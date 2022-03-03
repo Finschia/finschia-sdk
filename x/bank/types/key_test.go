@@ -3,8 +3,9 @@ package types_test
 import (
 	"testing"
 
-	"github.com/line/lbm-sdk/x/bank/keeper"
 	"github.com/stretchr/testify/require"
+
+	"github.com/line/lbm-sdk/x/bank/keeper"
 
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/bank/types"

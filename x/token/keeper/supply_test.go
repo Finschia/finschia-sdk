@@ -10,9 +10,9 @@ import (
 func (s *KeeperTestSuite) TestIssue() {
 	// create a not mintable class
 	class := token.Token{
-		Id: "fee1dead",
-		Name: "NOT Mintable",
-		Symbol: "NO",
+		Id:       "fee1dead",
+		Name:     "NOT Mintable",
+		Symbol:   "NO",
 		Mintable: false,
 	}
 	err := s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, sdk.OneInt())

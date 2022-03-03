@@ -3,10 +3,11 @@ package cmd_test
 import (
 	"context"
 	"fmt"
+	"testing"
+
 	"github.com/line/lbm-sdk/crypto/hd"
 	"github.com/line/lbm-sdk/crypto/keyring"
 	sdk "github.com/line/lbm-sdk/types"
-	"testing"
 
 	"github.com/line/ostracon/libs/log"
 	"github.com/spf13/viper"

@@ -8,6 +8,13 @@ import (
 	"path"
 	"testing"
 
+	"github.com/line/ostracon/libs/log"
+	octypes "github.com/line/ostracon/types"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/crypto/hd"
@@ -22,12 +29,6 @@ import (
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"github.com/line/ostracon/libs/log"
-	octypes "github.com/line/ostracon/types"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 var wasmIdent = []byte("\x00\x61\x73\x6D")
@@ -55,7 +56,6 @@ func TestGenesisStoreCodeCmd(t *testing.T) {
 			mutator: func(cmd *cobra.Command) {
 				cmd.SetArgs([]string{anyValidWasmFile.Name()})
 				flagSet := cmd.Flags()
-				flagSet.Set("source", "https://foo.bar")
 				flagSet.Set("run-as", keeper.RandomBech32AccountAddress(t))
 			},
 		},
@@ -80,18 +80,6 @@ func TestGenesisStoreCodeCmd(t *testing.T) {
 			srcGenesis: minimalWasmGenesis,
 			mutator: func(cmd *cobra.Command) {
 				cmd.SetArgs([]string{anyValidWasmFile.Name()})
-				flagSet := cmd.Flags()
-				flagSet.Set("source", "https://foo.bar")
-			},
-			expError: true,
-		},
-		"invalid msg data should fail": {
-			srcGenesis: minimalWasmGenesis,
-			mutator: func(cmd *cobra.Command) {
-				cmd.SetArgs([]string{anyValidWasmFile.Name()})
-				flagSet := cmd.Flags()
-				flagSet.Set("source", "not an url")
-				flagSet.Set("run-as", keeper.RandomBech32AccountAddress(t))
 			},
 			expError: true,
 		},
@@ -315,7 +303,7 @@ func TestInstantiateContractCmd(t *testing.T) {
 }
 
 func TestExecuteContractCmd(t *testing.T) {
-	const firstContractAddress = "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu"
+	const firstContractAddress = "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"
 	minimalWasmGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
 	}
@@ -396,7 +384,8 @@ func TestExecuteContractCmd(t *testing.T) {
 				},
 			},
 			mutator: func(cmd *cobra.Command) {
-				cmd.SetArgs([]string{"link1weh0k0l6t6v4jkmkde8e90tzkw2c59g4lkcapz", `{}`})
+				// See TestBuildContractAddress in keeper_test.go
+				cmd.SetArgs([]string{"link1mujpjkwhut9yjw4xueyugc02evfv46y0qnephq", `{}`})
 				flagSet := cmd.Flags()
 				flagSet.Set("run-as", myWellFundedAccount)
 			},
@@ -552,11 +541,11 @@ func TestGetAllContracts(t *testing.T) {
 			},
 			exp: []contractMeta{
 				{
-					ContractAddress: contractAddress(0, 1).String(),
+					ContractAddress: keeper.BuildContractAddress(0, 1).String(),
 					Info:            types.ContractInfo{Label: "first"},
 				},
 				{
-					ContractAddress: contractAddress(0, 2).String(),
+					ContractAddress: keeper.BuildContractAddress(0, 2).String(),
 					Info:            types.ContractInfo{Label: "second"},
 				},
 			},
@@ -572,7 +561,7 @@ func TestGetAllContracts(t *testing.T) {
 			},
 			exp: []contractMeta{
 				{
-					ContractAddress: contractAddress(0, 100).String(),
+					ContractAddress: keeper.BuildContractAddress(0, 100).String(),
 					Info:            types.ContractInfo{Label: "hundred"},
 				},
 			},
@@ -598,7 +587,7 @@ func TestGetAllContracts(t *testing.T) {
 					Info:            types.ContractInfo{Label: "first"},
 				},
 				{
-					ContractAddress: contractAddress(0, 100).String(),
+					ContractAddress: keeper.BuildContractAddress(0, 100).String(),
 					Info:            types.ContractInfo{Label: "hundred"},
 				},
 			},

@@ -130,7 +130,7 @@ func (suite *ConsortiumTestSuite) TestQueryValidatorAuth() {
 }
 
 func (suite *ConsortiumTestSuite) TestQueryValidatorAuths() {
-	var	req *types.QueryValidatorAuthsRequest
+	var req *types.QueryValidatorAuthsRequest
 	testCases := []struct {
 		msg      string
 		malleate func()

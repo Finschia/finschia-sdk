@@ -5,8 +5,9 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/line/lbm-sdk/x/feegrant/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/line/lbm-sdk/x/feegrant/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/types/module"

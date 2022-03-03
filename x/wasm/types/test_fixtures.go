@@ -74,8 +74,6 @@ func CodeInfoFixture(mutators ...func(*CodeInfo)) CodeInfo {
 	fixture := CodeInfo{
 		CodeHash:          codeHash[:],
 		Creator:           anyAddress,
-		Source:            "https://example.com",
-		Builder:           "my/builder:tag",
 		InstantiateConfig: AllowEverybody,
 	}
 	for _, m := range mutators {
@@ -133,8 +131,6 @@ func MsgStoreCodeFixture(mutators ...func(*MsgStoreCode)) *MsgStoreCode {
 	r := &MsgStoreCode{
 		Sender:                anyAddress,
 		WASMByteCode:          wasmIdent,
-		Source:                "https://example.com/code",
-		Builder:               "foo/bar:latest",
 		InstantiatePermission: &AllowEverybody,
 	}
 	for _, m := range mutators {
@@ -146,11 +142,11 @@ func MsgStoreCodeFixture(mutators ...func(*MsgStoreCode)) *MsgStoreCode {
 func MsgInstantiateContractFixture(mutators ...func(*MsgInstantiateContract)) *MsgInstantiateContract {
 	const anyAddress = "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"
 	r := &MsgInstantiateContract{
-		Sender:  anyAddress,
-		Admin:   anyAddress,
-		CodeID:  1,
-		Label:   "testing",
-		InitMsg: []byte(`{"foo":"bar"}`),
+		Sender: anyAddress,
+		Admin:  anyAddress,
+		CodeID: 1,
+		Label:  "testing",
+		Msg:    []byte(`{"foo":"bar"}`),
 		Funds: sdk.Coins{{
 			Denom:  "stake",
 			Amount: sdk.NewInt(1),
@@ -189,8 +185,6 @@ func StoreCodeProposalFixture(mutators ...func(*StoreCodeProposal)) *StoreCodePr
 		Description:  "Bar",
 		RunAs:        anyAddress,
 		WASMByteCode: []byte{0x0},
-		Source:       "https://example.com/code",
-		Builder:      "foo/bar:latest",
 	}
 	for _, m := range mutators {
 		m(p)
@@ -223,7 +217,7 @@ func InstantiateContractProposalFixture(mutators ...func(p *InstantiateContractP
 		Admin:       anyAddress,
 		CodeID:      1,
 		Label:       "testing",
-		InitMsg:     initMsgBz,
+		Msg:         initMsgBz,
 		Funds:       nil,
 	}
 
@@ -255,7 +249,7 @@ func MigrateContractProposalFixture(mutators ...func(p *MigrateContractProposal)
 		Description: "Bar",
 		Contract:    contractAddr,
 		CodeID:      1,
-		MigrateMsg:  migMsgBz,
+		Msg:         migMsgBz,
 		RunAs:       anyAddress,
 	}
 

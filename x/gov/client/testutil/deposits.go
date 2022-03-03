@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"time"
 
+	ostcli "github.com/line/ostracon/libs/cli"
+	"github.com/stretchr/testify/suite"
+
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	"github.com/line/lbm-sdk/testutil/network"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/gov/client/cli"
 	"github.com/line/lbm-sdk/x/gov/types"
-	ostcli "github.com/line/ostracon/libs/cli"
-	"github.com/stretchr/testify/suite"
 )
 
 type DepositTestSuite struct {

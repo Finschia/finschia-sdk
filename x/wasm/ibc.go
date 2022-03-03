@@ -3,6 +3,8 @@ package wasm
 import (
 	"math"
 
+	wasmvmtypes "github.com/line/wasmvm/types"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
@@ -10,7 +12,6 @@ import (
 	porttypes "github.com/line/lbm-sdk/x/ibc/core/05-port/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	wasmTypes "github.com/line/lbm-sdk/x/wasm/types"
-	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 var _ porttypes.IBCModule = IBCHandler{}
@@ -44,13 +45,18 @@ func (i IBCHandler) OnChanOpenInit(
 		return sdkerrors.Wrapf(err, "contract port id")
 	}
 
-	err = i.keeper.OnOpenChannel(ctx, contractAddr, wasmvmtypes.IBCChannel{
-		Endpoint:             wasmvmtypes.IBCEndpoint{PortID: portID, ChannelID: channelID},
-		CounterpartyEndpoint: wasmvmtypes.IBCEndpoint{PortID: counterParty.PortId, ChannelID: counterParty.ChannelId},
-		Order:                order.String(),
-		Version:              version,
-		ConnectionID:         connectionHops[0], // At the moment this list must be of length 1. In the future multi-hop channels may be supported.
-	})
+	msg := wasmvmtypes.IBCChannelOpenMsg{
+		OpenInit: &wasmvmtypes.IBCOpenInit{
+			Channel: wasmvmtypes.IBCChannel{
+				Endpoint:             wasmvmtypes.IBCEndpoint{PortID: portID, ChannelID: channelID},
+				CounterpartyEndpoint: wasmvmtypes.IBCEndpoint{PortID: counterParty.PortId, ChannelID: counterParty.ChannelId},
+				Order:                order.String(),
+				Version:              version,
+				ConnectionID:         connectionHops[0], // At the moment this list must be of length 1. In the future multi-hop channels may be supported.
+			},
+		},
+	}
+	err = i.keeper.OnOpenChannel(ctx, contractAddr, msg)
 	if err != nil {
 		return err
 	}
@@ -81,14 +87,20 @@ func (i IBCHandler) OnChanOpenTry(
 		return sdkerrors.Wrapf(err, "contract port id")
 	}
 
-	err = i.keeper.OnOpenChannel(ctx, contractAddr, wasmvmtypes.IBCChannel{
-		Endpoint:             wasmvmtypes.IBCEndpoint{PortID: portID, ChannelID: channelID},
-		CounterpartyEndpoint: wasmvmtypes.IBCEndpoint{PortID: counterParty.PortId, ChannelID: counterParty.ChannelId},
-		Order:                order.String(),
-		Version:              version,
-		CounterpartyVersion:  counterpartyVersion,
-		ConnectionID:         connectionHops[0], // At the moment this list must be of length 1. In the future multi-hop channels may be supported.
-	})
+	msg := wasmvmtypes.IBCChannelOpenMsg{
+		OpenTry: &wasmvmtypes.IBCOpenTry{
+			Channel: wasmvmtypes.IBCChannel{
+				Endpoint:             wasmvmtypes.IBCEndpoint{PortID: portID, ChannelID: channelID},
+				CounterpartyEndpoint: wasmvmtypes.IBCEndpoint{PortID: counterParty.PortId, ChannelID: counterParty.ChannelId},
+				Order:                order.String(),
+				Version:              version,
+				ConnectionID:         connectionHops[0], // At the moment this list must be of length 1. In the future multi-hop channels may be supported.
+			},
+			CounterpartyVersion: counterpartyVersion,
+		},
+	}
+
+	err = i.keeper.OnOpenChannel(ctx, contractAddr, msg)
 	if err != nil {
 		return err
 	}
@@ -119,7 +131,13 @@ func (i IBCHandler) OnChanOpenAck(
 	if !ok {
 		return sdkerrors.Wrapf(channeltypes.ErrChannelNotFound, "port ID (%s) channel ID (%s)", portID, channelID)
 	}
-	return i.keeper.OnConnectChannel(ctx, contractAddr, toWasmVMChannel(portID, channelID, channelInfo, counterpartyVersion))
+	msg := wasmvmtypes.IBCChannelConnectMsg{
+		OpenAck: &wasmvmtypes.IBCOpenAck{
+			Channel:             toWasmVMChannel(portID, channelID, channelInfo),
+			CounterpartyVersion: counterpartyVersion,
+		},
+	}
+	return i.keeper.OnConnectChannel(ctx, contractAddr, msg)
 }
 
 // OnChanOpenConfirm implements the IBCModule interface
@@ -132,7 +150,12 @@ func (i IBCHandler) OnChanOpenConfirm(ctx sdk.Context, portID, channelID string)
 	if !ok {
 		return sdkerrors.Wrapf(channeltypes.ErrChannelNotFound, "port ID (%s) channel ID (%s)", portID, channelID)
 	}
-	return i.keeper.OnConnectChannel(ctx, contractAddr, toWasmVMChannel(portID, channelID, channelInfo, ""))
+	msg := wasmvmtypes.IBCChannelConnectMsg{
+		OpenConfirm: &wasmvmtypes.IBCOpenConfirm{
+			Channel: toWasmVMChannel(portID, channelID, channelInfo),
+		},
+	}
+	return i.keeper.OnConnectChannel(ctx, contractAddr, msg)
 }
 
 // OnChanCloseInit implements the IBCModule interface
@@ -146,7 +169,10 @@ func (i IBCHandler) OnChanCloseInit(ctx sdk.Context, portID, channelID string) e
 		return sdkerrors.Wrapf(channeltypes.ErrChannelNotFound, "port ID (%s) channel ID (%s)", portID, channelID)
 	}
 
-	err = i.keeper.OnCloseChannel(ctx, contractAddr, toWasmVMChannel(portID, channelID, channelInfo, ""))
+	msg := wasmvmtypes.IBCChannelCloseMsg{
+		CloseInit: &wasmvmtypes.IBCCloseInit{Channel: toWasmVMChannel(portID, channelID, channelInfo)},
+	}
+	err = i.keeper.OnCloseChannel(ctx, contractAddr, msg)
 	if err != nil {
 		return err
 	}
@@ -167,7 +193,10 @@ func (i IBCHandler) OnChanCloseConfirm(ctx sdk.Context, portID, channelID string
 		return sdkerrors.Wrapf(channeltypes.ErrChannelNotFound, "port ID (%s) channel ID (%s)", portID, channelID)
 	}
 
-	err = i.keeper.OnCloseChannel(ctx, contractAddr, toWasmVMChannel(portID, channelID, channelInfo, ""))
+	msg := wasmvmtypes.IBCChannelCloseMsg{
+		CloseConfirm: &wasmvmtypes.IBCCloseConfirm{Channel: toWasmVMChannel(portID, channelID, channelInfo)},
+	}
+	err = i.keeper.OnCloseChannel(ctx, contractAddr, msg)
 	if err != nil {
 		return err
 	}
@@ -176,14 +205,13 @@ func (i IBCHandler) OnChanCloseConfirm(ctx sdk.Context, portID, channelID string
 	return err
 }
 
-func toWasmVMChannel(portID, channelID string, channelInfo channeltypes.Channel, counterpartyVersion string) wasmvmtypes.IBCChannel {
+func toWasmVMChannel(portID, channelID string, channelInfo channeltypes.Channel) wasmvmtypes.IBCChannel {
 	return wasmvmtypes.IBCChannel{
 		Endpoint:             wasmvmtypes.IBCEndpoint{PortID: portID, ChannelID: channelID},
 		CounterpartyEndpoint: wasmvmtypes.IBCEndpoint{PortID: channelInfo.Counterparty.PortId, ChannelID: channelInfo.Counterparty.ChannelId},
 		Order:                channelInfo.Ordering.String(),
 		Version:              channelInfo.Version,
 		ConnectionID:         channelInfo.ConnectionHops[0], // At the moment this list must be of length 1. In the future multi-hop channels may be supported.
-		CounterpartyVersion:  counterpartyVersion,
 	}
 }
 
@@ -196,14 +224,15 @@ func (i IBCHandler) OnRecvPacket(
 	if err != nil {
 		return nil, nil, sdkerrors.Wrapf(err, "contract port id")
 	}
-	msgBz, err := i.keeper.OnRecvPacket(ctx, contractAddr, newIBCPacket(packet))
+	msg := wasmvmtypes.IBCPacketReceiveMsg{Packet: newIBCPacket(packet)}
+	ack, err := i.keeper.OnRecvPacket(ctx, contractAddr, msg)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return &sdk.Result{
+	return &sdk.Result{ // the response is ignored
 		Events: ctx.EventManager().Events().ToABCIEvents(),
-	}, msgBz, nil
+	}, ack, nil
 }
 
 // OnAcknowledgementPacket implements the IBCModule interface
@@ -213,8 +242,8 @@ func (i IBCHandler) OnAcknowledgementPacket(ctx sdk.Context, packet channeltypes
 		return nil, sdkerrors.Wrapf(err, "contract port id")
 	}
 
-	err = i.keeper.OnAckPacket(ctx, contractAddr, wasmvmtypes.IBCAcknowledgement{
-		Acknowledgement: acknowledgement,
+	err = i.keeper.OnAckPacket(ctx, contractAddr, wasmvmtypes.IBCPacketAckMsg{
+		Acknowledgement: wasmvmtypes.IBCAcknowledgement{Data: acknowledgement},
 		OriginalPacket:  newIBCPacket(packet),
 	})
 	if err != nil {
@@ -233,7 +262,8 @@ func (i IBCHandler) OnTimeoutPacket(ctx sdk.Context, packet channeltypes.Packet)
 	if err != nil {
 		return nil, sdkerrors.Wrapf(err, "contract port id")
 	}
-	err = i.keeper.OnTimeoutPacket(ctx, contractAddr, newIBCPacket(packet))
+	msg := wasmvmtypes.IBCPacketTimeoutMsg{Packet: newIBCPacket(packet)}
+	err = i.keeper.OnTimeoutPacket(ctx, contractAddr, msg)
 	if err != nil {
 		return nil, err
 	}

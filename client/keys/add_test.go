@@ -10,6 +10,7 @@ import (
 	"github.com/line/ostracon/libs/cli"
 
 	bip39 "github.com/cosmos/go-bip39"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/crypto/hd"

@@ -4,6 +4,7 @@ import (
 	"github.com/VictoriaMetrics/fastcache"
 	"github.com/coocood/freecache"
 	"github.com/dgraph-io/ristretto"
+
 	"github.com/line/lbm-sdk/store/types"
 )
 

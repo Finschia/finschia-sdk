@@ -309,7 +309,7 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateOCClientHeader(chainID, int64(height.RevisionHeight), height, suite.now, bothValSet, bothValSet,bothVoterSet, bothVoterSet,  bothSigners),
+				Header1:  suite.chainA.CreateOCClientHeader(chainID, int64(height.RevisionHeight), height, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				Header2:  suite.chainA.CreateOCClientHeader(chainID, int64(height.RevisionHeight), height, suite.now.Add(time.Minute), altValSet, bothValSet, octypes.WrapValidatorsToVoterSet(altValSet.Validators), bothVoterSet, altSigners),
 				ClientId: chainID,
 			},

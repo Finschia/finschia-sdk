@@ -6,20 +6,20 @@ import (
 )
 
 func (s *KeeperTestSuite) TestMsgTransfer() {
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		classId string
-		amount sdk.Int
-		valid bool
+		amount  sdk.Int
+		valid   bool
 	}{
 		"valid request": {
 			classId: s.classID,
-			amount: sdk.OneInt(),
-			valid: true,
+			amount:  sdk.OneInt(),
+			valid:   true,
 		},
 		"insufficient funds (no such a class)": {
 			classId: "00000000",
-			amount: sdk.OneInt(),
-			valid: false,
+			amount:  sdk.OneInt(),
+			valid:   false,
 		},
 	}
 
@@ -27,9 +27,9 @@ func (s *KeeperTestSuite) TestMsgTransfer() {
 		s.Run(name, func() {
 			req := &token.MsgTransfer{
 				ClassId: tc.classId,
-				From: s.vendor.String(),
-				To: s.customer.String(),
-				Amount: tc.amount,
+				From:    s.vendor.String(),
+				To:      s.customer.String(),
+				Amount:  tc.amount,
 			}
 			res, err := s.msgServer.Transfer(s.goCtx, req)
 			if !tc.valid {
@@ -43,19 +43,19 @@ func (s *KeeperTestSuite) TestMsgTransfer() {
 }
 
 func (s *KeeperTestSuite) TestMsgTransferFrom() {
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		proxy sdk.AccAddress
-		from sdk.AccAddress
+		from  sdk.AccAddress
 		valid bool
 	}{
 		"valid request": {
 			proxy: s.operator,
-			from: s.customer,
+			from:  s.customer,
 			valid: true,
 		},
 		"not approved": {
 			proxy: s.vendor,
-			from: s.customer,
+			from:  s.customer,
 			valid: false,
 		},
 	}
@@ -64,10 +64,10 @@ func (s *KeeperTestSuite) TestMsgTransferFrom() {
 		s.Run(name, func() {
 			req := &token.MsgTransferFrom{
 				ClassId: s.classID,
-				Proxy: tc.proxy.String(),
-				From: tc.from.String(),
-				To: s.vendor.String(),
-				Amount: sdk.OneInt(),
+				Proxy:   tc.proxy.String(),
+				From:    tc.from.String(),
+				To:      s.vendor.String(),
+				Amount:  sdk.OneInt(),
 			}
 			res, err := s.msgServer.TransferFrom(s.goCtx, req)
 			if !tc.valid {
@@ -81,29 +81,29 @@ func (s *KeeperTestSuite) TestMsgTransferFrom() {
 }
 
 func (s *KeeperTestSuite) TestMsgApprove() {
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		approver sdk.AccAddress
-		proxy sdk.AccAddress
-		valid bool
+		proxy    sdk.AccAddress
+		valid    bool
 	}{
 		"valid request": {
 			approver: s.customer,
-			proxy: s.vendor,
-			valid: true,
+			proxy:    s.vendor,
+			valid:    true,
 		},
 		"already approved": {
 			approver: s.customer,
-			proxy: s.operator,
-			valid: false,
+			proxy:    s.operator,
+			valid:    false,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			req := &token.MsgApprove{
-				ClassId: s.classID,
+				ClassId:  s.classID,
 				Approver: tc.approver.String(),
-				Proxy: tc.proxy.String(),
+				Proxy:    tc.proxy.String(),
 			}
 			res, err := s.msgServer.Approve(s.goCtx, req)
 			if !tc.valid {
@@ -117,26 +117,26 @@ func (s *KeeperTestSuite) TestMsgApprove() {
 }
 
 func (s *KeeperTestSuite) TestMsgIssue() {
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		amount sdk.Int
-		valid bool
+		valid  bool
 	}{
 		"valid request": {
 			amount: sdk.OneInt(),
-			valid: true,
+			valid:  true,
 		},
 		"invalid amount (not possible to reach here but for cov)": {
 			amount: sdk.NewInt(-1),
-			valid: false,
+			valid:  false,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			req := &token.MsgIssue{
-				Owner: s.vendor.String(),
-				To: s.vendor.String(),
-				Name: "test",
+				Owner:  s.vendor.String(),
+				To:     s.vendor.String(),
+				Name:   "test",
 				Symbol: "TT",
 				Amount: tc.amount,
 			}
@@ -152,23 +152,23 @@ func (s *KeeperTestSuite) TestMsgIssue() {
 }
 
 func (s *KeeperTestSuite) TestMsgGrant() {
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		granter sdk.AccAddress
 		grantee sdk.AccAddress
-		action string
-		valid bool
+		action  string
+		valid   bool
 	}{
 		"valid request": {
 			granter: s.vendor,
 			grantee: s.operator,
-			action: token.ActionModify,
-			valid: true,
+			action:  token.ActionModify,
+			valid:   true,
 		},
 		"already granted": {
 			granter: s.vendor,
 			grantee: s.operator,
-			action: token.ActionMint,
-			valid: false,
+			action:  token.ActionMint,
+			valid:   false,
 		},
 	}
 
@@ -178,7 +178,7 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 				ClassId: s.classID,
 				Granter: tc.granter.String(),
 				Grantee: tc.grantee.String(),
-				Action: tc.action,
+				Action:  tc.action,
 			}
 			res, err := s.msgServer.Grant(s.goCtx, req)
 			if !tc.valid {
@@ -192,20 +192,20 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 }
 
 func (s *KeeperTestSuite) TestMsgRevoke() {
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		grantee sdk.AccAddress
-		action string
-		valid bool
+		action  string
+		valid   bool
 	}{
 		"valid request": {
 			grantee: s.operator,
-			action: token.ActionMint,
-			valid: true,
+			action:  token.ActionMint,
+			valid:   true,
 		},
 		"not granted yet": {
 			grantee: s.operator,
-			action: token.ActionModify,
-			valid: false,
+			action:  token.ActionModify,
+			valid:   false,
 		},
 	}
 
@@ -214,7 +214,7 @@ func (s *KeeperTestSuite) TestMsgRevoke() {
 			req := &token.MsgRevoke{
 				ClassId: s.classID,
 				Grantee: tc.grantee.String(),
-				Action: tc.action,
+				Action:  tc.action,
 			}
 			res, err := s.msgServer.Revoke(s.goCtx, req)
 			if !tc.valid {
@@ -228,17 +228,17 @@ func (s *KeeperTestSuite) TestMsgRevoke() {
 }
 
 func (s *KeeperTestSuite) TestMsgMint() {
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		grantee sdk.AccAddress
-		valid bool
+		valid   bool
 	}{
 		"valid request": {
 			grantee: s.operator,
-			valid: true,
+			valid:   true,
 		},
 		"not granted": {
 			grantee: s.customer,
-			valid: false,
+			valid:   false,
 		},
 	}
 
@@ -247,8 +247,8 @@ func (s *KeeperTestSuite) TestMsgMint() {
 			req := &token.MsgMint{
 				ClassId: s.classID,
 				Grantee: tc.grantee.String(),
-				To: s.customer.String(),
-				Amount: sdk.OneInt(),
+				To:      s.customer.String(),
+				Amount:  sdk.OneInt(),
 			}
 			res, err := s.msgServer.Mint(s.goCtx, req)
 			if !tc.valid {
@@ -262,16 +262,16 @@ func (s *KeeperTestSuite) TestMsgMint() {
 }
 
 func (s *KeeperTestSuite) TestMsgBurn() {
-	testCases := map[string]struct{
-		from sdk.AccAddress
+	testCases := map[string]struct {
+		from  sdk.AccAddress
 		valid bool
 	}{
 		"valid request": {
-			from: s.vendor,
+			from:  s.vendor,
 			valid: true,
 		},
 		"not granted": {
-			from: s.customer,
+			from:  s.customer,
 			valid: false,
 		},
 	}
@@ -280,8 +280,8 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 		s.Run(name, func() {
 			req := &token.MsgBurn{
 				ClassId: s.classID,
-				From: tc.from.String(),
-				Amount: sdk.OneInt(),
+				From:    tc.from.String(),
+				Amount:  sdk.OneInt(),
 			}
 			res, err := s.msgServer.Burn(s.goCtx, req)
 			if !tc.valid {
@@ -295,20 +295,20 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 }
 
 func (s *KeeperTestSuite) TestMsgBurnFrom() {
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		grantee sdk.AccAddress
-		from sdk.AccAddress
-		valid bool
+		from    sdk.AccAddress
+		valid   bool
 	}{
 		"valid request": {
 			grantee: s.operator,
-			from: s.customer,
-			valid: true,
+			from:    s.customer,
+			valid:   true,
 		},
 		"not approved": {
 			grantee: s.vendor,
-			from: s.customer,
-			valid: false,
+			from:    s.customer,
+			valid:   false,
 		},
 	}
 
@@ -317,8 +317,8 @@ func (s *KeeperTestSuite) TestMsgBurnFrom() {
 			req := &token.MsgBurnFrom{
 				ClassId: s.classID,
 				Grantee: tc.grantee.String(),
-				From: tc.from.String(),
-				Amount: sdk.OneInt(),
+				From:    tc.from.String(),
+				Amount:  sdk.OneInt(),
 			}
 			res, err := s.msgServer.BurnFrom(s.goCtx, req)
 			if !tc.valid {
@@ -332,17 +332,17 @@ func (s *KeeperTestSuite) TestMsgBurnFrom() {
 }
 
 func (s *KeeperTestSuite) TestMsgModify() {
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		grantee sdk.AccAddress
-		valid bool
+		valid   bool
 	}{
 		"valid request": {
 			grantee: s.vendor,
-			valid: true,
+			valid:   true,
 		},
 		"not granted": {
 			grantee: s.operator,
-			valid: false,
+			valid:   false,
 		},
 	}
 

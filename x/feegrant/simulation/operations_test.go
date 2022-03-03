@@ -5,10 +5,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/line/lbm-sdk/x/feegrant/types"
 	abci "github.com/line/ostracon/abci/types"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/line/lbm-sdk/x/feegrant/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	simappparams "github.com/line/lbm-sdk/simapp/params"

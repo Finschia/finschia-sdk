@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 func TestMsgSendRoute(t *testing.T) {

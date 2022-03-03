@@ -2,48 +2,48 @@ package keeper_test
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/token"
 	"github.com/line/lbm-sdk/x/token/keeper"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
 )
 
 func (s *KeeperTestSuite) TestNewHandler() {
-	testCases := map[string]struct{
-		msg sdk.Msg
+	testCases := map[string]struct {
+		msg   sdk.Msg
 		valid bool
 	}{
 		"MsgTransfer": {
 			&token.MsgTransfer{
 				ClassId: s.classID,
-				From: s.vendor.String(),
-				To: s.customer.String(),
-				Amount: sdk.OneInt(),
+				From:    s.vendor.String(),
+				To:      s.customer.String(),
+				Amount:  sdk.OneInt(),
 			},
 			true,
 		},
 		"MsgTransferFrom": {
 			&token.MsgTransferFrom{
 				ClassId: s.classID,
-				Proxy: s.operator.String(),
-				From: s.customer.String(),
-				To: s.vendor.String(),
-				Amount: sdk.OneInt(),
+				Proxy:   s.operator.String(),
+				From:    s.customer.String(),
+				To:      s.vendor.String(),
+				Amount:  sdk.OneInt(),
 			},
 			true,
 		},
 		"MsgApprove": {
 			&token.MsgApprove{
-				ClassId: s.classID,
+				ClassId:  s.classID,
 				Approver: s.customer.String(),
-				Proxy: s.vendor.String(),
+				Proxy:    s.vendor.String(),
 			},
 			true,
 		},
 		"MsgIssue": {
 			&token.MsgIssue{
-				Owner: s.vendor.String(),
-				To: s.vendor.String(),
-				Name: "for test",
+				Owner:  s.vendor.String(),
+				To:     s.vendor.String(),
+				Name:   "for test",
 				Symbol: "TT",
 				Amount: sdk.OneInt(),
 			},
@@ -54,7 +54,7 @@ func (s *KeeperTestSuite) TestNewHandler() {
 				ClassId: s.classID,
 				Granter: s.vendor.String(),
 				Grantee: s.operator.String(),
-				Action: token.ActionModify,
+				Action:  token.ActionModify,
 			},
 			true,
 		},
@@ -62,7 +62,7 @@ func (s *KeeperTestSuite) TestNewHandler() {
 			&token.MsgRevoke{
 				ClassId: s.classID,
 				Grantee: s.operator.String(),
-				Action: token.ActionMint,
+				Action:  token.ActionMint,
 			},
 			true,
 		},
@@ -70,16 +70,16 @@ func (s *KeeperTestSuite) TestNewHandler() {
 			&token.MsgMint{
 				ClassId: s.classID,
 				Grantee: s.vendor.String(),
-				To: s.customer.String(),
-				Amount: sdk.OneInt(),
+				To:      s.customer.String(),
+				Amount:  sdk.OneInt(),
 			},
 			true,
 		},
 		"MsgBurn": {
 			&token.MsgBurn{
 				ClassId: s.classID,
-				From: s.operator.String(),
-				Amount: sdk.OneInt(),
+				From:    s.operator.String(),
+				Amount:  sdk.OneInt(),
 			},
 			true,
 		},
@@ -87,8 +87,8 @@ func (s *KeeperTestSuite) TestNewHandler() {
 			&token.MsgBurnFrom{
 				ClassId: s.classID,
 				Grantee: s.operator.String(),
-				From: s.customer.String(),
-				Amount: sdk.OneInt(),
+				From:    s.customer.String(),
+				Amount:  sdk.OneInt(),
 			},
 			true,
 		},

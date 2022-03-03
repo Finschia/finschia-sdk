@@ -7,9 +7,10 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/line/lbm-sdk/x/feegrant/types"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
+
+	"github.com/line/lbm-sdk/x/feegrant/types"
 
 	sdkclient "github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/codec"

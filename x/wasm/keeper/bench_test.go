@@ -3,12 +3,13 @@ package keeper
 import (
 	"testing"
 
-	"github.com/line/lbm-sdk/x/wasm/types"
 	dbm "github.com/line/tm-db/v2"
 	"github.com/line/tm-db/v2/goleveldb"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 	"github.com/syndtr/goleveldb/leveldb/opt"
+
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 func BenchmarkExecution(b *testing.B) {

@@ -5,18 +5,19 @@ import (
 	"fmt"
 
 	"github.com/gogo/protobuf/jsonpb"
+	"github.com/pkg/errors"
+	"gopkg.in/yaml.v2"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
-	"github.com/pkg/errors"
-	"gopkg.in/yaml.v2"
 )
 
 const (
 	// DefaultParamspace for params keeper
 	DefaultParamspace = ModuleName
 	// DefaultMaxWasmCodeSize limit max bytes read to prevent gzip bombs
-	DefaultMaxWasmCodeSize = 600 * 1024
+	DefaultMaxWasmCodeSize = 600 * 1024 * 2
 	// GasMultiplier is how many cosmwasm gas points = 1 sdk gas point
 	// SDK reference costs is defined in x/store/types/gas.go KVGasConfig()
 	// https://github.com/line/lbm-sdk/blob/main/store/types/gas.go

@@ -1,16 +1,18 @@
 package keeper_test
 
 import (
+	"testing"
+
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	"testing"
+
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/x/bank/types"
 	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/stretchr/testify/suite"
 )
 
 const (

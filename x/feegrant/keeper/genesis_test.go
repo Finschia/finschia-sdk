@@ -3,9 +3,10 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/line/lbm-sdk/x/feegrant/types"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/line/lbm-sdk/x/feegrant/types"
 
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"

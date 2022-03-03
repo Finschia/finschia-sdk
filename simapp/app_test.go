@@ -11,22 +11,23 @@ import (
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
+	abci "github.com/line/ostracon/abci/types"
+
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/tests/mocks"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
-	abci "github.com/line/ostracon/abci/types"
 
 	"github.com/line/lbm-sdk/x/auth"
 	"github.com/line/lbm-sdk/x/auth/vesting"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/capability"
+	"github.com/line/lbm-sdk/x/consortium"
 	"github.com/line/lbm-sdk/x/crisis"
 	"github.com/line/lbm-sdk/x/distribution"
 	"github.com/line/lbm-sdk/x/evidence"
 	"github.com/line/lbm-sdk/x/genutil"
 	"github.com/line/lbm-sdk/x/gov"
-	"github.com/line/lbm-sdk/x/consortium"
 	transfer "github.com/line/lbm-sdk/x/ibc/applications/transfer"
 	ibc "github.com/line/lbm-sdk/x/ibc/core"
 	"github.com/line/lbm-sdk/x/mint"
@@ -140,7 +141,7 @@ func TestRunMigrations(t *testing.T) {
 			var err error
 
 			// Since it's very hard to test actual in-place store migrations in
-			// tests (due to the difficulty of maintaing multiple versions of a
+			// tests (due to the difficulty of maintaining multiple versions of a
 			// module), we're just testing here that the migration logic is
 			// called.
 			called := 0

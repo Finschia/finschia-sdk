@@ -11971,8 +11971,6 @@ CodeInfo is data for the uploaded contract WASM code
 | ----- | ---- | ----- | ----------- |
 | `code_hash` | [bytes](#bytes) |  | CodeHash is the unique identifier created by wasmvm |
 | `creator` | [string](#string) |  | Creator address who initially stored the code |
-| `source` | [string](#string) |  | Source is a valid absolute HTTPS URI to the contract's source code, optional |
-| `builder` | [string](#string) |  | Builder is a valid docker image name with tag, optional |
 | `instantiate_config` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiateConfig access control to apply on contract creation, optional |
 
 
@@ -12186,7 +12184,7 @@ code id.
 | `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
 | `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
 | `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
-| `init_msg` | [bytes](#bytes) |  | InitMsg json encoded message to be passed to the contract on instantiation |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on instantiation |
 | `funds` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
 
 
@@ -12221,7 +12219,7 @@ MsgMigrateContract runs a code upgrade/ downgrade for a smart contract
 | `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
 | `code_id` | [uint64](#uint64) |  | CodeID references the new WASM code |
-| `migrate_msg` | [bytes](#bytes) |  | MigrateMsg json encoded message to be passed to the contract on migration |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on migration |
 
 
 
@@ -12253,8 +12251,6 @@ MsgStoreCode submit Wasm code to the system
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
 | `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
-| `source` | [string](#string) |  | Source is a valid absolute HTTPS URI to the contract's source code, optional |
-| `builder` | [string](#string) |  | Builder is a valid docker image name with tag, optional |
 | `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission access control to apply on contract creation, optional |
 
 
@@ -12272,9 +12268,7 @@ MsgStoreCodeAndInstantiateContract submit Wasm code to the system and instantiat
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
 | `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
-| `source` | [string](#string) |  | Source is a valid absolute HTTPS URI to the contract's source code, optional |
-| `builder` | [string](#string) |  | Builder is a valid docker image name with tag, optional |
-| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission access control to apply on contract creation, optional |
+| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
 | `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
 | `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
 | `init_msg` | [bytes](#bytes) |  | InitMsg json encoded message to be passed to the contract on instantiation |
@@ -12588,7 +12582,7 @@ InstantiateContractProposal gov proposal content type to instantiate a contract.
 | `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
 | `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
 | `label` | [string](#string) |  | Label is optional metadata to be stored with a constract instance. |
-| `init_msg` | [bytes](#bytes) |  | InitMsg json encoded message to be passed to the contract on instantiation |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on instantiation |
 | `funds` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
 
 
@@ -12609,7 +12603,7 @@ MigrateContractProposal gov proposal content type to migrate a contract.
 | `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
 | `code_id` | [uint64](#uint64) |  | CodeID references the new WASM code |
-| `migrate_msg` | [bytes](#bytes) |  | MigrateMsg json encoded message to be passed to the contract on migration |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on migration |
 
 
 
@@ -12645,8 +12639,6 @@ StoreCodeProposal gov proposal content type to submit WASM code to the system
 | `description` | [string](#string) |  | Description is a human readable text |
 | `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
 | `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
-| `source` | [string](#string) |  | Source is a valid absolute HTTPS URI to the contract's source code, optional |
-| `builder` | [string](#string) |  | Builder is a valid docker image name with tag, optional |
 | `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply on contract creation, optional |
 
 
@@ -12734,8 +12726,6 @@ CodeInfoResponse contains code meta data from CodeInfo
 | `code_id` | [uint64](#uint64) |  | id for legacy support |
 | `creator` | [string](#string) |  |  |
 | `data_hash` | [bytes](#bytes) |  |  |
-| `source` | [string](#string) |  |  |
-| `builder` | [string](#string) |  |  |
 | `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
 
 
@@ -13013,14 +13003,14 @@ Query provides defines the gRPC querier service
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `ContractInfo` | [QueryContractInfoRequest](#lbm.wasm.v1.QueryContractInfoRequest) | [QueryContractInfoResponse](#lbm.wasm.v1.QueryContractInfoResponse) | ContractInfo gets the contract meta data | GET|/wasm/v1/contract/{address}|
-| `ContractHistory` | [QueryContractHistoryRequest](#lbm.wasm.v1.QueryContractHistoryRequest) | [QueryContractHistoryResponse](#lbm.wasm.v1.QueryContractHistoryResponse) | ContractHistory gets the contract code history | GET|/wasm/v1/contract/{address}/history|
-| `ContractsByCode` | [QueryContractsByCodeRequest](#lbm.wasm.v1.QueryContractsByCodeRequest) | [QueryContractsByCodeResponse](#lbm.wasm.v1.QueryContractsByCodeResponse) | ContractsByCode lists all smart contracts for a code id | GET|/wasm/v1/code/{code_id}/contracts|
-| `AllContractState` | [QueryAllContractStateRequest](#lbm.wasm.v1.QueryAllContractStateRequest) | [QueryAllContractStateResponse](#lbm.wasm.v1.QueryAllContractStateResponse) | AllContractState gets all raw store data for a single contract | GET|/wasm/v1/contract/{address}/state|
+| `ContractInfo` | [QueryContractInfoRequest](#lbm.wasm.v1.QueryContractInfoRequest) | [QueryContractInfoResponse](#lbm.wasm.v1.QueryContractInfoResponse) | ContractInfo gets the contract meta data | GET|/line/wasm/v1/contract/{address}|
+| `ContractHistory` | [QueryContractHistoryRequest](#lbm.wasm.v1.QueryContractHistoryRequest) | [QueryContractHistoryResponse](#lbm.wasm.v1.QueryContractHistoryResponse) | ContractHistory gets the contract code history | GET|/line/wasm/v1/contract/{address}/history|
+| `ContractsByCode` | [QueryContractsByCodeRequest](#lbm.wasm.v1.QueryContractsByCodeRequest) | [QueryContractsByCodeResponse](#lbm.wasm.v1.QueryContractsByCodeResponse) | ContractsByCode lists all smart contracts for a code id | GET|/line/wasm/v1/code/{code_id}/contracts|
+| `AllContractState` | [QueryAllContractStateRequest](#lbm.wasm.v1.QueryAllContractStateRequest) | [QueryAllContractStateResponse](#lbm.wasm.v1.QueryAllContractStateResponse) | AllContractState gets all raw store data for a single contract | GET|/line/wasm/v1/contract/{address}/state|
 | `RawContractState` | [QueryRawContractStateRequest](#lbm.wasm.v1.QueryRawContractStateRequest) | [QueryRawContractStateResponse](#lbm.wasm.v1.QueryRawContractStateResponse) | RawContractState gets single key from the raw store data of a contract | GET|/wasm/v1/contract/{address}/raw/{query_data}|
 | `SmartContractState` | [QuerySmartContractStateRequest](#lbm.wasm.v1.QuerySmartContractStateRequest) | [QuerySmartContractStateResponse](#lbm.wasm.v1.QuerySmartContractStateResponse) | SmartContractState get smart query result from the contract | GET|/wasm/v1/contract/{address}/smart/{query_data}|
-| `Code` | [QueryCodeRequest](#lbm.wasm.v1.QueryCodeRequest) | [QueryCodeResponse](#lbm.wasm.v1.QueryCodeResponse) | Code gets the binary code and metadata for a singe wasm code | GET|/wasm/v1/code/{code_id}|
-| `Codes` | [QueryCodesRequest](#lbm.wasm.v1.QueryCodesRequest) | [QueryCodesResponse](#lbm.wasm.v1.QueryCodesResponse) | Codes gets the metadata for all stored wasm codes | GET|/wasm/v1/code|
+| `Code` | [QueryCodeRequest](#lbm.wasm.v1.QueryCodeRequest) | [QueryCodeResponse](#lbm.wasm.v1.QueryCodeResponse) | Code gets the binary code and metadata for a singe wasm code | GET|/line/wasm/v1/code/{code_id}|
+| `Codes` | [QueryCodesRequest](#lbm.wasm.v1.QueryCodesRequest) | [QueryCodesResponse](#lbm.wasm.v1.QueryCodesResponse) | Codes gets the metadata for all stored wasm codes | GET|/line/wasm/v1/code|
 
  <!-- end services -->
 

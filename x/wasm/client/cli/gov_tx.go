@@ -3,14 +3,15 @@ package cli
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/gov/client/cli"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
 )
 
 func ProposalStoreCodeCmd() *cobra.Command {
@@ -57,8 +58,6 @@ func ProposalStoreCodeCmd() *cobra.Command {
 				Description:           proposalDescr,
 				RunAs:                 runAs,
 				WASMByteCode:          src.WASMByteCode,
-				Source:                src.Source,
-				Builder:               src.Builder,
 				InstantiatePermission: src.InstantiatePermission,
 			}
 
@@ -74,8 +73,6 @@ func ProposalStoreCodeCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(flagSource, "", "A valid URI reference to the contract's source code, optional")
-	cmd.Flags().String(flagBuilder, "", "A valid docker tag for the build system, optional")
 	cmd.Flags().String(flagRunAs, "", "The address that is stored as code creator")
 	cmd.Flags().String(flagInstantiateByEverybody, "", "Everybody can instantiate a contract from the code, optional")
 	cmd.Flags().String(flagInstantiateByAddress, "", "Only this address can instantiate a contract instance from the code, optional")
@@ -137,7 +134,7 @@ func ProposalInstantiateContractCmd() *cobra.Command {
 				Admin:       src.Admin,
 				CodeID:      src.CodeID,
 				Label:       src.Label,
-				InitMsg:     src.InitMsg,
+				Msg:         src.Msg,
 				Funds:       src.Funds,
 			}
 
@@ -212,7 +209,7 @@ func ProposalMigrateContractCmd() *cobra.Command {
 				Description: proposalDescr,
 				Contract:    src.Contract,
 				CodeID:      src.CodeID,
-				MigrateMsg:  src.MigrateMsg,
+				Msg:         src.Msg,
 				RunAs:       runAs,
 			}
 

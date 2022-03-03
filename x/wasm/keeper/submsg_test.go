@@ -9,9 +9,10 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	sdk "github.com/line/lbm-sdk/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // test handing of submessages, very closely related to the reflect_test
@@ -31,7 +32,7 @@ func TestDispatchSubMsgSuccessCase(t *testing.T) {
 	// upload code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, "", "", nil)
+	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), codeID)
 
@@ -58,7 +59,7 @@ func TestDispatchSubMsgSuccessCase(t *testing.T) {
 		},
 	}
 	reflectSend := ReflectHandleMsg{
-		ReflectSubCall: &reflectSubPayload{
+		ReflectSubMsg: &reflectSubPayload{
 			Msgs: []wasmvmtypes.SubMsg{{
 				ID:      7,
 				Msg:     msg,
@@ -79,7 +80,7 @@ func TestDispatchSubMsgSuccessCase(t *testing.T) {
 
 	// query the reflect state to ensure the result was stored
 	query := ReflectQueryMsg{
-		SubCallResult: &SubCall{ID: 7},
+		SubMsgResult: &SubCall{ID: 7},
 	}
 	queryBz, err := json.Marshal(query)
 	require.NoError(t, err)
@@ -94,7 +95,7 @@ func TestDispatchSubMsgSuccessCase(t *testing.T) {
 	require.NotNil(t, res.Result.Ok)
 	sub := res.Result.Ok
 	assert.Empty(t, sub.Data)
-	require.Len(t, sub.Events, 3)
+	require.Len(t, sub.Events, 1)
 
 	transfer := sub.Events[0]
 	assert.Equal(t, "transfer", transfer.Type)
@@ -102,22 +103,6 @@ func TestDispatchSubMsgSuccessCase(t *testing.T) {
 		Key:   "recipient",
 		Value: fred.String(),
 	}, transfer.Attributes[0])
-
-	sender := sub.Events[1]
-	assert.Equal(t, "message", sender.Type)
-	assert.Equal(t, wasmvmtypes.EventAttribute{
-		Key:   "sender",
-		Value: contractAddr.String(),
-	}, sender.Attributes[0])
-
-	// where does this come from?
-	module := sub.Events[2]
-	assert.Equal(t, "message", module.Type)
-	assert.Equal(t, wasmvmtypes.EventAttribute{
-		Key:   "module",
-		Value: "bank",
-	}, module.Attributes[0])
-
 }
 
 func TestDispatchSubMsgErrorHandling(t *testing.T) {
@@ -137,13 +122,13 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 	// upload code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	reflectID, err := keepers.ContractKeeper.Create(ctx, uploader, reflectCode, "", "", nil)
+	reflectID, err := keepers.ContractKeeper.Create(ctx, uploader, reflectCode, nil)
 	require.NoError(t, err)
 
 	// create hackatom contract for testing (for infinite loop)
 	hackatomCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
-	hackatomID, err := keepers.ContractKeeper.Create(ctx, uploader, hackatomCode, "", "", nil)
+	hackatomID, err := keepers.ContractKeeper.Create(ctx, uploader, hackatomCode, nil)
 	require.NoError(t, err)
 	_, _, bob := keyPubAddr()
 	_, _, fred := keyPubAddr()
@@ -211,7 +196,7 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 
 	assertReturnedEvents := func(expectedEvents int) assertion {
 		return func(t *testing.T, ctx sdk.Context, contract, emptyAccount string, response wasmvmtypes.SubcallResult) {
-			assert.Len(t, response.Ok.Events, expectedEvents)
+			require.Len(t, response.Ok.Events, expectedEvents)
 		}
 	}
 
@@ -232,13 +217,14 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 	assertGotContractAddr := func(t *testing.T, ctx sdk.Context, contract, emptyAccount string, response wasmvmtypes.SubcallResult) {
 		// should get the events emitted on new contract
 		event := response.Ok.Events[0]
-		assert.Equal(t, event.Type, "wasm")
-		assert.Equal(t, event.Attributes[0].Key, "contract_address")
+		require.Equal(t, event.Type, "instantiate")
+		assert.Equal(t, event.Attributes[0].Key, "_contract_address")
 		eventAddr := event.Attributes[0].Value
 		assert.NotEqual(t, contract, eventAddr)
 
 		// data field is the raw canonical address
 		// QUESTION: why not types.MsgInstantiateContractResponse? difference between calling Router and Service?
+		require.Len(t, response.Ok.Data, 43)
 		resAddr := sdk.AccAddress(response.Ok.Data)
 		assert.Equal(t, eventAddr, resAddr.String())
 	}
@@ -262,7 +248,7 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 			submsgID: 5,
 			msg:      validBankSend,
 			// note we charge another 40k for the reply call
-			resultAssertions: []assertion{assertReturnedEvents(3), assertGasUsed(117000, 130000)},
+			resultAssertions: []assertion{assertReturnedEvents(1), assertGasUsed(115534, 121000)},
 		},
 		"not enough tokens": {
 			submsgID:    6,
@@ -282,7 +268,7 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 			msg:      validBankSend,
 			gasLimit: &subGasLimit,
 			// uses same gas as call without limit
-			resultAssertions: []assertion{assertReturnedEvents(3), assertGasUsed(117000, 130000)},
+			resultAssertions: []assertion{assertReturnedEvents(1), assertGasUsed(115534, 121000)},
 		},
 		"not enough tokens with limit": {
 			submsgID:    16,
@@ -300,7 +286,6 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 			// uses all the subGasLimit, plus the 92k or so for the main contract
 			resultAssertions: []assertion{assertGasUsed(subGasLimit+92000, subGasLimit+106000), assertErrorString("out of gas")},
 		},
-
 		"instantiate contract gets address in data and events": {
 			submsgID:         21,
 			msg:              instantiateContract,
@@ -318,7 +303,7 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 
 			msg := tc.msg(contractAddr.String(), empty.String())
 			reflectSend := ReflectHandleMsg{
-				ReflectSubCall: &reflectSubPayload{
+				ReflectSubMsg: &reflectSubPayload{
 					Msgs: []wasmvmtypes.SubMsg{{
 						ID:       tc.submsgID,
 						Msg:      msg,
@@ -349,7 +334,7 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 
 				// query the reply
 				query := ReflectQueryMsg{
-					SubCallResult: &SubCall{ID: tc.submsgID},
+					SubMsgResult: &SubCall{ID: tc.submsgID},
 				}
 				queryBz, err := json.Marshal(query)
 				require.NoError(t, err)
@@ -388,7 +373,7 @@ func TestDispatchSubMsgEncodeToNoSdkMsg(t *testing.T) {
 		Bank: nilEncoder,
 	}
 
-	ctx, keepers := CreateTestInput(t, false, ReflectFeatures, nil, nil, WithMessageHandler(NewSDKMessageHandler(nil, nil, customEncoders)))
+	ctx, keepers := CreateTestInput(t, false, ReflectFeatures, nil, nil, WithMessageHandler(NewSDKMessageHandler(nil, customEncoders)))
 	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.WasmKeeper, keepers.BankKeeper
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
@@ -400,7 +385,7 @@ func TestDispatchSubMsgEncodeToNoSdkMsg(t *testing.T) {
 	// upload code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, "", "", nil)
+	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 
 	// creator instantiates a contract and gives it tokens
@@ -421,7 +406,7 @@ func TestDispatchSubMsgEncodeToNoSdkMsg(t *testing.T) {
 		},
 	}
 	reflectSend := ReflectHandleMsg{
-		ReflectSubCall: &reflectSubPayload{
+		ReflectSubMsg: &reflectSubPayload{
 			Msgs: []wasmvmtypes.SubMsg{{
 				ID:      7,
 				Msg:     msg,
@@ -436,7 +421,7 @@ func TestDispatchSubMsgEncodeToNoSdkMsg(t *testing.T) {
 
 	// query the reflect state to ensure the result was stored
 	query := ReflectQueryMsg{
-		SubCallResult: &SubCall{ID: 7},
+		SubMsgResult: &SubCall{ID: 7},
 	}
 	queryBz, err := json.Marshal(query)
 	require.NoError(t, err)
@@ -468,7 +453,7 @@ func TestDispatchSubMsgConditionalReplyOn(t *testing.T) {
 	// upload code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, "", "", nil)
+	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 
 	// creator instantiates a contract and gives it tokens
@@ -547,7 +532,7 @@ func TestDispatchSubMsgConditionalReplyOn(t *testing.T) {
 			}
 
 			reflectSend := ReflectHandleMsg{
-				ReflectSubCall: &reflectSubPayload{
+				ReflectSubMsg: &reflectSubPayload{
 					Msgs: []wasmvmtypes.SubMsg{subMsg},
 				},
 			}
@@ -563,7 +548,7 @@ func TestDispatchSubMsgConditionalReplyOn(t *testing.T) {
 
 			// query the reflect state to check if the result was stored
 			query := ReflectQueryMsg{
-				SubCallResult: &SubCall{ID: id},
+				SubMsgResult: &SubCall{ID: id},
 			}
 			queryBz, err := json.Marshal(query)
 			require.NoError(t, err)

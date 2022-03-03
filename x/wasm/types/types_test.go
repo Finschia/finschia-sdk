@@ -5,15 +5,16 @@ import (
 	"testing"
 	"time"
 
+	"github.com/line/ostracon/libs/rand"
+	wasmvmtypes "github.com/line/wasmvm/types"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/codec/types"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
-	"github.com/line/ostracon/libs/rand"
-	wasmvmtypes "github.com/line/wasmvm/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestContractInfoValidateBasic(t *testing.T) {
@@ -103,29 +104,6 @@ func TestCodeInfoValidateBasic(t *testing.T) {
 			srcMutator: func(c *CodeInfo) { c.Creator = "invalid address" },
 			expError:   true,
 		},
-		"source empty": {
-			srcMutator: func(c *CodeInfo) { c.Source = "" },
-		},
-		"source not an url": {
-			srcMutator: func(c *CodeInfo) { c.Source = "invalid" },
-			expError:   true,
-		},
-		"source not an absolute url": {
-			srcMutator: func(c *CodeInfo) { c.Source = "../bar.txt" },
-			expError:   true,
-		},
-		"source not https schema url": {
-			srcMutator: func(c *CodeInfo) { c.Source = "http://example.com" },
-			expError:   true,
-		},
-		"builder tag exceeds limit": {
-			srcMutator: func(c *CodeInfo) { c.Builder = strings.Repeat("a", MaxBuildTagSize+1) },
-			expError:   true,
-		},
-		"builder tag does not match pattern": {
-			srcMutator: func(c *CodeInfo) { c.Builder = "invalid" },
-			expError:   true,
-		},
 		"Instantiate config invalid": {
 			srcMutator: func(c *CodeInfo) { c.InstantiateConfig = AccessConfig{} },
 			expError:   true,
@@ -193,7 +171,7 @@ func TestContractInfoSetExtension(t *testing.T) {
 }
 
 func TestContractInfoMarshalUnmarshal(t *testing.T) {
-	var myAddr      = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
+	var myAddr = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
 	var myOtherAddr = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
 	var anyPos = AbsoluteTxPosition{BlockHeight: 1, TxIndex: 2}
 

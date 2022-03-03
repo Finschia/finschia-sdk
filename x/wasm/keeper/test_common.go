@@ -7,6 +7,15 @@ import (
 	"io/ioutil"
 	"time"
 
+	"github.com/line/ostracon/crypto"
+	"github.com/line/ostracon/crypto/ed25519"
+	"github.com/line/ostracon/libs/log"
+	"github.com/line/ostracon/libs/rand"
+	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	dbm "github.com/line/tm-db/v2"
+	"github.com/line/tm-db/v2/memdb"
+	"github.com/stretchr/testify/require"
+
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
@@ -59,14 +68,6 @@ import (
 	upgradeclient "github.com/line/lbm-sdk/x/upgrade/client"
 	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"github.com/line/ostracon/crypto"
-	"github.com/line/ostracon/crypto/ed25519"
-	"github.com/line/ostracon/libs/log"
-	"github.com/line/ostracon/libs/rand"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
-	dbm "github.com/line/tm-db/v2"
-	"github.com/line/tm-db/v2/memdb"
-	"github.com/stretchr/testify/require"
 )
 
 type TestingT interface {
@@ -302,7 +303,6 @@ func createTestInput(
 		scopedWasmKeeper,
 		wasmtesting.MockIBCTransferKeeper{},
 		router,
-		nil,
 		querier,
 		tempDir,
 		wasmConfig,
@@ -369,8 +369,7 @@ func handleStoreCode(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgS
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	codeID, err := k.Create(ctx, sdk.AccAddress(msg.Sender), msg.WASMByteCode, msg.Source, msg.Builder,
-		msg.InstantiatePermission)
+	codeID, err := k.Create(ctx, sdk.AccAddress(msg.Sender), msg.WASMByteCode, msg.InstantiatePermission)
 	if err != nil {
 		return nil, err
 	}
@@ -393,7 +392,7 @@ func handleInstantiate(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.Ms
 	}
 
 	contractAddr, _, err := k.Instantiate(ctx, msg.CodeID, sdk.AccAddress(msg.Sender), sdk.AccAddress(msg.Admin),
-		msg.InitMsg, msg.Label, msg.Funds)
+		msg.Msg, msg.Label, msg.Funds)
 	if err != nil {
 		return nil, err
 	}
@@ -413,13 +412,15 @@ func handleExecute(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgExe
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "admin")
 	}
-	res, err := k.Execute(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender), msg.Msg, msg.Funds)
+	data, err := k.Execute(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender), msg.Msg, msg.Funds)
 	if err != nil {
 		return nil, err
 	}
 
-	res.Events = ctx.EventManager().Events().ToABCIEvents()
-	return res, nil
+	return &sdk.Result{
+		Data:   data,
+		Events: ctx.EventManager().Events().ToABCIEvents(),
+	}, nil
 }
 
 func RandomAccountAddress(_ TestingT) sdk.AccAddress {
@@ -455,7 +456,7 @@ func StoreReflectContract(t TestingT, ctx sdk.Context, keepers TestKeepers) uint
 	require.NoError(t, err)
 
 	_, _, creatorAddr := keyPubAddr()
-	codeID, err := keepers.ContractKeeper.Create(ctx, creatorAddr, wasmCode, "", "", nil)
+	codeID, err := keepers.ContractKeeper.Create(ctx, creatorAddr, wasmCode, nil)
 	require.NoError(t, err)
 	return codeID
 }
@@ -468,7 +469,7 @@ func StoreExampleContract(t TestingT, ctx sdk.Context, keepers TestKeepers, wasm
 	wasmCode, err := ioutil.ReadFile(wasmFile)
 	require.NoError(t, err)
 
-	codeID, err := keepers.ContractKeeper.Create(ctx, creatorAddr, wasmCode, "", "", nil)
+	codeID, err := keepers.ContractKeeper.Create(ctx, creatorAddr, wasmCode, nil)
 	require.NoError(t, err)
 	return ExampleContract{anyAmount, creator, creatorAddr, codeID}
 }
@@ -500,7 +501,7 @@ func StoreRandomContract(t TestingT, ctx sdk.Context, keepers TestKeepers, mock 
 	fundAccounts(t, ctx, keepers.AccountKeeper, keepers.BankKeeper, creatorAddr, anyAmount)
 	keepers.WasmKeeper.wasmVM = mock
 	wasmCode := append(wasmIdent, rand.Bytes(10)...)
-	codeID, err := keepers.ContractKeeper.Create(ctx, creatorAddr, wasmCode, "", "", nil)
+	codeID, err := keepers.ContractKeeper.Create(ctx, creatorAddr, wasmCode, nil)
 	require.NoError(t, err)
 	exampleContract := ExampleContract{InitialAmount: anyAmount, Creator: creator, CreatorAddr: creatorAddr, CodeID: codeID}
 	return exampleContract

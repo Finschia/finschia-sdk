@@ -8,6 +8,10 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
+	wasmvmtypes "github.com/line/wasmvm/types"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
@@ -16,18 +20,15 @@ import (
 	bankkeeper "github.com/line/lbm-sdk/x/bank/keeper"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	wasmvmtypes "github.com/line/wasmvm/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 // ReflectInitMsg is {}
 
 // ReflectHandleMsg is used to encode handle messages
 type ReflectHandleMsg struct {
-	Reflect        *reflectPayload    `json:"reflect_msg,omitempty"`
-	ReflectSubCall *reflectSubPayload `json:"reflect_sub_call,omitempty"`
-	Change         *ownerPayload      `json:"change_owner,omitempty"`
+	Reflect       *reflectPayload    `json:"reflect_msg,omitempty"`
+	ReflectSubMsg *reflectSubPayload `json:"reflect_sub_msg,omitempty"`
+	Change        *ownerPayload      `json:"change_owner,omitempty"`
 }
 
 type ownerPayload struct {
@@ -44,10 +45,10 @@ type reflectSubPayload struct {
 
 // ReflectQueryMsg is used to encode query messages
 type ReflectQueryMsg struct {
-	Owner         *struct{}   `json:"owner,omitempty"`
-	Capitalized   *Text       `json:"capitalized,omitempty"`
-	Chain         *ChainQuery `json:"chain,omitempty"`
-	SubCallResult *SubCall    `json:"sub_call_result,omitempty"`
+	Owner        *struct{}   `json:"owner,omitempty"`
+	Capitalized  *Text       `json:"capitalized,omitempty"`
+	Chain        *ChainQuery `json:"chain,omitempty"`
+	SubMsgResult *SubCall    `json:"sub_msg_result,omitempty"`
 }
 
 type ChainQuery struct {
@@ -95,14 +96,14 @@ func TestReflectContractSend(t *testing.T) {
 	// upload reflect code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	reflectID, err := keeper.Create(ctx, creator, reflectCode, "", "", nil)
+	reflectID, err := keeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), reflectID)
 
 	// upload hackatom escrow code
 	escrowCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
-	escrowID, err := keeper.Create(ctx, creator, escrowCode, "", "", nil)
+	escrowID, err := keeper.Create(ctx, creator, escrowCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(2), escrowID)
 
@@ -140,7 +141,7 @@ func TestReflectContractSend(t *testing.T) {
 			Execute: &wasmvmtypes.ExecuteMsg{
 				ContractAddr: escrowAddr.String(),
 				Msg:          approveMsg,
-				Send: []wasmvmtypes.Coin{{
+				Funds: []wasmvmtypes.Coin{{
 					Denom:  "denom",
 					Amount: "14000",
 				}},
@@ -178,7 +179,7 @@ func TestReflectCustomMsg(t *testing.T) {
 	// upload code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	codeID, err := keeper.Create(ctx, creator, reflectCode, "", "", nil)
+	codeID, err := keeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), codeID)
 
@@ -269,7 +270,7 @@ func TestMaskReflectCustomQuery(t *testing.T) {
 	// upload code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, "", "", nil)
+	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), codeID)
 
@@ -321,7 +322,7 @@ func TestReflectStargateQuery(t *testing.T) {
 	// upload code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, "", "", nil)
+	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), codeID)
 
@@ -396,7 +397,7 @@ func TestMaskReflectWasmQueries(t *testing.T) {
 	// upload reflect code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	reflectID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, "", "", nil)
+	reflectID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), reflectID)
 
@@ -468,7 +469,7 @@ func TestWasmRawQueryWithNil(t *testing.T) {
 	// upload reflect code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	reflectID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, "", "", nil)
+	reflectID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), reflectID)
 
@@ -555,7 +556,7 @@ func reflectEncoders(cdc codec.Marshaler) *MessageEncoders {
 // fromReflectRawMsg decodes msg.Data to an sdk.Msg using proto Any and json encoding.
 // this needs to be registered on the Encoders
 func fromReflectRawMsg(cdc codec.Marshaler) CustomEncoder {
-	return func(_sender sdk.AccAddress, msg json.RawMessage, customEncodeRouter types.Router) ([]sdk.Msg, error) {
+	return func(_sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
 		var custom reflectCustomMsg
 		err := json.Unmarshal(msg, &custom)
 		if err != nil {

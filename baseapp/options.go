@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"io"
 
+	tmdb "github.com/line/tm-db/v2"
+
 	"github.com/line/lbm-sdk/store/cache"
 	"github.com/line/lbm-sdk/store/iavl"
-	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/snapshots"

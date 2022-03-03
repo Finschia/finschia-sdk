@@ -8,14 +8,15 @@ import (
 	"io/ioutil"
 	"testing"
 
+	wasmvm "github.com/line/wasmvm"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	sdk "github.com/line/lbm-sdk/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	"github.com/line/lbm-sdk/x/params/types/proposal"
 	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	wasmvm "github.com/line/wasmvm"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestStoreCodeProposal(t *testing.T) {
@@ -38,8 +39,6 @@ func TestStoreCodeProposal(t *testing.T) {
 	src := types.StoreCodeProposalFixture(func(p *types.StoreCodeProposal) {
 		p.RunAs = myActorAddress
 		p.WASMByteCode = wasmCode
-		p.Source = "https://example.com/mysource"
-		p.Builder = "foo/bar:v0.0.0"
 	})
 
 	// when stored
@@ -55,8 +54,6 @@ func TestStoreCodeProposal(t *testing.T) {
 	cInfo := wasmKeeper.GetCodeInfo(ctx, 1)
 	require.NotNil(t, cInfo)
 	assert.Equal(t, myActorAddress, cInfo.Creator)
-	assert.Equal(t, "foo/bar:v0.0.0", cInfo.Builder)
-	assert.Equal(t, "https://example.com/mysource", cInfo.Source)
 
 	storedCode, err := wasmKeeper.GetByteCode(ctx, 1)
 	require.NoError(t, err)
@@ -94,6 +91,7 @@ func TestInstantiateProposal(t *testing.T) {
 		p.Admin = otherAddress.String()
 		p.Label = "testing"
 	})
+	em := sdk.NewEventManager()
 
 	// when stored
 	storedProposal, err := govKeeper.SubmitProposal(ctx, src)
@@ -101,11 +99,11 @@ func TestInstantiateProposal(t *testing.T) {
 
 	// and proposal execute
 	handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
-	err = handler(ctx, storedProposal.GetContent())
+	err = handler(ctx.WithEventManager(em), storedProposal.GetContent())
 	require.NoError(t, err)
 
 	// then
-	contractAddr := "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu"
+	contractAddr := "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"
 	err = sdk.ValidateAccAddress(contractAddr)
 	require.NoError(t, err)
 
@@ -119,9 +117,18 @@ func TestInstantiateProposal(t *testing.T) {
 		Operation: types.ContractCodeHistoryOperationTypeInit,
 		CodeID:    src.CodeID,
 		Updated:   types.NewAbsoluteTxPosition(ctx),
-		Msg:       src.InitMsg,
+		Msg:       src.Msg,
 	}}
 	assert.Equal(t, expHistory, wasmKeeper.GetContractHistory(ctx, sdk.AccAddress(contractAddr)))
+	// and event
+	require.Len(t, em.Events(), 3, "%#v", em.Events())
+	require.Equal(t, types.EventTypeInstantiate, em.Events()[0].Type)
+	require.Equal(t, types.WasmModuleEventType, em.Events()[1].Type)
+	require.Equal(t, types.EventTypeGovContractResult, em.Events()[2].Type)
+	require.Len(t, em.Events()[0].Attributes, 2)
+	require.Len(t, em.Events()[1].Attributes, 2)
+	require.Len(t, em.Events()[2].Attributes, 1)
+	require.NotEmpty(t, em.Events()[2].Attributes[0])
 }
 
 func TestMigrateProposal(t *testing.T) {
@@ -147,7 +154,7 @@ func TestMigrateProposal(t *testing.T) {
 	var (
 		anyAddress   = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, sdk.BytesAddrLen))
 		otherAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, sdk.BytesAddrLen))
-		contractAddr = contractAddress(1, 1)
+		contractAddr = BuildContractAddress(1, 1)
 	)
 
 	contractInfoFixture := types.ContractInfoFixture(func(c *types.ContractInfo) {
@@ -170,9 +177,11 @@ func TestMigrateProposal(t *testing.T) {
 		Description: "Bar",
 		CodeID:      2,
 		Contract:    contractAddr.String(),
-		MigrateMsg:  migMsgBz,
+		Msg:         migMsgBz,
 		RunAs:       otherAddress.String(),
 	}
+
+	em := sdk.NewEventManager()
 
 	// when stored
 	storedProposal, err := govKeeper.SubmitProposal(ctx, &src)
@@ -180,7 +189,7 @@ func TestMigrateProposal(t *testing.T) {
 
 	// and proposal execute
 	handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
-	err = handler(ctx, storedProposal.GetContent())
+	err = handler(ctx.WithEventManager(em), storedProposal.GetContent())
 	require.NoError(t, err)
 
 	// then
@@ -198,15 +207,21 @@ func TestMigrateProposal(t *testing.T) {
 		Operation: types.ContractCodeHistoryOperationTypeMigrate,
 		CodeID:    src.CodeID,
 		Updated:   types.NewAbsoluteTxPosition(ctx),
-		Msg:       src.MigrateMsg,
+		Msg:       src.Msg,
 	}}
 	assert.Equal(t, expHistory, wasmKeeper.GetContractHistory(ctx, contractAddr))
+	// and events emitted
+	require.Len(t, em.Events(), 2)
+	assert.Equal(t, types.EventTypeMigrate, em.Events()[0].Type)
+	require.Equal(t, types.EventTypeGovContractResult, em.Events()[1].Type)
+	require.Len(t, em.Events()[1].Attributes, 1)
+	assert.Equal(t, types.AttributeKeyResultDataHex, string(em.Events()[1].Attributes[0].Key))
 }
 
 func TestAdminProposals(t *testing.T) {
 	var (
 		otherAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, sdk.BytesAddrLen))
-		contractAddr = contractAddress(1, 1)
+		contractAddr = BuildContractAddress(1, 1)
 	)
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
@@ -542,7 +557,7 @@ func TestUnpinCodesProposal(t *testing.T) {
 }
 
 func TestUpdateContractStatusProposals(t *testing.T) {
-	var contractAddr = contractAddress(1, 1)
+	var contractAddr = BuildContractAddress(1, 1)
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 

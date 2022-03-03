@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"strings"
 
+	ostcli "github.com/line/ostracon/libs/cli"
+
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	"github.com/line/lbm-sdk/x/consortium/client/cli"
-	ostcli "github.com/line/ostracon/libs/cli"
 )
 
 func (s *IntegrationTestSuite) TestNewQueryCmdParams() {

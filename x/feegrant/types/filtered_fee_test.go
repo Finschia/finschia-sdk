@@ -4,11 +4,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/line/lbm-sdk/x/feegrant/types"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/x/feegrant/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"

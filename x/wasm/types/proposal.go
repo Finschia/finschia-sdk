@@ -100,13 +100,6 @@ func (p StoreCodeProposal) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "code bytes %s", err.Error())
 	}
 
-	if err := validateSourceURL(p.Source); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "source %s", err.Error())
-	}
-
-	if err := validateBuilder(p.Builder); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "builder %s", err.Error())
-	}
 	if p.InstantiatePermission != nil {
 		if err := p.InstantiatePermission.ValidateBasic(); err != nil {
 			return sdkerrors.Wrap(err, "instantiate permission")
@@ -122,9 +115,7 @@ func (p StoreCodeProposal) String() string {
   Description: %s
   Run as:      %s
   WasmCode:    %X
-  Source:      %s
-  Builder:     %s
-`, p.Title, p.Description, p.RunAs, p.WASMByteCode, p.Source, p.Builder)
+`, p.Title, p.Description, p.RunAs, p.WASMByteCode)
 }
 
 // MarshalYAML pretty prints the wasm byte code
@@ -134,16 +125,12 @@ func (p StoreCodeProposal) MarshalYAML() (interface{}, error) {
 		Description           string        `yaml:"description"`
 		RunAs                 string        `yaml:"run_as"`
 		WASMByteCode          string        `yaml:"wasm_byte_code"`
-		Source                string        `yaml:"source"`
-		Builder               string        `yaml:"builder"`
 		InstantiatePermission *AccessConfig `yaml:"instantiate_permission"`
 	}{
 		Title:                 p.Title,
 		Description:           p.Description,
 		RunAs:                 p.RunAs,
 		WASMByteCode:          base64.StdEncoding.EncodeToString(p.WASMByteCode),
-		Source:                p.Source,
-		Builder:               p.Builder,
 		InstantiatePermission: p.InstantiatePermission,
 	}, nil
 }
@@ -188,7 +175,7 @@ func (p InstantiateContractProposal) ValidateBasic() error {
 			return err
 		}
 	}
-	if !json.Valid(p.InitMsg) {
+	if !json.Valid(p.Msg) {
 		return sdkerrors.Wrap(ErrInvalid, "init msg json")
 	}
 
@@ -204,9 +191,9 @@ func (p InstantiateContractProposal) String() string {
   Admin:       %s
   Code id:     %d
   Label:       %s
-  InitMsg:     %q
+  Msg:         %q
   Funds:       %s
-`, p.Title, p.Description, p.RunAs, p.Admin, p.CodeID, p.Label, p.InitMsg, p.Funds)
+`, p.Title, p.Description, p.RunAs, p.Admin, p.CodeID, p.Label, p.Msg, p.Funds)
 }
 
 // MarshalYAML pretty prints the init message
@@ -218,7 +205,7 @@ func (p InstantiateContractProposal) MarshalYAML() (interface{}, error) {
 		Admin       string    `yaml:"admin"`
 		CodeID      uint64    `yaml:"code_id"`
 		Label       string    `yaml:"label"`
-		InitMsg     string    `yaml:"init_msg"`
+		Msg         string    `yaml:"msg"`
 		Funds       sdk.Coins `yaml:"funds"`
 	}{
 		Title:       p.Title,
@@ -227,7 +214,7 @@ func (p InstantiateContractProposal) MarshalYAML() (interface{}, error) {
 		Admin:       p.Admin,
 		CodeID:      p.CodeID,
 		Label:       p.Label,
-		InitMsg:     string(p.InitMsg),
+		Msg:         string(p.Msg),
 		Funds:       p.Funds,
 	}, nil
 }
@@ -258,7 +245,7 @@ func (p MigrateContractProposal) ValidateBasic() error {
 	if err := sdk.ValidateAccAddress(p.RunAs); err != nil {
 		return sdkerrors.Wrap(err, "run as")
 	}
-	if !json.Valid(p.MigrateMsg) {
+	if !json.Valid(p.Msg) {
 		return sdkerrors.Wrap(ErrInvalid, "migrate msg json")
 	}
 	return nil
@@ -272,8 +259,8 @@ func (p MigrateContractProposal) String() string {
   Contract:    %s
   Code id:     %d
   Run as:      %s
-  MigrateMsg   %q
-`, p.Title, p.Description, p.Contract, p.CodeID, p.RunAs, p.MigrateMsg)
+  Msg:         %q
+`, p.Title, p.Description, p.Contract, p.CodeID, p.RunAs, p.Msg)
 }
 
 // MarshalYAML pretty prints the migrate message
@@ -283,14 +270,14 @@ func (p MigrateContractProposal) MarshalYAML() (interface{}, error) {
 		Description string `yaml:"description"`
 		Contract    string `yaml:"contract"`
 		CodeID      uint64 `yaml:"code_id"`
-		MigrateMsg  string `yaml:"msg"`
+		Msg         string `yaml:"msg"`
 		RunAs       string `yaml:"run_as"`
 	}{
 		Title:       p.Title,
 		Description: p.Description,
 		Contract:    p.Contract,
 		CodeID:      p.CodeID,
-		MigrateMsg:  string(p.MigrateMsg),
+		Msg:         string(p.Msg),
 		RunAs:       p.RunAs,
 	}, nil
 }

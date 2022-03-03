@@ -1,8 +1,9 @@
 package wasmtesting
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 type MockQueryHandler struct {
