@@ -425,7 +425,7 @@ proto-all: proto-format proto-lint proto-gen
 proto-gen:
 	@echo "Generating Protobuf files"
 	@if $(DOCKER) ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then $(DOCKER) start -a $(containerProtoGen); else $(DOCKER) run --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
-			sh ./scripts/protocgen.sh; fi
+		sh ./scripts/protocgen.sh; fi
 
 # This generates the SDK's custom wrapper for google.protobuf.Any. It should only be run manually when needed
 proto-gen-any:
