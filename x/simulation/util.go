@@ -120,6 +120,5 @@ func GenAndDeliverTx(txCtx OperationInput, fees types.Coins) (simtype.OperationM
 		return simtype.NoOpMsg(txCtx.ModuleName, txCtx.MsgType, "unable to deliver tx"), nil, err
 	}
 
-	return simtype.NewOperationMsg(txCtx.Msg, true, ""), nil, nil
-
+	return simtype.NewOperationMsg(txCtx.Msg, true, "", nil), nil, nil
 }

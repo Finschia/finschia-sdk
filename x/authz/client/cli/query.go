@@ -52,15 +52,17 @@ $ %s query %s authorizations cosmos1skj.. cosmos1skjwj..
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			granterAddr, err := sdk.AccAddressFromBech32(args[0])
+			err = sdk.ValidateAccAddress(args[0])
 			if err != nil {
 				return err
 			}
+			granterAddr := sdk.AccAddress(args[0])
 
-			granteeAddr, err := sdk.AccAddressFromBech32(args[1])
+			err = sdk.ValidateAccAddress(args[1])
 			if err != nil {
 				return err
 			}
+			granteeAddr := sdk.AccAddress(args[1])
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -106,15 +108,17 @@ $ %s query %s authorization cosmos1skjw.. cosmos1skjwj.. %s
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			granter, err := sdk.AccAddressFromBech32(args[0])
+			err = sdk.ValidateAccAddress(args[0])
 			if err != nil {
 				return err
 			}
+			granter := sdk.AccAddress(args[0])
 
-			grantee, err := sdk.AccAddressFromBech32(args[1])
+			err = sdk.ValidateAccAddress(args[1])
 			if err != nil {
 				return err
 			}
+			grantee := sdk.AccAddress(args[1])
 
 			msgAuthorized := args[2]
 

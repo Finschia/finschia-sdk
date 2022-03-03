@@ -24,18 +24,19 @@ func (k Keeper) Authorizations(c context.Context, req *types.QueryAuthorizations
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
 	}
 
-	granter, err := sdk.AccAddressFromBech32(req.Granter)
-
+	err := sdk.ValidateAccAddress(req.Granter)
 	if err != nil {
 		return nil, err
 	}
-	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
+	granter := sdk.AccAddress(req.Granter)
 
+	err = sdk.ValidateAccAddress(req.Grantee)
 	if err != nil {
 		return nil, err
 	}
+	grantee := sdk.AccAddress(req.Grantee)
+
 	ctx := sdk.UnwrapSDKContext(c)
-
 	store := ctx.KVStore(k.storeKey)
 	key := types.GetAuthorizationStoreKey(grantee, granter, "")
 	authStore := prefix.NewStore(store, key)
@@ -89,18 +90,19 @@ func (k Keeper) Authorization(c context.Context, req *types.QueryAuthorizationRe
 		return nil, status.Errorf(codes.InvalidArgument, "empty method-name")
 	}
 
-	granter, err := sdk.AccAddressFromBech32(req.Granter)
-
+	err := sdk.ValidateAccAddress(req.Granter)
 	if err != nil {
 		return nil, err
 	}
-	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
+	granter := sdk.AccAddress(req.Granter)
 
+	err = sdk.ValidateAccAddress(req.Grantee)
 	if err != nil {
 		return nil, err
 	}
+	grantee := sdk.AccAddress(req.Grantee)
+
 	ctx := sdk.UnwrapSDKContext(c)
-
 	authorization, expiration := k.GetOrRevokeAuthorization(ctx, grantee, granter, req.MethodName)
 	if authorization == nil {
 		return nil, status.Errorf(codes.NotFound, "no authorization found for %s type", req.MethodName)

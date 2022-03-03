@@ -9,14 +9,17 @@ import (
 // InitGenesis new authz genesis
 func InitGenesis(ctx sdk.Context, keeper keeper.Keeper, data *types.GenesisState) {
 	for _, entry := range data.Authorization {
-		grantee, err := sdk.AccAddressFromBech32(entry.Grantee)
+		err := sdk.ValidateAccAddress(entry.Grantee)
 		if err != nil {
 			panic(err)
 		}
-		granter, err := sdk.AccAddressFromBech32(entry.Granter)
+		grantee := sdk.AccAddress(entry.Grantee)
+
+		err = sdk.ValidateAccAddress(entry.Granter)
 		if err != nil {
 			panic(err)
 		}
+		granter := sdk.AccAddress(entry.Granter)
 		authorization, ok := entry.Authorization.GetCachedValue().(types.Authorization)
 		if !ok {
 			panic("expected authorization")

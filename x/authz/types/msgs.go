@@ -36,23 +36,27 @@ func NewMsgGrantAuthorization(granter sdk.AccAddress, grantee sdk.AccAddress, au
 
 // GetSigners implements Msg
 func (msg MsgGrantAuthorizationRequest) GetSigners() []sdk.AccAddress {
-	granter, err := sdk.AccAddressFromBech32(msg.Granter)
+	err := sdk.ValidateAccAddress(msg.Granter)
 	if err != nil {
 		panic(err)
 	}
+	granter := sdk.AccAddress(msg.Granter)
 	return []sdk.AccAddress{granter}
 }
 
 // ValidateBasic implements Msg
 func (msg MsgGrantAuthorizationRequest) ValidateBasic() error {
-	granter, err := sdk.AccAddressFromBech32(msg.Granter)
+	err := sdk.ValidateAccAddress(msg.Granter)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "invalid granter address")
 	}
-	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
+	granter := sdk.AccAddress(msg.Granter)
+
+	err = sdk.ValidateAccAddress(msg.Grantee)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "invalid granter address")
 	}
+	grantee := sdk.AccAddress(msg.Grantee)
 
 	if granter.Equals(grantee) {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "granter and grantee cannot be same")
@@ -119,23 +123,27 @@ func NewMsgRevokeAuthorization(granter sdk.AccAddress, grantee sdk.AccAddress, m
 
 // GetSigners implements Msg
 func (msg MsgRevokeAuthorizationRequest) GetSigners() []sdk.AccAddress {
-	granter, err := sdk.AccAddressFromBech32(msg.Granter)
+	err := sdk.ValidateAccAddress(msg.Granter)
 	if err != nil {
 		panic(err)
 	}
+	granter := sdk.AccAddress(msg.Granter)
 	return []sdk.AccAddress{granter}
 }
 
 // ValidateBasic implements MsgRequest.ValidateBasic
 func (msg MsgRevokeAuthorizationRequest) ValidateBasic() error {
-	granter, err := sdk.AccAddressFromBech32(msg.Granter)
+	err := sdk.ValidateAccAddress(msg.Granter)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "invalid granter address")
 	}
-	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
+	granter := sdk.AccAddress(msg.Granter)
+
+	err = sdk.ValidateAccAddress(msg.Grantee)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "invalid grantee address")
 	}
+	grantee := sdk.AccAddress(msg.Grantee)
 
 	if granter.Equals(grantee) {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "granter and grantee cannot be same")
@@ -193,16 +201,17 @@ func (msg MsgExecAuthorizedRequest) GetServiceMsgs() ([]sdk.ServiceMsg, error) {
 
 // GetSigners implements Msg
 func (msg MsgExecAuthorizedRequest) GetSigners() []sdk.AccAddress {
-	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
+	err := sdk.ValidateAccAddress(msg.Grantee)
 	if err != nil {
 		panic(err)
 	}
+	grantee := sdk.AccAddress(msg.Grantee)
 	return []sdk.AccAddress{grantee}
 }
 
 // ValidateBasic implements Msg
 func (msg MsgExecAuthorizedRequest) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Grantee)
+	err := sdk.ValidateAccAddress(msg.Grantee)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "invalid grantee address")
 	}

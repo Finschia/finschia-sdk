@@ -61,10 +61,11 @@ Examples:
 			if err != nil {
 				return err
 			}
-			grantee, err := sdk.AccAddressFromBech32(args[0])
+			err = sdk.ValidateAccAddress(args[0])
 			if err != nil {
 				return err
 			}
+			grantee := sdk.AccAddress(args[0])
 
 			var authorization types.Authorization
 			switch args[1] {
@@ -141,10 +142,11 @@ Example:
 				return err
 			}
 
-			grantee, err := sdk.AccAddressFromBech32(args[0])
+			err = sdk.ValidateAccAddress(args[0])
 			if err != nil {
 				return err
 			}
+			grantee := sdk.AccAddress(args[0])
 
 			granter := clientCtx.GetFromAddress()
 

@@ -13,14 +13,17 @@ var _ types.MsgServer = Keeper{}
 // GrantAuthorization implements the MsgServer.GrantAuthorization method.
 func (k Keeper) GrantAuthorization(goCtx context.Context, msg *types.MsgGrantAuthorizationRequest) (*types.MsgGrantAuthorizationResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
+	err := sdk.ValidateAccAddress(msg.Grantee)
 	if err != nil {
 		return nil, err
 	}
-	granter, err := sdk.AccAddressFromBech32(msg.Granter)
+	grantee := sdk.AccAddress(msg.Grantee)
+
+	err = sdk.ValidateAccAddress(msg.Granter)
 	if err != nil {
 		return nil, err
 	}
+	granter := sdk.AccAddress(msg.Granter)
 
 	authorization := msg.GetGrantAuthorization()
 	// If the granted service Msg doesn't exist, we throw an error.
@@ -39,14 +42,17 @@ func (k Keeper) GrantAuthorization(goCtx context.Context, msg *types.MsgGrantAut
 // RevokeAuthorization implements the MsgServer.RevokeAuthorization method.
 func (k Keeper) RevokeAuthorization(goCtx context.Context, msg *types.MsgRevokeAuthorizationRequest) (*types.MsgRevokeAuthorizationResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
+	err := sdk.ValidateAccAddress(msg.Grantee)
 	if err != nil {
 		return nil, err
 	}
-	granter, err := sdk.AccAddressFromBech32(msg.Granter)
+	grantee := sdk.AccAddress(msg.Grantee)
+
+	err = sdk.ValidateAccAddress(msg.Granter)
 	if err != nil {
 		return nil, err
 	}
+	granter := sdk.AccAddress(msg.Granter)
 
 	err = k.Revoke(ctx, grantee, granter, msg.MethodName)
 	if err != nil {
@@ -59,10 +65,11 @@ func (k Keeper) RevokeAuthorization(goCtx context.Context, msg *types.MsgRevokeA
 // ExecAuthorized implements the MsgServer.ExecAuthorized method.
 func (k Keeper) ExecAuthorized(goCtx context.Context, msg *types.MsgExecAuthorizedRequest) (*types.MsgExecAuthorizedResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
+	err := sdk.ValidateAccAddress(msg.Grantee)
 	if err != nil {
 		return nil, err
 	}
+	grantee := sdk.AccAddress(msg.Grantee)
 	msgs, err := msg.GetServiceMsgs()
 	if err != nil {
 		return nil, err
