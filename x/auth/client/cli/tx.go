@@ -1,11 +1,12 @@
 package cli
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
 	"github.com/line/lbm-sdk/x/auth/types"
-	"github.com/spf13/cobra"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/auth transaction commands.

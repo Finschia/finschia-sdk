@@ -1,0 +1,77 @@
+syntax = "proto3";
+package lbm.token.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/line/lbm-sdk/x/token";
+
+// EventTransfer is emitted on Msg/Transfer and Msg/TransferFrom
+message EventTransfer {
+  // class id associated with the token.
+  string class_id = 1;
+  string from     = 2;
+  string to       = 3;
+  string amount   = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// EventApprove is emitted on Msg/Approve
+message EventApprove {
+  // class id associated with the token.
+  string class_id = 1;
+  string approver = 2;
+  string proxy    = 3;
+}
+
+// EventIssue is emitted on Msg/Issue
+message EventIssue {
+  // class id associated with the token.
+  string class_id = 1;
+}
+
+// EventGrant is emitted on Msg/Grant
+message EventGrant {
+  // class id associated with the token.
+  string class_id = 1;
+
+  // address of the granted account.
+  string grantee = 2;
+
+  // action on the token class. Must be one of "mint", "burn" and "modify".
+  string action = 3;
+}
+
+// EventRevoke is emitted on Msg/Revoke
+message EventRevoke {
+  // class id associated with the token.
+  string class_id = 1;
+
+  // address of the revoked account.
+  string grantee = 2;
+
+  // action on the token class. Must be one of "mint", "burn" and "modify".
+  string action = 3;
+}
+
+// EventMint is emitted on Msg/Mint
+message EventMint {
+  // class id associated with the token.
+  string class_id = 1;
+  string to       = 2;
+  string amount   = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// EventBurn is emitted on Msg/Burn
+message EventBurn {
+  // class id associated with the token.
+  string class_id = 1;
+  string from     = 2;
+  string amount   = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// EventModify is emitted on Msg/Modify
+message EventModify {
+  // class id associated with the token.
+  string class_id = 1;
+  string key      = 2;
+  string value    = 3;
+}

@@ -3,16 +3,31 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/types"
 	wasmvm "github.com/line/wasmvm"
+	wasmvmtypes "github.com/line/wasmvm/types"
+
+	sdk "github.com/line/lbm-sdk/types"
+	types "github.com/line/lbm-sdk/x/wasm/types"
 )
 
 type cosmwasmAPIImpl struct {
-	gasMultiplier uint64
+	gasMultiplier GasMultiplier
 }
 
+const (
+	// DefaultDeserializationCostPerByte The formular should be `len(data) * deserializationCostPerByte`
+	DefaultDeserializationCostPerByte = 1
+)
+
+var (
+	costJSONDeserialization = wasmvmtypes.UFraction{
+		Numerator:   DefaultDeserializationCostPerByte * types.DefaultGasMultiplier,
+		Denominator: 1,
+	}
+)
+
 func (a cosmwasmAPIImpl) humanAddress(canon []byte) (string, uint64, error) {
-	gas := 5 * a.gasMultiplier
+	gas := a.gasMultiplier.FromWasmVMGas(5)
 	if len(canon) != sdk.BytesAddrLen {
 		//nolint:stylecheck
 		return "", gas, fmt.Errorf("expected %d byte address", sdk.BytesAddrLen)
@@ -23,7 +38,7 @@ func (a cosmwasmAPIImpl) humanAddress(canon []byte) (string, uint64, error) {
 
 func (a cosmwasmAPIImpl) canonicalAddress(human string) ([]byte, uint64, error) {
 	bz, err := sdk.AccAddressToBytes(human)
-	return bz, 4 * a.gasMultiplier, err
+	return bz, a.gasMultiplier.ToWasmVMGas(4), err
 }
 
 func (k Keeper) cosmwasmAPI(ctx sdk.Context) wasmvm.GoAPI {

@@ -1,9 +1,10 @@
 package types
 
 import (
+	wasmvmtypes "github.com/line/wasmvm/types"
+
 	sdk "github.com/line/lbm-sdk/types"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
-	types2 "github.com/line/wasmvm/types"
 )
 
 // ViewKeeper provides read only operations
@@ -25,16 +26,16 @@ type ViewKeeper interface {
 // ContractOpsKeeper contains mutable operations on a contract.
 type ContractOpsKeeper interface {
 	// Create uploads and compiles a WASM contract, returning a short identifier for the contract
-	Create(ctx sdk.Context, creator sdk.AccAddress, wasmCode []byte, source string, builder string, instantiateAccess *AccessConfig) (codeID uint64, err error)
+	Create(ctx sdk.Context, creator sdk.AccAddress, wasmCode []byte, instantiateAccess *AccessConfig) (codeID uint64, err error)
 
 	// Instantiate creates an instance of a WASM contract
 	Instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.AccAddress, initMsg []byte, label string, deposit sdk.Coins) (sdk.AccAddress, []byte, error)
 
 	// Execute executes the contract instance
-	Execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) (*sdk.Result, error)
+	Execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) ([]byte, error)
 
 	// Migrate allows to upgrade a contract to a new code with data migration.
-	Migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, newCodeID uint64, msg []byte) (*sdk.Result, error)
+	Migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, newCodeID uint64, msg []byte) ([]byte, error)
 
 	// UpdateContractAdmin sets the admin value on the ContractInfo. It must be a valid address (use ClearContractAdmin to remove it)
 	UpdateContractAdmin(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, newAdmin sdk.AccAddress) error
@@ -60,32 +61,32 @@ type IBCContractKeeper interface {
 	OnOpenChannel(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		channel types2.IBCChannel,
+		msg wasmvmtypes.IBCChannelOpenMsg,
 	) error
 	OnConnectChannel(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		channel types2.IBCChannel,
+		msg wasmvmtypes.IBCChannelConnectMsg,
 	) error
 	OnCloseChannel(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		channel types2.IBCChannel,
+		msg wasmvmtypes.IBCChannelCloseMsg,
 	) error
 	OnRecvPacket(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		packet types2.IBCPacket,
+		msg wasmvmtypes.IBCPacketReceiveMsg,
 	) ([]byte, error)
 	OnAckPacket(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		acknowledgement types2.IBCAcknowledgement,
+		acknowledgement wasmvmtypes.IBCPacketAckMsg,
 	) error
 	OnTimeoutPacket(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		packet types2.IBCPacket,
+		msg wasmvmtypes.IBCPacketTimeoutMsg,
 	) error
 	// ClaimCapability allows the transfer module to claim a capability
 	//that IBC module passes to it

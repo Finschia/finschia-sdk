@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/lbm-sdk/x/feegrant/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/line/lbm-sdk/x/feegrant/types"
 
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/simapp"

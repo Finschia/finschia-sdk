@@ -10,11 +10,12 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/require"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
-	"github.com/stretchr/testify/require"
 )
 
 func TestGovRestHandlers(t *testing.T) {
@@ -158,7 +159,7 @@ func TestGovRestHandlers(t *testing.T) {
 				"admin":       "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu",
 				"code_id":     "1",
 				"label":       "https://example.com/",
-				"init_msg":    "my/builder:tag",
+				"msg":         dict{"recipient": "cosmos100dejzacpanrldpjjwksjm62shqhyss44jf5xz"},
 				"funds":       []dict{{"denom": "ustake", "amount": "100"}},
 				"deposit":     []dict{{"denom": "ustake", "amount": "10"}},
 				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",

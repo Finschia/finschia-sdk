@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/spf13/viper"
+
 	"github.com/line/lbm-sdk/store/cache"
 	"github.com/line/lbm-sdk/store/iavl"
-	"github.com/spf13/viper"
 
 	storetypes "github.com/line/lbm-sdk/store/types"
 	"github.com/line/lbm-sdk/telemetry"

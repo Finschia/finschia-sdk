@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestValidateParams(t *testing.T) {
@@ -302,7 +303,7 @@ func TestParamsUnmarshalJson(t *testing.T) {
 			src: `{"code_upload_access": {"permission": "Everybody"},
 				"instantiate_default_permission": "Everybody",
 				"contract_status_access": {"permission": "Nobody"},
-				"max_wasm_code_size": 614400,
+				"max_wasm_code_size": 1228800,
 				"gas_multiplier": 100,
 				"instance_cost": 40000,
 				"compile_cost": 2}`,

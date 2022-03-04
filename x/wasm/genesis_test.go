@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"testing"
 
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 func TestInitGenesis(t *testing.T) {
@@ -22,8 +23,6 @@ func TestInitGenesis(t *testing.T) {
 	msg := MsgStoreCode{
 		Sender:       creator.String(),
 		WASMByteCode: testContract,
-		Source:       "https://github.com/line/lbm-sdk/blob/main/x/wasm/internal/keeper/testdata/hackatom.wasm",
-		Builder:      "confio/cosmwasm-opt:0.7.0",
 	}
 	err := msg.ValidateBasic()
 	require.NoError(t, err)
@@ -41,10 +40,10 @@ func TestInitGenesis(t *testing.T) {
 	require.NoError(t, err)
 
 	initCmd := MsgInstantiateContract{
-		Sender:  creator.String(),
-		CodeID:  firstCodeID,
-		InitMsg: initMsgBz,
-		Funds:   deposit,
+		Sender: creator.String(),
+		CodeID: firstCodeID,
+		Msg:    initMsgBz,
+		Funds:  deposit,
 	}
 	res, err = h(data.ctx, &initCmd)
 	require.NoError(t, err)

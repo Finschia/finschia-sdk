@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/line/ostracon/libs/log"
+	"github.com/spf13/viper"
+	"github.com/stretchr/testify/require"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/server"
@@ -12,9 +16,6 @@ import (
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	genutiltest "github.com/line/lbm-sdk/x/genutil/client/testutil"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
-	"github.com/spf13/viper"
-	"github.com/stretchr/testify/require"
-	"github.com/line/ostracon/libs/log"
 )
 
 func Test_TestnetCmd(t *testing.T) {

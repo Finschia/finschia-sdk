@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 
 	fuzz "github.com/google/gofuzz"
+	tmBytes "github.com/line/ostracon/libs/bytes"
+
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	tmBytes "github.com/line/ostracon/libs/bytes"
 )
 
 var ModelFuzzers = []interface{}{FuzzAddr, FuzzAddrString, FuzzAbsoluteTxPosition, FuzzContractInfo, FuzzStateModel, FuzzAccessType, FuzzAccessConfig, FuzzContractCodeHistory}

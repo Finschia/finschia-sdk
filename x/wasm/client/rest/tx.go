@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
@@ -30,7 +31,7 @@ type instantiateContractReq struct {
 	Label   string       `json:"label" yaml:"label"`
 	Deposit sdk.Coins    `json:"deposit" yaml:"deposit"`
 	Admin   string       `json:"admin,omitempty" yaml:"admin"`
-	InitMsg []byte       `json:"init_msg" yaml:"init_msg"`
+	Msg     []byte       `json:"msg" yaml:"msg"`
 }
 
 type storeCodeAndInstantiateContractReq struct {
@@ -111,12 +112,12 @@ func instantiateContractHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		}
 
 		msg := types.MsgInstantiateContract{
-			Sender:  req.BaseReq.From,
-			CodeID:  codeID,
-			Label:   req.Label,
-			Funds:   req.Deposit,
-			InitMsg: req.InitMsg,
-			Admin:   req.Admin,
+			Sender: req.BaseReq.From,
+			CodeID: codeID,
+			Label:  req.Label,
+			Funds:  req.Deposit,
+			Msg:    req.Msg,
+			Admin:  req.Admin,
 		}
 
 		if err := msg.ValidateBasic(); err != nil {

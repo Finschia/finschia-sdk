@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/lbm-sdk/codec"
-	types2 "github.com/line/lbm-sdk/codec/types"
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
+
+	"github.com/line/lbm-sdk/codec"
+	types2 "github.com/line/lbm-sdk/codec/types"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/testutil/testdata"

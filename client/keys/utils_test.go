@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/crypto/hd"
 	"github.com/line/lbm-sdk/crypto/keyring"
 	"github.com/line/lbm-sdk/testutil"
 	"github.com/line/lbm-sdk/types"
-	"github.com/stretchr/testify/require"
 )
 
 func Test_printInfos(t *testing.T) {

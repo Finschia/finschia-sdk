@@ -7,6 +7,12 @@ import (
 	"testing"
 
 	"github.com/dvsekhvalnov/jose2go/base64url"
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/crypto"
+	"github.com/line/ostracon/crypto/ed25519"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
@@ -14,11 +20,6 @@ import (
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	abci "github.com/line/ostracon/abci/types"
-	"github.com/line/ostracon/crypto"
-	"github.com/line/ostracon/crypto/ed25519"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 type testData struct {
@@ -30,7 +31,6 @@ type testData struct {
 	stakingKeeper stakingkeeper.Keeper
 }
 
-// returns a cleanup function, which must be defered on
 func setupTest(t *testing.T) testData {
 	ctx, keepers := CreateTestInput(t, false, "staking,stargate", nil, nil)
 	cdc := keeper.MakeTestCodec(t)
@@ -170,23 +170,23 @@ func TestHandleInstantiate(t *testing.T) {
 
 	// create with no balance is also legal
 	initCmd := MsgInstantiateContract{
-		Sender:  creator.String(),
-		CodeID:  firstCodeID,
-		InitMsg: initMsgBz,
-		Funds:   nil,
+		Sender: creator.String(),
+		CodeID: firstCodeID,
+		Msg:    initMsgBz,
+		Funds:  nil,
 	}
 	res, err = h(data.ctx, &initCmd)
 	require.NoError(t, err)
 	contractBech32Addr := parseInitResponse(t, res.Data)
 
-	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", contractBech32Addr)
+	assert.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", contractBech32Addr)
 	// this should be standard x/wasm init event, nothing from contract
-	require.Equal(t, 3, len(res.Events), prettyEvents(res.Events))
-	assert.Equal(t, "wasm", res.Events[0].Type)
-	assertAttribute(t, "contract_address", contractBech32Addr, res.Events[0].Attributes[0])
-	assertAttribute(t, "module", "wasm", res.Events[1].Attributes[0])
-	assert.Equal(t, "message", res.Events[1].Type)
-	assert.Equal(t, "instantiate_contract", res.Events[2].Type)
+	assert.Equal(t, 3, len(res.Events), prettyEvents(res.Events))
+	assert.Equal(t, "message", res.Events[0].Type)
+	assertAttribute(t, "module", "wasm", res.Events[0].Attributes[0])
+	assert.Equal(t, "instantiate", res.Events[1].Type)
+	assert.Equal(t, "wasm", res.Events[2].Type)
+	assertAttribute(t, "_contract_address", contractBech32Addr, res.Events[2].Attributes[0])
 
 	assertCodeList(t, q, data.ctx, 1)
 	assertCodeBytes(t, q, data.ctx, 1, testContract)
@@ -232,18 +232,18 @@ func TestHandleStoreAndInstantiate(t *testing.T) {
 	codeID, contractBech32Addr := parseStoreAndInitResponse(t, res.Data)
 
 	require.Equal(t, uint64(1), codeID)
-	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", contractBech32Addr)
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", contractBech32Addr)
 	// this should be standard x/wasm init event, nothing from contract
 	require.Equal(t, 4, len(res.Events), prettyEvents(res.Events))
-	assert.Equal(t, "message", res.Events[0].Type)
-	assertAttribute(t, "module", "wasm", res.Events[0].Attributes[0])
-	assert.Equal(t, "store_code", res.Events[1].Type)
-	assertAttribute(t, "code_id", "1", res.Events[1].Attributes[0])
-	assert.Equal(t, "wasm", res.Events[2].Type)
-	assertAttribute(t, "contract_address", contractBech32Addr, res.Events[2].Attributes[0])
-	assert.Equal(t, "instantiate_contract", res.Events[3].Type)
-	assertAttribute(t, "code_id", "1", res.Events[3].Attributes[0])
-	assertAttribute(t, "contract_address", contractBech32Addr, res.Events[3].Attributes[1])
+	assert.Equal(t, "store_code", res.Events[0].Type)
+	assertAttribute(t, "code_id", "1", res.Events[0].Attributes[0])
+	assert.Equal(t, "message", res.Events[1].Type)
+	assertAttribute(t, "module", "wasm", res.Events[1].Attributes[0])
+	assert.Equal(t, "instantiate", res.Events[2].Type)
+	assertAttribute(t, "_contract_address", contractBech32Addr, res.Events[2].Attributes[0])
+	assertAttribute(t, "code_id", "1", res.Events[2].Attributes[1])
+	assert.Equal(t, "wasm", res.Events[3].Type)
+	assertAttribute(t, "_contract_address", contractBech32Addr, res.Events[3].Attributes[0])
 
 	assertCodeList(t, q, data.ctx, 1)
 	assertCodeBytes(t, q, data.ctx, 1, testContract)
@@ -270,7 +270,7 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 
 	invalidInitMsgBz, err := json.Marshal(emptyMsg{})
 
-	expectedContractBech32Addr := "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu"
+	expectedContractBech32Addr := "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"
 
 	// test cases
 	cases := map[string]struct {
@@ -403,24 +403,24 @@ func TestHandleExecute(t *testing.T) {
 	require.NoError(t, err)
 
 	initCmd := MsgInstantiateContract{
-		Sender:  creator.String(),
-		CodeID:  firstCodeID,
-		InitMsg: initMsgBz,
-		Funds:   deposit,
+		Sender: creator.String(),
+		CodeID: firstCodeID,
+		Msg:    initMsgBz,
+		Funds:  deposit,
 	}
 	res, err = h(data.ctx, &initCmd)
 	require.NoError(t, err)
 	contractBech32Addr := parseInitResponse(t, res.Data)
 
-	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", contractBech32Addr)
+	assert.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", contractBech32Addr)
 	// this should be standard x/wasm init event, plus a bank send event (2), with no custom contract events
-	require.Equal(t, 4, len(res.Events), prettyEvents(res.Events))
-	assert.Equal(t, "transfer", res.Events[0].Type)
-	assert.Equal(t, "wasm", res.Events[1].Type)
-	assertAttribute(t, "contract_address", contractBech32Addr, res.Events[1].Attributes[0])
-	assert.Equal(t, "message", res.Events[2].Type)
-	assertAttribute(t, "module", "wasm", res.Events[2].Attributes[0])
-	assert.Equal(t, "instantiate_contract", res.Events[3].Type)
+	assert.Equal(t, 4, len(res.Events), prettyEvents(res.Events))
+	assert.Equal(t, "message", res.Events[0].Type)
+	assertAttribute(t, "module", "wasm", res.Events[0].Attributes[0])
+	assert.Equal(t, "transfer", res.Events[1].Type)
+	assert.Equal(t, "instantiate", res.Events[2].Type)
+	assert.Equal(t, "wasm", res.Events[3].Type)
+	assertAttribute(t, "_contract_address", contractBech32Addr, res.Events[3].Attributes[0])
 
 	// ensure bob doesn't exist
 	bobAcct := data.acctKeeper.GetAccount(data.ctx, bob)
@@ -449,29 +449,33 @@ func TestHandleExecute(t *testing.T) {
 	// executing https://github.com/line/cosmwasm/blob/main/contracts/hackatom/src/contract.rs do_release
 	assertExecuteResponse(t, res.Data, []byte{0xf0, 0x0b, 0xaa})
 
-	// this should be standard x/wasm init event, plus 2 bank send event, plus a special event from the contract
-	require.Equal(t, 5, len(res.Events), prettyEvents(res.Events))
+	// this should be standard message event, plus x/wasm init event, plus 2 bank send event, plus a special event from the contract
+	require.Equal(t, 6, len(res.Events), prettyEvents(res.Events))
 
-	require.Equal(t, "transfer", res.Events[0].Type)
-	require.Len(t, res.Events[0].Attributes, 3)
-	assertAttribute(t, "recipient", contractBech32Addr, res.Events[0].Attributes[0])
-	assertAttribute(t, "sender", fred.String(), res.Events[0].Attributes[1])
-	assertAttribute(t, "amount", "5000denom", res.Events[0].Attributes[2])
+	assert.Equal(t, "message", res.Events[0].Type)
+	assertAttribute(t, "module", "wasm", res.Events[0].Attributes[0])
+
+	require.Equal(t, "transfer", res.Events[1].Type)
+	require.Len(t, res.Events[1].Attributes, 3)
+	assertAttribute(t, "recipient", contractBech32Addr, res.Events[1].Attributes[0])
+	assertAttribute(t, "sender", fred.String(), res.Events[1].Attributes[1])
+	assertAttribute(t, "amount", "5000denom", res.Events[1].Attributes[2])
+
+	assert.Equal(t, "execute", res.Events[2].Type)
+
+	// custom contract event attribute
+	assert.Equal(t, "wasm", res.Events[3].Type)
+	assertAttribute(t, "_contract_address", contractBech32Addr, res.Events[3].Attributes[0])
+	assertAttribute(t, "action", "release", res.Events[3].Attributes[1])
 	// custom contract event
-	assert.Equal(t, "wasm", res.Events[1].Type)
-	assertAttribute(t, "contract_address", contractBech32Addr, res.Events[1].Attributes[0])
-	assertAttribute(t, "action", "release", res.Events[1].Attributes[1])
+	assert.Equal(t, "wasm-hackatom", res.Events[4].Type)
+	assertAttribute(t, "_contract_address", contractBech32Addr, res.Events[4].Attributes[0])
+	assertAttribute(t, "action", "release", res.Events[4].Attributes[1])
 	// second transfer (this without conflicting message)
-	assert.Equal(t, "transfer", res.Events[2].Type)
-	assertAttribute(t, "recipient", bob.String(), res.Events[2].Attributes[0])
-	assertAttribute(t, "sender", contractBech32Addr, res.Events[2].Attributes[1])
-	assertAttribute(t, "amount", "105000denom", res.Events[2].Attributes[2])
-	// finally, standard x/wasm tag
-	assert.Equal(t, "message", res.Events[3].Type)
-	assertAttribute(t, "module", "wasm", res.Events[3].Attributes[0])
-	assert.Equal(t, "execute_contract", res.Events[4].Type)
-	assertAttribute(t, "contract_address", contractBech32Addr, res.Events[4].Attributes[0])
-
+	assert.Equal(t, "transfer", res.Events[5].Type)
+	assertAttribute(t, "recipient", bob.String(), res.Events[5].Attributes[0])
+	assertAttribute(t, "sender", contractBech32Addr, res.Events[5].Attributes[1])
+	assertAttribute(t, "amount", "105000denom", res.Events[5].Attributes[2])
 	// ensure bob now exists and got both payments released
 	bobAcct = data.acctKeeper.GetAccount(data.ctx, bob)
 	require.NotNil(t, bobAcct)
@@ -523,15 +527,15 @@ func TestHandleExecuteEscrow(t *testing.T) {
 	require.NoError(t, err)
 
 	initCmd := MsgInstantiateContract{
-		Sender:  creator.String(),
-		CodeID:  firstCodeID,
-		InitMsg: initMsgBz,
-		Funds:   deposit,
+		Sender: creator.String(),
+		CodeID: firstCodeID,
+		Msg:    initMsgBz,
+		Funds:  deposit,
 	}
 	res, err = h(data.ctx, &initCmd)
 	require.NoError(t, err)
 	contractBech32Addr := parseInitResponse(t, res.Data)
-	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", contractBech32Addr)
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", contractBech32Addr)
 
 	handleMsg := map[string]interface{}{
 		"release": map[string]interface{}{},

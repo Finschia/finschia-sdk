@@ -3,9 +3,9 @@ package capability_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/suite"
 	abci "github.com/line/ostracon/abci/types"
 	osproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/simapp"

@@ -1,3 +1,4 @@
+//go:build norace
 // +build norace
 
 package cli_test
@@ -12,8 +13,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gogo/protobuf/proto"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -1286,87 +1285,6 @@ func (s *IntegrationTestSuite) createBankMsg(val *network.Validator, toAddr sdk.
 
 	flags = append(flags, extraFlags...)
 	return bankcli.MsgSendExec(val.ClientCtx, val.Address, toAddr, amount, flags...)
-}
-
-func (s *IntegrationTestSuite) TestNewEmptyTxCmd() {
-	val := s.network.Validators[0]
-
-	testCases := []struct {
-		name         string
-		from         sdk.AccAddress
-		args         []string
-		expectErr    bool
-		respType     proto.Message
-		expectedCode uint32
-	}{
-		{
-			"valid transaction",
-			val.Address,
-			[]string{
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-			},
-			false,
-			&sdk.TxResponse{},
-			0,
-		},
-		{
-			"not enough fees",
-			val.Address,
-			[]string{
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))).String()),
-			},
-			false,
-			&sdk.TxResponse{},
-			sdkerrors.ErrInsufficientFee.ABCICode(),
-		},
-		{
-			"not enough gas",
-			val.Address,
-			[]string{
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-				"--gas=10",
-			},
-			false,
-			&sdk.TxResponse{},
-			sdkerrors.ErrOutOfGas.ABCICode(),
-		},
-		{
-			"no from",
-			sdk.AccAddress(""),
-			[]string{
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-			},
-			true,
-			&sdk.TxResponse{},
-			0,
-		},
-	}
-
-	for _, tc := range testCases {
-		tc := tc
-
-		s.Run(tc.name, func() {
-			bz, err := clitestutil.ExecTestCLICmd(val.ClientCtx, authcli.NewEmptyTxCmd(),
-				append([]string{tc.from.String()}, tc.args...))
-			if tc.expectErr {
-				s.Require().Error(err)
-			} else {
-				s.Require().NoError(err)
-
-				s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(bz.Bytes(), tc.respType), bz.String())
-				txResp := tc.respType.(*sdk.TxResponse)
-				s.Require().Equal(tc.expectedCode, txResp.Code)
-			}
-		})
-	}
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

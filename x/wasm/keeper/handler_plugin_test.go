@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"testing"
 
+	wasmvm "github.com/line/wasmvm"
+	wasmvmtypes "github.com/line/wasmvm/types"
+
 	"github.com/line/lbm-sdk/baseapp"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
@@ -14,8 +17,7 @@ import (
 	ibcexported "github.com/line/lbm-sdk/x/ibc/core/exported"
 	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	wasmvm "github.com/line/wasmvm"
-	wasmvmtypes "github.com/line/wasmvm/types"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -115,7 +117,7 @@ func TestSDKMessageHandlerDispatch(t *testing.T) {
 	}{
 		"all good": {
 			srcRoute: sdk.NewRoute(types.RouterKey, capturingRouteFn),
-			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage, customEncodeRouter types.Router) ([]sdk.Msg, error) {
+			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
 				myMsg := types.MsgExecuteContract{
 					Sender:   myContractAddr.String(),
 					Contract: RandomBech32AccountAddress(t),
@@ -127,7 +129,7 @@ func TestSDKMessageHandlerDispatch(t *testing.T) {
 		},
 		"multiple output msgs": {
 			srcRoute: sdk.NewRoute(types.RouterKey, capturingRouteFn),
-			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage, customEncodeRouter types.Router) ([]sdk.Msg, error) {
+			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
 				first := &types.MsgExecuteContract{
 					Sender:   myContractAddr.String(),
 					Contract: RandomBech32AccountAddress(t),
@@ -144,7 +146,7 @@ func TestSDKMessageHandlerDispatch(t *testing.T) {
 		},
 		"invalid sdk message rejected": {
 			srcRoute: sdk.NewRoute(types.RouterKey, capturingRouteFn),
-			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage, customEncodeRouter types.Router) ([]sdk.Msg, error) {
+			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
 				invalidMsg := types.MsgExecuteContract{
 					Sender:   myContractAddr.String(),
 					Contract: RandomBech32AccountAddress(t),
@@ -156,7 +158,7 @@ func TestSDKMessageHandlerDispatch(t *testing.T) {
 		},
 		"invalid sender rejected": {
 			srcRoute: sdk.NewRoute(types.RouterKey, capturingRouteFn),
-			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage, customEncodeRouter types.Router) ([]sdk.Msg, error) {
+			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
 				invalidMsg := types.MsgExecuteContract{
 					Sender:   RandomBech32AccountAddress(t),
 					Contract: RandomBech32AccountAddress(t),
@@ -168,7 +170,7 @@ func TestSDKMessageHandlerDispatch(t *testing.T) {
 		},
 		"unroutable message rejected": {
 			srcRoute: sdk.NewRoute("nothing", capturingRouteFn),
-			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage, customEncodeRouter types.Router) ([]sdk.Msg, error) {
+			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
 				myMsg := types.MsgExecuteContract{
 					Sender:   myContractAddr.String(),
 					Contract: RandomBech32AccountAddress(t),
@@ -180,7 +182,7 @@ func TestSDKMessageHandlerDispatch(t *testing.T) {
 		},
 		"encoding error passed": {
 			srcRoute: sdk.NewRoute("nothing", capturingRouteFn),
-			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage, customEncodeRouter types.Router) ([]sdk.Msg, error) {
+			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
 				myErr := types.ErrUnpinContractFailed
 				return nil, myErr
 			},
@@ -195,7 +197,7 @@ func TestSDKMessageHandlerDispatch(t *testing.T) {
 
 			// when
 			ctx := sdk.Context{}
-			h := NewSDKMessageHandler(router, nil, MessageEncoders{Custom: spec.srcEncoder})
+			h := NewSDKMessageHandler(router, MessageEncoders{Custom: spec.srcEncoder})
 			gotEvents, gotData, gotErr := h.DispatchMsg(ctx, myContractAddr, "myPort", myContractMessage)
 
 			// then
@@ -365,9 +367,9 @@ func TestBurnCoinMessageHandlerIntegration(t *testing.T) {
 	for name, spec := range specs {
 		t.Run(name, func(t *testing.T) {
 			ctx, _ = parentCtx.CacheContext()
-			k.wasmVM = &wasmtesting.MockWasmer{ExecuteFn: func(codeID wasmvm.Checksum, env wasmvmtypes.Env, info wasmvmtypes.MessageInfo, executeMsg []byte, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64) (*wasmvmtypes.Response, uint64, error) {
-				return &wasmvmtypes.Response{Messages: []wasmvmtypes.CosmosMsg{
-					{Bank: &wasmvmtypes.BankMsg{Burn: &spec.msg}},
+			k.wasmVM = &wasmtesting.MockWasmer{ExecuteFn: func(codeID wasmvm.Checksum, env wasmvmtypes.Env, info wasmvmtypes.MessageInfo, executeMsg []byte, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) (*wasmvmtypes.Response, uint64, error) {
+				return &wasmvmtypes.Response{Messages: []wasmvmtypes.SubMsg{
+					{Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{Burn: &spec.msg}}, ReplyOn: wasmvmtypes.ReplyNever},
 				},
 				}, 0, nil
 			}}

@@ -4,9 +4,10 @@ import (
 	"fmt"
 
 	"github.com/gogo/protobuf/proto"
+	abci "github.com/line/ostracon/abci/types"
+
 	"github.com/line/lbm-sdk/x/wasm/keeper"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	abci "github.com/line/ostracon/abci/types"
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"

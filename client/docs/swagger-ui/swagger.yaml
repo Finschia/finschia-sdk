@@ -5248,7 +5248,7 @@ paths:
           format: boolean
       tags:
         - Query
-  '/lbm/bank/v1/balances/{address}/{denom}':
+  '/lbm/bank/v1/balances/{address}/by_denom':
     get:
       summary: Balance queries the balance of a single coin for a single account.
       operationId: Balance
@@ -5306,8 +5306,8 @@ paths:
           type: string
         - name: denom
           description: denom is the coin denom to query balances for.
-          in: path
-          required: true
+          in: query
+          required: false
           type: string
       tags:
         - Query
@@ -20908,6 +20908,53 @@ paths:
                       For height == 1,
 
                       it's genesis time.
+                  events:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        attributes:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              key:
+                                type: string
+                                format: byte
+                              value:
+                                type: string
+                                format: byte
+                              index:
+                                type: boolean
+                                format: boolean
+                            description: >-
+                              EventAttribute is a single key-value pair,
+                              associated with an event.
+                      description: >-
+                        Event allows application developers to attach additional
+                        information to
+
+                        ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx
+                        and ResponseDeliverTx.
+
+                        Later, transactions may be queried using these events.
+                    description: >-
+                      Events defines all the events emitted by processing a
+                      transaction. Note,
+
+                      these events include those emitted by processing all the
+                      messages and those
+
+                      emitted from the ante handler. Whereas Logs contains the
+                      events, with
+
+                      additional metadata, emitted only by processing the
+                      messages.
+
+
+                      Since: cosmos-sdk 0.42.11, 0.44.5, 0.45
                 description: >-
                   TxResponse defines a structure containing relevant tx data and
                   metadata. The
@@ -31002,7 +31049,7 @@ paths:
                       format: byte
       tags:
         - Query
-  /wasm/v1/code:
+  /line/wasm/v1/code:
     get:
       summary: Codes gets the metadata for all stored wasm codes
       operationId: Codes
@@ -31025,10 +31072,6 @@ paths:
                     data_hash:
                       type: string
                       format: byte
-                    source:
-                      type: string
-                    builder:
-                      type: string
                     instantiate_permission:
                       type: object
                       properties:
@@ -31311,7 +31354,7 @@ paths:
           format: boolean
       tags:
         - Query
-  '/wasm/v1/code/{code_id}':
+  '/line/wasm/v1/code/{code_id}':
     get:
       summary: Code gets the binary code and metadata for a singe wasm code
       operationId: Code
@@ -31332,10 +31375,6 @@ paths:
                   data_hash:
                     type: string
                     format: byte
-                  source:
-                    type: string
-                  builder:
-                    type: string
                   instantiate_permission:
                     type: object
                     properties:
@@ -31561,7 +31600,7 @@ paths:
           format: uint64
       tags:
         - Query
-  '/wasm/v1/code/{code_id}/contracts':
+  '/line/wasm/v1/code/{code_id}/contracts':
     get:
       summary: ContractsByCode lists all smart contracts for a code id
       operationId: ContractsByCode
@@ -31841,7 +31880,7 @@ paths:
           format: boolean
       tags:
         - Query
-  '/wasm/v1/contract/{address}':
+  '/line/wasm/v1/contract/{address}':
     get:
       summary: ContractInfo gets the contract meta data
       operationId: ContractInfo
@@ -32289,7 +32328,7 @@ paths:
           type: string
       tags:
         - Query
-  '/wasm/v1/contract/{address}/history':
+  '/line/wasm/v1/contract/{address}/history':
     get:
       summary: ContractHistory gets the contract code history
       operationId: ContractHistory
@@ -32559,6 +32598,295 @@ paths:
       parameters:
         - name: address
           description: address is the address of the contract to query
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+      tags:
+        - Query
+  '/line/wasm/v1/contract/{address}/state':
+    get:
+      summary: AllContractState gets all raw store data for a single contract
+      operationId: AllContractState
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              models:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    key:
+                      type: string
+                      format: byte
+                      title: hex-encode key to read it better (this is often ascii)
+                    value:
+                      type: string
+                      format: byte
+                      title: base64-encode raw value
+                  title: Model is a struct that holds a KV pair
+              pagination:
+                description: pagination defines the pagination in the response.
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+            title: |-
+              QueryAllContractStateResponse is the response type for the
+              Query/AllContractState RPC method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := ptypes.MarshalAny(foo)
+                         ...
+                         foo := &pb.Foo{}
+                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: address
+          description: address is the address of the contract
           in: path
           required: true
           type: string
@@ -33050,295 +33378,6 @@ paths:
           format: byte
       tags:
         - Query
-  '/wasm/v1/contract/{address}/state':
-    get:
-      summary: AllContractState gets all raw store data for a single contract
-      operationId: AllContractState
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              models:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    key:
-                      type: string
-                      format: byte
-                      title: hex-encode key to read it better (this is often ascii)
-                    value:
-                      type: string
-                      format: byte
-                      title: base64-encode raw value
-                  title: Model is a struct that holds a KV pair
-              pagination:
-                description: pagination defines the pagination in the response.
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-            title: |-
-              QueryAllContractStateResponse is the response type for the
-              Query/AllContractState RPC method
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: address
-          description: address is the address of the contract
-          in: path
-          required: true
-          type: string
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-          format: boolean
-      tags:
-        - Query
   /lbm/consortium/v1/params:
     get:
       summary: Params queries the module params.
@@ -33544,6 +33583,584 @@ paths:
       parameters:
         - name: validator_address
           description: validator_address defines the validator address to query for.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/lbm/token/v1/approve/{class_id}/{proxy}/{approver}':
+    get:
+      summary: Approve queries approve on a given proxy approver pair.
+      operationId: Approve
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              approve:
+                type: object
+                properties:
+                  approver:
+                    type: string
+                  proxy:
+                    type: string
+                  class_id:
+                    type: string
+                    description: class id associated with the token.
+                description: Approve defines approve information.
+            title: >-
+              QueryApproveResponse is the response type for the Query/Approve
+              RPC method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          description: class id associated with the token.
+          in: path
+          required: true
+          type: string
+        - name: proxy
+          in: path
+          required: true
+          type: string
+        - name: approver
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/lbm/token/v1/approves/{class_id}/{proxy}':
+    get:
+      summary: Approves queries all approves on a given proxy.
+      operationId: Approves
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              approves:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    approver:
+                      type: string
+                    proxy:
+                      type: string
+                    class_id:
+                      type: string
+                      description: class id associated with the token.
+                  description: Approve defines approve information.
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+            title: >-
+              QueryApprovesResponse is the response type for the Query/Approves
+              RPC method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          description: class id associated with the token.
+          in: path
+          required: true
+          type: string
+        - name: proxy
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+      tags:
+        - Query
+  '/lbm/token/v1/balance/{address}/{class_id}':
+    get:
+      summary: >-
+        TokenBalance queries the number of tokens of a given class owned by the
+        address.
+      operationId: TokenBalance
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              amount:
+                type: string
+            title: >-
+              QueryTokenBalanceResponse is the response type for the
+              Query/TokenBalance RPC method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+        - name: class_id
+          description: class id associated with the token.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/lbm/token/v1/grants/{grantee}/{class_id}':
+    get:
+      summary: Grants queries grants on a given grantee.
+      operationId: Grants
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              grants:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    grantee:
+                      type: string
+                      description: address of the granted account.
+                    class_id:
+                      type: string
+                      description: class id associated with the token.
+                    action:
+                      type: string
+                      description: >-
+                        action on the token class. Must be one of "mint", "burn"
+                        and "modify".
+                  description: Grant defines grant information.
+            title: >-
+              QueryGrantsResponse is the response type for the Query/Grants RPC
+              method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: grantee
+          in: path
+          required: true
+          type: string
+        - name: class_id
+          description: class id associated with the token.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/lbm/token/v1/supply/{class_id}':
+    get:
+      summary: Supply queries the number of tokens from the given class id.
+      operationId: Supply
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              amount:
+                type: string
+            title: >-
+              QuerySupplyResponse is the response type for the Query/Supply RPC
+              method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          description: class id associated with the token.
+          in: path
+          required: true
+          type: string
+        - name: type
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /lbm/token/v1/tokens:
+    get:
+      summary: Tokens queries all token metadata.
+      operationId: Tokens
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              tokens:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: id defines the unique identifier of the token.
+                    name:
+                      type: string
+                      description: name defines the human-readable name of the token.
+                    symbol:
+                      type: string
+                      description: symbol is an abbreviated name for token.
+                    meta:
+                      type: string
+                      description: meta is a brief description of token.
+                    image_uri:
+                      type: string
+                      description: >-
+                        image_uri is an uri for the token image stored off
+                        chain.
+                    decimals:
+                      type: integer
+                      format: int32
+                      description: >-
+                        decimals is the number of decimals which one must divide
+                        the amount by to get its user representation.
+                    mintable:
+                      type: boolean
+                      format: boolean
+                      description: >-
+                        mintable represents whether the token is allowed to
+                        mint.
+                  description: Token defines token information.
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+            title: >-
+              QueryTokensResponse is the response type for the Query/Tokens RPC
+              method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+      tags:
+        - Query
+  '/lbm/token/v1/tokens/{class_id}':
+    get:
+      summary: Token queries an token metadata based on its class id.
+      operationId: Token
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              token:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: id defines the unique identifier of the token.
+                  name:
+                    type: string
+                    description: name defines the human-readable name of the token.
+                  symbol:
+                    type: string
+                    description: symbol is an abbreviated name for token.
+                  meta:
+                    type: string
+                    description: meta is a brief description of token.
+                  image_uri:
+                    type: string
+                    description: image_uri is an uri for the token image stored off chain.
+                  decimals:
+                    type: integer
+                    format: int32
+                    description: >-
+                      decimals is the number of decimals which one must divide
+                      the amount by to get its user representation.
+                  mintable:
+                    type: boolean
+                    format: boolean
+                    description: mintable represents whether the token is allowed to mint.
+                description: Token defines token information.
+            title: >-
+              QueryTokenResponse is the response type for the Query/Token RPC
+              method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
           in: path
           required: true
           type: string
@@ -47017,6 +47634,51 @@ definitions:
           == 1,
 
           it's genesis time.
+      events:
+        type: array
+        items:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: array
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                    format: byte
+                  value:
+                    type: string
+                    format: byte
+                  index:
+                    type: boolean
+                    format: boolean
+                description: >-
+                  EventAttribute is a single key-value pair, associated with an
+                  event.
+          description: >-
+            Event allows application developers to attach additional information
+            to
+
+            ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
+            ResponseDeliverTx.
+
+            Later, transactions may be queried using these events.
+        description: >-
+          Events defines all the events emitted by processing a transaction.
+          Note,
+
+          these events include those emitted by processing all the messages and
+          those
+
+          emitted from the ante handler. Whereas Logs contains the events, with
+
+          additional metadata, emitted only by processing the messages.
+
+
+          Since: cosmos-sdk 0.42.11, 0.44.5, 0.45
     description: >-
       TxResponse defines a structure containing relevant tx data and metadata.
       The
@@ -47447,6 +48109,52 @@ definitions:
               height == 1,
 
               it's genesis time.
+          events:
+            type: array
+            items:
+              type: object
+              properties:
+                type:
+                  type: string
+                attributes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        format: byte
+                      value:
+                        type: string
+                        format: byte
+                      index:
+                        type: boolean
+                        format: boolean
+                    description: >-
+                      EventAttribute is a single key-value pair, associated with
+                      an event.
+              description: >-
+                Event allows application developers to attach additional
+                information to
+
+                ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
+                ResponseDeliverTx.
+
+                Later, transactions may be queried using these events.
+            description: >-
+              Events defines all the events emitted by processing a transaction.
+              Note,
+
+              these events include those emitted by processing all the messages
+              and those
+
+              emitted from the ante handler. Whereas Logs contains the events,
+              with
+
+              additional metadata, emitted only by processing the messages.
+
+
+              Since: cosmos-sdk 0.42.11, 0.44.5, 0.45
         description: >-
           TxResponse defines a structure containing relevant tx data and
           metadata. The
@@ -47774,6 +48482,52 @@ definitions:
               height == 1,
 
               it's genesis time.
+          events:
+            type: array
+            items:
+              type: object
+              properties:
+                type:
+                  type: string
+                attributes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        format: byte
+                      value:
+                        type: string
+                        format: byte
+                      index:
+                        type: boolean
+                        format: boolean
+                    description: >-
+                      EventAttribute is a single key-value pair, associated with
+                      an event.
+              description: >-
+                Event allows application developers to attach additional
+                information to
+
+                ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
+                ResponseDeliverTx.
+
+                Later, transactions may be queried using these events.
+            description: >-
+              Events defines all the events emitted by processing a transaction.
+              Note,
+
+              these events include those emitted by processing all the messages
+              and those
+
+              emitted from the ante handler. Whereas Logs contains the events,
+              with
+
+              additional metadata, emitted only by processing the messages.
+
+
+              Since: cosmos-sdk 0.42.11, 0.44.5, 0.45
         description: >-
           TxResponse defines a structure containing relevant tx data and
           metadata. The
@@ -48053,6 +48807,52 @@ definitions:
                 height == 1,
 
                 it's genesis time.
+            events:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  attributes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          format: byte
+                        value:
+                          type: string
+                          format: byte
+                        index:
+                          type: boolean
+                          format: boolean
+                      description: >-
+                        EventAttribute is a single key-value pair, associated
+                        with an event.
+                description: >-
+                  Event allows application developers to attach additional
+                  information to
+
+                  ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
+                  ResponseDeliverTx.
+
+                  Later, transactions may be queried using these events.
+              description: >-
+                Events defines all the events emitted by processing a
+                transaction. Note,
+
+                these events include those emitted by processing all the
+                messages and those
+
+                emitted from the ante handler. Whereas Logs contains the events,
+                with
+
+                additional metadata, emitted only by processing the messages.
+
+
+                Since: cosmos-sdk 0.42.11, 0.44.5, 0.45
           description: >-
             TxResponse defines a structure containing relevant tx data and
             metadata. The
@@ -54052,10 +54852,6 @@ definitions:
       data_hash:
         type: string
         format: byte
-      source:
-        type: string
-      builder:
-        type: string
       instantiate_permission:
         type: object
         properties:
@@ -54429,10 +55225,6 @@ definitions:
           data_hash:
             type: string
             format: byte
-          source:
-            type: string
-          builder:
-            type: string
           instantiate_permission:
             type: object
             properties:
@@ -54475,10 +55267,6 @@ definitions:
             data_hash:
               type: string
               format: byte
-            source:
-              type: string
-            builder:
-              type: string
             instantiate_permission:
               type: object
               properties:
@@ -54949,3 +55737,243 @@ definitions:
         type: boolean
         format: boolean
     description: ValidatorAuth defines authorization info of a validator.
+  lbm.token.v1.Approve:
+    type: object
+    properties:
+      approver:
+        type: string
+      proxy:
+        type: string
+      class_id:
+        type: string
+        description: class id associated with the token.
+    description: Approve defines approve information.
+  lbm.token.v1.Grant:
+    type: object
+    properties:
+      grantee:
+        type: string
+        description: address of the granted account.
+      class_id:
+        type: string
+        description: class id associated with the token.
+      action:
+        type: string
+        description: 'action on the token class. Must be one of "mint", "burn" and "modify".'
+    description: Grant defines grant information.
+  lbm.token.v1.QueryApproveResponse:
+    type: object
+    properties:
+      approve:
+        type: object
+        properties:
+          approver:
+            type: string
+          proxy:
+            type: string
+          class_id:
+            type: string
+            description: class id associated with the token.
+        description: Approve defines approve information.
+    title: QueryApproveResponse is the response type for the Query/Approve RPC method
+  lbm.token.v1.QueryApprovesResponse:
+    type: object
+    properties:
+      approves:
+        type: array
+        items:
+          type: object
+          properties:
+            approver:
+              type: string
+            proxy:
+              type: string
+            class_id:
+              type: string
+              description: class id associated with the token.
+          description: Approve defines approve information.
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+    title: >-
+      QueryApprovesResponse is the response type for the Query/Approves RPC
+      method
+  lbm.token.v1.QueryGrantsResponse:
+    type: object
+    properties:
+      grants:
+        type: array
+        items:
+          type: object
+          properties:
+            grantee:
+              type: string
+              description: address of the granted account.
+            class_id:
+              type: string
+              description: class id associated with the token.
+            action:
+              type: string
+              description: >-
+                action on the token class. Must be one of "mint", "burn" and
+                "modify".
+          description: Grant defines grant information.
+    title: QueryGrantsResponse is the response type for the Query/Grants RPC method
+  lbm.token.v1.QuerySupplyResponse:
+    type: object
+    properties:
+      amount:
+        type: string
+    title: QuerySupplyResponse is the response type for the Query/Supply RPC method
+  lbm.token.v1.QueryTokenBalanceResponse:
+    type: object
+    properties:
+      amount:
+        type: string
+    title: >-
+      QueryTokenBalanceResponse is the response type for the Query/TokenBalance
+      RPC method
+  lbm.token.v1.QueryTokenResponse:
+    type: object
+    properties:
+      token:
+        type: object
+        properties:
+          id:
+            type: string
+            description: id defines the unique identifier of the token.
+          name:
+            type: string
+            description: name defines the human-readable name of the token.
+          symbol:
+            type: string
+            description: symbol is an abbreviated name for token.
+          meta:
+            type: string
+            description: meta is a brief description of token.
+          image_uri:
+            type: string
+            description: image_uri is an uri for the token image stored off chain.
+          decimals:
+            type: integer
+            format: int32
+            description: >-
+              decimals is the number of decimals which one must divide the
+              amount by to get its user representation.
+          mintable:
+            type: boolean
+            format: boolean
+            description: mintable represents whether the token is allowed to mint.
+        description: Token defines token information.
+    title: QueryTokenResponse is the response type for the Query/Token RPC method
+  lbm.token.v1.QueryTokensResponse:
+    type: object
+    properties:
+      tokens:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              description: id defines the unique identifier of the token.
+            name:
+              type: string
+              description: name defines the human-readable name of the token.
+            symbol:
+              type: string
+              description: symbol is an abbreviated name for token.
+            meta:
+              type: string
+              description: meta is a brief description of token.
+            image_uri:
+              type: string
+              description: image_uri is an uri for the token image stored off chain.
+            decimals:
+              type: integer
+              format: int32
+              description: >-
+                decimals is the number of decimals which one must divide the
+                amount by to get its user representation.
+            mintable:
+              type: boolean
+              format: boolean
+              description: mintable represents whether the token is allowed to mint.
+          description: Token defines token information.
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+    title: QueryTokensResponse is the response type for the Query/Tokens RPC method
+  lbm.token.v1.Token:
+    type: object
+    properties:
+      id:
+        type: string
+        description: id defines the unique identifier of the token.
+      name:
+        type: string
+        description: name defines the human-readable name of the token.
+      symbol:
+        type: string
+        description: symbol is an abbreviated name for token.
+      meta:
+        type: string
+        description: meta is a brief description of token.
+      image_uri:
+        type: string
+        description: image_uri is an uri for the token image stored off chain.
+      decimals:
+        type: integer
+        format: int32
+        description: >-
+          decimals is the number of decimals which one must divide the amount by
+          to get its user representation.
+      mintable:
+        type: boolean
+        format: boolean
+        description: mintable represents whether the token is allowed to mint.
+    description: Token defines token information.

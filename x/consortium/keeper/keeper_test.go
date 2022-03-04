@@ -25,7 +25,7 @@ func TestCleanup(t *testing.T) {
 	k := app.ConsortiumKeeper
 
 	// add auths
-	auth :=	&types.ValidatorAuth{
+	auth := &types.ValidatorAuth{
 		OperatorAddress: valAddr.String(),
 		CreationAllowed: true,
 	}

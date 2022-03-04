@@ -9,6 +9,8 @@ import (
 
 	"github.com/line/tm-db/v2/memdb"
 
+	abci "github.com/line/ostracon/abci/types"
+
 	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/store/iavl"
 	"github.com/line/lbm-sdk/store/rootmulti"
@@ -19,7 +21,6 @@ import (
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
-	abci "github.com/line/ostracon/abci/types"
 )
 
 var (

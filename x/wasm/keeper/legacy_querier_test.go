@@ -7,12 +7,13 @@ import (
 	"io/ioutil"
 	"testing"
 
-	sdk "github.com/line/lbm-sdk/types"
-	sdkErrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/wasm/types"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/line/lbm-sdk/types"
+	sdkErrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 func TestLegacyQueryContractState(t *testing.T) {
@@ -27,7 +28,7 @@ func TestLegacyQueryContractState(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	contractID, err := keepers.ContractKeeper.Create(ctx, creator, wasmCode, "", "", nil)
+	contractID, err := keepers.ContractKeeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, bob := keyPubAddr()
@@ -164,7 +165,7 @@ func TestLegacyQueryContractListByCodeOrdering(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	codeID, err := keepers.ContractKeeper.Create(ctx, creator, wasmCode, "", "", nil)
+	codeID, err := keepers.ContractKeeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, bob := keyPubAddr()

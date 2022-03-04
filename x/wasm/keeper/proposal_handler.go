@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"fmt"
+	"encoding/hex"
 	"strconv"
 	"strings"
 
@@ -61,17 +61,9 @@ func handleStoreCodeProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types
 	if err != nil {
 		return sdkerrors.Wrap(err, "run as address")
 	}
-	codeID, err := k.Create(ctx, sdk.AccAddress(p.RunAs), p.WASMByteCode, p.Source, p.Builder, p.InstantiatePermission)
-	if err != nil {
-		return err
-	}
+	_, err = k.Create(ctx, sdk.AccAddress(p.RunAs), p.WASMByteCode, p.InstantiatePermission)
 
-	ourEvent := sdk.NewEvent(
-		types.EventTypeStoreCode,
-		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
-	)
-	ctx.EventManager().EmitEvent(ourEvent)
-	return nil
+	return err
 }
 
 func handleInstantiateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.InstantiateContractProposal) error {
@@ -87,17 +79,15 @@ func handleInstantiateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p typ
 		return sdkerrors.Wrap(err, "admin")
 	}
 
-	contractAddr, _, err := k.Instantiate(ctx, p.CodeID, sdk.AccAddress(p.RunAs), sdk.AccAddress(p.Admin), p.InitMsg, p.Label, p.Funds)
+	_, data, err := k.Instantiate(ctx, p.CodeID, sdk.AccAddress(p.RunAs), sdk.AccAddress(p.Admin), p.Msg, p.Label, p.Funds)
 	if err != nil {
 		return err
 	}
 
-	ourEvent := sdk.NewEvent(
-		types.EventTypeInstantiateContract,
-		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", p.CodeID)),
-		sdk.NewAttribute(types.AttributeKeyContract, contractAddr.String()),
-	)
-	ctx.EventManager().EmitEvent(ourEvent)
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		types.EventTypeGovContractResult,
+		sdk.NewAttribute(types.AttributeKeyResultDataHex, hex.EncodeToString(data)),
+	))
 	return nil
 }
 
@@ -114,24 +104,14 @@ func handleMigrateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.M
 	if err != nil {
 		return sdkerrors.Wrap(err, "run as address")
 	}
-	res, err := k.Migrate(ctx, sdk.AccAddress(p.Contract), sdk.AccAddress(p.RunAs), p.CodeID, p.MigrateMsg)
+	data, err := k.Migrate(ctx, sdk.AccAddress(p.Contract), sdk.AccAddress(p.RunAs), p.CodeID, p.Msg)
 	if err != nil {
 		return err
 	}
-	ourEvent := sdk.NewEvent(
-		types.EventTypeMigrateContract,
-		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
-		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", p.CodeID)),
-	)
-	ctx.EventManager().EmitEvent(ourEvent)
-
-	for _, e := range res.Events {
-		attr := make([]sdk.Attribute, len(e.Attributes))
-		for i, a := range e.Attributes {
-			attr[i] = sdk.NewAttribute(string(a.Key), string(a.Value))
-		}
-		ctx.EventManager().EmitEvent(sdk.NewEvent(e.Type, attr...))
-	}
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		types.EventTypeGovContractResult,
+		sdk.NewAttribute(types.AttributeKeyResultDataHex, hex.EncodeToString(data)),
+	))
 	return nil
 }
 
@@ -154,7 +134,8 @@ func handleUpdateAdminProposal(ctx sdk.Context, k types.ContractOpsKeeper, p typ
 
 	ourEvent := sdk.NewEvent(
 		types.EventTypeUpdateAdmin,
-		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
+		sdk.NewAttribute(types.AttributeKeyContractAddr, p.Contract),
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
 	return nil
@@ -175,7 +156,8 @@ func handleClearAdminProposal(ctx sdk.Context, k types.ContractOpsKeeper, p type
 
 	ourEvent := sdk.NewEvent(
 		types.EventTypeClearAdmin,
-		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
+		sdk.NewAttribute(types.AttributeKeyContractAddr, p.Contract),
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
 	return nil
@@ -251,7 +233,7 @@ func handleUpdateContractStatusProposal(ctx sdk.Context, k types.ContractOpsKeep
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		types.EventTypeUpdateContractStatus,
-		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
+		sdk.NewAttribute(types.AttributeKeyContractAddr, p.Contract),
 		sdk.NewAttribute(types.AttributeKeyContractStatus, p.Status.String()),
 	))
 	return nil

@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"testing"
 
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 func testQuerierHandler(ctx sdk.Context, jsonQuerier json.RawMessage) ([]byte, error) {

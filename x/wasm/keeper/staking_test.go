@@ -7,6 +7,10 @@ import (
 
 	wasmtypes "github.com/line/lbm-sdk/x/wasm/types"
 
+	wasmvmtypes "github.com/line/wasmvm/types"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	sdk "github.com/line/lbm-sdk/types"
@@ -18,9 +22,6 @@ import (
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 	"github.com/line/lbm-sdk/x/staking/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
-	wasmvmtypes "github.com/line/wasmvm/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 type StakingInitMsg struct {
@@ -88,7 +89,7 @@ type InvestmentResponse struct {
 	Validator    sdk.ValAddress `json:"validator"`
 	ExitTax      sdk.Dec        `json:"exit_tax"`
 	// MinWithdrawl is uint128 encoded as a string (use sdk.Int?)
-	MinWithdrawl string `json:"min_withdrawl"`
+	MinWithdrawl string `json:"min_withdrawal"`
 }
 
 func TestInitializeStaking(t *testing.T) {
@@ -107,7 +108,7 @@ func TestInitializeStaking(t *testing.T) {
 	// upload staking derivates code
 	stakingCode, err := ioutil.ReadFile("./testdata/staking.wasm")
 	require.NoError(t, err)
-	stakingID, err := keeper.Create(ctx, creator, stakingCode, "", "", nil)
+	stakingID, err := keeper.Create(ctx, creator, stakingCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), stakingID)
 
@@ -189,7 +190,7 @@ func initializeStaking(t *testing.T) initInfo {
 	// upload staking derivates code
 	stakingCode, err := ioutil.ReadFile("./testdata/staking.wasm")
 	require.NoError(t, err)
-	stakingID, err := k.ContractKeeper.Create(ctx, creator, stakingCode, "", "", nil)
+	stakingID, err := k.ContractKeeper.Create(ctx, creator, stakingCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), stakingID)
 
@@ -446,7 +447,7 @@ func TestQueryStakingInfo(t *testing.T) {
 	// upload mask code
 	maskCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	maskID, err := initInfo.contractKeeper.Create(ctx, creator, maskCode, "", "", nil)
+	maskID, err := initInfo.contractKeeper.Create(ctx, creator, maskCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(2), maskID)
 

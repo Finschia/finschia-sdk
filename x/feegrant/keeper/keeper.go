@@ -3,9 +3,10 @@ package keeper
 import (
 	"fmt"
 
+	"github.com/line/ostracon/libs/log"
+
 	storetypes "github.com/line/lbm-sdk/store/types"
 	"github.com/line/lbm-sdk/x/feegrant/types"
-	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"

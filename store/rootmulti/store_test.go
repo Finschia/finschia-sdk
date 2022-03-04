@@ -505,6 +505,15 @@ func TestMultiStore_Pruning(t *testing.T) {
 
 			for _, v := range tc.deleted {
 				_, err := ms.CacheMultiStoreWithVersion(v)
+				// Line: Pruning is async. store/iavl/store.GetImmutable
+				// returns an empty tree when the version doesn't exist.
+				// However, when it gets caught in between, i.e. version
+				// checking is done before, but iavl.GetImmutable is done
+				// after pruning, it fails with 'version not exist' error.
+				// Simply retry would do.
+				if err != nil {
+					_, err = ms.CacheMultiStoreWithVersion(v)
+				}
 				require.NoError(t, err, "expected error when loading height: %d", v)
 			}
 		})

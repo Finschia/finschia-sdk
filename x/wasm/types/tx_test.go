@@ -5,39 +5,13 @@ import (
 	"strings"
 	"testing"
 
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 const firstCodeID = 1
-
-func TestBuilderRegexp(t *testing.T) {
-	cases := map[string]struct {
-		example string
-		valid   bool
-	}{
-		"normal":                {"fedora/httpd:version1.0", true},
-		"another valid org":     {"confio/js-builder-1:test", true},
-		"no org name":           {"cosmwasm-opt:0.6.3", false},
-		"invalid trailing char": {"someone/cosmwasm-opt-:0.6.3", false},
-		"invalid leading char":  {"confio/.builder-1:manual", false},
-		"multiple orgs":         {"confio/assembly-script/optimizer:v0.9.1", true},
-		"too long":              {"over-128-character-limit/some-long-sub-path/and-yet-another-long-name/testtesttesttesttesttesttest/foobarfoobar/foobarfoobar:randomstringrandomstringrandomstringrandomstring", false},
-	}
-
-	for name, tc := range cases {
-		t.Run(name, func(t *testing.T) {
-			err := validateBuilder(tc.example)
-			if tc.valid {
-				assert.NoError(t, err)
-			} else {
-				assert.Error(t, err)
-			}
-		})
-
-	}
-}
 
 func TestStoreCodeValidation(t *testing.T) {
 	bad, err := sdk.AccAddressFromHex("012345")
@@ -78,37 +52,8 @@ func TestStoreCodeValidation(t *testing.T) {
 			msg: MsgStoreCode{
 				Sender:       goodAddress,
 				WASMByteCode: []byte("foo"),
-				Builder:      "confio/cosmwasm-opt:0.6.2",
-				Source:       "https://crates.io/api/v1/crates/cw-erc20/0.1.0/download",
 			},
 			valid: true,
-		},
-		"invalid builder": {
-			msg: MsgStoreCode{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Builder:      "-bad-opt:0.6.2",
-				Source:       "https://crates.io/api/v1/crates/cw-erc20/0.1.0/download",
-			},
-			valid: false,
-		},
-		"invalid source scheme": {
-			msg: MsgStoreCode{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Builder:      "cosmwasm-opt:0.6.2",
-				Source:       "ftp://crates.io/api/download.tar.gz",
-			},
-			valid: false,
-		},
-		"invalid source format": {
-			msg: MsgStoreCode{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Builder:      "cosmwasm-opt:0.6.2",
-				Source:       "/api/download-ss",
-			},
-			valid: false,
 		},
 		"invalid InstantiatePermission": {
 			msg: MsgStoreCode{
@@ -149,25 +94,25 @@ func TestInstantiateContractValidation(t *testing.T) {
 		},
 		"correct minimal": {
 			msg: MsgInstantiateContract{
-				Sender:  goodAddress,
-				CodeID:  firstCodeID,
-				Label:   "foo",
-				InitMsg: []byte("{}"),
+				Sender: goodAddress,
+				CodeID: firstCodeID,
+				Label:  "foo",
+				Msg:    []byte("{}"),
 			},
 			valid: true,
 		},
 		"missing code": {
 			msg: MsgInstantiateContract{
-				Sender:  goodAddress,
-				Label:   "foo",
-				InitMsg: []byte("{}"),
+				Sender: goodAddress,
+				Label:  "foo",
+				Msg:    []byte("{}"),
 			},
 			valid: false,
 		},
 		"missing label": {
 			msg: MsgInstantiateContract{
-				Sender:  goodAddress,
-				InitMsg: []byte("{}"),
+				Sender: goodAddress,
+				Msg:    []byte("{}"),
 			},
 			valid: false,
 		},
@@ -180,29 +125,29 @@ func TestInstantiateContractValidation(t *testing.T) {
 		},
 		"bad sender minimal": {
 			msg: MsgInstantiateContract{
-				Sender:  badAddress,
-				CodeID:  firstCodeID,
-				Label:   "foo",
-				InitMsg: []byte("{}"),
+				Sender: badAddress,
+				CodeID: firstCodeID,
+				Label:  "foo",
+				Msg:    []byte("{}"),
 			},
 			valid: false,
 		},
 		"correct maximal": {
 			msg: MsgInstantiateContract{
-				Sender:  goodAddress,
-				CodeID:  firstCodeID,
-				Label:   "foo",
-				InitMsg: []byte(`{"some": "data"}`),
-				Funds:   sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
+				Sender: goodAddress,
+				CodeID: firstCodeID,
+				Label:  "foo",
+				Msg:    []byte(`{"some": "data"}`),
+				Funds:  sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
 			},
 			valid: true,
 		},
 		"negative funds": {
 			msg: MsgInstantiateContract{
-				Sender:  goodAddress,
-				CodeID:  firstCodeID,
-				Label:   "foo",
-				InitMsg: []byte(`{"some": "data"}`),
+				Sender: goodAddress,
+				CodeID: firstCodeID,
+				Label:  "foo",
+				Msg:    []byte(`{"some": "data"}`),
 				// we cannot use sdk.NewCoin() constructors as they panic on creating invalid data (before we can test)
 				Funds: sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(-200)}},
 			},
@@ -210,10 +155,10 @@ func TestInstantiateContractValidation(t *testing.T) {
 		},
 		"non json init msg": {
 			msg: MsgInstantiateContract{
-				Sender:  goodAddress,
-				CodeID:  firstCodeID,
-				Label:   "foo",
-				InitMsg: []byte("invalid-json"),
+				Sender: goodAddress,
+				CodeID: firstCodeID,
+				Label:  "foo",
+				Msg:    []byte("invalid-json"),
 			},
 			valid: false,
 		},
@@ -292,49 +237,11 @@ func TestStoreCodeAndInstantiateContractValidation(t *testing.T) {
 			msg: MsgStoreCodeAndInstantiateContract{
 				Sender:       goodAddress,
 				WASMByteCode: []byte("foo"),
-				Builder:      "confio/cosmwasm-opt:0.6.2",
-				Source:       "https://crates.io/api/v1/crates/cw-erc20/0.1.0/download",
 				Label:        "foo",
 				InitMsg:      []byte(`{"some": "data"}`),
 				Funds:        sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
 			},
 			valid: true,
-		},
-		"invalid builder": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Builder:      "-bad-opt:0.6.2",
-				Source:       "https://crates.io/api/v1/crates/cw-erc20/0.1.0/download",
-				Label:        "foo",
-				InitMsg:      []byte(`{"some": "data"}`),
-				Funds:        sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
-			},
-			valid: false,
-		},
-		"invalid source scheme": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Builder:      "cosmwasm-opt:0.6.2",
-				Source:       "ftp://crates.io/api/download.tar.gz",
-				Label:        "foo",
-				InitMsg:      []byte(`{"some": "data"}`),
-				Funds:        sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
-			},
-			valid: false,
-		},
-		"invalid source format": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Builder:      "cosmwasm-opt:0.6.2",
-				Source:       "/api/download-ss",
-				Label:        "foo",
-				InitMsg:      []byte(`{"some": "data"}`),
-				Funds:        sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
-			},
-			valid: false,
 		},
 		"invalid InstantiatePermission": {
 			msg: MsgStoreCodeAndInstantiateContract{
@@ -635,10 +542,10 @@ func TestMsgMigrateContract(t *testing.T) {
 	}{
 		"all good": {
 			src: MsgMigrateContract{
-				Sender:     goodAddress,
-				Contract:   anotherGoodAddress,
-				CodeID:     firstCodeID,
-				MigrateMsg: []byte("{}"),
+				Sender:   goodAddress,
+				Contract: anotherGoodAddress,
+				CodeID:   firstCodeID,
+				Msg:      []byte("{}"),
 			},
 		},
 		"bad sender": {
@@ -680,10 +587,10 @@ func TestMsgMigrateContract(t *testing.T) {
 		},
 		"non json migrateMsg": {
 			src: MsgMigrateContract{
-				Sender:     goodAddress,
-				Contract:   anotherGoodAddress,
-				CodeID:     firstCodeID,
-				MigrateMsg: []byte("invalid json"),
+				Sender:   goodAddress,
+				Contract: anotherGoodAddress,
+				CodeID:   firstCodeID,
+				Msg:      []byte("invalid json"),
 			},
 			expErr: true,
 		},
