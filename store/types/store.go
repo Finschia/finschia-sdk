@@ -315,6 +315,9 @@ func (st StoreType) String() string {
 	case StoreTypeIAVL:
 		return "StoreTypeIAVL"
 
+	case StoreTypeTransient:
+		return "StoreTypeTransient"
+
 	case StoreTypeMemory:
 		return "StoreTypeMemory"
 	}

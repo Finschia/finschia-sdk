@@ -26,11 +26,11 @@ const (
 	TypeMsgBeginRedelegate = "begin_redelegate"
 
 	// These are used for querying events by action.
-	TypeSvcMsgUndelegate      = "/cosmos.staking.v1beta1.Msg/Undelegate"
-	TypeSvcMsgEditValidator   = "/cosmos.staking.v1beta1.Msg/EditValidator"
-	TypeSvcMsgCreateValidator = "/cosmos.staking.v1beta1.Msg/CreateValidator"
-	TypeSvcMsgDelegate        = "/cosmos.staking.v1beta1.Msg/Deledate"
-	TypeSvcMsgBeginRedelegate = "/cosmos.staking.v1beta1.Msg/BeginRedelegate"
+	TypeSvcMsgUndelegate      = "/lbm.staking.v1.Msg/Undelegate"
+	TypeSvcMsgEditValidator   = "/lbm.staking.v1.Msg/EditValidator"
+	TypeSvcMsgCreateValidator = "/lbm.staking.v1.Msg/CreateValidator"
+	TypeSvcMsgDelegate        = "/lbm.staking.v1.Msg/Deledate"
+	TypeSvcMsgBeginRedelegate = "/lbm.staking.v1.Msg/BeginRedelegate"
 )
 
 var (

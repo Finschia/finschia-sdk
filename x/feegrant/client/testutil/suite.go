@@ -840,34 +840,34 @@ func (s *IntegrationTestSuite) TestFilteredFeeAllowance() {
 			&sdk.TxResponse{},
 			0,
 		},
-		{
-			"valid weighted_vote tx",
-			func() (testutil.BufferWriter, error) {
-				return govtestutil.MsgVote(val.ClientCtx, grantee.String(), "0", "yes",
-					fmt.Sprintf("--%s=%s", flags.FlagFeeAccount, granter.String()),
-				)
-			},
-			&sdk.TxResponse{},
-			2,
-		},
-		{
-			"should fail with unauthorized msgs",
-			func() (testutil.BufferWriter, error) {
-				args := append(
-					[]string{
-						grantee.String(),
-						"link1j583lutp3vz6z43j62wgcjxzfuch0ucmxgepac",
-						fmt.Sprintf("--%s=%s", cli.FlagSpendLimit, "100stake"),
-						fmt.Sprintf("--%s=%s", flags.FlagFeeAccount, granter),
-					},
-					commonFlags...,
-				)
-				cmd := cli.NewCmdFeeGrant()
-				return clitestutil.ExecTestCLICmd(clientCtx, cmd, args)
-			},
-			&sdk.TxResponse{},
-			7,
-		},
+		// {
+		// 	"valid weighted_vote tx",
+		// 	func() (testutil.BufferWriter, error) {
+		// 		return govtestutil.MsgVote(val.ClientCtx, grantee.String(), "0", "yes",
+		// 			fmt.Sprintf("--%s=%s", flags.FlagFeeAccount, granter.String()),
+		// 		)
+		// 	},
+		// 	&sdk.TxResponse{},
+		// 	2,
+		// },
+		// {
+		// 	"should fail with unauthorized msgs",
+		// 	func() (testutil.BufferWriter, error) {
+		// 		args := append(
+		// 			[]string{
+		// 				grantee.String(),
+		// 				"link1j583lutp3vz6z43j62wgcjxzfuch0ucmxgepac",
+		// 				fmt.Sprintf("--%s=%s", cli.FlagSpendLimit, "100stake"),
+		// 				fmt.Sprintf("--%s=%s", flags.FlagFeeAccount, granter),
+		// 			},
+		// 			commonFlags...,
+		// 		)
+		// 		cmd := cli.NewCmdFeeGrant()
+		// 		return clitestutil.ExecTestCLICmd(clientCtx, cmd, args)
+		// 	},
+		// 	&sdk.TxResponse{},
+		// 	7,
+		// },
 	}
 
 	for _, tc := range cases {

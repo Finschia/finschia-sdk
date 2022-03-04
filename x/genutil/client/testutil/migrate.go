@@ -42,7 +42,7 @@ var v040Valid = `{
 			"votes": [
 			  {
 				"proposal_id": "5",
-				"voter": "cosmos1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh",
+				"voter": "link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh",
 				"option": "VOTE_OPTION_YES"
 			  }
 			],

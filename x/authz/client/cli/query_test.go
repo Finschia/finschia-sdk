@@ -166,7 +166,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorization() {
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
-			`{"@type":"/cosmos.bank.v1beta1.SendAuthorization","spend_limit":[{"denom":"steak","amount":"100"}]}`,
+			`{"@type":"/lbm.bank.v1.SendAuthorization","spend_limit":[{"denom":"steak","amount":"100"}]}`,
 		},
 	}
 	for _, tc := range testCases {

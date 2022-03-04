@@ -1,6 +1,3 @@
-//go:build norace
-// +build norace
-
 package rest_test
 
 import (
@@ -122,8 +119,8 @@ func mkIBCStdTx() []byte {
 		  {
 			"type": "lbm-sdk/MsgTransfer",
 			"value": {
-			  "receiver": "cosmos1q9wtnlwdjrhwtcjmt2uq77jrgx7z3usrq2yz7z",
-			  "sender": "cosmos1q9wtnlwdjrhwtcjmt2uq77jrgx7z3usrq2yz7z",
+			  "receiver": "link1q9wtnlwdjrhwtcjmt2uq77jrgx7z3usrq2yz7z",
+			  "sender": "link1q9wtnlwdjrhwtcjmt2uq77jrgx7z3usrq2yz7z",
 			  "source_channel": "THEslipperCHANNEL",
 			  "source_port": "transfer",
 			  "token": {
@@ -630,7 +627,7 @@ func (s *IntegrationTestSuite) TestLegacyMultisig() {
 
 	// Does not work in offline mode.
 	_, err = authtest.TxMultiSignExec(val1.ClientCtx, multisigInfo.GetName(), multiGeneratedTxFile.Name(), "--offline", sign1File.Name(), sign2File.Name())
-	s.Require().EqualError(err, fmt.Sprintf("couldn't verify signature: unable to verify single signer signature"))
+	s.Require().EqualError(err, fmt.Sprintf("couldn't verify signature for address %s", account1.GetAddress()))
 
 	val1.ClientCtx.Offline = false
 	multiSigWith2Signatures, err := authtest.TxMultiSignExec(val1.ClientCtx, multisigInfo.GetName(), multiGeneratedTxFile.Name(), sign1File.Name(), sign2File.Name())

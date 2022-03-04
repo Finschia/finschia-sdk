@@ -165,11 +165,11 @@ func TestSendToModuleAcc(t *testing.T) {
 
 			err := sdk.ValidateAccAddress(test.msg.FromAddress)
 			require.NoError(t, err)
-			fromAddr := sdk.BytesToAccAddress([]byte(test.msg.FromAddress))
+			fromAddr := sdk.AccAddress(test.msg.FromAddress)
 
 			err = sdk.ValidateAccAddress(test.msg.ToAddress)
 			require.NoError(t, err)
-			toAddr := sdk.BytesToAccAddress([]byte(test.msg.ToAddress))
+			toAddr := sdk.AccAddress(test.msg.ToAddress)
 
 			require.NoError(t, simapp.FundAccount(app, ctx, fromAddr, test.fromBalance))
 

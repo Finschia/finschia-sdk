@@ -566,6 +566,10 @@ func (app *BaseApp) preCheckTx(txBytes []byte) (tx sdk.Tx, err error) {
 	return tx, err
 }
 
+func (app *BaseApp) PreCheckTx(txBytes []byte) (sdk.Tx, error) {
+	return app.preCheckTx(txBytes)
+}
+
 func (app *BaseApp) checkTx(txBytes []byte, tx sdk.Tx, recheck bool) (gInfo sdk.GasInfo, err error) {
 	ctx := app.getCheckContextForTx(txBytes, recheck)
 	gasCtx := &ctx

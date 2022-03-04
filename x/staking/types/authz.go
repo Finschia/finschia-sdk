@@ -9,9 +9,9 @@ import (
 
 var (
 	_                   authz.Authorization = &StakeAuthorization{}
-	TypeDelegate                            = "/cosmos.staking.v1beta1.Msg/Delegate"
-	TypeUndelegate                          = "/cosmos.staking.v1beta1.Msg/Undelegate"
-	TypeBeginRedelegate                     = "/cosmos.staking.v1beta1.Msg/BeginRedelegate"
+	TypeDelegate                            = "/lbm.staking.v1.Msg/Delegate"
+	TypeUndelegate                          = "/lbm.staking.v1.Msg/Undelegate"
+	TypeBeginRedelegate                     = "/lbm.staking.v1.Msg/BeginRedelegate"
 )
 
 // NewStakeAuthorization creates a new StakeAuthorization object.

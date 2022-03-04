@@ -39,7 +39,7 @@ var (
 	}
 	msg0 = banktypes.NewMsgSend(addr1, addr2, sdk.NewCoins(sdk.NewInt64Coin("wack", 1)))
 	msg1 = sdk.ServiceMsg{
-		MethodName: "/cosmos.bank.v1beta1.Msg/Send",
+		MethodName: "/lbm.bank.v1.Msg/Send",
 		Request:    banktypes.NewMsgSend(addr1, addr2, sdk.NewCoins(sdk.NewInt64Coin("wack", 2))),
 	}
 )

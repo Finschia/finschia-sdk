@@ -96,7 +96,7 @@ func (spkd SetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 	// Also emit the following events, so that txs can be indexed by these
 	// indices:
 	// - signature (via `tx.signature='<sig_as_base64>'`),
-	// - concat(address,"/",sequence) (via `tx.acc_seq='cosmos1abc...def/42'`).
+	// - concat(address,"/",sequence) (via `tx.acc_seq='link1abc...def/42'`).
 	sigs, err := sigTx.GetSignaturesV2()
 	if err != nil {
 		return ctx, err

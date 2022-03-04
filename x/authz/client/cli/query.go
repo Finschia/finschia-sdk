@@ -43,7 +43,7 @@ func GetCmdQueryAuthorizations() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query list of authorizations for a granter-grantee pair:
 Example:
-$ %s query %s authorizations cosmos1skj.. cosmos1skjwj..
+$ %s query %s authorizations link1skj.. link1skjwj..
 `, version.AppName, types.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -99,7 +99,7 @@ func GetCmdQueryAuthorization() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query authorization for a granter-grantee pair that matches the given msg-type:
 Example:
-$ %s query %s authorization cosmos1skjw.. cosmos1skjwj.. %s
+$ %s query %s authorization link1skjw.. link1skjwj.. %s
 `, version.AppName, types.ModuleName, bank.SendAuthorization{}.MethodName()),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {

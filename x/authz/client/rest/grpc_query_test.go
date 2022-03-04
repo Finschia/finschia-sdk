@@ -28,7 +28,7 @@ type IntegrationTestSuite struct {
 }
 
 var typeMsgSend = banktypes.SendAuthorization{}.MethodName()
-var typeMsgVote = "/cosmos.gov.v1beta1.Msg/Vote"
+var typeMsgVote = "/lbm.gov.v1.Msg/Vote"
 
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")

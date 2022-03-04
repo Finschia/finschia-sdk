@@ -56,9 +56,9 @@ func NewCmdFeeGrant() *cobra.Command {
 				ignored as it is implied from [granter].
 
 Examples:
-%s tx %s grant link1skjw... cosmos1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z or
-%s tx %s grant link1skjw... cosmos1skjw... --spend-limit 100stake --period 3600 --period-limit 10stake --expiration 36000 or
-%s tx %s grant link1skjw... cosmos1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z 
+%s tx %s grant link1skjw... link1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z or
+%s tx %s grant link1skjw... link1skjw... --spend-limit 100stake --period 3600 --period-limit 10stake --expiration 36000 or
+%s tx %s grant link1skjw... link1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z 
 	--allowed-messages "/lbm.gov.v1.MsgSubmitProposal,/lbm.gov.v1.MsgVote"
 				`, version.AppName, types.ModuleName, version.AppName, types.ModuleName, version.AppName, types.ModuleName,
 			),
@@ -152,14 +152,19 @@ Examples:
 				grant = &periodic
 			}
 
-			msg, err := types.NewMsgGrantFeeAllowance(grant, granter, grantee)
+			allowedMsgs, err := cmd.Flags().GetStringSlice(FlagAllowedMsgs)
 			if err != nil {
 				return err
 			}
 
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.GrantFeeAllowance(cmd.Context(), msg)
+			if len(allowedMsgs) > 0 {
+				grant, err = types.NewAllowedMsgAllowance(grant, allowedMsgs)
+				if err != nil {
+					return err
+				}
+			}
+
+			msg, err := types.NewMsgGrantFeeAllowance(grant, granter, grantee)
 			if err != nil {
 				return err
 			}
@@ -188,7 +193,7 @@ func NewCmdRevokeFeegrant() *cobra.Command {
 			ignored as it is implied from [granter].
 
 Example:
- $ %s tx %s revoke link1skj.. cosmos1skj..
+ $ %s tx %s revoke link1skj.. link1skj..
 			`, version.AppName, types.ModuleName),
 		),
 		Args: cobra.ExactArgs(2),

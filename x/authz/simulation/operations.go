@@ -124,6 +124,16 @@ func SimulateMsgGrantAuthorization(ak types.AccountKeeper, bk types.BankKeeper, 
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgGrantAuthorization, "unable to generate mock tx"), nil, err
 		}
 
+		// TODO(dudong2): need to opti
+		txBytes, err := txGen.TxEncoder()(tx)
+		if err != nil {
+			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
+		}
+		tx, err = app.PreCheckTx(txBytes)
+		if err != nil {
+			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
+		}
+
 		_, _, err = app.Deliver(txGen.TxEncoder(), tx)
 		if err != nil {
 			return simtypes.NoOpMsg(types.ModuleName, svcMsgClientConn.GetMsgs()[0].Type(), "unable to deliver tx"), nil, err
@@ -188,6 +198,16 @@ func SimulateMsgRevokeAuthorization(ak types.AccountKeeper, bk types.BankKeeper,
 
 		if err != nil {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgRevokeAuthorization, err.Error()), nil, err
+		}
+
+		// TODO(dudong2): need to opti
+		txBytes, err := txGen.TxEncoder()(tx)
+		if err != nil {
+			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
+		}
+		tx, err = app.PreCheckTx(txBytes)
+		if err != nil {
+			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
 		}
 
 		_, _, err = app.Deliver(txGen.TxEncoder(), tx)
@@ -275,6 +295,17 @@ func SimulateMsgExecuteAuthorized(ak types.AccountKeeper, bk types.BankKeeper, k
 		if err != nil {
 			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
 		}
+
+		// TODO(dudong2): need to opti
+		txBytes, err := txGen.TxEncoder()(tx)
+		if err != nil {
+			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
+		}
+		tx, err = app.PreCheckTx(txBytes)
+		if err != nil {
+			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
+		}
+
 		_, _, err = app.Deliver(txGen.TxEncoder(), tx)
 		if err != nil {
 			if strings.Contains(err.Error(), "insufficient fee") {

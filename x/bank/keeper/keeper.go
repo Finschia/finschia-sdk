@@ -25,7 +25,7 @@ type Keeper interface {
 	ExportGenesis(sdk.Context) *types.GenesisState
 
 	GetSupply(ctx sdk.Context) exported.SupplyI
-	SetSupply(ctx sdk.Context, supply exported.SupplyI)
+	SetSupply(ctx sdk.Context, supply exported.SupplyI) // TODO(dudong2): remove after x/wasm version up
 
 	GetDenomMetaData(ctx sdk.Context, denom string) (types.Metadata, bool)
 	SetDenomMetaData(ctx sdk.Context, denomMetaData types.Metadata)

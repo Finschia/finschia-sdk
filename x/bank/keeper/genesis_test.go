@@ -26,7 +26,7 @@ func (suite *IntegrationTestSuite) TestExportGenesis() {
 			NoError(app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, sdk.AccAddress(expectedBalances[i].Address), expectedBalances[i].Coins))
 	}
 	// add mint module balance as nil
-	expectedBalances = append(expectedBalances, types.Balance{Address: "cosmos1m3h30wlvsf8llruxtpukdvsy0km2kum8g38c8q", Coins: nil})
+	expectedBalances = append(expectedBalances, types.Balance{Address: "link1m3h30wlvsf8llruxtpukdvsy0km2kum8al86ug", Coins: nil})
 	app.BankKeeper.SetParams(ctx, types.DefaultParams())
 
 	exportGenesis := app.BankKeeper.ExportGenesis(ctx)
@@ -39,8 +39,8 @@ func (suite *IntegrationTestSuite) TestExportGenesis() {
 }
 
 func (suite *IntegrationTestSuite) getTestBalancesAndSupply() ([]types.Balance, *types.Supply) {
-	addr2 := sdk.AccAddress("line1f9xjhxm0plzrh9cskf4qee4pc2xwp0n0556gh0")
-	addr1 := sdk.AccAddress("line1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh")
+	addr2 := sdk.AccAddress("link1f9xjhxm0plzrh9cskf4qee4pc2xwp0n0p662v8")
+	addr1 := sdk.AccAddress("link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3q4fdzl")
 	addr1Balance := sdk.Coins{sdk.NewInt64Coin("testcoin3", 10)}
 	addr2Balance := sdk.Coins{sdk.NewInt64Coin("testcoin1", 32), sdk.NewInt64Coin("testcoin2", 34)}
 

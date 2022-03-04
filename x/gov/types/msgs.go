@@ -20,10 +20,10 @@ const (
 	TypeMsgSubmitProposal = "submit_proposal"
 
 	// These are used for querying events by action.
-	TypeSvcMsgDeposit        = "/cosmos.gov.v1beta1.Msg/Deposit"
-	TypeSvcMsgVote           = "/cosmos.gov.v1beta1.Msg/Vote"
-	TypeSvcMsgVoteWeighted   = "/cosmos.gov.v1beta1.Msg/VoteWeighted"
-	TypeSvcMsgSubmitProposal = "/cosmos.gov.v1beta1.Msg/SubmitProposal"
+	TypeSvcMsgDeposit        = "/lbm.gov.v1.Msg/Deposit"
+	TypeSvcMsgVote           = "/lbm.gov.v1.Msg/Vote"
+	TypeSvcMsgVoteWeighted   = "/lbm.gov.v1.Msg/VoteWeighted"
+	TypeSvcMsgSubmitProposal = "/lbm.gov.v1.Msg/SubmitProposal"
 )
 
 var (

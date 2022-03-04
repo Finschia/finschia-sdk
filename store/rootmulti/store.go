@@ -26,6 +26,7 @@ import (
 	"github.com/line/lbm-sdk/store/iavl"
 	"github.com/line/lbm-sdk/store/mem"
 	"github.com/line/lbm-sdk/store/tracekv"
+	"github.com/line/lbm-sdk/store/transient"
 	"github.com/line/lbm-sdk/store/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
@@ -924,6 +925,14 @@ func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID
 
 	case types.StoreTypeDB:
 		return commitDBStoreAdapter{Store: dbadapter.Store{DB: db}}, nil
+
+	case types.StoreTypeTransient:
+		_, ok := key.(*types.TransientStoreKey)
+		if !ok {
+			return nil, fmt.Errorf("invalid StoreKey for StoreTypeTransient: %s", key.String())
+		}
+
+		return transient.NewStore(), nil
 
 	case types.StoreTypeMemory:
 		if _, ok := key.(*types.MemoryStoreKey); !ok {

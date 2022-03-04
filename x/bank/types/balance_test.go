@@ -81,22 +81,23 @@ func TestBalanceValidate(t *testing.T) {
 
 func TestBalance_GetAddress(t *testing.T) {
 	tests := []struct {
-		name      string
-		Address   string
-		wantPanic bool
+		name    string
+		Address string
+		expErr  bool
 	}{
 		{"empty address", "", true},
 		{"malformed address", "invalid", true},
-		{"valid address", "link1vy0ga0klndqy92ceqehfkvgmn4t94eteq4hmqv", false},
+		{"valid address", "link1vy0ga0klndqy92ceqehfkvgmn4t94ete4mhemy", false},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			b := bank.Balance{Address: tt.Address}
-			if tt.wantPanic {
-				require.Panics(t, func() { b.GetAddress() })
+			err := sdk.ValidateAccAddress(b.GetAddress().String())
+			if tt.expErr {
+				require.Error(t, err)
 			} else {
-				require.False(t, b.GetAddress().Empty())
+				require.NoError(t, err)
 			}
 		})
 	}
