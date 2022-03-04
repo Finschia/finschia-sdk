@@ -640,8 +640,9 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 	require.NoError(t, err)
 	t.Cleanup(func() { os.RemoveAll(tempDir) })
 	var (
-		keyParams = sdk.NewKVStoreKey(paramtypes.StoreKey)
-		keyWasm   = sdk.NewKVStoreKey(wasmTypes.StoreKey)
+		keyParams  = sdk.NewKVStoreKey(paramtypes.StoreKey)
+		tkeyParams = sdk.NewKVStoreKey(paramtypes.TStoreKey)
+		keyWasm    = sdk.NewKVStoreKey(wasmTypes.StoreKey)
 	)
 
 	db := memdb.NewDB()
@@ -665,7 +666,7 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 	govtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
 	wasmConfig := wasmTypes.DefaultWasmConfig()
-	pk := paramskeeper.NewKeeper(encodingConfig.Marshaler, encodingConfig.Amino, keyParams)
+	pk := paramskeeper.NewKeeper(encodingConfig.Marshaler, encodingConfig.Amino, keyParams, tkeyParams)
 
 	srcKeeper := NewKeeper(encodingConfig.Marshaler, keyWasm, pk.Subspace(wasmTypes.DefaultParamspace), authkeeper.AccountKeeper{}, bankpluskeeper.BaseKeeper{}, stakingkeeper.Keeper{}, distributionkeeper.Keeper{}, nil, nil, nil, nil, nil, nil, tempDir, wasmConfig, SupportedFeatures, nil, nil)
 	return &srcKeeper, ctx, []sdk.StoreKey{keyWasm, keyParams}

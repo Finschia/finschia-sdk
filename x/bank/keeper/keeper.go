@@ -25,6 +25,7 @@ type Keeper interface {
 	ExportGenesis(sdk.Context) *types.GenesisState
 
 	GetSupply(ctx sdk.Context) exported.SupplyI
+	SetSupply(ctx sdk.Context, supply exported.SupplyI)
 
 	GetDenomMetaData(ctx sdk.Context, denom string) (types.Metadata, bool)
 	SetDenomMetaData(ctx sdk.Context, denomMetaData types.Metadata)
@@ -169,6 +170,17 @@ func (k BaseKeeper) GetSupply(ctx sdk.Context) exported.SupplyI {
 
 // setSupply sets the Supply to store
 func (k BaseKeeper) setSupply(ctx sdk.Context, supply exported.SupplyI) {
+	store := ctx.KVStore(k.storeKey)
+	bz, err := k.MarshalSupply(supply)
+	if err != nil {
+		panic(err)
+	}
+
+	store.Set(types.SupplyKey, bz)
+}
+
+// SetSupply sets the Supply to store
+func (k BaseKeeper) SetSupply(ctx sdk.Context, supply exported.SupplyI) {
 	store := ctx.KVStore(k.storeKey)
 	bz, err := k.MarshalSupply(supply)
 	if err != nil {

@@ -173,6 +173,7 @@ func createTestInput(
 	keyStaking := sdk.NewKVStoreKey(stakingtypes.StoreKey)
 	keyDistro := sdk.NewKVStoreKey(distributiontypes.StoreKey)
 	keyParams := sdk.NewKVStoreKey(paramstypes.StoreKey)
+	tkeyParams := sdk.NewKVStoreKey(paramstypes.TStoreKey)
 	keyGov := sdk.NewKVStoreKey(govtypes.StoreKey)
 	keyIBC := sdk.NewKVStoreKey(ibchost.StoreKey)
 	keyCapability := sdk.NewKVStoreKey(capabilitytypes.StoreKey)
@@ -198,7 +199,7 @@ func createTestInput(
 	encodingConfig := MakeEncodingConfig(t)
 	appCodec, legacyAmino := encodingConfig.Marshaler, encodingConfig.Amino
 
-	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, keyParams)
+	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, keyParams, tkeyParams)
 	paramsKeeper.Subspace(authtypes.ModuleName)
 	paramsKeeper.Subspace(banktypes.ModuleName)
 	paramsKeeper.Subspace(stakingtypes.ModuleName)

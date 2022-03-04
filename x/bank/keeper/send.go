@@ -17,6 +17,9 @@ type SendKeeper interface {
 	InputOutputCoins(ctx sdk.Context, inputs []types.Input, outputs []types.Output) error
 	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 
+	SetBalance(ctx sdk.Context, addr sdk.AccAddress, balance sdk.Coin) error
+	SetBalances(ctx sdk.Context, addr sdk.AccAddress, balances sdk.Coins) error
+
 	GetParams(ctx sdk.Context) types.Params
 	SetParams(ctx sdk.Context, params types.Params)
 
@@ -247,8 +250,41 @@ func (k BaseSendKeeper) setBalances(ctx sdk.Context, addr sdk.AccAddress, balanc
 	return nil
 }
 
+// SetBalances sets the balance (multiple coins) for an account by address. It will
+// clear out all balances prior to setting the new coins as to set existing balances
+// to zero if they don't exist in amt. An error is returned upon failure.
+func (k BaseSendKeeper) SetBalances(ctx sdk.Context, addr sdk.AccAddress, balances sdk.Coins) error {
+	k.ClearBalances(ctx, addr)
+
+	for _, balance := range balances {
+		err := k.SetBalance(ctx, addr, balance)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // setBalance sets the coin balance for an account by address.
 func (k BaseSendKeeper) setBalance(ctx sdk.Context, addr sdk.AccAddress, balance sdk.Coin) error {
+	if !balance.IsValid() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, balance.String())
+	}
+
+	accountStore := k.getAccountStore(ctx, addr)
+
+	bz, err := balance.Marshal()
+	if err != nil {
+		return err
+	}
+	accountStore.Set([]byte(balance.Denom), bz)
+
+	return nil
+}
+
+// SetBalance sets the coin balance for an account by address.
+func (k BaseSendKeeper) SetBalance(ctx sdk.Context, addr sdk.AccAddress, balance sdk.Coin) error {
 	if !balance.IsValid() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, balance.String())
 	}
