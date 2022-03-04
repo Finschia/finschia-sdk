@@ -35,24 +35,16 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 # Changelog
 
-## [Unreleased](https://github.com/line/lbm-sdk/compare/v0.44.0-rc0...HEAD)
+## [Unreleased](https://github.com/line/lbm-sdk/compare/v0.45.0-rc0...HEAD)
 
 ### Features
-* (x/wasm) [\#444](https://github.com/line/lbm-sdk/pull/444) Merge wasmd 0.19.0
-  * remove custom encoder from x/wasm/keeper.NewKeeper's arg. After the Token/collection module is added, it will be ported again.
-* (cosmos-sdk) [\#437](https://github.com/line/lbm-sdk/pull/437) dump up to cosmos-sdk v0.42.11
-  * [changelog of cosmos-sdk v0.42.11](https://github.com/cosmos/cosmos-sdk/blob/v0.42.11/CHANGELOG.md)
-* (feat) [\#434](https://github.com/line/lbm-sdk/pull/434) Revert signature mechanism using `sig_block_height`
-* (x/token) [\#416](https://github.com/line/lbm-sdk/pull/416) Migrate token module from line/link
 
 ### Improvements
 
 ### Bug Fixes
-* (x/wasm) [\#436](https://github.com/line/lbm-sdk/pull/436) remove `x/wasm/linkwasmd`
 
 ### Breaking Changes
 
 ### Build, CI
-* (makefile, ci) [\#438](https://github.com/line/lbm-sdk/pull/438) fix `make proto-format` and `make proto-check-breaking` error
 
 ### Document Updates
