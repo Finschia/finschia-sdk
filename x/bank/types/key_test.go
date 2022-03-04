@@ -23,10 +23,8 @@ func TestAddressFromBalancesStore(t *testing.T) {
 	addr := sdk.AccAddress("link19tzp7e489drh9qfs9m84k2qe5a5yyknzen48tz")
 	err := sdk.ValidateAccAddress(addr.String())
 	require.NoError(t, err)
-	addrLen := len(addr)
-	require.Equal(t, 20, addrLen)
 
-	key := cloneAppend(address.MustLengthPrefix(addr), []byte("stake"))
+	key := cloneAppend(address.MustLengthPrefix(addr.Bytes()), []byte("stake"))
 	res := types.AddressFromBalancesStore(key)
 	require.Equal(t, res, addr)
 }

@@ -22,7 +22,7 @@ func TestMsgSendRoute(t *testing.T) {
 func TestMsgSendValidation(t *testing.T) {
 	addr1 := sdk.BytesToAccAddress([]byte("from________________"))
 	addr2 := sdk.BytesToAccAddress([]byte("to__________________"))
-	addrEmpty := sdk.BytesToAccAddress([]byte(""))
+	addrEmpty := sdk.AccAddress("")
 	addrLong := sdk.BytesToAccAddress([]byte("Accidentally used 33 bytes pubkey"))
 
 	atom123 := sdk.NewCoins(sdk.NewInt64Coin("atom", 123))
@@ -90,7 +90,7 @@ func TestMsgMultiSendRoute(t *testing.T) {
 func TestInputValidation(t *testing.T) {
 	addr1 := sdk.BytesToAccAddress([]byte("_______alice________"))
 	addr2 := sdk.BytesToAccAddress([]byte("________bob_________"))
-	addrEmpty := sdk.BytesToAccAddress([]byte(""))
+	addrEmpty := sdk.AccAddress("")
 	addrLong := sdk.BytesToAccAddress([]byte("Accidentally used 33 bytes pubkey"))
 
 	someCoins := sdk.NewCoins(sdk.NewInt64Coin("atom", 123))
@@ -131,7 +131,7 @@ func TestInputValidation(t *testing.T) {
 func TestOutputValidation(t *testing.T) {
 	addr1 := sdk.BytesToAccAddress([]byte("_______alice________"))
 	addr2 := sdk.BytesToAccAddress([]byte("________bob_________"))
-	addrEmpty := sdk.BytesToAccAddress([]byte(""))
+	addrEmpty := sdk.AccAddress("")
 	addrLong := sdk.BytesToAccAddress([]byte("Accidentally used 33 bytes pubkey"))
 
 	someCoins := sdk.NewCoins(sdk.NewInt64Coin("atom", 123))

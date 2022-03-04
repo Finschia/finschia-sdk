@@ -310,25 +310,25 @@ func GetRedelegationTimeKey(timestamp time.Time) []byte {
 // GetREDsKey returns a key prefix for indexing a redelegation from a delegator
 // address.
 func GetREDsKey(delAddr sdk.AccAddress) []byte {
-	return append(RedelegationKey, address.MustLengthPrefix([]byte(delAddr))...)
+	return append(RedelegationKey, address.MustLengthPrefix(delAddr.Bytes())...)
 }
 
 // GetREDsFromValSrcIndexKey returns a key prefix for indexing a redelegation to
 // a source validator.
 func GetREDsFromValSrcIndexKey(valSrcAddr sdk.ValAddress) []byte {
-	return append(RedelegationByValSrcIndexKey, address.MustLengthPrefix([]byte(valSrcAddr))...)
+	return append(RedelegationByValSrcIndexKey, address.MustLengthPrefix(valSrcAddr.Bytes())...)
 }
 
 // GetREDsToValDstIndexKey returns a key prefix for indexing a redelegation to a
 // destination (target) validator.
 func GetREDsToValDstIndexKey(valDstAddr sdk.ValAddress) []byte {
-	return append(RedelegationByValDstIndexKey, address.MustLengthPrefix([]byte(valDstAddr))...)
+	return append(RedelegationByValDstIndexKey, address.MustLengthPrefix(valDstAddr.Bytes())...)
 }
 
 // GetREDsByDelToValDstIndexKey returns a key prefix for indexing a redelegation
 // from an address to a source validator.
 func GetREDsByDelToValDstIndexKey(delAddr sdk.AccAddress, valDstAddr sdk.ValAddress) []byte {
-	return append(GetREDsToValDstIndexKey(valDstAddr), address.MustLengthPrefix([]byte(delAddr))...)
+	return append(GetREDsToValDstIndexKey(valDstAddr), address.MustLengthPrefix(delAddr.Bytes())...)
 }
 
 // GetHistoricalInfoKey returns a key prefix for indexing HistoricalInfo objects.

@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/store/prefix"
 	"github.com/line/lbm-sdk/telemetry"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
@@ -257,9 +256,7 @@ func (k BaseSendKeeper) SetBalances(ctx sdk.Context, addr sdk.AccAddress, balanc
 // initBalances sets the balance (multiple coins) for an account by address.
 // An error is returned upon failure.
 func (k BaseSendKeeper) initBalances(ctx sdk.Context, addr sdk.AccAddress, balances sdk.Coins) error {
-	store := ctx.KVStore(k.storeKey)
-	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
+	accountStore := k.getAccountStore(ctx, addr)
 	for i := range balances {
 		balance := balances[i]
 		if !balance.IsValid() {

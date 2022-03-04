@@ -12,6 +12,7 @@ import (
 	"github.com/line/lbm-sdk/testutil/network"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/rest"
+	"github.com/line/lbm-sdk/x/authz/client/cli"
 	authztestutil "github.com/line/lbm-sdk/x/authz/client/testutil"
 	types "github.com/line/lbm-sdk/x/authz/types"
 	banktestutil "github.com/line/lbm-sdk/x/bank/client/testutil"
@@ -53,7 +54,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 
 	// grant authorization
-	_, err = authztestutil.MsgGrantAuthorizationExec(val.ClientCtx, val.Address.String(), newAddr.String(), typeMsgSend, "100stake")
+	_, err = authztestutil.MsgGrantAuthorizationExec(val.ClientCtx, val.Address.String(), newAddr.String(), "send", fmt.Sprintf("--%s=100steak", cli.FlagSpendLimit))
 	s.Require().NoError(err)
 
 	s.grantee = newAddr
@@ -77,37 +78,37 @@ func (s *IntegrationTestSuite) TestQueryAuthorizationGRPC() {
 	}{
 		{
 			"fail invalid granter address",
-			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grant?msg_type=%s", baseURL, "invalid_granter", s.grantee.String(), typeMsgSend),
+			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grant?method_name=%s", baseURL, "invalid_granter", s.grantee.String(), typeMsgSend),
 			true,
-			"decoding bech32 failed: invalid index of 1: invalid request",
+			"decoding bech32 failed: invalid separator index -1: invalid request",
 		},
 		{
 			"fail invalid grantee address",
-			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grant?msg_type=%s", baseURL, val.Address.String(), "invalid_grantee", typeMsgSend),
+			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grant?method_name=%s", baseURL, val.Address.String(), "invalid_grantee", typeMsgSend),
 			true,
-			"decoding bech32 failed: invalid index of 1: invalid request",
+			"decoding bech32 failed: invalid separator index -1: invalid request",
 		},
 		{
 			"fail with empty granter",
-			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grant?msg_type=%s", baseURL, "", s.grantee.String(), typeMsgSend),
+			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grant?method_name=%s", baseURL, "", s.grantee.String(), typeMsgSend),
 			true,
 			"Not Implemented",
 		},
 		{
 			"fail with empty grantee",
-			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grant?msg_type=%s", baseURL, val.Address.String(), "", typeMsgSend),
+			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grant?method_name=%s", baseURL, val.Address.String(), "", typeMsgSend),
 			true,
 			"Not Implemented",
 		},
 		{
 			"fail invalid msg-type",
-			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grant?msg_type=%s", baseURL, val.Address.String(), s.grantee.String(), "invalidMsg"),
+			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grant?method_name=%s", baseURL, val.Address.String(), s.grantee.String(), "invalidMsg"),
 			true,
 			"rpc error: code = NotFound desc = no authorization found for invalidMsg type: key not found",
 		},
 		{
 			"valid query",
-			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grant?msg_type=%s", baseURL, val.Address.String(), s.grantee.String(), typeMsgSend),
+			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grant?method_name=%s", baseURL, val.Address.String(), s.grantee.String(), typeMsgSend),
 			false,
 			"",
 		},
@@ -145,7 +146,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorizationsGRPC() {
 			"fail invalid granter address",
 			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grants", baseURL, "invalid_granter", s.grantee.String()),
 			true,
-			"decoding bech32 failed: invalid index of 1: invalid request",
+			"decoding bech32 failed: invalid separator index -1: invalid request",
 			func() {},
 			func(_ *types.QueryAuthorizationsResponse) {},
 		},
@@ -153,7 +154,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorizationsGRPC() {
 			"fail invalid grantee address",
 			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grants", baseURL, val.Address.String(), "invalid_grantee"),
 			true,
-			"decoding bech32 failed: invalid index of 1: invalid request",
+			"decoding bech32 failed: invalid separator index -1: invalid request",
 			func() {},
 			func(_ *types.QueryAuthorizationsResponse) {},
 		},
@@ -182,7 +183,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorizationsGRPC() {
 			false,
 			"",
 			func() {
-				_, err := authztestutil.MsgGrantAuthorizationExec(val.ClientCtx, val.Address.String(), s.grantee.String(), "/lbm.gov.v1.Msg/Vote", "")
+				_, err := authztestutil.MsgGrantAuthorizationExec(val.ClientCtx, val.Address.String(), s.grantee.String(), "generic", fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()), fmt.Sprintf("--%s=%s", cli.FlagMsgType, typeMsgSend))
 				s.Require().NoError(err)
 			},
 			func(authorizations *types.QueryAuthorizationsResponse) {

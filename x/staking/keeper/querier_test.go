@@ -20,14 +20,14 @@ func TestNewQuerier(t *testing.T) {
 	cdc, app, ctx := createTestInput()
 
 	addrs := simapp.AddTestAddrs(app, ctx, 500, sdk.NewInt(10000))
-	_, addrAcc2 := addrs[0], addrs[1]
-	addrVal1, _ := sdk.ValAddress(addrs[0]), sdk.ValAddress(addrs[1])
+	addrAcc1, addrAcc2 := addrs[0], addrs[1]
+	addrVal1 := addrAcc1.ToValAddress()
 
 	// Create Validators
 	amts := []sdk.Int{sdk.NewInt(9), sdk.NewInt(8)}
 	var validators [2]types.Validator
 	for i, amt := range amts {
-		validators[i] = teststaking.NewValidator(t, sdk.ValAddress(addrs[i]), PKs[i])
+		validators[i] = teststaking.NewValidator(t, sdk.AccAddress(addrs[i]).ToValAddress(), PKs[i])
 		validators[i], _ = validators[i].AddTokensFromDel(amt)
 		app.StakingKeeper.SetValidator(ctx, validators[i])
 		app.StakingKeeper.SetValidatorByPowerIndex(ctx, validators[i])
