@@ -15,7 +15,7 @@ type Keeper struct {
 	legacyAmino *codec.LegacyAmino
 	key         sdk.StoreKey
 	tkey        sdk.StoreKey
-	spaces      map[string]*types.Subspace
+	spaces      map[string]types.Subspace
 }
 
 // NewKeeper constructs a params keeper
@@ -25,7 +25,7 @@ func NewKeeper(cdc codec.BinaryMarshaler, legacyAmino *codec.LegacyAmino, key, t
 		legacyAmino: legacyAmino,
 		key:         key,
 		tkey:        tkey,
-		spaces:      make(map[string]*types.Subspace),
+		spaces:      make(map[string]types.Subspace),
 	}
 }
 
@@ -48,7 +48,7 @@ func (k Keeper) Subspace(s string) types.Subspace {
 	space := types.NewSubspace(k.cdc, k.legacyAmino, k.key, s)
 	k.spaces[s] = space
 
-	return *space
+	return space
 }
 
 // Get existing substore from keeper
@@ -57,5 +57,5 @@ func (k Keeper) GetSubspace(s string) (types.Subspace, bool) {
 	if !ok {
 		return types.Subspace{}, false
 	}
-	return *space, ok
+	return space, ok
 }

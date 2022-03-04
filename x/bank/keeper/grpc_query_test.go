@@ -17,6 +17,7 @@ import (
 
 func (suite *IntegrationTestSuite) TestQueryBalance() {
 	app, ctx, queryClient := suite.app, suite.ctx, suite.queryClient
+	_, _, addr := testdata.KeyTestPubAddr()
 
 	_, err := queryClient.Balance(gocontext.Background(), &types.QueryBalanceRequest{})
 	suite.Require().Error(err)

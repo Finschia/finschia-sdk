@@ -7,11 +7,12 @@ import (
 
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	sdk "github.com/line/lbm-sdk/types"
+	bank "github.com/line/lbm-sdk/x/bank/types"
 )
 
 var granter = sdk.BytesToAccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 var grantee = sdk.BytesToAccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
-var msgType = SendAuthorization{}.MethodName()
+var msgType = bank.SendAuthorization{}.MethodName()
 
 func TestGrantkey(t *testing.T) {
 	granter1, grantee1 := ExtractAddressesFromGrantKey(GetAuthorizationStoreKey(grantee, granter, msgType))

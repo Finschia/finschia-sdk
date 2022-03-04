@@ -23,7 +23,7 @@ type SubspaceTestSuite struct {
 	cdc   codec.BinaryMarshaler
 	amino *codec.LegacyAmino
 	ctx   sdk.Context
-	ss    *types.Subspace
+	ss    types.Subspace
 }
 
 func (suite *SubspaceTestSuite) SetupTest() {

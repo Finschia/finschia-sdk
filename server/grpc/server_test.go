@@ -14,15 +14,12 @@ import (
 	"google.golang.org/grpc/metadata"
 	rpb "google.golang.org/grpc/reflection/grpc_reflection_v1alpha"
 
-	clienttx "github.com/line/lbm-sdk/client/tx"
 	"github.com/line/lbm-sdk/testutil/network"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	grpctypes "github.com/line/lbm-sdk/types/grpc"
 	"github.com/line/lbm-sdk/types/tx"
 	txtypes "github.com/line/lbm-sdk/types/tx"
-	"github.com/line/lbm-sdk/types/tx/signing"
-	authclient "github.com/line/lbm-sdk/x/auth/client"
 	banktestutil "github.com/line/lbm-sdk/x/bank/client/testutil"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 )
