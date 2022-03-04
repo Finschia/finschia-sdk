@@ -40,6 +40,7 @@ RUN chmod +x rustup-init
 RUN ./rustup-init -y --no-modify-path --default-toolchain 1.53.0; rm rustup-init
 RUN chmod -R a+w $RUSTUP_HOME $CARGO_HOME
 RUN cd $(go list -f "{{ .Dir }}" -m github.com/line/wasmvm) && \
+    cd ./libwasmvm && \
     RUSTFLAGS='-C target-feature=-crt-static' cargo build --release --example staticlib && \
     mv -f target/release/examples/libstaticlib.a /usr/lib/libwasmvm_static.a && \
     rm -rf target
