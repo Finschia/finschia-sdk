@@ -6,19 +6,11 @@ import (
 
 	"github.com/gorilla/mux"
 
-<<<<<<< HEAD
-	"github.com/line/lbm-sdk/client"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/rest"
-	authclient "github.com/line/lbm-sdk/x/auth/client"
-	"github.com/line/lbm-sdk/x/staking/types"
-=======
 	"github.com/line/lbm-sdk/client"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/rest"
 	authtx "github.com/line/lbm-sdk/x/auth/tx"
 	"github.com/line/lbm-sdk/x/staking/types"
->>>>>>> a93edeef4 (Move QueryTx functions to x/auth/tx (#8734))
 )
 
 // contains checks if the a given query contains one of the tx types

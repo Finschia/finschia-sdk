@@ -275,7 +275,7 @@ func createTestInput(
 	ibcSubsp, _ := paramsKeeper.GetSubspace(ibchost.ModuleName)
 
 	ibcKeeper := ibckeeper.NewKeeper(
-		appCodec, keyIBC, ibcSubsp, stakingKeeper, scopedIBCKeeper,
+		appCodec, keyIBC, ibcSubsp, stakingKeeper, nil, scopedIBCKeeper,
 	)
 
 	router := baseapp.NewRouter()

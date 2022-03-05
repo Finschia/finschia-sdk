@@ -89,11 +89,12 @@ func GetValidatorsByPowerIndexKey(validator types.Validator) []byte {
 
 	key[0] = ValidatorsByPowerIndexKey[0]
 	copy(key[1:powerBytesLen+1], powerBytes)
-	addr, err := sdk.ValAddressFromBech32(validator.OperatorAddress)
+	err := sdk.ValidateValAddress(validator.OperatorAddress)
 	if err != nil {
 		panic(err)
 	}
-	operAddrInvr := sdk.CopyBytes(addr)
+	addr := sdk.ValAddress(validator.OperatorAddress)
+	operAddrInvr := sdk.CopyBytes(addr.Bytes())
 
 	for i, b := range operAddrInvr {
 		operAddrInvr[i] = ^b
@@ -184,7 +185,7 @@ func GetDelegationsKey(delAddr sdk.AccAddress) []byte {
 // VALUE: staking/UnbondingDelegation
 func GetUBDKey(delAddr sdk.AccAddress, valAddr sdk.ValAddress) []byte {
 	return append(
-		GetUBDsKey(delAddr.Bytes()),
+		GetUBDsKey(delAddr),
 		valAddr.Bytes()...)
 }
 
@@ -204,7 +205,7 @@ func GetUBDKeyFromValIndexKey(indexKey []byte) []byte {
 	valAddr := addrs[:v040auth.AddrLen]
 	delAddr := addrs[v040auth.AddrLen:]
 
-	return GetUBDKey(delAddr, valAddr)
+	return GetUBDKey(sdk.AccAddress(delAddr), sdk.ValAddress(valAddr))
 }
 
 // gets the prefix for all unbonding delegations from a delegator
@@ -228,7 +229,7 @@ func GetUnbondingDelegationTimeKey(timestamp time.Time) []byte {
 func GetREDKey(delAddr sdk.AccAddress, valSrcAddr, valDstAddr sdk.ValAddress) []byte {
 	key := make([]byte, 1+v040auth.AddrLen*3)
 
-	copy(key[0:v040auth.AddrLen+1], GetREDsKey(delAddr.Bytes()))
+	copy(key[0:v040auth.AddrLen+1], GetREDsKey(delAddr))
 	copy(key[v040auth.AddrLen+1:2*v040auth.AddrLen+1], valSrcAddr.Bytes())
 	copy(key[2*v040auth.AddrLen+1:3*v040auth.AddrLen+1], valDstAddr.Bytes())
 
@@ -272,9 +273,9 @@ func GetREDKeyFromValSrcIndexKey(indexKey []byte) []byte {
 		panic("unexpected key length")
 	}
 
-	valSrcAddr := indexKey[1 : v040auth.AddrLen+1]
-	delAddr := indexKey[v040auth.AddrLen+1 : 2*v040auth.AddrLen+1]
-	valDstAddr := indexKey[2*v040auth.AddrLen+1 : 3*v040auth.AddrLen+1]
+	valSrcAddr := sdk.ValAddress(indexKey[1 : v040auth.AddrLen+1])
+	delAddr := sdk.AccAddress(indexKey[v040auth.AddrLen+1 : 2*v040auth.AddrLen+1])
+	valDstAddr := sdk.ValAddress(indexKey[2*v040auth.AddrLen+1 : 3*v040auth.AddrLen+1])
 
 	return GetREDKey(delAddr, valSrcAddr, valDstAddr)
 }
@@ -286,9 +287,9 @@ func GetREDKeyFromValDstIndexKey(indexKey []byte) []byte {
 		panic("unexpected key length")
 	}
 
-	valDstAddr := indexKey[1 : v040auth.AddrLen+1]
-	delAddr := indexKey[v040auth.AddrLen+1 : 2*v040auth.AddrLen+1]
-	valSrcAddr := indexKey[2*v040auth.AddrLen+1 : 3*v040auth.AddrLen+1]
+	valDstAddr := sdk.ValAddress(indexKey[1 : v040auth.AddrLen+1])
+	delAddr := sdk.AccAddress(indexKey[v040auth.AddrLen+1 : 2*v040auth.AddrLen+1])
+	valSrcAddr := sdk.ValAddress(indexKey[2*v040auth.AddrLen+1 : 3*v040auth.AddrLen+1])
 
 	return GetREDKey(delAddr, valSrcAddr, valDstAddr)
 }

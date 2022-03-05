@@ -263,7 +263,7 @@ func (k BaseSendKeeper) setBalances(ctx sdk.Context, addr sdk.AccAddress, balanc
 // clear out all balances prior to setting the new coins as to set existing balances
 // to zero if they don't exist in amt. An error is returned upon failure.
 func (k BaseSendKeeper) SetBalances(ctx sdk.Context, addr sdk.AccAddress, balances sdk.Coins) error {
-	k.ClearBalances(ctx, addr)
+	k.clearBalances(ctx, addr)
 
 	for _, balance := range balances {
 		err := k.SetBalance(ctx, addr, balance)

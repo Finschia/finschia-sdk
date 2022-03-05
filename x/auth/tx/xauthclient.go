@@ -48,7 +48,7 @@ func queryTxsByEvents(goCtx context.Context, clientCtx client.Context, events []
 		return nil, err
 	}
 
-	resBlocks, err := getBlocksForTxResults(goCtx, clientCtx, resTxs.Txs)
+	resBlocks, err := getBlocksForTxResults(clientCtx, resTxs.Txs)
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func queryTx(goCtx context.Context, clientCtx client.Context, hashHexStr string)
 		return nil, err
 	}
 
-	resBlocks, err := getBlocksForTxResults(goCtx, clientCtx, []*ctypes.ResultTx{resTx})
+	resBlocks, err := getBlocksForTxResults(clientCtx, []*ctypes.ResultTx{resTx})
 	if err != nil {
 		return nil, err
 	}
