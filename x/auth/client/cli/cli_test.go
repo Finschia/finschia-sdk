@@ -1075,7 +1075,7 @@ func (s *IntegrationTestSuite) TestGetAccountsCmd() {
 	clientCtx := val.ClientCtx
 
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, authcli.GetAccountsCmd(), []string{
-		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 	})
 	s.Require().NoError(err)
 

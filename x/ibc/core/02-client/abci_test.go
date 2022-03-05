@@ -11,6 +11,7 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	localhoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 )
@@ -87,7 +88,7 @@ func (suite *ClientTestSuite) TestBeginBlockerConsensusState() {
 	// plan Height is at ctx.BlockHeight+1
 	consState, found := suite.chainA.App.UpgradeKeeper.GetUpgradedConsensusState(newCtx, plan.Height)
 	suite.Require().True(found)
-	bz, err = types.MarshalConsensusState(suite.chainA.App.AppCodec(), &ibctmtypes.ConsensusState{Timestamp: newCtx.BlockTime(), NextValidatorsHash: nextValsHash})
+	bz, err = types.MarshalConsensusState(suite.chainA.App.AppCodec(), &ibcoctypes.ConsensusState{Timestamp: newCtx.BlockTime(), NextValidatorsHash: nextValsHash})
 	suite.Require().NoError(err)
 	suite.Require().Equal(bz, consState)
 }

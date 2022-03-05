@@ -195,7 +195,7 @@ func (suite *KeeperTestSuite) TestHandleUpgradeProposal() {
 			suite.SetupTest()  // reset
 			oldPlan.Height = 0 //reset
 
-			clientID, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Tendermint)
+			clientID, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
 			upgradedClientState = suite.chainA.GetClientState(clientID).ZeroCustomFields().(*ibcoctypes.ClientState)
 
 			// use height 1000 to distinguish from old plan

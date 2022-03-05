@@ -21,8 +21,6 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/module"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	"github.com/line/lbm-sdk/x/upgrade"
 	"github.com/line/lbm-sdk/x/upgrade/keeper"
 	"github.com/line/lbm-sdk/x/upgrade/types"

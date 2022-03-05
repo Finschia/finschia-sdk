@@ -1099,15 +1099,17 @@ func (suite *IntegrationTestSuite) TestBalanceTrackingEvents() {
 		case types.EventTypeCoinSpent:
 			coinsSpent, err := sdk.ParseCoinsNormalized((string)(e.Attributes[1].Value))
 			suite.Require().NoError(err)
-			spender, err := sdk.AccAddressFromBech32((string)(e.Attributes[0].Value))
+			err = sdk.ValidateAccAddress(string(e.Attributes[0].Value))
 			suite.Require().NoError(err)
+			spender := sdk.AccAddress(e.Attributes[0].Value)
 			balances[spender.String()] = balances[spender.String()].Sub(coinsSpent)
 
 		case types.EventTypeCoinReceived:
 			coinsRecv, err := sdk.ParseCoinsNormalized((string)(e.Attributes[1].Value))
 			suite.Require().NoError(err)
-			receiver, err := sdk.AccAddressFromBech32((string)(e.Attributes[0].Value))
+			err = sdk.ValidateAccAddress(string(e.Attributes[0].Value))
 			suite.Require().NoError(err)
+			receiver := sdk.AccAddress(e.Attributes[0].Value)
 			balances[receiver.String()] = balances[receiver.String()].Add(coinsRecv...)
 		}
 	}
