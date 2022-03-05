@@ -123,7 +123,7 @@ func (suite *IntegrationTestSuite) TestSendCoinsFromModuleToAccount_Blacklist() 
 	baseAcc := authKeeper.NewAccountWithAddress(ctx, authtypes.NewModuleAddress("baseAcc"))
 	suite.Require().NoError(keeper.SetBalances(ctx, holderAcc.GetAddress(), initCoins))
 
-	keeper.SetSupply(ctx, types.NewSupply(initCoins))
+	keeper.SetSupply(ctx, initCoins)
 	authKeeper.SetModuleAccount(ctx, holderAcc)
 	authKeeper.SetAccount(ctx, baseAcc)
 

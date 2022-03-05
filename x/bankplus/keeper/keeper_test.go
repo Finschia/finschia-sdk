@@ -43,10 +43,6 @@ func getCoinsByName(ctx sdk.Context, bk bankpluskeeper.Keeper, ak types.AccountK
 
 type IntegrationTestSuite struct {
 	suite.Suite
-
-	app         *simapp.SimApp
-	ctx         sdk.Context
-	queryClient types.QueryClient
 }
 
 func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
@@ -72,7 +68,7 @@ func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 	baseAcc := authKeeper.NewAccountWithAddress(ctx, authtypes.NewModuleAddress("baseAcc"))
 	suite.Require().NoError(keeper.SetBalances(ctx, holderAcc.GetAddress(), initCoins))
 
-	keeper.SetSupply(ctx, types.NewSupply(initCoins))
+	keeper.SetSupply(ctx, initCoins)
 	authKeeper.SetModuleAccount(ctx, holderAcc)
 	authKeeper.SetModuleAccount(ctx, burnerAcc)
 	authKeeper.SetAccount(ctx, baseAcc)
@@ -133,7 +129,7 @@ func (suite *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
 	)
 
 	suite.Require().NoError(keeper.SetBalances(ctx, holderAcc.GetAddress(), initCoins))
-	keeper.SetSupply(ctx, types.NewSupply(initCoins))
+	keeper.SetSupply(ctx, initCoins)
 	suite.Require().Equal(initCoins, keeper.GetAllBalances(ctx, holderAcc.GetAddress()))
 
 	suite.Require().False(keeper.IsInactiveAddr(blockedAcc.GetAddress()))
