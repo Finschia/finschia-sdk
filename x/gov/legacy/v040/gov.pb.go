@@ -8,7 +8,7 @@ import (
 	"io"
 	math_bits "math/bits"
 
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 type Vote struct {

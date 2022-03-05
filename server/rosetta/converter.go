@@ -6,30 +6,30 @@ import (
 	"fmt"
 	"reflect"
 
-	auth "github.com/cosmos/cosmos-sdk/x/auth/types"
+	auth "github.com/line/lbm-sdk/x/auth/types"
 
-	"github.com/tendermint/tendermint/crypto"
+	"github.com/line/ostracon/crypto"
 
 	"github.com/btcsuite/btcd/btcec"
+	tmcoretypes "github.com/line/ostracon/rpc/core/types"
 	crgtypes "github.com/tendermint/cosmos-rosetta-gateway/types"
-	tmcoretypes "github.com/tendermint/tendermint/rpc/core/types"
 
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/types/tx/signing"
 
 	rosettatypes "github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/gogo/protobuf/proto"
+	abci "github.com/line/ostracon/abci/types"
+	tmtypes "github.com/line/ostracon/types"
 	crgerrs "github.com/tendermint/cosmos-rosetta-gateway/errors"
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmtypes "github.com/tendermint/tendermint/types"
 
-	sdkclient "github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	sdkclient "github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	sdk "github.com/line/lbm-sdk/types"
+	authsigning "github.com/line/lbm-sdk/x/auth/signing"
+	banktypes "github.com/line/lbm-sdk/x/bank/types"
 )
 
 // Converter is a utility that can be used to convert
@@ -368,10 +368,11 @@ func sdkEventToBalanceOperations(status string, event abci.Event) (operations []
 	default:
 		return nil, false
 	case banktypes.EventTypeCoinSpent:
-		spender, err := sdk.AccAddressFromBech32((string)(event.Attributes[0].Value))
+		err := sdk.ValidateAccAddress(string(event.Attributes[0].Value))
 		if err != nil {
 			panic(err)
 		}
+		spender := sdk.AccAddress(event.Attributes[0].Value)
 		coins, err := sdk.ParseCoinsNormalized((string)(event.Attributes[1].Value))
 		if err != nil {
 			panic(err)
@@ -382,10 +383,11 @@ func sdkEventToBalanceOperations(status string, event abci.Event) (operations []
 		accountIdentifier = spender.String()
 
 	case banktypes.EventTypeCoinReceived:
-		receiver, err := sdk.AccAddressFromBech32((string)(event.Attributes[0].Value))
+		err := sdk.ValidateAccAddress(string(event.Attributes[0].Value))
 		if err != nil {
 			panic(err)
 		}
+		receiver := sdk.AccAddress(event.Attributes[0].Value)
 		coins, err := sdk.ParseCoinsNormalized((string)(event.Attributes[1].Value))
 		if err != nil {
 			panic(err)

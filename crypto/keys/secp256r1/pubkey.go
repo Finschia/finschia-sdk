@@ -2,10 +2,10 @@ package secp256r1
 
 import (
 	"github.com/gogo/protobuf/proto"
-	tmcrypto "github.com/tendermint/tendermint/crypto"
+	tmcrypto "github.com/line/ostracon/crypto"
 
-	ecdsa "github.com/cosmos/cosmos-sdk/crypto/keys/internal/ecdsa"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	ecdsa "github.com/line/lbm-sdk/crypto/keys/internal/ecdsa"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 )
 
 // String implements proto.Message interface.

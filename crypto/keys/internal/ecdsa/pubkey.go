@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"math/big"
 
-	tmcrypto "github.com/tendermint/tendermint/crypto"
+	tmcrypto "github.com/line/ostracon/crypto"
 
-	"github.com/cosmos/cosmos-sdk/types/address"
-	"github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/address"
+	"github.com/line/lbm-sdk/types/errors"
 )
 
 // signature holds the r and s values of an ECDSA signature.

@@ -3,7 +3,7 @@ package ecdsa
 import (
 	"testing"
 
-	"github.com/tendermint/tendermint/crypto"
+	"github.com/line/ostracon/crypto"
 
 	"github.com/stretchr/testify/suite"
 )

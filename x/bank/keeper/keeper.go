@@ -24,7 +24,7 @@ type Keeper interface {
 	GetSupply(ctx sdk.Context, denom string) sdk.Coin
 	GetTotalSupply(ctx sdk.Context) sdk.Coins
 	IterateTotalSupply(ctx sdk.Context, cb func(sdk.Coin) bool)
-	SetSupply(ctx sdk.Context, supply exported.SupplyI) // TODO(dudong2): remove after x/wasm version up
+	SetSupply(ctx sdk.Context, supply sdk.Coins) // TODO(dudong2): remove after x/wasm version up
 
 	GetDenomMetaData(ctx sdk.Context, denom string) (types.Metadata, bool)
 	SetDenomMetaData(ctx sdk.Context, denomMetaData types.Metadata)
@@ -213,14 +213,30 @@ func (k BaseKeeper) setSupply(ctx sdk.Context, supply sdk.Coins) {
 }
 
 // SetSupply sets the Supply to store
-func (k BaseKeeper) SetSupply(ctx sdk.Context, supply exported.SupplyI) {
+func (k BaseKeeper) SetSupply(ctx sdk.Context, supply sdk.Coins) {
 	store := ctx.KVStore(k.storeKey)
-	bz, err := k.MarshalSupply(supply)
-	if err != nil {
-		panic(err)
-	}
+	supplyStore := prefix.NewStore(store, types.SupplyKey)
 
-	store.Set(types.SupplyKey, bz)
+	var newSupply []sdk.Coin
+	storeSupply := k.GetTotalSupply(ctx)
+
+	// update supply for coins which have non zero amount
+	for _, coin := range storeSupply {
+		if supply.AmountOf(coin.Denom).IsZero() {
+			zeroCoin := &sdk.Coin{
+				Denom:  coin.Denom,
+				Amount: sdk.NewInt(0),
+			}
+			bz := k.cdc.MustMarshalBinaryBare(zeroCoin)
+			supplyStore.Set([]byte(coin.Denom), bz)
+		}
+	}
+	newSupply = append(newSupply, supply...)
+
+	for i := range newSupply {
+		bz := k.cdc.MustMarshalBinaryBare(&supply[i])
+		supplyStore.Set([]byte(supply[i].Denom), bz)
+	}
 }
 
 // GetDenomMetaData retrieves the denomination metadata

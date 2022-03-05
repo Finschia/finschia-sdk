@@ -5,23 +5,23 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/server/rosetta"
+	"github.com/line/lbm-sdk/server/rosetta"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/line/ostracon/abci/types"
 
-	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
+	authsigning "github.com/line/lbm-sdk/x/auth/signing"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	codectypes "github.com/line/lbm-sdk/codec/types"
 
 	rosettatypes "github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/stretchr/testify/suite"
 	crgerrs "github.com/tendermint/cosmos-rosetta-gateway/errors"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
-	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
+	sdk "github.com/line/lbm-sdk/types"
+	authtx "github.com/line/lbm-sdk/x/auth/tx"
+	bank "github.com/line/lbm-sdk/x/bank/types"
 )
 
 type ConverterTestSuite struct {
