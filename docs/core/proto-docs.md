@@ -5406,7 +5406,7 @@ GenesisState defines the bank module's genesis state.
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#lbm.bank.v1.Params) |  | params defines all the paramaters of the module. |
 | `balances` | [Balance](#lbm.bank.v1.Balance) | repeated | balances is an array containing the balances of all the accounts. |
-| `supply` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | supply represents the total supply. |
+| `supply` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | supply represents the total supply. If it is left empty, then supply will be calculated based on the provided balances. Otherwise, it will be used to validate that the sum of the balances equals this amount. |
 | `denom_metadata` | [Metadata](#lbm.bank.v1.Metadata) | repeated | denom_metadata defines the metadata of the differents coins. |
 
 
@@ -12120,7 +12120,8 @@ RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `tx` | [Tx](#lbm.tx.v1.Tx) |  | tx is the transaction to simulate. |
+| `tx` | [Tx](#lbm.tx.v1.Tx) |  | **Deprecated.** tx is the transaction to simulate. Deprecated. Send raw tx bytes instead. |
+| `tx_bytes` | [bytes](#bytes) |  | tx_bytes is the raw transaction. |
 
 
 

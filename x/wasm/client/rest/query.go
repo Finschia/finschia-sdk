@@ -43,7 +43,7 @@ func listCodesHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		pageReq, err := client.NewPageRequest(pageKey, offset, limit, page, countTotal)
+		pageReq, err := client.NewPageRequest(pageKey, offset, limit, page, countTotal, false)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -116,7 +116,7 @@ func listContractsByCodeHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		pageReq, err := client.NewPageRequest(pageKey, offset, limit, page, countTotal)
+		pageReq, err := client.NewPageRequest(pageKey, offset, limit, page, countTotal, false)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -296,7 +296,7 @@ func queryContractHistoryFn(cliCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		pageReq, err := client.NewPageRequest(pageKey, offset, limit, page, countTotal)
+		pageReq, err := client.NewPageRequest(pageKey, offset, limit, page, countTotal, false)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return

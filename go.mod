@@ -28,6 +28,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/hdevalence/ed25519consensus v0.0.0-20220222234857-c00d1f31bab3
 	github.com/improbable-eng/grpc-web v0.15.0
+	github.com/jhump/protoreflect v1.12.0
 	github.com/line/iavl/v2 v2.0.0-init.1.0.20220215225951-cb11c91d8857
 	github.com/line/ostracon v1.0.3
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486

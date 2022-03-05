@@ -9,10 +9,8 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/version"
 )
 

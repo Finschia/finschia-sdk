@@ -200,7 +200,8 @@ type keystore struct {
 	options Options
 }
 
-func infoKey(name string) []byte { return []byte(fmt.Sprintf("%s.%s", name, infoSuffix)) }
+func infoKey(name string) string   { return fmt.Sprintf("%s.%s", name, infoSuffix) }
+func infoKeyBz(name string) []byte { return []byte(infoKey(name)) }
 
 func newKeystore(kr keyring.Keyring, opts ...Option) keystore {
 	// Default options for keybase
@@ -796,7 +797,7 @@ func (ks keystore) existsInDb(info Info) (bool, error) {
 		return false, err // received unexpected error - returns error
 	}
 
-	if _, err := ks.db.Get(infoKey(info.GetName())); err == nil {
+	if _, err := ks.db.Get(string(infoKey(info.GetName()))); err == nil {
 		return true, nil // uid lookup succeeds - info exists
 	} else if err != keyring.ErrKeyNotFound {
 		return false, err // received unexpected error - returns

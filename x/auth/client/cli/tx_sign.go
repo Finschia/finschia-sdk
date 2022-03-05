@@ -9,8 +9,8 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
-	"github.com/line/lbm-sdk/client/types/tx/signing"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/tx/signing"
 	authclient "github.com/line/lbm-sdk/x/auth/client"
 	"github.com/line/lbm-sdk/x/auth/client/rest"
 )

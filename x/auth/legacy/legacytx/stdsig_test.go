@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	"github.com/cosmos/cosmos-sdk/x/auth/legacy/legacytx"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 )
 
 func TestStdSignatureMarshalYAML(t *testing.T) {
