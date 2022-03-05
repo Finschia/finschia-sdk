@@ -1060,7 +1060,7 @@ func (suite *IntegrationTestSuite) TestBalanceTrackingEvents() {
 			sdk.NewCoins(sdk.NewCoin("utxo", sdk.NewInt(100000)))),
 	)
 	// send coins to address
-	addr1 := sdk.AccAddress("addr1_______________")
+	addr1 := sdk.BytesToAccAddress([]byte("addr1_______________"))
 	suite.Require().NoError(
 		suite.app.BankKeeper.SendCoinsFromModuleToAccount(
 			suite.ctx,

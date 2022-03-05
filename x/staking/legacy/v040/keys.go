@@ -85,7 +85,7 @@ func GetValidatorsByPowerIndexKey(validator types.Validator) []byte {
 	powerBytesLen := len(powerBytes) // 8
 
 	// key is of format prefix || powerbytes || addrBytes
-	key := make([]byte, 1+powerBytesLen+v040auth.AddrLen)
+	key := make([]byte, 1+powerBytesLen+v040auth.ValAddrLen)
 
 	key[0] = ValidatorsByPowerIndexKey[0]
 	copy(key[1:powerBytesLen+1], powerBytes)
@@ -227,11 +227,11 @@ func GetUnbondingDelegationTimeKey(timestamp time.Time) []byte {
 // GetREDKey returns a key prefix for indexing a redelegation from a delegator
 // and source validator to a destination validator.
 func GetREDKey(delAddr sdk.AccAddress, valSrcAddr, valDstAddr sdk.ValAddress) []byte {
-	key := make([]byte, 1+v040auth.AddrLen*3)
+	key := make([]byte, 1+v040auth.AddrLen+v040auth.ValAddrLen*2)
 
 	copy(key[0:v040auth.AddrLen+1], GetREDsKey(delAddr))
-	copy(key[v040auth.AddrLen+1:2*v040auth.AddrLen+1], valSrcAddr.Bytes())
-	copy(key[2*v040auth.AddrLen+1:3*v040auth.AddrLen+1], valDstAddr.Bytes())
+	copy(key[v040auth.AddrLen+1:v040auth.AddrLen+v040auth.ValAddrLen+1], valSrcAddr.Bytes())
+	copy(key[v040auth.AddrLen+v040auth.ValAddrLen+1:v040auth.AddrLen+v040auth.ValAddrLen*2+1], valDstAddr.Bytes())
 
 	return key
 }
@@ -243,10 +243,10 @@ func GetREDByValSrcIndexKey(delAddr sdk.AccAddress, valSrcAddr, valDstAddr sdk.V
 	offset := len(REDSFromValsSrcKey)
 
 	// key is of the form REDSFromValsSrcKey || delAddr || valDstAddr
-	key := make([]byte, len(REDSFromValsSrcKey)+2*v040auth.AddrLen)
+	key := make([]byte, len(REDSFromValsSrcKey)+v040auth.AddrLen+v040auth.ValAddrLen)
 	copy(key[0:offset], REDSFromValsSrcKey)
 	copy(key[offset:offset+v040auth.AddrLen], delAddr.Bytes())
-	copy(key[offset+v040auth.AddrLen:offset+2*v040auth.AddrLen], valDstAddr.Bytes())
+	copy(key[offset+v040auth.AddrLen:offset+v040auth.AddrLen+v040auth.ValAddrLen], valDstAddr.Bytes())
 
 	return key
 }
@@ -258,10 +258,10 @@ func GetREDByValDstIndexKey(delAddr sdk.AccAddress, valSrcAddr, valDstAddr sdk.V
 	offset := len(REDSToValsDstKey)
 
 	// key is of the form REDSToValsDstKey || delAddr || valSrcAddr
-	key := make([]byte, len(REDSToValsDstKey)+2*v040auth.AddrLen)
+	key := make([]byte, len(REDSToValsDstKey)+v040auth.AddrLen+v040auth.ValAddrLen)
 	copy(key[0:offset], REDSToValsDstKey)
 	copy(key[offset:offset+v040auth.AddrLen], delAddr.Bytes())
-	copy(key[offset+v040auth.AddrLen:offset+2*v040auth.AddrLen], valSrcAddr.Bytes())
+	copy(key[offset+v040auth.AddrLen:offset+v040auth.AddrLen+v040auth.ValAddrLen], valSrcAddr.Bytes())
 
 	return key
 }

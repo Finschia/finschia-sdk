@@ -22,12 +22,12 @@ func TestStoreMigration(t *testing.T) {
 	store := ctx.KVStore(stakingKey)
 
 	_, pk1, addr1 := testdata.KeyTestPubAddr()
-	valAddr1 := sdk.ValAddress(addr1)
+	valAddr1 := sdk.AccAddress(addr1).ToValAddress()
 	val := teststaking.NewValidator(t, valAddr1, pk1)
-	_, pk1, addr2 := testdata.KeyTestPubAddr()
-	valAddr2 := sdk.ValAddress(addr2)
+	_, _, addr2 := testdata.KeyTestPubAddr()
+	valAddr2 := sdk.AccAddress(addr2).ToValAddress()
 	_, _, addr3 := testdata.KeyTestPubAddr()
-	consAddr := sdk.ConsAddress(addr3.String())
+	consAddr := sdk.AccAddress(addr3).ToConsAddress()
 	_, _, addr4 := testdata.KeyTestPubAddr()
 	now := time.Now()
 	// Use dummy value for all keys.
