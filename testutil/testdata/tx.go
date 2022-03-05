@@ -24,7 +24,7 @@ func KeyTestPubAddrSecp256R1(require *require.Assertions) (cryptotypes.PrivKey, 
 	key, err := secp256r1.GenPrivKey()
 	require.NoError(err)
 	pub := key.PubKey()
-	addr := sdk.AccAddress(pub.Address())
+	addr := sdk.BytesToAccAddress(pub.Address())
 	return key, pub, addr
 }
 

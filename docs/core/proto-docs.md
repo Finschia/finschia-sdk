@@ -244,6 +244,10 @@
     - [PrivKey](#lbm.crypto.secp256k1.PrivKey)
     - [PubKey](#lbm.crypto.secp256k1.PubKey)
   
+- [lbm/crypto/secp256r1/keys.proto](#lbm/crypto/secp256r1/keys.proto)
+    - [PrivKey](#lbm.crypto.secp256r1.PrivKey)
+    - [PubKey](#lbm.crypto.secp256r1.PubKey)
+  
 - [lbm/auth/v1/auth.proto](#lbm/auth/v1/auth.proto)
     - [BaseAccount](#lbm.auth.v1.BaseAccount)
     - [ModuleAccount](#lbm.auth.v1.ModuleAccount)
@@ -445,10 +449,6 @@
 - [lbm/crypto/multisig/v1/multisig.proto](#lbm/crypto/multisig/v1/multisig.proto)
     - [CompactBitArray](#lbm.crypto.multisig.v1.CompactBitArray)
     - [MultiSignature](#lbm.crypto.multisig.v1.MultiSignature)
-  
-- [lbm/crypto/secp256r1/keys.proto](#lbm/crypto/secp256r1/keys.proto)
-    - [PrivKey](#lbm.crypto.secp256r1.PrivKey)
-    - [PubKey](#lbm.crypto.secp256r1.PubKey)
   
 - [lbm/distribution/v1/distribution.proto](#lbm/distribution/v1/distribution.proto)
     - [CommunityPoolSpendProposal](#lbm.distribution.v1.CommunityPoolSpendProposal)
@@ -4360,6 +4360,52 @@ This prefix is followed with the x-coordinate.
 
 
 
+<a name="lbm/crypto/secp256r1/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/crypto/secp256r1/keys.proto
+
+
+
+<a name="lbm.crypto.secp256r1.PrivKey"></a>
+
+### PrivKey
+PrivKey defines a secp256r1 ECDSA private key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `secret` | [bytes](#bytes) |  | secret number serialized using big-endian encoding |
+
+
+
+
+
+
+<a name="lbm.crypto.secp256r1.PubKey"></a>
+
+### PubKey
+PubKey defines a secp256r1 ECDSA public key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  | Point on secp256r1 curve in a compressed representation as specified in section 4.3.6 of ANSI X9.62: https://webstore.ansi.org/standards/ascx9/ansix9621998 |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="lbm/auth/v1/auth.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -4380,6 +4426,7 @@ type for additional functionality (e.g. vesting).
 | `address` | [string](#string) |  |  |
 | `ed25519_pub_key` | [lbm.crypto.ed25519.PubKey](#lbm.crypto.ed25519.PubKey) |  |  |
 | `secp256k1_pub_key` | [lbm.crypto.secp256k1.PubKey](#lbm.crypto.secp256k1.PubKey) |  |  |
+| `secp256r1_pub_key` | [lbm.crypto.secp256r1.PubKey](#lbm.crypto.secp256r1.PubKey) |  |  |
 | `multisig_pub_key` | [lbm.crypto.multisig.LegacyAminoPubKey](#lbm.crypto.multisig.LegacyAminoPubKey) |  |  |
 | `account_number` | [uint64](#uint64) |  |  |
 | `sequence` | [uint64](#uint64) |  |  |
@@ -6878,52 +6925,6 @@ signed and with which modes.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `signatures` | [bytes](#bytes) | repeated |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/crypto/secp256r1/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/crypto/secp256r1/keys.proto
-
-
-
-<a name="lbm.crypto.secp256r1.PrivKey"></a>
-
-### PrivKey
-PrivKey defines a secp256r1 ECDSA private key.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `secret` | [bytes](#bytes) |  | secret number serialized using big-endian encoding |
-
-
-
-
-
-
-<a name="lbm.crypto.secp256r1.PubKey"></a>
-
-### PubKey
-PubKey defines a secp256r1 ECDSA public key.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  | Point on secp256r1 curve in a compressed representation as specified in section 4.3.6 of ANSI X9.62: https://webstore.ansi.org/standards/ascx9/ansix9621998 |
 
 
 

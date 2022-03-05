@@ -18,6 +18,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/crypto/keys/multisig"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/crypto/keys/secp256r1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	sdk "github.com/line/lbm-sdk/types"
 )
@@ -88,6 +89,8 @@ func (acc BaseAccount) GetPubKey() (pk cryptotypes.PubKey) {
 		return acc.Ed25519PubKey
 	} else if acc.Secp256K1PubKey != nil {
 		return acc.Secp256K1PubKey
+	} else if acc.Secp256R1PubKey != nil {
+		return acc.Secp256R1PubKey
 	} else if acc.MultisigPubKey != nil {
 		return acc.MultisigPubKey
 	}
@@ -97,13 +100,15 @@ func (acc BaseAccount) GetPubKey() (pk cryptotypes.PubKey) {
 // SetPubKey - Implements sdk.AccountI.
 func (acc *BaseAccount) SetPubKey(pubKey cryptotypes.PubKey) error {
 	if pubKey == nil {
-		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = nil, nil, nil
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = nil, nil, nil, nil
 	} else if pk, ok := pubKey.(*ed25519.PubKey); ok {
-		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = pk, nil, nil
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = pk, nil, nil, nil
 	} else if pk, ok := pubKey.(*secp256k1.PubKey); ok {
-		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = nil, pk, nil
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = nil, pk, nil, nil
+	} else if pk, ok := pubKey.(*secp256r1.PubKey); ok {
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = nil, nil, pk, nil
 	} else if pk, ok := pubKey.(*multisig.LegacyAminoPubKey); ok {
-		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = nil, nil, pk
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = nil, nil, nil, pk
 	} else {
 		return fmt.Errorf("invalid pubkey")
 	}

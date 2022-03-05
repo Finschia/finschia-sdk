@@ -368,11 +368,11 @@ func sdkEventToBalanceOperations(status string, event abci.Event) (operations []
 	default:
 		return nil, false
 	case banktypes.EventTypeCoinSpent:
-		err := sdk.ValidateAccAddress(string(event.Attributes[0].Value))
+		spender := sdk.BytesToAccAddress(event.Attributes[0].Value)
+		err := sdk.ValidateAccAddress(spender.String())
 		if err != nil {
 			panic(err)
 		}
-		spender := sdk.AccAddress(event.Attributes[0].Value)
 		coins, err := sdk.ParseCoinsNormalized((string)(event.Attributes[1].Value))
 		if err != nil {
 			panic(err)
@@ -383,11 +383,11 @@ func sdkEventToBalanceOperations(status string, event abci.Event) (operations []
 		accountIdentifier = spender.String()
 
 	case banktypes.EventTypeCoinReceived:
-		err := sdk.ValidateAccAddress(string(event.Attributes[0].Value))
+		receiver := sdk.BytesToAccAddress(event.Attributes[0].Value)
+		err := sdk.ValidateAccAddress(receiver.String())
 		if err != nil {
 			panic(err)
 		}
-		receiver := sdk.AccAddress(event.Attributes[0].Value)
 		coins, err := sdk.ParseCoinsNormalized((string)(event.Attributes[1].Value))
 		if err != nil {
 			panic(err)
@@ -738,7 +738,7 @@ func (c converter) SigningComponents(tx authsigning.Tx, metadata *ConstructionMe
 		if err != nil {
 			return nil, nil, err
 		}
-		if !bytes.Equal(pubKey.Address().Bytes(), signer.Bytes()) {
+		if !bytes.Equal(sdk.BytesToAccAddress(pubKey.Address()).Bytes(), signer.Bytes()) {
 			return nil, nil, crgerrs.WrapError(
 				crgerrs.ErrBadArgument,
 				fmt.Sprintf("public key at index %d does not match the expected transaction signer: %X <-> %X", i, rosPubKeys[i].Bytes, signer.Bytes()),

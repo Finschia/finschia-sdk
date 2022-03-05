@@ -14,7 +14,7 @@ import (
 type Vote struct {
 	ProposalId uint64           `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id,omitempty" yaml:"proposal_id"` //nolint:golint
 	Voter      string           `protobuf:"bytes,2,opt,name=voter,proto3" json:"voter,omitempty"`
-	Option     types.VoteOption `protobuf:"varint,3,opt,name=option,proto3,enum=cosmos.gov.v1beta1.VoteOption" json:"option,omitempty"`
+	Option     types.VoteOption `protobuf:"varint,3,opt,name=option,proto3,enum=lbm.gov.v1.VoteOption" json:"option,omitempty"`
 }
 
 func (m *Vote) Reset()      { *m = Vote{} }

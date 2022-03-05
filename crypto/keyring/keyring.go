@@ -549,7 +549,7 @@ func (ks keystore) NewAccount(uid string, mnemonic string, bip39Passphrase strin
 
 	// check if the a key already exists with the same address and return an error
 	// if found
-	address := sdk.AccAddress(privKey.PubKey().Address())
+	address := sdk.BytesToAccAddress(privKey.PubKey().Address())
 	if _, err := ks.KeyByAddress(address); err == nil {
 		return nil, fmt.Errorf("account with address %s already exists in keyring, delete the key first if you want to recreate it", address)
 	}
