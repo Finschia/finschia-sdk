@@ -346,7 +346,7 @@ func (chain *TestChain) GetValsAtHeight(height int64) (*octypes.ValidatorSet, bo
 
 	valSet := stakingtypes.Validators(histInfo.Valset)
 
-	ocValidators, err := teststaking.ToOcValidators(valSet)
+	ocValidators, err := teststaking.ToOcValidators(valSet, sdk.DefaultPowerReduction)
 	if err != nil {
 		panic(err)
 	}
@@ -362,7 +362,7 @@ func (chain *TestChain) GetVotersAtHeight(height int64) (*octypes.VoterSet, bool
 
 	// Voters of test chain is always same to validator set
 	voters := stakingtypes.Validators(histInfo.Valset)
-	ocVoters, err := teststaking.ToOcValidators(voters)
+	ocVoters, err := teststaking.ToOcValidators(voters, sdk.DefaultPowerReduction)
 	if err != nil {
 		panic(err)
 	}

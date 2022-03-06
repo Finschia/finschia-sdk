@@ -3,8 +3,8 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk//types/query"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/x/bank/types"
 )
 

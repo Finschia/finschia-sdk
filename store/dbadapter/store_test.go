@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/store/cachekv"
+	"github.com/line/lbm-sdk/store/cachekv"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"

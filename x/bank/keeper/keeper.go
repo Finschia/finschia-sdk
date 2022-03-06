@@ -26,6 +26,7 @@ type Keeper interface {
 
 	GetSupply(ctx sdk.Context, denom string) sdk.Coin
 	GetPaginatedTotalSupply(ctx sdk.Context, pagination *query.PageRequest) (sdk.Coins, *query.PageResponse, error)
+	GetTotalSupply(ctx sdk.Context) sdk.Coins // TODO(dudong2): remove after x/wasm version up
 	IterateTotalSupply(ctx sdk.Context, cb func(sdk.Coin) bool)
 	SetSupply(ctx sdk.Context, supply sdk.Coins) // TODO(dudong2): remove after x/wasm version up
 
@@ -55,6 +56,16 @@ type BaseKeeper struct {
 	cdc        codec.BinaryMarshaler
 	storeKey   sdk.StoreKey
 	paramSpace paramtypes.Subspace
+}
+
+func (k BaseKeeper) GetTotalSupply(ctx sdk.Context) sdk.Coins {
+	balances := sdk.NewCoins()
+	k.IterateTotalSupply(ctx, func(balance sdk.Coin) bool {
+		balances = balances.Add(balance)
+		return false
+	})
+
+	return balances.Sort()
 }
 
 func (k BaseKeeper) GetPaginatedTotalSupply(ctx sdk.Context, pagination *query.PageRequest) (sdk.Coins, *query.PageResponse, error) {

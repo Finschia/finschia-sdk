@@ -44,11 +44,11 @@ func DenomMetadataKey(denom string) []byte {
 // If invalid key is passed, AddressFromBalancesStore returns ErrInvalidKey.
 func AddressFromBalancesStore(key []byte) (sdk.AccAddress, error) {
 	if len(key) == 0 {
-		return nil, ErrInvalidKey
+		return "", ErrInvalidKey
 	}
 	addrLen := key[0]
 	if len(key[1:]) < int(addrLen) {
-		return nil, ErrInvalidKey
+		return "", ErrInvalidKey
 	}
 	addr := key[1 : addrLen+1]
 

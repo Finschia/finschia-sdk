@@ -4,7 +4,7 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/store/cachekv"
+	"github.com/line/lbm-sdk/store/cachekv"
 
 	"github.com/stretchr/testify/require"
 

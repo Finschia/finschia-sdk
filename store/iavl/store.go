@@ -17,7 +17,6 @@ import (
 	"github.com/line/lbm-sdk/store/listenkv"
 	"github.com/line/lbm-sdk/store/tracekv"
 	"github.com/line/lbm-sdk/store/types"
-	sdk "github.com/line/lbm-sdk/store/types"
 	"github.com/line/lbm-sdk/telemetry"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/kv"

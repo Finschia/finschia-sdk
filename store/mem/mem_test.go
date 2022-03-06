@@ -3,7 +3,7 @@ package mem_test
 import (
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/store/cachekv"
+	"github.com/line/lbm-sdk/store/cachekv"
 
 	"github.com/stretchr/testify/require"
 

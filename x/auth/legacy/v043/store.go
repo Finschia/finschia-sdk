@@ -6,18 +6,18 @@ import (
 
 	"github.com/gogo/protobuf/grpc"
 	"github.com/gogo/protobuf/proto"
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/line/ostracon/abci/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/vesting/exported"
-	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/baseapp"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/x/auth/vesting/exported"
+	vestingtypes "github.com/line/lbm-sdk/x/auth/vesting/types"
+	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 const (
