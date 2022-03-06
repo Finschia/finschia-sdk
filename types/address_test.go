@@ -56,17 +56,17 @@ func (s *addressTestSuite) TestEmptyAddresses() {
 	s.Require().Equal(sdk.ValAddress("").String(), "")
 	s.Require().Equal(sdk.ConsAddress("").String(), "")
 
-	accAddr := sdk.BytesToAccAddress([]byte(""))
+	accAddr := sdk.AccAddress("")
 	s.Require().True(accAddr.Empty())
 	err := sdk.ValidateAccAddress(accAddr.String())
 	s.Require().Error(err)
 
-	valAddr := sdk.BytesToValAddress([]byte(""))
+	valAddr := sdk.ValAddress("")
 	s.Require().True(valAddr.Empty())
 	err = sdk.ValidateValAddress(valAddr.String())
 	s.Require().Error(err)
 
-	consAddr := sdk.BytesToConsAddress([]byte(""))
+	consAddr := sdk.ConsAddress("")
 	s.Require().True(consAddr.Empty())
 	err = sdk.ValidateConsAddress(consAddr.String())
 	s.Require().Error(err)

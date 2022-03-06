@@ -22,7 +22,7 @@ func TestMigrateJSON(t *testing.T) {
 		WithTxConfig(encodingConfig.TxConfig).
 		WithJSONMarshaler(encodingConfig.Marshaler)
 
-	voter := sdk.AccAddress("link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh")
+	voter := sdk.AccAddress("link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3q4fdzl")
 	err := sdk.ValidateAccAddress(voter.String())
 	require.NoError(t, err)
 	govGenState := &v040gov.GenesisState{
@@ -64,6 +64,7 @@ func TestMigrateJSON(t *testing.T) {
 	},
 	"votes": [
 		{
+			"option": "VOTE_OPTION_UNSPECIFIED",
 			"options": [
 				{
 					"option": "VOTE_OPTION_ABSTAIN",
@@ -71,9 +72,10 @@ func TestMigrateJSON(t *testing.T) {
 				}
 			],
 			"proposal_id": "1",
-			"voter": "link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh"
+			"voter": "link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3q4fdzl"
 		},
 		{
+			"option": "VOTE_OPTION_UNSPECIFIED",
 			"options": [
 				{
 					"option": "VOTE_OPTION_UNSPECIFIED",
@@ -81,9 +83,10 @@ func TestMigrateJSON(t *testing.T) {
 				}
 			],
 			"proposal_id": "2",
-			"voter": "link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh"
+			"voter": "link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3q4fdzl"
 		},
 		{
+			"option": "VOTE_OPTION_UNSPECIFIED",
 			"options": [
 				{
 					"option": "VOTE_OPTION_NO",
@@ -91,9 +94,10 @@ func TestMigrateJSON(t *testing.T) {
 				}
 			],
 			"proposal_id": "3",
-			"voter": "link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh"
+			"voter": "link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3q4fdzl"
 		},
 		{
+			"option": "VOTE_OPTION_UNSPECIFIED",
 			"options": [
 				{
 					"option": "VOTE_OPTION_NO_WITH_VETO",
@@ -101,9 +105,10 @@ func TestMigrateJSON(t *testing.T) {
 				}
 			],
 			"proposal_id": "4",
-			"voter": "link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh"
+			"voter": "link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3q4fdzl"
 		},
 		{
+			"option": "VOTE_OPTION_UNSPECIFIED",
 			"options": [
 				{
 					"option": "VOTE_OPTION_YES",
@@ -111,7 +116,7 @@ func TestMigrateJSON(t *testing.T) {
 				}
 			],
 			"proposal_id": "5",
-			"voter": "link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh"
+			"voter": "link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3q4fdzl"
 		}
 	],
 	"voting_params": {

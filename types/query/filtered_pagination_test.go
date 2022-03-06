@@ -104,7 +104,7 @@ func (s *paginationTestSuite) TestReverseFilteredPaginations() {
 	}
 
 	balances = balances.Sort()
-	addr1 := sdk.AccAddress([]byte("addr1"))
+	addr1 := sdk.BytesToAccAddress([]byte("addr1"))
 	acc1 := app.AccountKeeper.NewAccountWithAddress(ctx, addr1)
 	app.AccountKeeper.SetAccount(ctx, acc1)
 	s.Require().NoError(simapp.FundAccount(app, ctx, addr1, balances))

@@ -122,6 +122,6 @@ func Test_runAddCmdLedger(t *testing.T) {
 	require.Equal(t, "keyname1", key1.GetName())
 	require.Equal(t, keyring.TypeLedger, key1.GetType())
 	require.Equal(t,
-		"PubKeySecp256k1{034FEF9CD7C4C63588D3B03FEB5281B9D232CBA34D6F3D71AEE59211FFBFE1FE87}",
+		"PubKeySecp256k1{02BCD96CAB102304AC10E90C5A0F29358E3A4A6FB1217B83E5DB657918EA28BEC1}",
 		key1.GetPubKey().String())
 }
