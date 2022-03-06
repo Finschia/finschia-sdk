@@ -64,7 +64,7 @@ func (s *IntegrationTestSuite) TestGetCmdQuerySigningInfo() {
 		{
 			"valid address (json output)",
 			[]string{
-				valConsPubKey,
+				pubKeyStr,
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 			},
@@ -74,7 +74,7 @@ func (s *IntegrationTestSuite) TestGetCmdQuerySigningInfo() {
 		{
 			"valid address (text output)",
 			[]string{
-				valConsPubKey,
+				pubKeyStr,
 				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 			},
