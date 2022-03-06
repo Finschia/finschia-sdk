@@ -72,7 +72,7 @@ func TestStoreMount(t *testing.T) {
 }
 
 func TestCacheMultiStore(t *testing.T) {
-	var db dbm.DB = dbm.NewMemDB()
+	var db tmdb.DB = memdb.NewDB()
 	ms := newMultiStoreWithMounts(db, types.PruneNothing)
 
 	cacheMulti := ms.CacheMultiStore()
@@ -699,7 +699,7 @@ func TestSetInitialVersion(t *testing.T) {
 }
 
 func TestAddListenersAndListeningEnabled(t *testing.T) {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	multi := newMultiStoreWithMounts(db, types.PruneNothing)
 	testKey := types.NewKVStoreKey("listening_test_key")
 	enabled := multi.ListeningEnabled(testKey)
@@ -730,7 +730,7 @@ var (
 
 func TestGetListenWrappedKVStore(t *testing.T) {
 	buf := new(bytes.Buffer)
-	var db dbm.DB = dbm.NewMemDB()
+	var db tmdb.DB = memdb.NewDB()
 	ms := newMultiStoreWithMounts(db, types.PruneNothing)
 	ms.LoadLatestVersion()
 	mockListeners := []types.WriteListener{types.NewStoreKVPairWriteListener(buf, testMarshaller)}
@@ -804,7 +804,7 @@ func TestGetListenWrappedKVStore(t *testing.T) {
 }
 
 func TestCacheWraps(t *testing.T) {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	multi := newMultiStoreWithMounts(db, types.PruneNothing)
 
 	cacheWrapper := multi.CacheWrap()
@@ -899,7 +899,7 @@ var (
 	testStoreKey3 = types.NewKVStoreKey("store3")
 )
 
-func newMultiStoreWithMounts(db dbm.DB, pruningOpts types.PruningOptions) *Store {
+func newMultiStoreWithMounts(db tmdb.DB, pruningOpts types.PruningOptions) *Store {
 	store := NewStore(db)
 	store.pruningOpts = pruningOpts
 

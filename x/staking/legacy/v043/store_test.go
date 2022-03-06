@@ -25,7 +25,7 @@ func TestStoreMigration(t *testing.T) {
 	ctx := testutil.DefaultContext(stakingKey, tStakingKey)
 	store := ctx.KVStore(stakingKey)
 
-	paramSubspace := paramtypes.NewSubspace(encCfg.Marshaler, encCfg.Amino, stakingKey, tStakingKey, types.ModuleName)
+	paramSubspace := paramtypes.NewSubspace(encCfg.Marshaler, encCfg.Amino, stakingKey, types.ModuleName)
 
 	_, pk1, addr1 := testdata.KeyTestPubAddr()
 	valAddr1 := sdk.AccAddress(addr1).ToValAddress()

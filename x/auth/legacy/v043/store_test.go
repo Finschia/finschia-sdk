@@ -500,7 +500,8 @@ func TestMigrateVestingAccounts(t *testing.T) {
 
 				ctx = ctx.WithBlockTime(ctx.BlockTime().AddDate(1, 0, 0))
 
-				valAddr, err := sdk.ValAddressFromBech32(validator.OperatorAddress)
+				valAddr := sdk.ValAddress(validator.OperatorAddress)
+				err = sdk.ValidateValAddress(valAddr.String())
 				require.NoError(t, err)
 
 				// un-delegation of the original vesting

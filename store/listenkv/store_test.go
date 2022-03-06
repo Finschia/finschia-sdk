@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	tmdb "github.com/line/tm-db/v2"
+	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/codec"
 	codecTypes "github.com/line/lbm-sdk/codec/types"
@@ -45,7 +45,7 @@ func newListenKVStore(w io.Writer) *listenkv.Store {
 
 func newEmptyListenKVStore(w io.Writer) *listenkv.Store {
 	listener := types.NewStoreKVPairWriteListener(w, testMarshaller)
-	memDB := dbadapter.Store{DB: tmdb.NewDB()}
+	memDB := dbadapter.Store{DB: memdb.NewDB()}
 
 	return listenkv.NewStore(memDB, testStoreKey, []types.WriteListener{listener})
 }
@@ -190,10 +190,6 @@ func TestTestListenKVStoreIterator(t *testing.T) {
 	store := newListenKVStore(&buf)
 	iterator := store.Iterator(nil, nil)
 
-	s, e := iterator.Domain()
-	require.Equal(t, []byte(nil), s)
-	require.Equal(t, []byte(nil), e)
-
 	testCases := []struct {
 		expectedKey   []byte
 		expectedValue []byte
@@ -232,10 +228,6 @@ func TestTestListenKVStoreReverseIterator(t *testing.T) {
 
 	store := newListenKVStore(&buf)
 	iterator := store.ReverseIterator(nil, nil)
-
-	s, e := iterator.Domain()
-	require.Equal(t, []byte(nil), s)
-	require.Equal(t, []byte(nil), e)
 
 	testCases := []struct {
 		expectedKey   []byte
@@ -277,7 +269,7 @@ func TestListenKVStorePrefix(t *testing.T) {
 }
 
 func TestListenKVStoreGetStoreType(t *testing.T) {
-	memDB := dbadapter.Store{DB: dbm.NewMemDB()}
+	memDB := dbadapter.Store{DB: memdb.NewDB()}
 	store := newEmptyListenKVStore(nil)
 	require.Equal(t, memDB.GetStoreType(), store.GetStoreType())
 }

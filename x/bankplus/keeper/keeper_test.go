@@ -26,7 +26,7 @@ var (
 	blockedAcc = authtypes.NewEmptyModuleAccount(blocker)
 	burnerAcc  = authtypes.NewEmptyModuleAccount(authtypes.Burner, authtypes.Burner)
 
-	initTokens = sdk.TokensFromConsensusPower(initialPower)
+	initTokens = sdk.TokensFromConsensusPower(initialPower, sdk.DefaultPowerReduction)
 	initCoins  = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, initTokens))
 )
 

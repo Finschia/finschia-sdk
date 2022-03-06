@@ -640,7 +640,7 @@ func TestSetInitialVersion(t *testing.T) {
 }
 
 func TestCacheWraps(t *testing.T) {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	tree, _ := newAlohaTree(t, db)
 	store := UnsafeNewStore(tree)
 

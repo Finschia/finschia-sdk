@@ -4,11 +4,10 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"github.com/line/lbm-sdk/store/cachekv"
-
 	"github.com/stretchr/testify/require"
 
 	liavl "github.com/line/iavl/v2"
+	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/store/dbadapter"
@@ -415,7 +414,7 @@ func TestPrefixDBReverseIterator4(t *testing.T) {
 }
 
 func TestCacheWraps(t *testing.T) {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	store := dbadapter.Store{DB: db}
 
 	cacheWrapper := store.CacheWrap()
