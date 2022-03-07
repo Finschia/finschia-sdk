@@ -9,7 +9,6 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
-	"github.com/line/lbm-sdk/types/msgservice"
 	ibctransfertypes "github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	connectionutils "github.com/line/lbm-sdk/x/ibc/core/03-connection/client/utils"
@@ -43,14 +42,8 @@ func NewChannelOpenInitCmd() *cobra.Command {
 				portID, version, order, hops,
 				counterpartyPortID, clientCtx.GetFromAddress(),
 			)
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.ChannelOpenInit(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
@@ -97,14 +90,8 @@ func NewChannelOpenTryCmd() *cobra.Command {
 				counterpartyPortID, counterpartyChannelID, version,
 				proofInit, proofHeight, clientCtx.GetFromAddress(),
 			)
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.ChannelOpenTry(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
@@ -146,14 +133,8 @@ func NewChannelOpenAckCmd() *cobra.Command {
 			msg := types.NewMsgChannelOpenAck(
 				portID, channelID, counterpartyChannelID, version, proofTry, proofHeight, clientCtx.GetFromAddress(),
 			)
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.ChannelOpenAck(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 	cmd.Flags().String(FlagIBCVersion, ibctransfertypes.Version, "IBC application version")
@@ -189,14 +170,8 @@ func NewChannelOpenConfirmCmd() *cobra.Command {
 			msg := types.NewMsgChannelOpenConfirm(
 				portID, channelID, proofAck, proofHeight, clientCtx.GetFromAddress(),
 			)
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.ChannelOpenConfirm(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
@@ -220,14 +195,8 @@ func NewChannelCloseInitCmd() *cobra.Command {
 			channelID := args[1]
 
 			msg := types.NewMsgChannelCloseInit(portID, channelID, clientCtx.GetFromAddress())
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.ChannelCloseInit(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
@@ -263,14 +232,8 @@ func NewChannelCloseConfirmCmd() *cobra.Command {
 			msg := types.NewMsgChannelCloseConfirm(
 				portID, channelID, proofInit, proofHeight, clientCtx.GetFromAddress(),
 			)
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.ChannelCloseConfirm(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 

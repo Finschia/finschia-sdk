@@ -21,7 +21,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	authztypes "github.com/line/lbm-sdk/x/authz/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
 	distrtypes "github.com/line/lbm-sdk/x/distribution/types"

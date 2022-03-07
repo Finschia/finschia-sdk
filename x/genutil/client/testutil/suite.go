@@ -9,7 +9,6 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	stakingcli "github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/simapp"
@@ -18,6 +17,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/genutil/client/cli"
+	stakingcli "github.com/line/lbm-sdk/x/staking/client/cli"
 	"github.com/line/lbm-sdk/x/staking/types"
 )
 

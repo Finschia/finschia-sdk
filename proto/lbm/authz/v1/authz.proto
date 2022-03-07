@@ -7,11 +7,7 @@ import "google/protobuf/timestamp.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 
-<<<<<<< HEAD:proto/lbm/authz/v1/authz.proto
-option go_package = "github.com/line/lbm-sdk/x/authz";
-=======
-option go_package                      = "github.com/cosmos/cosmos-sdk/x/authz";
->>>>>>> 3e4d81c3d (Fix proto format (#9279)):proto/cosmos/authz/v1beta1/authz.proto
+option go_package                      = "github.com/line/lbm-sdk/x/authz";
 option (gogoproto.goproto_getters_all) = false;
 
 // GenericAuthorization gives the grantee unrestricted permissions to execute

@@ -59,13 +59,13 @@ $ %s query %s grants link1skjw.. link1skjwj.. %s
 			if err != nil {
 				return err
 			}
-			granterAddr := sdk.AccAddress(args[0])
+			granter := sdk.AccAddress(args[0])
 
 			err = sdk.ValidateAccAddress(args[1])
 			if err != nil {
 				return err
 			}
-			granteeAddr := sdk.AccAddress(args[1])
+			grantee := sdk.AccAddress(args[1])
 
 			var msgAuthorized = ""
 			if len(args) >= 3 {

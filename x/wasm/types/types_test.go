@@ -197,7 +197,7 @@ func TestContractInfoMarshalUnmarshal(t *testing.T) {
 	govtypes.RegisterInterfaces(interfaceRegistry)
 
 	// when encode
-	bz, err := marshaler.MarshalBinaryBare(&src)
+	bz, err := marshaler.Marshal(&src)
 	require.NoError(t, err)
 	// and decode
 	var dest ContractInfo

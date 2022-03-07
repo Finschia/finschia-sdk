@@ -104,7 +104,7 @@ func (s IntegrationTestSuite) TestQueryBlockResultsByHeight() {
 	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1/blockresults/%d", val.APIAddress, 1))
 	s.Require().NoError(err)
 	var blockResultsRes tmservice.GetBlockResultsByHeightResponse
-	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(restRes, &blockResultsRes))
+	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(restRes, &blockResultsRes))
 }
 
 func (s IntegrationTestSuite) TestQueryLatestValidatorSet() {

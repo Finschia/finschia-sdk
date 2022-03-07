@@ -1,7 +1,6 @@
 package types
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -368,38 +367,7 @@ type AccountI interface {
 	MarshalX() ([]byte, error)
 }
 
-func MarshalAccountX(cdc codec.BinaryMarshaler, acc AccountI) ([]byte, error) {
-	if bacc, ok := acc.(*BaseAccount); ok && bacc.MultisigPubKey == nil {
-		return acc.MarshalX()
-	} else if macc, ok := acc.(*ModuleAccount); ok && macc.MultisigPubKey == nil {
-		return acc.MarshalX()
-	} else {
-		return cdc.MarshalInterface(acc)
-	}
-}
-
-func UnmarshalAccountX(cdc codec.BinaryMarshaler, bz []byte) (AccountI, error) {
-	sigLen := len(BaseAccountSig)
-	if len(bz) < sigLen {
-		return nil, fmt.Errorf("invalid data")
-	}
-	if bytes.Equal(bz[:sigLen], BaseAccountSig) {
-		acc := &BaseAccount{}
-		if err := acc.Unmarshal(bz[sigLen:]); err != nil {
-			return nil, err
-		}
-		return acc, nil
-	} else if bytes.Equal(bz[:sigLen], ModuleAccountSig) {
-		acc := &ModuleAccount{}
-		if err := acc.Unmarshal(bz[sigLen:]); err != nil {
-			return nil, err
-		}
-		return acc, nil
-	} else {
-		var acc AccountI
-		return acc, cdc.UnmarshalInterface(bz, &acc)
-	}
-}
+// TODO(dudong2): remove MarshalAccountX, UnmarshalAccountX(because codec.BinaryMarshaler is removed -> build failed) - ref. https://github.com/line/lbm-sdk/pull/320
 
 // ModuleAccountI defines an account interface for modules that hold tokens in
 // an escrow.

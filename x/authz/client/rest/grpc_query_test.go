@@ -19,7 +19,6 @@ import (
 	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/authz/client/cli"
 	authztestutil "github.com/line/lbm-sdk/x/authz/client/testutil"
-	types "github.com/line/lbm-sdk/x/authz/types"
 	banktestutil "github.com/line/lbm-sdk/x/bank/client/testutil"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
@@ -88,7 +87,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 
 func (s *IntegrationTestSuite) TestQueryGrantGRPC() {
 	val := s.network.Validators[0]
-	grantsURL := val.APIAddress + "/cosmos/authz/v1beta1/grants?granter=%s&grantee=%s&msg_type_url=%s"
+	grantsURL := val.APIAddress + "/lbm/authz/v1/grants?granter=%s&grantee=%s&msg_type_url=%s"
 	testCases := []struct {
 		name      string
 		url       string
@@ -154,7 +153,7 @@ func (s *IntegrationTestSuite) TestQueryGrantGRPC() {
 
 func (s *IntegrationTestSuite) TestQueryGrantsGRPC() {
 	val := s.network.Validators[0]
-	grantsURL := val.APIAddress + "/cosmos/authz/v1beta1/grants?granter=%s&grantee=%s"
+	grantsURL := val.APIAddress + "/lbm/authz/v1/grants?granter=%s&grantee=%s"
 	testCases := []struct {
 		name      string
 		url       string

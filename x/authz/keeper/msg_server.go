@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/authz/types"
+	"github.com/line/lbm-sdk/x/authz"
 )
 
 var _ authz.MsgServer = Keeper{}

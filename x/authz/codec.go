@@ -1,9 +1,9 @@
 package authz
 
 import (
-	types "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/msgservice"
+	types "github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/msgservice"
 )
 
 // RegisterInterfaces registers the interfaces types with the interface registry
@@ -15,7 +15,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	)
 
 	registry.RegisterInterface(
-		"cosmos.v1beta1.Authorization",
+		"lbm.v1.Authorization",
 		(*Authorization)(nil),
 		&GenericAuthorization{},
 	)

@@ -14,7 +14,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/feegrant"
 	"github.com/line/lbm-sdk/x/feegrant/keeper"
-	"github.com/line/lbm-sdk/x/feegrant/types"
 )
 
 type GenesisTestSuite struct {

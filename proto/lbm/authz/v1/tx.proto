@@ -8,7 +8,7 @@ import "google/protobuf/any.proto";
 import "lbm/base/abci/v1/abci.proto";
 import "lbm/authz/v1/authz.proto";
 
-option go_package = "github.com/line/lbm-sdk/x/authz/types";
+option go_package                      = "github.com/line/lbm-sdk/x/authz";
 option (gogoproto.goproto_getters_all) = false;
 
 // Msg defines the authz Msg service.
@@ -33,7 +33,7 @@ message MsgGrant {
   string granter = 1;
   string grantee = 2;
 
-  cosmos.authz.v1beta1.Grant grant = 3 [(gogoproto.nullable) = false];
+  lbm.authz.v1.Grant grant = 3 [(gogoproto.nullable) = false];
 }
 
 // MsgExecResponse defines the Msg/MsgExecResponse response type.

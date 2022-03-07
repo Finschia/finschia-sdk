@@ -45,7 +45,7 @@ func (k Keeper) Subspace(s string) types.Subspace {
 		panic("cannot use empty string for subspace")
 	}
 
-	space := types.NewSubspace(k.cdc, k.legacyAmino, k.key, s)
+	space := types.NewSubspace(k.cdc, k.legacyAmino, k.key, k.tkey, s)
 	k.spaces[s] = space
 
 	return space

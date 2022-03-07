@@ -15,11 +15,6 @@ var (
 	ErrEmptyKeyInData = errors.New("data contains empty key")
 )
 
-var (
-	ErrEmptyKey       = errors.New("key is empty")
-	ErrEmptyKeyInData = errors.New("data contains empty key")
-)
-
 // TendermintSpec constrains the format from ics23-tendermint (crypto/merkle SimpleProof)
 var TendermintSpec = &ics23.ProofSpec{
 	LeafSpec: &ics23.LeafOp{

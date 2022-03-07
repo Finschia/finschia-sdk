@@ -1,10 +1,10 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/internal/conv"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/address"
-	"github.com/cosmos/cosmos-sdk/x/authz"
+	"github.com/line/lbm-sdk/internal/conv"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/address"
+	"github.com/line/lbm-sdk/x/authz"
 )
 
 // Keys for store prefixes
@@ -21,8 +21,8 @@ const StoreKey = authz.ModuleName
 // - 0x01<granterAddressLen (1 Byte)><granterAddress_Bytes><granteeAddressLen (1 Byte)><granteeAddress_Bytes><msgType_Bytes>: Grant
 func grantStoreKey(grantee sdk.AccAddress, granter sdk.AccAddress, msgType string) []byte {
 	m := conv.UnsafeStrToBytes(msgType)
-	granter = address.MustLengthPrefix(granter)
-	grantee = address.MustLengthPrefix(grantee)
+	granter = sdk.AccAddress(address.MustLengthPrefix(granter.Bytes()))
+	grantee = sdk.AccAddress(address.MustLengthPrefix(grantee.Bytes()))
 
 	l := 1 + len(grantee) + len(granter) + len(m)
 	var key = make([]byte, l)

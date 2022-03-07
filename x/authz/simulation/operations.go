@@ -123,11 +123,11 @@ func SimulateMsgGrantAuthorization(ak authz.AccountKeeper, bk authz.BankKeeper, 
 		// TODO(dudong2): need to opti
 		txBytes, err := txGen.TxEncoder()(tx)
 		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
+			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
 		}
 		tx, err = app.PreCheckTx(txBytes)
 		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
+			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
 		}
 
 		_, _, err = app.Deliver(txGen.TxEncoder(), tx)
@@ -193,11 +193,11 @@ func SimulateMsgRevokeAuthorization(ak authz.AccountKeeper, bk authz.BankKeeper,
 		// TODO(dudong2): need to opti
 		txBytes, err := txGen.TxEncoder()(tx)
 		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
+			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
 		}
 		tx, err = app.PreCheckTx(txBytes)
 		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
+			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
 		}
 
 		_, _, err = app.Deliver(txGen.TxEncoder(), tx)
@@ -280,11 +280,11 @@ func SimulateMsgExecuteAuthorized(ak authz.AccountKeeper, bk authz.BankKeeper, k
 		// TODO(dudong2): need to opti
 		txBytes, err := txGen.TxEncoder()(tx)
 		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
+			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
 		}
 		tx, err = app.PreCheckTx(txBytes)
 		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
+			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
 		}
 
 		_, _, err = app.Deliver(txGen.TxEncoder(), tx)

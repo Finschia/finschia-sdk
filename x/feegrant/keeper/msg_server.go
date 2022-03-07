@@ -4,8 +4,6 @@ import (
 	"context"
 
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/feegrant/types"
-
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/feegrant"
 )

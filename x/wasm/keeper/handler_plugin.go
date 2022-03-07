@@ -4,14 +4,13 @@ import (
 	"errors"
 	"fmt"
 
-	wasmvmtypes "github.com/line/wasmvm/types"
-
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/wasm/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 // msgEncoder is an extension point to customize encodings
@@ -86,16 +85,21 @@ func (h SDKMessageHandler) handleSdkMessage(ctx sdk.Context, contractAddr sdk.Ad
 		}
 	}
 
-	// find the handler and execute it
-	handler := h.router.Route(ctx, msg.Route())
-	if handler == nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, msg.Route())
+	if legacyMsg, ok := msg.(legacytx.LegacyMsg); ok {
+		msgRoute := legacyMsg.Route()
+		// find the handler and execute it
+		handler := h.router.Route(ctx, msgRoute)
+		if handler == nil {
+			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, msgRoute)
+		}
+		res, err := handler(ctx, msg)
+		if err != nil {
+			return nil, err
+		}
+		return res, nil
 	}
-	res, err := handler(ctx, msg)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
+
+	return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "no route")
 }
 
 // MessageHandlerChain defines a chain of handlers that are called one by one until it can be handled.

@@ -294,6 +294,25 @@ func (k BaseSendKeeper) setBalance(ctx sdk.Context, addr sdk.AccAddress, balance
 	return nil
 }
 
+// SetBalance sets the coin balance for an account by address.
+func (k BaseSendKeeper) SetBalance(ctx sdk.Context, addr sdk.AccAddress, balance sdk.Coin) error {
+	if !balance.IsValid() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, balance.String())
+	}
+
+	accountStore := k.getAccountStore(ctx, addr)
+
+	// Bank invariants require to not store zero balances.
+	if balance.IsZero() {
+		accountStore.Delete([]byte(balance.Denom))
+	} else {
+		bz := k.cdc.MustMarshal(&balance)
+		accountStore.Set([]byte(balance.Denom), bz)
+	}
+
+	return nil
+}
+
 // IsSendEnabledCoins checks the coins provide and returns an ErrSendDisabled if
 // any of the coins are not configured for sending.  Returns nil if sending is enabled
 // for all provided coin

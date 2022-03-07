@@ -239,7 +239,7 @@ func QueryDepositByTxQuery(clientCtx client.Context, params types.QueryDepositPa
 	}
 
 	if !initialDeposit.Amount.IsZero() {
-		bz, err := clientCtx.JSONMarshaler.MarshalJSON(&initialDeposit)
+		bz, err := clientCtx.JSONCodec.MarshalJSON(&initialDeposit)
 		if err != nil {
 			return nil, err
 		}

@@ -4,9 +4,9 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/codec/types"
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	"github.com/line/lbm-sdk/tx/authz"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
+	"github.com/line/lbm-sdk/x/authz"
 )
 
 // RegisterLegacyAminoCodec registers the necessary x/bank interfaces and concrete types

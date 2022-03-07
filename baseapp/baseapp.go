@@ -25,10 +25,10 @@ import (
 )
 
 const (
-	runTxModeCheck    runTxMode = iota // Check a transaction
-	runTxModeReCheck                   // Recheck a (pending) transaction after a commit
-	runTxModeSimulate                  // Simulate a transaction
-	runTxModeDeliver                   // Deliver a transaction
+	runTxModeCheck    = iota // Check a transaction
+	runTxModeReCheck         // Recheck a (pending) transaction after a commit
+	runTxModeSimulate        // Simulate a transaction
+	runTxModeDeliver         // Deliver a transaction
 )
 
 var (

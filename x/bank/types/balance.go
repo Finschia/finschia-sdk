@@ -62,7 +62,7 @@ type balanceByAddress struct {
 
 func (b balanceByAddress) Len() int { return len(b.addresses) }
 func (b balanceByAddress) Less(i, j int) bool {
-	return bytes.Compare(b.addresses[i], b.addresses[j]) < 0
+	return bytes.Compare(b.addresses[i].Bytes(), b.addresses[j].Bytes()) < 0
 }
 func (b balanceByAddress) Swap(i, j int) {
 	b.addresses[i], b.addresses[j] = b.addresses[j], b.addresses[i]

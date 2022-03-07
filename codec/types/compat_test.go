@@ -37,22 +37,22 @@ func (s *Suite) SetupTest() {
 }
 
 func (s *Suite) TestAminoBinary() {
-	bz, err := s.cdc.MarshalBinaryBare(s.a)
+	bz, err := s.cdc.Marshal(s.a)
 	s.Require().NoError(err)
 
 	// expect plain amino marshal to fail
-	_, err = s.cdc.MarshalBinaryBare(s.b)
+	_, err = s.cdc.Marshal(s.b)
 	s.Require().Error(err)
 
 	// expect unpack interfaces before amino marshal to succeed
 	err = types.UnpackInterfaces(s.b, types.AminoPacker{Cdc: s.cdc})
 	s.Require().NoError(err)
-	bz2, err := s.cdc.MarshalBinaryBare(s.b)
+	bz2, err := s.cdc.Marshal(s.b)
 	s.Require().NoError(err)
 	s.Require().Equal(bz, bz2)
 
 	var c testdata.HasAnimal
-	err = s.cdc.UnmarshalBinaryBare(bz, &c)
+	err = s.cdc.Unmarshal(bz, &c)
 	s.Require().NoError(err)
 	err = types.UnpackInterfaces(c, types.AminoUnpacker{Cdc: s.cdc})
 	s.Require().NoError(err)
@@ -99,12 +99,12 @@ func (s *Suite) TestNested() {
 	// marshal
 	err = types.UnpackInterfaces(hhha, types.AminoPacker{Cdc: s.cdc})
 	s.Require().NoError(err)
-	bz, err := s.cdc.MarshalBinaryBare(hhha)
+	bz, err := s.cdc.Marshal(hhha)
 	s.Require().NoError(err)
 
 	// unmarshal
 	var hhha2 testdata.HasHasHasAnimal
-	err = s.cdc.UnmarshalBinaryBare(bz, &hhha2)
+	err = s.cdc.Unmarshal(bz, &hhha2)
 	s.Require().NoError(err)
 	err = types.UnpackInterfaces(hhha2, types.AminoUnpacker{Cdc: s.cdc})
 	s.Require().NoError(err)

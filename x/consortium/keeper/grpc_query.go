@@ -55,7 +55,7 @@ func (q Keeper) ValidatorAuths(c context.Context, req *types.QueryValidatorAuths
 	validatorStore := prefix.NewStore(store, types.ValidatorAuthKeyPrefix)
 	pageRes, err := query.Paginate(validatorStore, req.Pagination, func(key []byte, value []byte) error {
 		var auth types.ValidatorAuth
-		q.cdc.MustUnmarshalBinaryBare(value, &auth)
+		q.cdc.MustUnmarshal(value, &auth)
 		auths = append(auths, &auth)
 		return nil
 	})

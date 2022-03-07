@@ -7,6 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/feegrant"
@@ -136,7 +138,7 @@ func TestPeriodicFeeValidAllow(t *testing.T) {
 			periodReset:   oneHour.Add(tenMinutes), // one step from last reset, not now
 		},
 		"period reset no spend limit": {
-			allow: types.PeriodicAllowance{
+			allow: feegrant.PeriodicAllowance{
 				Period:           tenMinutes,
 				PeriodReset:      now,
 				PeriodSpendLimit: atom,

@@ -18,9 +18,10 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/authz/client/cli"
-	"github.com/line/lbm-sdk/x/authz/simulation"
 	"github.com/line/lbm-sdk/x/authz"
+	"github.com/line/lbm-sdk/x/authz/client/cli"
+	"github.com/line/lbm-sdk/x/authz/keeper"
+	"github.com/line/lbm-sdk/x/authz/simulation"
 )
 
 var (

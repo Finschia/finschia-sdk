@@ -60,7 +60,7 @@ Examples:
 %s tx %s grant link1skjw... link1skjw... --spend-limit 100stake --period 3600 --period-limit 10stake --expiration 36000 or
 %s tx %s grant link1skjw... link1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z 
 	--allowed-messages "/lbm.gov.v1.MsgSubmitProposal,/lbm.gov.v1.MsgVote"
-				`, version.AppName, types.ModuleName, version.AppName, types.ModuleName, version.AppName, feegrant.ModuleName,
+				`, version.AppName, feegrant.ModuleName, version.AppName, feegrant.ModuleName, version.AppName, feegrant.ModuleName,
 			),
 		),
 		Args: cobra.ExactArgs(2),
@@ -141,7 +141,7 @@ Examples:
 					return fmt.Errorf("period (%d) cannot reset after expiration (%v)", periodClock, exp)
 				}
 
-				periodic := types.PeriodicAllowance{
+				periodic := feegrant.PeriodicAllowance{
 					Basic:            basic,
 					Period:           getPeriod(periodClock),
 					PeriodReset:      getPeriodReset(periodClock),

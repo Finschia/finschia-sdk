@@ -42,7 +42,6 @@ import (
 	"github.com/line/lbm-sdk/x/authz"
 	authzkeeper "github.com/line/lbm-sdk/x/authz/keeper"
 	authzmodule "github.com/line/lbm-sdk/x/authz/module"
-	authztypes "github.com/line/lbm-sdk/x/authz/types"
 	"github.com/line/lbm-sdk/x/bank"
 	bankkeeper "github.com/line/lbm-sdk/x/bank/keeper"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
@@ -68,7 +67,6 @@ import (
 	"github.com/line/lbm-sdk/x/feegrant"
 	feegrantkeeper "github.com/line/lbm-sdk/x/feegrant/keeper"
 	feegrantmodule "github.com/line/lbm-sdk/x/feegrant/module"
-	feegranttypes "github.com/line/lbm-sdk/x/feegrant/types"
 	"github.com/line/lbm-sdk/x/genutil"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
 	"github.com/line/lbm-sdk/x/gov"
@@ -266,16 +264,14 @@ func NewSimApp(
 		evidencetypes.StoreKey,
 		ibctransfertypes.StoreKey,
 		capabilitytypes.StoreKey,
-		feegranttypes.StoreKey,
+		feegrant.StoreKey,
 		consortiumtypes.StoreKey,
 		class.StoreKey,
 		token.StoreKey,
-		authztypes.StoreKey,
+		authzkeeper.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
-	// NOTE: The testingkey is just mounted for testing purposes. Actual applications should
-	// not include this key.
-	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey, "testing")
+	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
 
 	app := &SimApp{
 		BaseApp:           bApp,
@@ -342,7 +338,7 @@ func NewSimApp(
 		appCodec, keys[ibchost.StoreKey], app.GetSubspace(ibchost.ModuleName), app.StakingKeeper, app.UpgradeKeeper, scopedIBCKeeper,
 	)
 
-	app.AuthzKeeper = authzkeeper.NewKeeper(keys[authztypes.StoreKey], appCodec, app.BaseApp.MsgServiceRouter())
+	app.AuthzKeeper = authzkeeper.NewKeeper(keys[authzkeeper.StoreKey], appCodec, app.BaseApp.MsgServiceRouter())
 
 	// register the proposal types
 	govRouter := govtypes.NewRouter()
@@ -452,8 +448,8 @@ func NewSimApp(
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
-		authztypes.ModuleName,
-		feegranttypes.ModuleName,
+		authz.ModuleName,
+		feegrant.ModuleName,
 		consortiumtypes.ModuleName,
 		token.ModuleName,
 	)

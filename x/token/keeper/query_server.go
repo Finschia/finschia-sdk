@@ -103,7 +103,7 @@ func (s queryServer) Tokens(c context.Context, req *token.QueryTokensRequest) (*
 	var classes []token.Token
 	pageRes, err := query.Paginate(classStore, req.Pagination, func(key []byte, value []byte) error {
 		var class token.Token
-		s.keeper.cdc.MustUnmarshalBinaryBare(value, &class)
+		s.keeper.cdc.MustUnmarshal(value, &class)
 		classes = append(classes, class)
 		return nil
 	})

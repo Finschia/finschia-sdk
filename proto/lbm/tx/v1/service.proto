@@ -44,13 +44,8 @@ message GetTxsEventRequest {
   // prove is Include proofs of the transactions inclusion in the block
   bool prove = 2;
   // pagination defines an pagination for the request.
-<<<<<<< HEAD:proto/lbm/tx/v1/service.proto
   lbm.base.query.v1.PageRequest pagination = 3;
   OrderBy                       order_by   = 4;
-=======
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-  OrderBy                               order_by   = 3;
->>>>>>> 3e4d81c3d (Fix proto format (#9279)):proto/cosmos/tx/v1beta1/service.proto
 }
 
 // OrderBy defines the sorting order
@@ -109,11 +104,7 @@ message BroadcastTxResponse {
 message SimulateRequest {
   // tx is the transaction to simulate.
   // Deprecated. Send raw tx bytes instead.
-<<<<<<< HEAD:proto/lbm/tx/v1/service.proto
   lbm.tx.v1.Tx tx = 1 [deprecated = true];
-=======
-  cosmos.tx.v1beta1.Tx tx = 1 [deprecated = true];
->>>>>>> 3e4d81c3d (Fix proto format (#9279)):proto/cosmos/tx/v1beta1/service.proto
   // tx_bytes is the raw transaction.
   bytes tx_bytes = 2;
 }
