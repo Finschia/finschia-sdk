@@ -547,10 +547,10 @@
     - [Query](#lbm.feegrant.v1.Query)
   
 - [lbm/feegrant/v1/tx.proto](#lbm/feegrant/v1/tx.proto)
-    - [MsgGrantFeeAllowance](#lbm.feegrant.v1.MsgGrantFeeAllowance)
-    - [MsgGrantFeeAllowanceResponse](#lbm.feegrant.v1.MsgGrantFeeAllowanceResponse)
-    - [MsgRevokeFeeAllowance](#lbm.feegrant.v1.MsgRevokeFeeAllowance)
-    - [MsgRevokeFeeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeFeeAllowanceResponse)
+    - [MsgGrantAllowance](#lbm.feegrant.v1.MsgGrantAllowance)
+    - [MsgGrantAllowanceResponse](#lbm.feegrant.v1.MsgGrantAllowanceResponse)
+    - [MsgRevokeAllowance](#lbm.feegrant.v1.MsgRevokeAllowance)
+    - [MsgRevokeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeAllowanceResponse)
   
     - [Msg](#lbm.feegrant.v1.Msg)
   
@@ -864,6 +864,7 @@
     - [DelayedVestingAccount](#lbm.vesting.v1.DelayedVestingAccount)
     - [Period](#lbm.vesting.v1.Period)
     - [PeriodicVestingAccount](#lbm.vesting.v1.PeriodicVestingAccount)
+    - [PermanentLockedAccount](#lbm.vesting.v1.PermanentLockedAccount)
   
 - [lbm/wasm/v1/types.proto](#lbm/wasm/v1/types.proto)
     - [AbsoluteTxPosition](#lbm.wasm.v1.AbsoluteTxPosition)
@@ -9263,10 +9264,10 @@ Query defines the gRPC querier service.
 
 
 
-<a name="lbm.feegrant.v1.MsgGrantFeeAllowance"></a>
+<a name="lbm.feegrant.v1.MsgGrantAllowance"></a>
 
-### MsgGrantFeeAllowance
-MsgGrantFeeAllowance adds permission for Grantee to spend up to Allowance
+### MsgGrantAllowance
+MsgGrantAllowance adds permission for Grantee to spend up to Allowance
 of fees from the account of Granter.
 
 
@@ -9281,20 +9282,20 @@ of fees from the account of Granter.
 
 
 
-<a name="lbm.feegrant.v1.MsgGrantFeeAllowanceResponse"></a>
+<a name="lbm.feegrant.v1.MsgGrantAllowanceResponse"></a>
 
-### MsgGrantFeeAllowanceResponse
-MsgGrantFeeAllowanceResponse defines the Msg/GrantFeeAllowanceResponse response type.
-
-
+### MsgGrantAllowanceResponse
+MsgGrantAllowanceResponse defines the Msg/GrantFeeAllowanceResponse response type.
 
 
 
 
-<a name="lbm.feegrant.v1.MsgRevokeFeeAllowance"></a>
 
-### MsgRevokeFeeAllowance
-MsgRevokeFeeAllowance removes any existing Allowance from Granter to Grantee.
+
+<a name="lbm.feegrant.v1.MsgRevokeAllowance"></a>
+
+### MsgRevokeAllowance
+MsgRevokeAllowance removes any existing Allowance from Granter to Grantee.
 
 
 | Field | Type | Label | Description |
@@ -9307,10 +9308,10 @@ MsgRevokeFeeAllowance removes any existing Allowance from Granter to Grantee.
 
 
 
-<a name="lbm.feegrant.v1.MsgRevokeFeeAllowanceResponse"></a>
+<a name="lbm.feegrant.v1.MsgRevokeAllowanceResponse"></a>
 
-### MsgRevokeFeeAllowanceResponse
-MsgRevokeFeeAllowanceResponse defines the Msg/RevokeFeeAllowanceResponse response type.
+### MsgRevokeAllowanceResponse
+MsgRevokeAllowanceResponse defines the Msg/RevokeFeeAllowanceResponse response type.
 
 
 
@@ -9330,8 +9331,8 @@ Msg defines the feegrant msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `GrantFeeAllowance` | [MsgGrantFeeAllowance](#lbm.feegrant.v1.MsgGrantFeeAllowance) | [MsgGrantFeeAllowanceResponse](#lbm.feegrant.v1.MsgGrantFeeAllowanceResponse) | GrantFeeAllowance grants fee allowance to the grantee on the granter's account with the provided expiration time. | |
-| `RevokeFeeAllowance` | [MsgRevokeFeeAllowance](#lbm.feegrant.v1.MsgRevokeFeeAllowance) | [MsgRevokeFeeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeFeeAllowanceResponse) | RevokeFeeAllowance revokes any fee allowance of granter's account that has been granted to the grantee. | |
+| `GrantFeeAllowance` | [MsgGrantAllowance](#lbm.feegrant.v1.MsgGrantAllowance) | [MsgGrantAllowanceResponse](#lbm.feegrant.v1.MsgGrantAllowanceResponse) | GrantFeeAllowance grants fee allowance to the grantee on the granter's account with the provided expiration time. | |
+| `RevokeFeeAllowance` | [MsgRevokeAllowance](#lbm.feegrant.v1.MsgRevokeAllowance) | [MsgRevokeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeAllowanceResponse) | RevokeFeeAllowance revokes any fee allowance of granter's account that has been granted to the grantee. | |
 
  <!-- end services -->
 
@@ -13534,6 +13535,23 @@ periodically vests by unlocking coins during each specified period.
 | `base_vesting_account` | [BaseVestingAccount](#lbm.vesting.v1.BaseVestingAccount) |  |  |
 | `start_time` | [int64](#int64) |  |  |
 | `vesting_periods` | [Period](#lbm.vesting.v1.Period) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.vesting.v1.PermanentLockedAccount"></a>
+
+### PermanentLockedAccount
+PermanentLockedAccount implements the VestingAccount interface. It does
+not ever release coins, locking them indefinitely. Coins in this account can
+still be used for delegating and for governance votes even while locked.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base_vesting_account` | [BaseVestingAccount](#lbm.vesting.v1.BaseVestingAccount) |  |  |
 
 
 

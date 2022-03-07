@@ -49,7 +49,7 @@ func (k msgServer) GrantFeeAllowance(goCtx context.Context, msg *types.MsgGrantA
 		return nil, err
 	}
 
-	err = k.Keeper.GrantFeeAllowance(ctx, granter, grantee, allowance)
+	err = k.Keeper.GrantAllowance(ctx, granter, grantee, allowance)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (k msgServer) RevokeFeeAllowance(goCtx context.Context, msg *types.MsgRevok
 	}
 	granter := sdk.AccAddress(msg.Granter)
 
-	err = k.Keeper.revokeFeeAllowance(ctx, granter, grantee)
+	err = k.Keeper.RevokeAllowance(ctx, granter, grantee)
 	if err != nil {
 		return nil, err
 	}

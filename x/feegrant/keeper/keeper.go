@@ -210,7 +210,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *types.GenesisState) error {
 			return err
 		}
 
-		err = k.GrantFeeAllowance(ctx, granter, grantee, grant)
+		err = k.GrantAllowance(ctx, granter, grantee, grant)
 		if err != nil {
 			return err
 		}
