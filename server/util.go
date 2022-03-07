@@ -290,6 +290,7 @@ func AddCommands(rootCmd *cobra.Command, defaultNodeHome string, appCreator type
 		ostraconCmd,
 		ExportCmd(appExport, defaultNodeHome),
 		version.NewVersionCommand(),
+		NewRollbackCmd(defaultNodeHome),
 	)
 }
 
