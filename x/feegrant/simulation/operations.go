@@ -36,13 +36,13 @@ func WeightedOperations(
 
 	appParams.GetOrGenerate(cdc, OpWeightMsgGrantAllowance, &weightMsgGrantAllowance, nil,
 		func(_ *rand.Rand) {
-			weightMsgGrantAllowance = simappparams.DefaultWeightGrantFeeAllowance
+			weightMsgGrantAllowance = simappparams.DefaultWeightGrantAllowance
 		},
 	)
 
 	appParams.GetOrGenerate(cdc, OpWeightMsgRevokeAllowance, &weightMsgRevokeAllowance, nil,
 		func(_ *rand.Rand) {
-			weightMsgRevokeAllowance = simappparams.DefaultWeightRevokeFeeAllowance
+			weightMsgRevokeAllowance = simappparams.DefaultWeightRevokeAllowance
 		},
 	)
 

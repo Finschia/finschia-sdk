@@ -74,12 +74,12 @@ func (suite *SimTestSuite) TestWeightedOperations() {
 		opMsgName  string
 	}{
 		{
-			simappparams.DefaultWeightGrantFeeAllowance,
+			simappparams.DefaultWeightGrantAllowance,
 			types.MsgGrantAllowance{}.Route(),
 			simulation.TypeMsgGrantAllowance,
 		},
 		{
-			simappparams.DefaultWeightRevokeFeeAllowance,
+			simappparams.DefaultWeightRevokeAllowance,
 			types.MsgRevokeAllowance{}.Route(),
 			simulation.TypeMsgRevokeAllowance,
 		},
@@ -138,7 +138,7 @@ func (suite *SimTestSuite) TestSimulateMsgRevokeAllowance() {
 	granter, grantee := accounts[0], accounts[1]
 
 	oneYear := ctx.BlockTime().AddDate(1, 0, 0)
-	err := app.FeeGrantKeeper.GrantFeeAllowance(
+	err := app.FeeGrantKeeper.GrantAllowance(
 		ctx,
 		granter.Address,
 		grantee.Address,

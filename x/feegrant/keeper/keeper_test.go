@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"context"
 	"testing"
-	"time"
+
+	"github.com/stretchr/testify/suite"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
@@ -137,7 +137,7 @@ func (suite *KeeperTestSuite) TestKeeperCrud() {
 	suite.Require().NoError(err)
 
 	// let's grant and revoke authorization to non existing account
-	err = suite.keeper.GrantFeeAllowance(suite.sdkCtx, suite.addrs[3], accAddr, basic2)
+	err = suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[3], accAddr, basic2)
 	suite.Require().NoError(err)
 
 	_, err = suite.keeper.GetAllowance(suite.sdkCtx, suite.addrs[3], accAddr)
@@ -221,7 +221,7 @@ func (suite *KeeperTestSuite) TestUseGrantedFee() {
 	}
 	// creating expired feegrant
 	ctx := suite.sdkCtx.WithBlockTime(oneYear)
-	err := suite.keeper.GrantFeeAllowance(ctx, suite.addrs[0], suite.addrs[2], expired)
+	err := suite.keeper.GrantAllowance(ctx, suite.addrs[0], suite.addrs[2], expired)
 	suite.Require().NoError(err)
 
 	// expect error: feegrant expired
@@ -250,36 +250,12 @@ func (suite *KeeperTestSuite) TestIterateGrants() {
 		Expiration: &exp,
 	}
 
-	suite.keeper.GrantFeeAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[1], allowance)
-	suite.keeper.GrantFeeAllowance(suite.sdkCtx, suite.addrs[2], suite.addrs[1], allowance1)
+	suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[1], allowance)
+	suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[2], suite.addrs[1], allowance1)
 
 	suite.keeper.IterateAllFeeAllowances(suite.sdkCtx, func(grant types.Grant) bool {
 		suite.Require().Equal(suite.addrs[1].String(), grant.Grantee)
 		suite.Require().Contains([]string{suite.addrs[0].String(), suite.addrs[2].String()}, grant.Granter)
 		return true
 	})
-
-}
-
-func (suite *KeeperTestSuite) TestIterateGrants() {
-	eth := sdk.NewCoins(sdk.NewInt64Coin("eth", 123))
-	allowance := &types.BasicAllowance{
-		SpendLimit: suite.atom,
-		Expiration: types.ExpiresAtHeight(5678),
-	}
-
-	allowance1 := &types.BasicAllowance{
-		SpendLimit: eth,
-		Expiration: types.ExpiresAtTime(suite.sdkCtx.BlockTime().Add(24 * time.Hour)),
-	}
-
-	suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[1], allowance)
-	suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[2], suite.addrs[1], allowance1)
-
-	suite.keeper.IterateAllFeeAllowances(suite.sdkCtx, func(grant types.FeeAllowanceGrant) bool {
-		suite.Require().Equal(suite.addrs[1].String(), grant.Grantee)
-		suite.Require().Contains([]string{suite.addrs[0].String(), suite.addrs[2].String()}, grant.Granter)
-		return true
-	})
-
 }

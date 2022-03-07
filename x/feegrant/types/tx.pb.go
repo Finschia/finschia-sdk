@@ -95,7 +95,7 @@ func (m *MsgGrantAllowance) GetAllowance() *types.Any {
 	return nil
 }
 
-// MsgGrantAllowanceResponse defines the Msg/GrantFeeAllowanceResponse response type.
+// MsgGrantAllowanceResponse defines the Msg/GrantAllowanceResponse response type.
 type MsgGrantAllowanceResponse struct {
 }
 
@@ -187,7 +187,7 @@ func (m *MsgRevokeAllowance) GetGrantee() string {
 	return ""
 }
 
-// MsgRevokeAllowanceResponse defines the Msg/RevokeFeeAllowanceResponse response type.
+// MsgRevokeAllowanceResponse defines the Msg/RevokeAllowanceResponse response type.
 type MsgRevokeAllowanceResponse struct {
 }
 
@@ -234,7 +234,7 @@ func init() {
 func init() { proto.RegisterFile("lbm/feegrant/v1/tx.proto", fileDescriptor_b4bf88d0a96288f9) }
 
 var fileDescriptor_b4bf88d0a96288f9 = []byte{
-	// 379 bytes of a gzipped FileDescriptorProto
+	// 373 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xc8, 0x49, 0xca, 0xd5,
 	0x4f, 0x4b, 0x4d, 0x4d, 0x2f, 0x4a, 0xcc, 0x2b, 0xd1, 0x2f, 0x33, 0xd4, 0x2f, 0xa9, 0xd0, 0x2b,
 	0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0xcf, 0x49, 0xca, 0xd5, 0x83, 0xc9, 0xe8, 0x95, 0x19, 0x4a,
@@ -250,15 +250,15 @@ var fileDescriptor_b4bf88d0a96288f9 = []byte{
 	0xd4, 0x16, 0x5d, 0x5e, 0xb7, 0xd4, 0x54, 0xb8, 0x33, 0x3d, 0x83, 0x10, 0x3a, 0x95, 0xa4, 0xb9,
 	0x24, 0x31, 0xfc, 0x11, 0x94, 0x5a, 0x5c, 0x90, 0x9f, 0x57, 0x9c, 0xaa, 0xd4, 0xc0, 0xc8, 0x25,
 	0xe4, 0x5b, 0x9c, 0x1e, 0x94, 0x5a, 0x96, 0x9f, 0x9d, 0x3a, 0x20, 0xde, 0x54, 0x92, 0xe1, 0x92,
-	0xc2, 0x74, 0x01, 0xcc, 0x81, 0x46, 0x97, 0x18, 0xb9, 0x98, 0x7d, 0x8b, 0xd3, 0x85, 0x92, 0xb9,
-	0x04, 0xc1, 0x5e, 0x40, 0xf6, 0xa6, 0x90, 0x92, 0x1e, 0x5a, 0x0a, 0xd0, 0xc3, 0xf0, 0xa9, 0x94,
-	0x16, 0x61, 0x35, 0x30, 0xcb, 0x84, 0xd2, 0xb8, 0x84, 0x20, 0xee, 0x40, 0xb1, 0x45, 0x19, 0x9b,
-	0x09, 0x68, 0xee, 0x95, 0xd2, 0x26, 0x42, 0x11, 0xcc, 0x1e, 0x27, 0xa7, 0x13, 0x8f, 0xe4, 0x18,
-	0x2f, 0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b, 0x8f, 0xe5,
-	0x18, 0x6e, 0x3c, 0x96, 0x63, 0x88, 0xd2, 0x48, 0xcf, 0x2c, 0xc9, 0x28, 0x4d, 0xd2, 0x4b, 0xce,
-	0xcf, 0xd5, 0xcf, 0xc9, 0xcc, 0x4b, 0xd5, 0xcf, 0x49, 0xca, 0xd5, 0x2d, 0x4e, 0xc9, 0xd6, 0xaf,
-	0x40, 0x64, 0x81, 0x92, 0xca, 0x82, 0xd4, 0xe2, 0x24, 0x36, 0x70, 0x12, 0x30, 0x06, 0x04, 0x00,
-	0x00, 0xff, 0xff, 0x63, 0x6c, 0x16, 0x28, 0x1f, 0x03, 0x00, 0x00,
+	0xc2, 0x74, 0x01, 0xcc, 0x81, 0x46, 0x67, 0x18, 0xb9, 0x98, 0x7d, 0x8b, 0xd3, 0x85, 0x12, 0xb8,
+	0xf8, 0xd0, 0xa2, 0x42, 0x49, 0x0f, 0x2d, 0xfa, 0xf5, 0x30, 0xbc, 0x29, 0xa5, 0x45, 0x58, 0x0d,
+	0xcc, 0x26, 0xa1, 0x64, 0x2e, 0x7e, 0xf4, 0x60, 0x50, 0xc6, 0xa6, 0x1d, 0x4d, 0x91, 0x94, 0x36,
+	0x11, 0x8a, 0x60, 0x96, 0x38, 0x39, 0x9d, 0x78, 0x24, 0xc7, 0x78, 0xe1, 0x91, 0x1c, 0xe3, 0x83,
+	0x47, 0x72, 0x8c, 0x13, 0x1e, 0xcb, 0x31, 0x5c, 0x78, 0x2c, 0xc7, 0x70, 0xe3, 0xb1, 0x1c, 0x43,
+	0x94, 0x46, 0x7a, 0x66, 0x49, 0x46, 0x69, 0x92, 0x5e, 0x72, 0x7e, 0xae, 0x7e, 0x4e, 0x66, 0x5e,
+	0xaa, 0x7e, 0x4e, 0x52, 0xae, 0x6e, 0x71, 0x4a, 0xb6, 0x7e, 0x05, 0x22, 0xf1, 0x97, 0x54, 0x16,
+	0xa4, 0x16, 0x27, 0xb1, 0x81, 0x23, 0xdf, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x65, 0x04, 0x27,
+	0xf4, 0x19, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -273,12 +273,12 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	// GrantFeeAllowance grants fee allowance to the grantee on the granter's
+	// GrantAllowance grants fee allowance to the grantee on the granter's
 	// account with the provided expiration time.
-	GrantFeeAllowance(ctx context.Context, in *MsgGrantAllowance, opts ...grpc.CallOption) (*MsgGrantAllowanceResponse, error)
-	// RevokeFeeAllowance revokes any fee allowance of granter's account that
+	GrantAllowance(ctx context.Context, in *MsgGrantAllowance, opts ...grpc.CallOption) (*MsgGrantAllowanceResponse, error)
+	// RevokeAllowance revokes any fee allowance of granter's account that
 	// has been granted to the grantee.
-	RevokeFeeAllowance(ctx context.Context, in *MsgRevokeAllowance, opts ...grpc.CallOption) (*MsgRevokeAllowanceResponse, error)
+	RevokeAllowance(ctx context.Context, in *MsgRevokeAllowance, opts ...grpc.CallOption) (*MsgRevokeAllowanceResponse, error)
 }
 
 type msgClient struct {
@@ -289,18 +289,18 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) GrantFeeAllowance(ctx context.Context, in *MsgGrantAllowance, opts ...grpc.CallOption) (*MsgGrantAllowanceResponse, error) {
+func (c *msgClient) GrantAllowance(ctx context.Context, in *MsgGrantAllowance, opts ...grpc.CallOption) (*MsgGrantAllowanceResponse, error) {
 	out := new(MsgGrantAllowanceResponse)
-	err := c.cc.Invoke(ctx, "/lbm.feegrant.v1.Msg/GrantFeeAllowance", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/lbm.feegrant.v1.Msg/GrantAllowance", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) RevokeFeeAllowance(ctx context.Context, in *MsgRevokeAllowance, opts ...grpc.CallOption) (*MsgRevokeAllowanceResponse, error) {
+func (c *msgClient) RevokeAllowance(ctx context.Context, in *MsgRevokeAllowance, opts ...grpc.CallOption) (*MsgRevokeAllowanceResponse, error) {
 	out := new(MsgRevokeAllowanceResponse)
-	err := c.cc.Invoke(ctx, "/lbm.feegrant.v1.Msg/RevokeFeeAllowance", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/lbm.feegrant.v1.Msg/RevokeAllowance", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -309,61 +309,61 @@ func (c *msgClient) RevokeFeeAllowance(ctx context.Context, in *MsgRevokeAllowan
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	// GrantFeeAllowance grants fee allowance to the grantee on the granter's
+	// GrantAllowance grants fee allowance to the grantee on the granter's
 	// account with the provided expiration time.
-	GrantFeeAllowance(context.Context, *MsgGrantAllowance) (*MsgGrantAllowanceResponse, error)
-	// RevokeFeeAllowance revokes any fee allowance of granter's account that
+	GrantAllowance(context.Context, *MsgGrantAllowance) (*MsgGrantAllowanceResponse, error)
+	// RevokeAllowance revokes any fee allowance of granter's account that
 	// has been granted to the grantee.
-	RevokeFeeAllowance(context.Context, *MsgRevokeAllowance) (*MsgRevokeAllowanceResponse, error)
+	RevokeAllowance(context.Context, *MsgRevokeAllowance) (*MsgRevokeAllowanceResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) GrantFeeAllowance(ctx context.Context, req *MsgGrantAllowance) (*MsgGrantAllowanceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GrantFeeAllowance not implemented")
+func (*UnimplementedMsgServer) GrantAllowance(ctx context.Context, req *MsgGrantAllowance) (*MsgGrantAllowanceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GrantAllowance not implemented")
 }
-func (*UnimplementedMsgServer) RevokeFeeAllowance(ctx context.Context, req *MsgRevokeAllowance) (*MsgRevokeAllowanceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RevokeFeeAllowance not implemented")
+func (*UnimplementedMsgServer) RevokeAllowance(ctx context.Context, req *MsgRevokeAllowance) (*MsgRevokeAllowanceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RevokeAllowance not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_GrantFeeAllowance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Msg_GrantAllowance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgGrantAllowance)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).GrantFeeAllowance(ctx, in)
+		return srv.(MsgServer).GrantAllowance(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lbm.feegrant.v1.Msg/GrantFeeAllowance",
+		FullMethod: "/lbm.feegrant.v1.Msg/GrantAllowance",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).GrantFeeAllowance(ctx, req.(*MsgGrantAllowance))
+		return srv.(MsgServer).GrantAllowance(ctx, req.(*MsgGrantAllowance))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_RevokeFeeAllowance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Msg_RevokeAllowance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgRevokeAllowance)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).RevokeFeeAllowance(ctx, in)
+		return srv.(MsgServer).RevokeAllowance(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lbm.feegrant.v1.Msg/RevokeFeeAllowance",
+		FullMethod: "/lbm.feegrant.v1.Msg/RevokeAllowance",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RevokeFeeAllowance(ctx, req.(*MsgRevokeAllowance))
+		return srv.(MsgServer).RevokeAllowance(ctx, req.(*MsgRevokeAllowance))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -373,12 +373,12 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GrantFeeAllowance",
-			Handler:    _Msg_GrantFeeAllowance_Handler,
+			MethodName: "GrantAllowance",
+			Handler:    _Msg_GrantAllowance_Handler,
 		},
 		{
-			MethodName: "RevokeFeeAllowance",
-			Handler:    _Msg_RevokeFeeAllowance_Handler,
+			MethodName: "RevokeAllowance",
+			Handler:    _Msg_RevokeAllowance_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

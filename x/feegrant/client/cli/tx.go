@@ -213,7 +213,7 @@ Example:
 			msg := types.NewMsgRevokeAllowance(clientCtx.GetFromAddress(), grantee)
 			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
 			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.RevokeFeeAllowance(cmd.Context(), &msg)
+			_, err = msgClient.RevokeAllowance(cmd.Context(), &msg)
 			if err != nil {
 				return err
 			}
