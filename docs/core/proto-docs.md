@@ -13003,14 +13003,14 @@ Query provides defines the gRPC querier service
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `ContractInfo` | [QueryContractInfoRequest](#lbm.wasm.v1.QueryContractInfoRequest) | [QueryContractInfoResponse](#lbm.wasm.v1.QueryContractInfoResponse) | ContractInfo gets the contract meta data | GET|/line/wasm/v1/contract/{address}|
-| `ContractHistory` | [QueryContractHistoryRequest](#lbm.wasm.v1.QueryContractHistoryRequest) | [QueryContractHistoryResponse](#lbm.wasm.v1.QueryContractHistoryResponse) | ContractHistory gets the contract code history | GET|/line/wasm/v1/contract/{address}/history|
-| `ContractsByCode` | [QueryContractsByCodeRequest](#lbm.wasm.v1.QueryContractsByCodeRequest) | [QueryContractsByCodeResponse](#lbm.wasm.v1.QueryContractsByCodeResponse) | ContractsByCode lists all smart contracts for a code id | GET|/line/wasm/v1/code/{code_id}/contracts|
-| `AllContractState` | [QueryAllContractStateRequest](#lbm.wasm.v1.QueryAllContractStateRequest) | [QueryAllContractStateResponse](#lbm.wasm.v1.QueryAllContractStateResponse) | AllContractState gets all raw store data for a single contract | GET|/line/wasm/v1/contract/{address}/state|
-| `RawContractState` | [QueryRawContractStateRequest](#lbm.wasm.v1.QueryRawContractStateRequest) | [QueryRawContractStateResponse](#lbm.wasm.v1.QueryRawContractStateResponse) | RawContractState gets single key from the raw store data of a contract | GET|/wasm/v1/contract/{address}/raw/{query_data}|
-| `SmartContractState` | [QuerySmartContractStateRequest](#lbm.wasm.v1.QuerySmartContractStateRequest) | [QuerySmartContractStateResponse](#lbm.wasm.v1.QuerySmartContractStateResponse) | SmartContractState get smart query result from the contract | GET|/wasm/v1/contract/{address}/smart/{query_data}|
-| `Code` | [QueryCodeRequest](#lbm.wasm.v1.QueryCodeRequest) | [QueryCodeResponse](#lbm.wasm.v1.QueryCodeResponse) | Code gets the binary code and metadata for a singe wasm code | GET|/line/wasm/v1/code/{code_id}|
-| `Codes` | [QueryCodesRequest](#lbm.wasm.v1.QueryCodesRequest) | [QueryCodesResponse](#lbm.wasm.v1.QueryCodesResponse) | Codes gets the metadata for all stored wasm codes | GET|/line/wasm/v1/code|
+| `ContractInfo` | [QueryContractInfoRequest](#lbm.wasm.v1.QueryContractInfoRequest) | [QueryContractInfoResponse](#lbm.wasm.v1.QueryContractInfoResponse) | ContractInfo gets the contract meta data | GET|/lbm/wasm/v1/contract/{address}|
+| `ContractHistory` | [QueryContractHistoryRequest](#lbm.wasm.v1.QueryContractHistoryRequest) | [QueryContractHistoryResponse](#lbm.wasm.v1.QueryContractHistoryResponse) | ContractHistory gets the contract code history | GET|/lbm/wasm/v1/contract/{address}/history|
+| `ContractsByCode` | [QueryContractsByCodeRequest](#lbm.wasm.v1.QueryContractsByCodeRequest) | [QueryContractsByCodeResponse](#lbm.wasm.v1.QueryContractsByCodeResponse) | ContractsByCode lists all smart contracts for a code id | GET|/lbm/wasm/v1/code/{code_id}/contracts|
+| `AllContractState` | [QueryAllContractStateRequest](#lbm.wasm.v1.QueryAllContractStateRequest) | [QueryAllContractStateResponse](#lbm.wasm.v1.QueryAllContractStateResponse) | AllContractState gets all raw store data for a single contract | GET|/lbm/wasm/v1/contract/{address}/state|
+| `RawContractState` | [QueryRawContractStateRequest](#lbm.wasm.v1.QueryRawContractStateRequest) | [QueryRawContractStateResponse](#lbm.wasm.v1.QueryRawContractStateResponse) | RawContractState gets single key from the raw store data of a contract | GET|/lbm/wasm/v1/contract/{address}/raw/{query_data}|
+| `SmartContractState` | [QuerySmartContractStateRequest](#lbm.wasm.v1.QuerySmartContractStateRequest) | [QuerySmartContractStateResponse](#lbm.wasm.v1.QuerySmartContractStateResponse) | SmartContractState get smart query result from the contract | GET|/lbm/wasm/v1/contract/{address}/smart/{query_data}|
+| `Code` | [QueryCodeRequest](#lbm.wasm.v1.QueryCodeRequest) | [QueryCodeResponse](#lbm.wasm.v1.QueryCodeResponse) | Code gets the binary code and metadata for a singe wasm code | GET|/lbm/wasm/v1/code/{code_id}|
+| `Codes` | [QueryCodesRequest](#lbm.wasm.v1.QueryCodesRequest) | [QueryCodesResponse](#lbm.wasm.v1.QueryCodesResponse) | Codes gets the metadata for all stored wasm codes | GET|/lbm/wasm/v1/code|
 
  <!-- end services -->
 
