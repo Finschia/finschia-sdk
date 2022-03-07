@@ -21,6 +21,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	authzkeeper "github.com/line/lbm-sdk/x/authz/keeper"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
 	distrtypes "github.com/line/lbm-sdk/x/distribution/types"
@@ -180,7 +181,7 @@ func TestAppImportExport(t *testing.T) {
 		{app.keys[capabilitytypes.StoreKey], newApp.keys[capabilitytypes.StoreKey], [][]byte{}},
 		{app.keys[ibchost.StoreKey], newApp.keys[ibchost.StoreKey], [][]byte{}},
 		{app.keys[ibctransfertypes.StoreKey], newApp.keys[ibctransfertypes.StoreKey], [][]byte{}},
-		{app.keys[authztypes.StoreKey], newApp.keys[authztypes.StoreKey], [][]byte{}},
+		{app.keys[authzkeeper.StoreKey], newApp.keys[authzkeeper.StoreKey], [][]byte{}},
 	}
 
 	for _, skp := range storeKeysPrefixes {

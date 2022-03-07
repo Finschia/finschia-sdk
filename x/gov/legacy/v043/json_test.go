@@ -20,7 +20,7 @@ func TestMigrateJSON(t *testing.T) {
 	clientCtx := client.Context{}.
 		WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
 		WithTxConfig(encodingConfig.TxConfig).
-		WithJSONCodec(encodingConfig.Marshaler)
+		WithJSONCodec(encodingConfig.Codec)
 
 	voter := sdk.AccAddress("link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3q4fdzl")
 	err := sdk.ValidateAccAddress(voter.String())

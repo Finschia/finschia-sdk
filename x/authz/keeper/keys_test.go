@@ -18,7 +18,7 @@ var msgType = bank.SendAuthorization{}.MsgTypeURL()
 func TestGrantkey(t *testing.T) {
 	require := require.New(t)
 	key := grantStoreKey(grantee, granter, msgType)
-	require.Len(key, len(GrantKey)+len(address.MustLengthPrefix(grantee))+len(address.MustLengthPrefix(granter))+len([]byte(msgType)))
+	require.Len(key, len(GrantKey)+len(address.MustLengthPrefix(grantee.Bytes()))+len(address.MustLengthPrefix(granter.Bytes()))+len([]byte(msgType)))
 
 	granter1, grantee1 := addressesFromGrantStoreKey(grantStoreKey(grantee, granter, msgType))
 	require.Equal(granter, granter1)

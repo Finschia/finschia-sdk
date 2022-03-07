@@ -201,7 +201,7 @@ func TestContractInfoMarshalUnmarshal(t *testing.T) {
 	require.NoError(t, err)
 	// and decode
 	var dest ContractInfo
-	err = marshaler.UnmarshalBinaryBare(bz, &dest)
+	err = marshaler.Unmarshal(bz, &dest)
 	// then
 	require.NoError(t, err)
 	assert.Equal(t, src, dest)

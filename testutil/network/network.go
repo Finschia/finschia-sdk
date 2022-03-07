@@ -99,13 +99,13 @@ func DefaultConfig() Config {
 	encCfg := simapp.MakeTestEncodingConfig()
 
 	return Config{
-		Codec:             encCfg.Marshaler,
+		Codec:             encCfg.Codec,
 		TxConfig:          encCfg.TxConfig,
 		LegacyAmino:       encCfg.Amino,
 		InterfaceRegistry: encCfg.InterfaceRegistry,
 		AccountRetriever:  authtypes.AccountRetriever{},
 		AppConstructor:    NewAppConstructor(encCfg),
-		GenesisState:      simapp.ModuleBasics.DefaultGenesis(encCfg.Marshaler),
+		GenesisState:      simapp.ModuleBasics.DefaultGenesis(encCfg.Codec),
 		// 2 second confirm may make some tests to be failed with `tx already in mempool`
 		TimeoutCommit:   1 * time.Second,
 		ChainID:         "chain-" + ostrand.NewRand().Str(6),

@@ -11,21 +11,14 @@ import (
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/feegrant"
 )
 
 func TestFilteredFeeValidAllow(t *testing.T) {
 	app := simapp.Setup(false)
 
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
-	badTime := ctx.BlockTime().AddDate(0, 0, -1)
-	allowace := &feegrant.BasicAllowance{
-		Expiration: &badTime,
-	}
-	require.Error(t, allowace.ValidateBasic())
-
-	ctx = app.BaseApp.NewContext(false, ocproto.Header{
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{
 		Time: time.Now(),
 	})
 	eth := sdk.NewCoins(sdk.NewInt64Coin("eth", 10))
@@ -36,32 +29,32 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 	now := ctx.BlockTime()
 	oneHour := now.Add(1 * time.Hour)
 
+	// msg we will call in the all cases
+	call := banktypes.MsgSend{}
 	cases := map[string]struct {
 		allowance *feegrant.BasicAllowance
 		msgs      []string
-		// all other checks are ignored if valid=false
 		fee       sdk.Coins
 		blockTime time.Time
-		valid     bool
 		accept    bool
 		remove    bool
 		remains   sdk.Coins
 	}{
 		"msg contained": {
 			allowance: &feegrant.BasicAllowance{},
-			msgs:      []string{"/lbm.auth.v1.MsgEmpty"},
+			msgs:      []string{sdk.MsgTypeURL(&call)},
 			accept:    true,
 		},
 		"msg not contained": {
 			allowance: &feegrant.BasicAllowance{},
-			msgs:      []string{"/lbm.feegrant.v1.MsgGrant"},
+			msgs:      []string{"/cosmos.gov.v1beta2.MsgVote"},
 			accept:    false,
 		},
 		"small fee without expire": {
 			allowance: &feegrant.BasicAllowance{
 				SpendLimit: atom,
 			},
-			msgs:    []string{"/lbm.auth.v1.MsgEmpty"},
+			msgs:    []string{sdk.MsgTypeURL(&call)},
 			fee:     smallAtom,
 			accept:  true,
 			remove:  false,
@@ -71,7 +64,7 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 			allowance: &feegrant.BasicAllowance{
 				SpendLimit: smallAtom,
 			},
-			msgs:   []string{"/lbm.auth.v1.MsgEmpty"},
+			msgs:   []string{sdk.MsgTypeURL(&call)},
 			fee:    smallAtom,
 			accept: true,
 			remove: true,
@@ -80,7 +73,7 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 			allowance: &feegrant.BasicAllowance{
 				SpendLimit: smallAtom,
 			},
-			msgs:   []string{"/lbm.auth.v1.MsgEmpty"},
+			msgs:   []string{sdk.MsgTypeURL(&call)},
 			fee:    eth,
 			accept: false,
 		},
@@ -89,8 +82,7 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 				SpendLimit: atom,
 				Expiration: &oneHour,
 			},
-			msgs:      []string{"/lbm.auth.v1.MsgEmpty"},
-			valid:     true,
+			msgs:      []string{sdk.MsgTypeURL(&call)},
 			fee:       smallAtom,
 			blockTime: now,
 			accept:    true,
@@ -102,8 +94,7 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 				SpendLimit: atom,
 				Expiration: &now,
 			},
-			msgs:      []string{"/lbm.auth.v1.MsgEmpty"},
-			valid:     true,
+			msgs:      []string{sdk.MsgTypeURL(&call)},
 			fee:       smallAtom,
 			blockTime: oneHour,
 			accept:    false,
@@ -114,8 +105,7 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 				SpendLimit: atom,
 				Expiration: &oneHour,
 			},
-			msgs:      []string{"/lbm.auth.v1.MsgEmpty"},
-			valid:     true,
+			msgs:      []string{sdk.MsgTypeURL(&call)},
 			fee:       bigAtom,
 			blockTime: now,
 			accept:    false,
@@ -124,8 +114,7 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 			allowance: &feegrant.BasicAllowance{
 				Expiration: &oneHour,
 			},
-			msgs:      []string{"/lbm.auth.v1.MsgEmpty"},
-			valid:     true,
+			msgs:      []string{sdk.MsgTypeURL(&call)},
 			fee:       bigAtom,
 			blockTime: now,
 			accept:    true,
@@ -134,8 +123,7 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 			allowance: &feegrant.BasicAllowance{
 				Expiration: &now,
 			},
-			msgs:      []string{"/lbm.auth.v1.MsgEmpty"},
-			valid:     true,
+			msgs:      []string{sdk.MsgTypeURL(&call)},
 			fee:       bigAtom,
 			blockTime: oneHour,
 			accept:    false,
@@ -151,24 +139,13 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 			ctx := app.BaseApp.NewContext(false, ocproto.Header{}).WithBlockTime(tc.blockTime)
 
 			// create grant
-			createGrant := func() feegrant.Grant {
-				var granter, grantee sdk.AccAddress
-				allowance, err := feegrant.NewAllowedMsgAllowance(tc.allowance, tc.msgs)
-				require.NoError(t, err)
-				grant, err := feegrant.NewGrant(granter, grantee, allowance)
-				require.NoError(t, err)
-				return grant
-			}
-			grant := createGrant()
-
-			// create empty msg
-			call := authtypes.MsgEmpty{
-				FromAddress: "",
-			}
+			var granter, grantee sdk.AccAddress
+			allowance, err := feegrant.NewAllowedMsgAllowance(tc.allowance, tc.msgs)
+			require.NoError(t, err)
+			grant, err := feegrant.NewGrant(granter, grantee, allowance)
+			require.NoError(t, err)
 
 			// now try to deduct
-			allowance, err := grant.GetGrant()
-			require.NoError(t, err)
 			removed, err := allowance.Accept(ctx, tc.fee, []sdk.Msg{&call})
 			if !tc.accept {
 				require.Error(t, err)
@@ -178,27 +155,29 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 
 			require.Equal(t, tc.remove, removed)
 			if !removed {
-				updatedGrant := func(granter, grantee sdk.AccAddress,
-					allowance feegrant.FeeAllowanceI) feegrant.Grant {
-					newGrant, err := feegrant.NewGrant(
-						granter,
-						grantee,
-						allowance)
-					require.NoError(t, err)
+				// mimic save & load process (#10564)
+				// the cached allowance was correct even before the fix,
+				// however, the saved value was not.
+				// so we need this to catch the bug.
 
-					cdc := simapp.MakeTestEncodingConfig().Marshaler
-					bz, err := cdc.Marshal(&newGrant)
-					require.NoError(t, err)
+				// create a new updated grant
+				newGrant, err := feegrant.NewGrant(
+					sdk.AccAddress(grant.Granter),
+					sdk.AccAddress(grant.Grantee),
+					allowance)
+				require.NoError(t, err)
 
-					var loaded feegrant.Grant
-					err = cdc.Unmarshal(bz, &loaded)
-					require.NoError(t, err)
-					return loaded
-				}
-				newGrant := updatedGrant(sdk.AccAddress(grant.Granter),
-					sdk.AccAddress(grant.Grantee), allowance)
+				// save the grant
+				cdc := simapp.MakeTestEncodingConfig().Codec
+				bz, err := cdc.Marshal(&newGrant)
+				require.NoError(t, err)
 
-				newAllowance, err := newGrant.GetGrant()
+				// load the grant
+				var loadedGrant feegrant.Grant
+				err = cdc.Unmarshal(bz, &loadedGrant)
+				require.NoError(t, err)
+
+				newAllowance, err := loadedGrant.GetGrant()
 				require.NoError(t, err)
 				feeAllowance, err := newAllowance.(*feegrant.AllowedMsgAllowance).GetAllowance()
 				require.NoError(t, err)

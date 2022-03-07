@@ -97,7 +97,7 @@ var ModuleBasics = module.NewBasicManager(
 )
 
 func MakeTestCodec(t TestingT) codec.Codec {
-	return MakeEncodingConfig(t).Marshaler
+	return MakeEncodingConfig(t).Codec
 }
 
 func MakeEncodingConfig(_ TestingT) params2.EncodingConfig {
@@ -116,7 +116,7 @@ func MakeEncodingConfig(_ TestingT) params2.EncodingConfig {
 
 	return params2.EncodingConfig{
 		InterfaceRegistry: interfaceRegistry,
-		Marshaler:         marshaler,
+		Codec:             marshaler,
 		TxConfig:          txCfg,
 		Amino:             amino,
 	}
@@ -198,7 +198,7 @@ func createTestInput(
 		Time:   time.Date(2020, time.April, 22, 12, 0, 0, 0, time.UTC),
 	}, isCheckTx, log.NewNopLogger())
 	encodingConfig := MakeEncodingConfig(t)
-	appCodec, legacyAmino := encodingConfig.Marshaler, encodingConfig.Amino
+	appCodec, legacyAmino := encodingConfig.Codec, encodingConfig.Amino
 
 	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, keyParams, tkeyParams)
 	paramsKeeper.Subspace(authtypes.ModuleName)
