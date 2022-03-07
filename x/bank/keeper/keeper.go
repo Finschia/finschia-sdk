@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/internal/conv"
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
@@ -28,7 +29,7 @@ type Keeper interface {
 	GetPaginatedTotalSupply(ctx sdk.Context, pagination *query.PageRequest) (sdk.Coins, *query.PageResponse, error)
 	GetTotalSupply(ctx sdk.Context) sdk.Coins // TODO(dudong2): remove after x/wasm version up
 	IterateTotalSupply(ctx sdk.Context, cb func(sdk.Coin) bool)
-	SetSupply(ctx sdk.Context, supply sdk.Coins) // TODO(dudong2): remove after x/wasm version up
+	SetSupply(ctx sdk.Context, coin sdk.Coin) // TODO(dudong2): remove after x/wasm version up
 
 	GetDenomMetaData(ctx sdk.Context, denom string) (types.Metadata, bool)
 	SetDenomMetaData(ctx sdk.Context, denomMetaData types.Metadata)
@@ -80,7 +81,9 @@ func (k BaseKeeper) GetPaginatedTotalSupply(ctx sdk.Context, pagination *query.P
 		if err != nil {
 			return fmt.Errorf("unable to convert amount string to Int %v", err)
 		}
-		supply = append(supply, sdk.NewCoin(string(key), amount))
+
+		// `Add` omits the 0 coins addition to the `supply`.
+		supply = supply.Add(sdk.NewCoin(string(key), amount))
 		return nil
 	})
 
@@ -225,29 +228,20 @@ func (k BaseKeeper) GetSupply(ctx sdk.Context, denom string) sdk.Coin {
 }
 
 // SetSupply sets the Supply to store
-func (k BaseKeeper) SetSupply(ctx sdk.Context, supply sdk.Coins) {
+func (k BaseKeeper) SetSupply(ctx sdk.Context, coin sdk.Coin) {
+	intBytes, err := coin.Amount.Marshal()
+	if err != nil {
+		panic(fmt.Errorf("unable to marshal amount value %v", err))
+	}
+
 	store := ctx.KVStore(k.storeKey)
 	supplyStore := prefix.NewStore(store, types.SupplyKey)
 
-	var newSupply []sdk.Coin
-	storeSupply := k.GetTotalSupply(ctx)
-
-	// update supply for coins which have non zero amount
-	for _, coin := range storeSupply {
-		if supply.AmountOf(coin.Denom).IsZero() {
-			zeroCoin := &sdk.Coin{
-				Denom:  coin.Denom,
-				Amount: sdk.NewInt(0),
-			}
-			bz := k.cdc.MustMarshalBinaryBare(zeroCoin)
-			supplyStore.Set([]byte(coin.Denom), bz)
-		}
-	}
-	newSupply = append(newSupply, supply...)
-
-	for i := range newSupply {
-		bz := k.cdc.MustMarshalBinaryBare(&supply[i])
-		supplyStore.Set([]byte(supply[i].Denom), bz)
+	// Bank invariants and IBC requires to remove zero coins.
+	if coin.IsZero() {
+		supplyStore.Delete(conv.UnsafeStrToBytes(coin.GetDenom()))
+	} else {
+		supplyStore.Set([]byte(coin.GetDenom()), intBytes)
 	}
 }
 
@@ -468,14 +462,20 @@ func (k BaseKeeper) BurnCoins(ctx sdk.Context, moduleName string, amounts sdk.Co
 }
 
 func (k BaseKeeper) setSupply(ctx sdk.Context, coin sdk.Coin) {
-	store := ctx.KVStore(k.storeKey)
-	supplyStore := prefix.NewStore(store, types.SupplyKey)
-
 	intBytes, err := coin.Amount.Marshal()
 	if err != nil {
 		panic(fmt.Errorf("unable to marshal amount value %v", err))
 	}
-	supplyStore.Set([]byte(coin.GetDenom()), intBytes)
+
+	store := ctx.KVStore(k.storeKey)
+	supplyStore := prefix.NewStore(store, types.SupplyKey)
+
+	// Bank invariants and IBC requires to remove zero coins.
+	if coin.IsZero() {
+		supplyStore.Delete(conv.UnsafeStrToBytes(coin.GetDenom()))
+	} else {
+		supplyStore.Set([]byte(coin.GetDenom()), intBytes)
+	}
 }
 
 func (k BaseKeeper) trackDelegation(ctx sdk.Context, addr sdk.AccAddress, balance, amt sdk.Coins) error {

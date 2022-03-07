@@ -22,6 +22,7 @@ import (
 	"github.com/line/lbm-sdk/x/bank/client/cli"
 	"github.com/line/lbm-sdk/x/bank/client/rest"
 	"github.com/line/lbm-sdk/x/bank/keeper"
+	"github.com/line/lbm-sdk/x/bank/legacy/v040"
 	"github.com/line/lbm-sdk/x/bank/simulation"
 	"github.com/line/lbm-sdk/x/bank/types"
 )
@@ -84,6 +85,9 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 // RegisterInterfaces registers interfaces and implementations of the bank module.
 func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	types.RegisterInterfaces(registry)
+
+	// Register legacy interfaces for migration scripts.
+	v040.RegisterInterfaces(registry)
 }
 
 // AppModule implements an application module for the bank module.

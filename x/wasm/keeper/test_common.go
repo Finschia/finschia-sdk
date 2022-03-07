@@ -128,6 +128,7 @@ var TestingStakeParams = stakingtypes.Params{
 	MaxEntries:        10,
 	HistoricalEntries: 10,
 	BondDenom:         "stake",
+	PowerReduction:    sdk.DefaultPowerReduction,
 }
 
 type TestKeepers struct {
@@ -245,7 +246,7 @@ func createTestInput(
 	)
 	bankParams := banktypes.DefaultParams()
 	bankKeeper.SetParams(ctx, bankParams)
-	bankKeeper.SetSupply(ctx, sdk.NewCoins(sdk.NewCoin("denom", sdk.NewInt(10000))))
+	bankKeeper.SetSupply(ctx, sdk.NewCoin("denom", sdk.NewInt(10000)))
 	stakingSubsp, _ := paramsKeeper.GetSubspace(stakingtypes.ModuleName)
 	stakingKeeper := stakingkeeper.NewKeeper(appCodec, keyStaking, authKeeper, bankKeeper, stakingSubsp)
 	stakingKeeper.SetParams(ctx, TestingStakeParams)

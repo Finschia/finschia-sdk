@@ -21,10 +21,10 @@ import (
 )
 
 const (
-	delegatorDelegationPath           = "/cosmos.staking.v1beta1.Query/DelegatorDelegations"
-	stakingParamsPath                 = "/cosmos.staking.v1beta1.Query/Params"
-	delegatorUnbondingDelegationsPath = "/cosmos.staking.v1beta1.Query/DelegatorUnbondingDelegations"
-	balancesPath                      = "/cosmos.bank.v1beta1.Query/AllBalances"
+	delegatorDelegationPath           = "/lbm.staking.v1.Query/DelegatorDelegations"
+	stakingParamsPath                 = "/lbm.staking.v1.Query/Params"
+	delegatorUnbondingDelegationsPath = "/lbm.staking.v1.Query/DelegatorUnbondingDelegations"
+	balancesPath                      = "/lbm.bank.v1.Query/AllBalances"
 )
 
 func migrateVestingAccounts(ctx sdk.Context, account types.AccountI, queryServer grpc.Server) (types.AccountI, error) {

@@ -1,6 +1,3 @@
-//go:build norace
-// +build norace
-
 package grpc_test
 
 import (
@@ -102,7 +99,7 @@ func (s *IntegrationTestSuite) TestGRPCServer_BankBalance() {
 
 func (s *IntegrationTestSuite) TestGRPCServer_Reflection() {
 	// Test server reflection
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 1500*time.Second)
 	defer cancel()
 	stub := rpb.NewServerReflectionClient(s.conn)
 	// NOTE(fdymylja): we use grpcreflect because it solves imports too

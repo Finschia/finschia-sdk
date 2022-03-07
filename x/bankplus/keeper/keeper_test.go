@@ -68,7 +68,7 @@ func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 	baseAcc := authKeeper.NewAccountWithAddress(ctx, authtypes.NewModuleAddress("baseAcc"))
 	suite.Require().NoError(keeper.SetBalances(ctx, holderAcc.GetAddress(), initCoins))
 
-	keeper.SetSupply(ctx, initCoins)
+	keeper.SetSupply(ctx, initCoins[0])
 	authKeeper.SetModuleAccount(ctx, holderAcc)
 	authKeeper.SetModuleAccount(ctx, burnerAcc)
 	authKeeper.SetAccount(ctx, baseAcc)
@@ -129,7 +129,7 @@ func (suite *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
 	)
 
 	suite.Require().NoError(keeper.SetBalances(ctx, holderAcc.GetAddress(), initCoins))
-	keeper.SetSupply(ctx, initCoins)
+	keeper.SetSupply(ctx, initCoins[0])
 	suite.Require().Equal(initCoins, keeper.GetAllBalances(ctx, holderAcc.GetAddress()))
 
 	suite.Require().False(keeper.IsInactiveAddr(blockedAcc.GetAddress()))
