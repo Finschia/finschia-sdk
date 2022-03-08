@@ -32,7 +32,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
 	app := simapp.Setup(false)
 	s.app = app
-	s.ctx = app.BaseApp.NewContext(false, tmproto.Header{})
+	s.ctx = app.BaseApp.NewContext(false, ocproto.Header{})
 
 	cfg := network.DefaultConfig()
 	cfg.NumValidators = 1

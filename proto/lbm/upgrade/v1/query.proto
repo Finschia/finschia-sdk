@@ -31,11 +31,6 @@ service Query {
   rpc ModuleVersions(QueryModuleVersionsRequest) returns (QueryModuleVersionsResponse) {
     option (google.api.http).get = "/lbm/upgrade/v1/module_versions";
   }
-
-  // ModuleVersions queries the list of module versions from state.
-  rpc ModuleVersions(QueryModuleVersionsRequest) returns (QueryModuleVersionsResponse) {
-    option (google.api.http).get = "/cosmos/upgrade/v1beta1/module_versions";
-  }
 }
 
 // QueryCurrentPlanRequest is the request type for the Query/CurrentPlan RPC

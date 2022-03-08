@@ -97,7 +97,7 @@ var ModuleBasics = module.NewBasicManager(
 )
 
 func MakeTestCodec(t TestingT) codec.Codec {
-	return MakeEncodingConfig(t).Codec
+	return MakeEncodingConfig(t).Marshaler
 }
 
 func MakeEncodingConfig(_ TestingT) params2.EncodingConfig {
@@ -116,7 +116,7 @@ func MakeEncodingConfig(_ TestingT) params2.EncodingConfig {
 
 	return params2.EncodingConfig{
 		InterfaceRegistry: interfaceRegistry,
-		Codec:             marshaler,
+		Marshaler:         marshaler,
 		TxConfig:          txCfg,
 		Amino:             amino,
 	}
@@ -128,7 +128,6 @@ var TestingStakeParams = stakingtypes.Params{
 	MaxEntries:        10,
 	HistoricalEntries: 10,
 	BondDenom:         "stake",
-	PowerReduction:    sdk.DefaultPowerReduction,
 }
 
 type TestKeepers struct {
@@ -198,7 +197,7 @@ func createTestInput(
 		Time:   time.Date(2020, time.April, 22, 12, 0, 0, 0, time.UTC),
 	}, isCheckTx, log.NewNopLogger())
 	encodingConfig := MakeEncodingConfig(t)
-	appCodec, legacyAmino := encodingConfig.Codec, encodingConfig.Amino
+	appCodec, legacyAmino := encodingConfig.Marshaler, encodingConfig.Amino
 
 	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, keyParams, tkeyParams)
 	paramsKeeper.Subspace(authtypes.ModuleName)
@@ -262,9 +261,7 @@ func createTestInput(
 	// set some funds ot pay out validatores, based on code from:
 	// https://github.com/line/lbm-sdk/blob/95b22d3a685f7eb531198e0023ef06873835e632/x/distribution/keeper/keeper_test.go#L49-L56
 	distrAcc := distKeeper.GetDistributionAccount(ctx)
-	err := bankKeeper.SetBalances(ctx, distrAcc.GetAddress(), sdk.NewCoins(
-		sdk.NewCoin("stake", sdk.NewInt(2000000)),
-	))
+	err := bankKeeper.SetBalance(ctx, distrAcc.GetAddress(), sdk.NewCoin("stake", sdk.NewInt(2000000)))
 	require.NoError(t, err)
 	authKeeper.SetModuleAccount(ctx, distrAcc)
 	capabilityKeeper := capabilitykeeper.NewKeeper(appCodec, keyCapability, keyCapabilityTransient)
@@ -611,7 +608,9 @@ func createFakeFundedAccount(t TestingT, ctx sdk.Context, am authkeeper.AccountK
 func fundAccounts(t TestingT, ctx sdk.Context, am authkeeper.AccountKeeper, bank bankkeeper.Keeper, addr sdk.AccAddress, coins sdk.Coins) {
 	acc := am.NewAccountWithAddress(ctx, addr)
 	am.SetAccount(ctx, acc)
-	require.NoError(t, bank.SetBalances(ctx, addr, coins))
+	for _, coin := range coins {
+		require.NoError(t, bank.SetBalance(ctx, addr, coin))
+	}
 }
 
 var keyCounter uint64 = 0

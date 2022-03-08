@@ -7,6 +7,7 @@ import (
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/upgrade/types"
 )
 

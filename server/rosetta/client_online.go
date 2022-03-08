@@ -9,14 +9,15 @@ import (
 	"time"
 
 	rosettatypes "github.com/coinbase/rosetta-sdk-go/types"
-	crgerrs "github.com/tendermint/cosmos-rosetta-gateway/errors"
-	crgtypes "github.com/tendermint/cosmos-rosetta-gateway/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
+	abcitypes "github.com/line/ostracon/abci/types"
 	ocrpc "github.com/line/ostracon/rpc/client"
 	"github.com/line/ostracon/rpc/client/http"
 
+	crgerrs "github.com/line/lbm-sdk/server/rosetta/lib/errors"
+	crgtypes "github.com/line/lbm-sdk/server/rosetta/lib/types"
 	sdk "github.com/line/lbm-sdk/types"
 	grpctypes "github.com/line/lbm-sdk/types/grpc"
 	"github.com/line/lbm-sdk/version"

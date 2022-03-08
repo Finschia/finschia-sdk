@@ -8,8 +8,6 @@ import (
 
 	"github.com/btcsuite/btcd/btcec"
 	rosettatypes "github.com/coinbase/rosetta-sdk-go/types"
-	crgerrs "github.com/tendermint/cosmos-rosetta-gateway/errors"
-	crgtypes "github.com/tendermint/cosmos-rosetta-gateway/types"
 
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto"
@@ -21,6 +19,8 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	crgerrs "github.com/line/lbm-sdk/server/rosetta/lib/errors"
+	crgtypes "github.com/line/lbm-sdk/server/rosetta/lib/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/tx/signing"
 	authsigning "github.com/line/lbm-sdk/x/auth/signing"
