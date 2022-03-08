@@ -16,7 +16,7 @@ func TestMsgSendRoute(t *testing.T) {
 	require.Equal(t, ModuleName, msg.Route())
 	require.Equal(t, "empty", msg.Type())
 
-	srvMsg := NewServiceMsgEmpty(sdk.AccAddress("from"))
+	srvMsg := NewMsgEmpty(sdk.AccAddress("from"))
 	require.Equal(t, "/lbm.auth.v1.Msg/Empty", srvMsg.Route())
 	require.Equal(t, "/lbm.auth.v1.Msg/Empty", srvMsg.Type())
 }
