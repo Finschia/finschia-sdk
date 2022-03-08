@@ -320,7 +320,7 @@ func TestInstantiate(t *testing.T) {
 
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x11ccf), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x12062), gasAfter-gasBefore)
 	}
 
 	// ensure it is stored properly
@@ -555,7 +555,7 @@ func TestExecute(t *testing.T) {
 	// make sure gas is properly deducted from ctx
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x115d7), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x10d7f), gasAfter-gasBefore)
 	}
 	// ensure bob now exists and got both payments released
 	bobAcct = accKeeper.GetAccount(ctx, bob)
@@ -566,7 +566,7 @@ func TestExecute(t *testing.T) {
 	// ensure contract has updated balance
 	contractAcct = accKeeper.GetAccount(ctx, addr)
 	require.NotNil(t, contractAcct)
-	assert.Equal(t, sdk.Coins(nil), bankKeeper.GetAllBalances(ctx, contractAcct.GetAddress()))
+	assert.Equal(t, sdk.NewCoins().String(), bankKeeper.GetAllBalances(ctx, contractAcct.GetAddress()).String())
 
 	// and events emitted
 	require.Len(t, em.Events(), 5)
@@ -1097,10 +1097,9 @@ func TestMigrateWithDispatchedMessage(t *testing.T) {
 			},
 		},
 		{
-			"Type": "transfer",
+			"Type": "coin_spent",
 			"Attr": []dict{
-				{"recipient": myPayoutAddr},
-				{"sender": contractAddr},
+				{"spender": "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu"},
 				{"amount": "100000denom"},
 			},
 		},

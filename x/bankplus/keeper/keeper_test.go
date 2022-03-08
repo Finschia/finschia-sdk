@@ -35,7 +35,7 @@ func getCoinsByName(ctx sdk.Context, bk bankpluskeeper.Keeper, ak types.AccountK
 	moduleAddress := ak.GetModuleAddress(moduleName)
 	macc := ak.GetAccount(ctx, moduleAddress)
 	if macc == nil {
-		return sdk.Coins(nil)
+		return sdk.NewCoins()
 	}
 
 	return bk.GetAllBalances(ctx, macc.GetAddress())
@@ -93,17 +93,17 @@ func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 	suite.Require().NoError(
 		keeper.SendCoinsFromModuleToModule(ctx, holderAcc.GetName(), authtypes.Burner, initCoins),
 	)
-	suite.Require().Equal(sdk.Coins(nil), getCoinsByName(ctx, keeper, authKeeper, holderAcc.GetName()))
+	suite.Require().Equal(sdk.NewCoins().String(), getCoinsByName(ctx, keeper, authKeeper, holderAcc.GetName()).String())
 	suite.Require().Equal(initCoins, getCoinsByName(ctx, keeper, authKeeper, authtypes.Burner))
 
 	suite.Require().NoError(
 		keeper.SendCoinsFromModuleToAccount(ctx, authtypes.Burner, baseAcc.GetAddress(), initCoins),
 	)
-	suite.Require().Equal(sdk.Coins(nil), getCoinsByName(ctx, keeper, authKeeper, authtypes.Burner))
+	suite.Require().Equal(sdk.NewCoins().String(), getCoinsByName(ctx, keeper, authKeeper, authtypes.Burner).String())
 	suite.Require().Equal(initCoins, keeper.GetAllBalances(ctx, baseAcc.GetAddress()))
 
 	suite.Require().NoError(keeper.SendCoinsFromAccountToModule(ctx, baseAcc.GetAddress(), authtypes.Burner, initCoins))
-	suite.Require().Equal(sdk.Coins(nil), keeper.GetAllBalances(ctx, baseAcc.GetAddress()))
+	suite.Require().Equal(sdk.NewCoins().String(), keeper.GetAllBalances(ctx, baseAcc.GetAddress()).String())
 	suite.Require().Equal(initCoins, getCoinsByName(ctx, keeper, authKeeper, authtypes.Burner))
 }
 
@@ -147,7 +147,7 @@ func (suite *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
 	suite.Require().False(keeper.IsInactiveAddr(blockedAcc.GetAddress()))
 
 	suite.Require().NoError(keeper.SendCoins(ctx, holderAcc.GetAddress(), blockedAcc.GetAddress(), initCoins))
-	suite.Require().Equal(sdk.Coins(nil), keeper.GetAllBalances(ctx, holderAcc.GetAddress()))
+	suite.Require().Equal(sdk.NewCoins().String(), keeper.GetAllBalances(ctx, holderAcc.GetAddress()).String())
 }
 
 func (suite *IntegrationTestSuite) TestInitializeBankPlus() {

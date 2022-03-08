@@ -97,7 +97,7 @@ func TestDispatchSubMsgSuccessCase(t *testing.T) {
 	assert.Empty(t, sub.Data)
 	require.Len(t, sub.Events, 1)
 
-	transfer := sub.Events[0]
+	transfer := sub.Events[2]
 	assert.Equal(t, "transfer", transfer.Type)
 	assert.Equal(t, wasmvmtypes.EventAttribute{
 		Key:   "recipient",

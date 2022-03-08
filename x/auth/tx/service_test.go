@@ -277,7 +277,7 @@ func (s IntegrationTestSuite) TestGetTxEvents_GRPCGateway() {
 		},
 		{
 			"valid request: order by asc",
-			fmt.Sprintf("%s/lbm/tx/v1/txs?events=%s&events=%s&order_by=ORDER_BY_ASC", val.APIAddress, "bankMsgSendEventAction", "message.module='bank'"),
+			fmt.Sprintf("%s/lbm/tx/v1/txs?events=%s&events=%s&order_by=ORDER_BY_ASC", val.APIAddress, bankMsgSendEventAction, "message.module='bank'"),
 			false,
 			"",
 		},

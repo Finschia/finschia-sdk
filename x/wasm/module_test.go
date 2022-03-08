@@ -486,7 +486,7 @@ func TestHandleExecute(t *testing.T) {
 
 	contractAcct = data.acctKeeper.GetAccount(data.ctx, contractAddr)
 	require.NotNil(t, contractAcct)
-	assert.Equal(t, sdk.Coins(nil), data.bankKeeper.GetAllBalances(data.ctx, contractAcct.GetAddress()))
+	assert.Equal(t, sdk.NewCoins().String(), data.bankKeeper.GetAllBalances(data.ctx, contractAcct.GetAddress()).String())
 
 	// ensure all contract state is as after init
 	assertCodeList(t, q, data.ctx, 1)
@@ -564,7 +564,7 @@ func TestHandleExecuteEscrow(t *testing.T) {
 	contractAddr := sdk.AccAddress(contractBech32Addr)
 	contractAcct := data.acctKeeper.GetAccount(data.ctx, contractAddr)
 	require.NotNil(t, contractAcct)
-	assert.Equal(t, sdk.Coins(nil), data.bankKeeper.GetAllBalances(data.ctx, contractAcct.GetAddress()))
+	assert.Equal(t, sdk.NewCoins().String(), data.bankKeeper.GetAllBalances(data.ctx, contractAcct.GetAddress()).String())
 }
 
 func TestReadWasmConfig(t *testing.T) {

@@ -120,16 +120,6 @@ func SimulateMsgGrantAuthorization(ak authz.AccountKeeper, bk authz.BankKeeper, 
 			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgGrantAuthorization, "unable to generate mock tx"), nil, err
 		}
 
-		// TODO(dudong2): need to opti
-		txBytes, err := txGen.TxEncoder()(tx)
-		if err != nil {
-			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
-		}
-		tx, err = app.PreCheckTx(txBytes)
-		if err != nil {
-			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
-		}
-
 		_, _, err = app.Deliver(txGen.TxEncoder(), tx)
 		if err != nil {
 			return simtypes.NoOpMsg(authz.ModuleName, sdk.MsgTypeURL(msg), "unable to deliver tx"), nil, err
@@ -188,16 +178,6 @@ func SimulateMsgRevokeAuthorization(ak authz.AccountKeeper, bk authz.BankKeeper,
 
 		if err != nil {
 			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgRevokeAuthorization, err.Error()), nil, err
-		}
-
-		// TODO(dudong2): need to opti
-		txBytes, err := txGen.TxEncoder()(tx)
-		if err != nil {
-			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
-		}
-		tx, err = app.PreCheckTx(txBytes)
-		if err != nil {
-			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
 		}
 
 		_, _, err = app.Deliver(txGen.TxEncoder(), tx)
@@ -273,16 +253,6 @@ func SimulateMsgExecuteAuthorized(ak authz.AccountKeeper, bk authz.BankKeeper, k
 			grantee.PrivKey,
 		)
 
-		if err != nil {
-			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
-		}
-
-		// TODO(dudong2): need to opti
-		txBytes, err := txGen.TxEncoder()(tx)
-		if err != nil {
-			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
-		}
-		tx, err = app.PreCheckTx(txBytes)
 		if err != nil {
 			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
 		}

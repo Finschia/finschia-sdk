@@ -193,6 +193,10 @@ func (msg MsgExec) GetSigners() []sdk.AccAddress {
 func (msg MsgExec) ValidateBasic() error {
 	err := sdk.ValidateAccAddress(msg.Grantee)
 	if err != nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "invalid grantee address")
+	}
+
+	if len(msg.Msgs) == 0 {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "messages cannot be empty")
 	}
 

@@ -26,30 +26,7 @@ func (s *IntegrationTestSuite) TestMigrateGenesis() {
 		expErr    bool
 		expErrMsg string
 		check     func(jsonOut string)
-	}{
-		{
-			"migrate 0.34 to 0.36",
-			`{"chain_id":"test","app_state":{}}`,
-			"v0.36",
-			false, "", func(_ string) {},
-		},
-		{
-			"migrate 0.37 to 0.42",
-			v037Exported,
-			"v0.42",
-			true, "Make sure that you have correctly migrated all Tendermint consensus params", func(_ string) {},
-		},
-		{
-			"migrate 0.42 to 0.43",
-			v040Valid,
-			"v0.43",
-			false, "",
-			func(jsonOut string) {
-				// Make sure the json output contains the ADR-037 gov weighted votes.
-				s.Require().Contains(jsonOut, "\"weight\":\"1.000000000000000000\"")
-			},
-		},
-	}
+	}{}
 
 	for _, tc := range testCases {
 		tc := tc

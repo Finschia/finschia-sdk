@@ -128,7 +128,7 @@ func NewEditValidatorCmd() *cobra.Command {
 				newMinSelfDelegation = &msb
 			}
 
-			msg := types.NewMsgEditValidator(sdk.ValAddress(valAddr), description, newRate, newMinSelfDelegation)
+			msg := types.NewMsgEditValidator(sdk.AccAddress(valAddr).ToValAddress(), description, newRate, newMinSelfDelegation)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},

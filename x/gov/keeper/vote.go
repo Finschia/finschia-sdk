@@ -75,11 +75,6 @@ func (keeper Keeper) GetVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 
 // SetVote sets a Vote to the gov store
 func (keeper Keeper) SetVote(ctx sdk.Context, vote types.Vote) {
-	// vote.Option is a deprecated field, we don't set it in state
-	if vote.Option != types.OptionEmpty { //nolint
-		vote.Option = types.OptionEmpty //nolint
-	}
-
 	store := ctx.KVStore(keeper.storeKey)
 	bz := keeper.cdc.MustMarshal(&vote)
 	addr := sdk.AccAddress(vote.Voter)
