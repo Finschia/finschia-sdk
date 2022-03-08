@@ -77,10 +77,11 @@ const (
 )
 
 type (
-	StoreKey       = types.StoreKey
-	CapabilityKey  = types.CapabilityKey
-	KVStoreKey     = types.KVStoreKey
-	MemoryStoreKey = types.MemoryStoreKey
+	StoreKey          = types.StoreKey
+	CapabilityKey     = types.CapabilityKey
+	KVStoreKey        = types.KVStoreKey
+	TransientStoreKey = types.TransientStoreKey
+	MemoryStoreKey    = types.MemoryStoreKey
 )
 
 // assertNoCommonPrefix will panic if there are two keys: k1 and k2 in keys, such that
@@ -124,9 +125,9 @@ func NewTransientStoreKey(name string) *types.TransientStoreKey {
 // Must return pointers according to the ocap principle
 // The function will panic if there is a potential conflict in names (see `assertNoPrefix`
 // function for more details).
-func NewTransientStoreKeys(names ...string) map[string]*types.TransientStoreKey {
+func NewTransientStoreKeys(names ...string) map[string]*TransientStoreKey {
 	assertNoPrefix(names)
-	keys := make(map[string]*types.TransientStoreKey)
+	keys := make(map[string]*TransientStoreKey)
 	for _, n := range names {
 		keys[n] = NewTransientStoreKey(n)
 	}

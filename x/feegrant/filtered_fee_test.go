@@ -168,7 +168,7 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 				require.NoError(t, err)
 
 				// save the grant
-				cdc := simapp.MakeTestEncodingConfig().Codec
+				cdc := simapp.MakeTestEncodingConfig().Marshaler
 				bz, err := cdc.Marshal(&newGrant)
 				require.NoError(t, err)
 

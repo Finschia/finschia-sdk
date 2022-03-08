@@ -3,16 +3,17 @@ package keeper_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/suite"
+
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
-
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/stretchr/testify/suite"
-
 	"github.com/line/lbm-sdk/x/bank/types"
 	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
+	minttypes "github.com/line/lbm-sdk/x/mint/types"
 )
 
 const (
@@ -66,7 +67,15 @@ func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 	)
 
 	baseAcc := authKeeper.NewAccountWithAddress(ctx, authtypes.NewModuleAddress("baseAcc"))
-	suite.Require().NoError(keeper.SetBalances(ctx, holderAcc.GetAddress(), initCoins))
+
+	// set initial balances
+	suite.
+		Require().
+		NoError(keeper.MintCoins(ctx, minttypes.ModuleName, initCoins))
+
+	suite.
+		Require().
+		NoError(keeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, holderAcc.GetAddress(), initCoins))
 
 	keeper.SetSupply(ctx, initCoins[0])
 	authKeeper.SetModuleAccount(ctx, holderAcc)
@@ -128,7 +137,15 @@ func (suite *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
 		app.GetSubspace(types.ModuleName), make(map[string]bool),
 	)
 
-	suite.Require().NoError(keeper.SetBalances(ctx, holderAcc.GetAddress(), initCoins))
+	// set initial balances
+	suite.
+		Require().
+		NoError(keeper.MintCoins(ctx, minttypes.ModuleName, initCoins))
+
+	suite.
+		Require().
+		NoError(keeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, holderAcc.GetAddress(), initCoins))
+
 	keeper.SetSupply(ctx, initCoins[0])
 	suite.Require().Equal(initCoins, keeper.GetAllBalances(ctx, holderAcc.GetAddress()))
 

@@ -14,6 +14,7 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/server/rosetta"
+	crgerrs "github.com/line/lbm-sdk/server/rosetta/lib/errors"
 	sdk "github.com/line/lbm-sdk/types"
 	authsigning "github.com/line/lbm-sdk/x/auth/signing"
 	authtx "github.com/line/lbm-sdk/x/auth/tx"

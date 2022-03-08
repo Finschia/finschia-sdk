@@ -751,6 +751,8 @@ func createFakeFundedAccount(t *testing.T, ctx sdk.Context, am authkeeper.Accoun
 	_, _, addr := keyPubAddr()
 	acc := am.NewAccountWithAddress(ctx, addr)
 	am.SetAccount(ctx, acc)
-	require.NoError(t, bankKeeper.SetBalances(ctx, addr, coins))
+	for _, coin := range coins {
+		require.NoError(t, bankKeeper.SetBalance(ctx, addr, coin))
+	}
 	return addr
 }

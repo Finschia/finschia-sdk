@@ -34,9 +34,9 @@ func (suite *SubspaceTestSuite) SetupTest() {
 	suite.NoError(ms.LoadLatestVersion())
 
 	encCfg := simapp.MakeTestEncodingConfig()
-	ss := types.NewSubspace(encCfg.Codec, encCfg.Amino, key, tkey, "testsubspace")
+	ss := types.NewSubspace(encCfg.Marshaler, encCfg.Amino, key, tkey, "testsubspace")
 
-	suite.cdc = encCfg.Codec
+	suite.cdc = encCfg.Marshaler
 	suite.amino = encCfg.Amino
 	suite.ctx = sdk.NewContext(ms, ocproto.Header{}, false, log.NewNopLogger())
 	suite.ss = ss.WithKeyTable(paramKeyTable())
