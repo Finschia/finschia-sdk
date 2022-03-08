@@ -124,9 +124,9 @@ func NewTransientStoreKey(name string) *types.TransientStoreKey {
 // Must return pointers according to the ocap principle
 // The function will panic if there is a potential conflict in names (see `assertNoPrefix`
 // function for more details).
-func NewTransientStoreKeys(names ...string) map[string]*TransientStoreKey {
+func NewTransientStoreKeys(names ...string) map[string]*types.TransientStoreKey {
 	assertNoPrefix(names)
-	keys := make(map[string]*TransientStoreKey)
+	keys := make(map[string]*types.TransientStoreKey)
 	for _, n := range names {
 		keys[n] = NewTransientStoreKey(n)
 	}
