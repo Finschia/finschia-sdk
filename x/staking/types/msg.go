@@ -1,6 +1,8 @@
 package types
 
 import (
+	"bytes"
+
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	sdk "github.com/line/lbm-sdk/types"
@@ -80,19 +82,23 @@ func (msg MsgCreateValidator) GetSignBytes() []byte {
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgCreateValidator) ValidateBasic() error {
 	// note that unmarshaling from bech32 ensures either empty or valid
-	delAddr := sdk.AccAddress(msg.DelegatorAddress)
-	err := sdk.ValidateAccAddress(delAddr.String())
+	delAddrBytes, err := sdk.AccAddressToBytes(msg.DelegatorAddress)
 	if err != nil {
 		return err
 	}
+	if len(delAddrBytes) == 0 {
+		return ErrEmptyDelegatorAddr
+	}
 
-	valAddr := sdk.ValAddress(msg.ValidatorAddress)
-	err = sdk.ValidateValAddress(valAddr.String())
+	valAddrBytes, err := sdk.ValAddressToBytes(msg.ValidatorAddress)
 	if err != nil {
 		return err
 	}
+	if len(valAddrBytes) == 0 {
+		return ErrEmptyValidatorAddr
+	}
 
-	if !sdk.AccAddress(valAddr).Equals(delAddr) {
+	if !bytes.Equal(delAddrBytes, valAddrBytes) {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "validator address is invalid")
 	}
 

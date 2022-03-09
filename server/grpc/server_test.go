@@ -227,13 +227,13 @@ func (s *IntegrationTestSuite) TestGRPCUnpacker() {
 	// no unpacked interfaces yet, so ConsAddr will be nil
 	nilAddr, err := validator.Validator.GetConsAddr()
 	require.Error(s.T(), err)
-	require.Nil(s.T(), nilAddr)
+	require.True(s.T(), nilAddr.Empty())
 
 	// unpack the interfaces and now ConsAddr is not nil
 	err = validator.Validator.UnpackInterfaces(ir)
 	require.NoError(s.T(), err)
 	addr, err := validator.Validator.GetConsAddr()
-	require.NotNil(s.T(), addr)
+	require.False(s.T(), addr.Empty())
 	require.NoError(s.T(), err)
 }
 

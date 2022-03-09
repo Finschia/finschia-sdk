@@ -137,7 +137,7 @@ func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {}
 
 // Deprecated: Route returns the message routing key for the feegrant module.
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(feegrant.RouterKey, nil)
+	return sdk.Route{}
 }
 
 // NewHandler returns an sdk.Handler for the feegrant module.

@@ -463,7 +463,7 @@ func (s *IntegrationTestSuite) TestQueryDelegatorDelegationsGRPC() {
 		},
 		{
 			"address without delegations",
-			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegations/%s", baseURL, newAddr.String()),
+			fmt.Sprintf("%s/lbm/staking/v1/delegations/%s", baseURL, newAddr.String()),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},

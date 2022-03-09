@@ -3,17 +3,17 @@ package upgrade_test
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
+
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
-	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/simapp"
 	storetypes "github.com/line/lbm-sdk/store/types"
@@ -232,21 +232,15 @@ func TestNoSpuriousUpgrades(t *testing.T) {
 }
 
 func TestPlanStringer(t *testing.T) {
-	ti, err := time.Parse(time.RFC3339, "2020-01-01T00:00:00Z")
-	require.Nil(t, err)
 	require.Equal(t, `Upgrade Plan
   Name: test
-  Time: 2020-01-01T00:00:00Z
-  Info: .`, types.Plan{Name: "test", Time: ti}.String())
-	require.Equal(t, `Upgrade Plan
-  Name: test
-  height: 100
+  Height: 100
   Info: .`, types.Plan{Name: "test", Height: 100, Info: ""}.String())
 
-	require.Equal(t, fmt.Sprintf(`Upgrade Plan
+	require.Equal(t, `Upgrade Plan
   Name: test
-  height: 100
-  Info: .`), types.Plan{Name: "test", Height: 100, Info: ""}.String())
+  Height: 100
+  Info: .`, types.Plan{Name: "test", Height: 100, Info: ""}.String())
 }
 
 func VerifyNotDone(t *testing.T, newCtx sdk.Context, name string) {
