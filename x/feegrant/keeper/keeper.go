@@ -5,8 +5,6 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 
-	storetypes "github.com/line/lbm-sdk/store/types"
-
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"

@@ -21,7 +21,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/feegrant"
 	"github.com/line/lbm-sdk/x/feegrant/client/cli"
-	"github.com/line/lbm-sdk/x/feegrant/types"
 	govtestutil "github.com/line/lbm-sdk/x/gov/client/testutil"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )

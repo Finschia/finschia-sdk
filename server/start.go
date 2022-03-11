@@ -12,7 +12,6 @@ import (
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 
-	crgserver "github.com/line/lbm-sdk/server/rosetta/lib/server"
 	"github.com/line/ostracon/abci/server"
 	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	ostos "github.com/line/ostracon/libs/os"
@@ -22,9 +21,6 @@ import (
 	"github.com/line/ostracon/proxy"
 	"github.com/line/ostracon/rpc/client/local"
 
-	"github.com/line/lbm-sdk/store/cache"
-	"github.com/line/lbm-sdk/store/iavl"
-
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/codec"
@@ -32,6 +28,7 @@ import (
 	"github.com/line/lbm-sdk/server/config"
 	servergrpc "github.com/line/lbm-sdk/server/grpc"
 	"github.com/line/lbm-sdk/server/rosetta"
+	crgserver "github.com/line/lbm-sdk/server/rosetta/lib/server"
 	"github.com/line/lbm-sdk/server/types"
 	"github.com/line/lbm-sdk/store/cache"
 	"github.com/line/lbm-sdk/store/iavl"

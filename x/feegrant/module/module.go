@@ -10,8 +10,6 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/x/feegrant/types"
-
 	sdkclient "github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/codec"
 	cdctypes "github.com/line/lbm-sdk/codec/types"
