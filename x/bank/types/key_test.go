@@ -7,8 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/x/bank/keeper"
-
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/address"
 	"github.com/line/lbm-sdk/x/bank/types"
