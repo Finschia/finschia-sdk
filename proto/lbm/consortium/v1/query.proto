@@ -23,6 +23,11 @@ service Query {
   rpc ValidatorAuths(QueryValidatorAuthsRequest) returns (QueryValidatorAuthsResponse) {
     option (google.api.http).get = "/lbm/consortium/v1/validators";
   }
+
+  // Test queries authorization infos of validators.
+  rpc Test(QueryValidatorAuthsRequest) returns (QueryValidatorAuthsResponse) {
+    option (google.api.http).get = "/lbm/consortium/v1/validators";
+  }
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
