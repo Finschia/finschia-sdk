@@ -320,7 +320,7 @@ func TestInstantiate(t *testing.T) {
 
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x12062), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x11f9f), gasAfter-gasBefore)
 	}
 
 	// ensure it is stored properly
@@ -555,7 +555,7 @@ func TestExecute(t *testing.T) {
 	// make sure gas is properly deducted from ctx
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x10d7f), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x10f57), gasAfter-gasBefore)
 	}
 	// ensure bob now exists and got both payments released
 	bobAcct = accKeeper.GetAccount(ctx, bob)
@@ -569,10 +569,10 @@ func TestExecute(t *testing.T) {
 	assert.Equal(t, sdk.NewCoins().String(), bankKeeper.GetAllBalances(ctx, contractAcct.GetAddress()).String())
 
 	// and events emitted
-	require.Len(t, em.Events(), 5)
+	require.Len(t, em.Events(), 9)
 	expEvt := sdk.NewEvent("execute",
 		sdk.NewAttribute("_contract_address", addr.String()))
-	assert.Equal(t, expEvt, em.Events()[1])
+	assert.Equal(t, expEvt, em.Events()[3])
 
 	t.Logf("Duration: %v (%d gas)\n", diff, gasAfter-gasBefore)
 }
@@ -1099,7 +1099,22 @@ func TestMigrateWithDispatchedMessage(t *testing.T) {
 		{
 			"Type": "coin_spent",
 			"Attr": []dict{
-				{"spender": "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu"},
+				{"spender": "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"},
+				{"amount": "100000denom"},
+			},
+		},
+		{
+			"Type": "coin_received",
+			"Attr": []dict{
+				{"receiver": "link1wrtx8cgrx5qtqdjf7gpxe6mr6au74des5k2may"},
+				{"amount": "100000denom"},
+			},
+		},
+		{
+			"Type": "transfer",
+			"Attr": []dict{
+				{"recipient": "link1wrtx8cgrx5qtqdjf7gpxe6mr6au74des5k2may"},
+				{"sender": "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"},
 				{"amount": "100000denom"},
 			},
 		},
@@ -1289,7 +1304,7 @@ func TestSudo(t *testing.T) {
 	balance := bankKeeper.GetBalance(ctx, comAcct.GetAddress(), "denom")
 	assert.Equal(t, sdk.NewInt64Coin("denom", 76543), balance)
 	// and events emitted
-	require.Len(t, em.Events(), 2)
+	require.Len(t, em.Events(), 4)
 	expEvt := sdk.NewEvent("sudo",
 		sdk.NewAttribute("_contract_address", addr.String()))
 	assert.Equal(t, expEvt, em.Events()[0])
