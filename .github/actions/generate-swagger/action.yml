@@ -1,0 +1,7 @@
+name: generate swagger
+description: generate swagger files based on protobuf
+runs:
+  using: "composite"
+  steps:
+    - run: make proto-swagger-gen
+    - run: make update-swagger-docs
