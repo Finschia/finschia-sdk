@@ -122,6 +122,7 @@ func (suite *SimTestSuite) TestSimulateMsgMultiSend() {
 	require.Len(futureOperations, 0)
 }
 
+// Since the allowedReceivingModAcc value of the distribution module is set to true, change it to test in which the result is true.
 func (suite *SimTestSuite) TestSimulateModuleAccountMsgSend() {
 	const (
 		accCount       = 1
@@ -142,18 +143,19 @@ func (suite *SimTestSuite) TestSimulateModuleAccountMsgSend() {
 	r = rand.New(s)
 
 	operationMsg, futureOperations, err := op(r, suite.app.BaseApp, suite.ctx, accounts, "")
-	suite.Require().Error(err)
+	suite.Require().NoError(err)
 
 	var msg types.MsgSend
 	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
-	suite.Require().False(operationMsg.OK)
-	suite.Require().Equal(operationMsg.Comment, "invalid transfers")
+	suite.Require().True(operationMsg.OK)
+	suite.Require().Empty(operationMsg.Comment)
 	suite.Require().Equal(types.TypeMsgSend, msg.Type())
 	suite.Require().Equal(types.ModuleName, msg.Route())
 	suite.Require().Len(futureOperations, 0)
 }
 
+// Since the allowedReceivingModAcc value of the distribution module is set to true, change it to test in which the result is true.
 func (suite *SimTestSuite) TestSimulateMsgMultiSendToModuleAccount() {
 	const (
 		accCount  = 2
@@ -171,13 +173,13 @@ func (suite *SimTestSuite) TestSimulateMsgMultiSendToModuleAccount() {
 	op := simulation.SimulateMsgMultiSendToModuleAccount(suite.app.AccountKeeper, suite.app.BankKeeper, mAccCount)
 
 	operationMsg, futureOperations, err := op(r, suite.app.BaseApp, suite.ctx, accounts, "")
-	suite.Require().Error(err)
+	suite.Require().NoError(err)
 
 	var msg types.MsgMultiSend
 	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
-	suite.Require().False(operationMsg.OK) // sending tokens to a module account should fail
-	suite.Require().Equal(operationMsg.Comment, "invalid transfers")
+	suite.Require().True(operationMsg.OK) // sending tokens to a module account should fail
+	suite.Require().Empty(operationMsg.Comment)
 	suite.Require().Equal(types.TypeMsgMultiSend, msg.Type())
 	suite.Require().Equal(types.ModuleName, msg.Route())
 	suite.Require().Len(futureOperations, 0)

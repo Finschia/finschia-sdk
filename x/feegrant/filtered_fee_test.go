@@ -47,7 +47,7 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 		},
 		"msg not contained": {
 			allowance: &feegrant.BasicAllowance{},
-			msgs:      []string{"/cosmos.gov.v1beta2.MsgVote"},
+			msgs:      []string{"/lbm.gov.v1.MsgVote"},
 			accept:    false,
 		},
 		"small fee without expire": {

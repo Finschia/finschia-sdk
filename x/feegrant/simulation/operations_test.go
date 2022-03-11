@@ -75,12 +75,12 @@ func (suite *SimTestSuite) TestWeightedOperations() {
 	}{
 		{
 			simappparams.DefaultWeightGrantAllowance,
-			feegrant.MsgGrantAllowance{}.Route(),
+			feegrant.ModuleName,
 			simulation.TypeMsgGrantAllowance,
 		},
 		{
 			simappparams.DefaultWeightRevokeAllowance,
-			feegrant.MsgRevokeAllowance{}.Route(),
+			feegrant.ModuleName,
 			simulation.TypeMsgRevokeAllowance,
 		},
 	}

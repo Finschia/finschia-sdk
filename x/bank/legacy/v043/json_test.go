@@ -58,7 +58,7 @@ func TestMigrateJSON(t *testing.T) {
 	expected := `{
 	"balances": [
 		{
-			"address": "cosmos1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh",
+			"address": "link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh",
 			"coins": [
 				{
 					"amount": "20",

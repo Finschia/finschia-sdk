@@ -58,14 +58,6 @@ func TestPlanValid(t *testing.T) {
 		p     types.Plan
 		valid bool
 	}{
-		"proper": {
-			p: types.Plan{
-				Name: "all-good",
-				Info: "some text here",
-				Time: mustParseTime("2019-07-08T11:33:55Z"),
-			},
-			valid: true,
-		},
 		"proper by height": {
 			p: types.Plan{
 				Name:   "all-good",

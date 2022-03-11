@@ -10,6 +10,7 @@ import (
 	gogoproto "github.com/gogo/protobuf/proto"
 
 	// nolint: staticcheck
+	_ "github.com/confio/ics23/go" // TODO(dudong2): after separating ibc module from lbm-sdk, remove this
 	"github.com/golang/protobuf/proto"
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	_ "github.com/regen-network/cosmos-proto" // look above
@@ -18,6 +19,7 @@ import (
 var importsToFix = map[string]string{
 	"gogo.proto":   "gogoproto/gogo.proto",
 	"cosmos.proto": "cosmos_proto/cosmos.proto",
+	"proofs.proto": "confio/proofs.proto", // TODO(dudong2): after separating ibc module from lbm-sdk, remove this
 }
 
 // fixRegistration is required because certain files register themselves in a way
