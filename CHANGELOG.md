@@ -47,4 +47,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Build, CI
 
+* (ci) [\#457](https://github.com/line/lbm-sdk/pull/457) add swagger check
+
 ### Document Updates
