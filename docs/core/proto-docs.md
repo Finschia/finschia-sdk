@@ -4,7 +4,6 @@
 
 ## Table of Contents
 
-<<<<<<< HEAD
 - [ibc/applications/transfer/v1/transfer.proto](#ibc/applications/transfer/v1/transfer.proto)
     - [DenomTrace](#ibc.applications.transfer.v1.DenomTrace)
     - [FungibleTokenPacketData](#ibc.applications.transfer.v1.FungibleTokenPacketData)
@@ -274,9 +273,12 @@
     - [Msg](#lbm.auth.v1.Msg)
   
 - [lbm/authz/v1/authz.proto](#lbm/authz/v1/authz.proto)
-    - [AuthorizationGrant](#lbm.authz.v1.AuthorizationGrant)
     - [GenericAuthorization](#lbm.authz.v1.GenericAuthorization)
-    - [SendAuthorization](#lbm.authz.v1.SendAuthorization)
+    - [Grant](#lbm.authz.v1.Grant)
+  
+- [lbm/authz/v1/event.proto](#lbm/authz/v1/event.proto)
+    - [EventGrant](#lbm.authz.v1.EventGrant)
+    - [EventRevoke](#lbm.authz.v1.EventRevoke)
   
 - [lbm/base/abci/v1/abci.proto](#lbm/base/abci/v1/abci.proto)
     - [ABCIMessageLog](#lbm.base.abci.v1.ABCIMessageLog)
@@ -291,12 +293,12 @@
     - [TxResponse](#lbm.base.abci.v1.TxResponse)
   
 - [lbm/authz/v1/tx.proto](#lbm/authz/v1/tx.proto)
-    - [MsgExecAuthorizedRequest](#lbm.authz.v1.MsgExecAuthorizedRequest)
-    - [MsgExecAuthorizedResponse](#lbm.authz.v1.MsgExecAuthorizedResponse)
-    - [MsgGrantAuthorizationRequest](#lbm.authz.v1.MsgGrantAuthorizationRequest)
-    - [MsgGrantAuthorizationResponse](#lbm.authz.v1.MsgGrantAuthorizationResponse)
-    - [MsgRevokeAuthorizationRequest](#lbm.authz.v1.MsgRevokeAuthorizationRequest)
-    - [MsgRevokeAuthorizationResponse](#lbm.authz.v1.MsgRevokeAuthorizationResponse)
+    - [MsgExec](#lbm.authz.v1.MsgExec)
+    - [MsgExecResponse](#lbm.authz.v1.MsgExecResponse)
+    - [MsgGrant](#lbm.authz.v1.MsgGrant)
+    - [MsgGrantResponse](#lbm.authz.v1.MsgGrantResponse)
+    - [MsgRevoke](#lbm.authz.v1.MsgRevoke)
+    - [MsgRevokeResponse](#lbm.authz.v1.MsgRevokeResponse)
   
     - [Msg](#lbm.authz.v1.Msg)
   
@@ -305,10 +307,8 @@
     - [GrantAuthorization](#lbm.authz.v1.GrantAuthorization)
   
 - [lbm/authz/v1/query.proto](#lbm/authz/v1/query.proto)
-    - [QueryAuthorizationRequest](#lbm.authz.v1.QueryAuthorizationRequest)
-    - [QueryAuthorizationResponse](#lbm.authz.v1.QueryAuthorizationResponse)
-    - [QueryAuthorizationsRequest](#lbm.authz.v1.QueryAuthorizationsRequest)
-    - [QueryAuthorizationsResponse](#lbm.authz.v1.QueryAuthorizationsResponse)
+    - [QueryGrantsRequest](#lbm.authz.v1.QueryGrantsRequest)
+    - [QueryGrantsResponse](#lbm.authz.v1.QueryGrantsResponse)
   
     - [Query](#lbm.authz.v1.Query)
   
@@ -392,6 +392,36 @@
   
     - [ReflectionService](#lbm.base.reflection.v1.ReflectionService)
   
+- [lbm/base/reflection/v2/reflection.proto](#lbm/base/reflection/v2/reflection.proto)
+    - [AppDescriptor](#lbm.base.reflection.v2.AppDescriptor)
+    - [AuthnDescriptor](#lbm.base.reflection.v2.AuthnDescriptor)
+    - [ChainDescriptor](#lbm.base.reflection.v2.ChainDescriptor)
+    - [CodecDescriptor](#lbm.base.reflection.v2.CodecDescriptor)
+    - [ConfigurationDescriptor](#lbm.base.reflection.v2.ConfigurationDescriptor)
+    - [GetAuthnDescriptorRequest](#lbm.base.reflection.v2.GetAuthnDescriptorRequest)
+    - [GetAuthnDescriptorResponse](#lbm.base.reflection.v2.GetAuthnDescriptorResponse)
+    - [GetChainDescriptorRequest](#lbm.base.reflection.v2.GetChainDescriptorRequest)
+    - [GetChainDescriptorResponse](#lbm.base.reflection.v2.GetChainDescriptorResponse)
+    - [GetCodecDescriptorRequest](#lbm.base.reflection.v2.GetCodecDescriptorRequest)
+    - [GetCodecDescriptorResponse](#lbm.base.reflection.v2.GetCodecDescriptorResponse)
+    - [GetConfigurationDescriptorRequest](#lbm.base.reflection.v2.GetConfigurationDescriptorRequest)
+    - [GetConfigurationDescriptorResponse](#lbm.base.reflection.v2.GetConfigurationDescriptorResponse)
+    - [GetQueryServicesDescriptorRequest](#lbm.base.reflection.v2.GetQueryServicesDescriptorRequest)
+    - [GetQueryServicesDescriptorResponse](#lbm.base.reflection.v2.GetQueryServicesDescriptorResponse)
+    - [GetTxDescriptorRequest](#lbm.base.reflection.v2.GetTxDescriptorRequest)
+    - [GetTxDescriptorResponse](#lbm.base.reflection.v2.GetTxDescriptorResponse)
+    - [InterfaceAcceptingMessageDescriptor](#lbm.base.reflection.v2.InterfaceAcceptingMessageDescriptor)
+    - [InterfaceDescriptor](#lbm.base.reflection.v2.InterfaceDescriptor)
+    - [InterfaceImplementerDescriptor](#lbm.base.reflection.v2.InterfaceImplementerDescriptor)
+    - [MsgDescriptor](#lbm.base.reflection.v2.MsgDescriptor)
+    - [QueryMethodDescriptor](#lbm.base.reflection.v2.QueryMethodDescriptor)
+    - [QueryServiceDescriptor](#lbm.base.reflection.v2.QueryServiceDescriptor)
+    - [QueryServicesDescriptor](#lbm.base.reflection.v2.QueryServicesDescriptor)
+    - [SigningModeDescriptor](#lbm.base.reflection.v2.SigningModeDescriptor)
+    - [TxDescriptor](#lbm.base.reflection.v2.TxDescriptor)
+  
+    - [ReflectionService](#lbm.base.reflection.v2.ReflectionService)
+  
 - [lbm/base/snapshots/v1/snapshot.proto](#lbm/base/snapshots/v1/snapshot.proto)
     - [Metadata](#lbm.base.snapshots.v1.Metadata)
     - [Snapshot](#lbm.base.snapshots.v1.Snapshot)
@@ -400,6 +430,9 @@
     - [CommitID](#lbm.base.store.v1.CommitID)
     - [CommitInfo](#lbm.base.store.v1.CommitInfo)
     - [StoreInfo](#lbm.base.store.v1.StoreInfo)
+  
+- [lbm/base/store/v1/listening.proto](#lbm/base/store/v1/listening.proto)
+    - [StoreKVPair](#lbm.base.store.v1.StoreKVPair)
   
 - [lbm/base/store/v1/snapshot.proto](#lbm/base/store/v1/snapshot.proto)
     - [SnapshotIAVLItem](#lbm.base.store.v1.SnapshotIAVLItem)
@@ -941,584 +974,6 @@
     - [QuerySmartContractStateResponse](#lbm.wasm.v1.QuerySmartContractStateResponse)
   
     - [Query](#lbm.wasm.v1.Query)
-=======
-- [cosmos/auth/v1beta1/auth.proto](#cosmos/auth/v1beta1/auth.proto)
-    - [BaseAccount](#cosmos.auth.v1beta1.BaseAccount)
-    - [ModuleAccount](#cosmos.auth.v1beta1.ModuleAccount)
-    - [Params](#cosmos.auth.v1beta1.Params)
-  
-- [cosmos/auth/v1beta1/genesis.proto](#cosmos/auth/v1beta1/genesis.proto)
-    - [GenesisState](#cosmos.auth.v1beta1.GenesisState)
-  
-- [cosmos/base/query/v1beta1/pagination.proto](#cosmos/base/query/v1beta1/pagination.proto)
-    - [PageRequest](#cosmos.base.query.v1beta1.PageRequest)
-    - [PageResponse](#cosmos.base.query.v1beta1.PageResponse)
-  
-- [cosmos/auth/v1beta1/query.proto](#cosmos/auth/v1beta1/query.proto)
-    - [QueryAccountRequest](#cosmos.auth.v1beta1.QueryAccountRequest)
-    - [QueryAccountResponse](#cosmos.auth.v1beta1.QueryAccountResponse)
-    - [QueryAccountsRequest](#cosmos.auth.v1beta1.QueryAccountsRequest)
-    - [QueryAccountsResponse](#cosmos.auth.v1beta1.QueryAccountsResponse)
-    - [QueryParamsRequest](#cosmos.auth.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#cosmos.auth.v1beta1.QueryParamsResponse)
-  
-    - [Query](#cosmos.auth.v1beta1.Query)
-  
-- [cosmos/authz/v1beta1/authz.proto](#cosmos/authz/v1beta1/authz.proto)
-    - [AuthorizationGrant](#cosmos.authz.v1beta1.AuthorizationGrant)
-    - [GenericAuthorization](#cosmos.authz.v1beta1.GenericAuthorization)
-  
-- [cosmos/authz/v1beta1/genesis.proto](#cosmos/authz/v1beta1/genesis.proto)
-    - [GenesisState](#cosmos.authz.v1beta1.GenesisState)
-    - [GrantAuthorization](#cosmos.authz.v1beta1.GrantAuthorization)
-  
-- [cosmos/authz/v1beta1/query.proto](#cosmos/authz/v1beta1/query.proto)
-    - [QueryAuthorizationRequest](#cosmos.authz.v1beta1.QueryAuthorizationRequest)
-    - [QueryAuthorizationResponse](#cosmos.authz.v1beta1.QueryAuthorizationResponse)
-    - [QueryAuthorizationsRequest](#cosmos.authz.v1beta1.QueryAuthorizationsRequest)
-    - [QueryAuthorizationsResponse](#cosmos.authz.v1beta1.QueryAuthorizationsResponse)
-  
-    - [Query](#cosmos.authz.v1beta1.Query)
-  
-- [cosmos/base/abci/v1beta1/abci.proto](#cosmos/base/abci/v1beta1/abci.proto)
-    - [ABCIMessageLog](#cosmos.base.abci.v1beta1.ABCIMessageLog)
-    - [Attribute](#cosmos.base.abci.v1beta1.Attribute)
-    - [GasInfo](#cosmos.base.abci.v1beta1.GasInfo)
-    - [MsgData](#cosmos.base.abci.v1beta1.MsgData)
-    - [Result](#cosmos.base.abci.v1beta1.Result)
-    - [SearchTxsResult](#cosmos.base.abci.v1beta1.SearchTxsResult)
-    - [SimulationResponse](#cosmos.base.abci.v1beta1.SimulationResponse)
-    - [StringEvent](#cosmos.base.abci.v1beta1.StringEvent)
-    - [TxMsgData](#cosmos.base.abci.v1beta1.TxMsgData)
-    - [TxResponse](#cosmos.base.abci.v1beta1.TxResponse)
-  
-- [cosmos/authz/v1beta1/tx.proto](#cosmos/authz/v1beta1/tx.proto)
-    - [MsgExecAuthorizedRequest](#cosmos.authz.v1beta1.MsgExecAuthorizedRequest)
-    - [MsgExecAuthorizedResponse](#cosmos.authz.v1beta1.MsgExecAuthorizedResponse)
-    - [MsgGrantAuthorizationRequest](#cosmos.authz.v1beta1.MsgGrantAuthorizationRequest)
-    - [MsgGrantAuthorizationResponse](#cosmos.authz.v1beta1.MsgGrantAuthorizationResponse)
-    - [MsgRevokeAuthorizationRequest](#cosmos.authz.v1beta1.MsgRevokeAuthorizationRequest)
-    - [MsgRevokeAuthorizationResponse](#cosmos.authz.v1beta1.MsgRevokeAuthorizationResponse)
-  
-    - [Msg](#cosmos.authz.v1beta1.Msg)
-  
-- [cosmos/base/v1beta1/coin.proto](#cosmos/base/v1beta1/coin.proto)
-    - [Coin](#cosmos.base.v1beta1.Coin)
-    - [DecCoin](#cosmos.base.v1beta1.DecCoin)
-    - [DecProto](#cosmos.base.v1beta1.DecProto)
-    - [IntProto](#cosmos.base.v1beta1.IntProto)
-  
-- [cosmos/bank/v1beta1/authz.proto](#cosmos/bank/v1beta1/authz.proto)
-    - [SendAuthorization](#cosmos.bank.v1beta1.SendAuthorization)
-  
-- [cosmos/bank/v1beta1/bank.proto](#cosmos/bank/v1beta1/bank.proto)
-    - [DenomUnit](#cosmos.bank.v1beta1.DenomUnit)
-    - [Input](#cosmos.bank.v1beta1.Input)
-    - [Metadata](#cosmos.bank.v1beta1.Metadata)
-    - [Output](#cosmos.bank.v1beta1.Output)
-    - [Params](#cosmos.bank.v1beta1.Params)
-    - [SendEnabled](#cosmos.bank.v1beta1.SendEnabled)
-    - [Supply](#cosmos.bank.v1beta1.Supply)
-  
-- [cosmos/bank/v1beta1/genesis.proto](#cosmos/bank/v1beta1/genesis.proto)
-    - [Balance](#cosmos.bank.v1beta1.Balance)
-    - [GenesisState](#cosmos.bank.v1beta1.GenesisState)
-  
-- [cosmos/bank/v1beta1/query.proto](#cosmos/bank/v1beta1/query.proto)
-    - [QueryAllBalancesRequest](#cosmos.bank.v1beta1.QueryAllBalancesRequest)
-    - [QueryAllBalancesResponse](#cosmos.bank.v1beta1.QueryAllBalancesResponse)
-    - [QueryBalanceRequest](#cosmos.bank.v1beta1.QueryBalanceRequest)
-    - [QueryBalanceResponse](#cosmos.bank.v1beta1.QueryBalanceResponse)
-    - [QueryDenomMetadataRequest](#cosmos.bank.v1beta1.QueryDenomMetadataRequest)
-    - [QueryDenomMetadataResponse](#cosmos.bank.v1beta1.QueryDenomMetadataResponse)
-    - [QueryDenomsMetadataRequest](#cosmos.bank.v1beta1.QueryDenomsMetadataRequest)
-    - [QueryDenomsMetadataResponse](#cosmos.bank.v1beta1.QueryDenomsMetadataResponse)
-    - [QueryParamsRequest](#cosmos.bank.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#cosmos.bank.v1beta1.QueryParamsResponse)
-    - [QuerySupplyOfRequest](#cosmos.bank.v1beta1.QuerySupplyOfRequest)
-    - [QuerySupplyOfResponse](#cosmos.bank.v1beta1.QuerySupplyOfResponse)
-    - [QueryTotalSupplyRequest](#cosmos.bank.v1beta1.QueryTotalSupplyRequest)
-    - [QueryTotalSupplyResponse](#cosmos.bank.v1beta1.QueryTotalSupplyResponse)
-  
-    - [Query](#cosmos.bank.v1beta1.Query)
-  
-- [cosmos/bank/v1beta1/tx.proto](#cosmos/bank/v1beta1/tx.proto)
-    - [MsgMultiSend](#cosmos.bank.v1beta1.MsgMultiSend)
-    - [MsgMultiSendResponse](#cosmos.bank.v1beta1.MsgMultiSendResponse)
-    - [MsgSend](#cosmos.bank.v1beta1.MsgSend)
-    - [MsgSendResponse](#cosmos.bank.v1beta1.MsgSendResponse)
-  
-    - [Msg](#cosmos.bank.v1beta1.Msg)
-  
-- [cosmos/base/kv/v1beta1/kv.proto](#cosmos/base/kv/v1beta1/kv.proto)
-    - [Pair](#cosmos.base.kv.v1beta1.Pair)
-    - [Pairs](#cosmos.base.kv.v1beta1.Pairs)
-  
-- [cosmos/base/reflection/v1beta1/reflection.proto](#cosmos/base/reflection/v1beta1/reflection.proto)
-    - [ListAllInterfacesRequest](#cosmos.base.reflection.v1beta1.ListAllInterfacesRequest)
-    - [ListAllInterfacesResponse](#cosmos.base.reflection.v1beta1.ListAllInterfacesResponse)
-    - [ListImplementationsRequest](#cosmos.base.reflection.v1beta1.ListImplementationsRequest)
-    - [ListImplementationsResponse](#cosmos.base.reflection.v1beta1.ListImplementationsResponse)
-  
-    - [ReflectionService](#cosmos.base.reflection.v1beta1.ReflectionService)
-  
-- [cosmos/base/reflection/v2alpha1/reflection.proto](#cosmos/base/reflection/v2alpha1/reflection.proto)
-    - [AppDescriptor](#cosmos.base.reflection.v2alpha1.AppDescriptor)
-    - [AuthnDescriptor](#cosmos.base.reflection.v2alpha1.AuthnDescriptor)
-    - [ChainDescriptor](#cosmos.base.reflection.v2alpha1.ChainDescriptor)
-    - [CodecDescriptor](#cosmos.base.reflection.v2alpha1.CodecDescriptor)
-    - [ConfigurationDescriptor](#cosmos.base.reflection.v2alpha1.ConfigurationDescriptor)
-    - [GetAuthnDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetAuthnDescriptorRequest)
-    - [GetAuthnDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetAuthnDescriptorResponse)
-    - [GetChainDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetChainDescriptorRequest)
-    - [GetChainDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetChainDescriptorResponse)
-    - [GetCodecDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetCodecDescriptorRequest)
-    - [GetCodecDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetCodecDescriptorResponse)
-    - [GetConfigurationDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetConfigurationDescriptorRequest)
-    - [GetConfigurationDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetConfigurationDescriptorResponse)
-    - [GetQueryServicesDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetQueryServicesDescriptorRequest)
-    - [GetQueryServicesDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetQueryServicesDescriptorResponse)
-    - [GetTxDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetTxDescriptorRequest)
-    - [GetTxDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetTxDescriptorResponse)
-    - [InterfaceAcceptingMessageDescriptor](#cosmos.base.reflection.v2alpha1.InterfaceAcceptingMessageDescriptor)
-    - [InterfaceDescriptor](#cosmos.base.reflection.v2alpha1.InterfaceDescriptor)
-    - [InterfaceImplementerDescriptor](#cosmos.base.reflection.v2alpha1.InterfaceImplementerDescriptor)
-    - [MsgDescriptor](#cosmos.base.reflection.v2alpha1.MsgDescriptor)
-    - [QueryMethodDescriptor](#cosmos.base.reflection.v2alpha1.QueryMethodDescriptor)
-    - [QueryServiceDescriptor](#cosmos.base.reflection.v2alpha1.QueryServiceDescriptor)
-    - [QueryServicesDescriptor](#cosmos.base.reflection.v2alpha1.QueryServicesDescriptor)
-    - [ServiceMsgDescriptor](#cosmos.base.reflection.v2alpha1.ServiceMsgDescriptor)
-    - [SigningModeDescriptor](#cosmos.base.reflection.v2alpha1.SigningModeDescriptor)
-    - [TxDescriptor](#cosmos.base.reflection.v2alpha1.TxDescriptor)
-  
-    - [ReflectionService](#cosmos.base.reflection.v2alpha1.ReflectionService)
-  
-- [cosmos/base/snapshots/v1beta1/snapshot.proto](#cosmos/base/snapshots/v1beta1/snapshot.proto)
-    - [Metadata](#cosmos.base.snapshots.v1beta1.Metadata)
-    - [Snapshot](#cosmos.base.snapshots.v1beta1.Snapshot)
-  
-- [cosmos/base/store/v1beta1/commit_info.proto](#cosmos/base/store/v1beta1/commit_info.proto)
-    - [CommitID](#cosmos.base.store.v1beta1.CommitID)
-    - [CommitInfo](#cosmos.base.store.v1beta1.CommitInfo)
-    - [StoreInfo](#cosmos.base.store.v1beta1.StoreInfo)
-  
-- [cosmos/base/store/v1beta1/listening.proto](#cosmos/base/store/v1beta1/listening.proto)
-    - [StoreKVPair](#cosmos.base.store.v1beta1.StoreKVPair)
-  
-- [cosmos/base/store/v1beta1/snapshot.proto](#cosmos/base/store/v1beta1/snapshot.proto)
-    - [SnapshotIAVLItem](#cosmos.base.store.v1beta1.SnapshotIAVLItem)
-    - [SnapshotItem](#cosmos.base.store.v1beta1.SnapshotItem)
-    - [SnapshotStoreItem](#cosmos.base.store.v1beta1.SnapshotStoreItem)
-  
-- [cosmos/base/tendermint/v1beta1/query.proto](#cosmos/base/tendermint/v1beta1/query.proto)
-    - [GetBlockByHeightRequest](#cosmos.base.tendermint.v1beta1.GetBlockByHeightRequest)
-    - [GetBlockByHeightResponse](#cosmos.base.tendermint.v1beta1.GetBlockByHeightResponse)
-    - [GetLatestBlockRequest](#cosmos.base.tendermint.v1beta1.GetLatestBlockRequest)
-    - [GetLatestBlockResponse](#cosmos.base.tendermint.v1beta1.GetLatestBlockResponse)
-    - [GetLatestValidatorSetRequest](#cosmos.base.tendermint.v1beta1.GetLatestValidatorSetRequest)
-    - [GetLatestValidatorSetResponse](#cosmos.base.tendermint.v1beta1.GetLatestValidatorSetResponse)
-    - [GetNodeInfoRequest](#cosmos.base.tendermint.v1beta1.GetNodeInfoRequest)
-    - [GetNodeInfoResponse](#cosmos.base.tendermint.v1beta1.GetNodeInfoResponse)
-    - [GetSyncingRequest](#cosmos.base.tendermint.v1beta1.GetSyncingRequest)
-    - [GetSyncingResponse](#cosmos.base.tendermint.v1beta1.GetSyncingResponse)
-    - [GetValidatorSetByHeightRequest](#cosmos.base.tendermint.v1beta1.GetValidatorSetByHeightRequest)
-    - [GetValidatorSetByHeightResponse](#cosmos.base.tendermint.v1beta1.GetValidatorSetByHeightResponse)
-    - [Module](#cosmos.base.tendermint.v1beta1.Module)
-    - [Validator](#cosmos.base.tendermint.v1beta1.Validator)
-    - [VersionInfo](#cosmos.base.tendermint.v1beta1.VersionInfo)
-  
-    - [Service](#cosmos.base.tendermint.v1beta1.Service)
-  
-- [cosmos/capability/v1beta1/capability.proto](#cosmos/capability/v1beta1/capability.proto)
-    - [Capability](#cosmos.capability.v1beta1.Capability)
-    - [CapabilityOwners](#cosmos.capability.v1beta1.CapabilityOwners)
-    - [Owner](#cosmos.capability.v1beta1.Owner)
-  
-- [cosmos/capability/v1beta1/genesis.proto](#cosmos/capability/v1beta1/genesis.proto)
-    - [GenesisOwners](#cosmos.capability.v1beta1.GenesisOwners)
-    - [GenesisState](#cosmos.capability.v1beta1.GenesisState)
-  
-- [cosmos/crisis/v1beta1/genesis.proto](#cosmos/crisis/v1beta1/genesis.proto)
-    - [GenesisState](#cosmos.crisis.v1beta1.GenesisState)
-  
-- [cosmos/crisis/v1beta1/tx.proto](#cosmos/crisis/v1beta1/tx.proto)
-    - [MsgVerifyInvariant](#cosmos.crisis.v1beta1.MsgVerifyInvariant)
-    - [MsgVerifyInvariantResponse](#cosmos.crisis.v1beta1.MsgVerifyInvariantResponse)
-  
-    - [Msg](#cosmos.crisis.v1beta1.Msg)
-  
-- [cosmos/crypto/ed25519/keys.proto](#cosmos/crypto/ed25519/keys.proto)
-    - [PrivKey](#cosmos.crypto.ed25519.PrivKey)
-    - [PubKey](#cosmos.crypto.ed25519.PubKey)
-  
-- [cosmos/crypto/multisig/keys.proto](#cosmos/crypto/multisig/keys.proto)
-    - [LegacyAminoPubKey](#cosmos.crypto.multisig.LegacyAminoPubKey)
-  
-- [cosmos/crypto/multisig/v1beta1/multisig.proto](#cosmos/crypto/multisig/v1beta1/multisig.proto)
-    - [CompactBitArray](#cosmos.crypto.multisig.v1beta1.CompactBitArray)
-    - [MultiSignature](#cosmos.crypto.multisig.v1beta1.MultiSignature)
-  
-- [cosmos/crypto/secp256k1/keys.proto](#cosmos/crypto/secp256k1/keys.proto)
-    - [PrivKey](#cosmos.crypto.secp256k1.PrivKey)
-    - [PubKey](#cosmos.crypto.secp256k1.PubKey)
-  
-- [cosmos/crypto/secp256r1/keys.proto](#cosmos/crypto/secp256r1/keys.proto)
-    - [PrivKey](#cosmos.crypto.secp256r1.PrivKey)
-    - [PubKey](#cosmos.crypto.secp256r1.PubKey)
-  
-- [cosmos/distribution/v1beta1/distribution.proto](#cosmos/distribution/v1beta1/distribution.proto)
-    - [CommunityPoolSpendProposal](#cosmos.distribution.v1beta1.CommunityPoolSpendProposal)
-    - [CommunityPoolSpendProposalWithDeposit](#cosmos.distribution.v1beta1.CommunityPoolSpendProposalWithDeposit)
-    - [DelegationDelegatorReward](#cosmos.distribution.v1beta1.DelegationDelegatorReward)
-    - [DelegatorStartingInfo](#cosmos.distribution.v1beta1.DelegatorStartingInfo)
-    - [FeePool](#cosmos.distribution.v1beta1.FeePool)
-    - [Params](#cosmos.distribution.v1beta1.Params)
-    - [ValidatorAccumulatedCommission](#cosmos.distribution.v1beta1.ValidatorAccumulatedCommission)
-    - [ValidatorCurrentRewards](#cosmos.distribution.v1beta1.ValidatorCurrentRewards)
-    - [ValidatorHistoricalRewards](#cosmos.distribution.v1beta1.ValidatorHistoricalRewards)
-    - [ValidatorOutstandingRewards](#cosmos.distribution.v1beta1.ValidatorOutstandingRewards)
-    - [ValidatorSlashEvent](#cosmos.distribution.v1beta1.ValidatorSlashEvent)
-    - [ValidatorSlashEvents](#cosmos.distribution.v1beta1.ValidatorSlashEvents)
-  
-- [cosmos/distribution/v1beta1/genesis.proto](#cosmos/distribution/v1beta1/genesis.proto)
-    - [DelegatorStartingInfoRecord](#cosmos.distribution.v1beta1.DelegatorStartingInfoRecord)
-    - [DelegatorWithdrawInfo](#cosmos.distribution.v1beta1.DelegatorWithdrawInfo)
-    - [GenesisState](#cosmos.distribution.v1beta1.GenesisState)
-    - [ValidatorAccumulatedCommissionRecord](#cosmos.distribution.v1beta1.ValidatorAccumulatedCommissionRecord)
-    - [ValidatorCurrentRewardsRecord](#cosmos.distribution.v1beta1.ValidatorCurrentRewardsRecord)
-    - [ValidatorHistoricalRewardsRecord](#cosmos.distribution.v1beta1.ValidatorHistoricalRewardsRecord)
-    - [ValidatorOutstandingRewardsRecord](#cosmos.distribution.v1beta1.ValidatorOutstandingRewardsRecord)
-    - [ValidatorSlashEventRecord](#cosmos.distribution.v1beta1.ValidatorSlashEventRecord)
-  
-- [cosmos/distribution/v1beta1/query.proto](#cosmos/distribution/v1beta1/query.proto)
-    - [QueryCommunityPoolRequest](#cosmos.distribution.v1beta1.QueryCommunityPoolRequest)
-    - [QueryCommunityPoolResponse](#cosmos.distribution.v1beta1.QueryCommunityPoolResponse)
-    - [QueryDelegationRewardsRequest](#cosmos.distribution.v1beta1.QueryDelegationRewardsRequest)
-    - [QueryDelegationRewardsResponse](#cosmos.distribution.v1beta1.QueryDelegationRewardsResponse)
-    - [QueryDelegationTotalRewardsRequest](#cosmos.distribution.v1beta1.QueryDelegationTotalRewardsRequest)
-    - [QueryDelegationTotalRewardsResponse](#cosmos.distribution.v1beta1.QueryDelegationTotalRewardsResponse)
-    - [QueryDelegatorValidatorsRequest](#cosmos.distribution.v1beta1.QueryDelegatorValidatorsRequest)
-    - [QueryDelegatorValidatorsResponse](#cosmos.distribution.v1beta1.QueryDelegatorValidatorsResponse)
-    - [QueryDelegatorWithdrawAddressRequest](#cosmos.distribution.v1beta1.QueryDelegatorWithdrawAddressRequest)
-    - [QueryDelegatorWithdrawAddressResponse](#cosmos.distribution.v1beta1.QueryDelegatorWithdrawAddressResponse)
-    - [QueryParamsRequest](#cosmos.distribution.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#cosmos.distribution.v1beta1.QueryParamsResponse)
-    - [QueryValidatorCommissionRequest](#cosmos.distribution.v1beta1.QueryValidatorCommissionRequest)
-    - [QueryValidatorCommissionResponse](#cosmos.distribution.v1beta1.QueryValidatorCommissionResponse)
-    - [QueryValidatorOutstandingRewardsRequest](#cosmos.distribution.v1beta1.QueryValidatorOutstandingRewardsRequest)
-    - [QueryValidatorOutstandingRewardsResponse](#cosmos.distribution.v1beta1.QueryValidatorOutstandingRewardsResponse)
-    - [QueryValidatorSlashesRequest](#cosmos.distribution.v1beta1.QueryValidatorSlashesRequest)
-    - [QueryValidatorSlashesResponse](#cosmos.distribution.v1beta1.QueryValidatorSlashesResponse)
-  
-    - [Query](#cosmos.distribution.v1beta1.Query)
-  
-- [cosmos/distribution/v1beta1/tx.proto](#cosmos/distribution/v1beta1/tx.proto)
-    - [MsgFundCommunityPool](#cosmos.distribution.v1beta1.MsgFundCommunityPool)
-    - [MsgFundCommunityPoolResponse](#cosmos.distribution.v1beta1.MsgFundCommunityPoolResponse)
-    - [MsgSetWithdrawAddress](#cosmos.distribution.v1beta1.MsgSetWithdrawAddress)
-    - [MsgSetWithdrawAddressResponse](#cosmos.distribution.v1beta1.MsgSetWithdrawAddressResponse)
-    - [MsgWithdrawDelegatorReward](#cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward)
-    - [MsgWithdrawDelegatorRewardResponse](#cosmos.distribution.v1beta1.MsgWithdrawDelegatorRewardResponse)
-    - [MsgWithdrawValidatorCommission](#cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission)
-    - [MsgWithdrawValidatorCommissionResponse](#cosmos.distribution.v1beta1.MsgWithdrawValidatorCommissionResponse)
-  
-    - [Msg](#cosmos.distribution.v1beta1.Msg)
-  
-- [cosmos/evidence/v1beta1/evidence.proto](#cosmos/evidence/v1beta1/evidence.proto)
-    - [Equivocation](#cosmos.evidence.v1beta1.Equivocation)
-  
-- [cosmos/evidence/v1beta1/genesis.proto](#cosmos/evidence/v1beta1/genesis.proto)
-    - [GenesisState](#cosmos.evidence.v1beta1.GenesisState)
-  
-- [cosmos/evidence/v1beta1/query.proto](#cosmos/evidence/v1beta1/query.proto)
-    - [QueryAllEvidenceRequest](#cosmos.evidence.v1beta1.QueryAllEvidenceRequest)
-    - [QueryAllEvidenceResponse](#cosmos.evidence.v1beta1.QueryAllEvidenceResponse)
-    - [QueryEvidenceRequest](#cosmos.evidence.v1beta1.QueryEvidenceRequest)
-    - [QueryEvidenceResponse](#cosmos.evidence.v1beta1.QueryEvidenceResponse)
-  
-    - [Query](#cosmos.evidence.v1beta1.Query)
-  
-- [cosmos/evidence/v1beta1/tx.proto](#cosmos/evidence/v1beta1/tx.proto)
-    - [MsgSubmitEvidence](#cosmos.evidence.v1beta1.MsgSubmitEvidence)
-    - [MsgSubmitEvidenceResponse](#cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse)
-  
-    - [Msg](#cosmos.evidence.v1beta1.Msg)
-  
-- [cosmos/feegrant/v1beta1/feegrant.proto](#cosmos/feegrant/v1beta1/feegrant.proto)
-    - [BasicFeeAllowance](#cosmos.feegrant.v1beta1.BasicFeeAllowance)
-    - [Duration](#cosmos.feegrant.v1beta1.Duration)
-    - [ExpiresAt](#cosmos.feegrant.v1beta1.ExpiresAt)
-    - [FeeAllowanceGrant](#cosmos.feegrant.v1beta1.FeeAllowanceGrant)
-    - [PeriodicFeeAllowance](#cosmos.feegrant.v1beta1.PeriodicFeeAllowance)
-  
-- [cosmos/feegrant/v1beta1/genesis.proto](#cosmos/feegrant/v1beta1/genesis.proto)
-    - [GenesisState](#cosmos.feegrant.v1beta1.GenesisState)
-  
-- [cosmos/feegrant/v1beta1/query.proto](#cosmos/feegrant/v1beta1/query.proto)
-    - [QueryFeeAllowanceRequest](#cosmos.feegrant.v1beta1.QueryFeeAllowanceRequest)
-    - [QueryFeeAllowanceResponse](#cosmos.feegrant.v1beta1.QueryFeeAllowanceResponse)
-    - [QueryFeeAllowancesRequest](#cosmos.feegrant.v1beta1.QueryFeeAllowancesRequest)
-    - [QueryFeeAllowancesResponse](#cosmos.feegrant.v1beta1.QueryFeeAllowancesResponse)
-  
-    - [Query](#cosmos.feegrant.v1beta1.Query)
-  
-- [cosmos/feegrant/v1beta1/tx.proto](#cosmos/feegrant/v1beta1/tx.proto)
-    - [MsgGrantFeeAllowance](#cosmos.feegrant.v1beta1.MsgGrantFeeAllowance)
-    - [MsgGrantFeeAllowanceResponse](#cosmos.feegrant.v1beta1.MsgGrantFeeAllowanceResponse)
-    - [MsgRevokeFeeAllowance](#cosmos.feegrant.v1beta1.MsgRevokeFeeAllowance)
-    - [MsgRevokeFeeAllowanceResponse](#cosmos.feegrant.v1beta1.MsgRevokeFeeAllowanceResponse)
-  
-    - [Msg](#cosmos.feegrant.v1beta1.Msg)
-  
-- [cosmos/genutil/v1beta1/genesis.proto](#cosmos/genutil/v1beta1/genesis.proto)
-    - [GenesisState](#cosmos.genutil.v1beta1.GenesisState)
-  
-- [cosmos/gov/v1beta1/gov.proto](#cosmos/gov/v1beta1/gov.proto)
-    - [Deposit](#cosmos.gov.v1beta1.Deposit)
-    - [DepositParams](#cosmos.gov.v1beta1.DepositParams)
-    - [Proposal](#cosmos.gov.v1beta1.Proposal)
-    - [TallyParams](#cosmos.gov.v1beta1.TallyParams)
-    - [TallyResult](#cosmos.gov.v1beta1.TallyResult)
-    - [TextProposal](#cosmos.gov.v1beta1.TextProposal)
-    - [Vote](#cosmos.gov.v1beta1.Vote)
-    - [VotingParams](#cosmos.gov.v1beta1.VotingParams)
-    - [WeightedVoteOption](#cosmos.gov.v1beta1.WeightedVoteOption)
-  
-    - [ProposalStatus](#cosmos.gov.v1beta1.ProposalStatus)
-    - [VoteOption](#cosmos.gov.v1beta1.VoteOption)
-  
-- [cosmos/gov/v1beta1/genesis.proto](#cosmos/gov/v1beta1/genesis.proto)
-    - [GenesisState](#cosmos.gov.v1beta1.GenesisState)
-  
-- [cosmos/gov/v1beta1/query.proto](#cosmos/gov/v1beta1/query.proto)
-    - [QueryDepositRequest](#cosmos.gov.v1beta1.QueryDepositRequest)
-    - [QueryDepositResponse](#cosmos.gov.v1beta1.QueryDepositResponse)
-    - [QueryDepositsRequest](#cosmos.gov.v1beta1.QueryDepositsRequest)
-    - [QueryDepositsResponse](#cosmos.gov.v1beta1.QueryDepositsResponse)
-    - [QueryParamsRequest](#cosmos.gov.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#cosmos.gov.v1beta1.QueryParamsResponse)
-    - [QueryProposalRequest](#cosmos.gov.v1beta1.QueryProposalRequest)
-    - [QueryProposalResponse](#cosmos.gov.v1beta1.QueryProposalResponse)
-    - [QueryProposalsRequest](#cosmos.gov.v1beta1.QueryProposalsRequest)
-    - [QueryProposalsResponse](#cosmos.gov.v1beta1.QueryProposalsResponse)
-    - [QueryTallyResultRequest](#cosmos.gov.v1beta1.QueryTallyResultRequest)
-    - [QueryTallyResultResponse](#cosmos.gov.v1beta1.QueryTallyResultResponse)
-    - [QueryVoteRequest](#cosmos.gov.v1beta1.QueryVoteRequest)
-    - [QueryVoteResponse](#cosmos.gov.v1beta1.QueryVoteResponse)
-    - [QueryVotesRequest](#cosmos.gov.v1beta1.QueryVotesRequest)
-    - [QueryVotesResponse](#cosmos.gov.v1beta1.QueryVotesResponse)
-  
-    - [Query](#cosmos.gov.v1beta1.Query)
-  
-- [cosmos/gov/v1beta1/tx.proto](#cosmos/gov/v1beta1/tx.proto)
-    - [MsgDeposit](#cosmos.gov.v1beta1.MsgDeposit)
-    - [MsgDepositResponse](#cosmos.gov.v1beta1.MsgDepositResponse)
-    - [MsgSubmitProposal](#cosmos.gov.v1beta1.MsgSubmitProposal)
-    - [MsgSubmitProposalResponse](#cosmos.gov.v1beta1.MsgSubmitProposalResponse)
-    - [MsgVote](#cosmos.gov.v1beta1.MsgVote)
-    - [MsgVoteResponse](#cosmos.gov.v1beta1.MsgVoteResponse)
-    - [MsgVoteWeighted](#cosmos.gov.v1beta1.MsgVoteWeighted)
-    - [MsgVoteWeightedResponse](#cosmos.gov.v1beta1.MsgVoteWeightedResponse)
-  
-    - [Msg](#cosmos.gov.v1beta1.Msg)
-  
-- [cosmos/mint/v1beta1/mint.proto](#cosmos/mint/v1beta1/mint.proto)
-    - [Minter](#cosmos.mint.v1beta1.Minter)
-    - [Params](#cosmos.mint.v1beta1.Params)
-  
-- [cosmos/mint/v1beta1/genesis.proto](#cosmos/mint/v1beta1/genesis.proto)
-    - [GenesisState](#cosmos.mint.v1beta1.GenesisState)
-  
-- [cosmos/mint/v1beta1/query.proto](#cosmos/mint/v1beta1/query.proto)
-    - [QueryAnnualProvisionsRequest](#cosmos.mint.v1beta1.QueryAnnualProvisionsRequest)
-    - [QueryAnnualProvisionsResponse](#cosmos.mint.v1beta1.QueryAnnualProvisionsResponse)
-    - [QueryInflationRequest](#cosmos.mint.v1beta1.QueryInflationRequest)
-    - [QueryInflationResponse](#cosmos.mint.v1beta1.QueryInflationResponse)
-    - [QueryParamsRequest](#cosmos.mint.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#cosmos.mint.v1beta1.QueryParamsResponse)
-  
-    - [Query](#cosmos.mint.v1beta1.Query)
-  
-- [cosmos/params/v1beta1/params.proto](#cosmos/params/v1beta1/params.proto)
-    - [ParamChange](#cosmos.params.v1beta1.ParamChange)
-    - [ParameterChangeProposal](#cosmos.params.v1beta1.ParameterChangeProposal)
-  
-- [cosmos/params/v1beta1/query.proto](#cosmos/params/v1beta1/query.proto)
-    - [QueryParamsRequest](#cosmos.params.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#cosmos.params.v1beta1.QueryParamsResponse)
-  
-    - [Query](#cosmos.params.v1beta1.Query)
-  
-- [cosmos/slashing/v1beta1/slashing.proto](#cosmos/slashing/v1beta1/slashing.proto)
-    - [Params](#cosmos.slashing.v1beta1.Params)
-    - [ValidatorSigningInfo](#cosmos.slashing.v1beta1.ValidatorSigningInfo)
-  
-- [cosmos/slashing/v1beta1/genesis.proto](#cosmos/slashing/v1beta1/genesis.proto)
-    - [GenesisState](#cosmos.slashing.v1beta1.GenesisState)
-    - [MissedBlock](#cosmos.slashing.v1beta1.MissedBlock)
-    - [SigningInfo](#cosmos.slashing.v1beta1.SigningInfo)
-    - [ValidatorMissedBlocks](#cosmos.slashing.v1beta1.ValidatorMissedBlocks)
-  
-- [cosmos/slashing/v1beta1/query.proto](#cosmos/slashing/v1beta1/query.proto)
-    - [QueryParamsRequest](#cosmos.slashing.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#cosmos.slashing.v1beta1.QueryParamsResponse)
-    - [QuerySigningInfoRequest](#cosmos.slashing.v1beta1.QuerySigningInfoRequest)
-    - [QuerySigningInfoResponse](#cosmos.slashing.v1beta1.QuerySigningInfoResponse)
-    - [QuerySigningInfosRequest](#cosmos.slashing.v1beta1.QuerySigningInfosRequest)
-    - [QuerySigningInfosResponse](#cosmos.slashing.v1beta1.QuerySigningInfosResponse)
-  
-    - [Query](#cosmos.slashing.v1beta1.Query)
-  
-- [cosmos/slashing/v1beta1/tx.proto](#cosmos/slashing/v1beta1/tx.proto)
-    - [MsgUnjail](#cosmos.slashing.v1beta1.MsgUnjail)
-    - [MsgUnjailResponse](#cosmos.slashing.v1beta1.MsgUnjailResponse)
-  
-    - [Msg](#cosmos.slashing.v1beta1.Msg)
-  
-- [cosmos/staking/v1beta1/authz.proto](#cosmos/staking/v1beta1/authz.proto)
-    - [StakeAuthorization](#cosmos.staking.v1beta1.StakeAuthorization)
-    - [StakeAuthorization.Validators](#cosmos.staking.v1beta1.StakeAuthorization.Validators)
-  
-    - [AuthorizationType](#cosmos.staking.v1beta1.AuthorizationType)
-  
-- [cosmos/staking/v1beta1/staking.proto](#cosmos/staking/v1beta1/staking.proto)
-    - [Commission](#cosmos.staking.v1beta1.Commission)
-    - [CommissionRates](#cosmos.staking.v1beta1.CommissionRates)
-    - [DVPair](#cosmos.staking.v1beta1.DVPair)
-    - [DVPairs](#cosmos.staking.v1beta1.DVPairs)
-    - [DVVTriplet](#cosmos.staking.v1beta1.DVVTriplet)
-    - [DVVTriplets](#cosmos.staking.v1beta1.DVVTriplets)
-    - [Delegation](#cosmos.staking.v1beta1.Delegation)
-    - [DelegationResponse](#cosmos.staking.v1beta1.DelegationResponse)
-    - [Description](#cosmos.staking.v1beta1.Description)
-    - [HistoricalInfo](#cosmos.staking.v1beta1.HistoricalInfo)
-    - [Params](#cosmos.staking.v1beta1.Params)
-    - [Pool](#cosmos.staking.v1beta1.Pool)
-    - [Redelegation](#cosmos.staking.v1beta1.Redelegation)
-    - [RedelegationEntry](#cosmos.staking.v1beta1.RedelegationEntry)
-    - [RedelegationEntryResponse](#cosmos.staking.v1beta1.RedelegationEntryResponse)
-    - [RedelegationResponse](#cosmos.staking.v1beta1.RedelegationResponse)
-    - [UnbondingDelegation](#cosmos.staking.v1beta1.UnbondingDelegation)
-    - [UnbondingDelegationEntry](#cosmos.staking.v1beta1.UnbondingDelegationEntry)
-    - [ValAddresses](#cosmos.staking.v1beta1.ValAddresses)
-    - [Validator](#cosmos.staking.v1beta1.Validator)
-  
-    - [BondStatus](#cosmos.staking.v1beta1.BondStatus)
-  
-- [cosmos/staking/v1beta1/genesis.proto](#cosmos/staking/v1beta1/genesis.proto)
-    - [GenesisState](#cosmos.staking.v1beta1.GenesisState)
-    - [LastValidatorPower](#cosmos.staking.v1beta1.LastValidatorPower)
-  
-- [cosmos/staking/v1beta1/query.proto](#cosmos/staking/v1beta1/query.proto)
-    - [QueryDelegationRequest](#cosmos.staking.v1beta1.QueryDelegationRequest)
-    - [QueryDelegationResponse](#cosmos.staking.v1beta1.QueryDelegationResponse)
-    - [QueryDelegatorDelegationsRequest](#cosmos.staking.v1beta1.QueryDelegatorDelegationsRequest)
-    - [QueryDelegatorDelegationsResponse](#cosmos.staking.v1beta1.QueryDelegatorDelegationsResponse)
-    - [QueryDelegatorUnbondingDelegationsRequest](#cosmos.staking.v1beta1.QueryDelegatorUnbondingDelegationsRequest)
-    - [QueryDelegatorUnbondingDelegationsResponse](#cosmos.staking.v1beta1.QueryDelegatorUnbondingDelegationsResponse)
-    - [QueryDelegatorValidatorRequest](#cosmos.staking.v1beta1.QueryDelegatorValidatorRequest)
-    - [QueryDelegatorValidatorResponse](#cosmos.staking.v1beta1.QueryDelegatorValidatorResponse)
-    - [QueryDelegatorValidatorsRequest](#cosmos.staking.v1beta1.QueryDelegatorValidatorsRequest)
-    - [QueryDelegatorValidatorsResponse](#cosmos.staking.v1beta1.QueryDelegatorValidatorsResponse)
-    - [QueryHistoricalInfoRequest](#cosmos.staking.v1beta1.QueryHistoricalInfoRequest)
-    - [QueryHistoricalInfoResponse](#cosmos.staking.v1beta1.QueryHistoricalInfoResponse)
-    - [QueryParamsRequest](#cosmos.staking.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#cosmos.staking.v1beta1.QueryParamsResponse)
-    - [QueryPoolRequest](#cosmos.staking.v1beta1.QueryPoolRequest)
-    - [QueryPoolResponse](#cosmos.staking.v1beta1.QueryPoolResponse)
-    - [QueryRedelegationsRequest](#cosmos.staking.v1beta1.QueryRedelegationsRequest)
-    - [QueryRedelegationsResponse](#cosmos.staking.v1beta1.QueryRedelegationsResponse)
-    - [QueryUnbondingDelegationRequest](#cosmos.staking.v1beta1.QueryUnbondingDelegationRequest)
-    - [QueryUnbondingDelegationResponse](#cosmos.staking.v1beta1.QueryUnbondingDelegationResponse)
-    - [QueryValidatorDelegationsRequest](#cosmos.staking.v1beta1.QueryValidatorDelegationsRequest)
-    - [QueryValidatorDelegationsResponse](#cosmos.staking.v1beta1.QueryValidatorDelegationsResponse)
-    - [QueryValidatorRequest](#cosmos.staking.v1beta1.QueryValidatorRequest)
-    - [QueryValidatorResponse](#cosmos.staking.v1beta1.QueryValidatorResponse)
-    - [QueryValidatorUnbondingDelegationsRequest](#cosmos.staking.v1beta1.QueryValidatorUnbondingDelegationsRequest)
-    - [QueryValidatorUnbondingDelegationsResponse](#cosmos.staking.v1beta1.QueryValidatorUnbondingDelegationsResponse)
-    - [QueryValidatorsRequest](#cosmos.staking.v1beta1.QueryValidatorsRequest)
-    - [QueryValidatorsResponse](#cosmos.staking.v1beta1.QueryValidatorsResponse)
-  
-    - [Query](#cosmos.staking.v1beta1.Query)
-  
-- [cosmos/staking/v1beta1/tx.proto](#cosmos/staking/v1beta1/tx.proto)
-    - [MsgBeginRedelegate](#cosmos.staking.v1beta1.MsgBeginRedelegate)
-    - [MsgBeginRedelegateResponse](#cosmos.staking.v1beta1.MsgBeginRedelegateResponse)
-    - [MsgCreateValidator](#cosmos.staking.v1beta1.MsgCreateValidator)
-    - [MsgCreateValidatorResponse](#cosmos.staking.v1beta1.MsgCreateValidatorResponse)
-    - [MsgDelegate](#cosmos.staking.v1beta1.MsgDelegate)
-    - [MsgDelegateResponse](#cosmos.staking.v1beta1.MsgDelegateResponse)
-    - [MsgEditValidator](#cosmos.staking.v1beta1.MsgEditValidator)
-    - [MsgEditValidatorResponse](#cosmos.staking.v1beta1.MsgEditValidatorResponse)
-    - [MsgUndelegate](#cosmos.staking.v1beta1.MsgUndelegate)
-    - [MsgUndelegateResponse](#cosmos.staking.v1beta1.MsgUndelegateResponse)
-  
-    - [Msg](#cosmos.staking.v1beta1.Msg)
-  
-- [cosmos/tx/signing/v1beta1/signing.proto](#cosmos/tx/signing/v1beta1/signing.proto)
-    - [SignatureDescriptor](#cosmos.tx.signing.v1beta1.SignatureDescriptor)
-    - [SignatureDescriptor.Data](#cosmos.tx.signing.v1beta1.SignatureDescriptor.Data)
-    - [SignatureDescriptor.Data.Multi](#cosmos.tx.signing.v1beta1.SignatureDescriptor.Data.Multi)
-    - [SignatureDescriptor.Data.Single](#cosmos.tx.signing.v1beta1.SignatureDescriptor.Data.Single)
-    - [SignatureDescriptors](#cosmos.tx.signing.v1beta1.SignatureDescriptors)
-  
-    - [SignMode](#cosmos.tx.signing.v1beta1.SignMode)
-  
-- [cosmos/tx/v1beta1/tx.proto](#cosmos/tx/v1beta1/tx.proto)
-    - [AuthInfo](#cosmos.tx.v1beta1.AuthInfo)
-    - [Fee](#cosmos.tx.v1beta1.Fee)
-    - [ModeInfo](#cosmos.tx.v1beta1.ModeInfo)
-    - [ModeInfo.Multi](#cosmos.tx.v1beta1.ModeInfo.Multi)
-    - [ModeInfo.Single](#cosmos.tx.v1beta1.ModeInfo.Single)
-    - [SignDoc](#cosmos.tx.v1beta1.SignDoc)
-    - [SignerInfo](#cosmos.tx.v1beta1.SignerInfo)
-    - [Tx](#cosmos.tx.v1beta1.Tx)
-    - [TxBody](#cosmos.tx.v1beta1.TxBody)
-    - [TxRaw](#cosmos.tx.v1beta1.TxRaw)
-  
-- [cosmos/tx/v1beta1/service.proto](#cosmos/tx/v1beta1/service.proto)
-    - [BroadcastTxRequest](#cosmos.tx.v1beta1.BroadcastTxRequest)
-    - [BroadcastTxResponse](#cosmos.tx.v1beta1.BroadcastTxResponse)
-    - [GetTxRequest](#cosmos.tx.v1beta1.GetTxRequest)
-    - [GetTxResponse](#cosmos.tx.v1beta1.GetTxResponse)
-    - [GetTxsEventRequest](#cosmos.tx.v1beta1.GetTxsEventRequest)
-    - [GetTxsEventResponse](#cosmos.tx.v1beta1.GetTxsEventResponse)
-    - [SimulateRequest](#cosmos.tx.v1beta1.SimulateRequest)
-    - [SimulateResponse](#cosmos.tx.v1beta1.SimulateResponse)
-  
-    - [BroadcastMode](#cosmos.tx.v1beta1.BroadcastMode)
-    - [OrderBy](#cosmos.tx.v1beta1.OrderBy)
-  
-    - [Service](#cosmos.tx.v1beta1.Service)
-  
-- [cosmos/upgrade/v1beta1/upgrade.proto](#cosmos/upgrade/v1beta1/upgrade.proto)
-    - [CancelSoftwareUpgradeProposal](#cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal)
-    - [Plan](#cosmos.upgrade.v1beta1.Plan)
-    - [SoftwareUpgradeProposal](#cosmos.upgrade.v1beta1.SoftwareUpgradeProposal)
-  
-- [cosmos/upgrade/v1beta1/query.proto](#cosmos/upgrade/v1beta1/query.proto)
-    - [QueryAppliedPlanRequest](#cosmos.upgrade.v1beta1.QueryAppliedPlanRequest)
-    - [QueryAppliedPlanResponse](#cosmos.upgrade.v1beta1.QueryAppliedPlanResponse)
-    - [QueryCurrentPlanRequest](#cosmos.upgrade.v1beta1.QueryCurrentPlanRequest)
-    - [QueryCurrentPlanResponse](#cosmos.upgrade.v1beta1.QueryCurrentPlanResponse)
-    - [QueryUpgradedConsensusStateRequest](#cosmos.upgrade.v1beta1.QueryUpgradedConsensusStateRequest)
-    - [QueryUpgradedConsensusStateResponse](#cosmos.upgrade.v1beta1.QueryUpgradedConsensusStateResponse)
-  
-    - [Query](#cosmos.upgrade.v1beta1.Query)
-  
-- [cosmos/vesting/v1beta1/tx.proto](#cosmos/vesting/v1beta1/tx.proto)
-    - [MsgCreateVestingAccount](#cosmos.vesting.v1beta1.MsgCreateVestingAccount)
-    - [MsgCreateVestingAccountResponse](#cosmos.vesting.v1beta1.MsgCreateVestingAccountResponse)
-  
-    - [Msg](#cosmos.vesting.v1beta1.Msg)
-  
-- [cosmos/vesting/v1beta1/vesting.proto](#cosmos/vesting/v1beta1/vesting.proto)
-    - [BaseVestingAccount](#cosmos.vesting.v1beta1.BaseVestingAccount)
-    - [ContinuousVestingAccount](#cosmos.vesting.v1beta1.ContinuousVestingAccount)
-    - [DelayedVestingAccount](#cosmos.vesting.v1beta1.DelayedVestingAccount)
-    - [Period](#cosmos.vesting.v1beta1.Period)
-    - [PeriodicVestingAccount](#cosmos.vesting.v1beta1.PeriodicVestingAccount)
->>>>>>> 29ff33300 (cosmos-reflection: extend to support writing by reflection clients (#8965))
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -1654,7 +1109,7 @@ pagination. Ex:
 | `offset` | [uint64](#uint64) |  | offset is a numeric offset that can be used when key is unavailable. It is less efficient than using key. Only one of offset or key should be set. |
 | `limit` | [uint64](#uint64) |  | limit is the total number of results to be returned in the result page. If left empty it will default to a value to be set by each app. |
 | `count_total` | [bool](#bool) |  | count_total is set to true to indicate that the result set should include a count of the total number of items available for pagination in UIs. count_total is only respected when offset is used. It is ignored when key is set. |
-| `reverse` | [bool](#bool) |  | reverse is set to true indicates that, results to be returned in the descending order. |
+| `reverse` | [bool](#bool) |  | reverse is set to true if results are to be returned in the descending order. |
 
 
 
@@ -1943,9 +1398,10 @@ Plan specifies information about a planned upgrade and when it should occur.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `name` | [string](#string) |  | Sets the name for the upgrade. This name will be used by the upgraded version of the software to apply any special "on-upgrade" commands during the first BeginBlock method after the upgrade is applied. It is also used to detect whether a software version can handle a given upgrade. If no upgrade handler with this name has been set in the software, it will be assumed that the software is out-of-date when the upgrade Time or Height is reached and the software will exit. |
-| `time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The time after which the upgrade must be performed. Leave set to its zero value to use a pre-defined Height instead. |
+| `time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | **Deprecated.** Deprecated: Time based upgrades have been deprecated. Time based upgrade logic has been removed from the SDK. If this field is not empty, an error will be thrown. |
 | `height` | [int64](#int64) |  | The height at which the upgrade must be performed. Only used if Time is not set. |
 | `info` | [string](#string) |  | Any application specific upgrade info to be included on-chain such as a git commit that validators could automatically upgrade to |
+| `upgraded_client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | **Deprecated.** Deprecated: UpgradedClientState field has been deprecated. IBC upgrade logic has been moved to the IBC module in the sub module 02-client. If this field is not empty, an error will be thrown. |
 
 
 
@@ -2006,17 +1462,20 @@ client.
 <a name="ibc.core.client.v1.ClientUpdateProposal"></a>
 
 ### ClientUpdateProposal
-ClientUpdateProposal is a governance proposal. If it passes, the client is
-updated with the provided header. The update may fail if the header is not
-valid given certain conditions specified by the client implementation.
+ClientUpdateProposal is a governance proposal. If it passes, the substitute client's
+consensus states starting from the 'initial height' are copied over to the subjects
+client state. The proposal handler may fail if the subject and the substitute do not
+match in client and chain parameters (with exception to latest height, frozen height, and chain-id).
+The updated client must also be valid (cannot be expired).
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  | the title of the update proposal |
 | `description` | [string](#string) |  | the description of the proposal |
-| `client_id` | [string](#string) |  | the client identifier for the client to be updated if the proposal passes |
-| `header` | [google.protobuf.Any](#google.protobuf.Any) |  | the header used to update the client if the proposal passes |
+| `subject_client_id` | [string](#string) |  | the client identifier for the client to be updated if the proposal passes |
+| `substitute_client_id` | [string](#string) |  | the substitute client identifier for the client standing in for the subject client |
+| `initial_height` | [Height](#ibc.core.client.v1.Height) |  | the intital height to copy consensus states from the substitute to the subject |
 
 
 
@@ -2553,27 +2012,6 @@ QueryChannelsResponse is the response type for the Query/Channels RPC method.
 
 
 
-<<<<<<< HEAD
-=======
-
-<a name="cosmos.bank.v1beta1.Supply"></a>
-
-### Supply
-Supply represents a struct that passively keeps track of the total supply
-amounts in the network.
-This message is deprecated now that supply is indexed by denom.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `total` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
-
-
-
-
-
- <!-- end messages -->
->>>>>>> 29ff33300 (cosmos-reflection: extend to support writing by reflection clients (#8965))
 
 <a name="ibc.core.channel.v1.QueryConnectionChannelsRequest"></a>
 
@@ -2619,15 +2057,8 @@ Query/QueryNextSequenceReceiveRequest RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-<<<<<<< HEAD
 | `port_id` | [string](#string) |  | port unique identifier |
 | `channel_id` | [string](#string) |  | channel unique identifier |
-=======
-| `params` | [Params](#cosmos.bank.v1beta1.Params) |  | params defines all the paramaters of the module. |
-| `balances` | [Balance](#cosmos.bank.v1beta1.Balance) | repeated | balances is an array containing the balances of all the accounts. |
-| `supply` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | supply represents the total supply. If it is left empty, then supply will be calculated based on the provided balances. Otherwise, it will be used to validate that the sum of the balances equals this amount. |
-| `denom_metadata` | [Metadata](#cosmos.bank.v1beta1.Metadata) | repeated | denom_metadata defines the metadata of the differents coins. |
->>>>>>> 29ff33300 (cosmos-reflection: extend to support writing by reflection clients (#8965))
 
 
 
@@ -3175,442 +2606,6 @@ MsgRecvPacket receives incoming IBC packet
 ### MsgRecvPacketResponse
 MsgRecvPacketResponse defines the Msg/RecvPacket response type.
 
-<<<<<<< HEAD
-=======
-<a name="cosmos/base/reflection/v2alpha1/reflection.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmos/base/reflection/v2alpha1/reflection.proto
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.AppDescriptor"></a>
-
-### AppDescriptor
-AppDescriptor describes a cosmos-sdk based application
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `authn` | [AuthnDescriptor](#cosmos.base.reflection.v2alpha1.AuthnDescriptor) |  | AuthnDescriptor provides information on how to authenticate transactions on the application NOTE: experimental and subject to change in future releases. |
-| `chain` | [ChainDescriptor](#cosmos.base.reflection.v2alpha1.ChainDescriptor) |  | chain provides the chain descriptor |
-| `codec` | [CodecDescriptor](#cosmos.base.reflection.v2alpha1.CodecDescriptor) |  | codec provides metadata information regarding codec related types |
-| `configuration` | [ConfigurationDescriptor](#cosmos.base.reflection.v2alpha1.ConfigurationDescriptor) |  | configuration provides metadata information regarding the sdk.Config type |
-| `query_services` | [QueryServicesDescriptor](#cosmos.base.reflection.v2alpha1.QueryServicesDescriptor) |  | query_services provides metadata information regarding the available queriable endpoints |
-| `tx` | [TxDescriptor](#cosmos.base.reflection.v2alpha1.TxDescriptor) |  | tx provides metadata information regarding how to send transactions to the given application |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.AuthnDescriptor"></a>
-
-### AuthnDescriptor
-AuthnDescriptor provides information on how to sign transactions without relying
-on the online RPCs GetTxMetadata and CombineUnsignedTxAndSignatures
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sign_modes` | [SigningModeDescriptor](#cosmos.base.reflection.v2alpha1.SigningModeDescriptor) | repeated | sign_modes defines the supported signature algorithm |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.ChainDescriptor"></a>
-
-### ChainDescriptor
-ChainDescriptor describes chain information of the application
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  | id is the chain id |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.CodecDescriptor"></a>
-
-### CodecDescriptor
-CodecDescriptor describes the registered interfaces and provides metadata information on the types
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `interfaces` | [InterfaceDescriptor](#cosmos.base.reflection.v2alpha1.InterfaceDescriptor) | repeated | interfaces is a list of the registerted interfaces descriptors |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.ConfigurationDescriptor"></a>
-
-### ConfigurationDescriptor
-ConfigurationDescriptor contains metadata information on the sdk.Config
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `bech32_account_address_prefix` | [string](#string) |  | bech32_account_address_prefix is the account address prefix |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.GetAuthnDescriptorRequest"></a>
-
-### GetAuthnDescriptorRequest
-GetAuthnDescriptorRequest is the request used for the GetAuthnDescriptor RPC
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.GetAuthnDescriptorResponse"></a>
-
-### GetAuthnDescriptorResponse
-GetAuthnDescriptorResponse is the response returned by the GetAuthnDescriptor RPC
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `authn` | [AuthnDescriptor](#cosmos.base.reflection.v2alpha1.AuthnDescriptor) |  | authn describes how to authenticate to the application when sending transactions |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.GetChainDescriptorRequest"></a>
-
-### GetChainDescriptorRequest
-GetChainDescriptorRequest is the request used for the GetChainDescriptor RPC
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.GetChainDescriptorResponse"></a>
-
-### GetChainDescriptorResponse
-GetChainDescriptorResponse is the response returned by the GetChainDescriptor RPC
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `chain` | [ChainDescriptor](#cosmos.base.reflection.v2alpha1.ChainDescriptor) |  | chain describes application chain information |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.GetCodecDescriptorRequest"></a>
-
-### GetCodecDescriptorRequest
-GetCodecDescriptorRequest is the request used for the GetCodecDescriptor RPC
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.GetCodecDescriptorResponse"></a>
-
-### GetCodecDescriptorResponse
-GetCodecDescriptorResponse is the response returned by the GetCodecDescriptor RPC
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `codec` | [CodecDescriptor](#cosmos.base.reflection.v2alpha1.CodecDescriptor) |  | codec describes the application codec such as registered interfaces and implementations |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.GetConfigurationDescriptorRequest"></a>
-
-### GetConfigurationDescriptorRequest
-GetConfigurationDescriptorRequest is the request used for the GetConfigurationDescriptor RPC
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.GetConfigurationDescriptorResponse"></a>
-
-### GetConfigurationDescriptorResponse
-GetConfigurationDescriptorResponse is the response returned by the GetConfigurationDescriptor RPC
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `config` | [ConfigurationDescriptor](#cosmos.base.reflection.v2alpha1.ConfigurationDescriptor) |  | config describes the application's sdk.Config |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.GetQueryServicesDescriptorRequest"></a>
-
-### GetQueryServicesDescriptorRequest
-GetQueryServicesDescriptorRequest is the request used for the GetQueryServicesDescriptor RPC
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.GetQueryServicesDescriptorResponse"></a>
-
-### GetQueryServicesDescriptorResponse
-GetQueryServicesDescriptorResponse is the response returned by the GetQueryServicesDescriptor RPC
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `queries` | [QueryServicesDescriptor](#cosmos.base.reflection.v2alpha1.QueryServicesDescriptor) |  | queries provides information on the available queryable services |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.GetTxDescriptorRequest"></a>
-
-### GetTxDescriptorRequest
-GetTxDescriptorRequest is the request used for the GetTxDescriptor RPC
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.GetTxDescriptorResponse"></a>
-
-### GetTxDescriptorResponse
-GetTxDescriptorResponse is the response returned by the GetTxDescriptor RPC
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `tx` | [TxDescriptor](#cosmos.base.reflection.v2alpha1.TxDescriptor) |  | tx provides information on msgs that can be forwarded to the application alongside the accepted transaction protobuf type |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.InterfaceAcceptingMessageDescriptor"></a>
-
-### InterfaceAcceptingMessageDescriptor
-InterfaceAcceptingMessageDescriptor describes a protobuf message which contains
-an interface represented as a google.protobuf.Any
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the type containing the interface |
-| `field_descriptor_names` | [string](#string) | repeated | field_descriptor_names is a list of the protobuf name (not fullname) of the field which contains the interface as google.protobuf.Any (the interface is the same, but it can be in multiple fields of the same proto message) |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.InterfaceDescriptor"></a>
-
-### InterfaceDescriptor
-InterfaceDescriptor describes the implementation of an interface
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `fullname` | [string](#string) |  | fullname is the name of the interface |
-| `interface_accepting_messages` | [InterfaceAcceptingMessageDescriptor](#cosmos.base.reflection.v2alpha1.InterfaceAcceptingMessageDescriptor) | repeated | interface_accepting_messages contains information regarding the proto messages which contain the interface as google.protobuf.Any field |
-| `interface_implementers` | [InterfaceImplementerDescriptor](#cosmos.base.reflection.v2alpha1.InterfaceImplementerDescriptor) | repeated | interface_implementers is a list of the descriptors of the interface implementers |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.InterfaceImplementerDescriptor"></a>
-
-### InterfaceImplementerDescriptor
-InterfaceImplementerDescriptor describes an interface implementer
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `fullname` | [string](#string) |  | fullname is the protobuf queryable name of the interface implementer |
-| `type_url` | [string](#string) |  | type_url defines the type URL used when marshalling the type as any this is required so we can provide type safe google.protobuf.Any marshalling and unmarshalling, making sure that we don't accept just 'any' type in our interface fields |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.MsgDescriptor"></a>
-
-### MsgDescriptor
-MsgDescriptor describes a cosmos-sdk message that can be delivered with a transaction
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `service_msg` | [ServiceMsgDescriptor](#cosmos.base.reflection.v2alpha1.ServiceMsgDescriptor) |  | service_msg is used when the message is an sdk.ServiceMsg type |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.QueryMethodDescriptor"></a>
-
-### QueryMethodDescriptor
-QueryMethodDescriptor describes a queryable method of a query service
-no other info is provided beside method name and tendermint queryable path
-because it would be redundant with the grpc reflection service
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `name` | [string](#string) |  | name is the protobuf name (not fullname) of the method |
-| `full_query_path` | [string](#string) |  | full_query_path is the path that can be used to query this method via tendermint abci.Query |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.QueryServiceDescriptor"></a>
-
-### QueryServiceDescriptor
-QueryServiceDescriptor describes a cosmos-sdk queryable service
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the service descriptor |
-| `is_module` | [bool](#bool) |  | is_module describes if this service is actually exposed by an application's module |
-| `methods` | [QueryMethodDescriptor](#cosmos.base.reflection.v2alpha1.QueryMethodDescriptor) | repeated | methods provides a list of query service methods |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.QueryServicesDescriptor"></a>
-
-### QueryServicesDescriptor
-QueryServicesDescriptor contains the list of cosmos-sdk queriable services
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `query_services` | [QueryServiceDescriptor](#cosmos.base.reflection.v2alpha1.QueryServiceDescriptor) | repeated | query_services is a list of cosmos-sdk QueryServiceDescriptor |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.ServiceMsgDescriptor"></a>
-
-### ServiceMsgDescriptor
-ServiceMsgDescriptor describes an sdk.ServiceMsg type
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `request_fullname` | [string](#string) |  | request_fullname is the protobuf fullname of the given sdk.ServiceMsg request this is the protobuf message type which should be used as google.protobuf.Any.value when delivering the msg to the DeliverTx endpoint |
-| `request_route` | [string](#string) |  | request_route is the sdk.ServiceMsg route, it is equal to type_url |
-| `request_type_url` | [string](#string) |  | request_type_url is the identifier that should be used as google.protobuf.Any.type_url when delivering the msg to the DeliverTx endpoint |
-| `response_fullname` | [string](#string) |  | response_fullname is the protobuf fullname of the given sdk.ServiceMsg response |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.SigningModeDescriptor"></a>
-
-### SigningModeDescriptor
-SigningModeDescriptor provides information on a signing flow of the application
-NOTE(fdymylja): here we could go as far as providing an entire flow on how
-to sign a message given a SigningModeDescriptor, but it's better to think about
-this another time
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `name` | [string](#string) |  | name defines the unique name of the signing mode |
-| `number` | [int32](#int32) |  | number is the unique int32 identifier for the sign_mode enum |
-| `authn_info_provider_method_fullname` | [string](#string) |  | authn_info_provider_method_fullname defines the fullname of the method to call to get the metadata required to authenticate using the provided sign_modes |
-
-
-
-
-
-
-<a name="cosmos.base.reflection.v2alpha1.TxDescriptor"></a>
-
-### TxDescriptor
-TxDescriptor describes the accepted transaction type
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the raw transaction type (for instance the tx.Tx type) it is not meant to support polymorphism of transaction types, it is supposed to be used by reflection clients to understand if they can handle a specific transaction type in an application. |
-| `msgs` | [MsgDescriptor](#cosmos.base.reflection.v2alpha1.MsgDescriptor) | repeated | msgs lists the accepted application messages (sdk.ServiceMsg, sdk.Msg) NOTE: not to be confused with proto.Message types |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="cosmos.base.reflection.v2alpha1.ReflectionService"></a>
-
-### ReflectionService
-ReflectionService defines a service for application reflection.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `GetAuthnDescriptor` | [GetAuthnDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetAuthnDescriptorRequest) | [GetAuthnDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetAuthnDescriptorResponse) | GetAuthnDescriptor returns information on how to authenticate transactions in the application NOTE: this RPC is still experimental and might be subject to breaking changes or removal in future releases of the cosmos-sdk. | GET|/cosmos/base/reflection/v1beta1/app_descriptor/authn|
-| `GetChainDescriptor` | [GetChainDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetChainDescriptorRequest) | [GetChainDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetChainDescriptorResponse) | GetChainDescriptor returns the description of the chain | GET|/cosmos/base/reflection/v1beta1/app_descriptor/chain|
-| `GetCodecDescriptor` | [GetCodecDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetCodecDescriptorRequest) | [GetCodecDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetCodecDescriptorResponse) | GetCodecDescriptor returns the descriptor of the codec of the application | GET|/cosmos/base/reflection/v1beta1/app_descriptor/codec|
-| `GetConfigurationDescriptor` | [GetConfigurationDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetConfigurationDescriptorRequest) | [GetConfigurationDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetConfigurationDescriptorResponse) | GetConfigurationDescriptor returns the descriptor for the sdk.Config of the application | GET|/cosmos/base/reflection/v1beta1/app_descriptor/configuration|
-| `GetQueryServicesDescriptor` | [GetQueryServicesDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetQueryServicesDescriptorRequest) | [GetQueryServicesDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetQueryServicesDescriptorResponse) | GetQueryServicesDescriptor returns the available gRPC queryable services of the application | GET|/cosmos/base/reflection/v1beta1/app_descriptor/query_services|
-| `GetTxDescriptor` | [GetTxDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetTxDescriptorRequest) | [GetTxDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetTxDescriptorResponse) | GetTxDescriptor returns information on the used transaction object and available msgs that can be used | GET|/cosmos/base/reflection/v1beta1/app_descriptor/tx_descriptor|
-
- <!-- end services -->
-
-
-
-<a name="cosmos/base/snapshots/v1beta1/snapshot.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
->>>>>>> 29ff33300 (cosmos-reflection: extend to support writing by reflection clients (#8965))
 
 
 
@@ -5281,7 +4276,8 @@ data sign byte encodings.
 <a name="lbm.crypto.ed25519.PrivKey"></a>
 
 ### PrivKey
-PrivKey defines a ed25519 private key.
+Deprecated: PrivKey defines a ed25519 private key.
+NOTE: ed25519 keys must not be used in SDK apps except in a tendermint validator context.
 
 
 | Field | Type | Label | Description |
@@ -5296,11 +4292,11 @@ PrivKey defines a ed25519 private key.
 <a name="lbm.crypto.ed25519.PubKey"></a>
 
 ### PubKey
-PubKey defines a ed25519 public key
-Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
-if the y-coordinate is the lexicographically largest of the two associated with
-the x-coordinate. Otherwise the first byte is a 0x03.
-This prefix is followed with the x-coordinate.
+PubKey is an ed25519 public key for handling Tendermint keys in SDK.
+It's needed for Any serialization and SDK compatibility.
+It must not be used in a non Tendermint key context because it doesn't implement
+ADR-28. Nevertheless, you will like to use ed25519 in app user level
+then you must create a new proto message and follow ADR-28 for Address construction.
 
 
 | Field | Type | Label | Description |
@@ -5730,10 +4726,26 @@ Msg defines the auth Msg service.
 
 
 
-<a name="lbm.authz.v1.AuthorizationGrant"></a>
+<a name="lbm.authz.v1.GenericAuthorization"></a>
 
-### AuthorizationGrant
-AuthorizationGrant gives permissions to execute
+### GenericAuthorization
+GenericAuthorization gives the grantee unrestricted permissions to execute
+the provided method on behalf of the granter's account.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `msg` | [string](#string) |  | Msg, identified by it's type URL, to grant unrestricted permissions to execute |
+
+
+
+
+
+
+<a name="lbm.authz.v1.Grant"></a>
+
+### Grant
+Grant gives permissions to execute
 the provide method with expiration time.
 
 
@@ -5746,33 +4758,51 @@ the provide method with expiration time.
 
 
 
+ <!-- end messages -->
 
-<a name="lbm.authz.v1.GenericAuthorization"></a>
+ <!-- end enums -->
 
-### GenericAuthorization
-GenericAuthorization gives the grantee unrestricted permissions to execute
-the provided method on behalf of the granter's account.
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/authz/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/authz/v1/event.proto
+
+
+
+<a name="lbm.authz.v1.EventGrant"></a>
+
+### EventGrant
+EventGrant is emitted on Msg/Grant
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `method_name` | [string](#string) |  | method name to grant unrestricted permissions to execute Note: MethodName() is already a method on `GenericAuthorization` type, we need some custom naming here so using `MessageName` |
+| `msg_type_url` | [string](#string) |  | Msg type URL for which an autorization is granted |
+| `granter` | [string](#string) |  | Granter account address |
+| `grantee` | [string](#string) |  | Grantee account address |
 
 
 
 
 
 
-<a name="lbm.authz.v1.SendAuthorization"></a>
+<a name="lbm.authz.v1.EventRevoke"></a>
 
-### SendAuthorization
-SendAuthorization allows the grantee to spend up to spend_limit coins from
-the granter's account.
+### EventRevoke
+EventRevoke is emitted on Msg/Revoke
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `spend_limit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
+| `msg_type_url` | [string](#string) |  | Msg type URL for which an autorization is revoked |
+| `granter` | [string](#string) |  | Granter account address |
+| `grantee` | [string](#string) |  | Grantee account address |
 
 
 
@@ -5995,10 +5025,10 @@ Since: cosmos-sdk 0.42.11, 0.44.5, 0.45 |
 
 
 
-<a name="lbm.authz.v1.MsgExecAuthorizedRequest"></a>
+<a name="lbm.authz.v1.MsgExec"></a>
 
-### MsgExecAuthorizedRequest
-MsgExecAuthorizedRequest attempts to execute the provided messages using
+### MsgExec
+MsgExec attempts to execute the provided messages using
 authorizations granted to the grantee. Each message should have only
 one signer corresponding to the granter of the authorization.
 
@@ -6006,61 +5036,60 @@ one signer corresponding to the granter of the authorization.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `grantee` | [string](#string) |  |  |
-| `msgs` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
+| `msgs` | [google.protobuf.Any](#google.protobuf.Any) | repeated | Authorization Msg requests to execute. Each msg must implement Authorization interface The x/authz will try to find a grant matching (msg.signers[0], grantee, MsgTypeURL(msg)) triple and validate it. |
 
 
 
 
 
 
-<a name="lbm.authz.v1.MsgExecAuthorizedResponse"></a>
+<a name="lbm.authz.v1.MsgExecResponse"></a>
 
-### MsgExecAuthorizedResponse
-MsgExecAuthorizedResponse defines the Msg/MsgExecAuthorizedResponse response type.
+### MsgExecResponse
+MsgExecResponse defines the Msg/MsgExecResponse response type.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `result` | [lbm.base.abci.v1.Result](#lbm.base.abci.v1.Result) |  |  |
+| `results` | [bytes](#bytes) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.authz.v1.MsgGrantAuthorizationRequest"></a>
+<a name="lbm.authz.v1.MsgGrant"></a>
 
-### MsgGrantAuthorizationRequest
-MsgGrantAuthorizationRequest grants the provided authorization to the grantee on the granter's
-account with the provided expiration time.
+### MsgGrant
+MsgGrant is a request type for Grant method. It declares authorization to the grantee
+on behalf of the granter with the provided expiration time.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `granter` | [string](#string) |  |  |
 | `grantee` | [string](#string) |  |  |
-| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `expiration` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `grant` | [Grant](#lbm.authz.v1.Grant) |  |  |
 
 
 
 
 
 
-<a name="lbm.authz.v1.MsgGrantAuthorizationResponse"></a>
+<a name="lbm.authz.v1.MsgGrantResponse"></a>
 
-### MsgGrantAuthorizationResponse
-MsgGrantAuthorizationResponse defines the Msg/MsgGrantAuthorization response type.
-
-
+### MsgGrantResponse
+MsgGrantResponse defines the Msg/MsgGrant response type.
 
 
 
 
-<a name="lbm.authz.v1.MsgRevokeAuthorizationRequest"></a>
 
-### MsgRevokeAuthorizationRequest
-MsgRevokeAuthorizationRequest revokes any authorization with the provided sdk.Msg type on the
+
+<a name="lbm.authz.v1.MsgRevoke"></a>
+
+### MsgRevoke
+MsgRevoke revokes any authorization with the provided sdk.Msg type on the
 granter's account with that has been granted to the grantee.
 
 
@@ -6068,17 +5097,17 @@ granter's account with that has been granted to the grantee.
 | ----- | ---- | ----- | ----------- |
 | `granter` | [string](#string) |  |  |
 | `grantee` | [string](#string) |  |  |
-| `method_name` | [string](#string) |  |  |
+| `msg_type_url` | [string](#string) |  |  |
 
 
 
 
 
 
-<a name="lbm.authz.v1.MsgRevokeAuthorizationResponse"></a>
+<a name="lbm.authz.v1.MsgRevokeResponse"></a>
 
-### MsgRevokeAuthorizationResponse
-MsgRevokeAuthorizationResponse defines the Msg/MsgRevokeAuthorizationResponse response type.
+### MsgRevokeResponse
+MsgRevokeResponse defines the Msg/MsgRevokeResponse response type.
 
 
 
@@ -6098,9 +5127,9 @@ Msg defines the authz Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `GrantAuthorization` | [MsgGrantAuthorizationRequest](#lbm.authz.v1.MsgGrantAuthorizationRequest) | [MsgGrantAuthorizationResponse](#lbm.authz.v1.MsgGrantAuthorizationResponse) | GrantAuthorization grants the provided authorization to the grantee on the granter's account with the provided expiration time. | |
-| `ExecAuthorized` | [MsgExecAuthorizedRequest](#lbm.authz.v1.MsgExecAuthorizedRequest) | [MsgExecAuthorizedResponse](#lbm.authz.v1.MsgExecAuthorizedResponse) | ExecAuthorized attempts to execute the provided messages using authorizations granted to the grantee. Each message should have only one signer corresponding to the granter of the authorization. | |
-| `RevokeAuthorization` | [MsgRevokeAuthorizationRequest](#lbm.authz.v1.MsgRevokeAuthorizationRequest) | [MsgRevokeAuthorizationResponse](#lbm.authz.v1.MsgRevokeAuthorizationResponse) | RevokeAuthorization revokes any authorization corresponding to the provided method name on the granter's account that has been granted to the grantee. | |
+| `Grant` | [MsgGrant](#lbm.authz.v1.MsgGrant) | [MsgGrantResponse](#lbm.authz.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee on the granter's account with the provided expiration time. If there is already a grant for the given (granter, grantee, Authorization) triple, then the grant will be overwritten. | |
+| `Exec` | [MsgExec](#lbm.authz.v1.MsgExec) | [MsgExecResponse](#lbm.authz.v1.MsgExecResponse) | Exec attempts to execute the provided messages using authorizations granted to the grantee. Each message should have only one signer corresponding to the granter of the authorization. | |
+| `Revoke` | [MsgRevoke](#lbm.authz.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.authz.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name on the granter's account that has been granted to the grantee. | |
 
  <!-- end services -->
 
@@ -6162,48 +5191,17 @@ GrantAuthorization defines the GenesisState/GrantAuthorization type.
 
 
 
-<a name="lbm.authz.v1.QueryAuthorizationRequest"></a>
+<a name="lbm.authz.v1.QueryGrantsRequest"></a>
 
-### QueryAuthorizationRequest
-QueryAuthorizationRequest is the request type for the Query/Authorization RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `granter` | [string](#string) |  |  |
-| `grantee` | [string](#string) |  |  |
-| `method_name` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.authz.v1.QueryAuthorizationResponse"></a>
-
-### QueryAuthorizationResponse
-QueryAuthorizationResponse is the response type for the Query/Authorization RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `authorization` | [AuthorizationGrant](#lbm.authz.v1.AuthorizationGrant) |  | authorization is a authorization granted for grantee by granter. |
-
-
-
-
-
-
-<a name="lbm.authz.v1.QueryAuthorizationsRequest"></a>
-
-### QueryAuthorizationsRequest
-QueryAuthorizationsRequest is the request type for the Query/Authorizations RPC method.
+### QueryGrantsRequest
+QueryGrantsRequest is the request type for the Query/Grants RPC method.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `granter` | [string](#string) |  |  |
 | `grantee` | [string](#string) |  |  |
+| `msg_type_url` | [string](#string) |  | Optional, msg_type_url, when set, will query only grants matching given msg type. |
 | `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an pagination for the request. |
 
 
@@ -6211,15 +5209,15 @@ QueryAuthorizationsRequest is the request type for the Query/Authorizations RPC 
 
 
 
-<a name="lbm.authz.v1.QueryAuthorizationsResponse"></a>
+<a name="lbm.authz.v1.QueryGrantsResponse"></a>
 
-### QueryAuthorizationsResponse
-QueryAuthorizationsResponse is the response type for the Query/Authorizations RPC method.
+### QueryGrantsResponse
+QueryGrantsResponse is the response type for the Query/Authorizations RPC method.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `authorizations` | [AuthorizationGrant](#lbm.authz.v1.AuthorizationGrant) | repeated | authorizations is a list of grants granted for grantee by granter. |
+| `grants` | [Grant](#lbm.authz.v1.Grant) | repeated | authorizations is a list of grants granted for grantee by granter. |
 | `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines an pagination for the response. |
 
 
@@ -6240,8 +5238,7 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Authorization` | [QueryAuthorizationRequest](#lbm.authz.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.authz.v1.QueryAuthorizationResponse) | Returns any `Authorization` (or `nil`), with the expiration time, granted to the grantee by the granter for the provided msg type. | GET|/lbm/authz/v1/granters/{granter}/grantees/{grantee}/grant|
-| `Authorizations` | [QueryAuthorizationsRequest](#lbm.authz.v1.QueryAuthorizationsRequest) | [QueryAuthorizationsResponse](#lbm.authz.v1.QueryAuthorizationsResponse) | Returns list of `Authorization`, granted to the grantee by the granter. | GET|/lbm/authz/v1/granters/{granter}/grantees/{grantee}/grants|
+| `Grants` | [QueryGrantsRequest](#lbm.authz.v1.QueryGrantsRequest) | [QueryGrantsResponse](#lbm.authz.v1.QueryGrantsResponse) | Returns list of `Authorization`, granted to the grantee by the granter. | GET|/lbm/authz/v1/grants|
 
  <!-- end services -->
 
@@ -6663,6 +5660,11 @@ QueryTotalSupplyRequest is the request type for the Query/TotalSupply RPC
 method.
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
 
 
 
@@ -6677,6 +5679,7 @@ method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `supply` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | supply is the supply of the coins |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -7277,6 +6280,419 @@ ReflectionService defines a service for interface reflection.
 
 
 
+<a name="lbm/base/reflection/v2/reflection.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/base/reflection/v2/reflection.proto
+
+
+
+<a name="lbm.base.reflection.v2.AppDescriptor"></a>
+
+### AppDescriptor
+AppDescriptor describes a cosmos-sdk based application
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authn` | [AuthnDescriptor](#lbm.base.reflection.v2.AuthnDescriptor) |  | AuthnDescriptor provides information on how to authenticate transactions on the application NOTE: experimental and subject to change in future releases. |
+| `chain` | [ChainDescriptor](#lbm.base.reflection.v2.ChainDescriptor) |  | chain provides the chain descriptor |
+| `codec` | [CodecDescriptor](#lbm.base.reflection.v2.CodecDescriptor) |  | codec provides metadata information regarding codec related types |
+| `configuration` | [ConfigurationDescriptor](#lbm.base.reflection.v2.ConfigurationDescriptor) |  | configuration provides metadata information regarding the sdk.Config type |
+| `query_services` | [QueryServicesDescriptor](#lbm.base.reflection.v2.QueryServicesDescriptor) |  | query_services provides metadata information regarding the available queriable endpoints |
+| `tx` | [TxDescriptor](#lbm.base.reflection.v2.TxDescriptor) |  | tx provides metadata information regarding how to send transactions to the given application |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.AuthnDescriptor"></a>
+
+### AuthnDescriptor
+AuthnDescriptor provides information on how to sign transactions without relying
+on the online RPCs GetTxMetadata and CombineUnsignedTxAndSignatures
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sign_modes` | [SigningModeDescriptor](#lbm.base.reflection.v2.SigningModeDescriptor) | repeated | sign_modes defines the supported signature algorithm |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.ChainDescriptor"></a>
+
+### ChainDescriptor
+ChainDescriptor describes chain information of the application
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  | id is the chain id |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.CodecDescriptor"></a>
+
+### CodecDescriptor
+CodecDescriptor describes the registered interfaces and provides metadata information on the types
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `interfaces` | [InterfaceDescriptor](#lbm.base.reflection.v2.InterfaceDescriptor) | repeated | interfaces is a list of the registerted interfaces descriptors |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.ConfigurationDescriptor"></a>
+
+### ConfigurationDescriptor
+ConfigurationDescriptor contains metadata information on the sdk.Config
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bech32_account_address_prefix` | [string](#string) |  | bech32_account_address_prefix is the account address prefix |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetAuthnDescriptorRequest"></a>
+
+### GetAuthnDescriptorRequest
+GetAuthnDescriptorRequest is the request used for the GetAuthnDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetAuthnDescriptorResponse"></a>
+
+### GetAuthnDescriptorResponse
+GetAuthnDescriptorResponse is the response returned by the GetAuthnDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authn` | [AuthnDescriptor](#lbm.base.reflection.v2.AuthnDescriptor) |  | authn describes how to authenticate to the application when sending transactions |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetChainDescriptorRequest"></a>
+
+### GetChainDescriptorRequest
+GetChainDescriptorRequest is the request used for the GetChainDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetChainDescriptorResponse"></a>
+
+### GetChainDescriptorResponse
+GetChainDescriptorResponse is the response returned by the GetChainDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `chain` | [ChainDescriptor](#lbm.base.reflection.v2.ChainDescriptor) |  | chain describes application chain information |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetCodecDescriptorRequest"></a>
+
+### GetCodecDescriptorRequest
+GetCodecDescriptorRequest is the request used for the GetCodecDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetCodecDescriptorResponse"></a>
+
+### GetCodecDescriptorResponse
+GetCodecDescriptorResponse is the response returned by the GetCodecDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `codec` | [CodecDescriptor](#lbm.base.reflection.v2.CodecDescriptor) |  | codec describes the application codec such as registered interfaces and implementations |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetConfigurationDescriptorRequest"></a>
+
+### GetConfigurationDescriptorRequest
+GetConfigurationDescriptorRequest is the request used for the GetConfigurationDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetConfigurationDescriptorResponse"></a>
+
+### GetConfigurationDescriptorResponse
+GetConfigurationDescriptorResponse is the response returned by the GetConfigurationDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `config` | [ConfigurationDescriptor](#lbm.base.reflection.v2.ConfigurationDescriptor) |  | config describes the application's sdk.Config |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetQueryServicesDescriptorRequest"></a>
+
+### GetQueryServicesDescriptorRequest
+GetQueryServicesDescriptorRequest is the request used for the GetQueryServicesDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetQueryServicesDescriptorResponse"></a>
+
+### GetQueryServicesDescriptorResponse
+GetQueryServicesDescriptorResponse is the response returned by the GetQueryServicesDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `queries` | [QueryServicesDescriptor](#lbm.base.reflection.v2.QueryServicesDescriptor) |  | queries provides information on the available queryable services |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetTxDescriptorRequest"></a>
+
+### GetTxDescriptorRequest
+GetTxDescriptorRequest is the request used for the GetTxDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetTxDescriptorResponse"></a>
+
+### GetTxDescriptorResponse
+GetTxDescriptorResponse is the response returned by the GetTxDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `tx` | [TxDescriptor](#lbm.base.reflection.v2.TxDescriptor) |  | tx provides information on msgs that can be forwarded to the application alongside the accepted transaction protobuf type |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.InterfaceAcceptingMessageDescriptor"></a>
+
+### InterfaceAcceptingMessageDescriptor
+InterfaceAcceptingMessageDescriptor describes a protobuf message which contains
+an interface represented as a google.protobuf.Any
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the type containing the interface |
+| `field_descriptor_names` | [string](#string) | repeated | field_descriptor_names is a list of the protobuf name (not fullname) of the field which contains the interface as google.protobuf.Any (the interface is the same, but it can be in multiple fields of the same proto message) |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.InterfaceDescriptor"></a>
+
+### InterfaceDescriptor
+InterfaceDescriptor describes the implementation of an interface
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the name of the interface |
+| `interface_accepting_messages` | [InterfaceAcceptingMessageDescriptor](#lbm.base.reflection.v2.InterfaceAcceptingMessageDescriptor) | repeated | interface_accepting_messages contains information regarding the proto messages which contain the interface as google.protobuf.Any field |
+| `interface_implementers` | [InterfaceImplementerDescriptor](#lbm.base.reflection.v2.InterfaceImplementerDescriptor) | repeated | interface_implementers is a list of the descriptors of the interface implementers |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.InterfaceImplementerDescriptor"></a>
+
+### InterfaceImplementerDescriptor
+InterfaceImplementerDescriptor describes an interface implementer
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf queryable name of the interface implementer |
+| `type_url` | [string](#string) |  | type_url defines the type URL used when marshalling the type as any this is required so we can provide type safe google.protobuf.Any marshalling and unmarshalling, making sure that we don't accept just 'any' type in our interface fields |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.MsgDescriptor"></a>
+
+### MsgDescriptor
+MsgDescriptor describes a cosmos-sdk message that can be delivered with a transaction
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `msg_type_url` | [string](#string) |  | msg_type_url contains the TypeURL of a sdk.Msg. |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.QueryMethodDescriptor"></a>
+
+### QueryMethodDescriptor
+QueryMethodDescriptor describes a queryable method of a query service
+no other info is provided beside method name and tendermint queryable path
+because it would be redundant with the grpc reflection service
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | name is the protobuf name (not fullname) of the method |
+| `full_query_path` | [string](#string) |  | full_query_path is the path that can be used to query this method via tendermint abci.Query |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.QueryServiceDescriptor"></a>
+
+### QueryServiceDescriptor
+QueryServiceDescriptor describes a cosmos-sdk queryable service
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the service descriptor |
+| `is_module` | [bool](#bool) |  | is_module describes if this service is actually exposed by an application's module |
+| `methods` | [QueryMethodDescriptor](#lbm.base.reflection.v2.QueryMethodDescriptor) | repeated | methods provides a list of query service methods |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.QueryServicesDescriptor"></a>
+
+### QueryServicesDescriptor
+QueryServicesDescriptor contains the list of cosmos-sdk queriable services
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `query_services` | [QueryServiceDescriptor](#lbm.base.reflection.v2.QueryServiceDescriptor) | repeated | query_services is a list of cosmos-sdk QueryServiceDescriptor |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.SigningModeDescriptor"></a>
+
+### SigningModeDescriptor
+SigningModeDescriptor provides information on a signing flow of the application
+NOTE(fdymylja): here we could go as far as providing an entire flow on how
+to sign a message given a SigningModeDescriptor, but it's better to think about
+this another time
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | name defines the unique name of the signing mode |
+| `number` | [int32](#int32) |  | number is the unique int32 identifier for the sign_mode enum |
+| `authn_info_provider_method_fullname` | [string](#string) |  | authn_info_provider_method_fullname defines the fullname of the method to call to get the metadata required to authenticate using the provided sign_modes |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.TxDescriptor"></a>
+
+### TxDescriptor
+TxDescriptor describes the accepted transaction type
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the raw transaction type (for instance the tx.Tx type) it is not meant to support polymorphism of transaction types, it is supposed to be used by reflection clients to understand if they can handle a specific transaction type in an application. |
+| `msgs` | [MsgDescriptor](#lbm.base.reflection.v2.MsgDescriptor) | repeated | msgs lists the accepted application messages (sdk.Msg) |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.base.reflection.v2.ReflectionService"></a>
+
+### ReflectionService
+ReflectionService defines a service for application reflection.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `GetAuthnDescriptor` | [GetAuthnDescriptorRequest](#lbm.base.reflection.v2.GetAuthnDescriptorRequest) | [GetAuthnDescriptorResponse](#lbm.base.reflection.v2.GetAuthnDescriptorResponse) | GetAuthnDescriptor returns information on how to authenticate transactions in the application NOTE: this RPC is still experimental and might be subject to breaking changes or removal in future releases of the cosmos-sdk. | GET|/lbm/base/reflection/v1/app_descriptor/authn|
+| `GetChainDescriptor` | [GetChainDescriptorRequest](#lbm.base.reflection.v2.GetChainDescriptorRequest) | [GetChainDescriptorResponse](#lbm.base.reflection.v2.GetChainDescriptorResponse) | GetChainDescriptor returns the description of the chain | GET|/lbm/base/reflection/v1/app_descriptor/chain|
+| `GetCodecDescriptor` | [GetCodecDescriptorRequest](#lbm.base.reflection.v2.GetCodecDescriptorRequest) | [GetCodecDescriptorResponse](#lbm.base.reflection.v2.GetCodecDescriptorResponse) | GetCodecDescriptor returns the descriptor of the codec of the application | GET|/lbm/base/reflection/v1/app_descriptor/codec|
+| `GetConfigurationDescriptor` | [GetConfigurationDescriptorRequest](#lbm.base.reflection.v2.GetConfigurationDescriptorRequest) | [GetConfigurationDescriptorResponse](#lbm.base.reflection.v2.GetConfigurationDescriptorResponse) | GetConfigurationDescriptor returns the descriptor for the sdk.Config of the application | GET|/lbm/base/reflection/v1/app_descriptor/configuration|
+| `GetQueryServicesDescriptor` | [GetQueryServicesDescriptorRequest](#lbm.base.reflection.v2.GetQueryServicesDescriptorRequest) | [GetQueryServicesDescriptorResponse](#lbm.base.reflection.v2.GetQueryServicesDescriptorResponse) | GetQueryServicesDescriptor returns the available gRPC queryable services of the application | GET|/lbm/base/reflection/v1/app_descriptor/query_services|
+| `GetTxDescriptor` | [GetTxDescriptorRequest](#lbm.base.reflection.v2.GetTxDescriptorRequest) | [GetTxDescriptorResponse](#lbm.base.reflection.v2.GetTxDescriptorResponse) | GetTxDescriptor returns information on the used transaction object and available msgs that can be used | GET|/lbm/base/reflection/v1/app_descriptor/tx_descriptor|
+
+ <!-- end services -->
+
+
+
 <a name="lbm/base/snapshots/v1/snapshot.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -7379,6 +6795,42 @@ between a store name and the commit ID.
 | ----- | ---- | ----- | ----------- |
 | `name` | [string](#string) |  |  |
 | `commit_id` | [CommitID](#lbm.base.store.v1.CommitID) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/base/store/v1/listening.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/base/store/v1/listening.proto
+
+
+
+<a name="lbm.base.store.v1.StoreKVPair"></a>
+
+### StoreKVPair
+StoreKVPair is a KVStore KVPair used for listening to state changes (Sets and Deletes)
+It optionally includes the StoreKey for the originating KVStore and a Boolean flag to distinguish between Sets and
+Deletes
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `store_key` | [string](#string) |  | the store key for the KVStore this pair originates from |
+| `delete` | [bool](#bool) |  | true indicates a delete operation, false indicates a set operation |
+| `key` | [bytes](#bytes) |  |  |
+| `value` | [bytes](#bytes) |  |  |
 
 
 
@@ -10411,7 +9863,7 @@ GenesisState defines the slashing module's genesis state.
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#lbm.slashing.v1.Params) |  | params defines all the paramaters of related to deposit. |
 | `signing_infos` | [SigningInfo](#lbm.slashing.v1.SigningInfo) | repeated | signing_infos represents a map between validator addresses and their signing infos. |
-| `missed_blocks` | [ValidatorMissedBlocks](#lbm.slashing.v1.ValidatorMissedBlocks) | repeated | signing_infos represents a map between validator addresses and their missed blocks. |
+| `missed_blocks` | [ValidatorMissedBlocks](#lbm.slashing.v1.ValidatorMissedBlocks) | repeated | missed_blocks represents a map between validator addresses and their missed blocks. |
 
 
 
@@ -13006,7 +12458,7 @@ TxBody is the body of a transaction that all signers sign over.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `messages` | [google.protobuf.Any](#google.protobuf.Any) | repeated | messages is a list of messages to be executed. The required signers of those messages define the number and order of elements in AuthInfo's signer_infos and Tx's signatures. Each required signer address is added to the list only the first time it occurs. By convention, the first required signer (usually from the first message) is referred to as the primary signer and pays the fee for the whole transaction. |
-| `memo` | [string](#string) |  | memo is any arbitrary memo to be added to the transaction |
+| `memo` | [string](#string) |  | memo is any arbitrary note/comment to be added to the transaction. WARNING: in clients, any publicly exposed text should not be called memo, but should be called `note` instead (see https://github.com/cosmos/cosmos-sdk/issues/9122). |
 | `timeout_height` | [uint64](#uint64) |  | timeout is the block height after which this transaction will not be processed by the chain |
 | `extension_options` | [google.protobuf.Any](#google.protobuf.Any) | repeated | extension_options are arbitrary options that can be added by chains when the default options are not sufficient. If any of these are present and can't be handled, the transaction will be rejected |
 | `non_critical_extension_options` | [google.protobuf.Any](#google.protobuf.Any) | repeated | extension_options are arbitrary options that can be added by chains when the default options are not sufficient. If any of these are present and can't be handled, they will be ignored |
