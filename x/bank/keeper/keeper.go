@@ -27,9 +27,8 @@ type Keeper interface {
 
 	GetSupply(ctx sdk.Context, denom string) sdk.Coin
 	GetPaginatedTotalSupply(ctx sdk.Context, pagination *query.PageRequest) (sdk.Coins, *query.PageResponse, error)
-	GetTotalSupply(ctx sdk.Context) sdk.Coins // TODO(dudong2): remove after x/wasm version up
 	IterateTotalSupply(ctx sdk.Context, cb func(sdk.Coin) bool)
-	SetSupply(ctx sdk.Context, coin sdk.Coin) // TODO(dudong2): remove after x/wasm version up
+	SetSupply(ctx sdk.Context, coin sdk.Coin) // TODO(dudong2): remove after x/wasm version up(>= v0.22.0)
 
 	GetDenomMetaData(ctx sdk.Context, denom string) (types.Metadata, bool)
 	SetDenomMetaData(ctx sdk.Context, denomMetaData types.Metadata)
@@ -57,16 +56,6 @@ type BaseKeeper struct {
 	cdc        codec.BinaryCodec
 	storeKey   sdk.StoreKey
 	paramSpace paramtypes.Subspace
-}
-
-func (k BaseKeeper) GetTotalSupply(ctx sdk.Context) sdk.Coins {
-	balances := sdk.NewCoins()
-	k.IterateTotalSupply(ctx, func(balance sdk.Coin) bool {
-		balances = balances.Add(balance)
-		return false
-	})
-
-	return balances.Sort()
 }
 
 // GetPaginatedTotalSupply queries for the supply, ignoring 0 coins, with a given pagination

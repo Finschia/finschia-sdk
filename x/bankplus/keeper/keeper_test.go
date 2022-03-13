@@ -77,7 +77,7 @@ func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 		Require().
 		NoError(keeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, holderAcc.GetAddress(), initCoins))
 
-	keeper.SetSupply(ctx, initCoins[0])
+	suite.Require().NoError(keeper.MintCoins(ctx, minttypes.ModuleName, initCoins))
 	authKeeper.SetModuleAccount(ctx, holderAcc)
 	authKeeper.SetModuleAccount(ctx, burnerAcc)
 	authKeeper.SetAccount(ctx, baseAcc)
@@ -146,7 +146,7 @@ func (suite *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
 		Require().
 		NoError(keeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, holderAcc.GetAddress(), initCoins))
 
-	keeper.SetSupply(ctx, initCoins[0])
+	suite.Require().NoError(keeper.MintCoins(ctx, minttypes.ModuleName, initCoins))
 	suite.Require().Equal(initCoins, keeper.GetAllBalances(ctx, holderAcc.GetAddress()))
 
 	suite.Require().False(keeper.IsInactiveAddr(blockedAcc.GetAddress()))

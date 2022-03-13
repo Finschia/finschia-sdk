@@ -17,7 +17,7 @@ type SendKeeper interface {
 	InputOutputCoins(ctx sdk.Context, inputs []types.Input, outputs []types.Output) error
 	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 
-	SetBalance(ctx sdk.Context, addr sdk.AccAddress, balance sdk.Coin) error // TODO(dudong2): remove after x/wasm version up
+	SetBalance(ctx sdk.Context, addr sdk.AccAddress, balance sdk.Coin) error // TODO(dudong2): remove after x/wasm version up(>= v0.22.0)
 
 	GetParams(ctx sdk.Context) types.Params
 	SetParams(ctx sdk.Context, params types.Params)
