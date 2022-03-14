@@ -26,7 +26,6 @@ func GenTx(gen client.TxConfig, msgs []sdk.Msg, feeAmt sdk.Coins, gas uint64, ch
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	memo := simulation.RandStringOfLength(r, simulation.RandIntBetween(r, 0, 100))
-	memo = "asdf"
 
 	signMode := gen.SignModeHandler().DefaultMode()
 

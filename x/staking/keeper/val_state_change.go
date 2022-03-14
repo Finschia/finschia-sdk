@@ -101,10 +101,7 @@ func (k Keeper) ApplyAndReturnValidatorSetUpdates(ctx sdk.Context) (updates []ab
 	// Retrieve the last validator set.
 	// The persistent set is updated later in this function.
 	// (see LastValidatorPowerKey).
-	last, err := k.getLastValidatorsByAddr(ctx)
-	if err != nil {
-		return nil, err
-	}
+	last := k.getLastValidatorsByAddr(ctx)
 
 	// Iterate over validators, highest power to lowest.
 	iterator := k.ValidatorsPowerStoreIterator(ctx)
@@ -164,11 +161,7 @@ func (k Keeper) ApplyAndReturnValidatorSetUpdates(ctx sdk.Context) (updates []ab
 		totalPower = totalPower.Add(sdk.NewInt(newPower))
 	}
 
-	noLongerBonded, err := sortNoLongerBonded(last)
-	if err != nil {
-		return nil, err
-	}
-
+	noLongerBonded := sortNoLongerBonded(last)
 	for _, valAddrBytes := range noLongerBonded {
 		validator := k.mustGetValidator(ctx, sdk.ValAddress(valAddrBytes))
 		validator, err = k.bondedToUnbonding(ctx, validator)
@@ -332,7 +325,7 @@ func (k Keeper) completeUnbondingValidator(ctx sdk.Context, validator types.Vali
 type validatorsByAddr map[string][]byte
 
 // get the last validator set
-func (k Keeper) getLastValidatorsByAddr(ctx sdk.Context) (validatorsByAddr, error) {
+func (k Keeper) getLastValidatorsByAddr(ctx sdk.Context) validatorsByAddr {
 	last := make(validatorsByAddr)
 
 	iterator := k.LastValidatorsIterator(ctx)
@@ -346,12 +339,12 @@ func (k Keeper) getLastValidatorsByAddr(ctx sdk.Context) (validatorsByAddr, erro
 		copy(last[valAddr], powerBytes)
 	}
 
-	return last, nil
+	return last
 }
 
 // given a map of remaining validators to previous bonded power
 // returns the list of validators to be unbonded, sorted by operator address
-func sortNoLongerBonded(last validatorsByAddr) ([]string, error) {
+func sortNoLongerBonded(last validatorsByAddr) []string {
 	// sort the map keys for determinism
 	noLongerBonded := make([]string, len(last))
 	index := 0
@@ -366,5 +359,5 @@ func sortNoLongerBonded(last validatorsByAddr) ([]string, error) {
 		return strings.Compare(noLongerBonded[i], noLongerBonded[j]) == -1
 	})
 
-	return noLongerBonded, nil
+	return noLongerBonded
 }

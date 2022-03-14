@@ -14,31 +14,6 @@ import (
 // prefix_bytes | address_1_bytes | address_2_bytes | address_3_bytes
 // into format:
 // prefix_bytes | address_1_len (1 byte) | address_1_bytes | address_2_len (1 byte) | address_2_bytes | address_3_len (1 byte) | address_3_bytes
-func migratePrefixAddressAddressAddress(store sdk.KVStore, prefixBz []byte) {
-	oldStore := prefix.NewStore(store, prefixBz)
-
-	oldStoreIter := oldStore.Iterator(nil, nil)
-	defer oldStoreIter.Close()
-
-	for ; oldStoreIter.Valid(); oldStoreIter.Next() {
-		addr1 := oldStoreIter.Key()[:v040auth.AddrLen]
-		addr2 := oldStoreIter.Key()[v040auth.AddrLen : 2*v040auth.AddrLen]
-		addr3 := oldStoreIter.Key()[2*v040auth.AddrLen:]
-		newStoreKey := append(append(append(
-			prefixBz,
-			address.MustLengthPrefix(addr1)...), address.MustLengthPrefix(addr2)...), address.MustLengthPrefix(addr3)...,
-		)
-
-		// Set new key on store. Values don't change.
-		store.Set(newStoreKey, oldStoreIter.Value())
-		oldStore.Delete(oldStoreIter.Key())
-	}
-}
-
-// migratePrefixAddressAddressAddress is a helper function that migrates all keys of format:
-// prefix_bytes | address_1_bytes | address_2_bytes | address_3_bytes
-// into format:
-// prefix_bytes | address_1_len (1 byte) | address_1_bytes | address_2_len (1 byte) | address_2_bytes | address_3_len (1 byte) | address_3_bytes
 func migratePrefixAddressValAddressValAddress(store sdk.KVStore, prefixBz []byte) {
 	oldStore := prefix.NewStore(store, prefixBz)
 

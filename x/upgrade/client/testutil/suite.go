@@ -82,9 +82,9 @@ func (s *IntegrationTestSuite) TestModuleVersionsCLI() {
 	mv := s.app.UpgradeKeeper.GetModuleVersions(s.ctx)
 	s.Require().NotEmpty(vm)
 
-	for _, tc := range testCases {
+	for _, stc := range testCases {
+		tc := stc
 		s.Run(fmt.Sprintf("Case %s", tc.msg), func() {
-
 			expect := mv
 			if tc.expPass {
 				if tc.single {

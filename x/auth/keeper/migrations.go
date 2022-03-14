@@ -4,7 +4,7 @@ import (
 	"github.com/gogo/protobuf/grpc"
 
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/auth/legacy/v043"
+	v043 "github.com/line/lbm-sdk/x/auth/legacy/v043"
 	"github.com/line/lbm-sdk/x/auth/types"
 )
 

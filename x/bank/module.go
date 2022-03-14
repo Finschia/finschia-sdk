@@ -22,7 +22,7 @@ import (
 	"github.com/line/lbm-sdk/x/bank/client/cli"
 	"github.com/line/lbm-sdk/x/bank/client/rest"
 	"github.com/line/lbm-sdk/x/bank/keeper"
-	"github.com/line/lbm-sdk/x/bank/legacy/v040"
+	v040 "github.com/line/lbm-sdk/x/bank/legacy/v040"
 	"github.com/line/lbm-sdk/x/bank/simulation"
 	"github.com/line/lbm-sdk/x/bank/types"
 )
