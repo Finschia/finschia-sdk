@@ -27,6 +27,7 @@ var (
 	TypeMsgExec   = sdk.MsgTypeURL(&authz.MsgExec{})
 )
 
+// nolint:gosec
 // Simulation operation weights constants
 const (
 	OpWeightMsgGrant = "op_weight_msg_grant"

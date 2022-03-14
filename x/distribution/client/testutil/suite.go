@@ -308,7 +308,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorSlashes() {
 func (s *IntegrationTestSuite) TestGetCmdQueryDelegatorRewards() {
 	val := s.network.Validators[0]
 	addr := val.Address
-	valAddr := sdk.AccAddress(addr).ToValAddress()
+	valAddr := addr.ToValAddress()
 
 	_, err := s.network.WaitForHeightWithTimeout(11, time.Minute)
 	s.Require().NoError(err)

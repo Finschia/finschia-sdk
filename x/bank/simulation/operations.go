@@ -16,6 +16,7 @@ import (
 	"github.com/line/lbm-sdk/x/simulation"
 )
 
+// nolint:gosec
 // Simulation operation weights constants
 const (
 	OpWeightMsgSend      = "op_weight_msg_send"

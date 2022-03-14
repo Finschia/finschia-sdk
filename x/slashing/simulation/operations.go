@@ -16,6 +16,7 @@ import (
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 )
 
+// nolint: gosec
 // Simulation operation weights constants
 const (
 	OpWeightMsgUnjail = "op_weight_msg_unjail"

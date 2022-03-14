@@ -48,12 +48,12 @@ func (s *Store) Delete(key []byte) {
 }
 
 // Prefetch implements types.KVStore.
-func (store *Store) Prefetch(key []byte, forSet bool) (hits, misses int, value []byte) {
+func (s *Store) Prefetch(key []byte, forSet bool) (hits, misses int, value []byte) {
 	defer telemetry.MeasureSince(time.Now(), "store", "cachekv", "prefetch")
 
 	// do not update cache
 	types.AssertValidKey(key)
-	return store.parent.Prefetch(key, forSet)
+	return s.parent.Prefetch(key, forSet)
 }
 
 // Has implements the KVStore interface. It delegates the Has call to the

@@ -24,13 +24,6 @@ import (
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 )
 
-const (
-	runTxModeCheck    = iota // Check a transaction
-	runTxModeReCheck         // Recheck a (pending) transaction after a commit
-	runTxModeSimulate        // Simulate a transaction
-	runTxModeDeliver         // Deliver a transaction
-)
-
 var (
 	_ abci.Application = (*BaseApp)(nil)
 )
