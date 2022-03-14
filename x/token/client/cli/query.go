@@ -158,7 +158,7 @@ func NewQueryCmdGrants() *cobra.Command {
 				return err
 			}
 			queryClient := token.NewQueryClient(clientCtx)
-			res, err := queryClient.Grants(cmd.Context(), &token.QueryGrantsRequest{
+			res, err := queryClient.TokenGrants(cmd.Context(), &token.QueryGrantsRequest{
 				ClassId: args[0],
 				Grantee: args[1],
 			})

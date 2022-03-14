@@ -32,7 +32,7 @@ service Query {
   }
 
   // Grants queries grants on a given grantee.
-  rpc Grants(QueryGrantsRequest) returns (QueryGrantsResponse) {
+  rpc TokenGrants(QueryGrantsRequest) returns (QueryGrantsResponse) {
     option (google.api.http).get = "/lbm/token/v1/grants/{grantee}/{class_id}";
   }
 

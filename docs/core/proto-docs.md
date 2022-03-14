@@ -11865,7 +11865,7 @@ Query defines the gRPC querier service.
 | `Supply` | [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse) | Supply queries the number of tokens from the given class id. | GET|/lbm/token/v1/supply/{class_id}|
 | `Token` | [QueryTokenRequest](#lbm.token.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.token.v1.QueryTokenResponse) | Token queries an token metadata based on its class id. | GET|/lbm/token/v1/tokens/{class_id}|
 | `Tokens` | [QueryTokensRequest](#lbm.token.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.token.v1.QueryTokensResponse) | Tokens queries all token metadata. | GET|/lbm/token/v1/tokens|
-| `Grants` | [QueryGrantsRequest](#lbm.token.v1.QueryGrantsRequest) | [QueryGrantsResponse](#lbm.token.v1.QueryGrantsResponse) | Grants queries grants on a given grantee. | GET|/lbm/token/v1/grants/{grantee}/{class_id}|
+| `TokenGrants` | [QueryGrantsRequest](#lbm.token.v1.QueryGrantsRequest) | [QueryGrantsResponse](#lbm.token.v1.QueryGrantsResponse) | Grants queries grants on a given grantee. | GET|/lbm/token/v1/grants/{grantee}/{class_id}|
 | `Approve` | [QueryApproveRequest](#lbm.token.v1.QueryApproveRequest) | [QueryApproveResponse](#lbm.token.v1.QueryApproveResponse) | Approve queries approve on a given proxy approver pair. | GET|/lbm/token/v1/approve/{class_id}/{proxy}/{approver}|
 | `Approves` | [QueryApprovesRequest](#lbm.token.v1.QueryApprovesRequest) | [QueryApprovesResponse](#lbm.token.v1.QueryApprovesResponse) | Approves queries all approves on a given proxy. | GET|/lbm/token/v1/approves/{class_id}/{proxy}|
 

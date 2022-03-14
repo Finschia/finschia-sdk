@@ -114,7 +114,7 @@ func (s queryServer) Tokens(c context.Context, req *token.QueryTokensRequest) (*
 	return &token.QueryTokensResponse{Tokens: classes, Pagination: pageRes}, nil
 }
 
-func (s queryServer) Grants(c context.Context, req *token.QueryGrantsRequest) (*token.QueryGrantsResponse, error) {
+func (s queryServer) TokenGrants(c context.Context, req *token.QueryGrantsRequest) (*token.QueryGrantsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}

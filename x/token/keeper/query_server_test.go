@@ -215,7 +215,7 @@ func (s *KeeperTestSuite) TestQueryTokens() {
 
 func (s *KeeperTestSuite) TestQueryGrants() {
 	// empty request
-	_, err := s.queryServer.Grants(s.goCtx, nil)
+	_, err := s.queryServer.TokenGrants(s.goCtx, nil)
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
@@ -250,7 +250,7 @@ func (s *KeeperTestSuite) TestQueryGrants() {
 				ClassId: tc.classId,
 				Grantee: tc.grantee.String(),
 			}
-			res, err := s.queryServer.Grants(s.goCtx, req)
+			res, err := s.queryServer.TokenGrants(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
