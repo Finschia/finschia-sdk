@@ -41,14 +41,14 @@ func NewKeyOutput(name string, keyType KeyType, a sdk.Address, pk cryptotypes.Pu
 // MkConsKeyOutput create a KeyOutput in with "cons" Bech32 prefixes.
 func MkConsKeyOutput(keyInfo Info) (KeyOutput, error) {
 	pk := keyInfo.GetPubKey()
-	addr := sdk.ConsAddress(pk.Address())
+	addr := sdk.BytesToConsAddress(pk.Address())
 	return NewKeyOutput(keyInfo.GetName(), keyInfo.GetType(), addr, pk)
 }
 
 // MkValKeyOutput create a KeyOutput in with "val" Bech32 prefixes.
 func MkValKeyOutput(keyInfo Info) (KeyOutput, error) {
 	pk := keyInfo.GetPubKey()
-	addr := sdk.ValAddress(pk.Address())
+	addr := sdk.BytesToValAddress(pk.Address())
 	return NewKeyOutput(keyInfo.GetName(), keyInfo.GetType(), addr, pk)
 }
 
