@@ -3,7 +3,6 @@
 PACKAGES_NOSIMULATION=$(shell go list ./... | grep -v '/simulation')
 PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
 VERSION := $(shell echo $(shell git describe --always) | sed 's/^v//')
-OCVERSION := $(shell go list -m github.com/line/ostracon | sed 's:.* ::')
 COMMIT := $(shell git log -1 --format='%H')
 LEDGER_ENABLED ?= true
 BINDIR ?= $(GOPATH)/bin
@@ -89,16 +88,12 @@ ldflags = -X github.com/line/lbm-sdk/version.Name=sim \
 		  -X github.com/line/lbm-sdk/version.Commit=$(COMMIT) \
 		  -X github.com/line/lbm-sdk/types.DBBackend=$(DB_BACKEND) \
 		  -X "github.com/line/lbm-sdk/version.BuildTags=$(build_tags_comma_sep)"
-			-X github.com/line/ostracon/version.TMCoreSemVer=$(OCVERSION)
 
 ifeq (,$(findstring nostrip,$(LBM_BUILD_OPTIONS)))
   ldflags += -w -s
 endif
 ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))
-
-build_tags += $(BUILD_TAGS)
-build_tags := $(strip $(build_tags))
 
 BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
 # check for nostrip option
@@ -155,16 +150,15 @@ cosmovisor:
 
 .PHONY: build build-linux build-simd-all build-simd-linux cosmovisor
 
-mockgen_cmd=go run github.com/golang/mock/mockgen
-
 mocks: $(MOCKS_DIR)
-	$(mockgen_cmd) -source=client/account_retriever.go -package mocks -destination tests/mocks/account_retriever.go
-	$(mockgen_cmd) -package mocks -destination tests/mocks/tendermint_tm_db_DB.go github.com/tendermint/tm-db DB
-	$(mockgen_cmd) -source=types/module/module.go -package mocks -destination tests/mocks/types_module_module.go
-	$(mockgen_cmd) -source=types/invariant.go -package mocks -destination tests/mocks/types_invariant.go
-	$(mockgen_cmd) -source=types/router.go -package mocks -destination tests/mocks/types_router.go
-	$(mockgen_cmd) -package mocks -destination tests/mocks/grpc_server.go github.com/gogo/protobuf/grpc Server
-	$(mockgen_cmd) -package mocks -destination tests/mocks/tendermint_tendermint_libs_log_DB.go github.com/tendermint/tendermint/libs/log Logger
+	mockgen -source=client/account_retriever.go -package mocks -destination tests/mocks/account_retriever.go
+	mockgen -package mocks -destination tests/mocks/tendermint_tm_db_DB.go github.com/line/tm-db/v2 DB
+	mockgen -source=types/module/module.go -package mocks -destination tests/mocks/types_module_module.go
+	mockgen -source=types/invariant.go -package mocks -destination tests/mocks/types_invariant.go
+	mockgen -source=types/router.go -package mocks -destination tests/mocks/types_router.go
+	mockgen -source=types/handler.go -package mocks -destination tests/mocks/types_handler.go
+	mockgen -package mocks -destination tests/mocks/grpc_server.go github.com/gogo/protobuf/grpc Server
+	mockgen -package mocks -destination tests/mocks/tendermint_tendermint_libs_log_DB.go github.com/line/ostracon/libs/log Logger
 .PHONY: mocks
 
 $(MOCKS_DIR):
@@ -217,7 +211,14 @@ build-docs:
 		cp -r .vuepress/dist/* ~/output/$${path_prefix}/ ; \
 		cp ~/output/$${path_prefix}/index.html ~/output ; \
 	done < versions ;
-.PHONY: build-docs
+
+sync-docs:
+	cd ~/output && \
+	echo "role_arn = ${DEPLOYMENT_ROLE_ARN}" >> /root/.aws/config ; \
+	echo "CI job = ${CIRCLE_BUILD_URL}" >> version.html ; \
+	aws s3 sync . s3://${WEBSITE_BUCKET} --profile terraform --delete ; \
+	aws cloudfront create-invalidation --distribution-id ${CF_DISTRIBUTION_ID} --profile terraform --path "/*" ;
+.PHONY: sync-docs
 
 ###############################################################################
 ###                           Tests & Simulation                            ###
@@ -351,11 +352,6 @@ test-cover:
 	@export VERSION=$(VERSION); bash -x contrib/test_cover.sh
 .PHONY: test-cover
 
-test-rosetta:
-	docker build -t rosetta-ci:latest -f contrib/rosetta/node/Dockerfile .
-	docker-compose -f contrib/rosetta/docker-compose.yaml up --abort-on-container-exit --exit-code-from test_rosetta --build
-.PHONY: test-rosetta
-
 benchmark:
 	@go test -mod=readonly -bench=. $(PACKAGES_NOSIMULATION)
 .PHONY: benchmark
@@ -364,18 +360,15 @@ benchmark:
 ###                                Linting                                  ###
 ###############################################################################
 
-containerMarkdownLintImage=tmknom/markdownlint
-containerMarkdownLint=cosmos-sdk-markdownlint
-containerMarkdownLintFix=cosmos-sdk-markdownlint-fix
-
-lint:
+lint: golangci-lint
 	golangci-lint run --out-format=tab
-	@if docker ps -a --format '{{.Names}}' | grep -Eq "^${containerMarkdownLint}$$"; then docker start -a $(containerMarkdownLint); else docker run --name $(containerMarkdownLint) -i -v "$(CURDIR):/work" $(containerMarkdownLintImage); fi
+	find . -name '*.go' -type f -not -path "*.git*" | xargs gofmt -d -s
+
+golangci-lint:
+	@go get github.com/golangci/golangci-lint/cmd/golangci-lint
 
 lint-fix:
 	golangci-lint run --fix --out-format=tab --issues-exit-code=0
-	@if docker ps -a --format '{{.Names}}' | grep -Eq "^${containerMarkdownLintFix}$$"; then docker start -a $(containerMarkdownLintFix); else docker run --name $(containerMarkdownLintFix) -i -v "$(CURDIR):/work" $(containerMarkdownLintImage) . --fix; fi
-
 .PHONY: lint lint-fix
 
 format:
@@ -434,7 +427,7 @@ proto-all: proto-format proto-lint proto-gen
 proto-gen:
 	@echo "Generating Protobuf files"
 	@if $(DOCKER) ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then $(DOCKER) start -a $(containerProtoGen); else $(DOCKER) run --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
-		sh ./scripts/protocgen.sh; fi
+			sh ./scripts/protocgen.sh; fi
 
 # This generates the SDK's custom wrapper for google.protobuf.Any. It should only be run manually when needed
 proto-gen-any:
@@ -458,7 +451,6 @@ proto-lint:
 
 proto-check-breaking:
 	@$(DOCKER_BUF) breaking --against $(HTTPS_GIT)#branch=main
-
 
 TM_URL              = https://raw.githubusercontent.com/tendermint/tendermint/v0.34.0-rc6/proto/tendermint
 GOGO_PROTO_URL      = https://raw.githubusercontent.com/regen-network/protobuf/cosmos
@@ -538,15 +530,3 @@ localnet-stop:
 	docker-compose down
 
 .PHONY: localnet-start localnet-stop
-
-###############################################################################
-###                                rosetta                                  ###
-###############################################################################
-# builds rosetta test data dir
-rosetta-data:
-	-docker container rm data_dir_build
-	docker build -t rosetta-ci:latest -f contrib/rosetta/node/Dockerfile .
-	docker run --name data_dir_build -t rosetta-ci:latest sh /rosetta/data.sh
-	docker cp data_dir_build:/tmp/data.tar.gz "$(CURDIR)/contrib/rosetta/node/data.tar.gz"
-	docker container rm data_dir_build
-.PHONY: rosetta-data

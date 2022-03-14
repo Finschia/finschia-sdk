@@ -3,7 +3,8 @@ name: Protobuf
 # This workflow is only run when a .proto file has been changed
 on:
   pull_request:
-
+    paths:
+      - "**.proto"
 jobs:
   lint:
     name: proto-lint(clang-format)
@@ -18,6 +19,7 @@ jobs:
           extensions: 'proto'
           clangFormatVersion: 12
           inplace: True
+
 # TODO ebony: release comment after merging initial proto files to v2 branch
 #  breakage:
 #    runs-on: ubuntu-latest

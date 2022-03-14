@@ -35,6 +35,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 # Changelog
 
+## [Unreleased](https://github.com/line/lbm-sdk/compare/v0.45.0-rc0...HEAD)
+
 ### Features
 
 ### Improvements
@@ -45,5 +47,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Breaking Changes
 
 ### Build, CI
+
+* (ci) [\#457](https://github.com/line/lbm-sdk/pull/457) add swagger check
 
 ### Document Updates
