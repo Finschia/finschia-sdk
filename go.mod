@@ -52,7 +52,6 @@ require (
 	github.com/tendermint/btcd v0.1.1
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15
 	github.com/tendermint/go-amino v0.16.0
-	github.com/tendermint/tm-db v0.6.4 // indirect
 	golang.org/x/crypto v0.0.0-20220112180741-5e0467b6c7ce
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
 	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa

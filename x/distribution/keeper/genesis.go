@@ -31,7 +31,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data types.GenesisState) {
 	for _, rew := range data.OutstandingRewards {
 		valAddr := sdk.ValAddress(rew.ValidatorAddress)
 		k.SetValidatorOutstandingRewards(ctx, valAddr, types.ValidatorOutstandingRewards{Rewards: rew.OutstandingRewards})
-		moduleHoldings = rew.OutstandingRewards
+		moduleHoldings = moduleHoldings.Add(rew.OutstandingRewards...)
 	}
 	for _, acc := range data.ValidatorAccumulatedCommissions {
 		valAddr := sdk.ValAddress(acc.ValidatorAddress)
