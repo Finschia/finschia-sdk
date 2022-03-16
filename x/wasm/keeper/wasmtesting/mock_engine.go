@@ -35,6 +35,7 @@ type MockWasmer struct {
 	PinFn               func(checksum wasmvm.Checksum) error
 	UnpinFn             func(checksum wasmvm.Checksum) error
 	GetMetricsFn        func() (*wasmvmtypes.Metrics, error)
+	GetCacheFn          func() *wasmvm.Cache
 }
 
 func (m *MockWasmer) IBCChannelOpen(codeID wasmvm.Checksum, env wasmvmtypes.Env, channel wasmvmtypes.IBCChannel, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64) (uint64, error) {
@@ -169,6 +170,13 @@ func (m *MockWasmer) GetMetrics() (*wasmvmtypes.Metrics, error) {
 		panic("not expected to be called")
 	}
 	return m.GetMetricsFn()
+}
+
+func (m *MockWasmer) GetCache() *wasmvm.Cache {
+	if m.GetCacheFn == nil {
+		panic("not expected to be called")
+	}
+	return m.GetCacheFn()
 }
 
 var AlwaysPanicMockWasmer = &MockWasmer{}
