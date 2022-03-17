@@ -50,7 +50,7 @@ func (s *IntegrationTestSuite) TestQueryABCIHeight() {
 			req := abci.RequestQuery{
 				Path:   fmt.Sprintf("store/%s/key", banktypes.StoreKey),
 				Height: tc.reqHeight,
-				Data:   banktypes.CreateAccountBalancesPrefix(val.Address),
+				Data:   banktypes.CreateAccountBalancesPrefix(val.Address.Bytes()),
 				Prove:  true,
 			}
 

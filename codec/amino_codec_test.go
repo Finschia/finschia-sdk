@@ -11,7 +11,7 @@ import (
 	"github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/testutil/testdata"
-	"github.com/line/lbm-sdk/x/auth/client/rest"
+	"github.com/line/lbm-sdk/x/auth/client/cli"
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 )
 
