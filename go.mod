@@ -4,6 +4,7 @@ module github.com/line/lbm-sdk
 
 require (
 	github.com/99designs/keyring v1.1.6
+	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/VictoriaMetrics/fastcache v1.9.0
 	github.com/armon/go-metrics v0.3.10
 	github.com/bgentry/speakeasy v0.1.0
@@ -29,8 +30,9 @@ require (
 	github.com/hdevalence/ed25519consensus v0.0.0-20220222234857-c00d1f31bab3
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/jhump/protoreflect v1.10.3
+	github.com/lib/pq v1.10.4 // indirect
 	github.com/line/iavl/v2 v2.0.0-init.1.0.20220215225951-cb11c91d8857
-	github.com/line/ostracon v1.0.3
+	github.com/line/ostracon v1.0.4
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486
 	github.com/line/wasmvm v0.16.3-0.9.0
 	github.com/magiconair/properties v1.8.5

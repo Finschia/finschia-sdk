@@ -53,7 +53,7 @@ func newMemIterator(start, end []byte, items *memdb.MemDB, deleted *sync.Map, as
 		Iterator: iter,
 
 		lastKey: nil,
-		deleted: deleted,
+		deleted: newDeleted,
 	}
 }
 
