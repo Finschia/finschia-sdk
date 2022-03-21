@@ -793,40 +793,6 @@ func TestExecuteWithStorageLoop(t *testing.T) {
 	require.True(t, false, "We must panic before this line")
 }
 
-func TestExecuteInactiveContract(t *testing.T) {
-	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
-	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.BankKeeper
-
-	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
-	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
-	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit.Add(deposit...))
-	fred := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, topUp)
-
-	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
-	require.NoError(t, err)
-
-	contractID, err := keeper.Create(ctx, creator, wasmCode, nil)
-	require.NoError(t, err)
-
-	_, _, bob := keyPubAddr()
-	initMsg := HackatomExampleInitMsg{
-		Verifier:    fred,
-		Beneficiary: bob,
-	}
-	initMsgBz, err := json.Marshal(initMsg)
-	require.NoError(t, err)
-
-	addr, _, err := keeper.Instantiate(ctx, contractID, creator, "", initMsgBz, "demo contract 3", deposit)
-	require.NoError(t, err)
-	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", addr.String())
-
-	// execute inactive contract
-	err = keeper.UpdateContractStatus(ctx, addr, creator, types.ContractStatusInactive)
-
-	// Contract status can only be changed through a gov proposal.
-	require.True(t, sdkerrors.ErrUnauthorized.Is(err), "expected %v but got %v", sdkerrors.ErrUnauthorized, err)
-}
-
 func TestMigrate(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.BankKeeper
@@ -1412,6 +1378,169 @@ func TestClearContractAdmin(t *testing.T) {
 			assert.Empty(t, cInfo.Admin)
 		})
 	}
+}
+
+func TestExecuteInactiveContract(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.BankKeeper
+
+	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
+	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
+	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit.Add(deposit...))
+	fred := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, topUp)
+
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	require.NoError(t, err)
+
+	contractID, err := keeper.Create(ctx, creator, wasmCode, nil)
+	require.NoError(t, err)
+
+	_, _, bob := keyPubAddr()
+	initMsg := HackatomExampleInitMsg{
+		Verifier:    fred,
+		Beneficiary: bob,
+	}
+	initMsgBz, err := json.Marshal(initMsg)
+	require.NoError(t, err)
+
+	addr, _, err := keeper.Instantiate(ctx, contractID, creator, "", initMsgBz, "demo contract 3", deposit)
+	require.NoError(t, err)
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", addr.String())
+
+	// execute inactive contract through manual
+	err = keeper.UpdateContractStatus(ctx, addr, creator, types.ContractStatusInactive)
+
+	// Contract status can only be changed through a gov proposal.
+	require.True(t, sdkerrors.ErrUnauthorized.Is(err), "expected %v but got %v", sdkerrors.ErrUnauthorized, err)
+}
+
+func TestMigrateInactiveContract(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	accKeeper, keeper, govKeeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.GovKeeper, keepers.BankKeeper
+
+	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
+	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
+	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit.Add(deposit...))
+	fred := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, topUp)
+
+	originalCodeID := StoreHackatomExampleContract(t, ctx, keepers).CodeID
+	newCodeID := StoreHackatomExampleContract(t, ctx, keepers).CodeID
+	require.NotEqual(t, originalCodeID, newCodeID)
+
+	anyAddr := RandomAccountAddress(t)
+	newVerifierAddr := RandomAccountAddress(t)
+	initMsgBz := HackatomExampleInitMsg{
+		Verifier:    fred,
+		Beneficiary: anyAddr,
+	}.GetBytes(t)
+	migMsg := struct {
+		Verifier sdk.AccAddress `json:"verifier"`
+	}{Verifier: newVerifierAddr}
+	migMsgBz, err := json.Marshal(migMsg)
+
+	contractAddr, _, err := keeper.Instantiate(ctx, originalCodeID, creator, creator, initMsgBz, "demo contract", nil)
+
+	inactiveProposal := &types.UpdateContractStatusProposal{
+		Title:       "foo",
+		Description: "bar",
+		Contract:    contractAddr.String(),
+		Status:      types.ContractStatusInactive,
+	}
+	storedProposal, err := govKeeper.SubmitProposal(ctx, inactiveProposal)
+	require.NoError(t, err)
+
+	handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
+	err = handler(ctx, storedProposal.GetContent())
+	require.NoError(t, err)
+
+	_, err = keeper.Migrate(ctx, contractAddr, creator, newCodeID, migMsgBz)
+	require.True(t, types.ErrInvalid.Is(err), "expected %v but got %+v", types.ErrInvalid, err)
+}
+
+func TestUpdateContractAdminInactiveContract(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	accKeeper, keeper, govKeeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.GovKeeper, keepers.BankKeeper
+
+	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
+	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
+	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit.Add(deposit...))
+	fred := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, topUp)
+
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	require.NoError(t, err)
+
+	originalContractID, err := keeper.Create(ctx, creator, wasmCode, nil)
+	require.NoError(t, err)
+
+	_, _, anyAddr := keyPubAddr()
+	initMsg := HackatomExampleInitMsg{
+		Verifier:    fred,
+		Beneficiary: anyAddr,
+	}
+	initMsgBz, err := json.Marshal(initMsg)
+	require.NoError(t, err)
+
+	addr, _, err := keeper.Instantiate(ctx, originalContractID, creator, fred, initMsgBz, "demo contract", nil)
+	require.NoError(t, err)
+
+	inactiveProposal := &types.UpdateContractStatusProposal{
+		Title:       "foo",
+		Description: "bar",
+		Contract:    addr.String(),
+		Status:      types.ContractStatusInactive,
+	}
+	storedProposal, err := govKeeper.SubmitProposal(ctx, inactiveProposal)
+	require.NoError(t, err)
+
+	handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
+	err = handler(ctx, storedProposal.GetContent())
+	require.NoError(t, err)
+
+	err = keeper.UpdateContractAdmin(ctx, addr, fred, anyAddr)
+	require.True(t, types.ErrInvalid.Is(err), "expected %v but got %+v", types.ErrInvalid, err)
+}
+
+func TestClearContractAdminInactiveContract(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	accKeeper, keeper, govKeeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.GovKeeper, keepers.BankKeeper
+
+	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
+	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
+	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit.Add(deposit...))
+	fred := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, topUp)
+
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	require.NoError(t, err)
+
+	originalContractID, err := keeper.Create(ctx, creator, wasmCode, nil)
+	require.NoError(t, err)
+
+	_, _, anyAddr := keyPubAddr()
+	initMsg := HackatomExampleInitMsg{
+		Verifier:    fred,
+		Beneficiary: anyAddr,
+	}
+	initMsgBz, err := json.Marshal(initMsg)
+	require.NoError(t, err)
+
+	addr, _, err := keeper.Instantiate(ctx, originalContractID, creator, fred, initMsgBz, "demo contract", nil)
+	require.NoError(t, err)
+
+	inactiveProposal := &types.UpdateContractStatusProposal{
+		Title:       "foo",
+		Description: "bar",
+		Contract:    addr.String(),
+		Status:      types.ContractStatusInactive,
+	}
+	storedProposal, err := govKeeper.SubmitProposal(ctx, inactiveProposal)
+	require.NoError(t, err)
+
+	handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
+	err = handler(ctx, storedProposal.GetContent())
+	require.NoError(t, err)
+
+	err = keeper.ClearContractAdmin(ctx, addr, fred)
+	require.True(t, types.ErrInvalid.Is(err), "expected %v but got %+v", types.ErrInvalid, err)
 }
 
 func TestPinCode(t *testing.T) {
