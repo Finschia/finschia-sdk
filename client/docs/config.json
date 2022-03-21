@@ -164,7 +164,7 @@
         "rename": {
           "Params": "TokenParams",
           "Balance": "TokenBalance",
-          "Grant": "TokenGrant"
+          "Grants": "TokenGrants"
         }
       }
     },
