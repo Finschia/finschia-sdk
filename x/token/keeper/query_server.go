@@ -27,8 +27,8 @@ func NewQueryServer(keeper Keeper) token.QueryServer {
 
 var _ token.QueryServer = queryServer{}
 
-// TokenBalance queries the number of tokens of a given class owned by the owner.
-func (s queryServer) TokenBalance(c context.Context, req *token.QueryTokenBalanceRequest) (*token.QueryTokenBalanceResponse, error) {
+// Balance queries the number of tokens of a given class owned by the owner.
+func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) (*token.QueryBalanceResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -43,7 +43,7 @@ func (s queryServer) TokenBalance(c context.Context, req *token.QueryTokenBalanc
 	ctx := sdk.UnwrapSDKContext(c)
 	balance := s.keeper.GetBalance(ctx, sdk.AccAddress(req.Address), req.ClassId)
 
-	return &token.QueryTokenBalanceResponse{Amount: balance.Amount}, nil
+	return &token.QueryBalanceResponse{Amount: balance.Amount}, nil
 }
 
 // Supply queries the number of tokens from the given class id.
@@ -114,7 +114,7 @@ func (s queryServer) Tokens(c context.Context, req *token.QueryTokensRequest) (*
 	return &token.QueryTokensResponse{Tokens: classes, Pagination: pageRes}, nil
 }
 
-func (s queryServer) TokenGrants(c context.Context, req *token.QueryGrantsRequest) (*token.QueryGrantsResponse, error) {
+func (s queryServer) Grants(c context.Context, req *token.QueryGrantsRequest) (*token.QueryGrantsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}

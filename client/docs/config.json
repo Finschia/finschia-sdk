@@ -162,7 +162,9 @@
       "url": "./tmp-swagger-gen/lbm/token/v1/query.swagger.json",
       "operationIds": {
         "rename": {
-          "Params": "TokenParams"
+          "Params": "TokenParams",
+          "Balance": "TokenBalance",
+          "Grant": "TokenGrant"
         }
       }
     },

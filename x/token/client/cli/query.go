@@ -23,7 +23,7 @@ func NewQueryCmd() *cobra.Command {
 	}
 
 	queryCmd.AddCommand(
-		NewQueryCmdTokenBalance(),
+		NewQueryCmdBalance(),
 		NewQueryCmdSupply(),
 		NewQueryCmdToken(),
 		NewQueryCmdTokens(),
@@ -35,7 +35,7 @@ func NewQueryCmd() *cobra.Command {
 	return queryCmd
 }
 
-func NewQueryCmdTokenBalance() *cobra.Command {
+func NewQueryCmdBalance() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "token-balance [class-id] [address]",
 		Args:    cobra.ExactArgs(2),
@@ -47,7 +47,7 @@ func NewQueryCmdTokenBalance() *cobra.Command {
 				return err
 			}
 			queryClient := token.NewQueryClient(clientCtx)
-			res, err := queryClient.TokenBalance(cmd.Context(), &token.QueryTokenBalanceRequest{
+			res, err := queryClient.Balance(cmd.Context(), &token.QueryBalanceRequest{
 				ClassId: args[0],
 				Address: args[1],
 			})
@@ -158,7 +158,7 @@ func NewQueryCmdGrants() *cobra.Command {
 				return err
 			}
 			queryClient := token.NewQueryClient(clientCtx)
-			res, err := queryClient.TokenGrants(cmd.Context(), &token.QueryGrantsRequest{
+			res, err := queryClient.Grants(cmd.Context(), &token.QueryGrantsRequest{
 				ClassId: args[0],
 				Grantee: args[1],
 			})

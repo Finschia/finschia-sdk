@@ -13,7 +13,7 @@ import (
 	"github.com/line/lbm-sdk/x/token/client/cli"
 )
 
-func (s *IntegrationTestSuite) TestNewQueryCmdTokenBalance() {
+func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -31,7 +31,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokenBalance() {
 				s.customer.String(),
 			},
 			true,
-			&token.QueryTokenBalanceResponse{
+			&token.QueryBalanceResponse{
 				Amount: s.balance,
 			},
 		},
@@ -65,7 +65,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokenBalance() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdTokenBalance()
+			cmd := cli.NewQueryCmdBalance()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -73,7 +73,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokenBalance() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.QueryTokenBalanceResponse
+			var actual token.QueryBalanceResponse
 			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})

@@ -11,8 +11,8 @@ option go_package = "github.com/line/lbm-sdk/x/token";
 
 // Query defines the gRPC querier service.
 service Query {
-  // TokenBalance queries the number of tokens of a given class owned by the address.
-  rpc TokenBalance(QueryTokenBalanceRequest) returns (QueryTokenBalanceResponse) {
+  // Balance queries the number of tokens of a given class owned by the address.
+  rpc Balance(QueryBalanceRequest) returns (QueryBalanceResponse) {
     option (google.api.http).get = "/lbm/token/v1/balance/{address}/{class_id}";
   }
 
@@ -32,7 +32,7 @@ service Query {
   }
 
   // Grants queries grants on a given grantee.
-  rpc TokenGrants(QueryGrantsRequest) returns (QueryGrantsResponse) {
+  rpc Grants(QueryGrantsRequest) returns (QueryGrantsResponse) {
     option (google.api.http).get = "/lbm/token/v1/grants/{grantee}/{class_id}";
   }
 
@@ -47,15 +47,15 @@ service Query {
   }
 }
 
-// QueryTokenBalanceRequest is the request type for the Query/TokenBalance RPC method
-message QueryTokenBalanceRequest {
+// QueryBalanceRequest is the request type for the Query/Balance RPC method
+message QueryBalanceRequest {
   // class id associated with the token.
   string class_id = 1;
   string address  = 2;
 }
 
-// QueryTokenBalanceResponse is the response type for the Query/TokenBalance RPC method
-message QueryTokenBalanceResponse {
+// QueryBalanceResponse is the response type for the Query/Balance RPC method
+message QueryBalanceResponse {
   string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
