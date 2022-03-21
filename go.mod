@@ -4,7 +4,6 @@ module github.com/line/lbm-sdk
 
 require (
 	github.com/99designs/keyring v1.1.6
-	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
 	github.com/VictoriaMetrics/fastcache v1.9.0
 	github.com/armon/go-metrics v0.3.10
 	github.com/bgentry/speakeasy v0.1.0

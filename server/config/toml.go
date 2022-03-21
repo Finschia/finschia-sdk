@@ -83,6 +83,10 @@ index-events = {{ .BaseConfig.IndexEvents }}
 # It works when tendermint's prometheus option (config.toml) is set to true.
 prometheus = {{ .BaseConfig.Prometheus }}
 
+# IavlCacheSize set the size of the iavl tree cache. 
+# Default cache size is 50mb.
+iavl-cache-size = {{ .BaseConfig.IAVLCacheSize }}
+
 ###############################################################################
 ###                         Telemetry Configuration                         ###
 ###############################################################################

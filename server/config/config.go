@@ -77,7 +77,7 @@ type BaseConfig struct {
 	InterBlockCacheSize int `mapstructure:"inter-block-cache-size"`
 
 	// IAVL cache size; bytes size unit
-	IAVLCacheSize int `mapstructure:"iavl-cache-size"`
+	IAVLCacheSize uint64 `mapstructure:"iavl-cache-size"`
 
 	// Bech32CacheSize is the maximum bytes size of bech32 cache (Default : 1GB)
 	Bech32CacheSize int `mapstructure:"bech32-cache-size"`

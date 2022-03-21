@@ -204,6 +204,9 @@ type CommitMultiStore interface {
 	// SetIAVLCacheManager sets the CacheManager that is holding nodedb cache of IAVL tree
 	// If a cacheManager is not set, then IAVL tree does not use cache
 	SetIAVLCacheManager(cacheManager CacheManager)
+
+	// SetIAVLCacheSize sets the cache size of the IAVL tree.
+	SetIAVLCacheSize(size int)
 }
 
 //---------subsp-------------------------------
