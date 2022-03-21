@@ -28,7 +28,7 @@ func (p DefaultAuthorizationPolicy) CanModifyContract(admin, actor sdk.AccAddres
 }
 
 func (p DefaultAuthorizationPolicy) CanUpdateContractStatus(config types.AccessConfig, actor sdk.AccAddress) bool {
-	return config.Allowed(actor)
+	return false
 }
 
 // GovAuthorizationPolicy is for the gov handler(proposal_handler.go) authorities
