@@ -100,7 +100,7 @@ func mkStdTx() legacytx.StdTx {
 
 // Create an IBC tx that's encoded as amino-JSON. Since we can't amino-marshal
 // a tx with "lbm-sdk/MsgTransfer" using the SDK, we just hardcode the tx
-// here. But external clients might, see https://github.com/line/lbm-sdk/issues/8022.
+// here. But external clients might, see https://github.com/cosmos/cosmos-sdk/issues/8022.
 func mkIBCStdTx() []byte {
 	ibcTx := `{
 		"account_number": "68",

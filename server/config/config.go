@@ -118,7 +118,7 @@ type APIConfig struct {
 
 	// TODO: TLS/Proxy configuration.
 	//
-	// Ref: https://github.com/line/lbm-sdk/issues/6420
+	// Ref: https://github.com/cosmos/cosmos-sdk/issues/6420
 }
 
 // RosettaConfig defines the Rosetta API listener configuration.
