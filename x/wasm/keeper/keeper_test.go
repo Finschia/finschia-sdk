@@ -130,7 +130,6 @@ func TestCreateStoresInstantiatePermission(t *testing.T) {
 			keepers.WasmKeeper.setParams(ctx, types.Params{
 				CodeUploadAccess:             types.AllowEverybody,
 				InstantiateDefaultPermission: spec.srcPermission,
-				ContractStatusAccess:         types.DefaultContractStatusAccess,
 				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 				GasMultiplier:                types.DefaultGasMultiplier,
 				InstanceCost:                 types.DefaultInstanceCost,
@@ -796,7 +795,7 @@ func TestExecuteWithStorageLoop(t *testing.T) {
 
 func TestExecuteInactiveContract(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
-	accKeeper, keeper, wasmKeeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.WasmKeeper, keepers.BankKeeper
+	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.BankKeeper
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
 	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
@@ -822,9 +821,6 @@ func TestExecuteInactiveContract(t *testing.T) {
 	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", addr.String())
 
 	// execute inactive contract
-	params := wasmKeeper.GetParams(ctx)
-	params.ContractStatusAccess = types.AccessTypeOnlyAddress.With(creator)
-	wasmKeeper.setParams(ctx, params)
 	err = keeper.UpdateContractStatus(ctx, addr, creator, types.ContractStatusInactive)
 
 	// Contract status can only be changed through a gov proposal.

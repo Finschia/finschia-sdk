@@ -145,12 +145,6 @@ func (k Keeper) getInstantiateAccessConfig(ctx sdk.Context) types.AccessType {
 	return a
 }
 
-func (k Keeper) getContractStatusAccessConfig(ctx sdk.Context) types.AccessConfig {
-	var a types.AccessConfig
-	k.paramSpace.Get(ctx, types.ParamStoreKeyContractStatusAccess, &a)
-	return a
-}
-
 func (k Keeper) getMaxWasmCodeSize(ctx sdk.Context) uint64 {
 	var a uint64
 	k.paramSpace.Get(ctx, types.ParamStoreKeyMaxWasmCodeSize, &a)
@@ -619,7 +613,7 @@ func (k Keeper) IterateContractsByCode(ctx sdk.Context, codeID uint64, cb func(a
 }
 
 func (k Keeper) setContractStatus(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus, authZ AuthorizationPolicy) error {
-	if !authZ.CanUpdateContractStatus(k.getContractStatusAccessConfig(ctx), caller) {
+	if !authZ.CanUpdateContractStatus() {
 		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not update contract status")
 	}
 
