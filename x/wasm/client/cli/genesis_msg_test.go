@@ -21,6 +21,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/keyring"
 	"github.com/line/lbm-sdk/server"
 	"github.com/line/lbm-sdk/testutil"
+	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/genutil"
@@ -650,7 +651,7 @@ func executeCmdWithContext(t *testing.T, homeDir string, cmd *cobra.Command) err
 	mockIn := testutil.ApplyMockIODiscardOutErr(cmd)
 	kb, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, homeDir, mockIn)
 	require.NoError(t, err)
-	_, err = kb.NewAccount(defaultTestKeyName, testutil.TestMnemonic, "", sdk.FullFundraiserPath, hd.Secp256k1)
+	_, err = kb.NewAccount(defaultTestKeyName, testdata.TestMnemonic, "", sdk.FullFundraiserPath, hd.Secp256k1)
 	require.NoError(t, err)
 	return cmd.ExecuteContext(ctx)
 }

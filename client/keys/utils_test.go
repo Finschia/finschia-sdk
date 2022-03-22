@@ -10,6 +10,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/hd"
 	"github.com/line/lbm-sdk/crypto/keyring"
 	"github.com/line/lbm-sdk/testutil"
+	"github.com/line/lbm-sdk/testutil/testdata"
 	"github.com/line/lbm-sdk/types"
 )
 
@@ -23,7 +24,7 @@ func Test_printInfos(t *testing.T) {
 	kb, err := keyring.New(types.KeyringServiceName(), keyring.BackendTest, kbHome, mockIn)
 	require.NoError(t, err)
 
-	kb.NewAccount("something", testutil.TestMnemonic, "", "", hd.Secp256k1)
+	kb.NewAccount("something", testdata.TestMnemonic, "", "", hd.Secp256k1)
 
 	clientCtx := client.Context{}.WithKeyring(kb)
 	require.NoError(t, err)
