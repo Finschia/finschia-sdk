@@ -12,7 +12,6 @@ message EventTransfer {
   string from     = 2;
   string to       = 3;
   string amount   = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
-  string dummy    = 5;
 }
 
 // EventApprove is emitted on Msg/Approve

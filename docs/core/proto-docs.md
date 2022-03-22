@@ -10241,7 +10241,6 @@ EventTransfer is emitted on Msg/Transfer and Msg/TransferFrom
 | `from` | [string](#string) |  |  |
 | `to` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
-| `dummy` | [string](#string) |  |  |
 
 
 
