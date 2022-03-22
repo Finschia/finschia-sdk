@@ -1380,7 +1380,7 @@ func TestClearContractAdmin(t *testing.T) {
 	}
 }
 
-func TestExecuteInactiveContract(t *testing.T) {
+func TestExecuteManualInactiveContractFailure(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.BankKeeper
 
@@ -1414,7 +1414,7 @@ func TestExecuteInactiveContract(t *testing.T) {
 	require.True(t, sdkerrors.ErrUnauthorized.Is(err), "expected %v but got %v", sdkerrors.ErrUnauthorized, err)
 }
 
-func TestMigrateInactiveContract(t *testing.T) {
+func TestMigrateInactivatedContractFailure(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	accKeeper, keeper, govKeeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.GovKeeper, keepers.BankKeeper
 
@@ -1457,7 +1457,7 @@ func TestMigrateInactiveContract(t *testing.T) {
 	require.True(t, types.ErrInvalid.Is(err), "expected %v but got %+v", types.ErrInvalid, err)
 }
 
-func TestUpdateContractAdminInactiveContract(t *testing.T) {
+func TestUpdateContractAdminInactivatedContractFailure(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	accKeeper, keeper, govKeeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.GovKeeper, keepers.BankKeeper
 
@@ -1500,7 +1500,7 @@ func TestUpdateContractAdminInactiveContract(t *testing.T) {
 	require.True(t, types.ErrInvalid.Is(err), "expected %v but got %+v", types.ErrInvalid, err)
 }
 
-func TestClearContractAdminInactiveContract(t *testing.T) {
+func TestClearContractAdminInactivedContractFailure(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	accKeeper, keeper, govKeeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.GovKeeper, keepers.BankKeeper
 
