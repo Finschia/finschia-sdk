@@ -67,7 +67,7 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"0 value coin",
 			bank.Balance{
-				Address: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
 				Coins: sdk.Coins{
 					sdk.NewInt64Coin("atom", 0),
 					sdk.NewInt64Coin("zatom", 2),
@@ -78,7 +78,7 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"unsorted coins",
 			bank.Balance{
-				Address: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
 				Coins: sdk.Coins{
 					sdk.NewInt64Coin("atom", 2),
 					sdk.NewInt64Coin("zatom", 2),
@@ -90,7 +90,7 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"valid sorted coins",
 			bank.Balance{
-				Address: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
 				Coins: sdk.Coins{
 					sdk.NewInt64Coin("atom", 2),
 					sdk.NewInt64Coin("batom", 12),
