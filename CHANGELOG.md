@@ -50,5 +50,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 * (ci) [\#457](https://github.com/line/lbm-sdk/pull/457) add swagger check
 * (ci) [\#469](https://github.com/line/lbm-sdk/pull/469) publish docker image on tag push
+* (ci) [\#471](https://github.com/line/lbm-sdk/pull/471) disable swagger check temporarily
 
 ### Document Updates
