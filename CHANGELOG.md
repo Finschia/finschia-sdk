@@ -49,7 +49,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Build, CI
 
-* (ci) [\#457](https://github.com/line/lbm-sdk/pull/457) add swagger check
+* (ci) [\#457](https://github.com/line/lbm-sdk/pull/457), [\#471](https://github.com/line/lbm-sdk/pull/471) add swagger check
 * (ci) [\#469](https://github.com/line/lbm-sdk/pull/469) publish docker image on tag push
 
 ### Document Updates
