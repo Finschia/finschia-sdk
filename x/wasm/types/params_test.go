@@ -29,7 +29,6 @@ func TestValidateParams(t *testing.T) {
 			src: Params{
 				CodeUploadAccess:             AllowNobody,
 				InstantiateDefaultPermission: AccessTypeNobody,
-				ContractStatusAccess:         AllowNobody,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 				GasMultiplier:                DefaultGasMultiplier,
 				InstanceCost:                 DefaultInstanceCost,
@@ -40,7 +39,6 @@ func TestValidateParams(t *testing.T) {
 			src: Params{
 				CodeUploadAccess:             AllowEverybody,
 				InstantiateDefaultPermission: AccessTypeEverybody,
-				ContractStatusAccess:         AllowEverybody,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 				GasMultiplier:                DefaultGasMultiplier,
 				InstanceCost:                 DefaultInstanceCost,
@@ -51,7 +49,6 @@ func TestValidateParams(t *testing.T) {
 			src: Params{
 				CodeUploadAccess:             AccessTypeOnlyAddress.With(anyAddress),
 				InstantiateDefaultPermission: AccessTypeOnlyAddress,
-				ContractStatusAccess:         AccessTypeOnlyAddress.With(anyAddress),
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 				GasMultiplier:                DefaultGasMultiplier,
 				InstanceCost:                 DefaultInstanceCost,
@@ -60,12 +57,11 @@ func TestValidateParams(t *testing.T) {
 		},
 		"reject empty type in instantiate permission": {
 			src: Params{
-				CodeUploadAccess:     AllowNobody,
-				ContractStatusAccess: DefaultContractStatusAccess,
-				MaxWasmCodeSize:      DefaultMaxWasmCodeSize,
-				GasMultiplier:        DefaultGasMultiplier,
-				InstanceCost:         DefaultInstanceCost,
-				CompileCost:          DefaultCompileCost,
+				CodeUploadAccess: AllowNobody,
+				MaxWasmCodeSize:  DefaultMaxWasmCodeSize,
+				GasMultiplier:    DefaultGasMultiplier,
+				InstanceCost:     DefaultInstanceCost,
+				CompileCost:      DefaultCompileCost,
 			},
 			expErr: true,
 		},
@@ -73,7 +69,6 @@ func TestValidateParams(t *testing.T) {
 			src: Params{
 				CodeUploadAccess:             AllowNobody,
 				InstantiateDefaultPermission: 1111,
-				ContractStatusAccess:         DefaultContractStatusAccess,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 				GasMultiplier:                DefaultGasMultiplier,
 				InstanceCost:                 DefaultInstanceCost,
@@ -85,7 +80,6 @@ func TestValidateParams(t *testing.T) {
 			src: Params{
 				CodeUploadAccess:             AccessConfig{Permission: AccessTypeOnlyAddress, Address: invalidAddress},
 				InstantiateDefaultPermission: AccessTypeOnlyAddress,
-				ContractStatusAccess:         DefaultContractStatusAccess,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 				GasMultiplier:                DefaultGasMultiplier,
 				InstanceCost:                 DefaultInstanceCost,
@@ -97,7 +91,6 @@ func TestValidateParams(t *testing.T) {
 			src: Params{
 				CodeUploadAccess:             AccessConfig{Permission: AccessTypeEverybody, Address: anyAddress.String()},
 				InstantiateDefaultPermission: AccessTypeOnlyAddress,
-				ContractStatusAccess:         DefaultContractStatusAccess,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 				GasMultiplier:                DefaultGasMultiplier,
 				InstanceCost:                 DefaultInstanceCost,
@@ -109,7 +102,6 @@ func TestValidateParams(t *testing.T) {
 			src: Params{
 				CodeUploadAccess:             AccessConfig{Permission: AccessTypeNobody, Address: anyAddress.String()},
 				InstantiateDefaultPermission: AccessTypeOnlyAddress,
-				ContractStatusAccess:         DefaultContractStatusAccess,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 				GasMultiplier:                DefaultGasMultiplier,
 				InstanceCost:                 DefaultInstanceCost,
@@ -120,7 +112,6 @@ func TestValidateParams(t *testing.T) {
 		"reject empty CodeUploadAccess": {
 			src: Params{
 				InstantiateDefaultPermission: AccessTypeOnlyAddress,
-				ContractStatusAccess:         DefaultContractStatusAccess,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 				GasMultiplier:                DefaultGasMultiplier,
 				InstanceCost:                 DefaultInstanceCost,
@@ -132,7 +123,6 @@ func TestValidateParams(t *testing.T) {
 			src: Params{
 				CodeUploadAccess:             AccessConfig{Permission: AccessTypeUnspecified},
 				InstantiateDefaultPermission: AccessTypeOnlyAddress,
-				ContractStatusAccess:         DefaultContractStatusAccess,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 				GasMultiplier:                DefaultGasMultiplier,
 				InstanceCost:                 DefaultInstanceCost,
@@ -144,7 +134,6 @@ func TestValidateParams(t *testing.T) {
 			src: Params{
 				CodeUploadAccess:             AllowNobody,
 				InstantiateDefaultPermission: AccessTypeNobody,
-				ContractStatusAccess:         DefaultContractStatusAccess,
 				GasMultiplier:                DefaultGasMultiplier,
 				InstanceCost:                 DefaultInstanceCost,
 				CompileCost:                  DefaultCompileCost,
@@ -178,65 +167,6 @@ func TestValidateParams(t *testing.T) {
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 				GasMultiplier:                DefaultGasMultiplier,
 				InstanceCost:                 DefaultInstanceCost,
-			},
-			expErr: true,
-		},
-		"reject ContractStatusAccess invalid address in only address": {
-			src: Params{
-				CodeUploadAccess:             DefaultUploadAccess,
-				InstantiateDefaultPermission: AccessTypeOnlyAddress,
-				ContractStatusAccess:         AccessConfig{Permission: AccessTypeOnlyAddress, Address: invalidAddress},
-				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
-				GasMultiplier:                DefaultGasMultiplier,
-				InstanceCost:                 DefaultInstanceCost,
-				CompileCost:                  DefaultCompileCost,
-			},
-			expErr: true,
-		},
-		"reject ContractStatusAccess Everybody with obsolete address": {
-			src: Params{
-				CodeUploadAccess:             DefaultUploadAccess,
-				InstantiateDefaultPermission: AccessTypeOnlyAddress,
-				ContractStatusAccess:         AccessConfig{Permission: AccessTypeEverybody, Address: anyAddress.String()},
-				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
-				GasMultiplier:                DefaultGasMultiplier,
-				InstanceCost:                 DefaultInstanceCost,
-				CompileCost:                  DefaultCompileCost,
-			},
-			expErr: true,
-		},
-		"reject ContractStatusAccess Nobody with obsolete address": {
-			src: Params{
-				CodeUploadAccess:             DefaultUploadAccess,
-				InstantiateDefaultPermission: AccessTypeOnlyAddress,
-				ContractStatusAccess:         AccessConfig{Permission: AccessTypeNobody, Address: anyAddress.String()},
-				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
-				GasMultiplier:                DefaultGasMultiplier,
-				InstanceCost:                 DefaultInstanceCost,
-				CompileCost:                  DefaultCompileCost,
-			},
-			expErr: true,
-		},
-		"reject empty ContractStatusAccess": {
-			src: Params{
-				CodeUploadAccess:             DefaultUploadAccess,
-				InstantiateDefaultPermission: AccessTypeOnlyAddress,
-				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
-				GasMultiplier:                DefaultGasMultiplier,
-				InstanceCost:                 DefaultInstanceCost,
-				CompileCost:                  DefaultCompileCost,
-			},
-			expErr: true,
-		},
-		"reject undefined permission in ContractStatusAccess": {
-			src: Params{
-				CodeUploadAccess:             DefaultUploadAccess,
-				InstantiateDefaultPermission: AccessTypeOnlyAddress,
-				ContractStatusAccess:         AccessConfig{Permission: AccessTypeUnspecified},
-				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
-				GasMultiplier:                DefaultGasMultiplier,
-				InstanceCost:                 DefaultInstanceCost,
-				CompileCost:                  DefaultCompileCost,
 			},
 			expErr: true,
 		},
@@ -302,7 +232,6 @@ func TestParamsUnmarshalJson(t *testing.T) {
 		"defaults": {
 			src: `{"code_upload_access": {"permission": "Everybody"},
 				"instantiate_default_permission": "Everybody",
-				"contract_status_access": {"permission": "Nobody"},
 				"max_wasm_code_size": 1228800,
 				"gas_multiplier": 100,
 				"instance_cost": 40000,
