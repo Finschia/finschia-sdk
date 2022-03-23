@@ -12,7 +12,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryParams() {
 	var (
 		req      *proposal.QueryParamsRequest
 		expValue string
-		space    *types.Subspace
+		space    types.Subspace
 	)
 	key := []byte("key")
 

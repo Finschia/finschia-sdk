@@ -28,7 +28,7 @@ type AppModule struct {
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Marshaler, keeper stakingkeeper.Keeper, ak stakingtypes.AccountKeeper, bk stakingtypes.BankKeeper, ck types.ConsortiumKeeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper stakingkeeper.Keeper, ak stakingtypes.AccountKeeper, bk stakingtypes.BankKeeper, ck types.ConsortiumKeeper) AppModule {
 	return AppModule{
 		AppModule: staking.NewAppModule(cdc, keeper, ak, bk),
 		keeper:    keeper,

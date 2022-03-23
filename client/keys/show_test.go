@@ -3,12 +3,9 @@ package keys
 import (
 	"context"
 	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	ostcli "github.com/line/ostracon/libs/cli"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
@@ -18,7 +15,6 @@ import (
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/testutil"
-	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	sdk "github.com/line/lbm-sdk/types"
 )
 
@@ -28,8 +24,8 @@ func Test_multiSigKey_Properties(t *testing.T) {
 		1,
 		[]cryptotypes.PubKey{tmpKey1.PubKey()},
 	)
-	tmp := keyring.NewMultiInfo("myMultisig", pk)
-
+	tmp, err := keyring.NewMultiInfo("myMultisig", pk)
+	require.NoError(t, err)
 	require.Equal(t, "myMultisig", tmp.GetName())
 	require.Equal(t, keyring.TypeMulti, tmp.GetType())
 	require.Equal(t, "BDF0C827D34CA39919C7688EB5A95383C60B3471", tmp.GetPubKey().Address().String())
@@ -43,67 +39,6 @@ func Test_showKeysCmd(t *testing.T) {
 	require.NotNil(t, cmd)
 	require.Equal(t, "false", cmd.Flag(FlagAddress).DefValue)
 	require.Equal(t, "false", cmd.Flag(FlagPublicKey).DefValue)
-}
-
-func TestShowCmdWithMultisigAccount(t *testing.T) {
-	cmd := ShowKeysCmd()
-	cmd.Flags().AddFlagSet(Commands("home").PersistentFlags())
-	mockIn := testutil.ApplyMockIODiscardOutErr(cmd)
-
-	kbHome := t.TempDir()
-	kb, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, kbHome, mockIn)
-	require.NoError(t, err)
-
-	clientCtx := client.Context{}.WithKeyring(kb)
-
-	fakeKeyName1 := "runShowCmd_Key1"
-	fakeKeyName2 := "runShowCmd_Key2"
-	myMultiSig := "mymulti"
-	threshold := 2
-
-	t.Cleanup(func() {
-		kb.Delete(fakeKeyName1)
-		kb.Delete(fakeKeyName2)
-		kb.Delete(myMultiSig)
-	})
-
-	path := hd.NewFundraiserParams(1, sdk.CoinType, 0).String()
-	acc1, err := kb.NewAccount(fakeKeyName1, testutil.TestMnemonic, "", path, hd.Secp256k1)
-	require.NoError(t, err)
-
-	path2 := hd.NewFundraiserParams(1, sdk.CoinType, 1).String()
-	acc2, err := kb.NewAccount(fakeKeyName2, testutil.TestMnemonic, "", path2, hd.Secp256k1)
-	require.NoError(t, err)
-
-	var pks []cryptotypes.PubKey
-	pks = append(pks, acc1.GetPubKey(), acc2.GetPubKey())
-
-	pk := multisig.NewLegacyAminoPubKey(threshold, pks)
-	multiSig, err := kb.SaveMultisig(myMultiSig, pk)
-	require.NoError(t, err)
-
-	multiSigInfo, err := keyring.Bech32KeyOutput(multiSig)
-	require.NoError(t, err)
-
-	multiSigInfoBytes, err := KeysCdc.Amino.MarshalJSON(multiSigInfo)
-	require.NoError(t, err)
-
-	args := []string{
-		myMultiSig,
-		fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
-		fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
-		fmt.Sprintf("--%s=%s", FlagBechPrefix, sdk.PrefixAccount),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
-	}
-
-	var res keyring.KeyOutput
-	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, args)
-	require.NoError(t, err)
-
-	KeysCdc.Amino.UnmarshalJSON(out.Bytes(), &res)
-	require.Equal(t, res.Threshold, uint(threshold))
-	require.Len(t, res.PubKeys, 2)
-	require.Equal(t, strings.TrimSpace(out.String()), string(multiSigInfoBytes))
 }
 
 func Test_runShowCmd(t *testing.T) {
@@ -263,28 +198,20 @@ func Test_getBechKeyOut(t *testing.T) {
 	}{
 		{"empty", args{""}, nil, true},
 		{"wrong", args{"???"}, nil, true},
-		{"acc", args{sdk.PrefixAccount}, keyring.Bech32KeyOutput, false},
-		{"val", args{sdk.PrefixValidator}, keyring.Bech32ValKeyOutput, false},
-		{"cons", args{sdk.PrefixConsensus}, keyring.Bech32ConsKeyOutput, false},
+		{"acc", args{sdk.PrefixAccount}, keyring.MkAccKeyOutput, false},
+		{"val", args{sdk.PrefixValidator}, keyring.MkValKeyOutput, false},
+		{"cons", args{sdk.PrefixConsensus}, keyring.MkConsKeyOutput, false},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := getBechKeyOut(tt.args.bechPrefix)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("getBechKeyOut() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-
-			if !tt.wantErr {
+			if tt.wantErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
 				require.NotNil(t, got)
 			}
-
-			// TODO: Still not possible to compare functions
-			// Maybe in next release: https://github.com/stretchr/testify/issues/182
-			//if &got != &tt.want {
-			//	t.Errorf("getBechKeyOut() = %v, want %v", got, tt.want)
-			//}
 		})
 	}
 }

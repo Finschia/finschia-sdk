@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/line/ostracon/crypto"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	wasmvm "github.com/line/wasmvm"
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
@@ -222,7 +222,7 @@ func TestCreateWithSimulation(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.BankKeeper
 
-	ctx = ctx.WithBlockHeader(tmproto.Header{Height: 1}).
+	ctx = ctx.WithBlockHeader(ocproto.Header{Height: 1}).
 		WithGasMeter(stypes.NewInfiniteGasMeter())
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
@@ -252,15 +252,15 @@ func TestIsSimulationMode(t *testing.T) {
 		exp bool
 	}{
 		"genesis block": {
-			ctx: sdk.Context{}.WithBlockHeader(tmproto.Header{}).WithGasMeter(stypes.NewInfiniteGasMeter()),
+			ctx: sdk.Context{}.WithBlockHeader(ocproto.Header{}).WithGasMeter(stypes.NewInfiniteGasMeter()),
 			exp: false,
 		},
 		"any regular block": {
-			ctx: sdk.Context{}.WithBlockHeader(tmproto.Header{Height: 1}).WithGasMeter(stypes.NewGasMeter(10000000)),
+			ctx: sdk.Context{}.WithBlockHeader(ocproto.Header{Height: 1}).WithGasMeter(stypes.NewGasMeter(10000000)),
 			exp: false,
 		},
 		"simulation": {
-			ctx: sdk.Context{}.WithBlockHeader(tmproto.Header{Height: 1}).WithGasMeter(stypes.NewInfiniteGasMeter()),
+			ctx: sdk.Context{}.WithBlockHeader(ocproto.Header{Height: 1}).WithGasMeter(stypes.NewInfiniteGasMeter()),
 			exp: true,
 		},
 	}
@@ -320,7 +320,7 @@ func TestInstantiate(t *testing.T) {
 
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x11ccf), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x11f9f), gasAfter-gasBefore)
 	}
 
 	// ensure it is stored properly
@@ -555,7 +555,7 @@ func TestExecute(t *testing.T) {
 	// make sure gas is properly deducted from ctx
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x115d7), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x10f57), gasAfter-gasBefore)
 	}
 	// ensure bob now exists and got both payments released
 	bobAcct = accKeeper.GetAccount(ctx, bob)
@@ -566,13 +566,13 @@ func TestExecute(t *testing.T) {
 	// ensure contract has updated balance
 	contractAcct = accKeeper.GetAccount(ctx, addr)
 	require.NotNil(t, contractAcct)
-	assert.Equal(t, sdk.Coins(nil), bankKeeper.GetAllBalances(ctx, contractAcct.GetAddress()))
+	assert.Equal(t, sdk.NewCoins().String(), bankKeeper.GetAllBalances(ctx, contractAcct.GetAddress()).String())
 
 	// and events emitted
-	require.Len(t, em.Events(), 5)
+	require.Len(t, em.Events(), 9)
 	expEvt := sdk.NewEvent("execute",
 		sdk.NewAttribute("_contract_address", addr.String()))
-	assert.Equal(t, expEvt, em.Events()[1])
+	assert.Equal(t, expEvt, em.Events()[3])
 
 	t.Logf("Duration: %v (%d gas)\n", diff, gasAfter-gasBefore)
 }
@@ -1097,10 +1097,24 @@ func TestMigrateWithDispatchedMessage(t *testing.T) {
 			},
 		},
 		{
+			"Type": "coin_spent",
+			"Attr": []dict{
+				{"spender": "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"},
+				{"amount": "100000denom"},
+			},
+		},
+		{
+			"Type": "coin_received",
+			"Attr": []dict{
+				{"receiver": "link1wrtx8cgrx5qtqdjf7gpxe6mr6au74des5k2may"},
+				{"amount": "100000denom"},
+			},
+		},
+		{
 			"Type": "transfer",
 			"Attr": []dict{
-				{"recipient": myPayoutAddr},
-				{"sender": contractAddr},
+				{"recipient": "link1wrtx8cgrx5qtqdjf7gpxe6mr6au74des5k2may"},
+				{"sender": "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"},
 				{"amount": "100000denom"},
 			},
 		},
@@ -1290,7 +1304,7 @@ func TestSudo(t *testing.T) {
 	balance := bankKeeper.GetBalance(ctx, comAcct.GetAddress(), "denom")
 	assert.Equal(t, sdk.NewInt64Coin("denom", 76543), balance)
 	// and events emitted
-	require.Len(t, em.Events(), 2)
+	require.Len(t, em.Events(), 4)
 	expEvt := sdk.NewEvent("sudo",
 		sdk.NewAttribute("_contract_address", addr.String()))
 	assert.Equal(t, expEvt, em.Events()[0])

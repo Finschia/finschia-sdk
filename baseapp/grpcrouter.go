@@ -6,10 +6,11 @@ import (
 	"sync"
 
 	gogogrpc "github.com/gogo/protobuf/grpc"
-	abci "github.com/line/ostracon/abci/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/encoding"
 	"google.golang.org/grpc/encoding/proto"
+
+	abci "github.com/line/ostracon/abci/types"
 
 	"github.com/line/lbm-sdk/client/grpc/reflection"
 	codectypes "github.com/line/lbm-sdk/codec/types"
@@ -149,7 +150,6 @@ func (qrt *GRPCQueryRouter) SetInterfaceRegistry(interfaceRegistry codectypes.In
 	// defer qrt.lck.Unlock()
 
 	qrt.interfaceRegistry = interfaceRegistry
-
 	// Once we have an interface registry, we can register the interface
 	// registry reflection gRPC service.
 	reflection.RegisterReflectionServiceServer(

@@ -32,6 +32,12 @@
     - [DecProto](#lbm.base.v1.DecProto)
     - [IntProto](#lbm.base.v1.IntProto)
   
+- [lbm/upgrade/v1/upgrade.proto](#lbm/upgrade/v1/upgrade.proto)
+    - [CancelSoftwareUpgradeProposal](#lbm.upgrade.v1.CancelSoftwareUpgradeProposal)
+    - [ModuleVersion](#lbm.upgrade.v1.ModuleVersion)
+    - [Plan](#lbm.upgrade.v1.Plan)
+    - [SoftwareUpgradeProposal](#lbm.upgrade.v1.SoftwareUpgradeProposal)
+  
 - [ibc/core/client/v1/client.proto](#ibc/core/client/v1/client.proto)
     - [ClientConsensusStates](#ibc.core.client.v1.ClientConsensusStates)
     - [ClientUpdateProposal](#ibc.core.client.v1.ClientUpdateProposal)
@@ -39,6 +45,7 @@
     - [Height](#ibc.core.client.v1.Height)
     - [IdentifiedClientState](#ibc.core.client.v1.IdentifiedClientState)
     - [Params](#ibc.core.client.v1.Params)
+    - [UpgradeProposal](#ibc.core.client.v1.UpgradeProposal)
   
 - [ibc/applications/transfer/v1/tx.proto](#ibc/applications/transfer/v1/tx.proto)
     - [MsgTransfer](#ibc.applications.transfer.v1.MsgTransfer)
@@ -131,6 +138,8 @@
     - [QueryConsensusStateResponse](#ibc.core.client.v1.QueryConsensusStateResponse)
     - [QueryConsensusStatesRequest](#ibc.core.client.v1.QueryConsensusStatesRequest)
     - [QueryConsensusStatesResponse](#ibc.core.client.v1.QueryConsensusStatesResponse)
+    - [QueryUpgradedClientStateRequest](#ibc.core.client.v1.QueryUpgradedClientStateRequest)
+    - [QueryUpgradedClientStateResponse](#ibc.core.client.v1.QueryUpgradedClientStateResponse)
   
     - [Query](#ibc.core.client.v1.Query)
   
@@ -235,6 +244,10 @@
     - [PrivKey](#lbm.crypto.secp256k1.PrivKey)
     - [PubKey](#lbm.crypto.secp256k1.PubKey)
   
+- [lbm/crypto/secp256r1/keys.proto](#lbm/crypto/secp256r1/keys.proto)
+    - [PrivKey](#lbm.crypto.secp256r1.PrivKey)
+    - [PubKey](#lbm.crypto.secp256r1.PubKey)
+  
 - [lbm/auth/v1/auth.proto](#lbm/auth/v1/auth.proto)
     - [BaseAccount](#lbm.auth.v1.BaseAccount)
     - [ModuleAccount](#lbm.auth.v1.ModuleAccount)
@@ -246,6 +259,8 @@
 - [lbm/auth/v1/query.proto](#lbm/auth/v1/query.proto)
     - [QueryAccountRequest](#lbm.auth.v1.QueryAccountRequest)
     - [QueryAccountResponse](#lbm.auth.v1.QueryAccountResponse)
+    - [QueryAccountsRequest](#lbm.auth.v1.QueryAccountsRequest)
+    - [QueryAccountsResponse](#lbm.auth.v1.QueryAccountsResponse)
     - [QueryParamsRequest](#lbm.auth.v1.QueryParamsRequest)
     - [QueryParamsResponse](#lbm.auth.v1.QueryParamsResponse)
   
@@ -256,6 +271,49 @@
     - [MsgEmptyResponse](#lbm.auth.v1.MsgEmptyResponse)
   
     - [Msg](#lbm.auth.v1.Msg)
+  
+- [lbm/authz/v1/authz.proto](#lbm/authz/v1/authz.proto)
+    - [GenericAuthorization](#lbm.authz.v1.GenericAuthorization)
+    - [Grant](#lbm.authz.v1.Grant)
+  
+- [lbm/authz/v1/event.proto](#lbm/authz/v1/event.proto)
+    - [EventGrant](#lbm.authz.v1.EventGrant)
+    - [EventRevoke](#lbm.authz.v1.EventRevoke)
+  
+- [lbm/base/abci/v1/abci.proto](#lbm/base/abci/v1/abci.proto)
+    - [ABCIMessageLog](#lbm.base.abci.v1.ABCIMessageLog)
+    - [Attribute](#lbm.base.abci.v1.Attribute)
+    - [GasInfo](#lbm.base.abci.v1.GasInfo)
+    - [MsgData](#lbm.base.abci.v1.MsgData)
+    - [Result](#lbm.base.abci.v1.Result)
+    - [SearchTxsResult](#lbm.base.abci.v1.SearchTxsResult)
+    - [SimulationResponse](#lbm.base.abci.v1.SimulationResponse)
+    - [StringEvent](#lbm.base.abci.v1.StringEvent)
+    - [TxMsgData](#lbm.base.abci.v1.TxMsgData)
+    - [TxResponse](#lbm.base.abci.v1.TxResponse)
+  
+- [lbm/authz/v1/tx.proto](#lbm/authz/v1/tx.proto)
+    - [MsgExec](#lbm.authz.v1.MsgExec)
+    - [MsgExecResponse](#lbm.authz.v1.MsgExecResponse)
+    - [MsgGrant](#lbm.authz.v1.MsgGrant)
+    - [MsgGrantResponse](#lbm.authz.v1.MsgGrantResponse)
+    - [MsgRevoke](#lbm.authz.v1.MsgRevoke)
+    - [MsgRevokeResponse](#lbm.authz.v1.MsgRevokeResponse)
+  
+    - [Msg](#lbm.authz.v1.Msg)
+  
+- [lbm/authz/v1/genesis.proto](#lbm/authz/v1/genesis.proto)
+    - [GenesisState](#lbm.authz.v1.GenesisState)
+    - [GrantAuthorization](#lbm.authz.v1.GrantAuthorization)
+  
+- [lbm/authz/v1/query.proto](#lbm/authz/v1/query.proto)
+    - [QueryGrantsRequest](#lbm.authz.v1.QueryGrantsRequest)
+    - [QueryGrantsResponse](#lbm.authz.v1.QueryGrantsResponse)
+  
+    - [Query](#lbm.authz.v1.Query)
+  
+- [lbm/bank/v1/authz.proto](#lbm/bank/v1/authz.proto)
+    - [SendAuthorization](#lbm.bank.v1.SendAuthorization)
   
 - [lbm/bank/v1/bank.proto](#lbm/bank/v1/bank.proto)
     - [DenomUnit](#lbm.bank.v1.DenomUnit)
@@ -299,18 +357,6 @@
 - [lbm/bankplus/v1/bankplus.proto](#lbm/bankplus/v1/bankplus.proto)
     - [InactiveAddr](#lbm.bankplus.v1.InactiveAddr)
   
-- [lbm/base/abci/v1/abci.proto](#lbm/base/abci/v1/abci.proto)
-    - [ABCIMessageLog](#lbm.base.abci.v1.ABCIMessageLog)
-    - [Attribute](#lbm.base.abci.v1.Attribute)
-    - [GasInfo](#lbm.base.abci.v1.GasInfo)
-    - [MsgData](#lbm.base.abci.v1.MsgData)
-    - [Result](#lbm.base.abci.v1.Result)
-    - [SearchTxsResult](#lbm.base.abci.v1.SearchTxsResult)
-    - [SimulationResponse](#lbm.base.abci.v1.SimulationResponse)
-    - [StringEvent](#lbm.base.abci.v1.StringEvent)
-    - [TxMsgData](#lbm.base.abci.v1.TxMsgData)
-    - [TxResponse](#lbm.base.abci.v1.TxResponse)
-  
 - [lbm/base/kv/v1/kv.proto](#lbm/base/kv/v1/kv.proto)
     - [Pair](#lbm.base.kv.v1.Pair)
     - [Pairs](#lbm.base.kv.v1.Pairs)
@@ -346,6 +392,36 @@
   
     - [ReflectionService](#lbm.base.reflection.v1.ReflectionService)
   
+- [lbm/base/reflection/v2/reflection.proto](#lbm/base/reflection/v2/reflection.proto)
+    - [AppDescriptor](#lbm.base.reflection.v2.AppDescriptor)
+    - [AuthnDescriptor](#lbm.base.reflection.v2.AuthnDescriptor)
+    - [ChainDescriptor](#lbm.base.reflection.v2.ChainDescriptor)
+    - [CodecDescriptor](#lbm.base.reflection.v2.CodecDescriptor)
+    - [ConfigurationDescriptor](#lbm.base.reflection.v2.ConfigurationDescriptor)
+    - [GetAuthnDescriptorRequest](#lbm.base.reflection.v2.GetAuthnDescriptorRequest)
+    - [GetAuthnDescriptorResponse](#lbm.base.reflection.v2.GetAuthnDescriptorResponse)
+    - [GetChainDescriptorRequest](#lbm.base.reflection.v2.GetChainDescriptorRequest)
+    - [GetChainDescriptorResponse](#lbm.base.reflection.v2.GetChainDescriptorResponse)
+    - [GetCodecDescriptorRequest](#lbm.base.reflection.v2.GetCodecDescriptorRequest)
+    - [GetCodecDescriptorResponse](#lbm.base.reflection.v2.GetCodecDescriptorResponse)
+    - [GetConfigurationDescriptorRequest](#lbm.base.reflection.v2.GetConfigurationDescriptorRequest)
+    - [GetConfigurationDescriptorResponse](#lbm.base.reflection.v2.GetConfigurationDescriptorResponse)
+    - [GetQueryServicesDescriptorRequest](#lbm.base.reflection.v2.GetQueryServicesDescriptorRequest)
+    - [GetQueryServicesDescriptorResponse](#lbm.base.reflection.v2.GetQueryServicesDescriptorResponse)
+    - [GetTxDescriptorRequest](#lbm.base.reflection.v2.GetTxDescriptorRequest)
+    - [GetTxDescriptorResponse](#lbm.base.reflection.v2.GetTxDescriptorResponse)
+    - [InterfaceAcceptingMessageDescriptor](#lbm.base.reflection.v2.InterfaceAcceptingMessageDescriptor)
+    - [InterfaceDescriptor](#lbm.base.reflection.v2.InterfaceDescriptor)
+    - [InterfaceImplementerDescriptor](#lbm.base.reflection.v2.InterfaceImplementerDescriptor)
+    - [MsgDescriptor](#lbm.base.reflection.v2.MsgDescriptor)
+    - [QueryMethodDescriptor](#lbm.base.reflection.v2.QueryMethodDescriptor)
+    - [QueryServiceDescriptor](#lbm.base.reflection.v2.QueryServiceDescriptor)
+    - [QueryServicesDescriptor](#lbm.base.reflection.v2.QueryServicesDescriptor)
+    - [SigningModeDescriptor](#lbm.base.reflection.v2.SigningModeDescriptor)
+    - [TxDescriptor](#lbm.base.reflection.v2.TxDescriptor)
+  
+    - [ReflectionService](#lbm.base.reflection.v2.ReflectionService)
+  
 - [lbm/base/snapshots/v1/snapshot.proto](#lbm/base/snapshots/v1/snapshot.proto)
     - [Metadata](#lbm.base.snapshots.v1.Metadata)
     - [Snapshot](#lbm.base.snapshots.v1.Snapshot)
@@ -354,6 +430,9 @@
     - [CommitID](#lbm.base.store.v1.CommitID)
     - [CommitInfo](#lbm.base.store.v1.CommitInfo)
     - [StoreInfo](#lbm.base.store.v1.StoreInfo)
+  
+- [lbm/base/store/v1/listening.proto](#lbm/base/store/v1/listening.proto)
+    - [StoreKVPair](#lbm.base.store.v1.StoreKVPair)
   
 - [lbm/base/store/v1/snapshot.proto](#lbm/base/store/v1/snapshot.proto)
     - [SnapshotIAVLItem](#lbm.base.store.v1.SnapshotIAVLItem)
@@ -613,6 +692,12 @@
   
     - [Msg](#lbm.slashing.v1.Msg)
   
+- [lbm/staking/v1/authz.proto](#lbm/staking/v1/authz.proto)
+    - [StakeAuthorization](#lbm.staking.v1.StakeAuthorization)
+    - [StakeAuthorization.Validators](#lbm.staking.v1.StakeAuthorization.Validators)
+  
+    - [AuthorizationType](#lbm.staking.v1.AuthorizationType)
+  
 - [lbm/staking/v1/staking.proto](#lbm/staking/v1/staking.proto)
     - [Commission](#lbm.staking.v1.Commission)
     - [CommissionRates](#lbm.staking.v1.CommissionRates)
@@ -715,12 +800,12 @@
     - [QueryApproveResponse](#lbm.token.v1.QueryApproveResponse)
     - [QueryApprovesRequest](#lbm.token.v1.QueryApprovesRequest)
     - [QueryApprovesResponse](#lbm.token.v1.QueryApprovesResponse)
+    - [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest)
+    - [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse)
     - [QueryGrantsRequest](#lbm.token.v1.QueryGrantsRequest)
     - [QueryGrantsResponse](#lbm.token.v1.QueryGrantsResponse)
     - [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest)
     - [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse)
-    - [QueryTokenBalanceRequest](#lbm.token.v1.QueryTokenBalanceRequest)
-    - [QueryTokenBalanceResponse](#lbm.token.v1.QueryTokenBalanceResponse)
     - [QueryTokenRequest](#lbm.token.v1.QueryTokenRequest)
     - [QueryTokenResponse](#lbm.token.v1.QueryTokenResponse)
     - [QueryTokensRequest](#lbm.token.v1.QueryTokensRequest)
@@ -788,12 +873,6 @@
   
     - [Service](#lbm.tx.v1.Service)
   
-- [lbm/upgrade/v1/upgrade.proto](#lbm/upgrade/v1/upgrade.proto)
-    - [CancelSoftwareUpgradeProposal](#lbm.upgrade.v1.CancelSoftwareUpgradeProposal)
-    - [ModuleVersion](#lbm.upgrade.v1.ModuleVersion)
-    - [Plan](#lbm.upgrade.v1.Plan)
-    - [SoftwareUpgradeProposal](#lbm.upgrade.v1.SoftwareUpgradeProposal)
-  
 - [lbm/upgrade/v1/query.proto](#lbm/upgrade/v1/query.proto)
     - [QueryAppliedPlanRequest](#lbm.upgrade.v1.QueryAppliedPlanRequest)
     - [QueryAppliedPlanResponse](#lbm.upgrade.v1.QueryAppliedPlanResponse)
@@ -818,6 +897,7 @@
     - [DelayedVestingAccount](#lbm.vesting.v1.DelayedVestingAccount)
     - [Period](#lbm.vesting.v1.Period)
     - [PeriodicVestingAccount](#lbm.vesting.v1.PeriodicVestingAccount)
+    - [PermanentLockedAccount](#lbm.vesting.v1.PermanentLockedAccount)
   
 - [lbm/wasm/v1/types.proto](#lbm/wasm/v1/types.proto)
     - [AbsoluteTxPosition](#lbm.wasm.v1.AbsoluteTxPosition)
@@ -1029,6 +1109,7 @@ pagination. Ex:
 | `offset` | [uint64](#uint64) |  | offset is a numeric offset that can be used when key is unavailable. It is less efficient than using key. Only one of offset or key should be set. |
 | `limit` | [uint64](#uint64) |  | limit is the total number of results to be returned in the result page. If left empty it will default to a value to be set by each app. |
 | `count_total` | [bool](#bool) |  | count_total is set to true to indicate that the result set should include a count of the total number of items available for pagination in UIs. count_total is only respected when offset is used. It is ignored when key is set. |
+| `reverse` | [bool](#bool) |  | reverse is set to true if results are to be returned in the descending order. |
 
 
 
@@ -1268,6 +1349,92 @@ IntProto defines a Protobuf wrapper around an Int object.
 
 
 
+<a name="lbm/upgrade/v1/upgrade.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/upgrade/v1/upgrade.proto
+
+
+
+<a name="lbm.upgrade.v1.CancelSoftwareUpgradeProposal"></a>
+
+### CancelSoftwareUpgradeProposal
+CancelSoftwareUpgradeProposal is a gov Content type for cancelling a software
+upgrade.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.upgrade.v1.ModuleVersion"></a>
+
+### ModuleVersion
+ModuleVersion specifies a module and its consensus version.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | name of the app module |
+| `version` | [uint64](#uint64) |  | consensus version of the app module |
+
+
+
+
+
+
+<a name="lbm.upgrade.v1.Plan"></a>
+
+### Plan
+Plan specifies information about a planned upgrade and when it should occur.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | Sets the name for the upgrade. This name will be used by the upgraded version of the software to apply any special "on-upgrade" commands during the first BeginBlock method after the upgrade is applied. It is also used to detect whether a software version can handle a given upgrade. If no upgrade handler with this name has been set in the software, it will be assumed that the software is out-of-date when the upgrade Time or Height is reached and the software will exit. |
+| `time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | **Deprecated.** Deprecated: Time based upgrades have been deprecated. Time based upgrade logic has been removed from the SDK. If this field is not empty, an error will be thrown. |
+| `height` | [int64](#int64) |  | The height at which the upgrade must be performed. Only used if Time is not set. |
+| `info` | [string](#string) |  | Any application specific upgrade info to be included on-chain such as a git commit that validators could automatically upgrade to |
+| `upgraded_client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | **Deprecated.** Deprecated: UpgradedClientState field has been deprecated. IBC upgrade logic has been moved to the IBC module in the sub module 02-client. If this field is not empty, an error will be thrown. |
+
+
+
+
+
+
+<a name="lbm.upgrade.v1.SoftwareUpgradeProposal"></a>
+
+### SoftwareUpgradeProposal
+SoftwareUpgradeProposal is a gov Content type for initiating a software
+upgrade.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `plan` | [Plan](#lbm.upgrade.v1.Plan) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="ibc/core/client/v1/client.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1295,17 +1462,20 @@ client.
 <a name="ibc.core.client.v1.ClientUpdateProposal"></a>
 
 ### ClientUpdateProposal
-ClientUpdateProposal is a governance proposal. If it passes, the client is
-updated with the provided header. The update may fail if the header is not
-valid given certain conditions specified by the client implementation.
+ClientUpdateProposal is a governance proposal. If it passes, the substitute client's
+consensus states starting from the 'initial height' are copied over to the subjects
+client state. The proposal handler may fail if the subject and the substitute do not
+match in client and chain parameters (with exception to latest height, frozen height, and chain-id).
+The updated client must also be valid (cannot be expired).
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  | the title of the update proposal |
 | `description` | [string](#string) |  | the description of the proposal |
-| `client_id` | [string](#string) |  | the client identifier for the client to be updated if the proposal passes |
-| `header` | [google.protobuf.Any](#google.protobuf.Any) |  | the header used to update the client if the proposal passes |
+| `subject_client_id` | [string](#string) |  | the client identifier for the client to be updated if the proposal passes |
+| `substitute_client_id` | [string](#string) |  | the substitute client identifier for the client standing in for the subject client |
+| `initial_height` | [Height](#ibc.core.client.v1.Height) |  | the intital height to copy consensus states from the substitute to the subject |
 
 
 
@@ -1378,6 +1548,25 @@ Params defines the set of IBC light client parameters.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `allowed_clients` | [string](#string) | repeated | allowed_clients defines the list of allowed client state types. |
+
+
+
+
+
+
+<a name="ibc.core.client.v1.UpgradeProposal"></a>
+
+### UpgradeProposal
+UpgradeProposal is a gov Content type for initiating an IBC breaking
+upgrade.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `plan` | [lbm.upgrade.v1.Plan](#lbm.upgrade.v1.Plan) |  |  |
+| `upgraded_client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | An UpgradedClientState must be provided to perform an IBC breaking upgrade. This will make the chain commit to the correct upgraded (self) client state before the upgrade occurs, so that connecting chains can verify that the new upgraded client is valid by verifying a proof on the previous version of the chain. This will allow IBC connections to persist smoothly across planned chain upgrades |
 
 
 
@@ -2749,6 +2938,39 @@ Query/ConsensusStates RPC method
 
 
 
+
+<a name="ibc.core.client.v1.QueryUpgradedClientStateRequest"></a>
+
+### QueryUpgradedClientStateRequest
+QueryUpgradedClientStateRequest is the request type for the Query/UpgradedClientState RPC
+method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `client_id` | [string](#string) |  | client state unique identifier |
+| `plan_height` | [int64](#int64) |  | plan height of the current chain must be sent in request as this is the height under which upgraded client state is stored |
+
+
+
+
+
+
+<a name="ibc.core.client.v1.QueryUpgradedClientStateResponse"></a>
+
+### QueryUpgradedClientStateResponse
+QueryUpgradedClientStateResponse is the response type for the Query/UpgradedClientState RPC
+method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `upgraded_client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | client state associated with the request identifier |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -2768,6 +2990,7 @@ Query provides defines the gRPC querier service
 | `ConsensusState` | [QueryConsensusStateRequest](#ibc.core.client.v1.QueryConsensusStateRequest) | [QueryConsensusStateResponse](#ibc.core.client.v1.QueryConsensusStateResponse) | ConsensusState queries a consensus state associated with a client state at a given height. | GET|/ibc/core/client/v1/consensus_states/{client_id}/revision/{revision_number}/height/{revision_height}|
 | `ConsensusStates` | [QueryConsensusStatesRequest](#ibc.core.client.v1.QueryConsensusStatesRequest) | [QueryConsensusStatesResponse](#ibc.core.client.v1.QueryConsensusStatesResponse) | ConsensusStates queries all the consensus state associated with a given client. | GET|/ibc/core/client/v1/consensus_states/{client_id}|
 | `ClientParams` | [QueryClientParamsRequest](#ibc.core.client.v1.QueryClientParamsRequest) | [QueryClientParamsResponse](#ibc.core.client.v1.QueryClientParamsResponse) | ClientParams queries all parameters of the ibc client. | GET|/ibc/client/v1/params|
+| `UpgradedClientState` | [QueryUpgradedClientStateRequest](#ibc.core.client.v1.QueryUpgradedClientStateRequest) | [QueryUpgradedClientStateResponse](#ibc.core.client.v1.QueryUpgradedClientStateResponse) | UpgradedClientState queries an Upgraded IBC light client. | GET|/ibc/core/client/v1/upgraded_client_states/{client_id}|
 
  <!-- end services -->
 
@@ -4053,7 +4276,8 @@ data sign byte encodings.
 <a name="lbm.crypto.ed25519.PrivKey"></a>
 
 ### PrivKey
-PrivKey defines a ed25519 private key.
+Deprecated: PrivKey defines a ed25519 private key.
+NOTE: ed25519 keys must not be used in SDK apps except in a tendermint validator context.
 
 
 | Field | Type | Label | Description |
@@ -4068,11 +4292,11 @@ PrivKey defines a ed25519 private key.
 <a name="lbm.crypto.ed25519.PubKey"></a>
 
 ### PubKey
-PubKey defines a ed25519 public key
-Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
-if the y-coordinate is the lexicographically largest of the two associated with
-the x-coordinate. Otherwise the first byte is a 0x03.
-This prefix is followed with the x-coordinate.
+PubKey is an ed25519 public key for handling Tendermint keys in SDK.
+It's needed for Any serialization and SDK compatibility.
+It must not be used in a non Tendermint key context because it doesn't implement
+ADR-28. Nevertheless, you will like to use ed25519 in app user level
+then you must create a new proto message and follow ADR-28 for Address construction.
 
 
 | Field | Type | Label | Description |
@@ -4177,6 +4401,52 @@ This prefix is followed with the x-coordinate.
 
 
 
+<a name="lbm/crypto/secp256r1/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/crypto/secp256r1/keys.proto
+
+
+
+<a name="lbm.crypto.secp256r1.PrivKey"></a>
+
+### PrivKey
+PrivKey defines a secp256r1 ECDSA private key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `secret` | [bytes](#bytes) |  | secret number serialized using big-endian encoding |
+
+
+
+
+
+
+<a name="lbm.crypto.secp256r1.PubKey"></a>
+
+### PubKey
+PubKey defines a secp256r1 ECDSA public key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  | Point on secp256r1 curve in a compressed representation as specified in section 4.3.6 of ANSI X9.62: https://webstore.ansi.org/standards/ascx9/ansix9621998 |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="lbm/auth/v1/auth.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -4197,6 +4467,7 @@ type for additional functionality (e.g. vesting).
 | `address` | [string](#string) |  |  |
 | `ed25519_pub_key` | [lbm.crypto.ed25519.PubKey](#lbm.crypto.ed25519.PubKey) |  |  |
 | `secp256k1_pub_key` | [lbm.crypto.secp256k1.PubKey](#lbm.crypto.secp256k1.PubKey) |  |  |
+| `secp256r1_pub_key` | [lbm.crypto.secp256r1.PubKey](#lbm.crypto.secp256r1.PubKey) |  |  |
 | `multisig_pub_key` | [lbm.crypto.multisig.LegacyAminoPubKey](#lbm.crypto.multisig.LegacyAminoPubKey) |  |  |
 | `account_number` | [uint64](#uint64) |  |  |
 | `sequence` | [uint64](#uint64) |  |  |
@@ -4320,6 +4591,37 @@ QueryAccountResponse is the response type for the Query/Account RPC method.
 
 
 
+<a name="lbm.auth.v1.QueryAccountsRequest"></a>
+
+### QueryAccountsRequest
+QueryAccountsRequest is the request type for the Query/Accounts RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.auth.v1.QueryAccountsResponse"></a>
+
+### QueryAccountsResponse
+QueryAccountsResponse is the response type for the Query/Accounts RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `accounts` | [google.protobuf.Any](#google.protobuf.Any) | repeated | accounts are the existing accounts |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
 <a name="lbm.auth.v1.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
@@ -4358,6 +4660,7 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Accounts` | [QueryAccountsRequest](#lbm.auth.v1.QueryAccountsRequest) | [QueryAccountsResponse](#lbm.auth.v1.QueryAccountsResponse) | Accounts returns all the existing accounts | GET|/lbm/auth/v1/accounts|
 | `Account` | [QueryAccountRequest](#lbm.auth.v1.QueryAccountRequest) | [QueryAccountResponse](#lbm.auth.v1.QueryAccountResponse) | Account returns account details based on address. | GET|/lbm/auth/v1/accounts/{address}|
 | `Params` | [QueryParamsRequest](#lbm.auth.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.auth.v1.QueryParamsResponse) | Params queries all parameters. | GET|/lbm/auth/v1/params|
 
@@ -4411,6 +4714,563 @@ Msg defines the auth Msg service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Empty` | [MsgEmpty](#lbm.auth.v1.MsgEmpty) | [MsgEmptyResponse](#lbm.auth.v1.MsgEmptyResponse) | Empty defines a method that doesn't do anything. Used to measure performance. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/authz/v1/authz.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/authz/v1/authz.proto
+
+
+
+<a name="lbm.authz.v1.GenericAuthorization"></a>
+
+### GenericAuthorization
+GenericAuthorization gives the grantee unrestricted permissions to execute
+the provided method on behalf of the granter's account.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `msg` | [string](#string) |  | Msg, identified by it's type URL, to grant unrestricted permissions to execute |
+
+
+
+
+
+
+<a name="lbm.authz.v1.Grant"></a>
+
+### Grant
+Grant gives permissions to execute
+the provide method with expiration time.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `expiration` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/authz/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/authz/v1/event.proto
+
+
+
+<a name="lbm.authz.v1.EventGrant"></a>
+
+### EventGrant
+EventGrant is emitted on Msg/Grant
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `msg_type_url` | [string](#string) |  | Msg type URL for which an autorization is granted |
+| `granter` | [string](#string) |  | Granter account address |
+| `grantee` | [string](#string) |  | Grantee account address |
+
+
+
+
+
+
+<a name="lbm.authz.v1.EventRevoke"></a>
+
+### EventRevoke
+EventRevoke is emitted on Msg/Revoke
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `msg_type_url` | [string](#string) |  | Msg type URL for which an autorization is revoked |
+| `granter` | [string](#string) |  | Granter account address |
+| `grantee` | [string](#string) |  | Grantee account address |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/base/abci/v1/abci.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/base/abci/v1/abci.proto
+
+
+
+<a name="lbm.base.abci.v1.ABCIMessageLog"></a>
+
+### ABCIMessageLog
+ABCIMessageLog defines a structure containing an indexed tx ABCI message log.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `msg_index` | [uint32](#uint32) |  |  |
+| `log` | [string](#string) |  |  |
+| `events` | [StringEvent](#lbm.base.abci.v1.StringEvent) | repeated | Events contains a slice of Event objects that were emitted during some execution. |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.Attribute"></a>
+
+### Attribute
+Attribute defines an attribute wrapper where the key and value are
+strings instead of raw bytes.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [string](#string) |  |  |
+| `value` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.GasInfo"></a>
+
+### GasInfo
+GasInfo defines tx execution gas context.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `gas_wanted` | [uint64](#uint64) |  | GasWanted is the maximum units of work we allow this tx to perform. |
+| `gas_used` | [uint64](#uint64) |  | GasUsed is the amount of gas actually consumed. |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.MsgData"></a>
+
+### MsgData
+MsgData defines the data returned in a Result object during message
+execution.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `msg_type` | [string](#string) |  |  |
+| `data` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.Result"></a>
+
+### Result
+Result is the union of ResponseFormat and ResponseCheckTx.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `data` | [bytes](#bytes) |  | Data is any data returned from message or handler execution. It MUST be length prefixed in order to separate data from multiple message executions. |
+| `log` | [string](#string) |  | Log contains the log information from message or handler execution. |
+| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events contains a slice of Event objects that were emitted during message or handler execution. |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.SearchTxsResult"></a>
+
+### SearchTxsResult
+SearchTxsResult defines a structure for querying txs pageable
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `total_count` | [uint64](#uint64) |  | Count of all txs |
+| `count` | [uint64](#uint64) |  | Count of txs in current page |
+| `page_number` | [uint64](#uint64) |  | Index of current page, start from 1 |
+| `page_total` | [uint64](#uint64) |  | Count of total pages |
+| `limit` | [uint64](#uint64) |  | Max count txs per page |
+| `txs` | [TxResponse](#lbm.base.abci.v1.TxResponse) | repeated | List of txs in current page |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.SimulationResponse"></a>
+
+### SimulationResponse
+SimulationResponse defines the response generated when a transaction is
+successfully simulated.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `gas_info` | [GasInfo](#lbm.base.abci.v1.GasInfo) |  |  |
+| `result` | [Result](#lbm.base.abci.v1.Result) |  |  |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.StringEvent"></a>
+
+### StringEvent
+StringEvent defines en Event object wrapper where all the attributes
+contain key/value pairs that are strings instead of raw bytes.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `type` | [string](#string) |  |  |
+| `attributes` | [Attribute](#lbm.base.abci.v1.Attribute) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.TxMsgData"></a>
+
+### TxMsgData
+TxMsgData defines a list of MsgData. A transaction will have a MsgData object
+for each message.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `data` | [MsgData](#lbm.base.abci.v1.MsgData) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.TxResponse"></a>
+
+### TxResponse
+TxResponse defines a structure containing relevant tx data and metadata. The
+tags are stringified and the log is JSON decoded.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `height` | [int64](#int64) |  | The block height |
+| `txhash` | [string](#string) |  | The transaction hash. |
+| `codespace` | [string](#string) |  | Namespace for the Code |
+| `code` | [uint32](#uint32) |  | Response code. |
+| `data` | [string](#string) |  | Result bytes, if any. |
+| `raw_log` | [string](#string) |  | The output of the application's logger (raw string). May be non-deterministic. |
+| `logs` | [ABCIMessageLog](#lbm.base.abci.v1.ABCIMessageLog) | repeated | The output of the application's logger (typed). May be non-deterministic. |
+| `info` | [string](#string) |  | Additional information. May be non-deterministic. |
+| `gas_wanted` | [int64](#int64) |  | Amount of gas requested for transaction. |
+| `gas_used` | [int64](#int64) |  | Amount of gas consumed by transaction. |
+| `tx` | [google.protobuf.Any](#google.protobuf.Any) |  | The request transaction bytes. |
+| `timestamp` | [string](#string) |  | Time of the previous block. For heights > 1, it's the weighted median of the timestamps of the valid votes in the block.LastCommit. For height == 1, it's genesis time. |
+| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events defines all the events emitted by processing a transaction. Note, these events include those emitted by processing all the messages and those emitted from the ante handler. Whereas Logs contains the events, with additional metadata, emitted only by processing the messages.
+
+Since: cosmos-sdk 0.42.11, 0.44.5, 0.45 |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/authz/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/authz/v1/tx.proto
+
+
+
+<a name="lbm.authz.v1.MsgExec"></a>
+
+### MsgExec
+MsgExec attempts to execute the provided messages using
+authorizations granted to the grantee. Each message should have only
+one signer corresponding to the granter of the authorization.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grantee` | [string](#string) |  |  |
+| `msgs` | [google.protobuf.Any](#google.protobuf.Any) | repeated | Authorization Msg requests to execute. Each msg must implement Authorization interface The x/authz will try to find a grant matching (msg.signers[0], grantee, MsgTypeURL(msg)) triple and validate it. |
+
+
+
+
+
+
+<a name="lbm.authz.v1.MsgExecResponse"></a>
+
+### MsgExecResponse
+MsgExecResponse defines the Msg/MsgExecResponse response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `results` | [bytes](#bytes) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.authz.v1.MsgGrant"></a>
+
+### MsgGrant
+MsgGrant is a request type for Grant method. It declares authorization to the grantee
+on behalf of the granter with the provided expiration time.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `grant` | [Grant](#lbm.authz.v1.Grant) |  |  |
+
+
+
+
+
+
+<a name="lbm.authz.v1.MsgGrantResponse"></a>
+
+### MsgGrantResponse
+MsgGrantResponse defines the Msg/MsgGrant response type.
+
+
+
+
+
+
+<a name="lbm.authz.v1.MsgRevoke"></a>
+
+### MsgRevoke
+MsgRevoke revokes any authorization with the provided sdk.Msg type on the
+granter's account with that has been granted to the grantee.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `msg_type_url` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.authz.v1.MsgRevokeResponse"></a>
+
+### MsgRevokeResponse
+MsgRevokeResponse defines the Msg/MsgRevokeResponse response type.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.authz.v1.Msg"></a>
+
+### Msg
+Msg defines the authz Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Grant` | [MsgGrant](#lbm.authz.v1.MsgGrant) | [MsgGrantResponse](#lbm.authz.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee on the granter's account with the provided expiration time. If there is already a grant for the given (granter, grantee, Authorization) triple, then the grant will be overwritten. | |
+| `Exec` | [MsgExec](#lbm.authz.v1.MsgExec) | [MsgExecResponse](#lbm.authz.v1.MsgExecResponse) | Exec attempts to execute the provided messages using authorizations granted to the grantee. Each message should have only one signer corresponding to the granter of the authorization. | |
+| `Revoke` | [MsgRevoke](#lbm.authz.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.authz.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name on the granter's account that has been granted to the grantee. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/authz/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/authz/v1/genesis.proto
+
+
+
+<a name="lbm.authz.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the authz module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authorization` | [GrantAuthorization](#lbm.authz.v1.GrantAuthorization) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.authz.v1.GrantAuthorization"></a>
+
+### GrantAuthorization
+GrantAuthorization defines the GenesisState/GrantAuthorization type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `expiration` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/authz/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/authz/v1/query.proto
+
+
+
+<a name="lbm.authz.v1.QueryGrantsRequest"></a>
+
+### QueryGrantsRequest
+QueryGrantsRequest is the request type for the Query/Grants RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `msg_type_url` | [string](#string) |  | Optional, msg_type_url, when set, will query only grants matching given msg type. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.authz.v1.QueryGrantsResponse"></a>
+
+### QueryGrantsResponse
+QueryGrantsResponse is the response type for the Query/Authorizations RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grants` | [Grant](#lbm.authz.v1.Grant) | repeated | authorizations is a list of grants granted for grantee by granter. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines an pagination for the response. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.authz.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Grants` | [QueryGrantsRequest](#lbm.authz.v1.QueryGrantsRequest) | [QueryGrantsResponse](#lbm.authz.v1.QueryGrantsResponse) | Returns list of `Authorization`, granted to the grantee by the granter. | GET|/lbm/authz/v1/grants|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/bank/v1/authz.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/bank/v1/authz.proto
+
+
+
+<a name="lbm.bank.v1.SendAuthorization"></a>
+
+### SendAuthorization
+SendAuthorization allows the grantee to spend up to spend_limit coins from
+the granter's account.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `spend_limit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
 
  <!-- end services -->
 
@@ -4470,6 +5330,8 @@ a basic token.
 | `denom_units` | [DenomUnit](#lbm.bank.v1.DenomUnit) | repeated | denom_units represents the list of DenomUnit's for a given coin |
 | `base` | [string](#string) |  | base represents the base denom (should be the DenomUnit with exponent = 0). |
 | `display` | [string](#string) |  | display indicates the suggested denom that should be displayed in clients. |
+| `name` | [string](#string) |  | name defines the name of the token (eg: Cosmos Atom) |
+| `symbol` | [string](#string) |  | symbol is the token symbol usually shown on exchanges (eg: ATOM). This can be the same as the display. |
 
 
 
@@ -4530,6 +5392,7 @@ sendable).
 ### Supply
 Supply represents a struct that passively keeps track of the total supply
 amounts in the network.
+This message is deprecated now that supply is indexed by denom.
 
 
 | Field | Type | Label | Description |
@@ -4584,7 +5447,7 @@ GenesisState defines the bank module's genesis state.
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#lbm.bank.v1.Params) |  | params defines all the paramaters of the module. |
 | `balances` | [Balance](#lbm.bank.v1.Balance) | repeated | balances is an array containing the balances of all the accounts. |
-| `supply` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | supply represents the total supply. |
+| `supply` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | supply represents the total supply. If it is left empty, then supply will be calculated based on the provided balances. Otherwise, it will be used to validate that the sum of the balances equals this amount. |
 | `denom_metadata` | [Metadata](#lbm.bank.v1.Metadata) | repeated | denom_metadata defines the metadata of the differents coins. |
 
 
@@ -4797,6 +5660,11 @@ QueryTotalSupplyRequest is the request type for the Query/TotalSupply RPC
 method.
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
 
 
 
@@ -4811,6 +5679,7 @@ method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `supply` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | supply is the supply of the coins |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -4938,206 +5807,6 @@ InactiveAddr models the blocked address for the bankplus module
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/base/abci/v1/abci.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/base/abci/v1/abci.proto
-
-
-
-<a name="lbm.base.abci.v1.ABCIMessageLog"></a>
-
-### ABCIMessageLog
-ABCIMessageLog defines a structure containing an indexed tx ABCI message log.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `msg_index` | [uint32](#uint32) |  |  |
-| `log` | [string](#string) |  |  |
-| `events` | [StringEvent](#lbm.base.abci.v1.StringEvent) | repeated | Events contains a slice of Event objects that were emitted during some execution. |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.Attribute"></a>
-
-### Attribute
-Attribute defines an attribute wrapper where the key and value are
-strings instead of raw bytes.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [string](#string) |  |  |
-| `value` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.GasInfo"></a>
-
-### GasInfo
-GasInfo defines tx execution gas context.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `gas_wanted` | [uint64](#uint64) |  | GasWanted is the maximum units of work we allow this tx to perform. |
-| `gas_used` | [uint64](#uint64) |  | GasUsed is the amount of gas actually consumed. |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.MsgData"></a>
-
-### MsgData
-MsgData defines the data returned in a Result object during message
-execution.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `msg_type` | [string](#string) |  |  |
-| `data` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.Result"></a>
-
-### Result
-Result is the union of ResponseFormat and ResponseCheckTx.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `data` | [bytes](#bytes) |  | Data is any data returned from message or handler execution. It MUST be length prefixed in order to separate data from multiple message executions. |
-| `log` | [string](#string) |  | Log contains the log information from message or handler execution. |
-| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events contains a slice of Event objects that were emitted during message or handler execution. |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.SearchTxsResult"></a>
-
-### SearchTxsResult
-SearchTxsResult defines a structure for querying txs pageable
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `total_count` | [uint64](#uint64) |  | Count of all txs |
-| `count` | [uint64](#uint64) |  | Count of txs in current page |
-| `page_number` | [uint64](#uint64) |  | Index of current page, start from 1 |
-| `page_total` | [uint64](#uint64) |  | Count of total pages |
-| `limit` | [uint64](#uint64) |  | Max count txs per page |
-| `txs` | [TxResponse](#lbm.base.abci.v1.TxResponse) | repeated | List of txs in current page |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.SimulationResponse"></a>
-
-### SimulationResponse
-SimulationResponse defines the response generated when a transaction is
-successfully simulated.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `gas_info` | [GasInfo](#lbm.base.abci.v1.GasInfo) |  |  |
-| `result` | [Result](#lbm.base.abci.v1.Result) |  |  |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.StringEvent"></a>
-
-### StringEvent
-StringEvent defines en Event object wrapper where all the attributes
-contain key/value pairs that are strings instead of raw bytes.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `type` | [string](#string) |  |  |
-| `attributes` | [Attribute](#lbm.base.abci.v1.Attribute) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.TxMsgData"></a>
-
-### TxMsgData
-TxMsgData defines a list of MsgData. A transaction will have a MsgData object
-for each message.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `data` | [MsgData](#lbm.base.abci.v1.MsgData) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.TxResponse"></a>
-
-### TxResponse
-TxResponse defines a structure containing relevant tx data and metadata. The
-tags are stringified and the log is JSON decoded.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `height` | [int64](#int64) |  | The block height |
-| `txhash` | [string](#string) |  | The transaction hash. |
-| `codespace` | [string](#string) |  | Namespace for the Code |
-| `code` | [uint32](#uint32) |  | Response code. |
-| `data` | [string](#string) |  | Result bytes, if any. |
-| `raw_log` | [string](#string) |  | The output of the application's logger (raw string). May be non-deterministic. |
-| `logs` | [ABCIMessageLog](#lbm.base.abci.v1.ABCIMessageLog) | repeated | The output of the application's logger (typed). May be non-deterministic. |
-| `info` | [string](#string) |  | Additional information. May be non-deterministic. |
-| `gas_wanted` | [int64](#int64) |  | Amount of gas requested for transaction. |
-| `gas_used` | [int64](#int64) |  | Amount of gas consumed by transaction. |
-| `tx` | [google.protobuf.Any](#google.protobuf.Any) |  | The request transaction bytes. |
-| `timestamp` | [string](#string) |  | Time of the previous block. For heights > 1, it's the weighted median of the timestamps of the valid votes in the block.LastCommit. For height == 1, it's genesis time. |
-| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events defines all the events emitted by processing a transaction. Note, these events include those emitted by processing all the messages and those emitted from the ante handler. Whereas Logs contains the events, with additional metadata, emitted only by processing the messages.
-
-Since: cosmos-sdk 0.42.11, 0.44.5, 0.45 |
 
 
 
@@ -5611,6 +6280,419 @@ ReflectionService defines a service for interface reflection.
 
 
 
+<a name="lbm/base/reflection/v2/reflection.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/base/reflection/v2/reflection.proto
+
+
+
+<a name="lbm.base.reflection.v2.AppDescriptor"></a>
+
+### AppDescriptor
+AppDescriptor describes a cosmos-sdk based application
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authn` | [AuthnDescriptor](#lbm.base.reflection.v2.AuthnDescriptor) |  | AuthnDescriptor provides information on how to authenticate transactions on the application NOTE: experimental and subject to change in future releases. |
+| `chain` | [ChainDescriptor](#lbm.base.reflection.v2.ChainDescriptor) |  | chain provides the chain descriptor |
+| `codec` | [CodecDescriptor](#lbm.base.reflection.v2.CodecDescriptor) |  | codec provides metadata information regarding codec related types |
+| `configuration` | [ConfigurationDescriptor](#lbm.base.reflection.v2.ConfigurationDescriptor) |  | configuration provides metadata information regarding the sdk.Config type |
+| `query_services` | [QueryServicesDescriptor](#lbm.base.reflection.v2.QueryServicesDescriptor) |  | query_services provides metadata information regarding the available queriable endpoints |
+| `tx` | [TxDescriptor](#lbm.base.reflection.v2.TxDescriptor) |  | tx provides metadata information regarding how to send transactions to the given application |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.AuthnDescriptor"></a>
+
+### AuthnDescriptor
+AuthnDescriptor provides information on how to sign transactions without relying
+on the online RPCs GetTxMetadata and CombineUnsignedTxAndSignatures
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sign_modes` | [SigningModeDescriptor](#lbm.base.reflection.v2.SigningModeDescriptor) | repeated | sign_modes defines the supported signature algorithm |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.ChainDescriptor"></a>
+
+### ChainDescriptor
+ChainDescriptor describes chain information of the application
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  | id is the chain id |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.CodecDescriptor"></a>
+
+### CodecDescriptor
+CodecDescriptor describes the registered interfaces and provides metadata information on the types
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `interfaces` | [InterfaceDescriptor](#lbm.base.reflection.v2.InterfaceDescriptor) | repeated | interfaces is a list of the registerted interfaces descriptors |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.ConfigurationDescriptor"></a>
+
+### ConfigurationDescriptor
+ConfigurationDescriptor contains metadata information on the sdk.Config
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bech32_account_address_prefix` | [string](#string) |  | bech32_account_address_prefix is the account address prefix |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetAuthnDescriptorRequest"></a>
+
+### GetAuthnDescriptorRequest
+GetAuthnDescriptorRequest is the request used for the GetAuthnDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetAuthnDescriptorResponse"></a>
+
+### GetAuthnDescriptorResponse
+GetAuthnDescriptorResponse is the response returned by the GetAuthnDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authn` | [AuthnDescriptor](#lbm.base.reflection.v2.AuthnDescriptor) |  | authn describes how to authenticate to the application when sending transactions |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetChainDescriptorRequest"></a>
+
+### GetChainDescriptorRequest
+GetChainDescriptorRequest is the request used for the GetChainDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetChainDescriptorResponse"></a>
+
+### GetChainDescriptorResponse
+GetChainDescriptorResponse is the response returned by the GetChainDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `chain` | [ChainDescriptor](#lbm.base.reflection.v2.ChainDescriptor) |  | chain describes application chain information |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetCodecDescriptorRequest"></a>
+
+### GetCodecDescriptorRequest
+GetCodecDescriptorRequest is the request used for the GetCodecDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetCodecDescriptorResponse"></a>
+
+### GetCodecDescriptorResponse
+GetCodecDescriptorResponse is the response returned by the GetCodecDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `codec` | [CodecDescriptor](#lbm.base.reflection.v2.CodecDescriptor) |  | codec describes the application codec such as registered interfaces and implementations |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetConfigurationDescriptorRequest"></a>
+
+### GetConfigurationDescriptorRequest
+GetConfigurationDescriptorRequest is the request used for the GetConfigurationDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetConfigurationDescriptorResponse"></a>
+
+### GetConfigurationDescriptorResponse
+GetConfigurationDescriptorResponse is the response returned by the GetConfigurationDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `config` | [ConfigurationDescriptor](#lbm.base.reflection.v2.ConfigurationDescriptor) |  | config describes the application's sdk.Config |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetQueryServicesDescriptorRequest"></a>
+
+### GetQueryServicesDescriptorRequest
+GetQueryServicesDescriptorRequest is the request used for the GetQueryServicesDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetQueryServicesDescriptorResponse"></a>
+
+### GetQueryServicesDescriptorResponse
+GetQueryServicesDescriptorResponse is the response returned by the GetQueryServicesDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `queries` | [QueryServicesDescriptor](#lbm.base.reflection.v2.QueryServicesDescriptor) |  | queries provides information on the available queryable services |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetTxDescriptorRequest"></a>
+
+### GetTxDescriptorRequest
+GetTxDescriptorRequest is the request used for the GetTxDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetTxDescriptorResponse"></a>
+
+### GetTxDescriptorResponse
+GetTxDescriptorResponse is the response returned by the GetTxDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `tx` | [TxDescriptor](#lbm.base.reflection.v2.TxDescriptor) |  | tx provides information on msgs that can be forwarded to the application alongside the accepted transaction protobuf type |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.InterfaceAcceptingMessageDescriptor"></a>
+
+### InterfaceAcceptingMessageDescriptor
+InterfaceAcceptingMessageDescriptor describes a protobuf message which contains
+an interface represented as a google.protobuf.Any
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the type containing the interface |
+| `field_descriptor_names` | [string](#string) | repeated | field_descriptor_names is a list of the protobuf name (not fullname) of the field which contains the interface as google.protobuf.Any (the interface is the same, but it can be in multiple fields of the same proto message) |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.InterfaceDescriptor"></a>
+
+### InterfaceDescriptor
+InterfaceDescriptor describes the implementation of an interface
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the name of the interface |
+| `interface_accepting_messages` | [InterfaceAcceptingMessageDescriptor](#lbm.base.reflection.v2.InterfaceAcceptingMessageDescriptor) | repeated | interface_accepting_messages contains information regarding the proto messages which contain the interface as google.protobuf.Any field |
+| `interface_implementers` | [InterfaceImplementerDescriptor](#lbm.base.reflection.v2.InterfaceImplementerDescriptor) | repeated | interface_implementers is a list of the descriptors of the interface implementers |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.InterfaceImplementerDescriptor"></a>
+
+### InterfaceImplementerDescriptor
+InterfaceImplementerDescriptor describes an interface implementer
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf queryable name of the interface implementer |
+| `type_url` | [string](#string) |  | type_url defines the type URL used when marshalling the type as any this is required so we can provide type safe google.protobuf.Any marshalling and unmarshalling, making sure that we don't accept just 'any' type in our interface fields |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.MsgDescriptor"></a>
+
+### MsgDescriptor
+MsgDescriptor describes a cosmos-sdk message that can be delivered with a transaction
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `msg_type_url` | [string](#string) |  | msg_type_url contains the TypeURL of a sdk.Msg. |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.QueryMethodDescriptor"></a>
+
+### QueryMethodDescriptor
+QueryMethodDescriptor describes a queryable method of a query service
+no other info is provided beside method name and tendermint queryable path
+because it would be redundant with the grpc reflection service
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | name is the protobuf name (not fullname) of the method |
+| `full_query_path` | [string](#string) |  | full_query_path is the path that can be used to query this method via tendermint abci.Query |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.QueryServiceDescriptor"></a>
+
+### QueryServiceDescriptor
+QueryServiceDescriptor describes a cosmos-sdk queryable service
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the service descriptor |
+| `is_module` | [bool](#bool) |  | is_module describes if this service is actually exposed by an application's module |
+| `methods` | [QueryMethodDescriptor](#lbm.base.reflection.v2.QueryMethodDescriptor) | repeated | methods provides a list of query service methods |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.QueryServicesDescriptor"></a>
+
+### QueryServicesDescriptor
+QueryServicesDescriptor contains the list of cosmos-sdk queriable services
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `query_services` | [QueryServiceDescriptor](#lbm.base.reflection.v2.QueryServiceDescriptor) | repeated | query_services is a list of cosmos-sdk QueryServiceDescriptor |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.SigningModeDescriptor"></a>
+
+### SigningModeDescriptor
+SigningModeDescriptor provides information on a signing flow of the application
+NOTE(fdymylja): here we could go as far as providing an entire flow on how
+to sign a message given a SigningModeDescriptor, but it's better to think about
+this another time
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | name defines the unique name of the signing mode |
+| `number` | [int32](#int32) |  | number is the unique int32 identifier for the sign_mode enum |
+| `authn_info_provider_method_fullname` | [string](#string) |  | authn_info_provider_method_fullname defines the fullname of the method to call to get the metadata required to authenticate using the provided sign_modes |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.TxDescriptor"></a>
+
+### TxDescriptor
+TxDescriptor describes the accepted transaction type
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the raw transaction type (for instance the tx.Tx type) it is not meant to support polymorphism of transaction types, it is supposed to be used by reflection clients to understand if they can handle a specific transaction type in an application. |
+| `msgs` | [MsgDescriptor](#lbm.base.reflection.v2.MsgDescriptor) | repeated | msgs lists the accepted application messages (sdk.Msg) |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.base.reflection.v2.ReflectionService"></a>
+
+### ReflectionService
+ReflectionService defines a service for application reflection.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `GetAuthnDescriptor` | [GetAuthnDescriptorRequest](#lbm.base.reflection.v2.GetAuthnDescriptorRequest) | [GetAuthnDescriptorResponse](#lbm.base.reflection.v2.GetAuthnDescriptorResponse) | GetAuthnDescriptor returns information on how to authenticate transactions in the application NOTE: this RPC is still experimental and might be subject to breaking changes or removal in future releases of the cosmos-sdk. | GET|/lbm/base/reflection/v1/app_descriptor/authn|
+| `GetChainDescriptor` | [GetChainDescriptorRequest](#lbm.base.reflection.v2.GetChainDescriptorRequest) | [GetChainDescriptorResponse](#lbm.base.reflection.v2.GetChainDescriptorResponse) | GetChainDescriptor returns the description of the chain | GET|/lbm/base/reflection/v1/app_descriptor/chain|
+| `GetCodecDescriptor` | [GetCodecDescriptorRequest](#lbm.base.reflection.v2.GetCodecDescriptorRequest) | [GetCodecDescriptorResponse](#lbm.base.reflection.v2.GetCodecDescriptorResponse) | GetCodecDescriptor returns the descriptor of the codec of the application | GET|/lbm/base/reflection/v1/app_descriptor/codec|
+| `GetConfigurationDescriptor` | [GetConfigurationDescriptorRequest](#lbm.base.reflection.v2.GetConfigurationDescriptorRequest) | [GetConfigurationDescriptorResponse](#lbm.base.reflection.v2.GetConfigurationDescriptorResponse) | GetConfigurationDescriptor returns the descriptor for the sdk.Config of the application | GET|/lbm/base/reflection/v1/app_descriptor/configuration|
+| `GetQueryServicesDescriptor` | [GetQueryServicesDescriptorRequest](#lbm.base.reflection.v2.GetQueryServicesDescriptorRequest) | [GetQueryServicesDescriptorResponse](#lbm.base.reflection.v2.GetQueryServicesDescriptorResponse) | GetQueryServicesDescriptor returns the available gRPC queryable services of the application | GET|/lbm/base/reflection/v1/app_descriptor/query_services|
+| `GetTxDescriptor` | [GetTxDescriptorRequest](#lbm.base.reflection.v2.GetTxDescriptorRequest) | [GetTxDescriptorResponse](#lbm.base.reflection.v2.GetTxDescriptorResponse) | GetTxDescriptor returns information on the used transaction object and available msgs that can be used | GET|/lbm/base/reflection/v1/app_descriptor/tx_descriptor|
+
+ <!-- end services -->
+
+
+
 <a name="lbm/base/snapshots/v1/snapshot.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -5713,6 +6795,42 @@ between a store name and the commit ID.
 | ----- | ---- | ----- | ----------- |
 | `name` | [string](#string) |  |  |
 | `commit_id` | [CommitID](#lbm.base.store.v1.CommitID) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/base/store/v1/listening.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/base/store/v1/listening.proto
+
+
+
+<a name="lbm.base.store.v1.StoreKVPair"></a>
+
+### StoreKVPair
+StoreKVPair is a KVStore KVPair used for listening to state changes (Sets and Deletes)
+It optionally includes the StoreKey for the originating KVStore and a Boolean flag to distinguish between Sets and
+Deletes
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `store_key` | [string](#string) |  | the store key for the KVStore this pair originates from |
+| `delete` | [bool](#bool) |  | true indicates a delete operation, false indicates a set operation |
+| `key` | [bytes](#bytes) |  |  |
+| `value` | [bytes](#bytes) |  |  |
 
 
 
@@ -8745,7 +9863,7 @@ GenesisState defines the slashing module's genesis state.
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#lbm.slashing.v1.Params) |  | params defines all the paramaters of related to deposit. |
 | `signing_infos` | [SigningInfo](#lbm.slashing.v1.SigningInfo) | repeated | signing_infos represents a map between validator addresses and their signing infos. |
-| `missed_blocks` | [ValidatorMissedBlocks](#lbm.slashing.v1.ValidatorMissedBlocks) | repeated | signing_infos represents a map between validator addresses and their missed blocks. |
+| `missed_blocks` | [ValidatorMissedBlocks](#lbm.slashing.v1.ValidatorMissedBlocks) | repeated | missed_blocks represents a map between validator addresses and their missed blocks. |
 
 
 
@@ -8974,6 +10092,69 @@ Msg defines the slashing Msg service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Unjail` | [MsgUnjail](#lbm.slashing.v1.MsgUnjail) | [MsgUnjailResponse](#lbm.slashing.v1.MsgUnjailResponse) | Unjail defines a method for unjailing a jailed validator, thus returning them into the bonded validator set, so they can begin receiving provisions and rewards again. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/staking/v1/authz.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/staking/v1/authz.proto
+
+
+
+<a name="lbm.staking.v1.StakeAuthorization"></a>
+
+### StakeAuthorization
+StakeAuthorization defines authorization for delegate/undelegate/redelegate.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `max_tokens` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) |  | max_tokens specifies the maximum amount of tokens can be delegate to a validator. If it is empty, there is no spend limit and any amount of coins can be delegated. |
+| `allow_list` | [StakeAuthorization.Validators](#lbm.staking.v1.StakeAuthorization.Validators) |  | allow_list specifies list of validator addresses to whom grantee can delegate tokens on behalf of granter's account. |
+| `deny_list` | [StakeAuthorization.Validators](#lbm.staking.v1.StakeAuthorization.Validators) |  | deny_list specifies list of validator addresses to whom grantee can not delegate tokens. |
+| `authorization_type` | [AuthorizationType](#lbm.staking.v1.AuthorizationType) |  | authorization_type defines one of AuthorizationType. |
+
+
+
+
+
+
+<a name="lbm.staking.v1.StakeAuthorization.Validators"></a>
+
+### StakeAuthorization.Validators
+Validators defines list of validator addresses.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="lbm.staking.v1.AuthorizationType"></a>
+
+### AuthorizationType
+AuthorizationType defines the type of staking module authorization type
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| AUTHORIZATION_TYPE_UNSPECIFIED | 0 | AUTHORIZATION_TYPE_UNSPECIFIED specifies an unknown authorization type |
+| AUTHORIZATION_TYPE_DELEGATE | 1 | AUTHORIZATION_TYPE_DELEGATE defines an authorization type for Msg/Delegate |
+| AUTHORIZATION_TYPE_UNDELEGATE | 2 | AUTHORIZATION_TYPE_UNDELEGATE defines an authorization type for Msg/Undelegate |
+| AUTHORIZATION_TYPE_REDELEGATE | 3 | AUTHORIZATION_TYPE_REDELEGATE defines an authorization type for Msg/BeginRedelegate |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
 
  <!-- end services -->
 
@@ -10513,6 +11694,37 @@ QueryApprovesResponse is the response type for the Query/Approves RPC method
 
 
 
+<a name="lbm.token.v1.QueryBalanceRequest"></a>
+
+### QueryBalanceRequest
+QueryBalanceRequest is the request type for the Query/Balance RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  | class id associated with the token. |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryBalanceResponse"></a>
+
+### QueryBalanceResponse
+QueryBalanceResponse is the response type for the Query/Balance RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="lbm.token.v1.QueryGrantsRequest"></a>
 
 ### QueryGrantsRequest
@@ -10564,37 +11776,6 @@ QuerySupplyRequest is the request type for the Query/Supply RPC method
 
 ### QuerySupplyResponse
 QuerySupplyResponse is the response type for the Query/Supply RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `amount` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryTokenBalanceRequest"></a>
-
-### QueryTokenBalanceRequest
-QueryTokenBalanceRequest is the request type for the Query/TokenBalance RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  | class id associated with the token. |
-| `address` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryTokenBalanceResponse"></a>
-
-### QueryTokenBalanceResponse
-QueryTokenBalanceResponse is the response type for the Query/TokenBalance RPC method
 
 
 | Field | Type | Label | Description |
@@ -10680,7 +11861,7 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `TokenBalance` | [QueryTokenBalanceRequest](#lbm.token.v1.QueryTokenBalanceRequest) | [QueryTokenBalanceResponse](#lbm.token.v1.QueryTokenBalanceResponse) | TokenBalance queries the number of tokens of a given class owned by the address. | GET|/lbm/token/v1/balance/{address}/{class_id}|
+| `Balance` | [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse) | Balance queries the number of tokens of a given class owned by the address. | GET|/lbm/token/v1/balance/{address}/{class_id}|
 | `Supply` | [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse) | Supply queries the number of tokens from the given class id. | GET|/lbm/token/v1/supply/{class_id}|
 | `Token` | [QueryTokenRequest](#lbm.token.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.token.v1.QueryTokenResponse) | Token queries an token metadata based on its class id. | GET|/lbm/token/v1/tokens/{class_id}|
 | `Tokens` | [QueryTokensRequest](#lbm.token.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.token.v1.QueryTokensResponse) | Tokens queries all token metadata. | GET|/lbm/token/v1/tokens|
@@ -11277,7 +12458,7 @@ TxBody is the body of a transaction that all signers sign over.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `messages` | [google.protobuf.Any](#google.protobuf.Any) | repeated | messages is a list of messages to be executed. The required signers of those messages define the number and order of elements in AuthInfo's signer_infos and Tx's signatures. Each required signer address is added to the list only the first time it occurs. By convention, the first required signer (usually from the first message) is referred to as the primary signer and pays the fee for the whole transaction. |
-| `memo` | [string](#string) |  | memo is any arbitrary memo to be added to the transaction |
+| `memo` | [string](#string) |  | memo is any arbitrary note/comment to be added to the transaction. WARNING: in clients, any publicly exposed text should not be called memo, but should be called `note` instead (see https://github.com/cosmos/cosmos-sdk/issues/9122). |
 | `timeout_height` | [uint64](#uint64) |  | timeout is the block height after which this transaction will not be processed by the chain |
 | `extension_options` | [google.protobuf.Any](#google.protobuf.Any) | repeated | extension_options are arbitrary options that can be added by chains when the default options are not sufficient. If any of these are present and can't be handled, the transaction will be rejected |
 | `non_critical_extension_options` | [google.protobuf.Any](#google.protobuf.Any) | repeated | extension_options are arbitrary options that can be added by chains when the default options are not sufficient. If any of these are present and can't be handled, they will be ignored |
@@ -11435,7 +12616,8 @@ RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `tx` | [Tx](#lbm.tx.v1.Tx) |  | tx is the transaction to simulate. |
+| `tx` | [Tx](#lbm.tx.v1.Tx) |  | **Deprecated.** tx is the transaction to simulate. Deprecated. Send raw tx bytes instead. |
+| `tx_bytes` | [bytes](#bytes) |  | tx_bytes is the raw transaction. |
 
 
 
@@ -11503,92 +12685,6 @@ Service defines a gRPC service for interacting with transactions.
 | `GetTx` | [GetTxRequest](#lbm.tx.v1.GetTxRequest) | [GetTxResponse](#lbm.tx.v1.GetTxResponse) | GetTx fetches a tx by hash. | GET|/lbm/tx/v1/txs/{hash}|
 | `BroadcastTx` | [BroadcastTxRequest](#lbm.tx.v1.BroadcastTxRequest) | [BroadcastTxResponse](#lbm.tx.v1.BroadcastTxResponse) | BroadcastTx broadcast transaction. | POST|/lbm/tx/v1/txs|
 | `GetTxsEvent` | [GetTxsEventRequest](#lbm.tx.v1.GetTxsEventRequest) | [GetTxsEventResponse](#lbm.tx.v1.GetTxsEventResponse) | GetTxsEvent fetches txs by event. | GET|/lbm/tx/v1/txs|
-
- <!-- end services -->
-
-
-
-<a name="lbm/upgrade/v1/upgrade.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/upgrade/v1/upgrade.proto
-
-
-
-<a name="lbm.upgrade.v1.CancelSoftwareUpgradeProposal"></a>
-
-### CancelSoftwareUpgradeProposal
-CancelSoftwareUpgradeProposal is a gov Content type for cancelling a software
-upgrade.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  |  |
-| `description` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.upgrade.v1.ModuleVersion"></a>
-
-### ModuleVersion
-ModuleVersion specifies a module and its consensus version.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `name` | [string](#string) |  | name of the app module |
-| `version` | [uint64](#uint64) |  | consensus version of the app module |
-
-
-
-
-
-
-<a name="lbm.upgrade.v1.Plan"></a>
-
-### Plan
-Plan specifies information about a planned upgrade and when it should occur.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `name` | [string](#string) |  | Sets the name for the upgrade. This name will be used by the upgraded version of the software to apply any special "on-upgrade" commands during the first BeginBlock method after the upgrade is applied. It is also used to detect whether a software version can handle a given upgrade. If no upgrade handler with this name has been set in the software, it will be assumed that the software is out-of-date when the upgrade Time or Height is reached and the software will exit. |
-| `time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The time after which the upgrade must be performed. Leave set to its zero value to use a pre-defined Height instead. |
-| `height` | [int64](#int64) |  | The height at which the upgrade must be performed. Only used if Time is not set. |
-| `info` | [string](#string) |  | Any application specific upgrade info to be included on-chain such as a git commit that validators could automatically upgrade to |
-| `upgraded_client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | IBC-enabled chains can opt-in to including the upgraded client state in its upgrade plan This will make the chain commit to the correct upgraded (self) client state before the upgrade occurs, so that connecting chains can verify that the new upgraded client is valid by verifying a proof on the previous version of the chain. This will allow IBC connections to persist smoothly across planned chain upgrades |
-
-
-
-
-
-
-<a name="lbm.upgrade.v1.SoftwareUpgradeProposal"></a>
-
-### SoftwareUpgradeProposal
-SoftwareUpgradeProposal is a gov Content type for initiating a software
-upgrade.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  |  |
-| `description` | [string](#string) |  |  |
-| `plan` | [Plan](#lbm.upgrade.v1.Plan) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
 
  <!-- end services -->
 
@@ -11717,7 +12813,7 @@ RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `upgraded_consensus_state` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `upgraded_consensus_state` | [bytes](#bytes) |  |  |
 
 
 
@@ -11891,6 +12987,23 @@ periodically vests by unlocking coins during each specified period.
 | `base_vesting_account` | [BaseVestingAccount](#lbm.vesting.v1.BaseVestingAccount) |  |  |
 | `start_time` | [int64](#int64) |  |  |
 | `vesting_periods` | [Period](#lbm.vesting.v1.Period) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.vesting.v1.PermanentLockedAccount"></a>
+
+### PermanentLockedAccount
+PermanentLockedAccount implements the VestingAccount interface. It does
+not ever release coins, locking them indefinitely. Coins in this account can
+still be used for delegating and for governance votes even while locked.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base_vesting_account` | [BaseVestingAccount](#lbm.vesting.v1.BaseVestingAccount) |  |  |
 
 
 

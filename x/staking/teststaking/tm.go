@@ -5,6 +5,7 @@ import (
 	octypes "github.com/line/ostracon/types"
 
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/staking/types"
 )
 
@@ -18,22 +19,22 @@ func GetOcConsPubKey(v types.Validator) (occrypto.PubKey, error) {
 	return cryptocodec.ToOcPubKeyInterface(pk)
 }
 
-// ToOcValidator casts an SDK validator to an ostracon type Validator.
-func ToOcValidator(v types.Validator) (*octypes.Validator, error) {
-	tmPk, err := GetOcConsPubKey(v)
+// ToOcValidator casts an SDK validator to a tendermint type Validator.
+func ToOcValidator(v types.Validator, r sdk.Int) (*octypes.Validator, error) {
+	ocPk, err := GetOcConsPubKey(v)
 	if err != nil {
 		return nil, err
 	}
 
-	return octypes.NewValidator(tmPk, v.ConsensusPower()), nil
+	return octypes.NewValidator(ocPk, v.ConsensusPower(r)), nil
 }
 
 // ToOcValidators casts all validators to the corresponding tendermint type.
-func ToOcValidators(v types.Validators) ([]*octypes.Validator, error) {
+func ToOcValidators(v types.Validators, r sdk.Int) ([]*octypes.Validator, error) {
 	validators := make([]*octypes.Validator, len(v))
 	var err error
 	for i, val := range v {
-		validators[i], err = ToOcValidator(val)
+		validators[i], err = ToOcValidator(val, r)
 		if err != nil {
 			return nil, err
 		}

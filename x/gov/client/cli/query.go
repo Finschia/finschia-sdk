@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"fmt"
 	"strconv"
 	"strings"
@@ -74,7 +73,7 @@ $ %s query gov proposal 1
 
 			// Query the proposal
 			res, err := queryClient.Proposal(
-				context.Background(),
+				cmd.Context(),
 				&types.QueryProposalRequest{ProposalId: proposalID},
 			)
 			if err != nil {
@@ -100,8 +99,8 @@ func GetCmdQueryProposals() *cobra.Command {
 			fmt.Sprintf(`Query for a all paginated proposals that match optional filters:
 
 Example:
-$ %s query gov proposals --depositor cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
-$ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+$ %s query gov proposals --depositor link1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+$ %s query gov proposals --voter link1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 $ %s query gov proposals --status (DepositPeriod|VotingPeriod|Passed|Rejected)
 $ %s query gov proposals --page=2 --limit=100
 `,
@@ -135,7 +134,7 @@ $ %s query gov proposals --page=2 --limit=100
 			}
 
 			res, err := queryClient.Proposals(
-				context.Background(),
+				cmd.Context(),
 				&types.QueryProposalsRequest{
 					ProposalStatus: proposalStatus,
 					Voter:          bechVoterAddr,
@@ -175,7 +174,7 @@ func GetCmdQueryVote() *cobra.Command {
 			fmt.Sprintf(`Query details for a single vote on a proposal given its identifier.
 
 Example:
-$ %s query gov vote 1 cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+$ %s query gov vote 1 link1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 `,
 				version.AppName,
 			),
@@ -194,8 +193,9 @@ $ %s query gov vote 1 cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 			}
 
 			// check to see if the proposal is in the store
+			ctx := cmd.Context()
 			_, err = queryClient.Proposal(
-				context.Background(),
+				ctx,
 				&types.QueryProposalRequest{ProposalId: proposalID},
 			)
 			if err != nil {
@@ -205,7 +205,7 @@ $ %s query gov vote 1 cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 			voterAddr := sdk.AccAddress(args[1])
 
 			res, err := queryClient.Vote(
-				context.Background(),
+				ctx,
 				&types.QueryVoteRequest{ProposalId: proposalID, Voter: args[1]},
 			)
 			if err != nil {
@@ -221,7 +221,7 @@ $ %s query gov vote 1 cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 					return err
 				}
 
-				if err := clientCtx.JSONMarshaler.UnmarshalJSON(resByTxQuery, &vote); err != nil {
+				if err := clientCtx.Codec.UnmarshalJSON(resByTxQuery, &vote); err != nil {
 					return err
 				}
 			}
@@ -265,8 +265,9 @@ $ %[1]s query gov votes 1 --page=2 --limit=100
 			}
 
 			// check to see if the proposal is in the store
+			ctx := cmd.Context()
 			proposalRes, err := queryClient.Proposal(
-				context.Background(),
+				ctx,
 				&types.QueryProposalRequest{ProposalId: proposalID},
 			)
 			if err != nil {
@@ -285,7 +286,7 @@ $ %[1]s query gov votes 1 --page=2 --limit=100
 				}
 
 				var votes types.Votes
-				// TODO migrate to use JSONMarshaler (implement MarshalJSONArray
+				// TODO migrate to use JSONCodec (implement MarshalJSONArray
 				// or wrap lists of proto.Message in some other message)
 				clientCtx.LegacyAmino.MustUnmarshalJSON(resByTxQuery, &votes)
 				return clientCtx.PrintObjectLegacy(votes)
@@ -298,7 +299,7 @@ $ %[1]s query gov votes 1 --page=2 --limit=100
 			}
 
 			res, err := queryClient.Votes(
-				context.Background(),
+				ctx,
 				&types.QueryVotesRequest{ProposalId: proposalID, Pagination: pageReq},
 			)
 
@@ -328,7 +329,7 @@ func GetCmdQueryDeposit() *cobra.Command {
 			fmt.Sprintf(`Query details for a single proposal deposit on a proposal by its identifier.
 
 Example:
-$ %s query gov deposit 1 cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+$ %s query gov deposit 1 link1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 `,
 				version.AppName,
 			),
@@ -366,7 +367,7 @@ $ %s query gov deposit 1 cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 				if err != nil {
 					return err
 				}
-				clientCtx.JSONMarshaler.MustUnmarshalJSON(resByTxQuery, &deposit)
+				clientCtx.Codec.MustUnmarshalJSON(resByTxQuery, &deposit)
 				return clientCtx.PrintProto(&deposit)
 			}
 
@@ -417,8 +418,9 @@ $ %s query gov deposits 1
 			}
 
 			// check to see if the proposal is in the store
+			ctx := cmd.Context()
 			proposalRes, err := queryClient.Proposal(
-				context.Background(),
+				ctx,
 				&types.QueryProposalRequest{ProposalId: proposalID},
 			)
 			if err != nil {
@@ -434,7 +436,7 @@ $ %s query gov deposits 1
 				}
 
 				var dep types.Deposits
-				// TODO migrate to use JSONMarshaler (implement MarshalJSONArray
+				// TODO migrate to use JSONCodec (implement MarshalJSONArray
 				// or wrap lists of proto.Message in some other message)
 				clientCtx.LegacyAmino.MustUnmarshalJSON(resByTxQuery, &dep)
 
@@ -447,7 +449,7 @@ $ %s query gov deposits 1
 			}
 
 			res, err := queryClient.Deposits(
-				context.Background(),
+				ctx,
 				&types.QueryDepositsRequest{ProposalId: proposalID, Pagination: pageReq},
 			)
 
@@ -495,8 +497,9 @@ $ %s query gov tally 1
 			}
 
 			// check to see if the proposal is in the store
+			ctx := cmd.Context()
 			_, err = queryClient.Proposal(
-				context.Background(),
+				ctx,
 				&types.QueryProposalRequest{ProposalId: proposalID},
 			)
 			if err != nil {
@@ -505,7 +508,7 @@ $ %s query gov tally 1
 
 			// Query store
 			res, err := queryClient.TallyResult(
-				context.Background(),
+				ctx,
 				&types.QueryTallyResultRequest{ProposalId: proposalID},
 			)
 			if err != nil {
@@ -544,8 +547,9 @@ $ %s query gov params
 			queryClient := types.NewQueryClient(clientCtx)
 
 			// Query store for all 3 params
+			ctx := cmd.Context()
 			votingRes, err := queryClient.Params(
-				context.Background(),
+				ctx,
 				&types.QueryParamsRequest{ParamsType: "voting"},
 			)
 			if err != nil {
@@ -553,7 +557,7 @@ $ %s query gov params
 			}
 
 			tallyRes, err := queryClient.Params(
-				context.Background(),
+				ctx,
 				&types.QueryParamsRequest{ParamsType: "tallying"},
 			)
 			if err != nil {
@@ -561,7 +565,7 @@ $ %s query gov params
 			}
 
 			depositRes, err := queryClient.Params(
-				context.Background(),
+				ctx,
 				&types.QueryParamsRequest{ParamsType: "deposit"},
 			)
 			if err != nil {
@@ -609,7 +613,7 @@ $ %s query gov param deposit
 
 			// Query store
 			res, err := queryClient.Params(
-				context.Background(),
+				cmd.Context(),
 				&types.QueryParamsRequest{ParamsType: args[0]},
 			)
 			if err != nil {

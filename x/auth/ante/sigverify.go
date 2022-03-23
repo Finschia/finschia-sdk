@@ -11,6 +11,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	kmultisig "github.com/line/lbm-sdk/crypto/keys/multisig"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/crypto/keys/secp256r1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/crypto/types/multisig"
 	sdk "github.com/line/lbm-sdk/types"
@@ -61,7 +62,10 @@ func (spkd SetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid tx type")
 	}
 
-	pubkeys := sigTx.GetPubKeys()
+	pubkeys, err := sigTx.GetPubKeys()
+	if err != nil {
+		return ctx, err
+	}
 	signers := sigTx.GetSigners()
 
 	for i, pk := range pubkeys {
@@ -96,7 +100,7 @@ func (spkd SetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 	// Also emit the following events, so that txs can be indexed by these
 	// indices:
 	// - signature (via `tx.signature='<sig_as_base64>'`),
-	// - concat(address,"/",sequence) (via `tx.acc_seq='cosmos1abc...def/42'`).
+	// - concat(address,"/",sequence) (via `tx.acc_seq='link1abc...def/42'`).
 	sigs, err := sigTx.GetSignaturesV2()
 	if err != nil {
 		return ctx, err
@@ -450,7 +454,10 @@ func (vscd ValidateSigCountDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, sim
 	}
 
 	params := vscd.ak.GetParams(ctx)
-	pubKeys := sigTx.GetPubKeys()
+	pubKeys, err := sigTx.GetPubKeys()
+	if err != nil {
+		return ctx, err
+	}
 
 	sigCount := 0
 	for _, pk := range pubKeys {
@@ -478,6 +485,10 @@ func DefaultSigVerificationGasConsumer(
 
 	case *secp256k1.PubKey:
 		meter.ConsumeGas(params.SigVerifyCostSecp256k1, "ante verify: secp256k1")
+		return nil
+
+	case *secp256r1.PubKey:
+		meter.ConsumeGas(params.SigVerifyCostSecp256r1(), "ante verify: secp256r1")
 		return nil
 
 	case multisig.PubKey:
@@ -584,6 +595,6 @@ func signatureDataToBz(data signing.SignatureData) ([][]byte, error) {
 
 		return sigs, nil
 	default:
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "unexpected signature data type %T", data)
+		return nil, sdkerrors.ErrInvalidType.Wrapf("unexpected signature data type %T", data)
 	}
 }

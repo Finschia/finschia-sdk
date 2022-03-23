@@ -5,24 +5,25 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 
-	storetypes "github.com/line/lbm-sdk/store/types"
-	"github.com/line/lbm-sdk/x/feegrant/types"
-
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/auth/ante"
+	"github.com/line/lbm-sdk/x/feegrant"
 )
 
 // Keeper manages state of all fee grants, as well as calculating approval.
 // It must have a codec with all available allowances registered.
 type Keeper struct {
-	cdc        codec.Marshaler
-	storeKey   storetypes.StoreKey
-	authKeeper types.AccountKeeper
+	cdc        codec.BinaryCodec
+	storeKey   sdk.StoreKey
+	authKeeper feegrant.AccountKeeper
 }
 
+var _ ante.FeegrantKeeper = &Keeper{}
+
 // NewKeeper creates a fee grant Keeper
-func NewKeeper(cdc codec.Marshaler, storeKey storetypes.StoreKey, ak types.AccountKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, storeKey sdk.StoreKey, ak feegrant.AccountKeeper) Keeper {
 	return Keeper{
 		cdc:        cdc,
 		storeKey:   storeKey,
@@ -32,11 +33,11 @@ func NewKeeper(cdc codec.Marshaler, storeKey storetypes.StoreKey, ak types.Accou
 
 // Logger returns a module-specific logger.
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
-	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
+	return ctx.Logger().With("module", fmt.Sprintf("x/%s", feegrant.ModuleName))
 }
 
 // GrantAllowance creates a new grant
-func (k Keeper) GrantAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress, feeAllowance types.FeeAllowanceI) error {
+func (k Keeper) GrantAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress, feeAllowance feegrant.FeeAllowanceI) error {
 
 	// create the account if it is not in account state
 	granteeAcc := k.authKeeper.GetAccount(ctx, grantee)
@@ -46,13 +47,13 @@ func (k Keeper) GrantAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress,
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	key := types.FeeAllowanceKey(granter, grantee)
-	grant, err := types.NewGrant(granter, grantee, feeAllowance)
+	key := feegrant.FeeAllowanceKey(granter, grantee)
+	grant, err := feegrant.NewGrant(granter, grantee, feeAllowance)
 	if err != nil {
 		return err
 	}
 
-	bz, err := k.cdc.MarshalBinaryBare(&grant)
+	bz, err := k.cdc.Marshal(&grant)
 	if err != nil {
 		return err
 	}
@@ -61,9 +62,9 @@ func (k Keeper) GrantAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress,
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeSetFeeGrant,
-			sdk.NewAttribute(types.AttributeKeyGranter, grant.Granter),
-			sdk.NewAttribute(types.AttributeKeyGrantee, grant.Grantee),
+			feegrant.EventTypeSetFeeGrant,
+			sdk.NewAttribute(feegrant.AttributeKeyGranter, grant.Granter),
+			sdk.NewAttribute(feegrant.AttributeKeyGrantee, grant.Grantee),
 		),
 	)
 
@@ -78,14 +79,14 @@ func (k Keeper) revokeAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	key := types.FeeAllowanceKey(granter, grantee)
+	key := feegrant.FeeAllowanceKey(granter, grantee)
 	store.Delete(key)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeRevokeFeeGrant,
-			sdk.NewAttribute(types.AttributeKeyGranter, granter.String()),
-			sdk.NewAttribute(types.AttributeKeyGrantee, grantee.String()),
+			feegrant.EventTypeRevokeFeeGrant,
+			sdk.NewAttribute(feegrant.AttributeKeyGranter, granter.String()),
+			sdk.NewAttribute(feegrant.AttributeKeyGrantee, grantee.String()),
 		),
 	)
 	return nil
@@ -94,7 +95,7 @@ func (k Keeper) revokeAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress
 // GetAllowance returns the allowance between the granter and grantee.
 // If there is none, it returns nil, nil.
 // Returns an error on parsing issues
-func (k Keeper) GetAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress) (types.FeeAllowanceI, error) {
+func (k Keeper) GetAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress) (feegrant.FeeAllowanceI, error) {
 	grant, err := k.getGrant(ctx, granter, grantee)
 	if err != nil {
 		return nil, err
@@ -104,16 +105,16 @@ func (k Keeper) GetAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress) (
 }
 
 // getGrant returns entire grant between both accounts
-func (k Keeper) getGrant(ctx sdk.Context, granter sdk.AccAddress, grantee sdk.AccAddress) (*types.Grant, error) {
+func (k Keeper) getGrant(ctx sdk.Context, granter sdk.AccAddress, grantee sdk.AccAddress) (*feegrant.Grant, error) {
 	store := ctx.KVStore(k.storeKey)
-	key := types.FeeAllowanceKey(granter, grantee)
+	key := feegrant.FeeAllowanceKey(granter, grantee)
 	bz := store.Get(key)
 	if len(bz) == 0 {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "fee-grant not found")
 	}
 
-	var feegrant types.Grant
-	if err := k.cdc.UnmarshalBinaryBare(bz, &feegrant); err != nil {
+	var feegrant feegrant.Grant
+	if err := k.cdc.Unmarshal(bz, &feegrant); err != nil {
 		return nil, err
 	}
 
@@ -123,16 +124,16 @@ func (k Keeper) getGrant(ctx sdk.Context, granter sdk.AccAddress, grantee sdk.Ac
 // IterateAllFeeAllowances iterates over all the grants in the store.
 // Callback to get all data, returns true to stop, false to keep reading
 // Calling this without pagination is very expensive and only designed for export genesis
-func (k Keeper) IterateAllFeeAllowances(ctx sdk.Context, cb func(grant types.Grant) bool) error {
+func (k Keeper) IterateAllFeeAllowances(ctx sdk.Context, cb func(grant feegrant.Grant) bool) error {
 	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.FeeAllowanceKeyPrefix)
+	iter := sdk.KVStorePrefixIterator(store, feegrant.FeeAllowanceKeyPrefix)
 	defer iter.Close()
 
 	stop := false
 	for ; iter.Valid() && !stop; iter.Next() {
 		bz := iter.Value()
-		var feeGrant types.Grant
-		if err := k.cdc.UnmarshalBinaryBare(bz, &feeGrant); err != nil {
+		var feeGrant feegrant.Grant
+		if err := k.cdc.Unmarshal(bz, &feeGrant); err != nil {
 			return err
 		}
 
@@ -181,15 +182,15 @@ func (k Keeper) UseGrantedFees(ctx sdk.Context, granter, grantee sdk.AccAddress,
 func emitUseGrantEvent(ctx sdk.Context, granter, grantee string) {
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeUseFeeGrant,
-			sdk.NewAttribute(types.AttributeKeyGranter, granter),
-			sdk.NewAttribute(types.AttributeKeyGrantee, grantee),
+			feegrant.EventTypeUseFeeGrant,
+			sdk.NewAttribute(feegrant.AttributeKeyGranter, granter),
+			sdk.NewAttribute(feegrant.AttributeKeyGrantee, grantee),
 		),
 	)
 }
 
 // InitGenesis will initialize the keeper from a *previously validated* GenesisState
-func (k Keeper) InitGenesis(ctx sdk.Context, data *types.GenesisState) error {
+func (k Keeper) InitGenesis(ctx sdk.Context, data *feegrant.GenesisState) error {
 	for _, f := range data.Allowances {
 		err := sdk.ValidateAccAddress(f.Granter)
 		if err != nil {
@@ -216,15 +217,15 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *types.GenesisState) error {
 }
 
 // ExportGenesis will dump the contents of the keeper into a serializable GenesisState.
-func (k Keeper) ExportGenesis(ctx sdk.Context) (*types.GenesisState, error) {
-	var grants []types.Grant
+func (k Keeper) ExportGenesis(ctx sdk.Context) (*feegrant.GenesisState, error) {
+	var grants []feegrant.Grant
 
-	err := k.IterateAllFeeAllowances(ctx, func(grant types.Grant) bool {
+	err := k.IterateAllFeeAllowances(ctx, func(grant feegrant.Grant) bool {
 		grants = append(grants, grant)
 		return false
 	})
 
-	return &types.GenesisState{
+	return &feegrant.GenesisState{
 		Allowances: grants,
 	}, err
 }

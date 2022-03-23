@@ -15,6 +15,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/keyring"
 	kmultisig "github.com/line/lbm-sdk/crypto/keys/multisig"
 	"github.com/line/lbm-sdk/crypto/types/multisig"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/errors"
 	signingtypes "github.com/line/lbm-sdk/types/tx/signing"
 	"github.com/line/lbm-sdk/version"
@@ -121,7 +122,8 @@ func makeMultiSignCmd() func(cmd *cobra.Command, args []string) (err error) {
 			for _, sig := range sigs {
 				err = signing.VerifySignature(sig.PubKey, signingData, sig.Data, txCfg.SignModeHandler(), txBuilder.GetTx())
 				if err != nil {
-					return fmt.Errorf("couldn't verify signature: %w", err)
+					addr, _ := sdk.AccAddressFromHex(sig.PubKey.Address().String())
+					return fmt.Errorf("couldn't verify signature for address %s", addr)
 				}
 
 				if err := multisig.AddSignatureV2(multisigSig, sig, multisigPub.GetPubKeys()); err != nil {

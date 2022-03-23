@@ -12,6 +12,7 @@ import (
 )
 
 func benchmarkCacheKVStoreIterator(numKVs int, b *testing.B) {
+	b.ReportAllocs()
 	mem := dbadapter.Store{DB: memdb.NewDB()}
 	cstore := cachekv.NewStore(mem)
 	keys := make([]string, numKVs)

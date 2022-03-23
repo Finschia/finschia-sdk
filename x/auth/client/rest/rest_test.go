@@ -1,6 +1,3 @@
-//go:build norace
-// +build norace
-
 package rest_test
 
 import (
@@ -32,8 +29,8 @@ import (
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	bankcli "github.com/line/lbm-sdk/x/bank/client/testutil"
 	"github.com/line/lbm-sdk/x/bank/types"
+	ibcclientcli "github.com/line/lbm-sdk/x/ibc/core/02-client/client/cli"
 	ibccli "github.com/line/lbm-sdk/x/ibc/core/04-channel/client/cli"
-	ibcsolomachinecli "github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/client/cli"
 )
 
 type IntegrationTestSuite struct {
@@ -56,13 +53,13 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.network = network.New(s.T(), cfg)
 
 	kb := s.network.Validators[0].ClientCtx.Keyring
-	_, _, err := kb.NewMnemonic("newAccount", keyring.English, sdk.FullFundraiserPath, hd.Secp256k1)
+	_, _, err := kb.NewMnemonic("newAccount", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	s.Require().NoError(err)
 
-	account1, _, err := kb.NewMnemonic("newAccount1", keyring.English, sdk.FullFundraiserPath, hd.Secp256k1)
+	account1, _, err := kb.NewMnemonic("newAccount1", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	s.Require().NoError(err)
 
-	account2, _, err := kb.NewMnemonic("newAccount2", keyring.English, sdk.FullFundraiserPath, hd.Secp256k1)
+	account2, _, err := kb.NewMnemonic("newAccount2", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	s.Require().NoError(err)
 
 	multi := kmultisig.NewLegacyAminoPubKey(2, []cryptotypes.PubKey{account1.GetPubKey(), account2.GetPubKey()})
@@ -103,7 +100,7 @@ func mkStdTx() legacytx.StdTx {
 
 // Create an IBC tx that's encoded as amino-JSON. Since we can't amino-marshal
 // a tx with "lbm-sdk/MsgTransfer" using the SDK, we just hardcode the tx
-// here. But external clients might, see https://github.com/line/lbm-sdk/issues/8022.
+// here. But external clients might, see https://github.com/cosmos/cosmos-sdk/issues/8022.
 func mkIBCStdTx() []byte {
 	ibcTx := `{
 		"account_number": "68",
@@ -122,8 +119,8 @@ func mkIBCStdTx() []byte {
 		  {
 			"type": "lbm-sdk/MsgTransfer",
 			"value": {
-			  "receiver": "cosmos1q9wtnlwdjrhwtcjmt2uq77jrgx7z3usrq2yz7z",
-			  "sender": "cosmos1q9wtnlwdjrhwtcjmt2uq77jrgx7z3usrq2yz7z",
+			  "receiver": "link1q9wtnlwdjrhwtcjmt2uq77jrgx7z3usrq2yz7z",
+			  "sender": "link1q9wtnlwdjrhwtcjmt2uq77jrgx7z3usrq2yz7z",
 			  "source_channel": "THEslipperCHANNEL",
 			  "source_port": "transfer",
 			  "token": {
@@ -158,7 +155,7 @@ func (s *IntegrationTestSuite) TestEncodeDecode() {
 	err = cdc.UnmarshalJSON(res, &encodeResp)
 	require.NoError(err)
 
-	bz, err = cdc.MarshalJSON(authrest.DecodeReq{Tx: encodeResp.Tx})
+	bz, err = cdc.MarshalJSON(authrest.DecodeReq(encodeResp))
 	require.NoError(err)
 
 	res, err = rest.PostRequest(fmt.Sprintf("%s/txs/decode", val.APIAddress), "application/json", bz)
@@ -171,6 +168,18 @@ func (s *IntegrationTestSuite) TestEncodeDecode() {
 	err = cdc.UnmarshalJSON(respWithHeight.Result, &decodeResp)
 	require.NoError(err)
 	require.Equal(stdTx, legacytx.StdTx(decodeResp))
+}
+
+func (s *IntegrationTestSuite) TestQueryAccountWithColon() {
+	val := s.network.Validators[0]
+	// This address is not a valid simapp address! It is only used to test that addresses with
+	// colon don't 501. See
+	// https://github.com/cosmos/cosmos-sdk/issues/8650
+	addrWithColon := "cosmos:1m4f6lwd9eh8e5nxt0h00d46d3fr03apfh8qf4g"
+
+	res, err := rest.GetRequest(fmt.Sprintf("%s/lbm/auth/v1/accounts/%s", val.APIAddress, addrWithColon))
+	s.Require().NoError(err)
+	s.Require().Contains(string(res), "decoding bech32 failed")
 }
 
 func (s *IntegrationTestSuite) TestEncodeIBCTx() {
@@ -276,7 +285,7 @@ func (s *IntegrationTestSuite) testQueryTx(txHeight int64, txHash, txRecipient s
 	}
 }
 
-func (s *IntegrationTestSuite) TestQueryTxWithStdTx() {
+func (s *IntegrationTestSuite) TestQueryLegacyStdTx() {
 	val0 := s.network.Validators[0]
 
 	// We broadcasted a StdTx in SetupSuite.
@@ -286,7 +295,7 @@ func (s *IntegrationTestSuite) TestQueryTxWithStdTx() {
 	s.testQueryTx(s.stdTxRes.Height, s.stdTxRes.TxHash, val0.Address.String())
 }
 
-func (s *IntegrationTestSuite) TestQueryTxWithServiceMessage() {
+func (s *IntegrationTestSuite) TestQueryTx() {
 	val := s.network.Validators[0]
 
 	sendTokens := sdk.NewInt64Coin(s.cfg.BondDenom, 10)
@@ -295,7 +304,7 @@ func (s *IntegrationTestSuite) TestQueryTxWithServiceMessage() {
 	// Might need to wait a block to refresh sequences from previous setups.
 	s.Require().NoError(s.network.WaitForNextBlock())
 
-	out, err := bankcli.ServiceMsgSendExec(
+	out, err := bankcli.MsgSendExec(
 		val.ClientCtx,
 		val.Address,
 		addr,
@@ -308,7 +317,7 @@ func (s *IntegrationTestSuite) TestQueryTxWithServiceMessage() {
 
 	s.Require().NoError(err)
 	var txRes sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &txRes))
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &txRes))
 	s.Require().Equal(uint32(0), txRes.Code)
 
 	s.Require().NoError(s.network.WaitForNextBlock())
@@ -461,7 +470,7 @@ func (s *IntegrationTestSuite) testQueryIBCTx(txRes sdk.TxResponse, cmd *cobra.C
 	s.Require().NoError(err)
 
 	var getTxRes txtypes.GetTxResponse
-	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(grpcJSON, &getTxRes))
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(grpcJSON, &getTxRes))
 	s.Require().Equal(getTxRes.Tx.Body.Memo, "foobar")
 
 	// generate broadcast only txn.
@@ -496,10 +505,20 @@ func (s *IntegrationTestSuite) testQueryIBCTx(txRes sdk.TxResponse, cmd *cobra.C
 func (s *IntegrationTestSuite) TestLegacyRestErrMessages() {
 	val := s.network.Validators[0]
 
+	// Write client state json to temp file, used for an IBC message.
+	// Generated by printing the result of cdc.MarshalIntefaceJSON on
+	// a solo machine client state
+	clientStateJSON := testutil.WriteToNewTempFile(
+		s.T(),
+		`{"@type":"/ibc.lightclients.solomachine.v1.ClientState","sequence":"1","frozen_sequence":"0","consensus_state":{"public_key":{"@type":"/lbm.crypto.secp256k1.PubKey","key":"AtK50+5pJOoaa04qqAqrnyAqsYrwrR/INnA6UPIaYZlp"},"diversifier":"testing","timestamp":"10"},"allow_update_after_proposal":false}`,
+	)
+
 	// Write consensus json to temp file, used for an IBC message.
+	// Generated by printing the result of cdc.MarshalIntefaceJSON on
+	// a solo machine consensus state
 	consensusJSON := testutil.WriteToNewTempFile(
 		s.T(),
-		`{"public_key":{"@type":"/lbm.crypto.secp256k1.PubKey","key":"A/3SXL2ONYaOkxpdR5P8tHTlSlPv1AwQwSFxKRee5JQW"},"diversifier":"diversifier","timestamp":"10"}`,
+		`{"@type":"/ibc.lightclients.solomachine.v1.ConsensusState","public_key":{"@type":"/lbm.crypto.secp256k1.PubKey","key":"AtK50+5pJOoaa04qqAqrnyAqsYrwrR/INnA6UPIaYZlp"},"diversifier":"testing","timestamp":"10"}`,
 	)
 
 	testCases := []struct {
@@ -519,22 +538,22 @@ func (s *IntegrationTestSuite) TestLegacyRestErrMessages() {
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 				fmt.Sprintf("--gas=%d", flags.DefaultGasLimit),
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-				fmt.Sprintf("--%s=foobar", flags.FlagMemo),
+				fmt.Sprintf("--%s=foobar", flags.FlagNote),
 			},
 			uint32(7),
 		},
 		{
 			"Successful IBC message",
-			ibcsolomachinecli.NewCreateClientCmd(),
+			ibcclientcli.NewCreateClientCmd(),
 			[]string{
-				"1",                  // dummy sequence
-				consensusJSON.Name(), // path to consensus json,
+				clientStateJSON.Name(), // path to client state json
+				consensusJSON.Name(),   // path to consensus json,
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 				fmt.Sprintf("--gas=%d", flags.DefaultGasLimit),
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-				fmt.Sprintf("--%s=foobar", flags.FlagMemo),
+				fmt.Sprintf("--%s=foobar", flags.FlagNote),
 			},
 			uint32(0),
 		},
@@ -545,7 +564,7 @@ func (s *IntegrationTestSuite) TestLegacyRestErrMessages() {
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, tc.cmd, tc.args)
 			s.Require().NoError(err)
 			var txRes sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &txRes))
+			s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &txRes))
 			s.Require().Equal(tc.code, txRes.Code)
 
 			s.Require().NoError(s.network.WaitForNextBlock())
@@ -557,7 +576,7 @@ func (s *IntegrationTestSuite) TestLegacyRestErrMessages() {
 
 // TestLegacyMultiSig creates a legacy multisig transaction, and makes sure
 // we can query it via the legacy REST endpoint.
-// ref: https://github.com/line/lbm-sdk/issues/8679
+// ref: https://github.com/cosmos/cosmos-sdk/issues/8679
 func (s *IntegrationTestSuite) TestLegacyMultisig() {
 	val1 := *s.network.Validators[0]
 
@@ -620,7 +639,7 @@ func (s *IntegrationTestSuite) TestLegacyMultisig() {
 
 	// Does not work in offline mode.
 	_, err = authtest.TxMultiSignExec(val1.ClientCtx, multisigInfo.GetName(), multiGeneratedTxFile.Name(), "--offline", sign1File.Name(), sign2File.Name())
-	s.Require().EqualError(err, fmt.Sprintf("couldn't verify signature: unable to verify single signer signature"))
+	s.Require().EqualError(err, fmt.Sprintf("couldn't verify signature for address %s", account1.GetAddress()))
 
 	val1.ClientCtx.Offline = false
 	multiSigWith2Signatures, err := authtest.TxMultiSignExec(val1.ClientCtx, multisigInfo.GetName(), multiGeneratedTxFile.Name(), sign1File.Name(), sign2File.Name())
@@ -639,7 +658,7 @@ func (s *IntegrationTestSuite) TestLegacyMultisig() {
 	s.Require().NoError(s.network.WaitForNextBlock())
 
 	var txRes sdk.TxResponse
-	err = val1.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &txRes)
+	err = val1.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &txRes)
 	s.Require().NoError(err)
 	s.Require().Equal(uint32(0), txRes.Code)
 

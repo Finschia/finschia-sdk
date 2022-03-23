@@ -40,7 +40,7 @@ func NewEmptyTxCmd() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewServiceMsgEmpty(clientCtx.GetFromAddress())
+			msg := types.NewMsgEmpty(clientCtx.GetFromAddress())
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

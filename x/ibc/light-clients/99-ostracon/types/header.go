@@ -81,3 +81,5 @@ func (h Header) ValidateBasic() error {
 	}
 	return nil
 }
+
+// TODO(dudong2): need to remove ibc from lbm-sdk(move to other repo)

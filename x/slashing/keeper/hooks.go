@@ -40,8 +40,6 @@ func (k Keeper) AfterValidatorRemoved(ctx sdk.Context, address sdk.ConsAddress) 
 	k.deleteAddrPubkeyRelation(ctx, addrBytes)
 }
 
-// _________________________________________________________________________________________
-
 // Hooks wrapper struct for slashing keeper
 type Hooks struct {
 	k Keeper

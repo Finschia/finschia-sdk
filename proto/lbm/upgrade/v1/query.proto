@@ -69,7 +69,9 @@ message QueryUpgradedConsensusStateRequest {
 // QueryUpgradedConsensusStateResponse is the response type for the Query/UpgradedConsensusState
 // RPC method.
 message QueryUpgradedConsensusStateResponse {
-  google.protobuf.Any upgraded_consensus_state = 1;
+  reserved 1;
+
+  bytes upgraded_consensus_state = 2;
 }
 
 // QueryModuleVersionsRequest is the request type for the Query/ModuleVersions

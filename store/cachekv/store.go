@@ -3,14 +3,14 @@ package cachekv
 import (
 	"bytes"
 	"io"
-	"reflect"
 	"sort"
 	"sync"
 	"time"
-	"unsafe"
 
 	"github.com/line/tm-db/v2/memdb"
 
+	"github.com/line/lbm-sdk/internal/conv"
+	"github.com/line/lbm-sdk/store/listenkv"
 	"github.com/line/lbm-sdk/store/tracekv"
 	"github.com/line/lbm-sdk/store/types"
 	"github.com/line/lbm-sdk/telemetry"
@@ -156,6 +156,11 @@ func (store *Store) CacheWrapWithTrace(w io.Writer, tc types.TraceContext) types
 	return NewStore(tracekv.NewStore(store, w, tc))
 }
 
+// CacheWrapWithListeners implements the CacheWrapper interface.
+func (store *Store) CacheWrapWithListeners(storeKey types.StoreKey, listeners []types.WriteListener) types.CacheWrap {
+	return NewStore(listenkv.NewStore(store, storeKey, listeners))
+}
+
 //----------------------------------------
 // Iteration
 
@@ -187,28 +192,6 @@ func (store *Store) iterator(start, end []byte, ascending bool) types.Iterator {
 	return newCacheMergeIterator(parent, cache, ascending)
 }
 
-// strToBytes is meant to make a zero allocation conversion
-// from string -> []byte to speed up operations, it is not meant
-// to be used generally, but for a specific pattern to check for available
-// keys within a domain.
-func strToBytes(s string) []byte {
-	var b []byte
-	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&b))
-	hdr.Cap = len(s)
-	hdr.Len = len(s)
-	hdr.Data = (*reflect.StringHeader)(unsafe.Pointer(&s)).Data
-	return b
-}
-
-// byteSliceToStr is meant to make a zero allocation conversion
-// from []byte -> string to speed up operations, it is not meant
-// to be used generally, but for a specific pattern to delete keys
-// from a map.
-func byteSliceToStr(b []byte) string {
-	hdr := (*reflect.StringHeader)(unsafe.Pointer(&b))
-	return *(*string)(unsafe.Pointer(hdr))
-}
-
 // Constructs a slice of dirty items, to use w/ memIterator.
 func (store *Store) dirtyItems(start, end []byte) {
 	unsorted := make([]*kv.Pair, 0)
@@ -220,7 +203,7 @@ func (store *Store) dirtyItems(start, end []byte) {
 	// than just not having the cache.
 	store.unsortedCache.Range(func(k, _ interface{}) bool {
 		key := k.(string)
-		if IsKeyInDomain(strToBytes(key), start, end) {
+		if IsKeyInDomain(conv.UnsafeStrToBytes(key), start, end) {
 			cacheValue, ok := store.cache.Load(key)
 			if ok {
 				unsorted = append(unsorted, &kv.Pair{Key: []byte(key), Value: cacheValue.(*cValue).value})
@@ -233,7 +216,7 @@ func (store *Store) dirtyItems(start, end []byte) {
 
 func (store *Store) clearUnsortedCacheSubset(unsorted []*kv.Pair) {
 	for _, kv := range unsorted {
-		store.unsortedCache.Delete(byteSliceToStr(kv.Key))
+		store.unsortedCache.Delete(conv.UnsafeBytesToStr(kv.Key))
 	}
 	sort.Slice(unsorted, func(i, j int) bool {
 		return bytes.Compare(unsorted[i].Key, unsorted[j].Key) < 0
@@ -258,7 +241,7 @@ func (store *Store) clearUnsortedCacheSubset(unsorted []*kv.Pair) {
 
 // Only entrypoint to mutate store.cache.
 func (store *Store) setCacheValue(key, value []byte, deleted bool, dirty bool) {
-	keyStr := byteSliceToStr(key)
+	keyStr := conv.UnsafeBytesToStr(key)
 	store.cache.Store(keyStr, &cValue{
 		value: value,
 		dirty: dirty,

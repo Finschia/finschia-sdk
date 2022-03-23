@@ -59,7 +59,7 @@ func (k Keeper) GetClass(ctx sdk.Context, classID string) (*token.Token, error) 
 	}
 
 	var class token.Token
-	if err := k.cdc.UnmarshalBinaryBare(bz, &class); err != nil {
+	if err := k.cdc.Unmarshal(bz, &class); err != nil {
 		return nil, err
 	}
 
@@ -68,7 +68,7 @@ func (k Keeper) GetClass(ctx sdk.Context, classID string) (*token.Token, error) 
 
 func (k Keeper) setClass(ctx sdk.Context, class token.Token) error {
 	store := ctx.KVStore(k.storeKey)
-	bz, err := k.cdc.MarshalBinaryBare(&class)
+	bz, err := k.cdc.Marshal(&class)
 	if err != nil {
 		return err
 	}

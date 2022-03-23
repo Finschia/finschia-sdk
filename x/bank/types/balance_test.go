@@ -1,7 +1,7 @@
 package types_test
 
 import (
-	"strings"
+	"bytes"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -20,7 +20,7 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"valid balance",
 			bank.Balance{
-				Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
 				Coins:   sdk.Coins{sdk.NewInt64Coin("uatom", 1)},
 			},
 			false,
@@ -29,14 +29,14 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"nil balance coins",
 			bank.Balance{
-				Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
 			},
 			false,
 		},
 		{
 			"dup coins",
 			bank.Balance{
-				Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
 				Coins: sdk.Coins{
 					sdk.NewInt64Coin("uatom", 1),
 					sdk.NewInt64Coin("uatom", 1),
@@ -47,7 +47,7 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"invalid coin denom",
 			bank.Balance{
-				Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
 				Coins: sdk.Coins{
 					sdk.Coin{Denom: "", Amount: sdk.OneInt()},
 				},
@@ -57,7 +57,7 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"negative coin",
 			bank.Balance{
-				Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
 				Coins: sdk.Coins{
 					sdk.Coin{Denom: "uatom", Amount: sdk.NewInt(-1)},
 				},
@@ -83,23 +83,23 @@ func TestBalanceValidate(t *testing.T) {
 
 func TestBalance_GetAddress(t *testing.T) {
 	tests := []struct {
-		name      string
-		Address   string
-		wantPanic bool
+		name    string
+		Address string
+		expErr  bool
 	}{
-		{"empty address", "", false},
-		{"malformed address", "invalid", false},
-		{"valid address", "link1qz9c0r2jvpkccx67d5svg8kms6eu3k832hdc6p", false},
+		{"empty address", "", true},
+		{"malformed address", "invalid", true},
+		{"valid address", "link1vy0ga0klndqy92ceqehfkvgmn4t94ete4mhemy", false},
 	}
-	// Balance.GetAddress() does not validate the address.
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			b := bank.Balance{Address: tt.Address}
-			if tt.wantPanic {
-				require.Panics(t, func() { b.GetAddress() })
+			err := sdk.ValidateAccAddress(b.GetAddress().String())
+			if tt.expErr {
+				require.Error(t, err)
 			} else {
-				require.True(t, b.GetAddress().Equals(sdk.AccAddress(tt.Address)))
+				require.NoError(t, err)
 			}
 		})
 	}
@@ -107,7 +107,7 @@ func TestBalance_GetAddress(t *testing.T) {
 
 func TestSanitizeBalances(t *testing.T) {
 	// 1. Generate balances
-	tokens := sdk.TokensFromConsensusPower(81)
+	tokens := sdk.TokensFromConsensusPower(81, sdk.DefaultPowerReduction)
 	coin := sdk.NewCoin("benchcoin", tokens)
 	coins := sdk.Coins{coin}
 	addrs, _ := makeRandomAddressesAndPublicKeys(20)
@@ -131,7 +131,7 @@ func TestSanitizeBalances(t *testing.T) {
 		for j := i + 1; j < len(sorted); j++ {
 			aj := sorted[j]
 
-			if got := strings.Compare(ai.GetAddress().String(), aj.GetAddress().String()); got > 0 {
+			if got := bytes.Compare(ai.GetAddress().Bytes(), aj.GetAddress().Bytes()); got > 0 {
 				t.Errorf("Balance(%d) > Balance(%d)", i, j)
 			}
 		}
@@ -142,7 +142,7 @@ func makeRandomAddressesAndPublicKeys(n int) (accL []sdk.AccAddress, pkL []*ed25
 	for i := 0; i < n; i++ {
 		pk := ed25519.GenPrivKey().PubKey().(*ed25519.PubKey)
 		pkL = append(pkL, pk)
-		accL = append(accL, sdk.BytesToAccAddress(pk.Address()))
+		accL = append(accL, sdk.AccAddress(pk.Address()))
 	}
 	return accL, pkL
 }
@@ -159,7 +159,7 @@ func BenchmarkSanitizeBalances1000(b *testing.B) {
 
 func benchmarkSanitizeBalances(b *testing.B, nAddresses int) {
 	b.ReportAllocs()
-	tokens := sdk.TokensFromConsensusPower(81)
+	tokens := sdk.TokensFromConsensusPower(81, sdk.DefaultPowerReduction)
 	coin := sdk.NewCoin("benchcoin", tokens)
 	coins := sdk.Coins{coin}
 	addrs, _ := makeRandomAddressesAndPublicKeys(nAddresses)

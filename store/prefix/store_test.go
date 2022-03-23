@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	liavl "github.com/line/iavl/v2"
+	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/store/dbadapter"
@@ -410,4 +411,18 @@ func TestPrefixDBReverseIterator4(t *testing.T) {
 	itr := pstore.ReverseIterator(bz(""), bz(""))
 	checkInvalid(t, itr)
 	itr.Close()
+}
+
+func TestCacheWraps(t *testing.T) {
+	db := memdb.NewDB()
+	store := dbadapter.Store{DB: db}
+
+	cacheWrapper := store.CacheWrap()
+	require.IsType(t, &cachekv.Store{}, cacheWrapper)
+
+	cacheWrappedWithTrace := store.CacheWrapWithTrace(nil, nil)
+	require.IsType(t, &cachekv.Store{}, cacheWrappedWithTrace)
+
+	cacheWrappedWithListeners := store.CacheWrapWithListeners(nil, nil)
+	require.IsType(t, &cachekv.Store{}, cacheWrappedWithListeners)
 }

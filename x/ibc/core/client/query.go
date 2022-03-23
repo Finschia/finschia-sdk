@@ -20,7 +20,7 @@ import (
 // the correct merkle proof. Proof queries at height less than or equal to 2 are
 // not supported. Queries with a client context height of 0 will perform a query
 // at the lastest state available.
-// Issue: https://github.com/line/lbm-sdk/issues/6567
+// Issue: https://github.com/cosmos/cosmos-sdk/issues/6567
 func QueryTendermintProof(clientCtx client.Context, key []byte) ([]byte, []byte, clienttypes.Height, error) {
 	height := clientCtx.Height
 
@@ -57,7 +57,7 @@ func QueryTendermintProof(clientCtx client.Context, key []byte) ([]byte, []byte,
 
 	cdc := codec.NewProtoCodec(clientCtx.InterfaceRegistry)
 
-	proofBz, err := cdc.MarshalBinaryBare(&merkleProof)
+	proofBz, err := cdc.Marshal(&merkleProof)
 	if err != nil {
 		return nil, nil, clienttypes.Height{}, err
 	}

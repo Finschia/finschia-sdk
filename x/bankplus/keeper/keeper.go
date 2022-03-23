@@ -25,13 +25,13 @@ type BaseKeeper struct {
 	bankkeeper.BaseKeeper
 
 	ak            types.AccountKeeper
-	cdc           codec.BinaryMarshaler
+	cdc           codec.Codec
 	storeKey      sdk.StoreKey
 	inactiveAddrs map[string]bool
 }
 
 func NewBaseKeeper(
-	cdc codec.BinaryMarshaler, storeKey sdk.StoreKey, ak types.AccountKeeper, paramSpace *paramtypes.Subspace,
+	cdc codec.Codec, storeKey sdk.StoreKey, ak types.AccountKeeper, paramSpace paramtypes.Subspace,
 	blockedAddr map[string]bool,
 ) BaseKeeper {
 	return BaseKeeper{
