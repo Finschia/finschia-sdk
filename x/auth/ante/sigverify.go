@@ -2,6 +2,7 @@ package ante
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
@@ -305,7 +306,21 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		}
 
 		if !simulate {
-			err := authsigning.VerifySignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx)
+			if !genesis {
+				sigKey := fmt.Sprintf("%d:%d", signerData.AccountNumber, signerData.Sequence)
+				// TODO could we use `tx.(*wrapper).getBodyBytes()` instead of `ctx.TxBytes()`?
+				txHash := sha256.Sum256(ctx.TxBytes())
+				stored := false
+
+				stored, err = svd.verifySignatureWithCache(ctx, pubKey, signerData, sig.Data, tx, sigKey, txHash[:])
+
+				if stored {
+					newSigKeys = append(newSigKeys, sigKey)
+				}
+			} else {
+				err = authsigning.VerifySignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx)
+			}
+
 			if err != nil {
 				var errMsg string
 				if OnlyLegacyAminoSigners(sig.Data) {
