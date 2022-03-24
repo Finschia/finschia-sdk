@@ -12,7 +12,7 @@ import (
 const (
 	chainID        = ""
 	keyringBackend = "os"
-	output         = ""
+	output         = "text"
 	node           = "tcp://localhost:26657"
 	broadcastMode  = "sync"
 )
