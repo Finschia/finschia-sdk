@@ -60,20 +60,17 @@ const (
 	FlagPruningInterval   = "pruning-interval"
 	FlagIndexEvents       = "index-events"
 	FlagMinRetainBlocks   = "min-retain-blocks"
-)
 
-// GRPC-related flags.
-const (
+	// state sync-related flags
+	FlagStateSyncSnapshotInterval   = "state-sync.snapshot-interval"
+	FlagStateSyncSnapshotKeepRecent = "state-sync.snapshot-keep-recent"
+
+	// gRPC-related flags
+	flagGRPCOnly       = "grpc-only"
 	flagGRPCEnable     = "grpc.enable"
 	flagGRPCAddress    = "grpc.address"
 	flagGRPCWebEnable  = "grpc-web.enable"
 	flagGRPCWebAddress = "grpc-web.address"
-)
-
-// State sync-related flags.
-const (
-	FlagStateSyncSnapshotInterval   = "state-sync.snapshot-interval"
-	FlagStateSyncSnapshotKeepRecent = "state-sync.snapshot-keep-recent"
 )
 
 // StartCmd runs the service passed in, either stand-alone or in-process with
@@ -103,6 +100,11 @@ will not be able to commit subsequent blocks.
 
 For profiling and benchmarking purposes, CPU profiling can be enabled via the '--cpu-profile' flag
 which accepts a path for the resulting pprof file.
+
+The node may be started in a 'query only' mode where only the gRPC and JSON HTTP
+API services are enabled via the 'grpc-only' flag. In this mode, Tendermint is
+bypassed and can be used when legacy queries are needed after an on-chain upgrade
+is performed. Note, when enabled, gRPC will also be automatically enabled.
 `,
 		PreRunE: func(cmd *cobra.Command, _ []string) error {
 			serverCtx := GetServerContextFromCmd(cmd)
@@ -162,6 +164,7 @@ which accepts a path for the resulting pprof file.
 	cmd.Flags().Uint(FlagInvCheckPeriod, 0, "Assert registered invariants every N blocks")
 	cmd.Flags().Uint64(FlagMinRetainBlocks, 0, "Minimum block height offset during ABCI commit to prune Ostracon blocks")
 
+	cmd.Flags().Bool(flagGRPCOnly, false, "Start the node in gRPC query only mode (no Tendermint process is started)")
 	cmd.Flags().Bool(flagGRPCEnable, true, "Define if the gRPC server should be enabled")
 	cmd.Flags().String(flagGRPCAddress, config.DefaultGRPCAddress, "the gRPC server address to listen on")
 
@@ -218,7 +221,6 @@ func startStandAlone(ctx *Context, appCreator types.AppCreator) error {
 	return WaitForQuitSignals()
 }
 
-// legacyAminoCdc is used for the legacy REST API
 func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.AppCreator) error {
 	cfg := ctx.Config
 	home := cfg.RootDir
@@ -268,34 +270,45 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	}
 
 	genDocProvider := node.DefaultGenesisDocProviderFunc(cfg)
-	pv, err2 := pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(), cfg.PrivKeyType)
-	if err2 != nil {
-		return err2
-	}
-	ocNode, err := node.NewNode(
-		cfg,
-		pv,
-		nodeKey,
-		proxy.NewLocalClientCreator(app),
-		genDocProvider,
-		node.DefaultDBProvider,
-		node.DefaultMetricsProvider(cfg.Instrumentation),
-		ctx.Logger,
-	)
-	if err != nil {
-		return err
-	}
 
-	ctx.Logger.Debug("initialization: ocNode created")
-	if err := ocNode.Start(); err != nil {
-		return err
+	var (
+		ocNode   *node.Node
+		gRPCOnly = ctx.Viper.GetBool(flagGRPCOnly)
+	)
+
+	if gRPCOnly {
+		ctx.Logger.Info("starting node in gRPC only mode; Ostracon is disabled")
+		config.GRPC.Enable = true
+	} else {
+		ctx.Logger.Info("starting node with ABCI Ostracon in-process")
+
+		pv, err2 := pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(), cfg.PrivKeyType)
+		if err2 != nil {
+			return err2
+		}
+
+		ocNode, err = node.NewNode(
+			cfg,
+			pv,
+			nodeKey,
+			proxy.NewLocalClientCreator(app),
+			genDocProvider,
+			node.DefaultDBProvider,
+			node.DefaultMetricsProvider(cfg.Instrumentation),
+			ctx.Logger,
+		)
+
+		ctx.Logger.Debug("initialization: ocNode created")
+		if err := ocNode.Start(); err != nil {
+			return err
+		}
+		ctx.Logger.Debug("initialization: ocNode started")
 	}
-	ctx.Logger.Debug("initialization: ocNode started")
 
 	// Add the tx service to the gRPC router. We only need to register this
 	// service if API or gRPC is enabled, and avoid doing so in the general
 	// case, because it spawns a new local ostracon RPC client.
-	if config.API.Enable || config.GRPC.Enable {
+	if (config.API.Enable || config.GRPC.Enable) && ocNode != nil {
 		clientCtx = clientCtx.WithClient(local.New(ocNode))
 
 		app.RegisterTxService(clientCtx)
@@ -309,9 +322,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 			return err
 		}
 
-		clientCtx := clientCtx.
-			WithHomeDir(home).
-			WithChainID(genDoc.ChainID)
+		clientCtx := clientCtx.WithHomeDir(home).WithChainID(genDoc.ChainID)
 
 		apiSrv = api.New(clientCtx, ctx.Logger.With("module", "api-server"))
 		app.RegisterAPIRoutes(apiSrv, config.API)
@@ -326,6 +337,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		select {
 		case err := <-errCh:
 			return err
+
 		case <-time.After(types.ServerStartTime): // assume server started successfully
 		}
 	}
@@ -334,11 +346,13 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		grpcSrv    *grpc.Server
 		grpcWebSrv *http.Server
 	)
+
 	if config.GRPC.Enable {
 		grpcSrv, err = servergrpc.StartGRPCServer(clientCtx, app, config.GRPC.Address)
 		if err != nil {
 			return err
 		}
+
 		if config.GRPCWeb.Enable {
 			grpcWebSrv, err = servergrpc.StartGRPCWeb(grpcSrv, config)
 			if err != nil {
@@ -348,28 +362,40 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		}
 	}
 
+	// At this point it is safe to block the process if we're in gRPC only mode as
+	// we do not need to start Rosetta or handle any Tendermint related processes.
+	if gRPCOnly {
+		// wait for signal capture and gracefully return
+		return WaitForQuitSignals()
+	}
+
 	var rosettaSrv crgserver.Server
 	if config.Rosetta.Enable {
 		offlineMode := config.Rosetta.Offline
-		if !config.GRPC.Enable { // If GRPC is not enabled rosetta cannot work in online mode, so it works in offline mode.
+
+		// If GRPC is not enabled rosetta cannot work in online mode, so it works in
+		// offline mode.
+		if !config.GRPC.Enable {
 			offlineMode = true
 		}
 
 		conf := &rosetta.Config{
-			Blockchain:    config.Rosetta.Blockchain,
-			Network:       config.Rosetta.Network,
-			TendermintRPC: ctx.Config.RPC.ListenAddress,
-			GRPCEndpoint:  config.GRPC.Address,
-			Addr:          config.Rosetta.Address,
-			Retries:       config.Rosetta.Retries,
-			Offline:       offlineMode,
+			Blockchain:        config.Rosetta.Blockchain,
+			Network:           config.Rosetta.Network,
+			TendermintRPC:     ctx.Config.RPC.ListenAddress,
+			GRPCEndpoint:      config.GRPC.Address,
+			Addr:              config.Rosetta.Address,
+			Retries:           config.Rosetta.Retries,
+			Offline:           offlineMode,
+			Codec:             clientCtx.Codec.(*codec.ProtoCodec),
+			InterfaceRegistry: clientCtx.InterfaceRegistry,
 		}
-		conf.WithCodec(clientCtx.InterfaceRegistry, clientCtx.Codec.(*codec.ProtoCodec))
 
 		rosettaSrv, err = rosetta.ServerFromConfig(conf)
 		if err != nil {
 			return err
 		}
+
 		errCh := make(chan error)
 		go func() {
 			if err := rosettaSrv.Start(); err != nil {
@@ -380,6 +406,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		select {
 		case err := <-errCh:
 			return err
+
 		case <-time.After(types.ServerStartTime): // assume server started successfully
 		}
 	}
@@ -407,6 +434,6 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		ctx.Logger.Info("exiting...")
 	}()
 
-	// Wait for SIGINT or SIGTERM signal
+	// wait for signal capture and gracefully return
 	return WaitForQuitSignals()
 }
