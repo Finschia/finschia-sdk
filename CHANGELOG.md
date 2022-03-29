@@ -44,6 +44,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
+* (client) [\#476](https://github.com/line/lbm-sdk/pull/476) change the default value of the client output format in the config
 
 ### Breaking Changes
 
