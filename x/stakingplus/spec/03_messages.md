@@ -17,6 +17,6 @@ A validator is created using the `Msg/CreateValidator` service message.
 This service message is expected to fail if:
 
 - one of the conditions described in the staking module of the Cosmos-SDK is met.
-- the operator address is not registered on x/consortium through the corresponding proposal.
+- the operator address is not registered on x/consortium through UpdateValidatorAuthsProposal. TODO: add a ref to x/consortium spec file.
 
 The other [statements](../../staking/spec/03_messages.md#Msg/CreateValidator) on this message in the exising document are still valid.
