@@ -4,7 +4,7 @@ order: 3
 
 # Messages
 
-In this section we describe only the changes introduced by LBM-SDK. Refer to the [original document](../../staking/03_messages.md) for more information.
+In this section we describe only the changes introduced by LBM-SDK. Refer to the [original document](../../staking/spec/03_messages.md) for more information.
 
 ## Msg/CreateValidator
 
@@ -19,4 +19,4 @@ This service message is expected to fail if:
 - one of the conditions described in the staking module of the Cosmos-SDK is met.
 - the operator address is not registered on x/foundation through the corresponding proposal.
 
-The other [statements](../../staking/03_messages.md#Msg/CreateValidator) on this message in the exising document are still valid.
+The other [statements](../../staking/spec/03_messages.md#Msg/CreateValidator) on this message in the exising document are still valid.

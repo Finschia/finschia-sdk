@@ -9,7 +9,7 @@ parent:
 
 ## Abstract
 
-This paper specifies the Staking Plus module of the LBM-SDK, which extends existing [Staking module](../../staking/README.md) of the Cosmos-SDK.
+This paper specifies the Staking Plus module of the LBM-SDK, which extends existing [Staking module](../../staking/spec/README.md) of the Cosmos-SDK.
 
 The module enables LBM-SDK based blockchain to support an advanced Proof-of-Stake system. In this system, holders of the native staking token of the chain can become validators and can delegate tokens to validators, ultimately determining the effective validator set for the system.
 
