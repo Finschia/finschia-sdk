@@ -25,5 +25,4 @@ This module is almost identical to the previous Staking module of the Cosmos-SDK
 5. **[End-Block ](05_end_block.md)**
 6. **[Hooks](06_hooks.md)**
 7. **[Events](07_events.md)**
-    - [Handlers](07_events.md#handlers)
 8. **[Parameters](08_params.md)**
