@@ -13,7 +13,7 @@ This paper specifies the Staking Plus module of the LBM-SDK, which extends exist
 
 The module enables LBM-SDK based blockchain to support an advanced Proof-of-Stake system. In this system, holders of the native staking token of the chain can become validators and can delegate tokens to validators, ultimately determining the effective validator set for the system.
 
-This module is almost identical to the previous Staking module of the Cosmos-SDK, but introduces some breaking changes. For example, you must have x/foundation GrantProposal passed before sending x/stakingplus MsgCreateValidator, or the message would fail.
+This module is almost identical to the previous Staking module of the Cosmos-SDK, but introduces some breaking changes. For example, you must have x/consortium UpdateValidatorAuthsProposal passed before sending x/stakingplus MsgCreateValidator, or the message would fail.
 
 ## Contents
 
