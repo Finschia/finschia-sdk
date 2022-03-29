@@ -12,7 +12,7 @@ A validator is created using the `Msg/CreateValidator` service message.
 
 +++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L16-L17
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L36-L51
++++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L35-L51
 
 This service message is expected to fail if:
 
