@@ -9,7 +9,7 @@ parent:
 
 ## Overview
 
-This module provides the functionalities related to the consortium. Also, one can turn off the functionalities irreversibly, through the corresponding proposal. Therefore, the users can ensure that no one bring back these consortium-specific functionalities.
+This module provides the functionalities related to the consortium. Also, one can turn off these functionalities irreversibly, through the corresponding proposal. Therefore, the users can ensure that no one can bring back these consortium-specific functionalities.
 
 ## Contents
 
