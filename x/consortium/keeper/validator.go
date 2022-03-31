@@ -3,18 +3,18 @@ package keeper
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/consortium/types"
+	"github.com/line/lbm-sdk/x/consortium"
 )
 
-func (k Keeper) GetValidatorAuth(ctx sdk.Context, valAddr sdk.ValAddress) (*types.ValidatorAuth, error) {
+func (k Keeper) GetValidatorAuth(ctx sdk.Context, valAddr sdk.ValAddress) (*consortium.ValidatorAuth, error) {
 	store := ctx.KVStore(k.storeKey)
-	key := types.ValidatorAuthKey(valAddr)
+	key := validatorAuthKey(valAddr)
 	bz := store.Get(key)
 	if len(bz) == 0 {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "no validator auth found for: %s", valAddr)
 	}
 
-	var auth types.ValidatorAuth
+	var auth consortium.ValidatorAuth
 	if err := k.cdc.UnmarshalBinaryBare(bz, &auth); err != nil {
 		return nil, err
 	}
@@ -22,9 +22,9 @@ func (k Keeper) GetValidatorAuth(ctx sdk.Context, valAddr sdk.ValAddress) (*type
 	return &auth, nil
 }
 
-func (k Keeper) SetValidatorAuth(ctx sdk.Context, auth *types.ValidatorAuth) error {
+func (k Keeper) SetValidatorAuth(ctx sdk.Context, auth *consortium.ValidatorAuth) error {
 	store := ctx.KVStore(k.storeKey)
-	key := types.ValidatorAuthKey(sdk.ValAddress(auth.OperatorAddress))
+	key := validatorAuthKey(sdk.ValAddress(auth.OperatorAddress))
 
 	bz, err := k.cdc.MarshalBinaryBare(auth)
 	if err != nil {
@@ -39,13 +39,13 @@ func (k Keeper) SetValidatorAuth(ctx sdk.Context, auth *types.ValidatorAuth) err
 
 // IterateValidatorAuths iterates over the validator auths
 // and performs a callback function
-func (k Keeper) IterateValidatorAuths(ctx sdk.Context, cb func(auth types.ValidatorAuth) (stop bool)) {
+func (k Keeper) IterateValidatorAuths(ctx sdk.Context, cb func(auth consortium.ValidatorAuth) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.ValidatorAuthKeyPrefix)
+	iter := sdk.KVStorePrefixIterator(store, validatorAuthKeyPrefix)
 
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
-		var auth types.ValidatorAuth
+		var auth consortium.ValidatorAuth
 		k.cdc.MustUnmarshalBinaryBare(iter.Value(), &auth)
 		if cb(auth) {
 			break
@@ -54,9 +54,9 @@ func (k Keeper) IterateValidatorAuths(ctx sdk.Context, cb func(auth types.Valida
 }
 
 // utility functions
-func (k Keeper) GetValidatorAuths(ctx sdk.Context) []*types.ValidatorAuth {
-	auths := []*types.ValidatorAuth{}
-	k.IterateValidatorAuths(ctx, func(auth types.ValidatorAuth) (stop bool) {
+func (k Keeper) GetValidatorAuths(ctx sdk.Context) []*consortium.ValidatorAuth {
+	auths := []*consortium.ValidatorAuth{}
+	k.IterateValidatorAuths(ctx, func(auth consortium.ValidatorAuth) (stop bool) {
 		auths = append(auths, &auth)
 		return false
 	})
