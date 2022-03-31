@@ -2,11 +2,11 @@
 // source: lbm/consortium/v1/query.proto
 
 /*
-Package types is a reverse proxy.
+Package consortium is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package types
+package consortium
 
 import (
 	"context"
