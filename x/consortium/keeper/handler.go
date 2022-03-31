@@ -1,23 +1,22 @@
-package consortium
+package keeper
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/consortium/keeper"
-	"github.com/line/lbm-sdk/x/consortium/types"
+	"github.com/line/lbm-sdk/x/consortium"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
-func NewProposalHandler(k keeper.Keeper) govtypes.Handler {
+func NewProposalHandler(k Keeper) govtypes.Handler {
 	return func(ctx sdk.Context, content govtypes.Content) error {
 		if !k.GetEnabled(ctx) {
 			return nil
 		}
 
 		switch c := content.(type) {
-		case *types.UpdateConsortiumParamsProposal:
+		case *consortium.UpdateConsortiumParamsProposal:
 			return handleUpdateConsortiumParamsProposal(ctx, k, c)
-		case *types.UpdateValidatorAuthsProposal:
+		case *consortium.UpdateValidatorAuthsProposal:
 			return handleUpdateValidatorAuthsProposal(ctx, k, c)
 		default:
 			return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized consortium proposal content type: %T", c)
