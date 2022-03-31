@@ -22,8 +22,3 @@ func validatorAuthKey(valAddr sdk.ValAddress) []byte {
 	copy(key[len(validatorAuthKeyPrefix):], valAddr)
 	return key
 }
-
-// splitValidatorAuthKey splits the validator auth key and returns validator
-func splitValidatorAuthKey(key []byte) sdk.ValAddress {
-	return sdk.ValAddress(key[1:]) // remove prefix
-}
