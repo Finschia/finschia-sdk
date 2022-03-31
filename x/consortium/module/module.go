@@ -1,4 +1,4 @@
-package consortium
+package module
 
 import (
 	"context"
@@ -15,9 +15,9 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
+	"github.com/line/lbm-sdk/x/consortium"
 	"github.com/line/lbm-sdk/x/consortium/client/cli"
 	"github.com/line/lbm-sdk/x/consortium/keeper"
-	"github.com/line/lbm-sdk/x/consortium/types"
 )
 
 var (
@@ -37,28 +37,26 @@ func NewAppModuleBasic() AppModuleBasic {
 
 // Name returns the ModuleName
 func (AppModuleBasic) Name() string {
-	return types.ModuleName
+	return consortium.ModuleName
 }
 
 // RegisterLegacyAminoCodec registers the consortium types on the LegacyAmino codec
-func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	types.RegisterLegacyAminoCodec(cdc)
-}
+func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
 
 // DefaultGenesis returns default genesis state as raw bytes for the consortium
 // module.
 func (AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
-	return cdc.MustMarshalJSON(types.DefaultGenesisState())
+	return cdc.MustMarshalJSON(consortium.DefaultGenesisState())
 }
 
 // ValidateGenesis performs genesis state validation for the consortium module.
 func (AppModuleBasic) ValidateGenesis(cdc codec.JSONMarshaler, config client.TxEncodingConfig, bz json.RawMessage) error {
-	var data types.GenesisState
+	var data consortium.GenesisState
 	if err := cdc.UnmarshalJSON(bz, &data); err != nil {
-		return fmt.Errorf("failed to unmarshal %s genesis state: %w", types.ModuleName, err)
+		return fmt.Errorf("failed to unmarshal %s genesis state: %w", consortium.ModuleName, err)
 	}
 
-	return types.ValidateGenesis(data)
+	return consortium.ValidateGenesis(data)
 }
 
 // RegisterRESTRoutes registers all REST query handlers
@@ -66,7 +64,9 @@ func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, r *mux.Router
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the consortium module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
-	types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
+	if err := consortium.RegisterQueryHandlerClient(context.Background(), mux, consortium.NewQueryClient(clientCtx)); err != nil {
+		panic(err)
+	}
 }
 
 // GetQueryCmd returns the cli query commands for this module
@@ -80,7 +80,7 @@ func (AppModuleBasic) GetTxCmd() *cobra.Command {
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
-	types.RegisterInterfaces(registry)
+	consortium.RegisterInterfaces(registry)
 }
 
 //____________________________________________________________________________
@@ -90,11 +90,11 @@ type AppModule struct {
 	AppModuleBasic
 
 	keeper        keeper.Keeper
-	stakingKeeper types.StakingKeeper
+	stakingKeeper consortium.StakingKeeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Marshaler, keeper keeper.Keeper, stk types.StakingKeeper) AppModule {
+func NewAppModule(cdc codec.Marshaler, keeper keeper.Keeper, stk consortium.StakingKeeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		keeper:         keeper,
@@ -109,20 +109,20 @@ func (AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 func (AppModule) Route() sdk.Route { return sdk.Route{} }
 
 // QuerierRoute returns the route we respond to for abci queries
-func (AppModule) QuerierRoute() string { return types.QuerierKey }
+func (AppModule) QuerierRoute() string { return "" }
 
 // LegacyQuerierHandler registers a query handler to respond to the module-specific queries
 func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
-	return keeper.NewQuerier(am.keeper, legacyQuerierCdc)
+	return nil
 }
 
 // RegisterServices registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
+	consortium.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 
 	/* m := keeper.NewMigrator(am.keeper)
-	if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
+	if err := cfg.RegisterMigration(consortium.ModuleName, 1, m.Migrate1to2); err != nil {
 		panic(fmt.Sprintf("failed to migrate x/consortium from version 1 to 2: %v", err))
 	} */
 }
@@ -130,7 +130,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 // InitGenesis performs genesis initialization for the consortium module. It returns
 // no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, data json.RawMessage) []abci.ValidatorUpdate {
-	var genesisState types.GenesisState
+	var genesisState consortium.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 	InitGenesis(ctx, am.keeper, am.stakingKeeper, &genesisState)
 	return []abci.ValidatorUpdate{}
