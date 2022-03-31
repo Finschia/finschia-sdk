@@ -2,42 +2,38 @@ package consortium
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/consortium/keeper"
-	"github.com/line/lbm-sdk/x/consortium/types"
-
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
-func InitGenesis(ctx sdk.Context, keeper keeper.Keeper, sk types.StakingKeeper, data *types.GenesisState) error {
-	keeper.SetParams(ctx, data.Params)
+// NewGenesisState creates a new GenesisState object
+func NewGenesisState(params *Params, validatorAuths []*ValidatorAuth) *GenesisState {
+	return &GenesisState{
+		Params:         params,
+		ValidatorAuths: validatorAuths,
+	}
+}
 
-	validatorAuths := data.ValidatorAuths
-	if keeper.GetEnabled(ctx) && len(validatorAuths) == 0 {
-		// Allowed validators must exist if the module is enabled,
-		// so it should be the very first block of the chain.
-		// We gather the information from staking module.
-		sk.IterateValidators(ctx, func(_ int64, addr stakingtypes.ValidatorI) (stop bool) {
-			auth := &types.ValidatorAuth{
-				OperatorAddress: addr.GetOperator().String(),
-				CreationAllowed: true,
-			}
-			validatorAuths = append(validatorAuths, auth)
-			return false
-		})
+// DefaultGenesisState creates a default GenesisState object
+func DefaultGenesisState() *GenesisState {
+	return &GenesisState{
+		Params:         &Params{Enabled: false},
+		ValidatorAuths: []*ValidatorAuth{},
+	}
+}
+
+// ValidateGenesis validates the provided genesis state to ensure the
+// expected invariants holds.
+func ValidateGenesis(data GenesisState) error {
+	// validator auths are redundant where consortium is off
+	if !data.Params.Enabled && len(data.ValidatorAuths) != 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "redundant validator auths for disabled consortium")
 	}
 
-	for _, auth := range validatorAuths {
-		if err := keeper.SetValidatorAuth(ctx, auth); err != nil {
+	for _, auth := range data.ValidatorAuths {
+		if err := sdk.ValidateValAddress(auth.OperatorAddress); err != nil {
 			return err
 		}
 	}
 
 	return nil
-}
-
-func ExportGenesis(ctx sdk.Context, keeper keeper.Keeper) *types.GenesisState {
-	return &types.GenesisState{
-		Params:         keeper.GetParams(ctx),
-		ValidatorAuths: keeper.GetValidatorAuths(ctx),
-	}
 }
