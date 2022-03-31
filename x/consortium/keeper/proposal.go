@@ -6,7 +6,7 @@ import (
 )
 
 // handleUpdateConsortiumParamsProposal is a handler for update consortium params proposal
-func handleUpdateConsortiumParamsProposal(ctx sdk.Context, k Keeper, p *consortium.UpdateConsortiumParamsProposal) error {
+func (k Keeper) handleUpdateConsortiumParamsProposal(ctx sdk.Context, p *consortium.UpdateConsortiumParamsProposal) error {
 	params := p.Params
 	k.SetParams(ctx, params)
 
@@ -20,7 +20,7 @@ func handleUpdateConsortiumParamsProposal(ctx sdk.Context, k Keeper, p *consorti
 }
 
 // handleUpdateValidatorAuthsProposal is a handler for update validator auths proposal
-func handleUpdateValidatorAuthsProposal(ctx sdk.Context, k Keeper, p *consortium.UpdateValidatorAuthsProposal) error {
+func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *consortium.UpdateValidatorAuthsProposal) error {
 	for _, auth := range p.Auths {
 		if err := k.SetValidatorAuth(ctx, auth); err != nil {
 			return err

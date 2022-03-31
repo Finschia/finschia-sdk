@@ -15,9 +15,9 @@ func NewProposalHandler(k Keeper) govtypes.Handler {
 
 		switch c := content.(type) {
 		case *consortium.UpdateConsortiumParamsProposal:
-			return handleUpdateConsortiumParamsProposal(ctx, k, c)
+			return k.handleUpdateConsortiumParamsProposal(ctx, c)
 		case *consortium.UpdateValidatorAuthsProposal:
-			return handleUpdateValidatorAuthsProposal(ctx, k, c)
+			return k.handleUpdateValidatorAuthsProposal(ctx, c)
 		default:
 			return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized consortium proposal content type: %T", c)
 		}
