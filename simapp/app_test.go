@@ -22,7 +22,7 @@ import (
 	"github.com/line/lbm-sdk/x/auth/vesting"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/capability"
-	"github.com/line/lbm-sdk/x/consortium"
+	consortiummodule "github.com/line/lbm-sdk/x/consortium/module"
 	"github.com/line/lbm-sdk/x/crisis"
 	"github.com/line/lbm-sdk/x/distribution"
 	"github.com/line/lbm-sdk/x/evidence"
@@ -184,7 +184,7 @@ func TestRunMigrations(t *testing.T) {
 					"crisis":       crisis.AppModule{}.ConsensusVersion(),
 					"genutil":      genutil.AppModule{}.ConsensusVersion(),
 					"capability":   capability.AppModule{}.ConsensusVersion(),
-					"consortium":   consortium.AppModule{}.ConsensusVersion(),
+					"consortium":   consortiummodule.AppModule{}.ConsensusVersion(),
 				},
 			)
 			if tc.expRunErr {
@@ -237,7 +237,7 @@ func TestInitGenesisOnMigration(t *testing.T) {
 			"crisis":       crisis.AppModule{}.ConsensusVersion(),
 			"genutil":      genutil.AppModule{}.ConsensusVersion(),
 			"capability":   capability.AppModule{}.ConsensusVersion(),
-			"consortium":   consortium.AppModule{}.ConsensusVersion(),
+			"consortium":   consortiummodule.AppModule{}.ConsensusVersion(),
 		},
 	)
 
