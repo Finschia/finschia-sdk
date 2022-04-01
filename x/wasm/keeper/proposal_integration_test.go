@@ -25,7 +25,6 @@ func TestStoreCodeProposal(t *testing.T) {
 	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
-		ContractStatusAccess:         types.DefaultContractStatusAccess,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 		GasMultiplier:                types.DefaultGasMultiplier,
 		InstanceCost:                 types.DefaultInstanceCost,
@@ -66,7 +65,6 @@ func TestInstantiateProposal(t *testing.T) {
 	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
-		ContractStatusAccess:         types.DefaultContractStatusAccess,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 		GasMultiplier:                types.DefaultGasMultiplier,
 		InstanceCost:                 types.DefaultInstanceCost,
@@ -137,7 +135,6 @@ func TestMigrateProposal(t *testing.T) {
 	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
-		ContractStatusAccess:         types.DefaultContractStatusAccess,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 		GasMultiplier:                types.DefaultGasMultiplier,
 		InstanceCost:                 types.DefaultInstanceCost,
@@ -281,7 +278,6 @@ func TestAdminProposals(t *testing.T) {
 			wasmKeeper.setParams(ctx, types.Params{
 				CodeUploadAccess:             types.AllowNobody,
 				InstantiateDefaultPermission: types.AccessTypeNobody,
-				ContractStatusAccess:         types.DefaultContractStatusAccess,
 				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 				GasMultiplier:                types.DefaultGasMultiplier,
 				InstanceCost:                 types.DefaultInstanceCost,
@@ -594,7 +590,6 @@ func TestUpdateContractStatusProposals(t *testing.T) {
 			wasmKeeper.setParams(ctx, types.Params{
 				CodeUploadAccess:             types.AllowNobody,
 				InstantiateDefaultPermission: types.AccessTypeNobody,
-				ContractStatusAccess:         types.AllowNobody,
 				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 				GasMultiplier:                types.DefaultGasMultiplier,
 				InstanceCost:                 types.DefaultInstanceCost,

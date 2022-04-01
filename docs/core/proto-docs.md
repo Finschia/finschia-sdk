@@ -928,8 +928,6 @@
     - [MsgStoreCodeResponse](#lbm.wasm.v1.MsgStoreCodeResponse)
     - [MsgUpdateAdmin](#lbm.wasm.v1.MsgUpdateAdmin)
     - [MsgUpdateAdminResponse](#lbm.wasm.v1.MsgUpdateAdminResponse)
-    - [MsgUpdateContractStatus](#lbm.wasm.v1.MsgUpdateContractStatus)
-    - [MsgUpdateContractStatusResponse](#lbm.wasm.v1.MsgUpdateContractStatusResponse)
   
     - [Msg](#lbm.wasm.v1.Msg)
   
@@ -13201,7 +13199,6 @@ Params defines the set of wasm parameters.
 | ----- | ---- | ----- | ----------- |
 | `code_upload_access` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
 | `instantiate_default_permission` | [AccessType](#lbm.wasm.v1.AccessType) |  |  |
-| `contract_status_access` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
 | `max_wasm_code_size` | [uint64](#uint64) |  |  |
 | `gas_multiplier` | [uint64](#uint64) |  |  |
 | `instance_cost` | [uint64](#uint64) |  |  |
@@ -13494,33 +13491,6 @@ MsgUpdateAdminResponse returns empty data
 
 
 
-
-<a name="lbm.wasm.v1.MsgUpdateContractStatus"></a>
-
-### MsgUpdateContractStatus
-MsgUpdateContractStatus sets a new status for a smart contract
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `status` | [ContractStatus](#lbm.wasm.v1.ContractStatus) |  | Status to be set |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgUpdateContractStatusResponse"></a>
-
-### MsgUpdateContractStatusResponse
-MsgUpdateContractStatusResponse returns empty data
-
-
-
-
-
  <!-- end messages -->
 
  <!-- end enums -->
@@ -13542,7 +13512,6 @@ Msg defines the wasm Msg service.
 | `MigrateContract` | [MsgMigrateContract](#lbm.wasm.v1.MsgMigrateContract) | [MsgMigrateContractResponse](#lbm.wasm.v1.MsgMigrateContractResponse) | Migrate runs a code upgrade/ downgrade for a smart contract | |
 | `UpdateAdmin` | [MsgUpdateAdmin](#lbm.wasm.v1.MsgUpdateAdmin) | [MsgUpdateAdminResponse](#lbm.wasm.v1.MsgUpdateAdminResponse) | UpdateAdmin sets a new admin for a smart contract | |
 | `ClearAdmin` | [MsgClearAdmin](#lbm.wasm.v1.MsgClearAdmin) | [MsgClearAdminResponse](#lbm.wasm.v1.MsgClearAdminResponse) | ClearAdmin removes any admin stored for a smart contract | |
-| `UpdateContractStatus` | [MsgUpdateContractStatus](#lbm.wasm.v1.MsgUpdateContractStatus) | [MsgUpdateContractStatusResponse](#lbm.wasm.v1.MsgUpdateContractStatusResponse) | UpdateContractStatus sets a new status for a smart contract | |
 
  <!-- end services -->
 

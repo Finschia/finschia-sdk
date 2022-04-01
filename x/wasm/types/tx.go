@@ -280,43 +280,6 @@ func (msg MsgClearAdmin) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{senderAddr}
 }
 
-func (msg MsgUpdateContractStatus) Route() string {
-	return RouterKey
-}
-
-func (msg MsgUpdateContractStatus) Type() string {
-	return "update-contract-status"
-}
-
-func (msg MsgUpdateContractStatus) ValidateBasic() error {
-	if err := sdk.ValidateAccAddress(msg.Sender); err != nil {
-		return sdkerrors.Wrap(err, "sender")
-	}
-	if err := sdk.ValidateAccAddress(msg.Contract); err != nil {
-		return sdkerrors.Wrap(err, "contract")
-	}
-	found := false
-	for _, v := range AllContractStatus {
-		if msg.Status == v {
-			found = true
-			break
-		}
-	}
-	if !found || msg.Status == ContractStatusUnspecified {
-		return sdkerrors.Wrap(ErrInvalidMsg, "invalid status")
-	}
-	return nil
-}
-
-func (msg MsgUpdateContractStatus) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
-}
-
-func (msg MsgUpdateContractStatus) GetSigners() []sdk.AccAddress {
-	senderAddr := sdk.AccAddress(msg.Sender)
-	return []sdk.AccAddress{senderAddr}
-}
-
 func (msg MsgIBCSend) Route() string {
 	return RouterKey
 }
