@@ -1027,6 +1027,7 @@
     - [UnpinCodesProposal](#lbm.wasm.v1.UnpinCodesProposal)
     - [UpdateAdminProposal](#lbm.wasm.v1.UpdateAdminProposal)
     - [UpdateContractStatusProposal](#lbm.wasm.v1.UpdateContractStatusProposal)
+    - [UpdateInstantiateConfigProposal](#lbm.wasm.v1.UpdateInstantiateConfigProposal)
   
 - [lbm/wasm/v1/query.proto](#lbm/wasm/v1/query.proto)
     - [CodeInfoResponse](#lbm.wasm.v1.CodeInfoResponse)
@@ -14975,6 +14976,25 @@ UpdateStatusProposal gov proposal content type to update the contract status.
 | `description` | [string](#string) |  | Description is a human readable text |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
 | `status` | [ContractStatus](#lbm.wasm.v1.ContractStatus) |  | Status to be set |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.UpdateInstantiateConfigProposal"></a>
+
+### UpdateInstantiateConfigProposal
+UpdateInstantiateConfigProposal gov proposal content type to update
+instantiate config to a  set of code ids.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `code_ids` | [uint64](#uint64) | repeated | CodeIDs references the WASM codes |
+| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply to the set of code ids |
 
 
 

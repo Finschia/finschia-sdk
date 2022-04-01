@@ -50,6 +50,8 @@ func NewWasmProposalHandlerX(k types.ContractOpsKeeper, enabledProposalTypes []t
 			return handleUnpinCodesProposal(ctx, k, *c)
 		case *types.UpdateContractStatusProposal:
 			return handleUpdateContractStatusProposal(ctx, k, *c)
+		case *types.UpdateInstantiateConfigProposal:
+			return handleUpdateInstantiateConfigProposal(ctx, k, *c)
 		default:
 			return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized wasm proposal content type: %T", c)
 		}
@@ -287,5 +289,17 @@ func handleUpdateContractStatusProposal(ctx sdk.Context, k types.ContractOpsKeep
 		sdk.NewAttribute(types.AttributeKeyContractAddr, p.Contract),
 		sdk.NewAttribute(types.AttributeKeyContractStatus, p.Status.String()),
 	))
+	return nil
+}
+
+func handleUpdateInstantiateConfigProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.UpdateInstantiateConfigProposal) error {
+	if err := p.ValidateBasic(); err != nil {
+		return err
+	}
+	for _, v := range p.CodeIDs {
+		if err := k.SetAccessConfig(ctx, v, p.InstantiatePermission); err != nil {
+			return sdkerrors.Wrapf(err, "code id: %d", v)
+		}
+	}
 	return nil
 }
