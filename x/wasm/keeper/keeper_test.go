@@ -1068,14 +1068,14 @@ func TestMigrateWithDispatchedMessage(t *testing.T) {
 		{
 			"Type": "coin_received",
 			"Attr": []dict{
-				{"receiver": "link1wrtx8cgrx5qtqdjf7gpxe6mr6au74des5k2may"},
+				{"receiver": "link1pfvr4mx003jylaxrp9ckjze20ndsvxgfkwt864"},
 				{"amount": "100000denom"},
 			},
 		},
 		{
 			"Type": "transfer",
 			"Attr": []dict{
-				{"recipient": "link1wrtx8cgrx5qtqdjf7gpxe6mr6au74des5k2may"},
+				{"recipient": "link1pfvr4mx003jylaxrp9ckjze20ndsvxgfkwt864"},
 				{"sender": "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"},
 				{"amount": "100000denom"},
 			},
