@@ -64,6 +64,41 @@ func TestBalanceValidate(t *testing.T) {
 			},
 			true,
 		},
+		{
+			"0 value coin",
+			bank.Balance{
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
+				Coins: sdk.Coins{
+					sdk.NewInt64Coin("atom", 0),
+					sdk.NewInt64Coin("zatom", 2),
+				},
+			},
+			true,
+		},
+		{
+			"unsorted coins",
+			bank.Balance{
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
+				Coins: sdk.Coins{
+					sdk.NewInt64Coin("atom", 2),
+					sdk.NewInt64Coin("zatom", 2),
+					sdk.NewInt64Coin("batom", 12),
+				},
+			},
+			true,
+		},
+		{
+			"valid sorted coins",
+			bank.Balance{
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
+				Coins: sdk.Coins{
+					sdk.NewInt64Coin("atom", 2),
+					sdk.NewInt64Coin("batom", 12),
+					sdk.NewInt64Coin("zatom", 2),
+				},
+			},
+			false,
+		},
 	}
 
 	for _, tc := range testCases {

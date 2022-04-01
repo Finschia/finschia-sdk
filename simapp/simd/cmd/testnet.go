@@ -10,12 +10,13 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/spf13/cobra"
+
 	ostconfig "github.com/line/ostracon/config"
 	ostos "github.com/line/ostracon/libs/os"
 	ostrand "github.com/line/ostracon/libs/rand"
 	"github.com/line/ostracon/types"
 	osttime "github.com/line/ostracon/types/time"
-	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
@@ -25,6 +26,7 @@ import (
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/server"
 	srvconfig "github.com/line/lbm-sdk/server/config"
+	"github.com/line/lbm-sdk/testutil"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
@@ -178,7 +180,7 @@ func InitTestnet(
 			return err
 		}
 
-		addr, secret, err := server.GenerateSaveCoinKey(kb, nodeDirName, true, algo)
+		addr, secret, err := testutil.GenerateSaveCoinKey(kb, nodeDirName, "", true, algo)
 		if err != nil {
 			_ = os.RemoveAll(outputDir)
 			return err

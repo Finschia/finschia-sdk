@@ -11,7 +11,7 @@ import (
 	"github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/testutil/testdata"
-	"github.com/line/lbm-sdk/x/auth/client/rest"
+	"github.com/line/lbm-sdk/x/auth/client/cli"
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 )
 
@@ -132,7 +132,7 @@ func TestAminoCodecFullDecodeAndEncode(t *testing.T) {
 	require.Equal(t, string(marshaledTx), txSigned)
 
 	// Marshalling/unmarshalling the tx wrapped in a struct should work.
-	txRequest := &rest.BroadcastReq{
+	txRequest := &cli.BroadcastReq{
 		Mode: "block",
 		Tx:   tx,
 	}

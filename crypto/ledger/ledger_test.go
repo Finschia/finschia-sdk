@@ -9,7 +9,7 @@ import (
 	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/crypto/hd"
 	"github.com/line/lbm-sdk/crypto/types"
-	"github.com/line/lbm-sdk/testutil"
+	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 )
 
@@ -33,11 +33,11 @@ func checkDefaultPubKey(t *testing.T, priv types.LedgerPrivKey) {
 	expectedPkStr := "PubKeySecp256k1{02BCD96CAB102304AC10E90C5A0F29358E3A4A6FB1217B83E5DB657918EA28BEC1}"
 	require.Equal(t, "c03701b72102bcd96cab102304ac10e90c5a0f29358e3a4a6fb1217b83e5db657918ea28bec1",
 		fmt.Sprintf("%x", cdc.Amino.MustMarshalBinaryBare(priv.PubKey())),
-		"Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
+		"Is your device using test mnemonic: %s ?", testdata.TestMnemonic)
 	require.Equal(t, expectedPkStr, priv.PubKey().String())
 	addr := sdk.BytesToAccAddress(priv.PubKey().Address())
 	require.Equal(t, "link1tdl7n2acgmec0y5nng0q2fahl9khyct3cgsktn",
-		addr.String(), "Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
+		addr.String(), "Is your device using test mnemonic: %s ?", testdata.TestMnemonic)
 }
 
 func TestPublicKeyUnsafeHDPath(t *testing.T) {
@@ -74,7 +74,7 @@ func TestPublicKeyUnsafeHDPath(t *testing.T) {
 
 		// in this test we are chekcking if the generated keys are correct.
 		require.Equal(t, expectedAnswers[i], priv.PubKey().String(),
-			"Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
+			"Is your device using test mnemonic: %s ?", testdata.TestMnemonic)
 
 		// Store and restore
 		serializedPk := priv.Bytes()
@@ -151,7 +151,7 @@ func TestPublicKeyHDPath(t *testing.T) {
 		require.Equal(t, addr2, addr)
 		require.Equal(t,
 			expectedAddrs[i], addr,
-			"Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
+			"Is your device using test mnemonic: %s ?", testdata.TestMnemonic)
 
 		// Check other methods
 		tmp := priv.(PrivKeyLedgerSecp256k1)
@@ -161,7 +161,7 @@ func TestPublicKeyHDPath(t *testing.T) {
 		// in this test we are chekcking if the generated keys are correct and stored in a right path.
 		require.Equal(t,
 			expectedPubKeys[i], priv.PubKey().String(),
-			"Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
+			"Is your device using test mnemonic: %s ?", testdata.TestMnemonic)
 
 		// Store and restore
 		serializedPk := priv.Bytes()
@@ -203,7 +203,7 @@ func TestSignaturesHD(t *testing.T) {
 		require.NoError(t, err)
 
 		valid := pub.VerifySignature(msg, sig)
-		require.True(t, valid, "Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
+		require.True(t, valid, "Is your device using test mnemonic: %s ?", testdata.TestMnemonic)
 	}
 }
 

@@ -55,7 +55,6 @@ func (store *Store) GetStoreType() types.StoreType {
 
 // Get implements types.KVStore.
 func (store *Store) Get(key []byte) (value []byte) {
-
 	types.AssertValidKey(key)
 	store.mtx.RLock()
 	defer store.mtx.RUnlock()
@@ -71,7 +70,6 @@ func (store *Store) Get(key []byte) (value []byte) {
 
 // Set implements types.KVStore.
 func (store *Store) Set(key []byte, value []byte) {
-
 	types.AssertValidKey(key)
 	types.AssertValidValue(value)
 
@@ -126,15 +124,19 @@ func (store *Store) Write() {
 	// TODO: Consider allowing usage of Batch, which would allow the write to
 	// at least happen atomically.
 	for _, key := range keys {
-		v, _ := store.cache.Load(key)
-		cacheValue := v.(*cValue)
-
-		switch {
-		case store.isDeleted(key):
+		if store.isDeleted(key) {
+			// We use []byte(key) instead of conv.UnsafeStrToBytes because we cannot
+			// be sure if the underlying store might do a save with the byteslice or
+			// not. Once we get confirmation that .Delete is guaranteed not to
+			// save the byteslice, then we can assume only a read-only copy is sufficient.
 			store.parent.Delete([]byte(key))
-		case cacheValue.value == nil:
-			// Skip, it already doesn't exist in parent.
-		default:
+			continue
+		}
+
+		v, ok := store.cache.Load(key)
+		cacheValue := v.(*cValue)
+		if ok && cacheValue != nil {
+			// It already exists in the parent, hence delete it.
 			store.parent.Set([]byte(key), cacheValue.value)
 		}
 	}
@@ -192,6 +194,7 @@ func (store *Store) iterator(start, end []byte, ascending bool) types.Iterator {
 	return newCacheMergeIterator(parent, cache, ascending)
 }
 
+// TODO(dudong2): need to bump up this func - (https://github.com/cosmos/cosmos-sdk/pull/10024)
 // Constructs a slice of dirty items, to use w/ memIterator.
 func (store *Store) dirtyItems(start, end []byte) {
 	unsorted := make([]*kv.Pair, 0)

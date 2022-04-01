@@ -1109,7 +1109,9 @@ pagination. Ex:
 | `offset` | [uint64](#uint64) |  | offset is a numeric offset that can be used when key is unavailable. It is less efficient than using key. Only one of offset or key should be set. |
 | `limit` | [uint64](#uint64) |  | limit is the total number of results to be returned in the result page. If left empty it will default to a value to be set by each app. |
 | `count_total` | [bool](#bool) |  | count_total is set to true to indicate that the result set should include a count of the total number of items available for pagination in UIs. count_total is only respected when offset is used. It is ignored when key is set. |
-| `reverse` | [bool](#bool) |  | reverse is set to true if results are to be returned in the descending order. |
+| `reverse` | [bool](#bool) |  | reverse is set to true if results are to be returned in the descending order.
+
+Since: cosmos-sdk 0.43 |
 
 
 
@@ -1377,6 +1379,8 @@ upgrade.
 
 ### ModuleVersion
 ModuleVersion specifies a module and its consensus version.
+
+Since: cosmos-sdk 0.43
 
 
 | Field | Type | Label | Description |
@@ -4405,7 +4409,7 @@ This prefix is followed with the x-coordinate.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/crypto/secp256r1/keys.proto
-
+Since: cosmos-sdk 0.43
 
 
 <a name="lbm.crypto.secp256r1.PrivKey"></a>
@@ -4596,6 +4600,8 @@ QueryAccountResponse is the response type for the Query/Account RPC method.
 ### QueryAccountsRequest
 QueryAccountsRequest is the request type for the Query/Accounts RPC method.
 
+Since: cosmos-sdk 0.43
+
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -4610,6 +4616,8 @@ QueryAccountsRequest is the request type for the Query/Accounts RPC method.
 
 ### QueryAccountsResponse
 QueryAccountsResponse is the response type for the Query/Accounts RPC method.
+
+Since: cosmos-sdk 0.43
 
 
 | Field | Type | Label | Description |
@@ -4660,7 +4668,9 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Accounts` | [QueryAccountsRequest](#lbm.auth.v1.QueryAccountsRequest) | [QueryAccountsResponse](#lbm.auth.v1.QueryAccountsResponse) | Accounts returns all the existing accounts | GET|/lbm/auth/v1/accounts|
+| `Accounts` | [QueryAccountsRequest](#lbm.auth.v1.QueryAccountsRequest) | [QueryAccountsResponse](#lbm.auth.v1.QueryAccountsResponse) | Accounts returns all the existing accounts
+
+Since: cosmos-sdk 0.43 | GET|/lbm/auth/v1/accounts|
 | `Account` | [QueryAccountRequest](#lbm.auth.v1.QueryAccountRequest) | [QueryAccountResponse](#lbm.auth.v1.QueryAccountResponse) | Account returns account details based on address. | GET|/lbm/auth/v1/accounts/{address}|
 | `Params` | [QueryParamsRequest](#lbm.auth.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.auth.v1.QueryParamsResponse) | Params queries all parameters. | GET|/lbm/auth/v1/params|
 
@@ -4723,7 +4733,7 @@ Msg defines the auth Msg service.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/authz/v1/authz.proto
-
+Since: cosmos-sdk 0.43
 
 
 <a name="lbm.authz.v1.GenericAuthorization"></a>
@@ -4772,7 +4782,7 @@ the provide method with expiration time.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/authz/v1/event.proto
-
+Since: cosmos-sdk 0.43
 
 
 <a name="lbm.authz.v1.EventGrant"></a>
@@ -5022,7 +5032,7 @@ Since: cosmos-sdk 0.42.11, 0.44.5, 0.45 |
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/authz/v1/tx.proto
-
+Since: cosmos-sdk 0.43
 
 
 <a name="lbm.authz.v1.MsgExec"></a>
@@ -5139,7 +5149,7 @@ Msg defines the authz Msg service.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/authz/v1/genesis.proto
-
+Since: cosmos-sdk 0.43
 
 
 <a name="lbm.authz.v1.GenesisState"></a>
@@ -5188,7 +5198,7 @@ GrantAuthorization defines the GenesisState/GrantAuthorization type.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/authz/v1/query.proto
-
+Since: cosmos-sdk 0.43
 
 
 <a name="lbm.authz.v1.QueryGrantsRequest"></a>
@@ -5256,6 +5266,8 @@ Query defines the gRPC querier service.
 ### SendAuthorization
 SendAuthorization allows the grantee to spend up to spend_limit coins from
 the granter's account.
+
+Since: cosmos-sdk 0.43
 
 
 | Field | Type | Label | Description |
@@ -5330,8 +5342,12 @@ a basic token.
 | `denom_units` | [DenomUnit](#lbm.bank.v1.DenomUnit) | repeated | denom_units represents the list of DenomUnit's for a given coin |
 | `base` | [string](#string) |  | base represents the base denom (should be the DenomUnit with exponent = 0). |
 | `display` | [string](#string) |  | display indicates the suggested denom that should be displayed in clients. |
-| `name` | [string](#string) |  | name defines the name of the token (eg: Cosmos Atom) |
-| `symbol` | [string](#string) |  | symbol is the token symbol usually shown on exchanges (eg: ATOM). This can be the same as the display. |
+| `name` | [string](#string) |  | name defines the name of the token (eg: Cosmos Atom)
+
+Since: cosmos-sdk 0.43 |
+| `symbol` | [string](#string) |  | symbol is the token symbol usually shown on exchanges (eg: ATOM). This can be the same as the display.
+
+Since: cosmos-sdk 0.43 |
 
 
 
@@ -5662,7 +5678,9 @@ method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request.
+
+Since: cosmos-sdk 0.43 |
 
 
 
@@ -5679,7 +5697,9 @@ method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `supply` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | supply is the supply of the coins |
-| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response.
+
+Since: cosmos-sdk 0.43 |
 
 
 
@@ -6163,7 +6183,7 @@ VersionInfo is the type for the GetNodeInfoResponse message.
 | `build_tags` | [string](#string) |  |  |
 | `go_version` | [string](#string) |  |  |
 | `build_deps` | [Module](#lbm.base.ostracon.v1.Module) | repeated |  |
-| `lbm_sdk_version` | [string](#string) |  |  |
+| `lbm_sdk_version` | [string](#string) |  | Since: cosmos-sdk 0.43 |
 
 
 
@@ -6284,7 +6304,7 @@ ReflectionService defines a service for interface reflection.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/base/reflection/v2/reflection.proto
-
+Since: cosmos-sdk 0.43
 
 
 <a name="lbm.base.reflection.v2.AppDescriptor"></a>
@@ -6823,6 +6843,8 @@ between a store name and the commit ID.
 StoreKVPair is a KVStore KVPair used for listening to state changes (Sets and Deletes)
 It optionally includes the StoreKey for the originating KVStore and a Boolean flag to distinguish between Sets and
 Deletes
+
+Since: cosmos-sdk 0.43
 
 
 | Field | Type | Label | Description |
@@ -8506,7 +8528,7 @@ Msg defines the evidence Msg service.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/feegrant/v1/feegrant.proto
-
+Since: cosmos-sdk 0.43
 
 
 <a name="lbm.feegrant.v1.AllowedMsgAllowance"></a>
@@ -8592,7 +8614,7 @@ as well as a limit per time period.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/feegrant/v1/genesis.proto
-
+Since: cosmos-sdk 0.43
 
 
 <a name="lbm.feegrant.v1.GenesisState"></a>
@@ -8623,7 +8645,7 @@ GenesisState contains a set of fee allowances, persisted from the store
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/feegrant/v1/query.proto
-
+Since: cosmos-sdk 0.43
 
 
 <a name="lbm.feegrant.v1.QueryAllowanceRequest"></a>
@@ -8713,7 +8735,7 @@ Query defines the gRPC querier service.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/feegrant/v1/tx.proto
-
+Since: cosmos-sdk 0.43
 
 
 <a name="lbm.feegrant.v1.MsgGrantAllowance"></a>
@@ -8949,7 +8971,7 @@ A Vote consists of a proposal ID, the voter, and the vote option.
 | `proposal_id` | [uint64](#uint64) |  |  |
 | `voter` | [string](#string) |  |  |
 | `option` | [VoteOption](#lbm.gov.v1.VoteOption) |  | **Deprecated.** Deprecated: Prefer to use `options` instead. This field is set in queries if and only if `len(options) == 1` and that option has weight 1. In all other cases, this field will default to VOTE_OPTION_UNSPECIFIED. |
-| `options` | [WeightedVoteOption](#lbm.gov.v1.WeightedVoteOption) | repeated |  |
+| `options` | [WeightedVoteOption](#lbm.gov.v1.WeightedVoteOption) | repeated | Since: cosmos-sdk 0.43 |
 
 
 
@@ -8975,6 +8997,8 @@ VotingParams defines the params for voting on governance proposals.
 
 ### WeightedVoteOption
 WeightedVoteOption defines a unit of vote for vote split.
+
+Since: cosmos-sdk 0.43
 
 
 | Field | Type | Label | Description |
@@ -9449,6 +9473,8 @@ MsgVoteResponse defines the Msg/Vote response type.
 ### MsgVoteWeighted
 MsgVoteWeighted defines a message to cast a vote.
 
+Since: cosmos-sdk 0.43
+
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -9465,6 +9491,8 @@ MsgVoteWeighted defines a message to cast a vote.
 
 ### MsgVoteWeightedResponse
 MsgVoteWeightedResponse defines the Msg/VoteWeighted response type.
+
+Since: cosmos-sdk 0.43
 
 
 
@@ -9486,7 +9514,9 @@ Msg defines the bank Msg service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `SubmitProposal` | [MsgSubmitProposal](#lbm.gov.v1.MsgSubmitProposal) | [MsgSubmitProposalResponse](#lbm.gov.v1.MsgSubmitProposalResponse) | SubmitProposal defines a method to create new proposal given a content. | |
 | `Vote` | [MsgVote](#lbm.gov.v1.MsgVote) | [MsgVoteResponse](#lbm.gov.v1.MsgVoteResponse) | Vote defines a method to add a vote on a specific proposal. | |
-| `VoteWeighted` | [MsgVoteWeighted](#lbm.gov.v1.MsgVoteWeighted) | [MsgVoteWeightedResponse](#lbm.gov.v1.MsgVoteWeightedResponse) | VoteWeighted defines a method to add a weighted vote on a specific proposal. | |
+| `VoteWeighted` | [MsgVoteWeighted](#lbm.gov.v1.MsgVoteWeighted) | [MsgVoteWeightedResponse](#lbm.gov.v1.MsgVoteWeightedResponse) | VoteWeighted defines a method to add a weighted vote on a specific proposal.
+
+Since: cosmos-sdk 0.43 | |
 | `Deposit` | [MsgDeposit](#lbm.gov.v1.MsgDeposit) | [MsgDepositResponse](#lbm.gov.v1.MsgDepositResponse) | Deposit defines a method to add deposit on a specific proposal. | |
 
  <!-- end services -->
@@ -10109,6 +10139,8 @@ Msg defines the slashing Msg service.
 ### StakeAuthorization
 StakeAuthorization defines authorization for delegate/undelegate/redelegate.
 
+Since: cosmos-sdk 0.43
+
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -10143,6 +10175,8 @@ Validators defines list of validator addresses.
 
 ### AuthorizationType
 AuthorizationType defines the type of staking module authorization type
+
+Since: cosmos-sdk 0.43
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
@@ -12617,7 +12651,9 @@ RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `tx` | [Tx](#lbm.tx.v1.Tx) |  | **Deprecated.** tx is the transaction to simulate. Deprecated. Send raw tx bytes instead. |
-| `tx_bytes` | [bytes](#bytes) |  | tx_bytes is the raw transaction. |
+| `tx_bytes` | [bytes](#bytes) |  | tx_bytes is the raw transaction.
+
+Since: cosmos-sdk 0.43 |
 
 
 
@@ -12762,6 +12798,8 @@ method.
 QueryModuleVersionsRequest is the request type for the Query/ModuleVersions
 RPC method.
 
+Since: cosmos-sdk 0.43
+
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -12777,6 +12815,8 @@ RPC method.
 ### QueryModuleVersionsResponse
 QueryModuleVersionsResponse is the response type for the Query/ModuleVersions
 RPC method.
+
+Since: cosmos-sdk 0.43
 
 
 | Field | Type | Label | Description |
@@ -12813,7 +12853,7 @@ RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `upgraded_consensus_state` | [bytes](#bytes) |  |  |
+| `upgraded_consensus_state` | [bytes](#bytes) |  | Since: cosmos-sdk 0.43 |
 
 
 
@@ -12835,8 +12875,10 @@ Query defines the gRPC upgrade querier service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `CurrentPlan` | [QueryCurrentPlanRequest](#lbm.upgrade.v1.QueryCurrentPlanRequest) | [QueryCurrentPlanResponse](#lbm.upgrade.v1.QueryCurrentPlanResponse) | CurrentPlan queries the current upgrade plan. | GET|/lbm/upgrade/v1/current_plan|
 | `AppliedPlan` | [QueryAppliedPlanRequest](#lbm.upgrade.v1.QueryAppliedPlanRequest) | [QueryAppliedPlanResponse](#lbm.upgrade.v1.QueryAppliedPlanResponse) | AppliedPlan queries a previously applied upgrade plan by its name. | GET|/lbm/upgrade/v1/applied_plan/{name}|
-| `UpgradedConsensusState` | [QueryUpgradedConsensusStateRequest](#lbm.upgrade.v1.QueryUpgradedConsensusStateRequest) | [QueryUpgradedConsensusStateResponse](#lbm.upgrade.v1.QueryUpgradedConsensusStateResponse) | UpgradedConsensusState queries the consensus state that will serve as a trusted kernel for the next version of this chain. It will only be stored at the last height of this chain. UpgradedConsensusState RPC not supported with legacy querier | GET|/lbm/upgrade/v1/upgraded_consensus_state/{last_height}|
-| `ModuleVersions` | [QueryModuleVersionsRequest](#lbm.upgrade.v1.QueryModuleVersionsRequest) | [QueryModuleVersionsResponse](#lbm.upgrade.v1.QueryModuleVersionsResponse) | ModuleVersions queries the list of module versions from state. | GET|/lbm/upgrade/v1/module_versions|
+| `UpgradedConsensusState` | [QueryUpgradedConsensusStateRequest](#lbm.upgrade.v1.QueryUpgradedConsensusStateRequest) | [QueryUpgradedConsensusStateResponse](#lbm.upgrade.v1.QueryUpgradedConsensusStateResponse) | UpgradedConsensusState queries the consensus state that will serve as a trusted kernel for the next version of this chain. It will only be stored at the last height of this chain. UpgradedConsensusState RPC not supported with legacy querier This rpc is deprecated now that IBC has its own replacement (https://github.com/cosmos/ibc-go/blob/2c880a22e9f9cc75f62b527ca94aa75ce1106001/proto/ibc/core/client/v1/query.proto#L54) | GET|/lbm/upgrade/v1/upgraded_consensus_state/{last_height}|
+| `ModuleVersions` | [QueryModuleVersionsRequest](#lbm.upgrade.v1.QueryModuleVersionsRequest) | [QueryModuleVersionsResponse](#lbm.upgrade.v1.QueryModuleVersionsResponse) | ModuleVersions queries the list of module versions from state.
+
+Since: cosmos-sdk 0.43 | GET|/lbm/upgrade/v1/module_versions|
 
  <!-- end services -->
 
@@ -12999,6 +13041,8 @@ periodically vests by unlocking coins during each specified period.
 PermanentLockedAccount implements the VestingAccount interface. It does
 not ever release coins, locking them indefinitely. Coins in this account can
 still be used for delegating and for governance votes even while locked.
+
+Since: cosmos-sdk 0.43
 
 
 | Field | Type | Label | Description |

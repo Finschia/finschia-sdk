@@ -3,7 +3,6 @@ package types
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"sort"
 
 	"github.com/line/lbm-sdk/codec"
@@ -29,28 +28,10 @@ func (b Balance) Validate() error {
 	if err != nil {
 		return err
 	}
-	seenDenoms := make(map[string]bool)
 
-	// NOTE: we perform a custom validation since the coins.Validate function
-	// errors on zero balance coins
-	for _, coin := range b.Coins {
-		if seenDenoms[coin.Denom] {
-			return fmt.Errorf("duplicate denomination %s", coin.Denom)
-		}
-
-		if err := sdk.ValidateDenom(coin.Denom); err != nil {
-			return err
-		}
-
-		if coin.IsNegative() {
-			return fmt.Errorf("coin %s amount is cannot be negative", coin.Denom)
-		}
-
-		seenDenoms[coin.Denom] = true
+	if err := b.Coins.Validate(); err != nil {
+		return err
 	}
-
-	// sort the coins post validation
-	b.Coins.Sort()
 
 	return nil
 }

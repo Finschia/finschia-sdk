@@ -7,7 +7,7 @@ import (
 
 	"github.com/line/lbm-sdk/crypto/hd"
 	"github.com/line/lbm-sdk/crypto/ledger"
-	"github.com/line/lbm-sdk/testutil"
+	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 )
 
@@ -21,6 +21,6 @@ func TestBeach32ifPbKey(t *testing.T) {
 	pubKeyAddr, err := MarshalPubKey(AccPK, priv.PubKey())
 	require.NoError(err)
 	require.Equal("linkpub1cqmsrdepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzygzwr2",
-		pubKeyAddr, "Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
+		pubKeyAddr, "Is your device using test mnemonic: %s ?", testdata.TestMnemonic)
 
 }

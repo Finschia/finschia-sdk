@@ -285,18 +285,11 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		}
 
 		// Check account sequence number.
-		// When using Amino StdSignatures, we actually don't have the Sequence in
-		// the SignatureV2 struct (it's only in the SignDoc). In this case, we
-		// cannot check sequence directly, and must do it via signature
-		// verification (in the VerifySignature call below).
-		onlyAminoSigners := OnlyLegacyAminoSigners(sig.Data)
-		if !onlyAminoSigners {
-			if sig.Sequence != acc.GetSequence() {
-				return ctx, sdkerrors.Wrapf(
-					sdkerrors.ErrWrongSequence,
-					"account sequence mismatch, expected %d, got %d", acc.GetSequence(), sig.Sequence,
-				)
-			}
+		if sig.Sequence != acc.GetSequence() {
+			return ctx, sdkerrors.Wrapf(
+				sdkerrors.ErrWrongSequence,
+				"account sequence mismatch, expected %d, got %d", acc.GetSequence(), sig.Sequence,
+			)
 		}
 
 		// retrieve signer data
@@ -312,31 +305,33 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 			Sequence:      acc.GetSequence(),
 		}
 
-		if !genesis {
-			sigKey := fmt.Sprintf("%d:%d", signerData.AccountNumber, signerData.Sequence)
-			// TODO could we use `tx.(*wrapper).getBodyBytes()` instead of `ctx.TxBytes()`?
-			txHash := sha256.Sum256(ctx.TxBytes())
-			stored := false
+		if !simulate {
+			if !genesis {
+				sigKey := fmt.Sprintf("%d:%d", signerData.AccountNumber, signerData.Sequence)
+				// TODO could we use `tx.(*wrapper).getBodyBytes()` instead of `ctx.TxBytes()`?
+				txHash := sha256.Sum256(ctx.TxBytes())
+				stored := false
 
-			stored, err = svd.verifySignatureWithCache(ctx, pubKey, signerData, sig.Data, tx, sigKey, txHash[:])
+				stored, err = svd.verifySignatureWithCache(ctx, pubKey, signerData, sig.Data, tx, sigKey, txHash[:])
 
-			if stored {
-				newSigKeys = append(newSigKeys, sigKey)
-			}
-		} else {
-			err = authsigning.VerifySignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx)
-		}
-
-		if err != nil {
-			var errMsg string
-			if onlyAminoSigners {
-				// If all signers are using SIGN_MODE_LEGACY_AMINO, we rely on VerifySignature to check account sequence number,
-				// and therefore communicate sequence number as a potential cause of error.
-				errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d), sequence (%d) and chain-id (%s)", accNum, acc.GetSequence(), chainID)
+				if stored {
+					newSigKeys = append(newSigKeys, sigKey)
+				}
 			} else {
-				errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d) and chain-id (%s)", accNum, chainID)
+				err = authsigning.VerifySignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx)
 			}
-			return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, errMsg)
+
+			if err != nil {
+				var errMsg string
+				if OnlyLegacyAminoSigners(sig.Data) {
+					// If all signers are using SIGN_MODE_LEGACY_AMINO, we rely on VerifySignature to check account sequence number,
+					// and therefore communicate sequence number as a potential cause of error.
+					errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d), sequence (%d) and chain-id (%s)", accNum, acc.GetSequence(), chainID)
+				} else {
+					errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d) and chain-id (%s)", accNum, chainID)
+				}
+				return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, errMsg)
+			}
 		}
 	}
 

@@ -77,7 +77,7 @@ type BaseConfig struct {
 	InterBlockCacheSize int `mapstructure:"inter-block-cache-size"`
 
 	// IAVL cache size; bytes size unit
-	IAVLCacheSize int `mapstructure:"iavl-cache-size"`
+	IAVLCacheSize uint64 `mapstructure:"iavl-cache-size"`
 
 	// Bech32CacheSize is the maximum bytes size of bech32 cache (Default : 1GB)
 	Bech32CacheSize int `mapstructure:"bech32-cache-size"`
@@ -292,6 +292,7 @@ func GetConfig(v *viper.Viper) Config {
 			HaltTime:          v.GetUint64("halt-time"),
 			IndexEvents:       v.GetStringSlice("index-events"),
 			MinRetainBlocks:   v.GetUint64("min-retain-blocks"),
+			IAVLCacheSize:     v.GetUint64("iavl-cache-size"),
 		},
 		Telemetry: telemetry.Config{
 			ServiceName:             v.GetString("telemetry.service-name"),

@@ -9,10 +9,11 @@ import (
 
 	btcSecp256k1 "github.com/btcsuite/btcd/btcec"
 	"github.com/cosmos/btcutil/base58"
-	"github.com/line/ostracon/crypto"
-	ostsecp256k1 "github.com/line/ostracon/crypto/secp256k1"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/line/ostracon/crypto"
+	ostsecp256k1 "github.com/line/ostracon/crypto/secp256k1"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"

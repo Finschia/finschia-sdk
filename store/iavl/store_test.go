@@ -95,17 +95,17 @@ func TestLoadStore(t *testing.T) {
 	require.Equal(t, string(hcStore.Get([]byte("hello"))), "ciao")
 
 	// Querying a new store at some previous non-pruned height H
-	newHStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDH, false)
+	newHStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDH, false, DefaultIAVLCacheSize)
 	require.NoError(t, err)
 	require.Equal(t, string(newHStore.Get([]byte("hello"))), "hallo")
 
 	// Querying a new store at some previous pruned height Hp
-	newHpStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDHp, false)
+	newHpStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDHp, false, DefaultIAVLCacheSize)
 	require.NoError(t, err)
 	require.Equal(t, string(newHpStore.Get([]byte("hello"))), "hola")
 
 	// Querying a new store at current height H
-	newHcStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDHc, false)
+	newHcStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDHc, false, DefaultIAVLCacheSize)
 	require.NoError(t, err)
 	require.Equal(t, string(newHcStore.Get([]byte("hello"))), "ciao")
 }

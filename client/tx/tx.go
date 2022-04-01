@@ -319,9 +319,7 @@ func prepareFactory(clientCtx client.Context, txf Factory) (Factory, error) {
 	if initNum == 0 || initSeq == 0 {
 		num, seq, err := txf.accountRetriever.GetAccountNumberSequence(clientCtx, from)
 		if err != nil {
-			if cliError, ok := err.(*client.Error); !ok || cliError.Code != sdkerrors.ErrKeyNotFound.ABCICode() {
-				return txf, err
-			}
+			return txf, err
 		}
 
 		if initNum == 0 {

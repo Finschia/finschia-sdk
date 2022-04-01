@@ -50,6 +50,7 @@ type Store struct {
 	db             tmdb.DB
 	lastCommitInfo *types.CommitInfo
 	pruningOpts    types.PruningOptions
+	iavlCacheSize  int
 	storesParams   map[types.StoreKey]storeParams
 	stores         map[types.StoreKey]types.CommitKVStore
 	keysByName     map[string]types.StoreKey
@@ -80,15 +81,16 @@ var (
 // LoadVersion must be called.
 func NewStore(db tmdb.DB) *Store {
 	return &Store{
-		db:           db,
-		pruningOpts:  types.PruneNothing,
-		storesParams: make(map[types.StoreKey]storeParams),
-		stores:       make(map[types.StoreKey]types.CommitKVStore),
-		keysByName:   make(map[string]types.StoreKey),
-		pruneHeights: make([]int64, 0),
-		pruneLock:    &sync.Mutex{},
-		prunePass:    make(chan bool, 1),
-		listeners:    make(map[types.StoreKey][]types.WriteListener),
+		db:            db,
+		pruningOpts:   types.PruneNothing,
+		storesParams:  make(map[types.StoreKey]storeParams),
+		stores:        make(map[types.StoreKey]types.CommitKVStore),
+		keysByName:    make(map[string]types.StoreKey),
+		pruneHeights:  make([]int64, 0),
+		pruneLock:     &sync.Mutex{},
+		prunePass:     make(chan bool, 1),
+		listeners:     make(map[types.StoreKey][]types.WriteListener),
+		iavlCacheSize: iavl.DefaultIAVLCacheSize,
 	}
 }
 
@@ -102,6 +104,10 @@ func (rs *Store) GetPruning() types.PruningOptions {
 // LoadLatestVersion performs a no-op as the stores aren't mounted yet.
 func (rs *Store) SetPruning(pruningOpts types.PruningOptions) {
 	rs.pruningOpts = pruningOpts
+}
+
+func (rs *Store) SetIAVLCacheSize(cacheSize int) {
+	rs.iavlCacheSize = cacheSize
 }
 
 // SetLazyLoading sets if the iavl store should be loaded lazily or not
@@ -209,8 +215,8 @@ func (rs *Store) loadVersion(ver int64, upgrades *types.StoreUpgrades) error {
 	}
 	if upgrades != nil {
 		// deterministic iteration order for upgrades
-		// (as the underlyin store may change and
-		// upgrades make store change where the execution order may matter)
+		// (as the underlying store may change and
+		// upgrades make store changes where the execution order may matter)
 		sort.Slice(storesKeys, func(i, j int) bool {
 			return storesKeys[i].Name() < storesKeys[j].Name()
 		})
@@ -932,10 +938,9 @@ func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID
 		var err error
 
 		if params.initialVersion == 0 {
-			store, err = iavl.LoadStore(db, rs.iavlCacheManager, id, rs.lazyLoading)
+			store, err = iavl.LoadStore(db, rs.iavlCacheManager, id, rs.lazyLoading, rs.iavlCacheSize)
 		} else {
-			store, err = iavl.LoadStoreWithInitialVersion(db, rs.iavlCacheManager, id, rs.lazyLoading,
-				params.initialVersion)
+			store, err = iavl.LoadStoreWithInitialVersion(db, rs.iavlCacheManager, id, rs.lazyLoading, params.initialVersion, rs.iavlCacheSize)
 		}
 
 		if err != nil {
