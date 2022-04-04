@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/line/lbm-sdk/client"
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/bech32/legacybech32" //nolint:staticcheck
 	"github.com/line/lbm-sdk/types/rest"
 	"github.com/line/lbm-sdk/x/slashing/types"
 )
@@ -29,11 +29,11 @@ func registerQueryRoutes(clientCtx client.Context, r *mux.Router) {
 	).Methods("GET")
 }
 
-// http request handler to query signing info
+// Deprecated: http request handler to query signing info
 func signingInfoHandlerFn(clientCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		pk, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, vars["validatorPubKey"])
+		pk, err := legacybech32.UnmarshalPubKey(legacybech32.ConsPK, vars["validatorPubKey"])
 		if rest.CheckBadRequestError(w, err) {
 			return
 		}

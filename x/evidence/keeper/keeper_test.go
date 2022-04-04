@@ -14,10 +14,10 @@ import (
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/evidence/exported"
 	"github.com/line/lbm-sdk/x/evidence/keeper"
 	"github.com/line/lbm-sdk/x/evidence/types"
+	minttypes "github.com/line/lbm-sdk/x/mint/types"
 	"github.com/line/lbm-sdk/x/staking"
 )
 
@@ -34,7 +34,8 @@ var (
 		sdk.BytesToValAddress(pubkeys[2].Address()),
 	}
 
-	initAmt   = sdk.TokensFromConsensusPower(200)
+	// The default power validators are initialized to have within tests
+	initAmt   = sdk.TokensFromConsensusPower(200, sdk.DefaultPowerReduction)
 	initCoins = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, initAmt))
 )
 
@@ -130,11 +131,10 @@ func (suite *KeeperTestSuite) populateValidators(ctx sdk.Context) {
 	// add accounts and set total supply
 	totalSupplyAmt := initAmt.MulRaw(int64(len(valAddresses)))
 	totalSupply := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, totalSupplyAmt))
-	suite.app.BankKeeper.SetSupply(ctx, banktypes.NewSupply(totalSupply))
+	suite.NoError(suite.app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, totalSupply))
 
 	for _, addr := range valAddresses {
-		err := suite.app.BankKeeper.AddCoins(ctx, addr.ToAccAddress(), initCoins)
-		suite.NoError(err)
+		suite.NoError(suite.app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr.ToAccAddress(), initCoins))
 	}
 }
 

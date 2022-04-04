@@ -89,9 +89,9 @@ func addUint64Overflow(a, b uint64) (uint64, bool) {
 
 func (g *basicGasMeter) ConsumeGas(amount Gas, descriptor string) {
 	var overflow bool
-	// TODO: Should we set the consumed field after overflow checking?
 	g.consumed, overflow = addUint64Overflow(g.consumed, amount)
 	if overflow {
+		g.consumed = math.MaxUint64
 		panic(ErrorGasOverflow{descriptor})
 	}
 
@@ -205,5 +205,18 @@ func KVGasConfig() GasConfig {
 		WriteCostFlat:    2000,
 		WriteCostPerByte: 30,
 		IterNextCostFlat: 30,
+	}
+}
+
+// TransientGasConfig returns a default gas config for TransientStores.
+func TransientGasConfig() GasConfig {
+	return GasConfig{
+		HasCost:          100,
+		DeleteCost:       100,
+		ReadCostFlat:     100,
+		ReadCostPerByte:  0,
+		WriteCostFlat:    200,
+		WriteCostPerByte: 3,
+		IterNextCostFlat: 3,
 	}
 }

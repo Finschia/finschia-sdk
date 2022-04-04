@@ -10,7 +10,7 @@ import (
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
-func ParamChanges(r *rand.Rand, cdc codec.Marshaler) []simtypes.ParamChange {
+func ParamChanges(r *rand.Rand, cdc codec.Codec) []simtypes.ParamChange {
 	params := RandomParams(r)
 	return []simtypes.ParamChange{
 		simulation.NewSimParamChange(types.ModuleName, string(types.ParamStoreKeyUploadAccess),

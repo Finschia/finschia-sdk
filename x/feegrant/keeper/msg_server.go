@@ -4,9 +4,8 @@ import (
 	"context"
 
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/feegrant/types"
-
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/feegrant"
 )
 
 type msgServer struct {
@@ -15,16 +14,16 @@ type msgServer struct {
 
 // NewMsgServerImpl returns an implementation of the feegrant MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(k Keeper) types.MsgServer {
+func NewMsgServerImpl(k Keeper) feegrant.MsgServer {
 	return &msgServer{
 		Keeper: k,
 	}
 }
 
-var _ types.MsgServer = msgServer{}
+var _ feegrant.MsgServer = msgServer{}
 
 // GrantAllowance grants an allowance from the granter's funds to be used by the grantee.
-func (k msgServer) GrantAllowance(goCtx context.Context, msg *types.MsgGrantAllowance) (*types.MsgGrantAllowanceResponse, error) {
+func (k msgServer) GrantAllowance(goCtx context.Context, msg *feegrant.MsgGrantAllowance) (*feegrant.MsgGrantAllowanceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	err := sdk.ValidateAccAddress(msg.Grantee)
@@ -54,11 +53,11 @@ func (k msgServer) GrantAllowance(goCtx context.Context, msg *types.MsgGrantAllo
 		return nil, err
 	}
 
-	return &types.MsgGrantAllowanceResponse{}, nil
+	return &feegrant.MsgGrantAllowanceResponse{}, nil
 }
 
 // RevokeAllowance revokes a fee allowance between a granter and grantee.
-func (k msgServer) RevokeAllowance(goCtx context.Context, msg *types.MsgRevokeAllowance) (*types.MsgRevokeAllowanceResponse, error) {
+func (k msgServer) RevokeAllowance(goCtx context.Context, msg *feegrant.MsgRevokeAllowance) (*feegrant.MsgRevokeAllowanceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	err := sdk.ValidateAccAddress(msg.Grantee)
@@ -78,5 +77,5 @@ func (k msgServer) RevokeAllowance(goCtx context.Context, msg *types.MsgRevokeAl
 		return nil, err
 	}
 
-	return &types.MsgRevokeAllowanceResponse{}, nil
+	return &feegrant.MsgRevokeAllowanceResponse{}, nil
 }

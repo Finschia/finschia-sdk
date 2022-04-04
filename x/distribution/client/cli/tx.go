@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
@@ -155,7 +154,7 @@ $ %[1]s tx distribution withdraw-all-rewards --from mykey
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
-			delValsRes, err := queryClient.DelegatorValidators(context.Background(), &types.QueryDelegatorValidatorsRequest{DelegatorAddress: delAddr.String()})
+			delValsRes, err := queryClient.DelegatorValidators(cmd.Context(), &types.QueryDelegatorValidatorsRequest{DelegatorAddress: delAddr.String()})
 			if err != nil {
 				return err
 			}
@@ -218,11 +217,9 @@ $ %s tx distribution set-withdraw-addr %s1gghjut3ccd8ay0zduzj64hwre2fxs9ld75ru9p
 			if err != nil {
 				return err
 			}
+			withdrawAddr := sdk.AccAddress(args[0])
 
-			msg := types.NewMsgSetWithdrawAddress(delAddr, sdk.AccAddress(args[0]))
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
+			msg := types.NewMsgSetWithdrawAddress(delAddr, withdrawAddr)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -259,9 +256,6 @@ $ %s tx distribution fund-community-pool 100uatom --from mykey
 			}
 
 			msg := types.NewMsgFundCommunityPool(amount, depositorAddr)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -305,7 +299,7 @@ Where proposal.json contains:
 			if err != nil {
 				return err
 			}
-			proposal, err := ParseCommunityPoolSpendProposalWithDeposit(clientCtx.JSONMarshaler, args[0])
+			proposal, err := ParseCommunityPoolSpendProposalWithDeposit(clientCtx.Codec, args[0])
 			if err != nil {
 				return err
 			}
@@ -330,10 +324,6 @@ Where proposal.json contains:
 
 			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {
-				return err
-			}
-
-			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
 

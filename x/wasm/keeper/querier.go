@@ -20,13 +20,13 @@ import (
 var _ types.QueryServer = &GrpcQuerier{}
 
 type GrpcQuerier struct {
-	cdc           codec.Marshaler
+	cdc           codec.Codec
 	storeKey      sdk.StoreKey
 	keeper        types.ViewKeeper
 	queryGasLimit sdk.Gas
 }
 
-func NewGrpcQuerier(cdc codec.Marshaler, storeKey sdk.StoreKey, keeper types.ViewKeeper, queryGasLimit sdk.Gas) *GrpcQuerier {
+func NewGrpcQuerier(cdc codec.Codec, storeKey sdk.StoreKey, keeper types.ViewKeeper, queryGasLimit sdk.Gas) *GrpcQuerier {
 	return &GrpcQuerier{cdc: cdc, storeKey: storeKey, keeper: keeper, queryGasLimit: queryGasLimit}
 }
 
@@ -64,7 +64,7 @@ func (q GrpcQuerier) ContractHistory(c context.Context, req *types.QueryContract
 	pageRes, err := query.FilteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		if accumulate {
 			var e types.ContractCodeHistoryEntry
-			if err := q.cdc.UnmarshalBinaryBare(value, &e); err != nil {
+			if err := q.cdc.Unmarshal(value, &e); err != nil {
 				return false, err
 			}
 			e.Updated = nil // redact
@@ -231,7 +231,7 @@ func (q GrpcQuerier) Codes(c context.Context, req *types.QueryCodesRequest) (*ty
 	pageRes, err := query.FilteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		if accumulate {
 			var c types.CodeInfo
-			if err := q.cdc.UnmarshalBinaryBare(value, &c); err != nil {
+			if err := q.cdc.Unmarshal(value, &c); err != nil {
 				return false, err
 			}
 			r = append(r, types.CodeInfoResponse{

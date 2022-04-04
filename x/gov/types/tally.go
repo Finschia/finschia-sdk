@@ -17,14 +17,14 @@ type ValidatorGovInfo struct {
 
 // NewValidatorGovInfo creates a ValidatorGovInfo instance
 func NewValidatorGovInfo(address sdk.ValAddress, bondedTokens sdk.Int, delegatorShares,
-	delegatorDeductions sdk.Dec, vote WeightedVoteOptions) ValidatorGovInfo {
+	delegatorDeductions sdk.Dec, options WeightedVoteOptions) ValidatorGovInfo {
 
 	return ValidatorGovInfo{
 		Address:             address,
 		BondedTokens:        bondedTokens,
 		DelegatorShares:     delegatorShares,
 		DelegatorDeductions: delegatorDeductions,
-		Vote:                vote,
+		Vote:                options,
 	}
 }
 

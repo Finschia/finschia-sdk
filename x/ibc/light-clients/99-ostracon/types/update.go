@@ -38,7 +38,7 @@ import (
 // Ostracon client validity checking uses the bisection algorithm described
 // in the [Ostracon spec](https://github.com/tendermint/spec/blob/master/spec/consensus/light-client.md).
 func (cs ClientState) CheckHeaderAndUpdateState(
-	ctx sdk.Context, cdc codec.BinaryMarshaler, clientStore sdk.KVStore,
+	ctx sdk.Context, cdc codec.Codec, clientStore sdk.KVStore,
 	header exported.Header,
 ) (exported.ClientState, exported.ConsensusState, error) {
 	tmHeader, ok := header.(*Header)

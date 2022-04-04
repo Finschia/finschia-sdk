@@ -1,14 +1,11 @@
 package types
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strconv"
 	"strings"
 
-	"github.com/gogo/protobuf/jsonpb"
 	"github.com/gogo/protobuf/proto"
 	"github.com/line/ostracon/crypto"
 	"gopkg.in/yaml.v2"
@@ -18,6 +15,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/crypto/keys/multisig"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/crypto/keys/secp256r1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	sdk "github.com/line/lbm-sdk/types"
 )
@@ -60,6 +58,7 @@ func ProtoBaseAccount() AccountI {
 }
 
 // NewBaseAccountWithAddress - returns a new base account with a given address
+// leaving AccountNumber and Sequence to zero.
 func NewBaseAccountWithAddress(addr sdk.AccAddress) *BaseAccount {
 	return &BaseAccount{
 		Address: addr.String(),
@@ -87,6 +86,8 @@ func (acc BaseAccount) GetPubKey() (pk cryptotypes.PubKey) {
 		return acc.Ed25519PubKey
 	} else if acc.Secp256K1PubKey != nil {
 		return acc.Secp256K1PubKey
+	} else if acc.Secp256R1PubKey != nil {
+		return acc.Secp256R1PubKey
 	} else if acc.MultisigPubKey != nil {
 		return acc.MultisigPubKey
 	}
@@ -96,13 +97,15 @@ func (acc BaseAccount) GetPubKey() (pk cryptotypes.PubKey) {
 // SetPubKey - Implements sdk.AccountI.
 func (acc *BaseAccount) SetPubKey(pubKey cryptotypes.PubKey) error {
 	if pubKey == nil {
-		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = nil, nil, nil
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = nil, nil, nil, nil
 	} else if pk, ok := pubKey.(*ed25519.PubKey); ok {
-		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = pk, nil, nil
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = pk, nil, nil, nil
 	} else if pk, ok := pubKey.(*secp256k1.PubKey); ok {
-		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = nil, pk, nil
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = nil, pk, nil, nil
+	} else if pk, ok := pubKey.(*secp256r1.PubKey); ok {
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = nil, nil, pk, nil
 	} else if pk, ok := pubKey.(*multisig.LegacyAminoPubKey); ok {
-		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = nil, nil, pk
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = nil, nil, nil, pk
 	} else {
 		return fmt.Errorf("invalid pubkey")
 	}
@@ -237,11 +240,6 @@ func (ma ModuleAccount) SetPubKey(pubKey cryptotypes.PubKey) error {
 	return fmt.Errorf("not supported for module accounts")
 }
 
-// SetSequence - Implements AccountI
-func (ma ModuleAccount) SetSequence(seq uint64) error {
-	return fmt.Errorf("not supported for module accounts")
-}
-
 // Validate checks for errors on the account fields
 func (ma ModuleAccount) Validate() error {
 	if strings.TrimSpace(ma.Name) == "" {
@@ -296,7 +294,6 @@ func (ma ModuleAccount) MarshalYAML() (interface{}, error) {
 		Name:          ma.Name,
 		Permissions:   ma.Permissions,
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -362,38 +359,7 @@ type AccountI interface {
 	MarshalX() ([]byte, error)
 }
 
-func MarshalAccountX(cdc codec.BinaryMarshaler, acc AccountI) ([]byte, error) {
-	if bacc, ok := acc.(*BaseAccount); ok && bacc.MultisigPubKey == nil {
-		return acc.MarshalX()
-	} else if macc, ok := acc.(*ModuleAccount); ok && macc.MultisigPubKey == nil {
-		return acc.MarshalX()
-	} else {
-		return cdc.MarshalInterface(acc)
-	}
-}
-
-func UnmarshalAccountX(cdc codec.BinaryMarshaler, bz []byte) (AccountI, error) {
-	sigLen := len(BaseAccountSig)
-	if len(bz) < sigLen {
-		return nil, fmt.Errorf("invalid data")
-	}
-	if bytes.Equal(bz[:sigLen], BaseAccountSig) {
-		acc := &BaseAccount{}
-		if err := acc.Unmarshal(bz[sigLen:]); err != nil {
-			return nil, err
-		}
-		return acc, nil
-	} else if bytes.Equal(bz[:sigLen], ModuleAccountSig) {
-		acc := &ModuleAccount{}
-		if err := acc.Unmarshal(bz[sigLen:]); err != nil {
-			return nil, err
-		}
-		return acc, nil
-	} else {
-		var acc AccountI
-		return acc, cdc.UnmarshalInterface(bz, &acc)
-	}
-}
+// TODO(dudong2): remove MarshalAccountX, UnmarshalAccountX(because codec.BinaryMarshaler is removed -> build failed) - ref. https://github.com/line/lbm-sdk/pull/320
 
 // ModuleAccountI defines an account interface for modules that hold tokens in
 // an escrow.
@@ -425,122 +391,4 @@ type GenesisAccount interface {
 	AccountI
 
 	Validate() error
-}
-
-// custom json marshaler for BaseAccount & ModuleAccount
-
-type PubKeyJSON struct {
-	Type byte   `json:"type"`
-	Key  []byte `json:"key"`
-}
-type BaseAccountJSON struct {
-	Address       string     `json:"address"`
-	PubKey        PubKeyJSON `json:"pub_key"`
-	AccountNumber uint64     `json:"account_number"`
-	Sequence      string     `json:"sequence"`
-}
-
-func (acc BaseAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
-	var bi BaseAccountJSON
-
-	bi.Address = acc.GetAddress().String()
-	bi.AccountNumber = acc.GetAccountNumber()
-	bi.Sequence = strconv.FormatUint(acc.Sequence, 10)
-	var bz []byte
-	var err error
-	if acc.Secp256K1PubKey != nil {
-		bi.PubKey.Type = PubKeyTypeSecp256k1
-		bz, err = acc.Secp256K1PubKey.Marshal()
-	}
-	if acc.Ed25519PubKey != nil {
-		bi.PubKey.Type = PubKeyTypeEd25519
-		bz, err = acc.Ed25519PubKey.Marshal()
-	}
-	if acc.MultisigPubKey != nil {
-		bi.PubKey.Type = PubKeyTypeMultisig
-		bz, err = acc.MultisigPubKey.Marshal()
-	}
-	if err != nil {
-		return nil, err
-	}
-	bi.PubKey.Key = bz
-	return json.Marshal(bi)
-}
-
-func (acc *BaseAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error {
-	var bi BaseAccountJSON
-
-	err := json.Unmarshal(bz, &bi)
-	if err != nil {
-		return err
-	}
-
-	acc.Address = bi.Address
-	acc.AccountNumber = bi.AccountNumber
-	acc.Sequence, err = strconv.ParseUint(bi.Sequence, 10, 64)
-	if err != nil {
-		return err
-	}
-
-	switch bi.PubKey.Type {
-	case PubKeyTypeSecp256k1:
-		pk := new(secp256k1.PubKey)
-		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
-			return err
-		}
-		acc.SetPubKey(pk)
-	case PubKeyTypeEd25519:
-		pk := new(secp256k1.PubKey)
-		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
-			return err
-		}
-		acc.SetPubKey(pk)
-	case PubKeyTypeMultisig:
-		pk := new(multisig.LegacyAminoPubKey)
-		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
-			return err
-		}
-		acc.SetPubKey(pk)
-	}
-	return nil
-}
-
-type ModuleAccountJSON struct {
-	BaseAccount json.RawMessage `json:"base_account"`
-	Name        string          `json:"name"`
-	Permissions []string        `json:"permissions"`
-}
-
-func (ma ModuleAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
-	var mi ModuleAccountJSON
-
-	bz, err := ma.BaseAccount.MarshalJSONPB(m)
-	if err != nil {
-		return nil, err
-	}
-	mi.BaseAccount = bz
-	mi.Name = ma.Name
-	mi.Permissions = ma.Permissions
-
-	return json.Marshal(mi)
-}
-
-func (ma *ModuleAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error {
-	var mi ModuleAccountJSON
-
-	err := json.Unmarshal(bz, &mi)
-	if err != nil {
-		return err
-	}
-
-	ma.Name = mi.Name
-	ma.Permissions = mi.Permissions
-
-	ba := new(BaseAccount)
-	if err := m.Unmarshal(strings.NewReader(string(mi.BaseAccount)), ba); err != nil {
-		return err
-	}
-	ma.BaseAccount = ba
-
-	return nil
 }

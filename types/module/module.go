@@ -30,12 +30,14 @@ package module
 
 import (
 	"encoding/json"
+	"fmt"
 	"sort"
 
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
+
+	abci "github.com/line/ostracon/abci/types"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/codec"
@@ -44,16 +46,14 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
-// __________________________________________________________________________________________
-
 // AppModuleBasic is the standard form for basic non-dependant elements of an application module.
 type AppModuleBasic interface {
 	Name() string
 	RegisterLegacyAminoCodec(*codec.LegacyAmino)
 	RegisterInterfaces(codectypes.InterfaceRegistry)
 
-	DefaultGenesis(codec.JSONMarshaler) json.RawMessage
-	ValidateGenesis(codec.JSONMarshaler, client.TxEncodingConfig, json.RawMessage) error
+	DefaultGenesis(codec.JSONCodec) json.RawMessage
+	ValidateGenesis(codec.JSONCodec, client.TxEncodingConfig, json.RawMessage) error
 
 	// client functionality
 	RegisterRESTRoutes(client.Context, *mux.Router)
@@ -89,7 +89,7 @@ func (bm BasicManager) RegisterInterfaces(registry codectypes.InterfaceRegistry)
 }
 
 // DefaultGenesis provides default genesis information for all modules
-func (bm BasicManager) DefaultGenesis(cdc codec.JSONMarshaler) map[string]json.RawMessage {
+func (bm BasicManager) DefaultGenesis(cdc codec.JSONCodec) map[string]json.RawMessage {
 	genesis := make(map[string]json.RawMessage)
 	for _, b := range bm {
 		genesis[b.Name()] = b.DefaultGenesis(cdc)
@@ -99,7 +99,7 @@ func (bm BasicManager) DefaultGenesis(cdc codec.JSONMarshaler) map[string]json.R
 }
 
 // ValidateGenesis performs genesis state validation for all modules
-func (bm BasicManager) ValidateGenesis(cdc codec.JSONMarshaler, txEncCfg client.TxEncodingConfig, genesis map[string]json.RawMessage) error {
+func (bm BasicManager) ValidateGenesis(cdc codec.JSONCodec, txEncCfg client.TxEncodingConfig, genesis map[string]json.RawMessage) error {
 	for _, b := range bm {
 		if err := b.ValidateGenesis(cdc, txEncCfg, genesis[b.Name()]); err != nil {
 			return err
@@ -126,7 +126,7 @@ func (bm BasicManager) RegisterGRPCGatewayRoutes(clientCtx client.Context, rtr *
 // AddTxCommands adds all tx commands to the rootTxCmd.
 //
 // TODO: Remove clientCtx argument.
-// REF: https://github.com/line/lbm-sdk/issues/6571
+// REF: https://github.com/cosmos/cosmos-sdk/issues/6571
 func (bm BasicManager) AddTxCommands(rootTxCmd *cobra.Command) {
 	for _, b := range bm {
 		if cmd := b.GetTxCmd(); cmd != nil {
@@ -138,7 +138,7 @@ func (bm BasicManager) AddTxCommands(rootTxCmd *cobra.Command) {
 // AddQueryCommands adds all query commands to the rootQueryCmd.
 //
 // TODO: Remove clientCtx argument.
-// REF: https://github.com/line/lbm-sdk/issues/6571
+// REF: https://github.com/cosmos/cosmos-sdk/issues/6571
 func (bm BasicManager) AddQueryCommands(rootQueryCmd *cobra.Command) {
 	for _, b := range bm {
 		if cmd := b.GetQueryCmd(); cmd != nil {
@@ -147,14 +147,12 @@ func (bm BasicManager) AddQueryCommands(rootQueryCmd *cobra.Command) {
 	}
 }
 
-// _________________________________________________________
-
 // AppModuleGenesis is the standard form for an application module genesis functions
 type AppModuleGenesis interface {
 	AppModuleBasic
 
-	InitGenesis(sdk.Context, codec.JSONMarshaler, json.RawMessage) []abci.ValidatorUpdate
-	ExportGenesis(sdk.Context, codec.JSONMarshaler) json.RawMessage
+	InitGenesis(sdk.Context, codec.JSONCodec, json.RawMessage) []abci.ValidatorUpdate
+	ExportGenesis(sdk.Context, codec.JSONCodec) json.RawMessage
 }
 
 // AppModule is the standard form for an application module
@@ -186,8 +184,6 @@ type AppModule interface {
 	BeginBlock(sdk.Context, abci.RequestBeginBlock)
 	EndBlock(sdk.Context, abci.RequestEndBlock) []abci.ValidatorUpdate
 }
-
-// ___________________________
 
 // GenesisOnlyAppModule is an AppModule that only has import/export functionality
 type GenesisOnlyAppModule struct {
@@ -227,8 +223,6 @@ func (GenesisOnlyAppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []ab
 	return []abci.ValidatorUpdate{}
 }
 
-// ____________________________________________________________________________
-
 // Manager defines a module manager that provides the high level utility for managing and executing
 // operations for a group of modules
 type Manager struct {
@@ -237,6 +231,7 @@ type Manager struct {
 	OrderExportGenesis []string
 	OrderBeginBlockers []string
 	OrderEndBlockers   []string
+	OrderMigrations    []string
 }
 
 // NewManager creates a new Manager object
@@ -260,25 +255,36 @@ func NewManager(modules ...AppModule) *Manager {
 
 // SetOrderInitGenesis sets the order of init genesis calls
 func (m *Manager) SetOrderInitGenesis(moduleNames ...string) {
+	m.assertNoForgottenModules("SetOrderInitGenesis", moduleNames)
 	m.OrderInitGenesis = moduleNames
 }
 
 // SetOrderExportGenesis sets the order of export genesis calls
 func (m *Manager) SetOrderExportGenesis(moduleNames ...string) {
+	m.assertNoForgottenModules("SetOrderExportGenesis", moduleNames)
 	m.OrderExportGenesis = moduleNames
 }
 
 // SetOrderBeginBlockers sets the order of set begin-blocker calls
 func (m *Manager) SetOrderBeginBlockers(moduleNames ...string) {
+	m.assertNoForgottenModules("SetOrderBeginBlockers", moduleNames)
 	m.OrderBeginBlockers = moduleNames
 }
 
 // SetOrderEndBlockers sets the order of set end-blocker calls
 func (m *Manager) SetOrderEndBlockers(moduleNames ...string) {
+	m.assertNoForgottenModules("SetOrderEndBlockers", moduleNames)
 	m.OrderEndBlockers = moduleNames
 }
 
-// RegisterInvariants registers all module routes and module querier routes
+// SetOrderMigrations sets the order of migrations to be run. If not set
+// then migrations will be run with an order defined in `DefaultMigrationsOrder`.
+func (m *Manager) SetOrderMigrations(moduleNames ...string) {
+	m.assertNoForgottenModules("SetOrderMigrations", moduleNames)
+	m.OrderMigrations = moduleNames
+}
+
+// RegisterInvariants registers all module invariants
 func (m *Manager) RegisterInvariants(ir sdk.InvariantRegistry) {
 	for _, module := range m.Modules {
 		module.RegisterInvariants(ir)
@@ -305,7 +311,7 @@ func (m *Manager) RegisterServices(cfg Configurator) {
 }
 
 // InitGenesis performs init genesis functionality for modules
-func (m *Manager) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, genesisData map[string]json.RawMessage) abci.ResponseInitChain {
+func (m *Manager) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, genesisData map[string]json.RawMessage) abci.ResponseInitChain {
 	var validatorUpdates []abci.ValidatorUpdate
 	for _, moduleName := range m.OrderInitGenesis {
 		if genesisData[moduleName] == nil {
@@ -330,7 +336,7 @@ func (m *Manager) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, genesisD
 }
 
 // ExportGenesis performs export genesis functionality for modules
-func (m *Manager) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) map[string]json.RawMessage {
+func (m *Manager) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) map[string]json.RawMessage {
 	genesisData := make(map[string]json.RawMessage)
 	for _, moduleName := range m.OrderExportGenesis {
 		genesisData[moduleName] = m.Modules[moduleName].ExportGenesis(ctx, cdc)
@@ -339,11 +345,29 @@ func (m *Manager) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) map[st
 	return genesisData
 }
 
+// assertNoForgottenModules checks that we didn't forget any modules in the
+// SetOrder* functions.
+func (m *Manager) assertNoForgottenModules(setOrderFnName string, moduleNames []string) {
+	ms := make(map[string]bool)
+	for _, m := range moduleNames {
+		ms[m] = true
+	}
+	var missing []string
+	for m := range m.Modules {
+		if !ms[m] {
+			missing = append(missing, m)
+		}
+	}
+	if len(missing) != 0 {
+		panic(fmt.Sprintf(
+			"%s: all modules must be defined when setting SetOrderMigrations, missing: %v", setOrderFnName, missing))
+	}
+}
+
 // MigrationHandler is the migration function that each module registers.
 type MigrationHandler func(sdk.Context) error
 
-// VersionMap is a map of moduleName -> version, where version denotes the
-// version from which we should perform the migration for each module.
+// VersionMap is a map of moduleName -> version
 type VersionMap map[string]uint64
 
 // RunMigrations performs in-place store migrations for all modules. This
@@ -369,6 +393,9 @@ type VersionMap map[string]uint64
 //      because it was not in the previous x/upgrade's store), then run
 //      `InitGenesis` on that module.
 // - return the `updatedVM` to be persisted in the x/upgrade's store.
+//
+// Migrations are run in an order defined by `Manager.OrderMigrations` or (if not set) defined by
+// `DefaultMigrationsOrder` function.
 //
 // As an app developer, if you wish to skip running InitGenesis for your new
 // module "foo", you need to manually pass a `fromVM` argument to this function
@@ -396,19 +423,13 @@ func (m Manager) RunMigrations(ctx sdk.Context, cfg Configurator, fromVM Version
 	if !ok {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expected %T, got %T", configurator{}, cfg)
 	}
-
-	updatedVM := make(VersionMap)
-	// for deterministic iteration order
-	// (as some migrations depend on other modules
-	// and the order of executing migrations matters)
-	// TODO: make the order user-configurable?
-	sortedModNames := make([]string, 0, len(m.Modules))
-	for key := range m.Modules {
-		sortedModNames = append(sortedModNames, key)
+	var modules = m.OrderMigrations
+	if modules == nil {
+		modules = DefaultMigrationsOrder(m.ModuleNames())
 	}
-	sort.Strings(sortedModNames)
 
-	for _, moduleName := range sortedModNames {
+	updatedVM := VersionMap{}
+	for _, moduleName := range modules {
 		module := m.Modules[moduleName]
 		fromVersion, exists := fromVM[moduleName]
 		toVersion := module.ConsensusVersion()
@@ -435,6 +456,7 @@ func (m Manager) RunMigrations(ctx sdk.Context, cfg Configurator, fromVM Version
 			}
 
 			moduleValUpdates := module.InitGenesis(ctx, cfgtor.cdc, module.DefaultGenesis(cfgtor.cdc))
+			ctx.Logger().Info(fmt.Sprintf("adding a new module: %s", moduleName))
 			// The module manager assumes only one module will update the
 			// validator set, and that it will not be by a new module.
 			if len(moduleValUpdates) > 0 {
@@ -500,4 +522,36 @@ func (m *Manager) GetVersionMap() VersionMap {
 	}
 
 	return vermap
+}
+
+// ModuleNames returns list of all module names, without any particular order.
+func (m *Manager) ModuleNames() []string {
+	ms := make([]string, len(m.Modules))
+	i := 0
+	for m := range m.Modules {
+		ms[i] = m
+		i++
+	}
+	return ms
+}
+
+// DefaultMigrationsOrder returns a default migrations order: ascending alphabetical by module name,
+// except x/auth which will run last, see:
+// https://github.com/cosmos/cosmos-sdk/issues/10591
+func DefaultMigrationsOrder(modules []string) []string {
+	const authName = "auth"
+	out := make([]string, 0, len(modules))
+	hasAuth := false
+	for _, m := range modules {
+		if m == authName {
+			hasAuth = true
+		} else {
+			out = append(out, m)
+		}
+	}
+	sort.Strings(out)
+	if hasAuth {
+		out = append(out, authName)
+	}
+	return out
 }

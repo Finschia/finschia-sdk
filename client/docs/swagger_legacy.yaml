@@ -517,7 +517,7 @@ paths:
       parameters:
         - in: body
           name: delegation
-          description: The password of the account to remove from the KMS
+          description: Delegate an amount of liquid coins to a validator
           schema:
             type: object
             properties:
@@ -607,7 +607,7 @@ paths:
       parameters:
         - in: body
           name: delegation
-          description: The password of the account to remove from the KMS
+          description: Unbond an amount of bonded shares from a validator
           schema:
             type: object
             properties:

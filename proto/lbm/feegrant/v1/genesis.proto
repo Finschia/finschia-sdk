@@ -1,10 +1,11 @@
+// Since: cosmos-sdk 0.43
 syntax = "proto3";
 package lbm.feegrant.v1;
 
 import "gogoproto/gogo.proto";
 import "lbm/feegrant/v1/feegrant.proto";
 
-option go_package = "github.com/line/lbm-sdk/x/feegrant/types";
+option go_package = "github.com/line/lbm-sdk/x/feegrant";
 
 // GenesisState contains a set of fee allowances, persisted from the store
 message GenesisState {

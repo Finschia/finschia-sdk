@@ -80,7 +80,7 @@ func TestOnOpenChannel(t *testing.T) {
 			}
 			require.NoError(t, err)
 			// verify gas consumed
-			const storageCosts = sdk.Gas(0xa8b)
+			const storageCosts = sdk.Gas(0xb2a)
 			assert.Equal(t, spec.expGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
 		})
 	}
@@ -186,7 +186,7 @@ func TestOnConnectChannel(t *testing.T) {
 			require.NoError(t, err)
 
 			// verify gas consumed
-			const storageCosts = sdk.Gas(0xa8b)
+			const storageCosts = sdk.Gas(0xb2a)
 			assert.Equal(t, spec.expContractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
 
 			// verify msgs dispatched
@@ -297,7 +297,7 @@ func TestOnCloseChannel(t *testing.T) {
 			}
 			require.NoError(t, err)
 			// verify gas consumed
-			const storageCosts = sdk.Gas(0xa8b)
+			const storageCosts = sdk.Gas(0xb2a)
 			assert.Equal(t, spec.expContractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
 
 			// verify msgs dispatched
@@ -403,7 +403,7 @@ func TestOnRecvPacket(t *testing.T) {
 		},
 		"submessage reply can overwrite ack data": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 10 + types.DefaultInstanceCost + 3689,
+			expContractGas: myContractGas + 10 + types.DefaultInstanceCost + 3848,
 			contractResp: &wasmvmtypes.IBCReceiveResponse{
 				Acknowledgement: []byte("myAck"),
 				Messages:        []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyAlways, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}},
@@ -459,7 +459,7 @@ func TestOnRecvPacket(t *testing.T) {
 			require.Equal(t, spec.expAck, gotAck)
 
 			// verify gas consumed
-			const storageCosts = sdk.Gas(0xa8b)
+			const storageCosts = sdk.Gas(0xb2a)
 			assert.Equal(t, spec.expContractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
 
 			// verify msgs dispatched
@@ -567,7 +567,7 @@ func TestOnAckPacket(t *testing.T) {
 			require.NoError(t, err)
 
 			// verify gas consumed
-			const storageCosts = sdk.Gas(0xa8b)
+			const storageCosts = sdk.Gas(0xb2a)
 			assert.Equal(t, spec.expContractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
 
 			// verify msgs dispatched
@@ -689,7 +689,7 @@ func TestOnTimeoutPacket(t *testing.T) {
 			}
 			require.NoError(t, err)
 			// verify gas consumed
-			const storageCosts = sdk.Gas(0xa8b)
+			const storageCosts = sdk.Gas(0xb2a)
 			assert.Equal(t, spec.expContractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
 
 			// verify msgs dispatched

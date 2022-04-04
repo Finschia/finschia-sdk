@@ -3,36 +3,28 @@ package types
 import (
 	"fmt"
 	"strings"
-	"time"
 
-	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	ibcexported "github.com/line/lbm-sdk/x/ibc/core/exported"
 )
-
-var _ codectypes.UnpackInterfacesMessage = Plan{}
 
 func (p Plan) String() string {
 	due := p.DueAt()
 	dueUp := strings.ToUpper(due[0:1]) + due[1:]
-	var upgradedClientStr string
-	upgradedClient, err := clienttypes.UnpackClientState(p.UpgradedClientState)
-	if err != nil {
-		upgradedClientStr = "no upgraded client provided"
-	} else {
-		upgradedClientStr = upgradedClient.String()
-	}
 	return fmt.Sprintf(`Upgrade Plan
   Name: %s
   %s
-  Info: %s.
-  Upgraded IBC Client: %s`, p.Name, dueUp, p.Info, upgradedClientStr)
+  Info: %s.`, p.Name, dueUp, p.Info)
 }
 
 // ValidateBasic does basic validation of a Plan
 func (p Plan) ValidateBasic() error {
+	if !p.Time.IsZero() {
+		return sdkerrors.ErrInvalidRequest.Wrap("time-based upgrades have been deprecated in the SDK")
+	}
+	if p.UpgradedClientState != nil {
+		return sdkerrors.ErrInvalidRequest.Wrap("upgrade logic for IBC has been moved to the IBC module")
+	}
 	if len(p.Name) == 0 {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "name cannot be empty")
 	}
@@ -44,9 +36,6 @@ func (p Plan) ValidateBasic() error {
 	}
 	if p.Time.Unix() > 0 && p.Height != 0 {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "cannot set both time and height")
-	}
-	if p.Time.Unix() > 0 && p.UpgradedClientState != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "IBC chain upgrades must only set height")
 	}
 
 	return nil
@@ -65,24 +54,5 @@ func (p Plan) ShouldExecute(ctx sdk.Context) bool {
 
 // DueAt is a string representation of when this plan is due to be executed
 func (p Plan) DueAt() string {
-	if p.Time.Unix() > 0 {
-		return fmt.Sprintf("time: %s", p.Time.UTC().Format(time.RFC3339))
-	}
 	return fmt.Sprintf("height: %d", p.Height)
-}
-
-// IsIBCPlan will return true if plan includes IBC client information
-func (p Plan) IsIBCPlan() bool {
-	return p.UpgradedClientState != nil
-}
-
-// UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
-func (p Plan) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
-	// UpgradedClientState may be nil
-	if p.UpgradedClientState == nil {
-		return nil
-	}
-
-	var clientState ibcexported.ClientState
-	return unpacker.UnpackAny(p.UpgradedClientState, &clientState)
 }

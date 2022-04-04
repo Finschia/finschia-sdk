@@ -6,6 +6,7 @@ import (
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
+	"github.com/line/lbm-sdk/x/authz"
 )
 
 // RegisterLegacyAminoCodec registers the necessary x/staking interfaces and concrete types
@@ -26,6 +27,10 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgDelegate{},
 		&MsgUndelegate{},
 		&MsgBeginRedelegate{},
+	)
+	registry.RegisterImplementations(
+		(*authz.Authorization)(nil),
+		&StakeAuthorization{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

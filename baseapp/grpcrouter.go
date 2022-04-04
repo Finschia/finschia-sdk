@@ -2,32 +2,26 @@ package baseapp
 
 import (
 	"fmt"
-	"reflect"
 	"sync"
 
 	gogogrpc "github.com/gogo/protobuf/grpc"
-	abci "github.com/line/ostracon/abci/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/encoding"
 	"google.golang.org/grpc/encoding/proto"
 
+	abci "github.com/line/ostracon/abci/types"
+
 	"github.com/line/lbm-sdk/client/grpc/reflection"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 var protoCodec = encoding.GetCodec(proto.Name)
 
 // GRPCQueryRouter routes ABCI Query requests to GRPC handlers
 type GRPCQueryRouter struct {
-	lck    sync.Mutex
-	routes map[string]GRPCQueryHandler
-	// returnTypes is a map of FQ method name => its return type. It is used
-	// for cache purposes: the first time a method handler is run, we save its
-	// return type in this map. Then, on subsequent method handler calls, we
-	// decode the ABCI response bytes using the cached return type.
-	returnTypes       map[string]reflect.Type
+	lck               sync.Mutex
+	routes            map[string]GRPCQueryHandler
 	interfaceRegistry codectypes.InterfaceRegistry
 	serviceData       []serviceData
 }
@@ -43,9 +37,8 @@ var _ gogogrpc.Server = &GRPCQueryRouter{}
 // NewGRPCQueryRouter creates a new GRPCQueryRouter
 func NewGRPCQueryRouter() *GRPCQueryRouter {
 	return &GRPCQueryRouter{
-		lck:         sync.Mutex{},
-		returnTypes: map[string]reflect.Type{},
-		routes:      map[string]GRPCQueryHandler{},
+		lck:    sync.Mutex{},
+		routes: map[string]GRPCQueryHandler{},
 	}
 }
 
@@ -105,19 +98,8 @@ func (qrt *GRPCQueryRouter) RegisterService(sd *grpc.ServiceDesc, handler interf
 				if qrt.interfaceRegistry != nil {
 					return codectypes.UnpackInterfaces(i, qrt.interfaceRegistry)
 				}
-
 				return nil
 			}, nil)
-
-			// If it's the first time we call this handler, then we save
-			// the return type of the handler in the `returnTypes` map.
-			// The return type will be used for decoding subsequent requests.
-			qrt.lck.Lock()
-			if _, found := qrt.returnTypes[fqName]; !found {
-				qrt.returnTypes[fqName] = reflect.TypeOf(res)
-			}
-			qrt.lck.Unlock()
-
 			if err != nil {
 				return abci.ResponseQuery{}, err
 			}
@@ -149,27 +131,10 @@ func (qrt *GRPCQueryRouter) SetInterfaceRegistry(interfaceRegistry codectypes.In
 	// defer qrt.lck.Unlock()
 
 	qrt.interfaceRegistry = interfaceRegistry
-
 	// Once we have an interface registry, we can register the interface
 	// registry reflection gRPC service.
 	reflection.RegisterReflectionServiceServer(
 		qrt,
 		reflection.NewReflectionServiceServer(interfaceRegistry),
 	)
-}
-
-// returnTypeOf returns the return type of a gRPC method handler. With the way the
-// `returnTypes` cache map is set up, the return type of a method handler is
-// guaranteed to be found if it's retrieved **after** the method handler ran at
-// least once. If not, then a logic error is return.
-func (qrt *GRPCQueryRouter) returnTypeOf(method string) (reflect.Type, error) {
-	qrt.lck.Lock()
-	defer qrt.lck.Unlock()
-
-	returnType, found := qrt.returnTypes[method]
-	if !found {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrLogic, "cannot find %s return type", method)
-	}
-
-	return returnType, nil
 }
