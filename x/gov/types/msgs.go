@@ -21,8 +21,8 @@ const (
 )
 
 var (
-	_, _, _ sdk.Msg                       = &MsgSubmitProposal{}, &MsgDeposit{}, &MsgVoteWeighted{}
-	_       types.UnpackInterfacesMessage = &MsgSubmitProposal{}
+	_, _, _, _ sdk.Msg                       = &MsgSubmitProposal{}, &MsgDeposit{}, &MsgVote{}, &MsgVoteWeighted{}
+	_          types.UnpackInterfacesMessage = &MsgSubmitProposal{}
 )
 
 // NewMsgSubmitProposal creates a new MsgSubmitProposal.
@@ -195,9 +195,6 @@ func (msg MsgVote) Type() string { return TypeMsgVote }
 func (msg MsgVote) ValidateBasic() error {
 	if msg.Voter == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, msg.Voter)
-	}
-	if err := sdk.ValidateAccAddress(msg.Voter); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid voter address (%s)", err)
 	}
 	if !ValidVoteOption(msg.Option) {
 		return sdkerrors.Wrap(ErrInvalidVote, msg.Option.String())

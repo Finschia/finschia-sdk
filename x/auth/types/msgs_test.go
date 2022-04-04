@@ -13,18 +13,14 @@ import (
 func TestMsgSendRoute(t *testing.T) {
 	msg := NewMsgEmpty(sdk.AccAddress("from"))
 
-	require.Equal(t, ModuleName, msg.Route())
+	require.Equal(t, RouterKey, msg.Route())
 	require.Equal(t, "empty", msg.Type())
-
-	srvMsg := NewServiceMsgEmpty(sdk.AccAddress("from"))
-	require.Equal(t, "/lbm.auth.v1.Msg/Empty", srvMsg.Route())
-	require.Equal(t, "/lbm.auth.v1.Msg/Empty", srvMsg.Type())
 }
 
 func TestMsgSendValidation(t *testing.T) {
 	addr1 := sdk.BytesToAccAddress([]byte("from________________"))
-	addrEmpty := sdk.BytesToAccAddress([]byte(""))
-	addrTooLong := sdk.BytesToAccAddress([]byte("Accidentally used 33 bytes pubkey"))
+	addrEmpty := sdk.AccAddress("")
+	addrLong := sdk.BytesToAccAddress([]byte("Accidentally used 33 bytes pubkey"))
 
 	cases := []struct {
 		expectedErr string // empty means no error expected
@@ -32,7 +28,7 @@ func TestMsgSendValidation(t *testing.T) {
 	}{
 		{"", NewMsgEmpty(addr1)}, // valid
 		{"Invalid sender address (empty address string is not allowed): invalid address", NewMsgEmpty(addrEmpty)},
-		{"Invalid sender address (incorrect address length (expected: 20, actual: 33)): invalid address", NewMsgEmpty(addrTooLong)},
+		{"", NewMsgEmpty(addrLong)},
 	}
 
 	for _, tc := range cases {
@@ -56,8 +52,4 @@ func TestMsgSendGetSigners(t *testing.T) {
 	res := NewMsgEmpty(sdk.BytesToAccAddress([]byte("input111111111111111"))).GetSigners()
 	bytes, _ := sdk.AccAddressToBytes(res[0].String())
 	require.Equal(t, fmt.Sprintf("%v", hex.EncodeToString(bytes)), "696e707574313131313131313131313131313131")
-
-	require.Panics(t, func() {
-		NewMsgEmpty(sdk.BytesToAccAddress([]byte("input"))).GetSigners()
-	})
 }

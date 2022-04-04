@@ -58,7 +58,7 @@ func TestUpdateDescription(t *testing.T) {
 
 func TestABCIValidatorUpdate(t *testing.T) {
 	validator := newValidator(t, valAddr1, pk1)
-	abciVal := validator.ABCIValidatorUpdate()
+	abciVal := validator.ABCIValidatorUpdate(sdk.DefaultPowerReduction)
 	pk, err := validator.OcConsPublicKey()
 	require.NoError(t, err)
 	require.Equal(t, pk, abciVal.PubKey)
@@ -290,13 +290,15 @@ func TestValidatorsSortTendermint(t *testing.T) {
 	valz := types.Validators(vals)
 
 	// create expected ostracon validators by converting to ostracon then sorting
-	expectedVals, err := teststaking.ToOcValidators(valz)
+	expectedVals, err := teststaking.ToOcValidators(valz, sdk.DefaultPowerReduction)
 	require.NoError(t, err)
 	sort.Sort(octypes.ValidatorsByVotingPower(expectedVals))
 
-	// sort in SDK and then convert to ostracon
-	sort.Sort(types.ValidatorsByVotingPower(valz))
-	actualVals, err := teststaking.ToOcValidators(valz)
+	// sort in SDK and then convert to tendermint
+	sort.SliceStable(valz, func(i, j int) bool {
+		return types.ValidatorsByVotingPower(valz).Less(i, j, sdk.DefaultPowerReduction)
+	})
+	actualVals, err := teststaking.ToOcValidators(valz, sdk.DefaultPowerReduction)
 	require.NoError(t, err)
 
 	require.Equal(t, expectedVals, actualVals, "sorting in SDK is not the same as sorting in Tendermint")
@@ -314,9 +316,9 @@ func TestValidatorToTm(t *testing.T) {
 		vals[i] = val
 		tmPk, err := cryptocodec.ToOcPubKeyInterface(pk)
 		require.NoError(t, err)
-		expected[i] = octypes.NewValidator(tmPk, val.ConsensusPower())
+		expected[i] = octypes.NewValidator(tmPk, val.ConsensusPower(sdk.DefaultPowerReduction))
 	}
-	vs, err := teststaking.ToOcValidators(vals)
+	vs, err := teststaking.ToOcValidators(vals, sdk.DefaultPowerReduction)
 	require.NoError(t, err)
 	require.Equal(t, expected, vs)
 }

@@ -16,7 +16,7 @@ type Keeper struct {
 	storeKey sdk.StoreKey
 
 	// The codec for binary encoding/decoding.
-	cdc codec.BinaryMarshaler
+	cdc codec.Codec
 }
 
 // NewKeeper returns a consortium keeper. It handles:
@@ -24,7 +24,7 @@ type Keeper struct {
 //
 // CONTRACT: the parameter Subspace must have the param key table already initialized
 func NewKeeper(
-	cdc codec.BinaryMarshaler,
+	cdc codec.Codec,
 	key sdk.StoreKey,
 	stakingKeeper types.StakingKeeper,
 ) Keeper {

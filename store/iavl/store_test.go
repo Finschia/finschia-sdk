@@ -11,6 +11,7 @@ import (
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
+	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/lbm-sdk/store/types"
 	"github.com/line/lbm-sdk/types/kv"
 )
@@ -94,17 +95,17 @@ func TestLoadStore(t *testing.T) {
 	require.Equal(t, string(hcStore.Get([]byte("hello"))), "ciao")
 
 	// Querying a new store at some previous non-pruned height H
-	newHStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDH, false)
+	newHStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDH, false, DefaultIAVLCacheSize)
 	require.NoError(t, err)
 	require.Equal(t, string(newHStore.Get([]byte("hello"))), "hallo")
 
 	// Querying a new store at some previous pruned height Hp
-	newHpStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDHp, false)
+	newHpStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDHp, false, DefaultIAVLCacheSize)
 	require.NoError(t, err)
 	require.Equal(t, string(newHpStore.Get([]byte("hello"))), "hola")
 
 	// Querying a new store at current height H
-	newHcStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDHc, false)
+	newHcStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDHc, false, DefaultIAVLCacheSize)
 	require.NoError(t, err)
 	require.Equal(t, string(newHcStore.Get([]byte("hello"))), "ciao")
 }
@@ -559,6 +560,7 @@ func TestIAVLStoreQuery(t *testing.T) {
 }
 
 func BenchmarkIAVLIteratorNext(b *testing.B) {
+	b.ReportAllocs()
 	db := memdb.NewDB()
 	treeSize := 1000
 	tree, err := iavl.NewMutableTree(db, cacheSize)
@@ -635,4 +637,19 @@ func TestSetInitialVersion(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestCacheWraps(t *testing.T) {
+	db := memdb.NewDB()
+	tree, _ := newAlohaTree(t, db)
+	store := UnsafeNewStore(tree)
+
+	cacheWrapper := store.CacheWrap()
+	require.IsType(t, &cachekv.Store{}, cacheWrapper)
+
+	cacheWrappedWithTrace := store.CacheWrapWithTrace(nil, nil)
+	require.IsType(t, &cachekv.Store{}, cacheWrappedWithTrace)
+
+	cacheWrappedWithListeners := store.CacheWrapWithListeners(nil, nil)
+	require.IsType(t, &cachekv.Store{}, cacheWrappedWithListeners)
 }

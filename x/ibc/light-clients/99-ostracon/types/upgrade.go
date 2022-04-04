@@ -24,7 +24,7 @@ import (
 // - any Ostracon chain specified parameter in upgraded client such as ChainID, UnbondingPeriod,
 //   and ProofSpecs do not match parameters set by committed client
 func (cs ClientState) VerifyUpgradeAndUpdateState(
-	ctx sdk.Context, cdc codec.BinaryMarshaler, clientStore sdk.KVStore,
+	ctx sdk.Context, cdc codec.Codec, clientStore sdk.KVStore,
 	upgradedClient exported.ClientState, upgradedConsState exported.ConsensusState,
 	proofUpgradeClient, proofUpgradeConsState []byte,
 ) (exported.ClientState, exported.ConsensusState, error) {
@@ -40,8 +40,8 @@ func (cs ClientState) VerifyUpgradeAndUpdateState(
 			upgradedClient.GetLatestHeight(), lastHeight)
 	}
 
-	// counterparty chain must commit the upgraded client with all client-customizable fields zeroed out
-	// at the upgrade path specified by current client
+	// upgraded client state and consensus state must be IBC tendermint client state and consensus state
+	// this may be modified in the future to upgrade to a new IBC tendermint type
 	// counterparty must also commit to the upgraded consensus state at a sub-path under the upgrade path specified
 	tmUpgradeClient, ok := upgradedClient.(*ClientState)
 	if !ok {
@@ -56,10 +56,10 @@ func (cs ClientState) VerifyUpgradeAndUpdateState(
 
 	// unmarshal proofs
 	var merkleProofClient, merkleProofConsState commitmenttypes.MerkleProof
-	if err := cdc.UnmarshalBinaryBare(proofUpgradeClient, &merkleProofClient); err != nil {
+	if err := cdc.Unmarshal(proofUpgradeClient, &merkleProofClient); err != nil {
 		return nil, nil, sdkerrors.Wrapf(commitmenttypes.ErrInvalidProof, "could not unmarshal client merkle proof: %v", err)
 	}
-	if err := cdc.UnmarshalBinaryBare(proofUpgradeConsState, &merkleProofConsState); err != nil {
+	if err := cdc.Unmarshal(proofUpgradeConsState, &merkleProofConsState); err != nil {
 		return nil, nil, sdkerrors.Wrapf(commitmenttypes.ErrInvalidProof, "could not unmarshal consensus state merkle proof: %v", err)
 	}
 

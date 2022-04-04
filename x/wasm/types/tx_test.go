@@ -46,7 +46,7 @@ func TestStoreCodeValidation(t *testing.T) {
 				Sender:       badAddress,
 				WASMByteCode: []byte("foo"),
 			},
-			valid: false,
+			valid: true,
 		},
 		"correct maximal": {
 			msg: MsgStoreCode{
@@ -61,7 +61,7 @@ func TestStoreCodeValidation(t *testing.T) {
 				WASMByteCode:          []byte("foo"),
 				InstantiatePermission: &AccessConfig{Permission: AccessTypeOnlyAddress, Address: badAddress},
 			},
-			valid: false,
+			valid: true,
 		},
 	}
 
@@ -130,7 +130,7 @@ func TestInstantiateContractValidation(t *testing.T) {
 				Label:  "foo",
 				Msg:    []byte("{}"),
 			},
-			valid: false,
+			valid: true,
 		},
 		"correct maximal": {
 			msg: MsgInstantiateContract{
@@ -252,7 +252,7 @@ func TestStoreCodeAndInstantiateContractValidation(t *testing.T) {
 				InitMsg:               []byte(`{"some": "data"}`),
 				Funds:                 sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
 			},
-			valid: false,
+			valid: true,
 		},
 		"negative funds": {
 			msg: MsgStoreCodeAndInstantiateContract{
@@ -280,7 +280,7 @@ func TestStoreCodeAndInstantiateContractValidation(t *testing.T) {
 				Label:        "foo",
 				InitMsg:      []byte("{}"),
 			},
-			valid: false,
+			valid: true,
 		},
 	}
 
@@ -334,7 +334,7 @@ func TestExecuteContractValidation(t *testing.T) {
 				Contract: goodAddress,
 				Msg:      []byte(`{"some": "data"}`),
 			},
-			valid: false,
+			valid: true,
 		},
 		"empty sender": {
 			msg: MsgExecuteContract{
@@ -349,7 +349,7 @@ func TestExecuteContractValidation(t *testing.T) {
 				Contract: badAddress,
 				Msg:      []byte(`{"some": "data"}`),
 			},
-			valid: false,
+			valid: true,
 		},
 		"empty contract": {
 			msg: MsgExecuteContract{
@@ -438,7 +438,6 @@ func TestMsgUpdateAdministrator(t *testing.T) {
 				NewAdmin: otherGoodAddress,
 				Contract: anotherGoodAddress,
 			},
-			expErr: true,
 		},
 		"bad new admin": {
 			src: MsgUpdateAdmin{
@@ -446,7 +445,6 @@ func TestMsgUpdateAdministrator(t *testing.T) {
 				NewAdmin: badAddress,
 				Contract: anotherGoodAddress,
 			},
-			expErr: true,
 		},
 		"bad contract addr": {
 			src: MsgUpdateAdmin{
@@ -454,7 +452,6 @@ func TestMsgUpdateAdministrator(t *testing.T) {
 				NewAdmin: otherGoodAddress,
 				Contract: badAddress,
 			},
-			expErr: true,
 		},
 		"new admin same as old admin": {
 			src: MsgUpdateAdmin{
@@ -500,14 +497,12 @@ func TestMsgClearAdministrator(t *testing.T) {
 				Sender:   badAddress,
 				Contract: anotherGoodAddress,
 			},
-			expErr: true,
 		},
 		"bad contract addr": {
 			src: MsgClearAdmin{
 				Sender:   goodAddress,
 				Contract: badAddress,
 			},
-			expErr: true,
 		},
 		"contract missing": {
 			src: MsgClearAdmin{

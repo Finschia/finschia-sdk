@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/gogo/protobuf/proto"
+
 	abci "github.com/line/ostracon/abci/types"
 	ctypes "github.com/line/ostracon/rpc/core/types"
 

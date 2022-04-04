@@ -6,22 +6,22 @@ import (
 	"github.com/line/lbm-sdk/x/token"
 )
 
-func (s *KeeperTestSuite) TestQueryTokenBalance() {
+func (s *KeeperTestSuite) TestQueryBalance() {
 	// empty request
-	_, err := s.queryServer.TokenBalance(s.goCtx, nil)
+	_, err := s.queryServer.Balance(s.goCtx, nil)
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
 		classId  string
 		address  sdk.AccAddress
 		valid    bool
-		postTest func(res *token.QueryTokenBalanceResponse)
+		postTest func(res *token.QueryBalanceResponse)
 	}{
 		"valid request": {
 			classId: s.classID,
 			address: s.vendor,
 			valid:   true,
-			postTest: func(res *token.QueryTokenBalanceResponse) {
+			postTest: func(res *token.QueryBalanceResponse) {
 				s.Require().Equal(s.balance, res.Amount)
 			},
 		},
@@ -39,11 +39,11 @@ func (s *KeeperTestSuite) TestQueryTokenBalance() {
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			req := &token.QueryTokenBalanceRequest{
+			req := &token.QueryBalanceRequest{
 				ClassId: tc.classId,
 				Address: tc.address.String(),
 			}
-			res, err := s.queryServer.TokenBalance(s.goCtx, req)
+			res, err := s.queryServer.Balance(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

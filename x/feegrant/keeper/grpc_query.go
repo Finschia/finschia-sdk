@@ -7,18 +7,17 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lbm-sdk/x/feegrant/types"
-
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/query"
+	"github.com/line/lbm-sdk/x/feegrant"
 )
 
-var _ types.QueryServer = Keeper{}
+var _ feegrant.QueryServer = Keeper{}
 
 // Allowance returns fee granted to the grantee by the granter.
-func (q Keeper) Allowance(c context.Context, req *types.QueryAllowanceRequest) (*types.QueryAllowanceResponse, error) {
+func (q Keeper) Allowance(c context.Context, req *feegrant.QueryAllowanceRequest) (*feegrant.QueryAllowanceResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -43,8 +42,8 @@ func (q Keeper) Allowance(c context.Context, req *types.QueryAllowanceRequest) (
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
-	return &types.QueryAllowanceResponse{
-		Allowance: &types.Grant{
+	return &feegrant.QueryAllowanceResponse{
+		Allowance: &feegrant.Grant{
 			Granter:   granterAddr.String(),
 			Grantee:   granteeAddr.String(),
 			Allowance: feeAllowanceAny,
@@ -53,7 +52,7 @@ func (q Keeper) Allowance(c context.Context, req *types.QueryAllowanceRequest) (
 }
 
 // Allowances queries all the allowances granted to the given grantee.
-func (q Keeper) Allowances(c context.Context, req *types.QueryAllowancesRequest) (*types.QueryAllowancesResponse, error) {
+func (q Keeper) Allowances(c context.Context, req *feegrant.QueryAllowancesRequest) (*feegrant.QueryAllowancesResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -66,15 +65,15 @@ func (q Keeper) Allowances(c context.Context, req *types.QueryAllowancesRequest)
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	var grants []*types.Grant
+	var grants []*feegrant.Grant
 
 	store := ctx.KVStore(q.storeKey)
-	grantsStore := prefix.NewStore(store, types.FeeAllowancePrefixByGrantee(granteeAddr))
+	grantsStore := prefix.NewStore(store, feegrant.FeeAllowancePrefixByGrantee(granteeAddr))
 
 	pageRes, err := query.Paginate(grantsStore, req.Pagination, func(key []byte, value []byte) error {
-		var grant types.Grant
+		var grant feegrant.Grant
 
-		if err := q.cdc.UnmarshalBinaryBare(value, &grant); err != nil {
+		if err := q.cdc.Unmarshal(value, &grant); err != nil {
 			return err
 		}
 
@@ -86,5 +85,5 @@ func (q Keeper) Allowances(c context.Context, req *types.QueryAllowancesRequest)
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &types.QueryAllowancesResponse{Allowances: grants, Pagination: pageRes}, nil
+	return &feegrant.QueryAllowancesResponse{Allowances: grants, Pagination: pageRes}, nil
 }

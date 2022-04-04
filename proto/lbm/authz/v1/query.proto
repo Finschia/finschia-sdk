@@ -1,0 +1,36 @@
+// Since: cosmos-sdk 0.43
+syntax = "proto3";
+package lbm.authz.v1;
+
+import "google/api/annotations.proto";
+import "cosmos_proto/cosmos.proto";
+import "lbm/base/query/v1/pagination.proto";
+import "lbm/authz/v1/authz.proto";
+
+option go_package = "github.com/line/lbm-sdk/x/authz";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Returns list of `Authorization`, granted to the grantee by the granter.
+  rpc Grants(QueryGrantsRequest) returns (QueryGrantsResponse) {
+    option (google.api.http).get = "/lbm/authz/v1/grants";
+  }
+}
+
+// QueryGrantsRequest is the request type for the Query/Grants RPC method.
+message QueryGrantsRequest {
+  string granter = 1;
+  string grantee = 2;
+  // Optional, msg_type_url, when set, will query only grants matching given msg type.
+  string msg_type_url = 3;
+  // pagination defines an pagination for the request.
+  lbm.base.query.v1.PageRequest pagination = 4;
+}
+
+// QueryGrantsResponse is the response type for the Query/Authorizations RPC method.
+message QueryGrantsResponse {
+  // authorizations is a list of grants granted for grantee by granter.
+  repeated lbm.authz.v1.Grant grants = 1;
+  // pagination defines an pagination for the response.
+  lbm.base.query.v1.PageResponse pagination = 2;
+}

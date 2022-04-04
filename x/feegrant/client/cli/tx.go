@@ -7,13 +7,12 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/x/feegrant/types"
-
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/version"
+	"github.com/line/lbm-sdk/x/feegrant"
 )
 
 // flag for feegrant module
@@ -28,7 +27,7 @@ const (
 // GetTxCmd returns the transaction commands for this module
 func GetTxCmd() *cobra.Command {
 	feegrantTxCmd := &cobra.Command{
-		Use:                        types.ModuleName,
+		Use:                        feegrant.ModuleName,
 		Short:                      "Feegrant transactions subcommands",
 		Long:                       "Grant and revoke fee allowance for a grantee by a granter",
 		DisableFlagParsing:         true,
@@ -55,11 +54,11 @@ func NewCmdFeeGrant() *cobra.Command {
 				ignored as it is implied from [granter].
 
 Examples:
-%s tx %s grant cosmos1skjw... cosmos1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z or
-%s tx %s grant cosmos1skjw... cosmos1skjw... --spend-limit 100stake --period 3600 --period-limit 10stake --expiration 36000 or
-%s tx %s grant cosmos1skjw... cosmos1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z 
-	--allowed-messages "/cosmos.gov.v1beta1.MsgSubmitProposal,/cosmos.gov.v1beta1.MsgVote"
-				`, version.AppName, types.ModuleName, version.AppName, types.ModuleName, version.AppName, types.ModuleName,
+%s tx %s grant link1skjw... link1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z or
+%s tx %s grant link1skjw... link1skjw... --spend-limit 100stake --period 3600 --period-limit 10stake --expiration 2022-01-30T15:04:05Z or
+%s tx %s grant link1skjw... link1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z 
+	--allowed-messages "/lbm.gov.v1.MsgSubmitProposal,/lbm.gov.v1.MsgVote"
+				`, version.AppName, feegrant.ModuleName, version.AppName, feegrant.ModuleName, version.AppName, feegrant.ModuleName,
 			),
 		),
 		Args: cobra.ExactArgs(2),
@@ -94,7 +93,7 @@ Examples:
 				return err
 			}
 
-			basic := types.BasicAllowance{
+			basic := feegrant.BasicAllowance{
 				SpendLimit: limit,
 			}
 
@@ -107,7 +106,7 @@ Examples:
 				basic.Expiration = &expiresAtTime
 			}
 
-			var grant types.FeeAllowanceI
+			var grant feegrant.FeeAllowanceI
 			grant = &basic
 
 			periodClock, err := cmd.Flags().GetInt64(FlagPeriod)
@@ -140,7 +139,7 @@ Examples:
 					return fmt.Errorf("period (%d) cannot reset after expiration (%v)", periodClock, exp)
 				}
 
-				periodic := types.PeriodicAllowance{
+				periodic := feegrant.PeriodicAllowance{
 					Basic:            basic,
 					Period:           getPeriod(periodClock),
 					PeriodReset:      getPeriodReset(periodClock),
@@ -157,13 +156,13 @@ Examples:
 			}
 
 			if len(allowedMsgs) > 0 {
-				grant, err = types.NewAllowedMsgAllowance(grant, allowedMsgs)
+				grant, err = feegrant.NewAllowedMsgAllowance(grant, allowedMsgs)
 				if err != nil {
 					return err
 				}
 			}
 
-			msg, err := types.NewMsgGrantAllowance(grant, granter, grantee)
+			msg, err := feegrant.NewMsgGrantAllowance(grant, granter, grantee)
 			if err != nil {
 				return err
 			}
@@ -176,7 +175,7 @@ Examples:
 	cmd.Flags().StringSlice(FlagAllowedMsgs, []string{}, "Set of allowed messages for fee allowance")
 	cmd.Flags().String(FlagExpiration, "", "The RFC 3339 timestamp after which the grant expires for the user")
 	cmd.Flags().String(FlagSpendLimit, "", "Spend limit specifies the max limit can be used, if not mentioned there is no limit")
-	cmd.Flags().Int64(FlagPeriod, 0, "period specifies the time duration in which period_spend_limit coins can be spent before that allowance is reset")
+	cmd.Flags().Int64(FlagPeriod, 0, "period specifies the time duration(in seconds) in which period_limit coins can be spent before that allowance is reset (ex: 3600)")
 	cmd.Flags().String(FlagPeriodLimit, "", "period limit specifies the maximum number of coins that can be spent in the period")
 
 	return cmd
@@ -192,8 +191,8 @@ func NewCmdRevokeFeegrant() *cobra.Command {
 			ignored as it is implied from [granter].
 
 Example:
- $ %s tx %s revoke cosmos1skj.. cosmos1skj..
-			`, version.AppName, types.ModuleName),
+ $ %s tx %s revoke link1skj.. link1skj..
+			`, version.AppName, feegrant.ModuleName),
 		),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -209,7 +208,7 @@ Example:
 			}
 			grantee := sdk.AccAddress(args[1])
 
-			msg := types.NewMsgRevokeAllowance(clientCtx.GetFromAddress(), grantee)
+			msg := feegrant.NewMsgRevokeAllowance(clientCtx.GetFromAddress(), grantee)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},

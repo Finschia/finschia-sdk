@@ -18,13 +18,6 @@ func NewMsgEmpty(fromAddr sdk.AccAddress) *MsgEmpty {
 	return &MsgEmpty{FromAddress: fromAddr.String()}
 }
 
-func NewServiceMsgEmpty(fromAddr sdk.AccAddress) sdk.ServiceMsg {
-	return sdk.ServiceMsg{
-		MethodName: "/lbm.auth.v1.Msg/Empty",
-		Request:    NewMsgEmpty(fromAddr),
-	}
-}
-
 func (msg MsgEmpty) Route() string { return ModuleName }
 
 func (msg MsgEmpty) Type() string { return TypeMsgEmpty }

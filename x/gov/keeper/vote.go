@@ -20,12 +20,15 @@ func (keeper Keeper) AddVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 
 	for _, option := range options {
 		if !types.ValidWeightedVoteOption(option) {
-			return sdkerrors.Wrap(types.ErrInvalidVote, options.String())
+			return sdkerrors.Wrap(types.ErrInvalidVote, option.String())
 		}
 	}
 
 	vote := types.NewVote(proposalID, voterAddr, options)
 	keeper.SetVote(ctx, vote)
+
+	// called after a vote on a proposal is cast
+	keeper.AfterProposalVote(ctx, proposalID, voterAddr)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -66,7 +69,7 @@ func (keeper Keeper) GetVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 		return vote, false
 	}
 
-	keeper.cdc.MustUnmarshalBinaryBare(bz, &vote)
+	keeper.cdc.MustUnmarshal(bz, &vote)
 	populateLegacyOption(&vote)
 
 	return vote, true
@@ -80,7 +83,7 @@ func (keeper Keeper) SetVote(ctx sdk.Context, vote types.Vote) {
 	}
 
 	store := ctx.KVStore(keeper.storeKey)
-	bz := keeper.cdc.MustMarshalBinaryBare(&vote)
+	bz := keeper.cdc.MustMarshal(&vote)
 	addr := sdk.AccAddress(vote.Voter)
 	store.Set(types.VoteKey(vote.ProposalId, addr), bz)
 }
@@ -93,7 +96,7 @@ func (keeper Keeper) IterateAllVotes(ctx sdk.Context, cb func(vote types.Vote) (
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var vote types.Vote
-		keeper.cdc.MustUnmarshalBinaryBare(iterator.Value(), &vote)
+		keeper.cdc.MustUnmarshal(iterator.Value(), &vote)
 		populateLegacyOption(&vote)
 
 		if cb(vote) {
@@ -110,7 +113,7 @@ func (keeper Keeper) IterateVotes(ctx sdk.Context, proposalID uint64, cb func(vo
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var vote types.Vote
-		keeper.cdc.MustUnmarshalBinaryBare(iterator.Value(), &vote)
+		keeper.cdc.MustUnmarshal(iterator.Value(), &vote)
 		populateLegacyOption(&vote)
 
 		if cb(vote) {

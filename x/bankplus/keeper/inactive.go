@@ -25,7 +25,7 @@ func (keeper BaseKeeper) isStoredInactiveAddr(ctx sdk.Context, address sdk.AccAd
 func (keeper BaseKeeper) addToInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
 	store := ctx.KVStore(keeper.storeKey)
 	blockedCAddr := types.InactiveAddr{Address: address.String()}
-	bz := keeper.cdc.MustMarshalBinaryBare(&blockedCAddr)
+	bz := keeper.cdc.MustMarshal(&blockedCAddr)
 	store.Set(inactiveAddrKey(address), bz)
 }
 
@@ -45,7 +45,7 @@ func (keeper BaseKeeper) loadAllInactiveAddrs(ctx sdk.Context) {
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var bAddr types.InactiveAddr
-		keeper.cdc.MustUnmarshalBinaryBare(iterator.Value(), &bAddr)
+		keeper.cdc.MustUnmarshal(iterator.Value(), &bAddr)
 
 		keeper.inactiveAddrs[bAddr.Address] = true
 	}

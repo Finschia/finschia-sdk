@@ -4,9 +4,13 @@ package server
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"runtime/pprof"
 	"time"
+
+	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
 
 	"github.com/line/ostracon/abci/server"
 	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
@@ -16,18 +20,18 @@ import (
 	pvm "github.com/line/ostracon/privval"
 	"github.com/line/ostracon/proxy"
 	"github.com/line/ostracon/rpc/client/local"
-	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
-
-	"github.com/line/lbm-sdk/store/cache"
-	"github.com/line/lbm-sdk/store/iavl"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/server/api"
 	"github.com/line/lbm-sdk/server/config"
 	servergrpc "github.com/line/lbm-sdk/server/grpc"
+	"github.com/line/lbm-sdk/server/rosetta"
+	crgserver "github.com/line/lbm-sdk/server/rosetta/lib/server"
 	"github.com/line/lbm-sdk/server/types"
+	"github.com/line/lbm-sdk/store/cache"
+	"github.com/line/lbm-sdk/store/iavl"
 	storetypes "github.com/line/lbm-sdk/store/types"
 )
 
@@ -60,8 +64,10 @@ const (
 
 // GRPC-related flags.
 const (
-	flagGRPCEnable  = "grpc.enable"
-	flagGRPCAddress = "grpc.address"
+	flagGRPCEnable     = "grpc.enable"
+	flagGRPCAddress    = "grpc.address"
+	flagGRPCWebEnable  = "grpc-web.enable"
+	flagGRPCWebAddress = "grpc-web.address"
 )
 
 // State sync-related flags.
@@ -159,6 +165,9 @@ which accepts a path for the resulting pprof file.
 	cmd.Flags().Bool(flagGRPCEnable, true, "Define if the gRPC server should be enabled")
 	cmd.Flags().String(flagGRPCAddress, config.DefaultGRPCAddress, "the gRPC server address to listen on")
 
+	cmd.Flags().Bool(flagGRPCWebEnable, true, "Define if the gRPC-Web server should be enabled. (Note: gRPC must also be enabled.)")
+	cmd.Flags().String(flagGRPCWebAddress, config.DefaultGRPCWebAddress, "The gRPC-Web server address to listen on")
+
 	cmd.Flags().Uint64(FlagStateSyncSnapshotInterval, 0, "State sync snapshot interval")
 	cmd.Flags().Uint32(FlagStateSyncSnapshotKeepRecent, 2, "State sync snapshot to keep")
 
@@ -244,6 +253,13 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		return err
 	}
 
+	config := config.GetConfig(ctx.Viper)
+	if err := config.ValidateBasic(); err != nil {
+		ctx.Logger.Error("WARNING: The minimum-gas-prices config in app.toml is set to the empty string. " +
+			"This defaults to 0 in the current version, but will error in the next version " +
+			"(SDK v0.45). Please explicitly put the desired minimum-gas-prices in your app.toml.")
+	}
+
 	app := appCreator(ctx.Logger, db, traceWriter, ctx.Viper)
 
 	nodeKey, err := p2p.LoadOrGenNodeKey(cfg.NodeKeyFile())
@@ -276,8 +292,6 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	}
 	ctx.Logger.Debug("initialization: ocNode started")
 
-	config := config.GetConfig(ctx.Viper)
-
 	// Add the tx service to the gRPC router. We only need to register this
 	// service if API or gRPC is enabled, and avoid doing so in the general
 	// case, because it spawns a new local ostracon RPC client.
@@ -289,7 +303,6 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	}
 
 	var apiSrv *api.Server
-
 	if config.API.Enable {
 		genDoc, err := genDocProvider()
 		if err != nil {
@@ -313,15 +326,61 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		select {
 		case err := <-errCh:
 			return err
-		case <-time.After(5 * time.Second): // assume server started successfully
+		case <-time.After(types.ServerStartTime): // assume server started successfully
 		}
 	}
 
-	var grpcSrv *grpc.Server
+	var (
+		grpcSrv    *grpc.Server
+		grpcWebSrv *http.Server
+	)
 	if config.GRPC.Enable {
 		grpcSrv, err = servergrpc.StartGRPCServer(clientCtx, app, config.GRPC.Address)
 		if err != nil {
 			return err
+		}
+		if config.GRPCWeb.Enable {
+			grpcWebSrv, err = servergrpc.StartGRPCWeb(grpcSrv, config)
+			if err != nil {
+				ctx.Logger.Error("failed to start grpc-web http server: ", err)
+				return err
+			}
+		}
+	}
+
+	var rosettaSrv crgserver.Server
+	if config.Rosetta.Enable {
+		offlineMode := config.Rosetta.Offline
+		if !config.GRPC.Enable { // If GRPC is not enabled rosetta cannot work in online mode, so it works in offline mode.
+			offlineMode = true
+		}
+
+		conf := &rosetta.Config{
+			Blockchain:    config.Rosetta.Blockchain,
+			Network:       config.Rosetta.Network,
+			TendermintRPC: ctx.Config.RPC.ListenAddress,
+			GRPCEndpoint:  config.GRPC.Address,
+			Addr:          config.Rosetta.Address,
+			Retries:       config.Rosetta.Retries,
+			Offline:       offlineMode,
+		}
+		conf.WithCodec(clientCtx.InterfaceRegistry, clientCtx.Codec.(*codec.ProtoCodec))
+
+		rosettaSrv, err = rosetta.ServerFromConfig(conf)
+		if err != nil {
+			return err
+		}
+		errCh := make(chan error)
+		go func() {
+			if err := rosettaSrv.Start(); err != nil {
+				errCh <- err
+			}
+		}()
+
+		select {
+		case err := <-errCh:
+			return err
+		case <-time.After(types.ServerStartTime): // assume server started successfully
 		}
 	}
 
@@ -340,6 +399,9 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 
 		if grpcSrv != nil {
 			grpcSrv.Stop()
+			if grpcWebSrv != nil {
+				grpcWebSrv.Close()
+			}
 		}
 
 		ctx.Logger.Info("exiting...")

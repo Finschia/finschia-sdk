@@ -40,7 +40,7 @@ func (k Keeper) iterateClasses(ctx sdk.Context, fn func(class token.Token) (stop
 
 	for ; iterator.Valid(); iterator.Next() {
 		var class token.Token
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &class)
+		k.cdc.MustUnmarshal(iterator.Value(), &class)
 
 		stop := fn(class)
 		if stop {

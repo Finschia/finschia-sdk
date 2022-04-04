@@ -4,18 +4,18 @@ import (
 	"testing"
 	"time"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+
 	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/slashing/types"
 )
 
 func TestGetSetValidatorSigningInfo(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
-	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200))
+	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, app.StakingKeeper.TokensFromConsensusPower(ctx, 200))
 
 	info, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, addrDels[0].ToConsAddress())
 	require.False(t, found)
@@ -37,7 +37,7 @@ func TestGetSetValidatorSigningInfo(t *testing.T) {
 func TestGetSetValidatorMissedBlockBitArray(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
-	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200))
+	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, app.StakingKeeper.TokensFromConsensusPower(ctx, 200))
 
 	missed := app.SlashingKeeper.GetValidatorMissedBlockBitArray(ctx, addrDels[0].ToConsAddress(), 0)
 	require.False(t, missed) // treat empty key as not missed
@@ -49,7 +49,7 @@ func TestGetSetValidatorMissedBlockBitArray(t *testing.T) {
 func TestTombstoned(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
-	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200))
+	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, app.StakingKeeper.TokensFromConsensusPower(ctx, 200))
 
 	require.Panics(t, func() { app.SlashingKeeper.Tombstone(ctx, addrDels[0].ToConsAddress()) })
 	require.False(t, app.SlashingKeeper.IsTombstoned(ctx, addrDels[0].ToConsAddress()))
@@ -72,7 +72,7 @@ func TestTombstoned(t *testing.T) {
 func TestJailUntil(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
-	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200))
+	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, app.StakingKeeper.TokensFromConsensusPower(ctx, 200))
 
 	require.Panics(t, func() { app.SlashingKeeper.JailUntil(ctx, addrDels[0].ToConsAddress(), time.Now()) })
 

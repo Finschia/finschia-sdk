@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"path/filepath"
 
-	ostcli "github.com/line/ostracon/libs/cli"
-
 	"github.com/spf13/cobra"
+
+	ostcli "github.com/line/ostracon/libs/cli"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
@@ -36,8 +36,11 @@ func runConfigCmd(cmd *cobra.Command, args []string) error {
 
 	switch len(args) {
 	case 0:
-		// print all client config fields to sdt out
-		s, _ := json.MarshalIndent(conf, "", "\t")
+		// print all client config fields to stdout
+		s, err := json.MarshalIndent(conf, "", "\t")
+		if err != nil {
+			return err
+		}
 		cmd.Println(string(s))
 
 	case 1:

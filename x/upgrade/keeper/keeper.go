@@ -3,6 +3,7 @@ package keeper
 import (
 	"encoding/binary"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -18,8 +19,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/module"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	ibcexported "github.com/line/lbm-sdk/x/ibc/core/exported"
+	xp "github.com/line/lbm-sdk/x/upgrade/exported"
 	"github.com/line/lbm-sdk/x/upgrade/types"
 )
 
@@ -27,21 +27,29 @@ import (
 const UpgradeInfoFileName string = "upgrade-info.json"
 
 type Keeper struct {
-	homePath           string
-	skipUpgradeHeights map[int64]bool
-	storeKey           sdk.StoreKey
-	cdc                codec.BinaryMarshaler
-	upgradeHandlers    map[string]types.UpgradeHandler
+	homePath           string                          // root directory of app config
+	skipUpgradeHeights map[int64]bool                  // map of heights to skip for an upgrade
+	storeKey           sdk.StoreKey                    // key to access x/upgrade store
+	cdc                codec.BinaryCodec               // App-wide binary codec
+	upgradeHandlers    map[string]types.UpgradeHandler // map of plan name to upgrade handler
+	versionSetter      xp.ProtocolVersionSetter        // implements setting the protocol version field on BaseApp
+	downgradeVerified  bool                            // tells if we've already sanity checked that this binary version isn't being used against an old state.
 }
 
-// NewKeeper constructs an upgrade Keeper
-func NewKeeper(skipUpgradeHeights map[int64]bool, storeKey sdk.StoreKey, cdc codec.BinaryMarshaler, homePath string) Keeper {
+// NewKeeper constructs an upgrade Keeper which requires the following arguments:
+// skipUpgradeHeights - map of heights to skip an upgrade
+// storeKey - a store key with which to access upgrade's store
+// cdc - the app-wide binary codec
+// homePath - root directory of the application's config
+// vs - the interface implemented by baseapp which allows setting baseapp's protocol version field
+func NewKeeper(skipUpgradeHeights map[int64]bool, storeKey sdk.StoreKey, cdc codec.BinaryCodec, homePath string, vs xp.ProtocolVersionSetter) Keeper {
 	return Keeper{
 		homePath:           homePath,
 		skipUpgradeHeights: skipUpgradeHeights,
 		storeKey:           storeKey,
 		cdc:                cdc,
 		upgradeHandlers:    map[string]types.UpgradeHandler{},
+		versionSetter:      vs,
 	}
 }
 
@@ -50,6 +58,28 @@ func NewKeeper(skipUpgradeHeights map[int64]bool, storeKey sdk.StoreKey, cdc cod
 // must be set even if it is a no-op function.
 func (k Keeper) SetUpgradeHandler(name string, upgradeHandler types.UpgradeHandler) {
 	k.upgradeHandlers[name] = upgradeHandler
+}
+
+// setProtocolVersion sets the protocol version to state
+func (k Keeper) setProtocolVersion(ctx sdk.Context, v uint64) {
+	store := ctx.KVStore(k.storeKey)
+	versionBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(versionBytes, v)
+	store.Set([]byte{types.ProtocolVersionByte}, versionBytes)
+}
+
+// getProtocolVersion gets the protocol version from state
+func (k Keeper) getProtocolVersion(ctx sdk.Context) uint64 {
+	store := ctx.KVStore(k.storeKey)
+	ok := store.Has([]byte{types.ProtocolVersionByte})
+	if ok {
+		pvBytes := store.Get([]byte{types.ProtocolVersionByte})
+		protocolVersion := binary.BigEndian.Uint64(pvBytes)
+
+		return protocolVersion
+	}
+	// default value
+	return 0
 }
 
 // SetModuleVersionMap saves a given version map to state
@@ -141,11 +171,7 @@ func (k Keeper) ScheduleUpgrade(ctx sdk.Context, plan types.Plan) error {
 		return err
 	}
 
-	if plan.Time.Unix() > 0 {
-		if !plan.Time.After(ctx.BlockHeader().Time) {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "upgrade cannot be scheduled in the past")
-		}
-	} else if plan.Height <= ctx.BlockHeight() {
+	if plan.Height <= ctx.BlockHeight() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "upgrade cannot be scheduled in the past")
 	}
 
@@ -156,84 +182,72 @@ func (k Keeper) ScheduleUpgrade(ctx sdk.Context, plan types.Plan) error {
 	store := ctx.KVStore(k.storeKey)
 
 	// clear any old IBC state stored by previous plan
-	oldPlan, exists := k.GetUpgradePlan(ctx)
-	if exists && oldPlan.IsIBCPlan() {
-		k.ClearIBCState(ctx, oldPlan.Height-1)
+	oldPlan, found := k.GetUpgradePlan(ctx)
+	if found {
+		k.ClearIBCState(ctx, oldPlan.Height)
 	}
 
-	bz := k.cdc.MustMarshalBinaryBare(&plan)
+	bz := k.cdc.MustMarshal(&plan)
 	store.Set(types.PlanKey(), bz)
 
-	if plan.IsIBCPlan() {
-		// Set UpgradedClientState in store
-		clientState, err := clienttypes.UnpackClientState(plan.UpgradedClientState)
-		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "could not unpack clientstate: %v", err)
-		}
-		// sets the new upgraded client in last height committed on this chain is at plan.Height,
-		// since the chain will panic at plan.Height and new chain will resume at plan.Height
-		return k.SetUpgradedClient(ctx, plan.Height, clientState)
-	}
 	return nil
 }
 
 // SetUpgradedClient sets the expected upgraded client for the next version of this chain at the last height the current chain will commit.
-func (k Keeper) SetUpgradedClient(ctx sdk.Context, planHeight int64, cs ibcexported.ClientState) error {
+func (k Keeper) SetUpgradedClient(ctx sdk.Context, planHeight int64, bz []byte) error {
 	store := ctx.KVStore(k.storeKey)
-
-	// zero out any custom fields before setting
-	cs = cs.ZeroCustomFields()
-	bz, err := clienttypes.MarshalClientState(k.cdc, cs)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "could not marshal clientstate: %v", err)
-	}
-
 	store.Set(types.UpgradedClientKey(planHeight), bz)
 	return nil
 }
 
 // GetUpgradedClient gets the expected upgraded client for the next version of this chain
-func (k Keeper) GetUpgradedClient(ctx sdk.Context, height int64) (ibcexported.ClientState, error) {
+func (k Keeper) GetUpgradedClient(ctx sdk.Context, height int64) ([]byte, bool) {
 	store := ctx.KVStore(k.storeKey)
-
 	bz := store.Get(types.UpgradedClientKey(height))
 	if len(bz) == 0 {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "upgraded client not found in store for height %d", height)
+		return nil, false
 	}
 
-	clientState, err := clienttypes.UnmarshalClientState(k.cdc, bz)
-	if err != nil {
-		return nil, err
-	}
-	return clientState, nil
+	return bz, true
 }
 
 // SetUpgradedConsensusState set the expected upgraded consensus state for the next version of this chain
 // using the last height committed on this chain.
-func (k Keeper) SetUpgradedConsensusState(ctx sdk.Context, planHeight int64, cs ibcexported.ConsensusState) error {
+func (k Keeper) SetUpgradedConsensusState(ctx sdk.Context, planHeight int64, bz []byte) error {
 	store := ctx.KVStore(k.storeKey)
-	bz, err := clienttypes.MarshalConsensusState(k.cdc, cs)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "could not marshal consensus state: %v", err)
-	}
-
 	store.Set(types.UpgradedConsStateKey(planHeight), bz)
 	return nil
 }
 
 // GetUpgradedConsensusState set the expected upgraded consensus state for the next version of this chain
-func (k Keeper) GetUpgradedConsensusState(ctx sdk.Context, lastHeight int64) (ibcexported.ConsensusState, error) {
+func (k Keeper) GetUpgradedConsensusState(ctx sdk.Context, lastHeight int64) ([]byte, bool) {
 	store := ctx.KVStore(k.storeKey)
-
 	bz := store.Get(types.UpgradedConsStateKey(lastHeight))
 	if len(bz) == 0 {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "upgraded consensus state not found in store for height: %d", lastHeight)
+		return nil, false
 	}
-	consState, err := clienttypes.UnmarshalConsensusState(k.cdc, bz)
-	if err != nil {
-		return nil, err
+
+	return bz, true
+}
+
+// GetLastCompletedUpgrade returns the last applied upgrade name and height.
+func (k Keeper) GetLastCompletedUpgrade(ctx sdk.Context) (string, int64) {
+	iter := sdk.KVStoreReversePrefixIterator(ctx.KVStore(k.storeKey), []byte{types.DoneByte})
+	defer iter.Close()
+	if iter.Valid() {
+		return parseDoneKey(iter.Key()), int64(binary.BigEndian.Uint64(iter.Value()))
 	}
-	return consState, nil
+
+	return "", 0
+}
+
+// parseDoneKey - split upgrade name from the done key
+func parseDoneKey(key []byte) string {
+	if len(key) < 2 {
+		panic(fmt.Sprintf("expected key of length at least %d, got %d", 2, len(key)))
+	}
+
+	return string(key[1:])
 }
 
 // GetDoneHeight returns the height at which the given upgrade was executed
@@ -255,8 +269,14 @@ func (k Keeper) ClearIBCState(ctx sdk.Context, lastHeight int64) {
 	store.Delete(types.UpgradedConsStateKey(lastHeight))
 }
 
-// ClearUpgradePlan clears any schedule upgrade
+// ClearUpgradePlan clears any schedule upgrade and associated IBC states.
 func (k Keeper) ClearUpgradePlan(ctx sdk.Context) {
+	// clear IBC states everytime upgrade plan is removed
+	oldPlan, found := k.GetUpgradePlan(ctx)
+	if found {
+		k.ClearIBCState(ctx, oldPlan.Height)
+	}
+
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.PlanKey())
 }
@@ -275,7 +295,7 @@ func (k Keeper) GetUpgradePlan(ctx sdk.Context) (plan types.Plan, havePlan bool)
 		return plan, false
 	}
 
-	k.cdc.MustUnmarshalBinaryBare(bz, &plan)
+	k.cdc.MustUnmarshal(bz, &plan)
 	return plan, true
 }
 
@@ -307,11 +327,17 @@ func (k Keeper) ApplyUpgrade(ctx sdk.Context, plan types.Plan) {
 
 	k.SetModuleVersionMap(ctx, updatedVM)
 
+	// incremement the protocol version and set it in state and baseapp
+	nextProtocolVersion := k.getProtocolVersion(ctx) + 1
+	k.setProtocolVersion(ctx, nextProtocolVersion)
+	if k.versionSetter != nil {
+		// set protocol version on BaseApp
+		k.versionSetter.SetProtocolVersion(nextProtocolVersion)
+	}
+
 	// Must clear IBC state after upgrade is applied as it is stored separately from the upgrade plan.
 	// This will prevent resubmission of upgrade msg after upgrade is already completed.
-	if plan.IsIBCPlan() {
-		k.ClearIBCState(ctx, plan.Height-1)
-	}
+	k.ClearIBCState(ctx, plan.Height)
 	k.ClearUpgradePlan(ctx)
 	k.setDone(ctx, plan.Name)
 }
@@ -321,23 +347,35 @@ func (k Keeper) IsSkipHeight(height int64) bool {
 	return k.skipUpgradeHeights[height]
 }
 
-// DumpUpgradeInfoToDisk writes upgrade information to UpgradeInfoFileName.
+// DumpUpgradeInfoToDisk writes upgrade information to UpgradeInfoFileName. The function
+// doesn't save the `Plan.Info` data, hence it won't support auto download functionality
+// by cosmvisor.
+// NOTE: this function will be update in the next release.
 func (k Keeper) DumpUpgradeInfoToDisk(height int64, name string) error {
+	return k.DumpUpgradeInfoWithInfoToDisk(height, name, "")
+}
+
+// Deprecated: DumpUpgradeInfoWithInfoToDisk writes upgrade information to UpgradeInfoFileName.
+// `info` should be provided and contain Plan.Info data in order to support
+// auto download functionality by cosmovisor and other tools using upgarde-info.json
+// (GetUpgradeInfoPath()) file.
+func (k Keeper) DumpUpgradeInfoWithInfoToDisk(height int64, name string, info string) error {
 	upgradeInfoFilePath, err := k.GetUpgradeInfoPath()
 	if err != nil {
 		return err
 	}
 
-	upgradeInfo := store.UpgradeInfo{
+	upgradeInfo := upgradeInfo{
 		Name:   name,
 		Height: height,
+		Info:   info,
 	}
-	info, err := json.Marshal(upgradeInfo)
+	bz, err := json.Marshal(upgradeInfo)
 	if err != nil {
 		return err
 	}
 
-	return ioutil.WriteFile(upgradeInfoFilePath, info, 0600)
+	return ioutil.WriteFile(upgradeInfoFilePath, bz, 0600)
 }
 
 // GetUpgradeInfoPath returns the upgrade info file path
@@ -383,4 +421,24 @@ func (k Keeper) ReadUpgradeInfoFromDisk() (store.UpgradeInfo, error) {
 	}
 
 	return upgradeInfo, nil
+}
+
+// upgradeInfo is stripped types.Plan structure used to dump upgrade plan data.
+type upgradeInfo struct {
+	// Name has types.Plan.Name value
+	Name string `json:"name,omitempty"`
+	// Height has types.Plan.Height value
+	Height int64 `json:"height,omitempty"`
+	// Height has types.Plan.Height value
+	Info string `json:"info,omitempty"`
+}
+
+// SetDowngradeVerified updates downgradeVerified.
+func (k *Keeper) SetDowngradeVerified(v bool) {
+	k.downgradeVerified = v
+}
+
+// DowngradeVerified returns downgradeVerified.
+func (k Keeper) DowngradeVerified() bool {
+	return k.downgradeVerified
 }

@@ -23,7 +23,9 @@ func (app *BaseApp) Simulate(txBytes []byte) (sdk.GasInfo, *sdk.Result, error) {
 	if err != nil {
 		return sdk.GasInfo{}, nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "%s", err)
 	}
-	return app.runTx(txBytes, tx, true)
+
+	gasInfo, result, _, err := app.runTx(txBytes, tx, true)
+	return gasInfo, result, err
 }
 
 func (app *BaseApp) Deliver(txEncoder sdk.TxEncoder, tx sdk.Tx) (sdk.GasInfo, *sdk.Result, error) {
@@ -32,7 +34,8 @@ func (app *BaseApp) Deliver(txEncoder sdk.TxEncoder, tx sdk.Tx) (sdk.GasInfo, *s
 	if err != nil {
 		return sdk.GasInfo{}, nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "%s", err)
 	}
-	return app.runTx(txBytes, tx, false)
+	gasInfo, result, _, err := app.runTx(txBytes, tx, false)
+	return gasInfo, result, err
 }
 
 // Context with current {check, deliver}State of the app used by tests.
@@ -48,4 +51,8 @@ func (app *BaseApp) NewContext(isCheckTx bool, header ocproto.Header) sdk.Contex
 
 func (app *BaseApp) NewUncachedContext(isCheckTx bool, header ocproto.Header) sdk.Context {
 	return sdk.NewContext(app.cms, header, isCheckTx, app.logger)
+}
+
+func (app *BaseApp) GetContextForDeliverTx(txBytes []byte) sdk.Context {
+	return app.getContextForTx(app.deliverState, txBytes)
 }
