@@ -5,14 +5,6 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
-// NewGenesisState creates a new GenesisState object
-func NewGenesisState(params *Params, validatorAuths []*ValidatorAuth) *GenesisState {
-	return &GenesisState{
-		Params:         params,
-		ValidatorAuths: validatorAuths,
-	}
-}
-
 // DefaultGenesisState creates a default GenesisState object
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
