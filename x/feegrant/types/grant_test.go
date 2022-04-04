@@ -4,13 +4,13 @@ import (
 	"testing"
 	"time"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/x/feegrant/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/feegrant"
 )
 
 func TestGrant(t *testing.T) {
@@ -74,7 +74,7 @@ func TestGrant(t *testing.T) {
 	for name, tc := range cases {
 		tc := tc
 		t.Run(name, func(t *testing.T) {
-			grant, err := types.NewGrant(tc.granter, tc.grantee, &types.BasicAllowance{
+			grant, err := feegrant.NewGrant(tc.granter, tc.grantee, &feegrant.BasicAllowance{
 				SpendLimit: tc.limit,
 				Expiration: &tc.expires,
 			})
@@ -88,10 +88,10 @@ func TestGrant(t *testing.T) {
 			require.NoError(t, err)
 
 			// if it is valid, let's try to serialize, deserialize, and make sure it matches
-			bz, err := cdc.MarshalBinaryBare(&grant)
+			bz, err := cdc.Marshal(&grant)
 			require.NoError(t, err)
-			var loaded types.Grant
-			err = cdc.UnmarshalBinaryBare(bz, &loaded)
+			var loaded feegrant.Grant
+			err = cdc.Unmarshal(bz, &loaded)
 			require.NoError(t, err)
 
 			err = loaded.ValidateBasic()

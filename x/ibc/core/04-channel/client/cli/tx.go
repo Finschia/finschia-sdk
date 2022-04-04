@@ -42,9 +42,6 @@ func NewChannelOpenInitCmd() *cobra.Command {
 				portID, version, order, hops,
 				counterpartyPortID, clientCtx.GetFromAddress(),
 			)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -93,9 +90,6 @@ func NewChannelOpenTryCmd() *cobra.Command {
 				counterpartyPortID, counterpartyChannelID, version,
 				proofInit, proofHeight, clientCtx.GetFromAddress(),
 			)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -139,9 +133,6 @@ func NewChannelOpenAckCmd() *cobra.Command {
 			msg := types.NewMsgChannelOpenAck(
 				portID, channelID, counterpartyChannelID, version, proofTry, proofHeight, clientCtx.GetFromAddress(),
 			)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -179,9 +170,6 @@ func NewChannelOpenConfirmCmd() *cobra.Command {
 			msg := types.NewMsgChannelOpenConfirm(
 				portID, channelID, proofAck, proofHeight, clientCtx.GetFromAddress(),
 			)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -207,9 +195,6 @@ func NewChannelCloseInitCmd() *cobra.Command {
 			channelID := args[1]
 
 			msg := types.NewMsgChannelCloseInit(portID, channelID, clientCtx.GetFromAddress())
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -247,9 +232,6 @@ func NewChannelCloseConfirmCmd() *cobra.Command {
 			msg := types.NewMsgChannelCloseConfirm(
 				portID, channelID, proofInit, proofHeight, clientCtx.GetFromAddress(),
 			)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},

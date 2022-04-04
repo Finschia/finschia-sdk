@@ -1,10 +1,9 @@
 package keeper_test
 
 import (
+	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/testutil"
-
-	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	paramskeeper "github.com/line/lbm-sdk/x/params/keeper"
 )
@@ -13,8 +12,9 @@ func testComponents() (*codec.LegacyAmino, sdk.Context, sdk.StoreKey, paramskeep
 	marshaler := simapp.MakeTestEncodingConfig().Marshaler
 	legacyAmino := createTestCodec()
 	mkey := sdk.NewKVStoreKey("test")
-	ctx := testutil.DefaultContext(mkey)
-	keeper := paramskeeper.NewKeeper(marshaler, legacyAmino, mkey)
+	tkey := sdk.NewTransientStoreKey("transient_test")
+	ctx := testutil.DefaultContext(mkey, tkey)
+	keeper := paramskeeper.NewKeeper(marshaler, legacyAmino, mkey, tkey)
 
 	return legacyAmino, ctx, mkey, keeper
 }

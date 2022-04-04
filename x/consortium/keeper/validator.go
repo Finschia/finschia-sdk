@@ -15,7 +15,7 @@ func (k Keeper) GetValidatorAuth(ctx sdk.Context, valAddr sdk.ValAddress) (*cons
 	}
 
 	var auth consortium.ValidatorAuth
-	if err := k.cdc.UnmarshalBinaryBare(bz, &auth); err != nil {
+	if err := k.cdc.Unmarshal(bz, &auth); err != nil {
 		return nil, err
 	}
 
@@ -26,7 +26,7 @@ func (k Keeper) SetValidatorAuth(ctx sdk.Context, auth *consortium.ValidatorAuth
 	store := ctx.KVStore(k.storeKey)
 	key := validatorAuthKey(sdk.ValAddress(auth.OperatorAddress))
 
-	bz, err := k.cdc.MarshalBinaryBare(auth)
+	bz, err := k.cdc.Marshal(auth)
 	if err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func (k Keeper) IterateValidatorAuths(ctx sdk.Context, cb func(auth consortium.V
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		var auth consortium.ValidatorAuth
-		k.cdc.MustUnmarshalBinaryBare(iter.Value(), &auth)
+		k.cdc.MustUnmarshal(iter.Value(), &auth)
 		if cb(auth) {
 			break
 		}

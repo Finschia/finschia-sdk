@@ -12,7 +12,9 @@ import (
 
 	"github.com/line/lbm-sdk/codec/legacy"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/types/address"
 	"github.com/line/lbm-sdk/types/bech32"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 const (
@@ -24,15 +26,16 @@ const (
 	//	config.SetBech32PrefixForAccount(yourBech32PrefixAccAddr, yourBech32PrefixAccPub)
 	//	config.SetBech32PrefixForValidator(yourBech32PrefixValAddr, yourBech32PrefixValPub)
 	//	config.SetBech32PrefixForConsensusNode(yourBech32PrefixConsAddr, yourBech32PrefixConsPub)
+	//	config.SetPurpose(yourPurpose)
 	//	config.SetCoinType(yourCoinType)
-	//	config.SetFullFundraiserPath(yourFullFundraiserPath)
 	//	config.Seal()
 
 	BytesAddrLen = 20
-	//AddrLen = len(Bech32MainPrefix) + 1 + 38
-
 	// Bech32MainPrefix defines the main SDK Bech32 prefix of an account's address
 	Bech32MainPrefix = "link"
+
+	// Purpose is the LINK purpose as defined in SLIP44 (https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
+	Purpose = 44
 
 	// CoinType is the LINK coin type as defined in SLIP44 (https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
 	CoinType = 438
@@ -174,12 +177,15 @@ func VerifyAddressFormat(bz []byte) error {
 	if verifier != nil {
 		return verifier(bz)
 	}
-	if len(bz) != BytesAddrLen {
-		if len(bz) == 0 {
-			return errors.New("empty address string is not allowed")
-		}
-		return fmt.Errorf("incorrect address length (expected: %d, actual: %d)", BytesAddrLen, len(bz))
+
+	if len(bz) == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrUnknownAddress, "addresses cannot be empty")
 	}
+
+	if len(bz) > address.MaxAddrLen {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "address max length is %d, got %d", address.MaxAddrLen, len(bz))
+	}
+
 	return nil
 }
 
@@ -625,6 +631,8 @@ func (ca ConsAddress) Format(s fmt.State, verb rune) {
 // auxiliary
 // ----------------------------------------------------------------------------
 
+var errBech32EmptyAddress = errors.New("decoding Bech32 address failed: must provide a non empty address")
+
 // Bech32PubKeyType defines a string type alias for a Bech32 public key type.
 type Bech32PubKeyType string
 
@@ -653,7 +661,7 @@ func Bech32ifyPubKey(pkt Bech32PubKeyType, pubkey cryptotypes.PubKey) (string, e
 
 	}
 
-	return bech32.ConvertAndEncode(bech32Prefix, legacy.Cdc.MustMarshalBinaryBare(pubkey))
+	return bech32.ConvertAndEncode(bech32Prefix, legacy.Cdc.MustMarshal(pubkey))
 }
 
 // MustBech32ifyPubKey calls Bech32ifyPubKey except it panics on error.
@@ -704,7 +712,7 @@ func MustGetPubKeyFromBech32(pkt Bech32PubKeyType, pubkeyStr string) cryptotypes
 // GetFromBech32 decodes a bytestring from a Bech32 encoded string.
 func GetFromBech32(bech32str, prefix string) ([]byte, error) {
 	if len(bech32str) == 0 {
-		return nil, errors.New("decoding Bech32 address failed: must provide an address")
+		return nil, errBech32EmptyAddress
 	}
 
 	hrp, bz, err := bech32.DecodeAndConvert(bech32str)

@@ -1,3 +1,4 @@
+// Since: cosmos-sdk 0.43
 syntax = "proto3";
 package lbm.feegrant.v1;
 
@@ -6,7 +7,7 @@ import "lbm/feegrant/v1/feegrant.proto";
 import "lbm/base/query/v1/pagination.proto";
 import "google/api/annotations.proto";
 
-option go_package = "github.com/line/lbm-sdk/x/feegrant/types";
+option go_package = "github.com/line/lbm-sdk/x/feegrant";
 
 // Query defines the gRPC querier service.
 service Query {

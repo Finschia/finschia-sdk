@@ -3,14 +3,14 @@ package cachekv
 import (
 	"bytes"
 	"io"
-	"reflect"
 	"sort"
 	"sync"
 	"time"
-	"unsafe"
 
 	"github.com/line/tm-db/v2/memdb"
 
+	"github.com/line/lbm-sdk/internal/conv"
+	"github.com/line/lbm-sdk/store/listenkv"
 	"github.com/line/lbm-sdk/store/tracekv"
 	"github.com/line/lbm-sdk/store/types"
 	"github.com/line/lbm-sdk/telemetry"
@@ -55,7 +55,6 @@ func (store *Store) GetStoreType() types.StoreType {
 
 // Get implements types.KVStore.
 func (store *Store) Get(key []byte) (value []byte) {
-
 	types.AssertValidKey(key)
 	store.mtx.RLock()
 	defer store.mtx.RUnlock()
@@ -71,7 +70,6 @@ func (store *Store) Get(key []byte) (value []byte) {
 
 // Set implements types.KVStore.
 func (store *Store) Set(key []byte, value []byte) {
-
 	types.AssertValidKey(key)
 	types.AssertValidValue(value)
 
@@ -126,15 +124,19 @@ func (store *Store) Write() {
 	// TODO: Consider allowing usage of Batch, which would allow the write to
 	// at least happen atomically.
 	for _, key := range keys {
-		v, _ := store.cache.Load(key)
-		cacheValue := v.(*cValue)
-
-		switch {
-		case store.isDeleted(key):
+		if store.isDeleted(key) {
+			// We use []byte(key) instead of conv.UnsafeStrToBytes because we cannot
+			// be sure if the underlying store might do a save with the byteslice or
+			// not. Once we get confirmation that .Delete is guaranteed not to
+			// save the byteslice, then we can assume only a read-only copy is sufficient.
 			store.parent.Delete([]byte(key))
-		case cacheValue.value == nil:
-			// Skip, it already doesn't exist in parent.
-		default:
+			continue
+		}
+
+		v, ok := store.cache.Load(key)
+		cacheValue := v.(*cValue)
+		if ok && cacheValue != nil {
+			// It already exists in the parent, hence delete it.
 			store.parent.Set([]byte(key), cacheValue.value)
 		}
 	}
@@ -154,6 +156,11 @@ func (store *Store) CacheWrap() types.CacheWrap {
 // CacheWrapWithTrace implements the CacheWrapper interface.
 func (store *Store) CacheWrapWithTrace(w io.Writer, tc types.TraceContext) types.CacheWrap {
 	return NewStore(tracekv.NewStore(store, w, tc))
+}
+
+// CacheWrapWithListeners implements the CacheWrapper interface.
+func (store *Store) CacheWrapWithListeners(storeKey types.StoreKey, listeners []types.WriteListener) types.CacheWrap {
+	return NewStore(listenkv.NewStore(store, storeKey, listeners))
 }
 
 //----------------------------------------
@@ -187,28 +194,7 @@ func (store *Store) iterator(start, end []byte, ascending bool) types.Iterator {
 	return newCacheMergeIterator(parent, cache, ascending)
 }
 
-// strToBytes is meant to make a zero allocation conversion
-// from string -> []byte to speed up operations, it is not meant
-// to be used generally, but for a specific pattern to check for available
-// keys within a domain.
-func strToBytes(s string) []byte {
-	var b []byte
-	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&b))
-	hdr.Cap = len(s)
-	hdr.Len = len(s)
-	hdr.Data = (*reflect.StringHeader)(unsafe.Pointer(&s)).Data
-	return b
-}
-
-// byteSliceToStr is meant to make a zero allocation conversion
-// from []byte -> string to speed up operations, it is not meant
-// to be used generally, but for a specific pattern to delete keys
-// from a map.
-func byteSliceToStr(b []byte) string {
-	hdr := (*reflect.StringHeader)(unsafe.Pointer(&b))
-	return *(*string)(unsafe.Pointer(hdr))
-}
-
+// TODO(dudong2): need to bump up this func - (https://github.com/cosmos/cosmos-sdk/pull/10024)
 // Constructs a slice of dirty items, to use w/ memIterator.
 func (store *Store) dirtyItems(start, end []byte) {
 	unsorted := make([]*kv.Pair, 0)
@@ -220,7 +206,7 @@ func (store *Store) dirtyItems(start, end []byte) {
 	// than just not having the cache.
 	store.unsortedCache.Range(func(k, _ interface{}) bool {
 		key := k.(string)
-		if IsKeyInDomain(strToBytes(key), start, end) {
+		if IsKeyInDomain(conv.UnsafeStrToBytes(key), start, end) {
 			cacheValue, ok := store.cache.Load(key)
 			if ok {
 				unsorted = append(unsorted, &kv.Pair{Key: []byte(key), Value: cacheValue.(*cValue).value})
@@ -233,7 +219,7 @@ func (store *Store) dirtyItems(start, end []byte) {
 
 func (store *Store) clearUnsortedCacheSubset(unsorted []*kv.Pair) {
 	for _, kv := range unsorted {
-		store.unsortedCache.Delete(byteSliceToStr(kv.Key))
+		store.unsortedCache.Delete(conv.UnsafeBytesToStr(kv.Key))
 	}
 	sort.Slice(unsorted, func(i, j int) bool {
 		return bytes.Compare(unsorted[i].Key, unsorted[j].Key) < 0
@@ -258,7 +244,7 @@ func (store *Store) clearUnsortedCacheSubset(unsorted []*kv.Pair) {
 
 // Only entrypoint to mutate store.cache.
 func (store *Store) setCacheValue(key, value []byte, deleted bool, dirty bool) {
-	keyStr := byteSliceToStr(key)
+	keyStr := conv.UnsafeBytesToStr(key)
 	store.cache.Store(keyStr, &cValue{
 		value: value,
 		dirty: dirty,

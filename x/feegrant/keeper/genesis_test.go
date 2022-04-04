@@ -3,16 +3,16 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/x/feegrant/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/feegrant"
 	"github.com/line/lbm-sdk/x/feegrant/keeper"
 )
 
@@ -25,7 +25,7 @@ type GenesisTestSuite struct {
 func (suite *GenesisTestSuite) SetupTest() {
 	checkTx := false
 	app := simapp.Setup(checkTx)
-	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{Height: 1})
+	suite.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{Height: 1})
 	suite.keeper = app.FeeGrantKeeper
 }
 
@@ -42,14 +42,14 @@ func (suite *GenesisTestSuite) TestImportExportGenesis() {
 	oneYear := now.AddDate(1, 0, 0)
 	msgSrvr := keeper.NewMsgServerImpl(suite.keeper)
 
-	allowance := &types.BasicAllowance{SpendLimit: coins, Expiration: &oneYear}
+	allowance := &feegrant.BasicAllowance{SpendLimit: coins, Expiration: &oneYear}
 	err := suite.keeper.GrantAllowance(suite.ctx, granterAddr, granteeAddr, allowance)
 	suite.Require().NoError(err)
 
 	genesis, err := suite.keeper.ExportGenesis(suite.ctx)
 	suite.Require().NoError(err)
 	// revoke fee allowance
-	_, err = msgSrvr.RevokeAllowance(sdk.WrapSDKContext(suite.ctx), &types.MsgRevokeAllowance{
+	_, err = msgSrvr.RevokeAllowance(sdk.WrapSDKContext(suite.ctx), &feegrant.MsgRevokeAllowance{
 		Granter: granterAddr.String(),
 		Grantee: granteeAddr.String(),
 	})
@@ -68,11 +68,11 @@ func (suite *GenesisTestSuite) TestInitGenesis() {
 
 	testCases := []struct {
 		name          string
-		feeAllowances []types.Grant
+		feeAllowances []feegrant.Grant
 	}{
 		{
 			"invalid granter",
-			[]types.Grant{
+			[]feegrant.Grant{
 				{
 					Granter: "invalid granter",
 					Grantee: granteeAddr.String(),
@@ -81,7 +81,7 @@ func (suite *GenesisTestSuite) TestInitGenesis() {
 		},
 		{
 			"invalid grantee",
-			[]types.Grant{
+			[]feegrant.Grant{
 				{
 					Granter: granterAddr.String(),
 					Grantee: "invalid grantee",
@@ -90,7 +90,7 @@ func (suite *GenesisTestSuite) TestInitGenesis() {
 		},
 		{
 			"invalid allowance",
-			[]types.Grant{
+			[]feegrant.Grant{
 				{
 					Granter:   granterAddr.String(),
 					Grantee:   granteeAddr.String(),
@@ -103,7 +103,7 @@ func (suite *GenesisTestSuite) TestInitGenesis() {
 	for _, tc := range testCases {
 		tc := tc
 		suite.Run(tc.name, func() {
-			err := suite.keeper.InitGenesis(suite.ctx, &types.GenesisState{Allowances: tc.feeAllowances})
+			err := suite.keeper.InitGenesis(suite.ctx, &feegrant.GenesisState{Allowances: tc.feeAllowances})
 			suite.Require().Error(err)
 		})
 	}

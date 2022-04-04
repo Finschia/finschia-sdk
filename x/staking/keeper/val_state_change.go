@@ -13,7 +13,7 @@ import (
 	"github.com/line/lbm-sdk/x/staking/types"
 )
 
-// Calculate the ValidatorUpdates for the current block
+// BlockValidatorUpdates calculates the ValidatorUpdates for the current block
 // Called in each EndBlock
 func (k Keeper) BlockValidatorUpdates(ctx sdk.Context) []abci.ValidatorUpdate {
 	// Calculate validator set changes.
@@ -79,7 +79,7 @@ func (k Keeper) BlockValidatorUpdates(ctx sdk.Context) []abci.ValidatorUpdate {
 	return validatorUpdates
 }
 
-// Apply and return accumulated updates to the bonded validator set. Also,
+// ApplyAndReturnValidatorSetUpdates applies and return accumulated updates to the bonded validator set. Also,
 // * Updates the active valset as keyed by LastValidatorPowerKey.
 // * Updates the total power as keyed by LastTotalPowerKey.
 // * Updates validator status' according to updated powers.
@@ -92,7 +92,9 @@ func (k Keeper) BlockValidatorUpdates(ctx sdk.Context) []abci.ValidatorUpdate {
 // at the previous block height or were removed from the validator set entirely
 // are returned to Tendermint.
 func (k Keeper) ApplyAndReturnValidatorSetUpdates(ctx sdk.Context) (updates []abci.ValidatorUpdate, err error) {
-	maxValidators := k.GetParams(ctx).MaxValidators
+	params := k.GetParams(ctx)
+	maxValidators := params.MaxValidators
+	powerReduction := k.PowerReduction(ctx)
 	totalPower := sdk.ZeroInt()
 	amtFromBondedToNotBonded, amtFromNotBondedToBonded := sdk.ZeroInt(), sdk.ZeroInt()
 
@@ -117,7 +119,7 @@ func (k Keeper) ApplyAndReturnValidatorSetUpdates(ctx sdk.Context) (updates []ab
 
 		// if we get to a zero-power validator (which we don't bond),
 		// there are no more possible bonded validators
-		if validator.PotentialConsensusPower() == 0 {
+		if validator.PotentialConsensusPower(k.PowerReduction(ctx)) == 0 {
 			break
 		}
 
@@ -143,12 +145,12 @@ func (k Keeper) ApplyAndReturnValidatorSetUpdates(ctx sdk.Context) (updates []ab
 
 		// fetch the old power bytes
 		oldPowerBytes, found := last[valAddr.String()]
-		newPower := validator.ConsensusPower()
-		newPowerBytes := k.cdc.MustMarshalBinaryBare(&gogotypes.Int64Value{Value: newPower})
+		newPower := validator.ConsensusPower(powerReduction)
+		newPowerBytes := k.cdc.MustMarshal(&gogotypes.Int64Value{Value: newPower})
 
 		// update the validator set if power has changed
 		if !found || !bytes.Equal(oldPowerBytes, newPowerBytes) {
-			updates = append(updates, validator.ABCIValidatorUpdate())
+			updates = append(updates, validator.ABCIValidatorUpdate(powerReduction))
 
 			k.SetLastValidatorPower(ctx, valAddr, newPower)
 		}
@@ -318,7 +320,8 @@ func (k Keeper) completeUnbondingValidator(ctx sdk.Context, validator types.Vali
 	return validator
 }
 
-// map of operator addresses to serialized power
+// map of operator bech32-addresses to serialized power
+// We use bech32 strings here, because we can't have slices as keys: map[[]byte][]byte
 type validatorsByAddr map[string][]byte
 
 // get the last validator set
@@ -329,8 +332,8 @@ func (k Keeper) getLastValidatorsByAddr(ctx sdk.Context) validatorsByAddr {
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		// extract the validator address from the key (prefix is 1-byte)
-		valAddr := string(iterator.Key()[1:])
+		// extract the validator address from the key (prefix is 1-byte, addrLen is 1-byte)
+		valAddr := string(iterator.Key()[2:])
 		powerBytes := iterator.Value()
 		last[valAddr] = make([]byte, len(powerBytes))
 		copy(last[valAddr], powerBytes)
@@ -346,8 +349,8 @@ func sortNoLongerBonded(last validatorsByAddr) []string {
 	noLongerBonded := make([]string, len(last))
 	index := 0
 
-	for valAddrBytes := range last {
-		noLongerBonded[index] = valAddrBytes
+	for valAddrStr := range last {
+		noLongerBonded[index] = valAddrStr
 		index++
 	}
 	// sorted by address - order doesn't matter

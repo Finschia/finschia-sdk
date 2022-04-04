@@ -90,7 +90,15 @@ message QueryAllBalancesResponse {
 
 // QueryTotalSupplyRequest is the request type for the Query/TotalSupply RPC
 // method.
-message QueryTotalSupplyRequest {}
+message QueryTotalSupplyRequest {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // pagination defines an optional pagination for the request.
+  //
+  // Since: cosmos-sdk 0.43
+  lbm.base.query.v1.PageRequest pagination = 1;
+}
 
 // QueryTotalSupplyResponse is the response type for the Query/TotalSupply RPC
 // method
@@ -98,6 +106,11 @@ message QueryTotalSupplyResponse {
   // supply is the supply of the coins
   repeated lbm.base.v1.Coin supply = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+
+  // pagination defines the pagination in the response.
+  //
+  // Since: cosmos-sdk 0.43
+  lbm.base.query.v1.PageResponse pagination = 2;
 }
 
 // QuerySupplyOfRequest is the request type for the Query/SupplyOf RPC method.

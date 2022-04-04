@@ -65,7 +65,7 @@ func (s queryServer) ValidatorAuths(c context.Context, req *consortium.QueryVali
 	validatorStore := prefix.NewStore(store, validatorAuthKeyPrefix)
 	pageRes, err := query.Paginate(validatorStore, req.Pagination, func(key []byte, value []byte) error {
 		var auth consortium.ValidatorAuth
-		s.keeper.cdc.MustUnmarshalBinaryBare(value, &auth)
+		s.keeper.cdc.MustUnmarshal(value, &auth)
 		auths = append(auths, &auth)
 		return nil
 	})

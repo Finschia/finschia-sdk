@@ -11,13 +11,13 @@ func (k Keeper) GetParams(ctx sdk.Context) *consortium.Params {
 	bz := store.Get(key)
 
 	var params consortium.Params
-	k.cdc.MustUnmarshalBinaryBare(bz, &params)
+	k.cdc.MustUnmarshal(bz, &params)
 
 	return &params
 }
 
 func (k Keeper) SetParams(ctx sdk.Context, params *consortium.Params) {
-	bz := k.cdc.MustMarshalBinaryBare(params)
+	bz := k.cdc.MustMarshal(params)
 
 	store := ctx.KVStore(k.storeKey)
 	key := paramsKey

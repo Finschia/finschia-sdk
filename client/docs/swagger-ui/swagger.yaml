@@ -33787,9 +33787,9 @@ paths:
   '/lbm/token/v1/balance/{address}/{class_id}':
     get:
       summary: >-
-        TokenBalance queries the number of tokens of a given class owned by the
+        Balance queries the number of tokens of a given class owned by the
         address.
-      operationId: TokenBalance
+      operationId: Balance
       responses:
         '200':
           description: A successful response.
@@ -33799,8 +33799,8 @@ paths:
               amount:
                 type: string
             title: >-
-              QueryTokenBalanceResponse is the response type for the
-              Query/TokenBalance RPC method
+              QueryBalanceResponse is the response type for the
+              Query/Balance RPC method
         default:
           description: An unexpected error response
           schema:
@@ -55847,13 +55847,13 @@ definitions:
       amount:
         type: string
     title: QuerySupplyResponse is the response type for the Query/Supply RPC method
-  lbm.token.v1.QueryTokenBalanceResponse:
+  lbm.token.v1.QueryBalanceResponse:
     type: object
     properties:
       amount:
         type: string
     title: >-
-      QueryTokenBalanceResponse is the response type for the Query/TokenBalance
+      QueryBalanceResponse is the response type for the Query/Balance
       RPC method
   lbm.token.v1.QueryTokenResponse:
     type: object

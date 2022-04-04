@@ -6,6 +6,7 @@ import (
 	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/store/cachekv"
+	"github.com/line/lbm-sdk/store/listenkv"
 	"github.com/line/lbm-sdk/store/tracekv"
 	"github.com/line/lbm-sdk/store/types"
 )
@@ -92,6 +93,11 @@ func (dsa Store) CacheWrap() types.CacheWrap {
 // CacheWrapWithTrace implements KVStore.
 func (dsa Store) CacheWrapWithTrace(w io.Writer, tc types.TraceContext) types.CacheWrap {
 	return cachekv.NewStore(tracekv.NewStore(dsa, w, tc))
+}
+
+// CacheWrapWithListeners implements the CacheWrapper interface.
+func (dsa Store) CacheWrapWithListeners(storeKey types.StoreKey, listeners []types.WriteListener) types.CacheWrap {
+	return cachekv.NewStore(listenkv.NewStore(dsa, storeKey, listeners))
 }
 
 // tmdb.DB implements KVStore so we can CacheKVStore it.
