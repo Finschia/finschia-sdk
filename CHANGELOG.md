@@ -54,3 +54,5 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ci) [\#469](https://github.com/line/lbm-sdk/pull/469) publish docker image on tag push
 
 ### Document Updates
+
+* (docs) [\#483](https://github.com/line/lbm-sdk/pull/483) update documents on x/stakingplus
