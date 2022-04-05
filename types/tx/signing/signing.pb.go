@@ -41,6 +41,11 @@ const (
 	// SIGN_MODE_LEGACY_AMINO_JSON is a backwards compatibility mode which uses
 	// Amino JSON and will be removed in the future
 	SignMode_SIGN_MODE_LEGACY_AMINO_JSON SignMode = 127
+	// SIGN_MODE_EIP_191 specifies the sign mode for EIP 191 signing on the Cosmos
+	// SDK. Ref: https://eips.ethereum.org/EIPS/eip-191
+	//
+	// Since: cosmos-sdk 0.45
+	SignMode_SIGN_MODE_EIP_191 SignMode = 191
 )
 
 var SignMode_name = map[int32]string{
@@ -48,6 +53,7 @@ var SignMode_name = map[int32]string{
 	1:   "SIGN_MODE_DIRECT",
 	2:   "SIGN_MODE_TEXTUAL",
 	127: "SIGN_MODE_LEGACY_AMINO_JSON",
+	191: "SIGN_MODE_EIP_191",
 }
 
 var SignMode_value = map[string]int32{
@@ -55,6 +61,7 @@ var SignMode_value = map[string]int32{
 	"SIGN_MODE_DIRECT":            1,
 	"SIGN_MODE_TEXTUAL":           2,
 	"SIGN_MODE_LEGACY_AMINO_JSON": 127,
+	"SIGN_MODE_EIP_191":           191,
 }
 
 func (x SignMode) String() string {
