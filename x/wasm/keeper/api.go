@@ -28,11 +28,11 @@ func (a cosmwasmAPIImpl) canonicalAddress(human string) ([]byte, uint64, error) 
 	bz, err := sdk.AccAddressToBytes(human)
 	return bz, 4 * a.gasMultiplier, err
 }
-func (a cosmwasmAPIImpl) GetContractEnv(contractAddrStr string) (*wasmvm.Cache, wasmvm.KVStore, wasmvm.Querier, wasmvm.GasMeter, []byte, uint64, error) {
+func (a cosmwasmAPIImpl) GetContractEnv(contractAddrStr string) (wasmvm.Env, *wasmvm.Cache, wasmvm.KVStore, wasmvm.Querier, wasmvm.GasMeter, []byte, uint64, error) {
 	contractAddr := sdk.AccAddress(contractAddrStr)
 	_, codeInfo, prefixStore, err := a.keeper.contractInstance(*a.ctx, contractAddr)
 	if err != nil {
-		return nil, nil, nil, nil, wasmvm.Checksum{}, 0, err
+		return wasmvm.Env{}, nil, nil, nil, nil, wasmvm.Checksum{}, 0, err
 	}
 
 	cache := a.keeper.wasmVM.GetCache()
@@ -44,8 +44,9 @@ func (a cosmwasmAPIImpl) GetContractEnv(contractAddrStr string) (*wasmvm.Cache, 
 	querier := NewQueryHandler(*a.ctx, a.keeper.wasmVMQueryHandler, contractAddr, a.gasMultiplier)
 	gas := 20 * a.gasMultiplier
 	wasmStore := types.NewWasmStore(prefixStore)
+	env := types.NewEnv(*a.ctx, contractAddr)
 
-	return cache, wasmStore, querier, a.keeper.gasMeter(*a.ctx), codeInfo.CodeHash, gas, nil
+	return env, cache, wasmStore, querier, a.keeper.gasMeter(*a.ctx), codeInfo.CodeHash, gas, nil
 }
 
 func (k Keeper) cosmwasmAPI(ctx sdk.Context) wasmvm.GoAPI {
