@@ -29,7 +29,7 @@ One can update the authorization, via proposals:
     }
     ```
 
-## Shutdown
+## Disable the module
 
 One can shutdown the consortium module via `UpdateConsortiumParamsProposal`, setting its `params.enabled` to `false`. This process is irreversible, so one cannot re-enable the module.
 
