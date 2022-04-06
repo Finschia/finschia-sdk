@@ -31,7 +31,7 @@ One can update the authorization, via proposals:
 
 ## Disable the module
 
-One can shutdown the consortium module via `UpdateConsortiumParamsProposal`, setting its `params.enabled` to `false`. This process is irreversible, so one cannot re-enable the module.
+One can disable the consortium module via `UpdateConsortiumParamsProposal`, setting its `params.enabled` to `false`. This process is irreversible, so one cannot re-enable the module.
 
 +++ https://github.com/line/lbm-sdk/blob/v0.44.0-rc0/proto/lbm/consortium/v1/consortium.proto#L20-L29
 ```go
