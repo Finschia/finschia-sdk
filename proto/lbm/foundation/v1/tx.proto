@@ -1,0 +1,39 @@
+syntax = "proto3";
+package lbm.foundation.v1;
+
+import "gogoproto/gogo.proto";
+import "lbm/foundation/v1/foundation.proto";
+import "lbm/base/v1/coin.proto";
+
+option go_package = "github.com/line/lbm-sdk/x/foundation";
+
+option (gogoproto.equal_all)           = false;
+option (gogoproto.goproto_getters_all) = false;
+
+// Msg defines the foundation Msg service.
+service Msg {
+  // FundTreasury defines a method to fund the treasury
+  rpc FundTreasury(MsgFundTreasury) returns (MsgFundTreasuryResponse);
+
+  // WithdrawFromTreasury defines a method to withdraw coins from the treasury
+  rpc WithdrawFromTreasury(MsgWithdrawFromTreasury) returns (MsgWithdrawFromTreasuryResponse);
+}
+
+// MsgFundTreasury represents a message to fund the treasury.
+message MsgFundTreasury {
+  string from = 1;
+  repeated lbm.base.v1.Coin amount = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+}
+
+// MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
+message MsgFundTreasuryResponse {}
+
+// MsgWithdrawFromTreasury represents a message to withdraw coins from the treasury.
+message MsgWithdrawFromTreasury {
+  string operator = 1;
+  string to = 2;
+  repeated lbm.base.v1.Coin amount = 3 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+}
+
+// MsgWithdrawFromTreasuryResponse defines the Msg/WithdrawFromTreasury response type.
+message MsgWithdrawFromTreasuryResponse {}

@@ -580,12 +580,22 @@
 - [lbm/foundation/v1/query.proto](#lbm/foundation/v1/query.proto)
     - [QueryParamsRequest](#lbm.foundation.v1.QueryParamsRequest)
     - [QueryParamsResponse](#lbm.foundation.v1.QueryParamsResponse)
+    - [QueryTreasuryRequest](#lbm.foundation.v1.QueryTreasuryRequest)
+    - [QueryTreasuryResponse](#lbm.foundation.v1.QueryTreasuryResponse)
     - [QueryValidatorAuthRequest](#lbm.foundation.v1.QueryValidatorAuthRequest)
     - [QueryValidatorAuthResponse](#lbm.foundation.v1.QueryValidatorAuthResponse)
     - [QueryValidatorAuthsRequest](#lbm.foundation.v1.QueryValidatorAuthsRequest)
     - [QueryValidatorAuthsResponse](#lbm.foundation.v1.QueryValidatorAuthsResponse)
   
     - [Query](#lbm.foundation.v1.Query)
+  
+- [lbm/foundation/v1/tx.proto](#lbm/foundation/v1/tx.proto)
+    - [MsgFundTreasury](#lbm.foundation.v1.MsgFundTreasury)
+    - [MsgFundTreasuryResponse](#lbm.foundation.v1.MsgFundTreasuryResponse)
+    - [MsgWithdrawFromTreasury](#lbm.foundation.v1.MsgWithdrawFromTreasury)
+    - [MsgWithdrawFromTreasuryResponse](#lbm.foundation.v1.MsgWithdrawFromTreasuryResponse)
+  
+    - [Msg](#lbm.foundation.v1.Msg)
   
 - [lbm/genutil/v1/genesis.proto](#lbm/genutil/v1/genesis.proto)
     - [GenesisState](#lbm.genutil.v1.GenesisState)
@@ -8725,6 +8735,33 @@ QueryParamsResponse is the response type for the Query/Params RPC method.
 
 
 
+<a name="lbm.foundation.v1.QueryTreasuryRequest"></a>
+
+### QueryTreasuryRequest
+QueryTreasuryRequest is the request type for the
+Query/Treasury RPC method.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryTreasuryResponse"></a>
+
+### QueryTreasuryResponse
+QueryTreasuryResponse is the response type for the
+Query/Treasury RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.QueryValidatorAuthRequest"></a>
 
 ### QueryValidatorAuthRequest
@@ -8806,6 +8843,87 @@ Query defines the gRPC querier service for foundation module.
 | `Params` | [QueryParamsRequest](#lbm.foundation.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.foundation.v1.QueryParamsResponse) | Params queries the module params. | GET|/lbm/foundation/v1/params|
 | `ValidatorAuth` | [QueryValidatorAuthRequest](#lbm.foundation.v1.QueryValidatorAuthRequest) | [QueryValidatorAuthResponse](#lbm.foundation.v1.QueryValidatorAuthResponse) | ValidatorAuth queries authorization info of a validator. | GET|/lbm/foundation/v1/validators/{validator_address}|
 | `ValidatorAuths` | [QueryValidatorAuthsRequest](#lbm.foundation.v1.QueryValidatorAuthsRequest) | [QueryValidatorAuthsResponse](#lbm.foundation.v1.QueryValidatorAuthsResponse) | ValidatorAuths queries authorization infos of validators. | GET|/lbm/foundation/v1/validators|
+| `Treasury` | [QueryTreasuryRequest](#lbm.foundation.v1.QueryTreasuryRequest) | [QueryTreasuryResponse](#lbm.foundation.v1.QueryTreasuryResponse) | Treasury queries the foundation treasury. | GET|/lbm/foundation/v1/treasury|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/foundation/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/foundation/v1/tx.proto
+
+
+
+<a name="lbm.foundation.v1.MsgFundTreasury"></a>
+
+### MsgFundTreasury
+MsgFundTreasury represents a message to fund the treasury.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgFundTreasuryResponse"></a>
+
+### MsgFundTreasuryResponse
+MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgWithdrawFromTreasury"></a>
+
+### MsgWithdrawFromTreasury
+MsgWithdrawFromTreasury represents a message to withdraw coins from the treasury.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  |  |
+| `to` | [string](#string) |  |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgWithdrawFromTreasuryResponse"></a>
+
+### MsgWithdrawFromTreasuryResponse
+MsgWithdrawFromTreasuryResponse defines the Msg/WithdrawFromTreasury response type.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.foundation.v1.Msg"></a>
+
+### Msg
+Msg defines the foundation Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `FundTreasury` | [MsgFundTreasury](#lbm.foundation.v1.MsgFundTreasury) | [MsgFundTreasuryResponse](#lbm.foundation.v1.MsgFundTreasuryResponse) | FundTreasury defines a method to fund the treasury | |
+| `WithdrawFromTreasury` | [MsgWithdrawFromTreasury](#lbm.foundation.v1.MsgWithdrawFromTreasury) | [MsgWithdrawFromTreasuryResponse](#lbm.foundation.v1.MsgWithdrawFromTreasuryResponse) | WithdrawFromTreasury defines a method to withdraw coins from the treasury | |
 
  <!-- end services -->
 

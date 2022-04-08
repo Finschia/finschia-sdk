@@ -6,6 +6,9 @@ option go_package = "github.com/line/lbm-sdk/x/foundation";
 import "lbm/base/query/v1/pagination.proto";
 import "google/api/annotations.proto";
 import "lbm/foundation/v1/foundation.proto";
+import "lbm/base/v1/coin.proto";
+
+import "gogoproto/gogo.proto";
 
 // Query defines the gRPC querier service for foundation module.
 service Query {
@@ -22,6 +25,11 @@ service Query {
   // ValidatorAuths queries authorization infos of validators.
   rpc ValidatorAuths(QueryValidatorAuthsRequest) returns (QueryValidatorAuthsResponse) {
     option (google.api.http).get = "/lbm/foundation/v1/validators";
+  }
+
+  // Treasury queries the foundation treasury.
+  rpc Treasury(QueryTreasuryRequest) returns (QueryTreasuryResponse) {
+    option (google.api.http).get = "/lbm/foundation/v1/treasury";
   }
 }
 
@@ -60,4 +68,15 @@ message QueryValidatorAuthsResponse {
 
   // pagination defines the pagination in the response.
   lbm.base.query.v1.PageResponse pagination = 2;
+}
+
+// QueryTreasuryRequest is the request type for the
+// Query/Treasury RPC method.
+message QueryTreasuryRequest {}
+
+// QueryTreasuryResponse is the response type for the
+// Query/Treasury RPC method.
+message QueryTreasuryResponse {
+  repeated lbm.base.v1.Coin amount = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }

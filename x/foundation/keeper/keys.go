@@ -10,9 +10,11 @@ import (
 // - 0x00: Params
 //
 // - 0x01<valAddress_Bytes>: bool
+// - 0x02: Treasury
 var (
 	paramsKey              = []byte{0x00}
 	validatorAuthKeyPrefix = []byte{0x01}
+	treasuryKey            = []byte{0x02}
 )
 
 // validatorAuthKey key for a specific validator from the store

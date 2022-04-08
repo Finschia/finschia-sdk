@@ -119,12 +119,17 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 // RegisterServices registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
+	foundation.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServer(am.keeper))
 	foundation.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(am.keeper))
 
-	/* m := keeper.NewMigrator(am.keeper)
-	if err := cfg.RegisterMigration(foundation.ModuleName, 1, m.Migrate1to2); err != nil {
-		panic(fmt.Sprintf("failed to migrate x/foundation from version 1 to 2: %v", err))
-	} */
+	// m := keeper.NewMigrator(am.keeper)
+	migrations := map[uint64]func(sdk.Context)error{
+	}
+	for ver, handler := range migrations {
+		if err := cfg.RegisterMigration(foundation.ModuleName, ver, handler); err != nil {
+			panic(fmt.Sprintf("failed to migrate x/foundation from version %d to %d: %v", ver, ver + 1, err))
+		}
+	}
 }
 
 // InitGenesis performs genesis initialization for the foundation module. It returns

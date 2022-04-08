@@ -75,3 +75,14 @@ func (s queryServer) ValidatorAuths(c context.Context, req *foundation.QueryVali
 
 	return &foundation.QueryValidatorAuthsResponse{Auths: auths, Pagination: pageRes}, nil
 }
+
+func (s queryServer) Treasury(c context.Context, req *foundation.QueryTreasuryRequest) (*foundation.QueryTreasuryResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	amount := s.keeper.GetTreasury(ctx)
+
+	return &foundation.QueryTreasuryResponse{Amount: amount}, nil
+}
