@@ -14,12 +14,12 @@ import (
 type msgServer struct {
 	stakingtypes.MsgServer
 
-	ck types.ConsortiumKeeper
+	ck types.FoundationKeeper
 }
 
 // NewMsgServerImpl returns an implementation of the staking MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(keeper stakingkeeper.Keeper, ck types.ConsortiumKeeper) stakingtypes.MsgServer {
+func NewMsgServerImpl(keeper stakingkeeper.Keeper, ck types.FoundationKeeper) stakingtypes.MsgServer {
 	return &msgServer{
 		MsgServer: stakingkeeper.NewMsgServerImpl(keeper),
 		ck:        ck,

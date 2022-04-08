@@ -448,29 +448,6 @@
     - [GenesisOwners](#lbm.capability.v1.GenesisOwners)
     - [GenesisState](#lbm.capability.v1.GenesisState)
   
-- [lbm/consortium/v1/consortium.proto](#lbm/consortium/v1/consortium.proto)
-    - [Params](#lbm.consortium.v1.Params)
-    - [UpdateConsortiumParamsProposal](#lbm.consortium.v1.UpdateConsortiumParamsProposal)
-    - [UpdateValidatorAuthsProposal](#lbm.consortium.v1.UpdateValidatorAuthsProposal)
-    - [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth)
-  
-- [lbm/consortium/v1/event.proto](#lbm/consortium/v1/event.proto)
-    - [EventUpdateConsortiumParams](#lbm.consortium.v1.EventUpdateConsortiumParams)
-    - [EventUpdateValidatorAuths](#lbm.consortium.v1.EventUpdateValidatorAuths)
-  
-- [lbm/consortium/v1/genesis.proto](#lbm/consortium/v1/genesis.proto)
-    - [GenesisState](#lbm.consortium.v1.GenesisState)
-  
-- [lbm/consortium/v1/query.proto](#lbm/consortium/v1/query.proto)
-    - [QueryParamsRequest](#lbm.consortium.v1.QueryParamsRequest)
-    - [QueryParamsResponse](#lbm.consortium.v1.QueryParamsResponse)
-    - [QueryValidatorAuthRequest](#lbm.consortium.v1.QueryValidatorAuthRequest)
-    - [QueryValidatorAuthResponse](#lbm.consortium.v1.QueryValidatorAuthResponse)
-    - [QueryValidatorAuthsRequest](#lbm.consortium.v1.QueryValidatorAuthsRequest)
-    - [QueryValidatorAuthsResponse](#lbm.consortium.v1.QueryValidatorAuthsResponse)
-  
-    - [Query](#lbm.consortium.v1.Query)
-  
 - [lbm/crisis/v1/genesis.proto](#lbm/crisis/v1/genesis.proto)
     - [GenesisState](#lbm.crisis.v1.GenesisState)
   
@@ -586,6 +563,29 @@
     - [MsgRevokeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeAllowanceResponse)
   
     - [Msg](#lbm.feegrant.v1.Msg)
+  
+- [lbm/foundation/v1/foundation.proto](#lbm/foundation/v1/foundation.proto)
+    - [Params](#lbm.foundation.v1.Params)
+    - [UpdateFoundationParamsProposal](#lbm.foundation.v1.UpdateFoundationParamsProposal)
+    - [UpdateValidatorAuthsProposal](#lbm.foundation.v1.UpdateValidatorAuthsProposal)
+    - [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth)
+  
+- [lbm/foundation/v1/event.proto](#lbm/foundation/v1/event.proto)
+    - [EventUpdateFoundationParams](#lbm.foundation.v1.EventUpdateFoundationParams)
+    - [EventUpdateValidatorAuths](#lbm.foundation.v1.EventUpdateValidatorAuths)
+  
+- [lbm/foundation/v1/genesis.proto](#lbm/foundation/v1/genesis.proto)
+    - [GenesisState](#lbm.foundation.v1.GenesisState)
+  
+- [lbm/foundation/v1/query.proto](#lbm/foundation/v1/query.proto)
+    - [QueryParamsRequest](#lbm.foundation.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#lbm.foundation.v1.QueryParamsResponse)
+    - [QueryValidatorAuthRequest](#lbm.foundation.v1.QueryValidatorAuthRequest)
+    - [QueryValidatorAuthResponse](#lbm.foundation.v1.QueryValidatorAuthResponse)
+    - [QueryValidatorAuthsRequest](#lbm.foundation.v1.QueryValidatorAuthsRequest)
+    - [QueryValidatorAuthsResponse](#lbm.foundation.v1.QueryValidatorAuthsResponse)
+  
+    - [Query](#lbm.foundation.v1.Query)
   
 - [lbm/genutil/v1/genesis.proto](#lbm/genutil/v1/genesis.proto)
     - [GenesisState](#lbm.genutil.v1.GenesisState)
@@ -7044,283 +7044,6 @@ GenesisState defines the capability module's genesis state.
 
 
 
-<a name="lbm/consortium/v1/consortium.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/consortium/v1/consortium.proto
-
-
-
-<a name="lbm.consortium.v1.Params"></a>
-
-### Params
-Params defines the parameters for the consortium module.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `enabled` | [bool](#bool) |  |  |
-
-
-
-
-
-
-<a name="lbm.consortium.v1.UpdateConsortiumParamsProposal"></a>
-
-### UpdateConsortiumParamsProposal
-UpdateConsortiumParamsProposal details a proposal to update params of cosortium module.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  |  |
-| `description` | [string](#string) |  |  |
-| `params` | [Params](#lbm.consortium.v1.Params) |  |  |
-
-
-
-
-
-
-<a name="lbm.consortium.v1.UpdateValidatorAuthsProposal"></a>
-
-### UpdateValidatorAuthsProposal
-UpdateValidatorAuthsProposal details a proposal to update validator auths on consortium.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  |  |
-| `description` | [string](#string) |  |  |
-| `auths` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.consortium.v1.ValidatorAuth"></a>
-
-### ValidatorAuth
-ValidatorAuth defines authorization info of a validator.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `operator_address` | [string](#string) |  |  |
-| `creation_allowed` | [bool](#bool) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/consortium/v1/event.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/consortium/v1/event.proto
-
-
-
-<a name="lbm.consortium.v1.EventUpdateConsortiumParams"></a>
-
-### EventUpdateConsortiumParams
-EventUpdateConsortiumParams is emitted after updating consortium parameters.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.consortium.v1.Params) |  |  |
-
-
-
-
-
-
-<a name="lbm.consortium.v1.EventUpdateValidatorAuths"></a>
-
-### EventUpdateValidatorAuths
-EventUpdateValidatorAuths is emitted after updating validator auth info.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `auths` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) | repeated |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/consortium/v1/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/consortium/v1/genesis.proto
-
-
-
-<a name="lbm.consortium.v1.GenesisState"></a>
-
-### GenesisState
-GenesisState defines the consortium module's genesis state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.consortium.v1.Params) |  | params defines the module parameters at genesis. |
-| `validator_auths` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) | repeated | allowed_validators defines the allowed validator addresses at genesis. provided empty, the module gathers information from staking module. |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/consortium/v1/query.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/consortium/v1/query.proto
-
-
-
-<a name="lbm.consortium.v1.QueryParamsRequest"></a>
-
-### QueryParamsRequest
-QueryParamsRequest is the request type for the Query/Params RPC method.
-
-
-
-
-
-
-<a name="lbm.consortium.v1.QueryParamsResponse"></a>
-
-### QueryParamsResponse
-QueryParamsResponse is the response type for the Query/Params RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.consortium.v1.Params) |  |  |
-
-
-
-
-
-
-<a name="lbm.consortium.v1.QueryValidatorAuthRequest"></a>
-
-### QueryValidatorAuthRequest
-QueryValidatorAuthRequest is the request type for the
-Query/ValidatorAuth RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `validator_address` | [string](#string) |  | validator_address defines the validator address to query for. |
-
-
-
-
-
-
-<a name="lbm.consortium.v1.QueryValidatorAuthResponse"></a>
-
-### QueryValidatorAuthResponse
-QueryValidatorAuthResponse is the request type for the
-Query/ValidatorAuth RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `auth` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) |  |  |
-
-
-
-
-
-
-<a name="lbm.consortium.v1.QueryValidatorAuthsRequest"></a>
-
-### QueryValidatorAuthsRequest
-QueryValidatorAuthsRequest is the request type for the
-Query/ValidatorAuths RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.consortium.v1.QueryValidatorAuthsResponse"></a>
-
-### QueryValidatorAuthsResponse
-QueryValidatorAuthsResponse is the response type for the
-Query/ValidatorAuths RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `auths` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) | repeated |  |
-| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="lbm.consortium.v1.Query"></a>
-
-### Query
-Query defines the gRPC querier service for consortium module.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#lbm.consortium.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.consortium.v1.QueryParamsResponse) | Params queries the module params. | GET|/lbm/consortium/v1/params|
-| `ValidatorAuth` | [QueryValidatorAuthRequest](#lbm.consortium.v1.QueryValidatorAuthRequest) | [QueryValidatorAuthResponse](#lbm.consortium.v1.QueryValidatorAuthResponse) | ValidatorAuth queries authorization info of a validator. | GET|/lbm/consortium/v1/validators/{validator_address}|
-| `ValidatorAuths` | [QueryValidatorAuthsRequest](#lbm.consortium.v1.QueryValidatorAuthsRequest) | [QueryValidatorAuthsResponse](#lbm.consortium.v1.QueryValidatorAuthsResponse) | ValidatorAuths queries authorization infos of validators. | GET|/lbm/consortium/v1/validators|
-
- <!-- end services -->
-
-
-
 <a name="lbm/crisis/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -8805,6 +8528,283 @@ Msg defines the feegrant msg service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `GrantAllowance` | [MsgGrantAllowance](#lbm.feegrant.v1.MsgGrantAllowance) | [MsgGrantAllowanceResponse](#lbm.feegrant.v1.MsgGrantAllowanceResponse) | GrantAllowance grants fee allowance to the grantee on the granter's account with the provided expiration time. | |
 | `RevokeAllowance` | [MsgRevokeAllowance](#lbm.feegrant.v1.MsgRevokeAllowance) | [MsgRevokeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeAllowanceResponse) | RevokeAllowance revokes any fee allowance of granter's account that has been granted to the grantee. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/foundation/v1/foundation.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/foundation/v1/foundation.proto
+
+
+
+<a name="lbm.foundation.v1.Params"></a>
+
+### Params
+Params defines the parameters for the foundation module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `enabled` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.UpdateFoundationParamsProposal"></a>
+
+### UpdateFoundationParamsProposal
+UpdateFoundationParamsProposal details a proposal to update params of cosortium module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `params` | [Params](#lbm.foundation.v1.Params) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.UpdateValidatorAuthsProposal"></a>
+
+### UpdateValidatorAuthsProposal
+UpdateValidatorAuthsProposal details a proposal to update validator auths on foundation.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `auths` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.ValidatorAuth"></a>
+
+### ValidatorAuth
+ValidatorAuth defines authorization info of a validator.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator_address` | [string](#string) |  |  |
+| `creation_allowed` | [bool](#bool) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/foundation/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/foundation/v1/event.proto
+
+
+
+<a name="lbm.foundation.v1.EventUpdateFoundationParams"></a>
+
+### EventUpdateFoundationParams
+EventUpdateFoundationParams is emitted after updating foundation parameters.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.foundation.v1.Params) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.EventUpdateValidatorAuths"></a>
+
+### EventUpdateValidatorAuths
+EventUpdateValidatorAuths is emitted after updating validator auth info.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `auths` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/foundation/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/foundation/v1/genesis.proto
+
+
+
+<a name="lbm.foundation.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the foundation module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.foundation.v1.Params) |  | params defines the module parameters at genesis. |
+| `validator_auths` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) | repeated | allowed_validators defines the allowed validator addresses at genesis. provided empty, the module gathers information from staking module. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/foundation/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/foundation/v1/query.proto
+
+
+
+<a name="lbm.foundation.v1.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+QueryParamsRequest is the request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryParamsResponse is the response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.foundation.v1.Params) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryValidatorAuthRequest"></a>
+
+### QueryValidatorAuthRequest
+QueryValidatorAuthRequest is the request type for the
+Query/ValidatorAuth RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  | validator_address defines the validator address to query for. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryValidatorAuthResponse"></a>
+
+### QueryValidatorAuthResponse
+QueryValidatorAuthResponse is the request type for the
+Query/ValidatorAuth RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `auth` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryValidatorAuthsRequest"></a>
+
+### QueryValidatorAuthsRequest
+QueryValidatorAuthsRequest is the request type for the
+Query/ValidatorAuths RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryValidatorAuthsResponse"></a>
+
+### QueryValidatorAuthsResponse
+QueryValidatorAuthsResponse is the response type for the
+Query/ValidatorAuths RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `auths` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.foundation.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service for foundation module.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#lbm.foundation.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.foundation.v1.QueryParamsResponse) | Params queries the module params. | GET|/lbm/foundation/v1/params|
+| `ValidatorAuth` | [QueryValidatorAuthRequest](#lbm.foundation.v1.QueryValidatorAuthRequest) | [QueryValidatorAuthResponse](#lbm.foundation.v1.QueryValidatorAuthResponse) | ValidatorAuth queries authorization info of a validator. | GET|/lbm/foundation/v1/validators/{validator_address}|
+| `ValidatorAuths` | [QueryValidatorAuthsRequest](#lbm.foundation.v1.QueryValidatorAuthsRequest) | [QueryValidatorAuthsResponse](#lbm.foundation.v1.QueryValidatorAuthsResponse) | ValidatorAuths queries authorization infos of validators. | GET|/lbm/foundation/v1/validators|
 
  <!-- end services -->
 

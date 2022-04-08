@@ -11,7 +11,7 @@ import (
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
-func NewHandler(k stakingkeeper.Keeper, ck types.ConsortiumKeeper) sdk.Handler {
+func NewHandler(k stakingkeeper.Keeper, ck types.FoundationKeeper) sdk.Handler {
 	overridden := staking.NewHandler(k)
 	msgServer := keeper.NewMsgServerImpl(k, ck)
 

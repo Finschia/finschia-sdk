@@ -23,7 +23,7 @@ import (
 	"github.com/line/lbm-sdk/x/bank"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/capability"
-	consortiummodule "github.com/line/lbm-sdk/x/consortium/module"
+	foundationmodule "github.com/line/lbm-sdk/x/foundation/module"
 	"github.com/line/lbm-sdk/x/crisis"
 	"github.com/line/lbm-sdk/x/distribution"
 	"github.com/line/lbm-sdk/x/evidence"
@@ -187,7 +187,7 @@ func TestRunMigrations(t *testing.T) {
 					"crisis":       crisis.AppModule{}.ConsensusVersion(),
 					"genutil":      genutil.AppModule{}.ConsensusVersion(),
 					"capability":   capability.AppModule{}.ConsensusVersion(),
-					"consortium":   consortiummodule.AppModule{}.ConsensusVersion(),
+					"foundation":   foundationmodule.AppModule{}.ConsensusVersion(),
 					"token":        tokenmodule.AppModule{}.ConsensusVersion(),
 				},
 			)
@@ -242,7 +242,7 @@ func TestInitGenesisOnMigration(t *testing.T) {
 			"crisis":       crisis.AppModule{}.ConsensusVersion(),
 			"genutil":      genutil.AppModule{}.ConsensusVersion(),
 			"capability":   capability.AppModule{}.ConsensusVersion(),
-			"consortium":   consortiummodule.AppModule{}.ConsensusVersion(),
+			"foundation":   foundationmodule.AppModule{}.ConsensusVersion(),
 			"token":        tokenmodule.AppModule{}.ConsensusVersion(),
 		},
 	)

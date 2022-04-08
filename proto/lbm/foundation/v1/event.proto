@@ -1,0 +1,16 @@
+syntax = "proto3";
+package lbm.foundation.v1;
+
+option go_package = "github.com/line/lbm-sdk/x/foundation";
+
+import "lbm/foundation/v1/foundation.proto";
+
+// EventUpdateFoundationParams is emitted after updating foundation parameters.
+message EventUpdateFoundationParams {
+  Params params = 1;
+}
+
+// EventUpdateValidatorAuths is emitted after updating validator auth info.
+message EventUpdateValidatorAuths {
+  repeated ValidatorAuth auths = 1;
+}
