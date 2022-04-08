@@ -30,3 +30,9 @@ func (k Keeper) GetEnabled(ctx sdk.Context) bool {
 
 	return params.Enabled
 }
+
+func (k Keeper) GetFoundationTax(ctx sdk.Context) sdk.Dec {
+	params := k.GetParams(ctx)
+
+	return params.FoundationTax
+}

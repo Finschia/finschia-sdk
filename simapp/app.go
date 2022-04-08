@@ -51,10 +51,6 @@ import (
 	"github.com/line/lbm-sdk/x/capability"
 	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
-	"github.com/line/lbm-sdk/x/foundation"
-	foundationclient "github.com/line/lbm-sdk/x/foundation/client"
-	foundationkeeper "github.com/line/lbm-sdk/x/foundation/keeper"
-	foundationmodule "github.com/line/lbm-sdk/x/foundation/module"
 	"github.com/line/lbm-sdk/x/crisis"
 	crisiskeeper "github.com/line/lbm-sdk/x/crisis/keeper"
 	crisistypes "github.com/line/lbm-sdk/x/crisis/types"
@@ -68,6 +64,10 @@ import (
 	"github.com/line/lbm-sdk/x/feegrant"
 	feegrantkeeper "github.com/line/lbm-sdk/x/feegrant/keeper"
 	feegrantmodule "github.com/line/lbm-sdk/x/feegrant/module"
+	"github.com/line/lbm-sdk/x/foundation"
+	foundationclient "github.com/line/lbm-sdk/x/foundation/client"
+	foundationkeeper "github.com/line/lbm-sdk/x/foundation/keeper"
+	foundationmodule "github.com/line/lbm-sdk/x/foundation/module"
 	"github.com/line/lbm-sdk/x/genutil"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
 	"github.com/line/lbm-sdk/x/gov"
@@ -158,6 +158,7 @@ var (
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName:     nil,
 		distrtypes.ModuleName:          nil,
+		foundation.TreasuryName:        nil,
 		minttypes.ModuleName:           {authtypes.Minter},
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
@@ -168,6 +169,7 @@ var (
 	// module accounts that are allowed to receive tokens
 	allowedReceivingModAcc = map[string]bool{
 		distrtypes.ModuleName: true,
+		foundation.TreasuryName: true,
 	}
 )
 
@@ -328,7 +330,7 @@ func NewSimApp(
 
 	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, keys[feegrant.StoreKey], app.AccountKeeper)
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath, app.BaseApp)
-	app.FoundationKeeper = foundationkeeper.NewKeeper(appCodec, keys[foundation.StoreKey], stakingKeeper)
+	app.FoundationKeeper = foundationkeeper.NewKeeper(appCodec, keys[foundation.StoreKey], app.AccountKeeper, app.BankKeeper, stakingKeeper, authtypes.FeeCollectorName)
 
 	classKeeper := classkeeper.NewKeeper(appCodec, keys[class.StoreKey])
 	app.TokenKeeper = tokenkeeper.NewKeeper(appCodec, keys[token.StoreKey], app.AccountKeeper, classKeeper)
@@ -434,6 +436,7 @@ func NewSimApp(
 		upgradetypes.ModuleName,
 		capabilitytypes.ModuleName,
 		minttypes.ModuleName,
+		foundation.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -449,7 +452,6 @@ func NewSimApp(
 		vestingtypes.ModuleName,
 		ibchost.ModuleName,
 		ibctransfertypes.ModuleName,
-		foundation.ModuleName,
 		token.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(

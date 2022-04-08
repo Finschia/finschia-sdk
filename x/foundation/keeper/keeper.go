@@ -10,13 +10,18 @@ import (
 
 // Keeper defines the foundation module Keeper
 type Keeper struct {
-	stakingKeeper foundation.StakingKeeper
+	// The codec for binary encoding/decoding.
+	cdc codec.Codec
 
 	// The (unexposed) keys used to access the stores from the Context.
 	storeKey sdk.StoreKey
 
-	// The codec for binary encoding/decoding.
-	cdc codec.Codec
+	// keepers
+	authKeeper foundation.AuthKeeper
+	bankKeeper foundation.BankKeeper
+	stakingKeeper foundation.StakingKeeper
+
+	feeCollectorName string
 }
 
 // NewKeeper returns a foundation keeper. It handles:
@@ -26,12 +31,18 @@ type Keeper struct {
 func NewKeeper(
 	cdc codec.Codec,
 	key sdk.StoreKey,
+	authKeeper foundation.AuthKeeper,
+	bankKeeper foundation.BankKeeper,
 	stakingKeeper foundation.StakingKeeper,
+	feeCollectorName string,
 ) Keeper {
 	return Keeper{
-		storeKey:      key,
-		stakingKeeper: stakingKeeper,
 		cdc:           cdc,
+		storeKey:      key,
+		authKeeper:    authKeeper,
+		bankKeeper:    bankKeeper,
+		stakingKeeper: stakingKeeper,
+		feeCollectorName: feeCollectorName,
 	}
 }
 

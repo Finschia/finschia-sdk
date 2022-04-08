@@ -35122,6 +35122,8 @@ paths:
                   enabled:
                     type: boolean
                     format: boolean
+                  foundation_tax:
+                    type: string
                 description: Params defines the parameters for the foundation module.
             description: >-
               QueryParamsResponse is the response type for the Query/Params RPC
@@ -58881,6 +58883,8 @@ definitions:
       enabled:
         type: boolean
         format: boolean
+      foundation_tax:
+        type: string
     description: Params defines the parameters for the foundation module.
   lbm.foundation.v1.QueryParamsResponse:
     type: object
@@ -58891,6 +58895,8 @@ definitions:
           enabled:
             type: boolean
             format: boolean
+          foundation_tax:
+            type: string
         description: Params defines the parameters for the foundation module.
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
   lbm.foundation.v1.QueryValidatorAuthResponse:

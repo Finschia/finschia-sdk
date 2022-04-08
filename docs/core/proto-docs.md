@@ -8549,6 +8549,7 @@ Params defines the parameters for the foundation module.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `enabled` | [bool](#bool) |  |  |
+| `foundation_tax` | [string](#string) |  |  |
 
 
 

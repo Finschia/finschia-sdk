@@ -9,6 +9,7 @@ import "gogoproto/gogo.proto";
 // Params defines the parameters for the foundation module.
 message Params {
   bool enabled = 1;
+  string foundation_tax = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 // ValidatorAuth defines authorization info of a validator.
