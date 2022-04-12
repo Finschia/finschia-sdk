@@ -145,7 +145,7 @@ for ((i = 0; i < N; i++))
       sed -i '' 's#"0.0.0.0:9090"#"0.0.0.0:'"${GRPC_PORT}"'"#g' ${CHAIN_DIR}/config/app.toml
     fi
 
-    echo "${BINARY} instance: home ${CHAIN_DIR} | chain-id ${CHAIN_ID} | p2p=:${P2P_PORT} | rpc=:${RPC_PORT} | profiling=:${PROF_PORT} | grpc=:${GRPC_PORT}"
+    echo "${BINARY} instance: home ${CHAIN_DIR} | chain-id ${CHAIN_ID} | p2p=:${P2P_PORT} | rpc=:${RPC_PORT} | profiling=:${PROF_PORT} | grpc=:${GRPC_PORT} | grpc-web=:${GRPC_WEB_PORT}"
     RPC_PORT=`expr ${RPC_PORT} + 2`
     P2P_PORT=`expr ${P2P_PORT} + 2`
     PROF_PORT=`expr ${PROF_PORT} + 1`
