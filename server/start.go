@@ -297,7 +297,9 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 			node.DefaultMetricsProvider(cfg.Instrumentation),
 			ctx.Logger,
 		)
-
+		if err != nil {
+			return err
+		}
 		ctx.Logger.Debug("initialization: ocNode created")
 		if err := ocNode.Start(); err != nil {
 			return err
