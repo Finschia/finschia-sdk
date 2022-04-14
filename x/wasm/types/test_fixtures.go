@@ -260,8 +260,8 @@ func MigrateContractProposalFixture(mutators ...func(p *MigrateContractProposal)
 
 func SudoContractProposalFixture(mutators ...func(p *SudoContractProposal)) *SudoContractProposal {
 	const (
-		contractAddr = "cosmos14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s4hmalr"
-		anyAddress   = "cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqs2m6sx4"
+		contractAddr = "link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8"
+		anyAddress   = "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"
 	)
 
 	p := &SudoContractProposal{

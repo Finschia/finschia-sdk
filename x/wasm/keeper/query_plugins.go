@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strings"
 
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
@@ -290,18 +289,9 @@ func IBCQuerier(wasm contractMetaDataSource, channelKeeper types.ChannelKeeper) 
 	}
 }
 
-var queryDenyList = []string{
-	"/lbm.tx.",
-	"/lbm.base.ostracon.",
-}
-
 func StargateQuerier(queryRouter GRPCQueryRouter) func(ctx sdk.Context, request *wasmvmtypes.StargateQuery) ([]byte, error) {
 	return func(ctx sdk.Context, msg *wasmvmtypes.StargateQuery) ([]byte, error) {
-		for _, b := range queryDenyList {
-			if strings.HasPrefix(msg.Path, b) {
-				return nil, wasmvmtypes.UnsupportedRequest{Kind: "path is not allowed from the contract"}
-			}
-		}
+		return nil, wasmvmtypes.UnsupportedRequest{Kind: "Stargate queries are disabled."}
 
 		route := queryRouter.Route(msg.Path)
 		if route == nil {

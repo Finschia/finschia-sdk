@@ -299,7 +299,7 @@ func (p SudoContractProposal) ValidateBasic() error {
 	if err := validateProposalCommons(p.Title, p.Description); err != nil {
 		return err
 	}
-	if _, err := sdk.AccAddressFromHex(p.Contract); err != nil {
+	if err := sdk.ValidateAccAddress(p.Contract); err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
 	if err := p.Msg.ValidateBasic(); err != nil {
