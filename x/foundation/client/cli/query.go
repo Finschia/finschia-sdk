@@ -22,6 +22,7 @@ func NewQueryCmd() *cobra.Command {
 		NewQueryCmdParams(),
 		NewQueryCmdValidatorAuth(),
 		NewQueryCmdValidatorAuths(),
+		NewQueryCmdTreasury(),
 	)
 
 	return cmd
@@ -121,6 +122,35 @@ func NewQueryCmdValidatorAuths() *cobra.Command {
 
 	flags.AddQueryFlagsToCmd(cmd)
 	flags.AddPaginationFlagsToCmd(cmd, "validator auths")
+
+	return cmd
+}
+
+// NewQueryCmdTreasury returns the amount of coins in the foundation treasury
+func NewQueryCmdTreasury() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "treasury",
+		Short: "Query foundation treasury",
+		Long:  "Gets the amount of coins in the foundation treasury",
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := foundation.NewQueryClient(clientCtx)
+
+			req := foundation.QueryTreasuryRequest{}
+			res, err := queryClient.Treasury(context.Background(), &req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
 }
