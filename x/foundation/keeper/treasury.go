@@ -33,7 +33,6 @@ func (k Keeper) fundTreasury(ctx sdk.Context, from sdk.AccAddress, amt sdk.Coins
 	return k.bankKeeper.SendCoinsFromAccountToModule(ctx, from, foundation.TreasuryName, amt)
 }
 
-func (k Keeper) withdrawFromTreasury(ctx sdk.Context, operator, to sdk.AccAddress, amt sdk.Coins) error {
-	// TODO: prohibit but operator
+func (k Keeper) withdrawFromTreasury(ctx sdk.Context, to sdk.AccAddress, amt sdk.Coins) error {
 	return k.bankKeeper.SendCoinsFromModuleToAccount(ctx, foundation.TreasuryName, to, amt)
 }

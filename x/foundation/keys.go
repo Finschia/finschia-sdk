@@ -11,4 +11,5 @@ const (
 	RouterKey = ModuleName
 
 	TreasuryName = "treasury"
+	AdministratorName = "administrator"
 )

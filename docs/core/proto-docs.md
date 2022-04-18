@@ -565,14 +565,31 @@
     - [Msg](#lbm.feegrant.v1.Msg)
   
 - [lbm/foundation/v1/foundation.proto](#lbm/foundation/v1/foundation.proto)
+    - [DecisionPolicy](#lbm.foundation.v1.DecisionPolicy)
+    - [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows)
+    - [FoundationInfo](#lbm.foundation.v1.FoundationInfo)
+    - [Member](#lbm.foundation.v1.Member)
     - [Params](#lbm.foundation.v1.Params)
+    - [Proposal](#lbm.foundation.v1.Proposal)
+    - [TallyResult](#lbm.foundation.v1.TallyResult)
     - [UpdateFoundationParamsProposal](#lbm.foundation.v1.UpdateFoundationParamsProposal)
     - [UpdateValidatorAuthsProposal](#lbm.foundation.v1.UpdateValidatorAuthsProposal)
     - [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth)
+    - [Vote](#lbm.foundation.v1.Vote)
+  
+    - [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult)
+    - [ProposalResult](#lbm.foundation.v1.ProposalResult)
+    - [ProposalStatus](#lbm.foundation.v1.ProposalStatus)
+    - [VoteOption](#lbm.foundation.v1.VoteOption)
   
 - [lbm/foundation/v1/event.proto](#lbm/foundation/v1/event.proto)
+    - [EventExec](#lbm.foundation.v1.EventExec)
+    - [EventLeaveFoundation](#lbm.foundation.v1.EventLeaveFoundation)
+    - [EventSubmitProposal](#lbm.foundation.v1.EventSubmitProposal)
     - [EventUpdateFoundationParams](#lbm.foundation.v1.EventUpdateFoundationParams)
     - [EventUpdateValidatorAuths](#lbm.foundation.v1.EventUpdateValidatorAuths)
+    - [EventVote](#lbm.foundation.v1.EventVote)
+    - [EventWithdrawProposal](#lbm.foundation.v1.EventWithdrawProposal)
   
 - [lbm/foundation/v1/genesis.proto](#lbm/foundation/v1/genesis.proto)
     - [GenesisState](#lbm.foundation.v1.GenesisState)
@@ -590,10 +607,26 @@
     - [Query](#lbm.foundation.v1.Query)
   
 - [lbm/foundation/v1/tx.proto](#lbm/foundation/v1/tx.proto)
+    - [MsgExec](#lbm.foundation.v1.MsgExec)
+    - [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse)
     - [MsgFundTreasury](#lbm.foundation.v1.MsgFundTreasury)
     - [MsgFundTreasuryResponse](#lbm.foundation.v1.MsgFundTreasuryResponse)
+    - [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation)
+    - [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse)
+    - [MsgSubmitProposal](#lbm.foundation.v1.MsgSubmitProposal)
+    - [MsgSubmitProposalResponse](#lbm.foundation.v1.MsgSubmitProposalResponse)
+    - [MsgUpdateDecisionPolicy](#lbm.foundation.v1.MsgUpdateDecisionPolicy)
+    - [MsgUpdateDecisionPolicyResponse](#lbm.foundation.v1.MsgUpdateDecisionPolicyResponse)
+    - [MsgUpdateMembers](#lbm.foundation.v1.MsgUpdateMembers)
+    - [MsgUpdateMembersResponse](#lbm.foundation.v1.MsgUpdateMembersResponse)
+    - [MsgVote](#lbm.foundation.v1.MsgVote)
+    - [MsgVoteResponse](#lbm.foundation.v1.MsgVoteResponse)
     - [MsgWithdrawFromTreasury](#lbm.foundation.v1.MsgWithdrawFromTreasury)
     - [MsgWithdrawFromTreasuryResponse](#lbm.foundation.v1.MsgWithdrawFromTreasuryResponse)
+    - [MsgWithdrawProposal](#lbm.foundation.v1.MsgWithdrawProposal)
+    - [MsgWithdrawProposalResponse](#lbm.foundation.v1.MsgWithdrawProposalResponse)
+  
+    - [Exec](#lbm.foundation.v1.Exec)
   
     - [Msg](#lbm.foundation.v1.Msg)
   
@@ -8550,6 +8583,79 @@ Msg defines the feegrant msg service.
 
 
 
+<a name="lbm.foundation.v1.DecisionPolicy"></a>
+
+### DecisionPolicy
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `windows` | [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows) |  | windows defines the different windows for voting and execution. |
+| `threshold` | [string](#string) |  | threshold is the minimum weighted sum of yes votes that must be met or exceeded for a proposal to succeed. |
+| `percentage` | [string](#string) |  | percentage is the minimum percentage the weighted sum of yes votes must meet for a proposal to succeed. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.DecisionPolicyWindows"></a>
+
+### DecisionPolicyWindows
+DecisionPolicyWindows defines the different windows for voting and execution.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `voting_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | voting_period is the duration from submission of a proposal to the end of voting period Within this times votes can be submitted with MsgVote. |
+| `min_execution_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | min_execution_period is the minimum duration after the proposal submission where members can start sending MsgExec. This means that the window for sending a MsgExec transaction is: `[ submission + min_execution_period ; submission + voting_period + max_execution_period]` where max_execution_period is a app-specific config, defined in the keeper. If not set, min_execution_period will default to 0.
+
+Please make sure to set a `min_execution_period` that is smaller than `voting_period + max_execution_period`, or else the above execution window is empty, meaning that all proposals created with this decision policy won't be able to be executed. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.FoundationInfo"></a>
+
+### FoundationInfo
+FoundationInfo represents the high-level on-chain information for the foundation.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | operator is the account address of the foundation's operator. |
+| `metadata` | [string](#string) |  | metadata is any arbitrary metadata to attached to the foundation. |
+| `version` | [uint64](#uint64) |  | version is used to track changes to the foundation's membership structure that would break existing proposals. Whenever any members weight is changed, or any member is added or removed this version is incremented and will cause proposals based on older versions of the foundation to fail |
+| `total_weight` | [string](#string) |  | total_weight is the sum of the foundation members' weights. |
+| `decision_policy` | [DecisionPolicy](#lbm.foundation.v1.DecisionPolicy) |  | decision_policy specifies the foundation's decision policy. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.Member"></a>
+
+### Member
+Member represents a foundation member with an account address,
+non-zero weight and metadata.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | address is the member's account address. |
+| `weight` | [string](#string) |  | weight is the member's voting weight that should be greater than 0. |
+| `metadata` | [string](#string) |  | metadata is any arbitrary metadata to attached to the member. |
+| `added_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | added_at is a timestamp specifying when a member was added. |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.Params"></a>
 
 ### Params
@@ -8560,6 +8666,52 @@ Params defines the parameters for the foundation module.
 | ----- | ---- | ----- | ----------- |
 | `enabled` | [bool](#bool) |  |  |
 | `foundation_tax` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.Proposal"></a>
+
+### Proposal
+Proposal defines a foundation proposal. Any member of the foundation can submit a proposal
+for a group policy to decide upon.
+A proposal consists of a set of `sdk.Msg`s that will be executed if the proposal
+passes as well as some optional metadata associated with the proposal.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [uint64](#uint64) |  | id is the unique id of the proposal. |
+| `metadata` | [string](#string) |  | metadata is any arbitrary metadata to attached to the proposal. |
+| `proposers` | [string](#string) | repeated | proposers are the account addresses of the proposers. |
+| `submit_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | submit_time is a timestamp specifying when a proposal was submitted. |
+| `foundation_version` | [uint64](#uint64) |  | foundation_version tracks the version of the foundation that this proposal corresponds to. When foundation info is changed, existing proposals from previous foundation versions will become invalid. |
+| `status` | [ProposalStatus](#lbm.foundation.v1.ProposalStatus) |  | status represents the high level position in the life cycle of the proposal. Initial value is Submitted. |
+| `result` | [ProposalResult](#lbm.foundation.v1.ProposalResult) |  | result is the final result based on the votes and election rule. Initial value is unfinalized. The result is persisted so that clients can always rely on this state and not have to replicate the logic. |
+| `final_tally_result` | [TallyResult](#lbm.foundation.v1.TallyResult) |  | final_tally_result contains the sums of all weighted votes for this proposal for each vote option, after tallying. When querying a proposal via gRPC, this field is not populated until the proposal's voting period has ended. |
+| `voting_period_end` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | voting_period_end is the timestamp before which voting must be done. Unless a successfull MsgExec is called before (to execute a proposal whose tally is successful before the voting period ends), tallying will be done at this point, and the `final_tally_result`, as well as `status` and `result` fields will be accordingly updated. |
+| `executor_result` | [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult) |  | executor_result is the final result based on the votes and election rule. Initial value is NotRun. |
+| `messages` | [google.protobuf.Any](#google.protobuf.Any) | repeated | messages is a list of Msgs that will be executed if the proposal passes. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.TallyResult"></a>
+
+### TallyResult
+TallyResult represents the sum of weighted votes for each vote option.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `yes_count` | [string](#string) |  | yes_count is the weighted sum of yes votes. |
+| `abstain_count` | [string](#string) |  | abstain_count is the weighted sum of abstainers. |
+| `no_count` | [string](#string) |  | no is the weighted sum of no votes. |
+| `no_with_veto_count` | [string](#string) |  | no_with_veto_count is the weighted sum of veto. |
 
 
 
@@ -8615,7 +8767,84 @@ ValidatorAuth defines authorization info of a validator.
 
 
 
+
+<a name="lbm.foundation.v1.Vote"></a>
+
+### Vote
+Vote represents a vote for a proposal.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal is the unique ID of the proposal. |
+| `voter` | [string](#string) |  | voter is the account address of the voter. |
+| `option` | [VoteOption](#lbm.foundation.v1.VoteOption) |  | option is the voter's choice on the proposal. |
+| `metadata` | [string](#string) |  | metadata is any arbitrary metadata to attached to the vote. |
+| `submit_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | submit_time is the timestamp when the vote was submitted. |
+
+
+
+
+
  <!-- end messages -->
+
+
+<a name="lbm.foundation.v1.ProposalExecutorResult"></a>
+
+### ProposalExecutorResult
+ProposalExecutorResult defines types of proposal executor results.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| PROPOSAL_EXECUTOR_RESULT_UNSPECIFIED | 0 | An empty value is not allowed. |
+| PROPOSAL_EXECUTOR_RESULT_NOT_RUN | 1 | We have not yet run the executor. |
+| PROPOSAL_EXECUTOR_RESULT_SUCCESS | 2 | The executor was successful and proposed action updated state. |
+| PROPOSAL_EXECUTOR_RESULT_FAILURE | 3 | The executor returned an error and proposed action didn't update state. |
+
+
+
+<a name="lbm.foundation.v1.ProposalResult"></a>
+
+### ProposalResult
+ProposalResult defines types of proposal results.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| PROPOSAL_RESULT_UNSPECIFIED | 0 | An empty value is invalid and not allowed |
+| PROPOSAL_RESULT_UNFINALIZED | 1 | Until a final tally has happened the status is unfinalized |
+| PROPOSAL_RESULT_ACCEPTED | 2 | Final result of the tally |
+| PROPOSAL_RESULT_REJECTED | 3 | Final result of the tally |
+
+
+
+<a name="lbm.foundation.v1.ProposalStatus"></a>
+
+### ProposalStatus
+ProposalStatus defines proposal statuses.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| PROPOSAL_STATUS_UNSPECIFIED | 0 | An empty value is invalid and not allowed. |
+| PROPOSAL_STATUS_SUBMITTED | 1 | Initial status of a proposal when persisted. |
+| PROPOSAL_STATUS_CLOSED | 2 | Final status of a proposal when the final tally was executed. |
+| PROPOSAL_STATUS_ABORTED | 3 | Final status of a proposal when the group was modified before the final tally. |
+| PROPOSAL_STATUS_WITHDRAWN | 4 | A proposal can be deleted before the voting start time by the owner. When this happens the final status is Withdrawn. |
+
+
+
+<a name="lbm.foundation.v1.VoteOption"></a>
+
+### VoteOption
+VoteOption enumerates the valid vote options for a given proposal.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| VOTE_OPTION_UNSPECIFIED | 0 | VOTE_OPTION_UNSPECIFIED defines a no-op vote option. |
+| VOTE_OPTION_YES | 1 | VOTE_OPTION_YES defines a yes vote option. |
+| VOTE_OPTION_ABSTAIN | 2 | VOTE_OPTION_ABSTAIN defines an abstain vote option. |
+| VOTE_OPTION_NO | 3 | VOTE_OPTION_NO defines a no vote option. |
+| VOTE_OPTION_NO_WITH_VETO | 4 | VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option. |
+
 
  <!-- end enums -->
 
@@ -8629,6 +8858,52 @@ ValidatorAuth defines authorization info of a validator.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/foundation/v1/event.proto
+
+
+
+<a name="lbm.foundation.v1.EventExec"></a>
+
+### EventExec
+EventExec is an event emitted when a proposal is executed.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal_id is the unique ID of the proposal. |
+| `result` | [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult) |  | result is the proposal execution result. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.EventLeaveFoundation"></a>
+
+### EventLeaveFoundation
+EventLeaveFoundation is an event emitted when a foundation member leaves the foundation.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | address is the account address of the foundation member. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.EventSubmitProposal"></a>
+
+### EventSubmitProposal
+EventSubmitProposal is an event emitted when a proposal is created.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal_id is the unique ID of the proposal. |
+
+
+
 
 
 
@@ -8661,6 +8936,37 @@ EventUpdateValidatorAuths is emitted after updating validator auth info.
 
 
 
+
+<a name="lbm.foundation.v1.EventVote"></a>
+
+### EventVote
+EventVote is an event emitted when a voter votes on a proposal.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal_id is the unique ID of the proposal. |
+| `voter` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.EventWithdrawProposal"></a>
+
+### EventWithdrawProposal
+EventWithdrawProposal is an event emitted when a proposal is withdrawn.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal_id is the unique ID of the proposal. |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -8688,6 +8994,11 @@ GenesisState defines the foundation module's genesis state.
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#lbm.foundation.v1.Params) |  | params defines the module parameters at genesis. |
 | `validator_auths` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) | repeated | allowed_validators defines the allowed validator addresses at genesis. provided empty, the module gathers information from staking module. |
+| `foundation` | [FoundationInfo](#lbm.foundation.v1.FoundationInfo) | repeated | foundation is the foundation info. |
+| `members` | [Member](#lbm.foundation.v1.Member) | repeated | members is the list of the foundation members. |
+| `proposal_seq` | [uint64](#uint64) |  | proposal_seq is the proposal table orm.Sequence, it is used to get the next proposal ID. |
+| `proposals` | [Proposal](#lbm.foundation.v1.Proposal) | repeated | proposals is the list of proposals. |
+| `votes` | [Vote](#lbm.foundation.v1.Vote) | repeated | votes is the list of votes. |
 
 
 
@@ -8856,6 +9167,32 @@ Query defines the gRPC querier service for foundation module.
 
 
 
+<a name="lbm.foundation.v1.MsgExec"></a>
+
+### MsgExec
+MsgExec is the Msg/Exec request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal is the unique ID of the proposal. |
+| `signer` | [string](#string) |  | signer is the account address used to execute the proposal. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgExecResponse"></a>
+
+### MsgExecResponse
+MsgExecResponse is the Msg/Exec request type.
+
+
+
+
+
+
 <a name="lbm.foundation.v1.MsgFundTreasury"></a>
 
 ### MsgFundTreasury
@@ -8876,6 +9213,145 @@ MsgFundTreasury represents a message to fund the treasury.
 
 ### MsgFundTreasuryResponse
 MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgLeaveFoundation"></a>
+
+### MsgLeaveFoundation
+MsgLeaveFoundation is the Msg/LeaveFoundation request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | address is the account address of the foundation member. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgLeaveFoundationResponse"></a>
+
+### MsgLeaveFoundationResponse
+MsgLeaveFoundationResponse is the Msg/LeaveFoundation response type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgSubmitProposal"></a>
+
+### MsgSubmitProposal
+MsgSubmitProposal is the Msg/SubmitProposal request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposers` | [string](#string) | repeated | proposers are the account addresses of the proposers. Proposers signatures will be counted as yes votes. |
+| `metadata` | [string](#string) |  | metadata is any arbitrary metadata to attached to the proposal. |
+| `messages` | [google.protobuf.Any](#google.protobuf.Any) | repeated | messages is a list of `sdk.Msg`s that will be executed if the proposal passes. |
+| `exec` | [Exec](#lbm.foundation.v1.Exec) |  | exec defines the mode of execution of the proposal, whether it should be executed immediately on creation or not. If so, proposers signatures are considered as Yes votes. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgSubmitProposalResponse"></a>
+
+### MsgSubmitProposalResponse
+MsgSubmitProposalResponse is the Msg/SubmitProposal response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal is the unique ID of the proposal. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgUpdateDecisionPolicy"></a>
+
+### MsgUpdateDecisionPolicy
+MsgUpdateDecisionPolicy is the Msg/UpdateDecisionPolicy request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | operator is the account address of the foundation operator. |
+| `decision_policy` | [DecisionPolicy](#lbm.foundation.v1.DecisionPolicy) |  | decision_policy is the updated decision policy. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgUpdateDecisionPolicyResponse"></a>
+
+### MsgUpdateDecisionPolicyResponse
+MsgUpdateDecisionPolicyResponse is the Msg/UpdateDecisionPolicy response type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgUpdateMembers"></a>
+
+### MsgUpdateMembers
+MsgUpdateMembers is the Msg/UpdateMembers request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  | operator is the account address of the foundation operator. |
+| `member_updates` | [Member](#lbm.foundation.v1.Member) | repeated | member_updates is the list of members to update, set weight to 0 to remove a member. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgUpdateMembersResponse"></a>
+
+### MsgUpdateMembersResponse
+MsgUpdateMembersResponse is the Msg/UpdateMembers response type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgVote"></a>
+
+### MsgVote
+MsgVote is the Msg/Vote request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal is the unique ID of the proposal. |
+| `voter` | [string](#string) |  | voter is the voter account address. |
+| `option` | [VoteOption](#lbm.foundation.v1.VoteOption) |  | option is the voter's choice on the proposal. |
+| `metadata` | [string](#string) |  | metadata is any arbitrary metadata to attached to the vote. |
+| `exec` | [Exec](#lbm.foundation.v1.Exec) |  | exec defines whether the proposal should be executed immediately after voting or not. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgVoteResponse"></a>
+
+### MsgVoteResponse
+MsgVoteResponse is the Msg/Vote response type.
 
 
 
@@ -8908,7 +9384,45 @@ MsgWithdrawFromTreasuryResponse defines the Msg/WithdrawFromTreasury response ty
 
 
 
+
+<a name="lbm.foundation.v1.MsgWithdrawProposal"></a>
+
+### MsgWithdrawProposal
+MsgWithdrawProposal is the Msg/WithdrawProposal request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal is the unique ID of the proposal. |
+| `address` | [string](#string) |  | address of one of the proposer of the proposal. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgWithdrawProposalResponse"></a>
+
+### MsgWithdrawProposalResponse
+MsgWithdrawProposalResponse is the Msg/WithdrawProposal response type.
+
+
+
+
+
  <!-- end messages -->
+
+
+<a name="lbm.foundation.v1.Exec"></a>
+
+### Exec
+Exec defines modes of execution of a proposal on creation or on new vote.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| EXEC_UNSPECIFIED | 0 | An empty value means that there should be a separate MsgExec request for the proposal to execute. |
+| EXEC_TRY | 1 | Try to execute the proposal immediately. If the proposal is not allowed per the DecisionPolicy, the proposal will still be open and could be executed at a later point. |
+
 
  <!-- end enums -->
 
@@ -8922,8 +9436,15 @@ Msg defines the foundation Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `FundTreasury` | [MsgFundTreasury](#lbm.foundation.v1.MsgFundTreasury) | [MsgFundTreasuryResponse](#lbm.foundation.v1.MsgFundTreasuryResponse) | FundTreasury defines a method to fund the treasury | |
-| `WithdrawFromTreasury` | [MsgWithdrawFromTreasury](#lbm.foundation.v1.MsgWithdrawFromTreasury) | [MsgWithdrawFromTreasuryResponse](#lbm.foundation.v1.MsgWithdrawFromTreasuryResponse) | WithdrawFromTreasury defines a method to withdraw coins from the treasury | |
+| `FundTreasury` | [MsgFundTreasury](#lbm.foundation.v1.MsgFundTreasury) | [MsgFundTreasuryResponse](#lbm.foundation.v1.MsgFundTreasuryResponse) | FundTreasury defines a method to fund the treasury. | |
+| `WithdrawFromTreasury` | [MsgWithdrawFromTreasury](#lbm.foundation.v1.MsgWithdrawFromTreasury) | [MsgWithdrawFromTreasuryResponse](#lbm.foundation.v1.MsgWithdrawFromTreasuryResponse) | WithdrawFromTreasury defines a method to withdraw coins from the treasury. | |
+| `UpdateMembers` | [MsgUpdateMembers](#lbm.foundation.v1.MsgUpdateMembers) | [MsgUpdateMembersResponse](#lbm.foundation.v1.MsgUpdateMembersResponse) | UpdateMembers updates the foundation members. | |
+| `UpdateDecisionPolicy` | [MsgUpdateDecisionPolicy](#lbm.foundation.v1.MsgUpdateDecisionPolicy) | [MsgUpdateDecisionPolicyResponse](#lbm.foundation.v1.MsgUpdateDecisionPolicyResponse) | UpdateDecisionPolicy allows a group policy's decision policy to be updated. | |
+| `SubmitProposal` | [MsgSubmitProposal](#lbm.foundation.v1.MsgSubmitProposal) | [MsgSubmitProposalResponse](#lbm.foundation.v1.MsgSubmitProposalResponse) | SubmitProposal submits a new proposal. | |
+| `WithdrawProposal` | [MsgWithdrawProposal](#lbm.foundation.v1.MsgWithdrawProposal) | [MsgWithdrawProposalResponse](#lbm.foundation.v1.MsgWithdrawProposalResponse) | WithdrawProposal aborts a proposal. | |
+| `Vote` | [MsgVote](#lbm.foundation.v1.MsgVote) | [MsgVoteResponse](#lbm.foundation.v1.MsgVoteResponse) | Vote allows a voter to vote on a proposal. | |
+| `Exec` | [MsgExec](#lbm.foundation.v1.MsgExec) | [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse) | Exec executes a proposal. | |
+| `LeaveFoundation` | [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation) | [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse) | LeaveFoundation allows a member to leave the foundation. | |
 
  <!-- end services -->
 

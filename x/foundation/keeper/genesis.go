@@ -32,6 +32,12 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		}
 	}
 
+	// TODO: check null
+	k.setFoundationInfo(ctx, foundation.FoundationInfo{
+		Version: 1,
+		Operator: string(k.GetAdmin(ctx)),
+	})
+
 	return nil
 }
 
