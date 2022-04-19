@@ -29,4 +29,3 @@ COPY --from=build /node/root /root/
 WORKDIR /root/.simapp
 
 RUN chmod -R 0777 ./
-

@@ -224,6 +224,24 @@ jobs:
           name: "${{ github.sha }}-${{ matrix.part }}-race-output"
           path: ./${{ matrix.part }}-race-output.txt
 
+# TODO finschia: enable this test
+#  test-rosetta:
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 10
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: technote-space/get-diff-action@v4
+#        id: git_diff
+#        with:
+#          PATTERNS: |
+#            **/**.go
+#            go.mod
+#            go.sum
+#      - name: test rosetta
+#        run: |
+#          make test-rosetta
+#          if: env.GIT_DIFF
+
 # TODO ebony: enable this test
 #  liveness-test:
 #    runs-on: ubuntu-latest
