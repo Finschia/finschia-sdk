@@ -565,13 +565,14 @@
     - [Msg](#lbm.feegrant.v1.Msg)
   
 - [lbm/foundation/v1/foundation.proto](#lbm/foundation/v1/foundation.proto)
-    - [DecisionPolicy](#lbm.foundation.v1.DecisionPolicy)
     - [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows)
     - [FoundationInfo](#lbm.foundation.v1.FoundationInfo)
     - [Member](#lbm.foundation.v1.Member)
     - [Params](#lbm.foundation.v1.Params)
+    - [PercentageDecisionPolicy](#lbm.foundation.v1.PercentageDecisionPolicy)
     - [Proposal](#lbm.foundation.v1.Proposal)
     - [TallyResult](#lbm.foundation.v1.TallyResult)
+    - [ThresholdDecisionPolicy](#lbm.foundation.v1.ThresholdDecisionPolicy)
     - [UpdateFoundationParamsProposal](#lbm.foundation.v1.UpdateFoundationParamsProposal)
     - [UpdateValidatorAuthsProposal](#lbm.foundation.v1.UpdateValidatorAuthsProposal)
     - [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth)
@@ -8583,23 +8584,6 @@ Msg defines the feegrant msg service.
 
 
 
-<a name="lbm.foundation.v1.DecisionPolicy"></a>
-
-### DecisionPolicy
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `windows` | [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows) |  | windows defines the different windows for voting and execution. |
-| `threshold` | [string](#string) |  | threshold is the minimum weighted sum of yes votes that must be met or exceeded for a proposal to succeed. |
-| `percentage` | [string](#string) |  | percentage is the minimum percentage the weighted sum of yes votes must meet for a proposal to succeed. |
-
-
-
-
-
-
 <a name="lbm.foundation.v1.DecisionPolicyWindows"></a>
 
 ### DecisionPolicyWindows
@@ -8627,10 +8611,9 @@ FoundationInfo represents the high-level on-chain information for the foundation
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `operator` | [string](#string) |  | operator is the account address of the foundation's operator. |
-| `metadata` | [string](#string) |  | metadata is any arbitrary metadata to attached to the foundation. |
 | `version` | [uint64](#uint64) |  | version is used to track changes to the foundation's membership structure that would break existing proposals. Whenever any members weight is changed, or any member is added or removed this version is incremented and will cause proposals based on older versions of the foundation to fail |
 | `total_weight` | [string](#string) |  | total_weight is the sum of the foundation members' weights. |
-| `decision_policy` | [DecisionPolicy](#lbm.foundation.v1.DecisionPolicy) |  | decision_policy specifies the foundation's decision policy. |
+| `decision_policy` | [google.protobuf.Any](#google.protobuf.Any) |  | decision_policy specifies the foundation's decision policy. |
 
 
 
@@ -8666,6 +8649,22 @@ Params defines the parameters for the foundation module.
 | ----- | ---- | ----- | ----------- |
 | `enabled` | [bool](#bool) |  |  |
 | `foundation_tax` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.PercentageDecisionPolicy"></a>
+
+### PercentageDecisionPolicy
+PercentageDecisionPolicy implements the DecisionPolicy interface
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `percentage` | [string](#string) |  | percentage is the minimum percentage the weighted sum of yes votes must meet for a proposal to succeed. |
+| `windows` | [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows) |  | windows defines the different windows for voting and execution. |
 
 
 
@@ -8712,6 +8711,22 @@ TallyResult represents the sum of weighted votes for each vote option.
 | `abstain_count` | [string](#string) |  | abstain_count is the weighted sum of abstainers. |
 | `no_count` | [string](#string) |  | no is the weighted sum of no votes. |
 | `no_with_veto_count` | [string](#string) |  | no_with_veto_count is the weighted sum of veto. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.ThresholdDecisionPolicy"></a>
+
+### ThresholdDecisionPolicy
+ThresholdDecisionPolicy implements the DecisionPolicy interface
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `threshold` | [string](#string) |  | threshold is the minimum weighted sum of yes votes that must be met or exceeded for a proposal to succeed. |
+| `windows` | [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows) |  | windows defines the different windows for voting and execution. |
 
 
 
@@ -9286,7 +9301,7 @@ MsgUpdateDecisionPolicy is the Msg/UpdateDecisionPolicy request type.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `operator` | [string](#string) |  | operator is the account address of the foundation operator. |
-| `decision_policy` | [DecisionPolicy](#lbm.foundation.v1.DecisionPolicy) |  | decision_policy is the updated decision policy. |
+| `decision_policy` | [google.protobuf.Any](#google.protobuf.Any) |  | decision_policy is the updated decision policy. |
 
 
 

@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"time"
-
 	gogotypes "github.com/gogo/protobuf/types"
 
 	sdk "github.com/line/lbm-sdk/types"
@@ -38,16 +36,17 @@ func (k Keeper) doTallyAndUpdate(ctx sdk.Context, p *foundation.Proposal) error 
 	}
 
 	info := k.GetFoundationInfo(ctx)
-	allow, final, err := makeDecision(ctx, info, tallyResult, ctx.BlockTime().Sub(submittedAt))
+	policy := info.GetDecisionPolicy()
+	decision, err := policy.Allow(tallyResult, info.TotalWeight, ctx.BlockTime().Sub(submittedAt))
 	switch {
 	case err != nil:
 		return err
-	case final:
+	case decision.Final:
 		if err := k.pruneVotes(ctx, p.Id); err != nil {
 			return err
 		}
 		p.FinalTallyResult = tallyResult
-		if allow {
+		if decision.Allow {
 			p.Result = foundation.PROPOSAL_RESULT_ACCEPTED
 			p.Status = foundation.PROPOSAL_STATUS_CLOSED
 		} else {
@@ -96,76 +95,4 @@ func (k Keeper) tally(ctx sdk.Context, p foundation.Proposal) (foundation.TallyR
 	}
 
 	return tallyResult, nil
-}
-
-func makeDecision(ctx sdk.Context, info foundation.FoundationInfo, result foundation.TallyResult, sinceSubmission time.Duration) (allow bool, final bool, err error) {
-	policy := info.DecisionPolicy
-	if sinceSubmission < policy.Windows.MinExecutionPeriod {
-		err = sdkerrors.ErrUnauthorized.Wrapf("must wait %s after submission before execution, currently at %s", policy.Windows.MinExecutionPeriod, sinceSubmission)
-		return
-	}
-
-	decisions := []func(sdk.Context, foundation.FoundationInfo, foundation.TallyResult)(allow bool, final bool){
-		makeDecisionThreshold,
-		makeDecisionPercentage,
-	}
-	allow, final = false, true
-	for _, decision := range decisions {
-		a, f := decision(ctx, info, result)
-		if a {
-			allow, final = true, true
-			return
-		}
-		if !f {
-			final = false
-		}
-	}
-
-	return 
-}
-
-func makeDecisionThreshold(ctx sdk.Context, info foundation.FoundationInfo, result foundation.TallyResult) (allow bool, final bool) {
-	// the real threshold of the policy is `min(threshold,total_weight)`. If
-	// the foundation member weights changes (member leaving, member weight update)
-	// and the threshold doesn't, we can end up with threshold > total_weight.
-	// In this case, as long as everyone votes yes (in which case
-	// `yesCount`==`realThreshold`), then the proposal still passes.
-	realThreshold := sdk.MinDec(info.DecisionPolicy.Threshold, info.TotalWeight)
-	if result.YesCount.GTE(realThreshold) {
-		allow, final = true, true
-		return
-	}
-
-	totalCounts := result.TotalCounts()
-	undecided := info.TotalWeight.Sub(totalCounts)
-
-	// maxYesCount is the max potential number of yes count, i.e the current yes count
-	// plus all undecided count (supposing they all vote yes).
-	maxYesCount := result.YesCount.Add(undecided)
-	if maxYesCount.LT(realThreshold) {
-		allow, final = false, true
-		return
-	}
-
-	return
-}
-
-func makeDecisionPercentage(ctx sdk.Context, info foundation.FoundationInfo, result foundation.TallyResult) (allow bool, final bool) {
-	yesPercentage := result.YesCount.Quo(info.TotalWeight)
-	if yesPercentage.GTE(info.DecisionPolicy.Percentage) {
-		allow, final = true, true
-		return
-	}
-
-	totalCounts := result.TotalCounts()
-	undecided := info.TotalWeight.Sub(totalCounts)
-
-	maxYesCount := result.YesCount.Add(undecided)
-	maxYesPercentage := maxYesCount.Quo(info.TotalWeight)
-	if maxYesPercentage.LT(info.DecisionPolicy.Percentage) {
-		allow, final = false, true
-		return
-	}
-
-	return
 }

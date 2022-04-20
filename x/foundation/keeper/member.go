@@ -7,10 +7,8 @@ import (
 )
 
 func (k Keeper) updateDecisionPolicy(ctx sdk.Context, policy foundation.DecisionPolicy) error {
-	// TODO: validate policy
-
 	info := k.GetFoundationInfo(ctx)
-	info.DecisionPolicy = policy
+	info.SetDecisionPolicy(policy)
 	info.Version++
 	k.setFoundationInfo(ctx, info)
 

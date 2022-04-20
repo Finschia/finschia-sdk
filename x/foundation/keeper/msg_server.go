@@ -70,7 +70,12 @@ func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUp
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "Not authorized to %s: %s", sdk.MsgTypeURL(req), req.Operator)
 	}
 
-	if err := s.keeper.updateDecisionPolicy(ctx, req.DecisionPolicy); err != nil {
+	policy := req.GetDecisionPolicy()
+	if err := policy.Validate(s.keeper.GetFoundationInfo(ctx), s.keeper.config); err != nil {
+		return nil, err
+	}
+
+	if err := s.keeper.updateDecisionPolicy(ctx, policy); err != nil {
 		return nil, err
 	}
 

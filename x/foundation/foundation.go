@@ -2,11 +2,35 @@ package foundation
 
 import (
 	"fmt"
+	"time"
 
+	"github.com/gogo/protobuf/proto"
+
+	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
+
+type DecisionPolicyResult struct {
+	Allow bool
+	Final bool
+}
+
+type DecisionPolicy interface {
+	codec.ProtoMarshaler
+
+	// GetVotingPeriod returns the duration after proposal submission where
+	// votes are accepted.
+	GetVotingPeriod() time.Duration
+	// Allow defines policy-specific logic to allow a proposal to pass or not,
+	// based on its tally result, the foundation's total power and the time since
+	// the proposal was submitted.
+	Allow(tallyResult TallyResult, totalPower sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error)
+
+	ValidateBasic() error
+	Validate(info FoundationInfo, config Config) error
+}
 
 func (t *TallyResult) Add(option VoteOption, weight sdk.Dec) error {
 	switch option {
@@ -95,4 +119,68 @@ func SetMsgs(msgs []sdk.Msg) ([]*codectypes.Any, error) {
 		}
 	}
 	return anys, nil
+}
+
+func (i FoundationInfo) GetDecisionPolicy() DecisionPolicy {
+	policy, ok := i.DecisionPolicy.GetCachedValue().(DecisionPolicy)
+	if !ok {
+		return nil
+	}
+	return policy
+}
+
+func (i *FoundationInfo) SetDecisionPolicy(policy DecisionPolicy) error {
+	msg, ok := policy.(proto.Message)
+	if !ok {
+		return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
+	}
+
+	any, err := codectypes.NewAnyWithValue(msg)
+	if err != nil {
+		return err
+	}
+	i.DecisionPolicy = any
+
+	return nil
+}
+
+func (p ThresholdDecisionPolicy) Validate(info FoundationInfo, config Config) error {
+	if p.Threshold.LT(config.MinThreshold) {
+		return sdkerrors.ErrInvalidRequest.Wrap("threshold must be greater than or equal to min_threshold")
+	}
+
+	if p.Windows.MinExecutionPeriod > p.Windows.VotingPeriod+config.MaxExecutionPeriod {
+		return sdkerrors.ErrInvalidRequest.Wrap("min_execution_period should be smaller than voting_period + max_execution_period")
+	}
+
+	return nil
+}
+
+
+func (p ThresholdDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
+	if sinceSubmission < p.Windows.MinExecutionPeriod {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("must wait %s after submission before execution, currently at %s", p.Windows.MinExecutionPeriod, sinceSubmission)
+	}
+
+	// the real threshold of the policy is `min(threshold,total_weight)`. If
+	// the foundation member weights changes (member leaving, member weight update)
+	// and the threshold doesn't, we can end up with threshold > total_weight.
+	// In this case, as long as everyone votes yes (in which case
+	// `yesCount`==`realThreshold`), then the proposal still passes.
+	realThreshold := sdk.MinDec(p.Threshold, totalWeight)
+	if result.YesCount.GTE(realThreshold) {
+		return &DecisionPolicyResult{Allow: true, Final: true}, nil
+	}
+
+	totalCounts := result.TotalCounts()
+	undecided := totalWeight.Sub(totalCounts)
+
+	// maxYesCount is the max potential number of yes count, i.e the current yes count
+	// plus all undecided count (supposing they all vote yes).
+	maxYesCount := result.YesCount.Add(undecided)
+	if maxYesCount.LT(realThreshold) {
+		return &DecisionPolicyResult{Allow: false, Final: true}, nil
+	}
+
+	return &DecisionPolicyResult{Final: false}, nil
 }

@@ -2,6 +2,10 @@ package foundation
 
 import (
 	"github.com/line/lbm-sdk/codec/legacy"
+	"github.com/line/lbm-sdk/codec/types"
+
+	"github.com/gogo/protobuf/proto"
+
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
@@ -124,7 +128,6 @@ func (m MsgUpdateDecisionPolicy) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
-	// TODO
 	return nil
 }
 
@@ -137,6 +140,34 @@ func (m MsgUpdateDecisionPolicy) GetSignBytes() []byte {
 func (m MsgUpdateDecisionPolicy) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.Operator)
 	return []sdk.AccAddress{signer}
+}
+
+func (m MsgUpdateDecisionPolicy) GetDecisionPolicy() DecisionPolicy {
+	policy, ok := m.DecisionPolicy.GetCachedValue().(DecisionPolicy)
+	if !ok {
+		return nil
+	}
+	return policy
+}
+
+func (m* MsgUpdateDecisionPolicy) SetDecisionPolicy(policy DecisionPolicy) error {
+	msg, ok := policy.(proto.Message)
+	if !ok {
+		return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
+	}
+
+	any, err := types.NewAnyWithValue(msg)
+	if err != nil {
+		return err
+	}
+	m.DecisionPolicy = any
+
+	return nil
+}
+
+func (m MsgUpdateDecisionPolicy) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	var policy DecisionPolicy
+	return unpacker.UnpackAny(m.DecisionPolicy, policy)
 }
 
 var _ sdk.Msg = (*MsgSubmitProposal)(nil)

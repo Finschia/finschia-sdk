@@ -8,6 +8,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
+import "cosmos_proto/cosmos.proto";
 
 // Params defines the parameters for the foundation module.
 message Params {
@@ -60,15 +61,26 @@ message Member {
   google.protobuf.Timestamp added_at = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
 }
 
-message DecisionPolicy {
-  // windows defines the different windows for voting and execution.
-  DecisionPolicyWindows windows = 1;
+// ThresholdDecisionPolicy implements the DecisionPolicy interface
+message ThresholdDecisionPolicy {
+  option (cosmos_proto.implements_interface) = "DecisionPolicy";
 
   // threshold is the minimum weighted sum of yes votes that must be met or exceeded for a proposal to succeed.
-  string threshold = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
+  string threshold = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
+
+  // windows defines the different windows for voting and execution.
+  DecisionPolicyWindows windows = 2;
+}
+
+// PercentageDecisionPolicy implements the DecisionPolicy interface
+message PercentageDecisionPolicy {
+  option (cosmos_proto.implements_interface) = "DecisionPolicy";
 
   // percentage is the minimum percentage the weighted sum of yes votes must meet for a proposal to succeed.
-  string percentage = 3 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
+  string percentage = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
+
+  // windows defines the different windows for voting and execution.
+  DecisionPolicyWindows windows = 2;
 }
 
 // DecisionPolicyWindows defines the different windows for voting and execution.
@@ -109,23 +121,22 @@ enum VoteOption {
 
 // FoundationInfo represents the high-level on-chain information for the foundation.
 message FoundationInfo {
+  option (gogoproto.goproto_getters) = false;
+
   // operator is the account address of the foundation's operator.
   string operator = 1;
-
-  // metadata is any arbitrary metadata to attached to the foundation.
-  string metadata = 2;
 
   // version is used to track changes to the foundation's membership structure that
   // would break existing proposals. Whenever any members weight is changed,
   // or any member is added or removed this version is incremented and will
   // cause proposals based on older versions of the foundation to fail
-  uint64 version = 3;
+  uint64 version = 2;
 
   // total_weight is the sum of the foundation members' weights.
-  string total_weight = 4 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
+  string total_weight = 3 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
 
   // decision_policy specifies the foundation's decision policy.
-  DecisionPolicy decision_policy = 5 [(gogoproto.nullable) = false];
+  google.protobuf.Any decision_policy = 4 [(cosmos_proto.accepts_interface) = "DecisionPolicy"];
 }
 
 // Proposal defines a foundation proposal. Any member of the foundation can submit a proposal
