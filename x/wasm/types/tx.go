@@ -5,7 +5,6 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/line/lbm-sdk/codec/legacy"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
@@ -68,7 +67,7 @@ func (msg MsgStoreCode) ValidateBasic() error {
 }
 
 func (msg MsgStoreCode) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&msg))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 func (msg MsgStoreCode) GetSigners() []sdk.AccAddress {
@@ -116,7 +115,7 @@ func (msg MsgInstantiateContract) ValidateBasic() error {
 }
 
 func (msg MsgInstantiateContract) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&msg))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 func (msg MsgInstantiateContract) GetSigners() []sdk.AccAddress {
@@ -153,7 +152,7 @@ func (msg MsgExecuteContract) ValidateBasic() error {
 }
 
 func (msg MsgExecuteContract) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&msg))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 func (msg MsgExecuteContract) GetSigners() []sdk.AccAddress {
@@ -191,7 +190,7 @@ func (msg MsgMigrateContract) ValidateBasic() error {
 }
 
 func (msg MsgMigrateContract) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&msg))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 func (msg MsgMigrateContract) GetSigners() []sdk.AccAddress {
@@ -227,7 +226,7 @@ func (msg MsgUpdateAdmin) ValidateBasic() error {
 }
 
 func (msg MsgUpdateAdmin) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&msg))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 func (msg MsgUpdateAdmin) GetSigners() []sdk.AccAddress {
@@ -257,7 +256,7 @@ func (msg MsgClearAdmin) ValidateBasic() error {
 }
 
 func (msg MsgClearAdmin) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&msg))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 func (msg MsgClearAdmin) GetSigners() []sdk.AccAddress {
@@ -281,7 +280,7 @@ func (msg MsgIBCSend) ValidateBasic() error {
 }
 
 func (msg MsgIBCSend) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&msg))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 func (msg MsgIBCSend) GetSigners() []sdk.AccAddress {
@@ -301,7 +300,7 @@ func (msg MsgIBCCloseChannel) ValidateBasic() error {
 }
 
 func (msg MsgIBCCloseChannel) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&msg))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 func (msg MsgIBCCloseChannel) GetSigners() []sdk.AccAddress {

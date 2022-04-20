@@ -9,7 +9,6 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/simapp"
 	simappparams "github.com/line/lbm-sdk/simapp/params"
 	sdk "github.com/line/lbm-sdk/types"
@@ -80,7 +79,7 @@ func TestSimulateMsgCreateValidator(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgCreateValidator
-	legacy.Cdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, "0.080000000000000000", msg.Commission.MaxChangeRate.String())
@@ -117,7 +116,7 @@ func TestSimulateMsgEditValidator(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgEditValidator
-	legacy.Cdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, "0.280623462081924936", msg.CommissionRate.String())
@@ -155,7 +154,7 @@ func TestSimulateMsgDelegate(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgDelegate
-	legacy.Cdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt", msg.DelegatorAddress)
@@ -200,7 +199,7 @@ func TestSimulateMsgUndelegate(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgUndelegate
-	legacy.Cdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, "link1p8wcgrjr4pjju90xg6u9cgq55dxwq8j7fmx8x8", msg.DelegatorAddress)
@@ -251,7 +250,7 @@ func TestSimulateMsgBeginRedelegate(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgBeginRedelegate
-	legacy.Cdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, "link12gwd9jchc69wck8dhstxgwz3z8qs8yv6t0s9q5", msg.DelegatorAddress)
