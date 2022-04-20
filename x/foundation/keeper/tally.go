@@ -42,9 +42,7 @@ func (k Keeper) doTallyAndUpdate(ctx sdk.Context, p *foundation.Proposal) error 
 	case err != nil:
 		return err
 	case decision.Final:
-		if err := k.pruneVotes(ctx, p.Id); err != nil {
-			return err
-		}
+		k.pruneVotes(ctx, p.Id)
 		p.FinalTallyResult = tallyResult
 		if decision.Allow {
 			p.Result = foundation.PROPOSAL_RESULT_ACCEPTED

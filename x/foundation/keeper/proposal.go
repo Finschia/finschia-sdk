@@ -100,9 +100,37 @@ func (k Keeper) withdrawProposal(ctx sdk.Context, proposal foundation.Proposal) 
 }
 
 // pruneProposal deletes a proposal from state.
-func (k Keeper) pruneProposal(ctx sdk.Context, proposalId uint64) error {
+func (k Keeper) pruneProposal(ctx sdk.Context, proposalId uint64) {
 	k.deleteProposal(ctx, proposalId)
-	return nil
+	k.pruneVotes(ctx, proposalId)
+}
+
+// pruneProposal deletes a proposal from state.
+func (k Keeper) pruneProposals(ctx sdk.Context) {
+	var ids []uint64
+	k.iterateProposals(ctx, func(proposal foundation.Proposal) (stop bool) {
+		ids = append(ids, proposal.Id)
+		return false
+	})
+
+	for _, id := range ids {
+		k.pruneProposal(ctx, id)
+	}
+}
+
+func (k Keeper) iterateProposals(ctx sdk.Context, fn func(proposal foundation.Proposal) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := append(proposalKeyPrefix)
+	iterator := sdk.KVStorePrefixIterator(store, prefix)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var proposal foundation.Proposal
+		k.cdc.MustUnmarshal(iterator.Value(), &proposal)
+		if stop := fn(proposal); stop {
+			break
+		}
+	}
 }
 
 func (k Keeper) GetProposal(ctx sdk.Context, id uint64) (*foundation.Proposal, error) {

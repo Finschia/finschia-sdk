@@ -10,7 +10,7 @@ func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
 		Params:         &Params{
 			Enabled: false,
-			FoundationTax: sdk.OneDec().QuoInt64(5), // 1/5 = 0.2
+			FoundationTax: sdk.MustNewDecFromStr("0.2"),
 		},
 		ValidatorAuths: []*ValidatorAuth{},
 	}

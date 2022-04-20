@@ -12,6 +12,9 @@ func (k Keeper) updateDecisionPolicy(ctx sdk.Context, policy foundation.Decision
 	info.Version++
 	k.setFoundationInfo(ctx, info)
 
+	// invalidate active proposals
+	k.pruneProposals(ctx)
+
 	return nil
 }
 
@@ -65,6 +68,9 @@ func (k Keeper) updateMembers(ctx sdk.Context, members []foundation.Member) erro
 	info.TotalWeight.Add(weightUpdate)
 	info.Version++
 	k.setFoundationInfo(ctx, info)
+
+	// invalidate active proposals
+	k.pruneProposals(ctx)
 
 	return nil
 }

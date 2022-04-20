@@ -91,7 +91,7 @@ func (k Keeper) iterateVotes(ctx sdk.Context, proposalId uint64, fn func(vote fo
 }
 
 // pruneVotes prunes all votes for a proposal from state.
-func (k Keeper) pruneVotes(ctx sdk.Context, proposalId uint64) error {
+func (k Keeper) pruneVotes(ctx sdk.Context, proposalId uint64) {
 	keys := [][]byte{}
 	k.iterateVotes(ctx, proposalId, func(vote foundation.Vote) (stop bool) {
 		keys = append(keys, voteKey(proposalId, sdk.AccAddress(vote.Voter)))
@@ -102,6 +102,4 @@ func (k Keeper) pruneVotes(ctx sdk.Context, proposalId uint64) error {
 	for _, key := range keys {
 		store.Delete(key)
 	}
-
-	return nil
 }
