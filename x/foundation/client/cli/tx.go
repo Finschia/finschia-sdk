@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/version"
@@ -20,6 +21,30 @@ const (
 	FlagAllowedValidatorAdd    = "add"
 	FlagAllowedValidatorDelete = "delete"
 )
+
+func phraseIgnoreFromFlag(name string) string {
+	return fmt.Sprintf(" note, the '--from' flag is ignored as it is implied from [%s].", name)
+}
+
+var phraseNotForUsers = " not intended to be used by users."
+
+// NewTxCmd returns the transaction commands for this module
+func NewTxCmd() *cobra.Command {
+	txCmd := &cobra.Command{
+		Use:                        foundation.ModuleName,
+		Short:                      fmt.Sprintf("%s transactions subcommands", foundation.ModuleName),
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	txCmd.AddCommand(
+		NewTxCmdFundTreasury(),
+		NewTxCmdWithdrawFromTreasury(),
+	)
+
+	return txCmd
+}
 
 // NewProposalCmdUpdateFoundationParams implements the command to submit an update-foundation-params proposal
 func NewProposalCmdUpdateFoundationParams() *cobra.Command {
@@ -191,5 +216,76 @@ $ %s tx gov submit-proposal update-validator-auths [flags]
 	cmd.Flags().String(FlagAllowedValidatorAdd, "", "validator addresses to add")
 	cmd.Flags().String(FlagAllowedValidatorDelete, "", "validator addresses to delete")
 
+	return cmd
+}
+
+func NewTxCmdFundTreasury() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "fund-treasury [from] [amount]",
+		Args:  cobra.ExactArgs(2),
+		Short: "fund the treasury." + phraseIgnoreFromFlag("from"),
+		Long: strings.TrimSpace(fmt.Sprintf(`
+			$ %s tx %s fund-treasury <from> <amount>`, version.AppName, foundation.ModuleName),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			from := args[0]
+			cmd.Flags().Set(flags.FlagFrom, from)
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			amount, err := sdk.ParseCoinsNormalized(args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := foundation.MsgFundTreasury{
+				From: from,
+				Amount: amount,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewTxCmdWithdrawFromTreasury() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "withdraw-from-treasury [to] [amount]",
+		Args:  cobra.ExactArgs(2),
+		Short: "withdraw coins from the treasury." + phraseNotForUsers,
+		Long: strings.TrimSpace(fmt.Sprintf(`
+			$ %s tx %s withdraw-from-treasury <to> <amount>`, version.AppName, foundation.ModuleName),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			amount, err := sdk.ParseCoinsNormalized(args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := foundation.MsgWithdrawFromTreasury{
+				To: args[0],
+				Amount: amount,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }

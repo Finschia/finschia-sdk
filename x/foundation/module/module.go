@@ -76,7 +76,7 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 
 // GetTxCmd returns the transaction commands for this module
 func (AppModuleBasic) GetTxCmd() *cobra.Command {
-	return nil
+	return cli.NewTxCmd()
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
