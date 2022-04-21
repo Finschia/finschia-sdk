@@ -39,7 +39,7 @@ service Query {
 
   // FoundationMember queries a member of the foundation
   rpc FoundationMember(QueryFoundationMemberRequest) returns (QueryFoundationMemberResponse) {
-    option (google.api.http).get = "/lbm/foundation/v1/foundation_members/{member}";
+    option (google.api.http).get = "/lbm/foundation/v1/foundation_members/{address}";
   };
 
   // FoundationMembers queries members of the foundation
@@ -132,7 +132,7 @@ message QueryFoundationInfoResponse {
 
 // QueryFoundationMemberRequest is the Query/FoundationMember request type.
 message QueryFoundationMemberRequest {
-  string member = 1;
+  string address = 1;
 }
 
 // QueryFoundationMemberResponse is the Query/FoundationMemberResponse response type.

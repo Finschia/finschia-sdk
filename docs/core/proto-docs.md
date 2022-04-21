@@ -9085,7 +9085,7 @@ QueryFoundationMemberRequest is the Query/FoundationMember request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `member` | [string](#string) |  |  |
+| `address` | [string](#string) |  |  |
 
 
 
@@ -9427,7 +9427,7 @@ Query defines the gRPC querier service for foundation module.
 | `ValidatorAuths` | [QueryValidatorAuthsRequest](#lbm.foundation.v1.QueryValidatorAuthsRequest) | [QueryValidatorAuthsResponse](#lbm.foundation.v1.QueryValidatorAuthsResponse) | ValidatorAuths queries authorization infos of validators. | GET|/lbm/foundation/v1/validators|
 | `Treasury` | [QueryTreasuryRequest](#lbm.foundation.v1.QueryTreasuryRequest) | [QueryTreasuryResponse](#lbm.foundation.v1.QueryTreasuryResponse) | Treasury queries the foundation treasury. | GET|/lbm/foundation/v1/treasury|
 | `FoundationInfo` | [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest) | [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse) | FoundationInfo queries foundation info. | GET|/lbm/foundation/v1/foundation_info|
-| `FoundationMember` | [QueryFoundationMemberRequest](#lbm.foundation.v1.QueryFoundationMemberRequest) | [QueryFoundationMemberResponse](#lbm.foundation.v1.QueryFoundationMemberResponse) | FoundationMember queries a member of the foundation | GET|/lbm/foundation/v1/foundation_members/{member}|
+| `FoundationMember` | [QueryFoundationMemberRequest](#lbm.foundation.v1.QueryFoundationMemberRequest) | [QueryFoundationMemberResponse](#lbm.foundation.v1.QueryFoundationMemberResponse) | FoundationMember queries a member of the foundation | GET|/lbm/foundation/v1/foundation_members/{address}|
 | `FoundationMembers` | [QueryFoundationMembersRequest](#lbm.foundation.v1.QueryFoundationMembersRequest) | [QueryFoundationMembersResponse](#lbm.foundation.v1.QueryFoundationMembersResponse) | FoundationMembers queries members of the foundation | GET|/lbm/foundation/v1/foundation_members|
 | `Proposal` | [QueryProposalRequest](#lbm.foundation.v1.QueryProposalRequest) | [QueryProposalResponse](#lbm.foundation.v1.QueryProposalResponse) | Proposal queries a proposal based on proposal id. | GET|/lbm/foundation/v1/proposals/{proposal_id}|
 | `Proposals` | [QueryProposalsRequest](#lbm.foundation.v1.QueryProposalsRequest) | [QueryProposalsResponse](#lbm.foundation.v1.QueryProposalsResponse) | Proposals queries all proposals. | GET|/lbm/foundation/v1/proposals|

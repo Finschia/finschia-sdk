@@ -154,3 +154,33 @@ func NewQueryCmdTreasury() *cobra.Command {
 
 	return cmd
 }
+
+
+// NewQueryCmdFoundationInfo returns the information of the foundation.
+func NewQueryCmdFoundationInfo() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "foundation-info",
+		Args:  cobra.NoArgs,
+		Short: "Query the foundation information",
+		Long: `Query the foundation information
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := foundation.NewQueryClient(clientCtx)
+
+			req := foundation.QueryFoundationInfoRequest{}
+			res, err := queryClient.FoundationInfo(context.Background(), &req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}

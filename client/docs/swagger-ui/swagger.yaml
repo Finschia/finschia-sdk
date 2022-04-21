@@ -35720,7 +35720,7 @@ paths:
           format: boolean
       tags:
         - Query
-  '/lbm/foundation/v1/foundation_members/{member}':
+  '/lbm/foundation/v1/foundation_members/{address}':
     get:
       summary: FoundationMember queries a member of the foundation
       operationId: FoundationMember
@@ -35948,7 +35948,7 @@ paths:
                           "value": "1.212s"
                         }
       parameters:
-        - name: member
+        - name: address
           in: path
           required: true
           type: string
