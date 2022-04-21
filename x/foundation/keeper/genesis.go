@@ -51,7 +51,6 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 			Threshold: k.config.MinThreshold,
 			Windows: &foundation.DecisionPolicyWindows{
 				VotingPeriod: 24 * time.Hour,
-				MinExecutionPeriod: 24 * time.Hour,
 			},
 		}
 		if err := info.SetDecisionPolicy(&policy); err != nil {
