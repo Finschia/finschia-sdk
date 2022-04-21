@@ -98,7 +98,7 @@ func (s queryServer) FoundationInfo(c context.Context, req *foundation.QueryFoun
 	return &foundation.QueryFoundationInfoResponse{Info: info}, nil
 }
 
-func (s queryServer) FoundationMember(c context.Context, req *foundation.QueryFoundationMemberRequest) (*foundation.QueryFoundationMemberResponse, error) {
+func (s queryServer) Member(c context.Context, req *foundation.QueryMemberRequest) (*foundation.QueryMemberResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -109,10 +109,10 @@ func (s queryServer) FoundationMember(c context.Context, req *foundation.QueryFo
 		return nil, err
 	}
 
-	return &foundation.QueryFoundationMemberResponse{Member: member}, nil
+	return &foundation.QueryMemberResponse{Member: member}, nil
 }
 
-func (s queryServer) FoundationMembers(c context.Context, req *foundation.QueryFoundationMembersRequest) (*foundation.QueryFoundationMembersResponse, error) {
+func (s queryServer) Members(c context.Context, req *foundation.QueryMembersRequest) (*foundation.QueryMembersResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -131,7 +131,7 @@ func (s queryServer) FoundationMembers(c context.Context, req *foundation.QueryF
 		return nil, err
 	}
 
-	return &foundation.QueryFoundationMembersResponse{Members: members, Pagination: pageRes}, nil
+	return &foundation.QueryMembersResponse{Members: members, Pagination: pageRes}, nil
 }
 
 func (s queryServer) Proposal(c context.Context, req *foundation.QueryProposalRequest) (*foundation.QueryProposalResponse, error) {

@@ -25,8 +25,8 @@ func NewQueryCmd() *cobra.Command {
 		NewQueryCmdValidatorAuths(),
 		NewQueryCmdTreasury(),
 		NewQueryCmdFoundationInfo(),
-		NewQueryCmdFoundationMember(),
-		NewQueryCmdFoundationMembers(),
+		NewQueryCmdMember(),
+		NewQueryCmdMembers(),
 		NewQueryCmdProposal(),
 		NewQueryCmdProposals(),
 		NewQueryCmdVote(),
@@ -194,10 +194,10 @@ func NewQueryCmdFoundationInfo() *cobra.Command {
 	return cmd
 }
 
-// NewQueryCmdFoundationMember returns a member of the foundation.
-func NewQueryCmdFoundationMember() *cobra.Command {
+// NewQueryCmdMember returns a member of the foundation.
+func NewQueryCmdMember() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "foundation-member [address]",
+		Use:   "member [address]",
 		Args:  cobra.ExactArgs(1),
 		Short: "Query a foundation member",
 		Long: `Query a foundation member
@@ -214,8 +214,8 @@ func NewQueryCmdFoundationMember() *cobra.Command {
 				return err
 			}
 
-			req := foundation.QueryFoundationMemberRequest{Address: address}
-			res, err := queryClient.FoundationMember(context.Background(), &req)
+			req := foundation.QueryMemberRequest{Address: address}
+			res, err := queryClient.Member(context.Background(), &req)
 			if err != nil {
 				return err
 			}
@@ -228,10 +228,10 @@ func NewQueryCmdFoundationMember() *cobra.Command {
 	return cmd
 }
 
-// NewQueryCmdFoundationMembers returns the members of the foundation.
-func NewQueryCmdFoundationMembers() *cobra.Command {
+// NewQueryCmdMembers returns the members of the foundation.
+func NewQueryCmdMembers() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "foundation-members",
+		Use:   "members",
 		Args:  cobra.NoArgs,
 		Short: "Query the foundation members",
 		Long: `Query the foundation members
@@ -243,8 +243,8 @@ func NewQueryCmdFoundationMembers() *cobra.Command {
 			}
 			queryClient := foundation.NewQueryClient(clientCtx)
 
-			req := foundation.QueryFoundationMembersRequest{}
-			res, err := queryClient.FoundationMembers(context.Background(), &req)
+			req := foundation.QueryMembersRequest{}
+			res, err := queryClient.Members(context.Background(), &req)
 			if err != nil {
 				return err
 			}

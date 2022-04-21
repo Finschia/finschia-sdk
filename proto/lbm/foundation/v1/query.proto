@@ -37,13 +37,13 @@ service Query {
     option (google.api.http).get = "/lbm/foundation/v1/foundation_info";
   };
 
-  // FoundationMember queries a member of the foundation
-  rpc FoundationMember(QueryFoundationMemberRequest) returns (QueryFoundationMemberResponse) {
+  // Member queries a member of the foundation
+  rpc Member(QueryMemberRequest) returns (QueryMemberResponse) {
     option (google.api.http).get = "/lbm/foundation/v1/foundation_members/{address}";
   };
 
-  // FoundationMembers queries members of the foundation
-  rpc FoundationMembers(QueryFoundationMembersRequest) returns (QueryFoundationMembersResponse) {
+  // Members queries members of the foundation
+  rpc Members(QueryMembersRequest) returns (QueryMembersResponse) {
     option (google.api.http).get = "/lbm/foundation/v1/foundation_members";
   };
 
@@ -130,25 +130,25 @@ message QueryFoundationInfoResponse {
   FoundationInfo info = 1 [(gogoproto.nullable) = false];
 }
 
-// QueryFoundationMemberRequest is the Query/FoundationMember request type.
-message QueryFoundationMemberRequest {
+// QueryMemberRequest is the Query/Member request type.
+message QueryMemberRequest {
   string address = 1;
 }
 
-// QueryFoundationMemberResponse is the Query/FoundationMemberResponse response type.
-message QueryFoundationMemberResponse {
+// QueryMemberResponse is the Query/MemberResponse response type.
+message QueryMemberResponse {
   // member is the members of the foundation.
   Member member = 1;
 }
 
-// QueryFoundationMembersRequest is the Query/FoundationMembers request type.
-message QueryFoundationMembersRequest {
+// QueryMembersRequest is the Query/Members request type.
+message QueryMembersRequest {
   // pagination defines an optional pagination for the request.
   lbm.base.query.v1.PageRequest pagination = 1;
 }
 
-// QueryFoundationMembersResponse is the Query/FoundationMembersResponse response type.
-message QueryFoundationMembersResponse {
+// QueryMembersResponse is the Query/MembersResponse response type.
+message QueryMembersResponse {
   // members are the members of the foundation.
   repeated Member members = 1 [(gogoproto.nullable) = false];
 

@@ -35411,8 +35411,8 @@ paths:
         - Query
   /lbm/foundation/v1/foundation_members:
     get:
-      summary: FoundationMembers queries members of the foundation
-      operationId: FoundationMembers
+      summary: Members queries members of the foundation
+      operationId: Members
       responses:
         '200':
           description: A successful response.
@@ -35467,9 +35467,7 @@ paths:
                       PageRequest.count_total
 
                       was set, its value is undefined otherwise
-            description: >-
-              QueryFoundationMembersResponse is the
-              Query/FoundationMembersResponse response type.
+            description: QueryMembersResponse is the Query/MembersResponse response type.
         default:
           description: An unexpected error response
           schema:
@@ -35722,8 +35720,8 @@ paths:
         - Query
   '/lbm/foundation/v1/foundation_members/{address}':
     get:
-      summary: FoundationMember queries a member of the foundation
-      operationId: FoundationMember
+      summary: Member queries a member of the foundation
+      operationId: Member
       responses:
         '200':
           description: A successful response.
@@ -35755,9 +35753,7 @@ paths:
                 description: |-
                   Member represents a foundation member with an account address,
                   non-zero weight and metadata.
-            description: >-
-              QueryFoundationMemberResponse is the
-              Query/FoundationMemberResponse response type.
+            description: QueryMemberResponse is the Query/MemberResponse response type.
         default:
           description: An unexpected error response
           schema:
@@ -62875,7 +62871,7 @@ definitions:
                   Must be a valid serialized protocol buffer of the above
                   specified type.
     description: QueryFoundationInfoResponse is the Query/FoundationInfo response type.
-  lbm.foundation.v1.QueryFoundationMemberResponse:
+  lbm.foundation.v1.QueryMemberResponse:
     type: object
     properties:
       member:
@@ -62899,10 +62895,8 @@ definitions:
         description: |-
           Member represents a foundation member with an account address,
           non-zero weight and metadata.
-    description: >-
-      QueryFoundationMemberResponse is the Query/FoundationMemberResponse
-      response type.
-  lbm.foundation.v1.QueryFoundationMembersResponse:
+    description: QueryMemberResponse is the Query/MemberResponse response type.
+  lbm.foundation.v1.QueryMembersResponse:
     type: object
     properties:
       members:
@@ -62947,9 +62941,7 @@ definitions:
               PageRequest.count_total
 
               was set, its value is undefined otherwise
-    description: >-
-      QueryFoundationMembersResponse is the Query/FoundationMembersResponse
-      response type.
+    description: QueryMembersResponse is the Query/MembersResponse response type.
   lbm.foundation.v1.QueryParamsResponse:
     type: object
     properties:

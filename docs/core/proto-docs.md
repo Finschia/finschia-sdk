@@ -598,10 +598,10 @@
 - [lbm/foundation/v1/query.proto](#lbm/foundation/v1/query.proto)
     - [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest)
     - [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse)
-    - [QueryFoundationMemberRequest](#lbm.foundation.v1.QueryFoundationMemberRequest)
-    - [QueryFoundationMemberResponse](#lbm.foundation.v1.QueryFoundationMemberResponse)
-    - [QueryFoundationMembersRequest](#lbm.foundation.v1.QueryFoundationMembersRequest)
-    - [QueryFoundationMembersResponse](#lbm.foundation.v1.QueryFoundationMembersResponse)
+    - [QueryMemberRequest](#lbm.foundation.v1.QueryMemberRequest)
+    - [QueryMemberResponse](#lbm.foundation.v1.QueryMemberResponse)
+    - [QueryMembersRequest](#lbm.foundation.v1.QueryMembersRequest)
+    - [QueryMembersResponse](#lbm.foundation.v1.QueryMembersResponse)
     - [QueryParamsRequest](#lbm.foundation.v1.QueryParamsRequest)
     - [QueryParamsResponse](#lbm.foundation.v1.QueryParamsResponse)
     - [QueryProposalRequest](#lbm.foundation.v1.QueryProposalRequest)
@@ -9077,10 +9077,10 @@ QueryFoundationInfoResponse is the Query/FoundationInfo response type.
 
 
 
-<a name="lbm.foundation.v1.QueryFoundationMemberRequest"></a>
+<a name="lbm.foundation.v1.QueryMemberRequest"></a>
 
-### QueryFoundationMemberRequest
-QueryFoundationMemberRequest is the Query/FoundationMember request type.
+### QueryMemberRequest
+QueryMemberRequest is the Query/Member request type.
 
 
 | Field | Type | Label | Description |
@@ -9092,10 +9092,10 @@ QueryFoundationMemberRequest is the Query/FoundationMember request type.
 
 
 
-<a name="lbm.foundation.v1.QueryFoundationMemberResponse"></a>
+<a name="lbm.foundation.v1.QueryMemberResponse"></a>
 
-### QueryFoundationMemberResponse
-QueryFoundationMemberResponse is the Query/FoundationMemberResponse response type.
+### QueryMemberResponse
+QueryMemberResponse is the Query/MemberResponse response type.
 
 
 | Field | Type | Label | Description |
@@ -9107,10 +9107,10 @@ QueryFoundationMemberResponse is the Query/FoundationMemberResponse response typ
 
 
 
-<a name="lbm.foundation.v1.QueryFoundationMembersRequest"></a>
+<a name="lbm.foundation.v1.QueryMembersRequest"></a>
 
-### QueryFoundationMembersRequest
-QueryFoundationMembersRequest is the Query/FoundationMembers request type.
+### QueryMembersRequest
+QueryMembersRequest is the Query/Members request type.
 
 
 | Field | Type | Label | Description |
@@ -9122,10 +9122,10 @@ QueryFoundationMembersRequest is the Query/FoundationMembers request type.
 
 
 
-<a name="lbm.foundation.v1.QueryFoundationMembersResponse"></a>
+<a name="lbm.foundation.v1.QueryMembersResponse"></a>
 
-### QueryFoundationMembersResponse
-QueryFoundationMembersResponse is the Query/FoundationMembersResponse response type.
+### QueryMembersResponse
+QueryMembersResponse is the Query/MembersResponse response type.
 
 
 | Field | Type | Label | Description |
@@ -9427,8 +9427,8 @@ Query defines the gRPC querier service for foundation module.
 | `ValidatorAuths` | [QueryValidatorAuthsRequest](#lbm.foundation.v1.QueryValidatorAuthsRequest) | [QueryValidatorAuthsResponse](#lbm.foundation.v1.QueryValidatorAuthsResponse) | ValidatorAuths queries authorization infos of validators. | GET|/lbm/foundation/v1/validators|
 | `Treasury` | [QueryTreasuryRequest](#lbm.foundation.v1.QueryTreasuryRequest) | [QueryTreasuryResponse](#lbm.foundation.v1.QueryTreasuryResponse) | Treasury queries the foundation treasury. | GET|/lbm/foundation/v1/treasury|
 | `FoundationInfo` | [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest) | [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse) | FoundationInfo queries foundation info. | GET|/lbm/foundation/v1/foundation_info|
-| `FoundationMember` | [QueryFoundationMemberRequest](#lbm.foundation.v1.QueryFoundationMemberRequest) | [QueryFoundationMemberResponse](#lbm.foundation.v1.QueryFoundationMemberResponse) | FoundationMember queries a member of the foundation | GET|/lbm/foundation/v1/foundation_members/{address}|
-| `FoundationMembers` | [QueryFoundationMembersRequest](#lbm.foundation.v1.QueryFoundationMembersRequest) | [QueryFoundationMembersResponse](#lbm.foundation.v1.QueryFoundationMembersResponse) | FoundationMembers queries members of the foundation | GET|/lbm/foundation/v1/foundation_members|
+| `Member` | [QueryMemberRequest](#lbm.foundation.v1.QueryMemberRequest) | [QueryMemberResponse](#lbm.foundation.v1.QueryMemberResponse) | Member queries a member of the foundation | GET|/lbm/foundation/v1/foundation_members/{address}|
+| `Members` | [QueryMembersRequest](#lbm.foundation.v1.QueryMembersRequest) | [QueryMembersResponse](#lbm.foundation.v1.QueryMembersResponse) | Members queries members of the foundation | GET|/lbm/foundation/v1/foundation_members|
 | `Proposal` | [QueryProposalRequest](#lbm.foundation.v1.QueryProposalRequest) | [QueryProposalResponse](#lbm.foundation.v1.QueryProposalResponse) | Proposal queries a proposal based on proposal id. | GET|/lbm/foundation/v1/proposals/{proposal_id}|
 | `Proposals` | [QueryProposalsRequest](#lbm.foundation.v1.QueryProposalsRequest) | [QueryProposalsResponse](#lbm.foundation.v1.QueryProposalsResponse) | Proposals queries all proposals. | GET|/lbm/foundation/v1/proposals|
 | `Vote` | [QueryVoteRequest](#lbm.foundation.v1.QueryVoteRequest) | [QueryVoteResponse](#lbm.foundation.v1.QueryVoteResponse) | Vote queries a vote by proposal id and voter. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes/{voter}|
