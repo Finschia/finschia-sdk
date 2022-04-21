@@ -35,24 +35,24 @@ func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *foundatio
 }
 
 func (k Keeper) NewProposalId(ctx sdk.Context) uint64 {
-	id := k.getProposalId(ctx)
-	k.setProposalId(ctx, id + 1)
+	id := k.getPreviousProposalId(ctx) + 1
+	k.setPreviousProposalId(ctx, id)
 
 	return id
 }
 
-func (k Keeper) getProposalId(ctx sdk.Context) uint64 {
+func (k Keeper) getPreviousProposalId(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(nextProposalIdKey)
+	bz := store.Get(previousProposalIdKey)
 	if len(bz) == 0 {
-		panic("next proposal ID hasn't been set")
+		panic("previous proposal ID hasn't been set")
 	}
 	return Uint64FromBytes(bz)
 }
 
-func (k Keeper) setProposalId(ctx sdk.Context, id uint64) {
+func (k Keeper) setPreviousProposalId(ctx sdk.Context, id uint64) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(nextProposalIdKey, Uint64ToBytes(id))
+	store.Set(previousProposalIdKey, Uint64ToBytes(id))
 }
 
 func (k Keeper) submitProposal(ctx sdk.Context, proposers []string, metadata string, msgs []sdk.Msg) (uint64, error) {

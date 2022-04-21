@@ -20,7 +20,7 @@ var (
 	treasuryKey            = []byte{0x02}
 	foundationInfoKey      = []byte{0x03}
 	memberKeyPrefix        = []byte{0x04}
-	nextProposalIdKey      = []byte{0x05}
+	previousProposalIdKey      = []byte{0x05}
 	proposalKeyPrefix      = []byte{0x06}
 	voteKeyPrefix          = []byte{0x07}
 )
