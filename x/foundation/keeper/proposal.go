@@ -35,16 +35,24 @@ func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *foundatio
 }
 
 func (k Keeper) NewProposalId(ctx sdk.Context) uint64 {
+	id := k.getProposalId(ctx)
+	k.setProposalId(ctx, id + 1)
+
+	return id
+}
+
+func (k Keeper) getProposalId(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(nextProposalIdKey)
 	if len(bz) == 0 {
 		panic("next proposal ID hasn't been set")
 	}
+	return Uint64FromBytes(bz)
+}
 
-	id := Uint64FromBytes(bz)
-	store.Set(nextProposalIdKey, Uint64ToBytes(id + 1))
-
-	return id
+func (k Keeper) setProposalId(ctx sdk.Context, id uint64) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(nextProposalIdKey, Uint64ToBytes(id))
 }
 
 func (k Keeper) submitProposal(ctx sdk.Context, proposers []string, metadata string, msgs []sdk.Msg) (uint64, error) {
@@ -116,6 +124,16 @@ func (k Keeper) pruneProposals(ctx sdk.Context) {
 	for _, id := range ids {
 		k.pruneProposal(ctx, id)
 	}
+}
+
+func (k Keeper) GetProposals(ctx sdk.Context) []foundation.Proposal {
+	var proposals []foundation.Proposal
+	k.iterateProposals(ctx, func(proposal foundation.Proposal) (stop bool) {
+		proposals = append(proposals, proposal)
+		return false
+	})
+
+	return proposals
 }
 
 func (k Keeper) iterateProposals(ctx sdk.Context, fn func(proposal foundation.Proposal) (stop bool)) {

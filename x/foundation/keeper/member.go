@@ -109,6 +109,31 @@ func (k Keeper) deleteMember(ctx sdk.Context, address sdk.AccAddress) {
 	store.Delete(key)
 }
 
+func (k Keeper) iterateMembers(ctx sdk.Context, fn func(member foundation.Member) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := append(memberKeyPrefix)
+	iterator := sdk.KVStorePrefixIterator(store, prefix)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var member foundation.Member
+		k.cdc.MustUnmarshal(iterator.Value(), &member)
+		if stop := fn(member); stop {
+			break
+		}
+	}
+}
+
+func (k Keeper) GetMembers(ctx sdk.Context) []foundation.Member {
+	var members []foundation.Member
+	k.iterateMembers(ctx, func(member foundation.Member) (stop bool) {
+		members = append(members, member)
+		return false
+	})
+
+	return members
+}
+
 func (k Keeper) GetOperator(ctx sdk.Context) sdk.AccAddress {
 	info := k.GetFoundationInfo(ctx)
 	return sdk.AccAddress(info.Operator)

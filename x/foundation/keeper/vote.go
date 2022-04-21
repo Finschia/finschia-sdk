@@ -38,7 +38,7 @@ func (k Keeper) vote(ctx sdk.Context, id uint64, voter string, option foundation
 		SubmitTime: ctx.BlockTime(),
 	}
 
-	return k.setVote(ctx, id, newVote)
+	return k.setVote(ctx, newVote)
 }
 
 func (k Keeper) hasVote(ctx sdk.Context, proposalId uint64, voter sdk.AccAddress) bool {
@@ -62,14 +62,14 @@ func (k Keeper) GetVote(ctx sdk.Context, proposalId uint64, voter sdk.AccAddress
 	return &vote, nil
 }
 
-func (k Keeper) setVote(ctx sdk.Context, proposalId uint64, vote foundation.Vote) error {
+func (k Keeper) setVote(ctx sdk.Context, vote foundation.Vote) error {
 	bz, err := k.cdc.Marshal(&vote)
 	if err != nil {
 		return err
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	key := voteKey(proposalId, sdk.AccAddress(vote.Voter))
+	key := voteKey(vote.ProposalId, sdk.AccAddress(vote.Voter))
 	store.Set(key, bz)
 
 	return nil
@@ -88,6 +88,16 @@ func (k Keeper) iterateVotes(ctx sdk.Context, proposalId uint64, fn func(vote fo
 			break
 		}
 	}
+}
+
+func (k Keeper) GetVotes(ctx sdk.Context, proposalId uint64) []foundation.Vote {
+	var votes []foundation.Vote
+	k.iterateVotes(ctx, proposalId, func(vote foundation.Vote) (stop bool) {
+		votes = append(votes, vote)
+		return false
+	})
+
+	return votes
 }
 
 // pruneVotes prunes all votes for a proposal from state.

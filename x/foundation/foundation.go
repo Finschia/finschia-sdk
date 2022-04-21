@@ -184,3 +184,15 @@ func (p ThresholdDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, 
 
 	return &DecisionPolicyResult{Final: false}, nil
 }
+
+func (p ThresholdDecisionPolicy) GetVotingPeriod() time.Duration {
+	return p.Windows.VotingPeriod
+}
+
+func (p ThresholdDecisionPolicy) ValidateBasic() error {
+	if p.Windows == nil || p.Windows.VotingPeriod == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("voting period cannot be zero")
+	}
+
+	return nil
+}
