@@ -350,10 +350,10 @@ func (p ExecuteContractProposal) ValidateBasic() error {
 	if err := validateProposalCommons(p.Title, p.Description); err != nil {
 		return err
 	}
-	if _, err := sdk.AccAddressFromHex(p.Contract); err != nil {
+	if err := sdk.ValidateAccAddress(p.Contract); err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
-	if _, err := sdk.AccAddressFromHex(p.RunAs); err != nil {
+	if err := sdk.ValidateAccAddress(p.RunAs); err != nil {
 		return sdkerrors.Wrap(err, "run as")
 	}
 	if !p.Funds.IsValid() {
