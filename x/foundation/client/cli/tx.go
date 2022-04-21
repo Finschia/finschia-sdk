@@ -70,12 +70,12 @@ func parseDecisionPolicy(codec codec.Codec, policyFile string) (foundation.Decis
 		return nil, err
 	}
 
-	var policy foundation.ThresholdDecisionPolicy
-	if err = codec.UnmarshalJSON(contents, &policy); err != nil {
-		return nil, err
+	var policy foundation.DecisionPolicy
+	if err = codec.UnmarshalJSON(contents, policy); err == nil {
+		return policy, nil
 	}
 
-	return &policy, nil
+	return nil, err
 }
 
 func execFromString(execStr string) foundation.Exec {
@@ -543,7 +543,7 @@ Example of the content of proposal-json-file:
     }
   ]
 }
-}`,
+`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			proposal, err := parseCLIProposal(args[0])
 			if err != nil {

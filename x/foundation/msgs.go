@@ -167,7 +167,7 @@ func (m* MsgUpdateDecisionPolicy) SetDecisionPolicy(policy DecisionPolicy) error
 
 func (m MsgUpdateDecisionPolicy) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	var policy DecisionPolicy
-	return unpacker.UnpackAny(m.DecisionPolicy, policy)
+	return unpacker.UnpackAny(m.DecisionPolicy, &policy)
 }
 
 var _ sdk.Msg = (*MsgSubmitProposal)(nil)

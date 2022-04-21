@@ -31,5 +31,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		"lbm.foundation.v1.DecisionPolicy",
 		(*DecisionPolicy)(nil),
 		&ThresholdDecisionPolicy{},
+		&PercentageDecisionPolicy{},
 	)
 }

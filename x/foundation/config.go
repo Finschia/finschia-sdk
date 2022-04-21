@@ -13,6 +13,7 @@ type Config struct {
 	// MaxMetadataLen defines the max length of the metadata bytes field for various entities within the foundation module. Defaults to 255 if not explicitly set.
 	MaxMetadataLen uint64
 	MinThreshold sdk.Dec
+	MinPercentage sdk.Dec
 }
 
 func DefaultConfig() Config {
@@ -20,5 +21,6 @@ func DefaultConfig() Config {
 		MaxExecutionPeriod: 2 * 7 * 24 * time.Hour, // two weeks
 		MaxMetadataLen:     255,
 		MinThreshold:       sdk.NewDec(3),
+		MinPercentage:      sdk.MustNewDecFromStr("0.8"),
 	}
 }
