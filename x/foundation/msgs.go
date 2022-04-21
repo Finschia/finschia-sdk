@@ -234,7 +234,7 @@ func (m MsgSubmitProposal) GetSignBytes() []byte {
 
 // GetSigners implements Msg.
 func (m MsgSubmitProposal) GetSigners() []sdk.AccAddress {
-	signers := make([]sdk.AccAddress, len(m.Proposers))
+	var signers []sdk.AccAddress
 	for _, proposer := range m.Proposers {
 		signers = append(signers, sdk.AccAddress(proposer))
 	}
