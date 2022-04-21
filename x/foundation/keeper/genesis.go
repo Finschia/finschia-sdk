@@ -17,7 +17,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		// so it should be the very first block of the chain.
 		// We gather the information from staking module.
 		sk.IterateValidators(ctx, func(_ int64, addr stakingtypes.ValidatorI) (stop bool) {
-			auth := &foundation.ValidatorAuth{
+			auth := foundation.ValidatorAuth{
 				OperatorAddress: addr.GetOperator().String(),
 				CreationAllowed: true,
 			}

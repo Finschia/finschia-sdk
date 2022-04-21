@@ -3,6 +3,8 @@ package lbm.foundation.v1;
 
 option go_package = "github.com/line/lbm-sdk/x/foundation";
 
+import "gogoproto/gogo.proto";
+
 import "lbm/foundation/v1/foundation.proto";
 
 // EventUpdateFoundationParams is emitted after updating foundation parameters.
@@ -12,7 +14,7 @@ message EventUpdateFoundationParams {
 
 // EventUpdateValidatorAuths is emitted after updating validator auth info.
 message EventUpdateValidatorAuths {
-  repeated ValidatorAuth auths = 1;
+  repeated ValidatorAuth auths = 1 [(gogoproto.nullable) = false];
 }
 
 // EventSubmitProposal is an event emitted when a proposal is created.

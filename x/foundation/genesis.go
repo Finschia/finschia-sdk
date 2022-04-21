@@ -12,7 +12,6 @@ func DefaultGenesisState() *GenesisState {
 			Enabled: false,
 			FoundationTax: sdk.MustNewDecFromStr("0.2"),
 		},
-		ValidatorAuths: []*ValidatorAuth{},
 	}
 }
 

@@ -42,7 +42,7 @@ message UpdateValidatorAuthsProposal {
 
   string                 title       = 1;
   string                 description = 2;
-  repeated ValidatorAuth auths       = 3;
+  repeated ValidatorAuth auths       = 3 [(gogoproto.nullable) = false];
 }
 
 // Member represents a foundation member with an account address,

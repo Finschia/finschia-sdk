@@ -271,17 +271,17 @@ $ %s tx gov submit-proposal update-validator-auths [flags]
 			}
 			deletingValidators := parseCommaSeparated(deletingValidatorsStr)
 
-			createAuths := func(addings, deletings []string) []*foundation.ValidatorAuth {
-				var auths []*foundation.ValidatorAuth
+			createAuths := func(addings, deletings []string) []foundation.ValidatorAuth {
+				var auths []foundation.ValidatorAuth
 				for _, addr := range addings {
-					auth := &foundation.ValidatorAuth{
+					auth := foundation.ValidatorAuth{
 						OperatorAddress: addr,
 						CreationAllowed: true,
 					}
 					auths = append(auths, auth)
 				}
 				for _, addr := range deletings {
-					auth := &foundation.ValidatorAuth{
+					auth := foundation.ValidatorAuth{
 						OperatorAddress: addr,
 						CreationAllowed: false,
 					}

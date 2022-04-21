@@ -51,7 +51,7 @@ func (p UpdateFoundationParamsProposal) String() string {
 }
 
 func NewUpdateValidatorAuthsProposal(title, description string,
-	auths []*ValidatorAuth) govtypes.Content {
+	auths []ValidatorAuth) govtypes.Content {
 	return &UpdateValidatorAuthsProposal{title, description, auths}
 }
 

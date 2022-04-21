@@ -22,11 +22,11 @@ func (k Keeper) GetValidatorAuth(ctx sdk.Context, valAddr sdk.ValAddress) (*foun
 	return &auth, nil
 }
 
-func (k Keeper) SetValidatorAuth(ctx sdk.Context, auth *foundation.ValidatorAuth) error {
+func (k Keeper) SetValidatorAuth(ctx sdk.Context, auth foundation.ValidatorAuth) error {
 	store := ctx.KVStore(k.storeKey)
 	key := validatorAuthKey(sdk.ValAddress(auth.OperatorAddress))
 
-	bz, err := k.cdc.Marshal(auth)
+	bz, err := k.cdc.Marshal(&auth)
 	if err != nil {
 		return err
 	}
@@ -54,10 +54,10 @@ func (k Keeper) IterateValidatorAuths(ctx sdk.Context, cb func(auth foundation.V
 }
 
 // utility functions
-func (k Keeper) GetValidatorAuths(ctx sdk.Context) []*foundation.ValidatorAuth {
-	auths := []*foundation.ValidatorAuth{}
+func (k Keeper) GetValidatorAuths(ctx sdk.Context) []foundation.ValidatorAuth {
+	var auths []foundation.ValidatorAuth
 	k.IterateValidatorAuths(ctx, func(auth foundation.ValidatorAuth) (stop bool) {
-		auths = append(auths, &auth)
+		auths = append(auths, auth)
 		return false
 	})
 	return auths
