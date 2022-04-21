@@ -403,18 +403,18 @@ func NewTxCmdUpdateMembers() *cobra.Command {
 Example of the content of members-json-file:
 
 {
-	[
-		{
-			"address": "addr1",
-			"weight": "1",
-			"metadata": "some new metadata"
-		},
-		{
-			"address": "addr2",
-			"weight": "0",
-			"metadata": "some metadata"
-		}
-	]
+  "members": [
+    {
+      "address": "addr1",
+      "weight": "1",
+      "metadata": "some new metadata"
+    },
+    {
+      "address": "addr2",
+      "weight": "0",
+      "metadata": "some metadata"
+    }
+  ]
 }
 
 Set a member's weight to "0" to delete it.
@@ -452,10 +452,20 @@ Set a member's weight to "0" to delete it.
 
 func NewTxCmdUpdateDecisionPolicy() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-decision-policy [operator] [amount]",
+		Use:   "update-decision-policy [operator] [policy-json-file]",
 		Args:  cobra.ExactArgs(2),
 		Short: "Update the foundation decision policy",
 		Long: `Update the foundation decision policy
+
+Example of the content of policy-json-file:
+
+{
+  "threshold": "3",
+  "windows": {
+    "voting_period": "24h",
+    "min_execution_period": "24h",
+  }
+}
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			operator := args[0]
@@ -492,7 +502,23 @@ func NewTxCmdSubmitProposal() *cobra.Command {
 		Long: `Submit a new proposal
 
 Parameters:
-			proposal-json-file: path to json file with messages that will be executed if the proposal is accepted.
+    proposal-json-file: path to json file with messages that will be executed if the proposal is accepted.
+
+Example of the content of proposal-json-file:
+
+{
+  "metadata": "this is an example proposal",
+  "proposers": [
+    "addr1",
+    "addr2"
+  ],
+  "messages": [
+    {
+      "@type": "/msg/type/url/to/execute",
+      ...
+    }
+  ]
+}
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			proposal, err := parseCLIProposal(args[0])
@@ -550,8 +576,8 @@ func NewTxCmdWithdrawProposal() *cobra.Command {
 		Long: `Withdraw a submitted proposal.
 
 Parameters:
-			proposal-id: unique ID of the proposal.
-			address: one of the proposer of the proposal.
+    proposal-id: unique ID of the proposal.
+    address: one of the proposer of the proposal.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			address := args[1]
@@ -592,15 +618,15 @@ func NewTxCmdVote() *cobra.Command {
 		Long: `Vote on a proposal.
 
 Parameters:
-			proposal-id: unique ID of the proposal
-			voter: voter account addresses.
-			vote-option: choice of the voter(s)
-				VOTE_OPTION_UNSPECIFIED: no-op
-				VOTE_OPTION_NO: no
-				VOTE_OPTION_YES: yes
-				VOTE_OPTION_ABSTAIN: abstain
-				VOTE_OPTION_NO_WITH_VETO: no-with-veto
-			metadata: metadata for the vote
+    proposal-id: unique ID of the proposal
+    voter: voter account addresses.
+    vote-option: choice of the voter(s)
+        VOTE_OPTION_UNSPECIFIED: no-op
+        VOTE_OPTION_NO: no
+        VOTE_OPTION_YES: yes
+        VOTE_OPTION_ABSTAIN: abstain
+        VOTE_OPTION_NO_WITH_VETO: no-with-veto
+    metadata: metadata for the vote
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			voter := args[1]
