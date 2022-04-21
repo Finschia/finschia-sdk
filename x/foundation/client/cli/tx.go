@@ -357,7 +357,7 @@ func NewTxCmdFundTreasury() *cobra.Command {
 func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "withdraw-from-treasury [operator] [to] [amount]",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		Short: "Withdraw coins from the treasury",
 		Long: `Withdraw coins from the treasury
 `,
