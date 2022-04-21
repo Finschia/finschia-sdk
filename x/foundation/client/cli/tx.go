@@ -2,17 +2,17 @@ package cli
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"fmt"
+	"io/ioutil"
 	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
+	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/version"
 	"github.com/line/lbm-sdk/x/foundation"
@@ -60,6 +60,24 @@ func parseMembers(codec codec.Codec, membersFile string) ([]foundation.Member, e
 	return members, nil
 }
 
+func parseDecisionPolicy(codec codec.Codec, policyFile string) (foundation.DecisionPolicy, error) {
+	if policyFile == "" {
+		return nil, nil
+	}
+
+	contents, err := ioutil.ReadFile(policyFile)
+	if err != nil {
+		return nil, err
+	}
+
+	var policy foundation.ThresholdDecisionPolicy
+	if err = codec.UnmarshalJSON(contents, &policy); err != nil {
+		return nil, err
+	}
+
+	return &policy, nil
+}
+
 func execFromString(execStr string) foundation.Exec {
 	exec := foundation.Exec_EXEC_UNSPECIFIED
 	switch execStr {
@@ -81,10 +99,10 @@ func voteOptionFromString(str string) (foundation.VoteOption, error) {
 
 // CLIProposal defines a Msg-based proposal for CLI purposes.
 type CLIProposal struct {
-	// Messages defines an array of sdk.Msgs proto-JSON-encoded as Anys.
-	Messages  []json.RawMessage
 	Metadata  string
 	Proposers []string
+	// Messages defines an array of sdk.Msgs proto-JSON-encoded as Anys.
+	Messages  []json.RawMessage
 }
 
 func parseCLIProposal(path string) (CLIProposal, error) {
@@ -478,11 +496,17 @@ Example of the content of policy-json-file:
 				return err
 			}
 
-			// TODO
 			msg := foundation.MsgUpdateDecisionPolicy{
 				Operator: operator,
-				DecisionPolicy: nil,
 			}
+			policy, err := parseDecisionPolicy(clientCtx.Codec, args[1])
+			if err != nil {
+				return err
+			}
+			if err := msg.SetDecisionPolicy(policy); err != nil {
+				return err
+			}
+
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
