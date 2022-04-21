@@ -26,4 +26,10 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
+
+	registry.RegisterInterface(
+		"lbm.foundation.v1.DecisionPolicy",
+		(*DecisionPolicy)(nil),
+		&ThresholdDecisionPolicy{},
+	)
 }
