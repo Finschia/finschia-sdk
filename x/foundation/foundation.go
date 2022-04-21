@@ -61,6 +61,8 @@ func (t TallyResult) TotalCounts() sdk.Dec {
 	return totalCounts
 }
 
+var _ codectypes.UnpackInterfacesMessage = (*Proposal)(nil)
+
 func (p *Proposal) GetMsgs() []sdk.Msg {
 	msgs, err := GetMsgs(p.Messages, "proposal")
 	if err != nil {
@@ -121,6 +123,8 @@ func SetMsgs(msgs []sdk.Msg) ([]*codectypes.Any, error) {
 	return anys, nil
 }
 
+var _ codectypes.UnpackInterfacesMessage = (*FoundationInfo)(nil)
+
 func (i FoundationInfo) GetDecisionPolicy() DecisionPolicy {
 	policy, ok := i.DecisionPolicy.GetCachedValue().(DecisionPolicy)
 	if !ok {
@@ -143,6 +147,13 @@ func (i *FoundationInfo) SetDecisionPolicy(policy DecisionPolicy) error {
 
 	return nil
 }
+
+func (i *FoundationInfo) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	var policy DecisionPolicy
+	return unpacker.UnpackAny(i.DecisionPolicy, &policy)
+}
+
+var _ DecisionPolicy = (*ThresholdDecisionPolicy)(nil)
 
 func (p ThresholdDecisionPolicy) Validate(info FoundationInfo, config Config) error {
 	if p.Threshold.LT(config.MinThreshold) {
@@ -196,6 +207,8 @@ func (p ThresholdDecisionPolicy) ValidateBasic() error {
 
 	return nil
 }
+
+var _ DecisionPolicy = (*PercentageDecisionPolicy)(nil)
 
 func (p PercentageDecisionPolicy) Validate(info FoundationInfo, config Config) error {
 	if p.Percentage.LT(config.MinPercentage) {
