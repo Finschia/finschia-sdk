@@ -3,7 +3,6 @@ package keeper
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
@@ -292,20 +291,6 @@ func IBCQuerier(wasm contractMetaDataSource, channelKeeper types.ChannelKeeper) 
 func StargateQuerier(queryRouter GRPCQueryRouter) func(ctx sdk.Context, request *wasmvmtypes.StargateQuery) ([]byte, error) {
 	return func(ctx sdk.Context, msg *wasmvmtypes.StargateQuery) ([]byte, error) {
 		return nil, wasmvmtypes.UnsupportedRequest{Kind: "Stargate queries are disabled."}
-
-		route := queryRouter.Route(msg.Path)
-		if route == nil {
-			return nil, wasmvmtypes.UnsupportedRequest{Kind: fmt.Sprintf("No route to query '%s'", msg.Path)}
-		}
-		req := abci.RequestQuery{
-			Data: msg.Data,
-			Path: msg.Path,
-		}
-		res, err := route(ctx, req)
-		if err != nil {
-			return nil, err
-		}
-		return res.Value, nil
 	}
 }
 
