@@ -1,11 +1,15 @@
 package cli
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
 
+	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
@@ -20,13 +24,99 @@ import (
 const (
 	FlagAllowedValidatorAdd    = "add"
 	FlagAllowedValidatorDelete = "delete"
+
+	FlagExec = "exec"
+	ExecTry = "try"
 )
 
-func phraseIgnoreFromFlag(name string) string {
-	return fmt.Sprintf(" note, the '--from' flag is ignored as it is implied from [%s].", name)
+type CLIMembers struct {
+	Members []json.RawMessage
 }
 
-var phraseNotForUsers = " not intended to be used by users."
+func parseMembers(codec codec.Codec, membersFile string) ([]foundation.Member, error) {
+	if membersFile == "" {
+		return nil, nil
+	}
+
+	contents, err := ioutil.ReadFile(membersFile)
+	if err != nil {
+		return nil, err
+	}
+
+	var cliMembers CLIMembers
+	if err = json.Unmarshal(contents, &cliMembers); err != nil {
+		return nil, err
+	}
+
+	var members []foundation.Member
+	for _, cliMember := range cliMembers.Members {
+		var member foundation.Member
+		if err = codec.UnmarshalJSON(cliMember, &member); err != nil {
+			return nil, err
+		}
+		members = append(members, member)
+	}
+
+	return members, nil
+}
+
+func execFromString(execStr string) foundation.Exec {
+	exec := foundation.Exec_EXEC_UNSPECIFIED
+	switch execStr {
+	case ExecTry:
+		exec = foundation.Exec_EXEC_TRY
+	}
+	return exec
+}
+
+// VoteOptionFromString returns a VoteOption from a string. It returns an error
+// if the string is invalid.
+func voteOptionFromString(str string) (foundation.VoteOption, error) {
+	vo, ok := foundation.VoteOption_value[str]
+	if !ok {
+		return foundation.VOTE_OPTION_UNSPECIFIED, fmt.Errorf("'%s' is not a valid vote option", str)
+	}
+	return foundation.VoteOption(vo), nil
+}
+
+// CLIProposal defines a Msg-based proposal for CLI purposes.
+type CLIProposal struct {
+	// Messages defines an array of sdk.Msgs proto-JSON-encoded as Anys.
+	Messages  []json.RawMessage
+	Metadata  string
+	Proposers []string
+}
+
+func parseCLIProposal(path string) (CLIProposal, error) {
+	var p CLIProposal
+
+	contents, err := ioutil.ReadFile(path)
+	if err != nil {
+		return p, err
+	}
+
+	err = json.Unmarshal(contents, &p)
+	if err != nil {
+		return p, err
+	}
+
+	return p, nil
+}
+
+func parseMsgs(cdc codec.Codec, p CLIProposal) ([]sdk.Msg, error) {
+	msgs := make([]sdk.Msg, len(p.Messages))
+	for i, anyJSON := range p.Messages {
+		var msg sdk.Msg
+		err := cdc.UnmarshalInterfaceJSON(anyJSON, &msg)
+		if err != nil {
+			return nil, err
+		}
+
+		msgs[i] = msg
+	}
+
+	return msgs, nil
+}
 
 // NewTxCmd returns the transaction commands for this module
 func NewTxCmd() *cobra.Command {
@@ -41,6 +131,13 @@ func NewTxCmd() *cobra.Command {
 	txCmd.AddCommand(
 		NewTxCmdFundTreasury(),
 		NewTxCmdWithdrawFromTreasury(),
+		NewTxCmdUpdateMembers(),
+		NewTxCmdUpdateDecisionPolicy(),
+		NewTxCmdSubmitProposal(),
+		NewTxCmdWithdrawProposal(),
+		NewTxCmdVote(),
+		NewTxCmdExec(),
+		NewTxCmdLeaveFoundation(),
 	)
 
 	return txCmd
@@ -223,10 +320,9 @@ func NewTxCmdFundTreasury() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "fund-treasury [from] [amount]",
 		Args:  cobra.ExactArgs(2),
-		Short: "fund the treasury." + phraseIgnoreFromFlag("from"),
-		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s fund-treasury <from> <amount>`, version.AppName, foundation.ModuleName),
-		),
+		Short: "Fund the treasury",
+		Long: `Fund the treasury
+`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			from := args[0]
 			cmd.Flags().Set(flags.FlagFrom, from)
@@ -258,13 +354,357 @@ func NewTxCmdFundTreasury() *cobra.Command {
 
 func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "withdraw-from-treasury [to] [amount]",
+		Use:   "withdraw-from-treasury [operator] [to] [amount]",
 		Args:  cobra.ExactArgs(2),
-		Short: "withdraw coins from the treasury." + phraseNotForUsers,
-		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s withdraw-from-treasury <to> <amount>`, version.AppName, foundation.ModuleName),
-		),
+		Short: "Withdraw coins from the treasury",
+		Long: `Withdraw coins from the treasury
+`,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			operator := args[0]
+			cmd.Flags().Set(flags.FlagFrom, operator)
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			amount, err := sdk.ParseCoinsNormalized(args[2])
+			if err != nil {
+				return err
+			}
+
+			msg := foundation.MsgWithdrawFromTreasury{
+				Operator: operator,
+				To: args[1],
+				Amount: amount,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewTxCmdUpdateMembers() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-members [operator] [members-json-file]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Update the foundation members",
+		Long: `Update the foundation members
+
+Example of the content of members-json-file:
+
+{
+	[
+		{
+			"address": "addr1",
+			"weight": "1",
+			"metadata": "some new metadata"
+		},
+		{
+			"address": "addr2",
+			"weight": "0",
+			"metadata": "some metadata"
+		}
+	]
+}
+
+Set a member's weight to "0" to delete it.
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			operator := args[0]
+			cmd.Flags().Set(flags.FlagFrom, operator)
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			updates, err := parseMembers(clientCtx.Codec, args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := foundation.MsgUpdateMembers{
+				Operator: operator,
+				MemberUpdates: updates,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewTxCmdUpdateDecisionPolicy() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-decision-policy [operator] [amount]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Update the foundation decision policy",
+		Long: `Update the foundation decision policy
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			operator := args[0]
+			cmd.Flags().Set(flags.FlagFrom, operator)
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			// TODO
+			msg := foundation.MsgUpdateDecisionPolicy{
+				Operator: operator,
+				DecisionPolicy: nil,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewTxCmdSubmitProposal() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "submit-proposal [proposal-json-file]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Submit a new proposal",
+		Long: `Submit a new proposal
+
+Parameters:
+			proposal-json-file: path to json file with messages that will be executed if the proposal is accepted.
+}`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			proposal, err := parseCLIProposal(args[0])
+			if err != nil {
+				return err
+			}
+
+			cmd.Flags().Set(flags.FlagFrom, proposal.Proposers[0])
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			messages, err := parseMsgs(clientCtx.Codec, proposal)
+			if err != nil {
+				return err
+			}
+
+			execStr, err := cmd.Flags().GetString(FlagExec)
+			if err != nil {
+				return err
+			}
+			exec := execFromString(execStr)
+
+			msg := foundation.MsgSubmitProposal{
+				Proposers: proposal.Proposers,
+				Metadata: proposal.Metadata,
+				Exec: exec,
+			}
+			if err := msg.SetMsgs(messages); err != nil {
+				return err
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(FlagExec, "", "Set to 1 to try to execute proposal immediately after creation")
+
+	return cmd
+}
+
+func NewTxCmdWithdrawProposal() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "withdraw-proposal [proposal-id]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Withdraw a submitted proposal",
+		Long: `Withdraw a submitted proposal.
+
+Parameters:
+			proposal-id: unique ID of the proposal.
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			address := clientCtx.GetFromAddress().String()
+
+			proposalId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			msg := foundation.MsgWithdrawProposal{
+				ProposalId: proposalId,
+				Address: address,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewTxCmdVote() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "vote [proposal-id] [voter] [option] [metadata]",
+		Args:  cobra.ExactArgs(4),
+		Short: "Vote on a proposal",
+		Long: `Vote on a proposal.
+
+Parameters:
+			proposal-id: unique ID of the proposal
+			voter: voter account addresses.
+			vote-option: choice of the voter(s)
+				VOTE_OPTION_UNSPECIFIED: no-op
+				VOTE_OPTION_NO: no
+				VOTE_OPTION_YES: yes
+				VOTE_OPTION_ABSTAIN: abstain
+				VOTE_OPTION_NO_WITH_VETO: no-with-veto
+			metadata: metadata for the vote
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			voter := args[1]
+			if err := cmd.Flags().Set(flags.FlagFrom, voter); err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			proposalId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			option, err := voteOptionFromString(args[2])
+			if err != nil {
+				return err
+			}
+
+			execStr, err := cmd.Flags().GetString(FlagExec)
+			if err != nil {
+				return err
+			}
+			exec := execFromString(execStr)
+
+			msg := foundation.MsgVote{
+				ProposalId: proposalId,
+				Voter: voter,
+				Option: option,
+				Metadata: args[3],
+				Exec: exec,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(FlagExec, "", "Set to 1 to try to execute proposal immediately after voting")
+
+	return cmd
+}
+
+func NewTxCmdExec() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "exec [proposal-id]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Execute a proposal",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			signer := clientCtx.GetFromAddress().String()
+
+			proposalId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			msg := foundation.MsgExec{
+				ProposalId: proposalId,
+				Signer: signer,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewTxCmdLeaveFoundation() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "leave-foundation",
+		Args:  cobra.NoArgs,
+		Short: "Leave the foundation",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			address := clientCtx.GetFromAddress().String()
+
+			msg := foundation.MsgLeaveFoundation{
+				Address: address,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewTxCmdUpdateOperator() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-operator [old] [new]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Update the foundation operator",
+		Long: `Update the foundation operator
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			from := args[0]
+			cmd.Flags().Set(flags.FlagFrom, from)
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -275,8 +715,8 @@ func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 				return err
 			}
 
-			msg := foundation.MsgWithdrawFromTreasury{
-				To: args[0],
+			msg := foundation.MsgFundTreasury{
+				From: from,
 				Amount: amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
