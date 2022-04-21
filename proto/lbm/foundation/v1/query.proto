@@ -31,6 +31,46 @@ service Query {
   rpc Treasury(QueryTreasuryRequest) returns (QueryTreasuryResponse) {
     option (google.api.http).get = "/lbm/foundation/v1/treasury";
   }
+
+  // FoundationInfo queries foundation info.
+  rpc FoundationInfo(QueryFoundationInfoRequest) returns (QueryFoundationInfoResponse) {
+    option (google.api.http).get = "/lbm/foundation/v1/foundation_info";
+  };
+
+  // FoundationMember queries a member of the foundation
+  rpc FoundationMember(QueryFoundationMemberRequest) returns (QueryFoundationMemberResponse) {
+    option (google.api.http).get = "/lbm/foundation/v1/foundation_members/{member}";
+  };
+
+  // FoundationMembers queries members of the foundation
+  rpc FoundationMembers(QueryFoundationMembersRequest) returns (QueryFoundationMembersResponse) {
+    option (google.api.http).get = "/lbm/foundation/v1/foundation_members";
+  };
+
+  // Proposal queries a proposal based on proposal id.
+  rpc Proposal(QueryProposalRequest) returns (QueryProposalResponse) {
+    option (google.api.http).get = "/lbm/foundation/v1/proposals/{proposal_id}";
+  };
+
+  // Proposals queries all proposals.
+  rpc Proposals(QueryProposalsRequest) returns (QueryProposalsResponse) {
+    option (google.api.http).get = "/lbm/foundation/v1/proposals";
+  };
+
+  // Vote queries a vote by proposal id and voter.
+  rpc Vote(QueryVoteRequest) returns (QueryVoteResponse) {
+    option (google.api.http).get = "/lbm/foundation/v1/proposals/{proposal_id}/votes/{voter}";
+  };
+
+  // Votes queries a vote by proposal.
+  rpc Votes(QueryVotesRequest) returns (QueryVotesResponse) {
+    option (google.api.http).get = "/lbm/foundation/v1/proposals/{proposal_id}/votes";
+  };
+
+  // TallyResult queries the tally of a proposal votes.
+  rpc TallyResult(QueryTallyResultRequest) returns (QueryTallyResultResponse) {
+    option (google.api.http).get = "/lbm/foundation/v1/proposals/{proposal_id}/tally";
+  };
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -64,7 +104,7 @@ message QueryValidatorAuthsRequest {
 // QueryValidatorAuthsResponse is the response type for the
 // Query/ValidatorAuths RPC method.
 message QueryValidatorAuthsResponse {
-  repeated ValidatorAuth auths = 1;
+  repeated ValidatorAuth auths = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
   lbm.base.query.v1.PageResponse pagination = 2;
@@ -79,4 +119,111 @@ message QueryTreasuryRequest {}
 message QueryTreasuryResponse {
   repeated lbm.base.v1.Coin amount = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+}
+
+// QueryFoundationInfoRequest is the Query/FoundationInfo request type.
+message QueryFoundationInfoRequest {}
+
+// QueryFoundationInfoResponse is the Query/FoundationInfo response type.
+message QueryFoundationInfoResponse {
+  // info is the FoundationInfo for the foundation.
+  FoundationInfo info = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryFoundationMemberRequest is the Query/FoundationMember request type.
+message QueryFoundationMemberRequest {
+  string member = 1;
+}
+
+// QueryFoundationMemberResponse is the Query/FoundationMemberResponse response type.
+message QueryFoundationMemberResponse {
+  // member is the members of the foundation.
+  Member member = 1;
+}
+
+// QueryFoundationMembersRequest is the Query/FoundationMembers request type.
+message QueryFoundationMembersRequest {
+  // pagination defines an optional pagination for the request.
+  lbm.base.query.v1.PageRequest pagination = 1;
+}
+
+// QueryFoundationMembersResponse is the Query/FoundationMembersResponse response type.
+message QueryFoundationMembersResponse {
+  // members are the members of the foundation.
+  repeated Member members = 1 [(gogoproto.nullable) = false];
+
+  // pagination defines the pagination in the response.
+  lbm.base.query.v1.PageResponse pagination = 2;
+}
+
+// QueryProposalRequest is the Query/Proposal request type.
+message QueryProposalRequest {
+  // proposal_id is the unique ID of a proposal.
+  uint64 proposal_id = 1;
+}
+
+// QueryProposalResponse is the Query/Proposal response type.
+message QueryProposalResponse {
+  // proposal is the proposal info.
+  Proposal proposal = 1;
+}
+
+// QueryProposals is the Query/Proposals request type.
+message QueryProposalsRequest {
+  // pagination defines an optional pagination for the request.
+  lbm.base.query.v1.PageRequest pagination = 1;
+}
+
+// QueryProposalsResponse is the Query/Proposals response type.
+message QueryProposalsResponse {
+  // proposals are the proposals of the foundation.
+  repeated Proposal proposals = 1 [(gogoproto.nullable) = false];
+
+  // pagination defines the pagination in the response.
+  lbm.base.query.v1.PageResponse pagination = 2;
+}
+
+// QueryVote is the Query/Vote request type.
+message QueryVoteRequest {
+  // proposal_id is the unique ID of a proposal.
+  uint64 proposal_id = 1;
+
+  // voter is a proposal voter account address.
+  string voter = 2;
+}
+
+// QueryVoteResponse is the Query/Vote response type.
+message QueryVoteResponse {
+  // vote is the vote with given proposal_id and voter.
+  Vote vote = 1;
+}
+
+// QueryVotes is the Query/Votes request type.
+message QueryVotesRequest {
+  // proposal_id is the unique ID of a proposal.
+  uint64 proposal_id = 1;
+
+  // pagination defines an optional pagination for the request.
+  lbm.base.query.v1.PageRequest pagination = 2;
+}
+
+// QueryVotesResponse is the Query/Votes response type.
+message QueryVotesResponse {
+  // votes are the list of votes for given proposal_id.
+  repeated Vote votes = 1 [(gogoproto.nullable) = false];
+
+  // pagination defines the pagination in the response.
+  lbm.base.query.v1.PageResponse pagination = 2;
+}
+
+// QueryTallyResultRequest is the Query/TallyResult request type.
+message QueryTallyResultRequest {
+  // proposal_id is the unique id of a proposal.
+  uint64 proposal_id = 1;
+}
+
+// QueryTallyResultResponse is the Query/TallyResult response type.
+message QueryTallyResultResponse {
+  // tally defines the requested tally.
+  TallyResult tally = 1 [(gogoproto.nullable) = false];
 }

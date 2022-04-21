@@ -596,14 +596,30 @@
     - [GenesisState](#lbm.foundation.v1.GenesisState)
   
 - [lbm/foundation/v1/query.proto](#lbm/foundation/v1/query.proto)
+    - [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest)
+    - [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse)
+    - [QueryFoundationMemberRequest](#lbm.foundation.v1.QueryFoundationMemberRequest)
+    - [QueryFoundationMemberResponse](#lbm.foundation.v1.QueryFoundationMemberResponse)
+    - [QueryFoundationMembersRequest](#lbm.foundation.v1.QueryFoundationMembersRequest)
+    - [QueryFoundationMembersResponse](#lbm.foundation.v1.QueryFoundationMembersResponse)
     - [QueryParamsRequest](#lbm.foundation.v1.QueryParamsRequest)
     - [QueryParamsResponse](#lbm.foundation.v1.QueryParamsResponse)
+    - [QueryProposalRequest](#lbm.foundation.v1.QueryProposalRequest)
+    - [QueryProposalResponse](#lbm.foundation.v1.QueryProposalResponse)
+    - [QueryProposalsRequest](#lbm.foundation.v1.QueryProposalsRequest)
+    - [QueryProposalsResponse](#lbm.foundation.v1.QueryProposalsResponse)
+    - [QueryTallyResultRequest](#lbm.foundation.v1.QueryTallyResultRequest)
+    - [QueryTallyResultResponse](#lbm.foundation.v1.QueryTallyResultResponse)
     - [QueryTreasuryRequest](#lbm.foundation.v1.QueryTreasuryRequest)
     - [QueryTreasuryResponse](#lbm.foundation.v1.QueryTreasuryResponse)
     - [QueryValidatorAuthRequest](#lbm.foundation.v1.QueryValidatorAuthRequest)
     - [QueryValidatorAuthResponse](#lbm.foundation.v1.QueryValidatorAuthResponse)
     - [QueryValidatorAuthsRequest](#lbm.foundation.v1.QueryValidatorAuthsRequest)
     - [QueryValidatorAuthsResponse](#lbm.foundation.v1.QueryValidatorAuthsResponse)
+    - [QueryVoteRequest](#lbm.foundation.v1.QueryVoteRequest)
+    - [QueryVoteResponse](#lbm.foundation.v1.QueryVoteResponse)
+    - [QueryVotesRequest](#lbm.foundation.v1.QueryVotesRequest)
+    - [QueryVotesResponse](#lbm.foundation.v1.QueryVotesResponse)
   
     - [Query](#lbm.foundation.v1.Query)
   
@@ -9036,6 +9052,92 @@ GenesisState defines the foundation module's genesis state.
 
 
 
+<a name="lbm.foundation.v1.QueryFoundationInfoRequest"></a>
+
+### QueryFoundationInfoRequest
+QueryFoundationInfoRequest is the Query/FoundationInfo request type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryFoundationInfoResponse"></a>
+
+### QueryFoundationInfoResponse
+QueryFoundationInfoResponse is the Query/FoundationInfo response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `info` | [FoundationInfo](#lbm.foundation.v1.FoundationInfo) |  | info is the FoundationInfo for the foundation. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryFoundationMemberRequest"></a>
+
+### QueryFoundationMemberRequest
+QueryFoundationMemberRequest is the Query/FoundationMember request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `member` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryFoundationMemberResponse"></a>
+
+### QueryFoundationMemberResponse
+QueryFoundationMemberResponse is the Query/FoundationMemberResponse response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `member` | [Member](#lbm.foundation.v1.Member) |  | member is the members of the foundation. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryFoundationMembersRequest"></a>
+
+### QueryFoundationMembersRequest
+QueryFoundationMembersRequest is the Query/FoundationMembers request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryFoundationMembersResponse"></a>
+
+### QueryFoundationMembersResponse
+QueryFoundationMembersResponse is the Query/FoundationMembersResponse response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `members` | [Member](#lbm.foundation.v1.Member) | repeated | members are the members of the foundation. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
@@ -9055,6 +9157,97 @@ QueryParamsResponse is the response type for the Query/Params RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#lbm.foundation.v1.Params) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryProposalRequest"></a>
+
+### QueryProposalRequest
+QueryProposalRequest is the Query/Proposal request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal_id is the unique ID of a proposal. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryProposalResponse"></a>
+
+### QueryProposalResponse
+QueryProposalResponse is the Query/Proposal response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal` | [Proposal](#lbm.foundation.v1.Proposal) |  | proposal is the proposal info. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryProposalsRequest"></a>
+
+### QueryProposalsRequest
+QueryProposals is the Query/Proposals request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryProposalsResponse"></a>
+
+### QueryProposalsResponse
+QueryProposalsResponse is the Query/Proposals response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposals` | [Proposal](#lbm.foundation.v1.Proposal) | repeated | proposals are the proposals of the foundation. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryTallyResultRequest"></a>
+
+### QueryTallyResultRequest
+QueryTallyResultRequest is the Query/TallyResult request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal_id is the unique id of a proposal. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryTallyResultResponse"></a>
+
+### QueryTallyResultResponse
+QueryTallyResultResponse is the Query/TallyResult response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `tally` | [TallyResult](#lbm.foundation.v1.TallyResult) |  | tally defines the requested tally. |
 
 
 
@@ -9152,6 +9345,69 @@ Query/ValidatorAuths RPC method.
 
 
 
+
+<a name="lbm.foundation.v1.QueryVoteRequest"></a>
+
+### QueryVoteRequest
+QueryVote is the Query/Vote request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal_id is the unique ID of a proposal. |
+| `voter` | [string](#string) |  | voter is a proposal voter account address. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryVoteResponse"></a>
+
+### QueryVoteResponse
+QueryVoteResponse is the Query/Vote response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `vote` | [Vote](#lbm.foundation.v1.Vote) |  | vote is the vote with given proposal_id and voter. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryVotesRequest"></a>
+
+### QueryVotesRequest
+QueryVotes is the Query/Votes request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  | proposal_id is the unique ID of a proposal. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryVotesResponse"></a>
+
+### QueryVotesResponse
+QueryVotesResponse is the Query/Votes response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `votes` | [Vote](#lbm.foundation.v1.Vote) | repeated | votes are the list of votes for given proposal_id. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -9170,6 +9426,14 @@ Query defines the gRPC querier service for foundation module.
 | `ValidatorAuth` | [QueryValidatorAuthRequest](#lbm.foundation.v1.QueryValidatorAuthRequest) | [QueryValidatorAuthResponse](#lbm.foundation.v1.QueryValidatorAuthResponse) | ValidatorAuth queries authorization info of a validator. | GET|/lbm/foundation/v1/validators/{validator_address}|
 | `ValidatorAuths` | [QueryValidatorAuthsRequest](#lbm.foundation.v1.QueryValidatorAuthsRequest) | [QueryValidatorAuthsResponse](#lbm.foundation.v1.QueryValidatorAuthsResponse) | ValidatorAuths queries authorization infos of validators. | GET|/lbm/foundation/v1/validators|
 | `Treasury` | [QueryTreasuryRequest](#lbm.foundation.v1.QueryTreasuryRequest) | [QueryTreasuryResponse](#lbm.foundation.v1.QueryTreasuryResponse) | Treasury queries the foundation treasury. | GET|/lbm/foundation/v1/treasury|
+| `FoundationInfo` | [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest) | [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse) | FoundationInfo queries foundation info. | GET|/lbm/foundation/v1/foundation_info|
+| `FoundationMember` | [QueryFoundationMemberRequest](#lbm.foundation.v1.QueryFoundationMemberRequest) | [QueryFoundationMemberResponse](#lbm.foundation.v1.QueryFoundationMemberResponse) | FoundationMember queries a member of the foundation | GET|/lbm/foundation/v1/foundation_members/{member}|
+| `FoundationMembers` | [QueryFoundationMembersRequest](#lbm.foundation.v1.QueryFoundationMembersRequest) | [QueryFoundationMembersResponse](#lbm.foundation.v1.QueryFoundationMembersResponse) | FoundationMembers queries members of the foundation | GET|/lbm/foundation/v1/foundation_members|
+| `Proposal` | [QueryProposalRequest](#lbm.foundation.v1.QueryProposalRequest) | [QueryProposalResponse](#lbm.foundation.v1.QueryProposalResponse) | Proposal queries a proposal based on proposal id. | GET|/lbm/foundation/v1/proposals/{proposal_id}|
+| `Proposals` | [QueryProposalsRequest](#lbm.foundation.v1.QueryProposalsRequest) | [QueryProposalsResponse](#lbm.foundation.v1.QueryProposalsResponse) | Proposals queries all proposals. | GET|/lbm/foundation/v1/proposals|
+| `Vote` | [QueryVoteRequest](#lbm.foundation.v1.QueryVoteRequest) | [QueryVoteResponse](#lbm.foundation.v1.QueryVoteResponse) | Vote queries a vote by proposal id and voter. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes/{voter}|
+| `Votes` | [QueryVotesRequest](#lbm.foundation.v1.QueryVotesRequest) | [QueryVotesResponse](#lbm.foundation.v1.QueryVotesResponse) | Votes queries a vote by proposal. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes|
+| `TallyResult` | [QueryTallyResultRequest](#lbm.foundation.v1.QueryTallyResultRequest) | [QueryTallyResultResponse](#lbm.foundation.v1.QueryTallyResultResponse) | TallyResult queries the tally of a proposal votes. | GET|/lbm/foundation/v1/proposals/{proposal_id}/tally|
 
  <!-- end services -->
 
