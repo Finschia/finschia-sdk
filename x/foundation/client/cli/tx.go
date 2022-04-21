@@ -325,7 +325,9 @@ func NewTxCmdFundTreasury() *cobra.Command {
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			from := args[0]
-			cmd.Flags().Set(flags.FlagFrom, from)
+			if err := cmd.Flags().Set(flags.FlagFrom, from); err != nil {
+				return err
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -361,7 +363,9 @@ func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			operator := args[0]
-			cmd.Flags().Set(flags.FlagFrom, operator)
+			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+				return err
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -417,7 +421,9 @@ Set a member's weight to "0" to delete it.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			operator := args[0]
-			cmd.Flags().Set(flags.FlagFrom, operator)
+			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+				return err
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -453,7 +459,9 @@ func NewTxCmdUpdateDecisionPolicy() *cobra.Command {
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			operator := args[0]
-			cmd.Flags().Set(flags.FlagFrom, operator)
+			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+				return err
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -492,7 +500,10 @@ Parameters:
 				return err
 			}
 
-			cmd.Flags().Set(flags.FlagFrom, proposal.Proposers[0])
+			signer := proposal.Proposers[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, signer); err != nil {
+				return err
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -533,21 +544,25 @@ Parameters:
 
 func NewTxCmdWithdrawProposal() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "withdraw-proposal [proposal-id]",
-		Args:  cobra.ExactArgs(1),
+		Use:   "withdraw-proposal [proposal-id] [address]",
+		Args:  cobra.ExactArgs(2),
 		Short: "Withdraw a submitted proposal",
 		Long: `Withdraw a submitted proposal.
 
 Parameters:
 			proposal-id: unique ID of the proposal.
+			address: one of the proposer of the proposal.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			address := args[1]
+			if err := cmd.Flags().Set(flags.FlagFrom, address); err != nil {
+				return err
+			}
+			
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
-
-			address := clientCtx.GetFromAddress().String()
 
 			proposalId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
@@ -636,16 +651,19 @@ Parameters:
 
 func NewTxCmdExec() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "exec [proposal-id]",
-		Args:  cobra.ExactArgs(1),
+		Use:   "exec [proposal-id] [signer]",
+		Args:  cobra.ExactArgs(2),
 		Short: "Execute a proposal",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			signer := args[1]
+			if err := cmd.Flags().Set(flags.FlagFrom, signer); err != nil {
+				return err
+			}
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
-
-			signer := clientCtx.GetFromAddress().String()
 
 			proposalId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
@@ -669,55 +687,22 @@ func NewTxCmdExec() *cobra.Command {
 
 func NewTxCmdLeaveFoundation() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "leave-foundation",
-		Args:  cobra.NoArgs,
+		Use:   "leave-foundation [address]",
+		Args:  cobra.ExactArgs(1),
 		Short: "Leave the foundation",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			address := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, address); err != nil {
+				return err
+			}
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
-
-			address := clientCtx.GetFromAddress().String()
 
 			msg := foundation.MsgLeaveFoundation{
 				Address: address,
-			}
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-	return cmd
-}
-
-func NewTxCmdUpdateOperator() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "update-operator [old] [new]",
-		Args:  cobra.ExactArgs(2),
-		Short: "Update the foundation operator",
-		Long: `Update the foundation operator
-`,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			from := args[0]
-			cmd.Flags().Set(flags.FlagFrom, from)
-
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			amount, err := sdk.ParseCoinsNormalized(args[1])
-			if err != nil {
-				return err
-			}
-
-			msg := foundation.MsgFundTreasury{
-				From: from,
-				Amount: amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
