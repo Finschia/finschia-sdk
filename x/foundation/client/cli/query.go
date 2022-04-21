@@ -2,6 +2,7 @@ package cli
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/spf13/cobra"
 
@@ -23,6 +24,14 @@ func NewQueryCmd() *cobra.Command {
 		NewQueryCmdValidatorAuth(),
 		NewQueryCmdValidatorAuths(),
 		NewQueryCmdTreasury(),
+		NewQueryCmdFoundationInfo(),
+		NewQueryCmdFoundationMember(),
+		NewQueryCmdFoundationMembers(),
+		NewQueryCmdProposal(),
+		NewQueryCmdProposals(),
+		NewQueryCmdVote(),
+		NewQueryCmdVotes(),
+		NewQueryCmdTallyResult(),
 	)
 
 	return cmd
@@ -173,6 +182,239 @@ func NewQueryCmdFoundationInfo() *cobra.Command {
 
 			req := foundation.QueryFoundationInfoRequest{}
 			res, err := queryClient.FoundationInfo(context.Background(), &req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+// NewQueryCmdFoundationMember returns a member of the foundation.
+func NewQueryCmdFoundationMember() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "foundation-member [address]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query a foundation member",
+		Long: `Query a foundation member
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := foundation.NewQueryClient(clientCtx)
+
+			address := args[0]
+			if err = sdk.ValidateValAddress(address); err != nil {
+				return err
+			}
+
+			req := foundation.QueryFoundationMemberRequest{Address: address}
+			res, err := queryClient.FoundationMember(context.Background(), &req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+// NewQueryCmdFoundationMembers returns the members of the foundation.
+func NewQueryCmdFoundationMembers() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "foundation-members",
+		Args:  cobra.NoArgs,
+		Short: "Query the foundation members",
+		Long: `Query the foundation members
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := foundation.NewQueryClient(clientCtx)
+
+			req := foundation.QueryFoundationMembersRequest{}
+			res, err := queryClient.FoundationMembers(context.Background(), &req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+// NewQueryCmdProposal returns a proposal baesd on proposal id.
+func NewQueryCmdProposal() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposal [proposal-id]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query a proposal",
+		Long: `Query a proposal
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := foundation.NewQueryClient(clientCtx)
+
+			proposalId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			req := foundation.QueryProposalRequest{ProposalId: proposalId}
+			res, err := queryClient.Proposal(context.Background(), &req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+// NewQueryCmdProposals returns all proposals of the foundation.
+func NewQueryCmdProposals() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposals",
+		Args:  cobra.NoArgs,
+		Short: "Query all proposals",
+		Long: `Query all proposals
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := foundation.NewQueryClient(clientCtx)
+
+			req := foundation.QueryProposalsRequest{}
+			res, err := queryClient.Proposals(context.Background(), &req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+// NewQueryCmdVote returns the vote of a voter on a proposal.
+func NewQueryCmdVote() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "vote [proposal-id] [voter]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Query the vote of a voter on a proposal",
+		Long: `Query the vote of a voter on a proposal
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := foundation.NewQueryClient(clientCtx)
+
+			proposalId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			voter := args[1]
+			if err := sdk.ValidateAccAddress(voter); err != nil {
+				return err
+			}
+
+			req := foundation.QueryVoteRequest{ProposalId: proposalId, Voter: voter}
+			res, err := queryClient.Vote(context.Background(), &req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+// NewQueryCmdVotes returns the votes on a proposal.
+func NewQueryCmdVotes() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "votes [proposal-id]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query the votes on a proposal",
+		Long: `Query the votes on a proposal
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := foundation.NewQueryClient(clientCtx)
+
+			proposalId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			req := foundation.QueryVotesRequest{ProposalId: proposalId}
+			res, err := queryClient.Votes(context.Background(), &req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+// NewQueryCmdTallyResult returns the tally of proposal votes.
+func NewQueryCmdTallyResult() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "tally [proposal-id]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query the tally of proposal votes",
+		Long: `Query the tally of proposal votes
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := foundation.NewQueryClient(clientCtx)
+
+			proposalId, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			req := foundation.QueryTallyResultRequest{ProposalId: proposalId}
+			res, err := queryClient.TallyResult(context.Background(), &req)
 			if err != nil {
 				return err
 			}
