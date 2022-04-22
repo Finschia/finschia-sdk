@@ -83,7 +83,7 @@ message MsgStoreCodeAndInstantiateContract {
   string admin = 6;
   // Label is optional metadata to be stored with a contract instance.
   string label = 7;
-  // InitMsg json encoded message to be passed to the contract on instantiation
+  // Msg json encoded message to be passed to the contract on instantiation
   bytes msg = 8 [(gogoproto.casttype) = "RawContractMessage"];
   // Funds coins that are transferred to the contract on instantiation
   repeated lbm.base.v1.Coin funds = 9

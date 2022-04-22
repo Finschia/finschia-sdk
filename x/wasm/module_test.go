@@ -216,14 +216,14 @@ func TestHandleStoreAndInstantiate(t *testing.T) {
 		Verifier:    fred,
 		Beneficiary: bob,
 	}
-	msgB, err := json.Marshal(initMsg)
+	msgBz, err := json.Marshal(initMsg)
 	require.NoError(t, err)
 
 	// create with no balance is legal
 	msg := &MsgStoreCodeAndInstantiateContract{
 		Sender:       creator.String(),
 		WASMByteCode: testContract,
-		Msg:          msgB,
+		Msg:          msgBz,
 		Label:        "contract for test",
 		Funds:        nil,
 	}
