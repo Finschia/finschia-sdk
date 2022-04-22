@@ -3,7 +3,6 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"strconv"
 	"strings"
 
@@ -29,29 +28,16 @@ const (
 	ExecTry = "try"
 )
 
-type CLIMembers struct {
-	Members []json.RawMessage
-}
-
-func parseMembers(codec codec.Codec, membersFile string) ([]foundation.Member, error) {
-	if membersFile == "" {
-		return nil, nil
-	}
-
-	contents, err := ioutil.ReadFile(membersFile)
-	if err != nil {
-		return nil, err
-	}
-
-	var cliMembers CLIMembers
-	if err = json.Unmarshal(contents, &cliMembers); err != nil {
+func parseMembers(codec codec.Codec, membersJson string) ([]foundation.Member, error) {
+	var cliMembers []json.RawMessage
+	if err := json.Unmarshal([]byte(membersJson), &cliMembers); err != nil {
 		return nil, err
 	}
 
 	var members []foundation.Member
-	for _, cliMember := range cliMembers.Members {
+	for _, cliMember := range cliMembers {
 		var member foundation.Member
-		if err = codec.UnmarshalJSON(cliMember, &member); err != nil {
+		if err := codec.UnmarshalJSON(cliMember, &member); err != nil {
 			return nil, err
 		}
 		members = append(members, member)
@@ -60,22 +46,25 @@ func parseMembers(codec codec.Codec, membersFile string) ([]foundation.Member, e
 	return members, nil
 }
 
-func parseDecisionPolicy(codec codec.Codec, policyFile string) (foundation.DecisionPolicy, error) {
-	if policyFile == "" {
-		return nil, nil
+func parseAddresses(addressesJson string) ([]string, error) {
+	var addresses []string
+	if err := json.Unmarshal([]byte(addressesJson), &addresses); err != nil {
+		return nil, err
+	}
+	if len(addresses) == 0 {
+		return nil, fmt.Errorf("you must provide one address at least")
 	}
 
-	contents, err := ioutil.ReadFile(policyFile)
-	if err != nil {
+	return addresses, nil
+}
+
+func parseDecisionPolicy(codec codec.Codec, policyJson string) (foundation.DecisionPolicy, error) {
+	var policy foundation.DecisionPolicy
+	if err := codec.UnmarshalInterfaceJSON([]byte(policyJson), &policy); err != nil {
 		return nil, err
 	}
 
-	var policy foundation.DecisionPolicy
-	if err = codec.UnmarshalJSON(contents, policy); err == nil {
-		return policy, nil
-	}
-
-	return nil, err
+	return policy, nil
 }
 
 func execFromString(execStr string) foundation.Exec {
@@ -97,33 +86,14 @@ func voteOptionFromString(str string) (foundation.VoteOption, error) {
 	return foundation.VoteOption(vo), nil
 }
 
-// CLIProposal defines a Msg-based proposal for CLI purposes.
-type CLIProposal struct {
-	Metadata  string
-	Proposers []string
-	// Messages defines an array of sdk.Msgs proto-JSON-encoded as Anys.
-	Messages  []json.RawMessage
-}
-
-func parseCLIProposal(path string) (CLIProposal, error) {
-	var p CLIProposal
-
-	contents, err := ioutil.ReadFile(path)
-	if err != nil {
-		return p, err
+func parseMsgs(cdc codec.Codec, msgsJson string) ([]sdk.Msg, error) {
+	var cliMsgs []json.RawMessage
+	if err := json.Unmarshal([]byte(msgsJson), &cliMsgs); err != nil {
+		return nil, err
 	}
 
-	err = json.Unmarshal(contents, &p)
-	if err != nil {
-		return p, err
-	}
-
-	return p, nil
-}
-
-func parseMsgs(cdc codec.Codec, p CLIProposal) ([]sdk.Msg, error) {
-	msgs := make([]sdk.Msg, len(p.Messages))
-	for i, anyJSON := range p.Messages {
+	msgs := make([]sdk.Msg, len(cliMsgs))
+	for i, anyJSON := range cliMsgs {
 		var msg sdk.Msg
 		err := cdc.UnmarshalInterfaceJSON(anyJSON, &msg)
 		if err != nil {
@@ -413,15 +383,15 @@ func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 
 func NewTxCmdUpdateMembers() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-members [operator] [members-json-file]",
+		Use:   "update-members [operator] [members-json]",
 		Args:  cobra.ExactArgs(2),
 		Short: "Update the foundation members",
 		Long: `Update the foundation members
 
-Example of the content of members-json-file:
+Example of the content of members-json:
 
 {
-  "members": [
+  [
     {
       "address": "addr1",
       "weight": "1",
@@ -470,18 +440,19 @@ Set a member's weight to "0" to delete it.
 
 func NewTxCmdUpdateDecisionPolicy() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-decision-policy [operator] [policy-json-file]",
+		Use:   "update-decision-policy [operator] [policy-json]",
 		Args:  cobra.ExactArgs(2),
 		Short: "Update the foundation decision policy",
 		Long: `Update the foundation decision policy
 
-Example of the content of policy-json-file:
+Example of the content of policy-json:
 
 {
-  "threshold": "3",
+  "@type": "/lbm.foundation.v1.ThresholdDecisionPolicy",
+  "threshold": "10",
   "windows": {
     "voting_period": "24h",
-    "min_execution_period": "24h",
+    "min_execution_period": "0s",
   }
 }
 `,
@@ -520,37 +491,36 @@ Example of the content of policy-json-file:
 
 func NewTxCmdSubmitProposal() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "submit-proposal [proposal-json-file]",
-		Args:  cobra.ExactArgs(1),
+		Use:   "submit-proposal [metadata] [proposers-json] [messages-json]",
+		Args:  cobra.ExactArgs(3),
 		Short: "Submit a new proposal",
 		Long: `Submit a new proposal
 
 Parameters:
-    proposal-json-file: path to json file with messages that will be executed if the proposal is accepted.
+    metadata: metadata of the proposal.
+    proposers-json: the addresses of the proposers in json format.
+    messages-json: messages in json format that will be executed if the proposal is accepted.
 
-Example of the content of proposal-json-file:
+Example of the content of messages-json:
 
 {
-  "metadata": "this is an example proposal",
-  "proposers": [
-    "addr1",
-    "addr2"
-  ],
-  "messages": [
+  [
     {
-      "@type": "/msg/type/url/to/execute",
-      ...
+      "@type": "/lbm.foundation.v1.MsgWithdrawFromTreasury",
+      "operator": "link...",
+      "to": "link...",
+      "amount": "10000stake"
     }
   ]
 }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			proposal, err := parseCLIProposal(args[0])
+			proposers, err := parseAddresses(args[1])
 			if err != nil {
 				return err
 			}
 
-			signer := proposal.Proposers[0]
+			signer := proposers[0]
 			if err := cmd.Flags().Set(flags.FlagFrom, signer); err != nil {
 				return err
 			}
@@ -560,7 +530,7 @@ Example of the content of proposal-json-file:
 				return err
 			}
 
-			messages, err := parseMsgs(clientCtx.Codec, proposal)
+			messages, err := parseMsgs(clientCtx.Codec, args[2])
 			if err != nil {
 				return err
 			}
@@ -572,8 +542,8 @@ Example of the content of proposal-json-file:
 			exec := execFromString(execStr)
 
 			msg := foundation.MsgSubmitProposal{
-				Proposers: proposal.Proposers,
-				Metadata: proposal.Metadata,
+				Proposers: proposers,
+				Metadata: args[0],
 				Exec: exec,
 			}
 			if err := msg.SetMsgs(messages); err != nil {
