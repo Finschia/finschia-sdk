@@ -99,7 +99,7 @@ func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context,
 		adminAddr = sdk.AccAddress(msg.Admin)
 	}
 
-	contractAddr, data, err := m.keeper.Instantiate(ctx, codeID, sdk.AccAddress(msg.Sender), adminAddr, msg.InitMsg,
+	contractAddr, data, err := m.keeper.Instantiate(ctx, codeID, sdk.AccAddress(msg.Sender), adminAddr, msg.Msg,
 		msg.Label, msg.Funds)
 	if err != nil {
 		return nil, err
