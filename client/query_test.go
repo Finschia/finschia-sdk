@@ -34,7 +34,7 @@ func (s *IntegrationTestSuite) TestQueryABCIHeight() {
 			name:      "empty request height and context height - use latest height",
 			reqHeight: 0,
 			ctxHeight: 0,
-			expHeight: 4,
+			expHeight: 5,
 		},
 	}
 
