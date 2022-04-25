@@ -34,19 +34,42 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		}
 	}
 
+	members := data.Members
+	if len(members) == 0 {
+		for _, auth := range validatorAuths {
+			member := foundation.Member{
+				Address: sdk.ValAddress(auth.OperatorAddress).ToAccAddress().String(),
+				Weight: sdk.OneDec(),
+				Metadata: "genesis member",
+			}
+			members = append(members, member)
+		}
+	}
+	for _, member := range members {
+		k.setMember(ctx, member)
+	}
+
 	info := data.Foundation
 	if info == nil {
-		totalWeight := sdk.ZeroDec()
-		for _, member := range data.Members {
-			totalWeight = totalWeight.Add(member.Weight)
-		}
-
 		info = &foundation.FoundationInfo{
-			Operator: string(k.GetAdmin(ctx)),
 			Version: 1,
-			TotalWeight: totalWeight,
 		}
+	}
 
+	totalWeight := sdk.ZeroDec()
+	for _, member := range members {
+		totalWeight = totalWeight.Add(member.Weight)
+	}
+	info.TotalWeight = totalWeight
+
+	if err := sdk.ValidateAccAddress(info.Operator); err != nil {
+		info.Operator = k.GetAdmin(ctx).String()
+	}
+
+	if info.DecisionPolicy == nil ||
+		info.GetDecisionPolicy() == nil ||
+		info.GetDecisionPolicy().ValidateBasic() != nil ||
+		info.GetDecisionPolicy().Validate(k.config) != nil {
 		policy := foundation.ThresholdDecisionPolicy{
 			Threshold: k.config.MinThreshold,
 			Windows: &foundation.DecisionPolicyWindows{
@@ -57,11 +80,8 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 			return err
 		}
 	}
-	k.setFoundationInfo(ctx, *info)
 
-	for _, member := range data.Members {
-		k.setMember(ctx, member)
-	}
+	k.setFoundationInfo(ctx, *info)
 
 	k.setPreviousProposalId(ctx, data.PreviousProposalId)
 
