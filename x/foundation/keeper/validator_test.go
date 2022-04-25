@@ -25,9 +25,9 @@ func TestGetSetValidatorAuth(t *testing.T) {
 		OperatorAddress: valAddr.String(),
 		CreationAllowed: true,
 	}
-	require.NoError(t, k.SetValidatorAuth(ctx, expected))
+	require.NoError(t, k.SetValidatorAuth(ctx, *expected))
 	actual, err := k.GetValidatorAuth(ctx, valAddr)
 	require.Equal(t, expected, actual)
 
-	require.Equal(t, []*foundation.ValidatorAuth{expected}, k.GetValidatorAuths(ctx))
+	require.Equal(t, []foundation.ValidatorAuth{*expected}, k.GetValidatorAuths(ctx))
 }

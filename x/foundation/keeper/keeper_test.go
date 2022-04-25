@@ -25,7 +25,7 @@ func TestCleanup(t *testing.T) {
 	k := app.FoundationKeeper
 
 	// add auths
-	auth := &foundation.ValidatorAuth{
+	auth := foundation.ValidatorAuth{
 		OperatorAddress: valAddr.String(),
 		CreationAllowed: true,
 	}
@@ -33,5 +33,5 @@ func TestCleanup(t *testing.T) {
 
 	// cleanup
 	k.Cleanup(ctx)
-	require.Equal(t, []*foundation.ValidatorAuth{}, k.GetValidatorAuths(ctx))
+	require.Empty(t, k.GetValidatorAuths(ctx))
 }

@@ -21,10 +21,10 @@ func newUpdateFoundationParamsProposal(params *foundation.Params) govtypes.Conte
 	return foundation.NewUpdateFoundationParamsProposal("Test", "description", params)
 }
 
-func newValidatorAuths(addrs []sdk.ValAddress, allow bool) []*foundation.ValidatorAuth {
-	auths := []*foundation.ValidatorAuth{}
+func newValidatorAuths(addrs []sdk.ValAddress, allow bool) []foundation.ValidatorAuth {
+	auths := []foundation.ValidatorAuth{}
 	for _, addr := range addrs {
-		auth := &foundation.ValidatorAuth{
+		auth := foundation.ValidatorAuth{
 			OperatorAddress: addr.String(),
 			CreationAllowed: allow,
 		}
@@ -34,7 +34,7 @@ func newValidatorAuths(addrs []sdk.ValAddress, allow bool) []*foundation.Validat
 	return auths
 }
 
-func newUpdateValidatorAuthsProposal(auths []*foundation.ValidatorAuth) govtypes.Content {
+func newUpdateValidatorAuthsProposal(auths []foundation.ValidatorAuth) govtypes.Content {
 	return foundation.NewUpdateValidatorAuthsProposal("Test", "description", auths)
 }
 
@@ -68,7 +68,7 @@ func TestProposalHandler(t *testing.T) {
 	pp := newUpdateFoundationParamsProposal(params_off)
 	require.NoError(t, pp.ValidateBasic())
 	require.NoError(t, handler(ctx, pp))
-	require.Equal(t, []*foundation.ValidatorAuth{}, k.GetValidatorAuths(ctx))
+	require.Empty(t, k.GetValidatorAuths(ctx))
 	require.Equal(t, params_off, k.GetParams(ctx))
 
 	// attempt to enable foundation, which fails

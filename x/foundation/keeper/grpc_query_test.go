@@ -98,14 +98,14 @@ func (suite *FoundationTestSuite) TestQueryValidatorAuth() {
 		{
 			"with existing auth",
 			func() {
-				auth := &foundation.ValidatorAuth{
+				auth := foundation.ValidatorAuth{
 					OperatorAddress: valAddr.String(),
 					CreationAllowed: true,
 				}
 				suite.app.FoundationKeeper.SetValidatorAuth(suite.ctx, auth)
 
 				req = &foundation.QueryValidatorAuthRequest{ValidatorAddress: valAddr.String()}
-				expResponse = foundation.QueryValidatorAuthResponse{Auth: auth}
+				expResponse = foundation.QueryValidatorAuthResponse{Auth: &auth}
 			},
 			true,
 		},
@@ -162,7 +162,7 @@ func (suite *FoundationTestSuite) TestQueryValidatorAuths() {
 		{
 			"with non-empty auths",
 			func() {
-				auth := &foundation.ValidatorAuth{
+				auth := foundation.ValidatorAuth{
 					OperatorAddress: valAddr.String(),
 					CreationAllowed: true,
 				}
