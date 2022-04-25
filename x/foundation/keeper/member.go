@@ -142,3 +142,22 @@ func (k Keeper) GetOperator(ctx sdk.Context) sdk.AccAddress {
 func (k Keeper) GetAdmin(ctx sdk.Context) sdk.AccAddress {
 	return k.authKeeper.GetModuleAccount(ctx, foundation.AdministratorName).GetAddress()
 }
+
+func (k Keeper) validateOperator(ctx sdk.Context, operator string) error {
+	if sdk.AccAddress(operator) != k.GetOperator(ctx) {
+		return sdkerrors.ErrUnauthorized.Wrapf("%s is not the operator", operator)
+	}
+
+	return nil
+}
+
+func (k Keeper) validateMembers(ctx sdk.Context, members []string) error {
+	for _, member := range members {
+		if _, err := k.GetMember(ctx, sdk.AccAddress(member)); err != nil {
+			return sdkerrors.ErrUnauthorized.Wrapf("%s is not a member", member)
+		}
+	}
+
+	return nil
+}
+

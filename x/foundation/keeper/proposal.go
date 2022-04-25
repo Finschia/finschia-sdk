@@ -58,12 +58,6 @@ func (k Keeper) setPreviousProposalId(ctx sdk.Context, id uint64) {
 }
 
 func (k Keeper) submitProposal(ctx sdk.Context, proposers []string, metadata string, msgs []sdk.Msg) (uint64, error) {
-	for _, proposer := range proposers {
-		if _, err := k.GetMember(ctx, sdk.AccAddress(proposer)); err != nil {
-			return 0, err
-		}
-	}
-
 	foundationInfo := k.GetFoundationInfo(ctx)
 	if err := ensureMsgAuthz(msgs, sdk.AccAddress(foundationInfo.Operator)); err != nil {
 		return 0, err

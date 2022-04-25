@@ -25,11 +25,6 @@ func (k Keeper) vote(ctx sdk.Context, id uint64, voter string, option foundation
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "voting period has ended already")
 	}
 
-	// Count and store votes.
-	if _, err = k.GetMember(ctx, sdk.AccAddress(voter)); err != nil {
-		return err
-	}
-
 	newVote := foundation.Vote{
 		ProposalId: id,
 		Voter:      voter,

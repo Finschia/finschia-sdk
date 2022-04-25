@@ -38,8 +38,8 @@ func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasu
 func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWithdrawFromTreasury) (*foundation.MsgWithdrawFromTreasuryResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if sdk.AccAddress(req.Operator) != s.keeper.GetOperator(ctx) {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "Not authorized to %s: %s", sdk.MsgTypeURL(req), req.Operator)
+	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+		return nil, err
 	}
 
 	if err := s.keeper.withdrawFromTreasury(ctx, sdk.AccAddress(req.To), req.Amount); err != nil {
@@ -52,8 +52,8 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMembers) (*foundation.MsgUpdateMembersResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if sdk.AccAddress(req.Operator) != s.keeper.GetOperator(ctx) {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "Not authorized to %s: %s", sdk.MsgTypeURL(req), req.Operator)
+	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+		return nil, err
 	}
 
 	if err := s.keeper.updateMembers(ctx, req.MemberUpdates); err != nil {
@@ -66,8 +66,8 @@ func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMem
 func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUpdateDecisionPolicy) (*foundation.MsgUpdateDecisionPolicyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if sdk.AccAddress(req.Operator) != s.keeper.GetOperator(ctx) {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "Not authorized to %s: %s", sdk.MsgTypeURL(req), req.Operator)
+	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+		return nil, err
 	}
 
 	policy := req.GetDecisionPolicy()
@@ -84,6 +84,10 @@ func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUp
 
 func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitProposal) (*foundation.MsgSubmitProposalResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.keeper.validateMembers(ctx, req.Proposers); err != nil {
+		return nil, err
+	}
 
 	id, err := s.keeper.submitProposal(ctx, req.Proposers, req.Metadata, req.GetMsgs())
 	if err != nil {
@@ -103,8 +107,7 @@ func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitPr
 
 		// Then try to execute the proposal
 		// We consider the first proposer as the MsgExecRequest signer
-		signer := req.Proposers[0]
-		if err = s.keeper.exec(ctx, id, signer); err != nil {
+		if err = s.keeper.exec(ctx, id); err != nil {
 			return &foundation.MsgSubmitProposalResponse{ProposalId: id}, sdkerrors.Wrap(err, "The proposal was created but failed on exec")
 		}
 	}
@@ -140,6 +143,11 @@ func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdr
 
 func (s msgServer) Vote(c context.Context, req *foundation.MsgVote) (*foundation.MsgVoteResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.keeper.validateMembers(ctx, []string{req.Voter}); err != nil {
+		return nil, err
+	}
+
 	if err := s.keeper.vote(ctx, req.ProposalId, req.Voter, req.Option, req.Metadata); err != nil {
 		return nil, err
 	}
@@ -150,7 +158,7 @@ func (s msgServer) Vote(c context.Context, req *foundation.MsgVote) (*foundation
 
 	// Try to execute proposal immediately
 	if req.Exec == foundation.Exec_EXEC_TRY {
-		if err := s.keeper.exec(ctx, req.ProposalId, req.Voter); err != nil {
+		if err := s.keeper.exec(ctx, req.ProposalId); err != nil {
 			return nil, err
 		}
 	}
@@ -160,14 +168,18 @@ func (s msgServer) Vote(c context.Context, req *foundation.MsgVote) (*foundation
 
 func (s msgServer) Exec(c context.Context, req *foundation.MsgExec) (*foundation.MsgExecResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	id := req.ProposalId
 
+	if err := s.keeper.validateMembers(ctx, []string{req.Signer}); err != nil {
+		return nil, err
+	}
+
+	id := req.ProposalId
 	proposal, err := s.keeper.GetProposal(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := s.keeper.exec(ctx, req.ProposalId, req.Signer); err != nil {
+	if err := s.keeper.exec(ctx, req.ProposalId); err != nil {
 		return nil, err
 	}
 
@@ -183,6 +195,10 @@ func (s msgServer) Exec(c context.Context, req *foundation.MsgExec) (*foundation
 
 func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFoundation) (*foundation.MsgLeaveFoundationResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.keeper.validateMembers(ctx, []string{req.Address}); err != nil {
+		return nil, err
+	}
 
 	update := foundation.Member{
 		Address: req.Address,

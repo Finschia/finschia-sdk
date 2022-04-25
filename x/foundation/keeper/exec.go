@@ -21,14 +21,9 @@ func ensureMsgAuthz(msgs []sdk.Msg, admin sdk.AccAddress) error {
 	return nil
 }
 
-func (k Keeper) exec(ctx sdk.Context, proposalId uint64, signer string) error {
+func (k Keeper) exec(ctx sdk.Context, proposalId uint64) error {
 	proposal, err := k.GetProposal(ctx, proposalId)
 	if err != nil {
-		return err
-	}
-
-	// check whether the signer is one of the members
-	if _, err := k.GetMember(ctx, sdk.AccAddress(signer)); err != nil {
 		return err
 	}
 
