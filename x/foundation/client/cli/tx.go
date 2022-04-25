@@ -390,20 +390,18 @@ func NewTxCmdUpdateMembers() *cobra.Command {
 
 Example of the content of members-json:
 
-{
-  [
-    {
-      "address": "addr1",
-      "weight": "1",
-      "metadata": "some new metadata"
-    },
-    {
-      "address": "addr2",
-      "weight": "0",
-      "metadata": "some metadata"
-    }
-  ]
-}
+[
+  {
+    "address": "addr1",
+    "weight": "1",
+    "metadata": "some new metadata"
+  },
+  {
+    "address": "addr2",
+    "weight": "0",
+    "metadata": "some metadata"
+  }
+]
 
 Set a member's weight to "0" to delete it.
 `,
@@ -501,18 +499,23 @@ Parameters:
     proposers-json: the addresses of the proposers in json format.
     messages-json: messages in json format that will be executed if the proposal is accepted.
 
+Example of the content of proposers-json:
+
+[
+  "addr1",
+  "addr2"
+]
+
 Example of the content of messages-json:
 
-{
-  [
-    {
-      "@type": "/lbm.foundation.v1.MsgWithdrawFromTreasury",
-      "operator": "link...",
-      "to": "link...",
-      "amount": "10000stake"
-    }
-  ]
-}
+[
+  {
+    "@type": "/lbm.foundation.v1.MsgWithdrawFromTreasury",
+    "operator": "addr1",
+    "to": "addr2",
+    "amount": "10000stake"
+  }
+]
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			proposers, err := parseAddresses(args[1])
