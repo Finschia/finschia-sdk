@@ -45,23 +45,22 @@ func (k Keeper) setFoundationInfo(ctx sdk.Context, info foundation.FoundationInf
 func (k Keeper) updateMembers(ctx sdk.Context, members []foundation.Member) error {
 	weightUpdate := sdk.ZeroDec()
 	for _, new := range members {
-		if new.Weight.IsZero() { // Delete
-			old, err := k.GetMember(ctx, sdk.AccAddress(new.Address))
-			if err != nil {
-				return err
-			}
+		weightUpdate = weightUpdate.Add(new.Weight)
 
-			k.deleteMember(ctx, sdk.AccAddress(old.Address))
-			weightUpdate = weightUpdate.Sub(old.Weight)
-		}
+		deleting := new.Weight.IsZero()
 
 		old, err := k.GetMember(ctx, sdk.AccAddress(new.Address))
 		if err == nil {
 			weightUpdate = weightUpdate.Sub(old.Weight)
+		} else if deleting { // the member must exist
+			return err
 		}
 
-		k.setMember(ctx, new)
-		weightUpdate = weightUpdate.Add(new.Weight)
+		if deleting {
+			k.deleteMember(ctx, sdk.AccAddress(old.Address))
+		} else {
+			k.setMember(ctx, new)
+		}
 	}
 
 	info := k.GetFoundationInfo(ctx)
