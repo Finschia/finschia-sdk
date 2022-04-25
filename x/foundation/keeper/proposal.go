@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"time"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/foundation"
@@ -89,6 +91,7 @@ func (k Keeper) submitProposal(ctx sdk.Context, proposers []string, metadata str
 	if err := k.setProposal(ctx, proposal); err != nil {
 		return 0, err
 	}
+	k.addProposalToVPEndQueue(ctx, proposal)
 
 	return id, nil
 }
@@ -108,21 +111,49 @@ func (k Keeper) withdrawProposal(ctx sdk.Context, proposal foundation.Proposal) 
 }
 
 // pruneProposal deletes a proposal from state.
-func (k Keeper) pruneProposal(ctx sdk.Context, proposalId uint64) {
-	k.deleteProposal(ctx, proposalId)
-	k.pruneVotes(ctx, proposalId)
+func (k Keeper) pruneProposal(ctx sdk.Context, proposal foundation.Proposal) {
+	k.removeProposalFromVPEndQueue(ctx, proposal)
+	k.deleteProposal(ctx, proposal.Id)
+	k.pruneVotes(ctx, proposal.Id)
 }
 
-// pruneProposal deletes a proposal from state.
-func (k Keeper) pruneProposals(ctx sdk.Context) {
-	var ids []uint64
-	k.iterateProposals(ctx, func(proposal foundation.Proposal) (stop bool) {
-		ids = append(ids, proposal.Id)
+// pruneExpiredProposals prunes all proposals:
+// 1. which are expired, i.e. whose `submit_time + voting_period + max_execution_period` is greater than now.
+func (k Keeper) pruneExpiredProposals(ctx sdk.Context) {
+	votingPeriodEnd := ctx.BlockTime().Add(-k.config.MaxExecutionPeriod)
+
+	var proposals []foundation.Proposal
+	k.iterateProposalsByVPEnd(ctx, votingPeriodEnd, func(proposal foundation.Proposal) (stop bool) {
+		proposals = append(proposals, proposal)
 		return false
 	})
 
-	for _, id := range ids {
-		k.pruneProposal(ctx, id)
+	for _, proposal := range proposals {
+		k.pruneProposal(ctx, proposal)
+	}
+}
+
+// pruneOldProposals prunes all proposals:
+// 2. which have lower version than the current foundation's
+func (k Keeper) pruneOldProposals(ctx sdk.Context) {
+	latestVersion := k.GetFoundationInfo(ctx).Version
+
+	var proposals []foundation.Proposal
+	k.iterateProposals(ctx, func(proposal foundation.Proposal) (stop bool) {
+		if proposal.FoundationVersion == latestVersion {
+			return true
+		}
+
+		// one may still execute the finalized proposals
+		if proposal.Result == foundation.PROPOSAL_RESULT_UNFINALIZED {
+			proposals = append(proposals, proposal)
+		}
+
+		return false
+	})
+
+	for _, proposal := range proposals {
+		k.pruneProposal(ctx, proposal)
 	}
 }
 
@@ -149,6 +180,35 @@ func (k Keeper) iterateProposals(ctx sdk.Context, fn func(proposal foundation.Pr
 			break
 		}
 	}
+}
+
+func (k Keeper) iterateProposalsByVPEnd(ctx sdk.Context, endTime time.Time, fn func(proposal foundation.Proposal) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	iter := store.Iterator(proposalByVPEndKeyPrefix, sdk.PrefixEndBytes(append(proposalByVPEndKeyPrefix, sdk.FormatTimeBytes(endTime)...)))
+	defer iter.Close()
+
+	for ; iter.Valid(); iter.Next() {
+		var proposal foundation.Proposal
+		k.cdc.MustUnmarshal(iter.Value(), &proposal)
+
+		if fn(proposal) {
+			break
+		}
+	}
+}
+
+func (k Keeper) UpdateTallyOfVPEndProposals(ctx sdk.Context) {
+	k.iterateProposalsByVPEnd(ctx, ctx.BlockTime(), func(proposal foundation.Proposal) (stop bool) {
+		if err := k.doTallyAndUpdate(ctx, &proposal); err != nil {
+			panic(err)
+		}
+
+		if err := k.setProposal(ctx, proposal); err != nil {
+			panic(err)
+		}
+
+		return false
+	})
 }
 
 func (k Keeper) GetProposal(ctx sdk.Context, id uint64) (*foundation.Proposal, error) {
@@ -182,6 +242,18 @@ func (k Keeper) setProposal(ctx sdk.Context, proposal foundation.Proposal) error
 func (k Keeper) deleteProposal(ctx sdk.Context, proposalId uint64) {
 	store := ctx.KVStore(k.storeKey)
 	key := proposalKey(proposalId)
+	store.Delete(key)
+}
+
+func (k Keeper) addProposalToVPEndQueue(ctx sdk.Context, proposal foundation.Proposal) {
+	store := ctx.KVStore(k.storeKey)
+	key := proposalByVPEndKey(proposal.Id, proposal.VotingPeriodEnd)
+	store.Set(key, []byte{})
+}
+
+func (k Keeper) removeProposalFromVPEndQueue(ctx sdk.Context, proposal foundation.Proposal) {
+	store := ctx.KVStore(k.storeKey)
+	key := proposalByVPEndKey(proposal.Id, proposal.VotingPeriodEnd)
 	store.Delete(key)
 }
 

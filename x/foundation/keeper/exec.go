@@ -59,7 +59,7 @@ func (k Keeper) exec(ctx sdk.Context, proposalId uint64, signer string) error {
 
 	// If proposal has successfully run, delete it from state.
 	if proposal.ExecutorResult == foundation.PROPOSAL_EXECUTOR_RESULT_SUCCESS {
-		k.pruneProposal(ctx, proposal.Id)
+		k.pruneProposal(ctx, *proposal)
 	} else {
 		if err := k.setProposal(ctx, *proposal); err != nil {
 			return err

@@ -13,7 +13,7 @@ func (k Keeper) updateDecisionPolicy(ctx sdk.Context, policy foundation.Decision
 	k.setFoundationInfo(ctx, info)
 
 	// invalidate active proposals
-	k.pruneProposals(ctx)
+	k.pruneOldProposals(ctx)
 
 	return nil
 }
@@ -70,7 +70,7 @@ func (k Keeper) updateMembers(ctx sdk.Context, members []foundation.Member) erro
 	k.setFoundationInfo(ctx, info)
 
 	// invalidate active proposals
-	k.pruneProposals(ctx)
+	k.pruneOldProposals(ctx)
 
 	return nil
 }

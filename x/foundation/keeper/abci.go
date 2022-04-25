@@ -3,8 +3,6 @@ package keeper
 import (
 	"time"
 
-	abci "github.com/line/ostracon/abci/types"
-
 	"github.com/line/lbm-sdk/telemetry"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
@@ -12,10 +10,15 @@ import (
 
 // BeginBlocker withdraws rewards from fee-collector before the distribution
 // module's withdraw.
-func BeginBlocker(ctx sdk.Context, _ abci.RequestBeginBlock, k Keeper) {
+func BeginBlocker(ctx sdk.Context, k Keeper) {
 	defer telemetry.ModuleMeasureSince(foundation.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
 
 	if err := k.collectFoundationTax(ctx); err != nil {
 		panic(err)
 	}
+}
+
+func EndBlocker(ctx sdk.Context, k Keeper) {
+	k.UpdateTallyOfVPEndProposals(ctx)
+	k.pruneExpiredProposals(ctx)
 }
