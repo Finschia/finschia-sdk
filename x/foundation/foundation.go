@@ -29,7 +29,7 @@ type DecisionPolicy interface {
 	Allow(tallyResult TallyResult, totalPower sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error)
 
 	ValidateBasic() error
-	Validate(info FoundationInfo, config Config) error
+	Validate(config Config) error
 }
 
 func (t *TallyResult) Add(option VoteOption, weight sdk.Dec) error {
@@ -155,7 +155,7 @@ func (i *FoundationInfo) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error
 
 var _ DecisionPolicy = (*ThresholdDecisionPolicy)(nil)
 
-func (p ThresholdDecisionPolicy) Validate(info FoundationInfo, config Config) error {
+func (p ThresholdDecisionPolicy) Validate(config Config) error {
 	if p.Threshold.LT(config.MinThreshold) {
 		return sdkerrors.ErrInvalidRequest.Wrap("threshold must be greater than or equal to min_threshold")
 	}
@@ -210,7 +210,7 @@ func (p ThresholdDecisionPolicy) ValidateBasic() error {
 
 var _ DecisionPolicy = (*PercentageDecisionPolicy)(nil)
 
-func (p PercentageDecisionPolicy) Validate(info FoundationInfo, config Config) error {
+func (p PercentageDecisionPolicy) Validate(config Config) error {
 	if p.Percentage.LT(config.MinPercentage) {
 		return sdkerrors.ErrInvalidRequest.Wrap("percentage must be greater than or equal to min_percentage")
 	}

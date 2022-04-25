@@ -71,7 +71,7 @@ func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUp
 	}
 
 	policy := req.GetDecisionPolicy()
-	if err := policy.Validate(s.keeper.GetFoundationInfo(ctx), s.keeper.config); err != nil {
+	if err := policy.Validate(s.keeper.config); err != nil {
 		return nil, err
 	}
 
