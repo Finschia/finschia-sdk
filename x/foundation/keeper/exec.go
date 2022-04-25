@@ -27,8 +27,8 @@ func (k Keeper) exec(ctx sdk.Context, proposalId uint64, signer string) error {
 		return err
 	}
 
-	// check whether the signer is one of the proposers
-	if err = validateActorForProposal(signer, *proposal); err != nil {
+	// check whether the signer is one of the members
+	if _, err := k.GetMember(ctx, sdk.AccAddress(signer)); err != nil {
 		return err
 	}
 
