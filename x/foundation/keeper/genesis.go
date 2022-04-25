@@ -67,6 +67,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 
 	for _, proposal := range data.Proposals {
 		k.setProposal(ctx, proposal)
+		k.addProposalToVPEndQueue(ctx, proposal)
 	}
 
 	for _, vote := range data.Votes {
