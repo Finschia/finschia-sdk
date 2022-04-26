@@ -25,7 +25,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
-			`{"params":{"enabled":true}}`,
+			`{"params":{"enabled":true,"foundation_tax":"0.000000000000000000"}}`,
 		},
 		{
 			"text output",
@@ -34,7 +34,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
 				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
 			},
 			`params:
-  enabled: true`,
+  enabled: true
+  foundation_tax: "0.000000000000000000"`,
 		},
 	}
 
@@ -127,6 +128,10 @@ func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuth() {
 func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuths() {
 	val := s.network.Validators[0]
 
+	jsonAuth := `{"operator_address":"%s","creation_allowed":true}`
+	textAuth := `- creation_allowed: true
+  operator_address: %s
+`
 	testCases := []struct {
 		name           string
 		args           []string
@@ -138,8 +143,9 @@ func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuths() {
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
-			fmt.Sprintf(`{"auths":[{"operator_address":"%s","creation_allowed":true}],"pagination":{"next_key":null,"total":"0"}}`,
-				val.ValAddress.String(),
+			fmt.Sprintf(`{"auths":[%s,%s],"pagination":{"next_key":null,"total":"0"}}`,
+				fmt.Sprintf(jsonAuth, s.network.Validators[0].ValAddress),
+				fmt.Sprintf(jsonAuth, s.network.Validators[1].ValAddress),
 			),
 		},
 		{
@@ -149,12 +155,12 @@ func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuths() {
 				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
 			},
 			fmt.Sprintf(`auths:
-- creation_allowed: true
-  operator_address: %s
+%s%s
 pagination:
   next_key: null
   total: "0"`,
-				val.ValAddress.String(),
+				fmt.Sprintf(textAuth, s.network.Validators[0].ValAddress),
+				fmt.Sprintf(textAuth, s.network.Validators[1].ValAddress),
 			),
 		},
 	}

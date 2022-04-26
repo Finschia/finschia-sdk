@@ -110,7 +110,7 @@ func (s *IntegrationTestSuite) TestGRPCValidatorAuths() {
 			"valid request",
 			fmt.Sprintf("%s/lbm/foundation/v1/validators", val.APIAddress),
 			map[string]string{},
-			1,
+			2,
 			false,
 		},
 	}
