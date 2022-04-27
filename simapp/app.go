@@ -585,7 +585,7 @@ func NewSimApp(
 	app.ScopedIBCMockKeeper = scopedIBCMockKeeper
 
 	app.SnapshotManager().RegisterExtensions(
-		wasm.NewWasmSnapshotter(filepath.Join(wasmDir, "wasm", "state", "wasm")),
+		wasm.NewWasmSnapshotter(app.CommitMultiStore(), app.wasmKeeper),
 	)
 
 	return app
