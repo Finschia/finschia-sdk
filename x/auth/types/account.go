@@ -450,21 +450,21 @@ func (acc BaseAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
 	bi.Sequence = strconv.FormatUint(acc.Sequence, 10)
 	var bz []byte
 	var err error
-	if acc.Ed25519PubKey != nil {
-		bi.PubKey.Type = PubKeyTypeEd25519
-		bz, err = codec.ProtoMarshalJSON(acc.Ed25519PubKey, m.AnyResolver)
-	}
 	if acc.Secp256K1PubKey != nil {
 		bi.PubKey.Type = PubKeyTypeSecp256k1
-		bz, err = codec.ProtoMarshalJSON(acc.Secp256K1PubKey, m.AnyResolver)
+		bz, err = acc.Secp256K1PubKey.Marshal()
 	}
 	if acc.Secp256R1PubKey != nil {
 		bi.PubKey.Type = PubKeyTypeSecp256R1
-		bz, err = codec.ProtoMarshalJSON(acc.Secp256R1PubKey, m.AnyResolver)
+		bz, err = acc.Secp256R1PubKey.Marshal()
+	}
+	if acc.Ed25519PubKey != nil {
+		bi.PubKey.Type = PubKeyTypeEd25519
+		bz, err = acc.Ed25519PubKey.Marshal()
 	}
 	if acc.MultisigPubKey != nil {
 		bi.PubKey.Type = PubKeyTypeMultisig
-		bz, err = codec.ProtoMarshalJSON(acc.MultisigPubKey, m.AnyResolver)
+		bz, err = acc.MultisigPubKey.Marshal()
 	}
 	if err != nil {
 		return nil, err
@@ -495,6 +495,12 @@ func (acc *BaseAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error 
 	}
 
 	switch bi.PubKey.Type {
+	case PubKeyTypeEd25519:
+		pk := new(ed25519.PubKey)
+		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
+			return err
+		}
+		acc.SetPubKey(pk)
 	case PubKeyTypeSecp256k1:
 		pk := new(secp256k1.PubKey)
 		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
@@ -503,12 +509,6 @@ func (acc *BaseAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error 
 		acc.SetPubKey(pk)
 	case PubKeyTypeSecp256R1:
 		pk := new(secp256r1.PubKey)
-		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
-			return err
-		}
-		acc.SetPubKey(pk)
-	case PubKeyTypeEd25519:
-		pk := new(ed25519.PubKey)
 		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
 			return err
 		}
