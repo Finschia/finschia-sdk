@@ -584,9 +584,14 @@ func NewSimApp(
 	// note replicate if you do not need to test core IBC or light clients.
 	app.ScopedIBCMockKeeper = scopedIBCMockKeeper
 
-	app.SnapshotManager().RegisterExtensions(
-		wasm.NewWasmSnapshotter(app.CommitMultiStore(), app.wasmKeeper),
-	)
+	// must be before Loading version
+	// requires the snapshot store to be created and registered as a BaseAppOption
+	// see cmd/wasmd/root.go: 206 - 214 approx
+	if manager := app.SnapshotManager(); manager != nil {
+		manager.RegisterExtensions(
+			wasm.NewWasmSnapshotter(app.CommitMultiStore(), app.wasmKeeper),
+		)
+	}
 
 	return app
 }
