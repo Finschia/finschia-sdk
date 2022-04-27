@@ -10,7 +10,6 @@ func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
 		Params:         &Params{
 			Enabled: false,
-			FoundationTax: sdk.MustNewDecFromStr("0.2"),
 		},
 	}
 }
@@ -27,6 +26,11 @@ func ValidateGenesis(data GenesisState) error {
 		if err := sdk.ValidateValAddress(auth.OperatorAddress); err != nil {
 			return err
 		}
+	}
+
+	if data.Params.FoundationTax.IsNegative() ||
+		data.Params.FoundationTax.LT(sdk.ZeroDec()) {
+		return sdkerrors.ErrInvalidRequest.Wrap("foundation tax must be >= 0 and <= 1")
 	}
 
 	return nil
