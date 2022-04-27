@@ -10,7 +10,7 @@ import (
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/rest"
-	wasmUtils "github.com/line/lbm-sdk/x/wasm/client/utils"
+	"github.com/line/lbm-sdk/x/wasm/ioutils"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -65,13 +65,13 @@ func storeCodeHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		wasm := req.WasmBytes
 
 		// gzip the wasm file
-		if wasmUtils.IsWasm(wasm) {
-			wasm, err = wasmUtils.GzipIt(wasm)
+		if ioutils.IsWasm(wasm) {
+			wasm, err = ioutils.GzipIt(wasm)
 			if err != nil {
 				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 				return
 			}
-		} else if !wasmUtils.IsGzip(wasm) {
+		} else if !ioutils.IsGzip(wasm) {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, "Invalid input file, use wasm binary or zip")
 			return
 		}
@@ -144,13 +144,13 @@ func storeCodeAndInstantiateContractHandlerFn(cliCtx client.Context) http.Handle
 		wasm := req.WasmBytes
 
 		// gzip the wasm file
-		if wasmUtils.IsWasm(wasm) {
-			wasm, err = wasmUtils.GzipIt(wasm)
+		if ioutils.IsWasm(wasm) {
+			wasm, err = ioutils.GzipIt(wasm)
 			if err != nil {
 				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 				return
 			}
-		} else if !wasmUtils.IsGzip(wasm) {
+		} else if !ioutils.IsGzip(wasm) {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, "Invalid input file, use wasm binary or zip")
 			return
 		}
