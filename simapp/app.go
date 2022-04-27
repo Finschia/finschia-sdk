@@ -17,6 +17,7 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	tmdb "github.com/line/tm-db/v2"
 
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/grpc/tmservice"
@@ -108,7 +109,6 @@ import (
 	upgradeclient "github.com/line/lbm-sdk/x/upgrade/client"
 	upgradekeeper "github.com/line/lbm-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
-	"github.com/line/lbm-sdk/x/wasm"
 
 	// unnamed import of statik for swagger UI support
 	_ "github.com/line/lbm-sdk/client/docs/statik"
@@ -589,7 +589,7 @@ func NewSimApp(
 	// see cmd/wasmd/root.go: 206 - 214 approx
 	if manager := app.SnapshotManager(); manager != nil {
 		manager.RegisterExtensions(
-			wasm.NewWasmSnapshotter(app.CommitMultiStore(), app.wasmKeeper),
+			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), app.wasmKeeper),
 		)
 	}
 
