@@ -56,7 +56,7 @@ func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMem
 		return nil, err
 	}
 
-	if err := s.keeper.updateMembers(ctx, req.MemberUpdates); err != nil {
+	if err := s.keeper.UpdateMembers(ctx, req.MemberUpdates); err != nil {
 		return nil, err
 	}
 
@@ -204,7 +204,7 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 		Address: req.Address,
 		Weight: sdk.ZeroDec(),
 	}
-	if err := s.keeper.updateMembers(ctx, []foundation.Member{update}); err != nil {
+	if err := s.keeper.UpdateMembers(ctx, []foundation.Member{update}); err != nil {
 		return nil, err
 	}
 

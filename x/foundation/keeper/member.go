@@ -42,7 +42,7 @@ func (k Keeper) setFoundationInfo(ctx sdk.Context, info foundation.FoundationInf
 	return nil
 }
 
-func (k Keeper) updateMembers(ctx sdk.Context, members []foundation.Member) error {
+func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.Member) error {
 	weightUpdate := sdk.ZeroDec()
 	for _, new := range members {
 		weightUpdate = weightUpdate.Add(new.Weight)
@@ -59,6 +59,7 @@ func (k Keeper) updateMembers(ctx sdk.Context, members []foundation.Member) erro
 		if deleting {
 			k.deleteMember(ctx, sdk.AccAddress(old.Address))
 		} else {
+			new.AddedAt = ctx.BlockTime()
 			k.setMember(ctx, new)
 		}
 	}
@@ -138,6 +139,16 @@ func (k Keeper) GetOperator(ctx sdk.Context) sdk.AccAddress {
 	return sdk.AccAddress(info.Operator)
 }
 
+func (k Keeper) updateOperator(ctx sdk.Context, operator sdk.AccAddress) error {
+	info := k.GetFoundationInfo(ctx)
+	info.Operator = operator.String()
+	if err := k.setFoundationInfo(ctx, info); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (k Keeper) GetAdmin(ctx sdk.Context) sdk.AccAddress {
 	return k.authKeeper.GetModuleAccount(ctx, foundation.AdministratorName).GetAddress()
 }
@@ -153,7 +164,8 @@ func (k Keeper) validateOperator(ctx sdk.Context, operator string) error {
 func (k Keeper) validateMembers(ctx sdk.Context, members []string) error {
 	for _, member := range members {
 		if _, err := k.GetMember(ctx, sdk.AccAddress(member)); err != nil {
-			return sdkerrors.ErrUnauthorized.Wrapf("%s is not a member", member)
+			// TODO: fix
+			return sdkerrors.ErrUnauthorized.Wrapf("%s is not a member, %v", member, k.GetMembers(ctx))
 		}
 	}
 

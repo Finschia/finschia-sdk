@@ -9,12 +9,12 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
-// ensureMsgAuthz checks that if a message requires signers that all of them are equal to the given account address of the admin.
-func ensureMsgAuthz(msgs []sdk.Msg, admin sdk.AccAddress) error {
+// ensureMsgAuthz checks that if a message requires signers that all of them are equal to the given account address of the operator.
+func ensureMsgAuthz(msgs []sdk.Msg, operator sdk.AccAddress) error {
 	for _, msg := range msgs {
 		for _, signer := range msg.GetSigners() {
-			if !admin.Equals(signer) {
-				return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "msg does not have authorization")
+			if !operator.Equals(signer) {
+				return sdkerrors.ErrUnauthorized.Wrapf("signer of msg is not the operator: %s, %s", signer, operator)
 			}
 		}
 	}
@@ -64,22 +64,11 @@ func (k Keeper) exec(ctx sdk.Context, proposalId uint64) error {
 	return nil
 }
 
-// doExecuteMsgs routes the messages to the registered handlers. Messages are limited to those that require no authZ or
-// by the account of admin only. Otherwise this gives access to other peoples accounts as the sdk ant handler is bypassed
+// doExecuteMsgs routes the messages to the registered handlers.
 func (k Keeper) doExecuteMsgs(ctx sdk.Context, proposal foundation.Proposal) ([]sdk.Result, error) {
-	// Ensure it's not too late to execute the messages.
-	// After https://github.com/cosmos/cosmos-sdk/issues/11245, proposals should
-	// be pruned automatically, so this function should not even be called, as
-	// the proposal doesn't exist in state. For sanity check, we can still keep
-	// this simple and cheap check.
-	// expiryDate := proposal.VotingPeriodEnd.Add(k.config.MaxExecutionPeriod)
-	// if expiryDate.Before(ctx.BlockTime()) {
-	// 	return nil, grouperrors.ErrExpired.Wrapf("proposal expired on %s", expiryDate)
-	// }
-
 	msgs := proposal.GetMsgs()
 	results := make([]sdk.Result, len(msgs))
-	if err := ensureMsgAuthz(msgs, k.GetAdmin(ctx)); err != nil {
+	if err := ensureMsgAuthz(msgs, k.GetOperator(ctx)); err != nil {
 		return nil, err
 	}
 	for i, msg := range msgs {

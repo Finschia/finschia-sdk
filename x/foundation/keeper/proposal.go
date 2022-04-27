@@ -63,8 +63,6 @@ func (k Keeper) submitProposal(ctx sdk.Context, proposers []string, metadata str
 		return 0, err
 	}
 
-	// TODO: validate policy
-
 	id := k.NewProposalId(ctx)
 	proposal := foundation.Proposal{
 		Id: id,
