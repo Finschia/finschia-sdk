@@ -585,11 +585,15 @@
   
 - [lbm/foundation/v1/event.proto](#lbm/foundation/v1/event.proto)
     - [EventExec](#lbm.foundation.v1.EventExec)
+    - [EventFundTreasury](#lbm.foundation.v1.EventFundTreasury)
     - [EventLeaveFoundation](#lbm.foundation.v1.EventLeaveFoundation)
     - [EventSubmitProposal](#lbm.foundation.v1.EventSubmitProposal)
+    - [EventUpdateDecisionPolicy](#lbm.foundation.v1.EventUpdateDecisionPolicy)
     - [EventUpdateFoundationParams](#lbm.foundation.v1.EventUpdateFoundationParams)
+    - [EventUpdateMembers](#lbm.foundation.v1.EventUpdateMembers)
     - [EventUpdateValidatorAuths](#lbm.foundation.v1.EventUpdateValidatorAuths)
     - [EventVote](#lbm.foundation.v1.EventVote)
+    - [EventWithdrawFromTreasury](#lbm.foundation.v1.EventWithdrawFromTreasury)
     - [EventWithdrawProposal](#lbm.foundation.v1.EventWithdrawProposal)
   
 - [lbm/foundation/v1/genesis.proto](#lbm/foundation/v1/genesis.proto)
@@ -8908,6 +8912,22 @@ EventExec is an event emitted when a proposal is executed.
 
 
 
+<a name="lbm.foundation.v1.EventFundTreasury"></a>
+
+### EventFundTreasury
+EventFundTreasury is an event emitted when one funds the treasury.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from` | [string](#string) |  |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.EventLeaveFoundation"></a>
 
 ### EventLeaveFoundation
@@ -8931,7 +8951,22 @@ EventSubmitProposal is an event emitted when a proposal is created.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `proposal_id` | [uint64](#uint64) |  | proposal_id is the unique ID of the proposal. |
+| `proposal` | [Proposal](#lbm.foundation.v1.Proposal) |  | proposal is the unique ID of the proposal. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.EventUpdateDecisionPolicy"></a>
+
+### EventUpdateDecisionPolicy
+EventUpdateDecisionPolicy is an event emitted when the decision policy have been updated.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `decision_policy` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 
 
 
@@ -8947,6 +8982,21 @@ EventUpdateFoundationParams is emitted after updating foundation parameters.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#lbm.foundation.v1.Params) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.EventUpdateMembers"></a>
+
+### EventUpdateMembers
+EventUpdateMembers is an event emitted when the members have been updated.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `member_updates` | [Member](#lbm.foundation.v1.Member) | repeated |  |
 
 
 
@@ -8978,6 +9028,22 @@ EventVote is an event emitted when a voter votes on a proposal.
 | ----- | ---- | ----- | ----------- |
 | `proposal_id` | [uint64](#uint64) |  | proposal_id is the unique ID of the proposal. |
 | `voter` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.EventWithdrawFromTreasury"></a>
+
+### EventWithdrawFromTreasury
+EventWithdrawFromTreasury is an event emitted when the operator withdraws coins from the treasury.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `to` | [string](#string) |  |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 
 
 

@@ -31,6 +31,13 @@ func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasu
 		return nil, err
 	}
 
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventFundTreasury{
+		From: req.From,
+		Amount: req.Amount,
+	}); err != nil {
+		return nil, err
+	}
+
 	return &foundation.MsgFundTreasuryResponse{}, nil
 }
 
@@ -46,6 +53,13 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 		return nil, err
 	}
 
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventWithdrawFromTreasury{
+		To: req.To,
+		Amount: req.Amount,
+	}); err != nil {
+		return nil, err
+	}
+
 	return &foundation.MsgWithdrawFromTreasuryResponse{}, nil
 }
 
@@ -57,6 +71,12 @@ func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMem
 	}
 
 	if err := s.keeper.UpdateMembers(ctx, req.MemberUpdates); err != nil {
+		return nil, err
+	}
+
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateMembers{
+		MemberUpdates: req.MemberUpdates,
+	}); err != nil {
 		return nil, err
 	}
 
@@ -79,6 +99,14 @@ func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUp
 		return nil, err
 	}
 
+	event := &foundation.EventUpdateDecisionPolicy{}
+	if err := event.SetDecisionPolicy(policy); err != nil {
+		return nil, err
+	}
+	if err := ctx.EventManager().EmitTypedEvent(event); err != nil {
+		return nil, err
+	}
+
 	return &foundation.MsgUpdateDecisionPolicyResponse{}, nil
 }
 
@@ -91,6 +119,13 @@ func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitPr
 
 	id, err := s.keeper.submitProposal(ctx, req.Proposers, req.Metadata, req.GetMsgs())
 	if err != nil {
+		return nil, err
+	}
+
+	proposal, _ := s.keeper.GetProposal(ctx, id)
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventSubmitProposal{
+		Proposal: *proposal,
+	}); err != nil {
 		return nil, err
 	}
 
@@ -132,12 +167,13 @@ func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdr
 		}
 	}
 
-	err = ctx.EventManager().EmitTypedEvent(&foundation.EventWithdrawProposal{ProposalId: id})
-	if err != nil {
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventWithdrawProposal{
+		ProposalId: id,
+	}); err != nil {
 		return nil, err
 	}
 
-	if err = s.keeper.withdrawProposal(ctx, *proposal); err != nil {
+	if err := s.keeper.withdrawProposal(ctx, *proposal); err != nil {
 		return nil, err
 	}
 
@@ -155,7 +191,9 @@ func (s msgServer) Vote(c context.Context, req *foundation.MsgVote) (*foundation
 		return nil, err
 	}
 
-	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventVote{ProposalId: req.ProposalId}); err != nil {
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventVote{
+		ProposalId: req.ProposalId,
+	}); err != nil {
 		return nil, err
 	}
 
@@ -186,7 +224,7 @@ func (s msgServer) Exec(c context.Context, req *foundation.MsgExec) (*foundation
 		return nil, err
 	}
 
-	if err = ctx.EventManager().EmitTypedEvent(&foundation.EventExec{
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventExec{
 		ProposalId: id,
 		Result:     proposal.ExecutorResult,
 	}); err != nil {
@@ -208,6 +246,12 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 		Weight: sdk.ZeroDec(),
 	}
 	if err := s.keeper.UpdateMembers(ctx, []foundation.Member{update}); err != nil {
+		return nil, err
+	}
+
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventLeaveFoundation{
+		Address: req.Address,
+	}); err != nil {
 		return nil, err
 	}
 
