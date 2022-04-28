@@ -19,7 +19,7 @@ func (k Keeper) vote(ctx sdk.Context, id uint64, voter string, option foundation
 
 	// Ensure that we can still accept votes for this proposal.
 	if proposal.Status != foundation.PROPOSAL_STATUS_SUBMITTED {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "proposal not open for voting")
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "not possible with proposal status: %s", proposal.Status.String())
 	}
 	if ctx.BlockTime().After(proposal.VotingPeriodEnd) {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "voting period has ended already")
