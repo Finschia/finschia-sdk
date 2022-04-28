@@ -223,16 +223,7 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 			exec: foundation.Exec_EXEC_TRY,
 			valid: true,
 		},
-		"not authorized": {
-			proposers: []sdk.AccAddress{s.stranger},
-			msg: &foundation.MsgWithdrawFromTreasury{
-				Operator: s.operator.String(),
-				To: s.stranger.String(),
-				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-			},
-			valid: false,
-		},
-		"not enough votes": {
+		"valid request (submit & execute fail)": {
 			proposers: []sdk.AccAddress{s.member},
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.operator.String(),
@@ -240,6 +231,15 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 			},
 			exec: foundation.Exec_EXEC_TRY,
+			valid: true,
+		},
+		"not authorized": {
+			proposers: []sdk.AccAddress{s.stranger},
+			msg: &foundation.MsgWithdrawFromTreasury{
+				Operator: s.operator.String(),
+				To: s.stranger.String(),
+				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+			},
 			valid: false,
 		},
 	}
@@ -264,6 +264,63 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 			}
 			s.Require().NoError(err)
 			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgWithdrawProposal() {
+	testCases := map[string]struct {
+		address sdk.AccAddress
+		valid bool
+	}{
+		"valid request (proposer)": {
+			address: s.member,
+			valid: true,
+		},
+		"valid request (operator)": {
+			address: s.operator,
+			valid: true,
+		},
+		"not authorized": {
+			address: s.stranger,
+			valid: false,
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			// submit a proposal first
+			proposal := &foundation.MsgSubmitProposal{Proposers: []string{s.member.String()}}
+			err := proposal.SetMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
+				Operator: s.operator.String(),
+				To: s.stranger.String(),
+				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+			}})
+			s.Require().NoError(err)
+
+			proposalRes, err := s.msgServer.SubmitProposal(s.goCtx, proposal)
+			s.Require().NoError(err)
+
+			proposalId := proposalRes.ProposalId
+
+			// withdraw the proposal
+			req := &foundation.MsgWithdrawProposal{
+				ProposalId: proposalId,
+				Address: tc.address.String(),
+			}
+
+			res, err := s.msgServer.WithdrawProposal(s.goCtx, req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+
+			// double withdraw which fails
+			// it feeds "already invalidated"
+			_, err = s.msgServer.WithdrawProposal(s.goCtx, req)
+			s.Require().Error(err)
 		})
 	}
 }
@@ -351,23 +408,23 @@ func (s *KeeperTestSuite) TestMsgExec() {
 		voteOption foundation.VoteOption
 		valid bool
 	}{
-		"valid request": {
+		"valid request (execute)": {
 			signer: s.member,
 			voteOption: foundation.VOTE_OPTION_YES,
+			valid: true,
+		},
+		"valid request (not finalized)": {
+			signer: s.member,
+			valid: true,
+		},
+		"valid request (rejected)": {
+			signer: s.member,
+			voteOption: foundation.VOTE_OPTION_NO,
 			valid: true,
 		},
 		"not authorized": {
 			signer: s.stranger,
 			voteOption: foundation.VOTE_OPTION_YES,
-			valid: false,
-		},
-		"not finalized": {
-			signer: s.member,
-			valid: true,
-		},
-		"rejected": {
-			signer: s.member,
-			voteOption: foundation.VOTE_OPTION_NO,
 			valid: false,
 		},
 	}
@@ -388,7 +445,7 @@ func (s *KeeperTestSuite) TestMsgExec() {
 
 			proposalId := proposalRes.ProposalId
 
-			// all members vote yes first
+			// all members vote first
 			for _, voter := range s.keeper.GetMembers(s.ctx) {
 				s.msgServer.Vote(s.goCtx, &foundation.MsgVote{
 					ProposalId: proposalId,

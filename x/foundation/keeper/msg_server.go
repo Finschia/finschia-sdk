@@ -124,9 +124,12 @@ func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdr
 		return nil, err
 	}
 
-	// check whether the address is in proposers list.
-	if err = validateActorForProposal(req.Address, *proposal); err != nil {
-		return nil, err
+	// operator may withdraw any proposal.
+	if req.Address != s.keeper.GetOperator(ctx).String() {
+		// check whether the address is in proposers list.
+		if err = validateActorForProposal(req.Address, *proposal); err != nil {
+			return nil, err
+		}
 	}
 
 	err = ctx.EventManager().EmitTypedEvent(&foundation.EventWithdrawProposal{ProposalId: id})

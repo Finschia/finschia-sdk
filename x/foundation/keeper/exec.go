@@ -27,7 +27,8 @@ func (k Keeper) exec(ctx sdk.Context, proposalId uint64) error {
 		return err
 	}
 
-	if proposal.Status != foundation.PROPOSAL_STATUS_SUBMITTED && proposal.Status != foundation.PROPOSAL_STATUS_CLOSED {
+	if proposal.Status != foundation.PROPOSAL_STATUS_SUBMITTED &&
+		proposal.Status != foundation.PROPOSAL_STATUS_CLOSED {
 		return sdkerrors.ErrInvalidRequest.Wrapf("not possible with proposal status %s", proposal.Status.String())
 	}
 
@@ -38,7 +39,9 @@ func (k Keeper) exec(ctx sdk.Context, proposalId uint64) error {
 	}
 
 	// Execute proposal payload.
-	if proposal.Status == foundation.PROPOSAL_STATUS_CLOSED && proposal.Result == foundation.PROPOSAL_RESULT_ACCEPTED && proposal.ExecutorResult != foundation.PROPOSAL_EXECUTOR_RESULT_SUCCESS {
+	if proposal.Status == foundation.PROPOSAL_STATUS_CLOSED &&
+		proposal.Result == foundation.PROPOSAL_RESULT_ACCEPTED &&
+		proposal.ExecutorResult != foundation.PROPOSAL_EXECUTOR_RESULT_SUCCESS {
 		logger := ctx.Logger().With("module", fmt.Sprintf("x/%s", foundation.ModuleName))
 		// Caching context so that we don't update the store in case of failure.
 		ctx, flush := ctx.CacheContext()

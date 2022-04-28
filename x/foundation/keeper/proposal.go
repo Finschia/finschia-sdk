@@ -36,7 +36,7 @@ func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *foundatio
 	})
 }
 
-func (k Keeper) NewProposalId(ctx sdk.Context) uint64 {
+func (k Keeper) newProposalId(ctx sdk.Context) uint64 {
 	id := k.getPreviousProposalId(ctx) + 1
 	k.setPreviousProposalId(ctx, id)
 
@@ -63,7 +63,7 @@ func (k Keeper) submitProposal(ctx sdk.Context, proposers []string, metadata str
 		return 0, err
 	}
 
-	id := k.NewProposalId(ctx)
+	id := k.newProposalId(ctx)
 	proposal := foundation.Proposal{
 		Id: id,
 		Metadata: metadata,
@@ -94,9 +94,7 @@ func (k Keeper) withdrawProposal(ctx sdk.Context, proposal foundation.Proposal) 
 		return sdkerrors.ErrInvalidRequest.Wrapf("cannot withdraw a proposal with the status of %s", proposal.Status.String())
 	}
 
-	proposal.Result = foundation.PROPOSAL_RESULT_UNFINALIZED
 	proposal.Status = foundation.PROPOSAL_STATUS_WITHDRAWN
-
 	k.setProposal(ctx, proposal)
 
 	return nil
@@ -109,8 +107,8 @@ func (k Keeper) pruneProposal(ctx sdk.Context, proposal foundation.Proposal) {
 	k.pruneVotes(ctx, proposal.Id)
 }
 
-// pruneExpiredProposals prunes all proposals:
-// 1. which are expired, i.e. whose `submit_time + voting_period + max_execution_period` is greater than now.
+// pruneExpiredProposals prunes all proposals which are expired,
+// i.e. whose `submit_time + voting_period + max_execution_period` is greater than now.
 func (k Keeper) pruneExpiredProposals(ctx sdk.Context) {
 	votingPeriodEnd := ctx.BlockTime().Add(-k.config.MaxExecutionPeriod)
 
@@ -125,28 +123,24 @@ func (k Keeper) pruneExpiredProposals(ctx sdk.Context) {
 	}
 }
 
-// pruneOldProposals prunes all proposals:
-// 2. which have lower version than the current foundation's
-func (k Keeper) pruneOldProposals(ctx sdk.Context) {
+// abortOldProposals aborts all proposals which have lower version than the current foundation's
+func (k Keeper) abortOldProposals(ctx sdk.Context) {
 	latestVersion := k.GetFoundationInfo(ctx).Version
 
-	var proposals []foundation.Proposal
 	k.iterateProposals(ctx, func(proposal foundation.Proposal) (stop bool) {
-		if proposal.FoundationVersion == latestVersion {
+		if proposal.FoundationVersion != latestVersion - 1 {
 			return true
 		}
 
-		// one may still execute the finalized proposals
-		if proposal.Result == foundation.PROPOSAL_RESULT_UNFINALIZED {
-			proposals = append(proposals, proposal)
+		if proposal.Status == foundation.PROPOSAL_STATUS_SUBMITTED {
+			k.pruneVotes(ctx, proposal.Id)
+
+			proposal.Status = foundation.PROPOSAL_STATUS_ABORTED
+			k.setProposal(ctx, proposal)
 		}
 
 		return false
 	})
-
-	for _, proposal := range proposals {
-		k.pruneProposal(ctx, proposal)
-	}
 }
 
 func (k Keeper) GetProposals(ctx sdk.Context) []foundation.Proposal {
@@ -250,13 +244,11 @@ func (k Keeper) removeProposalFromVPEndQueue(ctx sdk.Context, proposal foundatio
 }
 
 func validateActorForProposal(address string, proposal foundation.Proposal) error {
-	proposers := map[string]bool{}
 	for _, proposer := range proposal.Proposers {
-		proposers[proposer] = true
-	}
-	if !proposers[address] {
-		return sdkerrors.ErrUnauthorized.Wrapf("given address is not in proposers: %s", address)
+		if address == proposer {
+			return nil
+		}
 	}
 
-	return nil
+	return sdkerrors.ErrUnauthorized.Wrapf("not a proposer: %s", address)
 }

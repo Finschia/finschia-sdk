@@ -70,11 +70,15 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.queryServer = keeper.NewQueryServer(s.keeper)
 	s.msgServer = keeper.NewMsgServer(s.keeper)
 
+	createAddress := func() sdk.AccAddress {
+		return sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
 	s.operator = s.keeper.GetOperator(s.ctx)
-	s.member = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	s.comingMember = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	s.leavingMember = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	s.stranger = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	s.member = createAddress()
+	anotherMember := createAddress()
+	s.comingMember = createAddress()
+	s.leavingMember = createAddress()
+	s.stranger = createAddress()
 
 	s.balance = sdk.NewInt(1000000)
 	holders := []sdk.AccAddress{
@@ -93,6 +97,11 @@ func (s *KeeperTestSuite) SetupTest() {
 			Metadata: "a permanent member",
 		},
 		{
+			Address: anotherMember.String(),
+			Weight: sdk.OneDec(),
+			Metadata: "another permanent member",
+		},
+		{
 			Address: s.leavingMember.String(),
 			Weight: sdk.OneDec(),
 			Metadata: "a member to leave",
@@ -100,7 +109,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		{
 			Address: s.badMember.String(),
 			Weight: sdk.OneDec(),
-			Metadata: "a member to be deported ",
+			Metadata: "a member to be deported",
 		},
 	})
 	s.Require().NoError(err)
