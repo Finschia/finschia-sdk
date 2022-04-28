@@ -12,6 +12,41 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
+func validateMetadata(metadata string, config Config) error {
+	if len(metadata) > int(config.MaxMetadataLen) {
+		return sdkerrors.ErrInvalidRequest.Wrap("metadata is too large")
+	}
+
+	return nil
+}
+
+func validateMembers(members []Member) error {
+	addrs := map[string]bool{}
+	for _, member := range members {
+		if err := member.ValidateBasic(); err != nil {
+			return err
+		}
+		if addrs[member.Address] {
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicated address: %s", member.Address)
+		}
+		addrs[member.Address] = true
+	}
+
+	return nil
+}
+
+func (m Member) ValidateBasic() error {
+	if err := sdk.ValidateAccAddress(m.Address); err != nil {
+		return err
+	}
+
+	if !m.Weight.Equal(sdk.OneDec()) || !m.Weight.IsZero() {
+		return sdkerrors.ErrInvalidRequest.Wrapf("expected a zero or one, got %s", m.Weight)
+	}
+
+	return nil
+}
+
 type DecisionPolicyResult struct {
 	Allow bool
 	Final bool
@@ -201,6 +236,10 @@ func (p ThresholdDecisionPolicy) GetVotingPeriod() time.Duration {
 }
 
 func (p ThresholdDecisionPolicy) ValidateBasic() error {
+	if !p.Threshold.IsPositive() {
+		return sdkerrors.ErrInvalidRequest.Wrap("threshold must be a positive number")
+	}
+
 	if p.Windows == nil || p.Windows.VotingPeriod == 0 {
 		return sdkerrors.ErrInvalidRequest.Wrap("voting period cannot be zero")
 	}
@@ -251,6 +290,10 @@ func (p PercentageDecisionPolicy) GetVotingPeriod() time.Duration {
 func (p PercentageDecisionPolicy) ValidateBasic() error {
 	if p.Windows == nil || p.Windows.VotingPeriod == 0 {
 		return sdkerrors.ErrInvalidRequest.Wrap("voting period cannot be zero")
+	}
+
+	if p.Percentage.GT(sdk.OneDec()) || p.Percentage.LTE(sdk.ZeroDec()) {
+		return sdkerrors.ErrInvalidRequest.Wrap("percentage must be > 0 and <= 1")
 	}
 
 	return nil

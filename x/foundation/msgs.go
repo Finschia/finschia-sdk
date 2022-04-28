@@ -128,6 +128,14 @@ func (m MsgUpdateDecisionPolicy) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
+	if m.GetDecisionPolicy() == nil {
+		return sdkerrors.ErrInvalidRequest.Wrap("nil decision policy")
+	}
+
+	if err := m.GetDecisionPolicy().ValidateBasic(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -143,6 +151,10 @@ func (m MsgUpdateDecisionPolicy) GetSigners() []sdk.AccAddress {
 }
 
 func (m MsgUpdateDecisionPolicy) GetDecisionPolicy() DecisionPolicy {
+	if m.DecisionPolicy == nil {
+		return nil
+	}
+
 	policy, ok := m.DecisionPolicy.GetCachedValue().(DecisionPolicy)
 	if !ok {
 		return nil
@@ -192,15 +204,15 @@ func (m MsgSubmitProposal) ValidateBasic() error {
 		}
 	}
 
-	if err := validateMetadata(m.Metadata); err != nil {
-		return err
-	}
-
 	msgs := m.GetMsgs()
 	for i, msg := range msgs {
 		if err := msg.ValidateBasic(); err != nil {
 			return sdkerrors.Wrapf(err, "msg %d", i)
 		}
+	}
+
+	if _, ok := Exec_name[int32(m.Exec)]; !ok {
+		return sdkerrors.ErrInvalidRequest.Wrap("invalid exec option")
 	}
 
 	return nil
@@ -296,6 +308,10 @@ func (m MsgVote) ValidateBasic() error {
 	}
 	if _, ok := VoteOption_name[int32(m.Option)]; !ok {
 		return sdkerrors.ErrInvalidRequest.Wrap("invalid vote option")
+	}
+
+	if _, ok := Exec_name[int32(m.Exec)]; !ok {
+		return sdkerrors.ErrInvalidRequest.Wrap("invalid exec option")
 	}
 
 	return nil
