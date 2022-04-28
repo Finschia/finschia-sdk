@@ -192,6 +192,10 @@ func (m MsgSubmitProposal) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgSubmitProposal) ValidateBasic() error {
+	if len(m.Proposers) == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("no proposers")
+	}
+
 	proposers := map[string]bool{}
 	for _, proposer := range m.Proposers {
 		if proposers[proposer] {
@@ -205,6 +209,9 @@ func (m MsgSubmitProposal) ValidateBasic() error {
 	}
 
 	msgs := m.GetMsgs()
+	if len(msgs) == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("no msgs")
+	}
 	for i, msg := range msgs {
 		if err := msg.ValidateBasic(); err != nil {
 			return sdkerrors.Wrapf(err, "msg %d", i)

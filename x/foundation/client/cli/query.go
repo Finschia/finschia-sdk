@@ -210,7 +210,7 @@ func NewQueryCmdMember() *cobra.Command {
 			queryClient := foundation.NewQueryClient(clientCtx)
 
 			address := args[0]
-			if err = sdk.ValidateValAddress(address); err != nil {
+			if err = sdk.ValidateAccAddress(address); err != nil {
 				return err
 			}
 
