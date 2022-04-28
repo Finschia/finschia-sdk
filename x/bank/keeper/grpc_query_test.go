@@ -1,3 +1,6 @@
+//go:build norace
+// +build norace
+
 package keeper_test
 
 import (
