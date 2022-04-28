@@ -7,7 +7,7 @@ import (
 
 	"github.com/line/lbm-sdk/testutil"
 	"github.com/line/lbm-sdk/testutil/rest"
-	"github.com/line/lbm-sdk/x/consortium/types"
+	"github.com/line/lbm-sdk/x/consortium"
 )
 
 func (s *IntegrationTestSuite) TestGRPCParams() {
@@ -24,9 +24,9 @@ func (s *IntegrationTestSuite) TestGRPCParams() {
 			"valid request",
 			fmt.Sprintf("%s/lbm/consortium/v1/params", val.APIAddress),
 			false,
-			&types.QueryParamsResponse{},
-			&types.QueryParamsResponse{
-				Params: &types.Params{
+			&consortium.QueryParamsResponse{},
+			&consortium.QueryParamsResponse{
+				Params: &consortium.Params{
 					Enabled: true,
 				},
 			},
@@ -83,7 +83,7 @@ func (s *IntegrationTestSuite) TestGRPCValidatorAuth() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
 
-			var auth types.QueryValidatorAuthResponse
+			var auth consortium.QueryValidatorAuthResponse
 			err = s.cfg.Codec.UnmarshalJSON(resp, &auth)
 
 			if tc.expErr {
@@ -121,7 +121,7 @@ func (s *IntegrationTestSuite) TestGRPCValidatorAuths() {
 			resp, err := testutil.GetRequestWithHeaders(tc.url, tc.headers)
 			s.Require().NoError(err)
 
-			var auths types.QueryValidatorAuthsResponse
+			var auths consortium.QueryValidatorAuthsResponse
 			err = s.cfg.Codec.UnmarshalJSON(resp, &auths)
 
 			if tc.expErr {

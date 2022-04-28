@@ -1,4 +1,4 @@
-package types
+package consortium
 
 import (
 	"fmt"
@@ -20,13 +20,11 @@ func NewUpdateConsortiumParamsProposal(title, description string, params *Params
 }
 
 // Assert proposals implements govtypes.Content at compile-time
-var _ govtypes.Content = &UpdateConsortiumParamsProposal{}
+var _ govtypes.Content = (*UpdateConsortiumParamsProposal)(nil)
 
 func init() {
 	govtypes.RegisterProposalType(ProposalTypeUpdateConsortiumParams)
-	govtypes.RegisterProposalTypeCodec(&UpdateConsortiumParamsProposal{}, "lbm-sdk/UpdateConsortiumParamsProposal")
 	govtypes.RegisterProposalType(ProposalTypeUpdateValidatorAuths)
-	govtypes.RegisterProposalTypeCodec(&UpdateValidatorAuthsProposal{}, "lbm-sdk/UpdateValidatorAuths")
 }
 
 func (p *UpdateConsortiumParamsProposal) GetTitle() string       { return p.Title }
@@ -57,7 +55,7 @@ func NewUpdateValidatorAuthsProposal(title, description string,
 	return &UpdateValidatorAuthsProposal{title, description, auths}
 }
 
-var _ govtypes.Content = &UpdateValidatorAuthsProposal{}
+var _ govtypes.Content = (*UpdateValidatorAuthsProposal)(nil)
 
 func (p *UpdateValidatorAuthsProposal) GetTitle() string       { return p.Title }
 func (p *UpdateValidatorAuthsProposal) GetDescription() string { return p.Description }
