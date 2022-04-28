@@ -2,179 +2,593 @@ package testutil
 
 import (
 	"fmt"
-	"strings"
+	"sort"
 
+	"github.com/gogo/protobuf/proto"
 	ostcli "github.com/line/ostracon/libs/cli"
 
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/client/cli"
 )
 
 func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
 	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
 
-	testCases := []struct {
-		name           string
-		args           []string
-		expectedOutput string
+	testCases := map[string]struct {
+		args     []string
+		valid    bool
+		expected proto.Message
 	}{
-		{
-			"json output",
-			[]string{
-				fmt.Sprintf("--%s=1", flags.FlagHeight),
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		"valid query": {
+			[]string{},
+			true,
+			&foundation.QueryParamsResponse{
+				Params: &foundation.Params{
+					Enabled: true,
+					FoundationTax: sdk.MustNewDecFromStr("0.2"),
+				},
 			},
-			`{"params":{"enabled":true,"foundation_tax":"0.000000000000000000"}}`,
 		},
-		{
-			"text output",
+		"extra args": {
 			[]string{
-				fmt.Sprintf("--%s=1", flags.FlagHeight),
-				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
+				"extra",
 			},
-			`params:
-  enabled: true
-  foundation_tax: "0.000000000000000000"`,
+			false,
+			nil,
 		},
 	}
 
-	for _, tc := range testCases {
+	for name, tc := range testCases {
 		tc := tc
 
-		s.Run(tc.name, func() {
+		s.Run(name, func() {
 			cmd := cli.NewQueryCmdParams()
-			clientCtx := val.ClientCtx
-
-			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
 			s.Require().NoError(err)
-			s.Require().Equal(tc.expectedOutput, strings.TrimSpace(out.String()))
+
+			var actual foundation.QueryParamsResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().Equal(tc.expected, &actual)
 		})
 	}
 }
 
 func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuth() {
 	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
 
-	testCases := []struct {
-		name           string
+	testCases := map[string]struct {
 		args           []string
-		expectErr      bool
-		expectedOutput string
+		valid    bool
+		expected proto.Message
 	}{
-		{
-			"json output",
+		"valid query": {
 			[]string{
-				fmt.Sprintf("--%s=1", flags.FlagHeight),
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 				val.ValAddress.String(),
-			},
-			false,
-			fmt.Sprintf(`{"auth":{"operator_address":"%s","creation_allowed":true}}`,
-				val.ValAddress.String(),
-			),
-		},
-		{
-			"text output",
-			[]string{
-				fmt.Sprintf("--%s=1", flags.FlagHeight),
-				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
-				val.ValAddress.String(),
-			},
-			false,
-			fmt.Sprintf(`auth:
-  creation_allowed: true
-  operator_address: %s`,
-				val.ValAddress.String(),
-			),
-		},
-		{
-			"with no args",
-			[]string{
-				fmt.Sprintf("--%s=1", flags.FlagHeight),
 			},
 			true,
-			"",
+			&foundation.QueryValidatorAuthResponse{
+				Auth: &foundation.ValidatorAuth{
+					OperatorAddress: val.ValAddress.String(),
+					CreationAllowed: true,
+				},
+			},
 		},
-		{
-			"with an invalid address",
+		"extra args": {
 			[]string{
-				fmt.Sprintf("--%s=1", flags.FlagHeight),
+				val.ValAddress.String(),
+				"extra",
+			},
+			false,
+			nil,
+		},
+		"not enough args": {
+			[]string{},
+			false,
+			nil,
+		},
+		"invalid address": {
+			[]string{
 				"this-is-an-invalid-address",
 			},
-			true,
-			"",
+			false,
+			nil,
 		},
 	}
 
-	for _, tc := range testCases {
+	for name, tc := range testCases {
 		tc := tc
 
-		s.Run(tc.name, func() {
+		s.Run(name, func() {
 			cmd := cli.NewQueryCmdValidatorAuth()
-			clientCtx := val.ClientCtx
-
-			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
-			if tc.expectErr {
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
 				s.Require().Error(err)
-			} else {
-				s.Require().NoError(err)
-				s.Require().Equal(tc.expectedOutput, strings.TrimSpace(out.String()))
+				return
 			}
+			s.Require().NoError(err)
+
+			var actual foundation.QueryValidatorAuthResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().Equal(tc.expected, &actual)
 		})
 	}
 }
 
 func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuths() {
 	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
 
-	jsonAuth := `{"operator_address":"%s","creation_allowed":true}`
-	textAuth := `- creation_allowed: true
-  operator_address: %s
-`
-	testCases := []struct {
-		name           string
+	testCases := map[string]struct {
 		args           []string
-		expectedOutput string
+		valid bool
+		expected []foundation.ValidatorAuth
 	}{
-		{
-			"json output",
-			[]string{
-				fmt.Sprintf("--%s=1", flags.FlagHeight),
-				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+		"valid query": {
+			[]string{},
+			true,
+			[]foundation.ValidatorAuth{
+				{
+					OperatorAddress: s.network.Validators[0].ValAddress.String(),
+					CreationAllowed: true,
+				},
 			},
-			fmt.Sprintf(`{"auths":[%s,%s],"pagination":{"next_key":null,"total":"0"}}`,
-				fmt.Sprintf(jsonAuth, s.network.Validators[0].ValAddress),
-				fmt.Sprintf(jsonAuth, s.network.Validators[1].ValAddress),
-			),
 		},
-		{
-			"text output",
+		"extra args": {
 			[]string{
-				fmt.Sprintf("--%s=1", flags.FlagHeight),
-				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
+				"extra",
 			},
-			fmt.Sprintf(`auths:
-%s%s
-pagination:
-  next_key: null
-  total: "0"`,
-				fmt.Sprintf(textAuth, s.network.Validators[0].ValAddress),
-				fmt.Sprintf(textAuth, s.network.Validators[1].ValAddress),
-			),
+			false,
+			nil,
 		},
 	}
 
-	for _, tc := range testCases {
+	for name, tc := range testCases {
 		tc := tc
 
-		s.Run(tc.name, func() {
+		s.Run(name, func() {
 			cmd := cli.NewQueryCmdValidatorAuths()
-			clientCtx := val.ClientCtx
-
-			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
 			s.Require().NoError(err)
-			s.Require().Equal(tc.expectedOutput, strings.TrimSpace(out.String()))
+
+			var actual foundation.QueryValidatorAuthsResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			sort.Slice(tc.expected, func(l, r int) bool {
+				return tc.expected[l].OperatorAddress < tc.expected[r].OperatorAddress
+			})
+			s.Require().Equal(tc.expected, actual.Auths)
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdTreasury() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args           []string
+		valid bool
+	}{
+		"valid query": {
+			[]string{},
+			true,
+		},
+		"extra args": {
+			[]string{
+				"extra",
+			},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdTreasury()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual foundation.QueryTreasuryResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdFoundationInfo() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args           []string
+		valid bool
+	}{
+		"valid query": {
+			[]string{},
+			true,
+		},
+		"extra args": {
+			[]string{
+				"extra",
+			},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdFoundationInfo()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual foundation.QueryFoundationInfoResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdMember() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args           []string
+		valid bool
+		expected *foundation.Member
+	}{
+		"valid query": {
+			[]string{
+				val.Address.String(),
+			},
+			true,
+			&foundation.Member{
+				Address: val.Address.String(),
+				Weight: sdk.OneDec(),
+				Metadata: "genesis member",
+			},
+		},
+		"extra args": {
+			[]string{
+				"extra",
+			},
+			false,
+			nil,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdMember()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual foundation.QueryMemberResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().Equal(tc.expected, actual.Member)
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdMembers() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args           []string
+		valid bool
+	}{
+		"valid query": {
+			[]string{},
+			true,
+		},
+		"extra args": {
+			[]string{
+				"extra",
+			},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdMembers()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual foundation.QueryMembersResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdProposal() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args           []string
+		valid bool
+	}{
+		"valid query": {
+			[]string{
+				"1",
+			},
+			true,
+		},
+		"extra args": {
+			[]string{
+				"1",
+				"extra",
+			},
+			false,
+		},
+		"not enough args": {
+			[]string{},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdProposal()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual foundation.QueryProposalResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdProposals() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args           []string
+		valid bool
+	}{
+		"valid query": {
+			[]string{},
+			true,
+		},
+		"extra args": {
+			[]string{
+				"extra",
+			},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdProposals()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual foundation.QueryProposalsResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdVote() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args           []string
+		valid bool
+	}{
+		"valid query": {
+			[]string{
+				"1",
+				val.Address.String(),
+			},
+			true,
+		},
+		"extra args": {
+			[]string{
+				"1",
+				val.Address.String(),
+				"extra",
+			},
+			false,
+		},
+		"not enough args": {
+			[]string{
+				"1",
+			},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdVote()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual foundation.QueryVoteResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdVotes() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args           []string
+		valid bool
+	}{
+		"valid query": {
+			[]string{
+				"1",
+			},
+			true,
+		},
+		"extra args": {
+			[]string{
+				"1",
+				"extra",
+			},
+			false,
+		},
+		"not enough args": {
+			[]string{},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdVotes()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual foundation.QueryVotesResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdTallyResult() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args           []string
+		valid bool
+	}{
+		"valid query": {
+			[]string{
+				"1",
+			},
+			true,
+		},
+		"extra args": {
+			[]string{
+				"1",
+				"extra",
+			},
+			false,
+		},
+		"not enough args": {
+			[]string{},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdTallyResult()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual foundation.QueryTallyResultResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 		})
 	}
 }

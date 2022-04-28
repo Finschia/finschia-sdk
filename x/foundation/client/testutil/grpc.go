@@ -7,6 +7,8 @@ import (
 
 	"github.com/line/lbm-sdk/testutil"
 	"github.com/line/lbm-sdk/testutil/rest"
+
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
@@ -28,6 +30,7 @@ func (s *IntegrationTestSuite) TestGRPCParams() {
 			&foundation.QueryParamsResponse{
 				Params: &foundation.Params{
 					Enabled: true,
+					FoundationTax: sdk.MustNewDecFromStr("0.2"),
 				},
 			},
 		},
@@ -110,7 +113,7 @@ func (s *IntegrationTestSuite) TestGRPCValidatorAuths() {
 			"valid request",
 			fmt.Sprintf("%s/lbm/foundation/v1/validators", val.APIAddress),
 			map[string]string{},
-			2,
+			len(s.network.Validators),
 			false,
 		},
 	}
