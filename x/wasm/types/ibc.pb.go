@@ -34,7 +34,8 @@ type MsgIBCSend struct {
 	// Timeout timestamp (in nanoseconds) relative to the current block timestamp.
 	// The timeout is disabled when set to 0.
 	TimeoutTimestamp uint64 `protobuf:"varint,5,opt,name=timeout_timestamp,json=timeoutTimestamp,proto3" json:"timeout_timestamp,omitempty" yaml:"timeout_timestamp"`
-	// data is the payload to transfer
+	// Data is the payload to transfer. We must not make assumption what format or
+	// content is in here.
 	Data encoding_json.RawMessage `protobuf:"bytes,6,opt,name=data,proto3,casttype=encoding/json.RawMessage" json:"data,omitempty"`
 }
 
