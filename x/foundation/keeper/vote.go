@@ -6,13 +6,13 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
-func (k Keeper) vote(ctx sdk.Context, id uint64, voter string, option foundation.VoteOption, metadata string) error {
+func (k Keeper) vote(ctx sdk.Context, vote foundation.Vote) error {
 	// Make sure that a voter hasn't already voted.
-	if k.hasVote(ctx, id, sdk.AccAddress(voter)) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Already voted: %s", voter)
+	if k.hasVote(ctx, vote.ProposalId, sdk.AccAddress(vote.Voter)) {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Already voted: %s", vote.Voter)
 	}
 
-	proposal, err := k.GetProposal(ctx, id)
+	proposal, err := k.GetProposal(ctx, vote.ProposalId)
 	if err != nil {
 		return err
 	}
@@ -25,15 +25,9 @@ func (k Keeper) vote(ctx sdk.Context, id uint64, voter string, option foundation
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "voting period has ended already")
 	}
 
-	newVote := foundation.Vote{
-		ProposalId: id,
-		Voter:      voter,
-		Option:     option,
-		Metadata:   metadata,
-		SubmitTime: ctx.BlockTime(),
-	}
+	vote.SubmitTime = ctx.BlockTime()
 
-	return k.setVote(ctx, newVote)
+	return k.setVote(ctx, vote)
 }
 
 func (k Keeper) hasVote(ctx sdk.Context, proposalId uint64, voter sdk.AccAddress) bool {

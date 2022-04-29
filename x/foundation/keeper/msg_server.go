@@ -134,7 +134,13 @@ func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitPr
 		// Consider proposers as Yes votes
 		for _, proposer := range req.Proposers {
 			ctx.GasMeter().ConsumeGas(gasCostPerIteration, "vote on proposal")
-			err = s.keeper.vote(ctx, id, proposer, foundation.VOTE_OPTION_YES, "")
+
+			vote := foundation.Vote{
+				ProposalId: id,
+				Voter:      proposer,
+				Option:     foundation.VOTE_OPTION_YES,
+			}
+			err = s.keeper.vote(ctx, vote)
 			if err != nil {
 				return &foundation.MsgSubmitProposalResponse{ProposalId: id}, sdkerrors.Wrap(err, "The proposal was created but failed on vote")
 			}
@@ -187,12 +193,19 @@ func (s msgServer) Vote(c context.Context, req *foundation.MsgVote) (*foundation
 		return nil, err
 	}
 
-	if err := s.keeper.vote(ctx, req.ProposalId, req.Voter, req.Option, req.Metadata); err != nil {
+	vote := foundation.Vote{
+		ProposalId: req.ProposalId,
+		Voter:      req.Voter,
+		Option:     req.Option,
+		Metadata:   req.Metadata,
+	}
+
+	if err := s.keeper.vote(ctx, vote); err != nil {
 		return nil, err
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventVote{
-		ProposalId: req.ProposalId,
+		Vote: vote,
 	}); err != nil {
 		return nil, err
 	}

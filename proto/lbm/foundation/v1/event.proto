@@ -58,9 +58,7 @@ message EventWithdrawProposal {
 
 // EventVote is an event emitted when a voter votes on a proposal.
 message EventVote {
-  // proposal_id is the unique ID of the proposal.
-  uint64 proposal_id = 1;
-  string voter = 2;
+  Vote vote = 1 [(gogoproto.nullable) = false];
 }
 
 // EventExec is an event emitted when a proposal is executed.

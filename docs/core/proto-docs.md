@@ -9026,8 +9026,7 @@ EventVote is an event emitted when a voter votes on a proposal.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `proposal_id` | [uint64](#uint64) |  | proposal_id is the unique ID of the proposal. |
-| `voter` | [string](#string) |  |  |
+| `vote` | [Vote](#lbm.foundation.v1.Vote) |  |  |
 
 
 
