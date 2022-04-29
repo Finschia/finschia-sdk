@@ -14,8 +14,6 @@ import (
 )
 
 const (
-	// DefaultMaxWasmCodeSize limit max bytes read to prevent gzip bombs
-	DefaultMaxWasmCodeSize = 600 * 1024 * 2
 	// DefaultGasMultiplier is how many CosmWasm gas points = 1 Cosmos SDK gas point.
 	//
 	// CosmWasm gas strategy is documented in https://https://github.com/line/cosmwasm/blob/v1.0.0-0.6.0/docs/GAS.md.
@@ -44,7 +42,6 @@ const (
 
 var ParamStoreKeyUploadAccess = []byte("uploadAccess")
 var ParamStoreKeyInstantiateAccess = []byte("instantiateAccess")
-var ParamStoreKeyMaxWasmCodeSize = []byte("maxWasmCodeSize")
 var ParamStoreKeyGasMultiplier = []byte("gasMultiplier")
 var ParamStoreKeyInstanceCost = []byte("instanceCost")
 var ParamStoreKeyCompileCost = []byte("compileCost")
@@ -125,7 +122,6 @@ func DefaultParams() Params {
 	return Params{
 		CodeUploadAccess:             AllowEverybody,
 		InstantiateDefaultPermission: AccessTypeEverybody,
-		MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 		GasMultiplier:                DefaultGasMultiplier,
 		InstanceCost:                 DefaultInstanceCost,
 		CompileCost:                  DefaultCompileCost,
@@ -145,7 +141,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(ParamStoreKeyUploadAccess, &p.CodeUploadAccess, validateAccessConfig),
 		paramtypes.NewParamSetPair(ParamStoreKeyInstantiateAccess, &p.InstantiateDefaultPermission, validateAccessType),
-		paramtypes.NewParamSetPair(ParamStoreKeyMaxWasmCodeSize, &p.MaxWasmCodeSize, validateMaxWasmCodeSize),
 		paramtypes.NewParamSetPair(ParamStoreKeyGasMultiplier, &p.GasMultiplier, validateGasMultiplier),
 		paramtypes.NewParamSetPair(ParamStoreKeyInstanceCost, &p.InstanceCost, validateInstanceCost),
 		paramtypes.NewParamSetPair(ParamStoreKeyCompileCost, &p.CompileCost, validateCompileCost),
@@ -159,9 +154,6 @@ func (p Params) ValidateBasic() error {
 	}
 	if err := validateAccessConfig(p.CodeUploadAccess); err != nil {
 		return errors.Wrap(err, "upload access")
-	}
-	if err := validateMaxWasmCodeSize(p.MaxWasmCodeSize); err != nil {
-		return errors.Wrap(err, "max wasm code size")
 	}
 	if err := validateGasMultiplier(p.GasMultiplier); err != nil {
 		return errors.Wrap(err, "gas multiplier")
@@ -197,17 +189,6 @@ func validateAccessType(i interface{}) error {
 		}
 	}
 	return sdkerrors.Wrapf(ErrInvalid, "unknown type: %q", a)
-}
-
-func validateMaxWasmCodeSize(i interface{}) error {
-	a, ok := i.(uint64)
-	if !ok {
-		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
-	}
-	if a == 0 {
-		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
-	}
-	return nil
 }
 
 func validateGasMultiplier(i interface{}) error {

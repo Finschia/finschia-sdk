@@ -14316,7 +14316,6 @@ Params defines the set of wasm parameters.
 | ----- | ---- | ----- | ----------- |
 | `code_upload_access` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
 | `instantiate_default_permission` | [AccessType](#lbm.wasm.v1.AccessType) |  |  |
-| `max_wasm_code_size` | [uint64](#uint64) |  |  |
 | `gas_multiplier` | [uint64](#uint64) |  |  |
 | `instance_cost` | [uint64](#uint64) |  |  |
 | `compile_cost` | [uint64](#uint64) |  |  |

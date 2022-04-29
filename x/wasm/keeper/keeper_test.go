@@ -131,7 +131,6 @@ func TestCreateStoresInstantiatePermission(t *testing.T) {
 			keepers.WasmKeeper.setParams(ctx, types.Params{
 				CodeUploadAccess:             types.AllowEverybody,
 				InstantiateDefaultPermission: spec.srcPermission,
-				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 				GasMultiplier:                types.DefaultGasMultiplier,
 				InstanceCost:                 types.DefaultInstanceCost,
 				CompileCost:                  types.DefaultCompileCost,
