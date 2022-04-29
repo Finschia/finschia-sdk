@@ -110,6 +110,15 @@ func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 			},
 			valid: false,
 		},
+		"long metadata": {
+			operator: s.operator,
+			member: foundation.Member{
+				Address: s.member.String(),
+				Weight: sdk.ZeroDec(),
+				Metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+			},
+			valid: false,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -200,6 +209,7 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 
 	testCases := map[string]struct {
 		proposers []sdk.AccAddress
+		metadata string
 		msg sdk.Msg
 		exec foundation.Exec
 		valid bool
@@ -242,6 +252,16 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 			},
 			valid: false,
 		},
+		"long metadata": {
+			proposers: []sdk.AccAddress{s.stranger},
+			metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+			msg: &foundation.MsgWithdrawFromTreasury{
+				Operator: s.operator.String(),
+				To: s.stranger.String(),
+				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+			},
+			valid: false,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -252,6 +272,7 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 			}
 			req := &foundation.MsgSubmitProposal{
 				Proposers: proposers,
+				Metadata: tc.metadata,
 				Exec: tc.exec,
 			}
 			err := req.SetMsgs([]sdk.Msg{tc.msg})
@@ -328,6 +349,7 @@ func (s *KeeperTestSuite) TestMsgWithdrawProposal() {
 func (s *KeeperTestSuite) TestMsgVote() {
 	testCases := map[string]struct {
 		voter sdk.AccAddress
+		metadata string
 		msg sdk.Msg
 		exec foundation.Exec
 		valid bool
@@ -345,12 +367,19 @@ func (s *KeeperTestSuite) TestMsgVote() {
 			voter: s.stranger,
 			valid: false,
 		},
+		"long metadata": {
+			voter: s.stranger,
+			metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+			valid: false,
+		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			// submit a proposal first
-			proposal := &foundation.MsgSubmitProposal{Proposers: []string{s.member.String()}}
+			proposal := &foundation.MsgSubmitProposal{
+				Proposers: []string{s.member.String()},
+			}
 			err := proposal.SetMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
 				Operator: s.operator.String(),
 				To: s.stranger.String(),
@@ -382,6 +411,7 @@ func (s *KeeperTestSuite) TestMsgVote() {
 				ProposalId: proposalId,
 				Voter: tc.voter.String(),
 				Option: foundation.VOTE_OPTION_YES,
+				Metadata: tc.metadata,
 				Exec: tc.exec,
 			}
 

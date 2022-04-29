@@ -58,6 +58,10 @@ func (k Keeper) setPreviousProposalID(ctx sdk.Context, id uint64) {
 }
 
 func (k Keeper) submitProposal(ctx sdk.Context, proposers []string, metadata string, msgs []sdk.Msg) (uint64, error) {
+	if err := validateMetadata(metadata, k.config); err != nil {
+		return 0, err
+	}
+
 	foundationInfo := k.GetFoundationInfo(ctx)
 	if err := ensureMsgAuthz(msgs, sdk.AccAddress(foundationInfo.Operator)); err != nil {
 		return 0, err

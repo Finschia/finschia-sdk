@@ -7,6 +7,10 @@ import (
 )
 
 func (k Keeper) vote(ctx sdk.Context, vote foundation.Vote) error {
+	if err := validateMetadata(vote.Metadata, k.config); err != nil {
+		return err
+	}
+
 	// Make sure that a voter hasn't already voted.
 	if k.hasVote(ctx, vote.ProposalId, sdk.AccAddress(vote.Voter)) {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Already voted: %s", vote.Voter)
