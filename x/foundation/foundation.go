@@ -12,14 +12,6 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
-func validateMetadata(metadata string, config Config) error {
-	if len(metadata) > int(config.MaxMetadataLen) {
-		return sdkerrors.ErrInvalidRequest.Wrap("metadata is too large")
-	}
-
-	return nil
-}
-
 func validateMembers(members []Member) error {
 	addrs := map[string]bool{}
 	for _, member := range members {

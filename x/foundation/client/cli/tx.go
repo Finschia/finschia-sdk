@@ -28,27 +28,27 @@ const (
 	ExecTry  = "try"
 )
 
-func parseMembers(codec codec.Codec, membersJson string) ([]foundation.Member, error) {
+func parseMembers(codec codec.Codec, membersJSON string) ([]foundation.Member, error) {
 	var cliMembers []json.RawMessage
-	if err := json.Unmarshal([]byte(membersJson), &cliMembers); err != nil {
+	if err := json.Unmarshal([]byte(membersJSON), &cliMembers); err != nil {
 		return nil, err
 	}
 
-	var members []foundation.Member
-	for _, cliMember := range cliMembers {
+	members := make([]foundation.Member, len(cliMembers))
+	for i, cliMember := range cliMembers {
 		var member foundation.Member
 		if err := codec.UnmarshalJSON(cliMember, &member); err != nil {
 			return nil, err
 		}
-		members = append(members, member)
+		members[i] = member
 	}
 
 	return members, nil
 }
 
-func parseAddresses(addressesJson string) ([]string, error) {
+func parseAddresses(addressesJSON string) ([]string, error) {
 	var addresses []string
-	if err := json.Unmarshal([]byte(addressesJson), &addresses); err != nil {
+	if err := json.Unmarshal([]byte(addressesJSON), &addresses); err != nil {
 		return nil, err
 	}
 	if len(addresses) == 0 {
@@ -58,9 +58,9 @@ func parseAddresses(addressesJson string) ([]string, error) {
 	return addresses, nil
 }
 
-func parseDecisionPolicy(codec codec.Codec, policyJson string) (foundation.DecisionPolicy, error) {
+func parseDecisionPolicy(codec codec.Codec, policyJSON string) (foundation.DecisionPolicy, error) {
 	var policy foundation.DecisionPolicy
-	if err := codec.UnmarshalInterfaceJSON([]byte(policyJson), &policy); err != nil {
+	if err := codec.UnmarshalInterfaceJSON([]byte(policyJSON), &policy); err != nil {
 		return nil, err
 	}
 
@@ -86,9 +86,9 @@ func voteOptionFromString(str string) (foundation.VoteOption, error) {
 	return foundation.VoteOption(vo), nil
 }
 
-func parseMsgs(cdc codec.Codec, msgsJson string) ([]sdk.Msg, error) {
+func parseMsgs(cdc codec.Codec, msgsJSON string) ([]sdk.Msg, error) {
 	var cliMsgs []json.RawMessage
-	if err := json.Unmarshal([]byte(msgsJson), &cliMsgs); err != nil {
+	if err := json.Unmarshal([]byte(msgsJSON), &cliMsgs); err != nil {
 		return nil, err
 	}
 
@@ -587,13 +587,13 @@ Parameters:
 				return err
 			}
 
-			proposalId, err := strconv.ParseUint(args[0], 10, 64)
+			proposalID, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
 
 			msg := foundation.MsgWithdrawProposal{
-				ProposalId: proposalId,
+				ProposalId: proposalID,
 				Address:    address,
 			}
 			if err := msg.ValidateBasic(); err != nil {
@@ -636,7 +636,7 @@ Parameters:
 				return err
 			}
 
-			proposalId, err := strconv.ParseUint(args[0], 10, 64)
+			proposalID, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
@@ -653,7 +653,7 @@ Parameters:
 			exec := execFromString(execStr)
 
 			msg := foundation.MsgVote{
-				ProposalId: proposalId,
+				ProposalId: proposalID,
 				Voter:      voter,
 				Option:     option,
 				Metadata:   args[3],
@@ -688,13 +688,13 @@ func NewTxCmdExec() *cobra.Command {
 				return err
 			}
 
-			proposalId, err := strconv.ParseUint(args[0], 10, 64)
+			proposalID, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
 
 			msg := foundation.MsgExec{
-				ProposalId: proposalId,
+				ProposalId: proposalID,
 				Signer:     signer,
 			}
 			if err := msg.ValidateBasic(); err != nil {

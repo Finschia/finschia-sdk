@@ -1,8 +1,6 @@
 package foundation
 
 import (
-	"github.com/line/lbm-sdk/codec/types"
-
 	"github.com/gogo/protobuf/proto"
 
 	codectypes "github.com/line/lbm-sdk/codec/types"
@@ -27,7 +25,7 @@ func (m *EventUpdateDecisionPolicy) SetDecisionPolicy(policy DecisionPolicy) err
 		return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", event)
 	}
 
-	any, err := types.NewAnyWithValue(event)
+	any, err := codectypes.NewAnyWithValue(event)
 	if err != nil {
 		return err
 	}

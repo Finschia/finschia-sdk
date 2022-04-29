@@ -30,18 +30,18 @@ func (k Keeper) vote(ctx sdk.Context, vote foundation.Vote) error {
 	return k.setVote(ctx, vote)
 }
 
-func (k Keeper) hasVote(ctx sdk.Context, proposalId uint64, voter sdk.AccAddress) bool {
+func (k Keeper) hasVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress) bool {
 	store := ctx.KVStore(k.storeKey)
-	key := voteKey(proposalId, voter)
+	key := voteKey(proposalID, voter)
 	return store.Has(key)
 }
 
-func (k Keeper) GetVote(ctx sdk.Context, proposalId uint64, voter sdk.AccAddress) (*foundation.Vote, error) {
+func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress) (*foundation.Vote, error) {
 	store := ctx.KVStore(k.storeKey)
-	key := voteKey(proposalId, voter)
+	key := voteKey(proposalID, voter)
 	bz := store.Get(key)
 	if len(bz) == 0 {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "No vote for proposal %d: %s", proposalId, voter)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "No vote for proposal %d: %s", proposalID, voter)
 	}
 
 	var vote foundation.Vote
@@ -64,9 +64,9 @@ func (k Keeper) setVote(ctx sdk.Context, vote foundation.Vote) error {
 	return nil
 }
 
-func (k Keeper) iterateVotes(ctx sdk.Context, proposalId uint64, fn func(vote foundation.Vote) (stop bool)) {
+func (k Keeper) iterateVotes(ctx sdk.Context, proposalID uint64, fn func(vote foundation.Vote) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	prefix := append(voteKeyPrefix, Uint64ToBytes(proposalId)...)
+	prefix := append(voteKeyPrefix, Uint64ToBytes(proposalID)...)
 	iterator := sdk.KVStorePrefixIterator(store, prefix)
 	defer iterator.Close()
 
@@ -79,9 +79,9 @@ func (k Keeper) iterateVotes(ctx sdk.Context, proposalId uint64, fn func(vote fo
 	}
 }
 
-func (k Keeper) GetVotes(ctx sdk.Context, proposalId uint64) []foundation.Vote {
+func (k Keeper) GetVotes(ctx sdk.Context, proposalID uint64) []foundation.Vote {
 	var votes []foundation.Vote
-	k.iterateVotes(ctx, proposalId, func(vote foundation.Vote) (stop bool) {
+	k.iterateVotes(ctx, proposalID, func(vote foundation.Vote) (stop bool) {
 		votes = append(votes, vote)
 		return false
 	})
@@ -90,10 +90,10 @@ func (k Keeper) GetVotes(ctx sdk.Context, proposalId uint64) []foundation.Vote {
 }
 
 // pruneVotes prunes all votes for a proposal from state.
-func (k Keeper) pruneVotes(ctx sdk.Context, proposalId uint64) {
+func (k Keeper) pruneVotes(ctx sdk.Context, proposalID uint64) {
 	keys := [][]byte{}
-	k.iterateVotes(ctx, proposalId, func(vote foundation.Vote) (stop bool) {
-		keys = append(keys, voteKey(proposalId, sdk.AccAddress(vote.Voter)))
+	k.iterateVotes(ctx, proposalID, func(vote foundation.Vote) (stop bool) {
+		keys = append(keys, voteKey(proposalID, sdk.AccAddress(vote.Voter)))
 		return false
 	})
 

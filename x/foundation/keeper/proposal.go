@@ -36,25 +36,25 @@ func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *foundatio
 	})
 }
 
-func (k Keeper) newProposalId(ctx sdk.Context) uint64 {
-	id := k.getPreviousProposalId(ctx) + 1
-	k.setPreviousProposalId(ctx, id)
+func (k Keeper) newProposalID(ctx sdk.Context) uint64 {
+	id := k.getPreviousProposalID(ctx) + 1
+	k.setPreviousProposalID(ctx, id)
 
 	return id
 }
 
-func (k Keeper) getPreviousProposalId(ctx sdk.Context) uint64 {
+func (k Keeper) getPreviousProposalID(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(previousProposalIdKey)
+	bz := store.Get(previousProposalIDKey)
 	if len(bz) == 0 {
 		panic("previous proposal ID hasn't been set")
 	}
 	return Uint64FromBytes(bz)
 }
 
-func (k Keeper) setPreviousProposalId(ctx sdk.Context, id uint64) {
+func (k Keeper) setPreviousProposalID(ctx sdk.Context, id uint64) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(previousProposalIdKey, Uint64ToBytes(id))
+	store.Set(previousProposalIDKey, Uint64ToBytes(id))
 }
 
 func (k Keeper) submitProposal(ctx sdk.Context, proposers []string, metadata string, msgs []sdk.Msg) (uint64, error) {
@@ -63,7 +63,7 @@ func (k Keeper) submitProposal(ctx sdk.Context, proposers []string, metadata str
 		return 0, err
 	}
 
-	id := k.newProposalId(ctx)
+	id := k.newProposalID(ctx)
 	proposal := foundation.Proposal{
 		Id:                id,
 		Metadata:          metadata,
@@ -155,7 +155,7 @@ func (k Keeper) GetProposals(ctx sdk.Context) []foundation.Proposal {
 
 func (k Keeper) iterateProposals(ctx sdk.Context, fn func(proposal foundation.Proposal) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	prefix := append(proposalKeyPrefix)
+	prefix := proposalKeyPrefix
 	iterator := sdk.KVStorePrefixIterator(store, prefix)
 	defer iterator.Close()
 
@@ -225,9 +225,9 @@ func (k Keeper) setProposal(ctx sdk.Context, proposal foundation.Proposal) error
 	return nil
 }
 
-func (k Keeper) deleteProposal(ctx sdk.Context, proposalId uint64) {
+func (k Keeper) deleteProposal(ctx sdk.Context, proposalID uint64) {
 	store := ctx.KVStore(k.storeKey)
-	key := proposalKey(proposalId)
+	key := proposalKey(proposalID)
 	store.Delete(key)
 }
 

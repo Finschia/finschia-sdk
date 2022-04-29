@@ -2,7 +2,6 @@ package foundation
 
 import (
 	"github.com/line/lbm-sdk/codec/legacy"
-	"github.com/line/lbm-sdk/codec/types"
 
 	"github.com/gogo/protobuf/proto"
 
@@ -168,7 +167,7 @@ func (m *MsgUpdateDecisionPolicy) SetDecisionPolicy(policy DecisionPolicy) error
 		return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
 	}
 
-	any, err := types.NewAnyWithValue(msg)
+	any, err := codectypes.NewAnyWithValue(msg)
 	if err != nil {
 		return err
 	}
@@ -253,9 +252,9 @@ func (m MsgSubmitProposal) GetSignBytes() []byte {
 
 // GetSigners implements Msg.
 func (m MsgSubmitProposal) GetSigners() []sdk.AccAddress {
-	var signers []sdk.AccAddress
-	for _, proposer := range m.Proposers {
-		signers = append(signers, sdk.AccAddress(proposer))
+	signers := make([]sdk.AccAddress, len(m.Proposers))
+	for i, proposer := range m.Proposers {
+		signers[i] = sdk.AccAddress(proposer)
 	}
 	return signers
 }

@@ -83,7 +83,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 
 	k.setFoundationInfo(ctx, *info)
 
-	k.setPreviousProposalId(ctx, data.PreviousProposalId)
+	k.setPreviousProposalID(ctx, data.PreviousProposalId)
 
 	for _, proposal := range data.Proposals {
 		k.setProposal(ctx, proposal)
@@ -111,7 +111,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 		ValidatorAuths:     k.GetValidatorAuths(ctx),
 		Foundation:         &info,
 		Members:            k.GetMembers(ctx),
-		PreviousProposalId: k.getPreviousProposalId(ctx),
+		PreviousProposalId: k.getPreviousProposalID(ctx),
 		Proposals:          proposals,
 		Votes:              votes,
 	}

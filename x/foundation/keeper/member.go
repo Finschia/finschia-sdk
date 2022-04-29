@@ -6,7 +6,19 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
+func validateMetadata(metadata string, config foundation.Config) error {
+	if len(metadata) > int(config.MaxMetadataLen) {
+		return sdkerrors.ErrInvalidRequest.Wrap("metadata is too large")
+	}
+
+	return nil
+}
+
 func (k Keeper) updateDecisionPolicy(ctx sdk.Context, policy foundation.DecisionPolicy) error {
+	if err := policy.Validate(k.config); err != nil {
+		return err
+	}
+
 	info := k.GetFoundationInfo(ctx)
 	info.SetDecisionPolicy(policy)
 	info.Version++
@@ -45,11 +57,13 @@ func (k Keeper) setFoundationInfo(ctx sdk.Context, info foundation.FoundationInf
 func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.Member) error {
 	weightUpdate := sdk.ZeroDec()
 	for _, new := range members {
+		if err := validateMetadata(new.Metadata, k.config); err != nil {
+			return err
+		}
 		weightUpdate = weightUpdate.Add(new.Weight)
 
-		deleting := new.Weight.IsZero()
-
 		old, err := k.GetMember(ctx, sdk.AccAddress(new.Address))
+		deleting := new.Weight.IsZero()
 		if err == nil {
 			weightUpdate = weightUpdate.Sub(old.Weight)
 		} else if deleting { // the member must exist
@@ -111,7 +125,7 @@ func (k Keeper) deleteMember(ctx sdk.Context, address sdk.AccAddress) {
 
 func (k Keeper) iterateMembers(ctx sdk.Context, fn func(member foundation.Member) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	prefix := append(memberKeyPrefix)
+	prefix := memberKeyPrefix
 	iterator := sdk.KVStorePrefixIterator(store, prefix)
 	defer iterator.Close()
 
@@ -139,15 +153,15 @@ func (k Keeper) GetOperator(ctx sdk.Context) sdk.AccAddress {
 	return sdk.AccAddress(info.Operator)
 }
 
-func (k Keeper) updateOperator(ctx sdk.Context, operator sdk.AccAddress) error {
-	info := k.GetFoundationInfo(ctx)
-	info.Operator = operator.String()
-	if err := k.setFoundationInfo(ctx, info); err != nil {
-		return err
-	}
+// func (k Keeper) updateOperator(ctx sdk.Context, operator sdk.AccAddress) error {
+// 	info := k.GetFoundationInfo(ctx)
+// 	info.Operator = operator.String()
+// 	if err := k.setFoundationInfo(ctx, info); err != nil {
+// 		return err
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
 func (k Keeper) GetAdmin(ctx sdk.Context) sdk.AccAddress {
 	return k.authKeeper.GetModuleAccount(ctx, foundation.AdministratorName).GetAddress()

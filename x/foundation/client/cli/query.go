@@ -271,12 +271,12 @@ func NewQueryCmdProposal() *cobra.Command {
 			}
 			queryClient := foundation.NewQueryClient(clientCtx)
 
-			proposalId, err := strconv.ParseUint(args[0], 10, 64)
+			proposalID, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
 
-			req := foundation.QueryProposalRequest{ProposalId: proposalId}
+			req := foundation.QueryProposalRequest{ProposalId: proposalID}
 			res, err := queryClient.Proposal(context.Background(), &req)
 			if err != nil {
 				return err
@@ -334,7 +334,7 @@ func NewQueryCmdVote() *cobra.Command {
 			}
 			queryClient := foundation.NewQueryClient(clientCtx)
 
-			proposalId, err := strconv.ParseUint(args[0], 10, 64)
+			proposalID, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
@@ -344,7 +344,7 @@ func NewQueryCmdVote() *cobra.Command {
 				return err
 			}
 
-			req := foundation.QueryVoteRequest{ProposalId: proposalId, Voter: voter}
+			req := foundation.QueryVoteRequest{ProposalId: proposalID, Voter: voter}
 			res, err := queryClient.Vote(context.Background(), &req)
 			if err != nil {
 				return err
@@ -373,12 +373,12 @@ func NewQueryCmdVotes() *cobra.Command {
 			}
 			queryClient := foundation.NewQueryClient(clientCtx)
 
-			proposalId, err := strconv.ParseUint(args[0], 10, 64)
+			proposalID, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
 
-			req := foundation.QueryVotesRequest{ProposalId: proposalId}
+			req := foundation.QueryVotesRequest{ProposalId: proposalID}
 			res, err := queryClient.Votes(context.Background(), &req)
 			if err != nil {
 				return err
@@ -407,12 +407,12 @@ func NewQueryCmdTallyResult() *cobra.Command {
 			}
 			queryClient := foundation.NewQueryClient(clientCtx)
 
-			proposalId, err := strconv.ParseUint(args[0], 10, 64)
+			proposalID, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
 
-			req := foundation.QueryTallyResultRequest{ProposalId: proposalId}
+			req := foundation.QueryTallyResultRequest{ProposalId: proposalID}
 			res, err := queryClient.TallyResult(context.Background(), &req)
 			if err != nil {
 				return err

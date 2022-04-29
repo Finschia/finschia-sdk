@@ -159,7 +159,7 @@ func (s *IntegrationTestSuite) submitProposal(msg sdk.Msg, try bool) uint64 {
 		s.msgToString(msg),
 	}, commonArgs...)
 	if try {
-		args = append(args, fmt.Sprintf("--exec=try"))
+		args = append(args, fmt.Sprintf("--%s=%s", cli.FlagExec, cli.ExecTry))
 	}
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdSubmitProposal(), args)
 	s.Require().NoError(err)
@@ -183,12 +183,12 @@ func (s *IntegrationTestSuite) submitProposal(msg sdk.Msg, try bool) uint64 {
 	return 0
 }
 
-func (s *IntegrationTestSuite) vote(proposalId uint64, voters []sdk.AccAddress) {
+func (s *IntegrationTestSuite) vote(proposalID uint64, voters []sdk.AccAddress) {
 	val := s.network.Validators[0]
 
 	for _, voter := range voters {
 		args := append([]string{
-			fmt.Sprint(proposalId),
+			fmt.Sprint(proposalID),
 			voter.String(),
 			foundation.VOTE_OPTION_YES.String(),
 			"test vote",
@@ -203,10 +203,10 @@ func (s *IntegrationTestSuite) vote(proposalId uint64, voters []sdk.AccAddress) 
 }
 
 func (s IntegrationTestSuite) msgToString(msg sdk.Msg) string {
-	anyJson, err := s.cfg.Codec.MarshalInterfaceJSON(msg)
+	anyJSON, err := s.cfg.Codec.MarshalInterfaceJSON(msg)
 	s.Require().NoError(err)
 
-	cliMsgs := []json.RawMessage{anyJson}
+	cliMsgs := []json.RawMessage{anyJSON}
 	msgsBz, err := json.Marshal(cliMsgs)
 	s.Require().NoError(err)
 
