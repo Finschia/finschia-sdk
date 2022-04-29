@@ -202,7 +202,6 @@ func (p ThresholdDecisionPolicy) Validate(config Config) error {
 	return nil
 }
 
-
 func (p ThresholdDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
 	if sinceSubmission < p.Windows.MinExecutionPeriod {
 		return nil, sdkerrors.ErrUnauthorized.Wrapf("must wait %s after submission before execution, currently at %s", p.Windows.MinExecutionPeriod, sinceSubmission)
@@ -260,7 +259,6 @@ func (p PercentageDecisionPolicy) Validate(config Config) error {
 
 	return nil
 }
-
 
 func (p PercentageDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
 	if sinceSubmission < p.Windows.MinExecutionPeriod {

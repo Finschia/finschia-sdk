@@ -31,7 +31,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
 			true,
 			&foundation.QueryParamsResponse{
 				Params: &foundation.Params{
-					Enabled: true,
+					Enabled:       true,
 					FoundationTax: sdk.MustNewDecFromStr("0.2"),
 				},
 			},
@@ -72,7 +72,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuth() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args     []string
 		valid    bool
 		expected proto.Message
 	}{
@@ -137,8 +137,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuths() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
-		valid bool
+		args     []string
+		valid    bool
 		expected []foundation.ValidatorAuth
 	}{
 		"valid query": {
@@ -190,7 +190,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTreasury() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid query": {
@@ -231,7 +231,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdFoundationInfo() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid query": {
@@ -272,8 +272,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMember() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
-		valid bool
+		args     []string
+		valid    bool
 		expected *foundation.Member
 	}{
 		"valid query": {
@@ -282,8 +282,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMember() {
 			},
 			true,
 			&foundation.Member{
-				Address: val.Address.String(),
-				Weight: sdk.OneDec(),
+				Address:  val.Address.String(),
+				Weight:   sdk.OneDec(),
 				Metadata: "genesis member",
 			},
 		},
@@ -323,7 +323,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMembers() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid query": {
@@ -364,7 +364,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdProposal() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid query": {
@@ -412,7 +412,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdProposals() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid query": {
@@ -453,7 +453,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdVote() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid query": {
@@ -505,7 +505,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdVotes() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid query": {
@@ -553,7 +553,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTallyResult() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid query": {

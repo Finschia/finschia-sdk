@@ -65,16 +65,16 @@ func (k Keeper) submitProposal(ctx sdk.Context, proposers []string, metadata str
 
 	id := k.newProposalId(ctx)
 	proposal := foundation.Proposal{
-		Id: id,
-		Metadata: metadata,
-		Proposers: proposers,
-		SubmitTime: ctx.BlockTime(),
+		Id:                id,
+		Metadata:          metadata,
+		Proposers:         proposers,
+		SubmitTime:        ctx.BlockTime(),
 		FoundationVersion: foundationInfo.Version,
-		Result: foundation.PROPOSAL_RESULT_UNFINALIZED,
-		Status: foundation.PROPOSAL_STATUS_SUBMITTED,
-		ExecutorResult: foundation.PROPOSAL_EXECUTOR_RESULT_NOT_RUN,
-		VotingPeriodEnd: ctx.BlockTime().Add(foundationInfo.GetDecisionPolicy().GetVotingPeriod()),
-		FinalTallyResult: DefaultTallyResult(),
+		Result:            foundation.PROPOSAL_RESULT_UNFINALIZED,
+		Status:            foundation.PROPOSAL_STATUS_SUBMITTED,
+		ExecutorResult:    foundation.PROPOSAL_EXECUTOR_RESULT_NOT_RUN,
+		VotingPeriodEnd:   ctx.BlockTime().Add(foundationInfo.GetDecisionPolicy().GetVotingPeriod()),
+		FinalTallyResult:  DefaultTallyResult(),
 	}
 	if err := proposal.SetMsgs(msgs); err != nil {
 		return 0, err
@@ -128,7 +128,7 @@ func (k Keeper) abortOldProposals(ctx sdk.Context) {
 	latestVersion := k.GetFoundationInfo(ctx).Version
 
 	k.iterateProposals(ctx, func(proposal foundation.Proposal) (stop bool) {
-		if proposal.FoundationVersion != latestVersion - 1 {
+		if proposal.FoundationVersion != latestVersion-1 {
 			return true
 		}
 

@@ -1,8 +1,8 @@
 package foundation
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )

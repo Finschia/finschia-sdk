@@ -8,7 +8,7 @@ import (
 // DefaultGenesisState creates a default GenesisState object
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
-		Params:         &Params{
+		Params: &Params{
 			Enabled: false,
 		},
 	}

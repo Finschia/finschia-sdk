@@ -38,8 +38,8 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	if len(members) == 0 {
 		for _, auth := range validatorAuths {
 			member := foundation.Member{
-				Address: sdk.ValAddress(auth.OperatorAddress).ToAccAddress().String(),
-				Weight: sdk.OneDec(),
+				Address:  sdk.ValAddress(auth.OperatorAddress).ToAccAddress().String(),
+				Weight:   sdk.OneDec(),
 				Metadata: "genesis member",
 			}
 			members = append(members, member)
@@ -107,12 +107,12 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 	}
 
 	return &foundation.GenesisState{
-		Params:         k.GetParams(ctx),
-		ValidatorAuths: k.GetValidatorAuths(ctx),
-		Foundation:     &info,
-		Members:        k.GetMembers(ctx),
-		PreviousProposalId:    k.getPreviousProposalId(ctx),
-		Proposals:      proposals,
-		Votes:          votes,
+		Params:             k.GetParams(ctx),
+		ValidatorAuths:     k.GetValidatorAuths(ctx),
+		Foundation:         &info,
+		Members:            k.GetMembers(ctx),
+		PreviousProposalId: k.getPreviousProposalId(ctx),
+		Proposals:          proposals,
+		Votes:              votes,
 	}
 }

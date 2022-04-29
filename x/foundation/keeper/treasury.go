@@ -1,4 +1,4 @@
-package keeper 
+package keeper
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
@@ -20,7 +20,7 @@ func (k Keeper) collectFoundationTax(ctx sdk.Context) error {
 	if err := k.bankKeeper.SendCoinsFromModuleToModule(ctx, k.feeCollectorName, foundation.TreasuryName, tax); err != nil {
 		return err
 	}
-	
+
 	return nil
 }
 

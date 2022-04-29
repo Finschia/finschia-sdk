@@ -123,11 +123,10 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	foundation.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(am.keeper))
 
 	// m := keeper.NewMigrator(am.keeper)
-	migrations := map[uint64]func(sdk.Context)error{
-	}
+	migrations := map[uint64]func(sdk.Context) error{}
 	for ver, handler := range migrations {
 		if err := cfg.RegisterMigration(foundation.ModuleName, ver, handler); err != nil {
-			panic(fmt.Sprintf("failed to migrate x/foundation from version %d to %d: %v", ver, ver + 1, err))
+			panic(fmt.Sprintf("failed to migrate x/foundation from version %d to %d: %v", ver, ver+1, err))
 		}
 	}
 }

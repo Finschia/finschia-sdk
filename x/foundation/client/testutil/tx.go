@@ -413,8 +413,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 				fmt.Sprintf(proposers, val.Address),
 				s.msgToString(&foundation.MsgWithdrawFromTreasury{
 					Operator: s.operator.String(),
-					To: val.Address.String(),
-					Amount: sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())),
+					To:       val.Address.String(),
+					Amount:   sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())),
 				}),
 			},
 			true,
@@ -425,8 +425,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 				fmt.Sprintf(proposers, val.Address),
 				s.msgToString(&foundation.MsgWithdrawFromTreasury{
 					Operator: s.operator.String(),
-					To: val.Address.String(),
-					Amount: sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())),
+					To:       val.Address.String(),
+					Amount:   sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())),
 				}),
 				"extra",
 			},
@@ -527,8 +527,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 
 	id := s.submitProposal(&foundation.MsgWithdrawFromTreasury{
 		Operator: s.operator.String(),
-		To: s.network.Validators[0].Address.String(),
-		Amount: sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))),
+		To:       s.network.Validators[0].Address.String(),
+		Amount:   sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))),
 	}, false)
 	testCases := map[string]struct {
 		args  []string

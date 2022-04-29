@@ -29,7 +29,7 @@ func (s *IntegrationTestSuite) TestGRPCParams() {
 			&foundation.QueryParamsResponse{},
 			&foundation.QueryParamsResponse{
 				Params: &foundation.Params{
-					Enabled: true,
+					Enabled:       true,
 					FoundationTax: sdk.MustNewDecFromStr("0.2"),
 				},
 			},

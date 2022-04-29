@@ -171,4 +171,3 @@ func (k Keeper) validateMembers(ctx sdk.Context, members []string) error {
 
 	return nil
 }
-

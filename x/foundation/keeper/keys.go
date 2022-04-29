@@ -10,18 +10,18 @@ import (
 // Keys for foundation store
 // Items are stored with the following key: values
 var (
-	paramsKey              = []byte{0x00}
-	foundationInfoKey      = []byte{0x01}
+	paramsKey         = []byte{0x00}
+	foundationInfoKey = []byte{0x01}
 
-	treasuryKey            = []byte{0x10}
+	treasuryKey = []byte{0x10}
 
 	validatorAuthKeyPrefix = []byte{0x20}
 
-	memberKeyPrefix        = []byte{0x30}
-	previousProposalIdKey      = []byte{0x31}
-	proposalKeyPrefix      = []byte{0x32}
+	memberKeyPrefix          = []byte{0x30}
+	previousProposalIdKey    = []byte{0x31}
+	proposalKeyPrefix        = []byte{0x32}
 	proposalByVPEndKeyPrefix = []byte{0x33}
-	voteKeyPrefix          = []byte{0x34}
+	voteKeyPrefix            = []byte{0x34}
 )
 
 // Uint64FromBytes converts a byte array to uint64
@@ -102,12 +102,12 @@ func splitProposalByVPEndKey(key []byte) (proposalId uint64, vpEnd time.Time) {
 	begin := len(proposalByVPEndKeyPrefix) + 1
 	end := begin + int(key[begin-1]) // uint64
 	proposalId = Uint64FromBytes(key[begin:end])
-	
+
 	begin = end
 	vpEnd, err := sdk.ParseTimeBytes(key[begin:])
 	if err != nil {
 		panic(err)
-	}	
+	}
 
 	return
 }

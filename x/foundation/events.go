@@ -21,7 +21,7 @@ func (m EventUpdateDecisionPolicy) GetDecisionPolicy() DecisionPolicy {
 	return policy
 }
 
-func (m* EventUpdateDecisionPolicy) SetDecisionPolicy(policy DecisionPolicy) error {
+func (m *EventUpdateDecisionPolicy) SetDecisionPolicy(policy DecisionPolicy) error {
 	event, ok := policy.(proto.Message)
 	if !ok {
 		return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", event)

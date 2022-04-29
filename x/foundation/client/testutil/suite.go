@@ -27,10 +27,10 @@ type IntegrationTestSuite struct {
 
 	setupHeight int64
 
-	operator sdk.AccAddress
-	comingMember sdk.AccAddress
+	operator      sdk.AccAddress
+	comingMember  sdk.AccAddress
 	leavingMember sdk.AccAddress
-	stranger sdk.AccAddress
+	stranger      sdk.AccAddress
 }
 
 var commonArgs = []string{
@@ -53,7 +53,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	// enable foundation
 	params := &foundation.Params{
-		Enabled: true,
+		Enabled:       true,
 		FoundationTax: sdk.MustNewDecFromStr("0.2"),
 	}
 	foundationData.Params = params
@@ -62,7 +62,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	operatorMnemonic, s.operator = s.createMnemonic("operator")
 	info := &foundation.FoundationInfo{
 		Operator: s.operator.String(),
-		Version: 1,
+		Version:  1,
 	}
 	err := info.SetDecisionPolicy(&foundation.ThresholdDecisionPolicy{
 		Threshold: sdk.OneDec(),
@@ -98,8 +98,8 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.addMembers([]sdk.AccAddress{s.leavingMember})
 	id := s.submitProposal(&foundation.MsgWithdrawFromTreasury{
 		Operator: s.operator.String(),
-		To: s.network.Validators[0].Address.String(),
-		Amount: sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))),
+		To:       s.network.Validators[0].Address.String(),
+		Amount:   sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))),
 	}, false)
 	s.vote(id, []sdk.AccAddress{s.network.Validators[0].Address, s.leavingMember})
 	s.Require().NoError(s.network.WaitForNextBlock())
@@ -122,7 +122,7 @@ func (s *IntegrationTestSuite) addMembers(members []sdk.AccAddress) {
 	for i, member := range members {
 		update := foundation.Member{
 			Address: member.String(),
-			Weight: sdk.OneDec(),
+			Weight:  sdk.OneDec(),
 		}
 		bz, err := s.cfg.Codec.MarshalJSON(&update)
 		s.Require().NoError(err)

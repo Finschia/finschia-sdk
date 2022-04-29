@@ -164,7 +164,6 @@ func NewQueryCmdTreasury() *cobra.Command {
 	return cmd
 }
 
-
 // NewQueryCmdFoundationInfo returns the information of the foundation.
 func NewQueryCmdFoundationInfo() *cobra.Command {
 	cmd := &cobra.Command{

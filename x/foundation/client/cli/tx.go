@@ -25,7 +25,7 @@ const (
 	FlagAllowedValidatorDelete = "delete"
 
 	FlagExec = "exec"
-	ExecTry = "try"
+	ExecTry  = "try"
 )
 
 func parseMembers(codec codec.Codec, membersJson string) ([]foundation.Member, error) {
@@ -328,7 +328,7 @@ func NewTxCmdFundTreasury() *cobra.Command {
 			}
 
 			msg := foundation.MsgFundTreasury{
-				From: from,
+				From:   from,
 				Amount: amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
@@ -367,8 +367,8 @@ func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 
 			msg := foundation.MsgWithdrawFromTreasury{
 				Operator: operator,
-				To: args[1],
-				Amount: amount,
+				To:       args[1],
+				Amount:   amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -422,7 +422,7 @@ Set a member's weight to "0" to delete it.
 			}
 
 			msg := foundation.MsgUpdateMembers{
-				Operator: operator,
+				Operator:      operator,
 				MemberUpdates: updates,
 			}
 			if err := msg.ValidateBasic(); err != nil {
@@ -546,8 +546,8 @@ Example of the content of messages-json:
 
 			msg := foundation.MsgSubmitProposal{
 				Proposers: proposers,
-				Metadata: args[0],
-				Exec: exec,
+				Metadata:  args[0],
+				Exec:      exec,
 			}
 			if err := msg.SetMsgs(messages); err != nil {
 				return err
@@ -581,7 +581,7 @@ Parameters:
 			if err := cmd.Flags().Set(flags.FlagFrom, address); err != nil {
 				return err
 			}
-			
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -594,7 +594,7 @@ Parameters:
 
 			msg := foundation.MsgWithdrawProposal{
 				ProposalId: proposalId,
-				Address: address,
+				Address:    address,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -654,10 +654,10 @@ Parameters:
 
 			msg := foundation.MsgVote{
 				ProposalId: proposalId,
-				Voter: voter,
-				Option: option,
-				Metadata: args[3],
-				Exec: exec,
+				Voter:      voter,
+				Option:     option,
+				Metadata:   args[3],
+				Exec:       exec,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -695,7 +695,7 @@ func NewTxCmdExec() *cobra.Command {
 
 			msg := foundation.MsgExec{
 				ProposalId: proposalId,
-				Signer: signer,
+				Signer:     signer,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

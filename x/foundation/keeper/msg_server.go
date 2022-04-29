@@ -32,7 +32,7 @@ func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasu
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventFundTreasury{
-		From: req.From,
+		From:   req.From,
 		Amount: req.Amount,
 	}); err != nil {
 		return nil, err
@@ -54,7 +54,7 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventWithdrawFromTreasury{
-		To: req.To,
+		To:     req.To,
 		Amount: req.Amount,
 	}); err != nil {
 		return nil, err
@@ -256,7 +256,7 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 
 	update := foundation.Member{
 		Address: req.Address,
-		Weight: sdk.ZeroDec(),
+		Weight:  sdk.ZeroDec(),
 	}
 	if err := s.keeper.UpdateMembers(ctx, []foundation.Member{update}); err != nil {
 		return nil, err
