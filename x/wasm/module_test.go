@@ -216,14 +216,14 @@ func TestHandleStoreAndInstantiate(t *testing.T) {
 		Verifier:    fred,
 		Beneficiary: bob,
 	}
-	initMsgBz, err := json.Marshal(initMsg)
+	msgBz, err := json.Marshal(initMsg)
 	require.NoError(t, err)
 
 	// create with no balance is legal
 	msg := &MsgStoreCodeAndInstantiateContract{
 		Sender:       creator.String(),
 		WASMByteCode: testContract,
-		InitMsg:      initMsgBz,
+		Msg:          msgBz,
 		Label:        "contract for test",
 		Funds:        nil,
 	}
@@ -289,7 +289,7 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 			msg: &MsgStoreCodeAndInstantiateContract{
 				Sender:       addr1,
 				WASMByteCode: testContract,
-				InitMsg:      validInitMsgBz,
+				Msg:          validInitMsgBz,
 				Label:        "foo",
 				Funds:        nil,
 			},
@@ -301,7 +301,7 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 			msg: &MsgStoreCodeAndInstantiateContract{
 				Sender:       addr1,
 				WASMByteCode: []byte("foobar"),
-				InitMsg:      validInitMsgBz,
+				Msg:          validInitMsgBz,
 				Label:        "foo",
 				Funds:        nil,
 			},
@@ -313,7 +313,7 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 			msg: &MsgStoreCodeAndInstantiateContract{
 				Sender:       addr1,
 				WASMByteCode: oldContract,
-				InitMsg:      validInitMsgBz,
+				Msg:          validInitMsgBz,
 				Label:        "foo",
 				Funds:        nil,
 			},
@@ -325,7 +325,7 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 			msg: &MsgStoreCodeAndInstantiateContract{
 				Sender:       addr1,
 				WASMByteCode: testContract,
-				InitMsg:      invalidInitMsgBz,
+				Msg:          invalidInitMsgBz,
 				Label:        "foo",
 				Funds:        nil,
 			},

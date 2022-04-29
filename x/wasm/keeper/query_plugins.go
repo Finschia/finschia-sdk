@@ -489,7 +489,11 @@ func WasmQuerier(wasm wasmQueryKeeper) func(ctx sdk.Context, request *wasmvmtype
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.Smart.ContractAddr)
 			}
-			return wasm.QuerySmart(ctx, sdk.AccAddress(request.Smart.ContractAddr), request.Smart.Msg)
+			msg := types.RawContractMessage(request.Smart.Msg)
+			if err := msg.ValidateBasic(); err != nil {
+				return nil, sdkerrors.Wrap(err, "json msg")
+			}
+			return wasm.QuerySmart(ctx, sdk.AccAddress(request.Smart.ContractAddr), msg)
 		}
 		if request.Raw != nil {
 			err := sdk.ValidateAccAddress(request.Raw.ContractAddr)
