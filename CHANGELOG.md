@@ -44,6 +44,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Improvements
 
 * (refactor) [\#493](https://github.com/line/lbm-sdk/pull/493) restructure x/consortium
+* (x/foundation) [\#518](https://github.com/line/lbm-sdk/pull/518) add foundation treasury feature to x/foundation
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
