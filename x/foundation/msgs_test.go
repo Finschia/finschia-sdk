@@ -281,6 +281,7 @@ func TestMsgSubmitProposal(t *testing.T) {
 			valid:   true,
 		},
 		"empty proposers": {
+			proposers: []sdk.AccAddress{},
 			msgs: []sdk.Msg{&foundation.MsgWithdrawFromTreasury{
 				Operator: addrs[0].String(),
 				To: addrs[0].String(),
