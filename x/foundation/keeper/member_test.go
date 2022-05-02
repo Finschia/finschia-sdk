@@ -69,7 +69,9 @@ func (s *KeeperTestSuite) TestUpdateDecisionPolicy() {
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			err := s.keeper.UpdateDecisionPolicy(s.ctx, tc.policy)
+			ctx, _ := s.ctx.CacheContext()
+
+			err := s.keeper.UpdateDecisionPolicy(ctx, tc.policy)
 			if tc.valid {
 				s.Require().NoError(err)
 			} else {
@@ -87,7 +89,7 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 		"add a new member": {
 			updates: []foundation.Member{
 				{
-					Address: s.comingMember.String(),
+					Address: s.stranger.String(),
 					Weight: sdk.OneDec(),
 				},
 			},
@@ -96,7 +98,7 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 		"remove a member": {
 			updates: []foundation.Member{
 				{
-					Address: s.badMember.String(),
+					Address: s.member.String(),
 					Weight: sdk.ZeroDec(),
 				},
 			},
@@ -113,7 +115,7 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 		"long metadata": {
 			updates: []foundation.Member{
 				{
-					Address: s.comingMember.String(),
+					Address: s.stranger.String(),
 					Weight: sdk.OneDec(),
 					Metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
 				},
@@ -123,7 +125,9 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			err := s.keeper.UpdateMembers(s.ctx, tc.updates)
+			ctx, _ := s.ctx.CacheContext()
+
+			err := s.keeper.UpdateMembers(ctx, tc.updates)
 			if tc.valid {
 				s.Require().NoError(err)
 			} else {
@@ -134,25 +138,24 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 }
 
 func (s *KeeperTestSuite) TestUpdateOperator() {
-	testCases := []struct{
-		name string
+	testCases := map[string]struct{
 		operator sdk.AccAddress
 		valid bool
 	}{
-		{
-			name: "already the operator",
-			operator: s.operator,
-		},
-		{
-			name: "valid operator",
+		"valid new operator": {
 			operator: s.stranger,
 			valid: true,
 		},
+		"already the operator": {
+			operator: s.operator,
+		},
 	}
 
-	for _, tc := range testCases {
-		s.Run(tc.name, func() {
-			err := s.keeper.UpdateOperator(s.ctx, tc.operator)
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			err := s.keeper.UpdateOperator(ctx, tc.operator)
 			if tc.valid {
 				s.Require().NoError(err)
 			} else {
