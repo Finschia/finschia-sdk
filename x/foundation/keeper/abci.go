@@ -13,12 +13,12 @@ import (
 func BeginBlocker(ctx sdk.Context, k Keeper) {
 	defer telemetry.ModuleMeasureSince(foundation.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
 
-	if err := k.collectFoundationTax(ctx); err != nil {
+	if err := k.CollectFoundationTax(ctx); err != nil {
 		panic(err)
 	}
 }
 
 func EndBlocker(ctx sdk.Context, k Keeper) {
 	k.UpdateTallyOfVPEndProposals(ctx)
-	k.pruneExpiredProposals(ctx)
+	k.PruneExpiredProposals(ctx)
 }

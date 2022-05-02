@@ -21,7 +21,7 @@ func ensureMsgAuthz(msgs []sdk.Msg, operator sdk.AccAddress) error {
 	return nil
 }
 
-func (k Keeper) exec(ctx sdk.Context, proposalID uint64) error {
+func (k Keeper) Exec(ctx sdk.Context, proposalID uint64) error {
 	proposal, err := k.GetProposal(ctx, proposalID)
 	if err != nil {
 		return err

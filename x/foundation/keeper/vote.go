@@ -6,7 +6,7 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
-func (k Keeper) vote(ctx sdk.Context, vote foundation.Vote) error {
+func (k Keeper) Vote(ctx sdk.Context, vote foundation.Vote) error {
 	if err := validateMetadata(vote.Metadata, k.config); err != nil {
 		return err
 	}

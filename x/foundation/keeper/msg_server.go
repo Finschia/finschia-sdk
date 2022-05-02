@@ -27,7 +27,7 @@ var _ foundation.MsgServer = msgServer{}
 // FundTreasury defines a method to fund the treasury.
 func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasury) (*foundation.MsgFundTreasuryResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.fundTreasury(ctx, sdk.AccAddress(req.From), req.Amount); err != nil {
+	if err := s.keeper.FundTreasury(ctx, sdk.AccAddress(req.From), req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -49,7 +49,7 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 		return nil, err
 	}
 
-	if err := s.keeper.withdrawFromTreasury(ctx, sdk.AccAddress(req.To), req.Amount); err != nil {
+	if err := s.keeper.WithdrawFromTreasury(ctx, sdk.AccAddress(req.To), req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -95,7 +95,7 @@ func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUp
 		return nil, err
 	}
 
-	if err := s.keeper.updateDecisionPolicy(ctx, policy); err != nil {
+	if err := s.keeper.UpdateDecisionPolicy(ctx, policy); err != nil {
 		return nil, err
 	}
 
@@ -117,7 +117,7 @@ func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitPr
 		return nil, err
 	}
 
-	id, err := s.keeper.submitProposal(ctx, req.Proposers, req.Metadata, req.GetMsgs())
+	id, err := s.keeper.SubmitProposal(ctx, req.Proposers, req.Metadata, req.GetMsgs())
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +140,7 @@ func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitPr
 				Voter:      proposer,
 				Option:     foundation.VOTE_OPTION_YES,
 			}
-			err = s.keeper.vote(ctx, vote)
+			err = s.keeper.Vote(ctx, vote)
 			if err != nil {
 				return &foundation.MsgSubmitProposalResponse{ProposalId: id}, sdkerrors.Wrap(err, "The proposal was created but failed on vote")
 			}
@@ -148,7 +148,7 @@ func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitPr
 
 		// Then try to execute the proposal
 		// We consider the first proposer as the MsgExecRequest signer
-		if err = s.keeper.exec(ctx, id); err != nil {
+		if err = s.keeper.Exec(ctx, id); err != nil {
 			return &foundation.MsgSubmitProposalResponse{ProposalId: id}, sdkerrors.Wrap(err, "The proposal was created but failed on exec")
 		}
 	}
@@ -179,7 +179,7 @@ func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdr
 		return nil, err
 	}
 
-	if err := s.keeper.withdrawProposal(ctx, *proposal); err != nil {
+	if err := s.keeper.WithdrawProposal(ctx, *proposal); err != nil {
 		return nil, err
 	}
 
@@ -200,7 +200,7 @@ func (s msgServer) Vote(c context.Context, req *foundation.MsgVote) (*foundation
 		Metadata:   req.Metadata,
 	}
 
-	if err := s.keeper.vote(ctx, vote); err != nil {
+	if err := s.keeper.Vote(ctx, vote); err != nil {
 		return nil, err
 	}
 
@@ -212,7 +212,7 @@ func (s msgServer) Vote(c context.Context, req *foundation.MsgVote) (*foundation
 
 	// Try to execute proposal immediately
 	if req.Exec == foundation.Exec_EXEC_TRY {
-		if err := s.keeper.exec(ctx, req.ProposalId); err != nil {
+		if err := s.keeper.Exec(ctx, req.ProposalId); err != nil {
 			return nil, err
 		}
 	}
@@ -233,7 +233,7 @@ func (s msgServer) Exec(c context.Context, req *foundation.MsgExec) (*foundation
 		return nil, err
 	}
 
-	if err := s.keeper.exec(ctx, req.ProposalId); err != nil {
+	if err := s.keeper.Exec(ctx, req.ProposalId); err != nil {
 		return nil, err
 	}
 

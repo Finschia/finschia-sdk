@@ -14,7 +14,7 @@ func validateMetadata(metadata string, config foundation.Config) error {
 	return nil
 }
 
-func (k Keeper) updateDecisionPolicy(ctx sdk.Context, policy foundation.DecisionPolicy) error {
+func (k Keeper) UpdateDecisionPolicy(ctx sdk.Context, policy foundation.DecisionPolicy) error {
 	if err := policy.Validate(k.config); err != nil {
 		return err
 	}
@@ -153,15 +153,15 @@ func (k Keeper) GetOperator(ctx sdk.Context) sdk.AccAddress {
 	return sdk.AccAddress(info.Operator)
 }
 
-// func (k Keeper) updateOperator(ctx sdk.Context, operator sdk.AccAddress) error {
-// 	info := k.GetFoundationInfo(ctx)
-// 	info.Operator = operator.String()
-// 	if err := k.setFoundationInfo(ctx, info); err != nil {
-// 		return err
-// 	}
+func (k Keeper) UpdateOperator(ctx sdk.Context, operator sdk.AccAddress) error {
+	info := k.GetFoundationInfo(ctx)
+	info.Operator = operator.String()
+	if err := k.setFoundationInfo(ctx, info); err != nil {
+		return err
+	}
 
-// 	return nil
-// }
+	return nil
+}
 
 func (k Keeper) GetAdmin(ctx sdk.Context) sdk.AccAddress {
 	return k.authKeeper.GetModuleAccount(ctx, foundation.AdministratorName).GetAddress()

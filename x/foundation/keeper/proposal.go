@@ -57,7 +57,7 @@ func (k Keeper) setPreviousProposalID(ctx sdk.Context, id uint64) {
 	store.Set(previousProposalIDKey, Uint64ToBytes(id))
 }
 
-func (k Keeper) submitProposal(ctx sdk.Context, proposers []string, metadata string, msgs []sdk.Msg) (uint64, error) {
+func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata string, msgs []sdk.Msg) (uint64, error) {
 	if err := validateMetadata(metadata, k.config); err != nil {
 		return 0, err
 	}
@@ -92,7 +92,7 @@ func (k Keeper) submitProposal(ctx sdk.Context, proposers []string, metadata str
 	return id, nil
 }
 
-func (k Keeper) withdrawProposal(ctx sdk.Context, proposal foundation.Proposal) error {
+func (k Keeper) WithdrawProposal(ctx sdk.Context, proposal foundation.Proposal) error {
 	// Ensure the proposal can be withdrawn.
 	if proposal.Status != foundation.PROPOSAL_STATUS_SUBMITTED {
 		return sdkerrors.ErrInvalidRequest.Wrapf("cannot withdraw a proposal with the status of %s", proposal.Status.String())
@@ -111,9 +111,9 @@ func (k Keeper) pruneProposal(ctx sdk.Context, proposal foundation.Proposal) {
 	k.pruneVotes(ctx, proposal.Id)
 }
 
-// pruneExpiredProposals prunes all proposals which are expired,
+// PruneExpiredProposals prunes all proposals which are expired,
 // i.e. whose `submit_time + voting_period + max_execution_period` is greater than now.
-func (k Keeper) pruneExpiredProposals(ctx sdk.Context) {
+func (k Keeper) PruneExpiredProposals(ctx sdk.Context) {
 	votingPeriodEnd := ctx.BlockTime().Add(-k.config.MaxExecutionPeriod)
 
 	var proposals []foundation.Proposal
