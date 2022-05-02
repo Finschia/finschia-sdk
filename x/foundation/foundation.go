@@ -182,13 +182,20 @@ func (i *FoundationInfo) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error
 
 var _ DecisionPolicy = (*ThresholdDecisionPolicy)(nil)
 
+func validateDecisionPolicyWindows(windows DecisionPolicyWindows, config Config) error {
+	if windows.MinExecutionPeriod >= windows.VotingPeriod+config.MaxExecutionPeriod {
+		return sdkerrors.ErrInvalidRequest.Wrap("min_execution_period should be smaller than voting_period + max_execution_period")
+	}
+	return nil
+}
+
 func (p ThresholdDecisionPolicy) Validate(config Config) error {
 	if p.Threshold.LT(config.MinThreshold) {
 		return sdkerrors.ErrInvalidRequest.Wrap("threshold must be greater than or equal to min_threshold")
 	}
 
-	if p.Windows.MinExecutionPeriod > p.Windows.VotingPeriod+config.MaxExecutionPeriod {
-		return sdkerrors.ErrInvalidRequest.Wrap("min_execution_period should be smaller than voting_period + max_execution_period")
+	if err := validateDecisionPolicyWindows(*p.Windows, config); err != nil {
+		return err
 	}
 
 	return nil
@@ -245,8 +252,8 @@ func (p PercentageDecisionPolicy) Validate(config Config) error {
 		return sdkerrors.ErrInvalidRequest.Wrap("percentage must be greater than or equal to min_percentage")
 	}
 
-	if p.Windows.MinExecutionPeriod > p.Windows.VotingPeriod+config.MaxExecutionPeriod {
-		return sdkerrors.ErrInvalidRequest.Wrap("min_execution_period should be smaller than voting_period + max_execution_period")
+	if err := validateDecisionPolicyWindows(*p.Windows, config); err != nil {
+		return err
 	}
 
 	return nil

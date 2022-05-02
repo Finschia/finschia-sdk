@@ -155,6 +155,10 @@ func (k Keeper) GetOperator(ctx sdk.Context) sdk.AccAddress {
 
 func (k Keeper) UpdateOperator(ctx sdk.Context, operator sdk.AccAddress) error {
 	info := k.GetFoundationInfo(ctx)
+	if operator.String() == info.Operator {
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s is already the operator", operator)
+	}
+
 	info.Operator = operator.String()
 	if err := k.setFoundationInfo(ctx, info); err != nil {
 		return err

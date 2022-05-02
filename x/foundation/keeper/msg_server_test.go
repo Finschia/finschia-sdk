@@ -80,83 +80,16 @@ func (s *KeeperTestSuite) TestMsgWithdrawFromTreasury() {
 	}
 }
 
-func (s *KeeperTestSuite) TestMsgUpdateMembers() {
-	testCases := map[string]struct {
-		operator sdk.AccAddress
-		member foundation.Member
-		valid bool
-	}{
-		"valid request (add member)": {
-			operator: s.operator,
-			member: foundation.Member{
-				Address: s.comingMember.String(),
-				Weight: sdk.OneDec(),
-			},
-			valid: true,
-		},
-		"valid request (remove member)": {
-			operator: s.operator,
-			member: foundation.Member{
-				Address: s.badMember.String(),
-				Weight: sdk.ZeroDec(),
-			},
-			valid: true,
-		},
-		"not authorized": {
-			operator: s.stranger,
-			member: foundation.Member{
-				Address: s.member.String(),
-				Weight: sdk.ZeroDec(),
-			},
-			valid: false,
-		},
-		"long metadata": {
-			operator: s.operator,
-			member: foundation.Member{
-				Address: s.member.String(),
-				Weight: sdk.ZeroDec(),
-				Metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
-			},
-			valid: false,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			req := &foundation.MsgUpdateMembers{
-				Operator: tc.operator.String(),
-				MemberUpdates: []foundation.Member{tc.member},
-			}
-
-			res, err := s.msgServer.UpdateMembers(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-		})
-	}
-}
-
 func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 	testCases := map[string]struct {
 		operator sdk.AccAddress
 		policy foundation.DecisionPolicy
 		valid bool
 	}{
-		"valid request (threshold)": {
+		"valid request": {
 			operator: s.operator,
 			policy: &foundation.ThresholdDecisionPolicy{
 				Threshold: sdk.NewDec(10),
-				Windows: &foundation.DecisionPolicyWindows{},
-			},
-			valid: true,
-		},
-		"valid request (percentage)": {
-			operator: s.operator,
-			policy: &foundation.PercentageDecisionPolicy{
-				Percentage: sdk.NewDec(1),
 				Windows: &foundation.DecisionPolicyWindows{},
 			},
 			valid: true,
@@ -167,15 +100,13 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 				Threshold: sdk.NewDec(10),
 				Windows: &foundation.DecisionPolicyWindows{},
 			},
-			valid: false,
 		},
 		"low threshold": {
 			operator: s.operator,
 			policy: &foundation.ThresholdDecisionPolicy{
-				Threshold: sdk.NewDec(2),
+				Threshold: sdk.OneDec(),
 				Windows: &foundation.DecisionPolicyWindows{},
 			},
-			valid: false,
 		},
 	}
 
@@ -188,6 +119,54 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 			err := req.SetDecisionPolicy(tc.policy)
 			s.Require().NoError(err)
 			res, err := s.msgServer.UpdateDecisionPolicy(s.goCtx, req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgUpdateMembers() {
+	testCases := map[string]struct {
+		operator sdk.AccAddress
+		member foundation.Member
+		valid bool
+	}{
+		"valid request": {
+			operator: s.operator,
+			member: foundation.Member{
+				Address: s.comingMember.String(),
+				Weight: sdk.OneDec(),
+			},
+			valid: true,
+		},
+		"not authorized": {
+			operator: s.stranger,
+			member: foundation.Member{
+				Address: s.member.String(),
+				Weight: sdk.ZeroDec(),
+			},
+		},
+		"remove a non-member": {
+			operator: s.operator,
+			member: foundation.Member{
+				Address: s.stranger.String(),
+				Weight: sdk.ZeroDec(),
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			req := &foundation.MsgUpdateMembers{
+				Operator: tc.operator.String(),
+				MemberUpdates: []foundation.Member{tc.member},
+			}
+
+			res, err := s.msgServer.UpdateMembers(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

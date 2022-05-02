@@ -91,10 +91,6 @@ func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUp
 	}
 
 	policy := req.GetDecisionPolicy()
-	if err := policy.Validate(s.keeper.config); err != nil {
-		return nil, err
-	}
-
 	if err := s.keeper.UpdateDecisionPolicy(ctx, policy); err != nil {
 		return nil, err
 	}

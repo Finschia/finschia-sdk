@@ -112,9 +112,9 @@ func (k Keeper) pruneProposal(ctx sdk.Context, proposal foundation.Proposal) {
 }
 
 // PruneExpiredProposals prunes all proposals which are expired,
-// i.e. whose `submit_time + voting_period + max_execution_period` is greater than now.
+// i.e. whose `submit_time + voting_period + max_execution_period` is smaller than (or equal to) now.
 func (k Keeper) PruneExpiredProposals(ctx sdk.Context) {
-	votingPeriodEnd := ctx.BlockTime().Add(-k.config.MaxExecutionPeriod)
+	votingPeriodEnd := ctx.BlockTime().Add(-k.config.MaxExecutionPeriod).Add(time.Nanosecond)
 
 	var proposals []foundation.Proposal
 	k.iterateProposalsByVPEnd(ctx, votingPeriodEnd, func(proposal foundation.Proposal) (stop bool) {
