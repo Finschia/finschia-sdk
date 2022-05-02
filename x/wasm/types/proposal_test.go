@@ -759,7 +759,7 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 	"admin": "myAdminAddress",
 	"code_id": 1,
 	"funds": [{"denom": "ALX", "amount": "2"},{"denom": "BLX","amount": "3"}],
-	"msg": "e30=",
+	"msg": {},
 	"label": "testing",
 	"run_as": "myRunAsAddress"
 }`,
@@ -782,7 +782,7 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 	"description": "bar",
 	"code_id": 1,
 	"contract": "myContractAddr",
-	"msg": "e30=",
+	"msg": {},
 	"run_as": "myRunAsAddress"
 }`,
 			got: &MigrateContractProposal{},
@@ -803,4 +803,38 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 		})
 	}
 
+}
+
+func TestProposalJsonSignBytes(t *testing.T) {
+	const myInnerMsg = `{"foo":"bar"}`
+	specs := map[string]struct {
+		src govtypes.Content
+		exp string
+	}{
+		"instantiate contract": {
+			src: &InstantiateContractProposal{Msg: RawContractMessage(myInnerMsg)},
+			exp: `
+ {
+ 	"type":"lbm-sdk/MsgSubmitProposal",
+ 	"value":{"content":{"type":"wasm/InstantiateContractProposal","value":{"funds":[],"msg":{"foo":"bar"}}},"initial_deposit":[]}
+ }`,
+		},
+		"migrate contract": {
+			src: &MigrateContractProposal{Msg: RawContractMessage(myInnerMsg)},
+			exp: `
+ {
+ 	"type":"lbm-sdk/MsgSubmitProposal",
+ 	"value":{"content":{"type":"wasm/MigrateContractProposal","value":{"msg":{"foo":"bar"}}},"initial_deposit":[]}
+ }`,
+		},
+	}
+	for name, spec := range specs {
+		t.Run(name, func(t *testing.T) {
+			msg, err := govtypes.NewMsgSubmitProposal(spec.src, sdk.NewCoins(), sdk.AccAddress([]byte{}))
+			require.NoError(t, err)
+
+			bz := msg.GetSignBytes()
+			assert.JSONEq(t, spec.exp, string(bz), "raw: %s", string(bz))
+		})
+	}
 }

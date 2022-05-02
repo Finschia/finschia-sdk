@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"encoding/json"
 	"testing"
 
 	"github.com/golang/protobuf/proto"
@@ -34,7 +33,7 @@ func TestEncoding(t *testing.T) {
 	valAddr := sdk.ValAddress("foo")
 	valAddr2 := sdk.ValAddress("bar")
 
-	jsonMsg := json.RawMessage(`{"foo": 123}`)
+	jsonMsg := types.RawContractMessage(`{"foo": 123}`)
 
 	bankMsg := &banktypes.MsgSend{
 		FromAddress: addr2.String(),
