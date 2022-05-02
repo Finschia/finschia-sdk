@@ -54,6 +54,7 @@ type KeeperTestSuite struct {
 	activeProposal uint64
 	votedProposal uint64
 	abortedProposal uint64
+	invalidProposal uint64
 
 	balance sdk.Int
 }
@@ -134,6 +135,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		s.Require().NoError(err)
 	}
 
+	// create an aborted proposal
 	s.abortedProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
 			Operator: s.operator.String(),
@@ -144,6 +146,24 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.Require().NoError(err)
 	err = s.keeper.WithdrawProposal(s.ctx, s.abortedProposal)
 	s.Require().NoError(err)
+
+	// create an invalid proposal which contains invalid message
+	s.invalidProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
+		&foundation.MsgWithdrawFromTreasury{
+			Operator: s.operator.String(),
+			To: s.stranger.String(),
+			Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance.Add(sdk.OneInt()))),
+		},
+	})
+	s.Require().NoError(err)
+	for _, member := range s.members {
+		err := s.keeper.Vote(s.ctx, foundation.Vote{
+			ProposalId: s.invalidProposal,
+			Voter: member.String(),
+			Option: foundation.VOTE_OPTION_YES,
+		})
+		s.Require().NoError(err)
+	}
 }
 
 func TestKeeperTestSuite(t *testing.T) {
