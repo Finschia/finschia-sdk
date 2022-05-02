@@ -5,12 +5,12 @@ module github.com/line/lbm-sdk
 require (
 	github.com/99designs/keyring v1.1.6
 	github.com/VictoriaMetrics/fastcache v1.9.0
-	github.com/armon/go-metrics v0.3.10
+	github.com/armon/go-metrics v0.3.11
 	github.com/bgentry/speakeasy v0.1.0
 	github.com/btcsuite/btcd v0.22.0-beta
 	github.com/coinbase/rosetta-sdk-go v0.7.0
 	github.com/confio/ics23/go v0.6.6
-	github.com/coocood/freecache v1.2.0
+	github.com/coocood/freecache v1.2.1
 	github.com/cosmos/btcutil v1.0.4
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/ledger-cosmos-go v0.11.1
