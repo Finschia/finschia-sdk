@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/x/consortium/types"
+	"github.com/line/lbm-sdk/x/consortium"
 )
 
 func TestGetSetValidatorAuth(t *testing.T) {
@@ -21,7 +21,7 @@ func TestGetSetValidatorAuth(t *testing.T) {
 	require.Error(t, err)
 
 	// test adding creation allowed validators
-	expected := &types.ValidatorAuth{
+	expected := &consortium.ValidatorAuth{
 		OperatorAddress: valAddr.String(),
 		CreationAllowed: true,
 	}
@@ -29,5 +29,5 @@ func TestGetSetValidatorAuth(t *testing.T) {
 	actual, err := k.GetValidatorAuth(ctx, valAddr)
 	require.Equal(t, expected, actual)
 
-	require.Equal(t, []*types.ValidatorAuth{expected}, k.GetValidatorAuths(ctx))
+	require.Equal(t, []*consortium.ValidatorAuth{expected}, k.GetValidatorAuths(ctx))
 }

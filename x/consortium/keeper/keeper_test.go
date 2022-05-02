@@ -9,7 +9,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/consortium/types"
+	"github.com/line/lbm-sdk/x/consortium"
 )
 
 var (
@@ -25,7 +25,7 @@ func TestCleanup(t *testing.T) {
 	k := app.ConsortiumKeeper
 
 	// add auths
-	auth := &types.ValidatorAuth{
+	auth := &consortium.ValidatorAuth{
 		OperatorAddress: valAddr.String(),
 		CreationAllowed: true,
 	}
@@ -33,5 +33,5 @@ func TestCleanup(t *testing.T) {
 
 	// cleanup
 	k.Cleanup(ctx)
-	require.Equal(t, []*types.ValidatorAuth{}, k.GetValidatorAuths(ctx))
+	require.Equal(t, []*consortium.ValidatorAuth{}, k.GetValidatorAuths(ctx))
 }

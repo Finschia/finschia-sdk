@@ -1,4 +1,4 @@
-package types
+package consortium
 
 import (
 	sdk "github.com/line/lbm-sdk/types"

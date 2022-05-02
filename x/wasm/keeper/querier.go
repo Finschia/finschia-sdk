@@ -164,6 +164,9 @@ func (q GrpcQuerier) SmartContractState(c context.Context, req *types.QuerySmart
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
+	if err := req.QueryData.ValidateBasic(); err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid query data")
+	}
 	err = sdk.ValidateAccAddress(req.Address)
 	if err != nil {
 		return nil, err
