@@ -80,9 +80,11 @@ func handleInstantiateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p typ
 	if err != nil {
 		return sdkerrors.Wrap(err, "run as address")
 	}
-	err = sdk.ValidateAccAddress(p.Admin)
-	if err != nil {
-		return sdkerrors.Wrap(err, "admin")
+	if p.Admin != "" {
+		err = sdk.ValidateAccAddress(p.Admin)
+		if err != nil {
+			return sdkerrors.Wrap(err, "admin")
+		}
 	}
 
 	_, data, err := k.Instantiate(ctx, p.CodeID, sdk.AccAddress(p.RunAs), sdk.AccAddress(p.Admin), p.Msg, p.Label, p.Funds)
