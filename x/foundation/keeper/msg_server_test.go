@@ -91,7 +91,7 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 		"valid request": {
 			operator: s.operator,
 			policy: &foundation.ThresholdDecisionPolicy{
-				Threshold: sdk.NewDec(10),
+				Threshold: foundation.DefaultConfig().MinThreshold,
 				Windows: &foundation.DecisionPolicyWindows{},
 			},
 			valid: true,
@@ -99,7 +99,7 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 		"not authorized": {
 			operator: s.stranger,
 			policy: &foundation.ThresholdDecisionPolicy{
-				Threshold: sdk.NewDec(10),
+				Threshold: foundation.DefaultConfig().MinThreshold,
 				Windows: &foundation.DecisionPolicyWindows{},
 			},
 		},
