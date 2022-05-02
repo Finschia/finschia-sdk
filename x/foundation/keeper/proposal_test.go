@@ -84,7 +84,7 @@ func (s *KeeperTestSuite) TestSubmitProposal() {
 		valid bool
 	}{
 		"valid proposal": {
-			proposers: []string{s.member.String()},
+			proposers: []string{s.members[0].String()},
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.operator.String(),
 				To: s.stranger.String(),
@@ -93,7 +93,7 @@ func (s *KeeperTestSuite) TestSubmitProposal() {
 			valid: true,
 		},
 		"long metadata": {
-			proposers: []string{s.member.String()},
+			proposers: []string{s.members[0].String()},
 			metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.operator.String(),
@@ -102,7 +102,7 @@ func (s *KeeperTestSuite) TestSubmitProposal() {
 			},
 		},
 		"unauthorized msg": {
-			proposers: []string{s.member.String()},
+			proposers: []string{s.members[0].String()},
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.stranger.String(),
 				To: s.stranger.String(),
@@ -131,11 +131,11 @@ func (s *KeeperTestSuite) TestWithdrawProposal() {
 		valid bool
 	}{
 		"valid proposal": {
-			id: 1,
+			id: s.activeProposal,
 			valid: true,
 		},
 		"not active": {
-			id: 2,
+			id: s.abortedProposal,
 		},
 	}
 

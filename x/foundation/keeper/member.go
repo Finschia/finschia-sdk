@@ -182,8 +182,7 @@ func (k Keeper) validateOperator(ctx sdk.Context, operator string) error {
 func (k Keeper) validateMembers(ctx sdk.Context, members []string) error {
 	for _, member := range members {
 		if _, err := k.GetMember(ctx, sdk.AccAddress(member)); err != nil {
-			// TODO: fix
-			return sdkerrors.ErrUnauthorized.Wrapf("%s is not a member, %v", member, k.GetMembers(ctx))
+			return sdkerrors.ErrUnauthorized.Wrapf("%s is not a member", member)
 		}
 	}
 

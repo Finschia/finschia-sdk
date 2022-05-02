@@ -98,7 +98,7 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 		"remove a member": {
 			updates: []foundation.Member{
 				{
-					Address: s.member.String(),
+					Address: s.members[0].String(),
 					Weight: sdk.ZeroDec(),
 				},
 			},

@@ -11,23 +11,24 @@ func (s *KeeperTestSuite) TestMsgFundTreasury() {
 		valid bool
 	}{
 		"valid request": {
-			amount: sdk.OneInt(),
+			amount: s.balance,
 			valid: true,
 		},
 		"insufficient funds": {
-			amount: s.balance.Add(s.balance),
+			amount: s.balance.Add(sdk.OneInt()),
 			valid: false,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
 			req := &foundation.MsgFundTreasury{
 				From:    s.stranger.String(),
 				Amount:  sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, tc.amount)),
 			}
-
-			res, err := s.msgServer.FundTreasury(s.goCtx, req)
+			res, err := s.msgServer.FundTreasury(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -46,30 +47,31 @@ func (s *KeeperTestSuite) TestMsgWithdrawFromTreasury() {
 	}{
 		"valid request": {
 			operator: s.operator,
-			amount: sdk.OneInt(),
+			amount: s.balance,
 			valid: true,
 		},
 		"not authorized": {
 			operator: s.stranger,
-			amount: sdk.OneInt(),
+			amount: s.balance,
 			valid: false,
 		},
 		"insufficient funds": {
 			operator: s.operator,
-			amount: s.balance.Add(s.balance),
+			amount: s.balance.Add(sdk.OneInt()),
 			valid: false,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
 			req := &foundation.MsgWithdrawFromTreasury{
 				Operator: tc.operator.String(),
 				To: s.stranger.String(),
 				Amount:  sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, tc.amount)),
 			}
-
-			res, err := s.msgServer.WithdrawFromTreasury(s.goCtx, req)
+			res, err := s.msgServer.WithdrawFromTreasury(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -112,13 +114,15 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
 			req := &foundation.MsgUpdateDecisionPolicy{
 				Operator: tc.operator.String(),
 			}
-
 			err := req.SetDecisionPolicy(tc.policy)
 			s.Require().NoError(err)
-			res, err := s.msgServer.UpdateDecisionPolicy(s.goCtx, req)
+
+			res, err := s.msgServer.UpdateDecisionPolicy(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -138,15 +142,15 @@ func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 		"valid request": {
 			operator: s.operator,
 			member: foundation.Member{
-				Address: s.comingMember.String(),
-				Weight: sdk.OneDec(),
+				Address: s.members[0].String(),
+				Weight: sdk.ZeroDec(),
 			},
 			valid: true,
 		},
 		"not authorized": {
 			operator: s.stranger,
 			member: foundation.Member{
-				Address: s.member.String(),
+				Address: s.members[0].String(),
 				Weight: sdk.ZeroDec(),
 			},
 		},
@@ -161,12 +165,13 @@ func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
 			req := &foundation.MsgUpdateMembers{
 				Operator: tc.operator.String(),
 				MemberUpdates: []foundation.Member{tc.member},
 			}
-
-			res, err := s.msgServer.UpdateMembers(s.goCtx, req)
+			res, err := s.msgServer.UpdateMembers(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -178,86 +183,78 @@ func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 }
 
 func (s *KeeperTestSuite) TestMsgSubmitProposal() {
-	getMembers := func(ctx sdk.Context) []sdk.AccAddress {
-		var members []sdk.AccAddress
-		for _, member := range s.keeper.GetMembers(ctx) {
-			members = append(members, sdk.AccAddress(member.Address))
-		}
-		return members
+	members := make([]string, len(s.members))
+	for i, member := range s.members {
+		members[i] = member.String()
 	}
 
 	testCases := map[string]struct {
-		proposers []sdk.AccAddress
+		proposers []string
 		metadata string
 		msg sdk.Msg
 		exec foundation.Exec
 		valid bool
 	}{
 		"valid request (submit)": {
-			proposers: getMembers(s.ctx),
+			proposers: members,
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.operator.String(),
 				To: s.stranger.String(),
-				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 			},
 			valid: true,
 		},
 		"valid request (submit & execute)": {
-			proposers: getMembers(s.ctx),
+			proposers: members,
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.operator.String(),
 				To: s.stranger.String(),
-				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 			},
 			exec: foundation.Exec_EXEC_TRY,
 			valid: true,
 		},
 		"valid request (submit & execute fail)": {
-			proposers: []sdk.AccAddress{s.member},
+			proposers: []string{members[0]},
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.operator.String(),
 				To: s.stranger.String(),
-				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 			},
 			exec: foundation.Exec_EXEC_TRY,
 			valid: true,
 		},
 		"not authorized": {
-			proposers: []sdk.AccAddress{s.stranger},
+			proposers: []string{s.stranger.String()},
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.operator.String(),
 				To: s.stranger.String(),
-				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 			},
-			valid: false,
 		},
-		"long metadata": {
-			proposers: []sdk.AccAddress{s.stranger},
-			metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+		"unauthorized msg": {
+			proposers: []string{members[0]},
 			msg: &foundation.MsgWithdrawFromTreasury{
-				Operator: s.operator.String(),
+				Operator: s.stranger.String(),
 				To: s.stranger.String(),
-				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 			},
-			valid: false,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			var proposers []string
-			for _, proposer := range tc.proposers {
-				proposers = append(proposers, proposer.String())
-			}
+			ctx, _ := s.ctx.CacheContext()
+
 			req := &foundation.MsgSubmitProposal{
-				Proposers: proposers,
+				Proposers: tc.proposers,
 				Metadata: tc.metadata,
 				Exec: tc.exec,
 			}
 			err := req.SetMsgs([]sdk.Msg{tc.msg})
 			s.Require().NoError(err)
 
-			res, err := s.msgServer.SubmitProposal(s.goCtx, req)
+			res, err := s.msgServer.SubmitProposal(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -270,217 +267,135 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 
 func (s *KeeperTestSuite) TestMsgWithdrawProposal() {
 	testCases := map[string]struct {
+		proposalID uint64
 		address sdk.AccAddress
 		valid bool
 	}{
 		"valid request (proposer)": {
-			address: s.member,
+			proposalID: s.activeProposal,
+			address: s.members[0],
 			valid: true,
 		},
 		"valid request (operator)": {
+			proposalID: s.activeProposal,
 			address: s.operator,
 			valid: true,
 		},
 		"not authorized": {
 			address: s.stranger,
-			valid: false,
+		},
+		"inactive proposal": {
+			proposalID: s.abortedProposal,
+			address: s.members[0],
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			// submit a proposal first
-			proposal := &foundation.MsgSubmitProposal{Proposers: []string{s.member.String()}}
-			err := proposal.SetMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-				Operator: s.operator.String(),
-				To: s.stranger.String(),
-				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-			}})
-			s.Require().NoError(err)
+			ctx, _ := s.ctx.CacheContext()
 
-			proposalRes, err := s.msgServer.SubmitProposal(s.goCtx, proposal)
-			s.Require().NoError(err)
-
-			proposalId := proposalRes.ProposalId
-
-			// withdraw the proposal
 			req := &foundation.MsgWithdrawProposal{
-				ProposalId: proposalId,
+				ProposalId: tc.proposalID,
 				Address: tc.address.String(),
 			}
-
-			res, err := s.msgServer.WithdrawProposal(s.goCtx, req)
+			res, err := s.msgServer.WithdrawProposal(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
 			}
 			s.Require().NoError(err)
 			s.Require().NotNil(res)
-
-			// double withdraw which fails
-			// it feeds "already invalidated"
-			_, err = s.msgServer.WithdrawProposal(s.goCtx, req)
-			s.Require().Error(err)
 		})
 	}
 }
 
 func (s *KeeperTestSuite) TestMsgVote() {
 	testCases := map[string]struct {
+		proposalID uint64
 		voter sdk.AccAddress
-		metadata string
 		msg sdk.Msg
 		exec foundation.Exec
 		valid bool
 	}{
 		"valid request (vote)": {
-			voter: s.member,
+			proposalID: s.activeProposal,
+			voter: s.members[0],
 			valid: true,
 		},
 		"valid request (vote & execute)": {
-			voter: s.member,
+			proposalID: s.activeProposal,
+			voter: s.members[0],
 			exec: foundation.Exec_EXEC_TRY,
 			valid: true,
 		},
 		"not authorized": {
+			proposalID: s.activeProposal,
 			voter: s.stranger,
-			valid: false,
 		},
-		"long metadata": {
-			voter: s.stranger,
-			metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
-			valid: false,
+		"already voted": {
+			proposalID: s.votedProposal,
+			voter: s.members[0],
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			// submit a proposal first
-			proposal := &foundation.MsgSubmitProposal{
-				Proposers: []string{s.member.String()},
-			}
-			err := proposal.SetMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-				Operator: s.operator.String(),
-				To: s.stranger.String(),
-				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-			}})
-			s.Require().NoError(err)
+			ctx, _ := s.ctx.CacheContext()
 
-			proposalRes, err := s.msgServer.SubmitProposal(s.goCtx, proposal)
-			s.Require().NoError(err)
-
-			proposalId := proposalRes.ProposalId
-
-			// members except the voter vote first
-			voters := map[string]bool{}
-			for _, voter := range s.keeper.GetMembers(s.ctx) {
-				voters[voter.Address] = true
-			}
-			delete(voters, tc.voter.String())
-			for voter := range voters {
-				s.msgServer.Vote(s.goCtx, &foundation.MsgVote{
-					ProposalId: proposalId,
-					Voter: voter,
-					Option: foundation.VOTE_OPTION_YES,
-				})
-			}
-
-			// do the test on the subject
 			req := &foundation.MsgVote{
-				ProposalId: proposalId,
+				ProposalId: tc.proposalID,
 				Voter: tc.voter.String(),
 				Option: foundation.VOTE_OPTION_YES,
-				Metadata: tc.metadata,
 				Exec: tc.exec,
 			}
-
-			res, err := s.msgServer.Vote(s.goCtx, req)
+			res, err := s.msgServer.Vote(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
 			}
 			s.Require().NoError(err)
 			s.Require().NotNil(res)
-
-			// double vote which fails
-			// it feeds "no proposal" and "already voted"
-			req.Option = foundation.VOTE_OPTION_YES
-			_, err = s.msgServer.Vote(s.goCtx, req)
-			s.Require().Error(err)
 		})
 	}
 }
 
 func (s *KeeperTestSuite) TestMsgExec() {
 	testCases := map[string]struct {
+		proposalID uint64
 		signer sdk.AccAddress
-		voteOption foundation.VoteOption
 		valid bool
 	}{
 		"valid request (execute)": {
-			signer: s.member,
-			voteOption: foundation.VOTE_OPTION_YES,
+			proposalID: s.votedProposal,
+			signer: s.members[0],
 			valid: true,
 		},
 		"valid request (not finalized)": {
-			signer: s.member,
-			valid: true,
-		},
-		"valid request (rejected)": {
-			signer: s.member,
-			voteOption: foundation.VOTE_OPTION_NO,
+			proposalID: s.activeProposal,
+			signer: s.members[0],
 			valid: true,
 		},
 		"not authorized": {
+			proposalID: s.votedProposal,
 			signer: s.stranger,
-			voteOption: foundation.VOTE_OPTION_YES,
-			valid: false,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			// submit a proposal first
-			proposal := &foundation.MsgSubmitProposal{Proposers: []string{s.member.String()}}
-			err := proposal.SetMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-				Operator: s.operator.String(),
-				To: s.stranger.String(),
-				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-			}})
-			s.Require().NoError(err)
+			ctx, _ := s.ctx.CacheContext()
 
-			proposalRes, err := s.msgServer.SubmitProposal(s.goCtx, proposal)
-			s.Require().NoError(err)
-
-			proposalId := proposalRes.ProposalId
-
-			// all members vote first
-			for _, voter := range s.keeper.GetMembers(s.ctx) {
-				s.msgServer.Vote(s.goCtx, &foundation.MsgVote{
-					ProposalId: proposalId,
-					Voter: voter.String(),
-					Option: tc.voteOption,
-				})
-			}
-
-			// do the test on the subject
 			req := &foundation.MsgExec{
-				ProposalId: proposalId,
+				ProposalId: tc.proposalID,
 				Signer: tc.signer.String(),
 			}
-
-			res, err := s.msgServer.Exec(s.goCtx, req)
+			res, err := s.msgServer.Exec(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
 			}
 			s.Require().NoError(err)
 			s.Require().NotNil(res)
-
-			// double exec which fails
-			// it feeds "no proposal"
-			_, err = s.msgServer.Exec(s.goCtx, req)
-			s.Require().Error(err)
 		})
 	}
 }
@@ -491,22 +406,22 @@ func (s *KeeperTestSuite) TestMsgLeaveFoundation() {
 		valid bool
 	}{
 		"valid request": {
-			address: s.leavingMember,
+			address: s.members[0],
 			valid: true,
 		},
 		"not authorized": {
 			address: s.stranger,
-			valid: false,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
 			req := &foundation.MsgLeaveFoundation{
 				Address: tc.address.String(),
 			}
-
-			res, err := s.msgServer.LeaveFoundation(s.goCtx, req)
+			res, err := s.msgServer.LeaveFoundation(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

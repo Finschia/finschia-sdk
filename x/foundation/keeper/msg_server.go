@@ -169,13 +169,13 @@ func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdr
 		}
 	}
 
-	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventWithdrawProposal{
-		ProposalId: id,
-	}); err != nil {
+	if err := s.keeper.WithdrawProposal(ctx, id); err != nil {
 		return nil, err
 	}
 
-	if err := s.keeper.WithdrawProposal(ctx, *proposal); err != nil {
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventWithdrawProposal{
+		ProposalId: id,
+	}); err != nil {
 		return nil, err
 	}
 

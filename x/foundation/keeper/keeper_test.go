@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"context"
 	"testing"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
@@ -43,19 +42,18 @@ func TestCleanup(t *testing.T) {
 type KeeperTestSuite struct {
 	suite.Suite
 	ctx  sdk.Context
-	goCtx context.Context
+
 	keeper keeper.Keeper
 	queryServer foundation.QueryServer
 	msgServer foundation.MsgServer
 
 	operator sdk.AccAddress
-
-	member sdk.AccAddress
-	comingMember sdk.AccAddress
-	leavingMember sdk.AccAddress
-	badMember sdk.AccAddress
-
+	members []sdk.AccAddress
 	stranger sdk.AccAddress
+
+	activeProposal uint64
+	votedProposal uint64
+	abortedProposal uint64
 
 	balance sdk.Int
 }
@@ -64,7 +62,6 @@ func (s *KeeperTestSuite) SetupTest() {
 	checkTx := false
 	app := simapp.Setup(checkTx)
 	s.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{})
-	s.goCtx = sdk.WrapSDKContext(s.ctx)
 	s.keeper = app.FoundationKeeper
 
 	s.queryServer = keeper.NewQueryServer(s.keeper)
@@ -73,11 +70,12 @@ func (s *KeeperTestSuite) SetupTest() {
 	createAddress := func() sdk.AccAddress {
 		return sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
+
 	s.operator = s.keeper.GetOperator(s.ctx)
-	s.member = createAddress()
-	anotherMember := createAddress()
-	s.comingMember = createAddress()
-	s.leavingMember = createAddress()
+	s.members = make([]sdk.AccAddress, foundation.DefaultConfig().MinThreshold.TruncateInt64())
+	for i := range s.members {
+		s.members[i] = createAddress()
+	}
 	s.stranger = createAddress()
 
 	s.balance = sdk.NewInt(1000000)
@@ -90,28 +88,61 @@ func (s *KeeperTestSuite) SetupTest() {
 		s.Require().NoError(err)
 	}
 
-	err := s.keeper.UpdateMembers(s.ctx, []foundation.Member{
-		{
-			Address: s.member.String(),
+	updates := make([]foundation.Member, len(s.members))
+	for i, member := range s.members {
+		updates[i] = foundation.Member{
+			Address: member.String(),
 			Weight: sdk.OneDec(),
-			Metadata: "a permanent member",
-		},
-		{
-			Address: anotherMember.String(),
-			Weight: sdk.OneDec(),
-			Metadata: "another permanent member",
-		},
-		{
-			Address: s.leavingMember.String(),
-			Weight: sdk.OneDec(),
-			Metadata: "a member to leave",
-		},
-		{
-			Address: s.badMember.String(),
-			Weight: sdk.OneDec(),
-			Metadata: "a member to be deported",
+		}
+	}
+	err := s.keeper.UpdateMembers(s.ctx, updates)
+	s.Require().NoError(err)
+
+	// create a proposal
+	s.activeProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
+		&foundation.MsgWithdrawFromTreasury{
+			Operator: s.operator.String(),
+			To: s.stranger.String(),
+			Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 		},
 	})
+	s.Require().NoError(err)
+	for _, member := range s.members[1:] {
+		err := s.keeper.Vote(s.ctx, foundation.Vote{
+			ProposalId: s.activeProposal,
+			Voter: member.String(),
+			Option: foundation.VOTE_OPTION_YES,
+		})
+		s.Require().NoError(err)
+	}
+
+	// create a proposal voted by all members
+	s.votedProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
+		&foundation.MsgWithdrawFromTreasury{
+			Operator: s.operator.String(),
+			To: s.stranger.String(),
+			Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
+		},
+	})
+	s.Require().NoError(err)
+	for _, member := range s.members {
+		err := s.keeper.Vote(s.ctx, foundation.Vote{
+			ProposalId: s.votedProposal,
+			Voter: member.String(),
+			Option: foundation.VOTE_OPTION_YES,
+		})
+		s.Require().NoError(err)
+	}
+
+	s.abortedProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
+		&foundation.MsgWithdrawFromTreasury{
+			Operator: s.operator.String(),
+			To: s.stranger.String(),
+			Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
+		},
+	})
+	s.Require().NoError(err)
+	err = s.keeper.WithdrawProposal(s.ctx, s.abortedProposal)
 	s.Require().NoError(err)
 }
 
