@@ -11,6 +11,7 @@ Here are some production-grade modules that can be used in Cosmos SDK applicatio
 - [Authz](authz/spec/README.md) - Authorization for accounts to perform actions on behalf of other accounts.
 - [Bank](bank/spec/README.md) - Token transfer functionalities.
 - [Capability](capability/spec/README.md) - Object capability implementation.
+- [Consortium](consortium/spec/README.md) - Consotrium related functionalities.
 - [Crisis](crisis/spec/README.md) - Halting the blockchain under certain circumstances (e.g. if an invariant is broken).
 - [Distribution](distribution/spec/README.md) - Fee distribution, and staking token provision distribution.
 - [Evidence](evidence/spec/README.md) - Evidence handling for double signing, misbehaviour, etc.
@@ -21,6 +22,7 @@ Here are some production-grade modules that can be used in Cosmos SDK applicatio
 - [Params](params/spec/README.md) - Globally available parameter store.
 - [Slashing](slashing/spec/README.md) - Validator punishment mechanisms.
 - [Staking](staking/spec/README.md) - Proof-of-Stake layer for public blockchains.
+- [Staking Plus](stakingplus/spec/README.md) - Modified version of staking.
 - [Upgrade](upgrade/spec/README.md) - Software upgrades handling and coordination.
 
 To learn more about the process of building modules, visit the [building modules reference documentation](../docs/building-modules/README.md).

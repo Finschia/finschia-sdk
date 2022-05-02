@@ -8,13 +8,13 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/consortium/types"
+	"github.com/line/lbm-sdk/x/consortium"
 )
 
 // NewQueryCmd returns the parent command for all x/consortium CLi query commands.
 func NewQueryCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   types.ModuleName,
+		Use:   consortium.ModuleName,
 		Short: "Querying commands for the consortium module",
 	}
 
@@ -39,9 +39,9 @@ func NewQueryCmdParams() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			queryClient := types.NewQueryClient(clientCtx)
+			queryClient := consortium.NewQueryClient(clientCtx)
 
-			params := types.QueryParamsRequest{}
+			params := consortium.QueryParamsRequest{}
 			res, err := queryClient.Params(context.Background(), &params)
 			if err != nil {
 				return err
@@ -68,14 +68,14 @@ func NewQueryCmdValidatorAuth() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			queryClient := types.NewQueryClient(clientCtx)
+			queryClient := consortium.NewQueryClient(clientCtx)
 
 			valAddr := args[0]
 			if err = sdk.ValidateValAddress(valAddr); err != nil {
 				return err
 			}
 
-			params := types.QueryValidatorAuthRequest{ValidatorAddress: valAddr}
+			params := consortium.QueryValidatorAuthRequest{ValidatorAddress: valAddr}
 			res, err := queryClient.ValidatorAuth(context.Background(), &params)
 			if err != nil {
 				return err
@@ -102,14 +102,14 @@ func NewQueryCmdValidatorAuths() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			queryClient := types.NewQueryClient(clientCtx)
+			queryClient := consortium.NewQueryClient(clientCtx)
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
 				return err
 			}
 
-			params := types.QueryValidatorAuthsRequest{Pagination: pageReq}
+			params := consortium.QueryValidatorAuthsRequest{Pagination: pageReq}
 			res, err := queryClient.ValidatorAuths(context.Background(), &params)
 			if err != nil {
 				return err

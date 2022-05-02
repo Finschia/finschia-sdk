@@ -2,25 +2,25 @@ package keeper
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/consortium/types"
+	"github.com/line/lbm-sdk/x/consortium"
 )
 
-func (k Keeper) GetParams(ctx sdk.Context) *types.Params {
+func (k Keeper) GetParams(ctx sdk.Context) *consortium.Params {
 	store := ctx.KVStore(k.storeKey)
-	key := types.ParamsKey
+	key := paramsKey
 	bz := store.Get(key)
 
-	var params types.Params
+	var params consortium.Params
 	k.cdc.MustUnmarshal(bz, &params)
 
 	return &params
 }
 
-func (k Keeper) SetParams(ctx sdk.Context, params *types.Params) {
+func (k Keeper) SetParams(ctx sdk.Context, params *consortium.Params) {
 	bz := k.cdc.MustMarshal(params)
 
 	store := ctx.KVStore(k.storeKey)
-	key := types.ParamsKey
+	key := paramsKey
 	store.Set(key, bz)
 }
 
