@@ -40,7 +40,9 @@ func (s *IntegrationTestSuite) TestQueryABCIHeight() {
 
 	for _, tc := range testCases {
 		s.Run(tc.name, func() {
-			s.network.WaitForHeight(tc.expHeight)
+			h, err := s.network.WaitForHeight(tc.expHeight)
+			s.Require().NoError(err)
+			s.Require().LessOrEqual(tc.expHeight, h)
 
 			val := s.network.Validators[0]
 
