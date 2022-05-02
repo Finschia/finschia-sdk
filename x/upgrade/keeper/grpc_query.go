@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/errors"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/upgrade/types"
 )
 
@@ -36,21 +35,17 @@ func (k Keeper) AppliedPlan(c context.Context, req *types.QueryAppliedPlanReques
 }
 
 // UpgradedConsensusState implements the Query/UpgradedConsensusState gRPC method
+// nolint: staticcheck
 func (k Keeper) UpgradedConsensusState(c context.Context, req *types.QueryUpgradedConsensusStateRequest) (*types.QueryUpgradedConsensusStateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	consState, err := k.GetUpgradedConsensusState(ctx, req.LastHeight)
-	if err != nil {
-		return nil, err
-	}
-
-	cs, err := clienttypes.PackConsensusState(consState)
-	if err != nil {
-		return nil, err
+	consState, found := k.GetUpgradedConsensusState(ctx, req.LastHeight)
+	if !found {
+		return &types.QueryUpgradedConsensusStateResponse{}, nil
 	}
 
 	return &types.QueryUpgradedConsensusStateResponse{
-		UpgradedConsensusState: cs,
+		UpgradedConsensusState: consState,
 	}, nil
 }
 

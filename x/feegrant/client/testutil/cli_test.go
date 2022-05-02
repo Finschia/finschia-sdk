@@ -1,3 +1,4 @@
+//go:build norace
 // +build norace
 
 package testutil
@@ -5,9 +6,9 @@ package testutil
 import (
 	"testing"
 
-	"github.com/line/lbm-sdk/testutil/network"
-
 	"github.com/stretchr/testify/suite"
+
+	"github.com/line/lbm-sdk/testutil/network"
 )
 
 func TestIntegrationTestSuite(t *testing.T) {

@@ -11,6 +11,11 @@ var (
 	_ codectypes.UnpackInterfacesMessage = QueryChannelConsensusStateResponse{}
 )
 
+var (
+	_ codectypes.UnpackInterfacesMessage = QueryChannelClientStateResponse{}
+	_ codectypes.UnpackInterfacesMessage = QueryChannelConsensusStateResponse{}
+)
+
 // NewQueryChannelResponse creates a new QueryChannelResponse instance
 func NewQueryChannelResponse(channel Channel, proof []byte, height clienttypes.Height) *QueryChannelResponse {
 	return &QueryChannelResponse{

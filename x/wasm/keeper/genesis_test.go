@@ -12,13 +12,11 @@ import (
 	"testing"
 	"time"
 
-	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
-
 	fuzz "github.com/google/gofuzz"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/proto/ostracon/crypto"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -27,6 +25,7 @@ import (
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
+	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
 	distributionkeeper "github.com/line/lbm-sdk/x/distribution/keeper"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	paramskeeper "github.com/line/lbm-sdk/x/params/keeper"
@@ -458,9 +457,6 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 			"permission": "Everybody"
 		},
 		"instantiate_default_permission": "Everybody",
-		"contract_status_access": {
-			"permission": "Nobody"
-		},
 		"max_wasm_code_size": 500000,
 		"gas_multiplier": 100,
 		"instance_cost": 40000,
@@ -641,8 +637,9 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 	require.NoError(t, err)
 	t.Cleanup(func() { os.RemoveAll(tempDir) })
 	var (
-		keyParams = sdk.NewKVStoreKey(paramtypes.StoreKey)
-		keyWasm   = sdk.NewKVStoreKey(wasmTypes.StoreKey)
+		keyParams  = sdk.NewKVStoreKey(paramtypes.StoreKey)
+		tkeyParams = sdk.NewKVStoreKey(paramtypes.TStoreKey)
+		keyWasm    = sdk.NewKVStoreKey(wasmTypes.StoreKey)
 	)
 
 	db := memdb.NewDB()
@@ -651,7 +648,7 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 	ms.MountStoreWithDB(keyParams, sdk.StoreTypeIAVL, db)
 	require.NoError(t, ms.LoadLatestVersion())
 
-	ctx := sdk.NewContext(ms, tmproto.Header{
+	ctx := sdk.NewContext(ms, ocproto.Header{
 		Height: 1234567,
 		Time:   time.Date(2020, time.April, 22, 12, 0, 0, 0, time.UTC),
 	}, false, log.NewNopLogger())
@@ -666,7 +663,7 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 	govtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
 	wasmConfig := wasmTypes.DefaultWasmConfig()
-	pk := paramskeeper.NewKeeper(encodingConfig.Marshaler, encodingConfig.Amino, keyParams)
+	pk := paramskeeper.NewKeeper(encodingConfig.Marshaler, encodingConfig.Amino, keyParams, tkeyParams)
 
 	srcKeeper := NewKeeper(encodingConfig.Marshaler, keyWasm, pk.Subspace(wasmTypes.DefaultParamspace), authkeeper.AccountKeeper{}, bankpluskeeper.BaseKeeper{}, stakingkeeper.Keeper{}, distributionkeeper.Keeper{}, nil, nil, nil, nil, nil, nil, tempDir, wasmConfig, SupportedFeatures, nil, nil)
 	return &srcKeeper, ctx, []sdk.StoreKey{keyWasm, keyParams}

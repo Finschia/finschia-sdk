@@ -11,6 +11,11 @@ var (
 	_ codectypes.UnpackInterfacesMessage = QueryConnectionConsensusStateResponse{}
 )
 
+var (
+	_ codectypes.UnpackInterfacesMessage = QueryConnectionClientStateResponse{}
+	_ codectypes.UnpackInterfacesMessage = QueryConnectionConsensusStateResponse{}
+)
+
 // NewQueryConnectionResponse creates a new QueryConnectionResponse instance
 func NewQueryConnectionResponse(
 	connection ConnectionEnd, proof []byte, height clienttypes.Height,

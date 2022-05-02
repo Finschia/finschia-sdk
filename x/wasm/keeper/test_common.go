@@ -11,7 +11,7 @@ import (
 	"github.com/line/ostracon/crypto/ed25519"
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/libs/rand"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	dbm "github.com/line/tm-db/v2"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
@@ -96,7 +96,7 @@ var ModuleBasics = module.NewBasicManager(
 	transfer.AppModuleBasic{},
 )
 
-func MakeTestCodec(t TestingT) codec.Marshaler {
+func MakeTestCodec(t TestingT) codec.Codec {
 	return MakeEncodingConfig(t).Marshaler
 }
 
@@ -173,6 +173,7 @@ func createTestInput(
 	keyStaking := sdk.NewKVStoreKey(stakingtypes.StoreKey)
 	keyDistro := sdk.NewKVStoreKey(distributiontypes.StoreKey)
 	keyParams := sdk.NewKVStoreKey(paramstypes.StoreKey)
+	tkeyParams := sdk.NewKVStoreKey(paramstypes.TStoreKey)
 	keyGov := sdk.NewKVStoreKey(govtypes.StoreKey)
 	keyIBC := sdk.NewKVStoreKey(ibchost.StoreKey)
 	keyCapability := sdk.NewKVStoreKey(capabilitytypes.StoreKey)
@@ -191,14 +192,14 @@ func createTestInput(
 	ms.MountStoreWithDB(keyCapabilityTransient, sdk.StoreTypeMemory, db)
 	require.NoError(t, ms.LoadLatestVersion())
 
-	ctx := sdk.NewContext(ms, tmproto.Header{
+	ctx := sdk.NewContext(ms, ocproto.Header{
 		Height: 1234567,
 		Time:   time.Date(2020, time.April, 22, 12, 0, 0, 0, time.UTC),
 	}, isCheckTx, log.NewNopLogger())
 	encodingConfig := MakeEncodingConfig(t)
 	appCodec, legacyAmino := encodingConfig.Marshaler, encodingConfig.Amino
 
-	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, keyParams)
+	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, keyParams, tkeyParams)
 	paramsKeeper.Subspace(authtypes.ModuleName)
 	paramsKeeper.Subspace(banktypes.ModuleName)
 	paramsKeeper.Subspace(stakingtypes.ModuleName)
@@ -244,9 +245,7 @@ func createTestInput(
 	)
 	bankParams := banktypes.DefaultParams()
 	bankKeeper.SetParams(ctx, bankParams)
-	bankKeeper.SetSupply(ctx, banktypes.NewSupply(sdk.NewCoins(
-		sdk.NewCoin("denom", sdk.NewInt(10000)),
-	)))
+	bankKeeper.SetSupply(ctx, sdk.NewCoin("denom", sdk.NewInt(10000)))
 	stakingSubsp, _ := paramsKeeper.GetSubspace(stakingtypes.ModuleName)
 	stakingKeeper := stakingkeeper.NewKeeper(appCodec, keyStaking, authKeeper, bankKeeper, stakingSubsp)
 	stakingKeeper.SetParams(ctx, TestingStakeParams)
@@ -262,9 +261,7 @@ func createTestInput(
 	// set some funds ot pay out validatores, based on code from:
 	// https://github.com/line/lbm-sdk/blob/95b22d3a685f7eb531198e0023ef06873835e632/x/distribution/keeper/keeper_test.go#L49-L56
 	distrAcc := distKeeper.GetDistributionAccount(ctx)
-	err := bankKeeper.SetBalances(ctx, distrAcc.GetAddress(), sdk.NewCoins(
-		sdk.NewCoin("stake", sdk.NewInt(2000000)),
-	))
+	err := bankKeeper.SetBalance(ctx, distrAcc.GetAddress(), sdk.NewCoin("stake", sdk.NewInt(2000000)))
 	require.NoError(t, err)
 	authKeeper.SetModuleAccount(ctx, distrAcc)
 	capabilityKeeper := capabilitykeeper.NewKeeper(appCodec, keyCapability, keyCapabilityTransient)
@@ -274,7 +271,7 @@ func createTestInput(
 	ibcSubsp, _ := paramsKeeper.GetSubspace(ibchost.ModuleName)
 
 	ibcKeeper := ibckeeper.NewKeeper(
-		appCodec, keyIBC, ibcSubsp, stakingKeeper, scopedIBCKeeper,
+		appCodec, keyIBC, ibcSubsp, stakingKeeper, nil, scopedIBCKeeper,
 	)
 
 	router := baseapp.NewRouter()
@@ -611,7 +608,9 @@ func createFakeFundedAccount(t TestingT, ctx sdk.Context, am authkeeper.AccountK
 func fundAccounts(t TestingT, ctx sdk.Context, am authkeeper.AccountKeeper, bank bankkeeper.Keeper, addr sdk.AccAddress, coins sdk.Coins) {
 	acc := am.NewAccountWithAddress(ctx, addr)
 	am.SetAccount(ctx, acc)
-	require.NoError(t, bank.SetBalances(ctx, addr, coins))
+	for _, coin := range coins {
+		require.NoError(t, bank.SetBalance(ctx, addr, coin))
+	}
 }
 
 var keyCounter uint64 = 0

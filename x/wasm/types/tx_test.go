@@ -46,7 +46,7 @@ func TestStoreCodeValidation(t *testing.T) {
 				Sender:       badAddress,
 				WASMByteCode: []byte("foo"),
 			},
-			valid: false,
+			valid: true,
 		},
 		"correct maximal": {
 			msg: MsgStoreCode{
@@ -61,7 +61,7 @@ func TestStoreCodeValidation(t *testing.T) {
 				WASMByteCode:          []byte("foo"),
 				InstantiatePermission: &AccessConfig{Permission: AccessTypeOnlyAddress, Address: badAddress},
 			},
-			valid: false,
+			valid: true,
 		},
 	}
 
@@ -130,7 +130,7 @@ func TestInstantiateContractValidation(t *testing.T) {
 				Label:  "foo",
 				Msg:    []byte("{}"),
 			},
-			valid: false,
+			valid: true,
 		},
 		"correct maximal": {
 			msg: MsgInstantiateContract{
@@ -205,15 +205,15 @@ func TestStoreCodeAndInstantiateContractValidation(t *testing.T) {
 				Sender:       goodAddress,
 				WASMByteCode: []byte("foo"),
 				Label:        "foo",
-				InitMsg:      []byte("{}"),
+				Msg:          []byte("{}"),
 			},
 			valid: true,
 		},
 		"missing code": {
 			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:  goodAddress,
-				Label:   "foo",
-				InitMsg: []byte("{}"),
+				Sender: goodAddress,
+				Label:  "foo",
+				Msg:    []byte("{}"),
 			},
 			valid: false,
 		},
@@ -221,7 +221,7 @@ func TestStoreCodeAndInstantiateContractValidation(t *testing.T) {
 			msg: MsgStoreCodeAndInstantiateContract{
 				Sender:       goodAddress,
 				WASMByteCode: []byte("foo"),
-				InitMsg:      []byte("{}"),
+				Msg:          []byte("{}"),
 			},
 			valid: false,
 		},
@@ -238,7 +238,7 @@ func TestStoreCodeAndInstantiateContractValidation(t *testing.T) {
 				Sender:       goodAddress,
 				WASMByteCode: []byte("foo"),
 				Label:        "foo",
-				InitMsg:      []byte(`{"some": "data"}`),
+				Msg:          []byte(`{"some": "data"}`),
 				Funds:        sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
 			},
 			valid: true,
@@ -249,16 +249,16 @@ func TestStoreCodeAndInstantiateContractValidation(t *testing.T) {
 				WASMByteCode:          []byte("foo"),
 				InstantiatePermission: &AccessConfig{Permission: AccessTypeOnlyAddress, Address: badAddress},
 				Label:                 "foo",
-				InitMsg:               []byte(`{"some": "data"}`),
+				Msg:                   []byte(`{"some": "data"}`),
 				Funds:                 sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
 			},
-			valid: false,
+			valid: true,
 		},
 		"negative funds": {
 			msg: MsgStoreCodeAndInstantiateContract{
 				Sender:       goodAddress,
 				WASMByteCode: []byte("foo"),
-				InitMsg:      []byte(`{"some": "data"}`),
+				Msg:          []byte(`{"some": "data"}`),
 				// we cannot use sdk.NewCoin() constructors as they panic on creating invalid data (before we can test)
 				Funds: sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(-200)}},
 			},
@@ -269,7 +269,7 @@ func TestStoreCodeAndInstantiateContractValidation(t *testing.T) {
 				Sender:       goodAddress,
 				WASMByteCode: []byte("foo"),
 				Label:        "foo",
-				InitMsg:      []byte("invalid-json"),
+				Msg:          []byte("invalid-json"),
 			},
 			valid: false,
 		},
@@ -278,9 +278,9 @@ func TestStoreCodeAndInstantiateContractValidation(t *testing.T) {
 				Sender:       badAddress,
 				WASMByteCode: []byte("foo"),
 				Label:        "foo",
-				InitMsg:      []byte("{}"),
+				Msg:          []byte("{}"),
 			},
-			valid: false,
+			valid: true,
 		},
 	}
 
@@ -334,7 +334,7 @@ func TestExecuteContractValidation(t *testing.T) {
 				Contract: goodAddress,
 				Msg:      []byte(`{"some": "data"}`),
 			},
-			valid: false,
+			valid: true,
 		},
 		"empty sender": {
 			msg: MsgExecuteContract{
@@ -349,7 +349,7 @@ func TestExecuteContractValidation(t *testing.T) {
 				Contract: badAddress,
 				Msg:      []byte(`{"some": "data"}`),
 			},
-			valid: false,
+			valid: true,
 		},
 		"empty contract": {
 			msg: MsgExecuteContract{
@@ -438,7 +438,6 @@ func TestMsgUpdateAdministrator(t *testing.T) {
 				NewAdmin: otherGoodAddress,
 				Contract: anotherGoodAddress,
 			},
-			expErr: true,
 		},
 		"bad new admin": {
 			src: MsgUpdateAdmin{
@@ -446,7 +445,6 @@ func TestMsgUpdateAdministrator(t *testing.T) {
 				NewAdmin: badAddress,
 				Contract: anotherGoodAddress,
 			},
-			expErr: true,
 		},
 		"bad contract addr": {
 			src: MsgUpdateAdmin{
@@ -454,7 +452,6 @@ func TestMsgUpdateAdministrator(t *testing.T) {
 				NewAdmin: otherGoodAddress,
 				Contract: badAddress,
 			},
-			expErr: true,
 		},
 		"new admin same as old admin": {
 			src: MsgUpdateAdmin{
@@ -500,14 +497,12 @@ func TestMsgClearAdministrator(t *testing.T) {
 				Sender:   badAddress,
 				Contract: anotherGoodAddress,
 			},
-			expErr: true,
 		},
 		"bad contract addr": {
 			src: MsgClearAdmin{
 				Sender:   goodAddress,
 				Contract: badAddress,
 			},
-			expErr: true,
 		},
 		"contract missing": {
 			src: MsgClearAdmin{
@@ -599,69 +594,6 @@ func TestMsgMigrateContract(t *testing.T) {
 				Sender:   goodAddress,
 				Contract: anotherGoodAddress,
 				CodeID:   firstCodeID,
-			},
-			expErr: true,
-		},
-	}
-	for msg, spec := range specs {
-		t.Run(msg, func(t *testing.T) {
-			err := spec.src.ValidateBasic()
-			if spec.expErr {
-				require.Error(t, err)
-				return
-			}
-			require.NoError(t, err)
-		})
-	}
-}
-
-func TestMsgUpdateContractStatus(t *testing.T) {
-	bad, err := sdk.AccAddressFromHex("012345")
-	require.NoError(t, err)
-	badAddress := bad.String()
-	// proper address size
-	goodAddress := sdk.BytesToAccAddress(make([]byte, 20)).String()
-	anotherGoodAddress := sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, 20)).String()
-
-	specs := map[string]struct {
-		src    MsgUpdateContractStatus
-		expErr bool
-	}{
-		"all good": {
-			src: MsgUpdateContractStatus{
-				Sender:   goodAddress,
-				Status:   ContractStatusInactive,
-				Contract: anotherGoodAddress,
-			},
-		},
-		"status required": {
-			src: MsgUpdateContractStatus{
-				Sender:   goodAddress,
-				Contract: anotherGoodAddress,
-			},
-			expErr: true,
-		},
-		"bad sender": {
-			src: MsgUpdateContractStatus{
-				Sender:   badAddress,
-				Status:   ContractStatusInactive,
-				Contract: anotherGoodAddress,
-			},
-			expErr: true,
-		},
-		"bad status": {
-			src: MsgUpdateContractStatus{
-				Sender:   goodAddress,
-				Status:   3,
-				Contract: anotherGoodAddress,
-			},
-			expErr: true,
-		},
-		"bad contract addr": {
-			src: MsgUpdateContractStatus{
-				Sender:   goodAddress,
-				Status:   ContractStatusInactive,
-				Contract: badAddress,
 			},
 			expErr: true,
 		},

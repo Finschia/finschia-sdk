@@ -153,7 +153,7 @@ func TestQueries(t *testing.T) {
 	TestAddrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.NewInt(20000001))
 
 	oneCoins := sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 1))
-	consCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.TokensFromConsensusPower(10)))
+	consCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, app.StakingKeeper.TokensFromConsensusPower(ctx, 10)))
 
 	tp := TestProposal
 
@@ -334,7 +334,7 @@ func TestPaginatedVotesQuery(t *testing.T) {
 		vote := types.Vote{
 			ProposalId: proposal.ProposalId,
 			Voter:      genAddr(),
-			Option:     types.OptionYes,
+			Options:    types.NewNonSplitVoteOption(types.OptionYes),
 		}
 		votes[i] = vote
 		app.GovKeeper.SetVote(ctx, vote)

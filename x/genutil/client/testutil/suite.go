@@ -125,7 +125,7 @@ func (s *IntegrationTestSuite) TestGenTxCmdPubkey() {
 	cmd.SetArgs([]string{
 		fmt.Sprintf("--%s=%s", flags.FlagChainID, s.network.Config.ChainID),
 		fmt.Sprintf("--%s=%s", flags.FlagOutputDocument, genTxFile),
-		fmt.Sprintf("--%s={\"@type\":\"/cosmos.crypto.ed25519.PubKey\",\"key\":\"BOIkjkFruMpfOFC9oNPhiJGfmY2pHF/gwHdLDLnrnS0=\"}", stakingcli.FlagPubKey),
+		fmt.Sprintf("--%s={\"@type\":\"/lbm.crypto.ed25519.PubKey\",\"key\":\"BOIkjkFruMpfOFC9oNPhiJGfmY2pHF/gwHdLDLnrnS0=\"}", stakingcli.FlagPubKey),
 		val.Moniker,
 		amount.String(),
 	})

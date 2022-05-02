@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/x/consortium/types"
+	"github.com/line/lbm-sdk/x/consortium"
 )
 
 func TestGetSetParams(t *testing.T) {
@@ -16,7 +16,7 @@ func TestGetSetParams(t *testing.T) {
 
 	k := app.ConsortiumKeeper
 
-	params := &types.Params{
+	params := &consortium.Params{
 		Enabled: true,
 	}
 	k.SetParams(ctx, params)

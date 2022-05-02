@@ -3,16 +3,17 @@ package keeper_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/suite"
+
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
-
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/stretchr/testify/suite"
-
 	"github.com/line/lbm-sdk/x/bank/types"
 	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
+	minttypes "github.com/line/lbm-sdk/x/mint/types"
 )
 
 const (
@@ -26,7 +27,7 @@ var (
 	blockedAcc = authtypes.NewEmptyModuleAccount(blocker)
 	burnerAcc  = authtypes.NewEmptyModuleAccount(authtypes.Burner, authtypes.Burner)
 
-	initTokens = sdk.TokensFromConsensusPower(initialPower)
+	initTokens = sdk.TokensFromConsensusPower(initialPower, sdk.DefaultPowerReduction)
 	initCoins  = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, initTokens))
 )
 
@@ -35,7 +36,7 @@ func getCoinsByName(ctx sdk.Context, bk bankpluskeeper.Keeper, ak types.AccountK
 	moduleAddress := ak.GetModuleAddress(moduleName)
 	macc := ak.GetAccount(ctx, moduleAddress)
 	if macc == nil {
-		return sdk.Coins(nil)
+		return sdk.NewCoins()
 	}
 
 	return bk.GetAllBalances(ctx, macc.GetAddress())
@@ -43,10 +44,6 @@ func getCoinsByName(ctx sdk.Context, bk bankpluskeeper.Keeper, ak types.AccountK
 
 type IntegrationTestSuite struct {
 	suite.Suite
-
-	app         *simapp.SimApp
-	ctx         sdk.Context
-	queryClient types.QueryClient
 }
 
 func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
@@ -70,9 +67,17 @@ func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 	)
 
 	baseAcc := authKeeper.NewAccountWithAddress(ctx, authtypes.NewModuleAddress("baseAcc"))
-	suite.Require().NoError(keeper.SetBalances(ctx, holderAcc.GetAddress(), initCoins))
 
-	keeper.SetSupply(ctx, types.NewSupply(initCoins))
+	// set initial balances
+	suite.
+		Require().
+		NoError(keeper.MintCoins(ctx, minttypes.ModuleName, initCoins))
+
+	suite.
+		Require().
+		NoError(keeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, holderAcc.GetAddress(), initCoins))
+
+	suite.Require().NoError(keeper.MintCoins(ctx, minttypes.ModuleName, initCoins))
 	authKeeper.SetModuleAccount(ctx, holderAcc)
 	authKeeper.SetModuleAccount(ctx, burnerAcc)
 	authKeeper.SetAccount(ctx, baseAcc)
@@ -97,17 +102,17 @@ func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 	suite.Require().NoError(
 		keeper.SendCoinsFromModuleToModule(ctx, holderAcc.GetName(), authtypes.Burner, initCoins),
 	)
-	suite.Require().Equal(sdk.Coins(nil), getCoinsByName(ctx, keeper, authKeeper, holderAcc.GetName()))
+	suite.Require().Equal(sdk.NewCoins().String(), getCoinsByName(ctx, keeper, authKeeper, holderAcc.GetName()).String())
 	suite.Require().Equal(initCoins, getCoinsByName(ctx, keeper, authKeeper, authtypes.Burner))
 
 	suite.Require().NoError(
 		keeper.SendCoinsFromModuleToAccount(ctx, authtypes.Burner, baseAcc.GetAddress(), initCoins),
 	)
-	suite.Require().Equal(sdk.Coins(nil), getCoinsByName(ctx, keeper, authKeeper, authtypes.Burner))
+	suite.Require().Equal(sdk.NewCoins().String(), getCoinsByName(ctx, keeper, authKeeper, authtypes.Burner).String())
 	suite.Require().Equal(initCoins, keeper.GetAllBalances(ctx, baseAcc.GetAddress()))
 
 	suite.Require().NoError(keeper.SendCoinsFromAccountToModule(ctx, baseAcc.GetAddress(), authtypes.Burner, initCoins))
-	suite.Require().Equal(sdk.Coins(nil), keeper.GetAllBalances(ctx, baseAcc.GetAddress()))
+	suite.Require().Equal(sdk.NewCoins().String(), keeper.GetAllBalances(ctx, baseAcc.GetAddress()).String())
 	suite.Require().Equal(initCoins, getCoinsByName(ctx, keeper, authKeeper, authtypes.Burner))
 }
 
@@ -132,8 +137,16 @@ func (suite *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
 		app.GetSubspace(types.ModuleName), make(map[string]bool),
 	)
 
-	suite.Require().NoError(keeper.SetBalances(ctx, holderAcc.GetAddress(), initCoins))
-	keeper.SetSupply(ctx, types.NewSupply(initCoins))
+	// set initial balances
+	suite.
+		Require().
+		NoError(keeper.MintCoins(ctx, minttypes.ModuleName, initCoins))
+
+	suite.
+		Require().
+		NoError(keeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, holderAcc.GetAddress(), initCoins))
+
+	suite.Require().NoError(keeper.MintCoins(ctx, minttypes.ModuleName, initCoins))
 	suite.Require().Equal(initCoins, keeper.GetAllBalances(ctx, holderAcc.GetAddress()))
 
 	suite.Require().False(keeper.IsInactiveAddr(blockedAcc.GetAddress()))
@@ -151,7 +164,7 @@ func (suite *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
 	suite.Require().False(keeper.IsInactiveAddr(blockedAcc.GetAddress()))
 
 	suite.Require().NoError(keeper.SendCoins(ctx, holderAcc.GetAddress(), blockedAcc.GetAddress(), initCoins))
-	suite.Require().Equal(sdk.Coins(nil), keeper.GetAllBalances(ctx, holderAcc.GetAddress()))
+	suite.Require().Equal(sdk.NewCoins().String(), keeper.GetAllBalances(ctx, holderAcc.GetAddress()).String())
 }
 
 func (suite *IntegrationTestSuite) TestInitializeBankPlus() {

@@ -104,18 +104,82 @@ func (suite *SimTestSuite) TestSimulateMsgMultiSend() {
 	// execute operation
 	op := simulation.SimulateMsgMultiSend(suite.app.AccountKeeper, suite.app.BankKeeper)
 	operationMsg, futureOperations, err := op(r, suite.app.BaseApp, suite.ctx, accounts, "")
+	require := suite.Require()
+	require.NoError(err)
+
+	var msg types.MsgMultiSend
+	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+
+	require.True(operationMsg.OK)
+	require.Len(msg.Inputs, 3)
+	require.Equal("link1p8wcgrjr4pjju90xg6u9cgq55dxwq8j7fmx8x8", msg.Inputs[1].Address)
+	require.Equal("185121068stake", msg.Inputs[1].Coins.String())
+	require.Len(msg.Outputs, 2)
+	require.Equal("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt", msg.Outputs[1].Address)
+	require.Equal("260469617stake", msg.Outputs[1].Coins.String())
+	require.Equal(types.TypeMsgMultiSend, msg.Type())
+	require.Equal(types.ModuleName, msg.Route())
+	require.Len(futureOperations, 0)
+}
+
+// Since the allowedReceivingModAcc value of the distribution module is set to true, change it to test in which the result is true.
+func (suite *SimTestSuite) TestSimulateModuleAccountMsgSend() {
+	const (
+		accCount       = 1
+		moduleAccCount = 1
+	)
+
+	s := rand.NewSource(1)
+	r := rand.New(s)
+	accounts := suite.getTestingAccounts(r, accCount)
+
+	// begin a new block
+	suite.app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+
+	// execute operation
+	op := simulation.SimulateMsgSendToModuleAccount(suite.app.AccountKeeper, suite.app.BankKeeper, moduleAccCount)
+
+	s = rand.NewSource(1)
+	r = rand.New(s)
+
+	operationMsg, futureOperations, err := op(r, suite.app.BaseApp, suite.ctx, accounts, "")
+	suite.Require().NoError(err)
+
+	var msg types.MsgSend
+	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+
+	suite.Require().True(operationMsg.OK)
+	suite.Require().Empty(operationMsg.Comment)
+	suite.Require().Equal(types.TypeMsgSend, msg.Type())
+	suite.Require().Equal(types.ModuleName, msg.Route())
+	suite.Require().Len(futureOperations, 0)
+}
+
+// Since the allowedReceivingModAcc value of the distribution module is set to true, change it to test in which the result is true.
+func (suite *SimTestSuite) TestSimulateMsgMultiSendToModuleAccount() {
+	const (
+		accCount  = 2
+		mAccCount = 2
+	)
+
+	s := rand.NewSource(1)
+	r := rand.New(s)
+	accounts := suite.getTestingAccounts(r, accCount)
+
+	// begin a new block
+	suite.app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+
+	// execute operation
+	op := simulation.SimulateMsgMultiSendToModuleAccount(suite.app.AccountKeeper, suite.app.BankKeeper, mAccCount)
+
+	operationMsg, futureOperations, err := op(r, suite.app.BaseApp, suite.ctx, accounts, "")
 	suite.Require().NoError(err)
 
 	var msg types.MsgMultiSend
 	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
-	suite.Require().True(operationMsg.OK)
-	suite.Require().Len(msg.Inputs, 3)
-	suite.Require().Equal("link1p8wcgrjr4pjju90xg6u9cgq55dxwq8j7fmx8x8", msg.Inputs[1].Address)
-	suite.Require().Equal("185121068stake", msg.Inputs[1].Coins.String())
-	suite.Require().Len(msg.Outputs, 2)
-	suite.Require().Equal("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt", msg.Outputs[1].Address)
-	suite.Require().Equal("260469617stake", msg.Outputs[1].Coins.String())
+	suite.Require().True(operationMsg.OK) // sending tokens to a module account should fail
+	suite.Require().Empty(operationMsg.Comment)
 	suite.Require().Equal(types.TypeMsgMultiSend, msg.Type())
 	suite.Require().Equal(types.ModuleName, msg.Route())
 	suite.Require().Len(futureOperations, 0)
@@ -124,15 +188,14 @@ func (suite *SimTestSuite) TestSimulateMsgMultiSend() {
 func (suite *SimTestSuite) getTestingAccounts(r *rand.Rand, n int) []simtypes.Account {
 	accounts := simtypes.RandomAccounts(r, n)
 
-	initAmt := sdk.TokensFromConsensusPower(200)
+	initAmt := suite.app.StakingKeeper.TokensFromConsensusPower(suite.ctx, 200)
 	initCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, initAmt))
 
 	// add coins to the accounts
 	for _, account := range accounts {
 		acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, account.Address)
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
-		err := suite.app.BankKeeper.SetBalances(suite.ctx, account.Address, initCoins)
-		suite.Require().NoError(err)
+		suite.Require().NoError(simapp.FundAccount(suite.app, suite.ctx, account.Address, initCoins))
 	}
 
 	return accounts

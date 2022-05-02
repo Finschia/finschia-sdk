@@ -15,12 +15,12 @@ type Keeper struct {
 	storeKey sdk.StoreKey
 
 	// The codec for binary encoding/decoding.
-	cdc codec.BinaryMarshaler
+	cdc codec.Codec
 }
 
 // NewKeeper returns a token keeper
 func NewKeeper(
-	cdc codec.BinaryMarshaler,
+	cdc codec.Codec,
 	key sdk.StoreKey,
 	ak token.AccountKeeper,
 	ck token.ClassKeeper,

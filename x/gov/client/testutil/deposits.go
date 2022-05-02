@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
+
+	ostcli "github.com/line/ostracon/libs/cli"
 
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	"github.com/line/lbm-sdk/testutil/network"

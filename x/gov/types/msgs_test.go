@@ -92,7 +92,7 @@ func TestMsgDeposit(t *testing.T) {
 	}
 }
 
-// test ValidateBasic for MsgDeposit
+// test ValidateBasic for MsgVote
 func TestMsgVote(t *testing.T) {
 	tests := []struct {
 		proposalID uint64

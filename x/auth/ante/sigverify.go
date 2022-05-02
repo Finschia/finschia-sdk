@@ -11,6 +11,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	kmultisig "github.com/line/lbm-sdk/crypto/keys/multisig"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/crypto/keys/secp256r1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/crypto/types/multisig"
 	sdk "github.com/line/lbm-sdk/types"
@@ -61,7 +62,10 @@ func (spkd SetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid tx type")
 	}
 
-	pubkeys := sigTx.GetPubKeys()
+	pubkeys, err := sigTx.GetPubKeys()
+	if err != nil {
+		return ctx, err
+	}
 	signers := sigTx.GetSigners()
 
 	for i, pk := range pubkeys {
@@ -96,7 +100,7 @@ func (spkd SetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 	// Also emit the following events, so that txs can be indexed by these
 	// indices:
 	// - signature (via `tx.signature='<sig_as_base64>'`),
-	// - concat(address,"/",sequence) (via `tx.acc_seq='cosmos1abc...def/42'`).
+	// - concat(address,"/",sequence) (via `tx.acc_seq='link1abc...def/42'`).
 	sigs, err := sigTx.GetSignaturesV2()
 	if err != nil {
 		return ctx, err
@@ -281,18 +285,11 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		}
 
 		// Check account sequence number.
-		// When using Amino StdSignatures, we actually don't have the Sequence in
-		// the SignatureV2 struct (it's only in the SignDoc). In this case, we
-		// cannot check sequence directly, and must do it via signature
-		// verification (in the VerifySignature call below).
-		onlyAminoSigners := OnlyLegacyAminoSigners(sig.Data)
-		if !onlyAminoSigners {
-			if sig.Sequence != acc.GetSequence() {
-				return ctx, sdkerrors.Wrapf(
-					sdkerrors.ErrWrongSequence,
-					"account sequence mismatch, expected %d, got %d", acc.GetSequence(), sig.Sequence,
-				)
-			}
+		if sig.Sequence != acc.GetSequence() {
+			return ctx, sdkerrors.Wrapf(
+				sdkerrors.ErrWrongSequence,
+				"account sequence mismatch, expected %d, got %d", acc.GetSequence(), sig.Sequence,
+			)
 		}
 
 		// retrieve signer data
@@ -308,31 +305,33 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 			Sequence:      acc.GetSequence(),
 		}
 
-		if !genesis {
-			sigKey := fmt.Sprintf("%d:%d", signerData.AccountNumber, signerData.Sequence)
-			// TODO could we use `tx.(*wrapper).getBodyBytes()` instead of `ctx.TxBytes()`?
-			txHash := sha256.Sum256(ctx.TxBytes())
-			stored := false
+		if !simulate {
+			if !genesis {
+				sigKey := fmt.Sprintf("%d:%d", signerData.AccountNumber, signerData.Sequence)
+				// TODO could we use `tx.(*wrapper).getBodyBytes()` instead of `ctx.TxBytes()`?
+				txHash := sha256.Sum256(ctx.TxBytes())
+				stored := false
 
-			stored, err = svd.verifySignatureWithCache(ctx, pubKey, signerData, sig.Data, tx, sigKey, txHash[:])
+				stored, err = svd.verifySignatureWithCache(ctx, pubKey, signerData, sig.Data, tx, sigKey, txHash[:])
 
-			if stored {
-				newSigKeys = append(newSigKeys, sigKey)
-			}
-		} else {
-			err = authsigning.VerifySignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx)
-		}
-
-		if err != nil {
-			var errMsg string
-			if onlyAminoSigners {
-				// If all signers are using SIGN_MODE_LEGACY_AMINO, we rely on VerifySignature to check account sequence number,
-				// and therefore communicate sequence number as a potential cause of error.
-				errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d), sequence (%d) and chain-id (%s)", accNum, acc.GetSequence(), chainID)
+				if stored {
+					newSigKeys = append(newSigKeys, sigKey)
+				}
 			} else {
-				errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d) and chain-id (%s)", accNum, chainID)
+				err = authsigning.VerifySignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx)
 			}
-			return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, errMsg)
+
+			if err != nil {
+				var errMsg string
+				if OnlyLegacyAminoSigners(sig.Data) {
+					// If all signers are using SIGN_MODE_LEGACY_AMINO, we rely on VerifySignature to check account sequence number,
+					// and therefore communicate sequence number as a potential cause of error.
+					errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d), sequence (%d) and chain-id (%s)", accNum, acc.GetSequence(), chainID)
+				} else {
+					errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d) and chain-id (%s)", accNum, chainID)
+				}
+				return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, errMsg)
+			}
 		}
 	}
 
@@ -450,7 +449,10 @@ func (vscd ValidateSigCountDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, sim
 	}
 
 	params := vscd.ak.GetParams(ctx)
-	pubKeys := sigTx.GetPubKeys()
+	pubKeys, err := sigTx.GetPubKeys()
+	if err != nil {
+		return ctx, err
+	}
 
 	sigCount := 0
 	for _, pk := range pubKeys {
@@ -478,6 +480,10 @@ func DefaultSigVerificationGasConsumer(
 
 	case *secp256k1.PubKey:
 		meter.ConsumeGas(params.SigVerifyCostSecp256k1, "ante verify: secp256k1")
+		return nil
+
+	case *secp256r1.PubKey:
+		meter.ConsumeGas(params.SigVerifyCostSecp256r1(), "ante verify: secp256r1")
 		return nil
 
 	case multisig.PubKey:
@@ -584,6 +590,6 @@ func signatureDataToBz(data signing.SignatureData) ([][]byte, error) {
 
 		return sigs, nil
 	default:
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "unexpected signature data type %T", data)
+		return nil, sdkerrors.ErrInvalidType.Wrapf("unexpected signature data type %T", data)
 	}
 }

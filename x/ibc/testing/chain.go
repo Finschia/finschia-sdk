@@ -91,7 +91,7 @@ type TestChain struct {
 	CurrentHeader ocproto.Header     // header for current block height
 	QueryServer   types.QueryServer
 	TxConfig      client.TxConfig
-	Codec         codec.BinaryMarshaler
+	Codec         codec.Codec
 
 	Vals   *octypes.ValidatorSet
 	Voters *octypes.VoterSet
@@ -195,7 +195,7 @@ func (chain *TestChain) QueryProof(key []byte) ([]byte, clienttypes.Height) {
 	merkleProof, err := commitmenttypes.ConvertProofs(res.ProofOps)
 	require.NoError(chain.t, err)
 
-	proof, err := chain.App.AppCodec().MarshalBinaryBare(&merkleProof)
+	proof, err := chain.App.AppCodec().Marshal(&merkleProof)
 	require.NoError(chain.t, err)
 
 	revision := clienttypes.ParseChainID(chain.ChainID)
@@ -219,7 +219,7 @@ func (chain *TestChain) QueryUpgradeProof(key []byte, height uint64) ([]byte, cl
 	merkleProof, err := commitmenttypes.ConvertProofs(res.ProofOps)
 	require.NoError(chain.t, err)
 
-	proof, err := chain.App.AppCodec().MarshalBinaryBare(&merkleProof)
+	proof, err := chain.App.AppCodec().Marshal(&merkleProof)
 	require.NoError(chain.t, err)
 
 	revision := clienttypes.ParseChainID(chain.ChainID)
@@ -346,7 +346,7 @@ func (chain *TestChain) GetValsAtHeight(height int64) (*octypes.ValidatorSet, bo
 
 	valSet := stakingtypes.Validators(histInfo.Valset)
 
-	ocValidators, err := teststaking.ToOcValidators(valSet)
+	ocValidators, err := teststaking.ToOcValidators(valSet, sdk.DefaultPowerReduction)
 	if err != nil {
 		panic(err)
 	}
@@ -362,7 +362,7 @@ func (chain *TestChain) GetVotersAtHeight(height int64) (*octypes.VoterSet, bool
 
 	// Voters of test chain is always same to validator set
 	voters := stakingtypes.Validators(histInfo.Valset)
-	ocVoters, err := teststaking.ToOcValidators(voters)
+	ocVoters, err := teststaking.ToOcValidators(voters, sdk.DefaultPowerReduction)
 	if err != nil {
 		panic(err)
 	}

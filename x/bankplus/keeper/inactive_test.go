@@ -29,12 +29,13 @@ func setupKeeper(storeKey *sdk.KVStoreKey) BaseKeeper {
 	registry := codectypes.NewInterfaceRegistry()
 	cdc := codec.NewProtoCodec(registry)
 	amino := codec.NewLegacyAmino()
+	testTransientStoreKey := sdk.NewTransientStoreKey("test")
 
 	accountStoreKey := sdk.NewKVStoreKey(accounttypes.StoreKey)
-	accountSubspace := paramtypes.NewSubspace(cdc, amino, accountStoreKey, accounttypes.ModuleName)
+	accountSubspace := paramtypes.NewSubspace(cdc, amino, accountStoreKey, testTransientStoreKey, accounttypes.ModuleName)
 	accountKeeper := accountkeeper.NewAccountKeeper(cdc, accountStoreKey, accountSubspace, accounttypes.ProtoBaseAccount, nil)
 
-	bankSubspace := paramtypes.NewSubspace(cdc, amino, storeKey, banktypes.StoreKey)
+	bankSubspace := paramtypes.NewSubspace(cdc, amino, storeKey, testTransientStoreKey, banktypes.StoreKey)
 	return NewBaseKeeper(cdc, storeKey, accountKeeper, bankSubspace, nil)
 }
 

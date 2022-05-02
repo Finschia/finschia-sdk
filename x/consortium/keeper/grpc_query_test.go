@@ -12,7 +12,8 @@ import (
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/query"
-	"github.com/line/lbm-sdk/x/consortium/types"
+	"github.com/line/lbm-sdk/x/consortium"
+	"github.com/line/lbm-sdk/x/consortium/keeper"
 )
 
 type ConsortiumTestSuite struct {
@@ -20,7 +21,7 @@ type ConsortiumTestSuite struct {
 
 	app         *simapp.SimApp
 	ctx         sdk.Context
-	queryClient types.QueryClient
+	queryClient consortium.QueryClient
 }
 
 func (suite *ConsortiumTestSuite) SetupTest() {
@@ -28,14 +29,14 @@ func (suite *ConsortiumTestSuite) SetupTest() {
 	suite.ctx = suite.app.BaseApp.NewContext(false, ocproto.Header{})
 
 	queryHelper := baseapp.NewQueryServerTestHelper(suite.ctx, suite.app.InterfaceRegistry())
-	types.RegisterQueryServer(queryHelper, suite.app.ConsortiumKeeper)
-	suite.queryClient = types.NewQueryClient(queryHelper)
+	consortium.RegisterQueryServer(queryHelper, keeper.NewQueryServer(suite.app.ConsortiumKeeper))
+	suite.queryClient = consortium.NewQueryClient(queryHelper)
 }
 
 func (suite *ConsortiumTestSuite) TestQueryParams() {
 	var (
-		req         *types.QueryParamsRequest
-		expResponse types.QueryParamsResponse
+		req         *consortium.QueryParamsRequest
+		expResponse consortium.QueryParamsResponse
 	)
 
 	testCases := []struct {
@@ -46,11 +47,11 @@ func (suite *ConsortiumTestSuite) TestQueryParams() {
 		{
 			"with enabled",
 			func() {
-				params := &types.Params{Enabled: true}
+				params := &consortium.Params{Enabled: true}
 				suite.app.ConsortiumKeeper.SetParams(suite.ctx, params)
 
-				req = &types.QueryParamsRequest{}
-				expResponse = types.QueryParamsResponse{Params: params}
+				req = &consortium.QueryParamsRequest{}
+				expResponse = consortium.QueryParamsResponse{Params: params}
 			},
 			true,
 		},
@@ -77,8 +78,8 @@ func (suite *ConsortiumTestSuite) TestQueryParams() {
 
 func (suite *ConsortiumTestSuite) TestQueryValidatorAuth() {
 	var (
-		req         *types.QueryValidatorAuthRequest
-		expResponse types.QueryValidatorAuthResponse
+		req         *consortium.QueryValidatorAuthRequest
+		expResponse consortium.QueryValidatorAuthResponse
 	)
 
 	testCases := []struct {
@@ -89,22 +90,22 @@ func (suite *ConsortiumTestSuite) TestQueryValidatorAuth() {
 		{
 			"with non-existent auth",
 			func() {
-				req = &types.QueryValidatorAuthRequest{ValidatorAddress: valAddr.String()}
-				expResponse = types.QueryValidatorAuthResponse{}
+				req = &consortium.QueryValidatorAuthRequest{ValidatorAddress: valAddr.String()}
+				expResponse = consortium.QueryValidatorAuthResponse{}
 			},
 			false,
 		},
 		{
 			"with existing auth",
 			func() {
-				auth := &types.ValidatorAuth{
+				auth := &consortium.ValidatorAuth{
 					OperatorAddress: valAddr.String(),
 					CreationAllowed: true,
 				}
 				suite.app.ConsortiumKeeper.SetValidatorAuth(suite.ctx, auth)
 
-				req = &types.QueryValidatorAuthRequest{ValidatorAddress: valAddr.String()}
-				expResponse = types.QueryValidatorAuthResponse{Auth: auth}
+				req = &consortium.QueryValidatorAuthRequest{ValidatorAddress: valAddr.String()}
+				expResponse = consortium.QueryValidatorAuthResponse{Auth: auth}
 			},
 			true,
 		},
@@ -130,7 +131,7 @@ func (suite *ConsortiumTestSuite) TestQueryValidatorAuth() {
 }
 
 func (suite *ConsortiumTestSuite) TestQueryValidatorAuths() {
-	var req *types.QueryValidatorAuthsRequest
+	var req *consortium.QueryValidatorAuthsRequest
 	testCases := []struct {
 		msg      string
 		malleate func()
@@ -141,7 +142,7 @@ func (suite *ConsortiumTestSuite) TestQueryValidatorAuths() {
 		{
 			"empty request",
 			func() {
-				req = &types.QueryValidatorAuthsRequest{}
+				req = &consortium.QueryValidatorAuthsRequest{}
 			},
 			true,
 			0,
@@ -150,7 +151,7 @@ func (suite *ConsortiumTestSuite) TestQueryValidatorAuths() {
 		{
 			"with empty auths",
 			func() {
-				req = &types.QueryValidatorAuthsRequest{
+				req = &consortium.QueryValidatorAuthsRequest{
 					Pagination: &query.PageRequest{Limit: 1, CountTotal: true},
 				}
 			},
@@ -161,13 +162,13 @@ func (suite *ConsortiumTestSuite) TestQueryValidatorAuths() {
 		{
 			"with non-empty auths",
 			func() {
-				auth := &types.ValidatorAuth{
+				auth := &consortium.ValidatorAuth{
 					OperatorAddress: valAddr.String(),
 					CreationAllowed: true,
 				}
 				suite.app.ConsortiumKeeper.SetValidatorAuth(suite.ctx, auth)
 
-				req = &types.QueryValidatorAuthsRequest{
+				req = &consortium.QueryValidatorAuthsRequest{
 					Pagination: &query.PageRequest{Limit: 1, CountTotal: true},
 				}
 			},

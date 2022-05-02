@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
+
 	abci "github.com/line/ostracon/abci/types"
 	ocbytes "github.com/line/ostracon/libs/bytes"
 	"github.com/line/ostracon/libs/log"
