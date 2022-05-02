@@ -92,14 +92,19 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata str
 	return id, nil
 }
 
-func (k Keeper) WithdrawProposal(ctx sdk.Context, proposal foundation.Proposal) error {
+func (k Keeper) WithdrawProposal(ctx sdk.Context, proposalID uint64) error {
+	proposal, err := k.GetProposal(ctx, proposalID)
+	if err != nil {
+		return err
+	}
+
 	// Ensure the proposal can be withdrawn.
 	if proposal.Status != foundation.PROPOSAL_STATUS_SUBMITTED {
 		return sdkerrors.ErrInvalidRequest.Wrapf("cannot withdraw a proposal with the status of %s", proposal.Status.String())
 	}
 
 	proposal.Status = foundation.PROPOSAL_STATUS_WITHDRAWN
-	k.setProposal(ctx, proposal)
+	k.setProposal(ctx, *proposal)
 
 	return nil
 }
