@@ -19,7 +19,7 @@ jobs:
   install-tparse:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v3.0.0
         with:
           go-version: 1.15
       - name: Display go version
@@ -27,7 +27,7 @@ jobs:
       - name: install tparse
         run: |
           export GO111MODULE="on" && go get github.com/mfridman/tparse@v0.8.3
-      - uses: actions/cache@v2.1.7
+      - uses: actions/cache@v3.0.2
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-tparse-binary
@@ -50,7 +50,7 @@ jobs:
       - run: sudo apt update && sudo apt install -y ${{ matrix.package }} qemu-user-binfmt
         if: "matrix.package != ''"
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v3.0.0
         with:
           go-version: 1.15
       - uses: technote-space/get-diff-action@v6.0.1
@@ -68,7 +68,7 @@ jobs:
 #    runs-on: ubuntu-latest
 #    steps:
 #      - uses: actions/checkout@v3
-#      - uses: actions/setup-go@v3
+#      - uses: actions/setup-go@v3.0.0
 #        with:
 #          go-version: 1.15
 #      - name: Display go version
@@ -95,19 +95,19 @@ jobs:
       - name: Split pkgs into 4 files
         run: split -d -n l/4 pkgs.txt pkgs.txt.part.
       # cache multiple
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: "${{ github.sha }}-00"
           path: ./pkgs.txt.part.00
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: "${{ github.sha }}-01"
           path: ./pkgs.txt.part.01
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: "${{ github.sha }}-02"
           path: ./pkgs.txt.part.02
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: "${{ github.sha }}-03"
           path: ./pkgs.txt.part.03
@@ -121,7 +121,7 @@ jobs:
         part: ["00", "01", "02", "03"]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v3.0.0
         with:
           go-version: 1.15
       - uses: technote-space/get-diff-action@v6.0.1
@@ -130,7 +130,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-${{ matrix.part }}"
         if: env.GIT_DIFF
@@ -141,7 +141,7 @@ jobs:
         run: |
           cat pkgs.txt.part.${{ matrix.part }} | xargs go test -mod=readonly -timeout 30m -coverprofile=${{ matrix.part }}profile.out -covermode=atomic -tags='norace ledger test_ledger_mock goleveldb'
         if: env.GIT_DIFF
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: "${{ github.sha }}-${{ matrix.part }}-coverage"
           path: ./${{ matrix.part }}profile.out
@@ -157,19 +157,19 @@ jobs:
             **/**.go
             go.mod
             go.sum
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-00-coverage"
         if: env.GIT_DIFF
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-01-coverage"
         if: env.GIT_DIFF
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-02-coverage"
         if: env.GIT_DIFF
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-03-coverage"
         if: env.GIT_DIFF
@@ -186,7 +186,7 @@ jobs:
             sed -i.bak "/$(echo $filename | sed 's/\//\\\//g')/d" coverage.txt
           done
         if: env.GIT_DIFF
-      - uses: codecov/codecov-action@v2.1.0
+      - uses: codecov/codecov-action@v3.1.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.txt
@@ -201,7 +201,7 @@ jobs:
         part: ["00", "01", "02", "03"]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v3.0.0
         with:
           go-version: 1.15
       - uses: technote-space/get-diff-action@v6.0.1
@@ -210,7 +210,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-${{ matrix.part }}"
         if: env.GIT_DIFF
@@ -222,7 +222,7 @@ jobs:
         run: |
           xargs --arg-file=pkgs.txt.part.${{ matrix.part }} go test -mod=readonly -timeout 30m -race -tags='cgo ledger test_ledger_mock goleveldb'
         if: env.GIT_DIFF
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: "${{ github.sha }}-${{ matrix.part }}-race-output"
           path: ./${{ matrix.part }}-race-output.txt

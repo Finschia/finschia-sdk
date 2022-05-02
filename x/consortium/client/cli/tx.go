@@ -10,7 +10,7 @@ import (
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/version"
-	"github.com/line/lbm-sdk/x/consortium/types"
+	"github.com/line/lbm-sdk/x/consortium"
 	"github.com/line/lbm-sdk/x/gov/client/cli"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
@@ -64,10 +64,10 @@ $ %s tx gov submit-proposal update-consortium-params [flags]
 				return err
 			}
 
-			params := &types.Params{
+			params := &consortium.Params{
 				Enabled: false,
 			}
-			content := types.NewUpdateConsortiumParamsProposal(title, description, params)
+			content := consortium.NewUpdateConsortiumParamsProposal(title, description, params)
 			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {
 				return err
@@ -149,17 +149,17 @@ $ %s tx gov submit-proposal update-validator-auths [flags]
 			}
 			deletingValidators := parseCommaSeparated(deletingValidatorsStr)
 
-			createAuths := func(addings, deletings []string) []*types.ValidatorAuth {
-				var auths []*types.ValidatorAuth
+			createAuths := func(addings, deletings []string) []*consortium.ValidatorAuth {
+				var auths []*consortium.ValidatorAuth
 				for _, addr := range addings {
-					auth := &types.ValidatorAuth{
+					auth := &consortium.ValidatorAuth{
 						OperatorAddress: addr,
 						CreationAllowed: true,
 					}
 					auths = append(auths, auth)
 				}
 				for _, addr := range deletings {
-					auth := &types.ValidatorAuth{
+					auth := &consortium.ValidatorAuth{
 						OperatorAddress: addr,
 						CreationAllowed: false,
 					}
@@ -170,7 +170,7 @@ $ %s tx gov submit-proposal update-validator-auths [flags]
 			}
 
 			auths := createAuths(addingValidators, deletingValidators)
-			content := types.NewUpdateValidatorAuthsProposal(title, description, auths)
+			content := consortium.NewUpdateValidatorAuthsProposal(title, description, auths)
 			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {
 				return err

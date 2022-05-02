@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lbm.consortium.v1;
 
-option go_package            = "github.com/line/lbm-sdk/x/consortium/types";
+option go_package            = "github.com/line/lbm-sdk/x/consortium";
 option (gogoproto.equal_all) = true;
 
 import "gogoproto/gogo.proto";
@@ -13,9 +13,9 @@ message GenesisState {
   option (gogoproto.goproto_getters) = false;
 
   // params defines the module parameters at genesis.
-  Params params = 1 [(gogoproto.moretags) = "yaml:\"params\""];
+  Params params = 1;
 
   // allowed_validators defines the allowed validator addresses at genesis.
   // provided empty, the module gathers information from staking module.
-  repeated ValidatorAuth validator_auths = 2 [(gogoproto.moretags) = "yaml:\"validator_auths\""];
+  repeated ValidatorAuth validator_auths = 2;
 }

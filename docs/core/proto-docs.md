@@ -13425,7 +13425,7 @@ MsgStoreCodeAndInstantiateContract submit Wasm code to the system and instantiat
 | `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
 | `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
 | `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
-| `init_msg` | [bytes](#bytes) |  | InitMsg json encoded message to be passed to the contract on instantiation |
+| `msg` | [bytes](#bytes) |  | InitMsg json encoded message to be passed to the contract on instantiation |
 | `funds` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
 
 
@@ -13654,7 +13654,7 @@ MsgIBCSend
 | `channel` | [string](#string) |  | the channel by which the packet will be sent |
 | `timeout_height` | [uint64](#uint64) |  | Timeout height relative to the current block height. The timeout is disabled when set to 0. |
 | `timeout_timestamp` | [uint64](#uint64) |  | Timeout timestamp (in nanoseconds) relative to the current block timestamp. The timeout is disabled when set to 0. |
-| `data` | [bytes](#bytes) |  | data is the payload to transfer |
+| `data` | [bytes](#bytes) |  | Data is the payload to transfer. We must not make assumption what format or content is in here. |
 
 
 
