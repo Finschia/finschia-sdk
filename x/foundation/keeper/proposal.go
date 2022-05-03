@@ -111,9 +111,9 @@ func (k Keeper) WithdrawProposal(ctx sdk.Context, proposalID uint64) error {
 
 // pruneProposal deletes a proposal from state.
 func (k Keeper) pruneProposal(ctx sdk.Context, proposal foundation.Proposal) {
+	k.pruneVotes(ctx, proposal.Id)
 	k.removeProposalFromVPEndQueue(ctx, proposal)
 	k.deleteProposal(ctx, proposal.Id)
-	k.pruneVotes(ctx, proposal.Id)
 }
 
 // PruneExpiredProposals prunes all proposals which are expired,

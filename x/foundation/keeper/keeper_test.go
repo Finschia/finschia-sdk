@@ -43,6 +43,7 @@ type KeeperTestSuite struct {
 	suite.Suite
 	ctx  sdk.Context
 
+	app *simapp.SimApp
 	keeper keeper.Keeper
 	queryServer foundation.QueryServer
 	msgServer foundation.MsgServer
@@ -61,9 +62,9 @@ type KeeperTestSuite struct {
 
 func (s *KeeperTestSuite) SetupTest() {
 	checkTx := false
-	app := simapp.Setup(checkTx)
-	s.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{})
-	s.keeper = app.FoundationKeeper
+	s.app = simapp.Setup(checkTx)
+	s.ctx = s.app.BaseApp.NewContext(checkTx, ocproto.Header{})
+	s.keeper = s.app.FoundationKeeper
 
 	s.queryServer = keeper.NewQueryServer(s.keeper)
 	s.msgServer = keeper.NewMsgServer(s.keeper)
@@ -82,10 +83,10 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.balance = sdk.NewInt(1000000)
 	holders := []sdk.AccAddress{
 		s.stranger,
-		app.AccountKeeper.GetModuleAccount(s.ctx, foundation.TreasuryName).GetAddress(),
+		s.app.AccountKeeper.GetModuleAccount(s.ctx, foundation.TreasuryName).GetAddress(),
 	}
 	for _, holder := range holders {
-		err := app.BankKeeper.SetBalance(s.ctx, holder, sdk.NewCoin(sdk.DefaultBondDenom, s.balance))
+		err := s.app.BankKeeper.SetBalance(s.ctx, holder, sdk.NewCoin(sdk.DefaultBondDenom, s.balance))
 		s.Require().NoError(err)
 	}
 

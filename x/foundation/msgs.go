@@ -191,30 +191,12 @@ func (m MsgSubmitProposal) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgSubmitProposal) ValidateBasic() error {
-	if len(m.Proposers) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("no proposers")
+	if err := validateProposers(m.Proposers); err != nil {
+		return err
 	}
 
-	proposers := map[string]bool{}
-	for _, proposer := range m.Proposers {
-		if proposers[proposer] {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicated proposer: %s", proposer)
-		}
-		proposers[proposer] = true
-
-		if err := sdk.ValidateAccAddress(proposer); err != nil {
-			return sdkerrors.ErrInvalidAddress.Wrapf("invalid proposer address: %s", proposer)
-		}
-	}
-
-	msgs := m.GetMsgs()
-	if len(msgs) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("no msgs")
-	}
-	for i, msg := range msgs {
-		if err := msg.ValidateBasic(); err != nil {
-			return sdkerrors.Wrapf(err, "msg %d", i)
-		}
+	if err := validateMsgs(m.GetMsgs()); err != nil {
+		return err
 	}
 
 	if _, ok := Exec_name[int32(m.Exec)]; !ok {
@@ -309,11 +291,8 @@ func (m MsgVote) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", m.Voter)
 	}
 
-	if m.Option == VOTE_OPTION_UNSPECIFIED {
-		return sdkerrors.ErrInvalidRequest.Wrap("empty vote option")
-	}
-	if _, ok := VoteOption_name[int32(m.Option)]; !ok {
-		return sdkerrors.ErrInvalidRequest.Wrap("invalid vote option")
+	if err := validateVoteOption(m.Option); err != nil {
+		return err
 	}
 
 	if _, ok := Exec_name[int32(m.Exec)]; !ok {

@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"time"
-
 	sdk "github.com/line/lbm-sdk/types"
 
 	"github.com/line/lbm-sdk/x/foundation"
@@ -11,7 +9,11 @@ import (
 )
 
 func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *foundation.GenesisState) error {
-	k.SetParams(ctx, data.Params)
+	params := data.Params
+	if params == nil {
+		params = &foundation.Params{}
+	}
+	k.SetParams(ctx, params)
 
 	validatorAuths := data.ValidatorAuths
 	if k.GetEnabled(ctx) && len(validatorAuths) == 0 {
@@ -46,6 +48,9 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		}
 	}
 	for _, member := range members {
+		if err := validateMetadata(member.Metadata, k.config); err != nil {
+			return err
+		}
 		k.setMember(ctx, member)
 	}
 
@@ -62,21 +67,15 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	}
 	info.TotalWeight = totalWeight
 
-	if err := sdk.ValidateAccAddress(info.Operator); err != nil {
+	if len(info.Operator) == 0 {
 		info.Operator = k.GetAdmin(ctx).String()
 	}
 
-	if info.DecisionPolicy == nil ||
-		info.GetDecisionPolicy() == nil ||
+	if info.GetDecisionPolicy() == nil ||
 		info.GetDecisionPolicy().ValidateBasic() != nil ||
 		info.GetDecisionPolicy().Validate(k.config) != nil {
-		policy := foundation.ThresholdDecisionPolicy{
-			Threshold: k.config.MinThreshold,
-			Windows: &foundation.DecisionPolicyWindows{
-				VotingPeriod: 24 * time.Hour,
-			},
-		}
-		if err := info.SetDecisionPolicy(&policy); err != nil {
+		policy := foundation.DefaultDecisionPolicy(k.config)
+		if err := info.SetDecisionPolicy(policy); err != nil {
 			return err
 		}
 	}
@@ -86,11 +85,19 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	k.setPreviousProposalID(ctx, data.PreviousProposalId)
 
 	for _, proposal := range data.Proposals {
+		if err := validateMetadata(proposal.Metadata, k.config); err != nil {
+			return err
+		}
+
 		k.setProposal(ctx, proposal)
 		k.addProposalToVPEndQueue(ctx, proposal)
 	}
 
 	for _, vote := range data.Votes {
+		if err := validateMetadata(vote.Metadata, k.config); err != nil {
+			return err
+		}
+
 		k.setVote(ctx, vote)
 	}
 
@@ -114,5 +121,26 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 		PreviousProposalId: k.getPreviousProposalID(ctx),
 		Proposals:          proposals,
 		Votes:              votes,
+	}
+}
+
+func (k Keeper) ResetState(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	// TODO: reset validator list too
+
+	// reset foundation
+	store.Delete(foundationInfoKey)
+
+	// reset members
+	for _, member := range k.GetMembers(ctx) {
+		store.Delete(memberKey(sdk.AccAddress(member.Address)))
+	}
+
+	// id
+	store.Delete(previousProposalIDKey)
+
+	// reset proposals & votes
+	for _, proposal := range k.GetProposals(ctx) {
+		k.pruneProposal(ctx, proposal)
 	}
 }

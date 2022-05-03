@@ -12,6 +12,70 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
+func DefaultDecisionPolicy(config Config) DecisionPolicy {
+	policy := &ThresholdDecisionPolicy{
+		Threshold: config.MinThreshold,
+		Windows: &DecisionPolicyWindows{
+			VotingPeriod: 24 * time.Hour,
+		},
+	}
+
+	// check whether the default policy is valid
+	if err := policy.ValidateBasic(); err != nil {
+		panic(err)
+	}
+	if err := policy.Validate(config); err != nil {
+		panic(err)
+	}
+
+	return policy
+}
+
+func validateProposers(proposers []string) error {
+	if len(proposers) == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("no proposers")
+	}
+
+	addrs := map[string]bool{}
+	for _, proposer := range proposers {
+		if addrs[proposer] {
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicated proposer: %s", proposer)
+		}
+		addrs[proposer] = true
+
+		if err := sdk.ValidateAccAddress(proposer); err != nil {
+			return sdkerrors.ErrInvalidAddress.Wrapf("invalid proposer address: %s", proposer)
+		}
+	}
+
+	return nil
+}
+
+func validateMsgs(msgs []sdk.Msg) error {
+	if len(msgs) == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("no msgs")
+	}
+
+	for i, msg := range msgs {
+		if err := msg.ValidateBasic(); err != nil {
+			return sdkerrors.Wrapf(err, "msg %d", i)
+		}
+	}
+
+	return nil
+}
+
+func validateVoteOption(option VoteOption) error {
+	if option == VOTE_OPTION_UNSPECIFIED {
+		return sdkerrors.ErrInvalidRequest.Wrap("empty vote option")
+	}
+	if _, ok := VoteOption_name[int32(option)]; !ok {
+		return sdkerrors.ErrInvalidRequest.Wrap("invalid vote option")
+	}
+
+	return nil
+}
+
 func validateMembers(members []Member) error {
 	addrs := map[string]bool{}
 	for _, member := range members {
@@ -107,6 +171,15 @@ func (p *Proposal) SetMsgs(msgs []sdk.Msg) error {
 	return nil
 }
 
+// for the tests
+func (p Proposal) WithMsgs(msgs []sdk.Msg) *Proposal {
+	proposal := p
+	if err := proposal.SetMsgs(msgs); err != nil {
+		return nil
+	}
+	return &proposal
+}
+
 func (p Proposal) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	return UnpackInterfaces(unpacker, p.Messages)
 }
@@ -153,6 +226,10 @@ func SetMsgs(msgs []sdk.Msg) ([]*codectypes.Any, error) {
 var _ codectypes.UnpackInterfacesMessage = (*FoundationInfo)(nil)
 
 func (i FoundationInfo) GetDecisionPolicy() DecisionPolicy {
+	if i.DecisionPolicy == nil {
+		return nil
+	}
+
 	policy, ok := i.DecisionPolicy.GetCachedValue().(DecisionPolicy)
 	if !ok {
 		return nil
@@ -173,6 +250,15 @@ func (i *FoundationInfo) SetDecisionPolicy(policy DecisionPolicy) error {
 	i.DecisionPolicy = any
 
 	return nil
+}
+
+// for the tests
+func (i FoundationInfo) WithDecisionPolicy(policy DecisionPolicy) *FoundationInfo {
+	info := i
+	if err := info.SetDecisionPolicy(policy); err != nil {
+		return nil
+	}
+	return &info
 }
 
 func (i *FoundationInfo) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
