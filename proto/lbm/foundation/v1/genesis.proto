@@ -6,6 +6,8 @@ option (gogoproto.equal_all) = true;
 
 import "gogoproto/gogo.proto";
 import "lbm/foundation/v1/foundation.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/any.proto";
 
 // GenesisState defines the foundation module's genesis state.
 message GenesisState {
@@ -33,4 +35,16 @@ message GenesisState {
 
   // votes is the list of votes.
   repeated Vote votes = 7 [(gogoproto.nullable) = false];
+
+  // grants
+  repeated GrantAuthorization authorizations = 8 [(gogoproto.nullable) = false];
 }
+
+// GrantAuthorization defines authorization grant from granter to grantee.
+message GrantAuthorization {
+  string granter = 1;
+  string grantee = 2;
+
+  google.protobuf.Any authorization = 3 [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/authz.Authorization"];
+}
+

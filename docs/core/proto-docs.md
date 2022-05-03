@@ -564,6 +564,10 @@
   
     - [Msg](#lbm.feegrant.v1.Msg)
   
+- [lbm/foundation/v1/authz.proto](#lbm/foundation/v1/authz.proto)
+    - [CreateValidatorAuthorization](#lbm.foundation.v1.CreateValidatorAuthorization)
+    - [WithdrawFromTreasuryAuthorization](#lbm.foundation.v1.WithdrawFromTreasuryAuthorization)
+  
 - [lbm/foundation/v1/foundation.proto](#lbm/foundation/v1/foundation.proto)
     - [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows)
     - [FoundationInfo](#lbm.foundation.v1.FoundationInfo)
@@ -578,6 +582,7 @@
     - [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth)
     - [Vote](#lbm.foundation.v1.Vote)
   
+    - [Granter](#lbm.foundation.v1.Granter)
     - [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult)
     - [ProposalResult](#lbm.foundation.v1.ProposalResult)
     - [ProposalStatus](#lbm.foundation.v1.ProposalStatus)
@@ -598,6 +603,7 @@
   
 - [lbm/foundation/v1/genesis.proto](#lbm/foundation/v1/genesis.proto)
     - [GenesisState](#lbm.foundation.v1.GenesisState)
+    - [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization)
   
 - [lbm/foundation/v1/query.proto](#lbm/foundation/v1/query.proto)
     - [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest)
@@ -8597,6 +8603,54 @@ Msg defines the feegrant msg service.
 
 
 
+<a name="lbm/foundation/v1/authz.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/foundation/v1/authz.proto
+
+
+
+<a name="lbm.foundation.v1.CreateValidatorAuthorization"></a>
+
+### CreateValidatorAuthorization
+CreateValidatorAuthorization allows the grantee to create a new validator.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `min_self_delegation` | [string](#string) |  |  |
+| `validator_address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.WithdrawFromTreasuryAuthorization"></a>
+
+### WithdrawFromTreasuryAuthorization
+WithdrawFromTreasuryAuthorization allows the grantee to receive coins
+up to receive_limit from the treasury.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `receive_limit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="lbm/foundation/v1/foundation.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -8822,6 +8876,19 @@ Vote represents a vote for a proposal.
 
 
  <!-- end messages -->
+
+
+<a name="lbm.foundation.v1.Granter"></a>
+
+### Granter
+Granter enumerates the valid granter for a given grant.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| GRANTER_UNSPECIFIED | 0 | GRANTER_UNSPECIFIED defines a empty granter type. |
+| GRANTER_GOVERNANCE | 1 | GRANTER_GOVERNANCE defines a granter type of governance. |
+| GRANTER_FOUNDATION | 2 | GRANTER_FOUNDATION defines a granter type of foundation. |
+
 
 
 <a name="lbm.foundation.v1.ProposalExecutorResult"></a>
@@ -9095,6 +9162,24 @@ GenesisState defines the foundation module's genesis state.
 | `previous_proposal_id` | [uint64](#uint64) |  | it is used to get the next proposal ID. |
 | `proposals` | [Proposal](#lbm.foundation.v1.Proposal) | repeated | proposals is the list of proposals. |
 | `votes` | [Vote](#lbm.foundation.v1.Vote) | repeated | votes is the list of votes. |
+| `authorizations` | [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization) | repeated | grants |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.GrantAuthorization"></a>
+
+### GrantAuthorization
+GrantAuthorization defines authorization grant from granter to grantee.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 
 
 
