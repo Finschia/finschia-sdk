@@ -5,6 +5,7 @@ import (
 	"time"
 
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/foundation"
 )
 
 // Keys for foundation store
@@ -22,6 +23,8 @@ var (
 	proposalKeyPrefix        = []byte{0x32}
 	proposalByVPEndKeyPrefix = []byte{0x33}
 	voteKeyPrefix            = []byte{0x34}
+
+	grantKeyPrefix = []byte{0x40}
 )
 
 // Uint64FromBytes converts a byte array to uint64
@@ -111,3 +114,28 @@ func proposalByVPEndKey(id uint64, end time.Time) []byte {
 
 // 	return
 // }
+
+func grantKey(granter foundation.Granter, grantee sdk.AccAddress, url string) []byte {
+	granterStr := granter.String()
+	key := make([]byte, len(grantKeyPrefix)+1+len(grantee)+1+len(granterStr)+len(url))
+
+	begin := 0
+	copy(key[begin:], grantKeyPrefix)
+
+	begin += len(grantKeyPrefix)
+	key[begin] = byte(len(grantee))
+
+	begin++
+	copy(key[begin:], grantee)
+
+	begin += len(grantee)
+	key[begin] = byte(len(granterStr))
+
+	begin++
+	copy(key[begin:], granterStr)
+
+	begin += len(granterStr)
+	copy(key[begin:], url)
+
+	return key
+}
