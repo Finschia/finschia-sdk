@@ -44,6 +44,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Improvements
 
 * (refactor) [\#493](https://github.com/line/lbm-sdk/pull/493) restructure x/consortium
+* (server/grpc) [\#526](https://github.com/line/lbm-sdk/pull/526) add index field into TxResponse
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
