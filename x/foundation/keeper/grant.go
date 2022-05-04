@@ -6,14 +6,23 @@ import (
 	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
-func (k Keeper) Grant(ctx sdk.Context, granter foundation.Granter, grantee sdk.AccAddress, authorization authz.Authorization) error {
+func (k Keeper) Grant(ctx sdk.Context, granter string, grantee sdk.AccAddress, authorization authz.Authorization) error {
+	msgTypeURL := authorization.MsgTypeURL()
+	if granter != getGranter(msgTypeURL) {
+		return sdkerrors.ErrInvalidRequest.Wrapf("granter %s cannot grant a msg type of %s", granter, msgTypeURL)
+	}
+
 	return k.setAuthorization(ctx, granter, grantee, authorization)
 }
 
-func (k Keeper) Revoke(ctx sdk.Context, granter foundation.Granter, grantee sdk.AccAddress, authorization authz.Authorization) error {
-	msgTypeURL := authorization.MsgTypeURL()
+func (k Keeper) Revoke(ctx sdk.Context, granter string, grantee sdk.AccAddress, msgTypeURL string) error {
+	if granter != getGranter(msgTypeURL) {
+		return sdkerrors.ErrInvalidRequest.Wrapf("granter %s cannot revoke a msg type of %s", granter, msgTypeURL)
+	}
+
 	if _, err := k.GetAuthorization(ctx, granter, grantee, msgTypeURL); err != nil {
 		return err
 	}
@@ -22,7 +31,7 @@ func (k Keeper) Revoke(ctx sdk.Context, granter foundation.Granter, grantee sdk.
 	return nil
 }
 
-func (k Keeper) GetAuthorization(ctx sdk.Context, granter foundation.Granter, grantee sdk.AccAddress, msgTypeURL string) (authz.Authorization, error) {
+func (k Keeper) GetAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, msgTypeURL string) (authz.Authorization, error) {
 	store := ctx.KVStore(k.storeKey)
 	key := grantKey(granter, grantee, msgTypeURL)
 	bz := store.Get(key)
@@ -38,7 +47,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, granter foundation.Granter, gr
 	return auth, nil
 }
 
-func (k Keeper) setAuthorization(ctx sdk.Context, granter foundation.Granter, grantee sdk.AccAddress, authorization authz.Authorization) error {
+func (k Keeper) setAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, authorization authz.Authorization) error {
 	store := ctx.KVStore(k.storeKey)
 	key := grantKey(granter, grantee, authorization.MsgTypeURL())
 
@@ -51,20 +60,23 @@ func (k Keeper) setAuthorization(ctx sdk.Context, granter foundation.Granter, gr
 	return nil
 }
 
-func (k Keeper) deleteAuthorization(ctx sdk.Context, granter foundation.Granter, grantee sdk.AccAddress, msgTypeURL string) {
+func (k Keeper) deleteAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, msgTypeURL string) {
 	store := ctx.KVStore(k.storeKey)
 	key := grantKey(granter, grantee, msgTypeURL)
 	store.Delete(key)
 }
 
-func (k Keeper) Accept(ctx sdk.Context, grantee sdk.AccAddress, msg sdk.Msg) error {
-	granters := map[string]foundation.Granter{
-		sdk.MsgTypeURL(&stakingtypes.MsgCreateValidator{}): foundation.GRANTER_GOVERNANCE,
-		sdk.MsgTypeURL(&foundation.MsgWithdrawFromTreasury{}): foundation.GRANTER_FOUNDATION,
+func getGranter(msgTypeURL string) string {
+	granters := map[string]string{
+		sdk.MsgTypeURL(&stakingtypes.MsgCreateValidator{}): govtypes.ModuleName,
+		sdk.MsgTypeURL(&foundation.MsgWithdrawFromTreasury{}): foundation.ModuleName,
 	}
+	return granters[msgTypeURL]
+}
 
+func (k Keeper) Accept(ctx sdk.Context, grantee sdk.AccAddress, msg sdk.Msg) error {
 	msgTypeURL := sdk.MsgTypeURL(msg)
-	granter := granters[msgTypeURL]
+	granter := getGranter(msgTypeURL)
 	authorization, err := k.GetAuthorization(ctx, granter, grantee, msgTypeURL)
 	if err != nil {
 		return err

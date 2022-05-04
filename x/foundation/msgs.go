@@ -2,6 +2,7 @@ package foundation
 
 import (
 	"github.com/line/lbm-sdk/codec/legacy"
+	"github.com/line/lbm-sdk/x/authz"
 
 	"github.com/gogo/protobuf/proto"
 
@@ -373,37 +374,97 @@ func (m MsgLeaveFoundation) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
-// var _ sdk.Msg = (*MsgXxx)(nil)
+var _ sdk.Msg = (*MsgGrant)(nil)
 
-// // Route implements Msg.
-// func (m MsgXxx) Route() string { return RouterKey }
+// Route implements Msg.
+func (m MsgGrant) Route() string { return RouterKey }
 
-// // Type implements Msg.
-// func (m MsgXxx) Type() string { return sdk.MsgTypeURL(&m) }
+// Type implements Msg.
+func (m MsgGrant) Type() string { return sdk.MsgTypeURL(&m) }
 
-// // ValidateBasic implements Msg.
-// func (m MsgXxx) ValidateBasic() error {
-// 	if err := class.ValidateID(m.ClassId); err != nil {
-// 		return err
-// 	}
-// 	if err := sdk.ValidateAccAddress(m.Approver); err != nil {
-// 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid approver address: %s", m.Approver)
-// 	}
+// ValidateBasic implements Msg.
+func (m MsgGrant) ValidateBasic() error {
+	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
 
-// 	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
-// 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid proxy address: %s", m.Proxy)
-// 	}
+	if err := sdk.ValidateAccAddress(m.Grantee); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
+	}
 
-// 	return nil
-// }
 
-// // GetSignBytes implements Msg.
-// func (m MsgXxx) GetSignBytes() []byte {
-// 	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-// }
 
-// // GetSigners implements Msg.
-// func (m MsgXxx) GetSigners() []sdk.AccAddress {
-// 	signer := sdk.AccAddress(m.Approver)
-// 	return []sdk.AccAddress{signer}
-// }
+	return nil
+}
+
+// GetSignBytes implements Msg.
+func (m MsgGrant) GetSignBytes() []byte {
+	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
+}
+
+// GetSigners implements Msg.
+func (m MsgGrant) GetSigners() []sdk.AccAddress {
+	signer := sdk.AccAddress(m.Operator)
+	return []sdk.AccAddress{signer}
+}
+
+var _ sdk.Msg = (*MsgRevoke)(nil)
+
+// Route implements Msg.
+func (m MsgRevoke) Route() string { return RouterKey }
+
+// Type implements Msg.
+func (m MsgRevoke) Type() string { return sdk.MsgTypeURL(&m) }
+
+// ValidateBasic implements Msg.
+func (m MsgRevoke) ValidateBasic() error {
+	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
+
+	if err := sdk.ValidateAccAddress(m.Grantee); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
+	}
+
+	return nil
+}
+
+func (m MsgGrant) GetAuthorization() authz.Authorization {
+	if m.Authorization == nil {
+		return nil
+	}
+	a, ok := m.Authorization.GetCachedValue().(authz.Authorization)
+	if !ok {
+		return nil
+	}
+	return a
+}
+
+func (m *MsgGrant) SetAuthorization(a authz.Authorization) error {
+	msg, ok := a.(proto.Message)
+	if !ok {
+		return sdkerrors.Wrapf(sdkerrors.ErrPackAny, "can't proto marshal %T", msg)
+	}
+	any, err := codectypes.NewAnyWithValue(msg)
+	if err != nil {
+		return err
+	}
+	m.Authorization = any
+	return nil
+}
+
+func (m MsgGrant) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	var authorization authz.Authorization
+	return unpacker.UnpackAny(m.Authorization, &authorization)
+}
+
+// GetSignBytes implements Msg.
+func (m MsgRevoke) GetSignBytes() []byte {
+	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
+}
+
+// GetSigners implements Msg.
+func (m MsgRevoke) GetSigners() []sdk.AccAddress {
+	signer := sdk.AccAddress(m.Operator)
+	return []sdk.AccAddress{signer}
+}

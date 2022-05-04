@@ -5,7 +5,6 @@ import (
 	"time"
 
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/foundation"
 )
 
 // Keys for foundation store
@@ -115,9 +114,8 @@ func proposalByVPEndKey(id uint64, end time.Time) []byte {
 // 	return
 // }
 
-func grantKey(granter foundation.Granter, grantee sdk.AccAddress, url string) []byte {
-	granterStr := granter.String()
-	key := make([]byte, len(grantKeyPrefix)+1+len(grantee)+1+len(granterStr)+len(url))
+func grantKey(granter string, grantee sdk.AccAddress, url string) []byte {
+	key := make([]byte, len(grantKeyPrefix)+1+len(grantee)+1+len(granter)+len(url))
 
 	begin := 0
 	copy(key[begin:], grantKeyPrefix)
@@ -129,12 +127,12 @@ func grantKey(granter foundation.Granter, grantee sdk.AccAddress, url string) []
 	copy(key[begin:], grantee)
 
 	begin += len(grantee)
-	key[begin] = byte(len(granterStr))
+	key[begin] = byte(len(granter))
 
 	begin++
-	copy(key[begin:], granterStr)
+	copy(key[begin:], granter)
 
-	begin += len(granterStr)
+	begin += len(granter)
 	copy(key[begin:], url)
 
 	return key

@@ -266,3 +266,46 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 
 	return &foundation.MsgLeaveFoundationResponse{}, nil
 }
+
+func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundation.MsgGrantResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+		return nil, err
+	}
+
+	authorization := req.GetAuthorization()
+	if err := s.keeper.Grant(ctx, foundation.ModuleName, sdk.AccAddress(req.Grantee), authorization); err != nil {
+		return nil, err
+	}
+
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventGrant{
+		Grantee: req.Grantee,
+		Authorization: req.Authorization,
+	}); err != nil {
+		return nil, err
+	}
+
+	return &foundation.MsgGrantResponse{}, nil
+}
+
+func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*foundation.MsgRevokeResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+		return nil, err
+	}
+
+	if err := s.keeper.Revoke(ctx, foundation.ModuleName, sdk.AccAddress(req.Grantee), req.MsgTypeUrl); err != nil {
+		return nil, err
+	}
+
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventRevoke{
+		Grantee: req.Grantee,
+		MsgTypeUrl: req.MsgTypeUrl,
+	}); err != nil {
+		return nil, err
+	}
+
+	return &foundation.MsgRevokeResponse{}, nil
+}
