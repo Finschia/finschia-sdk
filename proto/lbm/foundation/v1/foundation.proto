@@ -17,18 +17,6 @@ message Params {
       [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
-// Granter enumerates the valid granter for a given grant.
-enum Granter {
-  option (gogoproto.goproto_enum_prefix) = false;
-
-  // GRANTER_UNSPECIFIED defines a empty granter type.
-  GRANTER_UNSPECIFIED = 0;
-  // GRANTER_GOVERNANCE defines a granter type of governance.
-  GRANTER_GOVERNANCE = 1;
-  // GRANTER_FOUNDATION defines a granter type of foundation.
-  GRANTER_FOUNDATION = 2;
-}
-
 // ValidatorAuth defines authorization info of a validator.
 message ValidatorAuth {
   string operator_address = 1;

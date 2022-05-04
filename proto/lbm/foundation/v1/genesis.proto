@@ -40,9 +40,9 @@ message GenesisState {
   repeated GrantAuthorization authorizations = 8 [(gogoproto.nullable) = false];
 }
 
-// GrantAuthorization defines authorization grant from granter to grantee.
+// GrantAuthorization defines authorization grant to grantee via route.
 message GrantAuthorization {
-  string granter = 1;
+  string route = 1;
   string grantee = 2;
 
   google.protobuf.Any authorization = 3 [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/authz.Authorization"];

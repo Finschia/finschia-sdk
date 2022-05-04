@@ -582,7 +582,6 @@
     - [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth)
     - [Vote](#lbm.foundation.v1.Vote)
   
-    - [Granter](#lbm.foundation.v1.Granter)
     - [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult)
     - [ProposalResult](#lbm.foundation.v1.ProposalResult)
     - [ProposalStatus](#lbm.foundation.v1.ProposalStatus)
@@ -591,7 +590,9 @@
 - [lbm/foundation/v1/event.proto](#lbm/foundation/v1/event.proto)
     - [EventExec](#lbm.foundation.v1.EventExec)
     - [EventFundTreasury](#lbm.foundation.v1.EventFundTreasury)
+    - [EventGrant](#lbm.foundation.v1.EventGrant)
     - [EventLeaveFoundation](#lbm.foundation.v1.EventLeaveFoundation)
+    - [EventRevoke](#lbm.foundation.v1.EventRevoke)
     - [EventSubmitProposal](#lbm.foundation.v1.EventSubmitProposal)
     - [EventUpdateDecisionPolicy](#lbm.foundation.v1.EventUpdateDecisionPolicy)
     - [EventUpdateFoundationParams](#lbm.foundation.v1.EventUpdateFoundationParams)
@@ -638,8 +639,12 @@
     - [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse)
     - [MsgFundTreasury](#lbm.foundation.v1.MsgFundTreasury)
     - [MsgFundTreasuryResponse](#lbm.foundation.v1.MsgFundTreasuryResponse)
+    - [MsgGrant](#lbm.foundation.v1.MsgGrant)
+    - [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse)
     - [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation)
     - [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse)
+    - [MsgRevoke](#lbm.foundation.v1.MsgRevoke)
+    - [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse)
     - [MsgSubmitProposal](#lbm.foundation.v1.MsgSubmitProposal)
     - [MsgSubmitProposalResponse](#lbm.foundation.v1.MsgSubmitProposalResponse)
     - [MsgUpdateDecisionPolicy](#lbm.foundation.v1.MsgUpdateDecisionPolicy)
@@ -8878,19 +8883,6 @@ Vote represents a vote for a proposal.
  <!-- end messages -->
 
 
-<a name="lbm.foundation.v1.Granter"></a>
-
-### Granter
-Granter enumerates the valid granter for a given grant.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| GRANTER_UNSPECIFIED | 0 | GRANTER_UNSPECIFIED defines a empty granter type. |
-| GRANTER_GOVERNANCE | 1 | GRANTER_GOVERNANCE defines a granter type of governance. |
-| GRANTER_FOUNDATION | 2 | GRANTER_FOUNDATION defines a granter type of foundation. |
-
-
-
 <a name="lbm.foundation.v1.ProposalExecutorResult"></a>
 
 ### ProposalExecutorResult
@@ -8995,6 +8987,22 @@ EventFundTreasury is an event emitted when one funds the treasury.
 
 
 
+<a name="lbm.foundation.v1.EventGrant"></a>
+
+### EventGrant
+EventGrant is emitted on Msg/Grant
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grantee` | [string](#string) |  | Grantee account address |
+| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  | Autorization which is granted |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.EventLeaveFoundation"></a>
 
 ### EventLeaveFoundation
@@ -9004,6 +9012,22 @@ EventLeaveFoundation is an event emitted when a foundation member leaves the fou
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | address is the account address of the foundation member. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.EventRevoke"></a>
+
+### EventRevoke
+EventRevoke is emitted on Msg/Revoke
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grantee` | [string](#string) |  | Grantee account address |
+| `msg_type_url` | [string](#string) |  | Msg type URL for which an autorization is revoked |
 
 
 
@@ -9172,12 +9196,12 @@ GenesisState defines the foundation module's genesis state.
 <a name="lbm.foundation.v1.GrantAuthorization"></a>
 
 ### GrantAuthorization
-GrantAuthorization defines authorization grant from granter to grantee.
+GrantAuthorization defines authorization grant to grantee via route.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `granter` | [string](#string) |  |  |
+| `route` | [string](#string) |  |  |
 | `grantee` | [string](#string) |  |  |
 | `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 
@@ -9648,6 +9672,34 @@ MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
 
 
 
+<a name="lbm.foundation.v1.MsgGrant"></a>
+
+### MsgGrant
+MsgGrant is a request type for Grant method. It declares authorization to the grantee
+on behalf of the foundation.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgGrantResponse"></a>
+
+### MsgGrantResponse
+MsgGrantResponse defines the Msg/MsgGrant response type.
+
+
+
+
+
+
 <a name="lbm.foundation.v1.MsgLeaveFoundation"></a>
 
 ### MsgLeaveFoundation
@@ -9667,6 +9719,34 @@ MsgLeaveFoundation is the Msg/LeaveFoundation request type.
 
 ### MsgLeaveFoundationResponse
 MsgLeaveFoundationResponse is the Msg/LeaveFoundation response type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgRevoke"></a>
+
+### MsgRevoke
+MsgRevoke revokes any authorization with the provided sdk.Msg type
+to the grantee on behalf of the foundation.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `msg_type_url` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgRevokeResponse"></a>
+
+### MsgRevokeResponse
+MsgRevokeResponse defines the Msg/MsgRevokeResponse response type.
 
 
 
@@ -9874,6 +9954,8 @@ Msg defines the foundation Msg service.
 | `Vote` | [MsgVote](#lbm.foundation.v1.MsgVote) | [MsgVoteResponse](#lbm.foundation.v1.MsgVoteResponse) | Vote allows a voter to vote on a proposal. | |
 | `Exec` | [MsgExec](#lbm.foundation.v1.MsgExec) | [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse) | Exec executes a proposal. | |
 | `LeaveFoundation` | [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation) | [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse) | LeaveFoundation allows a member to leave the foundation. | |
+| `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (granter, grantee, Authorization) tuple, then the grant will be overwritten. | |
+| `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name on the granter that has been granted to the grantee. | |
 
  <!-- end services -->
 
