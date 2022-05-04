@@ -13426,7 +13426,7 @@ MsgStoreCodeAndInstantiateContract submit Wasm code to the system and instantiat
 | `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
 | `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
 | `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
-| `msg` | [bytes](#bytes) |  | InitMsg json encoded message to be passed to the contract on instantiation |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on instantiation |
 | `funds` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
 
 
