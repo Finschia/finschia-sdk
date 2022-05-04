@@ -5,7 +5,6 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
@@ -68,8 +67,8 @@ func (k Keeper) deleteAuthorization(ctx sdk.Context, granter string, grantee sdk
 
 func getGranter(msgTypeURL string) string {
 	granters := map[string]string{
-		sdk.MsgTypeURL(&stakingtypes.MsgCreateValidator{}): govtypes.ModuleName,
-		sdk.MsgTypeURL(&foundation.MsgWithdrawFromTreasury{}): foundation.ModuleName,
+		foundation.CreateValidatorAuthorization{}.MsgTypeURL(): govtypes.ModuleName,
+		foundation.WithdrawFromTreasuryAuthorization{}.MsgTypeURL(): foundation.ModuleName,
 	}
 	return granters[msgTypeURL]
 }
@@ -100,4 +99,23 @@ func (k Keeper) Accept(ctx sdk.Context, grantee sdk.AccAddress, msg sdk.Msg) err
 	}
 
 	return nil
+}
+
+func (k Keeper) iterateAuthorizations(ctx sdk.Context, grantee string, fn func(granter string, grantee sdk.AccAddress, authorization authz.Authorization) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	prefix := append(grantKeyPrefix, grantee...)
+	iterator := sdk.KVStorePrefixIterator(store, prefix)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var authorization authz.Authorization
+		if err := k.cdc.UnmarshalInterface(iterator.Value(), &authorization); err != nil {
+			panic(err)
+		}
+
+		granter, grantee, _ := splitGrantKey(iterator.Key())
+		if stop := fn(granter, grantee, authorization); stop {
+			break
+		}
+	}
 }

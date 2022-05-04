@@ -137,3 +137,18 @@ func grantKey(granter string, grantee sdk.AccAddress, url string) []byte {
 
 	return key
 }
+
+func splitGrantKey(key []byte) (granter string, grantee sdk.AccAddress, url string) {
+	begin := len(grantKeyPrefix) + 1
+	end := begin + int(key[begin-1])
+	granter = string(key[begin:end])
+
+	begin = end + 1
+	end = begin + int(key[begin-1])
+	grantee = sdk.AccAddress(key[begin:end])
+
+	begin = end
+	url = string(key[begin:])
+
+	return
+}

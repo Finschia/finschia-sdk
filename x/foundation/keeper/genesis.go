@@ -3,6 +3,7 @@ package keeper
 import (
 	sdk "github.com/line/lbm-sdk/types"
 
+	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
 
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
@@ -101,6 +102,12 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		k.setVote(ctx, vote)
 	}
 
+	for _, ga := range data.Authorizations {
+		if err := k.setAuthorization(ctx, ga.Granter, sdk.AccAddress(ga.Grantee), ga.GetAuthorization()); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -121,6 +128,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 		PreviousProposalId: k.getPreviousProposalID(ctx),
 		Proposals:          proposals,
 		Votes:              votes,
+		Authorizations:     k.GetGrants(ctx),
 	}
 }
 
@@ -143,4 +151,26 @@ func (k Keeper) ResetState(ctx sdk.Context) {
 	for _, proposal := range k.GetProposals(ctx) {
 		k.pruneProposal(ctx, proposal)
 	}
+
+	// reset authorizations
+	for _, ga := range k.GetGrants(ctx) {
+		k.deleteAuthorization(ctx, ga.Granter, sdk.AccAddress(ga.Grantee), ga.GetAuthorization().MsgTypeURL())
+	}
+}
+
+func (k Keeper) GetGrants(ctx sdk.Context) []foundation.GrantAuthorization {
+	var grantAuthorizations []foundation.GrantAuthorization
+	k.iterateAuthorizations(ctx, "", func(granter string, grantee sdk.AccAddress, authorization authz.Authorization) (stop bool) {
+		grantAuthorization := foundation.GrantAuthorization{
+			Granter: granter,
+			Grantee: grantee.String(),
+		}
+		if err := grantAuthorization.SetAuthorization(authorization); err != nil {
+			panic(err)
+		}
+		grantAuthorizations = append(grantAuthorizations, grantAuthorization)
+
+		return false
+	})
+	return grantAuthorizations
 }
