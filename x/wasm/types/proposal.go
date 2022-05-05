@@ -41,6 +41,7 @@ var EnableAllProposals = []ProposalType{
 	ProposalTypePinCodes,
 	ProposalTypeUnpinCodes,
 	ProposalTypeUpdateContractStatus,
+	ProposalTypeUpdateInstantiateConfig,
 }
 
 // ConvertToProposals maps each key to a ProposalType and returns a typed list.
@@ -617,10 +618,16 @@ func (p UpdateInstantiateConfigProposal) ValidateBasic() error {
 	if len(p.CodeUpdates) == 0 {
 		return sdkerrors.Wrap(ErrEmpty, "code updates")
 	}
+	dedup := make(map[uint64]bool)
 	for _, codeUpdate := range p.CodeUpdates {
+		_, found := dedup[codeUpdate.CodeID]
+		if found {
+			return sdkerrors.Wrapf(ErrDuplicate, "duplicate code: %d", codeUpdate.CodeID)
+		}
 		if err := codeUpdate.InstantiatePermission.ValidateBasic(); err != nil {
 			return sdkerrors.Wrap(err, "instantiate permission")
 		}
+		dedup[codeUpdate.CodeID] = true
 	}
 	return nil
 }
