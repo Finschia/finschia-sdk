@@ -4,6 +4,7 @@ import (
 	"github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
+	"github.com/line/lbm-sdk/x/authz"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
@@ -32,5 +33,11 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		(*DecisionPolicy)(nil),
 		&ThresholdDecisionPolicy{},
 		&PercentageDecisionPolicy{},
+	)
+
+	registry.RegisterImplementations(
+		(*authz.Authorization)(nil),
+		&CreateValidatorAuthorization{},
+		&WithdrawFromTreasuryAuthorization{},
 	)
 }

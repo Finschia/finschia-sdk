@@ -392,9 +392,46 @@ func (m MsgGrant) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
 	}
 
-
+	if a := m.GetAuthorization(); a == nil {
+		return sdkerrors.ErrInvalidType.Wrap("invalid authorization")
+	}
+	if err := m.GetAuthorization().ValidateBasic(); err != nil {
+		return err
+	}
 
 	return nil
+}
+
+func (m MsgGrant) GetAuthorization() authz.Authorization {
+	if m.Authorization == nil {
+		return nil
+	}
+
+	a, ok := m.Authorization.GetCachedValue().(authz.Authorization)
+	if !ok {
+		return nil
+	}
+	return a
+}
+
+func (m *MsgGrant) SetAuthorization(a authz.Authorization) error {
+	msg, ok := a.(proto.Message)
+	if !ok {
+		return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
+	}
+
+	any, err := codectypes.NewAnyWithValue(msg)
+	if err != nil {
+		return err
+	}
+	m.Authorization = any
+
+	return nil
+}
+
+func (m MsgGrant) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	var authorization authz.Authorization
+	return unpacker.UnpackAny(m.Authorization, &authorization)
 }
 
 // GetSignBytes implements Msg.
@@ -427,35 +464,6 @@ func (m MsgRevoke) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-func (m MsgGrant) GetAuthorization() authz.Authorization {
-	if m.Authorization == nil {
-		return nil
-	}
-	a, ok := m.Authorization.GetCachedValue().(authz.Authorization)
-	if !ok {
-		return nil
-	}
-	return a
-}
-
-func (m *MsgGrant) SetAuthorization(a authz.Authorization) error {
-	msg, ok := a.(proto.Message)
-	if !ok {
-		return sdkerrors.Wrapf(sdkerrors.ErrPackAny, "can't proto marshal %T", msg)
-	}
-	any, err := codectypes.NewAnyWithValue(msg)
-	if err != nil {
-		return err
-	}
-	m.Authorization = any
-	return nil
-}
-
-func (m MsgGrant) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
-	var authorization authz.Authorization
-	return unpacker.UnpackAny(m.Authorization, &authorization)
 }
 
 // GetSignBytes implements Msg.

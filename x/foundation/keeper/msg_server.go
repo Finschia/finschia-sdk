@@ -49,6 +49,10 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 		return nil, err
 	}
 
+	if err := s.keeper.Accept(ctx, sdk.AccAddress(req.To), req); err != nil {
+		return nil, err
+	}
+
 	if err := s.keeper.WithdrawFromTreasury(ctx, sdk.AccAddress(req.To), req.Amount); err != nil {
 		return nil, err
 	}

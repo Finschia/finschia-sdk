@@ -16,7 +16,6 @@ func (s *KeeperTestSuite) TestMsgFundTreasury() {
 		},
 		"insufficient funds": {
 			amount: s.balance.Add(sdk.OneInt()),
-			valid: false,
 		},
 	}
 
@@ -42,23 +41,30 @@ func (s *KeeperTestSuite) TestMsgFundTreasury() {
 func (s *KeeperTestSuite) TestMsgWithdrawFromTreasury() {
 	testCases := map[string]struct {
 		operator sdk.AccAddress
+		to sdk.AccAddress
 		amount sdk.Int
 		valid bool
 	}{
 		"valid request": {
 			operator: s.operator,
+			to: s.stranger,
 			amount: s.balance,
 			valid: true,
 		},
-		"not authorized": {
+		"operator not authorized": {
 			operator: s.stranger,
+			to: s.stranger,
 			amount: s.balance,
-			valid: false,
+		},
+		"receiver not authorized": {
+			operator: s.operator,
+			to: s.members[0],
+			amount: s.balance,
 		},
 		"insufficient funds": {
 			operator: s.operator,
+			to: s.stranger,
 			amount: s.balance.Add(sdk.OneInt()),
-			valid: false,
 		},
 	}
 
@@ -68,7 +74,7 @@ func (s *KeeperTestSuite) TestMsgWithdrawFromTreasury() {
 
 			req := &foundation.MsgWithdrawFromTreasury{
 				Operator: tc.operator.String(),
-				To: s.stranger.String(),
+				To: tc.to.String(),
 				Amount:  sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, tc.amount)),
 			}
 			res, err := s.msgServer.WithdrawFromTreasury(sdk.WrapSDKContext(ctx), req)

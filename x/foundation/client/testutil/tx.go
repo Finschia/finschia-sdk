@@ -225,7 +225,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 		"valid transaction": {
 			[]string{
 				s.operator.String(),
-				val.Address.String(),
+				s.stranger.String(),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
 			},
 			true,
@@ -233,7 +233,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 		"extra args": {
 			[]string{
 				s.operator.String(),
-				val.Address.String(),
+				s.stranger.String(),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
 				"extra",
 			},
@@ -242,7 +242,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 		"not enough args": {
 			[]string{
 				s.operator.String(),
-				val.Address.String(),
+				s.stranger.String(),
 			},
 			false,
 		},

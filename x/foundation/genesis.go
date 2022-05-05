@@ -1,8 +1,11 @@
 package foundation
 
 import (
+	"github.com/gogo/protobuf/proto"
+	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/authz"
 )
 
 // DefaultGenesisState creates a default GenesisState object
@@ -12,6 +15,16 @@ func DefaultGenesisState() *GenesisState {
 			Enabled: false,
 		},
 	}
+}
+
+func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	for _, ga := range data.Authorizations {
+		err := ga.UnpackInterfaces(unpacker)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // ValidateGenesis validates the provided genesis state to ensure the
@@ -93,5 +106,56 @@ func ValidateGenesis(data GenesisState) error {
 		}
 	}
 
+	for _, ga := range data.Authorizations {
+		if ga.GetAuthorization() == nil {
+			return sdkerrors.ErrInvalidType.Wrap("invalid authorization")
+		}
+
+		if err := sdk.ValidateAccAddress(ga.Grantee); err != nil {
+			return err
+		}
+	}
+
 	return nil
+}
+
+func (g GrantAuthorization) GetAuthorization() authz.Authorization {
+	if g.Authorization == nil {
+		return nil
+	}
+
+	a, ok := g.Authorization.GetCachedValue().(authz.Authorization)
+	if !ok {
+		return nil
+	}
+	return a
+}
+
+func (g *GrantAuthorization) SetAuthorization(a authz.Authorization) error {
+	msg, ok := a.(proto.Message)
+	if !ok {
+		return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
+	}
+
+	any, err := codectypes.NewAnyWithValue(msg)
+	if err != nil {
+		return err
+	}
+	g.Authorization = any
+
+	return nil
+}
+
+// for the tests
+func (g GrantAuthorization) WithAuthorization(authorization authz.Authorization) *GrantAuthorization {
+	grant := g
+	if err := grant.SetAuthorization(authorization); err != nil {
+		return nil
+	}
+	return &grant
+}
+
+func (g GrantAuthorization) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	var authorization authz.Authorization
+	return unpacker.UnpackAny(g.Authorization, &authorization)
 }

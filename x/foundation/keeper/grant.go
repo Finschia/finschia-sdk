@@ -10,7 +10,11 @@ import (
 
 func (k Keeper) Grant(ctx sdk.Context, granter string, grantee sdk.AccAddress, authorization authz.Authorization) error {
 	msgTypeURL := authorization.MsgTypeURL()
-	if granter != getGranter(msgTypeURL) {
+	expectedGranter, err := getGranter(msgTypeURL)
+	if err != nil {
+		return err
+	}
+	if granter != expectedGranter {
 		return sdkerrors.ErrInvalidRequest.Wrapf("granter %s cannot grant a msg type of %s", granter, msgTypeURL)
 	}
 
@@ -18,7 +22,11 @@ func (k Keeper) Grant(ctx sdk.Context, granter string, grantee sdk.AccAddress, a
 }
 
 func (k Keeper) Revoke(ctx sdk.Context, granter string, grantee sdk.AccAddress, msgTypeURL string) error {
-	if granter != getGranter(msgTypeURL) {
+	expectedGranter, err := getGranter(msgTypeURL)
+	if err != nil {
+		return err
+	}
+	if granter != expectedGranter {
 		return sdkerrors.ErrInvalidRequest.Wrapf("granter %s cannot revoke a msg type of %s", granter, msgTypeURL)
 	}
 
@@ -39,7 +47,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, granter string, grantee sdk.Ac
 	}
 
 	var auth authz.Authorization
-	if err := k.cdc.UnmarshalInterface(bz, auth); err != nil {
+	if err := k.cdc.UnmarshalInterface(bz, &auth); err != nil {
 		return nil, err
 	}
 
@@ -65,17 +73,25 @@ func (k Keeper) deleteAuthorization(ctx sdk.Context, granter string, grantee sdk
 	store.Delete(key)
 }
 
-func getGranter(msgTypeURL string) string {
+func getGranter(msgTypeURL string) (string, error) {
 	granters := map[string]string{
 		foundation.CreateValidatorAuthorization{}.MsgTypeURL(): govtypes.ModuleName,
 		foundation.WithdrawFromTreasuryAuthorization{}.MsgTypeURL(): foundation.ModuleName,
 	}
-	return granters[msgTypeURL]
+	if granter, ok := granters[msgTypeURL]; !ok {
+		return "", sdkerrors.ErrNotSupported.Wrapf("not supported msg type: %s", msgTypeURL)
+	} else {
+		return granter, nil
+	}
 }
 
 func (k Keeper) Accept(ctx sdk.Context, grantee sdk.AccAddress, msg sdk.Msg) error {
 	msgTypeURL := sdk.MsgTypeURL(msg)
-	granter := getGranter(msgTypeURL)
+	granter, err := getGranter(msgTypeURL)
+	if err != nil {
+		return err
+	}
+
 	authorization, err := k.GetAuthorization(ctx, granter, grantee, msgTypeURL)
 	if err != nil {
 		return err

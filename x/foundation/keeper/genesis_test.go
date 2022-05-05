@@ -97,6 +97,33 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 				},
 			},
 		},
+		"authorizations": {
+			init: &foundation.GenesisState{
+				Authorizations: []foundation.GrantAuthorization{
+					*foundation.GrantAuthorization{
+						Granter: foundation.ModuleName,
+						Grantee: s.stranger.String(),
+					}.WithAuthorization(&foundation.WithdrawFromTreasuryAuthorization{}),
+				},
+			},
+			valid: true,
+			export: &foundation.GenesisState{
+				Params: &foundation.Params{
+					FoundationTax: sdk.ZeroDec(),
+				},
+				Foundation: foundation.FoundationInfo{
+					Operator: s.keeper.GetAdmin(s.ctx).String(),
+					Version: 1,
+					TotalWeight: sdk.ZeroDec(),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				Authorizations: []foundation.GrantAuthorization{
+					*foundation.GrantAuthorization{
+						Granter: foundation.ModuleName,
+						Grantee: s.stranger.String(),
+					}.WithAuthorization(&foundation.WithdrawFromTreasuryAuthorization{}),
+				},
+			},
+		},
 		"member of long metadata": {
 			init: &foundation.GenesisState{
 				Members: []foundation.Member{

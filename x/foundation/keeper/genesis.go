@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 
 	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
@@ -81,7 +82,9 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		}
 	}
 
-	k.setFoundationInfo(ctx, *info)
+	if err := k.setFoundationInfo(ctx, *info); err != nil {
+		return err
+	}
 
 	k.setPreviousProposalID(ctx, data.PreviousProposalId)
 
@@ -90,7 +93,9 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 			return err
 		}
 
-		k.setProposal(ctx, proposal)
+		if err := k.setProposal(ctx, proposal); err != nil {
+			return err
+		}
 		k.addProposalToVPEndQueue(ctx, proposal)
 	}
 
@@ -99,7 +104,9 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 			return err
 		}
 
-		k.setVote(ctx, vote)
+		if err := k.setVote(ctx, vote); err != nil {
+			return err
+		}
 	}
 
 	for _, ga := range data.Authorizations {
