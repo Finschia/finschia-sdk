@@ -14,6 +14,7 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/version"
+	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/gov/client/cli"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
@@ -65,6 +66,15 @@ func parseDecisionPolicy(codec codec.Codec, policyJSON string) (foundation.Decis
 	}
 
 	return policy, nil
+}
+
+func parseAuthorization(codec codec.Codec, authorizationJSON string) (authz.Authorization, error) {
+	var authorization authz.Authorization
+	if err := codec.UnmarshalInterfaceJSON([]byte(authorizationJSON), &authorization); err != nil {
+		return nil, err
+	}
+
+	return authorization, nil
 }
 
 func execFromString(execStr string) foundation.Exec {
@@ -126,6 +136,8 @@ func NewTxCmd() *cobra.Command {
 		NewTxCmdVote(),
 		NewTxCmdExec(),
 		NewTxCmdLeaveFoundation(),
+		NewTxCmdGrant(),
+		NewTxCmdRevoke(),
 	)
 
 	return txCmd
@@ -726,6 +738,91 @@ func NewTxCmdLeaveFoundation() *cobra.Command {
 
 			msg := foundation.MsgLeaveFoundation{
 				Address: address,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewTxCmdGrant() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "grant [operator] [grantee] [authorization-json]",
+		Args:  cobra.ExactArgs(3),
+		Short: "Grant an authorization to grantee",
+		Long: `Grant an authorization to grantee
+
+Example of the content of authorization-json:
+
+{
+  "@type": "/lbm.foundation.v1.ReceiveFromTreasuryAuthorization",
+  "receive_limit": [
+    "denom": "stake",
+    "amount": "10000"
+  ]
+}
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			operator := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := foundation.MsgGrant{
+				Operator: operator,
+				Grantee: args[1],
+			}
+			authorization, err := parseAuthorization(clientCtx.Codec, args[2])
+			if err != nil {
+				return err
+			}
+			if err := msg.SetAuthorization(authorization); err != nil {
+				return err
+			}
+
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewTxCmdRevoke() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "revoke [operator] [grantee] [msg-type-url]",
+		Args:  cobra.ExactArgs(3),
+		Short: "Revoke an authorization of grantee",
+		Long: `Revoke an authorization of grantee
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			operator := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := foundation.MsgRevoke{
+				Operator: operator,
+				Grantee: args[1],
+				MsgTypeUrl: args[2],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

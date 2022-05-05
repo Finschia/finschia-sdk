@@ -75,12 +75,19 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	var strangerMnemonic string
 	strangerMnemonic, s.stranger = s.createMnemonic("stranger")
-	ga := foundation.GrantAuthorization{
-		Granter: foundation.ModuleName,
-		Grantee: s.stranger.String(),
-	}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{})
-	s.Require().NotNil(ga)
-	foundationData.Authorizations = []foundation.GrantAuthorization{*ga}
+	var leavingMemberMnemonic string
+	leavingMemberMnemonic, s.leavingMember = s.createMnemonic("leavingmember")
+
+	grantees := []sdk.AccAddress{s.stranger, s.leavingMember}
+	foundationData.Authorizations = make([]foundation.GrantAuthorization, len(grantees))
+	for i, grantee := range grantees {
+		ga := foundation.GrantAuthorization{
+			Granter: foundation.ModuleName,
+			Grantee: grantee.String(),
+		}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{})
+		s.Require().NotNil(ga)
+		foundationData.Authorizations[i] = *ga
+	}
 
 	foundationDataBz, err := s.cfg.Codec.MarshalJSON(&foundationData)
 	s.Require().NoError(err)
@@ -94,8 +101,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	var comingMemberMnemonic string
 	comingMemberMnemonic, s.comingMember = s.createMnemonic("comingmember")
-	var leavingMemberMnemonic string
-	leavingMemberMnemonic, s.leavingMember = s.createMnemonic("leavingmember")
 
 	s.createAccount("operator", operatorMnemonic)
 	s.createAccount("stranger", strangerMnemonic)
