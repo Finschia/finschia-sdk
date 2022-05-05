@@ -13,17 +13,15 @@ var (
 	paramsKey         = []byte{0x00}
 	foundationInfoKey = []byte{0x01}
 
-	// treasuryKey = []byte{0x10}
+	memberKeyPrefix          = []byte{0x10}
+	previousProposalIDKey    = []byte{0x11}
+	proposalKeyPrefix        = []byte{0x12}
+	proposalByVPEndKeyPrefix = []byte{0x13}
+	voteKeyPrefix            = []byte{0x14}
 
-	validatorAuthKeyPrefix = []byte{0x20}
+	grantKeyPrefix = []byte{0x20}
 
-	memberKeyPrefix          = []byte{0x30}
-	previousProposalIDKey    = []byte{0x31}
-	proposalKeyPrefix        = []byte{0x32}
-	proposalByVPEndKeyPrefix = []byte{0x33}
-	voteKeyPrefix            = []byte{0x34}
-
-	grantKeyPrefix = []byte{0x40}
+	// treasuryKey = []byte{0x??}
 )
 
 // Uint64FromBytes converts a byte array to uint64
@@ -36,14 +34,6 @@ func Uint64ToBytes(number uint64) []byte {
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, number)
 	return bz
-}
-
-// validatorAuthKey key for a specific validator from the store
-func validatorAuthKey(valAddr sdk.ValAddress) []byte {
-	key := make([]byte, len(validatorAuthKeyPrefix)+len(valAddr))
-	copy(key, validatorAuthKeyPrefix)
-	copy(key[len(validatorAuthKeyPrefix):], valAddr)
-	return key
 }
 
 // memberKey key for a specific member from the store

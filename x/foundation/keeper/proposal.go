@@ -31,7 +31,7 @@ func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *foundatio
 		if auth.CreationAllowed {
 			authorization := &foundation.CreateValidatorAuthorization{
 				MinSelfDelegation: sdk.OneInt(),
-				ValidatorAddress: auth.OperatorAddress,
+				ValidatorAddress:  auth.OperatorAddress,
 			}
 			if err := k.Grant(ctx, govtypes.ModuleName, grantee, authorization); err != nil {
 				return err

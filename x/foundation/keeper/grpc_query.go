@@ -216,33 +216,34 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 		return &foundation.QueryGrantsResponse{Authorizations: []*codectypes.Any{any}}, nil
-	} else {
-		var authorizations []*codectypes.Any
-
-		store := ctx.KVStore(s.keeper.storeKey)
-		granteeKey := append(grantKeyPrefix, append([]byte{byte(len(req.Grantee))}, req.Grantee...)...)
-		grantStore := prefix.NewStore(store, granteeKey)
-		pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
-			var authorization authz.Authorization
-			if err := s.keeper.cdc.UnmarshalInterface(value, &authorization); err != nil {
-				return err
-			}
-
-			msg, ok := authorization.(proto.Message)
-			if !ok {
-				return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
-			}
-			any, err := codectypes.NewAnyWithValue(msg)
-			if err != nil {
-				return err
-			}
-			authorizations = append(authorizations, any)
-
-			return nil
-		})
-		if err != nil {
-			return nil, err
-		}
-		return &foundation.QueryGrantsResponse{Authorizations: authorizations, Pagination: pageRes}, nil
 	}
+
+	var authorizations []*codectypes.Any
+
+	store := ctx.KVStore(s.keeper.storeKey)
+	granteeKey := append(grantKeyPrefix, append([]byte{byte(len(req.Grantee))}, req.Grantee...)...)
+	grantStore := prefix.NewStore(store, granteeKey)
+	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
+		var authorization authz.Authorization
+		if err := s.keeper.cdc.UnmarshalInterface(value, &authorization); err != nil {
+			return err
+		}
+
+		msg, ok := authorization.(proto.Message)
+		if !ok {
+			return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
+		}
+		any, err := codectypes.NewAnyWithValue(msg)
+		if err != nil {
+			return err
+		}
+		authorizations = append(authorizations, any)
+
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &foundation.QueryGrantsResponse{Authorizations: authorizations, Pagination: pageRes}, nil
 }

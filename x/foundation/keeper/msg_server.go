@@ -284,7 +284,7 @@ func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundati
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventGrant{
-		Grantee: req.Grantee,
+		Grantee:       req.Grantee,
 		Authorization: req.Authorization,
 	}); err != nil {
 		return nil, err
@@ -305,7 +305,7 @@ func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*founda
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventRevoke{
-		Grantee: req.Grantee,
+		Grantee:    req.Grantee,
 		MsgTypeUrl: req.MsgTypeUrl,
 	}); err != nil {
 		return nil, err

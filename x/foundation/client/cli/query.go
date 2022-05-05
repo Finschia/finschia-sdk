@@ -361,9 +361,9 @@ func NewQueryCmdGrants() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "grants [grantee] [msg-type-url]?",
 		Short: "Query grants for a grantee and optionally a msg-type-url",
-		Long:  `Query grants for a grantee and optionally a msg-type-url
+		Long: `Query grants for a grantee and optionally a msg-type-url
 `,
-		Args:  cobra.RangeArgs(1, 2),
+		Args: cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -381,7 +381,7 @@ func NewQueryCmdGrants() *cobra.Command {
 				msgTypeURL = args[1]
 			}
 			params := foundation.QueryGrantsRequest{
-				Grantee: args[0],
+				Grantee:    args[0],
 				MsgTypeUrl: msgTypeURL,
 				Pagination: pageReq,
 			}

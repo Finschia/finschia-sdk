@@ -780,7 +780,7 @@ Example of the content of authorization-json:
 
 			msg := foundation.MsgGrant{
 				Operator: operator,
-				Grantee: args[1],
+				Grantee:  args[1],
 			}
 			authorization, err := parseAuthorization(clientCtx.Codec, args[2])
 			if err != nil {
@@ -820,8 +820,8 @@ func NewTxCmdRevoke() *cobra.Command {
 			}
 
 			msg := foundation.MsgRevoke{
-				Operator: operator,
-				Grantee: args[1],
+				Operator:   operator,
+				Grantee:    args[1],
 				MsgTypeUrl: args[2],
 			}
 			if err := msg.ValidateBasic(); err != nil {
