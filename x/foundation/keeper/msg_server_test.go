@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
@@ -428,6 +429,99 @@ func (s *KeeperTestSuite) TestMsgLeaveFoundation() {
 				Address: tc.address.String(),
 			}
 			res, err := s.msgServer.LeaveFoundation(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgGrant() {
+	testCases := map[string]struct {
+		operator sdk.AccAddress
+		authorization authz.Authorization
+		valid bool
+	}{
+		"valid request": {
+			operator: s.operator,
+			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
+			valid: true,
+		},
+		"not authorized": {
+			operator: s.stranger,
+			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
+		},
+		"wrong granter": {
+			operator: s.operator,
+			authorization: &foundation.CreateValidatorAuthorization{},
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &foundation.MsgGrant{
+				Operator: tc.operator.String(),
+				Grantee: s.stranger.String(),
+			}
+			err := req.SetAuthorization(tc.authorization)
+			s.Require().NoError(err)
+
+			res, err := s.msgServer.Grant(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgRevoke() {
+	testCases := map[string]struct {
+		operator sdk.AccAddress
+		grantee sdk.AccAddress
+		msgTypeURL string
+		valid bool
+	}{
+		"valid request": {
+			operator: s.operator,
+			grantee: s.stranger,
+			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+			valid: true,
+		},
+		"no grant": {
+			operator: s.operator,
+			grantee: s.members[0],
+			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+		},
+		"not authorized": {
+			operator: s.stranger,
+			grantee: s.stranger,
+			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+		},
+		"wrong granter": {
+			operator: s.operator,
+			grantee: s.stranger,
+			msgTypeURL: foundation.CreateValidatorAuthorization{}.MsgTypeURL(),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &foundation.MsgRevoke{
+				Operator: tc.operator.String(),
+				Grantee: tc.grantee.String(),
+				MsgTypeUrl: tc.msgTypeURL,
+			}
+			res, err := s.msgServer.Revoke(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
