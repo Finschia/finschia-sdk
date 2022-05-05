@@ -609,6 +609,8 @@
 - [lbm/foundation/v1/query.proto](#lbm/foundation/v1/query.proto)
     - [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest)
     - [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse)
+    - [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest)
+    - [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse)
     - [QueryMemberRequest](#lbm.foundation.v1.QueryMemberRequest)
     - [QueryMemberResponse](#lbm.foundation.v1.QueryMemberResponse)
     - [QueryMembersRequest](#lbm.foundation.v1.QueryMembersRequest)
@@ -623,10 +625,6 @@
     - [QueryTallyResultResponse](#lbm.foundation.v1.QueryTallyResultResponse)
     - [QueryTreasuryRequest](#lbm.foundation.v1.QueryTreasuryRequest)
     - [QueryTreasuryResponse](#lbm.foundation.v1.QueryTreasuryResponse)
-    - [QueryValidatorAuthRequest](#lbm.foundation.v1.QueryValidatorAuthRequest)
-    - [QueryValidatorAuthResponse](#lbm.foundation.v1.QueryValidatorAuthResponse)
-    - [QueryValidatorAuthsRequest](#lbm.foundation.v1.QueryValidatorAuthsRequest)
-    - [QueryValidatorAuthsResponse](#lbm.foundation.v1.QueryValidatorAuthsResponse)
     - [QueryVoteRequest](#lbm.foundation.v1.QueryVoteRequest)
     - [QueryVoteResponse](#lbm.foundation.v1.QueryVoteResponse)
     - [QueryVotesRequest](#lbm.foundation.v1.QueryVotesRequest)
@@ -9251,6 +9249,39 @@ QueryFoundationInfoResponse is the Query/FoundationInfo response type.
 
 
 
+<a name="lbm.foundation.v1.QueryGrantsRequest"></a>
+
+### QueryGrantsRequest
+QueryGrantsRequest is the request type for the Query/Grants RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grantee` | [string](#string) |  |  |
+| `msg_type_url` | [string](#string) |  | Optional, msg_type_url, when set, will query only grants matching given msg type. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryGrantsResponse"></a>
+
+### QueryGrantsResponse
+QueryGrantsResponse is the response type for the Query/Grants RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authorizations` | [google.protobuf.Any](#google.protobuf.Any) | repeated | authorizations is a list of grants granted for grantee. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.QueryMemberRequest"></a>
 
 ### QueryMemberRequest
@@ -9455,71 +9486,6 @@ Query/Treasury RPC method.
 
 
 
-<a name="lbm.foundation.v1.QueryValidatorAuthRequest"></a>
-
-### QueryValidatorAuthRequest
-QueryValidatorAuthRequest is the request type for the
-Query/ValidatorAuth RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `validator_address` | [string](#string) |  | validator_address defines the validator address to query for. |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.QueryValidatorAuthResponse"></a>
-
-### QueryValidatorAuthResponse
-QueryValidatorAuthResponse is the request type for the
-Query/ValidatorAuth RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `auth` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) |  |  |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.QueryValidatorAuthsRequest"></a>
-
-### QueryValidatorAuthsRequest
-QueryValidatorAuthsRequest is the request type for the
-Query/ValidatorAuths RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.QueryValidatorAuthsResponse"></a>
-
-### QueryValidatorAuthsResponse
-QueryValidatorAuthsResponse is the response type for the
-Query/ValidatorAuths RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `auths` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) | repeated |  |
-| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
 <a name="lbm.foundation.v1.QueryVoteRequest"></a>
 
 ### QueryVoteRequest
@@ -9606,6 +9572,7 @@ Query defines the gRPC querier service for foundation module.
 | `Vote` | [QueryVoteRequest](#lbm.foundation.v1.QueryVoteRequest) | [QueryVoteResponse](#lbm.foundation.v1.QueryVoteResponse) | Vote queries a vote by proposal id and voter. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes/{voter}|
 | `Votes` | [QueryVotesRequest](#lbm.foundation.v1.QueryVotesRequest) | [QueryVotesResponse](#lbm.foundation.v1.QueryVotesResponse) | Votes queries a vote by proposal. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes|
 | `TallyResult` | [QueryTallyResultRequest](#lbm.foundation.v1.QueryTallyResultRequest) | [QueryTallyResultResponse](#lbm.foundation.v1.QueryTallyResultResponse) | TallyResult queries the tally of a proposal votes. | GET|/lbm/foundation/v1/proposals/{proposal_id}/tally|
+| `Grants` | [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest) | [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse) | Returns list of authorizations, granted to the grantee. | GET|/lbm/foundation/v1/grants/{grantee}/{msg_type_url}|
 
  <!-- end services -->
 

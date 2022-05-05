@@ -30,7 +30,7 @@ func NewQueryCmd() *cobra.Command {
 		NewQueryCmdVote(),
 		NewQueryCmdVotes(),
 		NewQueryCmdTallyResult(),
-		// NewQueryCmdGrants(),
+		NewQueryCmdGrants(),
 	)
 
 	return cmd
@@ -356,38 +356,46 @@ func NewQueryCmdTallyResult() *cobra.Command {
 	return cmd
 }
 
-// // NewQueryCmdGrants returns grants on a grantee
-// func NewQueryCmdGrants() *cobra.Command {
-// 	cmd := &cobra.Command{
-// 		Use:   "grants [grantee] [msg-type-url]?",
-// 		Short: "Query grants for a grantee and optionally a msg-type-url",
-// 		Long:  `Query grants for a grantee and optionally a msg-type-url
-// `,
-// 		Args:  cobra.RangeArgs(2, 3),
-// 		RunE: func(cmd *cobra.Command, args []string) error {
-// 			clientCtx, err := client.GetClientQueryContext(cmd)
-// 			if err != nil {
-// 				return err
-// 			}
-// 			queryClient := foundation.NewQueryClient(clientCtx)
+// NewQueryCmdGrants returns grants on a grantee
+func NewQueryCmdGrants() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "grants [grantee] [msg-type-url]?",
+		Short: "Query grants for a grantee and optionally a msg-type-url",
+		Long:  `Query grants for a grantee and optionally a msg-type-url
+`,
+		Args:  cobra.RangeArgs(1, 2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := foundation.NewQueryClient(clientCtx)
 
-// 			pageReq, err := client.ReadPageRequest(cmd.Flags())
-// 			if err != nil {
-// 				return err
-// 			}
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
 
-// 			params := foundation.QueryValidatorAuthsRequest{Pagination: pageReq}
-// 			res, err := queryClient.Grants(context.Background(), &params)
-// 			if err != nil {
-// 				return err
-// 			}
+			msgTypeURL := ""
+			if len(args) >= 2 {
+				msgTypeURL = args[1]
+			}
+			params := foundation.QueryGrantsRequest{
+				Grantee: args[0],
+				MsgTypeUrl: msgTypeURL,
+				Pagination: pageReq,
+			}
+			res, err := queryClient.Grants(context.Background(), &params)
+			if err != nil {
+				return err
+			}
 
-// 			return clientCtx.PrintProto(res)
-// 		},
-// 	}
+			return clientCtx.PrintProto(res)
+		},
+	}
 
-// 	flags.AddQueryFlagsToCmd(cmd)
-// 	flags.AddPaginationFlagsToCmd(cmd, "validator auths")
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "validator auths")
 
-// 	return cmd
-// }
+	return cmd
+}

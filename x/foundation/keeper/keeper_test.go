@@ -13,6 +13,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/keeper"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 var (
@@ -27,16 +28,12 @@ func TestCleanup(t *testing.T) {
 
 	k := app.FoundationKeeper
 
-	// add auths
-	auth := foundation.ValidatorAuth{
-		OperatorAddress: valAddr.String(),
-		CreationAllowed: true,
-	}
-	require.NoError(t, k.SetValidatorAuth(ctx, auth))
+	// add grant
+	require.NoError(t, k.Grant(ctx, govtypes.ModuleName, delAddr, &foundation.CreateValidatorAuthorization{}))
 
 	// cleanup
 	k.Cleanup(ctx)
-	require.Empty(t, k.GetValidatorAuths(ctx))
+	require.Empty(t, k.GetGrants(ctx))
 }
 
 type KeeperTestSuite struct {

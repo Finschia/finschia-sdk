@@ -6,9 +6,13 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/gogo/protobuf/proto"
+	codectypes "github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/query"
+	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
@@ -181,4 +185,64 @@ func (s queryServer) TallyResult(c context.Context, req *foundation.QueryTallyRe
 	}
 
 	return &foundation.QueryTallyResultResponse{Tally: tally}, nil
+}
+
+func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsRequest) (*foundation.QueryGrantsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	if req.MsgTypeUrl != "" {
+		granter, err := getGranter(req.MsgTypeUrl)
+		if err != nil {
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+		authorization, err := s.keeper.GetAuthorization(ctx, granter, sdk.AccAddress(req.Grantee), req.MsgTypeUrl)
+		if err != nil {
+			return nil, status.Errorf(codes.NotFound, "no authorization found for %s type", req.MsgTypeUrl)
+		}
+
+		msg, ok := authorization.(proto.Message)
+		if !ok {
+			return nil, status.Error(codes.Internal, sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg).Error())
+		}
+		any, err := codectypes.NewAnyWithValue(msg)
+		if err != nil {
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+		return &foundation.QueryGrantsResponse{Authorizations: []*codectypes.Any{any}}, nil
+	} else {
+		var authorizations []*codectypes.Any
+
+		store := ctx.KVStore(s.keeper.storeKey)
+		granteeKey := append(grantKeyPrefix, append([]byte{byte(len(req.Grantee))}, req.Grantee...)...)
+		grantStore := prefix.NewStore(store, granteeKey)
+		pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
+			var authorization authz.Authorization
+			if err := s.keeper.cdc.UnmarshalInterface(value, &authorization); err != nil {
+				return err
+			}
+
+			msg, ok := authorization.(proto.Message)
+			if !ok {
+				return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
+			}
+			any, err := codectypes.NewAnyWithValue(msg)
+			if err != nil {
+				return err
+			}
+			authorizations = append(authorizations, any)
+
+			return nil
+		})
+		if err != nil {
+			return nil, err
+		}
+		return &foundation.QueryGrantsResponse{Authorizations: authorizations, Pagination: pageRes}, nil
+	}
 }

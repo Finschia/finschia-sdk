@@ -8,6 +8,9 @@ import "google/api/annotations.proto";
 import "lbm/foundation/v1/foundation.proto";
 import "lbm/base/v1/coin.proto";
 
+import "google/protobuf/any.proto";
+import "cosmos_proto/cosmos.proto";
+
 import "gogoproto/gogo.proto";
 
 // Query defines the gRPC querier service for foundation module.
@@ -61,6 +64,11 @@ service Query {
   rpc TallyResult(QueryTallyResultRequest) returns (QueryTallyResultResponse) {
     option (google.api.http).get = "/lbm/foundation/v1/proposals/{proposal_id}/tally";
   };
+
+  // Returns list of authorizations, granted to the grantee.
+  rpc Grants(QueryGrantsRequest) returns (QueryGrantsResponse) {
+    option (google.api.http).get = "/lbm/foundation/v1/grants/{grantee}/{msg_type_url}";
+  }
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -69,35 +77,6 @@ message QueryParamsRequest {}
 // QueryParamsResponse is the response type for the Query/Params RPC method.
 message QueryParamsResponse {
   Params params = 1;
-}
-
-// QueryValidatorAuthRequest is the request type for the
-// Query/ValidatorAuth RPC method.
-message QueryValidatorAuthRequest {
-  // validator_address defines the validator address to query for.
-  string validator_address = 1;
-}
-
-// QueryValidatorAuthResponse is the request type for the
-// Query/ValidatorAuth RPC method.
-message QueryValidatorAuthResponse {
-  ValidatorAuth auth = 1;
-}
-
-// QueryValidatorAuthsRequest is the request type for the
-// Query/ValidatorAuths RPC method.
-message QueryValidatorAuthsRequest {
-  // pagination defines an optional pagination for the request.
-  lbm.base.query.v1.PageRequest pagination = 1;
-}
-
-// QueryValidatorAuthsResponse is the response type for the
-// Query/ValidatorAuths RPC method.
-message QueryValidatorAuthsResponse {
-  repeated ValidatorAuth auths = 1 [(gogoproto.nullable) = false];
-
-  // pagination defines the pagination in the response.
-  lbm.base.query.v1.PageResponse pagination = 2;
 }
 
 // QueryTreasuryRequest is the request type for the
@@ -216,4 +195,22 @@ message QueryTallyResultRequest {
 message QueryTallyResultResponse {
   // tally defines the requested tally.
   TallyResult tally = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryGrantsRequest is the request type for the Query/Grants RPC method.
+message QueryGrantsRequest {
+  string grantee = 1;
+  // Optional, msg_type_url, when set, will query only grants matching given msg type.
+  string msg_type_url = 2;
+  // pagination defines an optional pagination for the request.
+  lbm.base.query.v1.PageRequest pagination = 3;
+}
+
+// QueryGrantsResponse is the response type for the Query/Grants RPC method.
+message QueryGrantsResponse {
+  // authorizations is a list of grants granted for grantee.
+  repeated google.protobuf.Any authorizations = 1 [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/authz.Authorization"];
+
+  // pagination defines the pagination in the response.
+  lbm.base.query.v1.PageResponse pagination = 2;
 }
