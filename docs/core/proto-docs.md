@@ -9597,8 +9597,6 @@ Query defines the gRPC querier service for foundation module.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#lbm.foundation.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.foundation.v1.QueryParamsResponse) | Params queries the module params. | GET|/lbm/foundation/v1/params|
-| `ValidatorAuth` | [QueryValidatorAuthRequest](#lbm.foundation.v1.QueryValidatorAuthRequest) | [QueryValidatorAuthResponse](#lbm.foundation.v1.QueryValidatorAuthResponse) | ValidatorAuth queries authorization info of a validator. | GET|/lbm/foundation/v1/validators/{validator_address}|
-| `ValidatorAuths` | [QueryValidatorAuthsRequest](#lbm.foundation.v1.QueryValidatorAuthsRequest) | [QueryValidatorAuthsResponse](#lbm.foundation.v1.QueryValidatorAuthsResponse) | ValidatorAuths queries authorization infos of validators. | GET|/lbm/foundation/v1/validators|
 | `Treasury` | [QueryTreasuryRequest](#lbm.foundation.v1.QueryTreasuryRequest) | [QueryTreasuryResponse](#lbm.foundation.v1.QueryTreasuryResponse) | Treasury queries the foundation treasury. | GET|/lbm/foundation/v1/treasury|
 | `FoundationInfo` | [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest) | [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse) | FoundationInfo queries foundation info. | GET|/lbm/foundation/v1/foundation_info|
 | `Member` | [QueryMemberRequest](#lbm.foundation.v1.QueryMemberRequest) | [QueryMemberResponse](#lbm.foundation.v1.QueryMemberResponse) | Member queries a member of the foundation | GET|/lbm/foundation/v1/foundation_members/{address}|

@@ -6,7 +6,9 @@ import (
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 // Keeper defines the foundation module Keeper
@@ -62,16 +64,18 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 
 // Cleaning up the states
 func (k Keeper) Cleanup(ctx sdk.Context) {
-	valAddrs := []sdk.ValAddress{}
-	k.IterateValidatorAuths(ctx, func(auth foundation.ValidatorAuth) (stop bool) {
-		addr := sdk.ValAddress(auth.OperatorAddress)
-		valAddrs = append(valAddrs, addr)
+	msgTypeURL := foundation.CreateValidatorAuthorization{}.MsgTypeURL()
+	var createValidatorGrantees []sdk.AccAddress
+	k.iterateAuthorizations(ctx, "", func(granter string, grantee sdk.AccAddress, authorization authz.Authorization) (stop bool) {
+		if authorization.MsgTypeURL() == msgTypeURL {
+			createValidatorGrantees = append(createValidatorGrantees, grantee)
+		}
 		return false
 	})
 
-	store := ctx.KVStore(k.storeKey)
-	for _, addr := range valAddrs {
-		key := validatorAuthKey(addr)
-		store.Delete(key)
+	for _, grantee := range createValidatorGrantees {
+		if err := k.Revoke(ctx, govtypes.ModuleName, grantee, msgTypeURL); err != nil {
+			panic(err)
+		}
 	}
 }

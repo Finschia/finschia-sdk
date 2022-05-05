@@ -17,16 +17,6 @@ service Query {
     option (google.api.http).get = "/lbm/foundation/v1/params";
   }
 
-  // ValidatorAuth queries authorization info of a validator.
-  rpc ValidatorAuth(QueryValidatorAuthRequest) returns (QueryValidatorAuthResponse) {
-    option (google.api.http).get = "/lbm/foundation/v1/validators/{validator_address}";
-  }
-
-  // ValidatorAuths queries authorization infos of validators.
-  rpc ValidatorAuths(QueryValidatorAuthsRequest) returns (QueryValidatorAuthsResponse) {
-    option (google.api.http).get = "/lbm/foundation/v1/validators";
-  }
-
   // Treasury queries the foundation treasury.
   rpc Treasury(QueryTreasuryRequest) returns (QueryTreasuryResponse) {
     option (google.api.http).get = "/lbm/foundation/v1/treasury";

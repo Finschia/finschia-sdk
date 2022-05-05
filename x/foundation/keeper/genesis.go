@@ -136,7 +136,6 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 
 	return &foundation.GenesisState{
 		Params:             k.GetParams(ctx),
-		ValidatorAuths:     k.GetValidatorAuths(ctx),
 		Foundation:         &info,
 		Members:            k.GetMembers(ctx),
 		PreviousProposalId: k.getPreviousProposalID(ctx),
