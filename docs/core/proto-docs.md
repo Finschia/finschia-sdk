@@ -566,7 +566,7 @@
   
 - [lbm/foundation/v1/authz.proto](#lbm/foundation/v1/authz.proto)
     - [CreateValidatorAuthorization](#lbm.foundation.v1.CreateValidatorAuthorization)
-    - [WithdrawFromTreasuryAuthorization](#lbm.foundation.v1.WithdrawFromTreasuryAuthorization)
+    - [ReceiveFromTreasuryAuthorization](#lbm.foundation.v1.ReceiveFromTreasuryAuthorization)
   
 - [lbm/foundation/v1/foundation.proto](#lbm/foundation/v1/foundation.proto)
     - [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows)
@@ -8631,10 +8631,10 @@ CreateValidatorAuthorization allows the grantee to create a new validator.
 
 
 
-<a name="lbm.foundation.v1.WithdrawFromTreasuryAuthorization"></a>
+<a name="lbm.foundation.v1.ReceiveFromTreasuryAuthorization"></a>
 
-### WithdrawFromTreasuryAuthorization
-WithdrawFromTreasuryAuthorization allows the grantee to receive coins
+### ReceiveFromTreasuryAuthorization
+ReceiveFromTreasuryAuthorization allows the grantee to receive coins
 up to receive_limit from the treasury.
 
 

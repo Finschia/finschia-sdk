@@ -76,7 +76,7 @@ func (k Keeper) deleteAuthorization(ctx sdk.Context, granter string, grantee sdk
 func getGranter(msgTypeURL string) (string, error) {
 	granters := map[string]string{
 		foundation.CreateValidatorAuthorization{}.MsgTypeURL(): govtypes.ModuleName,
-		foundation.WithdrawFromTreasuryAuthorization{}.MsgTypeURL(): foundation.ModuleName,
+		foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(): foundation.ModuleName,
 	}
 	if granter, ok := granters[msgTypeURL]; !ok {
 		return "", sdkerrors.ErrNotSupported.Wrapf("not supported msg type: %s", msgTypeURL)

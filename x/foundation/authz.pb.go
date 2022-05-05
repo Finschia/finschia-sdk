@@ -72,24 +72,24 @@ func (m *CreateValidatorAuthorization) GetValidatorAddress() string {
 	return ""
 }
 
-// WithdrawFromTreasuryAuthorization allows the grantee to receive coins
+// ReceiveFromTreasuryAuthorization allows the grantee to receive coins
 // up to receive_limit from the treasury.
-type WithdrawFromTreasuryAuthorization struct {
+type ReceiveFromTreasuryAuthorization struct {
 	ReceiveLimit github_com_line_lbm_sdk_types.Coins `protobuf:"bytes,1,rep,name=receive_limit,json=receiveLimit,proto3,castrepeated=github.com/line/lbm-sdk/types.Coins" json:"receive_limit"`
 }
 
-func (m *WithdrawFromTreasuryAuthorization) Reset()         { *m = WithdrawFromTreasuryAuthorization{} }
-func (m *WithdrawFromTreasuryAuthorization) String() string { return proto.CompactTextString(m) }
-func (*WithdrawFromTreasuryAuthorization) ProtoMessage()    {}
-func (*WithdrawFromTreasuryAuthorization) Descriptor() ([]byte, []int) {
+func (m *ReceiveFromTreasuryAuthorization) Reset()         { *m = ReceiveFromTreasuryAuthorization{} }
+func (m *ReceiveFromTreasuryAuthorization) String() string { return proto.CompactTextString(m) }
+func (*ReceiveFromTreasuryAuthorization) ProtoMessage()    {}
+func (*ReceiveFromTreasuryAuthorization) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8bdb89c90659aa0e, []int{1}
 }
-func (m *WithdrawFromTreasuryAuthorization) XXX_Unmarshal(b []byte) error {
+func (m *ReceiveFromTreasuryAuthorization) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *WithdrawFromTreasuryAuthorization) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ReceiveFromTreasuryAuthorization) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_WithdrawFromTreasuryAuthorization.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ReceiveFromTreasuryAuthorization.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -99,19 +99,19 @@ func (m *WithdrawFromTreasuryAuthorization) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
-func (m *WithdrawFromTreasuryAuthorization) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_WithdrawFromTreasuryAuthorization.Merge(m, src)
+func (m *ReceiveFromTreasuryAuthorization) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ReceiveFromTreasuryAuthorization.Merge(m, src)
 }
-func (m *WithdrawFromTreasuryAuthorization) XXX_Size() int {
+func (m *ReceiveFromTreasuryAuthorization) XXX_Size() int {
 	return m.Size()
 }
-func (m *WithdrawFromTreasuryAuthorization) XXX_DiscardUnknown() {
-	xxx_messageInfo_WithdrawFromTreasuryAuthorization.DiscardUnknown(m)
+func (m *ReceiveFromTreasuryAuthorization) XXX_DiscardUnknown() {
+	xxx_messageInfo_ReceiveFromTreasuryAuthorization.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_WithdrawFromTreasuryAuthorization proto.InternalMessageInfo
+var xxx_messageInfo_ReceiveFromTreasuryAuthorization proto.InternalMessageInfo
 
-func (m *WithdrawFromTreasuryAuthorization) GetReceiveLimit() github_com_line_lbm_sdk_types.Coins {
+func (m *ReceiveFromTreasuryAuthorization) GetReceiveLimit() github_com_line_lbm_sdk_types.Coins {
 	if m != nil {
 		return m.ReceiveLimit
 	}
@@ -120,13 +120,13 @@ func (m *WithdrawFromTreasuryAuthorization) GetReceiveLimit() github_com_line_lb
 
 func init() {
 	proto.RegisterType((*CreateValidatorAuthorization)(nil), "lbm.foundation.v1.CreateValidatorAuthorization")
-	proto.RegisterType((*WithdrawFromTreasuryAuthorization)(nil), "lbm.foundation.v1.WithdrawFromTreasuryAuthorization")
+	proto.RegisterType((*ReceiveFromTreasuryAuthorization)(nil), "lbm.foundation.v1.ReceiveFromTreasuryAuthorization")
 }
 
 func init() { proto.RegisterFile("lbm/foundation/v1/authz.proto", fileDescriptor_8bdb89c90659aa0e) }
 
 var fileDescriptor_8bdb89c90659aa0e = []byte{
-	// 389 bytes of a gzipped FileDescriptorProto
+	// 384 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xcd, 0x49, 0xca, 0xd5,
 	0x4f, 0xcb, 0x2f, 0xcd, 0x4b, 0x49, 0x2c, 0xc9, 0xcc, 0xcf, 0xd3, 0x2f, 0x33, 0xd4, 0x4f, 0x2c,
 	0x2d, 0xc9, 0xa8, 0xd2, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0xcc, 0x49, 0xca, 0xd5, 0x43,
@@ -142,16 +142,15 @@ var fileDescriptor_8bdb89c90659aa0e = []byte{
 	0xf3, 0x4a, 0x82, 0x04, 0x73, 0x33, 0xf3, 0x82, 0x53, 0x73, 0xd2, 0x5c, 0xe0, 0x66, 0x08, 0x69,
 	0x73, 0x09, 0x96, 0xc1, 0x2c, 0x8d, 0x4f, 0x4c, 0x49, 0x29, 0x4a, 0x2d, 0x2e, 0x96, 0x60, 0x02,
 	0x19, 0x1c, 0x24, 0x00, 0x97, 0x70, 0x84, 0x88, 0x5b, 0x19, 0x5e, 0xda, 0xa2, 0xab, 0x8b, 0xcb,
-	0x9a, 0x0a, 0x68, 0x78, 0xa1, 0x38, 0x5d, 0x69, 0x37, 0x23, 0x97, 0x62, 0x78, 0x66, 0x49, 0x46,
-	0x4a, 0x51, 0x62, 0xb9, 0x5b, 0x51, 0x7e, 0x6e, 0x48, 0x51, 0x6a, 0x62, 0x71, 0x69, 0x51, 0x25,
-	0xaa, 0x07, 0x93, 0xb9, 0x78, 0x8b, 0x52, 0x93, 0x53, 0x33, 0xcb, 0x52, 0xe3, 0x73, 0x32, 0x73,
-	0x33, 0x4b, 0x24, 0x18, 0x15, 0x98, 0x35, 0xb8, 0x8d, 0x04, 0xf5, 0x40, 0xa1, 0x0e, 0x0a, 0x31,
-	0xbd, 0x32, 0x43, 0x3d, 0xe7, 0xfc, 0xcc, 0x3c, 0x27, 0x6d, 0x90, 0x6f, 0x57, 0xdd, 0x97, 0x57,
-	0xc6, 0xef, 0x5b, 0x90, 0xda, 0xe2, 0x20, 0x1e, 0xa8, 0xa1, 0x3e, 0x20, 0x33, 0xc9, 0x70, 0xbd,
-	0x93, 0xdd, 0x89, 0x47, 0x72, 0x8c, 0x17, 0x1e, 0xc9, 0x31, 0x3e, 0x78, 0x24, 0xc7, 0x38, 0xe1,
-	0xb1, 0x1c, 0xc3, 0x85, 0xc7, 0x72, 0x0c, 0x37, 0x1e, 0xcb, 0x31, 0x44, 0xa9, 0xe0, 0x36, 0x08,
-	0x91, 0x4a, 0x92, 0xd8, 0xc0, 0x11, 0x6c, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x29, 0x36, 0x5f,
-	0x99, 0x5d, 0x02, 0x00, 0x00,
+	0x9a, 0x0a, 0x68, 0x78, 0xa1, 0x38, 0x5d, 0x69, 0x17, 0x23, 0x97, 0x42, 0x50, 0x6a, 0x72, 0x6a,
+	0x66, 0x59, 0xaa, 0x5b, 0x51, 0x7e, 0x6e, 0x48, 0x51, 0x6a, 0x62, 0x71, 0x69, 0x51, 0x25, 0xaa,
+	0xff, 0x92, 0xb9, 0x78, 0x8b, 0x20, 0x6a, 0xe2, 0x73, 0x32, 0x73, 0x33, 0x4b, 0x24, 0x18, 0x15,
+	0x98, 0x35, 0xb8, 0x8d, 0x04, 0xf5, 0x40, 0x81, 0x0e, 0x0a, 0x30, 0xbd, 0x32, 0x43, 0x3d, 0xe7,
+	0xfc, 0xcc, 0x3c, 0x27, 0x6d, 0x90, 0x67, 0x57, 0xdd, 0x97, 0x57, 0xc6, 0xef, 0x59, 0x90, 0xda,
+	0xe2, 0x20, 0x1e, 0xa8, 0xa1, 0x3e, 0x20, 0x33, 0xc9, 0x70, 0xbc, 0x93, 0xdd, 0x89, 0x47, 0x72,
+	0x8c, 0x17, 0x1e, 0xc9, 0x31, 0x3e, 0x78, 0x24, 0xc7, 0x38, 0xe1, 0xb1, 0x1c, 0xc3, 0x85, 0xc7,
+	0x72, 0x0c, 0x37, 0x1e, 0xcb, 0x31, 0x44, 0xa9, 0xe0, 0x36, 0x08, 0x91, 0x48, 0x92, 0xd8, 0xc0,
+	0xf1, 0x6b, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x5e, 0x63, 0x02, 0x2c, 0x5c, 0x02, 0x00, 0x00,
 }
 
 func (m *CreateValidatorAuthorization) Marshal() (dAtA []byte, err error) {
@@ -194,7 +193,7 @@ func (m *CreateValidatorAuthorization) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
-func (m *WithdrawFromTreasuryAuthorization) Marshal() (dAtA []byte, err error) {
+func (m *ReceiveFromTreasuryAuthorization) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -204,12 +203,12 @@ func (m *WithdrawFromTreasuryAuthorization) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *WithdrawFromTreasuryAuthorization) MarshalTo(dAtA []byte) (int, error) {
+func (m *ReceiveFromTreasuryAuthorization) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *WithdrawFromTreasuryAuthorization) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ReceiveFromTreasuryAuthorization) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -257,7 +256,7 @@ func (m *CreateValidatorAuthorization) Size() (n int) {
 	return n
 }
 
-func (m *WithdrawFromTreasuryAuthorization) Size() (n int) {
+func (m *ReceiveFromTreasuryAuthorization) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -394,7 +393,7 @@ func (m *CreateValidatorAuthorization) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *WithdrawFromTreasuryAuthorization) Unmarshal(dAtA []byte) error {
+func (m *ReceiveFromTreasuryAuthorization) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -417,10 +416,10 @@ func (m *WithdrawFromTreasuryAuthorization) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: WithdrawFromTreasuryAuthorization: wiretype end group for non-group")
+			return fmt.Errorf("proto: ReceiveFromTreasuryAuthorization: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: WithdrawFromTreasuryAuthorization: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ReceiveFromTreasuryAuthorization: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

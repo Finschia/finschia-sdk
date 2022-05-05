@@ -103,7 +103,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					*foundation.GrantAuthorization{
 						Granter: foundation.ModuleName,
 						Grantee: s.stranger.String(),
-					}.WithAuthorization(&foundation.WithdrawFromTreasuryAuthorization{}),
+					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
 			},
 			valid: true,
@@ -120,7 +120,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					*foundation.GrantAuthorization{
 						Granter: foundation.ModuleName,
 						Grantee: s.stranger.String(),
-					}.WithAuthorization(&foundation.WithdrawFromTreasuryAuthorization{}),
+					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
 			},
 		},

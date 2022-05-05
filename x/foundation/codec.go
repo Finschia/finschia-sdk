@@ -38,6 +38,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*authz.Authorization)(nil),
 		&CreateValidatorAuthorization{},
-		&WithdrawFromTreasuryAuthorization{},
+		&ReceiveFromTreasuryAuthorization{},
 	)
 }

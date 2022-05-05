@@ -78,7 +78,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	ga := foundation.GrantAuthorization{
 		Granter: foundation.ModuleName,
 		Grantee: s.stranger.String(),
-	}.WithAuthorization(&foundation.WithdrawFromTreasuryAuthorization{})
+	}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{})
 	s.Require().NotNil(ga)
 	foundationData.Authorizations = []foundation.GrantAuthorization{*ga}
 

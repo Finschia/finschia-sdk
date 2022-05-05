@@ -167,7 +167,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	// grant stranger to receive foundation treasury
-	err = s.keeper.Grant(s.ctx, foundation.ModuleName, s.stranger, &foundation.WithdrawFromTreasuryAuthorization{})
+	err = s.keeper.Grant(s.ctx, foundation.ModuleName, s.stranger, &foundation.ReceiveFromTreasuryAuthorization{})
 	s.Require().NoError(err)
 }
 

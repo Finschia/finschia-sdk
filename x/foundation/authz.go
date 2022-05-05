@@ -7,13 +7,13 @@ import (
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
-var _ authz.Authorization = (*WithdrawFromTreasuryAuthorization)(nil)
+var _ authz.Authorization = (*ReceiveFromTreasuryAuthorization)(nil)
 
-func (a WithdrawFromTreasuryAuthorization) MsgTypeURL() string {
+func (a ReceiveFromTreasuryAuthorization) MsgTypeURL() string {
 	return sdk.MsgTypeURL(&MsgWithdrawFromTreasury{})
 }
 
-func (a WithdrawFromTreasuryAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
+func (a ReceiveFromTreasuryAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (authz.AcceptResponse, error) {
 	_, ok := msg.(*MsgWithdrawFromTreasury)
 	if !ok {
 		return authz.AcceptResponse{}, sdkerrors.ErrInvalidType.Wrap("type mismatch")
@@ -31,7 +31,7 @@ func (a WithdrawFromTreasuryAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) 
 	return authz.AcceptResponse{Accept: true}, nil
 }
 
-func (a WithdrawFromTreasuryAuthorization) ValidateBasic() error {
+func (a ReceiveFromTreasuryAuthorization) ValidateBasic() error {
 	// if a.ReceiveLimit == nil {
 	// 	return sdkerrors.ErrInvalidCoins.Wrap("receive limit cannot be nil")
 	// }
