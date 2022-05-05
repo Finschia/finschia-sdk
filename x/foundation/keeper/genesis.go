@@ -7,6 +7,7 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *foundation.GenesisState) error {
@@ -32,8 +33,15 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	}
 
 	for _, auth := range validatorAuths {
-		if err := k.SetValidatorAuth(ctx, auth); err != nil {
-			return err
+		grantee := sdk.ValAddress(auth.OperatorAddress).ToAccAddress()
+		if auth.CreationAllowed {
+			authorization := &foundation.CreateValidatorAuthorization{
+				MinSelfDelegation: sdk.OneInt(),
+				ValidatorAddress: auth.OperatorAddress,
+			}
+			if err := k.Grant(ctx, govtypes.ModuleName, grantee, authorization); err != nil {
+				return err
+			}
 		}
 	}
 
