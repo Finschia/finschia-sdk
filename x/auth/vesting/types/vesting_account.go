@@ -240,7 +240,7 @@ func (bva *BaseVestingAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte)
 	bva.BaseAccount = &ba
 	bva.OriginalVesting = va.OriginalVesting
 	bva.DelegatedFree = va.DelegatedFree
-	bva.OriginalVesting = va.DelegatedVesting
+	bva.DelegatedVesting = va.DelegatedVesting
 	bva.EndTime = va.EndTime
 
 	return nil

@@ -804,6 +804,26 @@ func TestPermanentLockedAccountMarshal(t *testing.T) {
 	require.NotNil(t, err)
 }
 
+func TestBaseVestingAccountMarshalJSONPB(t *testing.T) {
+	baseAcc, coins := initBaseAccount()
+	acc := types.NewBaseVestingAccount(baseAcc, coins, time.Now().Unix())
+
+	jm := jsonpb.Marshaler{}
+	bz, err := acc.MarshalJSONPB(&jm)
+	require.Nil(t, err)
+
+	jum := jsonpb.Unmarshaler{}
+	acc2 := types.NewBaseVestingAccount(nil, sdk.NewCoins(), 0)
+	err = acc2.UnmarshalJSONPB(&jum, bz)
+	require.Nil(t, err)
+	require.IsType(t, &types.BaseVestingAccount{}, acc2)
+	require.Equal(t, acc.String(), acc2.String())
+
+	// error on bad bytes
+	err = acc2.UnmarshalJSONPB(&jum, bz[:len(bz)/2])
+	require.NotNil(t, err)
+}
+
 func TestContinuousVestingAccountMarshalJSONPB(t *testing.T) {
 	baseAcc, coins := initBaseAccount()
 	baseVesting := types.NewBaseVestingAccount(baseAcc, coins, time.Now().Unix())
