@@ -1017,8 +1017,8 @@
     - [MsgIBCSend](#lbm.wasm.v1.MsgIBCSend)
   
 - [lbm/wasm/v1/proposal.proto](#lbm/wasm/v1/proposal.proto)
+    - [AccessConfigUpdate](#lbm.wasm.v1.AccessConfigUpdate)
     - [ClearAdminProposal](#lbm.wasm.v1.ClearAdminProposal)
-    - [CodeAccessConfigUpdate](#lbm.wasm.v1.CodeAccessConfigUpdate)
     - [ExecuteContractProposal](#lbm.wasm.v1.ExecuteContractProposal)
     - [InstantiateContractProposal](#lbm.wasm.v1.InstantiateContractProposal)
     - [MigrateContractProposal](#lbm.wasm.v1.MigrateContractProposal)
@@ -14795,6 +14795,23 @@ MsgIBCSend
 
 
 
+<a name="lbm.wasm.v1.AccessConfigUpdate"></a>
+
+### AccessConfigUpdate
+AccessConfigUpdate contains the code id and the access config to be
+applied.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code to be updated |
+| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply to the set of code ids |
+
+
+
+
+
+
 <a name="lbm.wasm.v1.ClearAdminProposal"></a>
 
 ### ClearAdminProposal
@@ -14806,23 +14823,6 @@ ClearAdminProposal gov proposal content type to clear the admin of a contract.
 | `title` | [string](#string) |  | Title is a short summary |
 | `description` | [string](#string) |  | Description is a human readable text |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.CodeAccessConfigUpdate"></a>
-
-### CodeAccessConfigUpdate
-CodeAccessConfigUpdate contains the code id and the access config to be
-applied.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code to be updated |
-| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply to the set of code ids |
 
 
 
@@ -15011,7 +15011,7 @@ instantiate config to a  set of code ids.
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  | Title is a short summary |
 | `description` | [string](#string) |  | Description is a human readable text |
-| `code_updates` | [CodeAccessConfigUpdate](#lbm.wasm.v1.CodeAccessConfigUpdate) | repeated | CodeAccessConfigUpdate contains the list of code ids and the access config to be applied. |
+| `access_config_updates` | [AccessConfigUpdate](#lbm.wasm.v1.AccessConfigUpdate) | repeated | AccessConfigUpdate contains the list of code ids and the access config to be applied. |
 
 
 
