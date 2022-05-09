@@ -4,7 +4,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/testutil/network"
-	"github.com/line/lbm-sdk/x/consortium/types"
+	"github.com/line/lbm-sdk/x/consortium"
 )
 
 type IntegrationTestSuite struct {
@@ -23,18 +23,18 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	genesisState := s.cfg.GenesisState
 
-	var consortiumData types.GenesisState
-	s.Require().NoError(s.cfg.Codec.UnmarshalJSON(genesisState[types.ModuleName], &consortiumData))
+	var consortiumData consortium.GenesisState
+	s.Require().NoError(s.cfg.Codec.UnmarshalJSON(genesisState[consortium.ModuleName], &consortiumData))
 
 	// enable consortium
-	params := &types.Params{
+	params := &consortium.Params{
 		Enabled: true,
 	}
 	consortiumData.Params = params
 
 	consortiumDataBz, err := s.cfg.Codec.MarshalJSON(&consortiumData)
 	s.Require().NoError(err)
-	genesisState[types.ModuleName] = consortiumDataBz
+	genesisState[consortium.ModuleName] = consortiumDataBz
 	s.cfg.GenesisState = genesisState
 
 	s.network = network.New(s.T(), s.cfg)

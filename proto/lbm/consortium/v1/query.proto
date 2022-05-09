@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lbm.consortium.v1;
 
-option go_package = "github.com/line/lbm-sdk/x/consortium/types";
+option go_package = "github.com/line/lbm-sdk/x/consortium";
 
 import "lbm/base/query/v1/pagination.proto";
 import "google/api/annotations.proto";

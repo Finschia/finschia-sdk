@@ -1,4 +1,4 @@
-package consortium_test
+package keeper_test
 
 import (
 	"testing"
@@ -6,32 +6,25 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/consortium"
-	"github.com/line/lbm-sdk/x/consortium/types"
+	"github.com/line/lbm-sdk/x/consortium/keeper"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
-var (
-	delPk   = ed25519.GenPrivKey().PubKey()
-	delAddr = sdk.BytesToAccAddress(delPk.Address())
-	valAddr = delAddr.ToValAddress()
-)
-
-func newParams(enabled bool) *types.Params {
-	return &types.Params{Enabled: enabled}
+func newParams(enabled bool) *consortium.Params {
+	return &consortium.Params{Enabled: enabled}
 }
 
-func newUpdateConsortiumParamsProposal(params *types.Params) govtypes.Content {
-	return types.NewUpdateConsortiumParamsProposal("Test", "description", params)
+func newUpdateConsortiumParamsProposal(params *consortium.Params) govtypes.Content {
+	return consortium.NewUpdateConsortiumParamsProposal("Test", "description", params)
 }
 
-func newValidatorAuths(addrs []sdk.ValAddress, allow bool) []*types.ValidatorAuth {
-	auths := []*types.ValidatorAuth{}
+func newValidatorAuths(addrs []sdk.ValAddress, allow bool) []*consortium.ValidatorAuth {
+	auths := []*consortium.ValidatorAuth{}
 	for _, addr := range addrs {
-		auth := &types.ValidatorAuth{
+		auth := &consortium.ValidatorAuth{
 			OperatorAddress: addr.String(),
 			CreationAllowed: allow,
 		}
@@ -41,8 +34,8 @@ func newValidatorAuths(addrs []sdk.ValAddress, allow bool) []*types.ValidatorAut
 	return auths
 }
 
-func newUpdateValidatorAuthsProposal(auths []*types.ValidatorAuth) govtypes.Content {
-	return types.NewUpdateValidatorAuthsProposal("Test", "description", auths)
+func newUpdateValidatorAuthsProposal(auths []*consortium.ValidatorAuth) govtypes.Content {
+	return consortium.NewUpdateValidatorAuthsProposal("Test", "description", auths)
 }
 
 func TestProposalHandler(t *testing.T) {
@@ -50,33 +43,33 @@ func TestProposalHandler(t *testing.T) {
 	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
 
 	// turn on the module
-	keeper := app.ConsortiumKeeper
+	k := app.ConsortiumKeeper
 	params_on := newParams(true)
-	keeper.SetParams(ctx, params_on)
+	k.SetParams(ctx, params_on)
 
-	handler := consortium.NewProposalHandler(keeper)
+	handler := keeper.NewProposalHandler(k)
 
 	// test adding creation allowed validators
 	adding := newValidatorAuths([]sdk.ValAddress{valAddr}, true)
 	ap := newUpdateValidatorAuthsProposal(adding)
 	require.NoError(t, ap.ValidateBasic())
 	require.NoError(t, handler(ctx, ap))
-	require.Equal(t, adding, keeper.GetValidatorAuths(ctx))
+	require.Equal(t, adding, k.GetValidatorAuths(ctx))
 
 	// test deleting creation allowed validators
 	deleting := newValidatorAuths([]sdk.ValAddress{valAddr}, false)
 	dp := newUpdateValidatorAuthsProposal(deleting)
 	require.NoError(t, dp.ValidateBasic())
 	require.NoError(t, handler(ctx, dp))
-	require.Equal(t, deleting, keeper.GetValidatorAuths(ctx))
+	require.Equal(t, deleting, k.GetValidatorAuths(ctx))
 
 	// disable consortium
 	params_off := newParams(false)
 	pp := newUpdateConsortiumParamsProposal(params_off)
 	require.NoError(t, pp.ValidateBasic())
 	require.NoError(t, handler(ctx, pp))
-	require.Equal(t, []*types.ValidatorAuth{}, keeper.GetValidatorAuths(ctx))
-	require.Equal(t, params_off, keeper.GetParams(ctx))
+	require.Equal(t, []*consortium.ValidatorAuth{}, k.GetValidatorAuths(ctx))
+	require.Equal(t, params_off, k.GetParams(ctx))
 
 	// attempt to enable consortium, which fails
 	pp = newUpdateConsortiumParamsProposal(params_on)

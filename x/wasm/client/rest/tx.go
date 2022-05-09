@@ -40,7 +40,7 @@ type storeCodeAndInstantiateContractReq struct {
 	Label     string       `json:"label" yaml:"label"`
 	Deposit   sdk.Coins    `json:"deposit" yaml:"deposit"`
 	Admin     string       `json:"admin,omitempty" yaml:"admin"`
-	InitMsg   []byte       `json:"init_msg" yaml:"init_msg"`
+	Msg       []byte       `json:"msg" yaml:"msg"`
 }
 
 type executeContractReq struct {
@@ -162,7 +162,7 @@ func storeCodeAndInstantiateContractHandlerFn(cliCtx client.Context) http.Handle
 			WASMByteCode: wasm,
 			Label:        req.Label,
 			Funds:        req.Deposit,
-			InitMsg:      req.InitMsg,
+			Msg:          req.Msg,
 			Admin:        req.Admin,
 		}
 
