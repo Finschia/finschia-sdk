@@ -124,14 +124,14 @@ func TestMsgUpdateMembers(t *testing.T) {
 			operator: addrs[0],
 			members: []foundation.Member{{
 				Address: addrs[0].String(),
-				Weight: sdk.OneDec(),
+				Participating: true,
 			}},
 			valid:   true,
 		},
 		"empty operator": {
 			members: []foundation.Member{{
 				Address: addrs[0].String(),
-				Weight: sdk.OneDec(),
+				Participating: true,
 			}},
 			valid:   false,
 		},
@@ -143,15 +143,7 @@ func TestMsgUpdateMembers(t *testing.T) {
 		"empty member address": {
 			operator: addrs[0],
 			members: []foundation.Member{{
-				Weight: sdk.OneDec(),
-			}},
-			valid:   false,
-		},
-		"invalid member weight": {
-			operator: addrs[0],
-			members: []foundation.Member{{
-				Address: addrs[0].String(),
-				Weight: sdk.MustNewDecFromStr("0.5"),
+				Participating: true,
 			}},
 			valid:   false,
 		},

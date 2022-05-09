@@ -232,7 +232,6 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 
 	update := foundation.Member{
 		Address: req.Address,
-		Weight:  sdk.ZeroDec(),
 	}
 	if err := s.keeper.UpdateMembers(ctx, []foundation.Member{update}); err != nil {
 		return nil, err

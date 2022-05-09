@@ -51,8 +51,8 @@ message Member {
   // address is the member's account address.
   string address = 1;
 
-  // weight is the member's voting weight that should be greater than 0.
-  string weight = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
+  // participating is the flag which allows one to remove the member by setting the flag to false.
+  bool participating = 2;
 
   // metadata is any arbitrary metadata to attached to the member.
   string metadata = 3;

@@ -68,7 +68,7 @@ func (k Keeper) tally(ctx sdk.Context, p foundation.Proposal) (foundation.TallyR
 	tallyResult := DefaultTallyResult()
 	var errors []error
 	k.iterateVotes(ctx, p.Id, func(vote foundation.Vote) (stop bool) {
-		voter, err := k.GetMember(ctx, sdk.AccAddress(vote.Voter))
+		_, err := k.GetMember(ctx, sdk.AccAddress(vote.Voter))
 		switch {
 		case sdkerrors.ErrNotFound.Is(err):
 			// If the member left the group after voting, then we simply skip the
@@ -80,7 +80,7 @@ func (k Keeper) tally(ctx sdk.Context, p foundation.Proposal) (foundation.TallyR
 			return true
 		}
 
-		if err := tallyResult.Add(vote.Option, voter.Weight); err != nil {
+		if err := tallyResult.Add(vote.Option, sdk.OneDec()); err != nil {
 			errors = append(errors, err)
 			return true
 		}

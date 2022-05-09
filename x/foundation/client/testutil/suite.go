@@ -122,7 +122,7 @@ func (s *IntegrationTestSuite) addMembers(members []sdk.AccAddress) {
 	for i, member := range members {
 		update := foundation.Member{
 			Address: member.String(),
-			Weight:  sdk.OneDec(),
+			Participating: true,
 		}
 		bz, err := s.cfg.Codec.MarshalJSON(&update)
 		s.Require().NoError(err)

@@ -35427,11 +35427,12 @@ paths:
                     address:
                       type: string
                       description: address is the member's account address.
-                    weight:
-                      type: string
+                    participating:
+                      type: boolean
+                      format: boolean
                       description: >-
-                        weight is the member's voting weight that should be
-                        greater than 0.
+                        participating is the flag which allows one to remove the
+                        member by setting the flag to false.
                     metadata:
                       type: string
                       description: >-
@@ -35734,11 +35735,12 @@ paths:
                   address:
                     type: string
                     description: address is the member's account address.
-                  weight:
-                    type: string
+                  participating:
+                    type: boolean
+                    format: boolean
                     description: >-
-                      weight is the member's voting weight that should be
-                      greater than 0.
+                      participating is the flag which allows one to remove the
+                      member by setting the flag to false.
                   metadata:
                     type: string
                     description: >-
@@ -62426,9 +62428,12 @@ definitions:
       address:
         type: string
         description: address is the member's account address.
-      weight:
-        type: string
-        description: weight is the member's voting weight that should be greater than 0.
+      participating:
+        type: boolean
+        format: boolean
+        description: >-
+          participating is the flag which allows one to remove the member by
+          setting the flag to false.
       metadata:
         type: string
         description: metadata is any arbitrary metadata to attached to the member.
@@ -62880,11 +62885,12 @@ definitions:
           address:
             type: string
             description: address is the member's account address.
-          weight:
-            type: string
+          participating:
+            type: boolean
+            format: boolean
             description: >-
-              weight is the member's voting weight that should be greater than
-              0.
+              participating is the flag which allows one to remove the member by
+              setting the flag to false.
           metadata:
             type: string
             description: metadata is any arbitrary metadata to attached to the member.
@@ -62907,11 +62913,12 @@ definitions:
             address:
               type: string
               description: address is the member's account address.
-            weight:
-              type: string
+            participating:
+              type: boolean
+              format: boolean
               description: >-
-                weight is the member's voting weight that should be greater than
-                0.
+                participating is the flag which allows one to remove the member
+                by setting the flag to false.
             metadata:
               type: string
               description: metadata is any arbitrary metadata to attached to the member.

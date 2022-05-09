@@ -143,7 +143,6 @@ func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 			operator: s.operator,
 			member: foundation.Member{
 				Address: s.members[0].String(),
-				Weight: sdk.ZeroDec(),
 			},
 			valid: true,
 		},
@@ -151,14 +150,12 @@ func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 			operator: s.stranger,
 			member: foundation.Member{
 				Address: s.members[0].String(),
-				Weight: sdk.ZeroDec(),
 			},
 		},
 		"remove a non-member": {
 			operator: s.operator,
 			member: foundation.Member{
 				Address: s.stranger.String(),
-				Weight: sdk.ZeroDec(),
 			},
 		},
 	}

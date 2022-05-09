@@ -283,7 +283,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMember() {
 			true,
 			&foundation.Member{
 				Address:  val.Address.String(),
-				Weight:   sdk.OneDec(),
+				Participating: true,
 				Metadata: "genesis member",
 			},
 		},

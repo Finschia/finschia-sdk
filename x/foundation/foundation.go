@@ -96,10 +96,6 @@ func (m Member) ValidateBasic() error {
 		return err
 	}
 
-	if !m.Weight.Equal(sdk.OneDec()) && !m.Weight.IsZero() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("expected a zero or one, got %s", m.Weight)
-	}
-
 	return nil
 }
 

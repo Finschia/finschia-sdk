@@ -90,7 +90,7 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 			updates: []foundation.Member{
 				{
 					Address: s.stranger.String(),
-					Weight: sdk.OneDec(),
+					Participating: true,
 				},
 			},
 			valid: true,
@@ -99,7 +99,6 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 			updates: []foundation.Member{
 				{
 					Address: s.members[0].String(),
-					Weight: sdk.ZeroDec(),
 				},
 			},
 			valid: true,
@@ -108,7 +107,6 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 			updates: []foundation.Member{
 				{
 					Address: s.stranger.String(),
-					Weight: sdk.ZeroDec(),
 				},
 			},
 		},
@@ -116,7 +114,7 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 			updates: []foundation.Member{
 				{
 					Address: s.stranger.String(),
-					Weight: sdk.OneDec(),
+					Participating: true,
 					Metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
 				},
 			},

@@ -60,20 +60,23 @@ func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.Member) erro
 		if err := validateMetadata(new.Metadata, k.config); err != nil {
 			return err
 		}
-		weightUpdate = weightUpdate.Add(new.Weight)
 
+		new.AddedAt = ctx.BlockTime()
 		old, err := k.GetMember(ctx, sdk.AccAddress(new.Address))
-		deleting := new.Weight.IsZero()
 		if err == nil {
-			weightUpdate = weightUpdate.Sub(old.Weight)
-		} else if deleting { // the member must exist
+			weightUpdate = weightUpdate.Sub(sdk.OneDec())
+			new.AddedAt = old.AddedAt
+		}
+
+		deleting := !new.Participating
+		if err != nil && deleting { // the member must exist
 			return err
 		}
 
 		if deleting {
 			k.deleteMember(ctx, sdk.AccAddress(old.Address))
 		} else {
-			new.AddedAt = ctx.BlockTime()
+			weightUpdate = weightUpdate.Add(sdk.OneDec())
 			k.setMember(ctx, new)
 		}
 	}

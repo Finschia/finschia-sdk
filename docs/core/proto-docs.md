@@ -8650,7 +8650,7 @@ non-zero weight and metadata.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | address is the member's account address. |
-| `weight` | [string](#string) |  | weight is the member's voting weight that should be greater than 0. |
+| `participating` | [bool](#bool) |  | participating is the flag which allows one to remove the member by setting the flag to false. |
 | `metadata` | [string](#string) |  | metadata is any arbitrary metadata to attached to the member. |
 | `added_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | added_at is a timestamp specifying when a member was added. |
 
