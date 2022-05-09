@@ -17,6 +17,7 @@ import (
 	"github.com/line/lbm-sdk/client/flags"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
+	wasmvmapi "github.com/line/wasmvm/api"
 )
 
 func GetQueryCmd() *cobra.Command {
@@ -35,8 +36,29 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdGetContractHistory(),
 		GetCmdGetContractState(),
 		GetCmdListPinnedCode(),
+		GetCmdLibVersion(),
 	)
 	return queryCmd
+}
+
+// GetCmdLibVersion gets current libwasmvm version.
+func GetCmdLibVersion() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "libwasmvm-version",
+		Short:   "Get libwasmvm version",
+		Long:    "Get libwasmvm version",
+		Aliases: []string{"lib-version"},
+		Args:    cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			version, err := wasmvmapi.LibwasmvmVersion()
+			if err != nil {
+				return fmt.Errorf("error retrieving libwasmvm version: %w", err)
+			}
+			fmt.Println(version)
+			return nil
+		},
+	}
+	return cmd
 }
 
 // GetCmdListCode lists all wasm code uploaded
