@@ -64,7 +64,10 @@ func (k Keeper) Exec(ctx sdk.Context, proposalID uint64) error {
 		}
 	}
 
-	return nil
+	return ctx.EventManager().EmitTypedEvent(&foundation.EventExec{
+		ProposalId: proposal.Id,
+		Result:     proposal.ExecutorResult,
+	})
 }
 
 // doExecuteMsgs routes the messages to the registered handlers.

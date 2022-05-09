@@ -31,7 +31,13 @@ func (k Keeper) Vote(ctx sdk.Context, vote foundation.Vote) error {
 
 	vote.SubmitTime = ctx.BlockTime()
 
-	return k.setVote(ctx, vote)
+	if err := k.setVote(ctx, vote); err != nil {
+		return err
+	}
+
+	return ctx.EventManager().EmitTypedEvent(&foundation.EventVote{
+		Vote: vote,
+	})
 }
 
 func (k Keeper) hasVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress) bool {
