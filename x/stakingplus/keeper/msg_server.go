@@ -7,8 +7,8 @@ import (
 	"context"
 
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/stakingplus/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/x/stakingplus/types"
 )
 
 type msgServer struct {
