@@ -55,7 +55,7 @@ message MsgFundTreasuryResponse {}
 
 // MsgWithdrawFromTreasury represents a message to withdraw coins from the treasury.
 message MsgWithdrawFromTreasury {
-  string   operator                   = 1;
+  string   operator                = 1;
   string   to                      = 2;
   repeated lbm.base.v1.Coin amount = 3
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];

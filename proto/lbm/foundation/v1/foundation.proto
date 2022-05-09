@@ -258,7 +258,8 @@ message TallyResult {
   string no_count = 3 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
 
   // no_with_veto_count is the weighted sum of veto.
-  string no_with_veto_count = 4 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
+  string no_with_veto_count = 4
+      [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
 }
 
 // Vote represents a vote for a proposal.
