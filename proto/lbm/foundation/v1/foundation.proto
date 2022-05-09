@@ -23,7 +23,7 @@ message ValidatorAuth {
   bool   creation_allowed = 2;
 }
 
-// UpdateFoundationParamsProposal details a proposal to update params of cosortium module.
+// UpdateFoundationParamsProposal details a proposal to update params of foundation module.
 message UpdateFoundationParamsProposal {
   option (gogoproto.equal)            = false;
   option (gogoproto.goproto_getters)  = false;
