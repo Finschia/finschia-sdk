@@ -10,6 +10,13 @@ import (
 
 const gasCostPerIteration = uint64(20)
 
+func canFoundationAuthorize(msgTypeURL string) bool {
+	urls := map[string]bool{
+		foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(): true,
+	}
+	return urls[msgTypeURL]
+}
+
 type msgServer struct {
 	keeper Keeper
 }
@@ -49,7 +56,7 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 		return nil, err
 	}
 
-	if err := s.keeper.Accept(ctx, sdk.AccAddress(req.To), req); err != nil {
+	if err := s.keeper.Accept(ctx, foundation.ModuleName, sdk.AccAddress(req.To), req); err != nil {
 		return nil, err
 	}
 
@@ -278,15 +285,13 @@ func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundati
 		return nil, err
 	}
 
-	authorization := req.GetAuthorization()
-	if err := s.keeper.Grant(ctx, foundation.ModuleName, sdk.AccAddress(req.Grantee), authorization); err != nil {
-		return nil, err
+	msgTypeURL := req.GetAuthorization().MsgTypeURL()
+	if !canFoundationAuthorize(msgTypeURL) {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("foundation cannot grant %s", msgTypeURL)
 	}
 
-	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventGrant{
-		Grantee:       req.Grantee,
-		Authorization: req.Authorization,
-	}); err != nil {
+	authorization := req.GetAuthorization()
+	if err := s.keeper.Grant(ctx, foundation.ModuleName, sdk.AccAddress(req.Grantee), authorization); err != nil {
 		return nil, err
 	}
 
@@ -300,14 +305,11 @@ func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*founda
 		return nil, err
 	}
 
-	if err := s.keeper.Revoke(ctx, foundation.ModuleName, sdk.AccAddress(req.Grantee), req.MsgTypeUrl); err != nil {
-		return nil, err
+	if !canFoundationAuthorize(req.MsgTypeUrl) {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("foundation cannot revoke %s", req.MsgTypeUrl)
 	}
 
-	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventRevoke{
-		Grantee:    req.Grantee,
-		MsgTypeUrl: req.MsgTypeUrl,
-	}); err != nil {
+	if err := s.keeper.Revoke(ctx, foundation.ModuleName, sdk.AccAddress(req.Grantee), req.MsgTypeUrl); err != nil {
 		return nil, err
 	}
 

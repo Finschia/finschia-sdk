@@ -5,35 +5,39 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 func (k Keeper) Grant(ctx sdk.Context, granter string, grantee sdk.AccAddress, authorization authz.Authorization) error {
-	msgTypeURL := authorization.MsgTypeURL()
-	expectedGranter, err := getGranter(msgTypeURL)
+	if err := k.setAuthorization(ctx, granter, grantee, authorization); err != nil {
+		return err
+	}
+
+	any, err := foundation.SetAuthorization(authorization)
 	if err != nil {
 		return err
 	}
-	if granter != expectedGranter {
-		return sdkerrors.ErrInvalidRequest.Wrapf("granter %s cannot grant a msg type of %s", granter, msgTypeURL)
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventGrant{
+		Grantee:       grantee.String(),
+		Authorization: any,
+	}); err != nil {
+		return err
 	}
 
-	return k.setAuthorization(ctx, granter, grantee, authorization)
+	return nil
 }
 
 func (k Keeper) Revoke(ctx sdk.Context, granter string, grantee sdk.AccAddress, msgTypeURL string) error {
-	expectedGranter, err := getGranter(msgTypeURL)
-	if err != nil {
-		return err
-	}
-	if granter != expectedGranter {
-		return sdkerrors.ErrInvalidRequest.Wrapf("granter %s cannot revoke a msg type of %s", granter, msgTypeURL)
-	}
-
 	if _, err := k.GetAuthorization(ctx, granter, grantee, msgTypeURL); err != nil {
 		return err
 	}
 	k.deleteAuthorization(ctx, granter, grantee, msgTypeURL)
+
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventRevoke{
+		Grantee:    grantee.String(),
+		MsgTypeUrl: msgTypeURL,
+	}); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -73,25 +77,8 @@ func (k Keeper) deleteAuthorization(ctx sdk.Context, granter string, grantee sdk
 	store.Delete(key)
 }
 
-func getGranter(msgTypeURL string) (string, error) {
-	granters := map[string]string{
-		foundation.CreateValidatorAuthorization{}.MsgTypeURL():     govtypes.ModuleName,
-		foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(): foundation.ModuleName,
-	}
-	granter, ok := granters[msgTypeURL]
-	if !ok {
-		return "", sdkerrors.ErrNotSupported.Wrapf("not supported msg type: %s", msgTypeURL)
-	}
-	return granter, nil
-}
-
-func (k Keeper) Accept(ctx sdk.Context, grantee sdk.AccAddress, msg sdk.Msg) error {
+func (k Keeper) Accept(ctx sdk.Context, granter string, grantee sdk.AccAddress, msg sdk.Msg) error {
 	msgTypeURL := sdk.MsgTypeURL(msg)
-	granter, err := getGranter(msgTypeURL)
-	if err != nil {
-		return err
-	}
-
 	authorization, err := k.GetAuthorization(ctx, granter, grantee, msgTypeURL)
 	if err != nil {
 		return err

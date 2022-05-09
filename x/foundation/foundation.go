@@ -10,6 +10,7 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/authz"
 )
 
 func DefaultDecisionPolicy(config Config) DecisionPolicy {
@@ -380,4 +381,30 @@ func (p PercentageDecisionPolicy) ValidateBasic() error {
 	}
 
 	return nil
+}
+
+func GetAuthorization(any *codectypes.Any, name string) (authz.Authorization, error) {
+	cached := any.GetCachedValue()
+	if cached == nil {
+		return nil, fmt.Errorf("any cached value is nil, %s authorization must be correctly packed any values", name)
+	}
+
+	a, ok := cached.(authz.Authorization)
+	if !ok {
+		return nil, sdkerrors.ErrInvalidType.Wrapf("can't proto unmarshal %T", a)
+	}
+	return a, nil
+}
+
+func SetAuthorization(a authz.Authorization) (*codectypes.Any, error) {
+	msg, ok := a.(proto.Message)
+	if !ok {
+		return nil, sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
+	}
+
+	any, err := codectypes.NewAnyWithValue(a)
+	if err != nil {
+		return nil, err
+	}
+	return any, nil
 }

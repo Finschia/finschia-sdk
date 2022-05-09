@@ -8,6 +8,7 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/stakingplus/types"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 type msgServer struct {
@@ -32,7 +33,7 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *stakingtypes.MsgC
 	if k.fk.GetEnabled(ctx) {
 		valAddr := sdk.ValAddress(msg.ValidatorAddress)
 		grantee := valAddr.ToAccAddress()
-		if err := k.fk.Accept(ctx, grantee, msg); err != nil {
+		if err := k.fk.Accept(ctx, govtypes.ModuleName, grantee, msg); err != nil {
 			return nil, err
 		}
 	}

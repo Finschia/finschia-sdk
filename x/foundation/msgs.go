@@ -407,20 +407,15 @@ func (m MsgGrant) GetAuthorization() authz.Authorization {
 		return nil
 	}
 
-	a, ok := m.Authorization.GetCachedValue().(authz.Authorization)
-	if !ok {
+	a, err := GetAuthorization(m.Authorization, "grant")
+	if err != nil {
 		return nil
 	}
 	return a
 }
 
 func (m *MsgGrant) SetAuthorization(a authz.Authorization) error {
-	msg, ok := a.(proto.Message)
-	if !ok {
-		return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
-	}
-
-	any, err := codectypes.NewAnyWithValue(msg)
+	any, err := SetAuthorization(a)
 	if err != nil {
 		return err
 	}
