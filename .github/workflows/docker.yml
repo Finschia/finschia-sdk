@@ -26,7 +26,7 @@ jobs:
           password: ${{secrets.DOCKERHUB_TOKEN}}
       - name: extract metadata for docker
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v4
         with:
           images: ${{env.registry}}/${{env.repository}}
           tags: |
