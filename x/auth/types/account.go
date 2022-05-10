@@ -453,16 +453,13 @@ func (acc BaseAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
 	if acc.Secp256K1PubKey != nil {
 		bi.PubKey.Type = PubKeyTypeSecp256k1
 		bz, err = acc.Secp256K1PubKey.Marshal()
-	}
-	if acc.Secp256R1PubKey != nil {
+	} else if acc.Secp256R1PubKey != nil {
 		bi.PubKey.Type = PubKeyTypeSecp256R1
 		bz, err = acc.Secp256R1PubKey.Marshal()
-	}
-	if acc.Ed25519PubKey != nil {
+	} else if acc.Ed25519PubKey != nil {
 		bi.PubKey.Type = PubKeyTypeEd25519
 		bz, err = acc.Ed25519PubKey.Marshal()
-	}
-	if acc.MultisigPubKey != nil {
+	} else if acc.MultisigPubKey != nil {
 		bi.PubKey.Type = PubKeyTypeMultisig
 		bz, err = acc.MultisigPubKey.Marshal()
 	}

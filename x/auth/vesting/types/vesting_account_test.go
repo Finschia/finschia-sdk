@@ -810,18 +810,18 @@ func TestBaseVestingAccountMarshalJSONPB(t *testing.T) {
 
 	jm := jsonpb.Marshaler{}
 	bz, err := acc.MarshalJSONPB(&jm)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	jum := jsonpb.Unmarshaler{}
 	acc2 := types.NewBaseVestingAccount(nil, sdk.NewCoins(), 0)
 	err = acc2.UnmarshalJSONPB(&jum, bz)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.IsType(t, &types.BaseVestingAccount{}, acc2)
 	require.Equal(t, acc.String(), acc2.String())
 
 	// error on bad bytes
 	err = acc2.UnmarshalJSONPB(&jum, bz[:len(bz)/2])
-	require.NotNil(t, err)
+	require.Error(t, err)
 }
 
 func TestContinuousVestingAccountMarshalJSONPB(t *testing.T) {
@@ -831,19 +831,19 @@ func TestContinuousVestingAccountMarshalJSONPB(t *testing.T) {
 
 	jm := jsonpb.Marshaler{}
 	bz, err := acc.MarshalJSONPB(&jm)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	jum := jsonpb.Unmarshaler{}
 	baseVesting2 := types.NewBaseVestingAccount(nil, sdk.NewCoins(), 0)
 	acc2 := types.NewContinuousVestingAccountRaw(baseVesting2, baseVesting2.EndTime)
 	err = acc2.UnmarshalJSONPB(&jum, bz)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.IsType(t, &types.ContinuousVestingAccount{}, acc2)
 	require.Equal(t, acc.String(), acc2.String())
 
 	// error on bad bytes
 	err = acc2.UnmarshalJSONPB(&jum, bz[:len(bz)/2])
-	require.NotNil(t, err)
+	require.Error(t, err)
 }
 
 func TestPeriodicVestingAccountMarshalJSONPB(t *testing.T) {
@@ -853,19 +853,19 @@ func TestPeriodicVestingAccountMarshalJSONPB(t *testing.T) {
 
 	jm := jsonpb.Marshaler{}
 	bz, err := acc.MarshalJSONPB(&jm)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	jum := jsonpb.Unmarshaler{}
 	baseVesting2 := types.NewBaseVestingAccount(nil, sdk.NewCoins(), 0)
 	acc2 := types.NewPeriodicVestingAccountRaw(baseVesting2, baseVesting2.EndTime, types.Periods{})
 	err = acc2.UnmarshalJSONPB(&jum, bz)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.IsType(t, &types.PeriodicVestingAccount{}, acc2)
 	require.Equal(t, acc.String(), acc2.String())
 
 	// error on bad bytes
 	err = acc2.UnmarshalJSONPB(&jum, bz[:len(bz)/2])
-	require.NotNil(t, err)
+	require.Error(t, err)
 }
 
 func TestDelayedVestingAccountMarshalJSONPB(t *testing.T) {
@@ -874,18 +874,18 @@ func TestDelayedVestingAccountMarshalJSONPB(t *testing.T) {
 
 	jm := jsonpb.Marshaler{}
 	bz, err := acc.MarshalJSONPB(&jm)
-	require.Nil(t, err)
+	require.NoError(t, err)
 
 	jum := jsonpb.Unmarshaler{}
 	acc2 := types.NewDelayedVestingAccount(nil, sdk.NewCoins(), 0)
 	err = acc2.UnmarshalJSONPB(&jum, bz)
-	require.Nil(t, err)
+	require.NoError(t, err)
 	require.IsType(t, &types.DelayedVestingAccount{}, acc2)
 	require.Equal(t, acc.String(), acc2.String())
 
 	// error on bad bytes
 	err = acc2.UnmarshalJSONPB(&jum, bz[:len(bz)/2])
-	require.NotNil(t, err)
+	require.Error(t, err)
 }
 
 func initBaseAccount() (*authtypes.BaseAccount, sdk.Coins) {

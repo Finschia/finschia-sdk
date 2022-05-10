@@ -219,7 +219,7 @@ func TestModuleAccountJSONPB(t *testing.T) {
 	pubkey := secp256k1.GenPrivKey().PubKey()
 	addr := sdk.BytesToAccAddress(pubkey.Address())
 	baseAcc := types.NewBaseAccount(addr, nil, 10, 50)
-	acc := types.NewModuleAccount(baseAcc, "test", "burner")
+	acc := types.NewModuleAccount(baseAcc, "test", types.Burner)
 
 	jm := jsonpb.Marshaler{}
 	bz, err := acc.MarshalJSONPB(&jm)
@@ -234,7 +234,7 @@ func TestModuleAccountJSONPB(t *testing.T) {
 
 	// error on bad bytes
 	err = acc2.UnmarshalJSONPB(&jum, bz[:len(bz)/2])
-	require.NotNil(t, err)
+	require.Error(t, err)
 }
 
 func TestGenesisAccountsContains(t *testing.T) {
