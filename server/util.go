@@ -3,7 +3,6 @@ package server
 import (
 	"errors"
 	"fmt"
-	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	"io"
 	"net"
 	"os"
@@ -15,6 +14,7 @@ import (
 	"syscall"
 	"time"
 
+	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	ostcfg "github.com/line/ostracon/config"
 	ostlog "github.com/line/ostracon/libs/log"
 	tmdb "github.com/line/tm-db/v2"
