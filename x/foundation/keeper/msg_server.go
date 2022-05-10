@@ -206,14 +206,7 @@ func (s msgServer) Vote(c context.Context, req *foundation.MsgVote) (*foundation
 		Option:     req.Option,
 		Metadata:   req.Metadata,
 	}
-
 	if err := s.keeper.Vote(ctx, vote); err != nil {
-		return nil, err
-	}
-
-	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventVote{
-		Vote: vote,
-	}); err != nil {
 		return nil, err
 	}
 
@@ -234,20 +227,7 @@ func (s msgServer) Exec(c context.Context, req *foundation.MsgExec) (*foundation
 		return nil, err
 	}
 
-	id := req.ProposalId
-	proposal, err := s.keeper.GetProposal(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-
 	if err := s.keeper.Exec(ctx, req.ProposalId); err != nil {
-		return nil, err
-	}
-
-	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventExec{
-		ProposalId: id,
-		Result:     proposal.ExecutorResult,
-	}); err != nil {
 		return nil, err
 	}
 

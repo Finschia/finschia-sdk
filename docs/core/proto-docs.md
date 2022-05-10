@@ -8813,7 +8813,7 @@ ThresholdDecisionPolicy implements the DecisionPolicy interface
 <a name="lbm.foundation.v1.UpdateFoundationParamsProposal"></a>
 
 ### UpdateFoundationParamsProposal
-UpdateFoundationParamsProposal details a proposal to update params of cosortium module.
+UpdateFoundationParamsProposal details a proposal to update params of foundation module.
 
 
 | Field | Type | Label | Description |

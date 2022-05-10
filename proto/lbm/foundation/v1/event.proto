@@ -23,14 +23,16 @@ message EventUpdateValidatorAuths {
 
 // EventFundTreasury is an event emitted when one funds the treasury.
 message EventFundTreasury {
-  string from = 1;
-  repeated lbm.base.v1.Coin amount = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+  string   from                    = 1;
+  repeated lbm.base.v1.Coin amount = 2
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
 
 // EventWithdrawFromTreasury is an event emitted when the operator withdraws coins from the treasury.
 message EventWithdrawFromTreasury {
-  string to = 1;
-  repeated lbm.base.v1.Coin amount = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+  string   to                      = 1;
+  repeated lbm.base.v1.Coin amount = 2
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
 
 // EventUpdateMembers is an event emitted when the members have been updated.
@@ -40,7 +42,7 @@ message EventUpdateMembers {
 
 // EventUpdateDecisionPolicy is an event emitted when the decision policy have been updated.
 message EventUpdateDecisionPolicy {
-  option (gogoproto.goproto_getters) = false;
+  option (gogoproto.goproto_getters)  = false;
   google.protobuf.Any decision_policy = 1 [(cosmos_proto.accepts_interface) = "DecisionPolicy"];
 }
 

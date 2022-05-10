@@ -4,7 +4,7 @@ order: 4
 
 # Parameters
 
-The consortium module contains the following parameters:
+The foundation module contains the following parameters:
 
 | Key     | Type | Example   |
 | ------- | ---- | --------- |

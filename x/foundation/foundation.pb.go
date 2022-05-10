@@ -283,7 +283,7 @@ func (m *ValidatorAuth) GetCreationAllowed() bool {
 	return false
 }
 
-// UpdateFoundationParamsProposal details a proposal to update params of cosortium module.
+// UpdateFoundationParamsProposal details a proposal to update params of foundation module.
 type UpdateFoundationParamsProposal struct {
 	Title       string  `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
 	Description string  `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`

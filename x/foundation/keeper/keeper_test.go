@@ -14,6 +14,7 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/keeper"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	minttypes "github.com/line/lbm-sdk/x/mint/types"
 )
 
 var (
@@ -83,7 +84,18 @@ func (s *KeeperTestSuite) SetupTest() {
 		s.app.AccountKeeper.GetModuleAccount(s.ctx, foundation.TreasuryName).GetAddress(),
 	}
 	for _, holder := range holders {
-		err := s.app.BankKeeper.SetBalance(s.ctx, holder, sdk.NewCoin(sdk.DefaultBondDenom, s.balance))
+		amount := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance))
+
+		// using minttypes here introduces dependency on x/mint
+		// the work around would be registering a new module account on this suite
+		// because x/bank already has dependency on x/mint, and we must have dependency
+		// on x/bank, it's OK to use x/mint here.
+		minterName := minttypes.ModuleName
+		err := s.app.BankKeeper.MintCoins(s.ctx, minterName, amount)
+		s.Require().NoError(err)
+
+		minter := s.app.AccountKeeper.GetModuleAccount(s.ctx, minterName).GetAddress()
+		err = s.app.BankKeeper.SendCoins(s.ctx, minter, holder, amount)
 		s.Require().NoError(err)
 	}
 
