@@ -3,6 +3,7 @@ package server
 import (
 	"errors"
 	"fmt"
+	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	"io"
 	"net"
 	"os"
@@ -278,13 +279,14 @@ func AddCommands(rootCmd *cobra.Command, defaultNodeHome string, appCreator type
 		ShowValidatorCmd(),
 		ShowAddressCmd(),
 		VersionCmd(),
+		ostcmd.ResetAllCmd,
+		ostcmd.ResetStateCmd,
 	)
 	startCmd := StartCmd(appCreator, defaultNodeHome)
 	addStartFlags(startCmd)
 
 	rootCmd.AddCommand(
 		startCmd,
-		UnsafeResetAllCmd(),
 		ostraconCmd,
 		ExportCmd(appExport, defaultNodeHome),
 		version.NewVersionCommand(),
