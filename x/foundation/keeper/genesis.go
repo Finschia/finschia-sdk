@@ -40,9 +40,9 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	if len(members) == 0 {
 		for _, auth := range validatorAuths {
 			member := foundation.Member{
-				Address:  sdk.ValAddress(auth.OperatorAddress).ToAccAddress().String(),
+				Address:       sdk.ValAddress(auth.OperatorAddress).ToAccAddress().String(),
 				Participating: true,
-				Metadata: "genesis member",
+				Metadata:      "genesis member",
 			}
 			members = append(members, member)
 		}
