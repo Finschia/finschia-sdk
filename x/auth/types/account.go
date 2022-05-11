@@ -1,11 +1,14 @@
 package types
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 
+	"github.com/gogo/protobuf/jsonpb"
 	"github.com/gogo/protobuf/proto"
 	"github.com/line/ostracon/crypto"
 	"gopkg.in/yaml.v2"
@@ -31,8 +34,9 @@ var (
 	ModuleAccountSig = []byte("macc")
 
 	PubKeyTypeSecp256k1 = byte(1)
-	PubKeyTypeEd25519   = byte(2)
-	PubKeyTypeMultisig  = byte(3)
+	PubKeyTypeSecp256R1 = byte(2)
+	PubKeyTypeEd25519   = byte(3)
+	PubKeyTypeMultisig  = byte(4)
 )
 
 // NewBaseAccount creates a new BaseAccount object
@@ -359,7 +363,38 @@ type AccountI interface {
 	MarshalX() ([]byte, error)
 }
 
-// TODO(dudong2): remove MarshalAccountX, UnmarshalAccountX(because codec.BinaryMarshaler is removed -> build failed) - ref. https://github.com/line/lbm-sdk/pull/320
+func MarshalAccountX(cdc codec.BinaryCodec, acc AccountI) ([]byte, error) {
+	if bacc, ok := acc.(*BaseAccount); ok && bacc.MultisigPubKey == nil {
+		return acc.MarshalX()
+	} else if macc, ok := acc.(*ModuleAccount); ok && macc.MultisigPubKey == nil {
+		return acc.MarshalX()
+	} else {
+		return cdc.MarshalInterface(acc)
+	}
+}
+
+func UnmarshalAccountX(cdc codec.BinaryCodec, bz []byte) (AccountI, error) {
+	sigLen := len(BaseAccountSig)
+	if len(bz) < sigLen {
+		return nil, fmt.Errorf("invalid data")
+	}
+	if bytes.Equal(bz[:sigLen], BaseAccountSig) {
+		acc := &BaseAccount{}
+		if err := acc.Unmarshal(bz[sigLen:]); err != nil {
+			return nil, err
+		}
+		return acc, nil
+	} else if bytes.Equal(bz[:sigLen], ModuleAccountSig) {
+		acc := &ModuleAccount{}
+		if err := acc.Unmarshal(bz[sigLen:]); err != nil {
+			return nil, err
+		}
+		return acc, nil
+	} else {
+		var acc AccountI
+		return acc, cdc.UnmarshalInterface(bz, &acc)
+	}
+}
 
 // ModuleAccountI defines an account interface for modules that hold tokens in
 // an escrow.
@@ -391,4 +426,136 @@ type GenesisAccount interface {
 	AccountI
 
 	Validate() error
+}
+
+// custom json marshaler for BaseAccount & ModuleAccount
+
+type PubKeyJSON struct {
+	Type byte   `json:"type"`
+	Key  []byte `json:"key"`
+}
+
+type BaseAccountJSON struct {
+	Address       string     `json:"address"`
+	PubKey        PubKeyJSON `json:"pub_key"`
+	AccountNumber uint64     `json:"account_number"`
+	Sequence      string     `json:"sequence"`
+}
+
+func (acc BaseAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
+	var bi BaseAccountJSON
+
+	bi.Address = acc.GetAddress().String()
+	bi.AccountNumber = acc.GetAccountNumber()
+	bi.Sequence = strconv.FormatUint(acc.Sequence, 10)
+	var bz []byte
+	var err error
+	if acc.Secp256K1PubKey != nil {
+		bi.PubKey.Type = PubKeyTypeSecp256k1
+		bz, err = acc.Secp256K1PubKey.Marshal()
+	} else if acc.Secp256R1PubKey != nil {
+		bi.PubKey.Type = PubKeyTypeSecp256R1
+		bz, err = acc.Secp256R1PubKey.Marshal()
+	} else if acc.Ed25519PubKey != nil {
+		bi.PubKey.Type = PubKeyTypeEd25519
+		bz, err = acc.Ed25519PubKey.Marshal()
+	} else if acc.MultisigPubKey != nil {
+		bi.PubKey.Type = PubKeyTypeMultisig
+		bz, err = acc.MultisigPubKey.Marshal()
+	}
+	if err != nil {
+		return nil, err
+	}
+	bi.PubKey.Key = bz
+	return json.Marshal(bi)
+}
+
+func (acc *BaseAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error {
+	var bi BaseAccountJSON
+
+	err := json.Unmarshal(bz, &bi)
+	if err != nil {
+		return err
+	}
+	/* TODO: do we need to validate address format here
+	err = sdk.ValidateAccAddress(bi.Address)
+	if err != nil {
+		return err
+	}
+	*/
+
+	acc.Address = bi.Address
+	acc.AccountNumber = bi.AccountNumber
+	acc.Sequence, err = strconv.ParseUint(bi.Sequence, 10, 64)
+	if err != nil {
+		return err
+	}
+
+	switch bi.PubKey.Type {
+	case PubKeyTypeEd25519:
+		pk := new(ed25519.PubKey)
+		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
+			return err
+		}
+		acc.SetPubKey(pk)
+	case PubKeyTypeSecp256k1:
+		pk := new(secp256k1.PubKey)
+		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
+			return err
+		}
+		acc.SetPubKey(pk)
+	case PubKeyTypeSecp256R1:
+		pk := new(secp256r1.PubKey)
+		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
+			return err
+		}
+		acc.SetPubKey(pk)
+	case PubKeyTypeMultisig:
+		pk := new(multisig.LegacyAminoPubKey)
+		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
+			return err
+		}
+		acc.SetPubKey(pk)
+	}
+	return nil
+}
+
+type ModuleAccountJSON struct {
+	BaseAccount json.RawMessage `json:"base_account"`
+	Name        string          `json:"name"`
+	Permissions []string        `json:"permissions"`
+}
+
+func (ma ModuleAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
+	var mi ModuleAccountJSON
+
+	bz, err := ma.BaseAccount.MarshalJSONPB(m)
+	if err != nil {
+		return nil, err
+	}
+	mi.BaseAccount = bz
+	mi.Name = ma.Name
+	mi.Permissions = ma.Permissions
+
+	return json.Marshal(mi)
+}
+
+func (ma *ModuleAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error {
+	var mi ModuleAccountJSON
+
+	err := json.Unmarshal(bz, &mi)
+	if err != nil {
+		return err
+	}
+
+	ma.Name = mi.Name
+	ma.Permissions = mi.Permissions
+
+	ba := new(BaseAccount)
+	if err := m.Unmarshal(strings.NewReader(string(mi.BaseAccount)), ba); err != nil {
+		return err
+	}
+	ma.BaseAccount = ba
+
+	return nil
 }
