@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/gogo/protobuf/jsonpb"
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
 
@@ -212,6 +213,28 @@ func TestModuleAccountJSON(t *testing.T) {
 	var a types.ModuleAccount
 	require.NoError(t, json.Unmarshal(bz, &a))
 	require.Equal(t, acc.String(), a.String())
+}
+
+func TestModuleAccountJSONPB(t *testing.T) {
+	pubkey := secp256k1.GenPrivKey().PubKey()
+	addr := sdk.BytesToAccAddress(pubkey.Address())
+	baseAcc := types.NewBaseAccount(addr, nil, 10, 50)
+	acc := types.NewModuleAccount(baseAcc, "test", types.Burner)
+
+	jm := jsonpb.Marshaler{}
+	bz, err := acc.MarshalJSONPB(&jm)
+	require.NoError(t, err)
+
+	jum := jsonpb.Unmarshaler{}
+	addr2 := sdk.AccAddress("")
+	baseAcc2 := types.NewBaseAccount(addr2, nil, 0, 0)
+	acc2 := types.NewModuleAccount(baseAcc2, "")
+	err = acc2.UnmarshalJSONPB(&jum, bz)
+	require.NoError(t, err)
+
+	// error on bad bytes
+	err = acc2.UnmarshalJSONPB(&jum, bz[:len(bz)/2])
+	require.Error(t, err)
 }
 
 func TestGenesisAccountsContains(t *testing.T) {

@@ -45,11 +45,13 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 * (refactor) [\#493](https://github.com/line/lbm-sdk/pull/493) restructure x/consortium
 * (server/grpc) [\#526](https://github.com/line/lbm-sdk/pull/526) add index field into TxResponse
+* (cli) [\#535](https://github.com/line/lbm-sdk/pull/536) updated ostracon to v1.0.5; `unsafe-reset-all` command has been moved to the `ostracon` sub-command.
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
 * (client) [\#476](https://github.com/line/lbm-sdk/pull/476) change the default value of the client output format in the config
 * (server/grpc) [\#516](https://github.com/line/lbm-sdk/pull/516) restore build norace flag
+* (genesis) [\#517](https://github.com/line/lbm-sdk/pull/517) fix genesis auth account format(cosmos-sdk style -> lbm-sdk style)
 
 ### Breaking Changes
 
