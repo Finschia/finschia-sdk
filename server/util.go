@@ -14,6 +14,7 @@ import (
 	"syscall"
 	"time"
 
+	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	ostcfg "github.com/line/ostracon/config"
 	ostlog "github.com/line/ostracon/libs/log"
 	tmdb "github.com/line/tm-db/v2"
@@ -278,13 +279,14 @@ func AddCommands(rootCmd *cobra.Command, defaultNodeHome string, appCreator type
 		ShowValidatorCmd(),
 		ShowAddressCmd(),
 		VersionCmd(),
+		ostcmd.ResetAllCmd,
+		ostcmd.ResetStateCmd,
 	)
 	startCmd := StartCmd(appCreator, defaultNodeHome)
 	addStartFlags(startCmd)
 
 	rootCmd.AddCommand(
 		startCmd,
-		UnsafeResetAllCmd(),
 		ostraconCmd,
 		ExportCmd(appExport, defaultNodeHome),
 		version.NewVersionCommand(),
