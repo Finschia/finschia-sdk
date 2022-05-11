@@ -29,26 +29,26 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// MsgTransfer represents a message to transfer tokens from one account to another.
-type MsgTransfer struct {
-	ClassId string                            `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	From    string                            `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	To      string                            `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
-	Amount  github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+// MsgSend defines the Msg/Send request type.
+type MsgSend struct {
+	ContractId string                            `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	From       string                            `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	To         string                            `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	Amount     github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
-func (m *MsgTransfer) Reset()         { *m = MsgTransfer{} }
-func (m *MsgTransfer) String() string { return proto.CompactTextString(m) }
-func (*MsgTransfer) ProtoMessage()    {}
-func (*MsgTransfer) Descriptor() ([]byte, []int) {
+func (m *MsgSend) Reset()         { *m = MsgSend{} }
+func (m *MsgSend) String() string { return proto.CompactTextString(m) }
+func (*MsgSend) ProtoMessage()    {}
+func (*MsgSend) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8bca67047bb82568, []int{0}
 }
-func (m *MsgTransfer) XXX_Unmarshal(b []byte) error {
+func (m *MsgSend) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgTransfer) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSend) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgTransfer.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSend.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -58,34 +58,34 @@ func (m *MsgTransfer) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-func (m *MsgTransfer) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgTransfer.Merge(m, src)
+func (m *MsgSend) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSend.Merge(m, src)
 }
-func (m *MsgTransfer) XXX_Size() int {
+func (m *MsgSend) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgTransfer) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgTransfer.DiscardUnknown(m)
+func (m *MsgSend) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSend.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgTransfer proto.InternalMessageInfo
+var xxx_messageInfo_MsgSend proto.InternalMessageInfo
 
-// MsgTransferResponse defines the Msg/Transfer response type.
-type MsgTransferResponse struct {
+// MsgSendResponse defines the Msg/Send response type.
+type MsgSendResponse struct {
 }
 
-func (m *MsgTransferResponse) Reset()         { *m = MsgTransferResponse{} }
-func (m *MsgTransferResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgTransferResponse) ProtoMessage()    {}
-func (*MsgTransferResponse) Descriptor() ([]byte, []int) {
+func (m *MsgSendResponse) Reset()         { *m = MsgSendResponse{} }
+func (m *MsgSendResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSendResponse) ProtoMessage()    {}
+func (*MsgSendResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8bca67047bb82568, []int{1}
 }
-func (m *MsgTransferResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgSendResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgTransferResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSendResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgTransferResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSendResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -95,39 +95,39 @@ func (m *MsgTransferResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *MsgTransferResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgTransferResponse.Merge(m, src)
+func (m *MsgSendResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSendResponse.Merge(m, src)
 }
-func (m *MsgTransferResponse) XXX_Size() int {
+func (m *MsgSendResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgTransferResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgTransferResponse.DiscardUnknown(m)
+func (m *MsgSendResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSendResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgTransferResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgSendResponse proto.InternalMessageInfo
 
-// MsgTransferFrom represents a message to transfer tokens from one account to another by the proxy.
-type MsgTransferFrom struct {
-	ClassId string                            `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	Proxy   string                            `protobuf:"bytes,2,opt,name=proxy,proto3" json:"proxy,omitempty"`
-	From    string                            `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
-	To      string                            `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`
-	Amount  github_com_line_lbm_sdk_types.Int `protobuf:"bytes,5,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+// MsgSendFrom defines the Msg/SendFrom request type.
+type MsgSendFrom struct {
+	ContractId string                            `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	Proxy      string                            `protobuf:"bytes,2,opt,name=proxy,proto3" json:"proxy,omitempty"`
+	From       string                            `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
+	To         string                            `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`
+	Amount     github_com_line_lbm_sdk_types.Int `protobuf:"bytes,5,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
-func (m *MsgTransferFrom) Reset()         { *m = MsgTransferFrom{} }
-func (m *MsgTransferFrom) String() string { return proto.CompactTextString(m) }
-func (*MsgTransferFrom) ProtoMessage()    {}
-func (*MsgTransferFrom) Descriptor() ([]byte, []int) {
+func (m *MsgSendFrom) Reset()         { *m = MsgSendFrom{} }
+func (m *MsgSendFrom) String() string { return proto.CompactTextString(m) }
+func (*MsgSendFrom) ProtoMessage()    {}
+func (*MsgSendFrom) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8bca67047bb82568, []int{2}
 }
-func (m *MsgTransferFrom) XXX_Unmarshal(b []byte) error {
+func (m *MsgSendFrom) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgTransferFrom) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSendFrom) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgTransferFrom.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSendFrom.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -137,34 +137,34 @@ func (m *MsgTransferFrom) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-func (m *MsgTransferFrom) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgTransferFrom.Merge(m, src)
+func (m *MsgSendFrom) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSendFrom.Merge(m, src)
 }
-func (m *MsgTransferFrom) XXX_Size() int {
+func (m *MsgSendFrom) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgTransferFrom) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgTransferFrom.DiscardUnknown(m)
+func (m *MsgSendFrom) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSendFrom.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgTransferFrom proto.InternalMessageInfo
+var xxx_messageInfo_MsgSendFrom proto.InternalMessageInfo
 
-// MsgTransferFromResponse defines the Msg/TransferFrom response type.
-type MsgTransferFromResponse struct {
+// MsgSendFromResponse defines the Msg/SendFrom response type.
+type MsgSendFromResponse struct {
 }
 
-func (m *MsgTransferFromResponse) Reset()         { *m = MsgTransferFromResponse{} }
-func (m *MsgTransferFromResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgTransferFromResponse) ProtoMessage()    {}
-func (*MsgTransferFromResponse) Descriptor() ([]byte, []int) {
+func (m *MsgSendFromResponse) Reset()         { *m = MsgSendFromResponse{} }
+func (m *MsgSendFromResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSendFromResponse) ProtoMessage()    {}
+func (*MsgSendFromResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8bca67047bb82568, []int{3}
 }
-func (m *MsgTransferFromResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgSendFromResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgTransferFromResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgSendFromResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgTransferFromResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgSendFromResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -174,37 +174,40 @@ func (m *MsgTransferFromResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *MsgTransferFromResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgTransferFromResponse.Merge(m, src)
+func (m *MsgSendFromResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSendFromResponse.Merge(m, src)
 }
-func (m *MsgTransferFromResponse) XXX_Size() int {
+func (m *MsgSendFromResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgTransferFromResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgTransferFromResponse.DiscardUnknown(m)
+func (m *MsgSendFromResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSendFromResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgTransferFromResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgSendFromResponse proto.InternalMessageInfo
 
-// MsgApprove represents a message to transfer tokens on behalf of the approver
-type MsgApprove struct {
-	ClassId  string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+// MsgAuthorizeOperator defines the Msg/AuthorizeOperator request type.
+type MsgAuthorizeOperator struct {
+	// contract id associated with the token class.
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	// approver is the address of the approver of the authorization.
 	Approver string `protobuf:"bytes,2,opt,name=approver,proto3" json:"approver,omitempty"`
-	Proxy    string `protobuf:"bytes,3,opt,name=proxy,proto3" json:"proxy,omitempty"`
+	// proxy is the address of the operator which the authorization is granted to.
+	Proxy string `protobuf:"bytes,3,opt,name=proxy,proto3" json:"proxy,omitempty"`
 }
 
-func (m *MsgApprove) Reset()         { *m = MsgApprove{} }
-func (m *MsgApprove) String() string { return proto.CompactTextString(m) }
-func (*MsgApprove) ProtoMessage()    {}
-func (*MsgApprove) Descriptor() ([]byte, []int) {
+func (m *MsgAuthorizeOperator) Reset()         { *m = MsgAuthorizeOperator{} }
+func (m *MsgAuthorizeOperator) String() string { return proto.CompactTextString(m) }
+func (*MsgAuthorizeOperator) ProtoMessage()    {}
+func (*MsgAuthorizeOperator) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8bca67047bb82568, []int{4}
 }
-func (m *MsgApprove) XXX_Unmarshal(b []byte) error {
+func (m *MsgAuthorizeOperator) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgApprove) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgAuthorizeOperator) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgApprove.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgAuthorizeOperator.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -214,34 +217,34 @@ func (m *MsgApprove) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *MsgApprove) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgApprove.Merge(m, src)
+func (m *MsgAuthorizeOperator) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAuthorizeOperator.Merge(m, src)
 }
-func (m *MsgApprove) XXX_Size() int {
+func (m *MsgAuthorizeOperator) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgApprove) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgApprove.DiscardUnknown(m)
+func (m *MsgAuthorizeOperator) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAuthorizeOperator.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgApprove proto.InternalMessageInfo
+var xxx_messageInfo_MsgAuthorizeOperator proto.InternalMessageInfo
 
-// MsgApproveResponse defines the Msg/Approve response type.
-type MsgApproveResponse struct {
+// MsgAuthorizeOperatorResponse defines the Msg/AuthorizeOperator response type.
+type MsgAuthorizeOperatorResponse struct {
 }
 
-func (m *MsgApproveResponse) Reset()         { *m = MsgApproveResponse{} }
-func (m *MsgApproveResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgApproveResponse) ProtoMessage()    {}
-func (*MsgApproveResponse) Descriptor() ([]byte, []int) {
+func (m *MsgAuthorizeOperatorResponse) Reset()         { *m = MsgAuthorizeOperatorResponse{} }
+func (m *MsgAuthorizeOperatorResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgAuthorizeOperatorResponse) ProtoMessage()    {}
+func (*MsgAuthorizeOperatorResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8bca67047bb82568, []int{5}
 }
-func (m *MsgApproveResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgAuthorizeOperatorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgApproveResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgAuthorizeOperatorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgApproveResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgAuthorizeOperatorResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -251,36 +254,122 @@ func (m *MsgApproveResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *MsgApproveResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgApproveResponse.Merge(m, src)
+func (m *MsgAuthorizeOperatorResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAuthorizeOperatorResponse.Merge(m, src)
 }
-func (m *MsgApproveResponse) XXX_Size() int {
+func (m *MsgAuthorizeOperatorResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgApproveResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgApproveResponse.DiscardUnknown(m)
+func (m *MsgAuthorizeOperatorResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAuthorizeOperatorResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgApproveResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgAuthorizeOperatorResponse proto.InternalMessageInfo
 
-// MsgIssue represents a message to issue a token.
+// MsgRevokeOperator defines the Msg/RevokeOperator request type.
+type MsgRevokeOperator struct {
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	Approver   string `protobuf:"bytes,2,opt,name=approver,proto3" json:"approver,omitempty"`
+	Proxy      string `protobuf:"bytes,3,opt,name=proxy,proto3" json:"proxy,omitempty"`
+}
+
+func (m *MsgRevokeOperator) Reset()         { *m = MsgRevokeOperator{} }
+func (m *MsgRevokeOperator) String() string { return proto.CompactTextString(m) }
+func (*MsgRevokeOperator) ProtoMessage()    {}
+func (*MsgRevokeOperator) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8bca67047bb82568, []int{6}
+}
+func (m *MsgRevokeOperator) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRevokeOperator) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRevokeOperator.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRevokeOperator) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRevokeOperator.Merge(m, src)
+}
+func (m *MsgRevokeOperator) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRevokeOperator) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRevokeOperator.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRevokeOperator proto.InternalMessageInfo
+
+// MsgRevokeOperatorResponse defines the Msg/RevokeOperator response type.
+type MsgRevokeOperatorResponse struct {
+}
+
+func (m *MsgRevokeOperatorResponse) Reset()         { *m = MsgRevokeOperatorResponse{} }
+func (m *MsgRevokeOperatorResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRevokeOperatorResponse) ProtoMessage()    {}
+func (*MsgRevokeOperatorResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8bca67047bb82568, []int{7}
+}
+func (m *MsgRevokeOperatorResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRevokeOperatorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRevokeOperatorResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRevokeOperatorResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRevokeOperatorResponse.Merge(m, src)
+}
+func (m *MsgRevokeOperatorResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRevokeOperatorResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRevokeOperatorResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRevokeOperatorResponse proto.InternalMessageInfo
+
+// MsgIssue defines the Msg/Issue request type.
 type MsgIssue struct {
-	Owner    string                            `protobuf:"bytes,1,opt,name=owner,proto3" json:"owner,omitempty"`
-	To       string                            `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
-	Name     string                            `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Symbol   string                            `protobuf:"bytes,4,opt,name=symbol,proto3" json:"symbol,omitempty"`
-	ImageUri string                            `protobuf:"bytes,5,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
-	Meta     string                            `protobuf:"bytes,6,opt,name=meta,proto3" json:"meta,omitempty"`
-	Amount   github_com_line_lbm_sdk_types.Int `protobuf:"bytes,7,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
-	Mintable bool                              `protobuf:"varint,8,opt,name=mintable,proto3" json:"mintable,omitempty"`
-	Decimals int32                             `protobuf:"varint,9,opt,name=decimals,proto3" json:"decimals,omitempty"`
+	// name defines the human-readable name of the token class. mandatory (not compatible with ERC20).
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// symbol is an abbreviated name for token class. mandatory (not compatible with ERC20).
+	Symbol string `protobuf:"bytes,2,opt,name=symbol,proto3" json:"symbol,omitempty"`
+	// image_uri is an uri for the image of the token class stored off chain.
+	ImageUri string `protobuf:"bytes,3,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
+	// meta is a brief description of token class.
+	Meta string `protobuf:"bytes,4,opt,name=meta,proto3" json:"meta,omitempty"`
+	// decimals is the number of decimals which one must divide the amount by to get its user representation.
+	Decimals int32 `protobuf:"varint,5,opt,name=decimals,proto3" json:"decimals,omitempty"`
+	// mintable represents whether the token is allowed to mint.
+	Mintable bool `protobuf:"varint,6,opt,name=mintable,proto3" json:"mintable,omitempty"`
+	// the address which all permissions on the token class will be granted to (not a permanent property).
+	Owner string `protobuf:"bytes,7,opt,name=owner,proto3" json:"owner,omitempty"`
+	// the address to send the minted token to. mandatory.
+	To string `protobuf:"bytes,8,opt,name=to,proto3" json:"to,omitempty"`
+	// amount of tokens to mint on issuance. mandatory.
+	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,9,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
 func (m *MsgIssue) Reset()         { *m = MsgIssue{} }
 func (m *MsgIssue) String() string { return proto.CompactTextString(m) }
 func (*MsgIssue) ProtoMessage()    {}
 func (*MsgIssue) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8bca67047bb82568, []int{6}
+	return fileDescriptor_8bca67047bb82568, []int{8}
 }
 func (m *MsgIssue) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -317,7 +406,7 @@ func (m *MsgIssueResponse) Reset()         { *m = MsgIssueResponse{} }
 func (m *MsgIssueResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgIssueResponse) ProtoMessage()    {}
 func (*MsgIssueResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8bca67047bb82568, []int{7}
+	return fileDescriptor_8bca67047bb82568, []int{9}
 }
 func (m *MsgIssueResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -346,19 +435,19 @@ func (m *MsgIssueResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgIssueResponse proto.InternalMessageInfo
 
-// MsgGrant represents a message to allow one to mint or burn tokens or modify a token metadata
+// MsgGrant defines the Msg/Grant request type.
 type MsgGrant struct {
-	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	Granter string `protobuf:"bytes,2,opt,name=granter,proto3" json:"granter,omitempty"`
-	Grantee string `protobuf:"bytes,3,opt,name=grantee,proto3" json:"grantee,omitempty"`
-	Action  string `protobuf:"bytes,4,opt,name=action,proto3" json:"action,omitempty"`
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	From       string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	To         string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	Permission string `protobuf:"bytes,4,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
 func (m *MsgGrant) Reset()         { *m = MsgGrant{} }
 func (m *MsgGrant) String() string { return proto.CompactTextString(m) }
 func (*MsgGrant) ProtoMessage()    {}
 func (*MsgGrant) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8bca67047bb82568, []int{8}
+	return fileDescriptor_8bca67047bb82568, []int{10}
 }
 func (m *MsgGrant) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -395,7 +484,7 @@ func (m *MsgGrantResponse) Reset()         { *m = MsgGrantResponse{} }
 func (m *MsgGrantResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgGrantResponse) ProtoMessage()    {}
 func (*MsgGrantResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8bca67047bb82568, []int{9}
+	return fileDescriptor_8bca67047bb82568, []int{11}
 }
 func (m *MsgGrantResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -424,25 +513,25 @@ func (m *MsgGrantResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgGrantResponse proto.InternalMessageInfo
 
-// MsgRevoke represents a message to revoke a grant.
-type MsgRevoke struct {
-	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	Grantee string `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
-	Action  string `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
+// MsgAbandon defines the Msg/Abandon request type.
+type MsgAbandon struct {
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	Grantee    string `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
+	Permission string `protobuf:"bytes,3,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
-func (m *MsgRevoke) Reset()         { *m = MsgRevoke{} }
-func (m *MsgRevoke) String() string { return proto.CompactTextString(m) }
-func (*MsgRevoke) ProtoMessage()    {}
-func (*MsgRevoke) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8bca67047bb82568, []int{10}
+func (m *MsgAbandon) Reset()         { *m = MsgAbandon{} }
+func (m *MsgAbandon) String() string { return proto.CompactTextString(m) }
+func (*MsgAbandon) ProtoMessage()    {}
+func (*MsgAbandon) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8bca67047bb82568, []int{12}
 }
-func (m *MsgRevoke) XXX_Unmarshal(b []byte) error {
+func (m *MsgAbandon) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgRevoke) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgAbandon) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgRevoke.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgAbandon.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -452,34 +541,34 @@ func (m *MsgRevoke) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *MsgRevoke) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRevoke.Merge(m, src)
+func (m *MsgAbandon) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAbandon.Merge(m, src)
 }
-func (m *MsgRevoke) XXX_Size() int {
+func (m *MsgAbandon) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgRevoke) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRevoke.DiscardUnknown(m)
+func (m *MsgAbandon) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAbandon.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgRevoke proto.InternalMessageInfo
+var xxx_messageInfo_MsgAbandon proto.InternalMessageInfo
 
-// MsgRevokeResponse defines the Msg/Revoke response type.
-type MsgRevokeResponse struct {
+// MsgAbandonResponse defines the Msg/Abandon response type.
+type MsgAbandonResponse struct {
 }
 
-func (m *MsgRevokeResponse) Reset()         { *m = MsgRevokeResponse{} }
-func (m *MsgRevokeResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgRevokeResponse) ProtoMessage()    {}
-func (*MsgRevokeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8bca67047bb82568, []int{11}
+func (m *MsgAbandonResponse) Reset()         { *m = MsgAbandonResponse{} }
+func (m *MsgAbandonResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgAbandonResponse) ProtoMessage()    {}
+func (*MsgAbandonResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8bca67047bb82568, []int{13}
 }
-func (m *MsgRevokeResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgAbandonResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgRevokeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgAbandonResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgRevokeResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgAbandonResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -489,31 +578,31 @@ func (m *MsgRevokeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *MsgRevokeResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRevokeResponse.Merge(m, src)
+func (m *MsgAbandonResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAbandonResponse.Merge(m, src)
 }
-func (m *MsgRevokeResponse) XXX_Size() int {
+func (m *MsgAbandonResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgRevokeResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRevokeResponse.DiscardUnknown(m)
+func (m *MsgAbandonResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAbandonResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgRevokeResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgAbandonResponse proto.InternalMessageInfo
 
-// MsgMint represents a message to mint tokens.
+// MsgMint defines the Msg/Mint request type.
 type MsgMint struct {
-	ClassId string                            `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	Grantee string                            `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
-	To      string                            `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
-	Amount  github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+	ContractId string                            `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	From       string                            `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	To         string                            `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	Amount     github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
 func (m *MsgMint) Reset()         { *m = MsgMint{} }
 func (m *MsgMint) String() string { return proto.CompactTextString(m) }
 func (*MsgMint) ProtoMessage()    {}
 func (*MsgMint) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8bca67047bb82568, []int{12}
+	return fileDescriptor_8bca67047bb82568, []int{14}
 }
 func (m *MsgMint) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -550,7 +639,7 @@ func (m *MsgMintResponse) Reset()         { *m = MsgMintResponse{} }
 func (m *MsgMintResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgMintResponse) ProtoMessage()    {}
 func (*MsgMintResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8bca67047bb82568, []int{13}
+	return fileDescriptor_8bca67047bb82568, []int{15}
 }
 func (m *MsgMintResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -579,18 +668,18 @@ func (m *MsgMintResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgMintResponse proto.InternalMessageInfo
 
-// MsgBurn represents a message to burn tokens.
+// MsgBurn defines the Msg/Burn request type.
 type MsgBurn struct {
-	ClassId string                            `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	From    string                            `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	Amount  github_com_line_lbm_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+	ContractId string                            `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	From       string                            `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	Amount     github_com_line_lbm_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
 func (m *MsgBurn) Reset()         { *m = MsgBurn{} }
 func (m *MsgBurn) String() string { return proto.CompactTextString(m) }
 func (*MsgBurn) ProtoMessage()    {}
 func (*MsgBurn) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8bca67047bb82568, []int{14}
+	return fileDescriptor_8bca67047bb82568, []int{16}
 }
 func (m *MsgBurn) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -627,7 +716,7 @@ func (m *MsgBurnResponse) Reset()         { *m = MsgBurnResponse{} }
 func (m *MsgBurnResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgBurnResponse) ProtoMessage()    {}
 func (*MsgBurnResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8bca67047bb82568, []int{15}
+	return fileDescriptor_8bca67047bb82568, []int{17}
 }
 func (m *MsgBurnResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -656,19 +745,19 @@ func (m *MsgBurnResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgBurnResponse proto.InternalMessageInfo
 
-// MsgBurnFrom represents a message to burn tokens.
+// MsgBurnFrom defines the Msg/BurnFrom request type.
 type MsgBurnFrom struct {
-	ClassId string                            `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	Grantee string                            `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
-	From    string                            `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
-	Amount  github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+	ContractId string                            `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	Proxy      string                            `protobuf:"bytes,2,opt,name=proxy,proto3" json:"proxy,omitempty"`
+	From       string                            `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
+	Amount     github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
 func (m *MsgBurnFrom) Reset()         { *m = MsgBurnFrom{} }
 func (m *MsgBurnFrom) String() string { return proto.CompactTextString(m) }
 func (*MsgBurnFrom) ProtoMessage()    {}
 func (*MsgBurnFrom) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8bca67047bb82568, []int{16}
+	return fileDescriptor_8bca67047bb82568, []int{18}
 }
 func (m *MsgBurnFrom) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -705,7 +794,7 @@ func (m *MsgBurnFromResponse) Reset()         { *m = MsgBurnFromResponse{} }
 func (m *MsgBurnFromResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgBurnFromResponse) ProtoMessage()    {}
 func (*MsgBurnFromResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8bca67047bb82568, []int{17}
+	return fileDescriptor_8bca67047bb82568, []int{19}
 }
 func (m *MsgBurnFromResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -734,18 +823,18 @@ func (m *MsgBurnFromResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgBurnFromResponse proto.InternalMessageInfo
 
-// MsgModify represents a message to modify a token metadata.
+// MsgModify defines the Msg/Modify request type.
 type MsgModify struct {
-	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	Grantee string `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
-	Changes []Pair `protobuf:"bytes,3,rep,name=changes,proto3" json:"changes"`
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	Owner      string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	Changes    []Pair `protobuf:"bytes,3,rep,name=changes,proto3" json:"changes"`
 }
 
 func (m *MsgModify) Reset()         { *m = MsgModify{} }
 func (m *MsgModify) String() string { return proto.CompactTextString(m) }
 func (*MsgModify) ProtoMessage()    {}
 func (*MsgModify) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8bca67047bb82568, []int{18}
+	return fileDescriptor_8bca67047bb82568, []int{20}
 }
 func (m *MsgModify) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -782,7 +871,7 @@ func (m *MsgModifyResponse) Reset()         { *m = MsgModifyResponse{} }
 func (m *MsgModifyResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgModifyResponse) ProtoMessage()    {}
 func (*MsgModifyResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8bca67047bb82568, []int{19}
+	return fileDescriptor_8bca67047bb82568, []int{21}
 }
 func (m *MsgModifyResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -812,18 +901,20 @@ func (m *MsgModifyResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgModifyResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgTransfer)(nil), "lbm.token.v1.MsgTransfer")
-	proto.RegisterType((*MsgTransferResponse)(nil), "lbm.token.v1.MsgTransferResponse")
-	proto.RegisterType((*MsgTransferFrom)(nil), "lbm.token.v1.MsgTransferFrom")
-	proto.RegisterType((*MsgTransferFromResponse)(nil), "lbm.token.v1.MsgTransferFromResponse")
-	proto.RegisterType((*MsgApprove)(nil), "lbm.token.v1.MsgApprove")
-	proto.RegisterType((*MsgApproveResponse)(nil), "lbm.token.v1.MsgApproveResponse")
+	proto.RegisterType((*MsgSend)(nil), "lbm.token.v1.MsgSend")
+	proto.RegisterType((*MsgSendResponse)(nil), "lbm.token.v1.MsgSendResponse")
+	proto.RegisterType((*MsgSendFrom)(nil), "lbm.token.v1.MsgSendFrom")
+	proto.RegisterType((*MsgSendFromResponse)(nil), "lbm.token.v1.MsgSendFromResponse")
+	proto.RegisterType((*MsgAuthorizeOperator)(nil), "lbm.token.v1.MsgAuthorizeOperator")
+	proto.RegisterType((*MsgAuthorizeOperatorResponse)(nil), "lbm.token.v1.MsgAuthorizeOperatorResponse")
+	proto.RegisterType((*MsgRevokeOperator)(nil), "lbm.token.v1.MsgRevokeOperator")
+	proto.RegisterType((*MsgRevokeOperatorResponse)(nil), "lbm.token.v1.MsgRevokeOperatorResponse")
 	proto.RegisterType((*MsgIssue)(nil), "lbm.token.v1.MsgIssue")
 	proto.RegisterType((*MsgIssueResponse)(nil), "lbm.token.v1.MsgIssueResponse")
 	proto.RegisterType((*MsgGrant)(nil), "lbm.token.v1.MsgGrant")
 	proto.RegisterType((*MsgGrantResponse)(nil), "lbm.token.v1.MsgGrantResponse")
-	proto.RegisterType((*MsgRevoke)(nil), "lbm.token.v1.MsgRevoke")
-	proto.RegisterType((*MsgRevokeResponse)(nil), "lbm.token.v1.MsgRevokeResponse")
+	proto.RegisterType((*MsgAbandon)(nil), "lbm.token.v1.MsgAbandon")
+	proto.RegisterType((*MsgAbandonResponse)(nil), "lbm.token.v1.MsgAbandonResponse")
 	proto.RegisterType((*MsgMint)(nil), "lbm.token.v1.MsgMint")
 	proto.RegisterType((*MsgMintResponse)(nil), "lbm.token.v1.MsgMintResponse")
 	proto.RegisterType((*MsgBurn)(nil), "lbm.token.v1.MsgBurn")
@@ -837,58 +928,60 @@ func init() {
 func init() { proto.RegisterFile("lbm/token/v1/tx.proto", fileDescriptor_8bca67047bb82568) }
 
 var fileDescriptor_8bca67047bb82568 = []byte{
-	// 804 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x56, 0xcd, 0x6e, 0xd3, 0x4a,
-	0x14, 0x8e, 0xe3, 0xfc, 0x9e, 0x56, 0xf7, 0xde, 0x4e, 0xff, 0x5c, 0x5f, 0xd5, 0x49, 0x23, 0x5d,
-	0x29, 0x77, 0x41, 0xa2, 0x96, 0x2d, 0x12, 0x6a, 0x24, 0x7e, 0xba, 0xb0, 0x84, 0xac, 0x22, 0x01,
-	0x9b, 0xca, 0x49, 0xa6, 0xae, 0x55, 0xdb, 0x13, 0x3c, 0x4e, 0x68, 0xc4, 0x0b, 0xb0, 0x03, 0x96,
-	0xbc, 0x01, 0xbc, 0x03, 0x0f, 0xd0, 0x65, 0x97, 0x88, 0x45, 0x05, 0xe9, 0x8b, 0xa0, 0x19, 0xdb,
-	0x13, 0x07, 0x3b, 0xa1, 0x14, 0xd8, 0xcd, 0xf9, 0xff, 0xce, 0xe7, 0x39, 0x67, 0x0c, 0xeb, 0x4e,
-	0xd7, 0x6d, 0x07, 0xe4, 0x14, 0x7b, 0xed, 0xd1, 0x6e, 0x3b, 0x38, 0x6b, 0x0d, 0x7c, 0x12, 0x10,
-	0xb4, 0xec, 0x74, 0xdd, 0x16, 0x57, 0xb7, 0x46, 0xbb, 0xea, 0x9a, 0x45, 0x2c, 0xc2, 0x0d, 0x6d,
-	0x76, 0x0a, 0x7d, 0x54, 0x65, 0x36, 0x94, 0x3b, 0x73, 0x4b, 0xe3, 0xb5, 0x04, 0x4b, 0x3a, 0xb5,
-	0x0e, 0x7d, 0xd3, 0xa3, 0xc7, 0xd8, 0x47, 0x5b, 0x50, 0xe9, 0x39, 0x26, 0xa5, 0x47, 0x76, 0x5f,
-	0x91, 0xea, 0x52, 0xb3, 0x6a, 0x94, 0xb9, 0x7c, 0xd0, 0x47, 0x08, 0x0a, 0xc7, 0x3e, 0x71, 0x95,
-	0x3c, 0x57, 0xf3, 0x33, 0xfa, 0x0b, 0xf2, 0x01, 0x51, 0x64, 0xae, 0xc9, 0x07, 0x04, 0xed, 0x43,
-	0xc9, 0x74, 0xc9, 0xd0, 0x0b, 0x94, 0x02, 0xd3, 0x75, 0xfe, 0x3f, 0xbf, 0xac, 0xe5, 0x3e, 0x5f,
-	0xd6, 0x76, 0x2c, 0x3b, 0x38, 0x19, 0x76, 0x5b, 0x3d, 0xe2, 0xb6, 0x1d, 0xdb, 0xc3, 0x6d, 0xa7,
-	0xeb, 0xde, 0xa2, 0xfd, 0xd3, 0x76, 0x30, 0x1e, 0x60, 0xda, 0x3a, 0xf0, 0x02, 0x23, 0x0a, 0x6c,
-	0xac, 0xc3, 0x6a, 0x02, 0x90, 0x81, 0xe9, 0x80, 0x78, 0x14, 0x37, 0x3e, 0x48, 0xf0, 0x77, 0x42,
-	0x7f, 0x9f, 0x55, 0x5f, 0x00, 0x76, 0x0d, 0x8a, 0x03, 0x9f, 0x9c, 0x8d, 0x23, 0xb4, 0xa1, 0x20,
-	0x5a, 0x90, 0x53, 0x2d, 0x14, 0x32, 0x5a, 0x28, 0xde, 0xb4, 0x85, 0x2d, 0xd8, 0xfc, 0x0e, 0xaa,
-	0x68, 0xe3, 0x29, 0x80, 0x4e, 0xad, 0xfd, 0xc1, 0xc0, 0x27, 0x23, 0xbc, 0xa8, 0x01, 0x15, 0x2a,
-	0x66, 0xe8, 0xe5, 0x47, 0x3d, 0x08, 0x79, 0xda, 0x9c, 0x9c, 0x68, 0xae, 0xb1, 0x06, 0x68, 0x9a,
-	0x5a, 0x14, 0x7c, 0x95, 0x87, 0x8a, 0x4e, 0xad, 0x03, 0x4a, 0x87, 0x98, 0x05, 0x92, 0x17, 0x1e,
-	0xf6, 0xa3, 0x62, 0xa1, 0x10, 0x31, 0x90, 0x17, 0x0c, 0x20, 0x28, 0x78, 0xa6, 0x8b, 0x63, 0x96,
-	0xd8, 0x19, 0x6d, 0x40, 0x89, 0x8e, 0xdd, 0x2e, 0x71, 0x22, 0xa6, 0x22, 0x09, 0xfd, 0x0b, 0x55,
-	0xdb, 0x35, 0x2d, 0x7c, 0x34, 0xf4, 0xed, 0x90, 0x30, 0xa3, 0xc2, 0x15, 0x8f, 0x7d, 0x9b, 0x25,
-	0x72, 0x71, 0x60, 0x2a, 0xa5, 0x30, 0x11, 0x3b, 0x27, 0xe8, 0x2d, 0xdf, 0x90, 0x5e, 0x46, 0x8d,
-	0x6b, 0x7b, 0x81, 0xd9, 0x75, 0xb0, 0x52, 0xa9, 0x4b, 0xcd, 0x8a, 0x21, 0x64, 0x66, 0xeb, 0xe3,
-	0x9e, 0xed, 0x9a, 0x0e, 0x55, 0xaa, 0x75, 0xa9, 0x59, 0x34, 0x84, 0xdc, 0x40, 0xf0, 0x4f, 0xcc,
-	0x84, 0xa0, 0xe7, 0x39, 0x67, 0xe7, 0x81, 0x6f, 0x7a, 0xc1, 0xa2, 0xaf, 0xa1, 0x40, 0xd9, 0x62,
-	0x3e, 0xe2, 0x63, 0xc4, 0xe2, 0xd4, 0x12, 0xf3, 0x15, 0x8b, 0x8c, 0x32, 0xb3, 0x17, 0xd8, 0xc4,
-	0x8b, 0x29, 0x0b, 0xa5, 0x08, 0x06, 0x2f, 0x29, 0x60, 0x3c, 0x81, 0xaa, 0x4e, 0x2d, 0x03, 0x8f,
-	0xc8, 0x29, 0xbe, 0x16, 0x0e, 0x3c, 0x8b, 0x23, 0x59, 0x4d, 0x9e, 0xa9, 0xb6, 0x0a, 0x2b, 0x22,
-	0xb3, 0x28, 0xf7, 0x56, 0x82, 0xb2, 0x4e, 0x2d, 0xdd, 0xbe, 0x66, 0xd7, 0xa9, 0x6a, 0x7f, 0x60,
-	0xee, 0x57, 0xf8, 0x7c, 0x33, 0x48, 0x02, 0xe6, 0x4b, 0x8e, 0xb2, 0x33, 0xf4, 0xbd, 0x9f, 0xdd,
-	0x4b, 0x53, 0x3c, 0xf2, 0xaf, 0xe1, 0x61, 0xc5, 0x05, 0x9e, 0x77, 0xe1, 0xb2, 0x64, 0xba, 0x1f,
-	0xed, 0x9f, 0xf9, 0xd4, 0x65, 0xed, 0xa0, 0xdf, 0xb6, 0x36, 0x63, 0x68, 0x02, 0x72, 0xc0, 0x2f,
-	0x96, 0x4e, 0xfa, 0xf6, 0xf1, 0xf8, 0x66, 0x78, 0xf7, 0xa0, 0xdc, 0x3b, 0x31, 0x3d, 0x0b, 0x53,
-	0x45, 0xae, 0xcb, 0xcd, 0xa5, 0x3d, 0xd4, 0x4a, 0xbe, 0x38, 0xad, 0x47, 0xa6, 0xed, 0x77, 0x0a,
-	0x0c, 0xb0, 0x11, 0x3b, 0x46, 0x97, 0x2e, 0xac, 0x1a, 0x43, 0xd9, 0xfb, 0x58, 0x04, 0x59, 0xa7,
-	0x16, 0x7a, 0x08, 0x95, 0xe9, 0x73, 0x33, 0x9b, 0x2b, 0xb1, 0x35, 0xd5, 0x9d, 0xb9, 0xa6, 0x38,
-	0x23, 0x3a, 0x84, 0xe5, 0x99, 0xf7, 0x60, 0x7b, 0x6e, 0x08, 0x33, 0xab, 0xff, 0x2d, 0x34, 0x8b,
-	0xac, 0xf7, 0xa0, 0x1c, 0xef, 0x67, 0x25, 0x15, 0x11, 0x59, 0xd4, 0xfa, 0x3c, 0x8b, 0x48, 0x73,
-	0x17, 0x8a, 0xe1, 0xd2, 0xdd, 0x48, 0xb9, 0x72, 0xbd, 0xaa, 0x65, 0xeb, 0x93, 0x09, 0xc2, 0xbd,
-	0x94, 0x4e, 0xc0, 0xf5, 0x19, 0x09, 0x66, 0x96, 0x0a, 0xea, 0x40, 0x29, 0xda, 0x28, 0x9b, 0x29,
-	0xcf, 0xd0, 0xa0, 0xd6, 0xe6, 0x18, 0x44, 0x8e, 0x3b, 0x50, 0xe0, 0x5b, 0x62, 0x3d, 0xe5, 0xc8,
-	0xd4, 0xea, 0x76, 0xa6, 0x3a, 0x19, 0xcd, 0xa7, 0x37, 0x1d, 0xcd, 0xd4, 0x19, 0xd1, 0xc9, 0x71,
-	0x63, 0x17, 0x65, 0x3a, 0x6a, 0x99, 0xae, 0xfc, 0xb3, 0xee, 0xcc, 0x35, 0x25, 0x99, 0x88, 0x46,
-	0x20, 0xcd, 0x44, 0x68, 0xc8, 0x60, 0x62, 0xf6, 0xfa, 0x76, 0xf6, 0xcf, 0xbf, 0x6a, 0xb9, 0xf7,
-	0x13, 0x2d, 0x77, 0x3e, 0xd1, 0xa4, 0x8b, 0x89, 0x26, 0x7d, 0x99, 0x68, 0xd2, 0x9b, 0x2b, 0x2d,
-	0x77, 0x71, 0xa5, 0xe5, 0x3e, 0x5d, 0x69, 0xb9, 0x67, 0xb5, 0x79, 0xd3, 0x7a, 0x16, 0xfe, 0x72,
-	0x75, 0x4b, 0xfc, 0x9f, 0xeb, 0xf6, 0xb7, 0x00, 0x00, 0x00, 0xff, 0xff, 0x0c, 0x71, 0xfe, 0xae,
-	0xca, 0x09, 0x00, 0x00,
+	// 835 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x56, 0x4d, 0x6f, 0xf3, 0x44,
+	0x10, 0x8e, 0xe3, 0x7c, 0x4e, 0xd1, 0x0b, 0xf5, 0x9b, 0xbe, 0xb8, 0x2e, 0x38, 0x69, 0x2e, 0x14,
+	0x24, 0x12, 0xb5, 0x5c, 0x2b, 0xa1, 0x46, 0xe2, 0xa3, 0x87, 0x08, 0x14, 0xc4, 0xa5, 0x97, 0xca,
+	0x4e, 0xb6, 0xae, 0xd5, 0x78, 0xd7, 0xda, 0xdd, 0x84, 0x86, 0x1b, 0x37, 0x8e, 0x70, 0xe6, 0xc4,
+	0x0d, 0x89, 0x3f, 0xd2, 0x63, 0x8f, 0x88, 0x43, 0x05, 0xe9, 0x1f, 0x41, 0xbb, 0x5e, 0x6f, 0x9d,
+	0xda, 0x51, 0x50, 0x09, 0xb7, 0xdd, 0xf9, 0x7c, 0x66, 0x3c, 0xf3, 0xac, 0x61, 0x6f, 0xea, 0x47,
+	0x7d, 0x4e, 0x6e, 0x10, 0xee, 0xcf, 0x8f, 0xfb, 0xfc, 0xb6, 0x17, 0x53, 0xc2, 0x89, 0xf5, 0xd6,
+	0xd4, 0x8f, 0x7a, 0x52, 0xdc, 0x9b, 0x1f, 0x3b, 0xad, 0x80, 0x04, 0x44, 0x2a, 0xfa, 0xe2, 0x94,
+	0xd8, 0x38, 0xf6, 0xaa, 0xab, 0x34, 0x96, 0x9a, 0xee, 0xcf, 0x06, 0xd4, 0x87, 0x2c, 0xf8, 0x06,
+	0xe1, 0x89, 0xd5, 0x86, 0x9d, 0x31, 0xc1, 0x9c, 0x7a, 0x63, 0x7e, 0x19, 0x4e, 0x6c, 0xa3, 0x63,
+	0x1c, 0x35, 0x47, 0x90, 0x8a, 0xce, 0x27, 0x96, 0x05, 0x95, 0x2b, 0x4a, 0x22, 0xbb, 0x2c, 0x35,
+	0xf2, 0x6c, 0xbd, 0x82, 0x32, 0x27, 0xb6, 0x29, 0x25, 0x65, 0x4e, 0xac, 0x33, 0xa8, 0x79, 0x11,
+	0x99, 0x61, 0x6e, 0x57, 0x84, 0x6c, 0xf0, 0xe1, 0xdd, 0x43, 0xbb, 0xf4, 0xe7, 0x43, 0xfb, 0x30,
+	0x08, 0xf9, 0xf5, 0xcc, 0xef, 0x8d, 0x49, 0xd4, 0x9f, 0x86, 0x18, 0xf5, 0xa7, 0x7e, 0xf4, 0x31,
+	0x9b, 0xdc, 0xf4, 0xf9, 0x22, 0x46, 0xac, 0x77, 0x8e, 0xf9, 0x48, 0x39, 0x76, 0x77, 0xe1, 0x6d,
+	0x05, 0x69, 0x84, 0x58, 0x4c, 0x30, 0x43, 0xdd, 0xdf, 0x0d, 0xd8, 0x51, 0xb2, 0xcf, 0x45, 0xd6,
+	0x8d, 0x50, 0x5b, 0x50, 0x8d, 0x29, 0xb9, 0x5d, 0x28, 0xac, 0xc9, 0x45, 0x17, 0x60, 0xe6, 0x0a,
+	0xa8, 0x14, 0x14, 0x50, 0x7d, 0x69, 0x01, 0x7b, 0xf0, 0x3a, 0x03, 0x56, 0x17, 0x11, 0x42, 0x6b,
+	0xc8, 0x82, 0xb3, 0x19, 0xbf, 0x26, 0x34, 0xfc, 0x1e, 0x7d, 0x15, 0x23, 0xea, 0x71, 0x42, 0x37,
+	0x17, 0xe3, 0x40, 0xc3, 0x8b, 0x63, 0x4a, 0xe6, 0x88, 0xaa, 0x7a, 0xf4, 0xfd, 0xa9, 0x50, 0x33,
+	0x53, 0x68, 0xd7, 0x85, 0xf7, 0x8a, 0x52, 0x69, 0x28, 0x57, 0xb0, 0x3b, 0x64, 0xc1, 0x08, 0xcd,
+	0xc9, 0xcd, 0xff, 0x8a, 0xe3, 0x00, 0xf6, 0x73, 0x79, 0x34, 0x88, 0x1f, 0xcb, 0xd0, 0x18, 0xb2,
+	0xe0, 0x9c, 0xb1, 0x19, 0x12, 0x9f, 0x06, 0x7b, 0x11, 0x52, 0x59, 0xe5, 0xd9, 0x7a, 0x03, 0x35,
+	0xb6, 0x88, 0x7c, 0x32, 0x55, 0xd9, 0xd4, 0xcd, 0x3a, 0x80, 0x66, 0x18, 0x79, 0x01, 0xba, 0x9c,
+	0xd1, 0x50, 0xe5, 0x6b, 0x48, 0xc1, 0xb7, 0x34, 0x14, 0x81, 0x22, 0xc4, 0x3d, 0xf5, 0x45, 0xe5,
+	0x59, 0x00, 0x9f, 0xa0, 0x71, 0x18, 0x79, 0x53, 0x26, 0xbf, 0x6a, 0x75, 0xa4, 0xef, 0x42, 0x17,
+	0x85, 0x98, 0x7b, 0xfe, 0x14, 0xd9, 0xb5, 0x8e, 0x71, 0xd4, 0x18, 0xe9, 0xbb, 0x28, 0x8a, 0x7c,
+	0x87, 0x11, 0xb5, 0xeb, 0x49, 0x51, 0xf2, 0xa2, 0x26, 0xa6, 0x51, 0x30, 0x31, 0xcd, 0x97, 0x4e,
+	0x8c, 0x05, 0xef, 0xa4, 0x9d, 0xd0, 0xed, 0x21, 0xb2, 0x3b, 0x5f, 0x50, 0x0f, 0xf3, 0xed, 0xac,
+	0xa6, 0x0b, 0x10, 0x23, 0x1a, 0x85, 0x8c, 0x85, 0x04, 0xab, 0xfe, 0x64, 0x24, 0x0a, 0x84, 0x4c,
+	0xa8, 0x41, 0x04, 0x00, 0x62, 0x90, 0x7c, 0x0f, 0x4f, 0x08, 0xde, 0x0c, 0xc3, 0x86, 0x7a, 0x20,
+	0xfc, 0x11, 0x52, 0x48, 0xd2, 0xeb, 0xb3, 0xe4, 0x66, 0x2e, 0x79, 0x0b, 0xac, 0xa7, 0x44, 0x3a,
+	0xbd, 0xa2, 0xa7, 0x61, 0xb8, 0xad, 0x1e, 0x6c, 0x8d, 0x9e, 0x04, 0x24, 0x0d, 0xf3, 0x87, 0x04,
+	0xe6, 0x60, 0x46, 0xf1, 0xcb, 0x60, 0x3e, 0xc1, 0x32, 0xff, 0x1b, 0x2c, 0x01, 0x41, 0xc3, 0xfa,
+	0x25, 0x61, 0x4d, 0x21, 0xdb, 0x36, 0x6b, 0x6e, 0xa1, 0x8f, 0x09, 0x4b, 0xa6, 0xe0, 0x34, 0xe8,
+	0x39, 0x34, 0x45, 0x7b, 0xc9, 0x24, 0xbc, 0x5a, 0xfc, 0x2b, 0xc4, 0xc9, 0x86, 0x96, 0xb3, 0x1b,
+	0x7a, 0x02, 0xf5, 0xf1, 0xb5, 0x87, 0x03, 0xc4, 0x6c, 0xb3, 0x63, 0x1e, 0xed, 0x9c, 0x58, 0xbd,
+	0xec, 0x2b, 0xd9, 0xfb, 0xda, 0x0b, 0xe9, 0xa0, 0x22, 0x20, 0x8f, 0x52, 0xc3, 0xee, 0x6b, 0x49,
+	0x89, 0x49, 0xde, 0x14, 0xcc, 0xc9, 0xaf, 0x35, 0x30, 0x87, 0x2c, 0xb0, 0x4e, 0xa1, 0x22, 0x9f,
+	0xc8, 0xbd, 0xd5, 0x38, 0x8a, 0xe5, 0x9d, 0xf7, 0x0b, 0xc5, 0x69, 0x14, 0xeb, 0x4b, 0x68, 0xe8,
+	0x97, 0x6b, 0xbf, 0xd0, 0x54, 0xa8, 0x9c, 0xc3, 0xb5, 0x2a, 0x1d, 0x69, 0x0c, 0xbb, 0xf9, 0xf7,
+	0xa3, 0x9b, 0xf3, 0xcb, 0xd9, 0x38, 0x1f, 0x6d, 0xb6, 0xd1, 0x49, 0x2e, 0xe0, 0xd5, 0xf3, 0x97,
+	0x21, 0xe7, 0xbd, 0x6a, 0xe0, 0x7c, 0xb0, 0xc1, 0x40, 0xc7, 0xfe, 0x14, 0xaa, 0x09, 0xdf, 0xbf,
+	0xc9, 0x79, 0x48, 0xb9, 0xe3, 0x16, 0xcb, 0xb3, 0x01, 0x12, 0x4a, 0xcc, 0x07, 0x90, 0xf2, 0x82,
+	0x00, 0x2b, 0x8c, 0x66, 0x7d, 0x06, 0xf5, 0x94, 0xce, 0xec, 0x7c, 0x53, 0x12, 0x8d, 0xd3, 0x59,
+	0xa7, 0xd1, 0x61, 0x4e, 0xa1, 0x22, 0x59, 0x29, 0x3f, 0x11, 0x42, 0x5c, 0x30, 0x11, 0x59, 0xc2,
+	0x10, 0xde, 0x92, 0x2c, 0xf2, 0xde, 0x42, 0x5c, 0xe0, 0x9d, 0xdd, 0x6b, 0x31, 0x4f, 0x7a, 0xa7,
+	0xf7, 0x0b, 0x4d, 0xd7, 0xcc, 0xd3, 0xf3, 0x65, 0xb3, 0x06, 0x50, 0x53, 0x9b, 0xf6, 0x6e, 0x1e,
+	0xb0, 0x54, 0x38, 0xed, 0x35, 0x8a, 0x34, 0xc6, 0xe0, 0xec, 0xee, 0x6f, 0xb7, 0xf4, 0xdb, 0xd2,
+	0x2d, 0xdd, 0x2d, 0x5d, 0xe3, 0x7e, 0xe9, 0x1a, 0x7f, 0x2d, 0x5d, 0xe3, 0xa7, 0x47, 0xb7, 0x74,
+	0xff, 0xe8, 0x96, 0xfe, 0x78, 0x74, 0x4b, 0x17, 0xed, 0x75, 0xa4, 0x70, 0x9b, 0xfc, 0x8b, 0xfa,
+	0x35, 0xf9, 0x33, 0xfa, 0xc9, 0x3f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x2a, 0x45, 0x75, 0xa3, 0xe3,
+	0x0a, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -903,25 +996,27 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	// Transfer defines a method to transfer tokens from one account to another account
-	Transfer(ctx context.Context, in *MsgTransfer, opts ...grpc.CallOption) (*MsgTransferResponse, error)
-	// TransferFrom defines a method to transfer tokens from one account to another account by the proxy
-	TransferFrom(ctx context.Context, in *MsgTransferFrom, opts ...grpc.CallOption) (*MsgTransferFromResponse, error)
-	// Approve allows one to transfer tokens on behalf of the approver
-	Approve(ctx context.Context, in *MsgApprove, opts ...grpc.CallOption) (*MsgApproveResponse, error)
-	// Issue defines a method to issue a token
+	// Send defines a method to send tokens from one account to another account.
+	Send(ctx context.Context, in *MsgSend, opts ...grpc.CallOption) (*MsgSendResponse, error)
+	// SendFrom defines a method to send tokens from one account to another account by the proxy.
+	SendFrom(ctx context.Context, in *MsgSendFrom, opts ...grpc.CallOption) (*MsgSendFromResponse, error)
+	// AuthorizeOperator allows one to send tokens on behalf of the approver.
+	AuthorizeOperator(ctx context.Context, in *MsgAuthorizeOperator, opts ...grpc.CallOption) (*MsgAuthorizeOperatorResponse, error)
+	// RevokeOperator revoke the authorization of the proxy to send the approver's tokens.
+	RevokeOperator(ctx context.Context, in *MsgRevokeOperator, opts ...grpc.CallOption) (*MsgRevokeOperatorResponse, error)
+	// Issue defines a method to create a class of token.
 	Issue(ctx context.Context, in *MsgIssue, opts ...grpc.CallOption) (*MsgIssueResponse, error)
-	// Grant allows one to mint or burn tokens or modify a token metadata
+	// Grant allows one to mint or burn tokens or modify a token metadata.
 	Grant(ctx context.Context, in *MsgGrant, opts ...grpc.CallOption) (*MsgGrantResponse, error)
-	// Revoke revokes the grant
-	Revoke(ctx context.Context, in *MsgRevoke, opts ...grpc.CallOption) (*MsgRevokeResponse, error)
-	// Mint defines a method to mint tokens
+	// Abandon abandons a permission.
+	Abandon(ctx context.Context, in *MsgAbandon, opts ...grpc.CallOption) (*MsgAbandonResponse, error)
+	// Mint defines a method to mint tokens.
 	Mint(ctx context.Context, in *MsgMint, opts ...grpc.CallOption) (*MsgMintResponse, error)
-	// Burn defines a method to burn tokens
+	// Burn defines a method to burn tokens.
 	Burn(ctx context.Context, in *MsgBurn, opts ...grpc.CallOption) (*MsgBurnResponse, error)
-	// BurnFrom defines a method to burn tokens
+	// BurnFrom defines a method to burn tokens.
 	BurnFrom(ctx context.Context, in *MsgBurnFrom, opts ...grpc.CallOption) (*MsgBurnFromResponse, error)
-	// Modify defines a method to modify a token metadata
+	// Modify defines a method to modify a token class.
 	Modify(ctx context.Context, in *MsgModify, opts ...grpc.CallOption) (*MsgModifyResponse, error)
 }
 
@@ -933,27 +1028,36 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) Transfer(ctx context.Context, in *MsgTransfer, opts ...grpc.CallOption) (*MsgTransferResponse, error) {
-	out := new(MsgTransferResponse)
-	err := c.cc.Invoke(ctx, "/lbm.token.v1.Msg/Transfer", in, out, opts...)
+func (c *msgClient) Send(ctx context.Context, in *MsgSend, opts ...grpc.CallOption) (*MsgSendResponse, error) {
+	out := new(MsgSendResponse)
+	err := c.cc.Invoke(ctx, "/lbm.token.v1.Msg/Send", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) TransferFrom(ctx context.Context, in *MsgTransferFrom, opts ...grpc.CallOption) (*MsgTransferFromResponse, error) {
-	out := new(MsgTransferFromResponse)
-	err := c.cc.Invoke(ctx, "/lbm.token.v1.Msg/TransferFrom", in, out, opts...)
+func (c *msgClient) SendFrom(ctx context.Context, in *MsgSendFrom, opts ...grpc.CallOption) (*MsgSendFromResponse, error) {
+	out := new(MsgSendFromResponse)
+	err := c.cc.Invoke(ctx, "/lbm.token.v1.Msg/SendFrom", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) Approve(ctx context.Context, in *MsgApprove, opts ...grpc.CallOption) (*MsgApproveResponse, error) {
-	out := new(MsgApproveResponse)
-	err := c.cc.Invoke(ctx, "/lbm.token.v1.Msg/Approve", in, out, opts...)
+func (c *msgClient) AuthorizeOperator(ctx context.Context, in *MsgAuthorizeOperator, opts ...grpc.CallOption) (*MsgAuthorizeOperatorResponse, error) {
+	out := new(MsgAuthorizeOperatorResponse)
+	err := c.cc.Invoke(ctx, "/lbm.token.v1.Msg/AuthorizeOperator", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) RevokeOperator(ctx context.Context, in *MsgRevokeOperator, opts ...grpc.CallOption) (*MsgRevokeOperatorResponse, error) {
+	out := new(MsgRevokeOperatorResponse)
+	err := c.cc.Invoke(ctx, "/lbm.token.v1.Msg/RevokeOperator", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -978,9 +1082,9 @@ func (c *msgClient) Grant(ctx context.Context, in *MsgGrant, opts ...grpc.CallOp
 	return out, nil
 }
 
-func (c *msgClient) Revoke(ctx context.Context, in *MsgRevoke, opts ...grpc.CallOption) (*MsgRevokeResponse, error) {
-	out := new(MsgRevokeResponse)
-	err := c.cc.Invoke(ctx, "/lbm.token.v1.Msg/Revoke", in, out, opts...)
+func (c *msgClient) Abandon(ctx context.Context, in *MsgAbandon, opts ...grpc.CallOption) (*MsgAbandonResponse, error) {
+	out := new(MsgAbandonResponse)
+	err := c.cc.Invoke(ctx, "/lbm.token.v1.Msg/Abandon", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1025,25 +1129,27 @@ func (c *msgClient) Modify(ctx context.Context, in *MsgModify, opts ...grpc.Call
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	// Transfer defines a method to transfer tokens from one account to another account
-	Transfer(context.Context, *MsgTransfer) (*MsgTransferResponse, error)
-	// TransferFrom defines a method to transfer tokens from one account to another account by the proxy
-	TransferFrom(context.Context, *MsgTransferFrom) (*MsgTransferFromResponse, error)
-	// Approve allows one to transfer tokens on behalf of the approver
-	Approve(context.Context, *MsgApprove) (*MsgApproveResponse, error)
-	// Issue defines a method to issue a token
+	// Send defines a method to send tokens from one account to another account.
+	Send(context.Context, *MsgSend) (*MsgSendResponse, error)
+	// SendFrom defines a method to send tokens from one account to another account by the proxy.
+	SendFrom(context.Context, *MsgSendFrom) (*MsgSendFromResponse, error)
+	// AuthorizeOperator allows one to send tokens on behalf of the approver.
+	AuthorizeOperator(context.Context, *MsgAuthorizeOperator) (*MsgAuthorizeOperatorResponse, error)
+	// RevokeOperator revoke the authorization of the proxy to send the approver's tokens.
+	RevokeOperator(context.Context, *MsgRevokeOperator) (*MsgRevokeOperatorResponse, error)
+	// Issue defines a method to create a class of token.
 	Issue(context.Context, *MsgIssue) (*MsgIssueResponse, error)
-	// Grant allows one to mint or burn tokens or modify a token metadata
+	// Grant allows one to mint or burn tokens or modify a token metadata.
 	Grant(context.Context, *MsgGrant) (*MsgGrantResponse, error)
-	// Revoke revokes the grant
-	Revoke(context.Context, *MsgRevoke) (*MsgRevokeResponse, error)
-	// Mint defines a method to mint tokens
+	// Abandon abandons a permission.
+	Abandon(context.Context, *MsgAbandon) (*MsgAbandonResponse, error)
+	// Mint defines a method to mint tokens.
 	Mint(context.Context, *MsgMint) (*MsgMintResponse, error)
-	// Burn defines a method to burn tokens
+	// Burn defines a method to burn tokens.
 	Burn(context.Context, *MsgBurn) (*MsgBurnResponse, error)
-	// BurnFrom defines a method to burn tokens
+	// BurnFrom defines a method to burn tokens.
 	BurnFrom(context.Context, *MsgBurnFrom) (*MsgBurnFromResponse, error)
-	// Modify defines a method to modify a token metadata
+	// Modify defines a method to modify a token class.
 	Modify(context.Context, *MsgModify) (*MsgModifyResponse, error)
 }
 
@@ -1051,14 +1157,17 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) Transfer(ctx context.Context, req *MsgTransfer) (*MsgTransferResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Transfer not implemented")
+func (*UnimplementedMsgServer) Send(ctx context.Context, req *MsgSend) (*MsgSendResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Send not implemented")
 }
-func (*UnimplementedMsgServer) TransferFrom(ctx context.Context, req *MsgTransferFrom) (*MsgTransferFromResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TransferFrom not implemented")
+func (*UnimplementedMsgServer) SendFrom(ctx context.Context, req *MsgSendFrom) (*MsgSendFromResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendFrom not implemented")
 }
-func (*UnimplementedMsgServer) Approve(ctx context.Context, req *MsgApprove) (*MsgApproveResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Approve not implemented")
+func (*UnimplementedMsgServer) AuthorizeOperator(ctx context.Context, req *MsgAuthorizeOperator) (*MsgAuthorizeOperatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthorizeOperator not implemented")
+}
+func (*UnimplementedMsgServer) RevokeOperator(ctx context.Context, req *MsgRevokeOperator) (*MsgRevokeOperatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RevokeOperator not implemented")
 }
 func (*UnimplementedMsgServer) Issue(ctx context.Context, req *MsgIssue) (*MsgIssueResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Issue not implemented")
@@ -1066,8 +1175,8 @@ func (*UnimplementedMsgServer) Issue(ctx context.Context, req *MsgIssue) (*MsgIs
 func (*UnimplementedMsgServer) Grant(ctx context.Context, req *MsgGrant) (*MsgGrantResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Grant not implemented")
 }
-func (*UnimplementedMsgServer) Revoke(ctx context.Context, req *MsgRevoke) (*MsgRevokeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Revoke not implemented")
+func (*UnimplementedMsgServer) Abandon(ctx context.Context, req *MsgAbandon) (*MsgAbandonResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Abandon not implemented")
 }
 func (*UnimplementedMsgServer) Mint(ctx context.Context, req *MsgMint) (*MsgMintResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Mint not implemented")
@@ -1086,56 +1195,74 @@ func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_Transfer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgTransfer)
+func _Msg_Send_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSend)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).Transfer(ctx, in)
+		return srv.(MsgServer).Send(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lbm.token.v1.Msg/Transfer",
+		FullMethod: "/lbm.token.v1.Msg/Send",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).Transfer(ctx, req.(*MsgTransfer))
+		return srv.(MsgServer).Send(ctx, req.(*MsgSend))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_TransferFrom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgTransferFrom)
+func _Msg_SendFrom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSendFrom)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).TransferFrom(ctx, in)
+		return srv.(MsgServer).SendFrom(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lbm.token.v1.Msg/TransferFrom",
+		FullMethod: "/lbm.token.v1.Msg/SendFrom",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).TransferFrom(ctx, req.(*MsgTransferFrom))
+		return srv.(MsgServer).SendFrom(ctx, req.(*MsgSendFrom))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_Approve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgApprove)
+func _Msg_AuthorizeOperator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAuthorizeOperator)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).Approve(ctx, in)
+		return srv.(MsgServer).AuthorizeOperator(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lbm.token.v1.Msg/Approve",
+		FullMethod: "/lbm.token.v1.Msg/AuthorizeOperator",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).Approve(ctx, req.(*MsgApprove))
+		return srv.(MsgServer).AuthorizeOperator(ctx, req.(*MsgAuthorizeOperator))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_RevokeOperator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRevokeOperator)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RevokeOperator(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/lbm.token.v1.Msg/RevokeOperator",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RevokeOperator(ctx, req.(*MsgRevokeOperator))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1176,20 +1303,20 @@ func _Msg_Grant_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_Revoke_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRevoke)
+func _Msg_Abandon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAbandon)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).Revoke(ctx, in)
+		return srv.(MsgServer).Abandon(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lbm.token.v1.Msg/Revoke",
+		FullMethod: "/lbm.token.v1.Msg/Abandon",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).Revoke(ctx, req.(*MsgRevoke))
+		return srv.(MsgServer).Abandon(ctx, req.(*MsgAbandon))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1271,16 +1398,20 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Transfer",
-			Handler:    _Msg_Transfer_Handler,
+			MethodName: "Send",
+			Handler:    _Msg_Send_Handler,
 		},
 		{
-			MethodName: "TransferFrom",
-			Handler:    _Msg_TransferFrom_Handler,
+			MethodName: "SendFrom",
+			Handler:    _Msg_SendFrom_Handler,
 		},
 		{
-			MethodName: "Approve",
-			Handler:    _Msg_Approve_Handler,
+			MethodName: "AuthorizeOperator",
+			Handler:    _Msg_AuthorizeOperator_Handler,
+		},
+		{
+			MethodName: "RevokeOperator",
+			Handler:    _Msg_RevokeOperator_Handler,
 		},
 		{
 			MethodName: "Issue",
@@ -1291,8 +1422,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_Grant_Handler,
 		},
 		{
-			MethodName: "Revoke",
-			Handler:    _Msg_Revoke_Handler,
+			MethodName: "Abandon",
+			Handler:    _Msg_Abandon_Handler,
 		},
 		{
 			MethodName: "Mint",
@@ -1315,7 +1446,7 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	Metadata: "lbm/token/v1/tx.proto",
 }
 
-func (m *MsgTransfer) Marshal() (dAtA []byte, err error) {
+func (m *MsgSend) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1325,12 +1456,12 @@ func (m *MsgTransfer) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgTransfer) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSend) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgTransfer) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSend) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1359,17 +1490,17 @@ func (m *MsgTransfer) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.ClassId) > 0 {
-		i -= len(m.ClassId)
-		copy(dAtA[i:], m.ClassId)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.ClassId)))
+	if len(m.ContractId) > 0 {
+		i -= len(m.ContractId)
+		copy(dAtA[i:], m.ContractId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ContractId)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgTransferResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgSendResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1379,12 +1510,12 @@ func (m *MsgTransferResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgTransferResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSendResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgTransferResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSendResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1392,7 +1523,7 @@ func (m *MsgTransferResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgTransferFrom) Marshal() (dAtA []byte, err error) {
+func (m *MsgSendFrom) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1402,12 +1533,12 @@ func (m *MsgTransferFrom) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgTransferFrom) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSendFrom) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgTransferFrom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSendFrom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1443,17 +1574,17 @@ func (m *MsgTransferFrom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.ClassId) > 0 {
-		i -= len(m.ClassId)
-		copy(dAtA[i:], m.ClassId)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.ClassId)))
+	if len(m.ContractId) > 0 {
+		i -= len(m.ContractId)
+		copy(dAtA[i:], m.ContractId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ContractId)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgTransferFromResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgSendFromResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1463,12 +1594,12 @@ func (m *MsgTransferFromResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgTransferFromResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgSendFromResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgTransferFromResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgSendFromResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1476,7 +1607,7 @@ func (m *MsgTransferFromResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgApprove) Marshal() (dAtA []byte, err error) {
+func (m *MsgAuthorizeOperator) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1486,12 +1617,12 @@ func (m *MsgApprove) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgApprove) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgAuthorizeOperator) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgApprove) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgAuthorizeOperator) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1510,17 +1641,17 @@ func (m *MsgApprove) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.ClassId) > 0 {
-		i -= len(m.ClassId)
-		copy(dAtA[i:], m.ClassId)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.ClassId)))
+	if len(m.ContractId) > 0 {
+		i -= len(m.ContractId)
+		copy(dAtA[i:], m.ContractId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ContractId)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgApproveResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgAuthorizeOperatorResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1530,12 +1661,79 @@ func (m *MsgApproveResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgApproveResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgAuthorizeOperatorResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgApproveResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgAuthorizeOperatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRevokeOperator) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRevokeOperator) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRevokeOperator) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Proxy) > 0 {
+		i -= len(m.Proxy)
+		copy(dAtA[i:], m.Proxy)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Proxy)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Approver) > 0 {
+		i -= len(m.Approver)
+		copy(dAtA[i:], m.Approver)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Approver)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ContractId) > 0 {
+		i -= len(m.ContractId)
+		copy(dAtA[i:], m.ContractId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ContractId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRevokeOperatorResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRevokeOperatorResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRevokeOperatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1563,21 +1761,6 @@ func (m *MsgIssue) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Decimals != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.Decimals))
-		i--
-		dAtA[i] = 0x48
-	}
-	if m.Mintable {
-		i--
-		if m.Mintable {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x40
-	}
 	{
 		size := m.Amount.Size()
 		i -= size
@@ -1587,46 +1770,61 @@ func (m *MsgIssue) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintTx(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x3a
+	dAtA[i] = 0x4a
+	if len(m.To) > 0 {
+		i -= len(m.To)
+		copy(dAtA[i:], m.To)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.To)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if m.Mintable {
+		i--
+		if m.Mintable {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.Decimals != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Decimals))
+		i--
+		dAtA[i] = 0x28
+	}
 	if len(m.Meta) > 0 {
 		i -= len(m.Meta)
 		copy(dAtA[i:], m.Meta)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Meta)))
 		i--
-		dAtA[i] = 0x32
+		dAtA[i] = 0x22
 	}
 	if len(m.ImageUri) > 0 {
 		i -= len(m.ImageUri)
 		copy(dAtA[i:], m.ImageUri)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.ImageUri)))
 		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x1a
 	}
 	if len(m.Symbol) > 0 {
 		i -= len(m.Symbol)
 		copy(dAtA[i:], m.Symbol)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Symbol)))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x12
 	}
 	if len(m.Name) > 0 {
 		i -= len(m.Name)
 		copy(dAtA[i:], m.Name)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.To) > 0 {
-		i -= len(m.To)
-		copy(dAtA[i:], m.To)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.To)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Owner) > 0 {
-		i -= len(m.Owner)
-		copy(dAtA[i:], m.Owner)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Owner)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1676,31 +1874,31 @@ func (m *MsgGrant) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Action) > 0 {
-		i -= len(m.Action)
-		copy(dAtA[i:], m.Action)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Action)))
+	if len(m.Permission) > 0 {
+		i -= len(m.Permission)
+		copy(dAtA[i:], m.Permission)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Permission)))
 		i--
 		dAtA[i] = 0x22
 	}
-	if len(m.Grantee) > 0 {
-		i -= len(m.Grantee)
-		copy(dAtA[i:], m.Grantee)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Grantee)))
+	if len(m.To) > 0 {
+		i -= len(m.To)
+		copy(dAtA[i:], m.To)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.To)))
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.Granter) > 0 {
-		i -= len(m.Granter)
-		copy(dAtA[i:], m.Granter)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Granter)))
+	if len(m.From) > 0 {
+		i -= len(m.From)
+		copy(dAtA[i:], m.From)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.From)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.ClassId) > 0 {
-		i -= len(m.ClassId)
-		copy(dAtA[i:], m.ClassId)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.ClassId)))
+	if len(m.ContractId) > 0 {
+		i -= len(m.ContractId)
+		copy(dAtA[i:], m.ContractId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ContractId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1730,7 +1928,7 @@ func (m *MsgGrantResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgRevoke) Marshal() (dAtA []byte, err error) {
+func (m *MsgAbandon) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1740,20 +1938,20 @@ func (m *MsgRevoke) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgRevoke) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgAbandon) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgRevoke) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgAbandon) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Action) > 0 {
-		i -= len(m.Action)
-		copy(dAtA[i:], m.Action)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Action)))
+	if len(m.Permission) > 0 {
+		i -= len(m.Permission)
+		copy(dAtA[i:], m.Permission)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Permission)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -1764,17 +1962,17 @@ func (m *MsgRevoke) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.ClassId) > 0 {
-		i -= len(m.ClassId)
-		copy(dAtA[i:], m.ClassId)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.ClassId)))
+	if len(m.ContractId) > 0 {
+		i -= len(m.ContractId)
+		copy(dAtA[i:], m.ContractId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ContractId)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgRevokeResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgAbandonResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1784,12 +1982,12 @@ func (m *MsgRevokeResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgRevokeResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgAbandonResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgRevokeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgAbandonResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1834,17 +2032,17 @@ func (m *MsgMint) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.Grantee) > 0 {
-		i -= len(m.Grantee)
-		copy(dAtA[i:], m.Grantee)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Grantee)))
+	if len(m.From) > 0 {
+		i -= len(m.From)
+		copy(dAtA[i:], m.From)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.From)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.ClassId) > 0 {
-		i -= len(m.ClassId)
-		copy(dAtA[i:], m.ClassId)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.ClassId)))
+	if len(m.ContractId) > 0 {
+		i -= len(m.ContractId)
+		copy(dAtA[i:], m.ContractId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ContractId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1911,10 +2109,10 @@ func (m *MsgBurn) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.ClassId) > 0 {
-		i -= len(m.ClassId)
-		copy(dAtA[i:], m.ClassId)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.ClassId)))
+	if len(m.ContractId) > 0 {
+		i -= len(m.ContractId)
+		copy(dAtA[i:], m.ContractId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ContractId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1981,17 +2179,17 @@ func (m *MsgBurnFrom) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.Grantee) > 0 {
-		i -= len(m.Grantee)
-		copy(dAtA[i:], m.Grantee)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Grantee)))
+	if len(m.Proxy) > 0 {
+		i -= len(m.Proxy)
+		copy(dAtA[i:], m.Proxy)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Proxy)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.ClassId) > 0 {
-		i -= len(m.ClassId)
-		copy(dAtA[i:], m.ClassId)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.ClassId)))
+	if len(m.ContractId) > 0 {
+		i -= len(m.ContractId)
+		copy(dAtA[i:], m.ContractId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ContractId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -2055,17 +2253,17 @@ func (m *MsgModify) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x1a
 		}
 	}
-	if len(m.Grantee) > 0 {
-		i -= len(m.Grantee)
-		copy(dAtA[i:], m.Grantee)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Grantee)))
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Owner)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.ClassId) > 0 {
-		i -= len(m.ClassId)
-		copy(dAtA[i:], m.ClassId)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.ClassId)))
+	if len(m.ContractId) > 0 {
+		i -= len(m.ContractId)
+		copy(dAtA[i:], m.ContractId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ContractId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -2106,13 +2304,13 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgTransfer) Size() (n int) {
+func (m *MsgSend) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.ClassId)
+	l = len(m.ContractId)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -2129,7 +2327,7 @@ func (m *MsgTransfer) Size() (n int) {
 	return n
 }
 
-func (m *MsgTransferResponse) Size() (n int) {
+func (m *MsgSendResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2138,13 +2336,13 @@ func (m *MsgTransferResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgTransferFrom) Size() (n int) {
+func (m *MsgSendFrom) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.ClassId)
+	l = len(m.ContractId)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -2165,7 +2363,7 @@ func (m *MsgTransferFrom) Size() (n int) {
 	return n
 }
 
-func (m *MsgTransferFromResponse) Size() (n int) {
+func (m *MsgSendFromResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2174,13 +2372,13 @@ func (m *MsgTransferFromResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgApprove) Size() (n int) {
+func (m *MsgAuthorizeOperator) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.ClassId)
+	l = len(m.ContractId)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -2195,7 +2393,37 @@ func (m *MsgApprove) Size() (n int) {
 	return n
 }
 
-func (m *MsgApproveResponse) Size() (n int) {
+func (m *MsgAuthorizeOperatorResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgRevokeOperator) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ContractId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Approver)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Proxy)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgRevokeOperatorResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2210,14 +2438,6 @@ func (m *MsgIssue) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Owner)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.To)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
 	l = len(m.Name)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -2234,14 +2454,22 @@ func (m *MsgIssue) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = m.Amount.Size()
-	n += 1 + l + sovTx(uint64(l))
-	if m.Mintable {
-		n += 2
-	}
 	if m.Decimals != 0 {
 		n += 1 + sovTx(uint64(m.Decimals))
 	}
+	if m.Mintable {
+		n += 2
+	}
+	l = len(m.Owner)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.To)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = m.Amount.Size()
+	n += 1 + l + sovTx(uint64(l))
 	return n
 }
 
@@ -2260,19 +2488,19 @@ func (m *MsgGrant) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.ClassId)
+	l = len(m.ContractId)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Granter)
+	l = len(m.From)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Grantee)
+	l = len(m.To)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Action)
+	l = len(m.Permission)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -2288,13 +2516,13 @@ func (m *MsgGrantResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgRevoke) Size() (n int) {
+func (m *MsgAbandon) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.ClassId)
+	l = len(m.ContractId)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -2302,14 +2530,14 @@ func (m *MsgRevoke) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Action)
+	l = len(m.Permission)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
 }
 
-func (m *MsgRevokeResponse) Size() (n int) {
+func (m *MsgAbandonResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2324,11 +2552,11 @@ func (m *MsgMint) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.ClassId)
+	l = len(m.ContractId)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Grantee)
+	l = len(m.From)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -2356,7 +2584,7 @@ func (m *MsgBurn) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.ClassId)
+	l = len(m.ContractId)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -2384,11 +2612,11 @@ func (m *MsgBurnFrom) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.ClassId)
+	l = len(m.ContractId)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Grantee)
+	l = len(m.Proxy)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -2416,11 +2644,11 @@ func (m *MsgModify) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.ClassId)
+	l = len(m.ContractId)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	l = len(m.Grantee)
+	l = len(m.Owner)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -2448,7 +2676,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgTransfer) Unmarshal(dAtA []byte) error {
+func (m *MsgSend) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2471,15 +2699,15 @@ func (m *MsgTransfer) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgTransfer: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSend: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgTransfer: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSend: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2507,7 +2735,7 @@ func (m *MsgTransfer) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ClassId = string(dAtA[iNdEx:postIndex])
+			m.ContractId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -2628,7 +2856,7 @@ func (m *MsgTransfer) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgTransferResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgSendResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2651,10 +2879,10 @@ func (m *MsgTransferResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgTransferResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSendResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgTransferResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSendResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -2678,7 +2906,7 @@ func (m *MsgTransferResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgTransferFrom) Unmarshal(dAtA []byte) error {
+func (m *MsgSendFrom) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2701,15 +2929,15 @@ func (m *MsgTransferFrom) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgTransferFrom: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSendFrom: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgTransferFrom: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSendFrom: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2737,7 +2965,7 @@ func (m *MsgTransferFrom) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ClassId = string(dAtA[iNdEx:postIndex])
+			m.ContractId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -2890,7 +3118,7 @@ func (m *MsgTransferFrom) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgTransferFromResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgSendFromResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2913,10 +3141,10 @@ func (m *MsgTransferFromResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgTransferFromResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgSendFromResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgTransferFromResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgSendFromResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -2940,7 +3168,7 @@ func (m *MsgTransferFromResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgApprove) Unmarshal(dAtA []byte) error {
+func (m *MsgAuthorizeOperator) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2963,15 +3191,15 @@ func (m *MsgApprove) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgApprove: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgAuthorizeOperator: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgApprove: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgAuthorizeOperator: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2999,7 +3227,7 @@ func (m *MsgApprove) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ClassId = string(dAtA[iNdEx:postIndex])
+			m.ContractId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -3086,7 +3314,7 @@ func (m *MsgApprove) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgApproveResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgAuthorizeOperatorResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3109,10 +3337,206 @@ func (m *MsgApproveResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgApproveResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgAuthorizeOperatorResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgApproveResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgAuthorizeOperatorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRevokeOperator) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRevokeOperator: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRevokeOperator: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContractId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Approver", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Approver = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Proxy", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Proxy = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRevokeOperatorResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRevokeOperatorResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRevokeOperatorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -3167,70 +3591,6 @@ func (m *MsgIssue) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Owner = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field To", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.To = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
 			var stringLen uint64
@@ -3261,7 +3621,7 @@ func (m *MsgIssue) Unmarshal(dAtA []byte) error {
 			}
 			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Symbol", wireType)
 			}
@@ -3293,7 +3653,7 @@ func (m *MsgIssue) Unmarshal(dAtA []byte) error {
 			}
 			m.Symbol = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 5:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ImageUri", wireType)
 			}
@@ -3325,7 +3685,7 @@ func (m *MsgIssue) Unmarshal(dAtA []byte) error {
 			}
 			m.ImageUri = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 6:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Meta", wireType)
 			}
@@ -3357,7 +3717,110 @@ func (m *MsgIssue) Unmarshal(dAtA []byte) error {
 			}
 			m.Meta = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Decimals", wireType)
+			}
+			m.Decimals = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Decimals |= int32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Mintable", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Mintable = bool(v != 0)
 		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field To", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.To = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 			}
@@ -3391,45 +3854,6 @@ func (m *MsgIssue) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 8:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Mintable", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Mintable = bool(v != 0)
-		case 9:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Decimals", wireType)
-			}
-			m.Decimals = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Decimals |= int32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -3532,7 +3956,7 @@ func (m *MsgGrant) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3560,11 +3984,11 @@ func (m *MsgGrant) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ClassId = string(dAtA[iNdEx:postIndex])
+			m.ContractId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Granter", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field From", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3592,11 +4016,11 @@ func (m *MsgGrant) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Granter = string(dAtA[iNdEx:postIndex])
+			m.From = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Grantee", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field To", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3624,11 +4048,11 @@ func (m *MsgGrant) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Grantee = string(dAtA[iNdEx:postIndex])
+			m.To = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Action", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Permission", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3656,7 +4080,7 @@ func (m *MsgGrant) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Action = string(dAtA[iNdEx:postIndex])
+			m.Permission = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -3729,7 +4153,7 @@ func (m *MsgGrantResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgRevoke) Unmarshal(dAtA []byte) error {
+func (m *MsgAbandon) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3752,15 +4176,15 @@ func (m *MsgRevoke) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRevoke: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgAbandon: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRevoke: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgAbandon: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3788,7 +4212,7 @@ func (m *MsgRevoke) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ClassId = string(dAtA[iNdEx:postIndex])
+			m.ContractId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -3824,7 +4248,7 @@ func (m *MsgRevoke) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Action", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Permission", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3852,7 +4276,7 @@ func (m *MsgRevoke) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Action = string(dAtA[iNdEx:postIndex])
+			m.Permission = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -3875,7 +4299,7 @@ func (m *MsgRevoke) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgRevokeResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgAbandonResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3898,10 +4322,10 @@ func (m *MsgRevokeResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRevokeResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgAbandonResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRevokeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgAbandonResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -3956,7 +4380,7 @@ func (m *MsgMint) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3984,11 +4408,11 @@ func (m *MsgMint) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ClassId = string(dAtA[iNdEx:postIndex])
+			m.ContractId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Grantee", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field From", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -4016,7 +4440,7 @@ func (m *MsgMint) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Grantee = string(dAtA[iNdEx:postIndex])
+			m.From = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -4186,7 +4610,7 @@ func (m *MsgBurn) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -4214,7 +4638,7 @@ func (m *MsgBurn) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ClassId = string(dAtA[iNdEx:postIndex])
+			m.ContractId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -4384,7 +4808,7 @@ func (m *MsgBurnFrom) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -4412,11 +4836,11 @@ func (m *MsgBurnFrom) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ClassId = string(dAtA[iNdEx:postIndex])
+			m.ContractId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Grantee", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Proxy", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -4444,7 +4868,7 @@ func (m *MsgBurnFrom) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Grantee = string(dAtA[iNdEx:postIndex])
+			m.Proxy = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -4614,7 +5038,7 @@ func (m *MsgModify) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -4642,11 +5066,11 @@ func (m *MsgModify) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ClassId = string(dAtA[iNdEx:postIndex])
+			m.ContractId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Grantee", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -4674,7 +5098,7 @@ func (m *MsgModify) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Grantee = string(dAtA[iNdEx:postIndex])
+			m.Owner = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {

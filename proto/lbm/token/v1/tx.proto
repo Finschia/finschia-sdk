@@ -11,145 +11,171 @@ option (gogoproto.goproto_getters_all) = false;
 
 // Msg defines the token Msg service.
 service Msg {
-  // Transfer defines a method to transfer tokens from one account to another account
-  rpc Transfer(MsgTransfer) returns (MsgTransferResponse);
+  // Send defines a method to send tokens from one account to another account.
+  rpc Send(MsgSend) returns (MsgSendResponse);
 
-  // TransferFrom defines a method to transfer tokens from one account to another account by the proxy
-  rpc TransferFrom(MsgTransferFrom) returns (MsgTransferFromResponse);
+  // SendFrom defines a method to send tokens from one account to another account by the proxy.
+  rpc SendFrom(MsgSendFrom) returns (MsgSendFromResponse);
 
-  // Approve allows one to transfer tokens on behalf of the approver
-  rpc Approve(MsgApprove) returns (MsgApproveResponse);
+  // AuthorizeOperator allows one to send tokens on behalf of the approver.
+  rpc AuthorizeOperator(MsgAuthorizeOperator) returns (MsgAuthorizeOperatorResponse);
 
-  // Issue defines a method to issue a token
+  // RevokeOperator revoke the authorization of the proxy to send the approver's tokens.
+  rpc RevokeOperator(MsgRevokeOperator) returns (MsgRevokeOperatorResponse);
+
+  // Issue defines a method to create a class of token.
   rpc Issue(MsgIssue) returns (MsgIssueResponse);
 
-  // Grant allows one to mint or burn tokens or modify a token metadata
+  // Grant allows one to mint or burn tokens or modify a token metadata.
   rpc Grant(MsgGrant) returns (MsgGrantResponse);
 
-  // Revoke revokes the grant
-  rpc Revoke(MsgRevoke) returns (MsgRevokeResponse);
+  // Abandon abandons a permission.
+  rpc Abandon(MsgAbandon) returns (MsgAbandonResponse);
 
-  // Mint defines a method to mint tokens
+  // Mint defines a method to mint tokens.
   rpc Mint(MsgMint) returns (MsgMintResponse);
 
-  // Burn defines a method to burn tokens
+  // Burn defines a method to burn tokens.
   rpc Burn(MsgBurn) returns (MsgBurnResponse);
 
-  // BurnFrom defines a method to burn tokens
+  // BurnFrom defines a method to burn tokens.
   rpc BurnFrom(MsgBurnFrom) returns (MsgBurnFromResponse);
 
-  // Modify defines a method to modify a token metadata
+  // Modify defines a method to modify a token class.
   rpc Modify(MsgModify) returns (MsgModifyResponse);
 }
 
-// MsgTransfer represents a message to transfer tokens from one account to another.
-message MsgTransfer {
-  string class_id = 1;
-  string from     = 2;
-  string to       = 3;
-  string amount   = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+// MsgSend defines the Msg/Send request type.
+message MsgSend {
+  string contract_id = 1;
+  string from        = 2;
+  string to          = 3;
+  string amount      = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// MsgTransferResponse defines the Msg/Transfer response type.
-message MsgTransferResponse {}
+// MsgSendResponse defines the Msg/Send response type.
+message MsgSendResponse {}
 
-// MsgTransferFrom represents a message to transfer tokens from one account to another by the proxy.
-message MsgTransferFrom {
-  string class_id = 1;
-  string proxy    = 2;
-  string from     = 3;
-  string to       = 4;
-  string amount   = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+// MsgSendFrom defines the Msg/SendFrom request type.
+message MsgSendFrom {
+  string contract_id = 1;
+  string proxy       = 2;
+  string from        = 3;
+  string to          = 4;
+  string amount      = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// MsgTransferFromResponse defines the Msg/TransferFrom response type.
-message MsgTransferFromResponse {}
+// MsgSendFromResponse defines the Msg/SendFrom response type.
+message MsgSendFromResponse {}
 
-// MsgApprove represents a message to transfer tokens on behalf of the approver
-message MsgApprove {
-  string class_id = 1;
+// MsgAuthorizeOperator defines the Msg/AuthorizeOperator request type.
+message MsgAuthorizeOperator {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // approver is the address of the approver of the authorization.
   string approver = 2;
-  string proxy    = 3;
+  // proxy is the address of the operator which the authorization is granted to.
+  string proxy = 3;
 }
 
-// MsgApproveResponse defines the Msg/Approve response type.
-message MsgApproveResponse {}
+// MsgAuthorizeOperatorResponse defines the Msg/AuthorizeOperator response type.
+message MsgAuthorizeOperatorResponse {}
 
-// MsgIssue represents a message to issue a token.
+// MsgRevokeOperator defines the Msg/RevokeOperator request type.
+message MsgRevokeOperator {
+  string contract_id = 1;
+  string approver    = 2;
+  string proxy       = 3;
+}
+
+// MsgRevokeOperatorResponse defines the Msg/RevokeOperator response type.
+message MsgRevokeOperatorResponse {}
+
+// MsgIssue defines the Msg/Issue request type.
 message MsgIssue {
-  string owner = 1;
-  string to    = 2;
+  // name defines the human-readable name of the token class. mandatory (not compatible with ERC20).
+  string name = 1;
+  // symbol is an abbreviated name for token class. mandatory (not compatible with ERC20).
+  string symbol = 2;
+  // image_uri is an uri for the image of the token class stored off chain.
+  string image_uri = 3;
+  // meta is a brief description of token class.
+  string meta = 4;
+  // decimals is the number of decimals which one must divide the amount by to get its user representation.
+  int32 decimals = 5;
+  // mintable represents whether the token is allowed to mint.
+  bool mintable = 6;
 
-  string name      = 3;
-  string symbol    = 4;
-  string image_uri = 5;
-  string meta      = 6;
-  string amount    = 7 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
-  bool   mintable  = 8;
-  int32  decimals  = 9;
+  // the address which all permissions on the token class will be granted to (not a permanent property).
+  string owner = 7;
+
+  // the address to send the minted token to. mandatory.
+  string to = 8;
+  // amount of tokens to mint on issuance. mandatory.
+  string amount = 9 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgIssueResponse defines the Msg/Issue response type.
 message MsgIssueResponse {}
 
-// MsgGrant represents a message to allow one to mint or burn tokens or modify a token metadata
+// MsgGrant defines the Msg/Grant request type.
 message MsgGrant {
-  string class_id = 1;
-  string granter  = 2;
-  string grantee  = 3;
-  string action   = 4;
+  string contract_id = 1;
+  string from        = 2;
+  string to          = 3;
+  string permission  = 4;
 }
 
 // MsgGrantResponse defines the Msg/Grant response type.
 message MsgGrantResponse {}
 
-// MsgRevoke represents a message to revoke a grant.
-message MsgRevoke {
-  string class_id = 1;
-  string grantee  = 2;
-  string action   = 3;
+// MsgAbandon defines the Msg/Abandon request type.
+message MsgAbandon {
+  string contract_id = 1;
+  string grantee     = 2;
+  string permission  = 3;
 }
 
-// MsgRevokeResponse defines the Msg/Revoke response type.
-message MsgRevokeResponse {}
+// MsgAbandonResponse defines the Msg/Abandon response type.
+message MsgAbandonResponse {}
 
-// MsgMint represents a message to mint tokens.
+// MsgMint defines the Msg/Mint request type.
 message MsgMint {
-  string class_id = 1;
-  string grantee  = 2;
-  string to       = 3;
-  string amount   = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string contract_id = 1;
+  string from        = 2;
+  string to          = 3;
+  string amount      = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgMintResponse defines the Msg/Mint response type.
 message MsgMintResponse {}
 
-// MsgBurn represents a message to burn tokens.
+// MsgBurn defines the Msg/Burn request type.
 message MsgBurn {
-  string class_id = 1;
-  string from     = 2;
-  string amount   = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string contract_id = 1;
+  string from        = 2;
+  string amount      = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgBurnResponse defines the Msg/Burn response type.
 message MsgBurnResponse {}
 
-// MsgBurnFrom represents a message to burn tokens.
+// MsgBurnFrom defines the Msg/BurnFrom request type.
 message MsgBurnFrom {
-  string class_id = 1;
-  string grantee  = 2;
-  string from     = 3;
-  string amount   = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string contract_id = 1;
+  string proxy       = 2;
+  string from        = 3;
+  string amount      = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgBurnFromResponse defines the Msg/BurnFrom response type.
 message MsgBurnFromResponse {}
 
-// MsgModify represents a message to modify a token metadata.
+// MsgModify defines the Msg/Modify request type.
 message MsgModify {
-  string        class_id = 1;
-  string        grantee  = 2;
-  repeated Pair changes  = 3 [(gogoproto.nullable) = false];
+  string        contract_id = 1;
+  string        owner       = 2;
+  repeated Pair changes     = 3 [(gogoproto.nullable) = false];
 }
 
 // MsgModifyResponse defines the Msg/Modify response type.

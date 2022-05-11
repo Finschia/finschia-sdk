@@ -5,73 +5,123 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/token";
 
-// EventTransfer is emitted on Msg/Transfer and Msg/TransferFrom
-message EventTransfer {
-  // class id associated with the token.
-  string class_id = 1;
-  string from     = 2;
-  string to       = 3;
-  string amount   = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+// EventSent is emitted on Msg/Send and Msg/SendFrom
+message EventSent {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  string from        = 2;
+  string to          = 3;
+  string amount      = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// EventApprove is emitted on Msg/Approve
-message EventApprove {
-  // class id associated with the token.
-  string class_id = 1;
+// EventAuthorizedOperator is emitted on Msg/AuthorizeOperator
+message EventAuthorizedOperator {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // approver is the address of the approver of the authorization.
   string approver = 2;
-  string proxy    = 3;
+  // proxy is the address of the operator which the authorization is granted to.
+  string proxy = 3;
+}
+
+// EventRevokedOperator is emitted on Msg/RevokeOperator
+message EventRevokedOperator {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // approver is the address of the approver of the authorization.
+  string approver = 2;
+  // proxy is the address of the operator which the authorization is granted to.
+  string proxy = 3;
 }
 
 // EventIssue is emitted on Msg/Issue
 message EventIssue {
-  // class id associated with the token.
-  string class_id = 1;
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // name defines the human-readable name of the token class.
+  string name = 2;
+  // symbol is an abbreviated name for token class.
+  string symbol = 3;
+  // image_uri is an uri for the image of the token class stored off chain.
+  string image_uri = 4;
+  // meta is a brief description of token class.
+  string meta = 5;
+  // decimals is the number of decimals which one must divide the amount by to get its user representation.
+  int32 decimals = 6;
+  // mintable represents whether the token is allowed to mint.
+  bool mintable = 7;
+
+  // the address which all permissions on the token class will be granted to (not a permanent property).
+  string owner = 8;
+
+  // the address to send the minted token to.
+  string to = 9;
+  // amount of tokens to mint on issuance.
+  string amount = 10 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // EventGrant is emitted on Msg/Grant
 message EventGrant {
-  // class id associated with the token.
-  string class_id = 1;
-
-  // address of the granted account.
-  string grantee = 2;
-
-  // action on the token class. Must be one of "mint", "burn" and "modify".
-  string action = 3;
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // address of the granter.
+  string from = 2;
+  // address of the grantee.
+  string to = 3;
+  // permission on the token class.
+  string perm = 4;
 }
 
-// EventRevoke is emitted on Msg/Revoke
-message EventRevoke {
-  // class id associated with the token.
-  string class_id = 1;
-
-  // address of the revoked account.
-  string grantee = 2;
-
-  // action on the token class. Must be one of "mint", "burn" and "modify".
-  string action = 3;
+// EventAbandon is emitted on Msg/Abandon
+message EventAbandon {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // address of the grantee which abandons its grant.
+  string from = 2;
+  // permission on the token class.
+  string perm = 3;
 }
 
-// EventMint is emitted on Msg/Mint
-message EventMint {
-  // class id associated with the token.
-  string class_id = 1;
-  string to       = 2;
-  string amount   = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+// EventMinted is emitted on Msg/Mint
+message EventMinted {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // the address of grantee.
+  string from = 2;
+  // the address to send minted tokens to.
+  string to = 3;
+  // the amount of minted tokens.
+  string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// EventBurn is emitted on Msg/Burn
-message EventBurn {
-  // class id associated with the token.
-  string class_id = 1;
-  string from     = 2;
-  string amount   = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+// EventBurned is emitted on Msg/Burn
+message EventBurned {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // the address of the token holder.
+  string from = 2;
+  // the amount of burnt token.
+  string amount = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// EventModify is emitted on Msg/Modify
-message EventModify {
-  // class id associated with the token.
-  string class_id = 1;
-  string key      = 2;
-  string value    = 3;
+// EventBurnedFrom is emitted on Msg/BurnFrom
+message EventBurnedFrom {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // the operator who is authorized to burn the tokens of the holder.
+  string proxy = 2;
+  // the address of the token holder.
+  string from = 3;
+  // the amount of burnt token.
+  string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// EventModified is emitted on Msg/Modify
+message EventModified {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // the name of modified field.
+  string field = 2;
+  // the result of the change to the value.
+  string value = 3;
 }

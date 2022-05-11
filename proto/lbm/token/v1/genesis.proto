@@ -18,22 +18,22 @@ message GenesisState {
   repeated Balance balances = 3 [(gogoproto.nullable) = false];
 
   // classes defines the metadata of the differents tokens.
-  repeated Token classes = 4 [(gogoproto.nullable) = false];
+  repeated TokenClass classes = 4 [(gogoproto.nullable) = false];
 
   // grants defines the grant information.
   repeated Grant grants = 5 [(gogoproto.nullable) = false];
 
-  // approves defines the approve information.
-  repeated Approve approves = 6 [(gogoproto.nullable) = false];
+  // authorizations defines the approve information.
+  repeated Authorization authorizations = 6 [(gogoproto.nullable) = false];
 
   // supplies represents the total supplies of tokens.
-  repeated FT supplies = 7 [(gogoproto.nullable) = false];
+  repeated Coin supplies = 7 [(gogoproto.nullable) = false];
 
   // mints represents the total mints of tokens.
-  repeated FT mints = 8 [(gogoproto.nullable) = false];
+  repeated Coin mints = 8 [(gogoproto.nullable) = false];
 
   // burns represents the total burns of tokens.
-  repeated FT burns = 9 [(gogoproto.nullable) = false];
+  repeated Coin burns = 9 [(gogoproto.nullable) = false];
 }
 
 // ClassGenesisState defines the classs keeper's genesis state.
@@ -48,6 +48,14 @@ message ClassGenesisState {
 // Balance defines an account address and balance pair used in the token module's
 // genesis state.
 message Balance {
-  string   address                = 1;
-  repeated lbm.token.v1.FT tokens = 2 [(gogoproto.nullable) = false];
+  string   address                 = 1;
+  repeated Coin coins = 2 [(gogoproto.nullable) = false];
+}
+
+// Coin defines a token with a contract id and an amount.
+message Coin {
+  option (gogoproto.equal) = true;
+
+  string contract_id = 1;
+  string amount      = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }

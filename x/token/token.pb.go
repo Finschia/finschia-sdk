@@ -7,7 +7,6 @@ import (
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
-	github_com_line_lbm_sdk_types "github.com/line/lbm-sdk/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -23,6 +22,42 @@ var _ = math.Inf
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
+
+// Permission enumerates the valid permissions on a token class.
+type Permission int32
+
+const (
+	// PERMISSION_UNSPECIFIED defines the default permission which is invalid.
+	unspecified Permission = 0
+	// PERMISSION_MODIFY defines a permission to modify a token class.
+	modify Permission = 1
+	// PERMISSION_MINT defines a permission to mint tokens of a token class.
+	mint Permission = 2
+	// PERMISSION_BURN defines a permission to burn tokens of a token class.
+	burn Permission = 3
+)
+
+var Permission_name = map[int32]string{
+	0: "PERSMISSION_UNSPECIFIED",
+	1: "PERSMISSION_MODIFY",
+	2: "PERSMISSION_MINT",
+	3: "PERSMISSION_BURN",
+}
+
+var Permission_value = map[string]int32{
+	"PERSMISSION_UNSPECIFIED": 0,
+	"PERSMISSION_MODIFY":      1,
+	"PERSMISSION_MINT":        2,
+	"PERSMISSION_BURN":        3,
+}
+
+func (x Permission) String() string {
+	return proto.EnumName(Permission_name, int32(x))
+}
+
+func (Permission) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_1cc82dfde9e68378, []int{0}
+}
 
 // Params defines the parameters for the token module.
 type Params struct {
@@ -61,36 +96,36 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
-// Token defines token information.
-type Token struct {
-	// id defines the unique identifier of the token.
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// name defines the human-readable name of the token.
+// TokenClass defines token information.
+type TokenClass struct {
+	// contract_id defines the unique identifier of the token class.
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	// name defines the human-readable name of the token class. mandatory (not ERC20 compliant).
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	// symbol is an abbreviated name for token.
+	// symbol is an abbreviated name for token class. mandatory (not ERC20 compliant).
 	Symbol string `protobuf:"bytes,3,opt,name=symbol,proto3" json:"symbol,omitempty"`
-	// meta is a brief description of token.
-	Meta string `protobuf:"bytes,4,opt,name=meta,proto3" json:"meta,omitempty"`
-	// image_uri is an uri for the token image stored off chain.
-	ImageUri string `protobuf:"bytes,5,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
+	// image_uri is an uri for the image of the token class stored off chain.
+	ImageUri string `protobuf:"bytes,4,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
+	// meta is a brief description of token class.
+	Meta string `protobuf:"bytes,5,opt,name=meta,proto3" json:"meta,omitempty"`
 	// decimals is the number of decimals which one must divide the amount by to get its user representation.
 	Decimals int32 `protobuf:"varint,6,opt,name=decimals,proto3" json:"decimals,omitempty"`
 	// mintable represents whether the token is allowed to mint.
 	Mintable bool `protobuf:"varint,7,opt,name=mintable,proto3" json:"mintable,omitempty"`
 }
 
-func (m *Token) Reset()         { *m = Token{} }
-func (m *Token) String() string { return proto.CompactTextString(m) }
-func (*Token) ProtoMessage()    {}
-func (*Token) Descriptor() ([]byte, []int) {
+func (m *TokenClass) Reset()         { *m = TokenClass{} }
+func (m *TokenClass) String() string { return proto.CompactTextString(m) }
+func (*TokenClass) ProtoMessage()    {}
+func (*TokenClass) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1cc82dfde9e68378, []int{1}
 }
-func (m *Token) XXX_Unmarshal(b []byte) error {
+func (m *TokenClass) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Token) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *TokenClass) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Token.Marshal(b, m, deterministic)
+		return xxx_messageInfo_TokenClass.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -100,62 +135,21 @@ func (m *Token) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Token) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Token.Merge(m, src)
+func (m *TokenClass) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TokenClass.Merge(m, src)
 }
-func (m *Token) XXX_Size() int {
+func (m *TokenClass) XXX_Size() int {
 	return m.Size()
 }
-func (m *Token) XXX_DiscardUnknown() {
-	xxx_messageInfo_Token.DiscardUnknown(m)
+func (m *TokenClass) XXX_DiscardUnknown() {
+	xxx_messageInfo_TokenClass.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Token proto.InternalMessageInfo
-
-// FT defines a fungible token with a class id and an amount.
-type FT struct {
-	// class id associated with the token.
-	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	// amount of the token
-	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
-}
-
-func (m *FT) Reset()         { *m = FT{} }
-func (m *FT) String() string { return proto.CompactTextString(m) }
-func (*FT) ProtoMessage()    {}
-func (*FT) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1cc82dfde9e68378, []int{2}
-}
-func (m *FT) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *FT) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_FT.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *FT) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FT.Merge(m, src)
-}
-func (m *FT) XXX_Size() int {
-	return m.Size()
-}
-func (m *FT) XXX_DiscardUnknown() {
-	xxx_messageInfo_FT.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_FT proto.InternalMessageInfo
+var xxx_messageInfo_TokenClass proto.InternalMessageInfo
 
 // Pair defines a key-value pair.
 type Pair struct {
-	Key   string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Field string `protobuf:"bytes,1,opt,name=field,proto3" json:"field,omitempty"`
 	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 }
 
@@ -163,7 +157,7 @@ func (m *Pair) Reset()         { *m = Pair{} }
 func (m *Pair) String() string { return proto.CompactTextString(m) }
 func (*Pair) ProtoMessage()    {}
 func (*Pair) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1cc82dfde9e68378, []int{3}
+	return fileDescriptor_1cc82dfde9e68378, []int{2}
 }
 func (m *Pair) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -192,14 +186,57 @@ func (m *Pair) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Pair proto.InternalMessageInfo
 
-// Grant defines grant information.
+// Authorization defines an authorization given to the operator on tokens of the holder.
+type Authorization struct {
+	// contract id associated with the token class.
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	// approver is the address of the approver of the authorization.
+	Approver string `protobuf:"bytes,2,opt,name=approver,proto3" json:"approver,omitempty"`
+	// proxy is the address of the operator which the authorization is granted to.
+	Proxy string `protobuf:"bytes,3,opt,name=proxy,proto3" json:"proxy,omitempty"`
+}
+
+func (m *Authorization) Reset()         { *m = Authorization{} }
+func (m *Authorization) String() string { return proto.CompactTextString(m) }
+func (*Authorization) ProtoMessage()    {}
+func (*Authorization) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1cc82dfde9e68378, []int{3}
+}
+func (m *Authorization) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Authorization) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Authorization.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Authorization) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Authorization.Merge(m, src)
+}
+func (m *Authorization) XXX_Size() int {
+	return m.Size()
+}
+func (m *Authorization) XXX_DiscardUnknown() {
+	xxx_messageInfo_Authorization.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Authorization proto.InternalMessageInfo
+
+// Grant defines permission given to a grantee.
 type Grant struct {
-	// address of the granted account.
-	Grantee string `protobuf:"bytes,1,opt,name=grantee,proto3" json:"grantee,omitempty"`
-	// class id associated with the token.
-	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	// action on the token class. Must be one of "mint", "burn" and "modify".
-	Action string `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
+	// contract id associated with the token class.
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	// address of the grantee.
+	Grantee string `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
+	// permission on the token class.
+	Permission string `protobuf:"bytes,3,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
 func (m *Grant) Reset()         { *m = Grant{} }
@@ -235,87 +272,51 @@ func (m *Grant) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Grant proto.InternalMessageInfo
 
-// Approve defines approve information.
-type Approve struct {
-	Approver string `protobuf:"bytes,1,opt,name=approver,proto3" json:"approver,omitempty"`
-	Proxy    string `protobuf:"bytes,2,opt,name=proxy,proto3" json:"proxy,omitempty"`
-	// class id associated with the token.
-	ClassId string `protobuf:"bytes,3,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-}
-
-func (m *Approve) Reset()         { *m = Approve{} }
-func (m *Approve) String() string { return proto.CompactTextString(m) }
-func (*Approve) ProtoMessage()    {}
-func (*Approve) Descriptor() ([]byte, []int) {
-	return fileDescriptor_1cc82dfde9e68378, []int{5}
-}
-func (m *Approve) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *Approve) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_Approve.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *Approve) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Approve.Merge(m, src)
-}
-func (m *Approve) XXX_Size() int {
-	return m.Size()
-}
-func (m *Approve) XXX_DiscardUnknown() {
-	xxx_messageInfo_Approve.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Approve proto.InternalMessageInfo
-
 func init() {
+	proto.RegisterEnum("lbm.token.v1.Permission", Permission_name, Permission_value)
 	proto.RegisterType((*Params)(nil), "lbm.token.v1.Params")
-	proto.RegisterType((*Token)(nil), "lbm.token.v1.Token")
-	proto.RegisterType((*FT)(nil), "lbm.token.v1.FT")
+	proto.RegisterType((*TokenClass)(nil), "lbm.token.v1.TokenClass")
 	proto.RegisterType((*Pair)(nil), "lbm.token.v1.Pair")
+	proto.RegisterType((*Authorization)(nil), "lbm.token.v1.Authorization")
 	proto.RegisterType((*Grant)(nil), "lbm.token.v1.Grant")
-	proto.RegisterType((*Approve)(nil), "lbm.token.v1.Approve")
 }
 
 func init() { proto.RegisterFile("lbm/token/v1/token.proto", fileDescriptor_1cc82dfde9e68378) }
 
 var fileDescriptor_1cc82dfde9e68378 = []byte{
-	// 420 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x92, 0xbd, 0x8a, 0xdb, 0x40,
-	0x14, 0x85, 0x25, 0xd9, 0x92, 0xb5, 0x97, 0x10, 0xc2, 0xb0, 0x2c, 0x93, 0x0d, 0xc8, 0x8e, 0x2a,
-	0xa7, 0x88, 0xc4, 0x92, 0x27, 0xf0, 0x16, 0x09, 0xdb, 0x2d, 0xc6, 0x49, 0x91, 0x66, 0x19, 0x59,
-	0x83, 0x32, 0x78, 0x7e, 0xc4, 0x68, 0x6c, 0xd6, 0x6f, 0x91, 0xc7, 0x48, 0x91, 0x07, 0x71, 0xb9,
-	0x65, 0x48, 0xb1, 0x24, 0xf6, 0x8b, 0x84, 0x99, 0x91, 0x0d, 0x2e, 0xd2, 0x9d, 0xef, 0xde, 0x23,
-	0xdd, 0xc3, 0x61, 0x00, 0xf3, 0x4a, 0x94, 0x46, 0xad, 0xa8, 0x2c, 0x37, 0x37, 0x5e, 0x14, 0xad,
-	0x56, 0x46, 0xa1, 0x17, 0xbc, 0x12, 0x85, 0x1f, 0x6c, 0x6e, 0xae, 0x2f, 0x1b, 0xd5, 0x28, 0xb7,
-	0x28, 0xad, 0xf2, 0x9e, 0x3c, 0x85, 0xe4, 0x9e, 0x68, 0x22, 0xba, 0xfc, 0x67, 0x08, 0xf1, 0xc2,
-	0x9a, 0xd1, 0x4b, 0x88, 0x58, 0x8d, 0xc3, 0x49, 0x38, 0xbd, 0x98, 0x47, 0xac, 0x46, 0x08, 0x86,
-	0x92, 0x08, 0x8a, 0x23, 0x37, 0x71, 0x1a, 0x5d, 0x41, 0xd2, 0x6d, 0x45, 0xa5, 0x38, 0x1e, 0xb8,
-	0x69, 0x4f, 0xd6, 0x2b, 0xa8, 0x21, 0x78, 0xe8, 0xbd, 0x56, 0xa3, 0x37, 0x70, 0xc1, 0x04, 0x69,
-	0xe8, 0xc3, 0x5a, 0x33, 0x1c, 0xbb, 0x45, 0xea, 0x06, 0x9f, 0x35, 0x43, 0xd7, 0x90, 0xd6, 0x74,
-	0xc9, 0x04, 0xe1, 0x1d, 0x4e, 0x26, 0xe1, 0x34, 0x9e, 0x9f, 0xd8, 0xee, 0x04, 0x93, 0x86, 0x54,
-	0x9c, 0xe2, 0xd1, 0x24, 0x9c, 0xa6, 0xf3, 0x13, 0xe7, 0x15, 0x44, 0x1f, 0x17, 0xe8, 0x35, 0xa4,
-	0x4b, 0x4e, 0xba, 0xee, 0xe1, 0x14, 0x78, 0xe4, 0xf8, 0xae, 0x46, 0x33, 0x48, 0x88, 0x50, 0x6b,
-	0x69, 0x7c, 0xee, 0xdb, 0x77, 0xbb, 0xe7, 0x71, 0xf0, 0xfb, 0x79, 0xfc, 0xb6, 0x61, 0xe6, 0xdb,
-	0xba, 0x2a, 0x96, 0x4a, 0x94, 0x9c, 0x49, 0x5a, 0xf2, 0x4a, 0xbc, 0xef, 0xea, 0x55, 0x69, 0xb6,
-	0x2d, 0xed, 0x8a, 0x3b, 0x69, 0xe6, 0xfd, 0x87, 0x79, 0x01, 0xc3, 0x7b, 0xc2, 0x34, 0x7a, 0x05,
-	0x83, 0x15, 0xdd, 0xf6, 0x07, 0xac, 0x44, 0x97, 0x10, 0x6f, 0x08, 0x5f, 0x1f, 0x3b, 0xf1, 0x90,
-	0x2f, 0x20, 0xfe, 0xa4, 0x89, 0x34, 0x08, 0xc3, 0xa8, 0xb1, 0x82, 0xd2, 0x63, 0xaa, 0x1e, 0xcf,
-	0x02, 0x47, 0xe7, 0x81, 0xaf, 0x20, 0x21, 0x4b, 0xc3, 0x94, 0x3c, 0x56, 0xea, 0x29, 0xff, 0x02,
-	0xa3, 0x59, 0xdb, 0x6a, 0xb5, 0xa1, 0xb6, 0x10, 0xe2, 0xa5, 0xee, 0x7f, 0x7c, 0x62, 0x1b, 0xa9,
-	0xd5, 0xea, 0x71, 0x7b, 0x8c, 0xe4, 0xe0, 0xec, 0xde, 0xe0, 0xec, 0xde, 0xed, 0x6c, 0xf7, 0x37,
-	0x0b, 0x7e, 0xec, 0xb3, 0x60, 0xb7, 0xcf, 0xc2, 0xa7, 0x7d, 0x16, 0xfe, 0xd9, 0x67, 0xe1, 0xf7,
-	0x43, 0x16, 0x3c, 0x1d, 0xb2, 0xe0, 0xd7, 0x21, 0x0b, 0xbe, 0x8e, 0xff, 0x57, 0xd5, 0xa3, 0x7f,
-	0x67, 0x55, 0xe2, 0x1e, 0xd1, 0x87, 0x7f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xd1, 0xab, 0x57, 0x3c,
-	0x84, 0x02, 0x00, 0x00,
+	// 498 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0xcf, 0x6e, 0xd3, 0x4c,
+	0x14, 0xc5, 0xed, 0x36, 0x49, 0xdd, 0xdb, 0xef, 0x13, 0xd1, 0xa8, 0x02, 0xcb, 0x48, 0x53, 0xcb,
+	0xab, 0x08, 0x41, 0xac, 0xc2, 0x13, 0xf4, 0x4f, 0x8a, 0xbc, 0x68, 0x1a, 0x25, 0xcd, 0x02, 0x36,
+	0xd1, 0x38, 0x9e, 0xa4, 0xa3, 0x7a, 0x66, 0xac, 0xf1, 0x38, 0x6a, 0x78, 0x02, 0x94, 0x15, 0x2f,
+	0x90, 0x15, 0x2c, 0x78, 0x0e, 0x56, 0x5d, 0x76, 0xc9, 0x12, 0x92, 0x17, 0x41, 0xb6, 0xe3, 0xa8,
+	0xb0, 0xe9, 0xee, 0xfe, 0xce, 0x39, 0x3a, 0xbe, 0xb6, 0x2f, 0xd8, 0x71, 0xc8, 0x7d, 0x2d, 0x6f,
+	0xa9, 0xf0, 0x67, 0xc7, 0xe5, 0xd0, 0x4e, 0x94, 0xd4, 0x12, 0xfd, 0x17, 0x87, 0xbc, 0x5d, 0x0a,
+	0xb3, 0x63, 0xe7, 0x70, 0x2a, 0xa7, 0xb2, 0x30, 0xfc, 0x7c, 0x2a, 0x33, 0x9e, 0x05, 0x8d, 0x1e,
+	0x51, 0x84, 0xa7, 0xde, 0x0f, 0x13, 0xe0, 0x3a, 0x0f, 0x9f, 0xc5, 0x24, 0x4d, 0xd1, 0x11, 0x1c,
+	0x8c, 0xa5, 0xd0, 0x8a, 0x8c, 0xf5, 0x88, 0x45, 0xb6, 0xe9, 0x9a, 0xad, 0xfd, 0x3e, 0x54, 0x52,
+	0x10, 0x21, 0x04, 0x35, 0x41, 0x38, 0xb5, 0x77, 0x0a, 0xa7, 0x98, 0xd1, 0x73, 0x68, 0xa4, 0x73,
+	0x1e, 0xca, 0xd8, 0xde, 0x2d, 0xd4, 0x0d, 0xa1, 0x97, 0xb0, 0xcf, 0x38, 0x99, 0xd2, 0x51, 0xa6,
+	0x98, 0x5d, 0x2b, 0x2c, 0xab, 0x10, 0x86, 0x8a, 0xe5, 0x45, 0x9c, 0x6a, 0x62, 0xd7, 0xcb, 0xa2,
+	0x7c, 0x46, 0x0e, 0x58, 0x11, 0x1d, 0x33, 0x4e, 0xe2, 0xd4, 0x6e, 0xb8, 0x66, 0xab, 0xde, 0xdf,
+	0x72, 0xee, 0x71, 0x26, 0x34, 0x09, 0x63, 0x6a, 0xef, 0xb9, 0x66, 0xcb, 0xea, 0x6f, 0xd9, 0x7b,
+	0x0b, 0xb5, 0x1e, 0x61, 0x0a, 0x1d, 0x42, 0x7d, 0xc2, 0x68, 0x5c, 0xed, 0x5d, 0x42, 0xae, 0xce,
+	0x48, 0x9c, 0x55, 0x3b, 0x97, 0xe0, 0x85, 0xf0, 0xff, 0x49, 0xa6, 0x6f, 0xa4, 0x62, 0x9f, 0x88,
+	0x66, 0x52, 0x3c, 0xfd, 0xea, 0x0e, 0x58, 0x24, 0x49, 0x94, 0x9c, 0x51, 0xb5, 0xa9, 0xda, 0x72,
+	0xfe, 0x8c, 0x44, 0xc9, 0xbb, 0xf9, 0xe6, 0x0b, 0x94, 0xe0, 0x85, 0x50, 0x7f, 0xaf, 0x88, 0xd0,
+	0x4f, 0x77, 0xdb, 0xb0, 0x37, 0xcd, 0x93, 0xb4, 0xda, 0xb2, 0x42, 0x84, 0x01, 0x12, 0xaa, 0x38,
+	0x4b, 0x53, 0x26, 0xc5, 0xa6, 0xfe, 0x91, 0xf2, 0xea, 0x9b, 0x09, 0xd0, 0xdb, 0x22, 0x7a, 0x0d,
+	0x2f, 0x7a, 0x9d, 0xfe, 0xe0, 0x32, 0x18, 0x0c, 0x82, 0xab, 0xee, 0x68, 0xd8, 0x1d, 0xf4, 0x3a,
+	0x67, 0xc1, 0x45, 0xd0, 0x39, 0x6f, 0x1a, 0xce, 0xb3, 0xc5, 0xd2, 0x3d, 0xc8, 0x44, 0x9a, 0xd0,
+	0x31, 0x9b, 0x30, 0x1a, 0x21, 0x0f, 0xd0, 0xe3, 0xf4, 0xe5, 0xd5, 0x79, 0x70, 0xf1, 0xa1, 0x69,
+	0x3a, 0xb0, 0x58, 0xba, 0x0d, 0x2e, 0x23, 0x36, 0x99, 0x23, 0x0c, 0xcd, 0xbf, 0x32, 0x41, 0xf7,
+	0xba, 0xb9, 0xe3, 0x58, 0x8b, 0xa5, 0x5b, 0xcb, 0x7f, 0xc0, 0xbf, 0xfe, 0xe9, 0xb0, 0xdf, 0x6d,
+	0xee, 0x96, 0x7e, 0x98, 0x29, 0xe1, 0xd4, 0x3e, 0x7f, 0xc5, 0xc6, 0xe9, 0xc9, 0xfd, 0x6f, 0x6c,
+	0x7c, 0x5f, 0x61, 0xe3, 0x7e, 0x85, 0xcd, 0x87, 0x15, 0x36, 0x7f, 0xad, 0xb0, 0xf9, 0x65, 0x8d,
+	0x8d, 0x87, 0x35, 0x36, 0x7e, 0xae, 0xb1, 0xf1, 0xf1, 0x68, 0xca, 0xf4, 0x4d, 0x16, 0xb6, 0xc7,
+	0x92, 0xfb, 0x31, 0x13, 0xd4, 0x8f, 0x43, 0xfe, 0x26, 0x8d, 0x6e, 0xfd, 0xbb, 0xf2, 0xbc, 0xc3,
+	0x46, 0x71, 0xbb, 0xef, 0xfe, 0x04, 0x00, 0x00, 0xff, 0xff, 0x79, 0x47, 0x1d, 0x2f, 0xfb, 0x02,
+	0x00, 0x00,
 }
 
 func (m *Params) Marshal() (dAtA []byte, err error) {
@@ -341,7 +342,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *Token) Marshal() (dAtA []byte, err error) {
+func (m *TokenClass) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -351,12 +352,12 @@ func (m *Token) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Token) MarshalTo(dAtA []byte) (int, error) {
+func (m *TokenClass) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Token) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *TokenClass) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -376,17 +377,17 @@ func (m *Token) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x30
 	}
-	if len(m.ImageUri) > 0 {
-		i -= len(m.ImageUri)
-		copy(dAtA[i:], m.ImageUri)
-		i = encodeVarintToken(dAtA, i, uint64(len(m.ImageUri)))
-		i--
-		dAtA[i] = 0x2a
-	}
 	if len(m.Meta) > 0 {
 		i -= len(m.Meta)
 		copy(dAtA[i:], m.Meta)
 		i = encodeVarintToken(dAtA, i, uint64(len(m.Meta)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.ImageUri) > 0 {
+		i -= len(m.ImageUri)
+		copy(dAtA[i:], m.ImageUri)
+		i = encodeVarintToken(dAtA, i, uint64(len(m.ImageUri)))
 		i--
 		dAtA[i] = 0x22
 	}
@@ -404,50 +405,10 @@ func (m *Token) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Id) > 0 {
-		i -= len(m.Id)
-		copy(dAtA[i:], m.Id)
-		i = encodeVarintToken(dAtA, i, uint64(len(m.Id)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *FT) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *FT) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *FT) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	{
-		size := m.Amount.Size()
-		i -= size
-		if _, err := m.Amount.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintToken(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x12
-	if len(m.ClassId) > 0 {
-		i -= len(m.ClassId)
-		copy(dAtA[i:], m.ClassId)
-		i = encodeVarintToken(dAtA, i, uint64(len(m.ClassId)))
+	if len(m.ContractId) > 0 {
+		i -= len(m.ContractId)
+		copy(dAtA[i:], m.ContractId)
+		i = encodeVarintToken(dAtA, i, uint64(len(m.ContractId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -481,10 +442,54 @@ func (m *Pair) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Key) > 0 {
-		i -= len(m.Key)
-		copy(dAtA[i:], m.Key)
-		i = encodeVarintToken(dAtA, i, uint64(len(m.Key)))
+	if len(m.Field) > 0 {
+		i -= len(m.Field)
+		copy(dAtA[i:], m.Field)
+		i = encodeVarintToken(dAtA, i, uint64(len(m.Field)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Authorization) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Authorization) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Authorization) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Proxy) > 0 {
+		i -= len(m.Proxy)
+		copy(dAtA[i:], m.Proxy)
+		i = encodeVarintToken(dAtA, i, uint64(len(m.Proxy)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Approver) > 0 {
+		i -= len(m.Approver)
+		copy(dAtA[i:], m.Approver)
+		i = encodeVarintToken(dAtA, i, uint64(len(m.Approver)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ContractId) > 0 {
+		i -= len(m.ContractId)
+		copy(dAtA[i:], m.ContractId)
+		i = encodeVarintToken(dAtA, i, uint64(len(m.ContractId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -511,68 +516,24 @@ func (m *Grant) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Action) > 0 {
-		i -= len(m.Action)
-		copy(dAtA[i:], m.Action)
-		i = encodeVarintToken(dAtA, i, uint64(len(m.Action)))
+	if len(m.Permission) > 0 {
+		i -= len(m.Permission)
+		copy(dAtA[i:], m.Permission)
+		i = encodeVarintToken(dAtA, i, uint64(len(m.Permission)))
 		i--
 		dAtA[i] = 0x1a
-	}
-	if len(m.ClassId) > 0 {
-		i -= len(m.ClassId)
-		copy(dAtA[i:], m.ClassId)
-		i = encodeVarintToken(dAtA, i, uint64(len(m.ClassId)))
-		i--
-		dAtA[i] = 0x12
 	}
 	if len(m.Grantee) > 0 {
 		i -= len(m.Grantee)
 		copy(dAtA[i:], m.Grantee)
 		i = encodeVarintToken(dAtA, i, uint64(len(m.Grantee)))
 		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *Approve) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Approve) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *Approve) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.ClassId) > 0 {
-		i -= len(m.ClassId)
-		copy(dAtA[i:], m.ClassId)
-		i = encodeVarintToken(dAtA, i, uint64(len(m.ClassId)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Proxy) > 0 {
-		i -= len(m.Proxy)
-		copy(dAtA[i:], m.Proxy)
-		i = encodeVarintToken(dAtA, i, uint64(len(m.Proxy)))
-		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Approver) > 0 {
-		i -= len(m.Approver)
-		copy(dAtA[i:], m.Approver)
-		i = encodeVarintToken(dAtA, i, uint64(len(m.Approver)))
+	if len(m.ContractId) > 0 {
+		i -= len(m.ContractId)
+		copy(dAtA[i:], m.ContractId)
+		i = encodeVarintToken(dAtA, i, uint64(len(m.ContractId)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -599,13 +560,13 @@ func (m *Params) Size() (n int) {
 	return n
 }
 
-func (m *Token) Size() (n int) {
+func (m *TokenClass) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Id)
+	l = len(m.ContractId)
 	if l > 0 {
 		n += 1 + l + sovToken(uint64(l))
 	}
@@ -617,11 +578,11 @@ func (m *Token) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovToken(uint64(l))
 	}
-	l = len(m.Meta)
+	l = len(m.ImageUri)
 	if l > 0 {
 		n += 1 + l + sovToken(uint64(l))
 	}
-	l = len(m.ImageUri)
+	l = len(m.Meta)
 	if l > 0 {
 		n += 1 + l + sovToken(uint64(l))
 	}
@@ -634,32 +595,38 @@ func (m *Token) Size() (n int) {
 	return n
 }
 
-func (m *FT) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.ClassId)
-	if l > 0 {
-		n += 1 + l + sovToken(uint64(l))
-	}
-	l = m.Amount.Size()
-	n += 1 + l + sovToken(uint64(l))
-	return n
-}
-
 func (m *Pair) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Key)
+	l = len(m.Field)
 	if l > 0 {
 		n += 1 + l + sovToken(uint64(l))
 	}
 	l = len(m.Value)
+	if l > 0 {
+		n += 1 + l + sovToken(uint64(l))
+	}
+	return n
+}
+
+func (m *Authorization) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ContractId)
+	if l > 0 {
+		n += 1 + l + sovToken(uint64(l))
+	}
+	l = len(m.Approver)
+	if l > 0 {
+		n += 1 + l + sovToken(uint64(l))
+	}
+	l = len(m.Proxy)
 	if l > 0 {
 		n += 1 + l + sovToken(uint64(l))
 	}
@@ -672,36 +639,15 @@ func (m *Grant) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.ContractId)
+	if l > 0 {
+		n += 1 + l + sovToken(uint64(l))
+	}
 	l = len(m.Grantee)
 	if l > 0 {
 		n += 1 + l + sovToken(uint64(l))
 	}
-	l = len(m.ClassId)
-	if l > 0 {
-		n += 1 + l + sovToken(uint64(l))
-	}
-	l = len(m.Action)
-	if l > 0 {
-		n += 1 + l + sovToken(uint64(l))
-	}
-	return n
-}
-
-func (m *Approve) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Approver)
-	if l > 0 {
-		n += 1 + l + sovToken(uint64(l))
-	}
-	l = len(m.Proxy)
-	if l > 0 {
-		n += 1 + l + sovToken(uint64(l))
-	}
-	l = len(m.ClassId)
+	l = len(m.Permission)
 	if l > 0 {
 		n += 1 + l + sovToken(uint64(l))
 	}
@@ -764,7 +710,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *Token) Unmarshal(dAtA []byte) error {
+func (m *TokenClass) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -787,15 +733,15 @@ func (m *Token) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Token: wiretype end group for non-group")
+			return fmt.Errorf("proto: TokenClass: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Token: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: TokenClass: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -823,7 +769,7 @@ func (m *Token) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Id = string(dAtA[iNdEx:postIndex])
+			m.ContractId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -891,38 +837,6 @@ func (m *Token) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Meta", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowToken
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthToken
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthToken
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Meta = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ImageUri", wireType)
 			}
 			var stringLen uint64
@@ -952,6 +866,38 @@ func (m *Token) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.ImageUri = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Meta", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowToken
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthToken
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthToken
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Meta = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 6:
 			if wireType != 0 {
@@ -1013,122 +959,6 @@ func (m *Token) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *FT) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowToken
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: FT: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: FT: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowToken
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthToken
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthToken
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ClassId = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowToken
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthToken
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthToken
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipToken(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthToken
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
 func (m *Pair) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1160,7 +990,7 @@ func (m *Pair) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Key", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Field", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1188,7 +1018,7 @@ func (m *Pair) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Key = string(dAtA[iNdEx:postIndex])
+			m.Field = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -1243,7 +1073,7 @@ func (m *Pair) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *Grant) Unmarshal(dAtA []byte) error {
+func (m *Authorization) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1266,15 +1096,15 @@ func (m *Grant) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Grant: wiretype end group for non-group")
+			return fmt.Errorf("proto: Authorization: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Grant: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Authorization: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Grantee", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1302,123 +1132,9 @@ func (m *Grant) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Grantee = string(dAtA[iNdEx:postIndex])
+			m.ContractId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowToken
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthToken
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthToken
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ClassId = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Action", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowToken
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthToken
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthToken
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Action = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipToken(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthToken
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Approve) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowToken
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Approve: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Approve: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Approver", wireType)
 			}
@@ -1450,7 +1166,7 @@ func (m *Approve) Unmarshal(dAtA []byte) error {
 			}
 			m.Approver = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Proxy", wireType)
 			}
@@ -1482,9 +1198,59 @@ func (m *Approve) Unmarshal(dAtA []byte) error {
 			}
 			m.Proxy = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		default:
+			iNdEx = preIndex
+			skippy, err := skipToken(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthToken
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Grant) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowToken
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Grant: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Grant: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1512,7 +1278,71 @@ func (m *Approve) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ClassId = string(dAtA[iNdEx:postIndex])
+			m.ContractId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Grantee", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowToken
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthToken
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthToken
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Grantee = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Permission", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowToken
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthToken
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthToken
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Permission = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
