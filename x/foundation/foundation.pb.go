@@ -361,8 +361,7 @@ func (m *UpdateValidatorAuthsProposal) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_UpdateValidatorAuthsProposal proto.InternalMessageInfo
 
-// Member represents a foundation member with an account address,
-// non-zero weight and metadata.
+// Member represents a foundation member with an account address and metadata.
 type Member struct {
 	// address is the member's account address.
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
@@ -437,7 +436,7 @@ func (m *Member) GetAddedAt() time.Time {
 
 // ThresholdDecisionPolicy implements the DecisionPolicy interface
 type ThresholdDecisionPolicy struct {
-	// threshold is the minimum weighted sum of yes votes that must be met or exceeded for a proposal to succeed.
+	// threshold is the minimum sum of yes votes that must be met or exceeded for a proposal to succeed.
 	Threshold github_com_line_lbm_sdk_types.Dec `protobuf:"bytes,1,opt,name=threshold,proto3,customtype=github.com/line/lbm-sdk/types.Dec" json:"threshold"`
 	// windows defines the different windows for voting and execution.
 	Windows *DecisionPolicyWindows `protobuf:"bytes,2,opt,name=windows,proto3" json:"windows,omitempty"`
@@ -485,7 +484,7 @@ func (m *ThresholdDecisionPolicy) GetWindows() *DecisionPolicyWindows {
 
 // PercentageDecisionPolicy implements the DecisionPolicy interface
 type PercentageDecisionPolicy struct {
-	// percentage is the minimum percentage the weighted sum of yes votes must meet for a proposal to succeed.
+	// percentage is the minimum percentage the sum of yes votes must meet for a proposal to succeed.
 	Percentage github_com_line_lbm_sdk_types.Dec `protobuf:"bytes,1,opt,name=percentage,proto3,customtype=github.com/line/lbm-sdk/types.Dec" json:"percentage"`
 	// windows defines the different windows for voting and execution.
 	Windows *DecisionPolicyWindows `protobuf:"bytes,2,opt,name=windows,proto3" json:"windows,omitempty"`
@@ -602,11 +601,11 @@ type FoundationInfo struct {
 	// operator is the account address of the foundation's operator.
 	Operator string `protobuf:"bytes,1,opt,name=operator,proto3" json:"operator,omitempty"`
 	// version is used to track changes to the foundation's membership structure that
-	// would break existing proposals. Whenever any members weight is changed,
-	// or any member is added or removed this version is incremented and will
-	// cause proposals based on older versions of the foundation to fail
+	// would break existing proposals. Whenever any member is added or removed,
+	// this version is incremented and will cause proposals based on older versions
+	// of the foundation to fail
 	Version uint64 `protobuf:"varint,2,opt,name=version,proto3" json:"version,omitempty"`
-	// total_weight is the sum of the foundation members' weights.
+	// total_weight is the number of the foundation members.
 	TotalWeight github_com_line_lbm_sdk_types.Dec `protobuf:"bytes,3,opt,name=total_weight,json=totalWeight,proto3,customtype=github.com/line/lbm-sdk/types.Dec" json:"total_weight"`
 	// decision_policy specifies the foundation's decision policy.
 	DecisionPolicy *types.Any `protobuf:"bytes,4,opt,name=decision_policy,json=decisionPolicy,proto3" json:"decision_policy,omitempty"`
@@ -666,7 +665,7 @@ type Proposal struct {
 	// result is the final result based on the votes and election rule. Initial value is unfinalized.
 	// The result is persisted so that clients can always rely on this state and not have to replicate the logic.
 	Result ProposalResult `protobuf:"varint,7,opt,name=result,proto3,enum=lbm.foundation.v1.ProposalResult" json:"result,omitempty"`
-	// final_tally_result contains the sums of all weighted votes for this
+	// final_tally_result contains the sums of all votes for this
 	// proposal for each vote option, after tallying. When querying a proposal
 	// via gRPC, this field is not populated until the proposal's voting period
 	// has ended.
@@ -716,15 +715,15 @@ func (m *Proposal) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Proposal proto.InternalMessageInfo
 
-// TallyResult represents the sum of weighted votes for each vote option.
+// TallyResult represents the sum of votes for each vote option.
 type TallyResult struct {
-	// yes_count is the weighted sum of yes votes.
+	// yes_count is the sum of yes votes.
 	YesCount github_com_line_lbm_sdk_types.Dec `protobuf:"bytes,1,opt,name=yes_count,json=yesCount,proto3,customtype=github.com/line/lbm-sdk/types.Dec" json:"yes_count"`
-	// abstain_count is the weighted sum of abstainers.
+	// abstain_count is the sum of abstainers.
 	AbstainCount github_com_line_lbm_sdk_types.Dec `protobuf:"bytes,2,opt,name=abstain_count,json=abstainCount,proto3,customtype=github.com/line/lbm-sdk/types.Dec" json:"abstain_count"`
-	// no is the weighted sum of no votes.
+	// no is the sum of no votes.
 	NoCount github_com_line_lbm_sdk_types.Dec `protobuf:"bytes,3,opt,name=no_count,json=noCount,proto3,customtype=github.com/line/lbm-sdk/types.Dec" json:"no_count"`
-	// no_with_veto_count is the weighted sum of veto.
+	// no_with_veto_count is the sum of veto.
 	NoWithVetoCount github_com_line_lbm_sdk_types.Dec `protobuf:"bytes,4,opt,name=no_with_veto_count,json=noWithVetoCount,proto3,customtype=github.com/line/lbm-sdk/types.Dec" json:"no_with_veto_count"`
 }
 
