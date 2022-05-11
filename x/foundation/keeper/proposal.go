@@ -44,9 +44,7 @@ func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *foundatio
 		}
 	}
 
-	return ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateValidatorAuths{
-		Auths: p.Auths,
-	})
+	return nil
 }
 
 func (k Keeper) newProposalID(ctx sdk.Context) uint64 {

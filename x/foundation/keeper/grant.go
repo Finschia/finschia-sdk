@@ -17,6 +17,7 @@ func (k Keeper) Grant(ctx sdk.Context, granter string, grantee sdk.AccAddress, a
 		return err
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventGrant{
+		Granter:       granter,
 		Grantee:       grantee.String(),
 		Authorization: any,
 	}); err != nil {
@@ -33,6 +34,7 @@ func (k Keeper) Revoke(ctx sdk.Context, granter string, grantee sdk.AccAddress, 
 	k.deleteAuthorization(ctx, granter, grantee, msgTypeURL)
 
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventRevoke{
+		Granter:    granter,
 		Grantee:    grantee.String(),
 		MsgTypeUrl: msgTypeURL,
 	}); err != nil {

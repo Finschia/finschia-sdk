@@ -597,7 +597,6 @@
     - [EventUpdateDecisionPolicy](#lbm.foundation.v1.EventUpdateDecisionPolicy)
     - [EventUpdateFoundationParams](#lbm.foundation.v1.EventUpdateFoundationParams)
     - [EventUpdateMembers](#lbm.foundation.v1.EventUpdateMembers)
-    - [EventUpdateValidatorAuths](#lbm.foundation.v1.EventUpdateValidatorAuths)
     - [EventVote](#lbm.foundation.v1.EventVote)
     - [EventWithdrawFromTreasury](#lbm.foundation.v1.EventWithdrawFromTreasury)
     - [EventWithdrawProposal](#lbm.foundation.v1.EventWithdrawProposal)
@@ -8993,8 +8992,9 @@ EventGrant is emitted on Msg/Grant
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `grantee` | [string](#string) |  | Grantee account address |
-| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  | Autorization which is granted |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  | the address of the grantee. |
+| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  | authorization granted. |
 
 
 
@@ -9024,8 +9024,9 @@ EventRevoke is emitted on Msg/Revoke
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `grantee` | [string](#string) |  | Grantee account address |
-| `msg_type_url` | [string](#string) |  | Msg type URL for which an autorization is revoked |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  | address of the grantee. |
+| `msg_type_url` | [string](#string) |  | message type url for which an autorization is revoked. |
 
 
 
@@ -9086,21 +9087,6 @@ EventUpdateMembers is an event emitted when the members have been updated.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `member_updates` | [Member](#lbm.foundation.v1.Member) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.EventUpdateValidatorAuths"></a>
-
-### EventUpdateValidatorAuths
-EventUpdateValidatorAuths is emitted after updating validator auth info.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `auths` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) | repeated |  |
 
 
 
