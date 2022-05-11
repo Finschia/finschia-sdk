@@ -80,7 +80,7 @@ func (k Keeper) tally(ctx sdk.Context, p foundation.Proposal) (foundation.TallyR
 			return true
 		}
 
-		if err := tallyResult.Add(vote.Option, sdk.OneDec()); err != nil {
+		if err := tallyResult.Add(vote.Option); err != nil {
 			errors = append(errors, err)
 			return true
 		}
