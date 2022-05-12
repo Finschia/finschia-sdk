@@ -5,7 +5,6 @@ package server
 import (
 	"fmt"
 
-	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	"github.com/line/ostracon/p2p"
 	pvm "github.com/line/ostracon/privval"
 	ostversion "github.com/line/ostracon/version"
@@ -111,22 +110,6 @@ against which this app has been compiled.
 			}
 
 			fmt.Println(string(bs))
-			return nil
-		},
-	}
-}
-
-// UnsafeResetAllCmd - extension of the tendermint command, resets initialization
-func UnsafeResetAllCmd() *cobra.Command {
-	return &cobra.Command{
-		Use:   "unsafe-reset-all",
-		Short: "Resets the blockchain database, removes address book files, and resets data/priv_validator_state.json to the genesis state",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			serverCtx := GetServerContextFromCmd(cmd)
-			cfg := serverCtx.Config
-
-			ostcmd.ResetAll(cfg.DBDir(), cfg.P2P.AddrBookFile(), cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(),
-				cfg.PrivKeyType, serverCtx.Logger)
 			return nil
 		},
 	}
