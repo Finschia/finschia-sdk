@@ -868,16 +868,16 @@
     - [QueryAuthorizationResponse](#lbm.token.v1.QueryAuthorizationResponse)
     - [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest)
     - [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse)
-    - [QueryBurnedRequest](#lbm.token.v1.QueryBurnedRequest)
-    - [QueryBurnedResponse](#lbm.token.v1.QueryBurnedResponse)
+    - [QueryBurntRequest](#lbm.token.v1.QueryBurntRequest)
+    - [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse)
     - [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest)
     - [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse)
     - [QueryGrantsRequest](#lbm.token.v1.QueryGrantsRequest)
     - [QueryGrantsResponse](#lbm.token.v1.QueryGrantsResponse)
     - [QueryMintedRequest](#lbm.token.v1.QueryMintedRequest)
     - [QueryMintedResponse](#lbm.token.v1.QueryMintedResponse)
-    - [QueryProxyAuthorizationsRequest](#lbm.token.v1.QueryProxyAuthorizationsRequest)
-    - [QueryProxyAuthorizationsResponse](#lbm.token.v1.QueryProxyAuthorizationsResponse)
+    - [QueryOperatorAuthorizationsRequest](#lbm.token.v1.QueryOperatorAuthorizationsRequest)
+    - [QueryOperatorAuthorizationsResponse](#lbm.token.v1.QueryOperatorAuthorizationsResponse)
     - [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest)
     - [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse)
     - [QueryTokenClassRequest](#lbm.token.v1.QueryTokenClassRequest)
@@ -893,8 +893,6 @@
     - [MsgAuthorizeOperator](#lbm.token.v1.MsgAuthorizeOperator)
     - [MsgAuthorizeOperatorResponse](#lbm.token.v1.MsgAuthorizeOperatorResponse)
     - [MsgBurn](#lbm.token.v1.MsgBurn)
-    - [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom)
-    - [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse)
     - [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse)
     - [MsgGrant](#lbm.token.v1.MsgGrant)
     - [MsgGrantResponse](#lbm.token.v1.MsgGrantResponse)
@@ -904,11 +902,13 @@
     - [MsgMintResponse](#lbm.token.v1.MsgMintResponse)
     - [MsgModify](#lbm.token.v1.MsgModify)
     - [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse)
+    - [MsgOperatorBurn](#lbm.token.v1.MsgOperatorBurn)
+    - [MsgOperatorBurnResponse](#lbm.token.v1.MsgOperatorBurnResponse)
+    - [MsgOperatorSend](#lbm.token.v1.MsgOperatorSend)
+    - [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse)
     - [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator)
     - [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse)
     - [MsgSend](#lbm.token.v1.MsgSend)
-    - [MsgSendFrom](#lbm.token.v1.MsgSendFrom)
-    - [MsgSendFromResponse](#lbm.token.v1.MsgSendFromResponse)
     - [MsgSendResponse](#lbm.token.v1.MsgSendResponse)
   
     - [Msg](#lbm.token.v1.Msg)
@@ -12779,10 +12779,10 @@ QueryBalanceResponse is the response type for the Query/Balance RPC method
 
 
 
-<a name="lbm.token.v1.QueryBurnedRequest"></a>
+<a name="lbm.token.v1.QueryBurntRequest"></a>
 
-### QueryBurnedRequest
-QueryBurnedRequest is the request type for the Query/Burned RPC method
+### QueryBurntRequest
+QueryBurntRequest is the request type for the Query/Burnt RPC method
 
 
 | Field | Type | Label | Description |
@@ -12794,10 +12794,10 @@ QueryBurnedRequest is the request type for the Query/Burned RPC method
 
 
 
-<a name="lbm.token.v1.QueryBurnedResponse"></a>
+<a name="lbm.token.v1.QueryBurntResponse"></a>
 
-### QueryBurnedResponse
-QueryBurnedResponse is the response type for the Query/Burned RPC method
+### QueryBurntResponse
+QueryBurntResponse is the response type for the Query/Burnt RPC method
 
 
 | Field | Type | Label | Description |
@@ -12904,10 +12904,10 @@ QueryMintedResponse is the response type for the Query/Minted RPC method
 
 
 
-<a name="lbm.token.v1.QueryProxyAuthorizationsRequest"></a>
+<a name="lbm.token.v1.QueryOperatorAuthorizationsRequest"></a>
 
-### QueryProxyAuthorizationsRequest
-QueryProxyAuthorizationsRequest is the request type for the Query/ProxyAuthorizations RPC method
+### QueryOperatorAuthorizationsRequest
+QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAuthorizations RPC method
 
 
 | Field | Type | Label | Description |
@@ -12921,10 +12921,10 @@ QueryProxyAuthorizationsRequest is the request type for the Query/ProxyAuthoriza
 
 
 
-<a name="lbm.token.v1.QueryProxyAuthorizationsResponse"></a>
+<a name="lbm.token.v1.QueryOperatorAuthorizationsResponse"></a>
 
-### QueryProxyAuthorizationsResponse
-QueryProxyAuthorizationsResponse is the response type for the Query/ProxyAuthorizations RPC method
+### QueryOperatorAuthorizationsResponse
+QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method
 
 
 | Field | Type | Label | Description |
@@ -13044,13 +13044,13 @@ Query defines the gRPC querier service.
 | `Balance` | [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse) | Balance queries the number of tokens of a given contract owned by the address. | GET|/lbm/token/v1/token_classes/{contract_id}/balances/{address}|
 | `Supply` | [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse) | Supply queries the number of tokens from the given contract id. | GET|/lbm/token/v1/token_classes/{contract_id}/supply|
 | `Minted` | [QueryMintedRequest](#lbm.token.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.token.v1.QueryMintedResponse) | Minted queries the number of minted tokens from the given contract id. | GET|/lbm/token/v1/token_classes/{contract_id}/minted|
-| `Burned` | [QueryBurnedRequest](#lbm.token.v1.QueryBurnedRequest) | [QueryBurnedResponse](#lbm.token.v1.QueryBurnedResponse) | Burned queries the number of burned tokens from the given contract id. | GET|/lbm/token/v1/token_classes/{contract_id}/burned|
+| `Burnt` | [QueryBurntRequest](#lbm.token.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from the given contract id. | GET|/lbm/token/v1/token_classes/{contract_id}/burnt|
 | `TokenClass` | [QueryTokenClassRequest](#lbm.token.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.token.v1.QueryTokenClassResponse) | TokenClass queries an token metadata based on its contract id. | GET|/lbm/token/v1/token_classes/{contract_id}|
-| `TokenClasses` | [QueryTokenClassesRequest](#lbm.token.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.token.v1.QueryTokenClassesResponse) | TokenClasses queries all token metadata. | GET|/lbm/token/v1/token_classes|
-| `Grant` | [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse) | Grant queries a permission on a given grantee. | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}|
-| `GranteeGrants` | [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse) | GranteeGrants queries permissions on a given grantee. | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
+| `TokenClasses` | [QueryTokenClassesRequest](#lbm.token.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.token.v1.QueryTokenClassesResponse) | TokenClasses queries all token metadata. Since: finschia | GET|/lbm/token/v1/token_classes|
+| `Grant` | [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse) | Grant queries a permission on a given grantee. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}|
+| `GranteeGrants` | [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse) | GranteeGrants queries permissions on a given grantee. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
 | `Authorization` | [QueryAuthorizationRequest](#lbm.token.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.token.v1.QueryAuthorizationResponse) | Authorization queries authorization on a given proxy approver pair. | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{proxy}/{approver}|
-| `ProxyAuthorizations` | [QueryProxyAuthorizationsRequest](#lbm.token.v1.QueryProxyAuthorizationsRequest) | [QueryProxyAuthorizationsResponse](#lbm.token.v1.QueryProxyAuthorizationsResponse) | ProxyAuthorizations queries authorization on a given proxy approver pair. | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{proxy}|
+| `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.token.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.token.v1.QueryOperatorAuthorizationsResponse) | OperatorAuthorizations queries authorization on a given proxy. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{proxy}|
 
  <!-- end services -->
 
@@ -13128,34 +13128,6 @@ MsgBurn defines the Msg/Burn request type.
 | `contract_id` | [string](#string) |  |  |
 | `from` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgBurnFrom"></a>
-
-### MsgBurnFrom
-MsgBurnFrom defines the Msg/BurnFrom request type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  |  |
-| `proxy` | [string](#string) |  |  |
-| `from` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgBurnFromResponse"></a>
-
-### MsgBurnFromResponse
-MsgBurnFromResponse defines the Msg/BurnFrom response type.
 
 
 
@@ -13288,6 +13260,63 @@ MsgModifyResponse defines the Msg/Modify response type.
 
 
 
+<a name="lbm.token.v1.MsgOperatorBurn"></a>
+
+### MsgOperatorBurn
+MsgOperatorBurn defines the Msg/OperatorBurn request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  |  |
+| `proxy` | [string](#string) |  |  |
+| `from` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgOperatorBurnResponse"></a>
+
+### MsgOperatorBurnResponse
+MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgOperatorSend"></a>
+
+### MsgOperatorSend
+MsgOperatorSend defines the Msg/OperatorSend request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  |  |
+| `proxy` | [string](#string) |  |  |
+| `from` | [string](#string) |  |  |
+| `to` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgOperatorSendResponse"></a>
+
+### MsgOperatorSendResponse
+MsgOperatorSendResponse defines the Msg/OperatorSend response type.
+
+
+
+
+
+
 <a name="lbm.token.v1.MsgRevokeOperator"></a>
 
 ### MsgRevokeOperator
@@ -13333,35 +13362,6 @@ MsgSend defines the Msg/Send request type.
 
 
 
-<a name="lbm.token.v1.MsgSendFrom"></a>
-
-### MsgSendFrom
-MsgSendFrom defines the Msg/SendFrom request type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  |  |
-| `proxy` | [string](#string) |  |  |
-| `from` | [string](#string) |  |  |
-| `to` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgSendFromResponse"></a>
-
-### MsgSendFromResponse
-MsgSendFromResponse defines the Msg/SendFrom response type.
-
-
-
-
-
-
 <a name="lbm.token.v1.MsgSendResponse"></a>
 
 ### MsgSendResponse
@@ -13386,15 +13386,15 @@ Msg defines the token Msg service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Send` | [MsgSend](#lbm.token.v1.MsgSend) | [MsgSendResponse](#lbm.token.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. | |
-| `SendFrom` | [MsgSendFrom](#lbm.token.v1.MsgSendFrom) | [MsgSendFromResponse](#lbm.token.v1.MsgSendFromResponse) | SendFrom defines a method to send tokens from one account to another account by the proxy. | |
+| `OperatorSend` | [MsgOperatorSend](#lbm.token.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the proxy. | |
 | `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.token.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.token.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the approver. | |
-| `RevokeOperator` | [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse) | RevokeOperator revoke the authorization of the proxy to send the approver's tokens. | |
+| `RevokeOperator` | [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse) | RevokeOperator revoke the authorization of the proxy to send the approver's tokens. Since: finschia | |
 | `Issue` | [MsgIssue](#lbm.token.v1.MsgIssue) | [MsgIssueResponse](#lbm.token.v1.MsgIssueResponse) | Issue defines a method to create a class of token. | |
 | `Grant` | [MsgGrant](#lbm.token.v1.MsgGrant) | [MsgGrantResponse](#lbm.token.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify a token metadata. | |
 | `Abandon` | [MsgAbandon](#lbm.token.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.token.v1.MsgAbandonResponse) | Abandon abandons a permission. | |
 | `Mint` | [MsgMint](#lbm.token.v1.MsgMint) | [MsgMintResponse](#lbm.token.v1.MsgMintResponse) | Mint defines a method to mint tokens. | |
 | `Burn` | [MsgBurn](#lbm.token.v1.MsgBurn) | [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse) | Burn defines a method to burn tokens. | |
-| `BurnFrom` | [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom) | [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse) | BurnFrom defines a method to burn tokens. | |
+| `OperatorBurn` | [MsgOperatorBurn](#lbm.token.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.token.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens. | |
 | `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token class. | |
 
  <!-- end services -->

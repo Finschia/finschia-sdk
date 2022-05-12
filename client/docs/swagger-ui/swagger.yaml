@@ -38783,7 +38783,9 @@ paths:
         - Query
   /lbm/token/v1/token_classes:
     get:
-      summary: TokenClasses queries all token metadata.
+      summary: |-
+        TokenClasses queries all token metadata.
+        Since: finschia
       operationId: TokenClasses
       responses:
         '200':
@@ -39026,10 +39028,10 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/authorizations/{proxy}':
     get:
-      summary: >-
-        ProxyAuthorizations queries authorization on a given proxy approver
-        pair.
-      operationId: ProxyAuthorizations
+      summary: |-
+        OperatorAuthorizations queries authorization on a given proxy.
+        Since: finschia
+      operationId: OperatorAuthorizations
       responses:
         '200':
           description: A successful response.
@@ -39085,8 +39087,8 @@ paths:
                            PageResponse page = 2;
                    }
             title: >-
-              QueryProxyAuthorizationsResponse is the response type for the
-              Query/ProxyAuthorizations RPC method
+              QueryOperatorAuthorizationsResponse is the response type for the
+              Query/OperatorAuthorizations RPC method
         default:
           description: An unexpected error response
           schema:
@@ -39308,10 +39310,10 @@ paths:
           type: string
       tags:
         - Query
-  '/lbm/token/v1/token_classes/{contract_id}/burned':
+  '/lbm/token/v1/token_classes/{contract_id}/burnt':
     get:
-      summary: Burned queries the number of burned tokens from the given contract id.
-      operationId: Burned
+      summary: Burnt queries the number of burnt tokens from the given contract id.
+      operationId: Burnt
       responses:
         '200':
           description: A successful response.
@@ -39321,7 +39323,7 @@ paths:
               amount:
                 type: string
             title: >-
-              QueryBurnedResponse is the response type for the Query/Burned RPC
+              QueryBurntResponse is the response type for the Query/Burnt RPC
               method
         default:
           description: An unexpected error response
@@ -39355,7 +39357,9 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}':
     get:
-      summary: GranteeGrants queries permissions on a given grantee.
+      summary: |-
+        GranteeGrants queries permissions on a given grantee.
+        Since: finschia
       operationId: GranteeGrants
       responses:
         '200':
@@ -39421,7 +39425,9 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}':
     get:
-      summary: Grant queries a permission on a given grantee.
+      summary: |-
+        Grant queries a permission on a given grantee.
+        Since: finschia
       operationId: Grant
       responses:
         '200':
@@ -64071,12 +64077,12 @@ definitions:
       amount:
         type: string
     title: QueryBalanceResponse is the response type for the Query/Balance RPC method
-  lbm.token.v1.QueryBurnedResponse:
+  lbm.token.v1.QueryBurntResponse:
     type: object
     properties:
       amount:
         type: string
-    title: QueryBurnedResponse is the response type for the Query/Burned RPC method
+    title: QueryBurntResponse is the response type for the Query/Burnt RPC method
   lbm.token.v1.QueryGrantResponse:
     type: object
     properties:
@@ -64100,7 +64106,7 @@ definitions:
       amount:
         type: string
     title: QueryMintedResponse is the response type for the Query/Minted RPC method
-  lbm.token.v1.QueryProxyAuthorizationsResponse:
+  lbm.token.v1.QueryOperatorAuthorizationsResponse:
     type: object
     properties:
       authorizations:
@@ -64148,8 +64154,8 @@ definitions:
                    PageResponse page = 2;
            }
     title: >-
-      QueryProxyAuthorizationsResponse is the response type for the
-      Query/ProxyAuthorizations RPC method
+      QueryOperatorAuthorizationsResponse is the response type for the
+      Query/OperatorAuthorizations RPC method
   lbm.token.v1.QuerySupplyResponse:
     type: object
     properties:

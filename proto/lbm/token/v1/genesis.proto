@@ -48,8 +48,8 @@ message ClassGenesisState {
 // Balance defines an account address and balance pair used in the token module's
 // genesis state.
 message Balance {
-  string   address                 = 1;
-  repeated Coin coins = 2 [(gogoproto.nullable) = false];
+  string        address = 1;
+  repeated Coin coins   = 2 [(gogoproto.nullable) = false];
 }
 
 // Coin defines a token with a contract id and an amount.

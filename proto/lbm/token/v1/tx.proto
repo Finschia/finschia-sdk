@@ -14,13 +14,14 @@ service Msg {
   // Send defines a method to send tokens from one account to another account.
   rpc Send(MsgSend) returns (MsgSendResponse);
 
-  // SendFrom defines a method to send tokens from one account to another account by the proxy.
-  rpc SendFrom(MsgSendFrom) returns (MsgSendFromResponse);
+  // OperatorSend defines a method to send tokens from one account to another account by the proxy.
+  rpc OperatorSend(MsgOperatorSend) returns (MsgOperatorSendResponse);
 
   // AuthorizeOperator allows one to send tokens on behalf of the approver.
   rpc AuthorizeOperator(MsgAuthorizeOperator) returns (MsgAuthorizeOperatorResponse);
 
   // RevokeOperator revoke the authorization of the proxy to send the approver's tokens.
+  // Since: finschia
   rpc RevokeOperator(MsgRevokeOperator) returns (MsgRevokeOperatorResponse);
 
   // Issue defines a method to create a class of token.
@@ -38,8 +39,8 @@ service Msg {
   // Burn defines a method to burn tokens.
   rpc Burn(MsgBurn) returns (MsgBurnResponse);
 
-  // BurnFrom defines a method to burn tokens.
-  rpc BurnFrom(MsgBurnFrom) returns (MsgBurnFromResponse);
+  // OperatorBurn defines a method to burn tokens.
+  rpc OperatorBurn(MsgOperatorBurn) returns (MsgOperatorBurnResponse);
 
   // Modify defines a method to modify a token class.
   rpc Modify(MsgModify) returns (MsgModifyResponse);
@@ -56,8 +57,8 @@ message MsgSend {
 // MsgSendResponse defines the Msg/Send response type.
 message MsgSendResponse {}
 
-// MsgSendFrom defines the Msg/SendFrom request type.
-message MsgSendFrom {
+// MsgOperatorSend defines the Msg/OperatorSend request type.
+message MsgOperatorSend {
   string contract_id = 1;
   string proxy       = 2;
   string from        = 3;
@@ -65,8 +66,8 @@ message MsgSendFrom {
   string amount      = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// MsgSendFromResponse defines the Msg/SendFrom response type.
-message MsgSendFromResponse {}
+// MsgOperatorSendResponse defines the Msg/OperatorSend response type.
+message MsgOperatorSendResponse {}
 
 // MsgAuthorizeOperator defines the Msg/AuthorizeOperator request type.
 message MsgAuthorizeOperator {
@@ -160,16 +161,16 @@ message MsgBurn {
 // MsgBurnResponse defines the Msg/Burn response type.
 message MsgBurnResponse {}
 
-// MsgBurnFrom defines the Msg/BurnFrom request type.
-message MsgBurnFrom {
+// MsgOperatorBurn defines the Msg/OperatorBurn request type.
+message MsgOperatorBurn {
   string contract_id = 1;
   string proxy       = 2;
   string from        = 3;
   string amount      = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// MsgBurnFromResponse defines the Msg/BurnFrom response type.
-message MsgBurnFromResponse {}
+// MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
+message MsgOperatorBurnResponse {}
 
 // MsgModify defines the Msg/Modify request type.
 message MsgModify {

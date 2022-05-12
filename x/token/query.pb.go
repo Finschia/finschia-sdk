@@ -292,24 +292,24 @@ func (m *QueryMintedResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryMintedResponse proto.InternalMessageInfo
 
-// QueryBurnedRequest is the request type for the Query/Burned RPC method
-type QueryBurnedRequest struct {
+// QueryBurntRequest is the request type for the Query/Burnt RPC method
+type QueryBurntRequest struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 }
 
-func (m *QueryBurnedRequest) Reset()         { *m = QueryBurnedRequest{} }
-func (m *QueryBurnedRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryBurnedRequest) ProtoMessage()    {}
-func (*QueryBurnedRequest) Descriptor() ([]byte, []int) {
+func (m *QueryBurntRequest) Reset()         { *m = QueryBurntRequest{} }
+func (m *QueryBurntRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryBurntRequest) ProtoMessage()    {}
+func (*QueryBurntRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7759ed3b35cde06a, []int{6}
 }
-func (m *QueryBurnedRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryBurntRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryBurnedRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryBurntRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryBurnedRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryBurntRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -319,42 +319,42 @@ func (m *QueryBurnedRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *QueryBurnedRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryBurnedRequest.Merge(m, src)
+func (m *QueryBurntRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBurntRequest.Merge(m, src)
 }
-func (m *QueryBurnedRequest) XXX_Size() int {
+func (m *QueryBurntRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryBurnedRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryBurnedRequest.DiscardUnknown(m)
+func (m *QueryBurntRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBurntRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryBurnedRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryBurntRequest proto.InternalMessageInfo
 
-func (m *QueryBurnedRequest) GetContractId() string {
+func (m *QueryBurntRequest) GetContractId() string {
 	if m != nil {
 		return m.ContractId
 	}
 	return ""
 }
 
-// QueryBurnedResponse is the response type for the Query/Burned RPC method
-type QueryBurnedResponse struct {
+// QueryBurntResponse is the response type for the Query/Burnt RPC method
+type QueryBurntResponse struct {
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,1,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
-func (m *QueryBurnedResponse) Reset()         { *m = QueryBurnedResponse{} }
-func (m *QueryBurnedResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryBurnedResponse) ProtoMessage()    {}
-func (*QueryBurnedResponse) Descriptor() ([]byte, []int) {
+func (m *QueryBurntResponse) Reset()         { *m = QueryBurntResponse{} }
+func (m *QueryBurntResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryBurntResponse) ProtoMessage()    {}
+func (*QueryBurntResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7759ed3b35cde06a, []int{7}
 }
-func (m *QueryBurnedResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryBurntResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryBurnedResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryBurntResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryBurnedResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryBurntResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -364,17 +364,17 @@ func (m *QueryBurnedResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *QueryBurnedResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryBurnedResponse.Merge(m, src)
+func (m *QueryBurntResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBurntResponse.Merge(m, src)
 }
-func (m *QueryBurnedResponse) XXX_Size() int {
+func (m *QueryBurntResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryBurnedResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryBurnedResponse.DiscardUnknown(m)
+func (m *QueryBurntResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBurntResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryBurnedResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryBurntResponse proto.InternalMessageInfo
 
 // QueryTokenClassRequest is the request type for the Query/TokenClass RPC method
 type QueryTokenClassRequest struct {
@@ -900,8 +900,8 @@ func (m *QueryAuthorizationResponse) GetAuthorization() *Authorization {
 	return nil
 }
 
-// QueryProxyAuthorizationsRequest is the request type for the Query/ProxyAuthorizations RPC method
-type QueryProxyAuthorizationsRequest struct {
+// QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAuthorizations RPC method
+type QueryOperatorAuthorizationsRequest struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// proxy is the address of the operator which the authorization is granted to.
@@ -910,18 +910,18 @@ type QueryProxyAuthorizationsRequest struct {
 	Pagination *query.PageRequest `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryProxyAuthorizationsRequest) Reset()         { *m = QueryProxyAuthorizationsRequest{} }
-func (m *QueryProxyAuthorizationsRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryProxyAuthorizationsRequest) ProtoMessage()    {}
-func (*QueryProxyAuthorizationsRequest) Descriptor() ([]byte, []int) {
+func (m *QueryOperatorAuthorizationsRequest) Reset()         { *m = QueryOperatorAuthorizationsRequest{} }
+func (m *QueryOperatorAuthorizationsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryOperatorAuthorizationsRequest) ProtoMessage()    {}
+func (*QueryOperatorAuthorizationsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7759ed3b35cde06a, []int{18}
 }
-func (m *QueryProxyAuthorizationsRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryOperatorAuthorizationsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryProxyAuthorizationsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryOperatorAuthorizationsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryProxyAuthorizationsRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryOperatorAuthorizationsRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -931,57 +931,57 @@ func (m *QueryProxyAuthorizationsRequest) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
-func (m *QueryProxyAuthorizationsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryProxyAuthorizationsRequest.Merge(m, src)
+func (m *QueryOperatorAuthorizationsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryOperatorAuthorizationsRequest.Merge(m, src)
 }
-func (m *QueryProxyAuthorizationsRequest) XXX_Size() int {
+func (m *QueryOperatorAuthorizationsRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryProxyAuthorizationsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryProxyAuthorizationsRequest.DiscardUnknown(m)
+func (m *QueryOperatorAuthorizationsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryOperatorAuthorizationsRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryProxyAuthorizationsRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryOperatorAuthorizationsRequest proto.InternalMessageInfo
 
-func (m *QueryProxyAuthorizationsRequest) GetContractId() string {
+func (m *QueryOperatorAuthorizationsRequest) GetContractId() string {
 	if m != nil {
 		return m.ContractId
 	}
 	return ""
 }
 
-func (m *QueryProxyAuthorizationsRequest) GetProxy() string {
+func (m *QueryOperatorAuthorizationsRequest) GetProxy() string {
 	if m != nil {
 		return m.Proxy
 	}
 	return ""
 }
 
-func (m *QueryProxyAuthorizationsRequest) GetPagination() *query.PageRequest {
+func (m *QueryOperatorAuthorizationsRequest) GetPagination() *query.PageRequest {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-// QueryProxyAuthorizationsResponse is the response type for the Query/ProxyAuthorizations RPC method
-type QueryProxyAuthorizationsResponse struct {
+// QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method
+type QueryOperatorAuthorizationsResponse struct {
 	Authorizations []Authorization     `protobuf:"bytes,1,rep,name=authorizations,proto3" json:"authorizations"`
 	Pagination     *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryProxyAuthorizationsResponse) Reset()         { *m = QueryProxyAuthorizationsResponse{} }
-func (m *QueryProxyAuthorizationsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryProxyAuthorizationsResponse) ProtoMessage()    {}
-func (*QueryProxyAuthorizationsResponse) Descriptor() ([]byte, []int) {
+func (m *QueryOperatorAuthorizationsResponse) Reset()         { *m = QueryOperatorAuthorizationsResponse{} }
+func (m *QueryOperatorAuthorizationsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryOperatorAuthorizationsResponse) ProtoMessage()    {}
+func (*QueryOperatorAuthorizationsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_7759ed3b35cde06a, []int{19}
 }
-func (m *QueryProxyAuthorizationsResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryOperatorAuthorizationsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryProxyAuthorizationsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryOperatorAuthorizationsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryProxyAuthorizationsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryOperatorAuthorizationsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -991,26 +991,26 @@ func (m *QueryProxyAuthorizationsResponse) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
-func (m *QueryProxyAuthorizationsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryProxyAuthorizationsResponse.Merge(m, src)
+func (m *QueryOperatorAuthorizationsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryOperatorAuthorizationsResponse.Merge(m, src)
 }
-func (m *QueryProxyAuthorizationsResponse) XXX_Size() int {
+func (m *QueryOperatorAuthorizationsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryProxyAuthorizationsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryProxyAuthorizationsResponse.DiscardUnknown(m)
+func (m *QueryOperatorAuthorizationsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryOperatorAuthorizationsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryProxyAuthorizationsResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryOperatorAuthorizationsResponse proto.InternalMessageInfo
 
-func (m *QueryProxyAuthorizationsResponse) GetAuthorizations() []Authorization {
+func (m *QueryOperatorAuthorizationsResponse) GetAuthorizations() []Authorization {
 	if m != nil {
 		return m.Authorizations
 	}
 	return nil
 }
 
-func (m *QueryProxyAuthorizationsResponse) GetPagination() *query.PageResponse {
+func (m *QueryOperatorAuthorizationsResponse) GetPagination() *query.PageResponse {
 	if m != nil {
 		return m.Pagination
 	}
@@ -1024,8 +1024,8 @@ func init() {
 	proto.RegisterType((*QuerySupplyResponse)(nil), "lbm.token.v1.QuerySupplyResponse")
 	proto.RegisterType((*QueryMintedRequest)(nil), "lbm.token.v1.QueryMintedRequest")
 	proto.RegisterType((*QueryMintedResponse)(nil), "lbm.token.v1.QueryMintedResponse")
-	proto.RegisterType((*QueryBurnedRequest)(nil), "lbm.token.v1.QueryBurnedRequest")
-	proto.RegisterType((*QueryBurnedResponse)(nil), "lbm.token.v1.QueryBurnedResponse")
+	proto.RegisterType((*QueryBurntRequest)(nil), "lbm.token.v1.QueryBurntRequest")
+	proto.RegisterType((*QueryBurntResponse)(nil), "lbm.token.v1.QueryBurntResponse")
 	proto.RegisterType((*QueryTokenClassRequest)(nil), "lbm.token.v1.QueryTokenClassRequest")
 	proto.RegisterType((*QueryTokenClassResponse)(nil), "lbm.token.v1.QueryTokenClassResponse")
 	proto.RegisterType((*QueryTokenClassesRequest)(nil), "lbm.token.v1.QueryTokenClassesRequest")
@@ -1036,75 +1036,76 @@ func init() {
 	proto.RegisterType((*QueryGrantsResponse)(nil), "lbm.token.v1.QueryGrantsResponse")
 	proto.RegisterType((*QueryAuthorizationRequest)(nil), "lbm.token.v1.QueryAuthorizationRequest")
 	proto.RegisterType((*QueryAuthorizationResponse)(nil), "lbm.token.v1.QueryAuthorizationResponse")
-	proto.RegisterType((*QueryProxyAuthorizationsRequest)(nil), "lbm.token.v1.QueryProxyAuthorizationsRequest")
-	proto.RegisterType((*QueryProxyAuthorizationsResponse)(nil), "lbm.token.v1.QueryProxyAuthorizationsResponse")
+	proto.RegisterType((*QueryOperatorAuthorizationsRequest)(nil), "lbm.token.v1.QueryOperatorAuthorizationsRequest")
+	proto.RegisterType((*QueryOperatorAuthorizationsResponse)(nil), "lbm.token.v1.QueryOperatorAuthorizationsResponse")
 }
 
 func init() { proto.RegisterFile("lbm/token/v1/query.proto", fileDescriptor_7759ed3b35cde06a) }
 
 var fileDescriptor_7759ed3b35cde06a = []byte{
-	// 974 bytes of a gzipped FileDescriptorProto
+	// 992 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x97, 0xcf, 0x6f, 0x1b, 0x45,
-	0x14, 0xc7, 0x33, 0x09, 0x4e, 0xe0, 0x35, 0x41, 0x62, 0x12, 0x81, 0xd9, 0xc2, 0xda, 0x59, 0x7e,
-	0x35, 0x42, 0xdd, 0xc1, 0x41, 0x48, 0x2d, 0xaa, 0x5a, 0x6a, 0x90, 0x82, 0x85, 0x2a, 0x82, 0xcb,
-	0x01, 0x7a, 0x89, 0x76, 0xed, 0xd1, 0x76, 0xd5, 0xf5, 0xce, 0x76, 0x67, 0x1d, 0x35, 0x58, 0xbe,
-	0x20, 0x04, 0x42, 0x42, 0x02, 0x09, 0xa9, 0x42, 0xe2, 0x7f, 0xe0, 0xca, 0x8d, 0x73, 0x8f, 0x95,
-	0xb8, 0x20, 0x0e, 0x15, 0x4a, 0xf8, 0x43, 0xaa, 0x9d, 0x99, 0xb5, 0x77, 0x9a, 0xb5, 0xb3, 0xb1,
-	0x7d, 0xf3, 0xcc, 0xbc, 0x1f, 0x9f, 0x99, 0x37, 0x6f, 0xbe, 0x6b, 0xa8, 0x06, 0x6e, 0x8f, 0x24,
-	0xec, 0x1e, 0x0d, 0xc9, 0x61, 0x83, 0xdc, 0xef, 0xd3, 0xf8, 0xc8, 0x8e, 0x62, 0x96, 0x30, 0xbc,
-	0x1e, 0xb8, 0x3d, 0x5b, 0xac, 0xd8, 0x87, 0x0d, 0xc3, 0x4a, 0xed, 0x5c, 0x87, 0x53, 0x69, 0x93,
-	0x1a, 0x47, 0x8e, 0xe7, 0x87, 0x4e, 0xe2, 0xb3, 0x50, 0x7a, 0x18, 0xaf, 0x79, 0x8c, 0x79, 0x01,
-	0x25, 0x4e, 0xe4, 0x13, 0x27, 0x0c, 0x59, 0x22, 0x16, 0xb9, 0x5a, 0xd5, 0x33, 0xc9, 0xc0, 0x72,
-	0x65, 0xcb, 0x63, 0x1e, 0x13, 0x3f, 0x49, 0xfa, 0x4b, 0xce, 0x5a, 0xfb, 0xb0, 0xf9, 0x45, 0x9a,
-	0xaa, 0xe9, 0x04, 0x4e, 0xd8, 0xa1, 0x6d, 0x7a, 0xbf, 0x4f, 0x79, 0x82, 0x6b, 0x70, 0xa1, 0xc3,
-	0xc2, 0x24, 0x76, 0x3a, 0xc9, 0x81, 0xdf, 0xad, 0xa2, 0x3a, 0xba, 0xf4, 0x42, 0x1b, 0xb2, 0xa9,
-	0x56, 0x17, 0x57, 0x61, 0xcd, 0xe9, 0x76, 0x63, 0xca, 0x79, 0x75, 0x59, 0x2c, 0x66, 0x43, 0xeb,
-	0x6b, 0xd8, 0xd2, 0x23, 0xf2, 0x88, 0x85, 0x9c, 0xe2, 0x9b, 0xb0, 0xea, 0xf4, 0x58, 0x3f, 0x4c,
-	0x64, 0xb4, 0xe6, 0xce, 0xa3, 0x27, 0xb5, 0xa5, 0x7f, 0x9f, 0xd4, 0xb6, 0x3d, 0x3f, 0xb9, 0xdb,
-	0x77, 0xed, 0x0e, 0xeb, 0x91, 0xc0, 0x0f, 0x29, 0x09, 0xdc, 0xde, 0x65, 0xde, 0xbd, 0x47, 0x92,
-	0xa3, 0x88, 0x72, 0xbb, 0x15, 0x26, 0x6d, 0xe5, 0x68, 0x7d, 0x00, 0x58, 0x84, 0xbe, 0xdd, 0x8f,
-	0xa2, 0xe0, 0xa8, 0x2c, 0xab, 0xf5, 0x95, 0xda, 0x63, 0xe6, 0xb6, 0x78, 0xa0, 0x5b, 0x7e, 0x98,
-	0xd0, 0xee, 0xb9, 0x81, 0x32, 0xb7, 0xc5, 0x03, 0x35, 0xfb, 0x71, 0x38, 0x03, 0x50, 0xe6, 0xb6,
-	0x38, 0xa0, 0xab, 0xf0, 0xb2, 0x88, 0xfc, 0x65, 0x7a, 0x13, 0x3f, 0x0e, 0x1c, 0xce, 0x4b, 0x43,
-	0xb5, 0xe0, 0x95, 0x53, 0xae, 0x0a, 0xcc, 0x86, 0x4a, 0x27, 0x9d, 0x10, 0x5e, 0x17, 0x76, 0xab,
-	0x76, 0xbe, 0x8b, 0xec, 0x9c, 0x83, 0x34, 0xb3, 0xee, 0x40, 0xf5, 0x99, 0x50, 0x74, 0xc4, 0x71,
-	0x1d, 0x60, 0xdc, 0x63, 0x2a, 0xa0, 0x29, 0x02, 0xa6, 0x8d, 0x68, 0xcb, 0x66, 0x3d, 0x6c, 0xd8,
-	0xfb, 0x8e, 0x97, 0xb5, 0x47, 0x3b, 0xe7, 0x61, 0x3d, 0x44, 0xf0, 0x6a, 0x41, 0x70, 0x45, 0x7a,
-	0x05, 0xd6, 0x3a, 0x72, 0xaa, 0x8a, 0xea, 0x2b, 0xd3, 0x58, 0x9b, 0xcf, 0xa5, 0xa7, 0xdb, 0xce,
-	0xcc, 0xf1, 0x0d, 0x8d, 0x6b, 0x59, 0x70, 0xd5, 0x26, 0x72, 0xc9, 0x74, 0x1a, 0x58, 0x08, 0x2f,
-	0x09, 0xae, 0xbd, 0xd8, 0x09, 0x93, 0xf3, 0x34, 0xb6, 0x97, 0x3a, 0x50, 0x9a, 0x35, 0xb6, 0x1a,
-	0x62, 0x13, 0x20, 0xa2, 0x71, 0xcf, 0xe7, 0x3c, 0x05, 0x5a, 0x91, 0x9e, 0xe3, 0x19, 0xeb, 0x86,
-	0xba, 0x7b, 0x2a, 0x9f, 0x3a, 0x80, 0x1d, 0xa8, 0x88, 0x00, 0xea, 0x64, 0x37, 0xf5, 0xed, 0x4b,
-	0x5b, 0x69, 0x61, 0xfd, 0x8c, 0xf2, 0x11, 0xf8, 0x02, 0x90, 0xf5, 0xda, 0xae, 0x9c, 0xbb, 0xb6,
-	0x3f, 0x22, 0xd5, 0x18, 0x19, 0x91, 0xda, 0x54, 0x03, 0x56, 0x45, 0x8a, 0xac, 0xa8, 0x45, 0xbb,
-	0x52, 0xf5, 0x54, 0x86, 0x8b, 0x28, 0xa7, 0xbc, 0x66, 0x37, 0xfb, 0xc9, 0x5d, 0x16, 0xfb, 0xdf,
-	0x88, 0xd9, 0xd2, 0x67, 0xb4, 0x05, 0x95, 0x28, 0x66, 0x0f, 0x8e, 0xd4, 0x09, 0xc9, 0x01, 0x36,
-	0xe0, 0x79, 0x27, 0x8a, 0x62, 0x76, 0x48, 0x63, 0x55, 0xd0, 0xd1, 0xd8, 0x3a, 0x00, 0xa3, 0x28,
-	0xdf, 0xe8, 0x69, 0xd8, 0x70, 0xf2, 0x0b, 0xaa, 0xbc, 0x17, 0xf5, 0x83, 0xd0, 0x7d, 0x75, 0x0f,
-	0xeb, 0x37, 0x04, 0x35, 0x91, 0x61, 0x3f, 0x65, 0xd1, 0x4c, 0xf9, 0x9c, 0xfb, 0x9a, 0xb7, 0xee,
-	0x7f, 0x20, 0xa8, 0x4f, 0x46, 0x53, 0x47, 0xd0, 0x82, 0x17, 0xb5, 0x0d, 0x65, 0x97, 0x61, 0xda,
-	0x19, 0xa8, 0x4b, 0xf1, 0x8c, 0xe3, 0xdc, 0x97, 0x63, 0xf7, 0xfb, 0x75, 0xa8, 0x08, 0x60, 0xfc,
-	0x10, 0xc1, 0x9a, 0x92, 0x5e, 0xbc, 0xad, 0x93, 0x14, 0x08, 0xbd, 0x61, 0x4d, 0x33, 0x91, 0x89,
-	0xac, 0x4f, 0xbe, 0xfd, 0xfb, 0xff, 0x5f, 0x97, 0xaf, 0xe3, 0x6b, 0xe4, 0xf4, 0xc7, 0xc5, 0x81,
-	0x7a, 0xae, 0xc8, 0x20, 0x57, 0xa7, 0x21, 0x71, 0x65, 0x08, 0x4e, 0x06, 0xea, 0xb3, 0x60, 0x88,
-	0x7f, 0x40, 0xb0, 0x2a, 0x15, 0x18, 0xd7, 0x0b, 0x92, 0x6a, 0x9a, 0x6e, 0x6c, 0x4f, 0xb1, 0x50,
-	0x54, 0x57, 0x04, 0xd5, 0x2e, 0x7e, 0xaf, 0x3c, 0x15, 0x97, 0xe9, 0x53, 0x12, 0x29, 0xbd, 0x85,
-	0x24, 0x9a, 0x98, 0x17, 0x92, 0xe8, 0xba, 0x3d, 0x0b, 0x49, 0x4f, 0xa6, 0x4f, 0x49, 0xa4, 0xe6,
-	0x16, 0x92, 0x68, 0x2a, 0x5e, 0x48, 0xa2, 0x0b, 0xf6, 0x2c, 0x24, 0xae, 0x4c, 0xff, 0x13, 0x02,
-	0x18, 0x6b, 0x11, 0x7e, 0xb3, 0x20, 0xd7, 0x29, 0x09, 0x37, 0xde, 0x3a, 0xc3, 0x4a, 0x51, 0x35,
-	0x04, 0xd5, 0xbb, 0x78, 0xa7, 0x34, 0x15, 0xfe, 0x0e, 0xc1, 0x7a, 0x5e, 0x4f, 0xf1, 0xdb, 0x53,
-	0x53, 0x8d, 0xd4, 0xdc, 0x78, 0xe7, 0x4c, 0x3b, 0x05, 0xf5, 0x86, 0x80, 0x7a, 0x1d, 0x5f, 0x9c,
-	0x02, 0x85, 0x7f, 0x47, 0x50, 0x11, 0x8f, 0x39, 0xae, 0x15, 0xc4, 0xcd, 0x0b, 0xab, 0x51, 0x9f,
-	0x6c, 0xa0, 0x32, 0x7e, 0x2e, 0x32, 0xb6, 0xf0, 0x5e, 0xf9, 0xe2, 0x48, 0xed, 0x20, 0x03, 0xa5,
-	0x67, 0x43, 0x32, 0x18, 0xeb, 0xed, 0x30, 0x6d, 0xf5, 0x8d, 0x3d, 0xb9, 0x22, 0xf5, 0x69, 0x11,
-	0x94, 0x4d, 0x41, 0x79, 0x0d, 0x7f, 0x38, 0x3b, 0x25, 0xfe, 0x13, 0xc1, 0x86, 0xf6, 0xec, 0xe1,
-	0xa2, 0xb2, 0x14, 0x09, 0x99, 0x71, 0xe9, 0x6c, 0x43, 0x05, 0x7a, 0x5b, 0x80, 0xde, 0xc2, 0x9f,
-	0x95, 0x07, 0xd5, 0x5f, 0x5d, 0x32, 0x10, 0x62, 0x31, 0x24, 0x83, 0x4c, 0xf3, 0x86, 0xf8, 0x2f,
-	0x04, 0x9b, 0x05, 0x6f, 0x3e, 0xbe, 0x5c, 0x80, 0x35, 0x59, 0xb6, 0x0c, 0xbb, 0xac, 0xb9, 0xda,
-	0xcb, 0xa7, 0x62, 0x2f, 0x4d, 0xfc, 0xd1, 0xbc, 0x7b, 0x69, 0x5e, 0x7d, 0x74, 0x6c, 0xa2, 0xc7,
-	0xc7, 0x26, 0xfa, 0xef, 0xd8, 0x44, 0xbf, 0x9c, 0x98, 0x4b, 0x8f, 0x4f, 0xcc, 0xa5, 0x7f, 0x4e,
-	0xcc, 0xa5, 0x3b, 0xb5, 0x49, 0x1f, 0xed, 0x0f, 0x64, 0x1e, 0x77, 0x55, 0xfc, 0x23, 0x7c, 0xff,
-	0x69, 0x00, 0x00, 0x00, 0xff, 0xff, 0x2b, 0xcf, 0xef, 0x30, 0xad, 0x0e, 0x00, 0x00,
+	0x14, 0xc7, 0x33, 0x09, 0x4e, 0xe0, 0x35, 0x41, 0x62, 0x1a, 0x15, 0xb3, 0x05, 0x3b, 0xd9, 0xf2,
+	0xa3, 0x11, 0x62, 0xa7, 0x0e, 0x20, 0x5a, 0x54, 0xb5, 0xd4, 0x20, 0x05, 0x0b, 0x55, 0x2d, 0x2e,
+	0x12, 0xd0, 0x4b, 0x34, 0xb6, 0x47, 0xee, 0xaa, 0xf6, 0xce, 0x76, 0x67, 0x1d, 0x35, 0x58, 0xbe,
+	0x00, 0x12, 0x42, 0x20, 0x81, 0x84, 0xd4, 0x4b, 0xff, 0x0a, 0x4e, 0xfc, 0x09, 0xf4, 0x58, 0x89,
+	0x0b, 0xe2, 0x50, 0xa1, 0x84, 0x3f, 0x04, 0xed, 0xcc, 0xdb, 0x64, 0xa7, 0xd9, 0x6c, 0x36, 0x8d,
+	0x6f, 0x9e, 0x99, 0xf7, 0xe3, 0xf3, 0xe6, 0xcd, 0xcc, 0x77, 0x0d, 0xd5, 0x41, 0x67, 0xc8, 0x62,
+	0x79, 0x57, 0x04, 0x6c, 0xab, 0xc1, 0xee, 0x8d, 0x44, 0xb4, 0xed, 0x85, 0x91, 0x8c, 0x25, 0x5d,
+	0x1c, 0x74, 0x86, 0x9e, 0x5e, 0xf1, 0xb6, 0x1a, 0x8e, 0x9b, 0xd8, 0x75, 0xb8, 0x12, 0xc6, 0x26,
+	0x31, 0x0e, 0x79, 0xdf, 0x0f, 0x78, 0xec, 0xcb, 0xc0, 0x78, 0x38, 0xaf, 0xf6, 0xa5, 0xec, 0x0f,
+	0x04, 0xe3, 0xa1, 0xcf, 0x78, 0x10, 0xc8, 0x58, 0x2f, 0x2a, 0x5c, 0xb5, 0x33, 0x99, 0xc0, 0x66,
+	0x65, 0xb9, 0x2f, 0xfb, 0x52, 0xff, 0x64, 0xc9, 0x2f, 0x33, 0xeb, 0xde, 0x84, 0xd3, 0x9f, 0x27,
+	0xa9, 0x9a, 0x7c, 0xc0, 0x83, 0xae, 0x68, 0x8b, 0x7b, 0x23, 0xa1, 0x62, 0x5a, 0x87, 0x53, 0x5d,
+	0x19, 0xc4, 0x11, 0xef, 0xc6, 0x9b, 0x7e, 0xaf, 0x4a, 0x56, 0xc8, 0xf9, 0x17, 0xda, 0x90, 0x4e,
+	0xb5, 0x7a, 0xb4, 0x0a, 0x0b, 0xbc, 0xd7, 0x8b, 0x84, 0x52, 0xd5, 0x59, 0xbd, 0x98, 0x0e, 0xdd,
+	0xaf, 0x61, 0xd9, 0x8e, 0xa8, 0x42, 0x19, 0x28, 0x41, 0xaf, 0xc1, 0x3c, 0x1f, 0xca, 0x51, 0x10,
+	0x9b, 0x68, 0xcd, 0xb5, 0x47, 0x4f, 0xea, 0x33, 0xff, 0x3c, 0xa9, 0xaf, 0xf6, 0xfd, 0xf8, 0xce,
+	0xa8, 0xe3, 0x75, 0xe5, 0x90, 0x0d, 0xfc, 0x40, 0xb0, 0x41, 0x67, 0xf8, 0x8e, 0xea, 0xdd, 0x65,
+	0xf1, 0x76, 0x28, 0x94, 0xd7, 0x0a, 0xe2, 0x36, 0x3a, 0xba, 0xef, 0x03, 0xd5, 0xa1, 0x6f, 0x8d,
+	0xc2, 0x70, 0xb0, 0x5d, 0x96, 0xd5, 0xfd, 0x0a, 0x6b, 0x4c, 0xdd, 0xa6, 0x0f, 0x74, 0xdd, 0x0f,
+	0x62, 0xd1, 0x3b, 0x36, 0x50, 0xea, 0x36, 0x3d, 0xa0, 0xf7, 0xe0, 0x25, 0xb3, 0xf9, 0xa3, 0x28,
+	0x88, 0x4b, 0xf3, 0x7c, 0x89, 0x65, 0xa0, 0xd7, 0xf4, 0x70, 0x2e, 0xc1, 0x19, 0x1d, 0xf8, 0x8b,
+	0xe4, 0x1c, 0x7e, 0x3c, 0xe0, 0x4a, 0x95, 0x66, 0x6a, 0xc1, 0xcb, 0x07, 0x5c, 0x11, 0xcc, 0x83,
+	0x4a, 0x37, 0x99, 0xd0, 0x5e, 0xa7, 0xd6, 0xab, 0x5e, 0xf6, 0x0e, 0x79, 0x19, 0x07, 0x63, 0xe6,
+	0xde, 0x86, 0xea, 0x53, 0xa1, 0xc4, 0x1e, 0xc7, 0x15, 0x80, 0xfd, 0x1b, 0x86, 0x01, 0x6b, 0x3a,
+	0x60, 0x72, 0x0d, 0x3d, 0x73, 0x55, 0xb7, 0x1a, 0xde, 0x4d, 0xde, 0x4f, 0x2f, 0x47, 0x3b, 0xe3,
+	0xe1, 0x3e, 0x20, 0xf0, 0x4a, 0x4e, 0x70, 0x24, 0xbd, 0x08, 0x0b, 0x5d, 0x33, 0x55, 0x25, 0x2b,
+	0x73, 0x45, 0xac, 0xcd, 0xe7, 0x92, 0xdd, 0x6d, 0xa7, 0xe6, 0xf4, 0xaa, 0xc5, 0x35, 0xab, 0xb9,
+	0xea, 0x87, 0x72, 0x99, 0x74, 0x16, 0x58, 0x80, 0x27, 0x61, 0x23, 0xe2, 0xe5, 0x4f, 0x42, 0x72,
+	0xad, 0xfb, 0x89, 0x83, 0x10, 0xe9, 0xb5, 0xc6, 0x21, 0xad, 0x01, 0x84, 0x22, 0x1a, 0xfa, 0x4a,
+	0x25, 0x40, 0x73, 0xc6, 0x73, 0x7f, 0xc6, 0xbd, 0x8a, 0x67, 0x08, 0xf3, 0xe1, 0x06, 0xac, 0x41,
+	0x45, 0x07, 0xc0, 0x9d, 0x3d, 0x6d, 0x97, 0x6f, 0x6c, 0x8d, 0x85, 0xfb, 0x0b, 0xc9, 0x46, 0x50,
+	0x53, 0x40, 0xb6, 0x7b, 0x3b, 0x77, 0xec, 0xde, 0xfe, 0x48, 0xf0, 0x9e, 0xa6, 0x44, 0x58, 0x54,
+	0x03, 0xe6, 0x75, 0x8a, 0xb4, 0xa9, 0x79, 0x55, 0x61, 0x3f, 0xd1, 0x70, 0x1a, 0xed, 0x34, 0xc7,
+	0xec, 0xda, 0x28, 0xbe, 0x23, 0x23, 0xff, 0x1b, 0x3d, 0x5b, 0x7a, 0x8f, 0x96, 0xa1, 0x12, 0x46,
+	0xf2, 0xfe, 0x36, 0xee, 0x90, 0x19, 0x50, 0x07, 0x9e, 0xe7, 0x61, 0x18, 0xc9, 0x2d, 0x11, 0x61,
+	0x43, 0xf7, 0xc6, 0xee, 0x26, 0x38, 0x79, 0xf9, 0xf6, 0x9e, 0x86, 0x25, 0x9e, 0x5d, 0xc0, 0xf6,
+	0x9e, 0xb5, 0x37, 0xc2, 0xf6, 0xb5, 0x3d, 0xdc, 0x87, 0x04, 0x5c, 0x9d, 0xe1, 0x46, 0x28, 0x22,
+	0x1e, 0xcb, 0xc8, 0xb2, 0x56, 0x27, 0x2c, 0xed, 0xa4, 0xad, 0xff, 0x9d, 0xc0, 0xb9, 0x42, 0x3a,
+	0xdc, 0x88, 0x16, 0xbc, 0x68, 0x95, 0x95, 0x1e, 0x89, 0xa2, 0x9d, 0xc0, 0xa3, 0xf1, 0x94, 0xe3,
+	0x89, 0x8f, 0xc8, 0xfa, 0x4f, 0x8b, 0x50, 0xd1, 0xcc, 0xf4, 0x01, 0x81, 0x05, 0x94, 0x5f, 0xba,
+	0x6a, 0x93, 0xe4, 0x88, 0xbd, 0xe3, 0x16, 0x99, 0x98, 0x44, 0xee, 0x27, 0xdf, 0xfe, 0xf5, 0xdf,
+	0x6f, 0xb3, 0x57, 0xe8, 0x65, 0x76, 0xf0, 0x03, 0x63, 0x13, 0x1f, 0x2d, 0x36, 0xce, 0xb4, 0x6a,
+	0xc2, 0x3a, 0x26, 0x84, 0x62, 0x63, 0xfc, 0x34, 0x98, 0xd0, 0x1f, 0x08, 0xcc, 0x1b, 0x15, 0xa6,
+	0x2b, 0x39, 0x49, 0x2d, 0x5d, 0x77, 0x56, 0x0b, 0x2c, 0x90, 0xea, 0xa2, 0xa6, 0x5a, 0xa7, 0x17,
+	0xca, 0x53, 0x29, 0x93, 0x3e, 0x21, 0x31, 0xf2, 0x9b, 0x4b, 0x62, 0x09, 0x7a, 0x2e, 0x89, 0xad,
+	0xdd, 0xcf, 0x42, 0x32, 0x34, 0xe9, 0xbf, 0x23, 0x50, 0xd1, 0xc2, 0x4b, 0xeb, 0x79, 0x7d, 0xc8,
+	0x08, 0xb9, 0xb3, 0x72, 0xb8, 0x01, 0x62, 0x7c, 0xa0, 0x31, 0x1a, 0x94, 0x1d, 0xa3, 0x4d, 0x3a,
+	0xf7, 0xcf, 0x04, 0x60, 0x5f, 0x8d, 0xe8, 0xeb, 0x39, 0x99, 0x0e, 0x88, 0xb8, 0xf3, 0xc6, 0x11,
+	0x56, 0x08, 0xd5, 0xd0, 0x50, 0x6f, 0xd3, 0xb5, 0xd2, 0x50, 0xf4, 0x7b, 0x02, 0x8b, 0x59, 0x45,
+	0xa5, 0x6f, 0x16, 0xa6, 0xda, 0xd3, 0x73, 0xe7, 0xad, 0x23, 0xed, 0x10, 0xea, 0x9c, 0x86, 0x7a,
+	0x8d, 0x9e, 0x2d, 0x80, 0xa2, 0x0f, 0x09, 0x54, 0xf4, 0x73, 0x9e, 0xdb, 0x9b, 0xac, 0xb4, 0xe6,
+	0xf6, 0xc6, 0xd2, 0x42, 0xf7, 0x86, 0xce, 0xd8, 0xa2, 0x1b, 0xe5, 0x7b, 0x63, 0xd4, 0x83, 0x8d,
+	0x51, 0xd1, 0x26, 0x6c, 0xbc, 0xaf, 0xb8, 0x93, 0xe4, 0x9a, 0x2f, 0x6d, 0x98, 0x15, 0xa3, 0x50,
+	0xd3, 0xa0, 0x6c, 0x6a, 0xca, 0xcb, 0xf4, 0xc3, 0x67, 0xa7, 0xa4, 0x7f, 0x10, 0x58, 0xb2, 0x9e,
+	0x3c, 0x9a, 0xd7, 0x96, 0x3c, 0x29, 0x73, 0xce, 0x1f, 0x6d, 0x88, 0xa0, 0xb7, 0x34, 0xe8, 0x75,
+	0xfa, 0x59, 0x79, 0x50, 0xfb, 0xc5, 0x65, 0x63, 0xad, 0x15, 0x13, 0x36, 0x4e, 0x55, 0x6f, 0x42,
+	0xff, 0x24, 0x70, 0x26, 0xff, 0xc9, 0xa7, 0x17, 0x72, 0xc8, 0x0a, 0xb5, 0xcb, 0x69, 0x1c, 0xc3,
+	0x03, 0x8b, 0xfa, 0x54, 0x17, 0xd5, 0xa4, 0x1f, 0x9d, 0xb4, 0xa8, 0xe6, 0xa5, 0x47, 0x3b, 0x35,
+	0xf2, 0x78, 0xa7, 0x46, 0xfe, 0xdd, 0xa9, 0x91, 0x5f, 0x77, 0x6b, 0x33, 0x8f, 0x77, 0x6b, 0x33,
+	0x7f, 0xef, 0xd6, 0x66, 0x6e, 0xd7, 0x0f, 0xfb, 0x7e, 0xbf, 0x6f, 0xf2, 0x74, 0xe6, 0xf5, 0x5f,
+	0xc3, 0x77, 0xff, 0x0f, 0x00, 0x00, 0xff, 0xff, 0x5f, 0x04, 0x0c, 0x79, 0xb6, 0x0e, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1125,20 +1126,24 @@ type QueryClient interface {
 	Supply(ctx context.Context, in *QuerySupplyRequest, opts ...grpc.CallOption) (*QuerySupplyResponse, error)
 	// Minted queries the number of minted tokens from the given contract id.
 	Minted(ctx context.Context, in *QueryMintedRequest, opts ...grpc.CallOption) (*QueryMintedResponse, error)
-	// Burned queries the number of burned tokens from the given contract id.
-	Burned(ctx context.Context, in *QueryBurnedRequest, opts ...grpc.CallOption) (*QueryBurnedResponse, error)
+	// Burnt queries the number of burnt tokens from the given contract id.
+	Burnt(ctx context.Context, in *QueryBurntRequest, opts ...grpc.CallOption) (*QueryBurntResponse, error)
 	// TokenClass queries an token metadata based on its contract id.
 	TokenClass(ctx context.Context, in *QueryTokenClassRequest, opts ...grpc.CallOption) (*QueryTokenClassResponse, error)
 	// TokenClasses queries all token metadata.
+	// Since: finschia
 	TokenClasses(ctx context.Context, in *QueryTokenClassesRequest, opts ...grpc.CallOption) (*QueryTokenClassesResponse, error)
 	// Grant queries a permission on a given grantee.
+	// Since: finschia
 	Grant(ctx context.Context, in *QueryGrantRequest, opts ...grpc.CallOption) (*QueryGrantResponse, error)
 	// GranteeGrants queries permissions on a given grantee.
+	// Since: finschia
 	GranteeGrants(ctx context.Context, in *QueryGrantRequest, opts ...grpc.CallOption) (*QueryGrantResponse, error)
 	// Authorization queries authorization on a given proxy approver pair.
 	Authorization(ctx context.Context, in *QueryAuthorizationRequest, opts ...grpc.CallOption) (*QueryAuthorizationResponse, error)
-	// ProxyAuthorizations queries authorization on a given proxy approver pair.
-	ProxyAuthorizations(ctx context.Context, in *QueryProxyAuthorizationsRequest, opts ...grpc.CallOption) (*QueryProxyAuthorizationsResponse, error)
+	// OperatorAuthorizations queries authorization on a given proxy.
+	// Since: finschia
+	OperatorAuthorizations(ctx context.Context, in *QueryOperatorAuthorizationsRequest, opts ...grpc.CallOption) (*QueryOperatorAuthorizationsResponse, error)
 }
 
 type queryClient struct {
@@ -1176,9 +1181,9 @@ func (c *queryClient) Minted(ctx context.Context, in *QueryMintedRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) Burned(ctx context.Context, in *QueryBurnedRequest, opts ...grpc.CallOption) (*QueryBurnedResponse, error) {
-	out := new(QueryBurnedResponse)
-	err := c.cc.Invoke(ctx, "/lbm.token.v1.Query/Burned", in, out, opts...)
+func (c *queryClient) Burnt(ctx context.Context, in *QueryBurntRequest, opts ...grpc.CallOption) (*QueryBurntResponse, error) {
+	out := new(QueryBurntResponse)
+	err := c.cc.Invoke(ctx, "/lbm.token.v1.Query/Burnt", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1230,9 +1235,9 @@ func (c *queryClient) Authorization(ctx context.Context, in *QueryAuthorizationR
 	return out, nil
 }
 
-func (c *queryClient) ProxyAuthorizations(ctx context.Context, in *QueryProxyAuthorizationsRequest, opts ...grpc.CallOption) (*QueryProxyAuthorizationsResponse, error) {
-	out := new(QueryProxyAuthorizationsResponse)
-	err := c.cc.Invoke(ctx, "/lbm.token.v1.Query/ProxyAuthorizations", in, out, opts...)
+func (c *queryClient) OperatorAuthorizations(ctx context.Context, in *QueryOperatorAuthorizationsRequest, opts ...grpc.CallOption) (*QueryOperatorAuthorizationsResponse, error) {
+	out := new(QueryOperatorAuthorizationsResponse)
+	err := c.cc.Invoke(ctx, "/lbm.token.v1.Query/OperatorAuthorizations", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1247,20 +1252,24 @@ type QueryServer interface {
 	Supply(context.Context, *QuerySupplyRequest) (*QuerySupplyResponse, error)
 	// Minted queries the number of minted tokens from the given contract id.
 	Minted(context.Context, *QueryMintedRequest) (*QueryMintedResponse, error)
-	// Burned queries the number of burned tokens from the given contract id.
-	Burned(context.Context, *QueryBurnedRequest) (*QueryBurnedResponse, error)
+	// Burnt queries the number of burnt tokens from the given contract id.
+	Burnt(context.Context, *QueryBurntRequest) (*QueryBurntResponse, error)
 	// TokenClass queries an token metadata based on its contract id.
 	TokenClass(context.Context, *QueryTokenClassRequest) (*QueryTokenClassResponse, error)
 	// TokenClasses queries all token metadata.
+	// Since: finschia
 	TokenClasses(context.Context, *QueryTokenClassesRequest) (*QueryTokenClassesResponse, error)
 	// Grant queries a permission on a given grantee.
+	// Since: finschia
 	Grant(context.Context, *QueryGrantRequest) (*QueryGrantResponse, error)
 	// GranteeGrants queries permissions on a given grantee.
+	// Since: finschia
 	GranteeGrants(context.Context, *QueryGrantRequest) (*QueryGrantResponse, error)
 	// Authorization queries authorization on a given proxy approver pair.
 	Authorization(context.Context, *QueryAuthorizationRequest) (*QueryAuthorizationResponse, error)
-	// ProxyAuthorizations queries authorization on a given proxy approver pair.
-	ProxyAuthorizations(context.Context, *QueryProxyAuthorizationsRequest) (*QueryProxyAuthorizationsResponse, error)
+	// OperatorAuthorizations queries authorization on a given proxy.
+	// Since: finschia
+	OperatorAuthorizations(context.Context, *QueryOperatorAuthorizationsRequest) (*QueryOperatorAuthorizationsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -1276,8 +1285,8 @@ func (*UnimplementedQueryServer) Supply(ctx context.Context, req *QuerySupplyReq
 func (*UnimplementedQueryServer) Minted(ctx context.Context, req *QueryMintedRequest) (*QueryMintedResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Minted not implemented")
 }
-func (*UnimplementedQueryServer) Burned(ctx context.Context, req *QueryBurnedRequest) (*QueryBurnedResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Burned not implemented")
+func (*UnimplementedQueryServer) Burnt(ctx context.Context, req *QueryBurntRequest) (*QueryBurntResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Burnt not implemented")
 }
 func (*UnimplementedQueryServer) TokenClass(ctx context.Context, req *QueryTokenClassRequest) (*QueryTokenClassResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TokenClass not implemented")
@@ -1294,8 +1303,8 @@ func (*UnimplementedQueryServer) GranteeGrants(ctx context.Context, req *QueryGr
 func (*UnimplementedQueryServer) Authorization(ctx context.Context, req *QueryAuthorizationRequest) (*QueryAuthorizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Authorization not implemented")
 }
-func (*UnimplementedQueryServer) ProxyAuthorizations(ctx context.Context, req *QueryProxyAuthorizationsRequest) (*QueryProxyAuthorizationsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProxyAuthorizations not implemented")
+func (*UnimplementedQueryServer) OperatorAuthorizations(ctx context.Context, req *QueryOperatorAuthorizationsRequest) (*QueryOperatorAuthorizationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OperatorAuthorizations not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -1356,20 +1365,20 @@ func _Query_Minted_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Burned_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryBurnedRequest)
+func _Query_Burnt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryBurntRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Burned(ctx, in)
+		return srv.(QueryServer).Burnt(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lbm.token.v1.Query/Burned",
+		FullMethod: "/lbm.token.v1.Query/Burnt",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Burned(ctx, req.(*QueryBurnedRequest))
+		return srv.(QueryServer).Burnt(ctx, req.(*QueryBurntRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1464,20 +1473,20 @@ func _Query_Authorization_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_ProxyAuthorizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryProxyAuthorizationsRequest)
+func _Query_OperatorAuthorizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryOperatorAuthorizationsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).ProxyAuthorizations(ctx, in)
+		return srv.(QueryServer).OperatorAuthorizations(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lbm.token.v1.Query/ProxyAuthorizations",
+		FullMethod: "/lbm.token.v1.Query/OperatorAuthorizations",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).ProxyAuthorizations(ctx, req.(*QueryProxyAuthorizationsRequest))
+		return srv.(QueryServer).OperatorAuthorizations(ctx, req.(*QueryOperatorAuthorizationsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1499,8 +1508,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Minted_Handler,
 		},
 		{
-			MethodName: "Burned",
-			Handler:    _Query_Burned_Handler,
+			MethodName: "Burnt",
+			Handler:    _Query_Burnt_Handler,
 		},
 		{
 			MethodName: "TokenClass",
@@ -1523,8 +1532,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Authorization_Handler,
 		},
 		{
-			MethodName: "ProxyAuthorizations",
-			Handler:    _Query_ProxyAuthorizations_Handler,
+			MethodName: "OperatorAuthorizations",
+			Handler:    _Query_OperatorAuthorizations_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1727,7 +1736,7 @@ func (m *QueryMintedResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryBurnedRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryBurntRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1737,12 +1746,12 @@ func (m *QueryBurnedRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryBurnedRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryBurntRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryBurnedRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryBurntRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1757,7 +1766,7 @@ func (m *QueryBurnedRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryBurnedResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryBurntResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1767,12 +1776,12 @@ func (m *QueryBurnedResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryBurnedResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryBurntResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryBurnedResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryBurntResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2195,7 +2204,7 @@ func (m *QueryAuthorizationResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryProxyAuthorizationsRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryOperatorAuthorizationsRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2205,12 +2214,12 @@ func (m *QueryProxyAuthorizationsRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryProxyAuthorizationsRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryOperatorAuthorizationsRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryProxyAuthorizationsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryOperatorAuthorizationsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2244,7 +2253,7 @@ func (m *QueryProxyAuthorizationsRequest) MarshalToSizedBuffer(dAtA []byte) (int
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryProxyAuthorizationsResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryOperatorAuthorizationsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2254,12 +2263,12 @@ func (m *QueryProxyAuthorizationsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryProxyAuthorizationsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryOperatorAuthorizationsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryProxyAuthorizationsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryOperatorAuthorizationsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2380,7 +2389,7 @@ func (m *QueryMintedResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryBurnedRequest) Size() (n int) {
+func (m *QueryBurntRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2393,7 +2402,7 @@ func (m *QueryBurnedRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryBurnedResponse) Size() (n int) {
+func (m *QueryBurntResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2570,7 +2579,7 @@ func (m *QueryAuthorizationResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryProxyAuthorizationsRequest) Size() (n int) {
+func (m *QueryOperatorAuthorizationsRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2591,7 +2600,7 @@ func (m *QueryProxyAuthorizationsRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryProxyAuthorizationsResponse) Size() (n int) {
+func (m *QueryOperatorAuthorizationsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -3146,7 +3155,7 @@ func (m *QueryMintedResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryBurnedRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryBurntRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3169,10 +3178,10 @@ func (m *QueryBurnedRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryBurnedRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryBurntRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryBurnedRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryBurntRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3228,7 +3237,7 @@ func (m *QueryBurnedRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryBurnedResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryBurntResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3251,10 +3260,10 @@ func (m *QueryBurnedResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryBurnedResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryBurntResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryBurnedResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryBurntResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -4420,7 +4429,7 @@ func (m *QueryAuthorizationResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryProxyAuthorizationsRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryOperatorAuthorizationsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4443,10 +4452,10 @@ func (m *QueryProxyAuthorizationsRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryProxyAuthorizationsRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryOperatorAuthorizationsRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryProxyAuthorizationsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryOperatorAuthorizationsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -4570,7 +4579,7 @@ func (m *QueryProxyAuthorizationsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryProxyAuthorizationsResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryOperatorAuthorizationsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4593,10 +4602,10 @@ func (m *QueryProxyAuthorizationsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryProxyAuthorizationsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryOperatorAuthorizationsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryProxyAuthorizationsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryOperatorAuthorizationsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

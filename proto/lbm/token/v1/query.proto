@@ -26,9 +26,9 @@ service Query {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/minted";
   }
 
-  // Burned queries the number of burned tokens from the given contract id.
-  rpc Burned(QueryBurnedRequest) returns (QueryBurnedResponse) {
-    option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/burned";
+  // Burnt queries the number of burnt tokens from the given contract id.
+  rpc Burnt(QueryBurntRequest) returns (QueryBurntResponse) {
+    option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/burnt";
   }
 
   // TokenClass queries an token metadata based on its contract id.
@@ -37,16 +37,19 @@ service Query {
   }
 
   // TokenClasses queries all token metadata.
+  // Since: finschia
   rpc TokenClasses(QueryTokenClassesRequest) returns (QueryTokenClassesResponse) {
     option (google.api.http).get = "/lbm/token/v1/token_classes";
   }
 
   // Grant queries a permission on a given grantee.
+  // Since: finschia
   rpc Grant(QueryGrantRequest) returns (QueryGrantResponse) {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}";
   }
 
   // GranteeGrants queries permissions on a given grantee.
+  // Since: finschia
   rpc GranteeGrants(QueryGrantRequest) returns (QueryGrantResponse) {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}";
   }
@@ -56,8 +59,9 @@ service Query {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/authorizations/{proxy}/{approver}";
   }
 
-  // ProxyAuthorizations queries authorization on a given proxy approver pair.
-  rpc ProxyAuthorizations(QueryProxyAuthorizationsRequest) returns (QueryProxyAuthorizationsResponse) {
+  // OperatorAuthorizations queries authorization on a given proxy.
+  // Since: finschia
+  rpc OperatorAuthorizations(QueryOperatorAuthorizationsRequest) returns (QueryOperatorAuthorizationsResponse) {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/authorizations/{proxy}";
   }
 }
@@ -97,14 +101,14 @@ message QueryMintedResponse {
   string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// QueryBurnedRequest is the request type for the Query/Burned RPC method
-message QueryBurnedRequest {
+// QueryBurntRequest is the request type for the Query/Burnt RPC method
+message QueryBurntRequest {
   // contract id associated with the token class.
   string contract_id = 1;
 }
 
-// QueryBurnedResponse is the response type for the Query/Burned RPC method
-message QueryBurnedResponse {
+// QueryBurntResponse is the response type for the Query/Burnt RPC method
+message QueryBurntResponse {
   string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -126,8 +130,8 @@ message QueryTokenClassesRequest {
 
 // QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method
 message QueryTokenClassesResponse {
-  repeated TokenClass classes    = 1 [(gogoproto.nullable) = false];
-  lbm.base.query.v1.PageResponse     pagination = 2;
+  repeated TokenClass            classes    = 1 [(gogoproto.nullable) = false];
+  lbm.base.query.v1.PageResponse pagination = 2;
 }
 
 // QueryGrantRequest is the request type for the Query/Grant RPC method
@@ -158,8 +162,8 @@ message QueryGrantsRequest {
 
 // QueryGrantsResponse is the response type for the Query/Grants RPC method
 message QueryGrantsResponse {
-  repeated Grant grants = 1 [(gogoproto.nullable) = false];
-  lbm.base.query.v1.PageResponse pagination     = 2;
+  repeated Grant                 grants     = 1 [(gogoproto.nullable) = false];
+  lbm.base.query.v1.PageResponse pagination = 2;
 }
 
 // QueryAuthorizationRequest is the request type for the Query/Authorization RPC method
@@ -174,11 +178,11 @@ message QueryAuthorizationRequest {
 
 // QueryAuthorizationResponse is the response type for the Query/Authorization RPC method
 message QueryAuthorizationResponse {
-  Authorization         authorization = 1;
+  Authorization authorization = 1;
 }
 
-// QueryProxyAuthorizationsRequest is the request type for the Query/ProxyAuthorizations RPC method
-message QueryProxyAuthorizationsRequest {
+// QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAuthorizations RPC method
+message QueryOperatorAuthorizationsRequest {
   // contract id associated with the token class.
   string contract_id = 1;
   // proxy is the address of the operator which the authorization is granted to.
@@ -188,8 +192,8 @@ message QueryProxyAuthorizationsRequest {
   lbm.base.query.v1.PageRequest pagination = 3;
 }
 
-// QueryProxyAuthorizationsResponse is the response type for the Query/ProxyAuthorizations RPC method
-message QueryProxyAuthorizationsResponse {
+// QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method
+message QueryOperatorAuthorizationsResponse {
   repeated Authorization         authorizations = 1 [(gogoproto.nullable) = false];
   lbm.base.query.v1.PageResponse pagination     = 2;
 }
