@@ -8,15 +8,15 @@ import (
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgTransfer{},
-		&MsgTransferFrom{},
-		&MsgApprove{},
+		&MsgSend{},
+		&MsgOperatorSend{},
+		&MsgAuthorizeOperator{},
 		&MsgIssue{},
 		&MsgGrant{},
-		&MsgRevoke{},
+		&MsgAbandon{},
 		&MsgMint{},
 		&MsgBurn{},
-		&MsgBurnFrom{},
+		&MsgOperatorBurn{},
 		&MsgModify{},
 	)
 
