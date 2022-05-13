@@ -836,18 +836,6 @@
   
     - [Msg](#lbm.staking.v1.Msg)
   
-- [lbm/token/v1/event.proto](#lbm/token/v1/event.proto)
-    - [EventAbandon](#lbm.token.v1.EventAbandon)
-    - [EventAuthorizedOperator](#lbm.token.v1.EventAuthorizedOperator)
-    - [EventBurned](#lbm.token.v1.EventBurned)
-    - [EventBurnedFrom](#lbm.token.v1.EventBurnedFrom)
-    - [EventGrant](#lbm.token.v1.EventGrant)
-    - [EventIssue](#lbm.token.v1.EventIssue)
-    - [EventMinted](#lbm.token.v1.EventMinted)
-    - [EventModified](#lbm.token.v1.EventModified)
-    - [EventRevokedOperator](#lbm.token.v1.EventRevokedOperator)
-    - [EventSent](#lbm.token.v1.EventSent)
-  
 - [lbm/token/v1/token.proto](#lbm/token/v1/token.proto)
     - [Authorization](#lbm.token.v1.Authorization)
     - [Grant](#lbm.token.v1.Grant)
@@ -856,6 +844,20 @@
     - [TokenClass](#lbm.token.v1.TokenClass)
   
     - [Permission](#lbm.token.v1.Permission)
+  
+- [lbm/token/v1/event.proto](#lbm/token/v1/event.proto)
+    - [EventAbandon](#lbm.token.v1.EventAbandon)
+    - [EventAuthorizedOperator](#lbm.token.v1.EventAuthorizedOperator)
+    - [EventBurned](#lbm.token.v1.EventBurned)
+    - [EventGrant](#lbm.token.v1.EventGrant)
+    - [EventIssue](#lbm.token.v1.EventIssue)
+    - [EventMinted](#lbm.token.v1.EventMinted)
+    - [EventModified](#lbm.token.v1.EventModified)
+    - [EventRevokedOperator](#lbm.token.v1.EventRevokedOperator)
+    - [EventSent](#lbm.token.v1.EventSent)
+  
+    - [AttributeKey](#lbm.token.v1.AttributeKey)
+    - [EventType](#lbm.token.v1.EventType)
   
 - [lbm/token/v1/genesis.proto](#lbm/token/v1/genesis.proto)
     - [Balance](#lbm.token.v1.Balance)
@@ -12313,203 +12315,6 @@ Msg defines the staking Msg service.
 
 
 
-<a name="lbm/token/v1/event.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/token/v1/event.proto
-
-
-
-<a name="lbm.token.v1.EventAbandon"></a>
-
-### EventAbandon
-EventAbandon is emitted on Msg/Abandon
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `from` | [string](#string) |  | address of the grantee which abandons its grant. |
-| `perm` | [string](#string) |  | permission on the token class. |
-
-
-
-
-
-
-<a name="lbm.token.v1.EventAuthorizedOperator"></a>
-
-### EventAuthorizedOperator
-EventAuthorizedOperator is emitted on Msg/AuthorizeOperator
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `approver` | [string](#string) |  | approver is the address of the approver of the authorization. |
-| `proxy` | [string](#string) |  | proxy is the address of the operator which the authorization is granted to. |
-
-
-
-
-
-
-<a name="lbm.token.v1.EventBurned"></a>
-
-### EventBurned
-EventBurned is emitted on Msg/Burn
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `from` | [string](#string) |  | the address of the token holder. |
-| `amount` | [string](#string) |  | the amount of burnt token. |
-
-
-
-
-
-
-<a name="lbm.token.v1.EventBurnedFrom"></a>
-
-### EventBurnedFrom
-EventBurnedFrom is emitted on Msg/BurnFrom
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `proxy` | [string](#string) |  | the operator who is authorized to burn the tokens of the holder. |
-| `from` | [string](#string) |  | the address of the token holder. |
-| `amount` | [string](#string) |  | the amount of burnt token. |
-
-
-
-
-
-
-<a name="lbm.token.v1.EventGrant"></a>
-
-### EventGrant
-EventGrant is emitted on Msg/Grant
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `from` | [string](#string) |  | address of the granter. |
-| `to` | [string](#string) |  | address of the grantee. |
-| `perm` | [string](#string) |  | permission on the token class. |
-
-
-
-
-
-
-<a name="lbm.token.v1.EventIssue"></a>
-
-### EventIssue
-EventIssue is emitted on Msg/Issue
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `name` | [string](#string) |  | name defines the human-readable name of the token class. |
-| `symbol` | [string](#string) |  | symbol is an abbreviated name for token class. |
-| `image_uri` | [string](#string) |  | image_uri is an uri for the image of the token class stored off chain. |
-| `meta` | [string](#string) |  | meta is a brief description of token class. |
-| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
-| `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint. |
-| `owner` | [string](#string) |  | the address which all permissions on the token class will be granted to (not a permanent property). |
-| `to` | [string](#string) |  | the address to send the minted token to. |
-| `amount` | [string](#string) |  | amount of tokens to mint on issuance. |
-
-
-
-
-
-
-<a name="lbm.token.v1.EventMinted"></a>
-
-### EventMinted
-EventMinted is emitted on Msg/Mint
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `from` | [string](#string) |  | the address of grantee. |
-| `to` | [string](#string) |  | the address to send minted tokens to. |
-| `amount` | [string](#string) |  | the amount of minted tokens. |
-
-
-
-
-
-
-<a name="lbm.token.v1.EventModified"></a>
-
-### EventModified
-EventModified is emitted on Msg/Modify
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `field` | [string](#string) |  | the name of modified field. |
-| `value` | [string](#string) |  | the result of the change to the value. |
-
-
-
-
-
-
-<a name="lbm.token.v1.EventRevokedOperator"></a>
-
-### EventRevokedOperator
-EventRevokedOperator is emitted on Msg/RevokeOperator
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `approver` | [string](#string) |  | approver is the address of the approver of the authorization. |
-| `proxy` | [string](#string) |  | proxy is the address of the operator which the authorization is granted to. |
-
-
-
-
-
-
-<a name="lbm.token.v1.EventSent"></a>
-
-### EventSent
-EventSent is emitted on Msg/Send and Msg/SendFrom
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `from` | [string](#string) |  |  |
-| `to` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
 <a name="lbm/token/v1/token.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -12611,6 +12416,240 @@ Permission enumerates the valid permissions on a token class.
 | PERSMISSION_MODIFY | 1 | PERMISSION_MODIFY defines a permission to modify a token class. |
 | PERSMISSION_MINT | 2 | PERMISSION_MINT defines a permission to mint tokens of a token class. |
 | PERSMISSION_BURN | 3 | PERMISSION_BURN defines a permission to burn tokens of a token class. |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/token/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/token/v1/event.proto
+
+
+
+<a name="lbm.token.v1.EventAbandon"></a>
+
+### EventAbandon
+EventAbandon is emitted on Msg/Abandon.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
+| `permission` | [string](#string) |  | permission on the token class. |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventAuthorizedOperator"></a>
+
+### EventAuthorizedOperator
+EventAuthorizedOperator is emitted on Msg/AuthorizeOperator.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `holder` | [string](#string) |  | address of the token holder of the authorization. |
+| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventBurned"></a>
+
+### EventBurned
+EventBurned is emitted on Msg/Burn and Msg/OperatorBurn.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `operator` | [string](#string) |  | address of the operator. |
+| `from` | [string](#string) |  | address which the burnt tokens were from. |
+| `amount` | [string](#string) |  | the amount of burnt token. |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventGrant"></a>
+
+### EventGrant
+EventGrant is emitted on Msg/Grant.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `granter` | [string](#string) |  | address of the granter. |
+| `grantee` | [string](#string) |  | address of the grantee. |
+| `permission` | [string](#string) |  | permission on the token class. |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventIssue"></a>
+
+### EventIssue
+EventIssue is emitted on Msg/Issue.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `name` | [string](#string) |  | name defines the human-readable name of the token class. |
+| `symbol` | [string](#string) |  | symbol is an abbreviated name for token class. |
+| `uri` | [string](#string) |  | uri is an uri for the resource of the token class stored off chain. |
+| `meta` | [string](#string) |  | meta is a brief description of token class. |
+| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
+| `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint. |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventMinted"></a>
+
+### EventMinted
+EventMinted is emitted on Msg/Mint.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `operator` | [string](#string) |  | the address of the operator. |
+| `to` | [string](#string) |  | the address to send minted tokens to. |
+| `amount` | [string](#string) |  | the amount of minted tokens. |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventModified"></a>
+
+### EventModified
+EventModified is emitted on Msg/Modify.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `changes` | [Pair](#lbm.token.v1.Pair) | repeated | changes on the metadata of the class. |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventRevokedOperator"></a>
+
+### EventRevokedOperator
+EventRevokedOperator is emitted on Msg/RevokeOperator.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `holder` | [string](#string) |  | address of the token holder of the authorization. |
+| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventSent"></a>
+
+### EventSent
+EventSent is emitted on Msg/Send and Msg/OperatorSend.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `operator` | [string](#string) |  | address of the operator. |
+| `from` | [string](#string) |  |  |
+| `to` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="lbm.token.v1.AttributeKey"></a>
+
+### AttributeKey
+AttributeKey enumerates the valid attribute keys on x/token.
+For the legacy events.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| unspecified | 0 |  |
+| name | 1 |  |
+| symbol | 2 |  |
+| meta | 3 |  |
+| contract_id | 4 |  |
+| owner | 5 |  |
+| amount | 6 |  |
+| decimals | 7 |  |
+| img_uri | 8 |  |
+| mintable | 9 |  |
+| from | 10 |  |
+| to | 11 |  |
+| perm | 12 |  |
+| approver | 13 |  |
+| proxy | 14 |  |
+
+
+
+<a name="lbm.token.v1.EventType"></a>
+
+### EventType
+EventType enumerates the valid event types on x/token.
+For the legacy events.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| unspecified | 0 |  |
+| issue | 1 |  |
+| mint | 2 |  |
+| burn | 3 |  |
+| burn_from | 4 |  |
+| modify_token | 5 |  |
+| transfer | 6 |  |
+| transfer_from | 7 |  |
+| grant_perm | 8 |  |
+| revoke_perm | 9 |  |
+| approve_token | 10 |  |
 
 
  <!-- end enums -->
