@@ -35132,19 +35132,16 @@ paths:
                       version is used to track changes to the foundation's
                       membership structure that
 
-                      would break existing proposals. Whenever any members
-                      weight is changed,
+                      would break existing proposals. Whenever any member is
+                      added or removed,
 
-                      or any member is added or removed this version is
-                      incremented and will
+                      this version is incremented and will cause proposals based
+                      on older versions
 
-                      cause proposals based on older versions of the foundation
-                      to fail
+                      of the foundation to fail
                   total_weight:
                     type: string
-                    description: >-
-                      total_weight is the sum of the foundation members'
-                      weights.
+                    description: total_weight is the number of the foundation members.
                   decision_policy:
                     description: >-
                       decision_policy specifies the foundation's decision
@@ -35427,11 +35424,12 @@ paths:
                     address:
                       type: string
                       description: address is the member's account address.
-                    weight:
-                      type: string
+                    participating:
+                      type: boolean
+                      format: boolean
                       description: >-
-                        weight is the member's voting weight that should be
-                        greater than 0.
+                        participating is the flag which allows one to remove the
+                        member by setting the flag to false.
                     metadata:
                       type: string
                       description: >-
@@ -35445,9 +35443,7 @@ paths:
                         added.
                   description: >-
                     Member represents a foundation member with an account
-                    address,
-
-                    non-zero weight and metadata.
+                    address and metadata.
                 description: members are the members of the foundation.
               pagination:
                 description: pagination defines the pagination in the response.
@@ -35734,11 +35730,12 @@ paths:
                   address:
                     type: string
                     description: address is the member's account address.
-                  weight:
-                    type: string
+                  participating:
+                    type: boolean
+                    format: boolean
                     description: >-
-                      weight is the member's voting weight that should be
-                      greater than 0.
+                      participating is the flag which allows one to remove the
+                      member by setting the flag to false.
                   metadata:
                     type: string
                     description: >-
@@ -35750,9 +35747,9 @@ paths:
                     description: >-
                       added_at is a timestamp specifying when a member was
                       added.
-                description: |-
-                  Member represents a foundation member with an account address,
-                  non-zero weight and metadata.
+                description: >-
+                  Member represents a foundation member with an account address
+                  and metadata.
             description: QueryMemberResponse is the Query/MemberResponse response type.
         default:
           description: An unexpected error response
@@ -36705,8 +36702,8 @@ paths:
                       default: PROPOSAL_RESULT_UNSPECIFIED
                     final_tally_result:
                       description: >-
-                        final_tally_result contains the sums of all weighted
-                        votes for this
+                        final_tally_result contains the sums of all votes for
+                        this
 
                         proposal for each vote option, after tallying. When
                         querying a proposal
@@ -36719,16 +36716,16 @@ paths:
                       properties:
                         yes_count:
                           type: string
-                          description: yes_count is the weighted sum of yes votes.
+                          description: yes_count is the sum of yes votes.
                         abstain_count:
                           type: string
-                          description: abstain_count is the weighted sum of abstainers.
+                          description: abstain_count is the sum of abstainers.
                         no_count:
                           type: string
-                          description: no is the weighted sum of no votes.
+                          description: no is the sum of no votes.
                         no_with_veto_count:
                           type: string
-                          description: no_with_veto_count is the weighted sum of veto.
+                          description: no_with_veto_count is the sum of veto.
                     voting_period_end:
                       type: string
                       format: date-time
@@ -37290,8 +37287,7 @@ paths:
                     default: PROPOSAL_RESULT_UNSPECIFIED
                   final_tally_result:
                     description: >-
-                      final_tally_result contains the sums of all weighted votes
-                      for this
+                      final_tally_result contains the sums of all votes for this
 
                       proposal for each vote option, after tallying. When
                       querying a proposal
@@ -37304,16 +37300,16 @@ paths:
                     properties:
                       yes_count:
                         type: string
-                        description: yes_count is the weighted sum of yes votes.
+                        description: yes_count is the sum of yes votes.
                       abstain_count:
                         type: string
-                        description: abstain_count is the weighted sum of abstainers.
+                        description: abstain_count is the sum of abstainers.
                       no_count:
                         type: string
-                        description: no is the weighted sum of no votes.
+                        description: no is the sum of no votes.
                       no_with_veto_count:
                         type: string
-                        description: no_with_veto_count is the weighted sum of veto.
+                        description: no_with_veto_count is the sum of veto.
                   voting_period_end:
                     type: string
                     format: date-time
@@ -37750,16 +37746,16 @@ paths:
                 properties:
                   yes_count:
                     type: string
-                    description: yes_count is the weighted sum of yes votes.
+                    description: yes_count is the sum of yes votes.
                   abstain_count:
                     type: string
-                    description: abstain_count is the weighted sum of abstainers.
+                    description: abstain_count is the sum of abstainers.
                   no_count:
                     type: string
-                    description: no is the weighted sum of no votes.
+                    description: no is the sum of no votes.
                   no_with_veto_count:
                     type: string
-                    description: no_with_veto_count is the weighted sum of veto.
+                    description: no_with_veto_count is the sum of veto.
             description: QueryTallyResultResponse is the Query/TallyResult response type.
         default:
           description: An unexpected error response
@@ -62305,15 +62301,16 @@ definitions:
           version is used to track changes to the foundation's membership
           structure that
 
-          would break existing proposals. Whenever any members weight is
-          changed,
+          would break existing proposals. Whenever any member is added or
+          removed,
 
-          or any member is added or removed this version is incremented and will
+          this version is incremented and will cause proposals based on older
+          versions
 
-          cause proposals based on older versions of the foundation to fail
+          of the foundation to fail
       total_weight:
         type: string
-        description: total_weight is the sum of the foundation members' weights.
+        description: total_weight is the number of the foundation members.
       decision_policy:
         description: decision_policy specifies the foundation's decision policy.
         type: object
@@ -62385,9 +62382,12 @@ definitions:
       address:
         type: string
         description: address is the member's account address.
-      weight:
-        type: string
-        description: weight is the member's voting weight that should be greater than 0.
+      participating:
+        type: boolean
+        format: boolean
+        description: >-
+          participating is the flag which allows one to remove the member by
+          setting the flag to false.
       metadata:
         type: string
         description: metadata is any arbitrary metadata to attached to the member.
@@ -62395,9 +62395,9 @@ definitions:
         type: string
         format: date-time
         description: added_at is a timestamp specifying when a member was added.
-    description: |-
-      Member represents a foundation member with an account address,
-      non-zero weight and metadata.
+    description: >-
+      Member represents a foundation member with an account address and
+      metadata.
   lbm.foundation.v1.Params:
     type: object
     properties:
@@ -62463,7 +62463,7 @@ definitions:
         default: PROPOSAL_RESULT_UNSPECIFIED
       final_tally_result:
         description: >-
-          final_tally_result contains the sums of all weighted votes for this
+          final_tally_result contains the sums of all votes for this
 
           proposal for each vote option, after tallying. When querying a
           proposal
@@ -62476,16 +62476,16 @@ definitions:
         properties:
           yes_count:
             type: string
-            description: yes_count is the weighted sum of yes votes.
+            description: yes_count is the sum of yes votes.
           abstain_count:
             type: string
-            description: abstain_count is the weighted sum of abstainers.
+            description: abstain_count is the sum of abstainers.
           no_count:
             type: string
-            description: no is the weighted sum of no votes.
+            description: no is the sum of no votes.
           no_with_veto_count:
             type: string
-            description: no_with_veto_count is the weighted sum of veto.
+            description: no_with_veto_count is the sum of veto.
       voting_period_end:
         type: string
         format: date-time
@@ -62754,16 +62754,16 @@ definitions:
               version is used to track changes to the foundation's membership
               structure that
 
-              would break existing proposals. Whenever any members weight is
-              changed,
+              would break existing proposals. Whenever any member is added or
+              removed,
 
-              or any member is added or removed this version is incremented and
-              will
+              this version is incremented and will cause proposals based on
+              older versions
 
-              cause proposals based on older versions of the foundation to fail
+              of the foundation to fail
           total_weight:
             type: string
-            description: total_weight is the sum of the foundation members' weights.
+            description: total_weight is the number of the foundation members.
           decision_policy:
             description: decision_policy specifies the foundation's decision policy.
             type: object
@@ -63026,11 +63026,12 @@ definitions:
           address:
             type: string
             description: address is the member's account address.
-          weight:
-            type: string
+          participating:
+            type: boolean
+            format: boolean
             description: >-
-              weight is the member's voting weight that should be greater than
-              0.
+              participating is the flag which allows one to remove the member by
+              setting the flag to false.
           metadata:
             type: string
             description: metadata is any arbitrary metadata to attached to the member.
@@ -63038,9 +63039,9 @@ definitions:
             type: string
             format: date-time
             description: added_at is a timestamp specifying when a member was added.
-        description: |-
-          Member represents a foundation member with an account address,
-          non-zero weight and metadata.
+        description: >-
+          Member represents a foundation member with an account address and
+          metadata.
     description: QueryMemberResponse is the Query/MemberResponse response type.
   lbm.foundation.v1.QueryMembersResponse:
     type: object
@@ -63053,11 +63054,12 @@ definitions:
             address:
               type: string
               description: address is the member's account address.
-            weight:
-              type: string
+            participating:
+              type: boolean
+              format: boolean
               description: >-
-                weight is the member's voting weight that should be greater than
-                0.
+                participating is the flag which allows one to remove the member
+                by setting the flag to false.
             metadata:
               type: string
               description: metadata is any arbitrary metadata to attached to the member.
@@ -63065,9 +63067,9 @@ definitions:
               type: string
               format: date-time
               description: added_at is a timestamp specifying when a member was added.
-          description: |-
-            Member represents a foundation member with an account address,
-            non-zero weight and metadata.
+          description: >-
+            Member represents a foundation member with an account address and
+            metadata.
         description: members are the members of the foundation.
       pagination:
         description: pagination defines the pagination in the response.
@@ -63162,8 +63164,7 @@ definitions:
             default: PROPOSAL_RESULT_UNSPECIFIED
           final_tally_result:
             description: >-
-              final_tally_result contains the sums of all weighted votes for
-              this
+              final_tally_result contains the sums of all votes for this
 
               proposal for each vote option, after tallying. When querying a
               proposal
@@ -63176,16 +63177,16 @@ definitions:
             properties:
               yes_count:
                 type: string
-                description: yes_count is the weighted sum of yes votes.
+                description: yes_count is the sum of yes votes.
               abstain_count:
                 type: string
-                description: abstain_count is the weighted sum of abstainers.
+                description: abstain_count is the sum of abstainers.
               no_count:
                 type: string
-                description: no is the weighted sum of no votes.
+                description: no is the sum of no votes.
               no_with_veto_count:
                 type: string
-                description: no_with_veto_count is the weighted sum of veto.
+                description: no_with_veto_count is the sum of veto.
           voting_period_end:
             type: string
             format: date-time
@@ -63461,8 +63462,7 @@ definitions:
               default: PROPOSAL_RESULT_UNSPECIFIED
             final_tally_result:
               description: >-
-                final_tally_result contains the sums of all weighted votes for
-                this
+                final_tally_result contains the sums of all votes for this
 
                 proposal for each vote option, after tallying. When querying a
                 proposal
@@ -63475,16 +63475,16 @@ definitions:
               properties:
                 yes_count:
                   type: string
-                  description: yes_count is the weighted sum of yes votes.
+                  description: yes_count is the sum of yes votes.
                 abstain_count:
                   type: string
-                  description: abstain_count is the weighted sum of abstainers.
+                  description: abstain_count is the sum of abstainers.
                 no_count:
                   type: string
-                  description: no is the weighted sum of no votes.
+                  description: no is the sum of no votes.
                 no_with_veto_count:
                   type: string
-                  description: no_with_veto_count is the weighted sum of veto.
+                  description: no_with_veto_count is the sum of veto.
             voting_period_end:
               type: string
               format: date-time
@@ -63728,16 +63728,16 @@ definitions:
         properties:
           yes_count:
             type: string
-            description: yes_count is the weighted sum of yes votes.
+            description: yes_count is the sum of yes votes.
           abstain_count:
             type: string
-            description: abstain_count is the weighted sum of abstainers.
+            description: abstain_count is the sum of abstainers.
           no_count:
             type: string
-            description: no is the weighted sum of no votes.
+            description: no is the sum of no votes.
           no_with_veto_count:
             type: string
-            description: no_with_veto_count is the weighted sum of veto.
+            description: no_with_veto_count is the sum of veto.
     description: QueryTallyResultResponse is the Query/TallyResult response type.
   lbm.foundation.v1.QueryTreasuryResponse:
     type: object
@@ -63849,17 +63849,17 @@ definitions:
     properties:
       yes_count:
         type: string
-        description: yes_count is the weighted sum of yes votes.
+        description: yes_count is the sum of yes votes.
       abstain_count:
         type: string
-        description: abstain_count is the weighted sum of abstainers.
+        description: abstain_count is the sum of abstainers.
       no_count:
         type: string
-        description: no is the weighted sum of no votes.
+        description: no is the sum of no votes.
       no_with_veto_count:
         type: string
-        description: no_with_veto_count is the weighted sum of veto.
-    description: TallyResult represents the sum of weighted votes for each vote option.
+        description: no_with_veto_count is the sum of veto.
+    description: TallyResult represents the sum of votes for each vote option.
   lbm.foundation.v1.Vote:
     type: object
     properties:

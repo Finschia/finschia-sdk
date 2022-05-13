@@ -277,7 +277,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	}
 
-	updates := `[{"address":"%s", "weight":"%d"}]`
+	updates := `[{"address":"%s", "participating":%t}]`
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -285,14 +285,14 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 		"valid transaction": {
 			[]string{
 				s.operator.String(),
-				fmt.Sprintf(updates, s.comingMember, 1),
+				fmt.Sprintf(updates, s.comingMember, true),
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
 				s.operator.String(),
-				fmt.Sprintf(updates, s.comingMember, 1),
+				fmt.Sprintf(updates, s.comingMember, true),
 				"extra",
 			},
 			false,

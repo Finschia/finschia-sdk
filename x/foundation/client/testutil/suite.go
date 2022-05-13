@@ -133,8 +133,8 @@ func (s *IntegrationTestSuite) addMembers(members []sdk.AccAddress) {
 	updates := make([]json.RawMessage, len(members))
 	for i, member := range members {
 		update := foundation.Member{
-			Address: member.String(),
-			Weight:  sdk.OneDec(),
+			Address:       member.String(),
+			Participating: true,
 		}
 		bz, err := s.cfg.Codec.MarshalJSON(&update)
 		s.Require().NoError(err)

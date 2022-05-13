@@ -45,14 +45,13 @@ message UpdateValidatorAuthsProposal {
   repeated ValidatorAuth auths       = 3 [(gogoproto.nullable) = false];
 }
 
-// Member represents a foundation member with an account address,
-// non-zero weight and metadata.
+// Member represents a foundation member with an account address and metadata.
 message Member {
   // address is the member's account address.
   string address = 1;
 
-  // weight is the member's voting weight that should be greater than 0.
-  string weight = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
+  // participating is the flag which allows one to remove the member by setting the flag to false.
+  bool participating = 2;
 
   // metadata is any arbitrary metadata to attached to the member.
   string metadata = 3;
@@ -65,7 +64,7 @@ message Member {
 message ThresholdDecisionPolicy {
   option (cosmos_proto.implements_interface) = "DecisionPolicy";
 
-  // threshold is the minimum weighted sum of yes votes that must be met or exceeded for a proposal to succeed.
+  // threshold is the minimum sum of yes votes that must be met or exceeded for a proposal to succeed.
   string threshold = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
 
   // windows defines the different windows for voting and execution.
@@ -76,7 +75,7 @@ message ThresholdDecisionPolicy {
 message PercentageDecisionPolicy {
   option (cosmos_proto.implements_interface) = "DecisionPolicy";
 
-  // percentage is the minimum percentage the weighted sum of yes votes must meet for a proposal to succeed.
+  // percentage is the minimum percentage the sum of yes votes must meet for a proposal to succeed.
   string percentage = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
 
   // windows defines the different windows for voting and execution.
@@ -127,12 +126,12 @@ message FoundationInfo {
   string operator = 1;
 
   // version is used to track changes to the foundation's membership structure that
-  // would break existing proposals. Whenever any members weight is changed,
-  // or any member is added or removed this version is incremented and will
-  // cause proposals based on older versions of the foundation to fail
+  // would break existing proposals. Whenever any member is added or removed,
+  // this version is incremented and will cause proposals based on older versions
+  // of the foundation to fail
   uint64 version = 2;
 
-  // total_weight is the sum of the foundation members' weights.
+  // total_weight is the number of the foundation members.
   string total_weight = 3 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
 
   // decision_policy specifies the foundation's decision policy.
@@ -169,7 +168,7 @@ message Proposal {
   // The result is persisted so that clients can always rely on this state and not have to replicate the logic.
   ProposalResult result = 7;
 
-  // final_tally_result contains the sums of all weighted votes for this
+  // final_tally_result contains the sums of all votes for this
   // proposal for each vote option, after tallying. When querying a proposal
   // via gRPC, this field is not populated until the proposal's voting period
   // has ended.
@@ -244,20 +243,20 @@ enum ProposalExecutorResult {
   PROPOSAL_EXECUTOR_RESULT_FAILURE = 3;
 }
 
-// TallyResult represents the sum of weighted votes for each vote option.
+// TallyResult represents the sum of votes for each vote option.
 message TallyResult {
   option (gogoproto.goproto_getters) = false;
 
-  // yes_count is the weighted sum of yes votes.
+  // yes_count is the sum of yes votes.
   string yes_count = 1 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
 
-  // abstain_count is the weighted sum of abstainers.
+  // abstain_count is the sum of abstainers.
   string abstain_count = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
 
-  // no is the weighted sum of no votes.
+  // no is the sum of no votes.
   string no_count = 3 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
 
-  // no_with_veto_count is the weighted sum of veto.
+  // no_with_veto_count is the sum of veto.
   string no_with_veto_count = 4
       [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
 }

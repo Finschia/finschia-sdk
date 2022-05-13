@@ -30,7 +30,7 @@ func TestValidateGenesis(t *testing.T) {
 				Members: []foundation.Member{
 					{
 						Address: createAddress().String(),
-						Weight: sdk.OneDec(),
+						Participating: true,
 					},
 				},
 			},
@@ -57,7 +57,7 @@ func TestValidateGenesis(t *testing.T) {
 				Members: []foundation.Member{
 					{
 						Address: "invalid-address",
-						Weight: sdk.OneDec(),
+						Participating: true,
 					},
 				},
 			},

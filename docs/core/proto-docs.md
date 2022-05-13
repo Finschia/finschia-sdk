@@ -8687,8 +8687,8 @@ FoundationInfo represents the high-level on-chain information for the foundation
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `operator` | [string](#string) |  | operator is the account address of the foundation's operator. |
-| `version` | [uint64](#uint64) |  | version is used to track changes to the foundation's membership structure that would break existing proposals. Whenever any members weight is changed, or any member is added or removed this version is incremented and will cause proposals based on older versions of the foundation to fail |
-| `total_weight` | [string](#string) |  | total_weight is the sum of the foundation members' weights. |
+| `version` | [uint64](#uint64) |  | version is used to track changes to the foundation's membership structure that would break existing proposals. Whenever any member is added or removed, this version is incremented and will cause proposals based on older versions of the foundation to fail |
+| `total_weight` | [string](#string) |  | total_weight is the number of the foundation members. |
 | `decision_policy` | [google.protobuf.Any](#google.protobuf.Any) |  | decision_policy specifies the foundation's decision policy. |
 
 
@@ -8699,14 +8699,13 @@ FoundationInfo represents the high-level on-chain information for the foundation
 <a name="lbm.foundation.v1.Member"></a>
 
 ### Member
-Member represents a foundation member with an account address,
-non-zero weight and metadata.
+Member represents a foundation member with an account address and metadata.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | address is the member's account address. |
-| `weight` | [string](#string) |  | weight is the member's voting weight that should be greater than 0. |
+| `participating` | [bool](#bool) |  | participating is the flag which allows one to remove the member by setting the flag to false. |
 | `metadata` | [string](#string) |  | metadata is any arbitrary metadata to attached to the member. |
 | `added_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | added_at is a timestamp specifying when a member was added. |
 
@@ -8739,7 +8738,7 @@ PercentageDecisionPolicy implements the DecisionPolicy interface
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `percentage` | [string](#string) |  | percentage is the minimum percentage the weighted sum of yes votes must meet for a proposal to succeed. |
+| `percentage` | [string](#string) |  | percentage is the minimum percentage the sum of yes votes must meet for a proposal to succeed. |
 | `windows` | [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows) |  | windows defines the different windows for voting and execution. |
 
 
@@ -8765,7 +8764,7 @@ passes as well as some optional metadata associated with the proposal.
 | `foundation_version` | [uint64](#uint64) |  | foundation_version tracks the version of the foundation that this proposal corresponds to. When foundation info is changed, existing proposals from previous foundation versions will become invalid. |
 | `status` | [ProposalStatus](#lbm.foundation.v1.ProposalStatus) |  | status represents the high level position in the life cycle of the proposal. Initial value is Submitted. |
 | `result` | [ProposalResult](#lbm.foundation.v1.ProposalResult) |  | result is the final result based on the votes and election rule. Initial value is unfinalized. The result is persisted so that clients can always rely on this state and not have to replicate the logic. |
-| `final_tally_result` | [TallyResult](#lbm.foundation.v1.TallyResult) |  | final_tally_result contains the sums of all weighted votes for this proposal for each vote option, after tallying. When querying a proposal via gRPC, this field is not populated until the proposal's voting period has ended. |
+| `final_tally_result` | [TallyResult](#lbm.foundation.v1.TallyResult) |  | final_tally_result contains the sums of all votes for this proposal for each vote option, after tallying. When querying a proposal via gRPC, this field is not populated until the proposal's voting period has ended. |
 | `voting_period_end` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | voting_period_end is the timestamp before which voting must be done. Unless a successfull MsgExec is called before (to execute a proposal whose tally is successful before the voting period ends), tallying will be done at this point, and the `final_tally_result`, as well as `status` and `result` fields will be accordingly updated. |
 | `executor_result` | [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult) |  | executor_result is the final result based on the votes and election rule. Initial value is NotRun. |
 | `messages` | [google.protobuf.Any](#google.protobuf.Any) | repeated | messages is a list of Msgs that will be executed if the proposal passes. |
@@ -8778,15 +8777,15 @@ passes as well as some optional metadata associated with the proposal.
 <a name="lbm.foundation.v1.TallyResult"></a>
 
 ### TallyResult
-TallyResult represents the sum of weighted votes for each vote option.
+TallyResult represents the sum of votes for each vote option.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `yes_count` | [string](#string) |  | yes_count is the weighted sum of yes votes. |
-| `abstain_count` | [string](#string) |  | abstain_count is the weighted sum of abstainers. |
-| `no_count` | [string](#string) |  | no is the weighted sum of no votes. |
-| `no_with_veto_count` | [string](#string) |  | no_with_veto_count is the weighted sum of veto. |
+| `yes_count` | [string](#string) |  | yes_count is the sum of yes votes. |
+| `abstain_count` | [string](#string) |  | abstain_count is the sum of abstainers. |
+| `no_count` | [string](#string) |  | no is the sum of no votes. |
+| `no_with_veto_count` | [string](#string) |  | no_with_veto_count is the sum of veto. |
 
 
 
@@ -8801,7 +8800,7 @@ ThresholdDecisionPolicy implements the DecisionPolicy interface
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `threshold` | [string](#string) |  | threshold is the minimum weighted sum of yes votes that must be met or exceeded for a proposal to succeed. |
+| `threshold` | [string](#string) |  | threshold is the minimum sum of yes votes that must be met or exceeded for a proposal to succeed. |
 | `windows` | [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows) |  | windows defines the different windows for voting and execution. |
 
 
@@ -9772,7 +9771,7 @@ MsgUpdateMembers is the Msg/UpdateMembers request type.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `operator` | [string](#string) |  | operator is the account address of the foundation operator. |
-| `member_updates` | [Member](#lbm.foundation.v1.Member) | repeated | member_updates is the list of members to update, set weight to 0 to remove a member. |
+| `member_updates` | [Member](#lbm.foundation.v1.Member) | repeated | member_updates is the list of members to update, set participating to false to remove a member. |
 
 
 

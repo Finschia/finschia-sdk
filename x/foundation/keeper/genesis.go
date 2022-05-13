@@ -49,9 +49,9 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	if len(members) == 0 {
 		for _, auth := range validatorAuths {
 			member := foundation.Member{
-				Address:  sdk.ValAddress(auth.OperatorAddress).ToAccAddress().String(),
-				Weight:   sdk.OneDec(),
-				Metadata: "genesis member",
+				Address:       sdk.ValAddress(auth.OperatorAddress).ToAccAddress().String(),
+				Participating: true,
+				Metadata:      "genesis member",
 			}
 			members = append(members, member)
 		}
@@ -60,7 +60,10 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		if err := validateMetadata(member.Metadata, k.config); err != nil {
 			return err
 		}
-		k.setMember(ctx, member)
+
+		if member.Participating {
+			k.setMember(ctx, member)
+		}
 	}
 
 	info := data.Foundation
@@ -70,11 +73,13 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		}
 	}
 
-	totalWeight := sdk.ZeroDec()
+	totalWeight := int64(0)
 	for _, member := range members {
-		totalWeight = totalWeight.Add(member.Weight)
+		if member.Participating {
+			totalWeight++
+		}
 	}
-	info.TotalWeight = totalWeight
+	info.TotalWeight = sdk.NewDec(totalWeight)
 
 	if len(info.Operator) == 0 {
 		info.Operator = k.GetAdmin(ctx).String()

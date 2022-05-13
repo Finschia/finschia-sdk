@@ -12,7 +12,7 @@ func (k Keeper) CollectFoundationTax(ctx sdk.Context) error {
 	feesCollectedInt := k.bankKeeper.GetAllBalances(ctx, feeCollector.GetAddress())
 	feesCollected := sdk.NewDecCoinsFromCoins(feesCollectedInt...)
 
-	// caculate the tax
+	// calculate the tax
 	taxRatio := k.GetFoundationTax(ctx)
 	tax, _ := feesCollected.MulDecTruncate(taxRatio).TruncateDecimal()
 

@@ -103,7 +103,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	for i, member := range s.members {
 		updates[i] = foundation.Member{
 			Address: member.String(),
-			Weight: sdk.OneDec(),
+			Participating: true,
 		}
 	}
 	err := s.keeper.UpdateMembers(s.ctx, updates)

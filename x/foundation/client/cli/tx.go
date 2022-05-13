@@ -405,17 +405,17 @@ Example of the content of members-json:
 [
   {
     "address": "addr1",
-    "weight": "1",
+    "participating": true,
     "metadata": "some new metadata"
   },
   {
     "address": "addr2",
-    "weight": "0",
+    "participating": false,
     "metadata": "some metadata"
   }
 ]
 
-Set a member's weight to "0" to delete it.
+Set a member's participating to false to delete it.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			operator := args[0]

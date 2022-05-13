@@ -32,7 +32,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 				Members: []foundation.Member{
 					{
 						Address: s.members[0].String(),
-						Weight: sdk.OneDec(),
+						Participating: true,
 					},
 				},
 			},
@@ -49,7 +49,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 				Members: []foundation.Member{
 					{
 						Address: s.members[0].String(),
-						Weight: sdk.OneDec(),
+						Participating: true,
 					},
 				},
 			},
@@ -129,7 +129,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 				Members: []foundation.Member{
 					{
 						Address: s.members[0].String(),
-						Weight: sdk.OneDec(),
+						Participating: true,
 						Metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
 					},
 				},

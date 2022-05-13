@@ -223,7 +223,7 @@ type MsgUpdateMembers struct {
 	// operator is the account address of the foundation operator.
 	Operator string `protobuf:"bytes,1,opt,name=operator,proto3" json:"operator,omitempty"`
 	// member_updates is the list of members to update,
-	// set weight to 0 to remove a member.
+	// set participating to false to remove a member.
 	MemberUpdates []Member `protobuf:"bytes,2,rep,name=member_updates,json=memberUpdates,proto3" json:"member_updates"`
 }
 

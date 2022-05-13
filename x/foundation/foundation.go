@@ -97,10 +97,6 @@ func (m Member) ValidateBasic() error {
 		return err
 	}
 
-	if !m.Weight.Equal(sdk.OneDec()) && !m.Weight.IsZero() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("expected a zero or one, got %s", m.Weight)
-	}
-
 	return nil
 }
 
@@ -124,7 +120,9 @@ type DecisionPolicy interface {
 	Validate(config Config) error
 }
 
-func (t *TallyResult) Add(option VoteOption, weight sdk.Dec) error {
+func (t *TallyResult) Add(option VoteOption) error {
+	weight := sdk.OneDec()
+
 	switch option {
 	case VOTE_OPTION_YES:
 		t.YesCount = t.YesCount.Add(weight)
