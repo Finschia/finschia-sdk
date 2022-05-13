@@ -10,16 +10,16 @@ option go_package = "github.com/line/lbm-sdk/x/token";
 // EventType enumerates the valid event types on x/token.
 // For the legacy events.
 enum EventType {
-  unspecified = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
-  issue = 1 [(gogoproto.enumvalue_customname) = "IssueToken"];
-  mint = 2 [(gogoproto.enumvalue_customname) = "MintToken"];
-  burn = 3 [(gogoproto.enumvalue_customname) = "BurnToken"];
-  burn_from = 4 [(gogoproto.enumvalue_customname) = "BurnTokenFrom"];
-  modify_token = 5 [(gogoproto.enumvalue_customname) = "ModifyToken"];
-  transfer = 6 [(gogoproto.enumvalue_customname) = "Transfer"];
+  unspecified   = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
+  issue         = 1 [(gogoproto.enumvalue_customname) = "IssueToken"];
+  mint          = 2 [(gogoproto.enumvalue_customname) = "MintToken"];
+  burn          = 3 [(gogoproto.enumvalue_customname) = "BurnToken"];
+  burn_from     = 4 [(gogoproto.enumvalue_customname) = "BurnTokenFrom"];
+  modify_token  = 5 [(gogoproto.enumvalue_customname) = "ModifyToken"];
+  transfer      = 6 [(gogoproto.enumvalue_customname) = "Transfer"];
   transfer_from = 7 [(gogoproto.enumvalue_customname) = "TransferFrom"];
-  grant_perm = 8 [(gogoproto.enumvalue_customname) = "GrantPermToken"];
-  revoke_perm = 9 [(gogoproto.enumvalue_customname) = "RevokePermToken"];
+  grant_perm    = 8 [(gogoproto.enumvalue_customname) = "GrantPermToken"];
+  revoke_perm   = 9 [(gogoproto.enumvalue_customname) = "RevokePermToken"];
   approve_token = 10 [(gogoproto.enumvalue_customname) = "ApproveToken"];
 }
 
@@ -27,20 +27,20 @@ enum EventType {
 // For the legacy events.
 enum AttributeKey {
   unspecified = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
-  name = 1 [(gogoproto.enumvalue_customname) = "Name"];
-  symbol = 2 [(gogoproto.enumvalue_customname) = "Symbol"];
-  meta = 3 [(gogoproto.enumvalue_customname) = "Meta"];
+  name        = 1 [(gogoproto.enumvalue_customname) = "Name"];
+  symbol      = 2 [(gogoproto.enumvalue_customname) = "Symbol"];
+  meta        = 3 [(gogoproto.enumvalue_customname) = "Meta"];
   contract_id = 4 [(gogoproto.enumvalue_customname) = "ContractID"];
-  owner = 5 [(gogoproto.enumvalue_customname) = "Owner"];
-  amount = 6 [(gogoproto.enumvalue_customname) = "Amount"];
-  decimals = 7 [(gogoproto.enumvalue_customname) = "Decimals"];
-  img_uri = 8 [(gogoproto.enumvalue_customname) = "ImageURI"];
-  mintable = 9 [(gogoproto.enumvalue_customname) = "Mintable"];
-  from = 10 [(gogoproto.enumvalue_customname) = "From"];
-  to = 11 [(gogoproto.enumvalue_customname) = "To"];
-  perm = 12 [(gogoproto.enumvalue_customname) = "Perm"];
-  approver = 13 [(gogoproto.enumvalue_customname) = "Approver"];
-  proxy = 14 [(gogoproto.enumvalue_customname) = "Proxy"];
+  owner       = 5 [(gogoproto.enumvalue_customname) = "Owner"];
+  amount      = 6 [(gogoproto.enumvalue_customname) = "Amount"];
+  decimals    = 7 [(gogoproto.enumvalue_customname) = "Decimals"];
+  img_uri     = 8 [(gogoproto.enumvalue_customname) = "ImageURI"];
+  mintable    = 9 [(gogoproto.enumvalue_customname) = "Mintable"];
+  from        = 10 [(gogoproto.enumvalue_customname) = "From"];
+  to          = 11 [(gogoproto.enumvalue_customname) = "To"];
+  perm        = 12 [(gogoproto.enumvalue_customname) = "Perm"];
+  approver    = 13 [(gogoproto.enumvalue_customname) = "Approver"];
+  proxy       = 14 [(gogoproto.enumvalue_customname) = "Proxy"];
 }
 
 // EventSent is emitted on Msg/Send and Msg/OperatorSend.
@@ -50,9 +50,9 @@ message EventSent {
   string contract_id = 1;
   // address of the operator.
   string operator = 2;
-  string from        = 3;
-  string to          = 4;
-  string amount      = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string from     = 3;
+  string to       = 4;
+  string amount   = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // EventAuthorizedOperator is emitted on Msg/AuthorizeOperator.
@@ -160,7 +160,7 @@ message EventModified {
 message EventSpent {
   // contract id associated with the token class.
   string contract_id = 1;
-  string spender      = 2;
+  string spender     = 2;
   string amount      = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
