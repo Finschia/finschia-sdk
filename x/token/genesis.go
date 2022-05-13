@@ -20,10 +20,10 @@ func ValidateGenesis(data GenesisState) error {
 		if err := sdk.ValidateAccAddress(balance.Address); err != nil {
 			return err
 		}
-		if len(balance.Tokens) == 0 {
+		if len(balance.Coins) == 0 {
 			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "tokens cannot be empty")
 		}
-		for _, amount := range balance.Tokens {
+		for _, amount := range balance.Coins {
 			if err := validateAmount(amount.Amount); err != nil {
 				return err
 			}
@@ -31,7 +31,7 @@ func ValidateGenesis(data GenesisState) error {
 	}
 
 	for _, c := range data.Classes {
-		if err := class.ValidateID(c.Id); err != nil {
+		if err := class.ValidateID(c.ContractId); err != nil {
 			return err
 		}
 		if err := validateName(c.Name); err != nil {
@@ -55,12 +55,12 @@ func ValidateGenesis(data GenesisState) error {
 		if err := sdk.ValidateAccAddress(grant.Grantee); err != nil {
 			return err
 		}
-		if err := validateAction(grant.Action); err != nil {
+		if err := validatePermission(grant.Permission); err != nil {
 			return err
 		}
 	}
 
-	for _, approve := range data.Approves {
+	for _, approve := range data.Authorizations {
 		if err := sdk.ValidateAccAddress(approve.Approver); err != nil {
 			return err
 		}
