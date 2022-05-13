@@ -40,6 +40,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Features
 * (x/wasm) [\#470](https://github.com/line/lbm-sdk/pull/470) remove contract activation control by actor
 * (x/wasm) [\#513](https://github.com/line/lbm-sdk/pull/513) fix message representation for signing
+* (x/foundation) [\#518](https://github.com/line/lbm-sdk/pull/518) add foundation treasury feature to x/foundation
 
 ### Improvements
 

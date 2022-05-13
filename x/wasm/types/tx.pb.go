@@ -215,7 +215,7 @@ type MsgStoreCodeAndInstantiateContract struct {
 	Admin string `protobuf:"bytes,6,opt,name=admin,proto3" json:"admin,omitempty"`
 	// Label is optional metadata to be stored with a contract instance.
 	Label string `protobuf:"bytes,7,opt,name=label,proto3" json:"label,omitempty"`
-	// InitMsg json encoded message to be passed to the contract on instantiation
+	// Msg json encoded message to be passed to the contract on instantiation
 	Msg RawContractMessage `protobuf:"bytes,8,opt,name=msg,proto3,casttype=RawContractMessage" json:"msg,omitempty"`
 	// Funds coins that are transferred to the contract on instantiation
 	Funds github_com_line_lbm_sdk_types.Coins `protobuf:"bytes,9,rep,name=funds,proto3,castrepeated=github.com/line/lbm-sdk/types.Coins" json:"funds"`
