@@ -853,8 +853,10 @@
     - [EventIssue](#lbm.token.v1.EventIssue)
     - [EventMinted](#lbm.token.v1.EventMinted)
     - [EventModified](#lbm.token.v1.EventModified)
+    - [EventReceived](#lbm.token.v1.EventReceived)
     - [EventRevokedOperator](#lbm.token.v1.EventRevokedOperator)
     - [EventSent](#lbm.token.v1.EventSent)
+    - [EventSpent](#lbm.token.v1.EventSpent)
   
     - [AttributeKey](#lbm.token.v1.AttributeKey)
     - [EventType](#lbm.token.v1.EventType)
@@ -12565,6 +12567,24 @@ Since: finschia
 
 
 
+<a name="lbm.token.v1.EventReceived"></a>
+
+### EventReceived
+EventReceived is emitted on token receipt.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `receiver` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="lbm.token.v1.EventRevokedOperator"></a>
 
 ### EventRevokedOperator
@@ -12596,6 +12616,24 @@ Since: finschia
 | `operator` | [string](#string) |  | address of the operator. |
 | `from` | [string](#string) |  |  |
 | `to` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventSpent"></a>
+
+### EventSpent
+EventSpent is emitted on token spend.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `spender` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
 
 
