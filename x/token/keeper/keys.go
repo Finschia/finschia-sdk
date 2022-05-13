@@ -8,7 +8,7 @@ var (
 	classKeyPrefix   = []byte{0x01}
 	balanceKeyPrefix = []byte{0x02}
 	grantKeyPrefix   = []byte{0x03}
-	approveKeyPrefix = []byte{0x04}
+	authorizationKeyPrefix = []byte{0x04}
 
 	// statistics keys
 	supplyKeyPrefix = []byte{0x05}
@@ -87,8 +87,8 @@ func splitStatisticsKey(key, keyPrefix []byte) (classID string) {
 // 	return splitStatisticsKey(key, burnKeyPrefix)
 // }
 
-func grantKey(grantee sdk.AccAddress, classID, action string) []byte {
-	key := make([]byte, len(grantKeyPrefix)+1+len(grantee)+1+len(classID)+len(action))
+func grantKey(grantee sdk.AccAddress, classID, permission string) []byte {
+	key := make([]byte, len(grantKeyPrefix)+1+len(grantee)+1+len(classID)+len(permission))
 
 	begin := 0
 	copy(key, grantKeyPrefix)
@@ -106,12 +106,12 @@ func grantKey(grantee sdk.AccAddress, classID, action string) []byte {
 	copy(key[begin:], classID)
 
 	begin += len(classID)
-	copy(key[begin:], action)
+	copy(key[begin:], permission)
 
 	return key
 }
 
-func splitGrantKey(key []byte) (grantee sdk.AccAddress, classID, action string) {
+func splitGrantKey(key []byte) (grantee sdk.AccAddress, classID, permission string) {
 	begin := len(grantKeyPrefix) + 1
 	end := begin + int(key[begin-1])
 	grantee = sdk.AccAddress(key[begin:end])
@@ -121,26 +121,26 @@ func splitGrantKey(key []byte) (grantee sdk.AccAddress, classID, action string) 
 	classID = string(key[begin:end])
 
 	begin = end
-	action = string(key[begin:])
+	permission = string(key[begin:])
 
 	return
 }
 
-func approveKey(classID string, proxy, approver sdk.AccAddress) []byte {
-	prefix := approveKeyPrefixByProxy(classID, proxy)
+func authorizationKey(classID string, proxy, approver sdk.AccAddress) []byte {
+	prefix := authorizationKeyPrefixByProxy(classID, proxy)
 	key := make([]byte, len(prefix)+len(approver))
 	copy(key, prefix)
 	copy(key[len(prefix):], approver)
 	return key
 }
 
-func approveKeyPrefixByProxy(classID string, proxy sdk.AccAddress) []byte {
-	key := make([]byte, len(approveKeyPrefix)+1+len(classID)+1+len(proxy))
+func authorizationKeyPrefixByProxy(classID string, proxy sdk.AccAddress) []byte {
+	key := make([]byte, len(authorizationKeyPrefix)+1+len(classID)+1+len(proxy))
 
 	begin := 0
-	copy(key, approveKeyPrefix)
+	copy(key, authorizationKeyPrefix)
 
-	begin += len(approveKeyPrefix)
+	begin += len(authorizationKeyPrefix)
 	key[begin] = byte(len(classID))
 
 	begin++
@@ -155,8 +155,8 @@ func approveKeyPrefixByProxy(classID string, proxy sdk.AccAddress) []byte {
 	return key
 }
 
-func splitApproveKey(key []byte) (classID string, proxy, approver sdk.AccAddress) {
-	begin := len(approveKeyPrefix) + 1
+func splitAuthorizationKey(key []byte) (classID string, proxy, approver sdk.AccAddress) {
+	begin := len(authorizationKeyPrefix) + 1
 	end := begin + int(key[begin-1])
 	classID = string(key[begin:end])
 

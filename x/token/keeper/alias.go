@@ -6,7 +6,7 @@ import (
 )
 
 // iterate through the balances and perform the provided function
-func (k Keeper) iterateBalances(ctx sdk.Context, fn func(addr sdk.AccAddress, token token.FT) (stop bool)) {
+func (k Keeper) iterateBalances(ctx sdk.Context, fn func(addr sdk.AccAddress, coin token.Coin) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 
 	iterator := sdk.KVStorePrefixIterator(store, balanceKeyPrefix)
@@ -19,8 +19,8 @@ func (k Keeper) iterateBalances(ctx sdk.Context, fn func(addr sdk.AccAddress, to
 		}
 
 		addr, classID := splitBalanceKey(iterator.Key())
-		token := token.FT{
-			ClassId: classID,
+		token := token.Coin{
+			ContractId: classID,
 			Amount:  amount,
 		}
 
@@ -32,14 +32,14 @@ func (k Keeper) iterateBalances(ctx sdk.Context, fn func(addr sdk.AccAddress, to
 }
 
 // iterate through the classes and perform the provided function
-func (k Keeper) iterateClasses(ctx sdk.Context, fn func(class token.Token) (stop bool)) {
+func (k Keeper) iterateClasses(ctx sdk.Context, fn func(class token.TokenClass) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 
 	iterator := sdk.KVStorePrefixIterator(store, classKeyPrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var class token.Token
+		var class token.TokenClass
 		k.cdc.MustUnmarshal(iterator.Value(), &class)
 
 		stop := fn(class)
@@ -56,11 +56,11 @@ func (k Keeper) iterateGrants(ctx sdk.Context, fn func(grant token.Grant) (stop 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		grantee, classID, action := splitGrantKey(iterator.Key())
+		grantee, classID, permission := splitGrantKey(iterator.Key())
 		grant := token.Grant{
+			ContractId: classID,
 			Grantee: grantee.String(),
-			ClassId: classID,
-			Action:  action,
+			Permission:  permission,
 		}
 
 		stop := fn(grant)
@@ -70,28 +70,28 @@ func (k Keeper) iterateGrants(ctx sdk.Context, fn func(grant token.Grant) (stop 
 	}
 }
 
-func (k Keeper) iterateApproves(ctx sdk.Context, fn func(approve token.Approve) (stop bool)) {
+func (k Keeper) iterateApproves(ctx sdk.Context, fn func(approve token.Authorization) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 
-	iterator := sdk.KVStorePrefixIterator(store, approveKeyPrefix)
+	iterator := sdk.KVStorePrefixIterator(store, authorizationKeyPrefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		classID, proxy, approver := splitApproveKey(iterator.Key())
-		approve := token.Approve{
+		classID, proxy, approver := splitAuthorizationKey(iterator.Key())
+		authorization := token.Authorization{
+			ContractId:  classID,
 			Approver: approver.String(),
 			Proxy:    proxy.String(),
-			ClassId:  classID,
 		}
 
-		stop := fn(approve)
+		stop := fn(authorization)
 		if stop {
 			break
 		}
 	}
 }
 
-func (k Keeper) iterateStatistics(ctx sdk.Context, fn func(amount token.FT) (stop bool), keyPrefix []byte) {
+func (k Keeper) iterateStatistics(ctx sdk.Context, fn func(amount token.Coin) (stop bool), keyPrefix []byte) {
 	store := ctx.KVStore(k.storeKey)
 
 	iterator := sdk.KVStorePrefixIterator(store, keyPrefix)
@@ -104,8 +104,8 @@ func (k Keeper) iterateStatistics(ctx sdk.Context, fn func(amount token.FT) (sto
 		}
 
 		classID := splitStatisticsKey(iterator.Key(), keyPrefix)
-		amount := token.FT{
-			ClassId: classID,
+		amount := token.Coin{
+			ContractId: classID,
 			Amount:  amt,
 		}
 
@@ -116,14 +116,14 @@ func (k Keeper) iterateStatistics(ctx sdk.Context, fn func(amount token.FT) (sto
 	}
 }
 
-func (k Keeper) iterateSupplies(ctx sdk.Context, fn func(amount token.FT) (stop bool)) {
+func (k Keeper) iterateSupplies(ctx sdk.Context, fn func(amount token.Coin) (stop bool)) {
 	k.iterateStatistics(ctx, fn, supplyKeyPrefix)
 }
 
-func (k Keeper) iterateMints(ctx sdk.Context, fn func(amount token.FT) (stop bool)) {
+func (k Keeper) iterateMints(ctx sdk.Context, fn func(amount token.Coin) (stop bool)) {
 	k.iterateStatistics(ctx, fn, mintKeyPrefix)
 }
 
-func (k Keeper) iterateBurns(ctx sdk.Context, fn func(amount token.FT) (stop bool)) {
+func (k Keeper) iterateBurns(ctx sdk.Context, fn func(amount token.Coin) (stop bool)) {
 	k.iterateStatistics(ctx, fn, burnKeyPrefix)
 }
