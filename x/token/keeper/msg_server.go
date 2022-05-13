@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/token"
 )
 
@@ -21,36 +22,73 @@ func NewMsgServer(keeper Keeper) token.MsgServer {
 
 var _ token.MsgServer = msgServer{}
 
-// Transfer defines a method to transfer tokens from one account to another account
-func (s msgServer) Transfer(c context.Context, req *token.MsgTransfer) (*token.MsgTransferResponse, error) {
+// Send defines a method to send tokens from one account to another account
+func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	amount := token.FT{ClassId: req.ClassId, Amount: req.Amount}
-	if err := s.keeper.Transfer(ctx, sdk.AccAddress(req.From), sdk.AccAddress(req.To), []token.FT{amount}); err != nil {
+
+	if err := s.keeper.Send(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.To), req.Amount); err != nil {
 		return nil, err
 	}
 
-	return &token.MsgTransferResponse{}, nil
+	// TODO: emit the legacy event too
+	if err := ctx.EventManager().EmitTypedEvent(&token.EventSent{
+		ContractId: req.ContractId,
+		Operator: req.From,
+		From: req.From,
+		To: req.To,
+		Amount: req.Amount,
+	}); err != nil {
+		return nil, err
+	}
+
+	return &token.MsgSendResponse{}, nil
 }
 
-// TransferFrom defines a method to transfer tokens from one account to another account by the proxy
-func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (*token.MsgTransferFromResponse, error) {
+// OperatorSend defines a method to send tokens from one account to another account by the proxy
+func (s msgServer) OperatorSend(c context.Context, req *token.MsgOperatorSend) (*token.MsgOperatorSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	amount := token.FT{ClassId: req.ClassId, Amount: req.Amount}
-	if err := s.keeper.TransferFrom(ctx, sdk.AccAddress(req.Proxy), sdk.AccAddress(req.From), sdk.AccAddress(req.To), []token.FT{amount}); err != nil {
+
+	if ok := s.keeper.GetApprove(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Proxy)); !ok {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized to send %s tokens of %s", req.Proxy, req.ContractId, req.From)
+	}
+
+	if err := s.keeper.Send(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.To), req.Amount); err != nil {
 		return nil, err
 	}
 
-	return &token.MsgTransferFromResponse{}, nil
+	// TODO: emit the legacy event too
+	if err := ctx.EventManager().EmitTypedEvent(&token.EventSent{
+		ContractId: req.ContractId,
+		Operator: req.Proxy,
+		From: req.From,
+		To: req.To,
+		Amount: req.Amount,
+	}); err != nil {
+		return nil, err
+	}
+
+	return &token.MsgOperatorSendResponse{}, nil
 }
 
-// Approve allows one to transfer tokens on behalf of the approver
-func (s msgServer) Approve(c context.Context, req *token.MsgApprove) (*token.MsgApproveResponse, error) {
+// AuthorizeOperator allows one to send tokens on behalf of the approver
+func (s msgServer) AuthorizeOperator(c context.Context, req *token.MsgAuthorizeOperator) (*token.MsgAuthorizeOperatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.Approve(ctx, sdk.AccAddress(req.Approver), sdk.AccAddress(req.Proxy), req.ClassId); err != nil {
+	if err := s.keeper.AuthorizeOperator(ctx, req.ContractId, sdk.AccAddress(req.Approver), sdk.AccAddress(req.Proxy)); err != nil {
 		return nil, err
 	}
 
-	return &token.MsgApproveResponse{}, nil
+	// TODO: emit the legacy event too
+	if err := ctx.EventManager().EmitTypedEvent(&token.A{
+		ContractId: req.ContractId,
+		Operator: req.From,
+		From: req.From,
+		To: req.To,
+		Amount: req.Amount,
+	}); err != nil {
+		return nil, err
+	}
+
+	return &token.MsgAuthorizeOperatorResponse{}, nil
 }
 
 // Issue defines a method to issue a token

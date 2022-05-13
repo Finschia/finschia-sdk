@@ -1,97 +1,76 @@
 package keeper
 
 import (
-	"github.com/gogo/protobuf/proto"
-
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/token"
 )
 
-func (k Keeper) Transfer(ctx sdk.Context, from, to sdk.AccAddress, amounts []token.FT) error {
-	if err := k.transfer(ctx, from, to, amounts); err != nil {
+func (k Keeper) Send(ctx sdk.Context, classID string, from, to sdk.AccAddress, amount sdk.Int) error {
+	if err := k.subtractToken(ctx, classID, from, amount); err != nil {
 		return err
 	}
 
-	events := make([]proto.Message, 0, len(amounts))
-	for _, amount := range amounts {
-		events = append(events, &token.EventTransfer{
-			ClassId: amount.ClassId,
-			From:    from.String(),
-			To:      to.String(),
-			Amount:  amount.Amount,
-		})
-	}
-	return ctx.EventManager().EmitTypedEvents(events...)
-}
-
-func (k Keeper) transfer(ctx sdk.Context, from, to sdk.AccAddress, amounts []token.FT) error {
-	if err := k.sendTokens(ctx, from, to, amounts); err != nil {
+	if err := k.addToken(ctx, classID, to, amount); err != nil {
 		return err
+	}
+
+	if !k.accountKeeper.HasAccount(ctx, to) {
+		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, to))
 	}
 
 	return nil
 }
 
-func (k Keeper) TransferFrom(ctx sdk.Context, proxy, from, to sdk.AccAddress, amounts []token.FT) error {
-	if err := k.transferFrom(ctx, proxy, from, to, amounts); err != nil {
-		return err
-	}
-
-	events := make([]proto.Message, 0, len(amounts))
-	for _, amount := range amounts {
-		events = append(events, &token.EventTransfer{
-			ClassId: amount.ClassId,
-			From:    from.String(),
-			To:      to.String(),
-			Amount:  amount.Amount,
-		})
-	}
-	return ctx.EventManager().EmitTypedEvents(events...)
-}
-
-func (k Keeper) transferFrom(ctx sdk.Context, proxy, from, to sdk.AccAddress, amounts []token.FT) error {
-	for _, amount := range amounts {
-		if ok := k.GetApprove(ctx, from, proxy, amount.ClassId); !ok {
-			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized to send %s tokens of %s", proxy, amount.ClassId, from)
-		}
-	}
-
-	return k.transfer(ctx, from, to, amounts)
-}
-
-func (k Keeper) Approve(ctx sdk.Context, approver, proxy sdk.AccAddress, classID string) error {
-	if err := k.approve(ctx, approver, proxy, classID); err != nil {
-		return err
-	}
-
-	return ctx.EventManager().EmitTypedEvent(&token.EventApprove{
-		ClassId:  classID,
-		Approver: approver.String(),
-		Proxy:    proxy.String(),
-	})
-}
-
-func (k Keeper) approve(ctx sdk.Context, approver, proxy sdk.AccAddress, classID string) error {
-	if k.GetApprove(ctx, approver, proxy, classID) {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Already approved")
+func (k Keeper) AuthorizeOperator(ctx sdk.Context, classID string, approver, proxy sdk.AccAddress) error {
+	if k.GetAuthorization(ctx, classID, approver, proxy) != nil {
+		return sdkerrors.ErrInvalidRequest.Wrap("Already authorized")
 	}
 	if _, err := k.GetClass(ctx, classID); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "ID not exists: %s", classID)
+		return sdkerrors.ErrNotFound.Wrapf("ID not exists: %s", classID)
 	}
 
-	k.setApprove(ctx, approver, proxy, classID, true)
+	authz := token.Authorization{
+		ContractId: classID,
+		Approver: approver.String(),
+		Proxy: proxy.String(),
+	}
+	k.setAuthorization(ctx, authz, true)
 	return nil
 }
 
-func (k Keeper) GetApprove(ctx sdk.Context, approver, proxy sdk.AccAddress, classID string) bool {
-	store := ctx.KVStore(k.storeKey)
-	return store.Has(approveKey(classID, proxy, approver))
+func (k Keeper) RevokeOperator(ctx sdk.Context, classID string, approver, proxy sdk.AccAddress) error {
+	if k.GetAuthorization(ctx, classID, approver, proxy) == nil {
+		return sdkerrors.ErrNotFound.Wrap("No authorization")
+	}
+	if _, err := k.GetClass(ctx, classID); err != nil {
+		return sdkerrors.ErrNotFound.Wrapf("ID not exists: %s", classID)
+	}
+
+	authz := token.Authorization{
+		ContractId: classID,
+		Approver: approver.String(),
+		Proxy: proxy.String(),
+	}
+	k.setAuthorization(ctx, authz, false)
+	return nil
 }
 
-func (k Keeper) setApprove(ctx sdk.Context, approver, proxy sdk.AccAddress, classID string, set bool) {
+func (k Keeper) GetAuthorization(ctx sdk.Context, classID string, approver, proxy sdk.AccAddress) *token.Authorization {
 	store := ctx.KVStore(k.storeKey)
-	key := approveKey(classID, proxy, approver)
+	if store.Has(approveKey(classID, proxy, approver)) {
+		return &token.Authorization{
+			ContractId: classID,
+			Approver: approver.String(),
+			Proxy: proxy.String(),
+		}
+	}
+	return nil
+}
+
+func (k Keeper) setAuthorization(ctx sdk.Context, authz token.Authorization, set bool) {
+	store := ctx.KVStore(k.storeKey)
+	key := approveKey(authz.ContractId, sdk.AccAddress(authz.Proxy), sdk.AccAddress(authz.Approver))
 	if set {
 		store.Set(key, []byte{})
 	} else {
@@ -99,71 +78,40 @@ func (k Keeper) setApprove(ctx sdk.Context, approver, proxy sdk.AccAddress, clas
 	}
 }
 
-func (k Keeper) sendTokens(ctx sdk.Context, from, to sdk.AccAddress, amounts []token.FT) error {
-	if err := k.subtractTokens(ctx, from, amounts); err != nil {
+func (k Keeper) subtractToken(ctx sdk.Context, classID string, addr sdk.AccAddress, amount sdk.Int) error {
+	if amount.IsNegative() {
+		return sdkerrors.ErrInvalidCoins.Wrap(amount.String())
+	}
+
+	balance := k.GetBalance(ctx, classID, addr)
+	newBalance := balance.Sub(amount)
+	if newBalance.IsNegative() {
+		return sdkerrors.ErrInsufficientFunds.Wrapf("%s is smaller than %s", balance, amount)
+	}
+
+	if err := k.setBalance(ctx, classID, addr, newBalance); err != nil {
 		return err
 	}
 
-	if err := k.addTokens(ctx, to, amounts); err != nil {
+	return nil
+}
+
+func (k Keeper) addToken(ctx sdk.Context, classID string, addr sdk.AccAddress, amount sdk.Int) error {
+	if amount.IsNegative() {
+		return sdkerrors.ErrInvalidCoins.Wrap(amount.String())
+	}
+
+	balance := k.GetBalance(ctx, classID, addr)
+	newBalance := balance.Add(amount)
+
+	if err := k.setBalance(ctx, classID, addr, newBalance); err != nil {
 		return err
 	}
 
-	// TODO: replace it to HasAccount()
-	if acc := k.accountKeeper.GetAccount(ctx, to); acc == nil {
-		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, to))
-	}
-
 	return nil
 }
 
-func (k Keeper) subtractTokens(ctx sdk.Context, addr sdk.AccAddress, amounts []token.FT) error {
-	for _, amount := range amounts {
-		if amount.Amount.IsNegative() {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, amount.Amount.String())
-		}
-
-		balance := k.GetBalance(ctx, addr, amount.ClassId)
-		newAmount := balance.Amount.Sub(amount.Amount)
-		if newAmount.IsNegative() {
-			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, "%s is smaller than %s", balance.Amount, amount.Amount)
-		}
-
-		newBalance := token.FT{
-			ClassId: amount.ClassId,
-			Amount:  newAmount,
-		}
-
-		if err := k.setBalance(ctx, addr, newBalance); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (k Keeper) addTokens(ctx sdk.Context, addr sdk.AccAddress, amounts []token.FT) error {
-	for _, amount := range amounts {
-		if amount.Amount.IsNegative() {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, amount.Amount.String())
-		}
-
-		balance := k.GetBalance(ctx, addr, amount.ClassId)
-		newAmount := balance.Amount.Add(amount.Amount)
-
-		newBalance := token.FT{
-			ClassId: amount.ClassId,
-			Amount:  newAmount,
-		}
-
-		if err := k.setBalance(ctx, addr, newBalance); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (k Keeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, classID string) token.FT {
+func (k Keeper) GetBalance(ctx sdk.Context, classID string, addr sdk.AccAddress) sdk.Int {
 	store := ctx.KVStore(k.storeKey)
 	amount := sdk.ZeroInt()
 	bz := store.Get(balanceKey(addr, classID))
@@ -172,22 +120,18 @@ func (k Keeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, classID string)
 			panic(err)
 		}
 	}
-
-	return token.FT{
-		ClassId: classID,
-		Amount:  amount,
-	}
+	return amount
 }
 
 // setBalance sets balance.
 // The caller must validate `balance`.
-func (k Keeper) setBalance(ctx sdk.Context, addr sdk.AccAddress, balance token.FT) error {
+func (k Keeper) setBalance(ctx sdk.Context, classID string, addr sdk.AccAddress, balance sdk.Int) error {
 	store := ctx.KVStore(k.storeKey)
-	key := balanceKey(addr, balance.ClassId)
-	if balance.Amount.IsZero() {
+	key := balanceKey(addr, classID)
+	if balance.IsZero() {
 		store.Delete(key)
 	} else {
-		bz, err := balance.Amount.Marshal()
+		bz, err := balance.Marshal()
 		if err != nil {
 			return err
 		}
