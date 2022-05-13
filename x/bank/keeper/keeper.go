@@ -237,7 +237,9 @@ func (k BaseKeeper) GetDenomMetaData(ctx sdk.Context, denom string) (types.Metad
 	}
 
 	var metadata types.Metadata
-	k.cdc.MustUnmarshal(bz, &metadata)
+	if err := metadata.Unmarshal(bz); err != nil {
+		panic(err)
+	}
 
 	return metadata, true
 }

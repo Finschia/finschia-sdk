@@ -10,9 +10,6 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 10
-  reviewers:
-  - alexanderbez
-  - fedekunze
   labels:
   - automerge
   - dependencies
@@ -21,5 +18,3 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 10
-  reviewers:
-  - fadeev

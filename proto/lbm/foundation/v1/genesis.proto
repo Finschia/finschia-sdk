@@ -48,4 +48,3 @@ message GrantAuthorization {
 
   google.protobuf.Any authorization = 3 [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/authz.Authorization"];
 }
-
