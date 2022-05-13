@@ -36,16 +36,10 @@ message Pair {
 
 // Permission enumerates the valid permissions on a token class.
 enum Permission {
-  option (gogoproto.goproto_enum_prefix) = false;
-
-  // PERMISSION_UNSPECIFIED defines the default permission which is invalid.
-  PERSMISSION_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "unspecified"];
-  // PERMISSION_MODIFY defines a permission to modify a token class.
-  PERSMISSION_MODIFY = 1 [(gogoproto.enumvalue_customname) = "modify"];
-  // PERMISSION_MINT defines a permission to mint tokens of a token class.
-  PERSMISSION_MINT = 2 [(gogoproto.enumvalue_customname) = "mint"];
-  // PERMISSION_BURN defines a permission to burn tokens of a token class.
-  PERSMISSION_BURN = 3 [(gogoproto.enumvalue_customname) = "burn"];
+  unspecified = 0 [(gogoproto.enumvalue_customname) = "unspecified"];
+  modify      = 1 [(gogoproto.enumvalue_customname) = "Modify"];
+  mint        = 2 [(gogoproto.enumvalue_customname) = "Mint"];
+  burn        = 3 [(gogoproto.enumvalue_customname) = "Burn"];
 }
 
 // Authorization defines an authorization given to the operator on tokens of the holder.

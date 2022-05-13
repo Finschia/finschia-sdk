@@ -12414,10 +12414,10 @@ Permission enumerates the valid permissions on a token class.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| PERSMISSION_UNSPECIFIED | 0 | PERMISSION_UNSPECIFIED defines the default permission which is invalid. |
-| PERSMISSION_MODIFY | 1 | PERMISSION_MODIFY defines a permission to modify a token class. |
-| PERSMISSION_MINT | 2 | PERMISSION_MINT defines a permission to mint tokens of a token class. |
-| PERSMISSION_BURN | 3 | PERMISSION_BURN defines a permission to burn tokens of a token class. |
+| unspecified | 0 |  |
+| modify | 1 |  |
+| mint | 2 |  |
+| burn | 3 |  |
 
 
  <!-- end enums -->

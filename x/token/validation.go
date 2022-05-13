@@ -68,29 +68,23 @@ func validateAmount(amount sdk.Int) error {
 	return nil
 }
 
-func validateAction(action string) error {
-	actions := []string{
-		ActionMint,
-		ActionBurn,
-		ActionModify,
+func validatePermission(permission string) error {
+	if value := Permission_value[permission]; value == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrapf("Invalid permission: %s", permission)
 	}
-	for _, a := range actions {
-		if action == a {
-			return nil
-		}
-	}
-	return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Invalid action: %s", action)
+	return nil
 }
 
 func validateChange(change Pair) error {
-	validators := map[string]func(string) error{
-		AttributeKeyName:     validateName,
-		AttributeKeyImageURI: validateImageURI,
-		AttributeKeyMeta:     validateMeta,
+	validators := map[AttributeKey]func(string) error{
+		AttributeKey_Unspecified: func(string) error {
+			return sdkerrors.ErrInvalidRequest.Wrapf("Invalid field: %s", change.Field)
+		},
+		AttributeKey_Name:     validateName,
+		AttributeKey_ImageURI: validateImageURI,
+		AttributeKey_Meta:     validateMeta,
 	}
-	validator, ok := validators[change.Key]
-	if !ok {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Invalid field: %s", change.Key)
-	}
+	
+	validator := validators[AttributeKey(AttributeKey_value[change.Field])]
 	return validator(change.Value)
 }
