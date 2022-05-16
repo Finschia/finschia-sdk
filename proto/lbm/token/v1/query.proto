@@ -42,7 +42,7 @@ service Query {
     option (google.api.http).get = "/lbm/token/v1/token_classes";
   }
 
-  // Grant queries a permission on a given grantee.
+  // Grant queries a permission on a given grantee permission pair.
   // Since: finschia
   rpc Grant(QueryGrantRequest) returns (QueryGrantResponse) {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}";
@@ -50,7 +50,7 @@ service Query {
 
   // GranteeGrants queries permissions on a given grantee.
   // Since: finschia
-  rpc GranteeGrants(QueryGrantRequest) returns (QueryGrantResponse) {
+  rpc GranteeGrants(QueryGranteeGrantsRequest) returns (QueryGranteeGrantsResponse) {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}";
   }
 
@@ -149,8 +149,8 @@ message QueryGrantResponse {
   Grant grant = 1;
 }
 
-// QueryGrantsRequest is the request type for the Query/Grants RPC method
-message QueryGrantsRequest {
+// QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method
+message QueryGranteeGrantsRequest {
   // contract id associated with the token class.
   string contract_id = 1;
   // grantee which has permissions on the token class.
@@ -160,8 +160,8 @@ message QueryGrantsRequest {
   lbm.base.query.v1.PageRequest pagination = 3;
 }
 
-// QueryGrantsResponse is the response type for the Query/Grants RPC method
-message QueryGrantsResponse {
+// QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method
+message QueryGranteeGrantsResponse {
   repeated Grant                 grants     = 1 [(gogoproto.nullable) = false];
   lbm.base.query.v1.PageResponse pagination = 2;
 }

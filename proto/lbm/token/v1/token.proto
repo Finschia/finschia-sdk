@@ -36,7 +36,7 @@ message Pair {
 
 // Permission enumerates the valid permissions on a token class.
 enum Permission {
-  unspecified = 0 [(gogoproto.enumvalue_customname) = "unspecified"];
+  unspecified = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
   modify      = 1 [(gogoproto.enumvalue_customname) = "Modify"];
   mint        = 2 [(gogoproto.enumvalue_customname) = "Mint"];
   burn        = 3 [(gogoproto.enumvalue_customname) = "Burn"];
@@ -44,20 +44,16 @@ enum Permission {
 
 // Authorization defines an authorization given to the operator on tokens of the holder.
 message Authorization {
-  // contract id associated with the token class.
-  string contract_id = 1;
   // approver is the address of the approver of the authorization.
-  string approver = 2;
+  string approver = 1;
   // proxy is the address of the operator which the authorization is granted to.
-  string proxy = 3;
+  string proxy = 2;
 }
 
 // Grant defines permission given to a grantee.
 message Grant {
-  // contract id associated with the token class.
-  string contract_id = 1;
   // address of the grantee.
-  string grantee = 2;
+  string grantee = 1;
   // permission on the token class.
-  string permission = 3;
+  string permission = 2;
 }

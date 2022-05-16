@@ -39043,9 +39043,6 @@ paths:
                 items:
                   type: object
                   properties:
-                    contract_id:
-                      type: string
-                      description: contract id associated with the token class.
                     approver:
                       type: string
                       description: >-
@@ -39197,9 +39194,6 @@ paths:
               authorization:
                 type: object
                 properties:
-                  contract_id:
-                    type: string
-                    description: contract id associated with the token class.
                   approver:
                     type: string
                     description: >-
@@ -39367,22 +39361,48 @@ paths:
           schema:
             type: object
             properties:
-              grant:
+              grants:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    grantee:
+                      type: string
+                      description: address of the grantee.
+                    permission:
+                      type: string
+                      description: permission on the token class.
+                  description: Grant defines permission given to a grantee.
+              pagination:
                 type: object
                 properties:
-                  contract_id:
+                  next_key:
                     type: string
-                    description: contract id associated with the token class.
-                  grantee:
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
                     type: string
-                    description: address of the grantee.
-                  permission:
-                    type: string
-                    description: permission on the token class.
-                description: Grant defines permission given to a grantee.
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
             title: >-
-              QueryGrantResponse is the response type for the Query/Grant RPC
-              method
+              QueryGranteeGrantsResponse is the response type for the
+              Query/GranteeGrants RPC method
         default:
           description: An unexpected error response
           schema:
@@ -39416,17 +39436,70 @@ paths:
           in: path
           required: true
           type: string
-        - name: permission
-          description: a permission given to the grantee.
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
           in: query
           required: false
           type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+          format: boolean
       tags:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}':
     get:
       summary: |-
-        Grant queries a permission on a given grantee.
+        Grant queries a permission on a given grantee permission pair.
         Since: finschia
       operationId: Grant
       responses:
@@ -39438,9 +39511,6 @@ paths:
               grant:
                 type: object
                 properties:
-                  contract_id:
-                    type: string
-                    description: contract id associated with the token class.
                   grantee:
                     type: string
                     description: address of the grantee.
@@ -64021,9 +64091,6 @@ definitions:
   lbm.token.v1.Authorization:
     type: object
     properties:
-      contract_id:
-        type: string
-        description: contract id associated with the token class.
       approver:
         type: string
         description: approver is the address of the approver of the authorization.
@@ -64038,9 +64105,6 @@ definitions:
   lbm.token.v1.Grant:
     type: object
     properties:
-      contract_id:
-        type: string
-        description: contract id associated with the token class.
       grantee:
         type: string
         description: address of the grantee.
@@ -64054,9 +64118,6 @@ definitions:
       authorization:
         type: object
         properties:
-          contract_id:
-            type: string
-            description: contract id associated with the token class.
           approver:
             type: string
             description: approver is the address of the approver of the authorization.
@@ -64089,9 +64150,6 @@ definitions:
       grant:
         type: object
         properties:
-          contract_id:
-            type: string
-            description: contract id associated with the token class.
           grantee:
             type: string
             description: address of the grantee.
@@ -64100,6 +64158,49 @@ definitions:
             description: permission on the token class.
         description: Grant defines permission given to a grantee.
     title: QueryGrantResponse is the response type for the Query/Grant RPC method
+  lbm.token.v1.QueryGranteeGrantsResponse:
+    type: object
+    properties:
+      grants:
+        type: array
+        items:
+          type: object
+          properties:
+            grantee:
+              type: string
+              description: address of the grantee.
+            permission:
+              type: string
+              description: permission on the token class.
+          description: Grant defines permission given to a grantee.
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+    title: >-
+      QueryGranteeGrantsResponse is the response type for the
+      Query/GranteeGrants RPC method
   lbm.token.v1.QueryMintedResponse:
     type: object
     properties:
@@ -64114,9 +64215,6 @@ definitions:
         items:
           type: object
           properties:
-            contract_id:
-              type: string
-              description: contract id associated with the token class.
             approver:
               type: string
               description: approver is the address of the approver of the authorization.

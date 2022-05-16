@@ -864,7 +864,10 @@
 - [lbm/token/v1/genesis.proto](#lbm/token/v1/genesis.proto)
     - [Balance](#lbm.token.v1.Balance)
     - [ClassGenesisState](#lbm.token.v1.ClassGenesisState)
-    - [Coin](#lbm.token.v1.Coin)
+    - [ContractAuthorizations](#lbm.token.v1.ContractAuthorizations)
+    - [ContractBalances](#lbm.token.v1.ContractBalances)
+    - [ContractCoin](#lbm.token.v1.ContractCoin)
+    - [ContractGrants](#lbm.token.v1.ContractGrants)
     - [GenesisState](#lbm.token.v1.GenesisState)
   
 - [lbm/token/v1/query.proto](#lbm/token/v1/query.proto)
@@ -876,8 +879,8 @@
     - [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse)
     - [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest)
     - [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse)
-    - [QueryGrantsRequest](#lbm.token.v1.QueryGrantsRequest)
-    - [QueryGrantsResponse](#lbm.token.v1.QueryGrantsResponse)
+    - [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest)
+    - [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse)
     - [QueryMintedRequest](#lbm.token.v1.QueryMintedRequest)
     - [QueryMintedResponse](#lbm.token.v1.QueryMintedResponse)
     - [QueryOperatorAuthorizationsRequest](#lbm.token.v1.QueryOperatorAuthorizationsRequest)
@@ -12332,7 +12335,6 @@ Authorization defines an authorization given to the operator on tokens of the ho
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `approver` | [string](#string) |  | approver is the address of the approver of the authorization. |
 | `proxy` | [string](#string) |  | proxy is the address of the operator which the authorization is granted to. |
 
@@ -12349,7 +12351,6 @@ Grant defines permission given to a grantee.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `grantee` | [string](#string) |  | address of the grantee. |
 | `permission` | [string](#string) |  | permission on the token class. |
 
@@ -12708,14 +12709,13 @@ For the legacy events.
 <a name="lbm.token.v1.Balance"></a>
 
 ### Balance
-Balance defines an account address and balance pair used in the token module's
-genesis state.
+Balance defines a balance of an address.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
-| `coins` | [Coin](#lbm.token.v1.Coin) | repeated |  |
+| `amount` | [string](#string) |  |  |
 
 
 
@@ -12738,16 +12738,65 @@ ClassGenesisState defines the classs keeper's genesis state.
 
 
 
-<a name="lbm.token.v1.Coin"></a>
+<a name="lbm.token.v1.ContractAuthorizations"></a>
 
-### Coin
-Coin defines a token with a contract id and an amount.
+### ContractAuthorizations
+ContractAuthorizations defines authorizations belong to a contract.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  |  |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `authorizations` | [Authorization](#lbm.token.v1.Authorization) | repeated | authorizations |
+
+
+
+
+
+
+<a name="lbm.token.v1.ContractBalances"></a>
+
+### ContractBalances
+ContractBalances defines balances belong to a contract.
+genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `balances` | [Balance](#lbm.token.v1.Balance) | repeated | balances |
+
+
+
+
+
+
+<a name="lbm.token.v1.ContractCoin"></a>
+
+### ContractCoin
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.ContractGrants"></a>
+
+### ContractGrants
+ContractGrant defines grants belong to a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `grants` | [Grant](#lbm.token.v1.Grant) | repeated | grants |
 
 
 
@@ -12764,13 +12813,13 @@ GenesisState defines the token module's genesis state.
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#lbm.token.v1.Params) |  | params defines all the paramaters of the module. |
 | `class_state` | [ClassGenesisState](#lbm.token.v1.ClassGenesisState) |  | class_state is the class keeper's genesis state. |
-| `balances` | [Balance](#lbm.token.v1.Balance) | repeated | balances is an array containing the balances of all the accounts. |
+| `balances` | [ContractBalances](#lbm.token.v1.ContractBalances) | repeated | balances is an array containing the balances of all the accounts. |
 | `classes` | [TokenClass](#lbm.token.v1.TokenClass) | repeated | classes defines the metadata of the differents tokens. |
-| `grants` | [Grant](#lbm.token.v1.Grant) | repeated | grants defines the grant information. |
-| `authorizations` | [Authorization](#lbm.token.v1.Authorization) | repeated | authorizations defines the approve information. |
-| `supplies` | [Coin](#lbm.token.v1.Coin) | repeated | supplies represents the total supplies of tokens. |
-| `mints` | [Coin](#lbm.token.v1.Coin) | repeated | mints represents the total mints of tokens. |
-| `burns` | [Coin](#lbm.token.v1.Coin) | repeated | burns represents the total burns of tokens. |
+| `grants` | [ContractGrants](#lbm.token.v1.ContractGrants) | repeated | grants defines the grant information. |
+| `authorizations` | [ContractAuthorizations](#lbm.token.v1.ContractAuthorizations) | repeated | authorizations defines the approve information. |
+| `supplies` | [ContractCoin](#lbm.token.v1.ContractCoin) | repeated | supplies represents the total supplies of tokens. |
+| `mints` | [ContractCoin](#lbm.token.v1.ContractCoin) | repeated | mints represents the total mints of tokens. |
+| `burns` | [ContractCoin](#lbm.token.v1.ContractCoin) | repeated | burns represents the total burns of tokens. |
 
 
 
@@ -12918,10 +12967,10 @@ QueryGrantResponse is the response type for the Query/Grant RPC method
 
 
 
-<a name="lbm.token.v1.QueryGrantsRequest"></a>
+<a name="lbm.token.v1.QueryGranteeGrantsRequest"></a>
 
-### QueryGrantsRequest
-QueryGrantsRequest is the request type for the Query/Grants RPC method
+### QueryGranteeGrantsRequest
+QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method
 
 
 | Field | Type | Label | Description |
@@ -12935,10 +12984,10 @@ QueryGrantsRequest is the request type for the Query/Grants RPC method
 
 
 
-<a name="lbm.token.v1.QueryGrantsResponse"></a>
+<a name="lbm.token.v1.QueryGranteeGrantsResponse"></a>
 
-### QueryGrantsResponse
-QueryGrantsResponse is the response type for the Query/Grants RPC method
+### QueryGranteeGrantsResponse
+QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method
 
 
 | Field | Type | Label | Description |
@@ -13124,8 +13173,8 @@ Query defines the gRPC querier service.
 | `Burnt` | [QueryBurntRequest](#lbm.token.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from the given contract id. | GET|/lbm/token/v1/token_classes/{contract_id}/burnt|
 | `TokenClass` | [QueryTokenClassRequest](#lbm.token.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.token.v1.QueryTokenClassResponse) | TokenClass queries an token metadata based on its contract id. | GET|/lbm/token/v1/token_classes/{contract_id}|
 | `TokenClasses` | [QueryTokenClassesRequest](#lbm.token.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.token.v1.QueryTokenClassesResponse) | TokenClasses queries all token metadata. Since: finschia | GET|/lbm/token/v1/token_classes|
-| `Grant` | [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse) | Grant queries a permission on a given grantee. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}|
-| `GranteeGrants` | [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse) | GranteeGrants queries permissions on a given grantee. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
+| `Grant` | [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse) | Grant queries a permission on a given grantee permission pair. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}|
+| `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse) | GranteeGrants queries permissions on a given grantee. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
 | `Authorization` | [QueryAuthorizationRequest](#lbm.token.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.token.v1.QueryAuthorizationResponse) | Authorization queries authorization on a given proxy approver pair. | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{proxy}/{approver}|
 | `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.token.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.token.v1.QueryOperatorAuthorizationsResponse) | OperatorAuthorizations queries authorization on a given proxy. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{proxy}|
 
