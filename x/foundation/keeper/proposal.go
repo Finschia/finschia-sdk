@@ -30,7 +30,7 @@ func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *foundatio
 		grantee := sdk.ValAddress(auth.OperatorAddress).ToAccAddress()
 		if auth.CreationAllowed {
 			authorization := &foundation.CreateValidatorAuthorization{
-				ValidatorAddress:  auth.OperatorAddress,
+				ValidatorAddress: auth.OperatorAddress,
 			}
 
 			if err := k.Grant(ctx, govtypes.ModuleName, grantee, authorization); err != nil {

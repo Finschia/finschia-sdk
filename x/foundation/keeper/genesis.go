@@ -35,7 +35,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		grantee := sdk.ValAddress(auth.OperatorAddress).ToAccAddress()
 		if auth.CreationAllowed {
 			authorization := &foundation.CreateValidatorAuthorization{
-				ValidatorAddress:  auth.OperatorAddress,
+				ValidatorAddress: auth.OperatorAddress,
 			}
 			if err := k.Grant(ctx, govtypes.ModuleName, grantee, authorization); err != nil {
 				return err

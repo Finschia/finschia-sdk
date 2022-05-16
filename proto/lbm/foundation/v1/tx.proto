@@ -194,9 +194,10 @@ message MsgLeaveFoundationResponse {}
 // on behalf of the foundation.
 message MsgGrant {
   string operator = 1;
-  string grantee = 2;
+  string grantee  = 2;
 
-  google.protobuf.Any authorization = 3 [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization"];
+  google.protobuf.Any authorization = 3
+      [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization"];
 }
 
 // MsgGrantResponse defines the Msg/MsgGrant response type.
@@ -205,7 +206,7 @@ message MsgGrantResponse {}
 // MsgRevoke revokes any authorization with the provided sdk.Msg type
 // to the grantee on behalf of the foundation.
 message MsgRevoke {
-  string operator = 1;
+  string operator     = 1;
   string grantee      = 2;
   string msg_type_url = 3;
 }

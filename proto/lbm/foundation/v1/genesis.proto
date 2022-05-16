@@ -43,8 +43,10 @@ message GenesisState {
 // GrantAuthorization defines authorization grant to grantee via route.
 message GrantAuthorization {
   option (gogoproto.goproto_getters) = false;
+
   string granter = 1;
   string grantee = 2;
 
-  google.protobuf.Any authorization = 3 [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization"];
+  google.protobuf.Any authorization = 3
+      [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization"];
 }
