@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"strconv"
 
+	wasmvm "github.com/line/wasmvm"
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
 
@@ -17,7 +18,6 @@ import (
 	"github.com/line/lbm-sdk/client/flags"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	wasmvmapi "github.com/line/wasmvm/api"
 )
 
 func GetQueryCmd() *cobra.Command {
@@ -51,7 +51,7 @@ func GetCmdLibVersion() *cobra.Command {
 		Aliases: []string{"lib-version"},
 		Args:    cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			version, err := wasmvmapi.LibwasmvmVersion()
+			version, err := wasmvm.LibwasmvmVersion()
 			if err != nil {
 				return fmt.Errorf("error retrieving libwasmvm version: %w", err)
 			}
