@@ -35,7 +35,7 @@ func (k Keeper) OnOpenChannel(
 
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
-	gasUsed, execErr := k.wasmVM.IBCChannelOpen(codeInfo.CodeHash, env, msg, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas, costJSONDeserialization)
+	_, gasUsed, execErr := k.wasmVM.IBCChannelOpen(codeInfo.CodeHash, env, msg, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas, costJSONDeserialization)
 	k.consumeRuntimeGas(ctx, gasUsed)
 
 	if execErr != nil {
