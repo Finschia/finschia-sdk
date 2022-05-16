@@ -51,10 +51,6 @@ import (
 	"github.com/line/lbm-sdk/x/capability"
 	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
-	"github.com/line/lbm-sdk/x/consortium"
-	consortiumclient "github.com/line/lbm-sdk/x/consortium/client"
-	consortiumkeeper "github.com/line/lbm-sdk/x/consortium/keeper"
-	consortiummodule "github.com/line/lbm-sdk/x/consortium/module"
 	"github.com/line/lbm-sdk/x/crisis"
 	crisiskeeper "github.com/line/lbm-sdk/x/crisis/keeper"
 	crisistypes "github.com/line/lbm-sdk/x/crisis/types"
@@ -68,6 +64,10 @@ import (
 	"github.com/line/lbm-sdk/x/feegrant"
 	feegrantkeeper "github.com/line/lbm-sdk/x/feegrant/keeper"
 	feegrantmodule "github.com/line/lbm-sdk/x/feegrant/module"
+	"github.com/line/lbm-sdk/x/foundation"
+	foundationclient "github.com/line/lbm-sdk/x/foundation/client"
+	foundationkeeper "github.com/line/lbm-sdk/x/foundation/keeper"
+	foundationmodule "github.com/line/lbm-sdk/x/foundation/module"
 	"github.com/line/lbm-sdk/x/genutil"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
 	"github.com/line/lbm-sdk/x/gov"
@@ -130,10 +130,10 @@ var (
 		staking.AppModuleBasic{},
 		mint.AppModuleBasic{},
 		distr.AppModuleBasic{},
-		consortiummodule.AppModuleBasic{},
+		foundationmodule.AppModuleBasic{},
 		gov.NewAppModuleBasic(
-			consortiumclient.UpdateConsortiumParamsProposalHandler,
-			consortiumclient.UpdateValidatorAuthsProposalHandler,
+			foundationclient.UpdateFoundationParamsProposalHandler,
+			foundationclient.UpdateValidatorAuthsProposalHandler,
 			paramsclient.ProposalHandler,
 			distrclient.ProposalHandler,
 			upgradeclient.ProposalHandler,
@@ -158,6 +158,8 @@ var (
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName:     nil,
 		distrtypes.ModuleName:          nil,
+		foundation.TreasuryName:        nil,
+		foundation.AdministratorName:   nil,
 		minttypes.ModuleName:           {authtypes.Minter},
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
 		stakingtypes.NotBondedPoolName: {authtypes.Burner, authtypes.Staking},
@@ -199,7 +201,7 @@ type SimApp struct {
 	SlashingKeeper   slashingkeeper.Keeper
 	MintKeeper       mintkeeper.Keeper
 	DistrKeeper      distrkeeper.Keeper
-	ConsortiumKeeper consortiumkeeper.Keeper
+	FoundationKeeper foundationkeeper.Keeper
 	GovKeeper        govkeeper.Keeper
 	CrisisKeeper     crisiskeeper.Keeper
 	UpgradeKeeper    upgradekeeper.Keeper
@@ -266,7 +268,7 @@ func NewSimApp(
 		ibctransfertypes.StoreKey,
 		capabilitytypes.StoreKey,
 		feegrant.StoreKey,
-		consortium.StoreKey,
+		foundation.StoreKey,
 		class.StoreKey,
 		token.StoreKey,
 		authzkeeper.StoreKey,
@@ -328,7 +330,9 @@ func NewSimApp(
 
 	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, keys[feegrant.StoreKey], app.AccountKeeper)
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath, app.BaseApp)
-	app.ConsortiumKeeper = consortiumkeeper.NewKeeper(appCodec, keys[consortium.StoreKey], stakingKeeper)
+
+	foundationConfig := foundation.DefaultConfig()
+	app.FoundationKeeper = foundationkeeper.NewKeeper(appCodec, keys[foundation.StoreKey], app.BaseApp.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, stakingKeeper, authtypes.FeeCollectorName, foundationConfig)
 
 	classKeeper := classkeeper.NewKeeper(appCodec, keys[class.StoreKey])
 	app.TokenKeeper = tokenkeeper.NewKeeper(appCodec, keys[token.StoreKey], app.AccountKeeper, classKeeper)
@@ -353,7 +357,7 @@ func NewSimApp(
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
-		AddRoute(consortium.RouterKey, consortiumkeeper.NewProposalHandler(app.ConsortiumKeeper))
+		AddRoute(foundation.RouterKey, foundationkeeper.NewProposalHandler(app.FoundationKeeper))
 
 	govKeeper := govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
@@ -410,12 +414,12 @@ func NewSimApp(
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper),
 		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
 		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
-		consortiummodule.NewAppModule(appCodec, app.ConsortiumKeeper, app.StakingKeeper),
+		foundationmodule.NewAppModule(appCodec, app.FoundationKeeper, app.StakingKeeper),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
-		stakingplus.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.ConsortiumKeeper),
+		stakingplus.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.FoundationKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
@@ -434,6 +438,7 @@ func NewSimApp(
 		upgradetypes.ModuleName,
 		capabilitytypes.ModuleName,
 		minttypes.ModuleName,
+		foundation.ModuleName,
 		distrtypes.ModuleName,
 		slashingtypes.ModuleName,
 		evidencetypes.ModuleName,
@@ -449,7 +454,6 @@ func NewSimApp(
 		vestingtypes.ModuleName,
 		ibchost.ModuleName,
 		ibctransfertypes.ModuleName,
-		consortium.ModuleName,
 		token.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
@@ -471,7 +475,7 @@ func NewSimApp(
 		vestingtypes.ModuleName,
 		ibchost.ModuleName,
 		ibctransfertypes.ModuleName,
-		consortium.ModuleName,
+		foundation.ModuleName,
 		token.ModuleName,
 	)
 
@@ -500,7 +504,7 @@ func NewSimApp(
 		ibchost.ModuleName,
 		ibctransfertypes.ModuleName,
 		vestingtypes.ModuleName,
-		consortium.ModuleName,
+		foundation.ModuleName,
 		token.ModuleName,
 	)
 
