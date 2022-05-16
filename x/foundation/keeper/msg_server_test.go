@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
@@ -439,7 +438,7 @@ func (s *KeeperTestSuite) TestMsgLeaveFoundation() {
 func (s *KeeperTestSuite) TestMsgGrant() {
 	testCases := map[string]struct {
 		operator sdk.AccAddress
-		authorization authz.Authorization
+		authorization foundation.Authorization
 		valid bool
 	}{
 		"valid request": {

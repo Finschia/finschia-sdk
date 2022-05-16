@@ -14,7 +14,6 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/version"
-	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/gov/client/cli"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
@@ -68,8 +67,8 @@ func parseDecisionPolicy(codec codec.Codec, policyJSON string) (foundation.Decis
 	return policy, nil
 }
 
-func parseAuthorization(codec codec.Codec, authorizationJSON string) (authz.Authorization, error) {
-	var authorization authz.Authorization
+func parseAuthorization(codec codec.Codec, authorizationJSON string) (foundation.Authorization, error) {
+	var authorization foundation.Authorization
 	if err := codec.UnmarshalInterfaceJSON([]byte(authorizationJSON), &authorization); err != nil {
 		return nil, err
 	}

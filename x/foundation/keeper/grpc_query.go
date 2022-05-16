@@ -12,7 +12,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/query"
-	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
@@ -204,7 +203,7 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 	var authorizations []*codectypes.Any
 	if req.MsgTypeUrl != "" {
 		pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
-			var authorization authz.Authorization
+			var authorization foundation.Authorization
 			if err := s.keeper.cdc.UnmarshalInterface(value, &authorization); err != nil {
 				return err
 			}
@@ -229,7 +228,7 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 	}
 
 	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
-		var authorization authz.Authorization
+		var authorization foundation.Authorization
 		if err := s.keeper.cdc.UnmarshalInterface(value, &authorization); err != nil {
 			return err
 		}

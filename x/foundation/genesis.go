@@ -5,7 +5,6 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/authz"
 )
 
 // DefaultGenesisState creates a default GenesisState object
@@ -119,19 +118,19 @@ func ValidateGenesis(data GenesisState) error {
 	return nil
 }
 
-func (g GrantAuthorization) GetAuthorization() authz.Authorization {
+func (g GrantAuthorization) GetAuthorization() Authorization {
 	if g.Authorization == nil {
 		return nil
 	}
 
-	a, ok := g.Authorization.GetCachedValue().(authz.Authorization)
+	a, ok := g.Authorization.GetCachedValue().(Authorization)
 	if !ok {
 		return nil
 	}
 	return a
 }
 
-func (g *GrantAuthorization) SetAuthorization(a authz.Authorization) error {
+func (g *GrantAuthorization) SetAuthorization(a Authorization) error {
 	msg, ok := a.(proto.Message)
 	if !ok {
 		return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
@@ -147,7 +146,7 @@ func (g *GrantAuthorization) SetAuthorization(a authz.Authorization) error {
 }
 
 // for the tests
-func (g GrantAuthorization) WithAuthorization(authorization authz.Authorization) *GrantAuthorization {
+func (g GrantAuthorization) WithAuthorization(authorization Authorization) *GrantAuthorization {
 	grant := g
 	if err := grant.SetAuthorization(authorization); err != nil {
 		return nil
@@ -156,6 +155,6 @@ func (g GrantAuthorization) WithAuthorization(authorization authz.Authorization)
 }
 
 func (g GrantAuthorization) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
-	var authorization authz.Authorization
+	var authorization Authorization
 	return unpacker.UnpackAny(g.Authorization, &authorization)
 }

@@ -9,7 +9,6 @@ import (
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/client/cli"
 )
@@ -698,7 +697,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	}
 
-	doMarshal := func(authorization authz.Authorization) string {
+	doMarshal := func(authorization foundation.Authorization) string {
 		bz, err := s.cfg.Codec.MarshalInterfaceJSON(authorization)
 		s.Require().NoError(err)
 		return string(bz)

@@ -46,5 +46,5 @@ message GrantAuthorization {
   string granter = 1;
   string grantee = 2;
 
-  google.protobuf.Any authorization = 3 [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/authz.Authorization"];
+  google.protobuf.Any authorization = 3 [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization"];
 }

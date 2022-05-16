@@ -2,7 +2,6 @@ package foundation
 
 import (
 	"github.com/line/lbm-sdk/codec/legacy"
-	"github.com/line/lbm-sdk/x/authz"
 
 	"github.com/gogo/protobuf/proto"
 
@@ -402,7 +401,7 @@ func (m MsgGrant) ValidateBasic() error {
 	return nil
 }
 
-func (m MsgGrant) GetAuthorization() authz.Authorization {
+func (m MsgGrant) GetAuthorization() Authorization {
 	if m.Authorization == nil {
 		return nil
 	}
@@ -414,7 +413,7 @@ func (m MsgGrant) GetAuthorization() authz.Authorization {
 	return a
 }
 
-func (m *MsgGrant) SetAuthorization(a authz.Authorization) error {
+func (m *MsgGrant) SetAuthorization(a Authorization) error {
 	any, err := SetAuthorization(a)
 	if err != nil {
 		return err
@@ -425,7 +424,7 @@ func (m *MsgGrant) SetAuthorization(a authz.Authorization) error {
 }
 
 func (m MsgGrant) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
-	var authorization authz.Authorization
+	var authorization Authorization
 	return unpacker.UnpackAny(m.Authorization, &authorization)
 }
 

@@ -6,7 +6,6 @@ import (
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
@@ -66,7 +65,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 func (k Keeper) Cleanup(ctx sdk.Context) {
 	msgTypeURL := foundation.CreateValidatorAuthorization{}.MsgTypeURL()
 	var createValidatorGrantees []sdk.AccAddress
-	k.iterateAuthorizations(ctx, "", func(granter string, grantee sdk.AccAddress, authorization authz.Authorization) (stop bool) {
+	k.iterateAuthorizations(ctx, "", func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
 		if authorization.MsgTypeURL() == msgTypeURL {
 			createValidatorGrantees = append(createValidatorGrantees, grantee)
 		}

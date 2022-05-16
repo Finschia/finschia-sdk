@@ -3,11 +3,10 @@ package keeper
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
-func (k Keeper) Grant(ctx sdk.Context, granter string, grantee sdk.AccAddress, authorization authz.Authorization) error {
+func (k Keeper) Grant(ctx sdk.Context, granter string, grantee sdk.AccAddress, authorization foundation.Authorization) error {
 	if err := k.setAuthorization(ctx, granter, grantee, authorization); err != nil {
 		return err
 	}
@@ -44,7 +43,7 @@ func (k Keeper) Revoke(ctx sdk.Context, granter string, grantee sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) GetAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, msgTypeURL string) (authz.Authorization, error) {
+func (k Keeper) GetAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, msgTypeURL string) (foundation.Authorization, error) {
 	store := ctx.KVStore(k.storeKey)
 	key := grantKey(granter, grantee, msgTypeURL)
 	bz := store.Get(key)
@@ -52,7 +51,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, granter string, grantee sdk.Ac
 		return nil, sdkerrors.ErrUnauthorized.Wrap("authorization not found")
 	}
 
-	var auth authz.Authorization
+	var auth foundation.Authorization
 	if err := k.cdc.UnmarshalInterface(bz, &auth); err != nil {
 		return nil, err
 	}
@@ -60,7 +59,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, granter string, grantee sdk.Ac
 	return auth, nil
 }
 
-func (k Keeper) setAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, authorization authz.Authorization) error {
+func (k Keeper) setAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, authorization foundation.Authorization) error {
 	store := ctx.KVStore(k.storeKey)
 	key := grantKey(granter, grantee, authorization.MsgTypeURL())
 
@@ -106,14 +105,14 @@ func (k Keeper) Accept(ctx sdk.Context, granter string, grantee sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) iterateAuthorizations(ctx sdk.Context, grantee string, fn func(granter string, grantee sdk.AccAddress, authorization authz.Authorization) (stop bool)) {
+func (k Keeper) iterateAuthorizations(ctx sdk.Context, grantee string, fn func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 	prefix := append(grantKeyPrefix, grantee...)
 	iterator := sdk.KVStorePrefixIterator(store, prefix)
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var authorization authz.Authorization
+		var authorization foundation.Authorization
 		if err := k.cdc.UnmarshalInterface(iterator.Value(), &authorization); err != nil {
 			panic(err)
 		}

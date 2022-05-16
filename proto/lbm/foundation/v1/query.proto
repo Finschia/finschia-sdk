@@ -209,7 +209,7 @@ message QueryGrantsRequest {
 // QueryGrantsResponse is the response type for the Query/Grants RPC method.
 message QueryGrantsResponse {
   // authorizations is a list of grants granted for grantee.
-  repeated google.protobuf.Any authorizations = 1 [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/authz.Authorization"];
+  repeated google.protobuf.Any authorizations = 1 [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization"];
 
   // pagination defines the pagination in the response.
   lbm.base.query.v1.PageResponse pagination = 2;

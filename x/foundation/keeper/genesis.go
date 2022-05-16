@@ -3,7 +3,6 @@ package keeper
 import (
 	sdk "github.com/line/lbm-sdk/types"
 
-	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/foundation"
 
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
@@ -177,7 +176,7 @@ func (k Keeper) ResetState(ctx sdk.Context) {
 
 func (k Keeper) GetGrants(ctx sdk.Context) []foundation.GrantAuthorization {
 	var grantAuthorizations []foundation.GrantAuthorization
-	k.iterateAuthorizations(ctx, "", func(granter string, grantee sdk.AccAddress, authorization authz.Authorization) (stop bool) {
+	k.iterateAuthorizations(ctx, "", func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
 		grantAuthorization := foundation.GrantAuthorization{
 			Granter: granter,
 			Grantee: grantee.String(),
