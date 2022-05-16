@@ -462,7 +462,7 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 
 			req := &foundation.MsgGrant{
 				Operator: tc.operator.String(),
-				Grantee: s.stranger.String(),
+				Grantee: s.operator.String(),
 			}
 			err := req.SetAuthorization(tc.authorization)
 			s.Require().NoError(err)
