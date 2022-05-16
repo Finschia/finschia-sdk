@@ -80,6 +80,7 @@ func NewResponseResultTx(res *ctypes.ResultTx, anyTx *codectypes.Any, timestamp 
 		Tx:        anyTx,
 		Timestamp: timestamp,
 		Events:    res.TxResult.Events,
+		Index:     res.Index,
 	}
 }
 
