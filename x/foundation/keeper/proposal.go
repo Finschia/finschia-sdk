@@ -30,7 +30,6 @@ func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *foundatio
 		grantee := sdk.ValAddress(auth.OperatorAddress).ToAccAddress()
 		if auth.CreationAllowed {
 			authorization := &foundation.CreateValidatorAuthorization{
-				MinSelfDelegation: sdk.OneInt(),
 				ValidatorAddress:  auth.OperatorAddress,
 			}
 

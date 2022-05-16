@@ -8620,8 +8620,7 @@ CreateValidatorAuthorization allows the grantee to create a new validator.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `min_self_delegation` | [string](#string) |  |  |
-| `validator_address` | [string](#string) |  |  |
+| `validator_address` | [string](#string) |  | redundant, but good for the query. |
 
 
 
@@ -8633,11 +8632,6 @@ CreateValidatorAuthorization allows the grantee to create a new validator.
 ### ReceiveFromTreasuryAuthorization
 ReceiveFromTreasuryAuthorization allows the grantee to receive coins
 up to receive_limit from the treasury.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `receive_limit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 
 
 

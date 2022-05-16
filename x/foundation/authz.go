@@ -19,25 +19,10 @@ func (a ReceiveFromTreasuryAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (
 		return authz.AcceptResponse{}, sdkerrors.ErrInvalidType.Wrap("type mismatch")
 	}
 
-	// limitLeft, isNegative := a.ReceiveLimit.SafeSub(mWithdraw.Amount)
-	// if isNegative {
-	// 	return authz.AcceptResponse{}, sdkerrors.ErrInsufficientFunds.Wrapf("requested amount is more than receive limit")
-	// }
-	// if limitLeft.IsZero() {
-	// 	return authz.AcceptResponse{Accept: true, Delete: true}, nil
-	// }
-
-	// return authz.AcceptResponse{Accept: true, Updated: &SendAuthorization{SpendLimit: limitLeft}}, nil
 	return authz.AcceptResponse{Accept: true}, nil
 }
 
 func (a ReceiveFromTreasuryAuthorization) ValidateBasic() error {
-	// if a.ReceiveLimit == nil {
-	// 	return sdkerrors.ErrInvalidCoins.Wrap("receive limit cannot be nil")
-	// }
-	// if !a.ReceiveLimit.IsAllPositive() {
-	// 	return sdkerrors.ErrInvalidCoins.Wrapf("receive limit must be positive")
-	// }
 	return nil
 }
 
@@ -53,10 +38,6 @@ func (a CreateValidatorAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (auth
 		return authz.AcceptResponse{}, sdkerrors.ErrInvalidType.Wrap("type mismatch")
 	}
 
-	if mCreate.MinSelfDelegation.LT(a.MinSelfDelegation) {
-		return authz.AcceptResponse{}, sdkerrors.ErrUnauthorized.Wrap("min self delegation is lower than the authorization's")
-	}
-
 	if mCreate.ValidatorAddress != a.ValidatorAddress {
 		return authz.AcceptResponse{}, sdkerrors.ErrUnauthorized.Wrap("validator address differs from the authorization's")
 	}
@@ -65,10 +46,6 @@ func (a CreateValidatorAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (auth
 }
 
 func (a CreateValidatorAuthorization) ValidateBasic() error {
-	if !a.MinSelfDelegation.IsPositive() {
-		return sdkerrors.ErrInvalidRequest.Wrap("min self delegation must be a positive integer")
-	}
-
 	if err := sdk.ValidateValAddress(a.ValidatorAddress); err != nil {
 		return err
 	}
