@@ -8,7 +8,7 @@ import (
 
 func (k Keeper) Grant(ctx sdk.Context, granter string, grantee sdk.AccAddress, authorization foundation.Authorization) error {
 	if _, err := k.GetAuthorization(ctx, granter, grantee, authorization.MsgTypeURL()); err == nil {
-		return sdkerrors.ErrInvalidRequest.Wrapf("authorization for %s already exists. you must revoke it first.", authorization.MsgTypeURL())
+		return sdkerrors.ErrInvalidRequest.Wrapf("authorization for %s already exists", authorization.MsgTypeURL())
 	}
 
 	if err := k.setAuthorization(ctx, granter, grantee, authorization); err != nil {
