@@ -16,15 +16,16 @@ func ValidateGenesis(data GenesisState) error {
 		}
 	}
 
-	for _, balance := range data.Balances {
-		if err := sdk.ValidateAccAddress(balance.Address); err != nil {
-			return err
+	for _, contractBalances := range data.Balances {
+		// TODO: validate contract id
+		if len(contractBalances.Balances) == 0 {
+			return sdkerrors.ErrInvalidRequest.Wrap("balances cannot be empty")
 		}
-		if len(balance.Coins) == 0 {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "tokens cannot be empty")
-		}
-		for _, amount := range balance.Coins {
-			if err := validateAmount(amount.Amount); err != nil {
+		for _, balance := range contractBalances.Balances {
+			if err := sdk.ValidateAccAddress(balance.Address); err != nil {
+				return err
+			}
+			if err := validateAmount(balance.Amount); err != nil {
 				return err
 			}
 		}
@@ -51,21 +52,33 @@ func ValidateGenesis(data GenesisState) error {
 		}
 	}
 
-	for _, grant := range data.Grants {
-		if err := sdk.ValidateAccAddress(grant.Grantee); err != nil {
-			return err
+	for _, contractGrants := range data.Grants {
+		// TODO: validate contract id
+		if len(contractGrants.Grants) == 0 {
+			return sdkerrors.ErrInvalidRequest.Wrap("grants cannot be empty")
 		}
-		if err := validatePermission(grant.Permission); err != nil {
-			return err
+		for _, grant := range contractGrants.Grants {
+			if err := sdk.ValidateAccAddress(grant.Grantee); err != nil {
+				return err
+			}
+			if err := validatePermission(grant.Permission); err != nil {
+				return err
+			}
 		}
 	}
 
-	for _, approve := range data.Authorizations {
-		if err := sdk.ValidateAccAddress(approve.Approver); err != nil {
-			return err
+	for _, contractAuthorizations := range data.Authorizations {
+		// TODO: validate contract id
+		if len(contractAuthorizations.Authorizations) == 0 {
+			return sdkerrors.ErrInvalidRequest.Wrap("authorizations cannot be empty")
 		}
-		if err := sdk.ValidateAccAddress(approve.Proxy); err != nil {
-			return err
+		for _, authorization := range contractAuthorizations.Authorizations {
+			if err := sdk.ValidateAccAddress(authorization.Approver); err != nil {
+				return err
+			}
+			if err := sdk.ValidateAccAddress(authorization.Proxy); err != nil {
+				return err
+			}
 		}
 	}
 

@@ -58,7 +58,7 @@ func (k Keeper) RevokeOperator(ctx sdk.Context, classID string, approver, proxy 
 
 func (k Keeper) GetAuthorization(ctx sdk.Context, classID string, approver, proxy sdk.AccAddress) *token.Authorization {
 	store := ctx.KVStore(k.storeKey)
-	if store.Has(approveKey(classID, proxy, approver)) {
+	if store.Has(authorizationKey(classID, proxy, approver)) {
 		return &token.Authorization{
 			ContractId: classID,
 			Approver: approver.String(),
@@ -68,14 +68,16 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, classID string, approver, prox
 	return nil
 }
 
-func (k Keeper) setAuthorization(ctx sdk.Context, authz token.Authorization, set bool) {
+func (k Keeper) setAuthorization(ctx sdk.Context, classID string, approver, proxy sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
-	key := approveKey(authz.ContractId, sdk.AccAddress(authz.Proxy), sdk.AccAddress(authz.Approver))
-	if set {
-		store.Set(key, []byte{})
-	} else {
-		store.Delete(key)
-	}
+	key := authorizationKey(classID, proxy, approver)
+	store.Set(key, []byte{})
+}
+
+func (k Keeper) deleteAuthorization(ctx sdk.Context, classID string, approver, proxy sdk.AccAddress) {
+	store := ctx.KVStore(k.storeKey)
+	key := authorizationKey(classID, proxy, approver)
+	store.Delete(key)
 }
 
 func (k Keeper) subtractToken(ctx sdk.Context, classID string, addr sdk.AccAddress, amount sdk.Int) error {

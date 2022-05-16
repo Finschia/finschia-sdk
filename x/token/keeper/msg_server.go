@@ -78,12 +78,10 @@ func (s msgServer) AuthorizeOperator(c context.Context, req *token.MsgAuthorizeO
 	}
 
 	// TODO: emit the legacy event too
-	if err := ctx.EventManager().EmitTypedEvent(&token.A{
+	if err := ctx.EventManager().EmitTypedEvent(&token.EventAuthorizedOperator{
 		ContractId: req.ContractId,
-		Operator: req.From,
-		From: req.From,
-		To: req.To,
-		Amount: req.Amount,
+		Holder: req.Approver,
+		Operator: req.Proxy,
 	}); err != nil {
 		return nil, err
 	}
@@ -91,12 +89,31 @@ func (s msgServer) AuthorizeOperator(c context.Context, req *token.MsgAuthorizeO
 	return &token.MsgAuthorizeOperatorResponse{}, nil
 }
 
+// RevokeOperator allows one to send tokens on behalf of the approver
+func (s msgServer) RevokeOperator(c context.Context, req *token.MsgRevokeOperator) (*token.MsgRevokeOperatorResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	if err := s.keeper.RevokeOperator(ctx, req.ContractId, sdk.AccAddress(req.Approver), sdk.AccAddress(req.Proxy)); err != nil {
+		return nil, err
+	}
+
+	// TODO: emit the legacy event too
+	if err := ctx.EventManager().EmitTypedEvent(&token.EventRevokedOperator{
+		ContractId: req.ContractId,
+		Holder: req.Approver,
+		Operator: req.Proxy,
+	}); err != nil {
+		return nil, err
+	}
+
+	return &token.MsgRevokeOperatorResponse{}, nil
+}
+
 // Issue defines a method to issue a token
 func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssueResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	classID := s.keeper.classKeeper.NewID(ctx)
-	class := token.Token{
-		Id:       classID,
+	class := token.TokenClass{
+		ContractId:       classID,
 		Name:     req.Name,
 		Symbol:   req.Symbol,
 		ImageUri: req.ImageUri,
@@ -115,28 +132,27 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 // Grant allows one to mint or burn tokens or modify a token metadata
 func (s msgServer) Grant(c context.Context, req *token.MsgGrant) (*token.MsgGrantResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.Grant(ctx, sdk.AccAddress(req.Granter), sdk.AccAddress(req.Grantee), req.ClassId, req.Action); err != nil {
+	if err := s.keeper.Grant(ctx, sdk.AccAddress(req.From), sdk.AccAddress(req.To), req.ClassId, req.Permission); err != nil {
 		return nil, err
 	}
 
 	return &token.MsgGrantResponse{}, nil
 }
 
-// Revoke revokes the grant
-func (s msgServer) Revoke(c context.Context, req *token.MsgRevoke) (*token.MsgRevokeResponse, error) {
+// Abandon abandons the permission
+func (s msgServer) Abandon(c context.Context, req *token.MsgAbandon) (*token.MsgAbandonResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.Revoke(ctx, sdk.AccAddress(req.Grantee), req.ClassId, req.Action); err != nil {
+	if err := s.keeper.Abandon(ctx, sdk.AccAddress(req.Grantee), req.ClassId, req.Action); err != nil {
 		return nil, err
 	}
 
-	return &token.MsgRevokeResponse{}, nil
+	return &token.MsgAbandonResponse{}, nil
 }
 
 // Mint defines a method to mint tokens
 func (s msgServer) Mint(c context.Context, req *token.MsgMint) (*token.MsgMintResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	amount := token.FT{ClassId: req.ClassId, Amount: req.Amount}
-	if err := s.keeper.Mint(ctx, sdk.AccAddress(req.Grantee), sdk.AccAddress(req.To), []token.FT{amount}); err != nil {
+	if err := s.keeper.Mint(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.To), req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -146,29 +162,27 @@ func (s msgServer) Mint(c context.Context, req *token.MsgMint) (*token.MsgMintRe
 // Burn defines a method to burn tokens
 func (s msgServer) Burn(c context.Context, req *token.MsgBurn) (*token.MsgBurnResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	amount := token.FT{ClassId: req.ClassId, Amount: req.Amount}
-	if err := s.keeper.Burn(ctx, sdk.AccAddress(req.From), []token.FT{amount}); err != nil {
+	if err := s.keeper.Burn(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
 		return nil, err
 	}
 
 	return &token.MsgBurnResponse{}, nil
 }
 
-// BurnFrom defines a method to burn tokens
-func (s msgServer) BurnFrom(c context.Context, req *token.MsgBurnFrom) (*token.MsgBurnFromResponse, error) {
+// OperatorBurn defines a method for the operator to burn tokens on the behalf of the holder.
+func (s msgServer) OperatorBurn(c context.Context, req *token.MsgOperatorBurn) (*token.MsgOperatorBurnResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	amount := token.FT{ClassId: req.ClassId, Amount: req.Amount}
-	if err := s.keeper.BurnFrom(ctx, sdk.AccAddress(req.Grantee), sdk.AccAddress(req.From), []token.FT{amount}); err != nil {
+	if err := s.keeper.OperatorBurn(ctx, req.ContractId, sdk.AccAddress(req.Proxy), sdk.AccAddress(req.From), req.Amount); err != nil {
 		return nil, err
 	}
 
-	return &token.MsgBurnFromResponse{}, nil
+	return &token.MsgOperatorBurnResponse{}, nil
 }
 
 // Modify defines a method to modify a token metadata
 func (s msgServer) Modify(c context.Context, req *token.MsgModify) (*token.MsgModifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.Modify(ctx, req.ClassId, sdk.AccAddress(req.Grantee), req.Changes); err != nil {
+	if err := s.keeper.Modify(ctx, req.ContractId, sdk.AccAddress(req.Owner), req.Changes); err != nil {
 		return nil, err
 	}
 
