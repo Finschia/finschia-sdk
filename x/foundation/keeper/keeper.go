@@ -66,7 +66,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 func (k Keeper) Cleanup(ctx sdk.Context) {
 	msgTypeURL := stakingplus.CreateValidatorAuthorization{}.MsgTypeURL()
 	var createValidatorGrantees []sdk.AccAddress
-	k.iterateAuthorizations(ctx, "", func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
+	k.iterateAuthorizations(ctx, func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
 		if authorization.MsgTypeURL() == msgTypeURL {
 			createValidatorGrantees = append(createValidatorGrantees, grantee)
 		}

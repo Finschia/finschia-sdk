@@ -49,7 +49,7 @@ func (k Keeper) Revoke(ctx sdk.Context, granter string, grantee sdk.AccAddress, 
 
 func (k Keeper) GetAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, msgTypeURL string) (foundation.Authorization, error) {
 	store := ctx.KVStore(k.storeKey)
-	key := grantKey(granter, grantee, msgTypeURL)
+	key := grantKey(grantee, msgTypeURL, granter)
 	bz := store.Get(key)
 	if bz == nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap("authorization not found")
@@ -65,7 +65,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, granter string, grantee sdk.Ac
 
 func (k Keeper) setAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, authorization foundation.Authorization) error {
 	store := ctx.KVStore(k.storeKey)
-	key := grantKey(granter, grantee, authorization.MsgTypeURL())
+	key := grantKey(grantee, authorization.MsgTypeURL(), granter)
 
 	bz, err := k.cdc.MarshalInterface(authorization)
 	if err != nil {
@@ -78,7 +78,7 @@ func (k Keeper) setAuthorization(ctx sdk.Context, granter string, grantee sdk.Ac
 
 func (k Keeper) deleteAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, msgTypeURL string) {
 	store := ctx.KVStore(k.storeKey)
-	key := grantKey(granter, grantee, msgTypeURL)
+	key := grantKey(grantee, msgTypeURL, granter)
 	store.Delete(key)
 }
 
@@ -109,9 +109,12 @@ func (k Keeper) Accept(ctx sdk.Context, granter string, grantee sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) iterateAuthorizations(ctx sdk.Context, grantee string, fn func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool)) {
+func (k Keeper) iterateAuthorizations(ctx sdk.Context, fn func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool)) {
+	k.iterateAuthorizationsImpl(ctx, grantKeyPrefix, fn)
+}
+
+func (k Keeper) iterateAuthorizationsImpl(ctx sdk.Context, prefix []byte, fn func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	prefix := append(grantKeyPrefix, grantee...)
 	iterator := sdk.KVStorePrefixIterator(store, prefix)
 	defer iterator.Close()
 
@@ -121,7 +124,7 @@ func (k Keeper) iterateAuthorizations(ctx sdk.Context, grantee string, fn func(g
 			panic(err)
 		}
 
-		granter, grantee, _ := splitGrantKey(iterator.Key())
+		grantee, _, granter := splitGrantKey(iterator.Key())
 		if stop := fn(granter, grantee, authorization); stop {
 			break
 		}

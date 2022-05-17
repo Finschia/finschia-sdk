@@ -197,12 +197,13 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
-	granteeKey := append(grantKeyPrefix, append([]byte{byte(len(req.Grantee))}, req.Grantee...)...)
-	grantStore := prefix.NewStore(store, granteeKey)
 
-	var authorizations []*codectypes.Any
 	if req.MsgTypeUrl != "" {
-		pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
+		keyPrefix := grantKeyPrefixByURL(sdk.AccAddress(req.Grantee), req.MsgTypeUrl)
+		grantStore := prefix.NewStore(store, keyPrefix)
+
+		var authorizations []*codectypes.Any
+		_, err := query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
 			var authorization foundation.Authorization
 			if err := s.keeper.cdc.UnmarshalInterface(value, &authorization); err != nil {
 				return err
@@ -223,10 +224,15 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 		if err != nil {
 			return nil, err
 		}
+		
+		return &foundation.QueryGrantsResponse{Authorizations: authorizations}, nil
 
-		return &foundation.QueryGrantsResponse{Authorizations: authorizations, Pagination: pageRes}, nil
 	}
 
+	keyPrefix := grantKeyPrefixByGrantee(sdk.AccAddress(req.Grantee))
+	grantStore := prefix.NewStore(store, keyPrefix)
+
+	var authorizations []*codectypes.Any
 	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
 		var authorization foundation.Authorization
 		if err := s.keeper.cdc.UnmarshalInterface(value, &authorization); err != nil {

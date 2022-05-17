@@ -104,8 +104,34 @@ func proposalByVPEndKey(id uint64, end time.Time) []byte {
 // 	return
 // }
 
-func grantKey(granter string, grantee sdk.AccAddress, url string) []byte {
-	key := make([]byte, len(grantKeyPrefix)+1+len(grantee)+1+len(granter)+len(url))
+func grantKey(grantee sdk.AccAddress, url, granter string) []byte {
+	prefix := grantKeyPrefixByURL(grantee, url)
+	key := make([]byte, len(prefix)+len(granter))
+
+	copy(key, prefix)
+	copy(key[len(prefix):], granter)
+
+	return key
+}
+
+func grantKeyPrefixByURL(grantee sdk.AccAddress, url string) []byte {
+	prefix := grantKeyPrefixByGrantee(grantee)
+	key := make([]byte, len(prefix)+1+len(url))
+
+	begin := 0
+	copy(key[begin:], prefix)
+
+	begin += len(prefix)
+	key[begin] = byte(len(url))
+
+	begin++
+	copy(key[begin:], url)
+
+	return key
+}
+
+func grantKeyPrefixByGrantee(grantee sdk.AccAddress) []byte {
+	key := make([]byte, len(grantKeyPrefix)+1+len(grantee))
 
 	begin := 0
 	copy(key[begin:], grantKeyPrefix)
@@ -116,29 +142,20 @@ func grantKey(granter string, grantee sdk.AccAddress, url string) []byte {
 	begin++
 	copy(key[begin:], grantee)
 
-	begin += len(grantee)
-	key[begin] = byte(len(granter))
-
-	begin++
-	copy(key[begin:], granter)
-
-	begin += len(granter)
-	copy(key[begin:], url)
-
 	return key
 }
 
-func splitGrantKey(key []byte) (granter string, grantee sdk.AccAddress, url string) {
+func splitGrantKey(key []byte) (grantee sdk.AccAddress, url, granter string) {
 	begin := len(grantKeyPrefix) + 1
 	end := begin + int(key[begin-1])
 	grantee = sdk.AccAddress(key[begin:end])
 
 	begin = end + 1
 	end = begin + int(key[begin-1])
-	granter = string(key[begin:end])
+	url = string(key[begin:end])
 
 	begin = end
-	url = string(key[begin:])
+	granter = string(key[begin:])
 
 	return
 }

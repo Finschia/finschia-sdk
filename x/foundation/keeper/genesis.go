@@ -177,7 +177,7 @@ func (k Keeper) ResetState(ctx sdk.Context) {
 
 func (k Keeper) GetGrants(ctx sdk.Context) []foundation.GrantAuthorization {
 	var grantAuthorizations []foundation.GrantAuthorization
-	k.iterateAuthorizations(ctx, "", func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
+	k.iterateAuthorizations(ctx, func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
 		grantAuthorization := foundation.GrantAuthorization{
 			Granter: granter,
 			Grantee: grantee.String(),
