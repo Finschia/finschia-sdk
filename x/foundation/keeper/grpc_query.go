@@ -224,7 +224,7 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 		if err != nil {
 			return nil, err
 		}
-		
+
 		return &foundation.QueryGrantsResponse{Authorizations: authorizations}, nil
 
 	}
