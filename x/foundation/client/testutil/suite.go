@@ -191,8 +191,7 @@ func (s *IntegrationTestSuite) submitProposal(msg sdk.Msg, try bool) uint64 {
 			return proposal.Id
 		}
 	}
-	s.Require().EqualValues(nil, res.Logs)
-	return 0
+	panic("You cannot reach here")
 }
 
 func (s *IntegrationTestSuite) vote(proposalID uint64, voters []sdk.AccAddress) {

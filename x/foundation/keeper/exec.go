@@ -14,7 +14,7 @@ func ensureMsgAuthz(msgs []sdk.Msg, operator sdk.AccAddress) error {
 	for _, msg := range msgs {
 		for _, signer := range msg.GetSigners() {
 			if !operator.Equals(signer) {
-				return sdkerrors.ErrUnauthorized.Wrapf("signer of msg is not the operator: %s, %s", signer, operator)
+				return sdkerrors.ErrUnauthorized.Wrapf("signer of msg (%s) is not the operator (%s)", signer, operator)
 			}
 		}
 	}

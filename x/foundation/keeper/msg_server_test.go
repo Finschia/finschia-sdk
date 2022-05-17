@@ -218,7 +218,7 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 			exec: foundation.Exec_EXEC_TRY,
 			valid: true,
 		},
-		"valid request (submit & execute fail)": {
+		"valid request (submit & unable to reach quorum)": {
 			proposers: []string{members[0]},
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.operator.String(),
@@ -228,7 +228,7 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 			exec: foundation.Exec_EXEC_TRY,
 			valid: true,
 		},
-		"not authorized": {
+		"not a member": {
 			proposers: []string{s.stranger.String()},
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.operator.String(),
