@@ -8,18 +8,18 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
-	"github.com/line/lbm-sdk/x/stakingplus/types"
+	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
 type msgServer struct {
 	stakingtypes.MsgServer
 
-	fk types.FoundationKeeper
+	fk stakingplus.FoundationKeeper
 }
 
 // NewMsgServerImpl returns an implementation of the staking MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(keeper stakingkeeper.Keeper, fk types.FoundationKeeper) stakingtypes.MsgServer {
+func NewMsgServerImpl(keeper stakingkeeper.Keeper, fk stakingplus.FoundationKeeper) stakingtypes.MsgServer {
 	return &msgServer{
 		MsgServer: stakingkeeper.NewMsgServerImpl(keeper),
 		fk:        fk,

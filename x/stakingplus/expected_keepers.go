@@ -1,4 +1,4 @@
-package types
+package stakingplus
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
