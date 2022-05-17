@@ -16,7 +16,7 @@ func DefaultGenesisState() *GenesisState {
 
 func DefaultParams() *Params {
 	return &Params{
-		Enabled: false,
+		Enabled:       false,
 		FoundationTax: sdk.ZeroDec(),
 	}
 }
