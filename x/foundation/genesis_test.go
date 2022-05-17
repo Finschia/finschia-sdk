@@ -45,6 +45,17 @@ func TestValidateGenesis(t *testing.T) {
 			},
 			valid: true,
 		},
+		"authorizations": {
+			data: foundation.GenesisState{
+				Authorizations: []foundation.GrantAuthorization{
+					*foundation.GrantAuthorization{
+						Granter: foundation.ModuleName,
+						Grantee: createAddress().String(),
+					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
+				},
+			},
+			valid: true,
+		},
 		"invalid foundation tax": {
 			data: foundation.GenesisState{
 				Params: &foundation.Params{

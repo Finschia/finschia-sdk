@@ -9145,7 +9145,6 @@ GenesisState defines the foundation module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#lbm.foundation.v1.Params) |  | params defines the module parameters at genesis. |
-| `validator_auths` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) | repeated | allowed_validators defines the allowed validator addresses at genesis. provided empty, the module gathers information from staking module. |
 | `foundation` | [FoundationInfo](#lbm.foundation.v1.FoundationInfo) |  | foundation is the foundation info. |
 | `members` | [Member](#lbm.foundation.v1.Member) | repeated | members is the list of the foundation members. |
 | `previous_proposal_id` | [uint64](#uint64) |  | it is used to get the next proposal ID. |

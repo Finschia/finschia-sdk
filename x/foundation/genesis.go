@@ -10,9 +10,14 @@ import (
 // DefaultGenesisState creates a default GenesisState object
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
-		Params: &Params{
-			Enabled: false,
-		},
+		Params: DefaultParams(),
+	}
+}
+
+func DefaultParams() *Params {
+	return &Params{
+		Enabled: false,
+		FoundationTax: sdk.ZeroDec(),
 	}
 }
 
@@ -30,20 +35,9 @@ func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error
 // expected invariants holds.
 func ValidateGenesis(data GenesisState) error {
 	if data.Params != nil {
-		// validator auths are redundant where foundation is off
-		if !data.Params.Enabled && len(data.ValidatorAuths) != 0 {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "redundant validator auths for disabled foundation")
-		}
-
 		if data.Params.FoundationTax.IsNegative() ||
 			data.Params.FoundationTax.GT(sdk.OneDec()) {
 			return sdkerrors.ErrInvalidRequest.Wrap("foundation tax must be >= 0 and <= 1")
-		}
-	}
-
-	for _, auth := range data.ValidatorAuths {
-		if err := sdk.ValidateValAddress(auth.OperatorAddress); err != nil {
-			return err
 		}
 	}
 

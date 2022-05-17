@@ -13,42 +13,42 @@ import (
 func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *foundation.GenesisState) error {
 	params := data.Params
 	if params == nil {
-		params = &foundation.Params{}
+		params = foundation.DefaultParams()
 	}
 	k.SetParams(ctx, params)
 
-	validatorAuths := data.ValidatorAuths
-	if k.GetEnabled(ctx) && len(validatorAuths) == 0 {
+	authorizations := data.Authorizations
+	createValidatorGrantees := getCreateValidatorGrantees(authorizations)
+	if k.GetEnabled(ctx) && len(createValidatorGrantees) == 0 {
 		// Allowed validators must exist if the module is enabled,
 		// so it should be the very first block of the chain.
 		// We gather the information from staking module.
 		sk.IterateValidators(ctx, func(_ int64, addr stakingtypes.ValidatorI) (stop bool) {
-			auth := foundation.ValidatorAuth{
-				OperatorAddress: addr.GetOperator().String(),
-				CreationAllowed: true,
+			grantee := addr.GetOperator().ToAccAddress()
+			createValidatorGrantees = append(createValidatorGrantees, grantee)
+
+			// add to authorizations
+			authorization := &stakingplus.CreateValidatorAuthorization{
+				ValidatorAddress: grantee.ToValAddress().String(),
 			}
-			validatorAuths = append(validatorAuths, auth)
+			ga := foundation.GrantAuthorization{
+				Granter: govtypes.ModuleName,
+				Grantee: grantee.String(),
+			}
+			if err := ga.SetAuthorization(authorization); err != nil {
+				panic(err)
+			}
+			authorizations = append(authorizations, ga)
+
 			return false
 		})
 	}
 
-	for _, auth := range validatorAuths {
-		grantee := sdk.ValAddress(auth.OperatorAddress).ToAccAddress()
-		if auth.CreationAllowed {
-			authorization := &stakingplus.CreateValidatorAuthorization{
-				ValidatorAddress: auth.OperatorAddress,
-			}
-			if err := k.Grant(ctx, govtypes.ModuleName, grantee, authorization); err != nil {
-				return err
-			}
-		}
-	}
-
 	members := data.Members
 	if len(members) == 0 {
-		for _, auth := range validatorAuths {
+		for _, grantee := range createValidatorGrantees {
 			member := foundation.Member{
-				Address:       sdk.ValAddress(auth.OperatorAddress).ToAccAddress().String(),
+				Address:       grantee.String(),
 				Participating: true,
 				Metadata:      "genesis member",
 			}
@@ -120,7 +120,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		}
 	}
 
-	for _, ga := range data.Authorizations {
+	for _, ga := range authorizations {
 		if err := k.setAuthorization(ctx, ga.Granter, sdk.AccAddress(ga.Grantee), ga.GetAuthorization()); err != nil {
 			return err
 		}
@@ -190,4 +190,17 @@ func (k Keeper) GetGrants(ctx sdk.Context) []foundation.GrantAuthorization {
 		return false
 	})
 	return grantAuthorizations
+}
+
+func getCreateValidatorGrantees(authorizations []foundation.GrantAuthorization) []sdk.AccAddress {
+	granter := govtypes.ModuleName
+	msgTypeURL := stakingplus.CreateValidatorAuthorization{}.MsgTypeURL()
+	var grantees []sdk.AccAddress
+	for _, ga := range authorizations {
+		if ga.Granter == granter && ga.GetAuthorization().MsgTypeURL() == msgTypeURL {
+			grantees = append(grantees, sdk.AccAddress(ga.Grantee))
+		}
+	}
+
+	return grantees
 }
