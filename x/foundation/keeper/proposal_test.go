@@ -15,7 +15,9 @@ import (
 )
 
 func newParams(enabled bool) *foundation.Params {
-	return &foundation.Params{Enabled: enabled}
+	params := foundation.DefaultParams()
+	params.Enabled = enabled
+	return params
 }
 
 func newUpdateFoundationParamsProposal(params *foundation.Params) govtypes.Content {

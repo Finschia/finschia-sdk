@@ -229,10 +229,10 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 				},
 			},
 		},
-		"zero percentage": {
+		"invalid percentage": {
 			operator: addrs[0],
 			policy: &foundation.PercentageDecisionPolicy{
-				Percentage: sdk.ZeroDec(),
+				Percentage: sdk.NewDec(2),
 				Windows: &foundation.DecisionPolicyWindows{
 					VotingPeriod: time.Hour,
 				},

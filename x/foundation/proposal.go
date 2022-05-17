@@ -39,6 +39,10 @@ func (p *UpdateFoundationParamsProposal) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "cannot enable foundation")
 	}
 
+	if err := validateRatio(params.FoundationTax, "tax rate"); err != nil {
+		return err
+	}
+
 	return nil
 }
 

@@ -373,10 +373,21 @@ func (p PercentageDecisionPolicy) ValidateBasic() error {
 		return sdkerrors.ErrInvalidRequest.Wrap("voting period cannot be zero")
 	}
 
-	if p.Percentage.GT(sdk.OneDec()) || p.Percentage.LTE(sdk.ZeroDec()) {
-		return sdkerrors.ErrInvalidRequest.Wrap("percentage must be > 0 and <= 1")
+	if err := validateRatio(p.Percentage, "percentage"); err != nil {
+		return err
 	}
 
+	return nil
+}
+
+func validateRatio(ratio sdk.Dec, name string) error {
+	if ratio.IsNil() {
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s is nil", name)
+	}
+
+	if ratio.GT(sdk.OneDec()) || ratio.IsNegative() {
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s must be >= 0 and <= 1", name)
+	}
 	return nil
 }
 

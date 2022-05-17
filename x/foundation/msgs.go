@@ -16,7 +16,7 @@ func (m MsgFundTreasury) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
-	if !m.Amount.IsAllPositive() {
+	if !m.Amount.IsValid() || !m.Amount.IsAllPositive() {
 		return sdkerrors.ErrInvalidCoins.Wrap(m.Amount.String())
 	}
 
@@ -41,7 +41,7 @@ func (m MsgWithdrawFromTreasury) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
-	if !m.Amount.IsAllPositive() {
+	if !m.Amount.IsValid() || !m.Amount.IsAllPositive() {
 		return sdkerrors.ErrInvalidCoins.Wrap(m.Amount.String())
 	}
 
