@@ -27,8 +27,8 @@ type AppModuleBasic struct {
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
-	// TODO: add stakingplus register interface
-	stakingtypes.RegisterInterfaces(registry)
+	b.AppModuleBasic.RegisterInterfaces(registry)
+	stakingplus.RegisterInterfaces(registry)
 }
 
 //____________________________________________________________________________
@@ -53,7 +53,7 @@ func NewAppModule(cdc codec.Codec, keeper stakingkeeper.Keeper, ak stakingtypes.
 		AppModuleBasic: AppModuleBasic{
 			impl.AppModuleBasic,
 		},
-		impl: impl,
+		impl:   impl,
 		keeper: keeper,
 		ak:     ak,
 		bk:     bk,

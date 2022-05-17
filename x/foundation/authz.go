@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 // Authorization represents the interface of various Authorization types implemented
@@ -56,32 +55,5 @@ func (a ReceiveFromTreasuryAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (
 }
 
 func (a ReceiveFromTreasuryAuthorization) ValidateBasic() error {
-	return nil
-}
-
-var _ Authorization = (*CreateValidatorAuthorization)(nil)
-
-func (a CreateValidatorAuthorization) MsgTypeURL() string {
-	return sdk.MsgTypeURL(&stakingtypes.MsgCreateValidator{})
-}
-
-func (a CreateValidatorAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (AcceptResponse, error) {
-	mCreate, ok := msg.(*stakingtypes.MsgCreateValidator)
-	if !ok {
-		return AcceptResponse{}, sdkerrors.ErrInvalidType.Wrap("type mismatch")
-	}
-
-	if mCreate.ValidatorAddress != a.ValidatorAddress {
-		return AcceptResponse{}, sdkerrors.ErrUnauthorized.Wrap("validator address differs from the authorization's")
-	}
-
-	return AcceptResponse{Accept: true}, nil
-}
-
-func (a CreateValidatorAuthorization) ValidateBasic() error {
-	if err := sdk.ValidateValAddress(a.ValidatorAddress); err != nil {
-		return err
-	}
-
 	return nil
 }

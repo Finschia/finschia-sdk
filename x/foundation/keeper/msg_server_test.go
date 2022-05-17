@@ -3,6 +3,7 @@ package keeper_test
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
+	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
 func (s *KeeperTestSuite) TestMsgFundTreasury() {
@@ -452,7 +453,7 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 		},
 		"wrong granter": {
 			operator: s.operator,
-			authorization: &foundation.CreateValidatorAuthorization{},
+			authorization: &stakingplus.CreateValidatorAuthorization{},
 		},
 	}
 
@@ -504,7 +505,7 @@ func (s *KeeperTestSuite) TestMsgRevoke() {
 		"wrong granter": {
 			operator: s.operator,
 			grantee: s.stranger,
-			msgTypeURL: foundation.CreateValidatorAuthorization{}.MsgTypeURL(),
+			msgTypeURL: stakingplus.CreateValidatorAuthorization{}.MsgTypeURL(),
 		},
 	}
 

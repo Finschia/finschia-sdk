@@ -10,6 +10,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/keeper"
+	"github.com/line/lbm-sdk/x/stakingplus"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
@@ -49,7 +50,7 @@ func TestProposalHandler(t *testing.T) {
 
 	handler := keeper.NewProposalHandler(k)
 
-	msgTypeURL := foundation.CreateValidatorAuthorization{}.MsgTypeURL()
+	msgTypeURL := stakingplus.CreateValidatorAuthorization{}.MsgTypeURL()
 	// test adding creation allowed validators
 	adding := newValidatorAuths([]sdk.ValAddress{valAddr}, true)
 	ap := newUpdateValidatorAuthsProposal(adding)

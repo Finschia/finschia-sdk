@@ -8,6 +8,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
 // Keeper defines the foundation module Keeper
@@ -63,7 +64,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 
 // Cleaning up the states
 func (k Keeper) Cleanup(ctx sdk.Context) {
-	msgTypeURL := foundation.CreateValidatorAuthorization{}.MsgTypeURL()
+	msgTypeURL := stakingplus.CreateValidatorAuthorization{}.MsgTypeURL()
 	var createValidatorGrantees []sdk.AccAddress
 	k.iterateAuthorizations(ctx, "", func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
 		if authorization.MsgTypeURL() == msgTypeURL {

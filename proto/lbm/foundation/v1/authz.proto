@@ -3,17 +3,8 @@ package lbm.foundation.v1;
 
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
-import "lbm/base/v1/coin.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/foundation";
-
-// CreateValidatorAuthorization allows the grantee to create a new validator.
-message CreateValidatorAuthorization {
-  option (cosmos_proto.implements_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization";
-
-  // redundant, but good for the query.
-  string validator_address = 1;
-}
 
 // ReceiveFromTreasuryAuthorization allows the grantee to receive coins
 // up to receive_limit from the treasury.

@@ -31,8 +31,7 @@ var _ stakingtypes.MsgServer = msgServer{}
 func (k msgServer) CreateValidator(goCtx context.Context, msg *stakingtypes.MsgCreateValidator) (*stakingtypes.MsgCreateValidatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if k.fk.GetEnabled(ctx) {
-		valAddr := sdk.ValAddress(msg.ValidatorAddress)
-		grantee := valAddr.ToAccAddress()
+		grantee := sdk.AccAddress(msg.DelegatorAddress)
 		if err := k.fk.Accept(ctx, govtypes.ModuleName, grantee, msg); err != nil {
 			return nil, err
 		}

@@ -7,6 +7,7 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/foundation"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
 // handleUpdateFoundationParamsProposal is a handler for update foundation params proposal
@@ -29,7 +30,7 @@ func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *foundatio
 	for _, auth := range p.Auths {
 		grantee := sdk.ValAddress(auth.OperatorAddress).ToAccAddress()
 		if auth.CreationAllowed {
-			authorization := &foundation.CreateValidatorAuthorization{
+			authorization := &stakingplus.CreateValidatorAuthorization{
 				ValidatorAddress: auth.OperatorAddress,
 			}
 
@@ -37,7 +38,7 @@ func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *foundatio
 				return err
 			}
 		} else {
-			if err := k.Revoke(ctx, govtypes.ModuleName, grantee, foundation.CreateValidatorAuthorization{}.MsgTypeURL()); err != nil {
+			if err := k.Revoke(ctx, govtypes.ModuleName, grantee, stakingplus.CreateValidatorAuthorization{}.MsgTypeURL()); err != nil {
 				return err
 			}
 		}

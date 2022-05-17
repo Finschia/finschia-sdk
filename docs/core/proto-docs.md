@@ -565,7 +565,6 @@
     - [Msg](#lbm.feegrant.v1.Msg)
   
 - [lbm/foundation/v1/authz.proto](#lbm/foundation/v1/authz.proto)
-    - [CreateValidatorAuthorization](#lbm.foundation.v1.CreateValidatorAuthorization)
     - [ReceiveFromTreasuryAuthorization](#lbm.foundation.v1.ReceiveFromTreasuryAuthorization)
   
 - [lbm/foundation/v1/foundation.proto](#lbm/foundation/v1/foundation.proto)
@@ -843,6 +842,9 @@
     - [MsgUndelegateResponse](#lbm.staking.v1.MsgUndelegateResponse)
   
     - [Msg](#lbm.staking.v1.Msg)
+  
+- [lbm/stakingplus/v1/authz.proto](#lbm/stakingplus/v1/authz.proto)
+    - [CreateValidatorAuthorization](#lbm.stakingplus.v1.CreateValidatorAuthorization)
   
 - [lbm/token/v1/event.proto](#lbm/token/v1/event.proto)
     - [EventApprove](#lbm.token.v1.EventApprove)
@@ -8613,21 +8615,6 @@ Msg defines the feegrant msg service.
 
 
 
-<a name="lbm.foundation.v1.CreateValidatorAuthorization"></a>
-
-### CreateValidatorAuthorization
-CreateValidatorAuthorization allows the grantee to create a new validator.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `validator_address` | [string](#string) |  | redundant, but good for the query. |
-
-
-
-
-
-
 <a name="lbm.foundation.v1.ReceiveFromTreasuryAuthorization"></a>
 
 ### ReceiveFromTreasuryAuthorization
@@ -12409,6 +12396,37 @@ Msg defines the staking Msg service.
 | `Delegate` | [MsgDelegate](#lbm.staking.v1.MsgDelegate) | [MsgDelegateResponse](#lbm.staking.v1.MsgDelegateResponse) | Delegate defines a method for performing a delegation of coins from a delegator to a validator. | |
 | `BeginRedelegate` | [MsgBeginRedelegate](#lbm.staking.v1.MsgBeginRedelegate) | [MsgBeginRedelegateResponse](#lbm.staking.v1.MsgBeginRedelegateResponse) | BeginRedelegate defines a method for performing a redelegation of coins from a delegator and source validator to a destination validator. | |
 | `Undelegate` | [MsgUndelegate](#lbm.staking.v1.MsgUndelegate) | [MsgUndelegateResponse](#lbm.staking.v1.MsgUndelegateResponse) | Undelegate defines a method for performing an undelegation from a delegate and a validator. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/stakingplus/v1/authz.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/stakingplus/v1/authz.proto
+
+
+
+<a name="lbm.stakingplus.v1.CreateValidatorAuthorization"></a>
+
+### CreateValidatorAuthorization
+CreateValidatorAuthorization allows the grantee to create a new validator.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  | redundant, but good for the query. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
 
  <!-- end services -->
 
