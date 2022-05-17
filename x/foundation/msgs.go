@@ -391,11 +391,12 @@ func (m MsgGrant) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
 	}
 
-	if a := m.GetAuthorization(); a == nil {
+	if a := m.GetAuthorization(); a != nil {
+		if err := a.ValidateBasic(); err != nil {
+			return err
+		}
+	} else {
 		return sdkerrors.ErrInvalidType.Wrap("invalid authorization")
-	}
-	if err := m.GetAuthorization().ValidateBasic(); err != nil {
-		return err
 	}
 
 	return nil
