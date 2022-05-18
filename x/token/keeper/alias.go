@@ -75,7 +75,7 @@ func (k Keeper) iterateGrantsImpl(ctx sdk.Context, prefix []byte, fn func(classI
 		classID, grantee, permission := splitGrantKey(iterator.Key())
 		grant := token.Grant{
 			Grantee: grantee.String(),
-			Permission:  permission,
+			Permission:  token.Permission_name[int32(permission)],
 		}
 
 		stop := fn(classID, grant)

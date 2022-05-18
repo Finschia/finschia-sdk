@@ -121,7 +121,7 @@ func (k Keeper) mintToken(ctx sdk.Context, classID string, addr sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) Burn(ctx sdk.Context, from sdk.AccAddress, amounts []token.FT) error {
+func (k Keeper) Burn(ctx sdk.Context, contractID string, from sdk.AccAddress, amount sdk.Int) error {
 	if err := k.burn(ctx, from, amounts); err != nil {
 		return err
 	}
@@ -137,11 +137,9 @@ func (k Keeper) Burn(ctx sdk.Context, from sdk.AccAddress, amounts []token.FT) e
 	return ctx.EventManager().EmitTypedEvents(events...)
 }
 
-func (k Keeper) burn(ctx sdk.Context, from sdk.AccAddress, amounts []token.FT) error {
-	for _, amount := range amounts {
-		if ok := k.GetGrant(ctx, from, amount.ClassId, token.ActionBurn); !ok {
-			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s %s tokens", from, token.ActionBurn, amount.ClassId)
-		}
+func (k Keeper) burn(ctx sdk.Context, contractID string, from sdk.AccAddress, amount sdk.Int) error {
+	if ok := k.GetGrant(ctx, contractID, from, token.Permission_Burn); !ok {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s %s tokens", from, token.ActionBurn, amount.ClassId)
 	}
 
 	if err := k.burnTokens(ctx, from, amounts); err != nil {
@@ -151,7 +149,7 @@ func (k Keeper) burn(ctx sdk.Context, from sdk.AccAddress, amounts []token.FT) e
 	return nil
 }
 
-func (k Keeper) BurnFrom(ctx sdk.Context, proxy, from sdk.AccAddress, amounts []token.FT) error {
+func (k Keeper) BurnFrom(ctx sdk.Context, contractID string, proxy, from sdk.AccAddress, amount sdk.Int) error {
 	if err := k.burnFrom(ctx, proxy, from, amounts); err != nil {
 		return err
 	}
@@ -167,39 +165,35 @@ func (k Keeper) BurnFrom(ctx sdk.Context, proxy, from sdk.AccAddress, amounts []
 	return ctx.EventManager().EmitTypedEvents(events...)
 }
 
-func (k Keeper) burnFrom(ctx sdk.Context, proxy, from sdk.AccAddress, amounts []token.FT) error {
-	for _, amount := range amounts {
-		granted := k.GetGrant(ctx, proxy, amount.ClassId, token.ActionBurn)
-		approved := k.GetApprove(ctx, from, proxy, amount.ClassId)
-		if !granted || !approved {
-			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s %s tokens of %s", proxy, token.ActionBurn, amount.ClassId, from)
-		}
+func (k Keeper) burnFrom(ctx sdk.Context, contractID string, proxy, from sdk.AccAddress, amount sdk.Int) error {
+	grant := k.GetGrant(ctx, contractID, proxy, token.Permission_Burn)
+	authorization := k.GetAuthorization(ctx, contractID, from, proxy)
+	if grant == nil || authorization == nil || true {
+		return sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s tokens from %s", proxy, token.Permission_Burn.String(), from)
 	}
 
-	if err := k.burnTokens(ctx, from, amounts); err != nil {
+	if err := k.burnToken(ctx, contractID, from, amount); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (k Keeper) burnTokens(ctx sdk.Context, addr sdk.AccAddress, amounts []token.FT) error {
-	if err := k.subtractTokens(ctx, addr, amounts); err != nil {
+func (k Keeper) burnToken(ctx sdk.Context, contractID string, addr sdk.AccAddress, amount sdk.Int) error {
+	if err := k.subtractToken(ctx, contractID, addr, amount); err != nil {
 		return err
 	}
 
-	for _, amount := range amounts {
-		burn := k.GetBurn(ctx, amount.ClassId)
-		burn.Amount = burn.Amount.Add(amount.Amount)
-		if err := k.setBurn(ctx, burn); err != nil {
-			return err
-		}
+	burn := k.GetBurn(ctx, contractID)
+	burn = burn.Add(amount)
+	if err := k.setBurn(ctx, contractID, burn); err != nil {
+		return err
+	}
 
-		supply := k.GetSupply(ctx, amount.ClassId)
-		supply.Amount = supply.Amount.Sub(amount.Amount)
-		if err := k.setSupply(ctx, supply); err != nil {
-			return err
-		}
+	supply := k.GetSupply(ctx, contractID)
+	supply = supply.Sub(amount)
+	if err := k.setSupply(ctx, contractID, supply); err != nil {
+		return err
 	}
 
 	return nil
@@ -357,13 +351,13 @@ func (k Keeper) abandon(ctx sdk.Context, grantee sdk.AccAddress, classID, permis
 	return nil
 }
 
-func (k Keeper) GetGrant(ctx sdk.Context, classID string, grantee sdk.AccAddress, permission string) *token.Grant {
+func (k Keeper) GetGrant(ctx sdk.Context, classID string, grantee sdk.AccAddress, permission token.Permission) *token.Grant {
 	var grant *token.Grant
 	store := ctx.KVStore(k.storeKey)
 	if store.Has(grantKey(classID, grantee, permission)) {
 		grant = &token.Grant{
 			Grantee: grantee.String(),
-			Permission: permission,
+			Permission: token.Permission_name[int32(permission)],
 		}
 	}
 

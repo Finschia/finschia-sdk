@@ -66,53 +66,82 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 		return false
 	})
 
-	balances := make([]token.ContractBalances, len(classes))
-	for i, class := range classes {
+	var balances []token.ContractBalances
+	for _, class := range classes {
 		id := class.ContractId
-		balances[i].ContractId = id
-		k.iterateContractBalances(ctx, id, func(contractID string, balance token.Balance) (stop bool) {
-			balances[i].Balances = append(balances[i].Balances, balance)
+		contractBalances := token.ContractBalances{
+			ContractId: id,
+		}
+
+		k.iterateContractBalances(ctx, id, func(balance token.Balance) (stop bool) {
+			contractBalances.Balances = append(contractBalances.Balances, balance)
 			return false
 		})
+		if len(contractBalances.Balances) != 0 {
+			balances = append(balances, contractBalances)
+		}
 	}
 
-	var supplies []token.FT
-	k.iterateSupplies(ctx, func(amount token.FT) (stop bool) {
-		supplies = append(supplies, amount)
+	var supplies []token.ContractCoin
+	k.iterateSupplies(ctx, func(contractID string, amount sdk.Int) (stop bool) {
+		supply := token.ContractCoin{
+			ContractId: contractID,
+			Amount: amount,
+		}
+		supplies = append(supplies, supply)
 		return false
 	})
 
-	var mints []token.FT
-	k.iterateMints(ctx, func(amount token.FT) (stop bool) {
-		mints = append(mints, amount)
+	var mints []token.ContractCoin
+	k.iterateMinteds(ctx, func(contractID string, amount sdk.Int) (stop bool) {
+		minted := token.ContractCoin{
+			ContractId: contractID,
+			Amount: amount,
+		}
+		mints = append(mints, minted)
 		return false
 	})
 
-	var burns []token.FT
-	k.iterateBurns(ctx, func(amount token.FT) (stop bool) {
-		burns = append(burns, amount)
+	var burns []token.ContractCoin
+	k.iterateBurnts(ctx, func(contractID string, amount sdk.Int) (stop bool) {
+		burnt := token.ContractCoin{
+			ContractId: contractID,
+			Amount: amount,
+		}
+		burns = append(burns, burnt)
 		return false
 	})
 
-	grants := make([]token.ContractGrants, len(classes))
-	for i, class := range classes {
+	var grants []token.ContractGrants
+	for _, class := range classes {
 		id := class.ContractId
-		grants[i].ContractId = id
-		k.iterateContractGrants(ctx, id, func(contractID string, grant token.Grant) (stop bool) {
-			grants[i].Grants = append(grants[i].Grants, grant)
+		contractGrants := token.ContractGrants{
+			ContractId: id,
+		}
+
+		k.iterateContractGrants(ctx, id, func(grant token.Grant) (stop bool) {
+			contractGrants.Grants = append(contractGrants.Grants, grant)
 			return false
 		})
+		if len(contractGrants.Grants) != 0 {
+			grants = append(grants, contractGrants)
+		}
 	}
 
-	authorizations := make([]token.ContractAuthorizations, len(classes))
-	for i, class := range classes {
+	var authorizations []token.ContractAuthorizations
+	for _, class := range classes {
 		id := class.ContractId
-		authorizations[i].ContractId = id
+		contractAuthorizations := token.ContractAuthorizations{
+			ContractId: id,
+		}
 
-		k.iterateContractAuthorizations(ctx, id, func(contractID string, authorization token.Authorization) (stop bool) {
-			authorizations[i].Authorizations = append(authorizations[i].Authorizations, authorization)
+		k.iterateContractAuthorizations(ctx, id, func(authorization token.Authorization) (stop bool) {
+			contractAuthorizations.Authorizations = append(contractAuthorizations.Authorizations, authorization)
 			return false
 		})
+		if len(contractAuthorizations.Authorizations) != 0 {
+			authorizations = append(authorizations, contractAuthorizations)
+		}
 	}
 
 	return &token.GenesisState{

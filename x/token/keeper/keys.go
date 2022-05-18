@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/token"
 )
 
 var (
@@ -94,12 +95,12 @@ func splitStatisticsKey(key, keyPrefix []byte) (classID string) {
 // 	return splitStatisticsKey(key, burnKeyPrefix)
 // }
 
-func grantKey(classID string, grantee sdk.AccAddress, permission string) []byte {
+func grantKey(classID string, grantee sdk.AccAddress, permission token.Permission) []byte {
 	prefix := grantKeyPrefixByGrantee(classID, grantee)
-	key := make([]byte, len(prefix)+len(permission))
+	key := make([]byte, len(prefix)+1)
 
 	copy(key, prefix)
-	copy(key[len(prefix):], permission)
+	key[len(prefix)] = byte(permission)
 
 	return key
 }
@@ -135,7 +136,7 @@ func grantKeyPrefixByContractID(classID string) []byte {
 	return key
 }
 
-func splitGrantKey(key []byte) (classID string, grantee sdk.AccAddress, permission string) {
+func splitGrantKey(key []byte) (classID string, grantee sdk.AccAddress, permission token.Permission) {
 	begin := len(grantKeyPrefix) + 1
 	end := begin + int(key[begin-1])
 	classID = string(key[begin:end])
@@ -145,7 +146,7 @@ func splitGrantKey(key []byte) (classID string, grantee sdk.AccAddress, permissi
 	grantee = sdk.AccAddress(key[begin:end])
 
 	begin = end
-	permission = string(key[begin:])
+	permission = token.Permission(key[begin])
 
 	return
 }
