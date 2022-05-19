@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"bytes"
+	"context"
 	"encoding/binary"
 	"fmt"
 	"math"
@@ -31,6 +32,13 @@ import (
 // contractMemoryLimit is the memory limit of each contract execution (in MiB)
 // constant value so all nodes run with the same limit.
 const contractMemoryLimit = 32
+
+type contextKey int
+
+const (
+	// private type creates an interface key for Context that cannot be accessed by any other package
+	contextKeyQueryStackSize contextKey = iota
+)
 
 // Option is an extension point to instantiate keeper with non default values
 type Option interface {
@@ -76,9 +84,10 @@ type Keeper struct {
 	messenger             Messenger
 	metrics               *Metrics
 	// queryGasLimit is the max wasmvm gas that can be spent on executing a query with a contract
-	queryGasLimit uint64
-	paramSpace    paramtypes.Subspace
-	gasRegister   WasmGasRegister
+	queryGasLimit     uint64
+	paramSpace        paramtypes.Subspace
+	gasRegister       WasmGasRegister
+	maxQueryStackSize uint32
 }
 
 // NewKeeper creates a new contract Keeper instance
@@ -114,18 +123,19 @@ func NewKeeper(
 	}
 
 	keeper := &Keeper{
-		storeKey:         storeKey,
-		cdc:              cdc,
-		wasmVM:           wasmer,
-		accountKeeper:    accountKeeper,
-		bank:             NewBankCoinTransferrer(bankKeeper),
-		portKeeper:       portKeeper,
-		capabilityKeeper: capabilityKeeper,
-		messenger:        NewDefaultMessageHandler(router, channelKeeper, capabilityKeeper, bankKeeper, cdc, portSource, customEncoders),
-		queryGasLimit:    wasmConfig.SmartQueryGasLimit,
-		paramSpace:       paramSpace,
-		metrics:          NopMetrics(),
-		gasRegister:      NewDefaultWasmGasRegister(),
+		storeKey:          storeKey,
+		cdc:               cdc,
+		wasmVM:            wasmer,
+		accountKeeper:     accountKeeper,
+		bank:              NewBankCoinTransferrer(bankKeeper),
+		portKeeper:        portKeeper,
+		capabilityKeeper:  capabilityKeeper,
+		messenger:         NewDefaultMessageHandler(router, channelKeeper, capabilityKeeper, bankKeeper, cdc, portSource, customEncoders),
+		queryGasLimit:     wasmConfig.SmartQueryGasLimit,
+		paramSpace:        paramSpace,
+		metrics:           NopMetrics(),
+		gasRegister:       NewDefaultWasmGasRegister(),
+		maxQueryStackSize: types.DefaultMaxQueryStackSize,
 	}
 	keeper.wasmVMQueryHandler = DefaultQueryPlugins(bankKeeper, stakingKeeper, distKeeper, channelKeeper, queryRouter, keeper).Merge(customPlugins)
 	for _, o := range opts {
@@ -709,6 +719,13 @@ func (k Keeper) getLastContractHistoryEntry(ctx sdk.Context, contractAddr sdk.Ac
 // QuerySmart queries the smart contract itself.
 func (k Keeper) QuerySmart(ctx sdk.Context, contractAddr sdk.AccAddress, req []byte) ([]byte, error) {
 	defer func(begin time.Time) { k.metrics.QuerySmartElapsedTimes.Observe(time.Since(begin).Seconds()) }(time.Now())
+
+	// checks and increase query stack size
+	ctx, err := checkAndIncreaseQueryStackSize(ctx, k.maxQueryStackSize)
+	if err != nil {
+		return nil, err
+	}
+
 	contractInfo, codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddr)
 	if err != nil {
 		return nil, err
@@ -729,6 +746,30 @@ func (k Keeper) QuerySmart(ctx sdk.Context, contractAddr sdk.AccAddress, req []b
 		return nil, sdkerrors.Wrap(types.ErrQueryFailed, qErr.Error())
 	}
 	return queryResult, nil
+}
+
+func checkAndIncreaseQueryStackSize(ctx sdk.Context, maxQueryStackSize uint32) (sdk.Context, error) {
+	var queryStackSize uint32
+
+	// read current value
+	if size := ctx.Context().Value(contextKeyQueryStackSize); size != nil {
+		queryStackSize = size.(uint32)
+	} else {
+		queryStackSize = 0
+	}
+
+	// increase
+	queryStackSize++
+
+	// did we go too far?
+	if queryStackSize > maxQueryStackSize {
+		return ctx, types.ErrExceedMaxQueryStackSize
+	}
+
+	// set updated stack size
+	ctx = ctx.WithContext(context.WithValue(ctx.Context(), contextKeyQueryStackSize, queryStackSize))
+
+	return ctx, nil
 }
 
 // QueryRaw returns the contract's state for give key. Returns `nil` when key is `nil`.
