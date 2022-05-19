@@ -28,7 +28,8 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *token.GenesisState) {
 
 	for _, contractGrants := range data.Grants {
 		for _, grant := range contractGrants.Grants {
-			k.setGrant(ctx, contractGrants.ContractId, sdk.AccAddress(grant.Grantee), grant.Permission)
+			permission := token.Permission(token.Permission_value[grant.Permission])
+			k.setGrant(ctx, contractGrants.ContractId, sdk.AccAddress(grant.Grantee), permission)
 		}
 	}
 
@@ -46,13 +47,13 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *token.GenesisState) {
 	}
 
 	for _, amount := range data.Mints {
-		if err := k.setMint(ctx, amount.ContractId, amount.Amount); err != nil {
+		if err := k.setMinted(ctx, amount.ContractId, amount.Amount); err != nil {
 			panic(err)
 		}
 	}
 
 	for _, amount := range data.Burns {
-		if err := k.setBurn(ctx, amount.ContractId, amount.Amount); err != nil {
+		if err := k.setBurnt(ctx, amount.ContractId, amount.Amount); err != nil {
 			panic(err)
 		}
 	}

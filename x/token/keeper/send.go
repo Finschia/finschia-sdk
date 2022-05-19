@@ -30,12 +30,7 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, classID string, approver, pro
 		return sdkerrors.ErrNotFound.Wrapf("ID not exists: %s", classID)
 	}
 
-	authz := token.Authorization{
-		ContractId: classID,
-		Approver: approver.String(),
-		Proxy: proxy.String(),
-	}
-	k.setAuthorization(ctx, authz, true)
+	k.setAuthorization(ctx, classID, approver, proxy)
 	return nil
 }
 
@@ -47,12 +42,7 @@ func (k Keeper) RevokeOperator(ctx sdk.Context, classID string, approver, proxy 
 		return sdkerrors.ErrNotFound.Wrapf("ID not exists: %s", classID)
 	}
 
-	authz := token.Authorization{
-		ContractId: classID,
-		Approver: approver.String(),
-		Proxy: proxy.String(),
-	}
-	k.setAuthorization(ctx, authz, false)
+	k.setAuthorization(ctx, classID, approver, proxy)
 	return nil
 }
 
@@ -60,7 +50,6 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, classID string, approver, prox
 	store := ctx.KVStore(k.storeKey)
 	if store.Has(authorizationKey(classID, proxy, approver)) {
 		return &token.Authorization{
-			ContractId: classID,
 			Approver: approver.String(),
 			Proxy: proxy.String(),
 		}
@@ -116,7 +105,7 @@ func (k Keeper) addToken(ctx sdk.Context, classID string, addr sdk.AccAddress, a
 func (k Keeper) GetBalance(ctx sdk.Context, classID string, addr sdk.AccAddress) sdk.Int {
 	store := ctx.KVStore(k.storeKey)
 	amount := sdk.ZeroInt()
-	bz := store.Get(balanceKey(addr, classID))
+	bz := store.Get(balanceKey(classID, addr))
 	if bz != nil {
 		if err := amount.Unmarshal(bz); err != nil {
 			panic(err)
@@ -129,7 +118,7 @@ func (k Keeper) GetBalance(ctx sdk.Context, classID string, addr sdk.AccAddress)
 // The caller must validate `balance`.
 func (k Keeper) setBalance(ctx sdk.Context, classID string, addr sdk.AccAddress, balance sdk.Int) error {
 	store := ctx.KVStore(k.storeKey)
-	key := balanceKey(addr, classID)
+	key := balanceKey(classID, addr)
 	if balance.IsZero() {
 		store.Delete(key)
 	} else {

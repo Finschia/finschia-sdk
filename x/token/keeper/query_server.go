@@ -110,7 +110,7 @@ func (s queryServer) TokenClass(c context.Context, req *token.QueryTokenClassReq
 		return nil, err
 	}
 
-	return &token.QueryTokenClassResponse{Token: *class}, nil
+	return &token.QueryTokenClassResponse{Class: class}, nil
 }
 
 // TokenClasses queries all token metadata.
@@ -147,12 +147,13 @@ func (s queryServer) Grant(c context.Context, req *token.QueryGrantRequest) (*to
 	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
 		return nil, err
 	}
-	if token.Permission_value[req.Permission] == 0 {
+	permission := token.Permission(token.Permission_value[req.Permission])
+	if permission == 0 {
 		return nil, status.Error(codes.InvalidArgument, "invalid permission")
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	grant := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Grantee), req.Permission)
+	grant := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Grantee), permission)
 
 	return &token.QueryGrantResponse{Grant: grant}, nil
 }
@@ -174,11 +175,10 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 	grantStore := prefix.NewStore(store, grantKeyPrefixByGrantee(req.ContractId, sdk.AccAddress(req.Grantee)))
 	var grants []token.Grant
 	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
-		classID, grantee, permission := splitGrantKey(key)
+		_, grantee, permission := splitGrantKey(key)
 		grants = append(grants, token.Grant{
-			ContractId:  classID,
 			Grantee: grantee.String(),
-			Permission: permission,
+			Permission: permission.String(),
 		})
 		return nil
 	})
@@ -227,9 +227,8 @@ func (s queryServer) OperatorAuthorizations(c context.Context, req *token.QueryO
 	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByProxy(req.ContractId, sdk.AccAddress(req.Proxy)))
 	var authorizations []token.Authorization
 	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key []byte, value []byte) error {
-		classID, approver, proxy := splitAuthorizationKey(key)
+		_, approver, proxy := splitAuthorizationKey(key)
 		authorizations = append(authorizations, token.Authorization{
-			ContractId:  classID,
 			Approver: approver.String(),
 			Proxy:    proxy.String(),
 		})

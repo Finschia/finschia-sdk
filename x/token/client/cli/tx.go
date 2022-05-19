@@ -241,10 +241,10 @@ func NewTxCmdGrant() *cobra.Command {
 			}
 
 			msg := token.MsgGrant{
-				ClassId: args[0],
+				ContractId: args[0],
 				Granter: args[1],
 				Grantee: args[2],
-				Action:  args[3],
+				Permission:  args[3],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

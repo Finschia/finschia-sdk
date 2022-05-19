@@ -26,14 +26,7 @@ var (
 )
 
 // AppModuleBasic defines the basic application module used by the token module.
-type AppModuleBasic struct {
-	cdc codec.Codec
-}
-
-// NewAppModuleBasic creates a new AppModuleBasic object
-func NewAppModuleBasic() AppModuleBasic {
-	return AppModuleBasic{}
-}
+type AppModuleBasic struct {}
 
 // Name returns the ModuleName
 func (AppModuleBasic) Name() string {
@@ -95,7 +88,6 @@ type AppModule struct {
 // NewAppModule creates a new AppModule object
 func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
 	return AppModule{
-		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		keeper:         keeper,
 	}
 }
@@ -104,9 +96,7 @@ func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
 func (AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
 // Route returns the message routing key for the token module.
-func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(token.RouterKey, keeper.NewHandler(am.keeper))
-}
+func (am AppModule) Route() sdk.Route { return sdk.Route{} }
 
 // QuerierRoute returns the route we respond to for abci queries
 func (AppModule) QuerierRoute() string { return "" }
@@ -122,10 +112,13 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	token.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServer(am.keeper))
 	token.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServer(am.keeper))
 
-	/* m := keeper.NewMigrator(am.keeper)
-	if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
-		panic(fmt.Sprintf("failed to migrate x/token from version 1 to 2: %v", err))
-	} */
+	// m := keeper.NewMigrator(am.keeper)
+	// migrations := map[uint64]func(sdk.Context) error{}
+	// for ver, handler := range migrations {
+	// 	if err := cfg.RegisterMigration(token.ModuleName, ver, handler); err != nil {
+	// 		panic(fmt.Sprintf("failed to migrate x/%s from version %d to %d: %v", token.ModuleName, ver, ver+1, err))
+	// 	}
+	// }
 }
 
 // InitGenesis performs genesis initialization for the token module. It returns

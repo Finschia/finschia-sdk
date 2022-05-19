@@ -48,7 +48,7 @@ func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendRe
 func (s msgServer) OperatorSend(c context.Context, req *token.MsgOperatorSend) (*token.MsgOperatorSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if ok := s.keeper.GetApprove(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Proxy)); !ok {
+	if s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Proxy)) == nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized to send %s tokens of %s", req.Proxy, req.ContractId, req.From)
 	}
 
@@ -132,7 +132,8 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 // Grant allows one to mint or burn tokens or modify a token metadata
 func (s msgServer) Grant(c context.Context, req *token.MsgGrant) (*token.MsgGrantResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.Grant(ctx, sdk.AccAddress(req.From), sdk.AccAddress(req.To), req.ClassId, req.Permission); err != nil {
+	permission := token.Permission(token.Permission_value[req.Permission])
+	if err := s.keeper.Grant(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.To), permission); err != nil {
 		return nil, err
 	}
 
@@ -142,7 +143,8 @@ func (s msgServer) Grant(c context.Context, req *token.MsgGrant) (*token.MsgGran
 // Abandon abandons the permission
 func (s msgServer) Abandon(c context.Context, req *token.MsgAbandon) (*token.MsgAbandonResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.Abandon(ctx, sdk.AccAddress(req.Grantee), req.ClassId, req.Action); err != nil {
+	permission := token.Permission(token.Permission_value[req.Permission])
+	if err := s.keeper.Abandon(ctx, req.ContractId, sdk.AccAddress(req.Grantee), permission); err != nil {
 		return nil, err
 	}
 
