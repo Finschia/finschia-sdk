@@ -135,9 +135,11 @@ func NewEventGrantPermToken(e EventGrant) sdk.Event {
 	eventType := EventType_GrantPermToken.String()
 	attributes := map[AttributeKey]string{
 		AttributeKey_ContractID: e.ContractId,
-		AttributeKey_From:       e.Granter,
 		AttributeKey_To:         e.Grantee,
 		AttributeKey_Perm:       e.Permission,
+	}
+	if e.Granter != e.Grantee {
+		attributes[AttributeKey_From] = e.Granter
 	}
 
 	new := sdk.NewEvent(eventType)

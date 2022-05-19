@@ -71,8 +71,8 @@ func NewTxCmdTransfer() *cobra.Command {
 			if !ok {
 				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
 			}
-			msg := &token.MsgTransfer{
-				ClassId: args[0],
+			msg := &token.MsgSend{
+				ContractId: args[0],
 				From:    args[1],
 				To:      args[2],
 				Amount:  amount,
@@ -107,8 +107,8 @@ func NewTxCmdTransferFrom() *cobra.Command {
 			if !ok {
 				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
 			}
-			msg := token.MsgTransferFrom{
-				ClassId: args[0],
+			msg := token.MsgOperatorSend{
+				ContractId: args[0],
 				Proxy:   args[1],
 				From:    args[2],
 				To:      args[3],
@@ -139,8 +139,8 @@ func NewTxCmdApprove() *cobra.Command {
 				return err
 			}
 
-			msg := token.MsgApprove{
-				ClassId:  args[0],
+			msg := token.MsgAuthorizeOperator{
+				ContractId:  args[0],
 				Approver: args[1],
 				Proxy:    args[2],
 			}
@@ -242,8 +242,8 @@ func NewTxCmdGrant() *cobra.Command {
 
 			msg := token.MsgGrant{
 				ContractId: args[0],
-				Granter: args[1],
-				Grantee: args[2],
+				From: args[1],
+				To: args[2],
 				Permission:  args[3],
 			}
 			if err := msg.ValidateBasic(); err != nil {
@@ -271,10 +271,10 @@ func NewTxCmdRevoke() *cobra.Command {
 				return err
 			}
 
-			msg := token.MsgRevoke{
-				ClassId: args[0],
+			msg := token.MsgAbandon{
+				ContractId: args[0],
 				Grantee: args[1],
-				Action:  args[2],
+				Permission:  args[2],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -308,8 +308,8 @@ func NewTxCmdMint() *cobra.Command {
 			}
 
 			msg := token.MsgMint{
-				ClassId: args[0],
-				Grantee: args[1],
+				ContractId: args[0],
+				From: args[1],
 				To:      args[2],
 				Amount:  amount,
 			}
@@ -345,7 +345,7 @@ func NewTxCmdBurn() *cobra.Command {
 			}
 
 			msg := token.MsgBurn{
-				ClassId: args[0],
+				ContractId: args[0],
 				From:    args[1],
 				Amount:  amount,
 			}
@@ -380,9 +380,9 @@ func NewTxCmdBurnFrom() *cobra.Command {
 				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
 			}
 
-			msg := token.MsgBurnFrom{
-				ClassId: args[0],
-				Grantee: args[1],
+			msg := token.MsgOperatorBurn{
+				ContractId: args[0],
+				Proxy: args[1],
 				From:    args[2],
 				Amount:  amount,
 			}
@@ -411,10 +411,10 @@ func NewTxCmdModify() *cobra.Command {
 				return err
 			}
 
-			change := token.Pair{Key: args[2], Value: args[3]}
+			change := token.Pair{Field: args[2], Value: args[3]}
 			msg := token.MsgModify{
-				ClassId: args[0],
-				Grantee: args[1],
+				ContractId: args[0],
+				Owner: args[1],
 				Changes: []token.Pair{change},
 			}
 			if err := msg.ValidateBasic(); err != nil {

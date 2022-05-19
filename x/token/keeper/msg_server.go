@@ -134,8 +134,18 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 // Grant allows one to mint or burn tokens or modify a token metadata
 func (s msgServer) Grant(c context.Context, req *token.MsgGrant) (*token.MsgGrantResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
+	granter := sdk.AccAddress(req.From)
+	grantee := sdk.AccAddress(req.To)
 	permission := token.Permission(token.Permission_value[req.Permission])
-	if err := s.keeper.Grant(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.To), permission); err != nil {
+	if s.keeper.GetGrant(ctx, req.ContractId, granter, permission) == nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s", granter, permission.String())
+	}
+	if s.keeper.GetGrant(ctx, req.ContractId, grantee, permission) != nil {
+		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission.String())
+	}
+
+	if err := s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission); err != nil {
 		return nil, err
 	}
 
@@ -145,8 +155,14 @@ func (s msgServer) Grant(c context.Context, req *token.MsgGrant) (*token.MsgGran
 // Abandon abandons the permission
 func (s msgServer) Abandon(c context.Context, req *token.MsgAbandon) (*token.MsgAbandonResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
+	grantee := sdk.AccAddress(req.Grantee)
 	permission := token.Permission(token.Permission_value[req.Permission])
-	if err := s.keeper.Abandon(ctx, req.ContractId, sdk.AccAddress(req.Grantee), permission); err != nil {
+	if s.keeper.GetGrant(ctx, req.ContractId, grantee, permission) == nil {
+		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not authorized for %s", grantee, permission)
+	}
+
+	if err := s.keeper.Abandon(ctx, req.ContractId, grantee, permission); err != nil {
 		return nil, err
 	}
 

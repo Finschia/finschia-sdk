@@ -11,6 +11,33 @@ func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.Acc
 		return err
 	}
 
+	permissions := []token.Permission{
+		token.Permission_Modify,
+	}
+	if class.Mintable {
+		permissions = append(permissions,
+			token.Permission_Mint,
+			token.Permission_Burn,
+		)
+	}
+	for _, permission := range permissions {
+		if err := k.Grant(ctx, class.ContractId, owner, owner, permission); err != nil {
+			return err
+		}
+	}
+
+	if err := k.mintToken(ctx, class.ContractId, to, amount); err != nil {
+		return err
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&token.EventMinted{
+		ContractId: class.ContractId,
+		Operator:   owner.String(),
+		To:         to.String(),
+		Amount:     amount,
+	}); err != nil {
+		return err
+	}
+
 	event := token.EventIssue{
 		ContractId: class.ContractId,
 		Name:       class.Name,
@@ -29,23 +56,6 @@ func (k Keeper) issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.Acc
 		return sdkerrors.ErrNotFound.Wrapf("ID already exists: %s")
 	}
 	if err := k.setClass(ctx, class); err != nil {
-		return err
-	}
-
-	permissions := []token.Permission{
-		token.Permission_Modify,
-	}
-	if class.Mintable {
-		permissions = append(permissions,
-			token.Permission_Mint,
-			token.Permission_Burn,
-		)
-	}
-	for _, permission := range permissions {
-		k.setGrant(ctx, class.ContractId, owner, permission)
-	}
-
-	if err := k.mintToken(ctx, class.ContractId, to, amount); err != nil {
 		return err
 	}
 
@@ -300,7 +310,7 @@ func (k Keeper) modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, 
 }
 
 func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.AccAddress, permission token.Permission) error {
-	if err := k.grant(ctx, contractID, granter, grantee, permission); err != nil {
+	if err := k.grant(ctx, contractID, grantee, permission); err != nil {
 		return err
 	}
 
@@ -313,14 +323,7 @@ func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.A
 	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
-func (k Keeper) grant(ctx sdk.Context, contractID string, granter, grantee sdk.AccAddress, permission token.Permission) error {
-	if k.GetGrant(ctx, contractID, granter, permission) == nil {
-		return sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s", granter, permission.String())
-	}
-	if k.GetGrant(ctx, contractID, grantee, permission) != nil {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission.String())
-	}
-
+func (k Keeper) grant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) error {
 	k.setGrant(ctx, contractID, grantee, permission)
 
 	if !k.accountKeeper.HasAccount(ctx, grantee) {
@@ -331,9 +334,7 @@ func (k Keeper) grant(ctx sdk.Context, contractID string, granter, grantee sdk.A
 }
 
 func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) error {
-	if err := k.abandon(ctx, contractID, grantee, permission); err != nil {
-		return err
-	}
+	k.deleteGrant(ctx, contractID, grantee, permission)
 
 	event := token.EventAbandon{
 		ContractId: contractID,
@@ -342,16 +343,6 @@ func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddre
 	}
 	ctx.EventManager().EmitEvent(token.NewEventRevokePermToken(event)) // deprecated
 	return ctx.EventManager().EmitTypedEvent(&event)
-}
-
-func (k Keeper) abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) error {
-	if k.GetGrant(ctx, contractID, grantee, permission) == nil {
-		return sdkerrors.ErrNotFound.Wrapf("%s is not authorized for %s", grantee, permission)
-	}
-
-	k.deleteGrant(ctx, contractID, grantee, permission)
-
-	return nil
 }
 
 func (k Keeper) GetGrant(ctx sdk.Context, classID string, grantee sdk.AccAddress, permission token.Permission) *token.Grant {
