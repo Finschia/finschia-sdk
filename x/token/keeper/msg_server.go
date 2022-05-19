@@ -30,14 +30,15 @@ func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendRe
 		return nil, err
 	}
 
-	// TODO: emit the legacy event too
-	if err := ctx.EventManager().EmitTypedEvent(&token.EventSent{
+	event := token.EventSent{
 		ContractId: req.ContractId,
 		Operator: req.From,
 		From: req.From,
 		To: req.To,
 		Amount: req.Amount,
-	}); err != nil {
+	}
+	ctx.EventManager().EmitEvent(token.NewEventTransfer(event))
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		return nil, err
 	}
 
@@ -56,14 +57,15 @@ func (s msgServer) OperatorSend(c context.Context, req *token.MsgOperatorSend) (
 		return nil, err
 	}
 
-	// TODO: emit the legacy event too
-	if err := ctx.EventManager().EmitTypedEvent(&token.EventSent{
+	event := token.EventSent{
 		ContractId: req.ContractId,
 		Operator: req.Proxy,
 		From: req.From,
 		To: req.To,
 		Amount: req.Amount,
-	}); err != nil {
+	}
+	ctx.EventManager().EmitEvent(token.NewEventTransferFrom(event))
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		return nil, err
 	}
 
@@ -77,12 +79,13 @@ func (s msgServer) AuthorizeOperator(c context.Context, req *token.MsgAuthorizeO
 		return nil, err
 	}
 
-	// TODO: emit the legacy event too
-	if err := ctx.EventManager().EmitTypedEvent(&token.EventAuthorizedOperator{
+	event := token.EventAuthorizedOperator{
 		ContractId: req.ContractId,
 		Holder: req.Approver,
 		Operator: req.Proxy,
-	}); err != nil {
+	}
+	ctx.EventManager().EmitEvent(token.NewEventApproveToken(event))
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		return nil, err
 	}
 
@@ -96,7 +99,6 @@ func (s msgServer) RevokeOperator(c context.Context, req *token.MsgRevokeOperato
 		return nil, err
 	}
 
-	// TODO: emit the legacy event too
 	if err := ctx.EventManager().EmitTypedEvent(&token.EventRevokedOperator{
 		ContractId: req.ContractId,
 		Holder: req.Approver,

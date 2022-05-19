@@ -11,9 +11,17 @@ func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.Acc
 		return err
 	}
 
-	// TODO: modify event structure
-	return ctx.EventManager().EmitTypedEvent(&token.EventIssue{
-	})
+	event := token.EventIssue{
+		ContractId: class.ContractId,
+		Name:       class.Name,
+		Symbol:     class.Symbol,
+		Uri:        class.ImageUri,
+		Meta:       class.Meta,
+		Decimals:   class.Decimals,
+		Mintable:   class.Mintable,
+	}
+	ctx.EventManager().EmitEvent(token.NewEventIssueToken(event, owner, to, amount)) // deprecated
+	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
 func (k Keeper) issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.AccAddress, amount sdk.Int) error {
@@ -76,12 +84,14 @@ func (k Keeper) Mint(ctx sdk.Context, classID string, grantee, to sdk.AccAddress
 		return err
 	}
 
-	return ctx.EventManager().EmitTypedEvents(&token.EventMinted{
+	event := token.EventMinted{
 		ContractId: classID,
-		Operator: grantee.String(),
-		To:      to.String(),
-		Amount:  amount,
-	})
+		Operator:   grantee.String(),
+		To:         to.String(),
+		Amount:     amount,
+	}
+	ctx.EventManager().EmitEvent(token.NewEventMintToken(event)) // deprecated
+	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
 func (k Keeper) mint(ctx sdk.Context, classID string, grantee, to sdk.AccAddress, amount sdk.Int) error {
@@ -121,12 +131,14 @@ func (k Keeper) Burn(ctx sdk.Context, contractID string, from sdk.AccAddress, am
 		return err
 	}
 
-	return ctx.EventManager().EmitTypedEvent(&token.EventBurned{
+	event := token.EventBurned{
 		ContractId: contractID,
-		Operator: from.String(),
-		From:    from.String(),
-		Amount:  amount,
-	})
+		Operator:   from.String(),
+		From:       from.String(),
+		Amount:     amount,
+	}
+	ctx.EventManager().EmitEvent(token.NewEventBurnToken(event)) // deprecated
+	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
 func (k Keeper) burn(ctx sdk.Context, contractID string, from sdk.AccAddress, amount sdk.Int) error {
@@ -146,12 +158,14 @@ func (k Keeper) OperatorBurn(ctx sdk.Context, contractID string, proxy, from sdk
 		return err
 	}
 
-	return ctx.EventManager().EmitTypedEvent(&token.EventBurned{
+	event := token.EventBurned{
 		ContractId: contractID,
-		Operator: proxy.String(),
-		From:    from.String(),
-		Amount:  amount,
-	})
+		Operator:   proxy.String(),
+		From:       from.String(),
+		Amount:     amount,
+	}
+	ctx.EventManager().EmitEvent(token.NewEventBurnTokenFrom(event)) // deprecated
+	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
 func (k Keeper) operatorBurn(ctx sdk.Context, contractID string, proxy, from sdk.AccAddress, amount sdk.Int) error {
@@ -247,10 +261,12 @@ func (k Keeper) Modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, 
 		return err
 	}
 
-	return ctx.EventManager().EmitTypedEvent(&token.EventModified{
+	event := token.EventModified{
 		ContractId: classID,
-		Changes: changes,
-	})
+		Changes:    changes,
+	}
+	ctx.EventManager().EmitEvents(token.NewEventModifyToken(event)) // deprecated
+	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
 func (k Keeper) modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, changes []token.Pair) error {
@@ -288,11 +304,13 @@ func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.A
 		return err
 	}
 
-	return ctx.EventManager().EmitTypedEvent(&token.EventGrant{
+	event := token.EventGrant{
 		ContractId: contractID,
-		Grantee: grantee.String(),
-		Permission:  permission.String(),
-	})
+		Grantee:    grantee.String(),
+		Permission: permission.String(),
+	}
+	ctx.EventManager().EmitEvent(token.NewEventGrantPermToken(event)) // deprecated
+	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
 func (k Keeper) grant(ctx sdk.Context, contractID string, granter, grantee sdk.AccAddress, permission token.Permission) error {
@@ -317,11 +335,13 @@ func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddre
 		return err
 	}
 
-	return ctx.EventManager().EmitTypedEvent(&token.EventAbandon{
+	event := token.EventAbandon{
 		ContractId: contractID,
-		Grantee: grantee.String(),
-		Permission:  permission.String(),
-	})
+		Grantee:    grantee.String(),
+		Permission: permission.String(),
+	}
+	ctx.EventManager().EmitEvent(token.NewEventRevokePermToken(event)) // deprecated
+	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
 func (k Keeper) abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) error {
@@ -339,7 +359,7 @@ func (k Keeper) GetGrant(ctx sdk.Context, classID string, grantee sdk.AccAddress
 	store := ctx.KVStore(k.storeKey)
 	if store.Has(grantKey(classID, grantee, permission)) {
 		grant = &token.Grant{
-			Grantee: grantee.String(),
+			Grantee:    grantee.String(),
 			Permission: permission.String(),
 		}
 	}
