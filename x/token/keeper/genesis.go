@@ -87,7 +87,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 	k.iterateSupplies(ctx, func(contractID string, amount sdk.Int) (stop bool) {
 		supply := token.ContractCoin{
 			ContractId: contractID,
-			Amount: amount,
+			Amount:     amount,
 		}
 		supplies = append(supplies, supply)
 		return false
@@ -97,7 +97,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 	k.iterateMinteds(ctx, func(contractID string, amount sdk.Int) (stop bool) {
 		minted := token.ContractCoin{
 			ContractId: contractID,
-			Amount: amount,
+			Amount:     amount,
 		}
 		mints = append(mints, minted)
 		return false
@@ -107,7 +107,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 	k.iterateBurnts(ctx, func(contractID string, amount sdk.Int) (stop bool) {
 		burnt := token.ContractCoin{
 			ContractId: contractID,
-			Amount: amount,
+			Amount:     amount,
 		}
 		burns = append(burns, burnt)
 		return false
@@ -146,13 +146,13 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 	}
 
 	return &token.GenesisState{
-		ClassState: k.classKeeper.ExportGenesis(ctx),
-		Balances:   balances,
-		Classes:    classes,
-		Grants:     grants,
-		Authorizations:   authorizations,
-		Supplies:   supplies,
-		Mints:      mints,
-		Burns:      burns,
+		ClassState:     k.classKeeper.ExportGenesis(ctx),
+		Balances:       balances,
+		Classes:        classes,
+		Grants:         grants,
+		Authorizations: authorizations,
+		Supplies:       supplies,
+		Mints:          mints,
+		Burns:          burns,
 	}
 }

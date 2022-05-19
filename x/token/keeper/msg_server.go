@@ -32,10 +32,10 @@ func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendRe
 
 	event := token.EventSent{
 		ContractId: req.ContractId,
-		Operator: req.From,
-		From: req.From,
-		To: req.To,
-		Amount: req.Amount,
+		Operator:   req.From,
+		From:       req.From,
+		To:         req.To,
+		Amount:     req.Amount,
 	}
 	ctx.EventManager().EmitEvent(token.NewEventTransfer(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -59,10 +59,10 @@ func (s msgServer) OperatorSend(c context.Context, req *token.MsgOperatorSend) (
 
 	event := token.EventSent{
 		ContractId: req.ContractId,
-		Operator: req.Proxy,
-		From: req.From,
-		To: req.To,
-		Amount: req.Amount,
+		Operator:   req.Proxy,
+		From:       req.From,
+		To:         req.To,
+		Amount:     req.Amount,
 	}
 	ctx.EventManager().EmitEvent(token.NewEventTransferFrom(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -81,8 +81,8 @@ func (s msgServer) AuthorizeOperator(c context.Context, req *token.MsgAuthorizeO
 
 	event := token.EventAuthorizedOperator{
 		ContractId: req.ContractId,
-		Holder: req.Approver,
-		Operator: req.Proxy,
+		Holder:     req.Approver,
+		Operator:   req.Proxy,
 	}
 	ctx.EventManager().EmitEvent(token.NewEventApproveToken(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -101,8 +101,8 @@ func (s msgServer) RevokeOperator(c context.Context, req *token.MsgRevokeOperato
 
 	if err := ctx.EventManager().EmitTypedEvent(&token.EventRevokedOperator{
 		ContractId: req.ContractId,
-		Holder: req.Approver,
-		Operator: req.Proxy,
+		Holder:     req.Approver,
+		Operator:   req.Proxy,
 	}); err != nil {
 		return nil, err
 	}
@@ -115,13 +115,13 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 	ctx := sdk.UnwrapSDKContext(c)
 	classID := s.keeper.classKeeper.NewID(ctx)
 	class := token.TokenClass{
-		ContractId:       classID,
-		Name:     req.Name,
-		Symbol:   req.Symbol,
-		ImageUri: req.ImageUri,
-		Meta:     req.Meta,
-		Decimals: req.Decimals,
-		Mintable: req.Mintable,
+		ContractId: classID,
+		Name:       req.Name,
+		Symbol:     req.Symbol,
+		ImageUri:   req.ImageUri,
+		Meta:       req.Meta,
+		Decimals:   req.Decimals,
+		Mintable:   req.Mintable,
 	}
 
 	if err := s.keeper.Issue(ctx, class, sdk.AccAddress(req.Owner), sdk.AccAddress(req.To), req.Amount); err != nil {

@@ -27,7 +27,7 @@ func (k Keeper) iterateBalancesImpl(ctx sdk.Context, prefix []byte, fn func(clas
 		}
 		balance := token.Balance{
 			Address: addr.String(),
-			Amount: amount,
+			Amount:  amount,
 		}
 
 		stop := fn(classID, balance)
@@ -74,8 +74,8 @@ func (k Keeper) iterateGrantsImpl(ctx sdk.Context, prefix []byte, fn func(classI
 	for ; iterator.Valid(); iterator.Next() {
 		classID, grantee, permission := splitGrantKey(iterator.Key())
 		grant := token.Grant{
-			Grantee: grantee.String(),
-			Permission:  token.Permission_name[int32(permission)],
+			Grantee:    grantee.String(),
+			Permission: token.Permission_name[int32(permission)],
 		}
 
 		stop := fn(classID, grant)

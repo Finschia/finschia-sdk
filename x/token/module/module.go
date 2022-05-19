@@ -26,7 +26,7 @@ var (
 )
 
 // AppModuleBasic defines the basic application module used by the token module.
-type AppModuleBasic struct {}
+type AppModuleBasic struct{}
 
 // Name returns the ModuleName
 func (AppModuleBasic) Name() string {
@@ -88,7 +88,7 @@ type AppModule struct {
 // NewAppModule creates a new AppModule object
 func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
 	return AppModule{
-		keeper:         keeper,
+		keeper: keeper,
 	}
 }
 

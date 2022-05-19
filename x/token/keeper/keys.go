@@ -6,9 +6,9 @@ import (
 )
 
 var (
-	classKeyPrefix   = []byte{0x01}
-	balanceKeyPrefix = []byte{0x02}
-	grantKeyPrefix   = []byte{0x03}
+	classKeyPrefix         = []byte{0x01}
+	balanceKeyPrefix       = []byte{0x02}
+	grantKeyPrefix         = []byte{0x03}
 	authorizationKeyPrefix = []byte{0x04}
 
 	// statistics keys

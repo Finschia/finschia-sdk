@@ -51,7 +51,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, classID string, approver, prox
 	if store.Has(authorizationKey(classID, proxy, approver)) {
 		return &token.Authorization{
 			Approver: approver.String(),
-			Proxy: proxy.String(),
+			Proxy:    proxy.String(),
 		}
 	}
 	return nil

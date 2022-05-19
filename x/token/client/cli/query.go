@@ -52,7 +52,7 @@ func NewQueryCmdBalance() *cobra.Command {
 			queryClient := token.NewQueryClient(clientCtx)
 			res, err := queryClient.Balance(cmd.Context(), &token.QueryBalanceRequest{
 				ContractId: args[0],
-				Address: args[1],
+				Address:    args[1],
 			})
 			if err != nil {
 				return err
@@ -214,7 +214,7 @@ func NewQueryCmdGrant() *cobra.Command {
 			queryClient := token.NewQueryClient(clientCtx)
 			res, err := queryClient.Grant(cmd.Context(), &token.QueryGrantRequest{
 				ContractId: args[0],
-				Grantee: args[1],
+				Grantee:    args[1],
 				Permission: args[2],
 			})
 			if err != nil {
@@ -242,7 +242,7 @@ func NewQueryCmdGranteeGrants() *cobra.Command {
 			queryClient := token.NewQueryClient(clientCtx)
 			res, err := queryClient.GranteeGrants(cmd.Context(), &token.QueryGranteeGrantsRequest{
 				ContractId: args[0],
-				Grantee: args[1],
+				Grantee:    args[1],
 			})
 			if err != nil {
 				return err
@@ -268,9 +268,9 @@ func NewQueryCmdAuthorization() *cobra.Command {
 			}
 			queryClient := token.NewQueryClient(clientCtx)
 			res, err := queryClient.Authorization(cmd.Context(), &token.QueryAuthorizationRequest{
-				ContractId:  args[0],
-				Proxy:    args[1],
-				Approver: args[2],
+				ContractId: args[0],
+				Proxy:      args[1],
+				Approver:   args[2],
 			})
 			if err != nil {
 				return err

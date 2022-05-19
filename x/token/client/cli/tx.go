@@ -73,9 +73,9 @@ func NewTxCmdTransfer() *cobra.Command {
 			}
 			msg := &token.MsgSend{
 				ContractId: args[0],
-				From:    args[1],
-				To:      args[2],
-				Amount:  amount,
+				From:       args[1],
+				To:         args[2],
+				Amount:     amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -109,10 +109,10 @@ func NewTxCmdTransferFrom() *cobra.Command {
 			}
 			msg := token.MsgOperatorSend{
 				ContractId: args[0],
-				Proxy:   args[1],
-				From:    args[2],
-				To:      args[3],
-				Amount:  amount,
+				Proxy:      args[1],
+				From:       args[2],
+				To:         args[3],
+				Amount:     amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -140,9 +140,9 @@ func NewTxCmdApprove() *cobra.Command {
 			}
 
 			msg := token.MsgAuthorizeOperator{
-				ContractId:  args[0],
-				Approver: args[1],
-				Proxy:    args[2],
+				ContractId: args[0],
+				Approver:   args[1],
+				Proxy:      args[2],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -242,9 +242,9 @@ func NewTxCmdGrant() *cobra.Command {
 
 			msg := token.MsgGrant{
 				ContractId: args[0],
-				From: args[1],
-				To: args[2],
-				Permission:  args[3],
+				From:       args[1],
+				To:         args[2],
+				Permission: args[3],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -273,8 +273,8 @@ func NewTxCmdRevoke() *cobra.Command {
 
 			msg := token.MsgAbandon{
 				ContractId: args[0],
-				Grantee: args[1],
-				Permission:  args[2],
+				Grantee:    args[1],
+				Permission: args[2],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -309,9 +309,9 @@ func NewTxCmdMint() *cobra.Command {
 
 			msg := token.MsgMint{
 				ContractId: args[0],
-				From: args[1],
-				To:      args[2],
-				Amount:  amount,
+				From:       args[1],
+				To:         args[2],
+				Amount:     amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -346,8 +346,8 @@ func NewTxCmdBurn() *cobra.Command {
 
 			msg := token.MsgBurn{
 				ContractId: args[0],
-				From:    args[1],
-				Amount:  amount,
+				From:       args[1],
+				Amount:     amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -382,9 +382,9 @@ func NewTxCmdBurnFrom() *cobra.Command {
 
 			msg := token.MsgOperatorBurn{
 				ContractId: args[0],
-				Proxy: args[1],
-				From:    args[2],
-				Amount:  amount,
+				Proxy:      args[1],
+				From:       args[2],
+				Amount:     amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -414,8 +414,8 @@ func NewTxCmdModify() *cobra.Command {
 			change := token.Pair{Field: args[2], Value: args[3]}
 			msg := token.MsgModify{
 				ContractId: args[0],
-				Owner: args[1],
-				Changes: []token.Pair{change},
+				Owner:      args[1],
+				Changes:    []token.Pair{change},
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

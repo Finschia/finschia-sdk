@@ -84,7 +84,7 @@ func validateChange(change Pair) error {
 		AttributeKey_ImageURI: validateImageURI,
 		AttributeKey_Meta:     validateMeta,
 	}
-	
+
 	validator := validators[AttributeKey(AttributeKey_value[change.Field])]
 	return validator(change.Value)
 }

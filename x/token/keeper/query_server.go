@@ -177,7 +177,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
 		_, grantee, permission := splitGrantKey(key)
 		grants = append(grants, token.Grant{
-			Grantee: grantee.String(),
+			Grantee:    grantee.String(),
 			Permission: permission.String(),
 		})
 		return nil
