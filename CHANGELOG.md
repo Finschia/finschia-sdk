@@ -40,10 +40,12 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Features
 * (x/wasm) [\#470](https://github.com/line/lbm-sdk/pull/470) remove contract activation control by actor
 * (x/wasm) [\#513](https://github.com/line/lbm-sdk/pull/513) fix message representation for signing
+* (x/foundation) [\#518](https://github.com/line/lbm-sdk/pull/518) add foundation treasury feature to x/foundation
 
 ### Improvements
 
 * (refactor) [\#493](https://github.com/line/lbm-sdk/pull/493) restructure x/consortium
+* (server/grpc) [\#526](https://github.com/line/lbm-sdk/pull/526) add index field into TxResponse
 * (cli) [\#535](https://github.com/line/lbm-sdk/pull/536) updated ostracon to v1.0.5; `unsafe-reset-all` command has been moved to the `ostracon` sub-command.
 
 ### Bug Fixes
