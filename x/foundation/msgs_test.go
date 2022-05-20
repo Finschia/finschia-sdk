@@ -29,13 +29,11 @@ func TestMsgFundTreasury(t *testing.T) {
 		},
 		"empty from": {
 			amount:  sdk.OneInt(),
-			valid:   false,
 		},
 		"zero amount": {
 			from:    addrs[0],
 			amount:  sdk.ZeroInt(),
-			valid:   false,
-		},
+ 		},
 	}
 
 	for name, tc := range testCases {
@@ -44,7 +42,7 @@ func TestMsgFundTreasury(t *testing.T) {
 			Amount:  sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, tc.amount)),
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners(), name)
 
 		err := msg.ValidateBasic()
 		if tc.valid {
@@ -56,7 +54,7 @@ func TestMsgFundTreasury(t *testing.T) {
 }
 
 func TestMsgWithdrawFromTreasury(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 1)
+	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
@@ -69,25 +67,22 @@ func TestMsgWithdrawFromTreasury(t *testing.T) {
 	}{
 		"valid msg": {
 			operator: addrs[0],
-			to:    addrs[0],
+			to:    addrs[1],
 			amount:  sdk.OneInt(),
 			valid:   true,
 		},
 		"empty operator": {
-			to:    addrs[0],
+			to:    addrs[1],
 			amount:  sdk.OneInt(),
-			valid:   false,
 		},
 		"empty to": {
 			operator: addrs[0],
 			amount:  sdk.OneInt(),
-			valid:   false,
 		},
 		"zero amount": {
 			operator: addrs[0],
-			to:    addrs[0],
+			to:    addrs[1],
 			amount:  sdk.ZeroInt(),
-			valid:   false,
 		},
 	}
 
@@ -98,7 +93,7 @@ func TestMsgWithdrawFromTreasury(t *testing.T) {
 			Amount:  sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, tc.amount)),
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners(), name)
 
 		err := msg.ValidateBasic()
 		if tc.valid {
@@ -110,7 +105,7 @@ func TestMsgWithdrawFromTreasury(t *testing.T) {
 }
 
 func TestMsgUpdateMembers(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 1)
+	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
@@ -123,29 +118,38 @@ func TestMsgUpdateMembers(t *testing.T) {
 		"valid msg": {
 			operator: addrs[0],
 			members: []foundation.Member{{
-				Address: addrs[0].String(),
+				Address: addrs[1].String(),
 				Participating: true,
 			}},
 			valid:   true,
 		},
 		"empty operator": {
 			members: []foundation.Member{{
-				Address: addrs[0].String(),
+				Address: addrs[1].String(),
 				Participating: true,
 			}},
-			valid:   false,
 		},
 		"empty members": {
 			operator: addrs[0],
 			members: []foundation.Member{},
-			valid:   false,
 		},
 		"empty member address": {
 			operator: addrs[0],
 			members: []foundation.Member{{
 				Participating: true,
 			}},
-			valid:   false,
+		},
+		"duplicate updates": {
+			operator: addrs[0],
+			members: []foundation.Member{
+				{
+					Address: addrs[1].String(),
+					Participating: true,
+				},
+				{
+					Address: addrs[1].String(),
+				},
+			},
 		},
 	}
 
@@ -155,7 +159,7 @@ func TestMsgUpdateMembers(t *testing.T) {
 			MemberUpdates: tc.members,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners(), name)
 
 		err := msg.ValidateBasic()
 		if tc.valid {
@@ -177,10 +181,20 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 		policy    foundation.DecisionPolicy
 		valid   bool
 	}{
-		"valid msg": {
+		"valid threshold policy": {
 			operator: addrs[0],
 			policy: &foundation.ThresholdDecisionPolicy{
 				Threshold: sdk.NewDec(3),
+				Windows: &foundation.DecisionPolicyWindows{
+					VotingPeriod: time.Hour,
+				},
+			},
+			valid:   true,
+		},
+		"valid percentage policy": {
+			operator: addrs[0],
+			policy: &foundation.PercentageDecisionPolicy{
+				Percentage: sdk.OneDec(),
 				Windows: &foundation.DecisionPolicyWindows{
 					VotingPeriod: time.Hour,
 				},
@@ -194,11 +208,9 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 					VotingPeriod: time.Hour,
 				},
 			},
-			valid:   false,
 		},
 		"empty policy": {
 			operator: addrs[0],
-			valid:   false,
 		},
 		"zero threshold": {
 			operator: addrs[0],
@@ -208,7 +220,6 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 					VotingPeriod: time.Hour,
 				},
 			},
-			valid:   false,
 		},
 		"zero voting period": {
 			operator: addrs[0],
@@ -217,17 +228,15 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 				Windows: &foundation.DecisionPolicyWindows{
 				},
 			},
-			valid:   false,
 		},
-		"zero percentage": {
+		"invalid percentage": {
 			operator: addrs[0],
 			policy: &foundation.PercentageDecisionPolicy{
-				Percentage: sdk.ZeroDec(),
+				Percentage: sdk.NewDec(2),
 				Windows: &foundation.DecisionPolicyWindows{
 					VotingPeriod: time.Hour,
 				},
 			},
-			valid:   false,
 		},
 	}
 
@@ -240,7 +249,7 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 			require.NoError(t, err, name)
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners(), name)
 
 		err := msg.ValidateBasic()
 		if tc.valid {
@@ -252,7 +261,7 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 }
 
 func TestMsgSubmitProposal(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 1)
+	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
@@ -266,8 +275,8 @@ func TestMsgSubmitProposal(t *testing.T) {
 		"valid msg": {
 			proposers: []sdk.AccAddress{addrs[0]},
 			msgs: []sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-				Operator: addrs[0].String(),
-				To: addrs[0].String(),
+				Operator: addrs[1].String(),
+				To: addrs[2].String(),
 				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 			}},
 			valid:   true,
@@ -275,35 +284,42 @@ func TestMsgSubmitProposal(t *testing.T) {
 		"empty proposers": {
 			proposers: []sdk.AccAddress{},
 			msgs: []sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-				Operator: addrs[0].String(),
-				To: addrs[0].String(),
+				Operator: addrs[1].String(),
+				To: addrs[2].String(),
 				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 			}},
-			valid:   false,
 		},
 		"invalid proposer": {
 			proposers: []sdk.AccAddress{""},
 			msgs: []sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-				Operator: addrs[0].String(),
-				To: addrs[0].String(),
+				Operator: addrs[1].String(),
+				To: addrs[2].String(),
 				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 			}},
-			valid:   false,
+		},
+		"duplicate proposers": {
+			proposers: []sdk.AccAddress{addrs[0], addrs[0]},
+			msgs: []sdk.Msg{&foundation.MsgWithdrawFromTreasury{
+				Operator: addrs[1].String(),
+				To: addrs[2].String(),
+				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+			}},
 		},
 		"empty msgs": {
 			proposers: []sdk.AccAddress{addrs[0]},
-			valid:   false,
 		},
 		"invalid msg": {
 			proposers: []sdk.AccAddress{addrs[0]},
 			msgs: []sdk.Msg{&foundation.MsgWithdrawFromTreasury{}},
-			valid:   false,
 		},
 		"invalid exec": {
 			proposers: []sdk.AccAddress{addrs[0]},
-			msgs: []sdk.Msg{&foundation.MsgWithdrawFromTreasury{}},
+			msgs: []sdk.Msg{&foundation.MsgWithdrawFromTreasury{
+				Operator: addrs[1].String(),
+				To: addrs[2].String(),
+				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+			}},
 			exec: -1,
-			valid:   false,
 		},
 	}
 
@@ -315,11 +331,12 @@ func TestMsgSubmitProposal(t *testing.T) {
 
 		msg := foundation.MsgSubmitProposal{
 			Proposers: proposers,
+			Exec: tc.exec,
 		}
 		err := msg.SetMsgs(tc.msgs)
 		require.NoError(t, err, name)
 
-		require.Equal(t, tc.proposers, msg.GetSigners())
+		require.Equal(t, tc.proposers, msg.GetSigners(), name)
 
 		err = msg.ValidateBasic()
 		if tc.valid {
@@ -348,11 +365,9 @@ func TestMsgWithdrawProposal(t *testing.T) {
 		},
 		"empty proposal id": {
 			address: addrs[0],
-			valid:   false,
 		},
 		"empty address": {
 			id: 1,
-			valid:   false,
 		},
 	}
 
@@ -362,7 +377,7 @@ func TestMsgWithdrawProposal(t *testing.T) {
 			Address: tc.address.String(),
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.address}, msg.GetSigners())
+		require.Equal(t, []sdk.AccAddress{tc.address}, msg.GetSigners(), name)
 
 		err := msg.ValidateBasic()
 		if tc.valid {
@@ -395,29 +410,25 @@ func TestMsgVote(t *testing.T) {
 		"empty proposal id": {
 			voter: addrs[0],
 			option: foundation.VOTE_OPTION_YES,
-			valid:   false,
 		},
 		"empty voter": {
 			id: 1,
 			option: foundation.VOTE_OPTION_YES,
-			valid:   false,
 		},
 		"empty option": {
 			id: 1,
 			voter: addrs[0],
-			valid:   false,
 		},
 		"invalid option": {
 			id: 1,
 			voter: addrs[0],
 			option: -1,
-			valid:   false,
 		},
 		"invalid exec": {
 			id: 1,
 			voter: addrs[0],
+			option: foundation.VOTE_OPTION_YES,
 			exec: -1,
-			valid:   false,
 		},
 	}
 
@@ -429,7 +440,7 @@ func TestMsgVote(t *testing.T) {
 			Exec: tc.exec,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.voter}, msg.GetSigners())
+		require.Equal(t, []sdk.AccAddress{tc.voter}, msg.GetSigners(), name)
 
 		err := msg.ValidateBasic()
 		if tc.valid {
@@ -458,11 +469,9 @@ func TestMsgExec(t *testing.T) {
 		},
 		"empty proposal id": {
 			signer: addrs[0],
-			valid:   false,
 		},
 		"empty signer": {
 			id: 1,
-			valid:   false,
 		},
 	}
 
@@ -472,7 +481,7 @@ func TestMsgExec(t *testing.T) {
 			Signer: tc.signer.String(),
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.signer}, msg.GetSigners())
+		require.Equal(t, []sdk.AccAddress{tc.signer}, msg.GetSigners(), name)
 
 		err := msg.ValidateBasic()
 		if tc.valid {
@@ -498,7 +507,6 @@ func TestMsgLeaveFoundation(t *testing.T) {
 			valid:   true,
 		},
 		"empty address": {
-			valid:   false,
 		},
 	}
 
@@ -507,7 +515,109 @@ func TestMsgLeaveFoundation(t *testing.T) {
 			Address: tc.address.String(),
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.address}, msg.GetSigners())
+		require.Equal(t, []sdk.AccAddress{tc.address}, msg.GetSigners(), name)
+
+		err := msg.ValidateBasic()
+		if tc.valid {
+			require.NoError(t, err, name)
+		} else {
+			require.Error(t, err, name)
+		}
+	}
+}
+
+func TestMsgGrant(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 2)
+	for i := range addrs {
+		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	testCases := map[string]struct {
+		operator sdk.AccAddress
+		grantee sdk.AccAddress
+		authorization foundation.Authorization
+		valid   bool
+	}{
+		"valid msg": {
+			operator: addrs[0],
+			grantee: addrs[1],
+			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
+			valid:   true,
+		},
+		"empty operator": {
+			grantee: addrs[1],
+			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
+		},
+		"empty grantee": {
+			operator: addrs[0],
+			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
+		},
+		"empty authorization": {
+			operator: addrs[0],
+			grantee: addrs[1],
+		},
+	}
+
+	for name, tc := range testCases {
+		msg := foundation.MsgGrant{
+			Operator: tc.operator.String(),
+			Grantee: tc.grantee.String(),
+		}
+		if tc.authorization != nil {
+			msg.SetAuthorization(tc.authorization)
+		}
+
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners(), name)
+
+		err := msg.ValidateBasic()
+		if tc.valid {
+			require.NoError(t, err, name)
+		} else {
+			require.Error(t, err, name)
+		}
+	}
+}
+
+func TestMsgRevoke(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 2)
+	for i := range addrs {
+		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	testCases := map[string]struct {
+		operator sdk.AccAddress
+		grantee sdk.AccAddress
+		msgTypeURL string
+		valid   bool
+	}{
+		"valid msg": {
+			operator: addrs[0],
+			grantee: addrs[1],
+			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+			valid:   true,
+		},
+		"empty operator": {
+			grantee: addrs[1],
+			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+		},
+		"empty grantee": {
+			operator: addrs[0],
+			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+		},
+		"empty url": {
+			operator: addrs[0],
+			grantee: addrs[1],
+		},
+	}
+
+	for name, tc := range testCases {
+		msg := foundation.MsgRevoke{
+			Operator: tc.operator.String(),
+			Grantee: tc.grantee.String(),
+			MsgTypeUrl: tc.msgTypeURL,
+		}
+
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners(), name)
 
 		err := msg.ValidateBasic()
 		if tc.valid {

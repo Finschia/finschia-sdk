@@ -564,6 +564,9 @@
   
     - [Msg](#lbm.feegrant.v1.Msg)
   
+- [lbm/foundation/v1/authz.proto](#lbm/foundation/v1/authz.proto)
+    - [ReceiveFromTreasuryAuthorization](#lbm.foundation.v1.ReceiveFromTreasuryAuthorization)
+  
 - [lbm/foundation/v1/foundation.proto](#lbm/foundation/v1/foundation.proto)
     - [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows)
     - [FoundationInfo](#lbm.foundation.v1.FoundationInfo)
@@ -586,22 +589,26 @@
 - [lbm/foundation/v1/event.proto](#lbm/foundation/v1/event.proto)
     - [EventExec](#lbm.foundation.v1.EventExec)
     - [EventFundTreasury](#lbm.foundation.v1.EventFundTreasury)
+    - [EventGrant](#lbm.foundation.v1.EventGrant)
     - [EventLeaveFoundation](#lbm.foundation.v1.EventLeaveFoundation)
+    - [EventRevoke](#lbm.foundation.v1.EventRevoke)
     - [EventSubmitProposal](#lbm.foundation.v1.EventSubmitProposal)
     - [EventUpdateDecisionPolicy](#lbm.foundation.v1.EventUpdateDecisionPolicy)
     - [EventUpdateFoundationParams](#lbm.foundation.v1.EventUpdateFoundationParams)
     - [EventUpdateMembers](#lbm.foundation.v1.EventUpdateMembers)
-    - [EventUpdateValidatorAuths](#lbm.foundation.v1.EventUpdateValidatorAuths)
     - [EventVote](#lbm.foundation.v1.EventVote)
     - [EventWithdrawFromTreasury](#lbm.foundation.v1.EventWithdrawFromTreasury)
     - [EventWithdrawProposal](#lbm.foundation.v1.EventWithdrawProposal)
   
 - [lbm/foundation/v1/genesis.proto](#lbm/foundation/v1/genesis.proto)
     - [GenesisState](#lbm.foundation.v1.GenesisState)
+    - [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization)
   
 - [lbm/foundation/v1/query.proto](#lbm/foundation/v1/query.proto)
     - [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest)
     - [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse)
+    - [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest)
+    - [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse)
     - [QueryMemberRequest](#lbm.foundation.v1.QueryMemberRequest)
     - [QueryMemberResponse](#lbm.foundation.v1.QueryMemberResponse)
     - [QueryMembersRequest](#lbm.foundation.v1.QueryMembersRequest)
@@ -616,10 +623,6 @@
     - [QueryTallyResultResponse](#lbm.foundation.v1.QueryTallyResultResponse)
     - [QueryTreasuryRequest](#lbm.foundation.v1.QueryTreasuryRequest)
     - [QueryTreasuryResponse](#lbm.foundation.v1.QueryTreasuryResponse)
-    - [QueryValidatorAuthRequest](#lbm.foundation.v1.QueryValidatorAuthRequest)
-    - [QueryValidatorAuthResponse](#lbm.foundation.v1.QueryValidatorAuthResponse)
-    - [QueryValidatorAuthsRequest](#lbm.foundation.v1.QueryValidatorAuthsRequest)
-    - [QueryValidatorAuthsResponse](#lbm.foundation.v1.QueryValidatorAuthsResponse)
     - [QueryVoteRequest](#lbm.foundation.v1.QueryVoteRequest)
     - [QueryVoteResponse](#lbm.foundation.v1.QueryVoteResponse)
     - [QueryVotesRequest](#lbm.foundation.v1.QueryVotesRequest)
@@ -632,8 +635,12 @@
     - [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse)
     - [MsgFundTreasury](#lbm.foundation.v1.MsgFundTreasury)
     - [MsgFundTreasuryResponse](#lbm.foundation.v1.MsgFundTreasuryResponse)
+    - [MsgGrant](#lbm.foundation.v1.MsgGrant)
+    - [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse)
     - [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation)
     - [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse)
+    - [MsgRevoke](#lbm.foundation.v1.MsgRevoke)
+    - [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse)
     - [MsgSubmitProposal](#lbm.foundation.v1.MsgSubmitProposal)
     - [MsgSubmitProposalResponse](#lbm.foundation.v1.MsgSubmitProposalResponse)
     - [MsgUpdateDecisionPolicy](#lbm.foundation.v1.MsgUpdateDecisionPolicy)
@@ -835,6 +842,9 @@
     - [MsgUndelegateResponse](#lbm.staking.v1.MsgUndelegateResponse)
   
     - [Msg](#lbm.staking.v1.Msg)
+  
+- [lbm/stakingplus/v1/authz.proto](#lbm/stakingplus/v1/authz.proto)
+    - [CreateValidatorAuthorization](#lbm.stakingplus.v1.CreateValidatorAuthorization)
   
 - [lbm/token/v1/event.proto](#lbm/token/v1/event.proto)
     - [EventApprove](#lbm.token.v1.EventApprove)
@@ -8598,6 +8608,33 @@ Msg defines the feegrant msg service.
 
 
 
+<a name="lbm/foundation/v1/authz.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/foundation/v1/authz.proto
+
+
+
+<a name="lbm.foundation.v1.ReceiveFromTreasuryAuthorization"></a>
+
+### ReceiveFromTreasuryAuthorization
+ReceiveFromTreasuryAuthorization allows the grantee to receive coins
+up to receive_limit from the treasury.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="lbm/foundation/v1/foundation.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -8928,6 +8965,23 @@ EventFundTreasury is an event emitted when one funds the treasury.
 
 
 
+<a name="lbm.foundation.v1.EventGrant"></a>
+
+### EventGrant
+EventGrant is emitted on Msg/Grant
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  | the address of the grantee. |
+| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  | authorization granted. |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.EventLeaveFoundation"></a>
 
 ### EventLeaveFoundation
@@ -8937,6 +8991,23 @@ EventLeaveFoundation is an event emitted when a foundation member leaves the fou
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | address is the account address of the foundation member. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.EventRevoke"></a>
+
+### EventRevoke
+EventRevoke is emitted on Msg/Revoke
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  | address of the grantee. |
+| `msg_type_url` | [string](#string) |  | message type url for which an autorization is revoked. |
 
 
 
@@ -8997,21 +9068,6 @@ EventUpdateMembers is an event emitted when the members have been updated.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `member_updates` | [Member](#lbm.foundation.v1.Member) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.EventUpdateValidatorAuths"></a>
-
-### EventUpdateValidatorAuths
-EventUpdateValidatorAuths is emitted after updating validator auth info.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `auths` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) | repeated |  |
 
 
 
@@ -9089,12 +9145,29 @@ GenesisState defines the foundation module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#lbm.foundation.v1.Params) |  | params defines the module parameters at genesis. |
-| `validator_auths` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) | repeated | allowed_validators defines the allowed validator addresses at genesis. provided empty, the module gathers information from staking module. |
 | `foundation` | [FoundationInfo](#lbm.foundation.v1.FoundationInfo) |  | foundation is the foundation info. |
 | `members` | [Member](#lbm.foundation.v1.Member) | repeated | members is the list of the foundation members. |
 | `previous_proposal_id` | [uint64](#uint64) |  | it is used to get the next proposal ID. |
 | `proposals` | [Proposal](#lbm.foundation.v1.Proposal) | repeated | proposals is the list of proposals. |
 | `votes` | [Vote](#lbm.foundation.v1.Vote) | repeated | votes is the list of votes. |
+| `authorizations` | [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization) | repeated | grants |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.GrantAuthorization"></a>
+
+### GrantAuthorization
+GrantAuthorization defines authorization grant to grantee via route.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 
 
 
@@ -9136,6 +9209,39 @@ QueryFoundationInfoResponse is the Query/FoundationInfo response type.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `info` | [FoundationInfo](#lbm.foundation.v1.FoundationInfo) |  | info is the FoundationInfo for the foundation. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryGrantsRequest"></a>
+
+### QueryGrantsRequest
+QueryGrantsRequest is the request type for the Query/Grants RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grantee` | [string](#string) |  |  |
+| `msg_type_url` | [string](#string) |  | Optional, msg_type_url, when set, will query only grants matching given msg type. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryGrantsResponse"></a>
+
+### QueryGrantsResponse
+QueryGrantsResponse is the response type for the Query/Grants RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authorizations` | [google.protobuf.Any](#google.protobuf.Any) | repeated | authorizations is a list of grants granted for grantee. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -9346,71 +9452,6 @@ Query/Treasury RPC method.
 
 
 
-<a name="lbm.foundation.v1.QueryValidatorAuthRequest"></a>
-
-### QueryValidatorAuthRequest
-QueryValidatorAuthRequest is the request type for the
-Query/ValidatorAuth RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `validator_address` | [string](#string) |  | validator_address defines the validator address to query for. |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.QueryValidatorAuthResponse"></a>
-
-### QueryValidatorAuthResponse
-QueryValidatorAuthResponse is the request type for the
-Query/ValidatorAuth RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `auth` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) |  |  |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.QueryValidatorAuthsRequest"></a>
-
-### QueryValidatorAuthsRequest
-QueryValidatorAuthsRequest is the request type for the
-Query/ValidatorAuths RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.QueryValidatorAuthsResponse"></a>
-
-### QueryValidatorAuthsResponse
-QueryValidatorAuthsResponse is the response type for the
-Query/ValidatorAuths RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `auths` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) | repeated |  |
-| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
 <a name="lbm.foundation.v1.QueryVoteRequest"></a>
 
 ### QueryVoteRequest
@@ -9488,8 +9529,6 @@ Query defines the gRPC querier service for foundation module.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Params` | [QueryParamsRequest](#lbm.foundation.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.foundation.v1.QueryParamsResponse) | Params queries the module params. | GET|/lbm/foundation/v1/params|
-| `ValidatorAuth` | [QueryValidatorAuthRequest](#lbm.foundation.v1.QueryValidatorAuthRequest) | [QueryValidatorAuthResponse](#lbm.foundation.v1.QueryValidatorAuthResponse) | ValidatorAuth queries authorization info of a validator. | GET|/lbm/foundation/v1/validators/{validator_address}|
-| `ValidatorAuths` | [QueryValidatorAuthsRequest](#lbm.foundation.v1.QueryValidatorAuthsRequest) | [QueryValidatorAuthsResponse](#lbm.foundation.v1.QueryValidatorAuthsResponse) | ValidatorAuths queries authorization infos of validators. | GET|/lbm/foundation/v1/validators|
 | `Treasury` | [QueryTreasuryRequest](#lbm.foundation.v1.QueryTreasuryRequest) | [QueryTreasuryResponse](#lbm.foundation.v1.QueryTreasuryResponse) | Treasury queries the foundation treasury. | GET|/lbm/foundation/v1/treasury|
 | `FoundationInfo` | [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest) | [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse) | FoundationInfo queries foundation info. | GET|/lbm/foundation/v1/foundation_info|
 | `Member` | [QueryMemberRequest](#lbm.foundation.v1.QueryMemberRequest) | [QueryMemberResponse](#lbm.foundation.v1.QueryMemberResponse) | Member queries a member of the foundation | GET|/lbm/foundation/v1/foundation_members/{address}|
@@ -9499,6 +9538,7 @@ Query defines the gRPC querier service for foundation module.
 | `Vote` | [QueryVoteRequest](#lbm.foundation.v1.QueryVoteRequest) | [QueryVoteResponse](#lbm.foundation.v1.QueryVoteResponse) | Vote queries a vote by proposal id and voter. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes/{voter}|
 | `Votes` | [QueryVotesRequest](#lbm.foundation.v1.QueryVotesRequest) | [QueryVotesResponse](#lbm.foundation.v1.QueryVotesResponse) | Votes queries a vote by proposal. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes|
 | `TallyResult` | [QueryTallyResultRequest](#lbm.foundation.v1.QueryTallyResultRequest) | [QueryTallyResultResponse](#lbm.foundation.v1.QueryTallyResultResponse) | TallyResult queries the tally of a proposal votes. | GET|/lbm/foundation/v1/proposals/{proposal_id}/tally|
+| `Grants` | [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest) | [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse) | Returns list of authorizations, granted to the grantee. | GET|/lbm/foundation/v1/grants/{grantee}/{msg_type_url}|
 
  <!-- end services -->
 
@@ -9563,6 +9603,34 @@ MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
 
 
 
+<a name="lbm.foundation.v1.MsgGrant"></a>
+
+### MsgGrant
+MsgGrant is a request type for Grant method. It declares authorization to the grantee
+on behalf of the foundation.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgGrantResponse"></a>
+
+### MsgGrantResponse
+MsgGrantResponse defines the Msg/MsgGrant response type.
+
+
+
+
+
+
 <a name="lbm.foundation.v1.MsgLeaveFoundation"></a>
 
 ### MsgLeaveFoundation
@@ -9582,6 +9650,34 @@ MsgLeaveFoundation is the Msg/LeaveFoundation request type.
 
 ### MsgLeaveFoundationResponse
 MsgLeaveFoundationResponse is the Msg/LeaveFoundation response type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgRevoke"></a>
+
+### MsgRevoke
+MsgRevoke revokes any authorization with the provided sdk.Msg type
+to the grantee on behalf of the foundation.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `msg_type_url` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgRevokeResponse"></a>
+
+### MsgRevokeResponse
+MsgRevokeResponse defines the Msg/MsgRevokeResponse response type.
 
 
 
@@ -9789,6 +9885,8 @@ Msg defines the foundation Msg service.
 | `Vote` | [MsgVote](#lbm.foundation.v1.MsgVote) | [MsgVoteResponse](#lbm.foundation.v1.MsgVoteResponse) | Vote allows a voter to vote on a proposal. | |
 | `Exec` | [MsgExec](#lbm.foundation.v1.MsgExec) | [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse) | Exec executes a proposal. | |
 | `LeaveFoundation` | [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation) | [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse) | LeaveFoundation allows a member to leave the foundation. | |
+| `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (granter, grantee, Authorization) tuple, then the grant will be overwritten. | |
+| `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name on the granter that has been granted to the grantee. | |
 
  <!-- end services -->
 
@@ -12297,6 +12395,37 @@ Msg defines the staking Msg service.
 | `Delegate` | [MsgDelegate](#lbm.staking.v1.MsgDelegate) | [MsgDelegateResponse](#lbm.staking.v1.MsgDelegateResponse) | Delegate defines a method for performing a delegation of coins from a delegator to a validator. | |
 | `BeginRedelegate` | [MsgBeginRedelegate](#lbm.staking.v1.MsgBeginRedelegate) | [MsgBeginRedelegateResponse](#lbm.staking.v1.MsgBeginRedelegateResponse) | BeginRedelegate defines a method for performing a redelegation of coins from a delegator and source validator to a destination validator. | |
 | `Undelegate` | [MsgUndelegate](#lbm.staking.v1.MsgUndelegate) | [MsgUndelegateResponse](#lbm.staking.v1.MsgUndelegateResponse) | Undelegate defines a method for performing an undelegation from a delegate and a validator. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/stakingplus/v1/authz.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/stakingplus/v1/authz.proto
+
+
+
+<a name="lbm.stakingplus.v1.CreateValidatorAuthorization"></a>
+
+### CreateValidatorAuthorization
+CreateValidatorAuthorization allows the grantee to create a new validator.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  | redundant, but good for the query. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
 
  <!-- end services -->
 

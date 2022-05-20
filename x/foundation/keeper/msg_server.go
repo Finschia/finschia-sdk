@@ -10,6 +10,13 @@ import (
 
 const gasCostPerIteration = uint64(20)
 
+func canFoundationAuthorize(msgTypeURL string) bool {
+	urls := map[string]bool{
+		foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(): true,
+	}
+	return urls[msgTypeURL]
+}
+
 type msgServer struct {
 	keeper Keeper
 }
@@ -46,6 +53,10 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+		return nil, err
+	}
+
+	if err := s.keeper.Accept(ctx, foundation.ModuleName, sdk.AccAddress(req.To), req); err != nil {
 		return nil, err
 	}
 
@@ -244,4 +255,42 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 	}
 
 	return &foundation.MsgLeaveFoundationResponse{}, nil
+}
+
+func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundation.MsgGrantResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+		return nil, err
+	}
+
+	msgTypeURL := req.GetAuthorization().MsgTypeURL()
+	if !canFoundationAuthorize(msgTypeURL) {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("foundation cannot grant %s", msgTypeURL)
+	}
+
+	authorization := req.GetAuthorization()
+	if err := s.keeper.Grant(ctx, foundation.ModuleName, sdk.AccAddress(req.Grantee), authorization); err != nil {
+		return nil, err
+	}
+
+	return &foundation.MsgGrantResponse{}, nil
+}
+
+func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*foundation.MsgRevokeResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+		return nil, err
+	}
+
+	if !canFoundationAuthorize(req.MsgTypeUrl) {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("foundation cannot revoke %s", req.MsgTypeUrl)
+	}
+
+	if err := s.keeper.Revoke(ctx, foundation.ModuleName, sdk.AccAddress(req.Grantee), req.MsgTypeUrl); err != nil {
+		return nil, err
+	}
+
+	return &foundation.MsgRevokeResponse{}, nil
 }

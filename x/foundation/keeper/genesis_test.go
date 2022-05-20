@@ -4,6 +4,8 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 
 	"github.com/line/lbm-sdk/x/foundation"
+	"github.com/line/lbm-sdk/x/stakingplus"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 func (s *KeeperTestSuite) TestImportExportGenesis() {
@@ -17,7 +19,25 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			},
 			valid: true,
 			export: &foundation.GenesisState{
+				Params: foundation.DefaultParams(),
+				Foundation: foundation.FoundationInfo{
+					Operator: s.keeper.GetAdmin(s.ctx).String(),
+					Version: 1,
+					TotalWeight: sdk.ZeroDec(),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+			},
+		},
+		"enabled with no create validator grantees": {
+			init: &foundation.GenesisState{
 				Params: &foundation.Params{
+					Enabled: true,
+					FoundationTax: sdk.ZeroDec(),
+				},
+			},
+			valid: true,
+			export: &foundation.GenesisState{
+				Params: &foundation.Params{
+					Enabled: true,
 					FoundationTax: sdk.ZeroDec(),
 				},
 				Foundation: foundation.FoundationInfo{
@@ -38,9 +58,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			},
 			valid: true,
 			export: &foundation.GenesisState{
-				Params: &foundation.Params{
-					FoundationTax: sdk.ZeroDec(),
-				},
+				Params: foundation.DefaultParams(),
 				Foundation: foundation.FoundationInfo{
 					Operator: s.keeper.GetAdmin(s.ctx).String(),
 					Version: 1,
@@ -67,12 +85,17 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 					}}),
 				},
+				Votes: []foundation.Vote{
+					{
+						ProposalId: 1,
+						Voter: s.members[0].String(),
+						Option: foundation.VOTE_OPTION_YES,
+					},
+				},
 			},
 			valid: true,
 			export: &foundation.GenesisState{
-				Params: &foundation.Params{
-					FoundationTax: sdk.ZeroDec(),
-				},
+				Params: foundation.DefaultParams(),
 				Foundation: foundation.FoundationInfo{
 					Operator: s.keeper.GetAdmin(s.ctx).String(),
 					Version: 1,
@@ -95,6 +118,72 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 					}}),
 				},
+				Votes: []foundation.Vote{
+					{
+						ProposalId: 1,
+						Voter: s.members[0].String(),
+						Option: foundation.VOTE_OPTION_YES,
+					},
+				},
+			},
+		},
+		"authorizations": {
+			init: &foundation.GenesisState{
+				Authorizations: []foundation.GrantAuthorization{
+					*foundation.GrantAuthorization{
+						Granter: foundation.ModuleName,
+						Grantee: s.stranger.String(),
+					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
+				},
+			},
+			valid: true,
+			export: &foundation.GenesisState{
+				Params: foundation.DefaultParams(),
+				Foundation: foundation.FoundationInfo{
+					Operator: s.keeper.GetAdmin(s.ctx).String(),
+					Version: 1,
+					TotalWeight: sdk.ZeroDec(),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				Authorizations: []foundation.GrantAuthorization{
+					*foundation.GrantAuthorization{
+						Granter: foundation.ModuleName,
+						Grantee: s.stranger.String(),
+					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
+				},
+			},
+		},
+		"create validator authorizations": {
+			init: &foundation.GenesisState{
+				Authorizations: []foundation.GrantAuthorization{
+					*foundation.GrantAuthorization{
+						Granter: govtypes.ModuleName,
+						Grantee: s.stranger.String(),
+					}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
+						ValidatorAddress: s.stranger.ToValAddress().String(),
+					}),
+				},
+			},
+			valid: true,
+			export: &foundation.GenesisState{
+				Params: foundation.DefaultParams(),
+				Foundation: foundation.FoundationInfo{
+					Operator: s.keeper.GetAdmin(s.ctx).String(),
+					Version: 1,
+					TotalWeight: sdk.OneDec(),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				Authorizations: []foundation.GrantAuthorization{
+					*foundation.GrantAuthorization{
+						Granter: govtypes.ModuleName,
+						Grantee: s.stranger.String(),
+					}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
+						ValidatorAddress: s.stranger.ToValAddress().String(),
+					}),
+				},
+				Members: []foundation.Member{{
+					Address: s.stranger.String(),
+					Participating: true,
+					Metadata: "genesis member",
+				}},
 			},
 		},
 		"member of long metadata": {

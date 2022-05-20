@@ -2,7 +2,6 @@ package testutil
 
 import (
 	"fmt"
-	"sort"
 
 	"github.com/gogo/protobuf/proto"
 	ostcli "github.com/line/ostracon/libs/cli"
@@ -60,124 +59,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
 			var actual foundation.QueryParamsResponse
 			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
-		})
-	}
-}
-
-func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuth() {
-	val := s.network.Validators[0]
-	commonArgs := []string{
-		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
-	}
-
-	testCases := map[string]struct {
-		args     []string
-		valid    bool
-		expected proto.Message
-	}{
-		"valid query": {
-			[]string{
-				val.ValAddress.String(),
-			},
-			true,
-			&foundation.QueryValidatorAuthResponse{
-				Auth: &foundation.ValidatorAuth{
-					OperatorAddress: val.ValAddress.String(),
-					CreationAllowed: true,
-				},
-			},
-		},
-		"extra args": {
-			[]string{
-				val.ValAddress.String(),
-				"extra",
-			},
-			false,
-			nil,
-		},
-		"not enough args": {
-			[]string{},
-			false,
-			nil,
-		},
-		"invalid address": {
-			[]string{
-				"this-is-an-invalid-address",
-			},
-			false,
-			nil,
-		},
-	}
-
-	for name, tc := range testCases {
-		tc := tc
-
-		s.Run(name, func() {
-			cmd := cli.NewQueryCmdValidatorAuth()
-			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-
-			var actual foundation.QueryValidatorAuthResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
-			s.Require().Equal(tc.expected, &actual)
-		})
-	}
-}
-
-func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuths() {
-	val := s.network.Validators[0]
-	commonArgs := []string{
-		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
-	}
-
-	testCases := map[string]struct {
-		args     []string
-		valid    bool
-		expected []foundation.ValidatorAuth
-	}{
-		"valid query": {
-			[]string{},
-			true,
-			[]foundation.ValidatorAuth{
-				{
-					OperatorAddress: s.network.Validators[0].ValAddress.String(),
-					CreationAllowed: true,
-				},
-			},
-		},
-		"extra args": {
-			[]string{
-				"extra",
-			},
-			false,
-			nil,
-		},
-	}
-
-	for name, tc := range testCases {
-		tc := tc
-
-		s.Run(name, func() {
-			cmd := cli.NewQueryCmdValidatorAuths()
-			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-
-			var actual foundation.QueryValidatorAuthsResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
-			sort.Slice(tc.expected, func(l, r int) bool {
-				return tc.expected[l].OperatorAddress < tc.expected[r].OperatorAddress
-			})
-			s.Require().Equal(tc.expected, actual.Auths)
 		})
 	}
 }
@@ -589,6 +470,63 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTallyResult() {
 
 			var actual foundation.QueryTallyResultResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args     []string
+		valid    bool
+		expected int
+	}{
+		"valid query": {
+			[]string{
+				s.stranger.String(),
+				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+			},
+			true,
+			1,
+		},
+		"no msg type url": {
+			[]string{
+				s.stranger.String(),
+			},
+			true,
+			1,
+		},
+		"extra args": {
+			[]string{
+				s.stranger.String(),
+				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+				"extra",
+			},
+			false,
+			0,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdGrants()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual foundation.QueryGrantsResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().Equal(tc.expected, len(actual.Authorizations))
 		})
 	}
 }

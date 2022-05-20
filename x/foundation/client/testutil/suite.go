@@ -73,6 +73,22 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 	foundationData.Foundation = info
 
+	var strangerMnemonic string
+	strangerMnemonic, s.stranger = s.createMnemonic("stranger")
+	var leavingMemberMnemonic string
+	leavingMemberMnemonic, s.leavingMember = s.createMnemonic("leavingmember")
+
+	grantees := []sdk.AccAddress{s.stranger, s.leavingMember}
+	foundationData.Authorizations = make([]foundation.GrantAuthorization, len(grantees))
+	for i, grantee := range grantees {
+		ga := foundation.GrantAuthorization{
+			Granter: foundation.ModuleName,
+			Grantee: grantee.String(),
+		}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{})
+		s.Require().NotNil(ga)
+		foundationData.Authorizations[i] = *ga
+	}
+
 	foundationDataBz, err := s.cfg.Codec.MarshalJSON(&foundationData)
 	s.Require().NoError(err)
 	genesisState[foundation.ModuleName] = foundationDataBz
@@ -83,12 +99,8 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	_, err = s.network.WaitForHeight(1)
 	s.Require().NoError(err)
 
-	var strangerMnemonic string
-	strangerMnemonic, s.stranger = s.createMnemonic("stranger")
 	var comingMemberMnemonic string
 	comingMemberMnemonic, s.comingMember = s.createMnemonic("comingmember")
-	var leavingMemberMnemonic string
-	leavingMemberMnemonic, s.leavingMember = s.createMnemonic("leavingmember")
 
 	s.createAccount("operator", operatorMnemonic)
 	s.createAccount("stranger", strangerMnemonic)
@@ -99,7 +111,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	id := s.submitProposal(&foundation.MsgWithdrawFromTreasury{
 		Operator: s.operator.String(),
 		To:       s.network.Validators[0].Address.String(),
-		Amount:   sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))),
+		Amount:   sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())),
 	}, false)
 	s.vote(id, []sdk.AccAddress{s.network.Validators[0].Address, s.leavingMember})
 	s.Require().NoError(s.network.WaitForNextBlock())
@@ -179,8 +191,7 @@ func (s *IntegrationTestSuite) submitProposal(msg sdk.Msg, try bool) uint64 {
 			return proposal.Id
 		}
 	}
-	s.Require().EqualValues(nil, res.Logs)
-	return 0
+	panic("You cannot reach here")
 }
 
 func (s *IntegrationTestSuite) vote(proposalID uint64, voters []sdk.AccAddress) {

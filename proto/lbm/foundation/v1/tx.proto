@@ -41,6 +41,15 @@ service Msg {
 
   // LeaveFoundation allows a member to leave the foundation.
   rpc LeaveFoundation(MsgLeaveFoundation) returns (MsgLeaveFoundationResponse);
+
+  // Grant grants the provided authorization to the grantee with authority of
+  // the foundation. If there is already a grant for the given
+  // (granter, grantee, Authorization) tuple, then the grant will be overwritten.
+  rpc Grant(MsgGrant) returns (MsgGrantResponse);
+
+  // Revoke revokes any authorization corresponding to the provided method name on the
+  // granter that has been granted to the grantee.
+  rpc Revoke(MsgRevoke) returns (MsgRevokeResponse);
 }
 
 // MsgFundTreasury represents a message to fund the treasury.
@@ -180,3 +189,27 @@ message MsgLeaveFoundation {
 
 // MsgLeaveFoundationResponse is the Msg/LeaveFoundation response type.
 message MsgLeaveFoundationResponse {}
+
+// MsgGrant is a request type for Grant method. It declares authorization to the grantee
+// on behalf of the foundation.
+message MsgGrant {
+  string operator = 1;
+  string grantee  = 2;
+
+  google.protobuf.Any authorization = 3
+      [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization"];
+}
+
+// MsgGrantResponse defines the Msg/MsgGrant response type.
+message MsgGrantResponse {}
+
+// MsgRevoke revokes any authorization with the provided sdk.Msg type
+// to the grantee on behalf of the foundation.
+message MsgRevoke {
+  string operator     = 1;
+  string grantee      = 2;
+  string msg_type_url = 3;
+}
+
+// MsgRevokeResponse defines the Msg/MsgRevokeResponse response type.
+message MsgRevokeResponse {}
