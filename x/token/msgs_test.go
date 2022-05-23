@@ -10,7 +10,7 @@ import (
 	"github.com/line/lbm-sdk/x/token"
 )
 
-func TestMsgTransfer(t *testing.T) {
+func TestMsgSend(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -73,7 +73,7 @@ func TestMsgTransfer(t *testing.T) {
 	}
 }
 
-func TestMsgTransferFrom(t *testing.T) {
+func TestMsgOperatorSend(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -148,7 +148,7 @@ func TestMsgTransferFrom(t *testing.T) {
 	}
 }
 
-func TestMsgApprove(t *testing.T) {
+func TestMsgAuthorizeOperator(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -182,6 +182,56 @@ func TestMsgApprove(t *testing.T) {
 
 	for name, tc := range testCases {
 		msg := token.MsgAuthorizeOperator{
+			ContractId:  tc.classId,
+			Approver: tc.approver.String(),
+			Proxy:    tc.proxy.String(),
+		}
+
+		require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
+
+		err := msg.ValidateBasic()
+		if tc.valid {
+			require.NoError(t, err, name)
+		} else {
+			require.Error(t, err, name)
+		}
+	}
+}
+
+func TestMsgRevokeOperator(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 2)
+	for i := range addrs {
+		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	testCases := map[string]struct {
+		classId  string
+		approver sdk.AccAddress
+		proxy    sdk.AccAddress
+		valid    bool
+	}{
+		"valid msg": {
+			classId:  "deadbeef",
+			approver: addrs[0],
+			proxy:    addrs[1],
+			valid:    true,
+		},
+		"invalid class id": {
+			approver: addrs[0],
+			proxy:    addrs[1],
+		},
+		"invalid approver": {
+			classId:  "deadbeef",
+			proxy:    addrs[1],
+		},
+		"empty proxy": {
+			classId:  "deadbeef",
+			approver: addrs[0],
+		},
+	}
+
+	for name, tc := range testCases {
+		msg := token.MsgRevokeOperator{
 			ContractId:  tc.classId,
 			Approver: tc.approver.String(),
 			Proxy:    tc.proxy.String(),
@@ -451,7 +501,7 @@ func TestMsgBurn(t *testing.T) {
 	}
 }
 
-func TestMsgBurnFrom(t *testing.T) {
+func TestMsgOperatorBurn(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -644,7 +694,7 @@ func TestMsgGrant(t *testing.T) {
 	}
 }
 
-func TestMsgRevoke(t *testing.T) {
+func TestMsgAbandon(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
