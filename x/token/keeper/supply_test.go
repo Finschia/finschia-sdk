@@ -65,40 +65,19 @@ func (s *KeeperTestSuite) TestBurn() {
 		s.operator: "operator",
 		s.customer: "customer",
 	}
-	amount := sdk.OneInt()
-	for from, desc := range userDescriptions {
-		name := fmt.Sprintf("From: %s", desc)
-		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
-
-			grant := s.keeper.GetGrant(ctx, s.classID, from, token.Permission_Burn)
-			err := s.keeper.Burn(ctx, s.classID, from, amount)
-			if grant != nil {
-				s.Require().NoError(err)
-			} else {
-				s.Require().Error(err)
-			}
-		})
+	amountDescriptions := map[sdk.Int]string {
+		s.balance: "limit",
+		s.balance.Add(sdk.OneInt()): "excess",
 	}
-}
-
-func (s *KeeperTestSuite) TestOperatorBurn() {
-	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor: "vendor",
-		s.operator: "operator",
-		s.customer: "customer",
-	}
-	amount := sdk.OneInt()
-	for operator, operatorDesc := range userDescriptions {
-		for from, fromDesc := range userDescriptions {
-			name := fmt.Sprintf("Operator: %s, From: %s", operatorDesc, fromDesc)
+	for from, fromDesc := range userDescriptions {
+		for amount, amountDesc := range amountDescriptions {
+			name := fmt.Sprintf("From: %s, Amount: %s", fromDesc, amountDesc)
 			s.Run(name, func() {
 				ctx, _ := s.ctx.CacheContext()
 
-				grant := s.keeper.GetGrant(ctx, s.classID, operator, token.Permission_Burn)
-				authorization := s.keeper.GetAuthorization(ctx, s.classID, from, operator)
-				err := s.keeper.OperatorBurn(ctx, s.classID, operator, from, amount)
-				if grant != nil && authorization != nil {
+				grant := s.keeper.GetGrant(ctx, s.classID, from, token.Permission_Burn)
+				err := s.keeper.Burn(ctx, s.classID, from, amount)
+				if grant != nil && amount.LTE(s.balance) {
 					s.Require().NoError(err)
 				} else {
 					s.Require().Error(err)
@@ -108,7 +87,42 @@ func (s *KeeperTestSuite) TestOperatorBurn() {
 	}
 }
 
+func (s *KeeperTestSuite) TestOperatorBurn() {
+	userDescriptions := map[sdk.AccAddress]string{
+		s.vendor: "vendor",
+		s.operator: "operator",
+		s.customer: "customer",
+	}
+	amountDescriptions := map[sdk.Int]string {
+		s.balance: "limit",
+		s.balance.Add(sdk.OneInt()): "excess",
+	}
+	for operator, operatorDesc := range userDescriptions {
+		for from, fromDesc := range userDescriptions {
+			for amount, amountDesc := range amountDescriptions {
+				name := fmt.Sprintf("Operator: %s, From: %s, Amount: %s", operatorDesc, fromDesc, amountDesc)
+				s.Run(name, func() {
+					ctx, _ := s.ctx.CacheContext()
+
+					grant := s.keeper.GetGrant(ctx, s.classID, operator, token.Permission_Burn)
+					authorization := s.keeper.GetAuthorization(ctx, s.classID, from, operator)
+					err := s.keeper.OperatorBurn(ctx, s.classID, operator, from, amount)
+					if grant != nil && authorization != nil && amount.LTE(s.balance) {
+						s.Require().NoError(err)
+					} else {
+						s.Require().Error(err)
+					}
+				})
+			}
+		}
+	}
+}
+
 func (s *KeeperTestSuite) TestModify() {
+	contractDescriptions := map[string]string{
+		s.classID: "valid",
+		"fee1dead": "not-exist",
+	}
 	userDescriptions := map[sdk.AccAddress]string{
 		s.vendor: "vendor",
 		s.operator: "operator",
@@ -119,13 +133,20 @@ func (s *KeeperTestSuite) TestModify() {
 		{Field: token.AttributeKey_ImageURI.String(), Value: "new uri"},
 		{Field: token.AttributeKey_Meta.String(), Value: "new meta"},
 	}
-	for grantee, desc := range userDescriptions {
-		name := fmt.Sprintf("Grantee: %s", desc)
-		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
 
-			err := s.keeper.Modify(ctx, s.classID, grantee, changes)
-			s.Require().NoError(err)
-		})
+	for contractID, contractDesc := range contractDescriptions {
+		for grantee, granteeDesc := range userDescriptions {
+			name := fmt.Sprintf("Grantee: %s, Contract: %s", granteeDesc, contractDesc)
+			s.Run(name, func() {
+				ctx, _ := s.ctx.CacheContext()
+
+				err := s.keeper.Modify(ctx, contractID, grantee, changes)
+				if contractID == s.classID {
+					s.Require().NoError(err)
+				} else {
+					s.Require().Error(err)
+				}
+			})
+		}
 	}
 }

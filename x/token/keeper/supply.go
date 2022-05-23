@@ -306,9 +306,7 @@ func (k Keeper) modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, 
 }
 
 func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.AccAddress, permission token.Permission) error {
-	if err := k.grant(ctx, contractID, grantee, permission); err != nil {
-		return err
-	}
+	k.grant(ctx, contractID, grantee, permission)
 
 	event := token.EventGrant{
 		ContractId: contractID,
@@ -320,14 +318,12 @@ func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.A
 	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
-func (k Keeper) grant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) error {
+func (k Keeper) grant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) {
 	k.setGrant(ctx, contractID, grantee, permission)
 
 	if !k.accountKeeper.HasAccount(ctx, grantee) {
 		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, grantee))
 	}
-
-	return nil
 }
 
 func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) error {
