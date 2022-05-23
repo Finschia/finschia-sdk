@@ -26,21 +26,17 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 			},
 		},
 		"invalid class id": {
-			classId: "invalid",
 			address: s.vendor,
-			valid:   false,
 		},
 		"invalid address": {
 			classId: s.classID,
-			address: "invalid",
-			valid:   false,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			req := &token.QueryBalanceRequest{
-				ClassId: tc.classId,
+				ContractId: tc.classId,
 				Address: tc.address.String(),
 			}
 			res, err := s.queryServer.Balance(s.goCtx, req)
@@ -68,45 +64,19 @@ func (s *KeeperTestSuite) TestQuerySupply() {
 	}{
 		"valid supply request": {
 			classId: s.classID,
-			reqType: "supply",
 			valid:   true,
 			postTest: func(res *token.QuerySupplyResponse) {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Amount)
 			},
 		},
-		"valid mint request": {
-			classId: s.classID,
-			reqType: "mint",
-			valid:   true,
-			postTest: func(res *token.QuerySupplyResponse) {
-				s.Require().Equal(s.balance.Mul(sdk.NewInt(4)), res.Amount)
-			},
-		},
-		"valid burn request": {
-			classId: s.classID,
-			reqType: "burn",
-			valid:   true,
-			postTest: func(res *token.QuerySupplyResponse) {
-				s.Require().Equal(s.balance, res.Amount)
-			},
-		},
 		"invalid class id": {
-			classId: "invalid",
-			reqType: "burn",
-			valid:   false,
-		},
-		"invalid request": {
-			classId: s.classID,
-			reqType: "invalid",
-			valid:   false,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			req := &token.QuerySupplyRequest{
-				ClassId: tc.classId,
-				Type:    tc.reqType,
+				ContractId: tc.classId,
 			}
 			res, err := s.queryServer.Supply(s.goCtx, req)
 			if !tc.valid {
@@ -120,39 +90,33 @@ func (s *KeeperTestSuite) TestQuerySupply() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryToken() {
+func (s *KeeperTestSuite) TestQueryMinted() {
 	// empty request
-	_, err := s.queryServer.Token(s.goCtx, nil)
+	_, err := s.queryServer.Minted(s.goCtx, nil)	
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
 		classId  string
 		valid    bool
-		postTest func(res *token.QueryTokenResponse)
+		postTest func(res *token.QueryMintedResponse)
 	}{
-		"valid request": {
+		"valid mint request": {
 			classId: s.classID,
 			valid:   true,
-			postTest: func(res *token.QueryTokenResponse) {
-				s.Require().Equal(s.classID, res.Token.Id)
+			postTest: func(res *token.QueryMintedResponse) {
+				s.Require().Equal(s.balance.Mul(sdk.NewInt(4)), res.Amount)
 			},
 		},
 		"invalid class id": {
-			classId: "invalid",
-			valid:   false,
-		},
-		"no such an id": {
-			classId: "00000000",
-			valid:   false,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			req := &token.QueryTokenRequest{
-				ClassId: tc.classId,
+			req := &token.QueryMintedRequest{
+				ContractId: tc.classId,
 			}
-			res, err := s.queryServer.Token(s.goCtx, req)
+			res, err := s.queryServer.Minted(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -164,30 +128,109 @@ func (s *KeeperTestSuite) TestQueryToken() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryTokens() {
+func (s *KeeperTestSuite) TestQueryBurnt() {
 	// empty request
-	_, err := s.queryServer.Tokens(s.goCtx, nil)
+	_, err := s.queryServer.Burnt(s.goCtx, nil)
+	s.Require().Error(err)
+
+	testCases := map[string]struct {
+		classId  string
+		valid    bool
+		postTest func(res *token.QueryBurntResponse)
+	}{
+		"valid burn request": {
+			classId: s.classID,
+			valid:   true,
+			postTest: func(res *token.QueryBurntResponse) {
+				s.Require().Equal(s.balance, res.Amount)
+			},
+		},
+		"invalid class id": {
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			req := &token.QueryBurntRequest{
+				ContractId: tc.classId,
+			}
+			res, err := s.queryServer.Burnt(s.goCtx, req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+			tc.postTest(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestQueryTokenClass() {
+	// empty request
+	_, err := s.queryServer.TokenClass(s.goCtx, nil)
+	s.Require().Error(err)
+
+	testCases := map[string]struct {
+		classId  string
+		valid    bool
+		postTest func(res *token.QueryTokenClassResponse)
+	}{
+		"valid request": {
+			classId: s.classID,
+			valid:   true,
+			postTest: func(res *token.QueryTokenClassResponse) {
+				s.Require().Equal(s.classID, res.Class.ContractId)
+			},
+		},
+		"invalid class id": {
+		},
+		"no such an id": {
+			classId: "00000000",
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			req := &token.QueryTokenClassRequest{
+				ContractId: tc.classId,
+			}
+			res, err := s.queryServer.TokenClass(s.goCtx, req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+			tc.postTest(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestQueryTokenClasses() {
+	// empty request
+	_, err := s.queryServer.TokenClasses(s.goCtx, nil)
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
 		classId  string
 		valid    bool
 		count    uint64
-		postTest func(res *token.QueryTokensResponse)
+		postTest func(res *token.QueryTokenClassesResponse)
 	}{
 		"valid request": {
 			classId: s.classID,
 			valid:   true,
-			postTest: func(res *token.QueryTokensResponse) {
-				s.Require().Equal(2, len(res.Tokens))
+			postTest: func(res *token.QueryTokenClassesResponse) {
+				s.Require().Equal(2, len(res.Classes))
 			},
 		},
 		"valid request with limit": {
 			classId: s.classID,
 			valid:   true,
 			count:   1,
-			postTest: func(res *token.QueryTokensResponse) {
-				s.Require().Equal(1, len(res.Tokens))
+			postTest: func(res *token.QueryTokenClassesResponse) {
+				s.Require().Equal(1, len(res.Classes))
 			},
 		},
 	}
@@ -198,10 +241,10 @@ func (s *KeeperTestSuite) TestQueryTokens() {
 			if tc.count != 0 {
 				pageReq.Limit = tc.count
 			}
-			req := &token.QueryTokensRequest{
+			req := &token.QueryTokenClassesRequest{
 				Pagination: pageReq,
 			}
-			res, err := s.queryServer.Tokens(s.goCtx, req)
+			res, err := s.queryServer.TokenClasses(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -213,44 +256,40 @@ func (s *KeeperTestSuite) TestQueryTokens() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryGrants() {
+func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 	// empty request
-	_, err := s.queryServer.Grants(s.goCtx, nil)
+	_, err := s.queryServer.GranteeGrants(s.goCtx, nil)
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
 		classId  string
 		grantee  sdk.AccAddress
 		valid    bool
-		postTest func(res *token.QueryGrantsResponse)
+		postTest func(res *token.QueryGranteeGrantsResponse)
 	}{
 		"valid request": {
 			classId: s.classID,
 			grantee: s.vendor,
 			valid:   true,
-			postTest: func(res *token.QueryGrantsResponse) {
+			postTest: func(res *token.QueryGranteeGrantsResponse) {
 				s.Require().Equal(3, len(res.Grants))
 			},
 		},
 		"invalid class id": {
-			classId: "invalid",
 			grantee: s.vendor,
-			valid:   false,
 		},
 		"invalid grantee": {
 			classId: s.classID,
-			grantee: "invalid",
-			valid:   false,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			req := &token.QueryGrantsRequest{
-				ClassId: tc.classId,
+			req := &token.QueryGranteeGrantsRequest{
+				ContractId: tc.classId,
 				Grantee: tc.grantee.String(),
 			}
-			res, err := s.queryServer.Grants(s.goCtx, req)
+			res, err := s.queryServer.GranteeGrants(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -262,9 +301,9 @@ func (s *KeeperTestSuite) TestQueryGrants() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryApprove() {
+func (s *KeeperTestSuite) TestQueryAuthorization() {
 	// empty request
-	_, err := s.queryServer.Approve(s.goCtx, nil)
+	_, err := s.queryServer.Authorization(s.goCtx, nil)
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
@@ -272,45 +311,39 @@ func (s *KeeperTestSuite) TestQueryApprove() {
 		proxy    sdk.AccAddress
 		approver sdk.AccAddress
 		valid    bool
-		postTest func(res *token.QueryApproveResponse)
+		postTest func(res *token.QueryAuthorizationResponse)
 	}{
 		"valid request": {
 			classId:  s.classID,
 			proxy:    s.operator,
 			approver: s.customer,
 			valid:    true,
-			postTest: func(res *token.QueryApproveResponse) {
-				s.Require().NotNil(res.Approve)
+			postTest: func(res *token.QueryAuthorizationResponse) {
+				s.Require().NotNil(res.Authorization)
 			},
 		},
 		"invalid class id": {
-			classId:  "invalid",
 			proxy:    s.operator,
 			approver: s.customer,
-			valid:    false,
 		},
 		"invalid proxy": {
 			classId:  s.classID,
-			proxy:    "invalid",
 			approver: s.customer,
-			valid:    false,
 		},
 		"invalid approver": {
 			classId:  s.classID,
 			proxy:    s.operator,
-			approver: "invalid",
-			valid:    false,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			req := &token.QueryApproveRequest{
-				ClassId:  tc.classId,
+			req := &token.QueryAuthorizationRequest{
+				ContractId:  tc.classId,
 				Proxy:    tc.proxy.String(),
 				Approver: tc.approver.String(),
 			}
-			res, err := s.queryServer.Approve(s.goCtx, req)
+			res, err := s.queryServer.Authorization(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -322,9 +355,9 @@ func (s *KeeperTestSuite) TestQueryApprove() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryApproves() {
+func (s *KeeperTestSuite) TestQueryOperatorAuthorizations() {
 	// empty request
-	_, err := s.queryServer.Approves(s.goCtx, nil)
+	_, err := s.queryServer.OperatorAuthorizations(s.goCtx, nil)
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
@@ -332,14 +365,14 @@ func (s *KeeperTestSuite) TestQueryApproves() {
 		proxy    sdk.AccAddress
 		valid    bool
 		count    uint64
-		postTest func(res *token.QueryApprovesResponse)
+		postTest func(res *token.QueryOperatorAuthorizationsResponse)
 	}{
 		"valid request": {
 			classId: s.classID,
 			proxy:   s.operator,
 			valid:   true,
-			postTest: func(res *token.QueryApprovesResponse) {
-				s.Require().Equal(2, len(res.Approves))
+			postTest: func(res *token.QueryOperatorAuthorizationsResponse) {
+				s.Require().Equal(2, len(res.Authorizations))
 			},
 		},
 		"valid request with limit": {
@@ -347,19 +380,15 @@ func (s *KeeperTestSuite) TestQueryApproves() {
 			proxy:   s.operator,
 			valid:   true,
 			count:   1,
-			postTest: func(res *token.QueryApprovesResponse) {
-				s.Require().Equal(1, len(res.Approves))
+			postTest: func(res *token.QueryOperatorAuthorizationsResponse) {
+				s.Require().Equal(1, len(res.Authorizations))
 			},
 		},
 		"invalid class id": {
-			classId: "invalid",
 			proxy:   s.operator,
-			valid:   false,
 		},
 		"invalid proxy": {
 			classId: s.classID,
-			proxy:   "invalid",
-			valid:   false,
 		},
 	}
 
@@ -369,12 +398,12 @@ func (s *KeeperTestSuite) TestQueryApproves() {
 			if tc.count != 0 {
 				pageReq.Limit = tc.count
 			}
-			req := &token.QueryApprovesRequest{
-				ClassId:    tc.classId,
+			req := &token.QueryOperatorAuthorizationsRequest{
+				ContractId:    tc.classId,
 				Proxy:      tc.proxy.String(),
 				Pagination: pageReq,
 			}
-			res, err := s.queryServer.Approves(s.goCtx, req)
+			res, err := s.queryServer.OperatorAuthorizations(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

@@ -9,12 +9,11 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 	genesis := s.keeper.ExportGenesis(s.ctx)
 
 	// forge
-	amount := token.FT{ClassId: s.classID, Amount: s.balance}
-	err := s.keeper.Burn(s.ctx, s.vendor, []token.FT{amount})
+	err := s.keeper.Burn(s.ctx, s.classID, s.vendor, s.balance)
 	s.Require().NoError(err)
-	err = s.keeper.Mint(s.ctx, s.vendor, s.customer, []token.FT{amount})
+	err = s.keeper.Mint(s.ctx, s.classID, s.vendor, s.customer, s.balance)
 	s.Require().NoError(err)
-	err = s.keeper.Revoke(s.ctx, s.vendor, s.classID, token.ActionMint)
+	err = s.keeper.Abandon(s.ctx, s.classID, s.vendor, token.Permission_Mint)
 	s.Require().NoError(err)
 
 	// restore

@@ -32,7 +32,7 @@ func NewQueryCmd() *cobra.Command {
 		NewQueryCmdGrant(),
 		NewQueryCmdGranteeGrants(),
 		NewQueryCmdAuthorization(),
-		NewQueryCmdAuthorizations(),
+		NewQueryCmdOperatorAuthorizations(),
 	)
 
 	return queryCmd
@@ -230,10 +230,10 @@ func NewQueryCmdGrant() *cobra.Command {
 
 func NewQueryCmdGranteeGrants() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "grantee-grant [class-id] [grantee]",
+		Use:     "grantee-grants [class-id] [grantee]",
 		Args:    cobra.ExactArgs(2),
 		Short:   "query grants on a given grantee",
-		Example: fmt.Sprintf(`$ %s query %s grant <class-id> <grantee>`, version.AppName, token.ModuleName),
+		Example: fmt.Sprintf(`$ %s query %s grantee-grants <class-id> <grantee>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -283,12 +283,12 @@ func NewQueryCmdAuthorization() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdAuthorizations() *cobra.Command {
+func NewQueryCmdOperatorAuthorizations() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "authorizations [class-id] [proxy]",
+		Use:     "operator-authorizations [class-id] [proxy]",
 		Args:    cobra.ExactArgs(2),
 		Short:   "query all authorizations on a given proxy",
-		Example: fmt.Sprintf(`$ %s query %s authorizations <class-id> <proxy>`, version.AppName, token.ModuleName),
+		Example: fmt.Sprintf(`$ %s query %s operator-authorizations <class-id> <proxy>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {

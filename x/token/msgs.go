@@ -1,19 +1,12 @@
 package token
 
 import (
-	"github.com/line/lbm-sdk/codec/legacy"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/token/class"
 )
 
 var _ sdk.Msg = (*MsgSend)(nil)
-
-// Route implements Msg.
-func (m MsgSend) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgSend) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgSend) ValidateBasic() error {
@@ -43,12 +36,6 @@ func (m MsgSend) GetSigners() []sdk.AccAddress {
 
 var _ sdk.Msg = (*MsgOperatorSend)(nil)
 
-// Route implements Msg.
-func (m MsgOperatorSend) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgOperatorSend) Type() string { return sdk.MsgTypeURL(&m) }
-
 // ValidateBasic implements Msg.
 func (m MsgOperatorSend) ValidateBasic() error {
 	if err := class.ValidateID(m.ContractId); err != nil {
@@ -73,11 +60,6 @@ func (m MsgOperatorSend) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes implements Msg.
-func (m MsgOperatorSend) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-}
-
 // GetSigners implements Msg
 func (m MsgOperatorSend) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.Proxy)
@@ -85,12 +67,6 @@ func (m MsgOperatorSend) GetSigners() []sdk.AccAddress {
 }
 
 var _ sdk.Msg = (*MsgAuthorizeOperator)(nil)
-
-// Route implements Msg.
-func (m MsgAuthorizeOperator) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgAuthorizeOperator) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgAuthorizeOperator) ValidateBasic() error {
@@ -108,24 +84,37 @@ func (m MsgAuthorizeOperator) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes implements Msg.
-func (m MsgAuthorizeOperator) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-}
-
 // GetSigners implements Msg.
 func (m MsgAuthorizeOperator) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.Approver)
 	return []sdk.AccAddress{signer}
 }
 
+var _ sdk.Msg = (*MsgRevokeOperator)(nil)
+
+// ValidateBasic implements Msg.
+func (m MsgRevokeOperator) ValidateBasic() error {
+	if err := class.ValidateID(m.ContractId); err != nil {
+		return err
+	}
+	if err := sdk.ValidateAccAddress(m.Approver); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("Invalid approver address: %s", m.Approver)
+	}
+
+	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("Invalid proxy address: %s", m.Proxy)
+	}
+
+	return nil
+}
+
+// GetSigners implements Msg.
+func (m MsgRevokeOperator) GetSigners() []sdk.AccAddress {
+	signer := sdk.AccAddress(m.Approver)
+	return []sdk.AccAddress{signer}
+}
+
 var _ sdk.Msg = (*MsgIssue)(nil)
-
-// Route implements Msg.
-func (m MsgIssue) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgIssue) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgIssue) ValidateBasic() error {
@@ -164,11 +153,6 @@ func (m MsgIssue) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes implements Msg.
-func (m MsgIssue) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-}
-
 // GetSigners implements Msg.
 func (m MsgIssue) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.Owner)
@@ -176,12 +160,6 @@ func (m MsgIssue) GetSigners() []sdk.AccAddress {
 }
 
 var _ sdk.Msg = (*MsgGrant)(nil)
-
-// Route implements Msg.
-func (m MsgGrant) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgGrant) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgGrant) ValidateBasic() error {
@@ -203,11 +181,6 @@ func (m MsgGrant) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes implements Msg.
-func (m MsgGrant) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-}
-
 // GetSigners implements Msg
 func (m MsgGrant) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.From)
@@ -215,12 +188,6 @@ func (m MsgGrant) GetSigners() []sdk.AccAddress {
 }
 
 var _ sdk.Msg = (*MsgAbandon)(nil)
-
-// Route implements Msg.
-func (m MsgAbandon) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgAbandon) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgAbandon) ValidateBasic() error {
@@ -238,11 +205,6 @@ func (m MsgAbandon) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes implements Msg.
-func (m MsgAbandon) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-}
-
 // GetSigners implements Msg
 func (m MsgAbandon) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.Grantee)
@@ -250,12 +212,6 @@ func (m MsgAbandon) GetSigners() []sdk.AccAddress {
 }
 
 var _ sdk.Msg = (*MsgMint)(nil)
-
-// Route implements Msg.
-func (m MsgMint) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgMint) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgMint) ValidateBasic() error {
@@ -277,11 +233,6 @@ func (m MsgMint) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes implements Msg.
-func (m MsgMint) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-}
-
 // GetSigners implements Msg
 func (m MsgMint) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.From)
@@ -289,12 +240,6 @@ func (m MsgMint) GetSigners() []sdk.AccAddress {
 }
 
 var _ sdk.Msg = (*MsgBurn)(nil)
-
-// Route implements Msg.
-func (m MsgBurn) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgBurn) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgBurn) ValidateBasic() error {
@@ -312,11 +257,6 @@ func (m MsgBurn) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes implements Msg.
-func (m MsgBurn) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-}
-
 // GetSigners implements Msg
 func (m MsgBurn) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.From)
@@ -324,12 +264,6 @@ func (m MsgBurn) GetSigners() []sdk.AccAddress {
 }
 
 var _ sdk.Msg = (*MsgOperatorBurn)(nil)
-
-// Route implements Msg.
-func (m MsgOperatorBurn) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgOperatorBurn) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgOperatorBurn) ValidateBasic() error {
@@ -351,11 +285,6 @@ func (m MsgOperatorBurn) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes implements Msg.
-func (m MsgOperatorBurn) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-}
-
 // GetSigners implements Msg
 func (m MsgOperatorBurn) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.Proxy)
@@ -363,12 +292,6 @@ func (m MsgOperatorBurn) GetSigners() []sdk.AccAddress {
 }
 
 var _ sdk.Msg = (*MsgModify)(nil)
-
-// Route implements Msg.
-func (m MsgModify) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgModify) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgModify) ValidateBasic() error {
@@ -395,11 +318,6 @@ func (m MsgModify) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-// GetSignBytes implements Msg.
-func (m MsgModify) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
 }
 
 // GetSigners implements Msg

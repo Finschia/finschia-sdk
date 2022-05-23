@@ -11,6 +11,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgSend{},
 		&MsgOperatorSend{},
 		&MsgAuthorizeOperator{},
+		&MsgRevokeOperator{},
 		&MsgIssue{},
 		&MsgGrant{},
 		&MsgAbandon{},

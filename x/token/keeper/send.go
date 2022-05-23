@@ -31,6 +31,11 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, classID string, approver, pro
 	}
 
 	k.setAuthorization(ctx, classID, approver, proxy)
+
+	if !k.accountKeeper.HasAccount(ctx, proxy) {
+		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, proxy))
+	}
+
 	return nil
 }
 
@@ -42,7 +47,7 @@ func (k Keeper) RevokeOperator(ctx sdk.Context, classID string, approver, proxy 
 		return sdkerrors.ErrNotFound.Wrapf("ID not exists: %s", classID)
 	}
 
-	k.setAuthorization(ctx, classID, approver, proxy)
+	k.deleteAuthorization(ctx, classID, approver, proxy)
 	return nil
 }
 

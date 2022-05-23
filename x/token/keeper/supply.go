@@ -53,7 +53,7 @@ func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.Acc
 
 func (k Keeper) issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.AccAddress, amount sdk.Int) error {
 	if _, err := k.GetClass(ctx, class.ContractId); err == nil {
-		return sdkerrors.ErrNotFound.Wrapf("ID already exists: %s")
+		return sdkerrors.ErrNotFound.Wrapf("ID already exists: %s", class.ContractId)
 	}
 	if err := k.setClass(ctx, class); err != nil {
 		return err
@@ -163,14 +163,14 @@ func (k Keeper) burn(ctx sdk.Context, contractID string, from sdk.AccAddress, am
 	return nil
 }
 
-func (k Keeper) OperatorBurn(ctx sdk.Context, contractID string, proxy, from sdk.AccAddress, amount sdk.Int) error {
-	if err := k.operatorBurn(ctx, contractID, proxy, from, amount); err != nil {
+func (k Keeper) OperatorBurn(ctx sdk.Context, contractID string, operator, from sdk.AccAddress, amount sdk.Int) error {
+	if err := k.operatorBurn(ctx, contractID, operator, from, amount); err != nil {
 		return err
 	}
 
 	event := token.EventBurned{
 		ContractId: contractID,
-		Operator:   proxy.String(),
+		Operator:   operator.String(),
 		From:       from.String(),
 		Amount:     amount,
 	}
@@ -178,11 +178,11 @@ func (k Keeper) OperatorBurn(ctx sdk.Context, contractID string, proxy, from sdk
 	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
-func (k Keeper) operatorBurn(ctx sdk.Context, contractID string, proxy, from sdk.AccAddress, amount sdk.Int) error {
-	grant := k.GetGrant(ctx, contractID, proxy, token.Permission_Burn)
-	authorization := k.GetAuthorization(ctx, contractID, from, proxy)
-	if grant == nil || authorization == nil || true {
-		return sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s tokens from %s", proxy, token.Permission_Burn.String(), from)
+func (k Keeper) operatorBurn(ctx sdk.Context, contractID string, operator, from sdk.AccAddress, amount sdk.Int) error {
+	grant := k.GetGrant(ctx, contractID, operator, token.Permission_Burn)
+	authorization := k.GetAuthorization(ctx, contractID, from, operator)
+	if grant == nil || authorization == nil {
+		return sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s tokens from %s", operator, token.Permission_Burn, from)
 	}
 
 	if err := k.burnToken(ctx, contractID, from, amount); err != nil {
@@ -280,10 +280,6 @@ func (k Keeper) Modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, 
 }
 
 func (k Keeper) modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, changes []token.Pair) error {
-	if k.GetGrant(ctx, classID, grantee, token.Permission_Modify) == nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s", grantee, token.Permission_Modify.String())
-	}
-
 	class, err := k.GetClass(ctx, classID)
 	if err != nil {
 		return err
@@ -316,6 +312,7 @@ func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.A
 
 	event := token.EventGrant{
 		ContractId: contractID,
+		Granter:    granter.String(),
 		Grantee:    grantee.String(),
 		Permission: permission.String(),
 	}
@@ -356,16 +353,6 @@ func (k Keeper) GetGrant(ctx sdk.Context, classID string, grantee sdk.AccAddress
 	}
 
 	return grant
-}
-
-func (k Keeper) GetGrants(ctx sdk.Context) []token.Grant {
-	var grants []token.Grant
-	k.iterateGrants(ctx, func(classID string, grant token.Grant) (stop bool) {
-		grants = append(grants, grant)
-		return false
-	})
-
-	return grants
 }
 
 func (k Keeper) setGrant(ctx sdk.Context, classID string, grantee sdk.AccAddress, permission token.Permission) {

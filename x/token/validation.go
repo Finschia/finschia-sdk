@@ -77,14 +77,14 @@ func validatePermission(permission string) error {
 
 func validateChange(change Pair) error {
 	validators := map[AttributeKey]func(string) error{
-		AttributeKey_Unspecified: func(string) error {
-			return sdkerrors.ErrInvalidRequest.Wrapf("Invalid field: %s", change.Field)
-		},
 		AttributeKey_Name:     validateName,
 		AttributeKey_ImageURI: validateImageURI,
 		AttributeKey_Meta:     validateMeta,
 	}
 
-	validator := validators[AttributeKey(AttributeKey_value[change.Field])]
+	validator, ok := validators[AttributeKey(AttributeKey_value[change.Field])]
+	if !ok {
+		return sdkerrors.ErrInvalidRequest.Wrapf("Invalid field: %s", change.Field)
+	}
 	return validator(change.Value)
 }

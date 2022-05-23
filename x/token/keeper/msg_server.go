@@ -202,7 +202,13 @@ func (s msgServer) OperatorBurn(c context.Context, req *token.MsgOperatorBurn) (
 // Modify defines a method to modify a token metadata
 func (s msgServer) Modify(c context.Context, req *token.MsgModify) (*token.MsgModifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.Modify(ctx, req.ContractId, sdk.AccAddress(req.Owner), req.Changes); err != nil {
+
+	grantee := sdk.AccAddress(req.Owner)
+	if s.keeper.GetGrant(ctx, req.ContractId, grantee, token.Permission_Modify) == nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s", grantee, token.Permission_Modify)
+	}
+
+	if err := s.keeper.Modify(ctx, req.ContractId, grantee, req.Changes); err != nil {
 		return nil, err
 	}
 

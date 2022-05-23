@@ -174,10 +174,10 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 	store := ctx.KVStore(s.keeper.storeKey)
 	grantStore := prefix.NewStore(store, grantKeyPrefixByGrantee(req.ContractId, sdk.AccAddress(req.Grantee)))
 	var grants []token.Grant
-	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
-		_, grantee, permission := splitGrantKey(key)
+	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, _ []byte) error {
+		permission := token.Permission(key[0])
 		grants = append(grants, token.Grant{
-			Grantee:    grantee.String(),
+			Grantee:    req.Grantee,
 			Permission: permission.String(),
 		})
 		return nil
@@ -227,10 +227,10 @@ func (s queryServer) OperatorAuthorizations(c context.Context, req *token.QueryO
 	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByProxy(req.ContractId, sdk.AccAddress(req.Proxy)))
 	var authorizations []token.Authorization
 	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key []byte, value []byte) error {
-		_, approver, proxy := splitAuthorizationKey(key)
+		approver := sdk.AccAddress(key)
 		authorizations = append(authorizations, token.Authorization{
 			Approver: approver.String(),
-			Proxy:    proxy.String(),
+			Proxy:    req.Proxy,
 		})
 		return nil
 	})

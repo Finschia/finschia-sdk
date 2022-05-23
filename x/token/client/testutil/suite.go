@@ -27,7 +27,7 @@ type IntegrationTestSuite struct {
 	vendor   sdk.AccAddress
 	customer sdk.AccAddress
 
-	classes []token.Token
+	classes []token.TokenClass
 
 	balance sdk.Int
 }
@@ -52,16 +52,16 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.vendor = s.createAccount("vendor")
 	s.customer = s.createAccount("customer")
 
-	s.classes = []token.Token{
+	s.classes = []token.TokenClass{
 		{
-			Id:       "678c146a",
+			ContractId:       "678c146a",
 			Name:     "test",
 			Symbol:   "ZERO",
 			Decimals: 8,
 			Mintable: true,
 		},
 		{
-			Id:       "9be17165",
+			ContractId:       "9be17165",
 			Name:     "test",
 			Symbol:   "ONE",
 			Decimals: 8,
@@ -75,9 +75,9 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.createClass(s.vendor, s.vendor, s.classes[1].Name, s.classes[1].Symbol, s.balance, s.classes[1].Mintable)
 	s.createClass(s.vendor, s.customer, s.classes[0].Name, s.classes[0].Symbol, s.balance, s.classes[0].Mintable)
 
-	// customer approves vendor to transfer its tokens of the both classes, so vendor can do transferFrom later.
+	// customer approves vendor to transfer its tokens of the both classes, so vendor can do Msg/OperatorBurn later.
 	for _, class := range s.classes {
-		s.approve(class.Id, s.customer, s.vendor)
+		s.authorizeOperator(class.ContractId, s.customer, s.vendor)
 	}
 
 	s.setupHeight, err = s.network.LatestHeight()
@@ -129,16 +129,16 @@ func (s *IntegrationTestSuite) createAccount(uid string) sdk.AccAddress {
 	return addr
 }
 
-func (s *IntegrationTestSuite) approve(classID string, approver, proxy sdk.AccAddress) {
+func (s *IntegrationTestSuite) authorizeOperator(classID string, holder, operator sdk.AccAddress) {
 	val := s.network.Validators[0]
 	args := append([]string{
 		classID,
-		approver.String(),
-		proxy.String(),
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, approver),
+		holder.String(),
+		operator.String(),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, holder),
 	}, commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdApprove(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdAuthorizeOperator(), args)
 	s.Require().NoError(err)
 
 	var res sdk.TxResponse

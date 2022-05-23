@@ -31,12 +31,11 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid address in a balance": {
 			&token.GenesisState{
-				Balances: []token.Balance{
+				Balances: []token.ContractBalances{
 					{
-						Address: "INVALID",
-						Tokens: []token.FT{
+						ContractId: "deadbeef",
+						Balances: []token.Balance{
 							{
-								ClassId: "deadbeef",
 								Amount:  sdk.OneInt(),
 							},
 						},
@@ -47,12 +46,12 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid amount in a balance": {
 			&token.GenesisState{
-				Balances: []token.Balance{
+				Balances: []token.ContractBalances{
 					{
-						Address: addr.String(),
-						Tokens: []token.FT{
+						ContractId: "deadbeef",
+						Balances: []token.Balance{
 							{
-								ClassId: "deadbeef",
+								Address: addr.String(),
 								Amount:  sdk.ZeroInt(),
 							},
 						},
@@ -63,9 +62,9 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"empty tokens in a balance": {
 			&token.GenesisState{
-				Balances: []token.Balance{
+				Balances: []token.ContractBalances{
 					{
-						Address: addr.String(),
+						ContractId: "deadbeef",
 					},
 				},
 			},
@@ -73,8 +72,8 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid id of class": {
 			&token.GenesisState{
-				Classes: []token.Token{{
-					Id:     "invalid",
+				Classes: []token.TokenClass{{
+					ContractId:     "invalid",
 					Name:   "test",
 					Symbol: "TT",
 				}},
@@ -83,8 +82,8 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid name of class": {
 			&token.GenesisState{
-				Classes: []token.Token{{
-					Id:     "deadbeef",
+				Classes: []token.TokenClass{{
+					ContractId:     "deadbeef",
 					Name:   string(make([]rune, 21)),
 					Symbol: "TT",
 				}},
@@ -93,8 +92,8 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid symbol of class": {
 			&token.GenesisState{
-				Classes: []token.Token{{
-					Id:     "deadbeef",
+				Classes: []token.TokenClass{{
+					ContractId:     "deadbeef",
 					Name:   "test",
 					Symbol: "tt",
 				}},
@@ -103,8 +102,8 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid image uri of class": {
 			&token.GenesisState{
-				Classes: []token.Token{{
-					Id:       "deadbeef",
+				Classes: []token.TokenClass{{
+					ContractId:       "deadbeef",
 					Name:     "test",
 					Symbol:   "TT",
 					ImageUri: string(make([]rune, 1001)),
@@ -114,8 +113,8 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid meta of class": {
 			&token.GenesisState{
-				Classes: []token.Token{{
-					Id:     "deadbeef",
+				Classes: []token.TokenClass{{
+					ContractId:     "deadbeef",
 					Name:   "test",
 					Symbol: "TT",
 					Meta:   string(make([]rune, 1001)),
@@ -125,8 +124,8 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid decimals of class": {
 			&token.GenesisState{
-				Classes: []token.Token{{
-					Id:       "deadbeef",
+				Classes: []token.TokenClass{{
+					ContractId:       "deadbeef",
 					Name:     "test",
 					Symbol:   "TT",
 					Decimals: -1,
@@ -136,36 +135,44 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid grantee of grant": {
 			&token.GenesisState{
-				Grants: []token.Grant{{
-					Grantee: "invalid",
-					Action:  token.ActionMint,
+				Grants: []token.ContractGrants{{
+					ContractId: "deadbeef",
+					Grants: []token.Grant{{
+						Permission: token.Permission_Mint.String(),
+					}},
 				}},
 			},
 			false,
 		},
 		"invalid action of grant": {
 			&token.GenesisState{
-				Grants: []token.Grant{{
-					Grantee: addr.String(),
-					Action:  "invalid",
+				Grants: []token.ContractGrants{{
+					ContractId: "deadbeef",
+					Grants: []token.Grant{{
+						Grantee: addr.String(),
+					}},
 				}},
 			},
 			false,
 		},
-		"invalid approver of approval": {
+		"invalid approver of authorization": {
 			&token.GenesisState{
-				Approves: []token.Approve{{
-					Approver: "invalid",
-					Proxy:    addr.String(),
+				Authorizations: []token.ContractAuthorizations{{
+					ContractId: "deadbeef",
+					Authorizations: []token.Authorization{{
+						Proxy:    addr.String(),
+					}},
 				}},
 			},
 			false,
 		},
-		"invalid proxy of approval": {
+		"invalid proxy of authorization": {
 			&token.GenesisState{
-				Approves: []token.Approve{{
-					Approver: addr.String(),
-					Proxy:    "invalid",
+				Authorizations: []token.ContractAuthorizations{{
+					ContractId: "deadbeef",
+					Authorizations: []token.Authorization{{
+						Approver: addr.String(),
+					}},
 				}},
 			},
 			false,

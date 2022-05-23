@@ -42,46 +42,51 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.queryServer = keeper.NewQueryServer(s.keeper)
 	s.msgServer = keeper.NewMsgServer(s.keeper)
 
-	s.vendor = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	s.operator = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	s.customer = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	createAddress := func() sdk.AccAddress {
+		return sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+	s.vendor = createAddress()
+	s.operator = createAddress()
+	s.customer = createAddress()
 
 	s.balance = sdk.NewInt(1000)
 
 	// create a mintable class
 	s.classID = "f00dbabe"
-	class := token.Token{
-		Id:       s.classID,
+	class := token.TokenClass{
+		ContractId:       s.classID,
 		Name:     "Mintable",
 		Symbol:   "OK",
 		Mintable: true,
 	}
 	err := s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
 	s.Require().NoError(err)
-	amount := []token.FT{{ClassId: s.classID, Amount: s.balance}}
-	err = s.keeper.Burn(s.ctx, s.vendor, amount)
+	err = s.keeper.Burn(s.ctx, s.classID, s.vendor, s.balance)
 	s.Require().NoError(err)
 
 	// create another class for the query test
-	class.Id = "deadbeef"
+	class.ContractId = "deadbeef"
 	err = s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
 	s.Require().NoError(err)
 
 	// mint to the others
 	for _, to := range []sdk.AccAddress{s.vendor, s.operator, s.customer} {
-		err = s.keeper.Mint(s.ctx, s.vendor, to, amount)
+		err = s.keeper.Mint(s.ctx, s.classID, s.vendor, to, s.balance)
 		s.Require().NoError(err)
 	}
 
 	// grant operator
-	for _, action := range []string{token.ActionMint, token.ActionBurn} {
-		err = s.keeper.Grant(s.ctx, s.vendor, s.operator, s.classID, action)
+	for _, permission := range []token.Permission{
+		token.Permission_Mint,
+		token.Permission_Burn,
+	} {
+		err = s.keeper.Grant(s.ctx, s.classID, s.vendor, s.operator, permission)
 		s.Require().NoError(err)
 	}
 
-	// approve operator
-	for _, approver := range []sdk.AccAddress{s.vendor, s.customer} {
-		err = s.keeper.Approve(s.ctx, approver, s.operator, s.classID)
+	// authorize operator
+	for _, holder := range []sdk.AccAddress{s.vendor, s.customer} {
+		err = s.keeper.AuthorizeOperator(s.ctx, s.classID, holder, s.operator)
 		s.Require().NoError(err)
 	}
 }
