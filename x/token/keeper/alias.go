@@ -55,10 +55,6 @@ func (k Keeper) iterateClasses(ctx sdk.Context, fn func(class token.TokenClass) 
 	}
 }
 
-func (k Keeper) iterateGrants(ctx sdk.Context, fn func(classID string, grant token.Grant) (stop bool)) {
-	k.iterateGrantsImpl(ctx, grantKeyPrefix, fn)
-}
-
 func (k Keeper) iterateContractGrants(ctx sdk.Context, classID string, fn func(grant token.Grant) (stop bool)) {
 	k.iterateGrantsImpl(ctx, grantKeyPrefixByContractID(classID), func(_ string, grant token.Grant) (stop bool) {
 		return fn(grant)
@@ -83,10 +79,6 @@ func (k Keeper) iterateGrantsImpl(ctx sdk.Context, prefix []byte, fn func(classI
 			break
 		}
 	}
-}
-
-func (k Keeper) iterateAuthorizations(ctx sdk.Context, fn func(classID string, authorization token.Authorization) (stop bool)) {
-	k.iterateAuthorizationsImpl(ctx, authorizationKeyPrefix, fn)
 }
 
 func (k Keeper) iterateContractAuthorizations(ctx sdk.Context, classID string, fn func(authorization token.Authorization) (stop bool)) {

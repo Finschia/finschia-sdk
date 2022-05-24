@@ -151,7 +151,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokens() {
 			[]string{},
 			true,
 			&token.QueryTokenClassesResponse{
-				Classes:     s.classes,
+				Classes:    s.classes,
 				Pagination: &query.PageResponse{},
 			},
 		},
@@ -204,16 +204,16 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGranteeGrants() {
 			&token.QueryGranteeGrantsResponse{
 				Grants: []token.Grant{
 					{
-						Grantee: s.vendor.String(),
-						Permission:  token.Permission_Modify.String(),
+						Grantee:    s.vendor.String(),
+						Permission: token.Permission_Modify.String(),
 					},
 					{
-						Grantee: s.vendor.String(),
-						Permission:  token.Permission_Mint.String(),
+						Grantee:    s.vendor.String(),
+						Permission: token.Permission_Mint.String(),
 					},
 					{
-						Grantee: s.vendor.String(),
-						Permission:  token.Permission_Burn.String(),
+						Grantee:    s.vendor.String(),
+						Permission: token.Permission_Burn.String(),
 					},
 				},
 				Pagination: &query.PageResponse{

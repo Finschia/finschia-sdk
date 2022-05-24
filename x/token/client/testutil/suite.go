@@ -54,18 +54,18 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	s.classes = []token.TokenClass{
 		{
-			ContractId:       "678c146a",
-			Name:     "test",
-			Symbol:   "ZERO",
-			Decimals: 8,
-			Mintable: true,
+			ContractId: "678c146a",
+			Name:       "test",
+			Symbol:     "ZERO",
+			Decimals:   8,
+			Mintable:   true,
 		},
 		{
-			ContractId:       "9be17165",
-			Name:     "test",
-			Symbol:   "ONE",
-			Decimals: 8,
-			Mintable: true,
+			ContractId: "9be17165",
+			Name:       "test",
+			Symbol:     "ONE",
+			Decimals:   8,
+			Mintable:   true,
 		},
 	}
 

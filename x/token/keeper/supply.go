@@ -7,7 +7,7 @@ import (
 )
 
 func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.AccAddress, amount sdk.Int) error {
-	if err := k.issue(ctx, class, owner, to, amount); err != nil {
+	if err := k.issue(ctx, class); err != nil {
 		return err
 	}
 
@@ -51,7 +51,7 @@ func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.Acc
 	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
-func (k Keeper) issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.AccAddress, amount sdk.Int) error {
+func (k Keeper) issue(ctx sdk.Context, class token.TokenClass) error {
 	if _, err := k.GetClass(ctx, class.ContractId); err == nil {
 		return sdkerrors.ErrNotFound.Wrapf("ID already exists: %s", class.ContractId)
 	}
@@ -267,7 +267,7 @@ func (k Keeper) setBurnt(ctx sdk.Context, classID string, amount sdk.Int) error 
 }
 
 func (k Keeper) Modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, changes []token.Pair) error {
-	if err := k.modify(ctx, classID, grantee, changes); err != nil {
+	if err := k.modify(ctx, classID, changes); err != nil {
 		return err
 	}
 
@@ -279,7 +279,7 @@ func (k Keeper) Modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, 
 	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
-func (k Keeper) modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, changes []token.Pair) error {
+func (k Keeper) modify(ctx sdk.Context, classID string, changes []token.Pair) error {
 	class, err := k.GetClass(ctx, classID)
 	if err != nil {
 		return err
