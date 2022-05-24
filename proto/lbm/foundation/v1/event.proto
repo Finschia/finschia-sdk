@@ -16,11 +16,6 @@ message EventUpdateFoundationParams {
   Params params = 1;
 }
 
-// EventUpdateValidatorAuths is emitted after updating validator auth info.
-message EventUpdateValidatorAuths {
-  repeated ValidatorAuth auths = 1 [(gogoproto.nullable) = false];
-}
-
 // EventFundTreasury is an event emitted when one funds the treasury.
 message EventFundTreasury {
   string   from                    = 1;
@@ -76,4 +71,23 @@ message EventExec {
 message EventLeaveFoundation {
   // address is the account address of the foundation member.
   string address = 1;
+}
+
+// EventGrant is emitted on Msg/Grant
+message EventGrant {
+  string granter = 1;
+  // the address of the grantee.
+  string grantee = 2;
+  // authorization granted.
+  google.protobuf.Any authorization = 3
+      [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/authz.Authorization"];
+}
+
+// EventRevoke is emitted on Msg/Revoke
+message EventRevoke {
+  string granter = 1;
+  // address of the grantee.
+  string grantee = 2;
+  // message type url for which an autorization is revoked.
+  string msg_type_url = 3;
 }

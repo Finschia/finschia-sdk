@@ -13,6 +13,8 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/keeper"
+	"github.com/line/lbm-sdk/x/stakingplus"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
 )
 
@@ -28,16 +30,12 @@ func TestCleanup(t *testing.T) {
 
 	k := app.FoundationKeeper
 
-	// add auths
-	auth := foundation.ValidatorAuth{
-		OperatorAddress: valAddr.String(),
-		CreationAllowed: true,
-	}
-	require.NoError(t, k.SetValidatorAuth(ctx, auth))
+	// add grant
+	require.NoError(t, k.Grant(ctx, govtypes.ModuleName, delAddr, &stakingplus.CreateValidatorAuthorization{}))
 
 	// cleanup
 	k.Cleanup(ctx)
-	require.Empty(t, k.GetValidatorAuths(ctx))
+	require.Empty(t, k.GetGrants(ctx))
 }
 
 type KeeperTestSuite struct {
@@ -177,6 +175,10 @@ func (s *KeeperTestSuite) SetupTest() {
 		})
 		s.Require().NoError(err)
 	}
+
+	// grant stranger to receive foundation treasury
+	err = s.keeper.Grant(s.ctx, foundation.ModuleName, s.stranger, &foundation.ReceiveFromTreasuryAuthorization{})
+	s.Require().NoError(err)
 }
 
 func TestKeeperTestSuite(t *testing.T) {

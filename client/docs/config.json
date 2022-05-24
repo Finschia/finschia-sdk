@@ -159,7 +159,8 @@
           "Proposals": "FoundationProposals",
           "Vote": "FoundationVote",
           "Votes": "FoundationVotes",
-          "TallyResult": "FoundationTallyResult"
+          "TallyResult": "FoundationTallyResult",
+          "Grants": "FoundationGrants"
         }
       }
     },

@@ -1,6 +1,8 @@
 package foundation
 
 import (
+	"github.com/gogo/protobuf/proto"
+	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
@@ -8,30 +10,34 @@ import (
 // DefaultGenesisState creates a default GenesisState object
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
-		Params: &Params{
-			Enabled: false,
-		},
+		Params: DefaultParams(),
 	}
+}
+
+func DefaultParams() *Params {
+	return &Params{
+		Enabled:       false,
+		FoundationTax: sdk.ZeroDec(),
+	}
+}
+
+func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	for _, ga := range data.Authorizations {
+		err := ga.UnpackInterfaces(unpacker)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // ValidateGenesis validates the provided genesis state to ensure the
 // expected invariants holds.
 func ValidateGenesis(data GenesisState) error {
 	if data.Params != nil {
-		// validator auths are redundant where foundation is off
-		if !data.Params.Enabled && len(data.ValidatorAuths) != 0 {
-			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "redundant validator auths for disabled foundation")
-		}
-
 		if data.Params.FoundationTax.IsNegative() ||
 			data.Params.FoundationTax.GT(sdk.OneDec()) {
 			return sdkerrors.ErrInvalidRequest.Wrap("foundation tax must be >= 0 and <= 1")
-		}
-	}
-
-	for _, auth := range data.ValidatorAuths {
-		if err := sdk.ValidateValAddress(auth.OperatorAddress); err != nil {
-			return err
 		}
 	}
 
@@ -93,5 +99,56 @@ func ValidateGenesis(data GenesisState) error {
 		}
 	}
 
+	for _, ga := range data.Authorizations {
+		if ga.GetAuthorization() == nil {
+			return sdkerrors.ErrInvalidType.Wrap("invalid authorization")
+		}
+
+		if err := sdk.ValidateAccAddress(ga.Grantee); err != nil {
+			return err
+		}
+	}
+
 	return nil
+}
+
+func (g GrantAuthorization) GetAuthorization() Authorization {
+	if g.Authorization == nil {
+		return nil
+	}
+
+	a, ok := g.Authorization.GetCachedValue().(Authorization)
+	if !ok {
+		return nil
+	}
+	return a
+}
+
+func (g *GrantAuthorization) SetAuthorization(a Authorization) error {
+	msg, ok := a.(proto.Message)
+	if !ok {
+		return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
+	}
+
+	any, err := codectypes.NewAnyWithValue(msg)
+	if err != nil {
+		return err
+	}
+	g.Authorization = any
+
+	return nil
+}
+
+// for the tests
+func (g GrantAuthorization) WithAuthorization(authorization Authorization) *GrantAuthorization {
+	grant := g
+	if err := grant.SetAuthorization(authorization); err != nil {
+		return nil
+	}
+	return &grant
+}
+
+func (g GrantAuthorization) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	var authorization Authorization
+	return unpacker.UnpackAny(g.Authorization, &authorization)
 }

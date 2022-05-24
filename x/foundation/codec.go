@@ -23,6 +23,8 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgVote{},
 		&MsgExec{},
 		&MsgLeaveFoundation{},
+		&MsgGrant{},
+		&MsgRevoke{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
@@ -32,5 +34,10 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		(*DecisionPolicy)(nil),
 		&ThresholdDecisionPolicy{},
 		&PercentageDecisionPolicy{},
+	)
+
+	registry.RegisterImplementations(
+		(*Authorization)(nil),
+		&ReceiveFromTreasuryAuthorization{},
 	)
 }

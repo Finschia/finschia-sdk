@@ -20,20 +20,10 @@ import (
 	"github.com/line/lbm-sdk/x/foundation/keeper"
 )
 
-var (
-	_ module.AppModule      = AppModule{}
-	_ module.AppModuleBasic = AppModuleBasic{}
-)
+var _ module.AppModuleBasic = AppModuleBasic{}
 
 // AppModuleBasic defines the basic application module used by the foundation module.
-type AppModuleBasic struct {
-	cdc codec.Codec
-}
-
-// NewAppModuleBasic creates a new AppModuleBasic object
-func NewAppModuleBasic() AppModuleBasic {
-	return AppModuleBasic{}
-}
+type AppModuleBasic struct{}
 
 // Name returns the ModuleName
 func (AppModuleBasic) Name() string {
@@ -85,6 +75,8 @@ func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry
 
 //____________________________________________________________________________
 
+var _ module.AppModule = AppModule{}
+
 // AppModule implements an application module for the foundation module.
 type AppModule struct {
 	AppModuleBasic
@@ -96,9 +88,8 @@ type AppModule struct {
 // NewAppModule creates a new AppModule object
 func NewAppModule(cdc codec.Codec, keeper keeper.Keeper, stk foundation.StakingKeeper) AppModule {
 	return AppModule{
-		AppModuleBasic: AppModuleBasic{cdc: cdc},
-		keeper:         keeper,
-		stakingKeeper:  stk,
+		keeper:        keeper,
+		stakingKeeper: stk,
 	}
 }
 

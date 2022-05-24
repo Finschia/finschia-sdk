@@ -1,8 +1,6 @@
 package foundation
 
 import (
-	"github.com/line/lbm-sdk/codec/legacy"
-
 	"github.com/gogo/protobuf/proto"
 
 	codectypes "github.com/line/lbm-sdk/codec/types"
@@ -12,28 +10,17 @@ import (
 
 var _ sdk.Msg = (*MsgFundTreasury)(nil)
 
-// Route implements Msg.
-func (m MsgFundTreasury) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgFundTreasury) Type() string { return sdk.MsgTypeURL(&m) }
-
 // ValidateBasic implements Msg.
 func (m MsgFundTreasury) ValidateBasic() error {
 	if err := sdk.ValidateAccAddress(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
-	if !m.Amount.IsAllPositive() {
+	if !m.Amount.IsValid() || !m.Amount.IsAllPositive() {
 		return sdkerrors.ErrInvalidCoins.Wrap(m.Amount.String())
 	}
 
 	return nil
-}
-
-// GetSignBytes implements Msg.
-func (m MsgFundTreasury) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
 }
 
 // GetSigners implements Msg.
@@ -43,12 +30,6 @@ func (m MsgFundTreasury) GetSigners() []sdk.AccAddress {
 }
 
 var _ sdk.Msg = (*MsgWithdrawFromTreasury)(nil)
-
-// Route implements Msg.
-func (m MsgWithdrawFromTreasury) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgWithdrawFromTreasury) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgWithdrawFromTreasury) ValidateBasic() error {
@@ -60,16 +41,11 @@ func (m MsgWithdrawFromTreasury) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
-	if !m.Amount.IsAllPositive() {
+	if !m.Amount.IsValid() || !m.Amount.IsAllPositive() {
 		return sdkerrors.ErrInvalidCoins.Wrap(m.Amount.String())
 	}
 
 	return nil
-}
-
-// GetSignBytes implements Msg.
-func (m MsgWithdrawFromTreasury) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
 }
 
 // GetSigners implements Msg.
@@ -79,12 +55,6 @@ func (m MsgWithdrawFromTreasury) GetSigners() []sdk.AccAddress {
 }
 
 var _ sdk.Msg = (*MsgUpdateMembers)(nil)
-
-// Route implements Msg.
-func (m MsgUpdateMembers) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgUpdateMembers) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgUpdateMembers) ValidateBasic() error {
@@ -102,11 +72,6 @@ func (m MsgUpdateMembers) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes implements Msg.
-func (m MsgUpdateMembers) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-}
-
 // GetSigners implements Msg.
 func (m MsgUpdateMembers) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.Operator)
@@ -114,12 +79,6 @@ func (m MsgUpdateMembers) GetSigners() []sdk.AccAddress {
 }
 
 var _ sdk.Msg = (*MsgUpdateDecisionPolicy)(nil)
-
-// Route implements Msg.
-func (m MsgUpdateDecisionPolicy) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgUpdateDecisionPolicy) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgUpdateDecisionPolicy) ValidateBasic() error {
@@ -136,11 +95,6 @@ func (m MsgUpdateDecisionPolicy) ValidateBasic() error {
 	}
 
 	return nil
-}
-
-// GetSignBytes implements Msg.
-func (m MsgUpdateDecisionPolicy) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
 }
 
 // GetSigners implements Msg.
@@ -183,12 +137,6 @@ func (m MsgUpdateDecisionPolicy) UnpackInterfaces(unpacker codectypes.AnyUnpacke
 
 var _ sdk.Msg = (*MsgSubmitProposal)(nil)
 
-// Route implements Msg.
-func (m MsgSubmitProposal) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgSubmitProposal) Type() string { return sdk.MsgTypeURL(&m) }
-
 // ValidateBasic implements Msg.
 func (m MsgSubmitProposal) ValidateBasic() error {
 	if err := validateProposers(m.Proposers); err != nil {
@@ -227,11 +175,6 @@ func (m MsgSubmitProposal) UnpackInterfaces(unpacker codectypes.AnyUnpacker) err
 	return UnpackInterfaces(unpacker, m.Messages)
 }
 
-// GetSignBytes implements Msg.
-func (m MsgSubmitProposal) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-}
-
 // GetSigners implements Msg.
 func (m MsgSubmitProposal) GetSigners() []sdk.AccAddress {
 	signers := make([]sdk.AccAddress, len(m.Proposers))
@@ -242,12 +185,6 @@ func (m MsgSubmitProposal) GetSigners() []sdk.AccAddress {
 }
 
 var _ sdk.Msg = (*MsgWithdrawProposal)(nil)
-
-// Route implements Msg.
-func (m MsgWithdrawProposal) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgWithdrawProposal) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgWithdrawProposal) ValidateBasic() error {
@@ -262,11 +199,6 @@ func (m MsgWithdrawProposal) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes implements Msg.
-func (m MsgWithdrawProposal) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-}
-
 // GetSigners implements Msg.
 func (m MsgWithdrawProposal) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.Address)
@@ -274,12 +206,6 @@ func (m MsgWithdrawProposal) GetSigners() []sdk.AccAddress {
 }
 
 var _ sdk.Msg = (*MsgVote)(nil)
-
-// Route implements Msg.
-func (m MsgVote) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgVote) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgVote) ValidateBasic() error {
@@ -302,11 +228,6 @@ func (m MsgVote) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes implements Msg.
-func (m MsgVote) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-}
-
 // GetSigners implements Msg.
 func (m MsgVote) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.Voter)
@@ -314,12 +235,6 @@ func (m MsgVote) GetSigners() []sdk.AccAddress {
 }
 
 var _ sdk.Msg = (*MsgExec)(nil)
-
-// Route implements Msg.
-func (m MsgExec) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgExec) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgExec) ValidateBasic() error {
@@ -334,11 +249,6 @@ func (m MsgExec) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes implements Msg.
-func (m MsgExec) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-}
-
 // GetSigners implements Msg.
 func (m MsgExec) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.Signer)
@@ -346,12 +256,6 @@ func (m MsgExec) GetSigners() []sdk.AccAddress {
 }
 
 var _ sdk.Msg = (*MsgLeaveFoundation)(nil)
-
-// Route implements Msg.
-func (m MsgLeaveFoundation) Route() string { return RouterKey }
-
-// Type implements Msg.
-func (m MsgLeaveFoundation) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgLeaveFoundation) ValidateBasic() error {
@@ -362,48 +266,89 @@ func (m MsgLeaveFoundation) ValidateBasic() error {
 	return nil
 }
 
-// GetSignBytes implements Msg.
-func (m MsgLeaveFoundation) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-}
-
 // GetSigners implements Msg.
 func (m MsgLeaveFoundation) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.Address)
 	return []sdk.AccAddress{signer}
 }
 
-// var _ sdk.Msg = (*MsgXxx)(nil)
+var _ sdk.Msg = (*MsgGrant)(nil)
 
-// // Route implements Msg.
-// func (m MsgXxx) Route() string { return RouterKey }
+// ValidateBasic implements Msg.
+func (m MsgGrant) ValidateBasic() error {
+	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
 
-// // Type implements Msg.
-// func (m MsgXxx) Type() string { return sdk.MsgTypeURL(&m) }
+	if err := sdk.ValidateAccAddress(m.Grantee); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
+	}
 
-// // ValidateBasic implements Msg.
-// func (m MsgXxx) ValidateBasic() error {
-// 	if err := class.ValidateID(m.ClassId); err != nil {
-// 		return err
-// 	}
-// 	if err := sdk.ValidateAccAddress(m.Approver); err != nil {
-// 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid approver address: %s", m.Approver)
-// 	}
+	if a := m.GetAuthorization(); a != nil {
+		if err := a.ValidateBasic(); err != nil {
+			return err
+		}
+	} else {
+		return sdkerrors.ErrInvalidType.Wrap("invalid authorization")
+	}
 
-// 	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
-// 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid proxy address: %s", m.Proxy)
-// 	}
+	return nil
+}
 
-// 	return nil
-// }
+func (m MsgGrant) GetAuthorization() Authorization {
+	if m.Authorization == nil {
+		return nil
+	}
 
-// // GetSignBytes implements Msg.
-// func (m MsgXxx) GetSignBytes() []byte {
-// 	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
-// }
+	a, err := GetAuthorization(m.Authorization, "grant")
+	if err != nil {
+		return nil
+	}
+	return a
+}
 
-// // GetSigners implements Msg.
-// func (m MsgXxx) GetSigners() []sdk.AccAddress {
-// 	signer := sdk.AccAddress(m.Approver)
-// 	return []sdk.AccAddress{signer}
-// }
+func (m *MsgGrant) SetAuthorization(a Authorization) error {
+	any, err := SetAuthorization(a)
+	if err != nil {
+		return err
+	}
+	m.Authorization = any
+
+	return nil
+}
+
+func (m MsgGrant) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	var authorization Authorization
+	return unpacker.UnpackAny(m.Authorization, &authorization)
+}
+
+// GetSigners implements Msg.
+func (m MsgGrant) GetSigners() []sdk.AccAddress {
+	signer := sdk.AccAddress(m.Operator)
+	return []sdk.AccAddress{signer}
+}
+
+var _ sdk.Msg = (*MsgRevoke)(nil)
+
+// ValidateBasic implements Msg.
+func (m MsgRevoke) ValidateBasic() error {
+	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
+
+	if err := sdk.ValidateAccAddress(m.Grantee); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
+	}
+
+	if len(m.MsgTypeUrl) == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrapf("empty url")
+	}
+
+	return nil
+}
+
+// GetSigners implements Msg.
+func (m MsgRevoke) GetSigners() []sdk.AccAddress {
+	signer := sdk.AccAddress(m.Operator)
+	return []sdk.AccAddress{signer}
+}

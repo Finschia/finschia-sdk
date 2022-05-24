@@ -10,11 +10,14 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/keeper"
+	"github.com/line/lbm-sdk/x/stakingplus"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 func newParams(enabled bool) *foundation.Params {
-	return &foundation.Params{Enabled: enabled}
+	params := foundation.DefaultParams()
+	params.Enabled = enabled
+	return params
 }
 
 func newUpdateFoundationParamsProposal(params *foundation.Params) govtypes.Content {
@@ -49,26 +52,35 @@ func TestProposalHandler(t *testing.T) {
 
 	handler := keeper.NewProposalHandler(k)
 
+	msgTypeURL := stakingplus.CreateValidatorAuthorization{}.MsgTypeURL()
 	// test adding creation allowed validators
 	adding := newValidatorAuths([]sdk.ValAddress{valAddr}, true)
 	ap := newUpdateValidatorAuthsProposal(adding)
 	require.NoError(t, ap.ValidateBasic())
 	require.NoError(t, handler(ctx, ap))
-	require.Equal(t, adding, k.GetValidatorAuths(ctx))
+	for i := range adding {
+		grantee := sdk.ValAddress(adding[i].OperatorAddress).ToAccAddress()
+		_, err := k.GetAuthorization(ctx, govtypes.ModuleName, grantee, msgTypeURL)
+		require.NoError(t, err)
+	}
 
 	// test deleting creation allowed validators
 	deleting := newValidatorAuths([]sdk.ValAddress{valAddr}, false)
 	dp := newUpdateValidatorAuthsProposal(deleting)
 	require.NoError(t, dp.ValidateBasic())
 	require.NoError(t, handler(ctx, dp))
-	require.Equal(t, deleting, k.GetValidatorAuths(ctx))
+	for i := range deleting {
+		grantee := sdk.ValAddress(adding[i].OperatorAddress).ToAccAddress()
+		_, err := k.GetAuthorization(ctx, govtypes.ModuleName, grantee, msgTypeURL)
+		require.Error(t, err)
+	}
 
 	// disable foundation
 	params_off := newParams(false)
 	pp := newUpdateFoundationParamsProposal(params_off)
 	require.NoError(t, pp.ValidateBasic())
 	require.NoError(t, handler(ctx, pp))
-	require.Empty(t, k.GetValidatorAuths(ctx))
+	require.Empty(t, k.GetGrants(ctx))
 	require.Equal(t, params_off, k.GetParams(ctx))
 
 	// attempt to enable foundation, which fails
