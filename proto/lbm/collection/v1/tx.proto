@@ -1,0 +1,525 @@
+syntax = "proto3";
+package lbm.collection.v1;
+
+import "gogoproto/gogo.proto";
+import "lbm/collection/v1/collection.proto";
+
+option go_package = "github.com/line/lbm-sdk/x/collection";
+
+option (gogoproto.equal_all) = false;
+
+// Msg defines the collection Msg service.
+service Msg {
+  // Send defines a method to send tokens from one account to another account.
+  // Since: finschia
+  rpc Send(MsgSend) returns (MsgSendResponse);
+
+  // OperatorSend defines a method to send tokens from one account to another account by the operator.
+  // Since: finschia
+  rpc OperatorSend(MsgOperatorSend) returns (MsgOperatorSendResponse);
+
+  // TransferFT defines a method to send fungible tokens from one account to another account.
+  rpc TransferFT(MsgTransferFT) returns (MsgTransferFTResponse);
+
+  // TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator.
+  rpc TransferFTFrom(MsgTransferFTFrom) returns (MsgTransferFTFromResponse);
+
+  // TransferNFT defines a method to send non-fungible tokens from one account to another account.
+  rpc TransferNFT(MsgTransferNFT) returns (MsgTransferNFTResponse);
+
+  // TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator.
+  rpc TransferNFTFrom(MsgTransferNFTFrom) returns (MsgTransferNFTFromResponse);
+
+  // AuthorizeOperator allows one to send tokens on behalf of the approver.
+  rpc AuthorizeOperator(MsgAuthorizeOperator) returns (MsgAuthorizeOperatorResponse);
+
+  // RevokeOperator revokes the authorization of the operator to send the approver's token.
+  rpc RevokeOperator(MsgRevokeOperator) returns (MsgRevokeOperatorResponse);
+
+  // CreateContract defines a method to create a contract.
+  rpc CreateContract(MsgCreateContract) returns (MsgCreateContractResponse);
+
+  // IssueFT defines a method to create a class of fungible token.
+  rpc IssueFT(MsgIssueFT) returns (MsgIssueFTResponse);
+
+  // IssueNFT defines a method to create a class of non-fungible token.
+  rpc IssueNFT(MsgIssueNFT) returns (MsgIssueNFTResponse);
+
+  // MintFT defines a method to mint fungible tokens.
+  rpc MintFT(MsgMintFT) returns (MsgMintFTResponse);
+
+  // MintNFT defines a method to mint non-fungible tokens.
+  rpc MintNFT(MsgMintNFT) returns (MsgMintNFTResponse);
+
+  // BurnFT defines a method to burn fungible tokens.
+  rpc BurnFT(MsgBurnFT) returns (MsgBurnFTResponse);
+
+  // BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy.
+  rpc BurnFTFrom(MsgBurnFTFrom) returns (MsgBurnFTFromResponse);
+
+  // BurnNFT defines a method to burn non-fungible tokens.
+  rpc BurnNFT(MsgBurnNFT) returns (MsgBurnNFTResponse);
+
+  // BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy.
+  rpc BurnNFTFrom(MsgBurnNFTFrom) returns (MsgBurnNFTFromResponse);
+
+  // Burn defines a method to burn tokens.
+  // Since: finschia
+  rpc Burn(MsgBurn) returns (MsgBurnResponse);
+
+  // OperatorBurn defines a method to burn tokens of the holder by the operator.
+  // Since: finschia
+  rpc OperatorBurn(MsgOperatorBurn) returns (MsgOperatorBurnResponse);
+
+  // Modify defines a method to modify metadata.
+  rpc Modify(MsgModify) returns (MsgModifyResponse);
+
+  // Grant allows one to mint or burn tokens or modify metadata.
+  rpc Grant(MsgGrant) returns (MsgGrantResponse);
+
+  // Abandon abandons a permission.
+  rpc Abandon(MsgAbandon) returns (MsgAbandonResponse);
+
+  // Attach defines a method to attach a token to another token.
+  rpc Attach(MsgAttach) returns (MsgAttachResponse);
+
+  // Detach defines a method to detach a token from another token.
+  rpc Detach(MsgDetach) returns (MsgDetachResponse);
+
+  // OperatorAttach defines a method to attach a token to another token by operator.
+  rpc OperatorAttach(MsgOperatorAttach) returns (MsgOperatorAttachResponse);
+
+  // Detach defines a method to detach a token from another token by operator.
+  rpc OperatorDetach(MsgOperatorDetach) returns (MsgOperatorDetachResponse);
+}
+
+// MsgSend is the Msg/Send request type.
+// Since: finschia
+message MsgSend {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // the address which the transfer is from.
+  string from = 2;
+  // the address which the transfer is to.
+  string to = 3;
+  // the amount of the transfer.
+  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+// MsgSendResponse is the Msg/Send response type.
+// Since: finschia
+message MsgSendResponse {}
+
+// MsgOperatorSend is the Msg/OperatorSend request type.
+// Since: finschia
+message MsgOperatorSend {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // the address of the operator.
+  string operator = 2;
+  // the address which the transfer is from.
+  string from = 3;
+  // the address which the transfer is to.
+  string to = 4;
+  // the amount of the transfer.
+  repeated Coin amount = 5 [(gogoproto.nullable) = false];
+}
+
+// MsgOperatorSendResponse is the Msg/OperatorSend response type.
+// Since: finschia
+message MsgOperatorSendResponse {}
+
+// MsgTransferFT is the Msg/TransferFT request type.
+message MsgTransferFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // the address which the transfer is from.
+  string from = 2;
+  // the address which the transfer is to.
+  string to = 3;
+  // the amount of the transfer.
+  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+// MsgTransferFTResponse is the Msg/TransferFT response type.
+message MsgTransferFTResponse {}
+
+// MsgTransferFTFrom is the Msg/TransferFTFrom request type.
+message MsgTransferFTFrom {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // the address of the operator.
+  string proxy = 2;
+  // the address which the transfer is from.
+  string from = 3;
+  // the address which the transfer is to.
+  string to = 4;
+  // the amount of the transfer.
+  repeated Coin amount = 5 [(gogoproto.nullable) = false];
+}
+
+// MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
+message MsgTransferFTFromResponse {}
+
+// MsgTransferNFT is the Msg/TransferNFT request type.
+message MsgTransferNFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // the address which the transfer is from.
+  string from = 2;
+  // the address which the transfer is to.
+  string to = 3;
+  // the token ids to transfer.
+  repeated string token_ids = 4;
+}
+
+// MsgTransferNFTResponse is the Msg/TransferNFT response type.
+message MsgTransferNFTResponse {}
+
+// MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
+message MsgTransferNFTFrom {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // the address of the operator.
+  string proxy = 2;
+  // the address which the transfer is from.
+  string from = 3;
+  // the address which the transfer is to.
+  string to = 4;
+  // the token ids to transfer.
+  repeated string token_ids = 5;
+}
+
+// MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
+message MsgTransferNFTFromResponse {}
+
+// MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
+message MsgAuthorizeOperator {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the holder who allows the manipulation of its token.
+  string approver = 2;
+  // address which the manipulation is allowed to.
+  string proxy = 3;
+}
+
+// MsgAuthorizeOperatorResponse is the Msg/AuthorizeOperator response type.
+message MsgAuthorizeOperatorResponse {}
+
+// MsgRevokeOperator is the Msg/RevokeOperator request type.
+message MsgRevokeOperator {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the holder who allows the manipulation of its token.
+  string approver = 2;
+  // address which the manipulation is allowed to.
+  string proxy = 3;
+}
+
+// MsgRevokeOperatorResponse is the Msg/RevokeOperator response type.
+message MsgRevokeOperatorResponse {}
+
+// MsgCreateContract is the Msg/CreateContract request type.
+message MsgCreateContract {
+  // name defines the human-readable name of the contract.
+  string name = 1;
+  // base img uri is an uri for the contract image stored off chain.
+  string base_img_uri = 2;
+  // meta is a brief description of the contract.
+  string meta = 3;
+
+  // address which all the permissions on the contract will be granted to (not a permanent property).
+  string owner = 4;
+}
+
+// MsgCreateContractResponse is the Msg/CreateContract response type.
+message MsgCreateContractResponse {}
+
+// MsgIssueFT is the Msg/IssueFT request type.
+message MsgIssueFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // name defines the human-readable name of the token class.
+  // NOTE: it has an app-specific limit on the length.
+  string name = 2;
+  // meta is a brief description of the token class.
+  // NOTE: it has an app-specific limit on the length.
+  string meta = 3;
+  // decimals is the number of decimals which one must divide the amount by to get its user representation.
+  // NOTE: it cannot be negative or greater than 18.
+  int32 decimals = 4;
+  // mintable represents whether the token is allowed to be minted or burnt.
+  // NOTE: one cannot set mintable to false, where amount == 1 and decimals == 0.
+  bool mintable = 5;
+
+  // the address of the grantee which must have the permission to issue a token.
+  // NOTE: no permissions would be granted on the issuance.
+  string owner = 6;
+
+  // the address to send the minted tokens to. mandatory.
+  string to = 7;
+  // the amount of tokens to mint on the issuance.
+  // NOTE: if you provide negative amount, a panic may result.
+  string amount = 8 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// MsgIssueFTResponse is the Msg/IssueFT response type.
+message MsgIssueFTResponse {}
+
+// MsgIssueNFT is the Msg/IssueNFT request type.
+message MsgIssueNFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // name defines the human-readable name of the token class.
+  string name = 2;
+  // meta is a brief description of the token class.
+  string meta = 3;
+
+  // the address of the grantee which must have the permission to issue a token.
+  // NOTE: permissions for mint and burn would be granted on the issuance.
+  string owner = 4;
+}
+
+// MsgIssueNFTResponse is the Msg/IssueNFT response type.
+message MsgIssueNFTResponse {}
+
+// MsgMintFT is the Msg/MintFT request type.
+message MsgMintFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the grantee which has the permission for the mint.
+  string from = 2;
+  // address which the minted tokens will be sent to.
+  string to = 3;
+  // the amount of the mint.
+  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+// MsgMintFTResponse is the Msg/MintFT response type.
+message MsgMintFTResponse {}
+
+// MsgMintNFT is the Msg/MintNFT request type.
+message MsgMintNFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the grantee which has the permission for the mint.
+  string from = 2;
+  // address which the minted token will be sent to.
+  string to = 3;
+  // parameters for the minted tokens.
+  repeated MintNFTParam params = 4 [(gogoproto.nullable) = false];
+}
+
+message MintNFTParam {
+  // token type or class id of the nft.
+  string token_type = 1;
+  // name defines the human-readable name of the nft.
+  string name = 2;
+  // meta is a brief description of the nft.
+  string meta = 3;
+}
+
+// MsgMintNFTResponse is the Msg/MintNFT response type.
+message MsgMintNFTResponse {}
+
+// MsgBurnFT is the Msg/BurnFT request type.
+message MsgBurnFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which the tokens will be burnt from.
+  // NOTE: it must have the permission for the burn.
+  string from = 2;
+  // the amount of the burn.
+  repeated Coin amount = 3 [(gogoproto.nullable) = false];
+}
+
+// MsgBurnFTResponse is the Msg/BurnFT response type.
+message MsgBurnFTResponse {}
+
+// MsgBurnFTFrom is the Msg/BurnFTFrom request type.
+message MsgBurnFTFrom {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggers the burn.
+  // NOTE: it must have the permission for the burn.
+  // NOTE: it must have been authorized by from.
+  string proxy = 2;
+  // address which the tokens will be burnt from.
+  string from = 3;
+  // the amount of the burn.
+  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+// MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
+message MsgBurnFTFromResponse {}
+
+// MsgBurnNFT is the Msg/BurnNFT request type.
+message MsgBurnNFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which the tokens will be burnt from.
+  // NOTE: it must have the permission for the burn.
+  string from = 2;
+  // the amount of the burn.
+  repeated Coin amount = 3 [(gogoproto.nullable) = false];
+}
+
+// MsgBurnNFTResponse is the Msg/BurnNFT response type.
+message MsgBurnNFTResponse {}
+
+// MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
+message MsgBurnNFTFrom {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggers the burn.
+  // NOTE: it must have the permission for the burn.
+  // NOTE: it must have been authorized by from.
+  string proxy = 2;
+  // address which the tokens will be burnt from.
+  string from = 3;
+  // the amount of the burn.
+  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+// MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
+message MsgBurnNFTFromResponse {}
+
+// MsgBurn is the Msg/Burn request type.
+// Since: finschia
+message MsgBurn {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which the tokens will be burnt from.
+  // NOTE: it must have the permission for the burn.
+  string from = 2;
+  // the amount of the burn.
+  repeated Coin amount = 3 [(gogoproto.nullable) = false];
+}
+
+// MsgBurnResponse is the Msg/Burn response type.
+// Since: finschia
+message MsgBurnResponse {}
+
+// MsgOperatorBurn is the Msg/OperatorBurn request type.
+// Since: finschia
+message MsgOperatorBurn {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggers the burn.
+  // NOTE: it must have the permission for the burn.
+  // NOTE: it must have been authorized by from.
+  string operator = 2;
+  // address which the tokens will be burnt from.
+  string from = 3;
+  // the amount of the burn.
+  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+// MsgOperatorBurnResponse is the Msg/OperatorBurn response type.
+// Since: finschia
+message MsgOperatorBurnResponse {}
+
+// MsgModify is the Msg/Modify request type.
+message MsgModify {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // the address of the grantee which must have modify permission.
+  string owner = 2;
+  // token type of the token.
+  string token_type = 3;
+  // token index of the token.
+  string token_index = 4;
+  // changes to apply.
+  repeated Pair changes = 5 [(gogoproto.nullable) = false];
+}
+
+// MsgModifyResponse is the Msg/Modify response type.
+message MsgModifyResponse {}
+
+// MsgGrant is the Msg/Grant request type.
+message MsgGrant {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the granter which must have the permission to give.
+  string from = 2;
+  // address of the grantee.
+  string to = 3;
+  // permission on the contract.
+  string permission = 4;
+}
+
+// MsgGrantResponse is the Msg/Grant response type.
+message MsgGrantResponse {}
+
+// MsgAbandon is the Msg/Abandon request type.
+message MsgAbandon {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the grantee which abandons the permission.
+  string from = 2;
+  // permission on the contract.
+  string permission = 3;
+}
+
+// MsgAbandonResponse is the Msg/Abandon response type.
+message MsgAbandonResponse {}
+
+// MsgAttach is the Msg/Attach request type.
+message MsgAttach {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the owner of the token.
+  string from = 2;
+  // token id of the token to attach.
+  string token_id = 3;
+  // to token id which one attachs the token to.
+  string to_token_id = 4;
+}
+
+// MsgAttachResponse is the Msg/Attach response type.
+message MsgAttachResponse {}
+
+// MsgDetach is the Msg/Detach request type.
+message MsgDetach {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the owner of the token.
+  string from = 2;
+  // token id of the token to detach.
+  string token_id = 3;
+}
+
+// MsgDetachResponse is the Msg/Detach response type.
+message MsgDetachResponse {}
+
+// MsgOperatorAttach is the Msg/OperatorAttach request type.
+message MsgOperatorAttach {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the operator.
+  string operator = 2;
+  // address of the owner of the token.
+  string from = 3;
+  // token id of the token to attach.
+  string token_id = 4;
+  // to token id which one attachs the token to.
+  string to_token_id = 5;
+}
+
+// MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
+message MsgOperatorAttachResponse {}
+
+// MsgOperatorDetach is the Msg/OperatorDetach request type.
+message MsgOperatorDetach {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the operator.
+  string operator = 2;
+  // address of the owner of the token.
+  string from = 3;
+  // token id of the token to detach.
+  string token_id = 4;
+}
+
+// MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
+message MsgOperatorDetachResponse {}

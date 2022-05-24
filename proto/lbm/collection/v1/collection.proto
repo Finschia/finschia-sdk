@@ -1,0 +1,145 @@
+syntax = "proto3";
+package lbm.collection.v1;
+
+option go_package                      = "github.com/line/lbm-sdk/x/collection";
+option (gogoproto.equal_all)           = false;
+option (gogoproto.goproto_getters_all) = false;
+
+import "gogoproto/gogo.proto";
+
+// Params defines the parameters for the collection module.
+message Params {}
+
+// Contract defines the information of the contract for the collection.
+message Contract {
+  // contract_id defines the unique identifier of the contract.
+  string contract_id = 1;
+  // name defines the human-readable name of the contract.
+  string name = 2;
+  // meta is a brief description of the contract.
+  string meta = 3;
+  // base img uri is an uri for the contract image stored off chain.
+  string base_img_uri = 4;
+}
+
+// Fungible defines the information of fungible token.
+message Fungible {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // token id defines the unique identifier of the fungible token.
+  string token_id = 2;
+  // name defines the human-readable name of the fungible token.
+  string name = 3;
+  // meta is a brief description of the fungible token.
+  string meta = 4;
+  // decimals is the number of decimals which one must divide the amount by to get its user representation.
+  int32 decimals = 5;
+  // mintable represents whether the fungible token is allowed to be minted or burnt.
+  bool mintable = 6;
+}
+
+// TokenType defines the information of token type.
+message TokenType {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // token type defines the unique identifier of the token type.
+  string token_type = 2;
+  // name defines the human-readable name of the token type.
+  string name = 3;
+  // meta is a brief description of the token type.
+  string meta = 4;
+}
+
+// FTClass defines the class of fungible token.
+// Since: finschia
+message FTClass {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // id defines the unique identifier of the token class.
+  // NOTE: the token id of its token is identical to its class id.
+  string id = 2;
+  // name defines the human-readable name of the token class.
+  string name = 3;
+  // meta is a brief description of the token class.
+  string meta = 4;
+  // decimals is the number of decimals which one must divide the amount by to get its user representation.
+  int32 decimals = 5;
+  // mintable represents whether the token class is allowed to mint or burn its tokens.
+  bool mintable = 6;
+}
+
+// NFTClass defines the class of non-fungible token.
+// Since: finschia
+message NFTClass {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // id defines the unique identifier of the token class.
+  string id = 2;
+  // name defines the human-readable name of the token class.
+  string name = 3;
+  // meta is a brief description of the token class.
+  string meta = 4;
+}
+
+// NFT defines the information of non-fungible token.
+message NFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // id defines the unique identifier of the token.
+  string token_id = 2;
+  // name defines the human-readable name of the token.
+  string name = 3;
+  // meta is a brief description of the token.
+  string meta = 4;
+
+  // owner of the token.
+  string owner = 5;
+}
+
+// Coin defines a token with a token id and an amount.
+message Coin {
+  option (gogoproto.equal) = true;
+
+  // token id associated with the token.
+  string token_id = 1;
+  // amount of the token.
+  string amount = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// Grant defines permission given to a grantee.
+message Grant {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the grantee.
+  string grantee = 2;
+  // permission on the contract.
+  string permission = 3;
+}
+
+// Permission enumerates the valid permissions on a contract.
+enum Permission {
+  // unspecified defines the default permission which is invalid.
+  unspecified = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
+  // modify defines a permission to modify a contract.
+  modify = 1 [(gogoproto.enumvalue_customname) = "Modify"];
+  // mint defines a permission to mint tokens of a contract.
+  mint = 2 [(gogoproto.enumvalue_customname) = "Mint"];
+  // burn defines a permission to burn tokens of a contract.
+  burn = 3 [(gogoproto.enumvalue_customname) = "Burn"];
+}
+
+// Authorization defines an authorization gien to the operator on tokens of the holder.
+message Authorization {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the approver of the authorization.
+  string approver = 2;
+  // address of the operator which the authorization is granted to.
+  string proxy = 3;
+}
+
+// Pair defines a key-value pair.
+message Pair {
+  string field = 1;
+  string value = 2;
+}

@@ -1,0 +1,184 @@
+syntax = "proto3";
+package lbm.collection.v1;
+
+import "gogoproto/gogo.proto";
+
+import "lbm/collection/v1/collection.proto";
+
+option go_package = "github.com/line/lbm-sdk/x/collection";
+
+// EventType enumerates the valid event types on x/collection.
+// For the legacy events.
+enum EventType {
+  unspecified            = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
+  create_collection      = 1 [(gogoproto.enumvalue_customname) = "CreateCollection"];
+  issue_ft               = 2 [(gogoproto.enumvalue_customname) = "IssueFT"];
+  issue_nft              = 3 [(gogoproto.enumvalue_customname) = "IssueNFT"];
+  mint_ft                = 4 [(gogoproto.enumvalue_customname) = "MintFT"];
+  burn_ft                = 5 [(gogoproto.enumvalue_customname) = "BurnFT"];
+  mint_nft               = 6 [(gogoproto.enumvalue_customname) = "MintNFT"];
+  burn_nft               = 7 [(gogoproto.enumvalue_customname) = "BurnNFT"];
+  burn_ft_from           = 8 [(gogoproto.enumvalue_customname) = "BurnFTFrom"];
+  burn_nft_from          = 9 [(gogoproto.enumvalue_customname) = "BurnNFTFrom"];
+  modify_collection      = 10 [(gogoproto.enumvalue_customname) = "ModifyCollection"];
+  modify_token_type      = 11 [(gogoproto.enumvalue_customname) = "ModifyTokenType"];
+  modify_token           = 12 [(gogoproto.enumvalue_customname) = "ModifyToken"];
+  transfer               = 13 [(gogoproto.enumvalue_customname) = "Transfer"];
+  transfer_ft            = 14 [(gogoproto.enumvalue_customname) = "TransferFT"];
+  transfer_nft           = 15 [(gogoproto.enumvalue_customname) = "TransferNFT"];
+  transfer_ft_from       = 16 [(gogoproto.enumvalue_customname) = "TransferFTFrom"];
+  transfer_nft_from      = 17 [(gogoproto.enumvalue_customname) = "TransferNFTFrom"];
+  grant_perm             = 18 [(gogoproto.enumvalue_customname) = "GrantPermToken"];
+  revoke_perm            = 19 [(gogoproto.enumvalue_customname) = "RevokePermToken"];
+  attach                 = 20 [(gogoproto.enumvalue_customname) = "AttachToken"];
+  detach                 = 21 [(gogoproto.enumvalue_customname) = "DetachToken"];
+  attach_from            = 22 [(gogoproto.enumvalue_customname) = "AttachFrom"];
+  detach_from            = 23 [(gogoproto.enumvalue_customname) = "DetachFrom"];
+  approve_collection     = 24 [(gogoproto.enumvalue_customname) = "ApproveCollection"];
+  disapprove_collection  = 25 [(gogoproto.enumvalue_customname) = "DisapproveCollection"];
+  operation_transfer_nft = 26 [(gogoproto.enumvalue_customname) = "OperationTransferNFT"];
+  operation_burn_nft     = 27 [(gogoproto.enumvalue_customname) = "OperationBurnNFT"];
+  operation_root_changed = 28 [(gogoproto.enumvalue_customname) = "OperationRootChanged"];
+}
+
+// AttributeKey enumerates the valid attribute keys on x/collection.
+// For the legacy events.
+enum AttributeKey {
+  unspecified       = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
+  name              = 1 [(gogoproto.enumvalue_customname) = "Name"];
+  meta              = 2 [(gogoproto.enumvalue_customname) = "Meta"];
+  contract_id       = 3 [(gogoproto.enumvalue_customname) = "ContractID"];
+  token_id          = 4 [(gogoproto.enumvalue_customname) = "TokenID"];
+  owner             = 5 [(gogoproto.enumvalue_customname) = "Owner"];
+  amount            = 6 [(gogoproto.enumvalue_customname) = "Amount"];
+  decimals          = 7 [(gogoproto.enumvalue_customname) = "Decimals"];
+  base_img_uri      = 8 [(gogoproto.enumvalue_customname) = "BaseImgURI"];
+  mintable          = 9 [(gogoproto.enumvalue_customname) = "Mintable"];
+  token_type        = 10 [(gogoproto.enumvalue_customname) = "TokenType"];
+  from              = 11 [(gogoproto.enumvalue_customname) = "From"];
+  to                = 12 [(gogoproto.enumvalue_customname) = "To"];
+  perm              = 13 [(gogoproto.enumvalue_customname) = "Perm"];
+  to_token_id       = 14 [(gogoproto.enumvalue_customname) = "ToTokenID"];
+  FromTokenID       = 15 [(gogoproto.enumvalue_customname) = "FromTokenID"];
+  Approver          = 16 [(gogoproto.enumvalue_customname) = "Approver"];
+  Proxy             = 17 [(gogoproto.enumvalue_customname) = "Proxy"];
+  old_root_token_id = 18 [(gogoproto.enumvalue_customname) = "OldRoot"];
+  new_root_token_id = 19 [(gogoproto.enumvalue_customname) = "NewRoot"];
+}
+
+// EventSent is emitted on Msg/Send and Msg/OperatorSend.
+// Since: finschia
+message EventSent {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the operator.
+  string operator = 2;
+  // address which the transfer is from.
+  string from = 3;
+  // address which the transfer is to.
+  string to = 4;
+  // amount of coins of the transfer.
+  repeated Coin amount = 5 [(gogoproto.nullable) = false];
+}
+
+// EventAuthorizedOperator is emitted on Msg/AuthorizeOperator.
+// Since: finschia
+message EventAuthorizedOperator {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the token holder.
+  string holder = 2;
+  // address of the operator which the authorization is granted to.
+  string operator = 3;
+}
+
+// EventRevokedOperator is emitted on Msg/RevokeOperator.
+// Since: finschia
+message EventRevokedOperator {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the token holder of the authorization.
+  string holder = 2;
+  // address of the operator which the authorization is granted to.
+  string operator = 3;
+}
+
+// EventIssue is emitted on Msg/Issue.
+// Since: finschia
+message EventIssue {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // name defines the human-readable name of the token class.
+  string name = 2;
+  // symbol is an abbreviated name for token class.
+  string symbol = 3;
+  // uri for the resource of the token class stored off chain.
+  string uri = 4;
+  // meta is a brief description of token class.
+  string meta = 5;
+  // decimals is the number of decimals which one must divide the amount by to get its user representation.
+  int32 decimals = 6;
+  // mintable represents whether the token is allowed to mint.
+  bool mintable = 7;
+}
+
+// EventGrant is emitted on Msg/Grant.
+// Since: finschia
+message EventGrant {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the granter.
+  string granter = 2;
+  // address of the grantee.
+  string grantee = 3;
+  // permission on the contract.
+  string permission = 4;
+}
+
+// EventAbandon is emitted on Msg/Abandon.
+// Since: finschia
+message EventAbandon {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the grantee which abandons its grant.
+  string grantee = 2;
+  // permission on the contract.
+  string permission = 3;
+}
+
+// EventMinted is emitted on Msg/MintFT and Msg/MintNFT.
+// Since: finschia
+message EventMinted {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the operator.
+  string operator = 2;
+  // the address to send minted tokens to.
+  string to = 3;
+  // the amount of minted tokens.
+  string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// EventBurned is emitted on Msg/Burn and Msg/OperatorBurn.
+// Since: finschia
+message EventBurned {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the operator.
+  string operator = 2;
+  // address of the token holder.
+  string from = 3;
+  // the amount of burnt token.
+  string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// EventModified is emitted on Msg/Modify.
+// Since: finschia
+message EventModified {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the operator.
+  string operator = 2;
+  // changes on metadata.
+  repeated Pair changes = 3 [(gogoproto.nullable) = false];
+}
