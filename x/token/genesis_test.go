@@ -133,6 +133,14 @@ func TestValidateGenesis(t *testing.T) {
 			},
 			false,
 		},
+		"empty grants": {
+			&token.GenesisState{
+				Grants: []token.ContractGrants{{
+					ContractId: "deadbeef",
+				}},
+			},
+			false,
+		},
 		"invalid grantee of grant": {
 			&token.GenesisState{
 				Grants: []token.ContractGrants{{
@@ -151,6 +159,14 @@ func TestValidateGenesis(t *testing.T) {
 					Grants: []token.Grant{{
 						Grantee: addr.String(),
 					}},
+				}},
+			},
+			false,
+		},
+		"empty authorizations": {
+			&token.GenesisState{
+				Authorizations: []token.ContractAuthorizations{{
+					ContractId: "deadbeef",
 				}},
 			},
 			false,
