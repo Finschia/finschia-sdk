@@ -89,7 +89,7 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata str
 		Status:            foundation.PROPOSAL_STATUS_SUBMITTED,
 		ExecutorResult:    foundation.PROPOSAL_EXECUTOR_RESULT_NOT_RUN,
 		VotingPeriodEnd:   ctx.BlockTime().Add(foundationInfo.GetDecisionPolicy().GetVotingPeriod()),
-		FinalTallyResult:  DefaultTallyResult(),
+		FinalTallyResult:  foundation.DefaultTallyResult(),
 	}
 	if err := proposal.SetMsgs(msgs); err != nil {
 		return 0, err

@@ -8,16 +8,6 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
-// DefaultTallyResult returns a TallyResult with all counts set to 0.
-func DefaultTallyResult() foundation.TallyResult {
-	return foundation.TallyResult{
-		YesCount:        sdk.ZeroDec(),
-		NoCount:         sdk.ZeroDec(),
-		NoWithVetoCount: sdk.ZeroDec(),
-		AbstainCount:    sdk.ZeroDec(),
-	}
-}
-
 // doTallyAndUpdate performs a tally, and updates the proposal's
 // `FinalTallyResult` field only if the tally is final.
 func (k Keeper) doTallyAndUpdate(ctx sdk.Context, p *foundation.Proposal) error {
@@ -65,7 +55,7 @@ func (k Keeper) tally(ctx sdk.Context, p foundation.Proposal) (foundation.TallyR
 		return p.FinalTallyResult, nil
 	}
 
-	tallyResult := DefaultTallyResult()
+	tallyResult := foundation.DefaultTallyResult()
 	var errors []error
 	k.iterateVotes(ctx, p.Id, func(vote foundation.Vote) (stop bool) {
 		_, err := k.GetMember(ctx, sdk.AccAddress(vote.Voter))
