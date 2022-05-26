@@ -23,11 +23,11 @@ func (k Keeper) Send(ctx sdk.Context, classID string, from, to sdk.AccAddress, a
 }
 
 func (k Keeper) AuthorizeOperator(ctx sdk.Context, classID string, approver, proxy sdk.AccAddress) error {
-	if k.GetAuthorization(ctx, classID, approver, proxy) != nil {
-		return sdkerrors.ErrInvalidRequest.Wrap("Already authorized")
-	}
 	if _, err := k.GetClass(ctx, classID); err != nil {
 		return sdkerrors.ErrNotFound.Wrapf("ID not exists: %s", classID)
+	}
+	if k.GetAuthorization(ctx, classID, approver, proxy) != nil {
+		return sdkerrors.ErrInvalidRequest.Wrap("Already authorized")
 	}
 
 	k.setAuthorization(ctx, classID, approver, proxy)
@@ -40,11 +40,11 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, classID string, approver, pro
 }
 
 func (k Keeper) RevokeOperator(ctx sdk.Context, classID string, approver, proxy sdk.AccAddress) error {
-	if k.GetAuthorization(ctx, classID, approver, proxy) == nil {
-		return sdkerrors.ErrNotFound.Wrap("No authorization")
-	}
 	if _, err := k.GetClass(ctx, classID); err != nil {
 		return sdkerrors.ErrNotFound.Wrapf("ID not exists: %s", classID)
+	}
+	if k.GetAuthorization(ctx, classID, approver, proxy) == nil {
+		return sdkerrors.ErrNotFound.Wrap("No authorization")
 	}
 
 	k.deleteAuthorization(ctx, classID, approver, proxy)

@@ -5,7 +5,7 @@ import (
 	"github.com/line/lbm-sdk/x/token"
 )
 
-func (s *KeeperTestSuite) TestMsgTransfer() {
+func (s *KeeperTestSuite) TestMsgSend() {
 	testCases := map[string]struct {
 		classId string
 		amount  sdk.Int
@@ -13,12 +13,16 @@ func (s *KeeperTestSuite) TestMsgTransfer() {
 	}{
 		"valid request": {
 			classId: s.classID,
-			amount:  sdk.OneInt(),
+			amount:  s.balance,
 			valid:   true,
 		},
 		"insufficient funds (no such a class)": {
-			classId: "00000000",
+			classId: "fee1dead",
 			amount:  sdk.OneInt(),
+		},
+		"insufficient funds (not enough balance)": {
+			classId: s.classID,
+			amount:  s.balance.Add(sdk.OneInt()),
 		},
 	}
 
@@ -43,20 +47,28 @@ func (s *KeeperTestSuite) TestMsgTransfer() {
 	}
 }
 
-func (s *KeeperTestSuite) TestMsgTransferFrom() {
+func (s *KeeperTestSuite) TestMsgOperatorSend() {
 	testCases := map[string]struct {
 		proxy sdk.AccAddress
 		from  sdk.AccAddress
+		amount sdk.Int
 		valid bool
 	}{
 		"valid request": {
 			proxy: s.operator,
 			from:  s.customer,
+			amount: s.balance,
 			valid: true,
 		},
 		"not approved": {
 			proxy: s.vendor,
 			from:  s.customer,
+			amount: s.balance,
+		},
+		"insufficient funds (not enough balance)": {
+			proxy: s.operator,
+			from:  s.customer,
+			amount:  s.balance.Add(sdk.OneInt()),
 		},
 	}
 
@@ -69,7 +81,7 @@ func (s *KeeperTestSuite) TestMsgTransferFrom() {
 				Proxy:   tc.proxy.String(),
 				From:    tc.from.String(),
 				To:      s.vendor.String(),
-				Amount:  sdk.OneInt(),
+				Amount:  tc.amount,
 			}
 			res, err := s.msgServer.OperatorSend(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -109,6 +121,43 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 				Proxy:    tc.proxy.String(),
 			}
 			res, err := s.msgServer.AuthorizeOperator(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgRevokeOperator() {
+	testCases := map[string]struct {
+		approver sdk.AccAddress
+		proxy    sdk.AccAddress
+		valid    bool
+	}{
+		"valid request": {
+			approver: s.customer,
+			proxy:    s.operator,
+			valid:    true,
+		},
+		"no authorization": {
+			approver: s.customer,
+			proxy:    s.vendor,
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &token.MsgRevokeOperator{
+				ContractId:  s.classID,
+				Approver: tc.approver.String(),
+				Proxy:    tc.proxy.String(),
+			}
+			res, err := s.msgServer.RevokeOperator(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -172,6 +221,11 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 			granter: s.vendor,
 			grantee: s.operator,
 			permission:  token.Permission_Mint.String(),
+		},
+		"granter has no permission": {
+			granter: s.customer,
+			grantee: s.operator,
+			permission:  token.Permission_Modify.String(),
 		},
 	}
 
@@ -289,7 +343,7 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 			req := &token.MsgBurn{
 				ContractId: s.classID,
 				From:    tc.from.String(),
-				Amount:  sdk.OneInt(),
+				Amount:  s.balance,
 			}
 			res, err := s.msgServer.Burn(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -327,7 +381,7 @@ func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 				ContractId: s.classID,
 				Proxy: tc.grantee.String(),
 				From:    tc.from.String(),
-				Amount:  sdk.OneInt(),
+				Amount:  s.balance,
 			}
 			res, err := s.msgServer.OperatorBurn(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {

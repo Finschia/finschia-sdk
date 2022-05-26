@@ -16,7 +16,7 @@ func (s *KeeperTestSuite) TestSend() {
 			valid: true,
 		},
 		"insufficient tokens": {
-			amount: s.balance.Mul(sdk.NewInt(2)),
+			amount: s.balance.Add(sdk.OneInt()),
 		},
 	}
 
@@ -41,27 +41,75 @@ func (s *KeeperTestSuite) TestSend() {
 }
 
 func (s *KeeperTestSuite) TestAuthorizeOperator() {
-	// no such a class
-	authorization := s.keeper.GetAuthorization(s.ctx, "deadbeef", s.vendor, s.customer)
-	s.Require().Nil(authorization)
+	dummyContractID := "fee1dead"
+	_, err := s.keeper.GetClass(s.ctx, dummyContractID)
+	s.Require().Error(err)
 
-	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
-	for _, operator := range users {
-		for _, from := range users {
-			name := fmt.Sprintf("Operator: %s, From: %s", operator, from)
-			s.Run(name, func() {
-				ctx, _ := s.ctx.CacheContext()
+	contractDescriptions := map[string]string{
+		s.classID: "valid",
+		dummyContractID: "not-exists",
+	}
+	userDescriptions := map[sdk.AccAddress]string{
+		s.vendor: "vendor",
+		s.operator: "operator",
+		s.customer: "customer",
+	}
+	for id, idDesc := range contractDescriptions {
+		for operator, operatorDesc := range userDescriptions {
+			for from, fromDesc := range userDescriptions {
+				name := fmt.Sprintf("ContractID: %s, Operator: %s, From: %s", idDesc, operatorDesc, fromDesc)
+				s.Run(name, func() {
+					ctx, _ := s.ctx.CacheContext()
 
-				authorization := s.keeper.GetAuthorization(ctx, s.classID, from, operator)
-				err := s.keeper.AuthorizeOperator(ctx, s.classID, from, operator)
-				if authorization == nil {
-					s.Require().NoError(err)
-					authorization = s.keeper.GetAuthorization(ctx, s.classID, from, operator)
-					s.Require().NotNil(authorization)
-				} else {
-					s.Require().Error(err)
-				}
-			})
+					_, idErr := s.keeper.GetClass(ctx, id)
+					authorization := s.keeper.GetAuthorization(ctx, id, from, operator)
+					err := s.keeper.AuthorizeOperator(ctx, id, from, operator)
+					if idErr == nil && authorization == nil {
+						s.Require().NoError(err)
+						authorization = s.keeper.GetAuthorization(ctx, id, from, operator)
+						s.Require().NotNil(authorization)
+					} else {
+						s.Require().Error(err)
+					}
+				})
+			}
+		}
+	}
+}
+
+func (s *KeeperTestSuite) TestRevokeOperator() {
+	dummyContractID := "fee1dead"
+	_, err := s.keeper.GetClass(s.ctx, dummyContractID)
+	s.Require().Error(err)
+
+	contractDescriptions := map[string]string{
+		s.classID: "valid",
+		dummyContractID: "not-exists",
+	}
+	userDescriptions := map[sdk.AccAddress]string{
+		s.vendor: "vendor",
+		s.operator: "operator",
+		s.customer: "customer",
+	}
+	for id, idDesc := range contractDescriptions {
+		for operator, operatorDesc := range userDescriptions {
+			for from, fromDesc := range userDescriptions {
+				name := fmt.Sprintf("ContractID: %s, Operator: %s, From: %s", idDesc, operatorDesc, fromDesc)
+				s.Run(name, func() {
+					ctx, _ := s.ctx.CacheContext()
+
+					_, idErr := s.keeper.GetClass(ctx, id)
+					authorization := s.keeper.GetAuthorization(ctx, id, from, operator)
+					err := s.keeper.RevokeOperator(ctx, id, from, operator)
+					if idErr == nil && authorization != nil {
+						s.Require().NoError(err)
+						authorization = s.keeper.GetAuthorization(ctx, id, from, operator)
+						s.Require().Nil(authorization)
+					} else {
+						s.Require().Error(err)
+					}
+				})
+			}
 		}
 	}
 }

@@ -256,6 +256,70 @@ func (s *KeeperTestSuite) TestQueryTokenClasses() {
 	}
 }
 
+func (s *KeeperTestSuite) TestQueryGrant() {
+	// empty request
+	_, err := s.queryServer.Grant(s.goCtx, nil)
+	s.Require().Error(err)
+
+	testCases := map[string]struct {
+		classId  string
+		grantee  sdk.AccAddress
+		permission string
+		valid    bool
+		postTest func(res *token.QueryGrantResponse)
+	}{
+		"valid request": {
+			classId: s.classID,
+			grantee: s.vendor,
+			permission: token.Permission_Modify.String(),
+			valid:   true,
+			postTest: func(res *token.QueryGrantResponse) {
+				s.Require().Equal(s.vendor.String(), res.Grant.Grantee)
+				s.Require().Equal(token.Permission_Modify.String(), res.Grant.Permission)
+			},
+		},
+		"no permission": {
+			classId: s.classID,
+			grantee: s.customer,
+ 			permission: token.Permission_Modify.String(),
+			valid:   true,
+			postTest: func(res *token.QueryGrantResponse) {
+				s.Require().Nil(res.Grant)
+			},
+		},
+		"invalid class id": {
+			grantee: s.vendor,
+			permission: token.Permission_Modify.String(),
+		},
+		"invalid grantee": {
+			classId: s.classID,
+			permission: token.Permission_Modify.String(),
+		},
+		"invalid permission": {
+			classId: s.classID,
+			grantee: s.vendor,
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			req := &token.QueryGrantRequest{
+				ContractId: tc.classId,
+				Grantee: tc.grantee.String(),
+				Permission: tc.permission,
+			}
+			res, err := s.queryServer.Grant(s.goCtx, req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+			tc.postTest(res)
+		})
+	}
+}
+
 func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 	// empty request
 	_, err := s.queryServer.GranteeGrants(s.goCtx, nil)
