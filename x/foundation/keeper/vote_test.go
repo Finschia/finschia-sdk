@@ -42,7 +42,7 @@ func (s *KeeperTestSuite) TestVote() {
 			proposalID: s.activeProposal,
 			voter: s.members[0],
 			option: foundation.VOTE_OPTION_YES,
-			metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+			metadata: string(make([]rune, 256)),
 		},
 		"voting too late": {
 			proposalID: s.activeProposal,

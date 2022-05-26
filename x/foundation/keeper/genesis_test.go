@@ -192,7 +192,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					{
 						Address: s.members[0].String(),
 						Participating: true,
-						Metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+						Metadata: string(make([]rune, 256)),
 					},
 				},
 			},
@@ -202,7 +202,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id: 1,
-						Metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+						Metadata: string(make([]rune, 256)),
 						Proposers: []string{s.members[0].String()},
 						FoundationVersion: 1,
 					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
@@ -231,7 +231,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						ProposalId: 1,
 						Voter: s.members[0].String(),
 						Option: foundation.VOTE_OPTION_YES,
-						Metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+						Metadata: string(make([]rune, 256)),
 					},
 				},
 			},
