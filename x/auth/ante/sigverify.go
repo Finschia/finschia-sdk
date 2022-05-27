@@ -312,7 +312,7 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 				txHash := sha256.Sum256(ctx.TxBytes())
 				stored := false
 
-				// TODO duong2: Does this really improve performance?
+				// TODO(duong2): Does this really improve performance?
 				stored, err = svd.verifySignatureWithCache(ctx, pubKey, signerData, sig.Data, tx, sigKey, txHash[:])
 
 				if stored {
