@@ -93,7 +93,7 @@ func DefaultGenesisState() *GenesisState {
 // For Class keeper
 func ValidateClassGenesis(data ClassGenesisState) error {
 	if data.Nonce.GT(sdk.NewUint(math.MaxUint64)) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Invalid nonce: %s", data.Nonce)
+		return sdkerrors.ErrInvalidRequest.Wrapf("Invalid nonce: %s", data.Nonce)
 	}
 
 	return nil

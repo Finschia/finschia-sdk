@@ -16,7 +16,7 @@ var (
 // ValidateID returns whether the class id is valid
 func ValidateID(id string) error {
 	if !reClassID.MatchString(id) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "invalid class id: %s", id)
+		return sdkerrors.ErrInvalidRequest.Wrapf("invalid class id: %s", id)
 	}
 	return nil
 }

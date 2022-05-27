@@ -26,44 +26,44 @@ func stringInSize(str string, size int) bool {
 
 func validateName(name string) error {
 	if len(name) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Name cannot be empty")
+		return sdkerrors.ErrInvalidRequest.Wrap("Name cannot be empty")
 	} else if !stringInSize(name, maxName) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Name cannot be longer than %d", maxName)
+		return sdkerrors.ErrInvalidRequest.Wrapf("Name cannot be longer than %d", maxName)
 	}
 	return nil
 }
 
 func validateSymbol(symbol string) error {
 	if !reSymbol.MatchString(symbol) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Invalid symbol: %s, valid expression is: %s", symbol, reSymbolString)
+		return sdkerrors.ErrInvalidRequest.Wrapf("Invalid symbol: %s, valid expression is: %s", symbol, reSymbolString)
 	}
 	return nil
 }
 
 func validateImageURI(uri string) error {
 	if !stringInSize(uri, maxImageURI) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "ImageUri cannot be longer than %d", maxImageURI)
+		return sdkerrors.ErrInvalidRequest.Wrapf("ImageUri cannot be longer than %d", maxImageURI)
 	}
 	return nil
 }
 
 func validateMeta(meta string) error {
 	if !stringInSize(meta, maxMeta) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Meta cannot be longer than %d", maxMeta)
+		return sdkerrors.ErrInvalidRequest.Wrapf("Meta cannot be longer than %d", maxMeta)
 	}
 	return nil
 }
 
 func validateDecimals(decimals int32) error {
 	if decimals < 0 || decimals > 18 {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Invalid decimals: %d", decimals)
+		return sdkerrors.ErrInvalidRequest.Wrapf("Invalid decimals: %d", decimals)
 	}
 	return nil
 }
 
 func validateAmount(amount sdk.Int) error {
 	if !amount.IsPositive() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Amount must be positive: %s", amount)
+		return sdkerrors.ErrInvalidRequest.Wrapf("Amount must be positive: %s", amount)
 	}
 	return nil
 }

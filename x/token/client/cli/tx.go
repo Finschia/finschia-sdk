@@ -70,7 +70,7 @@ func NewTxCmdSend() *cobra.Command {
 			amountStr := args[3]
 			amount, ok := sdk.NewIntFromString(amountStr)
 			if !ok {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
+				return sdkerrors.ErrInvalidType.Wrapf("failed to set amount: %s", amountStr)
 			}
 			msg := &token.MsgSend{
 				ContractId: args[0],
@@ -106,7 +106,7 @@ func NewTxCmdOperatorSend() *cobra.Command {
 			amountStr := args[4]
 			amount, ok := sdk.NewIntFromString(amountStr)
 			if !ok {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
+				return sdkerrors.ErrInvalidType.Wrapf("failed to set amount: %s", amountStr)
 			}
 			msg := token.MsgOperatorSend{
 				ContractId: args[0],
@@ -216,7 +216,7 @@ func NewTxCmdIssue() *cobra.Command {
 			}
 			supply, ok := sdk.NewIntFromString(supplyStr)
 			if !ok {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set supply: %s", supplyStr)
+				return sdkerrors.ErrInvalidType.Wrapf("failed to set supply: %s", supplyStr)
 			}
 
 			mintable, err := cmd.Flags().GetBool(FlagMintable)
@@ -335,7 +335,7 @@ func NewTxCmdMint() *cobra.Command {
 			amountStr := args[3]
 			amount, ok := sdk.NewIntFromString(amountStr)
 			if !ok {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
+				return sdkerrors.ErrInvalidType.Wrapf("failed to set amount: %s", amountStr)
 			}
 
 			msg := token.MsgMint{
@@ -372,7 +372,7 @@ func NewTxCmdBurn() *cobra.Command {
 			amountStr := args[2]
 			amount, ok := sdk.NewIntFromString(amountStr)
 			if !ok {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
+				return sdkerrors.ErrInvalidType.Wrapf("failed to set amount: %s", amountStr)
 			}
 
 			msg := token.MsgBurn{
@@ -408,7 +408,7 @@ func NewTxCmdOperatorBurn() *cobra.Command {
 			amountStr := args[3]
 			amount, ok := sdk.NewIntFromString(amountStr)
 			if !ok {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
+				return sdkerrors.ErrInvalidType.Wrapf("failed to set amount: %s", amountStr)
 			}
 
 			msg := token.MsgOperatorBurn{
