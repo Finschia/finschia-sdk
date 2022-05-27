@@ -15,10 +15,6 @@ func (k Keeper) Send(ctx sdk.Context, classID string, from, to sdk.AccAddress, a
 		return err
 	}
 
-	if !k.accountKeeper.HasAccount(ctx, to) {
-		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, to))
-	}
-
 	return nil
 }
 
@@ -108,6 +104,10 @@ func (k Keeper) addToken(ctx sdk.Context, classID string, addr sdk.AccAddress, a
 
 	if err := k.setBalance(ctx, classID, addr, newBalance); err != nil {
 		return err
+	}
+
+	if !k.accountKeeper.HasAccount(ctx, addr) {
+		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, addr))
 	}
 
 	// Emit an event on token receive
