@@ -193,7 +193,7 @@ func (sgcd SigGasConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simula
 }
 
 // Verify all signatures for a tx and return an error if any are invalid. Note,
-// the SigVerificationDecorator decorator will not get executed on ReCheck.
+// the SigVerificationDecorator will not check signatures on ReCheck.
 //
 // CONTRACT: Pubkeys are set in context for all signers before this decorator runs
 // CONTRACT: Tx must implement SigVerifiableTx interface
@@ -312,6 +312,7 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 				txHash := sha256.Sum256(ctx.TxBytes())
 				stored := false
 
+				// TODO duong2: Does this really improve performance?
 				stored, err = svd.verifySignatureWithCache(ctx, pubKey, signerData, sig.Data, tx, sigKey, txHash[:])
 
 				if stored {
