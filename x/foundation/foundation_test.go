@@ -147,8 +147,8 @@ func TestThresholdDecisionPolicyAllow(t *testing.T) {
 		},
 		"deny": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			totalWeight: policy.Threshold,
-			tally: foundation.NewTallyResult(sdk.ZeroDec(), sdk.ZeroDec(), sdk.OneDec(), sdk.ZeroDec()),
+			totalWeight: policy.Threshold.Add(sdk.OneDec()),
+			tally: foundation.NewTallyResult(sdk.ZeroDec(), sdk.OneDec(), sdk.OneDec(), sdk.ZeroDec()),
 			valid: true,
 			final: true,
 		},
@@ -271,7 +271,7 @@ func TestPercentageDecisionPolicyAllow(t *testing.T) {
 		},
 		"not final": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			tally: foundation.NewTallyResult(sdk.NewDec(4), sdk.ZeroDec(), sdk.NewDec(1), sdk.ZeroDec()),
+			tally: foundation.NewTallyResult(sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(1), sdk.ZeroDec()),
 			valid: true,
 		},
 		"deny": {

@@ -316,7 +316,7 @@ func (p PercentageDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec,
 	}
 
 	totalCounts := result.TotalCounts()
-	undecided := notAbstaining.Sub(totalCounts)
+	undecided := totalWeight.Sub(totalCounts)
 	maxYesCount := result.YesCount.Add(undecided)
 	maxYesPercentage := maxYesCount.Quo(notAbstaining)
 	if maxYesPercentage.LT(p.Percentage) {
