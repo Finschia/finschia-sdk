@@ -151,8 +151,10 @@ message EventBurned {
 message EventModified {
   // contract id associated with the token class.
   string contract_id = 1;
+  // address of the operator.
+  string operator = 2;
   // changes on the metadata of the class.
-  repeated Pair changes = 2 [(gogoproto.nullable) = false];
+  repeated Pair changes = 3 [(gogoproto.nullable) = false];
 }
 
 // EventSpent is emitted on token spend.

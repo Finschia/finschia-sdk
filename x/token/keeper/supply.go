@@ -273,6 +273,7 @@ func (k Keeper) Modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, 
 
 	event := token.EventModified{
 		ContractId: classID,
+		Operator:   grantee.String(),
 		Changes:    changes,
 	}
 	ctx.EventManager().EmitEvents(token.NewEventModifyToken(event)) // deprecated

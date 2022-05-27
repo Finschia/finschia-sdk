@@ -12691,6 +12691,7 @@ Since: finschia
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `operator` | [string](#string) |  | address of the operator. |
 | `changes` | [Pair](#lbm.token.v1.Pair) | repeated | changes on the metadata of the class. |
 
 
