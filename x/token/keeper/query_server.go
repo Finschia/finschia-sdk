@@ -57,6 +57,10 @@ func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+	// daphne compat.
+	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
 	supply := s.keeper.GetSupply(ctx, req.ContractId)
 
 	return &token.QuerySupplyResponse{Amount: supply}, nil
@@ -73,6 +77,10 @@ func (s queryServer) Minted(c context.Context, req *token.QueryMintedRequest) (*
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+	// daphne compat.
+	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
 	minted := s.keeper.GetMinted(ctx, req.ContractId)
 
 	return &token.QueryMintedResponse{Amount: minted}, nil
@@ -89,6 +97,10 @@ func (s queryServer) Burnt(c context.Context, req *token.QueryBurntRequest) (*to
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+	// daphne compat.
+	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
 	burnt := s.keeper.GetBurnt(ctx, req.ContractId)
 
 	return &token.QueryBurntResponse{Amount: burnt}, nil

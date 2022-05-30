@@ -71,6 +71,9 @@ func (s *KeeperTestSuite) TestQuerySupply() {
 		},
 		"invalid class id": {
 		},
+		"no such a class id": {
+			classId: "fee1dead",
+		},
 	}
 
 	for name, tc := range testCases {
@@ -109,6 +112,9 @@ func (s *KeeperTestSuite) TestQueryMinted() {
 		},
 		"invalid class id": {
 		},
+		"no such a class id": {
+			classId: "fee1dead",
+		},
 	}
 
 	for name, tc := range testCases {
@@ -146,6 +152,9 @@ func (s *KeeperTestSuite) TestQueryBurnt() {
 			},
 		},
 		"invalid class id": {
+		},
+		"no such a class id": {
+			classId: "fee1dead",
 		},
 	}
 
