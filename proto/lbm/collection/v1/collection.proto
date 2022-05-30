@@ -6,6 +6,7 @@ option (gogoproto.equal_all)           = false;
 option (gogoproto.goproto_getters_all) = false;
 
 import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
 
 // Params defines the parameters for the collection module.
 message Params {}
@@ -53,6 +54,8 @@ message TokenType {
 // FTClass defines the class of fungible token.
 // Since: finschia
 message FTClass {
+  option (cosmos_proto.implements_interface) = "github.com/line/lbm-sdk/x/collection.TokenClass";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // id defines the unique identifier of the token class.
@@ -71,6 +74,8 @@ message FTClass {
 // NFTClass defines the class of non-fungible token.
 // Since: finschia
 message NFTClass {
+  option (cosmos_proto.implements_interface) = "github.com/line/lbm-sdk/x/collection.TokenClass";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // id defines the unique identifier of the token class.

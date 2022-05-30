@@ -477,6 +477,15 @@
     - [AttributeKey](#lbm.collection.v1.AttributeKey)
     - [EventType](#lbm.collection.v1.EventType)
   
+- [lbm/collection/v1/genesis.proto](#lbm/collection/v1/genesis.proto)
+    - [Balance](#lbm.collection.v1.Balance)
+    - [ClassGenesisState](#lbm.collection.v1.ClassGenesisState)
+    - [ContractAuthorizations](#lbm.collection.v1.ContractAuthorizations)
+    - [ContractBalances](#lbm.collection.v1.ContractBalances)
+    - [ContractCoin](#lbm.collection.v1.ContractCoin)
+    - [ContractGrants](#lbm.collection.v1.ContractGrants)
+    - [GenesisState](#lbm.collection.v1.GenesisState)
+  
 - [lbm/collection/v1/query.proto](#lbm/collection/v1/query.proto)
     - [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest)
     - [QueryAllBalancesResponse](#lbm.collection.v1.QueryAllBalancesResponse)
@@ -7733,6 +7742,142 @@ For the legacy events.
 | operation_burn_nft | 27 |  |
 | operation_root_changed | 28 |  |
 
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/collection/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/collection/v1/genesis.proto
+
+
+
+<a name="lbm.collection.v1.Balance"></a>
+
+### Balance
+Balance defines a balance of an address.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.collection.v1.ClassGenesisState"></a>
+
+### ClassGenesisState
+ClassGenesisState defines the classs keeper's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nonce` | [string](#string) |  | nonce is the next class nonce to issue. |
+| `ids` | [string](#string) | repeated | ids represents the issued ids. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.ContractAuthorizations"></a>
+
+### ContractAuthorizations
+ContractAuthorizations defines authorizations belong to a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `authorizations` | [Authorization](#lbm.collection.v1.Authorization) | repeated | authorizations |
+
+
+
+
+
+
+<a name="lbm.collection.v1.ContractBalances"></a>
+
+### ContractBalances
+ContractBalances defines balances belong to a contract.
+genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `balances` | [Balance](#lbm.collection.v1.Balance) | repeated | balances |
+
+
+
+
+
+
+<a name="lbm.collection.v1.ContractCoin"></a>
+
+### ContractCoin
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.collection.v1.ContractGrants"></a>
+
+### ContractGrants
+ContractGrant defines grants belong to a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `grants` | [Grant](#lbm.collection.v1.Grant) | repeated | grants |
+
+
+
+
+
+
+<a name="lbm.collection.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the collection module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.collection.v1.Params) |  | params defines all the paramaters of the module. |
+| `balances` | [ContractBalances](#lbm.collection.v1.ContractBalances) | repeated | balances is an array containing the balances of all the accounts. |
+| `contracts` | [Contract](#lbm.collection.v1.Contract) | repeated | contracts defines the metadata of the contracts. |
+| `classes` | [google.protobuf.Any](#google.protobuf.Any) | repeated | classes defines the metadata of the tokens. |
+| `grants` | [ContractGrants](#lbm.collection.v1.ContractGrants) | repeated | grants defines the grant information. |
+| `authorizations` | [ContractAuthorizations](#lbm.collection.v1.ContractAuthorizations) | repeated | authorizations defines the approve information. |
+| `supplies` | [ContractCoin](#lbm.collection.v1.ContractCoin) | repeated | supplies represents the total supplies of tokens. |
+| `mints` | [ContractCoin](#lbm.collection.v1.ContractCoin) | repeated | mints represents the total mints of tokens. |
+| `burns` | [ContractCoin](#lbm.collection.v1.ContractCoin) | repeated | burns represents the total burns of tokens. |
+
+
+
+
+
+ <!-- end messages -->
 
  <!-- end enums -->
 
