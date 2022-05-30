@@ -1,0 +1,95 @@
+package keeper
+
+import (
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/collection"
+)
+
+func (k Keeper) SendCoins(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amount []collection.Coin) error {
+	if err := k.subtractCoins(ctx, contractID, from, amount); err != nil {
+		return err
+	}
+	if err := k.addCoins(ctx, contractID, to, amount); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) addCoins(ctx sdk.Context, contractID string, address sdk.AccAddress, amount []collection.Coin) error {
+	for _, coin := range amount {
+		balance := k.GetBalance(ctx, contractID, address, coin.TokenId)
+		newBalance := balance.Add(coin.Amount)
+		k.setBalance(ctx, contractID, address, coin.TokenId, newBalance)
+
+		// TODO: store the reverse index
+	}
+	// create account if recipient does not exist.
+	if !k.accountKeeper.HasAccount(ctx, address) {
+		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, address))
+	}
+
+	event := collection.EventReceived{
+		ContractId: contractID,
+		Receiver:   address.String(),
+		Amount:     amount,
+	}
+	return ctx.EventManager().EmitTypedEvent(&event)
+}
+
+func (k Keeper) subtractCoins(ctx sdk.Context, contractID string, address sdk.AccAddress, amount []collection.Coin) error {
+	for _, coin := range amount {
+		balance := k.GetBalance(ctx, contractID, address, coin.TokenId)
+		newBalance := balance.Sub(coin.Amount)
+		if newBalance.IsNegative() {
+			return sdkerrors.ErrInsufficientFunds.Wrapf("%s is smaller than %s", balance, coin.Amount)
+		}
+		k.setBalance(ctx, contractID, address, coin.TokenId, newBalance)
+
+		// TODO: delete the reverse index
+	}
+
+	event := collection.EventSpent{
+		ContractId: contractID,
+		Spender:    address.String(),
+		Amount:     amount,
+	}
+	return ctx.EventManager().EmitTypedEvent(&event)
+}
+
+func (k Keeper) GetBalance(ctx sdk.Context, contractID string, address sdk.AccAddress, tokenID string) sdk.Int {
+	store := ctx.KVStore(k.storeKey)
+	key := balanceKey(contractID, address, tokenID)
+	bz := store.Get(key)
+	if bz == nil {
+		return sdk.ZeroInt()
+	}
+
+	var balance sdk.Int
+	if err := balance.Unmarshal(bz); err != nil {
+		panic(err)
+	}
+	return balance
+}
+
+func (k Keeper) setBalance(ctx sdk.Context, contractID string, address sdk.AccAddress, tokenID string, balance sdk.Int) {
+	store := ctx.KVStore(k.storeKey)
+	key := balanceKey(contractID, address, tokenID)
+
+	if balance.IsZero() {
+		store.Delete(key)
+	} else {
+		bz, err := balance.Marshal()
+		if err != nil {
+			panic(err)
+		}
+		store.Set(key, bz)
+	}
+}
+
+// use it for the tests
+// TODO: remove it
+func (k Keeper) SetBalance(ctx sdk.Context, contractID string, address sdk.AccAddress, tokenID string, balance sdk.Int) {
+	k.setBalance(ctx, contractID, address, tokenID, balance)
+}
