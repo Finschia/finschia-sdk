@@ -51,6 +51,9 @@ import (
 	"github.com/line/lbm-sdk/x/capability"
 	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+	"github.com/line/lbm-sdk/x/collection"
+	collectionkeeper "github.com/line/lbm-sdk/x/collection/keeper"
+	collectionmodule "github.com/line/lbm-sdk/x/collection/module"
 	"github.com/line/lbm-sdk/x/crisis"
 	crisiskeeper "github.com/line/lbm-sdk/x/crisis/keeper"
 	crisistypes "github.com/line/lbm-sdk/x/crisis/types"
@@ -152,6 +155,7 @@ var (
 		authzmodule.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		tokenmodule.AppModuleBasic{},
+		collectionmodule.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -212,6 +216,7 @@ type SimApp struct {
 	TransferKeeper   ibctransferkeeper.Keeper
 	FeeGrantKeeper   feegrantkeeper.Keeper
 	TokenKeeper      tokenkeeper.Keeper
+	CollectionKeeper collectionkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -271,6 +276,7 @@ func NewSimApp(
 		foundation.StoreKey,
 		class.StoreKey,
 		token.StoreKey,
+		collection.StoreKey,
 		authzkeeper.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -336,6 +342,7 @@ func NewSimApp(
 
 	classKeeper := classkeeper.NewKeeper(appCodec, keys[class.StoreKey])
 	app.TokenKeeper = tokenkeeper.NewKeeper(appCodec, keys[token.StoreKey], app.AccountKeeper, classKeeper)
+	app.CollectionKeeper = collectionkeeper.NewKeeper(appCodec, keys[collection.StoreKey], app.AccountKeeper, classKeeper)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
@@ -425,6 +432,7 @@ func NewSimApp(
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		tokenmodule.NewAppModule(appCodec, app.TokenKeeper),
+		collectionmodule.NewAppModule(appCodec, app.CollectionKeeper),
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		transferModule,
 	)
@@ -455,6 +463,7 @@ func NewSimApp(
 		ibchost.ModuleName,
 		ibctransfertypes.ModuleName,
 		token.ModuleName,
+		collection.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		crisistypes.ModuleName,
@@ -477,6 +486,7 @@ func NewSimApp(
 		ibctransfertypes.ModuleName,
 		foundation.ModuleName,
 		token.ModuleName,
+		collection.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -506,6 +516,7 @@ func NewSimApp(
 		vestingtypes.ModuleName,
 		foundation.ModuleName,
 		token.ModuleName,
+		collection.ModuleName,
 	)
 
 	// Uncomment if you want to set a custom migration order here.
