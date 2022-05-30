@@ -54,6 +54,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (client) [\#476](https://github.com/line/lbm-sdk/pull/476) change the default value of the client output format in the config
 * (server/grpc) [\#516](https://github.com/line/lbm-sdk/pull/516) restore build norace flag
 * (genesis) [\#517](https://github.com/line/lbm-sdk/pull/517) fix genesis auth account format(cosmos-sdk style -> lbm-sdk style)
+* (x/token) [\#539](https://github.com/line/lbm-sdk/pull/539) fix the compatibility issues with daphne
 
 ### Breaking Changes
 
