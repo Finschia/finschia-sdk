@@ -6,15 +6,15 @@ import (
 )
 
 var (
+	balanceKeyPrefix       = []byte{0x00}
 	classKeyPrefix         = []byte{0x01}
-	balanceKeyPrefix       = []byte{0x02}
-	grantKeyPrefix         = []byte{0x03}
-	authorizationKeyPrefix = []byte{0x04}
+	grantKeyPrefix         = []byte{0x02}
+	authorizationKeyPrefix = []byte{0x03}
 
 	// statistics keys
-	supplyKeyPrefix = []byte{0x05}
-	mintKeyPrefix   = []byte{0x06}
-	burnKeyPrefix   = []byte{0x07}
+	supplyKeyPrefix = []byte{0x04}
+	mintKeyPrefix   = []byte{0x05}
+	burnKeyPrefix   = []byte{0x06}
 )
 
 func classKey(id string) []byte {
