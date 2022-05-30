@@ -167,15 +167,53 @@ func (s msgServer) RevokeOperator(c context.Context, req *collection.MsgRevokeOp
 }
 
 func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateContract) (*collection.MsgCreateContractResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+	contract := collection.Contract{
+		Name:       req.Name,
+		BaseImgUri: req.BaseImgUri,
+		Meta:       req.Meta,
+	}
+	_, err := s.keeper.CreateContract(ctx, contract)
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: is it better to return the id?
+	return &collection.MsgCreateContractResponse{}, nil
 }
 
 func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*collection.MsgIssueFTResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+	class := &collection.FTClass{
+		ContractId: req.ContractId,
+		Name:       req.Name,
+		Meta:       req.Meta,
+		Decimals:   req.Decimals,
+		Mintable:   req.Mintable,
+	}
+	_, err := s.keeper.CreateTokenClass(ctx, class)
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: is it better to return the id?
+	return &collection.MsgIssueFTResponse{}, nil
 }
 
 func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*collection.MsgIssueNFTResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+	class := &collection.NFTClass{
+		ContractId: req.ContractId,
+		Name:       req.Name,
+		Meta:       req.Meta,
+	}
+	_, err := s.keeper.CreateTokenClass(ctx, class)
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: is it better to return the id?
+	return &collection.MsgIssueNFTResponse{}, nil
 }
 
 func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collection.MsgMintFTResponse, error) {

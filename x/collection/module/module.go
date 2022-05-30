@@ -76,7 +76,7 @@ func (AppModuleBasic) GetTxCmd() *cobra.Command {
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
-	// collection.RegisterInterfaces(registry)
+	collection.RegisterInterfaces(registry)
 }
 
 //____________________________________________________________________________

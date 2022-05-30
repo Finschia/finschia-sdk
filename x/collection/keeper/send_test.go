@@ -14,17 +14,17 @@ func (s *KeeperTestSuite) TestSendCoins() {
 		valid  bool
 	}{
 		"valid send (fungible token)": {
-			tokenID: s.fungibleTokenClassID + fmt.Sprintf("%08d", 0),
+			tokenID: s.ftClassID + fmt.Sprintf("%08d", 0),
 			amount: s.balance,
 			valid: true,
 		},
 		"valid send (non-fungible token)": {
-			tokenID: s.nonFungibleTokenClassID + fmt.Sprintf("%08d", 1),
+			tokenID: s.nftClassID + fmt.Sprintf("%08d", 1),
 			amount: sdk.OneInt(),
 			valid: true,
 		},
 		"insufficient tokens": {
-			tokenID: s.fungibleTokenClassID + fmt.Sprintf("%08d", 0),
+			tokenID: s.ftClassID + fmt.Sprintf("%08d", 0),
 			amount: s.balance.Add(sdk.OneInt()),
 		},
 	}
@@ -51,4 +51,3 @@ func (s *KeeperTestSuite) TestSendCoins() {
 		})
 	}
 }
-

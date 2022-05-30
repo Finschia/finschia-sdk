@@ -5,7 +5,10 @@ import (
 )
 
 var (
-	balanceKeyPrefix = []byte{0x00}
+	balanceKeyPrefix     = []byte{0x00}
+	contractKeyPrefix    = []byte{0x01}
+	classKeyPrefix       = []byte{0x02}
+	nextClassIDKeyPrefix = []byte{0x03}
 )
 
 func balanceKey(contractID string, address sdk.AccAddress, tokenID string) []byte {
@@ -63,3 +66,46 @@ func balanceKeyPrefixByContractID(contractID string) []byte {
 
 // 	return
 // }
+
+func classKey(contractID string, classID string) []byte {
+	prefix := classKeyPrefixByContractID(contractID)
+	key := make([]byte, len(prefix)+len(classID))
+
+	copy(key, prefix)
+	copy(key[len(prefix):], classID)
+
+	return key
+}
+
+func classKeyPrefixByContractID(contractID string) []byte {
+	key := make([]byte, len(classKeyPrefix)+1+len(contractID))
+
+	begin := 0
+	copy(key, classKeyPrefix)
+
+	begin += len(classKeyPrefix)
+	key[begin] = byte(len(contractID))
+
+	begin++
+	copy(key[begin:], contractID)
+
+	return key
+}
+
+func contractKey(contractID string) []byte {
+	key := make([]byte, len(contractKeyPrefix)+len(contractID))
+
+	copy(key, contractKeyPrefix)
+	copy(key[len(contractKeyPrefix):], contractID)
+
+	return key
+}
+
+func nextClassIDKey(contractID string) []byte {
+	key := make([]byte, len(nextClassIDKeyPrefix)+len(contractID))
+
+	copy(key, nextClassIDKeyPrefix)
+	copy(key[len(nextClassIDKeyPrefix):], contractID)
+
+	return key
+}

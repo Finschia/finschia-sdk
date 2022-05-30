@@ -484,9 +484,9 @@
     - [ClassGenesisState](#lbm.collection.v1.ClassGenesisState)
     - [ContractAuthorizations](#lbm.collection.v1.ContractAuthorizations)
     - [ContractBalances](#lbm.collection.v1.ContractBalances)
-    - [ContractCoin](#lbm.collection.v1.ContractCoin)
     - [ContractGrants](#lbm.collection.v1.ContractGrants)
     - [GenesisState](#lbm.collection.v1.GenesisState)
+    - [NextClassIDs](#lbm.collection.v1.NextClassIDs)
   
 - [lbm/collection/v1/query.proto](#lbm/collection/v1/query.proto)
     - [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest)
@@ -7861,22 +7861,6 @@ genesis state.
 
 
 
-<a name="lbm.collection.v1.ContractCoin"></a>
-
-### ContractCoin
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `amount` | [string](#string) |  |  |
-
-
-
-
-
-
 <a name="lbm.collection.v1.ContractGrants"></a>
 
 ### ContractGrants
@@ -7907,9 +7891,23 @@ GenesisState defines the collection module's genesis state.
 | `classes` | [google.protobuf.Any](#google.protobuf.Any) | repeated | classes defines the metadata of the tokens. |
 | `grants` | [ContractGrants](#lbm.collection.v1.ContractGrants) | repeated | grants defines the grant information. |
 | `authorizations` | [ContractAuthorizations](#lbm.collection.v1.ContractAuthorizations) | repeated | authorizations defines the approve information. |
-| `supplies` | [ContractCoin](#lbm.collection.v1.ContractCoin) | repeated | supplies represents the total supplies of tokens. |
-| `mints` | [ContractCoin](#lbm.collection.v1.ContractCoin) | repeated | mints represents the total mints of tokens. |
-| `burns` | [ContractCoin](#lbm.collection.v1.ContractCoin) | repeated | burns represents the total burns of tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.NextClassIDs"></a>
+
+### NextClassIDs
+NextClassIDs defines the next class ids of the contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `fungible` | [string](#string) |  | id for the fungible tokens. |
+| `non_fungible` | [string](#string) |  | id for the non-fungible tokens. |
 
 
 

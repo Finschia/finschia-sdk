@@ -33,7 +33,7 @@ func (s *KeeperTestSuite) TestMsgSend() {
 				From:    s.vendor.String(),
 				To:      s.customer.String(),
 				Amount:  []collection.Coin{{
-					TokenId: s.fungibleTokenClassID + fmt.Sprintf("%08d", 0),
+					TokenId: s.ftClassID + fmt.Sprintf("%08d", 0),
 					Amount: tc.amount,
 				}},
 			}
@@ -83,7 +83,7 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 				From:    tc.from.String(),
 				To:      s.vendor.String(),
 				Amount:  []collection.Coin{{
-					TokenId: s.fungibleTokenClassID + fmt.Sprintf("%08d", 0),
+					TokenId: s.ftClassID + fmt.Sprintf("%08d", 0),
 					Amount: tc.amount,
 				}},
 			}
@@ -124,7 +124,7 @@ func (s *KeeperTestSuite) TestMsgTransferFT() {
 				From:    s.vendor.String(),
 				To:      s.customer.String(),
 				Amount:  []collection.Coin{{
-					TokenId: s.fungibleTokenClassID + fmt.Sprintf("%08d", 0),
+					TokenId: s.ftClassID + fmt.Sprintf("%08d", 0),
 					Amount: tc.amount,
 				}},
 			}
@@ -174,7 +174,7 @@ func (s *KeeperTestSuite) TestMsgTransferFTFrom() {
 				From:    tc.from.String(),
 				To:      s.vendor.String(),
 				Amount:  []collection.Coin{{
-					TokenId: s.fungibleTokenClassID + fmt.Sprintf("%08d", 0),
+					TokenId: s.ftClassID + fmt.Sprintf("%08d", 0),
 					Amount: tc.amount,
 				}},
 			}
@@ -215,7 +215,7 @@ func (s *KeeperTestSuite) TestMsgTransferNFT() {
 				From:    s.vendor.String(),
 				To:      s.customer.String(),
 				TokenIds:  []string{
-					s.nonFungibleTokenClassID + fmt.Sprintf("%08d", 1),
+					s.nftClassID + fmt.Sprintf("%08d", 1),
 				},
 			}
 			res, err := s.msgServer.TransferNFT(sdk.WrapSDKContext(ctx), req)
@@ -264,7 +264,7 @@ func (s *KeeperTestSuite) TestMsgTransferNFTFrom() {
 				From:    tc.from.String(),
 				To:      s.vendor.String(),
 				TokenIds:  []string{
-					s.nonFungibleTokenClassID + fmt.Sprintf("%08d", 1),
+					s.nftClassID + fmt.Sprintf("%08d", 1),
 				},
 			}
 			res, err := s.msgServer.TransferNFTFrom(sdk.WrapSDKContext(ctx), req)

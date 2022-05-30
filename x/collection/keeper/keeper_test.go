@@ -29,8 +29,8 @@ type KeeperTestSuite struct {
 	customer sdk.AccAddress
 
 	contractID string
-	fungibleTokenClassID string
-	nonFungibleTokenClassID string
+	ftClassID string
+	nftClassID string
 
 	balance sdk.Int
 }
@@ -55,20 +55,34 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.balance = sdk.OneInt()
 
 	// create a contract
-	s.contractID = "f00dbabe"
+	contractID, err := s.keeper.CreateContract(s.ctx, collection.Contract{
+		Name: "test contract",
+	})
+	s.Require().NoError(err)
+	s.contractID = *contractID
 
-	// create token classes
-	s.fungibleTokenClassID = fmt.Sprintf("%08d", 1)
-	s.nonFungibleTokenClassID = "10000001"
+	// create a fungible token class
+	ftClassID, err := s.keeper.CreateTokenClass(s.ctx, &collection.FTClass{
+		ContractId: *contractID,
+		Name: "test ft class",
+	})
+	s.Require().NoError(err)
+	s.ftClassID = *ftClassID
+
+	// create a non-fungible token class
+	nftClassID, err := s.keeper.CreateTokenClass(s.ctx, &collection.NFTClass{
+		ContractId: *contractID,
+		Name: "test ft class",
+	})
+	s.Require().NoError(err)
+	s.nftClassID = *nftClassID
 
 	// set balances
 	// TODO: replace with mint
 	for _, to := range []sdk.AccAddress{s.vendor, s.operator, s.customer} {
-		err := s.keeper.SetBalance(s.ctx, s.contractID, to, s.fungibleTokenClassID + fmt.Sprintf("%08d", 0), s.balance)
-		s.Require().NoError(err)
+		s.keeper.SetBalance(s.ctx, s.contractID, to, s.ftClassID + fmt.Sprintf("%08d", 0), s.balance)
 	}
-	err := s.keeper.SetBalance(s.ctx, s.contractID, s.vendor, s.nonFungibleTokenClassID + fmt.Sprintf("%08d", 1), s.balance)
-	s.Require().NoError(err)
+	s.keeper.SetBalance(s.ctx, s.contractID, s.vendor, s.nftClassID + fmt.Sprintf("%08d", 1), s.balance)
 }
 
 func TestKeeperTestSuite(t *testing.T) {
