@@ -471,8 +471,10 @@
     - [EventIssue](#lbm.collection.v1.EventIssue)
     - [EventMinted](#lbm.collection.v1.EventMinted)
     - [EventModified](#lbm.collection.v1.EventModified)
+    - [EventReceived](#lbm.collection.v1.EventReceived)
     - [EventRevokedOperator](#lbm.collection.v1.EventRevokedOperator)
     - [EventSent](#lbm.collection.v1.EventSent)
+    - [EventSpent](#lbm.collection.v1.EventSpent)
   
     - [AttributeKey](#lbm.collection.v1.AttributeKey)
     - [EventType](#lbm.collection.v1.EventType)
@@ -7633,6 +7635,24 @@ Since: finschia
 
 
 
+<a name="lbm.collection.v1.EventReceived"></a>
+
+### EventReceived
+EventReceived is emitted on token receipt.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `receiver` | [string](#string) |  |  |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated |  |
+
+
+
+
+
+
 <a name="lbm.collection.v1.EventRevokedOperator"></a>
 
 ### EventRevokedOperator
@@ -7665,6 +7685,24 @@ Since: finschia
 | `from` | [string](#string) |  | address which the transfer is from. |
 | `to` | [string](#string) |  | address which the transfer is to. |
 | `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of coins of the transfer. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventSpent"></a>
+
+### EventSpent
+EventSpent is emitted on token spend.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `spender` | [string](#string) |  |  |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated |  |
 
 
 

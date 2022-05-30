@@ -182,3 +182,21 @@ message EventModified {
   // changes on metadata.
   repeated Pair changes = 3 [(gogoproto.nullable) = false];
 }
+
+// EventSpent is emitted on token spend.
+// Since: finschia
+message EventSpent {
+  // contract id associated with the contract.
+  string        contract_id = 1;
+  string        spender     = 2;
+  repeated Coin amount      = 3 [(gogoproto.nullable) = false];
+}
+
+// EventReceived is emitted on token receipt.
+// Since: finschia
+message EventReceived {
+  // contract id associated with the contract.
+  string        contract_id = 1;
+  string        receiver    = 2;
+  repeated Coin amount      = 3 [(gogoproto.nullable) = false];
+}
