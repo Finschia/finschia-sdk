@@ -76,6 +76,7 @@ message QueryBalanceRequest {
 
 // QueryBalanceResponse is the response type for the Query/Balance RPC method
 message QueryBalanceResponse {
+  // the balance of the tokens.
   string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -87,6 +88,7 @@ message QuerySupplyRequest {
 
 // QuerySupplyResponse is the response type for the Query/Supply RPC method
 message QuerySupplyResponse {
+  // the supply of the tokens.
   string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -98,6 +100,7 @@ message QueryMintedRequest {
 
 // QueryMintedResponse is the response type for the Query/Minted RPC method
 message QueryMintedResponse {
+  // the amount of the minted tokens.
   string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -109,16 +112,19 @@ message QueryBurntRequest {
 
 // QueryBurntResponse is the response type for the Query/Burnt RPC method
 message QueryBurntResponse {
+  // the amount of the burnt tokens.
   string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryTokenClassRequest is the request type for the Query/TokenClass RPC method
 message QueryTokenClassRequest {
+  // contract id associated with the token class.
   string contract_id = 1;
 }
 
 // QueryTokenClassResponse is the response type for the Query/TokenClass RPC method
 message QueryTokenClassResponse {
+  // if no token class found for the request, it wound be nil and return an error.
   TokenClass class = 1;
 }
 
@@ -130,7 +136,9 @@ message QueryTokenClassesRequest {
 
 // QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method
 message QueryTokenClassesResponse {
-  repeated TokenClass            classes    = 1 [(gogoproto.nullable) = false];
+  // information of the token classes.
+  repeated TokenClass classes = 1 [(gogoproto.nullable) = false];
+  // pagination defines the pagination in the response.
   lbm.base.query.v1.PageResponse pagination = 2;
 }
 
@@ -146,6 +154,7 @@ message QueryGrantRequest {
 
 // QueryGrantResponse is the response type for the Query/Grant RPC method
 message QueryGrantResponse {
+  // if no grant found for the request, it would be nil and return an error.
   Grant grant = 1;
 }
 
@@ -162,7 +171,9 @@ message QueryGranteeGrantsRequest {
 
 // QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method
 message QueryGranteeGrantsResponse {
-  repeated Grant                 grants     = 1 [(gogoproto.nullable) = false];
+  // all the grants on the grantee.
+  repeated Grant grants = 1 [(gogoproto.nullable) = false];
+  // pagination defines the pagination in the response.
   lbm.base.query.v1.PageResponse pagination = 2;
 }
 
@@ -178,6 +189,7 @@ message QueryAuthorizationRequest {
 
 // QueryAuthorizationResponse is the response type for the Query/Authorization RPC method
 message QueryAuthorizationResponse {
+  // if no authorization found for the request, it would be nil.
   Authorization authorization = 1;
 }
 
@@ -194,6 +206,8 @@ message QueryOperatorAuthorizationsRequest {
 
 // QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method
 message QueryOperatorAuthorizationsResponse {
-  repeated Authorization         authorizations = 1 [(gogoproto.nullable) = false];
-  lbm.base.query.v1.PageResponse pagination     = 2;
+  // all the authorizations on the operator.
+  repeated Authorization authorizations = 1 [(gogoproto.nullable) = false];
+  // pagination defines the pagination in the response.
+  lbm.base.query.v1.PageResponse pagination = 2;
 }

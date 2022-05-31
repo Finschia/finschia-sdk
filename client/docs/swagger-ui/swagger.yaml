@@ -38797,7 +38797,9 @@ paths:
                         mintable represents whether the token is allowed to
                         mint.
                   description: TokenClass defines token information.
+                description: information of the token classes.
               pagination:
+                description: pagination defines the pagination in the response.
                 type: object
                 properties:
                   next_key:
@@ -38814,16 +38816,6 @@ paths:
                       PageRequest.count_total
 
                       was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
             title: >-
               QueryTokenClassesResponse is the response type for the
               Query/TokenClasses RPC method
@@ -38984,6 +38976,7 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
+          description: contract id associated with the token class.
           in: path
           required: true
           type: string
@@ -39019,7 +39012,9 @@ paths:
                   description: >-
                     Authorization defines an authorization given to the operator
                     on tokens of the holder.
+                description: all the authorizations on the operator.
               pagination:
+                description: pagination defines the pagination in the response.
                 type: object
                 properties:
                   next_key:
@@ -39036,16 +39031,6 @@ paths:
                       PageRequest.count_total
 
                       was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
             title: >-
               QueryOperatorAuthorizationsResponse is the response type for the
               Query/OperatorAuthorizations RPC method
@@ -39229,6 +39214,7 @@ paths:
             properties:
               amount:
                 type: string
+                description: the balance of the tokens.
             title: >-
               QueryBalanceResponse is the response type for the Query/Balance
               RPC method
@@ -39279,6 +39265,7 @@ paths:
             properties:
               amount:
                 type: string
+                description: the amount of the burnt tokens.
             title: >-
               QueryBurntResponse is the response type for the Query/Burnt RPC
               method
@@ -39336,7 +39323,9 @@ paths:
                       type: string
                       description: permission on the token class.
                   description: Grant defines permission given to a grantee.
+                description: all the grants on the grantee.
               pagination:
+                description: pagination defines the pagination in the response.
                 type: object
                 properties:
                   next_key:
@@ -39353,16 +39342,6 @@ paths:
                       PageRequest.count_total
 
                       was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
             title: >-
               QueryGranteeGrantsResponse is the response type for the
               Query/GranteeGrants RPC method
@@ -39536,6 +39515,7 @@ paths:
             properties:
               amount:
                 type: string
+                description: the amount of the minted tokens.
             title: >-
               QueryMintedResponse is the response type for the Query/Minted RPC
               method
@@ -39581,6 +39561,7 @@ paths:
             properties:
               amount:
                 type: string
+                description: the supply of the tokens.
             title: >-
               QuerySupplyResponse is the response type for the Query/Supply RPC
               method
@@ -64244,12 +64225,14 @@ definitions:
     properties:
       amount:
         type: string
+        description: the balance of the tokens.
     title: QueryBalanceResponse is the response type for the Query/Balance RPC method
   lbm.token.v1.QueryBurntResponse:
     type: object
     properties:
       amount:
         type: string
+        description: the amount of the burnt tokens.
     title: QueryBurntResponse is the response type for the Query/Burnt RPC method
   lbm.token.v1.QueryGrantResponse:
     type: object
@@ -64280,7 +64263,9 @@ definitions:
               type: string
               description: permission on the token class.
           description: Grant defines permission given to a grantee.
+        description: all the grants on the grantee.
       pagination:
+        description: pagination defines the pagination in the response.
         type: object
         properties:
           next_key:
@@ -64297,14 +64282,6 @@ definitions:
               PageRequest.count_total
 
               was set, its value is undefined otherwise
-        description: |-
-          PageResponse is to be embedded in gRPC response messages where the
-          corresponding request message has used PageRequest.
-
-           message SomeResponse {
-                   repeated Bar results = 1;
-                   PageResponse page = 2;
-           }
     title: >-
       QueryGranteeGrantsResponse is the response type for the
       Query/GranteeGrants RPC method
@@ -64313,6 +64290,7 @@ definitions:
     properties:
       amount:
         type: string
+        description: the amount of the minted tokens.
     title: QueryMintedResponse is the response type for the Query/Minted RPC method
   lbm.token.v1.QueryOperatorAuthorizationsResponse:
     type: object
@@ -64333,7 +64311,9 @@ definitions:
           description: >-
             Authorization defines an authorization given to the operator on
             tokens of the holder.
+        description: all the authorizations on the operator.
       pagination:
+        description: pagination defines the pagination in the response.
         type: object
         properties:
           next_key:
@@ -64350,14 +64330,6 @@ definitions:
               PageRequest.count_total
 
               was set, its value is undefined otherwise
-        description: |-
-          PageResponse is to be embedded in gRPC response messages where the
-          corresponding request message has used PageRequest.
-
-           message SomeResponse {
-                   repeated Bar results = 1;
-                   PageResponse page = 2;
-           }
     title: >-
       QueryOperatorAuthorizationsResponse is the response type for the
       Query/OperatorAuthorizations RPC method
@@ -64366,6 +64338,7 @@ definitions:
     properties:
       amount:
         type: string
+        description: the supply of the tokens.
     title: QuerySupplyResponse is the response type for the Query/Supply RPC method
   lbm.token.v1.QueryTokenClassResponse:
     type: object
@@ -64448,7 +64421,9 @@ definitions:
               format: boolean
               description: mintable represents whether the token is allowed to mint.
           description: TokenClass defines token information.
+        description: information of the token classes.
       pagination:
+        description: pagination defines the pagination in the response.
         type: object
         properties:
           next_key:
@@ -64465,14 +64440,6 @@ definitions:
               PageRequest.count_total
 
               was set, its value is undefined otherwise
-        description: |-
-          PageResponse is to be embedded in gRPC response messages where the
-          corresponding request message has used PageRequest.
-
-           message SomeResponse {
-                   repeated Bar results = 1;
-                   PageResponse page = 2;
-           }
     title: >-
       QueryTokenClassesResponse is the response type for the Query/TokenClasses
       RPC method

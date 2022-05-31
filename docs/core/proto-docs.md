@@ -12998,7 +12998,7 @@ QueryAuthorizationResponse is the response type for the Query/Authorization RPC 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `authorization` | [Authorization](#lbm.token.v1.Authorization) |  |  |
+| `authorization` | [Authorization](#lbm.token.v1.Authorization) |  | if no authorization found for the request, it would be nil. |
 
 
 
@@ -13029,7 +13029,7 @@ QueryBalanceResponse is the response type for the Query/Balance RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `amount` | [string](#string) |  |  |
+| `amount` | [string](#string) |  | the balance of the tokens. |
 
 
 
@@ -13059,7 +13059,7 @@ QueryBurntResponse is the response type for the Query/Burnt RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `amount` | [string](#string) |  |  |
+| `amount` | [string](#string) |  | the amount of the burnt tokens. |
 
 
 
@@ -13091,7 +13091,7 @@ QueryGrantResponse is the response type for the Query/Grant RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `grant` | [Grant](#lbm.token.v1.Grant) |  |  |
+| `grant` | [Grant](#lbm.token.v1.Grant) |  | if no grant found for the request, it would be nil and return an error. |
 
 
 
@@ -13123,8 +13123,8 @@ QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `grants` | [Grant](#lbm.token.v1.Grant) | repeated |  |
-| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  |  |
+| `grants` | [Grant](#lbm.token.v1.Grant) | repeated | all the grants on the grantee. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -13154,7 +13154,7 @@ QueryMintedResponse is the response type for the Query/Minted RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `amount` | [string](#string) |  |  |
+| `amount` | [string](#string) |  | the amount of the minted tokens. |
 
 
 
@@ -13186,8 +13186,8 @@ QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorA
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `authorizations` | [Authorization](#lbm.token.v1.Authorization) | repeated |  |
-| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  |  |
+| `authorizations` | [Authorization](#lbm.token.v1.Authorization) | repeated | all the authorizations on the operator. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -13217,7 +13217,7 @@ QuerySupplyResponse is the response type for the Query/Supply RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `amount` | [string](#string) |  |  |
+| `amount` | [string](#string) |  | the supply of the tokens. |
 
 
 
@@ -13232,7 +13232,7 @@ QueryTokenClassRequest is the request type for the Query/TokenClass RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  |  |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
 
 
 
@@ -13247,7 +13247,7 @@ QueryTokenClassResponse is the response type for the Query/TokenClass RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class` | [TokenClass](#lbm.token.v1.TokenClass) |  |  |
+| `class` | [TokenClass](#lbm.token.v1.TokenClass) |  | if no token class found for the request, it wound be nil and return an error. |
 
 
 
@@ -13277,8 +13277,8 @@ QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC me
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `classes` | [TokenClass](#lbm.token.v1.TokenClass) | repeated |  |
-| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  |  |
+| `classes` | [TokenClass](#lbm.token.v1.TokenClass) | repeated | information of the token classes. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 

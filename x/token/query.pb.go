@@ -88,6 +88,7 @@ func (m *QueryBalanceRequest) GetAddress() string {
 
 // QueryBalanceResponse is the response type for the Query/Balance RPC method
 type QueryBalanceResponse struct {
+	// the balance of the tokens.
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,1,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
@@ -172,6 +173,7 @@ func (m *QuerySupplyRequest) GetContractId() string {
 
 // QuerySupplyResponse is the response type for the Query/Supply RPC method
 type QuerySupplyResponse struct {
+	// the supply of the tokens.
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,1,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
@@ -256,6 +258,7 @@ func (m *QueryMintedRequest) GetContractId() string {
 
 // QueryMintedResponse is the response type for the Query/Minted RPC method
 type QueryMintedResponse struct {
+	// the amount of the minted tokens.
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,1,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
@@ -340,6 +343,7 @@ func (m *QueryBurntRequest) GetContractId() string {
 
 // QueryBurntResponse is the response type for the Query/Burnt RPC method
 type QueryBurntResponse struct {
+	// the amount of the burnt tokens.
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,1,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
@@ -378,6 +382,7 @@ var xxx_messageInfo_QueryBurntResponse proto.InternalMessageInfo
 
 // QueryTokenClassRequest is the request type for the Query/TokenClass RPC method
 type QueryTokenClassRequest struct {
+	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 }
 
@@ -423,6 +428,7 @@ func (m *QueryTokenClassRequest) GetContractId() string {
 
 // QueryTokenClassResponse is the response type for the Query/TokenClass RPC method
 type QueryTokenClassResponse struct {
+	// if no token class found for the request, it wound be nil and return an error.
 	Class *TokenClass `protobuf:"bytes,1,opt,name=class,proto3" json:"class,omitempty"`
 }
 
@@ -514,7 +520,9 @@ func (m *QueryTokenClassesRequest) GetPagination() *query.PageRequest {
 
 // QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method
 type QueryTokenClassesResponse struct {
-	Classes    []TokenClass        `protobuf:"bytes,1,rep,name=classes,proto3" json:"classes"`
+	// information of the token classes.
+	Classes []TokenClass `protobuf:"bytes,1,rep,name=classes,proto3" json:"classes"`
+	// pagination defines the pagination in the response.
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
@@ -631,6 +639,7 @@ func (m *QueryGrantRequest) GetPermission() string {
 
 // QueryGrantResponse is the response type for the Query/Grant RPC method
 type QueryGrantResponse struct {
+	// if no grant found for the request, it would be nil and return an error.
 	Grant *Grant `protobuf:"bytes,1,opt,name=grant,proto3" json:"grant,omitempty"`
 }
 
@@ -740,7 +749,9 @@ func (m *QueryGranteeGrantsRequest) GetPagination() *query.PageRequest {
 
 // QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method
 type QueryGranteeGrantsResponse struct {
-	Grants     []Grant             `protobuf:"bytes,1,rep,name=grants,proto3" json:"grants"`
+	// all the grants on the grantee.
+	Grants []Grant `protobuf:"bytes,1,rep,name=grants,proto3" json:"grants"`
+	// pagination defines the pagination in the response.
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
@@ -857,6 +868,7 @@ func (m *QueryAuthorizationRequest) GetApprover() string {
 
 // QueryAuthorizationResponse is the response type for the Query/Authorization RPC method
 type QueryAuthorizationResponse struct {
+	// if no authorization found for the request, it would be nil.
 	Authorization *Authorization `protobuf:"bytes,1,opt,name=authorization,proto3" json:"authorization,omitempty"`
 }
 
@@ -966,8 +978,10 @@ func (m *QueryOperatorAuthorizationsRequest) GetPagination() *query.PageRequest 
 
 // QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method
 type QueryOperatorAuthorizationsResponse struct {
-	Authorizations []Authorization     `protobuf:"bytes,1,rep,name=authorizations,proto3" json:"authorizations"`
-	Pagination     *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	// all the authorizations on the operator.
+	Authorizations []Authorization `protobuf:"bytes,1,rep,name=authorizations,proto3" json:"authorizations"`
+	// pagination defines the pagination in the response.
+	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
 func (m *QueryOperatorAuthorizationsResponse) Reset()         { *m = QueryOperatorAuthorizationsResponse{} }
