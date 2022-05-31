@@ -12845,8 +12845,8 @@ Balance defines a balance of an address.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
+| `address` | [string](#string) |  | address of the holder. |
+| `amount` | [string](#string) |  | amount of the balance. |
 
 
 
@@ -12878,7 +12878,7 @@ ContractAuthorizations defines authorizations belong to a contract.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `authorizations` | [Authorization](#lbm.token.v1.Authorization) | repeated | authorizations |
+| `authorizations` | [Authorization](#lbm.token.v1.Authorization) | repeated | authorizations of the contract. |
 
 
 
@@ -12895,7 +12895,7 @@ genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `balances` | [Balance](#lbm.token.v1.Balance) | repeated | balances |
+| `balances` | [Balance](#lbm.token.v1.Balance) | repeated | balances of the contract. |
 
 
 
@@ -12911,7 +12911,7 @@ genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `amount` | [string](#string) |  |  |
+| `amount` | [string](#string) |  | amount of the token. |
 
 
 
@@ -12927,7 +12927,7 @@ ContractGrant defines grants belong to a contract.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `grants` | [Grant](#lbm.token.v1.Grant) | repeated | grants |
+| `grants` | [Grant](#lbm.token.v1.Grant) | repeated | grants of the contract. |
 
 
 

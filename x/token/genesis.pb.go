@@ -195,7 +195,7 @@ func (m *ClassGenesisState) GetIds() []string {
 type ContractBalances struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// balances
+	// balances of the contract.
 	Balances []Balance `protobuf:"bytes,2,rep,name=balances,proto3" json:"balances"`
 }
 
@@ -248,8 +248,10 @@ func (m *ContractBalances) GetBalances() []Balance {
 
 // Balance defines a balance of an address.
 type Balance struct {
-	Address string                            `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Amount  github_com_line_lbm_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+	// address of the holder.
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	// amount of the balance.
+	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
 func (m *Balance) Reset()         { *m = Balance{} }
@@ -296,7 +298,7 @@ func (m *Balance) GetAddress() string {
 type ContractAuthorizations struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// authorizations
+	// authorizations of the contract.
 	Authorizations []Authorization `protobuf:"bytes,2,rep,name=authorizations,proto3" json:"authorizations"`
 }
 
@@ -351,7 +353,7 @@ func (m *ContractAuthorizations) GetAuthorizations() []Authorization {
 type ContractGrants struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// grants
+	// grants of the contract.
 	Grants []Grant `protobuf:"bytes,2,rep,name=grants,proto3" json:"grants"`
 }
 
@@ -404,8 +406,9 @@ func (m *ContractGrants) GetGrants() []Grant {
 
 type ContractCoin struct {
 	// contract id associated with the token class.
-	ContractId string                            `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	Amount     github_com_line_lbm_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	// amount of the token.
+	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
 func (m *ContractCoin) Reset()         { *m = ContractCoin{} }

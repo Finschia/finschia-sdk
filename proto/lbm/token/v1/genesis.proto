@@ -50,7 +50,7 @@ message ClassGenesisState {
 message ContractBalances {
   // contract id associated with the token class.
   string contract_id = 1;
-  // balances
+  // balances of the contract.
   repeated Balance balances = 2 [(gogoproto.nullable) = false];
 }
 
@@ -58,15 +58,17 @@ message ContractBalances {
 message Balance {
   option (gogoproto.equal) = true;
 
+  // address of the holder.
   string address = 1;
-  string amount  = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  // amount of the balance.
+  string amount = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // ContractAuthorizations defines authorizations belong to a contract.
 message ContractAuthorizations {
   // contract id associated with the token class.
   string contract_id = 1;
-  // authorizations
+  // authorizations of the contract.
   repeated Authorization authorizations = 2 [(gogoproto.nullable) = false];
 }
 
@@ -74,12 +76,13 @@ message ContractAuthorizations {
 message ContractGrants {
   // contract id associated with the token class.
   string contract_id = 1;
-  // grants
+  // grants of the contract.
   repeated Grant grants = 2 [(gogoproto.nullable) = false];
 }
 
 message ContractCoin {
   // contract id associated with the token class.
   string contract_id = 1;
-  string amount      = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  // amount of the token.
+  string amount = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
