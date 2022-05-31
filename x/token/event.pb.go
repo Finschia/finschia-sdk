@@ -150,10 +150,13 @@ type EventSent struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address of the operator.
-	Operator string                            `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
-	From     string                            `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
-	To       string                            `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`
-	Amount   github_com_line_lbm_sdk_types.Int `protobuf:"bytes,5,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
+	// address which the transfer is from.
+	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
+	// address which the transfer is to.
+	To string `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`
+	// amount of the send.
+	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,5,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
 func (m *EventSent) Reset()         { *m = EventSent{} }
@@ -790,9 +793,11 @@ func (m *EventModified) GetChanges() []Pair {
 // Since: finschia
 type EventSpent struct {
 	// contract id associated with the token class.
-	ContractId string                            `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	Spender    string                            `protobuf:"bytes,2,opt,name=spender,proto3" json:"spender,omitempty"`
-	Amount     github_com_line_lbm_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	// address of the spender.
+	Spender string `protobuf:"bytes,2,opt,name=spender,proto3" json:"spender,omitempty"`
+	// amount of the spend.
+	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
 func (m *EventSpent) Reset()         { *m = EventSpent{} }
@@ -846,9 +851,11 @@ func (m *EventSpent) GetSpender() string {
 // Since: finschia
 type EventReceived struct {
 	// contract id associated with the token class.
-	ContractId string                            `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	Receiver   string                            `protobuf:"bytes,2,opt,name=receiver,proto3" json:"receiver,omitempty"`
-	Amount     github_com_line_lbm_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	// address of the recipient.
+	Receiver string `protobuf:"bytes,2,opt,name=receiver,proto3" json:"receiver,omitempty"`
+	// amount of the receipt.
+	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
 func (m *EventReceived) Reset()         { *m = EventReceived{} }

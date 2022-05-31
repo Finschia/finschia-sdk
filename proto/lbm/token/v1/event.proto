@@ -50,9 +50,12 @@ message EventSent {
   string contract_id = 1;
   // address of the operator.
   string operator = 2;
-  string from     = 3;
-  string to       = 4;
-  string amount   = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  // address which the transfer is from.
+  string from = 3;
+  // address which the transfer is to.
+  string to = 4;
+  // amount of the send.
+  string amount = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // EventAuthorizedOperator is emitted on Msg/AuthorizeOperator.
@@ -162,8 +165,10 @@ message EventModified {
 message EventSpent {
   // contract id associated with the token class.
   string contract_id = 1;
-  string spender     = 2;
-  string amount      = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  // address of the spender.
+  string spender = 2;
+  // amount of the spend.
+  string amount = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // EventReceived is emitted on token receipt.
@@ -171,6 +176,8 @@ message EventSpent {
 message EventReceived {
   // contract id associated with the token class.
   string contract_id = 1;
-  string receiver    = 2;
-  string amount      = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  // address of the recipient.
+  string receiver = 2;
+  // amount of the receipt.
+  string amount = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }

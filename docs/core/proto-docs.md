@@ -12709,8 +12709,8 @@ Since: finschia
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `receiver` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
+| `receiver` | [string](#string) |  | address of the recipient. |
+| `amount` | [string](#string) |  | amount of the receipt. |
 
 
 
@@ -12746,9 +12746,9 @@ Since: finschia
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `operator` | [string](#string) |  | address of the operator. |
-| `from` | [string](#string) |  |  |
-| `to` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
+| `from` | [string](#string) |  | address which the transfer is from. |
+| `to` | [string](#string) |  | address which the transfer is to. |
+| `amount` | [string](#string) |  | amount of the send. |
 
 
 
@@ -12765,8 +12765,8 @@ Since: finschia
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `spender` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
+| `spender` | [string](#string) |  | address of the spender. |
+| `amount` | [string](#string) |  | amount of the spend. |
 
 
 
