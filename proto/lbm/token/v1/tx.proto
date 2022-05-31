@@ -14,13 +14,13 @@ service Msg {
   // Send defines a method to send tokens from one account to another account.
   rpc Send(MsgSend) returns (MsgSendResponse);
 
-  // OperatorSend defines a method to send tokens from one account to another account by the proxy.
+  // OperatorSend defines a method to send tokens from one account to another account by the operator.
   rpc OperatorSend(MsgOperatorSend) returns (MsgOperatorSendResponse);
 
   // AuthorizeOperator allows one to send tokens on behalf of the approver.
   rpc AuthorizeOperator(MsgAuthorizeOperator) returns (MsgAuthorizeOperatorResponse);
 
-  // RevokeOperator revoke the authorization of the proxy to send the approver's tokens.
+  // RevokeOperator revoke the authorization of the operator to send the approver's tokens.
   // Since: finschia
   rpc RevokeOperator(MsgRevokeOperator) returns (MsgRevokeOperatorResponse);
 
@@ -48,10 +48,14 @@ service Msg {
 
 // MsgSend defines the Msg/Send request type.
 message MsgSend {
+  // contract id associated with the token class.
   string contract_id = 1;
-  string from        = 2;
-  string to          = 3;
-  string amount      = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  // the address which the transfer is from.
+  string from = 2;
+  // the address which the transfer is to.
+  string to = 3;
+  // the amount of the transfer.
+  string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgSendResponse defines the Msg/Send response type.
@@ -59,11 +63,16 @@ message MsgSendResponse {}
 
 // MsgOperatorSend defines the Msg/OperatorSend request type.
 message MsgOperatorSend {
+  // contract id associated with the token class.
   string contract_id = 1;
-  string proxy       = 2;
-  string from        = 3;
-  string to          = 4;
-  string amount      = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  // the address of the operator.
+  string proxy = 2;
+  // the address which the transfer is from.
+  string from = 3;
+  // the address which the transfer is to.
+  string to = 4;
+  // the amount of the transfer.
+  string amount = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgOperatorSendResponse defines the Msg/OperatorSend response type.
@@ -84,9 +93,12 @@ message MsgAuthorizeOperatorResponse {}
 
 // MsgRevokeOperator defines the Msg/RevokeOperator request type.
 message MsgRevokeOperator {
+  // contract id associated with the token class.
   string contract_id = 1;
-  string approver    = 2;
-  string proxy       = 3;
+  // approver is the address of the approver of the authorization.
+  string approver = 2;
+  // proxy is the address of the operator which the authorization is granted to.
+  string proxy = 3;
 }
 
 // MsgRevokeOperatorResponse defines the Msg/RevokeOperator response type.
@@ -94,9 +106,9 @@ message MsgRevokeOperatorResponse {}
 
 // MsgIssue defines the Msg/Issue request type.
 message MsgIssue {
-  // name defines the human-readable name of the token class. mandatory (not compatible with ERC20).
+  // name defines the human-readable name of the token class. mandatory (not ERC20 compliant).
   string name = 1;
-  // symbol is an abbreviated name for token class. mandatory (not compatible with ERC20).
+  // symbol is an abbreviated name for token class. mandatory (not ERC20 compliant).
   string symbol = 2;
   // image_uri is an uri for the image of the token class stored off chain.
   string image_uri = 3;
@@ -121,10 +133,14 @@ message MsgIssueResponse {}
 
 // MsgGrant defines the Msg/Grant request type.
 message MsgGrant {
+  // contract id associated with the token class.
   string contract_id = 1;
-  string from        = 2;
-  string to          = 3;
-  string permission  = 4;
+  // address of the granter which must have the permission to give.
+  string from = 2;
+  // address of the grantee.
+  string to = 3;
+  // permission on the token class.
+  string permission = 4;
 }
 
 // MsgGrantResponse defines the Msg/Grant response type.
@@ -132,9 +148,12 @@ message MsgGrantResponse {}
 
 // MsgAbandon defines the Msg/Abandon request type.
 message MsgAbandon {
+  // contract id associated with the token class.
   string contract_id = 1;
-  string grantee     = 2;
-  string permission  = 3;
+  // address of the grantee which abandons the permission.
+  string grantee = 2;
+  // permission on the token class.
+  string permission = 3;
 }
 
 // MsgAbandonResponse defines the Msg/Abandon response type.
@@ -142,10 +161,14 @@ message MsgAbandonResponse {}
 
 // MsgMint defines the Msg/Mint request type.
 message MsgMint {
+  // contract id associated with the token class.
   string contract_id = 1;
-  string from        = 2;
-  string to          = 3;
-  string amount      = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  // address of the grantee which has the permission for the mint.
+  string from = 2;
+  // address which the minted tokens will be sent to.
+  string to = 3;
+  // the amount of the mint.
+  string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgMintResponse defines the Msg/Mint response type.
@@ -153,9 +176,13 @@ message MsgMintResponse {}
 
 // MsgBurn defines the Msg/Burn request type.
 message MsgBurn {
+  // contract id associated with the token class.w
   string contract_id = 1;
-  string from        = 2;
-  string amount      = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  // address which the tokens will be burnt from.
+  // NOTE: it must have the permission for the burn.
+  string from = 2;
+  // the amount of the burn.
+  string amount = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgBurnResponse defines the Msg/Burn response type.
@@ -163,10 +190,16 @@ message MsgBurnResponse {}
 
 // MsgOperatorBurn defines the Msg/OperatorBurn request type.
 message MsgOperatorBurn {
+  // the amount of the burn.
   string contract_id = 1;
-  string proxy       = 2;
-  string from        = 3;
-  string amount      = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  // address which triggers the burn.
+  // NOTE: it must have the permission for the burn.
+  // NOTE: it must have been authorized by from.
+  string proxy = 2;
+  // address which the tokens will be burnt from.
+  string from = 3;
+  // the amount of the burn.
+  string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
@@ -174,9 +207,12 @@ message MsgOperatorBurnResponse {}
 
 // MsgModify defines the Msg/Modify request type.
 message MsgModify {
-  string        contract_id = 1;
-  string        owner       = 2;
-  repeated Pair changes     = 3 [(gogoproto.nullable) = false];
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // the address of the grantee which must have modify permission.
+  string owner = 2;
+  // changes to apply.
+  repeated Pair changes = 3 [(gogoproto.nullable) = false];
 }
 
 // MsgModifyResponse defines the Msg/Modify response type.

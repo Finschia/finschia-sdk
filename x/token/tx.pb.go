@@ -31,10 +31,14 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // MsgSend defines the Msg/Send request type.
 type MsgSend struct {
-	ContractId string                            `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	From       string                            `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	To         string                            `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
-	Amount     github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+	// contract id associated with the token class.
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	// the address which the transfer is from.
+	From string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	// the address which the transfer is to.
+	To string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	// the amount of the transfer.
+	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
 func (m *MsgSend) Reset()         { *m = MsgSend{} }
@@ -109,11 +113,16 @@ var xxx_messageInfo_MsgSendResponse proto.InternalMessageInfo
 
 // MsgOperatorSend defines the Msg/OperatorSend request type.
 type MsgOperatorSend struct {
-	ContractId string                            `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	Proxy      string                            `protobuf:"bytes,2,opt,name=proxy,proto3" json:"proxy,omitempty"`
-	From       string                            `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
-	To         string                            `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`
-	Amount     github_com_line_lbm_sdk_types.Int `protobuf:"bytes,5,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+	// contract id associated with the token class.
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	// the address of the operator.
+	Proxy string `protobuf:"bytes,2,opt,name=proxy,proto3" json:"proxy,omitempty"`
+	// the address which the transfer is from.
+	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
+	// the address which the transfer is to.
+	To string `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`
+	// the amount of the transfer.
+	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,5,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
 func (m *MsgOperatorSend) Reset()         { *m = MsgOperatorSend{} }
@@ -268,9 +277,12 @@ var xxx_messageInfo_MsgAuthorizeOperatorResponse proto.InternalMessageInfo
 
 // MsgRevokeOperator defines the Msg/RevokeOperator request type.
 type MsgRevokeOperator struct {
+	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	Approver   string `protobuf:"bytes,2,opt,name=approver,proto3" json:"approver,omitempty"`
-	Proxy      string `protobuf:"bytes,3,opt,name=proxy,proto3" json:"proxy,omitempty"`
+	// approver is the address of the approver of the authorization.
+	Approver string `protobuf:"bytes,2,opt,name=approver,proto3" json:"approver,omitempty"`
+	// proxy is the address of the operator which the authorization is granted to.
+	Proxy string `protobuf:"bytes,3,opt,name=proxy,proto3" json:"proxy,omitempty"`
 }
 
 func (m *MsgRevokeOperator) Reset()         { *m = MsgRevokeOperator{} }
@@ -345,9 +357,9 @@ var xxx_messageInfo_MsgRevokeOperatorResponse proto.InternalMessageInfo
 
 // MsgIssue defines the Msg/Issue request type.
 type MsgIssue struct {
-	// name defines the human-readable name of the token class. mandatory (not compatible with ERC20).
+	// name defines the human-readable name of the token class. mandatory (not ERC20 compliant).
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	// symbol is an abbreviated name for token class. mandatory (not compatible with ERC20).
+	// symbol is an abbreviated name for token class. mandatory (not ERC20 compliant).
 	Symbol string `protobuf:"bytes,2,opt,name=symbol,proto3" json:"symbol,omitempty"`
 	// image_uri is an uri for the image of the token class stored off chain.
 	ImageUri string `protobuf:"bytes,3,opt,name=image_uri,json=imageUri,proto3" json:"image_uri,omitempty"`
@@ -437,9 +449,13 @@ var xxx_messageInfo_MsgIssueResponse proto.InternalMessageInfo
 
 // MsgGrant defines the Msg/Grant request type.
 type MsgGrant struct {
+	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	From       string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	To         string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	// address of the granter which must have the permission to give.
+	From string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	// address of the grantee.
+	To string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	// permission on the token class.
 	Permission string `protobuf:"bytes,4,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
@@ -515,8 +531,11 @@ var xxx_messageInfo_MsgGrantResponse proto.InternalMessageInfo
 
 // MsgAbandon defines the Msg/Abandon request type.
 type MsgAbandon struct {
+	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	Grantee    string `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
+	// address of the grantee which abandons the permission.
+	Grantee string `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
+	// permission on the token class.
 	Permission string `protobuf:"bytes,3,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
@@ -592,10 +611,14 @@ var xxx_messageInfo_MsgAbandonResponse proto.InternalMessageInfo
 
 // MsgMint defines the Msg/Mint request type.
 type MsgMint struct {
-	ContractId string                            `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	From       string                            `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	To         string                            `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
-	Amount     github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+	// contract id associated with the token class.
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	// address of the grantee which has the permission for the mint.
+	From string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	// address which the minted tokens will be sent to.
+	To string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
+	// the amount of the mint.
+	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
 func (m *MsgMint) Reset()         { *m = MsgMint{} }
@@ -670,9 +693,13 @@ var xxx_messageInfo_MsgMintResponse proto.InternalMessageInfo
 
 // MsgBurn defines the Msg/Burn request type.
 type MsgBurn struct {
-	ContractId string                            `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	From       string                            `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	Amount     github_com_line_lbm_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+	// contract id associated with the token class.w
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	// address which the tokens will be burnt from.
+	// NOTE: it must have the permission for the burn.
+	From string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
+	// the amount of the burn.
+	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
 func (m *MsgBurn) Reset()         { *m = MsgBurn{} }
@@ -747,10 +774,16 @@ var xxx_messageInfo_MsgBurnResponse proto.InternalMessageInfo
 
 // MsgOperatorBurn defines the Msg/OperatorBurn request type.
 type MsgOperatorBurn struct {
-	ContractId string                            `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	Proxy      string                            `protobuf:"bytes,2,opt,name=proxy,proto3" json:"proxy,omitempty"`
-	From       string                            `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
-	Amount     github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
+	// the amount of the burn.
+	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	// address which triggers the burn.
+	// NOTE: it must have the permission for the burn.
+	// NOTE: it must have been authorized by from.
+	Proxy string `protobuf:"bytes,2,opt,name=proxy,proto3" json:"proxy,omitempty"`
+	// address which the tokens will be burnt from.
+	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
+	// the amount of the burn.
+	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
 func (m *MsgOperatorBurn) Reset()         { *m = MsgOperatorBurn{} }
@@ -825,9 +858,12 @@ var xxx_messageInfo_MsgOperatorBurnResponse proto.InternalMessageInfo
 
 // MsgModify defines the Msg/Modify request type.
 type MsgModify struct {
+	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	Owner      string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
-	Changes    []Pair `protobuf:"bytes,3,rep,name=changes,proto3" json:"changes"`
+	// the address of the grantee which must have modify permission.
+	Owner string `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	// changes to apply.
+	Changes []Pair `protobuf:"bytes,3,rep,name=changes,proto3" json:"changes"`
 }
 
 func (m *MsgModify) Reset()         { *m = MsgModify{} }
@@ -998,11 +1034,11 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	// Send defines a method to send tokens from one account to another account.
 	Send(ctx context.Context, in *MsgSend, opts ...grpc.CallOption) (*MsgSendResponse, error)
-	// OperatorSend defines a method to send tokens from one account to another account by the proxy.
+	// OperatorSend defines a method to send tokens from one account to another account by the operator.
 	OperatorSend(ctx context.Context, in *MsgOperatorSend, opts ...grpc.CallOption) (*MsgOperatorSendResponse, error)
 	// AuthorizeOperator allows one to send tokens on behalf of the approver.
 	AuthorizeOperator(ctx context.Context, in *MsgAuthorizeOperator, opts ...grpc.CallOption) (*MsgAuthorizeOperatorResponse, error)
-	// RevokeOperator revoke the authorization of the proxy to send the approver's tokens.
+	// RevokeOperator revoke the authorization of the operator to send the approver's tokens.
 	// Since: finschia
 	RevokeOperator(ctx context.Context, in *MsgRevokeOperator, opts ...grpc.CallOption) (*MsgRevokeOperatorResponse, error)
 	// Issue defines a method to create a class of token.
@@ -1132,11 +1168,11 @@ func (c *msgClient) Modify(ctx context.Context, in *MsgModify, opts ...grpc.Call
 type MsgServer interface {
 	// Send defines a method to send tokens from one account to another account.
 	Send(context.Context, *MsgSend) (*MsgSendResponse, error)
-	// OperatorSend defines a method to send tokens from one account to another account by the proxy.
+	// OperatorSend defines a method to send tokens from one account to another account by the operator.
 	OperatorSend(context.Context, *MsgOperatorSend) (*MsgOperatorSendResponse, error)
 	// AuthorizeOperator allows one to send tokens on behalf of the approver.
 	AuthorizeOperator(context.Context, *MsgAuthorizeOperator) (*MsgAuthorizeOperatorResponse, error)
-	// RevokeOperator revoke the authorization of the proxy to send the approver's tokens.
+	// RevokeOperator revoke the authorization of the operator to send the approver's tokens.
 	// Since: finschia
 	RevokeOperator(context.Context, *MsgRevokeOperator) (*MsgRevokeOperatorResponse, error)
 	// Issue defines a method to create a class of token.

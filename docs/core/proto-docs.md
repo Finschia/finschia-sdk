@@ -13328,9 +13328,9 @@ MsgAbandon defines the Msg/Abandon request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  |  |
-| `grantee` | [string](#string) |  |  |
-| `permission` | [string](#string) |  |  |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `grantee` | [string](#string) |  | address of the grantee which abandons the permission. |
+| `permission` | [string](#string) |  | permission on the token class. |
 
 
 
@@ -13382,9 +13382,9 @@ MsgBurn defines the Msg/Burn request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  |  |
-| `from` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
+| `contract_id` | [string](#string) |  | contract id associated with the token class.w |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. NOTE: it must have the permission for the burn. |
+| `amount` | [string](#string) |  | the amount of the burn. |
 
 
 
@@ -13409,10 +13409,10 @@ MsgGrant defines the Msg/Grant request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  |  |
-| `from` | [string](#string) |  |  |
-| `to` | [string](#string) |  |  |
-| `permission` | [string](#string) |  |  |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `from` | [string](#string) |  | address of the granter which must have the permission to give. |
+| `to` | [string](#string) |  | address of the grantee. |
+| `permission` | [string](#string) |  | permission on the token class. |
 
 
 
@@ -13437,8 +13437,8 @@ MsgIssue defines the Msg/Issue request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `name` | [string](#string) |  | name defines the human-readable name of the token class. mandatory (not compatible with ERC20). |
-| `symbol` | [string](#string) |  | symbol is an abbreviated name for token class. mandatory (not compatible with ERC20). |
+| `name` | [string](#string) |  | name defines the human-readable name of the token class. mandatory (not ERC20 compliant). |
+| `symbol` | [string](#string) |  | symbol is an abbreviated name for token class. mandatory (not ERC20 compliant). |
 | `image_uri` | [string](#string) |  | image_uri is an uri for the image of the token class stored off chain. |
 | `meta` | [string](#string) |  | meta is a brief description of token class. |
 | `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
@@ -13470,10 +13470,10 @@ MsgMint defines the Msg/Mint request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  |  |
-| `from` | [string](#string) |  |  |
-| `to` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `from` | [string](#string) |  | address of the grantee which has the permission for the mint. |
+| `to` | [string](#string) |  | address which the minted tokens will be sent to. |
+| `amount` | [string](#string) |  | the amount of the mint. |
 
 
 
@@ -13498,9 +13498,9 @@ MsgModify defines the Msg/Modify request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  |  |
-| `owner` | [string](#string) |  |  |
-| `changes` | [Pair](#lbm.token.v1.Pair) | repeated |  |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
+| `changes` | [Pair](#lbm.token.v1.Pair) | repeated | changes to apply. |
 
 
 
@@ -13525,10 +13525,10 @@ MsgOperatorBurn defines the Msg/OperatorBurn request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  |  |
-| `proxy` | [string](#string) |  |  |
-| `from` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
+| `contract_id` | [string](#string) |  | the amount of the burn. |
+| `proxy` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. |
+| `amount` | [string](#string) |  | the amount of the burn. |
 
 
 
@@ -13553,11 +13553,11 @@ MsgOperatorSend defines the Msg/OperatorSend request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  |  |
-| `proxy` | [string](#string) |  |  |
-| `from` | [string](#string) |  |  |
-| `to` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `proxy` | [string](#string) |  | the address of the operator. |
+| `from` | [string](#string) |  | the address which the transfer is from. |
+| `to` | [string](#string) |  | the address which the transfer is to. |
+| `amount` | [string](#string) |  | the amount of the transfer. |
 
 
 
@@ -13582,9 +13582,9 @@ MsgRevokeOperator defines the Msg/RevokeOperator request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  |  |
-| `approver` | [string](#string) |  |  |
-| `proxy` | [string](#string) |  |  |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `approver` | [string](#string) |  | approver is the address of the approver of the authorization. |
+| `proxy` | [string](#string) |  | proxy is the address of the operator which the authorization is granted to. |
 
 
 
@@ -13609,10 +13609,10 @@ MsgSend defines the Msg/Send request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  |  |
-| `from` | [string](#string) |  |  |
-| `to` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `from` | [string](#string) |  | the address which the transfer is from. |
+| `to` | [string](#string) |  | the address which the transfer is to. |
+| `amount` | [string](#string) |  | the amount of the transfer. |
 
 
 
@@ -13643,9 +13643,9 @@ Msg defines the token Msg service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Send` | [MsgSend](#lbm.token.v1.MsgSend) | [MsgSendResponse](#lbm.token.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. | |
-| `OperatorSend` | [MsgOperatorSend](#lbm.token.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the proxy. | |
+| `OperatorSend` | [MsgOperatorSend](#lbm.token.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. | |
 | `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.token.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.token.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the approver. | |
-| `RevokeOperator` | [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse) | RevokeOperator revoke the authorization of the proxy to send the approver's tokens. Since: finschia | |
+| `RevokeOperator` | [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse) | RevokeOperator revoke the authorization of the operator to send the approver's tokens. Since: finschia | |
 | `Issue` | [MsgIssue](#lbm.token.v1.MsgIssue) | [MsgIssueResponse](#lbm.token.v1.MsgIssueResponse) | Issue defines a method to create a class of token. | |
 | `Grant` | [MsgGrant](#lbm.token.v1.MsgGrant) | [MsgGrantResponse](#lbm.token.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify a token metadata. | |
 | `Abandon` | [MsgAbandon](#lbm.token.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.token.v1.MsgAbandonResponse) | Abandon abandons a permission. | |
