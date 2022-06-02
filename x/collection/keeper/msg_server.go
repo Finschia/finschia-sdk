@@ -166,6 +166,14 @@ func (s msgServer) RevokeOperator(c context.Context, req *collection.MsgRevokeOp
 	return nil, sdkerrors.ErrNotSupported
 }
 
+func (s msgServer) Approve(c context.Context, req *collection.MsgApprove) (*collection.MsgApproveResponse, error) {
+	return nil, sdkerrors.ErrNotSupported
+}
+
+func (s msgServer) Disapprove(c context.Context, req *collection.MsgDisapprove) (*collection.MsgDisapproveResponse, error) {
+	return nil, sdkerrors.ErrNotSupported
+}
+
 func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateContract) (*collection.MsgCreateContractResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	contract := collection.Contract{
@@ -260,6 +268,14 @@ func (s msgServer) Abandon(c context.Context, req *collection.MsgAbandon) (*coll
 	return nil, sdkerrors.ErrNotSupported
 }
 
+func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPermission) (*collection.MsgGrantPermissionResponse, error) {
+	return nil, sdkerrors.ErrNotSupported
+}
+
+func (s msgServer) RevokePermission(c context.Context, req *collection.MsgRevokePermission) (*collection.MsgRevokePermissionResponse, error) {
+	return nil, sdkerrors.ErrNotSupported
+}
+
 func (s msgServer) Attach(c context.Context, req *collection.MsgAttach) (*collection.MsgAttachResponse, error) {
 	return nil, sdkerrors.ErrNotSupported
 }
@@ -273,5 +289,13 @@ func (s msgServer) OperatorAttach(c context.Context, req *collection.MsgOperator
 }
 
 func (s msgServer) OperatorDetach(c context.Context, req *collection.MsgOperatorDetach) (*collection.MsgOperatorDetachResponse, error) {
+	return nil, sdkerrors.ErrNotSupported
+}
+
+func (s msgServer) AttachFrom(c context.Context, req *collection.MsgAttachFrom) (*collection.MsgAttachFromResponse, error) {
+	return nil, sdkerrors.ErrNotSupported
+}
+
+func (s msgServer) DetachFrom(c context.Context, req *collection.MsgDetachFrom) (*collection.MsgDetachFromResponse, error) {
 	return nil, sdkerrors.ErrNotSupported
 }

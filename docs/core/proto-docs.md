@@ -550,7 +550,11 @@
     - [MintNFTParam](#lbm.collection.v1.MintNFTParam)
     - [MsgAbandon](#lbm.collection.v1.MsgAbandon)
     - [MsgAbandonResponse](#lbm.collection.v1.MsgAbandonResponse)
+    - [MsgApprove](#lbm.collection.v1.MsgApprove)
+    - [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse)
     - [MsgAttach](#lbm.collection.v1.MsgAttach)
+    - [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom)
+    - [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse)
     - [MsgAttachResponse](#lbm.collection.v1.MsgAttachResponse)
     - [MsgAuthorizeOperator](#lbm.collection.v1.MsgAuthorizeOperator)
     - [MsgAuthorizeOperatorResponse](#lbm.collection.v1.MsgAuthorizeOperatorResponse)
@@ -567,8 +571,14 @@
     - [MsgCreateContract](#lbm.collection.v1.MsgCreateContract)
     - [MsgCreateContractResponse](#lbm.collection.v1.MsgCreateContractResponse)
     - [MsgDetach](#lbm.collection.v1.MsgDetach)
+    - [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom)
+    - [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse)
     - [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse)
+    - [MsgDisapprove](#lbm.collection.v1.MsgDisapprove)
+    - [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse)
     - [MsgGrant](#lbm.collection.v1.MsgGrant)
+    - [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission)
+    - [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse)
     - [MsgGrantResponse](#lbm.collection.v1.MsgGrantResponse)
     - [MsgIssueFT](#lbm.collection.v1.MsgIssueFT)
     - [MsgIssueFTResponse](#lbm.collection.v1.MsgIssueFTResponse)
@@ -590,6 +600,8 @@
     - [MsgOperatorSendResponse](#lbm.collection.v1.MsgOperatorSendResponse)
     - [MsgRevokeOperator](#lbm.collection.v1.MsgRevokeOperator)
     - [MsgRevokeOperatorResponse](#lbm.collection.v1.MsgRevokeOperatorResponse)
+    - [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission)
+    - [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse)
     - [MsgSend](#lbm.collection.v1.MsgSend)
     - [MsgSendResponse](#lbm.collection.v1.MsgSendResponse)
     - [MsgTransferFT](#lbm.collection.v1.MsgTransferFT)
@@ -8873,12 +8885,13 @@ Query defines the gRPC querier service.
 
 ### MsgAbandon
 MsgAbandon is the Msg/Abandon request type.
+Since: finschia
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `from` | [string](#string) |  | address of the grantee which abandons the permission. |
+| `grantee` | [string](#string) |  | address of the grantee which abandons the permission. |
 | `permission` | [string](#string) |  | permission on the contract. |
 
 
@@ -8890,6 +8903,36 @@ MsgAbandon is the Msg/Abandon request type.
 
 ### MsgAbandonResponse
 MsgAbandonResponse is the Msg/Abandon response type.
+Since: finschia
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgApprove"></a>
+
+### MsgApprove
+MsgApprove is the Msg/Approve request type.
+NOTE: deprecated (use MsgAuthorizeOperator)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `approver` | [string](#string) |  | address of the holder who allows the manipulation of its token. |
+| `proxy` | [string](#string) |  | address which the manipulation is allowed to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgApproveResponse"></a>
+
+### MsgApproveResponse
+MsgApproveResponse is the Msg/Approve response type.
+NOTE: deprecated
 
 
 
@@ -8900,6 +8943,7 @@ MsgAbandonResponse is the Msg/Abandon response type.
 
 ### MsgAttach
 MsgAttach is the Msg/Attach request type.
+TODO: revisit the field names
 
 
 | Field | Type | Label | Description |
@@ -8908,6 +8952,37 @@ MsgAttach is the Msg/Attach request type.
 | `from` | [string](#string) |  | address of the owner of the token. |
 | `token_id` | [string](#string) |  | token id of the token to attach. |
 | `to_token_id` | [string](#string) |  | to token id which one attachs the token to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgAttachFrom"></a>
+
+### MsgAttachFrom
+MsgAttachFrom is the Msg/AttachFrom request type.
+NOTE: deprecated (use MsgOperatorAttach)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `proxy` | [string](#string) |  | address of the operator. |
+| `from` | [string](#string) |  | address of the owner of the token. |
+| `token_id` | [string](#string) |  | token id of the token to attach. |
+| `to_token_id` | [string](#string) |  | to token id which one attachs the token to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgAttachFromResponse"></a>
+
+### MsgAttachFromResponse
+MsgAttachFromResponse is the Msg/AttachFrom response type.
+NOTE: deprecated
 
 
 
@@ -8928,13 +9003,14 @@ MsgAttachResponse is the Msg/Attach response type.
 
 ### MsgAuthorizeOperator
 MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
+Since: finschia
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `approver` | [string](#string) |  | address of the holder who allows the manipulation of its token. |
-| `proxy` | [string](#string) |  | address which the manipulation is allowed to. |
+| `holder` | [string](#string) |  | address of the holder who allows the manipulation of its token. |
+| `operator` | [string](#string) |  | address which the manipulation is allowed to. |
 
 
 
@@ -8945,6 +9021,7 @@ MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
 
 ### MsgAuthorizeOperatorResponse
 MsgAuthorizeOperatorResponse is the Msg/AuthorizeOperator response type.
+Since: finschia
 
 
 
@@ -8973,6 +9050,7 @@ Since: finschia
 
 ### MsgBurnFT
 MsgBurnFT is the Msg/BurnFT request type.
+NOTE: deprecated (use MsgBurn)
 
 
 | Field | Type | Label | Description |
@@ -8990,6 +9068,7 @@ MsgBurnFT is the Msg/BurnFT request type.
 
 ### MsgBurnFTFrom
 MsgBurnFTFrom is the Msg/BurnFTFrom request type.
+NOTE: deprecated (use MsgOperatorBurn)
 
 
 | Field | Type | Label | Description |
@@ -9008,6 +9087,7 @@ MsgBurnFTFrom is the Msg/BurnFTFrom request type.
 
 ### MsgBurnFTFromResponse
 MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
+NOTE: deprecated
 
 
 
@@ -9018,6 +9098,7 @@ MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
 
 ### MsgBurnFTResponse
 MsgBurnFTResponse is the Msg/BurnFT response type.
+NOTE: deprecated
 
 
 
@@ -9028,13 +9109,14 @@ MsgBurnFTResponse is the Msg/BurnFT response type.
 
 ### MsgBurnNFT
 MsgBurnNFT is the Msg/BurnNFT request type.
+NOTE: deprecated (use MsgBurn)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `from` | [string](#string) |  | address which the tokens will be burnt from. NOTE: it must have the permission for the burn. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. |
+| `token_ids` | [string](#string) | repeated | the amount of the burn. |
 
 
 
@@ -9045,6 +9127,7 @@ MsgBurnNFT is the Msg/BurnNFT request type.
 
 ### MsgBurnNFTFrom
 MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
+NOTE: deprecated (use MsgOperatorBurn)
 
 
 | Field | Type | Label | Description |
@@ -9052,7 +9135,7 @@ MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `proxy` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
 | `from` | [string](#string) |  | address which the tokens will be burnt from. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. |
+| `token_ids` | [string](#string) | repeated | the amount of the burn. |
 
 
 
@@ -9063,6 +9146,7 @@ MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
 
 ### MsgBurnNFTFromResponse
 MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
+NOTE: deprecated
 
 
 
@@ -9073,6 +9157,7 @@ MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
 
 ### MsgBurnNFTResponse
 MsgBurnNFTResponse is the Msg/BurnNFT response type.
+NOTE: deprecated
 
 
 
@@ -9122,6 +9207,7 @@ MsgCreateContractResponse is the Msg/CreateContract response type.
 
 ### MsgDetach
 MsgDetach is the Msg/Detach request type.
+TODO: revisit the field names
 
 
 | Field | Type | Label | Description |
@@ -9129,6 +9215,36 @@ MsgDetach is the Msg/Detach request type.
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `from` | [string](#string) |  | address of the owner of the token. |
 | `token_id` | [string](#string) |  | token id of the token to detach. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgDetachFrom"></a>
+
+### MsgDetachFrom
+MsgDetachFrom is the Msg/DetachFrom request type.
+NOTE: deprecated (use MsgOperatorDetach)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `proxy` | [string](#string) |  | address of the operator. |
+| `from` | [string](#string) |  | address of the owner of the token. |
+| `token_id` | [string](#string) |  | token id of the token to detach. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgDetachFromResponse"></a>
+
+### MsgDetachFromResponse
+MsgDetachFromResponse is the Msg/DetachFrom response type.
+NOTE: deprecated
 
 
 
@@ -9145,10 +9261,59 @@ MsgDetachResponse is the Msg/Detach response type.
 
 
 
+<a name="lbm.collection.v1.MsgDisapprove"></a>
+
+### MsgDisapprove
+MsgDisapprove is the Msg/Disapprove request type.
+NOTE: deprecated (use MsgRevokeOperator)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `approver` | [string](#string) |  | address of the holder who allows the manipulation of its token. |
+| `proxy` | [string](#string) |  | address which the manipulation is allowed to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgDisapproveResponse"></a>
+
+### MsgDisapproveResponse
+MsgDisapproveResponse is the Msg/Disapprove response type.
+NOTE: deprecated
+
+
+
+
+
+
 <a name="lbm.collection.v1.MsgGrant"></a>
 
 ### MsgGrant
 MsgGrant is the Msg/Grant request type.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `granter` | [string](#string) |  | address of the granter which must have the permission to give. |
+| `grantee` | [string](#string) |  | address of the grantee. |
+| `permission` | [string](#string) |  | permission on the contract. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgGrantPermission"></a>
+
+### MsgGrantPermission
+MsgGrantPermission is the Msg/GrantPermission request type.
+NOTE: deprecated (use MsgGrant)
 
 
 | Field | Type | Label | Description |
@@ -9163,10 +9328,22 @@ MsgGrant is the Msg/Grant request type.
 
 
 
+<a name="lbm.collection.v1.MsgGrantPermissionResponse"></a>
+
+### MsgGrantPermissionResponse
+MsgGrantPermissionResponse is the Msg/GrantPermission response type.
+NOTE: deprecated
+
+
+
+
+
+
 <a name="lbm.collection.v1.MsgGrantResponse"></a>
 
 ### MsgGrantResponse
 MsgGrantResponse is the Msg/Grant response type.
+Since: finschia
 
 
 
@@ -9322,15 +9499,16 @@ MsgModifyResponse is the Msg/Modify response type.
 
 ### MsgOperatorAttach
 MsgOperatorAttach is the Msg/OperatorAttach request type.
+Since: finschia
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address of the operator. |
-| `from` | [string](#string) |  | address of the owner of the token. |
-| `token_id` | [string](#string) |  | token id of the token to attach. |
-| `to_token_id` | [string](#string) |  | to token id which one attachs the token to. |
+| `owner` | [string](#string) |  | address of the owner of the token. |
+| `id` | [string](#string) |  | token id of the token to attach. |
+| `to` | [string](#string) |  | token id which one attachs the token to. |
 
 
 
@@ -9341,6 +9519,7 @@ MsgOperatorAttach is the Msg/OperatorAttach request type.
 
 ### MsgOperatorAttachResponse
 MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
+Since: finschia
 
 
 
@@ -9381,14 +9560,15 @@ Since: finschia
 
 ### MsgOperatorDetach
 MsgOperatorDetach is the Msg/OperatorDetach request type.
+Since: finschia
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address of the operator. |
-| `from` | [string](#string) |  | address of the owner of the token. |
-| `token_id` | [string](#string) |  | token id of the token to detach. |
+| `owner` | [string](#string) |  | address of the holder of the token. |
+| `id` | [string](#string) |  | token id of the token to detach. |
 
 
 
@@ -9399,6 +9579,7 @@ MsgOperatorDetach is the Msg/OperatorDetach request type.
 
 ### MsgOperatorDetachResponse
 MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
+Since: finschia
 
 
 
@@ -9440,13 +9621,14 @@ Since: finschia
 
 ### MsgRevokeOperator
 MsgRevokeOperator is the Msg/RevokeOperator request type.
+Since: finschia
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `approver` | [string](#string) |  | address of the holder who allows the manipulation of its token. |
-| `proxy` | [string](#string) |  | address which the manipulation is allowed to. |
+| `holder` | [string](#string) |  | address of the holder who allows the manipulation of its token. |
+| `operator` | [string](#string) |  | address which the manipulation is allowed to. |
 
 
 
@@ -9457,6 +9639,36 @@ MsgRevokeOperator is the Msg/RevokeOperator request type.
 
 ### MsgRevokeOperatorResponse
 MsgRevokeOperatorResponse is the Msg/RevokeOperator response type.
+Since: finschia
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgRevokePermission"></a>
+
+### MsgRevokePermission
+MsgRevokePermission is the Msg/RevokePermission request type.
+NOTE: deprecated (use MsgAbandon)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `from` | [string](#string) |  | address of the grantee which abandons the permission. |
+| `permission` | [string](#string) |  | permission on the contract. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgRevokePermissionResponse"></a>
+
+### MsgRevokePermissionResponse
+MsgRevokePermissionResponse is the Msg/RevokePermission response type.
+NOTE: deprecated
 
 
 
@@ -9497,6 +9709,7 @@ Since: finschia
 
 ### MsgTransferFT
 MsgTransferFT is the Msg/TransferFT request type.
+NOTE: deprecated (use MsgSend)
 
 
 | Field | Type | Label | Description |
@@ -9515,6 +9728,7 @@ MsgTransferFT is the Msg/TransferFT request type.
 
 ### MsgTransferFTFrom
 MsgTransferFTFrom is the Msg/TransferFTFrom request type.
+NOTE: deprecated (use MsgOperatorSend)
 
 
 | Field | Type | Label | Description |
@@ -9534,6 +9748,7 @@ MsgTransferFTFrom is the Msg/TransferFTFrom request type.
 
 ### MsgTransferFTFromResponse
 MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
+NOTE: deprecated
 
 
 
@@ -9544,6 +9759,7 @@ MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
 
 ### MsgTransferFTResponse
 MsgTransferFTResponse is the Msg/TransferFT response type.
+NOTE: deprecated
 
 
 
@@ -9554,6 +9770,7 @@ MsgTransferFTResponse is the Msg/TransferFT response type.
 
 ### MsgTransferNFT
 MsgTransferNFT is the Msg/TransferNFT request type.
+NOTE: deprecated (use MsgSend)
 
 
 | Field | Type | Label | Description |
@@ -9572,6 +9789,7 @@ MsgTransferNFT is the Msg/TransferNFT request type.
 
 ### MsgTransferNFTFrom
 MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
+NOTE: deprecated (use MsgOperatorSend)
 
 
 | Field | Type | Label | Description |
@@ -9591,6 +9809,7 @@ MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
 
 ### MsgTransferNFTFromResponse
 MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
+NOTE: deprecated
 
 
 
@@ -9601,6 +9820,7 @@ MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
 
 ### MsgTransferNFTResponse
 MsgTransferNFTResponse is the Msg/TransferNFT response type.
+NOTE: deprecated
 
 
 
@@ -9620,32 +9840,38 @@ Msg defines the collection Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Send` | [MsgSend](#lbm.collection.v1.MsgSend) | [MsgSendResponse](#lbm.collection.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. Since: finschia | |
-| `OperatorSend` | [MsgOperatorSend](#lbm.collection.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.collection.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. Since: finschia | |
-| `TransferFT` | [MsgTransferFT](#lbm.collection.v1.MsgTransferFT) | [MsgTransferFTResponse](#lbm.collection.v1.MsgTransferFTResponse) | TransferFT defines a method to send fungible tokens from one account to another account. | |
-| `TransferFTFrom` | [MsgTransferFTFrom](#lbm.collection.v1.MsgTransferFTFrom) | [MsgTransferFTFromResponse](#lbm.collection.v1.MsgTransferFTFromResponse) | TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator. | |
-| `TransferNFT` | [MsgTransferNFT](#lbm.collection.v1.MsgTransferNFT) | [MsgTransferNFTResponse](#lbm.collection.v1.MsgTransferNFTResponse) | TransferNFT defines a method to send non-fungible tokens from one account to another account. | |
-| `TransferNFTFrom` | [MsgTransferNFTFrom](#lbm.collection.v1.MsgTransferNFTFrom) | [MsgTransferNFTFromResponse](#lbm.collection.v1.MsgTransferNFTFromResponse) | TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator. | |
-| `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.collection.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.collection.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the approver. | |
-| `RevokeOperator` | [MsgRevokeOperator](#lbm.collection.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.collection.v1.MsgRevokeOperatorResponse) | RevokeOperator revokes the authorization of the operator to send the approver's token. | |
+| `Send` | [MsgSend](#lbm.collection.v1.MsgSend) | [MsgSendResponse](#lbm.collection.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. you can send both fungible tokens and non-fungible tokens. Since: finschia | |
+| `OperatorSend` | [MsgOperatorSend](#lbm.collection.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.collection.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. you can send both fungible tokens and non-fungible tokens. Since: finschia | |
+| `TransferFT` | [MsgTransferFT](#lbm.collection.v1.MsgTransferFT) | [MsgTransferFTResponse](#lbm.collection.v1.MsgTransferFTResponse) | TransferFT defines a method to send fungible tokens from one account to another account. NOTE: deprecated (use Send) | |
+| `TransferFTFrom` | [MsgTransferFTFrom](#lbm.collection.v1.MsgTransferFTFrom) | [MsgTransferFTFromResponse](#lbm.collection.v1.MsgTransferFTFromResponse) | TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator. NOTE: deprecated (use OperatorSend) | |
+| `TransferNFT` | [MsgTransferNFT](#lbm.collection.v1.MsgTransferNFT) | [MsgTransferNFTResponse](#lbm.collection.v1.MsgTransferNFTResponse) | TransferNFT defines a method to send non-fungible tokens from one account to another account. NOTE: deprecated (use Send) | |
+| `TransferNFTFrom` | [MsgTransferNFTFrom](#lbm.collection.v1.MsgTransferNFTFrom) | [MsgTransferNFTFromResponse](#lbm.collection.v1.MsgTransferNFTFromResponse) | TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator. NOTE: deprecated (use OperatorSend) | |
+| `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.collection.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.collection.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the approver. Since: finschia | |
+| `RevokeOperator` | [MsgRevokeOperator](#lbm.collection.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.collection.v1.MsgRevokeOperatorResponse) | RevokeOperator revokes the authorization of the operator to send the approver's token. Since: finschia | |
+| `Approve` | [MsgApprove](#lbm.collection.v1.MsgApprove) | [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the approver. NOTE: deprecated (use AuthorizeOperator) | |
+| `Disapprove` | [MsgDisapprove](#lbm.collection.v1.MsgDisapprove) | [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse) | Disapprove revokes the authorization of the operator to send the approver's token. NOTE: deprecated (use RevokeOperator) | |
 | `CreateContract` | [MsgCreateContract](#lbm.collection.v1.MsgCreateContract) | [MsgCreateContractResponse](#lbm.collection.v1.MsgCreateContractResponse) | CreateContract defines a method to create a contract. | |
 | `IssueFT` | [MsgIssueFT](#lbm.collection.v1.MsgIssueFT) | [MsgIssueFTResponse](#lbm.collection.v1.MsgIssueFTResponse) | IssueFT defines a method to create a class of fungible token. | |
 | `IssueNFT` | [MsgIssueNFT](#lbm.collection.v1.MsgIssueNFT) | [MsgIssueNFTResponse](#lbm.collection.v1.MsgIssueNFTResponse) | IssueNFT defines a method to create a class of non-fungible token. | |
 | `MintFT` | [MsgMintFT](#lbm.collection.v1.MsgMintFT) | [MsgMintFTResponse](#lbm.collection.v1.MsgMintFTResponse) | MintFT defines a method to mint fungible tokens. | |
 | `MintNFT` | [MsgMintNFT](#lbm.collection.v1.MsgMintNFT) | [MsgMintNFTResponse](#lbm.collection.v1.MsgMintNFTResponse) | MintNFT defines a method to mint non-fungible tokens. | |
-| `BurnFT` | [MsgBurnFT](#lbm.collection.v1.MsgBurnFT) | [MsgBurnFTResponse](#lbm.collection.v1.MsgBurnFTResponse) | BurnFT defines a method to burn fungible tokens. | |
-| `BurnFTFrom` | [MsgBurnFTFrom](#lbm.collection.v1.MsgBurnFTFrom) | [MsgBurnFTFromResponse](#lbm.collection.v1.MsgBurnFTFromResponse) | BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy. | |
-| `BurnNFT` | [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT) | [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse) | BurnNFT defines a method to burn non-fungible tokens. | |
-| `BurnNFTFrom` | [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom) | [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse) | BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy. | |
 | `Burn` | [MsgBurn](#lbm.collection.v1.MsgBurn) | [MsgBurnResponse](#lbm.collection.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Since: finschia | |
 | `OperatorBurn` | [MsgOperatorBurn](#lbm.collection.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.collection.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens of the holder by the operator. Since: finschia | |
+| `BurnFT` | [MsgBurnFT](#lbm.collection.v1.MsgBurnFT) | [MsgBurnFTResponse](#lbm.collection.v1.MsgBurnFTResponse) | BurnFT defines a method to burn fungible tokens. NOTE: deprecated (use Burn) | |
+| `BurnFTFrom` | [MsgBurnFTFrom](#lbm.collection.v1.MsgBurnFTFrom) | [MsgBurnFTFromResponse](#lbm.collection.v1.MsgBurnFTFromResponse) | BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy. NOTE: deprecated (use OperatorBurn) | |
+| `BurnNFT` | [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT) | [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse) | BurnNFT defines a method to burn non-fungible tokens. NOTE: deprecated (use Burn) | |
+| `BurnNFTFrom` | [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom) | [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse) | BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy. NOTE: deprecated (use OperatorBurn) | |
 | `Modify` | [MsgModify](#lbm.collection.v1.MsgModify) | [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse) | Modify defines a method to modify metadata. | |
-| `Grant` | [MsgGrant](#lbm.collection.v1.MsgGrant) | [MsgGrantResponse](#lbm.collection.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify metadata. | |
-| `Abandon` | [MsgAbandon](#lbm.collection.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.collection.v1.MsgAbandonResponse) | Abandon abandons a permission. | |
+| `Grant` | [MsgGrant](#lbm.collection.v1.MsgGrant) | [MsgGrantResponse](#lbm.collection.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify metadata. Since: finschia | |
+| `Abandon` | [MsgAbandon](#lbm.collection.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.collection.v1.MsgAbandonResponse) | Abandon abandons a permission. Since: finschia | |
+| `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify metadata. NOTE: deprecated (use Grant) | |
+| `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. NOTE: deprecated (use Abandon) | |
 | `Attach` | [MsgAttach](#lbm.collection.v1.MsgAttach) | [MsgAttachResponse](#lbm.collection.v1.MsgAttachResponse) | Attach defines a method to attach a token to another token. | |
 | `Detach` | [MsgDetach](#lbm.collection.v1.MsgDetach) | [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse) | Detach defines a method to detach a token from another token. | |
-| `OperatorAttach` | [MsgOperatorAttach](#lbm.collection.v1.MsgOperatorAttach) | [MsgOperatorAttachResponse](#lbm.collection.v1.MsgOperatorAttachResponse) | OperatorAttach defines a method to attach a token to another token by operator. | |
-| `OperatorDetach` | [MsgOperatorDetach](#lbm.collection.v1.MsgOperatorDetach) | [MsgOperatorDetachResponse](#lbm.collection.v1.MsgOperatorDetachResponse) | Detach defines a method to detach a token from another token by operator. | |
+| `OperatorAttach` | [MsgOperatorAttach](#lbm.collection.v1.MsgOperatorAttach) | [MsgOperatorAttachResponse](#lbm.collection.v1.MsgOperatorAttachResponse) | OperatorAttach defines a method to attach a token to another token by operator. Since: finschia | |
+| `OperatorDetach` | [MsgOperatorDetach](#lbm.collection.v1.MsgOperatorDetach) | [MsgOperatorDetachResponse](#lbm.collection.v1.MsgOperatorDetachResponse) | Detach defines a method to detach a token from another token by operator. Since: finschia | |
+| `AttachFrom` | [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom) | [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse) | AttachFrom defines a method to attach a token to another token by operator. NOTE: deprecated (use OperatorAttach) | |
+| `DetachFrom` | [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom) | [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse) | DetachFrom defines a method to detach a token from another token by operator. NOTE: deprecated (use OperatorDetach) | |
 
  <!-- end services -->
 
