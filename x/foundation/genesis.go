@@ -22,9 +22,14 @@ func DefaultParams() *Params {
 }
 
 func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	if data.Foundation != nil {
+		if err := data.Foundation.UnpackInterfaces(unpacker); err != nil {
+			return err
+		}
+	}
+
 	for _, ga := range data.Authorizations {
-		err := ga.UnpackInterfaces(unpacker)
-		if err != nil {
+		if err := ga.UnpackInterfaces(unpacker); err != nil {
 			return err
 		}
 	}

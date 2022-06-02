@@ -127,7 +127,9 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState foundation.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
-	am.keeper.InitGenesis(ctx, am.stakingKeeper, &genesisState)
+	if err := am.keeper.InitGenesis(ctx, am.stakingKeeper, &genesisState); err != nil {
+		panic(err)
+	}
 	return []abci.ValidatorUpdate{}
 }
 
