@@ -156,7 +156,7 @@ message EventMinted {
   // the address to send minted tokens to.
   string to = 3;
   // the amount of minted tokens.
-  string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  repeated Coin amount = 4 [(gogoproto.nullable) = false];
 }
 
 // EventBurned is emitted on Msg/Burn and Msg/OperatorBurn.
@@ -169,7 +169,7 @@ message EventBurned {
   // address of the token holder.
   string from = 3;
   // the amount of burnt token.
-  string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  repeated Coin amount = 4 [(gogoproto.nullable) = false];
 }
 
 // EventModified is emitted on Msg/Modify.

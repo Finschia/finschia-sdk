@@ -7562,7 +7562,7 @@ Since: finschia
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address of the operator. |
 | `from` | [string](#string) |  | address of the token holder. |
-| `amount` | [string](#string) |  | the amount of burnt token. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of burnt token. |
 
 
 
@@ -7622,7 +7622,7 @@ Since: finschia
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address of the operator. |
 | `to` | [string](#string) |  | the address to send minted tokens to. |
-| `amount` | [string](#string) |  | the amount of minted tokens. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of minted tokens. |
 
 
 
