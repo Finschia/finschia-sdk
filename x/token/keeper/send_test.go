@@ -62,12 +62,12 @@ func (s *KeeperTestSuite) TestAuthorizeOperator() {
 					ctx, _ := s.ctx.CacheContext()
 
 					_, idErr := s.keeper.GetClass(ctx, id)
-					authorization := s.keeper.GetAuthorization(ctx, id, from, operator)
+					_, authErr := s.keeper.GetAuthorization(ctx, id, from, operator)
 					err := s.keeper.AuthorizeOperator(ctx, id, from, operator)
-					if idErr == nil && authorization == nil {
+					if idErr == nil && authErr != nil {
 						s.Require().NoError(err)
-						authorization = s.keeper.GetAuthorization(ctx, id, from, operator)
-						s.Require().NotNil(authorization)
+						_, authErr = s.keeper.GetAuthorization(ctx, id, from, operator)
+						s.Require().NoError(authErr)
 					} else {
 						s.Require().Error(err)
 					}
@@ -99,12 +99,12 @@ func (s *KeeperTestSuite) TestRevokeOperator() {
 					ctx, _ := s.ctx.CacheContext()
 
 					_, idErr := s.keeper.GetClass(ctx, id)
-					authorization := s.keeper.GetAuthorization(ctx, id, from, operator)
+					_, authErr := s.keeper.GetAuthorization(ctx, id, from, operator)
 					err := s.keeper.RevokeOperator(ctx, id, from, operator)
-					if idErr == nil && authorization != nil {
+					if idErr == nil && authErr == nil {
 						s.Require().NoError(err)
-						authorization = s.keeper.GetAuthorization(ctx, id, from, operator)
-						s.Require().Nil(authorization)
+						_, authErr = s.keeper.GetAuthorization(ctx, id, from, operator)
+						s.Require().Error(authErr)
 					} else {
 						s.Require().Error(err)
 					}

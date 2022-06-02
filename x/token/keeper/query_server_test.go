@@ -381,31 +381,31 @@ func (s *KeeperTestSuite) TestQueryAuthorization() {
 
 	testCases := map[string]struct {
 		contractID  string
-		proxy    sdk.AccAddress
-		approver sdk.AccAddress
+		operator    sdk.AccAddress
+		holder sdk.AccAddress
 		valid    bool
 		postTest func(res *token.QueryAuthorizationResponse)
 	}{
 		"valid request": {
 			contractID:  s.contractID,
-			proxy:    s.operator,
-			approver: s.customer,
+			operator:    s.operator,
+			holder: s.customer,
 			valid:    true,
 			postTest: func(res *token.QueryAuthorizationResponse) {
 				s.Require().NotNil(res.Authorization)
 			},
 		},
 		"invalid contract id": {
-			proxy:    s.operator,
-			approver: s.customer,
+			operator:    s.operator,
+			holder: s.customer,
 		},
-		"invalid proxy": {
+		"invalid operator": {
 			contractID:  s.contractID,
-			approver: s.customer,
+			holder: s.customer,
 		},
-		"invalid approver": {
+		"invalid holder": {
 			contractID:  s.contractID,
-			proxy:    s.operator,
+			operator:    s.operator,
 		},
 	}
 
@@ -413,8 +413,8 @@ func (s *KeeperTestSuite) TestQueryAuthorization() {
 		s.Run(name, func() {
 			req := &token.QueryAuthorizationRequest{
 				ContractId:  tc.contractID,
-				Proxy:    tc.proxy.String(),
-				Approver: tc.approver.String(),
+				Operator:    tc.operator.String(),
+				Holder: tc.holder.String(),
 			}
 			res, err := s.queryServer.Authorization(s.goCtx, req)
 			if !tc.valid {
@@ -435,14 +435,14 @@ func (s *KeeperTestSuite) TestQueryOperatorAuthorizations() {
 
 	testCases := map[string]struct {
 		contractID  string
-		proxy    sdk.AccAddress
+		operator    sdk.AccAddress
 		valid    bool
 		count    uint64
 		postTest func(res *token.QueryOperatorAuthorizationsResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			proxy:   s.operator,
+			operator:   s.operator,
 			valid:   true,
 			postTest: func(res *token.QueryOperatorAuthorizationsResponse) {
 				s.Require().Equal(2, len(res.Authorizations))
@@ -450,7 +450,7 @@ func (s *KeeperTestSuite) TestQueryOperatorAuthorizations() {
 		},
 		"valid request with limit": {
 			contractID: s.contractID,
-			proxy:   s.operator,
+			operator:   s.operator,
 			valid:   true,
 			count:   1,
 			postTest: func(res *token.QueryOperatorAuthorizationsResponse) {
@@ -458,9 +458,9 @@ func (s *KeeperTestSuite) TestQueryOperatorAuthorizations() {
 			},
 		},
 		"invalid contract id": {
-			proxy:   s.operator,
+			operator:   s.operator,
 		},
-		"invalid proxy": {
+		"invalid operator": {
 			contractID: s.contractID,
 		},
 	}
@@ -473,10 +473,64 @@ func (s *KeeperTestSuite) TestQueryOperatorAuthorizations() {
 			}
 			req := &token.QueryOperatorAuthorizationsRequest{
 				ContractId:    tc.contractID,
-				Proxy:      tc.proxy.String(),
+				Operator:      tc.operator.String(),
 				Pagination: pageReq,
 			}
 			res, err := s.queryServer.OperatorAuthorizations(s.goCtx, req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+			tc.postTest(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestQueryApproved() {
+	// empty request
+	_, err := s.queryServer.Approved(s.goCtx, nil)
+	s.Require().Error(err)
+
+	testCases := map[string]struct {
+		contractID  string
+		address    sdk.AccAddress
+		approver sdk.AccAddress
+		valid    bool
+		postTest func(res *token.QueryApprovedResponse)
+	}{
+		"valid request": {
+			contractID:  s.contractID,
+			address:    s.operator,
+			approver: s.customer,
+			valid:    true,
+			postTest: func(res *token.QueryApprovedResponse) {
+				s.Require().NotNil(res.Approved)
+			},
+		},
+		"invalid contract id": {
+			address:    s.operator,
+			approver: s.customer,
+		},
+		"invalid address": {
+			contractID:  s.contractID,
+			approver: s.customer,
+		},
+		"invalid approver": {
+			contractID:  s.contractID,
+			address:    s.operator,
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			req := &token.QueryApprovedRequest{
+				ContractId:  tc.contractID,
+				Address:    tc.address.String(),
+				Approver: tc.approver.String(),
+			}
+			res, err := s.queryServer.Approved(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

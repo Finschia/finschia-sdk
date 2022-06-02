@@ -257,10 +257,10 @@ func NewQueryCmdGranteeGrants() *cobra.Command {
 
 func NewQueryCmdAuthorization() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "authorization [class-id] [proxy] [approver]",
+		Use:     "authorization [class-id] [operator] [holder]",
 		Args:    cobra.ExactArgs(3),
-		Short:   "query authorization on its proxy and approver",
-		Example: fmt.Sprintf(`$ %s query %s authorization <class-id> <proxy> <approver>`, version.AppName, token.ModuleName),
+		Short:   "query authorization on its operator and the token holder",
+		Example: fmt.Sprintf(`$ %s query %s authorization <class-id> <operator> <holder>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -269,8 +269,8 @@ func NewQueryCmdAuthorization() *cobra.Command {
 			queryClient := token.NewQueryClient(clientCtx)
 			res, err := queryClient.Authorization(cmd.Context(), &token.QueryAuthorizationRequest{
 				ContractId: args[0],
-				Proxy:      args[1],
-				Approver:   args[2],
+				Operator:   args[1],
+				Holder:     args[2],
 			})
 			if err != nil {
 				return err
@@ -285,10 +285,10 @@ func NewQueryCmdAuthorization() *cobra.Command {
 
 func NewQueryCmdOperatorAuthorizations() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "operator-authorizations [class-id] [proxy]",
+		Use:     "operator-authorizations [class-id] [operator]",
 		Args:    cobra.ExactArgs(2),
-		Short:   "query all authorizations on a given proxy",
-		Example: fmt.Sprintf(`$ %s query %s operator-authorizations <class-id> <proxy>`, version.AppName, token.ModuleName),
+		Short:   "query all authorizations on a given operator",
+		Example: fmt.Sprintf(`$ %s query %s operator-authorizations <class-id> <operator>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -301,7 +301,7 @@ func NewQueryCmdOperatorAuthorizations() *cobra.Command {
 			}
 			res, err := queryClient.OperatorAuthorizations(cmd.Context(), &token.QueryOperatorAuthorizationsRequest{
 				ContractId: args[0],
-				Proxy:      args[1],
+				Operator:   args[1],
 				Pagination: pageReq,
 			})
 			if err != nil {

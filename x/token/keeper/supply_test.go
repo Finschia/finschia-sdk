@@ -105,9 +105,9 @@ func (s *KeeperTestSuite) TestOperatorBurn() {
 					ctx, _ := s.ctx.CacheContext()
 
 					grant := s.keeper.GetGrant(ctx, s.contractID, operator, token.Permission_Burn)
-					authorization := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
+					_, authErr := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
 					err := s.keeper.OperatorBurn(ctx, s.contractID, operator, from, amount)
-					if grant != nil && authorization != nil && amount.LTE(s.balance) {
+					if grant != nil && authErr == nil && amount.LTE(s.balance) {
 						s.Require().NoError(err)
 					} else {
 						s.Require().Error(err)

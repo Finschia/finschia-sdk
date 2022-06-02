@@ -881,6 +881,8 @@
     - [GenesisState](#lbm.token.v1.GenesisState)
   
 - [lbm/token/v1/query.proto](#lbm/token/v1/query.proto)
+    - [QueryApprovedRequest](#lbm.token.v1.QueryApprovedRequest)
+    - [QueryApprovedResponse](#lbm.token.v1.QueryApprovedResponse)
     - [QueryAuthorizationRequest](#lbm.token.v1.QueryAuthorizationRequest)
     - [QueryAuthorizationResponse](#lbm.token.v1.QueryAuthorizationResponse)
     - [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest)
@@ -12475,8 +12477,8 @@ Authorization defines an authorization given to the operator on tokens of the ho
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `approver` | [string](#string) |  | approver is the address of the approver of the authorization. |
-| `proxy` | [string](#string) |  | proxy is the address of the operator which the authorization is granted to. |
+| `holder` | [string](#string) |  | address of the token holder which approves the authorization. |
+| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
 
 
 
@@ -12983,17 +12985,52 @@ GenesisState defines the token module's genesis state.
 
 
 
-<a name="lbm.token.v1.QueryAuthorizationRequest"></a>
+<a name="lbm.token.v1.QueryApprovedRequest"></a>
 
-### QueryAuthorizationRequest
-QueryAuthorizationRequest is the request type for the Query/Authorization RPC method
+### QueryApprovedRequest
+QueryApprovedRequest is the request type for the Query/Approved RPC method
+NOTE: deprecated (use QueryApproved)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `proxy` | [string](#string) |  | proxy is the address of the operator which the authorization is granted to. |
+| `address` | [string](#string) |  | address of the operator which the authorization is granted to. |
 | `approver` | [string](#string) |  | approver is the address of the approver of the authorization. |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryApprovedResponse"></a>
+
+### QueryApprovedResponse
+QueryApprovedResponse is the response type for the Query/Approved RPC method
+NOTE: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `approved` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryAuthorizationRequest"></a>
+
+### QueryAuthorizationRequest
+QueryAuthorizationRequest is the request type for the Query/Authorization RPC method
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `holder` | [string](#string) |  | address of the token holder which has approved the authorization. |
 
 
 
@@ -13004,11 +13041,12 @@ QueryAuthorizationRequest is the request type for the Query/Authorization RPC me
 
 ### QueryAuthorizationResponse
 QueryAuthorizationResponse is the response type for the Query/Authorization RPC method
+Since: finschia
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `authorization` | [Authorization](#lbm.token.v1.Authorization) |  | if no authorization found for the request, it would be nil. |
+| `authorization` | [Authorization](#lbm.token.v1.Authorization) |  | if no authorization found for the request, it would be nil and return an error. |
 
 
 
@@ -13080,6 +13118,7 @@ QueryBurntResponse is the response type for the Query/Burnt RPC method
 
 ### QueryGrantRequest
 QueryGrantRequest is the request type for the Query/Grant RPC method
+Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -13097,6 +13136,7 @@ QueryGrantRequest is the request type for the Query/Grant RPC method
 
 ### QueryGrantResponse
 QueryGrantResponse is the response type for the Query/Grant RPC method
+Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -13112,6 +13152,7 @@ QueryGrantResponse is the response type for the Query/Grant RPC method
 
 ### QueryGranteeGrantsRequest
 QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method
+Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -13129,6 +13170,7 @@ QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC me
 
 ### QueryGranteeGrantsResponse
 QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method
+Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -13175,12 +13217,13 @@ QueryMintedResponse is the response type for the Query/Minted RPC method
 
 ### QueryOperatorAuthorizationsRequest
 QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAuthorizations RPC method
+Since: finschia
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `proxy` | [string](#string) |  | proxy is the address of the operator which the authorization is granted to. |
+| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
 | `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
@@ -13192,6 +13235,7 @@ QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAut
 
 ### QueryOperatorAuthorizationsResponse
 QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method
+Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -13268,6 +13312,7 @@ QueryTokenClassResponse is the response type for the Query/TokenClass RPC method
 
 ### QueryTokenClassesRequest
 QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method
+Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -13283,6 +13328,7 @@ QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC meth
 
 ### QueryTokenClassesResponse
 QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method
+Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -13316,8 +13362,9 @@ Query defines the gRPC querier service.
 | `TokenClasses` | [QueryTokenClassesRequest](#lbm.token.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.token.v1.QueryTokenClassesResponse) | TokenClasses queries all token metadata. Since: finschia | GET|/lbm/token/v1/token_classes|
 | `Grant` | [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse) | Grant queries a permission on a given grantee permission pair. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}|
 | `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse) | GranteeGrants queries permissions on a given grantee. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
-| `Authorization` | [QueryAuthorizationRequest](#lbm.token.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.token.v1.QueryAuthorizationResponse) | Authorization queries authorization on a given proxy approver pair. | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{proxy}/{approver}|
-| `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.token.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.token.v1.QueryOperatorAuthorizationsResponse) | OperatorAuthorizations queries authorization on a given proxy. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{proxy}|
+| `Authorization` | [QueryAuthorizationRequest](#lbm.token.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.token.v1.QueryAuthorizationResponse) | Authorization queries authorization on a given operator holder pair. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}/{holder}|
+| `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.token.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.token.v1.QueryOperatorAuthorizationsResponse) | OperatorAuthorizations queries authorization on a given operator. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}|
+| `Approved` | [QueryApprovedRequest](#lbm.token.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.token.v1.QueryApprovedResponse) | Approved queries authorization on a given proxy approver pair. NOTE: deprecated (use Authorization) | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/proxies/{approver}|
 
  <!-- end services -->
 

@@ -54,15 +54,22 @@ service Query {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}";
   }
 
-  // Authorization queries authorization on a given proxy approver pair.
+  // Authorization queries authorization on a given operator holder pair.
+  // Since: finschia
   rpc Authorization(QueryAuthorizationRequest) returns (QueryAuthorizationResponse) {
-    option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/authorizations/{proxy}/{approver}";
+    option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}/{holder}";
   }
 
-  // OperatorAuthorizations queries authorization on a given proxy.
+  // OperatorAuthorizations queries authorization on a given operator.
   // Since: finschia
   rpc OperatorAuthorizations(QueryOperatorAuthorizationsRequest) returns (QueryOperatorAuthorizationsResponse) {
-    option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/authorizations/{proxy}";
+    option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}";
+  }
+
+  // Approved queries authorization on a given proxy approver pair.
+  // NOTE: deprecated (use Authorization)
+  rpc Approved(QueryApprovedRequest) returns (QueryApprovedResponse) {
+    option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/proxies/{approver}";
   }
 }
 
@@ -129,12 +136,14 @@ message QueryTokenClassResponse {
 }
 
 // QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method
+// Since: finschia
 message QueryTokenClassesRequest {
   // pagination defines an optional pagination for the request.
   lbm.base.query.v1.PageRequest pagination = 1;
 }
 
 // QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method
+// Since: finschia
 message QueryTokenClassesResponse {
   // information of the token classes.
   repeated TokenClass classes = 1 [(gogoproto.nullable) = false];
@@ -143,6 +152,7 @@ message QueryTokenClassesResponse {
 }
 
 // QueryGrantRequest is the request type for the Query/Grant RPC method
+// Since: finschia
 message QueryGrantRequest {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -153,12 +163,14 @@ message QueryGrantRequest {
 }
 
 // QueryGrantResponse is the response type for the Query/Grant RPC method
+// Since: finschia
 message QueryGrantResponse {
   // if no grant found for the request, it would be nil and return an error.
   Grant grant = 1;
 }
 
 // QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method
+// Since: finschia
 message QueryGranteeGrantsRequest {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -170,6 +182,7 @@ message QueryGranteeGrantsRequest {
 }
 
 // QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method
+// Since: finschia
 message QueryGranteeGrantsResponse {
   // all the grants on the grantee.
   repeated Grant grants = 1 [(gogoproto.nullable) = false];
@@ -178,36 +191,57 @@ message QueryGranteeGrantsResponse {
 }
 
 // QueryAuthorizationRequest is the request type for the Query/Authorization RPC method
+// Since: finschia
 message QueryAuthorizationRequest {
   // contract id associated with the token class.
   string contract_id = 1;
-  // proxy is the address of the operator which the authorization is granted to.
-  string proxy = 2;
-  // approver is the address of the approver of the authorization.
-  string approver = 3;
+  // address of the operator which the authorization is granted to.
+  string operator = 2;
+  // address of the token holder which has approved the authorization.
+  string holder = 3;
 }
 
 // QueryAuthorizationResponse is the response type for the Query/Authorization RPC method
+// Since: finschia
 message QueryAuthorizationResponse {
-  // if no authorization found for the request, it would be nil.
+  // if no authorization found for the request, it would be nil and return an error.
   Authorization authorization = 1;
 }
 
 // QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAuthorizations RPC method
+// Since: finschia
 message QueryOperatorAuthorizationsRequest {
   // contract id associated with the token class.
   string contract_id = 1;
-  // proxy is the address of the operator which the authorization is granted to.
-  string proxy = 2;
+  // address of the operator which the authorization is granted to.
+  string operator = 2;
 
   // pagination defines an optional pagination for the request.
   lbm.base.query.v1.PageRequest pagination = 3;
 }
 
 // QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method
+// Since: finschia
 message QueryOperatorAuthorizationsResponse {
   // all the authorizations on the operator.
   repeated Authorization authorizations = 1 [(gogoproto.nullable) = false];
   // pagination defines the pagination in the response.
   lbm.base.query.v1.PageResponse pagination = 2;
+}
+
+// QueryApprovedRequest is the request type for the Query/Approved RPC method
+// NOTE: deprecated (use QueryApproved)
+message QueryApprovedRequest {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // address of the operator which the authorization is granted to.
+  string address = 2;
+  // approver is the address of the approver of the authorization.
+  string approver = 3;
+}
+
+// QueryApprovedResponse is the response type for the Query/Approved RPC method
+// NOTE: deprecated
+message QueryApprovedResponse {
+  bool approved = 1;
 }

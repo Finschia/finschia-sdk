@@ -44,10 +44,10 @@ enum Permission {
 
 // Authorization defines an authorization given to the operator on tokens of the holder.
 message Authorization {
-  // approver is the address of the approver of the authorization.
-  string approver = 1;
-  // proxy is the address of the operator which the authorization is granted to.
-  string proxy = 2;
+  // address of the token holder which approves the authorization.
+  string holder = 1;
+  // address of the operator which the authorization is granted to.
+  string operator = 2;
 }
 
 // Grant defines permission given to a grantee.

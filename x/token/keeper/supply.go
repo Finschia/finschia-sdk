@@ -180,9 +180,11 @@ func (k Keeper) OperatorBurn(ctx sdk.Context, contractID string, operator, from 
 
 func (k Keeper) operatorBurn(ctx sdk.Context, contractID string, operator, from sdk.AccAddress, amount sdk.Int) error {
 	grant := k.GetGrant(ctx, contractID, operator, token.Permission_Burn)
-	authorization := k.GetAuthorization(ctx, contractID, from, operator)
-	if grant == nil || authorization == nil {
-		return sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s tokens from %s", operator, token.Permission_Burn, from)
+	if grant == nil {
+		return sdkerrors.ErrUnauthorized.Wrapf("%s has no permission: %s", operator, token.Permission_Burn)
+	}
+	if _, err := k.GetAuthorization(ctx, contractID, from, operator); err != nil {
+		return sdkerrors.ErrUnauthorized.Wrapf(err.Error())
 	}
 
 	if err := k.burnToken(ctx, contractID, from, amount); err != nil {

@@ -94,10 +94,10 @@ func (k Keeper) iterateAuthorizationsImpl(ctx sdk.Context, prefix []byte, fn fun
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		contractID, operator, approver := splitAuthorizationKey(iterator.Key())
+		contractID, operator, holder := splitAuthorizationKey(iterator.Key())
 		authorization := token.Authorization{
-			Approver: approver.String(),
-			Proxy:    operator.String(),
+			Holder:   holder.String(),
+			Operator: operator.String(),
 		}
 
 		stop := fn(contractID, authorization)

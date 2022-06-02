@@ -49,8 +49,8 @@ func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendRe
 func (s msgServer) OperatorSend(c context.Context, req *token.MsgOperatorSend) (*token.MsgOperatorSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Operator)) == nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized to send %s tokens of %s", req.Operator, req.ContractId, req.From)
+	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Operator)); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf(err.Error())
 	}
 
 	if err := s.keeper.Send(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.To), req.Amount); err != nil {
@@ -76,8 +76,8 @@ func (s msgServer) OperatorSend(c context.Context, req *token.MsgOperatorSend) (
 func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (*token.MsgTransferFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Proxy)) == nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized to send %s tokens of %s", req.Proxy, req.ContractId, req.From)
+	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Proxy)); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf(err.Error())
 	}
 
 	if err := s.keeper.Send(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.To), req.Amount); err != nil {

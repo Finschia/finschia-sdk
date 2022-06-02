@@ -73,10 +73,10 @@ func ValidateGenesis(data GenesisState) error {
 			return sdkerrors.ErrInvalidRequest.Wrap("authorizations cannot be empty")
 		}
 		for _, authorization := range contractAuthorizations.Authorizations {
-			if err := sdk.ValidateAccAddress(authorization.Approver); err != nil {
+			if err := sdk.ValidateAccAddress(authorization.Holder); err != nil {
 				return err
 			}
-			if err := sdk.ValidateAccAddress(authorization.Proxy); err != nil {
+			if err := sdk.ValidateAccAddress(authorization.Operator); err != nil {
 				return err
 			}
 		}

@@ -279,8 +279,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 			true,
 			&token.QueryAuthorizationResponse{
 				Authorization: &token.Authorization{
-					Approver: s.customer.String(),
-					Proxy:    s.vendor.String(),
+					Holder:   s.customer.String(),
+					Operator: s.vendor.String(),
 				},
 			},
 		},
@@ -344,8 +344,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdOperatorAuthorizations() {
 			&token.QueryOperatorAuthorizationsResponse{
 				Authorizations: []token.Authorization{
 					{
-						Approver: s.customer.String(),
-						Proxy:    s.vendor.String(),
+						Holder:   s.customer.String(),
+						Operator: s.vendor.String(),
 					},
 				},
 				Pagination: &query.PageResponse{},

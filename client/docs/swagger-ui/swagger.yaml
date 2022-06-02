@@ -38819,6 +38819,8 @@ paths:
             title: >-
               QueryTokenClassesResponse is the response type for the
               Query/TokenClasses RPC method
+
+              Since: finschia
         default:
           description: An unexpected error response
           schema:
@@ -38982,58 +38984,26 @@ paths:
           type: string
       tags:
         - Query
-  '/lbm/token/v1/token_classes/{contract_id}/authorizations/{proxy}':
+  '/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/proxies/{approver}':
     get:
       summary: |-
-        OperatorAuthorizations queries authorization on a given proxy.
-        Since: finschia
-      operationId: OperatorAuthorizations
+        Approved queries authorization on a given proxy approver pair.
+        NOTE: deprecated (use Authorization)
+      operationId: Approved
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              authorizations:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    approver:
-                      type: string
-                      description: >-
-                        approver is the address of the approver of the
-                        authorization.
-                    proxy:
-                      type: string
-                      description: >-
-                        proxy is the address of the operator which the
-                        authorization is granted to.
-                  description: >-
-                    Authorization defines an authorization given to the operator
-                    on tokens of the holder.
-                description: all the authorizations on the operator.
-              pagination:
-                description: pagination defines the pagination in the response.
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
+              approved:
+                type: boolean
+                format: boolean
             title: >-
-              QueryOperatorAuthorizationsResponse is the response type for the
-              Query/OperatorAuthorizations RPC method
+              QueryApprovedResponse is the response type for the Query/Approved
+              RPC method
+
+              NOTE: deprecated
         default:
           description: An unexpected error response
           schema:
@@ -39062,10 +39032,102 @@ paths:
           in: path
           required: true
           type: string
-        - name: proxy
-          description: >-
-            proxy is the address of the operator which the authorization is
-            granted to.
+        - name: address
+          description: address of the operator which the authorization is granted to.
+          in: path
+          required: true
+          type: string
+        - name: approver
+          description: approver is the address of the approver of the authorization.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}':
+    get:
+      summary: |-
+        OperatorAuthorizations queries authorization on a given operator.
+        Since: finschia
+      operationId: OperatorAuthorizations
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              authorizations:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    holder:
+                      type: string
+                      description: >-
+                        address of the token holder which approves the
+                        authorization.
+                    operator:
+                      type: string
+                      description: >-
+                        address of the operator which the authorization is
+                        granted to.
+                  description: >-
+                    Authorization defines an authorization given to the operator
+                    on tokens of the holder.
+                description: all the authorizations on the operator.
+              pagination:
+                description: pagination defines the pagination in the response.
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+            title: >-
+              QueryOperatorAuthorizationsResponse is the response type for the
+              Query/OperatorAuthorizations RPC method
+
+              Since: finschia
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: contract_id
+          description: contract id associated with the token class.
+          in: path
+          required: true
+          type: string
+        - name: operator
+          description: address of the operator which the authorization is granted to.
           in: path
           required: true
           type: string
@@ -39129,9 +39191,11 @@ paths:
           format: boolean
       tags:
         - Query
-  '/lbm/token/v1/token_classes/{contract_id}/authorizations/{proxy}/{approver}':
+  '/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}/{holder}':
     get:
-      summary: Authorization queries authorization on a given proxy approver pair.
+      summary: |-
+        Authorization queries authorization on a given operator holder pair.
+        Since: finschia
       operationId: Authorization
       responses:
         '200':
@@ -39142,22 +39206,24 @@ paths:
               authorization:
                 type: object
                 properties:
-                  approver:
+                  holder:
                     type: string
                     description: >-
-                      approver is the address of the approver of the
+                      address of the token holder which approves the
                       authorization.
-                  proxy:
+                  operator:
                     type: string
                     description: >-
-                      proxy is the address of the operator which the
-                      authorization is granted to.
+                      address of the operator which the authorization is granted
+                      to.
                 description: >-
                   Authorization defines an authorization given to the operator
                   on tokens of the holder.
             title: >-
               QueryAuthorizationResponse is the response type for the
               Query/Authorization RPC method
+
+              Since: finschia
         default:
           description: An unexpected error response
           schema:
@@ -39186,15 +39252,13 @@ paths:
           in: path
           required: true
           type: string
-        - name: proxy
-          description: >-
-            proxy is the address of the operator which the authorization is
-            granted to.
+        - name: operator
+          description: address of the operator which the authorization is granted to.
           in: path
           required: true
           type: string
-        - name: approver
-          description: approver is the address of the approver of the authorization.
+        - name: holder
+          description: address of the token holder which has approved the authorization.
           in: path
           required: true
           type: string
@@ -39345,6 +39409,8 @@ paths:
             title: >-
               QueryGranteeGrantsResponse is the response type for the
               Query/GranteeGrants RPC method
+
+              Since: finschia
         default:
           description: An unexpected error response
           schema:
@@ -39463,6 +39529,8 @@ paths:
             title: >-
               QueryGrantResponse is the response type for the Query/Grant RPC
               method
+
+              Since: finschia
         default:
           description: An unexpected error response
           schema:
@@ -64179,14 +64247,12 @@ definitions:
   lbm.token.v1.Authorization:
     type: object
     properties:
-      approver:
+      holder:
         type: string
-        description: approver is the address of the approver of the authorization.
-      proxy:
+        description: address of the token holder which approves the authorization.
+      operator:
         type: string
-        description: >-
-          proxy is the address of the operator which the authorization is
-          granted to.
+        description: address of the operator which the authorization is granted to.
     description: >-
       Authorization defines an authorization given to the operator on tokens of
       the holder.
@@ -64200,26 +64266,37 @@ definitions:
         type: string
         description: permission on the token class.
     description: Grant defines permission given to a grantee.
+  lbm.token.v1.QueryApprovedResponse:
+    type: object
+    properties:
+      approved:
+        type: boolean
+        format: boolean
+    title: >-
+      QueryApprovedResponse is the response type for the Query/Approved RPC
+      method
+
+      NOTE: deprecated
   lbm.token.v1.QueryAuthorizationResponse:
     type: object
     properties:
       authorization:
         type: object
         properties:
-          approver:
+          holder:
             type: string
-            description: approver is the address of the approver of the authorization.
-          proxy:
+            description: address of the token holder which approves the authorization.
+          operator:
             type: string
-            description: >-
-              proxy is the address of the operator which the authorization is
-              granted to.
+            description: address of the operator which the authorization is granted to.
         description: >-
           Authorization defines an authorization given to the operator on tokens
           of the holder.
     title: >-
       QueryAuthorizationResponse is the response type for the
       Query/Authorization RPC method
+
+      Since: finschia
   lbm.token.v1.QueryBalanceResponse:
     type: object
     properties:
@@ -64247,7 +64324,9 @@ definitions:
             type: string
             description: permission on the token class.
         description: Grant defines permission given to a grantee.
-    title: QueryGrantResponse is the response type for the Query/Grant RPC method
+    title: |-
+      QueryGrantResponse is the response type for the Query/Grant RPC method
+      Since: finschia
   lbm.token.v1.QueryGranteeGrantsResponse:
     type: object
     properties:
@@ -64285,6 +64364,8 @@ definitions:
     title: >-
       QueryGranteeGrantsResponse is the response type for the
       Query/GranteeGrants RPC method
+
+      Since: finschia
   lbm.token.v1.QueryMintedResponse:
     type: object
     properties:
@@ -64300,14 +64381,12 @@ definitions:
         items:
           type: object
           properties:
-            approver:
+            holder:
               type: string
-              description: approver is the address of the approver of the authorization.
-            proxy:
+              description: address of the token holder which approves the authorization.
+            operator:
               type: string
-              description: >-
-                proxy is the address of the operator which the authorization is
-                granted to.
+              description: address of the operator which the authorization is granted to.
           description: >-
             Authorization defines an authorization given to the operator on
             tokens of the holder.
@@ -64333,6 +64412,8 @@ definitions:
     title: >-
       QueryOperatorAuthorizationsResponse is the response type for the
       Query/OperatorAuthorizations RPC method
+
+      Since: finschia
   lbm.token.v1.QuerySupplyResponse:
     type: object
     properties:
@@ -64443,6 +64524,8 @@ definitions:
     title: >-
       QueryTokenClassesResponse is the response type for the Query/TokenClasses
       RPC method
+
+      Since: finschia
   lbm.token.v1.TokenClass:
     type: object
     properties:

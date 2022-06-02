@@ -209,15 +209,18 @@ func (s queryServer) Authorization(c context.Context, req *token.QueryAuthorizat
 	if err := class.ValidateID(req.ContractId); err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Proxy); err != nil {
+	if err := sdk.ValidateAccAddress(req.Operator); err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Approver); err != nil {
+	if err := sdk.ValidateAccAddress(req.Holder); err != nil {
 		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	authorization := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.Approver), sdk.AccAddress(req.Proxy))
+	authorization, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.Holder), sdk.AccAddress(req.Operator))
+	if err != nil {
+		return nil, err
+	}
 
 	return &token.QueryAuthorizationResponse{Authorization: authorization}, nil
 }
@@ -230,19 +233,19 @@ func (s queryServer) OperatorAuthorizations(c context.Context, req *token.QueryO
 	if err := class.ValidateID(req.ContractId); err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Proxy); err != nil {
+	if err := sdk.ValidateAccAddress(req.Operator); err != nil {
 		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
-	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, sdk.AccAddress(req.Proxy)))
+	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, sdk.AccAddress(req.Operator)))
 	var authorizations []token.Authorization
 	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key []byte, value []byte) error {
-		approver := sdk.AccAddress(key)
+		holder := sdk.AccAddress(key)
 		authorizations = append(authorizations, token.Authorization{
-			Approver: approver.String(),
-			Proxy:    req.Proxy,
+			Holder:   holder.String(),
+			Operator: req.Operator,
 		})
 		return nil
 	})
@@ -251,4 +254,26 @@ func (s queryServer) OperatorAuthorizations(c context.Context, req *token.QueryO
 	}
 
 	return &token.QueryOperatorAuthorizationsResponse{Authorizations: authorizations, Pagination: pageRes}, nil
+}
+
+func (s queryServer) Approved(c context.Context, req *token.QueryApprovedRequest) (*token.QueryApprovedResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if err := class.ValidateID(req.ContractId); err != nil {
+		return nil, err
+	}
+	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+		return nil, err
+	}
+	if err := sdk.ValidateAccAddress(req.Approver); err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	_, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.Approver), sdk.AccAddress(req.Address))
+	approved := (err == nil)
+
+	return &token.QueryApprovedResponse{Approved: approved}, nil
 }

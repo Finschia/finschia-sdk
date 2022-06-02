@@ -171,23 +171,23 @@ func TestValidateGenesis(t *testing.T) {
 			},
 			false,
 		},
-		"invalid approver of authorization": {
+		"invalid holder of authorization": {
 			&token.GenesisState{
 				Authorizations: []token.ContractAuthorizations{{
 					ContractId: "deadbeef",
 					Authorizations: []token.Authorization{{
-						Proxy:    addr.String(),
+						Operator:    addr.String(),
 					}},
 				}},
 			},
 			false,
 		},
-		"invalid proxy of authorization": {
+		"invalid operator of authorization": {
 			&token.GenesisState{
 				Authorizations: []token.ContractAuthorizations{{
 					ContractId: "deadbeef",
 					Authorizations: []token.Authorization{{
-						Approver: addr.String(),
+						Holder: addr.String(),
 					}},
 				}},
 			},

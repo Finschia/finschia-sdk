@@ -22,7 +22,7 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, op
 	if _, err := k.GetClass(ctx, contractID); err != nil {
 		return sdkerrors.ErrNotFound.Wrapf("ID not exists: %s", contractID)
 	}
-	if k.GetAuthorization(ctx, contractID, holder, operator) != nil {
+	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err == nil {
 		return sdkerrors.ErrInvalidRequest.Wrap("Already authorized")
 	}
 
@@ -39,23 +39,23 @@ func (k Keeper) RevokeOperator(ctx sdk.Context, contractID string, holder, opera
 	if _, err := k.GetClass(ctx, contractID); err != nil {
 		return sdkerrors.ErrNotFound.Wrapf("ID not exists: %s", contractID)
 	}
-	if k.GetAuthorization(ctx, contractID, holder, operator) == nil {
-		return sdkerrors.ErrNotFound.Wrap("No authorization")
+	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err != nil {
+		return err
 	}
 
 	k.deleteAuthorization(ctx, contractID, holder, operator)
 	return nil
 }
 
-func (k Keeper) GetAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) *token.Authorization {
+func (k Keeper) GetAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) (*token.Authorization, error) {
 	store := ctx.KVStore(k.storeKey)
 	if store.Has(authorizationKey(contractID, operator, holder)) {
 		return &token.Authorization{
-			Approver: holder.String(),
-			Proxy:    operator.String(),
-		}
+			Holder:   holder.String(),
+			Operator: operator.String(),
+		}, nil
 	}
-	return nil
+	return nil, sdkerrors.ErrNotFound.Wrapf("no authorization by %s to %s", holder, operator)
 }
 
 func (k Keeper) setAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) {

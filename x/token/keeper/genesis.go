@@ -35,7 +35,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *token.GenesisState) {
 
 	for _, contractAuthorizations := range data.Authorizations {
 		for _, authorization := range contractAuthorizations.Authorizations {
-			k.setAuthorization(ctx, contractAuthorizations.ContractId, sdk.AccAddress(authorization.Approver), sdk.AccAddress(authorization.Proxy))
+			k.setAuthorization(ctx, contractAuthorizations.ContractId, sdk.AccAddress(authorization.Holder), sdk.AccAddress(authorization.Operator))
 		}
 	}
 
