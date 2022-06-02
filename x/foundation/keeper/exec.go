@@ -29,7 +29,7 @@ func (k Keeper) Exec(ctx sdk.Context, proposalID uint64) error {
 
 	if proposal.Status != foundation.PROPOSAL_STATUS_SUBMITTED &&
 		proposal.Status != foundation.PROPOSAL_STATUS_CLOSED {
-		return sdkerrors.ErrInvalidRequest.Wrapf("not possible with proposal status: %s", proposal.Status.String())
+		return sdkerrors.ErrInvalidRequest.Wrapf("not possible with proposal status: %s", proposal.Status)
 	}
 
 	if proposal.Status == foundation.PROPOSAL_STATUS_SUBMITTED {

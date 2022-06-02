@@ -111,7 +111,7 @@ func (k Keeper) WithdrawProposal(ctx sdk.Context, proposalID uint64) error {
 
 	// Ensure the proposal can be withdrawn.
 	if proposal.Status != foundation.PROPOSAL_STATUS_SUBMITTED {
-		return sdkerrors.ErrInvalidRequest.Wrapf("cannot withdraw a proposal with the status of %s", proposal.Status.String())
+		return sdkerrors.ErrInvalidRequest.Wrapf("cannot withdraw a proposal with the status of %s", proposal.Status)
 	}
 
 	proposal.Status = foundation.PROPOSAL_STATUS_WITHDRAWN

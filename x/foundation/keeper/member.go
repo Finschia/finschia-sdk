@@ -97,7 +97,7 @@ func (k Keeper) GetMember(ctx sdk.Context, address sdk.AccAddress) (*foundation.
 	key := memberKey(address)
 	bz := store.Get(key)
 	if len(bz) == 0 {
-		return nil, sdkerrors.ErrNotFound.Wrapf("No such member: %s", address.String())
+		return nil, sdkerrors.ErrNotFound.Wrapf("No such member: %s", address)
 	}
 
 	var member foundation.Member

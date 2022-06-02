@@ -17,10 +17,10 @@ func (s *IntegrationTestSuite) TestNewProposalCmdUpdateFoundationParams() {
 	val := s.network.Validators[0]
 
 	commonFlags := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
 	testCases := []struct {
@@ -57,7 +57,7 @@ func (s *IntegrationTestSuite) TestNewProposalCmdUpdateFoundationParams() {
 				s.Require().Error(err)
 			} else {
 				s.Require().NoError(err)
-				s.Require().NoError(s.cfg.Codec.UnmarshalJSON(out.Bytes(), tc.respType), out.String())
+				s.Require().NoError(s.cfg.Codec.UnmarshalJSON(out.Bytes(), tc.respType), out)
 
 				txResp := tc.respType.(*sdk.TxResponse)
 				s.Require().Equal(tc.expectedCode, txResp.Code)
@@ -70,10 +70,10 @@ func (s *IntegrationTestSuite) TestNewProposalCmdUpdateValidatorAuths() {
 	val := s.network.Validators[0]
 
 	commonFlags := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
 	testCases := []struct {
@@ -145,7 +145,7 @@ func (s *IntegrationTestSuite) TestNewProposalCmdUpdateValidatorAuths() {
 				s.Require().Error(err)
 			} else {
 				s.Require().NoError(err)
-				s.Require().NoError(s.cfg.Codec.UnmarshalJSON(out.Bytes(), tc.respType), out.String())
+				s.Require().NoError(s.cfg.Codec.UnmarshalJSON(out.Bytes(), tc.respType), out)
 
 				txResp := tc.respType.(*sdk.TxResponse)
 				s.Require().Equal(tc.expectedCode, txResp.Code)
@@ -157,10 +157,10 @@ func (s *IntegrationTestSuite) TestNewProposalCmdUpdateValidatorAuths() {
 func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
 	testCases := map[string]struct {
@@ -203,8 +203,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
-			s.Require().EqualValues(0, res.Code, out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
@@ -212,10 +212,10 @@ func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
 	testCases := map[string]struct {
@@ -261,8 +261,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
-			s.Require().EqualValues(0, res.Code, out.String())
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
@@ -270,10 +270,10 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
 	updates := `[{"address":"%s", "participating":%t}]`
@@ -317,8 +317,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
-			s.Require().EqualValues(0, res.Code, out.String())
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
@@ -326,10 +326,10 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
 	doMarshal := func(policy foundation.DecisionPolicy) string {
@@ -387,8 +387,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
-			s.Require().EqualValues(0, res.Code, out.String())
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
@@ -396,10 +396,10 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
 	proposers := `["%s"]`
@@ -454,8 +454,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
-			s.Require().EqualValues(0, res.Code, out.String())
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
@@ -463,10 +463,10 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
 	testCases := map[string]struct {
@@ -510,8 +510,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
-			s.Require().EqualValues(0, res.Code, out.String())
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
@@ -519,10 +519,10 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
 func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
 	id := s.submitProposal(&foundation.MsgWithdrawFromTreasury{
@@ -576,8 +576,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
-			s.Require().EqualValues(0, res.Code, out.String())
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
@@ -585,10 +585,10 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
 	testCases := map[string]struct {
@@ -631,8 +631,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
-			s.Require().EqualValues(0, res.Code, out.String())
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
@@ -640,10 +640,10 @@ func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
 	testCases := map[string]struct {
@@ -682,8 +682,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
-			s.Require().EqualValues(0, res.Code, out.String())
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
@@ -691,10 +691,10 @@ func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
 func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
 	doMarshal := func(authorization foundation.Authorization) string {
@@ -745,8 +745,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
-			s.Require().EqualValues(0, res.Code, out.String())
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
@@ -754,10 +754,10 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
 	testCases := map[string]struct {
@@ -803,8 +803,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
-			s.Require().EqualValues(0, res.Code, out.String())
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
