@@ -13,7 +13,7 @@ func (k Keeper) Vote(ctx sdk.Context, vote foundation.Vote) error {
 
 	// Make sure that a voter hasn't already voted.
 	if k.hasVote(ctx, vote.ProposalId, sdk.AccAddress(vote.Voter)) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Already voted: %s", vote.Voter)
+		return sdkerrors.ErrInvalidRequest.Wrapf("Already voted: %s", vote.Voter)
 	}
 
 	proposal, err := k.GetProposal(ctx, vote.ProposalId)
@@ -23,10 +23,10 @@ func (k Keeper) Vote(ctx sdk.Context, vote foundation.Vote) error {
 
 	// Ensure that we can still accept votes for this proposal.
 	if proposal.Status != foundation.PROPOSAL_STATUS_SUBMITTED {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "not possible with proposal status: %s", proposal.Status.String())
+		return sdkerrors.ErrInvalidRequest.Wrapf("not possible with proposal status: %s", proposal.Status.String())
 	}
 	if !ctx.BlockTime().Before(proposal.VotingPeriodEnd) {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "voting period has ended already")
+		return sdkerrors.ErrInvalidRequest.Wrap("voting period has ended already")
 	}
 
 	vote.SubmitTime = ctx.BlockTime()
@@ -51,7 +51,7 @@ func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress
 	key := voteKey(proposalID, voter)
 	bz := store.Get(key)
 	if len(bz) == 0 {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "No vote for proposal %d: %s", proposalID, voter)
+		return nil, sdkerrors.ErrNotFound.Wrapf("No vote for proposal %d: %s", proposalID, voter)
 	}
 
 	var vote foundation.Vote

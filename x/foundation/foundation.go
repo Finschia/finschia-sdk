@@ -136,7 +136,7 @@ func (t *TallyResult) Add(option VoteOption) error {
 	case VOTE_OPTION_NO_WITH_VETO:
 		t.NoWithVetoCount = t.NoWithVetoCount.Add(weight)
 	default:
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "unknown vote option %s", option.String())
+		return sdkerrors.ErrInvalidRequest.Wrapf("unknown vote option %s", option.String())
 	}
 
 	return nil

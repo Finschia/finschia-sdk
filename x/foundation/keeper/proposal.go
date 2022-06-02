@@ -222,7 +222,7 @@ func (k Keeper) GetProposal(ctx sdk.Context, id uint64) (*foundation.Proposal, e
 	key := proposalKey(id)
 	bz := store.Get(key)
 	if len(bz) == 0 {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "No proposal for id: %d", id)
+		return nil, sdkerrors.ErrNotFound.Wrapf("No proposal for id: %d", id)
 	}
 
 	var proposal foundation.Proposal
