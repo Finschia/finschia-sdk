@@ -7,21 +7,21 @@ import (
 
 func (s *KeeperTestSuite) TestMsgSend() {
 	testCases := map[string]struct {
-		classId string
+		contractID string
 		amount  sdk.Int
 		valid   bool
 	}{
 		"valid request": {
-			classId: s.classID,
+			contractID: s.contractID,
 			amount:  s.balance,
 			valid:   true,
 		},
 		"insufficient funds (no such a class)": {
-			classId: "fee1dead",
+			contractID: "fee1dead",
 			amount:  sdk.OneInt(),
 		},
 		"insufficient funds (not enough balance)": {
-			classId: s.classID,
+			contractID: s.contractID,
 			amount:  s.balance.Add(sdk.OneInt()),
 		},
 	}
@@ -31,7 +31,7 @@ func (s *KeeperTestSuite) TestMsgSend() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgSend{
-				ContractId: tc.classId,
+				ContractId: tc.contractID,
 				From:    s.vendor.String(),
 				To:      s.customer.String(),
 				Amount:  tc.amount,
@@ -77,7 +77,7 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgOperatorSend{
-				ContractId: s.classID,
+				ContractId: s.contractID,
 				Operator:   tc.operator.String(),
 				From:    tc.from.String(),
 				To:      s.vendor.String(),
@@ -124,7 +124,7 @@ func (s *KeeperTestSuite) TestMsgTransferFrom() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgTransferFrom{
-				ContractId: s.classID,
+				ContractId: s.contractID,
 				Proxy:   tc.proxy.String(),
 				From:    tc.from.String(),
 				To:      s.vendor.String(),
@@ -163,7 +163,7 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgAuthorizeOperator{
-				ContractId:  s.classID,
+				ContractId:  s.contractID,
 				Holder: tc.holder.String(),
 				Operator:    tc.operator.String(),
 			}
@@ -200,7 +200,7 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgRevokeOperator{
-				ContractId:  s.classID,
+				ContractId:  s.contractID,
 				Holder: tc.holder.String(),
 				Operator:    tc.operator.String(),
 			}
@@ -237,7 +237,7 @@ func (s *KeeperTestSuite) TestMsgApprove() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgApprove{
-				ContractId:  s.classID,
+				ContractId:  s.contractID,
 				Approver: tc.approver.String(),
 				Proxy:    tc.proxy.String(),
 			}
@@ -318,7 +318,7 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgGrant{
-				ContractId: s.classID,
+				ContractId: s.contractID,
 				Granter: tc.granter.String(),
 				Grantee: tc.grantee.String(),
 				Permission:  tc.permission,
@@ -356,7 +356,7 @@ func (s *KeeperTestSuite) TestMsgAbandon() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgAbandon{
-				ContractId: s.classID,
+				ContractId: s.contractID,
 				Grantee: tc.grantee.String(),
 				Permission:  tc.permission,
 			}
@@ -401,7 +401,7 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgGrantPermission{
-				ContractId: s.classID,
+				ContractId: s.contractID,
 				From: tc.granter.String(),
 				To: tc.grantee.String(),
 				Permission:  tc.permission,
@@ -439,7 +439,7 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgRevokePermission{
-				ContractId: s.classID,
+				ContractId: s.contractID,
 				From: tc.from.String(),
 				Permission:  tc.permission,
 			}
@@ -473,7 +473,7 @@ func (s *KeeperTestSuite) TestMsgMint() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgMint{
-				ContractId: s.classID,
+				ContractId: s.contractID,
 				From: tc.grantee.String(),
 				To:      s.customer.String(),
 				Amount:  sdk.OneInt(),
@@ -508,7 +508,7 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgBurn{
-				ContractId: s.classID,
+				ContractId: s.contractID,
 				From:    tc.from.String(),
 				Amount:  s.balance,
 			}
@@ -545,7 +545,7 @@ func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgOperatorBurn{
-				ContractId: s.classID,
+				ContractId: s.contractID,
 				Operator: tc.operator.String(),
 				From:    tc.from.String(),
 				Amount:  s.balance,
@@ -583,7 +583,7 @@ func (s *KeeperTestSuite) TestMsgBurnFrom() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgBurnFrom{
-				ContractId: s.classID,
+				ContractId: s.contractID,
 				Proxy: tc.proxy.String(),
 				From:    tc.from.String(),
 				Amount:  s.balance,
@@ -618,7 +618,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgModify{
-				ContractId: s.classID,
+				ContractId: s.contractID,
 				Owner: tc.grantee.String(),
 				Changes: []token.Pair{{Field: token.AttributeKey_Name.String(), Value: "hello"}},
 			}

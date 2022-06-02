@@ -12,31 +12,31 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
-		classId  string
+		contractID  string
 		address  sdk.AccAddress
 		valid    bool
 		postTest func(res *token.QueryBalanceResponse)
 	}{
 		"valid request": {
-			classId: s.classID,
+			contractID: s.contractID,
 			address: s.vendor,
 			valid:   true,
 			postTest: func(res *token.QueryBalanceResponse) {
 				s.Require().Equal(s.balance, res.Amount)
 			},
 		},
-		"invalid class id": {
+		"invalid contract id": {
 			address: s.vendor,
 		},
 		"invalid address": {
-			classId: s.classID,
+			contractID: s.contractID,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			req := &token.QueryBalanceRequest{
-				ContractId: tc.classId,
+				ContractId: tc.contractID,
 				Address: tc.address.String(),
 			}
 			res, err := s.queryServer.Balance(s.goCtx, req)
@@ -57,29 +57,29 @@ func (s *KeeperTestSuite) TestQuerySupply() {
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
-		classId  string
+		contractID  string
 		reqType  string
 		valid    bool
 		postTest func(res *token.QuerySupplyResponse)
 	}{
 		"valid supply request": {
-			classId: s.classID,
+			contractID: s.contractID,
 			valid:   true,
 			postTest: func(res *token.QuerySupplyResponse) {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Amount)
 			},
 		},
-		"invalid class id": {
+		"invalid contract id": {
 		},
-		"no such a class id": {
-			classId: "fee1dead",
+		"no such a contract id": {
+			contractID: "fee1dead",
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			req := &token.QuerySupplyRequest{
-				ContractId: tc.classId,
+				ContractId: tc.contractID,
 			}
 			res, err := s.queryServer.Supply(s.goCtx, req)
 			if !tc.valid {
@@ -99,28 +99,28 @@ func (s *KeeperTestSuite) TestQueryMinted() {
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
-		classId  string
+		contractID  string
 		valid    bool
 		postTest func(res *token.QueryMintedResponse)
 	}{
 		"valid mint request": {
-			classId: s.classID,
+			contractID: s.contractID,
 			valid:   true,
 			postTest: func(res *token.QueryMintedResponse) {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(4)), res.Amount)
 			},
 		},
-		"invalid class id": {
+		"invalid contract id": {
 		},
-		"no such a class id": {
-			classId: "fee1dead",
+		"no such a contract id": {
+			contractID: "fee1dead",
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			req := &token.QueryMintedRequest{
-				ContractId: tc.classId,
+				ContractId: tc.contractID,
 			}
 			res, err := s.queryServer.Minted(s.goCtx, req)
 			if !tc.valid {
@@ -140,28 +140,28 @@ func (s *KeeperTestSuite) TestQueryBurnt() {
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
-		classId  string
+		contractID  string
 		valid    bool
 		postTest func(res *token.QueryBurntResponse)
 	}{
 		"valid burn request": {
-			classId: s.classID,
+			contractID: s.contractID,
 			valid:   true,
 			postTest: func(res *token.QueryBurntResponse) {
 				s.Require().Equal(s.balance, res.Amount)
 			},
 		},
-		"invalid class id": {
+		"invalid contract id": {
 		},
-		"no such a class id": {
-			classId: "fee1dead",
+		"no such a contract id": {
+			contractID: "fee1dead",
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			req := &token.QueryBurntRequest{
-				ContractId: tc.classId,
+				ContractId: tc.contractID,
 			}
 			res, err := s.queryServer.Burnt(s.goCtx, req)
 			if !tc.valid {
@@ -181,28 +181,28 @@ func (s *KeeperTestSuite) TestQueryTokenClass() {
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
-		classId  string
+		contractID  string
 		valid    bool
 		postTest func(res *token.QueryTokenClassResponse)
 	}{
 		"valid request": {
-			classId: s.classID,
+			contractID: s.contractID,
 			valid:   true,
 			postTest: func(res *token.QueryTokenClassResponse) {
-				s.Require().Equal(s.classID, res.Class.ContractId)
+				s.Require().Equal(s.contractID, res.Class.ContractId)
 			},
 		},
-		"invalid class id": {
+		"invalid contract id": {
 		},
 		"no such an id": {
-			classId: "00000000",
+			contractID: "00000000",
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			req := &token.QueryTokenClassRequest{
-				ContractId: tc.classId,
+				ContractId: tc.contractID,
 			}
 			res, err := s.queryServer.TokenClass(s.goCtx, req)
 			if !tc.valid {
@@ -222,20 +222,20 @@ func (s *KeeperTestSuite) TestQueryTokenClasses() {
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
-		classId  string
+		contractID  string
 		valid    bool
 		count    uint64
 		postTest func(res *token.QueryTokenClassesResponse)
 	}{
 		"valid request": {
-			classId: s.classID,
+			contractID: s.contractID,
 			valid:   true,
 			postTest: func(res *token.QueryTokenClassesResponse) {
 				s.Require().Equal(2, len(res.Classes))
 			},
 		},
 		"valid request with limit": {
-			classId: s.classID,
+			contractID: s.contractID,
 			valid:   true,
 			count:   1,
 			postTest: func(res *token.QueryTokenClassesResponse) {
@@ -271,14 +271,14 @@ func (s *KeeperTestSuite) TestQueryGrant() {
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
-		classId  string
+		contractID  string
 		grantee  sdk.AccAddress
 		permission string
 		valid    bool
 		postTest func(res *token.QueryGrantResponse)
 	}{
 		"valid request": {
-			classId: s.classID,
+			contractID: s.contractID,
 			grantee: s.vendor,
 			permission: token.Permission_Modify.String(),
 			valid:   true,
@@ -288,7 +288,7 @@ func (s *KeeperTestSuite) TestQueryGrant() {
 			},
 		},
 		"no permission": {
-			classId: s.classID,
+			contractID: s.contractID,
 			grantee: s.customer,
  			permission: token.Permission_Modify.String(),
 			valid:   true,
@@ -296,16 +296,16 @@ func (s *KeeperTestSuite) TestQueryGrant() {
 				s.Require().Nil(res.Grant)
 			},
 		},
-		"invalid class id": {
+		"invalid contract id": {
 			grantee: s.vendor,
 			permission: token.Permission_Modify.String(),
 		},
 		"invalid grantee": {
-			classId: s.classID,
+			contractID: s.contractID,
 			permission: token.Permission_Modify.String(),
 		},
 		"invalid permission": {
-			classId: s.classID,
+			contractID: s.contractID,
 			grantee: s.vendor,
 		},
 	}
@@ -313,7 +313,7 @@ func (s *KeeperTestSuite) TestQueryGrant() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			req := &token.QueryGrantRequest{
-				ContractId: tc.classId,
+				ContractId: tc.contractID,
 				Grantee: tc.grantee.String(),
 				Permission: tc.permission,
 			}
@@ -335,31 +335,31 @@ func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
-		classId  string
+		contractID  string
 		grantee  sdk.AccAddress
 		valid    bool
 		postTest func(res *token.QueryGranteeGrantsResponse)
 	}{
 		"valid request": {
-			classId: s.classID,
+			contractID: s.contractID,
 			grantee: s.vendor,
 			valid:   true,
 			postTest: func(res *token.QueryGranteeGrantsResponse) {
 				s.Require().Equal(3, len(res.Grants))
 			},
 		},
-		"invalid class id": {
+		"invalid contract id": {
 			grantee: s.vendor,
 		},
 		"invalid grantee": {
-			classId: s.classID,
+			contractID: s.contractID,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			req := &token.QueryGranteeGrantsRequest{
-				ContractId: tc.classId,
+				ContractId: tc.contractID,
 				Grantee: tc.grantee.String(),
 			}
 			res, err := s.queryServer.GranteeGrants(s.goCtx, req)
@@ -380,14 +380,14 @@ func (s *KeeperTestSuite) TestQueryAuthorization() {
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
-		classId  string
+		contractID  string
 		proxy    sdk.AccAddress
 		approver sdk.AccAddress
 		valid    bool
 		postTest func(res *token.QueryAuthorizationResponse)
 	}{
 		"valid request": {
-			classId:  s.classID,
+			contractID:  s.contractID,
 			proxy:    s.operator,
 			approver: s.customer,
 			valid:    true,
@@ -395,16 +395,16 @@ func (s *KeeperTestSuite) TestQueryAuthorization() {
 				s.Require().NotNil(res.Authorization)
 			},
 		},
-		"invalid class id": {
+		"invalid contract id": {
 			proxy:    s.operator,
 			approver: s.customer,
 		},
 		"invalid proxy": {
-			classId:  s.classID,
+			contractID:  s.contractID,
 			approver: s.customer,
 		},
 		"invalid approver": {
-			classId:  s.classID,
+			contractID:  s.contractID,
 			proxy:    s.operator,
 		},
 	}
@@ -412,7 +412,7 @@ func (s *KeeperTestSuite) TestQueryAuthorization() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			req := &token.QueryAuthorizationRequest{
-				ContractId:  tc.classId,
+				ContractId:  tc.contractID,
 				Proxy:    tc.proxy.String(),
 				Approver: tc.approver.String(),
 			}
@@ -434,14 +434,14 @@ func (s *KeeperTestSuite) TestQueryOperatorAuthorizations() {
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
-		classId  string
+		contractID  string
 		proxy    sdk.AccAddress
 		valid    bool
 		count    uint64
 		postTest func(res *token.QueryOperatorAuthorizationsResponse)
 	}{
 		"valid request": {
-			classId: s.classID,
+			contractID: s.contractID,
 			proxy:   s.operator,
 			valid:   true,
 			postTest: func(res *token.QueryOperatorAuthorizationsResponse) {
@@ -449,7 +449,7 @@ func (s *KeeperTestSuite) TestQueryOperatorAuthorizations() {
 			},
 		},
 		"valid request with limit": {
-			classId: s.classID,
+			contractID: s.contractID,
 			proxy:   s.operator,
 			valid:   true,
 			count:   1,
@@ -457,11 +457,11 @@ func (s *KeeperTestSuite) TestQueryOperatorAuthorizations() {
 				s.Require().Equal(1, len(res.Authorizations))
 			},
 		},
-		"invalid class id": {
+		"invalid contract id": {
 			proxy:   s.operator,
 		},
 		"invalid proxy": {
-			classId: s.classID,
+			contractID: s.contractID,
 		},
 	}
 
@@ -472,7 +472,7 @@ func (s *KeeperTestSuite) TestQueryOperatorAuthorizations() {
 				pageReq.Limit = tc.count
 			}
 			req := &token.QueryOperatorAuthorizationsRequest{
-				ContractId:    tc.classId,
+				ContractId:    tc.contractID,
 				Proxy:      tc.proxy.String(),
 				Pagination: pageReq,
 			}

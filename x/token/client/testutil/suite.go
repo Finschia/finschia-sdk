@@ -129,10 +129,10 @@ func (s *IntegrationTestSuite) createAccount(uid string) sdk.AccAddress {
 	return addr
 }
 
-func (s *IntegrationTestSuite) authorizeOperator(classID string, holder, operator sdk.AccAddress) {
+func (s *IntegrationTestSuite) authorizeOperator(contractID string, holder, operator sdk.AccAddress) {
 	val := s.network.Validators[0]
 	args := append([]string{
-		classID,
+		contractID,
 		holder.String(),
 		operator.String(),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, holder),

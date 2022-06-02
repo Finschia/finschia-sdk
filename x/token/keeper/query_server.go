@@ -46,7 +46,7 @@ func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) 
 	return &token.QueryBalanceResponse{Amount: balance}, nil
 }
 
-// Supply queries the number of tokens from the given class id.
+// Supply queries the number of tokens from the given contract id.
 func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*token.QuerySupplyResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
@@ -66,7 +66,7 @@ func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*
 	return &token.QuerySupplyResponse{Amount: supply}, nil
 }
 
-// Minted queries the number of tokens from the given class id.
+// Minted queries the number of tokens from the given contract id.
 func (s queryServer) Minted(c context.Context, req *token.QueryMintedRequest) (*token.QueryMintedResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
@@ -86,7 +86,7 @@ func (s queryServer) Minted(c context.Context, req *token.QueryMintedRequest) (*
 	return &token.QueryMintedResponse{Amount: minted}, nil
 }
 
-// Burnt queries the number of tokens from the given class id.
+// Burnt queries the number of tokens from the given contract id.
 func (s queryServer) Burnt(c context.Context, req *token.QueryBurntRequest) (*token.QueryBurntResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
@@ -106,7 +106,7 @@ func (s queryServer) Burnt(c context.Context, req *token.QueryBurntRequest) (*to
 	return &token.QueryBurntResponse{Amount: burnt}, nil
 }
 
-// TokenClass queries an token metadata based on its class id.
+// TokenClass queries an token metadata based on its contract id.
 func (s queryServer) TokenClass(c context.Context, req *token.QueryTokenClassRequest) (*token.QueryTokenClassResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")

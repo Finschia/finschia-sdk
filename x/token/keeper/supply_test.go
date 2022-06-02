@@ -30,7 +30,7 @@ func (s *KeeperTestSuite) TestIssue() {
 	s.Require().NotNil(s.keeper.GetGrant(ctx, class.ContractId, s.vendor, token.Permission_Modify))
 
 	// override fails
-	class.ContractId = s.classID
+	class.ContractId = s.contractID
 	err = s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
 	s.Require().Error(err)
 }
@@ -48,8 +48,8 @@ func (s *KeeperTestSuite) TestMint() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			grant := s.keeper.GetGrant(ctx, s.classID, grantee, token.Permission_Mint)
-			err := s.keeper.Mint(ctx, s.classID, grantee, to, amount)
+			grant := s.keeper.GetGrant(ctx, s.contractID, grantee, token.Permission_Mint)
+			err := s.keeper.Mint(ctx, s.contractID, grantee, to, amount)
 			if grant != nil {
 				s.Require().NoError(err)
 			} else {
@@ -75,8 +75,8 @@ func (s *KeeperTestSuite) TestBurn() {
 			s.Run(name, func() {
 				ctx, _ := s.ctx.CacheContext()
 
-				grant := s.keeper.GetGrant(ctx, s.classID, from, token.Permission_Burn)
-				err := s.keeper.Burn(ctx, s.classID, from, amount)
+				grant := s.keeper.GetGrant(ctx, s.contractID, from, token.Permission_Burn)
+				err := s.keeper.Burn(ctx, s.contractID, from, amount)
 				if grant != nil && amount.LTE(s.balance) {
 					s.Require().NoError(err)
 				} else {
@@ -104,9 +104,9 @@ func (s *KeeperTestSuite) TestOperatorBurn() {
 				s.Run(name, func() {
 					ctx, _ := s.ctx.CacheContext()
 
-					grant := s.keeper.GetGrant(ctx, s.classID, operator, token.Permission_Burn)
-					authorization := s.keeper.GetAuthorization(ctx, s.classID, from, operator)
-					err := s.keeper.OperatorBurn(ctx, s.classID, operator, from, amount)
+					grant := s.keeper.GetGrant(ctx, s.contractID, operator, token.Permission_Burn)
+					authorization := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
+					err := s.keeper.OperatorBurn(ctx, s.contractID, operator, from, amount)
 					if grant != nil && authorization != nil && amount.LTE(s.balance) {
 						s.Require().NoError(err)
 					} else {
@@ -120,7 +120,7 @@ func (s *KeeperTestSuite) TestOperatorBurn() {
 
 func (s *KeeperTestSuite) TestModify() {
 	contractDescriptions := map[string]string{
-		s.classID: "valid",
+		s.contractID: "valid",
 		"fee1dead": "not-exist",
 	}
 	userDescriptions := map[sdk.AccAddress]string{
@@ -141,7 +141,7 @@ func (s *KeeperTestSuite) TestModify() {
 				ctx, _ := s.ctx.CacheContext()
 
 				err := s.keeper.Modify(ctx, contractID, grantee, changes)
-				if contractID == s.classID {
+				if contractID == s.contractID {
 					s.Require().NoError(err)
 				} else {
 					s.Require().Error(err)

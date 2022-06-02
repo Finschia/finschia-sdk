@@ -24,17 +24,17 @@ func (s *KeeperTestSuite) TestSend() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			err := s.keeper.Send(ctx, s.classID, s.vendor, s.operator, tc.amount)
+			err := s.keeper.Send(ctx, s.contractID, s.vendor, s.operator, tc.amount)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
 			}
 			s.Require().NoError(err)
 
-			vendorBalance := s.keeper.GetBalance(ctx, s.classID, s.vendor)
+			vendorBalance := s.keeper.GetBalance(ctx, s.contractID, s.vendor)
 			s.Require().True(s.balance.Sub(tc.amount).Equal(vendorBalance))
 
-			operatorBalance := s.keeper.GetBalance(ctx, s.classID, s.operator)
+			operatorBalance := s.keeper.GetBalance(ctx, s.contractID, s.operator)
 			s.Require().True(s.balance.Add(tc.amount).Equal(operatorBalance))
 		})
 	}
@@ -46,7 +46,7 @@ func (s *KeeperTestSuite) TestAuthorizeOperator() {
 	s.Require().Error(err)
 
 	contractDescriptions := map[string]string{
-		s.classID: "valid",
+		s.contractID: "valid",
 		dummyContractID: "not-exists",
 	}
 	userDescriptions := map[sdk.AccAddress]string{
@@ -83,7 +83,7 @@ func (s *KeeperTestSuite) TestRevokeOperator() {
 	s.Require().Error(err)
 
 	contractDescriptions := map[string]string{
-		s.classID: "valid",
+		s.contractID: "valid",
 		dummyContractID: "not-exists",
 	}
 	userDescriptions := map[sdk.AccAddress]string{

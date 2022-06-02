@@ -62,11 +62,11 @@ func (k Keeper) issue(ctx sdk.Context, class token.TokenClass) error {
 	return nil
 }
 
-func (k Keeper) GetClass(ctx sdk.Context, classID string) (*token.TokenClass, error) {
+func (k Keeper) GetClass(ctx sdk.Context, contractID string) (*token.TokenClass, error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(classKey(classID))
+	bz := store.Get(classKey(contractID))
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("No information for %s", classID)
+		return nil, sdkerrors.ErrNotFound.Wrapf("No information for %s", contractID)
 	}
 
 	var class token.TokenClass
@@ -89,13 +89,13 @@ func (k Keeper) setClass(ctx sdk.Context, class token.TokenClass) error {
 	return nil
 }
 
-func (k Keeper) Mint(ctx sdk.Context, classID string, grantee, to sdk.AccAddress, amount sdk.Int) error {
-	if err := k.mint(ctx, classID, grantee, to, amount); err != nil {
+func (k Keeper) Mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddress, amount sdk.Int) error {
+	if err := k.mint(ctx, contractID, grantee, to, amount); err != nil {
 		return err
 	}
 
 	event := token.EventMinted{
-		ContractId: classID,
+		ContractId: contractID,
 		Operator:   grantee.String(),
 		To:         to.String(),
 		Amount:     amount,
@@ -104,32 +104,32 @@ func (k Keeper) Mint(ctx sdk.Context, classID string, grantee, to sdk.AccAddress
 	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
-func (k Keeper) mint(ctx sdk.Context, classID string, grantee, to sdk.AccAddress, amount sdk.Int) error {
-	if k.GetGrant(ctx, classID, grantee, token.Permission_Mint) == nil {
-		return sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s %s tokens", grantee, token.Permission_Mint.String(), classID)
+func (k Keeper) mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddress, amount sdk.Int) error {
+	if k.GetGrant(ctx, contractID, grantee, token.Permission_Mint) == nil {
+		return sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s %s tokens", grantee, token.Permission_Mint.String(), contractID)
 	}
 
-	if err := k.mintToken(ctx, classID, to, amount); err != nil {
+	if err := k.mintToken(ctx, contractID, to, amount); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (k Keeper) mintToken(ctx sdk.Context, classID string, addr sdk.AccAddress, amount sdk.Int) error {
-	if err := k.addToken(ctx, classID, addr, amount); err != nil {
+func (k Keeper) mintToken(ctx sdk.Context, contractID string, addr sdk.AccAddress, amount sdk.Int) error {
+	if err := k.addToken(ctx, contractID, addr, amount); err != nil {
 		return err
 	}
 
-	minted := k.GetMinted(ctx, classID)
+	minted := k.GetMinted(ctx, contractID)
 	minted = minted.Add(amount)
-	if err := k.setMinted(ctx, classID, minted); err != nil {
+	if err := k.setMinted(ctx, contractID, minted); err != nil {
 		return err
 	}
 
-	supply := k.GetSupply(ctx, classID)
+	supply := k.GetSupply(ctx, contractID)
 	supply = supply.Add(amount)
-	if err := k.setSupply(ctx, classID, supply); err != nil {
+	if err := k.setSupply(ctx, contractID, supply); err != nil {
 		return err
 	}
 
@@ -212,10 +212,10 @@ func (k Keeper) burnToken(ctx sdk.Context, contractID string, addr sdk.AccAddres
 	return nil
 }
 
-func (k Keeper) getStatistics(ctx sdk.Context, classID string, keyPrefix []byte) sdk.Int {
+func (k Keeper) getStatistics(ctx sdk.Context, contractID string, keyPrefix []byte) sdk.Int {
 	store := ctx.KVStore(k.storeKey)
 	amount := sdk.ZeroInt()
-	bz := store.Get(statisticsKey(keyPrefix, classID))
+	bz := store.Get(statisticsKey(keyPrefix, contractID))
 	if bz != nil {
 		if err := amount.Unmarshal(bz); err != nil {
 			panic(err)
@@ -226,9 +226,9 @@ func (k Keeper) getStatistics(ctx sdk.Context, classID string, keyPrefix []byte)
 }
 
 // The caller must validate `amount`.
-func (k Keeper) setStatistics(ctx sdk.Context, classID string, amount sdk.Int, keyPrefix []byte) error {
+func (k Keeper) setStatistics(ctx sdk.Context, contractID string, amount sdk.Int, keyPrefix []byte) error {
 	store := ctx.KVStore(k.storeKey)
-	key := statisticsKey(keyPrefix, classID)
+	key := statisticsKey(keyPrefix, contractID)
 	if amount.IsZero() {
 		store.Delete(key)
 	} else {
@@ -242,37 +242,37 @@ func (k Keeper) setStatistics(ctx sdk.Context, classID string, amount sdk.Int, k
 	return nil
 }
 
-func (k Keeper) GetSupply(ctx sdk.Context, classID string) sdk.Int {
-	return k.getStatistics(ctx, classID, supplyKeyPrefix)
+func (k Keeper) GetSupply(ctx sdk.Context, contractID string) sdk.Int {
+	return k.getStatistics(ctx, contractID, supplyKeyPrefix)
 }
 
-func (k Keeper) GetMinted(ctx sdk.Context, classID string) sdk.Int {
-	return k.getStatistics(ctx, classID, mintKeyPrefix)
+func (k Keeper) GetMinted(ctx sdk.Context, contractID string) sdk.Int {
+	return k.getStatistics(ctx, contractID, mintKeyPrefix)
 }
 
-func (k Keeper) GetBurnt(ctx sdk.Context, classID string) sdk.Int {
-	return k.getStatistics(ctx, classID, burnKeyPrefix)
+func (k Keeper) GetBurnt(ctx sdk.Context, contractID string) sdk.Int {
+	return k.getStatistics(ctx, contractID, burnKeyPrefix)
 }
 
-func (k Keeper) setSupply(ctx sdk.Context, classID string, amount sdk.Int) error {
-	return k.setStatistics(ctx, classID, amount, supplyKeyPrefix)
+func (k Keeper) setSupply(ctx sdk.Context, contractID string, amount sdk.Int) error {
+	return k.setStatistics(ctx, contractID, amount, supplyKeyPrefix)
 }
 
-func (k Keeper) setMinted(ctx sdk.Context, classID string, amount sdk.Int) error {
-	return k.setStatistics(ctx, classID, amount, mintKeyPrefix)
+func (k Keeper) setMinted(ctx sdk.Context, contractID string, amount sdk.Int) error {
+	return k.setStatistics(ctx, contractID, amount, mintKeyPrefix)
 }
 
-func (k Keeper) setBurnt(ctx sdk.Context, classID string, amount sdk.Int) error {
-	return k.setStatistics(ctx, classID, amount, burnKeyPrefix)
+func (k Keeper) setBurnt(ctx sdk.Context, contractID string, amount sdk.Int) error {
+	return k.setStatistics(ctx, contractID, amount, burnKeyPrefix)
 }
 
-func (k Keeper) Modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, changes []token.Pair) error {
-	if err := k.modify(ctx, classID, changes); err != nil {
+func (k Keeper) Modify(ctx sdk.Context, contractID string, grantee sdk.AccAddress, changes []token.Pair) error {
+	if err := k.modify(ctx, contractID, changes); err != nil {
 		return err
 	}
 
 	event := token.EventModified{
-		ContractId: classID,
+		ContractId: contractID,
 		Operator:   grantee.String(),
 		Changes:    changes,
 	}
@@ -280,8 +280,8 @@ func (k Keeper) Modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, 
 	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
-func (k Keeper) modify(ctx sdk.Context, classID string, changes []token.Pair) error {
-	class, err := k.GetClass(ctx, classID)
+func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Pair) error {
+	class, err := k.GetClass(ctx, contractID)
 	if err != nil {
 		return err
 	}
@@ -339,10 +339,10 @@ func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddre
 	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
-func (k Keeper) GetGrant(ctx sdk.Context, classID string, grantee sdk.AccAddress, permission token.Permission) *token.Grant {
+func (k Keeper) GetGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) *token.Grant {
 	var grant *token.Grant
 	store := ctx.KVStore(k.storeKey)
-	if store.Has(grantKey(classID, grantee, permission)) {
+	if store.Has(grantKey(contractID, grantee, permission)) {
 		grant = &token.Grant{
 			Grantee:    grantee.String(),
 			Permission: permission.String(),
@@ -352,14 +352,14 @@ func (k Keeper) GetGrant(ctx sdk.Context, classID string, grantee sdk.AccAddress
 	return grant
 }
 
-func (k Keeper) setGrant(ctx sdk.Context, classID string, grantee sdk.AccAddress, permission token.Permission) {
+func (k Keeper) setGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) {
 	store := ctx.KVStore(k.storeKey)
-	key := grantKey(classID, grantee, permission)
+	key := grantKey(contractID, grantee, permission)
 	store.Set(key, []byte{})
 }
 
-func (k Keeper) deleteGrant(ctx sdk.Context, classID string, grantee sdk.AccAddress, permission token.Permission) {
+func (k Keeper) deleteGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) {
 	store := ctx.KVStore(k.storeKey)
-	key := grantKey(classID, grantee, permission)
+	key := grantKey(contractID, grantee, permission)
 	store.Delete(key)
 }

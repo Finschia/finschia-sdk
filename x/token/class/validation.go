@@ -8,15 +8,15 @@ import (
 )
 
 var (
-	// reClassIDString must be a hex string of 8 characters long
-	reClassIDString = `[0-9a-f]{8,8}`
-	reClassID       = regexp.MustCompile(fmt.Sprintf(`^%s$`, reClassIDString))
+	// reContractIDString must be a hex string of 8 characters long
+	reContractIDString = `[0-9a-f]{8,8}`
+	reContractID       = regexp.MustCompile(fmt.Sprintf(`^%s$`, reContractIDString))
 )
 
-// ValidateID returns whether the class id is valid
+// ValidateID returns whether the contract id is valid
 func ValidateID(id string) error {
-	if !reClassID.MatchString(id) {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid class id: %s", id)
+	if !reContractID.MatchString(id) {
+		return sdkerrors.ErrInvalidRequest.Wrapf("invalid contract id: %s", id)
 	}
 	return nil
 }

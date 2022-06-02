@@ -27,7 +27,7 @@ type KeeperTestSuite struct {
 	operator sdk.AccAddress
 	customer sdk.AccAddress
 
-	classID string
+	contractID string
 
 	balance sdk.Int
 }
@@ -52,16 +52,16 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.balance = sdk.NewInt(1000)
 
 	// create a mintable class
-	s.classID = "f00dbabe"
+	s.contractID = "f00dbabe"
 	class := token.TokenClass{
-		ContractId:       s.classID,
+		ContractId:       s.contractID,
 		Name:     "Mintable",
 		Symbol:   "OK",
 		Mintable: true,
 	}
 	err := s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
 	s.Require().NoError(err)
-	err = s.keeper.Burn(s.ctx, s.classID, s.vendor, s.balance)
+	err = s.keeper.Burn(s.ctx, s.contractID, s.vendor, s.balance)
 	s.Require().NoError(err)
 
 	// create another class for the query test
@@ -71,7 +71,7 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	// mint to the others
 	for _, to := range []sdk.AccAddress{s.vendor, s.operator, s.customer} {
-		err = s.keeper.Mint(s.ctx, s.classID, s.vendor, to, s.balance)
+		err = s.keeper.Mint(s.ctx, s.contractID, s.vendor, to, s.balance)
 		s.Require().NoError(err)
 	}
 
@@ -80,13 +80,13 @@ func (s *KeeperTestSuite) SetupTest() {
 		token.Permission_Mint,
 		token.Permission_Burn,
 	} {
-		err = s.keeper.Grant(s.ctx, s.classID, s.vendor, s.operator, permission)
+		err = s.keeper.Grant(s.ctx, s.contractID, s.vendor, s.operator, permission)
 		s.Require().NoError(err)
 	}
 
 	// authorize operator
 	for _, holder := range []sdk.AccAddress{s.vendor, s.customer} {
-		err = s.keeper.AuthorizeOperator(s.ctx, s.classID, holder, s.operator)
+		err = s.keeper.AuthorizeOperator(s.ctx, s.contractID, holder, s.operator)
 		s.Require().NoError(err)
 	}
 }
