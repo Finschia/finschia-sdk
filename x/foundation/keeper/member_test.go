@@ -115,7 +115,7 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 				{
 					Address: s.stranger.String(),
 					Participating: true,
-					Metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+					Metadata: string(make([]rune, 256)),
 				},
 			},
 		},

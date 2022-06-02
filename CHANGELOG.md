@@ -55,6 +55,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (server/grpc) [\#516](https://github.com/line/lbm-sdk/pull/516) restore build norace flag
 * (genesis) [\#517](https://github.com/line/lbm-sdk/pull/517) fix genesis auth account format(cosmos-sdk style -> lbm-sdk style)
 * (x/token) [\#539](https://github.com/line/lbm-sdk/pull/539) fix the compatibility issues with daphne
+* (x/foundation) [\#545](https://github.com/line/lbm-sdk/pull/545) fix genesis and support abstain
 
 ### Breaking Changes
 

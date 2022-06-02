@@ -106,7 +106,7 @@ func (s *KeeperTestSuite) TestSubmitProposal() {
 		},
 		"long metadata": {
 			proposers: []string{s.members[0].String()},
-			metadata: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+			metadata: string(make([]rune, 256)),
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.operator.String(),
 				To: s.stranger.String(),

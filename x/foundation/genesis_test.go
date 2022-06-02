@@ -11,6 +11,12 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
+func TestDefaultGenesisState(t *testing.T) {
+	gs := foundation.DefaultGenesisState()
+	require.Equal(t, false, gs.Params.Enabled)
+	require.Equal(t, sdk.ZeroDec(), gs.Params.FoundationTax)
+}
+
 func TestValidateGenesis(t *testing.T) {
 	createAddress := func() sdk.AccAddress {
 		return sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -207,6 +213,23 @@ func TestValidateGenesis(t *testing.T) {
 						ProposalId: 1,
 						Voter: createAddress().String(),
 					},
+				},
+			},
+		},
+		"invalid authorization": {
+			data: foundation.GenesisState{
+				Authorizations: []foundation.GrantAuthorization{{
+					Granter: foundation.ModuleName,
+					Grantee: createAddress().String(),
+				}},
+			},
+		},
+		"invalid grantee": {
+			data: foundation.GenesisState{
+				Authorizations: []foundation.GrantAuthorization{
+					*foundation.GrantAuthorization{
+						Granter: foundation.ModuleName,
+					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
 			},
 		},
