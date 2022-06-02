@@ -15,23 +15,44 @@ service Msg {
   rpc Send(MsgSend) returns (MsgSendResponse);
 
   // OperatorSend defines a method to send tokens from one account to another account by the operator.
+  // Since: finschia
   rpc OperatorSend(MsgOperatorSend) returns (MsgOperatorSendResponse);
 
-  // AuthorizeOperator allows one to send tokens on behalf of the approver.
+  // TransferFrom defines a method to send tokens from one account to another account by the operator.
+  // NOTE: the approval has no value of limit.
+  // NOTE: deprecated (use OperatorSend)
+  rpc TransferFrom(MsgTransferFrom) returns (MsgTransferFromResponse);
+
+  // AuthorizeOperator allows one to send tokens on behalf of the holder.
+  // Since: finschia
   rpc AuthorizeOperator(MsgAuthorizeOperator) returns (MsgAuthorizeOperatorResponse);
 
-  // RevokeOperator revoke the authorization of the operator to send the approver's tokens.
+  // RevokeOperator revoke the authorization of the operator to send the holder's tokens.
   // Since: finschia
   rpc RevokeOperator(MsgRevokeOperator) returns (MsgRevokeOperatorResponse);
+
+  // Approve allows one to send tokens on behalf of the holder.
+  // NOTE: deprecated (use AuthorizeOperator)
+  rpc Approve(MsgApprove) returns (MsgApproveResponse);
 
   // Issue defines a method to create a class of token.
   rpc Issue(MsgIssue) returns (MsgIssueResponse);
 
   // Grant allows one to mint or burn tokens or modify a token metadata.
+  // Since: finschia
   rpc Grant(MsgGrant) returns (MsgGrantResponse);
 
   // Abandon abandons a permission.
+  // Since: finschia
   rpc Abandon(MsgAbandon) returns (MsgAbandonResponse);
+
+  // GrantPermission allows one to mint or burn tokens or modify a token metadata.
+  // NOTE: deprecated (use Grant)
+  rpc GrantPermission(MsgGrantPermission) returns (MsgGrantPermissionResponse);
+
+  // RevokePermission abandons a permission.
+  // NOTE: deprecated (use Abandon)
+  rpc RevokePermission(MsgRevokePermission) returns (MsgRevokePermissionResponse);
 
   // Mint defines a method to mint tokens.
   rpc Mint(MsgMint) returns (MsgMintResponse);
@@ -39,8 +60,13 @@ service Msg {
   // Burn defines a method to burn tokens.
   rpc Burn(MsgBurn) returns (MsgBurnResponse);
 
-  // OperatorBurn defines a method to burn tokens.
+  // OperatorBurn defines a method to burn tokens by the operator.
+  // Since: finschia
   rpc OperatorBurn(MsgOperatorBurn) returns (MsgOperatorBurnResponse);
+
+  // BurnFrom defines a method to burn tokens by the operator.
+  // NOTE: deprecated (use OperatorBurn)
+  rpc BurnFrom(MsgBurnFrom) returns (MsgBurnFromResponse);
 
   // Modify defines a method to modify a token class.
   rpc Modify(MsgModify) returns (MsgModifyResponse);
@@ -62,7 +88,27 @@ message MsgSend {
 message MsgSendResponse {}
 
 // MsgOperatorSend defines the Msg/OperatorSend request type.
+// Since: finschia
 message MsgOperatorSend {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // the address of the operator.
+  string operator = 2;
+  // the address which the transfer is from.
+  string from = 3;
+  // the address which the transfer is to.
+  string to = 4;
+  // the amount of the transfer.
+  string amount = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// MsgOperatorSendResponse defines the Msg/OperatorSend response type.
+// Since: finschia
+message MsgOperatorSendResponse {}
+
+// MsgTransferFrom defines the Msg/TransferFrom request type.
+// NOTE: deprecated (use MsgOperatorSend)
+message MsgTransferFrom {
   // contract id associated with the token class.
   string contract_id = 1;
   // the address of the operator.
@@ -75,34 +121,54 @@ message MsgOperatorSend {
   string amount = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// MsgOperatorSendResponse defines the Msg/OperatorSend response type.
-message MsgOperatorSendResponse {}
+// MsgTransferFromResponse defines the Msg/TransferFrom response type.
+// NOTE: deprecated
+message MsgTransferFromResponse {}
 
 // MsgAuthorizeOperator defines the Msg/AuthorizeOperator request type.
+// Since: finschia
 message MsgAuthorizeOperator {
   // contract id associated with the token class.
   string contract_id = 1;
-  // approver is the address of the approver of the authorization.
-  string approver = 2;
-  // proxy is the address of the operator which the authorization is granted to.
-  string proxy = 3;
+  // address of the token holder which approves the authorization.
+  string holder = 2;
+  // address of the operator which the authorization is granted to.
+  string operator = 3;
 }
 
 // MsgAuthorizeOperatorResponse defines the Msg/AuthorizeOperator response type.
+// Since: finschia
 message MsgAuthorizeOperatorResponse {}
 
 // MsgRevokeOperator defines the Msg/RevokeOperator request type.
+// Since: finschia
 message MsgRevokeOperator {
   // contract id associated with the token class.
   string contract_id = 1;
-  // approver is the address of the approver of the authorization.
-  string approver = 2;
-  // proxy is the address of the operator which the authorization is granted to.
-  string proxy = 3;
+  // address of the token holder which approved the authorization.
+  string holder = 2;
+  // address of the operator which the authorization is granted to.
+  string operator = 3;
 }
 
 // MsgRevokeOperatorResponse defines the Msg/RevokeOperator response type.
+// Since: finschia
 message MsgRevokeOperatorResponse {}
+
+// MsgApprove defines the Msg/Approve request type.
+// NOTE: deprecated (use MsgAuthorizeOperator)
+message MsgApprove {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // address of the token holder which approves the authorization.
+  string approver = 2;
+  // address of the operator which the authorization is granted to.
+  string proxy = 3;
+}
+
+// MsgApproveResponse defines the Msg/Approve response type.
+// NOTE: deprecated
+message MsgApproveResponse {}
 
 // MsgIssue defines the Msg/Issue request type.
 message MsgIssue {
@@ -132,21 +198,24 @@ message MsgIssue {
 message MsgIssueResponse {}
 
 // MsgGrant defines the Msg/Grant request type.
+// Since: finschia
 message MsgGrant {
   // contract id associated with the token class.
   string contract_id = 1;
   // address of the granter which must have the permission to give.
-  string from = 2;
+  string granter = 2;
   // address of the grantee.
-  string to = 3;
+  string grantee = 3;
   // permission on the token class.
   string permission = 4;
 }
 
 // MsgGrantResponse defines the Msg/Grant response type.
+// Since: finschia
 message MsgGrantResponse {}
 
 // MsgAbandon defines the Msg/Abandon request type.
+// Since: finschia
 message MsgAbandon {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -157,7 +226,40 @@ message MsgAbandon {
 }
 
 // MsgAbandonResponse defines the Msg/Abandon response type.
+// Since: finschia
 message MsgAbandonResponse {}
+
+// MsgGrantPermission defines the Msg/GrantPermission request type.
+// NOTE: deprecated (use MsgGrant)
+message MsgGrantPermission {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // address of the granter which must have the permission to give.
+  string from = 2;
+  // address of the grantee.
+  string to = 3;
+  // permission on the token class.
+  string permission = 4;
+}
+
+// MsgGrantPermissionResponse defines the Msg/GrantPermission response type.
+// NOTE: deprecated
+message MsgGrantPermissionResponse {}
+
+// MsgRevokePermission defines the Msg/RevokePermission request type.
+// NOTE: deprecated (use MsgAbandon)
+message MsgRevokePermission {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // address of the grantee which abandons the permission.
+  string from = 2;
+  // permission on the token class.
+  string permission = 3;
+}
+
+// MsgRevokePermissionResponse defines the Msg/RevokePermission response type.
+// NOTE: deprecated
+message MsgRevokePermissionResponse {}
 
 // MsgMint defines the Msg/Mint request type.
 message MsgMint {
@@ -189,7 +291,27 @@ message MsgBurn {
 message MsgBurnResponse {}
 
 // MsgOperatorBurn defines the Msg/OperatorBurn request type.
+// Since: finschia
 message MsgOperatorBurn {
+  // the amount of the burn.
+  string contract_id = 1;
+  // address which triggers the burn.
+  // NOTE: it must have the permission for the burn.
+  // NOTE: it must have been authorized by from.
+  string operator = 2;
+  // address which the tokens will be burnt from.
+  string from = 3;
+  // the amount of the burn.
+  string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
+// Since: finschia
+message MsgOperatorBurnResponse {}
+
+// MsgBurnFrom defines the Msg/BurnFrom request type.
+// NOTE: deprecated (use MsgOperatorBurn)
+message MsgBurnFrom {
   // the amount of the burn.
   string contract_id = 1;
   // address which triggers the burn.
@@ -202,8 +324,9 @@ message MsgOperatorBurn {
   string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
-message MsgOperatorBurnResponse {}
+// MsgBurnFromResponse defines the Msg/BurnFrom response type.
+// NOTE: deprecated
+message MsgBurnFromResponse {}
 
 // MsgModify defines the Msg/Modify request type.
 message MsgModify {

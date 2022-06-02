@@ -49,6 +49,53 @@ func (s *KeeperTestSuite) TestMsgSend() {
 
 func (s *KeeperTestSuite) TestMsgOperatorSend() {
 	testCases := map[string]struct {
+		operator sdk.AccAddress
+		from  sdk.AccAddress
+		amount sdk.Int
+		valid bool
+	}{
+		"valid request": {
+			operator: s.operator,
+			from:  s.customer,
+			amount: s.balance,
+			valid: true,
+		},
+		"not approved": {
+			operator: s.vendor,
+			from:  s.customer,
+			amount: s.balance,
+		},
+		"insufficient funds (not enough balance)": {
+			operator: s.operator,
+			from:  s.customer,
+			amount:  s.balance.Add(sdk.OneInt()),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &token.MsgOperatorSend{
+				ContractId: s.classID,
+				Operator:   tc.operator.String(),
+				From:    tc.from.String(),
+				To:      s.vendor.String(),
+				Amount:  tc.amount,
+			}
+			res, err := s.msgServer.OperatorSend(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgTransferFrom() {
+	testCases := map[string]struct {
 		proxy sdk.AccAddress
 		from  sdk.AccAddress
 		amount sdk.Int
@@ -76,14 +123,14 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			req := &token.MsgOperatorSend{
+			req := &token.MsgTransferFrom{
 				ContractId: s.classID,
 				Proxy:   tc.proxy.String(),
 				From:    tc.from.String(),
 				To:      s.vendor.String(),
 				Amount:  tc.amount,
 			}
-			res, err := s.msgServer.OperatorSend(sdk.WrapSDKContext(ctx), req)
+			res, err := s.msgServer.TransferFrom(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -95,6 +142,80 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 }
 
 func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
+	testCases := map[string]struct {
+		holder sdk.AccAddress
+		operator    sdk.AccAddress
+		valid    bool
+	}{
+		"valid request": {
+			holder: s.customer,
+			operator:    s.vendor,
+			valid:    true,
+		},
+		"already approved": {
+			holder: s.customer,
+			operator:    s.operator,
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &token.MsgAuthorizeOperator{
+				ContractId:  s.classID,
+				Holder: tc.holder.String(),
+				Operator:    tc.operator.String(),
+			}
+			res, err := s.msgServer.AuthorizeOperator(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgRevokeOperator() {
+	testCases := map[string]struct {
+		holder sdk.AccAddress
+		operator    sdk.AccAddress
+		valid    bool
+	}{
+		"valid request": {
+			holder: s.customer,
+			operator:    s.operator,
+			valid:    true,
+		},
+		"no authorization": {
+			holder: s.customer,
+			operator:    s.vendor,
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &token.MsgRevokeOperator{
+				ContractId:  s.classID,
+				Holder: tc.holder.String(),
+				Operator:    tc.operator.String(),
+			}
+			res, err := s.msgServer.RevokeOperator(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgApprove() {
 	testCases := map[string]struct {
 		approver sdk.AccAddress
 		proxy    sdk.AccAddress
@@ -115,49 +236,12 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			req := &token.MsgAuthorizeOperator{
+			req := &token.MsgApprove{
 				ContractId:  s.classID,
 				Approver: tc.approver.String(),
 				Proxy:    tc.proxy.String(),
 			}
-			res, err := s.msgServer.AuthorizeOperator(sdk.WrapSDKContext(ctx), req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestMsgRevokeOperator() {
-	testCases := map[string]struct {
-		approver sdk.AccAddress
-		proxy    sdk.AccAddress
-		valid    bool
-	}{
-		"valid request": {
-			approver: s.customer,
-			proxy:    s.operator,
-			valid:    true,
-		},
-		"no authorization": {
-			approver: s.customer,
-			proxy:    s.vendor,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
-
-			req := &token.MsgRevokeOperator{
-				ContractId:  s.classID,
-				Approver: tc.approver.String(),
-				Proxy:    tc.proxy.String(),
-			}
-			res, err := s.msgServer.RevokeOperator(sdk.WrapSDKContext(ctx), req)
+			res, err := s.msgServer.Approve(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -235,8 +319,8 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 
 			req := &token.MsgGrant{
 				ContractId: s.classID,
-				From: tc.granter.String(),
-				To: tc.grantee.String(),
+				Granter: tc.granter.String(),
+				Grantee: tc.grantee.String(),
 				Permission:  tc.permission,
 			}
 			res, err := s.msgServer.Grant(sdk.WrapSDKContext(ctx), req)
@@ -277,6 +361,89 @@ func (s *KeeperTestSuite) TestMsgAbandon() {
 				Permission:  tc.permission,
 			}
 			res, err := s.msgServer.Abandon(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgGrantPermission() {
+	testCases := map[string]struct {
+		granter sdk.AccAddress
+		grantee sdk.AccAddress
+		permission  string
+		valid   bool
+	}{
+		"valid request": {
+			granter: s.vendor,
+			grantee: s.operator,
+			permission:  token.Permission_Modify.String(),
+			valid:   true,
+		},
+		"already granted": {
+			granter: s.vendor,
+			grantee: s.operator,
+			permission:  token.Permission_Mint.String(),
+		},
+		"granter has no permission": {
+			granter: s.customer,
+			grantee: s.operator,
+			permission:  token.Permission_Modify.String(),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &token.MsgGrantPermission{
+				ContractId: s.classID,
+				From: tc.granter.String(),
+				To: tc.grantee.String(),
+				Permission:  tc.permission,
+			}
+			res, err := s.msgServer.GrantPermission(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgRevokePermission() {
+	testCases := map[string]struct {
+		from sdk.AccAddress
+		permission  string
+		valid   bool
+	}{
+		"valid request": {
+			from: s.operator,
+			permission:  token.Permission_Mint.String(),
+			valid:   true,
+		},
+		"not granted yet": {
+			from: s.operator,
+			permission:  token.Permission_Modify.String(),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &token.MsgRevokePermission{
+				ContractId: s.classID,
+				From: tc.from.String(),
+				Permission:  tc.permission,
+			}
+			res, err := s.msgServer.RevokePermission(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -358,17 +525,17 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 
 func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 	testCases := map[string]struct {
-		grantee sdk.AccAddress
+		operator sdk.AccAddress
 		from    sdk.AccAddress
 		valid   bool
 	}{
 		"valid request": {
-			grantee: s.operator,
+			operator: s.operator,
 			from:    s.customer,
 			valid:   true,
 		},
 		"not approved": {
-			grantee: s.vendor,
+			operator: s.vendor,
 			from:    s.customer,
 		},
 	}
@@ -379,11 +546,49 @@ func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 
 			req := &token.MsgOperatorBurn{
 				ContractId: s.classID,
-				Proxy: tc.grantee.String(),
+				Operator: tc.operator.String(),
 				From:    tc.from.String(),
 				Amount:  s.balance,
 			}
 			res, err := s.msgServer.OperatorBurn(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgBurnFrom() {
+	testCases := map[string]struct {
+		proxy sdk.AccAddress
+		from    sdk.AccAddress
+		valid   bool
+	}{
+		"valid request": {
+			proxy: s.operator,
+			from:    s.customer,
+			valid:   true,
+		},
+		"not approved": {
+			proxy: s.vendor,
+			from:    s.customer,
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &token.MsgBurnFrom{
+				ContractId: s.classID,
+				Proxy: tc.proxy.String(),
+				From:    tc.from.String(),
+				Amount:  s.balance,
+			}
+			res, err := s.msgServer.BurnFrom(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

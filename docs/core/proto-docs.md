@@ -907,11 +907,17 @@
 - [lbm/token/v1/tx.proto](#lbm/token/v1/tx.proto)
     - [MsgAbandon](#lbm.token.v1.MsgAbandon)
     - [MsgAbandonResponse](#lbm.token.v1.MsgAbandonResponse)
+    - [MsgApprove](#lbm.token.v1.MsgApprove)
+    - [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse)
     - [MsgAuthorizeOperator](#lbm.token.v1.MsgAuthorizeOperator)
     - [MsgAuthorizeOperatorResponse](#lbm.token.v1.MsgAuthorizeOperatorResponse)
     - [MsgBurn](#lbm.token.v1.MsgBurn)
+    - [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom)
+    - [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse)
     - [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse)
     - [MsgGrant](#lbm.token.v1.MsgGrant)
+    - [MsgGrantPermission](#lbm.token.v1.MsgGrantPermission)
+    - [MsgGrantPermissionResponse](#lbm.token.v1.MsgGrantPermissionResponse)
     - [MsgGrantResponse](#lbm.token.v1.MsgGrantResponse)
     - [MsgIssue](#lbm.token.v1.MsgIssue)
     - [MsgIssueResponse](#lbm.token.v1.MsgIssueResponse)
@@ -925,8 +931,12 @@
     - [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse)
     - [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator)
     - [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse)
+    - [MsgRevokePermission](#lbm.token.v1.MsgRevokePermission)
+    - [MsgRevokePermissionResponse](#lbm.token.v1.MsgRevokePermissionResponse)
     - [MsgSend](#lbm.token.v1.MsgSend)
     - [MsgSendResponse](#lbm.token.v1.MsgSendResponse)
+    - [MsgTransferFrom](#lbm.token.v1.MsgTransferFrom)
+    - [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse)
   
     - [Msg](#lbm.token.v1.Msg)
   
@@ -13324,6 +13334,7 @@ Query defines the gRPC querier service.
 
 ### MsgAbandon
 MsgAbandon defines the Msg/Abandon request type.
+Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -13341,6 +13352,36 @@ MsgAbandon defines the Msg/Abandon request type.
 
 ### MsgAbandonResponse
 MsgAbandonResponse defines the Msg/Abandon response type.
+Since: finschia
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgApprove"></a>
+
+### MsgApprove
+MsgApprove defines the Msg/Approve request type.
+NOTE: deprecated (use MsgAuthorizeOperator)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `approver` | [string](#string) |  | address of the token holder which approves the authorization. |
+| `proxy` | [string](#string) |  | address of the operator which the authorization is granted to. |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgApproveResponse"></a>
+
+### MsgApproveResponse
+MsgApproveResponse defines the Msg/Approve response type.
+NOTE: deprecated
 
 
 
@@ -13351,13 +13392,14 @@ MsgAbandonResponse defines the Msg/Abandon response type.
 
 ### MsgAuthorizeOperator
 MsgAuthorizeOperator defines the Msg/AuthorizeOperator request type.
+Since: finschia
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `approver` | [string](#string) |  | approver is the address of the approver of the authorization. |
-| `proxy` | [string](#string) |  | proxy is the address of the operator which the authorization is granted to. |
+| `holder` | [string](#string) |  | address of the token holder which approves the authorization. |
+| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
 
 
 
@@ -13368,6 +13410,7 @@ MsgAuthorizeOperator defines the Msg/AuthorizeOperator request type.
 
 ### MsgAuthorizeOperatorResponse
 MsgAuthorizeOperatorResponse defines the Msg/AuthorizeOperator response type.
+Since: finschia
 
 
 
@@ -13391,6 +13434,36 @@ MsgBurn defines the Msg/Burn request type.
 
 
 
+<a name="lbm.token.v1.MsgBurnFrom"></a>
+
+### MsgBurnFrom
+MsgBurnFrom defines the Msg/BurnFrom request type.
+NOTE: deprecated (use MsgOperatorBurn)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | the amount of the burn. |
+| `proxy` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. |
+| `amount` | [string](#string) |  | the amount of the burn. |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgBurnFromResponse"></a>
+
+### MsgBurnFromResponse
+MsgBurnFromResponse defines the Msg/BurnFrom response type.
+NOTE: deprecated
+
+
+
+
+
+
 <a name="lbm.token.v1.MsgBurnResponse"></a>
 
 ### MsgBurnResponse
@@ -13405,6 +13478,26 @@ MsgBurnResponse defines the Msg/Burn response type.
 
 ### MsgGrant
 MsgGrant defines the Msg/Grant request type.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `granter` | [string](#string) |  | address of the granter which must have the permission to give. |
+| `grantee` | [string](#string) |  | address of the grantee. |
+| `permission` | [string](#string) |  | permission on the token class. |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgGrantPermission"></a>
+
+### MsgGrantPermission
+MsgGrantPermission defines the Msg/GrantPermission request type.
+NOTE: deprecated (use MsgGrant)
 
 
 | Field | Type | Label | Description |
@@ -13419,10 +13512,22 @@ MsgGrant defines the Msg/Grant request type.
 
 
 
+<a name="lbm.token.v1.MsgGrantPermissionResponse"></a>
+
+### MsgGrantPermissionResponse
+MsgGrantPermissionResponse defines the Msg/GrantPermission response type.
+NOTE: deprecated
+
+
+
+
+
+
 <a name="lbm.token.v1.MsgGrantResponse"></a>
 
 ### MsgGrantResponse
 MsgGrantResponse defines the Msg/Grant response type.
+Since: finschia
 
 
 
@@ -13521,12 +13626,13 @@ MsgModifyResponse defines the Msg/Modify response type.
 
 ### MsgOperatorBurn
 MsgOperatorBurn defines the Msg/OperatorBurn request type.
+Since: finschia
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | the amount of the burn. |
-| `proxy` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
+| `operator` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
 | `from` | [string](#string) |  | address which the tokens will be burnt from. |
 | `amount` | [string](#string) |  | the amount of the burn. |
 
@@ -13539,6 +13645,7 @@ MsgOperatorBurn defines the Msg/OperatorBurn request type.
 
 ### MsgOperatorBurnResponse
 MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
+Since: finschia
 
 
 
@@ -13549,12 +13656,13 @@ MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
 
 ### MsgOperatorSend
 MsgOperatorSend defines the Msg/OperatorSend request type.
+Since: finschia
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `proxy` | [string](#string) |  | the address of the operator. |
+| `operator` | [string](#string) |  | the address of the operator. |
 | `from` | [string](#string) |  | the address which the transfer is from. |
 | `to` | [string](#string) |  | the address which the transfer is to. |
 | `amount` | [string](#string) |  | the amount of the transfer. |
@@ -13568,6 +13676,7 @@ MsgOperatorSend defines the Msg/OperatorSend request type.
 
 ### MsgOperatorSendResponse
 MsgOperatorSendResponse defines the Msg/OperatorSend response type.
+Since: finschia
 
 
 
@@ -13578,13 +13687,14 @@ MsgOperatorSendResponse defines the Msg/OperatorSend response type.
 
 ### MsgRevokeOperator
 MsgRevokeOperator defines the Msg/RevokeOperator request type.
+Since: finschia
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `approver` | [string](#string) |  | approver is the address of the approver of the authorization. |
-| `proxy` | [string](#string) |  | proxy is the address of the operator which the authorization is granted to. |
+| `holder` | [string](#string) |  | address of the token holder which approved the authorization. |
+| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
 
 
 
@@ -13595,6 +13705,36 @@ MsgRevokeOperator defines the Msg/RevokeOperator request type.
 
 ### MsgRevokeOperatorResponse
 MsgRevokeOperatorResponse defines the Msg/RevokeOperator response type.
+Since: finschia
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgRevokePermission"></a>
+
+### MsgRevokePermission
+MsgRevokePermission defines the Msg/RevokePermission request type.
+NOTE: deprecated (use MsgAbandon)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `from` | [string](#string) |  | address of the grantee which abandons the permission. |
+| `permission` | [string](#string) |  | permission on the token class. |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgRevokePermissionResponse"></a>
+
+### MsgRevokePermissionResponse
+MsgRevokePermissionResponse defines the Msg/RevokePermission response type.
+NOTE: deprecated
 
 
 
@@ -13628,6 +13768,37 @@ MsgSendResponse defines the Msg/Send response type.
 
 
 
+
+<a name="lbm.token.v1.MsgTransferFrom"></a>
+
+### MsgTransferFrom
+MsgTransferFrom defines the Msg/TransferFrom request type.
+NOTE: deprecated (use MsgOperatorSend)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `proxy` | [string](#string) |  | the address of the operator. |
+| `from` | [string](#string) |  | the address which the transfer is from. |
+| `to` | [string](#string) |  | the address which the transfer is to. |
+| `amount` | [string](#string) |  | the amount of the transfer. |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgTransferFromResponse"></a>
+
+### MsgTransferFromResponse
+MsgTransferFromResponse defines the Msg/TransferFrom response type.
+NOTE: deprecated
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -13643,15 +13814,20 @@ Msg defines the token Msg service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Send` | [MsgSend](#lbm.token.v1.MsgSend) | [MsgSendResponse](#lbm.token.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. | |
-| `OperatorSend` | [MsgOperatorSend](#lbm.token.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. | |
-| `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.token.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.token.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the approver. | |
-| `RevokeOperator` | [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse) | RevokeOperator revoke the authorization of the operator to send the approver's tokens. Since: finschia | |
+| `OperatorSend` | [MsgOperatorSend](#lbm.token.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. Since: finschia | |
+| `TransferFrom` | [MsgTransferFrom](#lbm.token.v1.MsgTransferFrom) | [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse) | TransferFrom defines a method to send tokens from one account to another account by the operator. NOTE: the approval has no value of limit. NOTE: deprecated (use OperatorSend) | |
+| `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.token.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.token.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the holder. Since: finschia | |
+| `RevokeOperator` | [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse) | RevokeOperator revoke the authorization of the operator to send the holder's tokens. Since: finschia | |
+| `Approve` | [MsgApprove](#lbm.token.v1.MsgApprove) | [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the holder. NOTE: deprecated (use AuthorizeOperator) | |
 | `Issue` | [MsgIssue](#lbm.token.v1.MsgIssue) | [MsgIssueResponse](#lbm.token.v1.MsgIssueResponse) | Issue defines a method to create a class of token. | |
-| `Grant` | [MsgGrant](#lbm.token.v1.MsgGrant) | [MsgGrantResponse](#lbm.token.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify a token metadata. | |
-| `Abandon` | [MsgAbandon](#lbm.token.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.token.v1.MsgAbandonResponse) | Abandon abandons a permission. | |
+| `Grant` | [MsgGrant](#lbm.token.v1.MsgGrant) | [MsgGrantResponse](#lbm.token.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify a token metadata. Since: finschia | |
+| `Abandon` | [MsgAbandon](#lbm.token.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.token.v1.MsgAbandonResponse) | Abandon abandons a permission. Since: finschia | |
+| `GrantPermission` | [MsgGrantPermission](#lbm.token.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.token.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify a token metadata. NOTE: deprecated (use Grant) | |
+| `RevokePermission` | [MsgRevokePermission](#lbm.token.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.token.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. NOTE: deprecated (use Abandon) | |
 | `Mint` | [MsgMint](#lbm.token.v1.MsgMint) | [MsgMintResponse](#lbm.token.v1.MsgMintResponse) | Mint defines a method to mint tokens. | |
 | `Burn` | [MsgBurn](#lbm.token.v1.MsgBurn) | [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse) | Burn defines a method to burn tokens. | |
-| `OperatorBurn` | [MsgOperatorBurn](#lbm.token.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.token.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens. | |
+| `OperatorBurn` | [MsgOperatorBurn](#lbm.token.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.token.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens by the operator. Since: finschia | |
+| `BurnFrom` | [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom) | [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse) | BurnFrom defines a method to burn tokens by the operator. NOTE: deprecated (use OperatorBurn) | |
 | `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token class. | |
 
  <!-- end services -->

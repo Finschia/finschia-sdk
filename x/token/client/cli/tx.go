@@ -91,11 +91,11 @@ func NewTxCmdSend() *cobra.Command {
 
 func NewTxCmdOperatorSend() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "operator-send [class-id] [proxy] [from] [to] [amount]",
+		Use:   "operator-send [class-id] [operator] [from] [to] [amount]",
 		Args:  cobra.ExactArgs(5),
-		Short: "send tokens by proxy",
+		Short: "send tokens by operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s operator-send <class-id> <proxy> <from> <to> <amount>`, version.AppName, token.ModuleName),
+			$ %s tx %s operator-send <class-id> <operator> <from> <to> <amount>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -110,7 +110,7 @@ func NewTxCmdOperatorSend() *cobra.Command {
 			}
 			msg := token.MsgOperatorSend{
 				ContractId: args[0],
-				Proxy:      args[1],
+				Operator:   args[1],
 				From:       args[2],
 				To:         args[3],
 				Amount:     amount,
@@ -128,11 +128,11 @@ func NewTxCmdOperatorSend() *cobra.Command {
 
 func NewTxCmdAuthorizeOperator() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "authorize-operator [class-id] [approver] [proxy]",
+		Use:   "authorize-operator [class-id] [holder] [operator]",
 		Args:  cobra.ExactArgs(3),
-		Short: "authorize operator to send tokens to a given proxy",
+		Short: "authorize operator to send tokens to a given operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s authorize-operator <class-id> <approver> <proxy>`, version.AppName, token.ModuleName),
+			$ %s tx %s authorize-operator <class-id> <holder> <operator>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -142,8 +142,8 @@ func NewTxCmdAuthorizeOperator() *cobra.Command {
 
 			msg := token.MsgAuthorizeOperator{
 				ContractId: args[0],
-				Approver:   args[1],
-				Proxy:      args[2],
+				Holder:     args[1],
+				Operator:   args[2],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -158,11 +158,11 @@ func NewTxCmdAuthorizeOperator() *cobra.Command {
 
 func NewTxCmdRevokeOperator() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "revoke-operator [class-id] [approver] [proxy]",
+		Use:   "revoke-operator [class-id] [holder] [operator]",
 		Args:  cobra.ExactArgs(3),
-		Short: "revoke operator to send tokens to a given proxy",
+		Short: "revoke operator to send tokens to a given operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s revoke-operator <class-id> <approver> <proxy>`, version.AppName, token.ModuleName),
+			$ %s tx %s revoke-operator <class-id> <holder> <operator>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -172,8 +172,8 @@ func NewTxCmdRevokeOperator() *cobra.Command {
 
 			msg := token.MsgRevokeOperator{
 				ContractId: args[0],
-				Approver:   args[1],
-				Proxy:      args[2],
+				Holder:     args[1],
+				Operator:   args[2],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -273,8 +273,8 @@ func NewTxCmdGrant() *cobra.Command {
 
 			msg := token.MsgGrant{
 				ContractId: args[0],
-				From:       args[1],
-				To:         args[2],
+				Granter:    args[1],
+				Grantee:    args[2],
 				Permission: args[3],
 			}
 			if err := msg.ValidateBasic(); err != nil {
@@ -413,7 +413,7 @@ func NewTxCmdOperatorBurn() *cobra.Command {
 
 			msg := token.MsgOperatorBurn{
 				ContractId: args[0],
-				Proxy:      args[1],
+				Operator:   args[1],
 				From:       args[2],
 				Amount:     amount,
 			}

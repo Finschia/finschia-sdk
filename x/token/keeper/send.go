@@ -18,55 +18,55 @@ func (k Keeper) Send(ctx sdk.Context, classID string, from, to sdk.AccAddress, a
 	return nil
 }
 
-func (k Keeper) AuthorizeOperator(ctx sdk.Context, classID string, approver, proxy sdk.AccAddress) error {
+func (k Keeper) AuthorizeOperator(ctx sdk.Context, classID string, holder, operator sdk.AccAddress) error {
 	if _, err := k.GetClass(ctx, classID); err != nil {
 		return sdkerrors.ErrNotFound.Wrapf("ID not exists: %s", classID)
 	}
-	if k.GetAuthorization(ctx, classID, approver, proxy) != nil {
+	if k.GetAuthorization(ctx, classID, holder, operator) != nil {
 		return sdkerrors.ErrInvalidRequest.Wrap("Already authorized")
 	}
 
-	k.setAuthorization(ctx, classID, approver, proxy)
+	k.setAuthorization(ctx, classID, holder, operator)
 
-	if !k.accountKeeper.HasAccount(ctx, proxy) {
-		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, proxy))
+	if !k.accountKeeper.HasAccount(ctx, operator) {
+		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, operator))
 	}
 
 	return nil
 }
 
-func (k Keeper) RevokeOperator(ctx sdk.Context, classID string, approver, proxy sdk.AccAddress) error {
+func (k Keeper) RevokeOperator(ctx sdk.Context, classID string, holder, operator sdk.AccAddress) error {
 	if _, err := k.GetClass(ctx, classID); err != nil {
 		return sdkerrors.ErrNotFound.Wrapf("ID not exists: %s", classID)
 	}
-	if k.GetAuthorization(ctx, classID, approver, proxy) == nil {
+	if k.GetAuthorization(ctx, classID, holder, operator) == nil {
 		return sdkerrors.ErrNotFound.Wrap("No authorization")
 	}
 
-	k.deleteAuthorization(ctx, classID, approver, proxy)
+	k.deleteAuthorization(ctx, classID, holder, operator)
 	return nil
 }
 
-func (k Keeper) GetAuthorization(ctx sdk.Context, classID string, approver, proxy sdk.AccAddress) *token.Authorization {
+func (k Keeper) GetAuthorization(ctx sdk.Context, classID string, holder, operator sdk.AccAddress) *token.Authorization {
 	store := ctx.KVStore(k.storeKey)
-	if store.Has(authorizationKey(classID, proxy, approver)) {
+	if store.Has(authorizationKey(classID, operator, holder)) {
 		return &token.Authorization{
-			Approver: approver.String(),
-			Proxy:    proxy.String(),
+			Approver: holder.String(),
+			Proxy:    operator.String(),
 		}
 	}
 	return nil
 }
 
-func (k Keeper) setAuthorization(ctx sdk.Context, classID string, approver, proxy sdk.AccAddress) {
+func (k Keeper) setAuthorization(ctx sdk.Context, classID string, holder, operator sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
-	key := authorizationKey(classID, proxy, approver)
+	key := authorizationKey(classID, operator, holder)
 	store.Set(key, []byte{})
 }
 
-func (k Keeper) deleteAuthorization(ctx sdk.Context, classID string, approver, proxy sdk.AccAddress) {
+func (k Keeper) deleteAuthorization(ctx sdk.Context, classID string, holder, operator sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
-	key := authorizationKey(classID, proxy, approver)
+	key := authorizationKey(classID, operator, holder)
 	store.Delete(key)
 }
 

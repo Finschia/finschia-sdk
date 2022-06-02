@@ -236,7 +236,7 @@ func (s queryServer) OperatorAuthorizations(c context.Context, req *token.QueryO
 
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
-	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByProxy(req.ContractId, sdk.AccAddress(req.Proxy)))
+	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, sdk.AccAddress(req.Proxy)))
 	var authorizations []token.Authorization
 	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key []byte, value []byte) error {
 		approver := sdk.AccAddress(key)

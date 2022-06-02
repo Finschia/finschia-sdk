@@ -19,6 +19,10 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgBurn{},
 		&MsgOperatorBurn{},
 		&MsgModify{},
+		// deprecated messages
+		&MsgTransferFrom{},
+		&MsgApprove{},
+		&MsgBurnFrom{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
