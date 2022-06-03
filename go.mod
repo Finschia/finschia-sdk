@@ -7,7 +7,6 @@ require (
 	github.com/VictoriaMetrics/fastcache v1.10.0
 	github.com/armon/go-metrics v0.3.11
 	github.com/bgentry/speakeasy v0.1.0
-	github.com/btcsuite/btcd v0.22.1
 	github.com/coinbase/rosetta-sdk-go v0.7.9
 	github.com/confio/ics23/go v0.7.0
 	github.com/coocood/freecache v1.2.1
