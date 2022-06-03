@@ -491,6 +491,10 @@
 - [lbm/collection/v1/query.proto](#lbm/collection/v1/query.proto)
     - [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest)
     - [QueryAllBalancesResponse](#lbm.collection.v1.QueryAllBalancesResponse)
+    - [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest)
+    - [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse)
+    - [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest)
+    - [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse)
     - [QueryAuthorizationRequest](#lbm.collection.v1.QueryAuthorizationRequest)
     - [QueryAuthorizationResponse](#lbm.collection.v1.QueryAuthorizationResponse)
     - [QueryBalanceRequest](#lbm.collection.v1.QueryBalanceRequest)
@@ -525,6 +529,8 @@
     - [QueryNFTResponse](#lbm.collection.v1.QueryNFTResponse)
     - [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest)
     - [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse)
+    - [QueryNFTsRequest](#lbm.collection.v1.QueryNFTsRequest)
+    - [QueryNFTsResponse](#lbm.collection.v1.QueryNFTsResponse)
     - [QueryOperatorAuthorizationsRequest](#lbm.collection.v1.QueryOperatorAuthorizationsRequest)
     - [QueryOperatorAuthorizationsResponse](#lbm.collection.v1.QueryOperatorAuthorizationsResponse)
     - [QueryParentRequest](#lbm.collection.v1.QueryParentRequest)
@@ -7977,10 +7983,11 @@ Since: finschia
 
 
 
-<a name="lbm.collection.v1.QueryAuthorizationRequest"></a>
+<a name="lbm.collection.v1.QueryApprovedRequest"></a>
 
-### QueryAuthorizationRequest
-QueryAuthorizationRequest is the request type for the Query/Authorization RPC method.
+### QueryApprovedRequest
+QueryApprovedRequest is the request type for the Query/Approved RPC method.
+NOTE: deprecated (use QueryAuthorizationRequest)
 
 
 | Field | Type | Label | Description |
@@ -7994,10 +8001,80 @@ QueryAuthorizationRequest is the request type for the Query/Authorization RPC me
 
 
 
+<a name="lbm.collection.v1.QueryApprovedResponse"></a>
+
+### QueryApprovedResponse
+QueryApprovedResponse is the response type for the Query/Approved RPC method.
+NOTE: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `approved` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryApproversRequest"></a>
+
+### QueryApproversRequest
+QueryApproversRequest is the request type for the Query/Approvers RPC method.
+NOTE: deprecated (use QueryOperatorAuthorizations)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `address` | [string](#string) |  | address of the operator. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryApproversResponse"></a>
+
+### QueryApproversResponse
+QueryApproversResponse is the response type for the Query/Approvers RPC method.
+NOTE: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `approvers` | [string](#string) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryAuthorizationRequest"></a>
+
+### QueryAuthorizationRequest
+QueryAuthorizationRequest is the request type for the Query/Authorization RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | the address of the operator. |
+| `holder` | [string](#string) |  | the address of the token holder. |
+
+
+
+
+
+
 <a name="lbm.collection.v1.QueryAuthorizationResponse"></a>
 
 ### QueryAuthorizationResponse
 QueryAuthorizationResponse is the response type for the Query/Authorization RPC method.
+Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -8174,6 +8251,7 @@ Since: finschia
 
 ### QueryFTBurntRequest
 QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
+NOTE: deprecated (use QueryBurntRequest)
 
 
 | Field | Type | Label | Description |
@@ -8190,6 +8268,7 @@ QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
 
 ### QueryFTBurntResponse
 QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
+NOTE: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8205,6 +8284,7 @@ QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
 
 ### QueryFTMintedRequest
 QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
+NOTE: deprecated (use QueryMintedRequest)
 
 
 | Field | Type | Label | Description |
@@ -8221,6 +8301,7 @@ QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
 
 ### QueryFTMintedResponse
 QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
+NOTE: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8236,6 +8317,7 @@ QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
 
 ### QueryFTRequest
 QueryFTRequest is the request type for the Query/FT RPC method.
+NOTE: deprecated (use QueryTokenClassRequest)
 
 
 | Field | Type | Label | Description |
@@ -8252,6 +8334,7 @@ QueryFTRequest is the request type for the Query/FT RPC method.
 
 ### QueryFTResponse
 QueryFTResponse is the response type for the Query/FT RPC method.
+NOTE: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8267,6 +8350,7 @@ QueryFTResponse is the response type for the Query/FT RPC method.
 
 ### QueryFTSupplyRequest
 QueryFTSupplyRequest is the request type for the Query/FTSupply RPC method.
+NOTE: deprecated (use QuerySupplyRequest)
 
 
 | Field | Type | Label | Description |
@@ -8283,6 +8367,7 @@ QueryFTSupplyRequest is the request type for the Query/FTSupply RPC method.
 
 ### QueryFTSupplyResponse
 QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
+NOTE: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8400,6 +8485,7 @@ Since: finschia
 
 ### QueryNFTBurntRequest
 QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
+NOTE: deprecated (use QueryBurntRequest)
 
 
 | Field | Type | Label | Description |
@@ -8416,6 +8502,7 @@ QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
 
 ### QueryNFTBurntResponse
 QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
+NOTE: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8431,6 +8518,7 @@ QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
 
 ### QueryNFTMintedRequest
 QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
+NOTE: deprecated (use QueryMintedRequest)
 
 
 | Field | Type | Label | Description |
@@ -8447,6 +8535,7 @@ QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
 
 ### QueryNFTMintedResponse
 QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC method.
+NOTE: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8493,6 +8582,7 @@ QueryNFTResponse is the response type for the Query/NFT RPC method.
 
 ### QueryNFTSupplyRequest
 QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
+NOTE: deprecated (use QuerySupplyRequest)
 
 
 | Field | Type | Label | Description |
@@ -8509,11 +8599,45 @@ QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
 
 ### QueryNFTSupplyResponse
 QueryNFTSupplyResponse is the response type for the Query/NFTSupply RPC method.
+NOTE: deprecated
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `supply` | [string](#string) |  | supply is the supply of the non-fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryNFTsRequest"></a>
+
+### QueryNFTsRequest
+QueryNFTsRequest is the request type for the Query/NFTs RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryNFTsResponse"></a>
+
+### QueryNFTsResponse
+QueryNFTsResponse is the response type for the Query/NFTs RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `token` | [NFT](#lbm.collection.v1.NFT) | repeated | token is the information of the non-fungible token. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -8530,7 +8654,7 @@ Since: finschia
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `address` | [string](#string) |  | address of the operator. |
+| `operator` | [string](#string) |  | address of the operator. |
 | `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
@@ -8721,6 +8845,7 @@ Since: finschia
 
 ### QueryTokenTypeRequest
 QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
+NOTE: deprecated (use QueryTokenClassRequest)
 
 
 | Field | Type | Label | Description |
@@ -8737,6 +8862,7 @@ QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
 
 ### QueryTokenTypeResponse
 QueryTokenTypeResponse is the response type for the Query/TokenType RPC method.
+NOTE: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8752,6 +8878,7 @@ QueryTokenTypeResponse is the response type for the Query/TokenType RPC method.
 
 ### QueryTokenTypesRequest
 QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
+NOTE: deprecated (use QueryTokenClassesRequest)
 
 
 | Field | Type | Label | Description |
@@ -8768,6 +8895,7 @@ QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
 
 ### QueryTokenTypesResponse
 QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method.
+NOTE: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8784,6 +8912,7 @@ QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method
 
 ### QueryTokensRequest
 QueryTokensRequest is the request type for the Query/Tokens RPC method.
+NOTE: deprecated (use QueryTokenClasses and NFT)
 
 
 | Field | Type | Label | Description |
@@ -8827,31 +8956,34 @@ Query defines the gRPC querier service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Balance` | [QueryBalanceRequest](#lbm.collection.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.collection.v1.QueryBalanceResponse) | Balance queries the balance of a single token class for a single account. | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}/{token_id}|
 | `AllBalances` | [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.collection.v1.QueryAllBalancesResponse) | AllBalances queries the balance of all token classes for a single account. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}|
-| `FTSupply` | [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest) | [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse) | FTSupply queries the number of tokens from a given contract id and token id. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply|
-| `FTMinted` | [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest) | [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse) | FTMinted queries the number of minted tokens from a given contract id and token id. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted|
-| `FTBurnt` | [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest) | [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse) | FTBurnt queries the number of burnt tokens from a given contract id and token id. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt|
-| `NFTSupply` | [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest) | [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse) | NFTSupply queries the number of tokens from a given contract id and token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply|
-| `NFTMinted` | [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest) | [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse) | NFTMinted queries the number of minted tokens from a given contract id and token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted|
-| `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | NFTBurnt queries the number of burnt tokens from a given contract id and token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
 | `Supply` | [QuerySupplyRequest](#lbm.collection.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.collection.v1.QuerySupplyResponse) | Supply queries the number of tokens from a given contract id and class id. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/supply|
 | `Minted` | [QueryMintedRequest](#lbm.collection.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.collection.v1.QueryMintedResponse) | Minted queries the number of minted tokens from a given contract id and class id. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/minted|
 | `Burnt` | [QueryBurntRequest](#lbm.collection.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.collection.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from a given contract id and class id. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/burnt|
+| `FTSupply` | [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest) | [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse) | FTSupply queries the number of tokens from a given contract id and token id. NOTE: deprecated (use Supply) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply|
+| `FTMinted` | [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest) | [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse) | FTMinted queries the number of minted tokens from a given contract id and token id. NOTE: deprecated (use Minted) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted|
+| `FTBurnt` | [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest) | [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse) | FTBurnt queries the number of burnt tokens from a given contract id and token id. NOTE: deprecated (use Burnt) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt|
+| `NFTSupply` | [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest) | [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse) | NFTSupply queries the number of tokens from a given contract id and token type. NOTE: deprecated (use Supply) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply|
+| `NFTMinted` | [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest) | [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse) | NFTMinted queries the number of minted tokens from a given contract id and token type. NOTE: deprecated (use Minted) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted|
+| `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | NFTBurnt queries the number of burnt tokens from a given contract id and token type. NOTE: deprecated (use Burnt) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
 | `Contract` | [QueryContractRequest](#lbm.collection.v1.QueryContractRequest) | [QueryContractResponse](#lbm.collection.v1.QueryContractResponse) | Contract queries a contract metadata based on its contract id. | GET|/lbm/collection/v1/contracts/{contract_id}|
 | `Contracts` | [QueryContractsRequest](#lbm.collection.v1.QueryContractsRequest) | [QueryContractsResponse](#lbm.collection.v1.QueryContractsResponse) | Contracts queries metadata of all contracts. Since: finschia | GET|/lbm/collection/v1/contracts|
-| `FT` | [QueryFTRequest](#lbm.collection.v1.QueryFTRequest) | [QueryFTResponse](#lbm.collection.v1.QueryFTResponse) | FT queries a metadata of a fungible token from its token id. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}|
-| `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
-| `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
-| `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
 | `TokenClass` | [QueryTokenClassRequest](#lbm.collection.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.collection.v1.QueryTokenClassResponse) | TokenClass queries a metadata of a token class from its class id. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}|
 | `TokenClasses` | [QueryTokenClassesRequest](#lbm.collection.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.collection.v1.QueryTokenClassesResponse) | TokenClasses queries token metadata of all token classes of a contract. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes|
+| `FT` | [QueryFTRequest](#lbm.collection.v1.QueryFTRequest) | [QueryFTResponse](#lbm.collection.v1.QueryFTResponse) | FT queries a metadata of a fungible token from its token id. NOTE: deprecated (use TokenClass) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}|
+| `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. NOTE: deprecated (use TokenClass) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
+| `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. NOTE: deprecated (use TokenClasses) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
+| `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. NOTE: deprecated (use TokenClasses and NFT) | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
 | `NFT` | [QueryNFTRequest](#lbm.collection.v1.QueryNFTRequest) | [QueryNFTResponse](#lbm.collection.v1.QueryNFTResponse) | NFT queries a metadata of a non-fungible token. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}|
+| `NFTs` | [QueryNFTsRequest](#lbm.collection.v1.QueryNFTsRequest) | [QueryNFTsResponse](#lbm.collection.v1.QueryNFTsResponse) | NFTs queries a metadata of all non-fungible tokens. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/nfts|
 | `Root` | [QueryRootRequest](#lbm.collection.v1.QueryRootRequest) | [QueryRootResponse](#lbm.collection.v1.QueryRootResponse) | Root queries the root of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root|
 | `Parent` | [QueryParentRequest](#lbm.collection.v1.QueryParentRequest) | [QueryParentResponse](#lbm.collection.v1.QueryParentResponse) | Parent queries the parent of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent|
 | `Children` | [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest) | [QueryChildrenResponse](#lbm.collection.v1.QueryChildrenResponse) | Children queries the children of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children|
 | `Grant` | [QueryGrantRequest](#lbm.collection.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.collection.v1.QueryGrantResponse) | Grant queries a permission on a given grantee. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}/{permission}|
 | `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse) | GranteeGrants queries all permissions on a given grantee. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}|
-| `Authorization` | [QueryAuthorizationRequest](#lbm.collection.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.collection.v1.QueryAuthorizationResponse) | Authorization queries an authorization on a given operator approver pair. | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{address}/{approver}|
-| `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.collection.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.collection.v1.QueryOperatorAuthorizationsResponse) | Authorizations queries authorizations on a given operator. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{address}|
+| `Authorization` | [QueryAuthorizationRequest](#lbm.collection.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.collection.v1.QueryAuthorizationResponse) | Authorization queries an authorization on a given operator approver pair. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}/{holder}|
+| `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.collection.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.collection.v1.QueryOperatorAuthorizationsResponse) | OperatorAuthorizations queries authorizations on a given operator. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}|
+| `Approved` | [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse) | Approved queries whether the operator is approved by the approver. NOTE: deprecated (use Authorization) | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}|
+| `Approvers` | [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse) | Approvers queries approvers of a given operator. NOTE: deprecated (use OperatorAuthorizations) | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers|
 
  <!-- end services -->
 
