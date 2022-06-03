@@ -2,12 +2,46 @@ package collection
 
 import (
 	"github.com/line/lbm-sdk/codec/types"
-	// sdk "github.com/line/lbm-sdk/types"
-	// "github.com/line/lbm-sdk/types/msgservice"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/msgservice"
 )
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
-	// registry.RegisterImplementations((*sdk.Msg)(nil))
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgSend{},
+		&MsgOperatorSend{},
+		&MsgAuthorizeOperator{},
+		&MsgRevokeOperator{},
+		&MsgCreateContract{},
+		&MsgIssueFT{},
+		&MsgIssueNFT{},
+		&MsgMintFT{},
+		&MsgMintNFT{},
+		&MsgBurn{},
+		&MsgOperatorBurn{},
+		&MsgModify{},
+		&MsgGrant{},
+		&MsgAbandon{},
+		&MsgAttach{},
+		&MsgOperatorAttach{},
+		&MsgDetach{},
+		&MsgOperatorDetach{},
+		// deprecated msgs
+		&MsgTransferFT{},
+		&MsgTransferFTFrom{},
+		&MsgTransferNFT{},
+		&MsgTransferNFTFrom{},
+		&MsgApprove{},
+		&MsgDisapprove{},
+		&MsgBurnFT{},
+		&MsgBurnFTFrom{},
+		&MsgBurnNFT{},
+		&MsgBurnNFTFrom{},
+		&MsgGrantPermission{},
+		&MsgRevokePermission{},
+		&MsgAttachFrom{},
+		&MsgDetachFrom{},
+	)
 
 	registry.RegisterInterface(
 		"lbm.collection.v1.TokenClass",
@@ -16,5 +50,5 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&NFTClass{},
 	)
 
-	// msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
+	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

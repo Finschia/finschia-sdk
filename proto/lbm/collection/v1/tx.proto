@@ -143,7 +143,7 @@ message MsgSend {
   // the address which the transfer is to.
   string to = 3;
   // the amount of the transfer.
-  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+  repeated Coin amount = 4 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Coins"];
 }
 
 // MsgSendResponse is the Msg/Send response type.
@@ -162,7 +162,7 @@ message MsgOperatorSend {
   // the address which the transfer is to.
   string to = 4;
   // the amount of the transfer.
-  repeated Coin amount = 5 [(gogoproto.nullable) = false];
+  repeated Coin amount = 5 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Coins"];
 }
 
 // MsgOperatorSendResponse is the Msg/OperatorSend response type.
@@ -179,6 +179,7 @@ message MsgTransferFT {
   // the address which the transfer is to.
   string to = 3;
   // the amount of the transfer.
+  // NOTE: amount may be empty.
   repeated Coin amount = 4 [(gogoproto.nullable) = false];
 }
 
@@ -198,6 +199,7 @@ message MsgTransferFTFrom {
   // the address which the transfer is to.
   string to = 4;
   // the amount of the transfer.
+  // NOTE: amount may be empty.
   repeated Coin amount = 5 [(gogoproto.nullable) = false];
 }
 
@@ -342,6 +344,7 @@ message MsgIssueFT {
   string to = 7;
   // the amount of tokens to mint on the issuance.
   // NOTE: if you provide negative amount, a panic may result.
+  // NOTE: amount may be zero.
   string amount = 8 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -374,6 +377,7 @@ message MsgMintFT {
   // address which the minted tokens will be sent to.
   string to = 3;
   // the amount of the mint.
+  // NOTE: amount may be empty.
   repeated Coin amount = 4 [(gogoproto.nullable) = false];
 }
 
@@ -394,8 +398,9 @@ message MsgMintNFT {
 
 message MintNFTParam {
   // token type or class id of the nft.
+  // NOTE: it cannot start with zero.
   string token_type = 1;
-  // name defines the human-readable name of the nft.
+  // name defines the human-readable name of the nft (mandatory).
   string name = 2;
   // meta is a brief description of the nft.
   string meta = 3;
@@ -413,7 +418,7 @@ message MsgBurn {
   // NOTE: it must have the permission for the burn.
   string from = 2;
   // the amount of the burn.
-  repeated Coin amount = 3 [(gogoproto.nullable) = false];
+  repeated Coin amount = 3 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Coins"];
 }
 
 // MsgBurnResponse is the Msg/Burn response type.
@@ -432,7 +437,7 @@ message MsgOperatorBurn {
   // address which the tokens will be burnt from.
   string from = 3;
   // the amount of the burn.
-  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+  repeated Coin amount = 4 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Coins"];
 }
 
 // MsgOperatorBurnResponse is the Msg/OperatorBurn response type.
@@ -448,6 +453,7 @@ message MsgBurnFT {
   // NOTE: it must have the permission for the burn.
   string from = 2;
   // the amount of the burn.
+  // NOTE: amount may be empty.
   repeated Coin amount = 3 [(gogoproto.nullable) = false];
 }
 
@@ -467,6 +473,7 @@ message MsgBurnFTFrom {
   // address which the tokens will be burnt from.
   string from = 3;
   // the amount of the burn.
+  // NOTE: amount may be empty.
   repeated Coin amount = 4 [(gogoproto.nullable) = false];
 }
 
@@ -482,7 +489,8 @@ message MsgBurnNFT {
   // address which the tokens will be burnt from.
   // NOTE: it must have the permission for the burn.
   string from = 2;
-  // the amount of the burn.
+  // the token ids to burn.
+  // NOTE: id cannot start with zero.
   repeated string token_ids = 3;
 }
 
@@ -501,7 +509,8 @@ message MsgBurnNFTFrom {
   string proxy = 2;
   // address which the tokens will be burnt from.
   string from = 3;
-  // the amount of the burn.
+  // the token ids to burn.
+  // NOTE: id cannot start with zero.
   repeated string token_ids = 4;
 }
 
@@ -518,8 +527,13 @@ message MsgModify {
   // token type of the token.
   string token_type = 3;
   // token index of the token.
+  // if index is empty, it would modify the corresponding token type.
+  // if index is not empty, it would modify the corresponding nft.
+  // NOTE: if token type is of FTs, the index cannot be empty.
   string token_index = 4;
   // changes to apply.
+  // on modifying collection: name, base_img_uri, meta.
+  // on modifying token type and token: name, meta.
   repeated Pair changes = 5 [(gogoproto.nullable) = false];
 }
 

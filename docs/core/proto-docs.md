@@ -9004,8 +9004,8 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `token_type` | [string](#string) |  | token type or class id of the nft. |
-| `name` | [string](#string) |  | name defines the human-readable name of the nft. |
+| `token_type` | [string](#string) |  | token type or class id of the nft. NOTE: it cannot start with zero. |
+| `name` | [string](#string) |  | name defines the human-readable name of the nft (mandatory). |
 | `meta` | [string](#string) |  | meta is a brief description of the nft. |
 
 
@@ -9189,7 +9189,7 @@ NOTE: deprecated (use MsgBurn)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `from` | [string](#string) |  | address which the tokens will be burnt from. NOTE: it must have the permission for the burn. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. NOTE: amount may be empty. |
 
 
 
@@ -9208,7 +9208,7 @@ NOTE: deprecated (use MsgOperatorBurn)
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `proxy` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
 | `from` | [string](#string) |  | address which the tokens will be burnt from. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. NOTE: amount may be empty. |
 
 
 
@@ -9248,7 +9248,7 @@ NOTE: deprecated (use MsgBurn)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `from` | [string](#string) |  | address which the tokens will be burnt from. NOTE: it must have the permission for the burn. |
-| `token_ids` | [string](#string) | repeated | the amount of the burn. |
+| `token_ids` | [string](#string) | repeated | the token ids to burn. NOTE: id cannot start with zero. |
 
 
 
@@ -9267,7 +9267,7 @@ NOTE: deprecated (use MsgOperatorBurn)
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `proxy` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
 | `from` | [string](#string) |  | address which the tokens will be burnt from. |
-| `token_ids` | [string](#string) | repeated | the amount of the burn. |
+| `token_ids` | [string](#string) | repeated | the token ids to burn. NOTE: id cannot start with zero. |
 
 
 
@@ -9497,7 +9497,7 @@ MsgIssueFT is the Msg/IssueFT request type.
 | `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to be minted or burnt. NOTE: one cannot set mintable to false, where amount == 1 and decimals == 0. |
 | `owner` | [string](#string) |  | the address of the grantee which must have the permission to issue a token. NOTE: no permissions would be granted on the issuance. |
 | `to` | [string](#string) |  | the address to send the minted tokens to. mandatory. |
-| `amount` | [string](#string) |  | the amount of tokens to mint on the issuance. NOTE: if you provide negative amount, a panic may result. |
+| `amount` | [string](#string) |  | the amount of tokens to mint on the issuance. NOTE: if you provide negative amount, a panic may result. NOTE: amount may be zero. |
 
 
 
@@ -9553,7 +9553,7 @@ MsgMintFT is the Msg/MintFT request type.
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `from` | [string](#string) |  | address of the grantee which has the permission for the mint. |
 | `to` | [string](#string) |  | address which the minted tokens will be sent to. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the mint. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the mint. NOTE: amount may be empty. |
 
 
 
@@ -9609,8 +9609,8 @@ MsgModify is the Msg/Modify request type.
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
 | `token_type` | [string](#string) |  | token type of the token. |
-| `token_index` | [string](#string) |  | token index of the token. |
-| `changes` | [Pair](#lbm.collection.v1.Pair) | repeated | changes to apply. |
+| `token_index` | [string](#string) |  | token index of the token. if index is empty, it would modify the corresponding token type. if index is not empty, it would modify the corresponding nft. NOTE: if token type is of FTs, the index cannot be empty. |
+| `changes` | [Pair](#lbm.collection.v1.Pair) | repeated | changes to apply. on modifying collection: name, base_img_uri, meta. on modifying token type and token: name, meta. |
 
 
 
@@ -9849,7 +9849,7 @@ NOTE: deprecated (use MsgSend)
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `from` | [string](#string) |  | the address which the transfer is from. |
 | `to` | [string](#string) |  | the address which the transfer is to. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. NOTE: amount may be empty. |
 
 
 
@@ -9869,7 +9869,7 @@ NOTE: deprecated (use MsgOperatorSend)
 | `proxy` | [string](#string) |  | the address of the operator. |
 | `from` | [string](#string) |  | the address which the transfer is from. |
 | `to` | [string](#string) |  | the address which the transfer is to. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. NOTE: amount may be empty. |
 
 
 
