@@ -88,14 +88,18 @@ func BenchmarkInstantiationOverhead(b *testing.B) {
 func BenchmarkCompilation(b *testing.B) {
 	specs := map[string]struct {
 		wasmFile string
+		db       func() dbm.DB
 	}{
 		"hackatom": {
+			db:       func() dbm.DB { return memdb.NewDB() },
 			wasmFile: "./testdata/hackatom.wasm",
 		},
 		"burner": {
+			db:       func() dbm.DB { return memdb.NewDB() },
 			wasmFile: "./testdata/burner.wasm",
 		},
 		"ibc_reflect": {
+			db:       func() dbm.DB { return memdb.NewDB() },
 			wasmFile: "./testdata/ibc_reflect.wasm",
 		},
 	}
@@ -103,8 +107,7 @@ func BenchmarkCompilation(b *testing.B) {
 	for name, spec := range specs {
 		b.Run(name, func(b *testing.B) {
 			wasmConfig := types.WasmConfig{MemoryCacheSize: 0}
-			db := dbm.NewMemDB()
-			ctx, keepers := createTestInput(b, false, SupportedFeatures, wasmConfig, db)
+			ctx, keepers := createTestInput(b, false, SupportedFeatures, nil, nil, wasmConfig, spec.db())
 
 			// print out code size for comparisons
 			code, err := ioutil.ReadFile(spec.wasmFile)
