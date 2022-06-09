@@ -80,9 +80,9 @@ func (s *KeeperTestSuite) SetupTest() {
 	// set balances
 	// TODO: replace with mint
 	for _, to := range []sdk.AccAddress{s.vendor, s.operator, s.customer} {
-		s.keeper.SetBalance(s.ctx, s.contractID, to, s.ftClassID + fmt.Sprintf("%08d", 0), s.balance)
+		s.keeper.SetBalance(s.ctx, s.contractID, to, s.ftClassID + fmt.Sprintf("%08x", 0), s.balance)
 	}
-	s.keeper.SetBalance(s.ctx, s.contractID, s.vendor, s.nftClassID + fmt.Sprintf("%08d", 1), s.balance)
+	s.keeper.SetBalance(s.ctx, s.contractID, s.customer, s.nftClassID + fmt.Sprintf("%08x", 1), s.balance)
 }
 
 func TestKeeperTestSuite(t *testing.T) {

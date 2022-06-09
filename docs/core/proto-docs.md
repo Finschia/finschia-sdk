@@ -7823,7 +7823,7 @@ Balance defines a balance of an address.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated |  |
 
 
 

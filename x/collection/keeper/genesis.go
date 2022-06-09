@@ -7,13 +7,13 @@ import (
 
 // InitGenesis new collection genesis
 func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
-	// for _, contractBalances := range data.Balances {
-	// 	for _, balance := range contractBalances.Balances {
-	// 		if err := k.setBalance(ctx, contractBalances.ContractId, sdk.AccAddress(balance.Address), balance.Amount); err != nil {
-	// 			panic(err)
-	// 		}
-	// 	}
-	// }
+	for _, contractBalances := range data.Balances {
+		for _, balance := range contractBalances.Balances {
+			for _, coin := range balance.Amount {
+				k.setBalance(ctx, contractBalances.ContractId, sdk.AccAddress(balance.Address), coin.TokenId, coin.Amount)
+			}
+		}
+	}
 
 	// for _, class := range data.Classes {
 	// 	if err := k.setClass(ctx, class); err != nil {

@@ -9,17 +9,17 @@ import (
 
 func (s *KeeperTestSuite) TestMsgSend() {
 	testCases := map[string]struct {
-		contractId string
+		contractID string
 		amount  sdk.Int
 		valid   bool
 	}{
 		"valid request": {
-			contractId: s.contractID,
+			contractID: s.contractID,
 			amount:  s.balance,
 			valid:   true,
 		},
 		"insufficient funds": {
-			contractId: "fee1dead",
+			contractID: "fee1dead",
 			amount:  s.balance,
 		},
 	}
@@ -29,11 +29,11 @@ func (s *KeeperTestSuite) TestMsgSend() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &collection.MsgSend{
-				ContractId: tc.contractId,
+				ContractId: tc.contractID,
 				From:    s.vendor.String(),
 				To:      s.customer.String(),
 				Amount:  []collection.Coin{{
-					TokenId: s.ftClassID + fmt.Sprintf("%08d", 0),
+					TokenId: s.ftClassID + fmt.Sprintf("%08x", 0),
 					Amount: tc.amount,
 				}},
 			}
@@ -83,7 +83,7 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 				From:    tc.from.String(),
 				To:      s.vendor.String(),
 				Amount:  []collection.Coin{{
-					TokenId: s.ftClassID + fmt.Sprintf("%08d", 0),
+					TokenId: s.ftClassID + fmt.Sprintf("%08x", 0),
 					Amount: tc.amount,
 				}},
 			}
@@ -100,17 +100,17 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 
 func (s *KeeperTestSuite) TestMsgTransferFT() {
 	testCases := map[string]struct {
-		contractId string
+		contractID string
 		amount  sdk.Int
 		valid   bool
 	}{
 		"valid request": {
-			contractId: s.contractID,
+			contractID: s.contractID,
 			amount:  s.balance,
 			valid:   true,
 		},
 		"insufficient funds": {
-			contractId: "fee1dead",
+			contractID: "fee1dead",
 			amount:  s.balance,
 		},
 	}
@@ -120,11 +120,11 @@ func (s *KeeperTestSuite) TestMsgTransferFT() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &collection.MsgTransferFT{
-				ContractId: tc.contractId,
+				ContractId: tc.contractID,
 				From:    s.vendor.String(),
 				To:      s.customer.String(),
 				Amount:  []collection.Coin{{
-					TokenId: s.ftClassID + fmt.Sprintf("%08d", 0),
+					TokenId: s.ftClassID + fmt.Sprintf("%08x", 0),
 					Amount: tc.amount,
 				}},
 			}
@@ -174,7 +174,7 @@ func (s *KeeperTestSuite) TestMsgTransferFTFrom() {
 				From:    tc.from.String(),
 				To:      s.vendor.String(),
 				Amount:  []collection.Coin{{
-					TokenId: s.ftClassID + fmt.Sprintf("%08d", 0),
+					TokenId: s.ftClassID + fmt.Sprintf("%08x", 0),
 					Amount: tc.amount,
 				}},
 			}
@@ -191,18 +191,15 @@ func (s *KeeperTestSuite) TestMsgTransferFTFrom() {
 
 func (s *KeeperTestSuite) TestMsgTransferNFT() {
 	testCases := map[string]struct {
-		contractId string
-		amount  sdk.Int
+		contractID string
 		valid   bool
 	}{
 		"valid request": {
-			contractId: s.contractID,
-			amount:  s.balance,
+			contractID: s.contractID,
 			valid:   true,
 		},
 		"insufficient funds": {
-			contractId: "fee1dead",
-			amount:  s.balance,
+			contractID: "fee1dead",
 		},
 	}
 
@@ -211,11 +208,11 @@ func (s *KeeperTestSuite) TestMsgTransferNFT() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &collection.MsgTransferNFT{
-				ContractId: tc.contractId,
-				From:    s.vendor.String(),
-				To:      s.customer.String(),
+				ContractId: tc.contractID,
+				From:    s.customer.String(),
+				To:      s.vendor.String(),
 				TokenIds:  []string{
-					s.nftClassID + fmt.Sprintf("%08d", 1),
+					s.nftClassID + fmt.Sprintf("%08x", 1),
 				},
 			}
 			res, err := s.msgServer.TransferNFT(sdk.WrapSDKContext(ctx), req)
@@ -231,26 +228,25 @@ func (s *KeeperTestSuite) TestMsgTransferNFT() {
 
 func (s *KeeperTestSuite) TestMsgTransferNFTFrom() {
 	testCases := map[string]struct {
+		contractID string
 		proxy sdk.AccAddress
 		from  sdk.AccAddress
-		amount sdk.Int
 		valid bool
 	}{
 		"valid request": {
+			contractID: s.contractID,
 			proxy: s.operator,
 			from:  s.customer,
-			amount: s.balance,
 			// TODO: feature not supported
 		},
 		// "not approved": {
 		// 	proxy: s.vendor,
 		// 	from:  s.customer,
-		// 	amount: s.balance,
 		// },
 		"insufficient funds": {
+			contractID: "fee1dead",
 			proxy: s.operator,
 			from:  s.customer,
-			amount:  s.balance.Add(sdk.OneInt()),
 		},
 	}
 
@@ -264,7 +260,7 @@ func (s *KeeperTestSuite) TestMsgTransferNFTFrom() {
 				From:    tc.from.String(),
 				To:      s.vendor.String(),
 				TokenIds:  []string{
-					s.nftClassID + fmt.Sprintf("%08d", 1),
+					s.nftClassID + fmt.Sprintf("%08x", 1),
 				},
 			}
 			res, err := s.msgServer.TransferNFTFrom(sdk.WrapSDKContext(ctx), req)

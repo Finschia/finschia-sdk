@@ -16,9 +16,9 @@ func ValidateGenesis(data GenesisState) error {
 			if err := sdk.ValidateAccAddress(balance.Address); err != nil {
 				return err
 			}
-			// if err := validateAmount(balance.Amount); err != nil {
-			// 	return err
-			// }
+			if err := balance.Amount.ValidateBasic(); err != nil {
+				return err
+			}
 		}
 	}
 
