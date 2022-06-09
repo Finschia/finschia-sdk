@@ -653,7 +653,7 @@ func TestQueryContractInfo(t *testing.T) {
 }
 
 func TestQueryPinnedCodes(t *testing.T) {
-	ctx, keepers := CreateTestInput(t, false, SupportedFeatures)
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	keeper := keepers.WasmKeeper
 
 	exampleContract1 := InstantiateHackatomExampleContract(t, ctx, keepers)
