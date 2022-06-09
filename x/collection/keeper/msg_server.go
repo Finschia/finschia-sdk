@@ -236,7 +236,7 @@ func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateCo
 		BaseImgUri: req.BaseImgUri,
 		Meta:       req.Meta,
 	}
-	_, err := s.keeper.CreateContract(ctx, contract)
+	_, err := s.keeper.CreateContract(ctx, sdk.AccAddress(req.Owner), contract)
 	if err != nil {
 		return nil, err
 	}
@@ -247,6 +247,10 @@ func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateCo
 
 func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*collection.MsgIssueFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Owner), collection.Permission_Issue); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
 	class := &collection.FTClass{
 		ContractId: req.ContractId,
 		Name:       req.Name,
@@ -265,6 +269,10 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 
 func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*collection.MsgIssueNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Owner), collection.Permission_Issue); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
 	class := &collection.NFTClass{
 		ContractId: req.ContractId,
 		Name:       req.Name,
@@ -316,19 +324,75 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 }
 
 func (s msgServer) Grant(c context.Context, req *collection.MsgGrant) (*collection.MsgGrantResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+
+	granter := sdk.AccAddress(req.Granter)
+	grantee := sdk.AccAddress(req.Grantee)
+	permission := collection.Permission(collection.Permission_value[req.Permission])
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s", granter, permission.String())
+	}
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err == nil {
+		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission.String())
+	}
+
+	if err := s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgGrantResponse{}, nil
 }
 
 func (s msgServer) Abandon(c context.Context, req *collection.MsgAbandon) (*collection.MsgAbandonResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+
+	grantee := sdk.AccAddress(req.Grantee)
+	permission := collection.Permission(collection.Permission_value[req.Permission])
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {
+		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not authorized for %s", grantee, permission)
+	}
+
+	if err := s.keeper.Abandon(ctx, req.ContractId, grantee, permission); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgAbandonResponse{}, nil
 }
 
 func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPermission) (*collection.MsgGrantPermissionResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+
+	granter := sdk.AccAddress(req.From)
+	grantee := sdk.AccAddress(req.To)
+	permission := collection.Permission(collection.Permission_value[req.Permission])
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s", granter, permission.String())
+	}
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err == nil {
+		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission.String())
+	}
+
+	if err := s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgGrantPermissionResponse{}, nil
 }
 
 func (s msgServer) RevokePermission(c context.Context, req *collection.MsgRevokePermission) (*collection.MsgRevokePermissionResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+
+	grantee := sdk.AccAddress(req.From)
+	permission := collection.Permission(collection.Permission_value[req.Permission])
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {
+		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not authorized for %s", grantee, permission)
+	}
+
+	if err := s.keeper.Abandon(ctx, req.ContractId, grantee, permission); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgRevokePermissionResponse{}, nil
 }
 
 func (s msgServer) Attach(c context.Context, req *collection.MsgAttach) (*collection.MsgAttachResponse, error) {

@@ -12,7 +12,7 @@ func (s *KeeperTestSuite) TestCreateContract() {
 		Meta: "Tibetian Fox",
 		BaseImgUri: "file:///tibetian_fox.png",
 	}
-	id, err := s.keeper.CreateContract(ctx, input)
+	id, err := s.keeper.CreateContract(ctx, s.vendor, input)
 	s.Require().NoError(err)
 	s.Require().NotEmpty(id)
 

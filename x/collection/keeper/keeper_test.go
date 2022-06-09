@@ -55,15 +55,23 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.balance = sdk.OneInt()
 
 	// create a contract
-	contractID, err := s.keeper.CreateContract(s.ctx, collection.Contract{
+	contractID, err := s.keeper.CreateContract(s.ctx, s.vendor, collection.Contract{
 		Name: "test contract",
 	})
 	s.Require().NoError(err)
 	s.contractID = *contractID
 
+	for _, permission := range []collection.Permission{
+		collection.Permission_Mint,
+		collection.Permission_Burn,
+	}{
+		err := s.keeper.Grant(s.ctx, s.contractID, s.vendor, s.operator, permission)
+		s.Require().NoError(err)
+	}
+
 	// create a fungible token class
 	ftClassID, err := s.keeper.CreateTokenClass(s.ctx, &collection.FTClass{
-		ContractId: *contractID,
+		ContractId: s.contractID,
 		Name: "test ft class",
 	})
 	s.Require().NoError(err)
@@ -71,7 +79,7 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	// create a non-fungible token class
 	nftClassID, err := s.keeper.CreateTokenClass(s.ctx, &collection.NFTClass{
-		ContractId: *contractID,
+		ContractId: s.contractID,
 		Name: "test ft class",
 	})
 	s.Require().NoError(err)

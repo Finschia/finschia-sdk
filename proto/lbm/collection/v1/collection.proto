@@ -127,12 +127,14 @@ message Grant {
 enum Permission {
   // unspecified defines the default permission which is invalid.
   unspecified = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
+  // issue defines a permission to create a token class.
+  issue = 1 [(gogoproto.enumvalue_customname) = "Issue"];
   // modify defines a permission to modify a contract.
-  modify = 1 [(gogoproto.enumvalue_customname) = "Modify"];
+  modify = 2 [(gogoproto.enumvalue_customname) = "Modify"];
   // mint defines a permission to mint tokens of a contract.
-  mint = 2 [(gogoproto.enumvalue_customname) = "Mint"];
+  mint = 3 [(gogoproto.enumvalue_customname) = "Mint"];
   // burn defines a permission to burn tokens of a contract.
-  burn = 3 [(gogoproto.enumvalue_customname) = "Burn"];
+  burn = 4 [(gogoproto.enumvalue_customname) = "Burn"];
 }
 
 // Authorization defines an authorization given to the operator on tokens of the holder.

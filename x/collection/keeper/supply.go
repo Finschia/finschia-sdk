@@ -6,7 +6,25 @@ import (
 	"github.com/line/lbm-sdk/x/collection"
 )
 
-func (k Keeper) CreateContract(ctx sdk.Context, contract collection.Contract) (*string, error) {
+func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract collection.Contract) (*string, error) {
+	contractID, err := k.createContract(ctx, contract)
+	if err != nil {
+		return nil, err
+	}
+
+	for permission := range collection.Permission_name {
+		p := collection.Permission(permission)
+		if p == collection.Permission_Unspecified {
+			continue
+		}
+		// TODO: revisit grant
+		k.setGrant(ctx, *contractID, creator, collection.Permission(permission))
+	}
+
+	return contractID, nil
+}
+
+func (k Keeper) createContract(ctx sdk.Context, contract collection.Contract) (*string, error) {
 	contractID := k.classKeeper.NewID(ctx)
 	contract.ContractId = contractID
 	k.setContract(ctx, contract)
@@ -14,8 +32,6 @@ func (k Keeper) CreateContract(ctx sdk.Context, contract collection.Contract) (*
 	// set the next class ids
 	nextIDs := collection.DefaultNextClassIDs(contractID)
 	k.setNextClassIDs(ctx, nextIDs)
-
-	// TODO: grant
 
 	// TODO: emit event
 	return &contractID, nil
@@ -117,4 +133,58 @@ func (k Keeper) setNextClassIDs(ctx sdk.Context, ids collection.NextClassIDs) {
 		panic(err)
 	}
 	store.Set(key, bz)
+}
+
+func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.AccAddress, permission collection.Permission) error {
+	k.grant(ctx, contractID, grantee, permission)
+
+	event := collection.EventGrant{
+		ContractId: contractID,
+		Granter:    granter.String(),
+		Grantee:    grantee.String(),
+		Permission: permission.String(),
+	}
+	return ctx.EventManager().EmitTypedEvent(&event)
+}
+
+func (k Keeper) grant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) {
+	k.setGrant(ctx, contractID, grantee, permission)
+
+	if !k.accountKeeper.HasAccount(ctx, grantee) {
+		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, grantee))
+	}
+}
+
+func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) error {
+	k.deleteGrant(ctx, contractID, grantee, permission)
+
+	event := collection.EventAbandon{
+		ContractId: contractID,
+		Grantee:    grantee.String(),
+		Permission: permission.String(),
+	}
+	return ctx.EventManager().EmitTypedEvent(&event)
+}
+
+func (k Keeper) GetGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) (*collection.Grant, error) {
+	store := ctx.KVStore(k.storeKey)
+	if store.Has(grantKey(contractID, grantee, permission)) {
+		return &collection.Grant{
+			Grantee:    grantee.String(),
+			Permission: permission.String(),
+		}, nil
+	}
+	return nil, sdkerrors.ErrNotFound.Wrapf("no %s permission granted on %s", permission, grantee)
+}
+
+func (k Keeper) setGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) {
+	store := ctx.KVStore(k.storeKey)
+	key := grantKey(contractID, grantee, permission)
+	store.Set(key, []byte{})
+}
+
+func (k Keeper) deleteGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) {
+	store := ctx.KVStore(k.storeKey)
+	key := grantKey(contractID, grantee, permission)
+	store.Delete(key)
 }

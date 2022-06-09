@@ -7499,9 +7499,10 @@ Permission enumerates the valid permissions on a contract.
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | unspecified | 0 | unspecified defines the default permission which is invalid. |
-| modify | 1 | modify defines a permission to modify a contract. |
-| mint | 2 | mint defines a permission to mint tokens of a contract. |
-| burn | 3 | burn defines a permission to burn tokens of a contract. |
+| issue | 1 | issue defines a permission to create a token class. |
+| modify | 2 | modify defines a permission to modify a contract. |
+| mint | 3 | mint defines a permission to mint tokens of a contract. |
+| burn | 4 | burn defines a permission to burn tokens of a contract. |
 
 
  <!-- end enums -->

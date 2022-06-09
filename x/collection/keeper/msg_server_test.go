@@ -418,3 +418,169 @@ func (s *KeeperTestSuite) TestMsgDisapprove() {
 		})
 	}
 }
+
+func (s *KeeperTestSuite) TestMsgGrant() {
+	testCases := map[string]struct {
+		granter sdk.AccAddress
+		grantee sdk.AccAddress
+		permission  string
+		valid   bool
+	}{
+		"valid request": {
+			granter: s.vendor,
+			grantee: s.operator,
+			permission:  collection.Permission_Modify.String(),
+			valid:   true,
+		},
+		"already granted": {
+			granter: s.vendor,
+			grantee: s.operator,
+			permission:  collection.Permission_Mint.String(),
+		},
+		"granter has no permission": {
+			granter: s.customer,
+			grantee: s.operator,
+			permission:  collection.Permission_Modify.String(),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgGrant{
+				ContractId: s.contractID,
+				Granter: tc.granter.String(),
+				Grantee: tc.grantee.String(),
+				Permission:  tc.permission,
+			}
+			res, err := s.msgServer.Grant(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgAbandon() {
+	testCases := map[string]struct {
+		grantee sdk.AccAddress
+		permission  string
+		valid   bool
+	}{
+		"valid request": {
+			grantee: s.operator,
+			permission:  collection.Permission_Mint.String(),
+			valid:   true,
+		},
+		"not granted yet": {
+			grantee: s.operator,
+			permission:  collection.Permission_Modify.String(),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgAbandon{
+				ContractId: s.contractID,
+				Grantee: tc.grantee.String(),
+				Permission:  tc.permission,
+			}
+			res, err := s.msgServer.Abandon(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgGrantPermission() {
+	testCases := map[string]struct {
+		granter sdk.AccAddress
+		grantee sdk.AccAddress
+		permission  string
+		valid   bool
+	}{
+		"valid request": {
+			granter: s.vendor,
+			grantee: s.operator,
+			permission:  collection.Permission_Modify.String(),
+			valid:   true,
+		},
+		"already granted": {
+			granter: s.vendor,
+			grantee: s.operator,
+			permission:  collection.Permission_Mint.String(),
+		},
+		"granter has no permission": {
+			granter: s.customer,
+			grantee: s.operator,
+			permission:  collection.Permission_Modify.String(),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgGrantPermission{
+				ContractId: s.contractID,
+				From: tc.granter.String(),
+				To: tc.grantee.String(),
+				Permission:  tc.permission,
+			}
+			res, err := s.msgServer.GrantPermission(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgRevokePermission() {
+	testCases := map[string]struct {
+		from sdk.AccAddress
+		permission  string
+		valid   bool
+	}{
+		"valid request": {
+			from: s.operator,
+			permission:  collection.Permission_Mint.String(),
+			valid:   true,
+		},
+		"not granted yet": {
+			from: s.operator,
+			permission:  collection.Permission_Modify.String(),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgRevokePermission{
+				ContractId: s.contractID,
+				From: tc.from.String(),
+				Permission:  tc.permission,
+			}
+			res, err := s.msgServer.RevokePermission(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
