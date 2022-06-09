@@ -24,7 +24,6 @@ import (
 	"github.com/line/lbm-sdk/x/slashing/keeper"
 	"github.com/line/lbm-sdk/x/slashing/simulation"
 	"github.com/line/lbm-sdk/x/slashing/types"
-	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 )
 
 var (
