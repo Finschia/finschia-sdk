@@ -59,13 +59,13 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 			operator: s.operator,
 			from:  s.customer,
 			amount: s.balance,
-			// TODO: feature not supported
+			valid: true,
 		},
-		// "not approved": {
-		// 	operator: s.vendor,
-		// 	from:  s.customer,
-		// 	amount: s.balance,
-		// },
+		"not approved": {
+			operator: s.vendor,
+			from:  s.customer,
+			amount: s.balance,
+		},
 		"insufficient funds": {
 			operator: s.operator,
 			from:  s.customer,
@@ -150,13 +150,13 @@ func (s *KeeperTestSuite) TestMsgTransferFTFrom() {
 			proxy: s.operator,
 			from:  s.customer,
 			amount: s.balance,
-			// TODO: feature not supported
+			valid: true,
 		},
-		// "not approved": {
-		// 	proxy: s.vendor,
-		// 	from:  s.customer,
-		// 	amount: s.balance,
-		// },
+		"not approved": {
+			proxy: s.vendor,
+			from:  s.customer,
+			amount: s.balance,
+		},
 		"insufficient funds": {
 			proxy: s.operator,
 			from:  s.customer,
@@ -191,15 +191,15 @@ func (s *KeeperTestSuite) TestMsgTransferFTFrom() {
 
 func (s *KeeperTestSuite) TestMsgTransferNFT() {
 	testCases := map[string]struct {
-		contractID string
+		tokenID string
 		valid   bool
 	}{
 		"valid request": {
-			contractID: s.contractID,
+			tokenID: s.nftClassID + fmt.Sprintf("%08x", 1),
 			valid:   true,
 		},
 		"insufficient funds": {
-			contractID: "fee1dead",
+			tokenID: s.nftClassID + fmt.Sprintf("%08x", 2),
 		},
 	}
 
@@ -208,12 +208,10 @@ func (s *KeeperTestSuite) TestMsgTransferNFT() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &collection.MsgTransferNFT{
-				ContractId: tc.contractID,
+				ContractId: s.contractID,
 				From:    s.customer.String(),
 				To:      s.vendor.String(),
-				TokenIds:  []string{
-					s.nftClassID + fmt.Sprintf("%08x", 1),
-				},
+				TokenIds:  []string{tc.tokenID},
 			}
 			res, err := s.msgServer.TransferNFT(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -228,25 +226,26 @@ func (s *KeeperTestSuite) TestMsgTransferNFT() {
 
 func (s *KeeperTestSuite) TestMsgTransferNFTFrom() {
 	testCases := map[string]struct {
-		contractID string
 		proxy sdk.AccAddress
 		from  sdk.AccAddress
+		tokenID string
 		valid bool
 	}{
 		"valid request": {
-			contractID: s.contractID,
 			proxy: s.operator,
 			from:  s.customer,
-			// TODO: feature not supported
+			tokenID: s.nftClassID + fmt.Sprintf("%08x", 1),
+			valid: true,
 		},
-		// "not approved": {
-		// 	proxy: s.vendor,
-		// 	from:  s.customer,
-		// },
+		"not approved": {
+			proxy: s.vendor,
+			from:  s.customer,
+			tokenID: s.nftClassID + fmt.Sprintf("%08x", 1),
+		},
 		"insufficient funds": {
-			contractID: "fee1dead",
 			proxy: s.operator,
 			from:  s.customer,
+			tokenID: s.nftClassID + fmt.Sprintf("%08x", 2),
 		},
 	}
 
@@ -259,11 +258,157 @@ func (s *KeeperTestSuite) TestMsgTransferNFTFrom() {
 				Proxy:   tc.proxy.String(),
 				From:    tc.from.String(),
 				To:      s.vendor.String(),
-				TokenIds:  []string{
-					s.nftClassID + fmt.Sprintf("%08x", 1),
-				},
+				TokenIds:  []string{tc.tokenID},
 			}
 			res, err := s.msgServer.TransferNFTFrom(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
+	testCases := map[string]struct {
+		holder sdk.AccAddress
+		operator    sdk.AccAddress
+		valid    bool
+	}{
+		"valid request": {
+			holder: s.customer,
+			operator:    s.vendor,
+			valid:    true,
+		},
+		"already approved": {
+			holder: s.customer,
+			operator:    s.operator,
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgAuthorizeOperator{
+				ContractId:  s.contractID,
+				Holder: tc.holder.String(),
+				Operator:    tc.operator.String(),
+			}
+			res, err := s.msgServer.AuthorizeOperator(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgRevokeOperator() {
+	testCases := map[string]struct {
+		holder sdk.AccAddress
+		operator    sdk.AccAddress
+		valid    bool
+	}{
+		"valid request": {
+			holder:   s.customer,
+			operator: s.operator,
+			valid:    true,
+		},
+		"no authorization": {
+			holder:   s.customer,
+			operator: s.vendor,
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgRevokeOperator{
+				ContractId: s.contractID,
+				Holder:     tc.holder.String(),
+				Operator:   tc.operator.String(),
+			}
+			res, err := s.msgServer.RevokeOperator(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgApprove() {
+	testCases := map[string]struct {
+		approver sdk.AccAddress
+		proxy    sdk.AccAddress
+		valid    bool
+	}{
+		"valid request": {
+			approver: s.customer,
+			proxy:    s.vendor,
+			valid:    true,
+		},
+		"already approved": {
+			approver: s.customer,
+			proxy:    s.operator,
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgApprove{
+				ContractId:  s.contractID,
+				Approver: tc.approver.String(),
+				Proxy:    tc.proxy.String(),
+			}
+			res, err := s.msgServer.Approve(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgDisapprove() {
+	testCases := map[string]struct {
+		approver sdk.AccAddress
+		proxy    sdk.AccAddress
+		valid    bool
+	}{
+		"valid request": {
+			approver: s.customer,
+			proxy:    s.operator,
+			valid:    true,
+		},
+		"no authorization": {
+			approver: s.customer,
+			proxy:    s.vendor,
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgDisapprove{
+				ContractId:  s.contractID,
+				Approver: tc.approver.String(),
+				Proxy:    tc.proxy.String(),
+			}
+			res, err := s.msgServer.Disapprove(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

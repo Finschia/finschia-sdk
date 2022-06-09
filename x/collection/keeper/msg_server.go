@@ -43,10 +43,10 @@ func (s msgServer) Send(c context.Context, req *collection.MsgSend) (*collection
 
 func (s msgServer) OperatorSend(c context.Context, req *collection.MsgOperatorSend) (*collection.MsgOperatorSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	// TODO: check authorization
-	if req.Operator != req.From {
-		return nil, sdkerrors.ErrNotSupported
+	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Operator)); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
+
 	if err := s.keeper.SendCoins(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.To), req.Amount); err != nil {
 		return nil, err
 	}
@@ -85,10 +85,10 @@ func (s msgServer) TransferFT(c context.Context, req *collection.MsgTransferFT) 
 
 func (s msgServer) TransferFTFrom(c context.Context, req *collection.MsgTransferFTFrom) (*collection.MsgTransferFTFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	// TODO: check authorization
-	if req.Proxy != req.From {
-		return nil, sdkerrors.ErrNotSupported
+	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Proxy)); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
+
 	if err := s.keeper.SendCoins(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.To), req.Amount); err != nil {
 		return nil, err
 	}
@@ -137,10 +137,10 @@ func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransfe
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	// TODO: check authorization
-	if req.Proxy != req.From {
-		return nil, sdkerrors.ErrNotSupported
+	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Proxy)); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
+
 	if err := s.keeper.SendCoins(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.To), amount); err != nil {
 		return nil, err
 	}
@@ -159,19 +159,74 @@ func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransfe
 }
 
 func (s msgServer) AuthorizeOperator(c context.Context, req *collection.MsgAuthorizeOperator) (*collection.MsgAuthorizeOperatorResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+	if err := s.keeper.AuthorizeOperator(ctx, req.ContractId, sdk.AccAddress(req.Holder), sdk.AccAddress(req.Operator)); err != nil {
+		return nil, err
+	}
+
+	event := collection.EventAuthorizedOperator{
+		ContractId: req.ContractId,
+		Holder:     req.Holder,
+		Operator:   req.Operator,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgAuthorizeOperatorResponse{}, nil
 }
 
 func (s msgServer) RevokeOperator(c context.Context, req *collection.MsgRevokeOperator) (*collection.MsgRevokeOperatorResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+	if err := s.keeper.RevokeOperator(ctx, req.ContractId, sdk.AccAddress(req.Holder), sdk.AccAddress(req.Operator)); err != nil {
+		return nil, err
+	}
+
+	if err := ctx.EventManager().EmitTypedEvent(&collection.EventRevokedOperator{
+		ContractId: req.ContractId,
+		Holder:     req.Holder,
+		Operator:   req.Operator,
+	}); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgRevokeOperatorResponse{}, nil
 }
 
 func (s msgServer) Approve(c context.Context, req *collection.MsgApprove) (*collection.MsgApproveResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+	if err := s.keeper.AuthorizeOperator(ctx, req.ContractId, sdk.AccAddress(req.Approver), sdk.AccAddress(req.Proxy)); err != nil {
+		return nil, err
+	}
+
+	event := collection.EventAuthorizedOperator{
+		ContractId: req.ContractId,
+		Holder:     req.Approver,
+		Operator:   req.Proxy,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgApproveResponse{}, nil
 }
 
 func (s msgServer) Disapprove(c context.Context, req *collection.MsgDisapprove) (*collection.MsgDisapproveResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+	if err := s.keeper.RevokeOperator(ctx, req.ContractId, sdk.AccAddress(req.Approver), sdk.AccAddress(req.Proxy)); err != nil {
+		return nil, err
+	}
+
+	event := collection.EventRevokedOperator{
+		ContractId: req.ContractId,
+		Holder:     req.Approver,
+		Operator:   req.Proxy,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgDisapproveResponse{}, nil
 }
 
 func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateContract) (*collection.MsgCreateContractResponse, error) {

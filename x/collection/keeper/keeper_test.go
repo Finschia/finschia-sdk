@@ -83,6 +83,10 @@ func (s *KeeperTestSuite) SetupTest() {
 		s.keeper.SetBalance(s.ctx, s.contractID, to, s.ftClassID + fmt.Sprintf("%08x", 0), s.balance)
 	}
 	s.keeper.SetBalance(s.ctx, s.contractID, s.customer, s.nftClassID + fmt.Sprintf("%08x", 1), s.balance)
+
+	// authorize
+	err = s.keeper.AuthorizeOperator(s.ctx, s.contractID, s.customer, s.operator)
+	s.Require().NoError(err)
 }
 
 func TestKeeperTestSuite(t *testing.T) {

@@ -135,14 +135,12 @@ enum Permission {
   burn = 3 [(gogoproto.enumvalue_customname) = "Burn"];
 }
 
-// Authorization defines an authorization gien to the operator on tokens of the holder.
+// Authorization defines an authorization given to the operator on tokens of the holder.
 message Authorization {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // address of the approver of the authorization.
-  string approver = 2;
+  // address of the holder which authorizes the manipulation of its tokens.
+  string holder = 1;
   // address of the operator which the authorization is granted to.
-  string proxy = 3;
+  string operator = 2;
 }
 
 // Pair defines a key-value pair.

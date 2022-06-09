@@ -93,3 +93,55 @@ func (k Keeper) setBalance(ctx sdk.Context, contractID string, address sdk.AccAd
 func (k Keeper) SetBalance(ctx sdk.Context, contractID string, address sdk.AccAddress, tokenID string, balance sdk.Int) {
 	k.setBalance(ctx, contractID, address, tokenID, balance)
 }
+
+func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
+	if _, err := k.GetContract(ctx, contractID); err != nil {
+		return sdkerrors.ErrNotFound.Wrapf("contract does not exist: %s", contractID)
+	}
+	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err == nil {
+		return sdkerrors.ErrInvalidRequest.Wrap("Already authorized")
+	}
+
+	k.setAuthorization(ctx, contractID, holder, operator)
+
+	if !k.accountKeeper.HasAccount(ctx, operator) {
+		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, operator))
+	}
+
+	return nil
+}
+
+func (k Keeper) RevokeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
+	if _, err := k.GetContract(ctx, contractID); err != nil {
+		return sdkerrors.ErrNotFound.Wrapf("contract does not exist: %s", contractID)
+	}
+	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err != nil {
+		return err
+	}
+
+	k.deleteAuthorization(ctx, contractID, holder, operator)
+	return nil
+}
+
+func (k Keeper) GetAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) (*collection.Authorization, error) {
+	store := ctx.KVStore(k.storeKey)
+	if store.Has(authorizationKey(contractID, operator, holder)) {
+		return &collection.Authorization{
+			Holder:   holder.String(),
+			Operator: operator.String(),
+		}, nil
+	}
+	return nil, sdkerrors.ErrNotFound.Wrapf("no authorization by %s to %s", holder, operator)
+}
+
+func (k Keeper) setAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) {
+	store := ctx.KVStore(k.storeKey)
+	key := authorizationKey(contractID, operator, holder)
+	store.Set(key, []byte{})
+}
+
+func (k Keeper) deleteAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) {
+	store := ctx.KVStore(k.storeKey)
+	key := authorizationKey(contractID, operator, holder)
+	store.Delete(key)
+}

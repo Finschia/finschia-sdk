@@ -9,6 +9,8 @@ var (
 	contractKeyPrefix    = []byte{0x01}
 	classKeyPrefix       = []byte{0x02}
 	nextClassIDKeyPrefix = []byte{0x03}
+
+	authorizationKeyPrefix = []byte{0x04}
 )
 
 func balanceKey(contractID string, address sdk.AccAddress, tokenID string) []byte {
@@ -109,3 +111,59 @@ func nextClassIDKey(contractID string) []byte {
 
 	return key
 }
+
+func authorizationKey(contractID string, operator, holder sdk.AccAddress) []byte {
+	prefix := authorizationKeyPrefixByOperator(contractID, operator)
+	key := make([]byte, len(prefix)+len(holder))
+
+	copy(key, prefix)
+	copy(key[len(prefix):], holder)
+
+	return key
+}
+
+func authorizationKeyPrefixByOperator(contractID string, operator sdk.AccAddress) []byte {
+	prefix := authorizationKeyPrefixByContractID(contractID)
+	key := make([]byte, len(prefix)+1+len(operator))
+
+	begin := 0
+	copy(key, prefix)
+
+	begin += len(prefix)
+	key[begin] = byte(len(operator))
+
+	begin++
+	copy(key[begin:], operator)
+
+	return key
+}
+
+func authorizationKeyPrefixByContractID(contractID string) []byte {
+	key := make([]byte, len(authorizationKeyPrefix)+1+len(contractID))
+
+	begin := 0
+	copy(key, authorizationKeyPrefix)
+
+	begin += len(authorizationKeyPrefix)
+	key[begin] = byte(len(contractID))
+
+	begin++
+	copy(key[begin:], contractID)
+
+	return key
+}
+
+// func splitAuthorizationKey(key []byte) (contractID string, operator, holder sdk.AccAddress) {
+// 	begin := len(authorizationKeyPrefix) + 1
+// 	end := begin + int(key[begin-1])
+// 	contractID = string(key[begin:end])
+
+// 	begin = end + 1
+// 	end = begin + int(key[begin-1])
+// 	operator = sdk.AccAddress(key[begin:end])
+
+// 	begin = end
+// 	holder = sdk.AccAddress(key[begin:])
+
+// 	return
+// }

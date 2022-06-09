@@ -7302,14 +7302,13 @@ GenesisState defines the capability module's genesis state.
 <a name="lbm.collection.v1.Authorization"></a>
 
 ### Authorization
-Authorization defines an authorization gien to the operator on tokens of the holder.
+Authorization defines an authorization given to the operator on tokens of the holder.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `approver` | [string](#string) |  | address of the approver of the authorization. |
-| `proxy` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `holder` | [string](#string) |  | address of the holder which authorizes the manipulation of its tokens. |
+| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
 
 
 
