@@ -50,7 +50,7 @@ func (s msgServer) OperatorSend(c context.Context, req *token.MsgOperatorSend) (
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Operator)); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf(err.Error())
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
 	if err := s.keeper.Send(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.To), req.Amount); err != nil {
@@ -77,7 +77,7 @@ func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Proxy)); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf(err.Error())
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
 	if err := s.keeper.Send(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.To), req.Amount); err != nil {
@@ -185,10 +185,10 @@ func (s msgServer) Grant(c context.Context, req *token.MsgGrant) (*token.MsgGran
 	granter := sdk.AccAddress(req.Granter)
 	grantee := sdk.AccAddress(req.Grantee)
 	permission := token.Permission(token.Permission_value[req.Permission])
-	if s.keeper.GetGrant(ctx, req.ContractId, granter, permission) == nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s", granter, permission.String())
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
-	if s.keeper.GetGrant(ctx, req.ContractId, grantee, permission) != nil {
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err == nil {
 		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission.String())
 	}
 
@@ -205,8 +205,8 @@ func (s msgServer) Abandon(c context.Context, req *token.MsgAbandon) (*token.Msg
 
 	grantee := sdk.AccAddress(req.Grantee)
 	permission := token.Permission(token.Permission_value[req.Permission])
-	if s.keeper.GetGrant(ctx, req.ContractId, grantee, permission) == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not authorized for %s", grantee, permission)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
 	if err := s.keeper.Abandon(ctx, req.ContractId, grantee, permission); err != nil {
@@ -223,10 +223,10 @@ func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermiss
 	granter := sdk.AccAddress(req.From)
 	grantee := sdk.AccAddress(req.To)
 	permission := token.Permission(token.Permission_value[req.Permission])
-	if s.keeper.GetGrant(ctx, req.ContractId, granter, permission) == nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s", granter, permission.String())
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
-	if s.keeper.GetGrant(ctx, req.ContractId, grantee, permission) != nil {
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err == nil {
 		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission.String())
 	}
 
@@ -243,8 +243,8 @@ func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermi
 
 	grantee := sdk.AccAddress(req.From)
 	permission := token.Permission(token.Permission_value[req.Permission])
-	if s.keeper.GetGrant(ctx, req.ContractId, grantee, permission) == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not authorized for %s", grantee, permission)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
 	if err := s.keeper.Abandon(ctx, req.ContractId, grantee, permission); err != nil {
@@ -299,8 +299,8 @@ func (s msgServer) Modify(c context.Context, req *token.MsgModify) (*token.MsgMo
 	ctx := sdk.UnwrapSDKContext(c)
 
 	grantee := sdk.AccAddress(req.Owner)
-	if s.keeper.GetGrant(ctx, req.ContractId, grantee, token.Permission_Modify) == nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s", grantee, token.Permission_Modify)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, token.Permission_Modify); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
 	if err := s.keeper.Modify(ctx, req.ContractId, grantee, req.Changes); err != nil {

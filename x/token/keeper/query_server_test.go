@@ -291,10 +291,6 @@ func (s *KeeperTestSuite) TestQueryGrant() {
 			contractID: s.contractID,
 			grantee: s.customer,
  			permission: token.Permission_Modify.String(),
-			valid:   true,
-			postTest: func(res *token.QueryGrantResponse) {
-				s.Require().Nil(res.Grant)
-			},
 		},
 		"invalid contract id": {
 			grantee: s.vendor,

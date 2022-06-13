@@ -38906,7 +38906,9 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}':
     get:
-      summary: TokenClass queries an token metadata based on its contract id.
+      summary: |-
+        TokenClass queries an token metadata based on its contract id.
+        if no token class found for the request, it wound return an error.
       operationId: TokenClass
       responses:
         '200':
@@ -39195,6 +39197,7 @@ paths:
     get:
       summary: |-
         Authorization queries authorization on a given operator holder pair.
+        if no authorization found for the request, it would return an error.
         Since: finschia
       operationId: Authorization
       responses:
@@ -39508,6 +39511,7 @@ paths:
     get:
       summary: |-
         Grant queries a permission on a given grantee permission pair.
+        if no grant found for the request, it would return an error.
         Since: finschia
       operationId: Grant
       responses:

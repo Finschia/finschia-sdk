@@ -32,6 +32,7 @@ service Query {
   }
 
   // TokenClass queries an token metadata based on its contract id.
+  // if no token class found for the request, it wound return an error.
   rpc TokenClass(QueryTokenClassRequest) returns (QueryTokenClassResponse) {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}";
   }
@@ -43,6 +44,7 @@ service Query {
   }
 
   // Grant queries a permission on a given grantee permission pair.
+  // if no grant found for the request, it would return an error.
   // Since: finschia
   rpc Grant(QueryGrantRequest) returns (QueryGrantResponse) {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}";
@@ -55,6 +57,7 @@ service Query {
   }
 
   // Authorization queries authorization on a given operator holder pair.
+  // if no authorization found for the request, it would return an error.
   // Since: finschia
   rpc Authorization(QueryAuthorizationRequest) returns (QueryAuthorizationResponse) {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}/{holder}";
@@ -131,8 +134,7 @@ message QueryTokenClassRequest {
 
 // QueryTokenClassResponse is the response type for the Query/TokenClass RPC method
 message QueryTokenClassResponse {
-  // if no token class found for the request, it wound be nil and return an error.
-  TokenClass class = 1;
+  TokenClass class = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method
@@ -165,8 +167,7 @@ message QueryGrantRequest {
 // QueryGrantResponse is the response type for the Query/Grant RPC method
 // Since: finschia
 message QueryGrantResponse {
-  // if no grant found for the request, it would be nil and return an error.
-  Grant grant = 1;
+  Grant grant = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method
@@ -204,8 +205,7 @@ message QueryAuthorizationRequest {
 // QueryAuthorizationResponse is the response type for the Query/Authorization RPC method
 // Since: finschia
 message QueryAuthorizationResponse {
-  // if no authorization found for the request, it would be nil and return an error.
-  Authorization authorization = 1;
+  Authorization authorization = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAuthorizations RPC method

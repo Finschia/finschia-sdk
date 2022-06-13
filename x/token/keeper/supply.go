@@ -105,8 +105,8 @@ func (k Keeper) Mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddr
 }
 
 func (k Keeper) mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddress, amount sdk.Int) error {
-	if k.GetGrant(ctx, contractID, grantee, token.Permission_Mint) == nil {
-		return sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s %s tokens", grantee, token.Permission_Mint.String(), contractID)
+	if _, err := k.GetGrant(ctx, contractID, grantee, token.Permission_Mint); err != nil {
+		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
 	if err := k.mintToken(ctx, contractID, to, amount); err != nil {
@@ -152,8 +152,8 @@ func (k Keeper) Burn(ctx sdk.Context, contractID string, from sdk.AccAddress, am
 }
 
 func (k Keeper) burn(ctx sdk.Context, contractID string, from sdk.AccAddress, amount sdk.Int) error {
-	if k.GetGrant(ctx, contractID, from, token.Permission_Burn) == nil {
-		return sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s %s tokens", from, token.Permission_Burn.String(), contractID)
+	if _, err := k.GetGrant(ctx, contractID, from, token.Permission_Burn); err != nil {
+		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
 	if err := k.burnToken(ctx, contractID, from, amount); err != nil {
@@ -179,12 +179,12 @@ func (k Keeper) OperatorBurn(ctx sdk.Context, contractID string, operator, from 
 }
 
 func (k Keeper) operatorBurn(ctx sdk.Context, contractID string, operator, from sdk.AccAddress, amount sdk.Int) error {
-	grant := k.GetGrant(ctx, contractID, operator, token.Permission_Burn)
-	if grant == nil {
-		return sdkerrors.ErrUnauthorized.Wrapf("%s has no permission: %s", operator, token.Permission_Burn)
+	_, err := k.GetGrant(ctx, contractID, operator, token.Permission_Burn)
+	if err != nil {
+		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 	if _, err := k.GetAuthorization(ctx, contractID, from, operator); err != nil {
-		return sdkerrors.ErrUnauthorized.Wrapf(err.Error())
+		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
 	if err := k.burnToken(ctx, contractID, from, amount); err != nil {
@@ -341,7 +341,7 @@ func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddre
 	return ctx.EventManager().EmitTypedEvent(&event)
 }
 
-func (k Keeper) GetGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) *token.Grant {
+func (k Keeper) GetGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) (*token.Grant, error) {
 	var grant *token.Grant
 	store := ctx.KVStore(k.storeKey)
 	if store.Has(grantKey(contractID, grantee, permission)) {
@@ -349,9 +349,10 @@ func (k Keeper) GetGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddr
 			Grantee:    grantee.String(),
 			Permission: permission.String(),
 		}
+		return grant, nil
 	}
 
-	return grant
+	return nil, sdkerrors.ErrNotFound.Wrapf("%s has no %s permission", grantee, permission)
 }
 
 func (k Keeper) setGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) {

@@ -122,7 +122,7 @@ func (s queryServer) TokenClass(c context.Context, req *token.QueryTokenClassReq
 		return nil, err
 	}
 
-	return &token.QueryTokenClassResponse{Class: class}, nil
+	return &token.QueryTokenClassResponse{Class: *class}, nil
 }
 
 // TokenClasses queries all token metadata.
@@ -165,9 +165,12 @@ func (s queryServer) Grant(c context.Context, req *token.QueryGrantRequest) (*to
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	grant := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Grantee), permission)
+	grant, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Grantee), permission)
+	if err != nil {
+		return nil, err
+	}
 
-	return &token.QueryGrantResponse{Grant: grant}, nil
+	return &token.QueryGrantResponse{Grant: *grant}, nil
 }
 
 func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGrantsRequest) (*token.QueryGranteeGrantsResponse, error) {
@@ -222,7 +225,7 @@ func (s queryServer) Authorization(c context.Context, req *token.QueryAuthorizat
 		return nil, err
 	}
 
-	return &token.QueryAuthorizationResponse{Authorization: authorization}, nil
+	return &token.QueryAuthorizationResponse{Authorization: *authorization}, nil
 }
 
 func (s queryServer) OperatorAuthorizations(c context.Context, req *token.QueryOperatorAuthorizationsRequest) (*token.QueryOperatorAuthorizationsResponse, error) {

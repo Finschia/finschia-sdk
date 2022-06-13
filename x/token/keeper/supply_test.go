@@ -48,9 +48,9 @@ func (s *KeeperTestSuite) TestMint() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			grant := s.keeper.GetGrant(ctx, s.contractID, grantee, token.Permission_Mint)
+			_, grantErr := s.keeper.GetGrant(ctx, s.contractID, grantee, token.Permission_Mint)
 			err := s.keeper.Mint(ctx, s.contractID, grantee, to, amount)
-			if grant != nil {
+			if grantErr == nil {
 				s.Require().NoError(err)
 			} else {
 				s.Require().Error(err)
@@ -75,9 +75,9 @@ func (s *KeeperTestSuite) TestBurn() {
 			s.Run(name, func() {
 				ctx, _ := s.ctx.CacheContext()
 
-				grant := s.keeper.GetGrant(ctx, s.contractID, from, token.Permission_Burn)
+				_, grantErr := s.keeper.GetGrant(ctx, s.contractID, from, token.Permission_Burn)
 				err := s.keeper.Burn(ctx, s.contractID, from, amount)
-				if grant != nil && amount.LTE(s.balance) {
+				if grantErr == nil && amount.LTE(s.balance) {
 					s.Require().NoError(err)
 				} else {
 					s.Require().Error(err)
@@ -104,10 +104,10 @@ func (s *KeeperTestSuite) TestOperatorBurn() {
 				s.Run(name, func() {
 					ctx, _ := s.ctx.CacheContext()
 
-					grant := s.keeper.GetGrant(ctx, s.contractID, operator, token.Permission_Burn)
+					_, grantErr := s.keeper.GetGrant(ctx, s.contractID, operator, token.Permission_Burn)
 					_, authErr := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
 					err := s.keeper.OperatorBurn(ctx, s.contractID, operator, from, amount)
-					if grant != nil && authErr == nil && amount.LTE(s.balance) {
+					if grantErr == nil && authErr == nil && amount.LTE(s.balance) {
 						s.Require().NoError(err)
 					} else {
 						s.Require().Error(err)

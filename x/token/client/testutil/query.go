@@ -98,7 +98,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 			},
 			true,
 			&token.QueryTokenClassResponse{
-				Class: &s.classes[0],
+				Class: s.classes[0],
 			},
 		},
 		"extra args": {
@@ -278,7 +278,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 			},
 			true,
 			&token.QueryAuthorizationResponse{
-				Authorization: &token.Authorization{
+				Authorization: token.Authorization{
 					Holder:   s.customer.String(),
 					Operator: s.vendor.String(),
 				},

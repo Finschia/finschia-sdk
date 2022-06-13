@@ -13046,7 +13046,7 @@ Since: finschia
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `authorization` | [Authorization](#lbm.token.v1.Authorization) |  | if no authorization found for the request, it would be nil and return an error. |
+| `authorization` | [Authorization](#lbm.token.v1.Authorization) |  |  |
 
 
 
@@ -13141,7 +13141,7 @@ Since: finschia
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `grant` | [Grant](#lbm.token.v1.Grant) |  | if no grant found for the request, it would be nil and return an error. |
+| `grant` | [Grant](#lbm.token.v1.Grant) |  |  |
 
 
 
@@ -13301,7 +13301,7 @@ QueryTokenClassResponse is the response type for the Query/TokenClass RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class` | [TokenClass](#lbm.token.v1.TokenClass) |  | if no token class found for the request, it wound be nil and return an error. |
+| `class` | [TokenClass](#lbm.token.v1.TokenClass) |  |  |
 
 
 
@@ -13358,11 +13358,11 @@ Query defines the gRPC querier service.
 | `Supply` | [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse) | Supply queries the number of tokens from the given contract id. | GET|/lbm/token/v1/token_classes/{contract_id}/supply|
 | `Minted` | [QueryMintedRequest](#lbm.token.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.token.v1.QueryMintedResponse) | Minted queries the number of minted tokens from the given contract id. | GET|/lbm/token/v1/token_classes/{contract_id}/minted|
 | `Burnt` | [QueryBurntRequest](#lbm.token.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from the given contract id. | GET|/lbm/token/v1/token_classes/{contract_id}/burnt|
-| `TokenClass` | [QueryTokenClassRequest](#lbm.token.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.token.v1.QueryTokenClassResponse) | TokenClass queries an token metadata based on its contract id. | GET|/lbm/token/v1/token_classes/{contract_id}|
+| `TokenClass` | [QueryTokenClassRequest](#lbm.token.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.token.v1.QueryTokenClassResponse) | TokenClass queries an token metadata based on its contract id. if no token class found for the request, it wound return an error. | GET|/lbm/token/v1/token_classes/{contract_id}|
 | `TokenClasses` | [QueryTokenClassesRequest](#lbm.token.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.token.v1.QueryTokenClassesResponse) | TokenClasses queries all token metadata. Since: finschia | GET|/lbm/token/v1/token_classes|
-| `Grant` | [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse) | Grant queries a permission on a given grantee permission pair. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}|
+| `Grant` | [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse) | Grant queries a permission on a given grantee permission pair. if no grant found for the request, it would return an error. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}|
 | `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse) | GranteeGrants queries permissions on a given grantee. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
-| `Authorization` | [QueryAuthorizationRequest](#lbm.token.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.token.v1.QueryAuthorizationResponse) | Authorization queries authorization on a given operator holder pair. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}/{holder}|
+| `Authorization` | [QueryAuthorizationRequest](#lbm.token.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.token.v1.QueryAuthorizationResponse) | Authorization queries authorization on a given operator holder pair. if no authorization found for the request, it would return an error. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}/{holder}|
 | `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.token.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.token.v1.QueryOperatorAuthorizationsResponse) | OperatorAuthorizations queries authorization on a given operator. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}|
 | `Approved` | [QueryApprovedRequest](#lbm.token.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.token.v1.QueryApprovedResponse) | Approved queries authorization on a given proxy approver pair. NOTE: deprecated (use Authorization) | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/proxies/{approver}|
 
