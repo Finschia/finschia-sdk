@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/gogo/protobuf/jsonpb"
@@ -235,6 +236,15 @@ func TestModuleAccountJSONPB(t *testing.T) {
 	// error on bad bytes
 	err = acc2.UnmarshalJSONPB(&jum, bz[:len(bz)/2])
 	require.Error(t, err)
+}
+
+func TestBaseAccountJSONPB(t *testing.T) {
+	baseAccountJson := "{\"address\":\"link1rrfywnytlm87ywes0hvxn4rhm4grrn9qquqljc\",\"pub_key\":{\"type\":0,\"key\":null},\"account_number\":\"10\",\"sequence\":\"50\"}"
+	ba := new(types.BaseAccount)
+	jum := jsonpb.Unmarshaler{}
+	err := jum.Unmarshal(strings.NewReader(baseAccountJson), ba)
+	require.NoError(t, err)
+	require.Equal(t, ba.AccountNumber, uint64(10))
 }
 
 func TestGenesisAccountsContains(t *testing.T) {
