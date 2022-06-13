@@ -23,8 +23,14 @@ func (k Keeper) addCoins(ctx sdk.Context, contractID string, address sdk.AccAddr
 		newBalance := balance.Add(coin.Amount)
 		k.setBalance(ctx, contractID, address, coin.TokenId, newBalance)
 
-		// TODO: store the reverse index
+		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
+			if !k.isRoot(ctx, contractID, coin.TokenId) {
+				return sdkerrors.ErrInvalidRequest.Wrapf("%s is not root", coin.TokenId)
+			}
+			k.setOwner(ctx, contractID, coin.TokenId, address)
+		}
 	}
+
 	// create account if recipient does not exist.
 	if !k.accountKeeper.HasAccount(ctx, address) {
 		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, address))
@@ -47,7 +53,12 @@ func (k Keeper) subtractCoins(ctx sdk.Context, contractID string, address sdk.Ac
 		}
 		k.setBalance(ctx, contractID, address, coin.TokenId, newBalance)
 
-		// TODO: delete the reverse index
+		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
+			if !k.isRoot(ctx, contractID, coin.TokenId) {
+				return sdkerrors.ErrInvalidRequest.Wrapf("%s is not root", coin.TokenId)
+			}
+			k.deleteOwner(ctx, contractID, coin.TokenId)
+		}
 	}
 
 	event := collection.EventSpent{

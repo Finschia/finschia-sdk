@@ -7,13 +7,17 @@ import (
 )
 
 var (
-	balanceKeyPrefix     = []byte{0x00}
-	contractKeyPrefix    = []byte{0x01}
-	classKeyPrefix       = []byte{0x02}
-	nextClassIDKeyPrefix = []byte{0x03}
+	contractKeyPrefix    = []byte{0x00}
+	classKeyPrefix       = []byte{0x01}
+	nextClassIDKeyPrefix = []byte{0x02}
 
-	authorizationKeyPrefix = []byte{0x04}
-	grantKeyPrefix         = []byte{0x05}
+	balanceKeyPrefix = []byte{0x10}
+	ownerKeyPrefix   = []byte{0x11}
+	parentKeyPrefix  = []byte{0x12}
+	childKeyPrefix   = []byte{0x13}
+
+	authorizationKeyPrefix = []byte{0x20}
+	grantKeyPrefix         = []byte{0x21}
 )
 
 func balanceKey(contractID string, address sdk.AccAddress, tokenID string) []byte {
@@ -72,6 +76,119 @@ func balanceKeyPrefixByContractID(contractID string) []byte {
 // 	return
 // }
 
+//-----------------------------------------------------------------------------
+// owner
+func ownerKey(contractID string, tokenID string) []byte {
+	prefix := ownerKeyPrefixByContractID(contractID)
+	key := make([]byte, len(prefix)+len(tokenID))
+
+	copy(key, prefix)
+	copy(key[len(prefix):], tokenID)
+
+	return key
+}
+
+func ownerKeyPrefixByContractID(contractID string) []byte {
+	key := make([]byte, len(ownerKeyPrefix)+1+len(contractID))
+
+	begin := 0
+	copy(key, ownerKeyPrefix)
+
+	begin += len(ownerKeyPrefix)
+	key[begin] = byte(len(contractID))
+
+	begin++
+	copy(key[begin:], contractID)
+
+	return key
+}
+
+//-----------------------------------------------------------------------------
+// parent
+func parentKey(contractID string, tokenID string) []byte {
+	prefix := parentKeyPrefixByContractID(contractID)
+	key := make([]byte, len(prefix)+len(tokenID))
+
+	copy(key, prefix)
+	copy(key[len(prefix):], tokenID)
+
+	return key
+}
+
+func parentKeyPrefixByContractID(contractID string) []byte {
+	key := make([]byte, len(parentKeyPrefix)+1+len(contractID))
+
+	begin := 0
+	copy(key, parentKeyPrefix)
+
+	begin += len(parentKeyPrefix)
+	key[begin] = byte(len(contractID))
+
+	begin++
+	copy(key[begin:], contractID)
+
+	return key
+}
+
+//-----------------------------------------------------------------------------
+// child
+func childKey(contractID string, tokenID, childID string) []byte {
+	prefix := childKeyPrefixByTokenID(contractID, tokenID)
+	key := make([]byte, len(prefix)+len(childID))
+
+	copy(key, prefix)
+	copy(key[len(prefix):], childID)
+
+	return key
+}
+
+func childKeyPrefixByTokenID(contractID string, tokenID string) []byte {
+	prefix := childKeyPrefixByContractID(contractID)
+	key := make([]byte, len(prefix)+1+len(tokenID))
+
+	begin := 0
+	copy(key, prefix)
+
+	begin += len(prefix)
+	key[begin] = byte(len(tokenID))
+
+	begin++
+	copy(key[begin:], tokenID)
+
+	return key
+}
+
+func childKeyPrefixByContractID(contractID string) []byte {
+	key := make([]byte, len(childKeyPrefix)+1+len(contractID))
+
+	begin := 0
+	copy(key, childKeyPrefix)
+
+	begin += len(childKeyPrefix)
+	key[begin] = byte(len(contractID))
+
+	begin++
+	copy(key[begin:], contractID)
+
+	return key
+}
+
+func splitChildKey(key []byte) (contractID string, tokenID, childID string) {
+	begin := len(childKeyPrefix) + 1
+	end := begin + int(key[begin-1])
+	contractID = string(key[begin:end])
+
+	begin = end + 1
+	end = begin + int(key[begin-1])
+	tokenID = string(key[begin:end])
+
+	begin = end
+	childID = string(key[begin:])
+
+	return
+}
+
+//-----------------------------------------------------------------------------
 func classKey(contractID string, classID string) []byte {
 	prefix := classKeyPrefixByContractID(contractID)
 	key := make([]byte, len(prefix)+len(classID))
@@ -115,6 +232,7 @@ func nextClassIDKey(contractID string) []byte {
 	return key
 }
 
+//-----------------------------------------------------------------------------
 func authorizationKey(contractID string, operator, holder sdk.AccAddress) []byte {
 	prefix := authorizationKeyPrefixByOperator(contractID, operator)
 	key := make([]byte, len(prefix)+len(holder))
@@ -171,6 +289,7 @@ func authorizationKeyPrefixByContractID(contractID string) []byte {
 // 	return
 // }
 
+//-----------------------------------------------------------------------------
 func grantKey(contractID string, grantee sdk.AccAddress, permission collection.Permission) []byte {
 	prefix := grantKeyPrefixByGrantee(contractID, grantee)
 	key := make([]byte, len(prefix)+1)
