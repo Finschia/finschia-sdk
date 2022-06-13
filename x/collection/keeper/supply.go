@@ -188,3 +188,54 @@ func (k Keeper) deleteGrant(ctx sdk.Context, contractID string, grantee sdk.AccA
 	key := grantKey(contractID, grantee, permission)
 	store.Delete(key)
 }
+
+func (k Keeper) getStatistics(ctx sdk.Context, keyPrefix []byte, contractID string, classID string) sdk.Int {
+	store := ctx.KVStore(k.storeKey)
+	amount := sdk.ZeroInt()
+	bz := store.Get(statisticsKey(keyPrefix, contractID, classID))
+	if bz != nil {
+		if err := amount.Unmarshal(bz); err != nil {
+			panic(err)
+		}
+	}
+
+	return amount
+}
+
+func (k Keeper) setStatistics(ctx sdk.Context, keyPrefix []byte, contractID string, classID string, amount sdk.Int) {
+	store := ctx.KVStore(k.storeKey)
+	key := statisticsKey(keyPrefix, contractID, classID)
+	if amount.IsZero() {
+		store.Delete(key)
+	} else {
+		bz, err := amount.Marshal()
+		if err != nil {
+			panic(err)
+		}
+		store.Set(key, bz)
+	}
+}
+
+func (k Keeper) GetSupply(ctx sdk.Context, contractID string, classID string) sdk.Int {
+	return k.getStatistics(ctx, supplyKeyPrefix, contractID, classID)
+}
+
+func (k Keeper) GetMinted(ctx sdk.Context, contractID string, classID string) sdk.Int {
+	return k.getStatistics(ctx, mintedKeyPrefix, contractID, classID)
+}
+
+func (k Keeper) GetBurnt(ctx sdk.Context, contractID string, classID string) sdk.Int {
+	return k.getStatistics(ctx, burntKeyPrefix, contractID, classID)
+}
+
+func (k Keeper) setSupply(ctx sdk.Context, contractID string, classID string, amount sdk.Int) {
+	k.setStatistics(ctx, supplyKeyPrefix, contractID, classID, amount)
+}
+
+func (k Keeper) setMinted(ctx sdk.Context, contractID string, classID string, amount sdk.Int) {
+	k.setStatistics(ctx, mintedKeyPrefix, contractID, classID, amount)
+}
+
+func (k Keeper) setBurnt(ctx sdk.Context, contractID string, classID string, amount sdk.Int) {
+	k.setStatistics(ctx, burntKeyPrefix, contractID, classID, amount)
+}

@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	// "github.com/line/lbm-sdk/x/collection"
 )
 
 func (k Keeper) GetRootOwner(ctx sdk.Context, contractID string, tokenID string) sdk.AccAddress {

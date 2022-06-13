@@ -4,8 +4,13 @@ import (
 	"fmt"
 	"strings"
 
+	codectypes "github.com/line/lbm-sdk/codec/types"
 	proto "github.com/gogo/protobuf/proto"
 	sdk "github.com/line/lbm-sdk/types"
+)
+
+const (
+	LegacyMode = true
 )
 
 func DefaultNextClassIDs(contractID string) NextClassIDs {
@@ -27,6 +32,27 @@ type TokenClass interface {
 	ValidateBasic() error
 }
 
+func TokenClassToAny(class TokenClass) *codectypes.Any {
+	msg := class.(proto.Message)
+
+	any, err := codectypes.NewAnyWithValue(msg)
+	if err != nil {
+		panic(err)
+	}
+
+	return any
+}
+
+func TokenClassFromAny(any *codectypes.Any) TokenClass {
+	class := any.GetCachedValue().(TokenClass)
+	return class
+}
+
+func TokenClassUnpackInterfaces(any *codectypes.Any, unpacker codectypes.AnyUnpacker) error {
+	var class TokenClass
+	return unpacker.UnpackAny(any, &class)
+}
+
 //-----------------------------------------------------------------------------
 // FTClass
 var _ TokenClass = (*FTClass)(nil)
@@ -39,7 +65,17 @@ func (c *FTClass) SetId(ids *NextClassIDs) {
 }
 
 func (c FTClass) ValidateBasic() error {
-	if err := ValidateFTClassID(c.Id); err != nil {
+	if err := ValidateClassID(c.Id); err != nil {
+		return err
+	}
+
+	if err := validateName(c.Name); err != nil {
+		return err
+	}
+	if err := validateMeta(c.Meta); err != nil {
+		return err
+	}
+	if err := validateDecimals(c.Decimals); err != nil {
 		return err
 	}
 
@@ -58,7 +94,14 @@ func (c *NFTClass) SetId(ids *NextClassIDs) {
 }
 
 func (c NFTClass) ValidateBasic() error {
-	if err := ValidateNFTClassID(c.Id); err != nil {
+	if err := ValidateClassID(c.Id); err != nil {
+		return err
+	}
+
+	if err := validateName(c.Name); err != nil {
+		return err
+	}
+	if err := validateMeta(c.Meta); err != nil {
 		return err
 	}
 
@@ -87,6 +130,12 @@ func (c Coin) ValidateBasic() error {
 
 	if c.isNil() || !c.isPositive() {
 		return fmt.Errorf("invalid amount: %v", c.Amount)
+	}
+
+	if err := ValidateNFTID(c.TokenId); err == nil {
+		if !c.Amount.Equal(sdk.OneInt()) {
+			return fmt.Errorf("duplicate non fungible tokens")
+		}
 	}
 
 	return nil

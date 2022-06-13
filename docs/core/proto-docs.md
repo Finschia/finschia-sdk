@@ -482,11 +482,16 @@
 - [lbm/collection/v1/genesis.proto](#lbm/collection/v1/genesis.proto)
     - [Balance](#lbm.collection.v1.Balance)
     - [ClassGenesisState](#lbm.collection.v1.ClassGenesisState)
+    - [ClassStatistics](#lbm.collection.v1.ClassStatistics)
     - [ContractAuthorizations](#lbm.collection.v1.ContractAuthorizations)
     - [ContractBalances](#lbm.collection.v1.ContractBalances)
+    - [ContractClasses](#lbm.collection.v1.ContractClasses)
     - [ContractGrants](#lbm.collection.v1.ContractGrants)
+    - [ContractStatistics](#lbm.collection.v1.ContractStatistics)
+    - [ContractTokenRelations](#lbm.collection.v1.ContractTokenRelations)
     - [GenesisState](#lbm.collection.v1.GenesisState)
     - [NextClassIDs](#lbm.collection.v1.NextClassIDs)
+    - [TokenRelation](#lbm.collection.v1.TokenRelation)
   
 - [lbm/collection/v1/query.proto](#lbm/collection/v1/query.proto)
     - [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest)
@@ -7846,6 +7851,22 @@ ClassGenesisState defines the classs keeper's genesis state.
 
 
 
+<a name="lbm.collection.v1.ClassStatistics"></a>
+
+### ClassStatistics
+ClassStatistics defines statistics belong to a token class.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  | class id associated with the token class. |
+| `amount` | [string](#string) |  | statistics |
+
+
+
+
+
+
 <a name="lbm.collection.v1.ContractAuthorizations"></a>
 
 ### ContractAuthorizations
@@ -7879,6 +7900,22 @@ genesis state.
 
 
 
+<a name="lbm.collection.v1.ContractClasses"></a>
+
+### ContractClasses
+ContractClasses defines token classes belong to a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `classes` | [google.protobuf.Any](#google.protobuf.Any) | repeated | classes |
+
+
+
+
+
+
 <a name="lbm.collection.v1.ContractGrants"></a>
 
 ### ContractGrants
@@ -7895,6 +7932,38 @@ ContractGrant defines grants belong to a contract.
 
 
 
+<a name="lbm.collection.v1.ContractStatistics"></a>
+
+### ContractStatistics
+ContractStatistics defines statistics belong to a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `statistics` | [ClassStatistics](#lbm.collection.v1.ClassStatistics) | repeated | statistics |
+
+
+
+
+
+
+<a name="lbm.collection.v1.ContractTokenRelations"></a>
+
+### ContractTokenRelations
+ContractTokenRelations defines token relations belong to a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `relations` | [TokenRelation](#lbm.collection.v1.TokenRelation) | repeated | relations |
+
+
+
+
+
+
 <a name="lbm.collection.v1.GenesisState"></a>
 
 ### GenesisState
@@ -7904,11 +7973,14 @@ GenesisState defines the collection module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#lbm.collection.v1.Params) |  | params defines all the paramaters of the module. |
-| `balances` | [ContractBalances](#lbm.collection.v1.ContractBalances) | repeated | balances is an array containing the balances of all the accounts. |
 | `contracts` | [Contract](#lbm.collection.v1.Contract) | repeated | contracts defines the metadata of the contracts. |
-| `classes` | [google.protobuf.Any](#google.protobuf.Any) | repeated | classes defines the metadata of the tokens. |
+| `classes` | [ContractClasses](#lbm.collection.v1.ContractClasses) | repeated | classes defines the metadata of the tokens. |
+| `balances` | [ContractBalances](#lbm.collection.v1.ContractBalances) | repeated | balances is an array containing the balances of all the accounts. |
+| `parents` | [ContractTokenRelations](#lbm.collection.v1.ContractTokenRelations) | repeated | parents represents the parents of (non-fungible) tokens. |
 | `grants` | [ContractGrants](#lbm.collection.v1.ContractGrants) | repeated | grants defines the grant information. |
 | `authorizations` | [ContractAuthorizations](#lbm.collection.v1.ContractAuthorizations) | repeated | authorizations defines the approve information. |
+| `supplies` | [ContractStatistics](#lbm.collection.v1.ContractStatistics) | repeated | supplies represents the total supplies of tokens. |
+| `burnts` | [ContractStatistics](#lbm.collection.v1.ContractStatistics) | repeated | burnts represents the total amount of burnt tokens. |
 
 
 
@@ -7926,6 +7998,22 @@ NextClassIDs defines the next class ids of the contract.
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `fungible` | [string](#string) |  | id for the fungible tokens. |
 | `non_fungible` | [string](#string) |  | id for the non-fungible tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.TokenRelation"></a>
+
+### TokenRelation
+TokenRelation defines relations between two tokens.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `self` | [string](#string) |  | self |
+| `other` | [string](#string) |  | other |
 
 
 

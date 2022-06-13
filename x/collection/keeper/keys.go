@@ -18,6 +18,10 @@ var (
 
 	authorizationKeyPrefix = []byte{0x20}
 	grantKeyPrefix         = []byte{0x21}
+
+	supplyKeyPrefix = []byte{0x30}
+	mintedKeyPrefix = []byte{0x31}
+	burntKeyPrefix  = []byte{0x32}
 )
 
 func balanceKey(contractID string, address sdk.AccAddress, tokenID string) []byte {
@@ -61,20 +65,20 @@ func balanceKeyPrefixByContractID(contractID string) []byte {
 	return key
 }
 
-// func splitBalanceKey(key []byte) (contractID string, address sdk.AccAddress, tokenID string) {
-// 	begin := len(balanceKeyPrefix) + 1
-// 	end := begin + int(key[begin-1])
-// 	contractID = string(key[begin:end])
+func splitBalanceKey(key []byte) (contractID string, address sdk.AccAddress, tokenID string) {
+	begin := len(balanceKeyPrefix) + 1
+	end := begin + int(key[begin-1])
+	contractID = string(key[begin:end])
 
-// 	begin = end + 1
-// 	end = begin + int(key[begin-1])
-// 	address = sdk.AccAddress(key[begin:end])
+	begin = end + 1
+	end = begin + int(key[begin-1])
+	address = sdk.AccAddress(key[begin:end])
 
-// 	begin = end
-// 	tokenID = string(key[begin:])
+	begin = end
+	tokenID = string(key[begin:])
 
-// 	return
-// }
+	return
+}
 
 //-----------------------------------------------------------------------------
 // owner
@@ -128,6 +132,17 @@ func parentKeyPrefixByContractID(contractID string) []byte {
 	copy(key[begin:], contractID)
 
 	return key
+}
+
+func splitParentKey(key []byte) (contractID string, tokenID string) {
+	begin := len(parentKeyPrefix) + 1
+	end := begin + int(key[begin-1])
+	contractID = string(key[begin:end])
+
+	begin = end
+	tokenID = string(key[begin:])
+
+	return
 }
 
 //-----------------------------------------------------------------------------
@@ -274,20 +289,20 @@ func authorizationKeyPrefixByContractID(contractID string) []byte {
 	return key
 }
 
-// func splitAuthorizationKey(key []byte) (contractID string, operator, holder sdk.AccAddress) {
-// 	begin := len(authorizationKeyPrefix) + 1
-// 	end := begin + int(key[begin-1])
-// 	contractID = string(key[begin:end])
+func splitAuthorizationKey(key []byte) (contractID string, operator, holder sdk.AccAddress) {
+	begin := len(authorizationKeyPrefix) + 1
+	end := begin + int(key[begin-1])
+	contractID = string(key[begin:end])
 
-// 	begin = end + 1
-// 	end = begin + int(key[begin-1])
-// 	operator = sdk.AccAddress(key[begin:end])
+	begin = end + 1
+	end = begin + int(key[begin-1])
+	operator = sdk.AccAddress(key[begin:end])
 
-// 	begin = end
-// 	holder = sdk.AccAddress(key[begin:])
+	begin = end
+	holder = sdk.AccAddress(key[begin:])
 
-// 	return
-// }
+	return
+}
 
 //-----------------------------------------------------------------------------
 func grantKey(contractID string, grantee sdk.AccAddress, permission collection.Permission) []byte {
@@ -331,17 +346,55 @@ func grantKeyPrefixByContractID(contractID string) []byte {
 	return key
 }
 
-// func splitGrantKey(key []byte) (contractID string, grantee sdk.AccAddress, permission collection.Permission) {
-// 	begin := len(grantKeyPrefix) + 1
-// 	end := begin + int(key[begin-1])
-// 	contractID = string(key[begin:end])
+func splitGrantKey(key []byte) (contractID string, grantee sdk.AccAddress, permission collection.Permission) {
+	begin := len(grantKeyPrefix) + 1
+	end := begin + int(key[begin-1])
+	contractID = string(key[begin:end])
 
-// 	begin = end + 1
-// 	end = begin + int(key[begin-1])
-// 	grantee = sdk.AccAddress(key[begin:end])
+	begin = end + 1
+	end = begin + int(key[begin-1])
+	grantee = sdk.AccAddress(key[begin:end])
 
-// 	begin = end
-// 	permission = collection.Permission(key[begin])
+	begin = end
+	permission = collection.Permission(key[begin])
 
-// 	return
-// }
+	return
+}
+
+//-----------------------------------------------------------------------------
+// statistics
+func statisticsKey(keyPrefix []byte, contractID string, classID string) []byte {
+	prefix := statisticsKeyPrefixByContractID(keyPrefix, contractID)
+	key := make([]byte, len(prefix)+1+len(classID))
+
+	copy(key, prefix)
+	copy(key[len(prefix):], classID)
+
+	return key
+}
+
+func statisticsKeyPrefixByContractID(keyPrefix []byte, contractID string) []byte {
+	key := make([]byte, len(keyPrefix)+1+len(contractID))
+
+	begin := 0
+	copy(key, keyPrefix)
+
+	begin += len(keyPrefix)
+	key[begin] = byte(len(contractID))
+
+	begin++
+	copy(key[begin:], contractID)
+
+	return key
+}
+
+func splitStatisticsKey(keyPrefix, key []byte) (contractID string, classID string) {
+	begin := len(keyPrefix) + 1
+	end := begin + int(key[begin-1])
+	contractID = string(key[begin:end])
+
+	begin = end
+	classID = string(key[begin:])
+
+	return
+}
