@@ -3,7 +3,6 @@ package types
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strings"
 
 	sdk "github.com/line/lbm-sdk/types"
@@ -52,8 +51,6 @@ func (msg MsgStoreCode) Type() string {
 
 func (msg MsgStoreCode) ValidateBasic() error {
 	if err := sdk.ValidateAccAddress(msg.Sender); err != nil {
-		fmt.Printf("msg=%v: ", msg)
-		fmt.Printf("err=%s\n", err)
 		return err
 	}
 

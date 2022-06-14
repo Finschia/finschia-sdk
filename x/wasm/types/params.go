@@ -253,7 +253,6 @@ func (a AccessConfig) ValidateBasic() error {
 		}
 		return nil
 	case AccessTypeOnlyAddress:
-		fmt.Println("case AccessTypeOnlyAddress")
 		err := sdk.ValidateAccAddress(a.Address)
 		return err
 	}

@@ -2,7 +2,6 @@ package types
 
 import (
 	"bytes"
-	fmt "fmt"
 	"strings"
 	"testing"
 
@@ -70,7 +69,6 @@ func TestStoreCodeValidation(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			err := tc.msg.ValidateBasic()
 			if tc.valid {
-				fmt.Printf("err=%v\n", err)
 				assert.NoError(t, err)
 			} else {
 				assert.Error(t, err)
