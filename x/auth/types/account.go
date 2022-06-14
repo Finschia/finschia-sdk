@@ -438,7 +438,7 @@ type PubKeyJSON struct {
 type BaseAccountJSON struct {
 	Address       string     `json:"address"`
 	PubKey        PubKeyJSON `json:"pub_key"`
-	AccountNumber uint64     `json:"account_number"`
+	AccountNumber uint64     `json:"account_number,string"`
 	Sequence      string     `json:"sequence"`
 }
 
