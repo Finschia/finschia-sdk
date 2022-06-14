@@ -6,10 +6,8 @@ import (
 	"github.com/line/lbm-sdk/x/token"
 )
 
-func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.AccAddress, amount sdk.Int) error {
-	if err := k.issue(ctx, class); err != nil {
-		return err
-	}
+func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.AccAddress, amount sdk.Int) {
+	k.issue(ctx, class)
 
 	permissions := []token.Permission{
 		token.Permission_Modify,
@@ -21,21 +19,18 @@ func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.Acc
 		)
 	}
 	for _, permission := range permissions {
-		if err := k.Grant(ctx, class.ContractId, owner, owner, permission); err != nil {
-			return err
-		}
+		k.Grant(ctx, class.ContractId, owner, owner, permission)
 	}
 
-	if err := k.mintToken(ctx, class.ContractId, to, amount); err != nil {
-		return err
-	}
+	k.mintToken(ctx, class.ContractId, to, amount)
+
 	if err := ctx.EventManager().EmitTypedEvent(&token.EventMinted{
 		ContractId: class.ContractId,
 		Operator:   owner.String(),
 		To:         to.String(),
 		Amount:     amount,
 	}); err != nil {
-		return err
+		panic(err)
 	}
 
 	event := token.EventIssue{
@@ -48,45 +43,41 @@ func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.Acc
 		Mintable:   class.Mintable,
 	}
 	ctx.EventManager().EmitEvent(token.NewEventIssueToken(event, owner, to, amount)) // deprecated
-	return ctx.EventManager().EmitTypedEvent(&event)
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
 }
 
-func (k Keeper) issue(ctx sdk.Context, class token.TokenClass) error {
+func (k Keeper) issue(ctx sdk.Context, class token.TokenClass) {
 	if _, err := k.GetClass(ctx, class.ContractId); err == nil {
-		return sdkerrors.ErrNotFound.Wrapf("ID already exists: %s", class.ContractId)
+		panic(sdkerrors.ErrInvalidRequest.Wrapf("ID already exists: %s", class.ContractId))
 	}
-	if err := k.setClass(ctx, class); err != nil {
-		return err
-	}
-
-	return nil
+	k.setClass(ctx, class)
 }
 
 func (k Keeper) GetClass(ctx sdk.Context, contractID string) (*token.TokenClass, error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(classKey(contractID))
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("No information for %s", contractID)
+		return nil, sdkerrors.ErrNotFound.Wrapf("no class for %s", contractID)
 	}
 
 	var class token.TokenClass
 	if err := k.cdc.Unmarshal(bz, &class); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &class, nil
 }
 
-func (k Keeper) setClass(ctx sdk.Context, class token.TokenClass) error {
+func (k Keeper) setClass(ctx sdk.Context, class token.TokenClass) {
 	store := ctx.KVStore(k.storeKey)
 	bz, err := k.cdc.Marshal(&class)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	store.Set(classKey(class.ContractId), bz)
-
-	return nil
 }
 
 func (k Keeper) Mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddress, amount sdk.Int) error {
@@ -101,7 +92,10 @@ func (k Keeper) Mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddr
 		Amount:     amount,
 	}
 	ctx.EventManager().EmitEvent(token.NewEventMintToken(event)) // deprecated
-	return ctx.EventManager().EmitTypedEvent(&event)
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+	return nil
 }
 
 func (k Keeper) mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddress, amount sdk.Int) error {
@@ -109,31 +103,21 @@ func (k Keeper) mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddr
 		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	if err := k.mintToken(ctx, contractID, to, amount); err != nil {
-		return err
-	}
+	k.mintToken(ctx, contractID, to, amount)
 
 	return nil
 }
 
-func (k Keeper) mintToken(ctx sdk.Context, contractID string, addr sdk.AccAddress, amount sdk.Int) error {
-	if err := k.addToken(ctx, contractID, addr, amount); err != nil {
-		return err
-	}
+func (k Keeper) mintToken(ctx sdk.Context, contractID string, addr sdk.AccAddress, amount sdk.Int) {
+	k.addToken(ctx, contractID, addr, amount)
 
 	minted := k.GetMinted(ctx, contractID)
 	minted = minted.Add(amount)
-	if err := k.setMinted(ctx, contractID, minted); err != nil {
-		return err
-	}
+	k.setMinted(ctx, contractID, minted)
 
 	supply := k.GetSupply(ctx, contractID)
 	supply = supply.Add(amount)
-	if err := k.setSupply(ctx, contractID, supply); err != nil {
-		return err
-	}
-
-	return nil
+	k.setSupply(ctx, contractID, supply)
 }
 
 func (k Keeper) Burn(ctx sdk.Context, contractID string, from sdk.AccAddress, amount sdk.Int) error {
@@ -148,7 +132,10 @@ func (k Keeper) Burn(ctx sdk.Context, contractID string, from sdk.AccAddress, am
 		Amount:     amount,
 	}
 	ctx.EventManager().EmitEvent(token.NewEventBurnToken(event)) // deprecated
-	return ctx.EventManager().EmitTypedEvent(&event)
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+	return nil
 }
 
 func (k Keeper) burn(ctx sdk.Context, contractID string, from sdk.AccAddress, amount sdk.Int) error {
@@ -175,7 +162,10 @@ func (k Keeper) OperatorBurn(ctx sdk.Context, contractID string, operator, from 
 		Amount:     amount,
 	}
 	ctx.EventManager().EmitEvent(token.NewEventBurnTokenFrom(event)) // deprecated
-	return ctx.EventManager().EmitTypedEvent(&event)
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+	return nil
 }
 
 func (k Keeper) operatorBurn(ctx sdk.Context, contractID string, operator, from sdk.AccAddress, amount sdk.Int) error {
@@ -201,15 +191,11 @@ func (k Keeper) burnToken(ctx sdk.Context, contractID string, addr sdk.AccAddres
 
 	burnt := k.GetBurnt(ctx, contractID)
 	burnt = burnt.Add(amount)
-	if err := k.setBurnt(ctx, contractID, burnt); err != nil {
-		return err
-	}
+	k.setBurnt(ctx, contractID, burnt)
 
 	supply := k.GetSupply(ctx, contractID)
 	supply = supply.Sub(amount)
-	if err := k.setSupply(ctx, contractID, supply); err != nil {
-		return err
-	}
+	k.setSupply(ctx, contractID, supply)
 
 	return nil
 }
@@ -228,7 +214,7 @@ func (k Keeper) getStatistics(ctx sdk.Context, contractID string, keyPrefix []by
 }
 
 // The caller must validate `amount`.
-func (k Keeper) setStatistics(ctx sdk.Context, contractID string, amount sdk.Int, keyPrefix []byte) error {
+func (k Keeper) setStatistics(ctx sdk.Context, contractID string, amount sdk.Int, keyPrefix []byte) {
 	store := ctx.KVStore(k.storeKey)
 	key := statisticsKey(keyPrefix, contractID)
 	if amount.IsZero() {
@@ -236,12 +222,10 @@ func (k Keeper) setStatistics(ctx sdk.Context, contractID string, amount sdk.Int
 	} else {
 		bz, err := amount.Marshal()
 		if err != nil {
-			return err
+			panic(err)
 		}
 		store.Set(key, bz)
 	}
-
-	return nil
 }
 
 func (k Keeper) GetSupply(ctx sdk.Context, contractID string) sdk.Int {
@@ -256,16 +240,16 @@ func (k Keeper) GetBurnt(ctx sdk.Context, contractID string) sdk.Int {
 	return k.getStatistics(ctx, contractID, burnKeyPrefix)
 }
 
-func (k Keeper) setSupply(ctx sdk.Context, contractID string, amount sdk.Int) error {
-	return k.setStatistics(ctx, contractID, amount, supplyKeyPrefix)
+func (k Keeper) setSupply(ctx sdk.Context, contractID string, amount sdk.Int) {
+	k.setStatistics(ctx, contractID, amount, supplyKeyPrefix)
 }
 
-func (k Keeper) setMinted(ctx sdk.Context, contractID string, amount sdk.Int) error {
-	return k.setStatistics(ctx, contractID, amount, mintKeyPrefix)
+func (k Keeper) setMinted(ctx sdk.Context, contractID string, amount sdk.Int) {
+	k.setStatistics(ctx, contractID, amount, mintKeyPrefix)
 }
 
-func (k Keeper) setBurnt(ctx sdk.Context, contractID string, amount sdk.Int) error {
-	return k.setStatistics(ctx, contractID, amount, burnKeyPrefix)
+func (k Keeper) setBurnt(ctx sdk.Context, contractID string, amount sdk.Int) {
+	k.setStatistics(ctx, contractID, amount, burnKeyPrefix)
 }
 
 func (k Keeper) Modify(ctx sdk.Context, contractID string, grantee sdk.AccAddress, changes []token.Pair) error {
@@ -279,7 +263,10 @@ func (k Keeper) Modify(ctx sdk.Context, contractID string, grantee sdk.AccAddres
 		Changes:    changes,
 	}
 	ctx.EventManager().EmitEvents(token.NewEventModifyToken(event)) // deprecated
-	return ctx.EventManager().EmitTypedEvent(&event)
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+	return nil
 }
 
 func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Pair) error {
@@ -308,7 +295,7 @@ func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Pair)
 	return nil
 }
 
-func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.AccAddress, permission token.Permission) error {
+func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.AccAddress, permission token.Permission) {
 	k.grant(ctx, contractID, grantee, permission)
 
 	event := token.EventGrant{
@@ -318,7 +305,9 @@ func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.A
 		Permission: permission.String(),
 	}
 	ctx.EventManager().EmitEvent(token.NewEventGrantPermToken(event)) // deprecated
-	return ctx.EventManager().EmitTypedEvent(&event)
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) grant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) {
@@ -329,7 +318,7 @@ func (k Keeper) grant(ctx sdk.Context, contractID string, grantee sdk.AccAddress
 	}
 }
 
-func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) error {
+func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) {
 	k.deleteGrant(ctx, contractID, grantee, permission)
 
 	event := token.EventAbandon{
@@ -338,7 +327,9 @@ func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddre
 		Permission: permission.String(),
 	}
 	ctx.EventManager().EmitEvent(token.NewEventRevokePermToken(event)) // deprecated
-	return ctx.EventManager().EmitTypedEvent(&event)
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) GetGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) (*token.Grant, error) {

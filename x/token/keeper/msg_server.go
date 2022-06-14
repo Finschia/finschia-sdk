@@ -39,7 +39,7 @@ func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendRe
 	}
 	ctx.EventManager().EmitEvent(token.NewEventTransfer(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &token.MsgSendResponse{}, nil
@@ -66,7 +66,7 @@ func (s msgServer) OperatorSend(c context.Context, req *token.MsgOperatorSend) (
 	}
 	ctx.EventManager().EmitEvent(token.NewEventTransferFrom(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &token.MsgOperatorSendResponse{}, nil
@@ -93,7 +93,7 @@ func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (
 	}
 	ctx.EventManager().EmitEvent(token.NewEventTransferFrom(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &token.MsgTransferFromResponse{}, nil
@@ -113,7 +113,7 @@ func (s msgServer) AuthorizeOperator(c context.Context, req *token.MsgAuthorizeO
 	}
 	ctx.EventManager().EmitEvent(token.NewEventApproveToken(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &token.MsgAuthorizeOperatorResponse{}, nil
@@ -131,7 +131,7 @@ func (s msgServer) RevokeOperator(c context.Context, req *token.MsgRevokeOperato
 		Holder:     req.Holder,
 		Operator:   req.Operator,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &token.MsgRevokeOperatorResponse{}, nil
@@ -151,7 +151,7 @@ func (s msgServer) Approve(c context.Context, req *token.MsgApprove) (*token.Msg
 	}
 	ctx.EventManager().EmitEvent(token.NewEventApproveToken(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &token.MsgApproveResponse{}, nil
@@ -171,9 +171,7 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 		Mintable:   req.Mintable,
 	}
 
-	if err := s.keeper.Issue(ctx, class, sdk.AccAddress(req.Owner), sdk.AccAddress(req.To), req.Amount); err != nil {
-		return nil, err
-	}
+	s.keeper.Issue(ctx, class, sdk.AccAddress(req.Owner), sdk.AccAddress(req.To), req.Amount)
 
 	return &token.MsgIssueResponse{}, nil
 }
@@ -192,9 +190,7 @@ func (s msgServer) Grant(c context.Context, req *token.MsgGrant) (*token.MsgGran
 		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission.String())
 	}
 
-	if err := s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission); err != nil {
-		return nil, err
-	}
+	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
 
 	return &token.MsgGrantResponse{}, nil
 }
@@ -209,9 +205,7 @@ func (s msgServer) Abandon(c context.Context, req *token.MsgAbandon) (*token.Msg
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	if err := s.keeper.Abandon(ctx, req.ContractId, grantee, permission); err != nil {
-		return nil, err
-	}
+	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
 
 	return &token.MsgAbandonResponse{}, nil
 }
@@ -230,9 +224,7 @@ func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermiss
 		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission.String())
 	}
 
-	if err := s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission); err != nil {
-		return nil, err
-	}
+	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
 
 	return &token.MsgGrantPermissionResponse{}, nil
 }
@@ -247,9 +239,7 @@ func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermi
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	if err := s.keeper.Abandon(ctx, req.ContractId, grantee, permission); err != nil {
-		return nil, err
-	}
+	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
 
 	return &token.MsgRevokePermissionResponse{}, nil
 }

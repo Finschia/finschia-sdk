@@ -11,16 +11,14 @@ func (k Keeper) Send(ctx sdk.Context, contractID string, from, to sdk.AccAddress
 		return err
 	}
 
-	if err := k.addToken(ctx, contractID, to, amount); err != nil {
-		return err
-	}
+	k.addToken(ctx, contractID, to, amount)
 
 	return nil
 }
 
 func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
 	if _, err := k.GetClass(ctx, contractID); err != nil {
-		return sdkerrors.ErrNotFound.Wrapf("ID not exists: %s", contractID)
+		return err
 	}
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err == nil {
 		return sdkerrors.ErrInvalidRequest.Wrap("Already authorized")
@@ -37,7 +35,7 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, op
 
 func (k Keeper) RevokeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
 	if _, err := k.GetClass(ctx, contractID); err != nil {
-		return sdkerrors.ErrNotFound.Wrapf("ID not exists: %s", contractID)
+		return err
 	}
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err != nil {
 		return err
@@ -71,40 +69,26 @@ func (k Keeper) deleteAuthorization(ctx sdk.Context, contractID string, holder, 
 }
 
 func (k Keeper) subtractToken(ctx sdk.Context, contractID string, addr sdk.AccAddress, amount sdk.Int) error {
-	if amount.IsNegative() {
-		return sdkerrors.ErrInvalidCoins.Wrap(amount.String())
-	}
-
 	balance := k.GetBalance(ctx, contractID, addr)
 	newBalance := balance.Sub(amount)
 	if newBalance.IsNegative() {
 		return sdkerrors.ErrInsufficientFunds.Wrapf("%s is smaller than %s", balance, amount)
 	}
 
-	if err := k.setBalance(ctx, contractID, addr, newBalance); err != nil {
-		return err
-	}
+	k.setBalance(ctx, contractID, addr, newBalance)
 
 	return nil
 }
 
-func (k Keeper) addToken(ctx sdk.Context, contractID string, addr sdk.AccAddress, amount sdk.Int) error {
-	if amount.IsNegative() {
-		return sdkerrors.ErrInvalidCoins.Wrap(amount.String())
-	}
-
+func (k Keeper) addToken(ctx sdk.Context, contractID string, addr sdk.AccAddress, amount sdk.Int) {
 	balance := k.GetBalance(ctx, contractID, addr)
 	newBalance := balance.Add(amount)
 
-	if err := k.setBalance(ctx, contractID, addr, newBalance); err != nil {
-		return err
-	}
+	k.setBalance(ctx, contractID, addr, newBalance)
 
 	if !k.accountKeeper.HasAccount(ctx, addr) {
 		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, addr))
 	}
-
-	return nil
 }
 
 func (k Keeper) GetBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress) sdk.Int {
@@ -121,7 +105,7 @@ func (k Keeper) GetBalance(ctx sdk.Context, contractID string, addr sdk.AccAddre
 
 // setBalance sets balance.
 // The caller must validate `balance`.
-func (k Keeper) setBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, balance sdk.Int) error {
+func (k Keeper) setBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, balance sdk.Int) {
 	store := ctx.KVStore(k.storeKey)
 	key := balanceKey(contractID, addr)
 	if balance.IsZero() {
@@ -129,10 +113,8 @@ func (k Keeper) setBalance(ctx sdk.Context, contractID string, addr sdk.AccAddre
 	} else {
 		bz, err := balance.Marshal()
 		if err != nil {
-			return err
+			panic(err)
 		}
 		store.Set(key, bz)
 	}
-
-	return nil
 }

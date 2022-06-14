@@ -14,16 +14,12 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *token.GenesisState) {
 
 	for _, contractBalances := range data.Balances {
 		for _, balance := range contractBalances.Balances {
-			if err := k.setBalance(ctx, contractBalances.ContractId, sdk.AccAddress(balance.Address), balance.Amount); err != nil {
-				panic(err)
-			}
+			k.setBalance(ctx, contractBalances.ContractId, sdk.AccAddress(balance.Address), balance.Amount)
 		}
 	}
 
 	for _, class := range data.Classes {
-		if err := k.setClass(ctx, class); err != nil {
-			panic(err)
-		}
+		k.setClass(ctx, class)
 	}
 
 	for _, contractGrants := range data.Grants {
@@ -41,21 +37,15 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *token.GenesisState) {
 
 	// TODO: remove it (derive it using mints and burns)
 	for _, amount := range data.Supplies {
-		if err := k.setSupply(ctx, amount.ContractId, amount.Amount); err != nil {
-			panic(err)
-		}
+		k.setSupply(ctx, amount.ContractId, amount.Amount)
 	}
 
 	for _, amount := range data.Mints {
-		if err := k.setMinted(ctx, amount.ContractId, amount.Amount); err != nil {
-			panic(err)
-		}
+		k.setMinted(ctx, amount.ContractId, amount.Amount)
 	}
 
 	for _, amount := range data.Burns {
-		if err := k.setBurnt(ctx, amount.ContractId, amount.Amount); err != nil {
-			panic(err)
-		}
+		k.setBurnt(ctx, amount.ContractId, amount.Amount)
 	}
 }
 

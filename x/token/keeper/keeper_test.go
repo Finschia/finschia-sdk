@@ -80,8 +80,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		token.Permission_Mint,
 		token.Permission_Burn,
 	} {
-		err = s.keeper.Grant(s.ctx, s.contractID, s.vendor, s.operator, permission)
-		s.Require().NoError(err)
+		s.keeper.Grant(s.ctx, s.contractID, s.vendor, s.operator, permission)
 	}
 
 	// authorize operator
