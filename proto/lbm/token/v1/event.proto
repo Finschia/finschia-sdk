@@ -43,8 +43,8 @@ enum AttributeKey {
   proxy       = 14 [(gogoproto.enumvalue_customname) = "Proxy"];
 }
 
-// EventSent is emitted on Msg/Send and Msg/OperatorSend.
-// Since: finschia
+// EventSent is emitted when tokens are transferred.
+// Since: 0.46.0 (finschia)
 message EventSent {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -58,8 +58,8 @@ message EventSent {
   string amount = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// EventAuthorizedOperator is emitted on Msg/AuthorizeOperator.
-// Since: finschia
+// EventAuthorizedOperator is emitted when a holder authorizes an operator to manipulate its tokens.
+// Since: 0.46.0 (finschia)
 message EventAuthorizedOperator {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -69,8 +69,8 @@ message EventAuthorizedOperator {
   string operator = 3;
 }
 
-// EventRevokedOperator is emitted on Msg/RevokeOperator.
-// Since: finschia
+// EventRevokedOperator is emitted when an authorization is revoked.
+// Since: 0.46.0 (finschia)
 message EventRevokedOperator {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -80,8 +80,8 @@ message EventRevokedOperator {
   string operator = 3;
 }
 
-// EventIssue is emitted on Msg/Issue.
-// Since: finschia
+// EventIssue is emitted when a new token class is created.
+// Since: 0.46.0 (finschia)
 message EventIssue {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -99,8 +99,8 @@ message EventIssue {
   bool mintable = 7;
 }
 
-// EventGrant is emitted on Msg/Grant.
-// Since: finschia
+// EventGrant is emitted when a granter grants its permission to a grantee.
+// Since: 0.46.0 (finschia)
 message EventGrant {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -112,8 +112,8 @@ message EventGrant {
   string permission = 4;
 }
 
-// EventAbandon is emitted on Msg/Abandon.
-// Since: finschia
+// EventAbandon is emitted when a grantee abandons its permission.
+// Since: 0.46.0 (finschia)
 message EventAbandon {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -123,8 +123,8 @@ message EventAbandon {
   string permission = 3;
 }
 
-// EventMinted is emitted on Msg/Mint.
-// Since: finschia
+// EventMinted is emitted when tokens are minted.
+// Since: 0.46.0 (finschia)
 message EventMinted {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -136,8 +136,8 @@ message EventMinted {
   string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// EventBurned is emitted on Msg/Burn and Msg/OperatorBurn.
-// Since: finschia
+// EventBurned is emitted when tokens are burnt.
+// Since: 0.46.0 (finschia)
 message EventBurned {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -149,8 +149,8 @@ message EventBurned {
   string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// EventModified is emitted on Msg/Modify.
-// Since: finschia
+// EventModified is emitted when the information of a token class is modified.
+// Since: 0.46.0 (finschia)
 message EventModified {
   // contract id associated with the token class.
   string contract_id = 1;

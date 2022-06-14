@@ -12579,8 +12579,8 @@ Permission enumerates the valid permissions on a token class.
 <a name="lbm.token.v1.EventAbandon"></a>
 
 ### EventAbandon
-EventAbandon is emitted on Msg/Abandon.
-Since: finschia
+EventAbandon is emitted when a grantee abandons its permission.
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -12597,8 +12597,8 @@ Since: finschia
 <a name="lbm.token.v1.EventAuthorizedOperator"></a>
 
 ### EventAuthorizedOperator
-EventAuthorizedOperator is emitted on Msg/AuthorizeOperator.
-Since: finschia
+EventAuthorizedOperator is emitted when a holder authorizes an operator to manipulate its tokens.
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -12615,8 +12615,8 @@ Since: finschia
 <a name="lbm.token.v1.EventBurned"></a>
 
 ### EventBurned
-EventBurned is emitted on Msg/Burn and Msg/OperatorBurn.
-Since: finschia
+EventBurned is emitted when tokens are burnt.
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -12634,8 +12634,8 @@ Since: finschia
 <a name="lbm.token.v1.EventGrant"></a>
 
 ### EventGrant
-EventGrant is emitted on Msg/Grant.
-Since: finschia
+EventGrant is emitted when a granter grants its permission to a grantee.
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -12653,8 +12653,8 @@ Since: finschia
 <a name="lbm.token.v1.EventIssue"></a>
 
 ### EventIssue
-EventIssue is emitted on Msg/Issue.
-Since: finschia
+EventIssue is emitted when a new token class is created.
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -12675,8 +12675,8 @@ Since: finschia
 <a name="lbm.token.v1.EventMinted"></a>
 
 ### EventMinted
-EventMinted is emitted on Msg/Mint.
-Since: finschia
+EventMinted is emitted when tokens are minted.
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -12694,8 +12694,8 @@ Since: finschia
 <a name="lbm.token.v1.EventModified"></a>
 
 ### EventModified
-EventModified is emitted on Msg/Modify.
-Since: finschia
+EventModified is emitted when the information of a token class is modified.
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -12712,8 +12712,8 @@ Since: finschia
 <a name="lbm.token.v1.EventRevokedOperator"></a>
 
 ### EventRevokedOperator
-EventRevokedOperator is emitted on Msg/RevokeOperator.
-Since: finschia
+EventRevokedOperator is emitted when an authorization is revoked.
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -12730,8 +12730,8 @@ Since: finschia
 <a name="lbm.token.v1.EventSent"></a>
 
 ### EventSent
-EventSent is emitted on Msg/Send and Msg/OperatorSend.
-Since: finschia
+EventSent is emitted when tokens are transferred.
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |

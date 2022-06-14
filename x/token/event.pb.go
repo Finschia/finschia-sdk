@@ -144,8 +144,8 @@ func (AttributeKey) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_d7505f4c4cdec18e, []int{1}
 }
 
-// EventSent is emitted on Msg/Send and Msg/OperatorSend.
-// Since: finschia
+// EventSent is emitted when tokens are transferred.
+// Since: 0.46.0 (finschia)
 type EventSent struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -220,8 +220,8 @@ func (m *EventSent) GetTo() string {
 	return ""
 }
 
-// EventAuthorizedOperator is emitted on Msg/AuthorizeOperator.
-// Since: finschia
+// EventAuthorizedOperator is emitted when a holder authorizes an operator to manipulate its tokens.
+// Since: 0.46.0 (finschia)
 type EventAuthorizedOperator struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -285,8 +285,8 @@ func (m *EventAuthorizedOperator) GetOperator() string {
 	return ""
 }
 
-// EventRevokedOperator is emitted on Msg/RevokeOperator.
-// Since: finschia
+// EventRevokedOperator is emitted when an authorization is revoked.
+// Since: 0.46.0 (finschia)
 type EventRevokedOperator struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -350,8 +350,8 @@ func (m *EventRevokedOperator) GetOperator() string {
 	return ""
 }
 
-// EventIssue is emitted on Msg/Issue.
-// Since: finschia
+// EventIssue is emitted when a new token class is created.
+// Since: 0.46.0 (finschia)
 type EventIssue struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -451,8 +451,8 @@ func (m *EventIssue) GetMintable() bool {
 	return false
 }
 
-// EventGrant is emitted on Msg/Grant.
-// Since: finschia
+// EventGrant is emitted when a granter grants its permission to a grantee.
+// Since: 0.46.0 (finschia)
 type EventGrant struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -525,8 +525,8 @@ func (m *EventGrant) GetPermission() string {
 	return ""
 }
 
-// EventAbandon is emitted on Msg/Abandon.
-// Since: finschia
+// EventAbandon is emitted when a grantee abandons its permission.
+// Since: 0.46.0 (finschia)
 type EventAbandon struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -590,8 +590,8 @@ func (m *EventAbandon) GetPermission() string {
 	return ""
 }
 
-// EventMinted is emitted on Msg/Mint.
-// Since: finschia
+// EventMinted is emitted when tokens are minted.
+// Since: 0.46.0 (finschia)
 type EventMinted struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -657,8 +657,8 @@ func (m *EventMinted) GetTo() string {
 	return ""
 }
 
-// EventBurned is emitted on Msg/Burn and Msg/OperatorBurn.
-// Since: finschia
+// EventBurned is emitted when tokens are burnt.
+// Since: 0.46.0 (finschia)
 type EventBurned struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -724,8 +724,8 @@ func (m *EventBurned) GetFrom() string {
 	return ""
 }
 
-// EventModified is emitted on Msg/Modify.
-// Since: finschia
+// EventModified is emitted when the information of a token class is modified.
+// Since: 0.46.0 (finschia)
 type EventModified struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
