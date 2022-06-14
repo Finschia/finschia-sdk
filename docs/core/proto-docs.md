@@ -12539,7 +12539,7 @@ TokenClass defines token information.
 | `image_uri` | [string](#string) |  | image_uri is an uri for the image of the token class stored off chain. |
 | `meta` | [string](#string) |  | meta is a brief description of token class. |
 | `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
-| `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint. |
+| `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint or burn. |
 
 
 
@@ -13343,7 +13343,17 @@ Query defines the gRPC querier service.
 
 ### MsgAbandon
 MsgAbandon defines the Msg/Abandon request type.
-Since: finschia
+
+Throws:
+- ErrInvalidAddress
+  - `grantee` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+  - `permission` is not a valid permission.
+
+Signer: `grantee`
+
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -13361,7 +13371,8 @@ Since: finschia
 
 ### MsgAbandonResponse
 MsgAbandonResponse defines the Msg/Abandon response type.
-Since: finschia
+
+Since: 0.46.0 (finschia)
 
 
 
@@ -13372,7 +13383,8 @@ Since: finschia
 
 ### MsgApprove
 MsgApprove defines the Msg/Approve request type.
-NOTE: deprecated (use MsgAuthorizeOperator)
+
+Note: deprecated (use MsgAuthorizeOperator)
 
 
 | Field | Type | Label | Description |
@@ -13390,7 +13402,8 @@ NOTE: deprecated (use MsgAuthorizeOperator)
 
 ### MsgApproveResponse
 MsgApproveResponse defines the Msg/Approve response type.
-NOTE: deprecated
+
+Note: deprecated
 
 
 
@@ -13401,7 +13414,17 @@ NOTE: deprecated
 
 ### MsgAuthorizeOperator
 MsgAuthorizeOperator defines the Msg/AuthorizeOperator request type.
-Since: finschia
+
+Throws:
+- ErrInvalidAddress
+  - `holder` is of invalid format.
+  - `operator` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+
+Signer: `holder`
+
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -13419,7 +13442,8 @@ Since: finschia
 
 ### MsgAuthorizeOperatorResponse
 MsgAuthorizeOperatorResponse defines the Msg/AuthorizeOperator response type.
-Since: finschia
+
+Since: 0.46.0 (finschia)
 
 
 
@@ -13431,11 +13455,20 @@ Since: finschia
 ### MsgBurn
 MsgBurn defines the Msg/Burn request type.
 
+Throws:
+- ErrInvalidAddress
+  - `from` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+  - `amount` is not positive.
+
+Signer: `from`
+
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class.w |
-| `from` | [string](#string) |  | address which the tokens will be burnt from. NOTE: it must have the permission for the burn. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. |
 | `amount` | [string](#string) |  | the amount of the burn. |
 
 
@@ -13447,13 +13480,14 @@ MsgBurn defines the Msg/Burn request type.
 
 ### MsgBurnFrom
 MsgBurnFrom defines the Msg/BurnFrom request type.
-NOTE: deprecated (use MsgOperatorBurn)
+
+Note: deprecated (use MsgOperatorBurn)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | the amount of the burn. |
-| `proxy` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
+| `proxy` | [string](#string) |  | address which triggers the burn. |
 | `from` | [string](#string) |  | address which the tokens will be burnt from. |
 | `amount` | [string](#string) |  | the amount of the burn. |
 
@@ -13466,7 +13500,8 @@ NOTE: deprecated (use MsgOperatorBurn)
 
 ### MsgBurnFromResponse
 MsgBurnFromResponse defines the Msg/BurnFrom response type.
-NOTE: deprecated
+
+Note: deprecated
 
 
 
@@ -13487,7 +13522,18 @@ MsgBurnResponse defines the Msg/Burn response type.
 
 ### MsgGrant
 MsgGrant defines the Msg/Grant request type.
-Since: finschia
+
+Throws:
+- ErrInvalidAddress
+  - `granter` is of invalid format.
+  - `grantee` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+  - `permission` is not a valid permission.
+
+Signer: `granter`
+
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -13506,7 +13552,8 @@ Since: finschia
 
 ### MsgGrantPermission
 MsgGrantPermission defines the Msg/GrantPermission request type.
-NOTE: deprecated (use MsgGrant)
+
+Note: deprecated (use MsgGrant)
 
 
 | Field | Type | Label | Description |
@@ -13525,7 +13572,8 @@ NOTE: deprecated (use MsgGrant)
 
 ### MsgGrantPermissionResponse
 MsgGrantPermissionResponse defines the Msg/GrantPermission response type.
-NOTE: deprecated
+
+Note: deprecated
 
 
 
@@ -13536,7 +13584,8 @@ NOTE: deprecated
 
 ### MsgGrantResponse
 MsgGrantResponse defines the Msg/Grant response type.
-Since: finschia
+
+Since: 0.46.0 (finschia)
 
 
 
@@ -13547,6 +13596,21 @@ Since: finschia
 
 ### MsgIssue
 MsgIssue defines the Msg/Issue request type.
+
+Throws:
+- ErrInvalidAddress
+  - `owner` is of invalid format.
+  - `to` is of invalid format.
+- ErrInvalidRequest
+  - `name` is empty.
+  - `name` exceeds the app-specific limit in length.
+  - `symbol` is of invalid format.
+  - `image_uri` exceeds the app-specific limit in length.
+  - `meta` exceeds the app-specific limit in length.
+  - `decimals` is lesser than 0 or greater than 18.
+  - `amount` is not positive.
+
+Signer: `owner`
 
 
 | Field | Type | Label | Description |
@@ -13581,6 +13645,16 @@ MsgIssueResponse defines the Msg/Issue response type.
 ### MsgMint
 MsgMint defines the Msg/Mint request type.
 
+Throws:
+- ErrInvalidAddress
+  - `from` is of invalid format.
+  - `to` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+  - `amount` is not positive.
+
+Signer: `from`
+
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -13609,6 +13683,17 @@ MsgMintResponse defines the Msg/Mint response type.
 ### MsgModify
 MsgModify defines the Msg/Modify request type.
 
+Throws:
+- ErrInvalidAddress
+  - `owner` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+  - `changes` has duplicate keys.
+  - `changes` has a key which is not allowed to modify.
+  - `changes` is empty.
+
+Signer: `owner`
+
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -13635,13 +13720,24 @@ MsgModifyResponse defines the Msg/Modify response type.
 
 ### MsgOperatorBurn
 MsgOperatorBurn defines the Msg/OperatorBurn request type.
-Since: finschia
+
+Throws:
+- ErrInvalidAddress
+  - `operator` is of invalid format.
+  - `from` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+  - `amount` is not positive.
+
+Signer: `operator`
+
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | the amount of the burn. |
-| `operator` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
+| `operator` | [string](#string) |  | address which triggers the burn. |
 | `from` | [string](#string) |  | address which the tokens will be burnt from. |
 | `amount` | [string](#string) |  | the amount of the burn. |
 
@@ -13654,7 +13750,8 @@ Since: finschia
 
 ### MsgOperatorBurnResponse
 MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
-Since: finschia
+
+Since: 0.46.0 (finschia)
 
 
 
@@ -13665,7 +13762,19 @@ Since: finschia
 
 ### MsgOperatorSend
 MsgOperatorSend defines the Msg/OperatorSend request type.
-Since: finschia
+
+Throws:
+- ErrInvalidAddress
+  - `operator` is of invalid format.
+  - `from` is of invalid format.
+  - `to` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+  - `amount` is not positive.
+
+Signer: `operator`
+
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -13685,7 +13794,8 @@ Since: finschia
 
 ### MsgOperatorSendResponse
 MsgOperatorSendResponse defines the Msg/OperatorSend response type.
-Since: finschia
+
+Since: 0.46.0 (finschia)
 
 
 
@@ -13696,7 +13806,17 @@ Since: finschia
 
 ### MsgRevokeOperator
 MsgRevokeOperator defines the Msg/RevokeOperator request type.
-Since: finschia
+
+Throws:
+- ErrInvalidAddress
+  - `holder` is of invalid format.
+  - `operator` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+
+Signer: `holder`
+
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -13714,7 +13834,8 @@ Since: finschia
 
 ### MsgRevokeOperatorResponse
 MsgRevokeOperatorResponse defines the Msg/RevokeOperator response type.
-Since: finschia
+
+Since: 0.46.0 (finschia)
 
 
 
@@ -13725,7 +13846,8 @@ Since: finschia
 
 ### MsgRevokePermission
 MsgRevokePermission defines the Msg/RevokePermission request type.
-NOTE: deprecated (use MsgAbandon)
+
+Note: deprecated (use MsgAbandon)
 
 
 | Field | Type | Label | Description |
@@ -13743,7 +13865,8 @@ NOTE: deprecated (use MsgAbandon)
 
 ### MsgRevokePermissionResponse
 MsgRevokePermissionResponse defines the Msg/RevokePermission response type.
-NOTE: deprecated
+
+Note: deprecated
 
 
 
@@ -13754,6 +13877,16 @@ NOTE: deprecated
 
 ### MsgSend
 MsgSend defines the Msg/Send request type.
+
+Throws:
+- ErrInvalidAddress
+  - `from` is of invalid format.
+  - `to` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+  - `amount` is not positive.
+
+Signer: `from`
 
 
 | Field | Type | Label | Description |
@@ -13782,7 +13915,8 @@ MsgSendResponse defines the Msg/Send response type.
 
 ### MsgTransferFrom
 MsgTransferFrom defines the Msg/TransferFrom request type.
-NOTE: deprecated (use MsgOperatorSend)
+
+Note: deprecated (use MsgOperatorSend)
 
 
 | Field | Type | Label | Description |
@@ -13802,7 +13936,8 @@ NOTE: deprecated (use MsgOperatorSend)
 
 ### MsgTransferFromResponse
 MsgTransferFromResponse defines the Msg/TransferFrom response type.
-NOTE: deprecated
+
+Note: deprecated
 
 
 
@@ -13822,22 +13957,22 @@ Msg defines the token Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Send` | [MsgSend](#lbm.token.v1.MsgSend) | [MsgSendResponse](#lbm.token.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. | |
-| `OperatorSend` | [MsgOperatorSend](#lbm.token.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. Since: finschia | |
-| `TransferFrom` | [MsgTransferFrom](#lbm.token.v1.MsgTransferFrom) | [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse) | TransferFrom defines a method to send tokens from one account to another account by the operator. NOTE: the approval has no value of limit. NOTE: deprecated (use OperatorSend) | |
-| `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.token.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.token.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the holder. Since: finschia | |
-| `RevokeOperator` | [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse) | RevokeOperator revoke the authorization of the operator to send the holder's tokens. Since: finschia | |
-| `Approve` | [MsgApprove](#lbm.token.v1.MsgApprove) | [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the holder. NOTE: deprecated (use AuthorizeOperator) | |
-| `Issue` | [MsgIssue](#lbm.token.v1.MsgIssue) | [MsgIssueResponse](#lbm.token.v1.MsgIssueResponse) | Issue defines a method to create a class of token. | |
-| `Grant` | [MsgGrant](#lbm.token.v1.MsgGrant) | [MsgGrantResponse](#lbm.token.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify a token metadata. Since: finschia | |
-| `Abandon` | [MsgAbandon](#lbm.token.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.token.v1.MsgAbandonResponse) | Abandon abandons a permission. Since: finschia | |
-| `GrantPermission` | [MsgGrantPermission](#lbm.token.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.token.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify a token metadata. NOTE: deprecated (use Grant) | |
-| `RevokePermission` | [MsgRevokePermission](#lbm.token.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.token.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. NOTE: deprecated (use Abandon) | |
-| `Mint` | [MsgMint](#lbm.token.v1.MsgMint) | [MsgMintResponse](#lbm.token.v1.MsgMintResponse) | Mint defines a method to mint tokens. | |
-| `Burn` | [MsgBurn](#lbm.token.v1.MsgBurn) | [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse) | Burn defines a method to burn tokens. | |
-| `OperatorBurn` | [MsgOperatorBurn](#lbm.token.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.token.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens by the operator. Since: finschia | |
-| `BurnFrom` | [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom) | [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse) | BurnFrom defines a method to burn tokens by the operator. NOTE: deprecated (use OperatorBurn) | |
-| `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token class. | |
+| `Send` | [MsgSend](#lbm.token.v1.MsgSend) | [MsgSendResponse](#lbm.token.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. Fires: - EventSent - transfer (deprecated, not typed) Throws: - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to spend. | |
+| `OperatorSend` | [MsgOperatorSend](#lbm.token.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. Fires: - EventSent - transfer_from (deprecated, not typed) Throws: - ErrUnauthorized: - the holder has not authorized the operator. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to spend. Since: 0.46.0 (finschia) | |
+| `TransferFrom` | [MsgTransferFrom](#lbm.token.v1.MsgTransferFrom) | [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse) | TransferFrom defines a method to send tokens from one account to another account by the operator. Note: the approval has no value of limit (not ERC20 compliant). Note: deprecated (use OperatorSend) | |
+| `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.token.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.token.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the holder. Fires: - EventAuthorizedOperator - approve_token (deprecated, not typed) Throws: - ErrNotFound: - there is no the token class of `contract_id`. - ErrInvalidRequest: - `holder` has already authorized `operator`. Since: 0.46.0 (finschia) | |
+| `RevokeOperator` | [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse) | RevokeOperator revoke the authorization of the operator to send the holder's tokens. Fires: - EventRevokedOperator Throws: - ErrNotFound: - there is no the token class of `contract_id`. - there is no authorization by `holder` to `operator`. Note: it introduces breaking change, because the legacy clients cannot track this revocation. Since: 0.46.0 (finschia) | |
+| `Approve` | [MsgApprove](#lbm.token.v1.MsgApprove) | [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the holder. Note: deprecated (use AuthorizeOperator) | |
+| `Issue` | [MsgIssue](#lbm.token.v1.MsgIssue) | [MsgIssueResponse](#lbm.token.v1.MsgIssueResponse) | Issue defines a method to create a class of token. it grants `mint`, `burn` and `modify` permissions on the token class to its creator (see also `mintable`). Fires: - EventIssue - EventMinted - issue (deprecated, not typed) | |
+| `Grant` | [MsgGrant](#lbm.token.v1.MsgGrant) | [MsgGrantResponse](#lbm.token.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify a token metadata. Fires: - EventGrant - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. Since: 0.46.0 (finschia) | |
+| `Abandon` | [MsgAbandon](#lbm.token.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.token.v1.MsgAbandonResponse) | Abandon abandons a permission. Fires: - EventAbandon - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. Since: 0.46.0 (finschia) | |
+| `GrantPermission` | [MsgGrantPermission](#lbm.token.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.token.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify a token metadata. Note: deprecated (use Grant) | |
+| `RevokePermission` | [MsgRevokePermission](#lbm.token.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.token.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Note: deprecated (use Abandon) | |
+| `Mint` | [MsgMint](#lbm.token.v1.MsgMint) | [MsgMintResponse](#lbm.token.v1.MsgMintResponse) | Mint defines a method to mint tokens. Fires: - EventMinted - mint (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `mint` permission. | |
+| `Burn` | [MsgBurn](#lbm.token.v1.MsgBurn) | [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Fires: - EventBurned - burn (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. | |
+| `OperatorBurn` | [MsgOperatorBurn](#lbm.token.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.token.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens by the operator. Fires: - EventBurned - burn_from (deprecated, not typed) Throws: - ErrUnauthorized - `operator` does not have `burn` permission. - the holder has not authorized `operator`. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. Since: 0.46.0 (finschia) | |
+| `BurnFrom` | [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom) | [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse) | BurnFrom defines a method to burn tokens by the operator. Note: deprecated (use OperatorBurn) | |
+| `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token class. Fires: - EventModified - modify_token (deprecated, not typed) Throws: - ErrUnauthorized - the operator does not have `modify` permission. - ErrNotFound - there is no the token class of `contract_id`. | |
 
  <!-- end services -->
 

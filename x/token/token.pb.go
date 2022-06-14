@@ -106,7 +106,7 @@ type TokenClass struct {
 	Meta string `protobuf:"bytes,5,opt,name=meta,proto3" json:"meta,omitempty"`
 	// decimals is the number of decimals which one must divide the amount by to get its user representation.
 	Decimals int32 `protobuf:"varint,6,opt,name=decimals,proto3" json:"decimals,omitempty"`
-	// mintable represents whether the token is allowed to mint.
+	// mintable represents whether the token is allowed to mint or burn.
 	Mintable bool `protobuf:"varint,7,opt,name=mintable,proto3" json:"mintable,omitempty"`
 }
 

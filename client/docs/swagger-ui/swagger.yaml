@@ -38794,8 +38794,8 @@ paths:
                       type: boolean
                       format: boolean
                       description: >-
-                        mintable represents whether the token is allowed to
-                        mint.
+                        mintable represents whether the token is allowed to mint
+                        or burn.
                   description: TokenClass defines token information.
                 description: information of the token classes.
               pagination:
@@ -38951,7 +38951,9 @@ paths:
                   mintable:
                     type: boolean
                     format: boolean
-                    description: mintable represents whether the token is allowed to mint.
+                    description: >-
+                      mintable represents whether the token is allowed to mint
+                      or burn.
                 description: TokenClass defines token information.
             title: >-
               QueryTokenClassResponse is the response type for the
@@ -64461,7 +64463,7 @@ definitions:
           mintable:
             type: boolean
             format: boolean
-            description: mintable represents whether the token is allowed to mint.
+            description: mintable represents whether the token is allowed to mint or burn.
         description: TokenClass defines token information.
     title: >-
       QueryTokenClassResponse is the response type for the Query/TokenClass RPC
@@ -64504,7 +64506,9 @@ definitions:
             mintable:
               type: boolean
               format: boolean
-              description: mintable represents whether the token is allowed to mint.
+              description: >-
+                mintable represents whether the token is allowed to mint or
+                burn.
           description: TokenClass defines token information.
         description: information of the token classes.
       pagination:
@@ -64561,7 +64565,7 @@ definitions:
       mintable:
         type: boolean
         format: boolean
-        description: mintable represents whether the token is allowed to mint.
+        description: mintable represents whether the token is allowed to mint or burn.
     description: TokenClass defines token information.
   lbm.feegrant.v1.Grant:
     type: object

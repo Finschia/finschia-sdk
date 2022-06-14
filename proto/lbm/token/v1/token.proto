@@ -24,7 +24,7 @@ message TokenClass {
   string meta = 5;
   // decimals is the number of decimals which one must divide the amount by to get its user representation.
   int32 decimals = 6;
-  // mintable represents whether the token is allowed to mint.
+  // mintable represents whether the token is allowed to mint or burn.
   bool mintable = 7;
 }
 

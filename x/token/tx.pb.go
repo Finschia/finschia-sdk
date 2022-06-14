@@ -30,6 +30,16 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // MsgSend defines the Msg/Send request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `from` is of invalid format.
+//   - `to` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `amount` is not positive.
+//
+// Signer: `from`
 type MsgSend struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -112,7 +122,19 @@ func (m *MsgSendResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgSendResponse proto.InternalMessageInfo
 
 // MsgOperatorSend defines the Msg/OperatorSend request type.
-// Since: finschia
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `operator` is of invalid format.
+//   - `from` is of invalid format.
+//   - `to` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `amount` is not positive.
+//
+// Signer: `operator`
+//
+// Since: 0.46.0 (finschia)
 type MsgOperatorSend struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -160,7 +182,8 @@ func (m *MsgOperatorSend) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgOperatorSend proto.InternalMessageInfo
 
 // MsgOperatorSendResponse defines the Msg/OperatorSend response type.
-// Since: finschia
+//
+// Since: 0.46.0 (finschia)
 type MsgOperatorSendResponse struct {
 }
 
@@ -198,7 +221,8 @@ func (m *MsgOperatorSendResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgOperatorSendResponse proto.InternalMessageInfo
 
 // MsgTransferFrom defines the Msg/TransferFrom request type.
-// NOTE: deprecated (use MsgOperatorSend)
+//
+// Note: deprecated (use MsgOperatorSend)
 type MsgTransferFrom struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -246,7 +270,8 @@ func (m *MsgTransferFrom) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgTransferFrom proto.InternalMessageInfo
 
 // MsgTransferFromResponse defines the Msg/TransferFrom response type.
-// NOTE: deprecated
+//
+// Note: deprecated
 type MsgTransferFromResponse struct {
 }
 
@@ -284,7 +309,17 @@ func (m *MsgTransferFromResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgTransferFromResponse proto.InternalMessageInfo
 
 // MsgAuthorizeOperator defines the Msg/AuthorizeOperator request type.
-// Since: finschia
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `holder` is of invalid format.
+//   - `operator` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//
+// Signer: `holder`
+//
+// Since: 0.46.0 (finschia)
 type MsgAuthorizeOperator struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -328,7 +363,8 @@ func (m *MsgAuthorizeOperator) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAuthorizeOperator proto.InternalMessageInfo
 
 // MsgAuthorizeOperatorResponse defines the Msg/AuthorizeOperator response type.
-// Since: finschia
+//
+// Since: 0.46.0 (finschia)
 type MsgAuthorizeOperatorResponse struct {
 }
 
@@ -366,7 +402,17 @@ func (m *MsgAuthorizeOperatorResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAuthorizeOperatorResponse proto.InternalMessageInfo
 
 // MsgRevokeOperator defines the Msg/RevokeOperator request type.
-// Since: finschia
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `holder` is of invalid format.
+//   - `operator` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//
+// Signer: `holder`
+//
+// Since: 0.46.0 (finschia)
 type MsgRevokeOperator struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -410,7 +456,8 @@ func (m *MsgRevokeOperator) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgRevokeOperator proto.InternalMessageInfo
 
 // MsgRevokeOperatorResponse defines the Msg/RevokeOperator response type.
-// Since: finschia
+//
+// Since: 0.46.0 (finschia)
 type MsgRevokeOperatorResponse struct {
 }
 
@@ -448,7 +495,8 @@ func (m *MsgRevokeOperatorResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgRevokeOperatorResponse proto.InternalMessageInfo
 
 // MsgApprove defines the Msg/Approve request type.
-// NOTE: deprecated (use MsgAuthorizeOperator)
+//
+// Note: deprecated (use MsgAuthorizeOperator)
 type MsgApprove struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -492,7 +540,8 @@ func (m *MsgApprove) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgApprove proto.InternalMessageInfo
 
 // MsgApproveResponse defines the Msg/Approve response type.
-// NOTE: deprecated
+//
+// Note: deprecated
 type MsgApproveResponse struct {
 }
 
@@ -530,6 +579,21 @@ func (m *MsgApproveResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgApproveResponse proto.InternalMessageInfo
 
 // MsgIssue defines the Msg/Issue request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `owner` is of invalid format.
+//   - `to` is of invalid format.
+// - ErrInvalidRequest
+//   - `name` is empty.
+//   - `name` exceeds the app-specific limit in length.
+//   - `symbol` is of invalid format.
+//   - `image_uri` exceeds the app-specific limit in length.
+//   - `meta` exceeds the app-specific limit in length.
+//   - `decimals` is lesser than 0 or greater than 18.
+//   - `amount` is not positive.
+//
+// Signer: `owner`
 type MsgIssue struct {
 	// name defines the human-readable name of the token class. mandatory (not ERC20 compliant).
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
@@ -622,7 +686,18 @@ func (m *MsgIssueResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgIssueResponse proto.InternalMessageInfo
 
 // MsgGrant defines the Msg/Grant request type.
-// Since: finschia
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `granter` is of invalid format.
+//   - `grantee` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `permission` is not a valid permission.
+//
+// Signer: `granter`
+//
+// Since: 0.46.0 (finschia)
 type MsgGrant struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -668,7 +743,8 @@ func (m *MsgGrant) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgGrant proto.InternalMessageInfo
 
 // MsgGrantResponse defines the Msg/Grant response type.
-// Since: finschia
+//
+// Since: 0.46.0 (finschia)
 type MsgGrantResponse struct {
 }
 
@@ -706,7 +782,17 @@ func (m *MsgGrantResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgGrantResponse proto.InternalMessageInfo
 
 // MsgAbandon defines the Msg/Abandon request type.
-// Since: finschia
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `grantee` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `permission` is not a valid permission.
+//
+// Signer: `grantee`
+//
+// Since: 0.46.0 (finschia)
 type MsgAbandon struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -750,7 +836,8 @@ func (m *MsgAbandon) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAbandon proto.InternalMessageInfo
 
 // MsgAbandonResponse defines the Msg/Abandon response type.
-// Since: finschia
+//
+// Since: 0.46.0 (finschia)
 type MsgAbandonResponse struct {
 }
 
@@ -788,7 +875,8 @@ func (m *MsgAbandonResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAbandonResponse proto.InternalMessageInfo
 
 // MsgGrantPermission defines the Msg/GrantPermission request type.
-// NOTE: deprecated (use MsgGrant)
+//
+// Note: deprecated (use MsgGrant)
 type MsgGrantPermission struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -834,7 +922,8 @@ func (m *MsgGrantPermission) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgGrantPermission proto.InternalMessageInfo
 
 // MsgGrantPermissionResponse defines the Msg/GrantPermission response type.
-// NOTE: deprecated
+//
+// Note: deprecated
 type MsgGrantPermissionResponse struct {
 }
 
@@ -872,7 +961,8 @@ func (m *MsgGrantPermissionResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgGrantPermissionResponse proto.InternalMessageInfo
 
 // MsgRevokePermission defines the Msg/RevokePermission request type.
-// NOTE: deprecated (use MsgAbandon)
+//
+// Note: deprecated (use MsgAbandon)
 type MsgRevokePermission struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -916,7 +1006,8 @@ func (m *MsgRevokePermission) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgRevokePermission proto.InternalMessageInfo
 
 // MsgRevokePermissionResponse defines the Msg/RevokePermission response type.
-// NOTE: deprecated
+//
+// Note: deprecated
 type MsgRevokePermissionResponse struct {
 }
 
@@ -954,6 +1045,16 @@ func (m *MsgRevokePermissionResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgRevokePermissionResponse proto.InternalMessageInfo
 
 // MsgMint defines the Msg/Mint request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `from` is of invalid format.
+//   - `to` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `amount` is not positive.
+//
+// Signer: `from`
 type MsgMint struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1036,11 +1137,19 @@ func (m *MsgMintResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgMintResponse proto.InternalMessageInfo
 
 // MsgBurn defines the Msg/Burn request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `from` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `amount` is not positive.
+//
+// Signer: `from`
 type MsgBurn struct {
 	// contract id associated with the token class.w
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address which the tokens will be burnt from.
-	// NOTE: it must have the permission for the burn.
 	From string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
 	// the amount of the burn.
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
@@ -1117,13 +1226,22 @@ func (m *MsgBurnResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgBurnResponse proto.InternalMessageInfo
 
 // MsgOperatorBurn defines the Msg/OperatorBurn request type.
-// Since: finschia
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `operator` is of invalid format.
+//   - `from` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `amount` is not positive.
+//
+// Signer: `operator`
+//
+// Since: 0.46.0 (finschia)
 type MsgOperatorBurn struct {
 	// the amount of the burn.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address which triggers the burn.
-	// NOTE: it must have the permission for the burn.
-	// NOTE: it must have been authorized by from.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
 	// address which the tokens will be burnt from.
 	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
@@ -1165,7 +1283,8 @@ func (m *MsgOperatorBurn) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgOperatorBurn proto.InternalMessageInfo
 
 // MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
-// Since: finschia
+//
+// Since: 0.46.0 (finschia)
 type MsgOperatorBurnResponse struct {
 }
 
@@ -1203,13 +1322,12 @@ func (m *MsgOperatorBurnResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgOperatorBurnResponse proto.InternalMessageInfo
 
 // MsgBurnFrom defines the Msg/BurnFrom request type.
-// NOTE: deprecated (use MsgOperatorBurn)
+//
+// Note: deprecated (use MsgOperatorBurn)
 type MsgBurnFrom struct {
 	// the amount of the burn.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address which triggers the burn.
-	// NOTE: it must have the permission for the burn.
-	// NOTE: it must have been authorized by from.
 	Proxy string `protobuf:"bytes,2,opt,name=proxy,proto3" json:"proxy,omitempty"`
 	// address which the tokens will be burnt from.
 	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
@@ -1251,7 +1369,8 @@ func (m *MsgBurnFrom) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgBurnFrom proto.InternalMessageInfo
 
 // MsgBurnFromResponse defines the Msg/BurnFrom response type.
-// NOTE: deprecated
+//
+// Note: deprecated
 type MsgBurnFromResponse struct {
 }
 
@@ -1289,6 +1408,17 @@ func (m *MsgBurnFromResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgBurnFromResponse proto.InternalMessageInfo
 
 // MsgModify defines the Msg/Modify request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `owner` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `changes` has duplicate keys.
+//   - `changes` has a key which is not allowed to modify.
+//   - `changes` is empty.
+//
+// Signer: `owner`
 type MsgModify struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1487,48 +1617,127 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	// Send defines a method to send tokens from one account to another account.
+	// Fires:
+	// - EventSent
+	// - transfer (deprecated, not typed)
+	// Throws:
+	// - ErrInsufficientFunds:
+	//   - the balance of `from` does not have enough tokens to spend.
 	Send(ctx context.Context, in *MsgSend, opts ...grpc.CallOption) (*MsgSendResponse, error)
 	// OperatorSend defines a method to send tokens from one account to another account by the operator.
-	// Since: finschia
+	// Fires:
+	// - EventSent
+	// - transfer_from (deprecated, not typed)
+	// Throws:
+	// - ErrUnauthorized:
+	//   - the holder has not authorized the operator.
+	// - ErrInsufficientFunds:
+	//   - the balance of `from` does not have enough tokens to spend.
+	// Since: 0.46.0 (finschia)
 	OperatorSend(ctx context.Context, in *MsgOperatorSend, opts ...grpc.CallOption) (*MsgOperatorSendResponse, error)
 	// TransferFrom defines a method to send tokens from one account to another account by the operator.
-	// NOTE: the approval has no value of limit.
-	// NOTE: deprecated (use OperatorSend)
+	// Note: the approval has no value of limit (not ERC20 compliant).
+	// Note: deprecated (use OperatorSend)
 	TransferFrom(ctx context.Context, in *MsgTransferFrom, opts ...grpc.CallOption) (*MsgTransferFromResponse, error)
 	// AuthorizeOperator allows one to send tokens on behalf of the holder.
-	// Since: finschia
+	// Fires:
+	// - EventAuthorizedOperator
+	// - approve_token (deprecated, not typed)
+	// Throws:
+	// - ErrNotFound:
+	//   - there is no the token class of `contract_id`.
+	// - ErrInvalidRequest:
+	//   - `holder` has already authorized `operator`.
+	// Since: 0.46.0 (finschia)
 	AuthorizeOperator(ctx context.Context, in *MsgAuthorizeOperator, opts ...grpc.CallOption) (*MsgAuthorizeOperatorResponse, error)
 	// RevokeOperator revoke the authorization of the operator to send the holder's tokens.
-	// Since: finschia
+	// Fires:
+	// - EventRevokedOperator
+	// Throws:
+	// - ErrNotFound:
+	//   - there is no the token class of `contract_id`.
+	//   - there is no authorization by `holder` to `operator`.
+	// Note: it introduces breaking change, because the legacy clients cannot track this revocation.
+	// Since: 0.46.0 (finschia)
 	RevokeOperator(ctx context.Context, in *MsgRevokeOperator, opts ...grpc.CallOption) (*MsgRevokeOperatorResponse, error)
 	// Approve allows one to send tokens on behalf of the holder.
-	// NOTE: deprecated (use AuthorizeOperator)
+	// Note: deprecated (use AuthorizeOperator)
 	Approve(ctx context.Context, in *MsgApprove, opts ...grpc.CallOption) (*MsgApproveResponse, error)
 	// Issue defines a method to create a class of token.
+	// it grants `mint`, `burn` and `modify` permissions on the token class to its creator (see also `mintable`).
+	// Fires:
+	// - EventIssue
+	// - EventMinted
+	// - issue (deprecated, not typed)
 	Issue(ctx context.Context, in *MsgIssue, opts ...grpc.CallOption) (*MsgIssueResponse, error)
 	// Grant allows one to mint or burn tokens or modify a token metadata.
-	// Since: finschia
+	// Fires:
+	// - EventGrant
+	// - grant_perm (deprecated, not typed)
+	// Throws:
+	// - ErrUnauthorized
+	//   - `granter` does not have `permission`.
+	// - ErrInvalidRequest
+	//   - `grantee` already has `permission`.
+	// Since: 0.46.0 (finschia)
 	Grant(ctx context.Context, in *MsgGrant, opts ...grpc.CallOption) (*MsgGrantResponse, error)
 	// Abandon abandons a permission.
-	// Since: finschia
+	// Fires:
+	// - EventAbandon
+	// - revoke_perm (deprecated, not typed)
+	// Throws:
+	// - ErrUnauthorized
+	//   - `grantee` does not have `permission`.
+	// Since: 0.46.0 (finschia)
 	Abandon(ctx context.Context, in *MsgAbandon, opts ...grpc.CallOption) (*MsgAbandonResponse, error)
 	// GrantPermission allows one to mint or burn tokens or modify a token metadata.
-	// NOTE: deprecated (use Grant)
+	// Note: deprecated (use Grant)
 	GrantPermission(ctx context.Context, in *MsgGrantPermission, opts ...grpc.CallOption) (*MsgGrantPermissionResponse, error)
 	// RevokePermission abandons a permission.
-	// NOTE: deprecated (use Abandon)
+	// Note: deprecated (use Abandon)
 	RevokePermission(ctx context.Context, in *MsgRevokePermission, opts ...grpc.CallOption) (*MsgRevokePermissionResponse, error)
 	// Mint defines a method to mint tokens.
+	// Fires:
+	// - EventMinted
+	// - mint (deprecated, not typed)
+	// Throws:
+	// - ErrUnauthorized
+	//   - `from` does not have `mint` permission.
 	Mint(ctx context.Context, in *MsgMint, opts ...grpc.CallOption) (*MsgMintResponse, error)
 	// Burn defines a method to burn tokens.
+	// Fires:
+	// - EventBurned
+	// - burn (deprecated, not typed)
+	// Throws:
+	// - ErrUnauthorized
+	//   - `from` does not have `burn` permission.
+	// - ErrInsufficientFunds:
+	//   - the balance of `from` does not have enough tokens to burn.
 	Burn(ctx context.Context, in *MsgBurn, opts ...grpc.CallOption) (*MsgBurnResponse, error)
 	// OperatorBurn defines a method to burn tokens by the operator.
-	// Since: finschia
+	// Fires:
+	// - EventBurned
+	// - burn_from (deprecated, not typed)
+	// Throws:
+	// - ErrUnauthorized
+	//   - `operator` does not have `burn` permission.
+	//   - the holder has not authorized `operator`.
+	// - ErrInsufficientFunds:
+	//   - the balance of `from` does not have enough tokens to burn.
+	// Since: 0.46.0 (finschia)
 	OperatorBurn(ctx context.Context, in *MsgOperatorBurn, opts ...grpc.CallOption) (*MsgOperatorBurnResponse, error)
 	// BurnFrom defines a method to burn tokens by the operator.
-	// NOTE: deprecated (use OperatorBurn)
+	// Note: deprecated (use OperatorBurn)
 	BurnFrom(ctx context.Context, in *MsgBurnFrom, opts ...grpc.CallOption) (*MsgBurnFromResponse, error)
 	// Modify defines a method to modify a token class.
+	// Fires:
+	// - EventModified
+	// - modify_token (deprecated, not typed)
+	// Throws:
+	// - ErrUnauthorized
+	//   - the operator does not have `modify` permission.
+	// - ErrNotFound
+	//   - there is no the token class of `contract_id`.
 	Modify(ctx context.Context, in *MsgModify, opts ...grpc.CallOption) (*MsgModifyResponse, error)
 }
 
@@ -1687,48 +1896,127 @@ func (c *msgClient) Modify(ctx context.Context, in *MsgModify, opts ...grpc.Call
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// Send defines a method to send tokens from one account to another account.
+	// Fires:
+	// - EventSent
+	// - transfer (deprecated, not typed)
+	// Throws:
+	// - ErrInsufficientFunds:
+	//   - the balance of `from` does not have enough tokens to spend.
 	Send(context.Context, *MsgSend) (*MsgSendResponse, error)
 	// OperatorSend defines a method to send tokens from one account to another account by the operator.
-	// Since: finschia
+	// Fires:
+	// - EventSent
+	// - transfer_from (deprecated, not typed)
+	// Throws:
+	// - ErrUnauthorized:
+	//   - the holder has not authorized the operator.
+	// - ErrInsufficientFunds:
+	//   - the balance of `from` does not have enough tokens to spend.
+	// Since: 0.46.0 (finschia)
 	OperatorSend(context.Context, *MsgOperatorSend) (*MsgOperatorSendResponse, error)
 	// TransferFrom defines a method to send tokens from one account to another account by the operator.
-	// NOTE: the approval has no value of limit.
-	// NOTE: deprecated (use OperatorSend)
+	// Note: the approval has no value of limit (not ERC20 compliant).
+	// Note: deprecated (use OperatorSend)
 	TransferFrom(context.Context, *MsgTransferFrom) (*MsgTransferFromResponse, error)
 	// AuthorizeOperator allows one to send tokens on behalf of the holder.
-	// Since: finschia
+	// Fires:
+	// - EventAuthorizedOperator
+	// - approve_token (deprecated, not typed)
+	// Throws:
+	// - ErrNotFound:
+	//   - there is no the token class of `contract_id`.
+	// - ErrInvalidRequest:
+	//   - `holder` has already authorized `operator`.
+	// Since: 0.46.0 (finschia)
 	AuthorizeOperator(context.Context, *MsgAuthorizeOperator) (*MsgAuthorizeOperatorResponse, error)
 	// RevokeOperator revoke the authorization of the operator to send the holder's tokens.
-	// Since: finschia
+	// Fires:
+	// - EventRevokedOperator
+	// Throws:
+	// - ErrNotFound:
+	//   - there is no the token class of `contract_id`.
+	//   - there is no authorization by `holder` to `operator`.
+	// Note: it introduces breaking change, because the legacy clients cannot track this revocation.
+	// Since: 0.46.0 (finschia)
 	RevokeOperator(context.Context, *MsgRevokeOperator) (*MsgRevokeOperatorResponse, error)
 	// Approve allows one to send tokens on behalf of the holder.
-	// NOTE: deprecated (use AuthorizeOperator)
+	// Note: deprecated (use AuthorizeOperator)
 	Approve(context.Context, *MsgApprove) (*MsgApproveResponse, error)
 	// Issue defines a method to create a class of token.
+	// it grants `mint`, `burn` and `modify` permissions on the token class to its creator (see also `mintable`).
+	// Fires:
+	// - EventIssue
+	// - EventMinted
+	// - issue (deprecated, not typed)
 	Issue(context.Context, *MsgIssue) (*MsgIssueResponse, error)
 	// Grant allows one to mint or burn tokens or modify a token metadata.
-	// Since: finschia
+	// Fires:
+	// - EventGrant
+	// - grant_perm (deprecated, not typed)
+	// Throws:
+	// - ErrUnauthorized
+	//   - `granter` does not have `permission`.
+	// - ErrInvalidRequest
+	//   - `grantee` already has `permission`.
+	// Since: 0.46.0 (finschia)
 	Grant(context.Context, *MsgGrant) (*MsgGrantResponse, error)
 	// Abandon abandons a permission.
-	// Since: finschia
+	// Fires:
+	// - EventAbandon
+	// - revoke_perm (deprecated, not typed)
+	// Throws:
+	// - ErrUnauthorized
+	//   - `grantee` does not have `permission`.
+	// Since: 0.46.0 (finschia)
 	Abandon(context.Context, *MsgAbandon) (*MsgAbandonResponse, error)
 	// GrantPermission allows one to mint or burn tokens or modify a token metadata.
-	// NOTE: deprecated (use Grant)
+	// Note: deprecated (use Grant)
 	GrantPermission(context.Context, *MsgGrantPermission) (*MsgGrantPermissionResponse, error)
 	// RevokePermission abandons a permission.
-	// NOTE: deprecated (use Abandon)
+	// Note: deprecated (use Abandon)
 	RevokePermission(context.Context, *MsgRevokePermission) (*MsgRevokePermissionResponse, error)
 	// Mint defines a method to mint tokens.
+	// Fires:
+	// - EventMinted
+	// - mint (deprecated, not typed)
+	// Throws:
+	// - ErrUnauthorized
+	//   - `from` does not have `mint` permission.
 	Mint(context.Context, *MsgMint) (*MsgMintResponse, error)
 	// Burn defines a method to burn tokens.
+	// Fires:
+	// - EventBurned
+	// - burn (deprecated, not typed)
+	// Throws:
+	// - ErrUnauthorized
+	//   - `from` does not have `burn` permission.
+	// - ErrInsufficientFunds:
+	//   - the balance of `from` does not have enough tokens to burn.
 	Burn(context.Context, *MsgBurn) (*MsgBurnResponse, error)
 	// OperatorBurn defines a method to burn tokens by the operator.
-	// Since: finschia
+	// Fires:
+	// - EventBurned
+	// - burn_from (deprecated, not typed)
+	// Throws:
+	// - ErrUnauthorized
+	//   - `operator` does not have `burn` permission.
+	//   - the holder has not authorized `operator`.
+	// - ErrInsufficientFunds:
+	//   - the balance of `from` does not have enough tokens to burn.
+	// Since: 0.46.0 (finschia)
 	OperatorBurn(context.Context, *MsgOperatorBurn) (*MsgOperatorBurnResponse, error)
 	// BurnFrom defines a method to burn tokens by the operator.
-	// NOTE: deprecated (use OperatorBurn)
+	// Note: deprecated (use OperatorBurn)
 	BurnFrom(context.Context, *MsgBurnFrom) (*MsgBurnFromResponse, error)
 	// Modify defines a method to modify a token class.
+	// Fires:
+	// - EventModified
+	// - modify_token (deprecated, not typed)
+	// Throws:
+	// - ErrUnauthorized
+	//   - the operator does not have `modify` permission.
+	// - ErrNotFound
+	//   - there is no the token class of `contract_id`.
 	Modify(context.Context, *MsgModify) (*MsgModifyResponse, error)
 }
 
