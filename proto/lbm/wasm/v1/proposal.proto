@@ -73,7 +73,7 @@ message SudoContractProposal {
   // Contract is the address of the smart contract
   string contract = 3;
   // Msg json encoded message to be passed to the contract as sudo
-  bytes msg = 4 [ (gogoproto.casttype) = "RawContractMessage" ];
+  bytes msg = 4 [(gogoproto.casttype) = "RawContractMessage"];
 }
 
 // ExecuteContractProposal gov proposal content type to call execute on a
@@ -88,7 +88,7 @@ message ExecuteContractProposal {
   // Contract is the address of the smart contract
   string contract = 4;
   // Msg json encoded message to be passed to the contract as sudo
-  bytes msg = 5 [ (gogoproto.casttype) = "RawContractMessage" ];
+  bytes msg = 5 [(gogoproto.casttype) = "RawContractMessage"];
 }
 
 // UpdateAdminProposal gov proposal content type to set an admin for a contract.

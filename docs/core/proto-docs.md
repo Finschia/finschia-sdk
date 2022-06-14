@@ -1018,10 +1018,12 @@
   
 - [lbm/wasm/v1/proposal.proto](#lbm/wasm/v1/proposal.proto)
     - [ClearAdminProposal](#lbm.wasm.v1.ClearAdminProposal)
+    - [ExecuteContractProposal](#lbm.wasm.v1.ExecuteContractProposal)
     - [InstantiateContractProposal](#lbm.wasm.v1.InstantiateContractProposal)
     - [MigrateContractProposal](#lbm.wasm.v1.MigrateContractProposal)
     - [PinCodesProposal](#lbm.wasm.v1.PinCodesProposal)
     - [StoreCodeProposal](#lbm.wasm.v1.StoreCodeProposal)
+    - [SudoContractProposal](#lbm.wasm.v1.SudoContractProposal)
     - [UnpinCodesProposal](#lbm.wasm.v1.UnpinCodesProposal)
     - [UpdateAdminProposal](#lbm.wasm.v1.UpdateAdminProposal)
     - [UpdateContractStatusProposal](#lbm.wasm.v1.UpdateContractStatusProposal)
@@ -14809,6 +14811,26 @@ ClearAdminProposal gov proposal content type to clear the admin of a contract.
 
 
 
+<a name="lbm.wasm.v1.ExecuteContractProposal"></a>
+
+### ExecuteContractProposal
+ExecuteContractProposal gov proposal content type to call execute on a
+contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract as sudo |
+
+
+
+
+
+
 <a name="lbm.wasm.v1.InstantiateContractProposal"></a>
 
 ### InstantiateContractProposal
@@ -14841,7 +14863,7 @@ MigrateContractProposal gov proposal content type to migrate a contract.
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  | Title is a short summary |
 | `description` | [string](#string) |  | Description is a human readable text |
-| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
+| `run_as` | [string](#string) |  | FIXME: I think this is unused? Migrate has no sender RunAs is the address that is passed to the contract's environment as sender |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
 | `code_id` | [uint64](#uint64) |  | CodeID references the new WASM code |
 | `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on migration |
@@ -14881,6 +14903,24 @@ StoreCodeProposal gov proposal content type to submit WASM code to the system
 | `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
 | `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
 | `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply on contract creation, optional |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.SudoContractProposal"></a>
+
+### SudoContractProposal
+SudoContractProposal gov proposal content type to call sudo on a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract as sudo |
 
 
 
