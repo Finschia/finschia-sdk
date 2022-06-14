@@ -239,7 +239,7 @@ func TestModuleAccountJSONPB(t *testing.T) {
 }
 
 func TestBaseAccountJSONPB(t *testing.T) {
-	baseAccountJson := "{\"address\":\"link1rrfywnytlm87ywes0hvxn4rhm4grrn9qquqljc\",\"pub_key\":{\"type\":0,\"key\":null},\"account_number\":\"10\",\"sequence\":\"50\"}"
+	baseAccountJson := `{"address":"link1rrfywnytlm87ywes0hvxn4rhm4grrn9qquqljc","pub_key":{"type":0,"key":null},"account_number":"10","sequence":"50"}`
 	ba := new(types.BaseAccount)
 	jum := jsonpb.Unmarshaler{}
 	err := jum.Unmarshal(strings.NewReader(baseAccountJson), ba)
