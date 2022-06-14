@@ -85,13 +85,7 @@ func (k Keeper) subtractToken(ctx sdk.Context, contractID string, addr sdk.AccAd
 		return err
 	}
 
-	// Emit an event on token spend
-	// Since: finschia
-	return ctx.EventManager().EmitTypedEvent(&token.EventSpent{
-		ContractId: contractID,
-		Spender:    addr.String(),
-		Amount:     amount,
-	})
+	return nil
 }
 
 func (k Keeper) addToken(ctx sdk.Context, contractID string, addr sdk.AccAddress, amount sdk.Int) error {
@@ -110,13 +104,7 @@ func (k Keeper) addToken(ctx sdk.Context, contractID string, addr sdk.AccAddress
 		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, addr))
 	}
 
-	// Emit an event on token receive
-	// Since: finschia
-	return ctx.EventManager().EmitTypedEvent(&token.EventReceived{
-		ContractId: contractID,
-		Receiver:   addr.String(),
-		Amount:     amount,
-	})
+	return nil
 }
 
 func (k Keeper) GetBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress) sdk.Int {

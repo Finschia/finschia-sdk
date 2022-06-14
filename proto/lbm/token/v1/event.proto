@@ -159,25 +159,3 @@ message EventModified {
   // changes on the metadata of the class.
   repeated Pair changes = 3 [(gogoproto.nullable) = false];
 }
-
-// EventSpent is emitted on token spend.
-// Since: finschia
-message EventSpent {
-  // contract id associated with the token class.
-  string contract_id = 1;
-  // address of the spender.
-  string spender = 2;
-  // amount of the spend.
-  string amount = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
-}
-
-// EventReceived is emitted on token receipt.
-// Since: finschia
-message EventReceived {
-  // contract id associated with the token class.
-  string contract_id = 1;
-  // address of the recipient.
-  string receiver = 2;
-  // amount of the receipt.
-  string amount = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
-}
