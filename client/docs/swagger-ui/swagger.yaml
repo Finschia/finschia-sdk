@@ -42568,7 +42568,7 @@ definitions:
 
       NOTE: The amount field is an Int which implements the custom method
       signatures required by gogoproto.
-  cosmos.base.ostracon.v1.GetBlockByHashResponse:
+  lbm.base.ostracon.v1.GetBlockByHashResponse:
     type: object
     properties:
       block_id:
@@ -43119,7 +43119,7 @@ definitions:
     description: >-
       GetBlockByHashResponse is the response type for the Query/GetBlockByHash
       RPC method.
-  cosmos.base.ostracon.v1.GetBlockByHeightResponse:
+  lbm.base.ostracon.v1.GetBlockByHeightResponse:
     type: object
     properties:
       block_id:
@@ -43670,7 +43670,7 @@ definitions:
     description: >-
       GetBlockByHeightResponse is the response type for the
       Query/GetBlockByHeight RPC method.
-  cosmos.base.ostracon.v1.GetBlockResultsByHeightResponse:
+  lbm.base.ostracon.v1.GetBlockResultsByHeightResponse:
     type: object
     properties:
       height:
@@ -43901,7 +43901,7 @@ definitions:
     description: >-
       GetBlockResultsByHeightResponse is the response type for the
       Query/GetBlockResultsByHeight RPC method.
-  cosmos.base.ostracon.v1.GetLatestBlockResponse:
+  lbm.base.ostracon.v1.GetLatestBlockResponse:
     type: object
     properties:
       block_id:
@@ -44452,7 +44452,7 @@ definitions:
     description: >-
       GetLatestBlockResponse is the response type for the Query/GetLatestBlock
       RPC method.
-  cosmos.base.ostracon.v1.GetLatestValidatorSetResponse:
+  lbm.base.ostracon.v1.GetLatestValidatorSetResponse:
     type: object
     properties:
       block_height:
@@ -44662,7 +44662,7 @@ definitions:
     description: >-
       GetLatestValidatorSetResponse is the response type for the
       Query/GetValidatorSetByHeight RPC method.
-  cosmos.base.ostracon.v1.GetNodeInfoResponse:
+  lbm.base.ostracon.v1.GetNodeInfoResponse:
     type: object
     properties:
       default_node_info:
@@ -44737,7 +44737,7 @@ definitions:
     description: >-
       GetNodeInfoResponse is the request type for the Query/GetNodeInfo RPC
       method.
-  cosmos.base.ostracon.v1.GetSyncingResponse:
+  lbm.base.ostracon.v1.GetSyncingResponse:
     type: object
     properties:
       syncing:
@@ -44746,7 +44746,7 @@ definitions:
     description: >-
       GetSyncingResponse is the response type for the Query/GetSyncing RPC
       method.
-  cosmos.base.ostracon.v1.GetValidatorSetByHeightResponse:
+  lbm.base.ostracon.v1.GetValidatorSetByHeightResponse:
     type: object
     properties:
       block_height:
@@ -44956,7 +44956,7 @@ definitions:
     description: >-
       GetValidatorSetByHeightResponse is the response type for the
       Query/GetValidatorSetByHeight RPC method.
-  cosmos.base.ostracon.v1.Module:
+  lbm.base.ostracon.v1.Module:
     type: object
     properties:
       path:
@@ -44969,7 +44969,7 @@ definitions:
         type: string
         title: checksum
     title: Module is the type for VersionInfo
-  cosmos.base.ostracon.v1.Validator:
+  lbm.base.ostracon.v1.Validator:
     type: object
     properties:
       address:
@@ -45140,7 +45140,7 @@ definitions:
         type: string
         format: int64
     description: Validator is the type for the validator-set.
-  cosmos.base.ostracon.v1.VersionInfo:
+  lbm.base.ostracon.v1.VersionInfo:
     type: object
     properties:
       name:
@@ -53922,7 +53922,7 @@ definitions:
       The
 
       tags are stringified and the log is JSON decoded.
-  cosmos.crypto.multisig.v1.CompactBitArray:
+  cosmos.crypto.multisig.v1beta1.CompactBitArray:
     type: object
     properties:
       extra_bits_stored:

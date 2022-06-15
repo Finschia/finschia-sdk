@@ -47,12 +47,6 @@
   
     - [Msg](#cosmos.auth.v1beta1.Msg)
   
-- [cosmos/base/v1beta1/coin.proto](#cosmos/base/v1beta1/coin.proto)
-    - [Coin](#cosmos.base.v1beta1.Coin)
-    - [DecCoin](#cosmos.base.v1beta1.DecCoin)
-    - [DecProto](#cosmos.base.v1beta1.DecProto)
-    - [IntProto](#cosmos.base.v1beta1.IntProto)
-  
 - [cosmos/authz/v1beta1/authz.proto](#cosmos/authz/v1beta1/authz.proto)
     - [GenericAuthorization](#cosmos.authz.v1beta1.GenericAuthorization)
     - [Grant](#cosmos.authz.v1beta1.Grant)
@@ -60,6 +54,16 @@
 - [cosmos/authz/v1beta1/event.proto](#cosmos/authz/v1beta1/event.proto)
     - [EventGrant](#cosmos.authz.v1beta1.EventGrant)
     - [EventRevoke](#cosmos.authz.v1beta1.EventRevoke)
+  
+- [cosmos/authz/v1beta1/genesis.proto](#cosmos/authz/v1beta1/genesis.proto)
+    - [GenesisState](#cosmos.authz.v1beta1.GenesisState)
+    - [GrantAuthorization](#cosmos.authz.v1beta1.GrantAuthorization)
+  
+- [cosmos/authz/v1beta1/query.proto](#cosmos/authz/v1beta1/query.proto)
+    - [QueryGrantsRequest](#cosmos.authz.v1beta1.QueryGrantsRequest)
+    - [QueryGrantsResponse](#cosmos.authz.v1beta1.QueryGrantsResponse)
+  
+    - [Query](#cosmos.authz.v1beta1.Query)
   
 - [cosmos/base/abci/v1beta1/abci.proto](#cosmos/base/abci/v1beta1/abci.proto)
     - [ABCIMessageLog](#cosmos.base.abci.v1beta1.ABCIMessageLog)
@@ -83,15 +87,11 @@
   
     - [Msg](#cosmos.authz.v1beta1.Msg)
   
-- [cosmos/authz/v1beta1/genesis.proto](#cosmos/authz/v1beta1/genesis.proto)
-    - [GenesisState](#cosmos.authz.v1beta1.GenesisState)
-    - [GrantAuthorization](#cosmos.authz.v1beta1.GrantAuthorization)
-  
-- [cosmos/authz/v1beta1/query.proto](#cosmos/authz/v1beta1/query.proto)
-    - [QueryGrantsRequest](#cosmos.authz.v1beta1.QueryGrantsRequest)
-    - [QueryGrantsResponse](#cosmos.authz.v1beta1.QueryGrantsResponse)
-  
-    - [Query](#cosmos.authz.v1beta1.Query)
+- [cosmos/base/v1beta1/coin.proto](#cosmos/base/v1beta1/coin.proto)
+    - [Coin](#cosmos.base.v1beta1.Coin)
+    - [DecCoin](#cosmos.base.v1beta1.DecCoin)
+    - [DecProto](#cosmos.base.v1beta1.DecProto)
+    - [IntProto](#cosmos.base.v1beta1.IntProto)
   
 - [cosmos/bank/v1beta1/authz.proto](#cosmos/bank/v1beta1/authz.proto)
     - [SendAuthorization](#cosmos.bank.v1beta1.SendAuthorization)
@@ -213,8 +213,8 @@
     - [Msg](#cosmos.crisis.v1beta1.Msg)
   
 - [cosmos/crypto/multisig/v1beta1/multisig.proto](#cosmos/crypto/multisig/v1beta1/multisig.proto)
-    - [CompactBitArray](#cosmos.crypto.multisig.v1.CompactBitArray)
-    - [MultiSignature](#cosmos.crypto.multisig.v1.MultiSignature)
+    - [CompactBitArray](#cosmos.crypto.multisig.v1beta1.CompactBitArray)
+    - [MultiSignature](#cosmos.crypto.multisig.v1beta1.MultiSignature)
   
 - [cosmos/distribution/v1beta1/distribution.proto](#cosmos/distribution/v1beta1/distribution.proto)
     - [CommunityPoolSpendProposal](#cosmos.distribution.v1beta1.CommunityPoolSpendProposal)
@@ -1575,90 +1575,6 @@ Msg defines the auth Msg service.
 
 
 
-<a name="cosmos/base/v1beta1/coin.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmos/base/v1beta1/coin.proto
-
-
-
-<a name="cosmos.base.v1beta1.Coin"></a>
-
-### Coin
-Coin defines a token with a denomination and an amount.
-
-NOTE: The amount field is an Int which implements the custom method
-signatures required by gogoproto.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="cosmos.base.v1beta1.DecCoin"></a>
-
-### DecCoin
-DecCoin defines a token with a denomination and a decimal amount.
-
-NOTE: The amount field is an Dec which implements the custom method
-signatures required by gogoproto.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  |  |
-| `amount` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="cosmos.base.v1beta1.DecProto"></a>
-
-### DecProto
-DecProto defines a Protobuf wrapper around a Dec object.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `dec` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="cosmos.base.v1beta1.IntProto"></a>
-
-### IntProto
-IntProto defines a Protobuf wrapper around an Int object.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `int` | [string](#string) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
 <a name="cosmos/authz/v1beta1/authz.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1753,6 +1669,115 @@ EventRevoke is emitted on Msg/Revoke
  <!-- end enums -->
 
  <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmos/authz/v1beta1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmos/authz/v1beta1/genesis.proto
+Since: cosmos-sdk 0.43
+
+
+<a name="cosmos.authz.v1beta1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the authz module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authorization` | [GrantAuthorization](#cosmos.authz.v1beta1.GrantAuthorization) | repeated |  |
+
+
+
+
+
+
+<a name="cosmos.authz.v1beta1.GrantAuthorization"></a>
+
+### GrantAuthorization
+GrantAuthorization defines the GenesisState/GrantAuthorization type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `expiration` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmos/authz/v1beta1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmos/authz/v1beta1/query.proto
+Since: cosmos-sdk 0.43
+
+
+<a name="cosmos.authz.v1beta1.QueryGrantsRequest"></a>
+
+### QueryGrantsRequest
+QueryGrantsRequest is the request type for the Query/Grants RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `msg_type_url` | [string](#string) |  | Optional, msg_type_url, when set, will query only grants matching given msg type. |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an pagination for the request. |
+
+
+
+
+
+
+<a name="cosmos.authz.v1beta1.QueryGrantsResponse"></a>
+
+### QueryGrantsResponse
+QueryGrantsResponse is the response type for the Query/Authorizations RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grants` | [Grant](#cosmos.authz.v1beta1.Grant) | repeated | authorizations is a list of grants granted for grantee by granter. |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines an pagination for the response. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="cosmos.authz.v1beta1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Grants` | [QueryGrantsRequest](#cosmos.authz.v1beta1.QueryGrantsRequest) | [QueryGrantsResponse](#cosmos.authz.v1beta1.QueryGrantsResponse) | Returns list of `Authorization`, granted to the grantee by the granter. | GET|/cosmos/authz/v1beta1/grants|
 
  <!-- end services -->
 
@@ -2076,40 +2101,75 @@ Msg defines the authz Msg service.
 
 
 
-<a name="cosmos/authz/v1beta1/genesis.proto"></a>
+<a name="cosmos/base/v1beta1/coin.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## cosmos/authz/v1beta1/genesis.proto
-Since: cosmos-sdk 0.43
-
-
-<a name="cosmos.authz.v1beta1.GenesisState"></a>
-
-### GenesisState
-GenesisState defines the authz module's genesis state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `authorization` | [GrantAuthorization](#cosmos.authz.v1beta1.GrantAuthorization) | repeated |  |
+## cosmos/base/v1beta1/coin.proto
 
 
 
+<a name="cosmos.base.v1beta1.Coin"></a>
 
+### Coin
+Coin defines a token with a denomination and an amount.
 
-
-<a name="cosmos.authz.v1beta1.GrantAuthorization"></a>
-
-### GrantAuthorization
-GrantAuthorization defines the GenesisState/GrantAuthorization type.
+NOTE: The amount field is an Int which implements the custom method
+signatures required by gogoproto.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `granter` | [string](#string) |  |  |
-| `grantee` | [string](#string) |  |  |
-| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `expiration` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `denom` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="cosmos.base.v1beta1.DecCoin"></a>
+
+### DecCoin
+DecCoin defines a token with a denomination and a decimal amount.
+
+NOTE: The amount field is an Dec which implements the custom method
+signatures required by gogoproto.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="cosmos.base.v1beta1.DecProto"></a>
+
+### DecProto
+DecProto defines a Protobuf wrapper around a Dec object.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `dec` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="cosmos.base.v1beta1.IntProto"></a>
+
+### IntProto
+IntProto defines a Protobuf wrapper around an Int object.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `int` | [string](#string) |  |  |
 
 
 
@@ -2120,66 +2180,6 @@ GrantAuthorization defines the GenesisState/GrantAuthorization type.
  <!-- end enums -->
 
  <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="cosmos/authz/v1beta1/query.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmos/authz/v1beta1/query.proto
-Since: cosmos-sdk 0.43
-
-
-<a name="cosmos.authz.v1beta1.QueryGrantsRequest"></a>
-
-### QueryGrantsRequest
-QueryGrantsRequest is the request type for the Query/Grants RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `granter` | [string](#string) |  |  |
-| `grantee` | [string](#string) |  |  |
-| `msg_type_url` | [string](#string) |  | Optional, msg_type_url, when set, will query only grants matching given msg type. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an pagination for the request. |
-
-
-
-
-
-
-<a name="cosmos.authz.v1beta1.QueryGrantsResponse"></a>
-
-### QueryGrantsResponse
-QueryGrantsResponse is the response type for the Query/Authorizations RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `grants` | [Grant](#cosmos.authz.v1beta1.Grant) | repeated | authorizations is a list of grants granted for grantee by granter. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines an pagination for the response. |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="cosmos.authz.v1beta1.Query"></a>
-
-### Query
-Query defines the gRPC querier service.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Grants` | [QueryGrantsRequest](#cosmos.authz.v1beta1.QueryGrantsRequest) | [QueryGrantsResponse](#cosmos.authz.v1beta1.QueryGrantsResponse) | Returns list of `Authorization`, granted to the grantee by the granter. | GET|/cosmos/authz/v1beta1/grants|
 
  <!-- end services -->
 
@@ -3710,7 +3710,7 @@ Msg defines the bank Msg service.
 
 
 
-<a name="cosmos.crypto.multisig.v1.CompactBitArray"></a>
+<a name="cosmos.crypto.multisig.v1beta1.CompactBitArray"></a>
 
 ### CompactBitArray
 CompactBitArray is an implementation of a space efficient bit array.
@@ -3729,7 +3729,7 @@ This is not thread safe, and is not intended for concurrent usage.
 
 
 
-<a name="cosmos.crypto.multisig.v1.MultiSignature"></a>
+<a name="cosmos.crypto.multisig.v1beta1.MultiSignature"></a>
 
 ### MultiSignature
 MultiSignature wraps the signatures from a multisig.LegacyAminoPubKey.
@@ -7667,7 +7667,7 @@ Multi is the signature data for a multisig public key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `bitarray` | [cosmos.crypto.multisig.v1.CompactBitArray](#cosmos.crypto.multisig.v1.CompactBitArray) |  | bitarray specifies which keys within the multisig are signing |
+| `bitarray` | [cosmos.crypto.multisig.v1beta1.CompactBitArray](#cosmos.crypto.multisig.v1beta1.CompactBitArray) |  | bitarray specifies which keys within the multisig are signing |
 | `signatures` | [SignatureDescriptor.Data](#cosmos.tx.signing.v1beta1.SignatureDescriptor.Data) | repeated | signatures is the signatures of the multi-signature |
 
 
@@ -7797,7 +7797,7 @@ Multi is the mode info for a multisig public key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `bitarray` | [cosmos.crypto.multisig.v1.CompactBitArray](#cosmos.crypto.multisig.v1.CompactBitArray) |  | bitarray specifies which keys within the multisig are signing |
+| `bitarray` | [cosmos.crypto.multisig.v1beta1.CompactBitArray](#cosmos.crypto.multisig.v1beta1.CompactBitArray) |  | bitarray specifies which keys within the multisig are signing |
 | `mode_infos` | [ModeInfo](#cosmos.tx.v1beta1.ModeInfo) | repeated | mode_infos is the corresponding modes of the signers of the multisig which could include nested multisig public keys |
 
 
