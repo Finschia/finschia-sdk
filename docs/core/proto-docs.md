@@ -12580,6 +12580,7 @@ Permission enumerates the valid permissions on a token class.
 
 ### EventAbandon
 EventAbandon is emitted when a grantee abandons its permission.
+
 Since: 0.46.0 (finschia)
 
 
@@ -12598,6 +12599,7 @@ Since: 0.46.0 (finschia)
 
 ### EventAuthorizedOperator
 EventAuthorizedOperator is emitted when a holder authorizes an operator to manipulate its tokens.
+
 Since: 0.46.0 (finschia)
 
 
@@ -12616,6 +12618,7 @@ Since: 0.46.0 (finschia)
 
 ### EventBurned
 EventBurned is emitted when tokens are burnt.
+
 Since: 0.46.0 (finschia)
 
 
@@ -12635,6 +12638,7 @@ Since: 0.46.0 (finschia)
 
 ### EventGrant
 EventGrant is emitted when a granter grants its permission to a grantee.
+
 Since: 0.46.0 (finschia)
 
 
@@ -12654,6 +12658,7 @@ Since: 0.46.0 (finschia)
 
 ### EventIssue
 EventIssue is emitted when a new token class is created.
+
 Since: 0.46.0 (finschia)
 
 
@@ -12676,6 +12681,7 @@ Since: 0.46.0 (finschia)
 
 ### EventMinted
 EventMinted is emitted when tokens are minted.
+
 Since: 0.46.0 (finschia)
 
 
@@ -12695,6 +12701,7 @@ Since: 0.46.0 (finschia)
 
 ### EventModified
 EventModified is emitted when the information of a token class is modified.
+
 Since: 0.46.0 (finschia)
 
 
@@ -12713,6 +12720,7 @@ Since: 0.46.0 (finschia)
 
 ### EventRevokedOperator
 EventRevokedOperator is emitted when an authorization is revoked.
+
 Since: 0.46.0 (finschia)
 
 
@@ -12731,6 +12739,7 @@ Since: 0.46.0 (finschia)
 
 ### EventSent
 EventSent is emitted when tokens are transferred.
+
 Since: 0.46.0 (finschia)
 
 

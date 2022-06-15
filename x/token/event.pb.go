@@ -145,6 +145,7 @@ func (AttributeKey) EnumDescriptor() ([]byte, []int) {
 }
 
 // EventSent is emitted when tokens are transferred.
+//
 // Since: 0.46.0 (finschia)
 type EventSent struct {
 	// contract id associated with the token class.
@@ -221,6 +222,7 @@ func (m *EventSent) GetTo() string {
 }
 
 // EventAuthorizedOperator is emitted when a holder authorizes an operator to manipulate its tokens.
+//
 // Since: 0.46.0 (finschia)
 type EventAuthorizedOperator struct {
 	// contract id associated with the token class.
@@ -286,6 +288,7 @@ func (m *EventAuthorizedOperator) GetOperator() string {
 }
 
 // EventRevokedOperator is emitted when an authorization is revoked.
+//
 // Since: 0.46.0 (finschia)
 type EventRevokedOperator struct {
 	// contract id associated with the token class.
@@ -351,6 +354,7 @@ func (m *EventRevokedOperator) GetOperator() string {
 }
 
 // EventIssue is emitted when a new token class is created.
+//
 // Since: 0.46.0 (finschia)
 type EventIssue struct {
 	// contract id associated with the token class.
@@ -452,6 +456,7 @@ func (m *EventIssue) GetMintable() bool {
 }
 
 // EventGrant is emitted when a granter grants its permission to a grantee.
+//
 // Since: 0.46.0 (finschia)
 type EventGrant struct {
 	// contract id associated with the token class.
@@ -526,6 +531,7 @@ func (m *EventGrant) GetPermission() string {
 }
 
 // EventAbandon is emitted when a grantee abandons its permission.
+//
 // Since: 0.46.0 (finschia)
 type EventAbandon struct {
 	// contract id associated with the token class.
@@ -591,6 +597,7 @@ func (m *EventAbandon) GetPermission() string {
 }
 
 // EventMinted is emitted when tokens are minted.
+//
 // Since: 0.46.0 (finschia)
 type EventMinted struct {
 	// contract id associated with the token class.
@@ -658,6 +665,7 @@ func (m *EventMinted) GetTo() string {
 }
 
 // EventBurned is emitted when tokens are burnt.
+//
 // Since: 0.46.0 (finschia)
 type EventBurned struct {
 	// contract id associated with the token class.
@@ -725,6 +733,7 @@ func (m *EventBurned) GetFrom() string {
 }
 
 // EventModified is emitted when the information of a token class is modified.
+//
 // Since: 0.46.0 (finschia)
 type EventModified struct {
 	// contract id associated with the token class.
