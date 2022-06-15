@@ -145,17 +145,11 @@ func (k Keeper) iterateParentsImpl(ctx sdk.Context, prefix []byte, fn func(contr
 
 		var parentID gogotypes.StringValue
 		k.cdc.MustUnmarshal(iter.Value(), &parentID)
-		
+
 		if fn(contractID, tokenID, parentID.Value) {
 			break
 		}
 	}
-}
-
-func (k Keeper) iterateContractChildren(ctx sdk.Context, contractID string, fn func(tokenID, childID string) (stop bool)) {
-	k.iterateChildrenImpl(ctx, childKeyPrefixByContractID(contractID), func(_ string, tokenID, childID string) (stop bool) {
-		return fn(tokenID, childID)
-	})
 }
 
 func (k Keeper) iterateChildrenImpl(ctx sdk.Context, prefix []byte, fn func(contractID string, tokenID, childID string) (stop bool)) {
@@ -194,12 +188,6 @@ func (k Keeper) iterateStatisticsImpl(ctx sdk.Context, prefix []byte, fn func(co
 
 func (k Keeper) iterateContractSupplies(ctx sdk.Context, contractID string, fn func(classID string, amount sdk.Int) (stop bool)) {
 	k.iterateStatisticsImpl(ctx, statisticsKeyPrefixByContractID(supplyKeyPrefix, contractID), func(_ string, classID string, amount sdk.Int) (stop bool) {
-		return fn(classID, amount)
-	})
-}
-
-func (k Keeper) iterateContractMinteds(ctx sdk.Context, contractID string, fn func(classID string, amount sdk.Int) (stop bool)) {
-	k.iterateStatisticsImpl(ctx, statisticsKeyPrefixByContractID(mintedKeyPrefix, contractID), func(_ string, classID string, amount sdk.Int) (stop bool) {
 		return fn(classID, amount)
 	})
 }

@@ -82,17 +82,9 @@ func (k Keeper) GetChildren(ctx sdk.Context, contractID string, tokenID string) 
 }
 
 func (k Keeper) iterateChildren(ctx sdk.Context, contractID string, tokenID string, fn func(childID string) (stop bool)) {
-	store := ctx.KVStore(k.storeKey)
-	prefix := childKeyPrefixByTokenID(contractID, tokenID)
-	iter := sdk.KVStorePrefixIterator(store, prefix)
-
-	defer iter.Close()
-	for ; iter.Valid(); iter.Next() {
-		_, _, childID := splitChildKey(iter.Key())
-		if fn(childID) {
-			break
-		}
-	}
+	k.iterateChildrenImpl(ctx, childKeyPrefixByTokenID(contractID, tokenID), func(_ string, _ string, childID string) (stop bool) {
+		return fn(childID)
+	})
 }
 
 func (k Keeper) setChild(ctx sdk.Context, contractID string, tokenID, childID string) {

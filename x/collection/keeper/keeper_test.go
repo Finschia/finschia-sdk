@@ -27,12 +27,31 @@ type KeeperTestSuite struct {
 	vendor   sdk.AccAddress
 	operator sdk.AccAddress
 	customer sdk.AccAddress
+	stranger sdk.AccAddress
 
 	contractID string
 	ftClassID string
 	nftClassID string
 
 	balance sdk.Int
+}
+
+func createRandomAccounts(accNum int) []sdk.AccAddress {
+	seenAddresses := make(map[sdk.AccAddress]bool, accNum)
+	addresses := make([]sdk.AccAddress, accNum)
+	for i := 0; i < accNum; i++ {
+		var address sdk.AccAddress
+		for {
+			pk := secp256k1.GenPrivKey().PubKey()
+			address = sdk.BytesToAccAddress(pk.Address())
+			if !seenAddresses[address] {
+				seenAddresses[address] = true
+				break
+			}
+		}
+		addresses[i] = address
+	}
+	return addresses
 }
 
 func (s *KeeperTestSuite) SetupTest() {
@@ -45,12 +64,15 @@ func (s *KeeperTestSuite) SetupTest() {
 	// s.queryServer = keeper.NewQueryServer(s.keeper)
 	s.msgServer = keeper.NewMsgServer(s.keeper)
 
-	createAddress := func() sdk.AccAddress {
-		return sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addresses := []*sdk.AccAddress{
+		&s.vendor,
+		&s.operator,
+		&s.customer,
+		&s.stranger,
 	}
-	s.vendor = createAddress()
-	s.operator = createAddress()
-	s.customer = createAddress()
+	for i, address := range createRandomAccounts(len(addresses)) {
+		*addresses[i] = address
+	}
 
 	s.balance = sdk.OneInt()
 

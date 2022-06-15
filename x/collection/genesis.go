@@ -14,9 +14,9 @@ func ValidateGenesis(data GenesisState) error {
 	// TODO: validate parameters
 
 	// the legacy module did not validate the data.
-	if LegacyMode {
-		return nil
-	}
+	// if LegacyMode {
+	// 	return nil
+	// }
 
 	for _, contract := range data.Contracts {
 		if err := class.ValidateID(contract.ContractId); err != nil {

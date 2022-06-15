@@ -4,13 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	codectypes "github.com/line/lbm-sdk/codec/types"
 	proto "github.com/gogo/protobuf/proto"
+	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
-)
-
-const (
-	LegacyMode = true
 )
 
 func DefaultNextClassIDs(contractID string) NextClassIDs {
@@ -61,7 +57,7 @@ var _ TokenClass = (*FTClass)(nil)
 func (c *FTClass) SetId(ids *NextClassIDs) {
 	id := ids.Fungible
 	ids.Fungible = id.Incr()
-	c.Id = fmt.Sprintf("%08x%08x", id.Uint64(), 0)
+	c.Id = fmt.Sprintf("%08x", id.Uint64())
 }
 
 func (c FTClass) ValidateBasic() error {
@@ -90,7 +86,7 @@ var _ TokenClass = (*NFTClass)(nil)
 func (c *NFTClass) SetId(ids *NextClassIDs) {
 	id := ids.NonFungible
 	ids.NonFungible = id.Incr()
-	c.Id = fmt.Sprintf("%08x%08x", id.Uint64(), 0)
+	c.Id = fmt.Sprintf("%08x", id.Uint64())
 }
 
 func (c NFTClass) ValidateBasic() error {

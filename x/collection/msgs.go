@@ -11,14 +11,12 @@ import (
 )
 
 const (
-	//nolint:gosec
-	suffixTokenID = `[0-9a-f]{8}`
-	suffixClassID = `0{8}`
+	patternAll  = `[0-9a-f]{8}`
+	patternZero = `0{8}`
 
-	//nolint:gosec
-	prefixTokenID = `[0-9a-f]{8}`
-	prefixFTID    = `0[0-9a-f]{7}`
-	prefixNFTID   = `[1-9a-f][0-9a-f]{7}`
+	patternClassID          = patternAll
+	patternLegacyFTClassID  = `0[0-9a-f]{7}`
+	patternLegacyNFTClassID = `[1-9a-f][0-9a-f]{7}`
 
 	nameLengthLimit       = 20
 	baseImgURILengthLimit = 1000
@@ -28,14 +26,15 @@ const (
 
 var (
 	// regexps for class ids
-	reClassID    = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, prefixTokenID, suffixClassID))
-	reFTClassID  = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, prefixFTID, suffixClassID))
-	reNFTClassID = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, prefixNFTID, suffixClassID))
+	reClassID          = regexp.MustCompile(fmt.Sprintf(`^%s$`, patternClassID))
+	reLegacyFTClassID  = regexp.MustCompile(fmt.Sprintf(`^%s$`, patternLegacyFTClassID))
+	reLegacyNFTClassID = regexp.MustCompile(fmt.Sprintf(`^%s$`, patternLegacyNFTClassID))
 
 	// regexps for token ids
-	reTokenID = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, prefixTokenID, suffixTokenID))
-	reFTID    = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, prefixFTID, suffixTokenID))
-	reNFTID   = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, prefixNFTID, suffixTokenID))
+	reTokenID     = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternClassID, patternAll))
+	reFTID        = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternClassID, patternZero))
+	reLegacyFTID  = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternLegacyFTClassID, patternAll))
+	reLegacyNFTID = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternLegacyNFTClassID, patternAll))
 )
 
 func validateAmount(amount sdk.Int) error {
@@ -67,12 +66,14 @@ func ValidateClassID(id string) error {
 	return validateID(id, reClassID)
 }
 
-func ValidateFTClassID(id string) error {
-	return validateID(id, reFTClassID)
+// deprecated
+func ValidateLegacyFTClassID(id string) error {
+	return validateID(id, reLegacyFTClassID)
 }
 
-func ValidateNFTClassID(id string) error {
-	return validateID(id, reNFTClassID)
+// deprecated
+func ValidateLegacyNFTClassID(id string) error {
+	return validateID(id, reLegacyNFTClassID)
 }
 
 func ValidateTokenID(id string) error {
@@ -83,8 +84,24 @@ func ValidateFTID(id string) error {
 	return validateID(id, reFTID)
 }
 
+// deprecated
+func ValidateLegacyFTID(id string) error {
+	return validateID(id, reLegacyFTID)
+}
+
 func ValidateNFTID(id string) error {
-	return validateID(id, reNFTID)
+	if err := ValidateTokenID(id); err != nil {
+		return err
+	}
+	if err := ValidateFTID(id); err == nil {
+		return sdkerrors.ErrInvalidRequest.Wrapf("invalid id: %s", id)
+	}
+	return nil
+}
+
+// deprecated
+func ValidateLegacyNFTID(id string) error {
+	return validateID(id, reLegacyNFTID)
 }
 
 func validateID(id string, reg *regexp.Regexp) error {
@@ -586,8 +603,8 @@ func (m MsgMintNFT) ValidateBasic() error {
 		return sdkerrors.ErrInvalidRequest.Wrap("mint params cannot be empty")
 	}
 	for _, param := range m.Params {
-		classID := param.TokenType + fmt.Sprintf("%08x", 0)
-		if err := ValidateNFTClassID(classID); err != nil {
+		classID := param.TokenType
+		if err := ValidateLegacyNFTClassID(classID); err != nil {
 			return err
 		}
 
@@ -731,7 +748,7 @@ func (m MsgBurnNFT) ValidateBasic() error {
 		return sdkerrors.ErrInvalidRequest.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
-		if err := ValidateNFTID(id); err != nil {
+		if err := ValidateLegacyNFTID(id); err != nil {
 			return err
 		}
 	}
@@ -764,7 +781,7 @@ func (m MsgBurnNFTFrom) ValidateBasic() error {
 		return sdkerrors.ErrInvalidRequest.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
-		if err := ValidateNFTID(id); err != nil {
+		if err := ValidateLegacyNFTID(id); err != nil {
 			return err
 		}
 	}
@@ -791,11 +808,11 @@ func (m MsgModify) ValidateBasic() error {
 	}
 
 	if len(m.TokenType) != 0 {
-		classID := m.TokenType + fmt.Sprintf("%08x", 0)
+		classID := m.TokenType
 		if err := ValidateClassID(classID); err != nil {
 			return err
 		}
-		if err := ValidateFTClassID(classID); err == nil && len(m.TokenIndex) == 0 {
+		if err := ValidateLegacyFTClassID(classID); err == nil && len(m.TokenIndex) == 0 {
 			// smells
 			return sdkerrors.ErrInvalidRequest.Wrap("fungible token type without index")
 		}

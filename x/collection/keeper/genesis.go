@@ -103,7 +103,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *collection.GenesisState {
 		contractID := contract.ContractId
 		contractBalances := collection.ContractBalances{
 			ContractId: contractID,
-			Balances: k.getContractBalances(ctx, contractID),
+			Balances:   k.getContractBalances(ctx, contractID),
 		}
 
 		if len(contractBalances.Balances) != 0 {
@@ -120,7 +120,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *collection.GenesisState {
 
 		k.iterateContractParents(ctx, contractID, func(tokenID, parentID string) (stop bool) {
 			relation := collection.TokenRelation{
-				Self: tokenID,
+				Self:  tokenID,
 				Other: parentID,
 			}
 			contractParents.Relations = append(contractParents.Relations, relation)
@@ -164,42 +164,48 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *collection.GenesisState {
 	}
 
 	var supplies []collection.ContractStatistics
-	for _, contractStatistics := range supplies {
-		contractID := contractStatistics.ContractId
-		
+	for _, contract := range contracts {
+		contractID := contract.ContractId
+		contractSupplies := collection.ContractStatistics{
+			ContractId: contractID,
+		}
+
 		k.iterateContractSupplies(ctx, contractID, func(classID string, amount sdk.Int) (stop bool) {
 			supply := collection.ClassStatistics{
 				ClassId: classID,
-				Amount:     amount,
+				Amount:  amount,
 			}
-			contractStatistics.Statistics = append(contractStatistics.Statistics, supply)
+			contractSupplies.Statistics = append(contractSupplies.Statistics, supply)
 			return false
 		})
 	}
 
 	var burnts []collection.ContractStatistics
-	for _, contractStatistics := range burnts {
-		contractID := contractStatistics.ContractId
-		
+	for _, contract := range contracts {
+		contractID := contract.ContractId
+		contractBurnts := collection.ContractStatistics{
+			ContractId: contractID,
+		}
+
 		k.iterateContractBurnts(ctx, contractID, func(classID string, amount sdk.Int) (stop bool) {
 			burnt := collection.ClassStatistics{
 				ClassId: classID,
-				Amount:     amount,
+				Amount:  amount,
 			}
-			contractStatistics.Statistics = append(contractStatistics.Statistics, burnt)
+			contractBurnts.Statistics = append(contractBurnts.Statistics, burnt)
 			return false
 		})
 	}
 
 	return &collection.GenesisState{
-		Contracts:        contracts,
-		Classes: classes,
+		Contracts:      contracts,
+		Classes:        classes,
 		Balances:       balances,
-		Parents: parents,
+		Parents:        parents,
 		Grants:         grants,
 		Authorizations: authorizations,
 		Supplies:       supplies,
-		Burnts:          burnts,
+		Burnts:         burnts,
 	}
 }
 
@@ -216,7 +222,7 @@ func (k Keeper) getContractBalances(ctx sdk.Context, contractID string) []collec
 
 		accountBalance := collection.Balance{
 			Address: address.String(),
-			Amount: collection.Coins{},
+			Amount:  collection.Coins{},
 		}
 		balances = append(balances, accountBalance)
 		addressToBalanceIndex[address] = len(balances) - 1
