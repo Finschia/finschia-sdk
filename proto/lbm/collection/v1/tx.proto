@@ -12,12 +12,12 @@ option (gogoproto.equal_all) = false;
 service Msg {
   // Send defines a method to send tokens from one account to another account.
   // Info: one can send both fungible tokens and non-fungible tokens.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc Send(MsgSend) returns (MsgSendResponse);
 
   // OperatorSend defines a method to send tokens from one account to another account by the operator.
   // Info: one can send both fungible tokens and non-fungible tokens.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc OperatorSend(MsgOperatorSend) returns (MsgOperatorSendResponse);
 
   // TransferFT defines a method to send fungible tokens from one account to another account.
@@ -37,11 +37,11 @@ service Msg {
   rpc TransferNFTFrom(MsgTransferNFTFrom) returns (MsgTransferNFTFromResponse);
 
   // AuthorizeOperator allows one to send tokens on behalf of the approver.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc AuthorizeOperator(MsgAuthorizeOperator) returns (MsgAuthorizeOperatorResponse);
 
   // RevokeOperator revokes the authorization of the operator to send the approver's token.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc RevokeOperator(MsgRevokeOperator) returns (MsgRevokeOperatorResponse);
 
   // Approve allows one to send tokens on behalf of the approver.
@@ -69,12 +69,12 @@ service Msg {
 
   // Burn defines a method to burn tokens.
   // Info: one can burn both fungible tokens and non-fungible tokens.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc Burn(MsgBurn) returns (MsgBurnResponse);
 
   // OperatorBurn defines a method to burn tokens of the holder by the operator.
   // Info: one can burn both fungible tokens and non-fungible tokens.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc OperatorBurn(MsgOperatorBurn) returns (MsgOperatorBurnResponse);
 
   // BurnFT defines a method to burn fungible tokens.
@@ -97,11 +97,11 @@ service Msg {
   rpc Modify(MsgModify) returns (MsgModifyResponse);
 
   // Grant allows one to mint or burn tokens or modify metadata.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc Grant(MsgGrant) returns (MsgGrantResponse);
 
   // Abandon abandons a permission.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc Abandon(MsgAbandon) returns (MsgAbandonResponse);
 
   // GrantPermission allows one to mint or burn tokens or modify metadata.
@@ -119,11 +119,11 @@ service Msg {
   rpc Detach(MsgDetach) returns (MsgDetachResponse);
 
   // OperatorAttach defines a method to attach a token to another token by operator.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc OperatorAttach(MsgOperatorAttach) returns (MsgOperatorAttachResponse);
 
   // Detach defines a method to detach a token from another token by operator.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc OperatorDetach(MsgOperatorDetach) returns (MsgOperatorDetachResponse);
 
   // AttachFrom defines a method to attach a token to another token by operator.
@@ -137,7 +137,7 @@ service Msg {
 
 // MsgSend is the Msg/Send request type.
 //
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgSend {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -150,11 +150,11 @@ message MsgSend {
 }
 
 // MsgSendResponse is the Msg/Send response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgSendResponse {}
 
 // MsgOperatorSend is the Msg/OperatorSend request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgOperatorSend {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -169,7 +169,7 @@ message MsgOperatorSend {
 }
 
 // MsgOperatorSendResponse is the Msg/OperatorSend response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgOperatorSendResponse {}
 
 // MsgTransferFT is the Msg/TransferFT request type.
@@ -247,7 +247,7 @@ message MsgTransferNFTFrom {
 message MsgTransferNFTFromResponse {}
 
 // MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgAuthorizeOperator {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -258,11 +258,11 @@ message MsgAuthorizeOperator {
 }
 
 // MsgAuthorizeOperatorResponse is the Msg/AuthorizeOperator response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgAuthorizeOperatorResponse {}
 
 // MsgRevokeOperator is the Msg/RevokeOperator request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgRevokeOperator {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -273,7 +273,7 @@ message MsgRevokeOperator {
 }
 
 // MsgRevokeOperatorResponse is the Msg/RevokeOperator response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgRevokeOperatorResponse {}
 
 // MsgApprove is the Msg/Approve request type.
@@ -413,7 +413,7 @@ message MintNFTParam {
 message MsgMintNFTResponse {}
 
 // MsgBurn is the Msg/Burn request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgBurn {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -425,11 +425,11 @@ message MsgBurn {
 }
 
 // MsgBurnResponse is the Msg/Burn response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgBurnResponse {}
 
 // MsgOperatorBurn is the Msg/OperatorBurn request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgOperatorBurn {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -444,7 +444,7 @@ message MsgOperatorBurn {
 }
 
 // MsgOperatorBurnResponse is the Msg/OperatorBurn response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgOperatorBurnResponse {}
 
 // MsgBurnFT is the Msg/BurnFT request type.
@@ -544,7 +544,7 @@ message MsgModify {
 message MsgModifyResponse {}
 
 // MsgGrant is the Msg/Grant request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgGrant {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -557,11 +557,11 @@ message MsgGrant {
 }
 
 // MsgGrantResponse is the Msg/Grant response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgGrantResponse {}
 
 // MsgAbandon is the Msg/Abandon request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgAbandon {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -572,7 +572,7 @@ message MsgAbandon {
 }
 
 // MsgAbandonResponse is the Msg/Abandon response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgAbandonResponse {}
 
 // MsgGrantPermission is the Msg/GrantPermission request type.
@@ -638,7 +638,7 @@ message MsgDetach {
 message MsgDetachResponse {}
 
 // MsgOperatorAttach is the Msg/OperatorAttach request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgOperatorAttach {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -653,11 +653,11 @@ message MsgOperatorAttach {
 }
 
 // MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgOperatorAttachResponse {}
 
 // MsgOperatorDetach is the Msg/OperatorDetach request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgOperatorDetach {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -670,7 +670,7 @@ message MsgOperatorDetach {
 }
 
 // MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message MsgOperatorDetachResponse {}
 
 // MsgAttachFrom is the Msg/AttachFrom request type.

@@ -213,7 +213,7 @@ func (AttributeKey) EnumDescriptor() ([]byte, []int) {
 }
 
 // EventSent is emitted on Msg/Send and Msg/OperatorSend.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type EventSent struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -296,7 +296,7 @@ func (m *EventSent) GetAmount() []Coin {
 }
 
 // EventAuthorizedOperator is emitted on Msg/AuthorizeOperator.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type EventAuthorizedOperator struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -361,7 +361,7 @@ func (m *EventAuthorizedOperator) GetOperator() string {
 }
 
 // EventRevokedOperator is emitted on Msg/RevokeOperator.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type EventRevokedOperator struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -426,7 +426,7 @@ func (m *EventRevokedOperator) GetOperator() string {
 }
 
 // EventIssue is emitted on Msg/Issue.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type EventIssue struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -527,7 +527,7 @@ func (m *EventIssue) GetMintable() bool {
 }
 
 // EventGrant is emitted on Msg/Grant.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type EventGrant struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -601,7 +601,7 @@ func (m *EventGrant) GetPermission() string {
 }
 
 // EventAbandon is emitted on Msg/Abandon.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type EventAbandon struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -666,7 +666,7 @@ func (m *EventAbandon) GetPermission() string {
 }
 
 // EventMinted is emitted on Msg/MintFT and Msg/MintNFT.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type EventMinted struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -740,7 +740,7 @@ func (m *EventMinted) GetAmount() []Coin {
 }
 
 // EventBurned is emitted on Msg/Burn and Msg/OperatorBurn.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type EventBurned struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -814,7 +814,7 @@ func (m *EventBurned) GetAmount() []Coin {
 }
 
 // EventModified is emitted on Msg/Modify.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type EventModified struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -879,7 +879,7 @@ func (m *EventModified) GetChanges() []Pair {
 }
 
 // EventSpent is emitted on token spend.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type EventSpent struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -942,7 +942,7 @@ func (m *EventSpent) GetAmount() []Coin {
 }
 
 // EventReceived is emitted on token receipt.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type EventReceived struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`

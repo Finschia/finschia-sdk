@@ -20,28 +20,28 @@ service Query {
   }
 
   // AllBalances queries the balance of all token classes for a single account.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc AllBalances(QueryAllBalancesRequest) returns (QueryAllBalancesResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/balances/{address}";
   }
 
   // Supply queries the number of tokens from a given contract id and class id.
   // Info: one can query for both fungible tokens and non-fungible token classes.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc Supply(QuerySupplyRequest) returns (QuerySupplyResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/supply";
   }
 
   // Minted queries the number of minted tokens from a given contract id and class id.
   // Info: one can query for both fungible tokens and non-fungible token classes.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc Minted(QueryMintedRequest) returns (QueryMintedResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/minted";
   }
 
   // Burnt queries the number of burnt tokens from a given contract id and class id.
   // Info: one can query for both fungible tokens and non-fungible token classes.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc Burnt(QueryBurntRequest) returns (QueryBurntResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/burnt";
   }
@@ -88,19 +88,19 @@ service Query {
   }
 
   // Contracts queries metadata of all contracts.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc Contracts(QueryContractsRequest) returns (QueryContractsResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts";
   }
 
   // TokenClass queries a metadata of a token class from its class id.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc TokenClass(QueryTokenClassRequest) returns (QueryTokenClassResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}";
   }
 
   // TokenClasses queries token metadata of all token classes of a contract.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc TokenClasses(QueryTokenClassesRequest) returns (QueryTokenClassesResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes";
   }
@@ -135,7 +135,7 @@ service Query {
   }
 
   // NFTs queries a metadata of all non-fungible tokens.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc NFTs(QueryNFTsRequest) returns (QueryNFTsResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts";
   }
@@ -156,25 +156,25 @@ service Query {
   }
 
   // Grant queries a permission on a given grantee.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc Grant(QueryGrantRequest) returns (QueryGrantResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}/{permission}";
   }
 
   // GranteeGrants queries all permissions on a given grantee.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc GranteeGrants(QueryGranteeGrantsRequest) returns (QueryGranteeGrantsResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}";
   }
 
   // Authorization queries an authorization on a given operator approver pair.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc Authorization(QueryAuthorizationRequest) returns (QueryAuthorizationResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}/{holder}";
   }
 
   // OperatorAuthorizations queries authorizations on a given operator.
-  // Since: finschia
+  // Since: 0.46.0 (finschia)
   rpc OperatorAuthorizations(QueryOperatorAuthorizationsRequest) returns (QueryOperatorAuthorizationsResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}";
   }
@@ -209,7 +209,7 @@ message QueryBalanceResponse {
 }
 
 // QueryAllBalancesRequest is the request type for the Query/AllBalances RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryAllBalancesRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -221,7 +221,7 @@ message QueryAllBalancesRequest {
 }
 
 // QueryAllBalancesResponse is the response type for the Query/AllBalances RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryAllBalancesResponse {
   // balances is the balalces of all the tokens.
   repeated Coin balances = 1 [(gogoproto.nullable) = false];
@@ -231,7 +231,7 @@ message QueryAllBalancesResponse {
 }
 
 // QuerySupplyRequest is the request type for the Query/Supply RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QuerySupplyRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -240,14 +240,14 @@ message QuerySupplyRequest {
 }
 
 // QuerySupplyResponse is the response type for the Query/Supply RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QuerySupplyResponse {
   // supply is the supply of the tokens.
   string supply = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryMintedRequest is the request type for the Query/Minted RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryMintedRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -256,14 +256,14 @@ message QueryMintedRequest {
 }
 
 // QueryMintedResponse is the response type for the Query/Minted RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryMintedResponse {
   // minted is the amount of the minted tokens.
   string minted = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryBurntRequest is the request type for the Query/Burnt RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryBurntRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -272,7 +272,7 @@ message QueryBurntRequest {
 }
 
 // QueryBurntResponse is the response type for the Query/Burnt RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryBurntResponse {
   // burnt is the amount of the burnt tokens.
   string burnt = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
@@ -387,14 +387,14 @@ message QueryContractResponse {
 }
 
 // QueryContractsRequest is the request type for the Query/Contracts RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryContractsRequest {
   // pagination defines an optional pagination for the request.
   lbm.base.query.v1.PageRequest pagination = 1;
 }
 
 // QueryContractsResponse is the response type for the Query/Contracts RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryContractsResponse {
   // contracts is the informations of all the contracts.
   repeated Contract contracts = 1;
@@ -475,7 +475,7 @@ message QueryTokensResponse {
 }
 
 // QueryTokenClassRequest is the request type for the Query/TokenClass RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryTokenClassRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -484,14 +484,14 @@ message QueryTokenClassRequest {
 }
 
 // QueryTokenClassResponse is the response type for the Query/TokenClass RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryTokenClassResponse {
   // class is the information of the token class.
   google.protobuf.Any class = 1 [(cosmos_proto.accepts_interface) = "TokenClass"];
 }
 
 // QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryTokenClassesRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -501,7 +501,7 @@ message QueryTokenClassesRequest {
 }
 
 // QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryTokenClassesResponse {
   // classes is the informations of all the token classes.
   repeated google.protobuf.Any classes = 1
@@ -535,7 +535,7 @@ message QueryNFTsRequest {
 }
 
 // QueryNFTsResponse is the response type for the Query/NFTs RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryNFTsResponse {
   // token is the information of the non-fungible token.
   repeated NFT token = 1 [(gogoproto.nullable) = false];
@@ -595,7 +595,7 @@ message QueryChildrenResponse {
 }
 
 // QueryGrantRequest is the request type for the Query/Grant RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryGrantRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -606,14 +606,14 @@ message QueryGrantRequest {
 }
 
 // QueryGrantResponse is the response type for the Query/Grant RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryGrantResponse {
   // if no grant found for the request, it would be nil and return an error.
   Grant grant = 1;
 }
 
 // QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryGranteeGrantsRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -625,7 +625,7 @@ message QueryGranteeGrantsRequest {
 }
 
 // QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryGranteeGrantsResponse {
   repeated Grant grants = 1 [(gogoproto.nullable) = false];
 
@@ -634,7 +634,7 @@ message QueryGranteeGrantsResponse {
 }
 
 // QueryAuthorizationRequest is the request type for the Query/Authorization RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryAuthorizationRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -645,14 +645,14 @@ message QueryAuthorizationRequest {
 }
 
 // QueryAuthorizationResponse is the response type for the Query/Authorization RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryAuthorizationResponse {
   // if no authorization found for the request, it would be nil.
   Authorization authorization = 1;
 }
 
 // QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAuthorizations RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryOperatorAuthorizationsRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -664,7 +664,7 @@ message QueryOperatorAuthorizationsRequest {
 }
 
 // QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message QueryOperatorAuthorizationsResponse {
   repeated Authorization authorizations = 1 [(gogoproto.nullable) = false];
 

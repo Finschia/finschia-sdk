@@ -242,7 +242,7 @@ func (m *TokenType) XXX_DiscardUnknown() {
 var xxx_messageInfo_TokenType proto.InternalMessageInfo
 
 // FTClass defines the class of fungible token.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type FTClass struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -336,7 +336,7 @@ func (m *FTClass) GetMintable() bool {
 }
 
 // NFTClass defines the class of non-fungible token.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type NFTClass struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`

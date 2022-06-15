@@ -31,7 +31,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // MsgSend is the Msg/Send request type.
 //
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgSend struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -105,7 +105,7 @@ func (m *MsgSend) GetAmount() Coins {
 }
 
 // MsgSendResponse is the Msg/Send response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgSendResponse struct {
 }
 
@@ -143,7 +143,7 @@ func (m *MsgSendResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgSendResponse proto.InternalMessageInfo
 
 // MsgOperatorSend is the Msg/OperatorSend request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgOperatorSend struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -226,7 +226,7 @@ func (m *MsgOperatorSend) GetAmount() Coins {
 }
 
 // MsgOperatorSendResponse is the Msg/OperatorSend response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgOperatorSendResponse struct {
 }
 
@@ -732,7 +732,7 @@ func (m *MsgTransferNFTFromResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgTransferNFTFromResponse proto.InternalMessageInfo
 
 // MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgAuthorizeOperator struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -797,7 +797,7 @@ func (m *MsgAuthorizeOperator) GetOperator() string {
 }
 
 // MsgAuthorizeOperatorResponse is the Msg/AuthorizeOperator response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgAuthorizeOperatorResponse struct {
 }
 
@@ -835,7 +835,7 @@ func (m *MsgAuthorizeOperatorResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAuthorizeOperatorResponse proto.InternalMessageInfo
 
 // MsgRevokeOperator is the Msg/RevokeOperator request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgRevokeOperator struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -900,7 +900,7 @@ func (m *MsgRevokeOperator) GetOperator() string {
 }
 
 // MsgRevokeOperatorResponse is the Msg/RevokeOperator response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgRevokeOperatorResponse struct {
 }
 
@@ -1796,7 +1796,7 @@ func (m *MsgMintNFTResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgMintNFTResponse proto.InternalMessageInfo
 
 // MsgBurn is the Msg/Burn request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgBurn struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1862,7 +1862,7 @@ func (m *MsgBurn) GetAmount() Coins {
 }
 
 // MsgBurnResponse is the Msg/Burn response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgBurnResponse struct {
 }
 
@@ -1900,7 +1900,7 @@ func (m *MsgBurnResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgBurnResponse proto.InternalMessageInfo
 
 // MsgOperatorBurn is the Msg/OperatorBurn request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgOperatorBurn struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1976,7 +1976,7 @@ func (m *MsgOperatorBurn) GetAmount() Coins {
 }
 
 // MsgOperatorBurnResponse is the Msg/OperatorBurn response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgOperatorBurnResponse struct {
 }
 
@@ -2578,7 +2578,7 @@ func (m *MsgModifyResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgModifyResponse proto.InternalMessageInfo
 
 // MsgGrant is the Msg/Grant request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgGrant struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -2652,7 +2652,7 @@ func (m *MsgGrant) GetPermission() string {
 }
 
 // MsgGrantResponse is the Msg/Grant response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgGrantResponse struct {
 }
 
@@ -2690,7 +2690,7 @@ func (m *MsgGrantResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgGrantResponse proto.InternalMessageInfo
 
 // MsgAbandon is the Msg/Abandon request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgAbandon struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -2755,7 +2755,7 @@ func (m *MsgAbandon) GetPermission() string {
 }
 
 // MsgAbandonResponse is the Msg/Abandon response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgAbandonResponse struct {
 }
 
@@ -3221,7 +3221,7 @@ func (m *MsgDetachResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgDetachResponse proto.InternalMessageInfo
 
 // MsgOperatorAttach is the Msg/OperatorAttach request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgOperatorAttach struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -3304,7 +3304,7 @@ func (m *MsgOperatorAttach) GetTo() string {
 }
 
 // MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgOperatorAttachResponse struct {
 }
 
@@ -3342,7 +3342,7 @@ func (m *MsgOperatorAttachResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgOperatorAttachResponse proto.InternalMessageInfo
 
 // MsgOperatorDetach is the Msg/OperatorDetach request type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgOperatorDetach struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -3416,7 +3416,7 @@ func (m *MsgOperatorDetach) GetId() string {
 }
 
 // MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type MsgOperatorDetachResponse struct {
 }
 
@@ -3881,11 +3881,11 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	// Send defines a method to send tokens from one account to another account.
 	// Info: one can send both fungible tokens and non-fungible tokens.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Send(ctx context.Context, in *MsgSend, opts ...grpc.CallOption) (*MsgSendResponse, error)
 	// OperatorSend defines a method to send tokens from one account to another account by the operator.
 	// Info: one can send both fungible tokens and non-fungible tokens.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	OperatorSend(ctx context.Context, in *MsgOperatorSend, opts ...grpc.CallOption) (*MsgOperatorSendResponse, error)
 	// TransferFT defines a method to send fungible tokens from one account to another account.
 	// Note: deprecated (use Send)
@@ -3900,10 +3900,10 @@ type MsgClient interface {
 	// Note: deprecated (use OperatorSend)
 	TransferNFTFrom(ctx context.Context, in *MsgTransferNFTFrom, opts ...grpc.CallOption) (*MsgTransferNFTFromResponse, error)
 	// AuthorizeOperator allows one to send tokens on behalf of the approver.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	AuthorizeOperator(ctx context.Context, in *MsgAuthorizeOperator, opts ...grpc.CallOption) (*MsgAuthorizeOperatorResponse, error)
 	// RevokeOperator revokes the authorization of the operator to send the approver's token.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	RevokeOperator(ctx context.Context, in *MsgRevokeOperator, opts ...grpc.CallOption) (*MsgRevokeOperatorResponse, error)
 	// Approve allows one to send tokens on behalf of the approver.
 	// Note: deprecated (use AuthorizeOperator)
@@ -3923,11 +3923,11 @@ type MsgClient interface {
 	MintNFT(ctx context.Context, in *MsgMintNFT, opts ...grpc.CallOption) (*MsgMintNFTResponse, error)
 	// Burn defines a method to burn tokens.
 	// Info: one can burn both fungible tokens and non-fungible tokens.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Burn(ctx context.Context, in *MsgBurn, opts ...grpc.CallOption) (*MsgBurnResponse, error)
 	// OperatorBurn defines a method to burn tokens of the holder by the operator.
 	// Info: one can burn both fungible tokens and non-fungible tokens.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	OperatorBurn(ctx context.Context, in *MsgOperatorBurn, opts ...grpc.CallOption) (*MsgOperatorBurnResponse, error)
 	// BurnFT defines a method to burn fungible tokens.
 	// Note: deprecated (use Burn)
@@ -3944,10 +3944,10 @@ type MsgClient interface {
 	// Modify defines a method to modify metadata.
 	Modify(ctx context.Context, in *MsgModify, opts ...grpc.CallOption) (*MsgModifyResponse, error)
 	// Grant allows one to mint or burn tokens or modify metadata.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Grant(ctx context.Context, in *MsgGrant, opts ...grpc.CallOption) (*MsgGrantResponse, error)
 	// Abandon abandons a permission.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Abandon(ctx context.Context, in *MsgAbandon, opts ...grpc.CallOption) (*MsgAbandonResponse, error)
 	// GrantPermission allows one to mint or burn tokens or modify metadata.
 	// Note: deprecated (use Grant)
@@ -3960,10 +3960,10 @@ type MsgClient interface {
 	// Detach defines a method to detach a token from another token.
 	Detach(ctx context.Context, in *MsgDetach, opts ...grpc.CallOption) (*MsgDetachResponse, error)
 	// OperatorAttach defines a method to attach a token to another token by operator.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	OperatorAttach(ctx context.Context, in *MsgOperatorAttach, opts ...grpc.CallOption) (*MsgOperatorAttachResponse, error)
 	// Detach defines a method to detach a token from another token by operator.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	OperatorDetach(ctx context.Context, in *MsgOperatorDetach, opts ...grpc.CallOption) (*MsgOperatorDetachResponse, error)
 	// AttachFrom defines a method to attach a token to another token by operator.
 	// Note: deprecated (use OperatorAttach)
@@ -4273,11 +4273,11 @@ func (c *msgClient) DetachFrom(ctx context.Context, in *MsgDetachFrom, opts ...g
 type MsgServer interface {
 	// Send defines a method to send tokens from one account to another account.
 	// Info: one can send both fungible tokens and non-fungible tokens.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Send(context.Context, *MsgSend) (*MsgSendResponse, error)
 	// OperatorSend defines a method to send tokens from one account to another account by the operator.
 	// Info: one can send both fungible tokens and non-fungible tokens.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	OperatorSend(context.Context, *MsgOperatorSend) (*MsgOperatorSendResponse, error)
 	// TransferFT defines a method to send fungible tokens from one account to another account.
 	// Note: deprecated (use Send)
@@ -4292,10 +4292,10 @@ type MsgServer interface {
 	// Note: deprecated (use OperatorSend)
 	TransferNFTFrom(context.Context, *MsgTransferNFTFrom) (*MsgTransferNFTFromResponse, error)
 	// AuthorizeOperator allows one to send tokens on behalf of the approver.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	AuthorizeOperator(context.Context, *MsgAuthorizeOperator) (*MsgAuthorizeOperatorResponse, error)
 	// RevokeOperator revokes the authorization of the operator to send the approver's token.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	RevokeOperator(context.Context, *MsgRevokeOperator) (*MsgRevokeOperatorResponse, error)
 	// Approve allows one to send tokens on behalf of the approver.
 	// Note: deprecated (use AuthorizeOperator)
@@ -4315,11 +4315,11 @@ type MsgServer interface {
 	MintNFT(context.Context, *MsgMintNFT) (*MsgMintNFTResponse, error)
 	// Burn defines a method to burn tokens.
 	// Info: one can burn both fungible tokens and non-fungible tokens.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Burn(context.Context, *MsgBurn) (*MsgBurnResponse, error)
 	// OperatorBurn defines a method to burn tokens of the holder by the operator.
 	// Info: one can burn both fungible tokens and non-fungible tokens.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	OperatorBurn(context.Context, *MsgOperatorBurn) (*MsgOperatorBurnResponse, error)
 	// BurnFT defines a method to burn fungible tokens.
 	// Note: deprecated (use Burn)
@@ -4336,10 +4336,10 @@ type MsgServer interface {
 	// Modify defines a method to modify metadata.
 	Modify(context.Context, *MsgModify) (*MsgModifyResponse, error)
 	// Grant allows one to mint or burn tokens or modify metadata.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Grant(context.Context, *MsgGrant) (*MsgGrantResponse, error)
 	// Abandon abandons a permission.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Abandon(context.Context, *MsgAbandon) (*MsgAbandonResponse, error)
 	// GrantPermission allows one to mint or burn tokens or modify metadata.
 	// Note: deprecated (use Grant)
@@ -4352,10 +4352,10 @@ type MsgServer interface {
 	// Detach defines a method to detach a token from another token.
 	Detach(context.Context, *MsgDetach) (*MsgDetachResponse, error)
 	// OperatorAttach defines a method to attach a token to another token by operator.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	OperatorAttach(context.Context, *MsgOperatorAttach) (*MsgOperatorAttachResponse, error)
 	// Detach defines a method to detach a token from another token by operator.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	OperatorDetach(context.Context, *MsgOperatorDetach) (*MsgOperatorDetachResponse, error)
 	// AttachFrom defines a method to attach a token to another token by operator.
 	// Note: deprecated (use OperatorAttach)

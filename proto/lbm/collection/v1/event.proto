@@ -67,7 +67,7 @@ enum AttributeKey {
 }
 
 // EventSent is emitted on Msg/Send and Msg/OperatorSend.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message EventSent {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -82,7 +82,7 @@ message EventSent {
 }
 
 // EventAuthorizedOperator is emitted on Msg/AuthorizeOperator.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message EventAuthorizedOperator {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -93,7 +93,7 @@ message EventAuthorizedOperator {
 }
 
 // EventRevokedOperator is emitted on Msg/RevokeOperator.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message EventRevokedOperator {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -104,7 +104,7 @@ message EventRevokedOperator {
 }
 
 // EventIssue is emitted on Msg/Issue.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message EventIssue {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -123,7 +123,7 @@ message EventIssue {
 }
 
 // EventGrant is emitted on Msg/Grant.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message EventGrant {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -136,7 +136,7 @@ message EventGrant {
 }
 
 // EventAbandon is emitted on Msg/Abandon.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message EventAbandon {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -147,7 +147,7 @@ message EventAbandon {
 }
 
 // EventMinted is emitted on Msg/MintFT and Msg/MintNFT.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message EventMinted {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -160,7 +160,7 @@ message EventMinted {
 }
 
 // EventBurned is emitted on Msg/Burn and Msg/OperatorBurn.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message EventBurned {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -173,7 +173,7 @@ message EventBurned {
 }
 
 // EventModified is emitted on Msg/Modify.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message EventModified {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -184,7 +184,7 @@ message EventModified {
 }
 
 // EventSpent is emitted on token spend.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message EventSpent {
   // contract id associated with the contract.
   string        contract_id = 1;
@@ -193,7 +193,7 @@ message EventSpent {
 }
 
 // EventReceived is emitted on token receipt.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message EventReceived {
   // contract id associated with the contract.
   string        contract_id = 1;

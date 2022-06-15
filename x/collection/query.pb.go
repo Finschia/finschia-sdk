@@ -144,7 +144,7 @@ func (m *QueryBalanceResponse) GetBalance() *Coin {
 }
 
 // QueryAllBalancesRequest is the request type for the Query/AllBalances RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryAllBalancesRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -209,7 +209,7 @@ func (m *QueryAllBalancesRequest) GetPagination() *query.PageRequest {
 }
 
 // QueryAllBalancesResponse is the response type for the Query/AllBalances RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryAllBalancesResponse struct {
 	// balances is the balalces of all the tokens.
 	Balances []Coin `protobuf:"bytes,1,rep,name=balances,proto3" json:"balances"`
@@ -265,7 +265,7 @@ func (m *QueryAllBalancesResponse) GetPagination() *query.PageResponse {
 }
 
 // QuerySupplyRequest is the request type for the Query/Supply RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QuerySupplyRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -321,7 +321,7 @@ func (m *QuerySupplyRequest) GetClassId() string {
 }
 
 // QuerySupplyResponse is the response type for the Query/Supply RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QuerySupplyResponse struct {
 	// supply is the supply of the tokens.
 	Supply github_com_line_lbm_sdk_types.Int `protobuf:"bytes,1,opt,name=supply,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"supply"`
@@ -361,7 +361,7 @@ func (m *QuerySupplyResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_QuerySupplyResponse proto.InternalMessageInfo
 
 // QueryMintedRequest is the request type for the Query/Minted RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryMintedRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -417,7 +417,7 @@ func (m *QueryMintedRequest) GetClassId() string {
 }
 
 // QueryMintedResponse is the response type for the Query/Minted RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryMintedResponse struct {
 	// minted is the amount of the minted tokens.
 	Minted github_com_line_lbm_sdk_types.Int `protobuf:"bytes,1,opt,name=minted,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"minted"`
@@ -457,7 +457,7 @@ func (m *QueryMintedResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_QueryMintedResponse proto.InternalMessageInfo
 
 // QueryBurntRequest is the request type for the Query/Burnt RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryBurntRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -513,7 +513,7 @@ func (m *QueryBurntRequest) GetClassId() string {
 }
 
 // QueryBurntResponse is the response type for the Query/Burnt RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryBurntResponse struct {
 	// burnt is the amount of the burnt tokens.
 	Burnt github_com_line_lbm_sdk_types.Int `protobuf:"bytes,1,opt,name=burnt,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"burnt"`
@@ -1221,7 +1221,7 @@ func (m *QueryContractResponse) GetContract() *Contract {
 }
 
 // QueryContractsRequest is the request type for the Query/Contracts RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryContractsRequest struct {
 	// pagination defines an optional pagination for the request.
 	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
@@ -1268,7 +1268,7 @@ func (m *QueryContractsRequest) GetPagination() *query.PageRequest {
 }
 
 // QueryContractsResponse is the response type for the Query/Contracts RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryContractsResponse struct {
 	// contracts is the informations of all the contracts.
 	Contracts []*Contract `protobuf:"bytes,1,rep,name=contracts,proto3" json:"contracts,omitempty"`
@@ -1753,7 +1753,7 @@ func (m *QueryTokensResponse) GetPagination() *query.PageResponse {
 }
 
 // QueryTokenClassRequest is the request type for the Query/TokenClass RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryTokenClassRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1809,7 +1809,7 @@ func (m *QueryTokenClassRequest) GetClassId() string {
 }
 
 // QueryTokenClassResponse is the response type for the Query/TokenClass RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryTokenClassResponse struct {
 	// class is the information of the token class.
 	Class *types.Any `protobuf:"bytes,1,opt,name=class,proto3" json:"class,omitempty"`
@@ -1856,7 +1856,7 @@ func (m *QueryTokenClassResponse) GetClass() *types.Any {
 }
 
 // QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryTokenClassesRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1912,7 +1912,7 @@ func (m *QueryTokenClassesRequest) GetPagination() *query.PageRequest {
 }
 
 // QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryTokenClassesResponse struct {
 	// classes is the informations of all the token classes.
 	Classes []types.Any `protobuf:"bytes,1,rep,name=classes,proto3" json:"classes"`
@@ -2124,7 +2124,7 @@ func (m *QueryNFTsRequest) GetPagination() *query.PageRequest {
 }
 
 // QueryNFTsResponse is the response type for the Query/NFTs RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryNFTsResponse struct {
 	// token is the information of the non-fungible token.
 	Token []NFT `protobuf:"bytes,1,rep,name=token,proto3" json:"token"`
@@ -2503,7 +2503,7 @@ func (m *QueryChildrenResponse) GetPagination() *query.PageResponse {
 }
 
 // QueryGrantRequest is the request type for the Query/Grant RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryGrantRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -2568,7 +2568,7 @@ func (m *QueryGrantRequest) GetPermission() string {
 }
 
 // QueryGrantResponse is the response type for the Query/Grant RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryGrantResponse struct {
 	// if no grant found for the request, it would be nil and return an error.
 	Grant *Grant `protobuf:"bytes,1,opt,name=grant,proto3" json:"grant,omitempty"`
@@ -2615,7 +2615,7 @@ func (m *QueryGrantResponse) GetGrant() *Grant {
 }
 
 // QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryGranteeGrantsRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -2680,7 +2680,7 @@ func (m *QueryGranteeGrantsRequest) GetPagination() *query.PageRequest {
 }
 
 // QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryGranteeGrantsResponse struct {
 	Grants []Grant `protobuf:"bytes,1,rep,name=grants,proto3" json:"grants"`
 	// pagination defines the pagination in the response.
@@ -2735,7 +2735,7 @@ func (m *QueryGranteeGrantsResponse) GetPagination() *query.PageResponse {
 }
 
 // QueryAuthorizationRequest is the request type for the Query/Authorization RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryAuthorizationRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -2800,7 +2800,7 @@ func (m *QueryAuthorizationRequest) GetHolder() string {
 }
 
 // QueryAuthorizationResponse is the response type for the Query/Authorization RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryAuthorizationResponse struct {
 	// if no authorization found for the request, it would be nil.
 	Authorization *Authorization `protobuf:"bytes,1,opt,name=authorization,proto3" json:"authorization,omitempty"`
@@ -2847,7 +2847,7 @@ func (m *QueryAuthorizationResponse) GetAuthorization() *Authorization {
 }
 
 // QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAuthorizations RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryOperatorAuthorizationsRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -2912,7 +2912,7 @@ func (m *QueryOperatorAuthorizationsRequest) GetPagination() *query.PageRequest 
 }
 
 // QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 type QueryOperatorAuthorizationsResponse struct {
 	Authorizations []Authorization `protobuf:"bytes,1,rep,name=authorizations,proto3" json:"authorizations"`
 	// pagination defines the pagination in the response.
@@ -3418,19 +3418,19 @@ type QueryClient interface {
 	// Balance queries the balance of a single token class for a single account.
 	Balance(ctx context.Context, in *QueryBalanceRequest, opts ...grpc.CallOption) (*QueryBalanceResponse, error)
 	// AllBalances queries the balance of all token classes for a single account.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	AllBalances(ctx context.Context, in *QueryAllBalancesRequest, opts ...grpc.CallOption) (*QueryAllBalancesResponse, error)
 	// Supply queries the number of tokens from a given contract id and class id.
 	// Info: one can query for both fungible tokens and non-fungible token classes.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Supply(ctx context.Context, in *QuerySupplyRequest, opts ...grpc.CallOption) (*QuerySupplyResponse, error)
 	// Minted queries the number of minted tokens from a given contract id and class id.
 	// Info: one can query for both fungible tokens and non-fungible token classes.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Minted(ctx context.Context, in *QueryMintedRequest, opts ...grpc.CallOption) (*QueryMintedResponse, error)
 	// Burnt queries the number of burnt tokens from a given contract id and class id.
 	// Info: one can query for both fungible tokens and non-fungible token classes.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Burnt(ctx context.Context, in *QueryBurntRequest, opts ...grpc.CallOption) (*QueryBurntResponse, error)
 	// FTSupply queries the number of tokens from a given contract id and token id.
 	// Note: deprecated (use Supply)
@@ -3453,13 +3453,13 @@ type QueryClient interface {
 	// Contract queries a contract metadata based on its contract id.
 	Contract(ctx context.Context, in *QueryContractRequest, opts ...grpc.CallOption) (*QueryContractResponse, error)
 	// Contracts queries metadata of all contracts.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Contracts(ctx context.Context, in *QueryContractsRequest, opts ...grpc.CallOption) (*QueryContractsResponse, error)
 	// TokenClass queries a metadata of a token class from its class id.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	TokenClass(ctx context.Context, in *QueryTokenClassRequest, opts ...grpc.CallOption) (*QueryTokenClassResponse, error)
 	// TokenClasses queries token metadata of all token classes of a contract.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	TokenClasses(ctx context.Context, in *QueryTokenClassesRequest, opts ...grpc.CallOption) (*QueryTokenClassesResponse, error)
 	// FT queries a metadata of a fungible token from its token id.
 	// Note: deprecated (use TokenClass)
@@ -3476,7 +3476,7 @@ type QueryClient interface {
 	// NFT queries a metadata of a non-fungible token.
 	NFT(ctx context.Context, in *QueryNFTRequest, opts ...grpc.CallOption) (*QueryNFTResponse, error)
 	// NFTs queries a metadata of all non-fungible tokens.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	NFTs(ctx context.Context, in *QueryNFTsRequest, opts ...grpc.CallOption) (*QueryNFTsResponse, error)
 	// Root queries the root of a given nft.
 	Root(ctx context.Context, in *QueryRootRequest, opts ...grpc.CallOption) (*QueryRootResponse, error)
@@ -3485,16 +3485,16 @@ type QueryClient interface {
 	// Children queries the children of a given nft.
 	Children(ctx context.Context, in *QueryChildrenRequest, opts ...grpc.CallOption) (*QueryChildrenResponse, error)
 	// Grant queries a permission on a given grantee.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Grant(ctx context.Context, in *QueryGrantRequest, opts ...grpc.CallOption) (*QueryGrantResponse, error)
 	// GranteeGrants queries all permissions on a given grantee.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	GranteeGrants(ctx context.Context, in *QueryGranteeGrantsRequest, opts ...grpc.CallOption) (*QueryGranteeGrantsResponse, error)
 	// Authorization queries an authorization on a given operator approver pair.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Authorization(ctx context.Context, in *QueryAuthorizationRequest, opts ...grpc.CallOption) (*QueryAuthorizationResponse, error)
 	// OperatorAuthorizations queries authorizations on a given operator.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	OperatorAuthorizations(ctx context.Context, in *QueryOperatorAuthorizationsRequest, opts ...grpc.CallOption) (*QueryOperatorAuthorizationsResponse, error)
 	// Approved queries whether the operator is approved by the approver.
 	// Note: deprecated (use Authorization)
@@ -3787,19 +3787,19 @@ type QueryServer interface {
 	// Balance queries the balance of a single token class for a single account.
 	Balance(context.Context, *QueryBalanceRequest) (*QueryBalanceResponse, error)
 	// AllBalances queries the balance of all token classes for a single account.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	AllBalances(context.Context, *QueryAllBalancesRequest) (*QueryAllBalancesResponse, error)
 	// Supply queries the number of tokens from a given contract id and class id.
 	// Info: one can query for both fungible tokens and non-fungible token classes.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Supply(context.Context, *QuerySupplyRequest) (*QuerySupplyResponse, error)
 	// Minted queries the number of minted tokens from a given contract id and class id.
 	// Info: one can query for both fungible tokens and non-fungible token classes.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Minted(context.Context, *QueryMintedRequest) (*QueryMintedResponse, error)
 	// Burnt queries the number of burnt tokens from a given contract id and class id.
 	// Info: one can query for both fungible tokens and non-fungible token classes.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Burnt(context.Context, *QueryBurntRequest) (*QueryBurntResponse, error)
 	// FTSupply queries the number of tokens from a given contract id and token id.
 	// Note: deprecated (use Supply)
@@ -3822,13 +3822,13 @@ type QueryServer interface {
 	// Contract queries a contract metadata based on its contract id.
 	Contract(context.Context, *QueryContractRequest) (*QueryContractResponse, error)
 	// Contracts queries metadata of all contracts.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Contracts(context.Context, *QueryContractsRequest) (*QueryContractsResponse, error)
 	// TokenClass queries a metadata of a token class from its class id.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	TokenClass(context.Context, *QueryTokenClassRequest) (*QueryTokenClassResponse, error)
 	// TokenClasses queries token metadata of all token classes of a contract.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	TokenClasses(context.Context, *QueryTokenClassesRequest) (*QueryTokenClassesResponse, error)
 	// FT queries a metadata of a fungible token from its token id.
 	// Note: deprecated (use TokenClass)
@@ -3845,7 +3845,7 @@ type QueryServer interface {
 	// NFT queries a metadata of a non-fungible token.
 	NFT(context.Context, *QueryNFTRequest) (*QueryNFTResponse, error)
 	// NFTs queries a metadata of all non-fungible tokens.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	NFTs(context.Context, *QueryNFTsRequest) (*QueryNFTsResponse, error)
 	// Root queries the root of a given nft.
 	Root(context.Context, *QueryRootRequest) (*QueryRootResponse, error)
@@ -3854,16 +3854,16 @@ type QueryServer interface {
 	// Children queries the children of a given nft.
 	Children(context.Context, *QueryChildrenRequest) (*QueryChildrenResponse, error)
 	// Grant queries a permission on a given grantee.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Grant(context.Context, *QueryGrantRequest) (*QueryGrantResponse, error)
 	// GranteeGrants queries all permissions on a given grantee.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	GranteeGrants(context.Context, *QueryGranteeGrantsRequest) (*QueryGranteeGrantsResponse, error)
 	// Authorization queries an authorization on a given operator approver pair.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	Authorization(context.Context, *QueryAuthorizationRequest) (*QueryAuthorizationResponse, error)
 	// OperatorAuthorizations queries authorizations on a given operator.
-	// Since: finschia
+	// Since: 0.46.0 (finschia)
 	OperatorAuthorizations(context.Context, *QueryOperatorAuthorizationsRequest) (*QueryOperatorAuthorizationsResponse, error)
 	// Approved queries whether the operator is approved by the approver.
 	// Note: deprecated (use Authorization)

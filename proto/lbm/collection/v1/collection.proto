@@ -52,7 +52,7 @@ message TokenType {
 }
 
 // FTClass defines the class of fungible token.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message FTClass {
   option (gogoproto.goproto_getters)         = true;
   option (cosmos_proto.implements_interface) = "github.com/line/lbm-sdk/x/collection.TokenClass";
@@ -74,7 +74,7 @@ message FTClass {
 }
 
 // NFTClass defines the class of non-fungible token.
-// Since: finschia
+// Since: 0.46.0 (finschia)
 message NFTClass {
   option (gogoproto.goproto_getters)         = true;
   option (cosmos_proto.implements_interface) = "github.com/line/lbm-sdk/x/collection.TokenClass";

@@ -7358,7 +7358,7 @@ Contract defines the information of the contract for the collection.
 
 ### FTClass
 FTClass defines the class of fungible token.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -7435,7 +7435,7 @@ NFT defines the information of non-fungible token.
 
 ### NFTClass
 NFTClass defines the class of non-fungible token.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -7529,7 +7529,7 @@ Permission enumerates the valid permissions on a contract.
 
 ### EventAbandon
 EventAbandon is emitted on Msg/Abandon.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -7547,7 +7547,7 @@ Since: finschia
 
 ### EventAuthorizedOperator
 EventAuthorizedOperator is emitted on Msg/AuthorizeOperator.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -7565,7 +7565,7 @@ Since: finschia
 
 ### EventBurned
 EventBurned is emitted on Msg/Burn and Msg/OperatorBurn.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -7584,7 +7584,7 @@ Since: finschia
 
 ### EventGrant
 EventGrant is emitted on Msg/Grant.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -7603,7 +7603,7 @@ Since: finschia
 
 ### EventIssue
 EventIssue is emitted on Msg/Issue.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -7625,7 +7625,7 @@ Since: finschia
 
 ### EventMinted
 EventMinted is emitted on Msg/MintFT and Msg/MintNFT.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -7644,7 +7644,7 @@ Since: finschia
 
 ### EventModified
 EventModified is emitted on Msg/Modify.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -7662,7 +7662,7 @@ Since: finschia
 
 ### EventReceived
 EventReceived is emitted on token receipt.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -7680,7 +7680,7 @@ Since: finschia
 
 ### EventRevokedOperator
 EventRevokedOperator is emitted on Msg/RevokeOperator.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -7698,7 +7698,7 @@ Since: finschia
 
 ### EventSent
 EventSent is emitted on Msg/Send and Msg/OperatorSend.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -7718,7 +7718,7 @@ Since: finschia
 
 ### EventSpent
 EventSpent is emitted on token spend.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8040,7 +8040,7 @@ TokenRelation defines relations between two tokens.
 
 ### QueryAllBalancesRequest
 QueryAllBalancesRequest is the request type for the Query/AllBalances RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8058,7 +8058,7 @@ Since: finschia
 
 ### QueryAllBalancesResponse
 QueryAllBalancesResponse is the response type for the Query/AllBalances RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8144,7 +8144,7 @@ Note: deprecated
 
 ### QueryAuthorizationRequest
 QueryAuthorizationRequest is the request type for the Query/Authorization RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8162,7 +8162,7 @@ Since: finschia
 
 ### QueryAuthorizationResponse
 QueryAuthorizationResponse is the response type for the Query/Authorization RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8210,7 +8210,7 @@ QueryBalanceResponse is the response type for the Query/Balance RPC method.
 
 ### QueryBurntRequest
 QueryBurntRequest is the request type for the Query/Burnt RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8227,7 +8227,7 @@ Since: finschia
 
 ### QueryBurntResponse
 QueryBurntResponse is the response type for the Query/Burnt RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8306,7 +8306,7 @@ QueryContractResponse is the response type for the Query/Contract RPC method.
 
 ### QueryContractsRequest
 QueryContractsRequest is the request type for the Query/Contracts RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8322,7 +8322,7 @@ Since: finschia
 
 ### QueryContractsResponse
 QueryContractsResponse is the response type for the Query/Contracts RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8471,7 +8471,7 @@ Note: deprecated
 
 ### QueryGrantRequest
 QueryGrantRequest is the request type for the Query/Grant RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8489,7 +8489,7 @@ Since: finschia
 
 ### QueryGrantResponse
 QueryGrantResponse is the response type for the Query/Grant RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8505,7 +8505,7 @@ Since: finschia
 
 ### QueryGranteeGrantsRequest
 QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8523,7 +8523,7 @@ Since: finschia
 
 ### QueryGranteeGrantsResponse
 QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8540,7 +8540,7 @@ Since: finschia
 
 ### QueryMintedRequest
 QueryMintedRequest is the request type for the Query/Minted RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8557,7 +8557,7 @@ Since: finschia
 
 ### QueryMintedResponse
 QueryMintedResponse is the response type for the Query/Minted RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8719,7 +8719,7 @@ QueryNFTsRequest is the request type for the Query/NFTs RPC method.
 
 ### QueryNFTsResponse
 QueryNFTsResponse is the response type for the Query/NFTs RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8736,7 +8736,7 @@ Since: finschia
 
 ### QueryOperatorAuthorizationsRequest
 QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAuthorizations RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8754,7 +8754,7 @@ Since: finschia
 
 ### QueryOperatorAuthorizationsResponse
 QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8833,7 +8833,7 @@ QueryRootResponse is the response type for the Query/Root RPC method.
 
 ### QuerySupplyRequest
 QuerySupplyRequest is the request type for the Query/Supply RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8850,7 +8850,7 @@ Since: finschia
 
 ### QuerySupplyResponse
 QuerySupplyResponse is the response type for the Query/Supply RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8866,7 +8866,7 @@ Since: finschia
 
 ### QueryTokenClassRequest
 QueryTokenClassRequest is the request type for the Query/TokenClass RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8883,7 +8883,7 @@ Since: finschia
 
 ### QueryTokenClassResponse
 QueryTokenClassResponse is the response type for the Query/TokenClass RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8899,7 +8899,7 @@ Since: finschia
 
 ### QueryTokenClassesRequest
 QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -8916,7 +8916,7 @@ Since: finschia
 
 ### QueryTokenClassesResponse
 QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -9043,10 +9043,10 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Balance` | [QueryBalanceRequest](#lbm.collection.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.collection.v1.QueryBalanceResponse) | Balance queries the balance of a single token class for a single account. | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}/{token_id}|
-| `AllBalances` | [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.collection.v1.QueryAllBalancesResponse) | AllBalances queries the balance of all token classes for a single account. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}|
-| `Supply` | [QuerySupplyRequest](#lbm.collection.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.collection.v1.QuerySupplyResponse) | Supply queries the number of tokens from a given contract id and class id. Info: one can query for both fungible tokens and non-fungible token classes. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/supply|
-| `Minted` | [QueryMintedRequest](#lbm.collection.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.collection.v1.QueryMintedResponse) | Minted queries the number of minted tokens from a given contract id and class id. Info: one can query for both fungible tokens and non-fungible token classes. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/minted|
-| `Burnt` | [QueryBurntRequest](#lbm.collection.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.collection.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from a given contract id and class id. Info: one can query for both fungible tokens and non-fungible token classes. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/burnt|
+| `AllBalances` | [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.collection.v1.QueryAllBalancesResponse) | AllBalances queries the balance of all token classes for a single account. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}|
+| `Supply` | [QuerySupplyRequest](#lbm.collection.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.collection.v1.QuerySupplyResponse) | Supply queries the number of tokens from a given contract id and class id. Info: one can query for both fungible tokens and non-fungible token classes. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/supply|
+| `Minted` | [QueryMintedRequest](#lbm.collection.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.collection.v1.QueryMintedResponse) | Minted queries the number of minted tokens from a given contract id and class id. Info: one can query for both fungible tokens and non-fungible token classes. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/minted|
+| `Burnt` | [QueryBurntRequest](#lbm.collection.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.collection.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from a given contract id and class id. Info: one can query for both fungible tokens and non-fungible token classes. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/burnt|
 | `FTSupply` | [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest) | [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse) | FTSupply queries the number of tokens from a given contract id and token id. Note: deprecated (use Supply) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply|
 | `FTMinted` | [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest) | [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse) | FTMinted queries the number of minted tokens from a given contract id and token id. Note: deprecated (use Minted) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted|
 | `FTBurnt` | [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest) | [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse) | FTBurnt queries the number of burnt tokens from a given contract id and token id. Note: deprecated (use Burnt) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt|
@@ -9054,22 +9054,22 @@ Query defines the gRPC querier service.
 | `NFTMinted` | [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest) | [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse) | NFTMinted queries the number of minted tokens from a given contract id and token type. Note: deprecated (use Minted) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted|
 | `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | NFTBurnt queries the number of burnt tokens from a given contract id and token type. Note: deprecated (use Burnt) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
 | `Contract` | [QueryContractRequest](#lbm.collection.v1.QueryContractRequest) | [QueryContractResponse](#lbm.collection.v1.QueryContractResponse) | Contract queries a contract metadata based on its contract id. | GET|/lbm/collection/v1/contracts/{contract_id}|
-| `Contracts` | [QueryContractsRequest](#lbm.collection.v1.QueryContractsRequest) | [QueryContractsResponse](#lbm.collection.v1.QueryContractsResponse) | Contracts queries metadata of all contracts. Since: finschia | GET|/lbm/collection/v1/contracts|
-| `TokenClass` | [QueryTokenClassRequest](#lbm.collection.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.collection.v1.QueryTokenClassResponse) | TokenClass queries a metadata of a token class from its class id. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}|
-| `TokenClasses` | [QueryTokenClassesRequest](#lbm.collection.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.collection.v1.QueryTokenClassesResponse) | TokenClasses queries token metadata of all token classes of a contract. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes|
+| `Contracts` | [QueryContractsRequest](#lbm.collection.v1.QueryContractsRequest) | [QueryContractsResponse](#lbm.collection.v1.QueryContractsResponse) | Contracts queries metadata of all contracts. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts|
+| `TokenClass` | [QueryTokenClassRequest](#lbm.collection.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.collection.v1.QueryTokenClassResponse) | TokenClass queries a metadata of a token class from its class id. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}|
+| `TokenClasses` | [QueryTokenClassesRequest](#lbm.collection.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.collection.v1.QueryTokenClassesResponse) | TokenClasses queries token metadata of all token classes of a contract. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes|
 | `FT` | [QueryFTRequest](#lbm.collection.v1.QueryFTRequest) | [QueryFTResponse](#lbm.collection.v1.QueryFTResponse) | FT queries a metadata of a fungible token from its token id. Note: deprecated (use TokenClass) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}|
 | `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. Note: deprecated (use TokenClass) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
 | `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. Note: deprecated (use TokenClasses) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
 | `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. Note: deprecated (use TokenClasses and NFT) | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
 | `NFT` | [QueryNFTRequest](#lbm.collection.v1.QueryNFTRequest) | [QueryNFTResponse](#lbm.collection.v1.QueryNFTResponse) | NFT queries a metadata of a non-fungible token. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}|
-| `NFTs` | [QueryNFTsRequest](#lbm.collection.v1.QueryNFTsRequest) | [QueryNFTsResponse](#lbm.collection.v1.QueryNFTsResponse) | NFTs queries a metadata of all non-fungible tokens. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/nfts|
+| `NFTs` | [QueryNFTsRequest](#lbm.collection.v1.QueryNFTsRequest) | [QueryNFTsResponse](#lbm.collection.v1.QueryNFTsResponse) | NFTs queries a metadata of all non-fungible tokens. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/nfts|
 | `Root` | [QueryRootRequest](#lbm.collection.v1.QueryRootRequest) | [QueryRootResponse](#lbm.collection.v1.QueryRootResponse) | Root queries the root of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root|
 | `Parent` | [QueryParentRequest](#lbm.collection.v1.QueryParentRequest) | [QueryParentResponse](#lbm.collection.v1.QueryParentResponse) | Parent queries the parent of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent|
 | `Children` | [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest) | [QueryChildrenResponse](#lbm.collection.v1.QueryChildrenResponse) | Children queries the children of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children|
-| `Grant` | [QueryGrantRequest](#lbm.collection.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.collection.v1.QueryGrantResponse) | Grant queries a permission on a given grantee. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}/{permission}|
-| `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse) | GranteeGrants queries all permissions on a given grantee. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}|
-| `Authorization` | [QueryAuthorizationRequest](#lbm.collection.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.collection.v1.QueryAuthorizationResponse) | Authorization queries an authorization on a given operator approver pair. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}/{holder}|
-| `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.collection.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.collection.v1.QueryOperatorAuthorizationsResponse) | OperatorAuthorizations queries authorizations on a given operator. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}|
+| `Grant` | [QueryGrantRequest](#lbm.collection.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.collection.v1.QueryGrantResponse) | Grant queries a permission on a given grantee. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}/{permission}|
+| `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse) | GranteeGrants queries all permissions on a given grantee. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}|
+| `Authorization` | [QueryAuthorizationRequest](#lbm.collection.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.collection.v1.QueryAuthorizationResponse) | Authorization queries an authorization on a given operator approver pair. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}/{holder}|
+| `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.collection.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.collection.v1.QueryOperatorAuthorizationsResponse) | OperatorAuthorizations queries authorizations on a given operator. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}|
 | `Approved` | [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse) | Approved queries whether the operator is approved by the approver. Note: deprecated (use Authorization) | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}|
 | `Approvers` | [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse) | Approvers queries approvers of a given operator. Note: deprecated (use OperatorAuthorizations) | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers|
 
@@ -9105,7 +9105,7 @@ Query defines the gRPC querier service.
 
 ### MsgAbandon
 MsgAbandon is the Msg/Abandon request type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -9123,7 +9123,7 @@ Since: finschia
 
 ### MsgAbandonResponse
 MsgAbandonResponse is the Msg/Abandon response type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 
@@ -9223,7 +9223,7 @@ MsgAttachResponse is the Msg/Attach response type.
 
 ### MsgAuthorizeOperator
 MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -9241,7 +9241,7 @@ Since: finschia
 
 ### MsgAuthorizeOperatorResponse
 MsgAuthorizeOperatorResponse is the Msg/AuthorizeOperator response type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 
@@ -9252,7 +9252,7 @@ Since: finschia
 
 ### MsgBurn
 MsgBurn is the Msg/Burn request type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -9388,7 +9388,7 @@ Note: deprecated
 
 ### MsgBurnResponse
 MsgBurnResponse is the Msg/Burn response type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 
@@ -9514,7 +9514,7 @@ Note: deprecated
 
 ### MsgGrant
 MsgGrant is the Msg/Grant request type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -9563,7 +9563,7 @@ Note: deprecated
 
 ### MsgGrantResponse
 MsgGrantResponse is the Msg/Grant response type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 
@@ -9719,7 +9719,7 @@ MsgModifyResponse is the Msg/Modify response type.
 
 ### MsgOperatorAttach
 MsgOperatorAttach is the Msg/OperatorAttach request type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -9739,7 +9739,7 @@ Since: finschia
 
 ### MsgOperatorAttachResponse
 MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 
@@ -9750,7 +9750,7 @@ Since: finschia
 
 ### MsgOperatorBurn
 MsgOperatorBurn is the Msg/OperatorBurn request type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -9769,7 +9769,7 @@ Since: finschia
 
 ### MsgOperatorBurnResponse
 MsgOperatorBurnResponse is the Msg/OperatorBurn response type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 
@@ -9780,7 +9780,7 @@ Since: finschia
 
 ### MsgOperatorDetach
 MsgOperatorDetach is the Msg/OperatorDetach request type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -9799,7 +9799,7 @@ Since: finschia
 
 ### MsgOperatorDetachResponse
 MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 
@@ -9810,7 +9810,7 @@ Since: finschia
 
 ### MsgOperatorSend
 MsgOperatorSend is the Msg/OperatorSend request type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -9830,7 +9830,7 @@ Since: finschia
 
 ### MsgOperatorSendResponse
 MsgOperatorSendResponse is the Msg/OperatorSend response type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 
@@ -9841,7 +9841,7 @@ Since: finschia
 
 ### MsgRevokeOperator
 MsgRevokeOperator is the Msg/RevokeOperator request type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -9859,7 +9859,7 @@ Since: finschia
 
 ### MsgRevokeOperatorResponse
 MsgRevokeOperatorResponse is the Msg/RevokeOperator response type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 
@@ -9900,7 +9900,7 @@ Note: deprecated
 ### MsgSend
 MsgSend is the Msg/Send request type.
 
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -9919,7 +9919,7 @@ Since: finschia
 
 ### MsgSendResponse
 MsgSendResponse is the Msg/Send response type.
-Since: finschia
+Since: 0.46.0 (finschia)
 
 
 
@@ -10061,14 +10061,14 @@ Msg defines the collection Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Send` | [MsgSend](#lbm.collection.v1.MsgSend) | [MsgSendResponse](#lbm.collection.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. Info: one can send both fungible tokens and non-fungible tokens. Since: finschia | |
-| `OperatorSend` | [MsgOperatorSend](#lbm.collection.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.collection.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. Info: one can send both fungible tokens and non-fungible tokens. Since: finschia | |
+| `Send` | [MsgSend](#lbm.collection.v1.MsgSend) | [MsgSendResponse](#lbm.collection.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. Info: one can send both fungible tokens and non-fungible tokens. Since: 0.46.0 (finschia) | |
+| `OperatorSend` | [MsgOperatorSend](#lbm.collection.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.collection.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. Info: one can send both fungible tokens and non-fungible tokens. Since: 0.46.0 (finschia) | |
 | `TransferFT` | [MsgTransferFT](#lbm.collection.v1.MsgTransferFT) | [MsgTransferFTResponse](#lbm.collection.v1.MsgTransferFTResponse) | TransferFT defines a method to send fungible tokens from one account to another account. Note: deprecated (use Send) | |
 | `TransferFTFrom` | [MsgTransferFTFrom](#lbm.collection.v1.MsgTransferFTFrom) | [MsgTransferFTFromResponse](#lbm.collection.v1.MsgTransferFTFromResponse) | TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator. Note: deprecated (use OperatorSend) | |
 | `TransferNFT` | [MsgTransferNFT](#lbm.collection.v1.MsgTransferNFT) | [MsgTransferNFTResponse](#lbm.collection.v1.MsgTransferNFTResponse) | TransferNFT defines a method to send non-fungible tokens from one account to another account. Note: deprecated (use Send) | |
 | `TransferNFTFrom` | [MsgTransferNFTFrom](#lbm.collection.v1.MsgTransferNFTFrom) | [MsgTransferNFTFromResponse](#lbm.collection.v1.MsgTransferNFTFromResponse) | TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator. Note: deprecated (use OperatorSend) | |
-| `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.collection.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.collection.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the approver. Since: finschia | |
-| `RevokeOperator` | [MsgRevokeOperator](#lbm.collection.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.collection.v1.MsgRevokeOperatorResponse) | RevokeOperator revokes the authorization of the operator to send the approver's token. Since: finschia | |
+| `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.collection.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.collection.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the approver. Since: 0.46.0 (finschia) | |
+| `RevokeOperator` | [MsgRevokeOperator](#lbm.collection.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.collection.v1.MsgRevokeOperatorResponse) | RevokeOperator revokes the authorization of the operator to send the approver's token. Since: 0.46.0 (finschia) | |
 | `Approve` | [MsgApprove](#lbm.collection.v1.MsgApprove) | [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the approver. Note: deprecated (use AuthorizeOperator) | |
 | `Disapprove` | [MsgDisapprove](#lbm.collection.v1.MsgDisapprove) | [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse) | Disapprove revokes the authorization of the operator to send the approver's token. Note: deprecated (use RevokeOperator) | |
 | `CreateContract` | [MsgCreateContract](#lbm.collection.v1.MsgCreateContract) | [MsgCreateContractResponse](#lbm.collection.v1.MsgCreateContractResponse) | CreateContract defines a method to create a contract. | |
@@ -10076,21 +10076,21 @@ Msg defines the collection Msg service.
 | `IssueNFT` | [MsgIssueNFT](#lbm.collection.v1.MsgIssueNFT) | [MsgIssueNFTResponse](#lbm.collection.v1.MsgIssueNFTResponse) | IssueNFT defines a method to create a class of non-fungible token. | |
 | `MintFT` | [MsgMintFT](#lbm.collection.v1.MsgMintFT) | [MsgMintFTResponse](#lbm.collection.v1.MsgMintFTResponse) | MintFT defines a method to mint fungible tokens. | |
 | `MintNFT` | [MsgMintNFT](#lbm.collection.v1.MsgMintNFT) | [MsgMintNFTResponse](#lbm.collection.v1.MsgMintNFTResponse) | MintNFT defines a method to mint non-fungible tokens. | |
-| `Burn` | [MsgBurn](#lbm.collection.v1.MsgBurn) | [MsgBurnResponse](#lbm.collection.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Info: one can burn both fungible tokens and non-fungible tokens. Since: finschia | |
-| `OperatorBurn` | [MsgOperatorBurn](#lbm.collection.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.collection.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens of the holder by the operator. Info: one can burn both fungible tokens and non-fungible tokens. Since: finschia | |
+| `Burn` | [MsgBurn](#lbm.collection.v1.MsgBurn) | [MsgBurnResponse](#lbm.collection.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Info: one can burn both fungible tokens and non-fungible tokens. Since: 0.46.0 (finschia) | |
+| `OperatorBurn` | [MsgOperatorBurn](#lbm.collection.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.collection.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens of the holder by the operator. Info: one can burn both fungible tokens and non-fungible tokens. Since: 0.46.0 (finschia) | |
 | `BurnFT` | [MsgBurnFT](#lbm.collection.v1.MsgBurnFT) | [MsgBurnFTResponse](#lbm.collection.v1.MsgBurnFTResponse) | BurnFT defines a method to burn fungible tokens. Note: deprecated (use Burn) | |
 | `BurnFTFrom` | [MsgBurnFTFrom](#lbm.collection.v1.MsgBurnFTFrom) | [MsgBurnFTFromResponse](#lbm.collection.v1.MsgBurnFTFromResponse) | BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy. Note: deprecated (use OperatorBurn) | |
 | `BurnNFT` | [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT) | [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse) | BurnNFT defines a method to burn non-fungible tokens. Note: deprecated (use Burn) | |
 | `BurnNFTFrom` | [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom) | [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse) | BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy. Note: deprecated (use OperatorBurn) | |
 | `Modify` | [MsgModify](#lbm.collection.v1.MsgModify) | [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse) | Modify defines a method to modify metadata. | |
-| `Grant` | [MsgGrant](#lbm.collection.v1.MsgGrant) | [MsgGrantResponse](#lbm.collection.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify metadata. Since: finschia | |
-| `Abandon` | [MsgAbandon](#lbm.collection.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.collection.v1.MsgAbandonResponse) | Abandon abandons a permission. Since: finschia | |
+| `Grant` | [MsgGrant](#lbm.collection.v1.MsgGrant) | [MsgGrantResponse](#lbm.collection.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify metadata. Since: 0.46.0 (finschia) | |
+| `Abandon` | [MsgAbandon](#lbm.collection.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.collection.v1.MsgAbandonResponse) | Abandon abandons a permission. Since: 0.46.0 (finschia) | |
 | `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify metadata. Note: deprecated (use Grant) | |
 | `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Note: deprecated (use Abandon) | |
 | `Attach` | [MsgAttach](#lbm.collection.v1.MsgAttach) | [MsgAttachResponse](#lbm.collection.v1.MsgAttachResponse) | Attach defines a method to attach a token to another token. | |
 | `Detach` | [MsgDetach](#lbm.collection.v1.MsgDetach) | [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse) | Detach defines a method to detach a token from another token. | |
-| `OperatorAttach` | [MsgOperatorAttach](#lbm.collection.v1.MsgOperatorAttach) | [MsgOperatorAttachResponse](#lbm.collection.v1.MsgOperatorAttachResponse) | OperatorAttach defines a method to attach a token to another token by operator. Since: finschia | |
-| `OperatorDetach` | [MsgOperatorDetach](#lbm.collection.v1.MsgOperatorDetach) | [MsgOperatorDetachResponse](#lbm.collection.v1.MsgOperatorDetachResponse) | Detach defines a method to detach a token from another token by operator. Since: finschia | |
+| `OperatorAttach` | [MsgOperatorAttach](#lbm.collection.v1.MsgOperatorAttach) | [MsgOperatorAttachResponse](#lbm.collection.v1.MsgOperatorAttachResponse) | OperatorAttach defines a method to attach a token to another token by operator. Since: 0.46.0 (finschia) | |
+| `OperatorDetach` | [MsgOperatorDetach](#lbm.collection.v1.MsgOperatorDetach) | [MsgOperatorDetachResponse](#lbm.collection.v1.MsgOperatorDetachResponse) | Detach defines a method to detach a token from another token by operator. Since: 0.46.0 (finschia) | |
 | `AttachFrom` | [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom) | [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse) | AttachFrom defines a method to attach a token to another token by operator. Note: deprecated (use OperatorAttach) | |
 | `DetachFrom` | [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom) | [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse) | DetachFrom defines a method to detach a token from another token by operator. Note: deprecated (use OperatorDetach) | |
 
