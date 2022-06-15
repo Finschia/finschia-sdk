@@ -7,10 +7,13 @@ import (
 )
 
 func (k Keeper) Send(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amount sdk.Int) error {
+	if !amount.IsPositive() {
+		panic(sdkerrors.ErrInvalidRequest.Wrap("amount must be positive"))
+	}
+
 	if err := k.subtractToken(ctx, contractID, from, amount); err != nil {
 		return err
 	}
-
 	k.addToken(ctx, contractID, to, amount)
 
 	return nil

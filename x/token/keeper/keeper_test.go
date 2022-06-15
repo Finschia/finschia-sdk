@@ -26,10 +26,29 @@ type KeeperTestSuite struct {
 	vendor   sdk.AccAddress
 	operator sdk.AccAddress
 	customer sdk.AccAddress
+	stranger sdk.AccAddress
 
 	contractID string
 
 	balance sdk.Int
+}
+
+func createRandomAccounts(accNum int) []sdk.AccAddress {
+	seenAddresses := make(map[sdk.AccAddress]bool, accNum)
+	addresses := make([]sdk.AccAddress, accNum)
+	for i := 0; i < accNum; i++ {
+		var address sdk.AccAddress
+		for {
+			pk := secp256k1.GenPrivKey().PubKey()
+			address = sdk.BytesToAccAddress(pk.Address())
+			if !seenAddresses[address] {
+				seenAddresses[address] = true
+				break
+			}
+		}
+		addresses[i] = address
+	}
+	return addresses
 }
 
 func (s *KeeperTestSuite) SetupTest() {
@@ -42,12 +61,15 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.queryServer = keeper.NewQueryServer(s.keeper)
 	s.msgServer = keeper.NewMsgServer(s.keeper)
 
-	createAddress := func() sdk.AccAddress {
-		return sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addresses := []*sdk.AccAddress{
+		&s.vendor,
+		&s.operator,
+		&s.customer,
+		&s.stranger,
 	}
-	s.vendor = createAddress()
-	s.operator = createAddress()
-	s.customer = createAddress()
+	for i, address := range createRandomAccounts(len(addresses)) {
+		*addresses[i] = address
+	}
 
 	s.balance = sdk.NewInt(1000)
 
@@ -59,15 +81,13 @@ func (s *KeeperTestSuite) SetupTest() {
 		Symbol:   "OK",
 		Mintable: true,
 	}
-	err := s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
-	s.Require().NoError(err)
-	err = s.keeper.Burn(s.ctx, s.contractID, s.vendor, s.balance)
+	s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
+	err := s.keeper.Burn(s.ctx, s.contractID, s.vendor, s.balance)
 	s.Require().NoError(err)
 
 	// create another class for the query test
 	class.ContractId = "deadbeef"
-	err = s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
-	s.Require().NoError(err)
+	s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
 
 	// mint to the others
 	for _, to := range []sdk.AccAddress{s.vendor, s.operator, s.customer} {

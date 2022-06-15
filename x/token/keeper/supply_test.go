@@ -17,8 +17,7 @@ func (s *KeeperTestSuite) TestIssue() {
 		Symbol:   "NO",
 		Mintable: false,
 	}
-	err := s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
-	s.Require().NoError(err)
+	s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
 
 	mintPermissions := []token.Permission{
 		token.Permission_Mint,
@@ -31,8 +30,9 @@ func (s *KeeperTestSuite) TestIssue() {
 
 	// override fails
 	class.ContractId = s.contractID
-	err = s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
-	s.Require().Error(err)
+	s.Require().Panics(func(){
+		s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
+	})
 }
 
 func (s *KeeperTestSuite) TestMint() {

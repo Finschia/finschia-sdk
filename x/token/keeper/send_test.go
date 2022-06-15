@@ -53,6 +53,7 @@ func (s *KeeperTestSuite) TestAuthorizeOperator() {
 		s.vendor: "vendor",
 		s.operator: "operator",
 		s.customer: "customer",
+		s.stranger: "stranger",
 	}
 	for id, idDesc := range contractDescriptions {
 		for operator, operatorDesc := range userDescriptions {

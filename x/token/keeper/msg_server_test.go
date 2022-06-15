@@ -261,9 +261,6 @@ func (s *KeeperTestSuite) TestMsgIssue() {
 			amount: sdk.OneInt(),
 			valid:  true,
 		},
-		"invalid amount (not possible to reach here but for cov)": {
-			amount: sdk.NewInt(-1),
-		},
 	}
 
 	for name, tc := range testCases {
