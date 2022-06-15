@@ -11,29 +11,29 @@ option (gogoproto.equal_all) = false;
 // Msg defines the collection Msg service.
 service Msg {
   // Send defines a method to send tokens from one account to another account.
-  // you can send both fungible tokens and non-fungible tokens.
+  // Info: one can send both fungible tokens and non-fungible tokens.
   // Since: finschia
   rpc Send(MsgSend) returns (MsgSendResponse);
 
   // OperatorSend defines a method to send tokens from one account to another account by the operator.
-  // you can send both fungible tokens and non-fungible tokens.
+  // Info: one can send both fungible tokens and non-fungible tokens.
   // Since: finschia
   rpc OperatorSend(MsgOperatorSend) returns (MsgOperatorSendResponse);
 
   // TransferFT defines a method to send fungible tokens from one account to another account.
-  // NOTE: deprecated (use Send)
+  // Note: deprecated (use Send)
   rpc TransferFT(MsgTransferFT) returns (MsgTransferFTResponse);
 
   // TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator.
-  // NOTE: deprecated (use OperatorSend)
+  // Note: deprecated (use OperatorSend)
   rpc TransferFTFrom(MsgTransferFTFrom) returns (MsgTransferFTFromResponse);
 
   // TransferNFT defines a method to send non-fungible tokens from one account to another account.
-  // NOTE: deprecated (use Send)
+  // Note: deprecated (use Send)
   rpc TransferNFT(MsgTransferNFT) returns (MsgTransferNFTResponse);
 
   // TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator.
-  // NOTE: deprecated (use OperatorSend)
+  // Note: deprecated (use OperatorSend)
   rpc TransferNFTFrom(MsgTransferNFTFrom) returns (MsgTransferNFTFromResponse);
 
   // AuthorizeOperator allows one to send tokens on behalf of the approver.
@@ -45,11 +45,11 @@ service Msg {
   rpc RevokeOperator(MsgRevokeOperator) returns (MsgRevokeOperatorResponse);
 
   // Approve allows one to send tokens on behalf of the approver.
-  // NOTE: deprecated (use AuthorizeOperator)
+  // Note: deprecated (use AuthorizeOperator)
   rpc Approve(MsgApprove) returns (MsgApproveResponse);
 
   // Disapprove revokes the authorization of the operator to send the approver's token.
-  // NOTE: deprecated (use RevokeOperator)
+  // Note: deprecated (use RevokeOperator)
   rpc Disapprove(MsgDisapprove) returns (MsgDisapproveResponse);
 
   // CreateContract defines a method to create a contract.
@@ -68,27 +68,29 @@ service Msg {
   rpc MintNFT(MsgMintNFT) returns (MsgMintNFTResponse);
 
   // Burn defines a method to burn tokens.
+  // Info: one can burn both fungible tokens and non-fungible tokens.
   // Since: finschia
   rpc Burn(MsgBurn) returns (MsgBurnResponse);
 
   // OperatorBurn defines a method to burn tokens of the holder by the operator.
+  // Info: one can burn both fungible tokens and non-fungible tokens.
   // Since: finschia
   rpc OperatorBurn(MsgOperatorBurn) returns (MsgOperatorBurnResponse);
 
   // BurnFT defines a method to burn fungible tokens.
-  // NOTE: deprecated (use Burn)
+  // Note: deprecated (use Burn)
   rpc BurnFT(MsgBurnFT) returns (MsgBurnFTResponse);
 
   // BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy.
-  // NOTE: deprecated (use OperatorBurn)
+  // Note: deprecated (use OperatorBurn)
   rpc BurnFTFrom(MsgBurnFTFrom) returns (MsgBurnFTFromResponse);
 
   // BurnNFT defines a method to burn non-fungible tokens.
-  // NOTE: deprecated (use Burn)
+  // Note: deprecated (use Burn)
   rpc BurnNFT(MsgBurnNFT) returns (MsgBurnNFTResponse);
 
   // BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy.
-  // NOTE: deprecated (use OperatorBurn)
+  // Note: deprecated (use OperatorBurn)
   rpc BurnNFTFrom(MsgBurnNFTFrom) returns (MsgBurnNFTFromResponse);
 
   // Modify defines a method to modify metadata.
@@ -103,11 +105,11 @@ service Msg {
   rpc Abandon(MsgAbandon) returns (MsgAbandonResponse);
 
   // GrantPermission allows one to mint or burn tokens or modify metadata.
-  // NOTE: deprecated (use Grant)
+  // Note: deprecated (use Grant)
   rpc GrantPermission(MsgGrantPermission) returns (MsgGrantPermissionResponse);
 
   // RevokePermission abandons a permission.
-  // NOTE: deprecated (use Abandon)
+  // Note: deprecated (use Abandon)
   rpc RevokePermission(MsgRevokePermission) returns (MsgRevokePermissionResponse);
 
   // Attach defines a method to attach a token to another token.
@@ -125,15 +127,16 @@ service Msg {
   rpc OperatorDetach(MsgOperatorDetach) returns (MsgOperatorDetachResponse);
 
   // AttachFrom defines a method to attach a token to another token by operator.
-  // NOTE: deprecated (use OperatorAttach)
+  // Note: deprecated (use OperatorAttach)
   rpc AttachFrom(MsgAttachFrom) returns (MsgAttachFromResponse);
 
   // DetachFrom defines a method to detach a token from another token by operator.
-  // NOTE: deprecated (use OperatorDetach)
+  // Note: deprecated (use OperatorDetach)
   rpc DetachFrom(MsgDetachFrom) returns (MsgDetachFromResponse);
 }
 
 // MsgSend is the Msg/Send request type.
+//
 // Since: finschia
 message MsgSend {
   // contract id associated with the contract.
@@ -170,7 +173,7 @@ message MsgOperatorSend {
 message MsgOperatorSendResponse {}
 
 // MsgTransferFT is the Msg/TransferFT request type.
-// NOTE: deprecated (use MsgSend)
+// Note: deprecated (use MsgSend)
 message MsgTransferFT {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -179,16 +182,16 @@ message MsgTransferFT {
   // the address which the transfer is to.
   string to = 3;
   // the amount of the transfer.
-  // NOTE: amount may be empty.
+  // Note: amount may be empty.
   repeated Coin amount = 4 [(gogoproto.nullable) = false];
 }
 
 // MsgTransferFTResponse is the Msg/TransferFT response type.
-// NOTE: deprecated
+// Note: deprecated
 message MsgTransferFTResponse {}
 
 // MsgTransferFTFrom is the Msg/TransferFTFrom request type.
-// NOTE: deprecated (use MsgOperatorSend)
+// Note: deprecated (use MsgOperatorSend)
 message MsgTransferFTFrom {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -199,16 +202,16 @@ message MsgTransferFTFrom {
   // the address which the transfer is to.
   string to = 4;
   // the amount of the transfer.
-  // NOTE: amount may be empty.
+  // Note: amount may be empty.
   repeated Coin amount = 5 [(gogoproto.nullable) = false];
 }
 
 // MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
-// NOTE: deprecated
+// Note: deprecated
 message MsgTransferFTFromResponse {}
 
 // MsgTransferNFT is the Msg/TransferNFT request type.
-// NOTE: deprecated (use MsgSend)
+// Note: deprecated (use MsgSend)
 message MsgTransferNFT {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -221,11 +224,11 @@ message MsgTransferNFT {
 }
 
 // MsgTransferNFTResponse is the Msg/TransferNFT response type.
-// NOTE: deprecated
+// Note: deprecated
 message MsgTransferNFTResponse {}
 
 // MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
-// NOTE: deprecated (use MsgOperatorSend)
+// Note: deprecated (use MsgOperatorSend)
 message MsgTransferNFTFrom {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -240,7 +243,7 @@ message MsgTransferNFTFrom {
 }
 
 // MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
-// NOTE: deprecated
+// Note: deprecated
 message MsgTransferNFTFromResponse {}
 
 // MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
@@ -274,7 +277,7 @@ message MsgRevokeOperator {
 message MsgRevokeOperatorResponse {}
 
 // MsgApprove is the Msg/Approve request type.
-// NOTE: deprecated (use MsgAuthorizeOperator)
+// Note: deprecated (use MsgAuthorizeOperator)
 message MsgApprove {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -285,11 +288,11 @@ message MsgApprove {
 }
 
 // MsgApproveResponse is the Msg/Approve response type.
-// NOTE: deprecated
+// Note: deprecated
 message MsgApproveResponse {}
 
 // MsgDisapprove is the Msg/Disapprove request type.
-// NOTE: deprecated (use MsgRevokeOperator)
+// Note: deprecated (use MsgRevokeOperator)
 message MsgDisapprove {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -300,7 +303,7 @@ message MsgDisapprove {
 }
 
 // MsgDisapproveResponse is the Msg/Disapprove response type.
-// NOTE: deprecated
+// Note: deprecated
 message MsgDisapproveResponse {}
 
 // MsgCreateContract is the Msg/CreateContract request type.
@@ -324,27 +327,27 @@ message MsgIssueFT {
   // contract id associated with the contract.
   string contract_id = 1;
   // name defines the human-readable name of the token class.
-  // NOTE: it has an app-specific limit on the length.
+  // Note: it has an app-specific limit on the length.
   string name = 2;
   // meta is a brief description of the token class.
-  // NOTE: it has an app-specific limit on the length.
+  // Note: it has an app-specific limit on the length.
   string meta = 3;
   // decimals is the number of decimals which one must divide the amount by to get its user representation.
-  // NOTE: it cannot be negative or greater than 18.
+  // Note: it cannot be negative or greater than 18.
   int32 decimals = 4;
   // mintable represents whether the token is allowed to be minted or burnt.
-  // NOTE: one cannot set mintable to false, where amount == 1 and decimals == 0.
+  // Note: one cannot set mintable to false, where amount == 1 and decimals == 0.
   bool mintable = 5;
 
   // the address of the grantee which must have the permission to issue a token.
-  // NOTE: no permissions would be granted on the issuance.
+  // Note: no permissions would be granted on the issuance.
   string owner = 6;
 
   // the address to send the minted tokens to. mandatory.
   string to = 7;
   // the amount of tokens to mint on the issuance.
-  // NOTE: if you provide negative amount, a panic may result.
-  // NOTE: amount may be zero.
+  // Note: if you provide negative amount, a panic may result.
+  // Note: amount may be zero.
   string amount = 8 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -361,7 +364,7 @@ message MsgIssueNFT {
   string meta = 3;
 
   // the address of the grantee which must have the permission to issue a token.
-  // NOTE: permissions for mint and burn would be granted on the issuance.
+  // Note: permissions for mint and burn would be granted on the issuance.
   string owner = 4;
 }
 
@@ -377,7 +380,7 @@ message MsgMintFT {
   // address which the minted tokens will be sent to.
   string to = 3;
   // the amount of the mint.
-  // NOTE: amount may be empty.
+  // Note: amount may be empty.
   repeated Coin amount = 4 [(gogoproto.nullable) = false];
 }
 
@@ -398,7 +401,7 @@ message MsgMintNFT {
 
 message MintNFTParam {
   // token type or class id of the nft.
-  // NOTE: it cannot start with zero.
+  // Note: it cannot start with zero.
   string token_type = 1;
   // name defines the human-readable name of the nft (mandatory).
   string name = 2;
@@ -415,7 +418,7 @@ message MsgBurn {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which the tokens will be burnt from.
-  // NOTE: it must have the permission for the burn.
+  // Note: it must have the permission for the burn.
   string from = 2;
   // the amount of the burn.
   repeated Coin amount = 3 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Coins"];
@@ -431,8 +434,8 @@ message MsgOperatorBurn {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggers the burn.
-  // NOTE: it must have the permission for the burn.
-  // NOTE: it must have been authorized by from.
+  // Note: it must have the permission for the burn.
+  // Note: it must have been authorized by from.
   string operator = 2;
   // address which the tokens will be burnt from.
   string from = 3;
@@ -445,77 +448,77 @@ message MsgOperatorBurn {
 message MsgOperatorBurnResponse {}
 
 // MsgBurnFT is the Msg/BurnFT request type.
-// NOTE: deprecated (use MsgBurn)
+// Note: deprecated (use MsgBurn)
 message MsgBurnFT {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which the tokens will be burnt from.
-  // NOTE: it must have the permission for the burn.
+  // Note: it must have the permission for the burn.
   string from = 2;
   // the amount of the burn.
-  // NOTE: amount may be empty.
+  // Note: amount may be empty.
   repeated Coin amount = 3 [(gogoproto.nullable) = false];
 }
 
 // MsgBurnFTResponse is the Msg/BurnFT response type.
-// NOTE: deprecated
+// Note: deprecated
 message MsgBurnFTResponse {}
 
 // MsgBurnFTFrom is the Msg/BurnFTFrom request type.
-// NOTE: deprecated (use MsgOperatorBurn)
+// Note: deprecated (use MsgOperatorBurn)
 message MsgBurnFTFrom {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggers the burn.
-  // NOTE: it must have the permission for the burn.
-  // NOTE: it must have been authorized by from.
+  // Note: it must have the permission for the burn.
+  // Note: it must have been authorized by from.
   string proxy = 2;
   // address which the tokens will be burnt from.
   string from = 3;
   // the amount of the burn.
-  // NOTE: amount may be empty.
+  // Note: amount may be empty.
   repeated Coin amount = 4 [(gogoproto.nullable) = false];
 }
 
 // MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
-// NOTE: deprecated
+// Note: deprecated
 message MsgBurnFTFromResponse {}
 
 // MsgBurnNFT is the Msg/BurnNFT request type.
-// NOTE: deprecated (use MsgBurn)
+// Note: deprecated (use MsgBurn)
 message MsgBurnNFT {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which the tokens will be burnt from.
-  // NOTE: it must have the permission for the burn.
+  // Note: it must have the permission for the burn.
   string from = 2;
   // the token ids to burn.
-  // NOTE: id cannot start with zero.
+  // Note: id cannot start with zero.
   repeated string token_ids = 3;
 }
 
 // MsgBurnNFTResponse is the Msg/BurnNFT response type.
-// NOTE: deprecated
+// Note: deprecated
 message MsgBurnNFTResponse {}
 
 // MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
-// NOTE: deprecated (use MsgOperatorBurn)
+// Note: deprecated (use MsgOperatorBurn)
 message MsgBurnNFTFrom {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggers the burn.
-  // NOTE: it must have the permission for the burn.
-  // NOTE: it must have been authorized by from.
+  // Note: it must have the permission for the burn.
+  // Note: it must have been authorized by from.
   string proxy = 2;
   // address which the tokens will be burnt from.
   string from = 3;
   // the token ids to burn.
-  // NOTE: id cannot start with zero.
+  // Note: id cannot start with zero.
   repeated string token_ids = 4;
 }
 
 // MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
-// NOTE: deprecated
+// Note: deprecated
 message MsgBurnNFTFromResponse {}
 
 // MsgModify is the Msg/Modify request type.
@@ -529,7 +532,7 @@ message MsgModify {
   // token index of the token.
   // if index is empty, it would modify the corresponding token type.
   // if index is not empty, it would modify the corresponding nft.
-  // NOTE: if token type is of FTs, the index cannot be empty.
+  // Note: if token type is of FTs, the index cannot be empty.
   string token_index = 4;
   // changes to apply.
   // on modifying collection: name, base_img_uri, meta.
@@ -573,7 +576,7 @@ message MsgAbandon {
 message MsgAbandonResponse {}
 
 // MsgGrantPermission is the Msg/GrantPermission request type.
-// NOTE: deprecated (use MsgGrant)
+// Note: deprecated (use MsgGrant)
 message MsgGrantPermission {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -586,11 +589,11 @@ message MsgGrantPermission {
 }
 
 // MsgGrantPermissionResponse is the Msg/GrantPermission response type.
-// NOTE: deprecated
+// Note: deprecated
 message MsgGrantPermissionResponse {}
 
 // MsgRevokePermission is the Msg/RevokePermission request type.
-// NOTE: deprecated (use MsgAbandon)
+// Note: deprecated (use MsgAbandon)
 message MsgRevokePermission {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -601,7 +604,7 @@ message MsgRevokePermission {
 }
 
 // MsgRevokePermissionResponse is the Msg/RevokePermission response type.
-// NOTE: deprecated
+// Note: deprecated
 message MsgRevokePermissionResponse {}
 
 // MsgAttach is the Msg/Attach request type.
@@ -671,7 +674,7 @@ message MsgOperatorDetach {
 message MsgOperatorDetachResponse {}
 
 // MsgAttachFrom is the Msg/AttachFrom request type.
-// NOTE: deprecated (use MsgOperatorAttach)
+// Note: deprecated (use MsgOperatorAttach)
 message MsgAttachFrom {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -686,11 +689,11 @@ message MsgAttachFrom {
 }
 
 // MsgAttachFromResponse is the Msg/AttachFrom response type.
-// NOTE: deprecated
+// Note: deprecated
 message MsgAttachFromResponse {}
 
 // MsgDetachFrom is the Msg/DetachFrom request type.
-// NOTE: deprecated (use MsgOperatorDetach)
+// Note: deprecated (use MsgOperatorDetach)
 message MsgDetachFrom {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -703,5 +706,5 @@ message MsgDetachFrom {
 }
 
 // MsgDetachFromResponse is the Msg/DetachFrom response type.
-// NOTE: deprecated
+// Note: deprecated
 message MsgDetachFromResponse {}

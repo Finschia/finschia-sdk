@@ -247,7 +247,8 @@ type FTClass struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// id defines the unique identifier of the token class.
-	// NOTE: the token id of its token is identical to its class id.
+	// Note: size of the class id is 8 in length.
+	// Note: token id of the fungible token would be `id` + `00000000`.
 	Id string `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
 	// name defines the human-readable name of the token class.
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`

@@ -26,55 +26,58 @@ service Query {
   }
 
   // Supply queries the number of tokens from a given contract id and class id.
+  // Info: one can query for both fungible tokens and non-fungible token classes.
   // Since: finschia
   rpc Supply(QuerySupplyRequest) returns (QuerySupplyResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/supply";
   }
 
   // Minted queries the number of minted tokens from a given contract id and class id.
+  // Info: one can query for both fungible tokens and non-fungible token classes.
   // Since: finschia
   rpc Minted(QueryMintedRequest) returns (QueryMintedResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/minted";
   }
 
   // Burnt queries the number of burnt tokens from a given contract id and class id.
+  // Info: one can query for both fungible tokens and non-fungible token classes.
   // Since: finschia
   rpc Burnt(QueryBurntRequest) returns (QueryBurntResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/burnt";
   }
 
   // FTSupply queries the number of tokens from a given contract id and token id.
-  // NOTE: deprecated (use Supply)
+  // Note: deprecated (use Supply)
   rpc FTSupply(QueryFTSupplyRequest) returns (QueryFTSupplyResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply";
   }
 
   // FTMinted queries the number of minted tokens from a given contract id and token id.
-  // NOTE: deprecated (use Minted)
+  // Note: deprecated (use Minted)
   rpc FTMinted(QueryFTMintedRequest) returns (QueryFTMintedResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted";
   }
 
   // FTBurnt queries the number of burnt tokens from a given contract id and token id.
-  // NOTE: deprecated (use Burnt)
+  // Note: deprecated (use Burnt)
   rpc FTBurnt(QueryFTBurntRequest) returns (QueryFTBurntResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt";
   }
 
   // NFTSupply queries the number of tokens from a given contract id and token type.
-  // NOTE: deprecated (use Supply)
+  // Note: deprecated (use Supply)
   rpc NFTSupply(QueryNFTSupplyRequest) returns (QueryNFTSupplyResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply";
   }
 
   // NFTMinted queries the number of minted tokens from a given contract id and token type.
-  // NOTE: deprecated (use Minted)
+  // Note: deprecated (use Minted)
   rpc NFTMinted(QueryNFTMintedRequest) returns (QueryNFTMintedResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted";
   }
 
   // NFTBurnt queries the number of burnt tokens from a given contract id and token type.
-  // NOTE: deprecated (use Burnt)
+  // Note: deprecated (use Burnt)
   rpc NFTBurnt(QueryNFTBurntRequest) returns (QueryNFTBurntResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt";
   }
@@ -103,25 +106,25 @@ service Query {
   }
 
   // FT queries a metadata of a fungible token from its token id.
-  // NOTE: deprecated (use TokenClass)
+  // Note: deprecated (use TokenClass)
   rpc FT(QueryFTRequest) returns (QueryFTResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}";
   }
 
   // TokenType queries metadata of a token type.
-  // NOTE: deprecated (use TokenClass)
+  // Note: deprecated (use TokenClass)
   rpc TokenType(QueryTokenTypeRequest) returns (QueryTokenTypeResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}";
   }
 
   // TokenTypes queries metadata of all the token types.
-  // NOTE: deprecated (use TokenClasses)
+  // Note: deprecated (use TokenClasses)
   rpc TokenTypes(QueryTokenTypesRequest) returns (QueryTokenTypesResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types";
   }
 
   // Tokens queries all token metadata.
-  // NOTE: deprecated (use TokenClasses and NFT)
+  // Note: deprecated (use TokenClasses and NFT)
   rpc Tokens(QueryTokensRequest) returns (QueryTokensResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/tokens";
   }
@@ -177,13 +180,13 @@ service Query {
   }
 
   // Approved queries whether the operator is approved by the approver.
-  // NOTE: deprecated (use Authorization)
+  // Note: deprecated (use Authorization)
   rpc Approved(QueryApprovedRequest) returns (QueryApprovedResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}";
   }
 
   // Approvers queries approvers of a given operator.
-  // NOTE: deprecated (use OperatorAuthorizations)
+  // Note: deprecated (use OperatorAuthorizations)
   rpc Approvers(QueryApproversRequest) returns (QueryApproversResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers";
   }
@@ -276,7 +279,7 @@ message QueryBurntResponse {
 }
 
 // QueryFTSupplyRequest is the request type for the Query/FTSupply RPC method.
-// NOTE: deprecated (use QuerySupplyRequest)
+// Note: deprecated (use QuerySupplyRequest)
 message QueryFTSupplyRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -285,14 +288,14 @@ message QueryFTSupplyRequest {
 }
 
 // QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
-// NOTE: deprecated
+// Note: deprecated
 message QueryFTSupplyResponse {
   // supply is the supply of the tokens.
   string supply = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
-// NOTE: deprecated (use QueryMintedRequest)
+// Note: deprecated (use QueryMintedRequest)
 message QueryFTMintedRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -301,14 +304,14 @@ message QueryFTMintedRequest {
 }
 
 // QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
-// NOTE: deprecated
+// Note: deprecated
 message QueryFTMintedResponse {
   // minted is the amount of the minted tokens.
   string minted = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
-// NOTE: deprecated (use QueryBurntRequest)
+// Note: deprecated (use QueryBurntRequest)
 message QueryFTBurntRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -317,14 +320,14 @@ message QueryFTBurntRequest {
 }
 
 // QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
-// NOTE: deprecated
+// Note: deprecated
 message QueryFTBurntResponse {
   // burnt is the amount of the burnt tokens.
   string burnt = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
-// NOTE: deprecated (use QuerySupplyRequest)
+// Note: deprecated (use QuerySupplyRequest)
 message QueryNFTSupplyRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -333,14 +336,14 @@ message QueryNFTSupplyRequest {
 }
 
 // QueryNFTSupplyResponse is the response type for the Query/NFTSupply RPC method.
-// NOTE: deprecated
+// Note: deprecated
 message QueryNFTSupplyResponse {
   // supply is the supply of the non-fungible token.
   string supply = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
-// NOTE: deprecated (use QueryMintedRequest)
+// Note: deprecated (use QueryMintedRequest)
 message QueryNFTMintedRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -349,14 +352,14 @@ message QueryNFTMintedRequest {
 }
 
 // QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC method.
-// NOTE: deprecated
+// Note: deprecated
 message QueryNFTMintedResponse {
   // minted is the amount of minted tokens.
   string minted = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
-// NOTE: deprecated (use QueryBurntRequest)
+// Note: deprecated (use QueryBurntRequest)
 message QueryNFTBurntRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -365,7 +368,7 @@ message QueryNFTBurntRequest {
 }
 
 // QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
-// NOTE: deprecated
+// Note: deprecated
 message QueryNFTBurntResponse {
   // burnt is the amount of the burnt tokens.
   string burnt = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
@@ -401,7 +404,7 @@ message QueryContractsResponse {
 }
 
 // QueryFTRequest is the request type for the Query/FT RPC method.
-// NOTE: deprecated (use QueryTokenClassRequest)
+// Note: deprecated (use QueryTokenClassRequest)
 message QueryFTRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -410,14 +413,14 @@ message QueryFTRequest {
 }
 
 // QueryFTResponse is the response type for the Query/FT RPC method.
-// NOTE: deprecated
+// Note: deprecated
 message QueryFTResponse {
   // token is the information of the fungible token.
   Fungible token = 1;
 }
 
 // QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
-// NOTE: deprecated (use QueryTokenClassRequest)
+// Note: deprecated (use QueryTokenClassRequest)
 message QueryTokenTypeRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -426,14 +429,14 @@ message QueryTokenTypeRequest {
 }
 
 // QueryTokenTypeResponse is the response type for the Query/TokenType RPC method.
-// NOTE: deprecated
+// Note: deprecated
 message QueryTokenTypeResponse {
   // token type is the information of the token type.
   TokenType token_type = 1;
 }
 
 // QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
-// NOTE: deprecated (use QueryTokenClassesRequest)
+// Note: deprecated (use QueryTokenClassesRequest)
 message QueryTokenTypesRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -443,7 +446,7 @@ message QueryTokenTypesRequest {
 }
 
 // QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method.
-// NOTE: deprecated
+// Note: deprecated
 message QueryTokenTypesResponse {
   // token types is the informations of all the token types.
   repeated TokenType token_types = 1 [(gogoproto.nullable) = false];
@@ -453,7 +456,7 @@ message QueryTokenTypesResponse {
 }
 
 // QueryTokensRequest is the request type for the Query/Tokens RPC method.
-// NOTE: deprecated (use QueryTokenClasses and NFT)
+// Note: deprecated (use QueryTokenClasses and NFT)
 message QueryTokensRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -670,7 +673,7 @@ message QueryOperatorAuthorizationsResponse {
 }
 
 // QueryApprovedRequest is the request type for the Query/Approved RPC method.
-// NOTE: deprecated (use QueryAuthorizationRequest)
+// Note: deprecated (use QueryAuthorizationRequest)
 message QueryApprovedRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -681,13 +684,13 @@ message QueryApprovedRequest {
 }
 
 // QueryApprovedResponse is the response type for the Query/Approved RPC method.
-// NOTE: deprecated
+// Note: deprecated
 message QueryApprovedResponse {
   bool approved = 1;
 }
 
 // QueryApproversRequest is the request type for the Query/Approvers RPC method.
-// NOTE: deprecated (use QueryOperatorAuthorizations)
+// Note: deprecated (use QueryOperatorAuthorizations)
 message QueryApproversRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -699,7 +702,7 @@ message QueryApproversRequest {
 }
 
 // QueryApproversResponse is the response type for the Query/Approvers RPC method.
-// NOTE: deprecated
+// Note: deprecated
 message QueryApproversResponse {
   repeated string approvers = 1;
 

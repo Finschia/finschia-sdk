@@ -7364,7 +7364,7 @@ Since: finschia
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `id` | [string](#string) |  | id defines the unique identifier of the token class. NOTE: the token id of its token is identical to its class id. |
+| `id` | [string](#string) |  | id defines the unique identifier of the token class. Note: size of the class id is 8 in length. Note: token id of the fungible token would be `id` + `00000000`. |
 | `name` | [string](#string) |  | name defines the human-readable name of the token class. |
 | `meta` | [string](#string) |  | meta is a brief description of the token class. |
 | `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
@@ -8075,7 +8075,7 @@ Since: finschia
 
 ### QueryApprovedRequest
 QueryApprovedRequest is the request type for the Query/Approved RPC method.
-NOTE: deprecated (use QueryAuthorizationRequest)
+Note: deprecated (use QueryAuthorizationRequest)
 
 
 | Field | Type | Label | Description |
@@ -8093,7 +8093,7 @@ NOTE: deprecated (use QueryAuthorizationRequest)
 
 ### QueryApprovedResponse
 QueryApprovedResponse is the response type for the Query/Approved RPC method.
-NOTE: deprecated
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8109,7 +8109,7 @@ NOTE: deprecated
 
 ### QueryApproversRequest
 QueryApproversRequest is the request type for the Query/Approvers RPC method.
-NOTE: deprecated (use QueryOperatorAuthorizations)
+Note: deprecated (use QueryOperatorAuthorizations)
 
 
 | Field | Type | Label | Description |
@@ -8127,7 +8127,7 @@ NOTE: deprecated (use QueryOperatorAuthorizations)
 
 ### QueryApproversResponse
 QueryApproversResponse is the response type for the Query/Approvers RPC method.
-NOTE: deprecated
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8339,7 +8339,7 @@ Since: finschia
 
 ### QueryFTBurntRequest
 QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
-NOTE: deprecated (use QueryBurntRequest)
+Note: deprecated (use QueryBurntRequest)
 
 
 | Field | Type | Label | Description |
@@ -8356,7 +8356,7 @@ NOTE: deprecated (use QueryBurntRequest)
 
 ### QueryFTBurntResponse
 QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
-NOTE: deprecated
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8372,7 +8372,7 @@ NOTE: deprecated
 
 ### QueryFTMintedRequest
 QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
-NOTE: deprecated (use QueryMintedRequest)
+Note: deprecated (use QueryMintedRequest)
 
 
 | Field | Type | Label | Description |
@@ -8389,7 +8389,7 @@ NOTE: deprecated (use QueryMintedRequest)
 
 ### QueryFTMintedResponse
 QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
-NOTE: deprecated
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8405,7 +8405,7 @@ NOTE: deprecated
 
 ### QueryFTRequest
 QueryFTRequest is the request type for the Query/FT RPC method.
-NOTE: deprecated (use QueryTokenClassRequest)
+Note: deprecated (use QueryTokenClassRequest)
 
 
 | Field | Type | Label | Description |
@@ -8422,7 +8422,7 @@ NOTE: deprecated (use QueryTokenClassRequest)
 
 ### QueryFTResponse
 QueryFTResponse is the response type for the Query/FT RPC method.
-NOTE: deprecated
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8438,7 +8438,7 @@ NOTE: deprecated
 
 ### QueryFTSupplyRequest
 QueryFTSupplyRequest is the request type for the Query/FTSupply RPC method.
-NOTE: deprecated (use QuerySupplyRequest)
+Note: deprecated (use QuerySupplyRequest)
 
 
 | Field | Type | Label | Description |
@@ -8455,7 +8455,7 @@ NOTE: deprecated (use QuerySupplyRequest)
 
 ### QueryFTSupplyResponse
 QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
-NOTE: deprecated
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8573,7 +8573,7 @@ Since: finschia
 
 ### QueryNFTBurntRequest
 QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
-NOTE: deprecated (use QueryBurntRequest)
+Note: deprecated (use QueryBurntRequest)
 
 
 | Field | Type | Label | Description |
@@ -8590,7 +8590,7 @@ NOTE: deprecated (use QueryBurntRequest)
 
 ### QueryNFTBurntResponse
 QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
-NOTE: deprecated
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8606,7 +8606,7 @@ NOTE: deprecated
 
 ### QueryNFTMintedRequest
 QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
-NOTE: deprecated (use QueryMintedRequest)
+Note: deprecated (use QueryMintedRequest)
 
 
 | Field | Type | Label | Description |
@@ -8623,7 +8623,7 @@ NOTE: deprecated (use QueryMintedRequest)
 
 ### QueryNFTMintedResponse
 QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC method.
-NOTE: deprecated
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8670,7 +8670,7 @@ QueryNFTResponse is the response type for the Query/NFT RPC method.
 
 ### QueryNFTSupplyRequest
 QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
-NOTE: deprecated (use QuerySupplyRequest)
+Note: deprecated (use QuerySupplyRequest)
 
 
 | Field | Type | Label | Description |
@@ -8687,7 +8687,7 @@ NOTE: deprecated (use QuerySupplyRequest)
 
 ### QueryNFTSupplyResponse
 QueryNFTSupplyResponse is the response type for the Query/NFTSupply RPC method.
-NOTE: deprecated
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8933,7 +8933,7 @@ Since: finschia
 
 ### QueryTokenTypeRequest
 QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
-NOTE: deprecated (use QueryTokenClassRequest)
+Note: deprecated (use QueryTokenClassRequest)
 
 
 | Field | Type | Label | Description |
@@ -8950,7 +8950,7 @@ NOTE: deprecated (use QueryTokenClassRequest)
 
 ### QueryTokenTypeResponse
 QueryTokenTypeResponse is the response type for the Query/TokenType RPC method.
-NOTE: deprecated
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -8966,7 +8966,7 @@ NOTE: deprecated
 
 ### QueryTokenTypesRequest
 QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
-NOTE: deprecated (use QueryTokenClassesRequest)
+Note: deprecated (use QueryTokenClassesRequest)
 
 
 | Field | Type | Label | Description |
@@ -8983,7 +8983,7 @@ NOTE: deprecated (use QueryTokenClassesRequest)
 
 ### QueryTokenTypesResponse
 QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method.
-NOTE: deprecated
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -9000,7 +9000,7 @@ NOTE: deprecated
 
 ### QueryTokensRequest
 QueryTokensRequest is the request type for the Query/Tokens RPC method.
-NOTE: deprecated (use QueryTokenClasses and NFT)
+Note: deprecated (use QueryTokenClasses and NFT)
 
 
 | Field | Type | Label | Description |
@@ -9044,23 +9044,23 @@ Query defines the gRPC querier service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Balance` | [QueryBalanceRequest](#lbm.collection.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.collection.v1.QueryBalanceResponse) | Balance queries the balance of a single token class for a single account. | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}/{token_id}|
 | `AllBalances` | [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.collection.v1.QueryAllBalancesResponse) | AllBalances queries the balance of all token classes for a single account. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}|
-| `Supply` | [QuerySupplyRequest](#lbm.collection.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.collection.v1.QuerySupplyResponse) | Supply queries the number of tokens from a given contract id and class id. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/supply|
-| `Minted` | [QueryMintedRequest](#lbm.collection.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.collection.v1.QueryMintedResponse) | Minted queries the number of minted tokens from a given contract id and class id. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/minted|
-| `Burnt` | [QueryBurntRequest](#lbm.collection.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.collection.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from a given contract id and class id. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/burnt|
-| `FTSupply` | [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest) | [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse) | FTSupply queries the number of tokens from a given contract id and token id. NOTE: deprecated (use Supply) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply|
-| `FTMinted` | [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest) | [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse) | FTMinted queries the number of minted tokens from a given contract id and token id. NOTE: deprecated (use Minted) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted|
-| `FTBurnt` | [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest) | [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse) | FTBurnt queries the number of burnt tokens from a given contract id and token id. NOTE: deprecated (use Burnt) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt|
-| `NFTSupply` | [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest) | [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse) | NFTSupply queries the number of tokens from a given contract id and token type. NOTE: deprecated (use Supply) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply|
-| `NFTMinted` | [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest) | [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse) | NFTMinted queries the number of minted tokens from a given contract id and token type. NOTE: deprecated (use Minted) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted|
-| `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | NFTBurnt queries the number of burnt tokens from a given contract id and token type. NOTE: deprecated (use Burnt) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
+| `Supply` | [QuerySupplyRequest](#lbm.collection.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.collection.v1.QuerySupplyResponse) | Supply queries the number of tokens from a given contract id and class id. Info: one can query for both fungible tokens and non-fungible token classes. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/supply|
+| `Minted` | [QueryMintedRequest](#lbm.collection.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.collection.v1.QueryMintedResponse) | Minted queries the number of minted tokens from a given contract id and class id. Info: one can query for both fungible tokens and non-fungible token classes. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/minted|
+| `Burnt` | [QueryBurntRequest](#lbm.collection.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.collection.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from a given contract id and class id. Info: one can query for both fungible tokens and non-fungible token classes. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/burnt|
+| `FTSupply` | [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest) | [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse) | FTSupply queries the number of tokens from a given contract id and token id. Note: deprecated (use Supply) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply|
+| `FTMinted` | [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest) | [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse) | FTMinted queries the number of minted tokens from a given contract id and token id. Note: deprecated (use Minted) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted|
+| `FTBurnt` | [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest) | [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse) | FTBurnt queries the number of burnt tokens from a given contract id and token id. Note: deprecated (use Burnt) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt|
+| `NFTSupply` | [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest) | [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse) | NFTSupply queries the number of tokens from a given contract id and token type. Note: deprecated (use Supply) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply|
+| `NFTMinted` | [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest) | [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse) | NFTMinted queries the number of minted tokens from a given contract id and token type. Note: deprecated (use Minted) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted|
+| `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | NFTBurnt queries the number of burnt tokens from a given contract id and token type. Note: deprecated (use Burnt) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
 | `Contract` | [QueryContractRequest](#lbm.collection.v1.QueryContractRequest) | [QueryContractResponse](#lbm.collection.v1.QueryContractResponse) | Contract queries a contract metadata based on its contract id. | GET|/lbm/collection/v1/contracts/{contract_id}|
 | `Contracts` | [QueryContractsRequest](#lbm.collection.v1.QueryContractsRequest) | [QueryContractsResponse](#lbm.collection.v1.QueryContractsResponse) | Contracts queries metadata of all contracts. Since: finschia | GET|/lbm/collection/v1/contracts|
 | `TokenClass` | [QueryTokenClassRequest](#lbm.collection.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.collection.v1.QueryTokenClassResponse) | TokenClass queries a metadata of a token class from its class id. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}|
 | `TokenClasses` | [QueryTokenClassesRequest](#lbm.collection.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.collection.v1.QueryTokenClassesResponse) | TokenClasses queries token metadata of all token classes of a contract. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes|
-| `FT` | [QueryFTRequest](#lbm.collection.v1.QueryFTRequest) | [QueryFTResponse](#lbm.collection.v1.QueryFTResponse) | FT queries a metadata of a fungible token from its token id. NOTE: deprecated (use TokenClass) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}|
-| `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. NOTE: deprecated (use TokenClass) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
-| `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. NOTE: deprecated (use TokenClasses) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
-| `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. NOTE: deprecated (use TokenClasses and NFT) | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
+| `FT` | [QueryFTRequest](#lbm.collection.v1.QueryFTRequest) | [QueryFTResponse](#lbm.collection.v1.QueryFTResponse) | FT queries a metadata of a fungible token from its token id. Note: deprecated (use TokenClass) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}|
+| `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. Note: deprecated (use TokenClass) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
+| `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. Note: deprecated (use TokenClasses) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
+| `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. Note: deprecated (use TokenClasses and NFT) | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
 | `NFT` | [QueryNFTRequest](#lbm.collection.v1.QueryNFTRequest) | [QueryNFTResponse](#lbm.collection.v1.QueryNFTResponse) | NFT queries a metadata of a non-fungible token. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}|
 | `NFTs` | [QueryNFTsRequest](#lbm.collection.v1.QueryNFTsRequest) | [QueryNFTsResponse](#lbm.collection.v1.QueryNFTsResponse) | NFTs queries a metadata of all non-fungible tokens. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/nfts|
 | `Root` | [QueryRootRequest](#lbm.collection.v1.QueryRootRequest) | [QueryRootResponse](#lbm.collection.v1.QueryRootResponse) | Root queries the root of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root|
@@ -9070,8 +9070,8 @@ Query defines the gRPC querier service.
 | `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse) | GranteeGrants queries all permissions on a given grantee. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}|
 | `Authorization` | [QueryAuthorizationRequest](#lbm.collection.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.collection.v1.QueryAuthorizationResponse) | Authorization queries an authorization on a given operator approver pair. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}/{holder}|
 | `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.collection.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.collection.v1.QueryOperatorAuthorizationsResponse) | OperatorAuthorizations queries authorizations on a given operator. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}|
-| `Approved` | [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse) | Approved queries whether the operator is approved by the approver. NOTE: deprecated (use Authorization) | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}|
-| `Approvers` | [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse) | Approvers queries approvers of a given operator. NOTE: deprecated (use OperatorAuthorizations) | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers|
+| `Approved` | [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse) | Approved queries whether the operator is approved by the approver. Note: deprecated (use Authorization) | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}|
+| `Approvers` | [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse) | Approvers queries approvers of a given operator. Note: deprecated (use OperatorAuthorizations) | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers|
 
  <!-- end services -->
 
@@ -9092,7 +9092,7 @@ Query defines the gRPC querier service.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `token_type` | [string](#string) |  | token type or class id of the nft. NOTE: it cannot start with zero. |
+| `token_type` | [string](#string) |  | token type or class id of the nft. Note: it cannot start with zero. |
 | `name` | [string](#string) |  | name defines the human-readable name of the nft (mandatory). |
 | `meta` | [string](#string) |  | meta is a brief description of the nft. |
 
@@ -9134,7 +9134,7 @@ Since: finschia
 
 ### MsgApprove
 MsgApprove is the Msg/Approve request type.
-NOTE: deprecated (use MsgAuthorizeOperator)
+Note: deprecated (use MsgAuthorizeOperator)
 
 
 | Field | Type | Label | Description |
@@ -9152,7 +9152,7 @@ NOTE: deprecated (use MsgAuthorizeOperator)
 
 ### MsgApproveResponse
 MsgApproveResponse is the Msg/Approve response type.
-NOTE: deprecated
+Note: deprecated
 
 
 
@@ -9182,7 +9182,7 @@ TODO: revisit the field names
 
 ### MsgAttachFrom
 MsgAttachFrom is the Msg/AttachFrom request type.
-NOTE: deprecated (use MsgOperatorAttach)
+Note: deprecated (use MsgOperatorAttach)
 
 
 | Field | Type | Label | Description |
@@ -9202,7 +9202,7 @@ NOTE: deprecated (use MsgOperatorAttach)
 
 ### MsgAttachFromResponse
 MsgAttachFromResponse is the Msg/AttachFrom response type.
-NOTE: deprecated
+Note: deprecated
 
 
 
@@ -9258,7 +9258,7 @@ Since: finschia
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `from` | [string](#string) |  | address which the tokens will be burnt from. NOTE: it must have the permission for the burn. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. Note: it must have the permission for the burn. |
 | `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. |
 
 
@@ -9270,14 +9270,14 @@ Since: finschia
 
 ### MsgBurnFT
 MsgBurnFT is the Msg/BurnFT request type.
-NOTE: deprecated (use MsgBurn)
+Note: deprecated (use MsgBurn)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `from` | [string](#string) |  | address which the tokens will be burnt from. NOTE: it must have the permission for the burn. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. NOTE: amount may be empty. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. Note: it must have the permission for the burn. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. Note: amount may be empty. |
 
 
 
@@ -9288,15 +9288,15 @@ NOTE: deprecated (use MsgBurn)
 
 ### MsgBurnFTFrom
 MsgBurnFTFrom is the Msg/BurnFTFrom request type.
-NOTE: deprecated (use MsgOperatorBurn)
+Note: deprecated (use MsgOperatorBurn)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `proxy` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
+| `proxy` | [string](#string) |  | address which triggers the burn. Note: it must have the permission for the burn. Note: it must have been authorized by from. |
 | `from` | [string](#string) |  | address which the tokens will be burnt from. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. NOTE: amount may be empty. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. Note: amount may be empty. |
 
 
 
@@ -9307,7 +9307,7 @@ NOTE: deprecated (use MsgOperatorBurn)
 
 ### MsgBurnFTFromResponse
 MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
-NOTE: deprecated
+Note: deprecated
 
 
 
@@ -9318,7 +9318,7 @@ NOTE: deprecated
 
 ### MsgBurnFTResponse
 MsgBurnFTResponse is the Msg/BurnFT response type.
-NOTE: deprecated
+Note: deprecated
 
 
 
@@ -9329,14 +9329,14 @@ NOTE: deprecated
 
 ### MsgBurnNFT
 MsgBurnNFT is the Msg/BurnNFT request type.
-NOTE: deprecated (use MsgBurn)
+Note: deprecated (use MsgBurn)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `from` | [string](#string) |  | address which the tokens will be burnt from. NOTE: it must have the permission for the burn. |
-| `token_ids` | [string](#string) | repeated | the token ids to burn. NOTE: id cannot start with zero. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. Note: it must have the permission for the burn. |
+| `token_ids` | [string](#string) | repeated | the token ids to burn. Note: id cannot start with zero. |
 
 
 
@@ -9347,15 +9347,15 @@ NOTE: deprecated (use MsgBurn)
 
 ### MsgBurnNFTFrom
 MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
-NOTE: deprecated (use MsgOperatorBurn)
+Note: deprecated (use MsgOperatorBurn)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `proxy` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
+| `proxy` | [string](#string) |  | address which triggers the burn. Note: it must have the permission for the burn. Note: it must have been authorized by from. |
 | `from` | [string](#string) |  | address which the tokens will be burnt from. |
-| `token_ids` | [string](#string) | repeated | the token ids to burn. NOTE: id cannot start with zero. |
+| `token_ids` | [string](#string) | repeated | the token ids to burn. Note: id cannot start with zero. |
 
 
 
@@ -9366,7 +9366,7 @@ NOTE: deprecated (use MsgOperatorBurn)
 
 ### MsgBurnNFTFromResponse
 MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
-NOTE: deprecated
+Note: deprecated
 
 
 
@@ -9377,7 +9377,7 @@ NOTE: deprecated
 
 ### MsgBurnNFTResponse
 MsgBurnNFTResponse is the Msg/BurnNFT response type.
-NOTE: deprecated
+Note: deprecated
 
 
 
@@ -9445,7 +9445,7 @@ TODO: revisit the field names
 
 ### MsgDetachFrom
 MsgDetachFrom is the Msg/DetachFrom request type.
-NOTE: deprecated (use MsgOperatorDetach)
+Note: deprecated (use MsgOperatorDetach)
 
 
 | Field | Type | Label | Description |
@@ -9464,7 +9464,7 @@ NOTE: deprecated (use MsgOperatorDetach)
 
 ### MsgDetachFromResponse
 MsgDetachFromResponse is the Msg/DetachFrom response type.
-NOTE: deprecated
+Note: deprecated
 
 
 
@@ -9485,7 +9485,7 @@ MsgDetachResponse is the Msg/Detach response type.
 
 ### MsgDisapprove
 MsgDisapprove is the Msg/Disapprove request type.
-NOTE: deprecated (use MsgRevokeOperator)
+Note: deprecated (use MsgRevokeOperator)
 
 
 | Field | Type | Label | Description |
@@ -9503,7 +9503,7 @@ NOTE: deprecated (use MsgRevokeOperator)
 
 ### MsgDisapproveResponse
 MsgDisapproveResponse is the Msg/Disapprove response type.
-NOTE: deprecated
+Note: deprecated
 
 
 
@@ -9533,7 +9533,7 @@ Since: finschia
 
 ### MsgGrantPermission
 MsgGrantPermission is the Msg/GrantPermission request type.
-NOTE: deprecated (use MsgGrant)
+Note: deprecated (use MsgGrant)
 
 
 | Field | Type | Label | Description |
@@ -9552,7 +9552,7 @@ NOTE: deprecated (use MsgGrant)
 
 ### MsgGrantPermissionResponse
 MsgGrantPermissionResponse is the Msg/GrantPermission response type.
-NOTE: deprecated
+Note: deprecated
 
 
 
@@ -9579,13 +9579,13 @@ MsgIssueFT is the Msg/IssueFT request type.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `name` | [string](#string) |  | name defines the human-readable name of the token class. NOTE: it has an app-specific limit on the length. |
-| `meta` | [string](#string) |  | meta is a brief description of the token class. NOTE: it has an app-specific limit on the length. |
-| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. NOTE: it cannot be negative or greater than 18. |
-| `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to be minted or burnt. NOTE: one cannot set mintable to false, where amount == 1 and decimals == 0. |
-| `owner` | [string](#string) |  | the address of the grantee which must have the permission to issue a token. NOTE: no permissions would be granted on the issuance. |
+| `name` | [string](#string) |  | name defines the human-readable name of the token class. Note: it has an app-specific limit on the length. |
+| `meta` | [string](#string) |  | meta is a brief description of the token class. Note: it has an app-specific limit on the length. |
+| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. Note: it cannot be negative or greater than 18. |
+| `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to be minted or burnt. Note: one cannot set mintable to false, where amount == 1 and decimals == 0. |
+| `owner` | [string](#string) |  | the address of the grantee which must have the permission to issue a token. Note: no permissions would be granted on the issuance. |
 | `to` | [string](#string) |  | the address to send the minted tokens to. mandatory. |
-| `amount` | [string](#string) |  | the amount of tokens to mint on the issuance. NOTE: if you provide negative amount, a panic may result. NOTE: amount may be zero. |
+| `amount` | [string](#string) |  | the amount of tokens to mint on the issuance. Note: if you provide negative amount, a panic may result. Note: amount may be zero. |
 
 
 
@@ -9613,7 +9613,7 @@ MsgIssueNFT is the Msg/IssueNFT request type.
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `name` | [string](#string) |  | name defines the human-readable name of the token class. |
 | `meta` | [string](#string) |  | meta is a brief description of the token class. |
-| `owner` | [string](#string) |  | the address of the grantee which must have the permission to issue a token. NOTE: permissions for mint and burn would be granted on the issuance. |
+| `owner` | [string](#string) |  | the address of the grantee which must have the permission to issue a token. Note: permissions for mint and burn would be granted on the issuance. |
 
 
 
@@ -9641,7 +9641,7 @@ MsgMintFT is the Msg/MintFT request type.
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `from` | [string](#string) |  | address of the grantee which has the permission for the mint. |
 | `to` | [string](#string) |  | address which the minted tokens will be sent to. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the mint. NOTE: amount may be empty. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the mint. Note: amount may be empty. |
 
 
 
@@ -9697,7 +9697,7 @@ MsgModify is the Msg/Modify request type.
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
 | `token_type` | [string](#string) |  | token type of the token. |
-| `token_index` | [string](#string) |  | token index of the token. if index is empty, it would modify the corresponding token type. if index is not empty, it would modify the corresponding nft. NOTE: if token type is of FTs, the index cannot be empty. |
+| `token_index` | [string](#string) |  | token index of the token. if index is empty, it would modify the corresponding token type. if index is not empty, it would modify the corresponding nft. Note: if token type is of FTs, the index cannot be empty. |
 | `changes` | [Pair](#lbm.collection.v1.Pair) | repeated | changes to apply. on modifying collection: name, base_img_uri, meta. on modifying token type and token: name, meta. |
 
 
@@ -9756,7 +9756,7 @@ Since: finschia
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
+| `operator` | [string](#string) |  | address which triggers the burn. Note: it must have the permission for the burn. Note: it must have been authorized by from. |
 | `from` | [string](#string) |  | address which the tokens will be burnt from. |
 | `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. |
 
@@ -9870,7 +9870,7 @@ Since: finschia
 
 ### MsgRevokePermission
 MsgRevokePermission is the Msg/RevokePermission request type.
-NOTE: deprecated (use MsgAbandon)
+Note: deprecated (use MsgAbandon)
 
 
 | Field | Type | Label | Description |
@@ -9888,7 +9888,7 @@ NOTE: deprecated (use MsgAbandon)
 
 ### MsgRevokePermissionResponse
 MsgRevokePermissionResponse is the Msg/RevokePermission response type.
-NOTE: deprecated
+Note: deprecated
 
 
 
@@ -9899,6 +9899,7 @@ NOTE: deprecated
 
 ### MsgSend
 MsgSend is the Msg/Send request type.
+
 Since: finschia
 
 
@@ -9929,7 +9930,7 @@ Since: finschia
 
 ### MsgTransferFT
 MsgTransferFT is the Msg/TransferFT request type.
-NOTE: deprecated (use MsgSend)
+Note: deprecated (use MsgSend)
 
 
 | Field | Type | Label | Description |
@@ -9937,7 +9938,7 @@ NOTE: deprecated (use MsgSend)
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `from` | [string](#string) |  | the address which the transfer is from. |
 | `to` | [string](#string) |  | the address which the transfer is to. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. NOTE: amount may be empty. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. Note: amount may be empty. |
 
 
 
@@ -9948,7 +9949,7 @@ NOTE: deprecated (use MsgSend)
 
 ### MsgTransferFTFrom
 MsgTransferFTFrom is the Msg/TransferFTFrom request type.
-NOTE: deprecated (use MsgOperatorSend)
+Note: deprecated (use MsgOperatorSend)
 
 
 | Field | Type | Label | Description |
@@ -9957,7 +9958,7 @@ NOTE: deprecated (use MsgOperatorSend)
 | `proxy` | [string](#string) |  | the address of the operator. |
 | `from` | [string](#string) |  | the address which the transfer is from. |
 | `to` | [string](#string) |  | the address which the transfer is to. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. NOTE: amount may be empty. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. Note: amount may be empty. |
 
 
 
@@ -9968,7 +9969,7 @@ NOTE: deprecated (use MsgOperatorSend)
 
 ### MsgTransferFTFromResponse
 MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
-NOTE: deprecated
+Note: deprecated
 
 
 
@@ -9979,7 +9980,7 @@ NOTE: deprecated
 
 ### MsgTransferFTResponse
 MsgTransferFTResponse is the Msg/TransferFT response type.
-NOTE: deprecated
+Note: deprecated
 
 
 
@@ -9990,7 +9991,7 @@ NOTE: deprecated
 
 ### MsgTransferNFT
 MsgTransferNFT is the Msg/TransferNFT request type.
-NOTE: deprecated (use MsgSend)
+Note: deprecated (use MsgSend)
 
 
 | Field | Type | Label | Description |
@@ -10009,7 +10010,7 @@ NOTE: deprecated (use MsgSend)
 
 ### MsgTransferNFTFrom
 MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
-NOTE: deprecated (use MsgOperatorSend)
+Note: deprecated (use MsgOperatorSend)
 
 
 | Field | Type | Label | Description |
@@ -10029,7 +10030,7 @@ NOTE: deprecated (use MsgOperatorSend)
 
 ### MsgTransferNFTFromResponse
 MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
-NOTE: deprecated
+Note: deprecated
 
 
 
@@ -10040,7 +10041,7 @@ NOTE: deprecated
 
 ### MsgTransferNFTResponse
 MsgTransferNFTResponse is the Msg/TransferNFT response type.
-NOTE: deprecated
+Note: deprecated
 
 
 
@@ -10060,38 +10061,38 @@ Msg defines the collection Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Send` | [MsgSend](#lbm.collection.v1.MsgSend) | [MsgSendResponse](#lbm.collection.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. you can send both fungible tokens and non-fungible tokens. Since: finschia | |
-| `OperatorSend` | [MsgOperatorSend](#lbm.collection.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.collection.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. you can send both fungible tokens and non-fungible tokens. Since: finschia | |
-| `TransferFT` | [MsgTransferFT](#lbm.collection.v1.MsgTransferFT) | [MsgTransferFTResponse](#lbm.collection.v1.MsgTransferFTResponse) | TransferFT defines a method to send fungible tokens from one account to another account. NOTE: deprecated (use Send) | |
-| `TransferFTFrom` | [MsgTransferFTFrom](#lbm.collection.v1.MsgTransferFTFrom) | [MsgTransferFTFromResponse](#lbm.collection.v1.MsgTransferFTFromResponse) | TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator. NOTE: deprecated (use OperatorSend) | |
-| `TransferNFT` | [MsgTransferNFT](#lbm.collection.v1.MsgTransferNFT) | [MsgTransferNFTResponse](#lbm.collection.v1.MsgTransferNFTResponse) | TransferNFT defines a method to send non-fungible tokens from one account to another account. NOTE: deprecated (use Send) | |
-| `TransferNFTFrom` | [MsgTransferNFTFrom](#lbm.collection.v1.MsgTransferNFTFrom) | [MsgTransferNFTFromResponse](#lbm.collection.v1.MsgTransferNFTFromResponse) | TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator. NOTE: deprecated (use OperatorSend) | |
+| `Send` | [MsgSend](#lbm.collection.v1.MsgSend) | [MsgSendResponse](#lbm.collection.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. Info: one can send both fungible tokens and non-fungible tokens. Since: finschia | |
+| `OperatorSend` | [MsgOperatorSend](#lbm.collection.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.collection.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. Info: one can send both fungible tokens and non-fungible tokens. Since: finschia | |
+| `TransferFT` | [MsgTransferFT](#lbm.collection.v1.MsgTransferFT) | [MsgTransferFTResponse](#lbm.collection.v1.MsgTransferFTResponse) | TransferFT defines a method to send fungible tokens from one account to another account. Note: deprecated (use Send) | |
+| `TransferFTFrom` | [MsgTransferFTFrom](#lbm.collection.v1.MsgTransferFTFrom) | [MsgTransferFTFromResponse](#lbm.collection.v1.MsgTransferFTFromResponse) | TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator. Note: deprecated (use OperatorSend) | |
+| `TransferNFT` | [MsgTransferNFT](#lbm.collection.v1.MsgTransferNFT) | [MsgTransferNFTResponse](#lbm.collection.v1.MsgTransferNFTResponse) | TransferNFT defines a method to send non-fungible tokens from one account to another account. Note: deprecated (use Send) | |
+| `TransferNFTFrom` | [MsgTransferNFTFrom](#lbm.collection.v1.MsgTransferNFTFrom) | [MsgTransferNFTFromResponse](#lbm.collection.v1.MsgTransferNFTFromResponse) | TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator. Note: deprecated (use OperatorSend) | |
 | `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.collection.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.collection.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the approver. Since: finschia | |
 | `RevokeOperator` | [MsgRevokeOperator](#lbm.collection.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.collection.v1.MsgRevokeOperatorResponse) | RevokeOperator revokes the authorization of the operator to send the approver's token. Since: finschia | |
-| `Approve` | [MsgApprove](#lbm.collection.v1.MsgApprove) | [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the approver. NOTE: deprecated (use AuthorizeOperator) | |
-| `Disapprove` | [MsgDisapprove](#lbm.collection.v1.MsgDisapprove) | [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse) | Disapprove revokes the authorization of the operator to send the approver's token. NOTE: deprecated (use RevokeOperator) | |
+| `Approve` | [MsgApprove](#lbm.collection.v1.MsgApprove) | [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the approver. Note: deprecated (use AuthorizeOperator) | |
+| `Disapprove` | [MsgDisapprove](#lbm.collection.v1.MsgDisapprove) | [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse) | Disapprove revokes the authorization of the operator to send the approver's token. Note: deprecated (use RevokeOperator) | |
 | `CreateContract` | [MsgCreateContract](#lbm.collection.v1.MsgCreateContract) | [MsgCreateContractResponse](#lbm.collection.v1.MsgCreateContractResponse) | CreateContract defines a method to create a contract. | |
 | `IssueFT` | [MsgIssueFT](#lbm.collection.v1.MsgIssueFT) | [MsgIssueFTResponse](#lbm.collection.v1.MsgIssueFTResponse) | IssueFT defines a method to create a class of fungible token. | |
 | `IssueNFT` | [MsgIssueNFT](#lbm.collection.v1.MsgIssueNFT) | [MsgIssueNFTResponse](#lbm.collection.v1.MsgIssueNFTResponse) | IssueNFT defines a method to create a class of non-fungible token. | |
 | `MintFT` | [MsgMintFT](#lbm.collection.v1.MsgMintFT) | [MsgMintFTResponse](#lbm.collection.v1.MsgMintFTResponse) | MintFT defines a method to mint fungible tokens. | |
 | `MintNFT` | [MsgMintNFT](#lbm.collection.v1.MsgMintNFT) | [MsgMintNFTResponse](#lbm.collection.v1.MsgMintNFTResponse) | MintNFT defines a method to mint non-fungible tokens. | |
-| `Burn` | [MsgBurn](#lbm.collection.v1.MsgBurn) | [MsgBurnResponse](#lbm.collection.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Since: finschia | |
-| `OperatorBurn` | [MsgOperatorBurn](#lbm.collection.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.collection.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens of the holder by the operator. Since: finschia | |
-| `BurnFT` | [MsgBurnFT](#lbm.collection.v1.MsgBurnFT) | [MsgBurnFTResponse](#lbm.collection.v1.MsgBurnFTResponse) | BurnFT defines a method to burn fungible tokens. NOTE: deprecated (use Burn) | |
-| `BurnFTFrom` | [MsgBurnFTFrom](#lbm.collection.v1.MsgBurnFTFrom) | [MsgBurnFTFromResponse](#lbm.collection.v1.MsgBurnFTFromResponse) | BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy. NOTE: deprecated (use OperatorBurn) | |
-| `BurnNFT` | [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT) | [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse) | BurnNFT defines a method to burn non-fungible tokens. NOTE: deprecated (use Burn) | |
-| `BurnNFTFrom` | [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom) | [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse) | BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy. NOTE: deprecated (use OperatorBurn) | |
+| `Burn` | [MsgBurn](#lbm.collection.v1.MsgBurn) | [MsgBurnResponse](#lbm.collection.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Info: one can burn both fungible tokens and non-fungible tokens. Since: finschia | |
+| `OperatorBurn` | [MsgOperatorBurn](#lbm.collection.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.collection.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens of the holder by the operator. Info: one can burn both fungible tokens and non-fungible tokens. Since: finschia | |
+| `BurnFT` | [MsgBurnFT](#lbm.collection.v1.MsgBurnFT) | [MsgBurnFTResponse](#lbm.collection.v1.MsgBurnFTResponse) | BurnFT defines a method to burn fungible tokens. Note: deprecated (use Burn) | |
+| `BurnFTFrom` | [MsgBurnFTFrom](#lbm.collection.v1.MsgBurnFTFrom) | [MsgBurnFTFromResponse](#lbm.collection.v1.MsgBurnFTFromResponse) | BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy. Note: deprecated (use OperatorBurn) | |
+| `BurnNFT` | [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT) | [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse) | BurnNFT defines a method to burn non-fungible tokens. Note: deprecated (use Burn) | |
+| `BurnNFTFrom` | [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom) | [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse) | BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy. Note: deprecated (use OperatorBurn) | |
 | `Modify` | [MsgModify](#lbm.collection.v1.MsgModify) | [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse) | Modify defines a method to modify metadata. | |
 | `Grant` | [MsgGrant](#lbm.collection.v1.MsgGrant) | [MsgGrantResponse](#lbm.collection.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify metadata. Since: finschia | |
 | `Abandon` | [MsgAbandon](#lbm.collection.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.collection.v1.MsgAbandonResponse) | Abandon abandons a permission. Since: finschia | |
-| `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify metadata. NOTE: deprecated (use Grant) | |
-| `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. NOTE: deprecated (use Abandon) | |
+| `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify metadata. Note: deprecated (use Grant) | |
+| `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Note: deprecated (use Abandon) | |
 | `Attach` | [MsgAttach](#lbm.collection.v1.MsgAttach) | [MsgAttachResponse](#lbm.collection.v1.MsgAttachResponse) | Attach defines a method to attach a token to another token. | |
 | `Detach` | [MsgDetach](#lbm.collection.v1.MsgDetach) | [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse) | Detach defines a method to detach a token from another token. | |
 | `OperatorAttach` | [MsgOperatorAttach](#lbm.collection.v1.MsgOperatorAttach) | [MsgOperatorAttachResponse](#lbm.collection.v1.MsgOperatorAttachResponse) | OperatorAttach defines a method to attach a token to another token by operator. Since: finschia | |
 | `OperatorDetach` | [MsgOperatorDetach](#lbm.collection.v1.MsgOperatorDetach) | [MsgOperatorDetachResponse](#lbm.collection.v1.MsgOperatorDetachResponse) | Detach defines a method to detach a token from another token by operator. Since: finschia | |
-| `AttachFrom` | [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom) | [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse) | AttachFrom defines a method to attach a token to another token by operator. NOTE: deprecated (use OperatorAttach) | |
-| `DetachFrom` | [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom) | [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse) | DetachFrom defines a method to detach a token from another token by operator. NOTE: deprecated (use OperatorDetach) | |
+| `AttachFrom` | [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom) | [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse) | AttachFrom defines a method to attach a token to another token by operator. Note: deprecated (use OperatorAttach) | |
+| `DetachFrom` | [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom) | [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse) | DetachFrom defines a method to detach a token from another token by operator. Note: deprecated (use OperatorDetach) | |
 
  <!-- end services -->
 

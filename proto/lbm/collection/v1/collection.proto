@@ -60,7 +60,8 @@ message FTClass {
   // contract id associated with the contract.
   string contract_id = 1;
   // id defines the unique identifier of the token class.
-  // NOTE: the token id of its token is identical to its class id.
+  // Note: size of the class id is 8 in length.
+  // Note: token id of the fungible token would be `id` + `00000000`.
   string id = 2;
   // name defines the human-readable name of the token class.
   string name = 3;
