@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	
+
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/simapp"
@@ -47,7 +47,7 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 		},
 		"msg not contained": {
 			allowance: &feegrant.BasicAllowance{},
-			msgs:      []string{"/lbm.gov.v1.MsgVote"},
+			msgs:      []string{"/cosmos.gov.v1beta1.MsgVote"},
 			accept:    false,
 		},
 		"small fee without expire": {

@@ -2,7 +2,7 @@ syntax = "proto3";
 package ibc.core.channel.v1;
 
 import "ibc/core/client/v1/client.proto";
-import "lbm/base/query/v1/pagination.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "ibc/core/channel/v1/channel.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/any.proto";
@@ -114,7 +114,7 @@ message QueryChannelResponse {
 // QueryChannelsRequest is the request type for the Query/Channels RPC method
 message QueryChannelsRequest {
   // pagination request
-  lbm.base.query.v1.PageRequest pagination = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryChannelsResponse is the response type for the Query/Channels RPC method.
@@ -122,7 +122,7 @@ message QueryChannelsResponse {
   // list of stored channels of the chain.
   repeated ibc.core.channel.v1.IdentifiedChannel channels = 1;
   // pagination response
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
   // query block height
   ibc.core.client.v1.Height height = 3 [(gogoproto.nullable) = false];
 }
@@ -133,7 +133,7 @@ message QueryConnectionChannelsRequest {
   // connection unique identifier
   string connection = 1;
   // pagination request
-  lbm.base.query.v1.PageRequest pagination = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 // QueryConnectionChannelsResponse is the Response type for the
@@ -142,7 +142,7 @@ message QueryConnectionChannelsResponse {
   // list of channels associated with a connection.
   repeated ibc.core.channel.v1.IdentifiedChannel channels = 1;
   // pagination response
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
   // query block height
   ibc.core.client.v1.Height height = 3 [(gogoproto.nullable) = false];
 }
@@ -224,7 +224,7 @@ message QueryPacketCommitmentsRequest {
   // channel unique identifier
   string channel_id = 2;
   // pagination request
-  lbm.base.query.v1.PageRequest pagination = 3;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
 // QueryPacketCommitmentsResponse is the request type for the
@@ -232,7 +232,7 @@ message QueryPacketCommitmentsRequest {
 message QueryPacketCommitmentsResponse {
   repeated ibc.core.channel.v1.PacketState commitments = 1;
   // pagination response
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
   // query block height
   ibc.core.client.v1.Height height = 3 [(gogoproto.nullable) = false];
 }
@@ -291,7 +291,7 @@ message QueryPacketAcknowledgementsRequest {
   // channel unique identifier
   string channel_id = 2;
   // pagination request
-  lbm.base.query.v1.PageRequest pagination = 3;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
 // QueryPacketAcknowledgemetsResponse is the request type for the
@@ -299,7 +299,7 @@ message QueryPacketAcknowledgementsRequest {
 message QueryPacketAcknowledgementsResponse {
   repeated ibc.core.channel.v1.PacketState acknowledgements = 1;
   // pagination response
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
   // query block height
   ibc.core.client.v1.Height height = 3 [(gogoproto.nullable) = false];
 }

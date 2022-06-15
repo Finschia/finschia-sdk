@@ -354,10 +354,10 @@ func TestDisplay(t *testing.T) {
 	ccfg := simapp.MakeTestEncodingConfig()
 	bz, err := ccfg.Marshaler.MarshalInterfaceJSON(msig)
 	require.NoError(err)
-	expectedPrefix := `{"@type":"/lbm.crypto.multisig.LegacyAminoPubKey","threshold":2,"public_keys":[{"@type":"/lbm.crypto.secp256k1.PubKey"`
+	expectedPrefix := `{"@type":"/cosmos.crypto.multisig.LegacyAminoPubKey","threshold":2,"public_keys":[{"@type":"/cosmos.crypto.secp256k1.PubKey"`
 	require.True(strings.HasPrefix(string(bz), expectedPrefix))
 	// Example output:
-	// {"@type":"/lbm.crypto.multisig.LegacyAminoPubKey","threshold":2,"public_keys":[{"@type":"/lbm.crypto.secp256k1.PubKey","key":"AymUY3J2HKIyy9cbpGKcBFUTuDQsRH9NO/orKF/0WQ76"},{"@type":"/lbm.crypto.secp256k1.PubKey","key":"AkvnCDzSYF+tQV/FoI217V7CDIRPzjJj7zBE2nw7x3xT"},{"@type":"/lbm.crypto.secp256k1.PubKey","key":"A0yiqgcM5EB1i0h79+sQp+C0jLPFnT3+dFmdZmGa+H1s"}]}
+	// {"@type":"/cosmos.crypto.multisig.LegacyAminoPubKey","threshold":2,"public_keys":[{"@type":"/cosmos.crypto.secp256k1.PubKey","key":"AymUY3J2HKIyy9cbpGKcBFUTuDQsRH9NO/orKF/0WQ76"},{"@type":"/cosmos.crypto.secp256k1.PubKey","key":"AkvnCDzSYF+tQV/FoI217V7CDIRPzjJj7zBE2nw7x3xT"},{"@type":"/cosmos.crypto.secp256k1.PubKey","key":"A0yiqgcM5EB1i0h79+sQp+C0jLPFnT3+dFmdZmGa+H1s"}]}
 }
 
 func TestAminoBinary(t *testing.T) {

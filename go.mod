@@ -21,6 +21,7 @@ require (
 	github.com/gogo/protobuf v1.3.3
 	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.2
+	github.com/golangci/golangci-lint v1.46.2 // indirect
 	github.com/google/gofuzz v1.1.1-0.20200604201612-c04b05f3adfa
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
@@ -30,7 +31,7 @@ require (
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/jhump/protoreflect v1.10.3
 	github.com/line/iavl/v2 v2.0.0-init.1.0.20220215225951-cb11c91d8857
-	github.com/line/ostracon v1.0.5
+	github.com/line/ostracon v1.0.6-0.20220614053335-f9d9fa2cc779
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486
 	github.com/line/wasmvm v0.16.3-0.9.0
 	github.com/magiconair/properties v1.8.6
@@ -38,7 +39,7 @@ require (
 	github.com/mattn/go-isatty v0.0.14
 	github.com/onsi/ginkgo v1.16.4 // indirect
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.12.1
+	github.com/prometheus/client_golang v1.12.2
 	github.com/prometheus/common v0.34.0
 	github.com/rakyll/statik v0.1.7
 	github.com/regen-network/cosmos-proto v0.3.1
@@ -46,15 +47,15 @@ require (
 	github.com/spf13/cast v1.5.0
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/pflag v1.0.5
-	github.com/spf13/viper v1.11.0
-	github.com/stretchr/testify v1.7.1
+	github.com/spf13/viper v1.12.0
+	github.com/stretchr/testify v1.7.2
 	github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 	github.com/tendermint/btcd v0.1.1
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15
 	github.com/tendermint/go-amino v0.16.0
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4
-	google.golang.org/genproto v0.0.0-20220407144326-9054f6ed7bac
-	google.golang.org/grpc v1.46.0
+	google.golang.org/genproto v0.0.0-20220519153652-3a47de7e79bd
+	google.golang.org/grpc v1.47.0
 	google.golang.org/protobuf v1.28.0
 	gopkg.in/yaml.v2 v2.4.0
 )

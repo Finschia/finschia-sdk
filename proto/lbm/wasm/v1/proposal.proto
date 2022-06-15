@@ -2,7 +2,7 @@ syntax = "proto3";
 package lbm.wasm.v1;
 
 import "gogoproto/gogo.proto";
-import "lbm/base/v1/coin.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "lbm/wasm/v1/types.proto";
 
 option go_package                       = "github.com/line/lbm-sdk/x/wasm/types";
@@ -43,7 +43,7 @@ message InstantiateContractProposal {
   // Msg json encoded message to be passed to the contract on instantiation
   bytes msg = 7 [(gogoproto.casttype) = "RawContractMessage"];
   // Funds coins that are transferred to the contract on instantiation
-  repeated lbm.base.v1.Coin funds = 8
+  repeated cosmos.base.v1beta1.Coin funds = 8
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
 
