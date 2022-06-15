@@ -388,7 +388,7 @@ func TestReflectStargateQuery(t *testing.T) {
 
 func TestReflectInvalidStargateQuery(t *testing.T) {
 	cdc := MakeEncodingConfig(t).Marshaler
-	ctx, keepers := CreateTestInput(t, false, ReflectFeatures, WithMessageEncoders(reflectEncoders(cdc)), WithQueryPlugins(reflectPlugins()))
+	ctx, keepers := CreateTestInput(t, false, ReflectFeatures, nil, nil, WithMessageEncoders(reflectEncoders(cdc)), WithQueryPlugins(reflectPlugins()))
 	keeper := keepers.WasmKeeper
 
 	funds := sdk.NewCoins(sdk.NewInt64Coin("denom", 320000))
