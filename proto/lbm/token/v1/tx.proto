@@ -165,11 +165,11 @@ service Msg {
 message MsgSend {
   // contract id associated with the token class.
   string contract_id = 1;
-  // the address which the transfer is from.
+  // holder whose tokens are being sent.
   string from = 2;
-  // the address which the transfer is to.
+  // recipient of the tokens.
   string to = 3;
-  // the amount of the transfer.
+  // number of tokens to send.
   string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -193,13 +193,13 @@ message MsgSendResponse {}
 message MsgOperatorSend {
   // contract id associated with the token class.
   string contract_id = 1;
-  // the address of the operator.
+  // address which triggers the send.
   string operator = 2;
-  // the address which the transfer is from.
+  // holder whose tokens are being sent.
   string from = 3;
-  // the address which the transfer is to.
+  // recipient of the tokens.
   string to = 4;
-  // the amount of the transfer.
+  // number of tokens to send.
   string amount = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -244,9 +244,9 @@ message MsgTransferFromResponse {}
 message MsgAuthorizeOperator {
   // contract id associated with the token class.
   string contract_id = 1;
-  // address of the token holder which approves the authorization.
+  // address of a holder which authorizes the `operator` address as an operator.
   string holder = 2;
-  // address of the operator which the authorization is granted to.
+  // address to set as an operator for `holder`.
   string operator = 3;
 }
 
@@ -270,9 +270,9 @@ message MsgAuthorizeOperatorResponse {}
 message MsgRevokeOperator {
   // contract id associated with the token class.
   string contract_id = 1;
-  // address of the token holder which approved the authorization.
+  // address of a holder which revokes the `operator` address as an operator.
   string holder = 2;
-  // address of the operator which the authorization is granted to.
+  // address to rescind as an operator for `holder`.
   string operator = 3;
 }
 
@@ -445,11 +445,11 @@ message MsgRevokePermissionResponse {}
 message MsgMint {
   // contract id associated with the token class.
   string contract_id = 1;
-  // address of the grantee which has the permission for the mint.
+  // address which triggers the mint.
   string from = 2;
-  // address which the minted tokens will be sent to.
+  // recipient of the tokens.
   string to = 3;
-  // the amount of the mint.
+  // number of tokens to mint.
   string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -467,11 +467,11 @@ message MsgMintResponse {}
 //
 // Signer: `from`
 message MsgBurn {
-  // contract id associated with the token class.w
+  // contract id associated with the token class.
   string contract_id = 1;
-  // address which the tokens will be burnt from.
+  // holder whose tokens are being burned.
   string from = 2;
-  // the amount of the burn.
+  // number of tokens to burn.
   string amount = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -492,13 +492,13 @@ message MsgBurnResponse {}
 //
 // Since: 0.46.0 (finschia)
 message MsgOperatorBurn {
-  // the amount of the burn.
+  // contract id associated with the token class.
   string contract_id = 1;
   // address which triggers the burn.
   string operator = 2;
-  // address which the tokens will be burnt from.
+  // holder whose tokens are being burned.
   string from = 3;
-  // the amount of the burn.
+  // number of tokens to burn.
   string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -511,7 +511,7 @@ message MsgOperatorBurnResponse {}
 //
 // Note: deprecated (use MsgOperatorBurn)
 message MsgBurnFrom {
-  // the amount of the burn.
+  // contract id associated with the token class.
   string contract_id = 1;
   // address which triggers the burn.
   string proxy = 2;

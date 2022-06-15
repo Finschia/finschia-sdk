@@ -149,13 +149,13 @@ func (AttributeKey) EnumDescriptor() ([]byte, []int) {
 type EventSent struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the operator.
+	// address which triggered the send.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
-	// address which the transfer is from.
+	// holder whose tokens were sent.
 	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
-	// address which the transfer is to.
+	// recipient of the tokens
 	To string `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`
-	// amount of the send.
+	// number of tokens sent.
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,5,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
@@ -225,9 +225,9 @@ func (m *EventSent) GetTo() string {
 type EventAuthorizedOperator struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the token holder of the authorization.
+	// address of a holder which authorized the `operator` address as an operator.
 	Holder string `protobuf:"bytes,2,opt,name=holder,proto3" json:"holder,omitempty"`
-	// address of the operator which the authorization is granted to.
+	// address which became an operator of `holder`.
 	Operator string `protobuf:"bytes,3,opt,name=operator,proto3" json:"operator,omitempty"`
 }
 
@@ -290,9 +290,9 @@ func (m *EventAuthorizedOperator) GetOperator() string {
 type EventRevokedOperator struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the token holder of the authorization.
+	// address of a holder which revoked the `operator` address as an operator.
 	Holder string `protobuf:"bytes,2,opt,name=holder,proto3" json:"holder,omitempty"`
-	// address of the operator which the authorization is granted to.
+	// address which was revoked as an operator of `holder`.
 	Operator string `protobuf:"bytes,3,opt,name=operator,proto3" json:"operator,omitempty"`
 }
 
@@ -595,11 +595,11 @@ func (m *EventAbandon) GetPermission() string {
 type EventMinted struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// the address of the operator.
+	// address which triggered the mint.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
-	// the address to send minted tokens to.
+	// recipient of the tokens.
 	To string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
-	// the amount of minted tokens.
+	// number of tokens minted.
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
@@ -662,11 +662,11 @@ func (m *EventMinted) GetTo() string {
 type EventBurned struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the operator.
+	// address which triggered the burn.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
-	// address which the burnt tokens were from.
+	// holder whose tokens were burned.
 	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
-	// the amount of burnt token.
+	// number of tokens burned.
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
@@ -729,7 +729,7 @@ func (m *EventBurned) GetFrom() string {
 type EventModified struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the operator.
+	// address which triggered the modify.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
 	// changes on the metadata of the class.
 	Changes []Pair `protobuf:"bytes,3,rep,name=changes,proto3" json:"changes"`

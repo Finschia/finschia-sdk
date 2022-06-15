@@ -43,11 +43,11 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type MsgSend struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// the address which the transfer is from.
+	// holder whose tokens are being sent.
 	From string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	// the address which the transfer is to.
+	// recipient of the tokens.
 	To string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
-	// the amount of the transfer.
+	// number of tokens to send.
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
@@ -138,13 +138,13 @@ var xxx_messageInfo_MsgSendResponse proto.InternalMessageInfo
 type MsgOperatorSend struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// the address of the operator.
+	// address which triggers the send.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
-	// the address which the transfer is from.
+	// holder whose tokens are being sent.
 	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
-	// the address which the transfer is to.
+	// recipient of the tokens.
 	To string `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`
-	// the amount of the transfer.
+	// number of tokens to send.
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,5,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
@@ -323,9 +323,9 @@ var xxx_messageInfo_MsgTransferFromResponse proto.InternalMessageInfo
 type MsgAuthorizeOperator struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the token holder which approves the authorization.
+	// address of a holder which authorizes the `operator` address as an operator.
 	Holder string `protobuf:"bytes,2,opt,name=holder,proto3" json:"holder,omitempty"`
-	// address of the operator which the authorization is granted to.
+	// address to set as an operator for `holder`.
 	Operator string `protobuf:"bytes,3,opt,name=operator,proto3" json:"operator,omitempty"`
 }
 
@@ -416,9 +416,9 @@ var xxx_messageInfo_MsgAuthorizeOperatorResponse proto.InternalMessageInfo
 type MsgRevokeOperator struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the token holder which approved the authorization.
+	// address of a holder which revokes the `operator` address as an operator.
 	Holder string `protobuf:"bytes,2,opt,name=holder,proto3" json:"holder,omitempty"`
-	// address of the operator which the authorization is granted to.
+	// address to rescind as an operator for `holder`.
 	Operator string `protobuf:"bytes,3,opt,name=operator,proto3" json:"operator,omitempty"`
 }
 
@@ -1058,11 +1058,11 @@ var xxx_messageInfo_MsgRevokePermissionResponse proto.InternalMessageInfo
 type MsgMint struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the grantee which has the permission for the mint.
+	// address which triggers the mint.
 	From string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	// address which the minted tokens will be sent to.
+	// recipient of the tokens.
 	To string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
-	// the amount of the mint.
+	// number of tokens to mint.
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
@@ -1147,11 +1147,11 @@ var xxx_messageInfo_MsgMintResponse proto.InternalMessageInfo
 //
 // Signer: `from`
 type MsgBurn struct {
-	// contract id associated with the token class.w
+	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address which the tokens will be burnt from.
+	// holder whose tokens are being burned.
 	From string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	// the amount of the burn.
+	// number of tokens to burn.
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
@@ -1239,13 +1239,13 @@ var xxx_messageInfo_MsgBurnResponse proto.InternalMessageInfo
 //
 // Since: 0.46.0 (finschia)
 type MsgOperatorBurn struct {
-	// the amount of the burn.
+	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address which triggers the burn.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
-	// address which the tokens will be burnt from.
+	// holder whose tokens are being burned.
 	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
-	// the amount of the burn.
+	// number of tokens to burn.
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,4,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
@@ -1325,7 +1325,7 @@ var xxx_messageInfo_MsgOperatorBurnResponse proto.InternalMessageInfo
 //
 // Note: deprecated (use MsgOperatorBurn)
 type MsgBurnFrom struct {
-	// the amount of the burn.
+	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address which triggers the burn.
 	Proxy string `protobuf:"bytes,2,opt,name=proxy,proto3" json:"proxy,omitempty"`

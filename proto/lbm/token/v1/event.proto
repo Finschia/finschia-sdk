@@ -48,13 +48,13 @@ enum AttributeKey {
 message EventSent {
   // contract id associated with the token class.
   string contract_id = 1;
-  // address of the operator.
+  // address which triggered the send.
   string operator = 2;
-  // address which the transfer is from.
+  // holder whose tokens were sent.
   string from = 3;
-  // address which the transfer is to.
+  // recipient of the tokens
   string to = 4;
-  // amount of the send.
+  // number of tokens sent.
   string amount = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -63,9 +63,9 @@ message EventSent {
 message EventAuthorizedOperator {
   // contract id associated with the token class.
   string contract_id = 1;
-  // address of the token holder of the authorization.
+  // address of a holder which authorized the `operator` address as an operator.
   string holder = 2;
-  // address of the operator which the authorization is granted to.
+  // address which became an operator of `holder`.
   string operator = 3;
 }
 
@@ -74,9 +74,9 @@ message EventAuthorizedOperator {
 message EventRevokedOperator {
   // contract id associated with the token class.
   string contract_id = 1;
-  // address of the token holder of the authorization.
+  // address of a holder which revoked the `operator` address as an operator.
   string holder = 2;
-  // address of the operator which the authorization is granted to.
+  // address which was revoked as an operator of `holder`.
   string operator = 3;
 }
 
@@ -128,11 +128,11 @@ message EventAbandon {
 message EventMinted {
   // contract id associated with the token class.
   string contract_id = 1;
-  // the address of the operator.
+  // address which triggered the mint.
   string operator = 2;
-  // the address to send minted tokens to.
+  // recipient of the tokens.
   string to = 3;
-  // the amount of minted tokens.
+  // number of tokens minted.
   string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -141,11 +141,11 @@ message EventMinted {
 message EventBurned {
   // contract id associated with the token class.
   string contract_id = 1;
-  // address of the operator.
+  // address which triggered the burn.
   string operator = 2;
-  // address which the burnt tokens were from.
+  // holder whose tokens were burned.
   string from = 3;
-  // the amount of burnt token.
+  // number of tokens burned.
   string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -154,7 +154,7 @@ message EventBurned {
 message EventModified {
   // contract id associated with the token class.
   string contract_id = 1;
-  // address of the operator.
+  // address which triggered the modify.
   string operator = 2;
   // changes on the metadata of the class.
   repeated Pair changes = 3 [(gogoproto.nullable) = false];

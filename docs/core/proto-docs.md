@@ -12604,8 +12604,8 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `holder` | [string](#string) |  | address of the token holder of the authorization. |
-| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `holder` | [string](#string) |  | address of a holder which authorized the `operator` address as an operator. |
+| `operator` | [string](#string) |  | address which became an operator of `holder`. |
 
 
 
@@ -12622,9 +12622,9 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `operator` | [string](#string) |  | address of the operator. |
-| `from` | [string](#string) |  | address which the burnt tokens were from. |
-| `amount` | [string](#string) |  | the amount of burnt token. |
+| `operator` | [string](#string) |  | address which triggered the burn. |
+| `from` | [string](#string) |  | holder whose tokens were burned. |
+| `amount` | [string](#string) |  | number of tokens burned. |
 
 
 
@@ -12682,9 +12682,9 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `operator` | [string](#string) |  | the address of the operator. |
-| `to` | [string](#string) |  | the address to send minted tokens to. |
-| `amount` | [string](#string) |  | the amount of minted tokens. |
+| `operator` | [string](#string) |  | address which triggered the mint. |
+| `to` | [string](#string) |  | recipient of the tokens. |
+| `amount` | [string](#string) |  | number of tokens minted. |
 
 
 
@@ -12701,7 +12701,7 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `operator` | [string](#string) |  | address of the operator. |
+| `operator` | [string](#string) |  | address which triggered the modify. |
 | `changes` | [Pair](#lbm.token.v1.Pair) | repeated | changes on the metadata of the class. |
 
 
@@ -12719,8 +12719,8 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `holder` | [string](#string) |  | address of the token holder of the authorization. |
-| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `holder` | [string](#string) |  | address of a holder which revoked the `operator` address as an operator. |
+| `operator` | [string](#string) |  | address which was revoked as an operator of `holder`. |
 
 
 
@@ -12737,10 +12737,10 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `operator` | [string](#string) |  | address of the operator. |
-| `from` | [string](#string) |  | address which the transfer is from. |
-| `to` | [string](#string) |  | address which the transfer is to. |
-| `amount` | [string](#string) |  | amount of the send. |
+| `operator` | [string](#string) |  | address which triggered the send. |
+| `from` | [string](#string) |  | holder whose tokens were sent. |
+| `to` | [string](#string) |  | recipient of the tokens |
+| `amount` | [string](#string) |  | number of tokens sent. |
 
 
 
@@ -13430,8 +13430,8 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `holder` | [string](#string) |  | address of the token holder which approves the authorization. |
-| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `holder` | [string](#string) |  | address of a holder which authorizes the `operator` address as an operator. |
+| `operator` | [string](#string) |  | address to set as an operator for `holder`. |
 
 
 
@@ -13467,9 +13467,9 @@ Signer: `from`
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class.w |
-| `from` | [string](#string) |  | address which the tokens will be burnt from. |
-| `amount` | [string](#string) |  | the amount of the burn. |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `from` | [string](#string) |  | holder whose tokens are being burned. |
+| `amount` | [string](#string) |  | number of tokens to burn. |
 
 
 
@@ -13486,7 +13486,7 @@ Note: deprecated (use MsgOperatorBurn)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | the amount of the burn. |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `proxy` | [string](#string) |  | address which triggers the burn. |
 | `from` | [string](#string) |  | address which the tokens will be burnt from. |
 | `amount` | [string](#string) |  | the amount of the burn. |
@@ -13659,9 +13659,9 @@ Signer: `from`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `from` | [string](#string) |  | address of the grantee which has the permission for the mint. |
-| `to` | [string](#string) |  | address which the minted tokens will be sent to. |
-| `amount` | [string](#string) |  | the amount of the mint. |
+| `from` | [string](#string) |  | address which triggers the mint. |
+| `to` | [string](#string) |  | recipient of the tokens. |
+| `amount` | [string](#string) |  | number of tokens to mint. |
 
 
 
@@ -13736,10 +13736,10 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | the amount of the burn. |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `operator` | [string](#string) |  | address which triggers the burn. |
-| `from` | [string](#string) |  | address which the tokens will be burnt from. |
-| `amount` | [string](#string) |  | the amount of the burn. |
+| `from` | [string](#string) |  | holder whose tokens are being burned. |
+| `amount` | [string](#string) |  | number of tokens to burn. |
 
 
 
@@ -13780,10 +13780,10 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `operator` | [string](#string) |  | the address of the operator. |
-| `from` | [string](#string) |  | the address which the transfer is from. |
-| `to` | [string](#string) |  | the address which the transfer is to. |
-| `amount` | [string](#string) |  | the amount of the transfer. |
+| `operator` | [string](#string) |  | address which triggers the send. |
+| `from` | [string](#string) |  | holder whose tokens are being sent. |
+| `to` | [string](#string) |  | recipient of the tokens. |
+| `amount` | [string](#string) |  | number of tokens to send. |
 
 
 
@@ -13822,8 +13822,8 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `holder` | [string](#string) |  | address of the token holder which approved the authorization. |
-| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `holder` | [string](#string) |  | address of a holder which revokes the `operator` address as an operator. |
+| `operator` | [string](#string) |  | address to rescind as an operator for `holder`. |
 
 
 
@@ -13892,9 +13892,9 @@ Signer: `from`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `from` | [string](#string) |  | the address which the transfer is from. |
-| `to` | [string](#string) |  | the address which the transfer is to. |
-| `amount` | [string](#string) |  | the amount of the transfer. |
+| `from` | [string](#string) |  | holder whose tokens are being sent. |
+| `to` | [string](#string) |  | recipient of the tokens. |
+| `amount` | [string](#string) |  | number of tokens to send. |
 
 
 
