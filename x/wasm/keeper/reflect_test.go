@@ -410,7 +410,7 @@ func TestReflectInvalidStargateQuery(t *testing.T) {
 	// now, try to build a protobuf query
 	protoRequest := wasmvmtypes.QueryRequest{
 		Stargate: &wasmvmtypes.StargateQuery{
-			Path: "/cosmos.tx.v1beta1.Service/GetTx",
+			Path: "/lbm.tx.v1.Service/GetTx",
 			Data: []byte{},
 		},
 	}
@@ -427,7 +427,7 @@ func TestReflectInvalidStargateQuery(t *testing.T) {
 	// and another one
 	protoRequest = wasmvmtypes.QueryRequest{
 		Stargate: &wasmvmtypes.StargateQuery{
-			Path: "/cosmos.base.tendermint.v1beta1.Service/GetNodeInfo",
+			Path: "/lbm.base.ostracon.v1.Service/GetNodeInfo",
 			Data: []byte{},
 		},
 	}

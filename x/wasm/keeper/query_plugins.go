@@ -290,8 +290,8 @@ func IBCQuerier(wasm contractMetaDataSource, channelKeeper types.ChannelKeeper) 
 }
 
 var queryDenyList = []string{
-	"/cosmos.tx.",
-	"/cosmos.base.tendermint.",
+	"/lbm.tx.",
+	"/lbm.base.ostracon.",
 }
 
 func StargateQuerier(queryRouter GRPCQueryRouter) func(ctx sdk.Context, request *wasmvmtypes.StargateQuery) ([]byte, error) {
