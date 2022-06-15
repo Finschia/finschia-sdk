@@ -7528,7 +7528,8 @@ Permission enumerates the valid permissions on a contract.
 <a name="lbm.collection.v1.EventAbandon"></a>
 
 ### EventAbandon
-EventAbandon is emitted on Msg/Abandon.
+EventAbandon is emitted when a grantee abandons its permission.
+
 Since: 0.46.0 (finschia)
 
 
@@ -7546,15 +7547,16 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.EventAuthorizedOperator"></a>
 
 ### EventAuthorizedOperator
-EventAuthorizedOperator is emitted on Msg/AuthorizeOperator.
+EventAuthorizedOperator is emitted when a holder authorizes an operator to manipulate its tokens.
+
 Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `holder` | [string](#string) |  | address of the token holder. |
-| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `holder` | [string](#string) |  | address of a holder which authorized the `operator` address as an operator. |
+| `operator` | [string](#string) |  | address which became an operator of `holder`. |
 
 
 
@@ -7564,16 +7566,17 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.EventBurned"></a>
 
 ### EventBurned
-EventBurned is emitted on Msg/Burn and Msg/OperatorBurn.
+EventBurned is emitted when tokens are burnt.
+
 Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | address of the operator. |
-| `from` | [string](#string) |  | address of the token holder. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of burnt token. |
+| `operator` | [string](#string) |  | address which triggered the burn. |
+| `from` | [string](#string) |  | holder whose tokens were burned. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of tokens burned. |
 
 
 
@@ -7583,7 +7586,8 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.EventGrant"></a>
 
 ### EventGrant
-EventGrant is emitted on Msg/Grant.
+EventGrant is emitted when a granter grants its permission to a grantee.
+
 Since: 0.46.0 (finschia)
 
 
@@ -7602,7 +7606,8 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.EventIssue"></a>
 
 ### EventIssue
-EventIssue is emitted on Msg/Issue.
+EventIssue is emitted when a new token class is created.
+
 Since: 0.46.0 (finschia)
 
 
@@ -7624,16 +7629,17 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.EventMinted"></a>
 
 ### EventMinted
-EventMinted is emitted on Msg/MintFT and Msg/MintNFT.
+EventMinted is emitted when tokens are minted.
+
 Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | address of the operator. |
-| `to` | [string](#string) |  | the address to send minted tokens to. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of minted tokens. |
+| `operator` | [string](#string) |  | address which triggered the mint. |
+| `to` | [string](#string) |  | recipient of the tokens. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of tokens minted. |
 
 
 
@@ -7643,7 +7649,8 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.EventModified"></a>
 
 ### EventModified
-EventModified is emitted on Msg/Modify.
+EventModified is emitted when the information of a token class or contract is modified.
+
 Since: 0.46.0 (finschia)
 
 
@@ -7679,15 +7686,16 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.EventRevokedOperator"></a>
 
 ### EventRevokedOperator
-EventRevokedOperator is emitted on Msg/RevokeOperator.
+EventRevokedOperator is emitted when an authorization is revoked.
+
 Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `holder` | [string](#string) |  | address of the token holder of the authorization. |
-| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `holder` | [string](#string) |  | address of a holder which revoked the `operator` address as an operator. |
+| `operator` | [string](#string) |  | address which was revoked as an operator of `holder`. |
 
 
 
@@ -7697,17 +7705,18 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.EventSent"></a>
 
 ### EventSent
-EventSent is emitted on Msg/Send and Msg/OperatorSend.
+EventSent is emitted when tokens are transferred.
+
 Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | address of the operator. |
-| `from` | [string](#string) |  | address which the transfer is from. |
-| `to` | [string](#string) |  | address which the transfer is to. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of coins of the transfer. |
+| `operator` | [string](#string) |  | address which triggered the send. |
+| `from` | [string](#string) |  | holder whose tokens were sent. |
+| `to` | [string](#string) |  | recipient of the tokens. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of tokens sent. |
 
 
 
@@ -9105,6 +9114,7 @@ Query defines the gRPC querier service.
 
 ### MsgAbandon
 MsgAbandon is the Msg/Abandon request type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9123,6 +9133,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgAbandonResponse
 MsgAbandonResponse is the Msg/Abandon response type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9134,6 +9145,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgApprove
 MsgApprove is the Msg/Approve request type.
+
 Note: deprecated (use MsgAuthorizeOperator)
 
 
@@ -9152,6 +9164,7 @@ Note: deprecated (use MsgAuthorizeOperator)
 
 ### MsgApproveResponse
 MsgApproveResponse is the Msg/Approve response type.
+
 Note: deprecated
 
 
@@ -9163,6 +9176,7 @@ Note: deprecated
 
 ### MsgAttach
 MsgAttach is the Msg/Attach request type.
+
 TODO: revisit the field names
 
 
@@ -9182,6 +9196,7 @@ TODO: revisit the field names
 
 ### MsgAttachFrom
 MsgAttachFrom is the Msg/AttachFrom request type.
+
 Note: deprecated (use MsgOperatorAttach)
 
 
@@ -9202,6 +9217,7 @@ Note: deprecated (use MsgOperatorAttach)
 
 ### MsgAttachFromResponse
 MsgAttachFromResponse is the Msg/AttachFrom response type.
+
 Note: deprecated
 
 
@@ -9223,14 +9239,15 @@ MsgAttachResponse is the Msg/Attach response type.
 
 ### MsgAuthorizeOperator
 MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
+
 Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `holder` | [string](#string) |  | address of the holder who allows the manipulation of its token. |
-| `operator` | [string](#string) |  | address which the manipulation is allowed to. |
+| `holder` | [string](#string) |  | address of a holder which authorizes the `operator` address as an operator. |
+| `operator` | [string](#string) |  | address to set as an operator for `holder`. |
 
 
 
@@ -9241,6 +9258,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgAuthorizeOperatorResponse
 MsgAuthorizeOperatorResponse is the Msg/AuthorizeOperator response type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9252,14 +9270,15 @@ Since: 0.46.0 (finschia)
 
 ### MsgBurn
 MsgBurn is the Msg/Burn request type.
+
 Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `from` | [string](#string) |  | address which the tokens will be burnt from. Note: it must have the permission for the burn. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. |
+| `from` | [string](#string) |  | holder whose tokens are being burned. Note: it must have the permission for the burn. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of tokens to burn. |
 
 
 
@@ -9270,6 +9289,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgBurnFT
 MsgBurnFT is the Msg/BurnFT request type.
+
 Note: deprecated (use MsgBurn)
 
 
@@ -9288,6 +9308,7 @@ Note: deprecated (use MsgBurn)
 
 ### MsgBurnFTFrom
 MsgBurnFTFrom is the Msg/BurnFTFrom request type.
+
 Note: deprecated (use MsgOperatorBurn)
 
 
@@ -9307,6 +9328,7 @@ Note: deprecated (use MsgOperatorBurn)
 
 ### MsgBurnFTFromResponse
 MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
+
 Note: deprecated
 
 
@@ -9318,6 +9340,7 @@ Note: deprecated
 
 ### MsgBurnFTResponse
 MsgBurnFTResponse is the Msg/BurnFT response type.
+
 Note: deprecated
 
 
@@ -9329,6 +9352,7 @@ Note: deprecated
 
 ### MsgBurnNFT
 MsgBurnNFT is the Msg/BurnNFT request type.
+
 Note: deprecated (use MsgBurn)
 
 
@@ -9347,6 +9371,7 @@ Note: deprecated (use MsgBurn)
 
 ### MsgBurnNFTFrom
 MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
+
 Note: deprecated (use MsgOperatorBurn)
 
 
@@ -9366,6 +9391,7 @@ Note: deprecated (use MsgOperatorBurn)
 
 ### MsgBurnNFTFromResponse
 MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
+
 Note: deprecated
 
 
@@ -9377,6 +9403,7 @@ Note: deprecated
 
 ### MsgBurnNFTResponse
 MsgBurnNFTResponse is the Msg/BurnNFT response type.
+
 Note: deprecated
 
 
@@ -9388,6 +9415,7 @@ Note: deprecated
 
 ### MsgBurnResponse
 MsgBurnResponse is the Msg/Burn response type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9427,6 +9455,7 @@ MsgCreateContractResponse is the Msg/CreateContract response type.
 
 ### MsgDetach
 MsgDetach is the Msg/Detach request type.
+
 TODO: revisit the field names
 
 
@@ -9445,6 +9474,7 @@ TODO: revisit the field names
 
 ### MsgDetachFrom
 MsgDetachFrom is the Msg/DetachFrom request type.
+
 Note: deprecated (use MsgOperatorDetach)
 
 
@@ -9464,6 +9494,7 @@ Note: deprecated (use MsgOperatorDetach)
 
 ### MsgDetachFromResponse
 MsgDetachFromResponse is the Msg/DetachFrom response type.
+
 Note: deprecated
 
 
@@ -9485,6 +9516,7 @@ MsgDetachResponse is the Msg/Detach response type.
 
 ### MsgDisapprove
 MsgDisapprove is the Msg/Disapprove request type.
+
 Note: deprecated (use MsgRevokeOperator)
 
 
@@ -9503,6 +9535,7 @@ Note: deprecated (use MsgRevokeOperator)
 
 ### MsgDisapproveResponse
 MsgDisapproveResponse is the Msg/Disapprove response type.
+
 Note: deprecated
 
 
@@ -9514,6 +9547,7 @@ Note: deprecated
 
 ### MsgGrant
 MsgGrant is the Msg/Grant request type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9533,6 +9567,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgGrantPermission
 MsgGrantPermission is the Msg/GrantPermission request type.
+
 Note: deprecated (use MsgGrant)
 
 
@@ -9552,6 +9587,7 @@ Note: deprecated (use MsgGrant)
 
 ### MsgGrantPermissionResponse
 MsgGrantPermissionResponse is the Msg/GrantPermission response type.
+
 Note: deprecated
 
 
@@ -9563,6 +9599,7 @@ Note: deprecated
 
 ### MsgGrantResponse
 MsgGrantResponse is the Msg/Grant response type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9719,6 +9756,7 @@ MsgModifyResponse is the Msg/Modify response type.
 
 ### MsgOperatorAttach
 MsgOperatorAttach is the Msg/OperatorAttach request type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9739,6 +9777,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgOperatorAttachResponse
 MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9750,6 +9789,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgOperatorBurn
 MsgOperatorBurn is the Msg/OperatorBurn request type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9757,8 +9797,8 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggers the burn. Note: it must have the permission for the burn. Note: it must have been authorized by from. |
-| `from` | [string](#string) |  | address which the tokens will be burnt from. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. |
+| `from` | [string](#string) |  | holder whose tokens are being burned. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of tokens to burn. |
 
 
 
@@ -9769,6 +9809,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgOperatorBurnResponse
 MsgOperatorBurnResponse is the Msg/OperatorBurn response type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9780,6 +9821,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgOperatorDetach
 MsgOperatorDetach is the Msg/OperatorDetach request type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9799,6 +9841,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgOperatorDetachResponse
 MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9810,16 +9853,17 @@ Since: 0.46.0 (finschia)
 
 ### MsgOperatorSend
 MsgOperatorSend is the Msg/OperatorSend request type.
+
 Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | the address of the operator. |
-| `from` | [string](#string) |  | the address which the transfer is from. |
-| `to` | [string](#string) |  | the address which the transfer is to. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. |
+| `operator` | [string](#string) |  | address which triggers the send. |
+| `from` | [string](#string) |  | holder whose tokens are being sent. |
+| `to` | [string](#string) |  | recipient of the tokens. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of tokens to send. |
 
 
 
@@ -9830,6 +9874,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgOperatorSendResponse
 MsgOperatorSendResponse is the Msg/OperatorSend response type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9841,14 +9886,15 @@ Since: 0.46.0 (finschia)
 
 ### MsgRevokeOperator
 MsgRevokeOperator is the Msg/RevokeOperator request type.
+
 Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `holder` | [string](#string) |  | address of the holder who allows the manipulation of its token. |
-| `operator` | [string](#string) |  | address which the manipulation is allowed to. |
+| `holder` | [string](#string) |  | address of a holder which revokes the `operator` address as an operator. |
+| `operator` | [string](#string) |  | address to rescind as an operator for `holder`. |
 
 
 
@@ -9859,6 +9905,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgRevokeOperatorResponse
 MsgRevokeOperatorResponse is the Msg/RevokeOperator response type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9870,6 +9917,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgRevokePermission
 MsgRevokePermission is the Msg/RevokePermission request type.
+
 Note: deprecated (use MsgAbandon)
 
 
@@ -9888,6 +9936,7 @@ Note: deprecated (use MsgAbandon)
 
 ### MsgRevokePermissionResponse
 MsgRevokePermissionResponse is the Msg/RevokePermission response type.
+
 Note: deprecated
 
 
@@ -9906,9 +9955,9 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `from` | [string](#string) |  | the address which the transfer is from. |
-| `to` | [string](#string) |  | the address which the transfer is to. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. |
+| `from` | [string](#string) |  | holder whose tokens are being sent. |
+| `to` | [string](#string) |  | recipient of the tokens. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of tokens to send. |
 
 
 
@@ -9919,6 +9968,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgSendResponse
 MsgSendResponse is the Msg/Send response type.
+
 Since: 0.46.0 (finschia)
 
 
@@ -9930,6 +9980,7 @@ Since: 0.46.0 (finschia)
 
 ### MsgTransferFT
 MsgTransferFT is the Msg/TransferFT request type.
+
 Note: deprecated (use MsgSend)
 
 
@@ -9949,6 +10000,7 @@ Note: deprecated (use MsgSend)
 
 ### MsgTransferFTFrom
 MsgTransferFTFrom is the Msg/TransferFTFrom request type.
+
 Note: deprecated (use MsgOperatorSend)
 
 
@@ -9969,6 +10021,7 @@ Note: deprecated (use MsgOperatorSend)
 
 ### MsgTransferFTFromResponse
 MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
+
 Note: deprecated
 
 
@@ -9980,6 +10033,7 @@ Note: deprecated
 
 ### MsgTransferFTResponse
 MsgTransferFTResponse is the Msg/TransferFT response type.
+
 Note: deprecated
 
 
@@ -9991,6 +10045,7 @@ Note: deprecated
 
 ### MsgTransferNFT
 MsgTransferNFT is the Msg/TransferNFT request type.
+
 Note: deprecated (use MsgSend)
 
 
@@ -10010,6 +10065,7 @@ Note: deprecated (use MsgSend)
 
 ### MsgTransferNFTFrom
 MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
+
 Note: deprecated (use MsgOperatorSend)
 
 
@@ -10030,6 +10086,7 @@ Note: deprecated (use MsgOperatorSend)
 
 ### MsgTransferNFTFromResponse
 MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
+
 Note: deprecated
 
 
@@ -10041,6 +10098,7 @@ Note: deprecated
 
 ### MsgTransferNFTResponse
 MsgTransferNFTResponse is the Msg/TransferNFT response type.
+
 Note: deprecated
 
 

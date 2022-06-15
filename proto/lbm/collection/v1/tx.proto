@@ -141,38 +141,42 @@ service Msg {
 message MsgSend {
   // contract id associated with the contract.
   string contract_id = 1;
-  // the address which the transfer is from.
+  // holder whose tokens are being sent.
   string from = 2;
-  // the address which the transfer is to.
+  // recipient of the tokens.
   string to = 3;
-  // the amount of the transfer.
+  // amount of tokens to send.
   repeated Coin amount = 4 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Coins"];
 }
 
 // MsgSendResponse is the Msg/Send response type.
+//
 // Since: 0.46.0 (finschia)
 message MsgSendResponse {}
 
 // MsgOperatorSend is the Msg/OperatorSend request type.
+//
 // Since: 0.46.0 (finschia)
 message MsgOperatorSend {
   // contract id associated with the contract.
   string contract_id = 1;
-  // the address of the operator.
+  // address which triggers the send.
   string operator = 2;
-  // the address which the transfer is from.
+  // holder whose tokens are being sent.
   string from = 3;
-  // the address which the transfer is to.
+  // recipient of the tokens.
   string to = 4;
-  // the amount of the transfer.
+  // amount of tokens to send.
   repeated Coin amount = 5 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Coins"];
 }
 
 // MsgOperatorSendResponse is the Msg/OperatorSend response type.
+//
 // Since: 0.46.0 (finschia)
 message MsgOperatorSendResponse {}
 
 // MsgTransferFT is the Msg/TransferFT request type.
+//
 // Note: deprecated (use MsgSend)
 message MsgTransferFT {
   // contract id associated with the contract.
@@ -187,10 +191,12 @@ message MsgTransferFT {
 }
 
 // MsgTransferFTResponse is the Msg/TransferFT response type.
+//
 // Note: deprecated
 message MsgTransferFTResponse {}
 
 // MsgTransferFTFrom is the Msg/TransferFTFrom request type.
+//
 // Note: deprecated (use MsgOperatorSend)
 message MsgTransferFTFrom {
   // contract id associated with the contract.
@@ -207,10 +213,12 @@ message MsgTransferFTFrom {
 }
 
 // MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
+//
 // Note: deprecated
 message MsgTransferFTFromResponse {}
 
 // MsgTransferNFT is the Msg/TransferNFT request type.
+//
 // Note: deprecated (use MsgSend)
 message MsgTransferNFT {
   // contract id associated with the contract.
@@ -224,10 +232,12 @@ message MsgTransferNFT {
 }
 
 // MsgTransferNFTResponse is the Msg/TransferNFT response type.
+//
 // Note: deprecated
 message MsgTransferNFTResponse {}
 
 // MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
+//
 // Note: deprecated (use MsgOperatorSend)
 message MsgTransferNFTFrom {
   // contract id associated with the contract.
@@ -243,40 +253,46 @@ message MsgTransferNFTFrom {
 }
 
 // MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
+//
 // Note: deprecated
 message MsgTransferNFTFromResponse {}
 
 // MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
+//
 // Since: 0.46.0 (finschia)
 message MsgAuthorizeOperator {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the holder who allows the manipulation of its token.
+  // address of a holder which authorizes the `operator` address as an operator.
   string holder = 2;
-  // address which the manipulation is allowed to.
+  // address to set as an operator for `holder`.
   string operator = 3;
 }
 
 // MsgAuthorizeOperatorResponse is the Msg/AuthorizeOperator response type.
+//
 // Since: 0.46.0 (finschia)
 message MsgAuthorizeOperatorResponse {}
 
 // MsgRevokeOperator is the Msg/RevokeOperator request type.
+//
 // Since: 0.46.0 (finschia)
 message MsgRevokeOperator {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the holder who allows the manipulation of its token.
+  // address of a holder which revokes the `operator` address as an operator.
   string holder = 2;
-  // address which the manipulation is allowed to.
+  // address to rescind as an operator for `holder`.
   string operator = 3;
 }
 
 // MsgRevokeOperatorResponse is the Msg/RevokeOperator response type.
+//
 // Since: 0.46.0 (finschia)
 message MsgRevokeOperatorResponse {}
 
 // MsgApprove is the Msg/Approve request type.
+//
 // Note: deprecated (use MsgAuthorizeOperator)
 message MsgApprove {
   // contract id associated with the contract.
@@ -288,10 +304,12 @@ message MsgApprove {
 }
 
 // MsgApproveResponse is the Msg/Approve response type.
+//
 // Note: deprecated
 message MsgApproveResponse {}
 
 // MsgDisapprove is the Msg/Disapprove request type.
+//
 // Note: deprecated (use MsgRevokeOperator)
 message MsgDisapprove {
   // contract id associated with the contract.
@@ -303,6 +321,7 @@ message MsgDisapprove {
 }
 
 // MsgDisapproveResponse is the Msg/Disapprove response type.
+//
 // Note: deprecated
 message MsgDisapproveResponse {}
 
@@ -413,22 +432,25 @@ message MintNFTParam {
 message MsgMintNFTResponse {}
 
 // MsgBurn is the Msg/Burn request type.
+//
 // Since: 0.46.0 (finschia)
 message MsgBurn {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address which the tokens will be burnt from.
+  // holder whose tokens are being burned.
   // Note: it must have the permission for the burn.
   string from = 2;
-  // the amount of the burn.
+  // amount of tokens to burn.
   repeated Coin amount = 3 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Coins"];
 }
 
 // MsgBurnResponse is the Msg/Burn response type.
+//
 // Since: 0.46.0 (finschia)
 message MsgBurnResponse {}
 
 // MsgOperatorBurn is the Msg/OperatorBurn request type.
+//
 // Since: 0.46.0 (finschia)
 message MsgOperatorBurn {
   // contract id associated with the contract.
@@ -437,17 +459,19 @@ message MsgOperatorBurn {
   // Note: it must have the permission for the burn.
   // Note: it must have been authorized by from.
   string operator = 2;
-  // address which the tokens will be burnt from.
+  // holder whose tokens are being burned.
   string from = 3;
-  // the amount of the burn.
+  // amount of tokens to burn.
   repeated Coin amount = 4 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Coins"];
 }
 
 // MsgOperatorBurnResponse is the Msg/OperatorBurn response type.
+//
 // Since: 0.46.0 (finschia)
 message MsgOperatorBurnResponse {}
 
 // MsgBurnFT is the Msg/BurnFT request type.
+//
 // Note: deprecated (use MsgBurn)
 message MsgBurnFT {
   // contract id associated with the contract.
@@ -461,10 +485,12 @@ message MsgBurnFT {
 }
 
 // MsgBurnFTResponse is the Msg/BurnFT response type.
+//
 // Note: deprecated
 message MsgBurnFTResponse {}
 
 // MsgBurnFTFrom is the Msg/BurnFTFrom request type.
+//
 // Note: deprecated (use MsgOperatorBurn)
 message MsgBurnFTFrom {
   // contract id associated with the contract.
@@ -481,10 +507,12 @@ message MsgBurnFTFrom {
 }
 
 // MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
+//
 // Note: deprecated
 message MsgBurnFTFromResponse {}
 
 // MsgBurnNFT is the Msg/BurnNFT request type.
+//
 // Note: deprecated (use MsgBurn)
 message MsgBurnNFT {
   // contract id associated with the contract.
@@ -498,10 +526,12 @@ message MsgBurnNFT {
 }
 
 // MsgBurnNFTResponse is the Msg/BurnNFT response type.
+//
 // Note: deprecated
 message MsgBurnNFTResponse {}
 
 // MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
+//
 // Note: deprecated (use MsgOperatorBurn)
 message MsgBurnNFTFrom {
   // contract id associated with the contract.
@@ -518,6 +548,7 @@ message MsgBurnNFTFrom {
 }
 
 // MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
+//
 // Note: deprecated
 message MsgBurnNFTFromResponse {}
 
@@ -544,6 +575,7 @@ message MsgModify {
 message MsgModifyResponse {}
 
 // MsgGrant is the Msg/Grant request type.
+//
 // Since: 0.46.0 (finschia)
 message MsgGrant {
   // contract id associated with the contract.
@@ -557,10 +589,12 @@ message MsgGrant {
 }
 
 // MsgGrantResponse is the Msg/Grant response type.
+//
 // Since: 0.46.0 (finschia)
 message MsgGrantResponse {}
 
 // MsgAbandon is the Msg/Abandon request type.
+//
 // Since: 0.46.0 (finschia)
 message MsgAbandon {
   // contract id associated with the contract.
@@ -572,10 +606,12 @@ message MsgAbandon {
 }
 
 // MsgAbandonResponse is the Msg/Abandon response type.
+//
 // Since: 0.46.0 (finschia)
 message MsgAbandonResponse {}
 
 // MsgGrantPermission is the Msg/GrantPermission request type.
+//
 // Note: deprecated (use MsgGrant)
 message MsgGrantPermission {
   // contract id associated with the contract.
@@ -589,10 +625,12 @@ message MsgGrantPermission {
 }
 
 // MsgGrantPermissionResponse is the Msg/GrantPermission response type.
+//
 // Note: deprecated
 message MsgGrantPermissionResponse {}
 
 // MsgRevokePermission is the Msg/RevokePermission request type.
+//
 // Note: deprecated (use MsgAbandon)
 message MsgRevokePermission {
   // contract id associated with the contract.
@@ -604,10 +642,12 @@ message MsgRevokePermission {
 }
 
 // MsgRevokePermissionResponse is the Msg/RevokePermission response type.
+//
 // Note: deprecated
 message MsgRevokePermissionResponse {}
 
 // MsgAttach is the Msg/Attach request type.
+//
 // TODO: revisit the field names
 message MsgAttach {
   // contract id associated with the contract.
@@ -624,6 +664,7 @@ message MsgAttach {
 message MsgAttachResponse {}
 
 // MsgDetach is the Msg/Detach request type.
+//
 // TODO: revisit the field names
 message MsgDetach {
   // contract id associated with the contract.
@@ -638,6 +679,7 @@ message MsgDetach {
 message MsgDetachResponse {}
 
 // MsgOperatorAttach is the Msg/OperatorAttach request type.
+//
 // Since: 0.46.0 (finschia)
 message MsgOperatorAttach {
   // contract id associated with the contract.
@@ -653,10 +695,12 @@ message MsgOperatorAttach {
 }
 
 // MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
+//
 // Since: 0.46.0 (finschia)
 message MsgOperatorAttachResponse {}
 
 // MsgOperatorDetach is the Msg/OperatorDetach request type.
+//
 // Since: 0.46.0 (finschia)
 message MsgOperatorDetach {
   // contract id associated with the contract.
@@ -670,10 +714,12 @@ message MsgOperatorDetach {
 }
 
 // MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
+//
 // Since: 0.46.0 (finschia)
 message MsgOperatorDetachResponse {}
 
 // MsgAttachFrom is the Msg/AttachFrom request type.
+//
 // Note: deprecated (use MsgOperatorAttach)
 message MsgAttachFrom {
   // contract id associated with the contract.
@@ -689,10 +735,12 @@ message MsgAttachFrom {
 }
 
 // MsgAttachFromResponse is the Msg/AttachFrom response type.
+//
 // Note: deprecated
 message MsgAttachFromResponse {}
 
 // MsgDetachFrom is the Msg/DetachFrom request type.
+//
 // Note: deprecated (use MsgOperatorDetach)
 message MsgDetachFrom {
   // contract id associated with the contract.
@@ -706,5 +754,6 @@ message MsgDetachFrom {
 }
 
 // MsgDetachFromResponse is the Msg/DetachFrom response type.
+//
 // Note: deprecated
 message MsgDetachFromResponse {}

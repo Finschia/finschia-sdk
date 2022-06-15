@@ -212,18 +212,19 @@ func (AttributeKey) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_478cfab12ea1b00e, []int{1}
 }
 
-// EventSent is emitted on Msg/Send and Msg/OperatorSend.
+// EventSent is emitted when tokens are transferred.
+//
 // Since: 0.46.0 (finschia)
 type EventSent struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the operator.
+	// address which triggered the send.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
-	// address which the transfer is from.
+	// holder whose tokens were sent.
 	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
-	// address which the transfer is to.
+	// recipient of the tokens.
 	To string `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`
-	// amount of coins of the transfer.
+	// amount of tokens sent.
 	Amount []Coin `protobuf:"bytes,5,rep,name=amount,proto3" json:"amount"`
 }
 
@@ -295,14 +296,15 @@ func (m *EventSent) GetAmount() []Coin {
 	return nil
 }
 
-// EventAuthorizedOperator is emitted on Msg/AuthorizeOperator.
+// EventAuthorizedOperator is emitted when a holder authorizes an operator to manipulate its tokens.
+//
 // Since: 0.46.0 (finschia)
 type EventAuthorizedOperator struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the token holder.
+	// address of a holder which authorized the `operator` address as an operator.
 	Holder string `protobuf:"bytes,2,opt,name=holder,proto3" json:"holder,omitempty"`
-	// address of the operator which the authorization is granted to.
+	// address which became an operator of `holder`.
 	Operator string `protobuf:"bytes,3,opt,name=operator,proto3" json:"operator,omitempty"`
 }
 
@@ -360,14 +362,15 @@ func (m *EventAuthorizedOperator) GetOperator() string {
 	return ""
 }
 
-// EventRevokedOperator is emitted on Msg/RevokeOperator.
+// EventRevokedOperator is emitted when an authorization is revoked.
+//
 // Since: 0.46.0 (finschia)
 type EventRevokedOperator struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the token holder of the authorization.
+	// address of a holder which revoked the `operator` address as an operator.
 	Holder string `protobuf:"bytes,2,opt,name=holder,proto3" json:"holder,omitempty"`
-	// address of the operator which the authorization is granted to.
+	// address which was revoked as an operator of `holder`.
 	Operator string `protobuf:"bytes,3,opt,name=operator,proto3" json:"operator,omitempty"`
 }
 
@@ -425,7 +428,8 @@ func (m *EventRevokedOperator) GetOperator() string {
 	return ""
 }
 
-// EventIssue is emitted on Msg/Issue.
+// EventIssue is emitted when a new token class is created.
+//
 // Since: 0.46.0 (finschia)
 type EventIssue struct {
 	// contract id associated with the contract.
@@ -526,7 +530,8 @@ func (m *EventIssue) GetMintable() bool {
 	return false
 }
 
-// EventGrant is emitted on Msg/Grant.
+// EventGrant is emitted when a granter grants its permission to a grantee.
+//
 // Since: 0.46.0 (finschia)
 type EventGrant struct {
 	// contract id associated with the contract.
@@ -600,7 +605,8 @@ func (m *EventGrant) GetPermission() string {
 	return ""
 }
 
-// EventAbandon is emitted on Msg/Abandon.
+// EventAbandon is emitted when a grantee abandons its permission.
+//
 // Since: 0.46.0 (finschia)
 type EventAbandon struct {
 	// contract id associated with the contract.
@@ -665,16 +671,17 @@ func (m *EventAbandon) GetPermission() string {
 	return ""
 }
 
-// EventMinted is emitted on Msg/MintFT and Msg/MintNFT.
+// EventMinted is emitted when tokens are minted.
+//
 // Since: 0.46.0 (finschia)
 type EventMinted struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the operator.
+	// address which triggered the mint.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
-	// the address to send minted tokens to.
+	// recipient of the tokens.
 	To string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
-	// the amount of minted tokens.
+	// amount of tokens minted.
 	Amount []Coin `protobuf:"bytes,4,rep,name=amount,proto3" json:"amount"`
 }
 
@@ -739,16 +746,17 @@ func (m *EventMinted) GetAmount() []Coin {
 	return nil
 }
 
-// EventBurned is emitted on Msg/Burn and Msg/OperatorBurn.
+// EventBurned is emitted when tokens are burnt.
+//
 // Since: 0.46.0 (finschia)
 type EventBurned struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the operator.
+	// address which triggered the burn.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
-	// address of the token holder.
+	// holder whose tokens were burned.
 	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
-	// the amount of burnt token.
+	// amount of tokens burned.
 	Amount []Coin `protobuf:"bytes,4,rep,name=amount,proto3" json:"amount"`
 }
 
@@ -813,7 +821,8 @@ func (m *EventBurned) GetAmount() []Coin {
 	return nil
 }
 
-// EventModified is emitted on Msg/Modify.
+// EventModified is emitted when the information of a token class or contract is modified.
+//
 // Since: 0.46.0 (finschia)
 type EventModified struct {
 	// contract id associated with the contract.

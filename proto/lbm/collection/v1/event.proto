@@ -66,44 +66,48 @@ enum AttributeKey {
   new_root_token_id = 19 [(gogoproto.enumvalue_customname) = "NewRoot"];
 }
 
-// EventSent is emitted on Msg/Send and Msg/OperatorSend.
+// EventSent is emitted when tokens are transferred.
+//
 // Since: 0.46.0 (finschia)
 message EventSent {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the operator.
+  // address which triggered the send.
   string operator = 2;
-  // address which the transfer is from.
+  // holder whose tokens were sent.
   string from = 3;
-  // address which the transfer is to.
+  // recipient of the tokens.
   string to = 4;
-  // amount of coins of the transfer.
+  // amount of tokens sent.
   repeated Coin amount = 5 [(gogoproto.nullable) = false];
 }
 
-// EventAuthorizedOperator is emitted on Msg/AuthorizeOperator.
+// EventAuthorizedOperator is emitted when a holder authorizes an operator to manipulate its tokens.
+//
 // Since: 0.46.0 (finschia)
 message EventAuthorizedOperator {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the token holder.
+  // address of a holder which authorized the `operator` address as an operator.
   string holder = 2;
-  // address of the operator which the authorization is granted to.
+  // address which became an operator of `holder`.
   string operator = 3;
 }
 
-// EventRevokedOperator is emitted on Msg/RevokeOperator.
+// EventRevokedOperator is emitted when an authorization is revoked.
+//
 // Since: 0.46.0 (finschia)
 message EventRevokedOperator {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the token holder of the authorization.
+  // address of a holder which revoked the `operator` address as an operator.
   string holder = 2;
-  // address of the operator which the authorization is granted to.
+  // address which was revoked as an operator of `holder`.
   string operator = 3;
 }
 
-// EventIssue is emitted on Msg/Issue.
+// EventIssue is emitted when a new token class is created.
+//
 // Since: 0.46.0 (finschia)
 message EventIssue {
   // contract id associated with the contract.
@@ -122,7 +126,8 @@ message EventIssue {
   bool mintable = 7;
 }
 
-// EventGrant is emitted on Msg/Grant.
+// EventGrant is emitted when a granter grants its permission to a grantee.
+//
 // Since: 0.46.0 (finschia)
 message EventGrant {
   // contract id associated with the contract.
@@ -135,7 +140,8 @@ message EventGrant {
   string permission = 4;
 }
 
-// EventAbandon is emitted on Msg/Abandon.
+// EventAbandon is emitted when a grantee abandons its permission.
+//
 // Since: 0.46.0 (finschia)
 message EventAbandon {
   // contract id associated with the contract.
@@ -146,33 +152,36 @@ message EventAbandon {
   string permission = 3;
 }
 
-// EventMinted is emitted on Msg/MintFT and Msg/MintNFT.
+// EventMinted is emitted when tokens are minted.
+//
 // Since: 0.46.0 (finschia)
 message EventMinted {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the operator.
+  // address which triggered the mint.
   string operator = 2;
-  // the address to send minted tokens to.
+  // recipient of the tokens.
   string to = 3;
-  // the amount of minted tokens.
+  // amount of tokens minted.
   repeated Coin amount = 4 [(gogoproto.nullable) = false];
 }
 
-// EventBurned is emitted on Msg/Burn and Msg/OperatorBurn.
+// EventBurned is emitted when tokens are burnt.
+//
 // Since: 0.46.0 (finschia)
 message EventBurned {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the operator.
+  // address which triggered the burn.
   string operator = 2;
-  // address of the token holder.
+  // holder whose tokens were burned.
   string from = 3;
-  // the amount of burnt token.
+  // amount of tokens burned.
   repeated Coin amount = 4 [(gogoproto.nullable) = false];
 }
 
-// EventModified is emitted on Msg/Modify.
+// EventModified is emitted when the information of a token class or contract is modified.
+//
 // Since: 0.46.0 (finschia)
 message EventModified {
   // contract id associated with the contract.

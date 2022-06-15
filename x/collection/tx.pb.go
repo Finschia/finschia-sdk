@@ -35,11 +35,11 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type MsgSend struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// the address which the transfer is from.
+	// holder whose tokens are being sent.
 	From string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	// the address which the transfer is to.
+	// recipient of the tokens.
 	To string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
-	// the amount of the transfer.
+	// amount of tokens to send.
 	Amount Coins `protobuf:"bytes,4,rep,name=amount,proto3,castrepeated=Coins" json:"amount"`
 }
 
@@ -105,6 +105,7 @@ func (m *MsgSend) GetAmount() Coins {
 }
 
 // MsgSendResponse is the Msg/Send response type.
+//
 // Since: 0.46.0 (finschia)
 type MsgSendResponse struct {
 }
@@ -143,17 +144,18 @@ func (m *MsgSendResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgSendResponse proto.InternalMessageInfo
 
 // MsgOperatorSend is the Msg/OperatorSend request type.
+//
 // Since: 0.46.0 (finschia)
 type MsgOperatorSend struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// the address of the operator.
+	// address which triggers the send.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
-	// the address which the transfer is from.
+	// holder whose tokens are being sent.
 	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
-	// the address which the transfer is to.
+	// recipient of the tokens.
 	To string `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`
-	// the amount of the transfer.
+	// amount of tokens to send.
 	Amount Coins `protobuf:"bytes,5,rep,name=amount,proto3,castrepeated=Coins" json:"amount"`
 }
 
@@ -226,6 +228,7 @@ func (m *MsgOperatorSend) GetAmount() Coins {
 }
 
 // MsgOperatorSendResponse is the Msg/OperatorSend response type.
+//
 // Since: 0.46.0 (finschia)
 type MsgOperatorSendResponse struct {
 }
@@ -264,6 +267,7 @@ func (m *MsgOperatorSendResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgOperatorSendResponse proto.InternalMessageInfo
 
 // MsgTransferFT is the Msg/TransferFT request type.
+//
 // Note: deprecated (use MsgSend)
 type MsgTransferFT struct {
 	// contract id associated with the contract.
@@ -339,6 +343,7 @@ func (m *MsgTransferFT) GetAmount() []Coin {
 }
 
 // MsgTransferFTResponse is the Msg/TransferFT response type.
+//
 // Note: deprecated
 type MsgTransferFTResponse struct {
 }
@@ -377,6 +382,7 @@ func (m *MsgTransferFTResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgTransferFTResponse proto.InternalMessageInfo
 
 // MsgTransferFTFrom is the Msg/TransferFTFrom request type.
+//
 // Note: deprecated (use MsgOperatorSend)
 type MsgTransferFTFrom struct {
 	// contract id associated with the contract.
@@ -461,6 +467,7 @@ func (m *MsgTransferFTFrom) GetAmount() []Coin {
 }
 
 // MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
+//
 // Note: deprecated
 type MsgTransferFTFromResponse struct {
 }
@@ -499,6 +506,7 @@ func (m *MsgTransferFTFromResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgTransferFTFromResponse proto.InternalMessageInfo
 
 // MsgTransferNFT is the Msg/TransferNFT request type.
+//
 // Note: deprecated (use MsgSend)
 type MsgTransferNFT struct {
 	// contract id associated with the contract.
@@ -573,6 +581,7 @@ func (m *MsgTransferNFT) GetTokenIds() []string {
 }
 
 // MsgTransferNFTResponse is the Msg/TransferNFT response type.
+//
 // Note: deprecated
 type MsgTransferNFTResponse struct {
 }
@@ -611,6 +620,7 @@ func (m *MsgTransferNFTResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgTransferNFTResponse proto.InternalMessageInfo
 
 // MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
+//
 // Note: deprecated (use MsgOperatorSend)
 type MsgTransferNFTFrom struct {
 	// contract id associated with the contract.
@@ -694,6 +704,7 @@ func (m *MsgTransferNFTFrom) GetTokenIds() []string {
 }
 
 // MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
+//
 // Note: deprecated
 type MsgTransferNFTFromResponse struct {
 }
@@ -732,13 +743,14 @@ func (m *MsgTransferNFTFromResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgTransferNFTFromResponse proto.InternalMessageInfo
 
 // MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
+//
 // Since: 0.46.0 (finschia)
 type MsgAuthorizeOperator struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the holder who allows the manipulation of its token.
+	// address of a holder which authorizes the `operator` address as an operator.
 	Holder string `protobuf:"bytes,2,opt,name=holder,proto3" json:"holder,omitempty"`
-	// address which the manipulation is allowed to.
+	// address to set as an operator for `holder`.
 	Operator string `protobuf:"bytes,3,opt,name=operator,proto3" json:"operator,omitempty"`
 }
 
@@ -797,6 +809,7 @@ func (m *MsgAuthorizeOperator) GetOperator() string {
 }
 
 // MsgAuthorizeOperatorResponse is the Msg/AuthorizeOperator response type.
+//
 // Since: 0.46.0 (finschia)
 type MsgAuthorizeOperatorResponse struct {
 }
@@ -835,13 +848,14 @@ func (m *MsgAuthorizeOperatorResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAuthorizeOperatorResponse proto.InternalMessageInfo
 
 // MsgRevokeOperator is the Msg/RevokeOperator request type.
+//
 // Since: 0.46.0 (finschia)
 type MsgRevokeOperator struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the holder who allows the manipulation of its token.
+	// address of a holder which revokes the `operator` address as an operator.
 	Holder string `protobuf:"bytes,2,opt,name=holder,proto3" json:"holder,omitempty"`
-	// address which the manipulation is allowed to.
+	// address to rescind as an operator for `holder`.
 	Operator string `protobuf:"bytes,3,opt,name=operator,proto3" json:"operator,omitempty"`
 }
 
@@ -900,6 +914,7 @@ func (m *MsgRevokeOperator) GetOperator() string {
 }
 
 // MsgRevokeOperatorResponse is the Msg/RevokeOperator response type.
+//
 // Since: 0.46.0 (finschia)
 type MsgRevokeOperatorResponse struct {
 }
@@ -938,6 +953,7 @@ func (m *MsgRevokeOperatorResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgRevokeOperatorResponse proto.InternalMessageInfo
 
 // MsgApprove is the Msg/Approve request type.
+//
 // Note: deprecated (use MsgAuthorizeOperator)
 type MsgApprove struct {
 	// contract id associated with the contract.
@@ -1003,6 +1019,7 @@ func (m *MsgApprove) GetProxy() string {
 }
 
 // MsgApproveResponse is the Msg/Approve response type.
+//
 // Note: deprecated
 type MsgApproveResponse struct {
 }
@@ -1041,6 +1058,7 @@ func (m *MsgApproveResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgApproveResponse proto.InternalMessageInfo
 
 // MsgDisapprove is the Msg/Disapprove request type.
+//
 // Note: deprecated (use MsgRevokeOperator)
 type MsgDisapprove struct {
 	// contract id associated with the contract.
@@ -1106,6 +1124,7 @@ func (m *MsgDisapprove) GetProxy() string {
 }
 
 // MsgDisapproveResponse is the Msg/Disapprove response type.
+//
 // Note: deprecated
 type MsgDisapproveResponse struct {
 }
@@ -1796,14 +1815,15 @@ func (m *MsgMintNFTResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgMintNFTResponse proto.InternalMessageInfo
 
 // MsgBurn is the Msg/Burn request type.
+//
 // Since: 0.46.0 (finschia)
 type MsgBurn struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address which the tokens will be burnt from.
+	// holder whose tokens are being burned.
 	// Note: it must have the permission for the burn.
 	From string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
-	// the amount of the burn.
+	// amount of tokens to burn.
 	Amount Coins `protobuf:"bytes,3,rep,name=amount,proto3,castrepeated=Coins" json:"amount"`
 }
 
@@ -1862,6 +1882,7 @@ func (m *MsgBurn) GetAmount() Coins {
 }
 
 // MsgBurnResponse is the Msg/Burn response type.
+//
 // Since: 0.46.0 (finschia)
 type MsgBurnResponse struct {
 }
@@ -1900,6 +1921,7 @@ func (m *MsgBurnResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgBurnResponse proto.InternalMessageInfo
 
 // MsgOperatorBurn is the Msg/OperatorBurn request type.
+//
 // Since: 0.46.0 (finschia)
 type MsgOperatorBurn struct {
 	// contract id associated with the contract.
@@ -1908,9 +1930,9 @@ type MsgOperatorBurn struct {
 	// Note: it must have the permission for the burn.
 	// Note: it must have been authorized by from.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
-	// address which the tokens will be burnt from.
+	// holder whose tokens are being burned.
 	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
-	// the amount of the burn.
+	// amount of tokens to burn.
 	Amount Coins `protobuf:"bytes,4,rep,name=amount,proto3,castrepeated=Coins" json:"amount"`
 }
 
@@ -1976,6 +1998,7 @@ func (m *MsgOperatorBurn) GetAmount() Coins {
 }
 
 // MsgOperatorBurnResponse is the Msg/OperatorBurn response type.
+//
 // Since: 0.46.0 (finschia)
 type MsgOperatorBurnResponse struct {
 }
@@ -2014,6 +2037,7 @@ func (m *MsgOperatorBurnResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgOperatorBurnResponse proto.InternalMessageInfo
 
 // MsgBurnFT is the Msg/BurnFT request type.
+//
 // Note: deprecated (use MsgBurn)
 type MsgBurnFT struct {
 	// contract id associated with the contract.
@@ -2081,6 +2105,7 @@ func (m *MsgBurnFT) GetAmount() []Coin {
 }
 
 // MsgBurnFTResponse is the Msg/BurnFT response type.
+//
 // Note: deprecated
 type MsgBurnFTResponse struct {
 }
@@ -2119,6 +2144,7 @@ func (m *MsgBurnFTResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgBurnFTResponse proto.InternalMessageInfo
 
 // MsgBurnFTFrom is the Msg/BurnFTFrom request type.
+//
 // Note: deprecated (use MsgOperatorBurn)
 type MsgBurnFTFrom struct {
 	// contract id associated with the contract.
@@ -2196,6 +2222,7 @@ func (m *MsgBurnFTFrom) GetAmount() []Coin {
 }
 
 // MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
+//
 // Note: deprecated
 type MsgBurnFTFromResponse struct {
 }
@@ -2234,6 +2261,7 @@ func (m *MsgBurnFTFromResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgBurnFTFromResponse proto.InternalMessageInfo
 
 // MsgBurnNFT is the Msg/BurnNFT request type.
+//
 // Note: deprecated (use MsgBurn)
 type MsgBurnNFT struct {
 	// contract id associated with the contract.
@@ -2301,6 +2329,7 @@ func (m *MsgBurnNFT) GetTokenIds() []string {
 }
 
 // MsgBurnNFTResponse is the Msg/BurnNFT response type.
+//
 // Note: deprecated
 type MsgBurnNFTResponse struct {
 }
@@ -2339,6 +2368,7 @@ func (m *MsgBurnNFTResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgBurnNFTResponse proto.InternalMessageInfo
 
 // MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
+//
 // Note: deprecated (use MsgOperatorBurn)
 type MsgBurnNFTFrom struct {
 	// contract id associated with the contract.
@@ -2416,6 +2446,7 @@ func (m *MsgBurnNFTFrom) GetTokenIds() []string {
 }
 
 // MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
+//
 // Note: deprecated
 type MsgBurnNFTFromResponse struct {
 }
@@ -2578,6 +2609,7 @@ func (m *MsgModifyResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgModifyResponse proto.InternalMessageInfo
 
 // MsgGrant is the Msg/Grant request type.
+//
 // Since: 0.46.0 (finschia)
 type MsgGrant struct {
 	// contract id associated with the contract.
@@ -2652,6 +2684,7 @@ func (m *MsgGrant) GetPermission() string {
 }
 
 // MsgGrantResponse is the Msg/Grant response type.
+//
 // Since: 0.46.0 (finschia)
 type MsgGrantResponse struct {
 }
@@ -2690,6 +2723,7 @@ func (m *MsgGrantResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgGrantResponse proto.InternalMessageInfo
 
 // MsgAbandon is the Msg/Abandon request type.
+//
 // Since: 0.46.0 (finschia)
 type MsgAbandon struct {
 	// contract id associated with the contract.
@@ -2755,6 +2789,7 @@ func (m *MsgAbandon) GetPermission() string {
 }
 
 // MsgAbandonResponse is the Msg/Abandon response type.
+//
 // Since: 0.46.0 (finschia)
 type MsgAbandonResponse struct {
 }
@@ -2793,6 +2828,7 @@ func (m *MsgAbandonResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAbandonResponse proto.InternalMessageInfo
 
 // MsgGrantPermission is the Msg/GrantPermission request type.
+//
 // Note: deprecated (use MsgGrant)
 type MsgGrantPermission struct {
 	// contract id associated with the contract.
@@ -2867,6 +2903,7 @@ func (m *MsgGrantPermission) GetPermission() string {
 }
 
 // MsgGrantPermissionResponse is the Msg/GrantPermission response type.
+//
 // Note: deprecated
 type MsgGrantPermissionResponse struct {
 }
@@ -2905,6 +2942,7 @@ func (m *MsgGrantPermissionResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgGrantPermissionResponse proto.InternalMessageInfo
 
 // MsgRevokePermission is the Msg/RevokePermission request type.
+//
 // Note: deprecated (use MsgAbandon)
 type MsgRevokePermission struct {
 	// contract id associated with the contract.
@@ -2970,6 +3008,7 @@ func (m *MsgRevokePermission) GetPermission() string {
 }
 
 // MsgRevokePermissionResponse is the Msg/RevokePermission response type.
+//
 // Note: deprecated
 type MsgRevokePermissionResponse struct {
 }
@@ -3008,6 +3047,7 @@ func (m *MsgRevokePermissionResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgRevokePermissionResponse proto.InternalMessageInfo
 
 // MsgAttach is the Msg/Attach request type.
+//
 // TODO: revisit the field names
 type MsgAttach struct {
 	// contract id associated with the contract.
@@ -3119,6 +3159,7 @@ func (m *MsgAttachResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAttachResponse proto.InternalMessageInfo
 
 // MsgDetach is the Msg/Detach request type.
+//
 // TODO: revisit the field names
 type MsgDetach struct {
 	// contract id associated with the contract.
@@ -3221,6 +3262,7 @@ func (m *MsgDetachResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgDetachResponse proto.InternalMessageInfo
 
 // MsgOperatorAttach is the Msg/OperatorAttach request type.
+//
 // Since: 0.46.0 (finschia)
 type MsgOperatorAttach struct {
 	// contract id associated with the contract.
@@ -3304,6 +3346,7 @@ func (m *MsgOperatorAttach) GetTo() string {
 }
 
 // MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
+//
 // Since: 0.46.0 (finschia)
 type MsgOperatorAttachResponse struct {
 }
@@ -3342,6 +3385,7 @@ func (m *MsgOperatorAttachResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgOperatorAttachResponse proto.InternalMessageInfo
 
 // MsgOperatorDetach is the Msg/OperatorDetach request type.
+//
 // Since: 0.46.0 (finschia)
 type MsgOperatorDetach struct {
 	// contract id associated with the contract.
@@ -3416,6 +3460,7 @@ func (m *MsgOperatorDetach) GetId() string {
 }
 
 // MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
+//
 // Since: 0.46.0 (finschia)
 type MsgOperatorDetachResponse struct {
 }
@@ -3454,6 +3499,7 @@ func (m *MsgOperatorDetachResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgOperatorDetachResponse proto.InternalMessageInfo
 
 // MsgAttachFrom is the Msg/AttachFrom request type.
+//
 // Note: deprecated (use MsgOperatorAttach)
 type MsgAttachFrom struct {
 	// contract id associated with the contract.
@@ -3537,6 +3583,7 @@ func (m *MsgAttachFrom) GetToTokenId() string {
 }
 
 // MsgAttachFromResponse is the Msg/AttachFrom response type.
+//
 // Note: deprecated
 type MsgAttachFromResponse struct {
 }
@@ -3575,6 +3622,7 @@ func (m *MsgAttachFromResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAttachFromResponse proto.InternalMessageInfo
 
 // MsgDetachFrom is the Msg/DetachFrom request type.
+//
 // Note: deprecated (use MsgOperatorDetach)
 type MsgDetachFrom struct {
 	// contract id associated with the contract.
@@ -3649,6 +3697,7 @@ func (m *MsgDetachFrom) GetTokenId() string {
 }
 
 // MsgDetachFromResponse is the Msg/DetachFrom response type.
+//
 // Note: deprecated
 type MsgDetachFromResponse struct {
 }
