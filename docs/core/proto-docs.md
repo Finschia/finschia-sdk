@@ -811,6 +811,367 @@
   
     - [Service](#lbm.base.ostracon.v1.Service)
   
+<<<<<<< HEAD
+=======
+- [lbm/base/reflection/v1/reflection.proto](#lbm/base/reflection/v1/reflection.proto)
+    - [ListAllInterfacesRequest](#lbm.base.reflection.v1.ListAllInterfacesRequest)
+    - [ListAllInterfacesResponse](#lbm.base.reflection.v1.ListAllInterfacesResponse)
+    - [ListImplementationsRequest](#lbm.base.reflection.v1.ListImplementationsRequest)
+    - [ListImplementationsResponse](#lbm.base.reflection.v1.ListImplementationsResponse)
+  
+    - [ReflectionService](#lbm.base.reflection.v1.ReflectionService)
+  
+- [lbm/base/reflection/v2/reflection.proto](#lbm/base/reflection/v2/reflection.proto)
+    - [AppDescriptor](#lbm.base.reflection.v2.AppDescriptor)
+    - [AuthnDescriptor](#lbm.base.reflection.v2.AuthnDescriptor)
+    - [ChainDescriptor](#lbm.base.reflection.v2.ChainDescriptor)
+    - [CodecDescriptor](#lbm.base.reflection.v2.CodecDescriptor)
+    - [ConfigurationDescriptor](#lbm.base.reflection.v2.ConfigurationDescriptor)
+    - [GetAuthnDescriptorRequest](#lbm.base.reflection.v2.GetAuthnDescriptorRequest)
+    - [GetAuthnDescriptorResponse](#lbm.base.reflection.v2.GetAuthnDescriptorResponse)
+    - [GetChainDescriptorRequest](#lbm.base.reflection.v2.GetChainDescriptorRequest)
+    - [GetChainDescriptorResponse](#lbm.base.reflection.v2.GetChainDescriptorResponse)
+    - [GetCodecDescriptorRequest](#lbm.base.reflection.v2.GetCodecDescriptorRequest)
+    - [GetCodecDescriptorResponse](#lbm.base.reflection.v2.GetCodecDescriptorResponse)
+    - [GetConfigurationDescriptorRequest](#lbm.base.reflection.v2.GetConfigurationDescriptorRequest)
+    - [GetConfigurationDescriptorResponse](#lbm.base.reflection.v2.GetConfigurationDescriptorResponse)
+    - [GetQueryServicesDescriptorRequest](#lbm.base.reflection.v2.GetQueryServicesDescriptorRequest)
+    - [GetQueryServicesDescriptorResponse](#lbm.base.reflection.v2.GetQueryServicesDescriptorResponse)
+    - [GetTxDescriptorRequest](#lbm.base.reflection.v2.GetTxDescriptorRequest)
+    - [GetTxDescriptorResponse](#lbm.base.reflection.v2.GetTxDescriptorResponse)
+    - [InterfaceAcceptingMessageDescriptor](#lbm.base.reflection.v2.InterfaceAcceptingMessageDescriptor)
+    - [InterfaceDescriptor](#lbm.base.reflection.v2.InterfaceDescriptor)
+    - [InterfaceImplementerDescriptor](#lbm.base.reflection.v2.InterfaceImplementerDescriptor)
+    - [MsgDescriptor](#lbm.base.reflection.v2.MsgDescriptor)
+    - [QueryMethodDescriptor](#lbm.base.reflection.v2.QueryMethodDescriptor)
+    - [QueryServiceDescriptor](#lbm.base.reflection.v2.QueryServiceDescriptor)
+    - [QueryServicesDescriptor](#lbm.base.reflection.v2.QueryServicesDescriptor)
+    - [SigningModeDescriptor](#lbm.base.reflection.v2.SigningModeDescriptor)
+    - [TxDescriptor](#lbm.base.reflection.v2.TxDescriptor)
+  
+    - [ReflectionService](#lbm.base.reflection.v2.ReflectionService)
+  
+- [lbm/base/snapshots/v1/snapshot.proto](#lbm/base/snapshots/v1/snapshot.proto)
+    - [Metadata](#lbm.base.snapshots.v1.Metadata)
+    - [Snapshot](#lbm.base.snapshots.v1.Snapshot)
+  
+- [lbm/base/store/v1/commit_info.proto](#lbm/base/store/v1/commit_info.proto)
+    - [CommitID](#lbm.base.store.v1.CommitID)
+    - [CommitInfo](#lbm.base.store.v1.CommitInfo)
+    - [StoreInfo](#lbm.base.store.v1.StoreInfo)
+  
+- [lbm/base/store/v1/listening.proto](#lbm/base/store/v1/listening.proto)
+    - [StoreKVPair](#lbm.base.store.v1.StoreKVPair)
+  
+- [lbm/base/store/v1/snapshot.proto](#lbm/base/store/v1/snapshot.proto)
+    - [SnapshotIAVLItem](#lbm.base.store.v1.SnapshotIAVLItem)
+    - [SnapshotItem](#lbm.base.store.v1.SnapshotItem)
+    - [SnapshotStoreItem](#lbm.base.store.v1.SnapshotStoreItem)
+  
+- [lbm/capability/v1/capability.proto](#lbm/capability/v1/capability.proto)
+    - [Capability](#lbm.capability.v1.Capability)
+    - [CapabilityOwners](#lbm.capability.v1.CapabilityOwners)
+    - [Owner](#lbm.capability.v1.Owner)
+  
+- [lbm/capability/v1/genesis.proto](#lbm/capability/v1/genesis.proto)
+    - [GenesisOwners](#lbm.capability.v1.GenesisOwners)
+    - [GenesisState](#lbm.capability.v1.GenesisState)
+  
+- [lbm/collection/v1/collection.proto](#lbm/collection/v1/collection.proto)
+    - [Authorization](#lbm.collection.v1.Authorization)
+    - [Coin](#lbm.collection.v1.Coin)
+    - [Contract](#lbm.collection.v1.Contract)
+    - [FTClass](#lbm.collection.v1.FTClass)
+    - [Fungible](#lbm.collection.v1.Fungible)
+    - [Grant](#lbm.collection.v1.Grant)
+    - [NFT](#lbm.collection.v1.NFT)
+    - [NFTClass](#lbm.collection.v1.NFTClass)
+    - [Pair](#lbm.collection.v1.Pair)
+    - [Params](#lbm.collection.v1.Params)
+    - [TokenType](#lbm.collection.v1.TokenType)
+  
+    - [Permission](#lbm.collection.v1.Permission)
+  
+- [lbm/collection/v1/event.proto](#lbm/collection/v1/event.proto)
+    - [EventAbandon](#lbm.collection.v1.EventAbandon)
+    - [EventAuthorizedOperator](#lbm.collection.v1.EventAuthorizedOperator)
+    - [EventBurned](#lbm.collection.v1.EventBurned)
+    - [EventGrant](#lbm.collection.v1.EventGrant)
+    - [EventIssue](#lbm.collection.v1.EventIssue)
+    - [EventMinted](#lbm.collection.v1.EventMinted)
+    - [EventModified](#lbm.collection.v1.EventModified)
+    - [EventReceived](#lbm.collection.v1.EventReceived)
+    - [EventRevokedOperator](#lbm.collection.v1.EventRevokedOperator)
+    - [EventSent](#lbm.collection.v1.EventSent)
+    - [EventSpent](#lbm.collection.v1.EventSpent)
+  
+    - [AttributeKey](#lbm.collection.v1.AttributeKey)
+    - [EventType](#lbm.collection.v1.EventType)
+  
+- [lbm/collection/v1/genesis.proto](#lbm/collection/v1/genesis.proto)
+    - [Balance](#lbm.collection.v1.Balance)
+    - [ClassGenesisState](#lbm.collection.v1.ClassGenesisState)
+    - [ClassStatistics](#lbm.collection.v1.ClassStatistics)
+    - [ContractAuthorizations](#lbm.collection.v1.ContractAuthorizations)
+    - [ContractBalances](#lbm.collection.v1.ContractBalances)
+    - [ContractClasses](#lbm.collection.v1.ContractClasses)
+    - [ContractGrants](#lbm.collection.v1.ContractGrants)
+    - [ContractStatistics](#lbm.collection.v1.ContractStatistics)
+    - [ContractTokenRelations](#lbm.collection.v1.ContractTokenRelations)
+    - [GenesisState](#lbm.collection.v1.GenesisState)
+    - [NextClassIDs](#lbm.collection.v1.NextClassIDs)
+    - [TokenRelation](#lbm.collection.v1.TokenRelation)
+  
+- [lbm/collection/v1/query.proto](#lbm/collection/v1/query.proto)
+    - [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest)
+    - [QueryAllBalancesResponse](#lbm.collection.v1.QueryAllBalancesResponse)
+    - [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest)
+    - [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse)
+    - [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest)
+    - [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse)
+    - [QueryAuthorizationRequest](#lbm.collection.v1.QueryAuthorizationRequest)
+    - [QueryAuthorizationResponse](#lbm.collection.v1.QueryAuthorizationResponse)
+    - [QueryBalanceRequest](#lbm.collection.v1.QueryBalanceRequest)
+    - [QueryBalanceResponse](#lbm.collection.v1.QueryBalanceResponse)
+    - [QueryBurntRequest](#lbm.collection.v1.QueryBurntRequest)
+    - [QueryBurntResponse](#lbm.collection.v1.QueryBurntResponse)
+    - [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest)
+    - [QueryChildrenResponse](#lbm.collection.v1.QueryChildrenResponse)
+    - [QueryContractRequest](#lbm.collection.v1.QueryContractRequest)
+    - [QueryContractResponse](#lbm.collection.v1.QueryContractResponse)
+    - [QueryContractsRequest](#lbm.collection.v1.QueryContractsRequest)
+    - [QueryContractsResponse](#lbm.collection.v1.QueryContractsResponse)
+    - [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest)
+    - [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse)
+    - [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest)
+    - [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse)
+    - [QueryFTRequest](#lbm.collection.v1.QueryFTRequest)
+    - [QueryFTResponse](#lbm.collection.v1.QueryFTResponse)
+    - [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest)
+    - [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse)
+    - [QueryGrantRequest](#lbm.collection.v1.QueryGrantRequest)
+    - [QueryGrantResponse](#lbm.collection.v1.QueryGrantResponse)
+    - [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest)
+    - [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse)
+    - [QueryMintedRequest](#lbm.collection.v1.QueryMintedRequest)
+    - [QueryMintedResponse](#lbm.collection.v1.QueryMintedResponse)
+    - [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest)
+    - [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse)
+    - [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest)
+    - [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse)
+    - [QueryNFTRequest](#lbm.collection.v1.QueryNFTRequest)
+    - [QueryNFTResponse](#lbm.collection.v1.QueryNFTResponse)
+    - [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest)
+    - [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse)
+    - [QueryNFTsRequest](#lbm.collection.v1.QueryNFTsRequest)
+    - [QueryNFTsResponse](#lbm.collection.v1.QueryNFTsResponse)
+    - [QueryOperatorAuthorizationsRequest](#lbm.collection.v1.QueryOperatorAuthorizationsRequest)
+    - [QueryOperatorAuthorizationsResponse](#lbm.collection.v1.QueryOperatorAuthorizationsResponse)
+    - [QueryParentRequest](#lbm.collection.v1.QueryParentRequest)
+    - [QueryParentResponse](#lbm.collection.v1.QueryParentResponse)
+    - [QueryRootRequest](#lbm.collection.v1.QueryRootRequest)
+    - [QueryRootResponse](#lbm.collection.v1.QueryRootResponse)
+    - [QuerySupplyRequest](#lbm.collection.v1.QuerySupplyRequest)
+    - [QuerySupplyResponse](#lbm.collection.v1.QuerySupplyResponse)
+    - [QueryTokenClassRequest](#lbm.collection.v1.QueryTokenClassRequest)
+    - [QueryTokenClassResponse](#lbm.collection.v1.QueryTokenClassResponse)
+    - [QueryTokenClassesRequest](#lbm.collection.v1.QueryTokenClassesRequest)
+    - [QueryTokenClassesResponse](#lbm.collection.v1.QueryTokenClassesResponse)
+    - [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest)
+    - [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse)
+    - [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest)
+    - [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse)
+    - [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest)
+    - [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse)
+  
+    - [Query](#lbm.collection.v1.Query)
+  
+- [lbm/collection/v1/tx.proto](#lbm/collection/v1/tx.proto)
+    - [MintNFTParam](#lbm.collection.v1.MintNFTParam)
+    - [MsgAbandon](#lbm.collection.v1.MsgAbandon)
+    - [MsgAbandonResponse](#lbm.collection.v1.MsgAbandonResponse)
+    - [MsgApprove](#lbm.collection.v1.MsgApprove)
+    - [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse)
+    - [MsgAttach](#lbm.collection.v1.MsgAttach)
+    - [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom)
+    - [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse)
+    - [MsgAttachResponse](#lbm.collection.v1.MsgAttachResponse)
+    - [MsgAuthorizeOperator](#lbm.collection.v1.MsgAuthorizeOperator)
+    - [MsgAuthorizeOperatorResponse](#lbm.collection.v1.MsgAuthorizeOperatorResponse)
+    - [MsgBurn](#lbm.collection.v1.MsgBurn)
+    - [MsgBurnFT](#lbm.collection.v1.MsgBurnFT)
+    - [MsgBurnFTFrom](#lbm.collection.v1.MsgBurnFTFrom)
+    - [MsgBurnFTFromResponse](#lbm.collection.v1.MsgBurnFTFromResponse)
+    - [MsgBurnFTResponse](#lbm.collection.v1.MsgBurnFTResponse)
+    - [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT)
+    - [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom)
+    - [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse)
+    - [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse)
+    - [MsgBurnResponse](#lbm.collection.v1.MsgBurnResponse)
+    - [MsgCreateContract](#lbm.collection.v1.MsgCreateContract)
+    - [MsgCreateContractResponse](#lbm.collection.v1.MsgCreateContractResponse)
+    - [MsgDetach](#lbm.collection.v1.MsgDetach)
+    - [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom)
+    - [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse)
+    - [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse)
+    - [MsgDisapprove](#lbm.collection.v1.MsgDisapprove)
+    - [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse)
+    - [MsgGrant](#lbm.collection.v1.MsgGrant)
+    - [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission)
+    - [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse)
+    - [MsgGrantResponse](#lbm.collection.v1.MsgGrantResponse)
+    - [MsgIssueFT](#lbm.collection.v1.MsgIssueFT)
+    - [MsgIssueFTResponse](#lbm.collection.v1.MsgIssueFTResponse)
+    - [MsgIssueNFT](#lbm.collection.v1.MsgIssueNFT)
+    - [MsgIssueNFTResponse](#lbm.collection.v1.MsgIssueNFTResponse)
+    - [MsgMintFT](#lbm.collection.v1.MsgMintFT)
+    - [MsgMintFTResponse](#lbm.collection.v1.MsgMintFTResponse)
+    - [MsgMintNFT](#lbm.collection.v1.MsgMintNFT)
+    - [MsgMintNFTResponse](#lbm.collection.v1.MsgMintNFTResponse)
+    - [MsgModify](#lbm.collection.v1.MsgModify)
+    - [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse)
+    - [MsgOperatorAttach](#lbm.collection.v1.MsgOperatorAttach)
+    - [MsgOperatorAttachResponse](#lbm.collection.v1.MsgOperatorAttachResponse)
+    - [MsgOperatorBurn](#lbm.collection.v1.MsgOperatorBurn)
+    - [MsgOperatorBurnResponse](#lbm.collection.v1.MsgOperatorBurnResponse)
+    - [MsgOperatorDetach](#lbm.collection.v1.MsgOperatorDetach)
+    - [MsgOperatorDetachResponse](#lbm.collection.v1.MsgOperatorDetachResponse)
+    - [MsgOperatorSend](#lbm.collection.v1.MsgOperatorSend)
+    - [MsgOperatorSendResponse](#lbm.collection.v1.MsgOperatorSendResponse)
+    - [MsgRevokeOperator](#lbm.collection.v1.MsgRevokeOperator)
+    - [MsgRevokeOperatorResponse](#lbm.collection.v1.MsgRevokeOperatorResponse)
+    - [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission)
+    - [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse)
+    - [MsgSend](#lbm.collection.v1.MsgSend)
+    - [MsgSendResponse](#lbm.collection.v1.MsgSendResponse)
+    - [MsgTransferFT](#lbm.collection.v1.MsgTransferFT)
+    - [MsgTransferFTFrom](#lbm.collection.v1.MsgTransferFTFrom)
+    - [MsgTransferFTFromResponse](#lbm.collection.v1.MsgTransferFTFromResponse)
+    - [MsgTransferFTResponse](#lbm.collection.v1.MsgTransferFTResponse)
+    - [MsgTransferNFT](#lbm.collection.v1.MsgTransferNFT)
+    - [MsgTransferNFTFrom](#lbm.collection.v1.MsgTransferNFTFrom)
+    - [MsgTransferNFTFromResponse](#lbm.collection.v1.MsgTransferNFTFromResponse)
+    - [MsgTransferNFTResponse](#lbm.collection.v1.MsgTransferNFTResponse)
+  
+    - [Msg](#lbm.collection.v1.Msg)
+  
+- [lbm/crisis/v1/genesis.proto](#lbm/crisis/v1/genesis.proto)
+    - [GenesisState](#lbm.crisis.v1.GenesisState)
+  
+- [lbm/crisis/v1/tx.proto](#lbm/crisis/v1/tx.proto)
+    - [MsgVerifyInvariant](#lbm.crisis.v1.MsgVerifyInvariant)
+    - [MsgVerifyInvariantResponse](#lbm.crisis.v1.MsgVerifyInvariantResponse)
+  
+    - [Msg](#lbm.crisis.v1.Msg)
+  
+- [lbm/crypto/multisig/v1/multisig.proto](#lbm/crypto/multisig/v1/multisig.proto)
+    - [CompactBitArray](#lbm.crypto.multisig.v1.CompactBitArray)
+    - [MultiSignature](#lbm.crypto.multisig.v1.MultiSignature)
+  
+- [lbm/distribution/v1/distribution.proto](#lbm/distribution/v1/distribution.proto)
+    - [CommunityPoolSpendProposal](#lbm.distribution.v1.CommunityPoolSpendProposal)
+    - [CommunityPoolSpendProposalWithDeposit](#lbm.distribution.v1.CommunityPoolSpendProposalWithDeposit)
+    - [DelegationDelegatorReward](#lbm.distribution.v1.DelegationDelegatorReward)
+    - [DelegatorStartingInfo](#lbm.distribution.v1.DelegatorStartingInfo)
+    - [FeePool](#lbm.distribution.v1.FeePool)
+    - [Params](#lbm.distribution.v1.Params)
+    - [ValidatorAccumulatedCommission](#lbm.distribution.v1.ValidatorAccumulatedCommission)
+    - [ValidatorCurrentRewards](#lbm.distribution.v1.ValidatorCurrentRewards)
+    - [ValidatorHistoricalRewards](#lbm.distribution.v1.ValidatorHistoricalRewards)
+    - [ValidatorOutstandingRewards](#lbm.distribution.v1.ValidatorOutstandingRewards)
+    - [ValidatorSlashEvent](#lbm.distribution.v1.ValidatorSlashEvent)
+    - [ValidatorSlashEvents](#lbm.distribution.v1.ValidatorSlashEvents)
+  
+- [lbm/distribution/v1/genesis.proto](#lbm/distribution/v1/genesis.proto)
+    - [DelegatorStartingInfoRecord](#lbm.distribution.v1.DelegatorStartingInfoRecord)
+    - [DelegatorWithdrawInfo](#lbm.distribution.v1.DelegatorWithdrawInfo)
+    - [GenesisState](#lbm.distribution.v1.GenesisState)
+    - [ValidatorAccumulatedCommissionRecord](#lbm.distribution.v1.ValidatorAccumulatedCommissionRecord)
+    - [ValidatorCurrentRewardsRecord](#lbm.distribution.v1.ValidatorCurrentRewardsRecord)
+    - [ValidatorHistoricalRewardsRecord](#lbm.distribution.v1.ValidatorHistoricalRewardsRecord)
+    - [ValidatorOutstandingRewardsRecord](#lbm.distribution.v1.ValidatorOutstandingRewardsRecord)
+    - [ValidatorSlashEventRecord](#lbm.distribution.v1.ValidatorSlashEventRecord)
+  
+- [lbm/distribution/v1/query.proto](#lbm/distribution/v1/query.proto)
+    - [QueryCommunityPoolRequest](#lbm.distribution.v1.QueryCommunityPoolRequest)
+    - [QueryCommunityPoolResponse](#lbm.distribution.v1.QueryCommunityPoolResponse)
+    - [QueryDelegationRewardsRequest](#lbm.distribution.v1.QueryDelegationRewardsRequest)
+    - [QueryDelegationRewardsResponse](#lbm.distribution.v1.QueryDelegationRewardsResponse)
+    - [QueryDelegationTotalRewardsRequest](#lbm.distribution.v1.QueryDelegationTotalRewardsRequest)
+    - [QueryDelegationTotalRewardsResponse](#lbm.distribution.v1.QueryDelegationTotalRewardsResponse)
+    - [QueryDelegatorValidatorsRequest](#lbm.distribution.v1.QueryDelegatorValidatorsRequest)
+    - [QueryDelegatorValidatorsResponse](#lbm.distribution.v1.QueryDelegatorValidatorsResponse)
+    - [QueryDelegatorWithdrawAddressRequest](#lbm.distribution.v1.QueryDelegatorWithdrawAddressRequest)
+    - [QueryDelegatorWithdrawAddressResponse](#lbm.distribution.v1.QueryDelegatorWithdrawAddressResponse)
+    - [QueryParamsRequest](#lbm.distribution.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#lbm.distribution.v1.QueryParamsResponse)
+    - [QueryValidatorCommissionRequest](#lbm.distribution.v1.QueryValidatorCommissionRequest)
+    - [QueryValidatorCommissionResponse](#lbm.distribution.v1.QueryValidatorCommissionResponse)
+    - [QueryValidatorOutstandingRewardsRequest](#lbm.distribution.v1.QueryValidatorOutstandingRewardsRequest)
+    - [QueryValidatorOutstandingRewardsResponse](#lbm.distribution.v1.QueryValidatorOutstandingRewardsResponse)
+    - [QueryValidatorSlashesRequest](#lbm.distribution.v1.QueryValidatorSlashesRequest)
+    - [QueryValidatorSlashesResponse](#lbm.distribution.v1.QueryValidatorSlashesResponse)
+  
+    - [Query](#lbm.distribution.v1.Query)
+  
+- [lbm/distribution/v1/tx.proto](#lbm/distribution/v1/tx.proto)
+    - [MsgFundCommunityPool](#lbm.distribution.v1.MsgFundCommunityPool)
+    - [MsgFundCommunityPoolResponse](#lbm.distribution.v1.MsgFundCommunityPoolResponse)
+    - [MsgSetWithdrawAddress](#lbm.distribution.v1.MsgSetWithdrawAddress)
+    - [MsgSetWithdrawAddressResponse](#lbm.distribution.v1.MsgSetWithdrawAddressResponse)
+    - [MsgWithdrawDelegatorReward](#lbm.distribution.v1.MsgWithdrawDelegatorReward)
+    - [MsgWithdrawDelegatorRewardResponse](#lbm.distribution.v1.MsgWithdrawDelegatorRewardResponse)
+    - [MsgWithdrawValidatorCommission](#lbm.distribution.v1.MsgWithdrawValidatorCommission)
+    - [MsgWithdrawValidatorCommissionResponse](#lbm.distribution.v1.MsgWithdrawValidatorCommissionResponse)
+  
+    - [Msg](#lbm.distribution.v1.Msg)
+  
+- [lbm/evidence/v1/evidence.proto](#lbm/evidence/v1/evidence.proto)
+    - [Equivocation](#lbm.evidence.v1.Equivocation)
+  
+- [lbm/evidence/v1/genesis.proto](#lbm/evidence/v1/genesis.proto)
+    - [GenesisState](#lbm.evidence.v1.GenesisState)
+  
+- [lbm/evidence/v1/query.proto](#lbm/evidence/v1/query.proto)
+    - [QueryAllEvidenceRequest](#lbm.evidence.v1.QueryAllEvidenceRequest)
+    - [QueryAllEvidenceResponse](#lbm.evidence.v1.QueryAllEvidenceResponse)
+    - [QueryEvidenceRequest](#lbm.evidence.v1.QueryEvidenceRequest)
+    - [QueryEvidenceResponse](#lbm.evidence.v1.QueryEvidenceResponse)
+  
+    - [Query](#lbm.evidence.v1.Query)
+  
+- [lbm/evidence/v1/tx.proto](#lbm/evidence/v1/tx.proto)
+    - [MsgSubmitEvidence](#lbm.evidence.v1.MsgSubmitEvidence)
+    - [MsgSubmitEvidenceResponse](#lbm.evidence.v1.MsgSubmitEvidenceResponse)
+  
+    - [Msg](#lbm.evidence.v1.Msg)
+  
+- [lbm/feegrant/v1/feegrant.proto](#lbm/feegrant/v1/feegrant.proto)
+    - [AllowedMsgAllowance](#lbm.feegrant.v1.AllowedMsgAllowance)
+    - [BasicAllowance](#lbm.feegrant.v1.BasicAllowance)
+    - [Grant](#lbm.feegrant.v1.Grant)
+    - [PeriodicAllowance](#lbm.feegrant.v1.PeriodicAllowance)
+  
+- [lbm/feegrant/v1/genesis.proto](#lbm/feegrant/v1/genesis.proto)
+    - [GenesisState](#lbm.feegrant.v1.GenesisState)
+  
+- [lbm/feegrant/v1/query.proto](#lbm/feegrant/v1/query.proto)
+    - [QueryAllowanceRequest](#lbm.feegrant.v1.QueryAllowanceRequest)
+    - [QueryAllowanceResponse](#lbm.feegrant.v1.QueryAllowanceResponse)
+    - [QueryAllowancesRequest](#lbm.feegrant.v1.QueryAllowancesRequest)
+    - [QueryAllowancesResponse](#lbm.feegrant.v1.QueryAllowancesResponse)
+  
+    - [Query](#lbm.feegrant.v1.Query)
+  
+- [lbm/feegrant/v1/tx.proto](#lbm/feegrant/v1/tx.proto)
+    - [MsgGrantAllowance](#lbm.feegrant.v1.MsgGrantAllowance)
+    - [MsgGrantAllowanceResponse](#lbm.feegrant.v1.MsgGrantAllowanceResponse)
+    - [MsgRevokeAllowance](#lbm.feegrant.v1.MsgRevokeAllowance)
+    - [MsgRevokeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeAllowanceResponse)
+  
+    - [Msg](#lbm.feegrant.v1.Msg)
+  
+>>>>>>> d82d65ced (feat: define proto for x/collection)
 - [lbm/foundation/v1/authz.proto](#lbm/foundation/v1/authz.proto)
     - [ReceiveFromTreasuryAuthorization](#lbm.foundation.v1.ReceiveFromTreasuryAuthorization)
   
@@ -11955,6 +12316,5128 @@ Service defines the gRPC querier service for ostracon queries.
 
 
 
+<<<<<<< HEAD
+=======
+<a name="lbm/base/reflection/v1/reflection.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/base/reflection/v1/reflection.proto
+
+
+
+<a name="lbm.base.reflection.v1.ListAllInterfacesRequest"></a>
+
+### ListAllInterfacesRequest
+ListAllInterfacesRequest is the request type of the ListAllInterfaces RPC.
+
+
+
+
+
+
+<a name="lbm.base.reflection.v1.ListAllInterfacesResponse"></a>
+
+### ListAllInterfacesResponse
+ListAllInterfacesResponse is the response type of the ListAllInterfaces RPC.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `interface_names` | [string](#string) | repeated | interface_names is an array of all the registered interfaces. |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v1.ListImplementationsRequest"></a>
+
+### ListImplementationsRequest
+ListImplementationsRequest is the request type of the ListImplementations
+RPC.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `interface_name` | [string](#string) |  | interface_name defines the interface to query the implementations for. |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v1.ListImplementationsResponse"></a>
+
+### ListImplementationsResponse
+ListImplementationsResponse is the response type of the ListImplementations
+RPC.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `implementation_message_names` | [string](#string) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.base.reflection.v1.ReflectionService"></a>
+
+### ReflectionService
+ReflectionService defines a service for interface reflection.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `ListAllInterfaces` | [ListAllInterfacesRequest](#lbm.base.reflection.v1.ListAllInterfacesRequest) | [ListAllInterfacesResponse](#lbm.base.reflection.v1.ListAllInterfacesResponse) | ListAllInterfaces lists all the interfaces registered in the interface registry. | GET|/lbm/base/reflection/v1/interfaces|
+| `ListImplementations` | [ListImplementationsRequest](#lbm.base.reflection.v1.ListImplementationsRequest) | [ListImplementationsResponse](#lbm.base.reflection.v1.ListImplementationsResponse) | ListImplementations list all the concrete types that implement a given interface. | GET|/lbm/base/reflection/v1/interfaces/{interface_name}/implementations|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/base/reflection/v2/reflection.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/base/reflection/v2/reflection.proto
+Since: cosmos-sdk 0.43
+
+
+<a name="lbm.base.reflection.v2.AppDescriptor"></a>
+
+### AppDescriptor
+AppDescriptor describes a cosmos-sdk based application
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authn` | [AuthnDescriptor](#lbm.base.reflection.v2.AuthnDescriptor) |  | AuthnDescriptor provides information on how to authenticate transactions on the application NOTE: experimental and subject to change in future releases. |
+| `chain` | [ChainDescriptor](#lbm.base.reflection.v2.ChainDescriptor) |  | chain provides the chain descriptor |
+| `codec` | [CodecDescriptor](#lbm.base.reflection.v2.CodecDescriptor) |  | codec provides metadata information regarding codec related types |
+| `configuration` | [ConfigurationDescriptor](#lbm.base.reflection.v2.ConfigurationDescriptor) |  | configuration provides metadata information regarding the sdk.Config type |
+| `query_services` | [QueryServicesDescriptor](#lbm.base.reflection.v2.QueryServicesDescriptor) |  | query_services provides metadata information regarding the available queriable endpoints |
+| `tx` | [TxDescriptor](#lbm.base.reflection.v2.TxDescriptor) |  | tx provides metadata information regarding how to send transactions to the given application |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.AuthnDescriptor"></a>
+
+### AuthnDescriptor
+AuthnDescriptor provides information on how to sign transactions without relying
+on the online RPCs GetTxMetadata and CombineUnsignedTxAndSignatures
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sign_modes` | [SigningModeDescriptor](#lbm.base.reflection.v2.SigningModeDescriptor) | repeated | sign_modes defines the supported signature algorithm |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.ChainDescriptor"></a>
+
+### ChainDescriptor
+ChainDescriptor describes chain information of the application
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  | id is the chain id |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.CodecDescriptor"></a>
+
+### CodecDescriptor
+CodecDescriptor describes the registered interfaces and provides metadata information on the types
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `interfaces` | [InterfaceDescriptor](#lbm.base.reflection.v2.InterfaceDescriptor) | repeated | interfaces is a list of the registerted interfaces descriptors |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.ConfigurationDescriptor"></a>
+
+### ConfigurationDescriptor
+ConfigurationDescriptor contains metadata information on the sdk.Config
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bech32_account_address_prefix` | [string](#string) |  | bech32_account_address_prefix is the account address prefix |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetAuthnDescriptorRequest"></a>
+
+### GetAuthnDescriptorRequest
+GetAuthnDescriptorRequest is the request used for the GetAuthnDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetAuthnDescriptorResponse"></a>
+
+### GetAuthnDescriptorResponse
+GetAuthnDescriptorResponse is the response returned by the GetAuthnDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authn` | [AuthnDescriptor](#lbm.base.reflection.v2.AuthnDescriptor) |  | authn describes how to authenticate to the application when sending transactions |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetChainDescriptorRequest"></a>
+
+### GetChainDescriptorRequest
+GetChainDescriptorRequest is the request used for the GetChainDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetChainDescriptorResponse"></a>
+
+### GetChainDescriptorResponse
+GetChainDescriptorResponse is the response returned by the GetChainDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `chain` | [ChainDescriptor](#lbm.base.reflection.v2.ChainDescriptor) |  | chain describes application chain information |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetCodecDescriptorRequest"></a>
+
+### GetCodecDescriptorRequest
+GetCodecDescriptorRequest is the request used for the GetCodecDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetCodecDescriptorResponse"></a>
+
+### GetCodecDescriptorResponse
+GetCodecDescriptorResponse is the response returned by the GetCodecDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `codec` | [CodecDescriptor](#lbm.base.reflection.v2.CodecDescriptor) |  | codec describes the application codec such as registered interfaces and implementations |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetConfigurationDescriptorRequest"></a>
+
+### GetConfigurationDescriptorRequest
+GetConfigurationDescriptorRequest is the request used for the GetConfigurationDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetConfigurationDescriptorResponse"></a>
+
+### GetConfigurationDescriptorResponse
+GetConfigurationDescriptorResponse is the response returned by the GetConfigurationDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `config` | [ConfigurationDescriptor](#lbm.base.reflection.v2.ConfigurationDescriptor) |  | config describes the application's sdk.Config |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetQueryServicesDescriptorRequest"></a>
+
+### GetQueryServicesDescriptorRequest
+GetQueryServicesDescriptorRequest is the request used for the GetQueryServicesDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetQueryServicesDescriptorResponse"></a>
+
+### GetQueryServicesDescriptorResponse
+GetQueryServicesDescriptorResponse is the response returned by the GetQueryServicesDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `queries` | [QueryServicesDescriptor](#lbm.base.reflection.v2.QueryServicesDescriptor) |  | queries provides information on the available queryable services |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetTxDescriptorRequest"></a>
+
+### GetTxDescriptorRequest
+GetTxDescriptorRequest is the request used for the GetTxDescriptor RPC
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.GetTxDescriptorResponse"></a>
+
+### GetTxDescriptorResponse
+GetTxDescriptorResponse is the response returned by the GetTxDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `tx` | [TxDescriptor](#lbm.base.reflection.v2.TxDescriptor) |  | tx provides information on msgs that can be forwarded to the application alongside the accepted transaction protobuf type |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.InterfaceAcceptingMessageDescriptor"></a>
+
+### InterfaceAcceptingMessageDescriptor
+InterfaceAcceptingMessageDescriptor describes a protobuf message which contains
+an interface represented as a google.protobuf.Any
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the type containing the interface |
+| `field_descriptor_names` | [string](#string) | repeated | field_descriptor_names is a list of the protobuf name (not fullname) of the field which contains the interface as google.protobuf.Any (the interface is the same, but it can be in multiple fields of the same proto message) |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.InterfaceDescriptor"></a>
+
+### InterfaceDescriptor
+InterfaceDescriptor describes the implementation of an interface
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the name of the interface |
+| `interface_accepting_messages` | [InterfaceAcceptingMessageDescriptor](#lbm.base.reflection.v2.InterfaceAcceptingMessageDescriptor) | repeated | interface_accepting_messages contains information regarding the proto messages which contain the interface as google.protobuf.Any field |
+| `interface_implementers` | [InterfaceImplementerDescriptor](#lbm.base.reflection.v2.InterfaceImplementerDescriptor) | repeated | interface_implementers is a list of the descriptors of the interface implementers |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.InterfaceImplementerDescriptor"></a>
+
+### InterfaceImplementerDescriptor
+InterfaceImplementerDescriptor describes an interface implementer
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf queryable name of the interface implementer |
+| `type_url` | [string](#string) |  | type_url defines the type URL used when marshalling the type as any this is required so we can provide type safe google.protobuf.Any marshalling and unmarshalling, making sure that we don't accept just 'any' type in our interface fields |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.MsgDescriptor"></a>
+
+### MsgDescriptor
+MsgDescriptor describes a cosmos-sdk message that can be delivered with a transaction
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `msg_type_url` | [string](#string) |  | msg_type_url contains the TypeURL of a sdk.Msg. |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.QueryMethodDescriptor"></a>
+
+### QueryMethodDescriptor
+QueryMethodDescriptor describes a queryable method of a query service
+no other info is provided beside method name and tendermint queryable path
+because it would be redundant with the grpc reflection service
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | name is the protobuf name (not fullname) of the method |
+| `full_query_path` | [string](#string) |  | full_query_path is the path that can be used to query this method via tendermint abci.Query |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.QueryServiceDescriptor"></a>
+
+### QueryServiceDescriptor
+QueryServiceDescriptor describes a cosmos-sdk queryable service
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the service descriptor |
+| `is_module` | [bool](#bool) |  | is_module describes if this service is actually exposed by an application's module |
+| `methods` | [QueryMethodDescriptor](#lbm.base.reflection.v2.QueryMethodDescriptor) | repeated | methods provides a list of query service methods |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.QueryServicesDescriptor"></a>
+
+### QueryServicesDescriptor
+QueryServicesDescriptor contains the list of cosmos-sdk queriable services
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `query_services` | [QueryServiceDescriptor](#lbm.base.reflection.v2.QueryServiceDescriptor) | repeated | query_services is a list of cosmos-sdk QueryServiceDescriptor |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.SigningModeDescriptor"></a>
+
+### SigningModeDescriptor
+SigningModeDescriptor provides information on a signing flow of the application
+NOTE(fdymylja): here we could go as far as providing an entire flow on how
+to sign a message given a SigningModeDescriptor, but it's better to think about
+this another time
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | name defines the unique name of the signing mode |
+| `number` | [int32](#int32) |  | number is the unique int32 identifier for the sign_mode enum |
+| `authn_info_provider_method_fullname` | [string](#string) |  | authn_info_provider_method_fullname defines the fullname of the method to call to get the metadata required to authenticate using the provided sign_modes |
+
+
+
+
+
+
+<a name="lbm.base.reflection.v2.TxDescriptor"></a>
+
+### TxDescriptor
+TxDescriptor describes the accepted transaction type
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the raw transaction type (for instance the tx.Tx type) it is not meant to support polymorphism of transaction types, it is supposed to be used by reflection clients to understand if they can handle a specific transaction type in an application. |
+| `msgs` | [MsgDescriptor](#lbm.base.reflection.v2.MsgDescriptor) | repeated | msgs lists the accepted application messages (sdk.Msg) |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.base.reflection.v2.ReflectionService"></a>
+
+### ReflectionService
+ReflectionService defines a service for application reflection.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `GetAuthnDescriptor` | [GetAuthnDescriptorRequest](#lbm.base.reflection.v2.GetAuthnDescriptorRequest) | [GetAuthnDescriptorResponse](#lbm.base.reflection.v2.GetAuthnDescriptorResponse) | GetAuthnDescriptor returns information on how to authenticate transactions in the application NOTE: this RPC is still experimental and might be subject to breaking changes or removal in future releases of the cosmos-sdk. | GET|/lbm/base/reflection/v1/app_descriptor/authn|
+| `GetChainDescriptor` | [GetChainDescriptorRequest](#lbm.base.reflection.v2.GetChainDescriptorRequest) | [GetChainDescriptorResponse](#lbm.base.reflection.v2.GetChainDescriptorResponse) | GetChainDescriptor returns the description of the chain | GET|/lbm/base/reflection/v1/app_descriptor/chain|
+| `GetCodecDescriptor` | [GetCodecDescriptorRequest](#lbm.base.reflection.v2.GetCodecDescriptorRequest) | [GetCodecDescriptorResponse](#lbm.base.reflection.v2.GetCodecDescriptorResponse) | GetCodecDescriptor returns the descriptor of the codec of the application | GET|/lbm/base/reflection/v1/app_descriptor/codec|
+| `GetConfigurationDescriptor` | [GetConfigurationDescriptorRequest](#lbm.base.reflection.v2.GetConfigurationDescriptorRequest) | [GetConfigurationDescriptorResponse](#lbm.base.reflection.v2.GetConfigurationDescriptorResponse) | GetConfigurationDescriptor returns the descriptor for the sdk.Config of the application | GET|/lbm/base/reflection/v1/app_descriptor/configuration|
+| `GetQueryServicesDescriptor` | [GetQueryServicesDescriptorRequest](#lbm.base.reflection.v2.GetQueryServicesDescriptorRequest) | [GetQueryServicesDescriptorResponse](#lbm.base.reflection.v2.GetQueryServicesDescriptorResponse) | GetQueryServicesDescriptor returns the available gRPC queryable services of the application | GET|/lbm/base/reflection/v1/app_descriptor/query_services|
+| `GetTxDescriptor` | [GetTxDescriptorRequest](#lbm.base.reflection.v2.GetTxDescriptorRequest) | [GetTxDescriptorResponse](#lbm.base.reflection.v2.GetTxDescriptorResponse) | GetTxDescriptor returns information on the used transaction object and available msgs that can be used | GET|/lbm/base/reflection/v1/app_descriptor/tx_descriptor|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/base/snapshots/v1/snapshot.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/base/snapshots/v1/snapshot.proto
+
+
+
+<a name="lbm.base.snapshots.v1.Metadata"></a>
+
+### Metadata
+Metadata contains SDK-specific snapshot metadata.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `chunk_hashes` | [bytes](#bytes) | repeated | SHA-256 chunk hashes |
+
+
+
+
+
+
+<a name="lbm.base.snapshots.v1.Snapshot"></a>
+
+### Snapshot
+Snapshot contains Tendermint state sync snapshot info.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `height` | [uint64](#uint64) |  |  |
+| `format` | [uint32](#uint32) |  |  |
+| `chunks` | [uint32](#uint32) |  |  |
+| `hash` | [bytes](#bytes) |  |  |
+| `metadata` | [Metadata](#lbm.base.snapshots.v1.Metadata) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/base/store/v1/commit_info.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/base/store/v1/commit_info.proto
+
+
+
+<a name="lbm.base.store.v1.CommitID"></a>
+
+### CommitID
+CommitID defines the committment information when a specific store is
+committed.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `version` | [int64](#int64) |  |  |
+| `hash` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="lbm.base.store.v1.CommitInfo"></a>
+
+### CommitInfo
+CommitInfo defines commit information used by the multi-store when committing
+a version/height.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `version` | [int64](#int64) |  |  |
+| `store_infos` | [StoreInfo](#lbm.base.store.v1.StoreInfo) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.base.store.v1.StoreInfo"></a>
+
+### StoreInfo
+StoreInfo defines store-specific commit information. It contains a reference
+between a store name and the commit ID.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  |  |
+| `commit_id` | [CommitID](#lbm.base.store.v1.CommitID) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/base/store/v1/listening.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/base/store/v1/listening.proto
+
+
+
+<a name="lbm.base.store.v1.StoreKVPair"></a>
+
+### StoreKVPair
+StoreKVPair is a KVStore KVPair used for listening to state changes (Sets and Deletes)
+It optionally includes the StoreKey for the originating KVStore and a Boolean flag to distinguish between Sets and
+Deletes
+
+Since: cosmos-sdk 0.43
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `store_key` | [string](#string) |  | the store key for the KVStore this pair originates from |
+| `delete` | [bool](#bool) |  | true indicates a delete operation, false indicates a set operation |
+| `key` | [bytes](#bytes) |  |  |
+| `value` | [bytes](#bytes) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/base/store/v1/snapshot.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/base/store/v1/snapshot.proto
+
+
+
+<a name="lbm.base.store.v1.SnapshotIAVLItem"></a>
+
+### SnapshotIAVLItem
+SnapshotIAVLItem is an exported IAVL node.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+| `value` | [bytes](#bytes) |  |  |
+| `version` | [int64](#int64) |  |  |
+| `height` | [int32](#int32) |  |  |
+
+
+
+
+
+
+<a name="lbm.base.store.v1.SnapshotItem"></a>
+
+### SnapshotItem
+SnapshotItem is an item contained in a rootmulti.Store snapshot.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `store` | [SnapshotStoreItem](#lbm.base.store.v1.SnapshotStoreItem) |  |  |
+| `iavl` | [SnapshotIAVLItem](#lbm.base.store.v1.SnapshotIAVLItem) |  |  |
+
+
+
+
+
+
+<a name="lbm.base.store.v1.SnapshotStoreItem"></a>
+
+### SnapshotStoreItem
+SnapshotStoreItem contains metadata about a snapshotted store.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/capability/v1/capability.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/capability/v1/capability.proto
+
+
+
+<a name="lbm.capability.v1.Capability"></a>
+
+### Capability
+Capability defines an implementation of an object capability. The index
+provided to a Capability must be globally unique.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `index` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="lbm.capability.v1.CapabilityOwners"></a>
+
+### CapabilityOwners
+CapabilityOwners defines a set of owners of a single Capability. The set of
+owners must be unique.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owners` | [Owner](#lbm.capability.v1.Owner) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.capability.v1.Owner"></a>
+
+### Owner
+Owner defines a single capability owner. An owner is defined by the name of
+capability and the module name.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `module` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/capability/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/capability/v1/genesis.proto
+
+
+
+<a name="lbm.capability.v1.GenesisOwners"></a>
+
+### GenesisOwners
+GenesisOwners defines the capability owners with their corresponding index.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `index` | [uint64](#uint64) |  | index is the index of the capability owner. |
+| `index_owners` | [CapabilityOwners](#lbm.capability.v1.CapabilityOwners) |  | index_owners are the owners at the given index. |
+
+
+
+
+
+
+<a name="lbm.capability.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the capability module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `index` | [uint64](#uint64) |  | index is the capability global index. |
+| `owners` | [GenesisOwners](#lbm.capability.v1.GenesisOwners) | repeated | owners represents a map from index to owners of the capability index index key is string to allow amino marshalling. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/collection/v1/collection.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/collection/v1/collection.proto
+
+
+
+<a name="lbm.collection.v1.Authorization"></a>
+
+### Authorization
+Authorization defines an authorization given to the operator on tokens of the holder.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `holder` | [string](#string) |  | address of the holder which authorizes the manipulation of its tokens. |
+| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.Coin"></a>
+
+### Coin
+Coin defines a token with a token id and an amount.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `token_id` | [string](#string) |  | token id associated with the token. |
+| `amount` | [string](#string) |  | amount of the token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.Contract"></a>
+
+### Contract
+Contract defines the information of the contract for the collection.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract_id defines the unique identifier of the contract. |
+| `name` | [string](#string) |  | name defines the human-readable name of the contract. |
+| `meta` | [string](#string) |  | meta is a brief description of the contract. |
+| `base_img_uri` | [string](#string) |  | base img uri is an uri for the contract image stored off chain. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.FTClass"></a>
+
+### FTClass
+FTClass defines the class of fungible token.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `id` | [string](#string) |  | id defines the unique identifier of the token class. NOTE: the token id of its token is identical to its class id. |
+| `name` | [string](#string) |  | name defines the human-readable name of the token class. |
+| `meta` | [string](#string) |  | meta is a brief description of the token class. |
+| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
+| `mintable` | [bool](#bool) |  | mintable represents whether the token class is allowed to mint or burn its tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.Fungible"></a>
+
+### Fungible
+Fungible defines the information of fungible token.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id defines the unique identifier of the fungible token. |
+| `name` | [string](#string) |  | name defines the human-readable name of the fungible token. |
+| `meta` | [string](#string) |  | meta is a brief description of the fungible token. |
+| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
+| `mintable` | [bool](#bool) |  | mintable represents whether the fungible token is allowed to be minted or burnt. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.Grant"></a>
+
+### Grant
+Grant defines permission given to a grantee.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `grantee` | [string](#string) |  | address of the grantee. |
+| `permission` | [string](#string) |  | permission on the contract. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.NFT"></a>
+
+### NFT
+NFT defines the information of non-fungible token.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | id defines the unique identifier of the token. |
+| `name` | [string](#string) |  | name defines the human-readable name of the token. |
+| `meta` | [string](#string) |  | meta is a brief description of the token. |
+| `owner` | [string](#string) |  | owner of the token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.NFTClass"></a>
+
+### NFTClass
+NFTClass defines the class of non-fungible token.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `id` | [string](#string) |  | id defines the unique identifier of the token class. |
+| `name` | [string](#string) |  | name defines the human-readable name of the token class. |
+| `meta` | [string](#string) |  | meta is a brief description of the token class. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.Pair"></a>
+
+### Pair
+Pair defines a key-value pair.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `field` | [string](#string) |  |  |
+| `value` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.collection.v1.Params"></a>
+
+### Params
+Params defines the parameters for the collection module.
+
+
+
+
+
+
+<a name="lbm.collection.v1.TokenType"></a>
+
+### TokenType
+TokenType defines the information of token type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_type` | [string](#string) |  | token type defines the unique identifier of the token type. |
+| `name` | [string](#string) |  | name defines the human-readable name of the token type. |
+| `meta` | [string](#string) |  | meta is a brief description of the token type. |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="lbm.collection.v1.Permission"></a>
+
+### Permission
+Permission enumerates the valid permissions on a contract.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| unspecified | 0 | unspecified defines the default permission which is invalid. |
+| issue | 1 | issue defines a permission to create a token class. |
+| modify | 2 | modify defines a permission to modify a contract. |
+| mint | 3 | mint defines a permission to mint tokens of a contract. |
+| burn | 4 | burn defines a permission to burn tokens of a contract. |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/collection/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/collection/v1/event.proto
+
+
+
+<a name="lbm.collection.v1.EventAbandon"></a>
+
+### EventAbandon
+EventAbandon is emitted on Msg/Abandon.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
+| `permission` | [string](#string) |  | permission on the contract. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventAuthorizedOperator"></a>
+
+### EventAuthorizedOperator
+EventAuthorizedOperator is emitted on Msg/AuthorizeOperator.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `holder` | [string](#string) |  | address of the token holder. |
+| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventBurned"></a>
+
+### EventBurned
+EventBurned is emitted on Msg/Burn and Msg/OperatorBurn.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address of the operator. |
+| `from` | [string](#string) |  | address of the token holder. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of burnt token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventGrant"></a>
+
+### EventGrant
+EventGrant is emitted on Msg/Grant.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `granter` | [string](#string) |  | address of the granter. |
+| `grantee` | [string](#string) |  | address of the grantee. |
+| `permission` | [string](#string) |  | permission on the contract. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventIssue"></a>
+
+### EventIssue
+EventIssue is emitted on Msg/Issue.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `name` | [string](#string) |  | name defines the human-readable name of the token class. |
+| `symbol` | [string](#string) |  | symbol is an abbreviated name for token class. |
+| `uri` | [string](#string) |  | uri for the resource of the token class stored off chain. |
+| `meta` | [string](#string) |  | meta is a brief description of token class. |
+| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
+| `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventMinted"></a>
+
+### EventMinted
+EventMinted is emitted on Msg/MintFT and Msg/MintNFT.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address of the operator. |
+| `to` | [string](#string) |  | the address to send minted tokens to. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of minted tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventModified"></a>
+
+### EventModified
+EventModified is emitted on Msg/Modify.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address of the operator. |
+| `changes` | [Pair](#lbm.collection.v1.Pair) | repeated | changes on metadata. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventReceived"></a>
+
+### EventReceived
+EventReceived is emitted on token receipt.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `receiver` | [string](#string) |  |  |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventRevokedOperator"></a>
+
+### EventRevokedOperator
+EventRevokedOperator is emitted on Msg/RevokeOperator.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `holder` | [string](#string) |  | address of the token holder of the authorization. |
+| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventSent"></a>
+
+### EventSent
+EventSent is emitted on Msg/Send and Msg/OperatorSend.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address of the operator. |
+| `from` | [string](#string) |  | address which the transfer is from. |
+| `to` | [string](#string) |  | address which the transfer is to. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of coins of the transfer. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventSpent"></a>
+
+### EventSpent
+EventSpent is emitted on token spend.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `spender` | [string](#string) |  |  |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="lbm.collection.v1.AttributeKey"></a>
+
+### AttributeKey
+AttributeKey enumerates the valid attribute keys on x/collection.
+For the legacy events.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| unspecified | 0 |  |
+| name | 1 |  |
+| meta | 2 |  |
+| contract_id | 3 |  |
+| token_id | 4 |  |
+| owner | 5 |  |
+| amount | 6 |  |
+| decimals | 7 |  |
+| base_img_uri | 8 |  |
+| mintable | 9 |  |
+| token_type | 10 |  |
+| from | 11 |  |
+| to | 12 |  |
+| perm | 13 |  |
+| to_token_id | 14 |  |
+| FromTokenID | 15 |  |
+| Approver | 16 |  |
+| Proxy | 17 |  |
+| old_root_token_id | 18 |  |
+| new_root_token_id | 19 |  |
+
+
+
+<a name="lbm.collection.v1.EventType"></a>
+
+### EventType
+EventType enumerates the valid event types on x/collection.
+For the legacy events.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| unspecified | 0 |  |
+| create_collection | 1 |  |
+| issue_ft | 2 |  |
+| issue_nft | 3 |  |
+| mint_ft | 4 |  |
+| burn_ft | 5 |  |
+| mint_nft | 6 |  |
+| burn_nft | 7 |  |
+| burn_ft_from | 8 |  |
+| burn_nft_from | 9 |  |
+| modify_collection | 10 |  |
+| modify_token_type | 11 |  |
+| modify_token | 12 |  |
+| transfer | 13 |  |
+| transfer_ft | 14 |  |
+| transfer_nft | 15 |  |
+| transfer_ft_from | 16 |  |
+| transfer_nft_from | 17 |  |
+| grant_perm | 18 |  |
+| revoke_perm | 19 |  |
+| attach | 20 |  |
+| detach | 21 |  |
+| attach_from | 22 |  |
+| detach_from | 23 |  |
+| approve_collection | 24 |  |
+| disapprove_collection | 25 |  |
+| operation_transfer_nft | 26 |  |
+| operation_burn_nft | 27 |  |
+| operation_root_changed | 28 |  |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/collection/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/collection/v1/genesis.proto
+
+
+
+<a name="lbm.collection.v1.Balance"></a>
+
+### Balance
+Balance defines a balance of an address.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.collection.v1.ClassGenesisState"></a>
+
+### ClassGenesisState
+ClassGenesisState defines the classs keeper's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nonce` | [string](#string) |  | nonce is the next class nonce to issue. |
+| `ids` | [string](#string) | repeated | ids represents the issued ids. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.ClassStatistics"></a>
+
+### ClassStatistics
+ClassStatistics defines statistics belong to a token class.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  | class id associated with the token class. |
+| `amount` | [string](#string) |  | statistics |
+
+
+
+
+
+
+<a name="lbm.collection.v1.ContractAuthorizations"></a>
+
+### ContractAuthorizations
+ContractAuthorizations defines authorizations belong to a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `authorizations` | [Authorization](#lbm.collection.v1.Authorization) | repeated | authorizations |
+
+
+
+
+
+
+<a name="lbm.collection.v1.ContractBalances"></a>
+
+### ContractBalances
+ContractBalances defines balances belong to a contract.
+genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `balances` | [Balance](#lbm.collection.v1.Balance) | repeated | balances |
+
+
+
+
+
+
+<a name="lbm.collection.v1.ContractClasses"></a>
+
+### ContractClasses
+ContractClasses defines token classes belong to a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `classes` | [google.protobuf.Any](#google.protobuf.Any) | repeated | classes |
+
+
+
+
+
+
+<a name="lbm.collection.v1.ContractGrants"></a>
+
+### ContractGrants
+ContractGrant defines grants belong to a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `grants` | [Grant](#lbm.collection.v1.Grant) | repeated | grants |
+
+
+
+
+
+
+<a name="lbm.collection.v1.ContractStatistics"></a>
+
+### ContractStatistics
+ContractStatistics defines statistics belong to a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `statistics` | [ClassStatistics](#lbm.collection.v1.ClassStatistics) | repeated | statistics |
+
+
+
+
+
+
+<a name="lbm.collection.v1.ContractTokenRelations"></a>
+
+### ContractTokenRelations
+ContractTokenRelations defines token relations belong to a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `relations` | [TokenRelation](#lbm.collection.v1.TokenRelation) | repeated | relations |
+
+
+
+
+
+
+<a name="lbm.collection.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the collection module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.collection.v1.Params) |  | params defines all the paramaters of the module. |
+| `contracts` | [Contract](#lbm.collection.v1.Contract) | repeated | contracts defines the metadata of the contracts. |
+| `classes` | [ContractClasses](#lbm.collection.v1.ContractClasses) | repeated | classes defines the metadata of the tokens. |
+| `balances` | [ContractBalances](#lbm.collection.v1.ContractBalances) | repeated | balances is an array containing the balances of all the accounts. |
+| `parents` | [ContractTokenRelations](#lbm.collection.v1.ContractTokenRelations) | repeated | parents represents the parents of (non-fungible) tokens. |
+| `grants` | [ContractGrants](#lbm.collection.v1.ContractGrants) | repeated | grants defines the grant information. |
+| `authorizations` | [ContractAuthorizations](#lbm.collection.v1.ContractAuthorizations) | repeated | authorizations defines the approve information. |
+| `supplies` | [ContractStatistics](#lbm.collection.v1.ContractStatistics) | repeated | supplies represents the total supplies of tokens. |
+| `burnts` | [ContractStatistics](#lbm.collection.v1.ContractStatistics) | repeated | burnts represents the total amount of burnt tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.NextClassIDs"></a>
+
+### NextClassIDs
+NextClassIDs defines the next class ids of the contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `fungible` | [string](#string) |  | id for the fungible tokens. |
+| `non_fungible` | [string](#string) |  | id for the non-fungible tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.TokenRelation"></a>
+
+### TokenRelation
+TokenRelation defines relations between two tokens.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `self` | [string](#string) |  | self |
+| `other` | [string](#string) |  | other |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/collection/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/collection/v1/query.proto
+
+
+
+<a name="lbm.collection.v1.QueryAllBalancesRequest"></a>
+
+### QueryAllBalancesRequest
+QueryAllBalancesRequest is the request type for the Query/AllBalances RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `address` | [string](#string) |  | address is the address to query the balances for. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryAllBalancesResponse"></a>
+
+### QueryAllBalancesResponse
+QueryAllBalancesResponse is the response type for the Query/AllBalances RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `balances` | [Coin](#lbm.collection.v1.Coin) | repeated | balances is the balalces of all the tokens. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryApprovedRequest"></a>
+
+### QueryApprovedRequest
+QueryApprovedRequest is the request type for the Query/Approved RPC method.
+NOTE: deprecated (use QueryAuthorizationRequest)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `address` | [string](#string) |  | the address of the operator. |
+| `approver` | [string](#string) |  | the address of the token holder. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryApprovedResponse"></a>
+
+### QueryApprovedResponse
+QueryApprovedResponse is the response type for the Query/Approved RPC method.
+NOTE: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `approved` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryApproversRequest"></a>
+
+### QueryApproversRequest
+QueryApproversRequest is the request type for the Query/Approvers RPC method.
+NOTE: deprecated (use QueryOperatorAuthorizations)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `address` | [string](#string) |  | address of the operator. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryApproversResponse"></a>
+
+### QueryApproversResponse
+QueryApproversResponse is the response type for the Query/Approvers RPC method.
+NOTE: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `approvers` | [string](#string) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryAuthorizationRequest"></a>
+
+### QueryAuthorizationRequest
+QueryAuthorizationRequest is the request type for the Query/Authorization RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | the address of the operator. |
+| `holder` | [string](#string) |  | the address of the token holder. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryAuthorizationResponse"></a>
+
+### QueryAuthorizationResponse
+QueryAuthorizationResponse is the response type for the Query/Authorization RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authorization` | [Authorization](#lbm.collection.v1.Authorization) |  | if no authorization found for the request, it would be nil. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryBalanceRequest"></a>
+
+### QueryBalanceRequest
+QueryBalanceRequest is the request type for the Query/Balance RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `address` | [string](#string) |  | address is the address to query the balance for. |
+| `token_id` | [string](#string) |  | token id associated with the token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryBalanceResponse"></a>
+
+### QueryBalanceResponse
+QueryBalanceResponse is the response type for the Query/Balance RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `balance` | [Coin](#lbm.collection.v1.Coin) |  | balance is the balance of the token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryBurntRequest"></a>
+
+### QueryBurntRequest
+QueryBurntRequest is the request type for the Query/Burnt RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `class_id` | [string](#string) |  | class id associated with the token class. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryBurntResponse"></a>
+
+### QueryBurntResponse
+QueryBurntResponse is the response type for the Query/Burnt RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `burnt` | [string](#string) |  | burnt is the amount of the burnt tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryChildrenRequest"></a>
+
+### QueryChildrenRequest
+QueryChildrenRequest is the request type for the Query/Children RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id associated with the non-fungible token. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryChildrenResponse"></a>
+
+### QueryChildrenResponse
+QueryChildrenResponse is the response type for the Query/Children RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `children` | [NFT](#lbm.collection.v1.NFT) | repeated | children is the information of the child tokens. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryContractRequest"></a>
+
+### QueryContractRequest
+QueryContractRequest is the request type for the Query/Contract RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryContractResponse"></a>
+
+### QueryContractResponse
+QueryContractResponse is the response type for the Query/Contract RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract` | [Contract](#lbm.collection.v1.Contract) |  | contract is the information of the contract. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryContractsRequest"></a>
+
+### QueryContractsRequest
+QueryContractsRequest is the request type for the Query/Contracts RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryContractsResponse"></a>
+
+### QueryContractsResponse
+QueryContractsResponse is the response type for the Query/Contracts RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contracts` | [Contract](#lbm.collection.v1.Contract) | repeated | contracts is the informations of all the contracts. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryFTBurntRequest"></a>
+
+### QueryFTBurntRequest
+QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
+NOTE: deprecated (use QueryBurntRequest)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id associated with the fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryFTBurntResponse"></a>
+
+### QueryFTBurntResponse
+QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
+NOTE: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `burnt` | [string](#string) |  | burnt is the amount of the burnt tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryFTMintedRequest"></a>
+
+### QueryFTMintedRequest
+QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
+NOTE: deprecated (use QueryMintedRequest)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id associated with the fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryFTMintedResponse"></a>
+
+### QueryFTMintedResponse
+QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
+NOTE: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `minted` | [string](#string) |  | minted is the amount of the minted tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryFTRequest"></a>
+
+### QueryFTRequest
+QueryFTRequest is the request type for the Query/FT RPC method.
+NOTE: deprecated (use QueryTokenClassRequest)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id associated with the fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryFTResponse"></a>
+
+### QueryFTResponse
+QueryFTResponse is the response type for the Query/FT RPC method.
+NOTE: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `token` | [Fungible](#lbm.collection.v1.Fungible) |  | token is the information of the fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryFTSupplyRequest"></a>
+
+### QueryFTSupplyRequest
+QueryFTSupplyRequest is the request type for the Query/FTSupply RPC method.
+NOTE: deprecated (use QuerySupplyRequest)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id associated with the fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryFTSupplyResponse"></a>
+
+### QueryFTSupplyResponse
+QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
+NOTE: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `supply` | [string](#string) |  | supply is the supply of the tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryGrantRequest"></a>
+
+### QueryGrantRequest
+QueryGrantRequest is the request type for the Query/Grant RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `grantee` | [string](#string) |  | the address of the grantee. |
+| `permission` | [string](#string) |  | permission on the contract. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryGrantResponse"></a>
+
+### QueryGrantResponse
+QueryGrantResponse is the response type for the Query/Grant RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grant` | [Grant](#lbm.collection.v1.Grant) |  | if no grant found for the request, it would be nil and return an error. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryGranteeGrantsRequest"></a>
+
+### QueryGranteeGrantsRequest
+QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `grantee` | [string](#string) |  | the address of the grantee. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryGranteeGrantsResponse"></a>
+
+### QueryGranteeGrantsResponse
+QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grants` | [Grant](#lbm.collection.v1.Grant) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryMintedRequest"></a>
+
+### QueryMintedRequest
+QueryMintedRequest is the request type for the Query/Minted RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `class_id` | [string](#string) |  | class id associated with the token class. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryMintedResponse"></a>
+
+### QueryMintedResponse
+QueryMintedResponse is the response type for the Query/Minted RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `minted` | [string](#string) |  | minted is the amount of the minted tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryNFTBurntRequest"></a>
+
+### QueryNFTBurntRequest
+QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
+NOTE: deprecated (use QueryBurntRequest)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_type` | [string](#string) |  | token type associated with the token type. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryNFTBurntResponse"></a>
+
+### QueryNFTBurntResponse
+QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
+NOTE: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `burnt` | [string](#string) |  | burnt is the amount of the burnt tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryNFTMintedRequest"></a>
+
+### QueryNFTMintedRequest
+QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
+NOTE: deprecated (use QueryMintedRequest)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_type` | [string](#string) |  | token type associated with the token type. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryNFTMintedResponse"></a>
+
+### QueryNFTMintedResponse
+QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC method.
+NOTE: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `minted` | [string](#string) |  | minted is the amount of minted tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryNFTRequest"></a>
+
+### QueryNFTRequest
+QueryNFTRequest is the request type for the Query/NFT RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id associated with the non-fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryNFTResponse"></a>
+
+### QueryNFTResponse
+QueryNFTResponse is the response type for the Query/NFT RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `token` | [NFT](#lbm.collection.v1.NFT) |  | token is the information of the non-fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryNFTSupplyRequest"></a>
+
+### QueryNFTSupplyRequest
+QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
+NOTE: deprecated (use QuerySupplyRequest)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_type` | [string](#string) |  | token type associated with the token type. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryNFTSupplyResponse"></a>
+
+### QueryNFTSupplyResponse
+QueryNFTSupplyResponse is the response type for the Query/NFTSupply RPC method.
+NOTE: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `supply` | [string](#string) |  | supply is the supply of the non-fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryNFTsRequest"></a>
+
+### QueryNFTsRequest
+QueryNFTsRequest is the request type for the Query/NFTs RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryNFTsResponse"></a>
+
+### QueryNFTsResponse
+QueryNFTsResponse is the response type for the Query/NFTs RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `token` | [NFT](#lbm.collection.v1.NFT) | repeated | token is the information of the non-fungible token. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryOperatorAuthorizationsRequest"></a>
+
+### QueryOperatorAuthorizationsRequest
+QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAuthorizations RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address of the operator. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryOperatorAuthorizationsResponse"></a>
+
+### QueryOperatorAuthorizationsResponse
+QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authorizations` | [Authorization](#lbm.collection.v1.Authorization) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryParentRequest"></a>
+
+### QueryParentRequest
+QueryParentRequest is the request type for the Query/Parent RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id associated wit the non-fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryParentResponse"></a>
+
+### QueryParentResponse
+QueryParentResponse is the response type for the Query/Parent RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `parent` | [NFT](#lbm.collection.v1.NFT) |  | parent is the information of the parent token. if there is no parent for the token, it would return nil. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryRootRequest"></a>
+
+### QueryRootRequest
+QueryRootRequest is the request type for the Query/Root RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id associated with the non-fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryRootResponse"></a>
+
+### QueryRootResponse
+QueryRootResponse is the response type for the Query/Root RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `root` | [NFT](#lbm.collection.v1.NFT) |  | root is the information of the root token. it would return itself if it's the root token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QuerySupplyRequest"></a>
+
+### QuerySupplyRequest
+QuerySupplyRequest is the request type for the Query/Supply RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `class_id` | [string](#string) |  | class id associated with the token class. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QuerySupplyResponse"></a>
+
+### QuerySupplyResponse
+QuerySupplyResponse is the response type for the Query/Supply RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `supply` | [string](#string) |  | supply is the supply of the tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryTokenClassRequest"></a>
+
+### QueryTokenClassRequest
+QueryTokenClassRequest is the request type for the Query/TokenClass RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `class_id` | [string](#string) |  | class id associated with the token class. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryTokenClassResponse"></a>
+
+### QueryTokenClassResponse
+QueryTokenClassResponse is the response type for the Query/TokenClass RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class` | [google.protobuf.Any](#google.protobuf.Any) |  | class is the information of the token class. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryTokenClassesRequest"></a>
+
+### QueryTokenClassesRequest
+QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryTokenClassesResponse"></a>
+
+### QueryTokenClassesResponse
+QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `classes` | [google.protobuf.Any](#google.protobuf.Any) | repeated | classes is the informations of all the token classes. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryTokenTypeRequest"></a>
+
+### QueryTokenTypeRequest
+QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
+NOTE: deprecated (use QueryTokenClassRequest)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_type` | [string](#string) |  | token type associated with the token type. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryTokenTypeResponse"></a>
+
+### QueryTokenTypeResponse
+QueryTokenTypeResponse is the response type for the Query/TokenType RPC method.
+NOTE: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `token_type` | [TokenType](#lbm.collection.v1.TokenType) |  | token type is the information of the token type. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryTokenTypesRequest"></a>
+
+### QueryTokenTypesRequest
+QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
+NOTE: deprecated (use QueryTokenClassesRequest)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryTokenTypesResponse"></a>
+
+### QueryTokenTypesResponse
+QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method.
+NOTE: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `token_types` | [TokenType](#lbm.collection.v1.TokenType) | repeated | token types is the informations of all the token types. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryTokensRequest"></a>
+
+### QueryTokensRequest
+QueryTokensRequest is the request type for the Query/Tokens RPC method.
+NOTE: deprecated (use QueryTokenClasses and NFT)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryTokensResponse"></a>
+
+### QueryTokensResponse
+QueryTokensResponse is the response type for the Query/Tokens RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `tokens` | [google.protobuf.Any](#google.protobuf.Any) |  | tokens is the informations of all the tokens. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.collection.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Balance` | [QueryBalanceRequest](#lbm.collection.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.collection.v1.QueryBalanceResponse) | Balance queries the balance of a single token class for a single account. | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}/{token_id}|
+| `AllBalances` | [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.collection.v1.QueryAllBalancesResponse) | AllBalances queries the balance of all token classes for a single account. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}|
+| `Supply` | [QuerySupplyRequest](#lbm.collection.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.collection.v1.QuerySupplyResponse) | Supply queries the number of tokens from a given contract id and class id. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/supply|
+| `Minted` | [QueryMintedRequest](#lbm.collection.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.collection.v1.QueryMintedResponse) | Minted queries the number of minted tokens from a given contract id and class id. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/minted|
+| `Burnt` | [QueryBurntRequest](#lbm.collection.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.collection.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from a given contract id and class id. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/burnt|
+| `FTSupply` | [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest) | [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse) | FTSupply queries the number of tokens from a given contract id and token id. NOTE: deprecated (use Supply) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply|
+| `FTMinted` | [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest) | [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse) | FTMinted queries the number of minted tokens from a given contract id and token id. NOTE: deprecated (use Minted) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted|
+| `FTBurnt` | [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest) | [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse) | FTBurnt queries the number of burnt tokens from a given contract id and token id. NOTE: deprecated (use Burnt) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt|
+| `NFTSupply` | [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest) | [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse) | NFTSupply queries the number of tokens from a given contract id and token type. NOTE: deprecated (use Supply) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply|
+| `NFTMinted` | [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest) | [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse) | NFTMinted queries the number of minted tokens from a given contract id and token type. NOTE: deprecated (use Minted) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted|
+| `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | NFTBurnt queries the number of burnt tokens from a given contract id and token type. NOTE: deprecated (use Burnt) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
+| `Contract` | [QueryContractRequest](#lbm.collection.v1.QueryContractRequest) | [QueryContractResponse](#lbm.collection.v1.QueryContractResponse) | Contract queries a contract metadata based on its contract id. | GET|/lbm/collection/v1/contracts/{contract_id}|
+| `Contracts` | [QueryContractsRequest](#lbm.collection.v1.QueryContractsRequest) | [QueryContractsResponse](#lbm.collection.v1.QueryContractsResponse) | Contracts queries metadata of all contracts. Since: finschia | GET|/lbm/collection/v1/contracts|
+| `TokenClass` | [QueryTokenClassRequest](#lbm.collection.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.collection.v1.QueryTokenClassResponse) | TokenClass queries a metadata of a token class from its class id. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}|
+| `TokenClasses` | [QueryTokenClassesRequest](#lbm.collection.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.collection.v1.QueryTokenClassesResponse) | TokenClasses queries token metadata of all token classes of a contract. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes|
+| `FT` | [QueryFTRequest](#lbm.collection.v1.QueryFTRequest) | [QueryFTResponse](#lbm.collection.v1.QueryFTResponse) | FT queries a metadata of a fungible token from its token id. NOTE: deprecated (use TokenClass) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}|
+| `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. NOTE: deprecated (use TokenClass) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
+| `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. NOTE: deprecated (use TokenClasses) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
+| `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. NOTE: deprecated (use TokenClasses and NFT) | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
+| `NFT` | [QueryNFTRequest](#lbm.collection.v1.QueryNFTRequest) | [QueryNFTResponse](#lbm.collection.v1.QueryNFTResponse) | NFT queries a metadata of a non-fungible token. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}|
+| `NFTs` | [QueryNFTsRequest](#lbm.collection.v1.QueryNFTsRequest) | [QueryNFTsResponse](#lbm.collection.v1.QueryNFTsResponse) | NFTs queries a metadata of all non-fungible tokens. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/nfts|
+| `Root` | [QueryRootRequest](#lbm.collection.v1.QueryRootRequest) | [QueryRootResponse](#lbm.collection.v1.QueryRootResponse) | Root queries the root of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root|
+| `Parent` | [QueryParentRequest](#lbm.collection.v1.QueryParentRequest) | [QueryParentResponse](#lbm.collection.v1.QueryParentResponse) | Parent queries the parent of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent|
+| `Children` | [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest) | [QueryChildrenResponse](#lbm.collection.v1.QueryChildrenResponse) | Children queries the children of a given nft. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children|
+| `Grant` | [QueryGrantRequest](#lbm.collection.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.collection.v1.QueryGrantResponse) | Grant queries a permission on a given grantee. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}/{permission}|
+| `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse) | GranteeGrants queries all permissions on a given grantee. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}|
+| `Authorization` | [QueryAuthorizationRequest](#lbm.collection.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.collection.v1.QueryAuthorizationResponse) | Authorization queries an authorization on a given operator approver pair. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}/{holder}|
+| `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.collection.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.collection.v1.QueryOperatorAuthorizationsResponse) | OperatorAuthorizations queries authorizations on a given operator. Since: finschia | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}|
+| `Approved` | [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse) | Approved queries whether the operator is approved by the approver. NOTE: deprecated (use Authorization) | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}|
+| `Approvers` | [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse) | Approvers queries approvers of a given operator. NOTE: deprecated (use OperatorAuthorizations) | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/collection/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/collection/v1/tx.proto
+
+
+
+<a name="lbm.collection.v1.MintNFTParam"></a>
+
+### MintNFTParam
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `token_type` | [string](#string) |  | token type or class id of the nft. NOTE: it cannot start with zero. |
+| `name` | [string](#string) |  | name defines the human-readable name of the nft (mandatory). |
+| `meta` | [string](#string) |  | meta is a brief description of the nft. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgAbandon"></a>
+
+### MsgAbandon
+MsgAbandon is the Msg/Abandon request type.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `grantee` | [string](#string) |  | address of the grantee which abandons the permission. |
+| `permission` | [string](#string) |  | permission on the contract. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgAbandonResponse"></a>
+
+### MsgAbandonResponse
+MsgAbandonResponse is the Msg/Abandon response type.
+Since: finschia
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgApprove"></a>
+
+### MsgApprove
+MsgApprove is the Msg/Approve request type.
+NOTE: deprecated (use MsgAuthorizeOperator)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `approver` | [string](#string) |  | address of the holder who allows the manipulation of its token. |
+| `proxy` | [string](#string) |  | address which the manipulation is allowed to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgApproveResponse"></a>
+
+### MsgApproveResponse
+MsgApproveResponse is the Msg/Approve response type.
+NOTE: deprecated
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgAttach"></a>
+
+### MsgAttach
+MsgAttach is the Msg/Attach request type.
+TODO: revisit the field names
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `from` | [string](#string) |  | address of the owner of the token. |
+| `token_id` | [string](#string) |  | token id of the token to attach. |
+| `to_token_id` | [string](#string) |  | to token id which one attachs the token to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgAttachFrom"></a>
+
+### MsgAttachFrom
+MsgAttachFrom is the Msg/AttachFrom request type.
+NOTE: deprecated (use MsgOperatorAttach)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `proxy` | [string](#string) |  | address of the operator. |
+| `from` | [string](#string) |  | address of the owner of the token. |
+| `token_id` | [string](#string) |  | token id of the token to attach. |
+| `to_token_id` | [string](#string) |  | to token id which one attachs the token to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgAttachFromResponse"></a>
+
+### MsgAttachFromResponse
+MsgAttachFromResponse is the Msg/AttachFrom response type.
+NOTE: deprecated
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgAttachResponse"></a>
+
+### MsgAttachResponse
+MsgAttachResponse is the Msg/Attach response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgAuthorizeOperator"></a>
+
+### MsgAuthorizeOperator
+MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `holder` | [string](#string) |  | address of the holder who allows the manipulation of its token. |
+| `operator` | [string](#string) |  | address which the manipulation is allowed to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgAuthorizeOperatorResponse"></a>
+
+### MsgAuthorizeOperatorResponse
+MsgAuthorizeOperatorResponse is the Msg/AuthorizeOperator response type.
+Since: finschia
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgBurn"></a>
+
+### MsgBurn
+MsgBurn is the Msg/Burn request type.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. NOTE: it must have the permission for the burn. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgBurnFT"></a>
+
+### MsgBurnFT
+MsgBurnFT is the Msg/BurnFT request type.
+NOTE: deprecated (use MsgBurn)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. NOTE: it must have the permission for the burn. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. NOTE: amount may be empty. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgBurnFTFrom"></a>
+
+### MsgBurnFTFrom
+MsgBurnFTFrom is the Msg/BurnFTFrom request type.
+NOTE: deprecated (use MsgOperatorBurn)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `proxy` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. NOTE: amount may be empty. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgBurnFTFromResponse"></a>
+
+### MsgBurnFTFromResponse
+MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
+NOTE: deprecated
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgBurnFTResponse"></a>
+
+### MsgBurnFTResponse
+MsgBurnFTResponse is the Msg/BurnFT response type.
+NOTE: deprecated
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgBurnNFT"></a>
+
+### MsgBurnNFT
+MsgBurnNFT is the Msg/BurnNFT request type.
+NOTE: deprecated (use MsgBurn)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. NOTE: it must have the permission for the burn. |
+| `token_ids` | [string](#string) | repeated | the token ids to burn. NOTE: id cannot start with zero. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgBurnNFTFrom"></a>
+
+### MsgBurnNFTFrom
+MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
+NOTE: deprecated (use MsgOperatorBurn)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `proxy` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. |
+| `token_ids` | [string](#string) | repeated | the token ids to burn. NOTE: id cannot start with zero. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgBurnNFTFromResponse"></a>
+
+### MsgBurnNFTFromResponse
+MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
+NOTE: deprecated
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgBurnNFTResponse"></a>
+
+### MsgBurnNFTResponse
+MsgBurnNFTResponse is the Msg/BurnNFT response type.
+NOTE: deprecated
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgBurnResponse"></a>
+
+### MsgBurnResponse
+MsgBurnResponse is the Msg/Burn response type.
+Since: finschia
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgCreateContract"></a>
+
+### MsgCreateContract
+MsgCreateContract is the Msg/CreateContract request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | name defines the human-readable name of the contract. |
+| `base_img_uri` | [string](#string) |  | base img uri is an uri for the contract image stored off chain. |
+| `meta` | [string](#string) |  | meta is a brief description of the contract. |
+| `owner` | [string](#string) |  | address which all the permissions on the contract will be granted to (not a permanent property). |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgCreateContractResponse"></a>
+
+### MsgCreateContractResponse
+MsgCreateContractResponse is the Msg/CreateContract response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgDetach"></a>
+
+### MsgDetach
+MsgDetach is the Msg/Detach request type.
+TODO: revisit the field names
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `from` | [string](#string) |  | address of the owner of the token. |
+| `token_id` | [string](#string) |  | token id of the token to detach. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgDetachFrom"></a>
+
+### MsgDetachFrom
+MsgDetachFrom is the Msg/DetachFrom request type.
+NOTE: deprecated (use MsgOperatorDetach)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `proxy` | [string](#string) |  | address of the operator. |
+| `from` | [string](#string) |  | address of the owner of the token. |
+| `token_id` | [string](#string) |  | token id of the token to detach. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgDetachFromResponse"></a>
+
+### MsgDetachFromResponse
+MsgDetachFromResponse is the Msg/DetachFrom response type.
+NOTE: deprecated
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgDetachResponse"></a>
+
+### MsgDetachResponse
+MsgDetachResponse is the Msg/Detach response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgDisapprove"></a>
+
+### MsgDisapprove
+MsgDisapprove is the Msg/Disapprove request type.
+NOTE: deprecated (use MsgRevokeOperator)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `approver` | [string](#string) |  | address of the holder who allows the manipulation of its token. |
+| `proxy` | [string](#string) |  | address which the manipulation is allowed to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgDisapproveResponse"></a>
+
+### MsgDisapproveResponse
+MsgDisapproveResponse is the Msg/Disapprove response type.
+NOTE: deprecated
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgGrant"></a>
+
+### MsgGrant
+MsgGrant is the Msg/Grant request type.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `granter` | [string](#string) |  | address of the granter which must have the permission to give. |
+| `grantee` | [string](#string) |  | address of the grantee. |
+| `permission` | [string](#string) |  | permission on the contract. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgGrantPermission"></a>
+
+### MsgGrantPermission
+MsgGrantPermission is the Msg/GrantPermission request type.
+NOTE: deprecated (use MsgGrant)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `from` | [string](#string) |  | address of the granter which must have the permission to give. |
+| `to` | [string](#string) |  | address of the grantee. |
+| `permission` | [string](#string) |  | permission on the contract. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgGrantPermissionResponse"></a>
+
+### MsgGrantPermissionResponse
+MsgGrantPermissionResponse is the Msg/GrantPermission response type.
+NOTE: deprecated
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgGrantResponse"></a>
+
+### MsgGrantResponse
+MsgGrantResponse is the Msg/Grant response type.
+Since: finschia
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgIssueFT"></a>
+
+### MsgIssueFT
+MsgIssueFT is the Msg/IssueFT request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `name` | [string](#string) |  | name defines the human-readable name of the token class. NOTE: it has an app-specific limit on the length. |
+| `meta` | [string](#string) |  | meta is a brief description of the token class. NOTE: it has an app-specific limit on the length. |
+| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. NOTE: it cannot be negative or greater than 18. |
+| `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to be minted or burnt. NOTE: one cannot set mintable to false, where amount == 1 and decimals == 0. |
+| `owner` | [string](#string) |  | the address of the grantee which must have the permission to issue a token. NOTE: no permissions would be granted on the issuance. |
+| `to` | [string](#string) |  | the address to send the minted tokens to. mandatory. |
+| `amount` | [string](#string) |  | the amount of tokens to mint on the issuance. NOTE: if you provide negative amount, a panic may result. NOTE: amount may be zero. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgIssueFTResponse"></a>
+
+### MsgIssueFTResponse
+MsgIssueFTResponse is the Msg/IssueFT response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgIssueNFT"></a>
+
+### MsgIssueNFT
+MsgIssueNFT is the Msg/IssueNFT request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `name` | [string](#string) |  | name defines the human-readable name of the token class. |
+| `meta` | [string](#string) |  | meta is a brief description of the token class. |
+| `owner` | [string](#string) |  | the address of the grantee which must have the permission to issue a token. NOTE: permissions for mint and burn would be granted on the issuance. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgIssueNFTResponse"></a>
+
+### MsgIssueNFTResponse
+MsgIssueNFTResponse is the Msg/IssueNFT response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgMintFT"></a>
+
+### MsgMintFT
+MsgMintFT is the Msg/MintFT request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `from` | [string](#string) |  | address of the grantee which has the permission for the mint. |
+| `to` | [string](#string) |  | address which the minted tokens will be sent to. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the mint. NOTE: amount may be empty. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgMintFTResponse"></a>
+
+### MsgMintFTResponse
+MsgMintFTResponse is the Msg/MintFT response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgMintNFT"></a>
+
+### MsgMintNFT
+MsgMintNFT is the Msg/MintNFT request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `from` | [string](#string) |  | address of the grantee which has the permission for the mint. |
+| `to` | [string](#string) |  | address which the minted token will be sent to. |
+| `params` | [MintNFTParam](#lbm.collection.v1.MintNFTParam) | repeated | parameters for the minted tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgMintNFTResponse"></a>
+
+### MsgMintNFTResponse
+MsgMintNFTResponse is the Msg/MintNFT response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgModify"></a>
+
+### MsgModify
+MsgModify is the Msg/Modify request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
+| `token_type` | [string](#string) |  | token type of the token. |
+| `token_index` | [string](#string) |  | token index of the token. if index is empty, it would modify the corresponding token type. if index is not empty, it would modify the corresponding nft. NOTE: if token type is of FTs, the index cannot be empty. |
+| `changes` | [Pair](#lbm.collection.v1.Pair) | repeated | changes to apply. on modifying collection: name, base_img_uri, meta. on modifying token type and token: name, meta. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgModifyResponse"></a>
+
+### MsgModifyResponse
+MsgModifyResponse is the Msg/Modify response type.
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorAttach"></a>
+
+### MsgOperatorAttach
+MsgOperatorAttach is the Msg/OperatorAttach request type.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address of the operator. |
+| `owner` | [string](#string) |  | address of the owner of the token. |
+| `id` | [string](#string) |  | token id of the token to attach. |
+| `to` | [string](#string) |  | token id which one attachs the token to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorAttachResponse"></a>
+
+### MsgOperatorAttachResponse
+MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
+Since: finschia
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorBurn"></a>
+
+### MsgOperatorBurn
+MsgOperatorBurn is the Msg/OperatorBurn request type.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address which triggers the burn. NOTE: it must have the permission for the burn. NOTE: it must have been authorized by from. |
+| `from` | [string](#string) |  | address which the tokens will be burnt from. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the burn. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorBurnResponse"></a>
+
+### MsgOperatorBurnResponse
+MsgOperatorBurnResponse is the Msg/OperatorBurn response type.
+Since: finschia
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorDetach"></a>
+
+### MsgOperatorDetach
+MsgOperatorDetach is the Msg/OperatorDetach request type.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address of the operator. |
+| `owner` | [string](#string) |  | address of the holder of the token. |
+| `id` | [string](#string) |  | token id of the token to detach. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorDetachResponse"></a>
+
+### MsgOperatorDetachResponse
+MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
+Since: finschia
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorSend"></a>
+
+### MsgOperatorSend
+MsgOperatorSend is the Msg/OperatorSend request type.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | the address of the operator. |
+| `from` | [string](#string) |  | the address which the transfer is from. |
+| `to` | [string](#string) |  | the address which the transfer is to. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgOperatorSendResponse"></a>
+
+### MsgOperatorSendResponse
+MsgOperatorSendResponse is the Msg/OperatorSend response type.
+Since: finschia
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgRevokeOperator"></a>
+
+### MsgRevokeOperator
+MsgRevokeOperator is the Msg/RevokeOperator request type.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `holder` | [string](#string) |  | address of the holder who allows the manipulation of its token. |
+| `operator` | [string](#string) |  | address which the manipulation is allowed to. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgRevokeOperatorResponse"></a>
+
+### MsgRevokeOperatorResponse
+MsgRevokeOperatorResponse is the Msg/RevokeOperator response type.
+Since: finschia
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgRevokePermission"></a>
+
+### MsgRevokePermission
+MsgRevokePermission is the Msg/RevokePermission request type.
+NOTE: deprecated (use MsgAbandon)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `from` | [string](#string) |  | address of the grantee which abandons the permission. |
+| `permission` | [string](#string) |  | permission on the contract. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgRevokePermissionResponse"></a>
+
+### MsgRevokePermissionResponse
+MsgRevokePermissionResponse is the Msg/RevokePermission response type.
+NOTE: deprecated
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgSend"></a>
+
+### MsgSend
+MsgSend is the Msg/Send request type.
+Since: finschia
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `from` | [string](#string) |  | the address which the transfer is from. |
+| `to` | [string](#string) |  | the address which the transfer is to. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgSendResponse"></a>
+
+### MsgSendResponse
+MsgSendResponse is the Msg/Send response type.
+Since: finschia
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgTransferFT"></a>
+
+### MsgTransferFT
+MsgTransferFT is the Msg/TransferFT request type.
+NOTE: deprecated (use MsgSend)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `from` | [string](#string) |  | the address which the transfer is from. |
+| `to` | [string](#string) |  | the address which the transfer is to. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. NOTE: amount may be empty. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgTransferFTFrom"></a>
+
+### MsgTransferFTFrom
+MsgTransferFTFrom is the Msg/TransferFTFrom request type.
+NOTE: deprecated (use MsgOperatorSend)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `proxy` | [string](#string) |  | the address of the operator. |
+| `from` | [string](#string) |  | the address which the transfer is from. |
+| `to` | [string](#string) |  | the address which the transfer is to. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | the amount of the transfer. NOTE: amount may be empty. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgTransferFTFromResponse"></a>
+
+### MsgTransferFTFromResponse
+MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
+NOTE: deprecated
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgTransferFTResponse"></a>
+
+### MsgTransferFTResponse
+MsgTransferFTResponse is the Msg/TransferFT response type.
+NOTE: deprecated
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgTransferNFT"></a>
+
+### MsgTransferNFT
+MsgTransferNFT is the Msg/TransferNFT request type.
+NOTE: deprecated (use MsgSend)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `from` | [string](#string) |  | the address which the transfer is from. |
+| `to` | [string](#string) |  | the address which the transfer is to. |
+| `token_ids` | [string](#string) | repeated | the token ids to transfer. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgTransferNFTFrom"></a>
+
+### MsgTransferNFTFrom
+MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
+NOTE: deprecated (use MsgOperatorSend)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `proxy` | [string](#string) |  | the address of the operator. |
+| `from` | [string](#string) |  | the address which the transfer is from. |
+| `to` | [string](#string) |  | the address which the transfer is to. |
+| `token_ids` | [string](#string) | repeated | the token ids to transfer. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgTransferNFTFromResponse"></a>
+
+### MsgTransferNFTFromResponse
+MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
+NOTE: deprecated
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgTransferNFTResponse"></a>
+
+### MsgTransferNFTResponse
+MsgTransferNFTResponse is the Msg/TransferNFT response type.
+NOTE: deprecated
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.collection.v1.Msg"></a>
+
+### Msg
+Msg defines the collection Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Send` | [MsgSend](#lbm.collection.v1.MsgSend) | [MsgSendResponse](#lbm.collection.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. you can send both fungible tokens and non-fungible tokens. Since: finschia | |
+| `OperatorSend` | [MsgOperatorSend](#lbm.collection.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.collection.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. you can send both fungible tokens and non-fungible tokens. Since: finschia | |
+| `TransferFT` | [MsgTransferFT](#lbm.collection.v1.MsgTransferFT) | [MsgTransferFTResponse](#lbm.collection.v1.MsgTransferFTResponse) | TransferFT defines a method to send fungible tokens from one account to another account. NOTE: deprecated (use Send) | |
+| `TransferFTFrom` | [MsgTransferFTFrom](#lbm.collection.v1.MsgTransferFTFrom) | [MsgTransferFTFromResponse](#lbm.collection.v1.MsgTransferFTFromResponse) | TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator. NOTE: deprecated (use OperatorSend) | |
+| `TransferNFT` | [MsgTransferNFT](#lbm.collection.v1.MsgTransferNFT) | [MsgTransferNFTResponse](#lbm.collection.v1.MsgTransferNFTResponse) | TransferNFT defines a method to send non-fungible tokens from one account to another account. NOTE: deprecated (use Send) | |
+| `TransferNFTFrom` | [MsgTransferNFTFrom](#lbm.collection.v1.MsgTransferNFTFrom) | [MsgTransferNFTFromResponse](#lbm.collection.v1.MsgTransferNFTFromResponse) | TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator. NOTE: deprecated (use OperatorSend) | |
+| `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.collection.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.collection.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the approver. Since: finschia | |
+| `RevokeOperator` | [MsgRevokeOperator](#lbm.collection.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.collection.v1.MsgRevokeOperatorResponse) | RevokeOperator revokes the authorization of the operator to send the approver's token. Since: finschia | |
+| `Approve` | [MsgApprove](#lbm.collection.v1.MsgApprove) | [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the approver. NOTE: deprecated (use AuthorizeOperator) | |
+| `Disapprove` | [MsgDisapprove](#lbm.collection.v1.MsgDisapprove) | [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse) | Disapprove revokes the authorization of the operator to send the approver's token. NOTE: deprecated (use RevokeOperator) | |
+| `CreateContract` | [MsgCreateContract](#lbm.collection.v1.MsgCreateContract) | [MsgCreateContractResponse](#lbm.collection.v1.MsgCreateContractResponse) | CreateContract defines a method to create a contract. | |
+| `IssueFT` | [MsgIssueFT](#lbm.collection.v1.MsgIssueFT) | [MsgIssueFTResponse](#lbm.collection.v1.MsgIssueFTResponse) | IssueFT defines a method to create a class of fungible token. | |
+| `IssueNFT` | [MsgIssueNFT](#lbm.collection.v1.MsgIssueNFT) | [MsgIssueNFTResponse](#lbm.collection.v1.MsgIssueNFTResponse) | IssueNFT defines a method to create a class of non-fungible token. | |
+| `MintFT` | [MsgMintFT](#lbm.collection.v1.MsgMintFT) | [MsgMintFTResponse](#lbm.collection.v1.MsgMintFTResponse) | MintFT defines a method to mint fungible tokens. | |
+| `MintNFT` | [MsgMintNFT](#lbm.collection.v1.MsgMintNFT) | [MsgMintNFTResponse](#lbm.collection.v1.MsgMintNFTResponse) | MintNFT defines a method to mint non-fungible tokens. | |
+| `Burn` | [MsgBurn](#lbm.collection.v1.MsgBurn) | [MsgBurnResponse](#lbm.collection.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Since: finschia | |
+| `OperatorBurn` | [MsgOperatorBurn](#lbm.collection.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.collection.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens of the holder by the operator. Since: finschia | |
+| `BurnFT` | [MsgBurnFT](#lbm.collection.v1.MsgBurnFT) | [MsgBurnFTResponse](#lbm.collection.v1.MsgBurnFTResponse) | BurnFT defines a method to burn fungible tokens. NOTE: deprecated (use Burn) | |
+| `BurnFTFrom` | [MsgBurnFTFrom](#lbm.collection.v1.MsgBurnFTFrom) | [MsgBurnFTFromResponse](#lbm.collection.v1.MsgBurnFTFromResponse) | BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy. NOTE: deprecated (use OperatorBurn) | |
+| `BurnNFT` | [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT) | [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse) | BurnNFT defines a method to burn non-fungible tokens. NOTE: deprecated (use Burn) | |
+| `BurnNFTFrom` | [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom) | [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse) | BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy. NOTE: deprecated (use OperatorBurn) | |
+| `Modify` | [MsgModify](#lbm.collection.v1.MsgModify) | [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse) | Modify defines a method to modify metadata. | |
+| `Grant` | [MsgGrant](#lbm.collection.v1.MsgGrant) | [MsgGrantResponse](#lbm.collection.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify metadata. Since: finschia | |
+| `Abandon` | [MsgAbandon](#lbm.collection.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.collection.v1.MsgAbandonResponse) | Abandon abandons a permission. Since: finschia | |
+| `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify metadata. NOTE: deprecated (use Grant) | |
+| `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. NOTE: deprecated (use Abandon) | |
+| `Attach` | [MsgAttach](#lbm.collection.v1.MsgAttach) | [MsgAttachResponse](#lbm.collection.v1.MsgAttachResponse) | Attach defines a method to attach a token to another token. | |
+| `Detach` | [MsgDetach](#lbm.collection.v1.MsgDetach) | [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse) | Detach defines a method to detach a token from another token. | |
+| `OperatorAttach` | [MsgOperatorAttach](#lbm.collection.v1.MsgOperatorAttach) | [MsgOperatorAttachResponse](#lbm.collection.v1.MsgOperatorAttachResponse) | OperatorAttach defines a method to attach a token to another token by operator. Since: finschia | |
+| `OperatorDetach` | [MsgOperatorDetach](#lbm.collection.v1.MsgOperatorDetach) | [MsgOperatorDetachResponse](#lbm.collection.v1.MsgOperatorDetachResponse) | Detach defines a method to detach a token from another token by operator. Since: finschia | |
+| `AttachFrom` | [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom) | [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse) | AttachFrom defines a method to attach a token to another token by operator. NOTE: deprecated (use OperatorAttach) | |
+| `DetachFrom` | [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom) | [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse) | DetachFrom defines a method to detach a token from another token by operator. NOTE: deprecated (use OperatorDetach) | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/crisis/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/crisis/v1/genesis.proto
+
+
+
+<a name="lbm.crisis.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the crisis module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `constant_fee` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) |  | constant_fee is the fee used to verify the invariant in the crisis module. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/crisis/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/crisis/v1/tx.proto
+
+
+
+<a name="lbm.crisis.v1.MsgVerifyInvariant"></a>
+
+### MsgVerifyInvariant
+MsgVerifyInvariant represents a message to verify a particular invariance.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  |  |
+| `invariant_module_name` | [string](#string) |  |  |
+| `invariant_route` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.crisis.v1.MsgVerifyInvariantResponse"></a>
+
+### MsgVerifyInvariantResponse
+MsgVerifyInvariantResponse defines the Msg/VerifyInvariant response type.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.crisis.v1.Msg"></a>
+
+### Msg
+Msg defines the bank Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `VerifyInvariant` | [MsgVerifyInvariant](#lbm.crisis.v1.MsgVerifyInvariant) | [MsgVerifyInvariantResponse](#lbm.crisis.v1.MsgVerifyInvariantResponse) | VerifyInvariant defines a method to verify a particular invariance. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/crypto/multisig/v1/multisig.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/crypto/multisig/v1/multisig.proto
+
+
+
+<a name="lbm.crypto.multisig.v1.CompactBitArray"></a>
+
+### CompactBitArray
+CompactBitArray is an implementation of a space efficient bit array.
+This is used to ensure that the encoded data takes up a minimal amount of
+space after proto encoding.
+This is not thread safe, and is not intended for concurrent usage.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `extra_bits_stored` | [uint32](#uint32) |  |  |
+| `elems` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="lbm.crypto.multisig.v1.MultiSignature"></a>
+
+### MultiSignature
+MultiSignature wraps the signatures from a multisig.LegacyAminoPubKey.
+See lbm.tx.v1betata1.ModeInfo.Multi for how to specify which signers
+signed and with which modes.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `signatures` | [bytes](#bytes) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/distribution/v1/distribution.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/distribution/v1/distribution.proto
+
+
+
+<a name="lbm.distribution.v1.CommunityPoolSpendProposal"></a>
+
+### CommunityPoolSpendProposal
+CommunityPoolSpendProposal details a proposal for use of community funds,
+together with how many coins are proposed to be spent, and to which
+recipient account.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `recipient` | [string](#string) |  |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.CommunityPoolSpendProposalWithDeposit"></a>
+
+### CommunityPoolSpendProposalWithDeposit
+CommunityPoolSpendProposalWithDeposit defines a CommunityPoolSpendProposal
+with a deposit
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `recipient` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+| `deposit` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.DelegationDelegatorReward"></a>
+
+### DelegationDelegatorReward
+DelegationDelegatorReward represents the properties
+of a delegator's delegation reward.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  |  |
+| `reward` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.DelegatorStartingInfo"></a>
+
+### DelegatorStartingInfo
+DelegatorStartingInfo represents the starting info for a delegator reward
+period. It tracks the previous validator period, the delegation's amount of
+staking token, and the creation height (to check later on if any slashes have
+occurred). NOTE: Even though validators are slashed to whole staking tokens,
+the delegators within the validator may be left with less than a full token,
+thus sdk.Dec is used.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `previous_period` | [uint64](#uint64) |  |  |
+| `stake` | [string](#string) |  |  |
+| `height` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.FeePool"></a>
+
+### FeePool
+FeePool is the global fee pool for distribution.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `community_pool` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.Params"></a>
+
+### Params
+Params defines the set of params for the distribution module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `community_tax` | [string](#string) |  |  |
+| `base_proposer_reward` | [string](#string) |  |  |
+| `bonus_proposer_reward` | [string](#string) |  |  |
+| `withdraw_addr_enabled` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.ValidatorAccumulatedCommission"></a>
+
+### ValidatorAccumulatedCommission
+ValidatorAccumulatedCommission represents accumulated commission
+for a validator kept as a running counter, can be withdrawn at any time.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `commission` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.ValidatorCurrentRewards"></a>
+
+### ValidatorCurrentRewards
+ValidatorCurrentRewards represents current rewards and current
+period for a validator kept as a running counter and incremented
+each block as long as the validator's tokens remain constant.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rewards` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated |  |
+| `period` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.ValidatorHistoricalRewards"></a>
+
+### ValidatorHistoricalRewards
+ValidatorHistoricalRewards represents historical rewards for a validator.
+Height is implicit within the store key.
+Cumulative reward ratio is the sum from the zeroeth period
+until this period of rewards / tokens, per the spec.
+The reference count indicates the number of objects
+which might need to reference this historical entry at any point.
+ReferenceCount =
+   number of outstanding delegations which ended the associated period (and
+   might need to read that record)
+ + number of slashes which ended the associated period (and might need to
+ read that record)
+ + one per validator for the zeroeth period, set on initialization
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `cumulative_reward_ratio` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated |  |
+| `reference_count` | [uint32](#uint32) |  |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.ValidatorOutstandingRewards"></a>
+
+### ValidatorOutstandingRewards
+ValidatorOutstandingRewards represents outstanding (un-withdrawn) rewards
+for a validator inexpensive to track, allows simple sanity checks.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rewards` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.ValidatorSlashEvent"></a>
+
+### ValidatorSlashEvent
+ValidatorSlashEvent represents a validator slash event.
+Height is implicit within the store key.
+This is needed to calculate appropriate amount of staking tokens
+for delegations which are withdrawn after a slash has occurred.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_period` | [uint64](#uint64) |  |  |
+| `fraction` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.ValidatorSlashEvents"></a>
+
+### ValidatorSlashEvents
+ValidatorSlashEvents is a collection of ValidatorSlashEvent messages.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_slash_events` | [ValidatorSlashEvent](#lbm.distribution.v1.ValidatorSlashEvent) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/distribution/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/distribution/v1/genesis.proto
+
+
+
+<a name="lbm.distribution.v1.DelegatorStartingInfoRecord"></a>
+
+### DelegatorStartingInfoRecord
+DelegatorStartingInfoRecord used for import / export via genesis json.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `delegator_address` | [string](#string) |  | delegator_address is the address of the delegator. |
+| `validator_address` | [string](#string) |  | validator_address is the address of the validator. |
+| `starting_info` | [DelegatorStartingInfo](#lbm.distribution.v1.DelegatorStartingInfo) |  | starting_info defines the starting info of a delegator. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.DelegatorWithdrawInfo"></a>
+
+### DelegatorWithdrawInfo
+DelegatorWithdrawInfo is the address for where distributions rewards are
+withdrawn to by default this struct is only used at genesis to feed in
+default withdraw addresses.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `delegator_address` | [string](#string) |  | delegator_address is the address of the delegator. |
+| `withdraw_address` | [string](#string) |  | withdraw_address is the address to withdraw the delegation rewards to. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the distribution module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.distribution.v1.Params) |  | params defines all the paramaters of the module. |
+| `fee_pool` | [FeePool](#lbm.distribution.v1.FeePool) |  | fee_pool defines the fee pool at genesis. |
+| `delegator_withdraw_infos` | [DelegatorWithdrawInfo](#lbm.distribution.v1.DelegatorWithdrawInfo) | repeated | fee_pool defines the delegator withdraw infos at genesis. |
+| `previous_proposer` | [string](#string) |  | fee_pool defines the previous proposer at genesis. |
+| `outstanding_rewards` | [ValidatorOutstandingRewardsRecord](#lbm.distribution.v1.ValidatorOutstandingRewardsRecord) | repeated | fee_pool defines the outstanding rewards of all validators at genesis. |
+| `validator_accumulated_commissions` | [ValidatorAccumulatedCommissionRecord](#lbm.distribution.v1.ValidatorAccumulatedCommissionRecord) | repeated | fee_pool defines the accumulated commisions of all validators at genesis. |
+| `validator_historical_rewards` | [ValidatorHistoricalRewardsRecord](#lbm.distribution.v1.ValidatorHistoricalRewardsRecord) | repeated | fee_pool defines the historical rewards of all validators at genesis. |
+| `validator_current_rewards` | [ValidatorCurrentRewardsRecord](#lbm.distribution.v1.ValidatorCurrentRewardsRecord) | repeated | fee_pool defines the current rewards of all validators at genesis. |
+| `delegator_starting_infos` | [DelegatorStartingInfoRecord](#lbm.distribution.v1.DelegatorStartingInfoRecord) | repeated | fee_pool defines the delegator starting infos at genesis. |
+| `validator_slash_events` | [ValidatorSlashEventRecord](#lbm.distribution.v1.ValidatorSlashEventRecord) | repeated | fee_pool defines the validator slash events at genesis. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.ValidatorAccumulatedCommissionRecord"></a>
+
+### ValidatorAccumulatedCommissionRecord
+ValidatorAccumulatedCommissionRecord is used for import / export via genesis
+json.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  | validator_address is the address of the validator. |
+| `accumulated` | [ValidatorAccumulatedCommission](#lbm.distribution.v1.ValidatorAccumulatedCommission) |  | accumulated is the accumulated commission of a validator. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.ValidatorCurrentRewardsRecord"></a>
+
+### ValidatorCurrentRewardsRecord
+ValidatorCurrentRewardsRecord is used for import / export via genesis json.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  | validator_address is the address of the validator. |
+| `rewards` | [ValidatorCurrentRewards](#lbm.distribution.v1.ValidatorCurrentRewards) |  | rewards defines the current rewards of a validator. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.ValidatorHistoricalRewardsRecord"></a>
+
+### ValidatorHistoricalRewardsRecord
+ValidatorHistoricalRewardsRecord is used for import / export via genesis
+json.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  | validator_address is the address of the validator. |
+| `period` | [uint64](#uint64) |  | period defines the period the historical rewards apply to. |
+| `rewards` | [ValidatorHistoricalRewards](#lbm.distribution.v1.ValidatorHistoricalRewards) |  | rewards defines the historical rewards of a validator. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.ValidatorOutstandingRewardsRecord"></a>
+
+### ValidatorOutstandingRewardsRecord
+ValidatorOutstandingRewardsRecord is used for import/export via genesis json.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  | validator_address is the address of the validator. |
+| `outstanding_rewards` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated | outstanding_rewards represents the oustanding rewards of a validator. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.ValidatorSlashEventRecord"></a>
+
+### ValidatorSlashEventRecord
+ValidatorSlashEventRecord is used for import / export via genesis json.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  | validator_address is the address of the validator. |
+| `height` | [uint64](#uint64) |  | height defines the block height at which the slash event occured. |
+| `period` | [uint64](#uint64) |  | period is the period of the slash event. |
+| `validator_slash_event` | [ValidatorSlashEvent](#lbm.distribution.v1.ValidatorSlashEvent) |  | validator_slash_event describes the slash event. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/distribution/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/distribution/v1/query.proto
+
+
+
+<a name="lbm.distribution.v1.QueryCommunityPoolRequest"></a>
+
+### QueryCommunityPoolRequest
+QueryCommunityPoolRequest is the request type for the Query/CommunityPool RPC
+method.
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryCommunityPoolResponse"></a>
+
+### QueryCommunityPoolResponse
+QueryCommunityPoolResponse is the response type for the Query/CommunityPool
+RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pool` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated | pool defines community pool's coins. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryDelegationRewardsRequest"></a>
+
+### QueryDelegationRewardsRequest
+QueryDelegationRewardsRequest is the request type for the
+Query/DelegationRewards RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `delegator_address` | [string](#string) |  | delegator_address defines the delegator address to query for. |
+| `validator_address` | [string](#string) |  | validator_address defines the validator address to query for. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryDelegationRewardsResponse"></a>
+
+### QueryDelegationRewardsResponse
+QueryDelegationRewardsResponse is the response type for the
+Query/DelegationRewards RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rewards` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated | rewards defines the rewards accrued by a delegation. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryDelegationTotalRewardsRequest"></a>
+
+### QueryDelegationTotalRewardsRequest
+QueryDelegationTotalRewardsRequest is the request type for the
+Query/DelegationTotalRewards RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `delegator_address` | [string](#string) |  | delegator_address defines the delegator address to query for. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryDelegationTotalRewardsResponse"></a>
+
+### QueryDelegationTotalRewardsResponse
+QueryDelegationTotalRewardsResponse is the response type for the
+Query/DelegationTotalRewards RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rewards` | [DelegationDelegatorReward](#lbm.distribution.v1.DelegationDelegatorReward) | repeated | rewards defines all the rewards accrued by a delegator. |
+| `total` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated | total defines the sum of all the rewards. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryDelegatorValidatorsRequest"></a>
+
+### QueryDelegatorValidatorsRequest
+QueryDelegatorValidatorsRequest is the request type for the
+Query/DelegatorValidators RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `delegator_address` | [string](#string) |  | delegator_address defines the delegator address to query for. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryDelegatorValidatorsResponse"></a>
+
+### QueryDelegatorValidatorsResponse
+QueryDelegatorValidatorsResponse is the response type for the
+Query/DelegatorValidators RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validators` | [string](#string) | repeated | validators defines the validators a delegator is delegating for. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryDelegatorWithdrawAddressRequest"></a>
+
+### QueryDelegatorWithdrawAddressRequest
+QueryDelegatorWithdrawAddressRequest is the request type for the
+Query/DelegatorWithdrawAddress RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `delegator_address` | [string](#string) |  | delegator_address defines the delegator address to query for. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryDelegatorWithdrawAddressResponse"></a>
+
+### QueryDelegatorWithdrawAddressResponse
+QueryDelegatorWithdrawAddressResponse is the response type for the
+Query/DelegatorWithdrawAddress RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `withdraw_address` | [string](#string) |  | withdraw_address defines the delegator address to query for. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+QueryParamsRequest is the request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryParamsResponse is the response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.distribution.v1.Params) |  | params defines the parameters of the module. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryValidatorCommissionRequest"></a>
+
+### QueryValidatorCommissionRequest
+QueryValidatorCommissionRequest is the request type for the
+Query/ValidatorCommission RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  | validator_address defines the validator address to query for. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryValidatorCommissionResponse"></a>
+
+### QueryValidatorCommissionResponse
+QueryValidatorCommissionResponse is the response type for the
+Query/ValidatorCommission RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `commission` | [ValidatorAccumulatedCommission](#lbm.distribution.v1.ValidatorAccumulatedCommission) |  | commission defines the commision the validator received. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryValidatorOutstandingRewardsRequest"></a>
+
+### QueryValidatorOutstandingRewardsRequest
+QueryValidatorOutstandingRewardsRequest is the request type for the
+Query/ValidatorOutstandingRewards RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  | validator_address defines the validator address to query for. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryValidatorOutstandingRewardsResponse"></a>
+
+### QueryValidatorOutstandingRewardsResponse
+QueryValidatorOutstandingRewardsResponse is the response type for the
+Query/ValidatorOutstandingRewards RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `rewards` | [ValidatorOutstandingRewards](#lbm.distribution.v1.ValidatorOutstandingRewards) |  |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryValidatorSlashesRequest"></a>
+
+### QueryValidatorSlashesRequest
+QueryValidatorSlashesRequest is the request type for the
+Query/ValidatorSlashes RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  | validator_address defines the validator address to query for. |
+| `starting_height` | [uint64](#uint64) |  | starting_height defines the optional starting height to query the slashes. |
+| `ending_height` | [uint64](#uint64) |  | starting_height defines the optional ending height to query the slashes. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.QueryValidatorSlashesResponse"></a>
+
+### QueryValidatorSlashesResponse
+QueryValidatorSlashesResponse is the response type for the
+Query/ValidatorSlashes RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `slashes` | [ValidatorSlashEvent](#lbm.distribution.v1.ValidatorSlashEvent) | repeated | slashes defines the slashes the validator received. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.distribution.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service for distribution module.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#lbm.distribution.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.distribution.v1.QueryParamsResponse) | Params queries params of the distribution module. | GET|/lbm/distribution/v1/params|
+| `ValidatorOutstandingRewards` | [QueryValidatorOutstandingRewardsRequest](#lbm.distribution.v1.QueryValidatorOutstandingRewardsRequest) | [QueryValidatorOutstandingRewardsResponse](#lbm.distribution.v1.QueryValidatorOutstandingRewardsResponse) | ValidatorOutstandingRewards queries rewards of a validator address. | GET|/lbm/distribution/v1/validators/{validator_address}/outstanding_rewards|
+| `ValidatorCommission` | [QueryValidatorCommissionRequest](#lbm.distribution.v1.QueryValidatorCommissionRequest) | [QueryValidatorCommissionResponse](#lbm.distribution.v1.QueryValidatorCommissionResponse) | ValidatorCommission queries accumulated commission for a validator. | GET|/lbm/distribution/v1/validators/{validator_address}/commission|
+| `ValidatorSlashes` | [QueryValidatorSlashesRequest](#lbm.distribution.v1.QueryValidatorSlashesRequest) | [QueryValidatorSlashesResponse](#lbm.distribution.v1.QueryValidatorSlashesResponse) | ValidatorSlashes queries slash events of a validator. | GET|/lbm/distribution/v1/validators/{validator_address}/slashes|
+| `DelegationRewards` | [QueryDelegationRewardsRequest](#lbm.distribution.v1.QueryDelegationRewardsRequest) | [QueryDelegationRewardsResponse](#lbm.distribution.v1.QueryDelegationRewardsResponse) | DelegationRewards queries the total rewards accrued by a delegation. | GET|/lbm/distribution/v1/delegators/{delegator_address}/rewards/{validator_address}|
+| `DelegationTotalRewards` | [QueryDelegationTotalRewardsRequest](#lbm.distribution.v1.QueryDelegationTotalRewardsRequest) | [QueryDelegationTotalRewardsResponse](#lbm.distribution.v1.QueryDelegationTotalRewardsResponse) | DelegationTotalRewards queries the total rewards accrued by a each validator. | GET|/lbm/distribution/v1/delegators/{delegator_address}/rewards|
+| `DelegatorValidators` | [QueryDelegatorValidatorsRequest](#lbm.distribution.v1.QueryDelegatorValidatorsRequest) | [QueryDelegatorValidatorsResponse](#lbm.distribution.v1.QueryDelegatorValidatorsResponse) | DelegatorValidators queries the validators of a delegator. | GET|/lbm/distribution/v1/delegators/{delegator_address}/validators|
+| `DelegatorWithdrawAddress` | [QueryDelegatorWithdrawAddressRequest](#lbm.distribution.v1.QueryDelegatorWithdrawAddressRequest) | [QueryDelegatorWithdrawAddressResponse](#lbm.distribution.v1.QueryDelegatorWithdrawAddressResponse) | DelegatorWithdrawAddress queries withdraw address of a delegator. | GET|/lbm/distribution/v1/delegators/{delegator_address}/withdraw_address|
+| `CommunityPool` | [QueryCommunityPoolRequest](#lbm.distribution.v1.QueryCommunityPoolRequest) | [QueryCommunityPoolResponse](#lbm.distribution.v1.QueryCommunityPoolResponse) | CommunityPool queries the community pool coins. | GET|/lbm/distribution/v1/community_pool|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/distribution/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/distribution/v1/tx.proto
+
+
+
+<a name="lbm.distribution.v1.MsgFundCommunityPool"></a>
+
+### MsgFundCommunityPool
+MsgFundCommunityPool allows an account to directly
+fund the community pool.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
+| `depositor` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.MsgFundCommunityPoolResponse"></a>
+
+### MsgFundCommunityPoolResponse
+MsgFundCommunityPoolResponse defines the Msg/FundCommunityPool response type.
+
+
+
+
+
+
+<a name="lbm.distribution.v1.MsgSetWithdrawAddress"></a>
+
+### MsgSetWithdrawAddress
+MsgSetWithdrawAddress sets the withdraw address for
+a delegator (or validator self-delegation).
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `delegator_address` | [string](#string) |  |  |
+| `withdraw_address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.MsgSetWithdrawAddressResponse"></a>
+
+### MsgSetWithdrawAddressResponse
+MsgSetWithdrawAddressResponse defines the Msg/SetWithdrawAddress response type.
+
+
+
+
+
+
+<a name="lbm.distribution.v1.MsgWithdrawDelegatorReward"></a>
+
+### MsgWithdrawDelegatorReward
+MsgWithdrawDelegatorReward represents delegation withdrawal to a delegator
+from a single validator.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `delegator_address` | [string](#string) |  |  |
+| `validator_address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.MsgWithdrawDelegatorRewardResponse"></a>
+
+### MsgWithdrawDelegatorRewardResponse
+MsgWithdrawDelegatorRewardResponse defines the Msg/WithdrawDelegatorReward response type.
+
+
+
+
+
+
+<a name="lbm.distribution.v1.MsgWithdrawValidatorCommission"></a>
+
+### MsgWithdrawValidatorCommission
+MsgWithdrawValidatorCommission withdraws the full commission to the validator
+address.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.distribution.v1.MsgWithdrawValidatorCommissionResponse"></a>
+
+### MsgWithdrawValidatorCommissionResponse
+MsgWithdrawValidatorCommissionResponse defines the Msg/WithdrawValidatorCommission response type.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.distribution.v1.Msg"></a>
+
+### Msg
+Msg defines the distribution Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `SetWithdrawAddress` | [MsgSetWithdrawAddress](#lbm.distribution.v1.MsgSetWithdrawAddress) | [MsgSetWithdrawAddressResponse](#lbm.distribution.v1.MsgSetWithdrawAddressResponse) | SetWithdrawAddress defines a method to change the withdraw address for a delegator (or validator self-delegation). | |
+| `WithdrawDelegatorReward` | [MsgWithdrawDelegatorReward](#lbm.distribution.v1.MsgWithdrawDelegatorReward) | [MsgWithdrawDelegatorRewardResponse](#lbm.distribution.v1.MsgWithdrawDelegatorRewardResponse) | WithdrawDelegatorReward defines a method to withdraw rewards of delegator from a single validator. | |
+| `WithdrawValidatorCommission` | [MsgWithdrawValidatorCommission](#lbm.distribution.v1.MsgWithdrawValidatorCommission) | [MsgWithdrawValidatorCommissionResponse](#lbm.distribution.v1.MsgWithdrawValidatorCommissionResponse) | WithdrawValidatorCommission defines a method to withdraw the full commission to the validator address. | |
+| `FundCommunityPool` | [MsgFundCommunityPool](#lbm.distribution.v1.MsgFundCommunityPool) | [MsgFundCommunityPoolResponse](#lbm.distribution.v1.MsgFundCommunityPoolResponse) | FundCommunityPool defines a method to allow an account to directly fund the community pool. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/evidence/v1/evidence.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/evidence/v1/evidence.proto
+
+
+
+<a name="lbm.evidence.v1.Equivocation"></a>
+
+### Equivocation
+Equivocation implements the Evidence interface and defines evidence of double
+signing misbehavior.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `height` | [int64](#int64) |  |  |
+| `time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `power` | [int64](#int64) |  |  |
+| `consensus_address` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/evidence/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/evidence/v1/genesis.proto
+
+
+
+<a name="lbm.evidence.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the evidence module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `evidence` | [google.protobuf.Any](#google.protobuf.Any) | repeated | evidence defines all the evidence at genesis. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/evidence/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/evidence/v1/query.proto
+
+
+
+<a name="lbm.evidence.v1.QueryAllEvidenceRequest"></a>
+
+### QueryAllEvidenceRequest
+QueryEvidenceRequest is the request type for the Query/AllEvidence RPC
+method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.evidence.v1.QueryAllEvidenceResponse"></a>
+
+### QueryAllEvidenceResponse
+QueryAllEvidenceResponse is the response type for the Query/AllEvidence RPC
+method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `evidence` | [google.protobuf.Any](#google.protobuf.Any) | repeated | evidence returns all evidences. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.evidence.v1.QueryEvidenceRequest"></a>
+
+### QueryEvidenceRequest
+QueryEvidenceRequest is the request type for the Query/Evidence RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `evidence_hash` | [bytes](#bytes) |  | evidence_hash defines the hash of the requested evidence. |
+
+
+
+
+
+
+<a name="lbm.evidence.v1.QueryEvidenceResponse"></a>
+
+### QueryEvidenceResponse
+QueryEvidenceResponse is the response type for the Query/Evidence RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `evidence` | [google.protobuf.Any](#google.protobuf.Any) |  | evidence returns the requested evidence. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.evidence.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Evidence` | [QueryEvidenceRequest](#lbm.evidence.v1.QueryEvidenceRequest) | [QueryEvidenceResponse](#lbm.evidence.v1.QueryEvidenceResponse) | Evidence queries evidence based on evidence hash. | GET|/lbm/evidence/v1/evidence/{evidence_hash}|
+| `AllEvidence` | [QueryAllEvidenceRequest](#lbm.evidence.v1.QueryAllEvidenceRequest) | [QueryAllEvidenceResponse](#lbm.evidence.v1.QueryAllEvidenceResponse) | AllEvidence queries all evidence. | GET|/lbm/evidence/v1/evidence|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/evidence/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/evidence/v1/tx.proto
+
+
+
+<a name="lbm.evidence.v1.MsgSubmitEvidence"></a>
+
+### MsgSubmitEvidence
+MsgSubmitEvidence represents a message that supports submitting arbitrary
+Evidence of misbehavior such as equivocation or counterfactual signing.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `submitter` | [string](#string) |  |  |
+| `evidence` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+
+
+
+
+
+
+<a name="lbm.evidence.v1.MsgSubmitEvidenceResponse"></a>
+
+### MsgSubmitEvidenceResponse
+MsgSubmitEvidenceResponse defines the Msg/SubmitEvidence response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `hash` | [bytes](#bytes) |  | hash defines the hash of the evidence. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.evidence.v1.Msg"></a>
+
+### Msg
+Msg defines the evidence Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `SubmitEvidence` | [MsgSubmitEvidence](#lbm.evidence.v1.MsgSubmitEvidence) | [MsgSubmitEvidenceResponse](#lbm.evidence.v1.MsgSubmitEvidenceResponse) | SubmitEvidence submits an arbitrary Evidence of misbehavior such as equivocation or counterfactual signing. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/feegrant/v1/feegrant.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/feegrant/v1/feegrant.proto
+Since: cosmos-sdk 0.43
+
+
+<a name="lbm.feegrant.v1.AllowedMsgAllowance"></a>
+
+### AllowedMsgAllowance
+AllowedMsgAllowance creates allowance only for specified message types.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allowance` | [google.protobuf.Any](#google.protobuf.Any) |  | allowance can be any of basic and filtered fee allowance. |
+| `allowed_messages` | [string](#string) | repeated | allowed_messages are the messages for which the grantee has the access. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.BasicAllowance"></a>
+
+### BasicAllowance
+BasicAllowance implements Allowance with a one-time grant of tokens
+that optionally expires. The grantee can use up to SpendLimit to cover fees.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `spend_limit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | spend_limit specifies the maximum amount of tokens that can be spent by this allowance and will be updated as tokens are spent. If it is empty, there is no spend limit and any amount of coins can be spent. |
+| `expiration` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | expiration specifies an optional time when this allowance expires |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.Grant"></a>
+
+### Grant
+Grant is stored in the KVStore to record a grant with full context
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  | granter is the address of the user granting an allowance of their funds. |
+| `grantee` | [string](#string) |  | grantee is the address of the user being granted an allowance of another user's funds. |
+| `allowance` | [google.protobuf.Any](#google.protobuf.Any) |  | allowance can be any of basic and filtered fee allowance. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.PeriodicAllowance"></a>
+
+### PeriodicAllowance
+PeriodicAllowance extends Allowance to allow for both a maximum cap,
+as well as a limit per time period.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `basic` | [BasicAllowance](#lbm.feegrant.v1.BasicAllowance) |  | basic specifies a struct of `BasicAllowance` |
+| `period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | period specifies the time duration in which period_spend_limit coins can be spent before that allowance is reset |
+| `period_spend_limit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | period_spend_limit specifies the maximum number of coins that can be spent in the period |
+| `period_can_spend` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | period_can_spend is the number of coins left to be spent before the period_reset time |
+| `period_reset` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | period_reset is the time at which this period resets and a new one begins, it is calculated from the start time of the first transaction after the last period ended |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/feegrant/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/feegrant/v1/genesis.proto
+Since: cosmos-sdk 0.43
+
+
+<a name="lbm.feegrant.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState contains a set of fee allowances, persisted from the store
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allowances` | [Grant](#lbm.feegrant.v1.Grant) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/feegrant/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/feegrant/v1/query.proto
+Since: cosmos-sdk 0.43
+
+
+<a name="lbm.feegrant.v1.QueryAllowanceRequest"></a>
+
+### QueryAllowanceRequest
+QueryAllowanceRequest is the request type for the Query/Allowance RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  | granter is the address of the user granting an allowance of their funds. |
+| `grantee` | [string](#string) |  | grantee is the address of the user being granted an allowance of another user's funds. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.QueryAllowanceResponse"></a>
+
+### QueryAllowanceResponse
+QueryAllowanceResponse is the response type for the Query/Allowance RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allowance` | [Grant](#lbm.feegrant.v1.Grant) |  | allowance is a allowance granted for grantee by granter. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.QueryAllowancesRequest"></a>
+
+### QueryAllowancesRequest
+QueryAllowancesRequest is the request type for the Query/Allowances RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grantee` | [string](#string) |  |  |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.QueryAllowancesResponse"></a>
+
+### QueryAllowancesResponse
+QueryAllowancesResponse is the response type for the Query/Allowances RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allowances` | [Grant](#lbm.feegrant.v1.Grant) | repeated | allowances are allowance's granted for grantee by granter. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines an pagination for the response. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.feegrant.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Allowance` | [QueryAllowanceRequest](#lbm.feegrant.v1.QueryAllowanceRequest) | [QueryAllowanceResponse](#lbm.feegrant.v1.QueryAllowanceResponse) | Allowance returns fee granted to the grantee by the granter. | GET|/lbm/feegrant/v1/allowance/{granter}/{grantee}|
+| `Allowances` | [QueryAllowancesRequest](#lbm.feegrant.v1.QueryAllowancesRequest) | [QueryAllowancesResponse](#lbm.feegrant.v1.QueryAllowancesResponse) | Allowances returns all the grants for address. | GET|/lbm/feegrant/v1/allowances/{grantee}|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/feegrant/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/feegrant/v1/tx.proto
+Since: cosmos-sdk 0.43
+
+
+<a name="lbm.feegrant.v1.MsgGrantAllowance"></a>
+
+### MsgGrantAllowance
+MsgGrantAllowance adds permission for Grantee to spend up to Allowance
+of fees from the account of Granter.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  | granter is the address of the user granting an allowance of their funds. |
+| `grantee` | [string](#string) |  | grantee is the address of the user being granted an allowance of another user's funds. |
+| `allowance` | [google.protobuf.Any](#google.protobuf.Any) |  | allowance can be any of basic and filtered fee allowance. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.MsgGrantAllowanceResponse"></a>
+
+### MsgGrantAllowanceResponse
+MsgGrantAllowanceResponse defines the Msg/GrantAllowanceResponse response type.
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.MsgRevokeAllowance"></a>
+
+### MsgRevokeAllowance
+MsgRevokeAllowance removes any existing Allowance from Granter to Grantee.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  | granter is the address of the user granting an allowance of their funds. |
+| `grantee` | [string](#string) |  | grantee is the address of the user being granted an allowance of another user's funds. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.MsgRevokeAllowanceResponse"></a>
+
+### MsgRevokeAllowanceResponse
+MsgRevokeAllowanceResponse defines the Msg/RevokeAllowanceResponse response type.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.feegrant.v1.Msg"></a>
+
+### Msg
+Msg defines the feegrant msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `GrantAllowance` | [MsgGrantAllowance](#lbm.feegrant.v1.MsgGrantAllowance) | [MsgGrantAllowanceResponse](#lbm.feegrant.v1.MsgGrantAllowanceResponse) | GrantAllowance grants fee allowance to the grantee on the granter's account with the provided expiration time. | |
+| `RevokeAllowance` | [MsgRevokeAllowance](#lbm.feegrant.v1.MsgRevokeAllowance) | [MsgRevokeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeAllowanceResponse) | RevokeAllowance revokes any fee allowance of granter's account that has been granted to the grantee. | |
+
+ <!-- end services -->
+
+
+
+>>>>>>> d82d65ced (feat: define proto for x/collection)
 <a name="lbm/foundation/v1/authz.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
