@@ -57,7 +57,7 @@ func (s *IntegrationTestSuite) TestQueryABCIHeight() {
 			res, err := clientCtx.QueryABCI(req)
 			s.Require().NoError(err)
 
-			s.Require().Equal(tc.expHeight, res.Height)
+			s.Require().LessOrEqual(tx.expHeight, res.Height)
 		})
 	}
 }
