@@ -34,7 +34,7 @@ func (s *IntegrationTestSuite) TestQueryABCIHeight() {
 			name:      "empty request height and context height - use latest height",
 			reqHeight: 0,
 			ctxHeight: 0,
-			expHeight: 5,
+			expHeight: 4,
 		},
 	}
 
@@ -57,7 +57,7 @@ func (s *IntegrationTestSuite) TestQueryABCIHeight() {
 			res, err := clientCtx.QueryABCI(req)
 			s.Require().NoError(err)
 
-			s.Require().LessOrEqual(tc.expHeight, res.Height)
+			s.Require().Equal(tc.expHeight, res.Height)
 		})
 	}
 }
