@@ -82,6 +82,8 @@ func (p PermissionedKeeper) SetContractInfoExtension(ctx sdk.Context, contract s
 
 func (p PermissionedKeeper) UpdateContractStatus(ctx sdk.Context, contract sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus) error {
 	return p.nested.setContractStatus(ctx, contract, caller, status, p.authZPolicy)
+}
+
 // SetAccessConfig updates the access config of a code id.
 func (p PermissionedKeeper) SetAccessConfig(ctx sdk.Context, codeID uint64, config types.AccessConfig) error {
 	return p.nested.setAccessConfig(ctx, codeID, config)

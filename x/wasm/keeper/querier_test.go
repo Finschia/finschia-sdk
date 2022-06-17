@@ -714,10 +714,13 @@ func TestQueryCodeInfo(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	ctx, keepers := CreateTestInput(t, false, SupportedFeatures)
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	keeper := keepers.WasmKeeper
 
-	anyAddress, err := sdk.AccAddressFromBech32("cosmos100dejzacpanrldpjjwksjm62shqhyss44jf5xz")
+	const anyAddress = "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"
+	err = sdk.ValidateAccAddress(anyAddress)
+	require.NoError(t, err)
+
 	require.NoError(t, err)
 	specs := map[string]struct {
 		codeId       uint64
@@ -733,7 +736,7 @@ func TestQueryCodeInfo(t *testing.T) {
 		},
 		"with_address": {
 			codeId:       20,
-			accessConfig: types.AccessTypeOnlyAddress.With(anyAddress),
+			accessConfig: types.AccessTypeOnlyAddress.With(sdk.AccAddress(anyAddress)),
 		},
 	}
 	for msg, spec := range specs {
@@ -770,10 +773,12 @@ func TestQueryCodeInfoList(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	ctx, keepers := CreateTestInput(t, false, SupportedFeatures)
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	keeper := keepers.WasmKeeper
 
-	anyAddress, err := sdk.AccAddressFromBech32("cosmos100dejzacpanrldpjjwksjm62shqhyss44jf5xz")
+	const anyAddress = "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"
+	err = sdk.ValidateAccAddress(anyAddress)
+	require.NoError(t, err)
 	require.NoError(t, err)
 	codeInfoWithConfig := func(accessConfig types.AccessConfig) types.CodeInfo {
 		codeInfo := types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode))
@@ -799,7 +804,7 @@ func TestQueryCodeInfoList(t *testing.T) {
 		{
 			name:     "with_address",
 			codeId:   20,
-			codeInfo: codeInfoWithConfig(types.AccessTypeOnlyAddress.With(anyAddress)),
+			codeInfo: codeInfoWithConfig(types.AccessTypeOnlyAddress.With(sdk.AccAddress(anyAddress))),
 		},
 	}
 

@@ -120,16 +120,6 @@ func TestValidateParams(t *testing.T) {
 			},
 			expErr: true,
 		},
-		"reject empty max wasm code size": {
-			src: Params{
-				CodeUploadAccess:             AllowNobody,
-				InstantiateDefaultPermission: AccessTypeNobody,
-				GasMultiplier:                DefaultGasMultiplier,
-				InstanceCost:                 DefaultInstanceCost,
-				CompileCost:                  DefaultCompileCost,
-			},
-			expErr: true,
-		},
 		"reject empty gas multiplier": {
 			src: Params{
 				CodeUploadAccess:             AllowNobody,
