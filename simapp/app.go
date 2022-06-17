@@ -1,7 +1,6 @@
 package simapp
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -18,7 +17,6 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	tmdb "github.com/line/tm-db/v2"
 
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/grpc/tmservice"
@@ -585,17 +583,18 @@ func NewSimApp(
 	// note replicate if you do not need to test core IBC or light clients.
 	app.ScopedIBCMockKeeper = scopedIBCMockKeeper
 
+	// FIXME: After applying cosmos-sdk@0.45.4
 	// must be before Loading version
 	// requires the snapshot store to be created and registered as a BaseAppOption
 	// see cmd/wasmd/root.go: 206 - 214 approx
-	if manager := app.SnapshotManager(); manager != nil {
-		err := manager.RegisterExtensions(
-			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.wasmKeeper),
-		)
-		if err != nil {
-			panic(fmt.Errorf("failed to register snapshot extension: %s", err))
-		}
-	}
+	// if manager := app.SnapshotManager(); manager != nil {
+	// 	err := manager.RegisterExtensions(
+	// 		wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.wasmKeeper),
+	// 	)
+	// 	if err != nil {
+	// 		panic(fmt.Errorf("failed to register snapshot extension: %s", err))
+	// 	}
+	// }
 
 	return app
 }
