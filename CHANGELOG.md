@@ -56,8 +56,10 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (genesis) [\#517](https://github.com/line/lbm-sdk/pull/517) fix genesis auth account format(cosmos-sdk style -> lbm-sdk style)
 * (x/token) [\#539](https://github.com/line/lbm-sdk/pull/539) fix the compatibility issues with daphne
 * (x/foundation) [\#545](https://github.com/line/lbm-sdk/pull/545) fix genesis and support abstain
+* (x/auth) [\#563](https://github.com/line/lbm-sdk/pull/563) fix unmarshal bug of `BaseAccountJSON`
 
 ### Breaking Changes
+* (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
 
 ### Build, CI
 

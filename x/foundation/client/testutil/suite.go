@@ -213,7 +213,7 @@ func (s *IntegrationTestSuite) vote(proposalID uint64, voters []sdk.AccAddress) 
 	}
 }
 
-func (s IntegrationTestSuite) msgToString(msg sdk.Msg) string {
+func (s *IntegrationTestSuite) msgToString(msg sdk.Msg) string {
 	anyJSON, err := s.cfg.Codec.MarshalInterfaceJSON(msg)
 	s.Require().NoError(err)
 

@@ -57,7 +57,7 @@ Examples:
 %s tx %s grant link1skjw... link1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z or
 %s tx %s grant link1skjw... link1skjw... --spend-limit 100stake --period 3600 --period-limit 10stake --expiration 2022-01-30T15:04:05Z or
 %s tx %s grant link1skjw... link1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z 
-	--allowed-messages "/lbm.gov.v1.MsgSubmitProposal,/lbm.gov.v1.MsgVote"
+	--allowed-messages "/cosmos.gov.v1beta1.MsgSubmitProposal,/cosmos.gov.v1beta1.MsgVote"
 				`, version.AppName, feegrant.ModuleName, version.AppName, feegrant.ModuleName, version.AppName, feegrant.ModuleName,
 			),
 		),

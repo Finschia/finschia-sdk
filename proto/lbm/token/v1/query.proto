@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lbm.token.v1;
 
-import "lbm/base/query/v1/pagination.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "google/api/annotations.proto";
 import "lbm/token/v1/token.proto";
 
@@ -141,7 +141,7 @@ message QueryTokenClassResponse {
 // Since: finschia
 message QueryTokenClassesRequest {
   // pagination defines an optional pagination for the request.
-  lbm.base.query.v1.PageRequest pagination = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method
@@ -150,7 +150,7 @@ message QueryTokenClassesResponse {
   // information of the token classes.
   repeated TokenClass classes = 1 [(gogoproto.nullable) = false];
   // pagination defines the pagination in the response.
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryGrantRequest is the request type for the Query/Grant RPC method
@@ -179,7 +179,7 @@ message QueryGranteeGrantsRequest {
   string grantee = 2;
 
   // pagination defines an optional pagination for the request.
-  lbm.base.query.v1.PageRequest pagination = 3;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
 // QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method
@@ -188,7 +188,7 @@ message QueryGranteeGrantsResponse {
   // all the grants on the grantee.
   repeated Grant grants = 1 [(gogoproto.nullable) = false];
   // pagination defines the pagination in the response.
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryAuthorizationRequest is the request type for the Query/Authorization RPC method
@@ -217,7 +217,7 @@ message QueryOperatorAuthorizationsRequest {
   string operator = 2;
 
   // pagination defines an optional pagination for the request.
-  lbm.base.query.v1.PageRequest pagination = 3;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
 // QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method
@@ -226,7 +226,7 @@ message QueryOperatorAuthorizationsResponse {
   // all the authorizations on the operator.
   repeated Authorization authorizations = 1 [(gogoproto.nullable) = false];
   // pagination defines the pagination in the response.
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryApprovedRequest is the request type for the Query/Approved RPC method
