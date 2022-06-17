@@ -461,7 +461,8 @@ func (m *EventIssue) GetMintable() bool {
 type EventGrant struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the granter.
+	// address which granted the permission to `grantee`.
+	// it would be empty where the event is triggered by the issuance.
 	Granter string `protobuf:"bytes,2,opt,name=granter,proto3" json:"granter,omitempty"`
 	// address of the grantee.
 	Grantee string `protobuf:"bytes,3,opt,name=grantee,proto3" json:"grantee,omitempty"`

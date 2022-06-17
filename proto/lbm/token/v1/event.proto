@@ -109,7 +109,8 @@ message EventIssue {
 message EventGrant {
   // contract id associated with the token class.
   string contract_id = 1;
-  // address of the granter.
+  // address which granted the permission to `grantee`.
+  // it would be empty where the event is triggered by the issuance.
   string granter = 2;
   // address of the grantee.
   string grantee = 3;

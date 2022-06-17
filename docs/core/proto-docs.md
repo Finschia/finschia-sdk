@@ -13484,7 +13484,7 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `granter` | [string](#string) |  | address of the granter. |
+| `granter` | [string](#string) |  | address which granted the permission to `grantee`. it would be empty where the event is triggered by the issuance. |
 | `grantee` | [string](#string) |  | address of the grantee. |
 | `permission` | [string](#string) |  | permission on the token class. |
 
