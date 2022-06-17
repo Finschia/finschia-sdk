@@ -60,7 +60,7 @@ func NewCmdGrantAuthorization() *cobra.Command {
 
 Examples:
  $ %s tx %s grant link1skjw.. send %s --spend-limit=1000stake --from=link1skl..
- $ %s tx %s grant link1skjw.. generic --msg-type=/lbm.gov.v1.MsgVote --from=link1sk..
+ $ %s tx %s grant link1skjw.. generic --msg-type=/cosmos.gov.v1beta1.MsgVote --from=link1sk..
 	`, version.AppName, authz.ModuleName, bank.SendAuthorization{}.MsgTypeURL(), version.AppName, authz.ModuleName),
 		),
 		Args: cobra.ExactArgs(2),

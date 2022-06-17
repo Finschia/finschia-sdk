@@ -58,6 +58,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/auth) [\#563](https://github.com/line/lbm-sdk/pull/563) fix unmarshal bug of `BaseAccountJSON`
 
 ### Breaking Changes
+* (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
 
 ### Build, CI
 
