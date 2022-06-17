@@ -130,9 +130,9 @@ func TestInstantiateProposal(t *testing.T) {
 }
 
 func TestInstantiateProposal_NoAdmin(t *testing.T) {
-	ctx, keepers := CreateTestInput(t, false, "staking")
+	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
-	wasmKeeper.SetParams(ctx, types.Params{
+	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
 	})
@@ -146,7 +146,7 @@ func TestInstantiateProposal_NoAdmin(t *testing.T) {
 	)
 
 	var (
-		oneAddress sdk.AccAddress = bytes.Repeat([]byte{0x1}, types.ContractAddrLen)
+		oneAddress sdk.AccAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, types.ContractAddrLen))
 	)
 
 	// test invalid admin address
@@ -178,10 +178,11 @@ func TestInstantiateProposal_NoAdmin(t *testing.T) {
 	require.NoError(t, err)
 
 	// then
-	contractAddr, err := sdk.AccAddressFromBech32("cosmos14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9s4hmalr")
+	contractAddr := "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"
+	err = sdk.ValidateAccAddress(contractAddr)
 	require.NoError(t, err)
 
-	cInfo := wasmKeeper.GetContractInfo(ctx, contractAddr)
+	cInfo := wasmKeeper.GetContractInfo(ctx, sdk.AccAddress(contractAddr))
 	require.NotNil(t, cInfo)
 	assert.Equal(t, uint64(1), cInfo.CodeID)
 	assert.Equal(t, oneAddress.String(), cInfo.Creator)
@@ -193,7 +194,7 @@ func TestInstantiateProposal_NoAdmin(t *testing.T) {
 		Updated:   types.NewAbsoluteTxPosition(ctx),
 		Msg:       src.Msg,
 	}}
-	assert.Equal(t, expHistory, wasmKeeper.GetContractHistory(ctx, contractAddr))
+	assert.Equal(t, expHistory, wasmKeeper.GetContractHistory(ctx, sdk.AccAddress(contractAddr)))
 	// and event
 	require.Len(t, em.Events(), 3, "%#v", em.Events())
 	require.Equal(t, types.EventTypeInstantiate, em.Events()[0].Type)
