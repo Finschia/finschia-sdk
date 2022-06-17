@@ -353,7 +353,7 @@ func TestEncoding(t *testing.T) {
 			sender: addr2,
 			srcMsg: wasmvmtypes.CosmosMsg{
 				Stargate: &wasmvmtypes.StargateMsg{
-					TypeURL: "/lbm.bank.v1.MsgSend",
+					TypeURL: "/cosmos.bank.v1beta1.MsgSend",
 					Value:   bankMsgBin,
 				},
 			},
@@ -363,7 +363,7 @@ func TestEncoding(t *testing.T) {
 			sender: addr2,
 			srcMsg: wasmvmtypes.CosmosMsg{
 				Stargate: &wasmvmtypes.StargateMsg{
-					TypeURL: "/lbm.gov.v1.MsgSubmitProposal",
+					TypeURL: "/cosmos.gov.v1beta1.MsgSubmitProposal",
 					Value:   proposalMsgBin,
 				},
 			},

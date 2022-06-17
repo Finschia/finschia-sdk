@@ -8,7 +8,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 import "cosmos_proto/cosmos.proto";
 
-import "lbm/base/v1/coin.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "lbm/foundation/v1/foundation.proto";
 
 // EventUpdateFoundationParams is emitted after updating foundation parameters.
@@ -18,15 +18,15 @@ message EventUpdateFoundationParams {
 
 // EventFundTreasury is an event emitted when one funds the treasury.
 message EventFundTreasury {
-  string   from                    = 1;
-  repeated lbm.base.v1.Coin amount = 2
+  string   from                            = 1;
+  repeated cosmos.base.v1beta1.Coin amount = 2
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
 
 // EventWithdrawFromTreasury is an event emitted when the operator withdraws coins from the treasury.
 message EventWithdrawFromTreasury {
-  string   to                      = 1;
-  repeated lbm.base.v1.Coin amount = 2
+  string   to                              = 1;
+  repeated cosmos.base.v1beta1.Coin amount = 2
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
 

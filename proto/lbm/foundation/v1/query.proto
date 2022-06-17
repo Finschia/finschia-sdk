@@ -3,10 +3,10 @@ package lbm.foundation.v1;
 
 option go_package = "github.com/line/lbm-sdk/x/foundation";
 
-import "lbm/base/query/v1/pagination.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "google/api/annotations.proto";
 import "lbm/foundation/v1/foundation.proto";
-import "lbm/base/v1/coin.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 import "google/protobuf/any.proto";
 import "cosmos_proto/cosmos.proto";
@@ -86,7 +86,7 @@ message QueryTreasuryRequest {}
 // QueryTreasuryResponse is the response type for the
 // Query/Treasury RPC method.
 message QueryTreasuryResponse {
-  repeated lbm.base.v1.Coin amount = 1
+  repeated cosmos.base.v1beta1.Coin amount = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
 
@@ -113,7 +113,7 @@ message QueryMemberResponse {
 // QueryMembersRequest is the Query/Members request type.
 message QueryMembersRequest {
   // pagination defines an optional pagination for the request.
-  lbm.base.query.v1.PageRequest pagination = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryMembersResponse is the Query/MembersResponse response type.
@@ -122,7 +122,7 @@ message QueryMembersResponse {
   repeated Member members = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryProposalRequest is the Query/Proposal request type.
@@ -140,7 +140,7 @@ message QueryProposalResponse {
 // QueryProposals is the Query/Proposals request type.
 message QueryProposalsRequest {
   // pagination defines an optional pagination for the request.
-  lbm.base.query.v1.PageRequest pagination = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryProposalsResponse is the Query/Proposals response type.
@@ -149,7 +149,7 @@ message QueryProposalsResponse {
   repeated Proposal proposals = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryVote is the Query/Vote request type.
@@ -173,7 +173,7 @@ message QueryVotesRequest {
   uint64 proposal_id = 1;
 
   // pagination defines an optional pagination for the request.
-  lbm.base.query.v1.PageRequest pagination = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 // QueryVotesResponse is the Query/Votes response type.
@@ -182,7 +182,7 @@ message QueryVotesResponse {
   repeated Vote votes = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryTallyResultRequest is the Query/TallyResult request type.
@@ -203,7 +203,7 @@ message QueryGrantsRequest {
   // Optional, msg_type_url, when set, will query only grants matching given msg type.
   string msg_type_url = 2;
   // pagination defines an optional pagination for the request.
-  lbm.base.query.v1.PageRequest pagination = 3;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
 // QueryGrantsResponse is the response type for the Query/Grants RPC method.
@@ -213,5 +213,5 @@ message QueryGrantsResponse {
       [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization"];
 
   // pagination defines the pagination in the response.
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
