@@ -194,7 +194,7 @@ func TestCreateWithParamPermissions(t *testing.T) {
 // ensure that the user cannot set the code instantiate permission to something more permissive
 // than the default
 func TestEnforceValidPermissionsOnCreate(t *testing.T) {
-	ctx, keepers := CreateTestInput(t, false, SupportedFeatures)
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	keeper := keepers.WasmKeeper
 	contractKeeper := keepers.ContractKeeper
 
