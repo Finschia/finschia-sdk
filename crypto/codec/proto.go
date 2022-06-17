@@ -12,7 +12,7 @@ import (
 // RegisterInterfaces registers the sdk.Tx interface.
 func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	var pk *cryptotypes.PubKey
-	registry.RegisterInterface("lbm.crypto.PubKey", pk)
+	registry.RegisterInterface("cosmos.crypto.PubKey", pk)
 	registry.RegisterImplementations(pk, &ed25519.PubKey{})
 	registry.RegisterImplementations(pk, &secp256k1.PubKey{})
 	registry.RegisterImplementations(pk, &multisig.LegacyAminoPubKey{})

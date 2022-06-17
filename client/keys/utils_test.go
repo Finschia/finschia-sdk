@@ -33,5 +33,5 @@ func Test_printInfos(t *testing.T) {
 	require.NoError(t, err)
 	buf := bytes.NewBufferString("")
 	printInfos(buf, infos, OutputFormatJSON)
-	require.Equal(t, buf.String(), "[{\"name\":\"something\",\"type\":\"local\",\"address\":\"link1jyyxx9phqw6tarnxanhyx7ecr992d6yrztj4d0\",\"pubkey\":\"{\\\"@type\\\":\\\"/lbm.crypto.secp256k1.PubKey\\\",\\\"key\\\":\\\"Ag4G9vyaFv5/rR0RVmrXpo1XG93joUGk3JkH0MwT9ZNi\\\"}\"}]")
+	require.Equal(t, buf.String(), "[{\"name\":\"something\",\"type\":\"local\",\"address\":\"link1jyyxx9phqw6tarnxanhyx7ecr992d6yrztj4d0\",\"pubkey\":\"{\\\"@type\\\":\\\"/cosmos.crypto.secp256k1.PubKey\\\",\\\"key\\\":\\\"Ag4G9vyaFv5/rR0RVmrXpo1XG93joUGk3JkH0MwT9ZNi\\\"}\"}]")
 }

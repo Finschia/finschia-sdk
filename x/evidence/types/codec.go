@@ -20,7 +20,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil), &MsgSubmitEvidence{})
 	registry.RegisterInterface(
-		"lbm.evidence.v1.Evidence",
+		"cosmos.evidence.v1beta1.Evidence",
 		(*exported.Evidence)(nil),
 		&Equivocation{},
 	)
