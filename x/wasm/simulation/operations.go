@@ -11,7 +11,6 @@ import (
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/simulation"
 
-	"github.com/line/lbm-sdk/simapp/params"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -44,13 +43,13 @@ func WeightedOperations(
 
 	simstate.AppParams.GetOrGenerate(simstate.Cdc, OpWeightMsgStoreCode, &weightMsgStoreCode, nil,
 		func(_ *rand.Rand) {
-			weightMsgStoreCode = params.DefaultWeightMsgStoreCode
+			weightMsgStoreCode = simappparams.DefaultWeightMsgStoreCode
 		},
 	)
 
 	simstate.AppParams.GetOrGenerate(simstate.Cdc, OpWeightMsgInstantiateContract, &weightMsgInstantiateContract, nil,
 		func(_ *rand.Rand) {
-			weightMsgInstantiateContract = params.DefaultWeightMsgInstantiateContract
+			weightMsgInstantiateContract = simappparams.DefaultWeightMsgInstantiateContract
 		},
 	)
 	simstate.AppParams.GetOrGenerate(simstate.Cdc, OpReflectContractPath, &wasmContractPath, nil,
