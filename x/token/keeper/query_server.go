@@ -8,6 +8,7 @@ import (
 
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/x/token"
 	"github.com/line/lbm-sdk/x/token/class"
@@ -37,7 +38,7 @@ func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) 
 		return nil, err
 	}
 	if err := sdk.ValidateAccAddress(req.Address); err != nil {
-		return nil, err
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -157,11 +158,11 @@ func (s queryServer) Grant(c context.Context, req *token.QueryGrantRequest) (*to
 		return nil, err
 	}
 	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
-		return nil, err
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
 	}
 	permission := token.Permission(token.Permission_value[req.Permission])
 	if permission == 0 {
-		return nil, status.Error(codes.InvalidArgument, "invalid permission")
+		return nil, sdkerrors.ErrInvalidRequest.Wrapf("invalid permission: %s", req.Permission)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -182,7 +183,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 		return nil, err
 	}
 	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
-		return nil, err
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -213,10 +214,10 @@ func (s queryServer) Authorization(c context.Context, req *token.QueryAuthorizat
 		return nil, err
 	}
 	if err := sdk.ValidateAccAddress(req.Operator); err != nil {
-		return nil, err
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
 	}
 	if err := sdk.ValidateAccAddress(req.Holder); err != nil {
-		return nil, err
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", req.Holder)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -237,7 +238,7 @@ func (s queryServer) OperatorAuthorizations(c context.Context, req *token.QueryO
 		return nil, err
 	}
 	if err := sdk.ValidateAccAddress(req.Operator); err != nil {
-		return nil, err
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
