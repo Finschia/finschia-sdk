@@ -86,7 +86,7 @@ func (s *GRPCWebTestSuite) Test_Latest_Validators() {
 func (s *GRPCWebTestSuite) Test_Total_Supply() {
 	for _, contentType := range []string{grpcWebContentType} {
 		headers, trailers, responses, err := s.makeGrpcRequest(
-			"/lbm.bank.v1.Query/TotalSupply",
+			"/cosmos.bank.v1beta1.Query/TotalSupply",
 			headerWithFlag(),
 			serializeProtoMessages([]proto.Message{&banktypes.QueryTotalSupplyRequest{}}), false)
 

@@ -86,17 +86,17 @@ func (s *IntegrationTestSuite) TestQueryValidatorsGRPCHandler() {
 	}{
 		{
 			"test query validators gRPC route with invalid status",
-			fmt.Sprintf("%s/lbm/staking/v1/validators?status=active", baseURL),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators?status=active", baseURL),
 			true,
 		},
 		{
 			"test query validators gRPC route without status query param",
-			fmt.Sprintf("%s/lbm/staking/v1/validators", baseURL),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators", baseURL),
 			false,
 		},
 		{
 			"test query validators gRPC route with valid status",
-			fmt.Sprintf("%s/lbm/staking/v1/validators?status=%s", baseURL, types.Bonded.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators?status=%s", baseURL, types.Bonded.String()),
 			false,
 		},
 	}
@@ -134,17 +134,17 @@ func (s *IntegrationTestSuite) TestQueryValidatorGRPC() {
 	}{
 		{
 			"wrong validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s", baseURL, "wrongValidatorAddress"),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s", baseURL, "wrongValidatorAddress"),
 			true,
 		},
 		{
 			"with no validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s", baseURL, ""),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s", baseURL, ""),
 			true,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s", baseURL, val.ValAddress.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s", baseURL, val.ValAddress.String()),
 			false,
 		},
 	}
@@ -183,7 +183,7 @@ func (s *IntegrationTestSuite) TestQueryValidatorDelegationsGRPC() {
 	}{
 		{
 			"wrong validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/delegations", baseURL, "wrongValAddress"),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations", baseURL, "wrongValAddress"),
 			map[string]string{},
 			true,
 			&types.QueryValidatorDelegationsResponse{},
@@ -191,7 +191,7 @@ func (s *IntegrationTestSuite) TestQueryValidatorDelegationsGRPC() {
 		},
 		{
 			"with no validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/delegations", baseURL, ""),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations", baseURL, ""),
 			map[string]string{},
 			true,
 			&types.QueryValidatorDelegationsResponse{},
@@ -199,7 +199,7 @@ func (s *IntegrationTestSuite) TestQueryValidatorDelegationsGRPC() {
 		},
 		{
 			"valid request(height specific)",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/delegations", baseURL, val.ValAddress.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations", baseURL, val.ValAddress.String()),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -243,17 +243,17 @@ func (s *IntegrationTestSuite) TestQueryValidatorUnbondingDelegationsGRPC() {
 	}{
 		{
 			"wrong validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/unbonding_delegations", baseURL, "wrongValAddress"),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/unbonding_delegations", baseURL, "wrongValAddress"),
 			true,
 		},
 		{
 			"with no validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/unbonding_delegations", baseURL, ""),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/unbonding_delegations", baseURL, ""),
 			true,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/unbonding_delegations", baseURL, val.ValAddress.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/unbonding_delegations", baseURL, val.ValAddress.String()),
 			false,
 		},
 	}
@@ -293,35 +293,35 @@ func (s *IntegrationTestSuite) TestQueryDelegationGRPC() {
 	}{
 		{
 			"wrong validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/delegations/%s", baseURL, "wrongValAddress", val.Address.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s", baseURL, "wrongValAddress", val.Address.String()),
 			true,
 			&types.QueryDelegationResponse{},
 			nil,
 		},
 		{
 			"wrong account address",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/delegations/%s", baseURL, val.ValAddress.String(), "wrongAccAddress"),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s", baseURL, val.ValAddress.String(), "wrongAccAddress"),
 			true,
 			&types.QueryDelegationResponse{},
 			nil,
 		},
 		{
 			"with no validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/delegations/%s", baseURL, "", val.Address.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s", baseURL, "", val.Address.String()),
 			true,
 			&types.QueryDelegationResponse{},
 			nil,
 		},
 		{
 			"with no account address",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/delegations/%s", baseURL, val.ValAddress.String(), ""),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s", baseURL, val.ValAddress.String(), ""),
 			true,
 			&types.QueryDelegationResponse{},
 			nil,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/delegations/%s", baseURL, val2.ValAddress.String(), val.Address.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s", baseURL, val2.ValAddress.String(), val.Address.String()),
 			false,
 			&types.QueryDelegationResponse{},
 			&types.QueryDelegationResponse{
@@ -366,27 +366,27 @@ func (s *IntegrationTestSuite) TestQueryUnbondingDelegationGRPC() {
 	}{
 		{
 			"wrong validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/delegations/%s/unbonding_delegation", baseURL, "wrongValAddress", val.Address.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s/unbonding_delegation", baseURL, "wrongValAddress", val.Address.String()),
 			true,
 		},
 		{
 			"wrong account address",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/delegations/%s/unbonding_delegation", baseURL, val.ValAddress.String(), "wrongAccAddress"),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s/unbonding_delegation", baseURL, val.ValAddress.String(), "wrongAccAddress"),
 			true,
 		},
 		{
 			"with no validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/delegations/%s/unbonding_delegation", baseURL, "", val.Address.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s/unbonding_delegation", baseURL, "", val.Address.String()),
 			true,
 		},
 		{
 			"with no account address",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/delegations/%s/unbonding_delegation", baseURL, val.ValAddress.String(), ""),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s/unbonding_delegation", baseURL, val.ValAddress.String(), ""),
 			true,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/staking/v1/validators/%s/delegations/%s/unbonding_delegation", baseURL, val.ValAddress.String(), val.Address.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/validators/%s/delegations/%s/unbonding_delegation", baseURL, val.ValAddress.String(), val.Address.String()),
 			false,
 		},
 	}
@@ -432,7 +432,7 @@ func (s *IntegrationTestSuite) TestQueryDelegatorDelegationsGRPC() {
 	}{
 		{
 			"wrong validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegations/%s", baseURL, "wrongValAddress"),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegations/%s", baseURL, "wrongValAddress"),
 			map[string]string{},
 			true,
 			&types.QueryDelegatorDelegationsResponse{},
@@ -440,7 +440,7 @@ func (s *IntegrationTestSuite) TestQueryDelegatorDelegationsGRPC() {
 		},
 		{
 			"with no validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegations/%s", baseURL, ""),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegations/%s", baseURL, ""),
 			map[string]string{},
 			true,
 			&types.QueryDelegatorDelegationsResponse{},
@@ -448,7 +448,7 @@ func (s *IntegrationTestSuite) TestQueryDelegatorDelegationsGRPC() {
 		},
 		{
 			"valid request (height specific)",
-			fmt.Sprintf("%s/lbm/staking/v1/delegations/%s", baseURL, val.Address.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegations/%s", baseURL, val.Address.String()),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -463,7 +463,7 @@ func (s *IntegrationTestSuite) TestQueryDelegatorDelegationsGRPC() {
 		},
 		{
 			"address without delegations",
-			fmt.Sprintf("%s/lbm/staking/v1/delegations/%s", baseURL, newAddr.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegations/%s", baseURL, newAddr.String()),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -506,19 +506,19 @@ func (s *IntegrationTestSuite) TestQueryDelegatorUnbondingDelegationsGRPC() {
 	}{
 		{
 			"wrong validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/unbonding_delegations", baseURL, "wrongValAddress"),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/unbonding_delegations", baseURL, "wrongValAddress"),
 			true,
 			0,
 		},
 		{
 			"with no validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/unbonding_delegations", baseURL, ""),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/unbonding_delegations", baseURL, ""),
 			true,
 			0,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/unbonding_delegations", baseURL, val.Address.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/unbonding_delegations", baseURL, val.Address.String()),
 			false,
 			1,
 		},
@@ -556,32 +556,32 @@ func (s *IntegrationTestSuite) TestQueryRedelegationsGRPC() {
 	}{
 		{
 			"wrong validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/redelegations", baseURL, "wrongValAddress"),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/redelegations", baseURL, "wrongValAddress"),
 			true,
 		},
 		{
 			"with no validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/redelegations", baseURL, ""),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/redelegations", baseURL, ""),
 			true,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/redelegations", baseURL, val.Address.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/redelegations", baseURL, val.Address.String()),
 			false,
 		},
 		{
 			"valid request with src address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/redelegations?src_validator_addr=%s", baseURL, val.Address.String(), val.ValAddress.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/redelegations?src_validator_addr=%s", baseURL, val.Address.String(), val.ValAddress.String()),
 			false,
 		},
 		{
 			"valid request with dst address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/redelegations?dst_validator_addr=%s", baseURL, val.Address.String(), val2.ValAddress.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/redelegations?dst_validator_addr=%s", baseURL, val.Address.String(), val2.ValAddress.String()),
 			false,
 		},
 		{
 			"valid request with dst address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/redelegations?src_validator_addr=%s&dst_validator_addr=%s", baseURL, val.Address.String(), val.ValAddress.String(), val2.ValAddress.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/redelegations?src_validator_addr=%s&dst_validator_addr=%s", baseURL, val.Address.String(), val.ValAddress.String(), val2.ValAddress.String()),
 			false,
 		},
 	}
@@ -620,17 +620,17 @@ func (s *IntegrationTestSuite) TestQueryDelegatorValidatorsGRPC() {
 	}{
 		{
 			"wrong delegator address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/validators", baseURL, "wrongDelAddress"),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/validators", baseURL, "wrongDelAddress"),
 			true,
 		},
 		{
 			"with no delegator address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/validators", baseURL, ""),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/validators", baseURL, ""),
 			true,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/validators", baseURL, val.Address.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/validators", baseURL, val.Address.String()),
 			false,
 		},
 	}
@@ -667,27 +667,27 @@ func (s *IntegrationTestSuite) TestQueryDelegatorValidatorGRPC() {
 	}{
 		{
 			"wrong delegator address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/validators/%s", baseURL, "wrongAccAddress", val.ValAddress.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/validators/%s", baseURL, "wrongAccAddress", val.ValAddress.String()),
 			true,
 		},
 		{
 			"wrong validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/validators/%s", baseURL, val.Address.String(), "wrongValAddress"),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/validators/%s", baseURL, val.Address.String(), "wrongValAddress"),
 			true,
 		},
 		{
 			"with empty delegator address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/validators/%s", baseURL, "", val.ValAddress.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/validators/%s", baseURL, "", val.ValAddress.String()),
 			true,
 		},
 		{
 			"with empty validator address",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/validators/%s", baseURL, val.Address.String(), ""),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/validators/%s", baseURL, val.Address.String(), ""),
 			true,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/staking/v1/delegators/%s/validators/%s", baseURL, val.Address.String(), val.ValAddress.String()),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/delegators/%s/validators/%s", baseURL, val.Address.String(), val.ValAddress.String()),
 			false,
 		},
 	}
@@ -723,17 +723,17 @@ func (s *IntegrationTestSuite) TestQueryHistoricalInfoGRPC() {
 	}{
 		{
 			"wrong height",
-			fmt.Sprintf("%s/lbm/staking/v1/historical_info/%s", baseURL, "-1"),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/historical_info/%s", baseURL, "-1"),
 			true,
 		},
 		{
 			"with no height",
-			fmt.Sprintf("%s/lbm/staking/v1/historical_info/%s", baseURL, ""),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/historical_info/%s", baseURL, ""),
 			true,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/staking/v1/historical_info/%s", baseURL, "2"),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/historical_info/%s", baseURL, "2"),
 			false,
 		},
 	}
@@ -770,7 +770,7 @@ func (s *IntegrationTestSuite) TestQueryParamsGRPC() {
 	}{
 		{
 			"gRPC request params",
-			fmt.Sprintf("%s/lbm/staking/v1/params", baseURL),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/params", baseURL),
 			&types.QueryParamsResponse{},
 			&types.QueryParamsResponse{
 				Params: types.DefaultParams(),
@@ -801,7 +801,7 @@ func (s *IntegrationTestSuite) TestQueryPoolGRPC() {
 	}{
 		{
 			"gRPC request params",
-			fmt.Sprintf("%s/lbm/staking/v1/pool", baseURL),
+			fmt.Sprintf("%s/cosmos/staking/v1beta1/pool", baseURL),
 			&types.QueryPoolResponse{},
 			&types.QueryPoolResponse{
 				Pool: types.Pool{

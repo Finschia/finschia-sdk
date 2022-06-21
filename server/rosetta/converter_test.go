@@ -3,6 +3,9 @@ package rosetta_test
 import (
 	"encoding/hex"
 	"encoding/json"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	"github.com/line/lbm-sdk/types/tx/signing"
+	authtx "github.com/line/lbm-sdk/x/auth/tx"
 	"testing"
 
 	rosettatypes "github.com/coinbase/rosetta-sdk-go/types"
@@ -17,7 +20,6 @@ import (
 	crgerrs "github.com/line/lbm-sdk/server/rosetta/lib/errors"
 	sdk "github.com/line/lbm-sdk/types"
 	authsigning "github.com/line/lbm-sdk/x/auth/signing"
-	authtx "github.com/line/lbm-sdk/x/auth/tx"
 	bank "github.com/line/lbm-sdk/x/bank/types"
 )
 
@@ -33,9 +35,54 @@ type ConverterTestSuite struct {
 	txConf client.TxConfig
 }
 
+// generateMsgSend generate sample unsignedTxHex and pubKeyHex
+func generateMsgSend() (unsignedTxHex []byte, pubKeyHex []byte) {
+	cdc, _ := rosetta.MakeCodec()
+	txConfig := authtx.NewTxConfig(cdc, authtx.DefaultSignModes)
+
+	_, fromPk, fromAddr := testdata.KeyTestPubAddr()
+	_, _, toAddr := testdata.KeyTestPubAddr()
+
+	sendMsg := bank.MsgSend{
+		FromAddress: fromAddr.String(),
+		ToAddress:   toAddr.String(),
+		Amount:      sdk.NewCoins(sdk.NewInt64Coin("stake", 16)),
+	}
+
+	txBuilder := txConfig.NewTxBuilder()
+	err := txBuilder.SetMsgs(&sendMsg)
+	if err != nil {
+		return nil, nil
+	}
+	txBuilder.SetGasLimit(200000)
+	txBuilder.SetFeeAmount(sdk.NewCoins(sdk.NewInt64Coin("stake", 1)))
+
+	sigData := signing.SingleSignatureData{
+		SignMode:  signing.SignMode_SIGN_MODE_DIRECT,
+		Signature: nil,
+	}
+	sig := signing.SignatureV2{
+		PubKey:   fromPk,
+		Data:     &sigData,
+		Sequence: 1,
+	}
+	err = txBuilder.SetSignatures(sig)
+	if err != nil {
+		return nil, nil
+	}
+
+	stdTx := txBuilder.GetTx()
+	unsignedTxHex, err = txConfig.TxEncoder()(stdTx)
+	if err != nil {
+		return nil, nil
+	}
+
+	return unsignedTxHex, fromPk.Bytes()
+}
+
 func (s *ConverterTestSuite) SetupTest() {
 	// create an unsigned tx
-	const unsignedTxHex = "0a82010aff000a142f6c626d2e62616e6b2e76312e4d736753656e6412670a2b6c696e6b3134376b6c68377468356a6b6a793361616a736a3272717668747668396d6664657973777a3071122b6c696e6b316d6e7670386c786b616679346c787777617175356561653764787630647a36687767797436331a0b0a057374616b6512023136125d0a490a430a1c2f6c626d2e63727970746f2e736563703235366b312e5075624b657912230a21034c92046950c876f4a5cb6c7797d6eeb9ef80d67ced4d45fb62b1e859240ba9ad12020a0012100a0a0a057374616b651201311090a10f1a00"
+	const unsignedTxHex = "0a8a010a87010a1c2f636f736d6f732e62616e6b2e763162657461312e4d736753656e6412670a2b6c696e6b3136773064766c61716e34727779706739757a36713878643778343434687568756d636370756e122b6c696e6b316c33757538657364636c6a3876706a72757737357535666a34773479746475396e6c6b6538721a0b0a057374616b651202313612640a500a460a1f2f636f736d6f732e63727970746f2e736563703235366b312e5075624b657912230a210377365794209eab396f74316bb32ecb507c0e3788c14edf164f96b25cc4ef624112040a020801180112100a0a0a057374616b6512013110c09a0c1a00"
 	unsignedTxBytes, err := hex.DecodeString(unsignedTxHex)
 	s.Require().NoError(err)
 	s.unsignedTxBytes = unsignedTxBytes
@@ -105,7 +152,7 @@ func (s *ConverterTestSuite) TestFromRosettaOpsToTxErrors() {
 
 	s.Run("codec type but not sdk.Msg", func() {
 		op := &rosettatypes.Operation{
-			Type: "lbm.crypto.ed25519.PubKey",
+			Type: "cosmos.crypto.ed25519.PubKey",
 		}
 
 		_, err := s.c.ToSDK().UnsignedTx([]*rosettatypes.Operation{op})
@@ -136,8 +183,8 @@ func (s *ConverterTestSuite) TestMsgToMetaMetaToMsg() {
 func (s *ConverterTestSuite) TestSignedTx() {
 
 	s.Run("success", func() {
-		const payloadsJSON = `[{"hex_bytes":"82ccce81a3e4a7272249f0e25c3037a316ee2acce76eb0c25db00ef6634a4d57303b2420edfdb4c9a635ad8851fe5c7a9379b7bc2baadc7d74f7e76ac97459b5","signing_payload":{"address":"link147klh7th5jkjy3aajsj2rqvhtvh9mfde37wq5g","hex_bytes":"ed574d84b095250280de38bf8c254e4a1f8755e5bd300b1f6ca2671688136ecc","account_identifier":{"address":"link147klh7th5jkjy3aajsj2rqvhtvh9mfde37wq5g"},"signature_type":"ecdsa"},"public_key":{"hex_bytes":"034c92046950c876f4a5cb6c7797d6eeb9ef80d67ced4d45fb62b1e859240ba9ad","curve_type":"secp256k1"},"signature_type":"ecdsa"}]`
-		const expectedSignedTxHex = "0a82010aff000a142f6c626d2e62616e6b2e76312e4d736753656e6412670a2b6c696e6b3134376b6c68377468356a6b6a793361616a736a3272717668747668396d6664657973777a3071122b6c696e6b316d6e7670386c786b616679346c787777617175356561653764787630647a36687767797436331a0b0a057374616b6512023136125f0a4b0a430a1c2f6c626d2e63727970746f2e736563703235366b312e5075624b657912230a21034c92046950c876f4a5cb6c7797d6eeb9ef80d67ced4d45fb62b1e859240ba9ad12040a02087f12100a0a0a057374616b651201311090a10f1a4082ccce81a3e4a7272249f0e25c3037a316ee2acce76eb0c25db00ef6634a4d57303b2420edfdb4c9a635ad8851fe5c7a9379b7bc2baadc7d74f7e76ac97459b5"
+		const payloadsJSON = `[{"hex_bytes":"82ccce81a3e4a7272249f0e25c3037a316ee2acce76eb0c25db00ef6634a4d57303b2420edfdb4c9a635ad8851fe5c7a9379b7bc2baadc7d74f7e76ac97459b5","public_key":{"curve_type":"secp256k1","hex_bytes":"0377365794209eab396f74316bb32ecb507c0e3788c14edf164f96b25cc4ef6241"},"signature_type":"ecdsa","signing_payload":{"account_identifier":{"address":"link16w0dvlaqn4rwypg9uz6q8xd7x444huhumccpun"},"address":"link16w0dvlaqn4rwypg9uz6q8xd7x444huhumccpun","hex_bytes":"ea43c4019ee3c888a7f99acb57513f708bb8915bc84e914cf4ecbd08ab2d9e51","signature_type":"ecdsa"}}]`
+		const expectedSignedTxHex = "0a8a010a87010a1c2f636f736d6f732e62616e6b2e763162657461312e4d736753656e6412670a2b6c696e6b3136773064766c61716e34727779706739757a36713878643778343434687568756d636370756e122b6c696e6b316c33757538657364636c6a3876706a72757737357535666a34773479746475396e6c6b6538721a0b0a057374616b651202313612640a500a460a1f2f636f736d6f732e63727970746f2e736563703235366b312e5075624b657912230a210377365794209eab396f74316bb32ecb507c0e3788c14edf164f96b25cc4ef624112040a02087f180112100a0a0a057374616b6512013110c09a0c1a4082ccce81a3e4a7272249f0e25c3037a316ee2acce76eb0c25db00ef6634a4d57303b2420edfdb4c9a635ad8851fe5c7a9379b7bc2baadc7d74f7e76ac97459b5"
 
 		var payloads []*rosettatypes.Signature
 		s.Require().NoError(json.Unmarshal([]byte(payloadsJSON), &payloads))
@@ -269,7 +316,7 @@ func (s *ConverterTestSuite) TestSigningComponents() {
 	})
 
 	s.Run("success", func() {
-		expectedPubKey, err := hex.DecodeString("034c92046950c876f4a5cb6c7797d6eeb9ef80d67ced4d45fb62b1e859240ba9ad")
+		expectedPubKey, err := hex.DecodeString("0377365794209eab396f74316bb32ecb507c0e3788c14edf164f96b25cc4ef6241")
 		s.Require().NoError(err)
 
 		_, _, err = s.c.ToRosetta().SigningComponents(
