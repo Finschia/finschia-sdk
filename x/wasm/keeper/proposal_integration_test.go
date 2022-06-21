@@ -135,6 +135,9 @@ func TestInstantiateProposal_NoAdmin(t *testing.T) {
 	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
+		GasMultiplier:                types.DefaultGasMultiplier,
+		InstanceCost:                 types.DefaultInstanceCost,
+		CompileCost:                  types.DefaultCompileCost,
 	})
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")

@@ -485,7 +485,7 @@ func WasmQuerier(k wasmQueryKeeper) func(ctx sdk.Context, request *wasmvmtypes.W
 	return func(ctx sdk.Context, request *wasmvmtypes.WasmQuery) ([]byte, error) {
 		switch {
 		case request.Smart != nil:
-			addr, err := sdk.AccAddressFromHex(request.Smart.ContractAddr)
+			err := sdk.ValidateAccAddress(request.Smart.ContractAddr)
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.Smart.ContractAddr)
 			}
@@ -493,19 +493,19 @@ func WasmQuerier(k wasmQueryKeeper) func(ctx sdk.Context, request *wasmvmtypes.W
 			if err := msg.ValidateBasic(); err != nil {
 				return nil, sdkerrors.Wrap(err, "json msg")
 			}
-			return k.QuerySmart(ctx, addr, msg)
+			return k.QuerySmart(ctx, sdk.AccAddress(request.Smart.ContractAddr), msg)
 		case request.Raw != nil:
-			addr, err := sdk.AccAddressFromHex(request.Raw.ContractAddr)
+			err := sdk.ValidateAccAddress(request.Raw.ContractAddr)
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.Raw.ContractAddr)
 			}
-			return k.QueryRaw(ctx, addr, request.Raw.Key), nil
+			return k.QueryRaw(ctx, sdk.AccAddress(request.Raw.ContractAddr), request.Raw.Key), nil
 		case request.ContractInfo != nil:
-			addr, err := sdk.AccAddressFromHex(request.ContractInfo.ContractAddr)
+			err := sdk.ValidateAccAddress(request.ContractInfo.ContractAddr)
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.ContractInfo.ContractAddr)
 			}
-			info := k.GetContractInfo(ctx, addr)
+			info := k.GetContractInfo(ctx, sdk.AccAddress(request.ContractInfo.ContractAddr))
 			if info == nil {
 				return nil, &types.ErrNoSuchContract{Addr: request.ContractInfo.ContractAddr}
 			}

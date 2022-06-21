@@ -20,6 +20,7 @@ import (
 	evidencetypes "github.com/line/lbm-sdk/x/evidence/types"
 	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 
+	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
 	upgradekeeper "github.com/line/lbm-sdk/x/upgrade/keeper"
 
 	"github.com/line/lbm-sdk/baseapp"
@@ -36,6 +37,7 @@ import (
 	"github.com/line/lbm-sdk/x/bank"
 	bankkeeper "github.com/line/lbm-sdk/x/bank/keeper"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/x/bankplus"
 	"github.com/line/lbm-sdk/x/capability"
 	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
@@ -288,7 +290,7 @@ func createTestInput(
 		blockedAddrs[authtypes.NewModuleAddress(acc).String()] = true
 	}
 
-	bankKeeper := bankkeeper.NewBaseKeeper(
+	bankKeeper := bankpluskeeper.NewBaseKeeper(
 		appCodec,
 		keys[banktypes.StoreKey],
 		accountKeeper,
@@ -398,7 +400,7 @@ func createTestInput(
 	router.AddRoute(sdk.NewRoute(types.RouterKey, TestHandler(contractKeeper)))
 
 	am := module.NewManager( // minimal module set that we use for message/ query tests
-		bank.NewAppModule(appCodec, bankKeeper, accountKeeper),
+		bankplus.NewAppModule(appCodec, bankKeeper, accountKeeper),
 		staking.NewAppModule(appCodec, stakingKeeper, accountKeeper, bankKeeper),
 		distribution.NewAppModule(appCodec, distKeeper, accountKeeper, bankKeeper, stakingKeeper),
 	)

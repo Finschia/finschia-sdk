@@ -445,8 +445,6 @@ func TestContractInfoWasmQuerier(t *testing.T) {
 }
 
 func TestQueryErrors(t *testing.T) {
-	_, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
-
 	specs := map[string]struct {
 		src    error
 		expErr error
@@ -467,7 +465,7 @@ func TestQueryErrors(t *testing.T) {
 				return nil, spec.src
 			})
 			ctx := sdk.Context{}.WithGasMeter(sdk.NewInfiniteGasMeter()).WithMultiStore(store.NewCommitMultiStore(memdb.NewDB()))
-			q := NewQueryHandler(ctx, mock, sdk.AccAddress(""), keepers.WasmKeeper.getGasMultiplier(ctx))
+			q := NewQueryHandler(ctx, mock, sdk.AccAddress(""), NewGasMultiplier(types.DefaultGasMultiplier))
 			_, gotErr := q.Query(wasmvmtypes.QueryRequest{}, 1)
 			assert.Equal(t, spec.expErr, gotErr)
 		})

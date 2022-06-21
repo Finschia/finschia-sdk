@@ -398,7 +398,7 @@ func TestInstantiate(t *testing.T) {
 
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x18dab), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x18cb3), gasAfter-gasBefore)
 	}
 
 	// ensure it is stored properly
@@ -632,7 +632,7 @@ func TestExecute(t *testing.T) {
 	// make sure gas is properly deducted from ctx
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x17cd2), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x16f60), gasAfter-gasBefore)
 	}
 	// ensure bob now exists and got both payments released
 	bobAcct = accKeeper.GetAccount(ctx, bob)
@@ -785,7 +785,7 @@ func TestExecuteWithPanic(t *testing.T) {
 	require.Error(t, err)
 	require.True(t, errors.Is(err, types.ErrExecuteFailed))
 	// test with contains as "Display" implementation of the Wasmer "RuntimeError" is different for Mac and Linux
-	assert.Contains(t, err.Error(), "Error calling the VM: Error executing Wasm: Wasmer runtime error: RuntimeError: unreachable")
+	assert.Contains(t, err.Error(), "Error calling the VM: Error executing Wasm: Wasmer runtime error: RuntimeError: Aborted: panicked at 'This page intentionally faulted'")
 }
 
 func TestExecuteWithCpuLoop(t *testing.T) {
@@ -1153,8 +1153,8 @@ func TestMigrateWithDispatchedMessage(t *testing.T) {
 		{
 			"Type": "transfer",
 			"Attr": []dict{
-				{"recipient": "link1pfvr4mx003jylaxrp9ckjze20ndsvxgfkwt864"},
-				{"sender": "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"},
+				{"recipient": myPayoutAddr},
+				{"sender": contractAddr},
 				{"amount": "100000denom"},
 			},
 		},
@@ -1880,7 +1880,7 @@ func TestReply(t *testing.T) {
 					Bank: &wasmvmtypes.BankQuery{
 						Balance: &wasmvmtypes.BalanceQuery{Address: env.Contract.Address, Denom: "stake"},
 					},
-				}, 1_000_000)
+				}, 1_000_000*types.DefaultGasMultiplier)
 				require.NoError(t, err)
 				var gotBankRsp wasmvmtypes.BalanceResponse
 				require.NoError(t, json.Unmarshal(bzRsp, &gotBankRsp))
@@ -1944,7 +1944,7 @@ func TestQueryIsolation(t *testing.T) {
 	mock.ReplyFn = func(codeID wasmvm.Checksum, env wasmvmtypes.Env, reply wasmvmtypes.Reply, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) (*wasmvmtypes.Response, uint64, error) {
 		_, err := querier.Query(wasmvmtypes.QueryRequest{
 			Custom: []byte(`{}`),
-		}, 1_000_000)
+		}, 1_000_000*types.DefaultGasMultiplier)
 		require.NoError(t, err)
 		return &wasmvmtypes.Response{}, 0, nil
 	}

@@ -126,12 +126,11 @@ func handleSudoProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.Sudo
 	if err := p.ValidateBasic(); err != nil {
 		return err
 	}
-
-	contractAddr, err := sdk.AccAddressFromHex(p.Contract)
+	err := sdk.ValidateAccAddress(p.Contract)
 	if err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
-	data, err := k.Sudo(ctx, contractAddr, p.Msg)
+	data, err := k.Sudo(ctx, sdk.AccAddress(p.Contract), p.Msg)
 	if err != nil {
 		return err
 	}
@@ -148,15 +147,15 @@ func handleExecuteProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.E
 		return err
 	}
 
-	contractAddr, err := sdk.AccAddressFromHex(p.Contract)
+	err := sdk.ValidateAccAddress(p.Contract)
 	if err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
-	runAsAddr, err := sdk.AccAddressFromHex(p.RunAs)
+	err = sdk.ValidateAccAddress(p.RunAs)
 	if err != nil {
 		return sdkerrors.Wrap(err, "run as address")
 	}
-	data, err := k.Execute(ctx, contractAddr, runAsAddr, p.Msg, p.Funds)
+	data, err := k.Execute(ctx, sdk.AccAddress(p.Contract), sdk.AccAddress(p.RunAs), p.Msg, p.Funds)
 	if err != nil {
 		return err
 	}
