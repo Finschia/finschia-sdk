@@ -1262,31 +1262,79 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
 	// Balance queries the number of tokens of a given contract owned by the address.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrInvalidAddress
+	//   - `address` is of invalid format.
 	Balance(ctx context.Context, in *QueryBalanceRequest, opts ...grpc.CallOption) (*QueryBalanceResponse, error)
 	// Supply queries the number of tokens from the given contract id.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrNotFound
+	//   - there is no token class of `contract_id`.
 	Supply(ctx context.Context, in *QuerySupplyRequest, opts ...grpc.CallOption) (*QuerySupplyResponse, error)
 	// Minted queries the number of minted tokens from the given contract id.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrNotFound
+	//   - there is no token class of `contract_id`.
 	Minted(ctx context.Context, in *QueryMintedRequest, opts ...grpc.CallOption) (*QueryMintedResponse, error)
 	// Burnt queries the number of burnt tokens from the given contract id.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrNotFound
+	//   - there is no token class of `contract_id`.
 	Burnt(ctx context.Context, in *QueryBurntRequest, opts ...grpc.CallOption) (*QueryBurntResponse, error)
 	// TokenClass queries an token metadata based on its contract id.
-	// if no token class found for the request, it wound return an error.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrNotFound
+	//   - there is no token class of `contract_id`.
 	TokenClass(ctx context.Context, in *QueryTokenClassRequest, opts ...grpc.CallOption) (*QueryTokenClassResponse, error)
 	// TokenClasses queries all token metadata.
 	// Since: finschia
 	TokenClasses(ctx context.Context, in *QueryTokenClassesRequest, opts ...grpc.CallOption) (*QueryTokenClassesResponse, error)
 	// Grant queries a permission on a given grantee permission pair.
-	// if no grant found for the request, it would return an error.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	//   - `permission` is not a valid permission.
+	// - ErrInvalidAddress
+	//   - `grantee` is of invalid format.
+	// - ErrNotFound
+	//   - there is no permission of `permission` on `grantee`.
 	// Since: finschia
 	Grant(ctx context.Context, in *QueryGrantRequest, opts ...grpc.CallOption) (*QueryGrantResponse, error)
 	// GranteeGrants queries permissions on a given grantee.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrInvalidAddress
+	//   - `grantee` is of invalid format.
 	// Since: finschia
 	GranteeGrants(ctx context.Context, in *QueryGranteeGrantsRequest, opts ...grpc.CallOption) (*QueryGranteeGrantsResponse, error)
 	// Authorization queries authorization on a given operator holder pair.
-	// if no authorization found for the request, it would return an error.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrInvalidAddress
+	//   - `operator` is of invalid format.
+	//   - `holder` is of invalid format.
+	// - ErrNotFound
+	//   - there is no authorization given by `holder` to `operator`.
 	// Since: finschia
 	Authorization(ctx context.Context, in *QueryAuthorizationRequest, opts ...grpc.CallOption) (*QueryAuthorizationResponse, error)
 	// OperatorAuthorizations queries authorization on a given operator.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrInvalidAddress
+	//   - `operator` is of invalid format.
 	// Since: finschia
 	OperatorAuthorizations(ctx context.Context, in *QueryOperatorAuthorizationsRequest, opts ...grpc.CallOption) (*QueryOperatorAuthorizationsResponse, error)
 	// Approved queries authorization on a given proxy approver pair.
@@ -1404,31 +1452,79 @@ func (c *queryClient) Approved(ctx context.Context, in *QueryApprovedRequest, op
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Balance queries the number of tokens of a given contract owned by the address.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrInvalidAddress
+	//   - `address` is of invalid format.
 	Balance(context.Context, *QueryBalanceRequest) (*QueryBalanceResponse, error)
 	// Supply queries the number of tokens from the given contract id.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrNotFound
+	//   - there is no token class of `contract_id`.
 	Supply(context.Context, *QuerySupplyRequest) (*QuerySupplyResponse, error)
 	// Minted queries the number of minted tokens from the given contract id.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrNotFound
+	//   - there is no token class of `contract_id`.
 	Minted(context.Context, *QueryMintedRequest) (*QueryMintedResponse, error)
 	// Burnt queries the number of burnt tokens from the given contract id.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrNotFound
+	//   - there is no token class of `contract_id`.
 	Burnt(context.Context, *QueryBurntRequest) (*QueryBurntResponse, error)
 	// TokenClass queries an token metadata based on its contract id.
-	// if no token class found for the request, it wound return an error.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrNotFound
+	//   - there is no token class of `contract_id`.
 	TokenClass(context.Context, *QueryTokenClassRequest) (*QueryTokenClassResponse, error)
 	// TokenClasses queries all token metadata.
 	// Since: finschia
 	TokenClasses(context.Context, *QueryTokenClassesRequest) (*QueryTokenClassesResponse, error)
 	// Grant queries a permission on a given grantee permission pair.
-	// if no grant found for the request, it would return an error.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	//   - `permission` is not a valid permission.
+	// - ErrInvalidAddress
+	//   - `grantee` is of invalid format.
+	// - ErrNotFound
+	//   - there is no permission of `permission` on `grantee`.
 	// Since: finschia
 	Grant(context.Context, *QueryGrantRequest) (*QueryGrantResponse, error)
 	// GranteeGrants queries permissions on a given grantee.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrInvalidAddress
+	//   - `grantee` is of invalid format.
 	// Since: finschia
 	GranteeGrants(context.Context, *QueryGranteeGrantsRequest) (*QueryGranteeGrantsResponse, error)
 	// Authorization queries authorization on a given operator holder pair.
-	// if no authorization found for the request, it would return an error.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrInvalidAddress
+	//   - `operator` is of invalid format.
+	//   - `holder` is of invalid format.
+	// - ErrNotFound
+	//   - there is no authorization given by `holder` to `operator`.
 	// Since: finschia
 	Authorization(context.Context, *QueryAuthorizationRequest) (*QueryAuthorizationResponse, error)
 	// OperatorAuthorizations queries authorization on a given operator.
+	// Throws:
+	// - ErrInvalidRequest
+	//   - `contract_id` is of invalid format.
+	// - ErrInvalidAddress
+	//   - `operator` is of invalid format.
 	// Since: finschia
 	OperatorAuthorizations(context.Context, *QueryOperatorAuthorizationsRequest) (*QueryOperatorAuthorizationsResponse, error)
 	// Approved queries authorization on a given proxy approver pair.

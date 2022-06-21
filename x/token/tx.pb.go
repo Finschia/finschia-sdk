@@ -1645,7 +1645,7 @@ type MsgClient interface {
 	// - approve_token (deprecated, not typed)
 	// Throws:
 	// - ErrNotFound:
-	//   - there is no the token class of `contract_id`.
+	//   - there is no token class of `contract_id`.
 	// - ErrInvalidRequest:
 	//   - `holder` has already authorized `operator`.
 	// Since: 0.46.0 (finschia)
@@ -1655,7 +1655,7 @@ type MsgClient interface {
 	// - EventRevokedOperator
 	// Throws:
 	// - ErrNotFound:
-	//   - there is no the token class of `contract_id`.
+	//   - there is no token class of `contract_id`.
 	//   - there is no authorization by `holder` to `operator`.
 	// Note: it introduces breaking change, because the legacy clients cannot track this revocation.
 	// Since: 0.46.0 (finschia)
@@ -1737,7 +1737,7 @@ type MsgClient interface {
 	// - ErrUnauthorized
 	//   - the operator does not have `modify` permission.
 	// - ErrNotFound
-	//   - there is no the token class of `contract_id`.
+	//   - there is no token class of `contract_id`.
 	Modify(ctx context.Context, in *MsgModify, opts ...grpc.CallOption) (*MsgModifyResponse, error)
 }
 
@@ -1924,7 +1924,7 @@ type MsgServer interface {
 	// - approve_token (deprecated, not typed)
 	// Throws:
 	// - ErrNotFound:
-	//   - there is no the token class of `contract_id`.
+	//   - there is no token class of `contract_id`.
 	// - ErrInvalidRequest:
 	//   - `holder` has already authorized `operator`.
 	// Since: 0.46.0 (finschia)
@@ -1934,7 +1934,7 @@ type MsgServer interface {
 	// - EventRevokedOperator
 	// Throws:
 	// - ErrNotFound:
-	//   - there is no the token class of `contract_id`.
+	//   - there is no token class of `contract_id`.
 	//   - there is no authorization by `holder` to `operator`.
 	// Note: it introduces breaking change, because the legacy clients cannot track this revocation.
 	// Since: 0.46.0 (finschia)
@@ -2016,7 +2016,7 @@ type MsgServer interface {
 	// - ErrUnauthorized
 	//   - the operator does not have `modify` permission.
 	// - ErrNotFound
-	//   - there is no the token class of `contract_id`.
+	//   - there is no token class of `contract_id`.
 	Modify(context.Context, *MsgModify) (*MsgModifyResponse, error)
 }
 

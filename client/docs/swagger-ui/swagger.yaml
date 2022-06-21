@@ -38908,7 +38908,11 @@ paths:
     get:
       summary: |-
         TokenClass queries an token metadata based on its contract id.
-        if no token class found for the request, it wound return an error.
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+        - ErrNotFound
+          - there is no token class of `contract_id`.
       operationId: TokenClass
       responses:
         '200':
@@ -39052,6 +39056,11 @@ paths:
     get:
       summary: |-
         OperatorAuthorizations queries authorization on a given operator.
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+        - ErrInvalidAddress
+          - `operator` is of invalid format.
         Since: finschia
       operationId: OperatorAuthorizations
       responses:
@@ -39199,7 +39208,14 @@ paths:
     get:
       summary: |-
         Authorization queries authorization on a given operator holder pair.
-        if no authorization found for the request, it would return an error.
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+        - ErrInvalidAddress
+          - `operator` is of invalid format.
+          - `holder` is of invalid format.
+        - ErrNotFound
+          - there is no authorization given by `holder` to `operator`.
         Since: finschia
       operationId: Authorization
       responses:
@@ -39274,6 +39290,13 @@ paths:
       summary: >-
         Balance queries the number of tokens of a given contract owned by the
         address.
+
+        Throws:
+
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+        - ErrInvalidAddress
+          - `address` is of invalid format.
       operationId: TokenBalance
       responses:
         '200':
@@ -39324,7 +39347,13 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/burnt':
     get:
-      summary: Burnt queries the number of burnt tokens from the given contract id.
+      summary: |-
+        Burnt queries the number of burnt tokens from the given contract id.
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+        - ErrNotFound
+          - there is no token class of `contract_id`.
       operationId: Burnt
       responses:
         '200':
@@ -39372,6 +39401,11 @@ paths:
     get:
       summary: |-
         GranteeGrants queries permissions on a given grantee.
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+        - ErrInvalidAddress
+          - `grantee` is of invalid format.
         Since: finschia
       operationId: GranteeGrants
       responses:
@@ -39513,7 +39547,14 @@ paths:
     get:
       summary: |-
         Grant queries a permission on a given grantee permission pair.
-        if no grant found for the request, it would return an error.
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+          - `permission` is not a valid permission.
+        - ErrInvalidAddress
+          - `grantee` is of invalid format.
+        - ErrNotFound
+          - there is no permission of `permission` on `grantee`.
         Since: finschia
       operationId: Grant
       responses:
@@ -39579,7 +39620,13 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/minted':
     get:
-      summary: Minted queries the number of minted tokens from the given contract id.
+      summary: |-
+        Minted queries the number of minted tokens from the given contract id.
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+        - ErrNotFound
+          - there is no token class of `contract_id`.
       operationId: Minted
       responses:
         '200':
@@ -39625,7 +39672,13 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/supply':
     get:
-      summary: Supply queries the number of tokens from the given contract id.
+      summary: |-
+        Supply queries the number of tokens from the given contract id.
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+        - ErrNotFound
+          - there is no token class of `contract_id`.
       operationId: Supply
       responses:
         '200':

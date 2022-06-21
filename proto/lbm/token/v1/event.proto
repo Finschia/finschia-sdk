@@ -105,6 +105,8 @@ message EventIssue {
 
 // EventGrant is emitted when a granter grants its permission to a grantee.
 //
+// Info: `granter` would be empty if the permission is granted by an issuance.
+//
 // Since: 0.46.0 (finschia)
 message EventGrant {
   // contract id associated with the token class.

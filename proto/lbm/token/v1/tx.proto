@@ -43,7 +43,7 @@ service Msg {
   // - approve_token (deprecated, not typed)
   // Throws:
   // - ErrNotFound:
-  //   - there is no the token class of `contract_id`.
+  //   - there is no token class of `contract_id`.
   // - ErrInvalidRequest:
   //   - `holder` has already authorized `operator`.
   // Since: 0.46.0 (finschia)
@@ -54,7 +54,7 @@ service Msg {
   // - EventRevokedOperator
   // Throws:
   // - ErrNotFound:
-  //   - there is no the token class of `contract_id`.
+  //   - there is no token class of `contract_id`.
   //   - there is no authorization by `holder` to `operator`.
   // Note: it introduces breaking change, because the legacy clients cannot track this revocation.
   // Since: 0.46.0 (finschia)
@@ -147,7 +147,7 @@ service Msg {
   // - ErrUnauthorized
   //   - the operator does not have `modify` permission.
   // - ErrNotFound
-  //   - there is no the token class of `contract_id`.
+  //   - there is no token class of `contract_id`.
   rpc Modify(MsgModify) returns (MsgModifyResponse);
 }
 

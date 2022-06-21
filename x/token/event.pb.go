@@ -457,6 +457,8 @@ func (m *EventIssue) GetMintable() bool {
 
 // EventGrant is emitted when a granter grants its permission to a grantee.
 //
+// Info: `granter` would be empty if the permission is granted by an issuance.
+//
 // Since: 0.46.0 (finschia)
 type EventGrant struct {
 	// contract id associated with the token class.
