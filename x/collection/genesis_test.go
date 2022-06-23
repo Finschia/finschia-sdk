@@ -70,7 +70,6 @@ func TestValidateGenesis(t *testing.T) {
 				Classes: []collection.ContractClasses{{
 					Classes: []*codectypes.Any{
 						collection.TokenClassToAny(&collection.NFTClass{
-							ContractId: "deadbeef",
 							Id: "deadbeef",
 							Name: "tibetian fox",
 							Meta: "Tibetian Fox",
@@ -94,7 +93,6 @@ func TestValidateGenesis(t *testing.T) {
 					ContractId: "deadbeef",
 					Classes: []*codectypes.Any{
 						collection.TokenClassToAny(&collection.NFTClass{
-							ContractId: "deadbeef",
 							Name: "tibetian fox",
 							Meta: "Tibetian Fox",
 						}),

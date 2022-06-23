@@ -23,8 +23,76 @@ message Contract {
   string base_img_uri = 4;
 }
 
-// Fungible defines the information of fungible token.
-message Fungible {
+// FTClass defines the class of fungible token.
+//
+// Since: 0.46.0 (finschia)
+message FTClass {
+  option (gogoproto.goproto_getters)         = true;
+  option (cosmos_proto.implements_interface) = "github.com/line/lbm-sdk/x/collection.TokenClass";
+
+  // id defines the unique identifier of the token class.
+  // Note: size of the class id is 8 in length.
+  // Note: token id of the fungible token would be `id` + `00000000`.
+  string id = 1;
+  // name defines the human-readable name of the token class.
+  string name = 2;
+  // meta is a brief description of the token class.
+  string meta = 3;
+  // decimals is the number of decimals which one must divide the amount by to get its user representation.
+  int32 decimals = 4;
+  // mintable represents whether the token class is allowed to mint or burn its tokens.
+  bool mintable = 5;
+}
+
+// NFTClass defines the class of non-fungible token.
+//
+// Since: 0.46.0 (finschia)
+message NFTClass {
+  option (gogoproto.goproto_getters)         = true;
+  option (cosmos_proto.implements_interface) = "github.com/line/lbm-sdk/x/collection.TokenClass";
+
+  // id defines the unique identifier of the token class.
+  // Note: size of the class id is 8 in length.
+  string id = 1;
+  // name defines the human-readable name of the token class.
+  string name = 2;
+  // meta is a brief description of the token class.
+  string meta = 3;
+}
+
+// NFT defines the information of non-fungible token.
+//
+// Since: 0.46.0 (finschia)
+message NFT {
+  // id defines the unique identifier of the token.
+  string id = 1;
+  // name defines the human-readable name of the token.
+  string name = 2;
+  // meta is a brief description of the token.
+  string meta = 3;
+}
+
+// OwnerNFT defines the information of non-fungible token.
+//
+// Note: deprecated (use NFT)
+message OwnerNFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // id defines the unique identifier of the token.
+  string token_id = 2;
+  // name defines the human-readable name of the token.
+  string name = 3;
+  // meta is a brief description of the token.
+  string meta = 4;
+
+  // owner of the token.
+  string owner = 5;
+}
+
+// FT defines the information of fungible token.
+//
+// Note: deprecated (use FTClass)
+message FT {
   // contract id associated with the contract.
   string contract_id = 1;
   // token id defines the unique identifier of the fungible token.
@@ -40,6 +108,8 @@ message Fungible {
 }
 
 // TokenType defines the information of token type.
+//
+// Note: deprecated (use TokenClass)
 message TokenType {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -49,59 +119,6 @@ message TokenType {
   string name = 3;
   // meta is a brief description of the token type.
   string meta = 4;
-}
-
-// FTClass defines the class of fungible token.
-// Since: 0.46.0 (finschia)
-message FTClass {
-  option (gogoproto.goproto_getters)         = true;
-  option (cosmos_proto.implements_interface) = "github.com/line/lbm-sdk/x/collection.TokenClass";
-
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // id defines the unique identifier of the token class.
-  // Note: size of the class id is 8 in length.
-  // Note: token id of the fungible token would be `id` + `00000000`.
-  string id = 2;
-  // name defines the human-readable name of the token class.
-  string name = 3;
-  // meta is a brief description of the token class.
-  string meta = 4;
-  // decimals is the number of decimals which one must divide the amount by to get its user representation.
-  int32 decimals = 5;
-  // mintable represents whether the token class is allowed to mint or burn its tokens.
-  bool mintable = 6;
-}
-
-// NFTClass defines the class of non-fungible token.
-// Since: 0.46.0 (finschia)
-message NFTClass {
-  option (gogoproto.goproto_getters)         = true;
-  option (cosmos_proto.implements_interface) = "github.com/line/lbm-sdk/x/collection.TokenClass";
-
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // id defines the unique identifier of the token class.
-  string id = 2;
-  // name defines the human-readable name of the token class.
-  string name = 3;
-  // meta is a brief description of the token class.
-  string meta = 4;
-}
-
-// NFT defines the information of non-fungible token.
-message NFT {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // id defines the unique identifier of the token.
-  string token_id = 2;
-  // name defines the human-readable name of the token.
-  string name = 3;
-  // meta is a brief description of the token.
-  string meta = 4;
-
-  // owner of the token.
-  string owner = 5;
 }
 
 // Coin defines a token with a token id and an amount.
@@ -115,9 +132,9 @@ message Coin {
 }
 
 // Grant defines permission given to a grantee.
+//
+// Since: 0.46.0 (finschia)
 message Grant {
-  // contract id associated with the contract.
-  string contract_id = 1;
   // address of the grantee.
   string grantee = 2;
   // permission on the contract.
@@ -139,6 +156,8 @@ enum Permission {
 }
 
 // Authorization defines an authorization given to the operator on tokens of the holder.
+//
+// Since: 0.46.0 (finschia)
 message Authorization {
   // address of the holder which authorizes the manipulation of its tokens.
   string holder = 1;
@@ -146,8 +165,18 @@ message Authorization {
   string operator = 2;
 }
 
-// Pair defines a key-value pair.
-message Pair {
+// Attribute defines a key and value of the attribute.
+//
+// Since: 0.46.0 (finschia)
+message Attribute {
+  string key   = 1;
+  string value = 2;
+}
+
+// Change defines a field-value pair.
+//
+// Note: deprecated (use Attribute)
+message Change {
   string field = 1;
   string value = 2;
 }

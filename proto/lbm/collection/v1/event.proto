@@ -106,24 +106,16 @@ message EventRevokedOperator {
   string operator = 3;
 }
 
-// EventIssue is emitted when a new token class is created.
+// EventCreatedTokenClass is emitted when a new token class is created.
 //
 // Since: 0.46.0 (finschia)
-message EventIssue {
+message EventCreatedTokenClass {
   // contract id associated with the contract.
   string contract_id = 1;
-  // name defines the human-readable name of the token class.
-  string name = 2;
-  // symbol is an abbreviated name for token class.
-  string symbol = 3;
-  // uri for the resource of the token class stored off chain.
-  string uri = 4;
-  // meta is a brief description of token class.
-  string meta = 5;
-  // decimals is the number of decimals which one must divide the amount by to get its user representation.
-  int32 decimals = 6;
-  // mintable represents whether the token is allowed to mint.
-  bool mintable = 7;
+  // class id associated with the token class.
+  string id = 2;
+  // attributes of the token class.
+  repeated Attribute attributes = 3 [(gogoproto.nullable) = false];
 }
 
 // EventGrant is emitted when a granter grants its permission to a grantee.
@@ -132,7 +124,7 @@ message EventIssue {
 message EventGrant {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the granter.
+  // address of the granter which grants the permission.
   string granter = 2;
   // address of the grantee.
   string grantee = 3;
@@ -163,7 +155,9 @@ message EventMinted {
   // recipient of the tokens.
   string to = 3;
   // amount of tokens minted.
-  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+  Coin amount = 4 [(gogoproto.nullable) = false];
+  // attributes of the token.
+  repeated Attribute attributes = 5 [(gogoproto.nullable) = false];
 }
 
 // EventBurned is emitted when tokens are burnt.
@@ -186,10 +180,38 @@ message EventBurned {
 message EventModified {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the operator.
+  // address which triggered the modify.
   string operator = 2;
-  // changes on metadata.
-  repeated Pair changes = 3 [(gogoproto.nullable) = false];
+  // changes of the attributes applied.
+  repeated Attribute changes = 3 [(gogoproto.nullable) = false];
+}
+
+// EventModifiedTokenClass is emitted when the information of a token class or contract is modified.
+//
+// Since: 0.46.0 (finschia)
+message EventModifiedTokenClass {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the modify.
+  string operator = 2;
+  // class id associated with the token class.
+  string class_id = 3;
+  // changes of the attributes applied.
+  repeated Attribute changes = 4 [(gogoproto.nullable) = false];
+}
+
+// EventModifiedNFT is emitted when the information of a non-fungible token is modified.
+//
+// Since: 0.46.0 (finschia)
+message EventModifiedNFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the modify.
+  string operator = 2;
+  // token id associated with the non-fungible token.
+  string token_id = 3;
+  // changes of the attributes applied.
+  repeated Attribute changes = 4 [(gogoproto.nullable) = false];
 }
 
 // EventSpent is emitted on token spend.

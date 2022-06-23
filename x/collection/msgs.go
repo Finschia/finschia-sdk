@@ -144,29 +144,60 @@ func validatePermission(permission string) error {
 	return nil
 }
 
-func validateContractChange(change Pair) error {
+func validateChanges(changes []Attribute, validator func(change Attribute) error) error {
+	if len(changes) == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("empty changes")
+	}
+	if len(changes) > changesLimit {
+		return sdkerrors.ErrInvalidRequest.Wrapf("the number of changes exceeds the limit: %d > %d", len(changes), changesLimit)
+	}
+	seenKeys := map[string]bool{}
+	for _, change := range changes {
+		if seenKeys[change.Key] {
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate keys: %s", change.Key)
+		}
+		seenKeys[change.Key] = true
+
+		if err := validator(change); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func validateContractChange(change Attribute) error {
 	validators := map[AttributeKey]func(string) error{
 		AttributeKey_Name:       validateName,
 		AttributeKey_BaseImgURI: validateBaseImgURI,
 		AttributeKey_Meta:       validateMeta,
 	}
 
-	validator, ok := validators[AttributeKey(AttributeKey_value[change.Field])]
-	if !ok {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Field)
-	}
-	return validator(change.Value)
+	return validateChange(change, validators)
 }
 
-func validateTokenClassChange(change Pair) error {
+func validateTokenClassChange(change Attribute) error {
 	validators := map[AttributeKey]func(string) error{
 		AttributeKey_Name: validateName,
 		AttributeKey_Meta: validateMeta,
 	}
 
-	validator, ok := validators[AttributeKey(AttributeKey_value[change.Field])]
+	return validateChange(change, validators)
+}
+
+func validateNFTChange(change Attribute) error {
+	validators := map[AttributeKey]func(string) error{
+		AttributeKey_Name: validateName,
+		AttributeKey_Meta: validateMeta,
+	}
+
+	return validateChange(change, validators)
+}
+
+func validateChange(change Attribute, validators map[AttributeKey]func(string) error) error {
+	validator, ok := validators[AttributeKey(AttributeKey_value[change.Key])]
 	if !ok {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Field)
+		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Key)
 	}
 	return validator(change.Value)
 }
@@ -795,6 +826,81 @@ func (m MsgBurnNFTFrom) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+var _ sdk.Msg = (*MsgModifyContract)(nil)
+
+// ValidateBasic implements Msg.
+func (m MsgModifyContract) ValidateBasic() error {
+	if err := class.ValidateID(m.ContractId); err != nil {
+		return err
+	}
+
+	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
+
+	if err := validateChanges(m.Changes, validateContractChange); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetSigners implements Msg
+func (m MsgModifyContract) GetSigners() []sdk.AccAddress {
+	signer := sdk.AccAddress(m.Operator)
+	return []sdk.AccAddress{signer}
+}
+
+var _ sdk.Msg = (*MsgModifyTokenClass)(nil)
+
+// ValidateBasic implements Msg.
+func (m MsgModifyTokenClass) ValidateBasic() error {
+	if err := class.ValidateID(m.ContractId); err != nil {
+		return err
+	}
+
+	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
+
+	if err := validateChanges(m.Changes, validateTokenClassChange); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetSigners implements Msg
+func (m MsgModifyTokenClass) GetSigners() []sdk.AccAddress {
+	signer := sdk.AccAddress(m.Operator)
+	return []sdk.AccAddress{signer}
+}
+
+var _ sdk.Msg = (*MsgModifyNFT)(nil)
+
+// ValidateBasic implements Msg.
+func (m MsgModifyNFT) ValidateBasic() error {
+	if err := class.ValidateID(m.ContractId); err != nil {
+		return err
+	}
+
+	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
+
+	if err := validateChanges(m.Changes, validateNFTChange); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetSigners implements Msg
+func (m MsgModifyNFT) GetSigners() []sdk.AccAddress {
+	signer := sdk.AccAddress(m.Operator)
+	return []sdk.AccAddress{signer}
+}
+
 var _ sdk.Msg = (*MsgModify)(nil)
 
 // ValidateBasic implements Msg.
@@ -846,7 +952,11 @@ func (m MsgModify) ValidateBasic() error {
 		}
 		seenKeys[change.Field] = true
 
-		if err := validator(change); err != nil {
+		attribute := Attribute{
+			Key: change.Field,
+			Value: change.Value,
+		}
+		if err := validator(attribute); err != nil {
 			return err
 		}
 	}

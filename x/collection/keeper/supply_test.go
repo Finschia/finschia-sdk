@@ -28,19 +28,18 @@ func (s *KeeperTestSuite) TestCreateContract() {
 
 func (s *KeeperTestSuite) TestCreateTokenClass() {
 	testCases := map[string]struct {
+		contractID string
 		class collection.TokenClass
 		valid  bool
 	}{
 		"valid fungible token class": {
-			class: &collection.FTClass{
-				ContractId: s.contractID,
-			},
+			contractID: s.contractID,
+			class: &collection.FTClass{},
 			valid: true,
 		},
 		"valid non-fungible token class": {
-			class: &collection.NFTClass{
-				ContractId: s.contractID,
-			},
+			contractID: s.contractID,
+			class: &collection.NFTClass{},
 			valid: true,
 		},
 		"invalid contract id": {
@@ -50,7 +49,7 @@ func (s *KeeperTestSuite) TestCreateTokenClass() {
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			id, err := s.keeper.CreateTokenClass(s.ctx, tc.class)
+			id, err := s.keeper.CreateTokenClass(s.ctx, tc.contractID, tc.class)
 			if !tc.valid {
 				s.Require().Error(err)
 				s.Require().Nil(id)
@@ -59,10 +58,9 @@ func (s *KeeperTestSuite) TestCreateTokenClass() {
 			s.Require().NoError(err)
 			s.Require().NotNil(id)
 
-			contractID := tc.class.GetContractId()
-			class, err := s.keeper.GetTokenClass(s.ctx, contractID, *id)
+			class, err := s.keeper.GetTokenClass(s.ctx, tc.contractID, *id)
 			s.Require().NoError(err)
-			s.Require().Equal(contractID, class.GetContractId())
+			s.Require().NoError(class.ValidateBasic())
 		})
 	}
 }

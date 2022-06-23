@@ -252,13 +252,12 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 	}
 
 	class := &collection.FTClass{
-		ContractId: req.ContractId,
 		Name:       req.Name,
 		Meta:       req.Meta,
 		Decimals:   req.Decimals,
 		Mintable:   req.Mintable,
 	}
-	_, err := s.keeper.CreateTokenClass(ctx, class)
+	_, err := s.keeper.CreateTokenClass(ctx, req.ContractId, class)
 	if err != nil {
 		return nil, err
 	}
@@ -274,11 +273,10 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 	}
 
 	class := &collection.NFTClass{
-		ContractId: req.ContractId,
 		Name:       req.Name,
 		Meta:       req.Meta,
 	}
-	_, err := s.keeper.CreateTokenClass(ctx, class)
+	_, err := s.keeper.CreateTokenClass(ctx, req.ContractId, class)
 	if err != nil {
 		return nil, err
 	}
@@ -316,6 +314,18 @@ func (s msgServer) Burn(c context.Context, req *collection.MsgBurn) (*collection
 }
 
 func (s msgServer) OperatorBurn(c context.Context, req *collection.MsgOperatorBurn) (*collection.MsgOperatorBurnResponse, error) {
+	return nil, sdkerrors.ErrNotSupported
+}
+
+func (s msgServer) ModifyContract(c context.Context, req *collection.MsgModifyContract) (*collection.MsgModifyContractResponse, error) {
+	return nil, sdkerrors.ErrNotSupported
+}
+
+func (s msgServer) ModifyTokenClass(c context.Context, req *collection.MsgModifyTokenClass) (*collection.MsgModifyTokenClassResponse, error) {
+	return nil, sdkerrors.ErrNotSupported
+}
+
+func (s msgServer) ModifyNFT(c context.Context, req *collection.MsgModifyNFT) (*collection.MsgModifyNFTResponse, error) {
 	return nil, sdkerrors.ErrNotSupported
 }
 

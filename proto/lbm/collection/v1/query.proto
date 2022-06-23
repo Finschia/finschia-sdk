@@ -140,6 +140,12 @@ service Query {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts";
   }
 
+  // Owner queries the owner of the token.
+  // Since: 0.46.0 (finschia)
+  rpc Owner(QueryOwnerRequest) returns (QueryOwnerResponse) {
+    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/owner";
+  }
+
   // Root queries the root of a given nft.
   rpc Root(QueryRootRequest) returns (QueryRootResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root";
@@ -209,6 +215,7 @@ message QueryBalanceResponse {
 }
 
 // QueryAllBalancesRequest is the request type for the Query/AllBalances RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryAllBalancesRequest {
   // contract id associated with the contract.
@@ -221,6 +228,7 @@ message QueryAllBalancesRequest {
 }
 
 // QueryAllBalancesResponse is the response type for the Query/AllBalances RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryAllBalancesResponse {
   // balances is the balalces of all the tokens.
@@ -231,6 +239,7 @@ message QueryAllBalancesResponse {
 }
 
 // QuerySupplyRequest is the request type for the Query/Supply RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QuerySupplyRequest {
   // contract id associated with the contract.
@@ -240,6 +249,7 @@ message QuerySupplyRequest {
 }
 
 // QuerySupplyResponse is the response type for the Query/Supply RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QuerySupplyResponse {
   // supply is the supply of the tokens.
@@ -247,6 +257,7 @@ message QuerySupplyResponse {
 }
 
 // QueryMintedRequest is the request type for the Query/Minted RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryMintedRequest {
   // contract id associated with the contract.
@@ -256,6 +267,7 @@ message QueryMintedRequest {
 }
 
 // QueryMintedResponse is the response type for the Query/Minted RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryMintedResponse {
   // minted is the amount of the minted tokens.
@@ -263,6 +275,7 @@ message QueryMintedResponse {
 }
 
 // QueryBurntRequest is the request type for the Query/Burnt RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryBurntRequest {
   // contract id associated with the contract.
@@ -272,6 +285,7 @@ message QueryBurntRequest {
 }
 
 // QueryBurntResponse is the response type for the Query/Burnt RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryBurntResponse {
   // burnt is the amount of the burnt tokens.
@@ -279,6 +293,7 @@ message QueryBurntResponse {
 }
 
 // QueryFTSupplyRequest is the request type for the Query/FTSupply RPC method.
+//
 // Note: deprecated (use QuerySupplyRequest)
 message QueryFTSupplyRequest {
   // contract id associated with the contract.
@@ -288,6 +303,7 @@ message QueryFTSupplyRequest {
 }
 
 // QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
+//
 // Note: deprecated
 message QueryFTSupplyResponse {
   // supply is the supply of the tokens.
@@ -295,6 +311,7 @@ message QueryFTSupplyResponse {
 }
 
 // QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
+//
 // Note: deprecated (use QueryMintedRequest)
 message QueryFTMintedRequest {
   // contract id associated with the contract.
@@ -304,6 +321,7 @@ message QueryFTMintedRequest {
 }
 
 // QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
+//
 // Note: deprecated
 message QueryFTMintedResponse {
   // minted is the amount of the minted tokens.
@@ -311,6 +329,7 @@ message QueryFTMintedResponse {
 }
 
 // QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
+//
 // Note: deprecated (use QueryBurntRequest)
 message QueryFTBurntRequest {
   // contract id associated with the contract.
@@ -320,6 +339,7 @@ message QueryFTBurntRequest {
 }
 
 // QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
+//
 // Note: deprecated
 message QueryFTBurntResponse {
   // burnt is the amount of the burnt tokens.
@@ -327,6 +347,7 @@ message QueryFTBurntResponse {
 }
 
 // QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
+//
 // Note: deprecated (use QuerySupplyRequest)
 message QueryNFTSupplyRequest {
   // contract id associated with the contract.
@@ -336,6 +357,7 @@ message QueryNFTSupplyRequest {
 }
 
 // QueryNFTSupplyResponse is the response type for the Query/NFTSupply RPC method.
+//
 // Note: deprecated
 message QueryNFTSupplyResponse {
   // supply is the supply of the non-fungible token.
@@ -343,6 +365,7 @@ message QueryNFTSupplyResponse {
 }
 
 // QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
+//
 // Note: deprecated (use QueryMintedRequest)
 message QueryNFTMintedRequest {
   // contract id associated with the contract.
@@ -352,6 +375,7 @@ message QueryNFTMintedRequest {
 }
 
 // QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC method.
+//
 // Note: deprecated
 message QueryNFTMintedResponse {
   // minted is the amount of minted tokens.
@@ -359,6 +383,7 @@ message QueryNFTMintedResponse {
 }
 
 // QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
+//
 // Note: deprecated (use QueryBurntRequest)
 message QueryNFTBurntRequest {
   // contract id associated with the contract.
@@ -368,6 +393,7 @@ message QueryNFTBurntRequest {
 }
 
 // QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
+//
 // Note: deprecated
 message QueryNFTBurntResponse {
   // burnt is the amount of the burnt tokens.
@@ -396,7 +422,7 @@ message QueryContractsRequest {
 // QueryContractsResponse is the response type for the Query/Contracts RPC method.
 // Since: 0.46.0 (finschia)
 message QueryContractsResponse {
-  // contracts is the informations of all the contracts.
+  // contracts are the informations of all the contracts.
   repeated Contract contracts = 1;
 
   // pagination defines the pagination in the response.
@@ -404,6 +430,7 @@ message QueryContractsResponse {
 }
 
 // QueryFTRequest is the request type for the Query/FT RPC method.
+//
 // Note: deprecated (use QueryTokenClassRequest)
 message QueryFTRequest {
   // contract id associated with the contract.
@@ -413,13 +440,15 @@ message QueryFTRequest {
 }
 
 // QueryFTResponse is the response type for the Query/FT RPC method.
+//
 // Note: deprecated
 message QueryFTResponse {
   // token is the information of the fungible token.
-  Fungible token = 1;
+  FT token = 1;
 }
 
 // QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
+//
 // Note: deprecated (use QueryTokenClassRequest)
 message QueryTokenTypeRequest {
   // contract id associated with the contract.
@@ -429,6 +458,7 @@ message QueryTokenTypeRequest {
 }
 
 // QueryTokenTypeResponse is the response type for the Query/TokenType RPC method.
+//
 // Note: deprecated
 message QueryTokenTypeResponse {
   // token type is the information of the token type.
@@ -436,6 +466,7 @@ message QueryTokenTypeResponse {
 }
 
 // QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
+//
 // Note: deprecated (use QueryTokenClassesRequest)
 message QueryTokenTypesRequest {
   // contract id associated with the contract.
@@ -446,6 +477,7 @@ message QueryTokenTypesRequest {
 }
 
 // QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method.
+//
 // Note: deprecated
 message QueryTokenTypesResponse {
   // token types is the informations of all the token types.
@@ -456,6 +488,7 @@ message QueryTokenTypesResponse {
 }
 
 // QueryTokensRequest is the request type for the Query/Tokens RPC method.
+//
 // Note: deprecated (use QueryTokenClasses and NFT)
 message QueryTokensRequest {
   // contract id associated with the contract.
@@ -475,6 +508,7 @@ message QueryTokensResponse {
 }
 
 // QueryTokenClassRequest is the request type for the Query/TokenClass RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryTokenClassRequest {
   // contract id associated with the contract.
@@ -484,6 +518,7 @@ message QueryTokenClassRequest {
 }
 
 // QueryTokenClassResponse is the response type for the Query/TokenClass RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryTokenClassResponse {
   // class is the information of the token class.
@@ -491,6 +526,7 @@ message QueryTokenClassResponse {
 }
 
 // QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryTokenClassesRequest {
   // contract id associated with the contract.
@@ -501,6 +537,7 @@ message QueryTokenClassesRequest {
 }
 
 // QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryTokenClassesResponse {
   // classes is the informations of all the token classes.
@@ -535,6 +572,7 @@ message QueryNFTsRequest {
 }
 
 // QueryNFTsResponse is the response type for the Query/NFTs RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryNFTsResponse {
   // token is the information of the non-fungible token.
@@ -542,6 +580,24 @@ message QueryNFTsResponse {
 
   // pagination defines the pagination in the response.
   lbm.base.query.v1.PageResponse pagination = 2;
+}
+
+// QueryOwnerRequest is the request type for the Query/Owner RPC method.
+//
+// Since: 0.46.0 (finschia)
+message QueryOwnerRequest {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // token id associated with the non-fungible token.
+  string token_id = 2;
+}
+
+// QueryOwnerResponse is the response type for the Query/Owner RPC method.
+//
+// Since: 0.46.0 (finschia)
+message QueryOwnerResponse {
+  // owner of the token.
+  string owner = 1;
 }
 
 // QueryRootRequest is the request type for the Query/Root RPC method.
@@ -595,6 +651,7 @@ message QueryChildrenResponse {
 }
 
 // QueryGrantRequest is the request type for the Query/Grant RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryGrantRequest {
   // contract id associated with the contract.
@@ -606,13 +663,15 @@ message QueryGrantRequest {
 }
 
 // QueryGrantResponse is the response type for the Query/Grant RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryGrantResponse {
   // if no grant found for the request, it would be nil and return an error.
-  Grant grant = 1;
+  Grant grant = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryGranteeGrantsRequest {
   // contract id associated with the contract.
@@ -625,6 +684,7 @@ message QueryGranteeGrantsRequest {
 }
 
 // QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryGranteeGrantsResponse {
   repeated Grant grants = 1 [(gogoproto.nullable) = false];
@@ -634,6 +694,7 @@ message QueryGranteeGrantsResponse {
 }
 
 // QueryAuthorizationRequest is the request type for the Query/Authorization RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryAuthorizationRequest {
   // contract id associated with the contract.
@@ -645,13 +706,15 @@ message QueryAuthorizationRequest {
 }
 
 // QueryAuthorizationResponse is the response type for the Query/Authorization RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryAuthorizationResponse {
   // if no authorization found for the request, it would be nil.
-  Authorization authorization = 1;
+  Authorization authorization = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAuthorizations RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryOperatorAuthorizationsRequest {
   // contract id associated with the contract.
@@ -664,6 +727,7 @@ message QueryOperatorAuthorizationsRequest {
 }
 
 // QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method.
+//
 // Since: 0.46.0 (finschia)
 message QueryOperatorAuthorizationsResponse {
   repeated Authorization authorizations = 1 [(gogoproto.nullable) = false];
@@ -673,6 +737,7 @@ message QueryOperatorAuthorizationsResponse {
 }
 
 // QueryApprovedRequest is the request type for the Query/Approved RPC method.
+//
 // Note: deprecated (use QueryAuthorizationRequest)
 message QueryApprovedRequest {
   // contract id associated with the contract.
@@ -684,12 +749,14 @@ message QueryApprovedRequest {
 }
 
 // QueryApprovedResponse is the response type for the Query/Approved RPC method.
+//
 // Note: deprecated
 message QueryApprovedResponse {
   bool approved = 1;
 }
 
 // QueryApproversRequest is the request type for the Query/Approvers RPC method.
+//
 // Note: deprecated (use QueryOperatorAuthorizations)
 message QueryApproversRequest {
   // contract id associated with the contract.
@@ -702,6 +769,7 @@ message QueryApproversRequest {
 }
 
 // QueryApproversResponse is the response type for the Query/Approvers RPC method.
+//
 // Note: deprecated
 message QueryApproversResponse {
   repeated string approvers = 1;

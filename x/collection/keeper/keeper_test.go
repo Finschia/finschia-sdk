@@ -92,16 +92,14 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	// create a fungible token class
-	ftClassID, err := s.keeper.CreateTokenClass(s.ctx, &collection.FTClass{
-		ContractId: s.contractID,
+	ftClassID, err := s.keeper.CreateTokenClass(s.ctx, s.contractID, &collection.FTClass{
 		Name: "test ft class",
 	})
 	s.Require().NoError(err)
 	s.ftClassID = *ftClassID
 
 	// create a non-fungible token class
-	nftClassID, err := s.keeper.CreateTokenClass(s.ctx, &collection.NFTClass{
-		ContractId: s.contractID,
+	nftClassID, err := s.keeper.CreateTokenClass(s.ctx, s.contractID, &collection.NFTClass{
 		Name: "test ft class",
 	})
 	s.Require().NoError(err)

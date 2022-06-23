@@ -1,7 +1,10 @@
 syntax = "proto3";
 package lbm.collection.v1;
 
+import "google/protobuf/any.proto";
 import "gogoproto/gogo.proto";
+
+import "cosmos_proto/cosmos.proto";
 import "lbm/collection/v1/collection.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/collection";
@@ -52,7 +55,7 @@ service Msg {
   // Note: deprecated (use RevokeOperator)
   rpc Disapprove(MsgDisapprove) returns (MsgDisapproveResponse);
 
-  // CreateContract defines a method to create a contract.
+  // CreateContract defines a method to create a contract for collection.
   rpc CreateContract(MsgCreateContract) returns (MsgCreateContractResponse);
 
   // IssueFT defines a method to create a class of fungible token.
@@ -93,7 +96,20 @@ service Msg {
   // Note: deprecated (use OperatorBurn)
   rpc BurnNFTFrom(MsgBurnNFTFrom) returns (MsgBurnNFTFromResponse);
 
+  // ModifyContract defines a method to modify the attributes of a contract.
+  // Since: 0.46.0 (finschia)
+  rpc ModifyContract(MsgModifyContract) returns (MsgModifyContractResponse);
+
+  // ModifyTokenClass defines a method to modify the attributes of a token class.
+  // Since: 0.46.0 (finschia)
+  rpc ModifyTokenClass(MsgModifyTokenClass) returns (MsgModifyTokenClassResponse);
+
+  // ModifyNFT defines a method to modify the attributes of a non-fungible token.
+  // Since: 0.46.0 (finschia)
+  rpc ModifyNFT(MsgModifyNFT) returns (MsgModifyNFTResponse);
+
   // Modify defines a method to modify metadata.
+  // Note: deprecated (use ModifyContract, ModifyTokenClass or ModifyNFT)
   rpc Modify(MsgModify) returns (MsgModifyResponse);
 
   // Grant allows one to mint or burn tokens or modify metadata.
@@ -327,15 +343,15 @@ message MsgDisapproveResponse {}
 
 // MsgCreateContract is the Msg/CreateContract request type.
 message MsgCreateContract {
-  // name defines the human-readable name of the contract.
-  string name = 1;
-  // base img uri is an uri for the contract image stored off chain.
-  string base_img_uri = 2;
-  // meta is a brief description of the contract.
-  string meta = 3;
-
   // address which all the permissions on the contract will be granted to (not a permanent property).
-  string owner = 4;
+  string owner = 1;
+
+  // name defines the human-readable name of the contract.
+  string name = 2;
+  // base img uri is an uri for the contract image stored off chain.
+  string base_img_uri = 3;
+  // meta is a brief description of the contract.
+  string meta = 4;
 }
 
 // MsgCreateContractResponse is the Msg/CreateContract response type.
@@ -400,7 +416,7 @@ message MsgMintFT {
   string to = 3;
   // the amount of the mint.
   // Note: amount may be empty.
-  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+  repeated Coin amount = 4 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Coins"];
 }
 
 // MsgMintFTResponse is the Msg/MintFT response type.
@@ -418,6 +434,10 @@ message MsgMintNFT {
   repeated MintNFTParam params = 4 [(gogoproto.nullable) = false];
 }
 
+// MsgMintNFTResponse is the Msg/MintNFT response type.
+message MsgMintNFTResponse {}
+
+// MintNFTParam defines a parameter for minting nft.
 message MintNFTParam {
   // token type or class id of the nft.
   // Note: it cannot start with zero.
@@ -427,9 +447,6 @@ message MintNFTParam {
   // meta is a brief description of the nft.
   string meta = 3;
 }
-
-// MsgMintNFTResponse is the Msg/MintNFT response type.
-message MsgMintNFTResponse {}
 
 // MsgBurn is the Msg/Burn request type.
 //
@@ -552,7 +569,64 @@ message MsgBurnNFTFrom {
 // Note: deprecated
 message MsgBurnNFTFromResponse {}
 
+// MsgModifyContract is the Msg/ModifyContract request type.
+//
+// Since: 0.46.0 (finschia)
+message MsgModifyContract {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggers the modify.
+  string operator = 2;
+  // attributes to apply.
+  repeated Attribute changes = 3 [(gogoproto.nullable) = false];
+}
+
+// MsgModifyContractResponse is the Msg/ModifyContract response type.
+//
+// Since: 0.46.0 (finschia)
+message MsgModifyContractResponse {}
+
+// MsgModifyTokenClass is the Msg/ModifyTokenClass request type.
+//
+// Since: 0.46.0 (finschia)
+message MsgModifyTokenClass {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggers the modify.
+  string operator = 2;
+  // class id associated with the token class.
+  string class_id = 3;
+  // attributes to apply.
+  repeated Attribute changes = 4 [(gogoproto.nullable) = false];
+}
+
+// MsgModifyTokenClassResponse is the Msg/ModifyTokenClass response type.
+//
+// Since: 0.46.0 (finschia)
+message MsgModifyTokenClassResponse {}
+
+// MsgModifyNFT is the Msg/ModifyNFT request type.
+//
+// Since: 0.46.0 (finschia)
+message MsgModifyNFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggers the modify.
+  string operator = 2;
+  // token id associated with the non-fungible token.
+  string token_id = 3;
+  // attributes to apply.
+  repeated Attribute changes = 4 [(gogoproto.nullable) = false];
+}
+
+// MsgModifyNFTResponse is the Msg/ModifyNFT response type.
+//
+// Since: 0.46.0 (finschia)
+message MsgModifyNFTResponse {}
+
 // MsgModify is the Msg/Modify request type.
+//
+// Note: deprecated (use MsgModifyContract, MsgModifyTokenClass or MsgModifyNFT)
 message MsgModify {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -568,10 +642,12 @@ message MsgModify {
   // changes to apply.
   // on modifying collection: name, base_img_uri, meta.
   // on modifying token type and token: name, meta.
-  repeated Pair changes = 5 [(gogoproto.nullable) = false];
+  repeated Change changes = 5 [(gogoproto.nullable) = false];
 }
 
 // MsgModifyResponse is the Msg/Modify response type.
+//
+// Note: deprecated
 message MsgModifyResponse {}
 
 // MsgGrant is the Msg/Grant request type.

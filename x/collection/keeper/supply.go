@@ -63,8 +63,7 @@ func (k Keeper) setContract(ctx sdk.Context, contract collection.Contract) {
 	store.Set(key, bz)
 }
 
-func (k Keeper) CreateTokenClass(ctx sdk.Context, class collection.TokenClass) (*string, error) {
-	contractID := class.GetContractId()
+func (k Keeper) CreateTokenClass(ctx sdk.Context, contractID string, class collection.TokenClass) (*string, error) {
 	if _, err := k.GetContract(ctx, contractID); err != nil {
 		return nil, err
 	}
@@ -76,7 +75,7 @@ func (k Keeper) CreateTokenClass(ctx sdk.Context, class collection.TokenClass) (
 	if err := class.ValidateBasic(); err != nil {
 		return nil, err
 	}
-	k.setTokenClass(ctx, class)
+	k.setTokenClass(ctx, contractID, class)
 
 	// TODO: emit event
 	id := class.GetId()
@@ -98,9 +97,9 @@ func (k Keeper) GetTokenClass(ctx sdk.Context, contractID, classID string) (coll
 	return class, nil
 }
 
-func (k Keeper) setTokenClass(ctx sdk.Context, class collection.TokenClass) {
+func (k Keeper) setTokenClass(ctx sdk.Context, contractID string, class collection.TokenClass) {
 	store := ctx.KVStore(k.storeKey)
-	key := classKey(class.GetContractId(), class.GetId())
+	key := classKey(contractID, class.GetId())
 
 	bz, err := k.cdc.MarshalInterface(class)
 	if err != nil {

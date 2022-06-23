@@ -20,8 +20,6 @@ func DefaultNextClassIDs(contractID string) NextClassIDs {
 type TokenClass interface {
 	proto.Message
 
-	GetContractId() string
-
 	GetId() string
 	SetId(ids *NextClassIDs)
 

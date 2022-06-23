@@ -12,9 +12,11 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 	}
 
 	for _, contractClasses := range data.Classes {
+		contractID := contractClasses.ContractId
+
 		for _, any := range contractClasses.Classes {
 			class := collection.TokenClassFromAny(any)
-			k.setTokenClass(ctx, class)
+			k.setTokenClass(ctx, contractID, class)
 		}
 	}
 

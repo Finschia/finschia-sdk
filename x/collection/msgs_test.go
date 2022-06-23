@@ -1454,26 +1454,26 @@ func TestMsgModify(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	validChange := collection.Pair{Field: "name", Value: "New test"}
+	validChange := collection.Change{Field: "name", Value: "New test"}
 	testCases := map[string]struct {
 		contractID string
 		grantee sdk.AccAddress
 		tokenType string
 		tokenIndex string
-		changes []collection.Pair
+		changes []collection.Change
 		valid   bool
 	}{
 		"valid contract modification": {
 			contractID: "deadbeef",
 			grantee: addrs[0],
-			changes: []collection.Pair{validChange},
+			changes: []collection.Change{validChange},
 			valid:   true,
 		},
 		"valid token class modification": {
 			contractID: "deadbeef",
 			tokenType: "deadbeef",
 			grantee: addrs[0],
-			changes: []collection.Pair{validChange},
+			changes: []collection.Change{validChange},
 			valid:   true,
 		},
 		"valid nft modification": {
@@ -1481,26 +1481,26 @@ func TestMsgModify(t *testing.T) {
 			tokenType: "deadbeef",
 			tokenIndex: "deadbeef",
 			grantee: addrs[0],
-			changes: []collection.Pair{validChange},
+			changes: []collection.Change{validChange},
 			valid:   true,
 		},
 		"invalid contract id": {
 			grantee: addrs[0],
-			changes: []collection.Pair{validChange},
+			changes: []collection.Change{validChange},
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
-			changes: []collection.Pair{validChange},
+			changes: []collection.Change{validChange},
 		},
 		"invalid key of change": {
 			contractID: "deadbeef",
 			grantee: addrs[0],
-			changes: []collection.Pair{{Value: "tt"}},
+			changes: []collection.Change{{Value: "tt"}},
 		},
 		"invalid value of change": {
 			contractID: "deadbeef",
 			grantee: addrs[0],
-			changes: []collection.Pair{{Field: "symbol"}},
+			changes: []collection.Change{{Field: "symbol"}},
 		},
 		"empty changes": {
 			contractID: "deadbeef",
@@ -1509,12 +1509,12 @@ func TestMsgModify(t *testing.T) {
 		"too many changes": {
 			contractID: "deadbeef",
 			grantee: addrs[0],
-			changes: make([]collection.Pair, 101),
+			changes: make([]collection.Change, 101),
 		},
 		"duplicated changes": {
 			contractID: "deadbeef",
 			grantee: addrs[0],
-			changes: []collection.Pair{
+			changes: []collection.Change{
 				{Field: "name", Value: "hello"},
 				{Field: "name", Value: "world"},
 			},
