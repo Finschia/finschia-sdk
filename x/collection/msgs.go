@@ -953,7 +953,7 @@ func (m MsgModify) ValidateBasic() error {
 		seenKeys[change.Field] = true
 
 		attribute := Attribute{
-			Key: change.Field,
+			Key:   change.Field,
 			Value: change.Value,
 		}
 		if err := validator(attribute); err != nil {

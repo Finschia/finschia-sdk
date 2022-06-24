@@ -363,8 +363,8 @@ func splitGrantKey(key []byte) (contractID string, grantee sdk.AccAddress, permi
 
 //-----------------------------------------------------------------------------
 // statistics
-func statisticsKey(keyPrefix []byte, contractID string, classID string) []byte {
-	prefix := statisticsKeyPrefixByContractID(keyPrefix, contractID)
+func statisticKey(keyPrefix []byte, contractID string, classID string) []byte {
+	prefix := statisticKeyPrefixByContractID(keyPrefix, contractID)
 	key := make([]byte, len(prefix)+1+len(classID))
 
 	copy(key, prefix)
@@ -373,7 +373,7 @@ func statisticsKey(keyPrefix []byte, contractID string, classID string) []byte {
 	return key
 }
 
-func statisticsKeyPrefixByContractID(keyPrefix []byte, contractID string) []byte {
+func statisticKeyPrefixByContractID(keyPrefix []byte, contractID string) []byte {
 	key := make([]byte, len(keyPrefix)+1+len(contractID))
 
 	begin := 0
@@ -388,7 +388,7 @@ func statisticsKeyPrefixByContractID(keyPrefix []byte, contractID string) []byte
 	return key
 }
 
-func splitStatisticsKey(keyPrefix, key []byte) (contractID string, classID string) {
+func splitStatisticKey(keyPrefix, key []byte) (contractID string, classID string) {
 	begin := len(keyPrefix) + 1
 	end := begin + int(key[begin-1])
 	contractID = string(key[begin:end])

@@ -12,15 +12,14 @@ func (s *KeeperTestSuite) TestCreateContract() {
 		Meta: "Tibetian Fox",
 		BaseImgUri: "file:///tibetian_fox.png",
 	}
-	id, err := s.keeper.CreateContract(ctx, s.vendor, input)
-	s.Require().NoError(err)
+	id := s.keeper.CreateContract(ctx, s.vendor, input)
 	s.Require().NotEmpty(id)
 
-	output, err := s.keeper.GetContract(ctx, *id)
+	output, err := s.keeper.GetContract(ctx, id)
 	s.Require().NoError(err)
 	s.Require().NotNil(output)
 
-	s.Require().Equal(*id, output.ContractId)
+	s.Require().Equal(id, output.ContractId)
 	s.Require().Equal(input.Name, output.Name)
 	s.Require().Equal(input.Meta, output.Meta)
 	s.Require().Equal(input.BaseImgUri, output.BaseImgUri)

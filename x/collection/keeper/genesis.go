@@ -80,12 +80,31 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 
 // ExportGenesis returns a GenesisState for a given context.
 func (k Keeper) ExportGenesis(ctx sdk.Context) *collection.GenesisState {
+	contracts := k.getContracts(ctx)
+
+	return &collection.GenesisState{
+		Contracts:      contracts,
+		Classes:        k.getClasses(ctx, contracts),
+		Balances:       k.getBalances(ctx, contracts),
+		Parents:        k.getParents(ctx, contracts),
+		Grants:         k.getGrants(ctx, contracts),
+		Authorizations: k.getAuthorizations(ctx, contracts),
+		Supplies:       k.getSupplies(ctx, contracts),
+		Burnts:         k.getBurnts(ctx, contracts),
+	}
+}
+
+func (k Keeper) getContracts(ctx sdk.Context) []collection.Contract {
 	var contracts []collection.Contract
 	k.iterateContracts(ctx, func(contract collection.Contract) (stop bool) {
 		contracts = append(contracts, contract)
 		return false
 	})
 
+	return contracts
+}
+
+func (k Keeper) getClasses(ctx sdk.Context, contracts []collection.Contract) []collection.ContractClasses {
 	var classes []collection.ContractClasses
 	for _, contract := range contracts {
 		contractID := contract.ContractId
@@ -98,117 +117,29 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *collection.GenesisState {
 			contractClasses.Classes = append(contractClasses.Classes, any)
 			return false
 		})
+		if len(contractClasses.Classes) != 0 {
+			classes = append(classes, contractClasses)
+		}
 	}
 
+	return classes
+}
+
+func (k Keeper) getBalances(ctx sdk.Context, contracts []collection.Contract) []collection.ContractBalances {
 	var balances []collection.ContractBalances
 	for _, contract := range contracts {
 		contractID := contract.ContractId
 		contractBalances := collection.ContractBalances{
 			ContractId: contractID,
-			Balances:   k.getContractBalances(ctx, contractID),
 		}
 
+		contractBalances.Balances = k.getContractBalances(ctx, contractID)
 		if len(contractBalances.Balances) != 0 {
 			balances = append(balances, contractBalances)
 		}
 	}
 
-	var parents []collection.ContractTokenRelations
-	for _, contract := range contracts {
-		contractID := contract.ContractId
-		contractParents := collection.ContractTokenRelations{
-			ContractId: contractID,
-		}
-
-		k.iterateContractParents(ctx, contractID, func(tokenID, parentID string) (stop bool) {
-			relation := collection.TokenRelation{
-				Self:  tokenID,
-				Other: parentID,
-			}
-			contractParents.Relations = append(contractParents.Relations, relation)
-			return false
-		})
-		if len(contractParents.Relations) != 0 {
-			parents = append(parents, contractParents)
-		}
-	}
-
-	var authorizations []collection.ContractAuthorizations
-	for _, contract := range contracts {
-		contractID := contract.ContractId
-		contractAuthorizations := collection.ContractAuthorizations{
-			ContractId: contractID,
-		}
-
-		k.iterateContractAuthorizations(ctx, contractID, func(authorization collection.Authorization) (stop bool) {
-			contractAuthorizations.Authorizations = append(contractAuthorizations.Authorizations, authorization)
-			return false
-		})
-		if len(contractAuthorizations.Authorizations) != 0 {
-			authorizations = append(authorizations, contractAuthorizations)
-		}
-	}
-
-	var grants []collection.ContractGrants
-	for _, contract := range contracts {
-		contractID := contract.ContractId
-		contractGrants := collection.ContractGrants{
-			ContractId: contractID,
-		}
-
-		k.iterateContractGrants(ctx, contractID, func(grant collection.Grant) (stop bool) {
-			contractGrants.Grants = append(contractGrants.Grants, grant)
-			return false
-		})
-		if len(contractGrants.Grants) != 0 {
-			grants = append(grants, contractGrants)
-		}
-	}
-
-	var supplies []collection.ContractStatistics
-	for _, contract := range contracts {
-		contractID := contract.ContractId
-		contractSupplies := collection.ContractStatistics{
-			ContractId: contractID,
-		}
-
-		k.iterateContractSupplies(ctx, contractID, func(classID string, amount sdk.Int) (stop bool) {
-			supply := collection.ClassStatistics{
-				ClassId: classID,
-				Amount:  amount,
-			}
-			contractSupplies.Statistics = append(contractSupplies.Statistics, supply)
-			return false
-		})
-	}
-
-	var burnts []collection.ContractStatistics
-	for _, contract := range contracts {
-		contractID := contract.ContractId
-		contractBurnts := collection.ContractStatistics{
-			ContractId: contractID,
-		}
-
-		k.iterateContractBurnts(ctx, contractID, func(classID string, amount sdk.Int) (stop bool) {
-			burnt := collection.ClassStatistics{
-				ClassId: classID,
-				Amount:  amount,
-			}
-			contractBurnts.Statistics = append(contractBurnts.Statistics, burnt)
-			return false
-		})
-	}
-
-	return &collection.GenesisState{
-		Contracts:      contracts,
-		Classes:        classes,
-		Balances:       balances,
-		Parents:        parents,
-		Grants:         grants,
-		Authorizations: authorizations,
-		Supplies:       supplies,
-		Burnts:         burnts,
-	}
+	return balances
 }
 
 func (k Keeper) getContractBalances(ctx sdk.Context, contractID string) []collection.Balance {
@@ -232,4 +163,100 @@ func (k Keeper) getContractBalances(ctx sdk.Context, contractID string) []collec
 	})
 
 	return balances
+}
+
+func (k Keeper) getParents(ctx sdk.Context, contracts []collection.Contract) []collection.ContractTokenRelations {
+	var parents []collection.ContractTokenRelations
+	for _, contract := range contracts {
+		contractID := contract.ContractId
+		contractParents := collection.ContractTokenRelations{
+			ContractId: contractID,
+		}
+
+		k.iterateContractParents(ctx, contractID, func(tokenID, parentID string) (stop bool) {
+			relation := collection.TokenRelation{
+				Self:  tokenID,
+				Other: parentID,
+			}
+			contractParents.Relations = append(contractParents.Relations, relation)
+			return false
+		})
+		if len(contractParents.Relations) != 0 {
+			parents = append(parents, contractParents)
+		}
+	}
+
+	return parents
+}
+
+func (k Keeper) getAuthorizations(ctx sdk.Context, contracts []collection.Contract) []collection.ContractAuthorizations {
+	var authorizations []collection.ContractAuthorizations
+	for _, contract := range contracts {
+		contractID := contract.ContractId
+		contractAuthorizations := collection.ContractAuthorizations{
+			ContractId: contractID,
+		}
+
+		k.iterateContractAuthorizations(ctx, contractID, func(authorization collection.Authorization) (stop bool) {
+			contractAuthorizations.Authorizations = append(contractAuthorizations.Authorizations, authorization)
+			return false
+		})
+		if len(contractAuthorizations.Authorizations) != 0 {
+			authorizations = append(authorizations, contractAuthorizations)
+		}
+	}
+
+	return authorizations
+}
+
+func (k Keeper) getGrants(ctx sdk.Context, contracts []collection.Contract) []collection.ContractGrants {
+	var grants []collection.ContractGrants
+	for _, contract := range contracts {
+		contractID := contract.ContractId
+		contractGrants := collection.ContractGrants{
+			ContractId: contractID,
+		}
+
+		k.iterateContractGrants(ctx, contractID, func(grant collection.Grant) (stop bool) {
+			contractGrants.Grants = append(contractGrants.Grants, grant)
+			return false
+		})
+		if len(contractGrants.Grants) != 0 {
+			grants = append(grants, contractGrants)
+		}
+	}
+
+	return grants
+}
+
+func (k Keeper) getSupplies(ctx sdk.Context, contracts []collection.Contract) []collection.ContractStatistics {
+	return k.getStatistics(ctx, contracts, k.iterateContractSupplies)
+}
+
+func (k Keeper) getBurnts(ctx sdk.Context, contracts []collection.Contract) []collection.ContractStatistics {
+	return k.getStatistics(ctx, contracts, k.iterateContractBurnts)
+}
+
+func (k Keeper) getStatistics(ctx sdk.Context, contracts []collection.Contract, iterator func(ctx sdk.Context, contractID string, cb func(classID string, amount sdk.Int) (stop bool))) []collection.ContractStatistics {
+	var statistics []collection.ContractStatistics
+	for _, contract := range contracts {
+		contractID := contract.ContractId
+		contractStatistics := collection.ContractStatistics{
+			ContractId: contractID,
+		}
+
+		iterator(ctx, contractID, func(classID string, amount sdk.Int) (stop bool) {
+			supply := collection.ClassStatistics{
+				ClassId: classID,
+				Amount:  amount,
+			}
+			contractStatistics.Statistics = append(contractStatistics.Statistics, supply)
+			return false
+		})
+		if len(contractStatistics.Statistics) != 0 {
+			statistics = append(statistics, contractStatistics)
+		}
+	}
+
+	return statistics
 }

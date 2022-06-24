@@ -177,7 +177,7 @@ func (k Keeper) iterateStatisticsImpl(ctx sdk.Context, prefix []byte, fn func(co
 			panic(err)
 		}
 
-		contractID, classID := splitStatisticsKey(prefix, iterator.Key())
+		contractID, classID := splitStatisticKey(prefix, iterator.Key())
 
 		stop := fn(contractID, classID, amount)
 		if stop {
@@ -187,13 +187,33 @@ func (k Keeper) iterateStatisticsImpl(ctx sdk.Context, prefix []byte, fn func(co
 }
 
 func (k Keeper) iterateContractSupplies(ctx sdk.Context, contractID string, fn func(classID string, amount sdk.Int) (stop bool)) {
-	k.iterateStatisticsImpl(ctx, statisticsKeyPrefixByContractID(supplyKeyPrefix, contractID), func(_ string, classID string, amount sdk.Int) (stop bool) {
+	k.iterateStatisticsImpl(ctx, statisticKeyPrefixByContractID(supplyKeyPrefix, contractID), func(_ string, classID string, amount sdk.Int) (stop bool) {
 		return fn(classID, amount)
 	})
 }
 
 func (k Keeper) iterateContractBurnts(ctx sdk.Context, contractID string, fn func(classID string, amount sdk.Int) (stop bool)) {
-	k.iterateStatisticsImpl(ctx, statisticsKeyPrefixByContractID(burntKeyPrefix, contractID), func(_ string, classID string, amount sdk.Int) (stop bool) {
+	k.iterateStatisticsImpl(ctx, statisticKeyPrefixByContractID(burntKeyPrefix, contractID), func(_ string, classID string, amount sdk.Int) (stop bool) {
 		return fn(classID, amount)
 	})
+}
+
+// iterate through the next token class ids and perform the provided function
+func (k Keeper) iterateNextTokenClasseIDs(ctx sdk.Context, fn func(class collection.NextClassIDs) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+
+	iterator := sdk.KVStorePrefixIterator(store, nextClassIDKeyPrefix)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var class collection.NextClassIDs
+		if err := k.cdc.UnmarshalInterface(iterator.Value(), &class); err != nil {
+			panic(err)
+		}
+
+		stop := fn(class)
+		if stop {
+			break
+		}
+	}
 }

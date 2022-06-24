@@ -236,10 +236,7 @@ func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateCo
 		BaseImgUri: req.BaseImgUri,
 		Meta:       req.Meta,
 	}
-	_, err := s.keeper.CreateContract(ctx, sdk.AccAddress(req.Owner), contract)
-	if err != nil {
-		return nil, err
-	}
+	s.keeper.CreateContract(ctx, sdk.AccAddress(req.Owner), contract)
 
 	// TODO: is it better to return the id?
 	return &collection.MsgCreateContractResponse{}, nil
@@ -252,10 +249,10 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 	}
 
 	class := &collection.FTClass{
-		Name:       req.Name,
-		Meta:       req.Meta,
-		Decimals:   req.Decimals,
-		Mintable:   req.Mintable,
+		Name:     req.Name,
+		Meta:     req.Meta,
+		Decimals: req.Decimals,
+		Mintable: req.Mintable,
 	}
 	_, err := s.keeper.CreateTokenClass(ctx, req.ContractId, class)
 	if err != nil {
@@ -273,8 +270,8 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 	}
 
 	class := &collection.NFTClass{
-		Name:       req.Name,
-		Meta:       req.Meta,
+		Name: req.Name,
+		Meta: req.Meta,
 	}
 	_, err := s.keeper.CreateTokenClass(ctx, req.ContractId, class)
 	if err != nil {

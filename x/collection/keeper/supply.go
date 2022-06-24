@@ -6,11 +6,8 @@ import (
 	"github.com/line/lbm-sdk/x/collection"
 )
 
-func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract collection.Contract) (*string, error) {
-	contractID, err := k.createContract(ctx, contract)
-	if err != nil {
-		return nil, err
-	}
+func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract collection.Contract) string {
+	contractID := k.createContract(ctx, contract)
 
 	for permission := range collection.Permission_name {
 		p := collection.Permission(permission)
@@ -18,13 +15,14 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 			continue
 		}
 		// TODO: revisit grant
-		k.setGrant(ctx, *contractID, creator, collection.Permission(permission))
+		k.setGrant(ctx, contractID, creator, collection.Permission(permission))
 	}
 
-	return contractID, nil
+	// TODO: emit event
+	return contractID
 }
 
-func (k Keeper) createContract(ctx sdk.Context, contract collection.Contract) (*string, error) {
+func (k Keeper) createContract(ctx sdk.Context, contract collection.Contract) string {
 	contractID := k.classKeeper.NewID(ctx)
 	contract.ContractId = contractID
 	k.setContract(ctx, contract)
@@ -33,8 +31,7 @@ func (k Keeper) createContract(ctx sdk.Context, contract collection.Contract) (*
 	nextIDs := collection.DefaultNextClassIDs(contractID)
 	k.setNextClassIDs(ctx, nextIDs)
 
-	// TODO: emit event
-	return &contractID, nil
+	return contractID
 }
 
 func (k Keeper) GetContract(ctx sdk.Context, contractID string) (*collection.Contract, error) {
@@ -188,10 +185,10 @@ func (k Keeper) deleteGrant(ctx sdk.Context, contractID string, grantee sdk.AccA
 	store.Delete(key)
 }
 
-func (k Keeper) getStatistics(ctx sdk.Context, keyPrefix []byte, contractID string, classID string) sdk.Int {
+func (k Keeper) getStatistic(ctx sdk.Context, keyPrefix []byte, contractID string, classID string) sdk.Int {
 	store := ctx.KVStore(k.storeKey)
 	amount := sdk.ZeroInt()
-	bz := store.Get(statisticsKey(keyPrefix, contractID, classID))
+	bz := store.Get(statisticKey(keyPrefix, contractID, classID))
 	if bz != nil {
 		if err := amount.Unmarshal(bz); err != nil {
 			panic(err)
@@ -201,9 +198,9 @@ func (k Keeper) getStatistics(ctx sdk.Context, keyPrefix []byte, contractID stri
 	return amount
 }
 
-func (k Keeper) setStatistics(ctx sdk.Context, keyPrefix []byte, contractID string, classID string, amount sdk.Int) {
+func (k Keeper) setStatistic(ctx sdk.Context, keyPrefix []byte, contractID string, classID string, amount sdk.Int) {
 	store := ctx.KVStore(k.storeKey)
-	key := statisticsKey(keyPrefix, contractID, classID)
+	key := statisticKey(keyPrefix, contractID, classID)
 	if amount.IsZero() {
 		store.Delete(key)
 	} else {
@@ -216,25 +213,25 @@ func (k Keeper) setStatistics(ctx sdk.Context, keyPrefix []byte, contractID stri
 }
 
 func (k Keeper) GetSupply(ctx sdk.Context, contractID string, classID string) sdk.Int {
-	return k.getStatistics(ctx, supplyKeyPrefix, contractID, classID)
+	return k.getStatistic(ctx, supplyKeyPrefix, contractID, classID)
 }
 
 func (k Keeper) GetMinted(ctx sdk.Context, contractID string, classID string) sdk.Int {
-	return k.getStatistics(ctx, mintedKeyPrefix, contractID, classID)
+	return k.getStatistic(ctx, mintedKeyPrefix, contractID, classID)
 }
 
 func (k Keeper) GetBurnt(ctx sdk.Context, contractID string, classID string) sdk.Int {
-	return k.getStatistics(ctx, burntKeyPrefix, contractID, classID)
+	return k.getStatistic(ctx, burntKeyPrefix, contractID, classID)
 }
 
 func (k Keeper) setSupply(ctx sdk.Context, contractID string, classID string, amount sdk.Int) {
-	k.setStatistics(ctx, supplyKeyPrefix, contractID, classID, amount)
+	k.setStatistic(ctx, supplyKeyPrefix, contractID, classID, amount)
 }
 
 func (k Keeper) setMinted(ctx sdk.Context, contractID string, classID string, amount sdk.Int) {
-	k.setStatistics(ctx, mintedKeyPrefix, contractID, classID, amount)
+	k.setStatistic(ctx, mintedKeyPrefix, contractID, classID, amount)
 }
 
 func (k Keeper) setBurnt(ctx sdk.Context, contractID string, classID string, amount sdk.Int) {
-	k.setStatistics(ctx, burntKeyPrefix, contractID, classID, amount)
+	k.setStatistic(ctx, burntKeyPrefix, contractID, classID, amount)
 }

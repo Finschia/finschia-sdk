@@ -77,11 +77,9 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.balance = sdk.OneInt()
 
 	// create a contract
-	contractID, err := s.keeper.CreateContract(s.ctx, s.vendor, collection.Contract{
+	s.contractID = s.keeper.CreateContract(s.ctx, s.vendor, collection.Contract{
 		Name: "test contract",
 	})
-	s.Require().NoError(err)
-	s.contractID = *contractID
 
 	for _, permission := range []collection.Permission{
 		collection.Permission_Mint,
