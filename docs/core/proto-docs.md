@@ -9624,6 +9624,11 @@ MsgCreateContract is the Msg/CreateContract request type.
 MsgCreateContractResponse is the Msg/CreateContract response type.
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  | id of the new contract. |
+
+
 
 
 
@@ -9812,6 +9817,11 @@ MsgIssueFT is the Msg/IssueFT request type.
 MsgIssueFTResponse is the Msg/IssueFT response type.
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  | id of the new token class. |
+
+
 
 
 
@@ -9838,6 +9848,11 @@ MsgIssueNFT is the Msg/IssueNFT request type.
 
 ### MsgIssueNFTResponse
 MsgIssueNFTResponse is the Msg/IssueNFT response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  | id of the new token class. |
 
 
 
@@ -9894,6 +9909,11 @@ MsgMintNFT is the Msg/MintNFT request type.
 
 ### MsgMintNFTResponse
 MsgMintNFTResponse is the Msg/MintNFT response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `ids` | [string](#string) | repeated | ids of the new non-fungible tokens. |
 
 
 

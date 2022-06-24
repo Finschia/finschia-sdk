@@ -236,10 +236,9 @@ func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateCo
 		BaseImgUri: req.BaseImgUri,
 		Meta:       req.Meta,
 	}
-	s.keeper.CreateContract(ctx, sdk.AccAddress(req.Owner), contract)
+	id := s.keeper.CreateContract(ctx, sdk.AccAddress(req.Owner), contract)
 
-	// TODO: is it better to return the id?
-	return &collection.MsgCreateContractResponse{}, nil
+	return &collection.MsgCreateContractResponse{Id: id}, nil
 }
 
 func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*collection.MsgIssueFTResponse, error) {
@@ -254,13 +253,12 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 		Decimals: req.Decimals,
 		Mintable: req.Mintable,
 	}
-	_, err := s.keeper.CreateTokenClass(ctx, req.ContractId, class)
+	id, err := s.keeper.CreateTokenClass(ctx, req.ContractId, class)
 	if err != nil {
 		return nil, err
 	}
 
-	// TODO: is it better to return the id?
-	return &collection.MsgIssueFTResponse{}, nil
+	return &collection.MsgIssueFTResponse{Id: *id}, nil
 }
 
 func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*collection.MsgIssueNFTResponse, error) {
@@ -273,13 +271,12 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 		Name: req.Name,
 		Meta: req.Meta,
 	}
-	_, err := s.keeper.CreateTokenClass(ctx, req.ContractId, class)
+	id, err := s.keeper.CreateTokenClass(ctx, req.ContractId, class)
 	if err != nil {
 		return nil, err
 	}
 
-	// TODO: is it better to return the id?
-	return &collection.MsgIssueNFTResponse{}, nil
+	return &collection.MsgIssueNFTResponse{Id: *id}, nil
 }
 
 func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collection.MsgMintFTResponse, error) {
