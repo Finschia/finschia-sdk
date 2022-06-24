@@ -191,3 +191,8 @@ func (coins Coins) ValidateBasic() error {
 
 	return nil
 }
+
+// legacy
+type Token interface {
+	proto.Message
+}

@@ -14,8 +14,9 @@ var (
 
 	balanceKeyPrefix = []byte{0x10}
 	ownerKeyPrefix   = []byte{0x11}
-	parentKeyPrefix  = []byte{0x12}
-	childKeyPrefix   = []byte{0x13}
+	nftKeyPrefix     = []byte{0x12}
+	parentKeyPrefix  = []byte{0x13}
+	childKeyPrefix   = []byte{0x14}
 
 	authorizationKeyPrefix = []byte{0x20}
 	grantKeyPrefix         = []byte{0x21}
@@ -23,6 +24,9 @@ var (
 	supplyKeyPrefix = []byte{0x30}
 	mintedKeyPrefix = []byte{0x31}
 	burntKeyPrefix  = []byte{0x32}
+
+	legacyTokenKeyPrefix     = []byte{0x40}
+	legacyTokenTypeKeyPrefix = []byte{0x41}
 )
 
 func balanceKey(contractID string, address sdk.AccAddress, tokenID string) []byte {
@@ -100,6 +104,33 @@ func ownerKeyPrefixByContractID(contractID string) []byte {
 	copy(key, ownerKeyPrefix)
 
 	begin += len(ownerKeyPrefix)
+	key[begin] = byte(len(contractID))
+
+	begin++
+	copy(key[begin:], contractID)
+
+	return key
+}
+
+//-----------------------------------------------------------------------------
+// nft
+func nftKey(contractID string, tokenID string) []byte {
+	prefix := nftKeyPrefixByContractID(contractID)
+	key := make([]byte, len(prefix)+len(tokenID))
+
+	copy(key, prefix)
+	copy(key[len(prefix):], tokenID)
+
+	return key
+}
+
+func nftKeyPrefixByContractID(contractID string) []byte {
+	key := make([]byte, len(nftKeyPrefix)+1+len(contractID))
+
+	begin := 0
+	copy(key, nftKeyPrefix)
+
+	begin += len(nftKeyPrefix)
 	key[begin] = byte(len(contractID))
 
 	begin++
@@ -434,4 +465,56 @@ func splitStatisticKey(keyPrefix, key []byte) (contractID string, classID string
 	classID = string(key[begin:])
 
 	return
+}
+
+//-----------------------------------------------------------------------------
+// legacy
+func legacyTokenKey(contractID string, tokenID string) []byte {
+	prefix := legacyTokenKeyPrefixByContractID(contractID)
+	key := make([]byte, len(prefix)+len(tokenID))
+
+	copy(key, prefix)
+	copy(key[len(prefix):], tokenID)
+
+	return key
+}
+
+func legacyTokenKeyPrefixByContractID(contractID string) []byte {
+	key := make([]byte, len(legacyTokenKeyPrefix)+1+len(contractID))
+
+	begin := 0
+	copy(key, legacyTokenKeyPrefix)
+
+	begin += len(legacyTokenKeyPrefix)
+	key[begin] = byte(len(contractID))
+
+	begin++
+	copy(key[begin:], contractID)
+
+	return key
+}
+
+func legacyTokenTypeKey(contractID string, tokenType string) []byte {
+	prefix := legacyTokenTypeKeyPrefixByContractID(contractID)
+	key := make([]byte, len(prefix)+len(tokenType))
+
+	copy(key, prefix)
+	copy(key[len(prefix):], tokenType)
+
+	return key
+}
+
+func legacyTokenTypeKeyPrefixByContractID(contractID string) []byte {
+	key := make([]byte, len(legacyTokenTypeKeyPrefix)+1+len(contractID))
+
+	begin := 0
+	copy(key, legacyTokenTypeKeyPrefix)
+
+	begin += len(legacyTokenTypeKeyPrefix)
+	key[begin] = byte(len(contractID))
+
+	begin++
+	copy(key[begin:], contractID)
+
+	return key
 }

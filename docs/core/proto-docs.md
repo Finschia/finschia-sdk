@@ -472,13 +472,11 @@
     - [EventCreatedTokenClass](#lbm.collection.v1.EventCreatedTokenClass)
     - [EventGrant](#lbm.collection.v1.EventGrant)
     - [EventMinted](#lbm.collection.v1.EventMinted)
-    - [EventModified](#lbm.collection.v1.EventModified)
+    - [EventModifiedContract](#lbm.collection.v1.EventModifiedContract)
     - [EventModifiedNFT](#lbm.collection.v1.EventModifiedNFT)
     - [EventModifiedTokenClass](#lbm.collection.v1.EventModifiedTokenClass)
-    - [EventReceived](#lbm.collection.v1.EventReceived)
     - [EventRevokedOperator](#lbm.collection.v1.EventRevokedOperator)
     - [EventSent](#lbm.collection.v1.EventSent)
-    - [EventSpent](#lbm.collection.v1.EventSpent)
   
     - [AttributeKey](#lbm.collection.v1.AttributeKey)
     - [EventType](#lbm.collection.v1.EventType)
@@ -521,8 +519,6 @@
     - [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse)
     - [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest)
     - [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse)
-    - [QueryFTRequest](#lbm.collection.v1.QueryFTRequest)
-    - [QueryFTResponse](#lbm.collection.v1.QueryFTResponse)
     - [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest)
     - [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse)
     - [QueryGrantRequest](#lbm.collection.v1.QueryGrantRequest)
@@ -555,6 +551,8 @@
     - [QueryTokenClassResponse](#lbm.collection.v1.QueryTokenClassResponse)
     - [QueryTokenClassesRequest](#lbm.collection.v1.QueryTokenClassesRequest)
     - [QueryTokenClassesResponse](#lbm.collection.v1.QueryTokenClassesResponse)
+    - [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest)
+    - [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse)
     - [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest)
     - [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse)
     - [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest)
@@ -7656,7 +7654,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `id` | [string](#string) |  | class id associated with the token class. |
-| `attributes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | attributes of the token class. |
+| `class` | [google.protobuf.Any](#google.protobuf.Any) |  | new token class. |
 
 
 
@@ -7704,10 +7702,10 @@ Since: 0.46.0 (finschia)
 
 
 
-<a name="lbm.collection.v1.EventModified"></a>
+<a name="lbm.collection.v1.EventModifiedContract"></a>
 
-### EventModified
-EventModified is emitted when the information of a token class or contract is modified.
+### EventModifiedContract
+EventModifiedContract is emitted when the information of a contract is modified.
 
 Since: 0.46.0 (finschia)
 
@@ -7746,7 +7744,7 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.EventModifiedTokenClass"></a>
 
 ### EventModifiedTokenClass
-EventModifiedTokenClass is emitted when the information of a token class or contract is modified.
+EventModifiedTokenClass is emitted when the information of a token class is modified.
 
 Since: 0.46.0 (finschia)
 
@@ -7757,24 +7755,6 @@ Since: 0.46.0 (finschia)
 | `operator` | [string](#string) |  | address which triggered the modify. |
 | `class_id` | [string](#string) |  | class id associated with the token class. |
 | `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.EventReceived"></a>
-
-### EventReceived
-EventReceived is emitted on token receipt.
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `receiver` | [string](#string) |  |  |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated |  |
 
 
 
@@ -7815,24 +7795,6 @@ Since: 0.46.0 (finschia)
 | `from` | [string](#string) |  | holder whose tokens were sent. |
 | `to` | [string](#string) |  | recipient of the tokens. |
 | `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of tokens sent. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.EventSpent"></a>
-
-### EventSpent
-EventSpent is emitted on token spend.
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `spender` | [string](#string) |  |  |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated |  |
 
 
 
@@ -8540,41 +8502,6 @@ Note: deprecated
 
 
 
-<a name="lbm.collection.v1.QueryFTRequest"></a>
-
-### QueryFTRequest
-QueryFTRequest is the request type for the Query/FT RPC method.
-
-Note: deprecated (use QueryTokenClassRequest)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_id` | [string](#string) |  | token id associated with the fungible token. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryFTResponse"></a>
-
-### QueryFTResponse
-QueryFTResponse is the response type for the Query/FT RPC method.
-
-Note: deprecated
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `token` | [FT](#lbm.collection.v1.FT) |  | token is the information of the fungible token. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.QueryFTSupplyRequest"></a>
 
 ### QueryFTSupplyRequest
@@ -8880,7 +8807,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `token` | [NFT](#lbm.collection.v1.NFT) | repeated | token is the information of the non-fungible token. |
+| `tokens` | [NFT](#lbm.collection.v1.NFT) | repeated | token is the information of the non-fungible token. |
 | `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
@@ -9128,6 +9055,41 @@ Since: 0.46.0 (finschia)
 
 
 
+<a name="lbm.collection.v1.QueryTokenRequest"></a>
+
+### QueryTokenRequest
+QueryTokenRequest is the request type for the Query/Token RPC method.
+
+Note: deprecated (use QueryTokenClassRequest)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id associated with the fungible token. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryTokenResponse"></a>
+
+### QueryTokenResponse
+QueryTokenResponse is the response type for the Query/Token RPC method.
+
+Note: deprecated
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `token` | [google.protobuf.Any](#google.protobuf.Any) |  | information of the token. |
+
+
+
+
+
+
 <a name="lbm.collection.v1.QueryTokenTypeRequest"></a>
 
 ### QueryTokenTypeRequest
@@ -9225,7 +9187,7 @@ QueryTokensResponse is the response type for the Query/Tokens RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `tokens` | [google.protobuf.Any](#google.protobuf.Any) |  | tokens is the informations of all the tokens. |
+| `tokens` | [google.protobuf.Any](#google.protobuf.Any) | repeated | informations of all the tokens. |
 | `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
@@ -9261,10 +9223,10 @@ Query defines the gRPC querier service.
 | `Contracts` | [QueryContractsRequest](#lbm.collection.v1.QueryContractsRequest) | [QueryContractsResponse](#lbm.collection.v1.QueryContractsResponse) | Contracts queries metadata of all contracts. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts|
 | `TokenClass` | [QueryTokenClassRequest](#lbm.collection.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.collection.v1.QueryTokenClassResponse) | TokenClass queries a metadata of a token class from its class id. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}|
 | `TokenClasses` | [QueryTokenClassesRequest](#lbm.collection.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.collection.v1.QueryTokenClassesResponse) | TokenClasses queries token metadata of all token classes of a contract. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes|
-| `FT` | [QueryFTRequest](#lbm.collection.v1.QueryFTRequest) | [QueryFTResponse](#lbm.collection.v1.QueryFTResponse) | FT queries a metadata of a fungible token from its token id. Note: deprecated (use TokenClass) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}|
 | `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. Note: deprecated (use TokenClass) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
 | `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. Note: deprecated (use TokenClasses) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
-| `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. Note: deprecated (use TokenClasses and NFT) | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
+| `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Token queries a metadata of a token from its token id. Note: deprecated (use TokenClass and NFT) | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
+| `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. Note: deprecated (use TokenClasses and NFTs) | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
 | `NFT` | [QueryNFTRequest](#lbm.collection.v1.QueryNFTRequest) | [QueryNFTResponse](#lbm.collection.v1.QueryNFTResponse) | NFT queries a metadata of a non-fungible token. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}|
 | `NFTs` | [QueryNFTsRequest](#lbm.collection.v1.QueryNFTsRequest) | [QueryNFTsResponse](#lbm.collection.v1.QueryNFTsResponse) | NFTs queries a metadata of all non-fungible tokens. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/nfts|
 | `Owner` | [QueryOwnerRequest](#lbm.collection.v1.QueryOwnerRequest) | [QueryOwnerResponse](#lbm.collection.v1.QueryOwnerResponse) | Owner queries the owner of the token. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/owner|

@@ -36,12 +36,7 @@ func (k Keeper) addCoins(ctx sdk.Context, contractID string, address sdk.AccAddr
 		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, address))
 	}
 
-	event := collection.EventReceived{
-		ContractId: contractID,
-		Receiver:   address.String(),
-		Amount:     amount,
-	}
-	return ctx.EventManager().EmitTypedEvent(&event)
+	return nil
 }
 
 func (k Keeper) subtractCoins(ctx sdk.Context, contractID string, address sdk.AccAddress, amount []collection.Coin) error {
@@ -61,12 +56,7 @@ func (k Keeper) subtractCoins(ctx sdk.Context, contractID string, address sdk.Ac
 		}
 	}
 
-	event := collection.EventSpent{
-		ContractId: contractID,
-		Spender:    address.String(),
-		Amount:     amount,
-	}
-	return ctx.EventManager().EmitTypedEvent(&event)
+	return nil
 }
 
 func (k Keeper) GetBalance(ctx sdk.Context, contractID string, address sdk.AccAddress, tokenID string) sdk.Int {

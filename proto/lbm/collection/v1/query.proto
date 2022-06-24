@@ -105,12 +105,6 @@ service Query {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes";
   }
 
-  // FT queries a metadata of a fungible token from its token id.
-  // Note: deprecated (use TokenClass)
-  rpc FT(QueryFTRequest) returns (QueryFTResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}";
-  }
-
   // TokenType queries metadata of a token type.
   // Note: deprecated (use TokenClass)
   rpc TokenType(QueryTokenTypeRequest) returns (QueryTokenTypeResponse) {
@@ -123,8 +117,14 @@ service Query {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types";
   }
 
+  // Token queries a metadata of a token from its token id.
+  // Note: deprecated (use TokenClass and NFT)
+  rpc Token(QueryTokenRequest) returns (QueryTokenResponse) {
+    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}";
+  }
+
   // Tokens queries all token metadata.
-  // Note: deprecated (use TokenClasses and NFT)
+  // Note: deprecated (use TokenClasses and NFTs)
   rpc Tokens(QueryTokensRequest) returns (QueryTokensResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/tokens";
   }
@@ -211,7 +211,7 @@ message QueryBalanceRequest {
 // QueryBalanceResponse is the response type for the Query/Balance RPC method.
 message QueryBalanceResponse {
   // balance is the balance of the token.
-  Coin balance = 1;
+  Coin balance = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryAllBalancesRequest is the request type for the Query/AllBalances RPC method.
@@ -409,7 +409,7 @@ message QueryContractRequest {
 // QueryContractResponse is the response type for the Query/Contract RPC method.
 message QueryContractResponse {
   // contract is the information of the contract.
-  Contract contract = 1;
+  Contract contract = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryContractsRequest is the request type for the Query/Contracts RPC method.
@@ -423,28 +423,10 @@ message QueryContractsRequest {
 // Since: 0.46.0 (finschia)
 message QueryContractsResponse {
   // contracts are the informations of all the contracts.
-  repeated Contract contracts = 1;
+  repeated Contract contracts = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
   lbm.base.query.v1.PageResponse pagination = 2;
-}
-
-// QueryFTRequest is the request type for the Query/FT RPC method.
-//
-// Note: deprecated (use QueryTokenClassRequest)
-message QueryFTRequest {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // token id associated with the fungible token.
-  string token_id = 2;
-}
-
-// QueryFTResponse is the response type for the Query/FT RPC method.
-//
-// Note: deprecated
-message QueryFTResponse {
-  // token is the information of the fungible token.
-  FT token = 1;
 }
 
 // QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
@@ -462,7 +444,7 @@ message QueryTokenTypeRequest {
 // Note: deprecated
 message QueryTokenTypeResponse {
   // token type is the information of the token type.
-  TokenType token_type = 1;
+  TokenType token_type = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
@@ -487,6 +469,24 @@ message QueryTokenTypesResponse {
   lbm.base.query.v1.PageResponse pagination = 2;
 }
 
+// QueryTokenRequest is the request type for the Query/Token RPC method.
+//
+// Note: deprecated (use QueryTokenClassRequest)
+message QueryTokenRequest {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // token id associated with the fungible token.
+  string token_id = 2;
+}
+
+// QueryTokenResponse is the response type for the Query/Token RPC method.
+//
+// Note: deprecated
+message QueryTokenResponse {
+  // information of the token.
+  google.protobuf.Any token = 1 [(gogoproto.nullable) = false];
+}
+
 // QueryTokensRequest is the request type for the Query/Tokens RPC method.
 //
 // Note: deprecated (use QueryTokenClasses and NFT)
@@ -500,8 +500,8 @@ message QueryTokensRequest {
 
 // QueryTokensResponse is the response type for the Query/Tokens RPC method.
 message QueryTokensResponse {
-  // tokens is the informations of all the tokens.
-  google.protobuf.Any tokens = 1 [(gogoproto.nullable) = false, (cosmos_proto.accepts_interface) = "Token"];
+  // informations of all the tokens.
+  repeated google.protobuf.Any tokens = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
   lbm.base.query.v1.PageResponse pagination = 2;
@@ -522,7 +522,7 @@ message QueryTokenClassRequest {
 // Since: 0.46.0 (finschia)
 message QueryTokenClassResponse {
   // class is the information of the token class.
-  google.protobuf.Any class = 1 [(cosmos_proto.accepts_interface) = "TokenClass"];
+  google.protobuf.Any class = 1 [(gogoproto.nullable) = false, (cosmos_proto.accepts_interface) = "TokenClass"];
 }
 
 // QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method.
@@ -559,7 +559,7 @@ message QueryNFTRequest {
 // QueryNFTResponse is the response type for the Query/NFT RPC method.
 message QueryNFTResponse {
   // token is the information of the non-fungible token.
-  NFT token = 1;
+  NFT token = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryNFTsRequest is the request type for the Query/NFTs RPC method.
@@ -576,7 +576,7 @@ message QueryNFTsRequest {
 // Since: 0.46.0 (finschia)
 message QueryNFTsResponse {
   // token is the information of the non-fungible token.
-  repeated NFT token = 1 [(gogoproto.nullable) = false];
+  repeated NFT tokens = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
   lbm.base.query.v1.PageResponse pagination = 2;
@@ -612,7 +612,7 @@ message QueryRootRequest {
 message QueryRootResponse {
   // root is the information of the root token.
   // it would return itself if it's the root token.
-  NFT root = 1;
+  NFT root = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryParentRequest is the request type for the Query/Parent RPC method.
@@ -627,7 +627,7 @@ message QueryParentRequest {
 message QueryParentResponse {
   // parent is the information of the parent token.
   // if there is no parent for the token, it would return nil.
-  NFT parent = 1;
+  NFT parent = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryChildrenRequest is the request type for the Query/Children RPC method.

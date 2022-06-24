@@ -1,8 +1,10 @@
 syntax = "proto3";
 package lbm.collection.v1;
 
+import "google/protobuf/any.proto";
 import "gogoproto/gogo.proto";
 
+import "cosmos_proto/cosmos.proto";
 import "lbm/collection/v1/collection.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/collection";
@@ -114,8 +116,8 @@ message EventCreatedTokenClass {
   string contract_id = 1;
   // class id associated with the token class.
   string id = 2;
-  // attributes of the token class.
-  repeated Attribute attributes = 3 [(gogoproto.nullable) = false];
+  // new token class.
+  google.protobuf.Any class = 3 [(gogoproto.nullable) = false, (cosmos_proto.accepts_interface) = "TokenClass"];
 }
 
 // EventGrant is emitted when a granter grants its permission to a grantee.
@@ -174,10 +176,10 @@ message EventBurned {
   repeated Coin amount = 4 [(gogoproto.nullable) = false];
 }
 
-// EventModified is emitted when the information of a token class or contract is modified.
+// EventModifiedContract is emitted when the information of a contract is modified.
 //
 // Since: 0.46.0 (finschia)
-message EventModified {
+message EventModifiedContract {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the modify.
@@ -186,7 +188,7 @@ message EventModified {
   repeated Attribute changes = 3 [(gogoproto.nullable) = false];
 }
 
-// EventModifiedTokenClass is emitted when the information of a token class or contract is modified.
+// EventModifiedTokenClass is emitted when the information of a token class is modified.
 //
 // Since: 0.46.0 (finschia)
 message EventModifiedTokenClass {
@@ -212,22 +214,4 @@ message EventModifiedNFT {
   string token_id = 3;
   // changes of the attributes applied.
   repeated Attribute changes = 4 [(gogoproto.nullable) = false];
-}
-
-// EventSpent is emitted on token spend.
-// Since: 0.46.0 (finschia)
-message EventSpent {
-  // contract id associated with the contract.
-  string        contract_id = 1;
-  string        spender     = 2;
-  repeated Coin amount      = 3 [(gogoproto.nullable) = false];
-}
-
-// EventReceived is emitted on token receipt.
-// Since: 0.46.0 (finschia)
-message EventReceived {
-  // contract id associated with the contract.
-  string        contract_id = 1;
-  string        receiver    = 2;
-  repeated Coin amount      = 3 [(gogoproto.nullable) = false];
 }

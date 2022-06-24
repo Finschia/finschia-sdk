@@ -11,12 +11,7 @@ import (
 )
 
 const (
-	patternAll  = `[0-9a-f]{8}`
-	patternZero = `0{8}`
-
-	patternClassID          = patternAll
-	patternLegacyFTClassID  = `0[0-9a-f]{7}`
-	patternLegacyNFTClassID = `[1-9a-f][0-9a-f]{7}`
+	lengthClassID = 8
 
 	nameLengthLimit       = 20
 	baseImgURILengthLimit = 1000
@@ -25,6 +20,13 @@ const (
 )
 
 var (
+	patternAll  = fmt.Sprintf(`[0-9a-f]{%d}`, lengthClassID)
+	patternZero = fmt.Sprintf(`0{%d}`, lengthClassID)
+
+	patternClassID          = patternAll
+	patternLegacyFTClassID  = fmt.Sprintf(`0[0-9a-f]{%d}`, lengthClassID-1)
+	patternLegacyNFTClassID = fmt.Sprintf(`[1-9a-f][0-9a-f]{%d}`, lengthClassID-1)
+
 	// regexps for class ids
 	reClassID          = regexp.MustCompile(fmt.Sprintf(`^%s$`, patternClassID))
 	reLegacyFTClassID  = regexp.MustCompile(fmt.Sprintf(`^%s$`, patternLegacyFTClassID))
@@ -60,6 +62,10 @@ func validateCoinsWithIDValidator(amount []Coin, validator func(string) error) e
 		}
 	}
 	return nil
+}
+
+func SplitTokenID(tokenID string) (classID string) {
+	return tokenID[:lengthClassID]
 }
 
 func ValidateClassID(id string) error {

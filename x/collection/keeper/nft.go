@@ -5,7 +5,53 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/collection"
 )
+
+func (k Keeper) ValidateNFTID(ctx sdk.Context, contractID string, tokenID string) error {
+	classID := collection.SplitTokenID(tokenID)
+	class, err := k.GetTokenClass(ctx, contractID, classID)
+	if err != nil {
+		return err
+	}
+
+	if _, ok := class.(*collection.NFTClass); !ok {
+		return sdkerrors.ErrInvalidType.Wrapf("invalid class: %s", classID)
+	}
+
+	return nil
+}
+
+func (k Keeper) GetNFT(ctx sdk.Context, contractID string, tokenID string) (*collection.NFT, error) {
+	store := ctx.KVStore(k.storeKey)
+	key := nftKey(contractID, tokenID)
+	bz := store.Get(key)
+	if bz == nil {
+		return nil, sdkerrors.ErrNotFound.Wrapf("nft not exists: %s", tokenID)
+	}
+
+	var nft collection.NFT
+	k.cdc.MustUnmarshal(bz, &nft)
+
+	return &nft, nil
+}
+
+func (k Keeper) setNFT(ctx sdk.Context, contractID string, nft collection.NFT) {
+	store := ctx.KVStore(k.storeKey)
+	key := nftKey(contractID, nft.Id)
+
+	bz, err := nft.Marshal()
+	if err != nil {
+		panic(err)
+	}
+	store.Set(key, bz)
+}
+
+func (k Keeper) deleteNFT(ctx sdk.Context, contractID string, tokenID string) {
+	store := ctx.KVStore(k.storeKey)
+	key := nftKey(contractID, tokenID)
+	store.Delete(key)
+}
 
 func (k Keeper) GetRootOwner(ctx sdk.Context, contractID string, tokenID string) sdk.AccAddress {
 	rootID := k.GetRoot(ctx, contractID, tokenID)
@@ -114,4 +160,29 @@ func (k Keeper) GetRoot(ctx sdk.Context, contractID string, tokenID string) stri
 func (k Keeper) isRoot(ctx sdk.Context, contractID string, tokenID string) bool {
 	_, err := k.GetParent(ctx, contractID, tokenID)
 	return err != nil
+}
+
+// legacy
+func (k Keeper) setLegacyToken(ctx sdk.Context, contractID string, tokenID string) {
+	store := ctx.KVStore(k.storeKey)
+	key := legacyTokenKey(contractID, tokenID)
+	store.Set(key, []byte{})
+}
+
+func (k Keeper) deleteLegacyToken(ctx sdk.Context, contractID string, tokenID string) {
+	store := ctx.KVStore(k.storeKey)
+	key := legacyTokenKey(contractID, tokenID)
+	store.Delete(key)
+}
+
+func (k Keeper) setLegacyTokenType(ctx sdk.Context, contractID string, tokenType string) {
+	store := ctx.KVStore(k.storeKey)
+	key := legacyTokenTypeKey(contractID, tokenType)
+	store.Set(key, []byte{})
+}
+
+func (k Keeper) deleteLegacyTokenType(ctx sdk.Context, contractID string, tokenType string) {
+	store := ctx.KVStore(k.storeKey)
+	key := legacyTokenTypeKey(contractID, tokenType)
+	store.Delete(key)
 }

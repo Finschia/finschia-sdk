@@ -17,6 +17,11 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 		for _, any := range contractClasses.Classes {
 			class := collection.TokenClassFromAny(any)
 			k.setTokenClass(ctx, contractID, class)
+
+			// legacy
+			if nftClass, ok := class.(*collection.NFTClass); ok {
+				k.setLegacyTokenType(ctx, contractID, nftClass.Id)
+			}
 		}
 	}
 
