@@ -17,35 +17,32 @@ message GenesisState {
   // contracts defines the metadata of the contracts.
   repeated Contract contracts = 2 [(gogoproto.nullable) = false];
 
+  // next ids for token classes.
+  repeated NextClassIDs next_class_ids = 3 [(gogoproto.nullable) = false];
+
+  // next ids for (non-fungible) tokens.
+  repeated ContractNextTokenIDs next_token_ids = 4 [(gogoproto.nullable) = false];
+
   // classes defines the metadata of the tokens.
-  repeated ContractClasses classes = 3 [(gogoproto.nullable) = false];
+  repeated ContractClasses classes = 5 [(gogoproto.nullable) = false];
 
   // balances is an array containing the balances of all the accounts.
-  repeated ContractBalances balances = 4 [(gogoproto.nullable) = false];
+  repeated ContractBalances balances = 6 [(gogoproto.nullable) = false];
 
   // parents represents the parents of (non-fungible) tokens.
-  repeated ContractTokenRelations parents = 5 [(gogoproto.nullable) = false];
+  repeated ContractTokenRelations parents = 7 [(gogoproto.nullable) = false];
 
   // grants defines the grant information.
-  repeated ContractGrants grants = 6 [(gogoproto.nullable) = false];
+  repeated ContractGrants grants = 8 [(gogoproto.nullable) = false];
 
   // authorizations defines the approve information.
-  repeated ContractAuthorizations authorizations = 7 [(gogoproto.nullable) = false];
+  repeated ContractAuthorizations authorizations = 9 [(gogoproto.nullable) = false];
 
   // supplies represents the total supplies of tokens.
-  repeated ContractStatistics supplies = 8 [(gogoproto.nullable) = false];
+  repeated ContractStatistics supplies = 10 [(gogoproto.nullable) = false];
 
   // burnts represents the total amount of burnt tokens.
-  repeated ContractStatistics burnts = 9 [(gogoproto.nullable) = false];
-}
-
-// ClassGenesisState defines the classs keeper's genesis state.
-message ClassGenesisState {
-  // nonce is the next class nonce to issue.
-  string nonce = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Uint", (gogoproto.nullable) = false];
-
-  // ids represents the issued ids.
-  repeated string ids = 2;
+  repeated ContractStatistics burnts = 11 [(gogoproto.nullable) = false];
 }
 
 // ContractBalances defines balances belong to a contract.
@@ -113,6 +110,20 @@ message NextClassIDs {
   string fungible = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Uint", (gogoproto.nullable) = false];
   // id for the non-fungible tokens.
   string non_fungible = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Uint", (gogoproto.nullable) = false];
+}
+
+// ContractNextTokenIDs defines the next token ids belong to a contract.
+message ContractNextTokenIDs {
+  string               contract_id = 1;
+  repeated NextTokenID token_ids   = 2 [(gogoproto.nullable) = false];
+}
+
+// NextTokenID defines the next (non-fungible) token id of the token class.
+message NextTokenID {
+  // class id associated with the token class.
+  string class_id = 1;
+  // id for the token.
+  string id = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Uint", (gogoproto.nullable) = false];
 }
 
 // ContractTokenRelations defines token relations belong to a contract.

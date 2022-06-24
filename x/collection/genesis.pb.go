@@ -32,20 +32,24 @@ type GenesisState struct {
 	Params Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
 	// contracts defines the metadata of the contracts.
 	Contracts []Contract `protobuf:"bytes,2,rep,name=contracts,proto3" json:"contracts"`
+	// next ids for token classes.
+	NextClassIds []NextClassIDs `protobuf:"bytes,3,rep,name=next_class_ids,json=nextClassIds,proto3" json:"next_class_ids"`
+	// next ids for (non-fungible) tokens.
+	NextTokenIds []ContractNextTokenIDs `protobuf:"bytes,4,rep,name=next_token_ids,json=nextTokenIds,proto3" json:"next_token_ids"`
 	// classes defines the metadata of the tokens.
-	Classes []ContractClasses `protobuf:"bytes,3,rep,name=classes,proto3" json:"classes"`
+	Classes []ContractClasses `protobuf:"bytes,5,rep,name=classes,proto3" json:"classes"`
 	// balances is an array containing the balances of all the accounts.
-	Balances []ContractBalances `protobuf:"bytes,4,rep,name=balances,proto3" json:"balances"`
+	Balances []ContractBalances `protobuf:"bytes,6,rep,name=balances,proto3" json:"balances"`
 	// parents represents the parents of (non-fungible) tokens.
-	Parents []ContractTokenRelations `protobuf:"bytes,5,rep,name=parents,proto3" json:"parents"`
+	Parents []ContractTokenRelations `protobuf:"bytes,7,rep,name=parents,proto3" json:"parents"`
 	// grants defines the grant information.
-	Grants []ContractGrants `protobuf:"bytes,6,rep,name=grants,proto3" json:"grants"`
+	Grants []ContractGrants `protobuf:"bytes,8,rep,name=grants,proto3" json:"grants"`
 	// authorizations defines the approve information.
-	Authorizations []ContractAuthorizations `protobuf:"bytes,7,rep,name=authorizations,proto3" json:"authorizations"`
+	Authorizations []ContractAuthorizations `protobuf:"bytes,9,rep,name=authorizations,proto3" json:"authorizations"`
 	// supplies represents the total supplies of tokens.
-	Supplies []ContractStatistics `protobuf:"bytes,8,rep,name=supplies,proto3" json:"supplies"`
+	Supplies []ContractStatistics `protobuf:"bytes,10,rep,name=supplies,proto3" json:"supplies"`
 	// burnts represents the total amount of burnt tokens.
-	Burnts []ContractStatistics `protobuf:"bytes,9,rep,name=burnts,proto3" json:"burnts"`
+	Burnts []ContractStatistics `protobuf:"bytes,11,rep,name=burnts,proto3" json:"burnts"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -91,6 +95,20 @@ func (m *GenesisState) GetParams() Params {
 func (m *GenesisState) GetContracts() []Contract {
 	if m != nil {
 		return m.Contracts
+	}
+	return nil
+}
+
+func (m *GenesisState) GetNextClassIds() []NextClassIDs {
+	if m != nil {
+		return m.NextClassIds
+	}
+	return nil
+}
+
+func (m *GenesisState) GetNextTokenIds() []ContractNextTokenIDs {
+	if m != nil {
+		return m.NextTokenIds
 	}
 	return nil
 }
@@ -144,54 +162,6 @@ func (m *GenesisState) GetBurnts() []ContractStatistics {
 	return nil
 }
 
-// ClassGenesisState defines the classs keeper's genesis state.
-type ClassGenesisState struct {
-	// nonce is the next class nonce to issue.
-	Nonce github_com_line_lbm_sdk_types.Uint `protobuf:"bytes,1,opt,name=nonce,proto3,customtype=github.com/line/lbm-sdk/types.Uint" json:"nonce"`
-	// ids represents the issued ids.
-	Ids []string `protobuf:"bytes,2,rep,name=ids,proto3" json:"ids,omitempty"`
-}
-
-func (m *ClassGenesisState) Reset()         { *m = ClassGenesisState{} }
-func (m *ClassGenesisState) String() string { return proto.CompactTextString(m) }
-func (*ClassGenesisState) ProtoMessage()    {}
-func (*ClassGenesisState) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2b8b3f666cffb1ec, []int{1}
-}
-func (m *ClassGenesisState) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ClassGenesisState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ClassGenesisState.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *ClassGenesisState) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ClassGenesisState.Merge(m, src)
-}
-func (m *ClassGenesisState) XXX_Size() int {
-	return m.Size()
-}
-func (m *ClassGenesisState) XXX_DiscardUnknown() {
-	xxx_messageInfo_ClassGenesisState.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ClassGenesisState proto.InternalMessageInfo
-
-func (m *ClassGenesisState) GetIds() []string {
-	if m != nil {
-		return m.Ids
-	}
-	return nil
-}
-
 // ContractBalances defines balances belong to a contract.
 // genesis state.
 type ContractBalances struct {
@@ -205,7 +175,7 @@ func (m *ContractBalances) Reset()         { *m = ContractBalances{} }
 func (m *ContractBalances) String() string { return proto.CompactTextString(m) }
 func (*ContractBalances) ProtoMessage()    {}
 func (*ContractBalances) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2b8b3f666cffb1ec, []int{2}
+	return fileDescriptor_2b8b3f666cffb1ec, []int{1}
 }
 func (m *ContractBalances) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -260,7 +230,7 @@ func (m *ContractStatistics) Reset()         { *m = ContractStatistics{} }
 func (m *ContractStatistics) String() string { return proto.CompactTextString(m) }
 func (*ContractStatistics) ProtoMessage()    {}
 func (*ContractStatistics) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2b8b3f666cffb1ec, []int{3}
+	return fileDescriptor_2b8b3f666cffb1ec, []int{2}
 }
 func (m *ContractStatistics) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -315,7 +285,7 @@ func (m *ClassStatistics) Reset()         { *m = ClassStatistics{} }
 func (m *ClassStatistics) String() string { return proto.CompactTextString(m) }
 func (*ClassStatistics) ProtoMessage()    {}
 func (*ClassStatistics) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2b8b3f666cffb1ec, []int{4}
+	return fileDescriptor_2b8b3f666cffb1ec, []int{3}
 }
 func (m *ClassStatistics) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -361,7 +331,7 @@ func (m *Balance) Reset()         { *m = Balance{} }
 func (m *Balance) String() string { return proto.CompactTextString(m) }
 func (*Balance) ProtoMessage()    {}
 func (*Balance) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2b8b3f666cffb1ec, []int{5}
+	return fileDescriptor_2b8b3f666cffb1ec, []int{4}
 }
 func (m *Balance) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -416,7 +386,7 @@ func (m *ContractClasses) Reset()         { *m = ContractClasses{} }
 func (m *ContractClasses) String() string { return proto.CompactTextString(m) }
 func (*ContractClasses) ProtoMessage()    {}
 func (*ContractClasses) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2b8b3f666cffb1ec, []int{6}
+	return fileDescriptor_2b8b3f666cffb1ec, []int{5}
 }
 func (m *ContractClasses) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -471,7 +441,7 @@ func (m *ContractAuthorizations) Reset()         { *m = ContractAuthorizations{}
 func (m *ContractAuthorizations) String() string { return proto.CompactTextString(m) }
 func (*ContractAuthorizations) ProtoMessage()    {}
 func (*ContractAuthorizations) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2b8b3f666cffb1ec, []int{7}
+	return fileDescriptor_2b8b3f666cffb1ec, []int{6}
 }
 func (m *ContractAuthorizations) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -526,7 +496,7 @@ func (m *ContractGrants) Reset()         { *m = ContractGrants{} }
 func (m *ContractGrants) String() string { return proto.CompactTextString(m) }
 func (*ContractGrants) ProtoMessage()    {}
 func (*ContractGrants) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2b8b3f666cffb1ec, []int{8}
+	return fileDescriptor_2b8b3f666cffb1ec, []int{7}
 }
 func (m *ContractGrants) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -583,7 +553,7 @@ func (m *NextClassIDs) Reset()         { *m = NextClassIDs{} }
 func (m *NextClassIDs) String() string { return proto.CompactTextString(m) }
 func (*NextClassIDs) ProtoMessage()    {}
 func (*NextClassIDs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2b8b3f666cffb1ec, []int{9}
+	return fileDescriptor_2b8b3f666cffb1ec, []int{8}
 }
 func (m *NextClassIDs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -619,6 +589,107 @@ func (m *NextClassIDs) GetContractId() string {
 	return ""
 }
 
+// ContractNextTokenIDs defines the next token ids belong to a contract.
+type ContractNextTokenIDs struct {
+	ContractId string        `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	TokenIds   []NextTokenID `protobuf:"bytes,2,rep,name=token_ids,json=tokenIds,proto3" json:"token_ids"`
+}
+
+func (m *ContractNextTokenIDs) Reset()         { *m = ContractNextTokenIDs{} }
+func (m *ContractNextTokenIDs) String() string { return proto.CompactTextString(m) }
+func (*ContractNextTokenIDs) ProtoMessage()    {}
+func (*ContractNextTokenIDs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2b8b3f666cffb1ec, []int{9}
+}
+func (m *ContractNextTokenIDs) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContractNextTokenIDs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContractNextTokenIDs.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ContractNextTokenIDs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContractNextTokenIDs.Merge(m, src)
+}
+func (m *ContractNextTokenIDs) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContractNextTokenIDs) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContractNextTokenIDs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContractNextTokenIDs proto.InternalMessageInfo
+
+func (m *ContractNextTokenIDs) GetContractId() string {
+	if m != nil {
+		return m.ContractId
+	}
+	return ""
+}
+
+func (m *ContractNextTokenIDs) GetTokenIds() []NextTokenID {
+	if m != nil {
+		return m.TokenIds
+	}
+	return nil
+}
+
+// NextTokenID defines the next (non-fungible) token id of the token class.
+type NextTokenID struct {
+	// class id associated with the token class.
+	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+	// id for the token.
+	Id github_com_line_lbm_sdk_types.Uint `protobuf:"bytes,2,opt,name=id,proto3,customtype=github.com/line/lbm-sdk/types.Uint" json:"id"`
+}
+
+func (m *NextTokenID) Reset()         { *m = NextTokenID{} }
+func (m *NextTokenID) String() string { return proto.CompactTextString(m) }
+func (*NextTokenID) ProtoMessage()    {}
+func (*NextTokenID) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2b8b3f666cffb1ec, []int{10}
+}
+func (m *NextTokenID) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NextTokenID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NextTokenID.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NextTokenID) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NextTokenID.Merge(m, src)
+}
+func (m *NextTokenID) XXX_Size() int {
+	return m.Size()
+}
+func (m *NextTokenID) XXX_DiscardUnknown() {
+	xxx_messageInfo_NextTokenID.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NextTokenID proto.InternalMessageInfo
+
+func (m *NextTokenID) GetClassId() string {
+	if m != nil {
+		return m.ClassId
+	}
+	return ""
+}
+
 // ContractTokenRelations defines token relations belong to a contract.
 type ContractTokenRelations struct {
 	// contract id associated with the contract.
@@ -631,7 +702,7 @@ func (m *ContractTokenRelations) Reset()         { *m = ContractTokenRelations{}
 func (m *ContractTokenRelations) String() string { return proto.CompactTextString(m) }
 func (*ContractTokenRelations) ProtoMessage()    {}
 func (*ContractTokenRelations) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2b8b3f666cffb1ec, []int{10}
+	return fileDescriptor_2b8b3f666cffb1ec, []int{11}
 }
 func (m *ContractTokenRelations) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -686,7 +757,7 @@ func (m *TokenRelation) Reset()         { *m = TokenRelation{} }
 func (m *TokenRelation) String() string { return proto.CompactTextString(m) }
 func (*TokenRelation) ProtoMessage()    {}
 func (*TokenRelation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2b8b3f666cffb1ec, []int{11}
+	return fileDescriptor_2b8b3f666cffb1ec, []int{12}
 }
 func (m *TokenRelation) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -731,7 +802,6 @@ func (m *TokenRelation) GetOther() string {
 
 func init() {
 	proto.RegisterType((*GenesisState)(nil), "lbm.collection.v1.GenesisState")
-	proto.RegisterType((*ClassGenesisState)(nil), "lbm.collection.v1.ClassGenesisState")
 	proto.RegisterType((*ContractBalances)(nil), "lbm.collection.v1.ContractBalances")
 	proto.RegisterType((*ContractStatistics)(nil), "lbm.collection.v1.ContractStatistics")
 	proto.RegisterType((*ClassStatistics)(nil), "lbm.collection.v1.ClassStatistics")
@@ -740,6 +810,8 @@ func init() {
 	proto.RegisterType((*ContractAuthorizations)(nil), "lbm.collection.v1.ContractAuthorizations")
 	proto.RegisterType((*ContractGrants)(nil), "lbm.collection.v1.ContractGrants")
 	proto.RegisterType((*NextClassIDs)(nil), "lbm.collection.v1.NextClassIDs")
+	proto.RegisterType((*ContractNextTokenIDs)(nil), "lbm.collection.v1.ContractNextTokenIDs")
+	proto.RegisterType((*NextTokenID)(nil), "lbm.collection.v1.NextTokenID")
 	proto.RegisterType((*ContractTokenRelations)(nil), "lbm.collection.v1.ContractTokenRelations")
 	proto.RegisterType((*TokenRelation)(nil), "lbm.collection.v1.TokenRelation")
 }
@@ -747,58 +819,62 @@ func init() {
 func init() { proto.RegisterFile("lbm/collection/v1/genesis.proto", fileDescriptor_2b8b3f666cffb1ec) }
 
 var fileDescriptor_2b8b3f666cffb1ec = []byte{
-	// 809 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x55, 0x4f, 0x4f, 0xdb, 0x48,
-	0x14, 0x8f, 0xc9, 0xff, 0x17, 0xfe, 0x8e, 0xd0, 0xae, 0xc3, 0x4a, 0x09, 0x78, 0x77, 0x25, 0x58,
-	0x09, 0x5b, 0xb0, 0xd2, 0xae, 0x76, 0xb5, 0x82, 0x25, 0xb0, 0xb0, 0x39, 0x2c, 0x5a, 0xa5, 0xad,
-	0x2a, 0xf5, 0x82, 0x6c, 0x67, 0x30, 0x16, 0xce, 0x4c, 0xea, 0x71, 0x10, 0xf4, 0xc2, 0xad, 0x52,
-	0x6f, 0xfd, 0x08, 0x3d, 0xf7, 0xdc, 0xcf, 0x50, 0xa1, 0x9e, 0x38, 0x56, 0x3d, 0xd0, 0x0a, 0x2e,
-	0xfd, 0x18, 0x95, 0x67, 0xc6, 0x4e, 0x9c, 0xb8, 0x49, 0xb9, 0xcd, 0x78, 0x7e, 0x7f, 0xde, 0xbc,
-	0x79, 0xef, 0x19, 0xea, 0x9e, 0xd5, 0x31, 0x6c, 0xea, 0x79, 0xd8, 0x0e, 0x5c, 0x4a, 0x8c, 0xb3,
-	0x0d, 0xc3, 0xc1, 0x04, 0x33, 0x97, 0xe9, 0x5d, 0x9f, 0x06, 0x14, 0x2d, 0x78, 0x56, 0x47, 0xef,
-	0x03, 0xf4, 0xb3, 0x8d, 0xa5, 0xaa, 0x43, 0xa9, 0xe3, 0x61, 0x83, 0x03, 0xac, 0xde, 0xb1, 0x61,
-	0x92, 0x0b, 0x81, 0x5e, 0x5a, 0x74, 0xa8, 0x43, 0xf9, 0xd2, 0x08, 0x57, 0xf2, 0x6b, 0xd5, 0xa6,
-	0xac, 0x43, 0xd9, 0x91, 0x38, 0x10, 0x1b, 0x79, 0xa4, 0x8d, 0xfa, 0x0f, 0x98, 0x71, 0x8c, 0xf6,
-	0x3c, 0x0f, 0xd3, 0x07, 0x22, 0xa8, 0x07, 0x81, 0x19, 0x60, 0xf4, 0x3b, 0x14, 0xba, 0xa6, 0x6f,
-	0x76, 0x98, 0xaa, 0x2c, 0x2b, 0xab, 0x95, 0xcd, 0xaa, 0x3e, 0x12, 0xa4, 0xfe, 0x3f, 0x07, 0x34,
-	0x72, 0x57, 0x37, 0xf5, 0x4c, 0x4b, 0xc2, 0xd1, 0x36, 0x94, 0x6d, 0x4a, 0x02, 0xdf, 0xb4, 0x03,
-	0xa6, 0x4e, 0x2d, 0x67, 0x57, 0x2b, 0x9b, 0x3f, 0xa4, 0x70, 0x77, 0x25, 0x46, 0xb2, 0xfb, 0x1c,
-	0xd4, 0x80, 0xa2, 0xed, 0x99, 0x8c, 0x61, 0xa6, 0x66, 0x39, 0x5d, 0x1b, 0x43, 0xdf, 0x15, 0x48,
-	0xa9, 0x12, 0x11, 0xd1, 0x3f, 0x50, 0xb2, 0x4c, 0xcf, 0x24, 0x36, 0x66, 0x6a, 0x8e, 0x8b, 0xfc,
-	0x38, 0x2e, 0x06, 0x09, 0x95, 0x2a, 0x31, 0x15, 0x35, 0xa1, 0xd8, 0x35, 0x7d, 0x4c, 0x02, 0xa6,
-	0xe6, 0xb9, 0xca, 0xda, 0x18, 0x95, 0x87, 0xf4, 0x14, 0x93, 0x16, 0xf6, 0xcc, 0xf0, 0x20, 0x8e,
-	0x48, 0xf2, 0xd1, 0x36, 0x14, 0x1c, 0xdf, 0x0c, 0x95, 0x0a, 0x5c, 0x69, 0x65, 0x8c, 0xd2, 0x01,
-	0x07, 0x46, 0x79, 0x15, 0x34, 0xf4, 0x18, 0x66, 0xcd, 0x5e, 0x70, 0x42, 0x7d, 0xf7, 0x99, 0x70,
-	0x50, 0x8b, 0x13, 0x43, 0xda, 0x49, 0x10, 0xa4, 0xe0, 0x90, 0x0c, 0x3a, 0x80, 0x12, 0xeb, 0x75,
-	0xbb, 0x9e, 0x8b, 0x99, 0x5a, 0xe2, 0x92, 0x3f, 0x8f, 0x91, 0x0c, 0xab, 0xc3, 0x65, 0x81, 0x6b,
-	0xc7, 0xd9, 0x8a, 0xc8, 0x68, 0x17, 0x0a, 0x56, 0xcf, 0x0f, 0xaf, 0x58, 0xbe, 0xbf, 0x8c, 0xa4,
-	0x6a, 0x0e, 0x2c, 0xf0, 0x37, 0x4d, 0x14, 0xe3, 0xdf, 0x90, 0x27, 0x94, 0xd8, 0x98, 0xd7, 0x62,
-	0xb9, 0xf1, 0x4b, 0xc8, 0xf8, 0x70, 0x53, 0xd7, 0x1c, 0x37, 0x38, 0xe9, 0x59, 0xba, 0x4d, 0x3b,
-	0x86, 0xe7, 0x12, 0x6c, 0x78, 0x56, 0x67, 0x9d, 0xb5, 0x4f, 0x8d, 0xe0, 0xa2, 0x8b, 0x99, 0xfe,
-	0xc8, 0x25, 0x41, 0x4b, 0x10, 0xd1, 0x3c, 0x64, 0xdd, 0xb6, 0xa8, 0xc7, 0x72, 0x2b, 0x5c, 0x6a,
-	0x4f, 0x61, 0x7e, 0xf8, 0xfd, 0x51, 0x1d, 0x2a, 0x51, 0x1d, 0x1e, 0xb9, 0x6d, 0xe1, 0xd6, 0x82,
-	0xe8, 0x53, 0xb3, 0x8d, 0xfe, 0x1a, 0xa8, 0x2b, 0x51, 0xdb, 0x4b, 0x29, 0x97, 0x94, 0x7a, 0xc3,
-	0xe5, 0xa4, 0x5d, 0x02, 0x1a, 0xbd, 0xff, 0x64, 0xd3, 0x7f, 0x01, 0x58, 0x0c, 0x97, 0xb6, 0xa9,
-	0x3d, 0x11, 0xe6, 0x6d, 0x24, 0xb1, 0x03, 0x5c, 0x8d, 0xc2, 0xdc, 0x10, 0x08, 0x55, 0xa1, 0xc4,
-	0x9b, 0xa6, 0x6f, 0x2d, 0x9a, 0xa8, 0xd9, 0x46, 0x3b, 0x50, 0x30, 0x3b, 0xb4, 0x47, 0x02, 0x75,
-	0x8a, 0xa7, 0x7d, 0x4d, 0xa6, 0x7d, 0x65, 0x7c, 0xda, 0x9b, 0x24, 0x68, 0x49, 0xa2, 0xe6, 0x42,
-	0x51, 0x26, 0x03, 0xa9, 0x50, 0x34, 0xdb, 0x6d, 0x1f, 0x33, 0x16, 0xf9, 0xc8, 0x2d, 0xda, 0x1a,
-	0xf0, 0x09, 0xef, 0xf6, 0x7d, 0x6a, 0xdd, 0xb8, 0xa4, 0x31, 0x13, 0x06, 0xf0, 0xfa, 0x63, 0x3d,
-	0x1f, 0xee, 0x58, 0x64, 0xf2, 0x67, 0xee, 0xf3, 0xab, 0xba, 0xa2, 0xf9, 0x30, 0x37, 0x34, 0x14,
-	0x26, 0x67, 0x76, 0xab, 0x3f, 0x6a, 0x84, 0xf5, 0xa2, 0x2e, 0xe6, 0xae, 0x1e, 0xcd, 0x5d, 0x7d,
-	0x87, 0x5c, 0x34, 0x66, 0xdf, 0xbd, 0x59, 0x07, 0xde, 0xde, 0x5c, 0x39, 0x1e, 0x33, 0xda, 0x0b,
-	0x05, 0xbe, 0x4b, 0xef, 0xb5, 0xc9, 0xde, 0x87, 0x23, 0xfd, 0x2c, 0x42, 0x58, 0x4e, 0xb9, 0x7d,
-	0x42, 0x3b, 0xbd, 0x8d, 0x35, 0x17, 0x66, 0x93, 0xf3, 0x63, 0x72, 0x08, 0xbf, 0xc5, 0x33, 0x49,
-	0x58, 0xab, 0x29, 0xd6, 0x5c, 0x2b, 0x39, 0x8a, 0xb4, 0xb7, 0x0a, 0x4c, 0x1f, 0xe2, 0x73, 0x91,
-	0xe7, 0xe6, 0xde, 0x37, 0x38, 0xed, 0x43, 0xe9, 0xb8, 0x47, 0x1c, 0xd7, 0xf2, 0xb0, 0x2c, 0xa6,
-	0xfb, 0xf4, 0x70, 0xcc, 0x45, 0xff, 0xc1, 0x34, 0xa1, 0xe4, 0x28, 0xd6, 0xca, 0xde, 0x5b, 0xab,
-	0x42, 0x28, 0xd9, 0x97, 0x74, 0xed, 0xb2, 0xff, 0x7c, 0xc9, 0xe9, 0x3d, 0xf9, 0x46, 0x7b, 0x50,
-	0xf6, 0x23, 0xf4, 0x98, 0x97, 0x4b, 0xc8, 0x46, 0xff, 0xba, 0x98, 0xa8, 0xfd, 0x01, 0x33, 0x09,
-	0x04, 0x42, 0x90, 0x63, 0xd8, 0x3b, 0x96, 0x86, 0x7c, 0x8d, 0x16, 0x21, 0x4f, 0x83, 0x13, 0xec,
-	0x8b, 0xcc, 0xb5, 0xc4, 0xa6, 0xb1, 0x75, 0x75, 0x5b, 0x53, 0xae, 0x6f, 0x6b, 0xca, 0xa7, 0xdb,
-	0x9a, 0xf2, 0xf2, 0xae, 0x96, 0xb9, 0xbe, 0xab, 0x65, 0xde, 0xdf, 0xd5, 0x32, 0x4f, 0x7e, 0xfa,
-	0x5a, 0x1a, 0xce, 0x07, 0xfe, 0xfb, 0x56, 0x81, 0x97, 0xf8, 0xaf, 0x5f, 0x02, 0x00, 0x00, 0xff,
-	0xff, 0x6a, 0x94, 0x13, 0x56, 0x9e, 0x08, 0x00, 0x00,
+	// 877 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x96, 0x4b, 0x8f, 0x1c, 0x35,
+	0x10, 0xc7, 0xb7, 0xf7, 0x31, 0x8f, 0x9a, 0xcd, 0x06, 0xac, 0x15, 0xf4, 0x2c, 0xd2, 0xcc, 0xc6,
+	0x80, 0x48, 0x90, 0xd2, 0xad, 0x04, 0x09, 0x44, 0x84, 0x36, 0x9a, 0x99, 0x90, 0x65, 0x84, 0x88,
+	0xd0, 0x04, 0x84, 0xc4, 0x65, 0xd4, 0x0f, 0x6f, 0xaf, 0x95, 0x1e, 0x7b, 0x68, 0x7b, 0xa2, 0xdd,
+	0x5c, 0x72, 0xe6, 0xc6, 0x47, 0xe0, 0x88, 0x38, 0xf3, 0x19, 0x50, 0xc4, 0x29, 0x47, 0xc4, 0x21,
+	0xa0, 0xdd, 0x0b, 0x1f, 0x03, 0xb5, 0xed, 0xee, 0x79, 0x75, 0xba, 0xb5, 0xdc, 0xda, 0x76, 0xd5,
+	0xef, 0x5f, 0x65, 0x57, 0xd9, 0x0d, 0xdd, 0xd8, 0x9f, 0xb8, 0x01, 0x8f, 0x63, 0x12, 0x48, 0xca,
+	0x99, 0xfb, 0xf4, 0x8e, 0x1b, 0x11, 0x46, 0x04, 0x15, 0xce, 0x34, 0xe1, 0x92, 0xa3, 0x37, 0x63,
+	0x7f, 0xe2, 0xcc, 0x0d, 0x9c, 0xa7, 0x77, 0x0e, 0xda, 0x11, 0xe7, 0x51, 0x4c, 0x5c, 0x65, 0xe0,
+	0xcf, 0x4e, 0x5c, 0x8f, 0x9d, 0x6b, 0xeb, 0x83, 0xfd, 0x88, 0x47, 0x5c, 0x7d, 0xba, 0xe9, 0x97,
+	0x99, 0x6d, 0x07, 0x5c, 0x4c, 0xb8, 0x18, 0xeb, 0x05, 0x3d, 0x30, 0x4b, 0x78, 0x5d, 0x7f, 0x41,
+	0x4c, 0xd9, 0xe0, 0x5f, 0x6a, 0xb0, 0x7b, 0xac, 0x83, 0x7a, 0x2c, 0x3d, 0x49, 0xd0, 0x27, 0x50,
+	0x9b, 0x7a, 0x89, 0x37, 0x11, 0xb6, 0x75, 0x68, 0xdd, 0x6c, 0xdd, 0x6d, 0x3b, 0x6b, 0x41, 0x3a,
+	0x5f, 0x2b, 0x83, 0xfe, 0xf6, 0x8b, 0x57, 0xdd, 0x8d, 0x91, 0x31, 0x47, 0xf7, 0xa1, 0x19, 0x70,
+	0x26, 0x13, 0x2f, 0x90, 0xc2, 0xde, 0x3c, 0xdc, 0xba, 0xd9, 0xba, 0xfb, 0x4e, 0x81, 0xef, 0xc0,
+	0xd8, 0x18, 0xef, 0xb9, 0x0f, 0xfa, 0x12, 0xf6, 0x18, 0x39, 0x93, 0xe3, 0x20, 0xf6, 0x84, 0x18,
+	0xd3, 0x50, 0xd8, 0x5b, 0x8a, 0xd2, 0x2d, 0xa0, 0x3c, 0x22, 0x67, 0x72, 0x90, 0xda, 0x0d, 0x1f,
+	0x64, 0x71, 0xec, 0xb2, 0x7c, 0x2e, 0x14, 0xe8, 0xb1, 0x81, 0x49, 0xfe, 0x84, 0x30, 0x05, 0xdb,
+	0x56, 0xb0, 0x0f, 0x4a, 0x42, 0x4a, 0xa1, 0xdf, 0xa4, 0xf6, 0x2b, 0x50, 0x3d, 0x17, 0x0a, 0xd4,
+	0x87, 0xba, 0x0a, 0x8e, 0x08, 0x7b, 0x47, 0xd1, 0x70, 0x09, 0x6d, 0xa0, 0x2d, 0x0d, 0x28, 0x73,
+	0x44, 0x9f, 0x43, 0xc3, 0xf7, 0x62, 0x8f, 0x05, 0x44, 0xd8, 0x35, 0x05, 0x79, 0xb7, 0x6c, 0x97,
+	0x8c, 0xa9, 0xa1, 0xe4, 0xae, 0x68, 0x08, 0xf5, 0xa9, 0x97, 0x10, 0x26, 0x85, 0x5d, 0x57, 0x94,
+	0x5b, 0x25, 0x14, 0x95, 0xc0, 0x88, 0xc4, 0x5e, 0xba, 0x90, 0x47, 0x64, 0xfc, 0xd1, 0x7d, 0xa8,
+	0x45, 0x89, 0x97, 0x92, 0x1a, 0x8a, 0x74, 0xa3, 0x84, 0x74, 0xac, 0x0c, 0xb3, 0x93, 0xd7, 0x6e,
+	0xe8, 0x3b, 0xd8, 0xf3, 0x66, 0xf2, 0x94, 0x27, 0xf4, 0x99, 0x56, 0xb0, 0x9b, 0x95, 0x21, 0xf5,
+	0x96, 0x1c, 0x0c, 0x70, 0x05, 0x83, 0x8e, 0xa1, 0x21, 0x66, 0xd3, 0x69, 0x4c, 0x89, 0xb0, 0x41,
+	0x21, 0xdf, 0x2f, 0x41, 0xa6, 0xf5, 0x4b, 0x85, 0xa4, 0x41, 0xbe, 0x5b, 0x99, 0x33, 0x1a, 0x40,
+	0xcd, 0x9f, 0x25, 0x69, 0x8a, 0xad, 0xab, 0x63, 0x8c, 0x2b, 0xfe, 0x01, 0xde, 0x58, 0x3d, 0x16,
+	0xd4, 0x85, 0x56, 0x56, 0xc0, 0x63, 0x1a, 0xaa, 0x96, 0x69, 0x8e, 0x20, 0x9b, 0x1a, 0x86, 0xe8,
+	0xb3, 0x85, 0xe3, 0xd6, 0x4d, 0x71, 0x50, 0xa0, 0x6d, 0x78, 0xab, 0xa7, 0x8c, 0x9f, 0x03, 0x5a,
+	0x0f, 0xab, 0x5a, 0xf4, 0x0b, 0x00, 0x91, 0x9b, 0x1b, 0xd9, 0xc2, 0x52, 0x4d, 0x6b, 0x72, 0x2d,
+	0xdf, 0x05, 0x5f, 0xcc, 0xe1, 0xfa, 0x8a, 0x11, 0x6a, 0x43, 0x23, 0xeb, 0x50, 0x23, 0xad, 0x6b,
+	0x7b, 0x18, 0xa2, 0x1e, 0xd4, 0xbc, 0x09, 0x9f, 0x31, 0x69, 0x6f, 0xa6, 0x0b, 0xfd, 0x5b, 0x29,
+	0xef, 0xaf, 0x57, 0xdd, 0x1b, 0x11, 0x95, 0xa7, 0x33, 0xdf, 0x09, 0xf8, 0xc4, 0x8d, 0x29, 0x23,
+	0x6e, 0xec, 0x4f, 0x6e, 0x8b, 0xf0, 0x89, 0x2b, 0xcf, 0xa7, 0x44, 0x38, 0x43, 0x26, 0x47, 0xc6,
+	0x11, 0x53, 0xa8, 0x9b, 0xcd, 0x40, 0x36, 0xd4, 0xbd, 0x30, 0x4c, 0x88, 0x10, 0x99, 0x8e, 0x19,
+	0xa2, 0xa3, 0x05, 0x9d, 0x34, 0xb7, 0xb7, 0x0b, 0x8f, 0x93, 0xb2, 0xfe, 0xb5, 0x34, 0x80, 0x5f,
+	0xff, 0xee, 0xee, 0xa4, 0x23, 0x91, 0x89, 0xdc, 0xdb, 0xfe, 0xf7, 0xe7, 0xae, 0x85, 0x13, 0xb8,
+	0xbe, 0xd2, 0xab, 0xd5, 0x3b, 0x7b, 0x34, 0xbf, 0x01, 0xb4, 0xf4, 0xbe, 0xa3, 0x2f, 0x6c, 0x27,
+	0xbb, 0xb0, 0x9d, 0x1e, 0x3b, 0xef, 0xef, 0xfd, 0xf1, 0xdb, 0x6d, 0x50, 0x5d, 0xa7, 0xc8, 0x79,
+	0xf7, 0xe3, 0x1f, 0x2d, 0x78, 0xab, 0xb8, 0x05, 0xaa, 0xb5, 0x1f, 0xad, 0xb5, 0x99, 0x0e, 0xe1,
+	0xb0, 0x20, 0xfb, 0x25, 0x76, 0x71, 0x77, 0x61, 0x0a, 0x7b, 0xcb, 0x6d, 0x5d, 0x1d, 0xc2, 0xc7,
+	0xf9, 0x55, 0xa1, 0xa5, 0xed, 0x02, 0x69, 0xc5, 0x5a, 0xbe, 0x21, 0xf0, 0xef, 0x16, 0xec, 0x2e,
+	0x5e, 0xd9, 0xd5, 0x4a, 0x0f, 0xa1, 0x71, 0x32, 0x63, 0x11, 0xf5, 0x63, 0x62, 0x8a, 0xe9, 0x43,
+	0x53, 0x4c, 0xb8, 0xbc, 0x98, 0xbe, 0xa5, 0x4c, 0x8e, 0x72, 0x5f, 0xf4, 0x15, 0xec, 0x32, 0xce,
+	0xc6, 0x39, 0x6b, 0xeb, 0xca, 0xac, 0x16, 0xe3, 0xec, 0xa1, 0x71, 0xc7, 0xcf, 0x60, 0xbf, 0xe8,
+	0xb5, 0xa8, 0xce, 0xa7, 0x07, 0xcd, 0xf9, 0x53, 0xa4, 0x37, 0xaf, 0xf3, 0x9a, 0x77, 0xcd, 0x40,
+	0xb3, 0xcb, 0x40, 0x9a, 0xd7, 0x07, 0x87, 0xd0, 0x5a, 0x58, 0x2e, 0xeb, 0xc3, 0x7b, 0xb0, 0x49,
+	0xc3, 0xff, 0xb1, 0x6d, 0x9b, 0x34, 0xc4, 0xcf, 0xe7, 0x05, 0xba, 0xfc, 0x6c, 0x54, 0xe7, 0xf8,
+	0x00, 0x9a, 0x49, 0x66, 0x5d, 0x52, 0x9b, 0x4b, 0xd8, 0xec, 0x37, 0x20, 0x77, 0xc4, 0x9f, 0xc2,
+	0xb5, 0x25, 0x0b, 0x84, 0x60, 0x5b, 0x90, 0xf8, 0xc4, 0x08, 0xaa, 0x6f, 0xb4, 0x0f, 0x3b, 0x5c,
+	0x9e, 0x92, 0x44, 0x27, 0x39, 0xd2, 0x83, 0xfe, 0xd1, 0x8b, 0x8b, 0x8e, 0xf5, 0xf2, 0xa2, 0x63,
+	0xfd, 0x73, 0xd1, 0xb1, 0x7e, 0xba, 0xec, 0x6c, 0xbc, 0xbc, 0xec, 0x6c, 0xfc, 0x79, 0xd9, 0xd9,
+	0xf8, 0xfe, 0xbd, 0xd7, 0x65, 0x7f, 0xb6, 0xf0, 0x4b, 0xe4, 0xd7, 0x54, 0x13, 0x7f, 0xf4, 0x5f,
+	0x00, 0x00, 0x00, 0xff, 0xff, 0xae, 0x98, 0xb7, 0x01, 0xb9, 0x09, 0x00, 0x00,
 }
 
 func (this *Balance) Equal(that interface{}) bool {
@@ -864,7 +940,7 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintGenesis(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x4a
+			dAtA[i] = 0x5a
 		}
 	}
 	if len(m.Supplies) > 0 {
@@ -878,7 +954,7 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintGenesis(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x42
+			dAtA[i] = 0x52
 		}
 	}
 	if len(m.Authorizations) > 0 {
@@ -892,7 +968,7 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintGenesis(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x3a
+			dAtA[i] = 0x4a
 		}
 	}
 	if len(m.Grants) > 0 {
@@ -906,7 +982,7 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintGenesis(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x32
+			dAtA[i] = 0x42
 		}
 	}
 	if len(m.Parents) > 0 {
@@ -920,7 +996,7 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintGenesis(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x2a
+			dAtA[i] = 0x3a
 		}
 	}
 	if len(m.Balances) > 0 {
@@ -934,13 +1010,41 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 				i = encodeVarintGenesis(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x22
+			dAtA[i] = 0x32
 		}
 	}
 	if len(m.Classes) > 0 {
 		for iNdEx := len(m.Classes) - 1; iNdEx >= 0; iNdEx-- {
 			{
 				size, err := m.Classes[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x2a
+		}
+	}
+	if len(m.NextTokenIds) > 0 {
+		for iNdEx := len(m.NextTokenIds) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.NextTokenIds[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if len(m.NextClassIds) > 0 {
+		for iNdEx := len(m.NextClassIds) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.NextClassIds[iNdEx].MarshalToSizedBuffer(dAtA[:i])
 				if err != nil {
 					return 0, err
 				}
@@ -971,48 +1075,6 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			return 0, err
 		}
 		i -= size
-		i = encodeVarintGenesis(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0xa
-	return len(dAtA) - i, nil
-}
-
-func (m *ClassGenesisState) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ClassGenesisState) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ClassGenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Ids) > 0 {
-		for iNdEx := len(m.Ids) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Ids[iNdEx])
-			copy(dAtA[i:], m.Ids[iNdEx])
-			i = encodeVarintGenesis(dAtA, i, uint64(len(m.Ids[iNdEx])))
-			i--
-			dAtA[i] = 0x12
-		}
-	}
-	{
-		size := m.Nonce.Size()
-		i -= size
-		if _, err := m.Nonce.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
 		i = encodeVarintGenesis(dAtA, i, uint64(size))
 	}
 	i--
@@ -1374,6 +1436,90 @@ func (m *NextClassIDs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *ContractNextTokenIDs) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContractNextTokenIDs) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ContractNextTokenIDs) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.TokenIds) > 0 {
+		for iNdEx := len(m.TokenIds) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.TokenIds[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.ContractId) > 0 {
+		i -= len(m.ContractId)
+		copy(dAtA[i:], m.ContractId)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.ContractId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *NextTokenID) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NextTokenID) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NextTokenID) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.Id.Size()
+		i -= size
+		if _, err := m.Id.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintGenesis(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if len(m.ClassId) > 0 {
+		i -= len(m.ClassId)
+		copy(dAtA[i:], m.ClassId)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.ClassId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *ContractTokenRelations) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1480,6 +1626,18 @@ func (m *GenesisState) Size() (n int) {
 			n += 1 + l + sovGenesis(uint64(l))
 		}
 	}
+	if len(m.NextClassIds) > 0 {
+		for _, e := range m.NextClassIds {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if len(m.NextTokenIds) > 0 {
+		for _, e := range m.NextTokenIds {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
 	if len(m.Classes) > 0 {
 		for _, e := range m.Classes {
 			l = e.Size()
@@ -1519,23 +1677,6 @@ func (m *GenesisState) Size() (n int) {
 	if len(m.Burnts) > 0 {
 		for _, e := range m.Burnts {
 			l = e.Size()
-			n += 1 + l + sovGenesis(uint64(l))
-		}
-	}
-	return n
-}
-
-func (m *ClassGenesisState) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = m.Nonce.Size()
-	n += 1 + l + sovGenesis(uint64(l))
-	if len(m.Ids) > 0 {
-		for _, s := range m.Ids {
-			l = len(s)
 			n += 1 + l + sovGenesis(uint64(l))
 		}
 	}
@@ -1688,6 +1829,40 @@ func (m *NextClassIDs) Size() (n int) {
 	return n
 }
 
+func (m *ContractNextTokenIDs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ContractId)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if len(m.TokenIds) > 0 {
+		for _, e := range m.TokenIds {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *NextTokenID) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ClassId)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = m.Id.Size()
+	n += 1 + l + sovGenesis(uint64(l))
+	return n
+}
+
 func (m *ContractTokenRelations) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1828,6 +2003,74 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextClassIds", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NextClassIds = append(m.NextClassIds, NextClassIDs{})
+			if err := m.NextClassIds[len(m.NextClassIds)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextTokenIds", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NextTokenIds = append(m.NextTokenIds, ContractNextTokenIDs{})
+			if err := m.NextTokenIds[len(m.NextTokenIds)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Classes", wireType)
 			}
 			var msglen int
@@ -1860,7 +2103,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 4:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Balances", wireType)
 			}
@@ -1894,7 +2137,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 5:
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Parents", wireType)
 			}
@@ -1928,7 +2171,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 6:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Grants", wireType)
 			}
@@ -1962,7 +2205,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 7:
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Authorizations", wireType)
 			}
@@ -1996,7 +2239,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 8:
+		case 10:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Supplies", wireType)
 			}
@@ -2030,7 +2273,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 9:
+		case 11:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Burnts", wireType)
 			}
@@ -2063,122 +2306,6 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if err := m.Burnts[len(m.Burnts)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipGenesis(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ClassGenesisState) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowGenesis
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ClassGenesisState: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ClassGenesisState: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Nonce", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowGenesis
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.Nonce.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Ids", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowGenesis
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Ids = append(m.Ids, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -3139,6 +3266,238 @@ func (m *NextClassIDs) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.NonFungible.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGenesis(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContractNextTokenIDs) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGenesis
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContractNextTokenIDs: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContractNextTokenIDs: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContractId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TokenIds", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TokenIds = append(m.TokenIds, NextTokenID{})
+			if err := m.TokenIds[len(m.TokenIds)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGenesis(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *NextTokenID) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGenesis
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NextTokenID: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NextTokenID: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClassId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ClassId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Id.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

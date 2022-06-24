@@ -20,6 +20,18 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 		}
 	}
 
+	for _, nextClassIDs := range data.NextClassIds {
+		k.setNextClassIDs(ctx, nextClassIDs)
+	}
+
+	for _, contractNextTokenIDs := range data.NextTokenIds {
+		contractID := contractNextTokenIDs.ContractId
+
+		for _, nextTokenID := range contractNextTokenIDs.TokenIds {
+			k.setNextTokenID(ctx, contractID, nextTokenID.ClassId, nextTokenID.Id)
+		}
+	}
+
 	for _, contractBalances := range data.Balances {
 		contractID := contractBalances.ContractId
 
@@ -85,6 +97,8 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *collection.GenesisState {
 	return &collection.GenesisState{
 		Contracts:      contracts,
 		Classes:        k.getClasses(ctx, contracts),
+		NextClassIds:   k.getAllNextClassIDs(ctx),
+		NextTokenIds:   k.getNextTokenIDs(ctx, contracts),
 		Balances:       k.getBalances(ctx, contracts),
 		Parents:        k.getParents(ctx, contracts),
 		Grants:         k.getGrants(ctx, contracts),
@@ -123,6 +137,36 @@ func (k Keeper) getClasses(ctx sdk.Context, contracts []collection.Contract) []c
 	}
 
 	return classes
+}
+
+func (k Keeper) getAllNextClassIDs(ctx sdk.Context) []collection.NextClassIDs {
+	var nextIDs []collection.NextClassIDs
+	k.iterateNextTokenClassIDs(ctx, func(ids collection.NextClassIDs) (stop bool) {
+		nextIDs = append(nextIDs, ids)
+		return false
+	})
+
+	return nextIDs
+}
+
+func (k Keeper) getNextTokenIDs(ctx sdk.Context, contracts []collection.Contract) []collection.ContractNextTokenIDs {
+	var nextIDs []collection.ContractNextTokenIDs
+	for _, contract := range contracts {
+		contractID := contract.ContractId
+		contractNextIDs := collection.ContractNextTokenIDs{
+			ContractId: contractID,
+		}
+
+		k.iterateContractNextTokenIDs(ctx, contractID, func(nextID collection.NextTokenID) (stop bool) {
+			contractNextIDs.TokenIds = append(contractNextIDs.TokenIds, nextID)
+			return false
+		})
+		if len(contractNextIDs.TokenIds) != 0 {
+			nextIDs = append(nextIDs, contractNextIDs)
+		}
+	}
+
+	return nextIDs
 }
 
 func (k Keeper) getBalances(ctx sdk.Context, contracts []collection.Contract) []collection.ContractBalances {

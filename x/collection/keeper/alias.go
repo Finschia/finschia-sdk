@@ -199,7 +199,7 @@ func (k Keeper) iterateContractBurnts(ctx sdk.Context, contractID string, fn fun
 }
 
 // iterate through the next token class ids and perform the provided function
-func (k Keeper) iterateNextTokenClasseIDs(ctx sdk.Context, fn func(class collection.NextClassIDs) (stop bool)) {
+func (k Keeper) iterateNextTokenClassIDs(ctx sdk.Context, fn func(class collection.NextClassIDs) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 
 	iterator := sdk.KVStorePrefixIterator(store, nextClassIDKeyPrefix)
@@ -207,11 +207,42 @@ func (k Keeper) iterateNextTokenClasseIDs(ctx sdk.Context, fn func(class collect
 
 	for ; iterator.Valid(); iterator.Next() {
 		var class collection.NextClassIDs
-		if err := k.cdc.UnmarshalInterface(iterator.Value(), &class); err != nil {
+		k.cdc.MustUnmarshal(iterator.Value(), &class)
+
+		stop := fn(class)
+		if stop {
+			break
+		}
+	}
+}
+
+func (k Keeper) iterateContractNextTokenIDs(ctx sdk.Context, contractID string, fn func(nextID collection.NextTokenID) (stop bool)) {
+	k.iterateNextTokenIDsImpl(ctx, nextTokenIDKeyPrefixByContractID(contractID), func(_ string, nextID collection.NextTokenID) (stop bool) {
+		return fn(nextID)
+	})
+}
+
+// iterate through the next (non-fungible) token ids and perform the provided function
+func (k Keeper) iterateNextTokenIDsImpl(ctx sdk.Context, prefix []byte, fn func(contractID string, nextID collection.NextTokenID) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+
+	iterator := sdk.KVStorePrefixIterator(store, prefix)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		contractID, classID := splitNextTokenIDKey(iterator.Key())
+
+		var id sdk.Uint
+		if err := id.Unmarshal(iterator.Value()); err != nil {
 			panic(err)
 		}
 
-		stop := fn(class)
+		nextID := collection.NextTokenID{
+			ClassId: classID,
+			Id:      id,
+		}
+
+		stop := fn(contractID, nextID)
 		if stop {
 			break
 		}

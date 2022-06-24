@@ -131,6 +131,32 @@ func (k Keeper) setNextClassIDs(ctx sdk.Context, ids collection.NextClassIDs) {
 	store.Set(key, bz)
 }
 
+func (k Keeper) getNextTokenID(ctx sdk.Context, contractID string, classID string) sdk.Uint {
+	store := ctx.KVStore(k.storeKey)
+	key := nextTokenIDKey(contractID, classID)
+	bz := store.Get(key)
+	if bz == nil {
+		panic(sdkerrors.ErrNotFound.Wrapf("No next ids of token class %s", classID))
+	}
+
+	var id sdk.Uint
+	if err := id.Unmarshal(bz); err != nil {
+		panic(err)
+	}
+	return id
+}
+
+func (k Keeper) setNextTokenID(ctx sdk.Context, contractID string, classID string, tokenID sdk.Uint) {
+	store := ctx.KVStore(k.storeKey)
+	key := nextTokenIDKey(contractID, classID)
+
+	bz, err := tokenID.Marshal()
+	if err != nil {
+		panic(err)
+	}
+	store.Set(key, bz)
+}
+
 func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.AccAddress, permission collection.Permission) error {
 	k.grant(ctx, contractID, grantee, permission)
 

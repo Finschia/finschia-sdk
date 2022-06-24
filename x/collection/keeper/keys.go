@@ -10,6 +10,7 @@ var (
 	contractKeyPrefix    = []byte{0x00}
 	classKeyPrefix       = []byte{0x01}
 	nextClassIDKeyPrefix = []byte{0x02}
+	nextTokenIDKeyPrefix = []byte{0x03}
 
 	balanceKeyPrefix = []byte{0x10}
 	ownerKeyPrefix   = []byte{0x11}
@@ -204,6 +205,15 @@ func splitChildKey(key []byte) (contractID string, tokenID, childID string) {
 }
 
 //-----------------------------------------------------------------------------
+func contractKey(contractID string) []byte {
+	key := make([]byte, len(contractKeyPrefix)+len(contractID))
+
+	copy(key, contractKeyPrefix)
+	copy(key[len(contractKeyPrefix):], contractID)
+
+	return key
+}
+
 func classKey(contractID string, classID string) []byte {
 	prefix := classKeyPrefixByContractID(contractID)
 	key := make([]byte, len(prefix)+len(classID))
@@ -229,13 +239,40 @@ func classKeyPrefixByContractID(contractID string) []byte {
 	return key
 }
 
-func contractKey(contractID string) []byte {
-	key := make([]byte, len(contractKeyPrefix)+len(contractID))
+func nextTokenIDKey(contractID string, classID string) []byte {
+	prefix := nextTokenIDKeyPrefixByContractID(contractID)
+	key := make([]byte, len(prefix)+len(classID))
 
-	copy(key, contractKeyPrefix)
-	copy(key[len(contractKeyPrefix):], contractID)
+	copy(key, prefix)
+	copy(key[len(prefix):], classID)
 
 	return key
+}
+
+func nextTokenIDKeyPrefixByContractID(contractID string) []byte {
+	key := make([]byte, len(nextTokenIDKeyPrefix)+1+len(contractID))
+
+	begin := 0
+	copy(key, nextTokenIDKeyPrefix)
+
+	begin += len(nextTokenIDKeyPrefix)
+	key[begin] = byte(len(contractID))
+
+	begin++
+	copy(key[begin:], contractID)
+
+	return key
+}
+
+func splitNextTokenIDKey(key []byte) (contractID string, classID string) {
+	begin := len(nextTokenIDKeyPrefix) + 1
+	end := begin + int(key[begin-1])
+	contractID = string(key[begin:end])
+
+	begin = end
+	classID = string(key[begin:])
+
+	return
 }
 
 func nextClassIDKey(contractID string) []byte {

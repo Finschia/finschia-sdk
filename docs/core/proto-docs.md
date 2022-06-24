@@ -485,16 +485,17 @@
   
 - [lbm/collection/v1/genesis.proto](#lbm/collection/v1/genesis.proto)
     - [Balance](#lbm.collection.v1.Balance)
-    - [ClassGenesisState](#lbm.collection.v1.ClassGenesisState)
     - [ClassStatistics](#lbm.collection.v1.ClassStatistics)
     - [ContractAuthorizations](#lbm.collection.v1.ContractAuthorizations)
     - [ContractBalances](#lbm.collection.v1.ContractBalances)
     - [ContractClasses](#lbm.collection.v1.ContractClasses)
     - [ContractGrants](#lbm.collection.v1.ContractGrants)
+    - [ContractNextTokenIDs](#lbm.collection.v1.ContractNextTokenIDs)
     - [ContractStatistics](#lbm.collection.v1.ContractStatistics)
     - [ContractTokenRelations](#lbm.collection.v1.ContractTokenRelations)
     - [GenesisState](#lbm.collection.v1.GenesisState)
     - [NextClassIDs](#lbm.collection.v1.NextClassIDs)
+    - [NextTokenID](#lbm.collection.v1.NextTokenID)
     - [TokenRelation](#lbm.collection.v1.TokenRelation)
   
 - [lbm/collection/v1/query.proto](#lbm/collection/v1/query.proto)
@@ -7941,22 +7942,6 @@ Balance defines a balance of an address.
 
 
 
-<a name="lbm.collection.v1.ClassGenesisState"></a>
-
-### ClassGenesisState
-ClassGenesisState defines the classs keeper's genesis state.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `nonce` | [string](#string) |  | nonce is the next class nonce to issue. |
-| `ids` | [string](#string) | repeated | ids represents the issued ids. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.ClassStatistics"></a>
 
 ### ClassStatistics
@@ -8038,6 +8023,22 @@ ContractGrant defines grants belong to a contract.
 
 
 
+<a name="lbm.collection.v1.ContractNextTokenIDs"></a>
+
+### ContractNextTokenIDs
+ContractNextTokenIDs defines the next token ids belong to a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  |  |
+| `token_ids` | [NextTokenID](#lbm.collection.v1.NextTokenID) | repeated |  |
+
+
+
+
+
+
 <a name="lbm.collection.v1.ContractStatistics"></a>
 
 ### ContractStatistics
@@ -8080,6 +8081,8 @@ GenesisState defines the collection module's genesis state.
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#lbm.collection.v1.Params) |  | params defines all the paramaters of the module. |
 | `contracts` | [Contract](#lbm.collection.v1.Contract) | repeated | contracts defines the metadata of the contracts. |
+| `next_class_ids` | [NextClassIDs](#lbm.collection.v1.NextClassIDs) | repeated | next ids for token classes. |
+| `next_token_ids` | [ContractNextTokenIDs](#lbm.collection.v1.ContractNextTokenIDs) | repeated | next ids for (non-fungible) tokens. |
 | `classes` | [ContractClasses](#lbm.collection.v1.ContractClasses) | repeated | classes defines the metadata of the tokens. |
 | `balances` | [ContractBalances](#lbm.collection.v1.ContractBalances) | repeated | balances is an array containing the balances of all the accounts. |
 | `parents` | [ContractTokenRelations](#lbm.collection.v1.ContractTokenRelations) | repeated | parents represents the parents of (non-fungible) tokens. |
@@ -8104,6 +8107,22 @@ NextClassIDs defines the next class ids of the contract.
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `fungible` | [string](#string) |  | id for the fungible tokens. |
 | `non_fungible` | [string](#string) |  | id for the non-fungible tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.NextTokenID"></a>
+
+### NextTokenID
+NextTokenID defines the next (non-fungible) token id of the token class.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  | class id associated with the token class. |
+| `id` | [string](#string) |  | id for the token. |
 
 
 
