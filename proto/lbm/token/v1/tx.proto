@@ -338,7 +338,10 @@ message MsgIssue {
 }
 
 // MsgIssueResponse defines the Msg/Issue response type.
-message MsgIssueResponse {}
+message MsgIssueResponse {
+  // id of the new token class.
+  string id = 1;
+}
 
 // MsgGrant defines the Msg/Grant request type.
 //

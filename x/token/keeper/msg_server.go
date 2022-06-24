@@ -173,7 +173,7 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 
 	s.keeper.Issue(ctx, class, sdk.AccAddress(req.Owner), sdk.AccAddress(req.To), req.Amount)
 
-	return &token.MsgIssueResponse{}, nil
+	return &token.MsgIssueResponse{Id: contractID}, nil
 }
 
 // Grant allows one to mint or burn tokens or modify a token metadata

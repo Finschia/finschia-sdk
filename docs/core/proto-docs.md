@@ -14486,6 +14486,11 @@ Signer: `owner`
 MsgIssueResponse defines the Msg/Issue response type.
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  | id of the new token class. |
+
+
 
 
 
