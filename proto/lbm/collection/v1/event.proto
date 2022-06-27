@@ -146,10 +146,10 @@ message EventAbandon {
   string permission = 3;
 }
 
-// EventMinted is emitted when tokens are minted.
+// EventMintedFT is emitted when fungible tokens are minted.
 //
 // Since: 0.46.0 (finschia)
-message EventMinted {
+message EventMintedFT {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the mint.
@@ -157,9 +157,21 @@ message EventMinted {
   // recipient of the tokens.
   string to = 3;
   // amount of tokens minted.
-  Coin amount = 4 [(gogoproto.nullable) = false];
-  // attributes of the token.
-  repeated Attribute attributes = 5 [(gogoproto.nullable) = false];
+  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+// EventMintedNFT is emitted when non-fungible tokens are minted.
+//
+// Since: 0.46.0 (finschia)
+message EventMintedNFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the mint.
+  string operator = 2;
+  // recipient of the tokens.
+  string to = 3;
+  // tokens minted.
+  repeated NFT tokens = 4 [(gogoproto.nullable) = false];
 }
 
 // EventBurned is emitted when tokens are burnt.

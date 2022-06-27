@@ -471,7 +471,8 @@
     - [EventBurned](#lbm.collection.v1.EventBurned)
     - [EventCreatedTokenClass](#lbm.collection.v1.EventCreatedTokenClass)
     - [EventGrant](#lbm.collection.v1.EventGrant)
-    - [EventMinted](#lbm.collection.v1.EventMinted)
+    - [EventMintedFT](#lbm.collection.v1.EventMintedFT)
+    - [EventMintedNFT](#lbm.collection.v1.EventMintedNFT)
     - [EventModifiedContract](#lbm.collection.v1.EventModifiedContract)
     - [EventModifiedNFT](#lbm.collection.v1.EventModifiedNFT)
     - [EventModifiedTokenClass](#lbm.collection.v1.EventModifiedTokenClass)
@@ -7681,10 +7682,10 @@ Since: 0.46.0 (finschia)
 
 
 
-<a name="lbm.collection.v1.EventMinted"></a>
+<a name="lbm.collection.v1.EventMintedFT"></a>
 
-### EventMinted
-EventMinted is emitted when tokens are minted.
+### EventMintedFT
+EventMintedFT is emitted when fungible tokens are minted.
 
 Since: 0.46.0 (finschia)
 
@@ -7694,8 +7695,27 @@ Since: 0.46.0 (finschia)
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the mint. |
 | `to` | [string](#string) |  | recipient of the tokens. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) |  | amount of tokens minted. |
-| `attributes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | attributes of the token. |
+| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of tokens minted. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventMintedNFT"></a>
+
+### EventMintedNFT
+EventMintedNFT is emitted when non-fungible tokens are minted.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address which triggered the mint. |
+| `to` | [string](#string) |  | recipient of the tokens. |
+| `tokens` | [NFT](#lbm.collection.v1.NFT) | repeated | tokens minted. |
 
 
 
