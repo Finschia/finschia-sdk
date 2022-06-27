@@ -656,7 +656,7 @@ func TestGetAllContracts(t *testing.T) {
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			got := GetAllContracts(&spec.src)
+			got := getAllContracts(&spec.src)
 			assert.Equal(t, spec.exp, got)
 		})
 	}

@@ -665,8 +665,12 @@ func TestQueryPinnedCodes(t *testing.T) {
 	specs := map[string]struct {
 		srcQuery   *types.QueryPinnedCodesRequest
 		expCodeIDs []uint64
-		expErr     *sdkErrors.Error
+		expErr     bool
 	}{
+		"req nil": {
+			srcQuery: nil,
+			expErr:   true,
+		},
 		"query all": {
 			srcQuery:   &types.QueryPinnedCodesRequest{},
 			expCodeIDs: []uint64{exampleContract1.CodeID, exampleContract2.CodeID},
@@ -678,6 +682,15 @@ func TestQueryPinnedCodes(t *testing.T) {
 				},
 			},
 			expCodeIDs: []uint64{exampleContract2.CodeID},
+		},
+		"with invalid pagination key": {
+			srcQuery: &types.QueryPinnedCodesRequest{
+				Pagination: &query.PageRequest{
+					Offset: 1,
+					Key:    []byte("test"),
+				},
+			},
+			expErr: true,
 		},
 		"with pagination limit": {
 			srcQuery: &types.QueryPinnedCodesRequest{
@@ -699,8 +712,10 @@ func TestQueryPinnedCodes(t *testing.T) {
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
 			got, err := q.PinnedCodes(sdk.WrapSDKContext(ctx), spec.srcQuery)
-			require.True(t, spec.expErr.Is(err), err)
-			if spec.expErr != nil {
+			if spec.expErr {
+				assert.Nil(t, got)
+				assert.NotNil(t, err)
+
 				return
 			}
 			require.NotNil(t, got)

@@ -111,7 +111,7 @@ func GenesisInstantiateContractCmd(defaultNodeHome string, genesisMutator Genesi
 				}
 
 				//  does code id exists?
-				codeInfos, err := GetAllCodes(state)
+				codeInfos, err := getAllCodes(state)
 				if err != nil {
 					return err
 				}
@@ -210,7 +210,7 @@ func GenesisListCodesCmd(defaultNodeHome string, genReader GenesisReader) *cobra
 			if err != nil {
 				return err
 			}
-			all, err := GetAllCodes(g.WasmModuleState)
+			all, err := getAllCodes(g.WasmModuleState)
 			if err != nil {
 				return err
 			}
@@ -236,7 +236,7 @@ func GenesisListContractsCmd(defaultNodeHome string, genReader GenesisReader) *c
 				return err
 			}
 			state := g.WasmModuleState
-			all := GetAllContracts(state)
+			all := getAllContracts(state)
 			return printJSONOutput(cmd, all)
 		},
 	}
@@ -260,7 +260,7 @@ type CodeMeta struct {
 	Info   types.CodeInfo `json:"info"`
 }
 
-func GetAllCodes(state *types.GenesisState) ([]CodeMeta, error) {
+func getAllCodes(state *types.GenesisState) ([]CodeMeta, error) {
 	all := make([]CodeMeta, len(state.Codes))
 	for i, c := range state.Codes {
 		all[i] = CodeMeta{
@@ -303,7 +303,7 @@ type ContractMeta struct {
 	Info            types.ContractInfo `json:"info"`
 }
 
-func GetAllContracts(state *types.GenesisState) []ContractMeta {
+func getAllContracts(state *types.GenesisState) []ContractMeta {
 	all := make([]ContractMeta, len(state.Contracts))
 	for i, c := range state.Contracts {
 		all[i] = ContractMeta{
@@ -494,10 +494,7 @@ func getActorAddress(cmd *cobra.Command) (sdk.AccAddress, error) {
 		return sdk.AccAddress(actorArg), nil
 	}
 	inBuf := bufio.NewReader(cmd.InOrStdin())
-	keyringBackend, err := cmd.Flags().GetString(flags.FlagKeyringBackend)
-	if err != nil {
-		return sdk.AccAddress(""), err
-	}
+	keyringBackend, _ := cmd.Flags().GetString(flags.FlagKeyringBackend)
 
 	homeDir := client.GetClientContextFromCmd(cmd).HomeDir
 	// attempt to lookup address from Keybase if no address was provided
