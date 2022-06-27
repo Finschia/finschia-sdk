@@ -1906,54 +1906,54 @@ func TestMsgOperatorAttach(t *testing.T) {
 		contractID string
 		operator sdk.AccAddress
 		owner sdk.AccAddress
-		tokenID string
-		toTokenID string
+		subject string
+		target string
 		valid   bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			operator: addrs[0],
 			owner: addrs[1],
-			tokenID:      tokenIDs[0],
-			toTokenID: tokenIDs[1],
+			subject:      tokenIDs[0],
+			target: tokenIDs[1],
 			valid:   true,
 		},
 		"invalid contract id": {
 			operator:    addrs[0],
 			owner: addrs[1],
-			tokenID:      tokenIDs[0],
-			toTokenID: tokenIDs[1],
+			subject:      tokenIDs[0],
+			target: tokenIDs[1],
 		},
 		"empty operator": {
 			contractID: "deadbeef",
 			owner: addrs[1],
-			tokenID:      tokenIDs[0],
-			toTokenID: tokenIDs[1],
+			subject:      tokenIDs[0],
+			target: tokenIDs[1],
 		},
 		"empty owner": {
 			contractID: "deadbeef",
 			operator: addrs[0],
-			tokenID:      tokenIDs[0],
-			toTokenID: tokenIDs[1],
+			subject:      tokenIDs[0],
+			target: tokenIDs[1],
 		},
 		"invalid token id": {
 			contractID: "deadbeef",
 			operator:    addrs[0],
 			owner: addrs[1],
-			toTokenID: tokenIDs[1],
+			target: tokenIDs[1],
 		},
 		"invalid to id": {
 			contractID: "deadbeef",
 			operator:    addrs[0],
 			owner: addrs[1],
-			tokenID:      tokenIDs[0],
+			subject:      tokenIDs[0],
 		},
 		"to itself": {
 			contractID: "deadbeef",
 			operator:    addrs[0],
 			owner: addrs[1],
-			tokenID:      tokenIDs[0],
-			toTokenID: tokenIDs[0],
+			subject:      tokenIDs[0],
+			target: tokenIDs[0],
 		},
 	}
 
@@ -1962,8 +1962,8 @@ func TestMsgOperatorAttach(t *testing.T) {
 			ContractId: tc.contractID,
 			Operator:    tc.operator.String(),
 			Owner: tc.owner.String(),
-			Id:      tc.tokenID,
-			To:  tc.toTokenID,
+			Subject:      tc.subject,
+			Target:  tc.target,
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
@@ -1991,30 +1991,30 @@ func TestMsgOperatorDetach(t *testing.T) {
 		contractID string
 		operator sdk.AccAddress
 		owner sdk.AccAddress
-		tokenID string
+		subject string
 		valid   bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			operator: addrs[0],
 			owner: addrs[1],
-			tokenID:      tokenIDs[0],
+			subject:      tokenIDs[0],
 			valid:   true,
 		},
 		"invalid contract id": {
 			operator:    addrs[0],
 			owner: addrs[1],
-			tokenID:      tokenIDs[0],
+			subject:      tokenIDs[0],
 		},
 		"empty operator": {
 			contractID: "deadbeef",
 			owner: addrs[1],
-			tokenID:      tokenIDs[0],
+			subject:      tokenIDs[0],
 		},
 		"empty owner": {
 			contractID: "deadbeef",
 			operator: addrs[0],
-			tokenID:      tokenIDs[0],
+			subject:      tokenIDs[0],
 		},
 		"invalid token id": {
 			contractID: "deadbeef",
@@ -2028,7 +2028,7 @@ func TestMsgOperatorDetach(t *testing.T) {
 			ContractId: tc.contractID,
 			Operator:    tc.operator.String(),
 			Owner: tc.owner.String(),
-			Id:      tc.tokenID,
+			Subject:      tc.subject,
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())

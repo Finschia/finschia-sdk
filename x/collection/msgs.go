@@ -1154,14 +1154,14 @@ func (m MsgOperatorAttach) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", m.Owner)
 	}
 
-	if err := ValidateTokenID(m.Id); err != nil {
+	if err := ValidateTokenID(m.Subject); err != nil {
 		return err
 	}
-	if err := ValidateTokenID(m.To); err != nil {
+	if err := ValidateTokenID(m.Target); err != nil {
 		return err
 	}
 
-	if m.Id == m.To {
+	if m.Subject == m.Target {
 		return sdkerrors.ErrInvalidRequest.Wrap("cannot attach token to itself")
 	}
 
@@ -1189,7 +1189,7 @@ func (m MsgOperatorDetach) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", m.Owner)
 	}
 
-	if err := ValidateTokenID(m.Id); err != nil {
+	if err := ValidateTokenID(m.Subject); err != nil {
 		return err
 	}
 

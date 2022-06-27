@@ -13,11 +13,29 @@ option (gogoproto.equal_all) = false;
 // Msg defines the collection Msg service.
 service Msg {
   // Send defines a method to send tokens from one account to another account.
+  // Fires:
+  // - EventSent
+  // - transfer_ft (deprecated, not typed)
+  // - transfer_nft (deprecated, not typed)
+  // - operation_transfer_nft (deprecated, not typed)
+  // Throws:
+  // - ErrInsufficientFunds:
+  //   - the balance of `from` does not have enough tokens to spend.
   // Info: one can send both fungible tokens and non-fungible tokens.
   // Since: 0.46.0 (finschia)
   rpc Send(MsgSend) returns (MsgSendResponse);
 
   // OperatorSend defines a method to send tokens from one account to another account by the operator.
+  // Fires:
+  // - EventSent
+  // - transfer_ft_from (deprecated, not typed)
+  // - transfer_nft_from (deprecated, not typed)
+  // - operation_transfer_nft (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized:
+  //   - the holder has not authorized the operator.
+  // - ErrInsufficientFunds:
+  //   - the balance of `from` does not have enough tokens to spend.
   // Info: one can send both fungible tokens and non-fungible tokens.
   // Since: 0.46.0 (finschia)
   rpc OperatorSend(MsgOperatorSend) returns (MsgOperatorSendResponse);
@@ -39,10 +57,25 @@ service Msg {
   rpc TransferNFTFrom(MsgTransferNFTFrom) returns (MsgTransferNFTFromResponse);
 
   // AuthorizeOperator allows one to send tokens on behalf of the approver.
+  // Fires:
+  // - EventAuthorizedOperator
+  // - approve_collection (deprecated, not typed)
+  // Throws:
+  // - ErrNotFound:
+  //   - there is no contract of `contract_id`.
+  // - ErrInvalidRequest:
+  //   - `holder` has already authorized `operator`.
   // Since: 0.46.0 (finschia)
   rpc AuthorizeOperator(MsgAuthorizeOperator) returns (MsgAuthorizeOperatorResponse);
 
   // RevokeOperator revokes the authorization of the operator to send the approver's token.
+  // Fires:
+  // - EventRevokedOperator
+  // - disapprove_collection (deprecated, not typed)
+  // Throws:
+  // - ErrNotFound:
+  //   - there is no contract of `contract_id`.
+  //   - there is no authorization by `holder` to `operator`.
   // Since: 0.46.0 (finschia)
   rpc RevokeOperator(MsgRevokeOperator) returns (MsgRevokeOperatorResponse);
 
@@ -55,26 +88,73 @@ service Msg {
   rpc Disapprove(MsgDisapprove) returns (MsgDisapproveResponse);
 
   // CreateContract defines a method to create a contract for collection.
+  // it grants `mint`, `burn`, `modify` and `issue` permissions on the contract to its creator.
+  // Fires:
+  // - EventCreatedContract
+  // - create_collection (deprecated, not typed)
   rpc CreateContract(MsgCreateContract) returns (MsgCreateContractResponse);
 
   // IssueFT defines a method to create a class of fungible token.
+  // Fires:
+  // - EventIssueFT
+  // - EventMintedFT
+  // - issue_ft (deprecated, not typed)
+  // Note: it does not grant any permissions to its issuer.
   rpc IssueFT(MsgIssueFT) returns (MsgIssueFTResponse);
 
   // IssueNFT defines a method to create a class of non-fungible token.
+  // Fires:
+  // - EventIssueNFT
+  // - EventMintedNFT
+  // - issue_nft (deprecated, not typed)
+  // Note: it DOES grant `mint` and `burn` permissions to its issuer.
   rpc IssueNFT(MsgIssueNFT) returns (MsgIssueNFTResponse);
 
   // MintFT defines a method to mint fungible tokens.
+  // Fires:
+  // - EventMintedFT
+  // - mint_ft (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - `from` does not have `mint` permission.
   rpc MintFT(MsgMintFT) returns (MsgMintFTResponse);
 
   // MintNFT defines a method to mint non-fungible tokens.
+  // Fires:
+  // - EventMintedNFT
+  // - mint_nft (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - `from` does not have `mint` permission.
   rpc MintNFT(MsgMintNFT) returns (MsgMintNFTResponse);
 
   // Burn defines a method to burn tokens.
+  // Fires:
+  // - EventBurned
+  // - burn_ft (deprecated, not typed)
+  // - burn_nft (deprecated, not typed)
+  // - operation_burn_nft (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - `from` does not have `burn` permission.
+  // - ErrInsufficientFunds:
+  //   - the balance of `from` does not have enough tokens to burn.
   // Info: one can burn both fungible tokens and non-fungible tokens.
   // Since: 0.46.0 (finschia)
   rpc Burn(MsgBurn) returns (MsgBurnResponse);
 
   // OperatorBurn defines a method to burn tokens of the holder by the operator.
+  // Fires:
+  // - EventBurned
+  // - burn_ft_from (deprecated, not typed)
+  // - burn_nft_from (deprecated, not typed)
+  // - operation_burn_nft (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - `operator` does not have `burn` permission.
+  //   - the holder has not authorized `operator`.
+  // - ErrInsufficientFunds:
+  //   - the balance of `from` does not have enough tokens to burn.
   // Info: one can burn both fungible tokens and non-fungible tokens.
   // Since: 0.46.0 (finschia)
   rpc OperatorBurn(MsgOperatorBurn) returns (MsgOperatorBurnResponse);
@@ -96,14 +176,39 @@ service Msg {
   rpc BurnNFTFrom(MsgBurnNFTFrom) returns (MsgBurnNFTFromResponse);
 
   // ModifyContract defines a method to modify the attributes of a contract.
+  // Fires:
+  // - EventModifiedContract
+  // - modify_collection (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - the operator does not have `modify` permission.
+  // - ErrNotFound
+  //   - there is no token class of `contract_id`.
   // Since: 0.46.0 (finschia)
   rpc ModifyContract(MsgModifyContract) returns (MsgModifyContractResponse);
 
   // ModifyTokenClass defines a method to modify the attributes of a token class.
+  // Fires:
+  // - EventModifiedTokenClass
+  // - modify_token_type (deprecated, not typed)
+  // - modify_token (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - the operator does not have `modify` permission.
+  // - ErrNotFound
+  //   - there is no token class of `contract_id`.
   // Since: 0.46.0 (finschia)
   rpc ModifyTokenClass(MsgModifyTokenClass) returns (MsgModifyTokenClassResponse);
 
   // ModifyNFT defines a method to modify the attributes of a non-fungible token.
+  // Fires:
+  // - EventModifiedNFT
+  // - modify_token (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - the operator does not have `modify` permission.
+  // - ErrNotFound
+  //   - there is no token class of `contract_id`.
   // Since: 0.46.0 (finschia)
   rpc ModifyNFT(MsgModifyNFT) returns (MsgModifyNFTResponse);
 
@@ -112,10 +217,24 @@ service Msg {
   rpc Modify(MsgModify) returns (MsgModifyResponse);
 
   // Grant allows one to mint or burn tokens or modify metadata.
+  // Fires:
+  // - EventGrant
+  // - grant_perm (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - `granter` does not have `permission`.
+  // - ErrInvalidRequest
+  //   - `grantee` already has `permission`.
   // Since: 0.46.0 (finschia)
   rpc Grant(MsgGrant) returns (MsgGrantResponse);
 
   // Abandon abandons a permission.
+  // Fires:
+  // - EventAbandon
+  // - revoke_perm (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - `grantee` does not have `permission`.
   // Since: 0.46.0 (finschia)
   rpc Abandon(MsgAbandon) returns (MsgAbandonResponse);
 
@@ -128,16 +247,56 @@ service Msg {
   rpc RevokePermission(MsgRevokePermission) returns (MsgRevokePermissionResponse);
 
   // Attach defines a method to attach a token to another token.
+  // Fires:
+  // - EventAttach
+  // - attach (deprecated, not typed)
+  // - operation_root_changed (deprecated, not typed)
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `owner` does not owns `id`.
+  //   - `owner` does not owns `to`.
+  //   - `token_id` is not root.
+  //   - `token_id` is an ancestor of `to_token_id`, which creates a cycle as a result.
+  //   - depth of `to_token_id` exceeds an app-specific limit.
   rpc Attach(MsgAttach) returns (MsgAttachResponse);
 
   // Detach defines a method to detach a token from another token.
+  // Fires:
+  // - EventDetach
+  // - detach (deprecated, not typed)
+  // - operation_root_changed (deprecated, not typed)
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `owner` does not owns `token_id`.
   rpc Detach(MsgDetach) returns (MsgDetachResponse);
 
   // OperatorAttach defines a method to attach a token to another token by operator.
+  // Fires:
+  // - EventAttach
+  // - attach_from (deprecated, not typed)
+  // - operation_root_changed (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - the holder has not authorized `operator`.
+  // - ErrInvalidRequest
+  //   - `owner` does not owns `subject`.
+  //   - `owner` does not owns `target`.
+  //   - `subject` is not root.
+  //   - `subject` is an ancestor of `target`, which creates a cycle as a result.
+  //   - depth of `to` exceeds an app-specific limit.
   // Since: 0.46.0 (finschia)
   rpc OperatorAttach(MsgOperatorAttach) returns (MsgOperatorAttachResponse);
 
-  // Detach defines a method to detach a token from another token by operator.
+  // OperatorDetach defines a method to detach a token from another token by operator.
+  // Fires:
+  // - EventDetach
+  // - detach_from (deprecated, not typed)
+  // - operation_root_changed (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - the holder has not authorized `operator`.
+  // - ErrInvalidRequest
+  //   - `owner` does not owns `subject`.
   // Since: 0.46.0 (finschia)
   rpc OperatorDetach(MsgOperatorDetach) returns (MsgOperatorDetachResponse);
 
@@ -151,6 +310,16 @@ service Msg {
 }
 
 // MsgSend is the Msg/Send request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `from` is of invalid format.
+//   - `to` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `amount` is not positive.
+//
+// Signer: `from`
 //
 // Since: 0.46.0 (finschia)
 message MsgSend {
@@ -170,6 +339,17 @@ message MsgSend {
 message MsgSendResponse {}
 
 // MsgOperatorSend is the Msg/OperatorSend request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `operator` is of invalid format.
+//   - `from` is of invalid format.
+//   - `to` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `amount` is not positive.
+//
+// Signer: `operator`
 //
 // Since: 0.46.0 (finschia)
 message MsgOperatorSend {
@@ -274,6 +454,15 @@ message MsgTransferNFTFromResponse {}
 
 // MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
 //
+// Throws:
+// - ErrInvalidAddress
+//   - `holder` is of invalid format.
+//   - `operator` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//
+// Signer: `holder`
+//
 // Since: 0.46.0 (finschia)
 message MsgAuthorizeOperator {
   // contract id associated with the contract.
@@ -290,6 +479,15 @@ message MsgAuthorizeOperator {
 message MsgAuthorizeOperatorResponse {}
 
 // MsgRevokeOperator is the Msg/RevokeOperator request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `holder` is of invalid format.
+//   - `operator` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//
+// Signer: `holder`
 //
 // Since: 0.46.0 (finschia)
 message MsgRevokeOperator {
@@ -341,6 +539,16 @@ message MsgDisapprove {
 message MsgDisapproveResponse {}
 
 // MsgCreateContract is the Msg/CreateContract request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `owner` is of invalid format.
+// - ErrInvalidRequest
+//   - `name` exceeds the app-specific limit in length.
+//   - `base_img_uri` exceeds the app-specific limit in length.
+//   - `meta` exceeds the app-specific limit in length.
+//
+// Signer: `owner`
 message MsgCreateContract {
   // address which all the permissions on the contract will be granted to (not a permanent property).
   string owner = 1;
@@ -360,24 +568,33 @@ message MsgCreateContractResponse {
 }
 
 // MsgIssueFT is the Msg/IssueFT request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `owner` is of invalid format.
+//   - `to` is of invalid format.
+// - ErrInvalidRequest
+//   - `name` is empty.
+//   - `name` exceeds the app-specific limit in length.
+//   - `meta` exceeds the app-specific limit in length.
+//   - `decimals` is lesser than 0 or greater than 18.
+//   - `amount` is not positive.
+//   - `mintable` == false, amount == 1 and decimals == 0 (weird, but for the backward compatibility).
+//
+// Signer: `owner`
 message MsgIssueFT {
   // contract id associated with the contract.
   string contract_id = 1;
   // name defines the human-readable name of the token class.
-  // Note: it has an app-specific limit on the length.
   string name = 2;
   // meta is a brief description of the token class.
-  // Note: it has an app-specific limit on the length.
   string meta = 3;
   // decimals is the number of decimals which one must divide the amount by to get its user representation.
-  // Note: it cannot be negative or greater than 18.
   int32 decimals = 4;
   // mintable represents whether the token is allowed to be minted or burnt.
-  // Note: one cannot set mintable to false, where amount == 1 and decimals == 0.
   bool mintable = 5;
 
   // the address of the grantee which must have the permission to issue a token.
-  // Note: no permissions would be granted on the issuance.
   string owner = 6;
 
   // the address to send the minted tokens to. mandatory.
@@ -395,6 +612,15 @@ message MsgIssueFTResponse {
 }
 
 // MsgIssueNFT is the Msg/IssueNFT request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `owner` is of invalid format.
+// - ErrInvalidRequest
+//   - `name` exceeds the app-specific limit in length.
+//   - `meta` exceeds the app-specific limit in length.
+//
+// Signer: `owner`
 message MsgIssueNFT {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -404,7 +630,6 @@ message MsgIssueNFT {
   string meta = 3;
 
   // the address of the grantee which must have the permission to issue a token.
-  // Note: permissions for mint and burn would be granted on the issuance.
   string owner = 4;
 }
 
@@ -415,6 +640,16 @@ message MsgIssueNFTResponse {
 }
 
 // MsgMintFT is the Msg/MintFT request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `from` is of invalid format.
+//   - `to` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `amount` is not positive.
+//
+// Signer: `from`
 message MsgMintFT {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -431,6 +666,17 @@ message MsgMintFT {
 message MsgMintFTResponse {}
 
 // MsgMintNFT is the Msg/MintNFT request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `from` is of invalid format.
+//   - `to` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `params` is empty.
+//   - `params` has an invalid element.
+//
+// Signer: `from`
 message MsgMintNFT {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -454,19 +700,29 @@ message MintNFTParam {
   // Note: it cannot start with zero.
   string token_type = 1;
   // name defines the human-readable name of the nft (mandatory).
+  // Note: it has an app-specific limit in length.
   string name = 2;
   // meta is a brief description of the nft.
+  // Note: it has an app-specific limit in length.
   string meta = 3;
 }
 
 // MsgBurn is the Msg/Burn request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `from` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `amount` is not positive.
+//
+// Signer: `from`
 //
 // Since: 0.46.0 (finschia)
 message MsgBurn {
   // contract id associated with the contract.
   string contract_id = 1;
   // holder whose tokens are being burned.
-  // Note: it must have the permission for the burn.
   string from = 2;
   // amount of tokens to burn.
   repeated Coin amount = 3 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Coins"];
@@ -479,13 +735,21 @@ message MsgBurnResponse {}
 
 // MsgOperatorBurn is the Msg/OperatorBurn request type.
 //
+// Throws:
+// - ErrInvalidAddress
+//   - `operator` is of invalid format.
+//   - `from` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `amount` is not positive.
+//
+// Signer: `from`
+//
 // Since: 0.46.0 (finschia)
 message MsgOperatorBurn {
   // contract id associated with the contract.
   string contract_id = 1;
   // address which triggers the burn.
-  // Note: it must have the permission for the burn.
-  // Note: it must have been authorized by from.
   string operator = 2;
   // holder whose tokens are being burned.
   string from = 3;
@@ -582,6 +846,17 @@ message MsgBurnNFTFromResponse {}
 
 // MsgModifyContract is the Msg/ModifyContract request type.
 //
+// Throws:
+// - ErrInvalidAddress
+//   - `operator` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `changes` has duplicate keys.
+//   - `changes` has a key which is not allowed to modify.
+//   - `changes` is empty.
+//
+// Signer: `operator`
+//
 // Since: 0.46.0 (finschia)
 message MsgModifyContract {
   // contract id associated with the contract.
@@ -598,6 +873,18 @@ message MsgModifyContract {
 message MsgModifyContractResponse {}
 
 // MsgModifyTokenClass is the Msg/ModifyTokenClass request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `operator` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `class_id` is of invalid format.
+//   - `changes` has duplicate keys.
+//   - `changes` has a key which is not allowed to modify.
+//   - `changes` is empty.
+//
+// Signer: `operator`
 //
 // Since: 0.46.0 (finschia)
 message MsgModifyTokenClass {
@@ -617,6 +904,18 @@ message MsgModifyTokenClass {
 message MsgModifyTokenClassResponse {}
 
 // MsgModifyNFT is the Msg/ModifyNFT request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `operator` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `token_id` is of invalid format.
+//   - `changes` has duplicate keys.
+//   - `changes` has a key which is not allowed to modify.
+//   - `changes` is empty.
+//
+// Signer: `operator`
 //
 // Since: 0.46.0 (finschia)
 message MsgModifyNFT {
@@ -663,6 +962,16 @@ message MsgModifyResponse {}
 
 // MsgGrant is the Msg/Grant request type.
 //
+// Throws:
+// - ErrInvalidAddress
+//   - `granter` is of invalid format.
+//   - `grantee` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `permission` is not a valid permission.
+//
+// Signer: `granter`
+//
 // Since: 0.46.0 (finschia)
 message MsgGrant {
   // contract id associated with the contract.
@@ -681,6 +990,15 @@ message MsgGrant {
 message MsgGrantResponse {}
 
 // MsgAbandon is the Msg/Abandon request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `grantee` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `permission` is not a valid permission.
+//
+// Signer: `grantee`
 //
 // Since: 0.46.0 (finschia)
 message MsgAbandon {
@@ -735,6 +1053,17 @@ message MsgRevokePermissionResponse {}
 
 // MsgAttach is the Msg/Attach request type.
 //
+// Throws:
+// - ErrInvalidAddress
+//   - `from` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `token_id` is of invalid format.
+//   - `to_token_id` is of invalid format.
+//   - `token_id` is equal to `to_token_id`.
+//
+// Signer: `from`
+//
 // TODO: revisit the field names
 message MsgAttach {
   // contract id associated with the contract.
@@ -752,6 +1081,15 @@ message MsgAttachResponse {}
 
 // MsgDetach is the Msg/Detach request type.
 //
+// Throws:
+// - ErrInvalidAddress
+//   - `from` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `token_id` is of invalid format.
+//
+// Signer: `from`
+//
 // TODO: revisit the field names
 message MsgDetach {
   // contract id associated with the contract.
@@ -767,6 +1105,18 @@ message MsgDetachResponse {}
 
 // MsgOperatorAttach is the Msg/OperatorAttach request type.
 //
+// Throws:
+// - ErrInvalidAddress
+//   - `operator` is of invalid format.
+//   - `owner` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `subject` is of invalid format.
+//   - `target` is of invalid format.
+//   - `subject` is equal to `target`.
+//
+// Signer: `operator`
+//
 // Since: 0.46.0 (finschia)
 message MsgOperatorAttach {
   // contract id associated with the contract.
@@ -776,9 +1126,9 @@ message MsgOperatorAttach {
   // address of the owner of the token.
   string owner = 3;
   // token id of the token to attach.
-  string id = 4;
+  string subject = 4;
   // token id which one attachs the token to.
-  string to = 5;
+  string target = 5;
 }
 
 // MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
@@ -787,6 +1137,16 @@ message MsgOperatorAttach {
 message MsgOperatorAttachResponse {}
 
 // MsgOperatorDetach is the Msg/OperatorDetach request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `operator` is of invalid format.
+//   - `owner` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `subject` is of invalid format.
+//
+// Signer: `operator`
 //
 // Since: 0.46.0 (finschia)
 message MsgOperatorDetach {
@@ -797,7 +1157,7 @@ message MsgOperatorDetach {
   // address of the holder of the token.
   string owner = 3;
   // token id of the token to detach.
-  string id = 4;
+  string subject = 4;
 }
 
 // MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
