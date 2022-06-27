@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lbm.collection.v1;
 
-import "cosmos/base/query/v1beta1/pagination.proto";
+import "lbm/base/query/v1/pagination.proto";
 import "google/api/annotations.proto";
 import "lbm/collection/v1/collection.proto";
 
@@ -211,7 +211,7 @@ message QueryBalanceRequest {
 // QueryBalanceResponse is the response type for the Query/Balance RPC method.
 message QueryBalanceResponse {
   // balance is the balance of the token.
-  Coin balance = 1;
+  Coin balance = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryAllBalancesRequest is the request type for the Query/AllBalances RPC method.
@@ -224,7 +224,7 @@ message QueryAllBalancesRequest {
   string address = 2;
 
   // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+  lbm.base.query.v1.PageRequest pagination = 3;
 }
 
 // QueryAllBalancesResponse is the response type for the Query/AllBalances RPC method.
@@ -235,7 +235,7 @@ message QueryAllBalancesResponse {
   repeated Coin balances = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  lbm.base.query.v1.PageResponse pagination = 2;
 }
 
 // QuerySupplyRequest is the request type for the Query/Supply RPC method.
@@ -409,24 +409,24 @@ message QueryContractRequest {
 // QueryContractResponse is the response type for the Query/Contract RPC method.
 message QueryContractResponse {
   // contract is the information of the contract.
-  Contract contract = 1;
+  Contract contract = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryContractsRequest is the request type for the Query/Contracts RPC method.
 // Since: 0.46.0 (finschia)
 message QueryContractsRequest {
   // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  lbm.base.query.v1.PageRequest pagination = 1;
 }
 
 // QueryContractsResponse is the response type for the Query/Contracts RPC method.
 // Since: 0.46.0 (finschia)
 message QueryContractsResponse {
   // contracts are the informations of all the contracts.
-  repeated Contract contracts = 1;
+  repeated Contract contracts = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  lbm.base.query.v1.PageResponse pagination = 2;
 }
 
 // QueryFTRequest is the request type for the Query/FT RPC method.
@@ -444,7 +444,7 @@ message QueryFTRequest {
 // Note: deprecated
 message QueryFTResponse {
   // token is the information of the fungible token.
-  FT token = 1;
+  FT token = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
@@ -462,7 +462,7 @@ message QueryTokenTypeRequest {
 // Note: deprecated
 message QueryTokenTypeResponse {
   // token type is the information of the token type.
-  TokenType token_type = 1;
+  TokenType token_type = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
@@ -473,7 +473,7 @@ message QueryTokenTypesRequest {
   string contract_id = 1;
 
   // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+  lbm.base.query.v1.PageRequest pagination = 2;
 }
 
 // QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method.
@@ -484,7 +484,7 @@ message QueryTokenTypesResponse {
   repeated TokenType token_types = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  lbm.base.query.v1.PageResponse pagination = 2;
 }
 
 // QueryTokensRequest is the request type for the Query/Tokens RPC method.
@@ -495,16 +495,16 @@ message QueryTokensRequest {
   string contract_id = 1;
 
   // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+  lbm.base.query.v1.PageRequest pagination = 2;
 }
 
 // QueryTokensResponse is the response type for the Query/Tokens RPC method.
 message QueryTokensResponse {
   // tokens is the informations of all the tokens.
-  google.protobuf.Any tokens = 1 [(gogoproto.nullable) = false, (cosmos_proto.accepts_interface) = "Token"];
+  repeated google.protobuf.Any tokens = 1 [(gogoproto.nullable) = false, (cosmos_proto.accepts_interface) = "Token"];
 
   // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  lbm.base.query.v1.PageResponse pagination = 2;
 }
 
 // QueryTokenClassRequest is the request type for the Query/TokenClass RPC method.
@@ -522,7 +522,7 @@ message QueryTokenClassRequest {
 // Since: 0.46.0 (finschia)
 message QueryTokenClassResponse {
   // class is the information of the token class.
-  google.protobuf.Any class = 1 [(cosmos_proto.accepts_interface) = "TokenClass"];
+  google.protobuf.Any class = 1 [(gogoproto.nullable) = false, (cosmos_proto.accepts_interface) = "TokenClass"];
 }
 
 // QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method.
@@ -533,7 +533,7 @@ message QueryTokenClassesRequest {
   string contract_id = 1;
 
   // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+  lbm.base.query.v1.PageRequest pagination = 2;
 }
 
 // QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method.
@@ -545,7 +545,7 @@ message QueryTokenClassesResponse {
       [(gogoproto.nullable) = false, (cosmos_proto.accepts_interface) = "TokenClass"];
 
   // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  lbm.base.query.v1.PageResponse pagination = 2;
 }
 
 // QueryNFTRequest is the request type for the Query/NFT RPC method.
@@ -559,7 +559,7 @@ message QueryNFTRequest {
 // QueryNFTResponse is the response type for the Query/NFT RPC method.
 message QueryNFTResponse {
   // token is the information of the non-fungible token.
-  NFT token = 1;
+  NFT token = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryNFTsRequest is the request type for the Query/NFTs RPC method.
@@ -568,7 +568,7 @@ message QueryNFTsRequest {
   string contract_id = 1;
 
   // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+  lbm.base.query.v1.PageRequest pagination = 2;
 }
 
 // QueryNFTsResponse is the response type for the Query/NFTs RPC method.
@@ -576,10 +576,10 @@ message QueryNFTsRequest {
 // Since: 0.46.0 (finschia)
 message QueryNFTsResponse {
   // token is the information of the non-fungible token.
-  repeated NFT token = 1 [(gogoproto.nullable) = false];
+  repeated NFT tokens = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  lbm.base.query.v1.PageResponse pagination = 2;
 }
 
 // QueryOwnerRequest is the request type for the Query/Owner RPC method.
@@ -612,7 +612,7 @@ message QueryRootRequest {
 message QueryRootResponse {
   // root is the information of the root token.
   // it would return itself if it's the root token.
-  NFT root = 1;
+  NFT root = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryParentRequest is the request type for the Query/Parent RPC method.
@@ -627,7 +627,7 @@ message QueryParentRequest {
 message QueryParentResponse {
   // parent is the information of the parent token.
   // if there is no parent for the token, it would return nil.
-  NFT parent = 1;
+  NFT parent = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryChildrenRequest is the request type for the Query/Children RPC method.
@@ -638,7 +638,7 @@ message QueryChildrenRequest {
   string token_id = 2;
 
   // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+  lbm.base.query.v1.PageRequest pagination = 3;
 }
 
 // QueryChildrenResponse is the response type for the Query/Children RPC method.
@@ -647,7 +647,7 @@ message QueryChildrenResponse {
   repeated NFT children = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  lbm.base.query.v1.PageResponse pagination = 2;
 }
 
 // QueryGrantRequest is the request type for the Query/Grant RPC method.
@@ -680,7 +680,7 @@ message QueryGranteeGrantsRequest {
   string grantee = 2;
 
   // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+  lbm.base.query.v1.PageRequest pagination = 3;
 }
 
 // QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method.
@@ -690,7 +690,7 @@ message QueryGranteeGrantsResponse {
   repeated Grant grants = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  lbm.base.query.v1.PageResponse pagination = 2;
 }
 
 // QueryAuthorizationRequest is the request type for the Query/Authorization RPC method.
@@ -723,7 +723,7 @@ message QueryOperatorAuthorizationsRequest {
   string operator = 2;
 
   // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+  lbm.base.query.v1.PageRequest pagination = 3;
 }
 
 // QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method.
@@ -733,7 +733,7 @@ message QueryOperatorAuthorizationsResponse {
   repeated Authorization authorizations = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  lbm.base.query.v1.PageResponse pagination = 2;
 }
 
 // QueryApprovedRequest is the request type for the Query/Approved RPC method.
@@ -765,7 +765,7 @@ message QueryApproversRequest {
   string address = 2;
 
   // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+  lbm.base.query.v1.PageRequest pagination = 3;
 }
 
 // QueryApproversResponse is the response type for the Query/Approvers RPC method.
@@ -775,5 +775,5 @@ message QueryApproversResponse {
   repeated string approvers = 1;
 
   // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  lbm.base.query.v1.PageResponse pagination = 2;
 }
