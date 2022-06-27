@@ -61,9 +61,9 @@ enum AttributeKey {
   to                = 12 [(gogoproto.enumvalue_customname) = "To"];
   perm              = 13 [(gogoproto.enumvalue_customname) = "Perm"];
   to_token_id       = 14 [(gogoproto.enumvalue_customname) = "ToTokenID"];
-  FromTokenID       = 15 [(gogoproto.enumvalue_customname) = "FromTokenID"];
-  Approver          = 16 [(gogoproto.enumvalue_customname) = "Approver"];
-  Proxy             = 17 [(gogoproto.enumvalue_customname) = "Proxy"];
+  from_token_id     = 15 [(gogoproto.enumvalue_customname) = "FromTokenID"];
+  approver          = 16 [(gogoproto.enumvalue_customname) = "Approver"];
+  proxy             = 17 [(gogoproto.enumvalue_customname) = "Proxy"];
   old_root_token_id = 18 [(gogoproto.enumvalue_customname) = "OldRoot"];
   new_root_token_id = 19 [(gogoproto.enumvalue_customname) = "NewRoot"];
 }
@@ -121,6 +121,8 @@ message EventCreatedTokenClass {
 }
 
 // EventGrant is emitted when a granter grants its permission to a grantee.
+//
+// Info: `granter` would be empty if the permission is granted by an issuance.
 //
 // Since: 0.46.0 (finschia)
 message EventGrant {

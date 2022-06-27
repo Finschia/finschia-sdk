@@ -7667,6 +7667,8 @@ Since: 0.46.0 (finschia)
 ### EventGrant
 EventGrant is emitted when a granter grants its permission to a grantee.
 
+Info: `granter` would be empty if the permission is granted by an issuance.
+
 Since: 0.46.0 (finschia)
 
 
@@ -7846,9 +7848,9 @@ For the legacy events.
 | to | 12 |  |
 | perm | 13 |  |
 | to_token_id | 14 |  |
-| FromTokenID | 15 |  |
-| Approver | 16 |  |
-| Proxy | 17 |  |
+| from_token_id | 15 |  |
+| approver | 16 |  |
+| proxy | 17 |  |
 | old_root_token_id | 18 |  |
 | new_root_token_id | 19 |  |
 
