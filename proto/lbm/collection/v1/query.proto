@@ -15,17 +15,33 @@ option go_package = "github.com/line/lbm-sdk/x/collection";
 // Query defines the gRPC querier service.
 service Query {
   // Balance queries the balance of a single token class for a single account.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  // - ErrInvalidAddress
+  //   - `address` is of invalid format.
   rpc Balance(QueryBalanceRequest) returns (QueryBalanceResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/balances/{address}/{token_id}";
   }
 
   // AllBalances queries the balance of all token classes for a single account.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  // - ErrInvalidAddress
+  //   - `address` is of invalid format.
   // Since: 0.46.0 (finschia)
   rpc AllBalances(QueryAllBalancesRequest) returns (QueryAllBalancesResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/balances/{address}";
   }
 
   // Supply queries the number of tokens from a given contract id and class id.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  //   - `class_id` is of invalid format.
+  // - ErrNotFound
+  //   - there is no token class of `class_id`.
   // Info: one can query for both fungible tokens and non-fungible token classes.
   // Since: 0.46.0 (finschia)
   rpc Supply(QuerySupplyRequest) returns (QuerySupplyResponse) {
@@ -33,6 +49,12 @@ service Query {
   }
 
   // Minted queries the number of minted tokens from a given contract id and class id.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  //   - `class_id` is of invalid format.
+  // - ErrNotFound
+  //   - there is no token class of `class_id`.
   // Info: one can query for both fungible tokens and non-fungible token classes.
   // Since: 0.46.0 (finschia)
   rpc Minted(QueryMintedRequest) returns (QueryMintedResponse) {
@@ -40,6 +62,12 @@ service Query {
   }
 
   // Burnt queries the number of burnt tokens from a given contract id and class id.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  //   - `class_id` is of invalid format.
+  // - ErrNotFound
+  //   - there is no token class of `class_id`.
   // Info: one can query for both fungible tokens and non-fungible token classes.
   // Since: 0.46.0 (finschia)
   rpc Burnt(QueryBurntRequest) returns (QueryBurntResponse) {
@@ -83,6 +111,11 @@ service Query {
   }
 
   // Contract queries a contract metadata based on its contract id.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  // - ErrNotFound
+  //   - there is no contract of `contract_id`.
   rpc Contract(QueryContractRequest) returns (QueryContractResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}";
   }
@@ -94,21 +127,24 @@ service Query {
   }
 
   // TokenClass queries a metadata of a token class from its class id.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  //   - `class_id` is of invalid format.
+  // - ErrNotFound
+  //   - there is no token class of `class_id`.
   // Since: 0.46.0 (finschia)
   rpc TokenClass(QueryTokenClassRequest) returns (QueryTokenClassResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}";
   }
 
   // TokenClasses queries token metadata of all token classes of a contract.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
   // Since: 0.46.0 (finschia)
   rpc TokenClasses(QueryTokenClassesRequest) returns (QueryTokenClassesResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes";
-  }
-
-  // FT queries a metadata of a fungible token from its token id.
-  // Note: deprecated (use TokenClass)
-  rpc FT(QueryFTRequest) returns (QueryFTResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}";
   }
 
   // TokenType queries metadata of a token type.
@@ -123,63 +159,127 @@ service Query {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types";
   }
 
+  // Token queries a metadata of a token from its token id.
+  // Note: deprecated (use TokenClass and NFT)
+  rpc Token(QueryTokenRequest) returns (QueryTokenResponse) {
+    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}";
+  }
+
   // Tokens queries all token metadata.
-  // Note: deprecated (use TokenClasses and NFT)
+  // Note: deprecated (use TokenClasses and NFTs)
   rpc Tokens(QueryTokensRequest) returns (QueryTokensResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/tokens";
   }
 
   // NFT queries a metadata of a non-fungible token.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  //   - `token_id` is of invalid format.
+  // - ErrNotFound
+  //   - there is no token of `token_id`.
   rpc NFT(QueryNFTRequest) returns (QueryNFTResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}";
   }
 
   // NFTs queries a metadata of all non-fungible tokens.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
   // Since: 0.46.0 (finschia)
   rpc NFTs(QueryNFTsRequest) returns (QueryNFTsResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts";
   }
 
   // Owner queries the owner of the token.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  //   - `token_id` is of invalid format.
+  // - ErrNotFound
+  //   - there is no token of `token_id`.
   // Since: 0.46.0 (finschia)
   rpc Owner(QueryOwnerRequest) returns (QueryOwnerResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/owner";
   }
 
   // Root queries the root of a given nft.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  //   - `token_id` is of invalid format.
+  // - ErrNotFound
+  //   - there is no token of `token_id`.
   rpc Root(QueryRootRequest) returns (QueryRootResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root";
   }
 
   // Parent queries the parent of a given nft.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  //   - `token_id` is of invalid format.
+  // - ErrNotFound
+  //   - there is no token of `token_id`.
+  //   - token is the root.
   rpc Parent(QueryParentRequest) returns (QueryParentResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent";
   }
 
   // Children queries the children of a given nft.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  //   - `token_id` is of invalid format.
   rpc Children(QueryChildrenRequest) returns (QueryChildrenResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children";
   }
 
   // Grant queries a permission on a given grantee.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  //   - `permission` is not a valid permission.
+  // - ErrInvalidAddress
+  //   - `grantee` is of invalid format.
+  // - ErrNotFound
+  //   - there is no permission of `permission` on `grantee`.
   // Since: 0.46.0 (finschia)
   rpc Grant(QueryGrantRequest) returns (QueryGrantResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}/{permission}";
   }
 
   // GranteeGrants queries all permissions on a given grantee.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  // - ErrInvalidAddress
+  //   - `grantee` is of invalid format.
   // Since: 0.46.0 (finschia)
   rpc GranteeGrants(QueryGranteeGrantsRequest) returns (QueryGranteeGrantsResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}";
   }
 
   // Authorization queries an authorization on a given operator approver pair.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  // - ErrInvalidAddress
+  //   - `operator` is of invalid format.
+  //   - `holder` is of invalid format.
+  // - ErrNotFound
+  //   - there is no authorization given by `holder` to `operator`.
   // Since: 0.46.0 (finschia)
   rpc Authorization(QueryAuthorizationRequest) returns (QueryAuthorizationResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}/{holder}";
   }
 
   // OperatorAuthorizations queries authorizations on a given operator.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  // - ErrInvalidAddress
+  //   - `operator` is of invalid format.
   // Since: 0.46.0 (finschia)
   rpc OperatorAuthorizations(QueryOperatorAuthorizationsRequest) returns (QueryOperatorAuthorizationsResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}";
@@ -429,24 +529,6 @@ message QueryContractsResponse {
   lbm.base.query.v1.PageResponse pagination = 2;
 }
 
-// QueryFTRequest is the request type for the Query/FT RPC method.
-//
-// Note: deprecated (use QueryTokenClassRequest)
-message QueryFTRequest {
-  // contract id associated with the contract.
-  string contract_id = 1;
-  // token id associated with the fungible token.
-  string token_id = 2;
-}
-
-// QueryFTResponse is the response type for the Query/FT RPC method.
-//
-// Note: deprecated
-message QueryFTResponse {
-  // token is the information of the fungible token.
-  FT token = 1 [(gogoproto.nullable) = false];
-}
-
 // QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
 //
 // Note: deprecated (use QueryTokenClassRequest)
@@ -487,6 +569,24 @@ message QueryTokenTypesResponse {
   lbm.base.query.v1.PageResponse pagination = 2;
 }
 
+// QueryTokenRequest is the request type for the Query/Token RPC method.
+//
+// Note: deprecated (use QueryTokenClassRequest)
+message QueryTokenRequest {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // token id associated with the fungible token.
+  string token_id = 2;
+}
+
+// QueryTokenResponse is the response type for the Query/Token RPC method.
+//
+// Note: deprecated
+message QueryTokenResponse {
+  // information of the token.
+  google.protobuf.Any token = 1 [(gogoproto.nullable) = false];
+}
+
 // QueryTokensRequest is the request type for the Query/Tokens RPC method.
 //
 // Note: deprecated (use QueryTokenClasses and NFT)
@@ -500,8 +600,8 @@ message QueryTokensRequest {
 
 // QueryTokensResponse is the response type for the Query/Tokens RPC method.
 message QueryTokensResponse {
-  // tokens is the informations of all the tokens.
-  repeated google.protobuf.Any tokens = 1 [(gogoproto.nullable) = false, (cosmos_proto.accepts_interface) = "Token"];
+  // informations of all the tokens.
+  repeated google.protobuf.Any tokens = 1 [(gogoproto.nullable) = false];
 
   // pagination defines the pagination in the response.
   lbm.base.query.v1.PageResponse pagination = 2;

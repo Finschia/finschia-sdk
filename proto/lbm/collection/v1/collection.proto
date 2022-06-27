@@ -28,7 +28,7 @@ message Contract {
 // Since: 0.46.0 (finschia)
 message FTClass {
   option (gogoproto.goproto_getters)         = true;
-  option (cosmos_proto.implements_interface) = "github.com/line/lbm-sdk/x/collection.TokenClass";
+  option (cosmos_proto.implements_interface) = "TokenClass";
 
   // id defines the unique identifier of the token class.
   // Note: size of the class id is 8 in length.
@@ -49,7 +49,7 @@ message FTClass {
 // Since: 0.46.0 (finschia)
 message NFTClass {
   option (gogoproto.goproto_getters)         = true;
-  option (cosmos_proto.implements_interface) = "github.com/line/lbm-sdk/x/collection.TokenClass";
+  option (cosmos_proto.implements_interface) = "TokenClass";
 
   // id defines the unique identifier of the token class.
   // Note: size of the class id is 8 in length.
@@ -76,6 +76,8 @@ message NFT {
 //
 // Note: deprecated (use NFT)
 message OwnerNFT {
+  option (cosmos_proto.implements_interface) = "Token";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // id defines the unique identifier of the token.
@@ -93,6 +95,8 @@ message OwnerNFT {
 //
 // Note: deprecated (use FTClass)
 message FT {
+  option (cosmos_proto.implements_interface) = "Token";
+
   // contract id associated with the contract.
   string contract_id = 1;
   // token id defines the unique identifier of the fungible token.
