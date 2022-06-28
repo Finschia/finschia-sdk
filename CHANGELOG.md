@@ -42,6 +42,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/wasm) [\#513](https://github.com/line/lbm-sdk/pull/513) fix message representation for signing
 * (x/foundation) [\#518](https://github.com/line/lbm-sdk/pull/518) add foundation treasury feature to x/foundation
 * (x/foundation) [\#528](https://github.com/line/lbm-sdk/pull/528) add a feature of whitelist for /lbm.foundation.v1.MsgWithdrawFromTreasury
+* (x/collection) [\#574](https://github.com/line/lbm-sdk/pull/574) implement x/collection
 
 ### Improvements
 
