@@ -68,6 +68,10 @@ func SplitTokenID(tokenID string) (classID string) {
 	return tokenID[:lengthClassID]
 }
 
+func ValidateContractID(id string) error {
+	return class.ValidateID(id)
+}
+
 func ValidateClassID(id string) error {
 	return validateID(id, reClassID)
 }
@@ -212,7 +216,7 @@ var _ sdk.Msg = (*MsgSend)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgSend) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -240,7 +244,7 @@ var _ sdk.Msg = (*MsgOperatorSend)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgOperatorSend) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -271,7 +275,7 @@ var _ sdk.Msg = (*MsgTransferFT)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgTransferFT) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -299,7 +303,7 @@ var _ sdk.Msg = (*MsgTransferFTFrom)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgTransferFTFrom) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -330,7 +334,7 @@ var _ sdk.Msg = (*MsgTransferNFT)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgTransferNFT) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -363,7 +367,7 @@ var _ sdk.Msg = (*MsgTransferNFTFrom)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgTransferNFTFrom) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -399,7 +403,7 @@ var _ sdk.Msg = (*MsgAuthorizeOperator)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgAuthorizeOperator) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -423,7 +427,7 @@ var _ sdk.Msg = (*MsgRevokeOperator)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgRevokeOperator) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -447,7 +451,7 @@ var _ sdk.Msg = (*MsgApprove)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgApprove) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -471,7 +475,7 @@ var _ sdk.Msg = (*MsgDisapprove)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgDisapprove) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -524,7 +528,7 @@ var _ sdk.Msg = (*MsgIssueFT)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgIssueFT) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -568,7 +572,7 @@ var _ sdk.Msg = (*MsgIssueNFT)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgIssueNFT) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -597,7 +601,7 @@ var _ sdk.Msg = (*MsgMintFT)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgMintFT) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -625,7 +629,7 @@ var _ sdk.Msg = (*MsgMintNFT)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgMintNFT) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -667,7 +671,7 @@ var _ sdk.Msg = (*MsgBurn)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgBurn) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -692,7 +696,7 @@ var _ sdk.Msg = (*MsgOperatorBurn)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgOperatorBurn) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -720,7 +724,7 @@ var _ sdk.Msg = (*MsgBurnFT)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgBurnFT) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -745,7 +749,7 @@ var _ sdk.Msg = (*MsgBurnFTFrom)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgBurnFTFrom) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -773,7 +777,7 @@ var _ sdk.Msg = (*MsgBurnNFT)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgBurnNFT) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -803,7 +807,7 @@ var _ sdk.Msg = (*MsgBurnNFTFrom)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgBurnNFTFrom) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -836,7 +840,7 @@ var _ sdk.Msg = (*MsgModifyContract)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgModifyContract) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -861,7 +865,7 @@ var _ sdk.Msg = (*MsgModifyTokenClass)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgModifyTokenClass) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -886,7 +890,7 @@ var _ sdk.Msg = (*MsgModifyNFT)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgModifyNFT) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -911,7 +915,7 @@ var _ sdk.Msg = (*MsgModify)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgModify) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -980,7 +984,7 @@ var _ sdk.Msg = (*MsgGrant)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgGrant) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -1008,7 +1012,7 @@ var _ sdk.Msg = (*MsgAbandon)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgAbandon) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -1033,7 +1037,7 @@ var _ sdk.Msg = (*MsgGrantPermission)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgGrantPermission) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -1061,7 +1065,7 @@ var _ sdk.Msg = (*MsgRevokePermission)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgRevokePermission) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -1086,7 +1090,7 @@ var _ sdk.Msg = (*MsgAttach)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgAttach) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -1118,7 +1122,7 @@ var _ sdk.Msg = (*MsgDetach)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgDetach) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -1143,7 +1147,7 @@ var _ sdk.Msg = (*MsgOperatorAttach)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgOperatorAttach) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -1178,7 +1182,7 @@ var _ sdk.Msg = (*MsgOperatorDetach)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgOperatorDetach) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -1206,7 +1210,7 @@ var _ sdk.Msg = (*MsgAttachFrom)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgAttachFrom) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -1241,7 +1245,7 @@ var _ sdk.Msg = (*MsgDetachFrom)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgDetachFrom) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 

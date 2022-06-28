@@ -17,7 +17,7 @@ import (
 	"github.com/line/lbm-sdk/types/module"
 	"github.com/line/lbm-sdk/x/collection"
 
-	// "github.com/line/lbm-sdk/x/collection/client/cli"
+	"github.com/line/lbm-sdk/x/collection/client/cli"
 	"github.com/line/lbm-sdk/x/collection/keeper"
 )
 
@@ -65,8 +65,7 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 
 // GetQueryCmd returns the cli query commands for this module
 func (AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return nil
-	// return cli.NewQueryCmd()
+	return cli.NewQueryCmd()
 }
 
 // GetTxCmd returns the transaction commands for this module

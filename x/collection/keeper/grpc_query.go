@@ -12,7 +12,6 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/x/collection"
-	"github.com/line/lbm-sdk/x/token/class"
 )
 
 type queryServer struct {
@@ -35,7 +34,7 @@ func (s queryServer) Balance(c context.Context, req *collection.QueryBalanceRequ
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -60,7 +59,7 @@ func (s queryServer) AllBalances(c context.Context, req *collection.QueryAllBala
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -97,7 +96,7 @@ func (s queryServer) Supply(c context.Context, req *collection.QuerySupplyReques
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -117,7 +116,7 @@ func (s queryServer) Minted(c context.Context, req *collection.QueryMintedReques
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -137,7 +136,7 @@ func (s queryServer) Burnt(c context.Context, req *collection.QueryBurntRequest)
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -156,7 +155,7 @@ func (s queryServer) FTSupply(c context.Context, req *collection.QueryFTSupplyRe
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -180,7 +179,7 @@ func (s queryServer) FTMinted(c context.Context, req *collection.QueryFTMintedRe
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -204,7 +203,7 @@ func (s queryServer) FTBurnt(c context.Context, req *collection.QueryFTBurntRequ
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -228,7 +227,7 @@ func (s queryServer) NFTSupply(c context.Context, req *collection.QueryNFTSupply
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -251,7 +250,7 @@ func (s queryServer) NFTMinted(c context.Context, req *collection.QueryNFTMinted
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -274,7 +273,7 @@ func (s queryServer) NFTBurnt(c context.Context, req *collection.QueryNFTBurntRe
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -297,7 +296,7 @@ func (s queryServer) Contract(c context.Context, req *collection.QueryContractRe
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -339,7 +338,7 @@ func (s queryServer) TokenClass(c context.Context, req *collection.QueryTokenCla
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -363,7 +362,7 @@ func (s queryServer) TokenClasses(c context.Context, req *collection.QueryTokenC
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -391,7 +390,7 @@ func (s queryServer) TokenType(c context.Context, req *collection.QueryTokenType
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -426,7 +425,7 @@ func (s queryServer) TokenTypes(c context.Context, req *collection.QueryTokenTyp
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -467,7 +466,7 @@ func (s queryServer) Token(c context.Context, req *collection.QueryTokenRequest)
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -520,7 +519,7 @@ func (s queryServer) Tokens(c context.Context, req *collection.QueryTokensReques
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -585,7 +584,7 @@ func (s queryServer) NFT(c context.Context, req *collection.QueryNFTRequest) (*c
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -607,7 +606,7 @@ func (s queryServer) NFTs(c context.Context, req *collection.QueryNFTsRequest) (
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -633,7 +632,7 @@ func (s queryServer) Owner(c context.Context, req *collection.QueryOwnerRequest)
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -656,7 +655,7 @@ func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -683,7 +682,7 @@ func (s queryServer) Parent(c context.Context, req *collection.QueryParentReques
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -714,7 +713,7 @@ func (s queryServer) Children(c context.Context, req *collection.QueryChildrenRe
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -745,7 +744,7 @@ func (s queryServer) Grant(c context.Context, req *collection.QueryGrantRequest)
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -772,7 +771,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *collection.QueryGrant
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -804,7 +803,7 @@ func (s queryServer) Authorization(c context.Context, req *collection.QueryAutho
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -829,7 +828,7 @@ func (s queryServer) OperatorAuthorizations(c context.Context, req *collection.Q
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -861,7 +860,7 @@ func (s queryServer) Approved(c context.Context, req *collection.QueryApprovedRe
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -884,7 +883,7 @@ func (s queryServer) Approvers(c context.Context, req *collection.QueryApprovers
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
