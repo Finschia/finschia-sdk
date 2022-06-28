@@ -489,6 +489,7 @@
     - [ContractBalances](#lbm.collection.v1.ContractBalances)
     - [ContractClasses](#lbm.collection.v1.ContractClasses)
     - [ContractGrants](#lbm.collection.v1.ContractGrants)
+    - [ContractNFTs](#lbm.collection.v1.ContractNFTs)
     - [ContractNextTokenIDs](#lbm.collection.v1.ContractNextTokenIDs)
     - [ContractStatistics](#lbm.collection.v1.ContractStatistics)
     - [ContractTokenRelations](#lbm.collection.v1.ContractTokenRelations)
@@ -8007,6 +8008,22 @@ ContractGrant defines grants belong to a contract.
 
 
 
+<a name="lbm.collection.v1.ContractNFTs"></a>
+
+### ContractNFTs
+ContractNFTs defines token classes belong to a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `nfts` | [NFT](#lbm.collection.v1.NFT) | repeated | nfts |
+
+
+
+
+
+
 <a name="lbm.collection.v1.ContractNextTokenIDs"></a>
 
 ### ContractNextTokenIDs
@@ -8069,6 +8086,7 @@ GenesisState defines the collection module's genesis state.
 | `next_token_ids` | [ContractNextTokenIDs](#lbm.collection.v1.ContractNextTokenIDs) | repeated | next ids for (non-fungible) tokens. |
 | `classes` | [ContractClasses](#lbm.collection.v1.ContractClasses) | repeated | classes defines the metadata of the tokens. |
 | `balances` | [ContractBalances](#lbm.collection.v1.ContractBalances) | repeated | balances is an array containing the balances of all the accounts. |
+| `nfts` | [ContractNFTs](#lbm.collection.v1.ContractNFTs) | repeated | nfts is an array containing the nfts. |
 | `parents` | [ContractTokenRelations](#lbm.collection.v1.ContractTokenRelations) | repeated | parents represents the parents of (non-fungible) tokens. |
 | `grants` | [ContractGrants](#lbm.collection.v1.ContractGrants) | repeated | grants defines the grant information. |
 | `authorizations` | [ContractAuthorizations](#lbm.collection.v1.ContractAuthorizations) | repeated | authorizations defines the approve information. |

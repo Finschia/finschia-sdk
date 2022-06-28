@@ -42,7 +42,8 @@ func ValidateGenesis(data GenesisState) error {
 		if len(contractClasses.Classes) == 0 {
 			return sdkerrors.ErrInvalidRequest.Wrap("classes cannot be empty")
 		}
-		for _, any := range contractClasses.Classes {
+		for i := range contractClasses.Classes {
+			any := &contractClasses.Classes[i]
 			class := TokenClassFromAny(any)
 			if err := class.ValidateBasic(); err != nil {
 				return err
@@ -132,7 +133,8 @@ func DefaultGenesisState() *GenesisState {
 
 func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	for _, contractClasses := range data.Classes {
-		for _, any := range contractClasses.Classes {
+		for i := range contractClasses.Classes {
+			any := &contractClasses.Classes[i]
 			if err := TokenClassUnpackInterfaces(any, unpacker); err != nil {
 				return err
 			}

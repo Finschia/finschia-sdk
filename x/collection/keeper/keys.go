@@ -139,6 +139,17 @@ func nftKeyPrefixByContractID(contractID string) []byte {
 	return key
 }
 
+func splitNFTKey(key []byte) (contractID string, tokenID string) {
+	begin := len(nftKeyPrefix) + 1
+	end := begin + int(key[begin-1])
+	contractID = string(key[begin:end])
+
+	begin = end
+	tokenID = string(key[begin:])
+
+	return
+}
+
 //-----------------------------------------------------------------------------
 // parent
 func parentKey(contractID string, tokenID string) []byte {

@@ -14,7 +14,8 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 	for _, contractClasses := range data.Classes {
 		contractID := contractClasses.ContractId
 
-		for _, any := range contractClasses.Classes {
+		for i := range contractClasses.Classes {
+			any := &contractClasses.Classes[i]
 			class := collection.TokenClassFromAny(any)
 			k.setTokenClass(ctx, contractID, class)
 
@@ -48,6 +49,14 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 					k.setOwner(ctx, contractID, coin.TokenId, sdk.AccAddress(balance.Address))
 				}
 			}
+		}
+	}
+
+	for _, contractNFTs := range data.Nfts {
+		contractID := contractNFTs.ContractId
+
+		for _, nft := range contractNFTs.Nfts {
+			k.setNFT(ctx, contractID, nft)
 		}
 	}
 
@@ -105,6 +114,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *collection.GenesisState {
 		NextClassIds:   k.getAllNextClassIDs(ctx),
 		NextTokenIds:   k.getNextTokenIDs(ctx, contracts),
 		Balances:       k.getBalances(ctx, contracts),
+		Nfts:           k.getNFTs(ctx, contracts),
 		Parents:        k.getParents(ctx, contracts),
 		Grants:         k.getGrants(ctx, contracts),
 		Authorizations: k.getAuthorizations(ctx, contracts),
@@ -133,7 +143,7 @@ func (k Keeper) getClasses(ctx sdk.Context, contracts []collection.Contract) []c
 
 		k.iterateContractClasses(ctx, contractID, func(class collection.TokenClass) (stop bool) {
 			any := collection.TokenClassToAny(class)
-			contractClasses.Classes = append(contractClasses.Classes, any)
+			contractClasses.Classes = append(contractClasses.Classes, *any)
 			return false
 		})
 		if len(contractClasses.Classes) != 0 {
@@ -212,6 +222,26 @@ func (k Keeper) getContractBalances(ctx sdk.Context, contractID string) []collec
 	})
 
 	return balances
+}
+
+func (k Keeper) getNFTs(ctx sdk.Context, contracts []collection.Contract) []collection.ContractNFTs {
+	var parents []collection.ContractNFTs
+	for _, contract := range contracts {
+		contractID := contract.ContractId
+		contractParents := collection.ContractNFTs{
+			ContractId: contractID,
+		}
+
+		k.iterateContractNFTs(ctx, contractID, func(nft collection.NFT) (stop bool) {
+			contractParents.Nfts = append(contractParents.Nfts, nft)
+			return false
+		})
+		if len(contractParents.Nfts) != 0 {
+			parents = append(parents, contractParents)
+		}
+	}
+
+	return parents
 }
 
 func (k Keeper) getParents(ctx sdk.Context, contracts []collection.Contract) []collection.ContractTokenRelations {

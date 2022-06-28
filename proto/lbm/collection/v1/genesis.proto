@@ -29,20 +29,23 @@ message GenesisState {
   // balances is an array containing the balances of all the accounts.
   repeated ContractBalances balances = 6 [(gogoproto.nullable) = false];
 
+  // nfts is an array containing the nfts.
+  repeated ContractNFTs nfts = 7 [(gogoproto.nullable) = false];
+
   // parents represents the parents of (non-fungible) tokens.
-  repeated ContractTokenRelations parents = 7 [(gogoproto.nullable) = false];
+  repeated ContractTokenRelations parents = 8 [(gogoproto.nullable) = false];
 
   // grants defines the grant information.
-  repeated ContractGrants grants = 8 [(gogoproto.nullable) = false];
+  repeated ContractGrants grants = 9 [(gogoproto.nullable) = false];
 
   // authorizations defines the approve information.
-  repeated ContractAuthorizations authorizations = 9 [(gogoproto.nullable) = false];
+  repeated ContractAuthorizations authorizations = 10 [(gogoproto.nullable) = false];
 
   // supplies represents the total supplies of tokens.
-  repeated ContractStatistics supplies = 10 [(gogoproto.nullable) = false];
+  repeated ContractStatistics supplies = 11 [(gogoproto.nullable) = false];
 
   // burnts represents the total amount of burnt tokens.
-  repeated ContractStatistics burnts = 11 [(gogoproto.nullable) = false];
+  repeated ContractStatistics burnts = 12 [(gogoproto.nullable) = false];
 }
 
 // ContractBalances defines balances belong to a contract.
@@ -83,7 +86,16 @@ message ContractClasses {
   // contract id associated with the contract.
   string contract_id = 1;
   // classes
-  repeated google.protobuf.Any classes = 2 [(cosmos_proto.accepts_interface) = "TokenClass"];
+  repeated google.protobuf.Any classes = 2
+      [(gogoproto.nullable) = false, (cosmos_proto.accepts_interface) = "TokenClass"];
+}
+
+// ContractNFTs defines token classes belong to a contract.
+message ContractNFTs {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // nfts
+  repeated NFT nfts = 2 [(gogoproto.nullable) = false];
 }
 
 // ContractAuthorizations defines authorizations belong to a contract.

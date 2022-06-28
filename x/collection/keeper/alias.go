@@ -129,6 +129,29 @@ func (k Keeper) iterateAuthorizationsImpl(ctx sdk.Context, prefix []byte, fn fun
 	}
 }
 
+func (k Keeper) iterateContractNFTs(ctx sdk.Context, contractID string, fn func(nft collection.NFT) (stop bool)) {
+	k.iterateNFTsImpl(ctx, nftKeyPrefixByContractID(contractID), func(_ string, nft collection.NFT) (stop bool) {
+		return fn(nft)
+	})
+}
+
+func (k Keeper) iterateNFTsImpl(ctx sdk.Context, prefix []byte, fn func(contractID string, NFT collection.NFT) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	iter := sdk.KVStorePrefixIterator(store, prefix)
+
+	defer iter.Close()
+	for ; iter.Valid(); iter.Next() {
+		contractID, _ := splitNFTKey(iter.Key())
+
+		var nft collection.NFT
+		k.cdc.MustUnmarshal(iter.Value(), &nft)
+
+		if fn(contractID, nft) {
+			break
+		}
+	}
+}
+
 func (k Keeper) iterateContractParents(ctx sdk.Context, contractID string, fn func(tokenID, parentID string) (stop bool)) {
 	k.iterateParentsImpl(ctx, childKeyPrefixByContractID(contractID), func(_ string, tokenID, parentID string) (stop bool) {
 		return fn(tokenID, parentID)

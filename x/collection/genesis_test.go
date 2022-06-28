@@ -68,8 +68,8 @@ func TestValidateGenesis(t *testing.T) {
 		"contract classes of invalid contract id": {
 			&collection.GenesisState{
 				Classes: []collection.ContractClasses{{
-					Classes: []*codectypes.Any{
-						collection.TokenClassToAny(&collection.NFTClass{
+					Classes: []codectypes.Any{
+						*collection.TokenClassToAny(&collection.NFTClass{
 							Id: "deadbeef",
 							Name: "tibetian fox",
 							Meta: "Tibetian Fox",
@@ -91,8 +91,8 @@ func TestValidateGenesis(t *testing.T) {
 			&collection.GenesisState{
 				Classes: []collection.ContractClasses{{
 					ContractId: "deadbeef",
-					Classes: []*codectypes.Any{
-						collection.TokenClassToAny(&collection.NFTClass{
+					Classes: []codectypes.Any{
+						*collection.TokenClassToAny(&collection.NFTClass{
 							Name: "tibetian fox",
 							Meta: "Tibetian Fox",
 						}),
