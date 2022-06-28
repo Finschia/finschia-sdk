@@ -153,7 +153,7 @@ func (k Keeper) iterateNFTsImpl(ctx sdk.Context, prefix []byte, fn func(contract
 }
 
 func (k Keeper) iterateContractParents(ctx sdk.Context, contractID string, fn func(tokenID, parentID string) (stop bool)) {
-	k.iterateParentsImpl(ctx, childKeyPrefixByContractID(contractID), func(_ string, tokenID, parentID string) (stop bool) {
+	k.iterateParentsImpl(ctx, parentKeyPrefixByContractID(contractID), func(_ string, tokenID, parentID string) (stop bool) {
 		return fn(tokenID, parentID)
 	})
 }
