@@ -47,6 +47,7 @@ func (k Keeper) setNFT(ctx sdk.Context, contractID string, nft collection.NFT) {
 	store.Set(key, bz)
 }
 
+//nolint:unused
 func (k Keeper) deleteNFT(ctx sdk.Context, contractID string, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := nftKey(contractID, tokenID)
@@ -112,6 +113,7 @@ func (k Keeper) setParent(ctx sdk.Context, contractID string, tokenID, parentID 
 	store.Set(key, bz)
 }
 
+//nolint:unused
 func (k Keeper) deleteParent(ctx sdk.Context, contractID string, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := parentKey(contractID, tokenID)
@@ -139,6 +141,7 @@ func (k Keeper) setChild(ctx sdk.Context, contractID string, tokenID, childID st
 	store.Set(key, []byte{})
 }
 
+//nolint:unused
 func (k Keeper) deleteChild(ctx sdk.Context, contractID string, tokenID, childID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := childKey(contractID, tokenID, childID)
@@ -162,13 +165,15 @@ func (k Keeper) isRoot(ctx sdk.Context, contractID string, tokenID string) bool 
 	return err != nil
 }
 
-// legacy
+// legacy index
+//nolint:unused
 func (k Keeper) setLegacyToken(ctx sdk.Context, contractID string, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := legacyTokenKey(contractID, tokenID)
 	store.Set(key, []byte{})
 }
 
+//nolint:unused
 func (k Keeper) deleteLegacyToken(ctx sdk.Context, contractID string, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := legacyTokenKey(contractID, tokenID)
@@ -181,6 +186,7 @@ func (k Keeper) setLegacyTokenType(ctx sdk.Context, contractID string, tokenType
 	store.Set(key, []byte{})
 }
 
+//nolint:unused
 func (k Keeper) deleteLegacyTokenType(ctx sdk.Context, contractID string, tokenType string) {
 	store := ctx.KVStore(k.storeKey)
 	key := legacyTokenTypeKey(contractID, tokenType)

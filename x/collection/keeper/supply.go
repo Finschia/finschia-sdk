@@ -131,6 +131,7 @@ func (k Keeper) setNextClassIDs(ctx sdk.Context, ids collection.NextClassIDs) {
 	store.Set(key, bz)
 }
 
+//nolint:unused
 func (k Keeper) getNextTokenID(ctx sdk.Context, contractID string, classID string) sdk.Uint {
 	store := ctx.KVStore(k.storeKey)
 	key := nextTokenIDKey(contractID, classID)
