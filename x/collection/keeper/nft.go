@@ -16,24 +16,23 @@ func (k Keeper) GetNFT(ctx sdk.Context, contractID string, tokenID string) (*col
 		return nil, sdkerrors.ErrNotFound.Wrapf("nft not exists: %s", tokenID)
 	}
 
-	var nft collection.NFT
-	k.cdc.MustUnmarshal(bz, &nft)
+	var token collection.NFT
+	k.cdc.MustUnmarshal(bz, &token)
 
-	return &nft, nil
+	return &token, nil
 }
 
-func (k Keeper) setNFT(ctx sdk.Context, contractID string, nft collection.NFT) {
+func (k Keeper) setNFT(ctx sdk.Context, contractID string, token collection.NFT) {
 	store := ctx.KVStore(k.storeKey)
-	key := nftKey(contractID, nft.Id)
+	key := nftKey(contractID, token.Id)
 
-	bz, err := nft.Marshal()
+	bz, err := token.Marshal()
 	if err != nil {
 		panic(err)
 	}
 	store.Set(key, bz)
 }
 
-//nolint:unused
 func (k Keeper) deleteNFT(ctx sdk.Context, contractID string, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := nftKey(contractID, tokenID)
@@ -152,14 +151,12 @@ func (k Keeper) isRoot(ctx sdk.Context, contractID string, tokenID string) bool 
 }
 
 // legacy index
-//nolint:unused
 func (k Keeper) setLegacyToken(ctx sdk.Context, contractID string, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := legacyTokenKey(contractID, tokenID)
 	store.Set(key, []byte{})
 }
 
-//nolint:unused
 func (k Keeper) deleteLegacyToken(ctx sdk.Context, contractID string, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := legacyTokenKey(contractID, tokenID)
@@ -170,11 +167,4 @@ func (k Keeper) setLegacyTokenType(ctx sdk.Context, contractID string, tokenType
 	store := ctx.KVStore(k.storeKey)
 	key := legacyTokenTypeKey(contractID, tokenType)
 	store.Set(key, []byte{})
-}
-
-//nolint:unused
-func (k Keeper) deleteLegacyTokenType(ctx sdk.Context, contractID string, tokenType string) {
-	store := ctx.KVStore(k.storeKey)
-	key := legacyTokenTypeKey(contractID, tokenType)
-	store.Delete(key)
 }

@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/collection"
@@ -74,6 +76,11 @@ func (k Keeper) CreateTokenClass(ctx sdk.Context, contractID string, class colle
 	}
 	k.setTokenClass(ctx, contractID, class)
 
+	// legacy
+	if nftClass, ok := class.(*collection.NFTClass); ok {
+		k.setLegacyTokenType(ctx, contractID, nftClass.Id)
+	}
+
 	// TODO: emit event
 	id := class.GetId()
 	return &id, nil
@@ -131,7 +138,86 @@ func (k Keeper) setNextClassIDs(ctx sdk.Context, ids collection.NextClassIDs) {
 	store.Set(key, bz)
 }
 
-//nolint:unused
+func (k Keeper) mintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, amount []collection.Coin) error {
+	for _, amt := range amount {
+		if err := collection.ValidateFTID(amt.TokenId); err != nil {
+			return err
+		}
+
+		classID := collection.SplitTokenID(amt.TokenId)
+		class, err := k.GetTokenClass(ctx, contractID, classID)
+		if err != nil {
+			return err
+		}
+
+		if _, ok := class.(*collection.FTClass); !ok {
+			return sdkerrors.ErrInvalidType.Wrapf("not a class of fungible token: %s", classID)
+		}
+
+		tokenID := amt.TokenId
+		k.setBalance(ctx, contractID, to, tokenID, amt.Amount)
+
+		// legacy
+		k.setLegacyToken(ctx, contractID, tokenID)
+	}
+
+	return nil
+}
+
+func (k Keeper) mintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, params []collection.MintNFTParam) ([]collection.NFT, error) {
+	tokens := make([]collection.NFT, 0, len(params))
+	for _, param := range params {
+		classID := param.TokenType
+		class, err := k.GetTokenClass(ctx, contractID, classID)
+		if err != nil {
+			return nil, err
+		}
+
+		if _, ok := class.(*collection.NFTClass); !ok {
+			return nil, sdkerrors.ErrInvalidType.Wrapf("not a class of non-fungible token: %s", classID)
+		}
+
+		nextTokenID := k.getNextTokenID(ctx, contractID, classID)
+		k.setNextTokenID(ctx, contractID, classID, nextTokenID.Incr())
+		tokenID := classID + fmt.Sprintf("%08x", nextTokenID.Uint64())
+
+		k.setBalance(ctx, contractID, to, tokenID, sdk.OneInt())
+		k.setOwner(ctx, contractID, tokenID, to)
+
+		token := collection.NFT{
+			Id:   tokenID,
+			Name: param.Name,
+			Meta: param.Meta,
+		}
+		k.setNFT(ctx, contractID, token)
+
+		tokens = append(tokens, token)
+
+		// legacy
+		k.setLegacyToken(ctx, contractID, tokenID)
+	}
+
+	return tokens, nil
+}
+
+func (k Keeper) burnCoins(ctx sdk.Context, contractID string, from sdk.AccAddress, amount []collection.Coin) error {
+	if err := k.subtractCoins(ctx, contractID, from, amount); err != nil {
+		return err
+	}
+
+	for _, coin := range amount {
+		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
+			k.deleteOwner(ctx, contractID, coin.TokenId)
+			k.deleteNFT(ctx, contractID, coin.TokenId)
+
+			// legacy
+			k.deleteLegacyToken(ctx, contractID, coin.TokenId)
+		}
+	}
+
+	return nil
+}
+
 func (k Keeper) getNextTokenID(ctx sdk.Context, contractID string, classID string) sdk.Uint {
 	store := ctx.KVStore(k.storeKey)
 	key := nextTokenIDKey(contractID, classID)

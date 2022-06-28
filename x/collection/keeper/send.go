@@ -52,7 +52,6 @@ func (k Keeper) subtractCoins(ctx sdk.Context, contractID string, address sdk.Ac
 			if !k.isRoot(ctx, contractID, coin.TokenId) {
 				return sdkerrors.ErrInvalidRequest.Wrapf("%s is not root", coin.TokenId)
 			}
-			k.deleteOwner(ctx, contractID, coin.TokenId)
 		}
 	}
 

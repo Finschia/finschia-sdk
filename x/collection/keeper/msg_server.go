@@ -280,35 +280,214 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 }
 
 func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collection.MsgMintFTResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.From), collection.Permission_Mint); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if err := s.keeper.mintFT(ctx, req.ContractId, sdk.AccAddress(req.To), req.Amount); err != nil {
+		return nil, err
+	}
+
+	event := collection.EventMintedFT{
+		ContractId: req.ContractId,
+		Operator:   req.From,
+		To:         req.To,
+		Amount:     req.Amount,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgMintFTResponse{}, nil
 }
 
 func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*collection.MsgMintNFTResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
-}
+	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.From), collection.Permission_Mint); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
 
-func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collection.MsgBurnFTResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
-}
+	tokens, err := s.keeper.mintNFT(ctx, req.ContractId, sdk.AccAddress(req.To), req.Params)
+	if err != nil {
+		return nil, err
+	}
 
-func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) (*collection.MsgBurnFTFromResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
-}
+	event := collection.EventMintedNFT{
+		ContractId: req.ContractId,
+		Operator:   req.From,
+		To:         req.To,
+		Tokens:     tokens,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		return nil, err
+	}
 
-func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*collection.MsgBurnNFTResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
-}
-
-func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom) (*collection.MsgBurnNFTFromResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	tokenIDs := make([]string, 0, len(tokens))
+	for _, token := range tokens {
+		tokenIDs = append(tokenIDs, token.Id)
+	}
+	return &collection.MsgMintNFTResponse{Ids: tokenIDs}, nil
 }
 
 func (s msgServer) Burn(c context.Context, req *collection.MsgBurn) (*collection.MsgBurnResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.From), collection.Permission_Burn); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if err := s.keeper.burnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
+		return nil, err
+	}
+
+	event := collection.EventBurned{
+		ContractId: req.ContractId,
+		Operator:   req.From,
+		From:       req.From,
+		Amount:     req.Amount,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgBurnResponse{}, nil
 }
 
 func (s msgServer) OperatorBurn(c context.Context, req *collection.MsgOperatorBurn) (*collection.MsgOperatorBurnResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Operator)); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Operator), collection.Permission_Burn); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if err := s.keeper.burnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
+		return nil, err
+	}
+
+	event := collection.EventBurned{
+		ContractId: req.ContractId,
+		Operator:   req.Operator,
+		From:       req.From,
+		Amount:     req.Amount,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgOperatorBurnResponse{}, nil
+}
+
+func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collection.MsgBurnFTResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.From), collection.Permission_Burn); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if err := s.keeper.burnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
+		return nil, err
+	}
+
+	event := collection.EventBurned{
+		ContractId: req.ContractId,
+		Operator:   req.From,
+		From:       req.From,
+		Amount:     req.Amount,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgBurnFTResponse{}, nil
+}
+
+func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) (*collection.MsgBurnFTFromResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Proxy)); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Proxy), collection.Permission_Burn); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if err := s.keeper.burnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
+		return nil, err
+	}
+
+	event := collection.EventBurned{
+		ContractId: req.ContractId,
+		Operator:   req.Proxy,
+		From:       req.From,
+		Amount:     req.Amount,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgBurnFTFromResponse{}, nil
+}
+
+func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*collection.MsgBurnNFTResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.From), collection.Permission_Burn); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	amount := make([]collection.Coin, 0, len(req.TokenIds))
+	for _, id := range req.TokenIds {
+		amount = append(amount, collection.NewCoin(id, sdk.OneInt()))
+	}
+
+	if err := s.keeper.burnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), amount); err != nil {
+		return nil, err
+	}
+
+	event := collection.EventBurned{
+		ContractId: req.ContractId,
+		Operator:   req.From,
+		From:       req.From,
+		Amount:     amount,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgBurnNFTResponse{}, nil
+}
+
+func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom) (*collection.MsgBurnNFTFromResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Proxy)); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Proxy), collection.Permission_Burn); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	amount := make([]collection.Coin, 0, len(req.TokenIds))
+	for _, id := range req.TokenIds {
+		amount = append(amount, collection.NewCoin(id, sdk.OneInt()))
+	}
+
+	if err := s.keeper.burnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), amount); err != nil {
+		return nil, err
+	}
+
+	event := collection.EventBurned{
+		ContractId: req.ContractId,
+		Operator:   req.Proxy,
+		From:       req.From,
+		Amount:     amount,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgBurnNFTFromResponse{}, nil
 }
 
 func (s msgServer) ModifyContract(c context.Context, req *collection.MsgModifyContract) (*collection.MsgModifyContractResponse, error) {

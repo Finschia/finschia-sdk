@@ -407,7 +407,7 @@ func (s queryServer) TokenType(c context.Context, req *collection.QueryTokenType
 
 	nftClass, ok := class.(*collection.NFTClass)
 	if !ok {
-		return nil, sdkerrors.ErrInvalidType.Wrapf("%s is not a class id of non-fungible token", classID)
+		return nil, sdkerrors.ErrInvalidType.Wrapf("not a class of non-fungible token: %s", classID)
 	}
 
 	tokenType := collection.TokenType{
@@ -442,7 +442,7 @@ func (s queryServer) TokenTypes(c context.Context, req *collection.QueryTokenTyp
 
 		nftClass, ok := class.(*collection.NFTClass)
 		if !ok {
-			panic(sdkerrors.ErrInvalidType.Wrapf("%s is not a class id of non-fungible token", key))
+			panic(sdkerrors.ErrInvalidType.Wrapf("not a class of non-fungible token: %s", key))
 		}
 
 		tokenType := collection.TokenType{

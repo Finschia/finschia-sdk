@@ -480,7 +480,6 @@ func splitStatisticKey(keyPrefix, key []byte) (contractID string, classID string
 
 //-----------------------------------------------------------------------------
 // legacy keys
-//nolint:unused
 func legacyTokenKey(contractID string, tokenID string) []byte {
 	prefix := legacyTokenKeyPrefixByContractID(contractID)
 	key := make([]byte, len(prefix)+len(tokenID))
