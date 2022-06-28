@@ -8,20 +8,6 @@ import (
 	"github.com/line/lbm-sdk/x/collection"
 )
 
-func (k Keeper) ValidateNFTID(ctx sdk.Context, contractID string, tokenID string) error {
-	classID := collection.SplitTokenID(tokenID)
-	class, err := k.GetTokenClass(ctx, contractID, classID)
-	if err != nil {
-		return err
-	}
-
-	if _, ok := class.(*collection.NFTClass); !ok {
-		return sdkerrors.ErrInvalidType.Wrapf("invalid class: %s", classID)
-	}
-
-	return nil
-}
-
 func (k Keeper) GetNFT(ctx sdk.Context, contractID string, tokenID string) (*collection.NFT, error) {
 	store := ctx.KVStore(k.storeKey)
 	key := nftKey(contractID, tokenID)

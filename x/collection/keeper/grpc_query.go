@@ -641,7 +641,7 @@ func (s queryServer) Owner(c context.Context, req *collection.QueryOwnerRequest)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.ValidateNFTID(ctx, req.ContractId, req.TokenId); err != nil {
+	if _, err := s.keeper.GetNFT(ctx, req.ContractId, req.TokenId); err != nil {
 		return nil, err
 	}
 
@@ -664,7 +664,7 @@ func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.ValidateNFTID(ctx, req.ContractId, req.TokenId); err != nil {
+	if _, err := s.keeper.GetNFT(ctx, req.ContractId, req.TokenId); err != nil {
 		return nil, err
 	}
 
@@ -691,7 +691,7 @@ func (s queryServer) Parent(c context.Context, req *collection.QueryParentReques
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.ValidateNFTID(ctx, req.ContractId, req.TokenId); err != nil {
+	if _, err := s.keeper.GetNFT(ctx, req.ContractId, req.TokenId); err != nil {
 		return nil, err
 	}
 

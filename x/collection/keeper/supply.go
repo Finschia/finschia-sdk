@@ -39,7 +39,7 @@ func (k Keeper) GetContract(ctx sdk.Context, contractID string) (*collection.Con
 	key := contractKey(contractID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("No such a contract: %s", contractID)
+		return nil, sdkerrors.ErrNotFound.Wrapf("no such a contract: %s", contractID)
 	}
 
 	var contract collection.Contract
@@ -84,7 +84,7 @@ func (k Keeper) GetTokenClass(ctx sdk.Context, contractID, classID string) (coll
 	key := classKey(contractID, classID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("No such a class in contract %s: %s", contractID, classID)
+		return nil, sdkerrors.ErrNotFound.Wrapf("no such a class in contract %s: %s", contractID, classID)
 	}
 
 	var class collection.TokenClass
@@ -110,7 +110,7 @@ func (k Keeper) getNextClassIDs(ctx sdk.Context, contractID string) collection.N
 	key := nextClassIDKey(contractID)
 	bz := store.Get(key)
 	if bz == nil {
-		panic(sdkerrors.ErrNotFound.Wrapf("No next ids of contract %s", contractID))
+		panic(sdkerrors.ErrNotFound.Wrapf("no next ids of contract %s", contractID))
 	}
 
 	var class collection.NextClassIDs
@@ -137,7 +137,7 @@ func (k Keeper) getNextTokenID(ctx sdk.Context, contractID string, classID strin
 	key := nextTokenIDKey(contractID, classID)
 	bz := store.Get(key)
 	if bz == nil {
-		panic(sdkerrors.ErrNotFound.Wrapf("No next ids of token class %s", classID))
+		panic(sdkerrors.ErrNotFound.Wrapf("no next ids of token class %s", classID))
 	}
 
 	var id sdk.Uint
