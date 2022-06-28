@@ -1,7 +1,7 @@
 syntax = "proto3";
 package lbm.token.v1;
 
-import "lbm/base/query/v1/pagination.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "google/api/annotations.proto";
 import "lbm/token/v1/token.proto";
 
@@ -84,13 +84,13 @@ message QueryTokenResponse {
 // QueryTokensRequest is the request type for the Query/Tokens RPC method
 message QueryTokensRequest {
   // pagination defines an optional pagination for the request.
-  lbm.base.query.v1.PageRequest pagination = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryTokensResponse is the response type for the Query/Tokens RPC method
 message QueryTokensResponse {
-  repeated lbm.token.v1.Token    tokens     = 1 [(gogoproto.nullable) = false];
-  lbm.base.query.v1.PageResponse pagination = 2;
+  repeated lbm.token.v1.Token            tokens     = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryGrantsRequest is the request type for the Query/Grants RPC method
@@ -125,11 +125,11 @@ message QueryApprovesRequest {
   string proxy    = 2;
 
   // pagination defines an optional pagination for the request.
-  lbm.base.query.v1.PageRequest pagination = 3;
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
 }
 
 // QueryApprovesResponse is the response type for the Query/Approves RPC method
 message QueryApprovesResponse {
-  repeated Approve               approves   = 1 [(gogoproto.nullable) = false];
-  lbm.base.query.v1.PageResponse pagination = 2;
+  repeated Approve                       approves   = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

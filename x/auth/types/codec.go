@@ -31,14 +31,14 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 
 	registry.RegisterInterface(
-		"lbm.auth.v1.AccountI",
+		"cosmos.auth.v1beta1.AccountI",
 		(*AccountI)(nil),
 		&BaseAccount{},
 		&ModuleAccount{},
 	)
 
 	registry.RegisterInterface(
-		"lbm.auth.v1.GenesisAccount",
+		"cosmos.auth.v1beta1.GenesisAccount",
 		(*GenesisAccount)(nil),
 		&BaseAccount{},
 		&ModuleAccount{},

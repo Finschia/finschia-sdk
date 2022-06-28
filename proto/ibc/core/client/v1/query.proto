@@ -1,7 +1,7 @@
 syntax = "proto3";
 package ibc.core.client.v1;
 
-import "lbm/base/query/v1/pagination.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "ibc/core/client/v1/client.proto";
 import "google/protobuf/any.proto";
 import "google/api/annotations.proto";
@@ -68,7 +68,7 @@ message QueryClientStateResponse {
 // method
 message QueryClientStatesRequest {
   // pagination request
-  lbm.base.query.v1.PageRequest pagination = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryClientStatesResponse is the response type for the Query/ClientStates RPC
@@ -78,7 +78,7 @@ message QueryClientStatesResponse {
   repeated IdentifiedClientState client_states = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "IdentifiedClientStates"];
   // pagination response
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryConsensusStateRequest is the request type for the Query/ConsensusState
@@ -113,7 +113,7 @@ message QueryConsensusStatesRequest {
   // client identifier
   string client_id = 1;
   // pagination request
-  lbm.base.query.v1.PageRequest pagination = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 // QueryConsensusStatesResponse is the response type for the
@@ -122,7 +122,7 @@ message QueryConsensusStatesResponse {
   // consensus states associated with the identifier
   repeated ConsensusStateWithHeight consensus_states = 1 [(gogoproto.nullable) = false];
   // pagination response
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryClientParamsRequest is the request type for the Query/ClientParams RPC method.

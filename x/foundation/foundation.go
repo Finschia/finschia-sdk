@@ -13,22 +13,12 @@ import (
 )
 
 func DefaultDecisionPolicy(config Config) DecisionPolicy {
-	policy := &ThresholdDecisionPolicy{
+	return &ThresholdDecisionPolicy{
 		Threshold: config.MinThreshold,
 		Windows: &DecisionPolicyWindows{
 			VotingPeriod: 24 * time.Hour,
 		},
 	}
-
-	// check whether the default policy is valid
-	if err := policy.ValidateBasic(); err != nil {
-		panic(err)
-	}
-	if err := policy.Validate(config); err != nil {
-		panic(err)
-	}
-
-	return policy
 }
 
 func validateProposers(proposers []string) error {
@@ -117,6 +107,20 @@ type DecisionPolicy interface {
 
 	ValidateBasic() error
 	Validate(config Config) error
+}
+
+// DefaultTallyResult returns a TallyResult with all counts set to 0.
+func DefaultTallyResult() TallyResult {
+	return NewTallyResult(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
+}
+
+func NewTallyResult(yes, abstain, no, veto sdk.Dec) TallyResult {
+	return TallyResult{
+		YesCount:        yes,
+		AbstainCount:    abstain,
+		NoCount:         no,
+		NoWithVetoCount: veto,
+	}
 }
 
 func (t *TallyResult) Add(option VoteOption) error {
@@ -221,6 +225,146 @@ func SetMsgs(msgs []sdk.Msg) ([]*codectypes.Any, error) {
 	return anys, nil
 }
 
+var _ DecisionPolicy = (*ThresholdDecisionPolicy)(nil)
+
+func validateDecisionPolicyWindows(windows DecisionPolicyWindows, config Config) error {
+	if windows.MinExecutionPeriod >= windows.VotingPeriod+config.MaxExecutionPeriod {
+		return sdkerrors.ErrInvalidRequest.Wrap("min_execution_period should be smaller than voting_period + max_execution_period")
+	}
+	return nil
+}
+
+func validateDecisionPolicyWindowsBasic(windows *DecisionPolicyWindows) error {
+	if windows == nil || windows.VotingPeriod == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("voting period cannot be zero")
+	}
+
+	return nil
+}
+
+func (p ThresholdDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
+	if sinceSubmission < p.Windows.MinExecutionPeriod {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("must wait %s after submission before execution, currently at %s", p.Windows.MinExecutionPeriod, sinceSubmission)
+	}
+
+	// the real threshold of the policy is `min(threshold,total_weight)`. If
+	// the foundation member weights changes (member leaving, member weight update)
+	// and the threshold doesn't, we can end up with threshold > total_weight.
+	// In this case, as long as everyone votes yes (in which case
+	// `yesCount`==`realThreshold`), then the proposal still passes.
+	realThreshold := sdk.MinDec(p.Threshold, totalWeight)
+	if result.YesCount.GTE(realThreshold) {
+		return &DecisionPolicyResult{Allow: true, Final: true}, nil
+	}
+
+	totalCounts := result.TotalCounts()
+	undecided := totalWeight.Sub(totalCounts)
+
+	// maxYesCount is the max potential number of yes count, i.e the current yes count
+	// plus all undecided count (supposing they all vote yes).
+	maxYesCount := result.YesCount.Add(undecided)
+	if maxYesCount.LT(realThreshold) {
+		return &DecisionPolicyResult{Final: true}, nil
+	}
+
+	return &DecisionPolicyResult{}, nil
+}
+
+func (p ThresholdDecisionPolicy) GetVotingPeriod() time.Duration {
+	return p.Windows.VotingPeriod
+}
+
+func (p ThresholdDecisionPolicy) ValidateBasic() error {
+	if !p.Threshold.IsPositive() {
+		return sdkerrors.ErrInvalidRequest.Wrap("threshold must be a positive number")
+	}
+
+	if err := validateDecisionPolicyWindowsBasic(p.Windows); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p ThresholdDecisionPolicy) Validate(config Config) error {
+	if p.Threshold.LT(config.MinThreshold) {
+		return sdkerrors.ErrInvalidRequest.Wrap("threshold must be greater than or equal to min_threshold")
+	}
+
+	if err := validateDecisionPolicyWindows(*p.Windows, config); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var _ DecisionPolicy = (*PercentageDecisionPolicy)(nil)
+
+func (p PercentageDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
+	if sinceSubmission < p.Windows.MinExecutionPeriod {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("must wait %s after submission before execution, currently at %s", p.Windows.MinExecutionPeriod, sinceSubmission)
+	}
+
+	notAbstaining := totalWeight.Sub(result.AbstainCount)
+	// If no one votes (everyone abstains), proposal fails
+	if notAbstaining.IsZero() {
+		return &DecisionPolicyResult{Final: true}, nil
+	}
+
+	yesPercentage := result.YesCount.Quo(notAbstaining)
+	if yesPercentage.GTE(p.Percentage) {
+		return &DecisionPolicyResult{Allow: true, Final: true}, nil
+	}
+
+	totalCounts := result.TotalCounts()
+	undecided := totalWeight.Sub(totalCounts)
+	maxYesCount := result.YesCount.Add(undecided)
+	maxYesPercentage := maxYesCount.Quo(notAbstaining)
+	if maxYesPercentage.LT(p.Percentage) {
+		return &DecisionPolicyResult{Final: true}, nil
+	}
+
+	return &DecisionPolicyResult{}, nil
+}
+
+func (p PercentageDecisionPolicy) GetVotingPeriod() time.Duration {
+	return p.Windows.VotingPeriod
+}
+
+func (p PercentageDecisionPolicy) ValidateBasic() error {
+	if err := validateDecisionPolicyWindowsBasic(p.Windows); err != nil {
+		return err
+	}
+
+	if err := validateRatio(p.Percentage, "percentage"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p PercentageDecisionPolicy) Validate(config Config) error {
+	if p.Percentage.LT(config.MinPercentage) {
+		return sdkerrors.ErrInvalidRequest.Wrap("percentage must be greater than or equal to min_percentage")
+	}
+
+	if err := validateDecisionPolicyWindows(*p.Windows, config); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func validateRatio(ratio sdk.Dec, name string) error {
+	if ratio.IsNil() {
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s is nil", name)
+	}
+
+	if ratio.GT(sdk.OneDec()) || ratio.IsNegative() {
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s must be >= 0 and <= 1", name)
+	}
+	return nil
+}
+
 var _ codectypes.UnpackInterfacesMessage = (*FoundationInfo)(nil)
 
 func (i FoundationInfo) GetDecisionPolicy() DecisionPolicy {
@@ -262,133 +406,6 @@ func (i FoundationInfo) WithDecisionPolicy(policy DecisionPolicy) *FoundationInf
 func (i *FoundationInfo) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	var policy DecisionPolicy
 	return unpacker.UnpackAny(i.DecisionPolicy, &policy)
-}
-
-var _ DecisionPolicy = (*ThresholdDecisionPolicy)(nil)
-
-func validateDecisionPolicyWindows(windows DecisionPolicyWindows, config Config) error {
-	if windows.MinExecutionPeriod >= windows.VotingPeriod+config.MaxExecutionPeriod {
-		return sdkerrors.ErrInvalidRequest.Wrap("min_execution_period should be smaller than voting_period + max_execution_period")
-	}
-	return nil
-}
-
-func (p ThresholdDecisionPolicy) Validate(config Config) error {
-	if p.Threshold.LT(config.MinThreshold) {
-		return sdkerrors.ErrInvalidRequest.Wrap("threshold must be greater than or equal to min_threshold")
-	}
-
-	if err := validateDecisionPolicyWindows(*p.Windows, config); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (p ThresholdDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
-	if sinceSubmission < p.Windows.MinExecutionPeriod {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("must wait %s after submission before execution, currently at %s", p.Windows.MinExecutionPeriod, sinceSubmission)
-	}
-
-	// the real threshold of the policy is `min(threshold,total_weight)`. If
-	// the foundation member weights changes (member leaving, member weight update)
-	// and the threshold doesn't, we can end up with threshold > total_weight.
-	// In this case, as long as everyone votes yes (in which case
-	// `yesCount`==`realThreshold`), then the proposal still passes.
-	realThreshold := sdk.MinDec(p.Threshold, totalWeight)
-	if result.YesCount.GTE(realThreshold) {
-		return &DecisionPolicyResult{Allow: true, Final: true}, nil
-	}
-
-	totalCounts := result.TotalCounts()
-	undecided := totalWeight.Sub(totalCounts)
-
-	// maxYesCount is the max potential number of yes count, i.e the current yes count
-	// plus all undecided count (supposing they all vote yes).
-	maxYesCount := result.YesCount.Add(undecided)
-	if maxYesCount.LT(realThreshold) {
-		return &DecisionPolicyResult{Allow: false, Final: true}, nil
-	}
-
-	return &DecisionPolicyResult{Final: false}, nil
-}
-
-func (p ThresholdDecisionPolicy) GetVotingPeriod() time.Duration {
-	return p.Windows.VotingPeriod
-}
-
-func (p ThresholdDecisionPolicy) ValidateBasic() error {
-	if !p.Threshold.IsPositive() {
-		return sdkerrors.ErrInvalidRequest.Wrap("threshold must be a positive number")
-	}
-
-	if p.Windows == nil || p.Windows.VotingPeriod == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("voting period cannot be zero")
-	}
-
-	return nil
-}
-
-var _ DecisionPolicy = (*PercentageDecisionPolicy)(nil)
-
-func (p PercentageDecisionPolicy) Validate(config Config) error {
-	if p.Percentage.LT(config.MinPercentage) {
-		return sdkerrors.ErrInvalidRequest.Wrap("percentage must be greater than or equal to min_percentage")
-	}
-
-	if err := validateDecisionPolicyWindows(*p.Windows, config); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (p PercentageDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
-	if sinceSubmission < p.Windows.MinExecutionPeriod {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("must wait %s after submission before execution, currently at %s", p.Windows.MinExecutionPeriod, sinceSubmission)
-	}
-
-	yesPercentage := result.YesCount.Quo(totalWeight)
-	if yesPercentage.GTE(p.Percentage) {
-		return &DecisionPolicyResult{Allow: true, Final: true}, nil
-	}
-
-	totalCounts := result.TotalCounts()
-	undecided := totalWeight.Sub(totalCounts)
-	maxYesCount := result.YesCount.Add(undecided)
-	maxYesPercentage := maxYesCount.Quo(totalWeight)
-	if maxYesPercentage.LT(p.Percentage) {
-		return &DecisionPolicyResult{Allow: false, Final: true}, nil
-	}
-
-	return &DecisionPolicyResult{Allow: false, Final: false}, nil
-}
-
-func (p PercentageDecisionPolicy) GetVotingPeriod() time.Duration {
-	return p.Windows.VotingPeriod
-}
-
-func (p PercentageDecisionPolicy) ValidateBasic() error {
-	if p.Windows == nil || p.Windows.VotingPeriod == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("voting period cannot be zero")
-	}
-
-	if err := validateRatio(p.Percentage, "percentage"); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func validateRatio(ratio sdk.Dec, name string) error {
-	if ratio.IsNil() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s is nil", name)
-	}
-
-	if ratio.GT(sdk.OneDec()) || ratio.IsNegative() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s must be >= 0 and <= 1", name)
-	}
-	return nil
 }
 
 func GetAuthorization(any *codectypes.Any, name string) (Authorization, error) {
