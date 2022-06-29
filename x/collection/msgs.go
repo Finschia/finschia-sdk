@@ -873,6 +873,10 @@ func (m MsgModifyTokenClass) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
+	if err := ValidateClassID(m.ClassId); err != nil {
+		return err
+	}
+
 	if err := validateChanges(m.Changes, validateTokenClassChange); err != nil {
 		return err
 	}
@@ -896,6 +900,10 @@ func (m MsgModifyNFT) ValidateBasic() error {
 
 	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
+
+	if err := ValidateNFTID(m.TokenId); err != nil {
+		return err
 	}
 
 	if err := validateChanges(m.Changes, validateNFTChange); err != nil {

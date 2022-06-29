@@ -16,6 +16,8 @@ func TestMsgSend(t *testing.T) {
 	for i := range addrs {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
+
+	contractID := "deadbeef"
 	amount := collection.NewCoins(collection.NewCoin(
 		fmt.Sprintf("%s%08x", "deadbeef", 0),
 		sdk.OneInt(),
@@ -29,14 +31,14 @@ func TestMsgSend(t *testing.T) {
 		valid   bool
 	}{
 		"valid msg": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[0],
 			to:      addrs[1],
 			amount: amount,
 			valid:   true,
 		},
 		"empty from": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			to:      addrs[1],
 			amount: amount,
 		},
@@ -46,17 +48,17 @@ func TestMsgSend(t *testing.T) {
 			amount: amount,
 		},
 		"invalid to": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[0],
 			amount: amount,
 		},
 		"empty amount": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[0],
 			to:      addrs[1],
 		},
 		"invalid token id": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[0],
 			to:      addrs[1],
 			amount:   []collection.Coin{{
@@ -64,13 +66,13 @@ func TestMsgSend(t *testing.T) {
 			}},
 		},
 		"duplicate token ids": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[0],
 			to:      addrs[1],
 			amount:   []collection.Coin{amount[0], amount[0]},
 		},
 		"invalid amount": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[0],
 			to:      addrs[1],
 			amount:   []collection.Coin{{
@@ -104,6 +106,7 @@ func TestMsgOperatorSend(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
+	contractID := "deadbeef"
 	amount := collection.NewCoins(collection.NewCoin(
 		fmt.Sprintf("%s%08x", "deadbeef", 0),
 		sdk.OneInt(),
@@ -118,7 +121,7 @@ func TestMsgOperatorSend(t *testing.T) {
 		valid   bool
 	}{
 		"valid msg": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator:   addrs[0],
 			from:    addrs[1],
 			to:      addrs[2],
@@ -126,7 +129,7 @@ func TestMsgOperatorSend(t *testing.T) {
 			valid:   true,
 		},
 		"invalid operator": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[1],
 			to:      addrs[2],
 			amount:  amount,
@@ -138,19 +141,19 @@ func TestMsgOperatorSend(t *testing.T) {
 			amount:  amount,
 		},
 		"empty from": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator:   addrs[0],
 			to:      addrs[1],
 			amount:  amount,
 		},
 		"invalid to": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator:   addrs[0],
 			from:    addrs[1],
 			amount:  amount,
 		},
 		"empty amount": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator:   addrs[0],
 			from:    addrs[1],
 			to:      addrs[2],
@@ -474,6 +477,13 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 			from:    addrs[1],
 			to:      addrs[2],
 		},
+		"invalid id": {
+			contractID: "deadbeef",
+			proxy:   addrs[0],
+			from:    addrs[1],
+			to:      addrs[2],
+			ids:     []string{""},
+		},
 	}
 
 	for name, tc := range testCases {
@@ -502,6 +512,7 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
+	contractID := "deadbeef"
 	testCases := map[string]struct {
 		contractID  string
 		holder sdk.AccAddress
@@ -509,7 +520,7 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 		valid    bool
 	}{
 		"valid msg": {
-			contractID:  "deadbeef",
+			contractID:  contractID,
 			holder: addrs[0],
 			operator:    addrs[1],
 			valid:    true,
@@ -519,11 +530,11 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 			operator:    addrs[1],
 		},
 		"invalid holder": {
-			contractID:  "deadbeef",
+			contractID:  contractID,
 			operator:    addrs[1],
 		},
 		"empty operator": {
-			contractID:  "deadbeef",
+			contractID:  contractID,
 			holder: addrs[0],
 		},
 	}
@@ -552,6 +563,7 @@ func TestMsgRevokeOperator(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
+	contractID := "deadbeef"
 	testCases := map[string]struct {
 		contractID  string
 		holder sdk.AccAddress
@@ -559,7 +571,7 @@ func TestMsgRevokeOperator(t *testing.T) {
 		valid    bool
 	}{
 		"valid msg": {
-			contractID:  "deadbeef",
+			contractID:  contractID,
 			holder: addrs[0],
 			operator:    addrs[1],
 			valid:    true,
@@ -569,11 +581,11 @@ func TestMsgRevokeOperator(t *testing.T) {
 			operator:    addrs[1],
 		},
 		"invalid holder": {
-			contractID:  "deadbeef",
+			contractID:  contractID,
 			operator:    addrs[1],
 		},
 		"empty operator": {
-			contractID:  "deadbeef",
+			contractID:  contractID,
 			holder: addrs[0],
 		},
 	}
@@ -702,6 +714,9 @@ func TestMsgCreateContract(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
+	name := "tibetian fox"
+	uri := "file:///tibetian_fox.png"
+	meta := "Tibetian fox"
 	testCases := map[string]struct {
 		owner    sdk.AccAddress
 		name     string
@@ -711,32 +726,32 @@ func TestMsgCreateContract(t *testing.T) {
 	}{
 		"valid msg": {
 			owner:    addrs[0],
-			name:     "test",
-			baseImgURI: "some URI",
-			meta:     "some meta",
+			name:     name,
+			baseImgURI: uri,
+			meta:     meta,
 			valid:    true,
 		},
 		"invalid owner": {
-			name:     "test",
-			baseImgURI: "some URI",
-			meta:     "some meta",
+			name:     name,
+			baseImgURI: uri,
+			meta:     meta,
 		},
 		"long name": {
 			owner:    addrs[0],
 			name:     string(make([]rune, 21)),
-			baseImgURI: "some URI",
-			meta:     "some meta",
+			baseImgURI: uri,
+			meta:     meta,
 		},
 		"invalid base image uri": {
 			owner:    addrs[0],
-			name:     "test",
+			name:     name,
 			baseImgURI: string(make([]rune, 1001)),
-			meta:     "some meta",
+			meta:     meta,
 		},
 		"invalid meta": {
 			owner:    addrs[0],
-			name:     "test",
-			baseImgURI: "some URI",
+			name:     name,
+			baseImgURI: uri,
 			meta:     string(make([]rune, 1001)),
 		},
 	}
@@ -766,6 +781,10 @@ func TestMsgIssueFT(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
+	contractID := "deadbeef"
+	name := "tibetian fox"
+	meta := "Tibetian Fox"
+	decimals := int32(8)
 	testCases := map[string]struct {
 		contractID string
 		owner    sdk.AccAddress
@@ -778,82 +797,82 @@ func TestMsgIssueFT(t *testing.T) {
 		valid    bool
 	}{
 		"valid msg": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			owner:    addrs[0],
 			to:       addrs[1],
-			name:     "test",
-			meta:     "some meta",
-			decimals: 8,
+			name:     name,
+			meta:     meta,
+			decimals: decimals,
 			amount:   sdk.OneInt(),
 			valid:    true,
 		},
 		"invalid contract id": {
 			owner:    addrs[0],
 			to:       addrs[1],
-			name:     "test",
-			meta:     "some meta",
-			decimals: 8,
+			name:     name,
+			meta:     meta,
+			decimals: decimals,
 			amount:   sdk.OneInt(),
 		},
 		"invalid owner": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			to:       addrs[1],
-			name:     "test",
-			meta:     "some meta",
-			decimals: 8,
+			name:     name,
+			meta:     meta,
+			decimals: decimals,
 			amount:   sdk.OneInt(),
 		},
 		"empty to": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			owner:    addrs[0],
-			name:     "test",
-			meta:     "some meta",
-			decimals: 8,
+			name:     name,
+			meta:     meta,
+			decimals: decimals,
 			amount:   sdk.OneInt(),
 		},
 		"empty name": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			owner:    addrs[0],
 			to:       addrs[1],
-			meta:     "some meta",
-			decimals: 8,
+			meta:     meta,
+			decimals: decimals,
 			amount:   sdk.OneInt(),
 		},
 		"long name": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			owner:    addrs[0],
 			to:       addrs[1],
 			name:     string(make([]rune, 21)),
-			meta:     "some meta",
-			decimals: 8,
+			meta:     meta,
+			decimals: decimals,
 			amount:   sdk.OneInt(),
 			valid:    false,
 		},
 		"invalid meta": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			owner:    addrs[0],
 			to:       addrs[1],
-			name:     "test",
+			name:     name,
 			meta:     string(make([]rune, 1001)),
-			decimals: 8,
+			decimals: decimals,
 			amount:   sdk.OneInt(),
 		},
 		"invalid decimals": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			owner:    addrs[0],
 			to:       addrs[1],
-			name:     "test",
-			meta:     "some meta",
+			name:     name,
+			meta:     meta,
 			decimals: 19,
 			amount:   sdk.OneInt(),
 		},
 		"valid supply": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			owner:    addrs[0],
 			to:       addrs[1],
-			name:     "test",
-			meta:     "some meta",
-			decimals: 8,
+			name:     name,
+			meta:     meta,
+			decimals: decimals,
 			amount:   sdk.ZeroInt(),
 		},
 	}
@@ -886,40 +905,43 @@ func TestMsgIssueNFT(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
+	contractID := "deadbeef"
+	name := "tibetian fox"
+	meta := "Tibetian Fox"
 	testCases := map[string]struct {
 		contractID string
-		owner    sdk.AccAddress
+		operator    sdk.AccAddress
 		name     string
 		meta     string
 		valid    bool
 	}{
 		"valid msg": {
-			contractID: "deadbeef",
-			owner:    addrs[0],
-			name:     "test",
-			meta:     "some meta",
+			contractID: contractID,
+			operator:    addrs[0],
+			name:     name,
+			meta:     meta,
 			valid:    true,
 		},
 		"invalid contract id": {
-			owner:    addrs[0],
-			name:     "test",
-			meta:     "some meta",
+			operator:    addrs[0],
+			name:     name,
+			meta:     meta,
 		},
-		"invalid owner": {
-			contractID: "deadbeef",
-			name:     "test",
-			meta:     "some meta",
+		"invalid operator": {
+			contractID: contractID,
+			name:     name,
+			meta:     meta,
 		},
 		"long name": {
-			contractID: "deadbeef",
-			owner:    addrs[0],
+			contractID: contractID,
+			operator:    addrs[0],
 			name:     string(make([]rune, 21)),
-			meta:     "some meta",
+			meta:     meta,
 		},
 		"invalid meta": {
-			contractID: "deadbeef",
-			owner:    addrs[0],
-			name:     "test",
+			contractID: contractID,
+			operator:    addrs[0],
+			name:     name,
 			meta:     string(make([]rune, 1001)),
 		},
 	}
@@ -927,12 +949,12 @@ func TestMsgIssueNFT(t *testing.T) {
 	for name, tc := range testCases {
 		msg := collection.MsgIssueNFT{
 			ContractId: tc.contractID,
-			Owner:    tc.owner.String(),
+			Owner:    tc.operator.String(),
 			Name:     tc.name,
 			Meta:     tc.meta,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 
 		err := msg.ValidateBasic()
 		if tc.valid {
@@ -954,38 +976,39 @@ func TestMsgMintFT(t *testing.T) {
 		sdk.OneInt(),
 	))
 
+	contractID := "deadbeef"
 	testCases := map[string]struct {
 		contractID string
-		grantee sdk.AccAddress
+		operator sdk.AccAddress
 		to      sdk.AccAddress
 		amount  []collection.Coin
 		valid   bool
 	}{
 		"valid msg": {
-			contractID: "deadbeef",
-			grantee: addrs[0],
+			contractID: contractID,
+			operator: addrs[0],
 			to:      addrs[1],
 			amount:  amount,
 			valid:   true,
 		},
 		"invalid contract id": {
-			grantee: addrs[0],
+			operator: addrs[0],
 			to:      addrs[1],
 			amount:  amount,
 		},
-		"invalid grantee": {
-			contractID: "deadbeef",
+		"invalid operator": {
+			contractID: contractID,
 			to:      addrs[1],
 			amount:  amount,
 		},
 		"empty to": {
-			contractID: "deadbeef",
-			grantee: addrs[0],
+			contractID: contractID,
+			operator: addrs[0],
 			amount:  amount,
 		},
 		"invalid token id": {
-			contractID: "deadbeef",
-			grantee: addrs[0],
+			contractID: contractID,
+			operator: addrs[0],
 			to:      addrs[1],
 			amount: []collection.Coin{{
 				Amount: sdk.OneInt(),
@@ -996,12 +1019,12 @@ func TestMsgMintFT(t *testing.T) {
 	for name, tc := range testCases {
 		msg := collection.MsgMintFT{
 			ContractId: tc.contractID,
-			From: tc.grantee.String(),
+			From: tc.operator.String(),
 			To:      tc.to.String(),
 			Amount: tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 
 		err := msg.ValidateBasic()
 		if tc.valid {
@@ -1025,43 +1048,61 @@ func TestMsgMintNFT(t *testing.T) {
 	}}
 	testCases := map[string]struct {
 		contractID string
-		grantee sdk.AccAddress
+		operator sdk.AccAddress
 		to      sdk.AccAddress
 		params  []collection.MintNFTParam
 		valid   bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
+			operator: addrs[0],
 			to:      addrs[1],
 			params:  params,
 			valid:   true,
 		},
 		"invalid contract id": {
-			grantee: addrs[0],
+			operator: addrs[0],
 			to:      addrs[1],
 			params: params,
 		},
-		"invalid grantee": {
+		"invalid operator": {
 			contractID: "deadbeef",
 			to:      addrs[1],
 			params:  params,
 		},
 		"empty to": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
+			operator: addrs[0],
 			params: params,
 		},
 		"empty params": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
+			operator: addrs[0],
 			to:      addrs[1],
 		},
-		"invalid param": {
+		"param of invalid token type": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
+			operator: addrs[0],
 			to:      addrs[1],
 			params: []collection.MintNFTParam{{
+			}},
+		},
+		"param of invalid name": {
+			contractID: "deadbeef",
+			operator: addrs[0],
+			to:      addrs[1],
+			params: []collection.MintNFTParam{{
+				TokenType: "deadbeef",
+				Name: string(make([]rune, 21)),
+			}},
+		},
+		"param of invalid meta": {
+			contractID: "deadbeef",
+			operator: addrs[0],
+			to:      addrs[1],
+			params: []collection.MintNFTParam{{
+				TokenType: "deadbeef",
+				Meta: string(make([]rune, 1001)),
 			}},
 		},
 	}
@@ -1069,12 +1110,12 @@ func TestMsgMintNFT(t *testing.T) {
 	for name, tc := range testCases {
 		msg := collection.MsgMintNFT{
 			ContractId: tc.contractID,
-			From: tc.grantee.String(),
+			From: tc.operator.String(),
 			To:      tc.to.String(),
 			Params: tc.params,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 
 		err := msg.ValidateBasic()
 		if tc.valid {
@@ -1091,6 +1132,7 @@ func TestMsgBurn(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
+	contractID := "deadbeef"
 	amount := collection.NewCoins(collection.NewCoin(
 		fmt.Sprintf("%s%08x", "deadbeef", 0),
 		sdk.OneInt(),
@@ -1103,7 +1145,7 @@ func TestMsgBurn(t *testing.T) {
 		valid   bool
 	}{
 		"valid msg": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[0],
 			amount:  amount,
 			valid:   true,
@@ -1113,11 +1155,11 @@ func TestMsgBurn(t *testing.T) {
 			amount:  amount,
 		},
 		"invalid from": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			amount:  amount,
 		},
 		"empty amount": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[0],
 		},
 	}
@@ -1146,6 +1188,7 @@ func TestMsgOperatorBurn(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
+	contractID := "deadbeef"
 	amount := collection.NewCoins(collection.NewCoin(
 		fmt.Sprintf("%s%08x", "deadbeef", 0),
 		sdk.OneInt(),
@@ -1159,7 +1202,7 @@ func TestMsgOperatorBurn(t *testing.T) {
 		valid   bool
 	}{
 		"valid msg": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator: addrs[0],
 			from:    addrs[1],
 			amount:  amount,
@@ -1171,17 +1214,17 @@ func TestMsgOperatorBurn(t *testing.T) {
 			amount:  amount,
 		},
 		"invalid operator": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[1],
 			amount:  amount,
 		},
 		"empty from": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator: addrs[0],
 			amount:  amount,
 		},
 		"empty amount": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator: addrs[0],
 			from:    addrs[1],
 		},
@@ -1365,6 +1408,11 @@ func TestMsgBurnNFT(t *testing.T) {
 			contractID: "deadbeef",
 			from:    addrs[0],
 		},
+		"invalid id": {
+			contractID: "deadbeef",
+			from:    addrs[0],
+			ids: []string{""},
+		},
 	}
 
 	for name, tc := range testCases {
@@ -1427,6 +1475,12 @@ func TestMsgBurnNFTFrom(t *testing.T) {
 			grantee: addrs[0],
 			from:    addrs[1],
 		},
+		"invalid id": {
+			contractID: "deadbeef",
+			grantee: addrs[0],
+			from:    addrs[0],
+			ids: []string{""},
+		},
 	}
 
 	for name, tc := range testCases {
@@ -1448,16 +1502,274 @@ func TestMsgBurnNFTFrom(t *testing.T) {
 	}
 }
 
+func TestMsgModifyContract(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 1)
+	for i := range addrs {
+		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	contractID := "deadbeef"
+	change := collection.Attribute{Key: "name", Value: "tibetian fox"}
+	testCases := map[string]struct {
+		contractID string
+		operator sdk.AccAddress
+		changes []collection.Attribute
+		valid   bool
+	}{
+		"valid contract modification": {
+			contractID: contractID,
+			operator: addrs[0],
+			changes: []collection.Attribute{change},
+			valid:   true,
+		},
+		"invalid contract id": {
+			operator: addrs[0],
+			changes: []collection.Attribute{change},
+		},
+		"invalid operator": {
+			contractID: contractID,
+			changes: []collection.Attribute{change},
+		},
+		"invalid key of change": {
+			contractID: contractID,
+			operator: addrs[0],
+			changes: []collection.Attribute{{Value: "tibetian fox"}},
+		},
+		"invalid value of change": {
+			contractID: contractID,
+			operator: addrs[0],
+			changes: []collection.Attribute{{Key: "symbol"}},
+		},
+		"empty changes": {
+			contractID: contractID,
+			operator: addrs[0],
+		},
+		"too many changes": {
+			contractID: contractID,
+			operator: addrs[0],
+			changes: make([]collection.Attribute, 101),
+		},
+		"duplicated changes": {
+			contractID: contractID,
+			operator: addrs[0],
+			changes: []collection.Attribute{
+				{Key: "name", Value: "tibetian fox"},
+				{Key: "name", Value: "fennec fox"},
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		msg := collection.MsgModifyContract{
+			ContractId: tc.contractID,
+			Operator: tc.operator.String(),
+			Changes: tc.changes,
+		}
+
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+
+		err := msg.ValidateBasic()
+		if tc.valid {
+			require.NoError(t, err, name)
+		} else {
+			require.Error(t, err, name)
+		}
+	}
+}
+
+func TestMsgModifyTokenClass(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 1)
+	for i := range addrs {
+		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	contractID := "deadbeef"
+	classID := "deadbeef"
+	change := collection.Attribute{Key: "name", Value: "tibetian fox"}
+	testCases := map[string]struct {
+		contractID string
+		operator sdk.AccAddress
+		classID string
+		changes []collection.Attribute
+		valid   bool
+	}{
+		"valid modification": {
+			contractID: contractID,
+			operator: addrs[0],
+			classID: classID,
+			changes: []collection.Attribute{change},
+			valid:   true,
+		},
+		"invalid contract id": {
+			operator: addrs[0],
+			classID: classID,
+			changes: []collection.Attribute{change},
+		},
+		"invalid operator": {
+			contractID: contractID,
+			classID: classID,
+			changes: []collection.Attribute{change},
+		},
+		"invalid class id": {
+			contractID: contractID,
+			operator: addrs[0],
+			changes: []collection.Attribute{change},
+		},
+		"invalid key of change": {
+			contractID: contractID,
+			operator: addrs[0],
+			classID: classID,
+			changes: []collection.Attribute{{Value: "tibetian fox"}},
+		},
+		"invalid value of change": {
+			contractID: contractID,
+			operator: addrs[0],
+			classID: classID,
+			changes: []collection.Attribute{{Key: "symbol"}},
+		},
+		"empty changes": {
+			contractID: contractID,
+			operator: addrs[0],
+			classID: classID,
+		},
+		"too many changes": {
+			contractID: contractID,
+			operator: addrs[0],
+			classID: classID,
+			changes: make([]collection.Attribute, 101),
+		},
+		"duplicated changes": {
+			contractID: contractID,
+			operator: addrs[0],
+			classID: classID,
+			changes: []collection.Attribute{
+				{Key: "name", Value: "tibetian fox"},
+				{Key: "name", Value: "fennec fox"},
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		msg := collection.MsgModifyTokenClass{
+			ContractId: tc.contractID,
+			Operator: tc.operator.String(),
+			ClassId: tc.classID,
+			Changes: tc.changes,
+		}
+
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+
+		err := msg.ValidateBasic()
+		if tc.valid {
+			require.NoError(t, err, name)
+		} else {
+			require.Error(t, err, name)
+		}
+	}
+}
+
+func TestMsgModifyNFT(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 1)
+	for i := range addrs {
+		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	contractID := "deadbeef"
+	classID := "deadbeef"
+	tokenID := classID + fmt.Sprintf("%08x", 1)
+	change := collection.Attribute{Key: "name", Value: "tibetian fox"}
+	testCases := map[string]struct {
+		contractID string
+		operator sdk.AccAddress
+		tokenID string
+		changes []collection.Attribute
+		valid   bool
+	}{
+		"valid modification": {
+			contractID: contractID,
+			operator: addrs[0],
+			tokenID: tokenID,
+			changes: []collection.Attribute{change},
+			valid:   true,
+		},
+		"invalid contract id": {
+			operator: addrs[0],
+			tokenID: tokenID,
+			changes: []collection.Attribute{change},
+		},
+		"invalid operator": {
+			contractID: contractID,
+			tokenID: tokenID,
+			changes: []collection.Attribute{change},
+		},
+		"invalid token id": {
+			contractID: contractID,
+			operator: addrs[0],
+			changes: []collection.Attribute{change},
+		},
+		"invalid key of change": {
+			contractID: contractID,
+			operator: addrs[0],
+			tokenID: tokenID,
+			changes: []collection.Attribute{{Value: "tibetian fox"}},
+		},
+		"invalid value of change": {
+			contractID: contractID,
+			operator: addrs[0],
+			tokenID: tokenID,
+			changes: []collection.Attribute{{Key: "symbol"}},
+		},
+		"empty changes": {
+			contractID: contractID,
+			operator: addrs[0],
+			tokenID: tokenID,
+		},
+		"too many changes": {
+			contractID: contractID,
+			operator: addrs[0],
+			tokenID: tokenID,
+			changes: make([]collection.Attribute, 101),
+		},
+		"duplicated changes": {
+			contractID: contractID,
+			operator: addrs[0],
+			tokenID: tokenID,
+			changes: []collection.Attribute{
+				{Key: "name", Value: "tibetian fox"},
+				{Key: "name", Value: "fennec fox"},
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		msg := collection.MsgModifyNFT{
+			ContractId: tc.contractID,
+			Operator: tc.operator.String(),
+			TokenId: tc.tokenID,
+			Changes: tc.changes,
+		}
+
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+
+		err := msg.ValidateBasic()
+		if tc.valid {
+			require.NoError(t, err, name)
+		} else {
+			require.Error(t, err, name)
+		}
+	}
+}
+
 func TestMsgModify(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	validChange := collection.Change{Field: "name", Value: "New test"}
+	change := collection.Change{Field: "name", Value: "New test"}
 	testCases := map[string]struct {
 		contractID string
-		grantee sdk.AccAddress
+		owner sdk.AccAddress
 		tokenType string
 		tokenIndex string
 		changes []collection.Change
@@ -1465,55 +1777,55 @@ func TestMsgModify(t *testing.T) {
 	}{
 		"valid contract modification": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
-			changes: []collection.Change{validChange},
+			owner: addrs[0],
+			changes: []collection.Change{change},
 			valid:   true,
 		},
 		"valid token class modification": {
 			contractID: "deadbeef",
 			tokenType: "deadbeef",
-			grantee: addrs[0],
-			changes: []collection.Change{validChange},
+			owner: addrs[0],
+			changes: []collection.Change{change},
 			valid:   true,
 		},
 		"valid nft modification": {
 			contractID: "deadbeef",
 			tokenType: "deadbeef",
 			tokenIndex: "deadbeef",
-			grantee: addrs[0],
-			changes: []collection.Change{validChange},
+			owner: addrs[0],
+			changes: []collection.Change{change},
 			valid:   true,
 		},
 		"invalid contract id": {
-			grantee: addrs[0],
-			changes: []collection.Change{validChange},
+			owner: addrs[0],
+			changes: []collection.Change{change},
 		},
-		"invalid grantee": {
+		"invalid owner": {
 			contractID: "deadbeef",
-			changes: []collection.Change{validChange},
+			changes: []collection.Change{change},
 		},
 		"invalid key of change": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
+			owner: addrs[0],
 			changes: []collection.Change{{Value: "tt"}},
 		},
 		"invalid value of change": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
+			owner: addrs[0],
 			changes: []collection.Change{{Field: "symbol"}},
 		},
 		"empty changes": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
+			owner: addrs[0],
 		},
 		"too many changes": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
+			owner: addrs[0],
 			changes: make([]collection.Change, 101),
 		},
 		"duplicated changes": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
+			owner: addrs[0],
 			changes: []collection.Change{
 				{Field: "name", Value: "hello"},
 				{Field: "name", Value: "world"},
@@ -1526,11 +1838,11 @@ func TestMsgModify(t *testing.T) {
 			ContractId: tc.contractID,
 			TokenType: tc.tokenType,
 			TokenIndex: tc.tokenIndex,
-			Owner: tc.grantee.String(),
+			Owner: tc.owner.String(),
 			Changes: tc.changes,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
 
 		err := msg.ValidateBasic()
 		if tc.valid {
@@ -1547,6 +1859,7 @@ func TestMsgGrant(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
+	contractID := "deadbeef"
 	testCases := map[string]struct {
 		contractID string
 		granter sdk.AccAddress
@@ -1555,7 +1868,7 @@ func TestMsgGrant(t *testing.T) {
 		valid   bool
 	}{
 		"valid msg": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			granter: addrs[0],
 			grantee: addrs[1],
 			permission:  collection.Permission_Mint.String(),
@@ -1567,17 +1880,17 @@ func TestMsgGrant(t *testing.T) {
 			permission:  collection.Permission_Mint.String(),
 		},
 		"empty granter": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			grantee: addrs[1],
 			permission:  collection.Permission_Mint.String(),
 		},
 		"invalid grantee": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			granter: addrs[0],
 			permission:  collection.Permission_Mint.String(),
 		},
 		"invalid permission": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			granter: addrs[0],
 			grantee: addrs[1],
 			permission:  "invalid",
@@ -1609,6 +1922,7 @@ func TestMsgAbandon(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
+	contractID := "deadbeef"
 	testCases := map[string]struct {
 		contractID string
 		grantee sdk.AccAddress
@@ -1616,7 +1930,7 @@ func TestMsgAbandon(t *testing.T) {
 		valid   bool
 	}{
 		"valid msg": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			grantee: addrs[0],
 			permission:  collection.Permission_Mint.String(),
 			valid:   true,
@@ -1626,11 +1940,11 @@ func TestMsgAbandon(t *testing.T) {
 			permission:  collection.Permission_Mint.String(),
 		},
 		"invalid grantee": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			permission:  collection.Permission_Mint.String(),
 		},
 		"invalid permission": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			grantee: addrs[0],
 		},
 	}
@@ -1771,6 +2085,7 @@ func TestMsgAttach(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
+	contractID := "deadbeef"
 	tokenIDs := []string{
 		"deadbeef" + fmt.Sprintf("%08x", 0),
 		"fee1dead" + fmt.Sprintf("%08x", 0),
@@ -1784,14 +2099,14 @@ func TestMsgAttach(t *testing.T) {
 		valid   bool
 	}{
 		"valid msg": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[0],
 			tokenID:      tokenIDs[0],
 			toTokenID: tokenIDs[1],
 			valid:   true,
 		},
 		"empty from": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			tokenID:      tokenIDs[0],
 			toTokenID: tokenIDs[1],
 		},
@@ -1801,17 +2116,17 @@ func TestMsgAttach(t *testing.T) {
 			toTokenID: tokenIDs[1],
 		},
 		"invalid token id": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[0],
 			toTokenID: tokenIDs[1],
 		},
 		"invalid to id": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[0],
 			tokenID:      tokenIDs[0],
 		},
 		"to itself": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[0],
 			tokenID:      tokenIDs[0],
 			toTokenID: tokenIDs[0],
@@ -1843,6 +2158,7 @@ func TestMsgDetach(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
+	contractID := "deadbeef"
 	tokenIDs := []string{
 		"deadbeef" + fmt.Sprintf("%08x", 0),
 	}
@@ -1854,13 +2170,13 @@ func TestMsgDetach(t *testing.T) {
 		valid   bool
 	}{
 		"valid msg": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[0],
 			tokenID:      tokenIDs[0],
 			valid:   true,
 		},
 		"empty from": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			tokenID:      tokenIDs[0],
 		},
 		"invalid contract id": {
@@ -1868,7 +2184,7 @@ func TestMsgDetach(t *testing.T) {
 			tokenID:      tokenIDs[0],
 		},
 		"invalid token id": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			from:    addrs[0],
 		},
 	}
@@ -1897,6 +2213,7 @@ func TestMsgOperatorAttach(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
+	contractID := "deadbeef"
 	tokenIDs := []string{
 		"deadbeef" + fmt.Sprintf("%08x", 0),
 		"fee1dead" + fmt.Sprintf("%08x", 0),
@@ -1911,7 +2228,7 @@ func TestMsgOperatorAttach(t *testing.T) {
 		valid   bool
 	}{
 		"valid msg": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator: addrs[0],
 			owner: addrs[1],
 			subject:      tokenIDs[0],
@@ -1925,31 +2242,31 @@ func TestMsgOperatorAttach(t *testing.T) {
 			target: tokenIDs[1],
 		},
 		"empty operator": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			owner: addrs[1],
 			subject:      tokenIDs[0],
 			target: tokenIDs[1],
 		},
 		"empty owner": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator: addrs[0],
 			subject:      tokenIDs[0],
 			target: tokenIDs[1],
 		},
 		"invalid token id": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator:    addrs[0],
 			owner: addrs[1],
 			target: tokenIDs[1],
 		},
 		"invalid to id": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator:    addrs[0],
 			owner: addrs[1],
 			subject:      tokenIDs[0],
 		},
 		"to itself": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator:    addrs[0],
 			owner: addrs[1],
 			subject:      tokenIDs[0],
@@ -1983,6 +2300,7 @@ func TestMsgOperatorDetach(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
+	contractID := "deadbeef"
 	tokenIDs := []string{
 		"deadbeef" + fmt.Sprintf("%08x", 0),
 	}
@@ -1995,7 +2313,7 @@ func TestMsgOperatorDetach(t *testing.T) {
 		valid   bool
 	}{
 		"valid msg": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator: addrs[0],
 			owner: addrs[1],
 			subject:      tokenIDs[0],
@@ -2007,17 +2325,17 @@ func TestMsgOperatorDetach(t *testing.T) {
 			subject:      tokenIDs[0],
 		},
 		"empty operator": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			owner: addrs[1],
 			subject:      tokenIDs[0],
 		},
 		"empty owner": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator: addrs[0],
 			subject:      tokenIDs[0],
 		},
 		"invalid token id": {
-			contractID: "deadbeef",
+			contractID: contractID,
 			operator:    addrs[0],
 			owner: addrs[1],
 		},
