@@ -76,8 +76,10 @@ func (k Keeper) CreateTokenClass(ctx sdk.Context, contractID string, class colle
 	}
 	k.setTokenClass(ctx, contractID, class)
 
-	// legacy
 	if nftClass, ok := class.(*collection.NFTClass); ok {
+		k.setNextTokenID(ctx, contractID, nftClass.Id, sdk.OneUint())
+
+		// legacy
 		k.setLegacyTokenType(ctx, contractID, nftClass.Id)
 	}
 
@@ -117,7 +119,7 @@ func (k Keeper) getNextClassIDs(ctx sdk.Context, contractID string) collection.N
 	key := nextClassIDKey(contractID)
 	bz := store.Get(key)
 	if bz == nil {
-		panic(sdkerrors.ErrNotFound.Wrapf("no next ids of contract %s", contractID))
+		panic(sdkerrors.ErrNotFound.Wrapf("no next class ids of contract %s", contractID))
 	}
 
 	var class collection.NextClassIDs
@@ -138,7 +140,7 @@ func (k Keeper) setNextClassIDs(ctx sdk.Context, ids collection.NextClassIDs) {
 	store.Set(key, bz)
 }
 
-func (k Keeper) mintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, amount []collection.Coin) error {
+func (k Keeper) MintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, amount []collection.Coin) error {
 	for _, amt := range amount {
 		if err := collection.ValidateFTID(amt.TokenId); err != nil {
 			return err
@@ -164,7 +166,7 @@ func (k Keeper) mintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, am
 	return nil
 }
 
-func (k Keeper) mintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, params []collection.MintNFTParam) ([]collection.NFT, error) {
+func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, params []collection.MintNFTParam) ([]collection.NFT, error) {
 	tokens := make([]collection.NFT, 0, len(params))
 	for _, param := range params {
 		classID := param.TokenType
@@ -223,7 +225,7 @@ func (k Keeper) getNextTokenID(ctx sdk.Context, contractID string, classID strin
 	key := nextTokenIDKey(contractID, classID)
 	bz := store.Get(key)
 	if bz == nil {
-		panic(sdkerrors.ErrNotFound.Wrapf("no next ids of token class %s", classID))
+		panic(sdkerrors.ErrNotFound.Wrapf("no next token id of token class %s", classID))
 	}
 
 	var id sdk.Uint

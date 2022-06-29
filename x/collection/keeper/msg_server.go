@@ -285,7 +285,7 @@ func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collec
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	if err := s.keeper.mintFT(ctx, req.ContractId, sdk.AccAddress(req.To), req.Amount); err != nil {
+	if err := s.keeper.MintFT(ctx, req.ContractId, sdk.AccAddress(req.To), req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -308,7 +308,7 @@ func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*coll
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	tokens, err := s.keeper.mintNFT(ctx, req.ContractId, sdk.AccAddress(req.To), req.Params)
+	tokens, err := s.keeper.MintNFT(ctx, req.ContractId, sdk.AccAddress(req.To), req.Params)
 	if err != nil {
 		return nil, err
 	}

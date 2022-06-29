@@ -74,11 +74,11 @@ func (s *KeeperTestSuite) SetupTest() {
 		*addresses[i] = address
 	}
 
-	s.balance = sdk.OneInt()
+	s.balance = sdk.NewInt(1000000)
 
 	// create a contract
 	s.contractID = s.keeper.CreateContract(s.ctx, s.vendor, collection.Contract{
-		Name: "test contract",
+		Name: "fox",
 	})
 
 	for _, permission := range []collection.Permission{
@@ -91,27 +91,39 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	// create a fungible token class
 	ftClassID, err := s.keeper.CreateTokenClass(s.ctx, s.contractID, &collection.FTClass{
-		Name: "test ft class",
+		Name: "tibetian fox",
 	})
 	s.Require().NoError(err)
 	s.ftClassID = *ftClassID
 
 	// create a non-fungible token class
 	nftClassID, err := s.keeper.CreateTokenClass(s.ctx, s.contractID, &collection.NFTClass{
-		Name: "test ft class",
+		Name: "fennec fox",
 	})
 	s.Require().NoError(err)
 	s.nftClassID = *nftClassID
 
-	// set balances
-	// TODO: replace with mint
+	// mint fts
 	for _, to := range []sdk.AccAddress{s.vendor, s.operator, s.customer} {
-		s.keeper.SetBalance(s.ctx, s.contractID, to, s.ftClassID + fmt.Sprintf("%08x", 0), s.balance)
+		tokenID := s.ftClassID + fmt.Sprintf("%08x", 0)
+		amount := collection.NewCoin(tokenID, s.balance)
+		err := s.keeper.MintFT(s.ctx, s.contractID, to, []collection.Coin{amount})
+		s.Require().NoError(err)
 	}
-	s.keeper.SetBalance(s.ctx, s.contractID, s.customer, s.nftClassID + fmt.Sprintf("%08x", 1), s.balance)
+
+	// mint nfts
+	for _, to := range []sdk.AccAddress{s.vendor, s.operator, s.customer} {
+		mintParam := collection.MintNFTParam{
+			TokenType: s.nftClassID,
+		}
+		_, err = s.keeper.MintNFT(s.ctx, s.contractID, to, []collection.MintNFTParam{mintParam})
+		s.Require().NoError(err)
+	}
 
 	// authorize
 	err = s.keeper.AuthorizeOperator(s.ctx, s.contractID, s.customer, s.operator)
+	s.Require().NoError(err)
+	err = s.keeper.AuthorizeOperator(s.ctx, s.contractID, s.customer, s.stranger)
 	s.Require().NoError(err)
 }
 

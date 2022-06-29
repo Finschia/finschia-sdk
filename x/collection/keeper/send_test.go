@@ -19,7 +19,7 @@ func (s *KeeperTestSuite) TestSendCoins() {
 			valid: true,
 		},
 		"valid send (non-fungible token)": {
-			tokenID: s.nftClassID + fmt.Sprintf("%08x", 1),
+			tokenID: s.nftClassID + fmt.Sprintf("%08x", 3),
 			amount: sdk.OneInt(),
 			valid: true,
 		},
