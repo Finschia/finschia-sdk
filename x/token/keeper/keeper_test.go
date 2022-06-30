@@ -76,10 +76,10 @@ func (s *KeeperTestSuite) SetupTest() {
 	// create a mintable class
 	s.contractID = "f00dbabe"
 	class := token.TokenClass{
-		ContractId:       s.contractID,
-		Name:     "Mintable",
-		Symbol:   "OK",
-		Mintable: true,
+		ContractId: s.contractID,
+		Name:       "Mintable",
+		Symbol:     "OK",
+		Mintable:   true,
 	}
 	s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
 	err := s.keeper.Burn(s.ctx, s.contractID, s.vendor, s.balance)

@@ -61,7 +61,7 @@ func TestValidateGenesis(t *testing.T) {
 						ContractId: "deadbeef",
 						Balances: []token.Balance{
 							{
-								Amount:  sdk.OneInt(),
+								Amount: sdk.OneInt(),
 							},
 						},
 					},
@@ -97,9 +97,9 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid name of class": {
 			&token.GenesisState{
 				Classes: []token.TokenClass{{
-					ContractId:     "deadbeef",
-					Name:   string(make([]rune, 21)),
-					Symbol: "TT",
+					ContractId: "deadbeef",
+					Name:       string(make([]rune, 21)),
+					Symbol:     "TT",
 				}},
 			},
 			false,
@@ -107,9 +107,9 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid symbol of class": {
 			&token.GenesisState{
 				Classes: []token.TokenClass{{
-					ContractId:     "deadbeef",
-					Name:   "test",
-					Symbol: "tt",
+					ContractId: "deadbeef",
+					Name:       "test",
+					Symbol:     "tt",
 				}},
 			},
 			false,
@@ -117,10 +117,10 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid image uri of class": {
 			&token.GenesisState{
 				Classes: []token.TokenClass{{
-					ContractId:       "deadbeef",
-					Name:     "test",
-					Symbol:   "TT",
-					ImageUri: string(make([]rune, 1001)),
+					ContractId: "deadbeef",
+					Name:       "test",
+					Symbol:     "TT",
+					ImageUri:   string(make([]rune, 1001)),
 				}},
 			},
 			false,
@@ -128,10 +128,10 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid meta of class": {
 			&token.GenesisState{
 				Classes: []token.TokenClass{{
-					ContractId:     "deadbeef",
-					Name:   "test",
-					Symbol: "TT",
-					Meta:   string(make([]rune, 1001)),
+					ContractId: "deadbeef",
+					Name:       "test",
+					Symbol:     "TT",
+					Meta:       string(make([]rune, 1001)),
 				}},
 			},
 			false,
@@ -139,10 +139,10 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid decimals of class": {
 			&token.GenesisState{
 				Classes: []token.TokenClass{{
-					ContractId:       "deadbeef",
-					Name:     "test",
-					Symbol:   "TT",
-					Decimals: -1,
+					ContractId: "deadbeef",
+					Name:       "test",
+					Symbol:     "TT",
+					Decimals:   -1,
 				}},
 			},
 			false,
@@ -151,7 +151,7 @@ func TestValidateGenesis(t *testing.T) {
 			&token.GenesisState{
 				Grants: []token.ContractGrants{{
 					Grants: []token.Grant{{
-						Grantee: addr.String(),
+						Grantee:    addr.String(),
 						Permission: token.Permission_Mint.String(),
 					}},
 				}},
@@ -192,8 +192,8 @@ func TestValidateGenesis(t *testing.T) {
 			&token.GenesisState{
 				Authorizations: []token.ContractAuthorizations{{
 					Authorizations: []token.Authorization{{
-						Holder: addr.String(),
-						Operator:    addr.String(),
+						Holder:   addr.String(),
+						Operator: addr.String(),
 					}},
 				}},
 			},
@@ -212,7 +212,7 @@ func TestValidateGenesis(t *testing.T) {
 				Authorizations: []token.ContractAuthorizations{{
 					ContractId: "deadbeef",
 					Authorizations: []token.Authorization{{
-						Operator:    addr.String(),
+						Operator: addr.String(),
 					}},
 				}},
 			},

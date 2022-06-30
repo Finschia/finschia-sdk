@@ -13,7 +13,7 @@ func (s *KeeperTestSuite) TestSend() {
 	}{
 		"valid send": {
 			amount: sdk.OneInt(),
-			valid: true,
+			valid:  true,
 		},
 		"insufficient tokens": {
 			amount: s.balance.Add(sdk.OneInt()),
@@ -46,11 +46,11 @@ func (s *KeeperTestSuite) TestAuthorizeOperator() {
 	s.Require().Error(err)
 
 	contractDescriptions := map[string]string{
-		s.contractID: "valid",
+		s.contractID:    "valid",
 		dummyContractID: "not-exists",
 	}
 	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor: "vendor",
+		s.vendor:   "vendor",
 		s.operator: "operator",
 		s.customer: "customer",
 		s.stranger: "stranger",
@@ -84,11 +84,11 @@ func (s *KeeperTestSuite) TestRevokeOperator() {
 	s.Require().Error(err)
 
 	contractDescriptions := map[string]string{
-		s.contractID: "valid",
+		s.contractID:    "valid",
 		dummyContractID: "not-exists",
 	}
 	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor: "vendor",
+		s.vendor:   "vendor",
 		s.operator: "operator",
 		s.customer: "customer",
 	}

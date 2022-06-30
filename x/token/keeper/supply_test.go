@@ -12,10 +12,10 @@ func (s *KeeperTestSuite) TestIssue() {
 
 	// create a not mintable class
 	class := token.TokenClass{
-		ContractId:       "fee1dead",
-		Name:     "NOT Mintable",
-		Symbol:   "NO",
-		Mintable: false,
+		ContractId: "fee1dead",
+		Name:       "NOT Mintable",
+		Symbol:     "NO",
+		Mintable:   false,
 	}
 	s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
 
@@ -30,14 +30,14 @@ func (s *KeeperTestSuite) TestIssue() {
 
 	// override fails
 	class.ContractId = s.contractID
-	s.Require().Panics(func(){
+	s.Require().Panics(func() {
 		s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
 	})
 }
 
 func (s *KeeperTestSuite) TestMint() {
 	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor: "vendor",
+		s.vendor:   "vendor",
 		s.operator: "operator",
 		s.customer: "customer",
 	}
@@ -61,12 +61,12 @@ func (s *KeeperTestSuite) TestMint() {
 
 func (s *KeeperTestSuite) TestBurn() {
 	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor: "vendor",
+		s.vendor:   "vendor",
 		s.operator: "operator",
 		s.customer: "customer",
 	}
-	amountDescriptions := map[sdk.Int]string {
-		s.balance: "limit",
+	amountDescriptions := map[sdk.Int]string{
+		s.balance:                   "limit",
 		s.balance.Add(sdk.OneInt()): "excess",
 	}
 	for from, fromDesc := range userDescriptions {
@@ -89,12 +89,12 @@ func (s *KeeperTestSuite) TestBurn() {
 
 func (s *KeeperTestSuite) TestOperatorBurn() {
 	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor: "vendor",
+		s.vendor:   "vendor",
 		s.operator: "operator",
 		s.customer: "customer",
 	}
-	amountDescriptions := map[sdk.Int]string {
-		s.balance: "limit",
+	amountDescriptions := map[sdk.Int]string{
+		s.balance:                   "limit",
 		s.balance.Add(sdk.OneInt()): "excess",
 	}
 	for operator, operatorDesc := range userDescriptions {
@@ -121,10 +121,10 @@ func (s *KeeperTestSuite) TestOperatorBurn() {
 func (s *KeeperTestSuite) TestModify() {
 	contractDescriptions := map[string]string{
 		s.contractID: "valid",
-		"fee1dead": "not-exist",
+		"fee1dead":   "not-exist",
 	}
 	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor: "vendor",
+		s.vendor:   "vendor",
 		s.operator: "operator",
 		s.customer: "customer",
 	}

@@ -18,48 +18,48 @@ func TestMsgSend(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		from    sdk.AccAddress
-		to      sdk.AccAddress
-		amount  sdk.Int
-		valid   bool
+		from       sdk.AccAddress
+		to         sdk.AccAddress
+		amount     sdk.Int
+		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			from:    addrs[0],
-			to:      addrs[1],
-			amount:  sdk.OneInt(),
-			valid:   true,
+			from:       addrs[0],
+			to:         addrs[1],
+			amount:     sdk.OneInt(),
+			valid:      true,
 		},
 		"empty from": {
 			contractID: "deadbeef",
-			from:    "",
-			to:      addrs[1],
-			amount:  sdk.OneInt(),
+			from:       "",
+			to:         addrs[1],
+			amount:     sdk.OneInt(),
 		},
 		"invalid contract id": {
-			from:    addrs[0],
-			to:      addrs[1],
-			amount:  sdk.OneInt(),
+			from:   addrs[0],
+			to:     addrs[1],
+			amount: sdk.OneInt(),
 		},
 		"invalid to": {
 			contractID: "deadbeef",
-			from:    addrs[0],
-			amount:  sdk.OneInt(),
+			from:       addrs[0],
+			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
 			contractID: "deadbeef",
-			from:    addrs[0],
-			to:      addrs[1],
-			amount:  sdk.ZeroInt(),
+			from:       addrs[0],
+			to:         addrs[1],
+			amount:     sdk.ZeroInt(),
 		},
 	}
 
 	for name, tc := range testCases {
 		msg := token.MsgSend{
 			ContractId: tc.contractID,
-			From:    tc.from.String(),
-			To:      tc.to.String(),
-			Amount:  tc.amount,
+			From:       tc.from.String(),
+			To:         tc.to.String(),
+			Amount:     tc.amount,
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
@@ -82,49 +82,49 @@ func TestMsgOperatorSend(t *testing.T) {
 	testCases := map[string]struct {
 		contractID string
 		operator   sdk.AccAddress
-		from    sdk.AccAddress
-		to      sdk.AccAddress
-		amount  sdk.Int
-		valid   bool
+		from       sdk.AccAddress
+		to         sdk.AccAddress
+		amount     sdk.Int
+		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
-			from:    addrs[1],
-			to:      addrs[2],
-			amount:  sdk.OneInt(),
-			valid:   true,
+			from:       addrs[1],
+			to:         addrs[2],
+			amount:     sdk.OneInt(),
+			valid:      true,
 		},
 		"invalid operator": {
 			contractID: "deadbeef",
-			from:    addrs[1],
-			to:      addrs[2],
-			amount:  sdk.OneInt(),
+			from:       addrs[1],
+			to:         addrs[2],
+			amount:     sdk.OneInt(),
 		},
 		"invalid contract id": {
-			operator:   addrs[0],
-			from:    addrs[1],
-			to:      addrs[2],
-			amount:  sdk.OneInt(),
+			operator: addrs[0],
+			from:     addrs[1],
+			to:       addrs[2],
+			amount:   sdk.OneInt(),
 		},
 		"empty from": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
-			to:      addrs[1],
-			amount:  sdk.OneInt(),
+			to:         addrs[1],
+			amount:     sdk.OneInt(),
 		},
 		"invalid to": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
-			from:    addrs[1],
-			amount:  sdk.OneInt(),
+			from:       addrs[1],
+			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
-			from:    addrs[1],
-			to:      addrs[2],
-			amount:  sdk.ZeroInt(),
+			from:       addrs[1],
+			to:         addrs[2],
+			amount:     sdk.ZeroInt(),
 		},
 	}
 
@@ -132,9 +132,9 @@ func TestMsgOperatorSend(t *testing.T) {
 		msg := token.MsgOperatorSend{
 			ContractId: tc.contractID,
 			Operator:   tc.operator.String(),
-			From:    tc.from.String(),
-			To:      tc.to.String(),
-			Amount:  tc.amount,
+			From:       tc.from.String(),
+			To:         tc.to.String(),
+			Amount:     tc.amount,
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
@@ -156,60 +156,60 @@ func TestMsgTransferFrom(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		proxy   sdk.AccAddress
-		from    sdk.AccAddress
-		to      sdk.AccAddress
-		amount  sdk.Int
-		valid   bool
+		proxy      sdk.AccAddress
+		from       sdk.AccAddress
+		to         sdk.AccAddress
+		amount     sdk.Int
+		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			proxy:   addrs[0],
-			from:    addrs[1],
-			to:      addrs[2],
-			amount:  sdk.OneInt(),
-			valid:   true,
+			proxy:      addrs[0],
+			from:       addrs[1],
+			to:         addrs[2],
+			amount:     sdk.OneInt(),
+			valid:      true,
 		},
 		"invalid proxy": {
 			contractID: "deadbeef",
-			from:    addrs[1],
-			to:      addrs[2],
-			amount:  sdk.OneInt(),
+			from:       addrs[1],
+			to:         addrs[2],
+			amount:     sdk.OneInt(),
 		},
 		"invalid contract id": {
-			proxy:   addrs[0],
-			from:    addrs[1],
-			to:      addrs[2],
-			amount:  sdk.OneInt(),
+			proxy:  addrs[0],
+			from:   addrs[1],
+			to:     addrs[2],
+			amount: sdk.OneInt(),
 		},
 		"empty from": {
 			contractID: "deadbeef",
-			proxy:   addrs[0],
-			to:      addrs[1],
-			amount:  sdk.OneInt(),
+			proxy:      addrs[0],
+			to:         addrs[1],
+			amount:     sdk.OneInt(),
 		},
 		"invalid to": {
 			contractID: "deadbeef",
-			proxy:   addrs[0],
-			from:    addrs[1],
-			amount:  sdk.OneInt(),
+			proxy:      addrs[0],
+			from:       addrs[1],
+			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
 			contractID: "deadbeef",
-			proxy:   addrs[0],
-			from:    addrs[1],
-			to:      addrs[2],
-			amount:  sdk.ZeroInt(),
+			proxy:      addrs[0],
+			from:       addrs[1],
+			to:         addrs[2],
+			amount:     sdk.ZeroInt(),
 		},
 	}
 
 	for name, tc := range testCases {
 		msg := token.MsgTransferFrom{
 			ContractId: tc.contractID,
-			Proxy:   tc.proxy.String(),
-			From:    tc.from.String(),
-			To:      tc.to.String(),
-			Amount:  tc.amount,
+			Proxy:      tc.proxy.String(),
+			From:       tc.from.String(),
+			To:         tc.to.String(),
+			Amount:     tc.amount,
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
@@ -230,36 +230,36 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 	}
 
 	testCases := map[string]struct {
-		contractID  string
-		holder sdk.AccAddress
-		operator    sdk.AccAddress
-		valid    bool
+		contractID string
+		holder     sdk.AccAddress
+		operator   sdk.AccAddress
+		valid      bool
 	}{
 		"valid msg": {
-			contractID:  "deadbeef",
-			holder: addrs[0],
-			operator:    addrs[1],
-			valid:    true,
+			contractID: "deadbeef",
+			holder:     addrs[0],
+			operator:   addrs[1],
+			valid:      true,
 		},
 		"invalid contract id": {
-			holder: addrs[0],
-			operator:    addrs[1],
+			holder:   addrs[0],
+			operator: addrs[1],
 		},
 		"invalid holder": {
-			contractID:  "deadbeef",
-			operator:    addrs[1],
+			contractID: "deadbeef",
+			operator:   addrs[1],
 		},
 		"empty operator": {
-			contractID:  "deadbeef",
-			holder: addrs[0],
+			contractID: "deadbeef",
+			holder:     addrs[0],
 		},
 	}
 
 	for name, tc := range testCases {
 		msg := token.MsgAuthorizeOperator{
-			ContractId:  tc.contractID,
-			Holder: tc.holder.String(),
-			Operator:    tc.operator.String(),
+			ContractId: tc.contractID,
+			Holder:     tc.holder.String(),
+			Operator:   tc.operator.String(),
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.holder}, msg.GetSigners())
@@ -280,36 +280,36 @@ func TestMsgRevokeOperator(t *testing.T) {
 	}
 
 	testCases := map[string]struct {
-		contractID  string
-		holder sdk.AccAddress
-		operator    sdk.AccAddress
-		valid    bool
+		contractID string
+		holder     sdk.AccAddress
+		operator   sdk.AccAddress
+		valid      bool
 	}{
 		"valid msg": {
-			contractID:  "deadbeef",
-			holder: addrs[0],
-			operator:    addrs[1],
-			valid:    true,
+			contractID: "deadbeef",
+			holder:     addrs[0],
+			operator:   addrs[1],
+			valid:      true,
 		},
 		"invalid contract id": {
-			holder: addrs[0],
-			operator:    addrs[1],
+			holder:   addrs[0],
+			operator: addrs[1],
 		},
 		"invalid holder": {
-			contractID:  "deadbeef",
-			operator:    addrs[1],
+			contractID: "deadbeef",
+			operator:   addrs[1],
 		},
 		"empty operator": {
-			contractID:  "deadbeef",
-			holder: addrs[0],
+			contractID: "deadbeef",
+			holder:     addrs[0],
 		},
 	}
 
 	for name, tc := range testCases {
 		msg := token.MsgRevokeOperator{
-			ContractId:  tc.contractID,
-			Holder: tc.holder.String(),
-			Operator:    tc.operator.String(),
+			ContractId: tc.contractID,
+			Holder:     tc.holder.String(),
+			Operator:   tc.operator.String(),
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.holder}, msg.GetSigners())
@@ -330,36 +330,36 @@ func TestMsgApprove(t *testing.T) {
 	}
 
 	testCases := map[string]struct {
-		contractID  string
-		approver sdk.AccAddress
-		proxy    sdk.AccAddress
-		valid    bool
+		contractID string
+		approver   sdk.AccAddress
+		proxy      sdk.AccAddress
+		valid      bool
 	}{
 		"valid msg": {
-			contractID:  "deadbeef",
-			approver: addrs[0],
-			proxy:    addrs[1],
-			valid:    true,
+			contractID: "deadbeef",
+			approver:   addrs[0],
+			proxy:      addrs[1],
+			valid:      true,
 		},
 		"invalid contract id": {
 			approver: addrs[0],
 			proxy:    addrs[1],
 		},
 		"invalid approver": {
-			contractID:  "deadbeef",
-			proxy:    addrs[1],
+			contractID: "deadbeef",
+			proxy:      addrs[1],
 		},
 		"empty proxy": {
-			contractID:  "deadbeef",
-			approver: addrs[0],
+			contractID: "deadbeef",
+			approver:   addrs[0],
 		},
 	}
 
 	for name, tc := range testCases {
 		msg := token.MsgApprove{
-			ContractId:  tc.contractID,
-			Approver: tc.approver.String(),
-			Proxy:    tc.proxy.String(),
+			ContractId: tc.contractID,
+			Approver:   tc.approver.String(),
+			Proxy:      tc.proxy.String(),
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
@@ -521,17 +521,17 @@ func TestMsgMint(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		grantee sdk.AccAddress
-		to      sdk.AccAddress
-		amount  sdk.Int
-		valid   bool
+		grantee    sdk.AccAddress
+		to         sdk.AccAddress
+		amount     sdk.Int
+		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
-			to:      addrs[1],
-			amount:  sdk.OneInt(),
-			valid:   true,
+			grantee:    addrs[0],
+			to:         addrs[1],
+			amount:     sdk.OneInt(),
+			valid:      true,
 		},
 		"invalid contract id": {
 			grantee: addrs[0],
@@ -540,28 +540,28 @@ func TestMsgMint(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
-			to:      addrs[1],
-			amount:  sdk.OneInt(),
+			to:         addrs[1],
+			amount:     sdk.OneInt(),
 		},
 		"empty to": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
-			amount:  sdk.OneInt(),
+			grantee:    addrs[0],
+			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
-			to:      addrs[1],
-			amount:  sdk.ZeroInt(),
+			grantee:    addrs[0],
+			to:         addrs[1],
+			amount:     sdk.ZeroInt(),
 		},
 	}
 
 	for name, tc := range testCases {
 		msg := token.MsgMint{
 			ContractId: tc.contractID,
-			From: tc.grantee.String(),
-			To:      tc.to.String(),
-			Amount:  tc.amount,
+			From:       tc.grantee.String(),
+			To:         tc.to.String(),
+			Amount:     tc.amount,
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
@@ -583,36 +583,36 @@ func TestMsgBurn(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		from    sdk.AccAddress
-		amount  sdk.Int
-		valid   bool
+		from       sdk.AccAddress
+		amount     sdk.Int
+		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			from:    addrs[0],
-			amount:  sdk.OneInt(),
-			valid:   true,
+			from:       addrs[0],
+			amount:     sdk.OneInt(),
+			valid:      true,
 		},
 		"invalid contract id": {
-			from:    addrs[0],
-			amount:  sdk.OneInt(),
+			from:   addrs[0],
+			amount: sdk.OneInt(),
 		},
 		"invalid from": {
 			contractID: "deadbeef",
-			amount:  sdk.OneInt(),
+			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
 			contractID: "deadbeef",
-			from:    addrs[0],
-			amount:  sdk.ZeroInt(),
+			from:       addrs[0],
+			amount:     sdk.ZeroInt(),
 		},
 	}
 
 	for name, tc := range testCases {
 		msg := token.MsgBurn{
 			ContractId: tc.contractID,
-			From:    tc.from.String(),
-			Amount:  tc.amount,
+			From:       tc.from.String(),
+			Amount:     tc.amount,
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
@@ -634,47 +634,47 @@ func TestMsgOperatorBurn(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		operator sdk.AccAddress
-		from    sdk.AccAddress
-		amount  sdk.Int
-		valid   bool
+		operator   sdk.AccAddress
+		from       sdk.AccAddress
+		amount     sdk.Int
+		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			operator: addrs[0],
-			from:    addrs[1],
-			amount:  sdk.OneInt(),
-			valid:   true,
+			operator:   addrs[0],
+			from:       addrs[1],
+			amount:     sdk.OneInt(),
+			valid:      true,
 		},
 		"invalid contract id": {
 			operator: addrs[0],
-			from:    addrs[1],
-			amount:  sdk.OneInt(),
+			from:     addrs[1],
+			amount:   sdk.OneInt(),
 		},
 		"invalid operator": {
 			contractID: "deadbeef",
-			from:    addrs[1],
-			amount:  sdk.OneInt(),
+			from:       addrs[1],
+			amount:     sdk.OneInt(),
 		},
 		"empty from": {
 			contractID: "deadbeef",
-			operator: addrs[0],
-			amount:  sdk.OneInt(),
+			operator:   addrs[0],
+			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
 			contractID: "deadbeef",
-			operator: addrs[0],
-			from:    addrs[1],
-			amount:  sdk.ZeroInt(),
+			operator:   addrs[0],
+			from:       addrs[1],
+			amount:     sdk.ZeroInt(),
 		},
 	}
 
 	for name, tc := range testCases {
 		msg := token.MsgOperatorBurn{
 			ContractId: tc.contractID,
-			Operator: tc.operator.String(),
-			From:    tc.from.String(),
-			Amount:  tc.amount,
+			Operator:   tc.operator.String(),
+			From:       tc.from.String(),
+			Amount:     tc.amount,
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
@@ -696,17 +696,17 @@ func TestMsgBurnFrom(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		grantee sdk.AccAddress
-		from    sdk.AccAddress
-		amount  sdk.Int
-		valid   bool
+		grantee    sdk.AccAddress
+		from       sdk.AccAddress
+		amount     sdk.Int
+		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
-			from:    addrs[1],
-			amount:  sdk.OneInt(),
-			valid:   true,
+			grantee:    addrs[0],
+			from:       addrs[1],
+			amount:     sdk.OneInt(),
+			valid:      true,
 		},
 		"invalid contract id": {
 			grantee: addrs[0],
@@ -715,28 +715,28 @@ func TestMsgBurnFrom(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
-			from:    addrs[1],
-			amount:  sdk.OneInt(),
+			from:       addrs[1],
+			amount:     sdk.OneInt(),
 		},
 		"empty from": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
-			amount:  sdk.OneInt(),
+			grantee:    addrs[0],
+			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
-			from:    addrs[1],
-			amount:  sdk.ZeroInt(),
+			grantee:    addrs[0],
+			from:       addrs[1],
+			amount:     sdk.ZeroInt(),
 		},
 	}
 
 	for name, tc := range testCases {
 		msg := token.MsgBurnFrom{
 			ContractId: tc.contractID,
-			Proxy: tc.grantee.String(),
-			From:    tc.from.String(),
-			Amount:  tc.amount,
+			Proxy:      tc.grantee.String(),
+			From:       tc.from.String(),
+			Amount:     tc.amount,
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
@@ -759,15 +759,15 @@ func TestMsgModify(t *testing.T) {
 	validChange := token.Pair{Field: "name", Value: "New test"}
 	testCases := map[string]struct {
 		contractID string
-		grantee sdk.AccAddress
-		changes []token.Pair
-		valid   bool
+		grantee    sdk.AccAddress
+		changes    []token.Pair
+		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
-			changes: []token.Pair{validChange},
-			valid:   true,
+			grantee:    addrs[0],
+			changes:    []token.Pair{validChange},
+			valid:      true,
 		},
 		"invalid contract id": {
 			grantee: addrs[0],
@@ -775,25 +775,25 @@ func TestMsgModify(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
-			changes: []token.Pair{validChange},
+			changes:    []token.Pair{validChange},
 		},
 		"invalid key of change": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
-			changes: []token.Pair{{Value: "tt"}},
+			grantee:    addrs[0],
+			changes:    []token.Pair{{Value: "tt"}},
 		},
 		"invalid value of change": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
-			changes: []token.Pair{{Field: "symbol"}},
+			grantee:    addrs[0],
+			changes:    []token.Pair{{Field: "symbol"}},
 		},
 		"empty changes": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
+			grantee:    addrs[0],
 		},
 		"duplicated changes": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
+			grantee:    addrs[0],
 			changes: []token.Pair{
 				{Field: "name", Value: "hello"},
 				{Field: "name", Value: "world"},
@@ -804,8 +804,8 @@ func TestMsgModify(t *testing.T) {
 	for name, tc := range testCases {
 		msg := token.MsgModify{
 			ContractId: tc.contractID,
-			Owner: tc.grantee.String(),
-			Changes: tc.changes,
+			Owner:      tc.grantee.String(),
+			Changes:    tc.changes,
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
@@ -827,47 +827,47 @@ func TestMsgGrant(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		granter sdk.AccAddress
-		grantee sdk.AccAddress
-		permission  string
-		valid   bool
+		granter    sdk.AccAddress
+		grantee    sdk.AccAddress
+		permission string
+		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			granter: addrs[0],
-			grantee: addrs[1],
-			permission:  token.Permission_Mint.String(),
-			valid:   true,
+			granter:    addrs[0],
+			grantee:    addrs[1],
+			permission: token.Permission_Mint.String(),
+			valid:      true,
 		},
 		"invalid contract id": {
-			granter: addrs[0],
-			grantee: addrs[1],
-			permission:  token.Permission_Mint.String(),
+			granter:    addrs[0],
+			grantee:    addrs[1],
+			permission: token.Permission_Mint.String(),
 		},
 		"empty granter": {
 			contractID: "deadbeef",
-			grantee: addrs[1],
-			permission:  token.Permission_Mint.String(),
+			grantee:    addrs[1],
+			permission: token.Permission_Mint.String(),
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
-			granter: addrs[0],
-			permission:  token.Permission_Mint.String(),
+			granter:    addrs[0],
+			permission: token.Permission_Mint.String(),
 		},
 		"invalid permission": {
 			contractID: "deadbeef",
-			granter: addrs[0],
-			grantee: addrs[1],
-			permission:  "invalid",
+			granter:    addrs[0],
+			grantee:    addrs[1],
+			permission: "invalid",
 		},
 	}
 
 	for name, tc := range testCases {
 		msg := token.MsgGrant{
 			ContractId: tc.contractID,
-			Granter: tc.granter.String(),
-			Grantee: tc.grantee.String(),
-			Permission:  tc.permission,
+			Granter:    tc.granter.String(),
+			Grantee:    tc.grantee.String(),
+			Permission: tc.permission,
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.granter}, msg.GetSigners())
@@ -889,35 +889,35 @@ func TestMsgAbandon(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		grantee sdk.AccAddress
-		permission  string
-		valid   bool
+		grantee    sdk.AccAddress
+		permission string
+		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
-			permission:  token.Permission_Mint.String(),
-			valid:   true,
+			grantee:    addrs[0],
+			permission: token.Permission_Mint.String(),
+			valid:      true,
 		},
 		"invalid contract id": {
-			grantee: addrs[0],
-			permission:  token.Permission_Mint.String(),
+			grantee:    addrs[0],
+			permission: token.Permission_Mint.String(),
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
-			permission:  token.Permission_Mint.String(),
+			permission: token.Permission_Mint.String(),
 		},
 		"invalid permission": {
 			contractID: "deadbeef",
-			grantee: addrs[0],
+			grantee:    addrs[0],
 		},
 	}
 
 	for name, tc := range testCases {
 		msg := token.MsgAbandon{
 			ContractId: tc.contractID,
-			Grantee: tc.grantee.String(),
-			Permission:  tc.permission,
+			Grantee:    tc.grantee.String(),
+			Permission: tc.permission,
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
@@ -939,47 +939,47 @@ func TestMsgGrantPermission(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		from sdk.AccAddress
-		to sdk.AccAddress
-		permission  string
-		valid   bool
+		from       sdk.AccAddress
+		to         sdk.AccAddress
+		permission string
+		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			from: addrs[0],
-			to: addrs[1],
-			permission:  token.Permission_Mint.String(),
-			valid:   true,
+			from:       addrs[0],
+			to:         addrs[1],
+			permission: token.Permission_Mint.String(),
+			valid:      true,
 		},
 		"invalid contract id": {
-			from: addrs[0],
-			to: addrs[1],
-			permission:  token.Permission_Mint.String(),
+			from:       addrs[0],
+			to:         addrs[1],
+			permission: token.Permission_Mint.String(),
 		},
 		"empty from": {
 			contractID: "deadbeef",
-			to: addrs[1],
-			permission:  token.Permission_Mint.String(),
+			to:         addrs[1],
+			permission: token.Permission_Mint.String(),
 		},
 		"invalid to": {
 			contractID: "deadbeef",
-			from: addrs[0],
-			permission:  token.Permission_Mint.String(),
+			from:       addrs[0],
+			permission: token.Permission_Mint.String(),
 		},
 		"invalid permission": {
 			contractID: "deadbeef",
-			from: addrs[0],
-			to: addrs[1],
-			permission:  "invalid",
+			from:       addrs[0],
+			to:         addrs[1],
+			permission: "invalid",
 		},
 	}
 
 	for name, tc := range testCases {
 		msg := token.MsgGrantPermission{
 			ContractId: tc.contractID,
-			From: tc.from.String(),
-			To: tc.to.String(),
-			Permission:  tc.permission,
+			From:       tc.from.String(),
+			To:         tc.to.String(),
+			Permission: tc.permission,
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
@@ -1001,35 +1001,35 @@ func TestMsgRevokePermission(t *testing.T) {
 
 	testCases := map[string]struct {
 		contractID string
-		from sdk.AccAddress
-		permission  string
-		valid   bool
+		from       sdk.AccAddress
+		permission string
+		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
-			from: addrs[0],
-			permission:  token.Permission_Mint.String(),
-			valid:   true,
+			from:       addrs[0],
+			permission: token.Permission_Mint.String(),
+			valid:      true,
 		},
 		"invalid contract id": {
-			from: addrs[0],
-			permission:  token.Permission_Mint.String(),
+			from:       addrs[0],
+			permission: token.Permission_Mint.String(),
 		},
 		"invalid from": {
 			contractID: "deadbeef",
-			permission:  token.Permission_Mint.String(),
+			permission: token.Permission_Mint.String(),
 		},
 		"invalid permission": {
 			contractID: "deadbeef",
-			from: addrs[0],
+			from:       addrs[0],
 		},
 	}
 
 	for name, tc := range testCases {
 		msg := token.MsgRevokePermission{
 			ContractId: tc.contractID,
-			From: tc.from.String(),
-			Permission:  tc.permission,
+			From:       tc.from.String(),
+			Permission: tc.permission,
 		}
 
 		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
