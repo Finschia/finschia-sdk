@@ -579,25 +579,73 @@ func (s msgServer) RevokePermission(c context.Context, req *collection.MsgRevoke
 }
 
 func (s msgServer) Attach(c context.Context, req *collection.MsgAttach) (*collection.MsgAttachResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.keeper.Attach(ctx, req.ContractId, sdk.AccAddress(req.From), req.TokenId, req.ToTokenId); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgAttachResponse{}, nil
 }
 
 func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collection.MsgDetachResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.keeper.Detach(ctx, req.ContractId, sdk.AccAddress(req.From), req.TokenId); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgDetachResponse{}, nil
 }
 
 func (s msgServer) OperatorAttach(c context.Context, req *collection.MsgOperatorAttach) (*collection.MsgOperatorAttachResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.Owner), sdk.AccAddress(req.Operator)); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if err := s.keeper.Attach(ctx, req.ContractId, sdk.AccAddress(req.Owner), req.Subject, req.Target); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgOperatorAttachResponse{}, nil
 }
 
 func (s msgServer) OperatorDetach(c context.Context, req *collection.MsgOperatorDetach) (*collection.MsgOperatorDetachResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.Owner), sdk.AccAddress(req.Operator)); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if err := s.keeper.Detach(ctx, req.ContractId, sdk.AccAddress(req.Owner), req.Subject); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgOperatorDetachResponse{}, nil
 }
 
 func (s msgServer) AttachFrom(c context.Context, req *collection.MsgAttachFrom) (*collection.MsgAttachFromResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Proxy)); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if err := s.keeper.Attach(ctx, req.ContractId, sdk.AccAddress(req.From), req.TokenId, req.ToTokenId); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgAttachFromResponse{}, nil
 }
 
 func (s msgServer) DetachFrom(c context.Context, req *collection.MsgDetachFrom) (*collection.MsgDetachFromResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.From), sdk.AccAddress(req.Proxy)); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if err := s.keeper.Detach(ctx, req.ContractId, sdk.AccAddress(req.From), req.TokenId); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgDetachFromResponse{}, nil
 }

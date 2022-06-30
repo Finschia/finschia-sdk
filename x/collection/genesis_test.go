@@ -1,7 +1,6 @@
 package collection_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -106,7 +105,7 @@ func TestValidateGenesis(t *testing.T) {
 				Balances: []collection.ContractBalances{{
 					Balances: []collection.Balance{{
 						Address: addr.String(),
-						Amount:  collection.NewCoins(collection.NewCoin("deadbeef"+fmt.Sprintf("%08x", 0), sdk.OneInt())),
+						Amount:  collection.NewCoins(collection.NewFTCoin("00bab10c", sdk.OneInt())),
 					}},
 				}},
 			},
@@ -125,7 +124,7 @@ func TestValidateGenesis(t *testing.T) {
 				Balances: []collection.ContractBalances{{
 					ContractId: "deadbeef",
 					Balances: []collection.Balance{{
-						Amount: collection.NewCoins(collection.NewCoin("deadbeef"+fmt.Sprintf("%08x", 0), sdk.OneInt())),
+						Amount: collection.NewCoins(collection.NewFTCoin("00bab10c", sdk.OneInt())),
 					}},
 				}},
 			},
@@ -146,8 +145,8 @@ func TestValidateGenesis(t *testing.T) {
 			&collection.GenesisState{
 				Parents: []collection.ContractTokenRelations{{
 					Relations: []collection.TokenRelation{{
-						Self:  "deadbeef",
-						Other: "fee1dead",
+						Self:  collection.NewNFTID("deadbeef", 1),
+						Other: collection.NewNFTID("fee1dead", 1),
 					}},
 				}},
 			},
@@ -166,7 +165,7 @@ func TestValidateGenesis(t *testing.T) {
 				Parents: []collection.ContractTokenRelations{{
 					ContractId: "deadbeef",
 					Relations: []collection.TokenRelation{{
-						Other: "fee1dead" + fmt.Sprintf("%08x", 1),
+						Other: collection.NewNFTID("fee1dead", 1),
 					}},
 				}},
 			},
@@ -177,7 +176,7 @@ func TestValidateGenesis(t *testing.T) {
 				Parents: []collection.ContractTokenRelations{{
 					ContractId: "deadbeef",
 					Relations: []collection.TokenRelation{{
-						Self: "deadbeef" + fmt.Sprintf("%08x", 1),
+						Self: collection.NewNFTID("deadbeef", 1),
 					}},
 				}},
 			},

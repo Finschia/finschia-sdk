@@ -479,7 +479,7 @@ func (s queryServer) Token(c context.Context, req *collection.QueryTokenRequest)
 			return nil, err
 		}
 
-		owner := s.keeper.GetRootOwner(ctx, req.ContractId, token.Id)
+		owner := s.keeper.getRootOwnerUnbounded(ctx, req.ContractId, token.Id)
 		legacyToken = &collection.OwnerNFT{
 			ContractId: req.ContractId,
 			TokenId:    token.Id,
@@ -540,7 +540,7 @@ func (s queryServer) Tokens(c context.Context, req *collection.QueryTokensReques
 				panic(err)
 			}
 
-			owner := s.keeper.GetRootOwner(ctx, req.ContractId, token.Id)
+			owner := s.keeper.getRootOwnerUnbounded(ctx, req.ContractId, token.Id)
 			legacyToken = &collection.OwnerNFT{
 				ContractId: req.ContractId,
 				TokenId:    token.Id,
@@ -651,7 +651,7 @@ func (s queryServer) Owner(c context.Context, req *collection.QueryOwnerRequest)
 		return nil, err
 	}
 
-	owner := s.keeper.GetRootOwner(ctx, req.ContractId, req.TokenId)
+	owner := s.keeper.getRootOwnerUnbounded(ctx, req.ContractId, req.TokenId)
 
 	return &collection.QueryOwnerResponse{Owner: owner.String()}, nil
 }
@@ -674,10 +674,10 @@ func (s queryServer) Root(c context.Context, req *collection.QueryRootRequest) (
 		return nil, err
 	}
 
-	root := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
+	root := s.keeper.getRootUnbounded(ctx, req.ContractId, req.TokenId)
 	token, err := s.keeper.GetNFT(ctx, req.ContractId, root)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &collection.QueryRootResponse{Root: *token}, nil
@@ -708,7 +708,7 @@ func (s queryServer) Parent(c context.Context, req *collection.QueryParentReques
 
 	token, err := s.keeper.GetNFT(ctx, req.ContractId, *parent)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &collection.QueryParentResponse{Parent: *token}, nil
@@ -732,10 +732,13 @@ func (s queryServer) Children(c context.Context, req *collection.QueryChildrenRe
 	childStore := prefix.NewStore(store, childKeyPrefixByTokenID(req.ContractId, req.TokenId))
 	var children []collection.NFT
 	pageRes, err := query.Paginate(childStore, req.Pagination, func(key []byte, _ []byte) error {
-		var child collection.NFT
-		s.keeper.cdc.MustUnmarshal(key, &child)
+		childID := string(key)
+		child, err := s.keeper.GetNFT(ctx, req.ContractId, childID)
+		if err != nil {
+			panic(err)
+		}
 
-		children = append(children, child)
+		children = append(children, *child)
 		return nil
 	})
 	if err != nil {

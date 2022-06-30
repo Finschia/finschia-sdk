@@ -64,6 +64,19 @@ func validateCoinsWithIDValidator(amount []Coin, validator func(string) error) e
 	return nil
 }
 
+func NewFTID(classID string) string {
+	return newTokenID(classID, sdk.ZeroUint())
+}
+
+func NewNFTID(classID string, number int) string {
+	return newTokenID(classID, sdk.NewUint(uint64(number)))
+}
+
+func newTokenID(classID string, number sdk.Uint) string {
+	numberFormat := "%0" + fmt.Sprintf("%d", lengthClassID) + "x"
+	return classID + fmt.Sprintf(numberFormat, number.Uint64())
+}
+
 func SplitTokenID(tokenID string) (classID string) {
 	return tokenID[:lengthClassID]
 }

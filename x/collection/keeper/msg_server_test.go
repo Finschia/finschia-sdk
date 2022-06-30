@@ -1,8 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
-
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/collection"
 )
@@ -19,7 +17,7 @@ func (s *KeeperTestSuite) TestMsgSend() {
 			valid:      true,
 		},
 		"insufficient funds": {
-			contractID: "fee1dead",
+			contractID: "deadbeef",
 			amount:     s.balance,
 		},
 	}
@@ -32,10 +30,9 @@ func (s *KeeperTestSuite) TestMsgSend() {
 				ContractId: tc.contractID,
 				From:       s.vendor.String(),
 				To:         s.customer.String(),
-				Amount: []collection.Coin{{
-					TokenId: s.ftClassID + fmt.Sprintf("%08x", 0),
-					Amount:  tc.amount,
-				}},
+				Amount: collection.NewCoins(
+					collection.NewFTCoin(s.ftClassID, tc.amount),
+				),
 			}
 			res, err := s.msgServer.Send(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -82,10 +79,9 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 				Operator:   tc.operator.String(),
 				From:       tc.from.String(),
 				To:         s.vendor.String(),
-				Amount: []collection.Coin{{
-					TokenId: s.ftClassID + fmt.Sprintf("%08x", 0),
-					Amount:  tc.amount,
-				}},
+				Amount: collection.NewCoins(
+					collection.NewFTCoin(s.ftClassID, tc.amount),
+				),
 			}
 			res, err := s.msgServer.OperatorSend(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -110,7 +106,7 @@ func (s *KeeperTestSuite) TestMsgTransferFT() {
 			valid:      true,
 		},
 		"insufficient funds": {
-			contractID: "fee1dead",
+			contractID: "deadbeef",
 			amount:     s.balance,
 		},
 	}
@@ -123,10 +119,9 @@ func (s *KeeperTestSuite) TestMsgTransferFT() {
 				ContractId: tc.contractID,
 				From:       s.vendor.String(),
 				To:         s.customer.String(),
-				Amount: []collection.Coin{{
-					TokenId: s.ftClassID + fmt.Sprintf("%08x", 0),
-					Amount:  tc.amount,
-				}},
+				Amount: collection.NewCoins(
+					collection.NewFTCoin(s.ftClassID, tc.amount),
+				),
 			}
 			res, err := s.msgServer.TransferFT(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -173,10 +168,9 @@ func (s *KeeperTestSuite) TestMsgTransferFTFrom() {
 				Proxy:      tc.proxy.String(),
 				From:       tc.from.String(),
 				To:         s.vendor.String(),
-				Amount: []collection.Coin{{
-					TokenId: s.ftClassID + fmt.Sprintf("%08x", 0),
-					Amount:  tc.amount,
-				}},
+				Amount: collection.NewCoins(
+					collection.NewFTCoin(s.ftClassID, tc.amount),
+				),
 			}
 			res, err := s.msgServer.TransferFTFrom(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -195,11 +189,11 @@ func (s *KeeperTestSuite) TestMsgTransferNFT() {
 		valid   bool
 	}{
 		"valid request": {
-			tokenID: s.nftClassID + fmt.Sprintf("%08x", 1),
+			tokenID: collection.NewNFTID(s.nftClassID, 1),
 			valid:   true,
 		},
 		"insufficient funds": {
-			tokenID: "deadbeef" + fmt.Sprintf("%08x", 1),
+			tokenID: collection.NewNFTID("deadbeef", 1),
 		},
 	}
 
@@ -209,8 +203,8 @@ func (s *KeeperTestSuite) TestMsgTransferNFT() {
 
 			req := &collection.MsgTransferNFT{
 				ContractId: s.contractID,
-				From:       s.vendor.String(),
-				To:         s.customer.String(),
+				From:       s.customer.String(),
+				To:         s.vendor.String(),
 				TokenIds:   []string{tc.tokenID},
 			}
 			res, err := s.msgServer.TransferNFT(sdk.WrapSDKContext(ctx), req)
@@ -225,7 +219,7 @@ func (s *KeeperTestSuite) TestMsgTransferNFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgTransferNFTFrom() {
-	tokenID := s.nftClassID + fmt.Sprintf("%08x", 3)
+	tokenID := collection.NewNFTID(s.nftClassID, 1)
 	testCases := map[string]struct {
 		proxy   sdk.AccAddress
 		from    sdk.AccAddress
@@ -246,7 +240,7 @@ func (s *KeeperTestSuite) TestMsgTransferNFTFrom() {
 		"insufficient funds": {
 			proxy:   s.operator,
 			from:    s.customer,
-			tokenID: "deadbeef" + fmt.Sprintf("%08x", 1),
+			tokenID: collection.NewNFTID("deadbeef", 1),
 		},
 	}
 
@@ -522,7 +516,9 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgMintFT() {
-	amount := collection.NewCoin(s.ftClassID+fmt.Sprintf("%08x", 0), sdk.OneInt())
+	amount := collection.NewCoins(
+		collection.NewFTCoin(s.ftClassID, sdk.OneInt()),
+	)
 	testCases := map[string]struct {
 		contractID string
 		from       sdk.AccAddress
@@ -532,18 +528,20 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 		"valid request": {
 			contractID: s.contractID,
 			from:       s.vendor,
-			amount:     []collection.Coin{amount},
+			amount:     amount,
 			valid:      true,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			from:       s.customer,
-			amount:     []collection.Coin{amount},
+			amount:     amount,
 		},
 		"no class of the token": {
 			contractID: s.contractID,
 			from:       s.vendor,
-			amount:     []collection.Coin{collection.NewCoin("deadbeef"+fmt.Sprintf("%08x", 0), sdk.OneInt())},
+			amount: collection.NewCoins(
+				collection.NewFTCoin("00bab10c", sdk.OneInt()),
+			),
 		},
 	}
 
@@ -569,9 +567,9 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgMintNFT() {
-	param := collection.MintNFTParam{
+	params := []collection.MintNFTParam{{
 		TokenType: s.nftClassID,
-	}
+	}}
 	testCases := map[string]struct {
 		contractID string
 		from       sdk.AccAddress
@@ -581,13 +579,13 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 		"valid request": {
 			contractID: s.contractID,
 			from:       s.vendor,
-			params:     []collection.MintNFTParam{param},
+			params:     params,
 			valid:      true,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			from:       s.customer,
-			params:     []collection.MintNFTParam{param},
+			params:     params,
 		},
 		"no class of the token": {
 			contractID: s.contractID,
@@ -620,7 +618,9 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgBurn() {
-	amount := collection.NewCoin(s.ftClassID+fmt.Sprintf("%08x", 0), s.balance)
+	amount := collection.NewCoins(
+		collection.NewFTCoin(s.ftClassID, s.balance),
+	)
 	testCases := map[string]struct {
 		contractID string
 		from       sdk.AccAddress
@@ -630,18 +630,20 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 		"valid request": {
 			contractID: s.contractID,
 			from:       s.vendor,
-			amount:     []collection.Coin{amount},
+			amount:     amount,
 			valid:      true,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			from:       s.customer,
-			amount:     []collection.Coin{amount},
+			amount:     amount,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
 			from:       s.vendor,
-			amount:     []collection.Coin{collection.NewCoin("deadbeef"+fmt.Sprintf("%08x", 0), sdk.OneInt())},
+			amount: collection.NewCoins(
+				collection.NewFTCoin("00bab10c", sdk.OneInt()),
+			),
 		},
 	}
 
@@ -666,7 +668,9 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 }
 
 func (s *KeeperTestSuite) TestMsgOperatorBurn() {
-	amount := collection.NewCoin(s.ftClassID+fmt.Sprintf("%08x", 0), s.balance)
+	amount := collection.NewCoins(
+		collection.NewFTCoin(s.ftClassID, s.balance),
+	)
 	testCases := map[string]struct {
 		contractID string
 		operator   sdk.AccAddress
@@ -678,26 +682,28 @@ func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 			contractID: s.contractID,
 			operator:   s.operator,
 			from:       s.customer,
-			amount:     []collection.Coin{amount},
+			amount:     amount,
 			valid:      true,
 		},
 		"no authorization": {
 			contractID: s.contractID,
 			operator:   s.vendor,
 			from:       s.customer,
-			amount:     []collection.Coin{amount},
+			amount:     amount,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			operator:   s.stranger,
 			from:       s.customer,
-			amount:     []collection.Coin{amount},
+			amount:     amount,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
 			operator:   s.operator,
 			from:       s.customer,
-			amount:     []collection.Coin{collection.NewCoin("deadbeef"+fmt.Sprintf("%08x", 0), sdk.OneInt())},
+			amount: collection.NewCoins(
+				collection.NewFTCoin("00bab10c", sdk.OneInt()),
+			),
 		},
 	}
 
@@ -723,7 +729,9 @@ func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 }
 
 func (s *KeeperTestSuite) TestMsgBurnFT() {
-	amount := collection.NewCoin(s.ftClassID+fmt.Sprintf("%08x", 0), s.balance)
+	amount := collection.NewCoins(
+		collection.NewFTCoin(s.ftClassID, s.balance),
+	)
 	testCases := map[string]struct {
 		contractID string
 		from       sdk.AccAddress
@@ -733,18 +741,20 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 		"valid request": {
 			contractID: s.contractID,
 			from:       s.vendor,
-			amount:     []collection.Coin{amount},
+			amount:     amount,
 			valid:      true,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			from:       s.customer,
-			amount:     []collection.Coin{amount},
+			amount:     amount,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
 			from:       s.vendor,
-			amount:     []collection.Coin{collection.NewCoin("deadbeef"+fmt.Sprintf("%08x", 0), sdk.OneInt())},
+			amount: collection.NewCoins(
+				collection.NewFTCoin("00bab10c", sdk.OneInt()),
+			),
 		},
 	}
 
@@ -769,7 +779,9 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgBurnFTFrom() {
-	amount := collection.NewCoin(s.ftClassID+fmt.Sprintf("%08x", 0), s.balance)
+	amount := collection.NewCoins(
+		collection.NewFTCoin(s.ftClassID, s.balance),
+	)
 	testCases := map[string]struct {
 		contractID string
 		proxy      sdk.AccAddress
@@ -781,26 +793,28 @@ func (s *KeeperTestSuite) TestMsgBurnFTFrom() {
 			contractID: s.contractID,
 			proxy:      s.operator,
 			from:       s.customer,
-			amount:     []collection.Coin{amount},
+			amount:     amount,
 			valid:      true,
 		},
 		"no authorization": {
 			contractID: s.contractID,
 			proxy:      s.vendor,
 			from:       s.customer,
-			amount:     []collection.Coin{amount},
+			amount:     amount,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			proxy:      s.stranger,
 			from:       s.customer,
-			amount:     []collection.Coin{amount},
+			amount:     amount,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
 			proxy:      s.operator,
 			from:       s.customer,
-			amount:     []collection.Coin{collection.NewCoin("deadbeef"+fmt.Sprintf("%08x", 0), sdk.OneInt())},
+			amount: collection.NewCoins(
+				collection.NewFTCoin("00bab10c", sdk.OneInt()),
+			),
 		},
 	}
 
@@ -826,7 +840,9 @@ func (s *KeeperTestSuite) TestMsgBurnFTFrom() {
 }
 
 func (s *KeeperTestSuite) TestMsgBurnNFT() {
-	param := s.nftClassID + fmt.Sprintf("%08x", 1)
+	tokenIDs := []string{
+		collection.NewNFTID(s.nftClassID, s.lenChain*4+1),
+	}
 	testCases := map[string]struct {
 		contractID string
 		from       sdk.AccAddress
@@ -836,18 +852,20 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 		"valid request": {
 			contractID: s.contractID,
 			from:       s.vendor,
-			tokenIDs:   []string{param},
+			tokenIDs:   tokenIDs,
 			valid:      true,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			from:       s.customer,
-			tokenIDs:   []string{param},
+			tokenIDs:   tokenIDs,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
 			from:       s.vendor,
-			tokenIDs:   []string{"deadbeef" + fmt.Sprintf("%08x", 1)},
+			tokenIDs: []string{
+				collection.NewNFTID("deadbeef", 1),
+			},
 		},
 	}
 
@@ -872,7 +890,9 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgBurnNFTFrom() {
-	param := s.nftClassID + fmt.Sprintf("%08x", 3)
+	tokenIDs := []string{
+		collection.NewNFTID(s.nftClassID, 1),
+	}
 	testCases := map[string]struct {
 		contractID string
 		proxy      sdk.AccAddress
@@ -884,26 +904,28 @@ func (s *KeeperTestSuite) TestMsgBurnNFTFrom() {
 			contractID: s.contractID,
 			proxy:      s.operator,
 			from:       s.customer,
-			tokenIDs:   []string{param},
+			tokenIDs:   tokenIDs,
 			valid:      true,
 		},
 		"no authorization": {
 			contractID: s.contractID,
 			proxy:      s.vendor,
 			from:       s.customer,
-			tokenIDs:   []string{param},
+			tokenIDs:   tokenIDs,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			proxy:      s.stranger,
 			from:       s.customer,
-			tokenIDs:   []string{param},
+			tokenIDs:   tokenIDs,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
 			proxy:      s.operator,
 			from:       s.customer,
-			tokenIDs:   []string{"deadbeef" + fmt.Sprintf("%08x", 1)},
+			tokenIDs: []string{
+				collection.NewNFTID("deadbeef", 1),
+			},
 		},
 	}
 
@@ -1084,6 +1106,278 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 				Permission: tc.permission,
 			}
 			res, err := s.msgServer.RevokePermission(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgAttach() {
+	testCases := map[string]struct {
+		contractID string
+		subjectID  string
+		targetID   string
+		valid      bool
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
+			targetID:   collection.NewNFTID(s.nftClassID, 1),
+			valid:      true,
+		},
+		"not owner of the token": {
+			contractID: s.contractID,
+			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
+			targetID:   collection.NewNFTID(s.nftClassID, 2*s.lenChain+1),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgAttach{
+				ContractId: tc.contractID,
+				From:       s.customer.String(),
+				TokenId:    tc.subjectID,
+				ToTokenId:  tc.targetID,
+			}
+			res, err := s.msgServer.Attach(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgDetach() {
+	testCases := map[string]struct {
+		contractID string
+		subjectID  string
+		valid      bool
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			subjectID:  collection.NewNFTID(s.nftClassID, 2),
+			valid:      true,
+		},
+		"not owner of the token": {
+			contractID: s.contractID,
+			subjectID:  collection.NewNFTID(s.nftClassID, 2*s.lenChain+2),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgDetach{
+				ContractId: tc.contractID,
+				From:       s.customer.String(),
+				TokenId:    tc.subjectID,
+			}
+			res, err := s.msgServer.Detach(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgOperatorAttach() {
+	testCases := map[string]struct {
+		contractID string
+		operator   sdk.AccAddress
+		subjectID  string
+		targetID   string
+		valid      bool
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
+			targetID:   collection.NewNFTID(s.nftClassID, 1),
+			valid:      true,
+		},
+		"not authorized": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
+			targetID:   collection.NewNFTID(s.nftClassID, 1),
+		},
+		"not owner of the token": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
+			targetID:   collection.NewNFTID(s.nftClassID, 2*s.lenChain+1),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgOperatorAttach{
+				ContractId: tc.contractID,
+				Operator:   tc.operator.String(),
+				Owner:      s.customer.String(),
+				Subject:    tc.subjectID,
+				Target:     tc.targetID,
+			}
+			res, err := s.msgServer.OperatorAttach(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgOperatorDetach() {
+	testCases := map[string]struct {
+		contractID string
+		operator   sdk.AccAddress
+		subjectID  string
+		valid      bool
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			subjectID:  collection.NewNFTID(s.nftClassID, 2),
+			valid:      true,
+		},
+		"not authorized": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			subjectID:  collection.NewNFTID(s.nftClassID, 2),
+		},
+		"not owner of the token": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			subjectID:  collection.NewNFTID(s.nftClassID, 2*s.lenChain+2),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgOperatorDetach{
+				ContractId: tc.contractID,
+				Operator:   tc.operator.String(),
+				Owner:      s.customer.String(),
+				Subject:    tc.subjectID,
+			}
+			res, err := s.msgServer.OperatorDetach(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgAttachFrom() {
+	testCases := map[string]struct {
+		contractID string
+		operator   sdk.AccAddress
+		subjectID  string
+		targetID   string
+		valid      bool
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
+			targetID:   collection.NewNFTID(s.nftClassID, 1),
+			valid:      true,
+		},
+		"not authorized": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
+			targetID:   collection.NewNFTID(s.nftClassID, 1),
+		},
+		"not owner of the token": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
+			targetID:   collection.NewNFTID(s.nftClassID, 2*s.lenChain+1),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgAttachFrom{
+				ContractId: tc.contractID,
+				Proxy:      tc.operator.String(),
+				From:       s.customer.String(),
+				TokenId:    tc.subjectID,
+				ToTokenId:  tc.targetID,
+			}
+			res, err := s.msgServer.AttachFrom(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgDetachFrom() {
+	testCases := map[string]struct {
+		contractID string
+		operator   sdk.AccAddress
+		subjectID  string
+		valid      bool
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			subjectID:  collection.NewNFTID(s.nftClassID, 2),
+			valid:      true,
+		},
+		"not authorized": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			subjectID:  collection.NewNFTID(s.nftClassID, 2),
+		},
+		"not owner of the token": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			subjectID:  collection.NewNFTID(s.nftClassID, 2*s.lenChain+2),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgDetachFrom{
+				ContractId: tc.contractID,
+				Proxy:      tc.operator.String(),
+				From:       s.customer.String(),
+				TokenId:    tc.subjectID,
+			}
+			res, err := s.msgServer.DetachFrom(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

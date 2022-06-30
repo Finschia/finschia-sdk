@@ -1,7 +1,6 @@
 package collection_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -18,10 +17,9 @@ func TestMsgSend(t *testing.T) {
 	}
 
 	contractID := "deadbeef"
-	amount := collection.NewCoins(collection.NewCoin(
-		fmt.Sprintf("%s%08x", "deadbeef", 0),
-		sdk.OneInt(),
-	))
+	amount := collection.NewCoins(
+		collection.NewFTCoin("00bab10c", sdk.OneInt()),
+	)
 
 	testCases := map[string]struct {
 		contractID string
@@ -107,10 +105,9 @@ func TestMsgOperatorSend(t *testing.T) {
 	}
 
 	contractID := "deadbeef"
-	amount := collection.NewCoins(collection.NewCoin(
-		fmt.Sprintf("%s%08x", "deadbeef", 0),
-		sdk.OneInt(),
-	))
+	amount := collection.NewCoins(
+		collection.NewFTCoin("00bab10c", sdk.OneInt()),
+	)
 
 	testCases := map[string]struct {
 		contractID string
@@ -186,10 +183,9 @@ func TestMsgTransferFT(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	amount := collection.NewCoins(collection.NewCoin(
-		fmt.Sprintf("%s%08x", "deadbeef", 0),
-		sdk.OneInt(),
-	))
+	amount := collection.NewCoins(
+		collection.NewFTCoin("00bab10c", sdk.OneInt()),
+	)
 
 	testCases := map[string]struct {
 		contractID string
@@ -226,7 +222,7 @@ func TestMsgTransferFT(t *testing.T) {
 			from:       addrs[0],
 			to:         addrs[1],
 			amount: []collection.Coin{{
-				TokenId: fmt.Sprintf("%s%08x", "deadbeef", 0),
+				TokenId: collection.NewFTID("00bab10c"),
 			}},
 			panic: true,
 		},
@@ -235,7 +231,7 @@ func TestMsgTransferFT(t *testing.T) {
 			from:       addrs[0],
 			to:         addrs[1],
 			amount: []collection.Coin{{
-				TokenId: fmt.Sprintf("%s%08x", "deadbeef", 0),
+				TokenId: collection.NewFTID("00bab10c"),
 				Amount:  sdk.ZeroInt(),
 			}},
 		},
@@ -278,10 +274,9 @@ func TestMsgTransferFTFrom(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	amount := collection.NewCoins(collection.NewCoin(
-		fmt.Sprintf("%s%08x", "deadbeef", 0),
-		sdk.OneInt(),
-	))
+	amount := collection.NewCoins(
+		collection.NewFTCoin("00bab10c", sdk.OneInt()),
+	)
 
 	testCases := map[string]struct {
 		contractID string
@@ -360,7 +355,7 @@ func TestMsgTransferNFT(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	ids := []string{fmt.Sprintf("%s%08x", "deadbeef", 0)}
+	ids := []string{collection.NewNFTID("deadbeef", 1)}
 
 	testCases := map[string]struct {
 		contractID string
@@ -429,7 +424,7 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	ids := []string{fmt.Sprintf("%s%08x", "deadbeef", 0)}
+	ids := []string{collection.NewNFTID("deadbeef", 1)}
 
 	testCases := map[string]struct {
 		contractID string
@@ -971,10 +966,9 @@ func TestMsgMintFT(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	amount := collection.NewCoins(collection.NewCoin(
-		fmt.Sprintf("%s%08x", "deadbeef", 0),
-		sdk.OneInt(),
-	))
+	amount := collection.NewCoins(
+		collection.NewFTCoin("00bab10c", sdk.OneInt()),
+	)
 
 	contractID := "deadbeef"
 	testCases := map[string]struct {
@@ -1132,10 +1126,9 @@ func TestMsgBurn(t *testing.T) {
 	}
 
 	contractID := "deadbeef"
-	amount := collection.NewCoins(collection.NewCoin(
-		fmt.Sprintf("%s%08x", "deadbeef", 0),
-		sdk.OneInt(),
-	))
+	amount := collection.NewCoins(
+		collection.NewNFTCoin("deadbeef", 1),
+	)
 
 	testCases := map[string]struct {
 		contractID string
@@ -1188,10 +1181,9 @@ func TestMsgOperatorBurn(t *testing.T) {
 	}
 
 	contractID := "deadbeef"
-	amount := collection.NewCoins(collection.NewCoin(
-		fmt.Sprintf("%s%08x", "deadbeef", 0),
-		sdk.OneInt(),
-	))
+	amount := collection.NewCoins(
+		collection.NewNFTCoin("deadbeef", 1),
+	)
 
 	testCases := map[string]struct {
 		contractID string
@@ -1254,10 +1246,9 @@ func TestMsgBurnFT(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	amount := collection.NewCoins(collection.NewCoin(
-		fmt.Sprintf("%s%08x", "deadbeef", 0),
-		sdk.OneInt(),
-	))
+	amount := collection.NewCoins(
+		collection.NewFTCoin("00bab10c", sdk.OneInt()),
+	)
 
 	testCases := map[string]struct {
 		contractID string
@@ -1312,10 +1303,9 @@ func TestMsgBurnFTFrom(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	amount := collection.NewCoins(collection.NewCoin(
-		fmt.Sprintf("%s%08x", "deadbeef", 0),
-		sdk.OneInt(),
-	))
+	amount := collection.NewCoins(
+		collection.NewFTCoin("00bab10c", sdk.OneInt()),
+	)
 
 	testCases := map[string]struct {
 		contractID string
@@ -1381,7 +1371,7 @@ func TestMsgBurnNFT(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	ids := []string{fmt.Sprintf("%s%08x", "deadbeef", 0)}
+	ids := []string{collection.NewNFTID("deadbeef", 1)}
 
 	testCases := map[string]struct {
 		contractID string
@@ -1438,7 +1428,7 @@ func TestMsgBurnNFTFrom(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	ids := []string{fmt.Sprintf("%s%08x", "deadbeef", 0)}
+	ids := []string{collection.NewNFTID("deadbeef", 1)}
 
 	testCases := map[string]struct {
 		contractID string
@@ -1508,7 +1498,7 @@ func TestMsgModifyContract(t *testing.T) {
 	}
 
 	contractID := "deadbeef"
-	change := collection.Attribute{Key: "name", Value: "tibetian fox"}
+	changes := []collection.Attribute{{Key: "name", Value: "tibetian fox"}}
 	testCases := map[string]struct {
 		contractID string
 		operator   sdk.AccAddress
@@ -1518,16 +1508,16 @@ func TestMsgModifyContract(t *testing.T) {
 		"valid contract modification": {
 			contractID: contractID,
 			operator:   addrs[0],
-			changes:    []collection.Attribute{change},
+			changes:    changes,
 			valid:      true,
 		},
 		"invalid contract id": {
 			operator: addrs[0],
-			changes:  []collection.Attribute{change},
+			changes:  changes,
 		},
 		"invalid operator": {
 			contractID: contractID,
-			changes:    []collection.Attribute{change},
+			changes:    changes,
 		},
 		"invalid key of change": {
 			contractID: contractID,
@@ -1551,10 +1541,7 @@ func TestMsgModifyContract(t *testing.T) {
 		"duplicated changes": {
 			contractID: contractID,
 			operator:   addrs[0],
-			changes: []collection.Attribute{
-				{Key: "name", Value: "tibetian fox"},
-				{Key: "name", Value: "fennec fox"},
-			},
+			changes:    []collection.Attribute{changes[0], changes[0]},
 		},
 	}
 
@@ -1584,7 +1571,7 @@ func TestMsgModifyTokenClass(t *testing.T) {
 
 	contractID := "deadbeef"
 	classID := "deadbeef"
-	change := collection.Attribute{Key: "name", Value: "tibetian fox"}
+	changes := []collection.Attribute{{Key: "name", Value: "tibetian fox"}}
 	testCases := map[string]struct {
 		contractID string
 		operator   sdk.AccAddress
@@ -1596,23 +1583,23 @@ func TestMsgModifyTokenClass(t *testing.T) {
 			contractID: contractID,
 			operator:   addrs[0],
 			classID:    classID,
-			changes:    []collection.Attribute{change},
+			changes:    changes,
 			valid:      true,
 		},
 		"invalid contract id": {
 			operator: addrs[0],
 			classID:  classID,
-			changes:  []collection.Attribute{change},
+			changes:  changes,
 		},
 		"invalid operator": {
 			contractID: contractID,
 			classID:    classID,
-			changes:    []collection.Attribute{change},
+			changes:    changes,
 		},
 		"invalid class id": {
 			contractID: contractID,
 			operator:   addrs[0],
-			changes:    []collection.Attribute{change},
+			changes:    changes,
 		},
 		"invalid key of change": {
 			contractID: contractID,
@@ -1641,10 +1628,7 @@ func TestMsgModifyTokenClass(t *testing.T) {
 			contractID: contractID,
 			operator:   addrs[0],
 			classID:    classID,
-			changes: []collection.Attribute{
-				{Key: "name", Value: "tibetian fox"},
-				{Key: "name", Value: "fennec fox"},
-			},
+			changes:    []collection.Attribute{changes[0], changes[0]},
 		},
 	}
 
@@ -1675,8 +1659,8 @@ func TestMsgModifyNFT(t *testing.T) {
 
 	contractID := "deadbeef"
 	classID := "deadbeef"
-	tokenID := classID + fmt.Sprintf("%08x", 1)
-	change := collection.Attribute{Key: "name", Value: "tibetian fox"}
+	tokenID := collection.NewNFTID(classID, 1)
+	changes := []collection.Attribute{{Key: "name", Value: "tibetian fox"}}
 	testCases := map[string]struct {
 		contractID string
 		operator   sdk.AccAddress
@@ -1688,23 +1672,23 @@ func TestMsgModifyNFT(t *testing.T) {
 			contractID: contractID,
 			operator:   addrs[0],
 			tokenID:    tokenID,
-			changes:    []collection.Attribute{change},
+			changes:    changes,
 			valid:      true,
 		},
 		"invalid contract id": {
 			operator: addrs[0],
 			tokenID:  tokenID,
-			changes:  []collection.Attribute{change},
+			changes:  changes,
 		},
 		"invalid operator": {
 			contractID: contractID,
 			tokenID:    tokenID,
-			changes:    []collection.Attribute{change},
+			changes:    changes,
 		},
 		"invalid token id": {
 			contractID: contractID,
 			operator:   addrs[0],
-			changes:    []collection.Attribute{change},
+			changes:    changes,
 		},
 		"invalid key of change": {
 			contractID: contractID,
@@ -1733,10 +1717,7 @@ func TestMsgModifyNFT(t *testing.T) {
 			contractID: contractID,
 			operator:   addrs[0],
 			tokenID:    tokenID,
-			changes: []collection.Attribute{
-				{Key: "name", Value: "tibetian fox"},
-				{Key: "name", Value: "fennec fox"},
-			},
+			changes:    []collection.Attribute{changes[0], changes[0]},
 		},
 	}
 
@@ -1765,7 +1746,7 @@ func TestMsgModify(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	change := collection.Change{Field: "name", Value: "New test"}
+	changes := []collection.Change{{Field: "name", Value: "New test"}}
 	testCases := map[string]struct {
 		contractID string
 		owner      sdk.AccAddress
@@ -1777,14 +1758,14 @@ func TestMsgModify(t *testing.T) {
 		"valid contract modification": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Change{change},
+			changes:    changes,
 			valid:      true,
 		},
 		"valid token class modification": {
 			contractID: "deadbeef",
 			tokenType:  "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Change{change},
+			changes:    changes,
 			valid:      true,
 		},
 		"valid nft modification": {
@@ -1792,16 +1773,16 @@ func TestMsgModify(t *testing.T) {
 			tokenType:  "deadbeef",
 			tokenIndex: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Change{change},
+			changes:    changes,
 			valid:      true,
 		},
 		"invalid contract id": {
 			owner:   addrs[0],
-			changes: []collection.Change{change},
+			changes: changes,
 		},
 		"invalid owner": {
 			contractID: "deadbeef",
-			changes:    []collection.Change{change},
+			changes:    changes,
 		},
 		"invalid key of change": {
 			contractID: "deadbeef",
@@ -1825,10 +1806,7 @@ func TestMsgModify(t *testing.T) {
 		"duplicated changes": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes: []collection.Change{
-				{Field: "name", Value: "hello"},
-				{Field: "name", Value: "world"},
-			},
+			changes:    []collection.Change{changes[0], changes[0]},
 		},
 	}
 
@@ -2086,8 +2064,8 @@ func TestMsgAttach(t *testing.T) {
 
 	contractID := "deadbeef"
 	tokenIDs := []string{
-		"deadbeef" + fmt.Sprintf("%08x", 0),
-		"fee1dead" + fmt.Sprintf("%08x", 0),
+		collection.NewNFTID("deadbeef", 1),
+		collection.NewNFTID("fee1dead", 1),
 	}
 
 	testCases := map[string]struct {
@@ -2158,9 +2136,7 @@ func TestMsgDetach(t *testing.T) {
 	}
 
 	contractID := "deadbeef"
-	tokenIDs := []string{
-		"deadbeef" + fmt.Sprintf("%08x", 0),
-	}
+	tokenID := collection.NewNFTID("deadbeef", 1)
 
 	testCases := map[string]struct {
 		contractID string
@@ -2171,16 +2147,16 @@ func TestMsgDetach(t *testing.T) {
 		"valid msg": {
 			contractID: contractID,
 			from:       addrs[0],
-			tokenID:    tokenIDs[0],
+			tokenID:    tokenID,
 			valid:      true,
 		},
 		"empty from": {
 			contractID: contractID,
-			tokenID:    tokenIDs[0],
+			tokenID:    tokenID,
 		},
 		"invalid contract id": {
 			from:    addrs[0],
-			tokenID: tokenIDs[0],
+			tokenID: tokenID,
 		},
 		"invalid token id": {
 			contractID: contractID,
@@ -2214,8 +2190,8 @@ func TestMsgOperatorAttach(t *testing.T) {
 
 	contractID := "deadbeef"
 	tokenIDs := []string{
-		"deadbeef" + fmt.Sprintf("%08x", 0),
-		"fee1dead" + fmt.Sprintf("%08x", 0),
+		collection.NewNFTID("deadbeef", 1),
+		collection.NewNFTID("fee1dead", 1),
 	}
 
 	testCases := map[string]struct {
@@ -2300,9 +2276,7 @@ func TestMsgOperatorDetach(t *testing.T) {
 	}
 
 	contractID := "deadbeef"
-	tokenIDs := []string{
-		"deadbeef" + fmt.Sprintf("%08x", 0),
-	}
+	tokenID := collection.NewNFTID("deadbeef", 1)
 
 	testCases := map[string]struct {
 		contractID string
@@ -2315,23 +2289,23 @@ func TestMsgOperatorDetach(t *testing.T) {
 			contractID: contractID,
 			operator:   addrs[0],
 			owner:      addrs[1],
-			subject:    tokenIDs[0],
+			subject:    tokenID,
 			valid:      true,
 		},
 		"invalid contract id": {
 			operator: addrs[0],
 			owner:    addrs[1],
-			subject:  tokenIDs[0],
+			subject:  tokenID,
 		},
 		"empty operator": {
 			contractID: contractID,
 			owner:      addrs[1],
-			subject:    tokenIDs[0],
+			subject:    tokenID,
 		},
 		"empty owner": {
 			contractID: contractID,
 			operator:   addrs[0],
-			subject:    tokenIDs[0],
+			subject:    tokenID,
 		},
 		"invalid token id": {
 			contractID: contractID,
@@ -2366,8 +2340,8 @@ func TestMsgAttachFrom(t *testing.T) {
 	}
 
 	tokenIDs := []string{
-		"deadbeef" + fmt.Sprintf("%08x", 0),
-		"fee1dead" + fmt.Sprintf("%08x", 0),
+		collection.NewNFTID("deadbeef", 1),
+		collection.NewNFTID("fee1dead", 1),
 	}
 
 	testCases := map[string]struct {
@@ -2451,9 +2425,7 @@ func TestMsgDetachFrom(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	tokenIDs := []string{
-		"deadbeef" + fmt.Sprintf("%08x", 0),
-	}
+	tokenID := collection.NewNFTID("deadbeef", 1)
 
 	testCases := map[string]struct {
 		contractID string
@@ -2466,23 +2438,23 @@ func TestMsgDetachFrom(t *testing.T) {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			from:       addrs[1],
-			tokenID:    tokenIDs[0],
+			tokenID:    tokenID,
 			valid:      true,
 		},
 		"empty proxy": {
 			contractID: "deadbeef",
 			from:       addrs[1],
-			tokenID:    tokenIDs[0],
+			tokenID:    tokenID,
 		},
 		"empty from": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
-			tokenID:    tokenIDs[0],
+			tokenID:    tokenID,
 		},
 		"invalid contract id": {
 			proxy:   addrs[0],
 			from:    addrs[1],
-			tokenID: tokenIDs[0],
+			tokenID: tokenID,
 		},
 		"invalid token id": {
 			contractID: "deadbeef",

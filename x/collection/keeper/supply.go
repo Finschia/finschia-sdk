@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/collection"
@@ -188,7 +186,7 @@ func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, p
 
 		nextTokenID := k.getNextTokenID(ctx, contractID, classID)
 		k.setNextTokenID(ctx, contractID, classID, nextTokenID.Incr())
-		tokenID := classID + fmt.Sprintf("%08x", nextTokenID.Uint64())
+		tokenID := collection.NewNFTID(classID, int(nextTokenID.Uint64()))
 
 		amount := sdk.OneInt()
 

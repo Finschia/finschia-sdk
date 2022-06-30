@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
@@ -34,6 +33,8 @@ type KeeperTestSuite struct {
 	nftClassID string
 
 	balance sdk.Int
+
+	lenChain int
 }
 
 func createRandomAccounts(accNum int) []sdk.AccAddress {
@@ -104,20 +105,39 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.nftClassID = *nftClassID
 
 	// mint fts
-	for _, to := range []sdk.AccAddress{s.vendor, s.operator, s.customer} {
-		tokenID := s.ftClassID + fmt.Sprintf("%08x", 0)
-		amount := collection.NewCoin(tokenID, s.balance)
-		err := s.keeper.MintFT(s.ctx, s.contractID, to, []collection.Coin{amount})
+	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor} {
+		tokenID := collection.NewFTID(s.ftClassID)
+		amount := collection.NewCoins(collection.NewCoin(tokenID, s.balance))
+		err := s.keeper.MintFT(s.ctx, s.contractID, to, amount)
 		s.Require().NoError(err)
 	}
 
 	// mint nfts
-	for _, to := range []sdk.AccAddress{s.vendor, s.operator, s.customer} {
-		mintParam := collection.MintNFTParam{
-			TokenType: s.nftClassID,
+	newParams := func(classID string, size int) []collection.MintNFTParam {
+		res := make([]collection.MintNFTParam, size)
+		for i := range res {
+			res[i] = collection.MintNFTParam{
+				TokenType: s.nftClassID,
+			}
 		}
-		_, err = s.keeper.MintNFT(s.ctx, s.contractID, to, []collection.MintNFTParam{mintParam})
-		s.Require().NoError(err)
+		return res
+	}
+	s.lenChain = 2 * (keeper.DepthLimit + 1)
+	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor} {
+		// mint N chains per account
+		numChains := 2
+		for n := 0; n < numChains; n++ {
+			tokens, err := s.keeper.MintNFT(s.ctx, s.contractID, to, newParams(s.nftClassID, s.lenChain))
+			s.Require().NoError(err)
+
+			for i := range tokens[1:] {
+				r := len(tokens) - 1 - i
+				subject := tokens[r].Id
+				target := tokens[r-1].Id
+				err := s.keeper.Attach(s.ctx, s.contractID, to, subject, target)
+				s.Require().NoError(err)
+			}
+		}
 	}
 
 	// authorize

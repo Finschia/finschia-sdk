@@ -24,8 +24,8 @@ func (k Keeper) addCoins(ctx sdk.Context, contractID string, address sdk.AccAddr
 		k.setBalance(ctx, contractID, address, coin.TokenId, newBalance)
 
 		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
-			if !k.isRoot(ctx, contractID, coin.TokenId) {
-				return sdkerrors.ErrInvalidRequest.Wrapf("%s is not root", coin.TokenId)
+			if err := k.validateRoot(ctx, contractID, coin.TokenId); err != nil {
+				return err
 			}
 			k.setOwner(ctx, contractID, coin.TokenId, address)
 		}
@@ -49,8 +49,8 @@ func (k Keeper) subtractCoins(ctx sdk.Context, contractID string, address sdk.Ac
 		k.setBalance(ctx, contractID, address, coin.TokenId, newBalance)
 
 		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
-			if !k.isRoot(ctx, contractID, coin.TokenId) {
-				return sdkerrors.ErrInvalidRequest.Wrapf("%s is not root", coin.TokenId)
+			if err := k.validateRoot(ctx, contractID, coin.TokenId); err != nil {
+				return err
 			}
 		}
 	}

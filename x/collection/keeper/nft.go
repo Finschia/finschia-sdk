@@ -8,6 +8,10 @@ import (
 	"github.com/line/lbm-sdk/x/collection"
 )
 
+const (
+	DepthLimit = 15
+)
+
 func (k Keeper) GetNFT(ctx sdk.Context, contractID string, tokenID string) (*collection.NFT, error) {
 	store := ctx.KVStore(k.storeKey)
 	key := nftKey(contractID, tokenID)
@@ -39,8 +43,67 @@ func (k Keeper) deleteNFT(ctx sdk.Context, contractID string, tokenID string) {
 	store.Delete(key)
 }
 
-func (k Keeper) GetRootOwner(ctx sdk.Context, contractID string, tokenID string) sdk.AccAddress {
-	rootID := k.GetRoot(ctx, contractID, tokenID)
+func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress, subject, target string) error {
+	// validate subject
+	if !k.GetBalance(ctx, contractID, owner, subject).IsPositive() {
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, subject)
+	}
+
+	// validate target
+	if _, err := k.GetNFT(ctx, contractID, target); err != nil {
+		return err
+	}
+
+	root, err := k.GetRoot(ctx, contractID, target)
+	if err != nil {
+		return err
+	}
+
+	if owner != k.getOwner(ctx, contractID, *root) {
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, subject)
+	}
+
+	// update subject
+	k.deleteOwner(ctx, contractID, subject)
+	k.setParent(ctx, contractID, subject, target)
+
+	// update target
+	k.setChild(ctx, contractID, target, subject)
+
+	return nil
+}
+
+func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress, subject string) error {
+	if _, err := k.GetNFT(ctx, contractID, subject); err != nil {
+		return err
+	}
+
+	parent, err := k.GetParent(ctx, contractID, subject)
+	if err != nil {
+		return err
+	}
+
+	root, err := k.GetRoot(ctx, contractID, *parent)
+	if err != nil {
+		return err
+	}
+
+	if owner != k.getOwner(ctx, contractID, *root) {
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, subject)
+	}
+
+	// update subject
+	k.deleteParent(ctx, contractID, subject)
+	k.setOwner(ctx, contractID, subject, owner)
+
+	// update parent
+	k.deleteChild(ctx, contractID, *parent, subject)
+
+	return nil
+}
+
+func (k Keeper) getRootOwnerUnbounded(ctx sdk.Context, contractID string, tokenID string) sdk.AccAddress {
+	rootID := k.getRootUnbounded(ctx, contractID, tokenID)
 	return k.getOwner(ctx, contractID, rootID)
 }
 
@@ -98,13 +161,13 @@ func (k Keeper) setParent(ctx sdk.Context, contractID string, tokenID, parentID 
 	store.Set(key, bz)
 }
 
-//nolint:unused
 func (k Keeper) deleteParent(ctx sdk.Context, contractID string, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := parentKey(contractID, tokenID)
 	store.Delete(key)
 }
 
+//nolint:unused
 func (k Keeper) GetChildren(ctx sdk.Context, contractID string, tokenID string) []string {
 	var children []string
 	k.iterateChildren(ctx, contractID, tokenID, func(childID string) (stop bool) {
@@ -126,14 +189,13 @@ func (k Keeper) setChild(ctx sdk.Context, contractID string, tokenID, childID st
 	store.Set(key, []byte{})
 }
 
-//nolint:unused
 func (k Keeper) deleteChild(ctx sdk.Context, contractID string, tokenID, childID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := childKey(contractID, tokenID, childID)
 	store.Delete(key)
 }
 
-func (k Keeper) GetRoot(ctx sdk.Context, contractID string, tokenID string) string {
+func (k Keeper) getRootUnbounded(ctx sdk.Context, contractID string, tokenID string) string {
 	id := tokenID
 	for {
 		parent, err := k.GetParent(ctx, contractID, id)
@@ -145,9 +207,26 @@ func (k Keeper) GetRoot(ctx sdk.Context, contractID string, tokenID string) stri
 	}
 }
 
-func (k Keeper) isRoot(ctx sdk.Context, contractID string, tokenID string) bool {
-	_, err := k.GetParent(ctx, contractID, tokenID)
-	return err != nil
+func (k Keeper) GetRoot(ctx sdk.Context, contractID string, tokenID string) (*string, error) {
+	id := tokenID
+	for depth := 0; depth <= DepthLimit; depth++ {
+		parent, err := k.GetParent(ctx, contractID, id)
+		if err != nil {
+			return &id, nil
+		}
+
+		id = *parent
+	}
+
+	return nil, sdkerrors.ErrInvalidRequest.Wrapf("depth of %s exceeds the limit: %d", tokenID, DepthLimit)
+}
+
+func (k Keeper) validateRoot(ctx sdk.Context, contractID string, tokenID string) error {
+	if _, err := k.GetParent(ctx, contractID, tokenID); err == nil {
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not root", tokenID)
+	}
+
+	return nil
 }
 
 // legacy index

@@ -104,6 +104,14 @@ func (c NFTClass) ValidateBasic() error {
 
 //-----------------------------------------------------------------------------
 // Coin
+func NewFTCoin(classID string, amount sdk.Int) Coin {
+	return NewCoin(NewFTID(classID), amount)
+}
+
+func NewNFTCoin(classID string, number int) Coin {
+	return NewCoin(NewNFTID(classID, number), sdk.OneInt())
+}
+
 func NewCoin(id string, amount sdk.Int) Coin {
 	coin := Coin{
 		TokenId: id,
