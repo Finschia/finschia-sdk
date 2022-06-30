@@ -75,7 +75,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.createClass(s.vendor, s.vendor, s.classes[1].Name, s.classes[1].Symbol, s.balance, s.classes[1].Mintable)
 	s.createClass(s.vendor, s.customer, s.classes[0].Name, s.classes[0].Symbol, s.balance, s.classes[0].Mintable)
 
-	// customer approves vendor to transfer its tokens of the both classes, so vendor can do Msg/OperatorBurn later.
+	// customer approves vendor to manipulate its tokens of the both classes, so vendor can do OperatorXXX (Send or Burn) later.
 	for _, class := range s.classes {
 		s.authorizeOperator(class.ContractId, s.customer, s.vendor)
 	}
