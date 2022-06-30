@@ -56,7 +56,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, contractID string, holder, ope
 			Operator: operator.String(),
 		}, nil
 	}
-	return nil, sdkerrors.ErrNotFound.Wrapf("no authorization by %s to %s", holder, operator)
+	return nil, sdkerrors.ErrNotFound.Wrapf("no authorization to %s by %s", operator, holder)
 }
 
 func (k Keeper) setAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) {
