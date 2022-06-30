@@ -476,7 +476,7 @@ func (s queryServer) Token(c context.Context, req *collection.QueryTokenRequest)
 		tokenID := req.TokenId
 		token, err := s.keeper.GetNFT(ctx, req.ContractId, tokenID)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		owner := s.keeper.GetRootOwner(ctx, req.ContractId, token.Id)
@@ -491,10 +491,13 @@ func (s queryServer) Token(c context.Context, req *collection.QueryTokenRequest)
 		classID := collection.SplitTokenID(req.TokenId)
 		class, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 
-		ftClass := class.(*collection.FTClass)
+		ftClass, ok := class.(*collection.FTClass)
+		if !ok {
+			panic(sdkerrors.ErrInvalidType.Wrapf("not a class of fungible token: %s", classID))
+		}
 
 		legacyToken = &collection.FT{
 			ContractId: req.ContractId,
@@ -552,7 +555,10 @@ func (s queryServer) Tokens(c context.Context, req *collection.QueryTokensReques
 				panic(err)
 			}
 
-			ftClass := class.(*collection.FTClass)
+			ftClass, ok := class.(*collection.FTClass)
+			if !ok {
+				panic(sdkerrors.ErrInvalidType.Wrapf("not a class of fungible token: %s", classID))
+			}
 
 			legacyToken = &collection.FT{
 				ContractId: req.ContractId,

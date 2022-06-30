@@ -8,8 +8,8 @@ func (s *KeeperTestSuite) TestCreateContract() {
 	ctx, _ := s.ctx.CacheContext()
 
 	input := collection.Contract{
-		Name: "tibetian fox",
-		Meta: "Tibetian Fox",
+		Name:       "tibetian fox",
+		Meta:       "Tibetian Fox",
 		BaseImgUri: "file:///tibetian_fox.png",
 	}
 	id := s.keeper.CreateContract(ctx, s.vendor, input)
@@ -28,18 +28,18 @@ func (s *KeeperTestSuite) TestCreateContract() {
 func (s *KeeperTestSuite) TestCreateTokenClass() {
 	testCases := map[string]struct {
 		contractID string
-		class collection.TokenClass
-		valid  bool
+		class      collection.TokenClass
+		valid      bool
 	}{
 		"valid fungible token class": {
 			contractID: s.contractID,
-			class: &collection.FTClass{},
-			valid: true,
+			class:      &collection.FTClass{},
+			valid:      true,
 		},
 		"valid non-fungible token class": {
 			contractID: s.contractID,
-			class: &collection.NFTClass{},
-			valid: true,
+			class:      &collection.NFTClass{},
+			valid:      true,
 		},
 		"invalid contract id": {
 			class: &collection.FTClass{},

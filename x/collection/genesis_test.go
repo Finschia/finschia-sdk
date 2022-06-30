@@ -25,8 +25,8 @@ func TestValidateGenesis(t *testing.T) {
 		"contract of invalid contract id": {
 			&collection.GenesisState{
 				Contracts: []collection.Contract{{
-					Name: "tibetian fox",
-					Meta: "Tibetian Fox",
+					Name:       "tibetian fox",
+					Meta:       "Tibetian Fox",
 					BaseImgUri: "file:///tibetian_fox.png",
 				}},
 			},
@@ -36,8 +36,8 @@ func TestValidateGenesis(t *testing.T) {
 			&collection.GenesisState{
 				Contracts: []collection.Contract{{
 					ContractId: "deadbeef",
-					Name: string(make([]rune, 21)),
-					Meta: "Tibetian Fox",
+					Name:       string(make([]rune, 21)),
+					Meta:       "Tibetian Fox",
 					BaseImgUri: "file:///tibetian_fox.png",
 				}},
 			},
@@ -47,9 +47,9 @@ func TestValidateGenesis(t *testing.T) {
 			&collection.GenesisState{
 				Contracts: []collection.Contract{{
 					ContractId: "deadbeef",
-					Name: "tibetian fox",
+					Name:       "tibetian fox",
 					BaseImgUri: string(make([]rune, 1001)),
-					Meta: "Tibetian Fox",
+					Meta:       "Tibetian Fox",
 				}},
 			},
 			false,
@@ -58,9 +58,9 @@ func TestValidateGenesis(t *testing.T) {
 			&collection.GenesisState{
 				Contracts: []collection.Contract{{
 					ContractId: "deadbeef",
-					Name: "tibetian fox",
+					Name:       "tibetian fox",
 					BaseImgUri: "file:///tibetian_fox.png",
-					Meta: string(make([]rune, 1001)),
+					Meta:       string(make([]rune, 1001)),
 				}},
 			},
 			false,
@@ -70,7 +70,7 @@ func TestValidateGenesis(t *testing.T) {
 				Classes: []collection.ContractClasses{{
 					Classes: []codectypes.Any{
 						*collection.TokenClassToAny(&collection.NFTClass{
-							Id: "deadbeef",
+							Id:   "deadbeef",
 							Name: "tibetian fox",
 							Meta: "Tibetian Fox",
 						}),
@@ -106,7 +106,7 @@ func TestValidateGenesis(t *testing.T) {
 				Balances: []collection.ContractBalances{{
 					Balances: []collection.Balance{{
 						Address: addr.String(),
-						Amount:  collection.NewCoins(collection.NewCoin("deadbeef" + fmt.Sprintf("%08x", 0), sdk.OneInt())),
+						Amount:  collection.NewCoins(collection.NewCoin("deadbeef"+fmt.Sprintf("%08x", 0), sdk.OneInt())),
 					}},
 				}},
 			},
@@ -125,7 +125,7 @@ func TestValidateGenesis(t *testing.T) {
 				Balances: []collection.ContractBalances{{
 					ContractId: "deadbeef",
 					Balances: []collection.Balance{{
-						Amount:  collection.NewCoins(collection.NewCoin("deadbeef" + fmt.Sprintf("%08x", 0), sdk.OneInt())),
+						Amount: collection.NewCoins(collection.NewCoin("deadbeef"+fmt.Sprintf("%08x", 0), sdk.OneInt())),
 					}},
 				}},
 			},
@@ -146,7 +146,7 @@ func TestValidateGenesis(t *testing.T) {
 			&collection.GenesisState{
 				Parents: []collection.ContractTokenRelations{{
 					Relations: []collection.TokenRelation{{
-						Self: "deadbeef",
+						Self:  "deadbeef",
 						Other: "fee1dead",
 					}},
 				}},
@@ -187,8 +187,8 @@ func TestValidateGenesis(t *testing.T) {
 			&collection.GenesisState{
 				Authorizations: []collection.ContractAuthorizations{{
 					Authorizations: []collection.Authorization{{
-						Holder: addr.String(),
-						Operator:    addr.String(),
+						Holder:   addr.String(),
+						Operator: addr.String(),
 					}},
 				}},
 			},
@@ -207,7 +207,7 @@ func TestValidateGenesis(t *testing.T) {
 				Authorizations: []collection.ContractAuthorizations{{
 					ContractId: "deadbeef",
 					Authorizations: []collection.Authorization{{
-						Operator:    addr.String(),
+						Operator: addr.String(),
 					}},
 				}},
 			},
@@ -228,7 +228,7 @@ func TestValidateGenesis(t *testing.T) {
 			&collection.GenesisState{
 				Grants: []collection.ContractGrants{{
 					Grants: []collection.Grant{{
-						Grantee: addr.String(),
+						Grantee:    addr.String(),
 						Permission: collection.Permission_Mint.String(),
 					}},
 				}},

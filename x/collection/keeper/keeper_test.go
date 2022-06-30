@@ -1,8 +1,8 @@
 package keeper_test
 
 import (
-	"fmt"
 	"context"
+	"fmt"
 	"testing"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
@@ -30,7 +30,7 @@ type KeeperTestSuite struct {
 	stranger sdk.AccAddress
 
 	contractID string
-	ftClassID string
+	ftClassID  string
 	nftClassID string
 
 	balance sdk.Int
@@ -61,7 +61,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.goCtx = sdk.WrapSDKContext(s.ctx)
 	s.keeper = app.CollectionKeeper
 
-	// s.queryServer = keeper.NewQueryServer(s.keeper)
+	s.queryServer = keeper.NewQueryServer(s.keeper)
 	s.msgServer = keeper.NewMsgServer(s.keeper)
 
 	addresses := []*sdk.AccAddress{
@@ -84,7 +84,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	for _, permission := range []collection.Permission{
 		collection.Permission_Mint,
 		collection.Permission_Burn,
-	}{
+	} {
 		err := s.keeper.Grant(s.ctx, s.contractID, s.vendor, s.operator, permission)
 		s.Require().NoError(err)
 	}

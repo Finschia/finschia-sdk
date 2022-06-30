@@ -10,22 +10,22 @@ import (
 func (s *KeeperTestSuite) TestSendCoins() {
 	testCases := map[string]struct {
 		tokenID string
-		amount sdk.Int
-		valid  bool
+		amount  sdk.Int
+		valid   bool
 	}{
 		"valid send (fungible token)": {
 			tokenID: s.ftClassID + fmt.Sprintf("%08x", 0),
-			amount: s.balance,
-			valid: true,
+			amount:  s.balance,
+			valid:   true,
 		},
 		"valid send (non-fungible token)": {
 			tokenID: s.nftClassID + fmt.Sprintf("%08x", 3),
-			amount: sdk.OneInt(),
-			valid: true,
+			amount:  sdk.OneInt(),
+			valid:   true,
 		},
 		"insufficient tokens": {
 			tokenID: s.ftClassID + fmt.Sprintf("%08x", 0),
-			amount: s.balance.Add(sdk.OneInt()),
+			amount:  s.balance.Add(sdk.OneInt()),
 		},
 	}
 
@@ -59,11 +59,11 @@ func (s *KeeperTestSuite) TestAuthorizeOperator() {
 	s.Require().Error(err)
 
 	contractDescriptions := map[string]string{
-		s.contractID: "valid",
+		s.contractID:    "valid",
 		dummyContractID: "not-exists",
 	}
 	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor: "vendor",
+		s.vendor:   "vendor",
 		s.operator: "operator",
 		s.customer: "customer",
 	}
@@ -97,11 +97,11 @@ func (s *KeeperTestSuite) TestRevokeOperator() {
 	s.Require().Error(err)
 
 	contractDescriptions := map[string]string{
-		s.contractID: "valid",
+		s.contractID:    "valid",
 		dummyContractID: "not-exists",
 	}
 	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor: "vendor",
+		s.vendor:   "vendor",
 		s.operator: "operator",
 		s.customer: "customer",
 	}

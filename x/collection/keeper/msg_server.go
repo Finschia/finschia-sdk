@@ -336,7 +336,7 @@ func (s msgServer) Burn(c context.Context, req *collection.MsgBurn) (*collection
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	if err := s.keeper.burnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
+	if err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -363,7 +363,7 @@ func (s msgServer) OperatorBurn(c context.Context, req *collection.MsgOperatorBu
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	if err := s.keeper.burnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
+	if err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -386,7 +386,7 @@ func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collec
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	if err := s.keeper.burnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
+	if err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -413,7 +413,7 @@ func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) 
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	if err := s.keeper.burnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
+	if err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -441,7 +441,7 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 		amount = append(amount, collection.NewCoin(id, sdk.OneInt()))
 	}
 
-	if err := s.keeper.burnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), amount); err != nil {
+	if err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), amount); err != nil {
 		return nil, err
 	}
 
@@ -473,7 +473,7 @@ func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom
 		amount = append(amount, collection.NewCoin(id, sdk.OneInt()))
 	}
 
-	if err := s.keeper.burnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), amount); err != nil {
+	if err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), amount); err != nil {
 		return nil, err
 	}
 

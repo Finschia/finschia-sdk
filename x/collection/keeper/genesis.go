@@ -214,7 +214,7 @@ func (k Keeper) getContractBalances(ctx sdk.Context, contractID string) []collec
 
 		accountBalance := collection.Balance{
 			Address: address.String(),
-			Amount:  collection.Coins{},
+			Amount:  collection.Coins{balance},
 		}
 		balances = append(balances, accountBalance)
 		addressToBalanceIndex[address] = len(balances) - 1

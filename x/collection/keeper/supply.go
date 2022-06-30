@@ -141,12 +141,12 @@ func (k Keeper) setNextClassIDs(ctx sdk.Context, ids collection.NextClassIDs) {
 }
 
 func (k Keeper) MintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, amount []collection.Coin) error {
-	for _, amt := range amount {
-		if err := collection.ValidateFTID(amt.TokenId); err != nil {
+	for _, coin := range amount {
+		if err := collection.ValidateFTID(coin.TokenId); err != nil {
 			return err
 		}
 
-		classID := collection.SplitTokenID(amt.TokenId)
+		classID := collection.SplitTokenID(coin.TokenId)
 		class, err := k.GetTokenClass(ctx, contractID, classID)
 		if err != nil {
 			return err
@@ -156,8 +156,15 @@ func (k Keeper) MintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, am
 			return sdkerrors.ErrInvalidType.Wrapf("not a class of fungible token: %s", classID)
 		}
 
-		tokenID := amt.TokenId
-		k.setBalance(ctx, contractID, to, tokenID, amt.Amount)
+		tokenID := coin.TokenId
+		k.setBalance(ctx, contractID, to, tokenID, coin.Amount)
+
+		// update statistics
+		supply := k.GetSupply(ctx, contractID, classID)
+		k.setSupply(ctx, contractID, classID, supply.Add(coin.Amount))
+
+		minted := k.GetMinted(ctx, contractID, classID)
+		k.setMinted(ctx, contractID, classID, minted.Add(coin.Amount))
 
 		// legacy
 		k.setLegacyToken(ctx, contractID, tokenID)
@@ -183,7 +190,9 @@ func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, p
 		k.setNextTokenID(ctx, contractID, classID, nextTokenID.Incr())
 		tokenID := classID + fmt.Sprintf("%08x", nextTokenID.Uint64())
 
-		k.setBalance(ctx, contractID, to, tokenID, sdk.OneInt())
+		amount := sdk.OneInt()
+
+		k.setBalance(ctx, contractID, to, tokenID, amount)
 		k.setOwner(ctx, contractID, tokenID, to)
 
 		token := collection.NFT{
@@ -192,6 +201,13 @@ func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, p
 			Meta: param.Meta,
 		}
 		k.setNFT(ctx, contractID, token)
+
+		// update statistics
+		supply := k.GetSupply(ctx, contractID, classID)
+		k.setSupply(ctx, contractID, classID, supply.Add(amount))
+
+		minted := k.GetMinted(ctx, contractID, classID)
+		k.setMinted(ctx, contractID, classID, minted.Add(amount))
 
 		tokens = append(tokens, token)
 
@@ -202,7 +218,7 @@ func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, p
 	return tokens, nil
 }
 
-func (k Keeper) burnCoins(ctx sdk.Context, contractID string, from sdk.AccAddress, amount []collection.Coin) error {
+func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddress, amount []collection.Coin) error {
 	if err := k.subtractCoins(ctx, contractID, from, amount); err != nil {
 		return err
 	}
@@ -215,6 +231,15 @@ func (k Keeper) burnCoins(ctx sdk.Context, contractID string, from sdk.AccAddres
 			// legacy
 			k.deleteLegacyToken(ctx, contractID, coin.TokenId)
 		}
+
+		// update statistics
+		classID := collection.SplitTokenID(coin.TokenId)
+		supply := k.GetSupply(ctx, contractID, classID)
+		k.setSupply(ctx, contractID, classID, supply.Sub(coin.Amount))
+
+		burnt := k.GetBurnt(ctx, contractID, classID)
+		k.setBurnt(ctx, contractID, classID, burnt.Add(coin.Amount))
+
 	}
 
 	return nil

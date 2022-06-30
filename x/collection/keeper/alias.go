@@ -200,7 +200,8 @@ func (k Keeper) iterateStatisticsImpl(ctx sdk.Context, prefix []byte, fn func(co
 			panic(err)
 		}
 
-		contractID, classID := splitStatisticKey(prefix, iterator.Key())
+		keyPrefix := prefix[:1]
+		contractID, classID := splitStatisticKey(keyPrefix, iterator.Key())
 
 		stop := fn(contractID, classID, amount)
 		if stop {

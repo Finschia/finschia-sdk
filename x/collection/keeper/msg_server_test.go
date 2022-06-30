@@ -10,17 +10,17 @@ import (
 func (s *KeeperTestSuite) TestMsgSend() {
 	testCases := map[string]struct {
 		contractID string
-		amount  sdk.Int
-		valid   bool
+		amount     sdk.Int
+		valid      bool
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			amount:  s.balance,
-			valid:   true,
+			amount:     s.balance,
+			valid:      true,
 		},
 		"insufficient funds": {
 			contractID: "fee1dead",
-			amount:  s.balance,
+			amount:     s.balance,
 		},
 	}
 
@@ -30,11 +30,11 @@ func (s *KeeperTestSuite) TestMsgSend() {
 
 			req := &collection.MsgSend{
 				ContractId: tc.contractID,
-				From:    s.vendor.String(),
-				To:      s.customer.String(),
-				Amount:  []collection.Coin{{
+				From:       s.vendor.String(),
+				To:         s.customer.String(),
+				Amount: []collection.Coin{{
 					TokenId: s.ftClassID + fmt.Sprintf("%08x", 0),
-					Amount: tc.amount,
+					Amount:  tc.amount,
 				}},
 			}
 			res, err := s.msgServer.Send(sdk.WrapSDKContext(ctx), req)
@@ -51,25 +51,25 @@ func (s *KeeperTestSuite) TestMsgSend() {
 func (s *KeeperTestSuite) TestMsgOperatorSend() {
 	testCases := map[string]struct {
 		operator sdk.AccAddress
-		from  sdk.AccAddress
-		amount sdk.Int
-		valid bool
+		from     sdk.AccAddress
+		amount   sdk.Int
+		valid    bool
 	}{
 		"valid request": {
 			operator: s.operator,
-			from:  s.customer,
-			amount: s.balance,
-			valid: true,
+			from:     s.customer,
+			amount:   s.balance,
+			valid:    true,
 		},
 		"not approved": {
 			operator: s.vendor,
-			from:  s.customer,
-			amount: s.balance,
+			from:     s.customer,
+			amount:   s.balance,
 		},
 		"insufficient funds": {
 			operator: s.operator,
-			from:  s.customer,
-			amount:  s.balance.Add(sdk.OneInt()),
+			from:     s.customer,
+			amount:   s.balance.Add(sdk.OneInt()),
 		},
 	}
 
@@ -80,11 +80,11 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 			req := &collection.MsgOperatorSend{
 				ContractId: s.contractID,
 				Operator:   tc.operator.String(),
-				From:    tc.from.String(),
-				To:      s.vendor.String(),
-				Amount:  []collection.Coin{{
+				From:       tc.from.String(),
+				To:         s.vendor.String(),
+				Amount: []collection.Coin{{
 					TokenId: s.ftClassID + fmt.Sprintf("%08x", 0),
-					Amount: tc.amount,
+					Amount:  tc.amount,
 				}},
 			}
 			res, err := s.msgServer.OperatorSend(sdk.WrapSDKContext(ctx), req)
@@ -101,17 +101,17 @@ func (s *KeeperTestSuite) TestMsgOperatorSend() {
 func (s *KeeperTestSuite) TestMsgTransferFT() {
 	testCases := map[string]struct {
 		contractID string
-		amount  sdk.Int
-		valid   bool
+		amount     sdk.Int
+		valid      bool
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			amount:  s.balance,
-			valid:   true,
+			amount:     s.balance,
+			valid:      true,
 		},
 		"insufficient funds": {
 			contractID: "fee1dead",
-			amount:  s.balance,
+			amount:     s.balance,
 		},
 	}
 
@@ -121,11 +121,11 @@ func (s *KeeperTestSuite) TestMsgTransferFT() {
 
 			req := &collection.MsgTransferFT{
 				ContractId: tc.contractID,
-				From:    s.vendor.String(),
-				To:      s.customer.String(),
-				Amount:  []collection.Coin{{
+				From:       s.vendor.String(),
+				To:         s.customer.String(),
+				Amount: []collection.Coin{{
 					TokenId: s.ftClassID + fmt.Sprintf("%08x", 0),
-					Amount: tc.amount,
+					Amount:  tc.amount,
 				}},
 			}
 			res, err := s.msgServer.TransferFT(sdk.WrapSDKContext(ctx), req)
@@ -141,26 +141,26 @@ func (s *KeeperTestSuite) TestMsgTransferFT() {
 
 func (s *KeeperTestSuite) TestMsgTransferFTFrom() {
 	testCases := map[string]struct {
-		proxy sdk.AccAddress
-		from  sdk.AccAddress
+		proxy  sdk.AccAddress
+		from   sdk.AccAddress
 		amount sdk.Int
-		valid bool
+		valid  bool
 	}{
 		"valid request": {
-			proxy: s.operator,
-			from:  s.customer,
+			proxy:  s.operator,
+			from:   s.customer,
 			amount: s.balance,
-			valid: true,
+			valid:  true,
 		},
 		"not approved": {
-			proxy: s.vendor,
-			from:  s.customer,
+			proxy:  s.vendor,
+			from:   s.customer,
 			amount: s.balance,
 		},
 		"insufficient funds": {
-			proxy: s.operator,
-			from:  s.customer,
-			amount:  s.balance.Add(sdk.OneInt()),
+			proxy:  s.operator,
+			from:   s.customer,
+			amount: s.balance.Add(sdk.OneInt()),
 		},
 	}
 
@@ -170,12 +170,12 @@ func (s *KeeperTestSuite) TestMsgTransferFTFrom() {
 
 			req := &collection.MsgTransferFTFrom{
 				ContractId: s.contractID,
-				Proxy:   tc.proxy.String(),
-				From:    tc.from.String(),
-				To:      s.vendor.String(),
-				Amount:  []collection.Coin{{
+				Proxy:      tc.proxy.String(),
+				From:       tc.from.String(),
+				To:         s.vendor.String(),
+				Amount: []collection.Coin{{
 					TokenId: s.ftClassID + fmt.Sprintf("%08x", 0),
-					Amount: tc.amount,
+					Amount:  tc.amount,
 				}},
 			}
 			res, err := s.msgServer.TransferFTFrom(sdk.WrapSDKContext(ctx), req)
@@ -209,9 +209,9 @@ func (s *KeeperTestSuite) TestMsgTransferNFT() {
 
 			req := &collection.MsgTransferNFT{
 				ContractId: s.contractID,
-				From:    s.vendor.String(),
-				To:      s.customer.String(),
-				TokenIds:  []string{tc.tokenID},
+				From:       s.vendor.String(),
+				To:         s.customer.String(),
+				TokenIds:   []string{tc.tokenID},
 			}
 			res, err := s.msgServer.TransferNFT(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -227,25 +227,25 @@ func (s *KeeperTestSuite) TestMsgTransferNFT() {
 func (s *KeeperTestSuite) TestMsgTransferNFTFrom() {
 	tokenID := s.nftClassID + fmt.Sprintf("%08x", 3)
 	testCases := map[string]struct {
-		proxy sdk.AccAddress
-		from  sdk.AccAddress
+		proxy   sdk.AccAddress
+		from    sdk.AccAddress
 		tokenID string
-		valid bool
+		valid   bool
 	}{
 		"valid request": {
-			proxy: s.operator,
-			from:  s.customer,
+			proxy:   s.operator,
+			from:    s.customer,
 			tokenID: tokenID,
-			valid: true,
+			valid:   true,
 		},
 		"not approved": {
-			proxy: s.vendor,
-			from:  s.customer,
+			proxy:   s.vendor,
+			from:    s.customer,
 			tokenID: tokenID,
 		},
 		"insufficient funds": {
-			proxy: s.operator,
-			from:  s.customer,
+			proxy:   s.operator,
+			from:    s.customer,
 			tokenID: "deadbeef" + fmt.Sprintf("%08x", 1),
 		},
 	}
@@ -256,10 +256,10 @@ func (s *KeeperTestSuite) TestMsgTransferNFTFrom() {
 
 			req := &collection.MsgTransferNFTFrom{
 				ContractId: s.contractID,
-				Proxy:   tc.proxy.String(),
-				From:    tc.from.String(),
-				To:      s.vendor.String(),
-				TokenIds:  []string{tc.tokenID},
+				Proxy:      tc.proxy.String(),
+				From:       tc.from.String(),
+				To:         s.vendor.String(),
+				TokenIds:   []string{tc.tokenID},
 			}
 			res, err := s.msgServer.TransferNFTFrom(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -274,18 +274,18 @@ func (s *KeeperTestSuite) TestMsgTransferNFTFrom() {
 
 func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 	testCases := map[string]struct {
-		holder sdk.AccAddress
-		operator    sdk.AccAddress
+		holder   sdk.AccAddress
+		operator sdk.AccAddress
 		valid    bool
 	}{
 		"valid request": {
-			holder: s.customer,
-			operator:    s.vendor,
+			holder:   s.customer,
+			operator: s.vendor,
 			valid:    true,
 		},
 		"already approved": {
-			holder: s.customer,
-			operator:    s.operator,
+			holder:   s.customer,
+			operator: s.operator,
 		},
 	}
 
@@ -294,9 +294,9 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &collection.MsgAuthorizeOperator{
-				ContractId:  s.contractID,
-				Holder: tc.holder.String(),
-				Operator:    tc.operator.String(),
+				ContractId: s.contractID,
+				Holder:     tc.holder.String(),
+				Operator:   tc.operator.String(),
 			}
 			res, err := s.msgServer.AuthorizeOperator(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -311,8 +311,8 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 
 func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 	testCases := map[string]struct {
-		holder sdk.AccAddress
-		operator    sdk.AccAddress
+		holder   sdk.AccAddress
+		operator sdk.AccAddress
 		valid    bool
 	}{
 		"valid request": {
@@ -368,9 +368,9 @@ func (s *KeeperTestSuite) TestMsgApprove() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &collection.MsgApprove{
-				ContractId:  s.contractID,
-				Approver: tc.approver.String(),
-				Proxy:    tc.proxy.String(),
+				ContractId: s.contractID,
+				Approver:   tc.approver.String(),
+				Proxy:      tc.proxy.String(),
 			}
 			res, err := s.msgServer.Approve(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -405,9 +405,9 @@ func (s *KeeperTestSuite) TestMsgDisapprove() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &collection.MsgDisapprove{
-				ContractId:  s.contractID,
-				Approver: tc.approver.String(),
-				Proxy:    tc.proxy.String(),
+				ContractId: s.contractID,
+				Approver:   tc.approver.String(),
+				Proxy:      tc.proxy.String(),
 			}
 			res, err := s.msgServer.Disapprove(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -423,11 +423,11 @@ func (s *KeeperTestSuite) TestMsgDisapprove() {
 func (s *KeeperTestSuite) TestMsgCreateContract() {
 	testCases := map[string]struct {
 		owner sdk.AccAddress
-		valid    bool
+		valid bool
 	}{
 		"valid request": {
 			owner: s.vendor,
-			valid:    true,
+			valid: true,
 		},
 	}
 
@@ -452,17 +452,17 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 func (s *KeeperTestSuite) TestMsgIssueFT() {
 	testCases := map[string]struct {
 		contractID string
-		owner sdk.AccAddress
-		valid  bool
+		owner      sdk.AccAddress
+		valid      bool
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			owner: s.vendor,
-			valid:  true,
+			owner:      s.vendor,
+			valid:      true,
 		},
 		"no permission": {
 			contractID: s.contractID,
-			owner: s.customer,
+			owner:      s.customer,
 		},
 	}
 
@@ -472,7 +472,7 @@ func (s *KeeperTestSuite) TestMsgIssueFT() {
 
 			req := &collection.MsgIssueFT{
 				ContractId: tc.contractID,
-				Owner:  tc.owner.String(),
+				Owner:      tc.owner.String(),
 			}
 			res, err := s.msgServer.IssueFT(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -488,17 +488,17 @@ func (s *KeeperTestSuite) TestMsgIssueFT() {
 func (s *KeeperTestSuite) TestMsgIssueNFT() {
 	testCases := map[string]struct {
 		contractID string
-		owner sdk.AccAddress
-		valid  bool
+		owner      sdk.AccAddress
+		valid      bool
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			owner: s.vendor,
-			valid:  true,
+			owner:      s.vendor,
+			valid:      true,
 		},
 		"no permission": {
 			contractID: s.contractID,
-			owner: s.customer,
+			owner:      s.customer,
 		},
 	}
 
@@ -508,7 +508,7 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 
 			req := &collection.MsgIssueNFT{
 				ContractId: tc.contractID,
-				Owner:  tc.owner.String(),
+				Owner:      tc.owner.String(),
 			}
 			res, err := s.msgServer.IssueNFT(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -522,28 +522,28 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgMintFT() {
-	amount := collection.NewCoin(s.ftClassID + fmt.Sprintf("%08x", 0), sdk.OneInt())
+	amount := collection.NewCoin(s.ftClassID+fmt.Sprintf("%08x", 0), sdk.OneInt())
 	testCases := map[string]struct {
 		contractID string
-		from sdk.AccAddress
-		amount []collection.Coin
-		valid  bool
+		from       sdk.AccAddress
+		amount     []collection.Coin
+		valid      bool
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			from: s.vendor,
-			amount: []collection.Coin{amount},
-			valid:  true,
+			from:       s.vendor,
+			amount:     []collection.Coin{amount},
+			valid:      true,
 		},
 		"no permission": {
 			contractID: s.contractID,
-			from: s.customer,
-			amount: []collection.Coin{amount},
+			from:       s.customer,
+			amount:     []collection.Coin{amount},
 		},
 		"no class of the token": {
 			contractID: s.contractID,
-			from: s.vendor,
-			amount: []collection.Coin{collection.NewCoin("deadbeef" + fmt.Sprintf("%08x", 0), sdk.OneInt())},
+			from:       s.vendor,
+			amount:     []collection.Coin{collection.NewCoin("deadbeef"+fmt.Sprintf("%08x", 0), sdk.OneInt())},
 		},
 	}
 
@@ -553,9 +553,9 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 
 			req := &collection.MsgMintFT{
 				ContractId: tc.contractID,
-				From:  tc.from.String(),
-				To: s.customer.String(),
-				Amount: tc.amount,
+				From:       tc.from.String(),
+				To:         s.customer.String(),
+				Amount:     tc.amount,
 			}
 			res, err := s.msgServer.MintFT(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -574,24 +574,24 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 	}
 	testCases := map[string]struct {
 		contractID string
-		from sdk.AccAddress
-		params []collection.MintNFTParam
-		valid  bool
+		from       sdk.AccAddress
+		params     []collection.MintNFTParam
+		valid      bool
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			from: s.vendor,
-			params: []collection.MintNFTParam{param},
-			valid:  true,
+			from:       s.vendor,
+			params:     []collection.MintNFTParam{param},
+			valid:      true,
 		},
 		"no permission": {
 			contractID: s.contractID,
-			from: s.customer,
-			params: []collection.MintNFTParam{param},
+			from:       s.customer,
+			params:     []collection.MintNFTParam{param},
 		},
 		"no class of the token": {
 			contractID: s.contractID,
-			from: s.vendor,
+			from:       s.vendor,
 			params: []collection.MintNFTParam{{
 				TokenType: "deadbeef",
 			}},
@@ -604,9 +604,9 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 
 			req := &collection.MsgMintNFT{
 				ContractId: tc.contractID,
-				From:  tc.from.String(),
-				To: s.customer.String(),
-				Params: tc.params,
+				From:       tc.from.String(),
+				To:         s.customer.String(),
+				Params:     tc.params,
 			}
 			res, err := s.msgServer.MintNFT(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -620,28 +620,28 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgBurn() {
-	amount := collection.NewCoin(s.ftClassID + fmt.Sprintf("%08x", 0), s.balance)
+	amount := collection.NewCoin(s.ftClassID+fmt.Sprintf("%08x", 0), s.balance)
 	testCases := map[string]struct {
 		contractID string
-		from sdk.AccAddress
-		amount []collection.Coin
-		valid  bool
+		from       sdk.AccAddress
+		amount     []collection.Coin
+		valid      bool
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			from: s.vendor,
-			amount: []collection.Coin{amount},
-			valid:  true,
+			from:       s.vendor,
+			amount:     []collection.Coin{amount},
+			valid:      true,
 		},
 		"no permission": {
 			contractID: s.contractID,
-			from: s.customer,
-			amount: []collection.Coin{amount},
+			from:       s.customer,
+			amount:     []collection.Coin{amount},
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
-			from: s.vendor,
-			amount: []collection.Coin{collection.NewCoin("deadbeef" + fmt.Sprintf("%08x", 0), sdk.OneInt())},
+			from:       s.vendor,
+			amount:     []collection.Coin{collection.NewCoin("deadbeef"+fmt.Sprintf("%08x", 0), sdk.OneInt())},
 		},
 	}
 
@@ -651,8 +651,8 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 
 			req := &collection.MsgBurn{
 				ContractId: tc.contractID,
-				From:  tc.from.String(),
-				Amount: tc.amount,
+				From:       tc.from.String(),
+				Amount:     tc.amount,
 			}
 			res, err := s.msgServer.Burn(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -666,38 +666,38 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 }
 
 func (s *KeeperTestSuite) TestMsgOperatorBurn() {
-	amount := collection.NewCoin(s.ftClassID + fmt.Sprintf("%08x", 0), s.balance)
+	amount := collection.NewCoin(s.ftClassID+fmt.Sprintf("%08x", 0), s.balance)
 	testCases := map[string]struct {
 		contractID string
-		operator sdk.AccAddress
-		from sdk.AccAddress
-		amount []collection.Coin
-		valid  bool
+		operator   sdk.AccAddress
+		from       sdk.AccAddress
+		amount     []collection.Coin
+		valid      bool
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			operator: s.operator,
-			from: s.customer,
-			amount: []collection.Coin{amount},
-			valid:  true,
+			operator:   s.operator,
+			from:       s.customer,
+			amount:     []collection.Coin{amount},
+			valid:      true,
 		},
 		"no authorization": {
 			contractID: s.contractID,
-			operator: s.vendor,
-			from: s.customer,
-			amount: []collection.Coin{amount},
+			operator:   s.vendor,
+			from:       s.customer,
+			amount:     []collection.Coin{amount},
 		},
 		"no permission": {
 			contractID: s.contractID,
-			operator: s.stranger,
-			from: s.customer,
-			amount: []collection.Coin{amount},
+			operator:   s.stranger,
+			from:       s.customer,
+			amount:     []collection.Coin{amount},
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
-			operator: s.operator,
-			from: s.customer,
-			amount: []collection.Coin{collection.NewCoin("deadbeef" + fmt.Sprintf("%08x", 0), sdk.OneInt())},
+			operator:   s.operator,
+			from:       s.customer,
+			amount:     []collection.Coin{collection.NewCoin("deadbeef"+fmt.Sprintf("%08x", 0), sdk.OneInt())},
 		},
 	}
 
@@ -707,9 +707,9 @@ func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 
 			req := &collection.MsgOperatorBurn{
 				ContractId: tc.contractID,
-				Operator: tc.operator.String(),
-				From:  tc.from.String(),
-				Amount: tc.amount,
+				Operator:   tc.operator.String(),
+				From:       tc.from.String(),
+				Amount:     tc.amount,
 			}
 			res, err := s.msgServer.OperatorBurn(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -723,28 +723,28 @@ func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 }
 
 func (s *KeeperTestSuite) TestMsgBurnFT() {
-	amount := collection.NewCoin(s.ftClassID + fmt.Sprintf("%08x", 0), s.balance)
+	amount := collection.NewCoin(s.ftClassID+fmt.Sprintf("%08x", 0), s.balance)
 	testCases := map[string]struct {
 		contractID string
-		from sdk.AccAddress
-		amount []collection.Coin
-		valid  bool
+		from       sdk.AccAddress
+		amount     []collection.Coin
+		valid      bool
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			from: s.vendor,
-			amount: []collection.Coin{amount},
-			valid:  true,
+			from:       s.vendor,
+			amount:     []collection.Coin{amount},
+			valid:      true,
 		},
 		"no permission": {
 			contractID: s.contractID,
-			from: s.customer,
-			amount: []collection.Coin{amount},
+			from:       s.customer,
+			amount:     []collection.Coin{amount},
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
-			from: s.vendor,
-			amount: []collection.Coin{collection.NewCoin("deadbeef" + fmt.Sprintf("%08x", 0), sdk.OneInt())},
+			from:       s.vendor,
+			amount:     []collection.Coin{collection.NewCoin("deadbeef"+fmt.Sprintf("%08x", 0), sdk.OneInt())},
 		},
 	}
 
@@ -754,8 +754,8 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 
 			req := &collection.MsgBurnFT{
 				ContractId: tc.contractID,
-				From:  tc.from.String(),
-				Amount: tc.amount,
+				From:       tc.from.String(),
+				Amount:     tc.amount,
 			}
 			res, err := s.msgServer.BurnFT(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -769,38 +769,38 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 }
 
 func (s *KeeperTestSuite) TestMsgBurnFTFrom() {
-	amount := collection.NewCoin(s.ftClassID + fmt.Sprintf("%08x", 0), s.balance)
+	amount := collection.NewCoin(s.ftClassID+fmt.Sprintf("%08x", 0), s.balance)
 	testCases := map[string]struct {
 		contractID string
-		proxy sdk.AccAddress
-		from sdk.AccAddress
-		amount []collection.Coin
-		valid  bool
+		proxy      sdk.AccAddress
+		from       sdk.AccAddress
+		amount     []collection.Coin
+		valid      bool
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			proxy: s.operator,
-			from: s.customer,
-			amount: []collection.Coin{amount},
-			valid:  true,
+			proxy:      s.operator,
+			from:       s.customer,
+			amount:     []collection.Coin{amount},
+			valid:      true,
 		},
 		"no authorization": {
 			contractID: s.contractID,
-			proxy: s.vendor,
-			from: s.customer,
-			amount: []collection.Coin{amount},
+			proxy:      s.vendor,
+			from:       s.customer,
+			amount:     []collection.Coin{amount},
 		},
 		"no permission": {
 			contractID: s.contractID,
-			proxy: s.stranger,
-			from: s.customer,
-			amount: []collection.Coin{amount},
+			proxy:      s.stranger,
+			from:       s.customer,
+			amount:     []collection.Coin{amount},
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
-			proxy: s.operator,
-			from: s.customer,
-			amount: []collection.Coin{collection.NewCoin("deadbeef" + fmt.Sprintf("%08x", 0), sdk.OneInt())},
+			proxy:      s.operator,
+			from:       s.customer,
+			amount:     []collection.Coin{collection.NewCoin("deadbeef"+fmt.Sprintf("%08x", 0), sdk.OneInt())},
 		},
 	}
 
@@ -810,9 +810,9 @@ func (s *KeeperTestSuite) TestMsgBurnFTFrom() {
 
 			req := &collection.MsgBurnFTFrom{
 				ContractId: tc.contractID,
-				Proxy: tc.proxy.String(),
-				From:  tc.from.String(),
-				Amount: tc.amount,
+				Proxy:      tc.proxy.String(),
+				From:       tc.from.String(),
+				Amount:     tc.amount,
 			}
 			res, err := s.msgServer.BurnFTFrom(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -829,25 +829,25 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 	param := s.nftClassID + fmt.Sprintf("%08x", 1)
 	testCases := map[string]struct {
 		contractID string
-		from sdk.AccAddress
-		tokenIDs []string
-		valid  bool
+		from       sdk.AccAddress
+		tokenIDs   []string
+		valid      bool
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			from: s.vendor,
-			tokenIDs: []string{param},
-			valid:  true,
+			from:       s.vendor,
+			tokenIDs:   []string{param},
+			valid:      true,
 		},
 		"no permission": {
 			contractID: s.contractID,
-			from: s.customer,
-			tokenIDs: []string{param},
+			from:       s.customer,
+			tokenIDs:   []string{param},
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
-			from: s.vendor,
-			tokenIDs: []string{"deadbeef" + fmt.Sprintf("%08x", 1)},
+			from:       s.vendor,
+			tokenIDs:   []string{"deadbeef" + fmt.Sprintf("%08x", 1)},
 		},
 	}
 
@@ -857,8 +857,8 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 
 			req := &collection.MsgBurnNFT{
 				ContractId: tc.contractID,
-				From:  tc.from.String(),
-				TokenIds: tc.tokenIDs,
+				From:       tc.from.String(),
+				TokenIds:   tc.tokenIDs,
 			}
 			res, err := s.msgServer.BurnNFT(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -875,35 +875,35 @@ func (s *KeeperTestSuite) TestMsgBurnNFTFrom() {
 	param := s.nftClassID + fmt.Sprintf("%08x", 3)
 	testCases := map[string]struct {
 		contractID string
-		proxy sdk.AccAddress
-		from sdk.AccAddress
-		tokenIDs []string
-		valid  bool
+		proxy      sdk.AccAddress
+		from       sdk.AccAddress
+		tokenIDs   []string
+		valid      bool
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			proxy: s.operator,
-			from: s.customer,
-			tokenIDs: []string{param},
-			valid:  true,
+			proxy:      s.operator,
+			from:       s.customer,
+			tokenIDs:   []string{param},
+			valid:      true,
 		},
 		"no authorization": {
 			contractID: s.contractID,
-			proxy: s.vendor,
-			from: s.customer,
-			tokenIDs: []string{param},
+			proxy:      s.vendor,
+			from:       s.customer,
+			tokenIDs:   []string{param},
 		},
 		"no permission": {
 			contractID: s.contractID,
-			proxy: s.stranger,
-			from: s.customer,
-			tokenIDs: []string{param},
+			proxy:      s.stranger,
+			from:       s.customer,
+			tokenIDs:   []string{param},
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
-			proxy: s.operator,
-			from: s.customer,
-			tokenIDs: []string{"deadbeef" + fmt.Sprintf("%08x", 1)},
+			proxy:      s.operator,
+			from:       s.customer,
+			tokenIDs:   []string{"deadbeef" + fmt.Sprintf("%08x", 1)},
 		},
 	}
 
@@ -913,9 +913,9 @@ func (s *KeeperTestSuite) TestMsgBurnNFTFrom() {
 
 			req := &collection.MsgBurnNFTFrom{
 				ContractId: tc.contractID,
-				Proxy: tc.proxy.String(),
-				From:  tc.from.String(),
-				TokenIds: tc.tokenIDs,
+				Proxy:      tc.proxy.String(),
+				From:       tc.from.String(),
+				TokenIds:   tc.tokenIDs,
 			}
 			res, err := s.msgServer.BurnNFTFrom(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -930,26 +930,26 @@ func (s *KeeperTestSuite) TestMsgBurnNFTFrom() {
 
 func (s *KeeperTestSuite) TestMsgGrant() {
 	testCases := map[string]struct {
-		granter sdk.AccAddress
-		grantee sdk.AccAddress
-		permission  string
-		valid   bool
+		granter    sdk.AccAddress
+		grantee    sdk.AccAddress
+		permission string
+		valid      bool
 	}{
 		"valid request": {
-			granter: s.vendor,
-			grantee: s.operator,
-			permission:  collection.Permission_Modify.String(),
-			valid:   true,
+			granter:    s.vendor,
+			grantee:    s.operator,
+			permission: collection.Permission_Modify.String(),
+			valid:      true,
 		},
 		"already granted": {
-			granter: s.vendor,
-			grantee: s.operator,
-			permission:  collection.Permission_Mint.String(),
+			granter:    s.vendor,
+			grantee:    s.operator,
+			permission: collection.Permission_Mint.String(),
 		},
 		"granter has no permission": {
-			granter: s.customer,
-			grantee: s.operator,
-			permission:  collection.Permission_Modify.String(),
+			granter:    s.customer,
+			grantee:    s.operator,
+			permission: collection.Permission_Modify.String(),
 		},
 	}
 
@@ -959,9 +959,9 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 
 			req := &collection.MsgGrant{
 				ContractId: s.contractID,
-				Granter: tc.granter.String(),
-				Grantee: tc.grantee.String(),
-				Permission:  tc.permission,
+				Granter:    tc.granter.String(),
+				Grantee:    tc.grantee.String(),
+				Permission: tc.permission,
 			}
 			res, err := s.msgServer.Grant(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -976,18 +976,18 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 
 func (s *KeeperTestSuite) TestMsgAbandon() {
 	testCases := map[string]struct {
-		grantee sdk.AccAddress
-		permission  string
-		valid   bool
+		grantee    sdk.AccAddress
+		permission string
+		valid      bool
 	}{
 		"valid request": {
-			grantee: s.operator,
-			permission:  collection.Permission_Mint.String(),
-			valid:   true,
+			grantee:    s.operator,
+			permission: collection.Permission_Mint.String(),
+			valid:      true,
 		},
 		"not granted yet": {
-			grantee: s.operator,
-			permission:  collection.Permission_Modify.String(),
+			grantee:    s.operator,
+			permission: collection.Permission_Modify.String(),
 		},
 	}
 
@@ -997,8 +997,8 @@ func (s *KeeperTestSuite) TestMsgAbandon() {
 
 			req := &collection.MsgAbandon{
 				ContractId: s.contractID,
-				Grantee: tc.grantee.String(),
-				Permission:  tc.permission,
+				Grantee:    tc.grantee.String(),
+				Permission: tc.permission,
 			}
 			res, err := s.msgServer.Abandon(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -1013,26 +1013,26 @@ func (s *KeeperTestSuite) TestMsgAbandon() {
 
 func (s *KeeperTestSuite) TestMsgGrantPermission() {
 	testCases := map[string]struct {
-		granter sdk.AccAddress
-		grantee sdk.AccAddress
-		permission  string
-		valid   bool
+		granter    sdk.AccAddress
+		grantee    sdk.AccAddress
+		permission string
+		valid      bool
 	}{
 		"valid request": {
-			granter: s.vendor,
-			grantee: s.operator,
-			permission:  collection.Permission_Modify.String(),
-			valid:   true,
+			granter:    s.vendor,
+			grantee:    s.operator,
+			permission: collection.Permission_Modify.String(),
+			valid:      true,
 		},
 		"already granted": {
-			granter: s.vendor,
-			grantee: s.operator,
-			permission:  collection.Permission_Mint.String(),
+			granter:    s.vendor,
+			grantee:    s.operator,
+			permission: collection.Permission_Mint.String(),
 		},
 		"granter has no permission": {
-			granter: s.customer,
-			grantee: s.operator,
-			permission:  collection.Permission_Modify.String(),
+			granter:    s.customer,
+			grantee:    s.operator,
+			permission: collection.Permission_Modify.String(),
 		},
 	}
 
@@ -1042,9 +1042,9 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 
 			req := &collection.MsgGrantPermission{
 				ContractId: s.contractID,
-				From: tc.granter.String(),
-				To: tc.grantee.String(),
-				Permission:  tc.permission,
+				From:       tc.granter.String(),
+				To:         tc.grantee.String(),
+				Permission: tc.permission,
 			}
 			res, err := s.msgServer.GrantPermission(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -1059,18 +1059,18 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 
 func (s *KeeperTestSuite) TestMsgRevokePermission() {
 	testCases := map[string]struct {
-		from sdk.AccAddress
-		permission  string
-		valid   bool
+		from       sdk.AccAddress
+		permission string
+		valid      bool
 	}{
 		"valid request": {
-			from: s.operator,
-			permission:  collection.Permission_Mint.String(),
-			valid:   true,
+			from:       s.operator,
+			permission: collection.Permission_Mint.String(),
+			valid:      true,
 		},
 		"not granted yet": {
-			from: s.operator,
-			permission:  collection.Permission_Modify.String(),
+			from:       s.operator,
+			permission: collection.Permission_Modify.String(),
 		},
 	}
 
@@ -1080,8 +1080,8 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 
 			req := &collection.MsgRevokePermission{
 				ContractId: s.contractID,
-				From: tc.from.String(),
-				Permission:  tc.permission,
+				From:       tc.from.String(),
+				Permission: tc.permission,
 			}
 			res, err := s.msgServer.RevokePermission(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {

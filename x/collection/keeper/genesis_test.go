@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"fmt"
+
 	"github.com/line/lbm-sdk/x/collection"
 )
 
@@ -9,11 +11,13 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 	genesis := s.keeper.ExportGenesis(s.ctx)
 
 	// forge
-	// TODO: revisit
-	// err := s.keeper.Burn(s.ctx, s.contractID, s.vendor, s.balance)
-	// s.Require().NoError(err)
-	// err = s.keeper.Mint(s.ctx, s.contractID, s.vendor, s.customer, s.balance)
-	// s.Require().NoError(err)
+	amount := collection.NewCoins(collection.NewCoin(s.ftClassID+fmt.Sprintf("%08x", 0), s.balance))
+	err := s.keeper.SendCoins(s.ctx, s.contractID, s.vendor, s.customer, amount)
+	s.Require().NoError(err)
+
+	err = s.keeper.SendCoins(s.ctx, s.contractID, s.customer, s.operator, amount)
+	s.Require().NoError(err)
+
 	s.keeper.Abandon(s.ctx, s.contractID, s.vendor, collection.Permission_Mint)
 
 	// restore
@@ -22,7 +26,4 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 	// export again and compare
 	newGenesis := s.keeper.ExportGenesis(s.ctx)
 	s.Require().Equal(genesis, newGenesis)
-
-	// nil class state
-	s.keeper.InitGenesis(s.ctx, &collection.GenesisState{})
 }
