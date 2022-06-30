@@ -10,62 +10,50 @@ import "gogoproto/gogo.proto";
 // Params defines the parameters for the token module.
 message Params {}
 
-// Token defines token information.
-message Token {
-  // id defines the unique identifier of the token.
-  string id = 1;
-
-  // name defines the human-readable name of the token.
+// TokenClass defines token information.
+message TokenClass {
+  // contract_id defines the unique identifier of the token class.
+  string contract_id = 1;
+  // name defines the human-readable name of the token class. mandatory (not ERC20 compliant).
   string name = 2;
-
-  // symbol is an abbreviated name for token.
+  // symbol is an abbreviated name for token class. mandatory (not ERC20 compliant).
   string symbol = 3;
-
-  // meta is a brief description of token.
-  string meta = 4;
-
-  // image_uri is an uri for the token image stored off chain.
-  string image_uri = 5;
-
+  // image_uri is an uri for the image of the token class stored off chain.
+  string image_uri = 4;
+  // meta is a brief description of token class.
+  string meta = 5;
   // decimals is the number of decimals which one must divide the amount by to get its user representation.
   int32 decimals = 6;
-
-  // mintable represents whether the token is allowed to mint.
+  // mintable represents whether the token is allowed to mint or burn.
   bool mintable = 7;
-}
-
-// FT defines a fungible token with a class id and an amount.
-message FT {
-  // class id associated with the token.
-  string class_id = 1;
-
-  // amount of the token
-  string amount = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
 // Pair defines a key-value pair.
 message Pair {
-  string key   = 1;
+  string field = 1;
   string value = 2;
 }
 
-// Grant defines grant information.
-message Grant {
-  // address of the granted account.
-  string grantee = 1;
-
-  // class id associated with the token.
-  string class_id = 2;
-
-  // action on the token class. Must be one of "mint", "burn" and "modify".
-  string action = 3;
+// Permission enumerates the valid permissions on a token class.
+enum Permission {
+  unspecified = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
+  modify      = 1 [(gogoproto.enumvalue_customname) = "Modify"];
+  mint        = 2 [(gogoproto.enumvalue_customname) = "Mint"];
+  burn        = 3 [(gogoproto.enumvalue_customname) = "Burn"];
 }
 
-// Approve defines approve information.
-message Approve {
-  string approver = 1;
-  string proxy    = 2;
+// Authorization defines an authorization given to the operator on tokens of the holder.
+message Authorization {
+  // address of the token holder which approves the authorization.
+  string holder = 1;
+  // address of the operator which the authorization is granted to.
+  string operator = 2;
+}
 
-  // class id associated with the token.
-  string class_id = 3;
+// Grant defines permission given to a grantee.
+message Grant {
+  // address of the grantee.
+  string grantee = 1;
+  // permission on the token class.
+  string permission = 2;
 }

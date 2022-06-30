@@ -8,41 +8,49 @@ import (
 )
 
 func (s *KeeperTestSuite) TestIssue() {
-	// create a not mintable class
-	class := token.Token{
-		Id:       "fee1dead",
-		Name:     "NOT Mintable",
-		Symbol:   "NO",
-		Mintable: false,
-	}
-	err := s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, sdk.OneInt())
-	s.Require().NoError(err)
+	ctx, _ := s.ctx.CacheContext()
 
-	mintActions := []string{
-		token.ActionMint,
-		token.ActionBurn,
+	// create a not mintable class
+	class := token.TokenClass{
+		ContractId: "fee1dead",
+		Name:       "NOT Mintable",
+		Symbol:     "NO",
+		Mintable:   false,
 	}
-	for _, action := range mintActions {
-		s.Require().False(s.keeper.GetGrant(s.ctx, s.vendor, class.Id, action))
+	s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
+
+	mintPermissions := []token.Permission{
+		token.Permission_Mint,
+		token.Permission_Burn,
 	}
-	s.Require().True(s.keeper.GetGrant(s.ctx, s.vendor, class.Id, token.ActionModify))
+	for _, permission := range mintPermissions {
+		s.Require().Nil(s.keeper.GetGrant(ctx, class.ContractId, s.vendor, permission))
+	}
+	s.Require().NotNil(s.keeper.GetGrant(ctx, class.ContractId, s.vendor, token.Permission_Modify))
 
 	// override fails
-	class.Id = s.classID
-	err = s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, sdk.OneInt())
-	s.Require().Error(err)
+	class.ContractId = s.contractID
+	s.Require().Panics(func() {
+		s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
+	})
 }
 
 func (s *KeeperTestSuite) TestMint() {
-	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
+	userDescriptions := map[sdk.AccAddress]string{
+		s.vendor:   "vendor",
+		s.operator: "operator",
+		s.customer: "customer",
+	}
 	to := s.vendor
-	amount := token.FT{ClassId: s.classID, Amount: sdk.OneInt()}
-	for _, grantee := range users {
-		name := fmt.Sprintf("Grantee: %s", grantee)
+	amount := sdk.OneInt()
+	for grantee, desc := range userDescriptions {
+		name := fmt.Sprintf("Grantee: %s", desc)
 		s.Run(name, func() {
-			granted := s.keeper.GetGrant(s.ctx, grantee, amount.ClassId, token.ActionMint)
-			err := s.keeper.Mint(s.ctx, grantee, to, []token.FT{amount})
-			if granted {
+			ctx, _ := s.ctx.CacheContext()
+
+			_, grantErr := s.keeper.GetGrant(ctx, s.contractID, grantee, token.Permission_Mint)
+			err := s.keeper.Mint(ctx, s.contractID, grantee, to, amount)
+			if grantErr == nil {
 				s.Require().NoError(err)
 			} else {
 				s.Require().Error(err)
@@ -52,33 +60,24 @@ func (s *KeeperTestSuite) TestMint() {
 }
 
 func (s *KeeperTestSuite) TestBurn() {
-	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
-	amount := token.FT{ClassId: s.classID, Amount: sdk.OneInt()}
-	for _, from := range users {
-		name := fmt.Sprintf("From: %s", from)
-		s.Run(name, func() {
-			granted := s.keeper.GetGrant(s.ctx, from, amount.ClassId, token.ActionBurn)
-			err := s.keeper.Burn(s.ctx, from, []token.FT{amount})
-			if granted {
-				s.Require().NoError(err)
-			} else {
-				s.Require().Error(err)
-			}
-		})
+	userDescriptions := map[sdk.AccAddress]string{
+		s.vendor:   "vendor",
+		s.operator: "operator",
+		s.customer: "customer",
 	}
-}
-
-func (s *KeeperTestSuite) TestBurnFrom() {
-	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
-	amount := token.FT{ClassId: s.classID, Amount: sdk.OneInt()}
-	for _, grantee := range users {
-		for _, from := range users {
-			name := fmt.Sprintf("Grantee: %s, From: %s", grantee, from)
+	amountDescriptions := map[sdk.Int]string{
+		s.balance:                   "limit",
+		s.balance.Add(sdk.OneInt()): "excess",
+	}
+	for from, fromDesc := range userDescriptions {
+		for amount, amountDesc := range amountDescriptions {
+			name := fmt.Sprintf("From: %s, Amount: %s", fromDesc, amountDesc)
 			s.Run(name, func() {
-				granted := s.keeper.GetGrant(s.ctx, grantee, amount.ClassId, token.ActionBurn)
-				approved := s.keeper.GetApprove(s.ctx, from, grantee, amount.ClassId)
-				err := s.keeper.BurnFrom(s.ctx, grantee, from, []token.FT{amount})
-				if granted && approved {
+				ctx, _ := s.ctx.CacheContext()
+
+				_, grantErr := s.keeper.GetGrant(ctx, s.contractID, from, token.Permission_Burn)
+				err := s.keeper.Burn(ctx, s.contractID, from, amount)
+				if grantErr == nil && amount.LTE(s.balance) {
 					s.Require().NoError(err)
 				} else {
 					s.Require().Error(err)
@@ -88,41 +87,28 @@ func (s *KeeperTestSuite) TestBurnFrom() {
 	}
 }
 
-func (s *KeeperTestSuite) TestModify() {
-	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
-	changes := []token.Pair{
-		{Key: token.AttributeKeyName, Value: "new name"},
-		{Key: token.AttributeKeyImageURI, Value: "new uri"},
-		{Key: token.AttributeKeyMeta, Value: "new meta"},
+func (s *KeeperTestSuite) TestOperatorBurn() {
+	userDescriptions := map[sdk.AccAddress]string{
+		s.vendor:   "vendor",
+		s.operator: "operator",
+		s.customer: "customer",
 	}
-	for _, grantee := range users {
-		name := fmt.Sprintf("Grantee: %s", grantee)
-		s.Run(name, func() {
-			granted := s.keeper.GetGrant(s.ctx, grantee, s.classID, token.ActionModify)
-			err := s.keeper.Modify(s.ctx, s.classID, grantee, changes)
-			if granted {
-				s.Require().NoError(err)
-			} else {
-				s.Require().Error(err)
-			}
-		})
+	amountDescriptions := map[sdk.Int]string{
+		s.balance:                   "limit",
+		s.balance.Add(sdk.OneInt()): "excess",
 	}
-}
-
-func (s *KeeperTestSuite) TestGrant() {
-	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
-	actions := []string{token.ActionMint, token.ActionBurn, token.ActionModify}
-	for _, granter := range users {
-		for _, grantee := range users {
-			for _, action := range actions {
-				name := fmt.Sprintf("Granter: %s, Grantee: %s", granter, grantee)
+	for operator, operatorDesc := range userDescriptions {
+		for from, fromDesc := range userDescriptions {
+			for amount, amountDesc := range amountDescriptions {
+				name := fmt.Sprintf("Operator: %s, From: %s, Amount: %s", operatorDesc, fromDesc, amountDesc)
 				s.Run(name, func() {
-					granterGranted := s.keeper.GetGrant(s.ctx, granter, s.classID, action)
-					granteeGranted := s.keeper.GetGrant(s.ctx, grantee, s.classID, action)
-					err := s.keeper.Grant(s.ctx, granter, grantee, s.classID, action)
-					if granterGranted && !granteeGranted {
+					ctx, _ := s.ctx.CacheContext()
+
+					_, grantErr := s.keeper.GetGrant(ctx, s.contractID, operator, token.Permission_Burn)
+					_, authErr := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
+					err := s.keeper.OperatorBurn(ctx, s.contractID, operator, from, amount)
+					if grantErr == nil && authErr == nil && amount.LTE(s.balance) {
 						s.Require().NoError(err)
-						s.Require().True(s.keeper.GetGrant(s.ctx, grantee, s.classID, action))
 					} else {
 						s.Require().Error(err)
 					}
@@ -132,18 +118,31 @@ func (s *KeeperTestSuite) TestGrant() {
 	}
 }
 
-func (s *KeeperTestSuite) TestRevoke() {
-	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
-	actions := []string{token.ActionMint, token.ActionBurn, token.ActionModify}
-	for _, grantee := range users {
-		for _, action := range actions {
-			name := fmt.Sprintf("Grantee: %s", grantee)
+func (s *KeeperTestSuite) TestModify() {
+	contractDescriptions := map[string]string{
+		s.contractID: "valid",
+		"fee1dead":   "not-exist",
+	}
+	userDescriptions := map[sdk.AccAddress]string{
+		s.vendor:   "vendor",
+		s.operator: "operator",
+		s.customer: "customer",
+	}
+	changes := []token.Pair{
+		{Field: token.AttributeKey_Name.String(), Value: "new name"},
+		{Field: token.AttributeKey_ImageURI.String(), Value: "new uri"},
+		{Field: token.AttributeKey_Meta.String(), Value: "new meta"},
+	}
+
+	for contractID, contractDesc := range contractDescriptions {
+		for grantee, granteeDesc := range userDescriptions {
+			name := fmt.Sprintf("Grantee: %s, Contract: %s", granteeDesc, contractDesc)
 			s.Run(name, func() {
-				granted := s.keeper.GetGrant(s.ctx, grantee, s.classID, action)
-				err := s.keeper.Revoke(s.ctx, grantee, s.classID, action)
-				if granted {
+				ctx, _ := s.ctx.CacheContext()
+
+				err := s.keeper.Modify(ctx, contractID, grantee, changes)
+				if contractID == s.contractID {
 					s.Require().NoError(err)
-					s.Require().False(s.keeper.GetGrant(s.ctx, grantee, s.classID, action))
 				} else {
 					s.Require().Error(err)
 				}
