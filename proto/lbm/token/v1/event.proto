@@ -3,75 +3,171 @@ package lbm.token.v1;
 
 import "gogoproto/gogo.proto";
 
+import "lbm/token/v1/token.proto";
+
 option go_package = "github.com/line/lbm-sdk/x/token";
 
-// EventTransfer is emitted on Msg/Transfer and Msg/TransferFrom
-message EventTransfer {
-  // class id associated with the token.
-  string class_id = 1;
-  string from     = 2;
-  string to       = 3;
-  string amount   = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+// EventType enumerates the valid event types on x/token.
+// For the legacy events.
+enum EventType {
+  unspecified   = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
+  issue         = 1 [(gogoproto.enumvalue_customname) = "IssueToken"];
+  mint          = 2 [(gogoproto.enumvalue_customname) = "MintToken"];
+  burn          = 3 [(gogoproto.enumvalue_customname) = "BurnToken"];
+  burn_from     = 4 [(gogoproto.enumvalue_customname) = "BurnTokenFrom"];
+  modify_token  = 5 [(gogoproto.enumvalue_customname) = "ModifyToken"];
+  transfer      = 6 [(gogoproto.enumvalue_customname) = "Transfer"];
+  transfer_from = 7 [(gogoproto.enumvalue_customname) = "TransferFrom"];
+  grant_perm    = 8 [(gogoproto.enumvalue_customname) = "GrantPermToken"];
+  revoke_perm   = 9 [(gogoproto.enumvalue_customname) = "RevokePermToken"];
+  approve_token = 10 [(gogoproto.enumvalue_customname) = "ApproveToken"];
 }
 
-// EventApprove is emitted on Msg/Approve
-message EventApprove {
-  // class id associated with the token.
-  string class_id = 1;
-  string approver = 2;
-  string proxy    = 3;
+// AttributeKey enumerates the valid attribute keys on x/token.
+// For the legacy events.
+enum AttributeKey {
+  unspecified = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
+  name        = 1 [(gogoproto.enumvalue_customname) = "Name"];
+  symbol      = 2 [(gogoproto.enumvalue_customname) = "Symbol"];
+  meta        = 3 [(gogoproto.enumvalue_customname) = "Meta"];
+  contract_id = 4 [(gogoproto.enumvalue_customname) = "ContractID"];
+  owner       = 5 [(gogoproto.enumvalue_customname) = "Owner"];
+  amount      = 6 [(gogoproto.enumvalue_customname) = "Amount"];
+  decimals    = 7 [(gogoproto.enumvalue_customname) = "Decimals"];
+  img_uri     = 8 [(gogoproto.enumvalue_customname) = "ImageURI"];
+  mintable    = 9 [(gogoproto.enumvalue_customname) = "Mintable"];
+  from        = 10 [(gogoproto.enumvalue_customname) = "From"];
+  to          = 11 [(gogoproto.enumvalue_customname) = "To"];
+  perm        = 12 [(gogoproto.enumvalue_customname) = "Perm"];
+  approver    = 13 [(gogoproto.enumvalue_customname) = "Approver"];
+  proxy       = 14 [(gogoproto.enumvalue_customname) = "Proxy"];
 }
 
-// EventIssue is emitted on Msg/Issue
+// EventSent is emitted when tokens are transferred.
+//
+// Since: 0.46.0 (finschia)
+message EventSent {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // address which triggered the send.
+  string operator = 2;
+  // holder whose tokens were sent.
+  string from = 3;
+  // recipient of the tokens
+  string to = 4;
+  // number of tokens sent.
+  string amount = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// EventAuthorizedOperator is emitted when a holder authorizes an operator to manipulate its tokens.
+//
+// Since: 0.46.0 (finschia)
+message EventAuthorizedOperator {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // address of a holder which authorized the `operator` address as an operator.
+  string holder = 2;
+  // address which became an operator of `holder`.
+  string operator = 3;
+}
+
+// EventRevokedOperator is emitted when an authorization is revoked.
+//
+// Since: 0.46.0 (finschia)
+message EventRevokedOperator {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // address of a holder which revoked the `operator` address as an operator.
+  string holder = 2;
+  // address which was revoked as an operator of `holder`.
+  string operator = 3;
+}
+
+// EventIssue is emitted when a new token class is created.
+//
+// Since: 0.46.0 (finschia)
 message EventIssue {
-  // class id associated with the token.
-  string class_id = 1;
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // name defines the human-readable name of the token class.
+  string name = 2;
+  // symbol is an abbreviated name for token class.
+  string symbol = 3;
+  // uri is an uri for the resource of the token class stored off chain.
+  string uri = 4;
+  // meta is a brief description of token class.
+  string meta = 5;
+  // decimals is the number of decimals which one must divide the amount by to get its user representation.
+  int32 decimals = 6;
+  // mintable represents whether the token is allowed to mint.
+  bool mintable = 7;
 }
 
-// EventGrant is emitted on Msg/Grant
+// EventGrant is emitted when a granter grants its permission to a grantee.
+//
+// Info: `granter` would be empty if the permission is granted by an issuance.
+//
+// Since: 0.46.0 (finschia)
 message EventGrant {
-  // class id associated with the token.
-  string class_id = 1;
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // address which granted the permission to `grantee`.
+  // it would be empty where the event is triggered by the issuance.
+  string granter = 2;
+  // address of the grantee.
+  string grantee = 3;
+  // permission on the token class.
+  string permission = 4;
+}
 
-  // address of the granted account.
+// EventAbandon is emitted when a grantee abandons its permission.
+//
+// Since: 0.46.0 (finschia)
+message EventAbandon {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // address of the grantee which abandons its grant.
   string grantee = 2;
-
-  // action on the token class. Must be one of "mint", "burn" and "modify".
-  string action = 3;
+  // permission on the token class.
+  string permission = 3;
 }
 
-// EventRevoke is emitted on Msg/Revoke
-message EventRevoke {
-  // class id associated with the token.
-  string class_id = 1;
-
-  // address of the revoked account.
-  string grantee = 2;
-
-  // action on the token class. Must be one of "mint", "burn" and "modify".
-  string action = 3;
+// EventMinted is emitted when tokens are minted.
+//
+// Since: 0.46.0 (finschia)
+message EventMinted {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // address which triggered the mint.
+  string operator = 2;
+  // recipient of the tokens.
+  string to = 3;
+  // number of tokens minted.
+  string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// EventMint is emitted on Msg/Mint
-message EventMint {
-  // class id associated with the token.
-  string class_id = 1;
-  string to       = 2;
-  string amount   = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+// EventBurned is emitted when tokens are burnt.
+//
+// Since: 0.46.0 (finschia)
+message EventBurned {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // address which triggered the burn.
+  string operator = 2;
+  // holder whose tokens were burned.
+  string from = 3;
+  // number of tokens burned.
+  string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// EventBurn is emitted on Msg/Burn
-message EventBurn {
-  // class id associated with the token.
-  string class_id = 1;
-  string from     = 2;
-  string amount   = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
-}
-
-// EventModify is emitted on Msg/Modify
-message EventModify {
-  // class id associated with the token.
-  string class_id = 1;
-  string key      = 2;
-  string value    = 3;
+// EventModified is emitted when the information of a token class is modified.
+//
+// Since: 0.46.0 (finschia)
+message EventModified {
+  // contract id associated with the token class.
+  string contract_id = 1;
+  // address which triggered the modify.
+  string operator = 2;
+  // changes on the metadata of the class.
+  repeated Pair changes = 3 [(gogoproto.nullable) = false];
 }

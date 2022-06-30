@@ -7,6 +7,7 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/token/class"
 )
 
 const (
@@ -26,71 +27,69 @@ func stringInSize(str string, size int) bool {
 
 func validateName(name string) error {
 	if len(name) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Name cannot be empty")
+		return sdkerrors.ErrInvalidRequest.Wrap("name cannot be empty")
 	} else if !stringInSize(name, maxName) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Name cannot be longer than %d", maxName)
+		return sdkerrors.ErrInvalidRequest.Wrapf("name cannot be longer than %d", maxName)
 	}
 	return nil
 }
 
 func validateSymbol(symbol string) error {
 	if !reSymbol.MatchString(symbol) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Invalid symbol: %s, valid expression is: %s", symbol, reSymbolString)
+		return sdkerrors.ErrInvalidRequest.Wrapf("invalid symbol: %s, valid expression is: %s", symbol, reSymbolString)
 	}
 	return nil
 }
 
 func validateImageURI(uri string) error {
 	if !stringInSize(uri, maxImageURI) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "ImageUri cannot be longer than %d", maxImageURI)
+		return sdkerrors.ErrInvalidRequest.Wrapf("image_uri cannot be longer than %d", maxImageURI)
 	}
 	return nil
 }
 
 func validateMeta(meta string) error {
 	if !stringInSize(meta, maxMeta) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Meta cannot be longer than %d", maxMeta)
+		return sdkerrors.ErrInvalidRequest.Wrapf("meta cannot be longer than %d", maxMeta)
 	}
 	return nil
 }
 
 func validateDecimals(decimals int32) error {
 	if decimals < 0 || decimals > 18 {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Invalid decimals: %d", decimals)
+		return sdkerrors.ErrInvalidRequest.Wrapf("invalid decimals: %d", decimals)
 	}
 	return nil
 }
 
 func validateAmount(amount sdk.Int) error {
 	if !amount.IsPositive() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Amount must be positive: %s", amount)
+		return sdkerrors.ErrInvalidRequest.Wrapf("amount must be positive: %s", amount)
 	}
 	return nil
 }
 
-func validateAction(action string) error {
-	actions := []string{
-		ActionMint,
-		ActionBurn,
-		ActionModify,
+func validatePermission(permission string) error {
+	if value := Permission_value[permission]; value == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrapf("invalid permission: %s", permission)
 	}
-	for _, a := range actions {
-		if action == a {
-			return nil
-		}
-	}
-	return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Invalid action: %s", action)
+	return nil
 }
 
 func validateChange(change Pair) error {
-	validators := map[string]func(string) error{
-		AttributeKeyName:     validateName,
-		AttributeKeyImageURI: validateImageURI,
-		AttributeKeyMeta:     validateMeta,
+	validators := map[AttributeKey]func(string) error{
+		AttributeKey_Name:     validateName,
+		AttributeKey_ImageURI: validateImageURI,
+		AttributeKey_Meta:     validateMeta,
 	}
-	validator, ok := validators[change.Key]
+
+	validator, ok := validators[AttributeKey(AttributeKey_value[change.Field])]
 	if !ok {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Invalid field: %s", change.Key)
+		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Field)
 	}
 	return validator(change.Value)
+}
+
+func ValidateContractID(id string) error {
+	return class.ValidateID(id)
 }

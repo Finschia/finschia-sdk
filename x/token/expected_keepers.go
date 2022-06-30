@@ -8,7 +8,7 @@ import (
 type (
 	// AccountKeeper defines the contract required for account APIs.
 	AccountKeeper interface {
-		GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
+		HasAccount(ctx sdk.Context, addr sdk.AccAddress) bool
 		SetAccount(ctx sdk.Context, account authtypes.AccountI)
 
 		NewAccountWithAddress(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
