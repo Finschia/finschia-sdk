@@ -29,6 +29,31 @@ func TestValidateGenesis(t *testing.T) {
 			},
 			false,
 		},
+		"balances of invalid contract id": {
+			&token.GenesisState{
+				Balances: []token.ContractBalances{
+					{
+						Balances: []token.Balance{
+							{
+								Address: addr.String(),
+								Amount:  sdk.OneInt(),
+							},
+						},
+					},
+				},
+			},
+			false,
+		},
+		"empty tokens in a balance": {
+			&token.GenesisState{
+				Balances: []token.ContractBalances{
+					{
+						ContractId: "deadbeef",
+					},
+				},
+			},
+			false,
+		},
 		"invalid address in a balance": {
 			&token.GenesisState{
 				Balances: []token.ContractBalances{
@@ -60,20 +85,9 @@ func TestValidateGenesis(t *testing.T) {
 			},
 			false,
 		},
-		"empty tokens in a balance": {
-			&token.GenesisState{
-				Balances: []token.ContractBalances{
-					{
-						ContractId: "deadbeef",
-					},
-				},
-			},
-			false,
-		},
 		"invalid id of class": {
 			&token.GenesisState{
 				Classes: []token.TokenClass{{
-					ContractId:     "invalid",
 					Name:   "test",
 					Symbol: "TT",
 				}},
@@ -133,6 +147,17 @@ func TestValidateGenesis(t *testing.T) {
 			},
 			false,
 		},
+		"grants of invalid contract id": {
+			&token.GenesisState{
+				Grants: []token.ContractGrants{{
+					Grants: []token.Grant{{
+						Grantee: addr.String(),
+						Permission: token.Permission_Mint.String(),
+					}},
+				}},
+			},
+			false,
+		},
 		"empty grants": {
 			&token.GenesisState{
 				Grants: []token.ContractGrants{{
@@ -158,6 +183,17 @@ func TestValidateGenesis(t *testing.T) {
 					ContractId: "deadbeef",
 					Grants: []token.Grant{{
 						Grantee: addr.String(),
+					}},
+				}},
+			},
+			false,
+		},
+		"authorizations of invalid contract id": {
+			&token.GenesisState{
+				Authorizations: []token.ContractAuthorizations{{
+					Authorizations: []token.Authorization{{
+						Holder: addr.String(),
+						Operator:    addr.String(),
 					}},
 				}},
 			},

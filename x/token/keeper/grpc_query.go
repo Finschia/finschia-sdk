@@ -11,7 +11,6 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/x/token"
-	"github.com/line/lbm-sdk/x/token/class"
 )
 
 type queryServer struct {
@@ -34,7 +33,7 @@ func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) 
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 	if err := sdk.ValidateAccAddress(req.Address); err != nil {
@@ -53,7 +52,7 @@ func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -73,7 +72,7 @@ func (s queryServer) Minted(c context.Context, req *token.QueryMintedRequest) (*
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -93,7 +92,7 @@ func (s queryServer) Burnt(c context.Context, req *token.QueryBurntRequest) (*to
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -113,7 +112,7 @@ func (s queryServer) TokenClass(c context.Context, req *token.QueryTokenClassReq
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -154,7 +153,7 @@ func (s queryServer) Grant(c context.Context, req *token.QueryGrantRequest) (*to
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
@@ -179,7 +178,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
@@ -210,7 +209,7 @@ func (s queryServer) Authorization(c context.Context, req *token.QueryAuthorizat
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 	if err := sdk.ValidateAccAddress(req.Operator); err != nil {
@@ -234,7 +233,7 @@ func (s queryServer) OperatorAuthorizations(c context.Context, req *token.QueryO
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 	if err := sdk.ValidateAccAddress(req.Operator); err != nil {
@@ -265,7 +264,7 @@ func (s queryServer) Approved(c context.Context, req *token.QueryApprovedRequest
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := class.ValidateID(req.ContractId); err != nil {
+	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
 	if err := sdk.ValidateAccAddress(req.Address); err != nil {

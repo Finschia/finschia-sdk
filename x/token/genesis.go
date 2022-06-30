@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/token/class"
 )
 
 // ValidateGenesis check the given genesis state has no integrity issues
@@ -17,7 +16,10 @@ func ValidateGenesis(data GenesisState) error {
 	}
 
 	for _, contractBalances := range data.Balances {
-		// TODO: validate contract id
+		if err := ValidateContractID(contractBalances.ContractId); err != nil {
+			return err
+		}
+
 		if len(contractBalances.Balances) == 0 {
 			return sdkerrors.ErrInvalidRequest.Wrap("balances cannot be empty")
 		}
@@ -32,7 +34,7 @@ func ValidateGenesis(data GenesisState) error {
 	}
 
 	for _, c := range data.Classes {
-		if err := class.ValidateID(c.ContractId); err != nil {
+		if err := ValidateContractID(c.ContractId); err != nil {
 			return err
 		}
 		if err := validateName(c.Name); err != nil {
@@ -53,7 +55,10 @@ func ValidateGenesis(data GenesisState) error {
 	}
 
 	for _, contractGrants := range data.Grants {
-		// TODO: validate contract id
+		if err := ValidateContractID(contractGrants.ContractId); err != nil {
+			return err
+		}
+
 		if len(contractGrants.Grants) == 0 {
 			return sdkerrors.ErrInvalidRequest.Wrap("grants cannot be empty")
 		}
@@ -68,7 +73,10 @@ func ValidateGenesis(data GenesisState) error {
 	}
 
 	for _, contractAuthorizations := range data.Authorizations {
-		// TODO: validate contract id
+		if err := ValidateContractID(contractAuthorizations.ContractId); err != nil {
+			return err
+		}
+
 		if len(contractAuthorizations.Authorizations) == 0 {
 			return sdkerrors.ErrInvalidRequest.Wrap("authorizations cannot be empty")
 		}

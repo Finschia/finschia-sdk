@@ -3,14 +3,13 @@ package token
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/token/class"
 )
 
 var _ sdk.Msg = (*MsgSend)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgSend) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -38,7 +37,7 @@ var _ sdk.Msg = (*MsgOperatorSend)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgOperatorSend) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -69,7 +68,7 @@ var _ sdk.Msg = (*MsgTransferFrom)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgTransferFrom) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -100,7 +99,7 @@ var _ sdk.Msg = (*MsgAuthorizeOperator)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgAuthorizeOperator) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -124,7 +123,7 @@ var _ sdk.Msg = (*MsgRevokeOperator)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgRevokeOperator) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -148,7 +147,7 @@ var _ sdk.Msg = (*MsgApprove)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgApprove) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -217,7 +216,7 @@ var _ sdk.Msg = (*MsgGrant)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgGrant) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -245,7 +244,7 @@ var _ sdk.Msg = (*MsgAbandon)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgAbandon) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -270,7 +269,7 @@ var _ sdk.Msg = (*MsgGrantPermission)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgGrantPermission) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -298,7 +297,7 @@ var _ sdk.Msg = (*MsgRevokePermission)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgRevokePermission) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -323,7 +322,7 @@ var _ sdk.Msg = (*MsgMint)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgMint) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 	if err := sdk.ValidateAccAddress(m.From); err != nil {
@@ -351,7 +350,7 @@ var _ sdk.Msg = (*MsgBurn)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgBurn) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 	if err := sdk.ValidateAccAddress(m.From); err != nil {
@@ -375,7 +374,7 @@ var _ sdk.Msg = (*MsgOperatorBurn)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgOperatorBurn) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -403,7 +402,7 @@ var _ sdk.Msg = (*MsgBurnFrom)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgBurnFrom) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
@@ -431,7 +430,7 @@ var _ sdk.Msg = (*MsgModify)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgModify) ValidateBasic() error {
-	if err := class.ValidateID(m.ContractId); err != nil {
+	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 	if err := sdk.ValidateAccAddress(m.Owner); err != nil {

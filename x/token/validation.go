@@ -7,6 +7,7 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/token/class"
 )
 
 const (
@@ -87,4 +88,8 @@ func validateChange(change Pair) error {
 		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Field)
 	}
 	return validator(change.Value)
+}
+
+func ValidateContractID(id string) error {
+	return class.ValidateID(id)
 }
