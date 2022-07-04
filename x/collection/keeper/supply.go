@@ -269,6 +269,104 @@ func (k Keeper) setNextTokenID(ctx sdk.Context, contractID string, classID strin
 	store.Set(key, bz)
 }
 
+func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.AccAddress, changes []collection.Attribute) error {
+	contract, err := k.GetContract(ctx, contractID)
+	if err != nil {
+		return err
+	}
+
+	modifiers := map[string]func(string){
+		collection.AttributeKey_Name.String(): func(name string) {
+			contract.Name = name
+		},
+		collection.AttributeKey_BaseImgURI.String(): func(uri string) {
+			contract.Name = uri
+		},
+		collection.AttributeKey_Meta.String(): func(meta string) {
+			contract.Meta = meta
+		},
+	}
+	for _, change := range changes {
+		modifiers[change.Key](change.Value)
+	}
+
+	k.setContract(ctx, *contract)
+
+	event := collection.EventModifiedContract{
+		ContractId: contractID,
+		Operator:   operator.String(),
+		Changes:    changes,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+	return nil
+}
+
+func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID string, operator sdk.AccAddress, changes []collection.Attribute) error {
+	class, err := k.GetTokenClass(ctx, contractID, classID)
+	if err != nil {
+		return err
+	}
+
+	modifiers := map[string]func(string){
+		collection.AttributeKey_Name.String(): func(name string) {
+			class.SetName(name)
+		},
+		collection.AttributeKey_Meta.String(): func(meta string) {
+			class.SetMeta(meta)
+		},
+	}
+	for _, change := range changes {
+		modifiers[change.Key](change.Value)
+	}
+
+	k.setTokenClass(ctx, contractID, class)
+
+	event := collection.EventModifiedTokenClass{
+		ContractId: contractID,
+		ClassId:    class.GetId(),
+		Operator:   operator.String(),
+		Changes:    changes,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+	return nil
+}
+
+func (k Keeper) ModifyNFT(ctx sdk.Context, contractID string, tokenID string, operator sdk.AccAddress, changes []collection.Attribute) error {
+	token, err := k.GetNFT(ctx, contractID, tokenID)
+	if err != nil {
+		return err
+	}
+
+	modifiers := map[string]func(string){
+		collection.AttributeKey_Name.String(): func(name string) {
+			token.Name = name
+		},
+		collection.AttributeKey_Meta.String(): func(meta string) {
+			token.Meta = meta
+		},
+	}
+	for _, change := range changes {
+		modifiers[change.Key](change.Value)
+	}
+
+	k.setNFT(ctx, contractID, *token)
+
+	event := collection.EventModifiedNFT{
+		ContractId: contractID,
+		TokenId:    tokenID,
+		Operator:   operator.String(),
+		Changes:    changes,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+	return nil
+}
+
 func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.AccAddress, permission collection.Permission) error {
 	k.grant(ctx, contractID, grantee, permission)
 

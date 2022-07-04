@@ -1498,7 +1498,10 @@ func TestMsgModifyContract(t *testing.T) {
 	}
 
 	contractID := "deadbeef"
-	changes := []collection.Attribute{{Key: "name", Value: "tibetian fox"}}
+	changes := []collection.Attribute{{
+		Key:   collection.AttributeKey_Name.String(),
+		Value: "fox",
+	}}
 	testCases := map[string]struct {
 		contractID string
 		operator   sdk.AccAddress
@@ -1522,7 +1525,7 @@ func TestMsgModifyContract(t *testing.T) {
 		"invalid key of change": {
 			contractID: contractID,
 			operator:   addrs[0],
-			changes:    []collection.Attribute{{Value: "tibetian fox"}},
+			changes:    []collection.Attribute{{Value: "fox"}},
 		},
 		"invalid value of change": {
 			contractID: contractID,
@@ -1571,7 +1574,10 @@ func TestMsgModifyTokenClass(t *testing.T) {
 
 	contractID := "deadbeef"
 	classID := "deadbeef"
-	changes := []collection.Attribute{{Key: "name", Value: "tibetian fox"}}
+	changes := []collection.Attribute{{
+		Key:   collection.AttributeKey_Name.String(),
+		Value: "tibetian fox",
+	}}
 	testCases := map[string]struct {
 		contractID string
 		operator   sdk.AccAddress
@@ -1660,7 +1666,10 @@ func TestMsgModifyNFT(t *testing.T) {
 	contractID := "deadbeef"
 	classID := "deadbeef"
 	tokenID := collection.NewNFTID(classID, 1)
-	changes := []collection.Attribute{{Key: "name", Value: "tibetian fox"}}
+	changes := []collection.Attribute{{
+		Key:   collection.AttributeKey_Name.String(),
+		Value: "tibetian fox",
+	}}
 	testCases := map[string]struct {
 		contractID string
 		operator   sdk.AccAddress

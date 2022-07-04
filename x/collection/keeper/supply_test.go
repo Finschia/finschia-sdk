@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"fmt"
+
 	"github.com/line/lbm-sdk/x/collection"
 )
 
@@ -61,5 +63,94 @@ func (s *KeeperTestSuite) TestCreateTokenClass() {
 			s.Require().NoError(err)
 			s.Require().NoError(class.ValidateBasic())
 		})
+	}
+}
+
+func (s *KeeperTestSuite) TestModifyContract() {
+	contractDescriptions := map[string]string{
+		s.contractID: "valid",
+		"deadbeef":   "not-exist",
+	}
+	changes := []collection.Attribute{
+		{Key: collection.AttributeKey_Name.String(), Value: "fox"},
+		{Key: collection.AttributeKey_BaseImgURI.String(), Value: "file:///fox.png"},
+		{Key: collection.AttributeKey_Meta.String(), Value: "Fox"},
+	}
+
+	for contractID, contractDesc := range contractDescriptions {
+		name := fmt.Sprintf("Contract: %s", contractDesc)
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			err := s.keeper.ModifyContract(ctx, contractID, s.vendor, changes)
+			if contractID == s.contractID {
+				s.Require().NoError(err)
+			} else {
+				s.Require().Error(err)
+			}
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestModifyTokenClass() {
+	contractDescriptions := map[string]string{
+		s.contractID: "valid",
+		"deadbeef":   "not-exist",
+	}
+	classDescriptions := map[string]string{
+		s.nftClassID: "valid",
+		"deadbeef":   "not-exist",
+	}
+	changes := []collection.Attribute{
+		{Key: collection.AttributeKey_Name.String(), Value: "arctic fox"},
+		{Key: collection.AttributeKey_Meta.String(), Value: "Arctic Fox"},
+	}
+
+	for contractID, contractDesc := range contractDescriptions {
+		for classID, classDesc := range classDescriptions {
+			name := fmt.Sprintf("Contract: %s, Class: %s", contractDesc, classDesc)
+			s.Run(name, func() {
+				ctx, _ := s.ctx.CacheContext()
+
+				err := s.keeper.ModifyTokenClass(ctx, contractID, classID, s.vendor, changes)
+				if contractID == s.contractID && classID == s.nftClassID {
+					s.Require().NoError(err)
+				} else {
+					s.Require().Error(err)
+				}
+			})
+		}
+	}
+}
+
+func (s *KeeperTestSuite) TestModifyNFT() {
+	contractDescriptions := map[string]string{
+		s.contractID: "valid",
+		"deadbeef":   "not-exist",
+	}
+	validTokenID := collection.NewNFTID(s.nftClassID, 1)
+	tokenDescriptions := map[string]string{
+		validTokenID:                       "valid",
+		collection.NewNFTID("deadbeef", 1): "not-exist",
+	}
+	changes := []collection.Attribute{
+		{Key: collection.AttributeKey_Name.String(), Value: "fennec fox 1"},
+		{Key: collection.AttributeKey_Meta.String(), Value: "Fennec Fox 1"},
+	}
+
+	for contractID, contractDesc := range contractDescriptions {
+		for tokenID, tokenDesc := range tokenDescriptions {
+			name := fmt.Sprintf("Contract: %s, Token: %s", contractDesc, tokenDesc)
+			s.Run(name, func() {
+				ctx, _ := s.ctx.CacheContext()
+
+				err := s.keeper.ModifyNFT(ctx, contractID, tokenID, s.vendor, changes)
+				if contractID == s.contractID && tokenID == validTokenID {
+					s.Require().NoError(err)
+				} else {
+					s.Require().Error(err)
+				}
+			})
+		}
 	}
 }

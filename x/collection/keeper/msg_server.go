@@ -491,19 +491,91 @@ func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom
 }
 
 func (s msgServer) ModifyContract(c context.Context, req *collection.MsgModifyContract) (*collection.MsgModifyContractResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+
+	operator := sdk.AccAddress(req.Operator)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, operator, collection.Permission_Modify); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if err := s.keeper.ModifyContract(ctx, req.ContractId, operator, req.Changes); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgModifyContractResponse{}, nil
 }
 
 func (s msgServer) ModifyTokenClass(c context.Context, req *collection.MsgModifyTokenClass) (*collection.MsgModifyTokenClassResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+
+	operator := sdk.AccAddress(req.Operator)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, operator, collection.Permission_Modify); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if err := s.keeper.ModifyTokenClass(ctx, req.ContractId, req.ClassId, operator, req.Changes); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgModifyTokenClassResponse{}, nil
 }
 
 func (s msgServer) ModifyNFT(c context.Context, req *collection.MsgModifyNFT) (*collection.MsgModifyNFTResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+
+	operator := sdk.AccAddress(req.Operator)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, operator, collection.Permission_Modify); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	if err := s.keeper.ModifyNFT(ctx, req.ContractId, req.TokenId, operator, req.Changes); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgModifyNFTResponse{}, nil
 }
 
 func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collection.MsgModifyResponse, error) {
-	return nil, sdkerrors.ErrNotSupported
+	ctx := sdk.UnwrapSDKContext(c)
+
+	operator := sdk.AccAddress(req.Owner)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, operator, collection.Permission_Modify); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	// copied from daphne
+	modify := func(tokenType, tokenIndex string) error {
+		changes := make([]collection.Attribute, len(req.Changes))
+		for i, change := range req.Changes {
+			changes[i] = collection.Attribute{
+				Key:   change.Field,
+				Value: change.Field,
+			}
+		}
+
+		classID := req.TokenType
+		tokenID := classID + req.TokenIndex
+		if req.TokenType != "" {
+			if req.TokenIndex != "" {
+				if collection.ValidateNFTID(tokenID) == nil {
+					return s.keeper.ModifyNFT(ctx, req.ContractId, tokenID, operator, changes)
+				}
+				return s.keeper.ModifyTokenClass(ctx, req.ContractId, classID, operator, changes)
+			}
+			return s.keeper.ModifyTokenClass(ctx, req.ContractId, classID, operator, changes)
+		}
+		if req.TokenIndex == "" {
+			return s.keeper.ModifyContract(ctx, req.ContractId, operator, changes)
+		}
+
+		return sdkerrors.ErrInvalidRequest.Wrap("token index without type")
+	}
+
+	if err := modify(req.TokenType, req.TokenIndex); err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgModifyResponse{}, nil
 }
 
 func (s msgServer) Grant(c context.Context, req *collection.MsgGrant) (*collection.MsgGrantResponse, error) {

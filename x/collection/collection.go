@@ -23,6 +23,10 @@ type TokenClass interface {
 	GetId() string
 	SetId(ids *NextClassIDs)
 
+	SetName(name string)
+
+	SetMeta(meta string)
+
 	ValidateBasic() error
 }
 
@@ -58,6 +62,14 @@ func (c *FTClass) SetId(ids *NextClassIDs) {
 	c.Id = fmt.Sprintf("%08x", id.Uint64())
 }
 
+func (c *FTClass) SetName(name string) {
+	c.Name = name
+}
+
+func (c *FTClass) SetMeta(meta string) {
+	c.Meta = meta
+}
+
 func (c FTClass) ValidateBasic() error {
 	if err := ValidateClassID(c.Id); err != nil {
 		return err
@@ -85,6 +97,14 @@ func (c *NFTClass) SetId(ids *NextClassIDs) {
 	id := ids.NonFungible
 	ids.NonFungible = id.Incr()
 	c.Id = fmt.Sprintf("%08x", id.Uint64())
+}
+
+func (c *NFTClass) SetName(name string) {
+	c.Name = name
+}
+
+func (c *NFTClass) SetMeta(meta string) {
+	c.Meta = meta
 }
 
 func (c NFTClass) ValidateBasic() error {

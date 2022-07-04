@@ -950,6 +950,222 @@ func (s *KeeperTestSuite) TestMsgBurnNFTFrom() {
 	}
 }
 
+func (s *KeeperTestSuite) TestMsgModifyContract() {
+	testCases := map[string]struct {
+		contractID string
+		operator   sdk.AccAddress
+		valid      bool
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			valid:      true,
+		},
+		"no permission": {
+			contractID: s.contractID,
+			operator:   s.customer,
+		},
+		"contract not found": {
+			contractID: "deadbeef",
+			operator:   s.vendor,
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			changes := []collection.Attribute{{
+				Key:   collection.AttributeKey_Name.String(),
+				Value: "fox",
+			}}
+			req := &collection.MsgModifyContract{
+				ContractId: tc.contractID,
+				Operator:   tc.operator.String(),
+				Changes:    changes,
+			}
+			res, err := s.msgServer.ModifyContract(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgModifyTokenClass() {
+	testCases := map[string]struct {
+		contractID string
+		operator   sdk.AccAddress
+		classID    string
+		valid      bool
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			classID:    s.nftClassID,
+			valid:      true,
+		},
+		"no permission": {
+			contractID: s.contractID,
+			operator:   s.customer,
+			classID:    s.nftClassID,
+		},
+		"token class not found": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			classID:    "deadbeef",
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			changes := []collection.Attribute{{
+				Key:   collection.AttributeKey_Name.String(),
+				Value: "arctic fox",
+			}}
+			req := &collection.MsgModifyTokenClass{
+				ContractId: tc.contractID,
+				Operator:   tc.operator.String(),
+				ClassId:    tc.classID,
+				Changes:    changes,
+			}
+			res, err := s.msgServer.ModifyTokenClass(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgModifyNFT() {
+	tokenID := collection.NewNFTID(s.nftClassID, 1)
+	testCases := map[string]struct {
+		contractID string
+		operator   sdk.AccAddress
+		tokenID    string
+		valid      bool
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			tokenID:    tokenID,
+			valid:      true,
+		},
+		"no permission": {
+			contractID: s.contractID,
+			operator:   s.customer,
+			tokenID:    tokenID,
+		},
+		"token not found": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			tokenID:    collection.NewNFTID("deadbeef", 1),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			changes := []collection.Attribute{{
+				Key:   collection.AttributeKey_Name.String(),
+				Value: "fennec fox 1",
+			}}
+			req := &collection.MsgModifyNFT{
+				ContractId: tc.contractID,
+				Operator:   tc.operator.String(),
+				TokenId:    tc.tokenID,
+				Changes:    changes,
+			}
+			res, err := s.msgServer.ModifyNFT(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgModify() {
+	tokenIndex := collection.NewNFTID(s.nftClassID, 1)[8:]
+	testCases := map[string]struct {
+		contractID string
+		operator   sdk.AccAddress
+		tokenType  string
+		tokenIndex string
+		valid      bool
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			valid:      true,
+		},
+		"no permission": {
+			contractID: s.contractID,
+			operator:   s.customer,
+			tokenType:  s.nftClassID,
+			tokenIndex: tokenIndex,
+		},
+		"nft not found": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			tokenType:  s.nftClassID,
+			tokenIndex: collection.NewNFTID(s.nftClassID, s.lenChain*6+1)[8:],
+		},
+		"ft class not found": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			tokenType:  "00bab10c",
+			tokenIndex: collection.NewFTID("00bab10c")[8:],
+		},
+		"nft class not found": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			tokenType:  "deadbeef",
+		},
+		"token index without type": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			tokenIndex: "deadbeef",
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			changes := []collection.Change{{
+				Field: collection.AttributeKey_Name.String(),
+				Value: "test",
+			}}
+			req := &collection.MsgModify{
+				ContractId: tc.contractID,
+				Owner:      tc.operator.String(),
+				TokenType:  tc.tokenType,
+				TokenIndex: tc.tokenIndex,
+				Changes:    changes,
+			}
+			res, err := s.msgServer.Modify(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
 func (s *KeeperTestSuite) TestMsgGrant() {
 	testCases := map[string]struct {
 		granter    sdk.AccAddress
