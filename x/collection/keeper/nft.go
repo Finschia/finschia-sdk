@@ -221,14 +221,6 @@ func (k Keeper) GetRoot(ctx sdk.Context, contractID string, tokenID string) (*st
 	return nil, sdkerrors.ErrInvalidRequest.Wrapf("depth of %s exceeds the limit: %d", tokenID, DepthLimit)
 }
 
-func (k Keeper) validateRoot(ctx sdk.Context, contractID string, tokenID string) error {
-	if _, err := k.GetParent(ctx, contractID, tokenID); err == nil {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not root", tokenID)
-	}
-
-	return nil
-}
-
 // legacy index
 func (k Keeper) setLegacyToken(ctx sdk.Context, contractID string, tokenID string) {
 	store := ctx.KVStore(k.storeKey)

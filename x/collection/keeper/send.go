@@ -24,9 +24,6 @@ func (k Keeper) addCoins(ctx sdk.Context, contractID string, address sdk.AccAddr
 		k.setBalance(ctx, contractID, address, coin.TokenId, newBalance)
 
 		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
-			if err := k.validateRoot(ctx, contractID, coin.TokenId); err != nil {
-				return err
-			}
 			k.setOwner(ctx, contractID, coin.TokenId, address)
 		}
 	}
@@ -47,12 +44,6 @@ func (k Keeper) subtractCoins(ctx sdk.Context, contractID string, address sdk.Ac
 			return sdkerrors.ErrInsufficientFunds.Wrapf("%s is smaller than %s", balance, coin.Amount)
 		}
 		k.setBalance(ctx, contractID, address, coin.TokenId, newBalance)
-
-		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
-			if err := k.validateRoot(ctx, contractID, coin.TokenId); err != nil {
-				return err
-			}
-		}
 	}
 
 	return nil
