@@ -183,7 +183,7 @@ func (s *KeeperTestSuite) TestQueryMinted() {
 			classID:    s.ftClassID,
 			valid:      true,
 			postTest: func(res *collection.QueryMintedResponse) {
-				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Minted)
+				s.Require().Equal(s.balance.Mul(sdk.NewInt(6)), res.Minted)
 			},
 		},
 		"invalid contract id": {
@@ -228,7 +228,7 @@ func (s *KeeperTestSuite) TestQueryBurnt() {
 			classID:    s.ftClassID,
 			valid:      true,
 			postTest: func(res *collection.QueryBurntResponse) {
-				s.Require().Equal(sdk.ZeroInt(), res.Burnt)
+				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Burnt)
 			},
 		},
 		"invalid contract id": {
@@ -324,7 +324,7 @@ func (s *KeeperTestSuite) TestQueryFTMinted() {
 			tokenID:    tokenID,
 			valid:      true,
 			postTest: func(res *collection.QueryFTMintedResponse) {
-				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Minted)
+				s.Require().Equal(s.balance.Mul(sdk.NewInt(6)), res.Minted)
 			},
 		},
 		"invalid contract id": {
@@ -374,7 +374,7 @@ func (s *KeeperTestSuite) TestQueryFTBurnt() {
 			tokenID:    tokenID,
 			valid:      true,
 			postTest: func(res *collection.QueryFTBurntResponse) {
-				s.Require().Equal(sdk.ZeroInt(), res.Burnt)
+				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Burnt)
 			},
 		},
 		"invalid contract id": {

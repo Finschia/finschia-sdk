@@ -104,11 +104,17 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.Require().NoError(err)
 	s.nftClassID = *nftClassID
 
-	// mint fts
+	// mint & burn fts
 	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor} {
 		tokenID := collection.NewFTID(s.ftClassID)
 		amount := collection.NewCoins(collection.NewCoin(tokenID, s.balance))
+
 		err := s.keeper.MintFT(s.ctx, s.contractID, to, amount)
+		s.Require().NoError(err)
+
+		err = s.keeper.BurnCoins(s.ctx, s.contractID, to, amount)
+		s.Require().NoError(err)
+		err = s.keeper.MintFT(s.ctx, s.contractID, to, amount)
 		s.Require().NoError(err)
 	}
 
