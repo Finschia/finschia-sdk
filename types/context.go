@@ -62,7 +62,7 @@ func (c Context) EventManager() *EventManager { return c.eventManager }
 
 // clone the header before returning
 func (c Context) BlockHeader() ocproto.Header {
-	var msg = proto.Clone(&c.header).(*ocproto.Header)
+	msg := proto.Clone(&c.header).(*ocproto.Header)
 	return *msg
 }
 

@@ -25,9 +25,7 @@ import (
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 )
 
-var (
-	_ abci.Application = (*BaseApp)(nil)
-)
+var _ abci.Application = (*BaseApp)(nil)
 
 type (
 	// StoreLoader defines a customizable function to control how we load the CommitMultiStore

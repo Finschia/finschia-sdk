@@ -236,7 +236,6 @@ type Manager struct {
 
 // NewManager creates a new Manager object
 func NewManager(modules ...AppModule) *Manager {
-
 	moduleMap := make(map[string]AppModule)
 	modulesStr := make([]string, 0, len(modules))
 	for _, module := range modules {
@@ -423,7 +422,7 @@ func (m Manager) RunMigrations(ctx sdk.Context, cfg Configurator, fromVM Version
 	if !ok {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expected %T, got %T", configurator{}, cfg)
 	}
-	var modules = m.OrderMigrations
+	modules := m.OrderMigrations
 	if modules == nil {
 		modules = DefaultMigrationsOrder(m.ModuleNames())
 	}

@@ -65,7 +65,7 @@ $ %s query %s grants link1skjw.. link1skjwj.. %s
 			if err != nil {
 				return err
 			}
-			var msgAuthorized = ""
+			msgAuthorized := ""
 			if len(args) >= 3 {
 				msgAuthorized = args[2]
 			}
@@ -80,7 +80,8 @@ $ %s query %s grants link1skjw.. link1skjwj.. %s
 					Granter:    granter.String(),
 					Grantee:    grantee.String(),
 					MsgTypeUrl: msgAuthorized,
-					Pagination: pageReq},
+					Pagination: pageReq,
+				},
 			)
 			if err != nil {
 				return err

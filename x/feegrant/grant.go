@@ -8,9 +8,7 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
-var (
-	_ types.UnpackInterfacesMessage = &Grant{}
-)
+var _ types.UnpackInterfacesMessage = &Grant{}
 
 // NewGrant creates a new FeeAllowanceGrant.
 //nolint:interfacer

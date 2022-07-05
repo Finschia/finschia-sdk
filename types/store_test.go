@@ -25,7 +25,7 @@ func (s *storeTestSuite) SetupSuite() {
 }
 
 func (s *storeTestSuite) TestPrefixEndBytes() {
-	var testCases = []struct {
+	testCases := []struct {
 		prefix   []byte
 		expected []byte
 	}{
@@ -48,7 +48,7 @@ func (s *storeTestSuite) TestCommitID() {
 	var empty sdk.CommitID
 	s.Require().True(empty.IsZero())
 
-	var nonempty = sdk.CommitID{
+	nonempty := sdk.CommitID{
 		Version: 1,
 		Hash:    []byte("testhash"),
 	}
