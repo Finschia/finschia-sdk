@@ -30,7 +30,7 @@ RUN make build-linux
 FROM alpine:edge
 
 # Install ca-certificates
-RUN apk add --update ca-certificates
+RUN apk add --update ca-certificates libstdc++
 WORKDIR /root
 
 # Copy over binaries from the build-env

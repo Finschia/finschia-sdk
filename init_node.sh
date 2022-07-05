@@ -21,7 +21,7 @@ redirect() {
   fi
 }
 
-BINARY=simd
+BINARY=./build/simd
 BASE_DIR=~/.simapp
 CHAIN_DIR_PREFIX="${BASE_DIR}/simapp"
 GENTXS_DIR="${BASE_DIR}/gentxs"
