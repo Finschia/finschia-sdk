@@ -94,20 +94,37 @@ service Msg {
   // - create_collection (deprecated, not typed)
   rpc CreateContract(MsgCreateContract) returns (MsgCreateContractResponse);
 
+  // CreateFTClass defines a method to create a class of fungible token.
+  // one may set the supply on the creation, then no one can change the supply, which means no more mints and burns.
+  // Fires:
+  // - EventCreatedFTClass
+  // - EventMintedFT
+  // - issue_ft (deprecated, not typed)
+  // Since: 0.46.0 (finschia)
+  rpc CreateFTClass(MsgCreateFTClass) returns (MsgCreateFTClassResponse);
+
+  // CreateNFTClass defines a method to create a class of non-fungible token.
+  // Fires:
+  // - EventCreatedNFTClass
+  // - issue_nft (deprecated, not typed)
+  // Since: 0.46.0 (finschia)
+  rpc CreateNFTClass(MsgCreateNFTClass) returns (MsgCreateNFTClassResponse);
+
   // IssueFT defines a method to create a class of fungible token.
   // Fires:
   // - EventIssueFT
   // - EventMintedFT
   // - issue_ft (deprecated, not typed)
   // Note: it does not grant any permissions to its issuer.
+  // Note: deprecated (use CreateFTClass)
   rpc IssueFT(MsgIssueFT) returns (MsgIssueFTResponse);
 
   // IssueNFT defines a method to create a class of non-fungible token.
   // Fires:
   // - EventIssueNFT
-  // - EventMintedNFT
   // - issue_nft (deprecated, not typed)
   // Note: it DOES grant `mint` and `burn` permissions to its issuer.
+  // Note: deprecated (use CreateNFTClass)
   rpc IssueNFT(MsgIssueNFT) returns (MsgIssueNFTResponse);
 
   // MintFT defines a method to mint fungible tokens.
@@ -567,6 +584,79 @@ message MsgCreateContractResponse {
   string id = 1;
 }
 
+// MsgCreateFTClass is the Msg/CreateFTClass request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `operator` is of invalid format.
+//   - `to` is not empty and is of invalid format.
+// - ErrInvalidRequest
+//   - `name` exceeds the app-specific limit in length.
+//   - `meta` exceeds the app-specific limit in length.
+//   - `decimals` is lesser than 0 or greater than 18.
+//   - `supply` is positive and `to` is of invalid format.
+//
+// Signer: `operator`
+//
+// Since: 0.46.0 (finschia)
+message MsgCreateFTClass {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggers the create.
+  string operator = 2;
+  // name defines the human-readable name of the token class.
+  string name = 3;
+  // meta is a brief description of the token class.
+  string meta = 4;
+  // decimals is the number of decimals which one must divide the amount by to get its user representation.
+  int32 decimals = 5;
+
+  // recipient of the minted tokens.
+  string to = 6;
+  // amount of tokens to mint on the create.
+  // Note: amount may be zero.
+  string supply = 7 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// MsgCreateFTClassResponse is the Msg/CreateFTClass response type.
+//
+// Since: 0.46.0 (finschia)
+message MsgCreateFTClassResponse {
+  // id of the new token class.
+  string id = 1;
+}
+
+// MsgCreateNFTClass is the Msg/CreateNFTClass request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `operator` is of invalid format.
+// - ErrInvalidRequest
+//   - `name` exceeds the app-specific limit in length.
+//   - `meta` exceeds the app-specific limit in length.
+//
+// Signer: `operator`
+//
+// Since: 0.46.0 (finschia)
+message MsgCreateNFTClass {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggers the create.
+  string operator = 2;
+  // name defines the human-readable name of the token class.
+  string name = 3;
+  // meta is a brief description of the token class.
+  string meta = 4;
+}
+
+// MsgCreateNFTClassResponse is the Msg/CreateNFTClass response type.
+//
+// Since: 0.46.0 (finschia)
+message MsgCreateNFTClassResponse {
+  // id of the new token class.
+  string id = 1;
+}
+
 // MsgIssueFT is the Msg/IssueFT request type.
 //
 // Throws:
@@ -582,6 +672,8 @@ message MsgCreateContractResponse {
 //   - `mintable` == false, amount == 1 and decimals == 0 (weird, but for the backward compatibility).
 //
 // Signer: `owner`
+//
+// Note: deprecated (use MsgCreateFTClass)
 message MsgIssueFT {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -606,6 +698,8 @@ message MsgIssueFT {
 }
 
 // MsgIssueFTResponse is the Msg/IssueFT response type.
+//
+// Note: deprecated
 message MsgIssueFTResponse {
   // id of the new token class.
   string id = 1;
@@ -621,6 +715,8 @@ message MsgIssueFTResponse {
 //   - `meta` exceeds the app-specific limit in length.
 //
 // Signer: `owner`
+//
+// Note: deprecated (use MsgCreateNFTClass)
 message MsgIssueNFT {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -634,6 +730,8 @@ message MsgIssueNFT {
 }
 
 // MsgIssueNFTResponse is the Msg/IssueNFT response type.
+//
+// Note: deprecated
 message MsgIssueNFTResponse {
   // id of the new token class.
   string id = 1;

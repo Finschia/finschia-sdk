@@ -951,6 +951,10 @@
     - [MsgBurnResponse](#lbm.collection.v1.MsgBurnResponse)
     - [MsgCreateContract](#lbm.collection.v1.MsgCreateContract)
     - [MsgCreateContractResponse](#lbm.collection.v1.MsgCreateContractResponse)
+    - [MsgCreateFTClass](#lbm.collection.v1.MsgCreateFTClass)
+    - [MsgCreateFTClassResponse](#lbm.collection.v1.MsgCreateFTClassResponse)
+    - [MsgCreateNFTClass](#lbm.collection.v1.MsgCreateNFTClass)
+    - [MsgCreateNFTClassResponse](#lbm.collection.v1.MsgCreateNFTClassResponse)
     - [MsgDetach](#lbm.collection.v1.MsgDetach)
     - [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom)
     - [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse)
@@ -14567,6 +14571,104 @@ MsgCreateContractResponse is the Msg/CreateContract response type.
 
 
 
+<a name="lbm.collection.v1.MsgCreateFTClass"></a>
+
+### MsgCreateFTClass
+MsgCreateFTClass is the Msg/CreateFTClass request type.
+
+Throws:
+- ErrInvalidAddress
+  - `operator` is of invalid format.
+  - `to` is not empty and is of invalid format.
+- ErrInvalidRequest
+  - `name` exceeds the app-specific limit in length.
+  - `meta` exceeds the app-specific limit in length.
+  - `decimals` is lesser than 0 or greater than 18.
+  - `supply` is positive and `to` is of invalid format.
+
+Signer: `operator`
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address which triggers the create. |
+| `name` | [string](#string) |  | name defines the human-readable name of the token class. |
+| `meta` | [string](#string) |  | meta is a brief description of the token class. |
+| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
+| `to` | [string](#string) |  | recipient of the minted tokens. |
+| `supply` | [string](#string) |  | amount of tokens to mint on the create. Note: amount may be zero. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgCreateFTClassResponse"></a>
+
+### MsgCreateFTClassResponse
+MsgCreateFTClassResponse is the Msg/CreateFTClass response type.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  | id of the new token class. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgCreateNFTClass"></a>
+
+### MsgCreateNFTClass
+MsgCreateNFTClass is the Msg/CreateNFTClass request type.
+
+Throws:
+- ErrInvalidAddress
+  - `operator` is of invalid format.
+- ErrInvalidRequest
+  - `name` exceeds the app-specific limit in length.
+  - `meta` exceeds the app-specific limit in length.
+
+Signer: `operator`
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address which triggers the create. |
+| `name` | [string](#string) |  | name defines the human-readable name of the token class. |
+| `meta` | [string](#string) |  | meta is a brief description of the token class. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.MsgCreateNFTClassResponse"></a>
+
+### MsgCreateNFTClassResponse
+MsgCreateNFTClassResponse is the Msg/CreateNFTClass response type.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  | id of the new token class. |
+
+
+
+
+
+
 <a name="lbm.collection.v1.MsgDetach"></a>
 
 ### MsgDetach
@@ -14761,6 +14863,8 @@ Throws:
 
 Signer: `owner`
 
+Note: deprecated (use MsgCreateFTClass)
+
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -14782,6 +14886,8 @@ Signer: `owner`
 
 ### MsgIssueFTResponse
 MsgIssueFTResponse is the Msg/IssueFT response type.
+
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -14807,6 +14913,8 @@ Throws:
 
 Signer: `owner`
 
+Note: deprecated (use MsgCreateNFTClass)
+
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -14824,6 +14932,8 @@ Signer: `owner`
 
 ### MsgIssueNFTResponse
 MsgIssueNFTResponse is the Msg/IssueNFT response type.
+
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -15520,8 +15630,10 @@ Msg defines the collection Msg service.
 | `Approve` | [MsgApprove](#lbm.collection.v1.MsgApprove) | [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the approver. Note: deprecated (use AuthorizeOperator) | |
 | `Disapprove` | [MsgDisapprove](#lbm.collection.v1.MsgDisapprove) | [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse) | Disapprove revokes the authorization of the operator to send the approver's token. Note: deprecated (use RevokeOperator) | |
 | `CreateContract` | [MsgCreateContract](#lbm.collection.v1.MsgCreateContract) | [MsgCreateContractResponse](#lbm.collection.v1.MsgCreateContractResponse) | CreateContract defines a method to create a contract for collection. it grants `mint`, `burn`, `modify` and `issue` permissions on the contract to its creator. Fires: - EventCreatedContract - create_collection (deprecated, not typed) | |
-| `IssueFT` | [MsgIssueFT](#lbm.collection.v1.MsgIssueFT) | [MsgIssueFTResponse](#lbm.collection.v1.MsgIssueFTResponse) | IssueFT defines a method to create a class of fungible token. Fires: - EventIssueFT - EventMintedFT - issue_ft (deprecated, not typed) Note: it does not grant any permissions to its issuer. | |
-| `IssueNFT` | [MsgIssueNFT](#lbm.collection.v1.MsgIssueNFT) | [MsgIssueNFTResponse](#lbm.collection.v1.MsgIssueNFTResponse) | IssueNFT defines a method to create a class of non-fungible token. Fires: - EventIssueNFT - EventMintedNFT - issue_nft (deprecated, not typed) Note: it DOES grant `mint` and `burn` permissions to its issuer. | |
+| `CreateFTClass` | [MsgCreateFTClass](#lbm.collection.v1.MsgCreateFTClass) | [MsgCreateFTClassResponse](#lbm.collection.v1.MsgCreateFTClassResponse) | CreateFTClass defines a method to create a class of fungible token. one may set the supply on the creation, then no one can change the supply, which means no more mints and burns. Fires: - EventCreatedFTClass - EventMintedFT - issue_ft (deprecated, not typed) Since: 0.46.0 (finschia) | |
+| `CreateNFTClass` | [MsgCreateNFTClass](#lbm.collection.v1.MsgCreateNFTClass) | [MsgCreateNFTClassResponse](#lbm.collection.v1.MsgCreateNFTClassResponse) | CreateNFTClass defines a method to create a class of non-fungible token. Fires: - EventCreatedNFTClass - issue_nft (deprecated, not typed) Since: 0.46.0 (finschia) | |
+| `IssueFT` | [MsgIssueFT](#lbm.collection.v1.MsgIssueFT) | [MsgIssueFTResponse](#lbm.collection.v1.MsgIssueFTResponse) | IssueFT defines a method to create a class of fungible token. Fires: - EventIssueFT - EventMintedFT - issue_ft (deprecated, not typed) Note: it does not grant any permissions to its issuer. Note: deprecated (use CreateFTClass) | |
+| `IssueNFT` | [MsgIssueNFT](#lbm.collection.v1.MsgIssueNFT) | [MsgIssueNFTResponse](#lbm.collection.v1.MsgIssueNFTResponse) | IssueNFT defines a method to create a class of non-fungible token. Fires: - EventIssueNFT - issue_nft (deprecated, not typed) Note: it DOES grant `mint` and `burn` permissions to its issuer. Note: deprecated (use CreateNFTClass) | |
 | `MintFT` | [MsgMintFT](#lbm.collection.v1.MsgMintFT) | [MsgMintFTResponse](#lbm.collection.v1.MsgMintFTResponse) | MintFT defines a method to mint fungible tokens. Fires: - EventMintedFT - mint_ft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `mint` permission. | |
 | `MintNFT` | [MsgMintNFT](#lbm.collection.v1.MsgMintNFT) | [MsgMintNFTResponse](#lbm.collection.v1.MsgMintNFTResponse) | MintNFT defines a method to mint non-fungible tokens. Fires: - EventMintedNFT - mint_nft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `mint` permission. | |
 | `Burn` | [MsgBurn](#lbm.collection.v1.MsgBurn) | [MsgBurnResponse](#lbm.collection.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Fires: - EventBurned - burn_ft (deprecated, not typed) - burn_nft (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. Info: one can burn both fungible tokens and non-fungible tokens. Since: 0.46.0 (finschia) | |

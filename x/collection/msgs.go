@@ -537,6 +537,77 @@ func (m MsgCreateContract) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+var _ sdk.Msg = (*MsgCreateFTClass)(nil)
+
+// ValidateBasic implements Msg.
+func (m MsgCreateFTClass) ValidateBasic() error {
+	if err := ValidateContractID(m.ContractId); err != nil {
+		return err
+	}
+
+	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
+
+	if err := validateName(m.Name); err != nil {
+		return err
+	}
+
+	if err := validateMeta(m.Meta); err != nil {
+		return err
+	}
+
+	if err := validateDecimals(m.Decimals); err != nil {
+		return err
+	}
+
+	if m.Supply.IsNil() || m.Supply.IsNegative() {
+		return sdkerrors.ErrInvalidRequest.Wrap("supply cannot be negative")
+	}
+	if m.Supply.IsPositive() {
+		if err := sdk.ValidateAccAddress(m.To); err != nil {
+			return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
+		}
+	}
+
+	return nil
+}
+
+// GetSigners implements Msg
+func (m MsgCreateFTClass) GetSigners() []sdk.AccAddress {
+	signer := sdk.AccAddress(m.Operator)
+	return []sdk.AccAddress{signer}
+}
+
+var _ sdk.Msg = (*MsgCreateNFTClass)(nil)
+
+// ValidateBasic implements Msg.
+func (m MsgCreateNFTClass) ValidateBasic() error {
+	if err := ValidateContractID(m.ContractId); err != nil {
+		return err
+	}
+
+	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
+
+	if err := validateName(m.Name); err != nil {
+		return err
+	}
+
+	if err := validateMeta(m.Meta); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetSigners implements Msg
+func (m MsgCreateNFTClass) GetSigners() []sdk.AccAddress {
+	signer := sdk.AccAddress(m.Operator)
+	return []sdk.AccAddress{signer}
+}
+
 var _ sdk.Msg = (*MsgIssueFT)(nil)
 
 // ValidateBasic implements Msg.
@@ -568,8 +639,9 @@ func (m MsgIssueFT) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
-	if err := validateAmount(m.Amount); err != nil {
-		return err
+	// daphne compat.
+	if m.Amount.Equal(sdk.OneInt()) && m.Decimals == 0 && !m.Mintable {
+		return sdkerrors.ErrInvalidRequest.Wrap("invalid issue of ft")
 	}
 
 	return nil

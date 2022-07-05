@@ -861,14 +861,13 @@ func TestMsgIssueFT(t *testing.T) {
 			decimals:   19,
 			amount:     sdk.OneInt(),
 		},
-		"valid supply": {
+		"daphne compat": {
 			contractID: contractID,
 			owner:      addrs[0],
 			to:         addrs[1],
 			name:       name,
 			meta:       meta,
-			decimals:   decimals,
-			amount:     sdk.ZeroInt(),
+			amount:     sdk.OneInt(),
 		},
 	}
 
@@ -945,6 +944,189 @@ func TestMsgIssueNFT(t *testing.T) {
 		msg := collection.MsgIssueNFT{
 			ContractId: tc.contractID,
 			Owner:      tc.operator.String(),
+			Name:       tc.name,
+			Meta:       tc.meta,
+		}
+
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+
+		err := msg.ValidateBasic()
+		if tc.valid {
+			require.NoError(t, err, name)
+		} else {
+			require.Error(t, err, name)
+		}
+	}
+}
+
+func TestMsgCreateFTClass(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 2)
+	for i := range addrs {
+		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	contractID := "deadbeef"
+	name := "tibetian fox"
+	meta := "Tibetian Fox"
+	decimals := int32(8)
+	testCases := map[string]struct {
+		contractID string
+		operator   sdk.AccAddress
+		name       string
+		meta       string
+		decimals   int32
+		to         sdk.AccAddress
+		supply     sdk.Int
+		valid      bool
+	}{
+		"valid msg": {
+			contractID: contractID,
+			operator:   addrs[0],
+			name:       name,
+			meta:       meta,
+			decimals:   decimals,
+			supply:     sdk.ZeroInt(),
+			valid:      true,
+		},
+		"valid msg with supply": {
+			contractID: contractID,
+			operator:   addrs[0],
+			to:         addrs[1],
+			name:       name,
+			meta:       meta,
+			decimals:   decimals,
+			supply:     sdk.OneInt(),
+			valid:      true,
+		},
+		"invalid contract id": {
+			operator: addrs[0],
+			name:     name,
+			meta:     meta,
+			decimals: decimals,
+			supply:   sdk.ZeroInt(),
+		},
+		"invalid operator": {
+			contractID: contractID,
+			name:       name,
+			meta:       meta,
+			decimals:   decimals,
+			supply:     sdk.ZeroInt(),
+		},
+		"long name": {
+			contractID: contractID,
+			operator:   addrs[0],
+			name:       string(make([]rune, 21)),
+			meta:       meta,
+			decimals:   decimals,
+			supply:     sdk.ZeroInt(),
+			valid:      false,
+		},
+		"invalid meta": {
+			contractID: contractID,
+			operator:   addrs[0],
+			name:       name,
+			meta:       string(make([]rune, 1001)),
+			decimals:   decimals,
+			supply:     sdk.ZeroInt(),
+		},
+		"invalid decimals": {
+			contractID: contractID,
+			operator:   addrs[0],
+			name:       name,
+			meta:       meta,
+			decimals:   19,
+			supply:     sdk.ZeroInt(),
+		},
+		"positive supply with invalid to": {
+			contractID: contractID,
+			operator:   addrs[0],
+			name:       name,
+			meta:       meta,
+			decimals:   decimals,
+			supply:     sdk.OneInt(),
+		},
+		"invalid supply": {
+			contractID: contractID,
+			operator:   addrs[0],
+			name:       name,
+			meta:       meta,
+			decimals:   decimals,
+		},
+	}
+
+	for name, tc := range testCases {
+		msg := collection.MsgCreateFTClass{
+			ContractId: tc.contractID,
+			Operator:   tc.operator.String(),
+			To:         tc.to.String(),
+			Name:       tc.name,
+			Meta:       tc.meta,
+			Decimals:   tc.decimals,
+			Supply:     tc.supply,
+		}
+
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+
+		err := msg.ValidateBasic()
+		if tc.valid {
+			require.NoError(t, err, name)
+		} else {
+			require.Error(t, err, name)
+		}
+	}
+}
+
+func TestMsgCreateNFTClass(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 1)
+	for i := range addrs {
+		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	contractID := "deadbeef"
+	name := "tibetian fox"
+	meta := "Tibetian Fox"
+	testCases := map[string]struct {
+		contractID string
+		operator   sdk.AccAddress
+		name       string
+		meta       string
+		valid      bool
+	}{
+		"valid msg": {
+			contractID: contractID,
+			operator:   addrs[0],
+			name:       name,
+			meta:       meta,
+			valid:      true,
+		},
+		"invalid contract id": {
+			operator: addrs[0],
+			name:     name,
+			meta:     meta,
+		},
+		"invalid operator": {
+			contractID: contractID,
+			name:       name,
+			meta:       meta,
+		},
+		"long name": {
+			contractID: contractID,
+			operator:   addrs[0],
+			name:       string(make([]rune, 21)),
+			meta:       meta,
+		},
+		"invalid meta": {
+			contractID: contractID,
+			operator:   addrs[0],
+			name:       name,
+			meta:       string(make([]rune, 1001)),
+		},
+	}
+
+	for name, tc := range testCases {
+		msg := collection.MsgCreateNFTClass{
+			ContractId: tc.contractID,
+			Operator:   tc.operator.String(),
 			Name:       tc.name,
 			Meta:       tc.meta,
 		}

@@ -443,20 +443,112 @@ func (s *KeeperTestSuite) TestMsgCreateContract() {
 	}
 }
 
+func (s *KeeperTestSuite) TestMsgCreateFTClass() {
+	testCases := map[string]struct {
+		contractID string
+		operator   sdk.AccAddress
+		supply     sdk.Int
+		valid      bool
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			supply:     sdk.ZeroInt(),
+			valid:      true,
+		},
+		"valid request with supply": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			supply:     sdk.OneInt(),
+			valid:      true,
+		},
+		"no permission": {
+			contractID: s.contractID,
+			operator:   s.customer,
+			supply:     sdk.ZeroInt(),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgCreateFTClass{
+				ContractId: tc.contractID,
+				Operator:   tc.operator.String(),
+				To:         s.customer.String(),
+				Supply:     tc.supply,
+			}
+			res, err := s.msgServer.CreateFTClass(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestMsgCreateNFTClass() {
+	testCases := map[string]struct {
+		contractID string
+		operator   sdk.AccAddress
+		valid      bool
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			operator:   s.vendor,
+			valid:      true,
+		},
+		"no permission": {
+			contractID: s.contractID,
+			operator:   s.customer,
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &collection.MsgCreateNFTClass{
+				ContractId: tc.contractID,
+				Operator:   tc.operator.String(),
+			}
+			res, err := s.msgServer.CreateNFTClass(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
 func (s *KeeperTestSuite) TestMsgIssueFT() {
 	testCases := map[string]struct {
 		contractID string
 		owner      sdk.AccAddress
+		amount     sdk.Int
 		valid      bool
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			owner:      s.vendor,
+			amount:     sdk.ZeroInt(),
+			valid:      true,
+		},
+		"valid request with supply": {
+			contractID: s.contractID,
+			owner:      s.vendor,
+			amount:     sdk.OneInt(),
 			valid:      true,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			owner:      s.customer,
+			amount:     sdk.ZeroInt(),
 		},
 	}
 
@@ -467,6 +559,7 @@ func (s *KeeperTestSuite) TestMsgIssueFT() {
 			req := &collection.MsgIssueFT{
 				ContractId: tc.contractID,
 				Owner:      tc.owner.String(),
+				Amount:     tc.amount,
 			}
 			res, err := s.msgServer.IssueFT(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {

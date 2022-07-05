@@ -241,6 +241,53 @@ func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateCo
 	return &collection.MsgCreateContractResponse{Id: id}, nil
 }
 
+func (s msgServer) CreateFTClass(c context.Context, req *collection.MsgCreateFTClass) (*collection.MsgCreateFTClassResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Operator), collection.Permission_Issue); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	mintable := !req.Supply.IsPositive()
+	class := &collection.FTClass{
+		Name:     req.Name,
+		Meta:     req.Meta,
+		Decimals: req.Decimals,
+		Mintable: mintable,
+	}
+	id, err := s.keeper.CreateTokenClass(ctx, req.ContractId, class)
+	if err != nil {
+		return nil, err
+	}
+
+	// supply tokens
+	if req.Supply.IsPositive() {
+		amount := collection.NewCoins(collection.NewFTCoin(*id, req.Supply))
+		if err := s.keeper.MintFT(ctx, req.ContractId, sdk.AccAddress(req.To), amount); err != nil {
+			panic(err)
+		}
+	}
+
+	return &collection.MsgCreateFTClassResponse{Id: *id}, nil
+}
+
+func (s msgServer) CreateNFTClass(c context.Context, req *collection.MsgCreateNFTClass) (*collection.MsgCreateNFTClassResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Operator), collection.Permission_Issue); err != nil {
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+	}
+
+	class := &collection.NFTClass{
+		Name: req.Name,
+		Meta: req.Meta,
+	}
+	id, err := s.keeper.CreateTokenClass(ctx, req.ContractId, class)
+	if err != nil {
+		return nil, err
+	}
+
+	return &collection.MsgCreateNFTClassResponse{Id: *id}, nil
+}
+
 func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*collection.MsgIssueFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Owner), collection.Permission_Issue); err != nil {
@@ -256,6 +303,14 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 	id, err := s.keeper.CreateTokenClass(ctx, req.ContractId, class)
 	if err != nil {
 		return nil, err
+	}
+
+	// supply tokens
+	if req.Amount.IsPositive() {
+		amount := collection.NewCoins(collection.NewFTCoin(*id, req.Amount))
+		if err := s.keeper.MintFT(ctx, req.ContractId, sdk.AccAddress(req.To), amount); err != nil {
+			panic(err)
+		}
 	}
 
 	return &collection.MsgIssueFTResponse{Id: *id}, nil
