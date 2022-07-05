@@ -553,10 +553,10 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 			}
 		}
 
-		classID := req.TokenType
-		tokenID := classID + req.TokenIndex
-		if req.TokenType != "" {
-			if req.TokenIndex != "" {
+		classID := tokenType
+		tokenID := classID + tokenIndex
+		if tokenType != "" {
+			if tokenIndex != "" {
 				if collection.ValidateNFTID(tokenID) == nil {
 					return s.keeper.ModifyNFT(ctx, req.ContractId, tokenID, operator, changes)
 				}
