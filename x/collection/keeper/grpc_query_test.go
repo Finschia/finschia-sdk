@@ -640,24 +640,23 @@ func (s *KeeperTestSuite) TestQueryContracts() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryTokenClass() {
+func (s *KeeperTestSuite) TestQueryFTClass() {
 	// empty request
-	_, err := s.queryServer.TokenClass(s.goCtx, nil)
+	_, err := s.queryServer.FTClass(s.goCtx, nil)
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
 		contractID string
 		classID    string
 		valid      bool
-		postTest   func(res *collection.QueryTokenClassResponse)
+		postTest   func(res *collection.QueryFTClassResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			classID:    s.ftClassID,
 			valid:      true,
-			postTest: func(res *collection.QueryTokenClassResponse) {
-				class := collection.TokenClassFromAny(&res.Class)
-				s.Require().Equal(s.ftClassID, class.GetId())
+			postTest: func(res *collection.QueryFTClassResponse) {
+				s.Require().Equal(s.ftClassID, res.Class.GetId())
 			},
 		},
 		"invalid contract id": {
@@ -670,15 +669,19 @@ func (s *KeeperTestSuite) TestQueryTokenClass() {
 			contractID: s.contractID,
 			classID:    "deadbeef",
 		},
+		"not a class of ft": {
+			contractID: s.contractID,
+			classID:    s.nftClassID,
+		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			req := &collection.QueryTokenClassRequest{
+			req := &collection.QueryFTClassRequest{
 				ContractId: tc.contractID,
 				ClassId:    tc.classID,
 			}
-			res, err := s.queryServer.TokenClass(s.goCtx, req)
+			res, err := s.queryServer.FTClass(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -690,46 +693,48 @@ func (s *KeeperTestSuite) TestQueryTokenClass() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryTokenClasses() {
+func (s *KeeperTestSuite) TestQueryNFTClass() {
 	// empty request
-	_, err := s.queryServer.TokenClasses(s.goCtx, nil)
+	_, err := s.queryServer.NFTClass(s.goCtx, nil)
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
 		contractID string
+		classID    string
 		valid      bool
-		count      uint64
-		postTest   func(res *collection.QueryTokenClassesResponse)
+		postTest   func(res *collection.QueryNFTClassResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
+			classID:    s.nftClassID,
 			valid:      true,
-			postTest: func(res *collection.QueryTokenClassesResponse) {
-				s.Require().Equal(2, len(res.Classes))
+			postTest: func(res *collection.QueryNFTClassResponse) {
+				s.Require().Equal(s.nftClassID, res.Class.GetId())
 			},
 		},
-		"valid request with limit": {
+		"invalid contract id": {
+			classID: s.ftClassID,
+		},
+		"invalid class id": {
 			contractID: s.contractID,
-			valid:      true,
-			count:      1,
-			postTest: func(res *collection.QueryTokenClassesResponse) {
-				s.Require().Equal(1, len(res.Classes))
-			},
 		},
-		"invalid contract id": {},
+		"no such a class": {
+			contractID: s.contractID,
+			classID:    "deadbeef",
+		},
+		"not a class of nft": {
+			contractID: s.contractID,
+			classID:    s.ftClassID,
+		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			pageReq := &query.PageRequest{}
-			if tc.count != 0 {
-				pageReq.Limit = tc.count
-			}
-			req := &collection.QueryTokenClassesRequest{
+			req := &collection.QueryNFTClassRequest{
 				ContractId: tc.contractID,
-				Pagination: pageReq,
+				ClassId:    tc.classID,
 			}
-			res, err := s.queryServer.TokenClasses(s.goCtx, req)
+			res, err := s.queryServer.NFTClass(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -740,6 +745,57 @@ func (s *KeeperTestSuite) TestQueryTokenClasses() {
 		})
 	}
 }
+
+// func (s *KeeperTestSuite) TestQueryTokenClasses() {
+// 	// empty request
+// 	_, err := s.queryServer.TokenClasses(s.goCtx, nil)
+// 	s.Require().Error(err)
+
+// 	testCases := map[string]struct {
+// 		contractID string
+// 		valid      bool
+// 		count      uint64
+// 		postTest   func(res *collection.QueryTokenClassesResponse)
+// 	}{
+// 		"valid request": {
+// 			contractID: s.contractID,
+// 			valid:      true,
+// 			postTest: func(res *collection.QueryTokenClassesResponse) {
+// 				s.Require().Equal(2, len(res.Classes))
+// 			},
+// 		},
+// 		"valid request with limit": {
+// 			contractID: s.contractID,
+// 			valid:      true,
+// 			count:      1,
+// 			postTest: func(res *collection.QueryTokenClassesResponse) {
+// 				s.Require().Equal(1, len(res.Classes))
+// 			},
+// 		},
+// 		"invalid contract id": {},
+// 	}
+
+// 	for name, tc := range testCases {
+// 		s.Run(name, func() {
+// 			pageReq := &query.PageRequest{}
+// 			if tc.count != 0 {
+// 				pageReq.Limit = tc.count
+// 			}
+// 			req := &collection.QueryTokenClassesRequest{
+// 				ContractId: tc.contractID,
+// 				Pagination: pageReq,
+// 			}
+// 			res, err := s.queryServer.TokenClasses(s.goCtx, req)
+// 			if !tc.valid {
+// 				s.Require().Error(err)
+// 				return
+// 			}
+// 			s.Require().NoError(err)
+// 			s.Require().NotNil(res)
+// 			tc.postTest(res)
+// 		})
+// 	}
+// }
 
 func (s *KeeperTestSuite) TestQueryTokenType() {
 	// empty request
@@ -1011,57 +1067,57 @@ func (s *KeeperTestSuite) TestQueryNFT() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryNFTs() {
-	// empty request
-	_, err := s.queryServer.NFTs(s.goCtx, nil)
-	s.Require().Error(err)
+// func (s *KeeperTestSuite) TestQueryNFTs() {
+// 	// empty request
+// 	_, err := s.queryServer.NFTs(s.goCtx, nil)
+// 	s.Require().Error(err)
 
-	testCases := map[string]struct {
-		contractID string
-		valid      bool
-		count      uint64
-		postTest   func(res *collection.QueryNFTsResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			valid:      true,
-			count:      1000000,
-			postTest: func(res *collection.QueryNFTsResponse) {
-				s.Require().Equal(s.lenChain*6, len(res.Tokens))
-			},
-		},
-		"valid request with limit": {
-			contractID: s.contractID,
-			valid:      true,
-			count:      1,
-			postTest: func(res *collection.QueryNFTsResponse) {
-				s.Require().Equal(1, len(res.Tokens))
-			},
-		},
-		"invalid contract id": {},
-	}
+// 	testCases := map[string]struct {
+// 		contractID string
+// 		valid      bool
+// 		count      uint64
+// 		postTest   func(res *collection.QueryNFTsResponse)
+// 	}{
+// 		"valid request": {
+// 			contractID: s.contractID,
+// 			valid:      true,
+// 			count:      1000000,
+// 			postTest: func(res *collection.QueryNFTsResponse) {
+// 				s.Require().Equal(s.lenChain*6, len(res.Tokens))
+// 			},
+// 		},
+// 		"valid request with limit": {
+// 			contractID: s.contractID,
+// 			valid:      true,
+// 			count:      1,
+// 			postTest: func(res *collection.QueryNFTsResponse) {
+// 				s.Require().Equal(1, len(res.Tokens))
+// 			},
+// 		},
+// 		"invalid contract id": {},
+// 	}
 
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			pageReq := &query.PageRequest{}
-			if tc.count != 0 {
-				pageReq.Limit = tc.count
-			}
-			req := &collection.QueryNFTsRequest{
-				ContractId: tc.contractID,
-				Pagination: pageReq,
-			}
-			res, err := s.queryServer.NFTs(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
+// 	for name, tc := range testCases {
+// 		s.Run(name, func() {
+// 			pageReq := &query.PageRequest{}
+// 			if tc.count != 0 {
+// 				pageReq.Limit = tc.count
+// 			}
+// 			req := &collection.QueryNFTsRequest{
+// 				ContractId: tc.contractID,
+// 				Pagination: pageReq,
+// 			}
+// 			res, err := s.queryServer.NFTs(s.goCtx, req)
+// 			if !tc.valid {
+// 				s.Require().Error(err)
+// 				return
+// 			}
+// 			s.Require().NoError(err)
+// 			s.Require().NotNil(res)
+// 			tc.postTest(res)
+// 		})
+// 	}
+// }
 
 func (s *KeeperTestSuite) TestQueryOwner() {
 	// empty request

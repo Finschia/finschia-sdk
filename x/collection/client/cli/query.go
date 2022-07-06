@@ -34,10 +34,8 @@ func NewQueryCmd() *cobra.Command {
 		NewQueryCmdBurnt(),
 		NewQueryCmdContract(),
 		NewQueryCmdContracts(),
-		NewQueryCmdTokenClass(),
-		NewQueryCmdTokenClasses(),
 		NewQueryCmdNFT(),
-		NewQueryCmdNFTs(),
+		// NewQueryCmdNFTs(),
 		NewQueryCmdOwner(),
 		NewQueryCmdRoot(),
 		NewQueryCmdParent(),
@@ -303,12 +301,12 @@ func NewQueryCmdContracts() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdTokenClass() *cobra.Command {
+func NewQueryCmdFTClass() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "class [contract-id] [class-id]",
+		Use:     "ft-class [contract-id] [class-id]",
 		Args:    cobra.ExactArgs(2),
-		Short:   "query contract metadata based on its id",
-		Example: fmt.Sprintf(`$ %s query %s class [contract-id] [class-id]`, version.AppName, collection.ModuleName),
+		Short:   "query ft class metadata based on its id",
+		Example: fmt.Sprintf(`$ %s query %s ft-class [contract-id] [class-id]`, version.AppName, collection.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -326,11 +324,11 @@ func NewQueryCmdTokenClass() *cobra.Command {
 			}
 
 			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QueryTokenClassRequest{
+			req := &collection.QueryFTClassRequest{
 				ContractId: contractID,
 				ClassId:    classID,
 			}
-			res, err := queryClient.TokenClass(cmd.Context(), req)
+			res, err := queryClient.FTClass(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -342,12 +340,12 @@ func NewQueryCmdTokenClass() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdTokenClasses() *cobra.Command {
+func NewQueryCmdNFTClass() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "classes [contract-id]",
-		Args:    cobra.ExactArgs(1),
-		Short:   "query all token class metadata",
-		Example: fmt.Sprintf(`$ %s query %s classes [contract-id]`, version.AppName, collection.ModuleName),
+		Use:     "nft-class [contract-id] [class-id]",
+		Args:    cobra.ExactArgs(2),
+		Short:   "query nft class metadata based on its id",
+		Example: fmt.Sprintf(`$ %s query %s nft-class [contract-id] [class-id]`, version.AppName, collection.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -359,16 +357,17 @@ func NewQueryCmdTokenClasses() *cobra.Command {
 				return err
 			}
 
-			queryClient := collection.NewQueryClient(clientCtx)
-			pageReq, err := client.ReadPageRequest(cmd.Flags())
-			if err != nil {
+			classID := args[1]
+			if err := collection.ValidateClassID(classID); err != nil {
 				return err
 			}
-			req := &collection.QueryTokenClassesRequest{
+
+			queryClient := collection.NewQueryClient(clientCtx)
+			req := &collection.QueryNFTClassRequest{
 				ContractId: contractID,
-				Pagination: pageReq,
+				ClassId:    classID,
 			}
-			res, err := queryClient.TokenClasses(cmd.Context(), req)
+			res, err := queryClient.NFTClass(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -377,9 +376,47 @@ func NewQueryCmdTokenClasses() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
-	flags.AddPaginationFlagsToCmd(cmd, "classes")
 	return cmd
 }
+
+// func NewQueryCmdTokenClasses() *cobra.Command {
+// 	cmd := &cobra.Command{
+// 		Use:     "classes [contract-id]",
+// 		Args:    cobra.ExactArgs(1),
+// 		Short:   "query all token class metadata",
+// 		Example: fmt.Sprintf(`$ %s query %s classes [contract-id]`, version.AppName, collection.ModuleName),
+// 		RunE: func(cmd *cobra.Command, args []string) error {
+// 			clientCtx, err := client.GetClientQueryContext(cmd)
+// 			if err != nil {
+// 				return err
+// 			}
+
+// 			contractID := args[0]
+// 			if err := collection.ValidateContractID(contractID); err != nil {
+// 				return err
+// 			}
+
+// 			queryClient := collection.NewQueryClient(clientCtx)
+// 			pageReq, err := client.ReadPageRequest(cmd.Flags())
+// 			if err != nil {
+// 				return err
+// 			}
+// 			req := &collection.QueryTokenClassesRequest{
+// 				ContractId: contractID,
+// 				Pagination: pageReq,
+// 			}
+// 			res, err := queryClient.TokenClasses(cmd.Context(), req)
+// 			if err != nil {
+// 				return err
+// 			}
+// 			return clientCtx.PrintProto(res)
+// 		},
+// 	}
+
+// 	flags.AddQueryFlagsToCmd(cmd)
+// 	flags.AddPaginationFlagsToCmd(cmd, "classes")
+// 	return cmd
+// }
 
 func NewQueryCmdNFT() *cobra.Command {
 	cmd := &cobra.Command{
@@ -420,44 +457,44 @@ func NewQueryCmdNFT() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdNFTs() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     "nfts [contract-id]",
-		Args:    cobra.ExactArgs(1),
-		Short:   "query all nft metadata",
-		Example: fmt.Sprintf(`$ %s query %s nfts [contract-id]`, version.AppName, collection.ModuleName),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
+// func NewQueryCmdNFTs() *cobra.Command {
+// 	cmd := &cobra.Command{
+// 		Use:     "nfts [contract-id]",
+// 		Args:    cobra.ExactArgs(1),
+// 		Short:   "query all nft metadata",
+// 		Example: fmt.Sprintf(`$ %s query %s nfts [contract-id]`, version.AppName, collection.ModuleName),
+// 		RunE: func(cmd *cobra.Command, args []string) error {
+// 			clientCtx, err := client.GetClientQueryContext(cmd)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			contractID := args[0]
-			if err := collection.ValidateContractID(contractID); err != nil {
-				return err
-			}
+// 			contractID := args[0]
+// 			if err := collection.ValidateContractID(contractID); err != nil {
+// 				return err
+// 			}
 
-			queryClient := collection.NewQueryClient(clientCtx)
-			pageReq, err := client.ReadPageRequest(cmd.Flags())
-			if err != nil {
-				return err
-			}
-			req := &collection.QueryNFTsRequest{
-				ContractId: contractID,
-				Pagination: pageReq,
-			}
-			res, err := queryClient.NFTs(cmd.Context(), req)
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
+// 			queryClient := collection.NewQueryClient(clientCtx)
+// 			pageReq, err := client.ReadPageRequest(cmd.Flags())
+// 			if err != nil {
+// 				return err
+// 			}
+// 			req := &collection.QueryNFTsRequest{
+// 				ContractId: contractID,
+// 				Pagination: pageReq,
+// 			}
+// 			res, err := queryClient.NFTs(cmd.Context(), req)
+// 			if err != nil {
+// 				return err
+// 			}
+// 			return clientCtx.PrintProto(res)
+// 		},
+// 	}
 
-	flags.AddQueryFlagsToCmd(cmd)
-	flags.AddPaginationFlagsToCmd(cmd, "nfts")
-	return cmd
-}
+// 	flags.AddQueryFlagsToCmd(cmd)
+// 	flags.AddPaginationFlagsToCmd(cmd, "nfts")
+// 	return cmd
+// }
 
 func NewQueryCmdOwner() *cobra.Command {
 	cmd := &cobra.Command{

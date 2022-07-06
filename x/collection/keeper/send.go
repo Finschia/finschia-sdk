@@ -79,12 +79,6 @@ func (k Keeper) setBalance(ctx sdk.Context, contractID string, address sdk.AccAd
 	}
 }
 
-// use it for the tests
-// TODO: remove it
-func (k Keeper) SetBalance(ctx sdk.Context, contractID string, address sdk.AccAddress, tokenID string, balance sdk.Int) {
-	k.setBalance(ctx, contractID, address, tokenID, balance)
-}
-
 func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
 	if _, err := k.GetContract(ctx, contractID); err != nil {
 		return sdkerrors.ErrNotFound.Wrapf("contract does not exist: %s", contractID)

@@ -332,8 +332,8 @@ func (s queryServer) Contracts(c context.Context, req *collection.QueryContracts
 	return &collection.QueryContractsResponse{Contracts: contracts, Pagination: pageRes}, nil
 }
 
-// TokenClass queries an token metadata based on its contract id.
-func (s queryServer) TokenClass(c context.Context, req *collection.QueryTokenClassRequest) (*collection.QueryTokenClassResponse, error) {
+// FTClass queries a fungible token class based on its class id.
+func (s queryServer) FTClass(c context.Context, req *collection.QueryFTClassRequest) (*collection.QueryFTClassResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -351,13 +351,16 @@ func (s queryServer) TokenClass(c context.Context, req *collection.QueryTokenCla
 	if err != nil {
 		return nil, err
 	}
-	any := collection.TokenClassToAny(class)
+	ftClass, ok := class.(*collection.FTClass)
+	if !ok {
+		return nil, sdkerrors.ErrInvalidType.Wrapf("not a class of fungible token: %s", req.ClassId)
+	}
 
-	return &collection.QueryTokenClassResponse{Class: *any}, nil
+	return &collection.QueryFTClassResponse{Class: *ftClass}, nil
 }
 
-// TokenClasses queries all token class metadata.
-func (s queryServer) TokenClasses(c context.Context, req *collection.QueryTokenClassesRequest) (*collection.QueryTokenClassesResponse, error) {
+// NFTClass queries a non-fungible token class based on its class id.
+func (s queryServer) NFTClass(c context.Context, req *collection.QueryNFTClassRequest) (*collection.QueryNFTClassResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -366,24 +369,51 @@ func (s queryServer) TokenClasses(c context.Context, req *collection.QueryTokenC
 		return nil, err
 	}
 
-	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	classStore := prefix.NewStore(store, classKeyPrefix)
-	var classes []codectypes.Any
-	pageRes, err := query.Paginate(classStore, req.Pagination, func(key []byte, value []byte) error {
-		var class collection.TokenClass
-		if err := s.keeper.cdc.UnmarshalInterface(value, &class); err != nil {
-			panic(err)
-		}
-		classes = append(classes, *collection.TokenClassToAny(class))
-		return nil
-	})
-	if err != nil {
+	if err := collection.ValidateClassID(req.ClassId); err != nil {
 		return nil, err
 	}
 
-	return &collection.QueryTokenClassesResponse{Classes: classes, Pagination: pageRes}, nil
+	ctx := sdk.UnwrapSDKContext(c)
+	class, err := s.keeper.GetTokenClass(ctx, req.ContractId, req.ClassId)
+	if err != nil {
+		return nil, err
+	}
+	nftClass, ok := class.(*collection.NFTClass)
+	if !ok {
+		return nil, sdkerrors.ErrInvalidType.Wrapf("not a class of non-fungible token: %s", req.ClassId)
+	}
+
+	return &collection.QueryNFTClassResponse{Class: *nftClass}, nil
 }
+
+// TokenClasses queries all token class metadata.
+// func (s queryServer) TokenClasses(c context.Context, req *collection.QueryTokenClassesRequest) (*collection.QueryTokenClassesResponse, error) {
+// 	if req == nil {
+// 		return nil, status.Error(codes.InvalidArgument, "empty request")
+// 	}
+
+// 	if err := collection.ValidateContractID(req.ContractId); err != nil {
+// 		return nil, err
+// 	}
+
+// 	ctx := sdk.UnwrapSDKContext(c)
+// 	store := ctx.KVStore(s.keeper.storeKey)
+// 	classStore := prefix.NewStore(store, classKeyPrefix)
+// 	var classes []codectypes.Any
+// 	pageRes, err := query.Paginate(classStore, req.Pagination, func(key []byte, value []byte) error {
+// 		var class collection.TokenClass
+// 		if err := s.keeper.cdc.UnmarshalInterface(value, &class); err != nil {
+// 			panic(err)
+// 		}
+// 		classes = append(classes, *collection.TokenClassToAny(class))
+// 		return nil
+// 	})
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	return &collection.QueryTokenClassesResponse{Classes: classes, Pagination: pageRes}, nil
+// }
 
 func (s queryServer) TokenType(c context.Context, req *collection.QueryTokenTypeRequest) (*collection.QueryTokenTypeResponse, error) {
 	if req == nil {
@@ -607,31 +637,31 @@ func (s queryServer) NFT(c context.Context, req *collection.QueryNFTRequest) (*c
 	return &collection.QueryNFTResponse{Token: *token}, nil
 }
 
-func (s queryServer) NFTs(c context.Context, req *collection.QueryNFTsRequest) (*collection.QueryNFTsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
+// func (s queryServer) NFTs(c context.Context, req *collection.QueryNFTsRequest) (*collection.QueryNFTsResponse, error) {
+// 	if req == nil {
+// 		return nil, status.Error(codes.InvalidArgument, "empty request")
+// 	}
 
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
-	}
+// 	if err := collection.ValidateContractID(req.ContractId); err != nil {
+// 		return nil, err
+// 	}
 
-	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	nftStore := prefix.NewStore(store, nftKeyPrefix)
-	var tokens []collection.NFT
-	pageRes, err := query.Paginate(nftStore, req.Pagination, func(key []byte, value []byte) error {
-		var token collection.NFT
-		s.keeper.cdc.MustUnmarshal(value, &token)
-		tokens = append(tokens, token)
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
+// 	ctx := sdk.UnwrapSDKContext(c)
+// 	store := ctx.KVStore(s.keeper.storeKey)
+// 	nftStore := prefix.NewStore(store, nftKeyPrefix)
+// 	var tokens []collection.NFT
+// 	pageRes, err := query.Paginate(nftStore, req.Pagination, func(key []byte, value []byte) error {
+// 		var token collection.NFT
+// 		s.keeper.cdc.MustUnmarshal(value, &token)
+// 		tokens = append(tokens, token)
+// 		return nil
+// 	})
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	return &collection.QueryNFTsResponse{Tokens: tokens, Pagination: pageRes}, nil
-}
+// 	return &collection.QueryNFTsResponse{Tokens: tokens, Pagination: pageRes}, nil
+// }
 
 func (s queryServer) Owner(c context.Context, req *collection.QueryOwnerRequest) (*collection.QueryOwnerResponse, error) {
 	if req == nil {

@@ -832,7 +832,9 @@
     - [EventAbandon](#lbm.collection.v1.EventAbandon)
     - [EventAuthorizedOperator](#lbm.collection.v1.EventAuthorizedOperator)
     - [EventBurned](#lbm.collection.v1.EventBurned)
-    - [EventCreatedTokenClass](#lbm.collection.v1.EventCreatedTokenClass)
+    - [EventCreatedContract](#lbm.collection.v1.EventCreatedContract)
+    - [EventCreatedFTClass](#lbm.collection.v1.EventCreatedFTClass)
+    - [EventCreatedNFTClass](#lbm.collection.v1.EventCreatedNFTClass)
     - [EventGrant](#lbm.collection.v1.EventGrant)
     - [EventMintedFT](#lbm.collection.v1.EventMintedFT)
     - [EventMintedNFT](#lbm.collection.v1.EventMintedNFT)
@@ -882,6 +884,8 @@
     - [QueryContractsResponse](#lbm.collection.v1.QueryContractsResponse)
     - [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest)
     - [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse)
+    - [QueryFTClassRequest](#lbm.collection.v1.QueryFTClassRequest)
+    - [QueryFTClassResponse](#lbm.collection.v1.QueryFTClassResponse)
     - [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest)
     - [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse)
     - [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest)
@@ -894,14 +898,14 @@
     - [QueryMintedResponse](#lbm.collection.v1.QueryMintedResponse)
     - [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest)
     - [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse)
+    - [QueryNFTClassRequest](#lbm.collection.v1.QueryNFTClassRequest)
+    - [QueryNFTClassResponse](#lbm.collection.v1.QueryNFTClassResponse)
     - [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest)
     - [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse)
     - [QueryNFTRequest](#lbm.collection.v1.QueryNFTRequest)
     - [QueryNFTResponse](#lbm.collection.v1.QueryNFTResponse)
     - [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest)
     - [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse)
-    - [QueryNFTsRequest](#lbm.collection.v1.QueryNFTsRequest)
-    - [QueryNFTsResponse](#lbm.collection.v1.QueryNFTsResponse)
     - [QueryOperatorAuthorizationsRequest](#lbm.collection.v1.QueryOperatorAuthorizationsRequest)
     - [QueryOperatorAuthorizationsResponse](#lbm.collection.v1.QueryOperatorAuthorizationsResponse)
     - [QueryOwnerRequest](#lbm.collection.v1.QueryOwnerRequest)
@@ -912,10 +916,6 @@
     - [QueryRootResponse](#lbm.collection.v1.QueryRootResponse)
     - [QuerySupplyRequest](#lbm.collection.v1.QuerySupplyRequest)
     - [QuerySupplyResponse](#lbm.collection.v1.QuerySupplyResponse)
-    - [QueryTokenClassRequest](#lbm.collection.v1.QueryTokenClassRequest)
-    - [QueryTokenClassResponse](#lbm.collection.v1.QueryTokenClassResponse)
-    - [QueryTokenClassesRequest](#lbm.collection.v1.QueryTokenClassesRequest)
-    - [QueryTokenClassesResponse](#lbm.collection.v1.QueryTokenClassesResponse)
     - [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest)
     - [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse)
     - [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest)
@@ -12513,10 +12513,10 @@ Since: 0.46.0 (finschia)
 
 
 
-<a name="lbm.collection.v1.EventCreatedTokenClass"></a>
+<a name="lbm.collection.v1.EventCreatedContract"></a>
 
-### EventCreatedTokenClass
-EventCreatedTokenClass is emitted when a new token class is created.
+### EventCreatedContract
+EventCreatedContract is emitted when a new contract is created.
 
 Since: 0.46.0 (finschia)
 
@@ -12524,8 +12524,51 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `id` | [string](#string) |  | class id associated with the token class. |
-| `class` | [google.protobuf.Any](#google.protobuf.Any) |  | new token class. |
+| `name` | [string](#string) |  | name of the contract. |
+| `meta` | [string](#string) |  | metadata of the contract. |
+| `base_img_uri` | [string](#string) |  | uri for the contract image stored off chain. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventCreatedFTClass"></a>
+
+### EventCreatedFTClass
+EventCreatedFTClass is emitted when a new fungible token class is created.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `class_id` | [string](#string) |  | class id associated with the token class. |
+| `name` | [string](#string) |  | name of the token class. |
+| `meta` | [string](#string) |  | metadata of the token class. |
+| `decimals` | [int32](#int32) |  | decimals of the token class. |
+| `mintable` | [bool](#bool) |  | mintable represents whether the token class is allowed to mint or burn its tokens. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventCreatedNFTClass"></a>
+
+### EventCreatedNFTClass
+EventCreatedNFTClass is emitted when a new non-fungible token class is created.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `class_id` | [string](#string) |  | class id associated with the token class. |
+| `name` | [string](#string) |  | name of the token class. |
+| `meta` | [string](#string) |  | metadata of the token class. |
 
 
 
@@ -13376,6 +13419,41 @@ Note: deprecated
 
 
 
+<a name="lbm.collection.v1.QueryFTClassRequest"></a>
+
+### QueryFTClassRequest
+QueryFTClassRequest is the request type for the Query/FTClass RPC method.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `class_id` | [string](#string) |  | class id associated with the token class. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryFTClassResponse"></a>
+
+### QueryFTClassResponse
+QueryFTClassResponse is the response type for the Query/FTClass RPC method.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class` | [FTClass](#lbm.collection.v1.FTClass) |  | class is the information of the token class. |
+
+
+
+
+
+
 <a name="lbm.collection.v1.QueryFTMintedRequest"></a>
 
 ### QueryFTMintedRequest
@@ -13589,6 +13667,41 @@ Note: deprecated
 
 
 
+<a name="lbm.collection.v1.QueryNFTClassRequest"></a>
+
+### QueryNFTClassRequest
+QueryNFTClassRequest is the request type for the Query/NFTClass RPC method.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `class_id` | [string](#string) |  | class id associated with the token class. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryNFTClassResponse"></a>
+
+### QueryNFTClassResponse
+QueryNFTClassResponse is the response type for the Query/NFTClass RPC method.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class` | [NFTClass](#lbm.collection.v1.NFTClass) |  | class is the information of the token class. |
+
+
+
+
+
+
 <a name="lbm.collection.v1.QueryNFTMintedRequest"></a>
 
 ### QueryNFTMintedRequest
@@ -13629,6 +13742,8 @@ Note: deprecated
 ### QueryNFTRequest
 QueryNFTRequest is the request type for the Query/NFT RPC method.
 
+Since: 0.46.0 (finschia)
+
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -13644,6 +13759,8 @@ QueryNFTRequest is the request type for the Query/NFT RPC method.
 
 ### QueryNFTResponse
 QueryNFTResponse is the response type for the Query/NFT RPC method.
+
+Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -13684,40 +13801,6 @@ Note: deprecated
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `supply` | [string](#string) |  | supply is the supply of the non-fungible token. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryNFTsRequest"></a>
-
-### QueryNFTsRequest
-QueryNFTsRequest is the request type for the Query/NFTs RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryNFTsResponse"></a>
-
-### QueryNFTsResponse
-QueryNFTsResponse is the response type for the Query/NFTs RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `tokens` | [NFT](#lbm.collection.v1.NFT) | repeated | token is the information of the non-fungible token. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -13893,83 +13976,12 @@ Since: 0.46.0 (finschia)
 
 
 
-<a name="lbm.collection.v1.QueryTokenClassRequest"></a>
-
-### QueryTokenClassRequest
-QueryTokenClassRequest is the request type for the Query/TokenClass RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `class_id` | [string](#string) |  | class id associated with the token class. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokenClassResponse"></a>
-
-### QueryTokenClassResponse
-QueryTokenClassResponse is the response type for the Query/TokenClass RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `class` | [google.protobuf.Any](#google.protobuf.Any) |  | class is the information of the token class. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokenClassesRequest"></a>
-
-### QueryTokenClassesRequest
-QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokenClassesResponse"></a>
-
-### QueryTokenClassesResponse
-QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `classes` | [google.protobuf.Any](#google.protobuf.Any) | repeated | classes is the informations of all the token classes. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.QueryTokenRequest"></a>
 
 ### QueryTokenRequest
 QueryTokenRequest is the request type for the Query/Token RPC method.
 
-Note: deprecated (use QueryTokenClassRequest)
+Note: deprecated (use QueryFTClassRequest and QueryNFTRequest)
 
 
 | Field | Type | Label | Description |
@@ -14039,7 +14051,7 @@ Note: deprecated
 ### QueryTokenTypesRequest
 QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
 
-Note: deprecated (use QueryTokenClassesRequest)
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -14075,7 +14087,7 @@ Note: deprecated
 ### QueryTokensRequest
 QueryTokensRequest is the request type for the Query/Tokens RPC method.
 
-Note: deprecated (use QueryTokenClasses and NFT)
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -14092,6 +14104,8 @@ Note: deprecated (use QueryTokenClasses and NFT)
 
 ### QueryTokensResponse
 QueryTokensResponse is the response type for the Query/Tokens RPC method.
+
+Note: deprecated
 
 
 | Field | Type | Label | Description |
@@ -14130,14 +14144,13 @@ Query defines the gRPC querier service.
 | `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | NFTBurnt queries the number of burnt tokens from a given contract id and token type. Note: deprecated (use Burnt) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
 | `Contract` | [QueryContractRequest](#lbm.collection.v1.QueryContractRequest) | [QueryContractResponse](#lbm.collection.v1.QueryContractResponse) | Contract queries a contract metadata based on its contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}|
 | `Contracts` | [QueryContractsRequest](#lbm.collection.v1.QueryContractsRequest) | [QueryContractsResponse](#lbm.collection.v1.QueryContractsResponse) | Contracts queries metadata of all contracts. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts|
-| `TokenClass` | [QueryTokenClassRequest](#lbm.collection.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.collection.v1.QueryTokenClassResponse) | TokenClass queries a metadata of a token class from its class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}|
-| `TokenClasses` | [QueryTokenClassesRequest](#lbm.collection.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.collection.v1.QueryTokenClassesResponse) | TokenClasses queries token metadata of all token classes of a contract. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes|
-| `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. Note: deprecated (use TokenClass) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
-| `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. Note: deprecated (use TokenClasses) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
-| `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Token queries a metadata of a token from its token id. Note: deprecated (use TokenClass and NFT) | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
-| `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. Note: deprecated (use TokenClasses and NFTs) | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
-| `NFT` | [QueryNFTRequest](#lbm.collection.v1.QueryNFTRequest) | [QueryNFTResponse](#lbm.collection.v1.QueryNFTResponse) | NFT queries a metadata of a non-fungible token. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}|
-| `NFTs` | [QueryNFTsRequest](#lbm.collection.v1.QueryNFTsRequest) | [QueryNFTsResponse](#lbm.collection.v1.QueryNFTsResponse) | NFTs queries a metadata of all non-fungible tokens. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/nfts|
+| `FTClass` | [QueryFTClassRequest](#lbm.collection.v1.QueryFTClassRequest) | [QueryFTClassResponse](#lbm.collection.v1.QueryFTClassResponse) | FTClass queries a metadata of a fungible token class from its class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/ft_classes/{class_id}|
+| `NFTClass` | [QueryNFTClassRequest](#lbm.collection.v1.QueryNFTClassRequest) | [QueryNFTClassResponse](#lbm.collection.v1.QueryNFTClassResponse) | NFTClass queries a metadata of a non-fungible token class from its class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/nft_classes/{class_id}|
+| `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. Note: deprecated (use NFTClass) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
+| `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. Note: deprecated | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
+| `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Token queries a metadata of a token from its token id. Note: deprecated (use FTClass and NFT) | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
+| `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. Note: deprecated | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
+| `NFT` | [QueryNFTRequest](#lbm.collection.v1.QueryNFTRequest) | [QueryNFTResponse](#lbm.collection.v1.QueryNFTResponse) | NFT queries a metadata of a non-fungible token. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}|
 | `Owner` | [QueryOwnerRequest](#lbm.collection.v1.QueryOwnerRequest) | [QueryOwnerResponse](#lbm.collection.v1.QueryOwnerResponse) | Owner queries the owner of the token. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/owner|
 | `Root` | [QueryRootRequest](#lbm.collection.v1.QueryRootRequest) | [QueryRootResponse](#lbm.collection.v1.QueryRootResponse) | Root queries the root of a given nft. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root|
 | `Parent` | [QueryParentRequest](#lbm.collection.v1.QueryParentRequest) | [QueryParentResponse](#lbm.collection.v1.QueryParentResponse) | Parent queries the parent of a given nft. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. - token is the root. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent|

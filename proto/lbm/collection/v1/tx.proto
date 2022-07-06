@@ -3,7 +3,6 @@ package lbm.collection.v1;
 
 import "gogoproto/gogo.proto";
 
-import "cosmos_proto/cosmos.proto";
 import "lbm/collection/v1/collection.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/collection";
