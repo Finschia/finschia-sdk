@@ -6,7 +6,6 @@ import "google/api/annotations.proto";
 import "lbm/collection/v1/collection.proto";
 
 import "google/protobuf/any.proto";
-import "cosmos_proto/cosmos.proto";
 
 import "gogoproto/gogo.proto";
 
@@ -126,7 +125,7 @@ service Query {
     option (google.api.http).get = "/lbm/collection/v1/contracts";
   }
 
-  // TokenClass queries a metadata of a token class from its class id.
+  // FTClass queries a metadata of a fungible token class from its class id.
   // Throws:
   // - ErrInvalidRequest
   //   - `contract_id` is of invalid format.
@@ -134,39 +133,42 @@ service Query {
   // - ErrNotFound
   //   - there is no token class of `class_id`.
   // Since: 0.46.0 (finschia)
-  rpc TokenClass(QueryTokenClassRequest) returns (QueryTokenClassResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}";
+  rpc FTClass(QueryFTClassRequest) returns (QueryFTClassResponse) {
+    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/ft_classes/{class_id}";
   }
 
-  // TokenClasses queries token metadata of all token classes of a contract.
+  // NFTClass queries a metadata of a non-fungible token class from its class id.
   // Throws:
   // - ErrInvalidRequest
   //   - `contract_id` is of invalid format.
+  //   - `class_id` is of invalid format.
+  // - ErrNotFound
+  //   - there is no token class of `class_id`.
   // Since: 0.46.0 (finschia)
-  rpc TokenClasses(QueryTokenClassesRequest) returns (QueryTokenClassesResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes";
+  rpc NFTClass(QueryNFTClassRequest) returns (QueryNFTClassResponse) {
+    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nft_classes/{class_id}";
   }
 
   // TokenType queries metadata of a token type.
-  // Note: deprecated (use TokenClass)
+  // Note: deprecated (use NFTClass)
   rpc TokenType(QueryTokenTypeRequest) returns (QueryTokenTypeResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}";
   }
 
   // TokenTypes queries metadata of all the token types.
-  // Note: deprecated (use TokenClasses)
+  // Note: deprecated
   rpc TokenTypes(QueryTokenTypesRequest) returns (QueryTokenTypesResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types";
   }
 
   // Token queries a metadata of a token from its token id.
-  // Note: deprecated (use TokenClass and NFT)
+  // Note: deprecated (use FTClass and NFT)
   rpc Token(QueryTokenRequest) returns (QueryTokenResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}";
   }
 
   // Tokens queries all token metadata.
-  // Note: deprecated (use TokenClasses and NFTs)
+  // Note: deprecated
   rpc Tokens(QueryTokensRequest) returns (QueryTokensResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/tokens";
   }
@@ -178,17 +180,9 @@ service Query {
   //   - `token_id` is of invalid format.
   // - ErrNotFound
   //   - there is no token of `token_id`.
+  // Since: 0.46.0 (finschia)
   rpc NFT(QueryNFTRequest) returns (QueryNFTResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}";
-  }
-
-  // NFTs queries a metadata of all non-fungible tokens.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  // Since: 0.46.0 (finschia)
-  rpc NFTs(QueryNFTsRequest) returns (QueryNFTsResponse) {
-    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts";
   }
 
   // Owner queries the owner of the token.
@@ -549,7 +543,7 @@ message QueryTokenTypeResponse {
 
 // QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
 //
-// Note: deprecated (use QueryTokenClassesRequest)
+// Note: deprecated
 message QueryTokenTypesRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -571,7 +565,7 @@ message QueryTokenTypesResponse {
 
 // QueryTokenRequest is the request type for the Query/Token RPC method.
 //
-// Note: deprecated (use QueryTokenClassRequest)
+// Note: deprecated (use QueryFTClassRequest and QueryNFTRequest)
 message QueryTokenRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -589,7 +583,7 @@ message QueryTokenResponse {
 
 // QueryTokensRequest is the request type for the Query/Tokens RPC method.
 //
-// Note: deprecated (use QueryTokenClasses and NFT)
+// Note: deprecated
 message QueryTokensRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -599,6 +593,8 @@ message QueryTokensRequest {
 }
 
 // QueryTokensResponse is the response type for the Query/Tokens RPC method.
+//
+// Note: deprecated
 message QueryTokensResponse {
   // informations of all the tokens.
   repeated google.protobuf.Any tokens = 1 [(gogoproto.nullable) = false];
@@ -607,48 +603,45 @@ message QueryTokensResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-// QueryTokenClassRequest is the request type for the Query/TokenClass RPC method.
+// QueryFTClassRequest is the request type for the Query/FTClass RPC method.
 //
 // Since: 0.46.0 (finschia)
-message QueryTokenClassRequest {
+message QueryFTClassRequest {
   // contract id associated with the contract.
   string contract_id = 1;
   // class id associated with the token class.
   string class_id = 2;
 }
 
-// QueryTokenClassResponse is the response type for the Query/TokenClass RPC method.
+// QueryFTClassResponse is the response type for the Query/FTClass RPC method.
 //
 // Since: 0.46.0 (finschia)
-message QueryTokenClassResponse {
+message QueryFTClassResponse {
   // class is the information of the token class.
-  google.protobuf.Any class = 1 [(gogoproto.nullable) = false, (cosmos_proto.accepts_interface) = "TokenClass"];
+  FTClass class = 1 [(gogoproto.nullable) = false];
 }
 
-// QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method.
+// QueryNFTClassRequest is the request type for the Query/NFTClass RPC method.
 //
 // Since: 0.46.0 (finschia)
-message QueryTokenClassesRequest {
+message QueryNFTClassRequest {
   // contract id associated with the contract.
   string contract_id = 1;
-
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
+  // class id associated with the token class.
+  string class_id = 2;
 }
 
-// QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method.
+// QueryNFTClassResponse is the response type for the Query/NFTClass RPC method.
 //
 // Since: 0.46.0 (finschia)
-message QueryTokenClassesResponse {
-  // classes is the informations of all the token classes.
-  repeated google.protobuf.Any classes = 1
-      [(gogoproto.nullable) = false, (cosmos_proto.accepts_interface) = "TokenClass"];
-
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+message QueryNFTClassResponse {
+  // class is the information of the token class.
+  NFTClass class = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryNFTRequest is the request type for the Query/NFT RPC method.
+//
+// Since: 0.46.0 (finschia)
 message QueryNFTRequest {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -657,29 +650,11 @@ message QueryNFTRequest {
 }
 
 // QueryNFTResponse is the response type for the Query/NFT RPC method.
+//
+// Since: 0.46.0 (finschia)
 message QueryNFTResponse {
   // token is the information of the non-fungible token.
   NFT token = 1 [(gogoproto.nullable) = false];
-}
-
-// QueryNFTsRequest is the request type for the Query/NFTs RPC method.
-message QueryNFTsRequest {
-  // contract id associated with the contract.
-  string contract_id = 1;
-
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-}
-
-// QueryNFTsResponse is the response type for the Query/NFTs RPC method.
-//
-// Since: 0.46.0 (finschia)
-message QueryNFTsResponse {
-  // token is the information of the non-fungible token.
-  repeated NFT tokens = 1 [(gogoproto.nullable) = false];
-
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryOwnerRequest is the request type for the Query/Owner RPC method.
