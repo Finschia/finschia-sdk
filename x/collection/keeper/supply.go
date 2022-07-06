@@ -9,16 +9,24 @@ import (
 func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract collection.Contract) string {
 	contractID := k.createContract(ctx, contract)
 
+	event := collection.EventCreatedContract{
+		ContractId: contractID,
+		Name:       contract.Name,
+		Meta:       contract.Meta,
+		BaseImgUri: contract.BaseImgUri,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+
 	for permission := range collection.Permission_name {
 		p := collection.Permission(permission)
 		if p == collection.Permission_Unspecified {
 			continue
 		}
-		// TODO: revisit grant
-		k.setGrant(ctx, contractID, creator, collection.Permission(permission))
+		k.Grant(ctx, contractID, "", creator, collection.Permission(permission))
 	}
 
-	// TODO: emit event
 	return contractID
 }
 
@@ -81,7 +89,6 @@ func (k Keeper) CreateTokenClass(ctx sdk.Context, contractID string, class colle
 		k.setLegacyTokenType(ctx, contractID, nftClass.Id)
 	}
 
-	// TODO: emit event
 	id := class.GetId()
 	return &id, nil
 }
@@ -367,7 +374,7 @@ func (k Keeper) ModifyNFT(ctx sdk.Context, contractID string, tokenID string, op
 	return nil
 }
 
-func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.AccAddress, permission collection.Permission) error {
+func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.AccAddress, permission collection.Permission) {
 	k.grant(ctx, contractID, grantee, permission)
 
 	event := collection.EventGrant{
@@ -376,7 +383,9 @@ func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.A
 		Grantee:    grantee.String(),
 		Permission: permission.String(),
 	}
-	return ctx.EventManager().EmitTypedEvent(&event)
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) grant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) {
@@ -387,7 +396,7 @@ func (k Keeper) grant(ctx sdk.Context, contractID string, grantee sdk.AccAddress
 	}
 }
 
-func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) error {
+func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) {
 	k.deleteGrant(ctx, contractID, grantee, permission)
 
 	event := collection.EventAbandon{
@@ -395,7 +404,9 @@ func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddre
 		Grantee:    grantee.String(),
 		Permission: permission.String(),
 	}
-	return ctx.EventManager().EmitTypedEvent(&event)
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
 }
 
 func (k Keeper) GetGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) (*collection.Grant, error) {

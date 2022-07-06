@@ -86,8 +86,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		collection.Permission_Mint,
 		collection.Permission_Burn,
 	} {
-		err := s.keeper.Grant(s.ctx, s.contractID, s.vendor, s.operator, permission)
-		s.Require().NoError(err)
+		s.keeper.Grant(s.ctx, s.contractID, s.vendor, s.operator, permission)
 	}
 
 	// create a fungible token class

@@ -2,6 +2,7 @@ package collection
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	proto "github.com/gogo/protobuf/proto"
@@ -145,6 +146,10 @@ func NewCoin(id string, amount sdk.Int) Coin {
 	return coin
 }
 
+func (c Coin) String() string {
+	return fmt.Sprintf("%s:%s", c.TokenId, c.Amount)
+}
+
 func (c Coin) ValidateBasic() error {
 	if err := ValidateTokenID(c.TokenId); err != nil {
 		return err
@@ -169,6 +174,27 @@ func (c Coin) isPositive() bool {
 
 func (c Coin) isNil() bool {
 	return c.Amount.IsNil()
+}
+
+var reDecCoin = regexp.MustCompile(fmt.Sprintf(`^(%s%s):([[:digit:]]+)$`, patternClassID, patternAll))
+
+func ParseCoin(coinStr string) (*Coin, error) {
+	coinStr = strings.TrimSpace(coinStr)
+
+	matches := reDecCoin.FindStringSubmatch(coinStr)
+	if matches == nil {
+		return nil, fmt.Errorf("invalid coin expression: %s", coinStr)
+	}
+
+	id, amountStr := matches[1], matches[2]
+
+	amount, ok := sdk.NewIntFromString(amountStr)
+	if !ok {
+		return nil, fmt.Errorf("failed to parse coin amount: %s", amountStr)
+	}
+
+	coin := NewCoin(id, amount)
+	return &coin, nil
 }
 
 //-----------------------------------------------------------------------------
@@ -218,6 +244,26 @@ func (coins Coins) ValidateBasic() error {
 	}
 
 	return nil
+}
+
+func ParseCoins(coinsStr string) (Coins, error) {
+	coinsStr = strings.TrimSpace(coinsStr)
+	if len(coinsStr) == 0 {
+		return nil, fmt.Errorf("invalid string for coins")
+	}
+
+	coinStrs := strings.Split(coinsStr, ",")
+	coins := make(Coins, len(coinStrs))
+	for i, coinStr := range coinStrs {
+		coin, err := ParseCoin(coinStr)
+		if err != nil {
+			return nil, err
+		}
+
+		coins[i] = *coin
+	}
+
+	return NewCoins(coins...), nil
 }
 
 // legacy

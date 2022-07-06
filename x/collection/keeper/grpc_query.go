@@ -783,6 +783,10 @@ func (s queryServer) Children(c context.Context, req *collection.QueryChildrenRe
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+	if _, err := s.keeper.GetNFT(ctx, req.ContractId, req.TokenId); err != nil {
+		return nil, err
+	}
+
 	store := ctx.KVStore(s.keeper.storeKey)
 	childStore := prefix.NewStore(store, childKeyPrefixByTokenID(req.ContractId, req.TokenId))
 	var children []collection.NFT

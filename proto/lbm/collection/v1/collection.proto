@@ -127,7 +127,8 @@ message TokenType {
 
 // Coin defines a token with a token id and an amount.
 message Coin {
-  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+  option (gogoproto.equal)            = true;
 
   // token id associated with the token.
   string token_id = 1;

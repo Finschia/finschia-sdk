@@ -75,9 +75,6 @@ func NewQueryCmdBalances() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			if err := collection.ValidateTokenID(tokenID); err != nil {
-				return err
-			}
 
 			queryClient := collection.NewQueryClient(clientCtx)
 			if len(tokenID) == 0 {
@@ -96,6 +93,10 @@ func NewQueryCmdBalances() *cobra.Command {
 					return err
 				}
 				return clientCtx.PrintProto(res)
+			}
+
+			if err := collection.ValidateTokenID(tokenID); err != nil {
+				return err
 			}
 
 			req := &collection.QueryBalanceRequest{

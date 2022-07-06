@@ -36,8 +36,9 @@ func (s msgServer) Send(c context.Context, req *collection.MsgSend) (*collection
 		Amount:     req.Amount,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
+
 	return &collection.MsgSendResponse{}, nil
 }
 
@@ -59,8 +60,9 @@ func (s msgServer) OperatorSend(c context.Context, req *collection.MsgOperatorSe
 		Amount:     req.Amount,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
+
 	return &collection.MsgOperatorSendResponse{}, nil
 }
 
@@ -78,8 +80,9 @@ func (s msgServer) TransferFT(c context.Context, req *collection.MsgTransferFT) 
 		Amount:     req.Amount,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
+
 	return &collection.MsgTransferFTResponse{}, nil
 }
 
@@ -101,8 +104,9 @@ func (s msgServer) TransferFTFrom(c context.Context, req *collection.MsgTransfer
 		Amount:     req.Amount,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
+
 	return &collection.MsgTransferFTFromResponse{}, nil
 }
 
@@ -125,8 +129,9 @@ func (s msgServer) TransferNFT(c context.Context, req *collection.MsgTransferNFT
 		Amount:     amount,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
+
 	return &collection.MsgTransferNFTResponse{}, nil
 }
 
@@ -153,8 +158,9 @@ func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransfe
 		Amount:     amount,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
+
 	return &collection.MsgTransferNFTFromResponse{}, nil
 }
 
@@ -170,7 +176,7 @@ func (s msgServer) AuthorizeOperator(c context.Context, req *collection.MsgAutho
 		Operator:   req.Operator,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &collection.MsgAuthorizeOperatorResponse{}, nil
@@ -182,12 +188,13 @@ func (s msgServer) RevokeOperator(c context.Context, req *collection.MsgRevokeOp
 		return nil, err
 	}
 
-	if err := ctx.EventManager().EmitTypedEvent(&collection.EventRevokedOperator{
+	event := collection.EventRevokedOperator{
 		ContractId: req.ContractId,
 		Holder:     req.Holder,
 		Operator:   req.Operator,
-	}); err != nil {
-		return nil, err
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
 	}
 
 	return &collection.MsgRevokeOperatorResponse{}, nil
@@ -205,7 +212,7 @@ func (s msgServer) Approve(c context.Context, req *collection.MsgApprove) (*coll
 		Operator:   req.Proxy,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &collection.MsgApproveResponse{}, nil
@@ -223,7 +230,7 @@ func (s msgServer) Disapprove(c context.Context, req *collection.MsgDisapprove) 
 		Operator:   req.Proxy,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &collection.MsgDisapproveResponse{}, nil
@@ -259,6 +266,18 @@ func (s msgServer) CreateFTClass(c context.Context, req *collection.MsgCreateFTC
 		return nil, err
 	}
 
+	event := collection.EventCreatedFTClass{
+		ContractId: req.ContractId,
+		ClassId:    *id,
+		Name:       class.Name,
+		Meta:       class.Meta,
+		Decimals:   class.Decimals,
+		Mintable:   class.Mintable,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+
 	// supply tokens
 	if req.Supply.IsPositive() {
 		amount := collection.NewCoins(collection.NewFTCoin(*id, req.Supply))
@@ -283,6 +302,16 @@ func (s msgServer) CreateNFTClass(c context.Context, req *collection.MsgCreateNF
 	id, err := s.keeper.CreateTokenClass(ctx, req.ContractId, class)
 	if err != nil {
 		return nil, err
+	}
+
+	event := collection.EventCreatedNFTClass{
+		ContractId: req.ContractId,
+		ClassId:    *id,
+		Name:       class.Name,
+		Meta:       class.Meta,
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
 	}
 
 	return &collection.MsgCreateNFTClassResponse{Id: *id}, nil
@@ -351,7 +380,7 @@ func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collec
 		Amount:     req.Amount,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &collection.MsgMintFTResponse{}, nil
@@ -375,7 +404,7 @@ func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*coll
 		Tokens:     tokens,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	tokenIDs := make([]string, 0, len(tokens))
@@ -402,7 +431,7 @@ func (s msgServer) Burn(c context.Context, req *collection.MsgBurn) (*collection
 		Amount:     req.Amount,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &collection.MsgBurnResponse{}, nil
@@ -429,7 +458,7 @@ func (s msgServer) OperatorBurn(c context.Context, req *collection.MsgOperatorBu
 		Amount:     req.Amount,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &collection.MsgOperatorBurnResponse{}, nil
@@ -452,7 +481,7 @@ func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collec
 		Amount:     req.Amount,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &collection.MsgBurnFTResponse{}, nil
@@ -479,7 +508,7 @@ func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) 
 		Amount:     req.Amount,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &collection.MsgBurnFTFromResponse{}, nil
@@ -507,7 +536,7 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 		Amount:     amount,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &collection.MsgBurnNFTResponse{}, nil
@@ -539,7 +568,7 @@ func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom
 		Amount:     amount,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &collection.MsgBurnNFTFromResponse{}, nil
@@ -646,9 +675,7 @@ func (s msgServer) Grant(c context.Context, req *collection.MsgGrant) (*collecti
 		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission.String())
 	}
 
-	if err := s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission); err != nil {
-		return nil, err
-	}
+	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
 
 	return &collection.MsgGrantResponse{}, nil
 }
@@ -662,9 +689,7 @@ func (s msgServer) Abandon(c context.Context, req *collection.MsgAbandon) (*coll
 		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not authorized for %s", grantee, permission)
 	}
 
-	if err := s.keeper.Abandon(ctx, req.ContractId, grantee, permission); err != nil {
-		return nil, err
-	}
+	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
 
 	return &collection.MsgAbandonResponse{}, nil
 }
@@ -682,9 +707,7 @@ func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPe
 		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission.String())
 	}
 
-	if err := s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission); err != nil {
-		return nil, err
-	}
+	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
 
 	return &collection.MsgGrantPermissionResponse{}, nil
 }
@@ -698,9 +721,7 @@ func (s msgServer) RevokePermission(c context.Context, req *collection.MsgRevoke
 		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not authorized for %s", grantee, permission)
 	}
 
-	if err := s.keeper.Abandon(ctx, req.ContractId, grantee, permission); err != nil {
-		return nil, err
-	}
+	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
 
 	return &collection.MsgRevokePermissionResponse{}, nil
 }
