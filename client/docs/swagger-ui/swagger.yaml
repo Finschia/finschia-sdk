@@ -21431,12 +21431,6 @@ paths:
           items:
             type: string
           collectionFormat: multi
-        - name: prove
-          description: prove is Include proofs of the transactions inclusion in the block.
-          in: query
-          required: false
-          type: boolean
-          format: boolean
         - name: pagination.key
           description: |-
             key is a value returned in PageResponse.next_key to begin
