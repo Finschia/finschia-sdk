@@ -716,8 +716,8 @@ github.com/line/gorocksdb v0.0.0-20210406043732-d4bea34b6d55/go.mod h1:DHRJroSL7
 github.com/line/iavl/v2 v2.0.0-init.1.0.20220215225951-cb11c91d8857 h1:8kWqbLNeb37357e4U/7uLMVCRF3K9bxwTGb6JmRUKpI=
 github.com/line/iavl/v2 v2.0.0-init.1.0.20220215225951-cb11c91d8857/go.mod h1:uK2CYRdukSVRGhc5Q8zoDUnm/zAbfnZATbFXrfCrQKA=
 github.com/line/ostracon v0.34.9-0.20210429084710-ef4fe0a40c7d/go.mod h1:ttnbq+yQJMQ9a2MT5SEisOoa/+pOgh2KenTiK/rVdiw=
-github.com/line/ostracon v1.0.6-0.20220614053335-f9d9fa2cc779 h1:Nw+i074ivEcwtZd2MIY0HJh8UoRyh+iTlzgHSbssHPQ=
-github.com/line/ostracon v1.0.6-0.20220614053335-f9d9fa2cc779/go.mod h1:SGNYNMSs7/YNrsFg6FOIa5phmreBJxD7SaBmmijpfRc=
+github.com/line/ostracon v1.0.6 h1:NgFu4e9+ukalCizKLtHby6o7ofakSPkdV8yfzOe2urM=
+github.com/line/ostracon v1.0.6/go.mod h1:SGNYNMSs7/YNrsFg6FOIa5phmreBJxD7SaBmmijpfRc=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524/go.mod h1:wmkyPabXjtVZ1dvRofmurjaceghywtCSYGqFuFS+TbI=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486 h1:uvXQdcWaUyNsgkXBz375FpQ285WEJaLXhQ5HtoNK/GU=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486/go.mod h1:wmkyPabXjtVZ1dvRofmurjaceghywtCSYGqFuFS+TbI=
