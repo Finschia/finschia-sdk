@@ -179,7 +179,7 @@ func TestHandleInstantiate(t *testing.T) {
 	require.NoError(t, err)
 	contractBech32Addr := parseInitResponse(t, res.Data)
 
-	assert.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", contractBech32Addr)
+	assert.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8", contractBech32Addr)
 	// this should be standard x/wasm init event, nothing from contract
 	assert.Equal(t, 3, len(res.Events), prettyEvents(res.Events))
 	assert.Equal(t, "message", res.Events[0].Type)
@@ -232,7 +232,7 @@ func TestHandleStoreAndInstantiate(t *testing.T) {
 	codeID, contractBech32Addr := parseStoreAndInitResponse(t, res.Data)
 
 	require.Equal(t, uint64(1), codeID)
-	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", contractBech32Addr)
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8", contractBech32Addr)
 	// this should be standard x/wasm init event, nothing from contract
 	require.Equal(t, 4, len(res.Events), prettyEvents(res.Events))
 	assert.Equal(t, "store_code", res.Events[0].Type)
@@ -270,7 +270,7 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 
 	invalidInitMsgBz, err := json.Marshal(emptyMsg{})
 
-	expectedContractBech32Addr := "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"
+	expectedContractBech32Addr := "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"
 
 	// test cases
 	cases := map[string]struct {
@@ -413,7 +413,7 @@ func TestHandleExecute(t *testing.T) {
 	require.NoError(t, err)
 	contractBech32Addr := parseInitResponse(t, res.Data)
 
-	assert.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", contractBech32Addr)
+	assert.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8", contractBech32Addr)
 	// this should be standard x/wasm init event, plus a bank send event (2), with no custom contract events
 	assert.Equal(t, 6, len(res.Events), prettyEvents(res.Events))
 	assert.Equal(t, "message", res.Events[0].Type)
@@ -551,7 +551,7 @@ func TestHandleExecuteEscrow(t *testing.T) {
 	res, err = h(data.ctx, &initCmd)
 	require.NoError(t, err)
 	contractBech32Addr := parseInitResponse(t, res.Data)
-	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", contractBech32Addr)
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8", contractBech32Addr)
 
 	handleMsg := map[string]interface{}{
 		"release": map[string]interface{}{},

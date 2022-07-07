@@ -101,7 +101,7 @@ func TestInstantiateProposal(t *testing.T) {
 	require.NoError(t, err)
 
 	// then
-	contractAddr := "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"
+	contractAddr := "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"
 	err = sdk.ValidateAccAddress(contractAddr)
 	require.NoError(t, err)
 
@@ -181,7 +181,7 @@ func TestInstantiateProposal_NoAdmin(t *testing.T) {
 	require.NoError(t, err)
 
 	// then
-	contractAddr := "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"
+	contractAddr := "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"
 	err = sdk.ValidateAccAddress(contractAddr)
 	require.NoError(t, err)
 

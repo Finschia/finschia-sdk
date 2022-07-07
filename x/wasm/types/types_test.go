@@ -340,8 +340,7 @@ func TestVerifyAddressLen(t *testing.T) {
 		expErr bool
 	}{
 		"valid contract address": {
-			src:    bytes.Repeat([]byte{1}, 32),
-			expErr: true,
+			src: bytes.Repeat([]byte{1}, 32),
 		},
 		"valid legacy address": {
 			src: bytes.Repeat([]byte{1}, 20),

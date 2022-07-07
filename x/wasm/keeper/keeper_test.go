@@ -394,11 +394,11 @@ func TestInstantiate(t *testing.T) {
 	// create with no balance is also legal
 	gotContractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx.WithEventManager(em), codeID, creator, "", initMsgBz, "demo contract 1", nil)
 	require.NoError(t, err)
-	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", gotContractAddr.String())
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8", gotContractAddr.String())
 
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x18cb3), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x19aff), gasAfter-gasBefore)
 	}
 
 	// ensure it is stored properly
@@ -595,7 +595,7 @@ func TestExecute(t *testing.T) {
 
 	addr, _, err := keepers.ContractKeeper.Instantiate(ctx, contractID, creator, "", initMsgBz, "demo contract 3", deposit)
 	require.NoError(t, err)
-	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", addr.String())
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8", addr.String())
 
 	// ensure bob doesn't exist
 	bobAcct := accKeeper.GetAccount(ctx, bob)
@@ -632,7 +632,7 @@ func TestExecute(t *testing.T) {
 	// make sure gas is properly deducted from ctx
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x16f60), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x1739a), gasAfter-gasBefore)
 	}
 	// ensure bob now exists and got both payments released
 	bobAcct = accKeeper.GetAccount(ctx, bob)
@@ -1277,7 +1277,7 @@ func TestSudo(t *testing.T) {
 	addr, _, err := keepers.ContractKeeper.Instantiate(ctx, contractID, creator, "", initMsgBz, "demo contract 3", deposit)
 
 	require.NoError(t, err)
-	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", addr.String())
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8", addr.String())
 
 	// the community is broke
 	_, _, community := keyPubAddr()
@@ -1497,7 +1497,7 @@ func TestExecuteManualInactiveContractFailure(t *testing.T) {
 
 	addr, _, err := keeper.Instantiate(ctx, contractID, creator, "", initMsgBz, "demo contract 3", deposit)
 	require.NoError(t, err)
-	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", addr.String())
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8", addr.String())
 
 	// execute inactive contract through manual
 	err = keeper.UpdateContractStatus(ctx, addr, creator, types.ContractStatusInactive)
@@ -1762,13 +1762,13 @@ func TestPinnedContractLoops(t *testing.T) {
 			},
 		}, 0, nil
 	}
-	ctx = ctx.WithGasMeter(sdk.NewGasMeter(20000))
+	ctx = ctx.WithGasMeter(sdk.NewGasMeter(10000))
 	require.PanicsWithValue(t, sdk.ErrorOutOfGas{Descriptor: "ReadFlat"}, func() {
 		_, err := k.execute(ctx, example.Contract, RandomAccountAddress(t), anyMsg, nil)
 		require.NoError(t, err)
 	})
 	assert.True(t, ctx.GasMeter().IsOutOfGas())
-	assert.Greater(t, loops, 2)
+	assert.Greater(t, loops, 1)
 
 }
 
@@ -1963,12 +1963,12 @@ func TestBuildContractAddress(t *testing.T) {
 		"initial contract": {
 			srcCodeID:     1,
 			srcInstanceID: 1,
-			expectedAddr:  "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j",
+			expectedAddr:  "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8",
 		},
 		"demo value": {
 			srcCodeID:     1,
 			srcInstanceID: 100,
-			expectedAddr:  "link1mujpjkwhut9yjw4xueyugc02evfv46y0qnephq",
+			expectedAddr:  "link1mujpjkwhut9yjw4xueyugc02evfv46y0dtmnz4lh8xxkkdapym9skz93hr",
 		},
 		"both below max": {
 			srcCodeID:     math.MaxUint32 - 1,
@@ -1981,12 +1981,12 @@ func TestBuildContractAddress(t *testing.T) {
 		"codeID > max u32": {
 			srcCodeID:     math.MaxUint32 + 1,
 			srcInstanceID: 17,
-			expectedAddr:  "link1673hrexz4h6s0ft04l96ygq667djzh2ne27tt5",
+			expectedAddr:  "link1673hrexz4h6s0ft04l96ygq667djzh2nsr335kstjp49x5dk6rps5267na",
 		},
 		"instanceID > max u32": {
 			srcCodeID:     22,
 			srcInstanceID: math.MaxUint32 + 1,
-			expectedAddr:  "link10q3pgfvmeyy0veekgtqhxujxkhz0vm9z06c5ml",
+			expectedAddr:  "link10q3pgfvmeyy0veekgtqhxujxkhz0vm9zmalqgc7evrhj68q3l62q7nceel",
 		},
 	}
 	for name, spec := range specs {
