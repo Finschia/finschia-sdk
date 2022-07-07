@@ -89,6 +89,11 @@ func (k Keeper) CreateTokenClass(ctx sdk.Context, contractID string, class colle
 		k.setLegacyTokenType(ctx, contractID, nftClass.Id)
 	}
 
+	if ftClass, ok := class.(*collection.FTClass); ok {
+		// legacy
+		k.setLegacyToken(ctx, contractID, collection.NewFTID(ftClass.Id))
+	}
+
 	id := class.GetId()
 	return &id, nil
 }
@@ -157,25 +162,31 @@ func (k Keeper) MintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, am
 			return err
 		}
 
-		if _, ok := class.(*collection.FTClass); !ok {
+		ftClass, ok := class.(*collection.FTClass)
+		if !ok {
 			return sdkerrors.ErrInvalidType.Wrapf("not a class of fungible token: %s", classID)
 		}
 
-		tokenID := coin.TokenId
-		k.setBalance(ctx, contractID, to, tokenID, coin.Amount)
+		if !ftClass.Mintable {
+			return sdkerrors.ErrInvalidRequest.Wrapf("class is not mintable")
+		}
 
-		// update statistics
-		supply := k.GetSupply(ctx, contractID, classID)
-		k.setSupply(ctx, contractID, classID, supply.Add(coin.Amount))
-
-		minted := k.GetMinted(ctx, contractID, classID)
-		k.setMinted(ctx, contractID, classID, minted.Add(coin.Amount))
-
-		// legacy
-		k.setLegacyToken(ctx, contractID, tokenID)
+		k.mintFT(ctx, contractID, to, classID, coin.Amount)
 	}
 
 	return nil
+}
+
+func (k Keeper) mintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, classID string, amount sdk.Int) {
+	tokenID := collection.NewFTID(classID)
+	k.setBalance(ctx, contractID, to, tokenID, amount)
+
+	// update statistics
+	supply := k.GetSupply(ctx, contractID, classID)
+	k.setSupply(ctx, contractID, classID, supply.Add(amount))
+
+	minted := k.GetMinted(ctx, contractID, classID)
+	k.setMinted(ctx, contractID, classID, minted.Add(amount))
 }
 
 func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, params []collection.MintNFTParam) ([]collection.NFT, error) {
@@ -236,6 +247,24 @@ func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddres
 			// legacy
 			k.deleteLegacyToken(ctx, contractID, coin.TokenId)
 		}
+
+		// uncomment the following lines if you want the same logic used in x/token 
+		// if err := collection.ValidateFTID(coin.TokenId); err == nil {
+		// 	classID := collection.SplitTokenID(coin.TokenId)
+		// 	class, err := k.GetTokenClass(ctx, contractID, classID)
+		// 	if err != nil {
+		// 		return err
+		// 	}
+
+		// 	ftClass, ok := class.(*collection.FTClass)
+		// 	if !ok {
+		// 		panic(sdkerrors.ErrInvalidType.Wrapf("not a class of fungible token: %s", classID))
+		// 	}
+
+		// 	if !ftClass.Mintable {
+		// 		return sdkerrors.ErrInvalidRequest.Wrapf("class is not mintable")
+		// 	}
+		// }
 
 		// update statistics
 		classID := collection.SplitTokenID(coin.TokenId)

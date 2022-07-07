@@ -51,7 +51,9 @@ func (s *KeeperTestSuite) TestCreateTokenClass() {
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			id, err := s.keeper.CreateTokenClass(s.ctx, tc.contractID, tc.class)
+			ctx, _ := s.ctx.CacheContext()
+
+			id, err := s.keeper.CreateTokenClass(ctx, tc.contractID, tc.class)
 			if !tc.valid {
 				s.Require().Error(err)
 				s.Require().Nil(id)
@@ -60,7 +62,7 @@ func (s *KeeperTestSuite) TestCreateTokenClass() {
 			s.Require().NoError(err)
 			s.Require().NotNil(id)
 
-			class, err := s.keeper.GetTokenClass(s.ctx, tc.contractID, *id)
+			class, err := s.keeper.GetTokenClass(ctx, tc.contractID, *id)
 			s.Require().NoError(err)
 			s.Require().NoError(class.ValidateBasic())
 		})
@@ -94,7 +96,9 @@ func (s *KeeperTestSuite) TestMintFT() {
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			err := s.keeper.MintFT(s.ctx, tc.contractID, s.stranger, collection.NewCoins(tc.amount))
+			ctx, _ := s.ctx.CacheContext()
+
+			err := s.keeper.MintFT(ctx, tc.contractID, s.stranger, collection.NewCoins(tc.amount))
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -127,7 +131,48 @@ func (s *KeeperTestSuite) TestMintNFT() {
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			_, err := s.keeper.MintNFT(s.ctx, tc.contractID, s.stranger, tc.params)
+			ctx, _ := s.ctx.CacheContext()
+
+			_, err := s.keeper.MintNFT(ctx, tc.contractID, s.stranger, tc.params)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestBurnCoins() {
+	testCases := map[string]struct {
+		contractID string
+		amount     collection.Coin
+		valid      bool
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			amount:     collection.NewFTCoin(s.ftClassID, sdk.OneInt()),
+			valid:      true,
+		},
+		"invalid token id": {
+			contractID: s.contractID,
+			amount:     collection.NewNFTCoin(s.ftClassID, 1),
+		},
+		"class not found": {
+			contractID: s.contractID,
+			amount:     collection.NewFTCoin("00bab10c", sdk.OneInt()),
+		},
+		"not a class id of ft": {
+			contractID: s.contractID,
+			amount:     collection.NewFTCoin(s.nftClassID, sdk.OneInt()),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			err := s.keeper.BurnCoins(ctx, tc.contractID, s.vendor, collection.NewCoins(tc.amount))
 			if !tc.valid {
 				s.Require().Error(err)
 				return

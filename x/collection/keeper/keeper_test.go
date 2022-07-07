@@ -91,7 +91,8 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	// create a fungible token class
 	ftClassID, err := s.keeper.CreateTokenClass(s.ctx, s.contractID, &collection.FTClass{
-		Name: "tibetian fox",
+		Name:     "tibetian fox",
+		Mintable: true,
 	})
 	s.Require().NoError(err)
 	s.ftClassID = *ftClassID

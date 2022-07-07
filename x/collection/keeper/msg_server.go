@@ -280,10 +280,7 @@ func (s msgServer) CreateFTClass(c context.Context, req *collection.MsgCreateFTC
 
 	// supply tokens
 	if req.Supply.IsPositive() {
-		amount := collection.NewCoins(collection.NewFTCoin(*id, req.Supply))
-		if err := s.keeper.MintFT(ctx, req.ContractId, sdk.AccAddress(req.To), amount); err != nil {
-			panic(err)
-		}
+		s.keeper.mintFT(ctx, req.ContractId, sdk.AccAddress(req.To), *id, req.Supply)
 	}
 
 	return &collection.MsgCreateFTClassResponse{Id: *id}, nil
@@ -336,10 +333,7 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 
 	// supply tokens
 	if req.Amount.IsPositive() {
-		amount := collection.NewCoins(collection.NewFTCoin(*id, req.Amount))
-		if err := s.keeper.MintFT(ctx, req.ContractId, sdk.AccAddress(req.To), amount); err != nil {
-			panic(err)
-		}
+		s.keeper.mintFT(ctx, req.ContractId, sdk.AccAddress(req.To), *id, req.Amount)
 	}
 
 	return &collection.MsgIssueFTResponse{Id: *id}, nil
