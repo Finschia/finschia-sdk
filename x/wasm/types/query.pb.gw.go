@@ -1006,7 +1006,7 @@ var (
 
 	pattern_Query_Codes_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"lbm", "wasm", "v1", "code"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_PinnedCodes_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"cosmwasm", "wasm", "v1", "codes", "pinned"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_PinnedCodes_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"lbm", "wasm", "v1", "codes", "pinned"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (
