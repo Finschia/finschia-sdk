@@ -54,11 +54,11 @@ func initRecurseContract(t *testing.T) (contract sdk.AccAddress, creator sdk.Acc
 
 func TestGasCostOnQuery(t *testing.T) {
 	const (
-		GasNoWork uint64 = 63_931
+		GasNoWork uint64 = 64_030
 		// Note: about 100 SDK gas (10k wasmer gas) for each round of sha256
-		GasWork50 uint64 = 64_261 // this is a little shy of 50k gas - to keep an eye on the limit
+		GasWork50 uint64 = 64_328 // this is a little shy of 50k gas - to keep an eye on the limit
 
-		GasReturnUnhashed uint64 = 25
+		GasReturnUnhashed uint64 = 29
 		GasReturnHashed   uint64 = 24
 	)
 
@@ -100,7 +100,7 @@ func TestGasCostOnQuery(t *testing.T) {
 				Depth: 4,
 				Work:  50,
 			},
-			expectedGas: 5*GasWork50 + 4*GasReturnHashed - 3,
+			expectedGas: 5*GasWork50 + 4*GasReturnHashed,
 		},
 	}
 
@@ -217,9 +217,9 @@ func TestLimitRecursiveQueryGas(t *testing.T) {
 
 	const (
 		// Note: about 100 SDK gas (10k wasmer gas) for each round of sha256
-		GasWork2k uint64 = 78_225 // = NewContractInstanceCosts + x // we have 6x gas used in cpu than in the instance
+		GasWork2k uint64 = 78_292 // = NewContractInstanceCosts + x // we have 6x gas used in cpu than in the instance
 		// This is overhead for calling into a sub-contract
-		GasReturnHashed uint64 = 19
+		GasReturnHashed uint64 = 21
 	)
 
 	cases := map[string]struct {
@@ -247,7 +247,7 @@ func TestLimitRecursiveQueryGas(t *testing.T) {
 			},
 			expectQueriesFromContract: 5,
 			// FIXME: why -1 ... confused a bit by calculations, seems like rounding issues
-			expectedGas: GasWork2k + 5*(GasWork2k+GasReturnHashed) + 20,
+			expectedGas: GasWork2k + 5*(GasWork2k+GasReturnHashed) + 16,
 		},
 		// this is where we expect an error...
 		// it has enough gas to run 4 times and die on the 5th (4th time dispatching to sub-contract)
@@ -271,7 +271,7 @@ func TestLimitRecursiveQueryGas(t *testing.T) {
 			expectQueriesFromContract: 10,
 			expectOutOfGas:            false,
 			expectError:               "query wasm contract failed", // Error we get from the contract instance doing the failing query, not wasmd
-			expectedGas:               10*(GasWork2k+GasReturnHashed) - 215,
+			expectedGas:               10*(GasWork2k+GasReturnHashed) - 216,
 		},
 	}
 
