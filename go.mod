@@ -30,7 +30,7 @@ require (
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/jhump/protoreflect v1.10.3
 	github.com/line/iavl/v2 v2.0.0-init.1.0.20220215225951-cb11c91d8857
-	github.com/line/ostracon v1.0.6-0.20220614053335-f9d9fa2cc779
+	github.com/line/ostracon v1.0.6
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486
 	github.com/line/wasmvm v0.16.3-0.9.0
 	github.com/magiconair/properties v1.8.6
