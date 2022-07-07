@@ -38,6 +38,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [Unreleased](https://github.com/line/lbm-sdk/compare/v0.45.0-rc0...HEAD)
 
 ### Features
+* (x/wasm) [\#570](https://github.com/line/lbm-sdk/pull/570) Merge wasmd 0.27.0
 * (x/wasm) [\#470](https://github.com/line/lbm-sdk/pull/470) remove contract activation control by actor
 * (x/wasm) [\#513](https://github.com/line/lbm-sdk/pull/513) fix message representation for signing
 * (x/foundation) [\#518](https://github.com/line/lbm-sdk/pull/518) add foundation treasury feature to x/foundation
