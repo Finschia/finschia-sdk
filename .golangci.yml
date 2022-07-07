@@ -56,6 +56,9 @@ issues:
     - text: "SA1019: codec.LegacyAmino is deprecated"
       linters:
         - staticcheck
+    - text: "SA1019: collection."
+      linters:
+        - staticcheck
   max-issues-per-linter: 10000
   max-same-issues: 10000
 
