@@ -18,7 +18,7 @@ func TestGenerateCoinKey(t *testing.T) {
 	// Test creation
 	info, err := keyring.NewInMemory().NewAccount("xxx", mnemonic, "", hd.NewFundraiserParams(0, types.GetConfig().GetCoinType(), 0).String(), hd.Secp256k1)
 	require.NoError(t, err)
-	require.Equal(t, types.BytesToAccAddress(addr.Bytes()), info.GetAddress())
+	require.Equal(t, addr, info.GetAddress())
 }
 
 func TestGenerateSaveCoinKey(t *testing.T) {

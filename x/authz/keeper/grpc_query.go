@@ -24,19 +24,17 @@ func (k Keeper) Grants(c context.Context, req *authz.QueryGrantsRequest) (*authz
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
 	}
 
-	err := sdk.ValidateAccAddress(req.Granter)
+	granter, err := sdk.AccAddressFromBech32(req.Granter)
 	if err != nil {
 		return nil, err
 	}
-	granter := sdk.AccAddress(req.Granter)
 
-	err = sdk.ValidateAccAddress(req.Grantee)
+	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
 	if err != nil {
 		return nil, err
 	}
-	grantee := sdk.AccAddress(req.Grantee)
-
 	ctx := sdk.UnwrapSDKContext(c)
+
 	store := ctx.KVStore(k.storeKey)
 	key := grantStoreKey(grantee, granter, "")
 	authStore := prefix.NewStore(store, key)

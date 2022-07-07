@@ -20,12 +20,11 @@ func cloneAppend(bz []byte, tail []byte) (res []byte) {
 }
 
 func TestAddressFromBalancesStore(t *testing.T) {
-	addr := sdk.AccAddress("link19tzp7e489drh9qfs9m84k2qe5a5yyknzen48tz")
-	err := sdk.ValidateAccAddress(addr.String())
+	addr, err := sdk.AccAddressFromBech32("link19tzp7e489drh9qfs9m84k2qe5a5yyknzen48tz")
 	require.NoError(t, err)
 	addrLen := len(addr)
-	require.Equal(t, 43, addrLen)
-	key := cloneAppend(address.MustLengthPrefix(addr.Bytes()), []byte("stake"))
+	require.Equal(t, 20, addrLen)
+	key := cloneAppend(address.MustLengthPrefix(addr), []byte("stake"))
 
 	tests := []struct {
 		name        string
@@ -34,9 +33,9 @@ func TestAddressFromBalancesStore(t *testing.T) {
 		expectedKey sdk.AccAddress
 	}{
 		{"valid", key, false, addr},
-		{"#9111", []byte("\xff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"), false, ""},
-		{"empty", []byte(""), true, ""},
-		{"invalid", []byte("3AA"), true, ""},
+		{"#9111", []byte("\xff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"), false, nil},
+		{"empty", []byte(""), true, nil},
+		{"invalid", []byte("3AA"), true, nil},
 	}
 
 	for _, tc := range tests {

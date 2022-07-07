@@ -224,7 +224,6 @@ func DefaultConfig() *Config {
 			InterBlockCache:     true,
 			InterBlockCacheSize: cache.DefaultCommitKVStoreCacheSize,
 			IAVLCacheSize:       iavl.DefaultIAVLCacheSize,
-			Bech32CacheSize:     sdk.DefaultBech32CacheSize,
 			Pruning:             storetypes.PruningOptionDefault,
 			PruningKeepRecent:   "0",
 			PruningKeepEvery:    "0",

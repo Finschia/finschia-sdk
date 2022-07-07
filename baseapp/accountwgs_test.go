@@ -88,7 +88,7 @@ func newTestPrivKeys(num int) []*secp256k1.PrivKey {
 func getAddrs(privs []*secp256k1.PrivKey) []sdk.AccAddress {
 	addrs := make([]sdk.AccAddress, 0, len(privs))
 	for _, priv := range privs {
-		addrs = append(addrs, sdk.BytesToAccAddress(priv.PubKey().Address()))
+		addrs = append(addrs, sdk.AccAddress(priv.PubKey().Address()))
 	}
 	return addrs
 }

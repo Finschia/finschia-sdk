@@ -98,15 +98,15 @@ $ %s tx distribution withdraw-rewards %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj 
 				return err
 			}
 			delAddr := clientCtx.GetFromAddress()
-			err = sdk.ValidateValAddress(args[0])
+			valAddr, err := sdk.ValAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
 
-			msgs := []sdk.Msg{types.NewMsgWithdrawDelegatorReward(delAddr, sdk.ValAddress(args[0]))}
+			msgs := []sdk.Msg{types.NewMsgWithdrawDelegatorReward(delAddr, valAddr)}
 
 			if commission, _ := cmd.Flags().GetBool(FlagCommission); commission {
-				msgs = append(msgs, types.NewMsgWithdrawValidatorCommission(sdk.ValAddress(args[0])))
+				msgs = append(msgs, types.NewMsgWithdrawValidatorCommission(valAddr))
 			}
 
 			for _, msg := range msgs {
@@ -163,12 +163,12 @@ $ %[1]s tx distribution withdraw-all-rewards --from mykey
 			// build multi-message transaction
 			msgs := make([]sdk.Msg, 0, len(validators))
 			for _, valAddr := range validators {
-				err := sdk.ValidateValAddress(valAddr)
+				val, err := sdk.ValAddressFromBech32(valAddr)
 				if err != nil {
 					return err
 				}
 
-				msg := types.NewMsgWithdrawDelegatorReward(delAddr, sdk.ValAddress(valAddr))
+				msg := types.NewMsgWithdrawDelegatorReward(delAddr, val)
 				if err := msg.ValidateBasic(); err != nil {
 					return err
 				}
@@ -213,11 +213,10 @@ $ %s tx distribution set-withdraw-addr %s1gghjut3ccd8ay0zduzj64hwre2fxs9ld75ru9p
 				return err
 			}
 			delAddr := clientCtx.GetFromAddress()
-			err = sdk.ValidateAccAddress(args[0])
+			withdrawAddr, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
-			withdrawAddr := sdk.AccAddress(args[0])
 
 			msg := types.NewMsgSetWithdrawAddress(delAddr, withdrawAddr)
 
@@ -315,12 +314,11 @@ Where proposal.json contains:
 			}
 
 			from := clientCtx.GetFromAddress()
-			err = sdk.ValidateAccAddress(proposal.Recipient)
+			recpAddr, err := sdk.AccAddressFromBech32(proposal.Recipient)
 			if err != nil {
 				return err
 			}
-			content := types.NewCommunityPoolSpendProposal(proposal.Title, proposal.Description,
-				sdk.AccAddress(proposal.Recipient), amount)
+			content := types.NewCommunityPoolSpendProposal(proposal.Title, proposal.Description, recpAddr, amount)
 
 			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {

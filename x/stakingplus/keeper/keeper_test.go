@@ -10,24 +10,24 @@ import (
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
-	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
-	"github.com/line/lbm-sdk/x/stakingplus"
-	"github.com/line/lbm-sdk/x/stakingplus/keeper"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
+	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/x/stakingplus"
+	"github.com/line/lbm-sdk/x/stakingplus/keeper"
 )
 
 type KeeperTestSuite struct {
 	suite.Suite
-	ctx  sdk.Context
+	ctx sdk.Context
 
-	app *simapp.SimApp
-	keeper stakingkeeper.Keeper
+	app       *simapp.SimApp
+	keeper    stakingkeeper.Keeper
 	msgServer stakingtypes.MsgServer
 
 	stranger sdk.AccAddress
-	grantee sdk.AccAddress
+	grantee  sdk.AccAddress
 
 	balance sdk.Int
 }
@@ -41,7 +41,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.msgServer = keeper.NewMsgServerImpl(s.keeper, s.app.FoundationKeeper)
 
 	createAddress := func() sdk.AccAddress {
-		return sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	s.stranger = createAddress()
@@ -70,11 +70,11 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	// allow Msg/CreateValidator
 	s.app.FoundationKeeper.SetParams(s.ctx, &foundation.Params{
-		Enabled: true,
+		Enabled:       true,
 		FoundationTax: sdk.ZeroDec(),
 	})
 	err := s.app.FoundationKeeper.Grant(s.ctx, govtypes.ModuleName, s.grantee, &stakingplus.CreateValidatorAuthorization{
-		ValidatorAddress: s.grantee.ToValAddress().String(),
+		ValidatorAddress: sdk.ValAddress(s.grantee).String(),
 	})
 	s.Require().NoError(err)
 }

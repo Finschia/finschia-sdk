@@ -33,6 +33,6 @@ func BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock, k keeper.Keeper) 
 	}
 
 	// record the proposer for when we payout on the next block
-	consAddr := sdk.BytesToConsAddress(req.Header.ProposerAddress)
+	consAddr := sdk.ConsAddress(req.Header.ProposerAddress)
 	k.SetPreviousProposerConsAddr(ctx, consAddr)
 }

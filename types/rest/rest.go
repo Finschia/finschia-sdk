@@ -124,7 +124,7 @@ func (br BaseReq) ValidateBasic(w http.ResponseWriter) bool {
 		}
 	}
 
-	if err := sdk.ValidateAccAddress(br.From); err != nil || len(br.From) == 0 {
+	if _, err := sdk.AccAddressFromBech32(br.From); err != nil || len(br.From) == 0 {
 		WriteErrorResponse(w, http.StatusUnauthorized, fmt.Sprintf("invalid from address: %s", br.From))
 		return false
 	}

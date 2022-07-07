@@ -87,7 +87,7 @@ func printAndValidateSigs(
 			pubKey         = sig.PubKey
 			multiSigHeader string
 			multiSigMsg    string
-			sigAddr        = sdk.BytesToAccAddress(pubKey.Address())
+			sigAddr        = sdk.AccAddress(pubKey.Address())
 			sigSanity      = "OK"
 		)
 

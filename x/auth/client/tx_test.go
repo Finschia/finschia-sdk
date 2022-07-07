@@ -22,7 +22,7 @@ import (
 
 var (
 	priv = ed25519.GenPrivKey()
-	addr = sdk.BytesToAccAddress(priv.PubKey().Address())
+	addr = sdk.AccAddress(priv.PubKey().Address())
 )
 
 func TestParseQueryResponse(t *testing.T) {

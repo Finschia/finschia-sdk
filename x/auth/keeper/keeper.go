@@ -162,7 +162,7 @@ func (ak AccountKeeper) ValidatePermissions(macc types.ModuleAccountI) error {
 func (ak AccountKeeper) GetModuleAddress(moduleName string) sdk.AccAddress {
 	permAddr, ok := ak.permAddrs[moduleName]
 	if !ok {
-		return ""
+		return nil
 	}
 
 	return permAddr.GetAddress()

@@ -25,8 +25,8 @@ var (
 	priv2 = secp256k1.GenPrivKey()
 	pk1   = priv1.PubKey()
 	pk2   = priv2.PubKey()
-	addr1 = sdk.BytesToAccAddress(pk1.Address())
-	addr2 = sdk.BytesToAccAddress(pk2.Address())
+	addr1 = sdk.AccAddress(pk1.Address())
+	addr2 = sdk.AccAddress(pk2.Address())
 	desc  = stakingtypes.NewDescription("testname", "", "", "", "")
 	comm  = stakingtypes.CommissionRates{}
 )
@@ -53,10 +53,10 @@ func (suite *GenTxTestSuite) SetupTest() {
 	amount := sdk.NewInt64Coin(sdk.DefaultBondDenom, 50)
 	one := sdk.OneInt()
 	suite.msg1, err = stakingtypes.NewMsgCreateValidator(
-		sdk.BytesToValAddress(pk1.Address()), pk1, amount, desc, comm, one)
+		sdk.ValAddress(pk1.Address()), pk1, amount, desc, comm, one)
 	suite.NoError(err)
 	suite.msg2, err = stakingtypes.NewMsgCreateValidator(
-		sdk.BytesToValAddress(pk2.Address()), pk1, amount, desc, comm, one)
+		sdk.ValAddress(pk2.Address()), pk1, amount, desc, comm, one)
 	suite.NoError(err)
 }
 

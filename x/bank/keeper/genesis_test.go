@@ -14,7 +14,7 @@ func (suite *IntegrationTestSuite) TestExportGenesis() {
 	expectedBalances, totalSupply := suite.getTestBalancesAndSupply()
 	for i := range []int{1, 2} {
 		app.BankKeeper.SetDenomMetaData(ctx, expectedMetadata[i])
-		err1 := sdk.ValidateAccAddress(expectedBalances[i].Address)
+		accAddr, err1 := sdk.AccAddressFromBech32(expectedBalances[i].Address)
 		if err1 != nil {
 			panic(err1)
 		}
@@ -24,7 +24,7 @@ func (suite *IntegrationTestSuite) TestExportGenesis() {
 			NoError(app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, expectedBalances[i].Coins))
 		suite.
 			Require().
-			NoError(app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, sdk.AccAddress(expectedBalances[i].Address), expectedBalances[i].Coins))
+			NoError(app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, accAddr, expectedBalances[i].Coins))
 	}
 	app.BankKeeper.SetParams(ctx, types.DefaultParams())
 
@@ -38,8 +38,8 @@ func (suite *IntegrationTestSuite) TestExportGenesis() {
 }
 
 func (suite *IntegrationTestSuite) getTestBalancesAndSupply() ([]types.Balance, sdk.Coins) {
-	addr2 := sdk.AccAddress("link1f9xjhxm0plzrh9cskf4qee4pc2xwp0n0p662v8")
-	addr1 := sdk.AccAddress("link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3q4fdzl")
+	addr2, _ := sdk.AccAddressFromBech32("cosmos1f9xjhxm0plzrh9cskf4qee4pc2xwp0n0556gh0")
+	addr1, _ := sdk.AccAddressFromBech32("cosmos1t5u0jfg3ljsjrh2m9e47d4ny2hea7eehxrzdgd")
 	addr1Balance := sdk.Coins{sdk.NewInt64Coin("testcoin3", 10)}
 	addr2Balance := sdk.Coins{sdk.NewInt64Coin("testcoin1", 32), sdk.NewInt64Coin("testcoin2", 34)}
 

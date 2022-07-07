@@ -70,11 +70,10 @@ Examples:
 				return err
 			}
 
-			err = sdk.ValidateAccAddress(args[1])
+			grantee, err := sdk.AccAddressFromBech32(args[1])
 			if err != nil {
 				return err
 			}
-			grantee := sdk.AccAddress(args[1])
 
 			granter := clientCtx.GetFromAddress()
 			sl, err := cmd.Flags().GetString(FlagSpendLimit)
@@ -202,11 +201,10 @@ Example:
 				return err
 			}
 
-			err = sdk.ValidateAccAddress(args[1])
+			grantee, err := sdk.AccAddressFromBech32(args[1])
 			if err != nil {
 				return err
 			}
-			grantee := sdk.AccAddress(args[1])
 
 			msg := feegrant.NewMsgRevokeAllowance(clientCtx.GetFromAddress(), grantee)
 

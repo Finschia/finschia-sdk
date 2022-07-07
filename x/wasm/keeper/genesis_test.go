@@ -565,9 +565,9 @@ func TestSupportedGenMsgTypes(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 	var (
-		myAddress          = sdk.BytesToAccAddress(bytes.Repeat([]byte{1}, sdk.BytesAddrLen))
-		verifierAddress    = sdk.BytesToAccAddress(bytes.Repeat([]byte{2}, sdk.BytesAddrLen))
-		beneficiaryAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{3}, sdk.BytesAddrLen))
+		myAddress          = sdk.AccAddress(bytes.Repeat([]byte{1}, sdk.BytesAddrLen))
+		verifierAddress    = sdk.AccAddress(bytes.Repeat([]byte{2}, sdk.BytesAddrLen))
+		beneficiaryAddress = sdk.AccAddress(bytes.Repeat([]byte{3}, sdk.BytesAddrLen))
 	)
 	const denom = "stake"
 	importState := types.GenesisState{

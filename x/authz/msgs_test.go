@@ -14,8 +14,8 @@ import (
 
 var (
 	coinsPos = sdk.NewCoins(sdk.NewInt64Coin("steak", 100))
-	granter  = sdk.BytesToAccAddress([]byte("_______granter______"))
-	grantee  = sdk.BytesToAccAddress([]byte("_______grantee______"))
+	granter  = sdk.AccAddress("_______granter______")
+	grantee  = sdk.AccAddress("_______grantee______")
 )
 
 func TestMsgExecAuthorized(t *testing.T) {
@@ -25,7 +25,7 @@ func TestMsgExecAuthorized(t *testing.T) {
 		msgs       []sdk.Msg
 		expectPass bool
 	}{
-		{"nil grantee address", "", []sdk.Msg{}, false},
+		{"nil grantee address", nil, []sdk.Msg{}, false},
 		{"zero-messages test: should fail", grantee, []sdk.Msg{}, false},
 		{"valid test: msg type", grantee, []sdk.Msg{
 			&banktypes.MsgSend{
@@ -51,9 +51,9 @@ func TestMsgRevokeAuthorization(t *testing.T) {
 		msgType          string
 		expectPass       bool
 	}{
-		{"nil Granter address", "", grantee, "hello", false},
-		{"nil Grantee address", granter, "", "hello", false},
-		{"nil Granter and Grantee address", "", "", "hello", false},
+		{"nil Granter address", nil, grantee, "hello", false},
+		{"nil Grantee address", granter, nil, "hello", false},
+		{"nil Granter and Grantee address", nil, nil, "hello", false},
 		{"valid test case", granter, grantee, "hello", true},
 	}
 	for i, tc := range tests {
@@ -75,9 +75,9 @@ func TestMsgGrantAuthorization(t *testing.T) {
 		expectErr        bool
 		expectPass       bool
 	}{
-		{"nil granter address", "", grantee, &banktypes.SendAuthorization{SpendLimit: coinsPos}, time.Now(), false, false},
-		{"nil grantee address", granter, "", &banktypes.SendAuthorization{SpendLimit: coinsPos}, time.Now(), false, false},
-		{"nil granter and grantee address", "", "", &banktypes.SendAuthorization{SpendLimit: coinsPos}, time.Now(), false, false},
+		{"nil granter address", nil, grantee, &banktypes.SendAuthorization{SpendLimit: coinsPos}, time.Now(), false, false},
+		{"nil grantee address", granter, nil, &banktypes.SendAuthorization{SpendLimit: coinsPos}, time.Now(), false, false},
+		{"nil granter and grantee address", nil, nil, &banktypes.SendAuthorization{SpendLimit: coinsPos}, time.Now(), false, false},
 		{"nil authorization", granter, grantee, nil, time.Now(), true, false},
 		{"valid test case", granter, grantee, &banktypes.SendAuthorization{SpendLimit: coinsPos}, time.Now().AddDate(0, 1, 0), false, true},
 		{"past time", granter, grantee, &banktypes.SendAuthorization{SpendLimit: coinsPos}, time.Now().AddDate(0, 0, -1), false, true}, // TODO need 0.45

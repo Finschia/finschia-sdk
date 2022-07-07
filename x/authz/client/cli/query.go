@@ -55,23 +55,18 @@ $ %s query %s grants link1skjw.. link1skjwj.. %s
 			}
 			queryClient := authz.NewQueryClient(clientCtx)
 
-			err = sdk.ValidateAccAddress(args[0])
+			granter, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
-			granter := sdk.AccAddress(args[0])
-
-			err = sdk.ValidateAccAddress(args[1])
+			grantee, err := sdk.AccAddressFromBech32(args[1])
 			if err != nil {
 				return err
 			}
-			grantee := sdk.AccAddress(args[1])
-
 			var msgAuthorized = ""
 			if len(args) >= 3 {
 				msgAuthorized = args[2]
 			}
-
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
 				return err

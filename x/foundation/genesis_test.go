@@ -19,23 +19,22 @@ func TestDefaultGenesisState(t *testing.T) {
 
 func TestValidateGenesis(t *testing.T) {
 	createAddress := func() sdk.AccAddress {
-		return sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	testCases := map[string]struct{
-		data foundation.GenesisState
+	testCases := map[string]struct {
+		data  foundation.GenesisState
 		valid bool
 	}{
 		"minimal": {
-			data: foundation.GenesisState{
-			},
+			data:  foundation.GenesisState{},
 			valid: true,
 		},
 		"members": {
 			data: foundation.GenesisState{
 				Members: []foundation.Member{
 					{
-						Address: createAddress().String(),
+						Address:       createAddress().String(),
 						Participating: true,
 					},
 				},
@@ -46,7 +45,7 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Foundation: &foundation.FoundationInfo{
 					Operator: createAddress().String(),
-					Version: 1,
+					Version:  1,
 				},
 			},
 			valid: true,
@@ -73,7 +72,7 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Members: []foundation.Member{
 					{
-						Address: "invalid-address",
+						Address:       "invalid-address",
 						Participating: true,
 					},
 				},
@@ -83,21 +82,20 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Foundation: &foundation.FoundationInfo{
 					Operator: "invalid-address",
-					Version: 1,
+					Version:  1,
 				},
 			},
 		},
 		"invalid foundation version": {
 			data: foundation.GenesisState{
-				Foundation: &foundation.FoundationInfo{
-				},
+				Foundation: &foundation.FoundationInfo{},
 			},
 		},
 		"invalid decision policy": {
 			data: foundation.GenesisState{
 				Foundation: foundation.FoundationInfo{
 					Operator: createAddress().String(),
-					Version: 1,
+					Version:  1,
 				}.WithDecisionPolicy(&foundation.ThresholdDecisionPolicy{
 					Windows: &foundation.DecisionPolicyWindows{},
 				}),
@@ -107,7 +105,7 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Proposals: []foundation.Proposal{
 					{
-						Id: 1,
+						Id:                1,
 						FoundationVersion: 1,
 					},
 				},
@@ -117,12 +115,12 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
-						Id: 1,
+						Id:        1,
 						Proposers: []string{createAddress().String()},
 					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
 						Operator: createAddress().String(),
-						To: createAddress().String(),
-						Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+						To:       createAddress().String(),
+						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 					}}),
 				},
 			},
@@ -131,8 +129,8 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Proposals: []foundation.Proposal{
 					{
-						Id: 1,
-						Proposers: []string{createAddress().String()},
+						Id:                1,
+						Proposers:         []string{createAddress().String()},
 						FoundationVersion: 1,
 					},
 				},
@@ -142,22 +140,22 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
-						Id: 1,
-						Proposers: []string{createAddress().String()},
+						Id:                1,
+						Proposers:         []string{createAddress().String()},
 						FoundationVersion: 1,
 					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
 						Operator: createAddress().String(),
-						To: createAddress().String(),
-						Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+						To:       createAddress().String(),
+						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 					}}),
 					*foundation.Proposal{
-						Id: 1,
-						Proposers: []string{createAddress().String()},
+						Id:                1,
+						Proposers:         []string{createAddress().String()},
 						FoundationVersion: 1,
 					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
 						Operator: createAddress().String(),
-						To: createAddress().String(),
-						Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+						To:       createAddress().String(),
+						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 					}}),
 				},
 			},
@@ -167,8 +165,8 @@ func TestValidateGenesis(t *testing.T) {
 				Votes: []foundation.Vote{
 					{
 						ProposalId: 1,
-						Voter: createAddress().String(),
-						Option: foundation.VOTE_OPTION_YES,
+						Voter:      createAddress().String(),
+						Option:     foundation.VOTE_OPTION_YES,
 					},
 				},
 			},
@@ -177,20 +175,20 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
-						Id: 1,
-						Proposers: []string{createAddress().String()},
+						Id:                1,
+						Proposers:         []string{createAddress().String()},
 						FoundationVersion: 1,
 					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
 						Operator: createAddress().String(),
-						To: createAddress().String(),
-						Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+						To:       createAddress().String(),
+						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 					}}),
 				},
 				Votes: []foundation.Vote{
 					{
 						ProposalId: 1,
-						Voter: "invalid-address",
-						Option: foundation.VOTE_OPTION_YES,
+						Voter:      "invalid-address",
+						Option:     foundation.VOTE_OPTION_YES,
 					},
 				},
 			},
@@ -199,19 +197,19 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
-						Id: 1,
-						Proposers: []string{createAddress().String()},
+						Id:                1,
+						Proposers:         []string{createAddress().String()},
 						FoundationVersion: 1,
 					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
 						Operator: createAddress().String(),
-						To: createAddress().String(),
-						Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+						To:       createAddress().String(),
+						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 					}}),
 				},
 				Votes: []foundation.Vote{
 					{
 						ProposalId: 1,
-						Voter: createAddress().String(),
+						Voter:      createAddress().String(),
 					},
 				},
 			},

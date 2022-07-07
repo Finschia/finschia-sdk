@@ -11,17 +11,17 @@ import (
 // QueryDelegationRewards queries a delegation rewards between a delegator and a
 // validator.
 func QueryDelegationRewards(clientCtx client.Context, delAddr, valAddr string) ([]byte, int64, error) {
-	err := sdk.ValidateAccAddress(delAddr)
+	delegatorAddr, err := sdk.AccAddressFromBech32(delAddr)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	err = sdk.ValidateValAddress(valAddr)
+	validatorAddr, err := sdk.ValAddressFromBech32(valAddr)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	params := types.NewQueryDelegationRewardsParams(sdk.AccAddress(delAddr), sdk.ValAddress(valAddr))
+	params := types.NewQueryDelegationRewardsParams(delegatorAddr, validatorAddr)
 	bz, err := clientCtx.LegacyAmino.MarshalJSON(params)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to marshal params: %w", err)

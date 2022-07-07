@@ -13,7 +13,7 @@ import (
 func TestMsgSend(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -32,7 +32,7 @@ func TestMsgSend(t *testing.T) {
 		},
 		"empty from": {
 			contractID: "deadbeef",
-			from:       "",
+			from:       nil,
 			to:         addrs[1],
 			amount:     sdk.OneInt(),
 		},
@@ -76,7 +76,7 @@ func TestMsgSend(t *testing.T) {
 func TestMsgOperatorSend(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -151,7 +151,7 @@ func TestMsgOperatorSend(t *testing.T) {
 func TestMsgTransferFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -226,7 +226,7 @@ func TestMsgTransferFrom(t *testing.T) {
 func TestMsgAuthorizeOperator(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -276,7 +276,7 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 func TestMsgRevokeOperator(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -326,7 +326,7 @@ func TestMsgRevokeOperator(t *testing.T) {
 func TestMsgApprove(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -376,7 +376,7 @@ func TestMsgApprove(t *testing.T) {
 func TestMsgIssue(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -516,7 +516,7 @@ func TestMsgIssue(t *testing.T) {
 func TestMsgMint(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -578,7 +578,7 @@ func TestMsgMint(t *testing.T) {
 func TestMsgBurn(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -629,7 +629,7 @@ func TestMsgBurn(t *testing.T) {
 func TestMsgOperatorBurn(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -691,7 +691,7 @@ func TestMsgOperatorBurn(t *testing.T) {
 func TestMsgBurnFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -753,7 +753,7 @@ func TestMsgBurnFrom(t *testing.T) {
 func TestMsgModify(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	validChange := token.Pair{Field: "name", Value: "New test"}
@@ -822,7 +822,7 @@ func TestMsgModify(t *testing.T) {
 func TestMsgGrant(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -884,7 +884,7 @@ func TestMsgGrant(t *testing.T) {
 func TestMsgAbandon(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -934,7 +934,7 @@ func TestMsgAbandon(t *testing.T) {
 func TestMsgGrantPermission(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -996,7 +996,7 @@ func TestMsgGrantPermission(t *testing.T) {
 func TestMsgRevokePermission(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {

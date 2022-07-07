@@ -24,6 +24,6 @@ func NewTestCoins() sdk.Coins {
 func KeyTestPubAddr() (cryptotypes.PrivKey, cryptotypes.PubKey, sdk.AccAddress) {
 	key := secp256k1.GenPrivKey()
 	pub := key.PubKey()
-	addr := sdk.BytesToAccAddress(pub.Address())
+	addr := sdk.AccAddress(pub.Address())
 	return key, pub, addr
 }

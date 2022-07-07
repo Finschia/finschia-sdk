@@ -27,12 +27,12 @@ func (msg MsgSend) Type() string { return TypeMsgSend }
 
 // ValidateBasic Implements Msg.
 func (msg MsgSend) ValidateBasic() error {
-	err := sdk.ValidateAccAddress(msg.FromAddress) // TODO: Is this really required?
+	_, err := sdk.AccAddressFromBech32(msg.FromAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
 	}
 
-	err = sdk.ValidateAccAddress(msg.ToAddress) // TODO: Is this really required?
+	_, err = sdk.AccAddressFromBech32(msg.ToAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid recipient address (%s)", err)
 	}
@@ -55,7 +55,11 @@ func (msg MsgSend) GetSignBytes() []byte {
 
 // GetSigners Implements Msg.
 func (msg MsgSend) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{sdk.AccAddress(msg.FromAddress)}
+	from, err := sdk.AccAddressFromBech32(msg.FromAddress)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{from}
 }
 
 var _ sdk.Msg = &MsgMultiSend{}
@@ -95,7 +99,8 @@ func (msg MsgMultiSend) GetSignBytes() []byte {
 func (msg MsgMultiSend) GetSigners() []sdk.AccAddress {
 	addrs := make([]sdk.AccAddress, len(msg.Inputs))
 	for i, in := range msg.Inputs {
-		addrs[i] = sdk.AccAddress(in.Address)
+		addr, _ := sdk.AccAddressFromBech32(in.Address)
+		addrs[i] = addr
 	}
 
 	return addrs
@@ -103,7 +108,7 @@ func (msg MsgMultiSend) GetSigners() []sdk.AccAddress {
 
 // ValidateBasic - validate transaction input
 func (in Input) ValidateBasic() error {
-	err := sdk.ValidateAccAddress(in.Address)
+	_, err := sdk.AccAddressFromBech32(in.Address)
 	if err != nil {
 		return err
 	}
@@ -130,7 +135,7 @@ func NewInput(addr sdk.AccAddress, coins sdk.Coins) Input {
 
 // ValidateBasic - validate transaction output
 func (out Output) ValidateBasic() error {
-	err := sdk.ValidateAccAddress(out.Address)
+	_, err := sdk.AccAddressFromBech32(out.Address)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid output address (%s)", err)
 	}

@@ -21,7 +21,8 @@ func GenerateCoinKey(algo keyring.SignatureAlgo) (sdk.AccAddress, string, error)
 	if err != nil {
 		return sdk.AccAddress(""), "", err
 	}
-	return sdk.BytesToAccAddress(info.GetPubKey().Address()), secret, nil
+
+	return sdk.AccAddress(info.GetPubKey().Address()), secret, nil
 }
 
 // Deprecated: GenerateSaveCoinKey generates a new key mnemonic with its addrress.
@@ -58,5 +59,5 @@ func GenerateSaveCoinKey(
 		return sdk.AccAddress(""), "", err
 	}
 
-	return sdk.BytesToAccAddress(k.GetPubKey().Address()), mnemonic, nil
+	return sdk.AccAddress(k.GetAddress()), mnemonic, nil
 }

@@ -313,7 +313,7 @@ func New(t *testing.T, cfg Config) *Network {
 		require.NoError(t, err)
 
 		createValMsg, err := stakingtypes.NewMsgCreateValidator(
-			addr.ToValAddress(),
+			sdk.ValAddress(addr),
 			valPubKeys[i],
 			sdk.NewCoin(cfg.BondDenom, cfg.BondedTokens),
 			stakingtypes.NewDescription(nodeDirName, "", "", "", ""),
@@ -372,7 +372,7 @@ func New(t *testing.T, cfg Config) *Network {
 			P2PAddress: tmCfg.P2P.ListenAddress,
 			APIAddress: apiAddr,
 			Address:    addr,
-			ValAddress: addr.ToValAddress(),
+			ValAddress: sdk.ValAddress(addr),
 		}
 	}
 

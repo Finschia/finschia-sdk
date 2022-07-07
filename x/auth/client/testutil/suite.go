@@ -1117,12 +1117,11 @@ func TestGetBroadcastCommandWithoutOfflineFlag(t *testing.T) {
 	// Create new file with tx
 	builder := txCfg.NewTxBuilder()
 	builder.SetGasLimit(200000)
-	fromBytes, err := sdk.AccAddressToBytes("link1xpesesq0zddk2ersedyezgtywr0q92a34ddfku")
+	from, err := sdk.AccAddressFromBech32("link1xpesesq0zddk2ersedyezgtywr0q92a34ddfku")
 	require.NoError(t, err)
-	toBytes, err := sdk.AccAddressToBytes("link1xpesesq0zddk2ersedyezgtywr0q92a34ddfku")
+	to, err := sdk.AccAddressFromBech32("link1xpesesq0zddk2ersedyezgtywr0q92a34ddfku")
 	require.NoError(t, err)
-	err = builder.SetMsgs(banktypes.NewMsgSend(sdk.BytesToAccAddress(fromBytes),
-		sdk.BytesToAccAddress(toBytes), sdk.Coins{sdk.NewInt64Coin("stake", 10000)}))
+	err = builder.SetMsgs(banktypes.NewMsgSend(from, to, sdk.Coins{sdk.NewInt64Coin("stake", 10000)}))
 	require.NoError(t, err)
 	txContents, err := txCfg.TxJSONEncoder()(builder.GetTx())
 	require.NoError(t, err)

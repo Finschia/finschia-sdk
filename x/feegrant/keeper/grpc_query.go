@@ -22,8 +22,15 @@ func (q Keeper) Allowance(c context.Context, req *feegrant.QueryAllowanceRequest
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	granterAddr := sdk.AccAddress(req.Granter)
-	granteeAddr := sdk.AccAddress(req.Grantee)
+	granterAddr, err := sdk.AccAddressFromBech32(req.Granter)
+	if err != nil {
+		return nil, err
+	}
+
+	granteeAddr, err := sdk.AccAddressFromBech32(req.Grantee)
+	if err != nil {
+		return nil, err
+	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 
@@ -57,11 +64,10 @@ func (q Keeper) Allowances(c context.Context, req *feegrant.QueryAllowancesReque
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	err := sdk.ValidateAccAddress(req.Grantee)
+	granteeAddr, err := sdk.AccAddressFromBech32(req.Grantee)
 	if err != nil {
 		return nil, err
 	}
-	granteeAddr := sdk.AccAddress(req.Grantee)
 
 	ctx := sdk.UnwrapSDKContext(c)
 

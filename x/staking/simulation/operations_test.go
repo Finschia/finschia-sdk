@@ -303,7 +303,7 @@ func getTestingValidator1(t *testing.T, app *simapp.SimApp, ctx sdk.Context, acc
 func getTestingValidator(t *testing.T, app *simapp.SimApp, ctx sdk.Context, accounts []simtypes.Account, commission types.Commission, n int) types.Validator {
 	account := accounts[n]
 	valPubKey := account.PubKey
-	valAddr := sdk.BytesToValAddress(account.PubKey.Address())
+	valAddr := sdk.ValAddress(account.PubKey.Address().Bytes())
 	validator := teststaking.NewValidator(t, valAddr, valPubKey)
 	validator, err := validator.SetInitialCommission(commission)
 	require.NoError(t, err)

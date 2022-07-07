@@ -143,9 +143,13 @@ func (w *wrapper) FeePayer() sdk.AccAddress {
 func (w *wrapper) FeeGranter() sdk.AccAddress {
 	feePayer := w.tx.AuthInfo.Fee.Granter
 	if feePayer != "" {
-		return sdk.AccAddress(feePayer)
+		granterAddr, err := sdk.AccAddressFromBech32(feePayer)
+		if err != nil {
+			panic(err)
+		}
+		return granterAddr
 	}
-	return ""
+	return nil
 }
 
 func (w *wrapper) GetMemo() string {

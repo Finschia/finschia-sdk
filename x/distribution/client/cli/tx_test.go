@@ -39,7 +39,7 @@ func Test_splitAndCall_NoMessages(t *testing.T) {
 func Test_splitAndCall_Splitting(t *testing.T) {
 	clientCtx := client.Context{}
 
-	addr := sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 
 	// Add five messages
 	msgs := []sdk.Msg{

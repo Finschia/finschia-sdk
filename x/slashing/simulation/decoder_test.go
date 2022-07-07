@@ -19,9 +19,9 @@ import (
 // nolint:deadcode,unused,varcheck
 var (
 	delPk1    = ed25519.GenPrivKey().PubKey()
-	delAddr1  = sdk.BytesToAccAddress(delPk1.Address())
-	valAddr1  = sdk.BytesToValAddress(delPk1.Address())
-	consAddr1 = sdk.BytesToConsAddress(delPk1.Address())
+	delAddr1  = sdk.AccAddress(delPk1.Address())
+	valAddr1  = sdk.ValAddress(delPk1.Address())
+	consAddr1 = sdk.ConsAddress(delPk1.Address().Bytes())
 )
 
 func TestDecodeStore(t *testing.T) {
@@ -37,7 +37,7 @@ func TestDecodeStore(t *testing.T) {
 		Pairs: []kv.Pair{
 			{Key: types.ValidatorSigningInfoKey(consAddr1), Value: cdc.MustMarshal(&info)},
 			{Key: types.ValidatorMissedBlockBitArrayKey(consAddr1, 6), Value: cdc.MustMarshal(&missed)},
-			{Key: types.AddrPubkeyRelationKey(delAddr1.Bytes()), Value: bz},
+			{Key: types.AddrPubkeyRelationKey(delAddr1), Value: bz},
 			{Key: []byte{0x99}, Value: []byte{0x99}}, // This test should panic
 		},
 	}

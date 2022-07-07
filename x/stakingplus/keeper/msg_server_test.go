@@ -9,11 +9,11 @@ import (
 func (s *KeeperTestSuite) TestMsgCreateValidator() {
 	testCases := map[string]struct {
 		delegator sdk.AccAddress
-		valid bool
+		valid     bool
 	}{
 		"valid request": {
 			delegator: s.grantee,
-			valid: true,
+			valid:     true,
 		},
 		"no grant found": {
 			delegator: s.stranger,
@@ -27,7 +27,7 @@ func (s *KeeperTestSuite) TestMsgCreateValidator() {
 			pk := simapp.CreateTestPubKeys(1)[0]
 			delegation := sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())
 			req, err := stakingtypes.NewMsgCreateValidator(
-				tc.delegator.ToValAddress(),
+				sdk.ValAddress(tc.delegator),
 				pk,
 				delegation,
 				stakingtypes.Description{},

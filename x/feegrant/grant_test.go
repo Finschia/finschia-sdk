@@ -43,13 +43,13 @@ func TestGrant(t *testing.T) {
 		},
 		"no grantee": {
 			granter: addr2,
-			grantee: "",
+			grantee: nil,
 			limit:   atom,
 			expires: oneYear,
 			valid:   false,
 		},
 		"no granter": {
-			granter: "",
+			granter: nil,
 			grantee: addr,
 			limit:   atom,
 			expires: oneYear,

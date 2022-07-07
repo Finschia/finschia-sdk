@@ -13,15 +13,15 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/keeper"
-	"github.com/line/lbm-sdk/x/stakingplus"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
+	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
 var (
 	delPk   = ed25519.GenPrivKey().PubKey()
-	delAddr = sdk.BytesToAccAddress(delPk.Address())
-	valAddr = delAddr.ToValAddress()
+	delAddr = sdk.AccAddress(delPk.Address())
+	valAddr = sdk.ValAddress(delAddr)
 )
 
 func TestCleanup(t *testing.T) {
@@ -40,19 +40,19 @@ func TestCleanup(t *testing.T) {
 
 type KeeperTestSuite struct {
 	suite.Suite
-	ctx  sdk.Context
+	ctx sdk.Context
 
-	app *simapp.SimApp
-	keeper keeper.Keeper
+	app         *simapp.SimApp
+	keeper      keeper.Keeper
 	queryServer foundation.QueryServer
-	msgServer foundation.MsgServer
+	msgServer   foundation.MsgServer
 
 	operator sdk.AccAddress
-	members []sdk.AccAddress
+	members  []sdk.AccAddress
 	stranger sdk.AccAddress
 
-	activeProposal uint64
-	votedProposal uint64
+	activeProposal  uint64
+	votedProposal   uint64
 	abortedProposal uint64
 	invalidProposal uint64
 
@@ -69,7 +69,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.msgServer = keeper.NewMsgServer(s.keeper)
 
 	createAddress := func() sdk.AccAddress {
-		return sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	s.operator = s.keeper.GetOperator(s.ctx)
@@ -103,7 +103,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	updates := make([]foundation.Member, len(s.members))
 	for i, member := range s.members {
 		updates[i] = foundation.Member{
-			Address: member.String(),
+			Address:       member.String(),
 			Participating: true,
 		}
 	}
@@ -114,16 +114,16 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.activeProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
 			Operator: s.operator.String(),
-			To: s.stranger.String(),
-			Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
+			To:       s.stranger.String(),
+			Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 		},
 	})
 	s.Require().NoError(err)
 	for _, member := range s.members[1:] {
 		err := s.keeper.Vote(s.ctx, foundation.Vote{
 			ProposalId: s.activeProposal,
-			Voter: member.String(),
-			Option: foundation.VOTE_OPTION_YES,
+			Voter:      member.String(),
+			Option:     foundation.VOTE_OPTION_YES,
 		})
 		s.Require().NoError(err)
 	}
@@ -132,16 +132,16 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.votedProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
 			Operator: s.operator.String(),
-			To: s.stranger.String(),
-			Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
+			To:       s.stranger.String(),
+			Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 		},
 	})
 	s.Require().NoError(err)
 	for _, member := range s.members {
 		err := s.keeper.Vote(s.ctx, foundation.Vote{
 			ProposalId: s.votedProposal,
-			Voter: member.String(),
-			Option: foundation.VOTE_OPTION_YES,
+			Voter:      member.String(),
+			Option:     foundation.VOTE_OPTION_YES,
 		})
 		s.Require().NoError(err)
 	}
@@ -150,8 +150,8 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.abortedProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
 			Operator: s.operator.String(),
-			To: s.stranger.String(),
-			Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
+			To:       s.stranger.String(),
+			Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 		},
 	})
 	s.Require().NoError(err)
@@ -162,16 +162,16 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.invalidProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
 			Operator: s.operator.String(),
-			To: s.stranger.String(),
-			Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance.Add(sdk.OneInt()))),
+			To:       s.stranger.String(),
+			Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance.Add(sdk.OneInt()))),
 		},
 	})
 	s.Require().NoError(err)
 	for _, member := range s.members {
 		err := s.keeper.Vote(s.ctx, foundation.Vote{
 			ProposalId: s.invalidProposal,
-			Voter: member.String(),
-			Option: foundation.VOTE_OPTION_YES,
+			Voter:      member.String(),
+			Option:     foundation.VOTE_OPTION_YES,
 		})
 		s.Require().NoError(err)
 	}

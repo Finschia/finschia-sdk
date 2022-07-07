@@ -15,7 +15,7 @@ import (
 
 func TestSimGenesisAccountValidate(t *testing.T) {
 	pubkey := secp256k1.GenPrivKey().PubKey()
-	addr := sdk.BytesToAccAddress(pubkey.Address())
+	addr := sdk.AccAddress(pubkey.Address())
 
 	vestingStart := time.Now().UTC()
 
@@ -44,7 +44,7 @@ func TestSimGenesisAccountValidate(t *testing.T) {
 		{
 			"valid basic account with module name",
 			simapp.SimGenesisAccount{
-				BaseAccount: authtypes.NewBaseAccount(sdk.BytesToAccAddress(crypto.AddressHash([]byte("testmod"))), nil, 0, 0),
+				BaseAccount: authtypes.NewBaseAccount(sdk.AccAddress(crypto.AddressHash([]byte("testmod"))), nil, 0, 0),
 				ModuleName:  "testmod",
 			},
 			false,

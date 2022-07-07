@@ -26,17 +26,15 @@ var _ feegrant.MsgServer = msgServer{}
 func (k msgServer) GrantAllowance(goCtx context.Context, msg *feegrant.MsgGrantAllowance) (*feegrant.MsgGrantAllowanceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	err := sdk.ValidateAccAddress(msg.Grantee)
+	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
 	if err != nil {
 		return nil, err
 	}
-	grantee := sdk.AccAddress(msg.Grantee)
 
-	err = sdk.ValidateAccAddress(msg.Granter)
+	granter, err := sdk.AccAddressFromBech32(msg.Granter)
 	if err != nil {
 		return nil, err
 	}
-	granter := sdk.AccAddress(msg.Granter)
 
 	// Checking for duplicate entry
 	if f, _ := k.Keeper.GetAllowance(ctx, granter, grantee); f != nil {
@@ -60,17 +58,15 @@ func (k msgServer) GrantAllowance(goCtx context.Context, msg *feegrant.MsgGrantA
 func (k msgServer) RevokeAllowance(goCtx context.Context, msg *feegrant.MsgRevokeAllowance) (*feegrant.MsgRevokeAllowanceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	err := sdk.ValidateAccAddress(msg.Grantee)
+	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
 	if err != nil {
 		return nil, err
 	}
-	grantee := sdk.AccAddress(msg.Grantee)
 
-	err = sdk.ValidateAccAddress(msg.Granter)
+	granter, err := sdk.AccAddressFromBech32(msg.Granter)
 	if err != nil {
 		return nil, err
 	}
-	granter := sdk.AccAddress(msg.Granter)
 
 	err = k.Keeper.revokeAllowance(ctx, granter, grantee)
 	if err != nil {
