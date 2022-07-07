@@ -31,7 +31,7 @@ const (
 	// Do not make assumptions on how much gas an operation will consume in places that are hard to adjust,
 	// such as hardcoding them in contracts.
 	//
-	// Please not that all gas prices returned to the wasmer engine should have this multiplied
+	// Please note that all gas prices returned to wasmvm should have this multiplied.
 	DefaultGasMultiplier uint64 = 140_000_000
 	// InstanceCost is how much SDK gas we charge each time we load a WASM instance.
 	// Creating a new instance is costly, and this helps put a recursion limit to contracts calling contracts.

@@ -1,5 +1,6 @@
 package keeper
 
+// FIXME: After applying cosmos-sdk@0.45.5
 // import (
 // 	"encoding/hex"
 // 	"io"
@@ -53,7 +54,7 @@ package keeper
 
 // 	ctx := sdk.NewContext(cacheMS, tmproto.Header{}, false, log.NewNopLogger())
 // 	seenBefore := make(map[string]bool)
-// 	var rerr error
+// 	var err error
 
 // 	ws.wasm.IterateCodeInfos(ctx, func(id uint64, info types.CodeInfo) bool {
 // 		// Many code ids may point to the same code hash... only sync it once
@@ -67,26 +68,26 @@ package keeper
 // 		// load code and abort on error
 // 		wasmBytes, err := ws.wasm.GetByteCode(ctx, id)
 // 		if err != nil {
-// 			rerr = err
+// 			err = err
 // 			return true
 // 		}
 
 // 		compressedWasm, err := ioutils.GzipIt(wasmBytes)
 // 		if err != nil {
-// 			rerr = err
+// 			err = err
 // 			return true
 // 		}
 
 // 		err = snapshot.WriteExtensionItem(protoWriter, compressedWasm)
 // 		if err != nil {
-// 			rerr = err
+// 			err = err
 // 			return true
 // 		}
 
 // 		return false
 // 	})
 
-// 	return rerr
+// 	return err
 // }
 
 // func (ws *WasmSnapshotter) Restore(
