@@ -287,9 +287,9 @@ func (m *MsgOperatorSendResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgOperatorSendResponse proto.InternalMessageInfo
 
-// MsgTransferFT is the Msg/TransferFT request type.
+// Deprecated: use MsgSend
 //
-// Note: deprecated (use MsgSend)
+// MsgTransferFT is the Msg/TransferFT request type.
 type MsgTransferFT struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -363,9 +363,9 @@ func (m *MsgTransferFT) GetAmount() []Coin {
 	return nil
 }
 
-// MsgTransferFTResponse is the Msg/TransferFT response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgTransferFTResponse is the Msg/TransferFT response type.
 type MsgTransferFTResponse struct {
 }
 
@@ -402,9 +402,9 @@ func (m *MsgTransferFTResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgTransferFTResponse proto.InternalMessageInfo
 
-// MsgTransferFTFrom is the Msg/TransferFTFrom request type.
+// Deprecated: use MsgOperatorSend
 //
-// Note: deprecated (use MsgOperatorSend)
+// MsgTransferFTFrom is the Msg/TransferFTFrom request type.
 type MsgTransferFTFrom struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -487,9 +487,9 @@ func (m *MsgTransferFTFrom) GetAmount() []Coin {
 	return nil
 }
 
-// MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
 type MsgTransferFTFromResponse struct {
 }
 
@@ -526,9 +526,9 @@ func (m *MsgTransferFTFromResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgTransferFTFromResponse proto.InternalMessageInfo
 
-// MsgTransferNFT is the Msg/TransferNFT request type.
+// Deprecated: use MsgSend
 //
-// Note: deprecated (use MsgSend)
+// MsgTransferNFT is the Msg/TransferNFT request type.
 type MsgTransferNFT struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -601,9 +601,9 @@ func (m *MsgTransferNFT) GetTokenIds() []string {
 	return nil
 }
 
-// MsgTransferNFTResponse is the Msg/TransferNFT response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgTransferNFTResponse is the Msg/TransferNFT response type.
 type MsgTransferNFTResponse struct {
 }
 
@@ -640,9 +640,9 @@ func (m *MsgTransferNFTResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgTransferNFTResponse proto.InternalMessageInfo
 
-// MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
+// Deprecated: use MsgOperatorSend
 //
-// Note: deprecated (use MsgOperatorSend)
+// MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
 type MsgTransferNFTFrom struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -724,9 +724,9 @@ func (m *MsgTransferNFTFrom) GetTokenIds() []string {
 	return nil
 }
 
-// MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
 type MsgTransferNFTFromResponse struct {
 }
 
@@ -991,9 +991,9 @@ func (m *MsgRevokeOperatorResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgRevokeOperatorResponse proto.InternalMessageInfo
 
-// MsgApprove is the Msg/Approve request type.
+// Deprecated: use MsgAuthorizeOperator
 //
-// Note: deprecated (use MsgAuthorizeOperator)
+// MsgApprove is the Msg/Approve request type.
 type MsgApprove struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1057,9 +1057,9 @@ func (m *MsgApprove) GetProxy() string {
 	return ""
 }
 
-// MsgApproveResponse is the Msg/Approve response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgApproveResponse is the Msg/Approve response type.
 type MsgApproveResponse struct {
 }
 
@@ -1096,9 +1096,9 @@ func (m *MsgApproveResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgApproveResponse proto.InternalMessageInfo
 
-// MsgDisapprove is the Msg/Disapprove request type.
+// Deprecated: use MsgRevokeOperator
 //
-// Note: deprecated (use MsgRevokeOperator)
+// MsgDisapprove is the Msg/Disapprove request type.
 type MsgDisapprove struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1162,9 +1162,9 @@ func (m *MsgDisapprove) GetProxy() string {
 	return ""
 }
 
-// MsgDisapproveResponse is the Msg/Disapprove response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgDisapproveResponse is the Msg/Disapprove response type.
 type MsgDisapproveResponse struct {
 }
 
@@ -1359,7 +1359,7 @@ type MsgCreateFTClass struct {
 	// recipient of the minted tokens.
 	To string `protobuf:"bytes,6,opt,name=to,proto3" json:"to,omitempty"`
 	// amount of tokens to mint on the create.
-	// Note: amount may be zero.
+	// Note: supply may be zero.
 	Supply github_com_line_lbm_sdk_types.Int `protobuf:"bytes,7,opt,name=supply,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"supply"`
 }
 
@@ -1618,6 +1618,8 @@ func (m *MsgCreateNFTClassResponse) GetId() string {
 	return ""
 }
 
+// Deprecated: use MsgCreateFTClass
+//
 // MsgIssueFT is the Msg/IssueFT request type.
 //
 // Throws:
@@ -1633,8 +1635,6 @@ func (m *MsgCreateNFTClassResponse) GetId() string {
 //   - `mintable` == false, amount == 1 and decimals == 0 (weird, but for the backward compatibility).
 //
 // Signer: `owner`
-//
-// Note: deprecated (use MsgCreateFTClass)
 type MsgIssueFT struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1738,9 +1738,9 @@ func (m *MsgIssueFT) GetTo() string {
 	return ""
 }
 
-// MsgIssueFTResponse is the Msg/IssueFT response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgIssueFTResponse is the Msg/IssueFT response type.
 type MsgIssueFTResponse struct {
 	// id of the new token class.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -1786,6 +1786,8 @@ func (m *MsgIssueFTResponse) GetId() string {
 	return ""
 }
 
+// Deprecated: use MsgCreateNFTClass
+//
 // MsgIssueNFT is the Msg/IssueNFT request type.
 //
 // Throws:
@@ -1796,8 +1798,6 @@ func (m *MsgIssueFTResponse) GetId() string {
 //   - `meta` exceeds the app-specific limit in length.
 //
 // Signer: `owner`
-//
-// Note: deprecated (use MsgCreateNFTClass)
 type MsgIssueNFT struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1870,9 +1870,9 @@ func (m *MsgIssueNFT) GetOwner() string {
 	return ""
 }
 
-// MsgIssueNFTResponse is the Msg/IssueNFT response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgIssueNFTResponse is the Msg/IssueNFT response type.
 type MsgIssueNFTResponse struct {
 	// id of the new token class.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -2474,9 +2474,9 @@ func (m *MsgOperatorBurnResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgOperatorBurnResponse proto.InternalMessageInfo
 
-// MsgBurnFT is the Msg/BurnFT request type.
+// Deprecated: use MsgBurn
 //
-// Note: deprecated (use MsgBurn)
+// MsgBurnFT is the Msg/BurnFT request type.
 type MsgBurnFT struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -2542,9 +2542,9 @@ func (m *MsgBurnFT) GetAmount() []Coin {
 	return nil
 }
 
-// MsgBurnFTResponse is the Msg/BurnFT response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgBurnFTResponse is the Msg/BurnFT response type.
 type MsgBurnFTResponse struct {
 }
 
@@ -2581,9 +2581,9 @@ func (m *MsgBurnFTResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgBurnFTResponse proto.InternalMessageInfo
 
-// MsgBurnFTFrom is the Msg/BurnFTFrom request type.
+// Deprecated: use MsgOperatorBurn
 //
-// Note: deprecated (use MsgOperatorBurn)
+// MsgBurnFTFrom is the Msg/BurnFTFrom request type.
 type MsgBurnFTFrom struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -2659,9 +2659,9 @@ func (m *MsgBurnFTFrom) GetAmount() []Coin {
 	return nil
 }
 
-// MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
 type MsgBurnFTFromResponse struct {
 }
 
@@ -2698,9 +2698,9 @@ func (m *MsgBurnFTFromResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgBurnFTFromResponse proto.InternalMessageInfo
 
-// MsgBurnNFT is the Msg/BurnNFT request type.
+// Deprecated: use MsgBurn
 //
-// Note: deprecated (use MsgBurn)
+// MsgBurnNFT is the Msg/BurnNFT request type.
 type MsgBurnNFT struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -2766,9 +2766,9 @@ func (m *MsgBurnNFT) GetTokenIds() []string {
 	return nil
 }
 
-// MsgBurnNFTResponse is the Msg/BurnNFT response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgBurnNFTResponse is the Msg/BurnNFT response type.
 type MsgBurnNFTResponse struct {
 }
 
@@ -2805,9 +2805,9 @@ func (m *MsgBurnNFTResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgBurnNFTResponse proto.InternalMessageInfo
 
-// MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
+// Deprecated: use MsgOperatorBurn
 //
-// Note: deprecated (use MsgOperatorBurn)
+// MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
 type MsgBurnNFTFrom struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -2883,9 +2883,9 @@ func (m *MsgBurnNFTFrom) GetTokenIds() []string {
 	return nil
 }
 
-// MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
 type MsgBurnNFTFromResponse struct {
 }
 
@@ -3290,9 +3290,9 @@ func (m *MsgModifyNFTResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgModifyNFTResponse proto.InternalMessageInfo
 
-// MsgModify is the Msg/Modify request type.
+// Deprecated: use MsgModifyContract, MsgModifyTokenClass or MsgModifyNFT
 //
-// Note: deprecated (use MsgModifyContract, MsgModifyTokenClass or MsgModifyNFT)
+// MsgModify is the Msg/Modify request type.
 type MsgModify struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -3379,9 +3379,9 @@ func (m *MsgModify) GetChanges() []Change {
 	return nil
 }
 
-// MsgModifyResponse is the Msg/Modify response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgModifyResponse is the Msg/Modify response type.
 type MsgModifyResponse struct {
 }
 
@@ -3656,9 +3656,9 @@ func (m *MsgAbandonResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgAbandonResponse proto.InternalMessageInfo
 
-// MsgGrantPermission is the Msg/GrantPermission request type.
+// Deprecated: use MsgGrant
 //
-// Note: deprecated (use MsgGrant)
+// MsgGrantPermission is the Msg/GrantPermission request type.
 type MsgGrantPermission struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -3731,9 +3731,9 @@ func (m *MsgGrantPermission) GetPermission() string {
 	return ""
 }
 
-// MsgGrantPermissionResponse is the Msg/GrantPermission response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgGrantPermissionResponse is the Msg/GrantPermission response type.
 type MsgGrantPermissionResponse struct {
 }
 
@@ -3770,9 +3770,9 @@ func (m *MsgGrantPermissionResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgGrantPermissionResponse proto.InternalMessageInfo
 
-// MsgRevokePermission is the Msg/RevokePermission request type.
+// Deprecated: use MsgAbandon
 //
-// Note: deprecated (use MsgAbandon)
+// MsgRevokePermission is the Msg/RevokePermission request type.
 type MsgRevokePermission struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -3836,9 +3836,9 @@ func (m *MsgRevokePermission) GetPermission() string {
 	return ""
 }
 
-// MsgRevokePermissionResponse is the Msg/RevokePermission response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgRevokePermissionResponse is the Msg/RevokePermission response type.
 type MsgRevokePermissionResponse struct {
 }
 
@@ -4369,9 +4369,9 @@ func (m *MsgOperatorDetachResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgOperatorDetachResponse proto.InternalMessageInfo
 
-// MsgAttachFrom is the Msg/AttachFrom request type.
+// Deprecated: use MsgOperatorAttach
 //
-// Note: deprecated (use MsgOperatorAttach)
+// MsgAttachFrom is the Msg/AttachFrom request type.
 type MsgAttachFrom struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -4453,9 +4453,9 @@ func (m *MsgAttachFrom) GetToTokenId() string {
 	return ""
 }
 
-// MsgAttachFromResponse is the Msg/AttachFrom response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgAttachFromResponse is the Msg/AttachFrom response type.
 type MsgAttachFromResponse struct {
 }
 
@@ -4492,9 +4492,9 @@ func (m *MsgAttachFromResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgAttachFromResponse proto.InternalMessageInfo
 
-// MsgDetachFrom is the Msg/DetachFrom request type.
+// Deprecated: use MsgOperatorDetach
 //
-// Note: deprecated (use MsgOperatorDetach)
+// MsgDetachFrom is the Msg/DetachFrom request type.
 type MsgDetachFrom struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -4567,9 +4567,9 @@ func (m *MsgDetachFrom) GetTokenId() string {
 	return ""
 }
 
-// MsgDetachFromResponse is the Msg/DetachFrom response type.
+// Deprecated: do not use
 //
-// Note: deprecated
+// MsgDetachFromResponse is the Msg/DetachFrom response type.
 type MsgDetachFromResponse struct {
 }
 
@@ -4853,17 +4853,17 @@ type MsgClient interface {
 	// Info: one can send both fungible tokens and non-fungible tokens.
 	// Since: 0.46.0 (finschia)
 	OperatorSend(ctx context.Context, in *MsgOperatorSend, opts ...grpc.CallOption) (*MsgOperatorSendResponse, error)
+	// Deprecated: use Send
 	// TransferFT defines a method to send fungible tokens from one account to another account.
-	// Note: deprecated (use Send)
 	TransferFT(ctx context.Context, in *MsgTransferFT, opts ...grpc.CallOption) (*MsgTransferFTResponse, error)
+	// Deprecated: use OperatorSend
 	// TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator.
-	// Note: deprecated (use OperatorSend)
 	TransferFTFrom(ctx context.Context, in *MsgTransferFTFrom, opts ...grpc.CallOption) (*MsgTransferFTFromResponse, error)
+	// Deprecated: use Send
 	// TransferNFT defines a method to send non-fungible tokens from one account to another account.
-	// Note: deprecated (use Send)
 	TransferNFT(ctx context.Context, in *MsgTransferNFT, opts ...grpc.CallOption) (*MsgTransferNFTResponse, error)
+	// Deprecated: use OperatorSend
 	// TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator.
-	// Note: deprecated (use OperatorSend)
 	TransferNFTFrom(ctx context.Context, in *MsgTransferNFTFrom, opts ...grpc.CallOption) (*MsgTransferNFTFromResponse, error)
 	// AuthorizeOperator allows one to send tokens on behalf of the approver.
 	// Fires:
@@ -4886,11 +4886,11 @@ type MsgClient interface {
 	//   - there is no authorization by `holder` to `operator`.
 	// Since: 0.46.0 (finschia)
 	RevokeOperator(ctx context.Context, in *MsgRevokeOperator, opts ...grpc.CallOption) (*MsgRevokeOperatorResponse, error)
+	// Deprecated: use AuthorizeOperator
 	// Approve allows one to send tokens on behalf of the approver.
-	// Note: deprecated (use AuthorizeOperator)
 	Approve(ctx context.Context, in *MsgApprove, opts ...grpc.CallOption) (*MsgApproveResponse, error)
+	// Deprecated: use RevokeOperator
 	// Disapprove revokes the authorization of the operator to send the approver's token.
-	// Note: deprecated (use RevokeOperator)
 	Disapprove(ctx context.Context, in *MsgDisapprove, opts ...grpc.CallOption) (*MsgDisapproveResponse, error)
 	// CreateContract defines a method to create a contract for collection.
 	// it grants `mint`, `burn`, `modify` and `issue` permissions on the contract to its creator.
@@ -4912,20 +4912,20 @@ type MsgClient interface {
 	// - issue_nft (deprecated, not typed)
 	// Since: 0.46.0 (finschia)
 	CreateNFTClass(ctx context.Context, in *MsgCreateNFTClass, opts ...grpc.CallOption) (*MsgCreateNFTClassResponse, error)
+	// Deprecated: use CreateFTClass
 	// IssueFT defines a method to create a class of fungible token.
 	// Fires:
 	// - EventIssueFT
 	// - EventMintedFT
 	// - issue_ft (deprecated, not typed)
 	// Note: it does not grant any permissions to its issuer.
-	// Note: deprecated (use CreateFTClass)
 	IssueFT(ctx context.Context, in *MsgIssueFT, opts ...grpc.CallOption) (*MsgIssueFTResponse, error)
+	// Deprecated: use CreateNFTClass
 	// IssueNFT defines a method to create a class of non-fungible token.
 	// Fires:
 	// - EventIssueNFT
 	// - issue_nft (deprecated, not typed)
 	// Note: it DOES grant `mint` and `burn` permissions to its issuer.
-	// Note: deprecated (use CreateNFTClass)
 	IssueNFT(ctx context.Context, in *MsgIssueNFT, opts ...grpc.CallOption) (*MsgIssueNFTResponse, error)
 	// MintFT defines a method to mint fungible tokens.
 	// Fires:
@@ -4972,17 +4972,17 @@ type MsgClient interface {
 	// Info: one can burn both fungible tokens and non-fungible tokens.
 	// Since: 0.46.0 (finschia)
 	OperatorBurn(ctx context.Context, in *MsgOperatorBurn, opts ...grpc.CallOption) (*MsgOperatorBurnResponse, error)
+	// Deprecated: use Burn
 	// BurnFT defines a method to burn fungible tokens.
-	// Note: deprecated (use Burn)
 	BurnFT(ctx context.Context, in *MsgBurnFT, opts ...grpc.CallOption) (*MsgBurnFTResponse, error)
+	// Deprecated: use OperatorBurn
 	// BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy.
-	// Note: deprecated (use OperatorBurn)
 	BurnFTFrom(ctx context.Context, in *MsgBurnFTFrom, opts ...grpc.CallOption) (*MsgBurnFTFromResponse, error)
+	// Deprecated: use Burn
 	// BurnNFT defines a method to burn non-fungible tokens.
-	// Note: deprecated (use Burn)
 	BurnNFT(ctx context.Context, in *MsgBurnNFT, opts ...grpc.CallOption) (*MsgBurnNFTResponse, error)
+	// Deprecated: use OperatorBurn
 	// BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy.
-	// Note: deprecated (use OperatorBurn)
 	BurnNFTFrom(ctx context.Context, in *MsgBurnNFTFrom, opts ...grpc.CallOption) (*MsgBurnNFTFromResponse, error)
 	// ModifyContract defines a method to modify the attributes of a contract.
 	// Fires:
@@ -5018,8 +5018,8 @@ type MsgClient interface {
 	//   - there is no token class of `contract_id`.
 	// Since: 0.46.0 (finschia)
 	ModifyNFT(ctx context.Context, in *MsgModifyNFT, opts ...grpc.CallOption) (*MsgModifyNFTResponse, error)
+	// Deprecated: use ModifyContract, ModifyTokenClass or ModifyNFT
 	// Modify defines a method to modify metadata.
-	// Note: deprecated (use ModifyContract, ModifyTokenClass or ModifyNFT)
 	Modify(ctx context.Context, in *MsgModify, opts ...grpc.CallOption) (*MsgModifyResponse, error)
 	// Grant allows one to mint or burn tokens or modify metadata.
 	// Fires:
@@ -5041,11 +5041,11 @@ type MsgClient interface {
 	//   - `grantee` does not have `permission`.
 	// Since: 0.46.0 (finschia)
 	Abandon(ctx context.Context, in *MsgAbandon, opts ...grpc.CallOption) (*MsgAbandonResponse, error)
+	// Deprecated: use Grant
 	// GrantPermission allows one to mint or burn tokens or modify metadata.
-	// Note: deprecated (use Grant)
 	GrantPermission(ctx context.Context, in *MsgGrantPermission, opts ...grpc.CallOption) (*MsgGrantPermissionResponse, error)
+	// Deprecated: use Abandon
 	// RevokePermission abandons a permission.
-	// Note: deprecated (use Abandon)
 	RevokePermission(ctx context.Context, in *MsgRevokePermission, opts ...grpc.CallOption) (*MsgRevokePermissionResponse, error)
 	// Attach defines a method to attach a token to another token.
 	// Fires:
@@ -5097,11 +5097,11 @@ type MsgClient interface {
 	//   - `owner` does not owns `subject`.
 	// Since: 0.46.0 (finschia)
 	OperatorDetach(ctx context.Context, in *MsgOperatorDetach, opts ...grpc.CallOption) (*MsgOperatorDetachResponse, error)
+	// Deprecated: use OperatorAttach
 	// AttachFrom defines a method to attach a token to another token by operator.
-	// Note: deprecated (use OperatorAttach)
 	AttachFrom(ctx context.Context, in *MsgAttachFrom, opts ...grpc.CallOption) (*MsgAttachFromResponse, error)
+	// Deprecated: use OperatorDetach
 	// DetachFrom defines a method to detach a token from another token by operator.
-	// Note: deprecated (use OperatorDetach)
 	DetachFrom(ctx context.Context, in *MsgDetachFrom, opts ...grpc.CallOption) (*MsgDetachFromResponse, error)
 }
 
@@ -5474,17 +5474,17 @@ type MsgServer interface {
 	// Info: one can send both fungible tokens and non-fungible tokens.
 	// Since: 0.46.0 (finschia)
 	OperatorSend(context.Context, *MsgOperatorSend) (*MsgOperatorSendResponse, error)
+	// Deprecated: use Send
 	// TransferFT defines a method to send fungible tokens from one account to another account.
-	// Note: deprecated (use Send)
 	TransferFT(context.Context, *MsgTransferFT) (*MsgTransferFTResponse, error)
+	// Deprecated: use OperatorSend
 	// TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator.
-	// Note: deprecated (use OperatorSend)
 	TransferFTFrom(context.Context, *MsgTransferFTFrom) (*MsgTransferFTFromResponse, error)
+	// Deprecated: use Send
 	// TransferNFT defines a method to send non-fungible tokens from one account to another account.
-	// Note: deprecated (use Send)
 	TransferNFT(context.Context, *MsgTransferNFT) (*MsgTransferNFTResponse, error)
+	// Deprecated: use OperatorSend
 	// TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator.
-	// Note: deprecated (use OperatorSend)
 	TransferNFTFrom(context.Context, *MsgTransferNFTFrom) (*MsgTransferNFTFromResponse, error)
 	// AuthorizeOperator allows one to send tokens on behalf of the approver.
 	// Fires:
@@ -5507,11 +5507,11 @@ type MsgServer interface {
 	//   - there is no authorization by `holder` to `operator`.
 	// Since: 0.46.0 (finschia)
 	RevokeOperator(context.Context, *MsgRevokeOperator) (*MsgRevokeOperatorResponse, error)
+	// Deprecated: use AuthorizeOperator
 	// Approve allows one to send tokens on behalf of the approver.
-	// Note: deprecated (use AuthorizeOperator)
 	Approve(context.Context, *MsgApprove) (*MsgApproveResponse, error)
+	// Deprecated: use RevokeOperator
 	// Disapprove revokes the authorization of the operator to send the approver's token.
-	// Note: deprecated (use RevokeOperator)
 	Disapprove(context.Context, *MsgDisapprove) (*MsgDisapproveResponse, error)
 	// CreateContract defines a method to create a contract for collection.
 	// it grants `mint`, `burn`, `modify` and `issue` permissions on the contract to its creator.
@@ -5533,20 +5533,20 @@ type MsgServer interface {
 	// - issue_nft (deprecated, not typed)
 	// Since: 0.46.0 (finschia)
 	CreateNFTClass(context.Context, *MsgCreateNFTClass) (*MsgCreateNFTClassResponse, error)
+	// Deprecated: use CreateFTClass
 	// IssueFT defines a method to create a class of fungible token.
 	// Fires:
 	// - EventIssueFT
 	// - EventMintedFT
 	// - issue_ft (deprecated, not typed)
 	// Note: it does not grant any permissions to its issuer.
-	// Note: deprecated (use CreateFTClass)
 	IssueFT(context.Context, *MsgIssueFT) (*MsgIssueFTResponse, error)
+	// Deprecated: use CreateNFTClass
 	// IssueNFT defines a method to create a class of non-fungible token.
 	// Fires:
 	// - EventIssueNFT
 	// - issue_nft (deprecated, not typed)
 	// Note: it DOES grant `mint` and `burn` permissions to its issuer.
-	// Note: deprecated (use CreateNFTClass)
 	IssueNFT(context.Context, *MsgIssueNFT) (*MsgIssueNFTResponse, error)
 	// MintFT defines a method to mint fungible tokens.
 	// Fires:
@@ -5593,17 +5593,17 @@ type MsgServer interface {
 	// Info: one can burn both fungible tokens and non-fungible tokens.
 	// Since: 0.46.0 (finschia)
 	OperatorBurn(context.Context, *MsgOperatorBurn) (*MsgOperatorBurnResponse, error)
+	// Deprecated: use Burn
 	// BurnFT defines a method to burn fungible tokens.
-	// Note: deprecated (use Burn)
 	BurnFT(context.Context, *MsgBurnFT) (*MsgBurnFTResponse, error)
+	// Deprecated: use OperatorBurn
 	// BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy.
-	// Note: deprecated (use OperatorBurn)
 	BurnFTFrom(context.Context, *MsgBurnFTFrom) (*MsgBurnFTFromResponse, error)
+	// Deprecated: use Burn
 	// BurnNFT defines a method to burn non-fungible tokens.
-	// Note: deprecated (use Burn)
 	BurnNFT(context.Context, *MsgBurnNFT) (*MsgBurnNFTResponse, error)
+	// Deprecated: use OperatorBurn
 	// BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy.
-	// Note: deprecated (use OperatorBurn)
 	BurnNFTFrom(context.Context, *MsgBurnNFTFrom) (*MsgBurnNFTFromResponse, error)
 	// ModifyContract defines a method to modify the attributes of a contract.
 	// Fires:
@@ -5639,8 +5639,8 @@ type MsgServer interface {
 	//   - there is no token class of `contract_id`.
 	// Since: 0.46.0 (finschia)
 	ModifyNFT(context.Context, *MsgModifyNFT) (*MsgModifyNFTResponse, error)
+	// Deprecated: use ModifyContract, ModifyTokenClass or ModifyNFT
 	// Modify defines a method to modify metadata.
-	// Note: deprecated (use ModifyContract, ModifyTokenClass or ModifyNFT)
 	Modify(context.Context, *MsgModify) (*MsgModifyResponse, error)
 	// Grant allows one to mint or burn tokens or modify metadata.
 	// Fires:
@@ -5662,11 +5662,11 @@ type MsgServer interface {
 	//   - `grantee` does not have `permission`.
 	// Since: 0.46.0 (finschia)
 	Abandon(context.Context, *MsgAbandon) (*MsgAbandonResponse, error)
+	// Deprecated: use Grant
 	// GrantPermission allows one to mint or burn tokens or modify metadata.
-	// Note: deprecated (use Grant)
 	GrantPermission(context.Context, *MsgGrantPermission) (*MsgGrantPermissionResponse, error)
+	// Deprecated: use Abandon
 	// RevokePermission abandons a permission.
-	// Note: deprecated (use Abandon)
 	RevokePermission(context.Context, *MsgRevokePermission) (*MsgRevokePermissionResponse, error)
 	// Attach defines a method to attach a token to another token.
 	// Fires:
@@ -5718,11 +5718,11 @@ type MsgServer interface {
 	//   - `owner` does not owns `subject`.
 	// Since: 0.46.0 (finschia)
 	OperatorDetach(context.Context, *MsgOperatorDetach) (*MsgOperatorDetachResponse, error)
+	// Deprecated: use OperatorAttach
 	// AttachFrom defines a method to attach a token to another token by operator.
-	// Note: deprecated (use OperatorAttach)
 	AttachFrom(context.Context, *MsgAttachFrom) (*MsgAttachFromResponse, error)
+	// Deprecated: use OperatorDetach
 	// DetachFrom defines a method to detach a token from another token by operator.
-	// Note: deprecated (use OperatorDetach)
 	DetachFrom(context.Context, *MsgDetachFrom) (*MsgDetachFromResponse, error)
 }
 

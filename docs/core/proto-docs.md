@@ -12227,9 +12227,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.Change"></a>
 
 ### Change
-Change defines a field-value pair.
+Deprecated: use Attribute
 
-Note: deprecated (use Attribute)
+Change defines a field-value pair.
 
 
 | Field | Type | Label | Description |
@@ -12279,9 +12279,9 @@ Contract defines the information of the contract for the collection.
 <a name="lbm.collection.v1.FT"></a>
 
 ### FT
-FT defines the information of fungible token.
+Deprecated: use FTClass
 
-Note: deprecated (use FTClass)
+FT defines the information of fungible token.
 
 
 | Field | Type | Label | Description |
@@ -12378,9 +12378,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.OwnerNFT"></a>
 
 ### OwnerNFT
-OwnerNFT defines the information of non-fungible token.
+Deprecated: use NFT
 
-Note: deprecated (use NFT)
+OwnerNFT defines the information of non-fungible token.
 
 
 | Field | Type | Label | Description |
@@ -12409,9 +12409,9 @@ Params defines the parameters for the collection module.
 <a name="lbm.collection.v1.TokenType"></a>
 
 ### TokenType
-TokenType defines the information of token type.
+Deprecated: use TokenClass
 
-Note: deprecated (use TokenClass)
+TokenType defines the information of token type.
 
 
 | Field | Type | Label | Description |
@@ -13117,9 +13117,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.QueryApprovedRequest"></a>
 
 ### QueryApprovedRequest
-QueryApprovedRequest is the request type for the Query/Approved RPC method.
+Deprecated: use QueryAuthorizationRequest
 
-Note: deprecated (use QueryAuthorizationRequest)
+QueryApprovedRequest is the request type for the Query/Approved RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13136,9 +13136,9 @@ Note: deprecated (use QueryAuthorizationRequest)
 <a name="lbm.collection.v1.QueryApprovedResponse"></a>
 
 ### QueryApprovedResponse
-QueryApprovedResponse is the response type for the Query/Approved RPC method.
+Deprecated: do not use
 
-Note: deprecated
+QueryApprovedResponse is the response type for the Query/Approved RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13153,9 +13153,9 @@ Note: deprecated
 <a name="lbm.collection.v1.QueryApproversRequest"></a>
 
 ### QueryApproversRequest
-QueryApproversRequest is the request type for the Query/Approvers RPC method.
+Deprecated: use QueryOperatorAuthorizations
 
-Note: deprecated (use QueryOperatorAuthorizations)
+QueryApproversRequest is the request type for the Query/Approvers RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13172,9 +13172,9 @@ Note: deprecated (use QueryOperatorAuthorizations)
 <a name="lbm.collection.v1.QueryApproversResponse"></a>
 
 ### QueryApproversResponse
-QueryApproversResponse is the response type for the Query/Approvers RPC method.
+Deprecated: do not use
 
-Note: deprecated
+QueryApproversResponse is the response type for the Query/Approvers RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13389,9 +13389,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.QueryFTBurntRequest"></a>
 
 ### QueryFTBurntRequest
-QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
+Deprecated: use QueryBurntRequest
 
-Note: deprecated (use QueryBurntRequest)
+QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13407,9 +13407,9 @@ Note: deprecated (use QueryBurntRequest)
 <a name="lbm.collection.v1.QueryFTBurntResponse"></a>
 
 ### QueryFTBurntResponse
-QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
+Deprecated: do not use
 
-Note: deprecated
+QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13459,9 +13459,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.QueryFTMintedRequest"></a>
 
 ### QueryFTMintedRequest
-QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
+Deprecated: use QueryMintedRequest
 
-Note: deprecated (use QueryMintedRequest)
+QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13477,9 +13477,9 @@ Note: deprecated (use QueryMintedRequest)
 <a name="lbm.collection.v1.QueryFTMintedResponse"></a>
 
 ### QueryFTMintedResponse
-QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
+Deprecated: do not use
 
-Note: deprecated
+QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13494,9 +13494,9 @@ Note: deprecated
 <a name="lbm.collection.v1.QueryFTSupplyRequest"></a>
 
 ### QueryFTSupplyRequest
-QueryFTSupplyRequest is the request type for the Query/FTSupply RPC method.
+Deprecated: use QuerySupplyRequest
 
-Note: deprecated (use QuerySupplyRequest)
+QueryFTSupplyRequest is the request type for the Query/FTSupply RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13512,9 +13512,9 @@ Note: deprecated (use QuerySupplyRequest)
 <a name="lbm.collection.v1.QueryFTSupplyResponse"></a>
 
 ### QueryFTSupplyResponse
-QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
+Deprecated: do not use
 
-Note: deprecated
+QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13637,9 +13637,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.QueryNFTBurntRequest"></a>
 
 ### QueryNFTBurntRequest
-QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
+Deprecated: use QueryBurntRequest
 
-Note: deprecated (use QueryBurntRequest)
+QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13655,9 +13655,9 @@ Note: deprecated (use QueryBurntRequest)
 <a name="lbm.collection.v1.QueryNFTBurntResponse"></a>
 
 ### QueryNFTBurntResponse
-QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
+Deprecated: do not use
 
-Note: deprecated
+QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13707,9 +13707,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.QueryNFTMintedRequest"></a>
 
 ### QueryNFTMintedRequest
-QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
+Deprecated: use QueryMintedRequest
 
-Note: deprecated (use QueryMintedRequest)
+QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13725,9 +13725,9 @@ Note: deprecated (use QueryMintedRequest)
 <a name="lbm.collection.v1.QueryNFTMintedResponse"></a>
 
 ### QueryNFTMintedResponse
-QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC method.
+Deprecated: do not use
 
-Note: deprecated
+QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13777,9 +13777,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.QueryNFTSupplyRequest"></a>
 
 ### QueryNFTSupplyRequest
-QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
+Deprecated: use QuerySupplyRequest
 
-Note: deprecated (use QuerySupplyRequest)
+QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
 
 
 | Field | Type | Label | Description |
@@ -13795,9 +13795,9 @@ Note: deprecated (use QuerySupplyRequest)
 <a name="lbm.collection.v1.QueryNFTSupplyResponse"></a>
 
 ### QueryNFTSupplyResponse
-QueryNFTSupplyResponse is the response type for the Query/NFTSupply RPC method.
+Deprecated: do not use
 
-Note: deprecated
+QueryNFTSupplyResponse is the response type for the Query/NFTSupply RPC method.
 
 
 | Field | Type | Label | Description |
@@ -14016,9 +14016,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.QueryTokenRequest"></a>
 
 ### QueryTokenRequest
-QueryTokenRequest is the request type for the Query/Token RPC method.
+Deprecated: use QueryFTClassRequest or QueryNFTRequest
 
-Note: deprecated (use QueryFTClassRequest and QueryNFTRequest)
+QueryTokenRequest is the request type for the Query/Token RPC method.
 
 
 | Field | Type | Label | Description |
@@ -14034,9 +14034,9 @@ Note: deprecated (use QueryFTClassRequest and QueryNFTRequest)
 <a name="lbm.collection.v1.QueryTokenResponse"></a>
 
 ### QueryTokenResponse
-QueryTokenResponse is the response type for the Query/Token RPC method.
+Deprecated: do not use
 
-Note: deprecated
+QueryTokenResponse is the response type for the Query/Token RPC method.
 
 
 | Field | Type | Label | Description |
@@ -14051,9 +14051,9 @@ Note: deprecated
 <a name="lbm.collection.v1.QueryTokenTypeRequest"></a>
 
 ### QueryTokenTypeRequest
-QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
+Deprecated: use QueryTokenClassRequest
 
-Note: deprecated (use QueryTokenClassRequest)
+QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
 
 
 | Field | Type | Label | Description |
@@ -14069,9 +14069,9 @@ Note: deprecated (use QueryTokenClassRequest)
 <a name="lbm.collection.v1.QueryTokenTypeResponse"></a>
 
 ### QueryTokenTypeResponse
-QueryTokenTypeResponse is the response type for the Query/TokenType RPC method.
+Deprecated: do not use
 
-Note: deprecated
+QueryTokenTypeResponse is the response type for the Query/TokenType RPC method.
 
 
 | Field | Type | Label | Description |
@@ -14086,9 +14086,9 @@ Note: deprecated
 <a name="lbm.collection.v1.QueryTokenTypesRequest"></a>
 
 ### QueryTokenTypesRequest
-QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
+Deprecated: do not use
 
-Note: deprecated
+QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
 
 
 | Field | Type | Label | Description |
@@ -14104,9 +14104,9 @@ Note: deprecated
 <a name="lbm.collection.v1.QueryTokenTypesResponse"></a>
 
 ### QueryTokenTypesResponse
-QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method.
+Deprecated: do not use
 
-Note: deprecated
+QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method.
 
 
 | Field | Type | Label | Description |
@@ -14122,9 +14122,9 @@ Note: deprecated
 <a name="lbm.collection.v1.QueryTokensRequest"></a>
 
 ### QueryTokensRequest
-QueryTokensRequest is the request type for the Query/Tokens RPC method.
+Deprecated: do not use
 
-Note: deprecated
+QueryTokensRequest is the request type for the Query/Tokens RPC method.
 
 
 | Field | Type | Label | Description |
@@ -14140,9 +14140,9 @@ Note: deprecated
 <a name="lbm.collection.v1.QueryTokensResponse"></a>
 
 ### QueryTokensResponse
-QueryTokensResponse is the response type for the Query/Tokens RPC method.
+Deprecated: do not use
 
-Note: deprecated
+QueryTokensResponse is the response type for the Query/Tokens RPC method.
 
 
 | Field | Type | Label | Description |
@@ -14173,20 +14173,20 @@ Query defines the gRPC querier service.
 | `Supply` | [QuerySupplyRequest](#lbm.collection.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.collection.v1.QuerySupplyResponse) | Supply queries the number of tokens from a given contract id and class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Info: one can query for both fungible tokens and non-fungible token classes. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/supply|
 | `Minted` | [QueryMintedRequest](#lbm.collection.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.collection.v1.QueryMintedResponse) | Minted queries the number of minted tokens from a given contract id and class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Info: one can query for both fungible tokens and non-fungible token classes. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/minted|
 | `Burnt` | [QueryBurntRequest](#lbm.collection.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.collection.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from a given contract id and class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Info: one can query for both fungible tokens and non-fungible token classes. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/burnt|
-| `FTSupply` | [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest) | [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse) | FTSupply queries the number of tokens from a given contract id and token id. Note: deprecated (use Supply) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply|
-| `FTMinted` | [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest) | [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse) | FTMinted queries the number of minted tokens from a given contract id and token id. Note: deprecated (use Minted) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted|
-| `FTBurnt` | [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest) | [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse) | FTBurnt queries the number of burnt tokens from a given contract id and token id. Note: deprecated (use Burnt) | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt|
-| `NFTSupply` | [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest) | [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse) | NFTSupply queries the number of tokens from a given contract id and token type. Note: deprecated (use Supply) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply|
-| `NFTMinted` | [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest) | [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse) | NFTMinted queries the number of minted tokens from a given contract id and token type. Note: deprecated (use Minted) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted|
-| `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | NFTBurnt queries the number of burnt tokens from a given contract id and token type. Note: deprecated (use Burnt) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
+| `FTSupply` | [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest) | [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse) | Deprecated: use Supply FTSupply queries the number of tokens from a given contract id and token id. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply|
+| `FTMinted` | [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest) | [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse) | Deprecated: use Minted FTMinted queries the number of minted tokens from a given contract id and token id. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted|
+| `FTBurnt` | [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest) | [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse) | Deprecated: use Burnt FTBurnt queries the number of burnt tokens from a given contract id and token id. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt|
+| `NFTSupply` | [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest) | [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse) | Deprecated: use Supply NFTSupply queries the number of tokens from a given contract id and token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply|
+| `NFTMinted` | [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest) | [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse) | Deprecated: use Minted NFTMinted queries the number of minted tokens from a given contract id and token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted|
+| `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | Deprecated: use Burnt NFTBurnt queries the number of burnt tokens from a given contract id and token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
 | `Contract` | [QueryContractRequest](#lbm.collection.v1.QueryContractRequest) | [QueryContractResponse](#lbm.collection.v1.QueryContractResponse) | Contract queries a contract metadata based on its contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}|
 | `Contracts` | [QueryContractsRequest](#lbm.collection.v1.QueryContractsRequest) | [QueryContractsResponse](#lbm.collection.v1.QueryContractsResponse) | Contracts queries metadata of all contracts. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts|
 | `FTClass` | [QueryFTClassRequest](#lbm.collection.v1.QueryFTClassRequest) | [QueryFTClassResponse](#lbm.collection.v1.QueryFTClassResponse) | FTClass queries a metadata of a fungible token class from its class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/ft_classes/{class_id}|
 | `NFTClass` | [QueryNFTClassRequest](#lbm.collection.v1.QueryNFTClassRequest) | [QueryNFTClassResponse](#lbm.collection.v1.QueryNFTClassResponse) | NFTClass queries a metadata of a non-fungible token class from its class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/nft_classes/{class_id}|
 | `TokenClassTypeName` | [QueryTokenClassTypeNameRequest](#lbm.collection.v1.QueryTokenClassTypeNameRequest) | [QueryTokenClassTypeNameResponse](#lbm.collection.v1.QueryTokenClassTypeNameResponse) | TokenClassTypeName queries the fully qualified message type name of a token class from its class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/type_name|
-| `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. Note: deprecated (use NFTClass) | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
+| `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | Deprecated: use NFTClass TokenType queries metadata of a token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
 | `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. Note: deprecated | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
-| `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Token queries a metadata of a token from its token id. Note: deprecated (use FTClass and NFT) | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
+| `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Deprecated: use FTClass or NFT Token queries a metadata of a token from its token id. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
 | `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. Note: deprecated | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
 | `NFT` | [QueryNFTRequest](#lbm.collection.v1.QueryNFTRequest) | [QueryNFTResponse](#lbm.collection.v1.QueryNFTResponse) | NFT queries a metadata of a non-fungible token. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}|
 | `Owner` | [QueryOwnerRequest](#lbm.collection.v1.QueryOwnerRequest) | [QueryOwnerResponse](#lbm.collection.v1.QueryOwnerResponse) | Owner queries the owner of the token. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/owner|
@@ -14197,8 +14197,8 @@ Query defines the gRPC querier service.
 | `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse) | GranteeGrants queries all permissions on a given grantee. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `grantee` is of invalid format. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}|
 | `Authorization` | [QueryAuthorizationRequest](#lbm.collection.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.collection.v1.QueryAuthorizationResponse) | Authorization queries an authorization on a given operator approver pair. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `operator` is of invalid format. - `holder` is of invalid format. - ErrNotFound - there is no authorization given by `holder` to `operator`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}/{holder}|
 | `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.collection.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.collection.v1.QueryOperatorAuthorizationsResponse) | OperatorAuthorizations queries authorizations on a given operator. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `operator` is of invalid format. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}|
-| `Approved` | [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse) | Approved queries whether the operator is approved by the approver. Note: deprecated (use Authorization) | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}|
-| `Approvers` | [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse) | Approvers queries approvers of a given operator. Note: deprecated (use OperatorAuthorizations) | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers|
+| `Approved` | [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse) | Deprecated: use Authorization Approved queries whether the operator is approved by the approver. | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}|
+| `Approvers` | [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse) | Deprecated: use OperatorAuthorizations Approvers queries approvers of a given operator. | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers|
 
  <!-- end services -->
 
@@ -14271,9 +14271,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.MsgApprove"></a>
 
 ### MsgApprove
-MsgApprove is the Msg/Approve request type.
+Deprecated: use MsgAuthorizeOperator
 
-Note: deprecated (use MsgAuthorizeOperator)
+MsgApprove is the Msg/Approve request type.
 
 
 | Field | Type | Label | Description |
@@ -14290,9 +14290,9 @@ Note: deprecated (use MsgAuthorizeOperator)
 <a name="lbm.collection.v1.MsgApproveResponse"></a>
 
 ### MsgApproveResponse
-MsgApproveResponse is the Msg/Approve response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgApproveResponse is the Msg/Approve response type.
 
 
 
@@ -14333,9 +14333,9 @@ TODO: revisit the field names
 <a name="lbm.collection.v1.MsgAttachFrom"></a>
 
 ### MsgAttachFrom
-MsgAttachFrom is the Msg/AttachFrom request type.
+Deprecated: use MsgOperatorAttach
 
-Note: deprecated (use MsgOperatorAttach)
+MsgAttachFrom is the Msg/AttachFrom request type.
 
 
 | Field | Type | Label | Description |
@@ -14354,9 +14354,9 @@ Note: deprecated (use MsgOperatorAttach)
 <a name="lbm.collection.v1.MsgAttachFromResponse"></a>
 
 ### MsgAttachFromResponse
-MsgAttachFromResponse is the Msg/AttachFrom response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgAttachFromResponse is the Msg/AttachFrom response type.
 
 
 
@@ -14444,9 +14444,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.MsgBurnFT"></a>
 
 ### MsgBurnFT
-MsgBurnFT is the Msg/BurnFT request type.
+Deprecated: use MsgBurn
 
-Note: deprecated (use MsgBurn)
+MsgBurnFT is the Msg/BurnFT request type.
 
 
 | Field | Type | Label | Description |
@@ -14463,9 +14463,9 @@ Note: deprecated (use MsgBurn)
 <a name="lbm.collection.v1.MsgBurnFTFrom"></a>
 
 ### MsgBurnFTFrom
-MsgBurnFTFrom is the Msg/BurnFTFrom request type.
+Deprecated: use MsgOperatorBurn
 
-Note: deprecated (use MsgOperatorBurn)
+MsgBurnFTFrom is the Msg/BurnFTFrom request type.
 
 
 | Field | Type | Label | Description |
@@ -14483,9 +14483,9 @@ Note: deprecated (use MsgOperatorBurn)
 <a name="lbm.collection.v1.MsgBurnFTFromResponse"></a>
 
 ### MsgBurnFTFromResponse
-MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
 
 
 
@@ -14495,9 +14495,9 @@ Note: deprecated
 <a name="lbm.collection.v1.MsgBurnFTResponse"></a>
 
 ### MsgBurnFTResponse
-MsgBurnFTResponse is the Msg/BurnFT response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgBurnFTResponse is the Msg/BurnFT response type.
 
 
 
@@ -14507,9 +14507,9 @@ Note: deprecated
 <a name="lbm.collection.v1.MsgBurnNFT"></a>
 
 ### MsgBurnNFT
-MsgBurnNFT is the Msg/BurnNFT request type.
+Deprecated: use MsgBurn
 
-Note: deprecated (use MsgBurn)
+MsgBurnNFT is the Msg/BurnNFT request type.
 
 
 | Field | Type | Label | Description |
@@ -14526,9 +14526,9 @@ Note: deprecated (use MsgBurn)
 <a name="lbm.collection.v1.MsgBurnNFTFrom"></a>
 
 ### MsgBurnNFTFrom
-MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
+Deprecated: use MsgOperatorBurn
 
-Note: deprecated (use MsgOperatorBurn)
+MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
 
 
 | Field | Type | Label | Description |
@@ -14546,9 +14546,9 @@ Note: deprecated (use MsgOperatorBurn)
 <a name="lbm.collection.v1.MsgBurnNFTFromResponse"></a>
 
 ### MsgBurnNFTFromResponse
-MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
 
 
 
@@ -14558,9 +14558,9 @@ Note: deprecated
 <a name="lbm.collection.v1.MsgBurnNFTResponse"></a>
 
 ### MsgBurnNFTResponse
-MsgBurnNFTResponse is the Msg/BurnNFT response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgBurnNFTResponse is the Msg/BurnNFT response type.
 
 
 
@@ -14650,7 +14650,7 @@ Since: 0.46.0 (finschia)
 | `meta` | [string](#string) |  | meta is a brief description of the token class. |
 | `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
 | `to` | [string](#string) |  | recipient of the minted tokens. |
-| `supply` | [string](#string) |  | amount of tokens to mint on the create. Note: amount may be zero. |
+| `supply` | [string](#string) |  | amount of tokens to mint on the create. Note: supply may be zero. |
 
 
 
@@ -14751,9 +14751,9 @@ TODO: revisit the field names
 <a name="lbm.collection.v1.MsgDetachFrom"></a>
 
 ### MsgDetachFrom
-MsgDetachFrom is the Msg/DetachFrom request type.
+Deprecated: use MsgOperatorDetach
 
-Note: deprecated (use MsgOperatorDetach)
+MsgDetachFrom is the Msg/DetachFrom request type.
 
 
 | Field | Type | Label | Description |
@@ -14771,9 +14771,9 @@ Note: deprecated (use MsgOperatorDetach)
 <a name="lbm.collection.v1.MsgDetachFromResponse"></a>
 
 ### MsgDetachFromResponse
-MsgDetachFromResponse is the Msg/DetachFrom response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgDetachFromResponse is the Msg/DetachFrom response type.
 
 
 
@@ -14793,9 +14793,9 @@ MsgDetachResponse is the Msg/Detach response type.
 <a name="lbm.collection.v1.MsgDisapprove"></a>
 
 ### MsgDisapprove
-MsgDisapprove is the Msg/Disapprove request type.
+Deprecated: use MsgRevokeOperator
 
-Note: deprecated (use MsgRevokeOperator)
+MsgDisapprove is the Msg/Disapprove request type.
 
 
 | Field | Type | Label | Description |
@@ -14812,9 +14812,9 @@ Note: deprecated (use MsgRevokeOperator)
 <a name="lbm.collection.v1.MsgDisapproveResponse"></a>
 
 ### MsgDisapproveResponse
-MsgDisapproveResponse is the Msg/Disapprove response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgDisapproveResponse is the Msg/Disapprove response type.
 
 
 
@@ -14854,9 +14854,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.MsgGrantPermission"></a>
 
 ### MsgGrantPermission
-MsgGrantPermission is the Msg/GrantPermission request type.
+Deprecated: use MsgGrant
 
-Note: deprecated (use MsgGrant)
+MsgGrantPermission is the Msg/GrantPermission request type.
 
 
 | Field | Type | Label | Description |
@@ -14874,9 +14874,9 @@ Note: deprecated (use MsgGrant)
 <a name="lbm.collection.v1.MsgGrantPermissionResponse"></a>
 
 ### MsgGrantPermissionResponse
-MsgGrantPermissionResponse is the Msg/GrantPermission response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgGrantPermissionResponse is the Msg/GrantPermission response type.
 
 
 
@@ -14898,6 +14898,8 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.MsgIssueFT"></a>
 
 ### MsgIssueFT
+Deprecated: use MsgCreateFTClass
+
 MsgIssueFT is the Msg/IssueFT request type.
 
 Throws:
@@ -14913,8 +14915,6 @@ Throws:
   - `mintable` == false, amount == 1 and decimals == 0 (weird, but for the backward compatibility).
 
 Signer: `owner`
-
-Note: deprecated (use MsgCreateFTClass)
 
 
 | Field | Type | Label | Description |
@@ -14936,9 +14936,9 @@ Note: deprecated (use MsgCreateFTClass)
 <a name="lbm.collection.v1.MsgIssueFTResponse"></a>
 
 ### MsgIssueFTResponse
-MsgIssueFTResponse is the Msg/IssueFT response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgIssueFTResponse is the Msg/IssueFT response type.
 
 
 | Field | Type | Label | Description |
@@ -14953,6 +14953,8 @@ Note: deprecated
 <a name="lbm.collection.v1.MsgIssueNFT"></a>
 
 ### MsgIssueNFT
+Deprecated: use MsgCreateNFTClass
+
 MsgIssueNFT is the Msg/IssueNFT request type.
 
 Throws:
@@ -14963,8 +14965,6 @@ Throws:
   - `meta` exceeds the app-specific limit in length.
 
 Signer: `owner`
-
-Note: deprecated (use MsgCreateNFTClass)
 
 
 | Field | Type | Label | Description |
@@ -14982,9 +14982,9 @@ Note: deprecated (use MsgCreateNFTClass)
 <a name="lbm.collection.v1.MsgIssueNFTResponse"></a>
 
 ### MsgIssueNFTResponse
-MsgIssueNFTResponse is the Msg/IssueNFT response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgIssueNFTResponse is the Msg/IssueNFT response type.
 
 
 | Field | Type | Label | Description |
@@ -15081,9 +15081,9 @@ MsgMintNFTResponse is the Msg/MintNFT response type.
 <a name="lbm.collection.v1.MsgModify"></a>
 
 ### MsgModify
-MsgModify is the Msg/Modify request type.
+Deprecated: use MsgModifyContract, MsgModifyTokenClass or MsgModifyNFT
 
-Note: deprecated (use MsgModifyContract, MsgModifyTokenClass or MsgModifyNFT)
+MsgModify is the Msg/Modify request type.
 
 
 | Field | Type | Label | Description |
@@ -15188,9 +15188,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.MsgModifyResponse"></a>
 
 ### MsgModifyResponse
-MsgModifyResponse is the Msg/Modify response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgModifyResponse is the Msg/Modify response type.
 
 
 
@@ -15457,9 +15457,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.MsgRevokePermission"></a>
 
 ### MsgRevokePermission
-MsgRevokePermission is the Msg/RevokePermission request type.
+Deprecated: use MsgAbandon
 
-Note: deprecated (use MsgAbandon)
+MsgRevokePermission is the Msg/RevokePermission request type.
 
 
 | Field | Type | Label | Description |
@@ -15476,9 +15476,9 @@ Note: deprecated (use MsgAbandon)
 <a name="lbm.collection.v1.MsgRevokePermissionResponse"></a>
 
 ### MsgRevokePermissionResponse
-MsgRevokePermissionResponse is the Msg/RevokePermission response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgRevokePermissionResponse is the Msg/RevokePermission response type.
 
 
 
@@ -15530,9 +15530,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.MsgTransferFT"></a>
 
 ### MsgTransferFT
-MsgTransferFT is the Msg/TransferFT request type.
+Deprecated: use MsgSend
 
-Note: deprecated (use MsgSend)
+MsgTransferFT is the Msg/TransferFT request type.
 
 
 | Field | Type | Label | Description |
@@ -15550,9 +15550,9 @@ Note: deprecated (use MsgSend)
 <a name="lbm.collection.v1.MsgTransferFTFrom"></a>
 
 ### MsgTransferFTFrom
-MsgTransferFTFrom is the Msg/TransferFTFrom request type.
+Deprecated: use MsgOperatorSend
 
-Note: deprecated (use MsgOperatorSend)
+MsgTransferFTFrom is the Msg/TransferFTFrom request type.
 
 
 | Field | Type | Label | Description |
@@ -15571,9 +15571,9 @@ Note: deprecated (use MsgOperatorSend)
 <a name="lbm.collection.v1.MsgTransferFTFromResponse"></a>
 
 ### MsgTransferFTFromResponse
-MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
 
 
 
@@ -15583,9 +15583,9 @@ Note: deprecated
 <a name="lbm.collection.v1.MsgTransferFTResponse"></a>
 
 ### MsgTransferFTResponse
-MsgTransferFTResponse is the Msg/TransferFT response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgTransferFTResponse is the Msg/TransferFT response type.
 
 
 
@@ -15595,9 +15595,9 @@ Note: deprecated
 <a name="lbm.collection.v1.MsgTransferNFT"></a>
 
 ### MsgTransferNFT
-MsgTransferNFT is the Msg/TransferNFT request type.
+Deprecated: use MsgSend
 
-Note: deprecated (use MsgSend)
+MsgTransferNFT is the Msg/TransferNFT request type.
 
 
 | Field | Type | Label | Description |
@@ -15615,9 +15615,9 @@ Note: deprecated (use MsgSend)
 <a name="lbm.collection.v1.MsgTransferNFTFrom"></a>
 
 ### MsgTransferNFTFrom
-MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
+Deprecated: use MsgOperatorSend
 
-Note: deprecated (use MsgOperatorSend)
+MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
 
 
 | Field | Type | Label | Description |
@@ -15636,9 +15636,9 @@ Note: deprecated (use MsgOperatorSend)
 <a name="lbm.collection.v1.MsgTransferNFTFromResponse"></a>
 
 ### MsgTransferNFTFromResponse
-MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
 
 
 
@@ -15648,9 +15648,9 @@ Note: deprecated
 <a name="lbm.collection.v1.MsgTransferNFTResponse"></a>
 
 ### MsgTransferNFTResponse
-MsgTransferNFTResponse is the Msg/TransferNFT response type.
+Deprecated: do not use
 
-Note: deprecated
+MsgTransferNFTResponse is the Msg/TransferNFT response type.
 
 
 
@@ -15672,41 +15672,41 @@ Msg defines the collection Msg service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Send` | [MsgSend](#lbm.collection.v1.MsgSend) | [MsgSendResponse](#lbm.collection.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. Fires: - EventSent - transfer_ft (deprecated, not typed) - transfer_nft (deprecated, not typed) - operation_transfer_nft (deprecated, not typed) Throws: - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to spend. Info: one can send both fungible tokens and non-fungible tokens. Since: 0.46.0 (finschia) | |
 | `OperatorSend` | [MsgOperatorSend](#lbm.collection.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.collection.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. Fires: - EventSent - transfer_ft_from (deprecated, not typed) - transfer_nft_from (deprecated, not typed) - operation_transfer_nft (deprecated, not typed) Throws: - ErrUnauthorized: - the holder has not authorized the operator. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to spend. Info: one can send both fungible tokens and non-fungible tokens. Since: 0.46.0 (finschia) | |
-| `TransferFT` | [MsgTransferFT](#lbm.collection.v1.MsgTransferFT) | [MsgTransferFTResponse](#lbm.collection.v1.MsgTransferFTResponse) | TransferFT defines a method to send fungible tokens from one account to another account. Note: deprecated (use Send) | |
-| `TransferFTFrom` | [MsgTransferFTFrom](#lbm.collection.v1.MsgTransferFTFrom) | [MsgTransferFTFromResponse](#lbm.collection.v1.MsgTransferFTFromResponse) | TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator. Note: deprecated (use OperatorSend) | |
-| `TransferNFT` | [MsgTransferNFT](#lbm.collection.v1.MsgTransferNFT) | [MsgTransferNFTResponse](#lbm.collection.v1.MsgTransferNFTResponse) | TransferNFT defines a method to send non-fungible tokens from one account to another account. Note: deprecated (use Send) | |
-| `TransferNFTFrom` | [MsgTransferNFTFrom](#lbm.collection.v1.MsgTransferNFTFrom) | [MsgTransferNFTFromResponse](#lbm.collection.v1.MsgTransferNFTFromResponse) | TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator. Note: deprecated (use OperatorSend) | |
+| `TransferFT` | [MsgTransferFT](#lbm.collection.v1.MsgTransferFT) | [MsgTransferFTResponse](#lbm.collection.v1.MsgTransferFTResponse) | Deprecated: use Send TransferFT defines a method to send fungible tokens from one account to another account. | |
+| `TransferFTFrom` | [MsgTransferFTFrom](#lbm.collection.v1.MsgTransferFTFrom) | [MsgTransferFTFromResponse](#lbm.collection.v1.MsgTransferFTFromResponse) | Deprecated: use OperatorSend TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator. | |
+| `TransferNFT` | [MsgTransferNFT](#lbm.collection.v1.MsgTransferNFT) | [MsgTransferNFTResponse](#lbm.collection.v1.MsgTransferNFTResponse) | Deprecated: use Send TransferNFT defines a method to send non-fungible tokens from one account to another account. | |
+| `TransferNFTFrom` | [MsgTransferNFTFrom](#lbm.collection.v1.MsgTransferNFTFrom) | [MsgTransferNFTFromResponse](#lbm.collection.v1.MsgTransferNFTFromResponse) | Deprecated: use OperatorSend TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator. | |
 | `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.collection.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.collection.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the approver. Fires: - EventAuthorizedOperator - approve_collection (deprecated, not typed) Throws: - ErrNotFound: - there is no contract of `contract_id`. - ErrInvalidRequest: - `holder` has already authorized `operator`. Since: 0.46.0 (finschia) | |
 | `RevokeOperator` | [MsgRevokeOperator](#lbm.collection.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.collection.v1.MsgRevokeOperatorResponse) | RevokeOperator revokes the authorization of the operator to send the approver's token. Fires: - EventRevokedOperator - disapprove_collection (deprecated, not typed) Throws: - ErrNotFound: - there is no contract of `contract_id`. - there is no authorization by `holder` to `operator`. Since: 0.46.0 (finschia) | |
-| `Approve` | [MsgApprove](#lbm.collection.v1.MsgApprove) | [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the approver. Note: deprecated (use AuthorizeOperator) | |
-| `Disapprove` | [MsgDisapprove](#lbm.collection.v1.MsgDisapprove) | [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse) | Disapprove revokes the authorization of the operator to send the approver's token. Note: deprecated (use RevokeOperator) | |
+| `Approve` | [MsgApprove](#lbm.collection.v1.MsgApprove) | [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse) | Deprecated: use AuthorizeOperator Approve allows one to send tokens on behalf of the approver. | |
+| `Disapprove` | [MsgDisapprove](#lbm.collection.v1.MsgDisapprove) | [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse) | Deprecated: use RevokeOperator Disapprove revokes the authorization of the operator to send the approver's token. | |
 | `CreateContract` | [MsgCreateContract](#lbm.collection.v1.MsgCreateContract) | [MsgCreateContractResponse](#lbm.collection.v1.MsgCreateContractResponse) | CreateContract defines a method to create a contract for collection. it grants `mint`, `burn`, `modify` and `issue` permissions on the contract to its creator. Fires: - EventCreatedContract - create_collection (deprecated, not typed) | |
 | `CreateFTClass` | [MsgCreateFTClass](#lbm.collection.v1.MsgCreateFTClass) | [MsgCreateFTClassResponse](#lbm.collection.v1.MsgCreateFTClassResponse) | CreateFTClass defines a method to create a class of fungible token. one may set the supply on the creation, then no one can change the supply, which means no more mints and burns. Fires: - EventCreatedFTClass - EventMintedFT - issue_ft (deprecated, not typed) Since: 0.46.0 (finschia) | |
 | `CreateNFTClass` | [MsgCreateNFTClass](#lbm.collection.v1.MsgCreateNFTClass) | [MsgCreateNFTClassResponse](#lbm.collection.v1.MsgCreateNFTClassResponse) | CreateNFTClass defines a method to create a class of non-fungible token. Fires: - EventCreatedNFTClass - issue_nft (deprecated, not typed) Since: 0.46.0 (finschia) | |
-| `IssueFT` | [MsgIssueFT](#lbm.collection.v1.MsgIssueFT) | [MsgIssueFTResponse](#lbm.collection.v1.MsgIssueFTResponse) | IssueFT defines a method to create a class of fungible token. Fires: - EventIssueFT - EventMintedFT - issue_ft (deprecated, not typed) Note: it does not grant any permissions to its issuer. Note: deprecated (use CreateFTClass) | |
-| `IssueNFT` | [MsgIssueNFT](#lbm.collection.v1.MsgIssueNFT) | [MsgIssueNFTResponse](#lbm.collection.v1.MsgIssueNFTResponse) | IssueNFT defines a method to create a class of non-fungible token. Fires: - EventIssueNFT - issue_nft (deprecated, not typed) Note: it DOES grant `mint` and `burn` permissions to its issuer. Note: deprecated (use CreateNFTClass) | |
+| `IssueFT` | [MsgIssueFT](#lbm.collection.v1.MsgIssueFT) | [MsgIssueFTResponse](#lbm.collection.v1.MsgIssueFTResponse) | Deprecated: use CreateFTClass IssueFT defines a method to create a class of fungible token. Fires: - EventIssueFT - EventMintedFT - issue_ft (deprecated, not typed) Note: it does not grant any permissions to its issuer. | |
+| `IssueNFT` | [MsgIssueNFT](#lbm.collection.v1.MsgIssueNFT) | [MsgIssueNFTResponse](#lbm.collection.v1.MsgIssueNFTResponse) | Deprecated: use CreateNFTClass IssueNFT defines a method to create a class of non-fungible token. Fires: - EventIssueNFT - issue_nft (deprecated, not typed) Note: it DOES grant `mint` and `burn` permissions to its issuer. | |
 | `MintFT` | [MsgMintFT](#lbm.collection.v1.MsgMintFT) | [MsgMintFTResponse](#lbm.collection.v1.MsgMintFTResponse) | MintFT defines a method to mint fungible tokens. Fires: - EventMintedFT - mint_ft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `mint` permission. | |
 | `MintNFT` | [MsgMintNFT](#lbm.collection.v1.MsgMintNFT) | [MsgMintNFTResponse](#lbm.collection.v1.MsgMintNFTResponse) | MintNFT defines a method to mint non-fungible tokens. Fires: - EventMintedNFT - mint_nft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `mint` permission. | |
 | `Burn` | [MsgBurn](#lbm.collection.v1.MsgBurn) | [MsgBurnResponse](#lbm.collection.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Fires: - EventBurned - burn_ft (deprecated, not typed) - burn_nft (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. Info: one can burn both fungible tokens and non-fungible tokens. Since: 0.46.0 (finschia) | |
 | `OperatorBurn` | [MsgOperatorBurn](#lbm.collection.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.collection.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens of the holder by the operator. Fires: - EventBurned - burn_ft_from (deprecated, not typed) - burn_nft_from (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `operator` does not have `burn` permission. - the holder has not authorized `operator`. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. Info: one can burn both fungible tokens and non-fungible tokens. Since: 0.46.0 (finschia) | |
-| `BurnFT` | [MsgBurnFT](#lbm.collection.v1.MsgBurnFT) | [MsgBurnFTResponse](#lbm.collection.v1.MsgBurnFTResponse) | BurnFT defines a method to burn fungible tokens. Note: deprecated (use Burn) | |
-| `BurnFTFrom` | [MsgBurnFTFrom](#lbm.collection.v1.MsgBurnFTFrom) | [MsgBurnFTFromResponse](#lbm.collection.v1.MsgBurnFTFromResponse) | BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy. Note: deprecated (use OperatorBurn) | |
-| `BurnNFT` | [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT) | [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse) | BurnNFT defines a method to burn non-fungible tokens. Note: deprecated (use Burn) | |
-| `BurnNFTFrom` | [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom) | [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse) | BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy. Note: deprecated (use OperatorBurn) | |
+| `BurnFT` | [MsgBurnFT](#lbm.collection.v1.MsgBurnFT) | [MsgBurnFTResponse](#lbm.collection.v1.MsgBurnFTResponse) | Deprecated: use Burn BurnFT defines a method to burn fungible tokens. | |
+| `BurnFTFrom` | [MsgBurnFTFrom](#lbm.collection.v1.MsgBurnFTFrom) | [MsgBurnFTFromResponse](#lbm.collection.v1.MsgBurnFTFromResponse) | Deprecated: use OperatorBurn BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy. | |
+| `BurnNFT` | [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT) | [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse) | Deprecated: use Burn BurnNFT defines a method to burn non-fungible tokens. | |
+| `BurnNFTFrom` | [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom) | [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse) | Deprecated: use OperatorBurn BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy. | |
 | `ModifyContract` | [MsgModifyContract](#lbm.collection.v1.MsgModifyContract) | [MsgModifyContractResponse](#lbm.collection.v1.MsgModifyContractResponse) | ModifyContract defines a method to modify the attributes of a contract. Fires: - EventModifiedContract - modify_collection (deprecated, not typed) Throws: - ErrUnauthorized - the operator does not have `modify` permission. - ErrNotFound - there is no token class of `contract_id`. Since: 0.46.0 (finschia) | |
 | `ModifyTokenClass` | [MsgModifyTokenClass](#lbm.collection.v1.MsgModifyTokenClass) | [MsgModifyTokenClassResponse](#lbm.collection.v1.MsgModifyTokenClassResponse) | ModifyTokenClass defines a method to modify the attributes of a token class. Fires: - EventModifiedTokenClass - modify_token_type (deprecated, not typed) - modify_token (deprecated, not typed) Throws: - ErrUnauthorized - the operator does not have `modify` permission. - ErrNotFound - there is no token class of `contract_id`. Since: 0.46.0 (finschia) | |
 | `ModifyNFT` | [MsgModifyNFT](#lbm.collection.v1.MsgModifyNFT) | [MsgModifyNFTResponse](#lbm.collection.v1.MsgModifyNFTResponse) | ModifyNFT defines a method to modify the attributes of a non-fungible token. Fires: - EventModifiedNFT - modify_token (deprecated, not typed) Throws: - ErrUnauthorized - the operator does not have `modify` permission. - ErrNotFound - there is no token class of `contract_id`. Since: 0.46.0 (finschia) | |
-| `Modify` | [MsgModify](#lbm.collection.v1.MsgModify) | [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse) | Modify defines a method to modify metadata. Note: deprecated (use ModifyContract, ModifyTokenClass or ModifyNFT) | |
+| `Modify` | [MsgModify](#lbm.collection.v1.MsgModify) | [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse) | Deprecated: use ModifyContract, ModifyTokenClass or ModifyNFT Modify defines a method to modify metadata. | |
 | `Grant` | [MsgGrant](#lbm.collection.v1.MsgGrant) | [MsgGrantResponse](#lbm.collection.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify metadata. Fires: - EventGrant - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. Since: 0.46.0 (finschia) | |
 | `Abandon` | [MsgAbandon](#lbm.collection.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.collection.v1.MsgAbandonResponse) | Abandon abandons a permission. Fires: - EventAbandon - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. Since: 0.46.0 (finschia) | |
-| `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify metadata. Note: deprecated (use Grant) | |
-| `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Note: deprecated (use Abandon) | |
+| `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | Deprecated: use Grant GrantPermission allows one to mint or burn tokens or modify metadata. | |
+| `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | Deprecated: use Abandon RevokePermission abandons a permission. | |
 | `Attach` | [MsgAttach](#lbm.collection.v1.MsgAttach) | [MsgAttachResponse](#lbm.collection.v1.MsgAttachResponse) | Attach defines a method to attach a token to another token. Fires: - EventAttach - attach (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrInvalidRequest - `owner` does not owns `id`. - `owner` does not owns `to`. - `token_id` is not root. - `token_id` is an ancestor of `to_token_id`, which creates a cycle as a result. - depth of `to_token_id` exceeds an app-specific limit. | |
 | `Detach` | [MsgDetach](#lbm.collection.v1.MsgDetach) | [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse) | Detach defines a method to detach a token from another token. Fires: - EventDetach - detach (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrInvalidRequest - `owner` does not owns `token_id`. | |
 | `OperatorAttach` | [MsgOperatorAttach](#lbm.collection.v1.MsgOperatorAttach) | [MsgOperatorAttachResponse](#lbm.collection.v1.MsgOperatorAttachResponse) | OperatorAttach defines a method to attach a token to another token by operator. Fires: - EventAttach - attach_from (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrUnauthorized - the holder has not authorized `operator`. - ErrInvalidRequest - `owner` does not owns `subject`. - `owner` does not owns `target`. - `subject` is not root. - `subject` is an ancestor of `target`, which creates a cycle as a result. - depth of `to` exceeds an app-specific limit. Since: 0.46.0 (finschia) | |
 | `OperatorDetach` | [MsgOperatorDetach](#lbm.collection.v1.MsgOperatorDetach) | [MsgOperatorDetachResponse](#lbm.collection.v1.MsgOperatorDetachResponse) | OperatorDetach defines a method to detach a token from another token by operator. Fires: - EventDetach - detach_from (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrUnauthorized - the holder has not authorized `operator`. - ErrInvalidRequest - `owner` does not owns `subject`. Since: 0.46.0 (finschia) | |
-| `AttachFrom` | [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom) | [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse) | AttachFrom defines a method to attach a token to another token by operator. Note: deprecated (use OperatorAttach) | |
-| `DetachFrom` | [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom) | [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse) | DetachFrom defines a method to detach a token from another token by operator. Note: deprecated (use OperatorDetach) | |
+| `AttachFrom` | [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom) | [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse) | Deprecated: use OperatorAttach AttachFrom defines a method to attach a token to another token by operator. | |
+| `DetachFrom` | [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom) | [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse) | Deprecated: use OperatorDetach DetachFrom defines a method to detach a token from another token by operator. | |
 
  <!-- end services -->
 

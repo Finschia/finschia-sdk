@@ -345,9 +345,9 @@ func (m *NFT) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_NFT proto.InternalMessageInfo
 
-// OwnerNFT defines the information of non-fungible token.
+// Deprecated: use NFT
 //
-// Note: deprecated (use NFT)
+// OwnerNFT defines the information of non-fungible token.
 type OwnerNFT struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -394,9 +394,9 @@ func (m *OwnerNFT) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_OwnerNFT proto.InternalMessageInfo
 
-// FT defines the information of fungible token.
+// Deprecated: use FTClass
 //
-// Note: deprecated (use FTClass)
+// FT defines the information of fungible token.
 type FT struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -445,9 +445,9 @@ func (m *FT) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_FT proto.InternalMessageInfo
 
-// TokenType defines the information of token type.
+// Deprecated: use TokenClass
 //
-// Note: deprecated (use TokenClass)
+// TokenType defines the information of token type.
 type TokenType struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -659,9 +659,9 @@ func (m *Attribute) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Attribute proto.InternalMessageInfo
 
-// Change defines a field-value pair.
+// Deprecated: use Attribute
 //
-// Note: deprecated (use Attribute)
+// Change defines a field-value pair.
 type Change struct {
 	Field string `protobuf:"bytes,1,opt,name=field,proto3" json:"field,omitempty"`
 	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`

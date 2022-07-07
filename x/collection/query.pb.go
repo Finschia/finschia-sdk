@@ -559,9 +559,9 @@ func (m *QueryBurntResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryBurntResponse proto.InternalMessageInfo
 
-// QueryFTSupplyRequest is the request type for the Query/FTSupply RPC method.
+// Deprecated: use QuerySupplyRequest
 //
-// Note: deprecated (use QuerySupplyRequest)
+// QueryFTSupplyRequest is the request type for the Query/FTSupply RPC method.
 type QueryFTSupplyRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -616,9 +616,9 @@ func (m *QueryFTSupplyRequest) GetTokenId() string {
 	return ""
 }
 
-// QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
+// Deprecated: do not use
 //
-// Note: deprecated
+// QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
 type QueryFTSupplyResponse struct {
 	// supply is the supply of the tokens.
 	Supply github_com_line_lbm_sdk_types.Int `protobuf:"bytes,1,opt,name=supply,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"supply"`
@@ -657,9 +657,9 @@ func (m *QueryFTSupplyResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryFTSupplyResponse proto.InternalMessageInfo
 
-// QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
+// Deprecated: use QueryMintedRequest
 //
-// Note: deprecated (use QueryMintedRequest)
+// QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
 type QueryFTMintedRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -714,9 +714,9 @@ func (m *QueryFTMintedRequest) GetTokenId() string {
 	return ""
 }
 
-// QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
+// Deprecated: do not use
 //
-// Note: deprecated
+// QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
 type QueryFTMintedResponse struct {
 	// minted is the amount of the minted tokens.
 	Minted github_com_line_lbm_sdk_types.Int `protobuf:"bytes,1,opt,name=minted,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"minted"`
@@ -755,9 +755,9 @@ func (m *QueryFTMintedResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryFTMintedResponse proto.InternalMessageInfo
 
-// QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
+// Deprecated: use QueryBurntRequest
 //
-// Note: deprecated (use QueryBurntRequest)
+// QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
 type QueryFTBurntRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -812,9 +812,9 @@ func (m *QueryFTBurntRequest) GetTokenId() string {
 	return ""
 }
 
-// QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
+// Deprecated: do not use
 //
-// Note: deprecated
+// QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
 type QueryFTBurntResponse struct {
 	// burnt is the amount of the burnt tokens.
 	Burnt github_com_line_lbm_sdk_types.Int `protobuf:"bytes,1,opt,name=burnt,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"burnt"`
@@ -853,9 +853,9 @@ func (m *QueryFTBurntResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryFTBurntResponse proto.InternalMessageInfo
 
-// QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
+// Deprecated: use QuerySupplyRequest
 //
-// Note: deprecated (use QuerySupplyRequest)
+// QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
 type QueryNFTSupplyRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -910,9 +910,9 @@ func (m *QueryNFTSupplyRequest) GetTokenType() string {
 	return ""
 }
 
-// QueryNFTSupplyResponse is the response type for the Query/NFTSupply RPC method.
+// Deprecated: do not use
 //
-// Note: deprecated
+// QueryNFTSupplyResponse is the response type for the Query/NFTSupply RPC method.
 type QueryNFTSupplyResponse struct {
 	// supply is the supply of the non-fungible token.
 	Supply github_com_line_lbm_sdk_types.Int `protobuf:"bytes,1,opt,name=supply,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"supply"`
@@ -951,9 +951,9 @@ func (m *QueryNFTSupplyResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryNFTSupplyResponse proto.InternalMessageInfo
 
-// QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
+// Deprecated: use QueryMintedRequest
 //
-// Note: deprecated (use QueryMintedRequest)
+// QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
 type QueryNFTMintedRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1008,9 +1008,9 @@ func (m *QueryNFTMintedRequest) GetTokenType() string {
 	return ""
 }
 
-// QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC method.
+// Deprecated: do not use
 //
-// Note: deprecated
+// QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC method.
 type QueryNFTMintedResponse struct {
 	// minted is the amount of minted tokens.
 	Minted github_com_line_lbm_sdk_types.Int `protobuf:"bytes,1,opt,name=minted,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"minted"`
@@ -1049,9 +1049,9 @@ func (m *QueryNFTMintedResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryNFTMintedResponse proto.InternalMessageInfo
 
-// QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
+// Deprecated: use QueryBurntRequest
 //
-// Note: deprecated (use QueryBurntRequest)
+// QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
 type QueryNFTBurntRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1106,9 +1106,9 @@ func (m *QueryNFTBurntRequest) GetTokenType() string {
 	return ""
 }
 
-// QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
+// Deprecated: do not use
 //
-// Note: deprecated
+// QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
 type QueryNFTBurntResponse struct {
 	// burnt is the amount of the burnt tokens.
 	Burnt github_com_line_lbm_sdk_types.Int `protobuf:"bytes,1,opt,name=burnt,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"burnt"`
@@ -1342,9 +1342,9 @@ func (m *QueryContractsResponse) GetPagination() *query.PageResponse {
 	return nil
 }
 
-// QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
+// Deprecated: use QueryTokenClassRequest
 //
-// Note: deprecated (use QueryTokenClassRequest)
+// QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
 type QueryTokenTypeRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1399,9 +1399,9 @@ func (m *QueryTokenTypeRequest) GetTokenType() string {
 	return ""
 }
 
-// QueryTokenTypeResponse is the response type for the Query/TokenType RPC method.
+// Deprecated: do not use
 //
-// Note: deprecated
+// QueryTokenTypeResponse is the response type for the Query/TokenType RPC method.
 type QueryTokenTypeResponse struct {
 	// token type is the information of the token type.
 	TokenType TokenType `protobuf:"bytes,1,opt,name=token_type,json=tokenType,proto3" json:"token_type"`
@@ -1447,9 +1447,9 @@ func (m *QueryTokenTypeResponse) GetTokenType() TokenType {
 	return TokenType{}
 }
 
-// QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
+// Deprecated: do not use
 //
-// Note: deprecated
+// QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
 type QueryTokenTypesRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1504,9 +1504,9 @@ func (m *QueryTokenTypesRequest) GetPagination() *query.PageRequest {
 	return nil
 }
 
-// QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method.
+// Deprecated: do not use
 //
-// Note: deprecated
+// QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method.
 type QueryTokenTypesResponse struct {
 	// token types is the informations of all the token types.
 	TokenTypes []TokenType `protobuf:"bytes,1,rep,name=token_types,json=tokenTypes,proto3" json:"token_types"`
@@ -1561,9 +1561,9 @@ func (m *QueryTokenTypesResponse) GetPagination() *query.PageResponse {
 	return nil
 }
 
-// QueryTokenRequest is the request type for the Query/Token RPC method.
+// Deprecated: use QueryFTClassRequest or QueryNFTRequest
 //
-// Note: deprecated (use QueryFTClassRequest and QueryNFTRequest)
+// QueryTokenRequest is the request type for the Query/Token RPC method.
 type QueryTokenRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1618,9 +1618,9 @@ func (m *QueryTokenRequest) GetTokenId() string {
 	return ""
 }
 
-// QueryTokenResponse is the response type for the Query/Token RPC method.
+// Deprecated: do not use
 //
-// Note: deprecated
+// QueryTokenResponse is the response type for the Query/Token RPC method.
 type QueryTokenResponse struct {
 	// information of the token.
 	Token types.Any `protobuf:"bytes,1,opt,name=token,proto3" json:"token"`
@@ -1666,9 +1666,9 @@ func (m *QueryTokenResponse) GetToken() types.Any {
 	return types.Any{}
 }
 
-// QueryTokensRequest is the request type for the Query/Tokens RPC method.
+// Deprecated: do not use
 //
-// Note: deprecated
+// QueryTokensRequest is the request type for the Query/Tokens RPC method.
 type QueryTokensRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1723,9 +1723,9 @@ func (m *QueryTokensRequest) GetPagination() *query.PageRequest {
 	return nil
 }
 
-// QueryTokensResponse is the response type for the Query/Tokens RPC method.
+// Deprecated: do not use
 //
-// Note: deprecated
+// QueryTokensResponse is the response type for the Query/Tokens RPC method.
 type QueryTokensResponse struct {
 	// informations of all the tokens.
 	Tokens []types.Any `protobuf:"bytes,1,rep,name=tokens,proto3" json:"tokens"`
@@ -3100,9 +3100,9 @@ func (m *QueryOperatorAuthorizationsResponse) GetPagination() *query.PageRespons
 	return nil
 }
 
-// QueryApprovedRequest is the request type for the Query/Approved RPC method.
+// Deprecated: use QueryAuthorizationRequest
 //
-// Note: deprecated (use QueryAuthorizationRequest)
+// QueryApprovedRequest is the request type for the Query/Approved RPC method.
 type QueryApprovedRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -3166,9 +3166,9 @@ func (m *QueryApprovedRequest) GetApprover() string {
 	return ""
 }
 
-// QueryApprovedResponse is the response type for the Query/Approved RPC method.
+// Deprecated: do not use
 //
-// Note: deprecated
+// QueryApprovedResponse is the response type for the Query/Approved RPC method.
 type QueryApprovedResponse struct {
 	Approved bool `protobuf:"varint,1,opt,name=approved,proto3" json:"approved,omitempty"`
 }
@@ -3213,9 +3213,9 @@ func (m *QueryApprovedResponse) GetApproved() bool {
 	return false
 }
 
-// QueryApproversRequest is the request type for the Query/Approvers RPC method.
+// Deprecated: use QueryOperatorAuthorizations
 //
-// Note: deprecated (use QueryOperatorAuthorizations)
+// QueryApproversRequest is the request type for the Query/Approvers RPC method.
 type QueryApproversRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -3279,9 +3279,9 @@ func (m *QueryApproversRequest) GetPagination() *query.PageRequest {
 	return nil
 }
 
-// QueryApproversResponse is the response type for the Query/Approvers RPC method.
+// Deprecated: do not use
 //
-// Note: deprecated
+// QueryApproversResponse is the response type for the Query/Approvers RPC method.
 type QueryApproversResponse struct {
 	Approvers []string `protobuf:"bytes,1,rep,name=approvers,proto3" json:"approvers,omitempty"`
 	// pagination defines the pagination in the response.
@@ -3601,23 +3601,23 @@ type QueryClient interface {
 	// Info: one can query for both fungible tokens and non-fungible token classes.
 	// Since: 0.46.0 (finschia)
 	Burnt(ctx context.Context, in *QueryBurntRequest, opts ...grpc.CallOption) (*QueryBurntResponse, error)
+	// Deprecated: use Supply
 	// FTSupply queries the number of tokens from a given contract id and token id.
-	// Note: deprecated (use Supply)
 	FTSupply(ctx context.Context, in *QueryFTSupplyRequest, opts ...grpc.CallOption) (*QueryFTSupplyResponse, error)
+	// Deprecated: use Minted
 	// FTMinted queries the number of minted tokens from a given contract id and token id.
-	// Note: deprecated (use Minted)
 	FTMinted(ctx context.Context, in *QueryFTMintedRequest, opts ...grpc.CallOption) (*QueryFTMintedResponse, error)
+	// Deprecated: use Burnt
 	// FTBurnt queries the number of burnt tokens from a given contract id and token id.
-	// Note: deprecated (use Burnt)
 	FTBurnt(ctx context.Context, in *QueryFTBurntRequest, opts ...grpc.CallOption) (*QueryFTBurntResponse, error)
+	// Deprecated: use Supply
 	// NFTSupply queries the number of tokens from a given contract id and token type.
-	// Note: deprecated (use Supply)
 	NFTSupply(ctx context.Context, in *QueryNFTSupplyRequest, opts ...grpc.CallOption) (*QueryNFTSupplyResponse, error)
+	// Deprecated: use Minted
 	// NFTMinted queries the number of minted tokens from a given contract id and token type.
-	// Note: deprecated (use Minted)
 	NFTMinted(ctx context.Context, in *QueryNFTMintedRequest, opts ...grpc.CallOption) (*QueryNFTMintedResponse, error)
+	// Deprecated: use Burnt
 	// NFTBurnt queries the number of burnt tokens from a given contract id and token type.
-	// Note: deprecated (use Burnt)
 	NFTBurnt(ctx context.Context, in *QueryNFTBurntRequest, opts ...grpc.CallOption) (*QueryNFTBurntResponse, error)
 	// Contract queries a contract metadata based on its contract id.
 	// Throws:
@@ -3656,14 +3656,14 @@ type QueryClient interface {
 	//   - there is no token class of `class_id`.
 	// Since: 0.46.0 (finschia)
 	TokenClassTypeName(ctx context.Context, in *QueryTokenClassTypeNameRequest, opts ...grpc.CallOption) (*QueryTokenClassTypeNameResponse, error)
+	// Deprecated: use NFTClass
 	// TokenType queries metadata of a token type.
-	// Note: deprecated (use NFTClass)
 	TokenType(ctx context.Context, in *QueryTokenTypeRequest, opts ...grpc.CallOption) (*QueryTokenTypeResponse, error)
 	// TokenTypes queries metadata of all the token types.
 	// Note: deprecated
 	TokenTypes(ctx context.Context, in *QueryTokenTypesRequest, opts ...grpc.CallOption) (*QueryTokenTypesResponse, error)
+	// Deprecated: use FTClass or NFT
 	// Token queries a metadata of a token from its token id.
-	// Note: deprecated (use FTClass and NFT)
 	Token(ctx context.Context, in *QueryTokenRequest, opts ...grpc.CallOption) (*QueryTokenResponse, error)
 	// Tokens queries all token metadata.
 	// Note: deprecated
@@ -3747,11 +3747,11 @@ type QueryClient interface {
 	//   - `operator` is of invalid format.
 	// Since: 0.46.0 (finschia)
 	OperatorAuthorizations(ctx context.Context, in *QueryOperatorAuthorizationsRequest, opts ...grpc.CallOption) (*QueryOperatorAuthorizationsResponse, error)
+	// Deprecated: use Authorization
 	// Approved queries whether the operator is approved by the approver.
-	// Note: deprecated (use Authorization)
 	Approved(ctx context.Context, in *QueryApprovedRequest, opts ...grpc.CallOption) (*QueryApprovedResponse, error)
+	// Deprecated: use OperatorAuthorizations
 	// Approvers queries approvers of a given operator.
-	// Note: deprecated (use OperatorAuthorizations)
 	Approvers(ctx context.Context, in *QueryApproversRequest, opts ...grpc.CallOption) (*QueryApproversResponse, error)
 }
 
@@ -4089,23 +4089,23 @@ type QueryServer interface {
 	// Info: one can query for both fungible tokens and non-fungible token classes.
 	// Since: 0.46.0 (finschia)
 	Burnt(context.Context, *QueryBurntRequest) (*QueryBurntResponse, error)
+	// Deprecated: use Supply
 	// FTSupply queries the number of tokens from a given contract id and token id.
-	// Note: deprecated (use Supply)
 	FTSupply(context.Context, *QueryFTSupplyRequest) (*QueryFTSupplyResponse, error)
+	// Deprecated: use Minted
 	// FTMinted queries the number of minted tokens from a given contract id and token id.
-	// Note: deprecated (use Minted)
 	FTMinted(context.Context, *QueryFTMintedRequest) (*QueryFTMintedResponse, error)
+	// Deprecated: use Burnt
 	// FTBurnt queries the number of burnt tokens from a given contract id and token id.
-	// Note: deprecated (use Burnt)
 	FTBurnt(context.Context, *QueryFTBurntRequest) (*QueryFTBurntResponse, error)
+	// Deprecated: use Supply
 	// NFTSupply queries the number of tokens from a given contract id and token type.
-	// Note: deprecated (use Supply)
 	NFTSupply(context.Context, *QueryNFTSupplyRequest) (*QueryNFTSupplyResponse, error)
+	// Deprecated: use Minted
 	// NFTMinted queries the number of minted tokens from a given contract id and token type.
-	// Note: deprecated (use Minted)
 	NFTMinted(context.Context, *QueryNFTMintedRequest) (*QueryNFTMintedResponse, error)
+	// Deprecated: use Burnt
 	// NFTBurnt queries the number of burnt tokens from a given contract id and token type.
-	// Note: deprecated (use Burnt)
 	NFTBurnt(context.Context, *QueryNFTBurntRequest) (*QueryNFTBurntResponse, error)
 	// Contract queries a contract metadata based on its contract id.
 	// Throws:
@@ -4144,14 +4144,14 @@ type QueryServer interface {
 	//   - there is no token class of `class_id`.
 	// Since: 0.46.0 (finschia)
 	TokenClassTypeName(context.Context, *QueryTokenClassTypeNameRequest) (*QueryTokenClassTypeNameResponse, error)
+	// Deprecated: use NFTClass
 	// TokenType queries metadata of a token type.
-	// Note: deprecated (use NFTClass)
 	TokenType(context.Context, *QueryTokenTypeRequest) (*QueryTokenTypeResponse, error)
 	// TokenTypes queries metadata of all the token types.
 	// Note: deprecated
 	TokenTypes(context.Context, *QueryTokenTypesRequest) (*QueryTokenTypesResponse, error)
+	// Deprecated: use FTClass or NFT
 	// Token queries a metadata of a token from its token id.
-	// Note: deprecated (use FTClass and NFT)
 	Token(context.Context, *QueryTokenRequest) (*QueryTokenResponse, error)
 	// Tokens queries all token metadata.
 	// Note: deprecated
@@ -4235,11 +4235,11 @@ type QueryServer interface {
 	//   - `operator` is of invalid format.
 	// Since: 0.46.0 (finschia)
 	OperatorAuthorizations(context.Context, *QueryOperatorAuthorizationsRequest) (*QueryOperatorAuthorizationsResponse, error)
+	// Deprecated: use Authorization
 	// Approved queries whether the operator is approved by the approver.
-	// Note: deprecated (use Authorization)
 	Approved(context.Context, *QueryApprovedRequest) (*QueryApprovedResponse, error)
+	// Deprecated: use OperatorAuthorizations
 	// Approvers queries approvers of a given operator.
-	// Note: deprecated (use OperatorAuthorizations)
 	Approvers(context.Context, *QueryApproversRequest) (*QueryApproversResponse, error)
 }
 

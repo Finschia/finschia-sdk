@@ -266,7 +266,7 @@ func ParseCoins(coinsStr string) (Coins, error) {
 	return NewCoins(coins...), nil
 }
 
-// legacy
+// Deprecated: do not use
 type Token interface {
 	proto.Message
 }
