@@ -3,6 +3,7 @@ package keeper_test
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/collection"
+	"github.com/line/lbm-sdk/x/collection/keeper"
 )
 
 func (s *KeeperTestSuite) TestMsgSend() {
@@ -934,7 +935,7 @@ func (s *KeeperTestSuite) TestMsgBurnFTFrom() {
 
 func (s *KeeperTestSuite) TestMsgBurnNFT() {
 	tokenIDs := []string{
-		collection.NewNFTID(s.nftClassID, s.lenChain*4+1),
+		collection.NewNFTID(s.nftClassID, s.numNFTs*2+1),
 	}
 	testCases := map[string]struct {
 		contractID string
@@ -1213,7 +1214,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			contractID: s.contractID,
 			operator:   s.vendor,
 			tokenType:  s.nftClassID,
-			tokenIndex: collection.NewNFTID(s.nftClassID, s.lenChain*6+1)[8:],
+			tokenIndex: collection.NewNFTID(s.nftClassID, s.numNFTs*3+1)[8:],
 		},
 		"ft class not found": {
 			contractID: s.contractID,
@@ -1434,14 +1435,19 @@ func (s *KeeperTestSuite) TestMsgAttach() {
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, keeper.DepthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 			valid:      true,
 		},
 		"not owner of the token": {
 			contractID: s.contractID,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
-			targetID:   collection.NewNFTID(s.nftClassID, 2*s.lenChain+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, s.numNFTs+1),
+			targetID:   collection.NewNFTID(s.nftClassID, 1),
+		},
+		"number of descendants exceeds the limit": {
+			contractID: s.contractID,
+			subjectID:  collection.NewNFTID(s.nftClassID, keeper.DepthLimit+2),
+			targetID:   collection.NewNFTID(s.nftClassID, 1),
 		},
 	}
 
@@ -1479,7 +1485,7 @@ func (s *KeeperTestSuite) TestMsgDetach() {
 		},
 		"not owner of the token": {
 			contractID: s.contractID,
-			subjectID:  collection.NewNFTID(s.nftClassID, 2*s.lenChain+2),
+			subjectID:  collection.NewNFTID(s.nftClassID, s.numNFTs+2),
 		},
 	}
 
@@ -1514,21 +1520,27 @@ func (s *KeeperTestSuite) TestMsgOperatorAttach() {
 		"valid request": {
 			contractID: s.contractID,
 			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, keeper.DepthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 			valid:      true,
 		},
 		"not authorized": {
 			contractID: s.contractID,
 			operator:   s.vendor,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, keeper.DepthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 		},
 		"not owner of the token": {
 			contractID: s.contractID,
 			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
-			targetID:   collection.NewNFTID(s.nftClassID, 2*s.lenChain+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, s.numNFTs+1),
+			targetID:   collection.NewNFTID(s.nftClassID, 1),
+		},
+		"the number of descendants exceeds the limit": {
+			contractID: s.contractID,
+			operator:   s.operator,
+			subjectID:  collection.NewNFTID(s.nftClassID, keeper.DepthLimit+2),
+			targetID:   collection.NewNFTID(s.nftClassID, 1),
 		},
 	}
 
@@ -1575,7 +1587,7 @@ func (s *KeeperTestSuite) TestMsgOperatorDetach() {
 		"not owner of the token": {
 			contractID: s.contractID,
 			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, 2*s.lenChain+2),
+			subjectID:  collection.NewNFTID(s.nftClassID, s.numNFTs+2),
 		},
 	}
 
@@ -1611,21 +1623,21 @@ func (s *KeeperTestSuite) TestMsgAttachFrom() {
 		"valid request": {
 			contractID: s.contractID,
 			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, keeper.DepthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 			valid:      true,
 		},
 		"not authorized": {
 			contractID: s.contractID,
 			operator:   s.vendor,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, keeper.DepthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 		},
 		"not owner of the token": {
 			contractID: s.contractID,
 			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, s.lenChain+1),
-			targetID:   collection.NewNFTID(s.nftClassID, 2*s.lenChain+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, s.numNFTs+1),
+			targetID:   collection.NewNFTID(s.nftClassID, 1),
 		},
 	}
 
@@ -1672,7 +1684,7 @@ func (s *KeeperTestSuite) TestMsgDetachFrom() {
 		"not owner of the token": {
 			contractID: s.contractID,
 			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, 2*s.lenChain+2),
+			subjectID:  collection.NewNFTID(s.nftClassID, s.numNFTs+2),
 		},
 	}
 

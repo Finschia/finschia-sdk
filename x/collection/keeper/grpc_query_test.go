@@ -80,7 +80,7 @@ func (s *KeeperTestSuite) TestQueryAllBalances() {
 			address:    s.customer,
 			valid:      true,
 			postTest: func(res *collection.QueryAllBalancesResponse) {
-				s.Require().Equal(s.lenChain*2+1, len(res.Balances))
+				s.Require().Equal(s.numNFTs+1, len(res.Balances))
 			},
 		},
 		"valid request with limit": {
@@ -424,7 +424,7 @@ func (s *KeeperTestSuite) TestQueryNFTSupply() {
 			tokenType:  s.nftClassID,
 			valid:      true,
 			postTest: func(res *collection.QueryNFTSupplyResponse) {
-				s.Require().EqualValues(s.lenChain*6, res.Supply.Int64())
+				s.Require().EqualValues(s.numNFTs*3, res.Supply.Int64())
 			},
 		},
 		"invalid contract id": {
@@ -473,7 +473,7 @@ func (s *KeeperTestSuite) TestQueryNFTMinted() {
 			tokenType:  s.nftClassID,
 			valid:      true,
 			postTest: func(res *collection.QueryNFTMintedResponse) {
-				s.Require().EqualValues(s.lenChain*6, res.Minted.Int64())
+				s.Require().EqualValues(s.numNFTs*3, res.Minted.Int64())
 			},
 		},
 		"invalid contract id": {
@@ -1031,7 +1031,7 @@ func (s *KeeperTestSuite) TestQueryTokens() {
 			valid:      true,
 			count:      1000000,
 			postTest: func(res *collection.QueryTokensResponse) {
-				s.Require().Equal(s.lenChain*6+1, len(res.Tokens))
+				s.Require().Equal(s.numNFTs*3+1, len(res.Tokens))
 			},
 		},
 		"valid request with limit": {

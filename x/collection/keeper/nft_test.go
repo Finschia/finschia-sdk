@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"github.com/line/lbm-sdk/x/collection"
+	"github.com/line/lbm-sdk/x/collection/keeper"
 )
 
 func (s *KeeperTestSuite) TestAttach() {
@@ -13,29 +14,29 @@ func (s *KeeperTestSuite) TestAttach() {
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, s.lenChain+1),
+			subject:    collection.NewNFTID(s.nftClassID, keeper.DepthLimit+1),
 			target:     collection.NewNFTID(s.nftClassID, 1),
 			valid:      true,
 		},
 		"not owner of subject": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, s.lenChain*2+1),
+			subject:    collection.NewNFTID(s.nftClassID, s.numNFTs+1),
 			target:     collection.NewNFTID(s.nftClassID, 1),
 		},
 		"target not found": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, s.lenChain+1),
-			target:     collection.NewNFTID(s.nftClassID, s.lenChain*6+1),
+			subject:    collection.NewNFTID(s.nftClassID, keeper.DepthLimit+1),
+			target:     collection.NewNFTID(s.nftClassID, s.numNFTs*3+1),
 		},
-		"target's depth exceeds the limit": {
+		"result exceeds the limit": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, s.lenChain+1),
-			target:     collection.NewNFTID(s.nftClassID, s.lenChain),
+			subject:    collection.NewNFTID(s.nftClassID, keeper.DepthLimit+2),
+			target:     collection.NewNFTID(s.nftClassID, 1),
 		},
 		"not owner of target": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, s.lenChain+1),
-			target:     collection.NewNFTID(s.nftClassID, s.lenChain*2+1),
+			subject:    collection.NewNFTID(s.nftClassID, keeper.DepthLimit+1),
+			target:     collection.NewNFTID(s.nftClassID, s.numNFTs+1),
 		},
 	}
 
@@ -67,19 +68,15 @@ func (s *KeeperTestSuite) TestDetach() {
 		},
 		"subject not found": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, s.lenChain*6+1),
+			subject:    collection.NewNFTID(s.nftClassID, s.numNFTs*3+1),
 		},
 		"subject has no parent": {
 			contractID: s.contractID,
 			subject:    collection.NewNFTID(s.nftClassID, 1),
 		},
-		"parent's depth exceeds the limit": {
-			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, s.lenChain),
-		},
 		"not owner of subject": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, s.lenChain*2+2),
+			subject:    collection.NewNFTID(s.nftClassID, s.numNFTs+2),
 		},
 	}
 

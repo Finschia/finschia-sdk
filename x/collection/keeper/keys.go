@@ -12,11 +12,12 @@ var (
 	nextClassIDKeyPrefix = []byte{0x02}
 	nextTokenIDKeyPrefix = []byte{0x03}
 
-	balanceKeyPrefix = []byte{0x10}
-	ownerKeyPrefix   = []byte{0x11}
-	nftKeyPrefix     = []byte{0x12}
-	parentKeyPrefix  = []byte{0x13}
-	childKeyPrefix   = []byte{0x14}
+	balanceKeyPrefix     = []byte{0x10}
+	ownerKeyPrefix       = []byte{0x11}
+	nftKeyPrefix         = []byte{0x12}
+	parentKeyPrefix      = []byte{0x13}
+	childKeyPrefix       = []byte{0x14}
+	descendantsKeyPrefix = []byte{0x15}
 
 	authorizationKeyPrefix = []byte{0x20}
 	grantKeyPrefix         = []byte{0x21}
@@ -244,6 +245,33 @@ func splitChildKey(key []byte) (contractID string, tokenID, childID string) {
 	childID = string(key[begin:])
 
 	return
+}
+
+//-----------------------------------------------------------------------------
+// number of descendants
+func descendantsKey(contractID string, tokenID string) []byte {
+	prefix := descendantsKeyPrefixByContractID(contractID)
+	key := make([]byte, len(prefix)+len(tokenID))
+
+	copy(key, prefix)
+	copy(key[len(prefix):], tokenID)
+
+	return key
+}
+
+func descendantsKeyPrefixByContractID(contractID string) []byte {
+	key := make([]byte, len(descendantsKeyPrefix)+1+len(contractID))
+
+	begin := 0
+	copy(key, descendantsKeyPrefix)
+
+	begin += len(descendantsKeyPrefix)
+	key[begin] = byte(len(contractID))
+
+	begin++
+	copy(key[begin:], contractID)
+
+	return key
 }
 
 //-----------------------------------------------------------------------------
