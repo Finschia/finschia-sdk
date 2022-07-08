@@ -10,7 +10,7 @@ import (
 )
 
 // RegisterLegacyAminoCodec registers the account types and interface
-func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
+func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) { //nolint:staticcheck
 	cdc.RegisterConcrete(&MsgStoreCode{}, "wasm/MsgStoreCode", nil)
 	cdc.RegisterConcrete(&MsgInstantiateContract{}, "wasm/MsgInstantiateContract", nil)
 	cdc.RegisterConcrete(&MsgStoreCodeAndInstantiateContract{}, "wasm/StoreCodeAndInstantiateContract", nil)
@@ -18,15 +18,18 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgMigrateContract{}, "wasm/MsgMigrateContract", nil)
 	cdc.RegisterConcrete(&MsgUpdateAdmin{}, "wasm/MsgUpdateAdmin", nil)
 	cdc.RegisterConcrete(&MsgClearAdmin{}, "wasm/MsgClearAdmin", nil)
+
 	cdc.RegisterConcrete(&PinCodesProposal{}, "wasm/PinCodesProposal", nil)
 	cdc.RegisterConcrete(&UnpinCodesProposal{}, "wasm/UnpinCodesProposal", nil)
-
 	cdc.RegisterConcrete(&StoreCodeProposal{}, "wasm/StoreCodeProposal", nil)
 	cdc.RegisterConcrete(&InstantiateContractProposal{}, "wasm/InstantiateContractProposal", nil)
 	cdc.RegisterConcrete(&MigrateContractProposal{}, "wasm/MigrateContractProposal", nil)
+	cdc.RegisterConcrete(&SudoContractProposal{}, "wasm/SudoContractProposal", nil)
+	cdc.RegisterConcrete(&ExecuteContractProposal{}, "wasm/ExecuteContractProposal", nil)
 	cdc.RegisterConcrete(&UpdateAdminProposal{}, "wasm/UpdateAdminProposal", nil)
 	cdc.RegisterConcrete(&ClearAdminProposal{}, "wasm/ClearAdminProposal", nil)
 	cdc.RegisterConcrete(&UpdateContractStatusProposal{}, "wasm/UpdateContractStatusProposal", nil)
+	cdc.RegisterConcrete(&UpdateInstantiateConfigProposal{}, "wasm/UpdateInstantiateConfigProposal", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
@@ -47,11 +50,14 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&StoreCodeProposal{},
 		&InstantiateContractProposal{},
 		&MigrateContractProposal{},
+		&SudoContractProposal{},
+		&ExecuteContractProposal{},
 		&UpdateAdminProposal{},
 		&ClearAdminProposal{},
 		&PinCodesProposal{},
 		&UnpinCodesProposal{},
 		&UpdateContractStatusProposal{},
+		&UpdateInstantiateConfigProposal{},
 	)
 
 	registry.RegisterInterface("ContractInfoExtension", (*ContractInfoExtension)(nil))

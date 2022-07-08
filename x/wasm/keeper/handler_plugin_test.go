@@ -101,22 +101,26 @@ func TestSDKMessageHandlerDispatch(t *testing.T) {
 	}
 
 	var gotMsg []sdk.Msg
-	capturingRouteFn := func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
-		gotMsg = append(gotMsg, msg)
-		return &myRouterResult, nil
-	}
-
+	capturingMessageRouter := wasmtesting.MessageRouterFunc(func(msg sdk.Msg) baseapp.MsgServiceHandler {
+		return func(ctx sdk.Context, req sdk.Msg) (*sdk.Result, error) {
+			gotMsg = append(gotMsg, msg)
+			return &myRouterResult, nil
+		}
+	})
+	noRouteMessageRouter := wasmtesting.MessageRouterFunc(func(msg sdk.Msg) baseapp.MsgServiceHandler {
+		return nil
+	})
 	myContractAddr := RandomAccountAddress(t)
 	myContractMessage := wasmvmtypes.CosmosMsg{Custom: []byte("{}")}
 
 	specs := map[string]struct {
-		srcRoute         sdk.Route
+		srcRoute         MessageRouter
 		srcEncoder       CustomEncoder
 		expErr           *sdkerrors.Error
 		expMsgDispatched int
 	}{
 		"all good": {
-			srcRoute: sdk.NewRoute(types.RouterKey, capturingRouteFn),
+			srcRoute: capturingMessageRouter,
 			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
 				myMsg := types.MsgExecuteContract{
 					Sender:   myContractAddr.String(),
@@ -128,7 +132,7 @@ func TestSDKMessageHandlerDispatch(t *testing.T) {
 			expMsgDispatched: 1,
 		},
 		"multiple output msgs": {
-			srcRoute: sdk.NewRoute(types.RouterKey, capturingRouteFn),
+			srcRoute: capturingMessageRouter,
 			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
 				first := &types.MsgExecuteContract{
 					Sender:   myContractAddr.String(),
@@ -145,7 +149,7 @@ func TestSDKMessageHandlerDispatch(t *testing.T) {
 			expMsgDispatched: 2,
 		},
 		"invalid sdk message rejected": {
-			srcRoute: sdk.NewRoute(types.RouterKey, capturingRouteFn),
+			srcRoute: capturingMessageRouter,
 			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
 				invalidMsg := types.MsgExecuteContract{
 					Sender:   myContractAddr.String(),
@@ -157,7 +161,7 @@ func TestSDKMessageHandlerDispatch(t *testing.T) {
 			expErr: types.ErrInvalid,
 		},
 		"invalid sender rejected": {
-			srcRoute: sdk.NewRoute(types.RouterKey, capturingRouteFn),
+			srcRoute: capturingMessageRouter,
 			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
 				invalidMsg := types.MsgExecuteContract{
 					Sender:   RandomBech32AccountAddress(t),
@@ -169,7 +173,7 @@ func TestSDKMessageHandlerDispatch(t *testing.T) {
 			expErr: sdkerrors.ErrUnauthorized,
 		},
 		"unroutable message rejected": {
-			srcRoute: sdk.NewRoute("nothing", capturingRouteFn),
+			srcRoute: noRouteMessageRouter,
 			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
 				myMsg := types.MsgExecuteContract{
 					Sender:   myContractAddr.String(),
@@ -181,9 +185,9 @@ func TestSDKMessageHandlerDispatch(t *testing.T) {
 			expErr: sdkerrors.ErrUnknownRequest,
 		},
 		"encoding error passed": {
-			srcRoute: sdk.NewRoute("nothing", capturingRouteFn),
+			srcRoute: capturingMessageRouter,
 			srcEncoder: func(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
-				myErr := types.ErrUnpinContractFailed
+				myErr := types.ErrUnpinContractFailed // any error that is not used
 				return nil, myErr
 			},
 			expErr: types.ErrUnpinContractFailed,
@@ -192,12 +196,10 @@ func TestSDKMessageHandlerDispatch(t *testing.T) {
 	for name, spec := range specs {
 		t.Run(name, func(t *testing.T) {
 			gotMsg = make([]sdk.Msg, 0)
-			router := baseapp.NewRouter()
-			router.AddRoute(spec.srcRoute)
 
 			// when
 			ctx := sdk.Context{}
-			h := NewSDKMessageHandler(router, MessageEncoders{Custom: spec.srcEncoder})
+			h := NewSDKMessageHandler(spec.srcRoute, MessageEncoders{Custom: spec.srcEncoder})
 			gotEvents, gotData, gotErr := h.DispatchMsg(ctx, myContractAddr, "myPort", myContractMessage)
 
 			// then
@@ -317,11 +319,14 @@ func TestBurnCoinMessageHandlerIntegration(t *testing.T) {
 	// module permissions are set correct and no other handler
 	// picks the message in the default handler chain
 	ctx, keepers := CreateDefaultTestInput(t)
+	// set some supply
+	keepers.Faucet.NewFundedAccount(ctx, sdk.NewCoin("denom", sdk.NewInt(10_000_000)))
 	k := keepers.WasmKeeper
+
+	example := InstantiateHackatomExampleContract(t, ctx, keepers) // with deposit of 100 stake
 
 	before, err := keepers.BankKeeper.TotalSupply(sdk.WrapSDKContext(ctx), &banktypes.QueryTotalSupplyRequest{})
 	require.NoError(t, err)
-	example := InstantiateHackatomExampleContract(t, ctx, keepers) // with deposit of 100 stake
 
 	specs := map[string]struct {
 		msg    wasmvmtypes.BurnMsg

@@ -32,7 +32,7 @@ require (
 	github.com/line/iavl/v2 v2.0.0-init.1.0.20220215225951-cb11c91d8857
 	github.com/line/ostracon v1.0.6
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486
-	github.com/line/wasmvm v0.16.3-0.9.0
+	github.com/line/wasmvm v1.0.0-0.10.0
 	github.com/magiconair/properties v1.8.6
 	github.com/mailru/easyjson v0.7.7
 	github.com/mattn/go-isatty v0.0.14
@@ -42,6 +42,7 @@ require (
 	github.com/prometheus/common v0.35.0
 	github.com/rakyll/statik v0.1.7
 	github.com/regen-network/cosmos-proto v0.3.1
+	github.com/rogpeppe/go-internal v1.8.1 // indirect
 	github.com/rs/zerolog v1.27.0
 	github.com/spf13/cast v1.5.0
 	github.com/spf13/cobra v1.4.0
@@ -62,5 +63,6 @@ require (
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.1.7-0.20210622111912-ef00f8ac3d76
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )

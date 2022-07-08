@@ -1046,14 +1046,18 @@
     - [MsgIBCSend](#lbm.wasm.v1.MsgIBCSend)
   
 - [lbm/wasm/v1/proposal.proto](#lbm/wasm/v1/proposal.proto)
+    - [AccessConfigUpdate](#lbm.wasm.v1.AccessConfigUpdate)
     - [ClearAdminProposal](#lbm.wasm.v1.ClearAdminProposal)
+    - [ExecuteContractProposal](#lbm.wasm.v1.ExecuteContractProposal)
     - [InstantiateContractProposal](#lbm.wasm.v1.InstantiateContractProposal)
     - [MigrateContractProposal](#lbm.wasm.v1.MigrateContractProposal)
     - [PinCodesProposal](#lbm.wasm.v1.PinCodesProposal)
     - [StoreCodeProposal](#lbm.wasm.v1.StoreCodeProposal)
+    - [SudoContractProposal](#lbm.wasm.v1.SudoContractProposal)
     - [UnpinCodesProposal](#lbm.wasm.v1.UnpinCodesProposal)
     - [UpdateAdminProposal](#lbm.wasm.v1.UpdateAdminProposal)
     - [UpdateContractStatusProposal](#lbm.wasm.v1.UpdateContractStatusProposal)
+    - [UpdateInstantiateConfigProposal](#lbm.wasm.v1.UpdateInstantiateConfigProposal)
   
 - [lbm/wasm/v1/query.proto](#lbm/wasm/v1/query.proto)
     - [CodeInfoResponse](#lbm.wasm.v1.CodeInfoResponse)
@@ -1069,6 +1073,8 @@
     - [QueryContractInfoResponse](#lbm.wasm.v1.QueryContractInfoResponse)
     - [QueryContractsByCodeRequest](#lbm.wasm.v1.QueryContractsByCodeRequest)
     - [QueryContractsByCodeResponse](#lbm.wasm.v1.QueryContractsByCodeResponse)
+    - [QueryPinnedCodesRequest](#lbm.wasm.v1.QueryPinnedCodesRequest)
+    - [QueryPinnedCodesResponse](#lbm.wasm.v1.QueryPinnedCodesResponse)
     - [QueryRawContractStateRequest](#lbm.wasm.v1.QueryRawContractStateRequest)
     - [QueryRawContractStateResponse](#lbm.wasm.v1.QueryRawContractStateResponse)
     - [QuerySmartContractStateRequest](#lbm.wasm.v1.QuerySmartContractStateRequest)
@@ -14971,7 +14977,6 @@ Params defines the set of wasm parameters.
 | ----- | ---- | ----- | ----------- |
 | `code_upload_access` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
 | `instantiate_default_permission` | [AccessType](#lbm.wasm.v1.AccessType) |  |  |
-| `max_wasm_code_size` | [uint64](#uint64) |  |  |
 | `gas_multiplier` | [uint64](#uint64) |  |  |
 | `instance_cost` | [uint64](#uint64) |  |  |
 | `compile_cost` | [uint64](#uint64) |  |  |
@@ -15449,6 +15454,23 @@ MsgIBCSend
 
 
 
+<a name="lbm.wasm.v1.AccessConfigUpdate"></a>
+
+### AccessConfigUpdate
+AccessConfigUpdate contains the code id and the access config to be
+applied.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code to be updated |
+| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply to the set of code ids |
+
+
+
+
+
+
 <a name="lbm.wasm.v1.ClearAdminProposal"></a>
 
 ### ClearAdminProposal
@@ -15460,6 +15482,27 @@ ClearAdminProposal gov proposal content type to clear the admin of a contract.
 | `title` | [string](#string) |  | Title is a short summary |
 | `description` | [string](#string) |  | Description is a human readable text |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.ExecuteContractProposal"></a>
+
+### ExecuteContractProposal
+ExecuteContractProposal gov proposal content type to call execute on a
+contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract as execute |
+| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
 
 
 
@@ -15497,8 +15540,9 @@ MigrateContractProposal gov proposal content type to migrate a contract.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
+| `description` | [string](#string) |  | Description is a human readable text
+
+Note: skipping 3 as this was previously used for unneeded run_as |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
 | `code_id` | [uint64](#uint64) |  | CodeID references the new WASM code |
 | `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on migration |
@@ -15538,6 +15582,24 @@ StoreCodeProposal gov proposal content type to submit WASM code to the system
 | `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
 | `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
 | `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply on contract creation, optional |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.SudoContractProposal"></a>
+
+### SudoContractProposal
+SudoContractProposal gov proposal content type to call sudo on a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract as sudo |
 
 
 
@@ -15591,6 +15653,24 @@ UpdateStatusProposal gov proposal content type to update the contract status.
 | `description` | [string](#string) |  | Description is a human readable text |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
 | `status` | [ContractStatus](#lbm.wasm.v1.ContractStatus) |  | Status to be set |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.UpdateInstantiateConfigProposal"></a>
+
+### UpdateInstantiateConfigProposal
+UpdateInstantiateConfigProposal gov proposal content type to update
+instantiate config to a  set of code ids.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `access_config_updates` | [AccessConfigUpdate](#lbm.wasm.v1.AccessConfigUpdate) | repeated | AccessConfigUpdate contains the list of code ids and the access config to be applied. |
 
 
 
@@ -15822,6 +15902,39 @@ Query/ContractsByCode RPC method
 
 
 
+<a name="lbm.wasm.v1.QueryPinnedCodesRequest"></a>
+
+### QueryPinnedCodesRequest
+QueryPinnedCodesRequest is the request type for the Query/PinnedCodes
+RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.QueryPinnedCodesResponse"></a>
+
+### QueryPinnedCodesResponse
+QueryPinnedCodesResponse is the response type for the
+Query/PinnedCodes RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_ids` | [uint64](#uint64) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
 <a name="lbm.wasm.v1.QueryRawContractStateRequest"></a>
 
 ### QueryRawContractStateRequest
@@ -15909,6 +16022,7 @@ Query provides defines the gRPC querier service
 | `SmartContractState` | [QuerySmartContractStateRequest](#lbm.wasm.v1.QuerySmartContractStateRequest) | [QuerySmartContractStateResponse](#lbm.wasm.v1.QuerySmartContractStateResponse) | SmartContractState get smart query result from the contract | GET|/lbm/wasm/v1/contract/{address}/smart/{query_data}|
 | `Code` | [QueryCodeRequest](#lbm.wasm.v1.QueryCodeRequest) | [QueryCodeResponse](#lbm.wasm.v1.QueryCodeResponse) | Code gets the binary code and metadata for a singe wasm code | GET|/lbm/wasm/v1/code/{code_id}|
 | `Codes` | [QueryCodesRequest](#lbm.wasm.v1.QueryCodesRequest) | [QueryCodesResponse](#lbm.wasm.v1.QueryCodesResponse) | Codes gets the metadata for all stored wasm codes | GET|/lbm/wasm/v1/code|
+| `PinnedCodes` | [QueryPinnedCodesRequest](#lbm.wasm.v1.QueryPinnedCodesRequest) | [QueryPinnedCodesResponse](#lbm.wasm.v1.QueryPinnedCodesResponse) | PinnedCodes gets the pinned code ids | GET|/lbm/wasm/v1/codes/pinned|
 
  <!-- end services -->
 

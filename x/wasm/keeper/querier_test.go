@@ -16,7 +16,7 @@ import (
 	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
 
 	"github.com/line/ostracon/libs/log"
-	cosmwasm "github.com/line/wasmvm"
+	wasmvm "github.com/line/wasmvm"
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -186,7 +186,7 @@ func TestQuerySmartContractPanics(t *testing.T) {
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			keepers.WasmKeeper.wasmVM = &wasmtesting.MockWasmer{QueryFn: func(checksum cosmwasm.Checksum, env wasmvmtypes.Env, queryMsg []byte, store cosmwasm.KVStore, goapi cosmwasm.GoAPI, querier cosmwasm.Querier, gasMeter cosmwasm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) ([]byte, uint64, error) {
+			keepers.WasmKeeper.wasmVM = &wasmtesting.MockWasmer{QueryFn: func(checksum wasmvm.Checksum, env wasmvmtypes.Env, queryMsg []byte, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) ([]byte, uint64, error) {
 				spec.doInContract()
 				return nil, 0, nil
 			}}
@@ -259,12 +259,12 @@ func TestQueryRawContractState(t *testing.T) {
 
 func TestQueryContractListByCodeOrdering(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
-	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.WasmKeeper, keepers.BankKeeper
+	keeper := keepers.WasmKeeper
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 1000000))
 	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 500))
-	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit)
-	anyAddr := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, topUp)
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
+	anyAddr := keepers.Faucet.NewFundedAccount(ctx, topUp...)
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
@@ -650,6 +650,204 @@ func TestQueryContractInfo(t *testing.T) {
 			assert.Equal(t, spec.expRsp, gotRsp)
 		})
 	}
+}
+
+func TestQueryPinnedCodes(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
+	exampleContract1 := InstantiateHackatomExampleContract(t, ctx, keepers)
+	exampleContract2 := InstantiateIBCReflectContract(t, ctx, keepers)
+	require.NoError(t, keeper.pinCode(ctx, exampleContract1.CodeID))
+	require.NoError(t, keeper.pinCode(ctx, exampleContract2.CodeID))
+
+	q := Querier(keeper)
+	specs := map[string]struct {
+		srcQuery   *types.QueryPinnedCodesRequest
+		expCodeIDs []uint64
+		expErr     bool
+	}{
+		"req nil": {
+			srcQuery: nil,
+			expErr:   true,
+		},
+		"query all": {
+			srcQuery:   &types.QueryPinnedCodesRequest{},
+			expCodeIDs: []uint64{exampleContract1.CodeID, exampleContract2.CodeID},
+		},
+		"with pagination offset": {
+			srcQuery: &types.QueryPinnedCodesRequest{
+				Pagination: &query.PageRequest{
+					Offset: 1,
+				},
+			},
+			expCodeIDs: []uint64{exampleContract2.CodeID},
+		},
+		"with invalid pagination key": {
+			srcQuery: &types.QueryPinnedCodesRequest{
+				Pagination: &query.PageRequest{
+					Offset: 1,
+					Key:    []byte("test"),
+				},
+			},
+			expErr: true,
+		},
+		"with pagination limit": {
+			srcQuery: &types.QueryPinnedCodesRequest{
+				Pagination: &query.PageRequest{
+					Limit: 1,
+				},
+			},
+			expCodeIDs: []uint64{exampleContract1.CodeID},
+		},
+		"with pagination next key": {
+			srcQuery: &types.QueryPinnedCodesRequest{
+				Pagination: &query.PageRequest{
+					Key: fromBase64("AAAAAAAAAAM="),
+				},
+			},
+			expCodeIDs: []uint64{exampleContract2.CodeID},
+		},
+	}
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			got, err := q.PinnedCodes(sdk.WrapSDKContext(ctx), spec.srcQuery)
+			if spec.expErr {
+				assert.Nil(t, got)
+				assert.NotNil(t, err)
+
+				return
+			}
+			require.NotNil(t, got)
+			assert.Equal(t, spec.expCodeIDs, got.CodeIDs)
+		})
+	}
+}
+
+func TestQueryCodeInfo(t *testing.T) {
+
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	require.NoError(t, err)
+
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
+	const anyAddress = "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"
+	err = sdk.ValidateAccAddress(anyAddress)
+	require.NoError(t, err)
+
+	require.NoError(t, err)
+	specs := map[string]struct {
+		codeId       uint64
+		accessConfig types.AccessConfig
+	}{
+		"everybody": {
+			codeId:       1,
+			accessConfig: types.AllowEverybody,
+		},
+		"nobody": {
+			codeId:       10,
+			accessConfig: types.AllowNobody,
+		},
+		"with_address": {
+			codeId:       20,
+			accessConfig: types.AccessTypeOnlyAddress.With(sdk.AccAddress(anyAddress)),
+		},
+	}
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			codeInfo := types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode))
+			codeInfo.InstantiateConfig = spec.accessConfig
+			require.NoError(t, keeper.importCode(ctx, spec.codeId,
+				codeInfo,
+				wasmCode),
+			)
+
+			q := Querier(keeper)
+			got, err := q.Code(sdk.WrapSDKContext(ctx), &types.QueryCodeRequest{
+				CodeId: spec.codeId,
+			})
+			require.NoError(t, err)
+			expectedResponse := &types.QueryCodeResponse{
+				CodeInfoResponse: &types.CodeInfoResponse{
+					CodeID:                spec.codeId,
+					Creator:               codeInfo.Creator,
+					DataHash:              codeInfo.CodeHash,
+					InstantiatePermission: spec.accessConfig,
+				},
+				Data: wasmCode,
+			}
+			require.NotNil(t, got.CodeInfoResponse)
+			require.EqualValues(t, expectedResponse, got)
+		})
+	}
+}
+
+func TestQueryCodeInfoList(t *testing.T) {
+
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	require.NoError(t, err)
+
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
+	const anyAddress = "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"
+	err = sdk.ValidateAccAddress(anyAddress)
+	require.NoError(t, err)
+	require.NoError(t, err)
+	codeInfoWithConfig := func(accessConfig types.AccessConfig) types.CodeInfo {
+		codeInfo := types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode))
+		codeInfo.InstantiateConfig = accessConfig
+		return codeInfo
+	}
+
+	codes := []struct {
+		name     string
+		codeId   uint64
+		codeInfo types.CodeInfo
+	}{
+		{
+			name:     "everybody",
+			codeId:   1,
+			codeInfo: codeInfoWithConfig(types.AllowEverybody),
+		},
+		{
+			codeId:   10,
+			name:     "nobody",
+			codeInfo: codeInfoWithConfig(types.AllowNobody),
+		},
+		{
+			name:     "with_address",
+			codeId:   20,
+			codeInfo: codeInfoWithConfig(types.AccessTypeOnlyAddress.With(sdk.AccAddress(anyAddress))),
+		},
+	}
+
+	allCodesResponse := make([]types.CodeInfoResponse, 0)
+	for _, code := range codes {
+		t.Run(fmt.Sprintf("import_%s", code.name), func(t *testing.T) {
+			require.NoError(t, keeper.importCode(ctx, code.codeId,
+				code.codeInfo,
+				wasmCode),
+			)
+		})
+
+		allCodesResponse = append(allCodesResponse, types.CodeInfoResponse{
+			CodeID:                code.codeId,
+			Creator:               code.codeInfo.Creator,
+			DataHash:              code.codeInfo.CodeHash,
+			InstantiatePermission: code.codeInfo.InstantiateConfig,
+		})
+	}
+	q := Querier(keeper)
+	got, err := q.Codes(sdk.WrapSDKContext(ctx), &types.QueryCodesRequest{
+		Pagination: &query.PageRequest{
+			Limit: 3,
+		},
+	})
+	require.NoError(t, err)
+	require.Len(t, got.CodeInfos, 3)
+	require.EqualValues(t, allCodesResponse, got.CodeInfos)
 
 }
 

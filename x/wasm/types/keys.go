@@ -30,6 +30,7 @@ var (
 	ContractCodeHistoryElementPrefix               = []byte{0x05}
 	ContractByCodeIDAndCreatedSecondaryIndexPrefix = []byte{0x06}
 	PinnedCodeIndexPrefix                          = []byte{0x07}
+	TXCounterPrefix                                = []byte{0x08}
 
 	KeyLastCodeID     = append(SequenceKeyPrefix, []byte("lastCodeId")...)
 	KeyLastInstanceID = append(SequenceKeyPrefix, []byte("lastContractId")...)
@@ -56,7 +57,8 @@ func GetContractStorePrefix(addr sdk.AccAddress) []byte {
 func GetContractByCreatedSecondaryIndexKey(contractAddr sdk.AccAddress, c ContractCodeHistoryEntry) []byte {
 	prefix := GetContractByCodeIDSecondaryIndexPrefix(c.CodeID)
 	prefixLen := len(prefix)
-	r := make([]byte, prefixLen+AbsoluteTxPositionLen+len(contractAddr.Bytes()))
+	contractAddrLen := len(contractAddr)
+	r := make([]byte, prefixLen+AbsoluteTxPositionLen+contractAddrLen)
 	copy(r[0:], prefix)
 	copy(r[prefixLen:], c.Updated.Bytes())
 	copy(r[prefixLen+AbsoluteTxPositionLen:], contractAddr.Bytes())

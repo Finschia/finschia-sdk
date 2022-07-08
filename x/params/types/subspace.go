@@ -217,7 +217,6 @@ func (s Subspace) SetParamSet(ctx sdk.Context, ps ParamSet) {
 		if err := pair.ValidatorFn(v); err != nil {
 			panic(fmt.Sprintf("value from ParamSetPair is invalid: %s", err))
 		}
-
 		s.Set(ctx, pair.Key, v)
 	}
 }

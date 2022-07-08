@@ -23,6 +23,8 @@ const (
 	DefaultWeightParamChangeProposal    int = 5
 
 	// feegrant
-	DefaultWeightGrantAllowance  int = 100
-	DefaultWeightRevokeAllowance int = 100
+	DefaultWeightGrantAllowance         int = 100
+	DefaultWeightRevokeAllowance        int = 100
+	DefaultWeightMsgStoreCode           int = 100
+	DefaultWeightMsgInstantiateContract int = 100
 )
