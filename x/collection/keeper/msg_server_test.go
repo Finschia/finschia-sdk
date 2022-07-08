@@ -1444,11 +1444,6 @@ func (s *KeeperTestSuite) TestMsgAttach() {
 			subjectID:  collection.NewNFTID(s.nftClassID, s.numNFTs+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 		},
-		"number of descendants exceeds the limit": {
-			contractID: s.contractID,
-			subjectID:  collection.NewNFTID(s.nftClassID, keeper.DepthLimit+2),
-			targetID:   collection.NewNFTID(s.nftClassID, 1),
-		},
 	}
 
 	for name, tc := range testCases {
@@ -1534,12 +1529,6 @@ func (s *KeeperTestSuite) TestMsgOperatorAttach() {
 			contractID: s.contractID,
 			operator:   s.operator,
 			subjectID:  collection.NewNFTID(s.nftClassID, s.numNFTs+1),
-			targetID:   collection.NewNFTID(s.nftClassID, 1),
-		},
-		"the number of descendants exceeds the limit": {
-			contractID: s.contractID,
-			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, keeper.DepthLimit+2),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 		},
 	}
