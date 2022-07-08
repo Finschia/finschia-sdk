@@ -8041,7 +8041,6 @@ RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `events` | [string](#string) | repeated | events is the list of transaction event type. |
-| `prove` | [bool](#bool) |  | prove is Include proofs of the transactions inclusion in the block |
 | `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an pagination for the request. |
 | `order_by` | [OrderBy](#cosmos.tx.v1beta1.OrderBy) |  |  |
 
