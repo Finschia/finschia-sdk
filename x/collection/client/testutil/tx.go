@@ -83,7 +83,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -167,7 +167,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorSend() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -223,7 +223,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdCreateContract() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -284,7 +284,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdCreateFTClass() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -345,7 +345,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdCreateNFTClass() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -418,7 +418,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMintFT() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -487,7 +487,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMintNFT() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -553,7 +553,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -623,7 +623,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurn() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -645,7 +645,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyContract() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				collection.AttributeKey_Name.String(),
+				collection.AttributeKeyName.String(),
 				"fox",
 			},
 			true,
@@ -654,7 +654,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyContract() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				collection.AttributeKey_Name.String(),
+				collection.AttributeKeyName.String(),
 				"fox",
 				"extra",
 			},
@@ -664,7 +664,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyContract() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				collection.AttributeKey_Name.String(),
+				collection.AttributeKeyName.String(),
 			},
 			false,
 		},
@@ -672,7 +672,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyContract() {
 			[]string{
 				"",
 				s.operator.String(),
-				collection.AttributeKey_Name.String(),
+				collection.AttributeKeyName.String(),
 				"fox",
 			},
 			false,
@@ -692,7 +692,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyContract() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -715,7 +715,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyTokenClass() {
 				s.contractID,
 				s.operator.String(),
 				s.ftClassID,
-				collection.AttributeKey_Name.String(),
+				collection.AttributeKeyName.String(),
 				"tibetian fox",
 			},
 			true,
@@ -725,7 +725,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyTokenClass() {
 				s.contractID,
 				s.operator.String(),
 				s.ftClassID,
-				collection.AttributeKey_Name.String(),
+				collection.AttributeKeyName.String(),
 				"tibetian fox",
 				"extra",
 			},
@@ -736,7 +736,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyTokenClass() {
 				s.contractID,
 				s.operator.String(),
 				s.ftClassID,
-				collection.AttributeKey_Name.String(),
+				collection.AttributeKeyName.String(),
 			},
 			false,
 		},
@@ -745,7 +745,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyTokenClass() {
 				"",
 				s.operator.String(),
 				s.ftClassID,
-				collection.AttributeKey_Name.String(),
+				collection.AttributeKeyName.String(),
 				"tibetian fox",
 			},
 			false,
@@ -765,7 +765,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyTokenClass() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -789,7 +789,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyNFT() {
 				s.contractID,
 				s.operator.String(),
 				tokenID,
-				collection.AttributeKey_Name.String(),
+				collection.AttributeKeyName.String(),
 				"fennec fox 1",
 			},
 			true,
@@ -799,7 +799,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyNFT() {
 				s.contractID,
 				s.operator.String(),
 				tokenID,
-				collection.AttributeKey_Name.String(),
+				collection.AttributeKeyName.String(),
 				"fennec fox 1",
 				"extra",
 			},
@@ -810,7 +810,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyNFT() {
 				s.contractID,
 				s.operator.String(),
 				tokenID,
-				collection.AttributeKey_Name.String(),
+				collection.AttributeKeyName.String(),
 			},
 			false,
 		},
@@ -819,7 +819,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyNFT() {
 				"",
 				s.operator.String(),
 				tokenID,
-				collection.AttributeKey_Name.String(),
+				collection.AttributeKeyName.String(),
 				"fennec fox 1",
 			},
 			false,
@@ -839,7 +839,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyNFT() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -910,7 +910,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAttach() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -976,7 +976,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdDetach() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -1051,7 +1051,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorAttach() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -1121,7 +1121,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorDetach() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -1144,7 +1144,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 				s.contractID,
 				s.operator.String(),
 				s.customer.String(),
-				collection.Permission_Mint.String(),
+				collection.PermissionMint.String(),
 			},
 			true,
 		},
@@ -1153,7 +1153,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 				s.contractID,
 				s.operator.String(),
 				s.customer.String(),
-				collection.Permission_Mint.String(),
+				collection.PermissionMint.String(),
 				"extra",
 			},
 			false,
@@ -1181,7 +1181,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -1203,7 +1203,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAbandon() {
 			[]string{
 				s.contractID,
 				s.vendor.String(),
-				collection.Permission_Modify.String(),
+				collection.PermissionModify.String(),
 			},
 			true,
 		},
@@ -1211,7 +1211,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAbandon() {
 			[]string{
 				s.contractID,
 				s.vendor.String(),
-				collection.Permission_Modify.String(),
+				collection.PermissionModify.String(),
 				"extra",
 			},
 			false,
@@ -1238,7 +1238,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAbandon() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -1295,7 +1295,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAuthorizeOperator() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
@@ -1352,7 +1352,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevokeOperator() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}

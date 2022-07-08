@@ -720,8 +720,7 @@ func NewQueryCmdGrant() *cobra.Command {
 				return err
 			}
 
-			permission := args[2]
-			// TODO: validate permission
+			permission := collection.Permission(collection.Permission_value[args[2]])
 
 			queryClient := collection.NewQueryClient(clientCtx)
 			req := &collection.QueryGrantRequest{

@@ -788,6 +788,8 @@ func NewTxCmdGrant() *cobra.Command {
 				return err
 			}
 
+			permission := collection.Permission(collection.Permission_value[args[3]])
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -797,7 +799,7 @@ func NewTxCmdGrant() *cobra.Command {
 				ContractId: args[0],
 				Granter:    granter,
 				Grantee:    args[2],
-				Permission: args[3],
+				Permission: permission,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -824,6 +826,8 @@ func NewTxCmdAbandon() *cobra.Command {
 				return err
 			}
 
+			permission := collection.Permission(collection.Permission_value[args[2]])
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -832,7 +836,7 @@ func NewTxCmdAbandon() *cobra.Command {
 			msg := collection.MsgAbandon{
 				ContractId: args[0],
 				Grantee:    grantee,
-				Permission: args[2],
+				Permission: permission,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

@@ -188,9 +188,9 @@ func (s *KeeperTestSuite) TestModifyContract() {
 		"deadbeef":   "not-exist",
 	}
 	changes := []collection.Attribute{
-		{Key: collection.AttributeKey_Name.String(), Value: "fox"},
-		{Key: collection.AttributeKey_BaseImgURI.String(), Value: "file:///fox.png"},
-		{Key: collection.AttributeKey_Meta.String(), Value: "Fox"},
+		{Key: collection.AttributeKeyName.String(), Value: "fox"},
+		{Key: collection.AttributeKeyBaseImgURI.String(), Value: "file:///fox.png"},
+		{Key: collection.AttributeKeyMeta.String(), Value: "Fox"},
 	}
 
 	for contractID, contractDesc := range contractDescriptions {
@@ -218,8 +218,8 @@ func (s *KeeperTestSuite) TestModifyTokenClass() {
 		"deadbeef":   "not-exist",
 	}
 	changes := []collection.Attribute{
-		{Key: collection.AttributeKey_Name.String(), Value: "arctic fox"},
-		{Key: collection.AttributeKey_Meta.String(), Value: "Arctic Fox"},
+		{Key: collection.AttributeKeyName.String(), Value: "arctic fox"},
+		{Key: collection.AttributeKeyMeta.String(), Value: "Arctic Fox"},
 	}
 
 	for contractID, contractDesc := range contractDescriptions {
@@ -250,8 +250,8 @@ func (s *KeeperTestSuite) TestModifyNFT() {
 		collection.NewNFTID("deadbeef", 1): "not-exist",
 	}
 	changes := []collection.Attribute{
-		{Key: collection.AttributeKey_Name.String(), Value: "fennec fox 1"},
-		{Key: collection.AttributeKey_Meta.String(), Value: "Fennec Fox 1"},
+		{Key: collection.AttributeKeyName.String(), Value: "fennec fox 1"},
+		{Key: collection.AttributeKeyMeta.String(), Value: "Fennec Fox 1"},
 	}
 
 	for contractID, contractDesc := range contractDescriptions {

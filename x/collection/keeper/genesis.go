@@ -79,8 +79,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 
 	for _, contractGrants := range data.Grants {
 		for _, grant := range contractGrants.Grants {
-			permission := collection.Permission(collection.Permission_value[grant.Permission])
-			k.setGrant(ctx, contractGrants.ContractId, sdk.AccAddress(grant.Grantee), permission)
+			k.setGrant(ctx, contractGrants.ContractId, sdk.AccAddress(grant.Grantee), grant.Permission)
 		}
 	}
 

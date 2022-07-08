@@ -160,8 +160,22 @@ func validateDecimals(decimals int32) error {
 	return nil
 }
 
-func validatePermission(permission string) error {
-	if value := Permission_value[permission]; value == 0 {
+// Deprecated: do not use.
+func FromLegacyPermission(permission string) Permission {
+	return Permission(LegacyPermission_value[permission])
+}
+
+// Deprecated: do not use.
+func ToLegacyPermission(permission Permission) string {
+	return LegacyPermission_name[int32(permission)]
+}
+
+func validateLegacyPermission(permission string) error {
+	return ValidatePermission(FromLegacyPermission(permission))
+}
+
+func ValidatePermission(permission Permission) error {
+	if p := Permission_value[Permission_name[int32(permission)]]; p == 0 {
 		return sdkerrors.ErrInvalidRequest.Wrapf("invalid permission: %s", permission)
 	}
 	return nil
@@ -191,9 +205,9 @@ func validateChanges(changes []Attribute, validator func(change Attribute) error
 
 func validateContractChange(change Attribute) error {
 	validators := map[AttributeKey]func(string) error{
-		AttributeKey_Name:       validateName,
-		AttributeKey_BaseImgURI: validateBaseImgURI,
-		AttributeKey_Meta:       validateMeta,
+		AttributeKeyName:       validateName,
+		AttributeKeyBaseImgURI: validateBaseImgURI,
+		AttributeKeyMeta:       validateMeta,
 	}
 
 	return validateChange(change, validators)
@@ -201,8 +215,8 @@ func validateContractChange(change Attribute) error {
 
 func validateTokenClassChange(change Attribute) error {
 	validators := map[AttributeKey]func(string) error{
-		AttributeKey_Name: validateName,
-		AttributeKey_Meta: validateMeta,
+		AttributeKeyName: validateName,
+		AttributeKeyMeta: validateMeta,
 	}
 
 	return validateChange(change, validators)
@@ -210,8 +224,8 @@ func validateTokenClassChange(change Attribute) error {
 
 func validateNFTChange(change Attribute) error {
 	validators := map[AttributeKey]func(string) error{
-		AttributeKey_Name: validateName,
-		AttributeKey_Meta: validateMeta,
+		AttributeKeyName: validateName,
+		AttributeKeyMeta: validateMeta,
 	}
 
 	return validateChange(change, validators)
@@ -1088,7 +1102,7 @@ func (m MsgGrant) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
 	}
 
-	if err := validatePermission(m.Permission); err != nil {
+	if err := ValidatePermission(m.Permission); err != nil {
 		return err
 	}
 
@@ -1113,7 +1127,7 @@ func (m MsgAbandon) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
 	}
 
-	if err := validatePermission(m.Permission); err != nil {
+	if err := ValidatePermission(m.Permission); err != nil {
 		return err
 	}
 
@@ -1141,7 +1155,7 @@ func (m MsgGrantPermission) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
-	if err := validatePermission(m.Permission); err != nil {
+	if err := validateLegacyPermission(m.Permission); err != nil {
 		return err
 	}
 
@@ -1166,7 +1180,7 @@ func (m MsgRevokePermission) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
-	if err := validatePermission(m.Permission); err != nil {
+	if err := validateLegacyPermission(m.Permission); err != nil {
 		return err
 	}
 

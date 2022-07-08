@@ -826,6 +826,7 @@
     - [Params](#lbm.collection.v1.Params)
     - [TokenType](#lbm.collection.v1.TokenType)
   
+    - [LegacyPermission](#lbm.collection.v1.LegacyPermission)
     - [Permission](#lbm.collection.v1.Permission)
   
 - [lbm/collection/v1/event.proto](#lbm/collection/v1/event.proto)
@@ -12330,7 +12331,7 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `grantee` | [string](#string) |  | address of the grantee. |
-| `permission` | [string](#string) |  | permission on the contract. |
+| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
 
 
 
@@ -12428,6 +12429,23 @@ TokenType defines the information of token type.
  <!-- end messages -->
 
 
+<a name="lbm.collection.v1.LegacyPermission"></a>
+
+### LegacyPermission
+Deprecated: use Permission
+
+LegacyPermission enumerates the valid permissions on a contract.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| LEGACY_PERMISSION_UNSPECIFIED | 0 | unspecified defines the default permission which is invalid. |
+| issue | 1 | issue defines a permission to create a token class. |
+| modify | 2 | modify defines a permission to modify a contract. |
+| mint | 3 | mint defines a permission to mint tokens of a contract. |
+| burn | 4 | burn defines a permission to burn tokens of a contract. |
+
+
+
 <a name="lbm.collection.v1.Permission"></a>
 
 ### Permission
@@ -12435,11 +12453,11 @@ Permission enumerates the valid permissions on a contract.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| unspecified | 0 | unspecified defines the default permission which is invalid. |
-| issue | 1 | issue defines a permission to create a token class. |
-| modify | 2 | modify defines a permission to modify a contract. |
-| mint | 3 | mint defines a permission to mint tokens of a contract. |
-| burn | 4 | burn defines a permission to burn tokens of a contract. |
+| PERMISSION_UNSPECIFIED | 0 | unspecified defines the default permission which is invalid. |
+| PERMISSION_ISSUE | 1 | PERMISSION_ISSUE defines a permission to create a token class. |
+| PERMISSION_MODIFY | 2 | PERMISSION_MODIFY defines a permission to modify a contract. |
+| PERMISSION_MINT | 3 | PERMISSION_MINT defines a permission to mint tokens of a contract. |
+| PERMISSION_BURN | 4 | PERMISSION_BURN defines a permission to burn tokens of a contract. |
 
 
  <!-- end enums -->
@@ -12469,7 +12487,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
-| `permission` | [string](#string) |  | permission on the contract. |
+| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
 
 
 
@@ -12592,7 +12610,7 @@ Since: 0.46.0 (finschia)
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `granter` | [string](#string) |  | address of the granter which grants the permission. |
 | `grantee` | [string](#string) |  | address of the grantee. |
-| `permission` | [string](#string) |  | permission on the contract. |
+| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
 
 
 
@@ -12743,8 +12761,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.AttributeKey"></a>
 
 ### AttributeKey
+Deprecated: use typed events.
+
 AttributeKey enumerates the valid attribute keys on x/collection.
-For the legacy events.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
@@ -12774,8 +12793,9 @@ For the legacy events.
 <a name="lbm.collection.v1.EventType"></a>
 
 ### EventType
+Deprecated: use typed events.
+
 EventType enumerates the valid event types on x/collection.
-For the legacy events.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
@@ -13538,7 +13558,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `grantee` | [string](#string) |  | the address of the grantee. |
-| `permission` | [string](#string) |  | permission on the contract. |
+| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
 
 
 
@@ -14249,7 +14269,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `grantee` | [string](#string) |  | address of the grantee which abandons the permission. |
-| `permission` | [string](#string) |  | permission on the contract. |
+| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
 
 
 
@@ -14844,7 +14864,7 @@ Since: 0.46.0 (finschia)
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `granter` | [string](#string) |  | address of the granter which must have the permission to give. |
 | `grantee` | [string](#string) |  | address of the grantee. |
-| `permission` | [string](#string) |  | permission on the contract. |
+| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
 
 
 

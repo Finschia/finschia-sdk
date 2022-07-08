@@ -1681,7 +1681,7 @@ func TestMsgModifyContract(t *testing.T) {
 
 	contractID := "deadbeef"
 	changes := []collection.Attribute{{
-		Key:   collection.AttributeKey_Name.String(),
+		Key:   collection.AttributeKeyName.String(),
 		Value: "fox",
 	}}
 	testCases := map[string]struct {
@@ -1757,7 +1757,7 @@ func TestMsgModifyTokenClass(t *testing.T) {
 	contractID := "deadbeef"
 	classID := "deadbeef"
 	changes := []collection.Attribute{{
-		Key:   collection.AttributeKey_Name.String(),
+		Key:   collection.AttributeKeyName.String(),
 		Value: "tibetian fox",
 	}}
 	testCases := map[string]struct {
@@ -1849,7 +1849,7 @@ func TestMsgModifyNFT(t *testing.T) {
 	classID := "deadbeef"
 	tokenID := collection.NewNFTID(classID, 1)
 	changes := []collection.Attribute{{
-		Key:   collection.AttributeKey_Name.String(),
+		Key:   collection.AttributeKeyName.String(),
 		Value: "tibetian fox",
 	}}
 	testCases := map[string]struct {
@@ -2032,36 +2032,35 @@ func TestMsgGrant(t *testing.T) {
 		contractID string
 		granter    sdk.AccAddress
 		grantee    sdk.AccAddress
-		permission string
+		permission collection.Permission
 		valid      bool
 	}{
 		"valid msg": {
 			contractID: contractID,
 			granter:    addrs[0],
 			grantee:    addrs[1],
-			permission: collection.Permission_Mint.String(),
+			permission: collection.PermissionMint,
 			valid:      true,
 		},
 		"invalid contract id": {
 			granter:    addrs[0],
 			grantee:    addrs[1],
-			permission: collection.Permission_Mint.String(),
+			permission: collection.PermissionMint,
 		},
 		"empty granter": {
 			contractID: contractID,
 			grantee:    addrs[1],
-			permission: collection.Permission_Mint.String(),
+			permission: collection.PermissionMint,
 		},
 		"invalid grantee": {
 			contractID: contractID,
 			granter:    addrs[0],
-			permission: collection.Permission_Mint.String(),
+			permission: collection.PermissionMint,
 		},
 		"invalid permission": {
 			contractID: contractID,
 			granter:    addrs[0],
 			grantee:    addrs[1],
-			permission: "invalid",
 		},
 	}
 
@@ -2094,22 +2093,22 @@ func TestMsgAbandon(t *testing.T) {
 	testCases := map[string]struct {
 		contractID string
 		grantee    sdk.AccAddress
-		permission string
+		permission collection.Permission
 		valid      bool
 	}{
 		"valid msg": {
 			contractID: contractID,
 			grantee:    addrs[0],
-			permission: collection.Permission_Mint.String(),
+			permission: collection.PermissionMint,
 			valid:      true,
 		},
 		"invalid contract id": {
 			grantee:    addrs[0],
-			permission: collection.Permission_Mint.String(),
+			permission: collection.PermissionMint,
 		},
 		"invalid grantee": {
 			contractID: contractID,
-			permission: collection.Permission_Mint.String(),
+			permission: collection.PermissionMint,
 		},
 		"invalid permission": {
 			contractID: contractID,
@@ -2152,29 +2151,28 @@ func TestMsgGrantPermission(t *testing.T) {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			to:         addrs[1],
-			permission: collection.Permission_Mint.String(),
+			permission: collection.LegacyPermissionMint.String(),
 			valid:      true,
 		},
 		"invalid contract id": {
 			from:       addrs[0],
 			to:         addrs[1],
-			permission: collection.Permission_Mint.String(),
+			permission: collection.LegacyPermissionMint.String(),
 		},
 		"empty from": {
 			contractID: "deadbeef",
 			to:         addrs[1],
-			permission: collection.Permission_Mint.String(),
+			permission: collection.LegacyPermissionMint.String(),
 		},
 		"invalid to": {
 			contractID: "deadbeef",
 			from:       addrs[0],
-			permission: collection.Permission_Mint.String(),
+			permission: collection.LegacyPermissionMint.String(),
 		},
 		"invalid permission": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			to:         addrs[1],
-			permission: "invalid",
 		},
 	}
 
@@ -2212,16 +2210,16 @@ func TestMsgRevokePermission(t *testing.T) {
 		"valid msg": {
 			contractID: "deadbeef",
 			from:       addrs[0],
-			permission: collection.Permission_Mint.String(),
+			permission: collection.LegacyPermissionMint.String(),
 			valid:      true,
 		},
 		"invalid contract id": {
 			from:       addrs[0],
-			permission: collection.Permission_Mint.String(),
+			permission: collection.LegacyPermissionMint.String(),
 		},
 		"invalid from": {
 			contractID: "deadbeef",
-			permission: collection.Permission_Mint.String(),
+			permission: collection.LegacyPermissionMint.String(),
 		},
 		"invalid permission": {
 			contractID: "deadbeef",

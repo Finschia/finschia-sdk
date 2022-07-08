@@ -7,63 +7,69 @@ import "lbm/collection/v1/collection.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/collection";
 
+// Deprecated: use typed events.
+//
 // EventType enumerates the valid event types on x/collection.
-// For the legacy events.
 enum EventType {
-  unspecified            = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
-  create_collection      = 1 [(gogoproto.enumvalue_customname) = "CreateCollection"];
-  issue_ft               = 2 [(gogoproto.enumvalue_customname) = "IssueFT"];
-  issue_nft              = 3 [(gogoproto.enumvalue_customname) = "IssueNFT"];
-  mint_ft                = 4 [(gogoproto.enumvalue_customname) = "MintFT"];
-  burn_ft                = 5 [(gogoproto.enumvalue_customname) = "BurnFT"];
-  mint_nft               = 6 [(gogoproto.enumvalue_customname) = "MintNFT"];
-  burn_nft               = 7 [(gogoproto.enumvalue_customname) = "BurnNFT"];
-  burn_ft_from           = 8 [(gogoproto.enumvalue_customname) = "BurnFTFrom"];
-  burn_nft_from          = 9 [(gogoproto.enumvalue_customname) = "BurnNFTFrom"];
-  modify_collection      = 10 [(gogoproto.enumvalue_customname) = "ModifyCollection"];
-  modify_token_type      = 11 [(gogoproto.enumvalue_customname) = "ModifyTokenType"];
-  modify_token           = 12 [(gogoproto.enumvalue_customname) = "ModifyToken"];
-  transfer               = 13 [(gogoproto.enumvalue_customname) = "Transfer"];
-  transfer_ft            = 14 [(gogoproto.enumvalue_customname) = "TransferFT"];
-  transfer_nft           = 15 [(gogoproto.enumvalue_customname) = "TransferNFT"];
-  transfer_ft_from       = 16 [(gogoproto.enumvalue_customname) = "TransferFTFrom"];
-  transfer_nft_from      = 17 [(gogoproto.enumvalue_customname) = "TransferNFTFrom"];
-  grant_perm             = 18 [(gogoproto.enumvalue_customname) = "GrantPermToken"];
-  revoke_perm            = 19 [(gogoproto.enumvalue_customname) = "RevokePermToken"];
-  attach                 = 20 [(gogoproto.enumvalue_customname) = "AttachToken"];
-  detach                 = 21 [(gogoproto.enumvalue_customname) = "DetachToken"];
-  attach_from            = 22 [(gogoproto.enumvalue_customname) = "AttachFrom"];
-  detach_from            = 23 [(gogoproto.enumvalue_customname) = "DetachFrom"];
-  approve_collection     = 24 [(gogoproto.enumvalue_customname) = "ApproveCollection"];
-  disapprove_collection  = 25 [(gogoproto.enumvalue_customname) = "DisapproveCollection"];
-  operation_transfer_nft = 26 [(gogoproto.enumvalue_customname) = "OperationTransferNFT"];
-  operation_burn_nft     = 27 [(gogoproto.enumvalue_customname) = "OperationBurnNFT"];
-  operation_root_changed = 28 [(gogoproto.enumvalue_customname) = "OperationRootChanged"];
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  unspecified            = 0 [(gogoproto.enumvalue_customname) = "EventTypeUnspecified"];
+  create_collection      = 1 [(gogoproto.enumvalue_customname) = "EventTypeCreateCollection"];
+  issue_ft               = 2 [(gogoproto.enumvalue_customname) = "EventTypeIssueFT"];
+  issue_nft              = 3 [(gogoproto.enumvalue_customname) = "EventTypeIssueNFT"];
+  mint_ft                = 4 [(gogoproto.enumvalue_customname) = "EventTypeMintFT"];
+  burn_ft                = 5 [(gogoproto.enumvalue_customname) = "EventTypeBurnFT"];
+  mint_nft               = 6 [(gogoproto.enumvalue_customname) = "EventTypeMintNFT"];
+  burn_nft               = 7 [(gogoproto.enumvalue_customname) = "EventTypeBurnNFT"];
+  burn_ft_from           = 8 [(gogoproto.enumvalue_customname) = "EventTypeBurnFTFrom"];
+  burn_nft_from          = 9 [(gogoproto.enumvalue_customname) = "EventTypeBurnNFTFrom"];
+  modify_collection      = 10 [(gogoproto.enumvalue_customname) = "EventTypeModifyCollection"];
+  modify_token_type      = 11 [(gogoproto.enumvalue_customname) = "EventTypeModifyTokenType"];
+  modify_token           = 12 [(gogoproto.enumvalue_customname) = "EventTypeModifyToken"];
+  transfer               = 13 [(gogoproto.enumvalue_customname) = "EventTypeTransfer"];
+  transfer_ft            = 14 [(gogoproto.enumvalue_customname) = "EventTypeTransferFT"];
+  transfer_nft           = 15 [(gogoproto.enumvalue_customname) = "EventTypeTransferNFT"];
+  transfer_ft_from       = 16 [(gogoproto.enumvalue_customname) = "EventTypeTransferFTFrom"];
+  transfer_nft_from      = 17 [(gogoproto.enumvalue_customname) = "EventTypeTransferNFTFrom"];
+  grant_perm             = 18 [(gogoproto.enumvalue_customname) = "EventTypeGrantPermToken"];
+  revoke_perm            = 19 [(gogoproto.enumvalue_customname) = "EventTypeRevokePermToken"];
+  attach                 = 20 [(gogoproto.enumvalue_customname) = "EventTypeAttachToken"];
+  detach                 = 21 [(gogoproto.enumvalue_customname) = "EventTypeDetachToken"];
+  attach_from            = 22 [(gogoproto.enumvalue_customname) = "EventTypeAttachFrom"];
+  detach_from            = 23 [(gogoproto.enumvalue_customname) = "EventTypeDetachFrom"];
+  approve_collection     = 24 [(gogoproto.enumvalue_customname) = "EventTypeApproveCollection"];
+  disapprove_collection  = 25 [(gogoproto.enumvalue_customname) = "EventTypeDisapproveCollection"];
+  operation_transfer_nft = 26 [(gogoproto.enumvalue_customname) = "EventTypeOperationTransferNFT"];
+  operation_burn_nft     = 27 [(gogoproto.enumvalue_customname) = "EventTypeOperationBurnNFT"];
+  operation_root_changed = 28 [(gogoproto.enumvalue_customname) = "EventTypeOperationRootChanged"];
 }
 
+// Deprecated: use typed events.
+//
 // AttributeKey enumerates the valid attribute keys on x/collection.
-// For the legacy events.
 enum AttributeKey {
-  unspecified       = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
-  name              = 1 [(gogoproto.enumvalue_customname) = "Name"];
-  meta              = 2 [(gogoproto.enumvalue_customname) = "Meta"];
-  contract_id       = 3 [(gogoproto.enumvalue_customname) = "ContractID"];
-  token_id          = 4 [(gogoproto.enumvalue_customname) = "TokenID"];
-  owner             = 5 [(gogoproto.enumvalue_customname) = "Owner"];
-  amount            = 6 [(gogoproto.enumvalue_customname) = "Amount"];
-  decimals          = 7 [(gogoproto.enumvalue_customname) = "Decimals"];
-  base_img_uri      = 8 [(gogoproto.enumvalue_customname) = "BaseImgURI"];
-  mintable          = 9 [(gogoproto.enumvalue_customname) = "Mintable"];
-  token_type        = 10 [(gogoproto.enumvalue_customname) = "TokenType"];
-  from              = 11 [(gogoproto.enumvalue_customname) = "From"];
-  to                = 12 [(gogoproto.enumvalue_customname) = "To"];
-  perm              = 13 [(gogoproto.enumvalue_customname) = "Perm"];
-  to_token_id       = 14 [(gogoproto.enumvalue_customname) = "ToTokenID"];
-  from_token_id     = 15 [(gogoproto.enumvalue_customname) = "FromTokenID"];
-  approver          = 16 [(gogoproto.enumvalue_customname) = "Approver"];
-  proxy             = 17 [(gogoproto.enumvalue_customname) = "Proxy"];
-  old_root_token_id = 18 [(gogoproto.enumvalue_customname) = "OldRoot"];
-  new_root_token_id = 19 [(gogoproto.enumvalue_customname) = "NewRoot"];
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  unspecified       = 0 [(gogoproto.enumvalue_customname) = "AttributeKeyUnspecified"];
+  name              = 1 [(gogoproto.enumvalue_customname) = "AttributeKeyName"];
+  meta              = 2 [(gogoproto.enumvalue_customname) = "AttributeKeyMeta"];
+  contract_id       = 3 [(gogoproto.enumvalue_customname) = "AttributeKeyContractID"];
+  token_id          = 4 [(gogoproto.enumvalue_customname) = "AttributeKeyTokenID"];
+  owner             = 5 [(gogoproto.enumvalue_customname) = "AttributeKeyOwner"];
+  amount            = 6 [(gogoproto.enumvalue_customname) = "AttributeKeyAmount"];
+  decimals          = 7 [(gogoproto.enumvalue_customname) = "AttributeKeyDecimals"];
+  base_img_uri      = 8 [(gogoproto.enumvalue_customname) = "AttributeKeyBaseImgURI"];
+  mintable          = 9 [(gogoproto.enumvalue_customname) = "AttributeKeyMintable"];
+  token_type        = 10 [(gogoproto.enumvalue_customname) = "AttributeKeyTokenType"];
+  from              = 11 [(gogoproto.enumvalue_customname) = "AttributeKeyFrom"];
+  to                = 12 [(gogoproto.enumvalue_customname) = "AttributeKeyTo"];
+  perm              = 13 [(gogoproto.enumvalue_customname) = "AttributeKeyPerm"];
+  to_token_id       = 14 [(gogoproto.enumvalue_customname) = "AttributeKeyToTokenID"];
+  from_token_id     = 15 [(gogoproto.enumvalue_customname) = "AttributeKeyFromTokenID"];
+  approver          = 16 [(gogoproto.enumvalue_customname) = "AttributeKeyApprover"];
+  proxy             = 17 [(gogoproto.enumvalue_customname) = "AttributeKeyProxy"];
+  old_root_token_id = 18 [(gogoproto.enumvalue_customname) = "AttributeKeyOldRoot"];
+  new_root_token_id = 19 [(gogoproto.enumvalue_customname) = "AttributeKeyNewRoot"];
 }
 
 // EventSent is emitted when tokens are transferred.
@@ -165,7 +171,7 @@ message EventGrant {
   // address of the grantee.
   string grantee = 3;
   // permission on the contract.
-  string permission = 4;
+  Permission permission = 4;
 }
 
 // EventAbandon is emitted when a grantee abandons its permission.
@@ -177,7 +183,7 @@ message EventAbandon {
   // address of the grantee which abandons its grant.
   string grantee = 2;
   // permission on the contract.
-  string permission = 3;
+  Permission permission = 3;
 }
 
 // EventMintedFT is emitted when fungible tokens are minted.

@@ -141,23 +141,45 @@ message Coin {
 // Since: 0.46.0 (finschia)
 message Grant {
   // address of the grantee.
-  string grantee = 2;
+  string grantee = 1;
   // permission on the contract.
-  string permission = 3;
+  Permission permission = 2;
 }
 
 // Permission enumerates the valid permissions on a contract.
 enum Permission {
+  option (gogoproto.goproto_enum_prefix) = false;
+
   // unspecified defines the default permission which is invalid.
-  unspecified = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
+  PERMISSION_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "PermissionUnspecified"];
+
+  // PERMISSION_ISSUE defines a permission to create a token class.
+  PERMISSION_ISSUE = 1 [(gogoproto.enumvalue_customname) = "PermissionIssue"];
+  // PERMISSION_MODIFY defines a permission to modify a contract.
+  PERMISSION_MODIFY = 2 [(gogoproto.enumvalue_customname) = "PermissionModify"];
+  // PERMISSION_MINT defines a permission to mint tokens of a contract.
+  PERMISSION_MINT = 3 [(gogoproto.enumvalue_customname) = "PermissionMint"];
+  // PERMISSION_BURN defines a permission to burn tokens of a contract.
+  PERMISSION_BURN = 4 [(gogoproto.enumvalue_customname) = "PermissionBurn"];
+}
+
+// Deprecated: use Permission
+//
+// LegacyPermission enumerates the valid permissions on a contract.
+enum LegacyPermission {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // unspecified defines the default permission which is invalid.
+  LEGACY_PERMISSION_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "LegacyPermissionUnspecified"];
+
   // issue defines a permission to create a token class.
-  issue = 1 [(gogoproto.enumvalue_customname) = "Issue"];
+  issue = 1 [(gogoproto.enumvalue_customname) = "LegacyPermissionIssue"];
   // modify defines a permission to modify a contract.
-  modify = 2 [(gogoproto.enumvalue_customname) = "Modify"];
+  modify = 2 [(gogoproto.enumvalue_customname) = "LegacyPermissionModify"];
   // mint defines a permission to mint tokens of a contract.
-  mint = 3 [(gogoproto.enumvalue_customname) = "Mint"];
+  mint = 3 [(gogoproto.enumvalue_customname) = "LegacyPermissionMint"];
   // burn defines a permission to burn tokens of a contract.
-  burn = 4 [(gogoproto.enumvalue_customname) = "Burn"];
+  burn = 4 [(gogoproto.enumvalue_customname) = "LegacyPermissionBurn"];
 }
 
 // Authorization defines an authorization given to the operator on tokens of the holder.

@@ -228,7 +228,7 @@ func TestValidateGenesis(t *testing.T) {
 				Grants: []collection.ContractGrants{{
 					Grants: []collection.Grant{{
 						Grantee:    addr.String(),
-						Permission: collection.Permission_Mint.String(),
+						Permission: collection.PermissionMint,
 					}},
 				}},
 			},
@@ -247,7 +247,7 @@ func TestValidateGenesis(t *testing.T) {
 				Grants: []collection.ContractGrants{{
 					ContractId: "deadbeef",
 					Grants: []collection.Grant{{
-						Permission: collection.Permission_Mint.String(),
+						Permission: collection.PermissionMint,
 					}},
 				}},
 			},

@@ -1925,6 +1925,7 @@ func request_Query_Grant_0(ctx context.Context, marshaler runtime.Marshaler, cli
 
 	var (
 		val string
+		e   int32
 		ok  bool
 		err error
 		_   = err
@@ -1957,11 +1958,13 @@ func request_Query_Grant_0(ctx context.Context, marshaler runtime.Marshaler, cli
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "permission")
 	}
 
-	protoReq.Permission, err = runtime.String(val)
+	e, err = runtime.Enum(val, Permission_value)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "permission", err)
 	}
+
+	protoReq.Permission = Permission(e)
 
 	msg, err := client.Grant(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
@@ -1974,6 +1977,7 @@ func local_request_Query_Grant_0(ctx context.Context, marshaler runtime.Marshale
 
 	var (
 		val string
+		e   int32
 		ok  bool
 		err error
 		_   = err
@@ -2006,11 +2010,13 @@ func local_request_Query_Grant_0(ctx context.Context, marshaler runtime.Marshale
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "permission")
 	}
 
-	protoReq.Permission, err = runtime.String(val)
+	e, err = runtime.Enum(val, Permission_value)
 
 	if err != nil {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "permission", err)
 	}
+
+	protoReq.Permission = Permission(e)
 
 	msg, err := server.Grant(ctx, &protoReq)
 	return msg, metadata, err

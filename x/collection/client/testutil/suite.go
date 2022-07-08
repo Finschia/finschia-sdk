@@ -102,7 +102,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	// grant all the permissions to operator
 	for _, pv := range collection.Permission_value {
 		permission := collection.Permission(pv)
-		if permission == collection.Permission_Unspecified {
+		if permission == collection.PermissionUnspecified {
 			continue
 		}
 		s.grant(s.contractID, s.vendor, s.operator, permission)

@@ -1070,7 +1070,7 @@ func (s *KeeperTestSuite) TestMsgModifyContract() {
 			ctx, _ := s.ctx.CacheContext()
 
 			changes := []collection.Attribute{{
-				Key:   collection.AttributeKey_Name.String(),
+				Key:   collection.AttributeKeyName.String(),
 				Value: "fox",
 			}}
 			req := &collection.MsgModifyContract{
@@ -1119,7 +1119,7 @@ func (s *KeeperTestSuite) TestMsgModifyTokenClass() {
 			ctx, _ := s.ctx.CacheContext()
 
 			changes := []collection.Attribute{{
-				Key:   collection.AttributeKey_Name.String(),
+				Key:   collection.AttributeKeyName.String(),
 				Value: "arctic fox",
 			}}
 			req := &collection.MsgModifyTokenClass{
@@ -1170,7 +1170,7 @@ func (s *KeeperTestSuite) TestMsgModifyNFT() {
 			ctx, _ := s.ctx.CacheContext()
 
 			changes := []collection.Attribute{{
-				Key:   collection.AttributeKey_Name.String(),
+				Key:   collection.AttributeKeyName.String(),
 				Value: "fennec fox 1",
 			}}
 			req := &collection.MsgModifyNFT{
@@ -1239,7 +1239,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			ctx, _ := s.ctx.CacheContext()
 
 			changes := []collection.Change{{
-				Field: collection.AttributeKey_Name.String(),
+				Field: collection.AttributeKeyName.String(),
 				Value: "test",
 			}}
 			req := &collection.MsgModify{
@@ -1264,24 +1264,24 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 	testCases := map[string]struct {
 		granter    sdk.AccAddress
 		grantee    sdk.AccAddress
-		permission string
+		permission collection.Permission
 		valid      bool
 	}{
 		"valid request": {
 			granter:    s.vendor,
 			grantee:    s.operator,
-			permission: collection.Permission_Modify.String(),
+			permission: collection.PermissionModify,
 			valid:      true,
 		},
 		"already granted": {
 			granter:    s.vendor,
 			grantee:    s.operator,
-			permission: collection.Permission_Mint.String(),
+			permission: collection.PermissionMint,
 		},
 		"granter has no permission": {
 			granter:    s.customer,
 			grantee:    s.operator,
-			permission: collection.Permission_Modify.String(),
+			permission: collection.PermissionModify,
 		},
 	}
 
@@ -1309,17 +1309,17 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 func (s *KeeperTestSuite) TestMsgAbandon() {
 	testCases := map[string]struct {
 		grantee    sdk.AccAddress
-		permission string
+		permission collection.Permission
 		valid      bool
 	}{
 		"valid request": {
 			grantee:    s.operator,
-			permission: collection.Permission_Mint.String(),
+			permission: collection.PermissionMint,
 			valid:      true,
 		},
 		"not granted yet": {
 			grantee:    s.operator,
-			permission: collection.Permission_Modify.String(),
+			permission: collection.PermissionModify,
 		},
 	}
 
@@ -1353,18 +1353,18 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 		"valid request": {
 			granter:    s.vendor,
 			grantee:    s.operator,
-			permission: collection.Permission_Modify.String(),
+			permission: collection.LegacyPermissionModify.String(),
 			valid:      true,
 		},
 		"already granted": {
 			granter:    s.vendor,
 			grantee:    s.operator,
-			permission: collection.Permission_Mint.String(),
+			permission: collection.LegacyPermissionMint.String(),
 		},
 		"granter has no permission": {
 			granter:    s.customer,
 			grantee:    s.operator,
-			permission: collection.Permission_Modify.String(),
+			permission: collection.LegacyPermissionModify.String(),
 		},
 	}
 
@@ -1397,12 +1397,12 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 	}{
 		"valid request": {
 			from:       s.operator,
-			permission: collection.Permission_Mint.String(),
+			permission: collection.LegacyPermissionMint.String(),
 			valid:      true,
 		},
 		"not granted yet": {
 			from:       s.operator,
-			permission: collection.Permission_Modify.String(),
+			permission: collection.LegacyPermissionModify.String(),
 		},
 	}
 

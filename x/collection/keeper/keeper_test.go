@@ -83,8 +83,8 @@ func (s *KeeperTestSuite) SetupTest() {
 	})
 
 	for _, permission := range []collection.Permission{
-		collection.Permission_Mint,
-		collection.Permission_Burn,
+		collection.PermissionMint,
+		collection.PermissionBurn,
 	} {
 		s.keeper.Grant(s.ctx, s.contractID, s.vendor, s.operator, permission)
 	}

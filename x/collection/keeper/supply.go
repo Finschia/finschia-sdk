@@ -21,7 +21,7 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 
 	for permission := range collection.Permission_name {
 		p := collection.Permission(permission)
-		if p == collection.Permission_Unspecified {
+		if p == collection.PermissionUnspecified {
 			continue
 		}
 		k.Grant(ctx, contractID, "", creator, collection.Permission(permission))
@@ -312,13 +312,13 @@ func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.
 	}
 
 	modifiers := map[string]func(string){
-		collection.AttributeKey_Name.String(): func(name string) {
+		collection.AttributeKeyName.String(): func(name string) {
 			contract.Name = name
 		},
-		collection.AttributeKey_BaseImgURI.String(): func(uri string) {
+		collection.AttributeKeyBaseImgURI.String(): func(uri string) {
 			contract.Name = uri
 		},
-		collection.AttributeKey_Meta.String(): func(meta string) {
+		collection.AttributeKeyMeta.String(): func(meta string) {
 			contract.Meta = meta
 		},
 	}
@@ -346,10 +346,10 @@ func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID str
 	}
 
 	modifiers := map[string]func(string){
-		collection.AttributeKey_Name.String(): func(name string) {
+		collection.AttributeKeyName.String(): func(name string) {
 			class.SetName(name)
 		},
-		collection.AttributeKey_Meta.String(): func(meta string) {
+		collection.AttributeKeyMeta.String(): func(meta string) {
 			class.SetMeta(meta)
 		},
 	}
@@ -378,10 +378,10 @@ func (k Keeper) ModifyNFT(ctx sdk.Context, contractID string, tokenID string, op
 	}
 
 	modifiers := map[string]func(string){
-		collection.AttributeKey_Name.String(): func(name string) {
+		collection.AttributeKeyName.String(): func(name string) {
 			token.Name = name
 		},
-		collection.AttributeKey_Meta.String(): func(meta string) {
+		collection.AttributeKeyMeta.String(): func(meta string) {
 			token.Meta = meta
 		},
 	}
@@ -410,7 +410,7 @@ func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.A
 		ContractId: contractID,
 		Granter:    granter.String(),
 		Grantee:    grantee.String(),
-		Permission: permission.String(),
+		Permission: permission,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
@@ -431,7 +431,7 @@ func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddre
 	event := collection.EventAbandon{
 		ContractId: contractID,
 		Grantee:    grantee.String(),
-		Permission: permission.String(),
+		Permission: permission,
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
@@ -443,7 +443,7 @@ func (k Keeper) GetGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddr
 	if store.Has(grantKey(contractID, grantee, permission)) {
 		return &collection.Grant{
 			Grantee:    grantee.String(),
-			Permission: permission.String(),
+			Permission: permission,
 		}, nil
 	}
 	return nil, sdkerrors.ErrNotFound.Wrapf("no %s permission granted on %s", permission, grantee)

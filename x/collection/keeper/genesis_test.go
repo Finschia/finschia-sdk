@@ -19,7 +19,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 	err = s.keeper.BurnCoins(s.ctx, s.contractID, s.operator, amount)
 	s.Require().NoError(err)
 
-	s.keeper.Abandon(s.ctx, s.contractID, s.vendor, collection.Permission_Mint)
+	s.keeper.Abandon(s.ctx, s.contractID, s.vendor, collection.PermissionMint)
 
 	// restore
 	s.keeper.InitGenesis(s.ctx, genesis)

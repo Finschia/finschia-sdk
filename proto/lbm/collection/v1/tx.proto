@@ -1078,7 +1078,7 @@ message MsgGrant {
   // address of the grantee.
   string grantee = 3;
   // permission on the contract.
-  string permission = 4;
+  Permission permission = 4;
 }
 
 // MsgGrantResponse is the Msg/Grant response type.
@@ -1104,7 +1104,7 @@ message MsgAbandon {
   // address of the grantee which abandons the permission.
   string grantee = 2;
   // permission on the contract.
-  string permission = 3;
+  Permission permission = 3;
 }
 
 // MsgAbandonResponse is the Msg/Abandon response type.
