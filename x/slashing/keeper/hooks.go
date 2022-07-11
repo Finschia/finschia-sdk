@@ -3,6 +3,8 @@ package keeper
 import (
 	"time"
 
+	"github.com/line/ostracon/crypto"
+
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/slashing/types"
 )
@@ -36,8 +38,7 @@ func (k Keeper) AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress) e
 
 // AfterValidatorRemoved deletes the address-pubkey relation when a validator is removed,
 func (k Keeper) AfterValidatorRemoved(ctx sdk.Context, address sdk.ConsAddress) {
-	addrBytes, _ := sdk.ConsAddressToBytes(address.String())
-	k.deleteAddrPubkeyRelation(ctx, addrBytes)
+	k.deleteAddrPubkeyRelation(ctx, crypto.Address(address))
 }
 
 // Hooks wrapper struct for slashing keeper

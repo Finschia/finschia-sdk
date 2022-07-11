@@ -39,12 +39,12 @@ func NewUnjailRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		fromAddr, err := sdk.AccAddressToBytes(req.BaseReq.From)
+		fromAddr, err := sdk.AccAddressFromBech32(req.BaseReq.From)
 		if rest.CheckBadRequestError(w, err) {
 			return
 		}
 
-		valAddr, err := sdk.ValAddressToBytes(bech32Validator)
+		valAddr, err := sdk.ValAddressFromBech32(bech32Validator)
 		if rest.CheckInternalServerError(w, err) {
 			return
 		}
@@ -54,7 +54,7 @@ func NewUnjailRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		msg := types.NewMsgUnjail(sdk.ValAddress(bech32Validator))
+		msg := types.NewMsgUnjail(valAddr)
 		if rest.CheckBadRequestError(w, msg.ValidateBasic()) {
 			return
 		}
