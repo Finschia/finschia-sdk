@@ -831,11 +831,13 @@
   
 - [lbm/collection/v1/event.proto](#lbm/collection/v1/event.proto)
     - [EventAbandon](#lbm.collection.v1.EventAbandon)
+    - [EventAttached](#lbm.collection.v1.EventAttached)
     - [EventAuthorizedOperator](#lbm.collection.v1.EventAuthorizedOperator)
     - [EventBurned](#lbm.collection.v1.EventBurned)
     - [EventCreatedContract](#lbm.collection.v1.EventCreatedContract)
     - [EventCreatedFTClass](#lbm.collection.v1.EventCreatedFTClass)
     - [EventCreatedNFTClass](#lbm.collection.v1.EventCreatedNFTClass)
+    - [EventDetached](#lbm.collection.v1.EventDetached)
     - [EventGrant](#lbm.collection.v1.EventGrant)
     - [EventMintedFT](#lbm.collection.v1.EventMintedFT)
     - [EventMintedNFT](#lbm.collection.v1.EventMintedNFT)
@@ -12439,10 +12441,10 @@ LegacyPermission enumerates the valid permissions on a contract.
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | LEGACY_PERMISSION_UNSPECIFIED | 0 | unspecified defines the default permission which is invalid. |
-| issue | 1 | issue defines a permission to create a token class. |
-| modify | 2 | modify defines a permission to modify a contract. |
-| mint | 3 | mint defines a permission to mint tokens of a contract. |
-| burn | 4 | burn defines a permission to burn tokens of a contract. |
+| LEGACY_PERMISSION_ISSUE | 1 | issue defines a permission to create a token class. |
+| LEGACY_PERMISSION_MODIFY | 2 | modify defines a permission to modify a contract. |
+| LEGACY_PERMISSION_MINT | 3 | mint defines a permission to mint tokens of a contract. |
+| LEGACY_PERMISSION_BURN | 4 | burn defines a permission to burn tokens of a contract. |
 
 
 
@@ -12488,6 +12490,27 @@ Since: 0.46.0 (finschia)
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
 | `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventAttached"></a>
+
+### EventAttached
+EventAttached is emitted when a token is attached to another.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address which triggered the attach. |
+| `holder` | [string](#string) |  | address which holds the tokens. |
+| `subject` | [string](#string) |  | subject of the attach. |
+| `target` | [string](#string) |  | target of the attach. |
 
 
 
@@ -12589,6 +12612,26 @@ Since: 0.46.0 (finschia)
 | `class_id` | [string](#string) |  | class id associated with the token class. |
 | `name` | [string](#string) |  | name of the token class. |
 | `meta` | [string](#string) |  | metadata of the token class. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventDetached"></a>
+
+### EventDetached
+EventDetached is emitted when a token is detached from its parent.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address which triggered the detach. |
+| `holder` | [string](#string) |  | address which holds the token. |
+| `subject` | [string](#string) |  | token being detached. |
 
 
 
@@ -12767,26 +12810,26 @@ AttributeKey enumerates the valid attribute keys on x/collection.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| unspecified | 0 |  |
-| name | 1 |  |
-| meta | 2 |  |
-| contract_id | 3 |  |
-| token_id | 4 |  |
-| owner | 5 |  |
-| amount | 6 |  |
-| decimals | 7 |  |
-| base_img_uri | 8 |  |
-| mintable | 9 |  |
-| token_type | 10 |  |
-| from | 11 |  |
-| to | 12 |  |
-| perm | 13 |  |
-| to_token_id | 14 |  |
-| from_token_id | 15 |  |
-| approver | 16 |  |
-| proxy | 17 |  |
-| old_root_token_id | 18 |  |
-| new_root_token_id | 19 |  |
+| ATTRIBUTE_KEY_UNSPECIFIED | 0 |  |
+| ATTRIBUTE_KEY_NAME | 1 |  |
+| ATTRIBUTE_KEY_META | 2 |  |
+| ATTRIBUTE_KEY_CONTRACT_ID | 3 |  |
+| ATTRIBUTE_KEY_TOKEN_ID | 4 |  |
+| ATTRIBUTE_KEY_OWNER | 5 |  |
+| ATTRIBUTE_KEY_AMOUNT | 6 |  |
+| ATTRIBUTE_KEY_DECIMALS | 7 |  |
+| ATTRIBUTE_KEY_BASE_IMG_URI | 8 |  |
+| ATTRIBUTE_KEY_MINTABLE | 9 |  |
+| ATTRIBUTE_KEY_TOKEN_TYPE | 10 |  |
+| ATTRIBUTE_KEY_FROM | 11 |  |
+| ATTRIBUTE_KEY_TO | 12 |  |
+| ATTRIBUTE_KEY_PERM | 13 |  |
+| ATTRIBUTE_KEY_TO_TOKEN_ID | 14 |  |
+| ATTRIBUTE_KEY_FROM_TOKEN_ID | 15 |  |
+| ATTRIBUTE_KEY_APPROVER | 16 |  |
+| ATTRIBUTE_KEY_PROXY | 17 |  |
+| ATTRIBUTE_KEY_OLD_ROOT_TOKEN_ID | 18 |  |
+| ATTRIBUTE_KEY_NEW_ROOT_TOKEN_ID | 19 |  |
 
 
 
@@ -12799,35 +12842,35 @@ EventType enumerates the valid event types on x/collection.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| unspecified | 0 |  |
-| create_collection | 1 |  |
-| issue_ft | 2 |  |
-| issue_nft | 3 |  |
-| mint_ft | 4 |  |
-| burn_ft | 5 |  |
-| mint_nft | 6 |  |
-| burn_nft | 7 |  |
-| burn_ft_from | 8 |  |
-| burn_nft_from | 9 |  |
-| modify_collection | 10 |  |
-| modify_token_type | 11 |  |
-| modify_token | 12 |  |
-| transfer | 13 |  |
-| transfer_ft | 14 |  |
-| transfer_nft | 15 |  |
-| transfer_ft_from | 16 |  |
-| transfer_nft_from | 17 |  |
-| grant_perm | 18 |  |
-| revoke_perm | 19 |  |
-| attach | 20 |  |
-| detach | 21 |  |
-| attach_from | 22 |  |
-| detach_from | 23 |  |
-| approve_collection | 24 |  |
-| disapprove_collection | 25 |  |
-| operation_transfer_nft | 26 |  |
-| operation_burn_nft | 27 |  |
-| operation_root_changed | 28 |  |
+| EVENT_TYPE_UNSPECIFIED | 0 |  |
+| EVENT_TYPE_CREATE_COLLECTION | 1 |  |
+| EVENT_TYPE_ISSUE_FT | 2 |  |
+| EVENT_TYPE_ISSUE_NFT | 3 |  |
+| EVENT_TYPE_MINT_FT | 4 |  |
+| EVENT_TYPE_BURN_FT | 5 |  |
+| EVENT_TYPE_MINT_NFT | 6 |  |
+| EVENT_TYPE_BURN_NFT | 7 |  |
+| EVENT_TYPE_BURN_FT_FROM | 8 |  |
+| EVENT_TYPE_BURN_NFT_FROM | 9 |  |
+| EVENT_TYPE_MODIFY_COLLECTION | 10 |  |
+| EVENT_TYPE_MODIFY_TOKEN_TYPE | 11 |  |
+| EVENT_TYPE_MODIFY_TOKEN | 12 |  |
+| EVENT_TYPE_TRANSFER | 13 |  |
+| EVENT_TYPE_TRANSFER_FT | 14 |  |
+| EVENT_TYPE_TRANSFER_NFT | 15 |  |
+| EVENT_TYPE_TRANSFER_FT_FROM | 16 |  |
+| EVENT_TYPE_TRANSFER_NFT_FROM | 17 |  |
+| EVENT_TYPE_GRANT_PERM | 18 |  |
+| EVENT_TYPE_REVOKE_PERM | 19 |  |
+| EVENT_TYPE_ATTACH | 20 |  |
+| EVENT_TYPE_DETACH | 21 |  |
+| EVENT_TYPE_ATTACH_FROM | 22 |  |
+| EVENT_TYPE_DETACH_FROM | 23 |  |
+| EVENT_TYPE_APPROVE_COLLECTION | 24 |  |
+| EVENT_TYPE_DISAPPROVE_COLLECTION | 25 |  |
+| EVENT_TYPE_OPERATION_TRANSFER_NFT | 26 |  |
+| EVENT_TYPE_OPERATION_BURN_NFT | 27 |  |
+| EVENT_TYPE_OPERATION_ROOT_CHANGED | 28 |  |
 
 
  <!-- end enums -->

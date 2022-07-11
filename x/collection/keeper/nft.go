@@ -52,6 +52,20 @@ func (k Keeper) deleteNFT(ctx sdk.Context, contractID string, tokenID string) {
 	store.Delete(key)
 }
 
+func (k Keeper) pruneNFT(ctx sdk.Context, contractID string, tokenID string) []string {
+	burnt := []string{}
+	for _, child := range k.GetChildren(ctx, contractID, tokenID) {
+		k.deleteChild(ctx, contractID, tokenID, child)
+		k.deleteParent(ctx, contractID, child)
+		k.deleteNFT(ctx, contractID, child)
+		burnt = append(burnt, child)
+
+		pruned := k.pruneNFT(ctx, contractID, child)
+		burnt = append(burnt, pruned...)
+	}
+	return burnt
+}
+
 func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress, subject, target string) error {
 	// validate subject
 	if !k.GetBalance(ctx, contractID, owner, subject).IsPositive() {
@@ -212,7 +226,6 @@ func (k Keeper) deleteParent(ctx sdk.Context, contractID string, tokenID string)
 	store.Delete(key)
 }
 
-//nolint:unused
 func (k Keeper) GetChildren(ctx sdk.Context, contractID string, tokenID string) []string {
 	var children []string
 	k.iterateChildren(ctx, contractID, tokenID, func(childID string) (stop bool) {

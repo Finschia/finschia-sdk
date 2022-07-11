@@ -160,18 +160,8 @@ func validateDecimals(decimals int32) error {
 	return nil
 }
 
-// Deprecated: do not use.
-func FromLegacyPermission(permission string) Permission {
-	return Permission(LegacyPermission_value[permission])
-}
-
-// Deprecated: do not use.
-func ToLegacyPermission(permission Permission) string {
-	return LegacyPermission_name[int32(permission)]
-}
-
 func validateLegacyPermission(permission string) error {
-	return ValidatePermission(FromLegacyPermission(permission))
+	return ValidatePermission(Permission(LegacyPermissionFromString(permission)))
 }
 
 func ValidatePermission(permission Permission) error {
@@ -232,7 +222,7 @@ func validateNFTChange(change Attribute) error {
 }
 
 func validateChange(change Attribute, validators map[AttributeKey]func(string) error) error {
-	validator, ok := validators[AttributeKey(AttributeKey_value[change.Key])]
+	validator, ok := validators[AttributeKeyFromString(change.Key)]
 	if !ok {
 		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Key)
 	}

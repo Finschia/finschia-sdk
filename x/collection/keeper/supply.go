@@ -15,15 +15,26 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 		Meta:       contract.Meta,
 		BaseImgUri: contract.BaseImgUri,
 	}
+	ctx.EventManager().EmitEvent(collection.NewEventCreateCollection(event, creator))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
 
-	for permission := range collection.Permission_name {
+	ctx.EventManager().EmitEvent(
+		collection.NewEventGrantPermTokenHead(collection.EventGrant{
+			ContractId: contractID,
+			Grantee:    creator.String(),
+		}))
+	for _, permission := range collection.Permission_value {
 		p := collection.Permission(permission)
 		if p == collection.PermissionUnspecified {
 			continue
 		}
+
+		ctx.EventManager().EmitEvent(
+			collection.NewEventGrantPermTokenBody(collection.EventGrant{
+				Permission: p,
+			}))
 		k.Grant(ctx, contractID, "", creator, collection.Permission(permission))
 	}
 
@@ -234,15 +245,22 @@ func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, p
 	return tokens, nil
 }
 
-func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddress, amount []collection.Coin) error {
+func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddress, amount []collection.Coin) ([]collection.Coin, error) {
 	if err := k.subtractCoins(ctx, contractID, from, amount); err != nil {
-		return err
+		return nil, err
 	}
 
+	burntAmount := []collection.Coin{}
 	for _, coin := range amount {
+		burntAmount = append(burntAmount, coin)
 		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
 			k.deleteOwner(ctx, contractID, coin.TokenId)
 			k.deleteNFT(ctx, contractID, coin.TokenId)
+			pruned := k.pruneNFT(ctx, contractID, coin.TokenId)
+
+			for _, id := range pruned {
+				burntAmount = append(burntAmount, collection.NewCoin(id, sdk.OneInt()))
+			}
 
 			// legacy
 			k.deleteLegacyToken(ctx, contractID, coin.TokenId)
@@ -265,18 +283,19 @@ func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddres
 		// 		return sdkerrors.ErrInvalidRequest.Wrapf("class is not mintable")
 		// 	}
 		// }
+	}
 
-		// update statistics
+	// update statistics
+	for _, coin := range burntAmount {
 		classID := collection.SplitTokenID(coin.TokenId)
 		supply := k.GetSupply(ctx, contractID, classID)
 		k.setSupply(ctx, contractID, classID, supply.Sub(coin.Amount))
 
 		burnt := k.GetBurnt(ctx, contractID, classID)
 		k.setBurnt(ctx, contractID, classID, burnt.Add(coin.Amount))
-
 	}
 
-	return nil
+	return burntAmount, nil
 }
 
 func (k Keeper) getNextTokenID(ctx sdk.Context, contractID string, classID string) sdk.Uint {

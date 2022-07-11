@@ -274,6 +274,7 @@ func (s msgServer) CreateFTClass(c context.Context, req *collection.MsgCreateFTC
 		Decimals:   class.Decimals,
 		Mintable:   class.Mintable,
 	}
+	ctx.EventManager().EmitEvent(collection.NewEventIssueFT(event, sdk.AccAddress(req.Operator), sdk.AccAddress(req.To), req.Supply))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -281,6 +282,16 @@ func (s msgServer) CreateFTClass(c context.Context, req *collection.MsgCreateFTC
 	// supply tokens
 	if req.Supply.IsPositive() {
 		s.keeper.mintFT(ctx, req.ContractId, sdk.AccAddress(req.To), *id, req.Supply)
+
+		event := collection.EventMintedFT{
+			ContractId: req.ContractId,
+			Operator:   req.Operator,
+			To:         req.To,
+			Amount:     collection.NewCoins(collection.NewFTCoin(*id, req.Supply)),
+		}
+		if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+			panic(err)
+		}
 	}
 
 	return &collection.MsgCreateFTClassResponse{Id: *id}, nil
@@ -307,6 +318,7 @@ func (s msgServer) CreateNFTClass(c context.Context, req *collection.MsgCreateNF
 		Name:       class.Name,
 		Meta:       class.Meta,
 	}
+	ctx.EventManager().EmitEvent(collection.NewEventIssueNFT(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -331,9 +343,32 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 		return nil, err
 	}
 
+	event := collection.EventCreatedFTClass{
+		ContractId: req.ContractId,
+		ClassId:    *id,
+		Name:       class.Name,
+		Meta:       class.Meta,
+		Decimals:   class.Decimals,
+		Mintable:   class.Mintable,
+	}
+	ctx.EventManager().EmitEvent(collection.NewEventIssueFT(event, sdk.AccAddress(req.Owner), sdk.AccAddress(req.To), req.Amount))
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+
 	// supply tokens
 	if req.Amount.IsPositive() {
 		s.keeper.mintFT(ctx, req.ContractId, sdk.AccAddress(req.To), *id, req.Amount)
+
+		event := collection.EventMintedFT{
+			ContractId: req.ContractId,
+			Operator:   req.Owner,
+			To:         req.To,
+			Amount:     collection.NewCoins(collection.NewFTCoin(*id, req.Amount)),
+		}
+		if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+			panic(err)
+		}
 	}
 
 	return &collection.MsgIssueFTResponse{Id: *id}, nil
@@ -352,6 +387,17 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 	id, err := s.keeper.CreateTokenClass(ctx, req.ContractId, class)
 	if err != nil {
 		return nil, err
+	}
+
+	event := collection.EventCreatedNFTClass{
+		ContractId: req.ContractId,
+		ClassId:    *id,
+		Name:       class.Name,
+		Meta:       class.Meta,
+	}
+	ctx.EventManager().EmitEvent(collection.NewEventIssueNFT(event))
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
 	}
 
 	return &collection.MsgIssueNFTResponse{Id: *id}, nil
@@ -373,6 +419,7 @@ func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collec
 		To:         req.To,
 		Amount:     req.Amount,
 	}
+	ctx.EventManager().EmitEvent(collection.NewEventMintFT(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -397,6 +444,7 @@ func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*coll
 		To:         req.To,
 		Tokens:     tokens,
 	}
+	ctx.EventManager().EmitEvents(collection.NewEventMintNFT(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -414,7 +462,8 @@ func (s msgServer) Burn(c context.Context, req *collection.MsgBurn) (*collection
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	if err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
+	amount, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount)
+	if err != nil {
 		return nil, err
 	}
 
@@ -422,8 +471,12 @@ func (s msgServer) Burn(c context.Context, req *collection.MsgBurn) (*collection
 		ContractId: req.ContractId,
 		Operator:   req.From,
 		From:       req.From,
-		Amount:     req.Amount,
+		Amount:     amount,
 	}
+	if e := collection.NewEventBurnFT(event); e != nil {
+		ctx.EventManager().EmitEvent(*e)
+	}
+	ctx.EventManager().EmitEvents(collection.NewEventBurnNFT(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -441,7 +494,8 @@ func (s msgServer) OperatorBurn(c context.Context, req *collection.MsgOperatorBu
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	if err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
+	amount, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount)
+	if err != nil {
 		return nil, err
 	}
 
@@ -449,8 +503,12 @@ func (s msgServer) OperatorBurn(c context.Context, req *collection.MsgOperatorBu
 		ContractId: req.ContractId,
 		Operator:   req.Operator,
 		From:       req.From,
-		Amount:     req.Amount,
+		Amount:     amount,
 	}
+	if e := collection.NewEventBurnFTFrom(event); e != nil {
+		ctx.EventManager().EmitEvent(*e)
+	}
+	ctx.EventManager().EmitEvents(collection.NewEventBurnNFTFrom(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -464,7 +522,8 @@ func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collec
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	if err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
+	amount, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount)
+	if err != nil {
 		return nil, err
 	}
 
@@ -472,7 +531,10 @@ func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collec
 		ContractId: req.ContractId,
 		Operator:   req.From,
 		From:       req.From,
-		Amount:     req.Amount,
+		Amount:     amount,
+	}
+	if e := collection.NewEventBurnFT(event); e != nil {
+		ctx.EventManager().EmitEvent(*e)
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
@@ -491,7 +553,8 @@ func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) 
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	if err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount); err != nil {
+	amount, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount)
+	if err != nil {
 		return nil, err
 	}
 
@@ -499,7 +562,10 @@ func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) 
 		ContractId: req.ContractId,
 		Operator:   req.Proxy,
 		From:       req.From,
-		Amount:     req.Amount,
+		Amount:     amount,
+	}
+	if e := collection.NewEventBurnFTFrom(event); e != nil {
+		ctx.EventManager().EmitEvent(*e)
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
@@ -519,7 +585,8 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 		amount = append(amount, collection.NewCoin(id, sdk.OneInt()))
 	}
 
-	if err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), amount); err != nil {
+	amount, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), amount)
+	if err != nil {
 		return nil, err
 	}
 
@@ -529,6 +596,7 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 		From:       req.From,
 		Amount:     amount,
 	}
+	ctx.EventManager().EmitEvents(collection.NewEventBurnNFT(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -551,7 +619,8 @@ func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom
 		amount = append(amount, collection.NewCoin(id, sdk.OneInt()))
 	}
 
-	if err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), amount); err != nil {
+	amount, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), amount)
+	if err != nil {
 		return nil, err
 	}
 
@@ -561,6 +630,7 @@ func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom
 		From:       req.From,
 		Amount:     amount,
 	}
+	ctx.EventManager().EmitEvents(collection.NewEventBurnNFTFrom(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -580,6 +650,16 @@ func (s msgServer) ModifyContract(c context.Context, req *collection.MsgModifyCo
 		return nil, err
 	}
 
+	event := collection.EventModifiedContract{
+		ContractId: req.ContractId,
+		Operator:   req.Operator,
+		Changes:    req.Changes,
+	}
+	ctx.EventManager().EmitEvents(collection.NewEventModifyCollection(event))
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+
 	return &collection.MsgModifyContractResponse{}, nil
 }
 
@@ -595,6 +675,26 @@ func (s msgServer) ModifyTokenClass(c context.Context, req *collection.MsgModify
 		return nil, err
 	}
 
+	event := collection.EventModifiedTokenClass{
+		ContractId: req.ContractId,
+		Operator:   req.Operator,
+		ClassId:    req.ClassId,
+		Changes:    req.Changes,
+	}
+	class, err := s.keeper.GetTokenClass(ctx, req.ContractId, req.ClassId)
+	if err != nil {
+		panic(err)
+	}
+	if _, ok := class.(*collection.FTClass); ok {
+		ctx.EventManager().EmitEvents(collection.NewEventModifyTokenOfFTClass(event))
+	}
+	if _, ok := class.(*collection.NFTClass); ok {
+		ctx.EventManager().EmitEvents(collection.NewEventModifyTokenType(event))
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+
 	return &collection.MsgModifyTokenClassResponse{}, nil
 }
 
@@ -608,6 +708,17 @@ func (s msgServer) ModifyNFT(c context.Context, req *collection.MsgModifyNFT) (*
 
 	if err := s.keeper.ModifyNFT(ctx, req.ContractId, req.TokenId, operator, req.Changes); err != nil {
 		return nil, err
+	}
+
+	event := collection.EventModifiedNFT{
+		ContractId: req.ContractId,
+		Operator:   req.Operator,
+		TokenId:    req.TokenId,
+		Changes:    req.Changes,
+	}
+	ctx.EventManager().EmitEvents(collection.NewEventModifyTokenOfNFT(event))
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
 	}
 
 	return &collection.MsgModifyNFTResponse{}, nil
@@ -636,13 +747,59 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 		if tokenType != "" {
 			if tokenIndex != "" {
 				if collection.ValidateNFTID(tokenID) == nil {
+					event := collection.EventModifiedNFT{
+						ContractId: req.ContractId,
+						Operator:   operator.String(),
+						TokenId:    tokenID,
+						Changes:    changes,
+					}
+					ctx.EventManager().EmitEvents(collection.NewEventModifyTokenOfNFT(event))
+					if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+						panic(err)
+					}
+
 					return s.keeper.ModifyNFT(ctx, req.ContractId, tokenID, operator, changes)
 				}
+
+				event := collection.EventModifiedTokenClass{
+					ContractId: req.ContractId,
+					Operator:   operator.String(),
+					ClassId:    classID,
+					Changes:    changes,
+				}
+
+				ctx.EventManager().EmitEvents(collection.NewEventModifyTokenOfFTClass(event))
+				if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+					panic(err)
+				}
+
 				return s.keeper.ModifyTokenClass(ctx, req.ContractId, classID, operator, changes)
 			}
+
+			event := collection.EventModifiedTokenClass{
+				ContractId: req.ContractId,
+				Operator:   operator.String(),
+				ClassId:    classID,
+				Changes:    changes,
+			}
+			ctx.EventManager().EmitEvents(collection.NewEventModifyTokenType(event))
+			if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+				panic(err)
+			}
+
 			return s.keeper.ModifyTokenClass(ctx, req.ContractId, classID, operator, changes)
 		}
 		if req.TokenIndex == "" {
+			event := collection.EventModifiedContract{
+				ContractId: req.ContractId,
+				Operator:   operator.String(),
+				Changes:    changes,
+			}
+			ctx.EventManager().EmitEvents(collection.NewEventModifyCollection(event))
+			if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+				panic(err)
+			}
+
 			return s.keeper.ModifyContract(ctx, req.ContractId, operator, changes)
 		}
 
@@ -671,6 +828,15 @@ func (s msgServer) Grant(c context.Context, req *collection.MsgGrant) (*collecti
 
 	s.keeper.Grant(ctx, req.ContractId, granter, grantee, req.Permission)
 
+	event := collection.EventGrant{
+		ContractId: req.ContractId,
+		Granter:    granter.String(),
+		Grantee:    grantee.String(),
+		Permission: req.Permission,
+	}
+	ctx.EventManager().EmitEvent(collection.NewEventGrantPermToken(event))
+	// it emits typed event inside s.keeper.Grant()
+
 	return &collection.MsgGrantResponse{}, nil
 }
 
@@ -685,6 +851,14 @@ func (s msgServer) Abandon(c context.Context, req *collection.MsgAbandon) (*coll
 
 	s.keeper.Abandon(ctx, req.ContractId, grantee, req.Permission)
 
+	event := collection.EventAbandon{
+		ContractId: req.ContractId,
+		Grantee:    grantee.String(),
+		Permission: req.Permission,
+	}
+	ctx.EventManager().EmitEvent(collection.NewEventRevokePermToken(event))
+	// it emits typed event inside s.keeper.Abandon()
+
 	return &collection.MsgAbandonResponse{}, nil
 }
 
@@ -693,7 +867,7 @@ func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPe
 
 	granter := sdk.AccAddress(req.From)
 	grantee := sdk.AccAddress(req.To)
-	permission := collection.FromLegacyPermission(req.Permission)
+	permission := collection.Permission(collection.LegacyPermissionFromString(req.Permission))
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s", granter, permission)
 	}
@@ -703,6 +877,15 @@ func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPe
 
 	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
 
+	event := collection.EventGrant{
+		ContractId: req.ContractId,
+		Granter:    granter.String(),
+		Grantee:    grantee.String(),
+		Permission: permission,
+	}
+	ctx.EventManager().EmitEvent(collection.NewEventGrantPermToken(event))
+	// it emits typed event inside s.keeper.Grant()
+
 	return &collection.MsgGrantPermissionResponse{}, nil
 }
 
@@ -710,12 +893,20 @@ func (s msgServer) RevokePermission(c context.Context, req *collection.MsgRevoke
 	ctx := sdk.UnwrapSDKContext(c)
 
 	grantee := sdk.AccAddress(req.From)
-	permission := collection.FromLegacyPermission(req.Permission)
+	permission := collection.Permission(collection.LegacyPermissionFromString(req.Permission))
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {
 		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not authorized for %s", grantee, permission)
 	}
 
 	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
+
+	event := collection.EventAbandon{
+		ContractId: req.ContractId,
+		Grantee:    grantee.String(),
+		Permission: permission,
+	}
+	ctx.EventManager().EmitEvent(collection.NewEventRevokePermToken(event))
+	// it emits typed event inside s.keeper.Abandon()
 
 	return &collection.MsgRevokePermissionResponse{}, nil
 }
@@ -727,14 +918,44 @@ func (s msgServer) Attach(c context.Context, req *collection.MsgAttach) (*collec
 		return nil, err
 	}
 
+	event := collection.EventAttached{
+		ContractId: req.ContractId,
+		Operator:   req.From,
+		Holder:     req.From,
+		Subject:    req.TokenId,
+		Target:     req.ToTokenId,
+	}
+	newRoot := s.keeper.GetRoot(ctx, req.ContractId, req.ToTokenId)
+	ctx.EventManager().EmitEvent(collection.NewEventAttachToken(event, newRoot))
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+
 	return &collection.MsgAttachResponse{}, nil
 }
 
 func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collection.MsgDetachResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
+	// legacy
+	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
+		return nil, err
+	}
+	oldRoot := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
+
 	if err := s.keeper.Detach(ctx, req.ContractId, sdk.AccAddress(req.From), req.TokenId); err != nil {
 		return nil, err
+	}
+
+	event := collection.EventDetached{
+		ContractId: req.ContractId,
+		Operator:   req.From,
+		Holder:     req.From,
+		Subject:    req.TokenId,
+	}
+	ctx.EventManager().EmitEvent(collection.NewEventDetachToken(event, oldRoot))
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
 	}
 
 	return &collection.MsgDetachResponse{}, nil
@@ -750,6 +971,19 @@ func (s msgServer) OperatorAttach(c context.Context, req *collection.MsgOperator
 		return nil, err
 	}
 
+	event := collection.EventAttached{
+		ContractId: req.ContractId,
+		Operator:   req.Operator,
+		Holder:     req.Owner,
+		Subject:    req.Subject,
+		Target:     req.Target,
+	}
+	newRoot := s.keeper.GetRoot(ctx, req.ContractId, req.Target)
+	ctx.EventManager().EmitEvent(collection.NewEventAttachFrom(event, newRoot))
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+
 	return &collection.MsgOperatorAttachResponse{}, nil
 }
 
@@ -759,8 +993,25 @@ func (s msgServer) OperatorDetach(c context.Context, req *collection.MsgOperator
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
+	// legacy
+	if err := s.keeper.hasNFT(ctx, req.ContractId, req.Subject); err != nil {
+		return nil, err
+	}
+	oldRoot := s.keeper.GetRoot(ctx, req.ContractId, req.Subject)
+
 	if err := s.keeper.Detach(ctx, req.ContractId, sdk.AccAddress(req.Owner), req.Subject); err != nil {
 		return nil, err
+	}
+
+	event := collection.EventDetached{
+		ContractId: req.ContractId,
+		Operator:   req.Operator,
+		Holder:     req.Owner,
+		Subject:    req.Subject,
+	}
+	ctx.EventManager().EmitEvent(collection.NewEventDetachFrom(event, oldRoot))
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
 	}
 
 	return &collection.MsgOperatorDetachResponse{}, nil
@@ -776,6 +1027,19 @@ func (s msgServer) AttachFrom(c context.Context, req *collection.MsgAttachFrom) 
 		return nil, err
 	}
 
+	event := collection.EventAttached{
+		ContractId: req.ContractId,
+		Operator:   req.Proxy,
+		Holder:     req.From,
+		Subject:    req.TokenId,
+		Target:     req.ToTokenId,
+	}
+	newRoot := s.keeper.GetRoot(ctx, req.ContractId, req.ToTokenId)
+	ctx.EventManager().EmitEvent(collection.NewEventAttachFrom(event, newRoot))
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+
 	return &collection.MsgAttachFromResponse{}, nil
 }
 
@@ -785,8 +1049,25 @@ func (s msgServer) DetachFrom(c context.Context, req *collection.MsgDetachFrom) 
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
+	// legacy
+	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
+		return nil, err
+	}
+	oldRoot := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
+
 	if err := s.keeper.Detach(ctx, req.ContractId, sdk.AccAddress(req.From), req.TokenId); err != nil {
 		return nil, err
+	}
+
+	event := collection.EventDetached{
+		ContractId: req.ContractId,
+		Operator:   req.Proxy,
+		Holder:     req.From,
+		Subject:    req.TokenId,
+	}
+	ctx.EventManager().EmitEvent(collection.NewEventDetachFrom(event, oldRoot))
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
 	}
 
 	return &collection.MsgDetachFromResponse{}, nil

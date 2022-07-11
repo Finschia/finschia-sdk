@@ -112,7 +112,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		err := s.keeper.MintFT(s.ctx, s.contractID, to, amount)
 		s.Require().NoError(err)
 
-		err = s.keeper.BurnCoins(s.ctx, s.contractID, to, amount)
+		_, err = s.keeper.BurnCoins(s.ctx, s.contractID, to, amount)
 		s.Require().NoError(err)
 		err = s.keeper.MintFT(s.ctx, s.contractID, to, amount)
 		s.Require().NoError(err)

@@ -172,7 +172,7 @@ func (s *KeeperTestSuite) TestBurnCoins() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			err := s.keeper.BurnCoins(ctx, tc.contractID, s.vendor, collection.NewCoins(tc.amount))
+			_, err := s.keeper.BurnCoins(ctx, tc.contractID, s.vendor, collection.NewCoins(tc.amount))
 			if !tc.valid {
 				s.Require().Error(err)
 				return
