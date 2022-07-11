@@ -125,8 +125,6 @@ type MigrateProposalJSONReq struct {
 	Contract string          `json:"contract" yaml:"contract"`
 	Code     uint64          `json:"code_id" yaml:"code_id"`
 	Msg      json.RawMessage `json:"msg" yaml:"msg"`
-	// RunAs is the role that is passed to the contract's environment
-	RunAs string `json:"run_as" yaml:"run_as"`
 }
 
 func (s MigrateProposalJSONReq) Content() govtypes.Content {
@@ -136,7 +134,6 @@ func (s MigrateProposalJSONReq) Content() govtypes.Content {
 		Contract:    s.Contract,
 		CodeID:      s.Code,
 		Msg:         types.RawContractMessage(s.Msg),
-		RunAs:       s.RunAs,
 	}
 }
 func (s MigrateProposalJSONReq) GetProposer() string {
@@ -153,6 +150,97 @@ func MigrateProposalHandler(cliCtx client.Context) govrest.ProposalRESTHandler {
 		SubRoute: "wasm_migrate",
 		Handler: func(w http.ResponseWriter, r *http.Request) {
 			var req MigrateProposalJSONReq
+			if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
+				return
+			}
+			toStdTxResponse(cliCtx, w, req)
+		},
+	}
+}
+
+type ExecuteProposalJSONReq struct {
+	BaseReq rest.BaseReq `json:"base_req" yaml:"base_req"`
+
+	Title       string `json:"title" yaml:"title"`
+	Description string `json:"description" yaml:"description"`
+
+	Proposer string    `json:"proposer" yaml:"proposer"`
+	Deposit  sdk.Coins `json:"deposit" yaml:"deposit"`
+
+	Contract string          `json:"contract" yaml:"contract"`
+	Msg      json.RawMessage `json:"msg" yaml:"msg"`
+	// RunAs is the role that is passed to the contract's environment
+	RunAs string    `json:"run_as" yaml:"run_as"`
+	Funds sdk.Coins `json:"funds" yaml:"funds"`
+}
+
+func (s ExecuteProposalJSONReq) Content() govtypes.Content {
+	return &types.ExecuteContractProposal{
+		Title:       s.Title,
+		Description: s.Description,
+		Contract:    s.Contract,
+		Msg:         types.RawContractMessage(s.Msg),
+		RunAs:       s.RunAs,
+		Funds:       s.Funds,
+	}
+}
+func (s ExecuteProposalJSONReq) GetProposer() string {
+	return s.Proposer
+}
+func (s ExecuteProposalJSONReq) GetDeposit() sdk.Coins {
+	return s.Deposit
+}
+func (s ExecuteProposalJSONReq) GetBaseReq() rest.BaseReq {
+	return s.BaseReq
+}
+func ExecuteProposalHandler(cliCtx client.Context) govrest.ProposalRESTHandler {
+	return govrest.ProposalRESTHandler{
+		SubRoute: "wasm_execute",
+		Handler: func(w http.ResponseWriter, r *http.Request) {
+			var req ExecuteProposalJSONReq
+			if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
+				return
+			}
+			toStdTxResponse(cliCtx, w, req)
+		},
+	}
+}
+
+type SudoProposalJSONReq struct {
+	BaseReq rest.BaseReq `json:"base_req" yaml:"base_req"`
+
+	Title       string `json:"title" yaml:"title"`
+	Description string `json:"description" yaml:"description"`
+
+	Proposer string    `json:"proposer" yaml:"proposer"`
+	Deposit  sdk.Coins `json:"deposit" yaml:"deposit"`
+
+	Contract string          `json:"contract" yaml:"contract"`
+	Msg      json.RawMessage `json:"msg" yaml:"msg"`
+}
+
+func (s SudoProposalJSONReq) Content() govtypes.Content {
+	return &types.SudoContractProposal{
+		Title:       s.Title,
+		Description: s.Description,
+		Contract:    s.Contract,
+		Msg:         types.RawContractMessage(s.Msg),
+	}
+}
+func (s SudoProposalJSONReq) GetProposer() string {
+	return s.Proposer
+}
+func (s SudoProposalJSONReq) GetDeposit() sdk.Coins {
+	return s.Deposit
+}
+func (s SudoProposalJSONReq) GetBaseReq() rest.BaseReq {
+	return s.BaseReq
+}
+func SudoProposalHandler(cliCtx client.Context) govrest.ProposalRESTHandler {
+	return govrest.ProposalRESTHandler{
+		SubRoute: "wasm_sudo",
+		Handler: func(w http.ResponseWriter, r *http.Request) {
+			var req SudoProposalJSONReq
 			if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
 				return
 			}
@@ -237,6 +325,130 @@ func ClearContractAdminProposalHandler(cliCtx client.Context) govrest.ProposalRE
 		SubRoute: "wasm_clear_admin",
 		Handler: func(w http.ResponseWriter, r *http.Request) {
 			var req ClearAdminJSONReq
+			if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
+				return
+			}
+			toStdTxResponse(cliCtx, w, req)
+		},
+	}
+}
+
+type PinCodeJSONReq struct {
+	BaseReq rest.BaseReq `json:"base_req" yaml:"base_req"`
+
+	Title       string `json:"title" yaml:"title"`
+	Description string `json:"description" yaml:"description"`
+
+	Proposer string    `json:"proposer" yaml:"proposer"`
+	Deposit  sdk.Coins `json:"deposit" yaml:"deposit"`
+
+	CodeIDs []uint64 `json:"code_ids" yaml:"code_ids"`
+}
+
+func (s PinCodeJSONReq) Content() govtypes.Content {
+	return &types.PinCodesProposal{
+		Title:       s.Title,
+		Description: s.Description,
+		CodeIDs:     s.CodeIDs,
+	}
+}
+func (s PinCodeJSONReq) GetProposer() string {
+	return s.Proposer
+}
+func (s PinCodeJSONReq) GetDeposit() sdk.Coins {
+	return s.Deposit
+}
+func (s PinCodeJSONReq) GetBaseReq() rest.BaseReq {
+	return s.BaseReq
+}
+
+func PinCodeProposalHandler(cliCtx client.Context) govrest.ProposalRESTHandler {
+	return govrest.ProposalRESTHandler{
+		SubRoute: "pin_code",
+		Handler: func(w http.ResponseWriter, r *http.Request) {
+			var req PinCodeJSONReq
+			if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
+				return
+			}
+			toStdTxResponse(cliCtx, w, req)
+		},
+	}
+}
+
+type UnpinCodeJSONReq struct {
+	BaseReq rest.BaseReq `json:"base_req" yaml:"base_req"`
+
+	Title       string `json:"title" yaml:"title"`
+	Description string `json:"description" yaml:"description"`
+
+	Proposer string    `json:"proposer" yaml:"proposer"`
+	Deposit  sdk.Coins `json:"deposit" yaml:"deposit"`
+
+	CodeIDs []uint64 `json:"code_ids" yaml:"code_ids"`
+}
+
+func (s UnpinCodeJSONReq) Content() govtypes.Content {
+	return &types.UnpinCodesProposal{
+		Title:       s.Title,
+		Description: s.Description,
+		CodeIDs:     s.CodeIDs,
+	}
+}
+func (s UnpinCodeJSONReq) GetProposer() string {
+	return s.Proposer
+}
+func (s UnpinCodeJSONReq) GetDeposit() sdk.Coins {
+	return s.Deposit
+}
+func (s UnpinCodeJSONReq) GetBaseReq() rest.BaseReq {
+	return s.BaseReq
+}
+
+func UnpinCodeProposalHandler(cliCtx client.Context) govrest.ProposalRESTHandler {
+	return govrest.ProposalRESTHandler{
+		SubRoute: "unpin_code",
+		Handler: func(w http.ResponseWriter, r *http.Request) {
+			var req UnpinCodeJSONReq
+			if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
+				return
+			}
+			toStdTxResponse(cliCtx, w, req)
+		},
+	}
+}
+
+type UpdateInstantiateConfigProposalJSONReq struct {
+	BaseReq rest.BaseReq `json:"base_req" yaml:"base_req"`
+
+	Title               string                     `json:"title" yaml:"title"`
+	Description         string                     `json:"description" yaml:"description"`
+	Proposer            string                     `json:"proposer" yaml:"proposer"`
+	Deposit             sdk.Coins                  `json:"deposit" yaml:"deposit"`
+	AccessConfigUpdates []types.AccessConfigUpdate `json:"access_config_updates" yaml:"access_config_updates"`
+}
+
+func (s UpdateInstantiateConfigProposalJSONReq) Content() govtypes.Content {
+	return &types.UpdateInstantiateConfigProposal{
+		Title:               s.Title,
+		Description:         s.Description,
+		AccessConfigUpdates: s.AccessConfigUpdates,
+	}
+}
+func (s UpdateInstantiateConfigProposalJSONReq) GetProposer() string {
+	return s.Proposer
+}
+func (s UpdateInstantiateConfigProposalJSONReq) GetDeposit() sdk.Coins {
+	return s.Deposit
+}
+func (s UpdateInstantiateConfigProposalJSONReq) GetBaseReq() rest.BaseReq {
+	return s.BaseReq
+}
+
+func UpdateInstantiateConfigProposalHandler(cliCtx client.Context) govrest.ProposalRESTHandler {
+	return govrest.ProposalRESTHandler{
+		SubRoute: "update_instantiate_config",
+		Handler: func(w http.ResponseWriter, r *http.Request) {
+			var req UpdateInstantiateConfigProposalJSONReq
 			if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
 				return
 			}

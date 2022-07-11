@@ -33,7 +33,7 @@ const (
 	// invalid constants used for testing
 	invalidPort      = "(invalidport1)"
 	invalidShortPort = "p"
-	invalidLongPort  = "invalidlongportinvalidlongportinvalidlongportidinvalidlongportidinvalid"
+	invalidLongPort  = "invalidlongportinvalidlongportinvalidlongportidinvalidlongportidinvalidinvalidlongportinvalidlongportinvalidlongportinvalidlongport"
 
 	invalidChannel      = "(invalidchannel1)"
 	invalidShortChannel = "invalid"

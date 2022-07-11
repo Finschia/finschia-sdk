@@ -36,6 +36,10 @@ func NewWasmProposalHandlerX(k types.ContractOpsKeeper, enabledProposalTypes []t
 			return handleInstantiateProposal(ctx, k, *c)
 		case *types.MigrateContractProposal:
 			return handleMigrateProposal(ctx, k, *c)
+		case *types.SudoContractProposal:
+			return handleSudoProposal(ctx, k, *c)
+		case *types.ExecuteContractProposal:
+			return handleExecuteProposal(ctx, k, *c)
 		case *types.UpdateAdminProposal:
 			return handleUpdateAdminProposal(ctx, k, *c)
 		case *types.ClearAdminProposal:
@@ -46,6 +50,8 @@ func NewWasmProposalHandlerX(k types.ContractOpsKeeper, enabledProposalTypes []t
 			return handleUnpinCodesProposal(ctx, k, *c)
 		case *types.UpdateContractStatusProposal:
 			return handleUpdateContractStatusProposal(ctx, k, *c)
+		case *types.UpdateInstantiateConfigProposal:
+			return handleUpdateInstantiateConfigProposal(ctx, k, *c)
 		default:
 			return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized wasm proposal content type: %T", c)
 		}
@@ -61,9 +67,11 @@ func handleStoreCodeProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types
 	if err != nil {
 		return sdkerrors.Wrap(err, "run as address")
 	}
-	_, err = k.Create(ctx, sdk.AccAddress(p.RunAs), p.WASMByteCode, p.InstantiatePermission)
-
-	return err
+	codeID, err := k.Create(ctx, sdk.AccAddress(p.RunAs), p.WASMByteCode, p.InstantiatePermission)
+	if err != nil {
+		return err
+	}
+	return k.PinCode(ctx, codeID)
 }
 
 func handleInstantiateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.InstantiateContractProposal) error {
@@ -74,9 +82,11 @@ func handleInstantiateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p typ
 	if err != nil {
 		return sdkerrors.Wrap(err, "run as address")
 	}
-	err = sdk.ValidateAccAddress(p.Admin)
-	if err != nil {
-		return sdkerrors.Wrap(err, "admin")
+	if p.Admin != "" {
+		err = sdk.ValidateAccAddress(p.Admin)
+		if err != nil {
+			return sdkerrors.Wrap(err, "admin")
+		}
 	}
 
 	_, data, err := k.Instantiate(ctx, p.CodeID, sdk.AccAddress(p.RunAs), sdk.AccAddress(p.Admin), p.Msg, p.Label, p.Funds)
@@ -100,14 +110,56 @@ func handleMigrateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.M
 	if err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
+	// runAs is not used if this is permissioned, so just put any valid address there (second contractAddr)
+	data, err := k.Migrate(ctx, sdk.AccAddress(p.Contract), sdk.AccAddress(p.Contract), p.CodeID, p.Msg)
+	if err != nil {
+		return err
+	}
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		types.EventTypeGovContractResult,
+		sdk.NewAttribute(types.AttributeKeyResultDataHex, hex.EncodeToString(data)),
+	))
+	return nil
+}
+
+func handleSudoProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.SudoContractProposal) error {
+	if err := p.ValidateBasic(); err != nil {
+		return err
+	}
+	err := sdk.ValidateAccAddress(p.Contract)
+	if err != nil {
+		return sdkerrors.Wrap(err, "contract")
+	}
+	data, err := k.Sudo(ctx, sdk.AccAddress(p.Contract), p.Msg)
+	if err != nil {
+		return err
+	}
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		types.EventTypeGovContractResult,
+		sdk.NewAttribute(types.AttributeKeyResultDataHex, hex.EncodeToString(data)),
+	))
+	return nil
+}
+
+func handleExecuteProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.ExecuteContractProposal) error {
+	if err := p.ValidateBasic(); err != nil {
+		return err
+	}
+
+	err := sdk.ValidateAccAddress(p.Contract)
+	if err != nil {
+		return sdkerrors.Wrap(err, "contract")
+	}
 	err = sdk.ValidateAccAddress(p.RunAs)
 	if err != nil {
 		return sdkerrors.Wrap(err, "run as address")
 	}
-	data, err := k.Migrate(ctx, sdk.AccAddress(p.Contract), sdk.AccAddress(p.RunAs), p.CodeID, p.Msg)
+	data, err := k.Execute(ctx, sdk.AccAddress(p.Contract), sdk.AccAddress(p.RunAs), p.Msg, p.Funds)
 	if err != nil {
 		return err
 	}
+
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		types.EventTypeGovContractResult,
 		sdk.NewAttribute(types.AttributeKeyResultDataHex, hex.EncodeToString(data)),
@@ -236,5 +288,18 @@ func handleUpdateContractStatusProposal(ctx sdk.Context, k types.ContractOpsKeep
 		sdk.NewAttribute(types.AttributeKeyContractAddr, p.Contract),
 		sdk.NewAttribute(types.AttributeKeyContractStatus, p.Status.String()),
 	))
+	return nil
+}
+
+func handleUpdateInstantiateConfigProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.UpdateInstantiateConfigProposal) error {
+	if err := p.ValidateBasic(); err != nil {
+		return err
+	}
+
+	for _, accessConfigUpdate := range p.AccessConfigUpdates {
+		if err := k.SetAccessConfig(ctx, accessConfigUpdate.CodeID, accessConfigUpdate.InstantiatePermission); err != nil {
+			return sdkerrors.Wrapf(err, "code id: %d", accessConfigUpdate.CodeID)
+		}
+	}
 	return nil
 }

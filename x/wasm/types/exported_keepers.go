@@ -16,7 +16,7 @@ type ViewKeeper interface {
 	GetContractInfo(ctx sdk.Context, contractAddress sdk.AccAddress) *ContractInfo
 	IterateContractInfo(ctx sdk.Context, cb func(sdk.AccAddress, ContractInfo) bool)
 	IterateContractsByCode(ctx sdk.Context, codeID uint64, cb func(address sdk.AccAddress) bool)
-	GetContractState(ctx sdk.Context, contractAddress sdk.AccAddress) sdk.Iterator
+	IterateContractState(ctx sdk.Context, contractAddress sdk.AccAddress, cb func(key, value []byte) bool)
 	GetCodeInfo(ctx sdk.Context, codeID uint64) *CodeInfo
 	IterateCodeInfos(ctx sdk.Context, cb func(uint64, CodeInfo) bool)
 	GetByteCode(ctx sdk.Context, codeID uint64) ([]byte, error)
@@ -37,6 +37,9 @@ type ContractOpsKeeper interface {
 	// Migrate allows to upgrade a contract to a new code with data migration.
 	Migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, newCodeID uint64, msg []byte) ([]byte, error)
 
+	// Sudo allows to call privileged entry point of a contract.
+	Sudo(ctx sdk.Context, contractAddress sdk.AccAddress, msg []byte) ([]byte, error)
+
 	// UpdateContractAdmin sets the admin value on the ContractInfo. It must be a valid address (use ClearContractAdmin to remove it)
 	UpdateContractAdmin(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, newAdmin sdk.AccAddress) error
 
@@ -54,6 +57,9 @@ type ContractOpsKeeper interface {
 
 	// UpdateContractStatus sets a new status of the contract on the ContractInfo.
 	UpdateContractStatus(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, status ContractStatus) error
+
+	// SetAccessConfig updates the access config of a code id.
+	SetAccessConfig(ctx sdk.Context, codeID uint64, config AccessConfig) error
 }
 
 // IBCContractKeeper IBC lifecycle event handler
@@ -89,7 +95,7 @@ type IBCContractKeeper interface {
 		msg wasmvmtypes.IBCPacketTimeoutMsg,
 	) error
 	// ClaimCapability allows the transfer module to claim a capability
-	//that IBC module passes to it
+	// that IBC module passes to it
 	ClaimCapability(ctx sdk.Context, cap *capabilitytypes.Capability, name string) error
 	// AuthenticateCapability wraps the scopedKeeper's AuthenticateCapability function
 	AuthenticateCapability(ctx sdk.Context, cap *capabilitytypes.Capability, name string) bool

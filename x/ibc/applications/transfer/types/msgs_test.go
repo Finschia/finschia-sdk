@@ -16,7 +16,7 @@ const (
 	validPort        = "testportid"
 	invalidPort      = "(invalidport1)"
 	invalidShortPort = "p"
-	invalidLongPort  = "invalidlongportinvalidlongportinvalidlongportinvalidlongportinvalid"
+	invalidLongPort  = "invalidlongportinvalidlongportinvalidlongportidinvalidlongportidinvalidinvalidlongportinvalidlongportinvalidlongportinvalidlongport"
 
 	validChannel        = "testchannel"
 	invalidChannel      = "(invalidchannel1)"

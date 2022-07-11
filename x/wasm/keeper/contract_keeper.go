@@ -16,8 +16,10 @@ type decoratedKeeper interface {
 	pinCode(ctx sdk.Context, codeID uint64) error
 	unpinCode(ctx sdk.Context, codeID uint64) error
 	execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) ([]byte, error)
+	Sudo(ctx sdk.Context, contractAddress sdk.AccAddress, msg []byte) ([]byte, error)
 	setContractInfoExtension(ctx sdk.Context, contract sdk.AccAddress, extra types.ContractInfoExtension) error
 	setContractStatus(ctx sdk.Context, contract sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus, authZ AuthorizationPolicy) error
+	setAccessConfig(ctx sdk.Context, codeID uint64, config types.AccessConfig) error
 }
 
 type PermissionedKeeper struct {
@@ -53,6 +55,10 @@ func (p PermissionedKeeper) Migrate(ctx sdk.Context, contractAddress sdk.AccAddr
 	return p.nested.migrate(ctx, contractAddress, caller, newCodeID, msg, p.authZPolicy)
 }
 
+func (p PermissionedKeeper) Sudo(ctx sdk.Context, contractAddress sdk.AccAddress, msg []byte) ([]byte, error) {
+	return p.nested.Sudo(ctx, contractAddress, msg)
+}
+
 func (p PermissionedKeeper) UpdateContractAdmin(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, newAdmin sdk.AccAddress) error {
 	return p.nested.setContractAdmin(ctx, contractAddress, caller, newAdmin, p.authZPolicy)
 }
@@ -76,4 +82,9 @@ func (p PermissionedKeeper) SetContractInfoExtension(ctx sdk.Context, contract s
 
 func (p PermissionedKeeper) UpdateContractStatus(ctx sdk.Context, contract sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus) error {
 	return p.nested.setContractStatus(ctx, contract, caller, status, p.authZPolicy)
+}
+
+// SetAccessConfig updates the access config of a code id.
+func (p PermissionedKeeper) SetAccessConfig(ctx sdk.Context, codeID uint64, config types.AccessConfig) error {
+	return p.nested.setAccessConfig(ctx, codeID, config)
 }
