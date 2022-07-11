@@ -1,6 +1,7 @@
 # Changelog
 
 ## [Unreleased]
+* (x/wasm) [\#509](https://github.com/line/lbm-sdk/pull/590) Add integration tests for dynamic call #590
 
 ## [v0.43.0](https://github.com/line/lbm-sdk/releases/tag/v0.43.0)
 
