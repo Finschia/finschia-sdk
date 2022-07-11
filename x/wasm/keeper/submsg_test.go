@@ -38,7 +38,7 @@ func TestDispatchSubMsgSuccessCase(t *testing.T) {
 	require.Equal(t, uint64(1), codeID)
 
 	// creator instantiates a contract and gives it tokens
-	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, "", []byte("{}"), "reflect contract 1", contractStart)
+	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, nil, []byte("{}"), "reflect contract 1", contractStart)
 	require.NoError(t, err)
 	require.NotEmpty(t, contractAddr)
 
@@ -140,7 +140,7 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 	}
 	initMsgBz, err := json.Marshal(initMsg)
 	require.NoError(t, err)
-	hackatomAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, hackatomID, uploader, "", initMsgBz, "hackatom demo", contractStart)
+	hackatomAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, hackatomID, uploader, nil, initMsgBz, "hackatom demo", contractStart)
 	require.NoError(t, err)
 
 	validBankSend := func(contract, emptyAccount string) wasmvmtypes.CosmosMsg {
@@ -296,7 +296,7 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 			creator := keepers.Faucet.NewFundedAccount(ctx, contractStart...)
 			_, _, empty := keyPubAddr()
 
-			contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, reflectID, creator, "", []byte("{}"), fmt.Sprintf("contract %s", name), contractStart)
+			contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, reflectID, creator, nil, []byte("{}"), fmt.Sprintf("contract %s", name), contractStart)
 			require.NoError(t, err)
 
 			msg := tc.msg(contractAddr.String(), empty.String())
@@ -387,7 +387,7 @@ func TestDispatchSubMsgEncodeToNoSdkMsg(t *testing.T) {
 	require.NoError(t, err)
 
 	// creator instantiates a contract and gives it tokens
-	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, "", []byte("{}"), "reflect contract 1", contractStart)
+	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, nil, []byte("{}"), "reflect contract 1", contractStart)
 	require.NoError(t, err)
 	require.NotEmpty(t, contractAddr)
 
@@ -455,7 +455,7 @@ func TestDispatchSubMsgConditionalReplyOn(t *testing.T) {
 	require.NoError(t, err)
 
 	// creator instantiates a contract and gives it tokens
-	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, "", []byte("{}"), "reflect contract 1", contractStart)
+	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, nil, []byte("{}"), "reflect contract 1", contractStart)
 	require.NoError(t, err)
 
 	goodSend := wasmvmtypes.CosmosMsg{

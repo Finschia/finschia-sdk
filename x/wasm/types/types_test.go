@@ -173,9 +173,9 @@ func TestContractInfoSetExtension(t *testing.T) {
 }
 
 func TestContractInfoMarshalUnmarshal(t *testing.T) {
-	var myAddr = sdk.BytesToAccAddress(rand.Bytes(ContractAddrLen))
-	var myOtherAddr = sdk.BytesToAccAddress(rand.Bytes(ContractAddrLen))
-	var anyPos = AbsoluteTxPosition{BlockHeight: 1, TxIndex: 2}
+	var myAddr sdk.AccAddress = rand.Bytes(ContractAddrLen)
+	var myOtherAddr sdk.AccAddress = rand.Bytes(ContractAddrLen)
+	anyPos := AbsoluteTxPosition{BlockHeight: 1, TxIndex: 2}
 
 	anyTime := time.Now().UTC()
 	// using gov proposal here as a random protobuf types as it contains an Any type inside for nested unpacking
@@ -294,7 +294,7 @@ func TestContractInfoReadExtension(t *testing.T) {
 func TestNewEnv(t *testing.T) {
 	myTime := time.Unix(0, 1619700924259075000)
 	t.Logf("++ unix: %d", myTime.UnixNano())
-	var myContractAddr = sdk.BytesToAccAddress(randBytes(ContractAddrLen))
+	var myContractAddr sdk.AccAddress = randBytes(ContractAddrLen)
 	specs := map[string]struct {
 		srcCtx sdk.Context
 		exp    wasmvmtypes.Env

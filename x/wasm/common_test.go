@@ -29,7 +29,7 @@ func parseInitResponse(t *testing.T, data []byte) string {
 	require.NotEmpty(t, pInstResp.Address)
 	addr := pInstResp.Address
 	// ensure this is a valid sdk address
-	err := sdk.ValidateAccAddress(addr)
+	_, err := sdk.AccAddressFromBech32(addr)
 	require.NoError(t, err)
 	return addr
 }
@@ -43,7 +43,7 @@ func parseStoreAndInitResponse(t *testing.T, data []byte) (uint64, string) {
 	addr := res.Address
 	codeID := res.CodeID
 	// ensure this is a valid sdk address
-	err := sdk.ValidateAccAddress(addr)
+	_, err := sdk.AccAddressFromBech32(addr)
 	require.NoError(t, err)
 	return codeID, addr
 }

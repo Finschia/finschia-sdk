@@ -74,7 +74,7 @@ func (c CodeInfo) ValidateBasic() error {
 	if len(c.CodeHash) == 0 {
 		return sdkerrors.Wrap(ErrEmpty, "code hash")
 	}
-	if err := sdk.ValidateAccAddress(c.Creator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(c.Creator); err != nil {
 		return sdkerrors.Wrap(err, "creator")
 	}
 	if err := c.InstantiateConfig.ValidateBasic(); err != nil {
@@ -122,11 +122,11 @@ func (c *ContractInfo) ValidateBasic() error {
 	if c.CodeID == 0 {
 		return sdkerrors.Wrap(ErrEmpty, "code id")
 	}
-	if err := sdk.ValidateAccAddress(c.Creator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(c.Creator); err != nil {
 		return sdkerrors.Wrap(err, "creator")
 	}
 	if len(c.Admin) != 0 {
-		if err := sdk.ValidateAccAddress(c.Admin); err != nil {
+		if _, err := sdk.AccAddressFromBech32(c.Admin); err != nil {
 			return sdkerrors.Wrap(err, "admin")
 		}
 	}
@@ -235,9 +235,12 @@ func (c *ContractInfo) ResetFromGenesis(ctx sdk.Context) ContractCodeHistoryEntr
 // AdminAddr convert into sdk.AccAddress or nil when not set
 func (c *ContractInfo) AdminAddr() sdk.AccAddress {
 	if c.Admin == "" {
-		return ""
+		return nil
 	}
-	admin := sdk.AccAddress(c.Admin)
+	admin, err := sdk.AccAddressFromBech32(c.Admin)
+	if err != nil { // should never happen
+		panic(err.Error())
+	}
 	return admin
 }
 
