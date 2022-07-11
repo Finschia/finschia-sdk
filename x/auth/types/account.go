@@ -18,6 +18,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/crypto/keys/multisig"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/crypto/keys/secp256r1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	sdk "github.com/line/lbm-sdk/types"
 )
@@ -33,8 +34,9 @@ var (
 	ModuleAccountSig = []byte("macc")
 
 	PubKeyTypeSecp256k1 = byte(1)
-	PubKeyTypeEd25519   = byte(2)
-	PubKeyTypeMultisig  = byte(3)
+	PubKeyTypeSecp256R1 = byte(2)
+	PubKeyTypeEd25519   = byte(3)
+	PubKeyTypeMultisig  = byte(4)
 )
 
 // NewBaseAccount creates a new BaseAccount object
@@ -60,6 +62,7 @@ func ProtoBaseAccount() AccountI {
 }
 
 // NewBaseAccountWithAddress - returns a new base account with a given address
+// leaving AccountNumber and Sequence to zero.
 func NewBaseAccountWithAddress(addr sdk.AccAddress) *BaseAccount {
 	return &BaseAccount{
 		Address: addr.String(),
@@ -87,6 +90,8 @@ func (acc BaseAccount) GetPubKey() (pk cryptotypes.PubKey) {
 		return acc.Ed25519PubKey
 	} else if acc.Secp256K1PubKey != nil {
 		return acc.Secp256K1PubKey
+	} else if acc.Secp256R1PubKey != nil {
+		return acc.Secp256R1PubKey
 	} else if acc.MultisigPubKey != nil {
 		return acc.MultisigPubKey
 	}
@@ -96,13 +101,15 @@ func (acc BaseAccount) GetPubKey() (pk cryptotypes.PubKey) {
 // SetPubKey - Implements sdk.AccountI.
 func (acc *BaseAccount) SetPubKey(pubKey cryptotypes.PubKey) error {
 	if pubKey == nil {
-		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = nil, nil, nil
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = nil, nil, nil, nil
 	} else if pk, ok := pubKey.(*ed25519.PubKey); ok {
-		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = pk, nil, nil
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = pk, nil, nil, nil
 	} else if pk, ok := pubKey.(*secp256k1.PubKey); ok {
-		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = nil, pk, nil
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = nil, pk, nil, nil
+	} else if pk, ok := pubKey.(*secp256r1.PubKey); ok {
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = nil, nil, pk, nil
 	} else if pk, ok := pubKey.(*multisig.LegacyAminoPubKey); ok {
-		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = nil, nil, pk
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.Secp256R1PubKey, acc.MultisigPubKey = nil, nil, nil, pk
 	} else {
 		return fmt.Errorf("invalid pubkey")
 	}
@@ -237,11 +244,6 @@ func (ma ModuleAccount) SetPubKey(pubKey cryptotypes.PubKey) error {
 	return fmt.Errorf("not supported for module accounts")
 }
 
-// SetSequence - Implements AccountI
-func (ma ModuleAccount) SetSequence(seq uint64) error {
-	return fmt.Errorf("not supported for module accounts")
-}
-
 // Validate checks for errors on the account fields
 func (ma ModuleAccount) Validate() error {
 	if strings.TrimSpace(ma.Name) == "" {
@@ -296,7 +298,6 @@ func (ma ModuleAccount) MarshalYAML() (interface{}, error) {
 		Name:          ma.Name,
 		Permissions:   ma.Permissions,
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -362,7 +363,7 @@ type AccountI interface {
 	MarshalX() ([]byte, error)
 }
 
-func MarshalAccountX(cdc codec.BinaryMarshaler, acc AccountI) ([]byte, error) {
+func MarshalAccountX(cdc codec.BinaryCodec, acc AccountI) ([]byte, error) {
 	if bacc, ok := acc.(*BaseAccount); ok && bacc.MultisigPubKey == nil {
 		return acc.MarshalX()
 	} else if macc, ok := acc.(*ModuleAccount); ok && macc.MultisigPubKey == nil {
@@ -372,7 +373,7 @@ func MarshalAccountX(cdc codec.BinaryMarshaler, acc AccountI) ([]byte, error) {
 	}
 }
 
-func UnmarshalAccountX(cdc codec.BinaryMarshaler, bz []byte) (AccountI, error) {
+func UnmarshalAccountX(cdc codec.BinaryCodec, bz []byte) (AccountI, error) {
 	sigLen := len(BaseAccountSig)
 	if len(bz) < sigLen {
 		return nil, fmt.Errorf("invalid data")
@@ -433,10 +434,11 @@ type PubKeyJSON struct {
 	Type byte   `json:"type"`
 	Key  []byte `json:"key"`
 }
+
 type BaseAccountJSON struct {
 	Address       string     `json:"address"`
 	PubKey        PubKeyJSON `json:"pub_key"`
-	AccountNumber uint64     `json:"account_number"`
+	AccountNumber uint64     `json:"account_number,string"`
 	Sequence      string     `json:"sequence"`
 }
 
@@ -451,12 +453,13 @@ func (acc BaseAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
 	if acc.Secp256K1PubKey != nil {
 		bi.PubKey.Type = PubKeyTypeSecp256k1
 		bz, err = acc.Secp256K1PubKey.Marshal()
-	}
-	if acc.Ed25519PubKey != nil {
+	} else if acc.Secp256R1PubKey != nil {
+		bi.PubKey.Type = PubKeyTypeSecp256R1
+		bz, err = acc.Secp256R1PubKey.Marshal()
+	} else if acc.Ed25519PubKey != nil {
 		bi.PubKey.Type = PubKeyTypeEd25519
 		bz, err = acc.Ed25519PubKey.Marshal()
-	}
-	if acc.MultisigPubKey != nil {
+	} else if acc.MultisigPubKey != nil {
 		bi.PubKey.Type = PubKeyTypeMultisig
 		bz, err = acc.MultisigPubKey.Marshal()
 	}
@@ -474,6 +477,12 @@ func (acc *BaseAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error 
 	if err != nil {
 		return err
 	}
+	/* TODO: do we need to validate address format here
+	err = sdk.ValidateAccAddress(bi.Address)
+	if err != nil {
+		return err
+	}
+	*/
 
 	acc.Address = bi.Address
 	acc.AccountNumber = bi.AccountNumber
@@ -483,14 +492,20 @@ func (acc *BaseAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error 
 	}
 
 	switch bi.PubKey.Type {
+	case PubKeyTypeEd25519:
+		pk := new(ed25519.PubKey)
+		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
+			return err
+		}
+		acc.SetPubKey(pk)
 	case PubKeyTypeSecp256k1:
 		pk := new(secp256k1.PubKey)
 		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
 			return err
 		}
 		acc.SetPubKey(pk)
-	case PubKeyTypeEd25519:
-		pk := new(secp256k1.PubKey)
+	case PubKeyTypeSecp256R1:
+		pk := new(secp256r1.PubKey)
 		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
 			return err
 		}

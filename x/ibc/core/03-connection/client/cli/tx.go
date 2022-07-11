@@ -76,10 +76,6 @@ func NewConnectionOpenInitCmd() *cobra.Command {
 				counterpartyPrefix, version, delayPeriod, clientCtx.GetFromAddress(),
 			)
 
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
@@ -189,10 +185,6 @@ func NewConnectionOpenTryCmd() *cobra.Command {
 				consensusHeight, clientCtx.GetFromAddress(),
 			)
 
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
@@ -276,10 +268,6 @@ func NewConnectionOpenAckCmd() *cobra.Command {
 				consensusHeight, version, clientCtx.GetFromAddress(),
 			)
 
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
@@ -320,10 +308,6 @@ func NewConnectionOpenConfirmCmd() *cobra.Command {
 			msg := types.NewMsgConnectionOpenConfirm(
 				connectionID, proofAck, proofHeight, clientCtx.GetFromAddress(),
 			)
-
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},

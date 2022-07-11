@@ -9,7 +9,7 @@ type AuthorizationPolicy interface {
 	CanCreateCode(c types.AccessConfig, creator sdk.AccAddress) bool
 	CanInstantiateContract(c types.AccessConfig, actor sdk.AccAddress) bool
 	CanModifyContract(admin, actor sdk.AccAddress) bool
-	CanUpdateContractStatus(c types.AccessConfig, actor sdk.AccAddress) bool
+	CanUpdateContractStatus() bool
 }
 
 type DefaultAuthorizationPolicy struct {
@@ -27,8 +27,8 @@ func (p DefaultAuthorizationPolicy) CanModifyContract(admin, actor sdk.AccAddres
 	return admin != "" && admin.Equals(actor)
 }
 
-func (p DefaultAuthorizationPolicy) CanUpdateContractStatus(config types.AccessConfig, actor sdk.AccAddress) bool {
-	return config.Allowed(actor)
+func (p DefaultAuthorizationPolicy) CanUpdateContractStatus() bool {
+	return false
 }
 
 // GovAuthorizationPolicy is for the gov handler(proposal_handler.go) authorities
@@ -50,7 +50,7 @@ func (p GovAuthorizationPolicy) CanModifyContract(sdk.AccAddress, sdk.AccAddress
 	return true
 }
 
-func (p GovAuthorizationPolicy) CanUpdateContractStatus(types.AccessConfig, sdk.AccAddress) bool {
-	// The gov handler can update contract status regardless of the current access config
+func (p GovAuthorizationPolicy) CanUpdateContractStatus() bool {
+	// The gov handler can update contract status
 	return true
 }

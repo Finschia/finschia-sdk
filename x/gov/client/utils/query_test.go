@@ -5,17 +5,16 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/line/ostracon/rpc/client/mock"
 	ctypes "github.com/line/ostracon/rpc/core/types"
 	octypes "github.com/line/ostracon/types"
-	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/gov/client/utils"
 	"github.com/line/lbm-sdk/x/gov/types"
 )
@@ -63,7 +62,7 @@ func (mock TxSearchMock) TxSearch(ctx context.Context, query string, prove bool,
 		return &ctypes.ResultTxSearch{}, nil
 	}
 
-	txs := mock.txs[start:end]
+	txs := matchingTxs[start:end]
 	rst := &ctypes.ResultTxSearch{Txs: make([]*ctypes.ResultTx, len(txs)), TotalCount: len(txs)}
 	for i := range txs {
 		rst.Txs[i] = &ctypes.ResultTx{Tx: txs[i]}
@@ -76,15 +75,9 @@ func (mock TxSearchMock) Block(ctx context.Context, height *int64) (*ctypes.Resu
 	return &ctypes.ResultBlock{Block: &octypes.Block{}}, nil
 }
 
-func newTestCodec() *codec.LegacyAmino {
-	cdc := codec.NewLegacyAmino()
-	sdk.RegisterLegacyAminoCodec(cdc)
-	types.RegisterLegacyAminoCodec(cdc)
-	authtypes.RegisterLegacyAminoCodec(cdc)
-	return cdc
-}
-
 func TestGetPaginatedVotes(t *testing.T) {
+	encCfg := simapp.MakeTestEncodingConfig()
+
 	type testCase struct {
 		description string
 		page, limit int
@@ -116,7 +109,8 @@ func TestGetPaginatedVotes(t *testing.T) {
 			},
 			votes: []types.Vote{
 				types.NewVote(0, acc1, types.NewNonSplitVoteOption(types.OptionYes)),
-				types.NewVote(0, acc2, types.NewNonSplitVoteOption(types.OptionYes))},
+				types.NewVote(0, acc2, types.NewNonSplitVoteOption(types.OptionYes)),
+			},
 		},
 		{
 			description: "2MsgPerTx1Chunk",
@@ -128,7 +122,8 @@ func TestGetPaginatedVotes(t *testing.T) {
 			},
 			votes: []types.Vote{
 				types.NewVote(0, acc1, types.NewNonSplitVoteOption(types.OptionYes)),
-				types.NewVote(0, acc1, types.NewNonSplitVoteOption(types.OptionYes))},
+				types.NewVote(0, acc1, types.NewNonSplitVoteOption(types.OptionYes)),
+			},
 		},
 		{
 			description: "2MsgPerTx2Chunk",
@@ -140,7 +135,8 @@ func TestGetPaginatedVotes(t *testing.T) {
 			},
 			votes: []types.Vote{
 				types.NewVote(0, acc2, types.NewNonSplitVoteOption(types.OptionYes)),
-				types.NewVote(0, acc2, types.NewNonSplitVoteOption(types.OptionYes))},
+				types.NewVote(0, acc2, types.NewNonSplitVoteOption(types.OptionYes)),
+			},
 		},
 		{
 			description: "IncompleteSearchTx",
@@ -170,17 +166,12 @@ func TestGetPaginatedVotes(t *testing.T) {
 		tc := tc
 
 		t.Run(tc.description, func(t *testing.T) {
-			var (
-				marshalled = make([]octypes.Tx, len(tc.msgs))
-				cdc        = newTestCodec()
-			)
-
-			encodingConfig := simapp.MakeTestEncodingConfig()
-			cli := TxSearchMock{txs: marshalled, txConfig: encodingConfig.TxConfig}
+			var marshalled = make([]octypes.Tx, len(tc.msgs))
+			cli := TxSearchMock{txs: marshalled, txConfig: encCfg.TxConfig}
 			clientCtx := client.Context{}.
-				WithLegacyAmino(cdc).
+				WithLegacyAmino(encCfg.Amino).
 				WithClient(cli).
-				WithTxConfig(encodingConfig.TxConfig)
+				WithTxConfig(encCfg.TxConfig)
 
 			for i := range tc.msgs {
 				txBuilder := clientCtx.TxConfig.NewTxBuilder()

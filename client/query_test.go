@@ -34,7 +34,7 @@ func (s *IntegrationTestSuite) TestQueryABCIHeight() {
 			name:      "empty request height and context height - use latest height",
 			reqHeight: 0,
 			ctxHeight: 0,
-			expHeight: 4,
+			expHeight: 5,
 		},
 	}
 
@@ -50,14 +50,13 @@ func (s *IntegrationTestSuite) TestQueryABCIHeight() {
 			req := abci.RequestQuery{
 				Path:   fmt.Sprintf("store/%s/key", banktypes.StoreKey),
 				Height: tc.reqHeight,
-				Data:   append(banktypes.BalancesPrefix, val.Address.Bytes()...),
+				Data:   banktypes.CreateAccountBalancesPrefix(val.Address.Bytes()),
 				Prove:  true,
 			}
 
 			res, err := clientCtx.QueryABCI(req)
 			s.Require().NoError(err)
 
-			// Line: block height could be higher if execution gets slowed down
 			s.Require().LessOrEqual(tc.expHeight, res.Height)
 		})
 	}

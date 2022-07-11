@@ -6,12 +6,11 @@ package rest_test
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/testutil/network"
 	"github.com/line/lbm-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/rest"
-	authclient "github.com/line/lbm-sdk/x/auth/client"
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	bankrest "github.com/line/lbm-sdk/x/bank/client/rest"
@@ -19,9 +18,6 @@ import (
 )
 
 func (s *IntegrationTestSuite) TestCoinSend() {
-	encodingConfig := simapp.MakeTestEncodingConfig()
-	authclient.Codec = encodingConfig.Marshaler
-
 	val := s.network.Validators[0]
 
 	account, err := getAccountInfo(val)
@@ -29,7 +25,7 @@ func (s *IntegrationTestSuite) TestCoinSend() {
 
 	sendReq := generateSendReq(
 		account,
-		types.Coins{types.NewCoin(s.cfg.BondDenom, types.TokensFromConsensusPower(1))},
+		types.Coins{types.NewCoin(s.cfg.BondDenom, types.TokensFromConsensusPower(1, sdk.DefaultPowerReduction))},
 	)
 
 	stdTx, err := submitSendReq(val, sendReq)

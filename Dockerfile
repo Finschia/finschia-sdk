@@ -1,5 +1,5 @@
 # Simple usage with a mounted data directory:
-# > docker build -t simapp .
+# > docker build --platform="linux/amd64" -t simapp .
 #
 # Server:
 # > docker run -it -p 26657:26657 -p 26656:26656 -v ~/.simapp:/root/.simapp simapp simd init test-chain
@@ -11,10 +11,11 @@
 # > docker run -it -p 26657:26657 -p 26656:26656 -v ~/.simappcli:/root/.simapp simapp simd keys list
 # TODO: demo connecting rest-server (or is this in server now?)
 FROM golang:alpine AS build-env
+
 ARG LBM_BUILD_OPTIONS=""
 
 # Install minimum necessary dependencies,
-ENV PACKAGES curl wget make cmake git libc-dev bash gcc g++ linux-headers eudev-dev python3 perl
+ENV PACKAGES curl make cmake git libc-dev bash gcc g++ linux-headers eudev-dev python3
 RUN apk add --update --no-cache $PACKAGES
 
 # Set working directory for the build
@@ -37,7 +38,7 @@ ENV PATH=$CARGO_HOME/bin:$PATH
 
 RUN wget "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-musl/rustup-init"
 RUN chmod +x rustup-init
-RUN ./rustup-init -y --no-modify-path --default-toolchain 1.53.0; rm rustup-init
+RUN ./rustup-init -y --no-modify-path --default-toolchain 1.57.0; rm rustup-init
 RUN chmod -R a+w $RUSTUP_HOME $CARGO_HOME
 RUN cd $(go list -f "{{ .Dir }}" -m github.com/line/wasmvm) && \
     cd ./libwasmvm && \
@@ -45,10 +46,13 @@ RUN cd $(go list -f "{{ .Dir }}" -m github.com/line/wasmvm) && \
     mv -f target/release/examples/libstaticlib.a /usr/lib/libwasmvm_static.a && \
     rm -rf target
 
+#-------
+
 # Add source files
 COPY . .
 
 # install simapp, remove packages
+#RUN make build-linux
 RUN BUILD_TAGS=static make build CGO_ENABLED=1 LBM_BUILD_OPTIONS="$LBM_BUILD_OPTIONS"
 
 # Final image
@@ -57,7 +61,7 @@ FROM alpine:edge
 WORKDIR /root
 
 # Set up OS dependencies
-RUN apk add --update --no-cache libstdc++ ca-certificates
+RUN apk add --update --no-cache ca-certificates libstdc++
 
 # Copy over binaries from the build-env
 COPY --from=build-env /go/src/github.com/line/lbm-sdk/build/simd /usr/bin/simd

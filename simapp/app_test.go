@@ -6,26 +6,28 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
 	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/libs/log"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/tests/mocks"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
-
 	"github.com/line/lbm-sdk/x/auth"
 	"github.com/line/lbm-sdk/x/auth/vesting"
+	authz_m "github.com/line/lbm-sdk/x/authz/module"
+	"github.com/line/lbm-sdk/x/bank"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/capability"
-	"github.com/line/lbm-sdk/x/consortium"
 	"github.com/line/lbm-sdk/x/crisis"
 	"github.com/line/lbm-sdk/x/distribution"
 	"github.com/line/lbm-sdk/x/evidence"
+	feegrantmodule "github.com/line/lbm-sdk/x/feegrant/module"
+	foundationmodule "github.com/line/lbm-sdk/x/foundation/module"
 	"github.com/line/lbm-sdk/x/genutil"
 	"github.com/line/lbm-sdk/x/gov"
 	transfer "github.com/line/lbm-sdk/x/ibc/applications/transfer"
@@ -34,6 +36,7 @@ import (
 	"github.com/line/lbm-sdk/x/params"
 	"github.com/line/lbm-sdk/x/slashing"
 	"github.com/line/lbm-sdk/x/staking"
+	tokenmodule "github.com/line/lbm-sdk/x/token/module"
 	"github.com/line/lbm-sdk/x/upgrade"
 )
 
@@ -43,10 +46,7 @@ func TestSimAppExportAndBlockedAddrs(t *testing.T) {
 	app := NewSimApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{}, nil)
 
 	for acc := range maccPerms {
-		ex, _ := allowedReceivingModAcc[acc]
-		require.Equal(t,
-			!ex,
-			app.BankKeeper.BlockedAddr(app.AccountKeeper.GetModuleAddress(acc)),
+		require.Equal(t, !allowedReceivingModAcc[acc], app.BankKeeper.BlockedAddr(app.AccountKeeper.GetModuleAddress(acc)),
 			"ensure that blocked addresses are properly set in bank keeper")
 	}
 
@@ -119,6 +119,7 @@ func TestRunMigrations(t *testing.T) {
 			"bank", 0,
 			true, "module migration versions should start at 1: invalid version", false, "", 0,
 		},
+		// TODO(dudong2): bank module has no migration func, so comment out tests
 		// {
 		// 	"throws error on RunMigrations if no migration registered for bank",
 		// 	"", 1,
@@ -165,11 +166,12 @@ func TestRunMigrations(t *testing.T) {
 			// Run migrations only for bank. That's why we put the initial
 			// version for bank as 1, and for all other modules, we put as
 			// their latest ConsensusVersion.
-			_, err = app.RunMigrations(
-				app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()}),
+			_, err = app.mm.RunMigrations(
+				app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()}), app.configurator,
 				module.VersionMap{
 					"bank":         1,
 					"auth":         auth.AppModule{}.ConsensusVersion(),
+					"authz":        authz_m.AppModule{}.ConsensusVersion(),
 					"staking":      staking.AppModule{}.ConsensusVersion(),
 					"mint":         mint.AppModule{}.ConsensusVersion(),
 					"distribution": distribution.AppModule{}.ConsensusVersion(),
@@ -179,18 +181,21 @@ func TestRunMigrations(t *testing.T) {
 					"ibc":          ibc.AppModule{}.ConsensusVersion(),
 					"upgrade":      upgrade.AppModule{}.ConsensusVersion(),
 					"vesting":      vesting.AppModule{}.ConsensusVersion(),
+					"feegrant":     feegrantmodule.AppModule{}.ConsensusVersion(),
 					"transfer":     transfer.AppModule{}.ConsensusVersion(),
 					"evidence":     evidence.AppModule{}.ConsensusVersion(),
 					"crisis":       crisis.AppModule{}.ConsensusVersion(),
 					"genutil":      genutil.AppModule{}.ConsensusVersion(),
 					"capability":   capability.AppModule{}.ConsensusVersion(),
-					"consortium":   consortium.AppModule{}.ConsensusVersion(),
+					"foundation":   foundationmodule.AppModule{}.ConsensusVersion(),
+					"token":        tokenmodule.AppModule{}.ConsensusVersion(),
 				},
 			)
 			if tc.expRunErr {
 				require.EqualError(t, err, tc.expRunErrMsg)
 			} else {
 				require.NoError(t, err)
+				// Make sure bank's migration is called.
 				require.Equal(t, tc.expCalled, called)
 			}
 		})
@@ -218,11 +223,11 @@ func TestInitGenesisOnMigration(t *testing.T) {
 
 	// Run migrations only for "mock" module. We exclude it from
 	// the VersionMap to simulate upgrading with a new module.
-	_, err := app.RunMigrations(
-		app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()}),
+	_, err := app.mm.RunMigrations(ctx, app.configurator,
 		module.VersionMap{
-			"bank":         1,
+			"bank":         bank.AppModule{}.ConsensusVersion(),
 			"auth":         auth.AppModule{}.ConsensusVersion(),
+			"authz":        authz_m.AppModule{}.ConsensusVersion(),
 			"staking":      staking.AppModule{}.ConsensusVersion(),
 			"mint":         mint.AppModule{}.ConsensusVersion(),
 			"distribution": distribution.AppModule{}.ConsensusVersion(),
@@ -237,7 +242,8 @@ func TestInitGenesisOnMigration(t *testing.T) {
 			"crisis":       crisis.AppModule{}.ConsensusVersion(),
 			"genutil":      genutil.AppModule{}.ConsensusVersion(),
 			"capability":   capability.AppModule{}.ConsensusVersion(),
-			"consortium":   consortium.AppModule{}.ConsensusVersion(),
+			"foundation":   foundationmodule.AppModule{}.ConsensusVersion(),
+			"token":        tokenmodule.AppModule{}.ConsensusVersion(),
 		},
 	)
 

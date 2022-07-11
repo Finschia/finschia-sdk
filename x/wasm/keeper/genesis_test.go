@@ -12,13 +12,11 @@ import (
 	"testing"
 	"time"
 
-	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
-
 	fuzz "github.com/google/gofuzz"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/proto/ostracon/crypto"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -27,6 +25,7 @@ import (
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
+	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
 	distributionkeeper "github.com/line/lbm-sdk/x/distribution/keeper"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	paramskeeper "github.com/line/lbm-sdk/x/params/keeper"
@@ -114,7 +113,9 @@ func TestGenesisExportImport(t *testing.T) {
 	wasmKeeper.IterateContractInfo(srcCtx, func(address sdk.AccAddress, info wasmTypes.ContractInfo) bool {
 		wasmKeeper.removeFromContractCodeSecondaryIndex(srcCtx, address, wasmKeeper.getLastContractHistoryEntry(srcCtx, address))
 		prefixStore := prefix.NewStore(srcCtx.KVStore(wasmKeeper.storeKey), types.GetContractCodeHistoryElementPrefix(address))
-		for iter := prefixStore.Iterator(nil, nil); iter.Valid(); iter.Next() {
+		iter := prefixStore.Iterator(nil, nil)
+
+		for ; iter.Valid(); iter.Next() {
 			prefixStore.Delete(iter.Key())
 		}
 		x := &info
@@ -122,6 +123,7 @@ func TestGenesisExportImport(t *testing.T) {
 		wasmKeeper.storeContractInfo(srcCtx, address, x)
 		wasmKeeper.addToContractCodeSecondaryIndex(srcCtx, address, newHistory)
 		wasmKeeper.appendToContractHistory(srcCtx, address, newHistory)
+		iter.Close()
 		return false
 	})
 
@@ -146,6 +148,8 @@ func TestGenesisExportImport(t *testing.T) {
 		if !assert.False(t, dstIT.Valid()) {
 			t.Fatalf("dest Iterator still has key :%X", dstIT.Key())
 		}
+		srcIT.Close()
+		dstIT.Close()
 	}
 }
 
@@ -458,10 +462,6 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 			"permission": "Everybody"
 		},
 		"instantiate_default_permission": "Everybody",
-		"contract_status_access": {
-			"permission": "Nobody"
-		},
-		"max_wasm_code_size": 500000,
 		"gas_multiplier": 100,
 		"instance_cost": 40000,
 		"compile_cost": 2
@@ -493,8 +493,8 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
     }
   ],
   "sequences": [
-  {"id_key": %q, "value": "2"},
-  {"id_key": %q, "value": "2"}
+  {"id_key": "BGxhc3RDb2RlSWQ=", "value": "2"},
+  {"id_key": "BGxhc3RDb250cmFjdElk", "value": "3"}
   ]
 }`
 	keeper, ctx, _ := setupKeeper(t)
@@ -505,9 +505,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 
 	wasmCodeHash := sha256.Sum256(wasmCode)
 	enc64 := base64.StdEncoding.EncodeToString
-	genesisStr := fmt.Sprintf(genesisTemplate, enc64(wasmCodeHash[:]), enc64(wasmCode),
-		enc64(append([]byte{0x04}, []byte("lastCodeId")...)),
-		enc64(append([]byte{0x04}, []byte("lastContractId")...)))
+	genesisStr := fmt.Sprintf(genesisTemplate, enc64(wasmCodeHash[:]), enc64(wasmCode))
 
 	var importState wasmTypes.GenesisState
 	err = keeper.cdc.UnmarshalJSON([]byte(genesisStr), &importState)
@@ -563,15 +561,17 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 	},
 	}
 	assert.Equal(t, expHistory, keeper.GetContractHistory(ctx, contractAddr))
+	assert.Equal(t, uint64(2), keeper.PeekAutoIncrementID(ctx, types.KeyLastCodeID))
+	assert.Equal(t, uint64(3), keeper.PeekAutoIncrementID(ctx, types.KeyLastInstanceID))
 }
 
 func TestSupportedGenMsgTypes(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 	var (
-		myAddress          = sdk.BytesToAccAddress(bytes.Repeat([]byte{1}, sdk.BytesAddrLen))
-		verifierAddress    = sdk.BytesToAccAddress(bytes.Repeat([]byte{2}, sdk.BytesAddrLen))
-		beneficiaryAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{3}, sdk.BytesAddrLen))
+		myAddress          = sdk.BytesToAccAddress(bytes.Repeat([]byte{1}, types.ContractAddrLen))
+		verifierAddress    = sdk.BytesToAccAddress(bytes.Repeat([]byte{2}, types.ContractAddrLen))
+		beneficiaryAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{3}, types.ContractAddrLen))
 	)
 	const denom = "stake"
 	importState := types.GenesisState{
@@ -614,7 +614,8 @@ func TestSupportedGenMsgTypes(t *testing.T) {
 	ctx, keepers := CreateDefaultTestInput(t)
 	keeper := keepers.WasmKeeper
 	ctx = ctx.WithBlockHeight(0).WithGasMeter(sdk.NewInfiniteGasMeter())
-	fundAccounts(t, ctx, keepers.AccountKeeper, keepers.BankKeeper, myAddress, sdk.NewCoins(sdk.NewCoin(denom, sdk.NewInt(100))))
+	keepers.Faucet.Fund(ctx, myAddress, sdk.NewCoin(denom, sdk.NewInt(100)))
+
 	// when
 	_, err = InitGenesis(ctx, keeper, importState, &StakingKeeperMock{}, TestHandler(keepers.ContractKeeper))
 	require.NoError(t, err)
@@ -641,8 +642,9 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 	require.NoError(t, err)
 	t.Cleanup(func() { os.RemoveAll(tempDir) })
 	var (
-		keyParams = sdk.NewKVStoreKey(paramtypes.StoreKey)
-		keyWasm   = sdk.NewKVStoreKey(wasmTypes.StoreKey)
+		keyParams  = sdk.NewKVStoreKey(paramtypes.StoreKey)
+		tkeyParams = sdk.NewKVStoreKey(paramtypes.TStoreKey)
+		keyWasm    = sdk.NewKVStoreKey(wasmTypes.StoreKey)
 	)
 
 	db := memdb.NewDB()
@@ -651,7 +653,7 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 	ms.MountStoreWithDB(keyParams, sdk.StoreTypeIAVL, db)
 	require.NoError(t, ms.LoadLatestVersion())
 
-	ctx := sdk.NewContext(ms, tmproto.Header{
+	ctx := sdk.NewContext(ms, ocproto.Header{
 		Height: 1234567,
 		Time:   time.Date(2020, time.April, 22, 12, 0, 0, 0, time.UTC),
 	}, false, log.NewNopLogger())
@@ -666,9 +668,9 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 	govtypes.RegisterInterfaces(encodingConfig.InterfaceRegistry)
 
 	wasmConfig := wasmTypes.DefaultWasmConfig()
-	pk := paramskeeper.NewKeeper(encodingConfig.Marshaler, encodingConfig.Amino, keyParams)
+	pk := paramskeeper.NewKeeper(encodingConfig.Marshaler, encodingConfig.Amino, keyParams, tkeyParams)
 
-	srcKeeper := NewKeeper(encodingConfig.Marshaler, keyWasm, pk.Subspace(wasmTypes.DefaultParamspace), authkeeper.AccountKeeper{}, bankpluskeeper.BaseKeeper{}, stakingkeeper.Keeper{}, distributionkeeper.Keeper{}, nil, nil, nil, nil, nil, nil, tempDir, wasmConfig, SupportedFeatures, nil, nil)
+	srcKeeper := NewKeeper(encodingConfig.Marshaler, keyWasm, pk.Subspace(wasmTypes.ModuleName), authkeeper.AccountKeeper{}, bankpluskeeper.BaseKeeper{}, stakingkeeper.Keeper{}, distributionkeeper.Keeper{}, nil, nil, nil, nil, nil, nil, tempDir, wasmConfig, SupportedFeatures, nil, nil)
 	return &srcKeeper, ctx, []sdk.StoreKey{keyWasm, keyParams}
 }
 

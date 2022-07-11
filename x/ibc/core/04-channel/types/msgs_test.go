@@ -33,7 +33,7 @@ const (
 	// invalid constants used for testing
 	invalidPort      = "(invalidport1)"
 	invalidShortPort = "p"
-	invalidLongPort  = "invalidlongportinvalidlongportinvalidlongportidinvalidlongportidinvalid"
+	invalidLongPort  = "invalidlongportinvalidlongportinvalidlongportidinvalidlongportidinvalidinvalidlongportinvalidlongportinvalidlongportinvalidlongport"
 
 	invalidChannel      = "(invalidchannel1)"
 	invalidShortChannel = "invalid"
@@ -96,7 +96,7 @@ func (suite *TypesTestSuite) SetupTest() {
 
 	merkleProof, err := commitmenttypes.ConvertProofs(res.ProofOps)
 	suite.Require().NoError(err)
-	proof, err := app.AppCodec().MarshalBinaryBare(&merkleProof)
+	proof, err := app.AppCodec().Marshal(&merkleProof)
 	suite.Require().NoError(err)
 
 	suite.proof = proof

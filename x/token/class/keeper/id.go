@@ -19,7 +19,7 @@ func (k Keeper) NewID(ctx sdk.Context) string {
 			return encoded
 		}
 	}
-	panic("Class id space exhausted: uint64")
+	panic("contract id space exhausted: uint64")
 }
 
 func nonceToID(nonce uint64) string {

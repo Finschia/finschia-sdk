@@ -13,7 +13,7 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/rest"
-	authclient "github.com/line/lbm-sdk/x/auth/client"
+	authtx "github.com/line/lbm-sdk/x/auth/tx"
 	"github.com/line/lbm-sdk/x/auth/types"
 	genutilrest "github.com/line/lbm-sdk/x/genutil/client/rest"
 )
@@ -94,7 +94,7 @@ func QueryTxsRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		searchResult, err := authclient.QueryTxsByEvents(clientCtx, events, page, limit, "")
+		searchResult, err := authtx.QueryTxsByEvents(clientCtx, events, page, limit, "")
 		if rest.CheckInternalServerError(w, err) {
 			return
 		}
@@ -103,7 +103,7 @@ func QueryTxsRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			packStdTxResponse(w, clientCtx, txRes)
 		}
 
-		err = checkAminoMarshalError(clientCtx, searchResult, "/lbm/tx/v1/txs")
+		err = checkAminoMarshalError(clientCtx, searchResult, "/cosmos/tx/v1beta1/txs")
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 
@@ -126,7 +126,7 @@ func QueryTxRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		output, err := authclient.QueryTx(clientCtx, hashHexStr)
+		output, err := authtx.QueryTx(clientCtx, hashHexStr)
 		if err != nil {
 			if strings.Contains(err.Error(), hashHexStr) {
 				rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
@@ -146,7 +146,7 @@ func QueryTxRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			rest.WriteErrorResponse(w, http.StatusNotFound, fmt.Sprintf("no transaction found with hash %s", hashHexStr))
 		}
 
-		err = checkAminoMarshalError(clientCtx, output, "/lbm/tx/v1/txs/{txhash}")
+		err = checkAminoMarshalError(clientCtx, output, "/cosmos/tx/v1beta1/txs/{txhash}")
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 

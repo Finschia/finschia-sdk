@@ -11,6 +11,7 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/crypto/hd"
 	"github.com/line/lbm-sdk/testutil"
+	"github.com/line/lbm-sdk/testutil/testdata"
 
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/crypto/keyring"
@@ -90,8 +91,8 @@ func Test_runExportCmd(t *testing.T) {
 				kb.Delete("keyname1") // nolint:errcheck
 			})
 
-			path := sdk.GetConfig().GetFullFundraiserPath()
-			_, err = kb.NewAccount("keyname1", testutil.TestMnemonic, "", path, hd.Secp256k1)
+			path := sdk.GetConfig().GetFullBIP44Path()
+			_, err = kb.NewAccount("keyname1", testdata.TestMnemonic, "", path, hd.Secp256k1)
 			require.NoError(t, err)
 
 			clientCtx := client.Context{}.

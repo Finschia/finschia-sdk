@@ -62,10 +62,16 @@ func TestConstructorOptions(t *testing.T) {
 				assert.IsType(t, &wasmtesting.MockCoinTransferrer{}, k.bank)
 			},
 		},
+		"max recursion query limit": {
+			srcOpt: WithMaxQueryStackSize(1),
+			verify: func(t *testing.T, k Keeper) {
+				assert.IsType(t, uint32(1), k.maxQueryStackSize)
+			},
+		},
 	}
 	for name, spec := range specs {
 		t.Run(name, func(t *testing.T) {
-			k := NewKeeper(nil, nil, paramtypes.NewSubspace(nil, nil, nil, ""), authkeeper.AccountKeeper{}, bankpluskeeper.BaseKeeper{}, stakingkeeper.Keeper{}, distributionkeeper.Keeper{}, nil, nil, nil, nil, nil, nil, "tempDir", types.DefaultWasmConfig(), SupportedFeatures, nil, nil, spec.srcOpt)
+			k := NewKeeper(nil, nil, paramtypes.NewSubspace(nil, nil, nil, nil, ""), authkeeper.AccountKeeper{}, bankpluskeeper.BaseKeeper{}, stakingkeeper.Keeper{}, distributionkeeper.Keeper{}, nil, nil, nil, nil, nil, nil, "tempDir", types.DefaultWasmConfig(), SupportedFeatures, nil, nil, spec.srcOpt)
 			spec.verify(t, k)
 		})
 	}

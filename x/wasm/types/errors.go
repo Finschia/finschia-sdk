@@ -69,4 +69,38 @@ var (
 
 	// ErrInvalidEvent error if an attribute/event from the contract is invalid
 	ErrInvalidEvent = sdkErrors.Register(DefaultCodespace, 21, "invalid event")
+
+	//  error if an address does not belong to a contract (just for registration)
+	_ = sdkErrors.Register(DefaultCodespace, 22, "no such contract")
+
+	// ErrNotAJSONObject error if given data is not a JSON object
+	ErrNotAJSONObject = sdkErrors.Register(DefaultCodespace, 23, "not a JSON object")
+
+	// ErrNoTopLevelKey error if a JSON object has no top-level key
+	ErrNoTopLevelKey = sdkErrors.Register(DefaultCodespace, 24, "no top-level key")
+
+	// ErrMultipleTopLevelKeys error if a JSON object has more than one top-level key
+	ErrMultipleTopLevelKeys = sdkErrors.Register(DefaultCodespace, 25, "multiple top-level keys")
+
+	// ErrTopKevelKeyNotAllowed error if a JSON object has a top-level key that is not allowed
+	ErrTopKevelKeyNotAllowed = sdkErrors.Register(DefaultCodespace, 26, "top-level key is not allowed")
+
+	// ErrExceedMaxQueryStackSize error if max query stack size is exceeded
+	ErrExceedMaxQueryStackSize = sdkErrors.Register(DefaultCodespace, 27, "max query stack size exceeded")
 )
+
+type ErrNoSuchContract struct {
+	Addr string
+}
+
+func (m *ErrNoSuchContract) Error() string {
+	return "no such contract: " + m.Addr
+}
+
+func (m *ErrNoSuchContract) ABCICode() uint32 {
+	return 22
+}
+
+func (m *ErrNoSuchContract) Codespace() string {
+	return DefaultCodespace
+}

@@ -18,7 +18,7 @@ type AppModule struct {
 	bankKeeper bankkeeper.Keeper
 }
 
-func NewAppModule(cdc codec.Marshaler, keeper bankkeeper.Keeper, accountKeeper accountkeeper.AccountKeeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper bankkeeper.Keeper, accountKeeper accountkeeper.AccountKeeper) AppModule {
 	return AppModule{
 		AppModule:  bank.NewAppModule(cdc, keeper, accountKeeper),
 		bankKeeper: keeper,

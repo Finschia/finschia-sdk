@@ -1,6 +1,8 @@
 package types
 
 import (
+	"bytes"
+	"context"
 	"strings"
 	"testing"
 	"time"
@@ -171,8 +173,8 @@ func TestContractInfoSetExtension(t *testing.T) {
 }
 
 func TestContractInfoMarshalUnmarshal(t *testing.T) {
-	var myAddr = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
-	var myOtherAddr = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
+	var myAddr = sdk.BytesToAccAddress(rand.Bytes(ContractAddrLen))
+	var myOtherAddr = sdk.BytesToAccAddress(rand.Bytes(ContractAddrLen))
 	var anyPos = AbsoluteTxPosition{BlockHeight: 1, TxIndex: 2}
 
 	anyTime := time.Now().UTC()
@@ -197,11 +199,11 @@ func TestContractInfoMarshalUnmarshal(t *testing.T) {
 	govtypes.RegisterInterfaces(interfaceRegistry)
 
 	// when encode
-	bz, err := marshaler.MarshalBinaryBare(&src)
+	bz, err := marshaler.Marshal(&src)
 	require.NoError(t, err)
 	// and decode
 	var dest ContractInfo
-	err = marshaler.UnmarshalBinaryBare(bz, &dest)
+	err = marshaler.Unmarshal(bz, &dest)
 	// then
 	require.NoError(t, err)
 	assert.Equal(t, src, dest)
@@ -292,13 +294,27 @@ func TestContractInfoReadExtension(t *testing.T) {
 func TestNewEnv(t *testing.T) {
 	myTime := time.Unix(0, 1619700924259075000)
 	t.Logf("++ unix: %d", myTime.UnixNano())
-	var myContractAddr = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
+	var myContractAddr = sdk.BytesToAccAddress(randBytes(ContractAddrLen))
 	specs := map[string]struct {
 		srcCtx sdk.Context
 		exp    wasmvmtypes.Env
 	}{
-		"all good": {
-			srcCtx: sdk.Context{}.WithBlockHeight(1).WithBlockTime(myTime).WithChainID("testing"),
+		"all good with tx counter": {
+			srcCtx: WithTXCounter(sdk.Context{}.WithBlockHeight(1).WithBlockTime(myTime).WithChainID("testing").WithContext(context.Background()), 0),
+			exp: wasmvmtypes.Env{
+				Block: wasmvmtypes.BlockInfo{
+					Height:  1,
+					Time:    1619700924259075000,
+					ChainID: "testing",
+				},
+				Contract: wasmvmtypes.ContractInfo{
+					Address: myContractAddr.String(),
+				},
+				Transaction: &wasmvmtypes.TransactionInfo{Index: 0},
+			},
+		},
+		"without tx counter": {
+			srcCtx: sdk.Context{}.WithBlockHeight(1).WithBlockTime(myTime).WithChainID("testing").WithContext(context.Background()),
 			exp: wasmvmtypes.Env{
 				Block: wasmvmtypes.BlockInfo{
 					Height:  1,
@@ -316,5 +332,125 @@ func TestNewEnv(t *testing.T) {
 			assert.Equal(t, spec.exp, NewEnv(spec.srcCtx, myContractAddr))
 		})
 	}
+}
 
+func TestVerifyAddressLen(t *testing.T) {
+	specs := map[string]struct {
+		src    []byte
+		expErr bool
+	}{
+		"valid contract address": {
+			src: bytes.Repeat([]byte{1}, 32),
+		},
+		"valid legacy address": {
+			src: bytes.Repeat([]byte{1}, 20),
+		},
+		"address too short for legacy": {
+			src:    bytes.Repeat([]byte{1}, 19),
+			expErr: true,
+		},
+		"address too short for contract": {
+			src:    bytes.Repeat([]byte{1}, 31),
+			expErr: true,
+		},
+		"address too long for legacy": {
+			src:    bytes.Repeat([]byte{1}, 21),
+			expErr: true,
+		},
+		"address too long for contract": {
+			src:    bytes.Repeat([]byte{1}, 33),
+			expErr: true,
+		},
+	}
+	for name, spec := range specs {
+		t.Run(name, func(t *testing.T) {
+			gotErr := VerifyAddressLen()(spec.src)
+			if spec.expErr {
+				require.Error(t, gotErr)
+				return
+			}
+			require.NoError(t, gotErr)
+		})
+	}
+}
+
+func TestAccesConfigSubset(t *testing.T) {
+	specs := map[string]struct {
+		check    AccessConfig
+		superSet AccessConfig
+		isSubSet bool
+	}{
+		"nobody <= nobody": {
+			superSet: AccessConfig{Permission: AccessTypeNobody},
+			check:    AccessConfig{Permission: AccessTypeNobody},
+			isSubSet: true,
+		},
+		"only > nobody": {
+			superSet: AccessConfig{Permission: AccessTypeNobody},
+			check:    AccessConfig{Permission: AccessTypeOnlyAddress, Address: "foobar"},
+			isSubSet: false,
+		},
+		"everybody > nobody": {
+			superSet: AccessConfig{Permission: AccessTypeNobody},
+			check:    AccessConfig{Permission: AccessTypeEverybody},
+			isSubSet: false,
+		},
+		"unspecified > nobody": {
+			superSet: AccessConfig{Permission: AccessTypeNobody},
+			check:    AccessConfig{Permission: AccessTypeUnspecified},
+			isSubSet: false,
+		},
+		"nobody <= everybody": {
+			superSet: AccessConfig{Permission: AccessTypeEverybody},
+			check:    AccessConfig{Permission: AccessTypeNobody},
+			isSubSet: true,
+		},
+		"only <= everybody": {
+			superSet: AccessConfig{Permission: AccessTypeEverybody},
+			check:    AccessConfig{Permission: AccessTypeOnlyAddress, Address: "foobar"},
+			isSubSet: true,
+		},
+		"everybody <= everybody": {
+			superSet: AccessConfig{Permission: AccessTypeEverybody},
+			check:    AccessConfig{Permission: AccessTypeEverybody},
+			isSubSet: true,
+		},
+		"unspecified > everybody": {
+			superSet: AccessConfig{Permission: AccessTypeEverybody},
+			check:    AccessConfig{Permission: AccessTypeUnspecified},
+			isSubSet: false,
+		},
+		"nobody <= only": {
+			superSet: AccessConfig{Permission: AccessTypeOnlyAddress, Address: "owner"},
+			check:    AccessConfig{Permission: AccessTypeNobody},
+			isSubSet: true,
+		},
+		"only <= only(same)": {
+			superSet: AccessConfig{Permission: AccessTypeOnlyAddress, Address: "owner"},
+			check:    AccessConfig{Permission: AccessTypeOnlyAddress, Address: "owner"},
+			isSubSet: true,
+		},
+		"only > only(other)": {
+			superSet: AccessConfig{Permission: AccessTypeOnlyAddress, Address: "owner"},
+			check:    AccessConfig{Permission: AccessTypeOnlyAddress, Address: "other"},
+			isSubSet: false,
+		},
+		"everybody > only": {
+			superSet: AccessConfig{Permission: AccessTypeOnlyAddress, Address: "owner"},
+			check:    AccessConfig{Permission: AccessTypeEverybody},
+			isSubSet: false,
+		},
+		"nobody > unspecified": {
+			superSet: AccessConfig{Permission: AccessTypeUnspecified},
+			check:    AccessConfig{Permission: AccessTypeNobody},
+			isSubSet: false,
+		},
+	}
+
+	for name, spec := range specs {
+		t.Run(name, func(t *testing.T) {
+			subset := spec.check.IsSubset(spec.superSet)
+			require.Equal(t, spec.isSubSet, subset)
+		})
+	}
 }

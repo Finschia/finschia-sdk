@@ -99,7 +99,7 @@ func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context,
 		adminAddr = sdk.AccAddress(msg.Admin)
 	}
 
-	contractAddr, data, err := m.keeper.Instantiate(ctx, codeID, sdk.AccAddress(msg.Sender), adminAddr, msg.InitMsg,
+	contractAddr, data, err := m.keeper.Instantiate(ctx, codeID, sdk.AccAddress(msg.Sender), adminAddr, msg.Msg,
 		msg.Label, msg.Funds)
 	if err != nil {
 		return nil, err
@@ -221,38 +221,4 @@ func (m msgServer) ClearAdmin(goCtx context.Context, msg *types.MsgClearAdmin) (
 	}
 
 	return &types.MsgClearAdminResponse{}, nil
-}
-
-// UpdateContractStatus handles MsgUpdateContractStatus
-// CONTRACT: msg.validateBasic() must be called before calling this
-func (m msgServer) UpdateContractStatus(goCtx context.Context, msg *types.MsgUpdateContractStatus) (*types.MsgUpdateContractStatusResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	err := sdk.ValidateAccAddress(msg.Sender)
-	if err != nil {
-		return nil, sdkerrors.Wrap(err, "sender")
-	}
-	err = sdk.ValidateAccAddress(msg.Contract)
-	if err != nil {
-		return nil, sdkerrors.Wrap(err, "contract")
-	}
-
-	if err = m.keeper.UpdateContractStatus(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender),
-		msg.Status); err != nil {
-		return nil, err
-	}
-
-	ctx.EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
-		),
-		sdk.NewEvent(
-			types.EventTypeUpdateContractStatus,
-			sdk.NewAttribute(types.AttributeKeyContractAddr, msg.Contract),
-			sdk.NewAttribute(types.AttributeKeyContractStatus, msg.Status.String()),
-		),
-	})
-
-	return &types.MsgUpdateContractStatusResponse{}, nil
 }

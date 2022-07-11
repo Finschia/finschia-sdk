@@ -19,7 +19,6 @@ type AccountKeeper interface {
 type BankKeeper interface {
 	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
-	SetBalances(ctx sdk.Context, addr sdk.AccAddress, balances sdk.Coins) error
 	LockedCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 }
@@ -27,7 +26,7 @@ type BankKeeper interface {
 // ParamSubspace defines the expected Subspace interfacace
 type ParamSubspace interface {
 	HasKeyTable() bool
-	WithKeyTable(table paramtypes.KeyTable) *paramtypes.Subspace
+	WithKeyTable(table paramtypes.KeyTable) paramtypes.Subspace
 	Get(ctx sdk.Context, key []byte, ptr interface{})
 	GetParamSet(ctx sdk.Context, ps paramtypes.ParamSet)
 	SetParamSet(ctx sdk.Context, ps paramtypes.ParamSet)

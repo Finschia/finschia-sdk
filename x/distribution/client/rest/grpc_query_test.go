@@ -48,7 +48,7 @@ func (s *IntegrationTestSuite) TestQueryParamsGRPC() {
 	}{
 		{
 			"gRPC request params",
-			fmt.Sprintf("%s/lbm/distribution/v1/params", baseURL),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/params", baseURL),
 			&types.QueryParamsResponse{},
 			&types.QueryParamsResponse{
 				Params: types.DefaultParams(),
@@ -61,7 +61,7 @@ func (s *IntegrationTestSuite) TestQueryParamsGRPC() {
 		resp, err := rest.GetRequest(tc.url)
 		s.Run(tc.name, func() {
 			s.Require().NoError(err)
-			s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 			s.Require().Equal(tc.expected, tc.respType)
 		})
 	}
@@ -84,7 +84,7 @@ func (s *IntegrationTestSuite) TestQueryOutstandingRewardsGRPC() {
 	}{
 		{
 			"gRPC request params with wrong validator address",
-			fmt.Sprintf("%s/lbm/distribution/v1/validators/%s/outstanding_rewards", baseURL, "wrongAddress"),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/validators/%s/outstanding_rewards", baseURL, "wrongAddress"),
 			map[string]string{},
 			true,
 			&types.QueryValidatorOutstandingRewardsResponse{},
@@ -92,7 +92,7 @@ func (s *IntegrationTestSuite) TestQueryOutstandingRewardsGRPC() {
 		},
 		{
 			"gRPC request params valid address",
-			fmt.Sprintf("%s/lbm/distribution/v1/validators/%s/outstanding_rewards", baseURL, val.ValAddress.String()),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/validators/%s/outstanding_rewards", baseURL, val.ValAddress.String()),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "2",
 			},
@@ -111,10 +111,10 @@ func (s *IntegrationTestSuite) TestQueryOutstandingRewardsGRPC() {
 		resp, err := testutil.GetRequestWithHeaders(tc.url, tc.headers)
 		s.Run(tc.name, func() {
 			if tc.expErr {
-				s.Require().Error(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().Error(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 			} else {
 				s.Require().NoError(err)
-				s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 				s.Require().Equal(tc.expected.String(), tc.respType.String())
 			}
 		})
@@ -138,7 +138,7 @@ func (s *IntegrationTestSuite) TestQueryValidatorCommissionGRPC() {
 	}{
 		{
 			"gRPC request params with wrong validator address",
-			fmt.Sprintf("%s/lbm/distribution/v1/validators/%s/commission", baseURL, "wrongAddress"),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/validators/%s/commission", baseURL, "wrongAddress"),
 			map[string]string{},
 			true,
 			&types.QueryValidatorCommissionResponse{},
@@ -146,7 +146,7 @@ func (s *IntegrationTestSuite) TestQueryValidatorCommissionGRPC() {
 		},
 		{
 			"gRPC request params valid address",
-			fmt.Sprintf("%s/lbm/distribution/v1/validators/%s/commission", baseURL, val.ValAddress.String()),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/validators/%s/commission", baseURL, val.ValAddress.String()),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "2",
 			},
@@ -165,10 +165,10 @@ func (s *IntegrationTestSuite) TestQueryValidatorCommissionGRPC() {
 		resp, err := testutil.GetRequestWithHeaders(tc.url, tc.headers)
 		s.Run(tc.name, func() {
 			if tc.expErr {
-				s.Require().Error(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().Error(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 			} else {
 				s.Require().NoError(err)
-				s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 				s.Require().Equal(tc.expected.String(), tc.respType.String())
 			}
 		})
@@ -188,28 +188,28 @@ func (s *IntegrationTestSuite) TestQuerySlashesGRPC() {
 	}{
 		{
 			"invalid validator address",
-			fmt.Sprintf("%s/lbm/distribution/v1/validators/%s/slashes", baseURL, ""),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/validators/%s/slashes", baseURL, ""),
 			true,
 			&types.QueryValidatorSlashesResponse{},
 			nil,
 		},
 		{
 			"invalid start height",
-			fmt.Sprintf("%s/lbm/distribution/v1/validators/%s/slashes?starting_height=%s&ending_height=%s", baseURL, val.ValAddress.String(), "-1", "3"),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/validators/%s/slashes?starting_height=%s&ending_height=%s", baseURL, val.ValAddress.String(), "-1", "3"),
 			true,
 			&types.QueryValidatorSlashesResponse{},
 			nil,
 		},
 		{
 			"invalid start height",
-			fmt.Sprintf("%s/lbm/distribution/v1/validators/%s/slashes?starting_height=%s&ending_height=%s", baseURL, val.ValAddress.String(), "1", "-3"),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/validators/%s/slashes?starting_height=%s&ending_height=%s", baseURL, val.ValAddress.String(), "1", "-3"),
 			true,
 			&types.QueryValidatorSlashesResponse{},
 			nil,
 		},
 		{
 			"valid request get slashes",
-			fmt.Sprintf("%s/lbm/distribution/v1/validators/%s/slashes?starting_height=%s&ending_height=%s", baseURL, val.ValAddress.String(), "1", "3"),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/validators/%s/slashes?starting_height=%s&ending_height=%s", baseURL, val.ValAddress.String(), "1", "3"),
 			false,
 			&types.QueryValidatorSlashesResponse{},
 			&types.QueryValidatorSlashesResponse{
@@ -224,10 +224,10 @@ func (s *IntegrationTestSuite) TestQuerySlashesGRPC() {
 
 		s.Run(tc.name, func() {
 			if tc.expErr {
-				s.Require().Error(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().Error(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 			} else {
 				s.Require().NoError(err)
-				s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 				s.Require().Equal(tc.expected.String(), tc.respType.String())
 			}
 		})
@@ -251,7 +251,7 @@ func (s *IntegrationTestSuite) TestQueryDelegatorRewardsGRPC() {
 	}{
 		{
 			"wrong delegator address",
-			fmt.Sprintf("%s/lbm/distribution/v1/delegators/%s/rewards", baseUrl, "wrongDelegatorAddress"),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/delegators/%s/rewards", baseUrl, "wrongDelegatorAddress"),
 			map[string]string{},
 			true,
 			&types.QueryDelegationTotalRewardsResponse{},
@@ -259,7 +259,7 @@ func (s *IntegrationTestSuite) TestQueryDelegatorRewardsGRPC() {
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/distribution/v1/delegators/%s/rewards", baseUrl, val.Address.String()),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/delegators/%s/rewards", baseUrl, val.Address.String()),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "2",
 			},
@@ -274,7 +274,7 @@ func (s *IntegrationTestSuite) TestQueryDelegatorRewardsGRPC() {
 		},
 		{
 			"wrong validator address(specific validator rewards)",
-			fmt.Sprintf("%s/lbm/distribution/v1/delegators/%s/rewards/%s", baseUrl, val.Address.String(), "wrongValAddress"),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/delegators/%s/rewards/%s", baseUrl, val.Address.String(), "wrongValAddress"),
 			map[string]string{},
 			true,
 			&types.QueryDelegationTotalRewardsResponse{},
@@ -282,7 +282,7 @@ func (s *IntegrationTestSuite) TestQueryDelegatorRewardsGRPC() {
 		},
 		{
 			"valid request(specific validator rewards)",
-			fmt.Sprintf("%s/lbm/distribution/v1/delegators/%s/rewards/%s", baseUrl, val.Address.String(), val.ValAddress.String()),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/delegators/%s/rewards/%s", baseUrl, val.Address.String(), val.ValAddress.String()),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "2",
 			},
@@ -300,10 +300,10 @@ func (s *IntegrationTestSuite) TestQueryDelegatorRewardsGRPC() {
 
 		s.Run(tc.name, func() {
 			if tc.expErr {
-				s.Require().Error(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().Error(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 			} else {
 				s.Require().NoError(err)
-				s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 				s.Require().Equal(tc.expected.String(), tc.respType.String())
 			}
 		})
@@ -323,21 +323,21 @@ func (s *IntegrationTestSuite) TestQueryDelegatorValidatorsGRPC() {
 	}{
 		{
 			"empty delegator address",
-			fmt.Sprintf("%s/lbm/distribution/v1/delegators/%s/validators", baseUrl, ""),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/delegators/%s/validators", baseUrl, ""),
 			true,
 			&types.QueryDelegatorValidatorsResponse{},
 			nil,
 		},
 		{
 			"wrong delegator address",
-			fmt.Sprintf("%s/lbm/distribution/v1/delegators/%s/validators", baseUrl, "wrongDelegatorAddress"),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/delegators/%s/validators", baseUrl, "wrongDelegatorAddress"),
 			true,
 			&types.QueryDelegatorValidatorsResponse{},
 			nil,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/distribution/v1/delegators/%s/validators", baseUrl, val.Address.String()),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/delegators/%s/validators", baseUrl, val.Address.String()),
 			false,
 			&types.QueryDelegatorValidatorsResponse{},
 			&types.QueryDelegatorValidatorsResponse{
@@ -352,10 +352,10 @@ func (s *IntegrationTestSuite) TestQueryDelegatorValidatorsGRPC() {
 
 		s.Run(tc.name, func() {
 			if tc.expErr {
-				s.Require().Error(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().Error(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 			} else {
 				s.Require().NoError(err)
-				s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 				s.Require().Equal(tc.expected.String(), tc.respType.String())
 			}
 		})
@@ -375,21 +375,21 @@ func (s *IntegrationTestSuite) TestQueryWithdrawAddressGRPC() {
 	}{
 		{
 			"empty delegator address",
-			fmt.Sprintf("%s/lbm/distribution/v1/delegators/%s/withdraw_address", baseUrl, ""),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/delegators/%s/withdraw_address", baseUrl, ""),
 			true,
 			&types.QueryDelegatorWithdrawAddressResponse{},
 			nil,
 		},
 		{
 			"wrong delegator address",
-			fmt.Sprintf("%s/lbm/distribution/v1/delegators/%s/withdraw_address", baseUrl, "wrongDelegatorAddress"),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/delegators/%s/withdraw_address", baseUrl, "wrongDelegatorAddress"),
 			true,
 			&types.QueryDelegatorWithdrawAddressResponse{},
 			nil,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/distribution/v1/delegators/%s/withdraw_address", baseUrl, val.Address.String()),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/delegators/%s/withdraw_address", baseUrl, val.Address.String()),
 			false,
 			&types.QueryDelegatorWithdrawAddressResponse{},
 			&types.QueryDelegatorWithdrawAddressResponse{
@@ -404,10 +404,10 @@ func (s *IntegrationTestSuite) TestQueryWithdrawAddressGRPC() {
 
 		s.Run(tc.name, func() {
 			if tc.expErr {
-				s.Require().Error(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().Error(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 			} else {
 				s.Require().NoError(err)
-				s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 				s.Require().Equal(tc.expected.String(), tc.respType.String())
 			}
 		})
@@ -431,7 +431,7 @@ func (s *IntegrationTestSuite) TestQueryValidatorCommunityPoolGRPC() {
 	}{
 		{
 			"gRPC request params with wrong validator address",
-			fmt.Sprintf("%s/lbm/distribution/v1/community_pool", baseURL),
+			fmt.Sprintf("%s/cosmos/distribution/v1beta1/community_pool", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "2",
 			},
@@ -452,7 +452,7 @@ func (s *IntegrationTestSuite) TestQueryValidatorCommunityPoolGRPC() {
 				s.Require().Error(err)
 			} else {
 				s.Require().NoError(err)
-				s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 				s.Require().Equal(tc.expected.String(), tc.respType.String())
 			}
 		})

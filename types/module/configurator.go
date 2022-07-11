@@ -1,6 +1,8 @@
 package module
 
 import (
+	"fmt"
+
 	"github.com/gogo/protobuf/grpc"
 
 	"github.com/line/lbm-sdk/codec"
@@ -35,7 +37,7 @@ type Configurator interface {
 }
 
 type configurator struct {
-	cdc         codec.JSONMarshaler
+	cdc         codec.Codec
 	msgServer   grpc.Server
 	queryServer grpc.Server
 
@@ -44,7 +46,7 @@ type configurator struct {
 }
 
 // NewConfigurator returns a new Configurator instance
-func NewConfigurator(cdc codec.JSONMarshaler, msgServer grpc.Server, queryServer grpc.Server) Configurator {
+func NewConfigurator(cdc codec.Codec, msgServer grpc.Server, queryServer grpc.Server) Configurator {
 	return configurator{
 		cdc:         cdc,
 		msgServer:   msgServer,
@@ -103,6 +105,7 @@ func (c configurator) runModuleMigrations(ctx sdk.Context, moduleName string, fr
 		if !found {
 			return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no migration found for module %s from version %d to version %d", moduleName, i, i+1)
 		}
+		ctx.Logger().Info(fmt.Sprintf("migrating module %s from version %d to version %d", moduleName, i, i+1))
 
 		err := migrateFn(ctx)
 		if err != nil {

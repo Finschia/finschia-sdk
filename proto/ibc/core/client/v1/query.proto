@@ -1,7 +1,7 @@
 syntax = "proto3";
 package ibc.core.client.v1;
 
-import "lbm/base/query/v1/pagination.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "ibc/core/client/v1/client.proto";
 import "google/protobuf/any.proto";
 import "google/api/annotations.proto";
@@ -38,6 +38,11 @@ service Query {
   rpc ClientParams(QueryClientParamsRequest) returns (QueryClientParamsResponse) {
     option (google.api.http).get = "/ibc/client/v1/params";
   }
+
+  // UpgradedClientState queries an Upgraded IBC light client.
+  rpc UpgradedClientState(QueryUpgradedClientStateRequest) returns (QueryUpgradedClientStateResponse) {
+    option (google.api.http).get = "/ibc/core/client/v1/upgraded_client_states/{client_id}";
+  }
 }
 
 // QueryClientStateRequest is the request type for the Query/ClientState RPC
@@ -63,7 +68,7 @@ message QueryClientStateResponse {
 // method
 message QueryClientStatesRequest {
   // pagination request
-  lbm.base.query.v1.PageRequest pagination = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryClientStatesResponse is the response type for the Query/ClientStates RPC
@@ -73,7 +78,7 @@ message QueryClientStatesResponse {
   repeated IdentifiedClientState client_states = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "IdentifiedClientStates"];
   // pagination response
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryConsensusStateRequest is the request type for the Query/ConsensusState
@@ -108,7 +113,7 @@ message QueryConsensusStatesRequest {
   // client identifier
   string client_id = 1;
   // pagination request
-  lbm.base.query.v1.PageRequest pagination = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 // QueryConsensusStatesResponse is the response type for the
@@ -117,7 +122,7 @@ message QueryConsensusStatesResponse {
   // consensus states associated with the identifier
   repeated ConsensusStateWithHeight consensus_states = 1 [(gogoproto.nullable) = false];
   // pagination response
-  lbm.base.query.v1.PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryClientParamsRequest is the request type for the Query/ClientParams RPC method.
@@ -127,4 +132,21 @@ message QueryClientParamsRequest {}
 message QueryClientParamsResponse {
   // params defines the parameters of the module.
   Params params = 1;
+}
+
+// QueryUpgradedClientStateRequest is the request type for the Query/UpgradedClientState RPC
+// method
+message QueryUpgradedClientStateRequest {
+  // client state unique identifier
+  string client_id = 1;
+  // plan height of the current chain must be sent in request
+  // as this is the height under which upgraded client state is stored
+  int64 plan_height = 2;
+}
+
+// QueryUpgradedClientStateResponse is the response type for the Query/UpgradedClientState RPC
+// method.
+message QueryUpgradedClientStateResponse {
+  // client state associated with the request identifier
+  google.protobuf.Any upgraded_client_state = 1;
 }

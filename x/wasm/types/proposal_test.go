@@ -96,7 +96,7 @@ func TestValidateProposalCommons(t *testing.T) {
 
 func TestValidateStoreCodeProposal(t *testing.T) {
 	var (
-		anyAddress     = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x0}, sdk.BytesAddrLen))
+		anyAddress     = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x0}, ContractAddrLen))
 		invalidAddress = "invalid address"
 	)
 
@@ -305,14 +305,118 @@ func TestValidateMigrateContractProposal(t *testing.T) {
 			}),
 			expErr: true,
 		},
-		"run_as missing": {
-			src: MigrateContractProposalFixture(func(p *MigrateContractProposal) {
-				p.RunAs = ""
+	}
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			err := spec.src.ValidateBasic()
+			if spec.expErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestValidateSudoContractProposal(t *testing.T) {
+	var (
+		invalidAddress = "invalid address"
+	)
+
+	specs := map[string]struct {
+		src    *SudoContractProposal
+		expErr bool
+	}{
+		"all good": {
+			src: SudoContractProposalFixture(),
+		},
+		"msg is nil": {
+			src: SudoContractProposalFixture(func(p *SudoContractProposal) {
+				p.Msg = nil
 			}),
 			expErr: true,
 		},
-		"run_as invalid": {
-			src: MigrateContractProposalFixture(func(p *MigrateContractProposal) {
+		"msg with invalid json": {
+			src: SudoContractProposalFixture(func(p *SudoContractProposal) {
+				p.Msg = []byte("not a json message")
+			}),
+			expErr: true,
+		},
+		"base data missing": {
+			src: SudoContractProposalFixture(func(p *SudoContractProposal) {
+				p.Title = ""
+			}),
+			expErr: true,
+		},
+		"contract missing": {
+			src: SudoContractProposalFixture(func(p *SudoContractProposal) {
+				p.Contract = ""
+			}),
+			expErr: true,
+		},
+		"contract invalid": {
+			src: SudoContractProposalFixture(func(p *SudoContractProposal) {
+				p.Contract = invalidAddress
+			}),
+			expErr: true,
+		},
+	}
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			err := spec.src.ValidateBasic()
+			if spec.expErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestValidateExecuteContractProposal(t *testing.T) {
+	var (
+		invalidAddress = "invalid address"
+	)
+
+	specs := map[string]struct {
+		src    *ExecuteContractProposal
+		expErr bool
+	}{
+		"all good": {
+			src: ExecuteContractProposalFixture(),
+		},
+		"msg is nil": {
+			src: ExecuteContractProposalFixture(func(p *ExecuteContractProposal) {
+				p.Msg = nil
+			}),
+			expErr: true,
+		},
+		"msg with invalid json": {
+			src: ExecuteContractProposalFixture(func(p *ExecuteContractProposal) {
+				p.Msg = []byte("not a valid json message")
+			}),
+			expErr: true,
+		},
+		"base data missing": {
+			src: ExecuteContractProposalFixture(func(p *ExecuteContractProposal) {
+				p.Title = ""
+			}),
+			expErr: true,
+		},
+		"contract missing": {
+			src: ExecuteContractProposalFixture(func(p *ExecuteContractProposal) {
+				p.Contract = ""
+			}),
+			expErr: true,
+		},
+		"contract invalid": {
+			src: ExecuteContractProposalFixture(func(p *ExecuteContractProposal) {
+				p.Contract = invalidAddress
+			}),
+			expErr: true,
+		},
+		"run as is invalid": {
+			src: ExecuteContractProposalFixture(func(p *ExecuteContractProposal) {
 				p.RunAs = invalidAddress
 			}),
 			expErr: true,
@@ -547,7 +651,6 @@ func TestProposalStrings(t *testing.T) {
   Description: Bar
   Contract:    link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
   Code id:     1
-  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
   Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
 `,
 		},
@@ -665,7 +768,6 @@ description: Bar
 contract: link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
 code_id: 1
 msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
-run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
 `,
 		},
 		"update admin": {
@@ -759,7 +861,7 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 	"admin": "myAdminAddress",
 	"code_id": 1,
 	"funds": [{"denom": "ALX", "amount": "2"},{"denom": "BLX","amount": "3"}],
-	"msg": "e30=",
+	"msg": {},
 	"label": "testing",
 	"run_as": "myRunAsAddress"
 }`,
@@ -782,14 +884,13 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 	"description": "bar",
 	"code_id": 1,
 	"contract": "myContractAddr",
-	"msg": "e30=",
+	"msg": {},
 	"run_as": "myRunAsAddress"
 }`,
 			got: &MigrateContractProposal{},
 			exp: &MigrateContractProposal{
 				Title:       "foo",
 				Description: "bar",
-				RunAs:       "myRunAsAddress",
 				Contract:    "myContractAddr",
 				CodeID:      1,
 				Msg:         []byte("{}"),
@@ -802,5 +903,38 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 			assert.Equal(t, spec.exp, spec.got)
 		})
 	}
+}
 
+func TestProposalJsonSignBytes(t *testing.T) {
+	const myInnerMsg = `{"foo":"bar"}`
+	specs := map[string]struct {
+		src govtypes.Content
+		exp string
+	}{
+		"instantiate contract": {
+			src: &InstantiateContractProposal{Msg: RawContractMessage(myInnerMsg)},
+			exp: `
+ {
+ 	"type":"lbm-sdk/MsgSubmitProposal",
+ 	"value":{"content":{"type":"wasm/InstantiateContractProposal","value":{"funds":[],"msg":{"foo":"bar"}}},"initial_deposit":[]}
+ }`,
+		},
+		"migrate contract": {
+			src: &MigrateContractProposal{Msg: RawContractMessage(myInnerMsg)},
+			exp: `
+ {
+ 	"type":"lbm-sdk/MsgSubmitProposal",
+ 	"value":{"content":{"type":"wasm/MigrateContractProposal","value":{"msg":{"foo":"bar"}}},"initial_deposit":[]}
+ }`,
+		},
+	}
+	for name, spec := range specs {
+		t.Run(name, func(t *testing.T) {
+			msg, err := govtypes.NewMsgSubmitProposal(spec.src, sdk.NewCoins(), sdk.AccAddress([]byte{}))
+			require.NoError(t, err)
+
+			bz := msg.GetSignBytes()
+			assert.JSONEq(t, spec.exp, string(bz), "raw: %s", string(bz))
+		})
+	}
 }

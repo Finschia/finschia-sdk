@@ -13,7 +13,7 @@ import (
 	"github.com/line/lbm-sdk/x/token/client/cli"
 )
 
-func (s *IntegrationTestSuite) TestNewQueryCmdTokenBalance() {
+func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -27,17 +27,17 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokenBalance() {
 	}{
 		"valid query": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.customer.String(),
 			},
 			true,
-			&token.QueryTokenBalanceResponse{
+			&token.QueryBalanceResponse{
 				Amount: s.balance,
 			},
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.customer.String(),
 				"extra",
 			},
@@ -46,14 +46,14 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokenBalance() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 			},
 			false,
 			nil,
 		},
 		"invalid address": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				"invalid",
 			},
 			false,
@@ -65,7 +65,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokenBalance() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdTokenBalance()
+			cmd := cli.NewQueryCmdBalance()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -73,7 +73,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokenBalance() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.QueryTokenBalanceResponse
+			var actual token.QueryBalanceResponse
 			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
@@ -94,16 +94,16 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 	}{
 		"valid query": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 			},
 			true,
-			&token.QueryTokenResponse{
-				Token: s.classes[0],
+			&token.QueryTokenClassResponse{
+				Class: s.classes[0],
 			},
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				"extra",
 			},
 			false,
@@ -120,7 +120,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdToken()
+			cmd := cli.NewQueryCmdTokenClass()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -128,7 +128,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.QueryTokenResponse
+			var actual token.QueryTokenClassResponse
 			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
@@ -150,8 +150,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokens() {
 		"query all": {
 			[]string{},
 			true,
-			&token.QueryTokensResponse{
-				Tokens:     s.classes,
+			&token.QueryTokenClassesResponse{
+				Classes:    s.classes,
 				Pagination: &query.PageResponse{},
 			},
 		},
@@ -168,7 +168,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokens() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdTokens()
+			cmd := cli.NewQueryCmdTokenClasses()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -176,14 +176,14 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokens() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.QueryTokensResponse
+			var actual token.QueryTokenClassesResponse
 			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
+func (s *IntegrationTestSuite) TestNewQueryCmdGranteeGrants() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -197,33 +197,33 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 	}{
 		"valid query": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 			},
 			true,
-			&token.QueryGrantsResponse{
+			&token.QueryGranteeGrantsResponse{
 				Grants: []token.Grant{
 					{
-						Grantee: s.vendor.String(),
-						ClassId: s.classes[0].Id,
-						Action:  token.ActionMint,
+						Grantee:    s.vendor.String(),
+						Permission: token.Permission_Modify.String(),
 					},
 					{
-						Grantee: s.vendor.String(),
-						ClassId: s.classes[0].Id,
-						Action:  token.ActionBurn,
+						Grantee:    s.vendor.String(),
+						Permission: token.Permission_Mint.String(),
 					},
 					{
-						Grantee: s.vendor.String(),
-						ClassId: s.classes[0].Id,
-						Action:  token.ActionModify,
+						Grantee:    s.vendor.String(),
+						Permission: token.Permission_Burn.String(),
 					},
+				},
+				Pagination: &query.PageResponse{
+					Total: 3,
 				},
 			},
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				"extra",
 			},
@@ -232,7 +232,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 			},
 			false,
 			nil,
@@ -243,7 +243,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdGrants()
+			cmd := cli.NewQueryCmdGranteeGrants()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -251,7 +251,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.QueryGrantsResponse
+			var actual token.QueryGranteeGrantsResponse
 			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
@@ -272,22 +272,21 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 	}{
 		"valid query": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 			},
 			true,
-			&token.QueryApproveResponse{
-				Approve: &token.Approve{
-					ClassId:  s.classes[0].Id,
-					Approver: s.customer.String(),
-					Proxy:    s.vendor.String(),
+			&token.QueryAuthorizationResponse{
+				Authorization: token.Authorization{
+					Holder:   s.customer.String(),
+					Operator: s.vendor.String(),
 				},
 			},
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 				"extra",
@@ -297,7 +296,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 			},
 			false,
@@ -309,7 +308,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdApprove()
+			cmd := cli.NewQueryCmdAuthorization()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -317,14 +316,14 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.QueryApproveResponse
+			var actual token.QueryAuthorizationResponse
 			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdApproves() {
+func (s *IntegrationTestSuite) TestNewQueryCmdOperatorAuthorizations() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -338,16 +337,15 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApproves() {
 	}{
 		"valid query": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 			},
 			true,
-			&token.QueryApprovesResponse{
-				Approves: []token.Approve{
+			&token.QueryOperatorAuthorizationsResponse{
+				Authorizations: []token.Authorization{
 					{
-						ClassId:  s.classes[0].Id,
-						Approver: s.customer.String(),
-						Proxy:    s.vendor.String(),
+						Holder:   s.customer.String(),
+						Operator: s.vendor.String(),
 					},
 				},
 				Pagination: &query.PageResponse{},
@@ -355,7 +353,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApproves() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				"extra",
 			},
@@ -364,7 +362,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApproves() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 			},
 			false,
 			nil,
@@ -375,7 +373,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApproves() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdApproves()
+			cmd := cli.NewQueryCmdOperatorAuthorizations()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -383,7 +381,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApproves() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.QueryApprovesResponse
+			var actual token.QueryOperatorAuthorizationsResponse
 			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})

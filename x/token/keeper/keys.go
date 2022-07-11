@@ -2,18 +2,19 @@ package keeper
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/token"
 )
 
 var (
-	classKeyPrefix   = []byte{0x01}
-	balanceKeyPrefix = []byte{0x02}
-	grantKeyPrefix   = []byte{0x03}
-	approveKeyPrefix = []byte{0x04}
+	balanceKeyPrefix       = []byte{0x00}
+	classKeyPrefix         = []byte{0x01}
+	grantKeyPrefix         = []byte{0x02}
+	authorizationKeyPrefix = []byte{0x03}
 
 	// statistics keys
-	supplyKeyPrefix = []byte{0x05}
-	mintKeyPrefix   = []byte{0x06}
-	burnKeyPrefix   = []byte{0x07}
+	supplyKeyPrefix = []byte{0x04}
+	mintKeyPrefix   = []byte{0x05}
+	burnKeyPrefix   = []byte{0x06}
 )
 
 func classKey(id string) []byte {
@@ -23,149 +24,185 @@ func classKey(id string) []byte {
 	return key
 }
 
-func balanceKey(addr sdk.AccAddress, classID string) []byte {
-	key := make([]byte, len(balanceKeyPrefix)+1+len(addr)+len(classID))
+func balanceKey(contractID string, address sdk.AccAddress) []byte {
+	prefix := balanceKeyPrefixByContractID(contractID)
+	key := make([]byte, len(prefix)+len(address))
+
+	copy(key, prefix)
+	copy(key[len(prefix):], address)
+
+	return key
+}
+
+func balanceKeyPrefixByContractID(contractID string) []byte {
+	key := make([]byte, len(balanceKeyPrefix)+1+len(contractID))
 
 	begin := 0
 	copy(key, balanceKeyPrefix)
 
 	begin += len(balanceKeyPrefix)
-	key[begin] = byte(len(addr))
+	key[begin] = byte(len(contractID))
 
 	begin++
-	copy(key[begin:], addr)
-
-	begin += len(addr)
-	copy(key[begin:], classID)
+	copy(key[begin:], contractID)
 
 	return key
 }
 
-func splitBalanceKey(key []byte) (addr sdk.AccAddress, classID string) {
+func splitBalanceKey(key []byte) (contractID string, address sdk.AccAddress) {
 	begin := len(balanceKeyPrefix) + 1
 	end := begin + int(key[begin-1])
-	addr = sdk.AccAddress(key[begin:end])
+	contractID = string(key[begin:end])
 
 	begin = end
-	classID = string(key[begin:])
+	address = sdk.AccAddress(key[begin:])
 
 	return
 }
 
-func statisticsKey(keyPrefix []byte, classID string) []byte {
-	key := make([]byte, len(keyPrefix)+len(classID))
+func statisticsKey(keyPrefix []byte, contractID string) []byte {
+	key := make([]byte, len(keyPrefix)+len(contractID))
 	copy(key, keyPrefix)
-	copy(key[len(keyPrefix):], classID)
+	copy(key[len(keyPrefix):], contractID)
 	return key
 }
 
-// func supplyKey(classID string) []byte {
-// 	return statisticsKey(supplyKeyPrefix, classID)
+// func supplyKey(contractID string) []byte {
+// 	return statisticsKey(supplyKeyPrefix, contractID)
 // }
 
-// func mintKey(classID string) []byte {
-// 	return statisticsKey(mintKeyPrefix, classID)
+// func mintKey(contractID string) []byte {
+// 	return statisticsKey(mintKeyPrefix, contractID)
 // }
 
-// func burnKey(classID string) []byte {
-// 	return statisticsKey(burnKeyPrefix, classID)
+// func burnKey(contractID string) []byte {
+// 	return statisticsKey(burnKeyPrefix, contractID)
 // }
 
-func splitStatisticsKey(key, keyPrefix []byte) (classID string) {
+func splitStatisticsKey(key, keyPrefix []byte) (contractID string) {
 	return string(key[len(keyPrefix):])
 }
 
-// func splitSupplyKey(key []byte) (classID string) {
+// func splitSupplyKey(key []byte) (contractID string) {
 // 	return splitStatisticsKey(key, supplyKeyPrefix)
 // }
 
-// func splitMintKey(key []byte) (classID string) {
+// func splitMintKey(key []byte) (contractID string) {
 // 	return splitStatisticsKey(key, mintKeyPrefix)
 // }
 
-// func splitBurnKey(key []byte) (classID string) {
+// func splitBurnKey(key []byte) (contractID string) {
 // 	return splitStatisticsKey(key, burnKeyPrefix)
 // }
 
-func grantKey(grantee sdk.AccAddress, classID, action string) []byte {
-	key := make([]byte, len(grantKeyPrefix)+1+len(grantee)+1+len(classID)+len(action))
+func grantKey(contractID string, grantee sdk.AccAddress, permission token.Permission) []byte {
+	prefix := grantKeyPrefixByGrantee(contractID, grantee)
+	key := make([]byte, len(prefix)+1)
+
+	copy(key, prefix)
+	key[len(prefix)] = byte(permission)
+
+	return key
+}
+
+func grantKeyPrefixByGrantee(contractID string, grantee sdk.AccAddress) []byte {
+	prefix := grantKeyPrefixByContractID(contractID)
+	key := make([]byte, len(prefix)+1+len(grantee))
 
 	begin := 0
-	copy(key, grantKeyPrefix)
+	copy(key, prefix)
 
-	begin += len(grantKeyPrefix)
+	begin += len(prefix)
 	key[begin] = byte(len(grantee))
 
 	begin++
 	copy(key[begin:], grantee)
 
-	begin += len(grantee)
-	key[begin] = byte(len(classID))
+	return key
+}
+
+func grantKeyPrefixByContractID(contractID string) []byte {
+	key := make([]byte, len(grantKeyPrefix)+1+len(contractID))
+
+	begin := 0
+	copy(key, grantKeyPrefix)
+
+	begin += len(grantKeyPrefix)
+	key[begin] = byte(len(contractID))
 
 	begin++
-	copy(key[begin:], classID)
-
-	begin += len(classID)
-	copy(key[begin:], action)
+	copy(key[begin:], contractID)
 
 	return key
 }
 
-func splitGrantKey(key []byte) (grantee sdk.AccAddress, classID, action string) {
+func splitGrantKey(key []byte) (contractID string, grantee sdk.AccAddress, permission token.Permission) {
 	begin := len(grantKeyPrefix) + 1
 	end := begin + int(key[begin-1])
-	grantee = sdk.AccAddress(key[begin:end])
+	contractID = string(key[begin:end])
 
 	begin = end + 1
 	end = begin + int(key[begin-1])
-	classID = string(key[begin:end])
+	grantee = sdk.AccAddress(key[begin:end])
 
 	begin = end
-	action = string(key[begin:])
+	permission = token.Permission(key[begin])
 
 	return
 }
 
-func approveKey(classID string, proxy, approver sdk.AccAddress) []byte {
-	prefix := approveKeyPrefixByProxy(classID, proxy)
-	key := make([]byte, len(prefix)+len(approver))
+func authorizationKey(contractID string, operator, holder sdk.AccAddress) []byte {
+	prefix := authorizationKeyPrefixByOperator(contractID, operator)
+	key := make([]byte, len(prefix)+len(holder))
+
 	copy(key, prefix)
-	copy(key[len(prefix):], approver)
+	copy(key[len(prefix):], holder)
+
 	return key
 }
 
-func approveKeyPrefixByProxy(classID string, proxy sdk.AccAddress) []byte {
-	key := make([]byte, len(approveKeyPrefix)+1+len(classID)+1+len(proxy))
+func authorizationKeyPrefixByOperator(contractID string, operator sdk.AccAddress) []byte {
+	prefix := authorizationKeyPrefixByContractID(contractID)
+	key := make([]byte, len(prefix)+1+len(operator))
 
 	begin := 0
-	copy(key, approveKeyPrefix)
+	copy(key, prefix)
 
-	begin += len(approveKeyPrefix)
-	key[begin] = byte(len(classID))
-
-	begin++
-	copy(key[begin:], classID)
-
-	begin += len(classID)
-	key[begin] = byte(len(proxy))
+	begin += len(prefix)
+	key[begin] = byte(len(operator))
 
 	begin++
-	copy(key[begin:], proxy)
+	copy(key[begin:], operator)
 
 	return key
 }
 
-func splitApproveKey(key []byte) (classID string, proxy, approver sdk.AccAddress) {
-	begin := len(approveKeyPrefix) + 1
+func authorizationKeyPrefixByContractID(contractID string) []byte {
+	key := make([]byte, len(authorizationKeyPrefix)+1+len(contractID))
+
+	begin := 0
+	copy(key, authorizationKeyPrefix)
+
+	begin += len(authorizationKeyPrefix)
+	key[begin] = byte(len(contractID))
+
+	begin++
+	copy(key[begin:], contractID)
+
+	return key
+}
+
+func splitAuthorizationKey(key []byte) (contractID string, operator, holder sdk.AccAddress) {
+	begin := len(authorizationKeyPrefix) + 1
 	end := begin + int(key[begin-1])
-	classID = string(key[begin:end])
+	contractID = string(key[begin:end])
 
 	begin = end + 1
 	end = begin + int(key[begin-1])
-	proxy = sdk.AccAddress(key[begin:end])
+	operator = sdk.AccAddress(key[begin:end])
 
 	begin = end
-	approver = sdk.AccAddress(key[begin:])
+	holder = sdk.AccAddress(key[begin:])
 
 	return
 }

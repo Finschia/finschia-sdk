@@ -90,16 +90,16 @@ func (msg MsgCreateValidator) ValidateBasic() error {
 		return ErrEmptyDelegatorAddr
 	}
 
-	if msg.ValidatorAddress == "" {
-		return ErrEmptyValidatorAddr
-	}
-
 	valAddrBytes, err := sdk.ValAddressToBytes(msg.ValidatorAddress)
 	if err != nil {
 		return err
 	}
+	if len(valAddrBytes) == 0 {
+		return ErrEmptyValidatorAddr
+	}
+
 	if !bytes.Equal(delAddrBytes, valAddrBytes) {
-		return ErrBadValidatorAddr
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "validator address is invalid")
 	}
 
 	if msg.Pubkey == nil {
@@ -107,7 +107,7 @@ func (msg MsgCreateValidator) ValidateBasic() error {
 	}
 
 	if !msg.Value.IsValid() || !msg.Value.Amount.IsPositive() {
-		return ErrBadDelegationAmount
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid delegation amount")
 	}
 
 	if msg.Description == (Description{}) {
@@ -123,7 +123,10 @@ func (msg MsgCreateValidator) ValidateBasic() error {
 	}
 
 	if !msg.MinSelfDelegation.IsPositive() {
-		return ErrMinSelfDelegationInvalid
+		return sdkerrors.Wrap(
+			sdkerrors.ErrInvalidRequest,
+			"minimum self delegation must be a positive integer",
+		)
 	}
 
 	if msg.Value.Amount.LT(msg.MinSelfDelegation) {
@@ -181,7 +184,10 @@ func (msg MsgEditValidator) ValidateBasic() error {
 	}
 
 	if msg.MinSelfDelegation != nil && !msg.MinSelfDelegation.IsPositive() {
-		return ErrMinSelfDelegationInvalid
+		return sdkerrors.Wrap(
+			sdkerrors.ErrInvalidRequest,
+			"minimum self delegation must be a positive integer",
+		)
 	}
 
 	if msg.CommissionRate != nil {
@@ -241,7 +247,10 @@ func (msg MsgDelegate) ValidateBasic() error {
 	}
 
 	if !msg.Amount.IsValid() || !msg.Amount.Amount.IsPositive() {
-		return ErrBadDelegationAmount
+		return sdkerrors.Wrap(
+			sdkerrors.ErrInvalidRequest,
+			"invalid delegation amount",
+		)
 	}
 
 	return nil
@@ -305,7 +314,10 @@ func (msg MsgBeginRedelegate) ValidateBasic() error {
 	}
 
 	if !msg.Amount.IsValid() || !msg.Amount.Amount.IsPositive() {
-		return ErrBadSharesAmount
+		return sdkerrors.Wrap(
+			sdkerrors.ErrInvalidRequest,
+			"invalid shares amount",
+		)
 	}
 
 	return nil
@@ -359,7 +371,10 @@ func (msg MsgUndelegate) ValidateBasic() error {
 	}
 
 	if !msg.Amount.IsValid() || !msg.Amount.Amount.IsPositive() {
-		return ErrBadSharesAmount
+		return sdkerrors.Wrap(
+			sdkerrors.ErrInvalidRequest,
+			"invalid shares amount",
+		)
 	}
 
 	return nil

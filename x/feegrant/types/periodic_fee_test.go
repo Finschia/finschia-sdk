@@ -4,19 +4,19 @@ import (
 	"testing"
 	"time"
 
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/x/feegrant/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/feegrant"
 )
 
 func TestPeriodicFeeValidAllow(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{
 		Time: time.Now(),
 	})
 
@@ -32,7 +32,7 @@ func TestPeriodicFeeValidAllow(t *testing.T) {
 	tenMinutes := time.Duration(10) * time.Minute
 
 	cases := map[string]struct {
-		allow         types.PeriodicAllowance
+		allow         feegrant.PeriodicAllowance
 		fee           sdk.Coins
 		blockTime     time.Time
 		valid         bool // all other checks are ignored if valid=false
@@ -43,12 +43,12 @@ func TestPeriodicFeeValidAllow(t *testing.T) {
 		periodReset   time.Time
 	}{
 		"empty": {
-			allow: types.PeriodicAllowance{},
+			allow: feegrant.PeriodicAllowance{},
 			valid: false,
 		},
 		"only basic": {
-			allow: types.PeriodicAllowance{
-				Basic: types.BasicAllowance{
+			allow: feegrant.PeriodicAllowance{
+				Basic: feegrant.BasicAllowance{
 					SpendLimit: atom,
 					Expiration: &oneHour,
 				},
@@ -56,7 +56,7 @@ func TestPeriodicFeeValidAllow(t *testing.T) {
 			valid: false,
 		},
 		"empty basic": {
-			allow: types.PeriodicAllowance{
+			allow: feegrant.PeriodicAllowance{
 				Period:           tenMinutes,
 				PeriodSpendLimit: smallAtom,
 				PeriodReset:      now.Add(30 * time.Minute),
@@ -68,8 +68,8 @@ func TestPeriodicFeeValidAllow(t *testing.T) {
 			periodReset: now.Add(30 * time.Minute),
 		},
 		"mismatched currencies": {
-			allow: types.PeriodicAllowance{
-				Basic: types.BasicAllowance{
+			allow: feegrant.PeriodicAllowance{
+				Basic: feegrant.BasicAllowance{
 					SpendLimit: atom,
 					Expiration: &oneHour,
 				},
@@ -79,8 +79,8 @@ func TestPeriodicFeeValidAllow(t *testing.T) {
 			valid: false,
 		},
 		"same period": {
-			allow: types.PeriodicAllowance{
-				Basic: types.BasicAllowance{
+			allow: feegrant.PeriodicAllowance{
+				Basic: feegrant.BasicAllowance{
 					SpendLimit: atom,
 					Expiration: &twoHours,
 				},
@@ -99,8 +99,8 @@ func TestPeriodicFeeValidAllow(t *testing.T) {
 			periodReset:   now.Add(1 * time.Hour),
 		},
 		"step one period": {
-			allow: types.PeriodicAllowance{
-				Basic: types.BasicAllowance{
+			allow: feegrant.PeriodicAllowance{
+				Basic: feegrant.BasicAllowance{
 					SpendLimit: atom,
 					Expiration: &twoHours,
 				},
@@ -118,8 +118,8 @@ func TestPeriodicFeeValidAllow(t *testing.T) {
 			periodReset:   oneHour.Add(tenMinutes), // one step from last reset, not now
 		},
 		"step limited by global allowance": {
-			allow: types.PeriodicAllowance{
-				Basic: types.BasicAllowance{
+			allow: feegrant.PeriodicAllowance{
+				Basic: feegrant.BasicAllowance{
 					SpendLimit: smallAtom,
 					Expiration: &twoHours,
 				},
@@ -137,7 +137,7 @@ func TestPeriodicFeeValidAllow(t *testing.T) {
 			periodReset:   oneHour.Add(tenMinutes), // one step from last reset, not now
 		},
 		"period reset no spend limit": {
-			allow: types.PeriodicAllowance{
+			allow: feegrant.PeriodicAllowance{
 				Period:           tenMinutes,
 				PeriodReset:      now,
 				PeriodSpendLimit: atom,
@@ -150,8 +150,8 @@ func TestPeriodicFeeValidAllow(t *testing.T) {
 			periodReset: oneHour.Add(tenMinutes), // one step from last reset, not now
 		},
 		"expired": {
-			allow: types.PeriodicAllowance{
-				Basic: types.BasicAllowance{
+			allow: feegrant.PeriodicAllowance{
+				Basic: feegrant.BasicAllowance{
 					SpendLimit: atom,
 					Expiration: &now,
 				},
@@ -165,8 +165,8 @@ func TestPeriodicFeeValidAllow(t *testing.T) {
 			remove:    true,
 		},
 		"over period limit": {
-			allow: types.PeriodicAllowance{
-				Basic: types.BasicAllowance{
+			allow: feegrant.PeriodicAllowance{
+				Basic: feegrant.BasicAllowance{
 					SpendLimit: atom,
 					Expiration: &now,
 				},
@@ -193,7 +193,7 @@ func TestPeriodicFeeValidAllow(t *testing.T) {
 			}
 			require.NoError(t, err)
 
-			ctx := app.BaseApp.NewContext(false, tmproto.Header{}).WithBlockTime(tc.blockTime)
+			ctx := app.BaseApp.NewContext(false, ocproto.Header{}).WithBlockTime(tc.blockTime)
 			// now try to deduct
 			remove, err := tc.allow.Accept(ctx, tc.fee, []sdk.Msg{})
 			if !tc.accept {

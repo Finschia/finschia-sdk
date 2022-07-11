@@ -52,11 +52,12 @@ func ReadPageRequest(flagSet *pflag.FlagSet) (*query.PageRequest, error) {
 	limit, _ := flagSet.GetUint64(flags.FlagLimit)
 	countTotal, _ := flagSet.GetBool(flags.FlagCountTotal)
 	page, _ := flagSet.GetUint64(flags.FlagPage)
+	reverse, _ := flagSet.GetBool(flags.FlagReverse)
 
-	return NewPageRequest(pageKey, offset, limit, page, countTotal)
+	return NewPageRequest(pageKey, offset, limit, page, countTotal, reverse)
 }
 
-func NewPageRequest(pageKey string, offset, limit, page uint64, countTotal bool) (*query.PageRequest, error) {
+func NewPageRequest(pageKey string, offset, limit, page uint64, countTotal bool, reverse bool) (*query.PageRequest, error) {
 	if page > 1 && offset > 0 {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "page and offset cannot be used together")
 	}
@@ -70,6 +71,7 @@ func NewPageRequest(pageKey string, offset, limit, page uint64, countTotal bool)
 		Offset:     offset,
 		Limit:      limit,
 		CountTotal: countTotal,
+		Reverse:    reverse,
 	}, nil
 }
 

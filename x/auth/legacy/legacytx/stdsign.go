@@ -2,9 +2,13 @@ package legacytx
 
 import (
 	"encoding/json"
+	"fmt"
+
+	"gopkg.in/yaml.v2"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/codec/legacy"
+	codectypes "github.com/line/lbm-sdk/codec/types"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/crypto/types/multisig"
 	sdk "github.com/line/lbm-sdk/types"
@@ -49,7 +53,12 @@ type StdSignDoc struct {
 func StdSignBytes(chainID string, accnum, sequence, timeout uint64, fee StdFee, msgs []sdk.Msg, memo string) []byte {
 	msgsBytes := make([]json.RawMessage, 0, len(msgs))
 	for _, msg := range msgs {
-		msgsBytes = append(msgsBytes, json.RawMessage(msg.GetSignBytes()))
+		legacyMsg, ok := msg.(LegacyMsg)
+		if !ok {
+			panic(fmt.Errorf("expected %T when using amino JSON", (*LegacyMsg)(nil)))
+		}
+
+		msgsBytes = append(msgsBytes, json.RawMessage(legacyMsg.GetSignBytes()))
 	}
 
 	bz, err := legacy.Cdc.MarshalJSON(StdSignDoc{
@@ -72,6 +81,47 @@ func StdSignBytes(chainID string, accnum, sequence, timeout uint64, fee StdFee, 
 type StdSignature struct {
 	cryptotypes.PubKey `json:"pub_key" yaml:"pub_key"` // optional
 	Signature          []byte                          `json:"signature" yaml:"signature"`
+}
+
+// Deprecated
+func NewStdSignature(pk cryptotypes.PubKey, sig []byte) StdSignature {
+	return StdSignature{PubKey: pk, Signature: sig}
+}
+
+// GetSignature returns the raw signature bytes.
+func (ss StdSignature) GetSignature() []byte {
+	return ss.Signature
+}
+
+// GetPubKey returns the public key of a signature as a cryptotypes.PubKey using the
+// Amino codec.
+func (ss StdSignature) GetPubKey() cryptotypes.PubKey {
+	return ss.PubKey
+}
+
+// MarshalYAML returns the YAML representation of the signature.
+func (ss StdSignature) MarshalYAML() (interface{}, error) {
+	pk := ""
+	if ss.PubKey != nil {
+		pk = ss.PubKey.String()
+	}
+
+	bz, err := yaml.Marshal(struct {
+		PubKey    string
+		Signature string
+	}{
+		pk,
+		fmt.Sprintf("%X", ss.Signature),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return string(bz), err
+}
+
+func (ss StdSignature) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	return codectypes.UnpackInterfaces(ss.PubKey, unpacker)
 }
 
 // StdSignatureToSignatureV2 converts a StdSignature to a SignatureV2
@@ -97,7 +147,7 @@ func pubKeySigToSigData(cdc *codec.LegacyAmino, key cryptotypes.PubKey, sig []by
 		}, nil
 	}
 	var multiSig multisig.AminoMultisignature
-	err := cdc.UnmarshalBinaryBare(sig, &multiSig)
+	err := cdc.Unmarshal(sig, &multiSig)
 	if err != nil {
 		return nil, err
 	}

@@ -22,6 +22,9 @@ type AccountKeeperI interface {
 	// Return a new account with the next account number. Does not save the new account to the store.
 	NewAccount(sdk.Context, types.AccountI) types.AccountI
 
+	// Check if an account exists in the store.
+	HasAccount(sdk.Context, sdk.AccAddress) bool
+
 	// Retrieve an account from the store.
 	GetAccount(sdk.Context, sdk.AccAddress) types.AccountI
 
@@ -31,7 +34,7 @@ type AccountKeeperI interface {
 	// Remove an account from the store.
 	RemoveAccount(sdk.Context, types.AccountI)
 
-	// Iterate over all accounts, calling the provided function. Stop iteraiton when it returns false.
+	// Iterate over all accounts, calling the provided function. Stop iteration when it returns true.
 	IterateAccounts(sdk.Context, func(types.AccountI) bool)
 
 	// Fetch the public key of an account at a specified address
@@ -50,8 +53,8 @@ type AccountKeeperI interface {
 // encoding/decoding library.
 type AccountKeeper struct {
 	key           sdk.StoreKey
-	cdc           codec.BinaryMarshaler
-	paramSubspace *paramtypes.Subspace
+	cdc           codec.BinaryCodec
+	paramSubspace paramtypes.Subspace
 	permAddrs     map[string]types.PermissionsForAddress
 
 	// The prototypical AccountI constructor.
@@ -62,8 +65,12 @@ var _ AccountKeeperI = &AccountKeeper{}
 
 // NewAccountKeeper returns a new AccountKeeperI that uses go-amino to
 // (binary) encode and decode concrete sdk.Accounts.
+// `maccPerms` is a map that takes accounts' addresses as keys, and their respective permissions as values. This map is used to construct
+// types.PermissionsForAddress and is used in keeper.ValidatePermissions. Permissions are plain strings,
+// and don't have to fit into any predefined structure. This auth module does not use account permissions internally, though other modules
+// may use auth.Keeper to access the accounts permissions map.
 func NewAccountKeeper(
-	cdc codec.BinaryMarshaler, key sdk.StoreKey, paramstore *paramtypes.Subspace, proto func() types.AccountI,
+	cdc codec.BinaryCodec, key sdk.StoreKey, paramstore paramtypes.Subspace, proto func() types.AccountI,
 	maccPerms map[string][]string,
 ) AccountKeeper {
 
@@ -124,7 +131,7 @@ func (ak AccountKeeper) GetNextAccountNumber(ctx sdk.Context) uint64 {
 	} else {
 		val := gogotypes.UInt64Value{}
 
-		err := ak.cdc.UnmarshalBinaryBare(bz, &val)
+		err := ak.cdc.Unmarshal(bz, &val)
 		if err != nil {
 			panic(err)
 		}
@@ -132,7 +139,7 @@ func (ak AccountKeeper) GetNextAccountNumber(ctx sdk.Context) uint64 {
 		accNumber = val.GetValue()
 	}
 
-	bz = ak.cdc.MustMarshalBinaryBare(&gogotypes.UInt64Value{Value: accNumber + 1})
+	bz = ak.cdc.MustMarshal(&gogotypes.UInt64Value{Value: accNumber + 1})
 	store.Set(types.GlobalAccountNumberKey, bz)
 
 	return accNumber
@@ -204,7 +211,7 @@ func (ak AccountKeeper) GetModuleAccount(ctx sdk.Context, moduleName string) typ
 }
 
 // SetModuleAccount sets the module account to the auth account store
-func (ak AccountKeeper) SetModuleAccount(ctx sdk.Context, macc types.ModuleAccountI) { //nolint:interfacer
+func (ak AccountKeeper) SetModuleAccount(ctx sdk.Context, macc types.ModuleAccountI) {
 	ak.SetAccount(ctx, macc)
 }
 
@@ -228,5 +235,5 @@ func (ak AccountKeeper) UnmarshalAccount(bz []byte) (types.AccountI, error) {
 	return types.UnmarshalAccountX(ak.cdc, bz)
 }
 
-// GetCodec return codec.Marshaler object used by the keeper
-func (ak AccountKeeper) GetCodec() codec.BinaryMarshaler { return ak.cdc }
+// GetCodec return codec.Codec object used by the keeper
+func (ak AccountKeeper) GetCodec() codec.BinaryCodec { return ak.cdc }

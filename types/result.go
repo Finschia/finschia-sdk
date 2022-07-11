@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/gogo/protobuf/proto"
+
 	abci "github.com/line/ostracon/abci/types"
 	ctypes "github.com/line/ostracon/rpc/core/types"
 
@@ -79,6 +80,7 @@ func NewResponseResultTx(res *ctypes.ResultTx, anyTx *codectypes.Any, timestamp 
 		Tx:        anyTx,
 		Timestamp: timestamp,
 		Events:    res.TxResult.Events,
+		Index:     res.Index,
 	}
 }
 

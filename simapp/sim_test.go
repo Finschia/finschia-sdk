@@ -7,20 +7,21 @@ import (
 	"os"
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
-	"github.com/stretchr/testify/require"
-
-	"github.com/line/lbm-sdk/store/cache"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/simapp/helpers"
 	"github.com/line/lbm-sdk/store"
+	"github.com/line/lbm-sdk/store/cache"
 	sdk "github.com/line/lbm-sdk/types"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	authzkeeper "github.com/line/lbm-sdk/x/authz/keeper"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
 	distrtypes "github.com/line/lbm-sdk/x/distribution/types"
@@ -180,6 +181,7 @@ func TestAppImportExport(t *testing.T) {
 		{app.keys[capabilitytypes.StoreKey], newApp.keys[capabilitytypes.StoreKey], [][]byte{}},
 		{app.keys[ibchost.StoreKey], newApp.keys[ibchost.StoreKey], [][]byte{}},
 		{app.keys[ibctransfertypes.StoreKey], newApp.keys[ibctransfertypes.StoreKey], [][]byte{}},
+		{app.keys[authzkeeper.StoreKey], newApp.keys[authzkeeper.StoreKey], [][]byte{}},
 	}
 
 	for _, skp := range storeKeysPrefixes {
