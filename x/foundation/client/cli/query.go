@@ -139,7 +139,7 @@ func NewQueryCmdMember() *cobra.Command {
 			queryClient := foundation.NewQueryClient(clientCtx)
 
 			address := args[0]
-			if err = sdk.ValidateAccAddress(address); err != nil {
+			if _, err := sdk.AccAddressFromBech32(address); err != nil {
 				return err
 			}
 
@@ -270,7 +270,7 @@ func NewQueryCmdVote() *cobra.Command {
 			}
 
 			voter := args[1]
-			if err := sdk.ValidateAccAddress(voter); err != nil {
+			if _, err := sdk.AccAddressFromBech32(voter); err != nil {
 				return err
 			}
 

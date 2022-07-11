@@ -28,7 +28,7 @@ func (k Keeper) handleUpdateFoundationParamsProposal(ctx sdk.Context, p *foundat
 // handleUpdateValidatorAuthsProposal is a handler for update validator auths proposal
 func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *foundation.UpdateValidatorAuthsProposal) error {
 	for _, auth := range p.Auths {
-		grantee := sdk.ValAddress(auth.OperatorAddress).ToAccAddress()
+		grantee := sdk.AccAddress(sdk.ValAddress(auth.OperatorAddress))
 		if auth.CreationAllowed {
 			authorization := &stakingplus.CreateValidatorAuthorization{
 				ValidatorAddress: auth.OperatorAddress,

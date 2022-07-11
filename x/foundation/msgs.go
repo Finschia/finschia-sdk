@@ -12,7 +12,7 @@ var _ sdk.Msg = (*MsgFundTreasury)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgFundTreasury) ValidateBasic() error {
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
@@ -33,11 +33,11 @@ var _ sdk.Msg = (*MsgWithdrawFromTreasury)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgWithdrawFromTreasury) ValidateBasic() error {
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
@@ -58,7 +58,7 @@ var _ sdk.Msg = (*MsgUpdateMembers)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgUpdateMembers) ValidateBasic() error {
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
@@ -82,7 +82,7 @@ var _ sdk.Msg = (*MsgUpdateDecisionPolicy)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgUpdateDecisionPolicy) ValidateBasic() error {
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
@@ -192,7 +192,7 @@ func (m MsgWithdrawProposal) ValidateBasic() error {
 		return sdkerrors.ErrInvalidRequest.Wrap("empty proposal id")
 	}
 
-	if err := sdk.ValidateAccAddress(m.Address); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Address); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid withdrawer address: %s", m.Address)
 	}
 
@@ -213,7 +213,7 @@ func (m MsgVote) ValidateBasic() error {
 		return sdkerrors.ErrInvalidRequest.Wrap("empty proposal id")
 	}
 
-	if err := sdk.ValidateAccAddress(m.Voter); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Voter); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", m.Voter)
 	}
 
@@ -242,7 +242,7 @@ func (m MsgExec) ValidateBasic() error {
 		return sdkerrors.ErrInvalidRequest.Wrap("empty proposal id")
 	}
 
-	if err := sdk.ValidateAccAddress(m.Signer); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Signer); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", m.Signer)
 	}
 
@@ -259,7 +259,7 @@ var _ sdk.Msg = (*MsgLeaveFoundation)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgLeaveFoundation) ValidateBasic() error {
-	if err := sdk.ValidateAccAddress(m.Address); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Address); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid member address: %s", m.Address)
 	}
 
@@ -276,11 +276,11 @@ var _ sdk.Msg = (*MsgGrant)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgGrant) ValidateBasic() error {
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
-	if err := sdk.ValidateAccAddress(m.Grantee); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Grantee); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
 	}
 
@@ -332,11 +332,11 @@ var _ sdk.Msg = (*MsgRevoke)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgRevoke) ValidateBasic() error {
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
-	if err := sdk.ValidateAccAddress(m.Grantee); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Grantee); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
 	}
 

@@ -191,7 +191,7 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Grantee); err != nil {
 		return nil, err
 	}
 

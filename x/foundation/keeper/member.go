@@ -175,7 +175,13 @@ func (k Keeper) GetAdmin(ctx sdk.Context) sdk.AccAddress {
 }
 
 func (k Keeper) validateOperator(ctx sdk.Context, operator string) error {
-	if sdk.AccAddress(operator) != k.GetOperator(ctx) {
+	addr, err := sdk.AccAddressFromBech32(operator)
+
+	if err != nil {
+		return err
+	}
+
+	if !addr.Equals(k.GetOperator(ctx)) {
 		return sdkerrors.ErrUnauthorized.Wrapf("%s is not the operator", operator)
 	}
 
