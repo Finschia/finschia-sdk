@@ -85,16 +85,15 @@ func GetValidatorsByPowerIndexKey(validator types.Validator) []byte {
 	powerBytesLen := len(powerBytes) // 8
 
 	// key is of format prefix || powerbytes || addrBytes
-	key := make([]byte, 1+powerBytesLen+v040auth.ValAddrLen)
+	key := make([]byte, 1+powerBytesLen+v040auth.AddrLen)
 
 	key[0] = ValidatorsByPowerIndexKey[0]
 	copy(key[1:powerBytesLen+1], powerBytes)
-	err := sdk.ValidateValAddress(validator.OperatorAddress)
+	addr, err := sdk.ValAddressFromBech32(validator.OperatorAddress)
 	if err != nil {
 		panic(err)
 	}
-	addr := sdk.ValAddress(validator.OperatorAddress)
-	operAddrInvr := sdk.CopyBytes(addr.Bytes())
+	operAddrInvr := sdk.CopyBytes(addr)
 
 	for i, b := range operAddrInvr {
 		operAddrInvr[i] = ^b
