@@ -69,16 +69,8 @@ func validateAmount(amount sdk.Int) error {
 	return nil
 }
 
-func FromLegacyPermission(permission string) Permission {
-	return Permission(LegacyPermission_value[permission])
-}
-
-func ToLegacyPermission(permission Permission) string {
-	return LegacyPermission_name[int32(permission)]
-}
-
 func validateLegacyPermission(permission string) error {
-	return ValidatePermission(FromLegacyPermission(permission))
+	return ValidatePermission(Permission(LegacyPermissionFromString(permission)))
 }
 
 func ValidatePermission(permission Permission) error {
@@ -95,7 +87,7 @@ func validateChange(change Pair) error {
 		AttributeKeyMeta:     validateMeta,
 	}
 
-	validator, ok := validators[AttributeKey(AttributeKey_value[change.Field])]
+	validator, ok := validators[AttributeKeyFromString(change.Field)]
 	if !ok {
 		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Field)
 	}

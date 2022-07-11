@@ -216,7 +216,7 @@ func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermiss
 
 	granter := sdk.AccAddress(req.From)
 	grantee := sdk.AccAddress(req.To)
-	permission := token.FromLegacyPermission(req.Permission)
+	permission := token.Permission(token.LegacyPermissionFromString(req.Permission))
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
@@ -234,7 +234,7 @@ func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermi
 	ctx := sdk.UnwrapSDKContext(c)
 
 	grantee := sdk.AccAddress(req.From)
-	permission := token.FromLegacyPermission(req.Permission)
+	permission := token.Permission(token.LegacyPermissionFromString(req.Permission))
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}

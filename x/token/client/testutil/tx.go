@@ -652,7 +652,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 			[]string{
 				s.classes[0].ContractId,
 				s.vendor.String(),
-				"name",
+				token.AttributeKeyName.String(),
 				"cool token",
 			},
 			true,
@@ -661,7 +661,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 			[]string{
 				s.classes[0].ContractId,
 				s.vendor.String(),
-				"name",
+				token.AttributeKeyName.String(),
 				"cool token",
 				"extra",
 			},
@@ -671,7 +671,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 			[]string{
 				s.classes[0].ContractId,
 				s.vendor.String(),
-				"name",
+				token.AttributeKeyName.String(),
 			},
 			false,
 		},

@@ -11,44 +11,44 @@ option go_package = "github.com/line/lbm-sdk/x/token";
 //
 // EventType enumerates the valid event types on x/token.
 enum EventType {
-  option (gogoproto.goproto_enum_prefix) = false;
+  option (gogoproto.goproto_enum_stringer) = false;
+  option (gogoproto.goproto_enum_prefix)   = false;
 
   EVENT_TYPE_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "EventTypeUnspecified"];
 
-  issue         = 1 [(gogoproto.enumvalue_customname) = "EventTypeIssueToken"];
-  mint          = 2 [(gogoproto.enumvalue_customname) = "EventTypeMintToken"];
-  burn          = 3 [(gogoproto.enumvalue_customname) = "EventTypeBurnToken"];
-  burn_from     = 4 [(gogoproto.enumvalue_customname) = "EventTypeBurnTokenFrom"];
-  modify_token  = 5 [(gogoproto.enumvalue_customname) = "EventTypeModifyToken"];
-  transfer      = 6 [(gogoproto.enumvalue_customname) = "EventTypeTransfer"];
-  transfer_from = 7 [(gogoproto.enumvalue_customname) = "EventTypeTransferFrom"];
-  grant_perm    = 8 [(gogoproto.enumvalue_customname) = "EventTypeGrantPermToken"];
-  revoke_perm   = 9 [(gogoproto.enumvalue_customname) = "EventTypeRevokePermToken"];
-  approve_token = 10 [(gogoproto.enumvalue_customname) = "EventTypeApproveToken"];
+  EVENT_TYPE_ISSUE         = 1 [(gogoproto.enumvalue_customname) = "EventTypeIssueToken"];
+  EVENT_TYPE_MINT          = 2 [(gogoproto.enumvalue_customname) = "EventTypeMintToken"];
+  EVENT_TYPE_BURN          = 3 [(gogoproto.enumvalue_customname) = "EventTypeBurnToken"];
+  EVENT_TYPE_BURN_FROM     = 4 [(gogoproto.enumvalue_customname) = "EventTypeBurnTokenFrom"];
+  EVENT_TYPE_MODIFY_TOKEN  = 5 [(gogoproto.enumvalue_customname) = "EventTypeModifyToken"];
+  EVENT_TYPE_TRANSFER      = 6 [(gogoproto.enumvalue_customname) = "EventTypeTransfer"];
+  EVENT_TYPE_TRANSFER_FROM = 7 [(gogoproto.enumvalue_customname) = "EventTypeTransferFrom"];
+  EVENT_TYPE_GRANT_PERM    = 8 [(gogoproto.enumvalue_customname) = "EventTypeGrantPermToken"];
+  EVENT_TYPE_REVOKE_PERM   = 9 [(gogoproto.enumvalue_customname) = "EventTypeRevokePermToken"];
+  EVENT_TYPE_APPROVE_TOKEN = 10 [(gogoproto.enumvalue_customname) = "EventTypeApproveToken"];
 }
 
-// Deprecated: use typed events.
-//
 // AttributeKey enumerates the valid attribute keys on x/token.
 enum AttributeKey {
-  option (gogoproto.goproto_enum_prefix) = false;
+  option (gogoproto.goproto_enum_stringer) = false;
+  option (gogoproto.goproto_enum_prefix)   = false;
 
   ATTRIBUTE_KEY_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "AttributeKeyUnspecified"];
 
-  name        = 1 [(gogoproto.enumvalue_customname) = "AttributeKeyName"];
-  symbol      = 2 [(gogoproto.enumvalue_customname) = "AttributeKeySymbol"];
-  meta        = 3 [(gogoproto.enumvalue_customname) = "AttributeKeyMeta"];
-  contract_id = 4 [(gogoproto.enumvalue_customname) = "AttributeKeyContractID"];
-  owner       = 5 [(gogoproto.enumvalue_customname) = "AttributeKeyOwner"];
-  amount      = 6 [(gogoproto.enumvalue_customname) = "AttributeKeyAmount"];
-  decimals    = 7 [(gogoproto.enumvalue_customname) = "AttributeKeyDecimals"];
-  img_uri     = 8 [(gogoproto.enumvalue_customname) = "AttributeKeyImageURI"];
-  mintable    = 9 [(gogoproto.enumvalue_customname) = "AttributeKeyMintable"];
-  from        = 10 [(gogoproto.enumvalue_customname) = "AttributeKeyFrom"];
-  to          = 11 [(gogoproto.enumvalue_customname) = "AttributeKeyTo"];
-  perm        = 12 [(gogoproto.enumvalue_customname) = "AttributeKeyPerm"];
-  approver    = 13 [(gogoproto.enumvalue_customname) = "AttributeKeyApprover"];
-  proxy       = 14 [(gogoproto.enumvalue_customname) = "AttributeKeyProxy"];
+  ATTRIBUTE_KEY_NAME        = 1 [(gogoproto.enumvalue_customname) = "AttributeKeyName"];
+  ATTRIBUTE_KEY_SYMBOL      = 2 [(gogoproto.enumvalue_customname) = "AttributeKeySymbol"];
+  ATTRIBUTE_KEY_META        = 3 [(gogoproto.enumvalue_customname) = "AttributeKeyMeta"];
+  ATTRIBUTE_KEY_CONTRACT_ID = 4 [(gogoproto.enumvalue_customname) = "AttributeKeyContractID"];
+  ATTRIBUTE_KEY_OWNER       = 5 [(gogoproto.enumvalue_customname) = "AttributeKeyOwner"];
+  ATTRIBUTE_KEY_AMOUNT      = 6 [(gogoproto.enumvalue_customname) = "AttributeKeyAmount"];
+  ATTRIBUTE_KEY_DECIMALS    = 7 [(gogoproto.enumvalue_customname) = "AttributeKeyDecimals"];
+  ATTRIBUTE_KEY_IMG_URI     = 8 [(gogoproto.enumvalue_customname) = "AttributeKeyImageURI"];
+  ATTRIBUTE_KEY_MINTABLE    = 9 [(gogoproto.enumvalue_customname) = "AttributeKeyMintable"];
+  ATTRIBUTE_KEY_FROM        = 10 [(gogoproto.enumvalue_customname) = "AttributeKeyFrom"];
+  ATTRIBUTE_KEY_TO          = 11 [(gogoproto.enumvalue_customname) = "AttributeKeyTo"];
+  ATTRIBUTE_KEY_PERM        = 12 [(gogoproto.enumvalue_customname) = "AttributeKeyPerm"];
+  ATTRIBUTE_KEY_APPROVER    = 13 [(gogoproto.enumvalue_customname) = "AttributeKeyApprover"];
+  ATTRIBUTE_KEY_PROXY       = 14 [(gogoproto.enumvalue_customname) = "AttributeKeyProxy"];
 }
 
 // EventSent is emitted when tokens are transferred.

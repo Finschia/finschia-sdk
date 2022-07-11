@@ -756,7 +756,7 @@ func TestMsgModify(t *testing.T) {
 		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	validChange := token.Pair{Field: "name", Value: "New test"}
+	validChange := token.Pair{Field: token.AttributeKeyName.String(), Value: "New test"}
 	testCases := map[string]struct {
 		contractID string
 		grantee    sdk.AccAddress
@@ -795,8 +795,8 @@ func TestMsgModify(t *testing.T) {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			changes: []token.Pair{
-				{Field: "name", Value: "hello"},
-				{Field: "name", Value: "world"},
+				{Field: token.AttributeKeyName.String(), Value: "hello"},
+				{Field: token.AttributeKeyName.String(), Value: "world"},
 			},
 		},
 	}

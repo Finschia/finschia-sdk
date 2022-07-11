@@ -2,9 +2,35 @@ package token
 
 import (
 	"fmt"
+	"strings"
 
 	sdk "github.com/line/lbm-sdk/types"
 )
+
+const (
+	prefixEventType    = "EVENT_TYPE_"
+	prefixAttributeKey = "ATTRIBUTE_KEY_"
+)
+
+func (x EventType) String() string {
+	lenPrefix := len(prefixEventType)
+	return strings.ToLower(EventType_name[int32(x)][lenPrefix:])
+}
+
+func EventTypeFromString(name string) EventType {
+	eventTypeName := prefixEventType + strings.ToUpper(name)
+	return EventType(EventType_value[eventTypeName])
+}
+
+func (x AttributeKey) String() string {
+	lenPrefix := len(prefixAttributeKey)
+	return strings.ToLower(AttributeKey_name[int32(x)][lenPrefix:])
+}
+
+func AttributeKeyFromString(name string) AttributeKey {
+	attributeKeyName := prefixAttributeKey + strings.ToUpper(name)
+	return AttributeKey(AttributeKey_value[attributeKeyName])
+}
 
 func NewEventIssueToken(e EventIssue, grantee, to sdk.AccAddress, amount sdk.Int) sdk.Event {
 	eventType := EventTypeIssueToken.String()
@@ -136,7 +162,7 @@ func NewEventGrantPermToken(e EventGrant) sdk.Event {
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: e.ContractId,
 		AttributeKeyTo:         e.Grantee,
-		AttributeKeyPerm:       ToLegacyPermission(e.Permission),
+		AttributeKeyPerm:       LegacyPermission(e.Permission).String(),
 	}
 	if e.Granter != e.Grantee {
 		attributes[AttributeKeyFrom] = e.Granter
