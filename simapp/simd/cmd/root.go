@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"errors"
-	"github.com/prometheus/client_golang/prometheus"
+
 	"io"
 	"os"
 	"path/filepath"
@@ -37,6 +37,7 @@ import (
 	genutilcli "github.com/line/lbm-sdk/x/genutil/client/cli"
 	"github.com/line/lbm-sdk/x/wasm"
 	wasmkeeper "github.com/line/lbm-sdk/x/wasm/keeper"
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the
