@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"github.com/line/lbm-sdk/x/wasm/keeper"
+	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	abci "github.com/line/ostracon/abci/types"
 )
 
 var (
@@ -48,11 +48,11 @@ func TestDynamicPingPongWorks(t *testing.T) {
 
 	// instantiate callee contract
 	instantiateCalleeMsg := &MsgInstantiateContract{
-		Sender: addr1,
-		CodeID: calleeCodeId,
-		Label: "callee",
+		Sender:  addr1,
+		CodeID:  calleeCodeId,
+		Label:   "callee",
 		InitMsg: []byte(`{}`),
-		Funds: nil,
+		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
 	require.NoError(t, err)
@@ -62,11 +62,11 @@ func TestDynamicPingPongWorks(t *testing.T) {
 	// instantiate caller contract
 	cosmwasmInstantiateCallerMsg := fmt.Sprintf(`{"callee_addr":"%s"}`, calleeContractAddress)
 	instantiateCallerMsg := &MsgInstantiateContract{
-		Sender: addr1,
-		CodeID: callerCodeId,
-		Label: "caller",
+		Sender:  addr1,
+		CodeID:  callerCodeId,
+		Label:   "caller",
 		InitMsg: []byte(cosmwasmInstantiateCallerMsg),
-		Funds: nil,
+		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
 	require.NoError(t, err)
@@ -126,11 +126,11 @@ func TestDynamicReEntrancyFails(t *testing.T) {
 
 	// instantiate callee contract
 	instantiateCalleeMsg := &MsgInstantiateContract{
-		Sender: addr1,
-		CodeID: calleeCodeId,
-		Label: "callee",
+		Sender:  addr1,
+		CodeID:  calleeCodeId,
+		Label:   "callee",
 		InitMsg: []byte(`{}`),
-		Funds: nil,
+		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
 	require.NoError(t, err)
@@ -140,11 +140,11 @@ func TestDynamicReEntrancyFails(t *testing.T) {
 	// instantiate caller contract
 	cosmwasmInstantiateCallerMsg := fmt.Sprintf(`{"callee_addr":"%s"}`, calleeContractAddress)
 	instantiateCallerMsg := &MsgInstantiateContract{
-		Sender: addr1,
-		CodeID: callerCodeId,
-		Label: "caller",
+		Sender:  addr1,
+		CodeID:  callerCodeId,
+		Label:   "caller",
 		InitMsg: []byte(cosmwasmInstantiateCallerMsg),
-		Funds: nil,
+		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
 	require.NoError(t, err)
@@ -196,11 +196,11 @@ func TestDynamicCallAndTraditionalQueryWork(t *testing.T) {
 
 	// instantiate callee contract
 	instantiateCalleeMsg := &MsgInstantiateContract{
-		Sender: addr1,
-		CodeID: calleeCodeId,
-		Label: "number",
+		Sender:  addr1,
+		CodeID:  calleeCodeId,
+		Label:   "number",
 		InitMsg: []byte(`{"value":21}`),
-		Funds: nil,
+		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
 	require.NoError(t, err)
@@ -210,11 +210,11 @@ func TestDynamicCallAndTraditionalQueryWork(t *testing.T) {
 	// instantiate caller contract
 	cosmwasmInstantiateCallerMsg := fmt.Sprintf(`{"callee_addr":"%s"}`, calleeContractAddress)
 	instantiateCallerMsg := &MsgInstantiateContract{
-		Sender: addr1,
-		CodeID: callerCodeId,
-		Label: "call-number",
+		Sender:  addr1,
+		CodeID:  callerCodeId,
+		Label:   "call-number",
 		InitMsg: []byte(cosmwasmInstantiateCallerMsg),
-		Funds: nil,
+		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
 	require.NoError(t, err)
@@ -297,11 +297,11 @@ func TestDynamicCallWithWriteFailsByQuery(t *testing.T) {
 
 	// instantiate callee contract
 	instantiateCalleeMsg := &MsgInstantiateContract{
-		Sender: addr1,
-		CodeID: calleeCodeId,
-		Label: "number",
+		Sender:  addr1,
+		CodeID:  calleeCodeId,
+		Label:   "number",
 		InitMsg: []byte(`{"value":21}`),
-		Funds: nil,
+		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
 	require.NoError(t, err)
@@ -311,11 +311,11 @@ func TestDynamicCallWithWriteFailsByQuery(t *testing.T) {
 	// instantiate caller contract
 	cosmwasmInstantiateCallerMsg := fmt.Sprintf(`{"callee_addr":"%s"}`, calleeContractAddress)
 	instantiateCallerMsg := &MsgInstantiateContract{
-		Sender: addr1,
-		CodeID: callerCodeId,
-		Label: "call-number",
+		Sender:  addr1,
+		CodeID:  callerCodeId,
+		Label:   "call-number",
 		InitMsg: []byte(cosmwasmInstantiateCallerMsg),
-		Funds: nil,
+		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
 	require.NoError(t, err)
@@ -332,4 +332,3 @@ func TestDynamicCallWithWriteFailsByQuery(t *testing.T) {
 	_, qErr := q(data.ctx, queryPath, queryReq)
 	assert.ErrorContains(t, qErr, "Must not call a writing storage function in this context.")
 }
-
