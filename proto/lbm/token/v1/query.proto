@@ -209,7 +209,7 @@ message QueryGrantRequest {
   // grantee which has permissions on the token class.
   string grantee = 2;
   // a permission given to the grantee.
-  string permission = 3;
+  Permission permission = 3;
 }
 
 // QueryGrantResponse is the response type for the Query/Grant RPC method

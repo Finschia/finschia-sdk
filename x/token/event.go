@@ -7,19 +7,19 @@ import (
 )
 
 func NewEventIssueToken(e EventIssue, grantee, to sdk.AccAddress, amount sdk.Int) sdk.Event {
-	eventType := EventType_IssueToken.String()
+	eventType := EventTypeIssueToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKey_ContractID: e.ContractId,
-		AttributeKey_Name:       e.Name,
-		AttributeKey_Symbol:     e.Symbol,
-		AttributeKey_ImageURI:   e.Uri,
-		AttributeKey_Meta:       e.Meta,
-		AttributeKey_Decimals:   fmt.Sprintf("%d", e.Decimals),
-		AttributeKey_Mintable:   fmt.Sprintf("%t", e.Mintable),
+		AttributeKeyContractID: e.ContractId,
+		AttributeKeyName:       e.Name,
+		AttributeKeySymbol:     e.Symbol,
+		AttributeKeyImageURI:   e.Uri,
+		AttributeKeyMeta:       e.Meta,
+		AttributeKeyDecimals:   fmt.Sprintf("%d", e.Decimals),
+		AttributeKeyMintable:   fmt.Sprintf("%t", e.Mintable),
 
-		AttributeKey_Owner:  grantee.String(),
-		AttributeKey_To:     to.String(),
-		AttributeKey_Amount: amount.String(),
+		AttributeKeyOwner:  grantee.String(),
+		AttributeKeyTo:     to.String(),
+		AttributeKeyAmount: amount.String(),
 	}
 
 	new := sdk.NewEvent(eventType)
@@ -31,12 +31,12 @@ func NewEventIssueToken(e EventIssue, grantee, to sdk.AccAddress, amount sdk.Int
 }
 
 func NewEventMintToken(e EventMinted) sdk.Event {
-	eventType := EventType_MintToken.String()
+	eventType := EventTypeMintToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKey_ContractID: e.ContractId,
-		AttributeKey_From:       e.Operator,
-		AttributeKey_To:         e.To,
-		AttributeKey_Amount:     e.Amount.String(),
+		AttributeKeyContractID: e.ContractId,
+		AttributeKeyFrom:       e.Operator,
+		AttributeKeyTo:         e.To,
+		AttributeKeyAmount:     e.Amount.String(),
 	}
 
 	new := sdk.NewEvent(eventType)
@@ -48,11 +48,11 @@ func NewEventMintToken(e EventMinted) sdk.Event {
 }
 
 func NewEventBurnToken(e EventBurned) sdk.Event {
-	eventType := EventType_BurnToken.String()
+	eventType := EventTypeBurnToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKey_ContractID: e.ContractId,
-		AttributeKey_From:       e.From,
-		AttributeKey_Amount:     e.Amount.String(),
+		AttributeKeyContractID: e.ContractId,
+		AttributeKeyFrom:       e.From,
+		AttributeKeyAmount:     e.Amount.String(),
 	}
 
 	new := sdk.NewEvent(eventType)
@@ -64,12 +64,12 @@ func NewEventBurnToken(e EventBurned) sdk.Event {
 }
 
 func NewEventBurnTokenFrom(e EventBurned) sdk.Event {
-	eventType := EventType_BurnTokenFrom.String()
+	eventType := EventTypeBurnTokenFrom.String()
 	attributes := map[AttributeKey]string{
-		AttributeKey_ContractID: e.ContractId,
-		AttributeKey_Proxy:      e.Operator,
-		AttributeKey_From:       e.From,
-		AttributeKey_Amount:     e.Amount.String(),
+		AttributeKeyContractID: e.ContractId,
+		AttributeKeyProxy:      e.Operator,
+		AttributeKeyFrom:       e.From,
+		AttributeKeyAmount:     e.Amount.String(),
 	}
 
 	new := sdk.NewEvent(eventType)
@@ -81,10 +81,10 @@ func NewEventBurnTokenFrom(e EventBurned) sdk.Event {
 }
 
 func NewEventModifyToken(e EventModified) []sdk.Event {
-	eventType := EventType_ModifyToken.String()
+	eventType := EventTypeModifyToken.String()
 	new := []sdk.Event{
 		sdk.NewEvent(eventType,
-			sdk.NewAttribute(AttributeKey_ContractID.String(), e.ContractId),
+			sdk.NewAttribute(AttributeKeyContractID.String(), e.ContractId),
 		),
 	}
 
@@ -97,12 +97,12 @@ func NewEventModifyToken(e EventModified) []sdk.Event {
 }
 
 func NewEventTransfer(e EventSent) sdk.Event {
-	eventType := EventType_Transfer.String()
+	eventType := EventTypeTransfer.String()
 	attributes := map[AttributeKey]string{
-		AttributeKey_ContractID: e.ContractId,
-		AttributeKey_From:       e.From,
-		AttributeKey_To:         e.To,
-		AttributeKey_Amount:     e.Amount.String(),
+		AttributeKeyContractID: e.ContractId,
+		AttributeKeyFrom:       e.From,
+		AttributeKeyTo:         e.To,
+		AttributeKeyAmount:     e.Amount.String(),
 	}
 
 	new := sdk.NewEvent(eventType)
@@ -114,13 +114,13 @@ func NewEventTransfer(e EventSent) sdk.Event {
 }
 
 func NewEventTransferFrom(e EventSent) sdk.Event {
-	eventType := EventType_TransferFrom.String()
+	eventType := EventTypeTransferFrom.String()
 	attributes := map[AttributeKey]string{
-		AttributeKey_ContractID: e.ContractId,
-		AttributeKey_Proxy:      e.Operator,
-		AttributeKey_From:       e.From,
-		AttributeKey_To:         e.To,
-		AttributeKey_Amount:     e.Amount.String(),
+		AttributeKeyContractID: e.ContractId,
+		AttributeKeyProxy:      e.Operator,
+		AttributeKeyFrom:       e.From,
+		AttributeKeyTo:         e.To,
+		AttributeKeyAmount:     e.Amount.String(),
 	}
 
 	new := sdk.NewEvent(eventType)
@@ -132,14 +132,14 @@ func NewEventTransferFrom(e EventSent) sdk.Event {
 }
 
 func NewEventGrantPermToken(e EventGrant) sdk.Event {
-	eventType := EventType_GrantPermToken.String()
+	eventType := EventTypeGrantPermToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKey_ContractID: e.ContractId,
-		AttributeKey_To:         e.Grantee,
-		AttributeKey_Perm:       e.Permission,
+		AttributeKeyContractID: e.ContractId,
+		AttributeKeyTo:         e.Grantee,
+		AttributeKeyPerm:       ToLegacyPermission(e.Permission),
 	}
 	if e.Granter != e.Grantee {
-		attributes[AttributeKey_From] = e.Granter
+		attributes[AttributeKeyFrom] = e.Granter
 	}
 
 	new := sdk.NewEvent(eventType)
@@ -151,11 +151,11 @@ func NewEventGrantPermToken(e EventGrant) sdk.Event {
 }
 
 func NewEventRevokePermToken(e EventAbandon) sdk.Event {
-	eventType := EventType_RevokePermToken.String()
+	eventType := EventTypeRevokePermToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKey_ContractID: e.ContractId,
-		AttributeKey_From:       e.Grantee,
-		AttributeKey_Perm:       e.Permission,
+		AttributeKeyContractID: e.ContractId,
+		AttributeKeyFrom:       e.Grantee,
+		AttributeKeyPerm:       e.Permission,
 	}
 
 	new := sdk.NewEvent(eventType)
@@ -167,11 +167,11 @@ func NewEventRevokePermToken(e EventAbandon) sdk.Event {
 }
 
 func NewEventApproveToken(e EventAuthorizedOperator) sdk.Event {
-	eventType := EventType_ApproveToken.String()
+	eventType := EventTypeApproveToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKey_ContractID: e.ContractId,
-		AttributeKey_Approver:   e.Holder,
-		AttributeKey_Proxy:      e.Operator,
+		AttributeKeyContractID: e.ContractId,
+		AttributeKeyApprover:   e.Holder,
+		AttributeKeyProxy:      e.Operator,
 	}
 
 	new := sdk.NewEvent(eventType)

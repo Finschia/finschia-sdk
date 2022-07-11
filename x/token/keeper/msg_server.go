@@ -182,15 +182,15 @@ func (s msgServer) Grant(c context.Context, req *token.MsgGrant) (*token.MsgGran
 
 	granter := sdk.AccAddress(req.Granter)
 	grantee := sdk.AccAddress(req.Grantee)
-	permission := token.Permission(token.Permission_value[req.Permission])
-	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
+
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, req.Permission); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
-	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err == nil {
-		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission.String())
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, req.Permission); err == nil {
+		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, req.Permission)
 	}
 
-	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
+	s.keeper.Grant(ctx, req.ContractId, granter, grantee, req.Permission)
 
 	return &token.MsgGrantResponse{}, nil
 }
@@ -200,12 +200,12 @@ func (s msgServer) Abandon(c context.Context, req *token.MsgAbandon) (*token.Msg
 	ctx := sdk.UnwrapSDKContext(c)
 
 	grantee := sdk.AccAddress(req.Grantee)
-	permission := token.Permission(token.Permission_value[req.Permission])
-	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {
+
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, req.Permission); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
+	s.keeper.Abandon(ctx, req.ContractId, grantee, req.Permission)
 
 	return &token.MsgAbandonResponse{}, nil
 }
@@ -216,12 +216,12 @@ func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermiss
 
 	granter := sdk.AccAddress(req.From)
 	grantee := sdk.AccAddress(req.To)
-	permission := token.Permission(token.Permission_value[req.Permission])
+	permission := token.FromLegacyPermission(req.Permission)
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err == nil {
-		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission.String())
+		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission)
 	}
 
 	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
@@ -234,7 +234,7 @@ func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermi
 	ctx := sdk.UnwrapSDKContext(c)
 
 	grantee := sdk.AccAddress(req.From)
-	permission := token.Permission(token.Permission_value[req.Permission])
+	permission := token.FromLegacyPermission(req.Permission)
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
@@ -289,7 +289,7 @@ func (s msgServer) Modify(c context.Context, req *token.MsgModify) (*token.MsgMo
 	ctx := sdk.UnwrapSDKContext(c)
 
 	grantee := sdk.AccAddress(req.Owner)
-	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, token.Permission_Modify); err != nil {
+	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, token.PermissionModify); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 

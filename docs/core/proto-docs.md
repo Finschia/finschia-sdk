@@ -915,6 +915,7 @@
     - [Params](#lbm.token.v1.Params)
     - [TokenClass](#lbm.token.v1.TokenClass)
   
+    - [LegacyPermission](#lbm.token.v1.LegacyPermission)
     - [Permission](#lbm.token.v1.Permission)
   
 - [lbm/token/v1/event.proto](#lbm/token/v1/event.proto)
@@ -13336,7 +13337,7 @@ Grant defines permission given to a grantee.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `grantee` | [string](#string) |  | address of the grantee. |
-| `permission` | [string](#string) |  | permission on the token class. |
+| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
 
 
 
@@ -13392,6 +13393,22 @@ TokenClass defines token information.
  <!-- end messages -->
 
 
+<a name="lbm.token.v1.LegacyPermission"></a>
+
+### LegacyPermission
+Deprecated: use Permission
+
+LegacyPermission enumerates the valid permissions on a token class.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| LEGACY_PERMISSION_UNSPECIFIED | 0 | unspecified defines the default permission which is invalid. |
+| modify | 1 | modify defines a permission to modify a contract. |
+| mint | 2 | mint defines a permission to mint tokens of a contract. |
+| burn | 3 | burn defines a permission to burn tokens of a contract. |
+
+
+
 <a name="lbm.token.v1.Permission"></a>
 
 ### Permission
@@ -13399,10 +13416,10 @@ Permission enumerates the valid permissions on a token class.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| unspecified | 0 |  |
-| modify | 1 |  |
-| mint | 2 |  |
-| burn | 3 |  |
+| PERMISSION_UNSPECIFIED | 0 | unspecified defines the default permission which is invalid. |
+| PERMISSION_MODIFY | 1 | PERMISSION_MODIFY defines a permission to modify a contract. |
+| PERMISSION_MINT | 2 | PERMISSION_MINT defines a permission to mint tokens of a contract. |
+| PERMISSION_BURN | 3 | PERMISSION_BURN defines a permission to burn tokens of a contract. |
 
 
  <!-- end enums -->
@@ -13493,7 +13510,7 @@ Since: 0.46.0 (finschia)
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `granter` | [string](#string) |  | address which granted the permission to `grantee`. it would be empty where the event is triggered by the issuance. |
 | `grantee` | [string](#string) |  | address of the grantee. |
-| `permission` | [string](#string) |  | permission on the token class. |
+| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
 
 
 
@@ -13612,7 +13629,7 @@ For the legacy events.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| unspecified | 0 |  |
+| ATTRIBUTE_KEY_UNSPECIFIED | 0 |  |
 | name | 1 |  |
 | symbol | 2 |  |
 | meta | 3 |  |
@@ -13638,7 +13655,7 @@ For the legacy events.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
-| unspecified | 0 |  |
+| EVENT_TYPE_UNSPECIFIED | 0 |  |
 | issue | 1 |  |
 | mint | 2 |  |
 | burn | 3 |  |
@@ -13942,7 +13959,7 @@ Since: finschia
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `grantee` | [string](#string) |  | grantee which has permissions on the token class. |
-| `permission` | [string](#string) |  | a permission given to the grantee. |
+| `permission` | [Permission](#lbm.token.v1.Permission) |  | a permission given to the grantee. |
 
 
 
@@ -14215,7 +14232,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `grantee` | [string](#string) |  | address of the grantee which abandons the permission. |
-| `permission` | [string](#string) |  | permission on the token class. |
+| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
 
 
 
@@ -14396,7 +14413,7 @@ Since: 0.46.0 (finschia)
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `granter` | [string](#string) |  | address of the granter which must have the permission to give. |
 | `grantee` | [string](#string) |  | address of the grantee. |
-| `permission` | [string](#string) |  | permission on the token class. |
+| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
 
 
 
