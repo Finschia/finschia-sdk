@@ -34,15 +34,15 @@ type KeeperTestSuite struct {
 }
 
 func createRandomAccounts(accNum int) []sdk.AccAddress {
-	seenAddresses := make(map[sdk.AccAddress]bool, accNum)
+	seenAddresses := make(map[string]bool, accNum)
 	addresses := make([]sdk.AccAddress, accNum)
 	for i := 0; i < accNum; i++ {
 		var address sdk.AccAddress
 		for {
 			pk := secp256k1.GenPrivKey().PubKey()
-			address = sdk.BytesToAccAddress(pk.Address())
-			if !seenAddresses[address] {
-				seenAddresses[address] = true
+			address = sdk.AccAddress(pk.Address())
+			if !seenAddresses[address.String()] {
+				seenAddresses[address.String()] = true
 				break
 			}
 		}

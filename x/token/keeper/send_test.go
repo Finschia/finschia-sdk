@@ -49,15 +49,19 @@ func (s *KeeperTestSuite) TestAuthorizeOperator() {
 		s.contractID:    "valid",
 		dummyContractID: "not-exists",
 	}
-	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor:   "vendor",
-		s.operator: "operator",
-		s.customer: "customer",
-		s.stranger: "stranger",
+	userDescriptions := map[string]string{
+		s.vendor.String():   "vendor",
+		s.operator.String(): "operator",
+		s.customer.String(): "customer",
+		s.stranger.String(): "stranger",
 	}
 	for id, idDesc := range contractDescriptions {
-		for operator, operatorDesc := range userDescriptions {
-			for from, fromDesc := range userDescriptions {
+		for operatorStr, operatorDesc := range userDescriptions {
+			operator, err := sdk.AccAddressFromBech32(operatorStr)
+			s.Require().NoError(err)
+			for fromStr, fromDesc := range userDescriptions {
+				from, err := sdk.AccAddressFromBech32(fromStr)
+				s.Require().NoError(err)
 				name := fmt.Sprintf("ContractID: %s, Operator: %s, From: %s", idDesc, operatorDesc, fromDesc)
 				s.Run(name, func() {
 					ctx, _ := s.ctx.CacheContext()
@@ -87,14 +91,18 @@ func (s *KeeperTestSuite) TestRevokeOperator() {
 		s.contractID:    "valid",
 		dummyContractID: "not-exists",
 	}
-	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor:   "vendor",
-		s.operator: "operator",
-		s.customer: "customer",
+	userDescriptions := map[string]string{
+		s.vendor.String():   "vendor",
+		s.operator.String(): "operator",
+		s.customer.String(): "customer",
 	}
 	for id, idDesc := range contractDescriptions {
-		for operator, operatorDesc := range userDescriptions {
-			for from, fromDesc := range userDescriptions {
+		for operatorStr, operatorDesc := range userDescriptions {
+			operator, err := sdk.AccAddressFromBech32(operatorStr)
+			s.Require().NoError(err)
+			for fromStr, fromDesc := range userDescriptions {
+				from, err := sdk.AccAddressFromBech32(fromStr)
+				s.Require().NoError(err)
 				name := fmt.Sprintf("ContractID: %s, Operator: %s, From: %s", idDesc, operatorDesc, fromDesc)
 				s.Run(name, func() {
 					ctx, _ := s.ctx.CacheContext()
