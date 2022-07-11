@@ -28,7 +28,11 @@ func (msg MsgSetWithdrawAddress) Type() string  { return TypeMsgSetWithdrawAddre
 
 // Return address that must sign over msg.GetSignBytes()
 func (msg MsgSetWithdrawAddress) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{sdk.AccAddress(msg.DelegatorAddress)}
+	delAddr, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{delAddr}
 }
 
 // get the bytes for the message signer to sign on
@@ -45,12 +49,7 @@ func (msg MsgSetWithdrawAddress) ValidateBasic() error {
 	if msg.WithdrawAddress == "" {
 		return ErrEmptyWithdrawAddr
 	}
-	if err := sdk.ValidateAccAddress(msg.DelegatorAddress); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid delegator address (%s)", err)
-	}
-	if err := sdk.ValidateAccAddress(msg.WithdrawAddress); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid withdraw address (%s)", err)
-	}
+
 	return nil
 }
 
@@ -66,7 +65,10 @@ func (msg MsgWithdrawDelegatorReward) Type() string  { return TypeMsgWithdrawDel
 
 // Return address that must sign over msg.GetSignBytes()
 func (msg MsgWithdrawDelegatorReward) GetSigners() []sdk.AccAddress {
-	delAddr := sdk.AccAddress(msg.DelegatorAddress)
+	delAddr, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{delAddr}
 }
 
@@ -84,12 +86,6 @@ func (msg MsgWithdrawDelegatorReward) ValidateBasic() error {
 	if msg.ValidatorAddress == "" {
 		return ErrEmptyValidatorAddr
 	}
-	if err := sdk.ValidateAccAddress(msg.DelegatorAddress); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid delegator address (%s)", err)
-	}
-	if err := sdk.ValidateValAddress(msg.ValidatorAddress); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid validator address (%s)", err)
-	}
 	return nil
 }
 
@@ -104,11 +100,11 @@ func (msg MsgWithdrawValidatorCommission) Type() string  { return TypeMsgWithdra
 
 // Return address that must sign over msg.GetSignBytes()
 func (msg MsgWithdrawValidatorCommission) GetSigners() []sdk.AccAddress {
-	valAddrBytes, err := sdk.ValAddressToBytes(msg.ValidatorAddress)
+	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{sdk.BytesToAccAddress(valAddrBytes)}
+	return []sdk.AccAddress{valAddr.Bytes()}
 }
 
 // get the bytes for the message signer to sign on
@@ -121,9 +117,6 @@ func (msg MsgWithdrawValidatorCommission) GetSignBytes() []byte {
 func (msg MsgWithdrawValidatorCommission) ValidateBasic() error {
 	if msg.ValidatorAddress == "" {
 		return ErrEmptyValidatorAddr
-	}
-	if err := sdk.ValidateValAddress(msg.ValidatorAddress); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid validator address (%s)", err)
 	}
 	return nil
 }
@@ -146,7 +139,10 @@ func (msg MsgFundCommunityPool) Type() string { return TypeMsgFundCommunityPool 
 // GetSigners returns the signer addresses that are expected to sign the result
 // of GetSignBytes.
 func (msg MsgFundCommunityPool) GetSigners() []sdk.AccAddress {
-	depoAddr := sdk.AccAddress(msg.Depositor)
+	depoAddr, err := sdk.AccAddressFromBech32(msg.Depositor)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{depoAddr}
 }
 
@@ -164,9 +160,6 @@ func (msg MsgFundCommunityPool) ValidateBasic() error {
 	}
 	if msg.Depositor == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, msg.Depositor)
-	}
-	if err := sdk.ValidateAccAddress(msg.Depositor); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid depositor address (%s)", err)
 	}
 
 	return nil

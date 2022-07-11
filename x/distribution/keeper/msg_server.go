@@ -25,15 +25,15 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) SetWithdrawAddress(goCtx context.Context, msg *types.MsgSetWithdrawAddress) (*types.MsgSetWithdrawAddressResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	err := sdk.ValidateAccAddress(msg.DelegatorAddress)
+	delegatorAddress, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
 	if err != nil {
 		return nil, err
 	}
-	err = sdk.ValidateAccAddress(msg.WithdrawAddress)
+	withdrawAddress, err := sdk.AccAddressFromBech32(msg.WithdrawAddress)
 	if err != nil {
 		return nil, err
 	}
-	err = k.SetWithdrawAddr(ctx, sdk.AccAddress(msg.DelegatorAddress), sdk.AccAddress(msg.WithdrawAddress))
+	err = k.SetWithdrawAddr(ctx, delegatorAddress, withdrawAddress)
 	if err != nil {
 		return nil, err
 	}
@@ -52,16 +52,15 @@ func (k msgServer) SetWithdrawAddress(goCtx context.Context, msg *types.MsgSetWi
 func (k msgServer) WithdrawDelegatorReward(goCtx context.Context, msg *types.MsgWithdrawDelegatorReward) (*types.MsgWithdrawDelegatorRewardResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	err := sdk.ValidateValAddress(msg.ValidatorAddress)
+	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
 	if err != nil {
 		return nil, err
 	}
-	err = sdk.ValidateAccAddress(msg.DelegatorAddress)
+	delegatorAddress, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
 	if err != nil {
 		return nil, err
 	}
-	amount, err := k.WithdrawDelegationRewards(ctx, sdk.AccAddress(msg.DelegatorAddress),
-		sdk.ValAddress(msg.ValidatorAddress))
+	amount, err := k.WithdrawDelegationRewards(ctx, delegatorAddress, valAddr)
 	if err != nil {
 		return nil, err
 	}
@@ -91,11 +90,11 @@ func (k msgServer) WithdrawDelegatorReward(goCtx context.Context, msg *types.Msg
 func (k msgServer) WithdrawValidatorCommission(goCtx context.Context, msg *types.MsgWithdrawValidatorCommission) (*types.MsgWithdrawValidatorCommissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	err := sdk.ValidateValAddress(msg.ValidatorAddress)
+	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
 	if err != nil {
 		return nil, err
 	}
-	amount, err := k.Keeper.WithdrawValidatorCommission(ctx, sdk.ValAddress(msg.ValidatorAddress))
+	amount, err := k.Keeper.WithdrawValidatorCommission(ctx, valAddr)
 	if err != nil {
 		return nil, err
 	}
@@ -126,11 +125,11 @@ func (k msgServer) WithdrawValidatorCommission(goCtx context.Context, msg *types
 func (k msgServer) FundCommunityPool(goCtx context.Context, msg *types.MsgFundCommunityPool) (*types.MsgFundCommunityPoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	err := sdk.ValidateAccAddress(msg.Depositor)
+	depositer, err := sdk.AccAddressFromBech32(msg.Depositor)
 	if err != nil {
 		return nil, err
 	}
-	if err := k.Keeper.FundCommunityPool(ctx, msg.Amount, sdk.AccAddress(msg.Depositor)); err != nil {
+	if err := k.Keeper.FundCommunityPool(ctx, msg.Amount, depositer); err != nil {
 		return nil, err
 	}
 
