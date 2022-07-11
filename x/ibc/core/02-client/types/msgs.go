@@ -83,7 +83,7 @@ func (msg MsgCreateClient) ValidateBasic() error {
 	if err := ValidateClientType(clientState.ClientType()); err != nil {
 		return sdkerrors.Wrap(err, "client type does not meet naming constraints")
 	}
-	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+	if _, err := sdk.AccAddressFromBech32(msg.Signer); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
 	return consensusState.ValidateBasic()
@@ -150,7 +150,7 @@ func (msg MsgUpdateClient) ValidateBasic() error {
 	if msg.ClientId == exported.Localhost {
 		return sdkerrors.Wrap(ErrInvalidClient, "localhost client is only updated on ABCI BeginBlock")
 	}
-	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+	if _, err := sdk.AccAddressFromBech32(msg.Signer); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
 	return host.ClientIdentifierValidator(msg.ClientId)
@@ -232,7 +232,7 @@ func (msg MsgUpgradeClient) ValidateBasic() error {
 	if len(msg.ProofUpgradeConsensusState) == 0 {
 		return sdkerrors.Wrap(ErrInvalidUpgradeClient, "proof of upgrade consensus state cannot be empty")
 	}
-	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+	if _, err := sdk.AccAddressFromBech32(msg.Signer); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
 	return host.ClientIdentifierValidator(msg.ClientId)
@@ -301,7 +301,7 @@ func (msg MsgSubmitMisbehaviour) ValidateBasic() error {
 			misbehaviour.GetClientID(), msg.ClientId,
 		)
 	}
-	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+	if _, err := sdk.AccAddressFromBech32(msg.Signer); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
 

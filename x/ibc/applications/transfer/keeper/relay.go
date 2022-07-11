@@ -195,7 +195,7 @@ func (k Keeper) OnRecvPacket(ctx sdk.Context, packet channeltypes.Packet, data t
 	}
 
 	// decode the receiver address
-	err := sdk.ValidateAccAddress(data.Receiver)
+	_, err := sdk.AccAddressFromBech32(data.Receiver)
 	if err != nil {
 		return err
 	}
@@ -353,7 +353,7 @@ func (k Keeper) refundPacketToken(ctx sdk.Context, packet channeltypes.Packet, d
 	token := sdk.NewCoin(trace.IBCDenom(), sdk.NewIntFromUint64(data.Amount))
 
 	// decode the sender address
-	err := sdk.ValidateAccAddress(data.Sender)
+	_, err := sdk.AccAddressFromBech32(data.Sender)
 	if err != nil {
 		return err
 	}
