@@ -13,10 +13,10 @@ func (m MsgSend) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
@@ -41,13 +41,13 @@ func (m MsgOperatorSend) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
@@ -72,13 +72,13 @@ func (m MsgTransferFrom) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
 	}
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
@@ -103,10 +103,10 @@ func (m MsgAuthorizeOperator) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Holder); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Holder); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", m.Holder)
 	}
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
@@ -127,10 +127,10 @@ func (m MsgRevokeOperator) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Holder); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Holder); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", m.Holder)
 	}
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
@@ -151,10 +151,10 @@ func (m MsgApprove) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Approver); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Approver); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", m.Approver)
 	}
-	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
 	}
 
@@ -171,11 +171,11 @@ var _ sdk.Msg = (*MsgIssue)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgIssue) ValidateBasic() error {
-	if err := sdk.ValidateAccAddress(m.Owner); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Owner); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", m.Owner)
 	}
 
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
@@ -220,10 +220,10 @@ func (m MsgGrant) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Granter); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Granter); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", m.Granter)
 	}
-	if err := sdk.ValidateAccAddress(m.Grantee); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Grantee); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
 	}
 
@@ -248,7 +248,7 @@ func (m MsgAbandon) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Grantee); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Grantee); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
 	}
 
@@ -273,10 +273,10 @@ func (m MsgGrantPermission) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", m.From)
 	}
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.To)
 	}
 
@@ -301,7 +301,7 @@ func (m MsgRevokePermission) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
@@ -325,11 +325,11 @@ func (m MsgMint) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.From)
 	}
 
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
@@ -353,7 +353,7 @@ func (m MsgBurn) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
@@ -378,10 +378,10 @@ func (m MsgOperatorBurn) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
@@ -406,10 +406,10 @@ func (m MsgBurnFrom) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
 	}
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
@@ -433,7 +433,7 @@ func (m MsgModify) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
-	if err := sdk.ValidateAccAddress(m.Owner); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Owner); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Owner)
 	}
 
