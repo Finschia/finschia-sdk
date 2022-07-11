@@ -13624,8 +13624,9 @@ Since: 0.46.0 (finschia)
 <a name="lbm.token.v1.AttributeKey"></a>
 
 ### AttributeKey
+Deprecated: use typed events.
+
 AttributeKey enumerates the valid attribute keys on x/token.
-For the legacy events.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
@@ -13650,8 +13651,9 @@ For the legacy events.
 <a name="lbm.token.v1.EventType"></a>
 
 ### EventType
+Deprecated: use typed events.
+
 EventType enumerates the valid event types on x/token.
-For the legacy events.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |

@@ -7,8 +7,9 @@ import "lbm/token/v1/token.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/token";
 
+// Deprecated: use typed events.
+//
 // EventType enumerates the valid event types on x/token.
-// For the legacy events.
 enum EventType {
   option (gogoproto.goproto_enum_prefix) = false;
 
@@ -26,8 +27,9 @@ enum EventType {
   approve_token = 10 [(gogoproto.enumvalue_customname) = "EventTypeApproveToken"];
 }
 
+// Deprecated: use typed events.
+//
 // AttributeKey enumerates the valid attribute keys on x/token.
-// For the legacy events.
 enum AttributeKey {
   option (gogoproto.goproto_enum_prefix) = false;
 

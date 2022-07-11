@@ -24,8 +24,9 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// Deprecated: use typed events.
+//
 // EventType enumerates the valid event types on x/token.
-// For the legacy events.
 type EventType int32
 
 const (
@@ -78,8 +79,9 @@ func (EventType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_d7505f4c4cdec18e, []int{0}
 }
 
+// Deprecated: use typed events.
+//
 // AttributeKey enumerates the valid attribute keys on x/token.
-// For the legacy events.
 type AttributeKey int32
 
 const (
