@@ -36,7 +36,7 @@ func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Address); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
 	}
 
@@ -156,7 +156,7 @@ func (s queryServer) Grant(c context.Context, req *token.QueryGrantRequest) (*to
 	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Grantee); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
 	}
 	permission := token.Permission(token.Permission_value[req.Permission])
@@ -181,7 +181,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Grantee); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
 	}
 
@@ -212,10 +212,10 @@ func (s queryServer) Authorization(c context.Context, req *token.QueryAuthorizat
 	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Operator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Operator); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
 	}
-	if err := sdk.ValidateAccAddress(req.Holder); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Holder); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", req.Holder)
 	}
 
@@ -236,7 +236,7 @@ func (s queryServer) OperatorAuthorizations(c context.Context, req *token.QueryO
 	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Operator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Operator); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
 	}
 
@@ -267,10 +267,10 @@ func (s queryServer) Approved(c context.Context, req *token.QueryApprovedRequest
 	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Address); err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Approver); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Approver); err != nil {
 		return nil, err
 	}
 
