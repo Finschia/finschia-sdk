@@ -95,6 +95,9 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 	// update target
 	k.setChild(ctx, contractID, target, subject)
 
+	// legacy
+	k.emitEventOnDescendants(ctx, contractID, subject, collection.NewEventOperationRootChanged)
+
 	return nil
 }
 
@@ -241,6 +244,17 @@ func (k Keeper) iterateChildren(ctx sdk.Context, contractID string, tokenID stri
 	})
 }
 
+func (k Keeper) iterateDescendants(ctx sdk.Context, contractID string, tokenID string, fn func(descendantID string) (stop bool)) {
+	k.iterateChildren(ctx, contractID, tokenID, func(childID string) (stop bool) {
+		if stop := fn(childID); stop {
+			return true
+		}
+
+		k.iterateChildren(ctx, contractID, childID, fn)
+		return false
+	})
+}
+
 func (k Keeper) setChild(ctx sdk.Context, contractID string, tokenID, childID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := childKey(contractID, tokenID, childID)
@@ -294,21 +308,32 @@ func (k Keeper) GetRoot(ctx sdk.Context, contractID string, tokenID string) stri
 	return id
 }
 
-// legacy index
+// Deprecated
 func (k Keeper) setLegacyToken(ctx sdk.Context, contractID string, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := legacyTokenKey(contractID, tokenID)
 	store.Set(key, []byte{})
 }
 
+// Deprecated
 func (k Keeper) deleteLegacyToken(ctx sdk.Context, contractID string, tokenID string) {
 	store := ctx.KVStore(k.storeKey)
 	key := legacyTokenKey(contractID, tokenID)
 	store.Delete(key)
 }
 
+// Deprecated
 func (k Keeper) setLegacyTokenType(ctx sdk.Context, contractID string, tokenType string) {
 	store := ctx.KVStore(k.storeKey)
 	key := legacyTokenTypeKey(contractID, tokenType)
 	store.Set(key, []byte{})
+}
+
+// Deprecated
+func (k Keeper) emitEventOnDescendants(ctx sdk.Context, contractID string, tokenID string, generator func(contractID string, descendantID string) sdk.Event) {
+	k.iterateDescendants(ctx, contractID, tokenID, func(descendantID string) (stop bool) {
+		event := generator(contractID, descendantID)
+		ctx.EventManager().EmitEvent(event)
+		return false
+	})
 }

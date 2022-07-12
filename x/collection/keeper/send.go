@@ -25,6 +25,9 @@ func (k Keeper) addCoins(ctx sdk.Context, contractID string, address sdk.AccAddr
 
 		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
 			k.setOwner(ctx, contractID, coin.TokenId, address)
+
+			// legacy
+			k.emitEventOnDescendants(ctx, contractID, coin.TokenId, collection.NewEventOperationTransferNFT)
 		}
 	}
 

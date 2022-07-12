@@ -687,3 +687,51 @@ func NewEventDetachFrom(e EventDetached, oldRoot string) sdk.Event {
 	}
 	return new
 }
+
+// Deprecated: do not use.
+func NewEventOperationTransferNFT(contractID string, tokenID string) sdk.Event {
+	eventType := EventTypeOperationTransferNFT.String()
+	attributes := map[AttributeKey]string{
+		AttributeKeyContractID: contractID,
+		AttributeKeyTokenID:    tokenID,
+	}
+
+	new := sdk.NewEvent(eventType)
+	for key, value := range attributes {
+		attribute := sdk.NewAttribute(key.String(), value)
+		new = new.AppendAttributes(attribute)
+	}
+	return new
+}
+
+// Deprecated: use EventBurned.
+func NewEventOperationBurnNFT(contractID string, tokenID string) sdk.Event {
+	eventType := EventTypeOperationBurnNFT.String()
+	attributes := map[AttributeKey]string{
+		AttributeKeyContractID: contractID,
+		AttributeKeyTokenID:    tokenID,
+	}
+
+	new := sdk.NewEvent(eventType)
+	for key, value := range attributes {
+		attribute := sdk.NewAttribute(key.String(), value)
+		new = new.AppendAttributes(attribute)
+	}
+	return new
+}
+
+// Deprecated: do not use.
+func NewEventOperationRootChanged(contractID string, tokenID string) sdk.Event {
+	eventType := EventTypeOperationRootChanged.String()
+	attributes := map[AttributeKey]string{
+		AttributeKeyContractID: contractID,
+		AttributeKeyTokenID:    tokenID,
+	}
+
+	new := sdk.NewEvent(eventType)
+	for key, value := range attributes {
+		attribute := sdk.NewAttribute(key.String(), value)
+		new = new.AppendAttributes(attribute)
+	}
+	return new
+}

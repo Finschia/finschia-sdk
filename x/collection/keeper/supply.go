@@ -254,6 +254,9 @@ func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddres
 	for _, coin := range amount {
 		burntAmount = append(burntAmount, coin)
 		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
+			// legacy
+			k.emitEventOnDescendants(ctx, contractID, coin.TokenId, collection.NewEventOperationBurnNFT)
+
 			k.deleteOwner(ctx, contractID, coin.TokenId)
 			k.deleteNFT(ctx, contractID, coin.TokenId)
 			pruned := k.pruneNFT(ctx, contractID, coin.TokenId)
