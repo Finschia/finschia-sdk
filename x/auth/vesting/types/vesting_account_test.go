@@ -803,24 +803,6 @@ func TestPermanentLockedAccountMarshal(t *testing.T) {
 	require.NotNil(t, err)
 }
 
-func TestBaseVestingAccountMarshal(t *testing.T) {
-	baseAcc, coins := initBaseAccount()
-	acc := types.NewBaseVestingAccount(baseAcc, coins, time.Now().Unix())
-
-	bz, err := acc.Marshal()
-	require.NoError(t, err)
-
-	acc2 := types.NewBaseVestingAccount(nil, sdk.NewCoins(), 0)
-	err = acc2.Unmarshal(bz)
-	require.NoError(t, err)
-	require.IsType(t, &types.BaseVestingAccount{}, acc2)
-	require.Equal(t, acc.String(), acc2.String())
-
-	// error on bad bytes
-	err = acc2.Unmarshal(bz[:len(bz)/2])
-	require.Error(t, err)
-}
-
 func initBaseAccount() (*authtypes.BaseAccount, sdk.Coins) {
 	_, _, addr := testdata.KeyTestPubAddr()
 	origCoins := sdk.Coins{sdk.NewInt64Coin(feeDenom, 1000), sdk.NewInt64Coin(stakeDenom, 100)}

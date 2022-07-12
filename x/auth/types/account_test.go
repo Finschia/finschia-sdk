@@ -4,14 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
-
-	"github.com/line/lbm-sdk/codec"
-	types2 "github.com/line/lbm-sdk/codec/types"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/testutil/testdata"
@@ -50,26 +46,6 @@ func TestBaseAddressPubKey(t *testing.T) {
 	err = acc2.SetAddress(addr2)
 	require.Nil(t, err)
 	require.EqualValues(t, addr2, acc2.GetAddress())
-}
-
-func TestBaseAccountMarshalUnmarshalJSON(t *testing.T) {
-	interfaceRegistry := types2.NewInterfaceRegistry()
-	interfaceRegistry.RegisterImplementations((*cryptotypes.PubKey)(nil), &secp256k1.PubKey{})
-
-	cdc := codec.NewProtoCodec(interfaceRegistry)
-	_, pub, addr := testdata.KeyTestPubAddr()
-	acc := types.NewBaseAccountWithAddress(addr)
-	acc.SetPubKey(pub)
-
-	bz := cdc.MustMarshalJSON(acc)
-	var acc2 types.BaseAccount
-
-	cdc.MustUnmarshalJSON(bz, &acc2)
-	require.Equal(t, acc.AccountNumber, acc2.AccountNumber)
-	require.Equal(t, acc.PubKey.TypeUrl, acc2.PubKey.TypeUrl)
-	require.Equal(t, acc.PubKey.Value, acc2.PubKey.Value)
-	require.Equal(t, acc.Address, acc2.Address)
-	require.Equal(t, acc.Sequence, acc2.Sequence)
 }
 
 func TestBaseSequence(t *testing.T) {
