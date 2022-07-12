@@ -3,6 +3,7 @@ package simulation
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/line/lbm-sdk/types/module"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
