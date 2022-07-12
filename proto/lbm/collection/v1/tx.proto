@@ -590,6 +590,7 @@ message MsgCreateContractResponse {
 //   - `operator` is of invalid format.
 //   - `to` is not empty and is of invalid format.
 // - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
 //   - `name` exceeds the app-specific limit in length.
 //   - `meta` exceeds the app-specific limit in length.
 //   - `decimals` is lesser than 0 or greater than 18.
@@ -631,6 +632,7 @@ message MsgCreateFTClassResponse {
 // - ErrInvalidAddress
 //   - `operator` is of invalid format.
 // - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
 //   - `name` exceeds the app-specific limit in length.
 //   - `meta` exceeds the app-specific limit in length.
 //
@@ -665,6 +667,7 @@ message MsgCreateNFTClassResponse {
 //   - `owner` is of invalid format.
 //   - `to` is of invalid format.
 // - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
 //   - `name` is empty.
 //   - `name` exceeds the app-specific limit in length.
 //   - `meta` exceeds the app-specific limit in length.
@@ -712,6 +715,7 @@ message MsgIssueFTResponse {
 // - ErrInvalidAddress
 //   - `owner` is of invalid format.
 // - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
 //   - `name` exceeds the app-specific limit in length.
 //   - `meta` exceeds the app-specific limit in length.
 //

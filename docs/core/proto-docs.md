@@ -14695,6 +14695,7 @@ Throws:
   - `operator` is of invalid format.
   - `to` is not empty and is of invalid format.
 - ErrInvalidRequest
+  - `contract_id` is of invalid format.
   - `name` exceeds the app-specific limit in length.
   - `meta` exceeds the app-specific limit in length.
   - `decimals` is lesser than 0 or greater than 18.
@@ -14746,6 +14747,7 @@ Throws:
 - ErrInvalidAddress
   - `operator` is of invalid format.
 - ErrInvalidRequest
+  - `contract_id` is of invalid format.
   - `name` exceeds the app-specific limit in length.
   - `meta` exceeds the app-specific limit in length.
 
@@ -14970,6 +14972,7 @@ Throws:
   - `owner` is of invalid format.
   - `to` is of invalid format.
 - ErrInvalidRequest
+  - `contract_id` is of invalid format.
   - `name` is empty.
   - `name` exceeds the app-specific limit in length.
   - `meta` exceeds the app-specific limit in length.
@@ -15024,6 +15027,7 @@ Throws:
 - ErrInvalidAddress
   - `owner` is of invalid format.
 - ErrInvalidRequest
+  - `contract_id` is of invalid format.
   - `name` exceeds the app-specific limit in length.
   - `meta` exceeds the app-specific limit in length.
 

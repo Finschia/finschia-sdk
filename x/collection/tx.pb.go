@@ -1337,6 +1337,7 @@ func (m *MsgCreateContractResponse) GetId() string {
 //   - `operator` is of invalid format.
 //   - `to` is not empty and is of invalid format.
 // - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
 //   - `name` exceeds the app-specific limit in length.
 //   - `meta` exceeds the app-specific limit in length.
 //   - `decimals` is lesser than 0 or greater than 18.
@@ -1492,6 +1493,7 @@ func (m *MsgCreateFTClassResponse) GetId() string {
 // - ErrInvalidAddress
 //   - `operator` is of invalid format.
 // - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
 //   - `name` exceeds the app-specific limit in length.
 //   - `meta` exceeds the app-specific limit in length.
 //
@@ -1627,6 +1629,7 @@ func (m *MsgCreateNFTClassResponse) GetId() string {
 //   - `owner` is of invalid format.
 //   - `to` is of invalid format.
 // - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
 //   - `name` is empty.
 //   - `name` exceeds the app-specific limit in length.
 //   - `meta` exceeds the app-specific limit in length.
@@ -1794,6 +1797,7 @@ func (m *MsgIssueFTResponse) GetId() string {
 // - ErrInvalidAddress
 //   - `owner` is of invalid format.
 // - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
 //   - `name` exceeds the app-specific limit in length.
 //   - `meta` exceeds the app-specific limit in length.
 //
