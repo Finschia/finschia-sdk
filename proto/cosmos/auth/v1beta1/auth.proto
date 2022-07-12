@@ -1,12 +1,9 @@
 syntax = "proto3";
 package cosmos.auth.v1beta1;
 
-import "cosmos/crypto/ed25519/keys.proto";
-import "cosmos/crypto/multisig/keys.proto";
-import "cosmos/crypto/secp256k1/keys.proto";
-import "cosmos/crypto/secp256r1/keys.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/auth/types";
 
@@ -20,17 +17,11 @@ message BaseAccount {
 
   option (cosmos_proto.implements_interface) = "AccountI";
 
-  string                       address         = 1;
-  cosmos.crypto.ed25519.PubKey ed25519_pub_key = 2
-      [(gogoproto.jsontag) = "ed25519_public_key,omitempty", (gogoproto.moretags) = "yaml:\"ed25519_public_key\""];
-  cosmos.crypto.secp256k1.PubKey secp256k1_pub_key = 3
-      [(gogoproto.jsontag) = "secp256k1_public_key,omitempty", (gogoproto.moretags) = "yaml:\"secp256k1_public_key\""];
-  cosmos.crypto.secp256r1.PubKey secp256r1_pub_key = 4
-      [(gogoproto.jsontag) = "secp256r1_public_key,omitempty", (gogoproto.moretags) = "yaml:\"secp256r1_public_key\""];
-  cosmos.crypto.multisig.LegacyAminoPubKey multisig_pub_key = 5
-      [(gogoproto.jsontag) = "multisig_public_key,omitempty", (gogoproto.moretags) = "yaml:\"multisig_public_key\""];
-  uint64 account_number = 6 [(gogoproto.moretags) = "yaml:\"account_number\""];
-  uint64 sequence       = 7;
+  string              address = 1;
+  google.protobuf.Any pub_key = 2
+      [(gogoproto.jsontag) = "public_key,omitempty", (gogoproto.moretags) = "yaml:\"public_key\""];
+  uint64 account_number = 3 [(gogoproto.moretags) = "yaml:\"account_number\""];
+  uint64 sequence       = 4;
 }
 
 // ModuleAccount defines an account for modules that holds coins on a pool.

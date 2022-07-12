@@ -4,21 +4,6 @@
 
 ## Table of Contents
 
-- [cosmos/crypto/ed25519/keys.proto](#cosmos/crypto/ed25519/keys.proto)
-    - [PrivKey](#cosmos.crypto.ed25519.PrivKey)
-    - [PubKey](#cosmos.crypto.ed25519.PubKey)
-  
-- [cosmos/crypto/multisig/keys.proto](#cosmos/crypto/multisig/keys.proto)
-    - [LegacyAminoPubKey](#cosmos.crypto.multisig.LegacyAminoPubKey)
-  
-- [cosmos/crypto/secp256k1/keys.proto](#cosmos/crypto/secp256k1/keys.proto)
-    - [PrivKey](#cosmos.crypto.secp256k1.PrivKey)
-    - [PubKey](#cosmos.crypto.secp256k1.PubKey)
-  
-- [cosmos/crypto/secp256r1/keys.proto](#cosmos/crypto/secp256r1/keys.proto)
-    - [PrivKey](#cosmos.crypto.secp256r1.PrivKey)
-    - [PubKey](#cosmos.crypto.secp256r1.PubKey)
-  
 - [cosmos/auth/v1beta1/auth.proto](#cosmos/auth/v1beta1/auth.proto)
     - [BaseAccount](#cosmos.auth.v1beta1.BaseAccount)
     - [ModuleAccount](#cosmos.auth.v1beta1.ModuleAccount)
@@ -212,9 +197,24 @@
   
     - [Msg](#cosmos.crisis.v1beta1.Msg)
   
+- [cosmos/crypto/ed25519/keys.proto](#cosmos/crypto/ed25519/keys.proto)
+    - [PrivKey](#cosmos.crypto.ed25519.PrivKey)
+    - [PubKey](#cosmos.crypto.ed25519.PubKey)
+  
+- [cosmos/crypto/multisig/keys.proto](#cosmos/crypto/multisig/keys.proto)
+    - [LegacyAminoPubKey](#cosmos.crypto.multisig.LegacyAminoPubKey)
+  
 - [cosmos/crypto/multisig/v1beta1/multisig.proto](#cosmos/crypto/multisig/v1beta1/multisig.proto)
     - [CompactBitArray](#cosmos.crypto.multisig.v1beta1.CompactBitArray)
     - [MultiSignature](#cosmos.crypto.multisig.v1beta1.MultiSignature)
+  
+- [cosmos/crypto/secp256k1/keys.proto](#cosmos/crypto/secp256k1/keys.proto)
+    - [PrivKey](#cosmos.crypto.secp256k1.PrivKey)
+    - [PubKey](#cosmos.crypto.secp256k1.PubKey)
+  
+- [cosmos/crypto/secp256r1/keys.proto](#cosmos/crypto/secp256r1/keys.proto)
+    - [PrivKey](#cosmos.crypto.secp256r1.PrivKey)
+    - [PubKey](#cosmos.crypto.secp256r1.PubKey)
   
 - [cosmos/distribution/v1beta1/distribution.proto](#cosmos/distribution/v1beta1/distribution.proto)
     - [CommunityPoolSpendProposal](#cosmos.distribution.v1beta1.CommunityPoolSpendProposal)
@@ -1246,14 +1246,18 @@
     - [MsgIBCSend](#lbm.wasm.v1.MsgIBCSend)
   
 - [lbm/wasm/v1/proposal.proto](#lbm/wasm/v1/proposal.proto)
+    - [AccessConfigUpdate](#lbm.wasm.v1.AccessConfigUpdate)
     - [ClearAdminProposal](#lbm.wasm.v1.ClearAdminProposal)
+    - [ExecuteContractProposal](#lbm.wasm.v1.ExecuteContractProposal)
     - [InstantiateContractProposal](#lbm.wasm.v1.InstantiateContractProposal)
     - [MigrateContractProposal](#lbm.wasm.v1.MigrateContractProposal)
     - [PinCodesProposal](#lbm.wasm.v1.PinCodesProposal)
     - [StoreCodeProposal](#lbm.wasm.v1.StoreCodeProposal)
+    - [SudoContractProposal](#lbm.wasm.v1.SudoContractProposal)
     - [UnpinCodesProposal](#lbm.wasm.v1.UnpinCodesProposal)
     - [UpdateAdminProposal](#lbm.wasm.v1.UpdateAdminProposal)
     - [UpdateContractStatusProposal](#lbm.wasm.v1.UpdateContractStatusProposal)
+    - [UpdateInstantiateConfigProposal](#lbm.wasm.v1.UpdateInstantiateConfigProposal)
   
 - [lbm/wasm/v1/query.proto](#lbm/wasm/v1/query.proto)
     - [CodeInfoResponse](#lbm.wasm.v1.CodeInfoResponse)
@@ -1269,6 +1273,8 @@
     - [QueryContractInfoResponse](#lbm.wasm.v1.QueryContractInfoResponse)
     - [QueryContractsByCodeRequest](#lbm.wasm.v1.QueryContractsByCodeRequest)
     - [QueryContractsByCodeResponse](#lbm.wasm.v1.QueryContractsByCodeResponse)
+    - [QueryPinnedCodesRequest](#lbm.wasm.v1.QueryPinnedCodesRequest)
+    - [QueryPinnedCodesResponse](#lbm.wasm.v1.QueryPinnedCodesResponse)
     - [QueryRawContractStateRequest](#lbm.wasm.v1.QueryRawContractStateRequest)
     - [QueryRawContractStateResponse](#lbm.wasm.v1.QueryRawContractStateResponse)
     - [QuerySmartContractStateRequest](#lbm.wasm.v1.QuerySmartContractStateRequest)
@@ -1277,187 +1283,6 @@
     - [Query](#lbm.wasm.v1.Query)
   
 - [Scalar Value Types](#scalar-value-types)
-
-
-
-<a name="cosmos/crypto/ed25519/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmos/crypto/ed25519/keys.proto
-
-
-
-<a name="cosmos.crypto.ed25519.PrivKey"></a>
-
-### PrivKey
-Deprecated: PrivKey defines a ed25519 private key.
-NOTE: ed25519 keys must not be used in SDK apps except in a tendermint validator context.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="cosmos.crypto.ed25519.PubKey"></a>
-
-### PubKey
-PubKey is an ed25519 public key for handling Tendermint keys in SDK.
-It's needed for Any serialization and SDK compatibility.
-It must not be used in a non Tendermint key context because it doesn't implement
-ADR-28. Nevertheless, you will like to use ed25519 in app user level
-then you must create a new proto message and follow ADR-28 for Address construction.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="cosmos/crypto/multisig/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmos/crypto/multisig/keys.proto
-
-
-
-<a name="cosmos.crypto.multisig.LegacyAminoPubKey"></a>
-
-### LegacyAminoPubKey
-LegacyAminoPubKey specifies a public key type
-which nests multiple public keys and a threshold,
-it uses legacy amino address rules.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `threshold` | [uint32](#uint32) |  |  |
-| `public_keys` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="cosmos/crypto/secp256k1/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmos/crypto/secp256k1/keys.proto
-
-
-
-<a name="cosmos.crypto.secp256k1.PrivKey"></a>
-
-### PrivKey
-PrivKey defines a secp256k1 private key.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="cosmos.crypto.secp256k1.PubKey"></a>
-
-### PubKey
-PubKey defines a secp256k1 public key
-Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
-if the y-coordinate is the lexicographically largest of the two associated with
-the x-coordinate. Otherwise the first byte is a 0x03.
-This prefix is followed with the x-coordinate.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="cosmos/crypto/secp256r1/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmos/crypto/secp256r1/keys.proto
-Since: cosmos-sdk 0.43
-
-
-<a name="cosmos.crypto.secp256r1.PrivKey"></a>
-
-### PrivKey
-PrivKey defines a secp256r1 ECDSA private key.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `secret` | [bytes](#bytes) |  | secret number serialized using big-endian encoding |
-
-
-
-
-
-
-<a name="cosmos.crypto.secp256r1.PubKey"></a>
-
-### PubKey
-PubKey defines a secp256r1 ECDSA public key.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  | Point on secp256r1 curve in a compressed representation as specified in section 4.3.6 of ANSI X9.62: https://webstore.ansi.org/standards/ascx9/ansix9621998 |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
 
 
 
@@ -1479,10 +1304,7 @@ type for additional functionality (e.g. vesting).
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
-| `ed25519_pub_key` | [cosmos.crypto.ed25519.PubKey](#cosmos.crypto.ed25519.PubKey) |  |  |
-| `secp256k1_pub_key` | [cosmos.crypto.secp256k1.PubKey](#cosmos.crypto.secp256k1.PubKey) |  |  |
-| `secp256r1_pub_key` | [cosmos.crypto.secp256r1.PubKey](#cosmos.crypto.secp256r1.PubKey) |  |  |
-| `multisig_pub_key` | [cosmos.crypto.multisig.LegacyAminoPubKey](#cosmos.crypto.multisig.LegacyAminoPubKey) |  |  |
+| `pub_key` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 | `account_number` | [uint64](#uint64) |  |  |
 | `sequence` | [uint64](#uint64) |  |  |
 
@@ -3932,6 +3754,91 @@ Msg defines the bank Msg service.
 
 
 
+<a name="cosmos/crypto/ed25519/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmos/crypto/ed25519/keys.proto
+
+
+
+<a name="cosmos.crypto.ed25519.PrivKey"></a>
+
+### PrivKey
+Deprecated: PrivKey defines a ed25519 private key.
+NOTE: ed25519 keys must not be used in SDK apps except in a tendermint validator context.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="cosmos.crypto.ed25519.PubKey"></a>
+
+### PubKey
+PubKey is an ed25519 public key for handling Tendermint keys in SDK.
+It's needed for Any serialization and SDK compatibility.
+It must not be used in a non Tendermint key context because it doesn't implement
+ADR-28. Nevertheless, you will like to use ed25519 in app user level
+then you must create a new proto message and follow ADR-28 for Address construction.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmos/crypto/multisig/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmos/crypto/multisig/keys.proto
+
+
+
+<a name="cosmos.crypto.multisig.LegacyAminoPubKey"></a>
+
+### LegacyAminoPubKey
+LegacyAminoPubKey specifies a public key type
+which nests multiple public keys and a threshold,
+it uses legacy amino address rules.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `threshold` | [uint32](#uint32) |  |  |
+| `public_keys` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="cosmos/crypto/multisig/v1beta1/multisig.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -3969,6 +3876,102 @@ signed and with which modes.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `signatures` | [bytes](#bytes) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmos/crypto/secp256k1/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmos/crypto/secp256k1/keys.proto
+
+
+
+<a name="cosmos.crypto.secp256k1.PrivKey"></a>
+
+### PrivKey
+PrivKey defines a secp256k1 private key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="cosmos.crypto.secp256k1.PubKey"></a>
+
+### PubKey
+PubKey defines a secp256k1 public key
+Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
+if the y-coordinate is the lexicographically largest of the two associated with
+the x-coordinate. Otherwise the first byte is a 0x03.
+This prefix is followed with the x-coordinate.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmos/crypto/secp256r1/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmos/crypto/secp256r1/keys.proto
+Since: cosmos-sdk 0.43
+
+
+<a name="cosmos.crypto.secp256r1.PrivKey"></a>
+
+### PrivKey
+PrivKey defines a secp256r1 ECDSA private key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `secret` | [bytes](#bytes) |  | secret number serialized using big-endian encoding |
+
+
+
+
+
+
+<a name="cosmos.crypto.secp256r1.PubKey"></a>
+
+### PubKey
+PubKey defines a secp256r1 ECDSA public key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  | Point on secp256r1 curve in a compressed representation as specified in section 4.3.6 of ANSI X9.62: https://webstore.ansi.org/standards/ascx9/ansix9621998 |
 
 
 
@@ -8235,7 +8238,6 @@ RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `events` | [string](#string) | repeated | events is the list of transaction event type. |
-| `prove` | [bool](#bool) |  | prove is Include proofs of the transactions inclusion in the block |
 | `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an pagination for the request. |
 | `order_by` | [OrderBy](#cosmos.tx.v1beta1.OrderBy) |  |  |
 
@@ -18766,7 +18768,6 @@ Params defines the set of wasm parameters.
 | ----- | ---- | ----- | ----------- |
 | `code_upload_access` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
 | `instantiate_default_permission` | [AccessType](#lbm.wasm.v1.AccessType) |  |  |
-| `max_wasm_code_size` | [uint64](#uint64) |  |  |
 | `gas_multiplier` | [uint64](#uint64) |  |  |
 | `instance_cost` | [uint64](#uint64) |  |  |
 | `compile_cost` | [uint64](#uint64) |  |  |
@@ -19244,6 +19245,23 @@ MsgIBCSend
 
 
 
+<a name="lbm.wasm.v1.AccessConfigUpdate"></a>
+
+### AccessConfigUpdate
+AccessConfigUpdate contains the code id and the access config to be
+applied.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code to be updated |
+| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply to the set of code ids |
+
+
+
+
+
+
 <a name="lbm.wasm.v1.ClearAdminProposal"></a>
 
 ### ClearAdminProposal
@@ -19255,6 +19273,27 @@ ClearAdminProposal gov proposal content type to clear the admin of a contract.
 | `title` | [string](#string) |  | Title is a short summary |
 | `description` | [string](#string) |  | Description is a human readable text |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.ExecuteContractProposal"></a>
+
+### ExecuteContractProposal
+ExecuteContractProposal gov proposal content type to call execute on a
+contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract as execute |
+| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
 
 
 
@@ -19292,8 +19331,9 @@ MigrateContractProposal gov proposal content type to migrate a contract.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
+| `description` | [string](#string) |  | Description is a human readable text
+
+Note: skipping 3 as this was previously used for unneeded run_as |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
 | `code_id` | [uint64](#uint64) |  | CodeID references the new WASM code |
 | `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on migration |
@@ -19333,6 +19373,24 @@ StoreCodeProposal gov proposal content type to submit WASM code to the system
 | `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
 | `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
 | `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply on contract creation, optional |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.SudoContractProposal"></a>
+
+### SudoContractProposal
+SudoContractProposal gov proposal content type to call sudo on a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract as sudo |
 
 
 
@@ -19386,6 +19444,24 @@ UpdateStatusProposal gov proposal content type to update the contract status.
 | `description` | [string](#string) |  | Description is a human readable text |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
 | `status` | [ContractStatus](#lbm.wasm.v1.ContractStatus) |  | Status to be set |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.UpdateInstantiateConfigProposal"></a>
+
+### UpdateInstantiateConfigProposal
+UpdateInstantiateConfigProposal gov proposal content type to update
+instantiate config to a  set of code ids.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `access_config_updates` | [AccessConfigUpdate](#lbm.wasm.v1.AccessConfigUpdate) | repeated | AccessConfigUpdate contains the list of code ids and the access config to be applied. |
 
 
 
@@ -19617,6 +19693,39 @@ Query/ContractsByCode RPC method
 
 
 
+<a name="lbm.wasm.v1.QueryPinnedCodesRequest"></a>
+
+### QueryPinnedCodesRequest
+QueryPinnedCodesRequest is the request type for the Query/PinnedCodes
+RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.QueryPinnedCodesResponse"></a>
+
+### QueryPinnedCodesResponse
+QueryPinnedCodesResponse is the response type for the
+Query/PinnedCodes RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_ids` | [uint64](#uint64) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
 <a name="lbm.wasm.v1.QueryRawContractStateRequest"></a>
 
 ### QueryRawContractStateRequest
@@ -19704,6 +19813,7 @@ Query provides defines the gRPC querier service
 | `SmartContractState` | [QuerySmartContractStateRequest](#lbm.wasm.v1.QuerySmartContractStateRequest) | [QuerySmartContractStateResponse](#lbm.wasm.v1.QuerySmartContractStateResponse) | SmartContractState get smart query result from the contract | GET|/lbm/wasm/v1/contract/{address}/smart/{query_data}|
 | `Code` | [QueryCodeRequest](#lbm.wasm.v1.QueryCodeRequest) | [QueryCodeResponse](#lbm.wasm.v1.QueryCodeResponse) | Code gets the binary code and metadata for a singe wasm code | GET|/lbm/wasm/v1/code/{code_id}|
 | `Codes` | [QueryCodesRequest](#lbm.wasm.v1.QueryCodesRequest) | [QueryCodesResponse](#lbm.wasm.v1.QueryCodesResponse) | Codes gets the metadata for all stored wasm codes | GET|/lbm/wasm/v1/code|
+| `PinnedCodes` | [QueryPinnedCodesRequest](#lbm.wasm.v1.QueryPinnedCodesRequest) | [QueryPinnedCodesResponse](#lbm.wasm.v1.QueryPinnedCodesResponse) | PinnedCodes gets the pinned code ids | GET|/lbm/wasm/v1/codes/pinned|
 
  <!-- end services -->
 

@@ -121,7 +121,6 @@ func (msg MsgInstantiateContract) GetSignBytes() []byte {
 func (msg MsgInstantiateContract) GetSigners() []sdk.AccAddress {
 	senderAddr := sdk.AccAddress(msg.Sender)
 	return []sdk.AccAddress{senderAddr}
-
 }
 
 func (msg MsgStoreCodeAndInstantiateContract) Route() string {

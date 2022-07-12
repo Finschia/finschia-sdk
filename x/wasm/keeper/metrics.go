@@ -109,7 +109,7 @@ type WasmVMCacheMetricsCollector struct {
 	CacheSizeDescr     *prometheus.Desc
 }
 
-//NewWasmVMCacheMetricsCollector constructor
+// NewWasmVMCacheMetricsCollector constructor
 func NewWasmVMCacheMetricsCollector(s metricSource) *WasmVMCacheMetricsCollector {
 	return &WasmVMCacheMetricsCollector{
 		source:             s,

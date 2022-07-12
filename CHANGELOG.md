@@ -38,10 +38,12 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [Unreleased](https://github.com/line/lbm-sdk/compare/v0.45.0-rc0...HEAD)
 
 ### Features
+* (x/wasm) [\#570](https://github.com/line/lbm-sdk/pull/570) Merge wasmd 0.27.0
 * (x/wasm) [\#470](https://github.com/line/lbm-sdk/pull/470) remove contract activation control by actor
 * (x/wasm) [\#513](https://github.com/line/lbm-sdk/pull/513) fix message representation for signing
 * (x/foundation) [\#518](https://github.com/line/lbm-sdk/pull/518) add foundation treasury feature to x/foundation
 * (x/foundation) [\#528](https://github.com/line/lbm-sdk/pull/528) add a feature of whitelist for /lbm.foundation.v1.MsgWithdrawFromTreasury
+* (proto) [\#584](https://github.com/line/lbm-sdk/pull/564) remove `prove` field in the `GetTxsEventRequest` of `tx` proto
 * (x/collection) [\#574](https://github.com/line/lbm-sdk/pull/574) implement x/collection
 
 ### Improvements
@@ -67,6 +69,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 * (ci) [\#457](https://github.com/line/lbm-sdk/pull/457), [\#471](https://github.com/line/lbm-sdk/pull/471) add swagger check
 * (ci) [\#469](https://github.com/line/lbm-sdk/pull/469) publish docker image on tag push
+* (ci) [\#580](https://github.com/line/lbm-sdk/pull/580) fix the problem that the registered docker image couldn't  run on M1.
 
 ### Document Updates
 

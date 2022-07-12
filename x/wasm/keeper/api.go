@@ -28,7 +28,7 @@ var (
 
 func (a cosmwasmAPIImpl) humanAddress(canon []byte) (string, uint64, error) {
 	gas := a.gasMultiplier.FromWasmVMGas(5)
-	if len(canon) != sdk.BytesAddrLen {
+	if err := sdk.VerifyAddressFormat(canon); err != nil {
 		//nolint:stylecheck
 		return "", gas, fmt.Errorf("expected %d byte address", sdk.BytesAddrLen)
 	}

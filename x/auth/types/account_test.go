@@ -4,15 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strings"
 	"testing"
 
-	"github.com/gogo/protobuf/jsonpb"
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
-
-	"github.com/line/lbm-sdk/codec"
-	types2 "github.com/line/lbm-sdk/codec/types"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/testutil/testdata"
@@ -51,21 +46,6 @@ func TestBaseAddressPubKey(t *testing.T) {
 	err = acc2.SetAddress(addr2)
 	require.Nil(t, err)
 	require.EqualValues(t, addr2, acc2.GetAddress())
-}
-
-func TestBaseAccountMarshalUnmarshalJSON(t *testing.T) {
-	interfaceRegistry := types2.NewInterfaceRegistry()
-
-	cdc := codec.NewProtoCodec(interfaceRegistry)
-	_, pub, addr := testdata.KeyTestPubAddr()
-	acc := types.NewBaseAccountWithAddress(addr)
-	acc.SetPubKey(pub)
-
-	bz := cdc.MustMarshalJSON(acc)
-	var acc2 types.BaseAccount
-
-	cdc.MustUnmarshalJSON(bz, &acc2)
-	require.Equal(t, acc, &acc2)
 }
 
 func TestBaseSequence(t *testing.T) {
@@ -214,37 +194,6 @@ func TestModuleAccountJSON(t *testing.T) {
 	var a types.ModuleAccount
 	require.NoError(t, json.Unmarshal(bz, &a))
 	require.Equal(t, acc.String(), a.String())
-}
-
-func TestModuleAccountJSONPB(t *testing.T) {
-	pubkey := secp256k1.GenPrivKey().PubKey()
-	addr := sdk.BytesToAccAddress(pubkey.Address())
-	baseAcc := types.NewBaseAccount(addr, nil, 10, 50)
-	acc := types.NewModuleAccount(baseAcc, "test", types.Burner)
-
-	jm := jsonpb.Marshaler{}
-	bz, err := acc.MarshalJSONPB(&jm)
-	require.NoError(t, err)
-
-	jum := jsonpb.Unmarshaler{}
-	addr2 := sdk.AccAddress("")
-	baseAcc2 := types.NewBaseAccount(addr2, nil, 0, 0)
-	acc2 := types.NewModuleAccount(baseAcc2, "")
-	err = acc2.UnmarshalJSONPB(&jum, bz)
-	require.NoError(t, err)
-
-	// error on bad bytes
-	err = acc2.UnmarshalJSONPB(&jum, bz[:len(bz)/2])
-	require.Error(t, err)
-}
-
-func TestBaseAccountJSONPB(t *testing.T) {
-	baseAccountJson := `{"address":"link1rrfywnytlm87ywes0hvxn4rhm4grrn9qquqljc","pub_key":{"type":0,"key":null},"account_number":"10","sequence":"50"}`
-	ba := new(types.BaseAccount)
-	jum := jsonpb.Unmarshaler{}
-	err := jum.Unmarshal(strings.NewReader(baseAccountJson), ba)
-	require.NoError(t, err)
-	require.Equal(t, ba.AccountNumber, uint64(10))
 }
 
 func TestGenesisAccountsContains(t *testing.T) {
