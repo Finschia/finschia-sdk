@@ -268,24 +268,6 @@ func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddres
 			// legacy
 			k.deleteLegacyToken(ctx, contractID, coin.TokenId)
 		}
-
-		// uncomment the following lines if you want the same logic used in x/token
-		// if err := collection.ValidateFTID(coin.TokenId); err == nil {
-		// 	classID := collection.SplitTokenID(coin.TokenId)
-		// 	class, err := k.GetTokenClass(ctx, contractID, classID)
-		// 	if err != nil {
-		// 		return err
-		// 	}
-
-		// 	ftClass, ok := class.(*collection.FTClass)
-		// 	if !ok {
-		// 		panic(sdkerrors.ErrInvalidType.Wrapf("not a class of fungible token: %s", classID))
-		// 	}
-
-		// 	if !ftClass.Mintable {
-		// 		return sdkerrors.ErrInvalidRequest.Wrapf("class is not mintable")
-		// 	}
-		// }
 	}
 
 	// update statistics
