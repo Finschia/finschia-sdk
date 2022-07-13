@@ -255,7 +255,7 @@ func SortAddresses(addrs []sdk.AccAddress) {
 	SortByteArrays(byteAddrs)
 
 	for i, byteAddr := range byteAddrs {
-		addrs[i] = sdk.AccAddress(string(byteAddr))
+		addrs[i] = sdk.AccAddress(byteAddr)
 	}
 }
 
