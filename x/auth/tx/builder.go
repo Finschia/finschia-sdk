@@ -134,7 +134,11 @@ func (w *wrapper) GetFee() sdk.Coins {
 func (w *wrapper) FeePayer() sdk.AccAddress {
 	feePayer := w.tx.AuthInfo.Fee.Payer
 	if feePayer != "" {
-		return sdk.AccAddress(feePayer)
+		payerAddr, err := sdk.AccAddressFromBech32(feePayer)
+		if err != nil {
+			panic(err)
+		}
+		return payerAddr
 	}
 	// use first signer as default if no payer specified
 	return w.GetSigners()[0]
