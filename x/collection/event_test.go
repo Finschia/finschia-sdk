@@ -500,6 +500,7 @@ func TestNewEventTransferFT(t *testing.T) {
 	attributes := map[collection.AttributeKey]string{
 		collection.AttributeKeyContractID: event.ContractId,
 		collection.AttributeKeyFrom:       event.From,
+		collection.AttributeKeyTo:         event.To,
 		collection.AttributeKeyAmount:     collection.Coins(event.Amount).String(),
 	}
 	for key, value := range attributes {
@@ -530,6 +531,7 @@ func TestNewEventTransferNFT(t *testing.T) {
 	attributes := map[collection.AttributeKey]string{
 		collection.AttributeKeyContractID: event.ContractId,
 		collection.AttributeKeyFrom:       event.From,
+		collection.AttributeKeyTo:         event.To,
 	}
 	for key, value := range attributes {
 		require.True(t, assertAttribute(legacies[0], key.String(), value), key)
@@ -571,6 +573,7 @@ func TestNewEventTransferFTFrom(t *testing.T) {
 		collection.AttributeKeyContractID: event.ContractId,
 		collection.AttributeKeyProxy:      event.Operator,
 		collection.AttributeKeyFrom:       event.From,
+		collection.AttributeKeyTo:         event.To,
 		collection.AttributeKeyAmount:     collection.Coins(event.Amount).String(),
 	}
 	for key, value := range attributes {
@@ -601,6 +604,7 @@ func TestNewEventTransferNFTFrom(t *testing.T) {
 		collection.AttributeKeyContractID: event.ContractId,
 		collection.AttributeKeyProxy:      event.Operator,
 		collection.AttributeKeyFrom:       event.From,
+		collection.AttributeKeyTo:         event.To,
 	}
 	for key, value := range attributes {
 		require.True(t, assertAttribute(legacies[0], key.String(), value), key)
