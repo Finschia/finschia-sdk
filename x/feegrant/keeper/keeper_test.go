@@ -133,7 +133,7 @@ func (suite *KeeperTestSuite) TestKeeperCrud() {
 			suite.Equal(tc.allowance, allow)
 		})
 	}
-	accAddr := sdk.AccAddress("link1k907plrxssuh2dxsd8k2jtp3de2t4xyhq6rkxd")
+	accAddr, err := sdk.AccAddressFromBech32("link1k907plrxssuh2dxsd8k2jtp3de2t4xyhq6rkxd")
 	suite.Require().NoError(err)
 
 	// let's grant and revoke authorization to non existing account
