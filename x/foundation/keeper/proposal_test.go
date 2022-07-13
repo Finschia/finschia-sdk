@@ -59,8 +59,9 @@ func TestProposalHandler(t *testing.T) {
 	require.NoError(t, ap.ValidateBasic())
 	require.NoError(t, handler(ctx, ap))
 	for i := range adding {
-		grantee := sdk.AccAddress(sdk.ValAddress(adding[i].OperatorAddress))
-		_, err := k.GetAuthorization(ctx, govtypes.ModuleName, grantee, msgTypeURL)
+		grantee, err := sdk.AccAddressFromBech32(adding[i].OperatorAddress)
+		require.NoError(t, err)
+		_, err = k.GetAuthorization(ctx, govtypes.ModuleName, grantee, msgTypeURL)
 		require.NoError(t, err)
 	}
 
@@ -70,8 +71,9 @@ func TestProposalHandler(t *testing.T) {
 	require.NoError(t, dp.ValidateBasic())
 	require.NoError(t, handler(ctx, dp))
 	for i := range deleting {
-		grantee := sdk.AccAddress(sdk.ValAddress(adding[i].OperatorAddress))
-		_, err := k.GetAuthorization(ctx, govtypes.ModuleName, grantee, msgTypeURL)
+		grantee, err := sdk.AccAddressFromBech32(adding[i].OperatorAddress)
+		require.NoError(t, err)
+		_, err = k.GetAuthorization(ctx, govtypes.ModuleName, grantee, msgTypeURL)
 		require.Error(t, err)
 	}
 

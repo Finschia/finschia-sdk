@@ -25,7 +25,10 @@ func (m MsgFundTreasury) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgFundTreasury) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, err := sdk.AccAddressFromBech32(m.From)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -50,7 +53,10 @@ func (m MsgWithdrawFromTreasury) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgWithdrawFromTreasury) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
+	signer, err := sdk.AccAddressFromBech32(m.Operator)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -74,7 +80,10 @@ func (m MsgUpdateMembers) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgUpdateMembers) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
+	signer, err := sdk.AccAddressFromBech32(m.Operator)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -99,7 +108,10 @@ func (m MsgUpdateDecisionPolicy) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgUpdateDecisionPolicy) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
+	signer, err := sdk.AccAddressFromBech32(m.Operator)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -178,8 +190,12 @@ func (m MsgSubmitProposal) UnpackInterfaces(unpacker codectypes.AnyUnpacker) err
 // GetSigners implements Msg.
 func (m MsgSubmitProposal) GetSigners() []sdk.AccAddress {
 	signers := make([]sdk.AccAddress, len(m.Proposers))
-	for i, proposer := range m.Proposers {
-		signers[i] = sdk.AccAddress(proposer)
+	for i, p := range m.Proposers {
+		proposer, err := sdk.AccAddressFromBech32(p)
+		if err != nil {
+			panic(err)
+		}
+		signers[i] = proposer
 	}
 	return signers
 }
@@ -201,7 +217,10 @@ func (m MsgWithdrawProposal) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgWithdrawProposal) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Address)
+	signer, err := sdk.AccAddressFromBech32(m.Address)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -230,7 +249,10 @@ func (m MsgVote) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgVote) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Voter)
+	signer, err := sdk.AccAddressFromBech32(m.Voter)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -251,7 +273,10 @@ func (m MsgExec) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgExec) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Signer)
+	signer, err := sdk.AccAddressFromBech32(m.Signer)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -268,7 +293,10 @@ func (m MsgLeaveFoundation) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgLeaveFoundation) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Address)
+	signer, err := sdk.AccAddressFromBech32(m.Address)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -324,7 +352,10 @@ func (m MsgGrant) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 
 // GetSigners implements Msg.
 func (m MsgGrant) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
+	signer, err := sdk.AccAddressFromBech32(m.Operator)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -349,6 +380,9 @@ func (m MsgRevoke) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgRevoke) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
+	signer, err := sdk.AccAddressFromBech32(m.Operator)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{signer}
 }

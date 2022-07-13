@@ -121,7 +121,11 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	}
 
 	for _, ga := range authorizations {
-		if err := k.setAuthorization(ctx, ga.Granter, sdk.AccAddress(ga.Grantee), ga.GetAuthorization()); err != nil {
+		grantee, err := sdk.AccAddressFromBech32(ga.Grantee)
+		if err != nil {
+			return err
+		}
+		if err := k.setAuthorization(ctx, ga.Granter, grantee, ga.GetAuthorization()); err != nil {
 			return err
 		}
 	}
@@ -158,7 +162,11 @@ func (k Keeper) ResetState(ctx sdk.Context) {
 
 	// reset members
 	for _, member := range k.GetMembers(ctx) {
-		store.Delete(memberKey(sdk.AccAddress(member.Address)))
+		addr, err := sdk.AccAddressFromBech32(member.Address)
+		if err != nil {
+			panic(err)
+		}
+		store.Delete(memberKey(addr))
 	}
 
 	// id
@@ -171,7 +179,11 @@ func (k Keeper) ResetState(ctx sdk.Context) {
 
 	// reset authorizations
 	for _, ga := range k.GetGrants(ctx) {
-		k.deleteAuthorization(ctx, ga.Granter, sdk.AccAddress(ga.Grantee), ga.GetAuthorization().MsgTypeURL())
+		grantee, err := sdk.AccAddressFromBech32(ga.Grantee)
+		if err != nil {
+			panic(err)
+		}
+		k.deleteAuthorization(ctx, ga.Granter, grantee, ga.GetAuthorization().MsgTypeURL())
 	}
 }
 
@@ -198,7 +210,11 @@ func getCreateValidatorGrantees(authorizations []foundation.GrantAuthorization) 
 	var grantees []sdk.AccAddress
 	for _, ga := range authorizations {
 		if ga.Granter == granter && ga.GetAuthorization().MsgTypeURL() == msgTypeURL {
-			grantees = append(grantees, sdk.AccAddress(ga.Grantee))
+			grantee, err := sdk.AccAddressFromBech32(ga.Grantee)
+			if err != nil {
+				panic(err)
+			}
+			grantees = append(grantees, grantee)
 		}
 	}
 
