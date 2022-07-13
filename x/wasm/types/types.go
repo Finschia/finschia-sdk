@@ -15,9 +15,14 @@ import (
 )
 
 const (
-	defaultMemoryCacheSize   uint32 = 100 // in MiB
-	defaultQueryGasLimit     uint64 = 3000000
-	defaultContractDebugMode        = false
+	defaultMemoryCacheSize    uint32 = 100 // in MiB
+	defaultSmartQueryGasLimit uint64 = 3_000_000
+	defaultContractDebugMode         = false
+
+	// ContractAddrLen defines a valid address length for contracts
+	ContractAddrLen = 32
+	// SDKAddrLen defines a valid address length that was used in sdk address generation
+	SDKAddrLen = 20
 )
 
 var AllContractStatus = []ContractStatus{
@@ -306,6 +311,7 @@ func NewEnv(ctx sdk.Context, contractAddr sdk.AccAddress) wasmvmtypes.Env {
 	if nano < 1 {
 		panic("Block (unix) time must never be empty or negative ")
 	}
+
 	env := wasmvmtypes.Env{
 		Block: wasmvmtypes.BlockInfo{
 			Height:  uint64(ctx.BlockHeight()),
@@ -315,6 +321,9 @@ func NewEnv(ctx sdk.Context, contractAddr sdk.AccAddress) wasmvmtypes.Env {
 		Contract: wasmvmtypes.ContractInfo{
 			Address: contractAddr.String(),
 		},
+	}
+	if txCounter, ok := TXCounter(ctx); ok {
+		env.Transaction = &wasmvmtypes.TransactionInfo{Index: txCounter}
 	}
 	return env
 }
@@ -341,6 +350,10 @@ func NewWasmCoins(cosmosCoins sdk.Coins) (wasmCoins []wasmvmtypes.Coin) {
 
 // WasmConfig is the extra config required for wasm
 type WasmConfig struct {
+	// SimulationGasLimit is the max gas to be used in a tx simulation call.
+	// When not set the consensus max block gas is used instead
+	SimulationGasLimit *uint64
+	// SimulationGasLimit is the max gas to be used in a smart query contract call
 	SmartQueryGasLimit uint64
 	// MemoryCacheSize in MiB not bytes
 	MemoryCacheSize uint32
@@ -351,8 +364,36 @@ type WasmConfig struct {
 // DefaultWasmConfig returns the default settings for WasmConfig
 func DefaultWasmConfig() WasmConfig {
 	return WasmConfig{
-		SmartQueryGasLimit: defaultQueryGasLimit,
+		SmartQueryGasLimit: defaultSmartQueryGasLimit,
 		MemoryCacheSize:    defaultMemoryCacheSize,
 		ContractDebugMode:  defaultContractDebugMode,
+	}
+}
+
+// VerifyAddressLen ensures that the address matches the expected length
+func VerifyAddressLen() func(addr []byte) error {
+	return func(addr []byte) error {
+		if len(addr) != ContractAddrLen && len(addr) != SDKAddrLen {
+			return sdkerrors.ErrInvalidAddress
+		}
+		return nil
+	}
+}
+
+// IsSubset will return true if the caller is the same as the superset,
+// or if the caller is more restrictive than the superset.
+func (a AccessConfig) IsSubset(superSet AccessConfig) bool {
+	switch superSet.Permission {
+	case AccessTypeEverybody:
+		// Everything is a subset of this
+		return a.Permission != AccessTypeUnspecified
+	case AccessTypeNobody:
+		// Only an exact match is a subset of this
+		return a.Permission == AccessTypeNobody
+	case AccessTypeOnlyAddress:
+		// An exact match or nobody
+		return a.Permission == AccessTypeNobody || (a.Permission == AccessTypeOnlyAddress && a.Address == superSet.Address)
+	default:
+		return false
 	}
 }

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/libs/log"
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -347,7 +348,7 @@ func TestDispatchSubmessages(t *testing.T) {
 			em := sdk.NewEventManager()
 			ctx := sdk.Context{}.WithMultiStore(&mockStore).
 				WithGasMeter(sdk.NewGasMeter(100)).
-				WithEventManager(em)
+				WithEventManager(em).WithLogger(log.TestingLogger())
 			d := NewMessageDispatcher(spec.msgHandler, spec.replyer)
 			gotData, gotErr := d.DispatchSubmessages(ctx, RandomAccountAddress(t), "any_port", spec.msgs)
 			if spec.expErr {

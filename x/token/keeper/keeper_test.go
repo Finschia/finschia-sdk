@@ -26,10 +26,29 @@ type KeeperTestSuite struct {
 	vendor   sdk.AccAddress
 	operator sdk.AccAddress
 	customer sdk.AccAddress
+	stranger sdk.AccAddress
 
-	classID string
+	contractID string
 
 	balance sdk.Int
+}
+
+func createRandomAccounts(accNum int) []sdk.AccAddress {
+	seenAddresses := make(map[sdk.AccAddress]bool, accNum)
+	addresses := make([]sdk.AccAddress, accNum)
+	for i := 0; i < accNum; i++ {
+		var address sdk.AccAddress
+		for {
+			pk := secp256k1.GenPrivKey().PubKey()
+			address = sdk.BytesToAccAddress(pk.Address())
+			if !seenAddresses[address] {
+				seenAddresses[address] = true
+				break
+			}
+		}
+		addresses[i] = address
+	}
+	return addresses
 }
 
 func (s *KeeperTestSuite) SetupTest() {
@@ -42,46 +61,51 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.queryServer = keeper.NewQueryServer(s.keeper)
 	s.msgServer = keeper.NewMsgServer(s.keeper)
 
-	s.vendor = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	s.operator = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	s.customer = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addresses := []*sdk.AccAddress{
+		&s.vendor,
+		&s.operator,
+		&s.customer,
+		&s.stranger,
+	}
+	for i, address := range createRandomAccounts(len(addresses)) {
+		*addresses[i] = address
+	}
 
 	s.balance = sdk.NewInt(1000)
 
 	// create a mintable class
-	s.classID = "f00dbabe"
-	class := token.Token{
-		Id:       s.classID,
-		Name:     "Mintable",
-		Symbol:   "OK",
-		Mintable: true,
+	s.contractID = "f00dbabe"
+	class := token.TokenClass{
+		ContractId: s.contractID,
+		Name:       "Mintable",
+		Symbol:     "OK",
+		Mintable:   true,
 	}
-	err := s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
-	s.Require().NoError(err)
-	amount := []token.FT{{ClassId: s.classID, Amount: s.balance}}
-	err = s.keeper.Burn(s.ctx, s.vendor, amount)
+	s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
+	err := s.keeper.Burn(s.ctx, s.contractID, s.vendor, s.balance)
 	s.Require().NoError(err)
 
 	// create another class for the query test
-	class.Id = "deadbeef"
-	err = s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
-	s.Require().NoError(err)
+	class.ContractId = "deadbeef"
+	s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
 
 	// mint to the others
 	for _, to := range []sdk.AccAddress{s.vendor, s.operator, s.customer} {
-		err = s.keeper.Mint(s.ctx, s.vendor, to, amount)
+		err = s.keeper.Mint(s.ctx, s.contractID, s.vendor, to, s.balance)
 		s.Require().NoError(err)
 	}
 
 	// grant operator
-	for _, action := range []string{token.ActionMint, token.ActionBurn} {
-		err = s.keeper.Grant(s.ctx, s.vendor, s.operator, s.classID, action)
-		s.Require().NoError(err)
+	for _, permission := range []token.Permission{
+		token.Permission_Mint,
+		token.Permission_Burn,
+	} {
+		s.keeper.Grant(s.ctx, s.contractID, s.vendor, s.operator, permission)
 	}
 
-	// approve operator
-	for _, approver := range []sdk.AccAddress{s.vendor, s.customer} {
-		err = s.keeper.Approve(s.ctx, approver, s.operator, s.classID)
+	// authorize operator
+	for _, holder := range []sdk.AccAddress{s.vendor, s.customer} {
+		err = s.keeper.AuthorizeOperator(s.ctx, s.contractID, holder, s.operator)
 		s.Require().NoError(err)
 	}
 }

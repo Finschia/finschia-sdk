@@ -25,11 +25,14 @@ func NewQueryCmd() *cobra.Command {
 	queryCmd.AddCommand(
 		NewQueryCmdBalance(),
 		NewQueryCmdSupply(),
-		NewQueryCmdToken(),
-		NewQueryCmdTokens(),
-		NewQueryCmdGrants(),
-		NewQueryCmdApprove(),
-		NewQueryCmdApproves(),
+		NewQueryCmdMinted(),
+		NewQueryCmdBurnt(),
+		NewQueryCmdTokenClass(),
+		NewQueryCmdTokenClasses(),
+		NewQueryCmdGrant(),
+		NewQueryCmdGranteeGrants(),
+		NewQueryCmdAuthorization(),
+		NewQueryCmdOperatorAuthorizations(),
 	)
 
 	return queryCmd
@@ -48,8 +51,8 @@ func NewQueryCmdBalance() *cobra.Command {
 			}
 			queryClient := token.NewQueryClient(clientCtx)
 			res, err := queryClient.Balance(cmd.Context(), &token.QueryBalanceRequest{
-				ClassId: args[0],
-				Address: args[1],
+				ContractId: args[0],
+				Address:    args[1],
 			})
 			if err != nil {
 				return err
@@ -64,10 +67,10 @@ func NewQueryCmdBalance() *cobra.Command {
 
 func NewQueryCmdSupply() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "supply [class-id] [type]",
-		Args:    cobra.ExactArgs(2),
+		Use:     "supply [class-id]",
+		Args:    cobra.ExactArgs(1),
 		Short:   "query the supply of tokens of the class",
-		Example: fmt.Sprintf(`$ %s query %s supply <class-id> <type>`, version.AppName, token.ModuleName),
+		Example: fmt.Sprintf(`$ %s query %s supply <class-id>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -75,8 +78,7 @@ func NewQueryCmdSupply() *cobra.Command {
 			}
 			queryClient := token.NewQueryClient(clientCtx)
 			res, err := queryClient.Supply(cmd.Context(), &token.QuerySupplyRequest{
-				ClassId: args[0],
-				Type:    args[1],
+				ContractId: args[0],
 			})
 			if err != nil {
 				return err
@@ -89,20 +91,20 @@ func NewQueryCmdSupply() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdToken() *cobra.Command {
+func NewQueryCmdMinted() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "token [class-id]",
+		Use:     "minted [class-id]",
 		Args:    cobra.ExactArgs(1),
-		Short:   "query token metadata based on its id",
-		Example: fmt.Sprintf(`$ %s query %s token <class-id>`, version.AppName, token.ModuleName),
+		Short:   "query the minted tokens of the class",
+		Example: fmt.Sprintf(`$ %s query %s supply <class-id>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 			queryClient := token.NewQueryClient(clientCtx)
-			res, err := queryClient.Token(cmd.Context(), &token.QueryTokenRequest{
-				ClassId: args[0],
+			res, err := queryClient.Minted(cmd.Context(), &token.QueryMintedRequest{
+				ContractId: args[0],
 			})
 			if err != nil {
 				return err
@@ -115,7 +117,59 @@ func NewQueryCmdToken() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdTokens() *cobra.Command {
+func NewQueryCmdBurnt() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "burnt [class-id]",
+		Args:    cobra.ExactArgs(1),
+		Short:   "query the burnt tokens of the class",
+		Example: fmt.Sprintf(`$ %s query %s supply <class-id>`, version.AppName, token.ModuleName),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := token.NewQueryClient(clientCtx)
+			res, err := queryClient.Burnt(cmd.Context(), &token.QueryBurntRequest{
+				ContractId: args[0],
+			})
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewQueryCmdTokenClass() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "token [contract-id]",
+		Args:    cobra.ExactArgs(1),
+		Short:   "query token metadata based on its id",
+		Example: fmt.Sprintf(`$ %s query %s token <contract-id>`, version.AppName, token.ModuleName),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := token.NewQueryClient(clientCtx)
+			res, err := queryClient.TokenClass(cmd.Context(), &token.QueryTokenClassRequest{
+				ContractId: args[0],
+			})
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewQueryCmdTokenClasses() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "tokens",
 		Args:    cobra.NoArgs,
@@ -131,7 +185,7 @@ func NewQueryCmdTokens() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			res, err := queryClient.Tokens(cmd.Context(), &token.QueryTokensRequest{
+			res, err := queryClient.TokenClasses(cmd.Context(), &token.QueryTokenClassesRequest{
 				Pagination: pageReq,
 			})
 			if err != nil {
@@ -142,25 +196,53 @@ func NewQueryCmdTokens() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
-	flags.AddPaginationFlagsToCmd(cmd, "tokens")
+	flags.AddPaginationFlagsToCmd(cmd, "classes")
 	return cmd
 }
 
-func NewQueryCmdGrants() *cobra.Command {
+func NewQueryCmdGrant() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "grant [class-id] [grantee]",
+		Use:     "grant [class-id] [grantee] [permission]",
+		Args:    cobra.ExactArgs(3),
+		Short:   "query a permission on a given grantee",
+		Example: fmt.Sprintf(`$ %s query %s grant <class-id> <grantee> <permission>`, version.AppName, token.ModuleName),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := token.NewQueryClient(clientCtx)
+			res, err := queryClient.Grant(cmd.Context(), &token.QueryGrantRequest{
+				ContractId: args[0],
+				Grantee:    args[1],
+				Permission: args[2],
+			})
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewQueryCmdGranteeGrants() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "grantee-grants [class-id] [grantee]",
 		Args:    cobra.ExactArgs(2),
 		Short:   "query grants on a given grantee",
-		Example: fmt.Sprintf(`$ %s query %s grant <class-id> <grantee>`, version.AppName, token.ModuleName),
+		Example: fmt.Sprintf(`$ %s query %s grantee-grants <class-id> <grantee>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 			queryClient := token.NewQueryClient(clientCtx)
-			res, err := queryClient.Grants(cmd.Context(), &token.QueryGrantsRequest{
-				ClassId: args[0],
-				Grantee: args[1],
+			res, err := queryClient.GranteeGrants(cmd.Context(), &token.QueryGranteeGrantsRequest{
+				ContractId: args[0],
+				Grantee:    args[1],
 			})
 			if err != nil {
 				return err
@@ -173,22 +255,22 @@ func NewQueryCmdGrants() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdApprove() *cobra.Command {
+func NewQueryCmdAuthorization() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "approve [class-id] [proxy] [approver]",
+		Use:     "authorization [class-id] [operator] [holder]",
 		Args:    cobra.ExactArgs(3),
-		Short:   "query approve on its proxy and approver",
-		Example: fmt.Sprintf(`$ %s query %s approve <class-id> <proxy> <approver>`, version.AppName, token.ModuleName),
+		Short:   "query authorization on its operator and the token holder",
+		Example: fmt.Sprintf(`$ %s query %s authorization <class-id> <operator> <holder>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 			queryClient := token.NewQueryClient(clientCtx)
-			res, err := queryClient.Approve(cmd.Context(), &token.QueryApproveRequest{
-				ClassId:  args[0],
-				Proxy:    args[1],
-				Approver: args[2],
+			res, err := queryClient.Authorization(cmd.Context(), &token.QueryAuthorizationRequest{
+				ContractId: args[0],
+				Operator:   args[1],
+				Holder:     args[2],
 			})
 			if err != nil {
 				return err
@@ -201,12 +283,12 @@ func NewQueryCmdApprove() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdApproves() *cobra.Command {
+func NewQueryCmdOperatorAuthorizations() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "approves [class-id] [proxy]",
+		Use:     "operator-authorizations [class-id] [operator]",
 		Args:    cobra.ExactArgs(2),
-		Short:   "query all approves on a given proxy",
-		Example: fmt.Sprintf(`$ %s query %s approves <class-id> <proxy>`, version.AppName, token.ModuleName),
+		Short:   "query all authorizations on a given operator",
+		Example: fmt.Sprintf(`$ %s query %s operator-authorizations <class-id> <operator>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -217,9 +299,9 @@ func NewQueryCmdApproves() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			res, err := queryClient.Approves(cmd.Context(), &token.QueryApprovesRequest{
-				ClassId:    args[0],
-				Proxy:      args[1],
+			res, err := queryClient.OperatorAuthorizations(cmd.Context(), &token.QueryOperatorAuthorizationsRequest{
+				ContractId: args[0],
+				Operator:   args[1],
 				Pagination: pageReq,
 			})
 			if err != nil {
@@ -230,6 +312,6 @@ func NewQueryCmdApproves() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
-	flags.AddPaginationFlagsToCmd(cmd, "approves")
+	flags.AddPaginationFlagsToCmd(cmd, "authorizations")
 	return cmd
 }

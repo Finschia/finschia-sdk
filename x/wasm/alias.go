@@ -8,14 +8,11 @@ import (
 
 const (
 	firstCodeID                     = 1
-	DefaultParamspace               = types.DefaultParamspace
 	ModuleName                      = types.ModuleName
 	StoreKey                        = types.StoreKey
 	TStoreKey                       = types.TStoreKey
 	QuerierRoute                    = types.QuerierRoute
 	RouterKey                       = types.RouterKey
-	MaxWasmSize                     = types.MaxWasmSize
-	MaxLabelSize                    = types.MaxLabelSize
 	WasmModuleEventType             = types.WasmModuleEventType
 	AttributeKeyContractAddr        = types.AttributeKeyContractAddr
 	ProposalTypeStoreCode           = types.ProposalTypeStoreCode
@@ -68,6 +65,7 @@ var (
 	NewQuerier                = keeper.Querier
 	ContractFromPortID        = keeper.ContractFromPortID
 	WithWasmEngine            = keeper.WithWasmEngine
+	NewCountTXDecorator       = keeper.NewCountTXDecorator
 
 	// variable aliases
 	ModuleCdc            = types.ModuleCdc

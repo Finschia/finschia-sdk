@@ -10,7 +10,7 @@ import (
 	"github.com/line/lbm-sdk/x/token/client/cli"
 )
 
-func (s *IntegrationTestSuite) TestNewTxCmdTransfer() {
+func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.customer),
@@ -25,7 +25,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransfer() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.customer.String(),
 				s.vendor.String(),
 				"1",
@@ -34,7 +34,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransfer() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.customer.String(),
 				s.vendor.String(),
 				"1",
@@ -44,7 +44,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransfer() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.customer.String(),
 				s.vendor.String(),
 			},
@@ -52,7 +52,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransfer() {
 		},
 		"amount out of range": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.customer.String(),
 				s.vendor.String(),
 				"10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -65,7 +65,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransfer() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdTransfer()
+			cmd := cli.NewTxCmdSend()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -80,7 +80,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransfer() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
+func (s *IntegrationTestSuite) TestNewTxCmdOperatorSend() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.vendor),
@@ -95,7 +95,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 				s.vendor.String(),
@@ -105,7 +105,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 				s.vendor.String(),
@@ -116,7 +116,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 				s.vendor.String(),
@@ -125,7 +125,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 		},
 		"amount out of range": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 				s.vendor.String(),
@@ -139,7 +139,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdTransferFrom()
+			cmd := cli.NewTxCmdOperatorSend()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -154,7 +154,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
+func (s *IntegrationTestSuite) TestNewTxCmdAuthorizeOperator() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.vendor),
@@ -169,7 +169,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 			},
@@ -177,7 +177,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 				"extra",
@@ -186,7 +186,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 			},
 			false,
@@ -197,7 +197,65 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdApprove()
+			cmd := cli.NewTxCmdAuthorizeOperator()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().EqualValues(0, res.Code, out.String())
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewTxCmdRevokeOperator() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.customer),
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+	}
+
+	testCases := map[string]struct {
+		args  []string
+		valid bool
+	}{
+		"valid transaction": {
+			[]string{
+				s.classes[1].ContractId,
+				s.customer.String(),
+				s.vendor.String(),
+			},
+			true,
+		},
+		"extra args": {
+			[]string{
+				s.classes[1].ContractId,
+				s.customer.String(),
+				s.vendor.String(),
+				"extra",
+			},
+			false,
+		},
+		"not enough args": {
+			[]string{
+				s.classes[1].ContractId,
+				s.customer.String(),
+			},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewTxCmdRevokeOperator()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -293,26 +351,26 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[1].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
-				token.ActionMint,
+				token.Permission_Mint.String(),
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[1].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
-				token.ActionMint,
+				token.Permission_Mint.String(),
 				"extra",
 			},
 			false,
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[1].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 			},
@@ -339,7 +397,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
+func (s *IntegrationTestSuite) TestNewTxCmdAbandon() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.vendor),
@@ -354,24 +412,24 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[1].ContractId,
 				s.vendor.String(),
-				token.ActionMint,
+				token.Permission_Modify.String(),
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[1].ContractId,
 				s.vendor.String(),
-				token.ActionMint,
+				token.Permission_Modify.String(),
 				"extra",
 			},
 			false,
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[1].ContractId,
 				s.vendor.String(),
 			},
 			false,
@@ -382,7 +440,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdRevoke()
+			cmd := cli.NewTxCmdAbandon()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -412,7 +470,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMint() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 				"1",
@@ -421,7 +479,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMint() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 				"1",
@@ -431,7 +489,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMint() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 			},
@@ -473,7 +531,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[1].Id,
+				s.classes[1].ContractId,
 				s.vendor.String(),
 				"1",
 			},
@@ -481,7 +539,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[1].Id,
+				s.classes[1].ContractId,
 				s.vendor.String(),
 				"1",
 				"extra",
@@ -490,7 +548,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[1].Id,
+				s.classes[1].ContractId,
 				s.vendor.String(),
 			},
 			false,
@@ -516,7 +574,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdBurnFrom() {
+func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurn() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.vendor),
@@ -531,7 +589,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurnFrom() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 				"1",
@@ -540,7 +598,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurnFrom() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 				"1",
@@ -550,7 +608,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurnFrom() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
 			},
@@ -562,7 +620,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurnFrom() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdBurnFrom()
+			cmd := cli.NewTxCmdOperatorBurn()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -592,7 +650,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				"name",
 				"cool token",
@@ -601,7 +659,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				"name",
 				"cool token",
@@ -611,7 +669,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].Id,
+				s.classes[0].ContractId,
 				s.vendor.String(),
 				"name",
 			},
