@@ -31,7 +31,7 @@ func NewAnteHandler(
 		// ante.NewDeductFeeDecorator(ak, bankKeeper),
 		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
 		ante.NewSigVerificationDecorator(ak, signModeHandler),
-		ante.NewIncrementSequenceDecorator(ak, bankKeeper),
+		ante.NewIncrementSequenceDecorator(ak),
 		ibcante.NewAnteDecorator(channelKeeper),
 	)
 }

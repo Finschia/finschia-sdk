@@ -65,7 +65,6 @@ func testPrefixStore(t *testing.T, baseStore types.KVStore, prefix []byte) {
 		key := kvps[i].key
 		value := kvps[i].value
 		require.True(t, prefixPrefixStore.Has(key))
-		prefixPrefixStore.Prefetch(key, false)
 		require.Equal(t, value, prefixPrefixStore.Get(key))
 
 		key = append([]byte("prefix"), key...)

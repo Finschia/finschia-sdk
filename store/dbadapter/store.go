@@ -51,15 +51,6 @@ func (dsa Store) Delete(key []byte) {
 	}
 }
 
-// Prefetch wraps the underlying DB's Get method panicing on error.
-func (dsa Store) Prefetch(key []byte, forSet bool) (hits, misses int, value []byte) {
-	v, err := dsa.DB.Get(key)
-	if err != nil {
-		return 0, 0, nil
-	}
-	return 1, 1, v
-}
-
 // Iterator wraps the underlying DB's Iterator method panicing on error.
 func (dsa Store) Iterator(start, end []byte) types.Iterator {
 	iter, err := dsa.DB.Iterator(start, end)

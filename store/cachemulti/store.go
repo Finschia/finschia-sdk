@@ -2,10 +2,8 @@ package cachemulti
 
 import (
 	"fmt"
-	"io"
-	"sync"
-
 	tmdb "github.com/line/tm-db/v2"
+	"io"
 
 	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/lbm-sdk/store/dbadapter"
@@ -138,26 +136,8 @@ func (cms Store) GetStoreType() types.StoreType {
 // Write calls Write on each underlying store.
 func (cms Store) Write() {
 	cms.db.Write()
-	var wg sync.WaitGroup
-	var panicMsg interface{}
 	for _, store := range cms.stores {
-		wg.Add(1)
-		go func(s types.CacheWrap) {
-			defer func() {
-				if msg := recover(); msg != nil {
-					if panicMsg == nil {
-						panicMsg = msg
-					}
-				}
-				wg.Done()
-			}()
-
-			s.Write()
-		}(store)
-	}
-	wg.Wait()
-	if panicMsg != nil {
-		panic(panicMsg)
+		store.Write()
 	}
 }
 

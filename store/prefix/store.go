@@ -87,11 +87,6 @@ func (s Store) Delete(key []byte) {
 }
 
 // Implements KVStore
-func (s Store) Prefetch(key []byte, forSet bool) (hits, misses int, value []byte) {
-	return s.parent.Prefetch(s.key(key), forSet)
-}
-
-// Implements KVStore
 // Check https://github.com/tendermint/tendermint/blob/master/libs/db/prefix_db.go#L106
 func (s Store) Iterator(start, end []byte) types.Iterator {
 	newstart := cloneAppend(s.prefix, start)

@@ -68,7 +68,6 @@ func TestTraceKVStoreGet(t *testing.T) {
 		store := newTraceKVStore(&buf)
 		buf.Reset()
 		value := store.Get(tc.key)
-		store.Prefetch(tc.key, false)
 
 		require.Equal(t, tc.expectedValue, value)
 		require.Equal(t, tc.expectedOut, buf.String())
