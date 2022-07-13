@@ -12407,6 +12407,12 @@ OwnerNFT defines the information of non-fungible token.
 Params defines the parameters for the collection module.
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `depth_limit` | [uint32](#uint32) |  |  |
+| `width_limit` | [uint32](#uint32) |  |  |
+
+
 
 
 

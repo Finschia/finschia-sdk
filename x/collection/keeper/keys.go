@@ -7,27 +7,29 @@ import (
 )
 
 var (
-	contractKeyPrefix    = []byte{0x00}
-	classKeyPrefix       = []byte{0x01}
-	nextClassIDKeyPrefix = []byte{0x02}
-	nextTokenIDKeyPrefix = []byte{0x03}
+	paramsKey = []byte{0x00}
 
-	balanceKeyPrefix     = []byte{0x10}
-	ownerKeyPrefix       = []byte{0x11}
-	nftKeyPrefix         = []byte{0x12}
-	parentKeyPrefix      = []byte{0x13}
-	childKeyPrefix       = []byte{0x14}
-	descendantsKeyPrefix = []byte{0x15}
+	contractKeyPrefix    = []byte{0x10}
+	classKeyPrefix       = []byte{0x11}
+	nextClassIDKeyPrefix = []byte{0x12}
+	nextTokenIDKeyPrefix = []byte{0x13}
 
-	authorizationKeyPrefix = []byte{0x20}
-	grantKeyPrefix         = []byte{0x21}
+	balanceKeyPrefix = []byte{0x20}
+	ownerKeyPrefix   = []byte{0x21}
+	nftKeyPrefix     = []byte{0x22}
+	parentKeyPrefix  = []byte{0x23}
+	childKeyPrefix   = []byte{0x24}
+	// descendantsKeyPrefix = []byte{0x25}
 
-	supplyKeyPrefix = []byte{0x30}
-	mintedKeyPrefix = []byte{0x31}
-	burntKeyPrefix  = []byte{0x32}
+	authorizationKeyPrefix = []byte{0x30}
+	grantKeyPrefix         = []byte{0x31}
 
-	legacyTokenKeyPrefix     = []byte{0x40}
-	legacyTokenTypeKeyPrefix = []byte{0x41}
+	supplyKeyPrefix = []byte{0x40}
+	mintedKeyPrefix = []byte{0x41}
+	burntKeyPrefix  = []byte{0x42}
+
+	legacyTokenKeyPrefix     = []byte{0xf0}
+	legacyTokenTypeKeyPrefix = []byte{0xf1}
 )
 
 func balanceKey(contractID string, address sdk.AccAddress, tokenID string) []byte {
@@ -249,30 +251,30 @@ func splitChildKey(key []byte) (contractID string, tokenID, childID string) {
 
 //-----------------------------------------------------------------------------
 // number of descendants
-func descendantsKey(contractID string, tokenID string) []byte {
-	prefix := descendantsKeyPrefixByContractID(contractID)
-	key := make([]byte, len(prefix)+len(tokenID))
+// func descendantsKey(contractID string, tokenID string) []byte {
+// 	prefix := descendantsKeyPrefixByContractID(contractID)
+// 	key := make([]byte, len(prefix)+len(tokenID))
 
-	copy(key, prefix)
-	copy(key[len(prefix):], tokenID)
+// 	copy(key, prefix)
+// 	copy(key[len(prefix):], tokenID)
 
-	return key
-}
+// 	return key
+// }
 
-func descendantsKeyPrefixByContractID(contractID string) []byte {
-	key := make([]byte, len(descendantsKeyPrefix)+1+len(contractID))
+// func descendantsKeyPrefixByContractID(contractID string) []byte {
+// 	key := make([]byte, len(descendantsKeyPrefix)+1+len(contractID))
 
-	begin := 0
-	copy(key, descendantsKeyPrefix)
+// 	begin := 0
+// 	copy(key, descendantsKeyPrefix)
 
-	begin += len(descendantsKeyPrefix)
-	key[begin] = byte(len(contractID))
+// 	begin += len(descendantsKeyPrefix)
+// 	key[begin] = byte(len(contractID))
 
-	begin++
-	copy(key[begin:], contractID)
+// 	begin++
+// 	copy(key[begin:], contractID)
 
-	return key
-}
+// 	return key
+// }
 
 //-----------------------------------------------------------------------------
 func contractKey(contractID string) []byte {

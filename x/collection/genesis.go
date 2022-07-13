@@ -9,9 +9,13 @@ import (
 	"github.com/line/lbm-sdk/x/token/class"
 )
 
+const (
+	DefaultDepthLimit = 3
+	DefaultWidthLimit = 8
+)
+
 // ValidateGenesis check the given genesis state has no integrity issues
 func ValidateGenesis(data GenesisState) error {
-	// TODO: validate parameters
 
 	// the legacy module did not validate the data.
 	// if LegacyMode {
@@ -128,7 +132,12 @@ func ValidateGenesis(data GenesisState) error {
 
 // DefaultGenesisState - Return a default genesis state
 func DefaultGenesisState() *GenesisState {
-	return &GenesisState{}
+	return &GenesisState{
+		Params: Params{
+			DepthLimit: DefaultDepthLimit,
+			WidthLimit: DefaultWidthLimit,
+		},
+	}
 }
 
 func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {

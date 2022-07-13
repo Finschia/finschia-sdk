@@ -3,7 +3,6 @@ package keeper_test
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/collection"
-	"github.com/line/lbm-sdk/x/collection/keeper"
 )
 
 func (s *KeeperTestSuite) TestMsgSend() {
@@ -1435,7 +1434,7 @@ func (s *KeeperTestSuite) TestMsgAttach() {
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			subjectID:  collection.NewNFTID(s.nftClassID, keeper.DescendantsLimit+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 			valid:      true,
 		},
@@ -1515,14 +1514,14 @@ func (s *KeeperTestSuite) TestMsgOperatorAttach() {
 		"valid request": {
 			contractID: s.contractID,
 			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, keeper.DescendantsLimit+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 			valid:      true,
 		},
 		"not authorized": {
 			contractID: s.contractID,
 			operator:   s.vendor,
-			subjectID:  collection.NewNFTID(s.nftClassID, keeper.DescendantsLimit+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 		},
 		"not owner of the token": {
@@ -1612,14 +1611,14 @@ func (s *KeeperTestSuite) TestMsgAttachFrom() {
 		"valid request": {
 			contractID: s.contractID,
 			operator:   s.operator,
-			subjectID:  collection.NewNFTID(s.nftClassID, keeper.DescendantsLimit+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 			valid:      true,
 		},
 		"not authorized": {
 			contractID: s.contractID,
 			operator:   s.vendor,
-			subjectID:  collection.NewNFTID(s.nftClassID, keeper.DescendantsLimit+1),
+			subjectID:  collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
 		},
 		"not owner of the token": {

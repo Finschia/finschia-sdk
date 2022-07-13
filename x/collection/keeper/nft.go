@@ -8,12 +8,9 @@ import (
 	"github.com/line/lbm-sdk/x/collection"
 )
 
-const (
-	DescendantsLimit = 3
-
-	DepthLimit = 4
-	WidthLimit = 8
-)
+// const (
+// 	DescendantsLimit = 3
+// )
 
 func (k Keeper) hasNFT(ctx sdk.Context, contractID string, tokenID string) error {
 	store := ctx.KVStore(k.storeKey)
@@ -81,14 +78,18 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 	}
 
 	// update descendants data of the parents
-	update := 1 + k.getDescendants(ctx, contractID, subject)
-	root, err := k.updateDescendants(ctx, contractID, target, update)
-	if err != nil {
-		return err
-	}
+	// update := 1 + k.getDescendants(ctx, contractID, subject)
+	// root, err := k.updateDescendants(ctx, contractID, target, update)
+	// if err != nil {
+	// 	return err
+	// }
 
-	if owner != k.getOwner(ctx, contractID, *root) {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, subject)
+	root := k.GetRoot(ctx, contractID, target)
+	if owner != k.getOwner(ctx, contractID, root) {
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, target)
+	}
+	if root == subject {
+		return sdkerrors.ErrInvalidRequest.Wrap("cycles not allowed")
 	}
 
 	// update subject
@@ -99,7 +100,7 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 	k.setChild(ctx, contractID, target, subject)
 
 	// finally, check the invariant
-	if err := k.validateDepthAndWidth(ctx, contractID, *root); err != nil {
+	if err := k.validateDepthAndWidth(ctx, contractID, root); err != nil {
 		return err
 	}
 
@@ -120,13 +121,13 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 	}
 
 	// update descendants data of the parents
-	update := -(1 + k.getDescendants(ctx, contractID, subject))
-	root, err := k.updateDescendants(ctx, contractID, *parent, update)
-	if err != nil {
-		panic(err)
-	}
+	// update := -(1 + k.getDescendants(ctx, contractID, subject))
+	// root, err := k.updateDescendants(ctx, contractID, *parent, update)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	if owner != k.getOwner(ctx, contractID, *root) {
+	if owner != k.GetRootOwner(ctx, contractID, subject) {
 		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, subject)
 	}
 
@@ -140,28 +141,28 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 	return nil
 }
 
-func (k Keeper) updateDescendants(ctx sdk.Context, contractID string, tokenID string, update int32) (rootID *string, err error) {
-	limit := int32(DescendantsLimit)
-	root := tokenID
-	if err := k.iterateUpwards(ctx, contractID, tokenID, func(tokenID string) error {
-		prev := k.getDescendants(ctx, contractID, tokenID)
-		updated := prev + update
-		if updated > limit {
-			return sdkerrors.ErrInvalidRequest.Wrapf("the number of descendants exceeds the limit: %d", limit)
-		}
+// func (k Keeper) updateDescendants(ctx sdk.Context, contractID string, tokenID string, update int32) (rootID *string, err error) {
+// 	limit := int32(DescendantsLimit)
+// 	root := tokenID
+// 	if err := k.iterateAncestors(ctx, contractID, tokenID, func(tokenID string) error {
+// 		prev := k.getDescendants(ctx, contractID, tokenID)
+// 		updated := prev + update
+// 		if updated > limit {
+// 			return sdkerrors.ErrInvalidRequest.Wrapf("the number of descendants exceeds the limit: %d", limit)
+// 		}
 
-		k.setDescendants(ctx, contractID, tokenID, updated)
-		root = tokenID
+// 		k.setDescendants(ctx, contractID, tokenID, updated)
+// 		root = tokenID
 
-		return nil
-	}); err != nil {
-		return nil, err
-	}
+// 		return nil
+// 	}); err != nil {
+// 		return nil, err
+// 	}
 
-	return &root, nil
-}
+// 	return &root, nil
+// }
 
-func (k Keeper) iterateUpwards(ctx sdk.Context, contractID string, tokenID string, fn func(tokenID string) error) error {
+func (k Keeper) iterateAncestors(ctx sdk.Context, contractID string, tokenID string, fn func(tokenID string) error) error {
 	var err error
 	for id := &tokenID; err == nil; id, err = k.GetParent(ctx, contractID, *id) {
 		if fnErr := fn(*id); fnErr != nil {
@@ -279,40 +280,40 @@ func (k Keeper) deleteChild(ctx sdk.Context, contractID string, tokenID, childID
 	store.Delete(key)
 }
 
-func (k Keeper) getDescendants(ctx sdk.Context, contractID string, tokenID string) int32 {
-	store := ctx.KVStore(k.storeKey)
-	key := descendantsKey(contractID, tokenID)
-	bz := store.Get(key)
-	if bz == nil {
-		return 0
-	}
+// func (k Keeper) getDescendants(ctx sdk.Context, contractID string, tokenID string) int32 {
+// 	store := ctx.KVStore(k.storeKey)
+// 	key := descendantsKey(contractID, tokenID)
+// 	bz := store.Get(key)
+// 	if bz == nil {
+// 		return 0
+// 	}
 
-	var descendants gogotypes.Int32Value
-	if err := descendants.Unmarshal(bz); err != nil {
-		panic(err)
-	}
-	return descendants.Value
-}
+// 	var descendants gogotypes.Int32Value
+// 	if err := descendants.Unmarshal(bz); err != nil {
+// 		panic(err)
+// 	}
+// 	return descendants.Value
+// }
 
-func (k Keeper) setDescendants(ctx sdk.Context, contractID string, tokenID string, descendants int32) {
-	store := ctx.KVStore(k.storeKey)
-	key := descendantsKey(contractID, tokenID)
+// func (k Keeper) setDescendants(ctx sdk.Context, contractID string, tokenID string, descendants int32) {
+// 	store := ctx.KVStore(k.storeKey)
+// 	key := descendantsKey(contractID, tokenID)
 
-	if descendants == 0 {
-		store.Delete(key)
-	} else {
-		value := gogotypes.Int32Value{Value: descendants}
-		bz, err := value.Marshal()
-		if err != nil {
-			panic(err)
-		}
-		store.Set(key, bz)
-	}
-}
+// 	if descendants == 0 {
+// 		store.Delete(key)
+// 	} else {
+// 		value := gogotypes.Int32Value{Value: descendants}
+// 		bz, err := value.Marshal()
+// 		if err != nil {
+// 			panic(err)
+// 		}
+// 		store.Set(key, bz)
+// 	}
+// }
 
 func (k Keeper) GetRoot(ctx sdk.Context, contractID string, tokenID string) string {
 	id := tokenID
-	k.iterateUpwards(ctx, contractID, tokenID, func(tokenID string) error {
+	k.iterateAncestors(ctx, contractID, tokenID, func(tokenID string) error {
 		id = tokenID
 		return nil
 	})
@@ -358,14 +359,16 @@ func (k Keeper) validateDepthAndWidth(ctx sdk.Context, contractID string, tokenI
 		return false
 	})
 
+	params := k.GetParams(ctx)
+
 	depth := len(widths)
-	if legacyDepth := depth - 1; legacyDepth > DepthLimit {
-		return sdkerrors.ErrInvalidRequest.Wrapf("resulting depth exceeds its limit: %d", DepthLimit)
+	if legacyDepth := depth - 1; legacyDepth > int(params.DepthLimit) {
+		return sdkerrors.ErrInvalidRequest.Wrapf("resulting depth exceeds its limit: %d", params.DepthLimit)
 	}
 
 	for _, width := range widths {
-		if width > WidthLimit {
-			return sdkerrors.ErrInvalidRequest.Wrapf("resulting width exceeds its limit: %d", WidthLimit)
+		if width > int(params.WidthLimit) {
+			return sdkerrors.ErrInvalidRequest.Wrapf("resulting width exceeds its limit: %d", params.WidthLimit)
 		}
 	}
 
