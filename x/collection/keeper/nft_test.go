@@ -14,7 +14,7 @@ func (s *KeeperTestSuite) TestAttach() {
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, keeper.DepthLimit+1),
+			subject:    collection.NewNFTID(s.nftClassID, keeper.DescendantsLimit+1),
 			target:     collection.NewNFTID(s.nftClassID, 1),
 			valid:      true,
 		},
@@ -25,17 +25,17 @@ func (s *KeeperTestSuite) TestAttach() {
 		},
 		"target not found": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, keeper.DepthLimit+1),
+			subject:    collection.NewNFTID(s.nftClassID, keeper.DescendantsLimit+1),
 			target:     collection.NewNFTID(s.nftClassID, s.numNFTs*3+1),
 		},
 		"result exceeds the limit": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, keeper.DepthLimit+2),
+			subject:    collection.NewNFTID(s.nftClassID, keeper.DescendantsLimit+2),
 			target:     collection.NewNFTID(s.nftClassID, 1),
 		},
 		"not owner of target": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, keeper.DepthLimit+1),
+			subject:    collection.NewNFTID(s.nftClassID, keeper.DescendantsLimit+1),
 			target:     collection.NewNFTID(s.nftClassID, s.numNFTs+1),
 		},
 	}

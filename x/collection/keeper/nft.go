@@ -9,7 +9,10 @@ import (
 )
 
 const (
-	DepthLimit = 15
+	DescendantsLimit = 3
+
+	DepthLimit = 4
+	WidthLimit = 8
 )
 
 func (k Keeper) hasNFT(ctx sdk.Context, contractID string, tokenID string) error {
@@ -95,6 +98,11 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 	// update target
 	k.setChild(ctx, contractID, target, subject)
 
+	// finally, check the invariant
+	if err := k.validateDepthAndWidth(ctx, contractID, *root); err != nil {
+		return err
+	}
+
 	// legacy
 	k.emitEventOnDescendants(ctx, contractID, subject, collection.NewEventOperationRootChanged)
 
@@ -133,7 +141,7 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 }
 
 func (k Keeper) updateDescendants(ctx sdk.Context, contractID string, tokenID string, update int32) (rootID *string, err error) {
-	limit := int32(DepthLimit)
+	limit := int32(DescendantsLimit)
 	root := tokenID
 	if err := k.iterateUpwards(ctx, contractID, tokenID, func(tokenID string) error {
 		prev := k.getDescendants(ctx, contractID, tokenID)
@@ -244,13 +252,17 @@ func (k Keeper) iterateChildren(ctx sdk.Context, contractID string, tokenID stri
 	})
 }
 
-func (k Keeper) iterateDescendants(ctx sdk.Context, contractID string, tokenID string, fn func(descendantID string) (stop bool)) {
+func (k Keeper) iterateDescendants(ctx sdk.Context, contractID string, tokenID string, fn func(descendantID string, depth int) (stop bool)) {
+	k.iterateDescendantsImpl(ctx, contractID, tokenID, 1, fn)
+}
+
+func (k Keeper) iterateDescendantsImpl(ctx sdk.Context, contractID string, tokenID string, depth int, fn func(descendantID string, depth int) (stop bool)) {
 	k.iterateChildren(ctx, contractID, tokenID, func(childID string) (stop bool) {
-		if stop := fn(childID); stop {
+		if stop := fn(childID, depth); stop {
 			return true
 		}
 
-		k.iterateChildren(ctx, contractID, childID, fn)
+		k.iterateDescendantsImpl(ctx, contractID, childID, depth+1, fn)
 		return false
 	})
 }
@@ -331,9 +343,31 @@ func (k Keeper) setLegacyTokenType(ctx sdk.Context, contractID string, tokenType
 
 // Deprecated
 func (k Keeper) emitEventOnDescendants(ctx sdk.Context, contractID string, tokenID string, generator func(contractID string, descendantID string) sdk.Event) {
-	k.iterateDescendants(ctx, contractID, tokenID, func(descendantID string) (stop bool) {
+	k.iterateDescendants(ctx, contractID, tokenID, func(descendantID string, _ int) (stop bool) {
 		event := generator(contractID, descendantID)
 		ctx.EventManager().EmitEvent(event)
 		return false
 	})
+}
+
+// Deprecated
+func (k Keeper) validateDepthAndWidth(ctx sdk.Context, contractID string, tokenID string) error {
+	widths := map[int]int{0: 1}
+	k.iterateDescendants(ctx, contractID, tokenID, func(descendantID string, depth int) (stop bool) {
+		widths[depth]++
+		return false
+	})
+
+	depth := len(widths)
+	if legacyDepth := depth - 1; legacyDepth > DepthLimit {
+		return sdkerrors.ErrInvalidRequest.Wrapf("resulting depth exceeds its limit: %d", DepthLimit)
+	}
+
+	for _, width := range widths {
+		if width > WidthLimit {
+			return sdkerrors.ErrInvalidRequest.Wrapf("resulting width exceeds its limit: %d", WidthLimit)
+		}
+	}
+
+	return nil
 }

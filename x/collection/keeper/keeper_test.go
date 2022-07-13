@@ -130,9 +130,9 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 	// 1 for the successful attach, 2 for the failure
 	remainders := 1 + 2
-	s.numNFTs = keeper.DepthLimit + remainders
+	s.numNFTs = keeper.DescendantsLimit + remainders
 	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor} {
-		tokens, err := s.keeper.MintNFT(s.ctx, s.contractID, to, newParams(s.nftClassID, keeper.DepthLimit))
+		tokens, err := s.keeper.MintNFT(s.ctx, s.contractID, to, newParams(s.nftClassID, keeper.DescendantsLimit))
 		s.Require().NoError(err)
 
 		for i := range tokens[1:] {
