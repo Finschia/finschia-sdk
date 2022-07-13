@@ -181,7 +181,7 @@ func NewEventRevokePermToken(e EventAbandon) sdk.Event {
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: e.ContractId,
 		AttributeKeyFrom:       e.Grantee,
-		AttributeKeyPerm:       e.Permission,
+		AttributeKeyPerm:       LegacyPermission(e.Permission).String(),
 	}
 
 	new := sdk.NewEvent(eventType)

@@ -137,7 +137,7 @@ message EventAbandon {
   // address of the grantee which abandons its grant.
   string grantee = 2;
   // permission on the token class.
-  string permission = 3;
+  Permission permission = 3;
 }
 
 // EventMinted is emitted when tokens are minted.

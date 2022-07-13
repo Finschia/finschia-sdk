@@ -13449,7 +13449,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
-| `permission` | [string](#string) |  | permission on the token class. |
+| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
 
 
 

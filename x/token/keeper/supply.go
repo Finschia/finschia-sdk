@@ -324,7 +324,7 @@ func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddre
 	event := token.EventAbandon{
 		ContractId: contractID,
 		Grantee:    grantee.String(),
-		Permission: permission.String(),
+		Permission: permission,
 	}
 	ctx.EventManager().EmitEvent(token.NewEventRevokePermToken(event)) // deprecated
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
