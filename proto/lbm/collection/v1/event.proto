@@ -269,3 +269,33 @@ message EventModifiedNFT {
   // changes of the attributes applied.
   repeated Attribute changes = 4 [(gogoproto.nullable) = false];
 }
+
+// EventAttached is emitted when a token is attached to another.
+//
+// Since: 0.46.0 (finschia)
+message EventAttached {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the attach.
+  string operator = 2;
+  // address which holds the tokens.
+  string holder = 3;
+  // subject of the attach.
+  string subject = 4;
+  // target of the attach.
+  string target = 5;
+}
+
+// EventDetached is emitted when a token is detached from its parent.
+//
+// Since: 0.46.0 (finschia)
+message EventDetached {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggered the detach.
+  string operator = 2;
+  // address which holds the token.
+  string holder = 3;
+  // token being detached.
+  string subject = 4;
+}
