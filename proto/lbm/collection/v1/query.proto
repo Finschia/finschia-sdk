@@ -764,7 +764,7 @@ message QueryGrantRequest {
   // the address of the grantee.
   string grantee = 2;
   // permission on the contract.
-  string permission = 3;
+  Permission permission = 3;
 }
 
 // QueryGrantResponse is the response type for the Query/Grant RPC method.
