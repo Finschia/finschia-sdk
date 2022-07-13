@@ -51,7 +51,7 @@ func NewEventIssueToken(e EventIssue, grantee, to sdk.AccAddress, amount sdk.Int
 	new := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		new = new.AppendAttributes(attribute)
 	}
 	return new
 }
@@ -68,7 +68,7 @@ func NewEventMintToken(e EventMinted) sdk.Event {
 	new := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		new = new.AppendAttributes(attribute)
 	}
 	return new
 }
@@ -84,7 +84,7 @@ func NewEventBurnToken(e EventBurned) sdk.Event {
 	new := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		new = new.AppendAttributes(attribute)
 	}
 	return new
 }
@@ -101,7 +101,7 @@ func NewEventBurnTokenFrom(e EventBurned) sdk.Event {
 	new := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		new = new.AppendAttributes(attribute)
 	}
 	return new
 }
@@ -134,7 +134,7 @@ func NewEventTransfer(e EventSent) sdk.Event {
 	new := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		new = new.AppendAttributes(attribute)
 	}
 	return new
 }
@@ -152,7 +152,7 @@ func NewEventTransferFrom(e EventSent) sdk.Event {
 	new := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		new = new.AppendAttributes(attribute)
 	}
 	return new
 }
@@ -164,14 +164,46 @@ func NewEventGrantPermToken(e EventGrant) sdk.Event {
 		AttributeKeyTo:         e.Grantee,
 		AttributeKeyPerm:       LegacyPermission(e.Permission).String(),
 	}
-	if e.Granter != e.Grantee {
+	if len(e.Granter) != 0 {
 		attributes[AttributeKeyFrom] = e.Granter
 	}
 
 	new := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		new = new.AppendAttributes(attribute)
+	}
+	return new
+}
+
+func NewEventGrantPermTokenHead(e EventGrant) sdk.Event {
+	eventType := EventTypeGrantPermToken.String()
+	attributes := map[AttributeKey]string{
+		AttributeKeyContractID: e.ContractId,
+		AttributeKeyTo:         e.Grantee,
+	}
+	if len(e.Granter) != 0 {
+		attributes[AttributeKeyFrom] = e.Granter
+	}
+
+	new := sdk.NewEvent(eventType)
+	for key, value := range attributes {
+		attribute := sdk.NewAttribute(key.String(), value)
+		new = new.AppendAttributes(attribute)
+	}
+	return new
+}
+
+func NewEventGrantPermTokenBody(e EventGrant) sdk.Event {
+	eventType := EventTypeGrantPermToken.String()
+	attributes := map[AttributeKey]string{
+		AttributeKeyPerm: LegacyPermission(e.Permission).String(),
+	}
+
+	new := sdk.NewEvent(eventType)
+	for key, value := range attributes {
+		attribute := sdk.NewAttribute(key.String(), value)
+		new = new.AppendAttributes(attribute)
 	}
 	return new
 }
@@ -187,7 +219,7 @@ func NewEventRevokePermToken(e EventAbandon) sdk.Event {
 	new := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		new = new.AppendAttributes(attribute)
 	}
 	return new
 }
@@ -203,7 +235,7 @@ func NewEventApproveToken(e EventAuthorizedOperator) sdk.Event {
 	new := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		new = new.AppendAttributes(attribute)
 	}
 	return new
 }
