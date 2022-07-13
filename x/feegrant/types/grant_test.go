@@ -15,8 +15,8 @@ import (
 
 func TestGrant(t *testing.T) {
 	app := simapp.Setup(false)
-	addr := sdk.AccAddress("link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5")
-	addr2 := sdk.AccAddress("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
+	addr, _ := sdk.AccAddressFromBech32("link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5")
+	addr2, _ := sdk.AccAddressFromBech32("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
 	atom := sdk.NewCoins(sdk.NewInt64Coin("atom", 555))
 	ctx := app.BaseApp.NewContext(false, ocproto.Header{
 		Time: time.Now(),
