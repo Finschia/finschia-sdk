@@ -7,8 +7,9 @@ import "lbm/collection/v1/collection.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/collection";
 
+// Deprecated: use typed events.
+//
 // EventType enumerates the valid event types on x/collection.
-// For the legacy events.
 enum EventType {
   unspecified            = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
   create_collection      = 1 [(gogoproto.enumvalue_customname) = "CreateCollection"];
@@ -41,8 +42,9 @@ enum EventType {
   operation_root_changed = 28 [(gogoproto.enumvalue_customname) = "OperationRootChanged"];
 }
 
+// Deprecated: use typed events.
+//
 // AttributeKey enumerates the valid attribute keys on x/collection.
-// For the legacy events.
 enum AttributeKey {
   unspecified       = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
   name              = 1 [(gogoproto.enumvalue_customname) = "Name"];

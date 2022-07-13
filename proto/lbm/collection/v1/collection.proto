@@ -72,9 +72,9 @@ message NFT {
   string meta = 3;
 }
 
-// OwnerNFT defines the information of non-fungible token.
+// Deprecated: use NFT
 //
-// Note: deprecated (use NFT)
+// OwnerNFT defines the information of non-fungible token.
 message OwnerNFT {
   option (cosmos_proto.implements_interface) = "Token";
 
@@ -91,9 +91,9 @@ message OwnerNFT {
   string owner = 5;
 }
 
-// FT defines the information of fungible token.
+// Deprecated: use FTClass
 //
-// Note: deprecated (use FTClass)
+// FT defines the information of fungible token.
 message FT {
   option (cosmos_proto.implements_interface) = "Token";
 
@@ -111,9 +111,9 @@ message FT {
   bool mintable = 6;
 }
 
-// TokenType defines the information of token type.
+// Deprecated: use TokenClass
 //
-// Note: deprecated (use TokenClass)
+// TokenType defines the information of token type.
 message TokenType {
   // contract id associated with the contract.
   string contract_id = 1;
@@ -177,9 +177,9 @@ message Attribute {
   string value = 2;
 }
 
-// Change defines a field-value pair.
+// Deprecated: use Attribute
 //
-// Note: deprecated (use Attribute)
+// Change defines a field-value pair.
 message Change {
   string field = 1;
   string value = 2;
