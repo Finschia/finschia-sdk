@@ -25,7 +25,10 @@ func NewSendRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 		vars := mux.Vars(r)
 		bech32Addr := vars["address"]
 
-		toAddr := sdk.AccAddress(bech32Addr)
+		toAddr, err := sdk.AccAddressFromBech32(bech32Addr)
+		if rest.CheckBadRequestError(w, err) {
+			return
+		}
 
 		var req SendReq
 		if !rest.ReadRESTReq(w, r, clientCtx.LegacyAmino, &req) {
@@ -37,7 +40,10 @@ func NewSendRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		fromAddr := sdk.AccAddress(req.BaseReq.From)
+		fromAddr, err := sdk.AccAddressFromBech32(req.BaseReq.From)
+		if rest.CheckBadRequestError(w, err) {
+			return
+		}
 
 		msg := types.NewMsgSend(fromAddr, toAddr, req.Amount)
 		tx.WriteGeneratedTxResponse(clientCtx, w, req.BaseReq, msg)

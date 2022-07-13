@@ -123,7 +123,10 @@ func sendMsgSend(
 		err  error
 	)
 
-	from := sdk.AccAddress(msg.FromAddress)
+	from, err := sdk.AccAddressFromBech32(msg.FromAddress)
+	if err != nil {
+		return err
+	}
 
 	account := ak.GetAccount(ctx, from)
 	spendable := bk.SpendableCoins(ctx, account.GetAddress())
@@ -326,7 +329,10 @@ func sendMsgMultiSend(
 	sequenceNumbers := make([]uint64, len(msg.Inputs))
 
 	for i := 0; i < len(msg.Inputs); i++ {
-		addr := sdk.AccAddress(msg.Inputs[i].Address)
+		addr, err := sdk.AccAddressFromBech32(msg.Inputs[i].Address)
+		if err != nil {
+			panic(err)
+		}
 		acc := ak.GetAccount(ctx, addr)
 		accountNumbers[i] = acc.GetAccountNumber()
 		sequenceNumbers[i] = acc.GetSequence()
@@ -337,7 +343,10 @@ func sendMsgMultiSend(
 		err  error
 	)
 
-	addr := sdk.AccAddress(msg.Inputs[0].Address)
+	addr, err := sdk.AccAddressFromBech32(msg.Inputs[0].Address)
+	if err != nil {
+		panic(err)
+	}
 
 	// feePayer is the first signer, i.e. first input address
 	feePayer := ak.GetAccount(ctx, addr)
