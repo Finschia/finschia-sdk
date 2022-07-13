@@ -60,7 +60,7 @@ var (
 	invalidProofs1 = exported.Proof(nil)
 	invalidProofs2 = emptyProof
 
-	addr      = sdk.AccAddress([]byte("testaddr111111111111"))
+	addr      = sdk.AccAddress("testaddr111111111111")
 	emptyAddr sdk.AccAddress
 
 	connHops             = []string{"testconnection"}

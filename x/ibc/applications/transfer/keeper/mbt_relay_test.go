@@ -324,7 +324,8 @@ func (suite *KeeperTestSuite) TestModelBasedRelay() {
 				}
 				switch tc.handler {
 				case "SendTransfer":
-					addr, err := sdk.AccAddressFromBech32(tc.packet.Data.Sender)
+					var sender sdk.AccAddress
+					sender, err = sdk.AccAddressFromBech32(tc.packet.Data.Sender)
 					if err != nil {
 						panic("MBT failed to convert sender address")
 					}
@@ -338,7 +339,7 @@ func (suite *KeeperTestSuite) TestModelBasedRelay() {
 							tc.packet.SourcePort,
 							tc.packet.SourceChannel,
 							sdk.NewCoin(denom, sdk.NewIntFromUint64(tc.packet.Data.Amount)),
-							addr,
+							sender,
 							tc.packet.Data.Receiver,
 							clienttypes.NewHeight(0, 110),
 							0)
