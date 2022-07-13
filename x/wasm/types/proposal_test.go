@@ -930,7 +930,7 @@ func TestProposalJsonSignBytes(t *testing.T) {
 	}
 	for name, spec := range specs {
 		t.Run(name, func(t *testing.T) {
-			msg, err := govtypes.NewMsgSubmitProposal(spec.src, sdk.NewCoins(), sdk.AccAddress([]byte{}))
+			msg, err := govtypes.NewMsgSubmitProposal(spec.src, sdk.NewCoins(), []byte{})
 			require.NoError(t, err)
 
 			bz := msg.GetSignBytes()

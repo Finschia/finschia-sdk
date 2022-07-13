@@ -539,7 +539,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 	assert.Equal(t, expCodeInfo, *gotCodeInfo)
 
 	// verify contract
-	contractAddr := sdk.AccAddress("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
+	contractAddr, _ := sdk.AccAddressFromBech32("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
 	gotContractInfo := keeper.GetContractInfo(ctx, contractAddr)
 	require.NotNil(t, gotContractInfo)
 	contractCreatorAddr := "link1p0yx9c9q4xsnedlcn24gqfry5dcu6e9xkhv9aj"

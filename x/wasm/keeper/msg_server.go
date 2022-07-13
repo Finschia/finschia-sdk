@@ -80,7 +80,7 @@ func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context,
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	codeID, err := m.keeper.Create(ctx, sdk.AccAddress(msg.Sender), msg.WASMByteCode, msg.InstantiatePermission)
+	codeID, err := m.keeper.Create(ctx, senderAddr, msg.WASMByteCode, msg.InstantiatePermission)
 	if err != nil {
 		return nil, err
 	}

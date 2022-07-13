@@ -175,7 +175,10 @@ func (msg MsgStoreCodeAndInstantiateContract) GetSignBytes() []byte {
 }
 
 func (msg MsgStoreCodeAndInstantiateContract) GetSigners() []sdk.AccAddress {
-	senderAddr := sdk.AccAddress(msg.Sender)
+	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil { // should never happen as valid basic rejects invalid addresses
+		panic(err.Error())
+	}
 	return []sdk.AccAddress{senderAddr}
 }
 
