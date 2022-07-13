@@ -260,7 +260,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorSlashes() {
 			"invalid end height",
 			[]string{
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
-				sdk.ValAddress(val.Address).String(), "-1", "3",
+				sdk.ValAddress(val.Address).String(), "1", "-3",
 			},
 			true,
 			"",

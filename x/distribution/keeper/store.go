@@ -72,13 +72,13 @@ func (k Keeper) GetPreviousProposerConsAddr(ctx sdk.Context) sdk.ConsAddress {
 
 	addrValue := gogotypes.BytesValue{}
 	k.cdc.MustUnmarshal(bz, &addrValue)
-	return sdk.ConsAddress(addrValue.GetValue())
+	return addrValue.GetValue()
 }
 
 // set the proposer public key for this block
 func (k Keeper) SetPreviousProposerConsAddr(ctx sdk.Context, consAddr sdk.ConsAddress) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshal(&gogotypes.BytesValue{Value: consAddr.Bytes()})
+	bz := k.cdc.MustMarshal(&gogotypes.BytesValue{Value: consAddr})
 	store.Set(types.ProposerKey, bz)
 }
 
