@@ -21,8 +21,8 @@ const StoreKey = authz.ModuleName
 // - 0x01<granterAddressLen (1 Byte)><granterAddress_Bytes><granteeAddressLen (1 Byte)><granteeAddress_Bytes><msgType_Bytes>: Grant
 func grantStoreKey(grantee sdk.AccAddress, granter sdk.AccAddress, msgType string) []byte {
 	m := conv.UnsafeStrToBytes(msgType)
-	granter = sdk.AccAddress(address.MustLengthPrefix(granter.Bytes()))
-	grantee = sdk.AccAddress(address.MustLengthPrefix(grantee.Bytes()))
+	granter = address.MustLengthPrefix(granter)
+	grantee = address.MustLengthPrefix(grantee)
 
 	l := 1 + len(grantee) + len(granter) + len(m)
 	var key = make([]byte, l)
