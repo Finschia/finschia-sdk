@@ -184,7 +184,7 @@ func GetDelegationsKey(delAddr sdk.AccAddress) []byte {
 // VALUE: staking/UnbondingDelegation
 func GetUBDKey(delAddr sdk.AccAddress, valAddr sdk.ValAddress) []byte {
 	return append(
-		GetUBDsKey(delAddr),
+		GetUBDsKey(delAddr.Bytes()),
 		valAddr.Bytes()...)
 }
 
@@ -204,7 +204,7 @@ func GetUBDKeyFromValIndexKey(indexKey []byte) []byte {
 	valAddr := addrs[:v040auth.AddrLen]
 	delAddr := addrs[v040auth.AddrLen:]
 
-	return GetUBDKey(sdk.AccAddress(delAddr), sdk.ValAddress(valAddr))
+	return GetUBDKey(delAddr, valAddr)
 }
 
 // gets the prefix for all unbonding delegations from a delegator

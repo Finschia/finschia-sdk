@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"bytes"
 	"fmt"
 	"time"
 
@@ -393,12 +394,21 @@ func (k Keeper) HasMaxRedelegationEntries(ctx sdk.Context,
 
 // set a redelegation and associated index
 func (k Keeper) SetRedelegation(ctx sdk.Context, red types.Redelegation) {
-	delegatorAddress := sdk.AccAddress(red.DelegatorAddress)
+	delegatorAddress, err := sdk.AccAddressFromBech32(red.DelegatorAddress)
+	if err != nil {
+		panic(err)
+	}
 
 	store := ctx.KVStore(k.storeKey)
 	bz := types.MustMarshalRED(k.cdc, red)
-	valSrcAddr := sdk.ValAddress(red.ValidatorSrcAddress)
-	valDestAddr := sdk.ValAddress(red.ValidatorDstAddress)
+	valSrcAddr, err := sdk.ValAddressFromBech32(red.ValidatorSrcAddress)
+	if err != nil {
+		panic(err)
+	}
+	valDestAddr, err := sdk.ValAddressFromBech32(red.ValidatorDstAddress)
+	if err != nil {
+		panic(err)
+	}
 	key := types.GetREDKey(delegatorAddress, valSrcAddr, valDestAddr)
 	store.Set(key, bz)
 	store.Set(types.GetREDByValSrcIndexKey(delegatorAddress, valSrcAddr, valDestAddr), []byte{})
@@ -754,7 +764,10 @@ func (k Keeper) CompleteUnbonding(ctx sdk.Context, delAddr sdk.AccAddress, valAd
 	balances := sdk.NewCoins()
 	ctxTime := ctx.BlockHeader().Time
 
-	delegatorAddress := sdk.AccAddress(ubd.DelegatorAddress)
+	delegatorAddress, err := sdk.AccAddressFromBech32(ubd.DelegatorAddress)
+	if err != nil {
+		return nil, err
+	}
 
 	// loop through all the entries and complete unbonding mature entries
 	for i := 0; i < len(ubd.Entries); i++ {
@@ -791,7 +804,7 @@ func (k Keeper) CompleteUnbonding(ctx sdk.Context, delAddr sdk.AccAddress, valAd
 func (k Keeper) BeginRedelegation(
 	ctx sdk.Context, delAddr sdk.AccAddress, valSrcAddr, valDstAddr sdk.ValAddress, sharesAmount sdk.Dec,
 ) (completionTime time.Time, err error) {
-	if valSrcAddr.Equals(valDstAddr) {
+	if bytes.Equal(valSrcAddr, valDstAddr) {
 		return time.Time{}, types.ErrSelfRedelegation
 	}
 
