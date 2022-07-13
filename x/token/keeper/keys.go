@@ -55,7 +55,7 @@ func splitBalanceKey(key []byte) (contractID string, address sdk.AccAddress) {
 	contractID = string(key[begin:end])
 
 	begin = end
-	address = sdk.AccAddress(key[begin:])
+	address = key[begin:]
 
 	return
 }
@@ -143,7 +143,7 @@ func splitGrantKey(key []byte) (contractID string, grantee sdk.AccAddress, permi
 
 	begin = end + 1
 	end = begin + int(key[begin-1])
-	grantee = sdk.AccAddress(key[begin:end])
+	grantee = key[begin:end]
 
 	begin = end
 	permission = token.Permission(key[begin])
@@ -199,10 +199,10 @@ func splitAuthorizationKey(key []byte) (contractID string, operator, holder sdk.
 
 	begin = end + 1
 	end = begin + int(key[begin-1])
-	operator = sdk.AccAddress(key[begin:end])
+	operator = key[begin:end]
 
 	begin = end
-	holder = sdk.AccAddress(key[begin:])
+	holder = key[begin:]
 
 	return
 }
