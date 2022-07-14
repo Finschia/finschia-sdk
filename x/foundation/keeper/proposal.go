@@ -20,9 +20,13 @@ func (k Keeper) handleUpdateFoundationParamsProposal(ctx sdk.Context, p *foundat
 		k.Cleanup(ctx)
 	}
 
-	return ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateFoundationParams{
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateFoundationParams{
 		Params: params,
-	})
+	}); err != nil {
+		panic(err)
+	}
+
+	return nil
 }
 
 // handleUpdateValidatorAuthsProposal is a handler for update validator auths proposal
@@ -95,9 +99,7 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata str
 		return 0, err
 	}
 
-	if err := k.setProposal(ctx, proposal); err != nil {
-		return 0, err
-	}
+	k.setProposal(ctx, proposal)
 	k.addProposalToVPEndQueue(ctx, proposal)
 
 	return id, nil
@@ -209,9 +211,7 @@ func (k Keeper) UpdateTallyOfVPEndProposals(ctx sdk.Context) {
 			panic(err)
 		}
 
-		if err := k.setProposal(ctx, proposal); err != nil {
-			panic(err)
-		}
+		k.setProposal(ctx, proposal)
 
 		return false
 	})
@@ -226,23 +226,17 @@ func (k Keeper) GetProposal(ctx sdk.Context, id uint64) (*foundation.Proposal, e
 	}
 
 	var proposal foundation.Proposal
-	if err := k.cdc.Unmarshal(bz, &proposal); err != nil {
-		return nil, err
-	}
+	k.cdc.MustUnmarshal(bz, &proposal)
+
 	return &proposal, nil
 }
 
-func (k Keeper) setProposal(ctx sdk.Context, proposal foundation.Proposal) error {
-	bz, err := k.cdc.Marshal(&proposal)
-	if err != nil {
-		return err
-	}
-
+func (k Keeper) setProposal(ctx sdk.Context, proposal foundation.Proposal) {
 	store := ctx.KVStore(k.storeKey)
 	key := proposalKey(proposal.Id)
-	store.Set(key, bz)
 
-	return nil
+	bz := k.cdc.MustMarshal(&proposal)
+	store.Set(key, bz)
 }
 
 func (k Keeper) deleteProposal(ctx sdk.Context, proposalID uint64) {

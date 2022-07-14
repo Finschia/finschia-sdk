@@ -30,14 +30,15 @@ func (k Keeper) Vote(ctx sdk.Context, vote foundation.Vote) error {
 	}
 
 	vote.SubmitTime = ctx.BlockTime()
+	k.setVote(ctx, vote)
 
-	if err := k.setVote(ctx, vote); err != nil {
-		return err
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventVote{
+		Vote: vote,
+	}); err != nil {
+		panic(err)
 	}
 
-	return ctx.EventManager().EmitTypedEvent(&foundation.EventVote{
-		Vote: vote,
-	})
+	return nil
 }
 
 func (k Keeper) hasVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress) bool {
@@ -55,23 +56,17 @@ func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress
 	}
 
 	var vote foundation.Vote
-	if err := k.cdc.Unmarshal(bz, &vote); err != nil {
-		return nil, err
-	}
+	k.cdc.MustUnmarshal(bz, &vote)
+
 	return &vote, nil
 }
 
-func (k Keeper) setVote(ctx sdk.Context, vote foundation.Vote) error {
-	bz, err := k.cdc.Marshal(&vote)
-	if err != nil {
-		return err
-	}
-
+func (k Keeper) setVote(ctx sdk.Context, vote foundation.Vote) {
 	store := ctx.KVStore(k.storeKey)
 	key := voteKey(vote.ProposalId, sdk.AccAddress(vote.Voter))
-	store.Set(key, bz)
 
-	return nil
+	bz := k.cdc.MustMarshal(&vote)
+	store.Set(key, bz)
 }
 
 func (k Keeper) iterateVotes(ctx sdk.Context, proposalID uint64, fn func(vote foundation.Vote) (stop bool)) {
