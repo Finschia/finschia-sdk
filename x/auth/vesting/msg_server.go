@@ -84,7 +84,7 @@ func (s msgServer) CreateVestingAccount(goCtx context.Context, msg *types.MsgCre
 		}
 	}()
 
-	err := bk.SendCoins(ctx, from, to, msg.Amount)
+	err = bk.SendCoins(ctx, from, to, msg.Amount)
 	if err != nil {
 		return nil, err
 	}
