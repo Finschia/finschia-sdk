@@ -49,15 +49,14 @@ func (s *IntegrationTestSuite) TestNewProposalCmdUpdateFoundationParams() {
 
 		s.Run(tc.name, func() {
 			cmd := cli.NewProposalCmdUpdateFoundationParams()
-			clientCtx := val.ClientCtx
 			flags.AddTxFlagsToCmd(cmd)
 
-			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
 				s.Require().NoError(err)
-				s.Require().NoError(s.cfg.Codec.UnmarshalJSON(out.Bytes(), tc.respType), out)
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), tc.respType), out)
 
 				txResp := tc.respType.(*sdk.TxResponse)
 				s.Require().Equal(tc.expectedCode, txResp.Code)
@@ -137,15 +136,14 @@ func (s *IntegrationTestSuite) TestNewProposalCmdUpdateValidatorAuths() {
 
 		s.Run(tc.name, func() {
 			cmd := cli.NewProposalCmdUpdateValidatorAuths()
-			clientCtx := val.ClientCtx
 			flags.AddTxFlagsToCmd(cmd)
 
-			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
 			if tc.expectErr {
 				s.Require().Error(err)
 			} else {
 				s.Require().NoError(err)
-				s.Require().NoError(s.cfg.Codec.UnmarshalJSON(out.Bytes(), tc.respType), out)
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), tc.respType), out)
 
 				txResp := tc.respType.(*sdk.TxResponse)
 				s.Require().Equal(tc.expectedCode, txResp.Code)
@@ -261,7 +259,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
@@ -317,7 +315,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
@@ -333,7 +331,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 	}
 
 	doMarshal := func(policy foundation.DecisionPolicy) string {
-		bz, err := s.cfg.Codec.MarshalInterfaceJSON(policy)
+		bz, err := val.ClientCtx.Codec.MarshalInterfaceJSON(policy)
 		s.Require().NoError(err)
 		return string(bz)
 	}
@@ -387,7 +385,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
@@ -454,7 +452,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
@@ -510,7 +508,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
@@ -576,7 +574,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
@@ -631,7 +629,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
@@ -682,7 +680,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
@@ -698,7 +696,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 	}
 
 	doMarshal := func(authorization foundation.Authorization) string {
-		bz, err := s.cfg.Codec.MarshalInterfaceJSON(authorization)
+		bz, err := val.ClientCtx.Codec.MarshalInterfaceJSON(authorization)
 		s.Require().NoError(err)
 		return string(bz)
 	}
@@ -745,7 +743,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
@@ -803,7 +801,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 			s.Require().NoError(err)
 
 			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
