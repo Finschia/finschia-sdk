@@ -422,7 +422,10 @@ func (k Keeper) UnbondAllMatureValidators(ctx sdk.Context) {
 			k.cdc.MustUnmarshal(unbondingValIterator.Value(), &addrs)
 
 			for _, valAddr := range addrs.Addresses {
-				addr := sdk.ValAddress(valAddr)
+				addr, err := sdk.ValAddressFromBech32(valAddr)
+				if err != nil {
+					panic(err)
+				}
 				val, found := k.GetValidator(ctx, addr)
 				if !found {
 					panic("validator in the unbonding queue was not found")
