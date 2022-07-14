@@ -48,7 +48,7 @@ func querySigningInfo(ctx sdk.Context, req abci.RequestQuery, k Keeper, legacyQu
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	signingInfo, found := k.GetValidatorSigningInfo(ctx, sdk.ConsAddress(params.ConsAddress))
+	signingInfo, found := k.GetValidatorSigningInfo(ctx, sdk.ConsAddress(params.ConsAddress)) // XXX Is this correct? Should use `sdk.ConsAddressFromBech32`?
 	if !found {
 		return nil, sdkerrors.Wrap(types.ErrNoSigningInfoFound, params.ConsAddress)
 	}
