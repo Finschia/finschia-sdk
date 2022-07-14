@@ -462,21 +462,25 @@ func (s msgServer) Burn(c context.Context, req *collection.MsgBurn) (*collection
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	amount, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount)
+	burnt, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount)
 	if err != nil {
 		return nil, err
 	}
 
+	// legacy: emit events against the original request.
 	event := collection.EventBurned{
 		ContractId: req.ContractId,
 		Operator:   req.From,
 		From:       req.From,
-		Amount:     amount,
+		Amount:     req.Amount,
 	}
 	if e := collection.NewEventBurnFT(event); e != nil {
 		ctx.EventManager().EmitEvent(*e)
 	}
 	ctx.EventManager().EmitEvents(collection.NewEventBurnNFT(event))
+
+	// emit events against all burnt tokens.
+	event.Amount = burnt
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -494,21 +498,25 @@ func (s msgServer) OperatorBurn(c context.Context, req *collection.MsgOperatorBu
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	amount, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount)
+	burnt, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount)
 	if err != nil {
 		return nil, err
 	}
 
+	// legacy: emit events against the original request.
 	event := collection.EventBurned{
 		ContractId: req.ContractId,
 		Operator:   req.Operator,
 		From:       req.From,
-		Amount:     amount,
+		Amount:     req.Amount,
 	}
 	if e := collection.NewEventBurnFTFrom(event); e != nil {
 		ctx.EventManager().EmitEvent(*e)
 	}
 	ctx.EventManager().EmitEvents(collection.NewEventBurnNFTFrom(event))
+
+	// emit events against all burnt tokens.
+	event.Amount = burnt
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -522,7 +530,7 @@ func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collec
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	amount, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount)
+	burnt, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount)
 	if err != nil {
 		return nil, err
 	}
@@ -531,7 +539,7 @@ func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collec
 		ContractId: req.ContractId,
 		Operator:   req.From,
 		From:       req.From,
-		Amount:     amount,
+		Amount:     burnt,
 	}
 	if e := collection.NewEventBurnFT(event); e != nil {
 		ctx.EventManager().EmitEvent(*e)
@@ -553,7 +561,7 @@ func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) 
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	amount, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount)
+	burnt, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), req.Amount)
 	if err != nil {
 		return nil, err
 	}
@@ -562,7 +570,7 @@ func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) 
 		ContractId: req.ContractId,
 		Operator:   req.Proxy,
 		From:       req.From,
-		Amount:     amount,
+		Amount:     burnt,
 	}
 	if e := collection.NewEventBurnFTFrom(event); e != nil {
 		ctx.EventManager().EmitEvent(*e)
@@ -580,23 +588,27 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	amount := make([]collection.Coin, 0, len(req.TokenIds))
+	coins := make([]collection.Coin, 0, len(req.TokenIds))
 	for _, id := range req.TokenIds {
-		amount = append(amount, collection.NewCoin(id, sdk.OneInt()))
+		coins = append(coins, collection.NewCoin(id, sdk.OneInt()))
 	}
 
-	amount, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), amount)
+	burnt, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), coins)
 	if err != nil {
 		return nil, err
 	}
 
+	// legacy: emit events against the original request.
 	event := collection.EventBurned{
 		ContractId: req.ContractId,
 		Operator:   req.From,
 		From:       req.From,
-		Amount:     amount,
+		Amount:     coins,
 	}
 	ctx.EventManager().EmitEvents(collection.NewEventBurnNFT(event))
+
+	// emit events against all burnt tokens.
+	event.Amount = burnt
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -614,23 +626,27 @@ func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	amount := make([]collection.Coin, 0, len(req.TokenIds))
+	coins := make([]collection.Coin, 0, len(req.TokenIds))
 	for _, id := range req.TokenIds {
-		amount = append(amount, collection.NewCoin(id, sdk.OneInt()))
+		coins = append(coins, collection.NewCoin(id, sdk.OneInt()))
 	}
 
-	amount, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), amount)
+	burnt, err := s.keeper.BurnCoins(ctx, req.ContractId, sdk.AccAddress(req.From), coins)
 	if err != nil {
 		return nil, err
 	}
 
+	// legacy: emit events against the original request.
 	event := collection.EventBurned{
 		ContractId: req.ContractId,
 		Operator:   req.Proxy,
 		From:       req.From,
-		Amount:     amount,
+		Amount:     coins,
 	}
 	ctx.EventManager().EmitEvents(collection.NewEventBurnNFTFrom(event))
+
+	// emit events against all burnt tokens.
+	event.Amount = burnt
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
