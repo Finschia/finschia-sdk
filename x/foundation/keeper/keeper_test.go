@@ -11,6 +11,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/keeper"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
@@ -83,6 +84,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	holders := []sdk.AccAddress{
 		s.stranger,
 		s.app.AccountKeeper.GetModuleAccount(s.ctx, foundation.TreasuryName).GetAddress(),
+		s.app.AccountKeeper.GetModuleAccount(s.ctx, authtypes.FeeCollectorName).GetAddress(),
 	}
 	for _, holder := range holders {
 		amount := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance))
