@@ -17,18 +17,6 @@ type Store interface {
 	CacheWrapper
 }
 
-type Cache interface {
-	Set(key, value []byte)
-	Has(key []byte) bool
-	Get(dst, key []byte) []byte
-	Del(key []byte)
-	Stats() (hits, misses, entries, bytes uint64)
-}
-
-type CacheManager interface {
-	GetCache() Cache
-}
-
 // something that can persist to disk
 type Committer interface {
 	Commit() CommitID
@@ -200,10 +188,6 @@ type CommitMultiStore interface {
 	// SetInitialVersion sets the initial version of the IAVL tree. It is used when
 	// starting a new chain at an arbitrary height.
 	SetInitialVersion(version int64) error
-
-	// SetIAVLCacheManager sets the CacheManager that is holding nodedb cache of IAVL tree
-	// If a cacheManager is not set, then IAVL tree does not use cache
-	SetIAVLCacheManager(cacheManager CacheManager)
 
 	// SetIAVLCacheSize sets the cache size of the IAVL tree.
 	SetIAVLCacheSize(size int)
