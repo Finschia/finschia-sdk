@@ -232,9 +232,9 @@ func TestSimulateMsgBeginRedelegate(t *testing.T) {
 
 	// setup accounts[2] as delegator
 	delegator := accounts[2]
-	delegation := types.NewDelegation(delegator.Address, validator0.GetOperator(), issuedShares)
+	delegation := types.NewDelegation(delegator.Address, validator1.GetOperator(), issuedShares)
 	app.StakingKeeper.SetDelegation(ctx, delegation)
-	app.DistrKeeper.SetDelegatorStartingInfo(ctx, validator0.GetOperator(), delegator.Address, distrtypes.NewDelegatorStartingInfo(2, sdk.OneDec(), 200))
+	app.DistrKeeper.SetDelegatorStartingInfo(ctx, validator1.GetOperator(), delegator.Address, distrtypes.NewDelegatorStartingInfo(2, sdk.OneDec(), 200))
 
 	setupValidatorRewards(app, ctx, validator0.GetOperator())
 	setupValidatorRewards(app, ctx, validator1.GetOperator())
