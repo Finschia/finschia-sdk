@@ -62,7 +62,8 @@ func (e *Equivocation) ValidateBasic() error {
 // GetConsensusAddress returns the validator's consensus address at time of the
 // Equivocation infraction.
 func (e Equivocation) GetConsensusAddress() sdk.ConsAddress {
-	return sdk.ConsAddress(e.ConsensusAddress)
+	addr, _ := sdk.ConsAddressFromBech32(e.ConsensusAddress)
+	return addr
 }
 
 // GetHeight returns the height at time of the Equivocation infraction.
