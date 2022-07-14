@@ -11,6 +11,8 @@ import (
 )
 
 var (
+	// These come from https://github.com/line/cosmwasm/tree/main/contracts.
+	// Hashes of them are in testdata directory.
 	calleeContract     = mustLoad("./testdata/dynamic_callee_contract.wasm")
 	callerContract     = mustLoad("./testdata/dynamic_caller_contract.wasm")
 	numberContract     = mustLoad("./testdata/number.wasm")
@@ -87,12 +89,10 @@ func TestDynamicPingPongWorks(t *testing.T) {
 	assert.Equal(t, len(res.Events), 3)
 	assert.Equal(t, "wasm", res.Events[0].Type)
 	assert.Equal(t, len(res.Events[0].Attributes), 6)
-	assertAttribute(t, "contract_address", "link10pyejy66429refv3g35g2t7am0was7yaducgya", res.Events[0].Attributes[0])
 	assertAttribute(t, "returned_pong", "101", res.Events[0].Attributes[1])
 	assertAttribute(t, "returned_pong_with_struct", "hello world 101", res.Events[0].Attributes[2])
 	assertAttribute(t, "returned_pong_with_tuple", "(hello world, 42)", res.Events[0].Attributes[3])
 	assertAttribute(t, "returned_pong_with_tuple_takes_2_args", "(hello world, 42)", res.Events[0].Attributes[4])
-	assertAttribute(t, "returned_contract_address", "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", res.Events[0].Attributes[5])
 }
 
 // This tests re-entrancy in dynamic call fails
@@ -251,7 +251,6 @@ func TestDynamicCallAndTraditionalQueryWork(t *testing.T) {
 	assert.Equal(t, len(res.Events), 3)
 	assert.Equal(t, "wasm", res.Events[0].Type)
 	assert.Equal(t, len(res.Events[0].Attributes), 3)
-	assertAttribute(t, "contract_address", "link10pyejy66429refv3g35g2t7am0was7yaducgya", res.Events[0].Attributes[0])
 	assertAttribute(t, "value_by_dynamic", "42", res.Events[0].Attributes[1])
 	assertAttribute(t, "value_by_query", "42", res.Events[0].Attributes[2])
 
