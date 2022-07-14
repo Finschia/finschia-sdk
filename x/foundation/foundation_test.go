@@ -45,35 +45,35 @@ func TestTallyResult(t *testing.T) {
 func TestThresholdDecisionPolicy(t *testing.T) {
 	config := foundation.DefaultConfig()
 
-	testCases := map[string]struct{
-		threshold sdk.Dec
-		votingPeriod time.Duration
+	testCases := map[string]struct {
+		threshold          sdk.Dec
+		votingPeriod       time.Duration
 		minExecutionPeriod time.Duration
-		validBasic bool
-		valid bool
+		validBasic         bool
+		valid              bool
 	}{
 		"valid policy": {
-			threshold: config.MinThreshold,
-			votingPeriod: time.Hour,
+			threshold:          config.MinThreshold,
+			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
-			validBasic: true,
-			valid: true,
+			validBasic:         true,
+			valid:              true,
 		},
 		"invalid policy (basic)": {
-			threshold: config.MinThreshold,
+			threshold:          config.MinThreshold,
 			minExecutionPeriod: config.MaxExecutionPeriod - time.Nanosecond,
 		},
 		"invalid policy": {
-			threshold: config.MinThreshold.Sub(sdk.SmallestDec()),
-			votingPeriod: time.Hour,
+			threshold:          config.MinThreshold.Sub(sdk.SmallestDec()),
+			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
-			validBasic: true,
+			validBasic:         true,
 		},
 		"invalid policy (windows)": {
-			threshold: config.MinThreshold,
-			votingPeriod: time.Hour,
+			threshold:          config.MinThreshold,
+			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour,
-			validBasic: true,
+			validBasic:         true,
 		},
 	}
 
@@ -81,7 +81,7 @@ func TestThresholdDecisionPolicy(t *testing.T) {
 		policy := foundation.ThresholdDecisionPolicy{
 			Threshold: tc.threshold,
 			Windows: &foundation.DecisionPolicyWindows{
-				VotingPeriod: tc.votingPeriod,
+				VotingPeriod:       tc.votingPeriod,
 				MinExecutionPeriod: tc.minExecutionPeriod,
 			},
 		}
@@ -115,47 +115,47 @@ func TestThresholdDecisionPolicyAllow(t *testing.T) {
 	require.NoError(t, policy.Validate(config))
 	require.Equal(t, time.Hour, policy.GetVotingPeriod())
 
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		sinceSubmission time.Duration
-		totalWeight sdk.Dec
-		tally foundation.TallyResult
-		valid bool
-		final bool
-		allow bool
+		totalWeight     sdk.Dec
+		tally           foundation.TallyResult
+		valid           bool
+		final           bool
+		allow           bool
 	}{
 		"allow": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			totalWeight: policy.Threshold,
-			tally: foundation.NewTallyResult(policy.Threshold, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
-			valid: true,
-			final: true,
-			allow: true,
+			totalWeight:     policy.Threshold,
+			tally:           foundation.NewTallyResult(policy.Threshold, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			valid:           true,
+			final:           true,
+			allow:           true,
 		},
 		"allow (member size < threshold)": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			totalWeight: config.MinThreshold,
-			tally: foundation.NewTallyResult(config.MinThreshold, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
-			valid: true,
-			final: true,
-			allow: true,
+			totalWeight:     config.MinThreshold,
+			tally:           foundation.NewTallyResult(config.MinThreshold, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			valid:           true,
+			final:           true,
+			allow:           true,
 		},
 		"not final": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			totalWeight: policy.Threshold,
-			tally: foundation.NewTallyResult(policy.Threshold.Sub(sdk.OneDec()), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
-			valid: true,
+			totalWeight:     policy.Threshold,
+			tally:           foundation.NewTallyResult(policy.Threshold.Sub(sdk.OneDec()), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			valid:           true,
 		},
 		"deny": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			totalWeight: policy.Threshold.Add(sdk.OneDec()),
-			tally: foundation.NewTallyResult(sdk.ZeroDec(), sdk.OneDec(), sdk.OneDec(), sdk.ZeroDec()),
-			valid: true,
-			final: true,
+			totalWeight:     policy.Threshold.Add(sdk.OneDec()),
+			tally:           foundation.NewTallyResult(sdk.ZeroDec(), sdk.OneDec(), sdk.OneDec(), sdk.ZeroDec()),
+			valid:           true,
+			final:           true,
 		},
 		"too early": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod - time.Nanosecond,
-			totalWeight: policy.Threshold,
-			tally: foundation.NewTallyResult(policy.Threshold, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			totalWeight:     policy.Threshold,
+			tally:           foundation.NewTallyResult(policy.Threshold, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
 		},
 	}
 
@@ -177,35 +177,35 @@ func TestThresholdDecisionPolicyAllow(t *testing.T) {
 func TestPercentageDecisionPolicy(t *testing.T) {
 	config := foundation.DefaultConfig()
 
-	testCases := map[string]struct{
-		percentage sdk.Dec
-		votingPeriod time.Duration
+	testCases := map[string]struct {
+		percentage         sdk.Dec
+		votingPeriod       time.Duration
 		minExecutionPeriod time.Duration
-		validBasic bool
-		valid bool
+		validBasic         bool
+		valid              bool
 	}{
 		"valid policy": {
-			percentage: config.MinPercentage,
-			votingPeriod: time.Hour,
+			percentage:         config.MinPercentage,
+			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
-			validBasic: true,
-			valid: true,
+			validBasic:         true,
+			valid:              true,
 		},
 		"invalid policy (basic)": {
-			percentage: config.MinPercentage,
+			percentage:         config.MinPercentage,
 			minExecutionPeriod: config.MaxExecutionPeriod - time.Nanosecond,
 		},
 		"invalid policy": {
-			percentage: config.MinPercentage.Sub(sdk.SmallestDec()),
-			votingPeriod: time.Hour,
+			percentage:         config.MinPercentage.Sub(sdk.SmallestDec()),
+			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
-			validBasic: true,
+			validBasic:         true,
 		},
 		"invalid policy (windows)": {
-			percentage: config.MinPercentage,
-			votingPeriod: time.Hour,
+			percentage:         config.MinPercentage,
+			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour,
-			validBasic: true,
+			validBasic:         true,
 		},
 	}
 
@@ -213,7 +213,7 @@ func TestPercentageDecisionPolicy(t *testing.T) {
 		policy := foundation.PercentageDecisionPolicy{
 			Percentage: tc.percentage,
 			Windows: &foundation.DecisionPolicyWindows{
-				VotingPeriod: tc.votingPeriod,
+				VotingPeriod:       tc.votingPeriod,
 				MinExecutionPeriod: tc.minExecutionPeriod,
 			},
 		}
@@ -248,47 +248,47 @@ func TestPercentageDecisionPolicyAllow(t *testing.T) {
 	require.Equal(t, time.Hour, policy.GetVotingPeriod())
 
 	totalWeight := sdk.NewDec(10)
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		sinceSubmission time.Duration
-		tally foundation.TallyResult
-		valid bool
-		final bool
-		allow bool
+		tally           foundation.TallyResult
+		valid           bool
+		final           bool
+		allow           bool
 	}{
 		"allow": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			tally: foundation.NewTallyResult(sdk.NewDec(8), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
-			valid: true,
-			final: true,
-			allow: true,
+			tally:           foundation.NewTallyResult(sdk.NewDec(8), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			valid:           true,
+			final:           true,
+			allow:           true,
 		},
 		"allow (abstain)": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			tally: foundation.NewTallyResult(sdk.NewDec(4), sdk.NewDec(5), sdk.ZeroDec(), sdk.ZeroDec()),
-			valid: true,
-			final: true,
-			allow: true,
+			tally:           foundation.NewTallyResult(sdk.NewDec(4), sdk.NewDec(5), sdk.ZeroDec(), sdk.ZeroDec()),
+			valid:           true,
+			final:           true,
+			allow:           true,
 		},
 		"not final": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			tally: foundation.NewTallyResult(sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(1), sdk.ZeroDec()),
-			valid: true,
+			tally:           foundation.NewTallyResult(sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(1), sdk.ZeroDec()),
+			valid:           true,
 		},
 		"deny": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			tally: foundation.NewTallyResult(sdk.ZeroDec(), sdk.ZeroDec(), sdk.NewDec(3), sdk.ZeroDec()),
-			valid: true,
-			final: true,
+			tally:           foundation.NewTallyResult(sdk.ZeroDec(), sdk.ZeroDec(), sdk.NewDec(3), sdk.ZeroDec()),
+			valid:           true,
+			final:           true,
 		},
 		"deny (all abstain)": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			tally: foundation.NewTallyResult(sdk.ZeroDec(), sdk.NewDec(10), sdk.ZeroDec(), sdk.ZeroDec()),
-			valid: true,
-			final: true,
+			tally:           foundation.NewTallyResult(sdk.ZeroDec(), sdk.NewDec(10), sdk.ZeroDec(), sdk.ZeroDec()),
+			valid:           true,
+			final:           true,
 		},
 		"too early": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod - time.Nanosecond,
-			tally: foundation.NewTallyResult(sdk.NewDec(8), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			tally:           foundation.NewTallyResult(sdk.NewDec(8), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
 		},
 	}
 

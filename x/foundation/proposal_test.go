@@ -13,15 +13,15 @@ import (
 func TestUpdateFoundationParamsProposal(t *testing.T) {
 	testCases := map[string]struct {
 		params *foundation.Params
-		valid   bool
+		valid  bool
 	}{
 		"valid proposal": {
 			params: foundation.DefaultParams(),
-			valid:   true,
+			valid:  true,
 		},
 		"attempt to enable foundation": {
 			params: &foundation.Params{
-				Enabled: true,
+				Enabled:       true,
 				FoundationTax: sdk.ZeroDec(),
 			},
 		},
@@ -64,7 +64,7 @@ func TestUpdateValidatorAuthsProposal(t *testing.T) {
 				OperatorAddress: addrs[0].ToValAddress().String(),
 				CreationAllowed: true,
 			}},
-			valid:   true,
+			valid: true,
 		},
 		"empty auths": {
 			updates: []foundation.ValidatorAuth{},
