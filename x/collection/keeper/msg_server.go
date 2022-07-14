@@ -400,6 +400,13 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 		panic(err)
 	}
 
+	for _, permission := range []collection.Permission{
+		collection.PermissionMint,
+		collection.PermissionBurn,
+	} {
+		s.keeper.Grant(ctx, req.ContractId, "", sdk.AccAddress(req.Owner), permission)
+	}
+
 	return &collection.MsgIssueNFTResponse{Id: *id}, nil
 }
 
