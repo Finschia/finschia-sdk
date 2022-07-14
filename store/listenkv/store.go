@@ -1,8 +1,9 @@
 package listenkv
 
 import (
-	"github.com/line/lbm-sdk/store/types"
 	"io"
+
+	"github.com/line/lbm-sdk/store/types"
 )
 
 var _ types.KVStore = &Store{}

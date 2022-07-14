@@ -2,8 +2,9 @@ package cachemulti
 
 import (
 	"fmt"
-	tmdb "github.com/line/tm-db/v2"
 	"io"
+
+	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/lbm-sdk/store/dbadapter"
