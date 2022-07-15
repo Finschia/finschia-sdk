@@ -4,21 +4,6 @@
 
 ## Table of Contents
 
-- [cosmos/crypto/ed25519/keys.proto](#cosmos/crypto/ed25519/keys.proto)
-    - [PrivKey](#cosmos.crypto.ed25519.PrivKey)
-    - [PubKey](#cosmos.crypto.ed25519.PubKey)
-  
-- [cosmos/crypto/multisig/keys.proto](#cosmos/crypto/multisig/keys.proto)
-    - [LegacyAminoPubKey](#cosmos.crypto.multisig.LegacyAminoPubKey)
-  
-- [cosmos/crypto/secp256k1/keys.proto](#cosmos/crypto/secp256k1/keys.proto)
-    - [PrivKey](#cosmos.crypto.secp256k1.PrivKey)
-    - [PubKey](#cosmos.crypto.secp256k1.PubKey)
-  
-- [cosmos/crypto/secp256r1/keys.proto](#cosmos/crypto/secp256r1/keys.proto)
-    - [PrivKey](#cosmos.crypto.secp256r1.PrivKey)
-    - [PubKey](#cosmos.crypto.secp256r1.PubKey)
-  
 - [cosmos/auth/v1beta1/auth.proto](#cosmos/auth/v1beta1/auth.proto)
     - [BaseAccount](#cosmos.auth.v1beta1.BaseAccount)
     - [ModuleAccount](#cosmos.auth.v1beta1.ModuleAccount)
@@ -212,9 +197,24 @@
   
     - [Msg](#cosmos.crisis.v1beta1.Msg)
   
+- [cosmos/crypto/ed25519/keys.proto](#cosmos/crypto/ed25519/keys.proto)
+    - [PrivKey](#cosmos.crypto.ed25519.PrivKey)
+    - [PubKey](#cosmos.crypto.ed25519.PubKey)
+  
+- [cosmos/crypto/multisig/keys.proto](#cosmos/crypto/multisig/keys.proto)
+    - [LegacyAminoPubKey](#cosmos.crypto.multisig.LegacyAminoPubKey)
+  
 - [cosmos/crypto/multisig/v1beta1/multisig.proto](#cosmos/crypto/multisig/v1beta1/multisig.proto)
     - [CompactBitArray](#cosmos.crypto.multisig.v1beta1.CompactBitArray)
     - [MultiSignature](#cosmos.crypto.multisig.v1beta1.MultiSignature)
+  
+- [cosmos/crypto/secp256k1/keys.proto](#cosmos/crypto/secp256k1/keys.proto)
+    - [PrivKey](#cosmos.crypto.secp256k1.PrivKey)
+    - [PubKey](#cosmos.crypto.secp256k1.PubKey)
+  
+- [cosmos/crypto/secp256r1/keys.proto](#cosmos/crypto/secp256r1/keys.proto)
+    - [PrivKey](#cosmos.crypto.secp256r1.PrivKey)
+    - [PubKey](#cosmos.crypto.secp256r1.PubKey)
   
 - [cosmos/distribution/v1beta1/distribution.proto](#cosmos/distribution/v1beta1/distribution.proto)
     - [CommunityPoolSpendProposal](#cosmos.distribution.v1beta1.CommunityPoolSpendProposal)
@@ -1087,187 +1087,6 @@
 
 
 
-<a name="cosmos/crypto/ed25519/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmos/crypto/ed25519/keys.proto
-
-
-
-<a name="cosmos.crypto.ed25519.PrivKey"></a>
-
-### PrivKey
-Deprecated: PrivKey defines a ed25519 private key.
-NOTE: ed25519 keys must not be used in SDK apps except in a tendermint validator context.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="cosmos.crypto.ed25519.PubKey"></a>
-
-### PubKey
-PubKey is an ed25519 public key for handling Tendermint keys in SDK.
-It's needed for Any serialization and SDK compatibility.
-It must not be used in a non Tendermint key context because it doesn't implement
-ADR-28. Nevertheless, you will like to use ed25519 in app user level
-then you must create a new proto message and follow ADR-28 for Address construction.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="cosmos/crypto/multisig/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmos/crypto/multisig/keys.proto
-
-
-
-<a name="cosmos.crypto.multisig.LegacyAminoPubKey"></a>
-
-### LegacyAminoPubKey
-LegacyAminoPubKey specifies a public key type
-which nests multiple public keys and a threshold,
-it uses legacy amino address rules.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `threshold` | [uint32](#uint32) |  |  |
-| `public_keys` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="cosmos/crypto/secp256k1/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmos/crypto/secp256k1/keys.proto
-
-
-
-<a name="cosmos.crypto.secp256k1.PrivKey"></a>
-
-### PrivKey
-PrivKey defines a secp256k1 private key.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="cosmos.crypto.secp256k1.PubKey"></a>
-
-### PubKey
-PubKey defines a secp256k1 public key
-Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
-if the y-coordinate is the lexicographically largest of the two associated with
-the x-coordinate. Otherwise the first byte is a 0x03.
-This prefix is followed with the x-coordinate.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="cosmos/crypto/secp256r1/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmos/crypto/secp256r1/keys.proto
-Since: cosmos-sdk 0.43
-
-
-<a name="cosmos.crypto.secp256r1.PrivKey"></a>
-
-### PrivKey
-PrivKey defines a secp256r1 ECDSA private key.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `secret` | [bytes](#bytes) |  | secret number serialized using big-endian encoding |
-
-
-
-
-
-
-<a name="cosmos.crypto.secp256r1.PubKey"></a>
-
-### PubKey
-PubKey defines a secp256r1 ECDSA public key.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  | Point on secp256r1 curve in a compressed representation as specified in section 4.3.6 of ANSI X9.62: https://webstore.ansi.org/standards/ascx9/ansix9621998 |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
 <a name="cosmos/auth/v1beta1/auth.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1286,10 +1105,7 @@ type for additional functionality (e.g. vesting).
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
-| `ed25519_pub_key` | [cosmos.crypto.ed25519.PubKey](#cosmos.crypto.ed25519.PubKey) |  |  |
-| `secp256k1_pub_key` | [cosmos.crypto.secp256k1.PubKey](#cosmos.crypto.secp256k1.PubKey) |  |  |
-| `secp256r1_pub_key` | [cosmos.crypto.secp256r1.PubKey](#cosmos.crypto.secp256r1.PubKey) |  |  |
-| `multisig_pub_key` | [cosmos.crypto.multisig.LegacyAminoPubKey](#cosmos.crypto.multisig.LegacyAminoPubKey) |  |  |
+| `pub_key` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 | `account_number` | [uint64](#uint64) |  |  |
 | `sequence` | [uint64](#uint64) |  |  |
 
@@ -3739,6 +3555,91 @@ Msg defines the bank Msg service.
 
 
 
+<a name="cosmos/crypto/ed25519/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmos/crypto/ed25519/keys.proto
+
+
+
+<a name="cosmos.crypto.ed25519.PrivKey"></a>
+
+### PrivKey
+Deprecated: PrivKey defines a ed25519 private key.
+NOTE: ed25519 keys must not be used in SDK apps except in a tendermint validator context.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="cosmos.crypto.ed25519.PubKey"></a>
+
+### PubKey
+PubKey is an ed25519 public key for handling Tendermint keys in SDK.
+It's needed for Any serialization and SDK compatibility.
+It must not be used in a non Tendermint key context because it doesn't implement
+ADR-28. Nevertheless, you will like to use ed25519 in app user level
+then you must create a new proto message and follow ADR-28 for Address construction.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmos/crypto/multisig/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmos/crypto/multisig/keys.proto
+
+
+
+<a name="cosmos.crypto.multisig.LegacyAminoPubKey"></a>
+
+### LegacyAminoPubKey
+LegacyAminoPubKey specifies a public key type
+which nests multiple public keys and a threshold,
+it uses legacy amino address rules.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `threshold` | [uint32](#uint32) |  |  |
+| `public_keys` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="cosmos/crypto/multisig/v1beta1/multisig.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -3776,6 +3677,102 @@ signed and with which modes.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `signatures` | [bytes](#bytes) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmos/crypto/secp256k1/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmos/crypto/secp256k1/keys.proto
+
+
+
+<a name="cosmos.crypto.secp256k1.PrivKey"></a>
+
+### PrivKey
+PrivKey defines a secp256k1 private key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="cosmos.crypto.secp256k1.PubKey"></a>
+
+### PubKey
+PubKey defines a secp256k1 public key
+Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
+if the y-coordinate is the lexicographically largest of the two associated with
+the x-coordinate. Otherwise the first byte is a 0x03.
+This prefix is followed with the x-coordinate.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmos/crypto/secp256r1/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmos/crypto/secp256r1/keys.proto
+Since: cosmos-sdk 0.43
+
+
+<a name="cosmos.crypto.secp256r1.PrivKey"></a>
+
+### PrivKey
+PrivKey defines a secp256r1 ECDSA private key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `secret` | [bytes](#bytes) |  | secret number serialized using big-endian encoding |
+
+
+
+
+
+
+<a name="cosmos.crypto.secp256r1.PubKey"></a>
+
+### PubKey
+PubKey defines a secp256r1 ECDSA public key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  | Point on secp256r1 curve in a compressed representation as specified in section 4.3.6 of ANSI X9.62: https://webstore.ansi.org/standards/ascx9/ansix9621998 |
 
 
 
