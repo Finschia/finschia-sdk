@@ -516,35 +516,25 @@ func (s queryServer) TokenTypes(c context.Context, req *collection.QueryTokenTyp
 	return &collection.QueryTokenTypesResponse{TokenTypes: tokenTypes, Pagination: pageRes}, nil
 }
 
-func (s queryServer) Token(c context.Context, req *collection.QueryTokenRequest) (*collection.QueryTokenResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := collection.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	var legacyToken collection.Token
-	if err := collection.ValidateFTID(req.TokenId); err != nil {
-		tokenID := req.TokenId
-		token, err := s.keeper.GetNFT(ctx, req.ContractId, tokenID)
+func (s queryServer) getToken(ctx sdk.Context, contractID string, tokenID string) (collection.Token, error) {
+	switch {
+	case collection.ValidateNFTID(tokenID) == nil:
+		token, err := s.keeper.GetNFT(ctx, contractID, tokenID)
 		if err != nil {
 			return nil, err
 		}
 
-		owner := s.keeper.GetRootOwner(ctx, req.ContractId, token.Id)
-		legacyToken = &collection.OwnerNFT{
-			ContractId: req.ContractId,
+		owner := s.keeper.GetRootOwner(ctx, contractID, token.Id)
+		return &collection.OwnerNFT{
+			ContractId: contractID,
 			TokenId:    token.Id,
 			Name:       token.Name,
 			Meta:       token.Meta,
 			Owner:      owner.String(),
-		}
-	} else {
-		classID := collection.SplitTokenID(req.TokenId)
-		class, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID)
+		}, nil
+	case collection.ValidateFTID(tokenID) == nil:
+		classID := collection.SplitTokenID(tokenID)
+		class, err := s.keeper.GetTokenClass(ctx, contractID, classID)
 		if err != nil {
 			return nil, err
 		}
@@ -554,14 +544,36 @@ func (s queryServer) Token(c context.Context, req *collection.QueryTokenRequest)
 			panic(sdkerrors.ErrInvalidType.Wrapf("not a class of fungible token: %s", classID))
 		}
 
-		legacyToken = &collection.FT{
-			ContractId: req.ContractId,
+		return &collection.FT{
+			ContractId: contractID,
 			TokenId:    ftClass.Id,
 			Name:       ftClass.Name,
 			Meta:       ftClass.Meta,
 			Decimals:   ftClass.Decimals,
 			Mintable:   ftClass.Mintable,
-		}
+		}, nil
+	default:
+		panic("cannot reach here: token must be ft or nft")
+	}
+}
+
+func (s queryServer) Token(c context.Context, req *collection.QueryTokenRequest) (*collection.QueryTokenResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if err := collection.ValidateTokenID(req.TokenId); err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	legacyToken, err := s.getToken(ctx, req.ContractId, req.TokenId)
+	if err != nil {
+		return nil, err
 	}
 
 	any, err := codectypes.NewAnyWithValue(legacyToken)
@@ -586,44 +598,8 @@ func (s queryServer) Tokens(c context.Context, req *collection.QueryTokensReques
 	tokenStore := prefix.NewStore(store, legacyTokenKeyPrefixByContractID(req.ContractId))
 	var tokens []codectypes.Any
 	pageRes, err := query.Paginate(tokenStore, req.Pagination, func(key []byte, value []byte) error {
-		id := string(key)
-		var legacyToken collection.Token
-		if err := collection.ValidateFTID(id); err != nil {
-			tokenID := id
-			token, err := s.keeper.GetNFT(ctx, req.ContractId, tokenID)
-			if err != nil {
-				panic(err)
-			}
-
-			owner := s.keeper.GetRootOwner(ctx, req.ContractId, token.Id)
-			legacyToken = &collection.OwnerNFT{
-				ContractId: req.ContractId,
-				TokenId:    token.Id,
-				Name:       token.Name,
-				Meta:       token.Meta,
-				Owner:      owner.String(),
-			}
-		} else {
-			classID := collection.SplitTokenID(id)
-			class, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID)
-			if err != nil {
-				panic(err)
-			}
-
-			ftClass, ok := class.(*collection.FTClass)
-			if !ok {
-				panic(sdkerrors.ErrInvalidType.Wrapf("not a class of fungible token: %s", classID))
-			}
-
-			legacyToken = &collection.FT{
-				ContractId: req.ContractId,
-				TokenId:    ftClass.Id,
-				Name:       ftClass.Name,
-				Meta:       ftClass.Meta,
-				Decimals:   ftClass.Decimals,
-				Mintable:   ftClass.Mintable,
-			}
-		}
+		tokenID := string(key)
+		legacyToken, err := s.getToken(ctx, req.ContractId, tokenID)
 
 		any, err := codectypes.NewAnyWithValue(legacyToken)
 		if err != nil {
