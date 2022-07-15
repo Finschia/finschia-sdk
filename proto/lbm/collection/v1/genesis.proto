@@ -20,11 +20,11 @@ message GenesisState {
   // next ids for token classes.
   repeated NextClassIDs next_class_ids = 3 [(gogoproto.nullable) = false];
 
-  // next ids for (non-fungible) tokens.
-  repeated ContractNextTokenIDs next_token_ids = 4 [(gogoproto.nullable) = false];
-
   // classes defines the metadata of the tokens.
-  repeated ContractClasses classes = 5 [(gogoproto.nullable) = false];
+  repeated ContractClasses classes = 4 [(gogoproto.nullable) = false];
+
+  // next ids for (non-fungible) tokens.
+  repeated ContractNextTokenIDs next_token_ids = 5 [(gogoproto.nullable) = false];
 
   // balances is an array containing the balances of all the accounts.
   repeated ContractBalances balances = 6 [(gogoproto.nullable) = false];
