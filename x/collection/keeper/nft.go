@@ -8,10 +8,6 @@ import (
 	"github.com/line/lbm-sdk/x/collection"
 )
 
-// const (
-// 	DescendantsLimit = 3
-// )
-
 func (k Keeper) hasNFT(ctx sdk.Context, contractID string, tokenID string) error {
 	store := ctx.KVStore(k.storeKey)
 	key := nftKey(contractID, tokenID)
@@ -77,13 +73,6 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 		return err
 	}
 
-	// update descendants data of the parents
-	// update := 1 + k.getDescendants(ctx, contractID, subject)
-	// root, err := k.updateDescendants(ctx, contractID, target, update)
-	// if err != nil {
-	// 	return err
-	// }
-
 	root := k.GetRoot(ctx, contractID, target)
 	if owner != k.getOwner(ctx, contractID, root) {
 		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, target)
@@ -120,13 +109,6 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 		return err
 	}
 
-	// update descendants data of the parents
-	// update := -(1 + k.getDescendants(ctx, contractID, subject))
-	// root, err := k.updateDescendants(ctx, contractID, *parent, update)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
 	if owner != k.GetRootOwner(ctx, contractID, subject) {
 		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, subject)
 	}
@@ -140,27 +122,6 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 
 	return nil
 }
-
-// func (k Keeper) updateDescendants(ctx sdk.Context, contractID string, tokenID string, update int32) (rootID *string, err error) {
-// 	limit := int32(DescendantsLimit)
-// 	root := tokenID
-// 	if err := k.iterateAncestors(ctx, contractID, tokenID, func(tokenID string) error {
-// 		prev := k.getDescendants(ctx, contractID, tokenID)
-// 		updated := prev + update
-// 		if updated > limit {
-// 			return sdkerrors.ErrInvalidRequest.Wrapf("the number of descendants exceeds the limit: %d", limit)
-// 		}
-
-// 		k.setDescendants(ctx, contractID, tokenID, updated)
-// 		root = tokenID
-
-// 		return nil
-// 	}); err != nil {
-// 		return nil, err
-// 	}
-
-// 	return &root, nil
-// }
 
 func (k Keeper) iterateAncestors(ctx sdk.Context, contractID string, tokenID string, fn func(tokenID string) error) error {
 	var err error
@@ -279,37 +240,6 @@ func (k Keeper) deleteChild(ctx sdk.Context, contractID string, tokenID, childID
 	key := childKey(contractID, tokenID, childID)
 	store.Delete(key)
 }
-
-// func (k Keeper) getDescendants(ctx sdk.Context, contractID string, tokenID string) int32 {
-// 	store := ctx.KVStore(k.storeKey)
-// 	key := descendantsKey(contractID, tokenID)
-// 	bz := store.Get(key)
-// 	if bz == nil {
-// 		return 0
-// 	}
-
-// 	var descendants gogotypes.Int32Value
-// 	if err := descendants.Unmarshal(bz); err != nil {
-// 		panic(err)
-// 	}
-// 	return descendants.Value
-// }
-
-// func (k Keeper) setDescendants(ctx sdk.Context, contractID string, tokenID string, descendants int32) {
-// 	store := ctx.KVStore(k.storeKey)
-// 	key := descendantsKey(contractID, tokenID)
-
-// 	if descendants == 0 {
-// 		store.Delete(key)
-// 	} else {
-// 		value := gogotypes.Int32Value{Value: descendants}
-// 		bz, err := value.Marshal()
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 		store.Set(key, bz)
-// 	}
-// }
 
 func (k Keeper) GetRoot(ctx sdk.Context, contractID string, tokenID string) string {
 	id := tokenID

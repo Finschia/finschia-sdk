@@ -19,7 +19,6 @@ var (
 	nftKeyPrefix     = []byte{0x22}
 	parentKeyPrefix  = []byte{0x23}
 	childKeyPrefix   = []byte{0x24}
-	// descendantsKeyPrefix = []byte{0x25}
 
 	authorizationKeyPrefix = []byte{0x30}
 	grantKeyPrefix         = []byte{0x31}
@@ -248,33 +247,6 @@ func splitChildKey(key []byte) (contractID string, tokenID, childID string) {
 
 	return
 }
-
-//-----------------------------------------------------------------------------
-// number of descendants
-// func descendantsKey(contractID string, tokenID string) []byte {
-// 	prefix := descendantsKeyPrefixByContractID(contractID)
-// 	key := make([]byte, len(prefix)+len(tokenID))
-
-// 	copy(key, prefix)
-// 	copy(key[len(prefix):], tokenID)
-
-// 	return key
-// }
-
-// func descendantsKeyPrefixByContractID(contractID string) []byte {
-// 	key := make([]byte, len(descendantsKeyPrefix)+1+len(contractID))
-
-// 	begin := 0
-// 	copy(key, descendantsKeyPrefix)
-
-// 	begin += len(descendantsKeyPrefix)
-// 	key[begin] = byte(len(contractID))
-
-// 	begin++
-// 	copy(key[begin:], contractID)
-
-// 	return key
-// }
 
 //-----------------------------------------------------------------------------
 func contractKey(contractID string) []byte {
