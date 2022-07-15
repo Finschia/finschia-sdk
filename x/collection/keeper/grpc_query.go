@@ -638,32 +638,6 @@ func (s queryServer) NFT(c context.Context, req *collection.QueryNFTRequest) (*c
 	return &collection.QueryNFTResponse{Token: *token}, nil
 }
 
-// func (s queryServer) NFTs(c context.Context, req *collection.QueryNFTsRequest) (*collection.QueryNFTsResponse, error) {
-// 	if req == nil {
-// 		return nil, status.Error(codes.InvalidArgument, "empty request")
-// 	}
-
-// 	if err := collection.ValidateContractID(req.ContractId); err != nil {
-// 		return nil, err
-// 	}
-
-// 	ctx := sdk.UnwrapSDKContext(c)
-// 	store := ctx.KVStore(s.keeper.storeKey)
-// 	nftStore := prefix.NewStore(store, nftKeyPrefix)
-// 	var tokens []collection.NFT
-// 	pageRes, err := query.Paginate(nftStore, req.Pagination, func(key []byte, value []byte) error {
-// 		var token collection.NFT
-// 		s.keeper.cdc.MustUnmarshal(value, &token)
-// 		tokens = append(tokens, token)
-// 		return nil
-// 	})
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return &collection.QueryNFTsResponse{Tokens: tokens, Pagination: pageRes}, nil
-// }
-
 func (s queryServer) Owner(c context.Context, req *collection.QueryOwnerRequest) (*collection.QueryOwnerResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
