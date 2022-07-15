@@ -13068,8 +13068,8 @@ GenesisState defines the collection module's genesis state.
 | `params` | [Params](#lbm.collection.v1.Params) |  | params defines all the paramaters of the module. |
 | `contracts` | [Contract](#lbm.collection.v1.Contract) | repeated | contracts defines the metadata of the contracts. |
 | `next_class_ids` | [NextClassIDs](#lbm.collection.v1.NextClassIDs) | repeated | next ids for token classes. |
-| `next_token_ids` | [ContractNextTokenIDs](#lbm.collection.v1.ContractNextTokenIDs) | repeated | next ids for (non-fungible) tokens. |
 | `classes` | [ContractClasses](#lbm.collection.v1.ContractClasses) | repeated | classes defines the metadata of the tokens. |
+| `next_token_ids` | [ContractNextTokenIDs](#lbm.collection.v1.ContractNextTokenIDs) | repeated | next ids for (non-fungible) tokens. |
 | `balances` | [ContractBalances](#lbm.collection.v1.ContractBalances) | repeated | balances is an array containing the balances of all the accounts. |
 | `nfts` | [ContractNFTs](#lbm.collection.v1.ContractNFTs) | repeated | nfts is an array containing the nfts. |
 | `parents` | [ContractTokenRelations](#lbm.collection.v1.ContractTokenRelations) | repeated | parents represents the parents of (non-fungible) tokens. |

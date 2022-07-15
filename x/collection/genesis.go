@@ -5,8 +5,6 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-
-	"github.com/line/lbm-sdk/x/token/class"
 )
 
 const (
@@ -17,7 +15,7 @@ const (
 // ValidateGenesis check the given genesis state has no integrity issues
 func ValidateGenesis(data GenesisState) error {
 	for _, contract := range data.Contracts {
-		if err := class.ValidateID(contract.ContractId); err != nil {
+		if err := ValidateContractID(contract.ContractId); err != nil {
 			return err
 		}
 
@@ -32,8 +30,14 @@ func ValidateGenesis(data GenesisState) error {
 		}
 	}
 
+	for _, nextClassID := range data.NextClassIds {
+		if err := ValidateContractID(nextClassID.ContractId); err != nil {
+			return err
+		}
+	}
+
 	for _, contractClasses := range data.Classes {
-		if err := class.ValidateID(contractClasses.ContractId); err != nil {
+		if err := ValidateContractID(contractClasses.ContractId); err != nil {
 			return err
 		}
 
@@ -49,8 +53,23 @@ func ValidateGenesis(data GenesisState) error {
 		}
 	}
 
+	for _, contractNextTokenIDs := range data.NextTokenIds {
+		if err := ValidateContractID(contractNextTokenIDs.ContractId); err != nil {
+			return err
+		}
+
+		if len(contractNextTokenIDs.TokenIds) == 0 {
+			return sdkerrors.ErrInvalidRequest.Wrap("next token ids cannot be empty")
+		}
+		for _, nextTokenIDs := range contractNextTokenIDs.TokenIds {
+			if err := ValidateClassID(nextTokenIDs.ClassId); err != nil {
+				return err
+			}
+		}
+	}
+
 	for _, contractBalances := range data.Balances {
-		if err := class.ValidateID(contractBalances.ContractId); err != nil {
+		if err := ValidateContractID(contractBalances.ContractId); err != nil {
 			return err
 		}
 
@@ -67,8 +86,29 @@ func ValidateGenesis(data GenesisState) error {
 		}
 	}
 
+	for _, contractNFTs := range data.Nfts {
+		if err := ValidateContractID(contractNFTs.ContractId); err != nil {
+			return err
+		}
+
+		if len(contractNFTs.Nfts) == 0 {
+			return sdkerrors.ErrInvalidRequest.Wrap("nfts cannot be empty")
+		}
+		for _, token := range contractNFTs.Nfts {
+			if err := ValidateTokenID(token.Id); err != nil {
+				return err
+			}
+			if err := validateName(token.Name); err != nil {
+				return err
+			}
+			if err := validateMeta(token.Meta); err != nil {
+				return err
+			}
+		}
+	}
+
 	for _, contractParents := range data.Parents {
-		if err := class.ValidateID(contractParents.ContractId); err != nil {
+		if err := ValidateContractID(contractParents.ContractId); err != nil {
 			return err
 		}
 
@@ -86,7 +126,7 @@ func ValidateGenesis(data GenesisState) error {
 	}
 
 	for _, contractAuthorizations := range data.Authorizations {
-		if err := class.ValidateID(contractAuthorizations.ContractId); err != nil {
+		if err := ValidateContractID(contractAuthorizations.ContractId); err != nil {
 			return err
 		}
 
@@ -104,7 +144,7 @@ func ValidateGenesis(data GenesisState) error {
 	}
 
 	for _, contractGrants := range data.Grants {
-		if err := class.ValidateID(contractGrants.ContractId); err != nil {
+		if err := ValidateContractID(contractGrants.ContractId); err != nil {
 			return err
 		}
 
@@ -117,6 +157,42 @@ func ValidateGenesis(data GenesisState) error {
 			}
 			if err := ValidatePermission(grant.Permission); err != nil {
 				return err
+			}
+		}
+	}
+
+	for _, contractSupplies := range data.Supplies {
+		if err := ValidateContractID(contractSupplies.ContractId); err != nil {
+			return err
+		}
+
+		if len(contractSupplies.Statistics) == 0 {
+			return sdkerrors.ErrInvalidRequest.Wrap("supplies cannot be empty")
+		}
+		for _, supply := range contractSupplies.Statistics {
+			if err := ValidateClassID(supply.ClassId); err != nil {
+				return err
+			}
+			if !supply.Amount.IsPositive() {
+				return sdkerrors.ErrInvalidRequest.Wrap("supply must be positive")
+			}
+		}
+	}
+
+	for _, contractBurnts := range data.Burnts {
+		if err := ValidateContractID(contractBurnts.ContractId); err != nil {
+			return err
+		}
+
+		if len(contractBurnts.Statistics) == 0 {
+			return sdkerrors.ErrInvalidRequest.Wrap("burnts cannot be empty")
+		}
+		for _, burnt := range contractBurnts.Statistics {
+			if err := ValidateClassID(burnt.ClassId); err != nil {
+				return err
+			}
+			if !burnt.Amount.IsPositive() {
+				return sdkerrors.ErrInvalidRequest.Wrap("burnt must be positive")
 			}
 		}
 	}

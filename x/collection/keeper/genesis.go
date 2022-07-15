@@ -13,6 +13,10 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 		k.setContract(ctx, contract)
 	}
 
+	for _, nextClassIDs := range data.NextClassIds {
+		k.setNextClassIDs(ctx, nextClassIDs)
+	}
+
 	for _, contractClasses := range data.Classes {
 		contractID := contractClasses.ContractId
 
@@ -26,10 +30,6 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 				k.setLegacyTokenType(ctx, contractID, nftClass.Id)
 			}
 		}
-	}
-
-	for _, nextClassIDs := range data.NextClassIds {
-		k.setNextClassIDs(ctx, nextClassIDs)
 	}
 
 	for _, contractNextTokenIDs := range data.NextTokenIds {
@@ -111,8 +111,8 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *collection.GenesisState {
 
 	return &collection.GenesisState{
 		Contracts:      contracts,
-		Classes:        k.getClasses(ctx, contracts),
 		NextClassIds:   k.getAllNextClassIDs(ctx),
+		Classes:        k.getClasses(ctx, contracts),
 		NextTokenIds:   k.getNextTokenIDs(ctx, contracts),
 		Balances:       k.getBalances(ctx, contracts),
 		Nfts:           k.getNFTs(ctx, contracts),

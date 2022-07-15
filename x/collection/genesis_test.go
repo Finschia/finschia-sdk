@@ -64,6 +64,15 @@ func TestValidateGenesis(t *testing.T) {
 			},
 			false,
 		},
+		"next class ids of invalid contract id": {
+			&collection.GenesisState{
+				NextClassIds: []collection.NextClassIDs{{
+					Fungible:    sdk.ZeroUint(),
+					NonFungible: sdk.OneUint(),
+				}},
+			},
+			false,
+		},
 		"contract classes of invalid contract id": {
 			&collection.GenesisState{
 				Classes: []collection.ContractClasses{{
@@ -96,6 +105,36 @@ func TestValidateGenesis(t *testing.T) {
 							Meta: "Tibetian Fox",
 						}),
 					},
+				}},
+			},
+			false,
+		},
+		"contract next token ids of invalid contract id": {
+			&collection.GenesisState{
+				NextTokenIds: []collection.ContractNextTokenIDs{{
+					TokenIds: []collection.NextTokenID{{
+						ClassId: "deadbeef",
+						Id:      sdk.ZeroUint(),
+					}},
+				}},
+			},
+			false,
+		},
+		"contract next token ids of empty classes": {
+			&collection.GenesisState{
+				NextTokenIds: []collection.ContractNextTokenIDs{{
+					ContractId: "deadbeef",
+				}},
+			},
+			false,
+		},
+		"contract next token ids of invalid class": {
+			&collection.GenesisState{
+				NextTokenIds: []collection.ContractNextTokenIDs{{
+					ContractId: "deadbeef",
+					TokenIds: []collection.NextTokenID{{
+						Id: sdk.ZeroUint(),
+					}},
 				}},
 			},
 			false,
@@ -136,6 +175,64 @@ func TestValidateGenesis(t *testing.T) {
 					ContractId: "deadbeef",
 					Balances: []collection.Balance{{
 						Address: addr.String(),
+					}},
+				}},
+			},
+			false,
+		},
+		"contract nfts of invalid contract id": {
+			&collection.GenesisState{
+				Nfts: []collection.ContractNFTs{{
+					Nfts: []collection.NFT{{
+						Id:   collection.NewNFTID("deadbeef", 1),
+						Name: "tibetian fox",
+						Meta: "Tibetian Fox",
+					}},
+				}},
+			},
+			false,
+		},
+		"contract nfts of empty nfts": {
+			&collection.GenesisState{
+				Nfts: []collection.ContractNFTs{{
+					ContractId: "deadbeef",
+				}},
+			},
+			false,
+		},
+		"contract nfts of invalid class": {
+			&collection.GenesisState{
+				Nfts: []collection.ContractNFTs{{
+					ContractId: "deadbeef",
+					Nfts: []collection.NFT{{
+						Name: "tibetian fox",
+						Meta: "Tibetian Fox",
+					}},
+				}},
+			},
+			false,
+		},
+		"contract nfts of invalid name": {
+			&collection.GenesisState{
+				Nfts: []collection.ContractNFTs{{
+					ContractId: "deadbeef",
+					Nfts: []collection.NFT{{
+						Id:   collection.NewNFTID("deadbeef", 1),
+						Name: string(make([]rune, 21)),
+						Meta: "Tibetian Fox",
+					}},
+				}},
+			},
+			false,
+		},
+		"contract nfts of invalid meta": {
+			&collection.GenesisState{
+				Nfts: []collection.ContractNFTs{{
+					ContractId: "deadbeef",
+					Nfts: []collection.NFT{{
+						Id:   collection.NewNFTID("deadbeef", 1),
+						Name: "tibetian fox",
+						Meta: string(make([]rune, 1001)),
 					}},
 				}},
 			},
@@ -259,6 +356,90 @@ func TestValidateGenesis(t *testing.T) {
 					ContractId: "deadbeef",
 					Grants: []collection.Grant{{
 						Grantee: addr.String(),
+					}},
+				}},
+			},
+			false,
+		},
+		"contract supplies of invalid contract id": {
+			&collection.GenesisState{
+				Supplies: []collection.ContractStatistics{{
+					Statistics: []collection.ClassStatistics{{
+						ClassId: "deadbeef",
+						Amount:  sdk.OneInt(),
+					}},
+				}},
+			},
+			false,
+		},
+		"contract supplies of empty supplies": {
+			&collection.GenesisState{
+				Supplies: []collection.ContractStatistics{{
+					ContractId: "deadbeef",
+				}},
+			},
+			false,
+		},
+		"contract supplies of invalid class id": {
+			&collection.GenesisState{
+				Supplies: []collection.ContractStatistics{{
+					ContractId: "deadbeef",
+					Statistics: []collection.ClassStatistics{{
+						Amount: sdk.OneInt(),
+					}},
+				}},
+			},
+			false,
+		},
+		"contract supplies of invalid operator": {
+			&collection.GenesisState{
+				Supplies: []collection.ContractStatistics{{
+					ContractId: "deadbeef",
+					Statistics: []collection.ClassStatistics{{
+						ClassId: "deadbeef",
+						Amount:  sdk.ZeroInt(),
+					}},
+				}},
+			},
+			false,
+		},
+		"contract burnts of invalid contract id": {
+			&collection.GenesisState{
+				Burnts: []collection.ContractStatistics{{
+					Statistics: []collection.ClassStatistics{{
+						ClassId: "deadbeef",
+						Amount:  sdk.OneInt(),
+					}},
+				}},
+			},
+			false,
+		},
+		"contract burnts of empty burnts": {
+			&collection.GenesisState{
+				Burnts: []collection.ContractStatistics{{
+					ContractId: "deadbeef",
+				}},
+			},
+			false,
+		},
+		"contract burnts of invalid class id": {
+			&collection.GenesisState{
+				Burnts: []collection.ContractStatistics{{
+					ContractId: "deadbeef",
+					Statistics: []collection.ClassStatistics{{
+						Amount: sdk.OneInt(),
+					}},
+				}},
+			},
+			false,
+		},
+		"contract burnts of invalid operator": {
+			&collection.GenesisState{
+				Burnts: []collection.ContractStatistics{{
+					ContractId: "deadbeef",
+					Statistics: []collection.ClassStatistics{{
+						ClassId: "deadbeef",
+						Amount:  sdk.ZeroInt(),
 					}},
 				}},
 			},
