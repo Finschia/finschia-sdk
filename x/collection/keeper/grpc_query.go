@@ -600,6 +600,9 @@ func (s queryServer) Tokens(c context.Context, req *collection.QueryTokensReques
 	pageRes, err := query.Paginate(tokenStore, req.Pagination, func(key []byte, value []byte) error {
 		tokenID := string(key)
 		legacyToken, err := s.getToken(ctx, req.ContractId, tokenID)
+		if err != nil {
+			panic(err)
+		}
 
 		any, err := codectypes.NewAnyWithValue(legacyToken)
 		if err != nil {
