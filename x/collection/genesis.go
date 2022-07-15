@@ -16,12 +16,6 @@ const (
 
 // ValidateGenesis check the given genesis state has no integrity issues
 func ValidateGenesis(data GenesisState) error {
-
-	// the legacy module did not validate the data.
-	// if LegacyMode {
-	// 	return nil
-	// }
-
 	for _, contract := range data.Contracts {
 		if err := class.ValidateID(contract.ContractId); err != nil {
 			return err
