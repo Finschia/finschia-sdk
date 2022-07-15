@@ -74,7 +74,7 @@ func (p *UpdateValidatorAuthsProposal) ValidateBasic() error {
 	usedAddrs := map[string]bool{}
 	for _, auth := range p.Auths {
 		addr := auth.OperatorAddress
-		if _, err := sdk.AccAddressFromBech32(addr); err != nil {
+		if _, err := sdk.ValAddressFromBech32(addr); err != nil {
 			return err
 		}
 		if usedAddrs[addr] {

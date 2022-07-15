@@ -28,6 +28,7 @@ func TestMsgFundTreasury(t *testing.T) {
 			valid:  true,
 		},
 		"empty from": {
+			from:   sdk.AccAddress{},
 			amount: sdk.OneInt(),
 		},
 		"zero amount": {
@@ -72,11 +73,13 @@ func TestMsgWithdrawFromTreasury(t *testing.T) {
 			valid:    true,
 		},
 		"empty operator": {
-			to:     addrs[1],
-			amount: sdk.OneInt(),
+			operator: sdk.AccAddress{},
+			to:       addrs[1],
+			amount:   sdk.OneInt(),
 		},
 		"empty to": {
 			operator: addrs[0],
+			to:       sdk.AccAddress{},
 			amount:   sdk.OneInt(),
 		},
 		"zero amount": {
@@ -124,6 +127,7 @@ func TestMsgUpdateMembers(t *testing.T) {
 			valid: true,
 		},
 		"empty operator": {
+			operator: sdk.AccAddress{},
 			members: []foundation.Member{{
 				Address:       addrs[1].String(),
 				Participating: true,
@@ -202,6 +206,7 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 			valid: true,
 		},
 		"empty operator": {
+			operator: sdk.AccAddress{},
 			policy: &foundation.ThresholdDecisionPolicy{
 				Threshold: sdk.NewDec(3),
 				Windows: &foundation.DecisionPolicyWindows{
@@ -289,7 +294,7 @@ func TestMsgSubmitProposal(t *testing.T) {
 			}},
 		},
 		"invalid proposer": {
-			proposers: []sdk.AccAddress{nil},
+			proposers: []sdk.AccAddress{[]byte{}},
 			msgs: []sdk.Msg{&foundation.MsgWithdrawFromTreasury{
 				Operator: addrs[1].String(),
 				To:       addrs[2].String(),
@@ -366,7 +371,8 @@ func TestMsgWithdrawProposal(t *testing.T) {
 			address: addrs[0],
 		},
 		"empty address": {
-			id: 1,
+			address: sdk.AccAddress{},
+			id:      1,
 		},
 	}
 
@@ -412,6 +418,7 @@ func TestMsgVote(t *testing.T) {
 		},
 		"empty voter": {
 			id:     1,
+			voter:  sdk.AccAddress{},
 			option: foundation.VOTE_OPTION_YES,
 		},
 		"empty option": {
@@ -470,7 +477,8 @@ func TestMsgExec(t *testing.T) {
 			signer: addrs[0],
 		},
 		"empty signer": {
-			id: 1,
+			id:     1,
+			signer: sdk.AccAddress{},
 		},
 	}
 
@@ -505,7 +513,9 @@ func TestMsgLeaveFoundation(t *testing.T) {
 			address: addrs[0],
 			valid:   true,
 		},
-		"empty address": {},
+		"empty address": {
+			address: sdk.AccAddress{},
+		},
 	}
 
 	for name, tc := range testCases {
@@ -543,6 +553,7 @@ func TestMsgGrant(t *testing.T) {
 			valid:         true,
 		},
 		"empty operator": {
+			operator:      sdk.AccAddress{},
 			grantee:       addrs[1],
 			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
 		},
@@ -595,6 +606,7 @@ func TestMsgRevoke(t *testing.T) {
 			valid:      true,
 		},
 		"empty operator": {
+			operator:   sdk.AccAddress{},
 			grantee:    addrs[1],
 			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 		},
