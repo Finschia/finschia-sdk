@@ -54,7 +54,7 @@ func (s queryServer) Balance(c context.Context, req *collection.QueryBalanceRequ
 	return &collection.QueryBalanceResponse{Balance: coin}, nil
 }
 
-// AllBalancess queries all tokens owned by owner.
+// AllBalances queries all tokens owned by owner.
 func (s queryServer) AllBalances(c context.Context, req *collection.QueryAllBalancesRequest) (*collection.QueryAllBalancesResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
