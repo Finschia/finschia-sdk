@@ -14,7 +14,7 @@ const (
 	prefixLegacyPermission = "LEGACY_PERMISSION_"
 )
 
-// Deprecated: do not use.
+// Deprecated: use Permission.
 func LegacyPermissionFromString(name string) LegacyPermission {
 	legacyPermissionName := prefixLegacyPermission + strings.ToUpper(name)
 	return LegacyPermission(LegacyPermission_value[legacyPermissionName])

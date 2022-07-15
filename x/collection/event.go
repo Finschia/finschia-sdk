@@ -17,7 +17,7 @@ func (x EventType) String() string {
 	return strings.ToLower(EventType_name[int32(x)][lenPrefix:])
 }
 
-// Deprecated: do not use.
+// Deprecated: use typed events.
 func EventTypeFromString(name string) EventType {
 	eventTypeName := prefixEventType + strings.ToUpper(name)
 	return EventType(EventType_value[eventTypeName])
@@ -28,7 +28,6 @@ func (x AttributeKey) String() string {
 	return strings.ToLower(AttributeKey_name[int32(x)][lenPrefix:])
 }
 
-// Deprecated: do not use.
 func AttributeKeyFromString(name string) AttributeKey {
 	attributeKeyName := prefixAttributeKey + strings.ToUpper(name)
 	return AttributeKey(AttributeKey_value[attributeKeyName])
