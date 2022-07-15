@@ -49,7 +49,7 @@ func (k Keeper) deleteNFT(ctx sdk.Context, contractID string, tokenID string) {
 }
 
 func (k Keeper) pruneNFT(ctx sdk.Context, contractID string, tokenID string) []string {
-	var burnt []string
+	burnt := []string{}
 	for _, child := range k.GetChildren(ctx, contractID, tokenID) {
 		k.deleteChild(ctx, contractID, tokenID, child)
 		k.deleteParent(ctx, contractID, child)
