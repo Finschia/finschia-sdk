@@ -120,6 +120,9 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 	// update parent
 	k.deleteChild(ctx, contractID, *parent, subject)
 
+	// legacy
+	k.emitEventOnDescendants(ctx, contractID, subject, collection.NewEventOperationRootChanged)
+
 	return nil
 }
 
