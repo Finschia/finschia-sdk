@@ -422,9 +422,8 @@ func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.A
 func (k Keeper) grant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) {
 	k.setGrant(ctx, contractID, grantee, permission)
 
-	if !k.accountKeeper.HasAccount(ctx, grantee) {
-		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, grantee))
-	}
+	// create account if grantee does not exist.
+	k.createAccountOnAbsence(ctx, grantee)
 }
 
 func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) {

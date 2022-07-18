@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/telemetry"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/collection"
 )
@@ -30,5 +31,12 @@ func NewKeeper(
 		classKeeper:   ck,
 		storeKey:      key,
 		cdc:           cdc,
+	}
+}
+
+func (k Keeper) createAccountOnAbsence(ctx sdk.Context, address sdk.AccAddress) {
+	if !k.accountKeeper.HasAccount(ctx, address) {
+		defer telemetry.IncrCounter(1, "new", "account")
+		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, address))
 	}
 }
