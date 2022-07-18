@@ -33,6 +33,11 @@ func DefaultNextClassIDs(contractID string) NextClassIDs {
 	}
 }
 
+func validateParams(params Params) error {
+	// limits are uint32, so no need to validate them.
+	return nil
+}
+
 type TokenClass interface {
 	proto.Message
 

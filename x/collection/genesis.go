@@ -14,6 +14,10 @@ const (
 
 // ValidateGenesis check the given genesis state has no integrity issues
 func ValidateGenesis(data GenesisState) error {
+	if err := validateParams(data.Params); err != nil {
+		return err
+	}
+
 	for _, contract := range data.Contracts {
 		if err := ValidateContractID(contract.ContractId); err != nil {
 			return err
