@@ -34,96 +34,96 @@ func AttributeKeyFromString(name string) AttributeKey {
 }
 
 // Deprecated: use EventCreatedContract.
-func NewEventCreateCollection(e EventCreatedContract, creator sdk.AccAddress) sdk.Event {
+func NewEventCreateCollection(event EventCreatedContract, creator sdk.AccAddress) sdk.Event {
 	eventType := EventTypeCreateCollection.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyName:       e.Name,
-		AttributeKeyMeta:       e.Meta,
-		AttributeKeyBaseImgURI: e.BaseImgUri,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyName:       event.Name,
+		AttributeKeyMeta:       event.Meta,
+		AttributeKeyBaseImgURI: event.BaseImgUri,
 
 		AttributeKeyOwner: creator.String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventCreatedFTClass.
-func NewEventIssueFT(e EventCreatedFTClass, operator, to sdk.AccAddress, amount sdk.Int) sdk.Event {
+func NewEventIssueFT(event EventCreatedFTClass, operator, to sdk.AccAddress, amount sdk.Int) sdk.Event {
 	eventType := EventTypeIssueFT.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyTokenID:    NewFTID(e.ClassId),
-		AttributeKeyName:       e.Name,
-		AttributeKeyMeta:       e.Meta,
-		AttributeKeyDecimals:   fmt.Sprintf("%d", e.Decimals),
-		AttributeKeyMintable:   fmt.Sprintf("%t", e.Mintable),
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyTokenID:    NewFTID(event.ClassId),
+		AttributeKeyName:       event.Name,
+		AttributeKeyMeta:       event.Meta,
+		AttributeKeyDecimals:   fmt.Sprintf("%d", event.Decimals),
+		AttributeKeyMintable:   fmt.Sprintf("%t", event.Mintable),
 
 		AttributeKeyOwner:  operator.String(),
 		AttributeKeyTo:     to.String(),
 		AttributeKeyAmount: amount.String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventCreatedNFTClass.
-func NewEventIssueNFT(e EventCreatedNFTClass) sdk.Event {
+func NewEventIssueNFT(event EventCreatedNFTClass) sdk.Event {
 	eventType := EventTypeIssueNFT.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyTokenType:  e.ClassId,
-		AttributeKeyName:       e.Name,
-		AttributeKeyMeta:       e.Meta,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyTokenType:  event.ClassId,
+		AttributeKeyName:       event.Name,
+		AttributeKeyMeta:       event.Meta,
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventMintedFT.
-func NewEventMintFT(e EventMintedFT) sdk.Event {
+func NewEventMintFT(event EventMintedFT) sdk.Event {
 	eventType := EventTypeMintFT.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyFrom:       e.Operator,
-		AttributeKeyTo:         e.To,
-		AttributeKeyAmount:     Coins(e.Amount).String(),
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyFrom:       event.Operator,
+		AttributeKeyTo:         event.To,
+		AttributeKeyAmount:     Coins(event.Amount).String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventMintedNFT.
-func NewEventMintNFT(e EventMintedNFT) sdk.Events {
+func NewEventMintNFT(event EventMintedNFT) sdk.Events {
 	eventType := EventTypeMintNFT.String()
 
-	new := make(sdk.Events, len(e.Tokens))
-	for i, token := range e.Tokens {
-		event := sdk.NewEvent(eventType)
+	res := make(sdk.Events, len(event.Tokens))
+	for i, token := range event.Tokens {
+		e := sdk.NewEvent(eventType)
 		attributes := map[AttributeKey]string{
-			AttributeKeyContractID: e.ContractId,
-			AttributeKeyFrom:       e.Operator,
-			AttributeKeyTo:         e.To,
+			AttributeKeyContractID: event.ContractId,
+			AttributeKeyFrom:       event.Operator,
+			AttributeKeyTo:         event.To,
 
 			AttributeKeyTokenID: token.Id,
 			AttributeKeyName:    token.Name,
@@ -131,21 +131,21 @@ func NewEventMintNFT(e EventMintedNFT) sdk.Events {
 		}
 		for key, value := range attributes {
 			attribute := sdk.NewAttribute(key.String(), value)
-			event = event.AppendAttributes(attribute)
+			e = e.AppendAttributes(attribute)
 		}
 
-		new[i] = event
+		res[i] = e
 	}
 
-	return new
+	return res
 }
 
 // Deprecated: use EventBurned.
-func NewEventBurnFT(e EventBurned) *sdk.Event {
+func NewEventBurnFT(event EventBurned) *sdk.Event {
 	eventType := EventTypeBurnFT.String()
 
 	amount := []Coin{}
-	for _, coin := range e.Amount {
+	for _, coin := range event.Amount {
 		if err := ValidateFTID(coin.TokenId); err == nil {
 			amount = append(amount, coin)
 		}
@@ -155,25 +155,25 @@ func NewEventBurnFT(e EventBurned) *sdk.Event {
 	}
 
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyFrom:       e.From,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyFrom:       event.From,
 		AttributeKeyAmount:     Coins(amount).String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return &new
+	return &res
 }
 
 // Deprecated: use EventBurned.
-func NewEventBurnNFT(e EventBurned) sdk.Events {
+func NewEventBurnNFT(event EventBurned) sdk.Events {
 	eventType := EventTypeBurnNFT.String()
 
 	amount := []Coin{}
-	for _, coin := range e.Amount {
+	for _, coin := range event.Amount {
 		if err := ValidateNFTID(coin.TokenId); err == nil {
 			amount = append(amount, coin)
 		}
@@ -182,34 +182,34 @@ func NewEventBurnNFT(e EventBurned) sdk.Events {
 		return nil
 	}
 
-	new := make(sdk.Events, 0, len(amount)+1)
+	res := make(sdk.Events, 0, len(amount)+1)
 
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyFrom:       e.From,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyFrom:       event.From,
 	}
 	head := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
-	new = append(new, head)
+	res = append(res, head)
 
 	for _, coin := range amount {
 		attribute := sdk.NewAttribute(AttributeKeyTokenID.String(), coin.TokenId)
 		event := sdk.NewEvent(eventType, attribute)
-		new = append(new, event)
+		res = append(res, event)
 	}
 
-	return new
+	return res
 }
 
 // Deprecated: use EventBurned.
-func NewEventBurnFTFrom(e EventBurned) *sdk.Event {
+func NewEventBurnFTFrom(event EventBurned) *sdk.Event {
 	eventType := EventTypeBurnFTFrom.String()
 
 	amount := []Coin{}
-	for _, coin := range e.Amount {
+	for _, coin := range event.Amount {
 		if err := ValidateFTID(coin.TokenId); err == nil {
 			amount = append(amount, coin)
 		}
@@ -219,26 +219,26 @@ func NewEventBurnFTFrom(e EventBurned) *sdk.Event {
 	}
 
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyProxy:      e.Operator,
-		AttributeKeyFrom:       e.From,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyProxy:      event.Operator,
+		AttributeKeyFrom:       event.From,
 		AttributeKeyAmount:     Coins(amount).String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return &new
+	return &res
 }
 
 // Deprecated: use EventBurned.
-func NewEventBurnNFTFrom(e EventBurned) sdk.Events {
+func NewEventBurnNFTFrom(event EventBurned) sdk.Events {
 	eventType := EventTypeBurnNFTFrom.String()
 
 	amount := []Coin{}
-	for _, coin := range e.Amount {
+	for _, coin := range event.Amount {
 		if err := ValidateNFTID(coin.TokenId); err == nil {
 			amount = append(amount, coin)
 		}
@@ -247,84 +247,84 @@ func NewEventBurnNFTFrom(e EventBurned) sdk.Events {
 		return nil
 	}
 
-	new := make(sdk.Events, 0, len(amount)+1)
+	res := make(sdk.Events, 0, len(amount)+1)
 
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyProxy:      e.Operator,
-		AttributeKeyFrom:       e.From,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyProxy:      event.Operator,
+		AttributeKeyFrom:       event.From,
 	}
 	head := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
-	new = append(new, head)
+	res = append(res, head)
 
 	for _, coin := range amount {
 		attribute := sdk.NewAttribute(AttributeKeyTokenID.String(), coin.TokenId)
 		event := sdk.NewEvent(eventType, attribute)
-		new = append(new, event)
+		res = append(res, event)
 	}
 
-	return new
+	return res
 }
 
 // Deprecated: use EventModifiedContract
-func NewEventModifyCollection(e EventModifiedContract) sdk.Events {
+func NewEventModifyCollection(event EventModifiedContract) sdk.Events {
 	eventType := EventTypeModifyCollection.String()
-	new := make(sdk.Events, 0, 1+len(e.Changes))
+	res := make(sdk.Events, 0, 1+len(event.Changes))
 
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
+		AttributeKeyContractID: event.ContractId,
 	}
 	head := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
-	new = append(new, head)
+	res = append(res, head)
 
-	for _, pair := range e.Changes {
+	for _, pair := range event.Changes {
 		attribute := sdk.NewAttribute(pair.Key, pair.Value)
 		event := sdk.NewEvent(eventType, attribute)
-		new = append(new, event)
+		res = append(res, event)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventModifiedTokenClass
-func NewEventModifyTokenType(e EventModifiedTokenClass) sdk.Events {
+func NewEventModifyTokenType(event EventModifiedTokenClass) sdk.Events {
 	eventType := EventTypeModifyTokenType.String()
-	new := make(sdk.Events, 0, 1+len(e.Changes))
+	res := make(sdk.Events, 0, 1+len(event.Changes))
 
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyTokenType:  e.ClassId,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyTokenType:  event.ClassId,
 	}
 	head := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
-	new = append(new, head)
+	res = append(res, head)
 
-	for _, pair := range e.Changes {
+	for _, pair := range event.Changes {
 		attribute := sdk.NewAttribute(pair.Key, pair.Value)
 		event := sdk.NewEvent(eventType, attribute)
-		new = append(new, event)
+		res = append(res, event)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventModifiedTokenClass
-func NewEventModifyTokenOfFTClass(e EventModifiedTokenClass) sdk.Events {
+func NewEventModifyTokenOfFTClass(event EventModifiedTokenClass) sdk.Events {
 	eventType := EventTypeModifyToken.String()
-	new := make(sdk.Events, 0, 1+len(e.Changes))
+	res := make(sdk.Events, 0, 1+len(event.Changes))
 
-	tokenID := NewFTID(e.ClassId)
+	tokenID := NewFTID(event.ClassId)
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
+		AttributeKeyContractID: event.ContractId,
 		AttributeKeyTokenID:    tokenID,
 	}
 	head := sdk.NewEvent(eventType)
@@ -332,46 +332,46 @@ func NewEventModifyTokenOfFTClass(e EventModifiedTokenClass) sdk.Events {
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
-	new = append(new, head)
+	res = append(res, head)
 
-	for _, pair := range e.Changes {
+	for _, pair := range event.Changes {
 		attribute := sdk.NewAttribute(pair.Key, pair.Value)
 		event := sdk.NewEvent(eventType, attribute)
-		new = append(new, event)
+		res = append(res, event)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventModifiedNFT
-func NewEventModifyTokenOfNFT(e EventModifiedNFT) sdk.Events {
+func NewEventModifyTokenOfNFT(event EventModifiedNFT) sdk.Events {
 	eventType := EventTypeModifyToken.String()
-	new := make(sdk.Events, 0, 1+len(e.Changes))
+	res := make(sdk.Events, 0, 1+len(event.Changes))
 
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyTokenID:    e.TokenId,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyTokenID:    event.TokenId,
 	}
 	head := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
-	new = append(new, head)
+	res = append(res, head)
 
-	for _, pair := range e.Changes {
+	for _, pair := range event.Changes {
 		attribute := sdk.NewAttribute(pair.Key, pair.Value)
 		event := sdk.NewEvent(eventType, attribute)
-		new = append(new, event)
+		res = append(res, event)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventSent.
-func NewEventTransferFT(e EventSent) *sdk.Event {
+func NewEventTransferFT(event EventSent) *sdk.Event {
 	eventType := EventTypeTransferFT.String()
 
 	amount := []Coin{}
-	for _, coin := range e.Amount {
+	for _, coin := range event.Amount {
 		if err := ValidateFTID(coin.TokenId); err == nil {
 			amount = append(amount, coin)
 		}
@@ -381,26 +381,26 @@ func NewEventTransferFT(e EventSent) *sdk.Event {
 	}
 
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyFrom:       e.From,
-		AttributeKeyTo:         e.To,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyFrom:       event.From,
+		AttributeKeyTo:         event.To,
 		AttributeKeyAmount:     Coins(amount).String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return &new
+	return &res
 }
 
 // Deprecated: use EventSent.
-func NewEventTransferNFT(e EventSent) sdk.Events {
+func NewEventTransferNFT(event EventSent) sdk.Events {
 	eventType := EventTypeTransferNFT.String()
 
 	amount := []Coin{}
-	for _, coin := range e.Amount {
+	for _, coin := range event.Amount {
 		if err := ValidateNFTID(coin.TokenId); err == nil {
 			amount = append(amount, coin)
 		}
@@ -409,34 +409,34 @@ func NewEventTransferNFT(e EventSent) sdk.Events {
 		return nil
 	}
 
-	new := make(sdk.Events, 0, 1+len(amount))
+	res := make(sdk.Events, 0, 1+len(amount))
 
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyFrom:       e.From,
-		AttributeKeyTo:         e.To,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyFrom:       event.From,
+		AttributeKeyTo:         event.To,
 	}
 	head := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
-	new = append(new, head)
+	res = append(res, head)
 
 	for _, coin := range amount {
 		attribute := sdk.NewAttribute(AttributeKeyTokenID.String(), coin.TokenId)
 		event := sdk.NewEvent(eventType, attribute)
-		new = append(new, event)
+		res = append(res, event)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventSent.
-func NewEventTransferFTFrom(e EventSent) *sdk.Event {
+func NewEventTransferFTFrom(event EventSent) *sdk.Event {
 	eventType := EventTypeTransferFTFrom.String()
 
 	amount := []Coin{}
-	for _, coin := range e.Amount {
+	for _, coin := range event.Amount {
 		if err := ValidateFTID(coin.TokenId); err == nil {
 			amount = append(amount, coin)
 		}
@@ -446,27 +446,27 @@ func NewEventTransferFTFrom(e EventSent) *sdk.Event {
 	}
 
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyProxy:      e.Operator,
-		AttributeKeyFrom:       e.From,
-		AttributeKeyTo:         e.To,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyProxy:      event.Operator,
+		AttributeKeyFrom:       event.From,
+		AttributeKeyTo:         event.To,
 		AttributeKeyAmount:     Coins(amount).String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return &new
+	return &res
 }
 
 // Deprecated: use EventSent.
-func NewEventTransferNFTFrom(e EventSent) sdk.Events {
+func NewEventTransferNFTFrom(event EventSent) sdk.Events {
 	eventType := EventTypeTransferNFTFrom.String()
 
 	amount := []Coin{}
-	for _, coin := range e.Amount {
+	for _, coin := range event.Amount {
 		if err := ValidateNFTID(coin.TokenId); err == nil {
 			amount = append(amount, coin)
 		}
@@ -475,216 +475,216 @@ func NewEventTransferNFTFrom(e EventSent) sdk.Events {
 		return nil
 	}
 
-	new := make(sdk.Events, 0, 1+len(amount))
+	res := make(sdk.Events, 0, 1+len(amount))
 
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyProxy:      e.Operator,
-		AttributeKeyFrom:       e.From,
-		AttributeKeyTo:         e.To,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyProxy:      event.Operator,
+		AttributeKeyFrom:       event.From,
+		AttributeKeyTo:         event.To,
 	}
 	head := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
 		head = head.AppendAttributes(attribute)
 	}
-	new = append(new, head)
+	res = append(res, head)
 
 	for _, coin := range amount {
 		attribute := sdk.NewAttribute(AttributeKeyTokenID.String(), coin.TokenId)
 		event := sdk.NewEvent(eventType, attribute)
-		new = append(new, event)
+		res = append(res, event)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventGrant.
-func NewEventGrantPermToken(e EventGrant) sdk.Event {
+func NewEventGrantPermToken(event EventGrant) sdk.Event {
 	eventType := EventTypeGrantPermToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyTo:         e.Grantee,
-		AttributeKeyPerm:       LegacyPermission(e.Permission).String(),
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyTo:         event.Grantee,
+		AttributeKeyPerm:       LegacyPermission(event.Permission).String(),
 	}
-	if len(e.Granter) != 0 {
-		attributes[AttributeKeyFrom] = e.Granter
+	if len(event.Granter) != 0 {
+		attributes[AttributeKeyFrom] = event.Granter
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventGrant.
-func NewEventGrantPermTokenHead(e EventGrant) sdk.Event {
+func NewEventGrantPermTokenHead(event EventGrant) sdk.Event {
 	eventType := EventTypeGrantPermToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyTo:         e.Grantee,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyTo:         event.Grantee,
 	}
-	if len(e.Granter) != 0 {
-		attributes[AttributeKeyFrom] = e.Granter
+	if len(event.Granter) != 0 {
+		attributes[AttributeKeyFrom] = event.Granter
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventGrant.
-func NewEventGrantPermTokenBody(e EventGrant) sdk.Event {
+func NewEventGrantPermTokenBody(event EventGrant) sdk.Event {
 	eventType := EventTypeGrantPermToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyPerm: LegacyPermission(e.Permission).String(),
+		AttributeKeyPerm: LegacyPermission(event.Permission).String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventAbandon.
-func NewEventRevokePermToken(e EventAbandon) sdk.Event {
+func NewEventRevokePermToken(event EventAbandon) sdk.Event {
 	eventType := EventTypeRevokePermToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyFrom:       e.Grantee,
-		AttributeKeyPerm:       LegacyPermission(e.Permission).String(),
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyFrom:       event.Grantee,
+		AttributeKeyPerm:       LegacyPermission(event.Permission).String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventAuthorizedOperator.
-func NewEventApproveCollection(e EventAuthorizedOperator) sdk.Event {
+func NewEventApproveCollection(event EventAuthorizedOperator) sdk.Event {
 	eventType := EventTypeApproveCollection.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyApprover:   e.Holder,
-		AttributeKeyProxy:      e.Operator,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyApprover:   event.Holder,
+		AttributeKeyProxy:      event.Operator,
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventRevokedOperator.
-func NewEventDisapproveCollection(e EventRevokedOperator) sdk.Event {
+func NewEventDisapproveCollection(event EventRevokedOperator) sdk.Event {
 	eventType := EventTypeDisapproveCollection.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyApprover:   e.Holder,
-		AttributeKeyProxy:      e.Operator,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyApprover:   event.Holder,
+		AttributeKeyProxy:      event.Operator,
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventAttached.
-func NewEventAttachToken(e EventAttached, newRoot string) sdk.Event {
+func NewEventAttachToken(event EventAttached, newRoot string) sdk.Event {
 	eventType := EventTypeAttachToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyFrom:       e.Holder,
-		AttributeKeyTokenID:    e.Subject,
-		AttributeKeyToTokenID:  e.Target,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyFrom:       event.Holder,
+		AttributeKeyTokenID:    event.Subject,
+		AttributeKeyToTokenID:  event.Target,
 
-		AttributeKeyOldRoot: e.Subject,
+		AttributeKeyOldRoot: event.Subject,
 		AttributeKeyNewRoot: newRoot,
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventDetached.
-func NewEventDetachToken(e EventDetached, oldRoot string) sdk.Event {
+func NewEventDetachToken(event EventDetached, oldRoot string) sdk.Event {
 	eventType := EventTypeDetachToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID:  e.ContractId,
-		AttributeKeyFrom:        e.Holder,
-		AttributeKeyFromTokenID: e.Subject,
+		AttributeKeyContractID:  event.ContractId,
+		AttributeKeyFrom:        event.Holder,
+		AttributeKeyFromTokenID: event.Subject,
 
 		AttributeKeyOldRoot: oldRoot,
-		AttributeKeyNewRoot: e.Subject,
+		AttributeKeyNewRoot: event.Subject,
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventAttached.
-func NewEventAttachFrom(e EventAttached, newRoot string) sdk.Event {
+func NewEventAttachFrom(event EventAttached, newRoot string) sdk.Event {
 	eventType := EventTypeAttachFrom.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyProxy:      e.Operator,
-		AttributeKeyFrom:       e.Holder,
-		AttributeKeyTokenID:    e.Subject,
-		AttributeKeyToTokenID:  e.Target,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyProxy:      event.Operator,
+		AttributeKeyFrom:       event.Holder,
+		AttributeKeyTokenID:    event.Subject,
+		AttributeKeyToTokenID:  event.Target,
 
-		AttributeKeyOldRoot: e.Subject,
+		AttributeKeyOldRoot: event.Subject,
 		AttributeKeyNewRoot: newRoot,
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventDetached.
-func NewEventDetachFrom(e EventDetached, oldRoot string) sdk.Event {
+func NewEventDetachFrom(event EventDetached, oldRoot string) sdk.Event {
 	eventType := EventTypeDetachFrom.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID:  e.ContractId,
-		AttributeKeyProxy:       e.Operator,
-		AttributeKeyFrom:        e.Holder,
-		AttributeKeyFromTokenID: e.Subject,
+		AttributeKeyContractID:  event.ContractId,
+		AttributeKeyProxy:       event.Operator,
+		AttributeKeyFrom:        event.Holder,
+		AttributeKeyFromTokenID: event.Subject,
 
 		AttributeKeyOldRoot: oldRoot,
-		AttributeKeyNewRoot: e.Subject,
+		AttributeKeyNewRoot: event.Subject,
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: do not use.
@@ -695,12 +695,12 @@ func NewEventOperationTransferNFT(contractID string, tokenID string) sdk.Event {
 		AttributeKeyTokenID:    tokenID,
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: use EventBurned.
@@ -711,12 +711,12 @@ func NewEventOperationBurnNFT(contractID string, tokenID string) sdk.Event {
 		AttributeKeyTokenID:    tokenID,
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
 // Deprecated: do not use.
@@ -727,10 +727,10 @@ func NewEventOperationRootChanged(contractID string, tokenID string) sdk.Event {
 		AttributeKeyTokenID:    tokenID,
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new = new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
