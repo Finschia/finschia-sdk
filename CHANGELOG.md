@@ -61,6 +61,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#545](https://github.com/line/lbm-sdk/pull/545) fix genesis and support abstain
 * (x/auth) [\#563](https://github.com/line/lbm-sdk/pull/563) fix unmarshal bug of `BaseAccountJSON`
 * (client) [\#565](https://github.com/line/lbm-sdk/pull/565) fix the data race problem in `TestQueryABCIHeight`
+* (x/token) [\#589](https://github.com/line/lbm-sdk/pull/589) fix naming collision in x/token enums
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
@@ -70,6 +71,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ci) [\#457](https://github.com/line/lbm-sdk/pull/457), [\#471](https://github.com/line/lbm-sdk/pull/471) add swagger check
 * (ci) [\#469](https://github.com/line/lbm-sdk/pull/469) publish docker image on tag push
 * (ci) [\#580](https://github.com/line/lbm-sdk/pull/580) fix the problem that the registered docker image couldn't  run on M1.
+* (simapp) [\#591](https://github.com/line/lbm-sdk/pull/591) chore: add x/wasm module to simapp
 
 ### Document Updates
 

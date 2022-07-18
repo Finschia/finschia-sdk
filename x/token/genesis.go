@@ -66,7 +66,7 @@ func ValidateGenesis(data GenesisState) error {
 			if err := sdk.ValidateAccAddress(grant.Grantee); err != nil {
 				return err
 			}
-			if err := validatePermission(grant.Permission); err != nil {
+			if err := ValidatePermission(grant.Permission); err != nil {
 				return err
 			}
 		}

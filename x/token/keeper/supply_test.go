@@ -20,13 +20,13 @@ func (s *KeeperTestSuite) TestIssue() {
 	s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
 
 	mintPermissions := []token.Permission{
-		token.Permission_Mint,
-		token.Permission_Burn,
+		token.PermissionMint,
+		token.PermissionBurn,
 	}
 	for _, permission := range mintPermissions {
 		s.Require().Nil(s.keeper.GetGrant(ctx, class.ContractId, s.vendor, permission))
 	}
-	s.Require().NotNil(s.keeper.GetGrant(ctx, class.ContractId, s.vendor, token.Permission_Modify))
+	s.Require().NotNil(s.keeper.GetGrant(ctx, class.ContractId, s.vendor, token.PermissionModify))
 
 	// override fails
 	class.ContractId = s.contractID
@@ -48,7 +48,7 @@ func (s *KeeperTestSuite) TestMint() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			_, grantErr := s.keeper.GetGrant(ctx, s.contractID, grantee, token.Permission_Mint)
+			_, grantErr := s.keeper.GetGrant(ctx, s.contractID, grantee, token.PermissionMint)
 			err := s.keeper.Mint(ctx, s.contractID, grantee, to, amount)
 			if grantErr == nil {
 				s.Require().NoError(err)
@@ -75,7 +75,7 @@ func (s *KeeperTestSuite) TestBurn() {
 			s.Run(name, func() {
 				ctx, _ := s.ctx.CacheContext()
 
-				_, grantErr := s.keeper.GetGrant(ctx, s.contractID, from, token.Permission_Burn)
+				_, grantErr := s.keeper.GetGrant(ctx, s.contractID, from, token.PermissionBurn)
 				err := s.keeper.Burn(ctx, s.contractID, from, amount)
 				if grantErr == nil && amount.LTE(s.balance) {
 					s.Require().NoError(err)
@@ -104,7 +104,7 @@ func (s *KeeperTestSuite) TestOperatorBurn() {
 				s.Run(name, func() {
 					ctx, _ := s.ctx.CacheContext()
 
-					_, grantErr := s.keeper.GetGrant(ctx, s.contractID, operator, token.Permission_Burn)
+					_, grantErr := s.keeper.GetGrant(ctx, s.contractID, operator, token.PermissionBurn)
 					_, authErr := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
 					err := s.keeper.OperatorBurn(ctx, s.contractID, operator, from, amount)
 					if grantErr == nil && authErr == nil && amount.LTE(s.balance) {
@@ -129,9 +129,9 @@ func (s *KeeperTestSuite) TestModify() {
 		s.customer: "customer",
 	}
 	changes := []token.Pair{
-		{Field: token.AttributeKey_Name.String(), Value: "new name"},
-		{Field: token.AttributeKey_ImageURI.String(), Value: "new uri"},
-		{Field: token.AttributeKey_Meta.String(), Value: "new meta"},
+		{Field: token.AttributeKeyName.String(), Value: "new name"},
+		{Field: token.AttributeKeyImageURI.String(), Value: "new uri"},
+		{Field: token.AttributeKeyMeta.String(), Value: "new meta"},
 	}
 
 	for contractID, contractDesc := range contractDescriptions {

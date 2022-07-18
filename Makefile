@@ -12,6 +12,7 @@ MOCKS_DIR = $(CURDIR)/tests/mocks
 HTTPS_GIT := https://github.com/line/lbm-sdk.git
 DOCKER := $(shell which docker)
 DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bufbuild/buf
+CGO_ENABLED ?= 1
 
 export GO111MODULE = on
 
@@ -113,6 +114,9 @@ include contrib/devtools/Makefile
 BUILD_TARGETS := build install
 
 build: BUILD_ARGS=-o $(BUILDDIR)/
+	CGO_CFLAGS=$(CGO_CFLAGS) CGO_LDFLAGS=$(CGO_LDFLAGS) CGO_ENABLED=$(CGO_ENABLED) go build -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
+
+# todo: should be fix
 build-linux:
 	GOOS=linux GOARCH=amd64 LEDGER_ENABLED=false $(MAKE) build
 

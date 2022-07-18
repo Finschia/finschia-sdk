@@ -3,11 +3,13 @@ package cli
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
 	"testing"
 
+	ostcfg "github.com/line/ostracon/config"
 	"github.com/line/ostracon/libs/log"
 	octypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
@@ -25,7 +27,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/genutil"
-	genutiltest "github.com/line/lbm-sdk/x/genutil/client/testutil"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
@@ -693,9 +694,21 @@ func setupGenesis(t *testing.T, wasmGenesis types.GenesisState) string {
 	return homeDir
 }
 
+func createDefaultOstraconConfig(rootDir string) (*ostcfg.Config, error) {
+	conf := ostcfg.DefaultConfig()
+	conf.SetRoot(rootDir)
+	ostcfg.EnsureRoot(rootDir)
+
+	if err := conf.ValidateBasic(); err != nil {
+		return nil, fmt.Errorf("error in config file: %v", err)
+	}
+
+	return conf, nil
+}
+
 func executeCmdWithContext(t *testing.T, homeDir string, cmd *cobra.Command) error {
 	logger := log.NewNopLogger()
-	cfg, err := genutiltest.CreateDefaultTendermintConfig(homeDir)
+	cfg, err := createDefaultOstraconConfig(homeDir)
 	require.NoError(t, err)
 	appCodec := keeper.MakeEncodingConfig(t).Marshaler
 	serverCtx := server.NewContext(viper.New(), cfg, logger)

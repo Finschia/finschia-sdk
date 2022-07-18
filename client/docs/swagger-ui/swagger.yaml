@@ -39703,8 +39703,14 @@ paths:
                       type: string
                       description: address of the grantee.
                     permission:
-                      type: string
                       description: permission on the token class.
+                      type: string
+                      enum:
+                        - PERMISSION_UNSPECIFIED
+                        - PERMISSION_MODIFY
+                        - PERMISSION_MINT
+                        - PERMISSION_BURN
+                      default: PERMISSION_UNSPECIFIED
                   description: Grant defines permission given to a grantee.
                 description: all the grants on the grantee.
               pagination:
@@ -39850,8 +39856,14 @@ paths:
                     type: string
                     description: address of the grantee.
                   permission:
-                    type: string
                     description: permission on the token class.
+                    type: string
+                    enum:
+                      - PERMISSION_UNSPECIFIED
+                      - PERMISSION_MODIFY
+                      - PERMISSION_MINT
+                      - PERMISSION_BURN
+                    default: PERMISSION_UNSPECIFIED
                 description: Grant defines permission given to a grantee.
             title: >-
               QueryGrantResponse is the response type for the Query/Grant RPC
@@ -39896,6 +39908,11 @@ paths:
           in: path
           required: true
           type: string
+          enum:
+            - PERMISSION_UNSPECIFIED
+            - PERMISSION_MODIFY
+            - PERMISSION_MINT
+            - PERMISSION_BURN
       tags:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/minted':
@@ -64631,9 +64648,30 @@ definitions:
         type: string
         description: address of the grantee.
       permission:
-        type: string
         description: permission on the token class.
+        type: string
+        enum:
+          - PERMISSION_UNSPECIFIED
+          - PERMISSION_MODIFY
+          - PERMISSION_MINT
+          - PERMISSION_BURN
+        default: PERMISSION_UNSPECIFIED
     description: Grant defines permission given to a grantee.
+  lbm.token.v1.Permission:
+    type: string
+    enum:
+      - PERMISSION_UNSPECIFIED
+      - PERMISSION_MODIFY
+      - PERMISSION_MINT
+      - PERMISSION_BURN
+    default: PERMISSION_UNSPECIFIED
+    description: |-
+      Permission enumerates the valid permissions on a token class.
+
+       - PERMISSION_UNSPECIFIED: unspecified defines the default permission which is invalid.
+       - PERMISSION_MODIFY: PERMISSION_MODIFY defines a permission to modify a contract.
+       - PERMISSION_MINT: PERMISSION_MINT defines a permission to mint tokens of a contract.
+       - PERMISSION_BURN: PERMISSION_BURN defines a permission to burn tokens of a contract.
   lbm.token.v1.QueryApprovedResponse:
     type: object
     properties:
@@ -64689,8 +64727,14 @@ definitions:
             type: string
             description: address of the grantee.
           permission:
-            type: string
             description: permission on the token class.
+            type: string
+            enum:
+              - PERMISSION_UNSPECIFIED
+              - PERMISSION_MODIFY
+              - PERMISSION_MINT
+              - PERMISSION_BURN
+            default: PERMISSION_UNSPECIFIED
         description: Grant defines permission given to a grantee.
     title: |-
       QueryGrantResponse is the response type for the Query/Grant RPC method
@@ -64707,8 +64751,14 @@ definitions:
               type: string
               description: address of the grantee.
             permission:
-              type: string
               description: permission on the token class.
+              type: string
+              enum:
+                - PERMISSION_UNSPECIFIED
+                - PERMISSION_MODIFY
+                - PERMISSION_MINT
+                - PERMISSION_BURN
+              default: PERMISSION_UNSPECIFIED
           description: Grant defines permission given to a grantee.
         description: all the grants on the grantee.
       pagination:
