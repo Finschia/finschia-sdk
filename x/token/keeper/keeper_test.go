@@ -97,8 +97,8 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	// grant operator
 	for _, permission := range []token.Permission{
-		token.Permission_Mint,
-		token.Permission_Burn,
+		token.PermissionMint,
+		token.PermissionBurn,
 	} {
 		s.keeper.Grant(s.ctx, s.contractID, s.vendor, s.operator, permission)
 	}
