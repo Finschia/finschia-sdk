@@ -148,36 +148,3 @@ func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}
 }
-
-//____________________________________________________________________________
-
-// AppModuleSimulation functions
-
-// // GenerateGenesisState creates a randomized GenState of the collection module.
-// func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
-// 	simulation.RandomizedGenState(simState)
-// }
-
-// // ProposalContents returns all the collection content functions used to
-// // simulate collection proposals.
-// func (AppModule) ProposalContents(simState module.SimulationState) []simtypes.WeightedProposalContent {
-// 	return simulation.ProposalContents()
-// }
-
-// // RandomizedParams creates randomized collection param changes for the simulator.
-// func (AppModule) RandomizedParams(r *rand.Rand) []simtypes.ParamChange {
-// 	return simulation.ParamChanges(r)
-// }
-
-// // RegisterStoreDecoder registers a decoder for collection module's types
-// func (am AppModule) RegisterStoreDecoder(sdr sdk.StoreDecoderRegistry) {
-// 	sdr[types.StoreKey] = simulation.NewDecodeStore(am.cdc)
-// }
-
-// // WeightedOperations returns the all the collection module operations with their respective weights.
-// func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
-// 	return simulation.WeightedOperations(
-// 		simState.AppParams, simState.Cdc,
-// 		am.stakingKeeper, am.slashingKeeper, am.keeper, simState.Contents,
-// 	)
-// }
