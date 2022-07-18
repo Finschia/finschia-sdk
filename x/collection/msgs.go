@@ -35,7 +35,6 @@ var (
 	// regexps for token ids
 	reTokenID     = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternClassID, patternAll))
 	reFTID        = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternClassID, patternZero))
-	reLegacyFTID  = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternLegacyFTClassID, patternAll))
 	reLegacyNFTID = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, patternLegacyNFTClassID, patternAll))
 )
 
@@ -89,12 +88,12 @@ func ValidateClassID(id string) error {
 	return validateID(id, reClassID)
 }
 
-// deprecated
+// Deprecated: do not use (no successor).
 func ValidateLegacyFTClassID(id string) error {
 	return validateID(id, reLegacyFTClassID)
 }
 
-// deprecated
+// Deprecated: do not use (no successor).
 func ValidateLegacyNFTClassID(id string) error {
 	return validateID(id, reLegacyNFTClassID)
 }
@@ -107,11 +106,6 @@ func ValidateFTID(id string) error {
 	return validateID(id, reFTID)
 }
 
-// deprecated
-func ValidateLegacyFTID(id string) error {
-	return validateID(id, reLegacyFTID)
-}
-
 func ValidateNFTID(id string) error {
 	if err := ValidateTokenID(id); err != nil {
 		return err
@@ -122,7 +116,7 @@ func ValidateNFTID(id string) error {
 	return nil
 }
 
-// deprecated
+// Deprecated: do not use (no successor).
 func ValidateLegacyNFTID(id string) error {
 	return validateID(id, reLegacyNFTID)
 }
