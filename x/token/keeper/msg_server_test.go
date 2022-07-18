@@ -289,24 +289,24 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 	testCases := map[string]struct {
 		granter    sdk.AccAddress
 		grantee    sdk.AccAddress
-		permission string
+		permission token.Permission
 		valid      bool
 	}{
 		"valid request": {
 			granter:    s.vendor,
 			grantee:    s.operator,
-			permission: token.Permission_Modify.String(),
+			permission: token.PermissionModify,
 			valid:      true,
 		},
 		"already granted": {
 			granter:    s.vendor,
 			grantee:    s.operator,
-			permission: token.Permission_Mint.String(),
+			permission: token.PermissionMint,
 		},
 		"granter has no permission": {
 			granter:    s.customer,
 			grantee:    s.operator,
-			permission: token.Permission_Modify.String(),
+			permission: token.PermissionModify,
 		},
 	}
 
@@ -334,17 +334,17 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 func (s *KeeperTestSuite) TestMsgAbandon() {
 	testCases := map[string]struct {
 		grantee    sdk.AccAddress
-		permission string
+		permission token.Permission
 		valid      bool
 	}{
 		"valid request": {
 			grantee:    s.operator,
-			permission: token.Permission_Mint.String(),
+			permission: token.PermissionMint,
 			valid:      true,
 		},
 		"not granted yet": {
 			grantee:    s.operator,
-			permission: token.Permission_Modify.String(),
+			permission: token.PermissionModify,
 		},
 	}
 
@@ -378,18 +378,18 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 		"valid request": {
 			granter:    s.vendor,
 			grantee:    s.operator,
-			permission: token.Permission_Modify.String(),
+			permission: token.LegacyPermissionModify.String(),
 			valid:      true,
 		},
 		"already granted": {
 			granter:    s.vendor,
 			grantee:    s.operator,
-			permission: token.Permission_Mint.String(),
+			permission: token.LegacyPermissionMint.String(),
 		},
 		"granter has no permission": {
 			granter:    s.customer,
 			grantee:    s.operator,
-			permission: token.Permission_Modify.String(),
+			permission: token.LegacyPermissionModify.String(),
 		},
 	}
 
@@ -422,12 +422,12 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 	}{
 		"valid request": {
 			from:       s.operator,
-			permission: token.Permission_Mint.String(),
+			permission: token.LegacyPermissionMint.String(),
 			valid:      true,
 		},
 		"not granted yet": {
 			from:       s.operator,
-			permission: token.Permission_Modify.String(),
+			permission: token.LegacyPermissionModify.String(),
 		},
 	}
 
@@ -617,7 +617,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			req := &token.MsgModify{
 				ContractId: s.contractID,
 				Owner:      tc.grantee.String(),
-				Changes:    []token.Pair{{Field: token.AttributeKey_Name.String(), Value: "hello"}},
+				Changes:    []token.Pair{{Field: token.AttributeKeyName.String(), Value: "hello"}},
 			}
 			res, err := s.msgServer.Modify(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
