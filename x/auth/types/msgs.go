@@ -37,9 +37,9 @@ func (msg MsgEmpty) GetSignBytes() []byte {
 
 // GetSigners Implements Msg.
 func (msg MsgEmpty) GetSigners() []sdk.AccAddress {
-	_, err := sdk.AccAddressFromBech32(msg.FromAddress)
+	addr, err := sdk.AccAddressFromBech32(msg.FromAddress)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{sdk.AccAddress(msg.FromAddress)}
+	return []sdk.AccAddress{addr}
 }

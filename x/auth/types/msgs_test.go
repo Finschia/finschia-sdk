@@ -51,5 +51,5 @@ func TestMsgSendGetSignBytes(t *testing.T) {
 func TestMsgSendGetSigners(t *testing.T) {
 	res := NewMsgEmpty(sdk.AccAddress([]byte("input111111111111111"))).GetSigners()
 	bytes, _ := sdk.AccAddressFromBech32(res[0].String())
-	require.Equal(t, fmt.Sprintf("%v", hex.EncodeToString(bytes)), "696e707574313131313131313131313131313131")
+	require.Equal(t, "696e707574313131313131313131313131313131", fmt.Sprintf("%v", hex.EncodeToString(bytes)))
 }
