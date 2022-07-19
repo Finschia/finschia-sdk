@@ -426,7 +426,7 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 		collection.PermissionMint,
 		collection.PermissionBurn,
 	} {
-		s.keeper.Grant(ctx, req.ContractId, "", sdk.AccAddress(req.Owner), permission)
+		s.keeper.Grant(ctx, req.ContractId, []byte{}, sdk.AccAddress(req.Owner), permission)
 	}
 
 	return &collection.MsgIssueNFTResponse{Id: *id}, nil

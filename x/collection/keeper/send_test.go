@@ -58,10 +58,10 @@ func (s *KeeperTestSuite) TestAuthorizeOperator() {
 		s.contractID:    "valid",
 		dummyContractID: "not-exists",
 	}
-	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor:   "vendor",
-		s.operator: "operator",
-		s.customer: "customer",
+	userDescriptions := map[string]string{
+		s.vendor.String():   "vendor",
+		s.operator.String(): "operator",
+		s.customer.String(): "customer",
 	}
 	for id, idDesc := range contractDescriptions {
 		for operator, operatorDesc := range userDescriptions {
@@ -71,11 +71,17 @@ func (s *KeeperTestSuite) TestAuthorizeOperator() {
 					ctx, _ := s.ctx.CacheContext()
 
 					_, idErr := s.keeper.GetContract(ctx, id)
-					_, authErr := s.keeper.GetAuthorization(ctx, id, from, operator)
-					err := s.keeper.AuthorizeOperator(ctx, id, from, operator)
+
+					fromAddr, err := sdk.AccAddressFromBech32(from)
+					s.Require().NoError(err)
+					operatorAddr, err := sdk.AccAddressFromBech32(operator)
+					s.Require().NoError(err)
+
+					_, authErr := s.keeper.GetAuthorization(ctx, id, fromAddr, operatorAddr)
+					err = s.keeper.AuthorizeOperator(ctx, id, fromAddr, operatorAddr)
 					if idErr == nil && authErr != nil {
 						s.Require().NoError(err)
-						_, authErr = s.keeper.GetAuthorization(ctx, id, from, operator)
+						_, authErr = s.keeper.GetAuthorization(ctx, id, fromAddr, operatorAddr)
 						s.Require().NoError(authErr)
 					} else {
 						s.Require().Error(err)
@@ -96,10 +102,10 @@ func (s *KeeperTestSuite) TestRevokeOperator() {
 		s.contractID:    "valid",
 		dummyContractID: "not-exists",
 	}
-	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor:   "vendor",
-		s.operator: "operator",
-		s.customer: "customer",
+	userDescriptions := map[string]string{
+		s.vendor.String():   "vendor",
+		s.operator.String(): "operator",
+		s.customer.String(): "customer",
 	}
 	for id, idDesc := range contractDescriptions {
 		for operator, operatorDesc := range userDescriptions {
@@ -109,11 +115,17 @@ func (s *KeeperTestSuite) TestRevokeOperator() {
 					ctx, _ := s.ctx.CacheContext()
 
 					_, idErr := s.keeper.GetContract(ctx, id)
-					_, authErr := s.keeper.GetAuthorization(ctx, id, from, operator)
-					err := s.keeper.RevokeOperator(ctx, id, from, operator)
+
+					fromAddr, err := sdk.AccAddressFromBech32(from)
+					s.Require().NoError(err)
+					operatorAddr, err := sdk.AccAddressFromBech32(operator)
+					s.Require().NoError(err)
+
+					_, authErr := s.keeper.GetAuthorization(ctx, id, fromAddr, operatorAddr)
+					err = s.keeper.RevokeOperator(ctx, id, fromAddr, operatorAddr)
 					if idErr == nil && authErr == nil {
 						s.Require().NoError(err)
-						_, authErr = s.keeper.GetAuthorization(ctx, id, from, operator)
+						_, authErr = s.keeper.GetAuthorization(ctx, id, fromAddr, operatorAddr)
 						s.Require().Error(authErr)
 					} else {
 						s.Require().Error(err)

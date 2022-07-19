@@ -13,7 +13,7 @@ import (
 func TestMsgSend(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -101,7 +101,7 @@ func TestMsgSend(t *testing.T) {
 func TestMsgOperatorSend(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -180,7 +180,7 @@ func TestMsgOperatorSend(t *testing.T) {
 func TestMsgTransferFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	amount := collection.NewCoins(
@@ -271,7 +271,7 @@ func TestMsgTransferFT(t *testing.T) {
 func TestMsgTransferFTFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	amount := collection.NewCoins(
@@ -352,7 +352,7 @@ func TestMsgTransferFTFrom(t *testing.T) {
 func TestMsgTransferNFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	ids := []string{collection.NewNFTID("deadbeef", 1)}
@@ -421,7 +421,7 @@ func TestMsgTransferNFT(t *testing.T) {
 func TestMsgTransferNFTFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	ids := []string{collection.NewNFTID("deadbeef", 1)}
@@ -504,7 +504,7 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 func TestMsgAuthorizeOperator(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -555,7 +555,7 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 func TestMsgRevokeOperator(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -606,7 +606,7 @@ func TestMsgRevokeOperator(t *testing.T) {
 func TestMsgApprove(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -656,7 +656,7 @@ func TestMsgApprove(t *testing.T) {
 func TestMsgDisapprove(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -706,7 +706,7 @@ func TestMsgDisapprove(t *testing.T) {
 func TestMsgCreateContract(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	name := "tibetian fox"
@@ -773,7 +773,7 @@ func TestMsgCreateContract(t *testing.T) {
 func TestMsgIssueFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -896,7 +896,7 @@ func TestMsgIssueFT(t *testing.T) {
 func TestMsgIssueNFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -962,7 +962,7 @@ func TestMsgIssueNFT(t *testing.T) {
 func TestMsgCreateFTClass(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -1079,7 +1079,7 @@ func TestMsgCreateFTClass(t *testing.T) {
 func TestMsgCreateNFTClass(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -1145,7 +1145,7 @@ func TestMsgCreateNFTClass(t *testing.T) {
 func TestMsgMintFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	amount := collection.NewCoins(
@@ -1214,7 +1214,7 @@ func TestMsgMintFT(t *testing.T) {
 func TestMsgMintNFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	params := []collection.MintNFTParam{{
@@ -1304,7 +1304,7 @@ func TestMsgMintNFT(t *testing.T) {
 func TestMsgBurn(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -1359,7 +1359,7 @@ func TestMsgBurn(t *testing.T) {
 func TestMsgOperatorBurn(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -1425,7 +1425,7 @@ func TestMsgOperatorBurn(t *testing.T) {
 func TestMsgBurnFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	amount := collection.NewCoins(
@@ -1482,7 +1482,7 @@ func TestMsgBurnFT(t *testing.T) {
 func TestMsgBurnFTFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	amount := collection.NewCoins(
@@ -1550,7 +1550,7 @@ func TestMsgBurnFTFrom(t *testing.T) {
 func TestMsgBurnNFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	ids := []string{collection.NewNFTID("deadbeef", 1)}
@@ -1607,7 +1607,7 @@ func TestMsgBurnNFT(t *testing.T) {
 func TestMsgBurnNFTFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	ids := []string{collection.NewNFTID("deadbeef", 1)}
@@ -1676,7 +1676,7 @@ func TestMsgBurnNFTFrom(t *testing.T) {
 func TestMsgModifyContract(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -1751,7 +1751,7 @@ func TestMsgModifyContract(t *testing.T) {
 func TestMsgModifyTokenClass(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -1842,7 +1842,7 @@ func TestMsgModifyTokenClass(t *testing.T) {
 func TestMsgModifyNFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -1934,7 +1934,7 @@ func TestMsgModifyNFT(t *testing.T) {
 func TestMsgModify(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	changes := []collection.Change{{Field: "name", Value: "New test"}}
@@ -2024,7 +2024,7 @@ func TestMsgModify(t *testing.T) {
 func TestMsgGrant(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -2086,7 +2086,7 @@ func TestMsgGrant(t *testing.T) {
 func TestMsgAbandon(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -2137,7 +2137,7 @@ func TestMsgAbandon(t *testing.T) {
 func TestMsgGrantPermission(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -2198,7 +2198,7 @@ func TestMsgGrantPermission(t *testing.T) {
 func TestMsgRevokePermission(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -2248,7 +2248,7 @@ func TestMsgRevokePermission(t *testing.T) {
 func TestMsgAttach(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -2321,7 +2321,7 @@ func TestMsgAttach(t *testing.T) {
 func TestMsgDetach(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -2374,7 +2374,7 @@ func TestMsgDetach(t *testing.T) {
 func TestMsgOperatorAttach(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -2461,7 +2461,7 @@ func TestMsgOperatorAttach(t *testing.T) {
 func TestMsgOperatorDetach(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -2525,7 +2525,7 @@ func TestMsgOperatorDetach(t *testing.T) {
 func TestMsgAttachFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	tokenIDs := []string{
@@ -2611,7 +2611,7 @@ func TestMsgAttachFrom(t *testing.T) {
 func TestMsgDetachFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	tokenID := collection.NewNFTID("deadbeef", 1)
