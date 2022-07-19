@@ -81,8 +81,6 @@ func TestLoadStore(t *testing.T) {
 	hStore, err := store.GetImmutable(verH)
 	require.NoError(t, err)
 	require.Equal(t, string(hStore.Get([]byte("hello"))), "hallo")
-	hStore.Prefetch([]byte("hello"), false)
-	hStore.Prefetch([]byte("hello"), true)
 
 	// Querying an existing store at some previous pruned height Hp
 	hpStore, err := store.GetImmutable(verHp)

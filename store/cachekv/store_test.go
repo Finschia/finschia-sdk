@@ -33,7 +33,6 @@ func TestCacheKVStore(t *testing.T) {
 	// put something in mem and in cache
 	mem.Set(keyFmt(1), valFmt(1))
 	st.Set(keyFmt(1), valFmt(1))
-	st.Prefetch(keyFmt(1), false)
 	require.Equal(t, valFmt(1), st.Get(keyFmt(1)))
 
 	// update it in cache, shoudn't change mem

@@ -43,8 +43,6 @@ type AccountKeeperI interface {
 	// Fetch the sequence of an account at a specified address.
 	GetSequence(sdk.Context, sdk.AccAddress) (uint64, error)
 
-	// Prefetch an account, i.e. pre-fetch
-	Prefetch(sdk.Context, sdk.AccAddress, bool)
 	// Fetch the next account number, and increment the internal counter.
 	GetNextAccountNumber(sdk.Context) uint64
 }

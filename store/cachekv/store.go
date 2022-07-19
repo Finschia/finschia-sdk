@@ -94,15 +94,6 @@ func (store *Store) Delete(key []byte) {
 	store.setCacheValue(key, nil, true, true)
 }
 
-// Prefetch implements types.KVStore.
-func (store *Store) Prefetch(key []byte, forSet bool) (hits, misses int, value []byte) {
-	defer telemetry.MeasureSince(time.Now(), "store", "cachekv", "prefetch")
-
-	// do not update cache
-	types.AssertValidKey(key)
-	return store.parent.Prefetch(key, forSet)
-}
-
 // Implements Cachetypes.KVStore.
 func (store *Store) Write() {
 	store.mtx.Lock()
