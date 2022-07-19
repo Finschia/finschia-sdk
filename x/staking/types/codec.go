@@ -12,11 +12,11 @@ import (
 // RegisterLegacyAminoCodec registers the necessary x/staking interfaces and concrete types
 // on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateValidator{}, "lbm-sdk/MsgCreateValidator", nil)
-	cdc.RegisterConcrete(&MsgEditValidator{}, "lbm-sdk/MsgEditValidator", nil)
-	cdc.RegisterConcrete(&MsgDelegate{}, "lbm-sdk/MsgDelegate", nil)
-	cdc.RegisterConcrete(&MsgUndelegate{}, "lbm-sdk/MsgUndelegate", nil)
-	cdc.RegisterConcrete(&MsgBeginRedelegate{}, "lbm-sdk/MsgBeginRedelegate", nil)
+	cdc.RegisterConcrete(&MsgCreateValidator{}, "cosmos-sdk/MsgCreateValidator", nil)
+	cdc.RegisterConcrete(&MsgEditValidator{}, "cosmos-sdk/MsgEditValidator", nil)
+	cdc.RegisterConcrete(&MsgDelegate{}, "cosmos-sdk/MsgDelegate", nil)
+	cdc.RegisterConcrete(&MsgUndelegate{}, "cosmos-sdk/MsgUndelegate", nil)
+	cdc.RegisterConcrete(&MsgBeginRedelegate{}, "cosmos-sdk/MsgBeginRedelegate", nil)
 }
 
 // RegisterInterfaces registers the x/staking interfaces types with the interface registry
