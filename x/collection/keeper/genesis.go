@@ -45,10 +45,12 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 
 		for _, balance := range contractBalances.Balances {
 			for _, coin := range balance.Amount {
-				k.setBalance(ctx, contractID, sdk.AccAddress(balance.Address), coin.TokenId, coin.Amount)
+				addr, _ := sdk.AccAddressFromBech32(balance.Address)
+
+				k.setBalance(ctx, contractID, addr, coin.TokenId, coin.Amount)
 
 				if err := collection.ValidateNFTID(coin.TokenId); err == nil {
-					k.setOwner(ctx, contractID, coin.TokenId, sdk.AccAddress(balance.Address))
+					k.setOwner(ctx, contractID, coin.TokenId, addr)
 				}
 			}
 		}
@@ -75,13 +77,16 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 
 	for _, contractAuthorizations := range data.Authorizations {
 		for _, authorization := range contractAuthorizations.Authorizations {
-			k.setAuthorization(ctx, contractAuthorizations.ContractId, sdk.AccAddress(authorization.Holder), sdk.AccAddress(authorization.Operator))
+			holderAddr, _ := sdk.AccAddressFromBech32(authorization.Holder)
+			operatorAddr, _ := sdk.AccAddressFromBech32(authorization.Operator)
+			k.setAuthorization(ctx, contractAuthorizations.ContractId, holderAddr, operatorAddr)
 		}
 	}
 
 	for _, contractGrants := range data.Grants {
 		for _, grant := range contractGrants.Grants {
-			k.setGrant(ctx, contractGrants.ContractId, sdk.AccAddress(grant.Grantee), grant.Permission)
+			granteeAddr, _ := sdk.AccAddressFromBech32(grant.Grantee)
+			k.setGrant(ctx, contractGrants.ContractId, granteeAddr, grant.Permission)
 		}
 	}
 
