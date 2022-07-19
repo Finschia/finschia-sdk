@@ -48,6 +48,8 @@ func NewWasmProposalHandlerX(k types.ContractOpsKeeper, enabledProposalTypes []t
 			return handlePinCodesProposal(ctx, k, *c)
 		case *types.UnpinCodesProposal:
 			return handleUnpinCodesProposal(ctx, k, *c)
+		case *types.UpdateContractStatusProposal:
+			return handleUpdateContractStatusProposal(ctx, k, *c)
 		case *types.UpdateInstantiateConfigProposal:
 			return handleUpdateInstantiateConfigProposal(ctx, k, *c)
 		default:
@@ -107,6 +109,9 @@ func handleMigrateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.M
 	contractAddr, err := sdk.AccAddressFromBech32(p.Contract)
 	if err != nil {
 		return sdkerrors.Wrap(err, "contract")
+	}
+	if err != nil {
+		return sdkerrors.Wrap(err, "run as address")
 	}
 	// runAs is not used if this is permissioned, so just put any valid address there (second contractAddr)
 	data, err := k.Migrate(ctx, contractAddr, contractAddr, p.CodeID, p.Msg)
