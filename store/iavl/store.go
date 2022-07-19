@@ -89,16 +89,20 @@ func NewCacheManagerNoCache() types.CacheManager {
 // LoadStore returns an IAVL Store as a CommitKVStore. Internally, it will load the
 // store's version (id) from the provided DB. An error is returned if the version
 // fails to load, or if called with a positive version on an empty tree.
-func LoadStore(db tmdb.DB, id types.CommitID, lazyLoading bool, cacheSize int) (types.CommitKVStore, error) {
-	return LoadStoreWithInitialVersion(db, id, lazyLoading, 0, cacheSize)
+func LoadStore(db tmdb.DB, cacheManager types.CacheManager, id types.CommitID, lazyLoading bool, cacheSize int) (types.CommitKVStore, error) {
+	return LoadStoreWithInitialVersion(db, cacheManager, id, lazyLoading, 0, cacheSize)
 }
 
 // LoadStoreWithInitialVersion returns an IAVL Store as a CommitKVStore setting its initialVersion
 // to the one given. Internally, it will load the store's version (id) from the
 // provided DB. An error is returned if the version fails to load, or if called with a positive
 // version on an empty tree.
-func LoadStoreWithInitialVersion(db tmdb.DB, id types.CommitID, lazyLoading bool, initialVersion uint64, cacheSize int) (types.CommitKVStore, error) {
-	tree, err := iavl.NewMutableTreeWithOpts(db, cacheSize, &iavl.Options{InitialVersion: initialVersion})
+func LoadStoreWithInitialVersion(db tmdb.DB, cacheManager types.CacheManager, id types.CommitID, lazyLoading bool, initialVersion uint64, cacheSize int) (types.CommitKVStore, error) {
+	if cacheManager == nil {
+		cacheManager = NewCacheManagerNoCache()
+	}
+	cache := cacheManager.GetCache()
+	tree, err := iavl.NewMutableTreeWithCacheWithOpts(db, cache, &iavl.Options{InitialVersion: initialVersion}) // TODO(dudong2): need to fix to use cacheSize(by using NewMutableTreeWithOpts)
 	if err != nil {
 		return nil, err
 	}
@@ -113,8 +117,16 @@ func LoadStoreWithInitialVersion(db tmdb.DB, id types.CommitID, lazyLoading bool
 		return nil, err
 	}
 
+	var metrics *Metrics
+	if cms, ok := cacheManager.(*CacheManagerSingleton); ok {
+		metrics = cms.metrics
+	} else {
+		metrics = NopMetrics()
+	}
 	return &Store{
-		tree: tree,
+		tree:    tree,
+		cache:   cache,
+		metrics: metrics,
 	}, nil
 }
 
