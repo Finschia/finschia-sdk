@@ -5,5 +5,5 @@ import (
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(StdTx{}, "lbm-sdk/StdTx", nil)
+	cdc.RegisterConcrete(StdTx{}, "cosmos-sdk/StdTx", nil)
 }

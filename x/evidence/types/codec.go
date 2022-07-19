@@ -13,8 +13,8 @@ import (
 // evidence module.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*exported.Evidence)(nil), nil)
-	cdc.RegisterConcrete(&MsgSubmitEvidence{}, "lbm-sdk/MsgSubmitEvidence", nil)
-	cdc.RegisterConcrete(&Equivocation{}, "lbm-sdk/Equivocation", nil)
+	cdc.RegisterConcrete(&MsgSubmitEvidence{}, "cosmos-sdk/MsgSubmitEvidence", nil)
+	cdc.RegisterConcrete(&Equivocation{}, "cosmos-sdk/Equivocation", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
