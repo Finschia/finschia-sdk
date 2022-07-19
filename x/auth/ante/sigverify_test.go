@@ -367,7 +367,7 @@ func (suite *AnteTestSuite) TestIncrementSequenceDecorator() {
 	tx, err := suite.CreateTestTx(privs, accNums, accSeqs, suite.ctx.ChainID())
 	suite.Require().NoError(err)
 
-	isd := ante.NewIncrementSequenceDecorator(suite.app.AccountKeeper, suite.app.BankKeeper)
+	isd := ante.NewIncrementSequenceDecorator(suite.app.AccountKeeper)
 	antehandler := sdk.ChainAnteDecorators(isd)
 
 	testCases := []struct {

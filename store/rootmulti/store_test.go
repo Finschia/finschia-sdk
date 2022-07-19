@@ -11,12 +11,10 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	iavltree "github.com/line/iavl/v2"
 	abci "github.com/line/ostracon/abci/types"
 	tmdb "github.com/line/tm-db/v2"
 	"github.com/line/tm-db/v2/memdb"
@@ -108,8 +106,6 @@ func TestCacheMultiStoreWithVersion(t *testing.T) {
 	kvStore := cms.GetKVStore(ms.keysByName["store1"])
 	require.NotNil(t, kvStore)
 	require.Equal(t, kvStore.Get(k), v)
-	kvStore.Prefetch(k, true)
-	kvStore.Prefetch(k, false)
 
 	// require we cannot commit (write) to a cache-versioned multi-store
 	require.Panics(t, func() {
@@ -559,11 +555,7 @@ func TestMultiStore_PruningRestart(t *testing.T) {
 
 	// commit one more block and ensure the heights have been pruned
 	ms.Commit()
-	// pruning is background job, sleeps for a few seconds for the pruning to finish
-	time.Sleep(5 * time.Second)
-	ms.pruneLock.Lock()
 	require.Empty(t, ms.pruneHeights)
-	ms.pruneLock.Unlock()
 
 	for _, v := range pruneHeights {
 		_, err := ms.CacheMultiStoreWithVersion(v)
@@ -1055,8 +1047,4 @@ func hashStores(stores map[types.StoreKey]types.CommitKVStore) []byte {
 		}.GetHash()
 	}
 	return sdkmaps.HashFromMap(m)
-}
-
-func init() {
-	iavltree.PruningThreshold = 1 << 20
 }
