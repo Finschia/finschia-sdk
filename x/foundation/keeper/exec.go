@@ -29,7 +29,7 @@ func (k Keeper) Exec(ctx sdk.Context, proposalID uint64) error {
 
 	if proposal.Status != foundation.PROPOSAL_STATUS_SUBMITTED &&
 		proposal.Status != foundation.PROPOSAL_STATUS_CLOSED {
-		return sdkerrors.ErrInvalidRequest.Wrapf("not possible with proposal status: %s", proposal.Status.String())
+		return sdkerrors.ErrInvalidRequest.Wrapf("not possible with proposal status: %s", proposal.Status)
 	}
 
 	if proposal.Status == foundation.PROPOSAL_STATUS_SUBMITTED {
@@ -59,15 +59,17 @@ func (k Keeper) Exec(ctx sdk.Context, proposalID uint64) error {
 	if proposal.ExecutorResult == foundation.PROPOSAL_EXECUTOR_RESULT_SUCCESS {
 		k.pruneProposal(ctx, *proposal)
 	} else {
-		if err := k.setProposal(ctx, *proposal); err != nil {
-			return err
-		}
+		k.setProposal(ctx, *proposal)
 	}
 
-	return ctx.EventManager().EmitTypedEvent(&foundation.EventExec{
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventExec{
 		ProposalId: proposal.Id,
 		Result:     proposal.ExecutorResult,
-	})
+	}); err != nil {
+		panic(err)
+	}
+
+	return nil
 }
 
 // doExecuteMsgs routes the messages to the registered handlers.

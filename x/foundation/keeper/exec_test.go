@@ -1,21 +1,21 @@
 package keeper_test
 
 func (s *KeeperTestSuite) TestExec() {
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		proposalID uint64
-		valid bool
+		valid      bool
 	}{
 		"valid exec": {
 			proposalID: s.votedProposal,
-			valid: true,
+			valid:      true,
 		},
 		"not enough votes": {
 			proposalID: s.activeProposal,
-			valid: true,
+			valid:      true,
 		},
 		"invalid msg in proposal": {
 			proposalID: s.invalidProposal,
-			valid: true,
+			valid:      true,
 		},
 		"aborted proposal": {
 			proposalID: s.abortedProposal,
