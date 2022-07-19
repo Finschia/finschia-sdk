@@ -152,7 +152,7 @@ func (k Keeper) InitializeIndex(ctx sdk.Context, index uint64) error {
 	}
 	latest := k.GetLatestIndex(ctx)
 	if latest > 0 {
-		panic(fmt.Sprintf("SetIndex requires index to not be set: %d", latest))
+		panic("SetIndex requires index to not be set")
 	}
 
 	// set the global index to the passed index

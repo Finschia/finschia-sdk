@@ -980,6 +980,7 @@ func commitStores(version int64, storeMap map[types.StoreKey]types.CommitKVStore
 		if store.GetStoreType() == types.StoreTypeTransient {
 			continue
 		}
+
 		si := types.StoreInfo{}
 		si.Name = key.Name()
 		si.CommitId = commitID
