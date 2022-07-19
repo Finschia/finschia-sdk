@@ -71,17 +71,6 @@ func SetInterBlockCache(cache sdk.MultiStorePersistentCache) func(*BaseApp) {
 	return func(app *BaseApp) { app.setInterBlockCache(cache) }
 }
 
-// SetIAVLCacheManager provides a BaseApp option function that sets the iavl CacheManager
-func SetIAVLCacheManager(size int, provider iavl.MetricsProvider) func(*BaseApp) {
-	return func(app *BaseApp) {
-		if size == 0 {
-			app.cms.SetIAVLCacheManager(iavl.NewCacheManagerNoCache())
-		} else {
-			app.cms.SetIAVLCacheManager(iavl.NewCacheManagerSingleton(size, provider))
-		}
-	}
-}
-
 // SetSnapshotInterval sets the snapshot interval.
 func SetSnapshotInterval(interval uint64) func(*BaseApp) {
 	return func(app *BaseApp) { app.SetSnapshotInterval(interval) }
