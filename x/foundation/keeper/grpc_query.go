@@ -215,16 +215,16 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 		_, err = query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
 			var authorization foundation.Authorization
 			if err := s.keeper.cdc.UnmarshalInterface(value, &authorization); err != nil {
-				return err
+				panic(err)
 			}
 
 			msg, ok := authorization.(proto.Message)
 			if !ok {
-				return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
+				panic(sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg))
 			}
 			any, err := codectypes.NewAnyWithValue(msg)
 			if err != nil {
-				return err
+				panic(err)
 			}
 			authorizations = append(authorizations, any)
 
@@ -245,16 +245,16 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
 		var authorization foundation.Authorization
 		if err := s.keeper.cdc.UnmarshalInterface(value, &authorization); err != nil {
-			return err
+			panic(err)
 		}
 
 		msg, ok := authorization.(proto.Message)
 		if !ok {
-			return sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg)
+			panic(sdkerrors.ErrInvalidType.Wrapf("can't proto marshal %T", msg))
 		}
 		any, err := codectypes.NewAnyWithValue(msg)
 		if err != nil {
-			return err
+			panic(err)
 		}
 		authorizations = append(authorizations, any)
 

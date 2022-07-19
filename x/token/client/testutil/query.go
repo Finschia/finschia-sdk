@@ -74,7 +74,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 			s.Require().NoError(err)
 
 			var actual token.QueryBalanceResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
@@ -129,7 +129,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 			s.Require().NoError(err)
 
 			var actual token.QueryTokenClassResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
@@ -177,7 +177,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokens() {
 			s.Require().NoError(err)
 
 			var actual token.QueryTokenClassesResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
@@ -205,15 +205,15 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGranteeGrants() {
 				Grants: []token.Grant{
 					{
 						Grantee:    s.vendor.String(),
-						Permission: token.Permission_Modify.String(),
+						Permission: token.PermissionModify,
 					},
 					{
 						Grantee:    s.vendor.String(),
-						Permission: token.Permission_Mint.String(),
+						Permission: token.PermissionMint,
 					},
 					{
 						Grantee:    s.vendor.String(),
-						Permission: token.Permission_Burn.String(),
+						Permission: token.PermissionBurn,
 					},
 				},
 				Pagination: &query.PageResponse{
@@ -252,7 +252,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGranteeGrants() {
 			s.Require().NoError(err)
 
 			var actual token.QueryGranteeGrantsResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
@@ -317,7 +317,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 			s.Require().NoError(err)
 
 			var actual token.QueryAuthorizationResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
@@ -382,7 +382,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdOperatorAuthorizations() {
 			s.Require().NoError(err)
 
 			var actual token.QueryOperatorAuthorizationsResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}

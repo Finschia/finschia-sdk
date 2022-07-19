@@ -559,6 +559,7 @@ func TestMsgGrant(t *testing.T) {
 		},
 		"empty grantee": {
 			operator:      addrs[0],
+			grantee:       sdk.AccAddress{},
 			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
 		},
 		"empty authorization": {
@@ -612,6 +613,7 @@ func TestMsgRevoke(t *testing.T) {
 		},
 		"empty grantee": {
 			operator:   addrs[0],
+			grantee:    sdk.AccAddress{},
 			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 		},
 		"empty url": {

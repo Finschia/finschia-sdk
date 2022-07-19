@@ -1,0 +1,155 @@
+syntax = "proto3";
+package lbm.collection.v1;
+
+import "google/protobuf/any.proto";
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+import "lbm/collection/v1/collection.proto";
+
+option go_package = "github.com/line/lbm-sdk/x/collection";
+
+// GenesisState defines the collection module's genesis state.
+message GenesisState {
+  // params defines all the paramaters of the module.
+  Params params = 1 [(gogoproto.nullable) = false];
+
+  // contracts defines the metadata of the contracts.
+  repeated Contract contracts = 2 [(gogoproto.nullable) = false];
+
+  // next ids for token classes.
+  repeated NextClassIDs next_class_ids = 3 [(gogoproto.nullable) = false];
+
+  // classes defines the metadata of the tokens.
+  repeated ContractClasses classes = 4 [(gogoproto.nullable) = false];
+
+  // next ids for (non-fungible) tokens.
+  repeated ContractNextTokenIDs next_token_ids = 5 [(gogoproto.nullable) = false];
+
+  // balances is an array containing the balances of all the accounts.
+  repeated ContractBalances balances = 6 [(gogoproto.nullable) = false];
+
+  // nfts is an array containing the nfts.
+  repeated ContractNFTs nfts = 7 [(gogoproto.nullable) = false];
+
+  // parents represents the parents of (non-fungible) tokens.
+  repeated ContractTokenRelations parents = 8 [(gogoproto.nullable) = false];
+
+  // grants defines the grant information.
+  repeated ContractGrants grants = 9 [(gogoproto.nullable) = false];
+
+  // authorizations defines the approve information.
+  repeated ContractAuthorizations authorizations = 10 [(gogoproto.nullable) = false];
+
+  // supplies represents the total supplies of tokens.
+  repeated ContractStatistics supplies = 11 [(gogoproto.nullable) = false];
+
+  // burnts represents the total amount of burnt tokens.
+  repeated ContractStatistics burnts = 12 [(gogoproto.nullable) = false];
+}
+
+// ContractBalances defines balances belong to a contract.
+// genesis state.
+message ContractBalances {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // balances
+  repeated Balance balances = 2 [(gogoproto.nullable) = false];
+}
+
+// ContractStatistics defines statistics belong to a contract.
+message ContractStatistics {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // statistics
+  repeated ClassStatistics statistics = 2 [(gogoproto.nullable) = false];
+}
+
+// ClassStatistics defines statistics belong to a token class.
+message ClassStatistics {
+  // class id associated with the token class.
+  string class_id = 1;
+  // statistics
+  string amount = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int"];
+}
+
+// Balance defines a balance of an address.
+message Balance {
+  option (gogoproto.equal) = true;
+
+  string        address = 1;
+  repeated Coin amount  = 2 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Coins"];
+}
+
+// ContractClasses defines token classes belong to a contract.
+message ContractClasses {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // classes
+  repeated google.protobuf.Any classes = 2
+      [(gogoproto.nullable) = false, (cosmos_proto.accepts_interface) = "TokenClass"];
+}
+
+// ContractNFTs defines token classes belong to a contract.
+message ContractNFTs {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // nfts
+  repeated NFT nfts = 2 [(gogoproto.nullable) = false];
+}
+
+// ContractAuthorizations defines authorizations belong to a contract.
+message ContractAuthorizations {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // authorizations
+  repeated Authorization authorizations = 2 [(gogoproto.nullable) = false];
+}
+
+// ContractGrant defines grants belong to a contract.
+message ContractGrants {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // grants
+  repeated Grant grants = 2 [(gogoproto.nullable) = false];
+}
+
+// NextClassIDs defines the next class ids of the contract.
+message NextClassIDs {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // id for the fungible tokens.
+  string fungible = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Uint", (gogoproto.nullable) = false];
+  // id for the non-fungible tokens.
+  string non_fungible = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Uint", (gogoproto.nullable) = false];
+}
+
+// ContractNextTokenIDs defines the next token ids belong to a contract.
+message ContractNextTokenIDs {
+  string               contract_id = 1;
+  repeated NextTokenID token_ids   = 2 [(gogoproto.nullable) = false];
+}
+
+// NextTokenID defines the next (non-fungible) token id of the token class.
+message NextTokenID {
+  // class id associated with the token class.
+  string class_id = 1;
+  // id for the token.
+  string id = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Uint", (gogoproto.nullable) = false];
+}
+
+// ContractTokenRelations defines token relations belong to a contract.
+message ContractTokenRelations {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // relations
+  repeated TokenRelation relations = 2 [(gogoproto.nullable) = false];
+}
+
+// TokenRelation defines relations between two tokens.
+message TokenRelation {
+  // self
+  string self = 1;
+  // other
+  string other = 2;
+}

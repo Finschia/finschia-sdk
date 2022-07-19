@@ -28,12 +28,11 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *token.GenesisState) {
 
 	for _, contractGrants := range data.Grants {
 		for _, grant := range contractGrants.Grants {
-			permission := token.Permission(token.Permission_value[grant.Permission])
 			grantee, err := sdk.AccAddressFromBech32(grant.Grantee)
 			if err != nil {
 				panic(err)
 			}
-			k.setGrant(ctx, contractGrants.ContractId, grantee, permission)
+			k.setGrant(ctx, contractGrants.ContractId, grantee, grant.Permission)
 		}
 	}
 

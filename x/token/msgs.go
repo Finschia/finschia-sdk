@@ -248,7 +248,7 @@ func (m MsgGrant) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
 	}
 
-	if err := validatePermission(m.Permission); err != nil {
+	if err := ValidatePermission(m.Permission); err != nil {
 		return err
 	}
 
@@ -276,7 +276,7 @@ func (m MsgAbandon) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
 	}
 
-	if err := validatePermission(m.Permission); err != nil {
+	if err := ValidatePermission(m.Permission); err != nil {
 		return err
 	}
 
@@ -307,7 +307,7 @@ func (m MsgGrantPermission) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.To)
 	}
 
-	if err := validatePermission(m.Permission); err != nil {
+	if err := validateLegacyPermission(m.Permission); err != nil {
 		return err
 	}
 
@@ -335,7 +335,7 @@ func (m MsgRevokePermission) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
-	if err := validatePermission(m.Permission); err != nil {
+	if err := validateLegacyPermission(m.Permission); err != nil {
 		return err
 	}
 

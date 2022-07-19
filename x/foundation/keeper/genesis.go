@@ -93,9 +93,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		}
 	}
 
-	if err := k.setFoundationInfo(ctx, *info); err != nil {
-		return err
-	}
+	k.setFoundationInfo(ctx, *info)
 
 	k.setPreviousProposalID(ctx, data.PreviousProposalId)
 
@@ -104,9 +102,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 			return err
 		}
 
-		if err := k.setProposal(ctx, proposal); err != nil {
-			return err
-		}
+		k.setProposal(ctx, proposal)
 		k.addProposalToVPEndQueue(ctx, proposal)
 	}
 
@@ -115,9 +111,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 			return err
 		}
 
-		if err := k.setVote(ctx, vote); err != nil {
-			return err
-		}
+		k.setVote(ctx, vote)
 	}
 
 	for _, ga := range authorizations {
@@ -125,9 +119,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		if err != nil {
 			return err
 		}
-		if err := k.setAuthorization(ctx, ga.Granter, grantee, ga.GetAuthorization()); err != nil {
-			return err
-		}
+		k.setAuthorization(ctx, ga.Granter, grantee, ga.GetAuthorization())
 	}
 
 	return nil

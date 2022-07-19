@@ -9,9 +9,9 @@ import (
 
 func (s *KeeperTestSuite) TestUpdateDecisionPolicy() {
 	config := foundation.DefaultConfig()
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		policy foundation.DecisionPolicy
-		valid bool
+		valid  bool
 	}{
 		"threshold policy (valid)": {
 			policy: &foundation.ThresholdDecisionPolicy{
@@ -34,7 +34,7 @@ func (s *KeeperTestSuite) TestUpdateDecisionPolicy() {
 			policy: &foundation.ThresholdDecisionPolicy{
 				Threshold: config.MinThreshold,
 				Windows: &foundation.DecisionPolicyWindows{
-					VotingPeriod: time.Hour,
+					VotingPeriod:       time.Hour,
 					MinExecutionPeriod: time.Hour + config.MaxExecutionPeriod,
 				},
 			},
@@ -60,7 +60,7 @@ func (s *KeeperTestSuite) TestUpdateDecisionPolicy() {
 			policy: &foundation.PercentageDecisionPolicy{
 				Percentage: config.MinPercentage,
 				Windows: &foundation.DecisionPolicyWindows{
-					VotingPeriod: time.Hour,
+					VotingPeriod:       time.Hour,
 					MinExecutionPeriod: time.Hour + config.MaxExecutionPeriod,
 				},
 			},
@@ -82,14 +82,14 @@ func (s *KeeperTestSuite) TestUpdateDecisionPolicy() {
 }
 
 func (s *KeeperTestSuite) TestUpdateMembers() {
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		updates []foundation.Member
-		valid bool
+		valid   bool
 	}{
 		"add a new member": {
 			updates: []foundation.Member{
 				{
-					Address: s.stranger.String(),
+					Address:       s.stranger.String(),
 					Participating: true,
 				},
 			},
@@ -113,9 +113,9 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 		"long metadata": {
 			updates: []foundation.Member{
 				{
-					Address: s.stranger.String(),
+					Address:       s.stranger.String(),
 					Participating: true,
-					Metadata: string(make([]rune, 256)),
+					Metadata:      string(make([]rune, 256)),
 				},
 			},
 		},
@@ -136,13 +136,13 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 }
 
 func (s *KeeperTestSuite) TestUpdateOperator() {
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		operator sdk.AccAddress
-		valid bool
+		valid    bool
 	}{
 		"valid new operator": {
 			operator: s.stranger,
-			valid: true,
+			valid:    true,
 		},
 		"already the operator": {
 			operator: s.operator,

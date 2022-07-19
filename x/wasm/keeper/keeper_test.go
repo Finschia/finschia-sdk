@@ -389,7 +389,7 @@ func TestInstantiate(t *testing.T) {
 
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x19aff), gasAfter-gasBefore)
+		require.Equal(t, uint64(106175), gasAfter-gasBefore)
 	}
 
 	// ensure it is stored properly
@@ -623,7 +623,7 @@ func TestExecute(t *testing.T) {
 	// make sure gas is properly deducted from ctx
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x1739a), gasAfter-gasBefore)
+		require.Equal(t, uint64(96282), gasAfter-gasBefore)
 	}
 	// ensure bob now exists and got both payments released
 	bobAcct = accKeeper.GetAccount(ctx, bob)

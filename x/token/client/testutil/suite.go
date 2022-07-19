@@ -101,7 +101,7 @@ func (s *IntegrationTestSuite) createClass(owner, to sdk.AccAddress, name, symbo
 	s.Require().NoError(err)
 
 	var res sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().EqualValues(0, res.Code, out.String())
 }
 
@@ -123,7 +123,7 @@ func (s *IntegrationTestSuite) createAccount(uid string) sdk.AccAddress {
 	s.Require().NoError(err)
 
 	var res sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().EqualValues(0, res.Code, out.String())
 
 	return addr
@@ -142,7 +142,7 @@ func (s *IntegrationTestSuite) authorizeOperator(contractID string, holder, oper
 	s.Require().NoError(err)
 
 	var res sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().EqualValues(0, res.Code, out.String())
 }
 

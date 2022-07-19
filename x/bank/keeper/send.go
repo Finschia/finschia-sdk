@@ -265,10 +265,7 @@ func (k BaseSendKeeper) setBalance(ctx sdk.Context, addr sdk.AccAddress, balance
 	if balance.IsZero() {
 		accountStore.Delete([]byte(balance.Denom))
 	} else {
-		bz, err := balance.Marshal()
-		if err != nil {
-			return err
-		}
+		bz := k.cdc.MustMarshal(&balance)
 		accountStore.Set([]byte(balance.Denom), bz)
 	}
 

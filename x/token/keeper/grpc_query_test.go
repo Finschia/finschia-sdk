@@ -269,32 +269,32 @@ func (s *KeeperTestSuite) TestQueryGrant() {
 	testCases := map[string]struct {
 		contractID string
 		grantee    sdk.AccAddress
-		permission string
+		permission token.Permission
 		valid      bool
 		postTest   func(res *token.QueryGrantResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			grantee:    s.vendor,
-			permission: token.Permission_Modify.String(),
+			permission: token.PermissionModify,
 			valid:      true,
 			postTest: func(res *token.QueryGrantResponse) {
 				s.Require().Equal(s.vendor.String(), res.Grant.Grantee)
-				s.Require().Equal(token.Permission_Modify.String(), res.Grant.Permission)
+				s.Require().Equal(token.PermissionModify, res.Grant.Permission)
 			},
 		},
 		"no permission": {
 			contractID: s.contractID,
 			grantee:    s.customer,
-			permission: token.Permission_Modify.String(),
+			permission: token.PermissionModify,
 		},
 		"invalid contract id": {
 			grantee:    s.vendor,
-			permission: token.Permission_Modify.String(),
+			permission: token.PermissionModify,
 		},
 		"invalid grantee": {
 			contractID: s.contractID,
-			permission: token.Permission_Modify.String(),
+			permission: token.PermissionModify,
 		},
 		"invalid permission": {
 			contractID: s.contractID,

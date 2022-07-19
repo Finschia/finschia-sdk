@@ -207,6 +207,8 @@ func NewQueryCmdGrant() *cobra.Command {
 		Short:   "query a permission on a given grantee",
 		Example: fmt.Sprintf(`$ %s query %s grant <class-id> <grantee> <permission>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			permission := token.Permission(token.Permission_value[args[2]])
+
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
@@ -215,7 +217,7 @@ func NewQueryCmdGrant() *cobra.Command {
 			res, err := queryClient.Grant(cmd.Context(), &token.QueryGrantRequest{
 				ContractId: args[0],
 				Grantee:    args[1],
-				Permission: args[2],
+				Permission: permission,
 			})
 			if err != nil {
 				return err

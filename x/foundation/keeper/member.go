@@ -42,16 +42,10 @@ func (k Keeper) GetFoundationInfo(ctx sdk.Context) foundation.FoundationInfo {
 	return info
 }
 
-func (k Keeper) setFoundationInfo(ctx sdk.Context, info foundation.FoundationInfo) error {
-	bz, err := k.cdc.Marshal(&info)
-	if err != nil {
-		return err
-	}
-
+func (k Keeper) setFoundationInfo(ctx sdk.Context, info foundation.FoundationInfo) {
 	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(&info)
 	store.Set(foundationInfoKey, bz)
-
-	return nil
 }
 
 func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.Member) error {
@@ -105,31 +99,21 @@ func (k Keeper) GetMember(ctx sdk.Context, address sdk.AccAddress) (*foundation.
 	key := memberKey(address)
 	bz := store.Get(key)
 	if len(bz) == 0 {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "No such member: %s", address.String())
+		return nil, sdkerrors.ErrNotFound.Wrapf("No such member: %s", address)
 	}
 
 	var member foundation.Member
-	if err := k.cdc.Unmarshal(bz, &member); err != nil {
-		return nil, err
-	}
+	k.cdc.MustUnmarshal(bz, &member)
+
 	return &member, nil
 }
 
-func (k Keeper) setMember(ctx sdk.Context, member foundation.Member) error {
-	bz, err := k.cdc.Marshal(&member)
-	if err != nil {
-		return err
-	}
-
+func (k Keeper) setMember(ctx sdk.Context, member foundation.Member) {
 	store := ctx.KVStore(k.storeKey)
-	addr, err := sdk.AccAddressFromBech32(member.Address)
-	if err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", member.Address)
-	}
-	key := memberKey(addr)
-	store.Set(key, bz)
+	key := memberKey(sdk.AccAddress(member.Address))
 
-	return nil
+	bz := k.cdc.MustMarshal(&member)
+	store.Set(key, bz)
 }
 
 func (k Keeper) deleteMember(ctx sdk.Context, address sdk.AccAddress) {
@@ -179,9 +163,7 @@ func (k Keeper) UpdateOperator(ctx sdk.Context, operator sdk.AccAddress) error {
 	}
 
 	info.Operator = operator.String()
-	if err := k.setFoundationInfo(ctx, info); err != nil {
-		return err
-	}
+	k.setFoundationInfo(ctx, info)
 
 	return nil
 }
