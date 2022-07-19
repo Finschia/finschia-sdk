@@ -44,7 +44,7 @@ func TestMsgSendValidation(t *testing.T) {
 func TestMsgSendGetSignBytes(t *testing.T) {
 	res := NewMsgEmpty(sdk.AccAddress([]byte("input"))).GetSignBytes()
 
-	expected := `{"type":"lbm-sdk/MsgEmpty","value":{"from_address":"link1d9h8qat5fnwd3e"}}`
+	expected := `{"type":"cosmos-sdk/MsgEmpty","value":{"from_address":"link1d9h8qat5fnwd3e"}}`
 	require.Equal(t, expected, string(res))
 }
 

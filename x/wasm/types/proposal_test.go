@@ -915,7 +915,7 @@ func TestProposalJsonSignBytes(t *testing.T) {
 			src: &InstantiateContractProposal{Msg: RawContractMessage(myInnerMsg)},
 			exp: `
  {
- 	"type":"lbm-sdk/MsgSubmitProposal",
+ 	"type":"cosmos-sdk/MsgSubmitProposal",
  	"value":{"content":{"type":"wasm/InstantiateContractProposal","value":{"funds":[],"msg":{"foo":"bar"}}},"initial_deposit":[]}
  }`,
 		},
@@ -923,7 +923,7 @@ func TestProposalJsonSignBytes(t *testing.T) {
 			src: &MigrateContractProposal{Msg: RawContractMessage(myInnerMsg)},
 			exp: `
  {
- 	"type":"lbm-sdk/MsgSubmitProposal",
+ 	"type":"cosmos-sdk/MsgSubmitProposal",
  	"value":{"content":{"type":"wasm/MigrateContractProposal","value":{"msg":{"foo":"bar"}}},"initial_deposit":[]}
  }`,
 		},

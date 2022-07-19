@@ -12,11 +12,11 @@ import (
 // RegisterLegacyAminoCodec registers the necessary x/distribution interfaces and concrete types
 // on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgWithdrawDelegatorReward{}, "lbm-sdk/MsgWithdrawDelegationReward", nil)
-	cdc.RegisterConcrete(&MsgWithdrawValidatorCommission{}, "lbm-sdk/MsgWithdrawValidatorCommission", nil)
-	cdc.RegisterConcrete(&MsgSetWithdrawAddress{}, "lbm-sdk/MsgModifyWithdrawAddress", nil)
-	cdc.RegisterConcrete(&MsgFundCommunityPool{}, "lbm-sdk/MsgFundCommunityPool", nil)
-	cdc.RegisterConcrete(&CommunityPoolSpendProposal{}, "lbm-sdk/CommunityPoolSpendProposal", nil)
+	cdc.RegisterConcrete(&MsgWithdrawDelegatorReward{}, "cosmos-sdk/MsgWithdrawDelegationReward", nil)
+	cdc.RegisterConcrete(&MsgWithdrawValidatorCommission{}, "cosmos-sdk/MsgWithdrawValidatorCommission", nil)
+	cdc.RegisterConcrete(&MsgSetWithdrawAddress{}, "cosmos-sdk/MsgModifyWithdrawAddress", nil)
+	cdc.RegisterConcrete(&MsgFundCommunityPool{}, "cosmos-sdk/MsgFundCommunityPool", nil)
+	cdc.RegisterConcrete(&CommunityPoolSpendProposal{}, "cosmos-sdk/CommunityPoolSpendProposal", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

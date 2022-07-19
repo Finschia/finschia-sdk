@@ -34,7 +34,7 @@ func TestVerifySignature(t *testing.T) {
 	cdc := codec.NewLegacyAmino()
 	sdk.RegisterLegacyAminoCodec(cdc)
 	types.RegisterLegacyAminoCodec(cdc)
-	cdc.RegisterConcrete(testdata.TestMsg{}, "lbm-sdk/Test", nil)
+	cdc.RegisterConcrete(testdata.TestMsg{}, "cosmos-sdk/Test", nil)
 
 	acc1 := app.AccountKeeper.NewAccountWithAddress(ctx, addr)
 	_ = app.AccountKeeper.NewAccountWithAddress(ctx, addr1)
