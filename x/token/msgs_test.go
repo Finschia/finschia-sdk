@@ -32,7 +32,7 @@ func TestMsgSend(t *testing.T) {
 		},
 		"empty from": {
 			contractID: "deadbeef",
-			from:       nil,
+			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     sdk.OneInt(),
 		},
@@ -44,6 +44,7 @@ func TestMsgSend(t *testing.T) {
 		"invalid to": {
 			contractID: "deadbeef",
 			from:       addrs[0],
+			to:         sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -97,6 +98,7 @@ func TestMsgOperatorSend(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: "deadbeef",
+			operator:   sdk.AccAddress{},
 			from:       addrs[1],
 			to:         addrs[2],
 			amount:     sdk.OneInt(),
@@ -110,6 +112,7 @@ func TestMsgOperatorSend(t *testing.T) {
 		"empty from": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
+			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     sdk.OneInt(),
 		},
@@ -117,6 +120,7 @@ func TestMsgOperatorSend(t *testing.T) {
 			contractID: "deadbeef",
 			operator:   addrs[0],
 			from:       addrs[1],
+			to:         sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -172,6 +176,7 @@ func TestMsgTransferFrom(t *testing.T) {
 		},
 		"invalid proxy": {
 			contractID: "deadbeef",
+			proxy:      sdk.AccAddress{},
 			from:       addrs[1],
 			to:         addrs[2],
 			amount:     sdk.OneInt(),
@@ -185,6 +190,7 @@ func TestMsgTransferFrom(t *testing.T) {
 		"empty from": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
+			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     sdk.OneInt(),
 		},
@@ -192,6 +198,7 @@ func TestMsgTransferFrom(t *testing.T) {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			from:       addrs[1],
+			to:         sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -247,11 +254,13 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 		},
 		"invalid holder": {
 			contractID: "deadbeef",
+			holder:     sdk.AccAddress{},
 			operator:   addrs[1],
 		},
 		"empty operator": {
-			contractID: "deadbeef",
 			holder:     addrs[0],
+			operator:   sdk.AccAddress{},
+			contractID: "deadbeef",
 		},
 	}
 
@@ -297,11 +306,13 @@ func TestMsgRevokeOperator(t *testing.T) {
 		},
 		"invalid holder": {
 			contractID: "deadbeef",
+			holder:     sdk.AccAddress{},
 			operator:   addrs[1],
 		},
 		"empty operator": {
-			contractID: "deadbeef",
 			holder:     addrs[0],
+			operator:   sdk.AccAddress{},
+			contractID: "deadbeef",
 		},
 	}
 
@@ -347,11 +358,13 @@ func TestMsgApprove(t *testing.T) {
 		},
 		"invalid approver": {
 			contractID: "deadbeef",
+			approver:   sdk.AccAddress{},
 			proxy:      addrs[1],
 		},
 		"empty proxy": {
 			contractID: "deadbeef",
 			approver:   addrs[0],
+			proxy:      sdk.AccAddress{},
 		},
 	}
 
@@ -402,6 +415,7 @@ func TestMsgIssue(t *testing.T) {
 			valid:    true,
 		},
 		"invalid owner": {
+			owner:    sdk.AccAddress{},
 			to:       addrs[1],
 			name:     "test",
 			symbol:   "TT",
@@ -412,6 +426,7 @@ func TestMsgIssue(t *testing.T) {
 		},
 		"empty to": {
 			owner:    addrs[0],
+			to:       sdk.AccAddress{},
 			name:     "test",
 			symbol:   "TT",
 			imageUri: "some URI",
@@ -540,12 +555,14 @@ func TestMsgMint(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
+			grantee:    sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     sdk.OneInt(),
 		},
 		"empty to": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
+			to:         sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -599,6 +616,7 @@ func TestMsgBurn(t *testing.T) {
 		},
 		"invalid from": {
 			contractID: "deadbeef",
+			from:       sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -653,12 +671,14 @@ func TestMsgOperatorBurn(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: "deadbeef",
+			operator:   sdk.AccAddress{},
 			from:       addrs[1],
 			amount:     sdk.OneInt(),
 		},
 		"empty from": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
+			from:       sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -715,12 +735,14 @@ func TestMsgBurnFrom(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
+			grantee:    sdk.AccAddress{},
 			from:       addrs[1],
 			amount:     sdk.OneInt(),
 		},
 		"empty from": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
+			from:       sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -756,7 +778,7 @@ func TestMsgModify(t *testing.T) {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	validChange := token.Pair{Field: "name", Value: "New test"}
+	validChange := token.Pair{Field: token.AttributeKeyName.String(), Value: "New test"}
 	testCases := map[string]struct {
 		contractID string
 		grantee    sdk.AccAddress
@@ -775,6 +797,7 @@ func TestMsgModify(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
+			grantee:    sdk.AccAddress{},
 			changes:    []token.Pair{validChange},
 		},
 		"invalid key of change": {
@@ -795,8 +818,8 @@ func TestMsgModify(t *testing.T) {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			changes: []token.Pair{
-				{Field: "name", Value: "hello"},
-				{Field: "name", Value: "world"},
+				{Field: token.AttributeKeyName.String(), Value: "hello"},
+				{Field: token.AttributeKeyName.String(), Value: "world"},
 			},
 		},
 	}
@@ -829,36 +852,37 @@ func TestMsgGrant(t *testing.T) {
 		contractID string
 		granter    sdk.AccAddress
 		grantee    sdk.AccAddress
-		permission string
+		permission token.Permission
 		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			granter:    addrs[0],
 			grantee:    addrs[1],
-			permission: token.Permission_Mint.String(),
+			permission: token.PermissionMint,
 			valid:      true,
 		},
 		"invalid contract id": {
 			granter:    addrs[0],
 			grantee:    addrs[1],
-			permission: token.Permission_Mint.String(),
+			permission: token.PermissionMint,
 		},
 		"empty granter": {
 			contractID: "deadbeef",
+			granter:    sdk.AccAddress{},
 			grantee:    addrs[1],
-			permission: token.Permission_Mint.String(),
+			permission: token.PermissionMint,
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
 			granter:    addrs[0],
-			permission: token.Permission_Mint.String(),
+			grantee:    sdk.AccAddress{},
+			permission: token.PermissionMint,
 		},
 		"invalid permission": {
 			contractID: "deadbeef",
 			granter:    addrs[0],
 			grantee:    addrs[1],
-			permission: "invalid",
 		},
 	}
 
@@ -890,22 +914,23 @@ func TestMsgAbandon(t *testing.T) {
 	testCases := map[string]struct {
 		contractID string
 		grantee    sdk.AccAddress
-		permission string
+		permission token.Permission
 		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
-			permission: token.Permission_Mint.String(),
+			permission: token.PermissionMint,
 			valid:      true,
 		},
 		"invalid contract id": {
 			grantee:    addrs[0],
-			permission: token.Permission_Mint.String(),
+			permission: token.PermissionMint,
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
-			permission: token.Permission_Mint.String(),
+			grantee:    sdk.AccAddress{},
+			permission: token.PermissionMint,
 		},
 		"invalid permission": {
 			contractID: "deadbeef",
@@ -948,29 +973,30 @@ func TestMsgGrantPermission(t *testing.T) {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			to:         addrs[1],
-			permission: token.Permission_Mint.String(),
+			permission: token.LegacyPermissionMint.String(),
 			valid:      true,
 		},
 		"invalid contract id": {
 			from:       addrs[0],
 			to:         addrs[1],
-			permission: token.Permission_Mint.String(),
+			permission: token.LegacyPermissionMint.String(),
 		},
 		"empty from": {
 			contractID: "deadbeef",
+			from:       sdk.AccAddress{},
 			to:         addrs[1],
-			permission: token.Permission_Mint.String(),
+			permission: token.LegacyPermissionMint.String(),
 		},
 		"invalid to": {
 			contractID: "deadbeef",
 			from:       addrs[0],
-			permission: token.Permission_Mint.String(),
+			to:         sdk.AccAddress{},
+			permission: token.LegacyPermissionMint.String(),
 		},
 		"invalid permission": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			to:         addrs[1],
-			permission: "invalid",
 		},
 	}
 
@@ -1008,16 +1034,17 @@ func TestMsgRevokePermission(t *testing.T) {
 		"valid msg": {
 			contractID: "deadbeef",
 			from:       addrs[0],
-			permission: token.Permission_Mint.String(),
+			permission: token.LegacyPermissionMint.String(),
 			valid:      true,
 		},
 		"invalid contract id": {
 			from:       addrs[0],
-			permission: token.Permission_Mint.String(),
+			permission: token.LegacyPermissionMint.String(),
 		},
 		"invalid from": {
+			from:       sdk.AccAddress{},
 			contractID: "deadbeef",
-			permission: token.Permission_Mint.String(),
+			permission: token.LegacyPermissionMint.String(),
 		},
 		"invalid permission": {
 			contractID: "deadbeef",
