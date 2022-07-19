@@ -202,7 +202,7 @@ func TestProcessPostResponse(t *testing.T) {
 	acc := mockAccount{addr, coins, pubKey, accNumber, sequence}
 	cdc := codec.NewLegacyAmino()
 	cryptocodec.RegisterCrypto(cdc)
-	cdc.RegisterConcrete(&mockAccount{}, "lbm-sdk/mockAccount", nil)
+	cdc.RegisterConcrete(&mockAccount{}, "cosmos-sdk/mockAccount", nil)
 	ctx = ctx.WithLegacyAmino(cdc)
 
 	// setup expected results

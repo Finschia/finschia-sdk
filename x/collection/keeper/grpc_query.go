@@ -39,7 +39,7 @@ func (s queryServer) Balance(c context.Context, req *collection.QueryBalanceRequ
 		return nil, err
 	}
 
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Address); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
 	}
 
@@ -64,7 +64,7 @@ func (s queryServer) AllBalances(c context.Context, req *collection.QueryAllBala
 		return nil, err
 	}
 
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Address); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
 	}
 
@@ -769,7 +769,7 @@ func (s queryServer) Grant(c context.Context, req *collection.QueryGrantRequest)
 		return nil, err
 	}
 
-	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Grantee); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
 	}
 
@@ -795,7 +795,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *collection.QueryGrant
 		return nil, err
 	}
 
-	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Grantee); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
 	}
 
@@ -827,10 +827,10 @@ func (s queryServer) Authorization(c context.Context, req *collection.QueryAutho
 		return nil, err
 	}
 
-	if err := sdk.ValidateAccAddress(req.Operator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Operator); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
 	}
-	if err := sdk.ValidateAccAddress(req.Holder); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Holder); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", req.Holder)
 	}
 
@@ -852,7 +852,7 @@ func (s queryServer) OperatorAuthorizations(c context.Context, req *collection.Q
 		return nil, err
 	}
 
-	if err := sdk.ValidateAccAddress(req.Operator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Operator); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
 	}
 
@@ -884,10 +884,10 @@ func (s queryServer) Approved(c context.Context, req *collection.QueryApprovedRe
 		return nil, err
 	}
 
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Address); err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Approver); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Approver); err != nil {
 		return nil, err
 	}
 
@@ -907,7 +907,7 @@ func (s queryServer) Approvers(c context.Context, req *collection.QueryApprovers
 		return nil, err
 	}
 
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+	if _, err := sdk.AccAddressFromBech32(req.Address); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address address: %s", req.Address)
 	}
 

@@ -394,13 +394,11 @@ func (svd *SigVerificationDecorator) checkCache(sigKey string, txHash []byte) (v
 // client. It is recommended to instead use multiple messages in a tx.
 type IncrementSequenceDecorator struct {
 	ak AccountKeeper
-	bk types.BankKeeper
 }
 
-func NewIncrementSequenceDecorator(ak AccountKeeper, bk types.BankKeeper) IncrementSequenceDecorator {
+func NewIncrementSequenceDecorator(ak AccountKeeper) IncrementSequenceDecorator {
 	return IncrementSequenceDecorator{
 		ak: ak,
-		bk: bk,
 	}
 }
 
@@ -418,11 +416,6 @@ func (isd IncrementSequenceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, sim
 		}
 
 		isd.ak.SetAccount(ctx, acc)
-	}
-
-	// prefetching
-	if ctx.IsCheckTx() {
-		isd.bk.Prefetch(ctx, tx)
 	}
 
 	return next(ctx, tx, simulate)

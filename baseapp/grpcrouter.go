@@ -2,7 +2,6 @@ package baseapp
 
 import (
 	"fmt"
-	"sync"
 
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"google.golang.org/grpc"
@@ -20,7 +19,6 @@ var protoCodec = encoding.GetCodec(proto.Name)
 
 // GRPCQueryRouter routes ABCI Query requests to GRPC handlers
 type GRPCQueryRouter struct {
-	lck               sync.Mutex
 	routes            map[string]GRPCQueryHandler
 	interfaceRegistry codectypes.InterfaceRegistry
 	serviceData       []serviceData
@@ -37,7 +35,6 @@ var _ gogogrpc.Server = &GRPCQueryRouter{}
 // NewGRPCQueryRouter creates a new GRPCQueryRouter
 func NewGRPCQueryRouter() *GRPCQueryRouter {
 	return &GRPCQueryRouter{
-		lck:    sync.Mutex{},
 		routes: map[string]GRPCQueryHandler{},
 	}
 }
@@ -49,8 +46,6 @@ type GRPCQueryHandler = func(ctx sdk.Context, req abci.RequestQuery) (abci.Respo
 // Route returns the GRPCQueryHandler for a given query route path or nil
 // if not found
 func (qrt *GRPCQueryRouter) Route(path string) GRPCQueryHandler {
-	qrt.lck.Lock()
-	defer qrt.lck.Unlock()
 	handler, found := qrt.routes[path]
 	if !found {
 		return nil
@@ -64,9 +59,6 @@ func (qrt *GRPCQueryRouter) Route(path string) GRPCQueryHandler {
 // This functions PANICS:
 // - if a protobuf service is registered twice.
 func (qrt *GRPCQueryRouter) RegisterService(sd *grpc.ServiceDesc, handler interface{}) {
-	qrt.lck.Lock()
-	defer qrt.lck.Unlock()
-
 	// adds a top-level query handler based on the gRPC service name
 	for _, method := range sd.Methods {
 		fqName := fmt.Sprintf("/%s/%s", sd.ServiceName, method.MethodName)
@@ -127,9 +119,6 @@ func (qrt *GRPCQueryRouter) RegisterService(sd *grpc.ServiceDesc, handler interf
 // SetInterfaceRegistry sets the interface registry for the router. This will
 // also register the interface reflection gRPC service.
 func (qrt *GRPCQueryRouter) SetInterfaceRegistry(interfaceRegistry codectypes.InterfaceRegistry) {
-	// qrt.lck.Lock()
-	// defer qrt.lck.Unlock()
-
 	qrt.interfaceRegistry = interfaceRegistry
 	// Once we have an interface registry, we can register the interface
 	// registry reflection gRPC service.
