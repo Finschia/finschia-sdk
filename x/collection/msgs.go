@@ -247,7 +247,7 @@ func (m MsgSend) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgSend) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -278,7 +278,7 @@ func (m MsgOperatorSend) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgOperatorSend) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
@@ -306,7 +306,7 @@ func (m MsgTransferFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgTransferFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -337,7 +337,7 @@ func (m MsgTransferFTFrom) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgTransferFTFrom) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Proxy)
+	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
 }
 
@@ -370,7 +370,7 @@ func (m MsgTransferNFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgTransferNFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -406,7 +406,7 @@ func (m MsgTransferNFTFrom) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgTransferNFTFrom) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Proxy)
+	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
 }
 
@@ -430,7 +430,7 @@ func (m MsgAuthorizeOperator) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgAuthorizeOperator) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Holder)
+	signer, _ := sdk.AccAddressFromBech32(m.Holder)
 	return []sdk.AccAddress{signer}
 }
 
@@ -454,7 +454,7 @@ func (m MsgRevokeOperator) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgRevokeOperator) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Holder)
+	signer, _ := sdk.AccAddressFromBech32(m.Holder)
 	return []sdk.AccAddress{signer}
 }
 
@@ -478,7 +478,7 @@ func (m MsgApprove) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgApprove) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Approver)
+	signer, _ := sdk.AccAddressFromBech32(m.Approver)
 	return []sdk.AccAddress{signer}
 }
 
@@ -502,7 +502,7 @@ func (m MsgDisapprove) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgDisapprove) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Approver)
+	signer, _ := sdk.AccAddressFromBech32(m.Approver)
 	return []sdk.AccAddress{signer}
 }
 
@@ -531,7 +531,7 @@ func (m MsgCreateContract) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgCreateContract) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Owner)
+	signer, _ := sdk.AccAddressFromBech32(m.Owner)
 	return []sdk.AccAddress{signer}
 }
 
@@ -573,7 +573,7 @@ func (m MsgCreateFTClass) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgCreateFTClass) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
@@ -602,7 +602,7 @@ func (m MsgCreateNFTClass) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgCreateNFTClass) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
@@ -647,7 +647,7 @@ func (m MsgIssueFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgIssueFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Owner)
+	signer, _ := sdk.AccAddressFromBech32(m.Owner)
 	return []sdk.AccAddress{signer}
 }
 
@@ -676,7 +676,7 @@ func (m MsgIssueNFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgIssueNFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Owner)
+	signer, _ := sdk.AccAddressFromBech32(m.Owner)
 	return []sdk.AccAddress{signer}
 }
 
@@ -704,7 +704,7 @@ func (m MsgMintFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgMintFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -746,7 +746,7 @@ func (m MsgMintNFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgMintNFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -771,7 +771,7 @@ func (m MsgBurn) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgBurn) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -799,7 +799,7 @@ func (m MsgOperatorBurn) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgOperatorBurn) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
@@ -824,7 +824,7 @@ func (m MsgBurnFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgBurnFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -852,7 +852,7 @@ func (m MsgBurnFTFrom) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgBurnFTFrom) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Proxy)
+	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
 }
 
@@ -882,7 +882,7 @@ func (m MsgBurnNFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgBurnNFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -915,7 +915,7 @@ func (m MsgBurnNFTFrom) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgBurnNFTFrom) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Proxy)
+	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
 }
 
@@ -940,7 +940,7 @@ func (m MsgModifyContract) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgModifyContract) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
@@ -969,7 +969,7 @@ func (m MsgModifyTokenClass) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgModifyTokenClass) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
@@ -998,7 +998,7 @@ func (m MsgModifyNFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgModifyNFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
@@ -1067,7 +1067,7 @@ func (m MsgModify) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgModify) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Owner)
+	signer, _ := sdk.AccAddressFromBech32(m.Owner)
 	return []sdk.AccAddress{signer}
 }
 
@@ -1095,7 +1095,7 @@ func (m MsgGrant) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgGrant) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Granter)
+	signer, _ := sdk.AccAddressFromBech32(m.Granter)
 	return []sdk.AccAddress{signer}
 }
 
@@ -1120,7 +1120,7 @@ func (m MsgAbandon) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgAbandon) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Grantee)
+	signer, _ := sdk.AccAddressFromBech32(m.Grantee)
 	return []sdk.AccAddress{signer}
 }
 
@@ -1148,7 +1148,7 @@ func (m MsgGrantPermission) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgGrantPermission) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -1173,7 +1173,7 @@ func (m MsgRevokePermission) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgRevokePermission) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -1205,7 +1205,7 @@ func (m MsgAttach) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgAttach) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -1230,7 +1230,7 @@ func (m MsgDetach) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgDetach) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -1265,7 +1265,7 @@ func (m MsgOperatorAttach) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgOperatorAttach) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
@@ -1293,7 +1293,7 @@ func (m MsgOperatorDetach) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgOperatorDetach) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
@@ -1328,7 +1328,7 @@ func (m MsgAttachFrom) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgAttachFrom) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Proxy)
+	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
 }
 
@@ -1356,6 +1356,6 @@ func (m MsgDetachFrom) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgDetachFrom) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Proxy)
+	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
 }

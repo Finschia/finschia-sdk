@@ -37,6 +37,7 @@ func TestMsgSend(t *testing.T) {
 		},
 		"empty from": {
 			contractID: contractID,
+			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     amount,
 		},
@@ -127,6 +128,7 @@ func TestMsgOperatorSend(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: contractID,
+			operator:   sdk.AccAddress{},
 			from:       addrs[1],
 			to:         addrs[2],
 			amount:     amount,
@@ -139,6 +141,7 @@ func TestMsgOperatorSend(t *testing.T) {
 		},
 		"empty from": {
 			contractID: contractID,
+			from:       sdk.AccAddress{},
 			operator:   addrs[0],
 			to:         addrs[1],
 			amount:     amount,
@@ -204,6 +207,7 @@ func TestMsgTransferFT(t *testing.T) {
 		},
 		"empty from": {
 			contractID: "deadbeef",
+			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     amount,
 		},
@@ -296,6 +300,7 @@ func TestMsgTransferFTFrom(t *testing.T) {
 		},
 		"invalid proxy": {
 			contractID: "deadbeef",
+			proxy:      sdk.AccAddress{},
 			from:       addrs[1],
 			to:         addrs[2],
 			amount:     amount,
@@ -309,6 +314,7 @@ func TestMsgTransferFTFrom(t *testing.T) {
 		"empty from": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
+			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     amount,
 		},
@@ -373,6 +379,7 @@ func TestMsgTransferNFT(t *testing.T) {
 		},
 		"empty from": {
 			contractID: "deadbeef",
+			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			ids:        ids,
 		},
@@ -444,6 +451,7 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 		},
 		"invalid proxy": {
 			contractID: "deadbeef",
+			proxy:      sdk.AccAddress{},
 			from:       addrs[1],
 			to:         addrs[2],
 			ids:        ids,
@@ -457,6 +465,7 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 		"empty from": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
+			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			ids:        ids,
 		},
@@ -526,6 +535,7 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 		},
 		"invalid holder": {
 			contractID: contractID,
+			holder:     sdk.AccAddress{},
 			operator:   addrs[1],
 		},
 		"empty operator": {
@@ -577,6 +587,7 @@ func TestMsgRevokeOperator(t *testing.T) {
 		},
 		"invalid holder": {
 			contractID: contractID,
+			holder:     sdk.AccAddress{},
 			operator:   addrs[1],
 		},
 		"empty operator": {
@@ -627,6 +638,7 @@ func TestMsgApprove(t *testing.T) {
 		},
 		"invalid approver": {
 			contractID: "deadbeef",
+			approver:   sdk.AccAddress{},
 			proxy:      addrs[1],
 		},
 		"empty proxy": {
@@ -677,6 +689,7 @@ func TestMsgDisapprove(t *testing.T) {
 		},
 		"invalid approver": {
 			contractID: "deadbeef",
+			approver:   sdk.AccAddress{},
 			proxy:      addrs[1],
 		},
 		"empty proxy": {
@@ -727,6 +740,7 @@ func TestMsgCreateContract(t *testing.T) {
 			valid:      true,
 		},
 		"invalid owner": {
+			owner:      sdk.AccAddress{},
 			name:       name,
 			baseImgURI: uri,
 			meta:       meta,
@@ -810,6 +824,7 @@ func TestMsgIssueFT(t *testing.T) {
 			amount:   sdk.OneInt(),
 		},
 		"invalid owner": {
+			owner:      sdk.AccAddress{},
 			contractID: contractID,
 			to:         addrs[1],
 			name:       name,
@@ -923,6 +938,7 @@ func TestMsgIssueNFT(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: contractID,
+			operator:   sdk.AccAddress{},
 			name:       name,
 			meta:       meta,
 		},
@@ -1007,6 +1023,7 @@ func TestMsgCreateFTClass(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: contractID,
+			operator:   sdk.AccAddress{},
 			name:       name,
 			meta:       meta,
 			decimals:   decimals,
@@ -1106,6 +1123,7 @@ func TestMsgCreateNFTClass(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: contractID,
+			operator:   sdk.AccAddress{},
 			name:       name,
 			meta:       meta,
 		},
@@ -1174,6 +1192,7 @@ func TestMsgMintFT(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: contractID,
+			operator:   sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     amount,
 		},
@@ -1243,6 +1262,7 @@ func TestMsgMintNFT(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: "deadbeef",
+			operator:   sdk.AccAddress{},
 			to:         addrs[1],
 			params:     params,
 		},
@@ -1330,6 +1350,7 @@ func TestMsgBurn(t *testing.T) {
 		},
 		"invalid from": {
 			contractID: contractID,
+			from:       sdk.AccAddress{},
 			amount:     amount,
 		},
 		"empty amount": {
@@ -1388,12 +1409,14 @@ func TestMsgOperatorBurn(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: contractID,
+			operator:   sdk.AccAddress{},
 			from:       addrs[1],
 			amount:     amount,
 		},
 		"empty from": {
 			contractID: contractID,
 			operator:   addrs[0],
+			from:       sdk.AccAddress{},
 			amount:     amount,
 		},
 		"empty amount": {
@@ -1450,6 +1473,7 @@ func TestMsgBurnFT(t *testing.T) {
 		},
 		"invalid from": {
 			contractID: "deadbeef",
+			from:       sdk.AccAddress{},
 			amount:     amount,
 		},
 		"invalid token id": {
@@ -1509,6 +1533,7 @@ func TestMsgBurnFTFrom(t *testing.T) {
 			amount:  amount,
 		},
 		"invalid grantee": {
+			grantee:    sdk.AccAddress{},
 			contractID: "deadbeef",
 			from:       addrs[1],
 			amount:     amount,
@@ -1516,6 +1541,7 @@ func TestMsgBurnFTFrom(t *testing.T) {
 		"empty from": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
+			from:       sdk.AccAddress{},
 			amount:     amount,
 		},
 		"invalid token id": {
@@ -1573,6 +1599,7 @@ func TestMsgBurnNFT(t *testing.T) {
 		},
 		"invalid from": {
 			contractID: "deadbeef",
+			from:       sdk.AccAddress{},
 			ids:        ids,
 		},
 		"empty ids": {
@@ -1633,12 +1660,14 @@ func TestMsgBurnNFTFrom(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
+			grantee:    sdk.AccAddress{},
 			from:       addrs[1],
 			ids:        ids,
 		},
 		"empty from": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
+			from:       sdk.AccAddress{},
 			ids:        ids,
 		},
 		"empty ids": {
@@ -1702,6 +1731,7 @@ func TestMsgModifyContract(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: contractID,
+			operator:   sdk.AccAddress{},
 			changes:    changes,
 		},
 		"invalid key of change": {
@@ -1781,6 +1811,7 @@ func TestMsgModifyTokenClass(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: contractID,
+			operator:   sdk.AccAddress{},
 			classID:    classID,
 			changes:    changes,
 		},
@@ -1873,6 +1904,7 @@ func TestMsgModifyNFT(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: contractID,
+			operator:   sdk.AccAddress{},
 			tokenID:    tokenID,
 			changes:    changes,
 		},
@@ -1972,6 +2004,7 @@ func TestMsgModify(t *testing.T) {
 			changes: changes,
 		},
 		"invalid owner": {
+			owner:      sdk.AccAddress{},
 			contractID: "deadbeef",
 			changes:    changes,
 		},
@@ -2050,10 +2083,12 @@ func TestMsgGrant(t *testing.T) {
 		"empty granter": {
 			contractID: contractID,
 			grantee:    addrs[1],
+			granter:    sdk.AccAddress{},
 			permission: collection.PermissionMint,
 		},
 		"invalid grantee": {
 			contractID: contractID,
+			grantee:    sdk.AccAddress{},
 			granter:    addrs[0],
 			permission: collection.PermissionMint,
 		},
@@ -2108,6 +2143,7 @@ func TestMsgAbandon(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: contractID,
+			grantee:    sdk.AccAddress{},
 			permission: collection.PermissionMint,
 		},
 		"invalid permission": {
@@ -2161,6 +2197,7 @@ func TestMsgGrantPermission(t *testing.T) {
 		},
 		"empty from": {
 			contractID: "deadbeef",
+			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			permission: collection.LegacyPermissionMint.String(),
 		},
@@ -2219,6 +2256,7 @@ func TestMsgRevokePermission(t *testing.T) {
 		},
 		"invalid from": {
 			contractID: "deadbeef",
+			from:       sdk.AccAddress{},
 			permission: collection.LegacyPermissionMint.String(),
 		},
 		"invalid permission": {
@@ -2273,6 +2311,7 @@ func TestMsgAttach(t *testing.T) {
 		},
 		"empty from": {
 			contractID: contractID,
+			from:       sdk.AccAddress{},
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[1],
 		},
@@ -2341,6 +2380,7 @@ func TestMsgDetach(t *testing.T) {
 		},
 		"empty from": {
 			contractID: contractID,
+			from:       sdk.AccAddress{},
 			tokenID:    tokenID,
 		},
 		"invalid contract id": {
@@ -2407,6 +2447,7 @@ func TestMsgOperatorAttach(t *testing.T) {
 		},
 		"empty operator": {
 			contractID: contractID,
+			operator:   sdk.AccAddress{},
 			owner:      addrs[1],
 			subject:    tokenIDs[0],
 			target:     tokenIDs[1],
@@ -2488,6 +2529,7 @@ func TestMsgOperatorDetach(t *testing.T) {
 		},
 		"empty operator": {
 			contractID: contractID,
+			operator:   sdk.AccAddress{},
 			owner:      addrs[1],
 			subject:    tokenID,
 		},
@@ -2551,6 +2593,7 @@ func TestMsgAttachFrom(t *testing.T) {
 		},
 		"empty proxy": {
 			contractID: "deadbeef",
+			proxy:      sdk.AccAddress{},
 			from:       addrs[1],
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[1],
@@ -2558,6 +2601,7 @@ func TestMsgAttachFrom(t *testing.T) {
 		"empty from": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
+			from:       sdk.AccAddress{},
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[1],
 		},
@@ -2632,12 +2676,14 @@ func TestMsgDetachFrom(t *testing.T) {
 		},
 		"empty proxy": {
 			contractID: "deadbeef",
+			proxy:      sdk.AccAddress{},
 			from:       addrs[1],
 			tokenID:    tokenID,
 		},
 		"empty from": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
+			from:       sdk.AccAddress{},
 			tokenID:    tokenID,
 		},
 		"invalid contract id": {
