@@ -266,6 +266,8 @@ func NewTxCmdGrant() *cobra.Command {
 			$ %s tx %s grant <class-id> <granter> <grantee> <permission>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			permission := token.Permission(token.Permission_value[args[3]])
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -275,7 +277,7 @@ func NewTxCmdGrant() *cobra.Command {
 				ContractId: args[0],
 				Granter:    args[1],
 				Grantee:    args[2],
-				Permission: args[3],
+				Permission: permission,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -297,6 +299,7 @@ func NewTxCmdAbandon() *cobra.Command {
 			$ %s tx %s revoke <class-id> <grantee> <permission>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			permission := token.Permission(token.Permission_value[args[2]])
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -305,7 +308,7 @@ func NewTxCmdAbandon() *cobra.Command {
 			msg := token.MsgAbandon{
 				ContractId: args[0],
 				Grantee:    args[1],
-				Permission: args[2],
+				Permission: permission,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

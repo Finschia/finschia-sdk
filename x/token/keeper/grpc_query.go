@@ -159,13 +159,13 @@ func (s queryServer) Grant(c context.Context, req *token.QueryGrantRequest) (*to
 	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
 	}
-	permission := token.Permission(token.Permission_value[req.Permission])
-	if permission == 0 {
-		return nil, sdkerrors.ErrInvalidRequest.Wrapf("invalid permission: %s", req.Permission)
+
+	if err := token.ValidatePermission(req.Permission); err != nil {
+		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	grant, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Grantee), permission)
+	grant, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Grantee), req.Permission)
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +193,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 		permission := token.Permission(key[0])
 		grants = append(grants, token.Grant{
 			Grantee:    req.Grantee,
-			Permission: permission.String(),
+			Permission: permission,
 		})
 		return nil
 	})

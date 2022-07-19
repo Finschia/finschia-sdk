@@ -57,7 +57,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
 			s.Require().NoError(err)
 
 			var actual foundation.QueryParamsResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
@@ -525,7 +525,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 			s.Require().NoError(err)
 
 			var actual foundation.QueryGrantsResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, len(actual.Authorizations))
 		})
 	}

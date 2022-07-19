@@ -42,7 +42,7 @@ func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasu
 		From:   req.From,
 		Amount: req.Amount,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgFundTreasuryResponse{}, nil
@@ -68,7 +68,7 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 		To:     req.To,
 		Amount: req.Amount,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgWithdrawFromTreasuryResponse{}, nil
@@ -88,7 +88,7 @@ func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMem
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateMembers{
 		MemberUpdates: req.MemberUpdates,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgUpdateMembersResponse{}, nil
@@ -111,7 +111,7 @@ func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUp
 		return nil, err
 	}
 	if err := ctx.EventManager().EmitTypedEvent(event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgUpdateDecisionPolicyResponse{}, nil
@@ -129,11 +129,14 @@ func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitPr
 		return nil, err
 	}
 
-	proposal, _ := s.keeper.GetProposal(ctx, id)
+	proposal, err := s.keeper.GetProposal(ctx, id)
+	if err != nil {
+		panic(err)
+	}
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventSubmitProposal{
 		Proposal: *proposal,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	// Try to execute proposal immediately
@@ -187,7 +190,7 @@ func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdr
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventWithdrawProposal{
 		ProposalId: id,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgWithdrawProposalResponse{}, nil
@@ -251,7 +254,7 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventLeaveFoundation{
 		Address: req.Address,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgLeaveFoundationResponse{}, nil

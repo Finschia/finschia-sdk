@@ -8,17 +8,17 @@ import (
 func (s *KeeperTestSuite) TestGrant() {
 	testCases := map[string]struct {
 		grantee sdk.AccAddress
-		auth foundation.Authorization
-		valid bool
+		auth    foundation.Authorization
+		valid   bool
 	}{
 		"valid authz": {
 			grantee: s.members[0],
-			auth: &foundation.ReceiveFromTreasuryAuthorization{},
-			valid: true,
+			auth:    &foundation.ReceiveFromTreasuryAuthorization{},
+			valid:   true,
 		},
 		"override attempt": {
 			grantee: s.stranger,
-			auth: &foundation.ReceiveFromTreasuryAuthorization{},
+			auth:    &foundation.ReceiveFromTreasuryAuthorization{},
 		},
 	}
 
@@ -39,17 +39,17 @@ func (s *KeeperTestSuite) TestGrant() {
 func (s *KeeperTestSuite) TestRevoke() {
 	testCases := map[string]struct {
 		grantee sdk.AccAddress
-		url string
-		valid bool
+		url     string
+		valid   bool
 	}{
 		"valid url": {
 			grantee: s.stranger,
-			url: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
-			valid: true,
+			url:     foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+			valid:   true,
 		},
 		"grant not found": {
 			grantee: s.members[0],
-			url: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+			url:     foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 		},
 	}
 

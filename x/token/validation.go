@@ -69,8 +69,12 @@ func validateAmount(amount sdk.Int) error {
 	return nil
 }
 
-func validatePermission(permission string) error {
-	if value := Permission_value[permission]; value == 0 {
+func validateLegacyPermission(permission string) error {
+	return ValidatePermission(Permission(LegacyPermissionFromString(permission)))
+}
+
+func ValidatePermission(permission Permission) error {
+	if p := Permission_value[Permission_name[int32(permission)]]; p == 0 {
 		return sdkerrors.ErrInvalidRequest.Wrapf("invalid permission: %s", permission)
 	}
 	return nil
@@ -78,12 +82,12 @@ func validatePermission(permission string) error {
 
 func validateChange(change Pair) error {
 	validators := map[AttributeKey]func(string) error{
-		AttributeKey_Name:     validateName,
-		AttributeKey_ImageURI: validateImageURI,
-		AttributeKey_Meta:     validateMeta,
+		AttributeKeyName:     validateName,
+		AttributeKeyImageURI: validateImageURI,
+		AttributeKeyMeta:     validateMeta,
 	}
 
-	validator, ok := validators[AttributeKey(AttributeKey_value[change.Field])]
+	validator, ok := validators[AttributeKeyFromString(change.Field)]
 	if !ok {
 		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Field)
 	}
