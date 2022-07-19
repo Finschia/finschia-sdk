@@ -60,7 +60,8 @@ type Store struct {
 	traceWriter  io.Writer
 	traceContext types.TraceContext
 
-	interBlockCache types.MultiStorePersistentCache
+	interBlockCache  types.MultiStorePersistentCache
+	iavlCacheManager types.CacheManager
 
 	listeners map[types.StoreKey][]types.WriteListener
 }
@@ -78,12 +79,12 @@ func NewStore(db tmdb.DB) *Store {
 	return &Store{
 		db:            db,
 		pruningOpts:   types.PruneNothing,
-		iavlCacheSize: iavl.DefaultIAVLCacheSize,
 		storesParams:  make(map[types.StoreKey]storeParams),
 		stores:        make(map[types.StoreKey]types.CommitKVStore),
 		keysByName:    make(map[string]types.StoreKey),
 		pruneHeights:  make([]int64, 0),
 		listeners:     make(map[types.StoreKey][]types.WriteListener),
+		iavlCacheSize: iavl.DefaultIAVLCacheSize,
 	}
 }
 
@@ -106,6 +107,10 @@ func (rs *Store) SetIAVLCacheSize(cacheSize int) {
 // SetLazyLoading sets if the iavl store should be loaded lazily or not
 func (rs *Store) SetLazyLoading(lazyLoading bool) {
 	rs.lazyLoading = lazyLoading
+}
+
+func (rs *Store) SetIAVLCacheManager(cacheManager types.CacheManager) {
+	rs.iavlCacheManager = cacheManager
 }
 
 // GetStoreType implements Store.
@@ -427,6 +432,9 @@ func (rs *Store) pruneStores() {
 			store = rs.GetCommitKVStore(key)
 
 			if err := store.(*iavl.Store).DeleteVersions(rs.pruneHeights...); err != nil {
+				if err == iavltree.ErrBusy {
+					return
+				}
 				if errCause := errors.Cause(err); errCause != nil && errCause != iavltree.ErrVersionDoesNotExist {
 					panic(err)
 				}
@@ -660,7 +668,7 @@ func (rs *Store) Snapshot(height uint64, format uint32) (<-chan io.ReadCloser, e
 		switch store := rs.GetCommitKVStore(key).(type) {
 		case *iavl.Store:
 			stores = append(stores, namedStore{name: key.Name(), Store: store})
-		case *transient.Store, *mem.Store:
+		case *mem.Store:
 			// Non-persisted stores shouldn't be snapshotted
 			continue
 		default:
@@ -883,9 +891,9 @@ func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID
 		var err error
 
 		if params.initialVersion == 0 {
-			store, err = iavl.LoadStore(db, id, rs.lazyLoading, rs.iavlCacheSize)
+			store, err = iavl.LoadStore(db, rs.iavlCacheManager, id, rs.lazyLoading, rs.iavlCacheSize)
 		} else {
-			store, err = iavl.LoadStoreWithInitialVersion(db, id, rs.lazyLoading, params.initialVersion, rs.iavlCacheSize)
+			store, err = iavl.LoadStoreWithInitialVersion(db, rs.iavlCacheManager, id, rs.lazyLoading, params.initialVersion, rs.iavlCacheSize)
 		}
 
 		if err != nil {
@@ -927,9 +935,6 @@ func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID
 func (rs *Store) buildCommitInfo(version int64) *types.CommitInfo {
 	storeInfos := []types.StoreInfo{}
 	for key, store := range rs.stores {
-		if store.GetStoreType() == types.StoreTypeTransient {
-			continue
-		}
 		storeInfos = append(storeInfos, types.StoreInfo{
 			Name:     key.Name(),
 			CommitId: store.LastCommitID(),

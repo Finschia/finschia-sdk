@@ -7,6 +7,7 @@ import (
 	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/store/cache"
+	"github.com/line/lbm-sdk/store/iavl"
 
 	"github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/snapshots"
@@ -68,6 +69,17 @@ func SetIAVLCacheSize(size int) func(*BaseApp) {
 // inter-block cache.
 func SetInterBlockCache(cache sdk.MultiStorePersistentCache) func(*BaseApp) {
 	return func(app *BaseApp) { app.setInterBlockCache(cache) }
+}
+
+// SetIAVLCacheManager provides a BaseApp option function that sets the iavl CacheManager
+func SetIAVLCacheManager(size int, provider iavl.MetricsProvider) func(*BaseApp) {
+	return func(app *BaseApp) {
+		if size == 0 {
+			app.cms.SetIAVLCacheManager(iavl.NewCacheManagerNoCache())
+		} else {
+			app.cms.SetIAVLCacheManager(iavl.NewCacheManagerSingleton(size, provider))
+		}
+	}
 }
 
 // SetSnapshotInterval sets the snapshot interval.
@@ -245,10 +257,10 @@ func (app *BaseApp) SetInterfaceRegistry(registry types.InterfaceRegistry) {
 	app.msgServiceRouter.SetInterfaceRegistry(registry)
 }
 
-func MetricsProvider(prometheus bool) cache.MetricsProvider {
+func MetricsProvider(prometheus bool) (cache.MetricsProvider, iavl.MetricsProvider) {
 	namespace := "app"
 	if prometheus {
-		return cache.PrometheusMetricsProvider(namespace)
+		return cache.PrometheusMetricsProvider(namespace), iavl.PrometheusMetricsProvider(namespace)
 	}
-	return cache.NopMetricsProvider()
+	return cache.NopMetricsProvider(), iavl.NopMetricsProvider()
 }

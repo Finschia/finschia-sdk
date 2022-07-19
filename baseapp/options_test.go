@@ -8,11 +8,15 @@ import (
 )
 
 func TestMetricsProvider(t *testing.T) {
-	p := MetricsProvider(true)
-	c := p()
-	require.NotEqual(t, c.InterBlockCacheHits, discard.NewCounter())
+	p1, p2 := MetricsProvider(true)
+	c1 := p1()
+	c2 := p2()
+	require.NotEqual(t, c1.InterBlockCacheHits, discard.NewCounter())
+	require.NotEqual(t, c2.IAVLCacheHits, discard.NewGauge())
 
-	p = MetricsProvider(false)
-	c = p()
-	require.Equal(t, c.InterBlockCacheHits, discard.NewCounter())
+	p1, p2 = MetricsProvider(false)
+	c1 = p1()
+	c2 = p2()
+	require.Equal(t, c1.InterBlockCacheHits, discard.NewCounter())
+	require.Equal(t, c2.IAVLCacheHits, discard.NewGauge())
 }

@@ -132,6 +132,10 @@ func (ms multiStore) Restore(
 	panic("not implemented")
 }
 
+func (ms multiStore) SetIAVLCacheManager(cacheManager store.CacheManager) {
+	panic("not implemented")
+}
+
 var _ sdk.KVStore = kvStore{}
 
 type kvStore struct {
@@ -197,6 +201,10 @@ func (kv kvStore) SubspaceIterator(prefix []byte) sdk.Iterator {
 }
 
 func (kv kvStore) ReverseSubspaceIterator(prefix []byte) sdk.Iterator {
+	panic("not implemented")
+}
+
+func (kv kvStore) SetIAVLCacheManager(cacheManager store.CacheManager) {
 	panic("not implemented")
 }
 
