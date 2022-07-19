@@ -48,6 +48,8 @@ func NewWasmProposalHandlerX(k types.ContractOpsKeeper, enabledProposalTypes []t
 			return handlePinCodesProposal(ctx, k, *c)
 		case *types.UnpinCodesProposal:
 			return handleUnpinCodesProposal(ctx, k, *c)
+		case *types.UpdateContractStatusProposal:
+			return handleUpdateContractStatusProposal(ctx, k, *c)
 		case *types.UpdateInstantiateConfigProposal:
 			return handleUpdateInstantiateConfigProposal(ctx, k, *c)
 		default:
