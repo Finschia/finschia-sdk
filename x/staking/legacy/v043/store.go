@@ -14,7 +14,7 @@ import (
 // prefix_bytes | address_1_bytes | address_2_bytes | address_3_bytes
 // into format:
 // prefix_bytes | address_1_len (1 byte) | address_1_bytes | address_2_len (1 byte) | address_2_bytes | address_3_len (1 byte) | address_3_bytes
-func migratePrefixAddressValAddressValAddress(store sdk.KVStore, prefixBz []byte) {
+func migratePrefixAddressAddressAddress(store sdk.KVStore, prefixBz []byte) {
 	oldStore := prefix.NewStore(store, prefixBz)
 
 	oldStoreIter := oldStore.Iterator(nil, nil)
@@ -22,33 +22,8 @@ func migratePrefixAddressValAddressValAddress(store sdk.KVStore, prefixBz []byte
 
 	for ; oldStoreIter.Valid(); oldStoreIter.Next() {
 		addr1 := oldStoreIter.Key()[:v040auth.AddrLen]
-		addr2 := oldStoreIter.Key()[v040auth.AddrLen : v040auth.AddrLen+v040auth.ValAddrLen]
-		addr3 := oldStoreIter.Key()[v040auth.AddrLen+v040auth.ValAddrLen:]
-		newStoreKey := append(append(append(
-			prefixBz,
-			address.MustLengthPrefix(addr1)...), address.MustLengthPrefix(addr2)...), address.MustLengthPrefix(addr3)...,
-		)
-
-		// Set new key on store. Values don't change.
-		store.Set(newStoreKey, oldStoreIter.Value())
-		oldStore.Delete(oldStoreIter.Key())
-	}
-}
-
-// migratePrefixAddressAddressAddress is a helper function that migrates all keys of format:
-// prefix_bytes | address_1_bytes | address_2_bytes | address_3_bytes
-// into format:
-// prefix_bytes | address_1_len (1 byte) | address_1_bytes | address_2_len (1 byte) | address_2_bytes | address_3_len (1 byte) | address_3_bytes
-func migratePrefixValAddressAddressValAddress(store sdk.KVStore, prefixBz []byte) {
-	oldStore := prefix.NewStore(store, prefixBz)
-
-	oldStoreIter := oldStore.Iterator(nil, nil)
-	defer oldStoreIter.Close()
-
-	for ; oldStoreIter.Valid(); oldStoreIter.Next() {
-		addr1 := oldStoreIter.Key()[:v040auth.ValAddrLen]
-		addr2 := oldStoreIter.Key()[v040auth.ValAddrLen : v040auth.ValAddrLen+v040auth.AddrLen]
-		addr3 := oldStoreIter.Key()[v040auth.ValAddrLen+v040auth.AddrLen:]
+		addr2 := oldStoreIter.Key()[v040auth.AddrLen : 2*v040auth.AddrLen]
+		addr3 := oldStoreIter.Key()[2*v040auth.AddrLen:]
 		newStoreKey := append(append(append(
 			prefixBz,
 			address.MustLengthPrefix(addr1)...), address.MustLengthPrefix(addr2)...), address.MustLengthPrefix(addr3)...,
@@ -94,10 +69,10 @@ func MigrateStore(ctx sdk.Context, storeKey sdk.StoreKey) error {
 
 	v043distribution.MigratePrefixAddressAddress(store, v040staking.DelegationKey)
 	v043distribution.MigratePrefixAddressAddress(store, v040staking.UnbondingDelegationKey)
-	v043distribution.MigratePrefixValAddressAddress(store, v040staking.UnbondingDelegationByValIndexKey)
-	migratePrefixAddressValAddressValAddress(store, v040staking.RedelegationKey)
-	migratePrefixValAddressAddressValAddress(store, v040staking.RedelegationByValSrcIndexKey)
-	migratePrefixValAddressAddressValAddress(store, v040staking.RedelegationByValDstIndexKey)
+	v043distribution.MigratePrefixAddressAddress(store, v040staking.UnbondingDelegationByValIndexKey)
+	migratePrefixAddressAddressAddress(store, v040staking.RedelegationKey)
+	migratePrefixAddressAddressAddress(store, v040staking.RedelegationByValSrcIndexKey)
+	migratePrefixAddressAddressAddress(store, v040staking.RedelegationByValDstIndexKey)
 
 	return nil
 }
