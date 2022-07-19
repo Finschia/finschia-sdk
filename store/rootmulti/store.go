@@ -109,10 +109,6 @@ func (rs *Store) SetLazyLoading(lazyLoading bool) {
 	rs.lazyLoading = lazyLoading
 }
 
-func (rs *Store) SetIAVLCacheManager(cacheManager types.CacheManager) {
-	rs.iavlCacheManager = cacheManager
-}
-
 // GetStoreType implements Store.
 func (rs *Store) GetStoreType() types.StoreType {
 	return types.StoreTypeMulti
