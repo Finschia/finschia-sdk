@@ -45,6 +45,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#528](https://github.com/line/lbm-sdk/pull/528) add a feature of whitelist for /lbm.foundation.v1.MsgWithdrawFromTreasury
 * (proto) [\#584](https://github.com/line/lbm-sdk/pull/564) remove `prove` field in the `GetTxsEventRequest` of `tx` proto
 * (x/collection) [\#571](https://github.com/line/lbm-sdk/pull/571) add x/collection proto
+* (x/collection) [\#574](https://github.com/line/lbm-sdk/pull/574) implement x/collection
 
 ### Improvements
 

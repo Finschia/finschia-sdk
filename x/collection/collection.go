@@ -2,21 +2,157 @@ package collection
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
+	proto "github.com/gogo/protobuf/proto"
+	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 )
 
-func ValidateTokenID(id string) error {
+const (
+	prefixLegacyPermission = "LEGACY_PERMISSION_"
+)
+
+// Deprecated: use Permission.
+func LegacyPermissionFromString(name string) LegacyPermission {
+	legacyPermissionName := prefixLegacyPermission + strings.ToUpper(name)
+	return LegacyPermission(LegacyPermission_value[legacyPermissionName])
+}
+
+func (x LegacyPermission) String() string {
+	lenPrefix := len(prefixLegacyPermission)
+	return strings.ToLower(LegacyPermission_name[int32(x)][lenPrefix:])
+}
+
+func DefaultNextClassIDs(contractID string) NextClassIDs {
+	return NextClassIDs{
+		ContractId:  contractID,
+		Fungible:    sdk.NewUint(0),
+		NonFungible: sdk.NewUint(1 << 28), // "10000000"
+	}
+}
+
+func validateParams(params Params) error {
+	// limits are uint32, so no need to validate them.
 	return nil
 }
 
-func ValidateNFTID(id string) error {
+type TokenClass interface {
+	proto.Message
+
+	GetId() string
+	SetId(ids *NextClassIDs)
+
+	SetName(name string)
+
+	SetMeta(meta string)
+
+	ValidateBasic() error
+}
+
+func TokenClassToAny(class TokenClass) *codectypes.Any {
+	msg := class.(proto.Message)
+
+	any, err := codectypes.NewAnyWithValue(msg)
+	if err != nil {
+		panic(err)
+	}
+
+	return any
+}
+
+func TokenClassFromAny(any *codectypes.Any) TokenClass {
+	class := any.GetCachedValue().(TokenClass)
+	return class
+}
+
+func TokenClassUnpackInterfaces(any *codectypes.Any, unpacker codectypes.AnyUnpacker) error {
+	var class TokenClass
+	return unpacker.UnpackAny(any, &class)
+}
+
+//-----------------------------------------------------------------------------
+// FTClass
+var _ TokenClass = (*FTClass)(nil)
+
+//nolint:golint
+func (c *FTClass) SetId(ids *NextClassIDs) {
+	id := ids.Fungible
+	ids.Fungible = id.Incr()
+	c.Id = fmt.Sprintf("%08x", id.Uint64())
+}
+
+func (c *FTClass) SetName(name string) {
+	c.Name = name
+}
+
+func (c *FTClass) SetMeta(meta string) {
+	c.Meta = meta
+}
+
+func (c FTClass) ValidateBasic() error {
+	if err := ValidateClassID(c.Id); err != nil {
+		return err
+	}
+
+	if err := validateName(c.Name); err != nil {
+		return err
+	}
+	if err := validateMeta(c.Meta); err != nil {
+		return err
+	}
+	if err := validateDecimals(c.Decimals); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+//-----------------------------------------------------------------------------
+// NFTClass
+var _ TokenClass = (*NFTClass)(nil)
+
+//nolint:golint
+func (c *NFTClass) SetId(ids *NextClassIDs) {
+	id := ids.NonFungible
+	ids.NonFungible = id.Incr()
+	c.Id = fmt.Sprintf("%08x", id.Uint64())
+}
+
+func (c *NFTClass) SetName(name string) {
+	c.Name = name
+}
+
+func (c *NFTClass) SetMeta(meta string) {
+	c.Meta = meta
+}
+
+func (c NFTClass) ValidateBasic() error {
+	if err := ValidateClassID(c.Id); err != nil {
+		return err
+	}
+
+	if err := validateName(c.Name); err != nil {
+		return err
+	}
+	if err := validateMeta(c.Meta); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 //-----------------------------------------------------------------------------
 // Coin
+func NewFTCoin(classID string, amount sdk.Int) Coin {
+	return NewCoin(NewFTID(classID), amount)
+}
+
+func NewNFTCoin(classID string, number int) Coin {
+	return NewCoin(NewNFTID(classID, number), sdk.OneInt())
+}
+
 func NewCoin(id string, amount sdk.Int) Coin {
 	coin := Coin{
 		TokenId: id,
@@ -58,6 +194,27 @@ func (c Coin) isPositive() bool {
 
 func (c Coin) isNil() bool {
 	return c.Amount.IsNil()
+}
+
+var reDecCoin = regexp.MustCompile(fmt.Sprintf(`^(%s%s):([[:digit:]]+)$`, patternClassID, patternAll))
+
+func ParseCoin(coinStr string) (*Coin, error) {
+	coinStr = strings.TrimSpace(coinStr)
+
+	matches := reDecCoin.FindStringSubmatch(coinStr)
+	if matches == nil {
+		return nil, fmt.Errorf("invalid coin expression: %s", coinStr)
+	}
+
+	id, amountStr := matches[1], matches[2]
+
+	amount, ok := sdk.NewIntFromString(amountStr)
+	if !ok {
+		return nil, fmt.Errorf("failed to parse coin amount: %s", amountStr)
+	}
+
+	coin := NewCoin(id, amount)
+	return &coin, nil
 }
 
 //-----------------------------------------------------------------------------
@@ -107,4 +264,29 @@ func (coins Coins) ValidateBasic() error {
 	}
 
 	return nil
+}
+
+func ParseCoins(coinsStr string) (Coins, error) {
+	coinsStr = strings.TrimSpace(coinsStr)
+	if len(coinsStr) == 0 {
+		return nil, fmt.Errorf("invalid string for coins")
+	}
+
+	coinStrs := strings.Split(coinsStr, ",")
+	coins := make(Coins, len(coinStrs))
+	for i, coinStr := range coinStrs {
+		coin, err := ParseCoin(coinStr)
+		if err != nil {
+			return nil, err
+		}
+
+		coins[i] = *coin
+	}
+
+	return NewCoins(coins...), nil
+}
+
+// Deprecated: do not use
+type Token interface {
+	proto.Message
 }
