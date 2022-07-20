@@ -560,7 +560,8 @@ func (s *IntegrationTestSuite) TestNewCmdRevokeFeegrant() {
 	}
 
 	// Create new fee grant specifically to test amino.
-	aminoGrantee := sdk.AccAddress("link1zp4lzwuwzvhq7xhe8xj688vv00dxv2zyue4xuj")
+	aminoGrantee, err := sdk.AccAddressFromBech32("link1zp4lzwuwzvhq7xhe8xj688vv00dxv2zyue4xuj")
+	s.Require().NoError(err)
 	s.createGrant(granter, aminoGrantee)
 
 	testCases := []struct {
