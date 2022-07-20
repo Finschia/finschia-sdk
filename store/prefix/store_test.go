@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	liavl "github.com/line/iavl/v2"
+	liavl "github.com/cosmos/iavl"
 	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/tm-db/v2/memdb"
 

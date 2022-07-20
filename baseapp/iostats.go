@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	iavltree "github.com/line/iavl/v2"
+	"github.com/cosmos/iavl"
 	"github.com/line/ostracon/libs/log"
 )
 
@@ -86,7 +86,7 @@ func logIoStats(logger log.Logger) {
 	dt := now.Sub(tStats)
 	tStats = now
 
-	newSetCount, newSetBytes, newDelCount := iavltree.GetDBStats()
+	tCount, newSetBytes, newDelCount := iavl.GetDBStats()
 	newReadCount, newReadBytes, newWriteCount, newWriteBytes, _ := getDeviceIoStats(*logIoDev)
 	diffSetCount, diffSetBytes, diffDelCount := newSetCount-iavlSetCount, newSetBytes-iavlSetBytes, newDelCount-iavlDelCount
 	_, diffReadBytes, _, diffWriteBytes := newReadCount-diskReadCount, newReadBytes-diskReadBytes, newWriteCount-diskWriteCount, newWriteBytes-diskWriteBytes

@@ -10,9 +10,9 @@ import (
 	"sort"
 	"strings"
 
+	iavltree "github.com/cosmos/iavl"
 	protoio "github.com/gogo/protobuf/io"
 	gogotypes "github.com/gogo/protobuf/types"
-	iavltree "github.com/line/iavl/v2"
 	abci "github.com/line/ostracon/abci/types"
 	tmdb "github.com/line/tm-db/v2"
 	"github.com/line/tm-db/v2/prefixdb"
@@ -432,9 +432,6 @@ func (rs *Store) pruneStores() {
 			store = rs.GetCommitKVStore(key)
 
 			if err := store.(*iavl.Store).DeleteVersions(rs.pruneHeights...); err != nil {
-				if err == iavltree.ErrBusy {
-					return
-				}
 				if errCause := errors.Cause(err); errCause != nil && errCause != iavltree.ErrVersionDoesNotExist {
 					panic(err)
 				}
@@ -891,9 +888,9 @@ func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID
 		var err error
 
 		if params.initialVersion == 0 {
-			store, err = iavl.LoadStore(db, rs.iavlCacheManager, id, rs.lazyLoading, rs.iavlCacheSize)
+			store, err = iavl.LoadStore(db, id, rs.lazyLoading, rs.iavlCacheSize)
 		} else {
-			store, err = iavl.LoadStoreWithInitialVersion(db, rs.iavlCacheManager, id, rs.lazyLoading, params.initialVersion, rs.iavlCacheSize)
+			store, err = iavl.LoadStoreWithInitialVersion(db, id, rs.lazyLoading, params.initialVersion, rs.iavlCacheSize)
 		}
 
 		if err != nil {
