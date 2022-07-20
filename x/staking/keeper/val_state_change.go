@@ -3,12 +3,12 @@ package keeper
 import (
 	"bytes"
 	"fmt"
-	gogotypes "github.com/gogo/protobuf/types"
-	abci "github.com/line/ostracon/abci/types"
 	"sort"
 
+	gogotypes "github.com/gogo/protobuf/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/staking/types"
+	abci "github.com/line/ostracon/abci/types"
 )
 
 // BlockValidatorUpdates calculates the ValidatorUpdates for the current block
