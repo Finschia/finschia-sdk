@@ -7,7 +7,6 @@ import (
 	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/store/cache"
-	"github.com/line/lbm-sdk/store/iavl"
 
 	"github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/snapshots"
@@ -246,10 +245,10 @@ func (app *BaseApp) SetInterfaceRegistry(registry types.InterfaceRegistry) {
 	app.msgServiceRouter.SetInterfaceRegistry(registry)
 }
 
-func MetricsProvider(prometheus bool) (cache.MetricsProvider, iavl.MetricsProvider) {
+func MetricsProvider(prometheus bool) cache.MetricsProvider {
 	namespace := "app"
 	if prometheus {
-		return cache.PrometheusMetricsProvider(namespace), iavl.PrometheusMetricsProvider(namespace)
+		return cache.PrometheusMetricsProvider(namespace)
 	}
-	return cache.NopMetricsProvider(), iavl.NopMetricsProvider()
+	return cache.NopMetricsProvider()
 }

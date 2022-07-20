@@ -237,8 +237,7 @@ type appCreator struct {
 func (a appCreator) newApp(logger log.Logger, db tmdb.DB, traceStore io.Writer, appOpts servertypes.AppOptions) servertypes.Application {
 	var cache sdk.MultiStorePersistentCache
 
-	ibCacheMetricsProvider, _ :=
-		baseapp.MetricsProvider(cast.ToBool(viper.GetBool(server.FlagPrometheus)))
+	ibCacheMetricsProvider := baseapp.MetricsProvider(cast.ToBool(viper.GetBool(server.FlagPrometheus)))
 	if cast.ToBool(appOpts.Get(server.FlagInterBlockCache)) {
 		cache = store.NewCommitKVStoreCacheManager(
 			cast.ToInt(appOpts.Get(server.FlagInterBlockCacheSize)), ibCacheMetricsProvider)
