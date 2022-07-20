@@ -110,7 +110,11 @@ func (k Keeper) GetMember(ctx sdk.Context, address sdk.AccAddress) (*foundation.
 
 func (k Keeper) setMember(ctx sdk.Context, member foundation.Member) {
 	store := ctx.KVStore(k.storeKey)
-	key := memberKey(sdk.AccAddress(member.Address))
+	addr, err := sdk.AccAddressFromBech32(member.Address)
+	if err != nil {
+		panic(err)
+	}
+	key := memberKey(addr)
 
 	bz := k.cdc.MustMarshal(&member)
 	store.Set(key, bz)
