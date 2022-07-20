@@ -286,11 +286,11 @@ func parseStoreCodeAndInstantiateContractArgs(file string, initMsg string, sende
 		return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("instantiate by address: %s", err)
 	}
 	if onlyAddrStr != "" {
-		_, err = sdk.AccAddressFromBech32(onlyAddrStr)
+		addr, err := sdk.AccAddressFromBech32(onlyAddrStr)
 		if err != nil {
 			return types.MsgStoreCodeAndInstantiateContract{}, sdkerrors.Wrap(err, flagInstantiateByAddress)
 		}
-		x := types.AccessTypeOnlyAddress.With(sdk.AccAddress(onlyAddrStr))
+		x := types.AccessTypeOnlyAddress.With(addr)
 		perm = &x
 	} else {
 		everybodyStr, err := flags.GetString(flagInstantiateByEverybody)
