@@ -354,7 +354,7 @@ func (suite *TypesTestSuite) TestMsgRecvPacketGetSigners() {
 	msg := types.NewMsgRecvPacket(packet, suite.proof, height, addr)
 	res := msg.GetSigners()
 
-	expected := "[6C696E6B3177336A687861727076336A38797666337879636E7A7666337879636E7A7666336339777A7374]"
+	expected := "[7465737461646472313131313131313131313131]"
 	suite.Equal(expected, fmt.Sprintf("%v", res))
 }
 
