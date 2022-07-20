@@ -257,8 +257,8 @@ func TestSimulateMsgBeginRedelegate(t *testing.T) {
 	require.Equal(t, "489348507626016866", msg.Amount.Amount.String())
 	require.Equal(t, "stake", msg.Amount.Denom)
 	require.Equal(t, types.TypeMsgBeginRedelegate, msg.Type())
-	require.Equal(t, "linkvaloper17s94pzwhsn4ah25tec27w70n65h5t2sc2g5u4z", msg.ValidatorDstAddress)
-	require.Equal(t, "linkvaloper1h6a7shta7jyc72hyznkys683z98z36e0qrqd3d", msg.ValidatorSrcAddress)
+	require.Equal(t, "linkvaloper1h6a7shta7jyc72hyznkys683z98z36e0qrqd3d", msg.ValidatorDstAddress)
+	require.Equal(t, "linkvaloper17s94pzwhsn4ah25tec27w70n65h5t2sc2g5u4z", msg.ValidatorSrcAddress)
 	require.Len(t, futureOperations, 0)
 }
 
