@@ -68,9 +68,9 @@ func (suite *IntegrationTestSuite) TestTotalSupply() {
 	// Prepare some test data.
 	defaultGenesis := types.DefaultGenesisState()
 	balances := []types.Balance{
-		{Coins: sdk.NewCoins(sdk.NewCoin("foocoin", sdk.NewInt(1))), Address: "link1f9xjhxm0plzrh9cskf4qee4pc2xwp0n0556gh0"},
-		{Coins: sdk.NewCoins(sdk.NewCoin("barcoin", sdk.NewInt(1))), Address: "link1t5u0jfg3ljsjrh2m9e47d4ny2hea7eehxrzdgd"},
-		{Coins: sdk.NewCoins(sdk.NewCoin("foocoin", sdk.NewInt(10)), sdk.NewCoin("barcoin", sdk.NewInt(20))), Address: "link1m3h30wlvsf8llruxtpukdvsy0km2kum8g38c8q"},
+		{Coins: sdk.NewCoins(sdk.NewCoin("foocoin", sdk.NewInt(1))), Address: "link1f9xjhxm0plzrh9cskf4qee4pc2xwp0n0p662v8"},
+		{Coins: sdk.NewCoins(sdk.NewCoin("barcoin", sdk.NewInt(1))), Address: "link1t5u0jfg3ljsjrh2m9e47d4ny2hea7eehndz0n9"},
+		{Coins: sdk.NewCoins(sdk.NewCoin("foocoin", sdk.NewInt(10)), sdk.NewCoin("barcoin", sdk.NewInt(20))), Address: "link1m3h30wlvsf8llruxtpukdvsy0km2kum8al86ug"},
 	}
 	totalSupply := sdk.NewCoins(sdk.NewCoin("foocoin", sdk.NewInt(11)), sdk.NewCoin("barcoin", sdk.NewInt(21)))
 
