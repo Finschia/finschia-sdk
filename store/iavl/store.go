@@ -32,58 +32,11 @@ var (
 	_ types.CommitKVStore           = (*Store)(nil)
 	_ types.Queryable               = (*Store)(nil)
 	_ types.StoreWithInitialVersion = (*Store)(nil)
-
-	_ types.CacheManager = (*CacheManagerSingleton)(nil)
 )
 
 // Store Implements types.KVStore and CommitKVStore.
 type Store struct {
-	tree    Tree
-	cache   types.Cache
-	metrics *Metrics
-}
-
-type CacheManagerSingleton struct {
-	cache   types.Cache
-	metrics *Metrics
-}
-
-func (cms *CacheManagerSingleton) GetCache() types.Cache {
-	return cms.cache
-}
-
-func NewCacheManagerSingleton(cacheSize int, provider MetricsProvider) types.CacheManager {
-	cm := &CacheManagerSingleton{
-		cache:   NewFastCache(cacheSize),
-		metrics: provider(),
-	}
-	startCacheMetricUpdator(cm.cache, cm.metrics)
-	return cm
-}
-
-func startCacheMetricUpdator(cache types.Cache, metrics *Metrics) {
-	// Execution time of `fastcache.UpdateStats()` can increase linearly as cache entries grows
-	// So we update the metrics with a separate go route.
-	go func() {
-		for {
-			hits, misses, entries, bytes := cache.Stats()
-			metrics.IAVLCacheHits.Set(float64(hits))
-			metrics.IAVLCacheMisses.Set(float64(misses))
-			metrics.IAVLCacheEntries.Set(float64(entries))
-			metrics.IAVLCacheBytes.Set(float64(bytes))
-			time.Sleep(10 * time.Second)
-		}
-	}()
-}
-
-type CacheManagerNoCache struct{}
-
-func (cmn *CacheManagerNoCache) GetCache() types.Cache {
-	return nil
-}
-
-func NewCacheManagerNoCache() types.CacheManager {
-	return &CacheManagerNoCache{}
+	tree Tree
 }
 
 // LoadStore returns an IAVL Store as a CommitKVStore. Internally, it will load the

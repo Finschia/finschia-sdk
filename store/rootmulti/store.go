@@ -60,8 +60,7 @@ type Store struct {
 	traceWriter  io.Writer
 	traceContext types.TraceContext
 
-	interBlockCache  types.MultiStorePersistentCache
-	iavlCacheManager types.CacheManager
+	interBlockCache types.MultiStorePersistentCache
 
 	listeners map[types.StoreKey][]types.WriteListener
 }
@@ -107,10 +106,6 @@ func (rs *Store) SetIAVLCacheSize(cacheSize int) {
 // SetLazyLoading sets if the iavl store should be loaded lazily or not
 func (rs *Store) SetLazyLoading(lazyLoading bool) {
 	rs.lazyLoading = lazyLoading
-}
-
-func (rs *Store) SetIAVLCacheManager(cacheManager types.CacheManager) {
-	rs.iavlCacheManager = cacheManager
 }
 
 // GetStoreType implements Store.
