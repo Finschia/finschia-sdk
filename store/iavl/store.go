@@ -102,7 +102,7 @@ func LoadStoreWithInitialVersion(db tmdb.DB, cacheManager types.CacheManager, id
 		cacheManager = NewCacheManagerNoCache()
 	}
 	cache := cacheManager.GetCache()
-	tree, err := iavl.NewMutableTreeWithCacheWithOpts(db, cache, &iavl.Options{InitialVersion: initialVersion}) // TODO(dudong2): need to fix to use cacheSize(by using NewMutableTreeWithOpts)
+	tree, err := iavl.NewMutableTreeWithOpts(db, cacheSize, &iavl.Options{InitialVersion: initialVersion})
 	if err != nil {
 		return nil, err
 	}
