@@ -8,7 +8,8 @@ Note: these specifications are subject to change.
 ## Common events
 
 In its process, every message emits an event of type `message` which has an attribute of a key `action`. This attribute has a value of `TypeURL` of the message. `TypeURL` is just a message name of the message, prefixed by `/`. For example, `TypeURL` of a message `MsgSend` would be `/cosmos.bank.v1beta1.MsgSend`.
-This events MUST proceed to any other events in its process of the message.
+
+This event MUST proceed to any other events in its process of the message.
 
 ## Ordering
 
