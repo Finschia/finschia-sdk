@@ -80,3 +80,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 * (docs) [\#483](https://github.com/line/lbm-sdk/pull/483) update documents on x/stakingplus
 * (docs) [\#490](https://github.com/line/lbm-sdk/pull/490) update documents on x/consortium
+* (docs) [\#602](https://github.com/line/lbm-sdk/pull/602) update outdated events in specs
