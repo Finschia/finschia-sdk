@@ -160,10 +160,8 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 				// however, the saved value was not.
 				// so we need this to catch the bug.
 
-				newGranter, err := sdk.AccAddressFromBech32(grant.Granter)
-				require.NoError(t, err)
-				newGrantee, err := sdk.AccAddressFromBech32(grant.Grantee)
-				require.NoError(t, err)
+				newGranter, _ := sdk.AccAddressFromBech32(grant.Granter)
+				newGrantee, _ := sdk.AccAddressFromBech32(grant.Grantee)
 				// create a new updated grant
 				newGrant, err := feegrant.NewGrant(
 					newGranter,
