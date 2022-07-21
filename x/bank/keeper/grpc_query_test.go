@@ -72,11 +72,6 @@ func (suite *IntegrationTestSuite) TestQueryAllBalances() {
 	suite.Equal(res.Balances.Len(), 1)
 	suite.NotNil(res.Pagination.NextKey)
 
-	// invalid bech32 address
-	invalidReq := types.NewQueryAllBalancesRequest(sdk.AccAddress(addr.String()[0:10]), pageReq)
-	_, err = queryClient.AllBalances(gocontext.Background(), invalidReq)
-	suite.Require().Error(err)
-
 	suite.T().Log("query second page with nextkey")
 	pageReq = &query.PageRequest{
 		Key:        res.Pagination.NextKey,

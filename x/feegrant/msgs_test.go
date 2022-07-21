@@ -14,8 +14,8 @@ import (
 
 func TestMsgGrantAllowance(t *testing.T) {
 	cdc := codec.NewProtoCodec(codectypes.NewInterfaceRegistry())
-	addr := sdk.AccAddress("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
-	addr2 := sdk.AccAddress("link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu")
+	addr, _ := sdk.AccAddressFromBech32("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
+	addr2, _ := sdk.AccAddressFromBech32("link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu")
 	atom := sdk.NewCoins(sdk.NewInt64Coin("atom", 555))
 	threeHours := time.Now().Add(3 * time.Hour)
 	basic := &feegrant.BasicAllowance{
@@ -37,12 +37,12 @@ func TestMsgGrantAllowance(t *testing.T) {
 		},
 		"no grantee": {
 			granter: addr2,
-			grantee: sdk.AccAddress(""),
+			grantee: sdk.AccAddress{},
 			grant:   basic,
 			valid:   false,
 		},
 		"no granter": {
-			granter: sdk.AccAddress(""),
+			granter: sdk.AccAddress{},
 			grantee: addr,
 			grant:   basic,
 			valid:   false,
@@ -64,7 +64,7 @@ func TestMsgGrantAllowance(t *testing.T) {
 			require.NoError(t, err)
 
 			addrSlice := msg.GetSigners()
-			require.True(t, tc.granter.Equals(addrSlice[0]))
+			require.Equal(t, tc.granter.String(), addrSlice[0].String())
 
 			allowance, err := msg.GetFeeAllowanceI()
 			require.NoError(t, err)
@@ -79,8 +79,8 @@ func TestMsgGrantAllowance(t *testing.T) {
 }
 
 func TestMsgRevokeAllowance(t *testing.T) {
-	addr := sdk.AccAddress("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
-	addr2 := sdk.AccAddress("link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu")
+	addr, err := sdk.AccAddressFromBech32("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
+	addr2, err := sdk.AccAddressFromBech32("link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu")
 	atom := sdk.NewCoins(sdk.NewInt64Coin("atom", 555))
 	threeHours := time.Now().Add(3 * time.Hour)
 
@@ -102,12 +102,12 @@ func TestMsgRevokeAllowance(t *testing.T) {
 		},
 		"no grantee": {
 			granter: addr2,
-			grantee: sdk.AccAddress(""),
+			grantee: sdk.AccAddress{},
 			grant:   basic,
 			valid:   false,
 		},
 		"no granter": {
-			granter: sdk.AccAddress(""),
+			granter: sdk.AccAddress{},
 			grantee: addr,
 			grant:   basic,
 			valid:   false,
@@ -126,7 +126,7 @@ func TestMsgRevokeAllowance(t *testing.T) {
 		if tc.valid {
 			require.NoError(t, err)
 			addrSlice := msg.GetSigners()
-			require.True(t, tc.granter.Equals(addrSlice[0]))
+			require.Equal(t, tc.granter.String(), addrSlice[0].String())
 		} else {
 			require.Error(t, err)
 		}

@@ -12,7 +12,11 @@ func (k Keeper) Vote(ctx sdk.Context, vote foundation.Vote) error {
 	}
 
 	// Make sure that a voter hasn't already voted.
-	if k.hasVote(ctx, vote.ProposalId, sdk.AccAddress(vote.Voter)) {
+	voter, err := sdk.AccAddressFromBech32(vote.Voter)
+	if err != nil {
+		return err
+	}
+	if k.hasVote(ctx, vote.ProposalId, voter) {
 		return sdkerrors.ErrInvalidRequest.Wrapf("Already voted: %s", vote.Voter)
 	}
 
@@ -63,8 +67,11 @@ func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, voter sdk.AccAddress
 
 func (k Keeper) setVote(ctx sdk.Context, vote foundation.Vote) {
 	store := ctx.KVStore(k.storeKey)
-	key := voteKey(vote.ProposalId, sdk.AccAddress(vote.Voter))
-
+	voter, err := sdk.AccAddressFromBech32(vote.Voter)
+	if err != nil {
+		panic(err)
+	}
+	key := voteKey(vote.ProposalId, voter)
 	bz := k.cdc.MustMarshal(&vote)
 	store.Set(key, bz)
 }
@@ -98,7 +105,11 @@ func (k Keeper) GetVotes(ctx sdk.Context, proposalID uint64) []foundation.Vote {
 func (k Keeper) pruneVotes(ctx sdk.Context, proposalID uint64) {
 	keys := [][]byte{}
 	k.iterateVotes(ctx, proposalID, func(vote foundation.Vote) (stop bool) {
-		keys = append(keys, voteKey(proposalID, sdk.AccAddress(vote.Voter)))
+		voter, err := sdk.AccAddressFromBech32(vote.Voter)
+		if err != nil {
+			return true
+		}
+		keys = append(keys, voteKey(proposalID, voter))
 		return false
 	})
 

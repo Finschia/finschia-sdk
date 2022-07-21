@@ -35,9 +35,9 @@ func checkDefaultPubKey(t *testing.T, priv types.LedgerPrivKey) {
 		fmt.Sprintf("%x", cdc.Amino.MustMarshalBinaryBare(priv.PubKey())),
 		"Is your device using test mnemonic: %s ?", testdata.TestMnemonic)
 	require.Equal(t, expectedPkStr, priv.PubKey().String())
-	addr := sdk.BytesToAccAddress(priv.PubKey().Address())
+	addr := sdk.AccAddress(priv.PubKey().Address()).String()
 	require.Equal(t, "link1tdl7n2acgmec0y5nng0q2fahl9khyct3cgsktn",
-		addr.String(), "Is your device using test mnemonic: %s ?", testdata.TestMnemonic)
+		addr, "Is your device using test mnemonic: %s ?", testdata.TestMnemonic)
 }
 
 func TestPublicKeyUnsafeHDPath(t *testing.T) {
@@ -102,7 +102,7 @@ func TestPublicKeySafe(t *testing.T) {
 	require.Nil(t, ShowAddress(path, priv.PubKey(), sdk.GetConfig().GetBech32AccountAddrPrefix()))
 	checkDefaultPubKey(t, priv)
 
-	addr2 := sdk.BytesToAccAddress(priv.PubKey().Address()).String()
+	addr2 := sdk.AccAddress(priv.PubKey().Address()).String()
 	require.Equal(t, addr, addr2)
 }
 
@@ -147,7 +147,7 @@ func TestPublicKeyHDPath(t *testing.T) {
 		require.NotNil(t, addr)
 		require.NotNil(t, priv)
 
-		addr2 := sdk.BytesToAccAddress(priv.PubKey().Address()).String()
+		addr2 := sdk.AccAddress(priv.PubKey().Address()).String()
 		require.Equal(t, addr2, addr)
 		require.Equal(t,
 			expectedAddrs[i], addr,

@@ -624,11 +624,11 @@ func parseAccessConfig(config string) (types.AccessConfig, error) {
 	case "everybody":
 		return types.AllowEverybody, nil
 	default:
-		err := sdk.ValidateAccAddress(config)
+		address, err := sdk.AccAddressFromBech32(config)
 		if err != nil {
 			return types.AccessConfig{}, fmt.Errorf("unable to parse address %s", config)
 		}
-		return types.AccessTypeOnlyAddress.With(sdk.AccAddress(config)), nil
+		return types.AccessTypeOnlyAddress.With(address), nil
 	}
 }
 
@@ -658,6 +658,7 @@ func parseAccessConfigUpdates(args []string) ([]types.AccessConfigUpdate, error)
 	}
 	return updates, nil
 }
+
 func ProposalUpdateInstantiateConfigCmd() *cobra.Command {
 	bech32Prefix := sdk.GetConfig().GetBech32AccountAddrPrefix()
 	cmd := &cobra.Command{

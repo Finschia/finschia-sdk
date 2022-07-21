@@ -27,7 +27,7 @@ func (a CreateValidatorAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (foun
 }
 
 func (a CreateValidatorAuthorization) ValidateBasic() error {
-	if err := sdk.ValidateValAddress(a.ValidatorAddress); err != nil {
+	if _, err := sdk.AccAddressFromBech32(a.ValidatorAddress); err != nil {
 		return err
 	}
 

@@ -14,12 +14,12 @@ import (
 )
 
 func TestSanitize(t *testing.T) {
-	addr1 := sdk.BytesToAccAddress(ed25519.GenPrivKey().PubKey().Address())
+	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	authAcc1 := types.NewBaseAccountWithAddress(addr1)
 	err := authAcc1.SetAccountNumber(1)
 	require.NoError(t, err)
 
-	addr2 := sdk.BytesToAccAddress(ed25519.GenPrivKey().PubKey().Address())
+	addr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	authAcc2 := types.NewBaseAccountWithAddress(addr2)
 
 	genAccs := types.GenesisAccounts{authAcc1, authAcc2}
@@ -35,8 +35,8 @@ func TestSanitize(t *testing.T) {
 var (
 	pk1   = ed25519.GenPrivKey().PubKey()
 	pk2   = ed25519.GenPrivKey().PubKey()
-	addr1 = sdk.BytesToValAddress(pk1.Address())
-	addr2 = sdk.BytesToValAddress(pk2.Address())
+	addr1 = sdk.ValAddress(pk1.Address())
+	addr2 = sdk.ValAddress(pk2.Address())
 )
 
 // require duplicate accounts fails validation

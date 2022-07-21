@@ -90,7 +90,7 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 
 	// if feegranter set deduct fee from feegranter account.
 	// this works with only when feegrant enabled.
-	if feeGranter != "" {
+	if feeGranter != nil {
 		if dfd.feegrantKeeper == nil {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "fee grants are not enabled")
 		} else if !feeGranter.Equals(feePayer) {

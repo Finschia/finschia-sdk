@@ -12,7 +12,7 @@ import (
 	"github.com/line/lbm-sdk/x/bank/types"
 )
 
-var addr1 = sdk.BytesToAccAddress([]byte("addr1"))
+var addr1 = sdk.AccAddress([]byte("addr1"))
 
 func (s *paginationTestSuite) TestFilteredPaginations() {
 	app, ctx, appCodec := setupTest()
@@ -29,7 +29,7 @@ func (s *paginationTestSuite) TestFilteredPaginations() {
 	}
 
 	balances = balances.Sort()
-	addr1 := sdk.BytesToAccAddress([]byte("addr1"))
+	addr1 := sdk.AccAddress([]byte("addr1"))
 	acc1 := app.AccountKeeper.NewAccountWithAddress(ctx, addr1)
 	app.AccountKeeper.SetAccount(ctx, acc1)
 	s.Require().NoError(simapp.FundAccount(app, ctx, addr1, balances))
@@ -104,7 +104,7 @@ func (s *paginationTestSuite) TestReverseFilteredPaginations() {
 	}
 
 	balances = balances.Sort()
-	addr1 := sdk.BytesToAccAddress([]byte("addr1"))
+	addr1 := sdk.AccAddress([]byte("addr1"))
 	acc1 := app.AccountKeeper.NewAccountWithAddress(ctx, addr1)
 	app.AccountKeeper.SetAccount(ctx, acc1)
 	s.Require().NoError(simapp.FundAccount(app, ctx, addr1, balances))
@@ -196,7 +196,7 @@ func ExampleFilteredPaginate() {
 	pageReq := &query.PageRequest{Key: nil, Limit: 1, CountTotal: true}
 	store := ctx.KVStore(app.GetKey(types.StoreKey))
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, address.MustLengthPrefix(addr1.Bytes()))
+	accountStore := prefix.NewStore(balancesStore, address.MustLengthPrefix(addr1))
 
 	var balResult sdk.Coins
 	pageRes, err := query.FilteredPaginate(accountStore, pageReq, func(key []byte, value []byte, accumulate bool) (bool, error) {
@@ -228,7 +228,7 @@ func ExampleFilteredPaginate() {
 
 func execFilterPaginate(store sdk.KVStore, pageReq *query.PageRequest, appCodec codec.Codec) (balances sdk.Coins, res *query.PageResponse, err error) {
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, address.MustLengthPrefix(addr1.Bytes()))
+	accountStore := prefix.NewStore(balancesStore, address.MustLengthPrefix(addr1))
 
 	var balResult sdk.Coins
 	res, err = query.FilteredPaginate(accountStore, pageReq, func(key []byte, value []byte, accumulate bool) (bool, error) {

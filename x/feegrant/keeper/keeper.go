@@ -192,16 +192,14 @@ func emitUseGrantEvent(ctx sdk.Context, granter, grantee string) {
 // InitGenesis will initialize the keeper from a *previously validated* GenesisState
 func (k Keeper) InitGenesis(ctx sdk.Context, data *feegrant.GenesisState) error {
 	for _, f := range data.Allowances {
-		err := sdk.ValidateAccAddress(f.Granter)
+		granter, err := sdk.AccAddressFromBech32(f.Granter)
 		if err != nil {
 			return err
 		}
-		granter := sdk.AccAddress(f.Granter)
-		err = sdk.ValidateAccAddress(f.Grantee)
+		grantee, err := sdk.AccAddressFromBech32(f.Grantee)
 		if err != nil {
 			return err
 		}
-		grantee := sdk.AccAddress(f.Grantee)
 
 		grant, err := f.GetGrant()
 		if err != nil {

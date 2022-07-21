@@ -74,7 +74,7 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 	}
 
 	root := k.GetRoot(ctx, contractID, target)
-	if owner != k.getOwner(ctx, contractID, root) {
+	if !owner.Equals(k.getOwner(ctx, contractID, root)) {
 		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, target)
 	}
 	if root == subject {
@@ -109,7 +109,7 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 		return err
 	}
 
-	if owner != k.GetRootOwner(ctx, contractID, subject) {
+	if !owner.Equals(k.GetRootOwner(ctx, contractID, subject)) {
 		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, subject)
 	}
 

@@ -146,7 +146,7 @@ func GetValidatorSlashEventAddressHeight(key []byte) (valAddr sdk.ValAddress, he
 	// key is in the format:
 	// 0x08<valAddrLen (1 Byte)><valAddr_Bytes><height>: ValidatorSlashEvent
 	valAddrLen := int(key[1])
-	valAddr = sdk.ValAddress(key[2 : 2+valAddrLen])
+	valAddr = key[2 : 2+valAddrLen]
 	startB := 2 + valAddrLen
 	b := key[startB : startB+8] // the next 8 bytes represent the height
 	height = binary.BigEndian.Uint64(b)

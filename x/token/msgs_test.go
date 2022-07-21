@@ -13,7 +13,7 @@ import (
 func TestMsgSend(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -32,7 +32,7 @@ func TestMsgSend(t *testing.T) {
 		},
 		"empty from": {
 			contractID: "deadbeef",
-			from:       "",
+			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     sdk.OneInt(),
 		},
@@ -44,6 +44,7 @@ func TestMsgSend(t *testing.T) {
 		"invalid to": {
 			contractID: "deadbeef",
 			from:       addrs[0],
+			to:         sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -76,7 +77,7 @@ func TestMsgSend(t *testing.T) {
 func TestMsgOperatorSend(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -97,6 +98,7 @@ func TestMsgOperatorSend(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: "deadbeef",
+			operator:   sdk.AccAddress{},
 			from:       addrs[1],
 			to:         addrs[2],
 			amount:     sdk.OneInt(),
@@ -110,6 +112,7 @@ func TestMsgOperatorSend(t *testing.T) {
 		"empty from": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
+			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     sdk.OneInt(),
 		},
@@ -117,6 +120,7 @@ func TestMsgOperatorSend(t *testing.T) {
 			contractID: "deadbeef",
 			operator:   addrs[0],
 			from:       addrs[1],
+			to:         sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -151,7 +155,7 @@ func TestMsgOperatorSend(t *testing.T) {
 func TestMsgTransferFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -172,6 +176,7 @@ func TestMsgTransferFrom(t *testing.T) {
 		},
 		"invalid proxy": {
 			contractID: "deadbeef",
+			proxy:      sdk.AccAddress{},
 			from:       addrs[1],
 			to:         addrs[2],
 			amount:     sdk.OneInt(),
@@ -185,6 +190,7 @@ func TestMsgTransferFrom(t *testing.T) {
 		"empty from": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
+			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     sdk.OneInt(),
 		},
@@ -192,6 +198,7 @@ func TestMsgTransferFrom(t *testing.T) {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			from:       addrs[1],
+			to:         sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -226,7 +233,7 @@ func TestMsgTransferFrom(t *testing.T) {
 func TestMsgAuthorizeOperator(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -247,11 +254,13 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 		},
 		"invalid holder": {
 			contractID: "deadbeef",
+			holder:     sdk.AccAddress{},
 			operator:   addrs[1],
 		},
 		"empty operator": {
-			contractID: "deadbeef",
 			holder:     addrs[0],
+			operator:   sdk.AccAddress{},
+			contractID: "deadbeef",
 		},
 	}
 
@@ -276,7 +285,7 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 func TestMsgRevokeOperator(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -297,11 +306,13 @@ func TestMsgRevokeOperator(t *testing.T) {
 		},
 		"invalid holder": {
 			contractID: "deadbeef",
+			holder:     sdk.AccAddress{},
 			operator:   addrs[1],
 		},
 		"empty operator": {
-			contractID: "deadbeef",
 			holder:     addrs[0],
+			operator:   sdk.AccAddress{},
+			contractID: "deadbeef",
 		},
 	}
 
@@ -326,7 +337,7 @@ func TestMsgRevokeOperator(t *testing.T) {
 func TestMsgApprove(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -347,11 +358,13 @@ func TestMsgApprove(t *testing.T) {
 		},
 		"invalid approver": {
 			contractID: "deadbeef",
+			approver:   sdk.AccAddress{},
 			proxy:      addrs[1],
 		},
 		"empty proxy": {
 			contractID: "deadbeef",
 			approver:   addrs[0],
+			proxy:      sdk.AccAddress{},
 		},
 	}
 
@@ -376,7 +389,7 @@ func TestMsgApprove(t *testing.T) {
 func TestMsgIssue(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -402,6 +415,7 @@ func TestMsgIssue(t *testing.T) {
 			valid:    true,
 		},
 		"invalid owner": {
+			owner:    sdk.AccAddress{},
 			to:       addrs[1],
 			name:     "test",
 			symbol:   "TT",
@@ -412,6 +426,7 @@ func TestMsgIssue(t *testing.T) {
 		},
 		"empty to": {
 			owner:    addrs[0],
+			to:       sdk.AccAddress{},
 			name:     "test",
 			symbol:   "TT",
 			imageUri: "some URI",
@@ -516,7 +531,7 @@ func TestMsgIssue(t *testing.T) {
 func TestMsgMint(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -540,12 +555,14 @@ func TestMsgMint(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
+			grantee:    sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     sdk.OneInt(),
 		},
 		"empty to": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
+			to:         sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -578,7 +595,7 @@ func TestMsgMint(t *testing.T) {
 func TestMsgBurn(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -599,6 +616,7 @@ func TestMsgBurn(t *testing.T) {
 		},
 		"invalid from": {
 			contractID: "deadbeef",
+			from:       sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -629,7 +647,7 @@ func TestMsgBurn(t *testing.T) {
 func TestMsgOperatorBurn(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -653,12 +671,14 @@ func TestMsgOperatorBurn(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: "deadbeef",
+			operator:   sdk.AccAddress{},
 			from:       addrs[1],
 			amount:     sdk.OneInt(),
 		},
 		"empty from": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
+			from:       sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -691,7 +711,7 @@ func TestMsgOperatorBurn(t *testing.T) {
 func TestMsgBurnFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -715,12 +735,14 @@ func TestMsgBurnFrom(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
+			grantee:    sdk.AccAddress{},
 			from:       addrs[1],
 			amount:     sdk.OneInt(),
 		},
 		"empty from": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
+			from:       sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -753,7 +775,7 @@ func TestMsgBurnFrom(t *testing.T) {
 func TestMsgModify(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	validChange := token.Pair{Field: token.AttributeKeyName.String(), Value: "New test"}
@@ -775,6 +797,7 @@ func TestMsgModify(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
+			grantee:    sdk.AccAddress{},
 			changes:    []token.Pair{validChange},
 		},
 		"invalid key of change": {
@@ -822,7 +845,7 @@ func TestMsgModify(t *testing.T) {
 func TestMsgGrant(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -846,12 +869,14 @@ func TestMsgGrant(t *testing.T) {
 		},
 		"empty granter": {
 			contractID: "deadbeef",
+			granter:    sdk.AccAddress{},
 			grantee:    addrs[1],
 			permission: token.PermissionMint,
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
 			granter:    addrs[0],
+			grantee:    sdk.AccAddress{},
 			permission: token.PermissionMint,
 		},
 		"invalid permission": {
@@ -883,7 +908,7 @@ func TestMsgGrant(t *testing.T) {
 func TestMsgAbandon(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -904,6 +929,7 @@ func TestMsgAbandon(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
+			grantee:    sdk.AccAddress{},
 			permission: token.PermissionMint,
 		},
 		"invalid permission": {
@@ -933,7 +959,7 @@ func TestMsgAbandon(t *testing.T) {
 func TestMsgGrantPermission(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -957,12 +983,14 @@ func TestMsgGrantPermission(t *testing.T) {
 		},
 		"empty from": {
 			contractID: "deadbeef",
+			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			permission: token.LegacyPermissionMint.String(),
 		},
 		"invalid to": {
 			contractID: "deadbeef",
 			from:       addrs[0],
+			to:         sdk.AccAddress{},
 			permission: token.LegacyPermissionMint.String(),
 		},
 		"invalid permission": {
@@ -994,7 +1022,7 @@ func TestMsgGrantPermission(t *testing.T) {
 func TestMsgRevokePermission(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -1014,6 +1042,7 @@ func TestMsgRevokePermission(t *testing.T) {
 			permission: token.LegacyPermissionMint.String(),
 		},
 		"invalid from": {
+			from:       sdk.AccAddress{},
 			contractID: "deadbeef",
 			permission: token.LegacyPermissionMint.String(),
 		},

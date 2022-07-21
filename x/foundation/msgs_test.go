@@ -14,7 +14,7 @@ import (
 func TestMsgFundTreasury(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -28,6 +28,7 @@ func TestMsgFundTreasury(t *testing.T) {
 			valid:  true,
 		},
 		"empty from": {
+			from:   sdk.AccAddress{},
 			amount: sdk.OneInt(),
 		},
 		"zero amount": {
@@ -56,7 +57,7 @@ func TestMsgFundTreasury(t *testing.T) {
 func TestMsgWithdrawFromTreasury(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -72,11 +73,13 @@ func TestMsgWithdrawFromTreasury(t *testing.T) {
 			valid:    true,
 		},
 		"empty operator": {
-			to:     addrs[1],
-			amount: sdk.OneInt(),
+			operator: sdk.AccAddress{},
+			to:       addrs[1],
+			amount:   sdk.OneInt(),
 		},
 		"empty to": {
 			operator: addrs[0],
+			to:       sdk.AccAddress{},
 			amount:   sdk.OneInt(),
 		},
 		"zero amount": {
@@ -107,7 +110,7 @@ func TestMsgWithdrawFromTreasury(t *testing.T) {
 func TestMsgUpdateMembers(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -124,6 +127,7 @@ func TestMsgUpdateMembers(t *testing.T) {
 			valid: true,
 		},
 		"empty operator": {
+			operator: sdk.AccAddress{},
 			members: []foundation.Member{{
 				Address:       addrs[1].String(),
 				Participating: true,
@@ -173,7 +177,7 @@ func TestMsgUpdateMembers(t *testing.T) {
 func TestMsgUpdateDecisionPolicy(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -202,6 +206,7 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 			valid: true,
 		},
 		"empty operator": {
+			operator: sdk.AccAddress{},
 			policy: &foundation.ThresholdDecisionPolicy{
 				Threshold: sdk.NewDec(3),
 				Windows: &foundation.DecisionPolicyWindows{
@@ -262,7 +267,7 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 func TestMsgSubmitProposal(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -289,7 +294,7 @@ func TestMsgSubmitProposal(t *testing.T) {
 			}},
 		},
 		"invalid proposer": {
-			proposers: []sdk.AccAddress{""},
+			proposers: []sdk.AccAddress{[]byte{}},
 			msgs: []sdk.Msg{&foundation.MsgWithdrawFromTreasury{
 				Operator: addrs[1].String(),
 				To:       addrs[2].String(),
@@ -349,7 +354,7 @@ func TestMsgSubmitProposal(t *testing.T) {
 func TestMsgWithdrawProposal(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -366,7 +371,8 @@ func TestMsgWithdrawProposal(t *testing.T) {
 			address: addrs[0],
 		},
 		"empty address": {
-			id: 1,
+			address: sdk.AccAddress{},
+			id:      1,
 		},
 	}
 
@@ -390,7 +396,7 @@ func TestMsgWithdrawProposal(t *testing.T) {
 func TestMsgVote(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -412,6 +418,7 @@ func TestMsgVote(t *testing.T) {
 		},
 		"empty voter": {
 			id:     1,
+			voter:  sdk.AccAddress{},
 			option: foundation.VOTE_OPTION_YES,
 		},
 		"empty option": {
@@ -453,7 +460,7 @@ func TestMsgVote(t *testing.T) {
 func TestMsgExec(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -470,7 +477,8 @@ func TestMsgExec(t *testing.T) {
 			signer: addrs[0],
 		},
 		"empty signer": {
-			id: 1,
+			id:     1,
+			signer: sdk.AccAddress{},
 		},
 	}
 
@@ -494,7 +502,7 @@ func TestMsgExec(t *testing.T) {
 func TestMsgLeaveFoundation(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -505,7 +513,9 @@ func TestMsgLeaveFoundation(t *testing.T) {
 			address: addrs[0],
 			valid:   true,
 		},
-		"empty address": {},
+		"empty address": {
+			address: sdk.AccAddress{},
+		},
 	}
 
 	for name, tc := range testCases {
@@ -527,7 +537,7 @@ func TestMsgLeaveFoundation(t *testing.T) {
 func TestMsgGrant(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -543,11 +553,13 @@ func TestMsgGrant(t *testing.T) {
 			valid:         true,
 		},
 		"empty operator": {
+			operator:      sdk.AccAddress{},
 			grantee:       addrs[1],
 			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
 		},
 		"empty grantee": {
 			operator:      addrs[0],
+			grantee:       sdk.AccAddress{},
 			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
 		},
 		"empty authorization": {
@@ -579,7 +591,7 @@ func TestMsgGrant(t *testing.T) {
 func TestMsgRevoke(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -595,11 +607,13 @@ func TestMsgRevoke(t *testing.T) {
 			valid:      true,
 		},
 		"empty operator": {
+			operator:   sdk.AccAddress{},
 			grantee:    addrs[1],
 			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 		},
 		"empty grantee": {
 			operator:   addrs[0],
+			grantee:    sdk.AccAddress{},
 			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 		},
 		"empty url": {
