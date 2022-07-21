@@ -168,6 +168,7 @@ func TestPrefixStoreIteratorEdgeCase(t *testing.T) {
 
 	iter := prefixStore.Iterator(nil, nil)
 
+	checkDomain(t, iter, nil, nil)
 	checkItem(t, iter, []byte{}, bz(""))
 	checkNext(t, iter, true)
 	checkItem(t, iter, []byte{0x00}, bz(""))
@@ -197,6 +198,7 @@ func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
 
 	iter := prefixStore.ReverseIterator(nil, nil)
 
+	checkDomain(t, iter, nil, nil)
 	checkItem(t, iter, []byte{0x00}, bz(""))
 	checkNext(t, iter, true)
 	checkItem(t, iter, []byte{}, bz(""))
@@ -223,6 +225,7 @@ func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
 
 	iter = prefixStore.ReverseIterator(nil, nil)
 
+	checkDomain(t, iter, nil, nil)
 	checkItem(t, iter, []byte{0x00}, bz(""))
 	checkNext(t, iter, true)
 	checkItem(t, iter, []byte{}, bz(""))
@@ -264,6 +267,12 @@ func checkNext(t *testing.T, itr types.Iterator, expected bool) {
 	itr.Next()
 	valid := itr.Valid()
 	require.Equal(t, expected, valid)
+}
+
+func checkDomain(t *testing.T, itr types.Iterator, start, end []byte) {
+	ds, de := itr.Domain()
+	require.Equal(t, start, ds)
+	require.Equal(t, end, de)
 }
 
 func checkItem(t *testing.T, itr types.Iterator, key, value []byte) {
@@ -313,6 +322,7 @@ func TestPrefixDBIterator1(t *testing.T) {
 	pstore := NewStore(store, bz("key"))
 
 	itr := pstore.Iterator(nil, nil)
+	checkDomain(t, itr, nil, nil)
 	checkItem(t, itr, bz(""), bz("value"))
 	checkNext(t, itr, true)
 	checkItem(t, itr, bz("1"), bz("value1"))
@@ -330,6 +340,7 @@ func TestPrefixDBIterator2(t *testing.T) {
 	pstore := NewStore(store, bz("key"))
 
 	itr := pstore.Iterator(nil, bz(""))
+	checkDomain(t, itr, nil, bz(""))
 	checkInvalid(t, itr)
 	itr.Close()
 }
@@ -339,6 +350,7 @@ func TestPrefixDBIterator3(t *testing.T) {
 	pstore := NewStore(store, bz("key"))
 
 	itr := pstore.Iterator(bz(""), nil)
+	checkDomain(t, itr, bz(""), nil)
 	checkItem(t, itr, bz(""), bz("value"))
 	checkNext(t, itr, true)
 	checkItem(t, itr, bz("1"), bz("value1"))
@@ -356,6 +368,7 @@ func TestPrefixDBIterator4(t *testing.T) {
 	pstore := NewStore(store, bz("key"))
 
 	itr := pstore.Iterator(bz(""), bz(""))
+	checkDomain(t, itr, bz(""), bz(""))
 	checkInvalid(t, itr)
 	itr.Close()
 }
@@ -365,6 +378,7 @@ func TestPrefixDBReverseIterator1(t *testing.T) {
 	pstore := NewStore(store, bz("key"))
 
 	itr := pstore.ReverseIterator(nil, nil)
+	checkDomain(t, itr, nil, nil)
 	checkItem(t, itr, bz("3"), bz("value3"))
 	checkNext(t, itr, true)
 	checkItem(t, itr, bz("2"), bz("value2"))
@@ -382,6 +396,7 @@ func TestPrefixDBReverseIterator2(t *testing.T) {
 	pstore := NewStore(store, bz("key"))
 
 	itr := pstore.ReverseIterator(bz(""), nil)
+	checkDomain(t, itr, bz(""), nil)
 	checkItem(t, itr, bz("3"), bz("value3"))
 	checkNext(t, itr, true)
 	checkItem(t, itr, bz("2"), bz("value2"))
@@ -399,6 +414,7 @@ func TestPrefixDBReverseIterator3(t *testing.T) {
 	pstore := NewStore(store, bz("key"))
 
 	itr := pstore.ReverseIterator(nil, bz(""))
+	checkDomain(t, itr, nil, bz(""))
 	checkInvalid(t, itr)
 	itr.Close()
 }

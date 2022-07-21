@@ -55,6 +55,9 @@ func TestGasKVStoreIterator(t *testing.T) {
 	st.Set(keyFmt(3), valFmt(0))
 
 	iterator := st.Iterator(nil, nil)
+	start, end := iterator.Domain()
+	require.Nil(t, start)
+	require.Nil(t, end)
 	require.NoError(t, iterator.Error())
 
 	t.Cleanup(func() {
