@@ -79,8 +79,8 @@ func TestMsgGrantAllowance(t *testing.T) {
 }
 
 func TestMsgRevokeAllowance(t *testing.T) {
-	addr := sdk.AccAddress("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
-	addr2 := sdk.AccAddress("link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu")
+	addr, err := sdk.AccAddressFromBech32("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
+	addr2, err := sdk.AccAddressFromBech32("link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu")
 	atom := sdk.NewCoins(sdk.NewInt64Coin("atom", 555))
 	threeHours := time.Now().Add(3 * time.Hour)
 

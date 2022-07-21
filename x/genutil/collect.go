@@ -159,7 +159,7 @@ func CollectTxs(cdc codec.JSONCodec, txJSONDecoder sdk.TxDecoder, moniker, genTx
 		if !valOk {
 			_, file, no, ok := runtime.Caller(1)
 			if ok {
-				fmt.Printf("CollectTxs-2, called from %s#%d - %s\n", file, no, sdk.AccAddress(msg.ValidatorAddress).String())
+				fmt.Printf("CollectTxs-2, called from %s#%d - %s\n", file, no, valAddr.String())
 			}
 			return appGenTxs, persistentPeers, fmt.Errorf("account %s balance not in genesis state: %+v", valAddr, balancesMap)
 		}

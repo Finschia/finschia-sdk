@@ -28,7 +28,7 @@ func TestStoreMigration(t *testing.T) {
 	_, pk1, addr2 := testdata.KeyTestPubAddr()
 	valAddr2 := sdk.ValAddress(addr2)
 	_, _, addr3 := testdata.KeyTestPubAddr()
-	consAddr := sdk.ConsAddress(addr3.String())
+	consAddr := sdk.ConsAddress(addr3)
 	_, _, addr4 := testdata.KeyTestPubAddr()
 	now := time.Now()
 	// Use dummy value for all keys.
