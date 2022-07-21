@@ -433,7 +433,7 @@ func (s msgServer) CreateFTClass(c context.Context, req *collection.MsgCreateFTC
 
 	toAddr, err := sdk.AccAddressFromBech32(req.To)
 	if err != nil {
-		return nil, err
+		toAddr = operatorAddr
 	}
 
 	ctx.EventManager().EmitEvent(collection.NewEventIssueFT(event, operatorAddr, toAddr, req.Supply))
