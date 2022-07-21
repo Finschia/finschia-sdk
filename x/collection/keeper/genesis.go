@@ -45,7 +45,10 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 
 		for _, balance := range contractBalances.Balances {
 			for _, coin := range balance.Amount {
-				addr, _ := sdk.AccAddressFromBech32(balance.Address)
+				addr, err := sdk.AccAddressFromBech32(balance.Address)
+				if err != nil {
+					panic(err)
+				}
 
 				k.setBalance(ctx, contractID, addr, coin.TokenId, coin.Amount)
 
@@ -77,15 +80,24 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 
 	for _, contractAuthorizations := range data.Authorizations {
 		for _, authorization := range contractAuthorizations.Authorizations {
-			holderAddr, _ := sdk.AccAddressFromBech32(authorization.Holder)
-			operatorAddr, _ := sdk.AccAddressFromBech32(authorization.Operator)
+			holderAddr, err := sdk.AccAddressFromBech32(authorization.Holder)
+			if err != nil {
+				panic(err)
+			}
+			operatorAddr, err := sdk.AccAddressFromBech32(authorization.Operator)
+			if err != nil {
+				panic(err)
+			}
 			k.setAuthorization(ctx, contractAuthorizations.ContractId, holderAddr, operatorAddr)
 		}
 	}
 
 	for _, contractGrants := range data.Grants {
 		for _, grant := range contractGrants.Grants {
-			granteeAddr, _ := sdk.AccAddressFromBech32(grant.Grantee)
+			granteeAddr, err := sdk.AccAddressFromBech32(grant.Grantee)
+			if err != nil {
+				panic(err)
+			}
 			k.setGrant(ctx, contractGrants.ContractId, granteeAddr, grant.Permission)
 		}
 	}
