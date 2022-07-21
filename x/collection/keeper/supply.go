@@ -253,7 +253,10 @@ func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddres
 		burntAmount = append(burntAmount, coin)
 		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
 			// legacy
-			k.emitEventOnDescendants(ctx, contractID, coin.TokenId, collection.NewEventOperationBurnNFT)
+			k.iterateDescendants(ctx, contractID, coin.TokenId, func(descendantID string, _ int) (stop bool) {
+				ctx.EventManager().EmitEvent(collection.NewEventOperationBurnNFT(contractID, descendantID))
+				return false
+			})
 
 			k.deleteOwner(ctx, contractID, coin.TokenId)
 			k.deleteNFT(ctx, contractID, coin.TokenId)

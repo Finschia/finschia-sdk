@@ -844,7 +844,9 @@
     - [EventModifiedContract](#lbm.collection.v1.EventModifiedContract)
     - [EventModifiedNFT](#lbm.collection.v1.EventModifiedNFT)
     - [EventModifiedTokenClass](#lbm.collection.v1.EventModifiedTokenClass)
+    - [EventOwnerChanged](#lbm.collection.v1.EventOwnerChanged)
     - [EventRevokedOperator](#lbm.collection.v1.EventRevokedOperator)
+    - [EventRootChanged](#lbm.collection.v1.EventRootChanged)
     - [EventSent](#lbm.collection.v1.EventSent)
   
     - [AttributeKey](#lbm.collection.v1.AttributeKey)
@@ -12768,6 +12770,24 @@ Since: 0.46.0 (finschia)
 
 
 
+<a name="lbm.collection.v1.EventOwnerChanged"></a>
+
+### EventOwnerChanged
+EventOwnerChanged is emitted when the owner of token is changed by operation applied to its ancestor.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id associated with the token. |
+
+
+
+
+
+
 <a name="lbm.collection.v1.EventRevokedOperator"></a>
 
 ### EventRevokedOperator
@@ -12781,6 +12801,24 @@ Since: 0.46.0 (finschia)
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `holder` | [string](#string) |  | address of a holder which revoked the `operator` address as an operator. |
 | `operator` | [string](#string) |  | address which was revoked as an operator of `holder`. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventRootChanged"></a>
+
+### EventRootChanged
+EventRootChanged is emitted when the root of token is changed by operation applied to its ancestor.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_id` | [string](#string) |  | token id associated with the token. |
 
 
 
