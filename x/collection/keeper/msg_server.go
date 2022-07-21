@@ -38,9 +38,15 @@ func (s msgServer) Send(c context.Context, req *collection.MsgSend) (*collection
 	}
 	ctx.EventManager().EmitEvents(collection.NewEventTransferNFT(event))
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
-	toAddr, _ := sdk.AccAddressFromBech32(req.To)
+	toAddr, err := sdk.AccAddressFromBech32(req.To)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, req.Amount); err != nil {
 		return nil, err
@@ -56,9 +62,15 @@ func (s msgServer) Send(c context.Context, req *collection.MsgSend) (*collection
 func (s msgServer) OperatorSend(c context.Context, req *collection.MsgOperatorSend) (*collection.MsgOperatorSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
-	operatorAddr, _ := sdk.AccAddressFromBech32(req.Operator)
+	operatorAddr, err := sdk.AccAddressFromBech32(req.Operator)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, operatorAddr); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -77,7 +89,10 @@ func (s msgServer) OperatorSend(c context.Context, req *collection.MsgOperatorSe
 	}
 	ctx.EventManager().EmitEvents(collection.NewEventTransferNFTFrom(event))
 
-	toAddr, _ := sdk.AccAddressFromBech32(req.To)
+	toAddr, err := sdk.AccAddressFromBech32(req.To)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, req.Amount); err != nil {
 		return nil, err
@@ -93,9 +108,15 @@ func (s msgServer) OperatorSend(c context.Context, req *collection.MsgOperatorSe
 func (s msgServer) TransferFT(c context.Context, req *collection.MsgTransferFT) (*collection.MsgTransferFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
-	toAddr, _ := sdk.AccAddressFromBech32(req.To)
+	toAddr, err := sdk.AccAddressFromBech32(req.To)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, req.Amount); err != nil {
 		return nil, err
@@ -119,15 +140,24 @@ func (s msgServer) TransferFT(c context.Context, req *collection.MsgTransferFT) 
 func (s msgServer) TransferFTFrom(c context.Context, req *collection.MsgTransferFTFrom) (*collection.MsgTransferFTFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
-	proxyAddr, _ := sdk.AccAddressFromBech32(req.Proxy)
+	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	toAddr, _ := sdk.AccAddressFromBech32(req.To)
+	toAddr, err := sdk.AccAddressFromBech32(req.To)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, req.Amount); err != nil {
 		return nil, err
@@ -166,9 +196,15 @@ func (s msgServer) TransferNFT(c context.Context, req *collection.MsgTransferNFT
 	}
 	ctx.EventManager().EmitEvents(collection.NewEventTransferNFT(event))
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
-	toAddr, _ := sdk.AccAddressFromBech32(req.To)
+	toAddr, err := sdk.AccAddressFromBech32(req.To)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, amount); err != nil {
 		return nil, err
@@ -189,9 +225,15 @@ func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransfe
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
-	proxyAddr, _ := sdk.AccAddressFromBech32(req.Proxy)
+	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -206,7 +248,10 @@ func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransfe
 		Amount:     amount,
 	}
 	ctx.EventManager().EmitEvents(collection.NewEventTransferNFTFrom(event))
-	toAddr, _ := sdk.AccAddressFromBech32(req.To)
+	toAddr, err := sdk.AccAddressFromBech32(req.To)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, amount); err != nil {
 		return nil, err
@@ -222,9 +267,15 @@ func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransfe
 func (s msgServer) AuthorizeOperator(c context.Context, req *collection.MsgAuthorizeOperator) (*collection.MsgAuthorizeOperatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	holderAddr, _ := sdk.AccAddressFromBech32(req.Holder)
+	holderAddr, err := sdk.AccAddressFromBech32(req.Holder)
+	if err != nil {
+		return nil, err
+	}
 
-	operatorAddr, _ := sdk.AccAddressFromBech32(req.Operator)
+	operatorAddr, err := sdk.AccAddressFromBech32(req.Operator)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := s.keeper.AuthorizeOperator(ctx, req.ContractId, holderAddr, operatorAddr); err != nil {
 		return nil, err
@@ -245,9 +296,15 @@ func (s msgServer) AuthorizeOperator(c context.Context, req *collection.MsgAutho
 func (s msgServer) RevokeOperator(c context.Context, req *collection.MsgRevokeOperator) (*collection.MsgRevokeOperatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	holderAddr, _ := sdk.AccAddressFromBech32(req.Holder)
+	holderAddr, err := sdk.AccAddressFromBech32(req.Holder)
+	if err != nil {
+		return nil, err
+	}
 
-	operatorAddr, _ := sdk.AccAddressFromBech32(req.Operator)
+	operatorAddr, err := sdk.AccAddressFromBech32(req.Operator)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := s.keeper.RevokeOperator(ctx, req.ContractId, holderAddr, operatorAddr); err != nil {
 		return nil, err
@@ -268,9 +325,15 @@ func (s msgServer) RevokeOperator(c context.Context, req *collection.MsgRevokeOp
 func (s msgServer) Approve(c context.Context, req *collection.MsgApprove) (*collection.MsgApproveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	approverAddr, _ := sdk.AccAddressFromBech32(req.Approver)
+	approverAddr, err := sdk.AccAddressFromBech32(req.Approver)
+	if err != nil {
+		return nil, err
+	}
 
-	proxyAddr, _ := sdk.AccAddressFromBech32(req.Proxy)
+	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := s.keeper.AuthorizeOperator(ctx, req.ContractId, approverAddr, proxyAddr); err != nil {
 		return nil, err
@@ -291,9 +354,15 @@ func (s msgServer) Approve(c context.Context, req *collection.MsgApprove) (*coll
 func (s msgServer) Disapprove(c context.Context, req *collection.MsgDisapprove) (*collection.MsgDisapproveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	approverAddr, _ := sdk.AccAddressFromBech32(req.Approver)
+	approverAddr, err := sdk.AccAddressFromBech32(req.Approver)
+	if err != nil {
+		return nil, err
+	}
 
-	proxyAddr, _ := sdk.AccAddressFromBech32(req.Proxy)
+	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := s.keeper.RevokeOperator(ctx, req.ContractId, approverAddr, proxyAddr); err != nil {
 		return nil, err
@@ -319,7 +388,10 @@ func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateCo
 		Meta:       req.Meta,
 	}
 
-	ownerAddr, _ := sdk.AccAddressFromBech32(req.Owner)
+	ownerAddr, err := sdk.AccAddressFromBech32(req.Owner)
+	if err != nil {
+		return nil, err
+	}
 
 	id := s.keeper.CreateContract(ctx, ownerAddr, contract)
 
@@ -329,7 +401,10 @@ func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateCo
 func (s msgServer) CreateFTClass(c context.Context, req *collection.MsgCreateFTClass) (*collection.MsgCreateFTClassResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	operatorAddr, _ := sdk.AccAddressFromBech32(req.Operator)
+	operatorAddr, err := sdk.AccAddressFromBech32(req.Operator)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, operatorAddr, collection.PermissionIssue); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -356,7 +431,10 @@ func (s msgServer) CreateFTClass(c context.Context, req *collection.MsgCreateFTC
 		Mintable:   class.Mintable,
 	}
 
-	toAddr, _ := sdk.AccAddressFromBech32(req.To)
+	toAddr, err := sdk.AccAddressFromBech32(req.To)
+	if err != nil {
+		return nil, err
+	}
 
 	ctx.EventManager().EmitEvent(collection.NewEventIssueFT(event, operatorAddr, toAddr, req.Supply))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -384,7 +462,10 @@ func (s msgServer) CreateFTClass(c context.Context, req *collection.MsgCreateFTC
 func (s msgServer) CreateNFTClass(c context.Context, req *collection.MsgCreateNFTClass) (*collection.MsgCreateNFTClassResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	operatorAddr, _ := sdk.AccAddressFromBech32(req.Operator)
+	operatorAddr, err := sdk.AccAddressFromBech32(req.Operator)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, operatorAddr, collection.PermissionIssue); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -416,7 +497,10 @@ func (s msgServer) CreateNFTClass(c context.Context, req *collection.MsgCreateNF
 func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*collection.MsgIssueFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	ownerAddr, _ := sdk.AccAddressFromBech32(req.Owner)
+	ownerAddr, err := sdk.AccAddressFromBech32(req.Owner)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, ownerAddr, collection.PermissionIssue); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -442,7 +526,10 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 		Mintable:   class.Mintable,
 	}
 
-	toAddr, _ := sdk.AccAddressFromBech32(req.To)
+	toAddr, err := sdk.AccAddressFromBech32(req.To)
+	if err != nil {
+		return nil, err
+	}
 
 	ctx.EventManager().EmitEvent(collection.NewEventIssueFT(event, ownerAddr, toAddr, req.Amount))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -470,7 +557,10 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*collection.MsgIssueNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	ownerAddr, _ := sdk.AccAddressFromBech32(req.Owner)
+	ownerAddr, err := sdk.AccAddressFromBech32(req.Owner)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, ownerAddr, collection.PermissionIssue); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -509,13 +599,19 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collection.MsgMintFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionMint); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	toAddr, _ := sdk.AccAddressFromBech32(req.To)
+	toAddr, err := sdk.AccAddressFromBech32(req.To)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := s.keeper.MintFT(ctx, req.ContractId, toAddr, req.Amount); err != nil {
 		return nil, err
@@ -538,13 +634,19 @@ func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collec
 func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*collection.MsgMintNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionMint); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
-	toAddr, _ := sdk.AccAddressFromBech32(req.To)
+	toAddr, err := sdk.AccAddressFromBech32(req.To)
+	if err != nil {
+		return nil, err
+	}
 
 	tokens, err := s.keeper.MintNFT(ctx, req.ContractId, toAddr, req.Params)
 	if err != nil {
@@ -572,7 +674,10 @@ func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*coll
 func (s msgServer) Burn(c context.Context, req *collection.MsgBurn) (*collection.MsgBurnResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionBurn); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -607,9 +712,15 @@ func (s msgServer) Burn(c context.Context, req *collection.MsgBurn) (*collection
 func (s msgServer) OperatorBurn(c context.Context, req *collection.MsgOperatorBurn) (*collection.MsgOperatorBurnResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
-	operatorAddr, _ := sdk.AccAddressFromBech32(req.Operator)
+	operatorAddr, err := sdk.AccAddressFromBech32(req.Operator)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, operatorAddr); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -648,7 +759,10 @@ func (s msgServer) OperatorBurn(c context.Context, req *collection.MsgOperatorBu
 func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collection.MsgBurnFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionBurn); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -678,9 +792,15 @@ func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collec
 func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) (*collection.MsgBurnFTFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
-	proxyAddr, _ := sdk.AccAddressFromBech32(req.Proxy)
+	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -714,7 +834,10 @@ func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) 
 func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*collection.MsgBurnNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionBurn); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -751,9 +874,15 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom) (*collection.MsgBurnNFTFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
-	proxyAddr, _ := sdk.AccAddressFromBech32(req.Proxy)
+	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -794,7 +923,10 @@ func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom
 func (s msgServer) ModifyContract(c context.Context, req *collection.MsgModifyContract) (*collection.MsgModifyContractResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	operator, _ := sdk.AccAddressFromBech32(req.Operator)
+	operator, err := sdk.AccAddressFromBech32(req.Operator)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, operator, collection.PermissionModify); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -820,7 +952,10 @@ func (s msgServer) ModifyContract(c context.Context, req *collection.MsgModifyCo
 func (s msgServer) ModifyTokenClass(c context.Context, req *collection.MsgModifyTokenClass) (*collection.MsgModifyTokenClassResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	operator, _ := sdk.AccAddressFromBech32(req.Operator)
+	operator, err := sdk.AccAddressFromBech32(req.Operator)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, operator, collection.PermissionModify); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -856,7 +991,10 @@ func (s msgServer) ModifyTokenClass(c context.Context, req *collection.MsgModify
 func (s msgServer) ModifyNFT(c context.Context, req *collection.MsgModifyNFT) (*collection.MsgModifyNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	operator, _ := sdk.AccAddressFromBech32(req.Operator)
+	operator, err := sdk.AccAddressFromBech32(req.Operator)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, operator, collection.PermissionModify); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -883,7 +1021,10 @@ func (s msgServer) ModifyNFT(c context.Context, req *collection.MsgModifyNFT) (*
 func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collection.MsgModifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	operator, _ := sdk.AccAddressFromBech32(req.Owner)
+	operator, err := sdk.AccAddressFromBech32(req.Owner)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, operator, collection.PermissionModify); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -973,9 +1114,15 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 func (s msgServer) Grant(c context.Context, req *collection.MsgGrant) (*collection.MsgGrantResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	granter, _ := sdk.AccAddressFromBech32(req.Granter)
+	granter, err := sdk.AccAddressFromBech32(req.Granter)
+	if err != nil {
+		return nil, err
+	}
 
-	grantee, _ := sdk.AccAddressFromBech32(req.Grantee)
+	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, req.Permission); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s", granter, req.Permission)
@@ -1001,7 +1148,10 @@ func (s msgServer) Grant(c context.Context, req *collection.MsgGrant) (*collecti
 func (s msgServer) Abandon(c context.Context, req *collection.MsgAbandon) (*collection.MsgAbandonResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	grantee, _ := sdk.AccAddressFromBech32(req.Grantee)
+	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, req.Permission); err != nil {
 		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not authorized for %s", grantee, req.Permission)
@@ -1023,9 +1173,15 @@ func (s msgServer) Abandon(c context.Context, req *collection.MsgAbandon) (*coll
 func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPermission) (*collection.MsgGrantPermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	granter, _ := sdk.AccAddressFromBech32(req.From)
+	granter, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
-	grantee, _ := sdk.AccAddressFromBech32(req.To)
+	grantee, err := sdk.AccAddressFromBech32(req.To)
+	if err != nil {
+		return nil, err
+	}
 
 	permission := collection.Permission(collection.LegacyPermissionFromString(req.Permission))
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
@@ -1052,7 +1208,10 @@ func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPe
 func (s msgServer) RevokePermission(c context.Context, req *collection.MsgRevokePermission) (*collection.MsgRevokePermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	grantee, _ := sdk.AccAddressFromBech32(req.From)
+	grantee, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
 	permission := collection.Permission(collection.LegacyPermissionFromString(req.Permission))
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {
@@ -1088,7 +1247,10 @@ func (s msgServer) Attach(c context.Context, req *collection.MsgAttach) (*collec
 		panic(err)
 	}
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := s.keeper.Attach(ctx, req.ContractId, fromAddr, req.TokenId, req.ToTokenId); err != nil {
 		return nil, err
@@ -1117,7 +1279,10 @@ func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collec
 		panic(err)
 	}
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
 	if err := s.keeper.Detach(ctx, req.ContractId, fromAddr, req.TokenId); err != nil {
 		return nil, err
@@ -1129,9 +1294,15 @@ func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collec
 func (s msgServer) OperatorAttach(c context.Context, req *collection.MsgOperatorAttach) (*collection.MsgOperatorAttachResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	ownerAddr, _ := sdk.AccAddressFromBech32(req.Owner)
+	ownerAddr, err := sdk.AccAddressFromBech32(req.Owner)
+	if err != nil {
+		return nil, err
+	}
 
-	operatorAddr, _ := sdk.AccAddressFromBech32(req.Operator)
+	operatorAddr, err := sdk.AccAddressFromBech32(req.Operator)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, ownerAddr, operatorAddr); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -1160,9 +1331,15 @@ func (s msgServer) OperatorAttach(c context.Context, req *collection.MsgOperator
 func (s msgServer) OperatorDetach(c context.Context, req *collection.MsgOperatorDetach) (*collection.MsgOperatorDetachResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	ownerAddr, _ := sdk.AccAddressFromBech32(req.Owner)
+	ownerAddr, err := sdk.AccAddressFromBech32(req.Owner)
+	if err != nil {
+		return nil, err
+	}
 
-	operatorAddr, _ := sdk.AccAddressFromBech32(req.Operator)
+	operatorAddr, err := sdk.AccAddressFromBech32(req.Operator)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, ownerAddr, operatorAddr); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -1195,9 +1372,15 @@ func (s msgServer) OperatorDetach(c context.Context, req *collection.MsgOperator
 func (s msgServer) AttachFrom(c context.Context, req *collection.MsgAttachFrom) (*collection.MsgAttachFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
-	proxyAddr, _ := sdk.AccAddressFromBech32(req.Proxy)
+	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -1226,9 +1409,15 @@ func (s msgServer) AttachFrom(c context.Context, req *collection.MsgAttachFrom) 
 func (s msgServer) DetachFrom(c context.Context, req *collection.MsgDetachFrom) (*collection.MsgDetachFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, _ := sdk.AccAddressFromBech32(req.From)
+	fromAddr, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
 
-	proxyAddr, _ := sdk.AccAddressFromBech32(req.Proxy)
+	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
+	if err != nil {
+		return nil, err
+	}
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
