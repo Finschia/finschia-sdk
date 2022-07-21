@@ -130,6 +130,11 @@ func newGasIterator(gasMeter types.GasMeter, gasConfig types.GasConfig, parent t
 }
 
 // Implements Iterator.
+func (gi *gasIterator) Domain() (start []byte, end []byte) {
+	return gi.parent.Domain()
+}
+
+// Implements Iterator.
 func (gi *gasIterator) Valid() bool {
 	return gi.parent.Valid()
 }

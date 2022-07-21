@@ -5,13 +5,13 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	sdk "github.com/line/lbm-sdk/types"
 )
 
 func TestStore(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	cms := NewCommitMultiStore()
 
 	key := sdk.NewKVStoreKey("test")

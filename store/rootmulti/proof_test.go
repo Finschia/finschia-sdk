@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	abci "github.com/line/ostracon/abci/types"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/iavl"
 	"github.com/line/lbm-sdk/store/types"
@@ -13,7 +13,7 @@ import (
 
 func TestVerifyIAVLStoreQueryProof(t *testing.T) {
 	// Create main tree for testing.
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	iStore, err := iavl.LoadStore(db, types.CommitID{}, false, iavl.DefaultIAVLCacheSize)
 	store := iStore.(*iavl.Store)
 	require.Nil(t, err)
@@ -56,7 +56,7 @@ func TestVerifyIAVLStoreQueryProof(t *testing.T) {
 
 func TestVerifyMultiStoreQueryProof(t *testing.T) {
 	// Create main tree for testing.
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	store := NewStore(db)
 	iavlStoreKey := types.NewKVStoreKey("iavlStoreKey")
 
@@ -111,7 +111,7 @@ func TestVerifyMultiStoreQueryProof(t *testing.T) {
 
 func TestVerifyMultiStoreQueryProofAbsence(t *testing.T) {
 	// Create main tree for testing.
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	store := NewStore(db)
 	iavlStoreKey := types.NewKVStoreKey("iavlStoreKey")
 

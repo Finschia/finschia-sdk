@@ -1,14 +1,14 @@
 package store
 
 import (
-	tmdb "github.com/line/tm-db/v2"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/cache"
 	"github.com/line/lbm-sdk/store/rootmulti"
 	"github.com/line/lbm-sdk/store/types"
 )
 
-func NewCommitMultiStore(db tmdb.DB) types.CommitMultiStore {
+func NewCommitMultiStore(db dbm.DB) types.CommitMultiStore {
 	return rootmulti.NewStore(db)
 }
 

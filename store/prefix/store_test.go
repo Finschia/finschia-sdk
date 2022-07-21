@@ -8,7 +8,7 @@ import (
 
 	liavl "github.com/cosmos/iavl"
 	"github.com/line/lbm-sdk/store/cachekv"
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/dbadapter"
 	"github.com/line/lbm-sdk/store/gaskv"
@@ -88,7 +88,7 @@ func testPrefixStore(t *testing.T, baseStore types.KVStore, prefix []byte) {
 }
 
 func TestIAVLStorePrefix(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	tree, err := liavl.NewMutableTree(db, cacheSize)
 	require.NoError(t, err)
 	iavlStore := iavl.UnsafeNewStore(tree)
@@ -98,13 +98,13 @@ func TestIAVLStorePrefix(t *testing.T) {
 
 func TestPrefixKVStoreNoNilSet(t *testing.T) {
 	meter := types.NewGasMeter(100000000)
-	mem := dbadapter.Store{DB: memdb.NewDB()}
+	mem := dbadapter.Store{DB: dbm.NewMemDB()}
 	gasStore := gaskv.NewStore(mem, meter, types.KVGasConfig())
 	require.Panics(t, func() { gasStore.Set([]byte("key"), nil) }, "setting a nil value should panic")
 }
 
 func TestPrefixStoreIterate(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	baseStore := dbadapter.Store{DB: db}
 	prefix := []byte("test")
 	prefixStore := NewStore(baseStore, prefix)
@@ -150,7 +150,7 @@ func TestCloneAppend(t *testing.T) {
 }
 
 func TestPrefixStoreIteratorEdgeCase(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	baseStore := dbadapter.Store{DB: db}
 
 	// overflow in cpIncr
@@ -179,7 +179,7 @@ func TestPrefixStoreIteratorEdgeCase(t *testing.T) {
 }
 
 func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	baseStore := dbadapter.Store{DB: db}
 
 	// overflow in cpIncr
@@ -206,7 +206,7 @@ func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
 
 	iter.Close()
 
-	db = memdb.NewDB()
+	db = dbm.NewMemDB()
 	baseStore = dbadapter.Store{DB: db}
 
 	// underflow in cpDecr
@@ -236,7 +236,7 @@ func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
 // Tests below are ported from https://github.com/tendermint/tendermint/blob/master/libs/db/prefix_db_test.go
 
 func mockStoreWithStuff() types.KVStore {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	store := dbadapter.Store{DB: db}
 	// Under "key" prefix
 	store.Set(bz("key"), bz("value"))
@@ -413,7 +413,7 @@ func TestPrefixDBReverseIterator4(t *testing.T) {
 }
 
 func TestCacheWraps(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	store := dbadapter.Store{DB: db}
 
 	cacheWrapper := store.CacheWrap()

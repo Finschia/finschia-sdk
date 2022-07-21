@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/codec"
@@ -340,7 +340,7 @@ func setupTest() (*simapp.SimApp, sdk.Context, codec.Codec) {
 	ctx := app.BaseApp.NewContext(false, ocproto.Header{Height: 1})
 	appCodec := app.AppCodec()
 
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	ms := store.NewCommitMultiStore(db)
 
 	ms.LoadLatestVersion()

@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/codec"
 	codecTypes "github.com/line/lbm-sdk/codec/types"
@@ -45,9 +45,9 @@ func newListenKVStore(w io.Writer) *listenkv.Store {
 
 func newEmptyListenKVStore(w io.Writer) *listenkv.Store {
 	listener := types.NewStoreKVPairWriteListener(w, testMarshaller)
-	memDB := dbadapter.Store{DB: memdb.NewDB()}
+	dbm := dbadapter.Store{DB: dbm.NewMemDB()}
 
-	return listenkv.NewStore(memDB, testStoreKey, []types.WriteListener{listener})
+	return listenkv.NewStore(dbm, testStoreKey, []types.WriteListener{listener})
 }
 
 func TestListenKVStoreGet(t *testing.T) {
@@ -269,9 +269,9 @@ func TestListenKVStorePrefix(t *testing.T) {
 }
 
 func TestListenKVStoreGetStoreType(t *testing.T) {
-	memDB := dbadapter.Store{DB: memdb.NewDB()}
+	dbm := dbadapter.Store{DB: dbm.NewMemDB()}
 	store := newEmptyListenKVStore(nil)
-	require.Equal(t, memDB.GetStoreType(), store.GetStoreType())
+	require.Equal(t, dbm.GetStoreType(), store.GetStoreType())
 }
 
 func TestListenKVStoreCacheWrap(t *testing.T) {

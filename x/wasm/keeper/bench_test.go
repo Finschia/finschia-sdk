@@ -4,11 +4,9 @@ import (
 	"io/ioutil"
 	"testing"
 
-	dbm "github.com/line/tm-db/v2"
-	"github.com/line/tm-db/v2/goleveldb"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 	"github.com/syndtr/goleveldb/leveldb/opt"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/x/wasm/types"
@@ -44,22 +42,22 @@ func BenchmarkInstantiationOverhead(b *testing.B) {
 		db     func() dbm.DB
 	}{
 		"unpinned, memory db": {
-			db: func() dbm.DB { return memdb.NewDB() },
+			db: func() dbm.DB { return dbm.NewMemDB() },
 		},
 		"pinned, memory db": {
-			db:     func() dbm.DB { return memdb.NewDB() },
+			db:     func() dbm.DB { return dbm.NewMemDB() },
 			pinned: true,
 		},
 		"unpinned, level db": {
 			db: func() dbm.DB {
-				levelDB, err := goleveldb.NewDBWithOpts("testing", b.TempDir(), &opt.Options{BlockCacher: opt.NoCacher})
+				levelDB, err := dbm.NewGoLevelDBWithOpts("testing", b.TempDir(), &opt.Options{BlockCacher: opt.NoCacher})
 				require.NoError(b, err)
 				return levelDB
 			},
 		},
 		"pinned, level db": {
 			db: func() dbm.DB {
-				levelDB, err := goleveldb.NewDBWithOpts("testing", b.TempDir(), &opt.Options{BlockCacher: opt.NoCacher})
+				levelDB, err := dbm.NewGoLevelDBWithOpts("testing", b.TempDir(), &opt.Options{BlockCacher: opt.NoCacher})
 				require.NoError(b, err)
 				return levelDB
 			},
@@ -91,15 +89,15 @@ func BenchmarkCompilation(b *testing.B) {
 		db       func() dbm.DB
 	}{
 		"hackatom": {
-			db:       func() dbm.DB { return memdb.NewDB() },
+			db:       func() dbm.DB { return dbm.NewMemDB() },
 			wasmFile: "./testdata/hackatom.wasm",
 		},
 		"burner": {
-			db:       func() dbm.DB { return memdb.NewDB() },
+			db:       func() dbm.DB { return dbm.NewMemDB() },
 			wasmFile: "./testdata/burner.wasm",
 		},
 		"ibc_reflect": {
-			db:       func() dbm.DB { return memdb.NewDB() },
+			db:       func() dbm.DB { return dbm.NewMemDB() },
 			wasmFile: "./testdata/ibc_reflect.wasm",
 		},
 	}

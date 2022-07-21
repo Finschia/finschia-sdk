@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/iavl"
 	abci "github.com/line/ostracon/abci/types"
 	occrypto "github.com/line/ostracon/proto/ostracon/crypto"
-	tmdb "github.com/line/tm-db/v2"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/lbm-sdk/store/listenkv"
@@ -42,7 +42,7 @@ type Store struct {
 // LoadStore returns an IAVL Store as a CommitKVStore. Internally, it will load the
 // store's version (id) from the provided DB. An error is returned if the version
 // fails to load, or if called with a positive version on an empty tree.
-func LoadStore(db tmdb.DB, id types.CommitID, lazyLoading bool, cacheSize int) (types.CommitKVStore, error) {
+func LoadStore(db dbm.DB, id types.CommitID, lazyLoading bool, cacheSize int) (types.CommitKVStore, error) {
 	return LoadStoreWithInitialVersion(db, id, lazyLoading, 0, cacheSize)
 }
 
@@ -50,7 +50,7 @@ func LoadStore(db tmdb.DB, id types.CommitID, lazyLoading bool, cacheSize int) (
 // to the one given. Internally, it will load the store's version (id) from the
 // provided DB. An error is returned if the version fails to load, or if called with a positive
 // version on an empty tree.
-func LoadStoreWithInitialVersion(db tmdb.DB, id types.CommitID, lazyLoading bool, initialVersion uint64, cacheSize int) (types.CommitKVStore, error) {
+func LoadStoreWithInitialVersion(db dbm.DB, id types.CommitID, lazyLoading bool, initialVersion uint64, cacheSize int) (types.CommitKVStore, error) {
 	tree, err := iavl.NewMutableTreeWithOpts(db, cacheSize, &iavl.Options{InitialVersion: initialVersion})
 	if err != nil {
 		return nil, err

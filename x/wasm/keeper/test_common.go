@@ -13,9 +13,8 @@ import (
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/libs/rand"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	dbm "github.com/line/tm-db/v2"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
 	evidencetypes "github.com/line/lbm-sdk/x/evidence/types"
 	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
@@ -194,7 +193,7 @@ func CreateDefaultTestInput(t testing.TB) (sdk.Context, TestKeepers) {
 // CreateTestInput encoders can be nil to accept the defaults, or set it to override some of the message handlers (like default)
 func CreateTestInput(t testing.TB, isCheckTx bool, supportedFeatures string, encoders *MessageEncoders, queriers *QueryPlugins, opts ...Option) (sdk.Context, TestKeepers) {
 	// Load default wasm config
-	return createTestInput(t, isCheckTx, supportedFeatures, encoders, queriers, types.DefaultWasmConfig(), memdb.NewDB(), opts...)
+	return createTestInput(t, isCheckTx, supportedFeatures, encoders, queriers, types.DefaultWasmConfig(), dbm.NewMemDB(), opts...)
 }
 
 // encoders can be nil to accept the defaults, or set it to override some of the message handlers (like default)

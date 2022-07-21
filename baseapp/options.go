@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	tmdb "github.com/line/tm-db/v2"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/cache"
 
@@ -115,7 +115,7 @@ func (app *BaseApp) SetProtocolVersion(v uint64) {
 	app.appVersion = v
 }
 
-func (app *BaseApp) SetDB(db tmdb.DB) {
+func (app *BaseApp) SetDB(db dbm.DB) {
 	if app.sealed {
 		panic("SetDB() on sealed BaseApp")
 	}

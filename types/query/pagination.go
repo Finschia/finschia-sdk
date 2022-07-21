@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	tmdb "github.com/line/tm-db/v2"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/types"
 )
@@ -142,7 +142,7 @@ func Paginate(
 	return res, nil
 }
 
-func getIterator(prefixStore types.KVStore, start []byte, reverse bool) tmdb.Iterator {
+func getIterator(prefixStore types.KVStore, start []byte, reverse bool) dbm.Iterator {
 	if reverse {
 		var end []byte
 		if start != nil {
