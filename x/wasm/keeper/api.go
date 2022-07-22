@@ -27,7 +27,6 @@ var (
 func (a cosmwasmAPIImpl) humanAddress(canon []byte) (string, uint64, error) {
 	gas := a.gasMultiplier.FromWasmVMGas(5)
 	if err := sdk.VerifyAddressFormat(canon); err != nil {
-		//nolint:stylecheck
 		return "", gas, err
 	}
 
