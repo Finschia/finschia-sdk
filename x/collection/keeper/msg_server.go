@@ -433,6 +433,7 @@ func (s msgServer) CreateFTClass(c context.Context, req *collection.MsgCreateFTC
 
 	toAddr, err := sdk.AccAddressFromBech32(req.To)
 	if err != nil {
+		// Default address to send the initial supply is operator address.
 		toAddr = operatorAddr
 	}
 
