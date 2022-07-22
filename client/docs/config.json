@@ -170,7 +170,35 @@
         "rename": {
           "Params": "TokenParams",
           "Balance": "TokenBalance",
-          "Grants": "TokenGrants"
+          "AllBalances": "TokenAllBalances",
+          "Grant": "TokenGrant",
+          "GranteeGrants": "TokenGranteeGrants",
+          "Grants": "TokenGrants",
+          "Approved": "TokenApproved",
+          "Authorization": "TokenAuthorization",
+          "OperatorAuthorizations": "TokenOperatorAuthorizations",
+          "Supply": "TokenSupply",
+          "Minted": "TokenMinted",
+          "Burnt": "TokenBurnt",
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/lbm/collection/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "CollectionParams",
+          "Balance": "CollectionBalance",
+          "AllBalances": "CollectionAllBalances",
+          "Grant": "CollectionGrant",
+          "GranteeGrants": "CollectionGranteeGrants",
+          "Grants": "CollectionGrants",
+          "Approved": "CollectionApproved",
+          "Authorization": "CollectionAuthorization",
+          "OperatorAuthorizations": "CollectionOperatorAuthorizations",
+          "Supply": "CollectionSupply",
+          "Minted": "CollectionMinted",
+          "Burnt": "CollectionBurnt",
         }
       }
     },
