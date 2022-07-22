@@ -255,7 +255,6 @@ func (s msgServer) Grant(c context.Context, req *token.MsgGrant) (*token.MsgGran
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
 	}
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, req.Permission); err != nil {
-
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, req.Permission); err == nil {
@@ -276,7 +275,6 @@ func (s msgServer) Abandon(c context.Context, req *token.MsgAbandon) (*token.Msg
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
 	}
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, req.Permission); err != nil {
-
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
