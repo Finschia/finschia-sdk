@@ -47,7 +47,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#571](https://github.com/line/lbm-sdk/pull/571) add x/collection proto
 * (x/collection) [\#574](https://github.com/line/lbm-sdk/pull/574) implement x/collection
 * (amino) [\#600](https://github.com/line/lbm-sdk/pull/600) change amino codec path from `lbm-sdk/` to `cosmos-sdk/`
-* (store) [\#605](https://github.com/line/lbm-sdk/pull/605) replace line/iavl and line/tm-db with cosmos/iavl and tendermint/tm-db
+* (store) [\#605](https://github.com/line/lbm-sdk/pull/605) replace line/iavl and line/tm-db with cosmos/iavl and tendermint/tm-db.
 
 ### Improvements
 
@@ -55,7 +55,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (server/grpc) [\#526](https://github.com/line/lbm-sdk/pull/526) add index field into TxResponse
 * (cli) [\#535](https://github.com/line/lbm-sdk/pull/536) updated ostracon to v1.0.5; `unsafe-reset-all` command has been moved to the `ostracon` sub-command.
 * (x/foundation) [\#597](https://github.com/line/lbm-sdk/pull/597) tidy up x/foundation
-* (store) [\#605](https://github.com/line/lbm-sdk/pull/597) remove iavl cache
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
