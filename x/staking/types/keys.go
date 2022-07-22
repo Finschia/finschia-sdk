@@ -47,8 +47,6 @@ var (
 	ValidatorQueueKey    = []byte{0x43} // prefix for the timestamps in validator queue
 
 	HistoricalInfoKey = []byte{0x50} // prefix for the historical info
-
-	AddressDelimiter = ","
 )
 
 // GetValidatorKey creates the key for the validator with address
