@@ -165,28 +165,6 @@ func ValidatePermission(permission Permission) error {
 	return nil
 }
 
-func validateChanges(changes []Attribute, validator func(change Attribute) error) error {
-	if len(changes) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("empty changes")
-	}
-	if len(changes) > changesLimit {
-		return sdkerrors.ErrInvalidRequest.Wrapf("the number of changes exceeds the limit: %d > %d", len(changes), changesLimit)
-	}
-	seenKeys := map[string]bool{}
-	for _, change := range changes {
-		if seenKeys[change.Key] {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate keys: %s", change.Key)
-		}
-		seenKeys[change.Key] = true
-
-		if err := validator(change); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func validateContractChange(change Attribute) error {
 	validators := map[AttributeKey]func(string) error{
 		AttributeKeyName:       validateName,
@@ -206,80 +184,12 @@ func validateTokenClassChange(change Attribute) error {
 	return validateChange(change, validators)
 }
 
-func validateNFTChange(change Attribute) error {
-	validators := map[AttributeKey]func(string) error{
-		AttributeKeyName: validateName,
-		AttributeKeyMeta: validateMeta,
-	}
-
-	return validateChange(change, validators)
-}
-
 func validateChange(change Attribute, validators map[AttributeKey]func(string) error) error {
 	validator, ok := validators[AttributeKeyFromString(change.Key)]
 	if !ok {
 		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Key)
 	}
 	return validator(change.Value)
-}
-
-var _ sdk.Msg = (*MsgSend)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgSend) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
-	}
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
-	}
-
-	if err := m.Amount.ValidateBasic(); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgSend) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgOperatorSend)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgOperatorSend) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
-	}
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
-	}
-
-	if err := m.Amount.ValidateBasic(); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgOperatorSend) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
-	return []sdk.AccAddress{signer}
 }
 
 var _ sdk.Msg = (*MsgTransferFT)(nil)
@@ -410,54 +320,6 @@ func (m MsgTransferNFTFrom) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
-var _ sdk.Msg = (*MsgAuthorizeOperator)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgAuthorizeOperator) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.Holder); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", m.Holder)
-	}
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgAuthorizeOperator) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Holder)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgRevokeOperator)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgRevokeOperator) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.Holder); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", m.Holder)
-	}
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgRevokeOperator) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Holder)
-	return []sdk.AccAddress{signer}
-}
-
 var _ sdk.Msg = (*MsgApprove)(nil)
 
 // ValidateBasic implements Msg.
@@ -532,77 +394,6 @@ func (m MsgCreateContract) ValidateBasic() error {
 // GetSigners implements Msg
 func (m MsgCreateContract) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.Owner)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgCreateFTClass)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgCreateFTClass) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-
-	if err := validateName(m.Name); err != nil {
-		return err
-	}
-
-	if err := validateMeta(m.Meta); err != nil {
-		return err
-	}
-
-	if err := validateDecimals(m.Decimals); err != nil {
-		return err
-	}
-
-	if m.Supply.IsNil() || m.Supply.IsNegative() {
-		return sdkerrors.ErrInvalidRequest.Wrap("supply cannot be negative")
-	}
-	if m.Supply.IsPositive() {
-		if err := sdk.ValidateAccAddress(m.To); err != nil {
-			return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
-		}
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgCreateFTClass) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgCreateNFTClass)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgCreateNFTClass) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-
-	if err := validateName(m.Name); err != nil {
-		return err
-	}
-
-	if err := validateMeta(m.Meta); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgCreateNFTClass) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
@@ -750,59 +541,6 @@ func (m MsgMintNFT) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
-var _ sdk.Msg = (*MsgBurn)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgBurn) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
-	}
-
-	if err := m.Amount.ValidateBasic(); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgBurn) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgOperatorBurn)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgOperatorBurn) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
-	}
-
-	if err := m.Amount.ValidateBasic(); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgOperatorBurn) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
-	return []sdk.AccAddress{signer}
-}
-
 var _ sdk.Msg = (*MsgBurnFT)(nil)
 
 // ValidateBasic implements Msg.
@@ -919,89 +657,6 @@ func (m MsgBurnNFTFrom) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
-var _ sdk.Msg = (*MsgModifyContract)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgModifyContract) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-
-	if err := validateChanges(m.Changes, validateContractChange); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgModifyContract) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgModifyTokenClass)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgModifyTokenClass) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-
-	if err := ValidateClassID(m.ClassId); err != nil {
-		return err
-	}
-
-	if err := validateChanges(m.Changes, validateTokenClassChange); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgModifyTokenClass) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgModifyNFT)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgModifyNFT) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-
-	if err := ValidateNFTID(m.TokenId); err != nil {
-		return err
-	}
-
-	if err := validateChanges(m.Changes, validateNFTChange); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgModifyNFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
-	return []sdk.AccAddress{signer}
-}
-
 var _ sdk.Msg = (*MsgModify)(nil)
 
 // ValidateBasic implements Msg.
@@ -1020,7 +675,6 @@ func (m MsgModify) ValidateBasic() error {
 			return err
 		}
 		if err := ValidateLegacyFTClassID(classID); err == nil && len(m.TokenIndex) == 0 {
-			// smells
 			return sdkerrors.ErrInvalidRequest.Wrap("fungible token type without index")
 		}
 	}
@@ -1068,59 +722,6 @@ func (m MsgModify) ValidateBasic() error {
 // GetSigners implements Msg
 func (m MsgModify) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.Owner)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgGrant)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgGrant) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.Granter); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", m.Granter)
-	}
-	if err := sdk.ValidateAccAddress(m.Grantee); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
-	}
-
-	if err := ValidatePermission(m.Permission); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgGrant) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Granter)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgAbandon)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgAbandon) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.Grantee); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
-	}
-
-	if err := ValidatePermission(m.Permission); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgAbandon) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Grantee)
 	return []sdk.AccAddress{signer}
 }
 
@@ -1231,69 +832,6 @@ func (m MsgDetach) ValidateBasic() error {
 // GetSigners implements Msg
 func (m MsgDetach) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.From)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgOperatorAttach)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgOperatorAttach) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-	if err := sdk.ValidateAccAddress(m.Owner); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", m.Owner)
-	}
-
-	if err := ValidateTokenID(m.Subject); err != nil {
-		return err
-	}
-	if err := ValidateTokenID(m.Target); err != nil {
-		return err
-	}
-
-	if m.Subject == m.Target {
-		return sdkerrors.ErrInvalidRequest.Wrap("cannot attach token to itself")
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgOperatorAttach) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgOperatorDetach)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgOperatorDetach) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if err := sdk.ValidateAccAddress(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-	if err := sdk.ValidateAccAddress(m.Owner); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", m.Owner)
-	}
-
-	if err := ValidateTokenID(m.Subject); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgOperatorDetach) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 

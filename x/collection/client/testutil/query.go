@@ -101,7 +101,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdSupply() {
 			},
 			true,
 			&collection.QuerySupplyResponse{
-				Supply: s.balance.Mul(sdk.NewInt(3)),
+				Supply: s.balance.Mul(sdk.NewInt(4)),
 			},
 		},
 		"extra args": {
@@ -176,7 +176,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMinted() {
 			},
 			true,
 			&collection.QueryMintedResponse{
-				Minted: s.balance.Mul(sdk.NewInt(4)),
+				Minted: s.balance.Mul(sdk.NewInt(5)),
 			},
 		},
 		"extra args": {
@@ -431,6 +431,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdFTClass() {
 			&collection.QueryFTClassResponse{
 				Class: collection.FTClass{
 					Id:       s.ftClassID,
+					Name:     "tibetian fox",
 					Decimals: 8,
 					Mintable: true,
 				},
@@ -1075,14 +1076,14 @@ func (s *IntegrationTestSuite) TestNewQueryCmdOperatorAuthorizations() {
 		"valid query": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
+				s.vendor.String(),
 			},
 			true,
 			&collection.QueryOperatorAuthorizationsResponse{
 				Authorizations: []collection.Authorization{
 					{
-						Holder:   s.customer.String(),
-						Operator: s.operator.String(),
+						Holder:   s.operator.String(),
+						Operator: s.vendor.String(),
 					},
 				},
 				Pagination: &query.PageResponse{},
@@ -1091,7 +1092,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdOperatorAuthorizations() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
+				s.vendor.String(),
 				"extra",
 			},
 			false,

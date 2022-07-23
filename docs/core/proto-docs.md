@@ -934,17 +934,12 @@
   
 - [lbm/collection/v1/tx.proto](#lbm/collection/v1/tx.proto)
     - [MintNFTParam](#lbm.collection.v1.MintNFTParam)
-    - [MsgAbandon](#lbm.collection.v1.MsgAbandon)
-    - [MsgAbandonResponse](#lbm.collection.v1.MsgAbandonResponse)
     - [MsgApprove](#lbm.collection.v1.MsgApprove)
     - [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse)
     - [MsgAttach](#lbm.collection.v1.MsgAttach)
     - [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom)
     - [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse)
     - [MsgAttachResponse](#lbm.collection.v1.MsgAttachResponse)
-    - [MsgAuthorizeOperator](#lbm.collection.v1.MsgAuthorizeOperator)
-    - [MsgAuthorizeOperatorResponse](#lbm.collection.v1.MsgAuthorizeOperatorResponse)
-    - [MsgBurn](#lbm.collection.v1.MsgBurn)
     - [MsgBurnFT](#lbm.collection.v1.MsgBurnFT)
     - [MsgBurnFTFrom](#lbm.collection.v1.MsgBurnFTFrom)
     - [MsgBurnFTFromResponse](#lbm.collection.v1.MsgBurnFTFromResponse)
@@ -953,23 +948,16 @@
     - [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom)
     - [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse)
     - [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse)
-    - [MsgBurnResponse](#lbm.collection.v1.MsgBurnResponse)
     - [MsgCreateContract](#lbm.collection.v1.MsgCreateContract)
     - [MsgCreateContractResponse](#lbm.collection.v1.MsgCreateContractResponse)
-    - [MsgCreateFTClass](#lbm.collection.v1.MsgCreateFTClass)
-    - [MsgCreateFTClassResponse](#lbm.collection.v1.MsgCreateFTClassResponse)
-    - [MsgCreateNFTClass](#lbm.collection.v1.MsgCreateNFTClass)
-    - [MsgCreateNFTClassResponse](#lbm.collection.v1.MsgCreateNFTClassResponse)
     - [MsgDetach](#lbm.collection.v1.MsgDetach)
     - [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom)
     - [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse)
     - [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse)
     - [MsgDisapprove](#lbm.collection.v1.MsgDisapprove)
     - [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse)
-    - [MsgGrant](#lbm.collection.v1.MsgGrant)
     - [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission)
     - [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse)
-    - [MsgGrantResponse](#lbm.collection.v1.MsgGrantResponse)
     - [MsgIssueFT](#lbm.collection.v1.MsgIssueFT)
     - [MsgIssueFTResponse](#lbm.collection.v1.MsgIssueFTResponse)
     - [MsgIssueNFT](#lbm.collection.v1.MsgIssueNFT)
@@ -979,27 +967,9 @@
     - [MsgMintNFT](#lbm.collection.v1.MsgMintNFT)
     - [MsgMintNFTResponse](#lbm.collection.v1.MsgMintNFTResponse)
     - [MsgModify](#lbm.collection.v1.MsgModify)
-    - [MsgModifyContract](#lbm.collection.v1.MsgModifyContract)
-    - [MsgModifyContractResponse](#lbm.collection.v1.MsgModifyContractResponse)
-    - [MsgModifyNFT](#lbm.collection.v1.MsgModifyNFT)
-    - [MsgModifyNFTResponse](#lbm.collection.v1.MsgModifyNFTResponse)
     - [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse)
-    - [MsgModifyTokenClass](#lbm.collection.v1.MsgModifyTokenClass)
-    - [MsgModifyTokenClassResponse](#lbm.collection.v1.MsgModifyTokenClassResponse)
-    - [MsgOperatorAttach](#lbm.collection.v1.MsgOperatorAttach)
-    - [MsgOperatorAttachResponse](#lbm.collection.v1.MsgOperatorAttachResponse)
-    - [MsgOperatorBurn](#lbm.collection.v1.MsgOperatorBurn)
-    - [MsgOperatorBurnResponse](#lbm.collection.v1.MsgOperatorBurnResponse)
-    - [MsgOperatorDetach](#lbm.collection.v1.MsgOperatorDetach)
-    - [MsgOperatorDetachResponse](#lbm.collection.v1.MsgOperatorDetachResponse)
-    - [MsgOperatorSend](#lbm.collection.v1.MsgOperatorSend)
-    - [MsgOperatorSendResponse](#lbm.collection.v1.MsgOperatorSendResponse)
-    - [MsgRevokeOperator](#lbm.collection.v1.MsgRevokeOperator)
-    - [MsgRevokeOperatorResponse](#lbm.collection.v1.MsgRevokeOperatorResponse)
     - [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission)
     - [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse)
-    - [MsgSend](#lbm.collection.v1.MsgSend)
-    - [MsgSendResponse](#lbm.collection.v1.MsgSendResponse)
     - [MsgTransferFT](#lbm.collection.v1.MsgTransferFT)
     - [MsgTransferFTFrom](#lbm.collection.v1.MsgTransferFTFrom)
     - [MsgTransferFTFromResponse](#lbm.collection.v1.MsgTransferFTFromResponse)
@@ -14300,51 +14270,9 @@ MintNFTParam defines a parameter for minting nft.
 
 
 
-<a name="lbm.collection.v1.MsgAbandon"></a>
-
-### MsgAbandon
-MsgAbandon is the Msg/Abandon request type.
-
-Throws:
-- ErrInvalidAddress
-  - `grantee` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `permission` is not a valid permission.
-
-Signer: `grantee`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `grantee` | [string](#string) |  | address of the grantee which abandons the permission. |
-| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgAbandonResponse"></a>
-
-### MsgAbandonResponse
-MsgAbandonResponse is the Msg/Abandon response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
 <a name="lbm.collection.v1.MsgApprove"></a>
 
 ### MsgApprove
-Deprecated: use MsgAuthorizeOperator
-
 MsgApprove is the Msg/Approve request type.
 
 
@@ -14362,8 +14290,6 @@ MsgApprove is the Msg/Approve request type.
 <a name="lbm.collection.v1.MsgApproveResponse"></a>
 
 ### MsgApproveResponse
-Deprecated: do not use
-
 MsgApproveResponse is the Msg/Approve response type.
 
 
@@ -14387,8 +14313,6 @@ Throws:
 
 Signer: `from`
 
-TODO: revisit the field names
-
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -14405,8 +14329,6 @@ TODO: revisit the field names
 <a name="lbm.collection.v1.MsgAttachFrom"></a>
 
 ### MsgAttachFrom
-Deprecated: use MsgOperatorAttach
-
 MsgAttachFrom is the Msg/AttachFrom request type.
 
 
@@ -14426,8 +14348,6 @@ MsgAttachFrom is the Msg/AttachFrom request type.
 <a name="lbm.collection.v1.MsgAttachFromResponse"></a>
 
 ### MsgAttachFromResponse
-Deprecated: do not use
-
 MsgAttachFromResponse is the Msg/AttachFrom response type.
 
 
@@ -14445,79 +14365,9 @@ MsgAttachResponse is the Msg/Attach response type.
 
 
 
-<a name="lbm.collection.v1.MsgAuthorizeOperator"></a>
-
-### MsgAuthorizeOperator
-MsgAuthorizeOperator is the Msg/AuthorizeOperator request type.
-
-Throws:
-- ErrInvalidAddress
-  - `holder` is of invalid format.
-  - `operator` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-
-Signer: `holder`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `holder` | [string](#string) |  | address of a holder which authorizes the `operator` address as an operator. |
-| `operator` | [string](#string) |  | address to set as an operator for `holder`. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgAuthorizeOperatorResponse"></a>
-
-### MsgAuthorizeOperatorResponse
-MsgAuthorizeOperatorResponse is the Msg/AuthorizeOperator response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgBurn"></a>
-
-### MsgBurn
-MsgBurn is the Msg/Burn request type.
-
-Throws:
-- ErrInvalidAddress
-  - `from` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `amount` is not positive.
-
-Signer: `from`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `from` | [string](#string) |  | holder whose tokens are being burned. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of tokens to burn. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.MsgBurnFT"></a>
 
 ### MsgBurnFT
-Deprecated: use MsgBurn
-
 MsgBurnFT is the Msg/BurnFT request type.
 
 
@@ -14535,8 +14385,6 @@ MsgBurnFT is the Msg/BurnFT request type.
 <a name="lbm.collection.v1.MsgBurnFTFrom"></a>
 
 ### MsgBurnFTFrom
-Deprecated: use MsgOperatorBurn
-
 MsgBurnFTFrom is the Msg/BurnFTFrom request type.
 
 
@@ -14555,8 +14403,6 @@ MsgBurnFTFrom is the Msg/BurnFTFrom request type.
 <a name="lbm.collection.v1.MsgBurnFTFromResponse"></a>
 
 ### MsgBurnFTFromResponse
-Deprecated: do not use
-
 MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
 
 
@@ -14567,8 +14413,6 @@ MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
 <a name="lbm.collection.v1.MsgBurnFTResponse"></a>
 
 ### MsgBurnFTResponse
-Deprecated: do not use
-
 MsgBurnFTResponse is the Msg/BurnFT response type.
 
 
@@ -14579,8 +14423,6 @@ MsgBurnFTResponse is the Msg/BurnFT response type.
 <a name="lbm.collection.v1.MsgBurnNFT"></a>
 
 ### MsgBurnNFT
-Deprecated: use MsgBurn
-
 MsgBurnNFT is the Msg/BurnNFT request type.
 
 
@@ -14598,8 +14440,6 @@ MsgBurnNFT is the Msg/BurnNFT request type.
 <a name="lbm.collection.v1.MsgBurnNFTFrom"></a>
 
 ### MsgBurnNFTFrom
-Deprecated: use MsgOperatorBurn
-
 MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
 
 
@@ -14618,8 +14458,6 @@ MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
 <a name="lbm.collection.v1.MsgBurnNFTFromResponse"></a>
 
 ### MsgBurnNFTFromResponse
-Deprecated: do not use
-
 MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
 
 
@@ -14630,21 +14468,7 @@ MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
 <a name="lbm.collection.v1.MsgBurnNFTResponse"></a>
 
 ### MsgBurnNFTResponse
-Deprecated: do not use
-
 MsgBurnNFTResponse is the Msg/BurnNFT response type.
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgBurnResponse"></a>
-
-### MsgBurnResponse
-MsgBurnResponse is the Msg/Burn response type.
-
-Since: 0.46.0 (finschia)
 
 
 
@@ -14694,106 +14518,6 @@ MsgCreateContractResponse is the Msg/CreateContract response type.
 
 
 
-<a name="lbm.collection.v1.MsgCreateFTClass"></a>
-
-### MsgCreateFTClass
-MsgCreateFTClass is the Msg/CreateFTClass request type.
-
-Throws:
-- ErrInvalidAddress
-  - `operator` is of invalid format.
-  - `to` is not empty and is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `name` exceeds the app-specific limit in length.
-  - `meta` exceeds the app-specific limit in length.
-  - `decimals` is lesser than 0 or greater than 18.
-  - `supply` is positive and `to` is of invalid format.
-
-Signer: `operator`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | address which triggers the create. |
-| `name` | [string](#string) |  | name defines the human-readable name of the token class. |
-| `meta` | [string](#string) |  | meta is a brief description of the token class. |
-| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
-| `to` | [string](#string) |  | recipient of the minted tokens. |
-| `supply` | [string](#string) |  | amount of tokens to mint on the create. Note: supply may be zero. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgCreateFTClassResponse"></a>
-
-### MsgCreateFTClassResponse
-MsgCreateFTClassResponse is the Msg/CreateFTClass response type.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  | id of the new token class. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgCreateNFTClass"></a>
-
-### MsgCreateNFTClass
-MsgCreateNFTClass is the Msg/CreateNFTClass request type.
-
-Throws:
-- ErrInvalidAddress
-  - `operator` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `name` exceeds the app-specific limit in length.
-  - `meta` exceeds the app-specific limit in length.
-
-Signer: `operator`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | address which triggers the create. |
-| `name` | [string](#string) |  | name defines the human-readable name of the token class. |
-| `meta` | [string](#string) |  | meta is a brief description of the token class. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgCreateNFTClassResponse"></a>
-
-### MsgCreateNFTClassResponse
-MsgCreateNFTClassResponse is the Msg/CreateNFTClass response type.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  | id of the new token class. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.MsgDetach"></a>
 
 ### MsgDetach
@@ -14807,8 +14531,6 @@ Throws:
   - `token_id` is of invalid format.
 
 Signer: `from`
-
-TODO: revisit the field names
 
 
 | Field | Type | Label | Description |
@@ -14825,8 +14547,6 @@ TODO: revisit the field names
 <a name="lbm.collection.v1.MsgDetachFrom"></a>
 
 ### MsgDetachFrom
-Deprecated: use MsgOperatorDetach
-
 MsgDetachFrom is the Msg/DetachFrom request type.
 
 
@@ -14845,8 +14565,6 @@ MsgDetachFrom is the Msg/DetachFrom request type.
 <a name="lbm.collection.v1.MsgDetachFromResponse"></a>
 
 ### MsgDetachFromResponse
-Deprecated: do not use
-
 MsgDetachFromResponse is the Msg/DetachFrom response type.
 
 
@@ -14867,8 +14585,6 @@ MsgDetachResponse is the Msg/Detach response type.
 <a name="lbm.collection.v1.MsgDisapprove"></a>
 
 ### MsgDisapprove
-Deprecated: use MsgRevokeOperator
-
 MsgDisapprove is the Msg/Disapprove request type.
 
 
@@ -14886,39 +14602,7 @@ MsgDisapprove is the Msg/Disapprove request type.
 <a name="lbm.collection.v1.MsgDisapproveResponse"></a>
 
 ### MsgDisapproveResponse
-Deprecated: do not use
-
 MsgDisapproveResponse is the Msg/Disapprove response type.
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgGrant"></a>
-
-### MsgGrant
-MsgGrant is the Msg/Grant request type.
-
-Throws:
-- ErrInvalidAddress
-  - `granter` is of invalid format.
-  - `grantee` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `permission` is not a valid permission.
-
-Signer: `granter`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `granter` | [string](#string) |  | address of the granter which must have the permission to give. |
-| `grantee` | [string](#string) |  | address of the grantee. |
-| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
 
 
 
@@ -14928,8 +14612,6 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.MsgGrantPermission"></a>
 
 ### MsgGrantPermission
-Deprecated: use MsgGrant
-
 MsgGrantPermission is the Msg/GrantPermission request type.
 
 
@@ -14948,21 +14630,7 @@ MsgGrantPermission is the Msg/GrantPermission request type.
 <a name="lbm.collection.v1.MsgGrantPermissionResponse"></a>
 
 ### MsgGrantPermissionResponse
-Deprecated: do not use
-
 MsgGrantPermissionResponse is the Msg/GrantPermission response type.
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgGrantResponse"></a>
-
-### MsgGrantResponse
-MsgGrantResponse is the Msg/Grant response type.
-
-Since: 0.46.0 (finschia)
 
 
 
@@ -14972,8 +14640,6 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.MsgIssueFT"></a>
 
 ### MsgIssueFT
-Deprecated: use MsgCreateFTClass
-
 MsgIssueFT is the Msg/IssueFT request type.
 
 Throws:
@@ -15011,8 +14677,6 @@ Signer: `owner`
 <a name="lbm.collection.v1.MsgIssueFTResponse"></a>
 
 ### MsgIssueFTResponse
-Deprecated: do not use
-
 MsgIssueFTResponse is the Msg/IssueFT response type.
 
 
@@ -15028,8 +14692,6 @@ MsgIssueFTResponse is the Msg/IssueFT response type.
 <a name="lbm.collection.v1.MsgIssueNFT"></a>
 
 ### MsgIssueNFT
-Deprecated: use MsgCreateNFTClass
-
 MsgIssueNFT is the Msg/IssueNFT request type.
 
 Throws:
@@ -15058,8 +14720,6 @@ Signer: `owner`
 <a name="lbm.collection.v1.MsgIssueNFTResponse"></a>
 
 ### MsgIssueNFTResponse
-Deprecated: do not use
-
 MsgIssueNFTResponse is the Msg/IssueNFT response type.
 
 
@@ -15157,8 +14817,6 @@ MsgMintNFTResponse is the Msg/MintNFT response type.
 <a name="lbm.collection.v1.MsgModify"></a>
 
 ### MsgModify
-Deprecated: use MsgModifyContract, MsgModifyTokenClass or MsgModifyNFT
-
 MsgModify is the Msg/Modify request type.
 
 
@@ -15175,355 +14833,10 @@ MsgModify is the Msg/Modify request type.
 
 
 
-<a name="lbm.collection.v1.MsgModifyContract"></a>
-
-### MsgModifyContract
-MsgModifyContract is the Msg/ModifyContract request type.
-
-Throws:
-- ErrInvalidAddress
-  - `operator` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `changes` has duplicate keys.
-  - `changes` has a key which is not allowed to modify.
-  - `changes` is empty.
-
-Signer: `operator`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | address which triggers the modify. |
-| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | attributes to apply. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgModifyContractResponse"></a>
-
-### MsgModifyContractResponse
-MsgModifyContractResponse is the Msg/ModifyContract response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgModifyNFT"></a>
-
-### MsgModifyNFT
-MsgModifyNFT is the Msg/ModifyNFT request type.
-
-Throws:
-- ErrInvalidAddress
-  - `operator` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `token_id` is of invalid format.
-  - `changes` has duplicate keys.
-  - `changes` has a key which is not allowed to modify.
-  - `changes` is empty.
-
-Signer: `operator`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | address which triggers the modify. |
-| `token_id` | [string](#string) |  | token id associated with the non-fungible token. |
-| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | attributes to apply. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgModifyNFTResponse"></a>
-
-### MsgModifyNFTResponse
-MsgModifyNFTResponse is the Msg/ModifyNFT response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
 <a name="lbm.collection.v1.MsgModifyResponse"></a>
 
 ### MsgModifyResponse
-Deprecated: do not use
-
 MsgModifyResponse is the Msg/Modify response type.
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgModifyTokenClass"></a>
-
-### MsgModifyTokenClass
-MsgModifyTokenClass is the Msg/ModifyTokenClass request type.
-
-Throws:
-- ErrInvalidAddress
-  - `operator` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `class_id` is of invalid format.
-  - `changes` has duplicate keys.
-  - `changes` has a key which is not allowed to modify.
-  - `changes` is empty.
-
-Signer: `operator`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | address which triggers the modify. |
-| `class_id` | [string](#string) |  | class id associated with the token class. |
-| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | attributes to apply. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgModifyTokenClassResponse"></a>
-
-### MsgModifyTokenClassResponse
-MsgModifyTokenClassResponse is the Msg/ModifyTokenClass response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgOperatorAttach"></a>
-
-### MsgOperatorAttach
-MsgOperatorAttach is the Msg/OperatorAttach request type.
-
-Throws:
-- ErrInvalidAddress
-  - `operator` is of invalid format.
-  - `owner` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `subject` is of invalid format.
-  - `target` is of invalid format.
-  - `subject` is equal to `target`.
-
-Signer: `operator`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | address of the operator. |
-| `owner` | [string](#string) |  | address of the owner of the token. |
-| `subject` | [string](#string) |  | token id of the token to attach. |
-| `target` | [string](#string) |  | token id which one attachs the token to. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgOperatorAttachResponse"></a>
-
-### MsgOperatorAttachResponse
-MsgOperatorAttachResponse is the Msg/OperatorAttach response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgOperatorBurn"></a>
-
-### MsgOperatorBurn
-MsgOperatorBurn is the Msg/OperatorBurn request type.
-
-Throws:
-- ErrInvalidAddress
-  - `operator` is of invalid format.
-  - `from` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `amount` is not positive.
-
-Signer: `from`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | address which triggers the burn. |
-| `from` | [string](#string) |  | holder whose tokens are being burned. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of tokens to burn. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgOperatorBurnResponse"></a>
-
-### MsgOperatorBurnResponse
-MsgOperatorBurnResponse is the Msg/OperatorBurn response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgOperatorDetach"></a>
-
-### MsgOperatorDetach
-MsgOperatorDetach is the Msg/OperatorDetach request type.
-
-Throws:
-- ErrInvalidAddress
-  - `operator` is of invalid format.
-  - `owner` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `subject` is of invalid format.
-
-Signer: `operator`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | address of the operator. |
-| `owner` | [string](#string) |  | address of the holder of the token. |
-| `subject` | [string](#string) |  | token id of the token to detach. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgOperatorDetachResponse"></a>
-
-### MsgOperatorDetachResponse
-MsgOperatorDetachResponse is the Msg/OperatorDetach response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgOperatorSend"></a>
-
-### MsgOperatorSend
-MsgOperatorSend is the Msg/OperatorSend request type.
-
-Throws:
-- ErrInvalidAddress
-  - `operator` is of invalid format.
-  - `from` is of invalid format.
-  - `to` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `amount` is not positive.
-
-Signer: `operator`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | address which triggers the send. |
-| `from` | [string](#string) |  | holder whose tokens are being sent. |
-| `to` | [string](#string) |  | recipient of the tokens. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of tokens to send. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgOperatorSendResponse"></a>
-
-### MsgOperatorSendResponse
-MsgOperatorSendResponse is the Msg/OperatorSend response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgRevokeOperator"></a>
-
-### MsgRevokeOperator
-MsgRevokeOperator is the Msg/RevokeOperator request type.
-
-Throws:
-- ErrInvalidAddress
-  - `holder` is of invalid format.
-  - `operator` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-
-Signer: `holder`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `holder` | [string](#string) |  | address of a holder which revokes the `operator` address as an operator. |
-| `operator` | [string](#string) |  | address to rescind as an operator for `holder`. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgRevokeOperatorResponse"></a>
-
-### MsgRevokeOperatorResponse
-MsgRevokeOperatorResponse is the Msg/RevokeOperator response type.
-
-Since: 0.46.0 (finschia)
 
 
 
@@ -15533,8 +14846,6 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.MsgRevokePermission"></a>
 
 ### MsgRevokePermission
-Deprecated: use MsgAbandon
-
 MsgRevokePermission is the Msg/RevokePermission request type.
 
 
@@ -15552,51 +14863,7 @@ MsgRevokePermission is the Msg/RevokePermission request type.
 <a name="lbm.collection.v1.MsgRevokePermissionResponse"></a>
 
 ### MsgRevokePermissionResponse
-Deprecated: do not use
-
 MsgRevokePermissionResponse is the Msg/RevokePermission response type.
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgSend"></a>
-
-### MsgSend
-MsgSend is the Msg/Send request type.
-
-Throws:
-- ErrInvalidAddress
-  - `from` is of invalid format.
-  - `to` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `amount` is not positive.
-
-Signer: `from`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `from` | [string](#string) |  | holder whose tokens are being sent. |
-| `to` | [string](#string) |  | recipient of the tokens. |
-| `amount` | [Coin](#lbm.collection.v1.Coin) | repeated | amount of tokens to send. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.MsgSendResponse"></a>
-
-### MsgSendResponse
-MsgSendResponse is the Msg/Send response type.
-
-Since: 0.46.0 (finschia)
 
 
 
@@ -15606,8 +14873,6 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.MsgTransferFT"></a>
 
 ### MsgTransferFT
-Deprecated: use MsgSend
-
 MsgTransferFT is the Msg/TransferFT request type.
 
 
@@ -15626,8 +14891,6 @@ MsgTransferFT is the Msg/TransferFT request type.
 <a name="lbm.collection.v1.MsgTransferFTFrom"></a>
 
 ### MsgTransferFTFrom
-Deprecated: use MsgOperatorSend
-
 MsgTransferFTFrom is the Msg/TransferFTFrom request type.
 
 
@@ -15647,8 +14910,6 @@ MsgTransferFTFrom is the Msg/TransferFTFrom request type.
 <a name="lbm.collection.v1.MsgTransferFTFromResponse"></a>
 
 ### MsgTransferFTFromResponse
-Deprecated: do not use
-
 MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
 
 
@@ -15659,8 +14920,6 @@ MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
 <a name="lbm.collection.v1.MsgTransferFTResponse"></a>
 
 ### MsgTransferFTResponse
-Deprecated: do not use
-
 MsgTransferFTResponse is the Msg/TransferFT response type.
 
 
@@ -15671,8 +14930,6 @@ MsgTransferFTResponse is the Msg/TransferFT response type.
 <a name="lbm.collection.v1.MsgTransferNFT"></a>
 
 ### MsgTransferNFT
-Deprecated: use MsgSend
-
 MsgTransferNFT is the Msg/TransferNFT request type.
 
 
@@ -15691,8 +14948,6 @@ MsgTransferNFT is the Msg/TransferNFT request type.
 <a name="lbm.collection.v1.MsgTransferNFTFrom"></a>
 
 ### MsgTransferNFTFrom
-Deprecated: use MsgOperatorSend
-
 MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
 
 
@@ -15712,8 +14967,6 @@ MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
 <a name="lbm.collection.v1.MsgTransferNFTFromResponse"></a>
 
 ### MsgTransferNFTFromResponse
-Deprecated: do not use
-
 MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
 
 
@@ -15724,8 +14977,6 @@ MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
 <a name="lbm.collection.v1.MsgTransferNFTResponse"></a>
 
 ### MsgTransferNFTResponse
-Deprecated: do not use
-
 MsgTransferNFTResponse is the Msg/TransferNFT response type.
 
 
@@ -15746,43 +14997,28 @@ Msg defines the collection Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Send` | [MsgSend](#lbm.collection.v1.MsgSend) | [MsgSendResponse](#lbm.collection.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. Fires: - EventSent - transfer_ft (deprecated, not typed) - transfer_nft (deprecated, not typed) - operation_transfer_nft (deprecated, not typed) Throws: - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to spend. Info: one can send both fungible tokens and non-fungible tokens. Since: 0.46.0 (finschia) | |
-| `OperatorSend` | [MsgOperatorSend](#lbm.collection.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.collection.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. Fires: - EventSent - transfer_ft_from (deprecated, not typed) - transfer_nft_from (deprecated, not typed) - operation_transfer_nft (deprecated, not typed) Throws: - ErrUnauthorized: - the holder has not authorized the operator. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to spend. Info: one can send both fungible tokens and non-fungible tokens. Since: 0.46.0 (finschia) | |
-| `TransferFT` | [MsgTransferFT](#lbm.collection.v1.MsgTransferFT) | [MsgTransferFTResponse](#lbm.collection.v1.MsgTransferFTResponse) | Deprecated: use Send TransferFT defines a method to send fungible tokens from one account to another account. | |
-| `TransferFTFrom` | [MsgTransferFTFrom](#lbm.collection.v1.MsgTransferFTFrom) | [MsgTransferFTFromResponse](#lbm.collection.v1.MsgTransferFTFromResponse) | Deprecated: use OperatorSend TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator. | |
-| `TransferNFT` | [MsgTransferNFT](#lbm.collection.v1.MsgTransferNFT) | [MsgTransferNFTResponse](#lbm.collection.v1.MsgTransferNFTResponse) | Deprecated: use Send TransferNFT defines a method to send non-fungible tokens from one account to another account. | |
-| `TransferNFTFrom` | [MsgTransferNFTFrom](#lbm.collection.v1.MsgTransferNFTFrom) | [MsgTransferNFTFromResponse](#lbm.collection.v1.MsgTransferNFTFromResponse) | Deprecated: use OperatorSend TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator. | |
-| `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.collection.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.collection.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the approver. Fires: - EventAuthorizedOperator - approve_collection (deprecated, not typed) Throws: - ErrNotFound: - there is no contract of `contract_id`. - ErrInvalidRequest: - `holder` has already authorized `operator`. Since: 0.46.0 (finschia) | |
-| `RevokeOperator` | [MsgRevokeOperator](#lbm.collection.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.collection.v1.MsgRevokeOperatorResponse) | RevokeOperator revokes the authorization of the operator to send the approver's token. Fires: - EventRevokedOperator - disapprove_collection (deprecated, not typed) Throws: - ErrNotFound: - there is no contract of `contract_id`. - there is no authorization by `holder` to `operator`. Since: 0.46.0 (finschia) | |
-| `Approve` | [MsgApprove](#lbm.collection.v1.MsgApprove) | [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse) | Deprecated: use AuthorizeOperator Approve allows one to send tokens on behalf of the approver. | |
-| `Disapprove` | [MsgDisapprove](#lbm.collection.v1.MsgDisapprove) | [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse) | Deprecated: use RevokeOperator Disapprove revokes the authorization of the operator to send the approver's token. | |
+| `TransferFT` | [MsgTransferFT](#lbm.collection.v1.MsgTransferFT) | [MsgTransferFTResponse](#lbm.collection.v1.MsgTransferFTResponse) | TransferFT defines a method to send fungible tokens from one account to another account. Fires: - EventSent - transfer_ft (deprecated, not typed) Throws: - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to spend. | |
+| `TransferFTFrom` | [MsgTransferFTFrom](#lbm.collection.v1.MsgTransferFTFrom) | [MsgTransferFTFromResponse](#lbm.collection.v1.MsgTransferFTFromResponse) | TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator. Fires: - EventSent - transfer_ft_from (deprecated, not typed) Throws: - ErrUnauthorized: - the holder has not authorized the operator. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to spend. | |
+| `TransferNFT` | [MsgTransferNFT](#lbm.collection.v1.MsgTransferNFT) | [MsgTransferNFTResponse](#lbm.collection.v1.MsgTransferNFTResponse) | TransferNFT defines a method to send non-fungible tokens from one account to another account. Fires: - EventSent - transfer_nft (deprecated, not typed) - operation_transfer_nft (deprecated, not typed) Throws: - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to spend. | |
+| `TransferNFTFrom` | [MsgTransferNFTFrom](#lbm.collection.v1.MsgTransferNFTFrom) | [MsgTransferNFTFromResponse](#lbm.collection.v1.MsgTransferNFTFromResponse) | TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator. Fires: - EventSent - transfer_nft_from (deprecated, not typed) - operation_transfer_nft (deprecated, not typed) Throws: - ErrUnauthorized: - the holder has not authorized the operator. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to spend. | |
+| `Approve` | [MsgApprove](#lbm.collection.v1.MsgApprove) | [MsgApproveResponse](#lbm.collection.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the approver. Fires: - EventAuthorizedOperator - approve_collection (deprecated, not typed) Throws: - ErrNotFound: - there is no contract of `contract_id`. - ErrInvalidRequest: - `holder` has already authorized `operator`. | |
+| `Disapprove` | [MsgDisapprove](#lbm.collection.v1.MsgDisapprove) | [MsgDisapproveResponse](#lbm.collection.v1.MsgDisapproveResponse) | Disapprove revokes the authorization of the operator to send the approver's token. Fires: - EventRevokedOperator - disapprove_collection (deprecated, not typed) Throws: - ErrNotFound: - there is no contract of `contract_id`. - there is no authorization by `holder` to `operator`. | |
 | `CreateContract` | [MsgCreateContract](#lbm.collection.v1.MsgCreateContract) | [MsgCreateContractResponse](#lbm.collection.v1.MsgCreateContractResponse) | CreateContract defines a method to create a contract for collection. it grants `mint`, `burn`, `modify` and `issue` permissions on the contract to its creator. Fires: - EventCreatedContract - create_collection (deprecated, not typed) | |
-| `CreateFTClass` | [MsgCreateFTClass](#lbm.collection.v1.MsgCreateFTClass) | [MsgCreateFTClassResponse](#lbm.collection.v1.MsgCreateFTClassResponse) | CreateFTClass defines a method to create a class of fungible token. one may set the supply on the creation, then no one can change the supply, which means no more mints and burns. Fires: - EventCreatedFTClass - EventMintedFT - issue_ft (deprecated, not typed) Since: 0.46.0 (finschia) | |
-| `CreateNFTClass` | [MsgCreateNFTClass](#lbm.collection.v1.MsgCreateNFTClass) | [MsgCreateNFTClassResponse](#lbm.collection.v1.MsgCreateNFTClassResponse) | CreateNFTClass defines a method to create a class of non-fungible token. Fires: - EventCreatedNFTClass - issue_nft (deprecated, not typed) Since: 0.46.0 (finschia) | |
-| `IssueFT` | [MsgIssueFT](#lbm.collection.v1.MsgIssueFT) | [MsgIssueFTResponse](#lbm.collection.v1.MsgIssueFTResponse) | Deprecated: use CreateFTClass IssueFT defines a method to create a class of fungible token. Fires: - EventIssueFT - EventMintedFT - issue_ft (deprecated, not typed) Note: it does not grant any permissions to its issuer. | |
-| `IssueNFT` | [MsgIssueNFT](#lbm.collection.v1.MsgIssueNFT) | [MsgIssueNFTResponse](#lbm.collection.v1.MsgIssueNFTResponse) | Deprecated: use CreateNFTClass IssueNFT defines a method to create a class of non-fungible token. Fires: - EventIssueNFT - issue_nft (deprecated, not typed) Note: it DOES grant `mint` and `burn` permissions to its issuer. | |
+| `IssueFT` | [MsgIssueFT](#lbm.collection.v1.MsgIssueFT) | [MsgIssueFTResponse](#lbm.collection.v1.MsgIssueFTResponse) | IssueFT defines a method to create a class of fungible token. Fires: - EventCreatedFTClass - EventMintedFT - issue_ft (deprecated, not typed) Note: it does not grant any permissions to its issuer. | |
+| `IssueNFT` | [MsgIssueNFT](#lbm.collection.v1.MsgIssueNFT) | [MsgIssueNFTResponse](#lbm.collection.v1.MsgIssueNFTResponse) | IssueNFT defines a method to create a class of non-fungible token. Fires: - EventCreatedNFTClass - issue_nft (deprecated, not typed) Note: it DOES grant `mint` and `burn` permissions to its issuer. | |
 | `MintFT` | [MsgMintFT](#lbm.collection.v1.MsgMintFT) | [MsgMintFTResponse](#lbm.collection.v1.MsgMintFTResponse) | MintFT defines a method to mint fungible tokens. Fires: - EventMintedFT - mint_ft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `mint` permission. | |
 | `MintNFT` | [MsgMintNFT](#lbm.collection.v1.MsgMintNFT) | [MsgMintNFTResponse](#lbm.collection.v1.MsgMintNFTResponse) | MintNFT defines a method to mint non-fungible tokens. Fires: - EventMintedNFT - mint_nft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `mint` permission. | |
-| `Burn` | [MsgBurn](#lbm.collection.v1.MsgBurn) | [MsgBurnResponse](#lbm.collection.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Fires: - EventBurned - burn_ft (deprecated, not typed) - burn_nft (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. Info: one can burn both fungible tokens and non-fungible tokens. Since: 0.46.0 (finschia) | |
-| `OperatorBurn` | [MsgOperatorBurn](#lbm.collection.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.collection.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens of the holder by the operator. Fires: - EventBurned - burn_ft_from (deprecated, not typed) - burn_nft_from (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `operator` does not have `burn` permission. - the holder has not authorized `operator`. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. Info: one can burn both fungible tokens and non-fungible tokens. Since: 0.46.0 (finschia) | |
-| `BurnFT` | [MsgBurnFT](#lbm.collection.v1.MsgBurnFT) | [MsgBurnFTResponse](#lbm.collection.v1.MsgBurnFTResponse) | Deprecated: use Burn BurnFT defines a method to burn fungible tokens. | |
-| `BurnFTFrom` | [MsgBurnFTFrom](#lbm.collection.v1.MsgBurnFTFrom) | [MsgBurnFTFromResponse](#lbm.collection.v1.MsgBurnFTFromResponse) | Deprecated: use OperatorBurn BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy. | |
-| `BurnNFT` | [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT) | [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse) | Deprecated: use Burn BurnNFT defines a method to burn non-fungible tokens. | |
-| `BurnNFTFrom` | [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom) | [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse) | Deprecated: use OperatorBurn BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy. | |
-| `ModifyContract` | [MsgModifyContract](#lbm.collection.v1.MsgModifyContract) | [MsgModifyContractResponse](#lbm.collection.v1.MsgModifyContractResponse) | ModifyContract defines a method to modify the attributes of a contract. Fires: - EventModifiedContract - modify_collection (deprecated, not typed) Throws: - ErrUnauthorized - the operator does not have `modify` permission. - ErrNotFound - there is no token class of `contract_id`. Since: 0.46.0 (finschia) | |
-| `ModifyTokenClass` | [MsgModifyTokenClass](#lbm.collection.v1.MsgModifyTokenClass) | [MsgModifyTokenClassResponse](#lbm.collection.v1.MsgModifyTokenClassResponse) | ModifyTokenClass defines a method to modify the attributes of a token class. Fires: - EventModifiedTokenClass - modify_token_type (deprecated, not typed) - modify_token (deprecated, not typed) Throws: - ErrUnauthorized - the operator does not have `modify` permission. - ErrNotFound - there is no token class of `contract_id`. Since: 0.46.0 (finschia) | |
-| `ModifyNFT` | [MsgModifyNFT](#lbm.collection.v1.MsgModifyNFT) | [MsgModifyNFTResponse](#lbm.collection.v1.MsgModifyNFTResponse) | ModifyNFT defines a method to modify the attributes of a non-fungible token. Fires: - EventModifiedNFT - modify_token (deprecated, not typed) Throws: - ErrUnauthorized - the operator does not have `modify` permission. - ErrNotFound - there is no token class of `contract_id`. Since: 0.46.0 (finschia) | |
-| `Modify` | [MsgModify](#lbm.collection.v1.MsgModify) | [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse) | Deprecated: use ModifyContract, ModifyTokenClass or ModifyNFT Modify defines a method to modify metadata. | |
-| `Grant` | [MsgGrant](#lbm.collection.v1.MsgGrant) | [MsgGrantResponse](#lbm.collection.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify metadata. Fires: - EventGrant - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. Since: 0.46.0 (finschia) | |
-| `Abandon` | [MsgAbandon](#lbm.collection.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.collection.v1.MsgAbandonResponse) | Abandon abandons a permission. Fires: - EventAbandon - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. Since: 0.46.0 (finschia) | |
-| `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | Deprecated: use Grant GrantPermission allows one to mint or burn tokens or modify metadata. | |
-| `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | Deprecated: use Abandon RevokePermission abandons a permission. | |
+| `BurnFT` | [MsgBurnFT](#lbm.collection.v1.MsgBurnFT) | [MsgBurnFTResponse](#lbm.collection.v1.MsgBurnFTResponse) | BurnFT defines a method to burn fungible tokens. Fires: - EventBurned - burn_ft (deprecated, not typed) - burn_nft (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. | |
+| `BurnFTFrom` | [MsgBurnFTFrom](#lbm.collection.v1.MsgBurnFTFrom) | [MsgBurnFTFromResponse](#lbm.collection.v1.MsgBurnFTFromResponse) | BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy. Fires: - EventBurned - burn_ft_from (deprecated, not typed) - burn_nft_from (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `operator` does not have `burn` permission. - the holder has not authorized `operator`. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. | |
+| `BurnNFT` | [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT) | [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse) | BurnNFT defines a method to burn non-fungible tokens. Fires: - EventBurned - burn_ft (deprecated, not typed) - burn_nft (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. | |
+| `BurnNFTFrom` | [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom) | [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse) | BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy. Fires: - EventBurned - burn_ft_from (deprecated, not typed) - burn_nft_from (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `operator` does not have `burn` permission. - the holder has not authorized `operator`. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. | |
+| `Modify` | [MsgModify](#lbm.collection.v1.MsgModify) | [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse) | Modify defines a method to modify metadata. Fires: - EventModifiedContract - modify_collection (deprecated, not typed) - EventModifiedTokenClass - modify_token_type (deprecated, not typed) - modify_token (deprecated, not typed) - EventModifiedNFT Throws: - ErrUnauthorized - the operator does not have `modify` permission. - ErrNotFound - there is no contract of `contract_id`. - there is no token class of `class_id`. - there is no token of `token_id`. | |
+| `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify metadata. Fires: - EventGrant - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. | |
+| `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Fires: - EventAbandon - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. | |
 | `Attach` | [MsgAttach](#lbm.collection.v1.MsgAttach) | [MsgAttachResponse](#lbm.collection.v1.MsgAttachResponse) | Attach defines a method to attach a token to another token. Fires: - EventAttach - attach (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrInvalidRequest - `owner` does not owns `id`. - `owner` does not owns `to`. - `token_id` is not root. - `token_id` is an ancestor of `to_token_id`, which creates a cycle as a result. - depth of `to_token_id` exceeds an app-specific limit. | |
 | `Detach` | [MsgDetach](#lbm.collection.v1.MsgDetach) | [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse) | Detach defines a method to detach a token from another token. Fires: - EventDetach - detach (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrInvalidRequest - `owner` does not owns `token_id`. | |
-| `OperatorAttach` | [MsgOperatorAttach](#lbm.collection.v1.MsgOperatorAttach) | [MsgOperatorAttachResponse](#lbm.collection.v1.MsgOperatorAttachResponse) | OperatorAttach defines a method to attach a token to another token by operator. Fires: - EventAttach - attach_from (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrUnauthorized - the holder has not authorized `operator`. - ErrInvalidRequest - `owner` does not owns `subject`. - `owner` does not owns `target`. - `subject` is not root. - `subject` is an ancestor of `target`, which creates a cycle as a result. - depth of `to` exceeds an app-specific limit. Since: 0.46.0 (finschia) | |
-| `OperatorDetach` | [MsgOperatorDetach](#lbm.collection.v1.MsgOperatorDetach) | [MsgOperatorDetachResponse](#lbm.collection.v1.MsgOperatorDetachResponse) | OperatorDetach defines a method to detach a token from another token by operator. Fires: - EventDetach - detach_from (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrUnauthorized - the holder has not authorized `operator`. - ErrInvalidRequest - `owner` does not owns `subject`. Since: 0.46.0 (finschia) | |
-| `AttachFrom` | [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom) | [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse) | Deprecated: use OperatorAttach AttachFrom defines a method to attach a token to another token by operator. | |
-| `DetachFrom` | [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom) | [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse) | Deprecated: use OperatorDetach DetachFrom defines a method to detach a token from another token by operator. | |
+| `AttachFrom` | [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom) | [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse) | AttachFrom defines a method to attach a token to another token by operator. Fires: - EventAttach - attach_from (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrUnauthorized - the holder has not authorized `operator`. - ErrInvalidRequest - `owner` does not owns `subject`. - `owner` does not owns `target`. - `subject` is not root. - `subject` is an ancestor of `target`, which creates a cycle as a result. - depth of `to` exceeds an app-specific limit. | |
+| `DetachFrom` | [MsgDetachFrom](#lbm.collection.v1.MsgDetachFrom) | [MsgDetachFromResponse](#lbm.collection.v1.MsgDetachFromResponse) | DetachFrom defines a method to detach a token from another token by operator. Fires: - EventDetach - detach_from (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrUnauthorized - the holder has not authorized `operator`. - ErrInvalidRequest - `owner` does not owns `subject`. | |
 
  <!-- end services -->
 
