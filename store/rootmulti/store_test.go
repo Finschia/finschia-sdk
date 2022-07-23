@@ -10,9 +10,10 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
 	abci "github.com/line/ostracon/abci/types"
-	dbm "github.com/tendermint/tm-db"
+	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/codec"
 	codecTypes "github.com/line/lbm-sdk/codec/types"
@@ -26,7 +27,7 @@ import (
 
 func TestStoreType(t *testing.T) {
 	db := dbm.NewMemDB()
-	store := NewStore(db)
+	store := NewStore(db, log.NewNopLogger())
 	store.MountStoreWithDB(types.NewKVStoreKey("store1"), types.StoreTypeIAVL, db)
 }
 
@@ -49,7 +50,7 @@ func TestGetCommitKVStore(t *testing.T) {
 
 func TestStoreMount(t *testing.T) {
 	db := dbm.NewMemDB()
-	store := NewStore(db)
+	store := NewStore(db, log.NewNopLogger())
 
 	key1 := types.NewKVStoreKey("store1")
 	key2 := types.NewKVStoreKey("store2")
@@ -772,7 +773,7 @@ var (
 )
 
 func newMultiStoreWithMounts(db dbm.DB, pruningOpts types.PruningOptions) *Store {
-	store := NewStore(db)
+	store := NewStore(db, log.NewNopLogger())
 	store.pruningOpts = pruningOpts
 
 	store.MountStoreWithDB(testStoreKey1, types.StoreTypeIAVL, nil)
@@ -783,7 +784,7 @@ func newMultiStoreWithMounts(db dbm.DB, pruningOpts types.PruningOptions) *Store
 }
 
 func newMultiStoreWithMixedMounts(db dbm.DB) *Store {
-	store := NewStore(db)
+	store := NewStore(db, log.NewNopLogger())
 	store.MountStoreWithDB(types.NewKVStoreKey("iavl1"), types.StoreTypeIAVL, nil)
 	store.MountStoreWithDB(types.NewKVStoreKey("iavl2"), types.StoreTypeIAVL, nil)
 	store.MountStoreWithDB(types.NewKVStoreKey("iavl3"), types.StoreTypeIAVL, nil)
@@ -793,7 +794,7 @@ func newMultiStoreWithMixedMounts(db dbm.DB) *Store {
 }
 
 func newMultiStoreWithGeneratedData(db dbm.DB, stores uint8, storeKeys uint64) *Store {
-	multiStore := NewStore(db)
+	multiStore := NewStore(db, log.NewNopLogger())
 	r := rand.New(rand.NewSource(49872768940)) // Fixed seed for deterministic tests
 
 	keys := []*types.KVStoreKey{}
@@ -825,7 +826,7 @@ func newMultiStoreWithGeneratedData(db dbm.DB, stores uint8, storeKeys uint64) *
 }
 
 func newMultiStoreWithModifiedMounts(db dbm.DB, pruningOpts types.PruningOptions) (*Store, *types.StoreUpgrades) {
-	store := NewStore(db)
+	store := NewStore(db, log.NewNopLogger())
 	store.pruningOpts = pruningOpts
 
 	store.MountStoreWithDB(types.NewKVStoreKey("store1"), types.StoreTypeIAVL, nil)

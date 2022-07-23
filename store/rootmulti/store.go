@@ -12,9 +12,11 @@ import (
 	iavltree "github.com/cosmos/iavl"
 	protoio "github.com/gogo/protobuf/io"
 	gogotypes "github.com/gogo/protobuf/types"
-	abci "github.com/line/ostracon/abci/types"
 	"github.com/pkg/errors"
 	dbm "github.com/tendermint/tm-db"
+
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/libs/log"
 
 	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
 	"github.com/line/lbm-sdk/store/cachemulti"
@@ -41,6 +43,7 @@ const (
 // the CommitMultiStore interface.
 type Store struct {
 	db                  dbm.DB
+	logger              log.Logger
 	lastCommitInfo      *types.CommitInfo
 	pruningOpts         types.PruningOptions
 	iavlCacheSize       int
@@ -70,17 +73,18 @@ var (
 // store will be created with a PruneNothing pruning strategy by default. After
 // a store is created, KVStores must be mounted and finally LoadLatestVersion or
 // LoadVersion must be called.
-func NewStore(db dbm.DB) *Store {
+func NewStore(db dbm.DB, logger log.Logger) *Store {
 	return &Store{
 		db:                  db,
+		logger:              logger,
 		pruningOpts:         types.PruneNothing,
+		iavlCacheSize:       iavl.DefaultIAVLCacheSize,
+		iavlDisableFastNode: iavlDisablefastNodeDefault,
 		storesParams:        make(map[types.StoreKey]storeParams),
 		stores:              make(map[types.StoreKey]types.CommitKVStore),
 		keysByName:          make(map[string]types.StoreKey),
 		pruneHeights:        make([]int64, 0),
 		listeners:           make(map[types.StoreKey][]types.WriteListener),
-		iavlCacheSize:       iavl.DefaultIAVLCacheSize,
-		iavlDisableFastNode: iavlDisablefastNodeDefault,
 	}
 }
 
@@ -842,9 +846,9 @@ func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID
 		var err error
 
 		if params.initialVersion == 0 {
-			store, err = iavl.LoadStore(db, id, rs.lazyLoading, rs.iavlCacheSize, rs.iavlDisableFastNode)
+			store, err = iavl.LoadStore(db, rs.logger, key, id, rs.lazyLoading, rs.iavlCacheSize, rs.iavlDisableFastNode)
 		} else {
-			store, err = iavl.LoadStoreWithInitialVersion(db, id, rs.lazyLoading, params.initialVersion, rs.iavlCacheSize, rs.iavlDisableFastNode)
+			store, err = iavl.LoadStoreWithInitialVersion(db, rs.logger, key, id, rs.lazyLoading, params.initialVersion, rs.iavlCacheSize, rs.iavlDisableFastNode)
 		}
 
 		if err != nil {

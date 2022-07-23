@@ -7,11 +7,12 @@ import (
 	"time"
 
 	ics23 "github.com/confio/ics23/go"
-
 	"github.com/cosmos/iavl"
-	abci "github.com/line/ostracon/abci/types"
-	occrypto "github.com/line/ostracon/proto/ostracon/crypto"
 	dbm "github.com/tendermint/tm-db"
+
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/libs/log"
+	occrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
 	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/lbm-sdk/store/listenkv"
@@ -44,18 +45,33 @@ type Store struct {
 // LoadStore returns an IAVL Store as a CommitKVStore. Internally, it will load the
 // store's version (id) from the provided DB. An error is returned if the version
 // fails to load, or if called with a positive version on an empty tree.
-func LoadStore(db dbm.DB, id types.CommitID, lazyLoading bool, cacheSize int, disableFastNode bool) (types.CommitKVStore, error) {
-	return LoadStoreWithInitialVersion(db, id, lazyLoading, 0, cacheSize, disableFastNode)
+func LoadStore(db dbm.DB, logger log.Logger, key types.StoreKey, id types.CommitID, lazyLoading bool, cacheSize int, disableFastNode bool) (types.CommitKVStore, error) {
+	return LoadStoreWithInitialVersion(db, logger, key, id, lazyLoading, 0, cacheSize, disableFastNode)
 }
 
 // LoadStoreWithInitialVersion returns an IAVL Store as a CommitKVStore setting its initialVersion
 // to the one given. Internally, it will load the store's version (id) from the
 // provided DB. An error is returned if the version fails to load, or if called with a positive
 // version on an empty tree.
-func LoadStoreWithInitialVersion(db dbm.DB, id types.CommitID, lazyLoading bool, initialVersion uint64, cacheSize int, disableFastNode bool) (types.CommitKVStore, error) {
+func LoadStoreWithInitialVersion(db dbm.DB, logger log.Logger, key types.StoreKey, id types.CommitID, lazyLoading bool, initialVersion uint64, cacheSize int, disableFastNode bool) (types.CommitKVStore, error) {
 	tree, err := iavl.NewMutableTreeWithOpts(db, cacheSize, &iavl.Options{InitialVersion: initialVersion}, disableFastNode)
 	if err != nil {
 		return nil, err
+	}
+
+	isUpgradeable, err := tree.IsUpgradeable()
+	if err != nil {
+		return nil, err
+	}
+
+	if isUpgradeable && logger != nil {
+		logger.Info(
+			"Upgrading IAVL storage for faster queries + execution on live state. This may take a while",
+			"store_key", key.String(),
+			"version", initialVersion,
+			"commit", fmt.Sprintf("%X", id),
+			"is_lazy", lazyLoading,
+		)
 	}
 
 	if lazyLoading {
@@ -66,6 +82,10 @@ func LoadStoreWithInitialVersion(db dbm.DB, id types.CommitID, lazyLoading bool,
 
 	if err != nil {
 		return nil, err
+	}
+
+	if logger != nil {
+		logger.Debug("Finished loading IAVL tree")
 	}
 
 	return &Store{
@@ -385,4 +405,27 @@ func getProofFromTree(tree *iavl.MutableTree, key []byte, exists bool) *occrypto
 
 	op := types.NewIavlCommitmentOp(key, commitmentProof)
 	return &occrypto.ProofOps{Ops: []occrypto.ProofOp{op.ProofOp()}}
+}
+
+//----------------------------------------
+
+// Implements types.Iterator.
+type iavlIterator struct {
+	dbm.Iterator
+}
+
+var _ types.Iterator = (*iavlIterator)(nil)
+
+// newIAVLIterator will create a new iavlIterator.
+// CONTRACT: Caller must release the iavlIterator, as each one creates a new
+// goroutine.
+func newIAVLIterator(tree *iavl.ImmutableTree, start, end []byte, ascending bool) *iavlIterator {
+	iterator, err := tree.Iterator(start, end, ascending)
+	if err != nil {
+		panic(err)
+	}
+	iter := &iavlIterator{
+		Iterator: iterator,
+	}
+	return iter
 }
