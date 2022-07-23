@@ -873,54 +873,30 @@
     - [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse)
     - [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest)
     - [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse)
-    - [QueryAuthorizationRequest](#lbm.collection.v1.QueryAuthorizationRequest)
-    - [QueryAuthorizationResponse](#lbm.collection.v1.QueryAuthorizationResponse)
     - [QueryBalanceRequest](#lbm.collection.v1.QueryBalanceRequest)
     - [QueryBalanceResponse](#lbm.collection.v1.QueryBalanceResponse)
-    - [QueryBurntRequest](#lbm.collection.v1.QueryBurntRequest)
-    - [QueryBurntResponse](#lbm.collection.v1.QueryBurntResponse)
     - [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest)
     - [QueryChildrenResponse](#lbm.collection.v1.QueryChildrenResponse)
     - [QueryContractRequest](#lbm.collection.v1.QueryContractRequest)
     - [QueryContractResponse](#lbm.collection.v1.QueryContractResponse)
-    - [QueryContractsRequest](#lbm.collection.v1.QueryContractsRequest)
-    - [QueryContractsResponse](#lbm.collection.v1.QueryContractsResponse)
     - [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest)
     - [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse)
-    - [QueryFTClassRequest](#lbm.collection.v1.QueryFTClassRequest)
-    - [QueryFTClassResponse](#lbm.collection.v1.QueryFTClassResponse)
     - [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest)
     - [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse)
     - [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest)
     - [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse)
-    - [QueryGrantRequest](#lbm.collection.v1.QueryGrantRequest)
-    - [QueryGrantResponse](#lbm.collection.v1.QueryGrantResponse)
     - [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest)
     - [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse)
-    - [QueryMintedRequest](#lbm.collection.v1.QueryMintedRequest)
-    - [QueryMintedResponse](#lbm.collection.v1.QueryMintedResponse)
     - [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest)
     - [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse)
-    - [QueryNFTClassRequest](#lbm.collection.v1.QueryNFTClassRequest)
-    - [QueryNFTClassResponse](#lbm.collection.v1.QueryNFTClassResponse)
     - [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest)
     - [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse)
-    - [QueryNFTRequest](#lbm.collection.v1.QueryNFTRequest)
-    - [QueryNFTResponse](#lbm.collection.v1.QueryNFTResponse)
     - [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest)
     - [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse)
-    - [QueryOperatorAuthorizationsRequest](#lbm.collection.v1.QueryOperatorAuthorizationsRequest)
-    - [QueryOperatorAuthorizationsResponse](#lbm.collection.v1.QueryOperatorAuthorizationsResponse)
-    - [QueryOwnerRequest](#lbm.collection.v1.QueryOwnerRequest)
-    - [QueryOwnerResponse](#lbm.collection.v1.QueryOwnerResponse)
     - [QueryParentRequest](#lbm.collection.v1.QueryParentRequest)
     - [QueryParentResponse](#lbm.collection.v1.QueryParentResponse)
     - [QueryRootRequest](#lbm.collection.v1.QueryRootRequest)
     - [QueryRootResponse](#lbm.collection.v1.QueryRootResponse)
-    - [QuerySupplyRequest](#lbm.collection.v1.QuerySupplyRequest)
-    - [QuerySupplyResponse](#lbm.collection.v1.QuerySupplyResponse)
-    - [QueryTokenClassTypeNameRequest](#lbm.collection.v1.QueryTokenClassTypeNameRequest)
-    - [QueryTokenClassTypeNameResponse](#lbm.collection.v1.QueryTokenClassTypeNameResponse)
     - [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest)
     - [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse)
     - [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest)
@@ -13124,8 +13100,6 @@ TokenRelation defines relations between two tokens.
 ### QueryAllBalancesRequest
 QueryAllBalancesRequest is the request type for the Query/AllBalances RPC method.
 
-Since: 0.46.0 (finschia)
-
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -13143,8 +13117,6 @@ Since: 0.46.0 (finschia)
 ### QueryAllBalancesResponse
 QueryAllBalancesResponse is the response type for the Query/AllBalances RPC method.
 
-Since: 0.46.0 (finschia)
-
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -13159,8 +13131,6 @@ Since: 0.46.0 (finschia)
 <a name="lbm.collection.v1.QueryApprovedRequest"></a>
 
 ### QueryApprovedRequest
-Deprecated: use QueryAuthorizationRequest
-
 QueryApprovedRequest is the request type for the Query/Approved RPC method.
 
 
@@ -13178,8 +13148,6 @@ QueryApprovedRequest is the request type for the Query/Approved RPC method.
 <a name="lbm.collection.v1.QueryApprovedResponse"></a>
 
 ### QueryApprovedResponse
-Deprecated: do not use
-
 QueryApprovedResponse is the response type for the Query/Approved RPC method.
 
 
@@ -13195,8 +13163,6 @@ QueryApprovedResponse is the response type for the Query/Approved RPC method.
 <a name="lbm.collection.v1.QueryApproversRequest"></a>
 
 ### QueryApproversRequest
-Deprecated: use QueryOperatorAuthorizations
-
 QueryApproversRequest is the request type for the Query/Approvers RPC method.
 
 
@@ -13214,8 +13180,6 @@ QueryApproversRequest is the request type for the Query/Approvers RPC method.
 <a name="lbm.collection.v1.QueryApproversResponse"></a>
 
 ### QueryApproversResponse
-Deprecated: do not use
-
 QueryApproversResponse is the response type for the Query/Approvers RPC method.
 
 
@@ -13223,42 +13187,6 @@ QueryApproversResponse is the response type for the Query/Approvers RPC method.
 | ----- | ---- | ----- | ----------- |
 | `approvers` | [string](#string) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryAuthorizationRequest"></a>
-
-### QueryAuthorizationRequest
-QueryAuthorizationRequest is the request type for the Query/Authorization RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | the address of the operator. |
-| `holder` | [string](#string) |  | the address of the token holder. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryAuthorizationResponse"></a>
-
-### QueryAuthorizationResponse
-QueryAuthorizationResponse is the response type for the Query/Authorization RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `authorization` | [Authorization](#lbm.collection.v1.Authorization) |  | if no authorization found for the request, it would be nil. |
 
 
 
@@ -13291,41 +13219,6 @@ QueryBalanceResponse is the response type for the Query/Balance RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `balance` | [Coin](#lbm.collection.v1.Coin) |  | balance is the balance of the token. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryBurntRequest"></a>
-
-### QueryBurntRequest
-QueryBurntRequest is the request type for the Query/Burnt RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `class_id` | [string](#string) |  | class id associated with the token class. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryBurntResponse"></a>
-
-### QueryBurntResponse
-QueryBurntResponse is the response type for the Query/Burnt RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `burnt` | [string](#string) |  | burnt is the amount of the burnt tokens. |
 
 
 
@@ -13395,44 +13288,9 @@ QueryContractResponse is the response type for the Query/Contract RPC method.
 
 
 
-<a name="lbm.collection.v1.QueryContractsRequest"></a>
-
-### QueryContractsRequest
-QueryContractsRequest is the request type for the Query/Contracts RPC method.
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryContractsResponse"></a>
-
-### QueryContractsResponse
-QueryContractsResponse is the response type for the Query/Contracts RPC method.
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contracts` | [Contract](#lbm.collection.v1.Contract) | repeated | contracts are the informations of all the contracts. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.QueryFTBurntRequest"></a>
 
 ### QueryFTBurntRequest
-Deprecated: use QueryBurntRequest
-
 QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
 
 
@@ -13449,8 +13307,6 @@ QueryFTBurntRequest is the request type for the Query/FTBurnt RPC method.
 <a name="lbm.collection.v1.QueryFTBurntResponse"></a>
 
 ### QueryFTBurntResponse
-Deprecated: do not use
-
 QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
 
 
@@ -13463,46 +13319,9 @@ QueryFTBurntResponse is the response type for the Query/FTBurnt RPC method.
 
 
 
-<a name="lbm.collection.v1.QueryFTClassRequest"></a>
-
-### QueryFTClassRequest
-QueryFTClassRequest is the request type for the Query/FTClass RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `class_id` | [string](#string) |  | class id associated with the token class. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryFTClassResponse"></a>
-
-### QueryFTClassResponse
-QueryFTClassResponse is the response type for the Query/FTClass RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `class` | [FTClass](#lbm.collection.v1.FTClass) |  | class is the information of the token class. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.QueryFTMintedRequest"></a>
 
 ### QueryFTMintedRequest
-Deprecated: use QueryMintedRequest
-
 QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
 
 
@@ -13519,8 +13338,6 @@ QueryFTMintedRequest is the request type for the Query/FTMinted RPC method.
 <a name="lbm.collection.v1.QueryFTMintedResponse"></a>
 
 ### QueryFTMintedResponse
-Deprecated: do not use
-
 QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
 
 
@@ -13536,8 +13353,6 @@ QueryFTMintedResponse is the response type for the Query/FTMinted RPC method.
 <a name="lbm.collection.v1.QueryFTSupplyRequest"></a>
 
 ### QueryFTSupplyRequest
-Deprecated: use QuerySupplyRequest
-
 QueryFTSupplyRequest is the request type for the Query/FTSupply RPC method.
 
 
@@ -13554,8 +13369,6 @@ QueryFTSupplyRequest is the request type for the Query/FTSupply RPC method.
 <a name="lbm.collection.v1.QueryFTSupplyResponse"></a>
 
 ### QueryFTSupplyResponse
-Deprecated: do not use
-
 QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
 
 
@@ -13568,48 +13381,10 @@ QueryFTSupplyResponse is the response type for the Query/FTSupply RPC method.
 
 
 
-<a name="lbm.collection.v1.QueryGrantRequest"></a>
-
-### QueryGrantRequest
-QueryGrantRequest is the request type for the Query/Grant RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `grantee` | [string](#string) |  | the address of the grantee. |
-| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryGrantResponse"></a>
-
-### QueryGrantResponse
-QueryGrantResponse is the response type for the Query/Grant RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `grant` | [Grant](#lbm.collection.v1.Grant) |  | if no grant found for the request, it would be nil and return an error. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.QueryGranteeGrantsRequest"></a>
 
 ### QueryGranteeGrantsRequest
 QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method.
-
-Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
@@ -13628,8 +13403,6 @@ Since: 0.46.0 (finschia)
 ### QueryGranteeGrantsResponse
 QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method.
 
-Since: 0.46.0 (finschia)
-
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
@@ -13641,46 +13414,9 @@ Since: 0.46.0 (finschia)
 
 
 
-<a name="lbm.collection.v1.QueryMintedRequest"></a>
-
-### QueryMintedRequest
-QueryMintedRequest is the request type for the Query/Minted RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `class_id` | [string](#string) |  | class id associated with the token class. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryMintedResponse"></a>
-
-### QueryMintedResponse
-QueryMintedResponse is the response type for the Query/Minted RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `minted` | [string](#string) |  | minted is the amount of the minted tokens. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.QueryNFTBurntRequest"></a>
 
 ### QueryNFTBurntRequest
-Deprecated: use QueryBurntRequest
-
 QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
 
 
@@ -13697,8 +13433,6 @@ QueryNFTBurntRequest is the request type for the Query/NFTBurnt RPC method.
 <a name="lbm.collection.v1.QueryNFTBurntResponse"></a>
 
 ### QueryNFTBurntResponse
-Deprecated: do not use
-
 QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
 
 
@@ -13711,46 +13445,9 @@ QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC method.
 
 
 
-<a name="lbm.collection.v1.QueryNFTClassRequest"></a>
-
-### QueryNFTClassRequest
-QueryNFTClassRequest is the request type for the Query/NFTClass RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `class_id` | [string](#string) |  | class id associated with the token class. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryNFTClassResponse"></a>
-
-### QueryNFTClassResponse
-QueryNFTClassResponse is the response type for the Query/NFTClass RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `class` | [NFTClass](#lbm.collection.v1.NFTClass) |  | class is the information of the token class. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.QueryNFTMintedRequest"></a>
 
 ### QueryNFTMintedRequest
-Deprecated: use QueryMintedRequest
-
 QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
 
 
@@ -13767,8 +13464,6 @@ QueryNFTMintedRequest is the request type for the Query/NFTMinted RPC method.
 <a name="lbm.collection.v1.QueryNFTMintedResponse"></a>
 
 ### QueryNFTMintedResponse
-Deprecated: do not use
-
 QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC method.
 
 
@@ -13781,46 +13476,9 @@ QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC method.
 
 
 
-<a name="lbm.collection.v1.QueryNFTRequest"></a>
-
-### QueryNFTRequest
-QueryNFTRequest is the request type for the Query/NFT RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_id` | [string](#string) |  | token id associated with the non-fungible token. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryNFTResponse"></a>
-
-### QueryNFTResponse
-QueryNFTResponse is the response type for the Query/NFT RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `token` | [NFT](#lbm.collection.v1.NFT) |  | token is the information of the non-fungible token. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.QueryNFTSupplyRequest"></a>
 
 ### QueryNFTSupplyRequest
-Deprecated: use QuerySupplyRequest
-
 QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
 
 
@@ -13837,86 +13495,12 @@ QueryNFTSupplyRequest is the request type for the Query/NFTSupply RPC method.
 <a name="lbm.collection.v1.QueryNFTSupplyResponse"></a>
 
 ### QueryNFTSupplyResponse
-Deprecated: do not use
-
 QueryNFTSupplyResponse is the response type for the Query/NFTSupply RPC method.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `supply` | [string](#string) |  | supply is the supply of the non-fungible token. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryOperatorAuthorizationsRequest"></a>
-
-### QueryOperatorAuthorizationsRequest
-QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAuthorizations RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `operator` | [string](#string) |  | address of the operator. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryOperatorAuthorizationsResponse"></a>
-
-### QueryOperatorAuthorizationsResponse
-QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `authorizations` | [Authorization](#lbm.collection.v1.Authorization) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryOwnerRequest"></a>
-
-### QueryOwnerRequest
-QueryOwnerRequest is the request type for the Query/Owner RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `token_id` | [string](#string) |  | token id associated with the non-fungible token. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryOwnerResponse"></a>
-
-### QueryOwnerResponse
-QueryOwnerResponse is the response type for the Query/Owner RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `owner` | [string](#string) |  | owner of the token. |
 
 
 
@@ -13985,81 +13569,9 @@ QueryRootResponse is the response type for the Query/Root RPC method.
 
 
 
-<a name="lbm.collection.v1.QuerySupplyRequest"></a>
-
-### QuerySupplyRequest
-QuerySupplyRequest is the request type for the Query/Supply RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `class_id` | [string](#string) |  | class id associated with the token class. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QuerySupplyResponse"></a>
-
-### QuerySupplyResponse
-QuerySupplyResponse is the response type for the Query/Supply RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `supply` | [string](#string) |  | supply is the supply of the tokens. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokenClassTypeNameRequest"></a>
-
-### QueryTokenClassTypeNameRequest
-QueryTokenClassTypeNameRequest is the request type for the Query/TokenClassTypeName RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `class_id` | [string](#string) |  | class id associated with the token class. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryTokenClassTypeNameResponse"></a>
-
-### QueryTokenClassTypeNameResponse
-QueryTokenClassTypeNameResponse is the response type for the Query/TokenClassTypeName RPC method.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `name` | [string](#string) |  | type name of the token class. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.QueryTokenRequest"></a>
 
 ### QueryTokenRequest
-Deprecated: use QueryFTClassRequest or QueryNFTRequest
-
 QueryTokenRequest is the request type for the Query/Token RPC method.
 
 
@@ -14076,8 +13588,6 @@ QueryTokenRequest is the request type for the Query/Token RPC method.
 <a name="lbm.collection.v1.QueryTokenResponse"></a>
 
 ### QueryTokenResponse
-Deprecated: do not use
-
 QueryTokenResponse is the response type for the Query/Token RPC method.
 
 
@@ -14093,8 +13603,6 @@ QueryTokenResponse is the response type for the Query/Token RPC method.
 <a name="lbm.collection.v1.QueryTokenTypeRequest"></a>
 
 ### QueryTokenTypeRequest
-Deprecated: use QueryTokenClassRequest
-
 QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
 
 
@@ -14111,8 +13619,6 @@ QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.
 <a name="lbm.collection.v1.QueryTokenTypeResponse"></a>
 
 ### QueryTokenTypeResponse
-Deprecated: do not use
-
 QueryTokenTypeResponse is the response type for the Query/TokenType RPC method.
 
 
@@ -14128,8 +13634,6 @@ QueryTokenTypeResponse is the response type for the Query/TokenType RPC method.
 <a name="lbm.collection.v1.QueryTokenTypesRequest"></a>
 
 ### QueryTokenTypesRequest
-Deprecated: do not use
-
 QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
 
 
@@ -14146,8 +13650,6 @@ QueryTokenTypesRequest is the request type for the Query/TokenTypes RPC method.
 <a name="lbm.collection.v1.QueryTokenTypesResponse"></a>
 
 ### QueryTokenTypesResponse
-Deprecated: do not use
-
 QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method.
 
 
@@ -14164,8 +13666,6 @@ QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC method
 <a name="lbm.collection.v1.QueryTokensRequest"></a>
 
 ### QueryTokensRequest
-Deprecated: do not use
-
 QueryTokensRequest is the request type for the Query/Tokens RPC method.
 
 
@@ -14182,8 +13682,6 @@ QueryTokensRequest is the request type for the Query/Tokens RPC method.
 <a name="lbm.collection.v1.QueryTokensResponse"></a>
 
 ### QueryTokensResponse
-Deprecated: do not use
-
 QueryTokensResponse is the response type for the Query/Tokens RPC method.
 
 
@@ -14211,36 +13709,24 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Balance` | [QueryBalanceRequest](#lbm.collection.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.collection.v1.QueryBalanceResponse) | Balance queries the balance of a single token class for a single account. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `address` is of invalid format. | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}/{token_id}|
-| `AllBalances` | [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.collection.v1.QueryAllBalancesResponse) | AllBalances queries the balance of all token classes for a single account. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `address` is of invalid format. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}|
-| `Supply` | [QuerySupplyRequest](#lbm.collection.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.collection.v1.QuerySupplyResponse) | Supply queries the number of tokens from a given contract id and class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Info: one can query for both fungible tokens and non-fungible token classes. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/supply|
-| `Minted` | [QueryMintedRequest](#lbm.collection.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.collection.v1.QueryMintedResponse) | Minted queries the number of minted tokens from a given contract id and class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Info: one can query for both fungible tokens and non-fungible token classes. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/minted|
-| `Burnt` | [QueryBurntRequest](#lbm.collection.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.collection.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from a given contract id and class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Info: one can query for both fungible tokens and non-fungible token classes. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/burnt|
-| `FTSupply` | [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest) | [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse) | Deprecated: use Supply FTSupply queries the number of tokens from a given contract id and token id. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply|
-| `FTMinted` | [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest) | [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse) | Deprecated: use Minted FTMinted queries the number of minted tokens from a given contract id and token id. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted|
-| `FTBurnt` | [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest) | [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse) | Deprecated: use Burnt FTBurnt queries the number of burnt tokens from a given contract id and token id. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt|
-| `NFTSupply` | [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest) | [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse) | Deprecated: use Supply NFTSupply queries the number of tokens from a given contract id and token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply|
-| `NFTMinted` | [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest) | [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse) | Deprecated: use Minted NFTMinted queries the number of minted tokens from a given contract id and token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted|
-| `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | Deprecated: use Burnt NFTBurnt queries the number of burnt tokens from a given contract id and token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
+| `AllBalances` | [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.collection.v1.QueryAllBalancesResponse) | AllBalances queries the balance of all token classes for a single account. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `address` is of invalid format. | GET|/lbm/collection/v1/contracts/{contract_id}/balances/{address}|
+| `FTSupply` | [QueryFTSupplyRequest](#lbm.collection.v1.QueryFTSupplyRequest) | [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse) | FTSupply queries the number of tokens from a given contract id and token id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply|
+| `FTMinted` | [QueryFTMintedRequest](#lbm.collection.v1.QueryFTMintedRequest) | [QueryFTMintedResponse](#lbm.collection.v1.QueryFTMintedResponse) | FTMinted queries the number of minted tokens from a given contract id and token id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted|
+| `FTBurnt` | [QueryFTBurntRequest](#lbm.collection.v1.QueryFTBurntRequest) | [QueryFTBurntResponse](#lbm.collection.v1.QueryFTBurntResponse) | FTBurnt queries the number of burnt tokens from a given contract id and token id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt|
+| `NFTSupply` | [QueryNFTSupplyRequest](#lbm.collection.v1.QueryNFTSupplyRequest) | [QueryNFTSupplyResponse](#lbm.collection.v1.QueryNFTSupplyResponse) | NFTSupply queries the number of tokens from a given contract id and token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply|
+| `NFTMinted` | [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest) | [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse) | NFTMinted queries the number of minted tokens from a given contract id and token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted|
+| `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | NFTBurnt queries the number of burnt tokens from a given contract id and token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
 | `Contract` | [QueryContractRequest](#lbm.collection.v1.QueryContractRequest) | [QueryContractResponse](#lbm.collection.v1.QueryContractResponse) | Contract queries a contract metadata based on its contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}|
-| `Contracts` | [QueryContractsRequest](#lbm.collection.v1.QueryContractsRequest) | [QueryContractsResponse](#lbm.collection.v1.QueryContractsResponse) | Contracts queries metadata of all contracts. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts|
-| `FTClass` | [QueryFTClassRequest](#lbm.collection.v1.QueryFTClassRequest) | [QueryFTClassResponse](#lbm.collection.v1.QueryFTClassResponse) | FTClass queries a metadata of a fungible token class from its class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/ft_classes/{class_id}|
-| `NFTClass` | [QueryNFTClassRequest](#lbm.collection.v1.QueryNFTClassRequest) | [QueryNFTClassResponse](#lbm.collection.v1.QueryNFTClassResponse) | NFTClass queries a metadata of a non-fungible token class from its class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/nft_classes/{class_id}|
-| `TokenClassTypeName` | [QueryTokenClassTypeNameRequest](#lbm.collection.v1.QueryTokenClassTypeNameRequest) | [QueryTokenClassTypeNameResponse](#lbm.collection.v1.QueryTokenClassTypeNameResponse) | TokenClassTypeName queries the fully qualified message type name of a token class from its class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/type_name|
-| `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | Deprecated: use NFTClass TokenType queries metadata of a token type. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
-| `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. Note: deprecated | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
-| `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Deprecated: use FTClass or NFT Token queries a metadata of a token from its token id. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
-| `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. Note: deprecated | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
-| `NFT` | [QueryNFTRequest](#lbm.collection.v1.QueryNFTRequest) | [QueryNFTResponse](#lbm.collection.v1.QueryNFTResponse) | NFT queries a metadata of a non-fungible token. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}|
-| `Owner` | [QueryOwnerRequest](#lbm.collection.v1.QueryOwnerRequest) | [QueryOwnerResponse](#lbm.collection.v1.QueryOwnerResponse) | Owner queries the owner of the token. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/owner|
+| `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
+| `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
+| `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Token queries a metadata of a token from its token id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
+| `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
 | `Root` | [QueryRootRequest](#lbm.collection.v1.QueryRootRequest) | [QueryRootResponse](#lbm.collection.v1.QueryRootResponse) | Root queries the root of a given nft. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root|
 | `Parent` | [QueryParentRequest](#lbm.collection.v1.QueryParentRequest) | [QueryParentResponse](#lbm.collection.v1.QueryParentResponse) | Parent queries the parent of a given nft. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. - token is the root. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent|
 | `Children` | [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest) | [QueryChildrenResponse](#lbm.collection.v1.QueryChildrenResponse) | Children queries the children of a given nft. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children|
-| `Grant` | [QueryGrantRequest](#lbm.collection.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.collection.v1.QueryGrantResponse) | Grant queries a permission on a given grantee. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `permission` is not a valid permission. - ErrInvalidAddress - `grantee` is of invalid format. - ErrNotFound - there is no permission of `permission` on `grantee`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}/{permission}|
-| `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse) | GranteeGrants queries all permissions on a given grantee. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `grantee` is of invalid format. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}|
-| `Authorization` | [QueryAuthorizationRequest](#lbm.collection.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.collection.v1.QueryAuthorizationResponse) | Authorization queries an authorization on a given operator approver pair. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `operator` is of invalid format. - `holder` is of invalid format. - ErrNotFound - there is no authorization given by `holder` to `operator`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}/{holder}|
-| `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.collection.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.collection.v1.QueryOperatorAuthorizationsResponse) | OperatorAuthorizations queries authorizations on a given operator. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `operator` is of invalid format. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}|
-| `Approved` | [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse) | Deprecated: use Authorization Approved queries whether the operator is approved by the approver. | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}|
-| `Approvers` | [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse) | Deprecated: use OperatorAuthorizations Approvers queries approvers of a given operator. | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers|
+| `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse) | GranteeGrants queries all permissions on a given grantee. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `grantee` is of invalid format. | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}|
+| `Approved` | [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse) | Approved queries whether the operator is approved by the approver. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `operator` is of invalid format. - `holder` is of invalid format. - ErrNotFound - there is no authorization given by `holder` to `operator`. | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}|
+| `Approvers` | [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse) | Approvers queries approvers of a given operator. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `operator` is of invalid format. | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers|
 
  <!-- end services -->
 

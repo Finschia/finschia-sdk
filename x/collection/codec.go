@@ -39,5 +39,12 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&NFTClass{},
 	)
 
+	registry.RegisterInterface(
+		"lbm.collection.v1.Token",
+		(*Token)(nil),
+		&FT{},
+		&OwnerNFT{},
+	)
+
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }
