@@ -797,6 +797,84 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 	}
 }
 
+func (s *IntegrationTestSuite) TestNewQueryCmdTokensWithTokenType() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	owners := []sdk.AccAddress{s.customer, s.operator, s.vendor, s.stranger}
+	tokens := make([]codectypes.Any, 0, s.lenChain*3*len(owners))
+	for _, owner := range owners {
+		for i := 0; i < s.lenChain*3; i++ {
+			token, err := codectypes.NewAnyWithValue(&collection.OwnerNFT{
+				ContractId: s.contractID,
+				TokenId:    collection.NewNFTID(s.nftClassID, len(tokens)+1),
+				Owner:      owner.String(),
+			})
+			s.Require().NoError(err)
+			tokens = append(tokens, *token)
+		}
+	}
+
+	testCases := map[string]struct {
+		args     []string
+		valid    bool
+		expected proto.Message
+	}{
+		"valid query": {
+			[]string{
+				s.contractID,
+				s.nftClassID,
+			},
+			true,
+			&collection.QueryTokensWithTokenTypeResponse{
+				Tokens:     tokens,
+				Pagination: &query.PageResponse{},
+			},
+		},
+		"extra args": {
+			[]string{
+				s.contractID,
+				s.nftClassID,
+				"extra",
+			},
+			false,
+			nil,
+		},
+		"not enough args": {
+			[]string{
+				s.contractID,
+			},
+			false,
+			nil,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdTokensWithTokenType()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual collection.QueryTokensWithTokenTypeResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			for i := range actual.Tokens {
+				err := collection.TokenUnpackInterfaces(&actual.Tokens[i], val.ClientCtx.InterfaceRegistry)
+				s.Require().NoError(err)
+			}
+			s.Require().Equal(tc.expected, &actual)
+		})
+	}
+}
+
 func (s *IntegrationTestSuite) TestNewQueryCmdTokens() {
 	val := s.network.Validators[0]
 	commonArgs := []string{

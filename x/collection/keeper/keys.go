@@ -492,6 +492,16 @@ func legacyTokenKey(contractID string, tokenID string) []byte {
 	return key
 }
 
+func legacyTokenKeyPrefixByTokenType(contractID string, tokenType string) []byte {
+	prefix := legacyTokenKeyPrefixByContractID(contractID)
+	key := make([]byte, len(prefix)+len(tokenType))
+
+	copy(key, prefix)
+	copy(key[len(prefix):], tokenType)
+
+	return key
+}
+
 func legacyTokenKeyPrefixByContractID(contractID string) []byte {
 	key := make([]byte, len(legacyTokenKeyPrefix)+1+len(contractID))
 

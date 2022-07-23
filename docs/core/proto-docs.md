@@ -905,6 +905,8 @@
     - [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse)
     - [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest)
     - [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse)
+    - [QueryTokensWithTokenTypeRequest](#lbm.collection.v1.QueryTokensWithTokenTypeRequest)
+    - [QueryTokensWithTokenTypeResponse](#lbm.collection.v1.QueryTokensWithTokenTypeResponse)
   
     - [Query](#lbm.collection.v1.Query)
   
@@ -13694,6 +13696,39 @@ QueryTokensResponse is the response type for the Query/Tokens RPC method.
 
 
 
+
+<a name="lbm.collection.v1.QueryTokensWithTokenTypeRequest"></a>
+
+### QueryTokensWithTokenTypeRequest
+QueryTokensWithTokenTypeRequest is the request type for the Query/TokensWithTokenType RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `token_type` | [string](#string) |  | token type associated with the token type. |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryTokensWithTokenTypeResponse"></a>
+
+### QueryTokensWithTokenTypeResponse
+QueryTokensWithTokenTypeResponse is the response type for the Query/TokensWithTokenType RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `tokens` | [google.protobuf.Any](#google.protobuf.Any) | repeated | informations of all the tokens. |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -13720,6 +13755,7 @@ Query defines the gRPC querier service.
 | `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
 | `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
 | `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Token queries a metadata of a token from its token id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
+| `TokensWithTokenType` | [QueryTokensWithTokenTypeRequest](#lbm.collection.v1.QueryTokensWithTokenTypeRequest) | [QueryTokensWithTokenTypeResponse](#lbm.collection.v1.QueryTokensWithTokenTypeResponse) | TokensWithTokenType queries all token metadata with token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_type` is of invalid format. - ErrNotFound - there is no contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/tokens|
 | `Tokens` | [QueryTokensRequest](#lbm.collection.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.collection.v1.QueryTokensResponse) | Tokens queries all token metadata. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens|
 | `Root` | [QueryRootRequest](#lbm.collection.v1.QueryRootRequest) | [QueryRootResponse](#lbm.collection.v1.QueryRootResponse) | Root queries the root of a given nft. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root|
 | `Parent` | [QueryParentRequest](#lbm.collection.v1.QueryParentRequest) | [QueryParentResponse](#lbm.collection.v1.QueryParentResponse) | Parent queries the parent of a given nft. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. - token is the root. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent|

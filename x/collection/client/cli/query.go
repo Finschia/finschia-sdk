@@ -506,6 +506,51 @@ func NewQueryCmdToken() *cobra.Command {
 	return cmd
 }
 
+func NewQueryCmdTokensWithTokenType() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "tokens-with-token-type [contract-id] [token-type]",
+		Args:    cobra.ExactArgs(2),
+		Short:   "query all tokens with token type",
+		Example: fmt.Sprintf(`$ %s query %s tokens [contract-id] [token-type]`, version.AppName, collection.ModuleName),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			contractID := args[0]
+			if err := collection.ValidateContractID(contractID); err != nil {
+				return err
+			}
+
+			classID := args[1]
+			if err := collection.ValidateClassID(classID); err != nil {
+				return err
+			}
+
+			queryClient := collection.NewQueryClient(clientCtx)
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+			req := &collection.QueryTokensWithTokenTypeRequest{
+				ContractId: contractID,
+				TokenType:  classID,
+				Pagination: pageReq,
+			}
+			res, err := queryClient.TokensWithTokenType(cmd.Context(), req)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "tokens")
+	return cmd
+}
+
 func NewQueryCmdTokens() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "tokens [contract-id]",
@@ -544,45 +589,6 @@ func NewQueryCmdTokens() *cobra.Command {
 	flags.AddPaginationFlagsToCmd(cmd, "tokens")
 	return cmd
 }
-
-// func NewQueryCmdTokensWithTokenType() *cobra.Command {
-// 	cmd := &cobra.Command{
-// 		Use:     "tokens-with-token-type [contract-id] [token-type]",
-// 		Args:    cobra.ExactArgs(2),
-// 		Short:   "query all tokens with token type",
-// 		Example: fmt.Sprintf(`$ %s query %s tokens [contract-id] [token-type]`, version.AppName, collection.ModuleName),
-// 		RunE: func(cmd *cobra.Command, args []string) error {
-// 			clientCtx, err := client.GetClientQueryContext(cmd)
-// 			if err != nil {
-// 				return err
-// 			}
-
-// 			contractID := args[0]
-// 			if err := collection.ValidateContractID(contractID); err != nil {
-// 				return err
-// 			}
-
-// 			queryClient := collection.NewQueryClient(clientCtx)
-// 			pageReq, err := client.ReadPageRequest(cmd.Flags())
-// 			if err != nil {
-// 				return err
-// 			}
-// 			req := &collection.QueryTokensWithTokenTypeRequest{
-// 				ContractId: contractID,
-// 				Pagination: pageReq,
-// 			}
-// 			res, err := queryClient.TokensWithTokenType(cmd.Context(), req)
-// 			if err != nil {
-// 				return err
-// 			}
-// 			return clientCtx.PrintProto(res)
-// 		},
-// 	}
-
-// 	flags.AddQueryFlagsToCmd(cmd)
-// 	flags.AddPaginationFlagsToCmd(cmd, "tokens")
-// 	return cmd
-// }
 
 func NewQueryCmdRoot() *cobra.Command {
 	cmd := &cobra.Command{
