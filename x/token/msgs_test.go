@@ -32,7 +32,6 @@ func TestMsgSend(t *testing.T) {
 		},
 		"empty from": {
 			contractID: "deadbeef",
-			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     sdk.OneInt(),
 		},
@@ -44,7 +43,6 @@ func TestMsgSend(t *testing.T) {
 		"invalid to": {
 			contractID: "deadbeef",
 			from:       addrs[0],
-			to:         sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -63,14 +61,14 @@ func TestMsgSend(t *testing.T) {
 			Amount:     tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 	}
 }
 
@@ -98,7 +96,6 @@ func TestMsgOperatorSend(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: "deadbeef",
-			operator:   sdk.AccAddress{},
 			from:       addrs[1],
 			to:         addrs[2],
 			amount:     sdk.OneInt(),
@@ -112,7 +109,6 @@ func TestMsgOperatorSend(t *testing.T) {
 		"empty from": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
-			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     sdk.OneInt(),
 		},
@@ -120,7 +116,6 @@ func TestMsgOperatorSend(t *testing.T) {
 			contractID: "deadbeef",
 			operator:   addrs[0],
 			from:       addrs[1],
-			to:         sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -141,14 +136,14 @@ func TestMsgOperatorSend(t *testing.T) {
 			Amount:     tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 	}
 }
 
@@ -176,7 +171,6 @@ func TestMsgTransferFrom(t *testing.T) {
 		},
 		"invalid proxy": {
 			contractID: "deadbeef",
-			proxy:      sdk.AccAddress{},
 			from:       addrs[1],
 			to:         addrs[2],
 			amount:     sdk.OneInt(),
@@ -190,7 +184,6 @@ func TestMsgTransferFrom(t *testing.T) {
 		"empty from": {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
-			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     sdk.OneInt(),
 		},
@@ -198,7 +191,6 @@ func TestMsgTransferFrom(t *testing.T) {
 			contractID: "deadbeef",
 			proxy:      addrs[0],
 			from:       addrs[1],
-			to:         sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -219,14 +211,14 @@ func TestMsgTransferFrom(t *testing.T) {
 			Amount:     tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
 	}
 }
 
@@ -254,12 +246,10 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 		},
 		"invalid holder": {
 			contractID: "deadbeef",
-			holder:     sdk.AccAddress{},
 			operator:   addrs[1],
 		},
 		"empty operator": {
 			holder:     addrs[0],
-			operator:   sdk.AccAddress{},
 			contractID: "deadbeef",
 		},
 	}
@@ -271,14 +261,14 @@ func TestMsgAuthorizeOperator(t *testing.T) {
 			Operator:   tc.operator.String(),
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.holder}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.holder}, msg.GetSigners())
 	}
 }
 
@@ -306,13 +296,11 @@ func TestMsgRevokeOperator(t *testing.T) {
 		},
 		"invalid holder": {
 			contractID: "deadbeef",
-			holder:     sdk.AccAddress{},
 			operator:   addrs[1],
 		},
 		"empty operator": {
-			holder:     addrs[0],
-			operator:   sdk.AccAddress{},
 			contractID: "deadbeef",
+			holder:     addrs[0],
 		},
 	}
 
@@ -323,14 +311,14 @@ func TestMsgRevokeOperator(t *testing.T) {
 			Operator:   tc.operator.String(),
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.holder}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.holder}, msg.GetSigners())
 	}
 }
 
@@ -358,13 +346,11 @@ func TestMsgApprove(t *testing.T) {
 		},
 		"invalid approver": {
 			contractID: "deadbeef",
-			approver:   sdk.AccAddress{},
 			proxy:      addrs[1],
 		},
 		"empty proxy": {
 			contractID: "deadbeef",
 			approver:   addrs[0],
-			proxy:      sdk.AccAddress{},
 		},
 	}
 
@@ -375,14 +361,14 @@ func TestMsgApprove(t *testing.T) {
 			Proxy:      tc.proxy.String(),
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
 	}
 }
 
@@ -415,7 +401,6 @@ func TestMsgIssue(t *testing.T) {
 			valid:    true,
 		},
 		"invalid owner": {
-			owner:    sdk.AccAddress{},
 			to:       addrs[1],
 			name:     "test",
 			symbol:   "TT",
@@ -426,7 +411,6 @@ func TestMsgIssue(t *testing.T) {
 		},
 		"empty to": {
 			owner:    addrs[0],
-			to:       sdk.AccAddress{},
 			name:     "test",
 			symbol:   "TT",
 			imageUri: "some URI",
@@ -517,14 +501,14 @@ func TestMsgIssue(t *testing.T) {
 			Amount:   tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
 	}
 }
 
@@ -555,14 +539,12 @@ func TestMsgMint(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
-			grantee:    sdk.AccAddress{},
 			to:         addrs[1],
 			amount:     sdk.OneInt(),
 		},
 		"empty to": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
-			to:         sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -581,14 +563,14 @@ func TestMsgMint(t *testing.T) {
 			Amount:     tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
 	}
 }
 
@@ -616,7 +598,6 @@ func TestMsgBurn(t *testing.T) {
 		},
 		"invalid from": {
 			contractID: "deadbeef",
-			from:       sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -633,14 +614,14 @@ func TestMsgBurn(t *testing.T) {
 			Amount:     tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 	}
 }
 
@@ -671,14 +652,12 @@ func TestMsgOperatorBurn(t *testing.T) {
 		},
 		"invalid operator": {
 			contractID: "deadbeef",
-			operator:   sdk.AccAddress{},
 			from:       addrs[1],
 			amount:     sdk.OneInt(),
 		},
 		"empty from": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
-			from:       sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -697,14 +676,14 @@ func TestMsgOperatorBurn(t *testing.T) {
 			Amount:     tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 	}
 }
 
@@ -735,14 +714,12 @@ func TestMsgBurnFrom(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
-			grantee:    sdk.AccAddress{},
 			from:       addrs[1],
 			amount:     sdk.OneInt(),
 		},
 		"empty from": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
-			from:       sdk.AccAddress{},
 			amount:     sdk.OneInt(),
 		},
 		"zero amount": {
@@ -761,14 +738,14 @@ func TestMsgBurnFrom(t *testing.T) {
 			Amount:     tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
 	}
 }
 
@@ -797,7 +774,6 @@ func TestMsgModify(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
-			grantee:    sdk.AccAddress{},
 			changes:    []token.Pair{validChange},
 		},
 		"invalid key of change": {
@@ -831,14 +807,14 @@ func TestMsgModify(t *testing.T) {
 			Changes:    tc.changes,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
 	}
 }
 
@@ -869,14 +845,12 @@ func TestMsgGrant(t *testing.T) {
 		},
 		"empty granter": {
 			contractID: "deadbeef",
-			granter:    sdk.AccAddress{},
 			grantee:    addrs[1],
 			permission: token.PermissionMint,
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
 			granter:    addrs[0],
-			grantee:    sdk.AccAddress{},
 			permission: token.PermissionMint,
 		},
 		"invalid permission": {
@@ -894,14 +868,14 @@ func TestMsgGrant(t *testing.T) {
 			Permission: tc.permission,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.granter}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.granter}, msg.GetSigners())
 	}
 }
 
@@ -929,7 +903,6 @@ func TestMsgAbandon(t *testing.T) {
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
-			grantee:    sdk.AccAddress{},
 			permission: token.PermissionMint,
 		},
 		"invalid permission": {
@@ -945,14 +918,14 @@ func TestMsgAbandon(t *testing.T) {
 			Permission: tc.permission,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
 	}
 }
 
@@ -983,14 +956,12 @@ func TestMsgGrantPermission(t *testing.T) {
 		},
 		"empty from": {
 			contractID: "deadbeef",
-			from:       sdk.AccAddress{},
 			to:         addrs[1],
 			permission: token.LegacyPermissionMint.String(),
 		},
 		"invalid to": {
 			contractID: "deadbeef",
 			from:       addrs[0],
-			to:         sdk.AccAddress{},
 			permission: token.LegacyPermissionMint.String(),
 		},
 		"invalid permission": {
@@ -1008,14 +979,14 @@ func TestMsgGrantPermission(t *testing.T) {
 			Permission: tc.permission,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 	}
 }
 
@@ -1042,7 +1013,6 @@ func TestMsgRevokePermission(t *testing.T) {
 			permission: token.LegacyPermissionMint.String(),
 		},
 		"invalid from": {
-			from:       sdk.AccAddress{},
 			contractID: "deadbeef",
 			permission: token.LegacyPermissionMint.String(),
 		},
@@ -1059,13 +1029,13 @@ func TestMsgRevokePermission(t *testing.T) {
 			Permission: tc.permission,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 	}
 }
