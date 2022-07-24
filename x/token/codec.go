@@ -9,17 +9,11 @@ import (
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgSend{},
-		&MsgOperatorSend{},
-		&MsgAuthorizeOperator{},
 		&MsgRevokeOperator{},
 		&MsgIssue{},
-		&MsgGrant{},
-		&MsgAbandon{},
 		&MsgMint{},
 		&MsgBurn{},
-		&MsgOperatorBurn{},
 		&MsgModify{},
-		// deprecated messages
 		&MsgTransferFrom{},
 		&MsgApprove{},
 		&MsgBurnFrom{},

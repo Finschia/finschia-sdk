@@ -20,7 +20,7 @@ service Msg {
   //   - the balance of `from` does not have enough tokens to spend.
   rpc Send(MsgSend) returns (MsgSendResponse);
 
-  // OperatorSend defines a method to send tokens from one account to another account by the operator.
+  // TransferFrom defines a method to send tokens from one account to another account by the operator.
   // Fires:
   // - EventSent
   // - transfer_from (deprecated, not typed)
@@ -29,25 +29,8 @@ service Msg {
   //   - the holder has not authorized the operator.
   // - ErrInsufficientFunds:
   //   - the balance of `from` does not have enough tokens to spend.
-  // Since: 0.46.0 (finschia)
-  rpc OperatorSend(MsgOperatorSend) returns (MsgOperatorSendResponse);
-
-  // TransferFrom defines a method to send tokens from one account to another account by the operator.
   // Note: the approval has no value of limit (not ERC20 compliant).
-  // Note: deprecated (use OperatorSend)
   rpc TransferFrom(MsgTransferFrom) returns (MsgTransferFromResponse);
-
-  // AuthorizeOperator allows one to send tokens on behalf of the holder.
-  // Fires:
-  // - EventAuthorizedOperator
-  // - approve_token (deprecated, not typed)
-  // Throws:
-  // - ErrNotFound:
-  //   - there is no token class of `contract_id`.
-  // - ErrInvalidRequest:
-  //   - `holder` has already authorized `operator`.
-  // Since: 0.46.0 (finschia)
-  rpc AuthorizeOperator(MsgAuthorizeOperator) returns (MsgAuthorizeOperatorResponse);
 
   // RevokeOperator revoke the authorization of the operator to send the holder's tokens.
   // Fires:
@@ -61,7 +44,14 @@ service Msg {
   rpc RevokeOperator(MsgRevokeOperator) returns (MsgRevokeOperatorResponse);
 
   // Approve allows one to send tokens on behalf of the holder.
-  // Note: deprecated (use AuthorizeOperator)
+  // Fires:
+  // - EventAuthorizedOperator
+  // - approve_token (deprecated, not typed)
+  // Throws:
+  // - ErrNotFound:
+  //   - there is no token class of `contract_id`.
+  // - ErrInvalidRequest:
+  //   - `holder` has already authorized `operator`.
   rpc Approve(MsgApprove) returns (MsgApproveResponse);
 
   // Issue defines a method to create a class of token.
@@ -72,7 +62,7 @@ service Msg {
   // - issue (deprecated, not typed)
   rpc Issue(MsgIssue) returns (MsgIssueResponse);
 
-  // Grant allows one to mint or burn tokens or modify a token metadata.
+  // GrantPermission allows one to mint or burn tokens or modify a token metadata.
   // Fires:
   // - EventGrant
   // - grant_perm (deprecated, not typed)
@@ -81,25 +71,15 @@ service Msg {
   //   - `granter` does not have `permission`.
   // - ErrInvalidRequest
   //   - `grantee` already has `permission`.
-  // Since: 0.46.0 (finschia)
-  rpc Grant(MsgGrant) returns (MsgGrantResponse);
+  rpc GrantPermission(MsgGrantPermission) returns (MsgGrantPermissionResponse);
 
-  // Abandon abandons a permission.
+  // RevokePermission abandons a permission.
   // Fires:
   // - EventAbandon
   // - revoke_perm (deprecated, not typed)
   // Throws:
   // - ErrUnauthorized
   //   - `grantee` does not have `permission`.
-  // Since: 0.46.0 (finschia)
-  rpc Abandon(MsgAbandon) returns (MsgAbandonResponse);
-
-  // GrantPermission allows one to mint or burn tokens or modify a token metadata.
-  // Note: deprecated (use Grant)
-  rpc GrantPermission(MsgGrantPermission) returns (MsgGrantPermissionResponse);
-
-  // RevokePermission abandons a permission.
-  // Note: deprecated (use Abandon)
   rpc RevokePermission(MsgRevokePermission) returns (MsgRevokePermissionResponse);
 
   // Mint defines a method to mint tokens.
@@ -122,7 +102,7 @@ service Msg {
   //   - the balance of `from` does not have enough tokens to burn.
   rpc Burn(MsgBurn) returns (MsgBurnResponse);
 
-  // OperatorBurn defines a method to burn tokens by the operator.
+  // BurnFrom defines a method to burn tokens by the operator.
   // Fires:
   // - EventBurned
   // - burn_from (deprecated, not typed)
@@ -132,11 +112,6 @@ service Msg {
   //   - the holder has not authorized `operator`.
   // - ErrInsufficientFunds:
   //   - the balance of `from` does not have enough tokens to burn.
-  // Since: 0.46.0 (finschia)
-  rpc OperatorBurn(MsgOperatorBurn) returns (MsgOperatorBurnResponse);
-
-  // BurnFrom defines a method to burn tokens by the operator.
-  // Note: deprecated (use OperatorBurn)
   rpc BurnFrom(MsgBurnFrom) returns (MsgBurnFromResponse);
 
   // Modify defines a method to modify a token class.
@@ -176,8 +151,7 @@ message MsgSend {
 // MsgSendResponse defines the Msg/Send response type.
 message MsgSendResponse {}
 
-// MsgOperatorSend defines the Msg/OperatorSend request type.
-//
+// MsgTransferFrom defines the Msg/TransferFrom request type.
 // Throws:
 // - ErrInvalidAddress
 //   - `operator` is of invalid format.
@@ -188,29 +162,6 @@ message MsgSendResponse {}
 //   - `amount` is not positive.
 //
 // Signer: `operator`
-//
-// Since: 0.46.0 (finschia)
-message MsgOperatorSend {
-  // contract id associated with the token class.
-  string contract_id = 1;
-  // address which triggers the send.
-  string operator = 2;
-  // holder whose tokens are being sent.
-  string from = 3;
-  // recipient of the tokens.
-  string to = 4;
-  // number of tokens to send.
-  string amount = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
-}
-
-// MsgOperatorSendResponse defines the Msg/OperatorSend response type.
-//
-// Since: 0.46.0 (finschia)
-message MsgOperatorSendResponse {}
-
-// MsgTransferFrom defines the Msg/TransferFrom request type.
-//
-// Note: deprecated (use MsgOperatorSend)
 message MsgTransferFrom {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -225,35 +176,7 @@ message MsgTransferFrom {
 }
 
 // MsgTransferFromResponse defines the Msg/TransferFrom response type.
-//
-// Note: deprecated
 message MsgTransferFromResponse {}
-
-// MsgAuthorizeOperator defines the Msg/AuthorizeOperator request type.
-//
-// Throws:
-// - ErrInvalidAddress
-//   - `holder` is of invalid format.
-//   - `operator` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//
-// Signer: `holder`
-//
-// Since: 0.46.0 (finschia)
-message MsgAuthorizeOperator {
-  // contract id associated with the token class.
-  string contract_id = 1;
-  // address of a holder which authorizes the `operator` address as an operator.
-  string holder = 2;
-  // address to set as an operator for `holder`.
-  string operator = 3;
-}
-
-// MsgAuthorizeOperatorResponse defines the Msg/AuthorizeOperator response type.
-//
-// Since: 0.46.0 (finschia)
-message MsgAuthorizeOperatorResponse {}
 
 // MsgRevokeOperator defines the Msg/RevokeOperator request type.
 //
@@ -283,7 +206,14 @@ message MsgRevokeOperatorResponse {}
 
 // MsgApprove defines the Msg/Approve request type.
 //
-// Note: deprecated (use MsgAuthorizeOperator)
+// Throws:
+// - ErrInvalidAddress
+//   - `holder` is of invalid format.
+//   - `operator` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//
+// Signer: `holder`
 message MsgApprove {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -294,8 +224,6 @@ message MsgApprove {
 }
 
 // MsgApproveResponse defines the Msg/Approve response type.
-//
-// Note: deprecated
 message MsgApproveResponse {}
 
 // MsgIssue defines the Msg/Issue request type.
@@ -343,7 +271,7 @@ message MsgIssueResponse {
   string id = 1;
 }
 
-// MsgGrant defines the Msg/Grant request type.
+// MsgGrantPermission defines the Msg/GrantPermission request type.
 //
 // Throws:
 // - ErrInvalidAddress
@@ -354,53 +282,6 @@ message MsgIssueResponse {
 //   - `permission` is not a valid permission.
 //
 // Signer: `granter`
-//
-// Since: 0.46.0 (finschia)
-message MsgGrant {
-  // contract id associated with the token class.
-  string contract_id = 1;
-  // address of the granter which must have the permission to give.
-  string granter = 2;
-  // address of the grantee.
-  string grantee = 3;
-  // permission on the token class.
-  Permission permission = 4;
-}
-
-// MsgGrantResponse defines the Msg/Grant response type.
-//
-// Since: 0.46.0 (finschia)
-message MsgGrantResponse {}
-
-// MsgAbandon defines the Msg/Abandon request type.
-//
-// Throws:
-// - ErrInvalidAddress
-//   - `grantee` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `permission` is not a valid permission.
-//
-// Signer: `grantee`
-//
-// Since: 0.46.0 (finschia)
-message MsgAbandon {
-  // contract id associated with the token class.
-  string contract_id = 1;
-  // address of the grantee which abandons the permission.
-  string grantee = 2;
-  // permission on the token class.
-  Permission permission = 3;
-}
-
-// MsgAbandonResponse defines the Msg/Abandon response type.
-//
-// Since: 0.46.0 (finschia)
-message MsgAbandonResponse {}
-
-// MsgGrantPermission defines the Msg/GrantPermission request type.
-//
-// Note: deprecated (use MsgGrant)
 message MsgGrantPermission {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -413,13 +294,18 @@ message MsgGrantPermission {
 }
 
 // MsgGrantPermissionResponse defines the Msg/GrantPermission response type.
-//
-// Note: deprecated
 message MsgGrantPermissionResponse {}
 
 // MsgRevokePermission defines the Msg/RevokePermission request type.
 //
-// Note: deprecated (use MsgAbandon)
+// Throws:
+// - ErrInvalidAddress
+//   - `grantee` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `permission` is not a valid permission.
+//
+// Signer: `grantee`
 message MsgRevokePermission {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -430,8 +316,6 @@ message MsgRevokePermission {
 }
 
 // MsgRevokePermissionResponse defines the Msg/RevokePermission response type.
-//
-// Note: deprecated
 message MsgRevokePermissionResponse {}
 
 // MsgMint defines the Msg/Mint request type.
@@ -481,7 +365,7 @@ message MsgBurn {
 // MsgBurnResponse defines the Msg/Burn response type.
 message MsgBurnResponse {}
 
-// MsgOperatorBurn defines the Msg/OperatorBurn request type.
+// MsgBurnFrom defines the Msg/BurnFrom request type.
 //
 // Throws:
 // - ErrInvalidAddress
@@ -492,27 +376,6 @@ message MsgBurnResponse {}
 //   - `amount` is not positive.
 //
 // Signer: `operator`
-//
-// Since: 0.46.0 (finschia)
-message MsgOperatorBurn {
-  // contract id associated with the token class.
-  string contract_id = 1;
-  // address which triggers the burn.
-  string operator = 2;
-  // holder whose tokens are being burned.
-  string from = 3;
-  // number of tokens to burn.
-  string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
-}
-
-// MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
-//
-// Since: 0.46.0 (finschia)
-message MsgOperatorBurnResponse {}
-
-// MsgBurnFrom defines the Msg/BurnFrom request type.
-//
-// Note: deprecated (use MsgOperatorBurn)
 message MsgBurnFrom {
   // contract id associated with the token class.
   string contract_id = 1;
@@ -525,8 +388,6 @@ message MsgBurnFrom {
 }
 
 // MsgBurnFromResponse defines the Msg/BurnFrom response type.
-//
-// Note: deprecated
 message MsgBurnFromResponse {}
 
 // MsgModify defines the Msg/Modify request type.
