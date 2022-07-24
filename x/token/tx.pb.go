@@ -43,7 +43,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type MsgSend struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// holder whose tokens are being sent.
+	// approver whose tokens are being sent.
 	From string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
 	// recipient of the tokens.
 	To string `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
@@ -124,18 +124,18 @@ var xxx_messageInfo_MsgSendResponse proto.InternalMessageInfo
 // MsgTransferFrom defines the Msg/TransferFrom request type.
 // Throws:
 // - ErrInvalidAddress
-//   - `operator` is of invalid format.
+//   - `proxy` is of invalid format.
 //   - `from` is of invalid format.
 //   - `to` is of invalid format.
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //   - `amount` is not positive.
 //
-// Signer: `operator`
+// Signer: `proxy`
 type MsgTransferFrom struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// the address of the operator.
+	// the address of the proxy.
 	Proxy string `protobuf:"bytes,2,opt,name=proxy,proto3" json:"proxy,omitempty"`
 	// the address which the transfer is from.
 	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
@@ -312,18 +312,18 @@ var xxx_messageInfo_MsgRevokeOperatorResponse proto.InternalMessageInfo
 //
 // Throws:
 // - ErrInvalidAddress
-//   - `holder` is of invalid format.
-//   - `operator` is of invalid format.
+//   - `approver` is of invalid format.
+//   - `proxy` is of invalid format.
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //
-// Signer: `holder`
+// Signer: `approver`
 type MsgApprove struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the token holder which approves the authorization.
+	// address of the token approver which approves the authorization.
 	Approver string `protobuf:"bytes,2,opt,name=approver,proto3" json:"approver,omitempty"`
-	// address of the operator which the authorization is granted to.
+	// address of the proxy which the authorization is granted to.
 	Proxy string `protobuf:"bytes,3,opt,name=proxy,proto3" json:"proxy,omitempty"`
 }
 
@@ -792,7 +792,7 @@ var xxx_messageInfo_MsgMintResponse proto.InternalMessageInfo
 type MsgBurn struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// holder whose tokens are being burned.
+	// address whose tokens are being burned.
 	From string `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
 	// number of tokens to burn.
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
@@ -872,13 +872,13 @@ var xxx_messageInfo_MsgBurnResponse proto.InternalMessageInfo
 //
 // Throws:
 // - ErrInvalidAddress
-//   - `operator` is of invalid format.
+//   - `proxy` is of invalid format.
 //   - `from` is of invalid format.
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //   - `amount` is not positive.
 //
-// Signer: `operator`
+// Signer: `proxy`
 type MsgBurnFrom struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
@@ -1156,13 +1156,13 @@ type MsgClient interface {
 	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	Send(ctx context.Context, in *MsgSend, opts ...grpc.CallOption) (*MsgSendResponse, error)
-	// TransferFrom defines a method to send tokens from one account to another account by the operator.
+	// TransferFrom defines a method to send tokens from one account to another account by the proxy.
 	// Fires:
 	// - EventSent
 	// - transfer_from (deprecated, not typed)
 	// Throws:
 	// - ErrUnauthorized:
-	//   - the holder has not authorized the operator.
+	//   - the approver has not authorized the proxy.
 	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	// Note: the approval has no value of limit (not ERC20 compliant).
@@ -1177,7 +1177,7 @@ type MsgClient interface {
 	// Note: it introduces breaking change, because the legacy clients cannot track this revocation.
 	// Since: 0.46.0 (finschia)
 	RevokeOperator(ctx context.Context, in *MsgRevokeOperator, opts ...grpc.CallOption) (*MsgRevokeOperatorResponse, error)
-	// Approve allows one to send tokens on behalf of the holder.
+	// Approve allows one to send tokens on behalf of the approver.
 	// Fires:
 	// - EventAuthorizedOperator
 	// - approve_token (deprecated, not typed)
@@ -1185,7 +1185,7 @@ type MsgClient interface {
 	// - ErrNotFound:
 	//   - there is no token class of `contract_id`.
 	// - ErrInvalidRequest:
-	//   - `holder` has already authorized `operator`.
+	//   - `approver` has already authorized `proxy`.
 	Approve(ctx context.Context, in *MsgApprove, opts ...grpc.CallOption) (*MsgApproveResponse, error)
 	// Issue defines a method to create a class of token.
 	// it grants `mint`, `burn` and `modify` permissions on the token class to its creator (see also `mintable`).
@@ -1230,14 +1230,14 @@ type MsgClient interface {
 	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	Burn(ctx context.Context, in *MsgBurn, opts ...grpc.CallOption) (*MsgBurnResponse, error)
-	// BurnFrom defines a method to burn tokens by the operator.
+	// BurnFrom defines a method to burn tokens by the proxy.
 	// Fires:
 	// - EventBurned
 	// - burn_from (deprecated, not typed)
 	// Throws:
 	// - ErrUnauthorized
-	//   - `operator` does not have `burn` permission.
-	//   - the holder has not authorized `operator`.
+	//   - `proxy` does not have `burn` permission.
+	//   - the approver has not authorized `proxy`.
 	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	BurnFrom(ctx context.Context, in *MsgBurnFrom, opts ...grpc.CallOption) (*MsgBurnFromResponse, error)
@@ -1247,7 +1247,7 @@ type MsgClient interface {
 	// - modify_token (deprecated, not typed)
 	// Throws:
 	// - ErrUnauthorized
-	//   - the operator does not have `modify` permission.
+	//   - the proxy does not have `modify` permission.
 	// - ErrNotFound
 	//   - there is no token class of `contract_id`.
 	Modify(ctx context.Context, in *MsgModify, opts ...grpc.CallOption) (*MsgModifyResponse, error)
@@ -1370,13 +1370,13 @@ type MsgServer interface {
 	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	Send(context.Context, *MsgSend) (*MsgSendResponse, error)
-	// TransferFrom defines a method to send tokens from one account to another account by the operator.
+	// TransferFrom defines a method to send tokens from one account to another account by the proxy.
 	// Fires:
 	// - EventSent
 	// - transfer_from (deprecated, not typed)
 	// Throws:
 	// - ErrUnauthorized:
-	//   - the holder has not authorized the operator.
+	//   - the approver has not authorized the proxy.
 	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	// Note: the approval has no value of limit (not ERC20 compliant).
@@ -1391,7 +1391,7 @@ type MsgServer interface {
 	// Note: it introduces breaking change, because the legacy clients cannot track this revocation.
 	// Since: 0.46.0 (finschia)
 	RevokeOperator(context.Context, *MsgRevokeOperator) (*MsgRevokeOperatorResponse, error)
-	// Approve allows one to send tokens on behalf of the holder.
+	// Approve allows one to send tokens on behalf of the approver.
 	// Fires:
 	// - EventAuthorizedOperator
 	// - approve_token (deprecated, not typed)
@@ -1399,7 +1399,7 @@ type MsgServer interface {
 	// - ErrNotFound:
 	//   - there is no token class of `contract_id`.
 	// - ErrInvalidRequest:
-	//   - `holder` has already authorized `operator`.
+	//   - `approver` has already authorized `proxy`.
 	Approve(context.Context, *MsgApprove) (*MsgApproveResponse, error)
 	// Issue defines a method to create a class of token.
 	// it grants `mint`, `burn` and `modify` permissions on the token class to its creator (see also `mintable`).
@@ -1444,14 +1444,14 @@ type MsgServer interface {
 	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	Burn(context.Context, *MsgBurn) (*MsgBurnResponse, error)
-	// BurnFrom defines a method to burn tokens by the operator.
+	// BurnFrom defines a method to burn tokens by the proxy.
 	// Fires:
 	// - EventBurned
 	// - burn_from (deprecated, not typed)
 	// Throws:
 	// - ErrUnauthorized
-	//   - `operator` does not have `burn` permission.
-	//   - the holder has not authorized `operator`.
+	//   - `proxy` does not have `burn` permission.
+	//   - the approver has not authorized `proxy`.
 	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	BurnFrom(context.Context, *MsgBurnFrom) (*MsgBurnFromResponse, error)
@@ -1461,7 +1461,7 @@ type MsgServer interface {
 	// - modify_token (deprecated, not typed)
 	// Throws:
 	// - ErrUnauthorized
-	//   - the operator does not have `modify` permission.
+	//   - the proxy does not have `modify` permission.
 	// - ErrNotFound
 	//   - there is no token class of `contract_id`.
 	Modify(context.Context, *MsgModify) (*MsgModifyResponse, error)

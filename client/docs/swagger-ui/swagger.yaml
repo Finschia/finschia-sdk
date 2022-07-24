@@ -39271,12 +39271,12 @@ paths:
   '/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/approvers':
     get:
       summary: |-
-        Approvers queries approvers on a given operator.
+        Approvers queries approvers on a given proxy.
         Throws:
         - ErrInvalidRequest
           - `contract_id` is of invalid format.
         - ErrInvalidAddress
-          - `operator` is of invalid format.
+          - `proxy` is of invalid format.
       operationId: Approvers
       responses:
         '200':
@@ -39288,7 +39288,7 @@ paths:
                 type: array
                 items:
                   type: string
-                description: all the authorizations on the operator.
+                description: all the authorizations on the proxy.
               pagination:
                 description: pagination defines the pagination in the response.
                 type: object
@@ -39339,7 +39339,7 @@ paths:
           required: true
           type: string
         - name: address
-          description: address of the operator which the authorization is granted to.
+          description: address of the proxy which the authorization is granted to.
           in: path
           required: true
           type: string
@@ -39411,8 +39411,8 @@ paths:
         - ErrInvalidRequest
           - `contract_id` is of invalid format.
         - ErrInvalidAddress
-          - `operator` is of invalid format.
-          - `holder` is of invalid format.
+          - `proxy` is of invalid format.
+          - `approver` is of invalid format.
       operationId: Approved
       responses:
         '200':
@@ -39460,7 +39460,7 @@ paths:
           required: true
           type: string
         - name: proxy
-          description: address of the operator which the authorization is granted to.
+          description: address of the proxy which the authorization is granted to.
           in: path
           required: true
           type: string
@@ -64488,7 +64488,7 @@ definitions:
         type: array
         items:
           type: string
-        description: all the authorizations on the operator.
+        description: all the authorizations on the proxy.
       pagination:
         description: pagination defines the pagination in the response.
         type: object

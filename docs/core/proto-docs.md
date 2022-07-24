@@ -17612,7 +17612,7 @@ QueryApprovedRequest is the request type for the Query/Approved RPC method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `proxy` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `proxy` | [string](#string) |  | address of the proxy which the authorization is granted to. |
 | `approver` | [string](#string) |  | approver is the address of the approver of the authorization. |
 
 
@@ -17644,7 +17644,7 @@ QueryApproversRequest is the request type for the Query/Approvers RPC method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `address` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `address` | [string](#string) |  | address of the proxy which the authorization is granted to. |
 | `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
@@ -17660,7 +17660,7 @@ QueryApproversResponse is the response type for the Query/Approvers RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `approvers` | [string](#string) | repeated | all the authorizations on the operator. |
+| `approvers` | [string](#string) | repeated | all the authorizations on the proxy. |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
@@ -17903,8 +17903,8 @@ Query defines the gRPC querier service.
 | `TokenClass` | [QueryTokenClassRequest](#lbm.token.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.token.v1.QueryTokenClassResponse) | TokenClass queries an token metadata based on its contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}|
 | `TokenClasses` | [QueryTokenClassesRequest](#lbm.token.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.token.v1.QueryTokenClassesResponse) | TokenClasses queries all token metadata. | GET|/lbm/token/v1/token_classes|
 | `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse) | GranteeGrants queries permissions on a given grantee. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `grantee` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
-| `Approved` | [QueryApprovedRequest](#lbm.token.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.token.v1.QueryApprovedResponse) | Approved queries authorization on a given proxy approver pair. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `operator` is of invalid format. - `holder` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{approver}/proxies/{proxy}|
-| `Approvers` | [QueryApproversRequest](#lbm.token.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.token.v1.QueryApproversResponse) | Approvers queries approvers on a given operator. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `operator` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/approvers|
+| `Approved` | [QueryApprovedRequest](#lbm.token.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.token.v1.QueryApprovedResponse) | Approved queries authorization on a given proxy approver pair. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. - `approver` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{approver}/proxies/{proxy}|
+| `Approvers` | [QueryApproversRequest](#lbm.token.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.token.v1.QueryApproversResponse) | Approvers queries approvers on a given proxy. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/approvers|
 
  <!-- end services -->
 
@@ -17924,19 +17924,19 @@ MsgApprove defines the Msg/Approve request type.
 
 Throws:
 - ErrInvalidAddress
-  - `holder` is of invalid format.
-  - `operator` is of invalid format.
+  - `approver` is of invalid format.
+  - `proxy` is of invalid format.
 - ErrInvalidRequest
   - `contract_id` is of invalid format.
 
-Signer: `holder`
+Signer: `approver`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `approver` | [string](#string) |  | address of the token holder which approves the authorization. |
-| `proxy` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `approver` | [string](#string) |  | address of the token approver which approves the authorization. |
+| `proxy` | [string](#string) |  | address of the proxy which the authorization is granted to. |
 
 
 
@@ -17971,7 +17971,7 @@ Signer: `from`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `from` | [string](#string) |  | holder whose tokens are being burned. |
+| `from` | [string](#string) |  | address whose tokens are being burned. |
 | `amount` | [string](#string) |  | number of tokens to burn. |
 
 
@@ -17986,13 +17986,13 @@ MsgBurnFrom defines the Msg/BurnFrom request type.
 
 Throws:
 - ErrInvalidAddress
-  - `operator` is of invalid format.
+  - `proxy` is of invalid format.
   - `from` is of invalid format.
 - ErrInvalidRequest
   - `contract_id` is of invalid format.
   - `amount` is not positive.
 
-Signer: `operator`
+Signer: `proxy`
 
 
 | Field | Type | Label | Description |
@@ -18289,7 +18289,7 @@ Signer: `from`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `from` | [string](#string) |  | holder whose tokens are being sent. |
+| `from` | [string](#string) |  | approver whose tokens are being sent. |
 | `to` | [string](#string) |  | recipient of the tokens. |
 | `amount` | [string](#string) |  | number of tokens to send. |
 
@@ -18314,20 +18314,20 @@ MsgSendResponse defines the Msg/Send response type.
 MsgTransferFrom defines the Msg/TransferFrom request type.
 Throws:
 - ErrInvalidAddress
-  - `operator` is of invalid format.
+  - `proxy` is of invalid format.
   - `from` is of invalid format.
   - `to` is of invalid format.
 - ErrInvalidRequest
   - `contract_id` is of invalid format.
   - `amount` is not positive.
 
-Signer: `operator`
+Signer: `proxy`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `proxy` | [string](#string) |  | the address of the operator. |
+| `proxy` | [string](#string) |  | the address of the proxy. |
 | `from` | [string](#string) |  | the address which the transfer is from. |
 | `to` | [string](#string) |  | the address which the transfer is to. |
 | `amount` | [string](#string) |  | the amount of the transfer. |
@@ -18361,16 +18361,16 @@ Msg defines the token Msg service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Send` | [MsgSend](#lbm.token.v1.MsgSend) | [MsgSendResponse](#lbm.token.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. Fires: - EventSent - transfer (deprecated, not typed) Throws: - ErrInvalidRequest: - the balance of `from` does not have enough tokens to spend. | |
-| `TransferFrom` | [MsgTransferFrom](#lbm.token.v1.MsgTransferFrom) | [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse) | TransferFrom defines a method to send tokens from one account to another account by the operator. Fires: - EventSent - transfer_from (deprecated, not typed) Throws: - ErrUnauthorized: - the holder has not authorized the operator. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to spend. Note: the approval has no value of limit (not ERC20 compliant). | |
+| `TransferFrom` | [MsgTransferFrom](#lbm.token.v1.MsgTransferFrom) | [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse) | TransferFrom defines a method to send tokens from one account to another account by the proxy. Fires: - EventSent - transfer_from (deprecated, not typed) Throws: - ErrUnauthorized: - the approver has not authorized the proxy. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to spend. Note: the approval has no value of limit (not ERC20 compliant). | |
 | `RevokeOperator` | [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse) | RevokeOperator revoke the authorization of the operator to send the holder's tokens. Fires: - EventRevokedOperator Throws: - ErrNotFound: - there is no token class of `contract_id`. - there is no authorization by `holder` to `operator`. Note: it introduces breaking change, because the legacy clients cannot track this revocation. Since: 0.46.0 (finschia) | |
-| `Approve` | [MsgApprove](#lbm.token.v1.MsgApprove) | [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the holder. Fires: - EventAuthorizedOperator - approve_token (deprecated, not typed) Throws: - ErrNotFound: - there is no token class of `contract_id`. - ErrInvalidRequest: - `holder` has already authorized `operator`. | |
+| `Approve` | [MsgApprove](#lbm.token.v1.MsgApprove) | [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the approver. Fires: - EventAuthorizedOperator - approve_token (deprecated, not typed) Throws: - ErrNotFound: - there is no token class of `contract_id`. - ErrInvalidRequest: - `approver` has already authorized `proxy`. | |
 | `Issue` | [MsgIssue](#lbm.token.v1.MsgIssue) | [MsgIssueResponse](#lbm.token.v1.MsgIssueResponse) | Issue defines a method to create a class of token. it grants `mint`, `burn` and `modify` permissions on the token class to its creator (see also `mintable`). Fires: - EventIssue - EventMinted - issue (deprecated, not typed) | |
 | `GrantPermission` | [MsgGrantPermission](#lbm.token.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.token.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify a token metadata. Fires: - EventGrant - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. | |
 | `RevokePermission` | [MsgRevokePermission](#lbm.token.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.token.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Fires: - EventAbandon - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. | |
 | `Mint` | [MsgMint](#lbm.token.v1.MsgMint) | [MsgMintResponse](#lbm.token.v1.MsgMintResponse) | Mint defines a method to mint tokens. Fires: - EventMinted - mint (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `mint` permission. | |
 | `Burn` | [MsgBurn](#lbm.token.v1.MsgBurn) | [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Fires: - EventBurned - burn (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
-| `BurnFrom` | [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom) | [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse) | BurnFrom defines a method to burn tokens by the operator. Fires: - EventBurned - burn_from (deprecated, not typed) Throws: - ErrUnauthorized - `operator` does not have `burn` permission. - the holder has not authorized `operator`. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
-| `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token class. Fires: - EventModified - modify_token (deprecated, not typed) Throws: - ErrUnauthorized - the operator does not have `modify` permission. - ErrNotFound - there is no token class of `contract_id`. | |
+| `BurnFrom` | [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom) | [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse) | BurnFrom defines a method to burn tokens by the proxy. Fires: - EventBurned - burn_from (deprecated, not typed) Throws: - ErrUnauthorized - `proxy` does not have `burn` permission. - the approver has not authorized `proxy`. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
+| `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token class. Fires: - EventModified - modify_token (deprecated, not typed) Throws: - ErrUnauthorized - the proxy does not have `modify` permission. - ErrNotFound - there is no token class of `contract_id`. | |
 
  <!-- end services -->
 

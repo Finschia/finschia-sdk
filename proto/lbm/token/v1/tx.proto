@@ -20,13 +20,13 @@ service Msg {
   //   - the balance of `from` does not have enough tokens to spend.
   rpc Send(MsgSend) returns (MsgSendResponse);
 
-  // TransferFrom defines a method to send tokens from one account to another account by the operator.
+  // TransferFrom defines a method to send tokens from one account to another account by the proxy.
   // Fires:
   // - EventSent
   // - transfer_from (deprecated, not typed)
   // Throws:
   // - ErrUnauthorized:
-  //   - the holder has not authorized the operator.
+  //   - the approver has not authorized the proxy.
   // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to spend.
   // Note: the approval has no value of limit (not ERC20 compliant).
@@ -43,7 +43,7 @@ service Msg {
   // Since: 0.46.0 (finschia)
   rpc RevokeOperator(MsgRevokeOperator) returns (MsgRevokeOperatorResponse);
 
-  // Approve allows one to send tokens on behalf of the holder.
+  // Approve allows one to send tokens on behalf of the approver.
   // Fires:
   // - EventAuthorizedOperator
   // - approve_token (deprecated, not typed)
@@ -51,7 +51,7 @@ service Msg {
   // - ErrNotFound:
   //   - there is no token class of `contract_id`.
   // - ErrInvalidRequest:
-  //   - `holder` has already authorized `operator`.
+  //   - `approver` has already authorized `proxy`.
   rpc Approve(MsgApprove) returns (MsgApproveResponse);
 
   // Issue defines a method to create a class of token.
@@ -102,14 +102,14 @@ service Msg {
   //   - the balance of `from` does not have enough tokens to burn.
   rpc Burn(MsgBurn) returns (MsgBurnResponse);
 
-  // BurnFrom defines a method to burn tokens by the operator.
+  // BurnFrom defines a method to burn tokens by the proxy.
   // Fires:
   // - EventBurned
   // - burn_from (deprecated, not typed)
   // Throws:
   // - ErrUnauthorized
-  //   - `operator` does not have `burn` permission.
-  //   - the holder has not authorized `operator`.
+  //   - `proxy` does not have `burn` permission.
+  //   - the approver has not authorized `proxy`.
   // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to burn.
   rpc BurnFrom(MsgBurnFrom) returns (MsgBurnFromResponse);
@@ -120,7 +120,7 @@ service Msg {
   // - modify_token (deprecated, not typed)
   // Throws:
   // - ErrUnauthorized
-  //   - the operator does not have `modify` permission.
+  //   - the proxy does not have `modify` permission.
   // - ErrNotFound
   //   - there is no token class of `contract_id`.
   rpc Modify(MsgModify) returns (MsgModifyResponse);
@@ -140,7 +140,7 @@ service Msg {
 message MsgSend {
   // contract id associated with the token class.
   string contract_id = 1;
-  // holder whose tokens are being sent.
+  // approver whose tokens are being sent.
   string from = 2;
   // recipient of the tokens.
   string to = 3;
@@ -154,18 +154,18 @@ message MsgSendResponse {}
 // MsgTransferFrom defines the Msg/TransferFrom request type.
 // Throws:
 // - ErrInvalidAddress
-//   - `operator` is of invalid format.
+//   - `proxy` is of invalid format.
 //   - `from` is of invalid format.
 //   - `to` is of invalid format.
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //   - `amount` is not positive.
 //
-// Signer: `operator`
+// Signer: `proxy`
 message MsgTransferFrom {
   // contract id associated with the token class.
   string contract_id = 1;
-  // the address of the operator.
+  // the address of the proxy.
   string proxy = 2;
   // the address which the transfer is from.
   string from = 3;
@@ -208,18 +208,18 @@ message MsgRevokeOperatorResponse {}
 //
 // Throws:
 // - ErrInvalidAddress
-//   - `holder` is of invalid format.
-//   - `operator` is of invalid format.
+//   - `approver` is of invalid format.
+//   - `proxy` is of invalid format.
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //
-// Signer: `holder`
+// Signer: `approver`
 message MsgApprove {
   // contract id associated with the token class.
   string contract_id = 1;
-  // address of the token holder which approves the authorization.
+  // address of the token approver which approves the authorization.
   string approver = 2;
-  // address of the operator which the authorization is granted to.
+  // address of the proxy which the authorization is granted to.
   string proxy = 3;
 }
 
@@ -356,7 +356,7 @@ message MsgMintResponse {}
 message MsgBurn {
   // contract id associated with the token class.
   string contract_id = 1;
-  // holder whose tokens are being burned.
+  // address whose tokens are being burned.
   string from = 2;
   // number of tokens to burn.
   string amount = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
@@ -369,13 +369,13 @@ message MsgBurnResponse {}
 //
 // Throws:
 // - ErrInvalidAddress
-//   - `operator` is of invalid format.
+//   - `proxy` is of invalid format.
 //   - `from` is of invalid format.
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //   - `amount` is not positive.
 //
-// Signer: `operator`
+// Signer: `proxy`
 message MsgBurnFrom {
   // contract id associated with the token class.
   string contract_id = 1;
