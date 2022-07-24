@@ -1153,7 +1153,7 @@ type MsgClient interface {
 	// - EventSent
 	// - transfer (deprecated, not typed)
 	// Throws:
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	Send(ctx context.Context, in *MsgSend, opts ...grpc.CallOption) (*MsgSendResponse, error)
 	// TransferFrom defines a method to send tokens from one account to another account by the operator.
@@ -1163,7 +1163,7 @@ type MsgClient interface {
 	// Throws:
 	// - ErrUnauthorized:
 	//   - the holder has not authorized the operator.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	// Note: the approval has no value of limit (not ERC20 compliant).
 	TransferFrom(ctx context.Context, in *MsgTransferFrom, opts ...grpc.CallOption) (*MsgTransferFromResponse, error)
@@ -1227,7 +1227,7 @@ type MsgClient interface {
 	// Throws:
 	// - ErrUnauthorized
 	//   - `from` does not have `burn` permission.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	Burn(ctx context.Context, in *MsgBurn, opts ...grpc.CallOption) (*MsgBurnResponse, error)
 	// BurnFrom defines a method to burn tokens by the operator.
@@ -1238,7 +1238,7 @@ type MsgClient interface {
 	// - ErrUnauthorized
 	//   - `operator` does not have `burn` permission.
 	//   - the holder has not authorized `operator`.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	BurnFrom(ctx context.Context, in *MsgBurnFrom, opts ...grpc.CallOption) (*MsgBurnFromResponse, error)
 	// Modify defines a method to modify a token class.
@@ -1367,7 +1367,7 @@ type MsgServer interface {
 	// - EventSent
 	// - transfer (deprecated, not typed)
 	// Throws:
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	Send(context.Context, *MsgSend) (*MsgSendResponse, error)
 	// TransferFrom defines a method to send tokens from one account to another account by the operator.
@@ -1377,7 +1377,7 @@ type MsgServer interface {
 	// Throws:
 	// - ErrUnauthorized:
 	//   - the holder has not authorized the operator.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	// Note: the approval has no value of limit (not ERC20 compliant).
 	TransferFrom(context.Context, *MsgTransferFrom) (*MsgTransferFromResponse, error)
@@ -1441,7 +1441,7 @@ type MsgServer interface {
 	// Throws:
 	// - ErrUnauthorized
 	//   - `from` does not have `burn` permission.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	Burn(context.Context, *MsgBurn) (*MsgBurnResponse, error)
 	// BurnFrom defines a method to burn tokens by the operator.
@@ -1452,7 +1452,7 @@ type MsgServer interface {
 	// - ErrUnauthorized
 	//   - `operator` does not have `burn` permission.
 	//   - the holder has not authorized `operator`.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	BurnFrom(context.Context, *MsgBurnFrom) (*MsgBurnFromResponse, error)
 	// Modify defines a method to modify a token class.

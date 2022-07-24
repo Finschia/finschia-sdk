@@ -16,7 +16,7 @@ service Msg {
   // - EventSent
   // - transfer (deprecated, not typed)
   // Throws:
-  // - ErrInsufficientFunds:
+  // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to spend.
   rpc Send(MsgSend) returns (MsgSendResponse);
 
@@ -27,7 +27,7 @@ service Msg {
   // Throws:
   // - ErrUnauthorized:
   //   - the holder has not authorized the operator.
-  // - ErrInsufficientFunds:
+  // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to spend.
   // Note: the approval has no value of limit (not ERC20 compliant).
   rpc TransferFrom(MsgTransferFrom) returns (MsgTransferFromResponse);
@@ -98,7 +98,7 @@ service Msg {
   // Throws:
   // - ErrUnauthorized
   //   - `from` does not have `burn` permission.
-  // - ErrInsufficientFunds:
+  // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to burn.
   rpc Burn(MsgBurn) returns (MsgBurnResponse);
 
@@ -110,7 +110,7 @@ service Msg {
   // - ErrUnauthorized
   //   - `operator` does not have `burn` permission.
   //   - the holder has not authorized `operator`.
-  // - ErrInsufficientFunds:
+  // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to burn.
   rpc BurnFrom(MsgBurnFrom) returns (MsgBurnFromResponse);
 
