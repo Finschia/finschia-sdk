@@ -20,13 +20,13 @@ service Msg {
   //   - the balance of `from` does not have enough tokens to spend.
   rpc TransferFT(MsgTransferFT) returns (MsgTransferFTResponse);
 
-  // TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator.
+  // TransferFTFrom defines a method to send fungible tokens from one account to another account by the proxy.
   // Fires:
   // - EventSent
   // - transfer_ft_from (deprecated, not typed)
   // Throws:
   // - ErrUnauthorized:
-  //   - the holder has not authorized the operator.
+  //   - the approver has not authorized the proxy.
   // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to spend.
   rpc TransferFTFrom(MsgTransferFTFrom) returns (MsgTransferFTFromResponse);
@@ -41,14 +41,14 @@ service Msg {
   //   - the balance of `from` does not have enough tokens to spend.
   rpc TransferNFT(MsgTransferNFT) returns (MsgTransferNFTResponse);
 
-  // TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator.
+  // TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the proxy.
   // Fires:
   // - EventSent
   // - transfer_nft_from (deprecated, not typed)
   // - operation_transfer_nft (deprecated, not typed)
   // Throws:
   // - ErrUnauthorized:
-  //   - the holder has not authorized the operator.
+  //   - the approver has not authorized the proxy.
   // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to spend.
   rpc TransferNFTFrom(MsgTransferNFTFrom) returns (MsgTransferNFTFromResponse);
@@ -61,17 +61,17 @@ service Msg {
   // - ErrNotFound:
   //   - there is no contract of `contract_id`.
   // - ErrInvalidRequest:
-  //   - `holder` has already authorized `operator`.
+  //   - `approver` has already authorized `proxy`.
   rpc Approve(MsgApprove) returns (MsgApproveResponse);
 
-  // Disapprove revokes the authorization of the operator to send the approver's token.
+  // Disapprove revokes the authorization of the proxy to send the approver's token.
   // Fires:
   // - EventRevokedOperator
   // - disapprove_collection (deprecated, not typed)
   // Throws:
   // - ErrNotFound:
   //   - there is no contract of `contract_id`.
-  //   - there is no authorization by `holder` to `operator`.
+  //   - there is no authorization by `approver` to `proxy`.
   rpc Disapprove(MsgDisapprove) returns (MsgDisapproveResponse);
 
   // CreateContract defines a method to create a contract for collection.
@@ -127,7 +127,7 @@ service Msg {
   //   - the balance of `from` does not have enough tokens to burn.
   rpc BurnFT(MsgBurnFT) returns (MsgBurnFTResponse);
 
-  // BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy.
+  // BurnFTFrom defines a method to burn fungible tokens of the approver by the proxy.
   // Fires:
   // - EventBurned
   // - burn_ft_from (deprecated, not typed)
@@ -135,8 +135,8 @@ service Msg {
   // - operation_burn_nft (deprecated, not typed)
   // Throws:
   // - ErrUnauthorized
-  //   - `operator` does not have `burn` permission.
-  //   - the holder has not authorized `operator`.
+  //   - `proxy` does not have `burn` permission.
+  //   - the approver has not authorized `proxy`.
   // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to burn.
   rpc BurnFTFrom(MsgBurnFTFrom) returns (MsgBurnFTFromResponse);
@@ -154,7 +154,7 @@ service Msg {
   //   - the balance of `from` does not have enough tokens to burn.
   rpc BurnNFT(MsgBurnNFT) returns (MsgBurnNFTResponse);
 
-  // BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy.
+  // BurnNFTFrom defines a method to burn non-fungible tokens of the approver by the proxy.
   // Fires:
   // - EventBurned
   // - burn_ft_from (deprecated, not typed)
@@ -162,8 +162,8 @@ service Msg {
   // - operation_burn_nft (deprecated, not typed)
   // Throws:
   // - ErrUnauthorized
-  //   - `operator` does not have `burn` permission.
-  //   - the holder has not authorized `operator`.
+  //   - `proxy` does not have `burn` permission.
+  //   - the approver has not authorized `proxy`.
   // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to burn.
   rpc BurnNFTFrom(MsgBurnNFTFrom) returns (MsgBurnNFTFromResponse);
@@ -178,10 +178,10 @@ service Msg {
   // - EventModifiedNFT
   // Throws:
   // - ErrUnauthorized
-  //   - the operator does not have `modify` permission.
+  //   - the proxy does not have `modify` permission.
   // - ErrNotFound
   //   - there is no contract of `contract_id`.
-  //   - there is no token class of `class_id`.
+  //   - there is no token type of `token_type`.
   //   - there is no token of `token_id`.
   rpc Modify(MsgModify) returns (MsgModifyResponse);
 
@@ -229,14 +229,14 @@ service Msg {
   //   - `owner` does not owns `token_id`.
   rpc Detach(MsgDetach) returns (MsgDetachResponse);
 
-  // AttachFrom defines a method to attach a token to another token by operator.
+  // AttachFrom defines a method to attach a token to another token by proxy.
   // Fires:
   // - EventAttach
   // - attach_from (deprecated, not typed)
   // - operation_root_changed (deprecated, not typed)
   // Throws:
   // - ErrUnauthorized
-  //   - the holder has not authorized `operator`.
+  //   - the approver has not authorized `proxy`.
   // - ErrInvalidRequest
   //   - `owner` does not owns `subject`.
   //   - `owner` does not owns `target`.
@@ -245,14 +245,14 @@ service Msg {
   //   - depth of `to` exceeds an app-specific limit.
   rpc AttachFrom(MsgAttachFrom) returns (MsgAttachFromResponse);
 
-  // DetachFrom defines a method to detach a token from another token by operator.
+  // DetachFrom defines a method to detach a token from another token by proxy.
   // Fires:
   // - EventDetach
   // - detach_from (deprecated, not typed)
   // - operation_root_changed (deprecated, not typed)
   // Throws:
   // - ErrUnauthorized
-  //   - the holder has not authorized `operator`.
+  //   - the approver has not authorized `proxy`.
   // - ErrInvalidRequest
   //   - `owner` does not owns `subject`.
   rpc DetachFrom(MsgDetachFrom) returns (MsgDetachFromResponse);
@@ -278,7 +278,7 @@ message MsgTransferFTResponse {}
 message MsgTransferFTFrom {
   // contract id associated with the contract.
   string contract_id = 1;
-  // the address of the operator.
+  // the address of the proxy.
   string proxy = 2;
   // the address which the transfer is from.
   string from = 3;
@@ -311,7 +311,7 @@ message MsgTransferNFTResponse {}
 message MsgTransferNFTFrom {
   // contract id associated with the contract.
   string contract_id = 1;
-  // the address of the operator.
+  // the address of the proxy.
   string proxy = 2;
   // the address which the transfer is from.
   string from = 3;
@@ -328,7 +328,7 @@ message MsgTransferNFTFromResponse {}
 message MsgApprove {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the holder who allows the manipulation of its token.
+  // address of the approver who allows the manipulation of its token.
   string approver = 2;
   // address which the manipulation is allowed to.
   string proxy = 3;
@@ -341,7 +341,7 @@ message MsgApproveResponse {}
 message MsgDisapprove {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the holder who allows the manipulation of its token.
+  // address of the approver who allows the manipulation of its token.
   string approver = 2;
   // address which the manipulation is allowed to.
   string proxy = 3;
@@ -398,9 +398,9 @@ message MsgCreateContractResponse {
 message MsgIssueFT {
   // contract id associated with the contract.
   string contract_id = 1;
-  // name defines the human-readable name of the token class.
+  // name defines the human-readable name of the token type.
   string name = 2;
-  // meta is a brief description of the token class.
+  // meta is a brief description of the token type.
   string meta = 3;
   // decimals is the number of decimals which one must divide the amount by to get its user representation.
   int32 decimals = 4;
@@ -420,7 +420,7 @@ message MsgIssueFT {
 
 // MsgIssueFTResponse is the Msg/IssueFT response type.
 message MsgIssueFTResponse {
-  // id of the new token class.
+  // id of the new token type.
   string id = 1;
 }
 
@@ -438,9 +438,9 @@ message MsgIssueFTResponse {
 message MsgIssueNFT {
   // contract id associated with the contract.
   string contract_id = 1;
-  // name defines the human-readable name of the token class.
+  // name defines the human-readable name of the token type.
   string name = 2;
-  // meta is a brief description of the token class.
+  // meta is a brief description of the token type.
   string meta = 3;
 
   // the address of the grantee which must have the permission to issue a token.
@@ -449,7 +449,7 @@ message MsgIssueNFT {
 
 // MsgIssueNFTResponse is the Msg/IssueNFT response type.
 message MsgIssueNFTResponse {
-  // id of the new token class.
+  // id of the new token type.
   string id = 1;
 }
 
@@ -689,7 +689,7 @@ message MsgDetachResponse {}
 message MsgAttachFrom {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the operator.
+  // address of the proxy.
   string proxy = 2;
   // address of the owner of the token.
   string from = 3;
@@ -706,7 +706,7 @@ message MsgAttachFromResponse {}
 message MsgDetachFrom {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the operator.
+  // address of the proxy.
   string proxy = 2;
   // address of the owner of the token.
   string from = 3;

@@ -204,25 +204,25 @@ service Query {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}";
   }
 
-  // Approved queries whether the operator is approved by the approver.
+  // Approved queries whether the proxy is approved by the approver.
   // Throws:
   // - ErrInvalidRequest
   //   - `contract_id` is of invalid format.
   // - ErrInvalidAddress
-  //   - `operator` is of invalid format.
-  //   - `holder` is of invalid format.
+  //   - `proxy` is of invalid format.
+  //   - `approver` is of invalid format.
   // - ErrNotFound
-  //   - there is no authorization given by `holder` to `operator`.
+  //   - there is no authorization given by `approver` to `proxy`.
   rpc Approved(QueryApprovedRequest) returns (QueryApprovedResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}";
   }
 
-  // Approvers queries approvers of a given operator.
+  // Approvers queries approvers of a given proxy.
   // Throws:
   // - ErrInvalidRequest
   //   - `contract_id` is of invalid format.
   // - ErrInvalidAddress
-  //   - `operator` is of invalid format.
+  //   - `proxy` is of invalid format.
   rpc Approvers(QueryApproversRequest) returns (QueryApproversResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers";
   }
@@ -517,9 +517,9 @@ message QueryGranteeGrantsResponse {
 message QueryApprovedRequest {
   // contract id associated with the contract.
   string contract_id = 1;
-  // the address of the operator.
+  // the address of the proxy.
   string address = 2;
-  // the address of the token holder.
+  // the address of the token approver.
   string approver = 3;
 }
 
@@ -532,7 +532,7 @@ message QueryApprovedResponse {
 message QueryApproversRequest {
   // contract id associated with the contract.
   string contract_id = 1;
-  // address of the operator.
+  // address of the proxy.
   string address = 2;
 
   // pagination defines an optional pagination for the request.

@@ -1903,9 +1903,9 @@ func (m *QueryGranteeGrantsResponse) GetPagination() *query.PageResponse {
 type QueryApprovedRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// the address of the operator.
+	// the address of the proxy.
 	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	// the address of the token holder.
+	// the address of the token approver.
 	Approver string `protobuf:"bytes,3,opt,name=approver,proto3" json:"approver,omitempty"`
 }
 
@@ -2012,7 +2012,7 @@ func (m *QueryApprovedResponse) GetApproved() bool {
 type QueryApproversRequest struct {
 	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// address of the operator.
+	// address of the proxy.
 	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
 	// pagination defines an optional pagination for the request.
 	Pagination *query.PageRequest `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination,omitempty"`
@@ -2423,22 +2423,22 @@ type QueryClient interface {
 	// - ErrInvalidAddress
 	//   - `grantee` is of invalid format.
 	GranteeGrants(ctx context.Context, in *QueryGranteeGrantsRequest, opts ...grpc.CallOption) (*QueryGranteeGrantsResponse, error)
-	// Approved queries whether the operator is approved by the approver.
+	// Approved queries whether the proxy is approved by the approver.
 	// Throws:
 	// - ErrInvalidRequest
 	//   - `contract_id` is of invalid format.
 	// - ErrInvalidAddress
-	//   - `operator` is of invalid format.
-	//   - `holder` is of invalid format.
+	//   - `proxy` is of invalid format.
+	//   - `approver` is of invalid format.
 	// - ErrNotFound
-	//   - there is no authorization given by `holder` to `operator`.
+	//   - there is no authorization given by `approver` to `proxy`.
 	Approved(ctx context.Context, in *QueryApprovedRequest, opts ...grpc.CallOption) (*QueryApprovedResponse, error)
-	// Approvers queries approvers of a given operator.
+	// Approvers queries approvers of a given proxy.
 	// Throws:
 	// - ErrInvalidRequest
 	//   - `contract_id` is of invalid format.
 	// - ErrInvalidAddress
-	//   - `operator` is of invalid format.
+	//   - `proxy` is of invalid format.
 	Approvers(ctx context.Context, in *QueryApproversRequest, opts ...grpc.CallOption) (*QueryApproversResponse, error)
 }
 
@@ -2769,22 +2769,22 @@ type QueryServer interface {
 	// - ErrInvalidAddress
 	//   - `grantee` is of invalid format.
 	GranteeGrants(context.Context, *QueryGranteeGrantsRequest) (*QueryGranteeGrantsResponse, error)
-	// Approved queries whether the operator is approved by the approver.
+	// Approved queries whether the proxy is approved by the approver.
 	// Throws:
 	// - ErrInvalidRequest
 	//   - `contract_id` is of invalid format.
 	// - ErrInvalidAddress
-	//   - `operator` is of invalid format.
-	//   - `holder` is of invalid format.
+	//   - `proxy` is of invalid format.
+	//   - `approver` is of invalid format.
 	// - ErrNotFound
-	//   - there is no authorization given by `holder` to `operator`.
+	//   - there is no authorization given by `approver` to `proxy`.
 	Approved(context.Context, *QueryApprovedRequest) (*QueryApprovedResponse, error)
-	// Approvers queries approvers of a given operator.
+	// Approvers queries approvers of a given proxy.
 	// Throws:
 	// - ErrInvalidRequest
 	//   - `contract_id` is of invalid format.
 	// - ErrInvalidAddress
-	//   - `operator` is of invalid format.
+	//   - `proxy` is of invalid format.
 	Approvers(context.Context, *QueryApproversRequest) (*QueryApproversResponse, error)
 }
 
