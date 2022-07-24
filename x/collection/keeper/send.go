@@ -42,7 +42,7 @@ func (k Keeper) subtractCoins(ctx sdk.Context, contractID string, address sdk.Ac
 		balance := k.GetBalance(ctx, contractID, address, coin.TokenId)
 		newBalance := balance.Sub(coin.Amount)
 		if newBalance.IsNegative() {
-			return sdkerrors.ErrInsufficientFunds.Wrapf("%s is smaller than %s", balance, coin.Amount)
+			return sdkerrors.ErrInvalidRequest.Wrapf("%s is smaller than %s", balance, coin.Amount)
 		}
 		k.setBalance(ctx, contractID, address, coin.TokenId, newBalance)
 	}

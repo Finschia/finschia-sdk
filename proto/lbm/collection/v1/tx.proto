@@ -16,7 +16,7 @@ service Msg {
   // - EventSent
   // - transfer_ft (deprecated, not typed)
   // Throws:
-  // - ErrInsufficientFunds:
+  // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to spend.
   rpc TransferFT(MsgTransferFT) returns (MsgTransferFTResponse);
 
@@ -27,7 +27,7 @@ service Msg {
   // Throws:
   // - ErrUnauthorized:
   //   - the holder has not authorized the operator.
-  // - ErrInsufficientFunds:
+  // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to spend.
   rpc TransferFTFrom(MsgTransferFTFrom) returns (MsgTransferFTFromResponse);
 
@@ -37,7 +37,7 @@ service Msg {
   // - transfer_nft (deprecated, not typed)
   // - operation_transfer_nft (deprecated, not typed)
   // Throws:
-  // - ErrInsufficientFunds:
+  // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to spend.
   rpc TransferNFT(MsgTransferNFT) returns (MsgTransferNFTResponse);
 
@@ -49,7 +49,7 @@ service Msg {
   // Throws:
   // - ErrUnauthorized:
   //   - the holder has not authorized the operator.
-  // - ErrInsufficientFunds:
+  // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to spend.
   rpc TransferNFTFrom(MsgTransferNFTFrom) returns (MsgTransferNFTFromResponse);
 
@@ -123,7 +123,7 @@ service Msg {
   // Throws:
   // - ErrUnauthorized
   //   - `from` does not have `burn` permission.
-  // - ErrInsufficientFunds:
+  // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to burn.
   rpc BurnFT(MsgBurnFT) returns (MsgBurnFTResponse);
 
@@ -137,7 +137,7 @@ service Msg {
   // - ErrUnauthorized
   //   - `operator` does not have `burn` permission.
   //   - the holder has not authorized `operator`.
-  // - ErrInsufficientFunds:
+  // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to burn.
   rpc BurnFTFrom(MsgBurnFTFrom) returns (MsgBurnFTFromResponse);
 
@@ -150,7 +150,7 @@ service Msg {
   // Throws:
   // - ErrUnauthorized
   //   - `from` does not have `burn` permission.
-  // - ErrInsufficientFunds:
+  // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to burn.
   rpc BurnNFT(MsgBurnNFT) returns (MsgBurnNFTResponse);
 
@@ -164,7 +164,7 @@ service Msg {
   // - ErrUnauthorized
   //   - `operator` does not have `burn` permission.
   //   - the holder has not authorized `operator`.
-  // - ErrInsufficientFunds:
+  // - ErrInvalidRequest:
   //   - the balance of `from` does not have enough tokens to burn.
   rpc BurnNFTFrom(MsgBurnNFTFrom) returns (MsgBurnNFTFromResponse);
 

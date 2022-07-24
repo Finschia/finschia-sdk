@@ -2814,7 +2814,7 @@ type MsgClient interface {
 	// - EventSent
 	// - transfer_ft (deprecated, not typed)
 	// Throws:
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	TransferFT(ctx context.Context, in *MsgTransferFT, opts ...grpc.CallOption) (*MsgTransferFTResponse, error)
 	// TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator.
@@ -2824,7 +2824,7 @@ type MsgClient interface {
 	// Throws:
 	// - ErrUnauthorized:
 	//   - the holder has not authorized the operator.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	TransferFTFrom(ctx context.Context, in *MsgTransferFTFrom, opts ...grpc.CallOption) (*MsgTransferFTFromResponse, error)
 	// TransferNFT defines a method to send non-fungible tokens from one account to another account.
@@ -2833,7 +2833,7 @@ type MsgClient interface {
 	// - transfer_nft (deprecated, not typed)
 	// - operation_transfer_nft (deprecated, not typed)
 	// Throws:
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	TransferNFT(ctx context.Context, in *MsgTransferNFT, opts ...grpc.CallOption) (*MsgTransferNFTResponse, error)
 	// TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator.
@@ -2844,7 +2844,7 @@ type MsgClient interface {
 	// Throws:
 	// - ErrUnauthorized:
 	//   - the holder has not authorized the operator.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	TransferNFTFrom(ctx context.Context, in *MsgTransferNFTFrom, opts ...grpc.CallOption) (*MsgTransferNFTFromResponse, error)
 	// Approve allows one to send tokens on behalf of the approver.
@@ -2910,7 +2910,7 @@ type MsgClient interface {
 	// Throws:
 	// - ErrUnauthorized
 	//   - `from` does not have `burn` permission.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	BurnFT(ctx context.Context, in *MsgBurnFT, opts ...grpc.CallOption) (*MsgBurnFTResponse, error)
 	// BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy.
@@ -2923,7 +2923,7 @@ type MsgClient interface {
 	// - ErrUnauthorized
 	//   - `operator` does not have `burn` permission.
 	//   - the holder has not authorized `operator`.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	BurnFTFrom(ctx context.Context, in *MsgBurnFTFrom, opts ...grpc.CallOption) (*MsgBurnFTFromResponse, error)
 	// BurnNFT defines a method to burn non-fungible tokens.
@@ -2935,7 +2935,7 @@ type MsgClient interface {
 	// Throws:
 	// - ErrUnauthorized
 	//   - `from` does not have `burn` permission.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	BurnNFT(ctx context.Context, in *MsgBurnNFT, opts ...grpc.CallOption) (*MsgBurnNFTResponse, error)
 	// BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy.
@@ -2948,7 +2948,7 @@ type MsgClient interface {
 	// - ErrUnauthorized
 	//   - `operator` does not have `burn` permission.
 	//   - the holder has not authorized `operator`.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	BurnNFTFrom(ctx context.Context, in *MsgBurnNFTFrom, opts ...grpc.CallOption) (*MsgBurnNFTFromResponse, error)
 	// Modify defines a method to modify metadata.
@@ -3248,7 +3248,7 @@ type MsgServer interface {
 	// - EventSent
 	// - transfer_ft (deprecated, not typed)
 	// Throws:
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	TransferFT(context.Context, *MsgTransferFT) (*MsgTransferFTResponse, error)
 	// TransferFTFrom defines a method to send fungible tokens from one account to another account by the operator.
@@ -3258,7 +3258,7 @@ type MsgServer interface {
 	// Throws:
 	// - ErrUnauthorized:
 	//   - the holder has not authorized the operator.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	TransferFTFrom(context.Context, *MsgTransferFTFrom) (*MsgTransferFTFromResponse, error)
 	// TransferNFT defines a method to send non-fungible tokens from one account to another account.
@@ -3267,7 +3267,7 @@ type MsgServer interface {
 	// - transfer_nft (deprecated, not typed)
 	// - operation_transfer_nft (deprecated, not typed)
 	// Throws:
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	TransferNFT(context.Context, *MsgTransferNFT) (*MsgTransferNFTResponse, error)
 	// TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the operator.
@@ -3278,7 +3278,7 @@ type MsgServer interface {
 	// Throws:
 	// - ErrUnauthorized:
 	//   - the holder has not authorized the operator.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to spend.
 	TransferNFTFrom(context.Context, *MsgTransferNFTFrom) (*MsgTransferNFTFromResponse, error)
 	// Approve allows one to send tokens on behalf of the approver.
@@ -3344,7 +3344,7 @@ type MsgServer interface {
 	// Throws:
 	// - ErrUnauthorized
 	//   - `from` does not have `burn` permission.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	BurnFT(context.Context, *MsgBurnFT) (*MsgBurnFTResponse, error)
 	// BurnFTFrom defines a method to burn fungible tokens of the holder by the proxy.
@@ -3357,7 +3357,7 @@ type MsgServer interface {
 	// - ErrUnauthorized
 	//   - `operator` does not have `burn` permission.
 	//   - the holder has not authorized `operator`.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	BurnFTFrom(context.Context, *MsgBurnFTFrom) (*MsgBurnFTFromResponse, error)
 	// BurnNFT defines a method to burn non-fungible tokens.
@@ -3369,7 +3369,7 @@ type MsgServer interface {
 	// Throws:
 	// - ErrUnauthorized
 	//   - `from` does not have `burn` permission.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	BurnNFT(context.Context, *MsgBurnNFT) (*MsgBurnNFTResponse, error)
 	// BurnNFTFrom defines a method to burn non-fungible tokens of the holder by the proxy.
@@ -3382,7 +3382,7 @@ type MsgServer interface {
 	// - ErrUnauthorized
 	//   - `operator` does not have `burn` permission.
 	//   - the holder has not authorized `operator`.
-	// - ErrInsufficientFunds:
+	// - ErrInvalidRequest:
 	//   - the balance of `from` does not have enough tokens to burn.
 	BurnNFTFrom(context.Context, *MsgBurnNFTFrom) (*MsgBurnNFTFromResponse, error)
 	// Modify defines a method to modify metadata.
