@@ -232,18 +232,14 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *authz.GenesisState {
 // InitGenesis new authz genesis
 func (k Keeper) InitGenesis(ctx sdk.Context, data *authz.GenesisState) {
 	for _, entry := range data.Authorization {
-		err := sdk.ValidateAccAddress(entry.Grantee)
+		grantee, err := sdk.AccAddressFromBech32(entry.Grantee)
 		if err != nil {
 			panic(err)
 		}
-		grantee := sdk.AccAddress(entry.Grantee)
-
-		err = sdk.ValidateAccAddress(entry.Granter)
+		granter, err := sdk.AccAddressFromBech32(entry.Granter)
 		if err != nil {
 			panic(err)
 		}
-		granter := sdk.AccAddress(entry.Granter)
-
 		a, ok := entry.Authorization.GetCachedValue().(authz.Authorization)
 		if !ok {
 			panic("expected authorization")

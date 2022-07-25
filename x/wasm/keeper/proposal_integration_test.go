@@ -80,8 +80,8 @@ func TestInstantiateProposal(t *testing.T) {
 	)
 
 	var (
-		oneAddress   = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, types.ContractAddrLen))
-		otherAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, types.ContractAddrLen))
+		oneAddress   sdk.AccAddress = bytes.Repeat([]byte{0x1}, types.ContractAddrLen)
+		otherAddress sdk.AccAddress = bytes.Repeat([]byte{0x2}, types.ContractAddrLen)
 	)
 	src := types.InstantiateContractProposalFixture(func(p *types.InstantiateContractProposal) {
 		p.CodeID = firstCodeID
@@ -101,11 +101,10 @@ func TestInstantiateProposal(t *testing.T) {
 	require.NoError(t, err)
 
 	// then
-	contractAddr := "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"
-	err = sdk.ValidateAccAddress(contractAddr)
+	contractAddr, err := sdk.AccAddressFromBech32("link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8")
 	require.NoError(t, err)
 
-	cInfo := wasmKeeper.GetContractInfo(ctx, sdk.AccAddress(contractAddr))
+	cInfo := wasmKeeper.GetContractInfo(ctx, contractAddr)
 	require.NotNil(t, cInfo)
 	assert.Equal(t, uint64(1), cInfo.CodeID)
 	assert.Equal(t, oneAddress.String(), cInfo.Creator)
@@ -117,7 +116,7 @@ func TestInstantiateProposal(t *testing.T) {
 		Updated:   types.NewAbsoluteTxPosition(ctx),
 		Msg:       src.Msg,
 	}}
-	assert.Equal(t, expHistory, wasmKeeper.GetContractHistory(ctx, sdk.AccAddress(contractAddr)))
+	assert.Equal(t, expHistory, wasmKeeper.GetContractHistory(ctx, contractAddr))
 	// and event
 	require.Len(t, em.Events(), 3, "%#v", em.Events())
 	require.Equal(t, types.EventTypeInstantiate, em.Events()[0].Type)
@@ -148,9 +147,7 @@ func TestInstantiateProposal_NoAdmin(t *testing.T) {
 		wasmCode),
 	)
 
-	var (
-		oneAddress sdk.AccAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, types.ContractAddrLen))
-	)
+	var oneAddress sdk.AccAddress = bytes.Repeat([]byte{0x1}, types.ContractAddrLen)
 
 	// test invalid admin address
 	src := types.InstantiateContractProposalFixture(func(p *types.InstantiateContractProposal) {
@@ -181,11 +178,10 @@ func TestInstantiateProposal_NoAdmin(t *testing.T) {
 	require.NoError(t, err)
 
 	// then
-	contractAddr := "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"
-	err = sdk.ValidateAccAddress(contractAddr)
+	contractAddr, err := sdk.AccAddressFromBech32("link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8")
 	require.NoError(t, err)
 
-	cInfo := wasmKeeper.GetContractInfo(ctx, sdk.AccAddress(contractAddr))
+	cInfo := wasmKeeper.GetContractInfo(ctx, contractAddr)
 	require.NotNil(t, cInfo)
 	assert.Equal(t, uint64(1), cInfo.CodeID)
 	assert.Equal(t, oneAddress.String(), cInfo.Creator)
@@ -197,7 +193,7 @@ func TestInstantiateProposal_NoAdmin(t *testing.T) {
 		Updated:   types.NewAbsoluteTxPosition(ctx),
 		Msg:       src.Msg,
 	}}
-	assert.Equal(t, expHistory, wasmKeeper.GetContractHistory(ctx, sdk.AccAddress(contractAddr)))
+	assert.Equal(t, expHistory, wasmKeeper.GetContractHistory(ctx, contractAddr))
 	// and event
 	require.Len(t, em.Events(), 3, "%#v", em.Events())
 	require.Equal(t, types.EventTypeInstantiate, em.Events()[0].Type)
@@ -226,8 +222,8 @@ func TestMigrateProposal(t *testing.T) {
 	require.NoError(t, wasmKeeper.importCode(ctx, 2, codeInfoFixture, wasmCode))
 
 	var (
-		anyAddress   sdk.AccAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, types.ContractAddrLen))
-		otherAddress sdk.AccAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, types.ContractAddrLen))
+		anyAddress   sdk.AccAddress = bytes.Repeat([]byte{0x1}, types.ContractAddrLen)
+		otherAddress sdk.AccAddress = bytes.Repeat([]byte{0x2}, types.ContractAddrLen)
 		contractAddr                = BuildContractAddress(1, 1)
 	)
 
@@ -406,7 +402,7 @@ func TestSudoProposal(t *testing.T) {
 
 func TestAdminProposals(t *testing.T) {
 	var (
-		otherAddress sdk.AccAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, types.ContractAddrLen))
+		otherAddress sdk.AccAddress = bytes.Repeat([]byte{0x2}, types.ContractAddrLen)
 		contractAddr                = BuildContractAddress(1, 1)
 	)
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
@@ -446,7 +442,7 @@ func TestAdminProposals(t *testing.T) {
 				Description: "Bar",
 				Contract:    contractAddr.String(),
 			},
-			expAdmin: "",
+			expAdmin: nil,
 		},
 		"clear with old admin empty": {
 			state: types.ContractInfoFixture(func(info *types.ContractInfo) {
@@ -457,7 +453,7 @@ func TestAdminProposals(t *testing.T) {
 				Description: "Bar",
 				Contract:    contractAddr.String(),
 			},
-			expAdmin: "",
+			expAdmin: nil,
 		},
 	}
 	for msg, spec := range specs {
@@ -499,7 +495,7 @@ func TestUpdateParamsProposal(t *testing.T) {
 
 	var (
 		legacyAmino                           = keepers.EncodingConfig.Amino
-		myAddress              sdk.AccAddress = sdk.BytesToAccAddress(make([]byte, types.ContractAddrLen))
+		myAddress              sdk.AccAddress = make([]byte, types.ContractAddrLen)
 		oneAddressAccessConfig                = types.AccessTypeOnlyAddress.With(myAddress)
 	)
 
@@ -838,7 +834,8 @@ func TestUpdateInstantiateConfigProposal(t *testing.T) {
 		CreateFn:      wasmtesting.NoOpCreateFn,
 		AnalyzeCodeFn: wasmtesting.WithoutIBCAnalyzeFn,
 	}
-	anyAddress := sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, types.ContractAddrLen))
+	anyAddress, err := sdk.AccAddressFromBech32("link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23")
+	require.NoError(t, err)
 
 	withAddressAccessConfig := types.AccessTypeOnlyAddress.With(anyAddress)
 	var (
@@ -885,7 +882,6 @@ func TestUpdateInstantiateConfigProposal(t *testing.T) {
 	parentCtx := ctx
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-
 			ctx, _ := parentCtx.CacheContext()
 
 			updates := make([]types.AccessConfigUpdate, 0)

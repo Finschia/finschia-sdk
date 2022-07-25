@@ -104,9 +104,8 @@ func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs 
 		require.NoError(t, err)
 		pkAny, err := codectypes.NewAnyWithValue(pk)
 		require.NoError(t, err)
-		valAddr := sdk.BytesToValAddress(val.Address)
 		validator := stakingtypes.Validator{
-			OperatorAddress:   valAddr.String(),
+			OperatorAddress:   sdk.ValAddress(val.Address).String(),
 			ConsensusPubkey:   pkAny,
 			Jailed:            false,
 			Status:            stakingtypes.Bonded,
@@ -119,7 +118,7 @@ func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs 
 			MinSelfDelegation: sdk.ZeroInt(),
 		}
 		validators = append(validators, validator)
-		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress(), valAddr, sdk.OneDec()))
+		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress(), val.Address.Bytes(), sdk.OneDec()))
 
 	}
 	// set validators and delegations
@@ -207,7 +206,7 @@ func createRandomAccounts(accNum int) []sdk.AccAddress {
 	testAddrs := make([]sdk.AccAddress, accNum)
 	for i := 0; i < accNum; i++ {
 		pk := ed25519.GenPrivKey().PubKey()
-		testAddrs[i] = sdk.BytesToAccAddress(pk.Address())
+		testAddrs[i] = sdk.AccAddress(pk.Address())
 	}
 
 	return testAddrs
@@ -240,8 +239,8 @@ func AddTestAddrsFromPubKeys(app *SimApp, ctx sdk.Context, pubKeys []cryptotypes
 	initCoins := sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.BondDenom(ctx), accAmt))
 
 	// fill all the addresses with some coins, set the loose pool tokens simultaneously
-	for _, pubKey := range pubKeys {
-		initAccountWithCoins(app, ctx, sdk.BytesToAccAddress(pubKey.Address()), initCoins)
+	for _, pk := range pubKeys {
+		initAccountWithCoins(app, ctx, sdk.AccAddress(pk.Address()), initCoins)
 	}
 }
 
@@ -256,7 +255,7 @@ func SortAddresses(addrs []sdk.AccAddress) {
 	SortByteArrays(byteAddrs)
 
 	for i, byteAddr := range byteAddrs {
-		addrs[i] = sdk.AccAddress(string(byteAddr))
+		addrs[i] = sdk.AccAddress(byteAddr)
 	}
 }
 
@@ -332,7 +331,7 @@ func ConvertAddrsToValAddrs(addrs []sdk.AccAddress) []sdk.ValAddress {
 	valAddrs := make([]sdk.ValAddress, len(addrs))
 
 	for i, addr := range addrs {
-		valAddrs[i] = addr.ToValAddress()
+		valAddrs[i] = sdk.ValAddress(addr)
 	}
 
 	return valAddrs
@@ -341,19 +340,19 @@ func ConvertAddrsToValAddrs(addrs []sdk.AccAddress) []sdk.ValAddress {
 func TestAddr(addr string, bech string) (sdk.AccAddress, error) {
 	res, err := sdk.AccAddressFromHex(addr)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	bechexpected := res.String()
 	if bech != bechexpected {
-		return "", fmt.Errorf("bech encoding doesn't match reference")
+		return nil, fmt.Errorf("bech encoding doesn't match reference")
 	}
 
-	err = sdk.ValidateAccAddress(bech)
+	bechres, err := sdk.AccAddressFromBech32(bech)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	if !sdk.AccAddress(bech).Equals(res) {
-		return "", err
+	if !bytes.Equal(bechres, res) {
+		return nil, err
 	}
 
 	return res, nil

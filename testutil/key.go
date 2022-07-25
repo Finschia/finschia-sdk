@@ -18,7 +18,7 @@ func GenerateCoinKey(algo keyring.SignatureAlgo) (sdk.AccAddress, string, error)
 		algo,
 	)
 	if err != nil {
-		return sdk.AccAddress(""), "", err
+		return sdk.AccAddress{}, "", err
 	}
 
 	return sdk.AccAddress(info.GetPubKey().Address()), secret, nil
@@ -42,12 +42,12 @@ func GenerateSaveCoinKey(
 
 	// ensure no overwrite
 	if !overwrite && exists {
-		return sdk.AccAddress(""), "", fmt.Errorf("key already exists, overwrite is disabled")
+		return sdk.AccAddress{}, "", fmt.Errorf("key already exists, overwrite is disabled")
 	}
 
 	if exists {
 		if err := keybase.Delete(keyName); err != nil {
-			return sdk.AccAddress(""), "", fmt.Errorf("failed to overwrite key")
+			return sdk.AccAddress{}, "", fmt.Errorf("failed to overwrite key")
 		}
 	}
 
@@ -75,7 +75,7 @@ func GenerateSaveCoinKey(
 		)
 	}
 	if err != nil {
-		return sdk.AccAddress(""), "", err
+		return sdk.AccAddress{}, "", err
 	}
 
 	return info.GetAddress(), secret, nil

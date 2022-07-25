@@ -19,7 +19,7 @@ func TestDefaultGenesisState(t *testing.T) {
 
 func TestValidateGenesis(t *testing.T) {
 	createAddress := func() sdk.AccAddress {
-		return sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {

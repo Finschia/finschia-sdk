@@ -34,12 +34,12 @@ type (
 
 var (
 	priv1 = secp256k1.GenPrivKey()
-	addr1 = sdk.BytesToAccAddress(priv1.PubKey().Address())
+	addr1 = sdk.AccAddress(priv1.PubKey().Address())
 	priv2 = secp256k1.GenPrivKey()
-	addr2 = sdk.BytesToAccAddress(priv2.PubKey().Address())
-	addr3 = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr2 = sdk.AccAddress(priv2.PubKey().Address())
+	addr3 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	priv4 = secp256k1.GenPrivKey()
-	addr4 = sdk.BytesToAccAddress(priv4.PubKey().Address())
+	addr4 = sdk.AccAddress(priv4.PubKey().Address())
 
 	coins     = sdk.Coins{sdk.NewInt64Coin("foocoin", 10)}
 	halfCoins = sdk.Coins{sdk.NewInt64Coin("foocoin", 5)}

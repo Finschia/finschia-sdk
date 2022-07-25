@@ -14,8 +14,8 @@ import (
 
 func TestValidateParams(t *testing.T) {
 	var (
-		anyAddress     = sdk.BytesToAccAddress(make([]byte, ContractAddrLen))
-		invalidAddress = "invalid address"
+		anyAddress     sdk.AccAddress = make([]byte, ContractAddrLen)
+		invalidAddress                = "invalid address"
 	)
 
 	specs := map[string]struct {
@@ -200,12 +200,12 @@ func TestAccessTypeUnmarshalJson(t *testing.T) {
 		})
 	}
 }
+
 func TestParamsUnmarshalJson(t *testing.T) {
 	specs := map[string]struct {
 		src string
 		exp Params
 	}{
-
 		"defaults": {
 			src: `{"code_upload_access": {"permission": "Everybody"},
 				"instantiate_default_permission": "Everybody",

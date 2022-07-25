@@ -5,8 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	sdk "github.com/line/lbm-sdk/types"
 )
 
 func TestGetContractByCodeIDSecondaryIndexPrefix(t *testing.T) {
@@ -14,10 +12,12 @@ func TestGetContractByCodeIDSecondaryIndexPrefix(t *testing.T) {
 		src uint64
 		exp []byte
 	}{
-		"small number": {src: 1,
+		"small number": {
+			src: 1,
 			exp: []byte{6, 0, 0, 0, 0, 0, 0, 0, 1},
 		},
-		"big number": {src: 1 << (8 * 7),
+		"big number": {
+			src: 1 << (8 * 7),
 			exp: []byte{6, 1, 0, 0, 0, 0, 0, 0, 0},
 		},
 	}
@@ -32,27 +32,21 @@ func TestGetContractByCodeIDSecondaryIndexPrefix(t *testing.T) {
 func TestGetContractCodeHistoryElementPrefix(t *testing.T) {
 
 	// test that contract addresses of 20 length are still supported
-	addr := sdk.BytesToAccAddress(bytes.Repeat([]byte{4}, 20))
+	addr := bytes.Repeat([]byte{4}, 20)
 	got := GetContractCodeHistoryElementPrefix(addr)
 	exp := []byte{5, // prefix
-		0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x71, 0x73, 0x7a, 0x71, 0x67,
-		0x70, 0x71, 0x79, 0x71, 0x73, 0x7a, 0x71, 0x67, 0x70, 0x71,
-		0x79, 0x71, 0x73, 0x7a, 0x71, 0x67, 0x70, 0x71, 0x79, 0x71,
-		0x73, 0x7a, 0x71, 0x67, 0x70, 0x71, 0x79, 0x68, 0x65, 0x70,
-		0x61, 0x73, 0x6c,
+		4, 4, 4, 4, 4, 4, 4, 4, 4, 4, // address 20 bytes
+		4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
 	}
 	assert.Equal(t, exp, got)
 
-	addr = sdk.BytesToAccAddress(bytes.Repeat([]byte{4}, ContractAddrLen))
+	addr = bytes.Repeat([]byte{4}, ContractAddrLen)
 	got = GetContractCodeHistoryElementPrefix(addr)
 	exp = []byte{5, // prefix
-		0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x71, 0x73, 0x7a, 0x71, 0x67,
-		0x70, 0x71, 0x79, 0x71, 0x73, 0x7a, 0x71, 0x67, 0x70, 0x71,
-		0x79, 0x71, 0x73, 0x7a, 0x71, 0x67, 0x70, 0x71, 0x79, 0x71,
-		0x73, 0x7a, 0x71, 0x67, 0x70, 0x71, 0x79, 0x71, 0x73, 0x7a,
-		0x71, 0x67, 0x70, 0x71, 0x79, 0x71, 0x73, 0x7a, 0x71, 0x67,
-		0x70, 0x71, 0x79, 0x71, 0x73, 0x7a, 0x71, 0x77, 0x64, 0x6d,
-		0x7a, 0x64, 0x75,
+		4, 4, 4, 4, 4, 4, 4, 4, 4, 4, // address 32 bytes
+		4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+		4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+		4, 4,
 	}
 	assert.Equal(t, exp, got)
 }
@@ -64,13 +58,15 @@ func TestGetContractByCreatedSecondaryIndexKey(t *testing.T) {
 	}
 
 	// test that contract addresses of 20 length are still supported
-	addr := sdk.BytesToAccAddress(bytes.Repeat([]byte{4}, 20))
+	addr := bytes.Repeat([]byte{4}, 20)
 	got := GetContractByCreatedSecondaryIndexKey(addr, e)
-	exp := []byte{6, // prefix
+	exp := []byte{
+		6,                      // prefix
 		0, 0, 0, 0, 0, 0, 0, 1, // codeID
 		1, 0, 0, 0, 0, 0, 0, 2, // height
 		1, 0, 0, 0, 0, 0, 0, 3, // index
-		0x6c, 0x69, 0x6e, 0x6b, 0x31, 0x71, 0x73, 0x7a, 0x71, 0x67, 0x70, 0x71, 0x79, 0x71, 0x73, 0x7a, 0x71, 0x67, 0x70, 0x71, 0x79, 0x71, 0x73, 0x7a, 0x71, 0x67, 0x70, 0x71, 0x79, 0x71, 0x73, 0x7a, 0x71, 0x67, 0x70, 0x71, 0x79, 0x68, 0x65, 0x70, 0x61, 0x73, 0x6c,
+		4, 4, 4, 4, 4, 4, 4, 4, 4, 4, // address 32 bytes
+		4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
 	}
 	assert.Equal(t, exp, got)
 }

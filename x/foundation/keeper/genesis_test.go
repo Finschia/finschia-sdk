@@ -158,7 +158,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Granter: govtypes.ModuleName,
 						Grantee: s.stranger.String(),
 					}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
-						ValidatorAddress: s.stranger.ToValAddress().String(),
+						ValidatorAddress: sdk.ValAddress(s.stranger).String(),
 					}),
 				},
 			},
@@ -175,7 +175,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Granter: govtypes.ModuleName,
 						Grantee: s.stranger.String(),
 					}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
-						ValidatorAddress: s.stranger.ToValAddress().String(),
+						ValidatorAddress: sdk.ValAddress(s.stranger).String(),
 					}),
 				},
 				Members: []foundation.Member{{

@@ -91,7 +91,7 @@ type Balance struct {
 }
 
 func AddressFromString(address string) string {
-	return sdk.BytesToAccAddress(crypto.AddressHash([]byte(address))).String()
+	return sdk.AccAddress(crypto.AddressHash([]byte(address))).String()
 }
 
 func AddressFromTla(addr []string) string {
@@ -324,7 +324,8 @@ func (suite *KeeperTestSuite) TestModelBasedRelay() {
 				}
 				switch tc.handler {
 				case "SendTransfer":
-					err = sdk.ValidateAccAddress(tc.packet.Data.Sender)
+					var sender sdk.AccAddress
+					sender, err = sdk.AccAddressFromBech32(tc.packet.Data.Sender)
 					if err != nil {
 						panic("MBT failed to convert sender address")
 					}
@@ -338,7 +339,7 @@ func (suite *KeeperTestSuite) TestModelBasedRelay() {
 							tc.packet.SourcePort,
 							tc.packet.SourceChannel,
 							sdk.NewCoin(denom, sdk.NewIntFromUint64(tc.packet.Data.Amount)),
-							sdk.AccAddress(tc.packet.Data.Sender),
+							sender,
 							tc.packet.Data.Receiver,
 							clienttypes.NewHeight(0, 110),
 							0)

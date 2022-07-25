@@ -37,13 +37,13 @@ func (suite *SlashingTestSuite) SetupTest() {
 
 	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 2, app.StakingKeeper.TokensFromConsensusPower(ctx, 200))
 
-	info1 := types.NewValidatorSigningInfo(addrDels[0].ToConsAddress(),
+	info1 := types.NewValidatorSigningInfo(sdk.ConsAddress(addrDels[0]),
 		time.Unix(2, 0), false, int64(10), int64(3))
-	info2 := types.NewValidatorSigningInfo(addrDels[1].ToConsAddress(),
+	info2 := types.NewValidatorSigningInfo(sdk.ConsAddress(addrDels[1]),
 		time.Unix(2, 0), false, int64(10), int64(4))
 
-	app.SlashingKeeper.SetValidatorSigningInfo(ctx, addrDels[0].ToConsAddress(), info1)
-	app.SlashingKeeper.SetValidatorSigningInfo(ctx, addrDels[1].ToConsAddress(), info2)
+	app.SlashingKeeper.SetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]), info1)
+	app.SlashingKeeper.SetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[1]), info2)
 
 	suite.app = app
 	suite.ctx = ctx
@@ -70,7 +70,7 @@ func (suite *SlashingTestSuite) TestGRPCSigningInfo() {
 	suite.Error(err)
 	suite.Nil(infoResp)
 
-	consAddr := suite.addrDels[0].ToConsAddress()
+	consAddr := sdk.ConsAddress(suite.addrDels[0])
 	info, found := suite.app.SlashingKeeper.GetValidatorSigningInfo(suite.ctx, consAddr)
 	suite.True(found)
 

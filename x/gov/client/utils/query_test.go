@@ -84,12 +84,10 @@ func TestGetPaginatedVotes(t *testing.T) {
 		msgs        [][]sdk.Msg
 		votes       []types.Vote
 	}
-	acc1Bytes := make([]byte, 20)
-	acc1Bytes[0] = 1
-	acc2Bytes := make([]byte, 20)
-	acc2Bytes[0] = 2
-	acc1 := sdk.BytesToAccAddress(acc1Bytes)
-	acc2 := sdk.BytesToAccAddress(acc2Bytes)
+	acc1 := make(sdk.AccAddress, 20)
+	acc1[0] = 1
+	acc2 := make(sdk.AccAddress, 20)
+	acc2[0] = 2
 	acc1Msgs := []sdk.Msg{
 		types.NewMsgVote(acc1, 0, types.OptionYes),
 		types.NewMsgVote(acc1, 0, types.OptionYes),
@@ -109,8 +107,7 @@ func TestGetPaginatedVotes(t *testing.T) {
 			},
 			votes: []types.Vote{
 				types.NewVote(0, acc1, types.NewNonSplitVoteOption(types.OptionYes)),
-				types.NewVote(0, acc2, types.NewNonSplitVoteOption(types.OptionYes)),
-			},
+				types.NewVote(0, acc2, types.NewNonSplitVoteOption(types.OptionYes))},
 		},
 		{
 			description: "2MsgPerTx1Chunk",
