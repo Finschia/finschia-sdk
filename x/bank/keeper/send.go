@@ -58,10 +58,6 @@ func NewBaseSendKeeper(
 	}
 }
 
-func AddressToPrefixKey(addr sdk.AccAddress) []byte {
-	return []byte(addr.String() + types.AddressDenomDelimiter)
-}
-
 // GetParams returns the total set of bank parameters.
 func (k BaseSendKeeper) GetParams(ctx sdk.Context) (params types.Params) {
 	k.paramSpace.GetParamSet(ctx, &params)
