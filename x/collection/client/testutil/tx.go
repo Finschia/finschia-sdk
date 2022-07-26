@@ -10,7 +10,7 @@ import (
 	"github.com/line/lbm-sdk/x/collection/client/cli"
 )
 
-func (s *IntegrationTestSuite) TestNewTxCmdSend() {
+func (s *IntegrationTestSuite) TestNewTxCmdTransferFT() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -26,7 +26,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.vendor.String(),
+				s.stranger.String(),
 				s.customer.String(),
 				amount.String(),
 			},
@@ -35,7 +35,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.vendor.String(),
+				s.stranger.String(),
 				s.customer.String(),
 				amount.String(),
 				"extra",
@@ -45,7 +45,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.vendor.String(),
+				s.stranger.String(),
 				s.customer.String(),
 			},
 			false,
@@ -53,7 +53,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 		"amount out of range": {
 			[]string{
 				s.contractID,
-				s.vendor.String(),
+				s.stranger.String(),
 				s.customer.String(),
 				fmt.Sprintf("%s:1%0127d", s.ftClassID, 0),
 			},
@@ -62,7 +62,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 		"invalid contract id": {
 			[]string{
 				"",
-				s.vendor.String(),
+				s.stranger.String(),
 				s.customer.String(),
 				amount.String(),
 			},
@@ -74,7 +74,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdSend()
+			cmd := cli.NewTxCmdTransferFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -89,7 +89,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdOperatorSend() {
+func (s *IntegrationTestSuite) TestNewTxCmdTransferFTFrom() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -158,7 +158,170 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorSend() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdOperatorSend()
+			cmd := cli.NewTxCmdTransferFTFrom()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().EqualValues(0, res.Code, out.String())
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewTxCmdTransferNFT() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+	}
+
+	tokenID := collection.NewNFTID(s.nftClassID, s.lenChain*3*3+1)
+	testCases := map[string]struct {
+		args  []string
+		valid bool
+	}{
+		"valid transaction": {
+			[]string{
+				s.contractID,
+				s.stranger.String(),
+				s.customer.String(),
+				tokenID,
+			},
+			true,
+		},
+		"extra args": {
+			[]string{
+				s.contractID,
+				s.stranger.String(),
+				s.customer.String(),
+				tokenID,
+				"extra",
+			},
+			false,
+		},
+		"not enough args": {
+			[]string{
+				s.contractID,
+				s.stranger.String(),
+				s.customer.String(),
+			},
+			false,
+		},
+		"amount out of range": {
+			[]string{
+				s.contractID,
+				s.stranger.String(),
+				s.customer.String(),
+				fmt.Sprintf("%s:1%0127d", s.ftClassID, 0),
+			},
+			false,
+		},
+		"invalid contract id": {
+			[]string{
+				"",
+				s.stranger.String(),
+				s.customer.String(),
+				tokenID,
+			},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewTxCmdTransferNFT()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().EqualValues(0, res.Code, out.String())
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewTxCmdTransferNFTFrom() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+	}
+
+	tokenID := collection.NewNFTID(s.nftClassID, 1)
+	testCases := map[string]struct {
+		args  []string
+		valid bool
+	}{
+		"valid transaction": {
+			[]string{
+				s.contractID,
+				s.operator.String(),
+				s.customer.String(),
+				s.vendor.String(),
+				tokenID,
+			},
+			true,
+		},
+		"extra args": {
+			[]string{
+				s.contractID,
+				s.operator.String(),
+				s.customer.String(),
+				s.vendor.String(),
+				tokenID,
+				"extra",
+			},
+			false,
+		},
+		"not enough args": {
+			[]string{
+				s.contractID,
+				s.operator.String(),
+				s.customer.String(),
+				s.vendor.String(),
+			},
+			false,
+		},
+		"amount out of range": {
+			[]string{
+				s.contractID,
+				s.operator.String(),
+				s.customer.String(),
+				s.vendor.String(),
+				fmt.Sprintf("%s:1%0127d", s.ftClassID, 0),
+			},
+			false,
+		},
+		"invalid contract id": {
+			[]string{
+				"",
+				s.operator.String(),
+				s.customer.String(),
+				s.vendor.String(),
+				tokenID,
+			},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewTxCmdTransferNFTFrom()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -229,7 +392,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdCreateContract() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdCreateFTClass() {
+func (s *IntegrationTestSuite) TestNewTxCmdIssueFT() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -245,6 +408,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdCreateFTClass() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
+				fmt.Sprintf("--%s=%s", cli.FlagName, "tibetian fox"),
+				fmt.Sprintf("--%s=%s", cli.FlagTo, s.operator),
 			},
 			true,
 		},
@@ -253,12 +418,16 @@ func (s *IntegrationTestSuite) TestNewTxCmdCreateFTClass() {
 				s.contractID,
 				s.operator.String(),
 				"extra",
+				fmt.Sprintf("--%s=%s", cli.FlagName, "tibetian fox"),
+				fmt.Sprintf("--%s=%s", cli.FlagTo, s.operator),
 			},
 			false,
 		},
 		"not enough args": {
 			[]string{
 				s.contractID,
+				fmt.Sprintf("--%s=%s", cli.FlagName, "tibetian fox"),
+				fmt.Sprintf("--%s=%s", cli.FlagTo, s.operator),
 			},
 			false,
 		},
@@ -275,7 +444,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdCreateFTClass() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdCreateFTClass()
+			cmd := cli.NewTxCmdIssueFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -290,7 +459,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdCreateFTClass() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdCreateNFTClass() {
+func (s *IntegrationTestSuite) TestNewTxCmdIssueNFT() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -336,7 +505,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdCreateNFTClass() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdCreateNFTClass()
+			cmd := cli.NewTxCmdIssueNFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -493,7 +662,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMintNFT() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
+func (s *IntegrationTestSuite) TestNewTxCmdBurnFT() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -544,7 +713,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdBurn()
+			cmd := cli.NewTxCmdBurnFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -559,7 +728,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurn() {
+func (s *IntegrationTestSuite) TestNewTxCmdBurnFTFrom() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -567,7 +736,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurn() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	}
 
-	amount := collection.NewCoins(collection.NewNFTCoin(s.nftClassID, s.lenChain*2+1))
+	amount := collection.NewCoins(collection.NewFTCoin(s.ftClassID, s.balance))
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -576,7 +745,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurn() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				s.customer.String(),
+				s.vendor.String(),
 				amount.String(),
 			},
 			true,
@@ -585,7 +754,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurn() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				s.customer.String(),
+				s.vendor.String(),
 				amount.String(),
 				"extra",
 			},
@@ -595,7 +764,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurn() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				s.customer.String(),
+				s.vendor.String(),
 			},
 			false,
 		},
@@ -603,7 +772,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurn() {
 			[]string{
 				"",
 				s.operator.String(),
-				s.customer.String(),
+				s.vendor.String(),
 				amount.String(),
 			},
 			false,
@@ -614,7 +783,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurn() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdOperatorBurn()
+			cmd := cli.NewTxCmdBurnFTFrom()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -629,7 +798,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurn() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdModifyContract() {
+func (s *IntegrationTestSuite) TestNewTxCmdBurnNFT() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -637,6 +806,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyContract() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	}
 
+	tokenID := collection.NewNFTID(s.nftClassID, s.lenChain*3+1)
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -645,8 +815,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyContract() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				collection.AttributeKeyName.String(),
-				"fox",
+				tokenID,
 			},
 			true,
 		},
@@ -654,8 +823,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyContract() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				collection.AttributeKeyName.String(),
-				"fox",
+				tokenID,
 				"extra",
 			},
 			false,
@@ -664,7 +832,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyContract() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				collection.AttributeKeyName.String(),
 			},
 			false,
 		},
@@ -672,8 +839,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyContract() {
 			[]string{
 				"",
 				s.operator.String(),
-				collection.AttributeKeyName.String(),
-				"fox",
+				tokenID,
 			},
 			false,
 		},
@@ -683,7 +849,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyContract() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdModifyContract()
+			cmd := cli.NewTxCmdBurnNFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -698,7 +864,77 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyContract() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdModifyTokenClass() {
+func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurnNFTFrom() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+	}
+
+	tokenID := collection.NewNFTID(s.nftClassID, s.lenChain*3*2+1)
+	testCases := map[string]struct {
+		args  []string
+		valid bool
+	}{
+		"valid transaction": {
+			[]string{
+				s.contractID,
+				s.operator.String(),
+				s.vendor.String(),
+				tokenID,
+			},
+			true,
+		},
+		"extra args": {
+			[]string{
+				s.contractID,
+				s.operator.String(),
+				s.vendor.String(),
+				tokenID,
+				"extra",
+			},
+			false,
+		},
+		"not enough args": {
+			[]string{
+				s.contractID,
+				s.operator.String(),
+				s.vendor.String(),
+			},
+			false,
+		},
+		"invalid contract id": {
+			[]string{
+				"",
+				s.operator.String(),
+				s.vendor.String(),
+				tokenID,
+			},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewTxCmdBurnNFTFrom()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().EqualValues(0, res.Code, out.String())
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -714,7 +950,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyTokenClass() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				s.ftClassID,
+				s.nftClassID,
+				"",
 				collection.AttributeKeyName.String(),
 				"tibetian fox",
 			},
@@ -724,7 +961,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyTokenClass() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				s.ftClassID,
+				s.nftClassID,
+				"",
 				collection.AttributeKeyName.String(),
 				"tibetian fox",
 				"extra",
@@ -735,7 +973,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyTokenClass() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				s.ftClassID,
+				s.nftClassID,
+				"",
 				collection.AttributeKeyName.String(),
 			},
 			false,
@@ -744,7 +983,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyTokenClass() {
 			[]string{
 				"",
 				s.operator.String(),
-				s.ftClassID,
+				s.nftClassID,
+				"",
 				collection.AttributeKeyName.String(),
 				"tibetian fox",
 			},
@@ -756,81 +996,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModifyTokenClass() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdModifyTokenClass()
-			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-
-			var res sdk.TxResponse
-			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
-			s.Require().EqualValues(0, res.Code, out.String())
-		})
-	}
-}
-
-func (s *IntegrationTestSuite) TestNewTxCmdModifyNFT() {
-	val := s.network.Validators[0]
-	commonArgs := []string{
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-	}
-
-	tokenID := collection.NewNFTID(s.nftClassID, 1)
-	testCases := map[string]struct {
-		args  []string
-		valid bool
-	}{
-		"valid transaction": {
-			[]string{
-				s.contractID,
-				s.operator.String(),
-				tokenID,
-				collection.AttributeKeyName.String(),
-				"fennec fox 1",
-			},
-			true,
-		},
-		"extra args": {
-			[]string{
-				s.contractID,
-				s.operator.String(),
-				tokenID,
-				collection.AttributeKeyName.String(),
-				"fennec fox 1",
-				"extra",
-			},
-			false,
-		},
-		"not enough args": {
-			[]string{
-				s.contractID,
-				s.operator.String(),
-				tokenID,
-				collection.AttributeKeyName.String(),
-			},
-			false,
-		},
-		"invalid contract id": {
-			[]string{
-				"",
-				s.operator.String(),
-				tokenID,
-				collection.AttributeKeyName.String(),
-				"fennec fox 1",
-			},
-			false,
-		},
-	}
-
-	for name, tc := range testCases {
-		tc := tc
-
-		s.Run(name, func() {
-			cmd := cli.NewTxCmdModifyNFT()
+			cmd := cli.NewTxCmdModify()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -853,8 +1019,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdAttach() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	}
 
-	subjectID := collection.NewNFTID(s.nftClassID, s.lenChain*4+1)
-	targetID := collection.NewNFTID(s.nftClassID, s.lenChain*3+1)
+	subjectID := collection.NewNFTID(s.nftClassID, s.lenChain*(3*2+1)+1)
+	targetID := collection.NewNFTID(s.nftClassID, s.lenChain*(3*2+2)+1)
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -924,7 +1090,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdDetach() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	}
 
-	subjectID := collection.NewNFTID(s.nftClassID, s.lenChain*5)
+	subjectID := collection.NewNFTID(s.nftClassID, s.lenChain*(3*3+1)+2)
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -932,7 +1098,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdDetach() {
 		"valid transaction": {
 			[]string{
 				s.contractID,
-				s.vendor.String(),
+				s.stranger.String(),
 				subjectID,
 			},
 			true,
@@ -940,7 +1106,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdDetach() {
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.vendor.String(),
+				s.stranger.String(),
 				subjectID,
 				"extra",
 			},
@@ -949,14 +1115,14 @@ func (s *IntegrationTestSuite) TestNewTxCmdDetach() {
 		"not enough args": {
 			[]string{
 				s.contractID,
-				s.vendor.String(),
+				s.stranger.String(),
 			},
 			false,
 		},
 		"invalid contract id": {
 			[]string{
 				"",
-				s.vendor.String(),
+				s.stranger.String(),
 				subjectID,
 			},
 			false,
@@ -982,7 +1148,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdDetach() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdOperatorAttach() {
+func (s *IntegrationTestSuite) TestNewTxCmdAttachFrom() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -990,8 +1156,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorAttach() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	}
 
-	subjectID := collection.NewNFTID(s.nftClassID, s.lenChain+1)
-	targetID := collection.NewNFTID(s.nftClassID, 1)
+	subjectID := collection.NewNFTID(s.nftClassID, s.lenChain*2+1)
+	targetID := collection.NewNFTID(s.nftClassID, s.lenChain+1)
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -1042,7 +1208,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorAttach() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdOperatorAttach()
+			cmd := cli.NewTxCmdAttachFrom()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -1057,7 +1223,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorAttach() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdOperatorDetach() {
+func (s *IntegrationTestSuite) TestNewTxCmdDetachFrom() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -1065,7 +1231,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorDetach() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	}
 
-	subjectID := collection.NewNFTID(s.nftClassID, s.lenChain*2)
+	subjectID := collection.NewNFTID(s.nftClassID, s.lenChain*3*3)
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -1074,7 +1240,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorDetach() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				s.customer.String(),
+				s.vendor.String(),
 				subjectID,
 			},
 			true,
@@ -1083,7 +1249,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorDetach() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				s.customer.String(),
+				s.vendor.String(),
 				subjectID,
 				"extra",
 			},
@@ -1093,7 +1259,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorDetach() {
 			[]string{
 				s.contractID,
 				s.operator.String(),
-				s.customer.String(),
+				s.vendor.String(),
 			},
 			false,
 		},
@@ -1101,7 +1267,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorDetach() {
 			[]string{
 				"",
 				s.operator.String(),
-				s.customer.String(),
+				s.vendor.String(),
 				subjectID,
 			},
 			false,
@@ -1112,7 +1278,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorDetach() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdOperatorDetach()
+			cmd := cli.NewTxCmdDetachFrom()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -1127,7 +1293,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorDetach() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
+func (s *IntegrationTestSuite) TestNewTxCmdGrantPermission() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -1144,7 +1310,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 				s.contractID,
 				s.operator.String(),
 				s.customer.String(),
-				collection.PermissionMint.String(),
+				collection.LegacyPermissionMint.String(),
 			},
 			true,
 		},
@@ -1153,7 +1319,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 				s.contractID,
 				s.operator.String(),
 				s.customer.String(),
-				collection.PermissionMint.String(),
+				collection.LegacyPermissionMint.String(),
 				"extra",
 			},
 			false,
@@ -1172,7 +1338,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdGrant()
+			cmd := cli.NewTxCmdGrantPermission()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -1187,7 +1353,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdAbandon() {
+func (s *IntegrationTestSuite) TestNewTxCmdRevokePermission() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -1203,7 +1369,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAbandon() {
 			[]string{
 				s.contractID,
 				s.vendor.String(),
-				collection.PermissionModify.String(),
+				collection.LegacyPermissionModify.String(),
 			},
 			true,
 		},
@@ -1211,7 +1377,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAbandon() {
 			[]string{
 				s.contractID,
 				s.vendor.String(),
-				collection.PermissionModify.String(),
+				collection.LegacyPermissionModify.String(),
 				"extra",
 			},
 			false,
@@ -1229,7 +1395,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAbandon() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdAbandon()
+			cmd := cli.NewTxCmdRevokePermission()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -1244,7 +1410,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAbandon() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdAuthorizeOperator() {
+func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -1286,7 +1452,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAuthorizeOperator() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdAuthorizeOperator()
+			cmd := cli.NewTxCmdApprove()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -1301,7 +1467,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAuthorizeOperator() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdRevokeOperator() {
+func (s *IntegrationTestSuite) TestNewTxCmdDisapprove() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -1343,7 +1509,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevokeOperator() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdRevokeOperator()
+			cmd := cli.NewTxCmdDisapprove()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)

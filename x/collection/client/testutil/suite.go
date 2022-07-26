@@ -29,6 +29,7 @@ type IntegrationTestSuite struct {
 	vendor   sdk.AccAddress
 	operator sdk.AccAddress
 	customer sdk.AccAddress
+	stranger sdk.AccAddress
 
 	contractID string
 	ftClassID  string
@@ -59,6 +60,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.vendor = s.createAccount("vendor")
 	s.operator = s.createAccount("operator")
 	s.customer = s.createAccount("customer")
+	s.stranger = s.createAccount("stranger")
 
 	s.balance = sdk.NewInt(1000000)
 
@@ -68,20 +70,20 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.nftClassID = s.createNFTClass(s.contractID, s.vendor)
 
 	// mint & burn fts
-	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor} {
+	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor, s.stranger} {
 		s.mintFT(s.contractID, s.vendor, to, s.ftClassID, s.balance)
 
 		if to.Equals(s.vendor) {
 			tokenID := collection.NewFTID(s.ftClassID)
 			amount := collection.NewCoins(collection.NewCoin(tokenID, s.balance))
-			s.burn(s.contractID, s.vendor, amount)
+			s.burnFT(s.contractID, s.vendor, amount)
 			s.mintFT(s.contractID, s.vendor, to, s.ftClassID, s.balance)
 		}
 	}
 
 	// mint nfts
 	s.lenChain = 2
-	for _, to := range []sdk.AccAddress{s.customer, s.vendor} {
+	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor, s.stranger} {
 		// mint N chains per account
 		numChains := 3
 		for n := 0; n < numChains; n++ {
@@ -108,8 +110,9 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		s.grant(s.contractID, s.vendor, s.operator, permission)
 	}
 
-	// customer approves the operator to manipulate its tokens, so vendor can do OperatorXXX (Send or Burn) later.
+	// customer and vendor approves the operator to manipulate its tokens, so vendor can do OperatorXXX (Send or Burn) later.
 	s.authorizeOperator(s.contractID, s.customer, s.operator)
+	s.authorizeOperator(s.contractID, s.vendor, s.operator)
 	// for the revocation.
 	s.authorizeOperator(s.contractID, s.operator, s.vendor)
 
@@ -161,9 +164,12 @@ func (s *IntegrationTestSuite) createFTClass(contractID string, operator sdk.Acc
 	args := append([]string{
 		contractID,
 		operator.String(),
+		fmt.Sprintf("--%s=%s", cli.FlagName, "tibetian fox"),
+		fmt.Sprintf("--%s=%s", cli.FlagTo, operator),
+		fmt.Sprintf("--%s=%v", cli.FlagMintable, true),
 	}, commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdCreateFTClass(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdIssueFT(), args)
 	s.Require().NoError(err)
 
 	var res sdk.TxResponse
@@ -184,7 +190,7 @@ func (s *IntegrationTestSuite) createNFTClass(contractID string, operator sdk.Ac
 		operator.String(),
 	}, commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdCreateNFTClass(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdIssueNFT(), args)
 	s.Require().NoError(err)
 
 	var res sdk.TxResponse
@@ -241,7 +247,7 @@ func (s *IntegrationTestSuite) mintNFT(contractID string, operator, to sdk.AccAd
 	return event.Tokens[0].Id
 }
 
-func (s *IntegrationTestSuite) burn(contractID string, from sdk.AccAddress, amount collection.Coins) {
+func (s *IntegrationTestSuite) burnFT(contractID string, from sdk.AccAddress, amount collection.Coins) {
 	val := s.network.Validators[0]
 	args := append([]string{
 		contractID,
@@ -249,7 +255,7 @@ func (s *IntegrationTestSuite) burn(contractID string, from sdk.AccAddress, amou
 		amount.String(),
 	}, commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdBurn(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdBurnFT(), args)
 	s.Require().NoError(err)
 
 	var res sdk.TxResponse
@@ -280,10 +286,10 @@ func (s *IntegrationTestSuite) grant(contractID string, granter, grantee sdk.Acc
 		contractID,
 		granter.String(),
 		grantee.String(),
-		permission.String(),
+		collection.LegacyPermission(permission).String(),
 	}, commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdGrant(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdGrantPermission(), args)
 	s.Require().NoError(err)
 
 	var res sdk.TxResponse
@@ -321,10 +327,9 @@ func (s *IntegrationTestSuite) authorizeOperator(contractID string, holder, oper
 		contractID,
 		holder.String(),
 		operator.String(),
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, holder),
 	}, commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdAuthorizeOperator(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdApprove(), args)
 	s.Require().NoError(err)
 
 	var res sdk.TxResponse
