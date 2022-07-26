@@ -1102,20 +1102,16 @@
 - [lbm/token/v1/query.proto](#lbm/token/v1/query.proto)
     - [QueryApprovedRequest](#lbm.token.v1.QueryApprovedRequest)
     - [QueryApprovedResponse](#lbm.token.v1.QueryApprovedResponse)
-    - [QueryAuthorizationRequest](#lbm.token.v1.QueryAuthorizationRequest)
-    - [QueryAuthorizationResponse](#lbm.token.v1.QueryAuthorizationResponse)
+    - [QueryApproversRequest](#lbm.token.v1.QueryApproversRequest)
+    - [QueryApproversResponse](#lbm.token.v1.QueryApproversResponse)
     - [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest)
     - [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse)
     - [QueryBurntRequest](#lbm.token.v1.QueryBurntRequest)
     - [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse)
-    - [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest)
-    - [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse)
     - [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest)
     - [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse)
     - [QueryMintedRequest](#lbm.token.v1.QueryMintedRequest)
     - [QueryMintedResponse](#lbm.token.v1.QueryMintedResponse)
-    - [QueryOperatorAuthorizationsRequest](#lbm.token.v1.QueryOperatorAuthorizationsRequest)
-    - [QueryOperatorAuthorizationsResponse](#lbm.token.v1.QueryOperatorAuthorizationsResponse)
     - [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest)
     - [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse)
     - [QueryTokenClassRequest](#lbm.token.v1.QueryTokenClassRequest)
@@ -1126,30 +1122,20 @@
     - [Query](#lbm.token.v1.Query)
   
 - [lbm/token/v1/tx.proto](#lbm/token/v1/tx.proto)
-    - [MsgAbandon](#lbm.token.v1.MsgAbandon)
-    - [MsgAbandonResponse](#lbm.token.v1.MsgAbandonResponse)
     - [MsgApprove](#lbm.token.v1.MsgApprove)
     - [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse)
-    - [MsgAuthorizeOperator](#lbm.token.v1.MsgAuthorizeOperator)
-    - [MsgAuthorizeOperatorResponse](#lbm.token.v1.MsgAuthorizeOperatorResponse)
     - [MsgBurn](#lbm.token.v1.MsgBurn)
     - [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom)
     - [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse)
     - [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse)
-    - [MsgGrant](#lbm.token.v1.MsgGrant)
     - [MsgGrantPermission](#lbm.token.v1.MsgGrantPermission)
     - [MsgGrantPermissionResponse](#lbm.token.v1.MsgGrantPermissionResponse)
-    - [MsgGrantResponse](#lbm.token.v1.MsgGrantResponse)
     - [MsgIssue](#lbm.token.v1.MsgIssue)
     - [MsgIssueResponse](#lbm.token.v1.MsgIssueResponse)
     - [MsgMint](#lbm.token.v1.MsgMint)
     - [MsgMintResponse](#lbm.token.v1.MsgMintResponse)
     - [MsgModify](#lbm.token.v1.MsgModify)
     - [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse)
-    - [MsgOperatorBurn](#lbm.token.v1.MsgOperatorBurn)
-    - [MsgOperatorBurnResponse](#lbm.token.v1.MsgOperatorBurnResponse)
-    - [MsgOperatorSend](#lbm.token.v1.MsgOperatorSend)
-    - [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse)
     - [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator)
     - [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse)
     - [MsgRevokePermission](#lbm.token.v1.MsgRevokePermission)
@@ -16597,13 +16583,12 @@ GenesisState defines the token module's genesis state.
 
 ### QueryApprovedRequest
 QueryApprovedRequest is the request type for the Query/Approved RPC method
-NOTE: deprecated (use QueryApproved)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `address` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `proxy` | [string](#string) |  | address of the proxy which the authorization is granted to. |
 | `approver` | [string](#string) |  | approver is the address of the approver of the authorization. |
 
 
@@ -16615,7 +16600,6 @@ NOTE: deprecated (use QueryApproved)
 
 ### QueryApprovedResponse
 QueryApprovedResponse is the response type for the Query/Approved RPC method
-NOTE: deprecated
 
 
 | Field | Type | Label | Description |
@@ -16627,34 +16611,33 @@ NOTE: deprecated
 
 
 
-<a name="lbm.token.v1.QueryAuthorizationRequest"></a>
+<a name="lbm.token.v1.QueryApproversRequest"></a>
 
-### QueryAuthorizationRequest
-QueryAuthorizationRequest is the request type for the Query/Authorization RPC method
-Since: finschia
+### QueryApproversRequest
+QueryApproversRequest is the request type for the Query/Approvers RPC method
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
-| `holder` | [string](#string) |  | address of the token holder which has approved the authorization. |
+| `address` | [string](#string) |  | address of the proxy which the authorization is granted to. |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.token.v1.QueryAuthorizationResponse"></a>
+<a name="lbm.token.v1.QueryApproversResponse"></a>
 
-### QueryAuthorizationResponse
-QueryAuthorizationResponse is the response type for the Query/Authorization RPC method
-Since: finschia
+### QueryApproversResponse
+QueryApproversResponse is the response type for the Query/Approvers RPC method
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `authorization` | [Authorization](#lbm.token.v1.Authorization) |  |  |
+| `approvers` | [string](#string) | repeated | all the authorizations on the proxy. |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -16722,45 +16705,10 @@ QueryBurntResponse is the response type for the Query/Burnt RPC method
 
 
 
-<a name="lbm.token.v1.QueryGrantRequest"></a>
-
-### QueryGrantRequest
-QueryGrantRequest is the request type for the Query/Grant RPC method
-Since: finschia
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `grantee` | [string](#string) |  | grantee which has permissions on the token class. |
-| `permission` | [Permission](#lbm.token.v1.Permission) |  | a permission given to the grantee. |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryGrantResponse"></a>
-
-### QueryGrantResponse
-QueryGrantResponse is the response type for the Query/Grant RPC method
-Since: finschia
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `grant` | [Grant](#lbm.token.v1.Grant) |  |  |
-
-
-
-
-
-
 <a name="lbm.token.v1.QueryGranteeGrantsRequest"></a>
 
 ### QueryGranteeGrantsRequest
 QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method
-Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -16778,7 +16726,6 @@ Since: finschia
 
 ### QueryGranteeGrantsResponse
 QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method
-Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -16815,41 +16762,6 @@ QueryMintedResponse is the response type for the Query/Minted RPC method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `amount` | [string](#string) |  | the amount of the minted tokens. |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryOperatorAuthorizationsRequest"></a>
-
-### QueryOperatorAuthorizationsRequest
-QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAuthorizations RPC method
-Since: finschia
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryOperatorAuthorizationsResponse"></a>
-
-### QueryOperatorAuthorizationsResponse
-QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method
-Since: finschia
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `authorizations` | [Authorization](#lbm.token.v1.Authorization) | repeated | all the authorizations on the operator. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -16920,7 +16832,6 @@ QueryTokenClassResponse is the response type for the Query/TokenClass RPC method
 
 ### QueryTokenClassesRequest
 QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method
-Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -16936,7 +16847,6 @@ Since: finschia
 
 ### QueryTokenClassesResponse
 QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method
-Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -16967,12 +16877,10 @@ Query defines the gRPC querier service.
 | `Minted` | [QueryMintedRequest](#lbm.token.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.token.v1.QueryMintedResponse) | Minted queries the number of minted tokens from the given contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}/minted|
 | `Burnt` | [QueryBurntRequest](#lbm.token.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from the given contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}/burnt|
 | `TokenClass` | [QueryTokenClassRequest](#lbm.token.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.token.v1.QueryTokenClassResponse) | TokenClass queries an token metadata based on its contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}|
-| `TokenClasses` | [QueryTokenClassesRequest](#lbm.token.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.token.v1.QueryTokenClassesResponse) | TokenClasses queries all token metadata. Since: finschia | GET|/lbm/token/v1/token_classes|
-| `Grant` | [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse) | Grant queries a permission on a given grantee permission pair. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `permission` is not a valid permission. - ErrInvalidAddress - `grantee` is of invalid format. - ErrNotFound - there is no permission of `permission` on `grantee`. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}|
-| `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse) | GranteeGrants queries permissions on a given grantee. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `grantee` is of invalid format. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
-| `Authorization` | [QueryAuthorizationRequest](#lbm.token.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.token.v1.QueryAuthorizationResponse) | Authorization queries authorization on a given operator holder pair. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `operator` is of invalid format. - `holder` is of invalid format. - ErrNotFound - there is no authorization given by `holder` to `operator`. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}/{holder}|
-| `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.token.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.token.v1.QueryOperatorAuthorizationsResponse) | OperatorAuthorizations queries authorization on a given operator. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `operator` is of invalid format. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}|
-| `Approved` | [QueryApprovedRequest](#lbm.token.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.token.v1.QueryApprovedResponse) | Approved queries authorization on a given proxy approver pair. NOTE: deprecated (use Authorization) | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/proxies/{approver}|
+| `TokenClasses` | [QueryTokenClassesRequest](#lbm.token.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.token.v1.QueryTokenClassesResponse) | TokenClasses queries all token metadata. | GET|/lbm/token/v1/token_classes|
+| `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse) | GranteeGrants queries permissions on a given grantee. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `grantee` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
+| `Approved` | [QueryApprovedRequest](#lbm.token.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.token.v1.QueryApprovedResponse) | Approved queries authorization on a given proxy approver pair. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. - `approver` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{approver}/proxies/{proxy}|
+| `Approvers` | [QueryApproversRequest](#lbm.token.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.token.v1.QueryApproversResponse) | Approvers queries approvers on a given proxy. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/approvers|
 
  <!-- end services -->
 
@@ -16985,59 +16893,26 @@ Query defines the gRPC querier service.
 
 
 
-<a name="lbm.token.v1.MsgAbandon"></a>
-
-### MsgAbandon
-MsgAbandon defines the Msg/Abandon request type.
-
-Throws:
-- ErrInvalidAddress
-  - `grantee` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `permission` is not a valid permission.
-
-Signer: `grantee`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `grantee` | [string](#string) |  | address of the grantee which abandons the permission. |
-| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgAbandonResponse"></a>
-
-### MsgAbandonResponse
-MsgAbandonResponse defines the Msg/Abandon response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
 <a name="lbm.token.v1.MsgApprove"></a>
 
 ### MsgApprove
 MsgApprove defines the Msg/Approve request type.
 
-Note: deprecated (use MsgAuthorizeOperator)
+Throws:
+- ErrInvalidAddress
+  - `approver` is of invalid format.
+  - `proxy` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+
+Signer: `approver`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `approver` | [string](#string) |  | address of the token holder which approves the authorization. |
-| `proxy` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `approver` | [string](#string) |  | address of the token approver which approves the authorization. |
+| `proxy` | [string](#string) |  | address of the proxy which the authorization is granted to. |
 
 
 
@@ -17048,48 +16923,6 @@ Note: deprecated (use MsgAuthorizeOperator)
 
 ### MsgApproveResponse
 MsgApproveResponse defines the Msg/Approve response type.
-
-Note: deprecated
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgAuthorizeOperator"></a>
-
-### MsgAuthorizeOperator
-MsgAuthorizeOperator defines the Msg/AuthorizeOperator request type.
-
-Throws:
-- ErrInvalidAddress
-  - `holder` is of invalid format.
-  - `operator` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-
-Signer: `holder`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `holder` | [string](#string) |  | address of a holder which authorizes the `operator` address as an operator. |
-| `operator` | [string](#string) |  | address to set as an operator for `holder`. |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgAuthorizeOperatorResponse"></a>
-
-### MsgAuthorizeOperatorResponse
-MsgAuthorizeOperatorResponse defines the Msg/AuthorizeOperator response type.
-
-Since: 0.46.0 (finschia)
 
 
 
@@ -17114,7 +16947,7 @@ Signer: `from`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `from` | [string](#string) |  | holder whose tokens are being burned. |
+| `from` | [string](#string) |  | address whose tokens are being burned. |
 | `amount` | [string](#string) |  | number of tokens to burn. |
 
 
@@ -17127,7 +16960,15 @@ Signer: `from`
 ### MsgBurnFrom
 MsgBurnFrom defines the Msg/BurnFrom request type.
 
-Note: deprecated (use MsgOperatorBurn)
+Throws:
+- ErrInvalidAddress
+  - `proxy` is of invalid format.
+  - `from` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+  - `amount` is not positive.
+
+Signer: `proxy`
 
 
 | Field | Type | Label | Description |
@@ -17147,8 +16988,6 @@ Note: deprecated (use MsgOperatorBurn)
 ### MsgBurnFromResponse
 MsgBurnFromResponse defines the Msg/BurnFrom response type.
 
-Note: deprecated
-
 
 
 
@@ -17164,10 +17003,10 @@ MsgBurnResponse defines the Msg/Burn response type.
 
 
 
-<a name="lbm.token.v1.MsgGrant"></a>
+<a name="lbm.token.v1.MsgGrantPermission"></a>
 
-### MsgGrant
-MsgGrant defines the Msg/Grant request type.
+### MsgGrantPermission
+MsgGrantPermission defines the Msg/GrantPermission request type.
 
 Throws:
 - ErrInvalidAddress
@@ -17178,28 +17017,6 @@ Throws:
   - `permission` is not a valid permission.
 
 Signer: `granter`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `granter` | [string](#string) |  | address of the granter which must have the permission to give. |
-| `grantee` | [string](#string) |  | address of the grantee. |
-| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgGrantPermission"></a>
-
-### MsgGrantPermission
-MsgGrantPermission defines the Msg/GrantPermission request type.
-
-Note: deprecated (use MsgGrant)
 
 
 | Field | Type | Label | Description |
@@ -17218,20 +17035,6 @@ Note: deprecated (use MsgGrant)
 
 ### MsgGrantPermissionResponse
 MsgGrantPermissionResponse defines the Msg/GrantPermission response type.
-
-Note: deprecated
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgGrantResponse"></a>
-
-### MsgGrantResponse
-MsgGrantResponse defines the Msg/Grant response type.
-
-Since: 0.46.0 (finschia)
 
 
 
@@ -17367,92 +17170,6 @@ MsgModifyResponse defines the Msg/Modify response type.
 
 
 
-<a name="lbm.token.v1.MsgOperatorBurn"></a>
-
-### MsgOperatorBurn
-MsgOperatorBurn defines the Msg/OperatorBurn request type.
-
-Throws:
-- ErrInvalidAddress
-  - `operator` is of invalid format.
-  - `from` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `amount` is not positive.
-
-Signer: `operator`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `operator` | [string](#string) |  | address which triggers the burn. |
-| `from` | [string](#string) |  | holder whose tokens are being burned. |
-| `amount` | [string](#string) |  | number of tokens to burn. |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgOperatorBurnResponse"></a>
-
-### MsgOperatorBurnResponse
-MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgOperatorSend"></a>
-
-### MsgOperatorSend
-MsgOperatorSend defines the Msg/OperatorSend request type.
-
-Throws:
-- ErrInvalidAddress
-  - `operator` is of invalid format.
-  - `from` is of invalid format.
-  - `to` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `amount` is not positive.
-
-Signer: `operator`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `operator` | [string](#string) |  | address which triggers the send. |
-| `from` | [string](#string) |  | holder whose tokens are being sent. |
-| `to` | [string](#string) |  | recipient of the tokens. |
-| `amount` | [string](#string) |  | number of tokens to send. |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgOperatorSendResponse"></a>
-
-### MsgOperatorSendResponse
-MsgOperatorSendResponse defines the Msg/OperatorSend response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
 <a name="lbm.token.v1.MsgRevokeOperator"></a>
 
 ### MsgRevokeOperator
@@ -17498,7 +17215,14 @@ Since: 0.46.0 (finschia)
 ### MsgRevokePermission
 MsgRevokePermission defines the Msg/RevokePermission request type.
 
-Note: deprecated (use MsgAbandon)
+Throws:
+- ErrInvalidAddress
+  - `grantee` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+  - `permission` is not a valid permission.
+
+Signer: `grantee`
 
 
 | Field | Type | Label | Description |
@@ -17516,8 +17240,6 @@ Note: deprecated (use MsgAbandon)
 
 ### MsgRevokePermissionResponse
 MsgRevokePermissionResponse defines the Msg/RevokePermission response type.
-
-Note: deprecated
 
 
 
@@ -17543,7 +17265,7 @@ Signer: `from`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `from` | [string](#string) |  | holder whose tokens are being sent. |
+| `from` | [string](#string) |  | approver whose tokens are being sent. |
 | `to` | [string](#string) |  | recipient of the tokens. |
 | `amount` | [string](#string) |  | number of tokens to send. |
 
@@ -17566,14 +17288,22 @@ MsgSendResponse defines the Msg/Send response type.
 
 ### MsgTransferFrom
 MsgTransferFrom defines the Msg/TransferFrom request type.
+Throws:
+- ErrInvalidAddress
+  - `proxy` is of invalid format.
+  - `from` is of invalid format.
+  - `to` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+  - `amount` is not positive.
 
-Note: deprecated (use MsgOperatorSend)
+Signer: `proxy`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `proxy` | [string](#string) |  | the address of the operator. |
+| `proxy` | [string](#string) |  | the address of the proxy. |
 | `from` | [string](#string) |  | the address which the transfer is from. |
 | `to` | [string](#string) |  | the address which the transfer is to. |
 | `amount` | [string](#string) |  | the amount of the transfer. |
@@ -17587,8 +17317,6 @@ Note: deprecated (use MsgOperatorSend)
 
 ### MsgTransferFromResponse
 MsgTransferFromResponse defines the Msg/TransferFrom response type.
-
-Note: deprecated
 
 
 
@@ -17608,22 +17336,17 @@ Msg defines the token Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Send` | [MsgSend](#lbm.token.v1.MsgSend) | [MsgSendResponse](#lbm.token.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. Fires: - EventSent - transfer (deprecated, not typed) Throws: - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to spend. | |
-| `OperatorSend` | [MsgOperatorSend](#lbm.token.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. Fires: - EventSent - transfer_from (deprecated, not typed) Throws: - ErrUnauthorized: - the holder has not authorized the operator. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to spend. Since: 0.46.0 (finschia) | |
-| `TransferFrom` | [MsgTransferFrom](#lbm.token.v1.MsgTransferFrom) | [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse) | TransferFrom defines a method to send tokens from one account to another account by the operator. Note: the approval has no value of limit (not ERC20 compliant). Note: deprecated (use OperatorSend) | |
-| `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.token.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.token.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the holder. Fires: - EventAuthorizedOperator - approve_token (deprecated, not typed) Throws: - ErrNotFound: - there is no token class of `contract_id`. - ErrInvalidRequest: - `holder` has already authorized `operator`. Since: 0.46.0 (finschia) | |
+| `Send` | [MsgSend](#lbm.token.v1.MsgSend) | [MsgSendResponse](#lbm.token.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. Fires: - EventSent - transfer (deprecated, not typed) Throws: - ErrInvalidRequest: - the balance of `from` does not have enough tokens to spend. | |
+| `TransferFrom` | [MsgTransferFrom](#lbm.token.v1.MsgTransferFrom) | [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse) | TransferFrom defines a method to send tokens from one account to another account by the proxy. Fires: - EventSent - transfer_from (deprecated, not typed) Throws: - ErrUnauthorized: - the approver has not authorized the proxy. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to spend. Note: the approval has no value of limit (not ERC20 compliant). | |
 | `RevokeOperator` | [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse) | RevokeOperator revoke the authorization of the operator to send the holder's tokens. Fires: - EventRevokedOperator Throws: - ErrNotFound: - there is no token class of `contract_id`. - there is no authorization by `holder` to `operator`. Note: it introduces breaking change, because the legacy clients cannot track this revocation. Since: 0.46.0 (finschia) | |
-| `Approve` | [MsgApprove](#lbm.token.v1.MsgApprove) | [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the holder. Note: deprecated (use AuthorizeOperator) | |
+| `Approve` | [MsgApprove](#lbm.token.v1.MsgApprove) | [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the approver. Fires: - EventAuthorizedOperator - approve_token (deprecated, not typed) Throws: - ErrNotFound: - there is no token class of `contract_id`. - ErrInvalidRequest: - `approver` has already authorized `proxy`. | |
 | `Issue` | [MsgIssue](#lbm.token.v1.MsgIssue) | [MsgIssueResponse](#lbm.token.v1.MsgIssueResponse) | Issue defines a method to create a class of token. it grants `mint`, `burn` and `modify` permissions on the token class to its creator (see also `mintable`). Fires: - EventIssue - EventMinted - issue (deprecated, not typed) | |
-| `Grant` | [MsgGrant](#lbm.token.v1.MsgGrant) | [MsgGrantResponse](#lbm.token.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify a token metadata. Fires: - EventGrant - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. Since: 0.46.0 (finschia) | |
-| `Abandon` | [MsgAbandon](#lbm.token.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.token.v1.MsgAbandonResponse) | Abandon abandons a permission. Fires: - EventAbandon - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. Since: 0.46.0 (finschia) | |
-| `GrantPermission` | [MsgGrantPermission](#lbm.token.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.token.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify a token metadata. Note: deprecated (use Grant) | |
-| `RevokePermission` | [MsgRevokePermission](#lbm.token.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.token.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Note: deprecated (use Abandon) | |
+| `GrantPermission` | [MsgGrantPermission](#lbm.token.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.token.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify a token metadata. Fires: - EventGrant - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. | |
+| `RevokePermission` | [MsgRevokePermission](#lbm.token.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.token.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Fires: - EventAbandon - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. | |
 | `Mint` | [MsgMint](#lbm.token.v1.MsgMint) | [MsgMintResponse](#lbm.token.v1.MsgMintResponse) | Mint defines a method to mint tokens. Fires: - EventMinted - mint (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `mint` permission. | |
-| `Burn` | [MsgBurn](#lbm.token.v1.MsgBurn) | [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Fires: - EventBurned - burn (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. | |
-| `OperatorBurn` | [MsgOperatorBurn](#lbm.token.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.token.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens by the operator. Fires: - EventBurned - burn_from (deprecated, not typed) Throws: - ErrUnauthorized - `operator` does not have `burn` permission. - the holder has not authorized `operator`. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. Since: 0.46.0 (finschia) | |
-| `BurnFrom` | [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom) | [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse) | BurnFrom defines a method to burn tokens by the operator. Note: deprecated (use OperatorBurn) | |
-| `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token class. Fires: - EventModified - modify_token (deprecated, not typed) Throws: - ErrUnauthorized - the operator does not have `modify` permission. - ErrNotFound - there is no token class of `contract_id`. | |
+| `Burn` | [MsgBurn](#lbm.token.v1.MsgBurn) | [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Fires: - EventBurned - burn (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
+| `BurnFrom` | [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom) | [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse) | BurnFrom defines a method to burn tokens by the proxy. Fires: - EventBurned - burn_from (deprecated, not typed) Throws: - ErrUnauthorized - `proxy` does not have `burn` permission. - the approver has not authorized `proxy`. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
+| `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token class. Fires: - EventModified - modify_token (deprecated, not typed) Throws: - ErrUnauthorized - the proxy does not have `modify` permission. - ErrNotFound - there is no token class of `contract_id`. | |
 
  <!-- end services -->
 

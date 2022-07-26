@@ -75,7 +75,7 @@ func (k Keeper) subtractToken(ctx sdk.Context, contractID string, addr sdk.AccAd
 	balance := k.GetBalance(ctx, contractID, addr)
 	newBalance := balance.Sub(amount)
 	if newBalance.IsNegative() {
-		return sdkerrors.ErrInsufficientFunds.Wrapf("%s is smaller than %s", balance, amount)
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s is smaller than %s", balance, amount)
 	}
 
 	k.setBalance(ctx, contractID, addr, newBalance)
