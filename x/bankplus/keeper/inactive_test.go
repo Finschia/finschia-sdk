@@ -22,7 +22,7 @@ import (
 func genAddress() sdk.AccAddress {
 	b := make([]byte, 20)
 	rand.Read(b)
-	return sdk.BytesToAccAddress(b)
+	return b
 }
 
 func setupKeeper(storeKey *sdk.KVStoreKey) BaseKeeper {

@@ -96,8 +96,8 @@ func TestValidateProposalCommons(t *testing.T) {
 
 func TestValidateStoreCodeProposal(t *testing.T) {
 	var (
-		anyAddress     = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x0}, ContractAddrLen))
-		invalidAddress = "invalid address"
+		anyAddress     sdk.AccAddress = bytes.Repeat([]byte{0x0}, ContractAddrLen)
+		invalidAddress                = "invalid address"
 	)
 
 	specs := map[string]struct {
@@ -599,7 +599,7 @@ func TestProposalStrings(t *testing.T) {
 			exp: `Store Code Proposal:
   Title:       Foo
   Description: Bar
-  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
   WasmCode:    0102030405060708090A
 `,
 		},
@@ -610,11 +610,11 @@ func TestProposalStrings(t *testing.T) {
 			exp: `Instantiate Code Proposal:
   Title:       Foo
   Description: Bar
-  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
-  Admin:       link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
+  Admin:       link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
   Code id:     1
   Label:       testing
-  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23\"}"
   Funds:       1foo,2bar
 `,
 		},
@@ -623,11 +623,11 @@ func TestProposalStrings(t *testing.T) {
 			exp: `Instantiate Code Proposal:
   Title:       Foo
   Description: Bar
-  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
-  Admin:       link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
+  Admin:       link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
   Code id:     1
   Label:       testing
-  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23\"}"
   Funds:       
 `,
 		},
@@ -636,11 +636,11 @@ func TestProposalStrings(t *testing.T) {
 			exp: `Instantiate Code Proposal:
   Title:       Foo
   Description: Bar
-  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
   Admin:       
   Code id:     1
   Label:       testing
-  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23\"}"
   Funds:       
 `,
 		},
@@ -651,7 +651,7 @@ func TestProposalStrings(t *testing.T) {
   Description: Bar
   Contract:    link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
   Code id:     1
-  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23\"}"
 `,
 		},
 		"update admin": {
@@ -660,7 +660,7 @@ func TestProposalStrings(t *testing.T) {
   Title:       Foo
   Description: Bar
   Contract:    link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
-  New Admin:   link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+  New Admin:   link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
 `,
 		},
 		"clear admin": {
@@ -714,7 +714,7 @@ func TestProposalYaml(t *testing.T) {
 			}),
 			exp: `title: Foo
 description: Bar
-run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
 wasm_byte_code: AQIDBAUGBwgJCg==
 instantiate_permission: null
 `,
@@ -725,11 +725,11 @@ instantiate_permission: null
 			}),
 			exp: `title: Foo
 description: Bar
-run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
-admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
+admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
 code_id: 1
 label: testing
-msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
+msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23"}'
 funds:
 - denom: foo
   amount: "1"
@@ -741,11 +741,11 @@ funds:
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) { p.Funds = nil }),
 			exp: `title: Foo
 description: Bar
-run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
-admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
+admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
 code_id: 1
 label: testing
-msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
+msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23"}'
 funds: []
 `,
 		},
@@ -753,11 +753,11 @@ funds: []
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) { p.Admin = "" }),
 			exp: `title: Foo
 description: Bar
-run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
 admin: ""
 code_id: 1
 label: testing
-msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
+msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23"}'
 funds: []
 `,
 		},
@@ -767,14 +767,14 @@ funds: []
 description: Bar
 contract: link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
 code_id: 1
-msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
+msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23"}'
 `,
 		},
 		"update admin": {
 			src: UpdateAdminProposalFixture(),
 			exp: `title: Foo
 description: Bar
-new_admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+new_admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
 contract: link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
 `,
 		},
@@ -930,7 +930,7 @@ func TestProposalJsonSignBytes(t *testing.T) {
 	}
 	for name, spec := range specs {
 		t.Run(name, func(t *testing.T) {
-			msg, err := govtypes.NewMsgSubmitProposal(spec.src, sdk.NewCoins(), sdk.AccAddress([]byte{}))
+			msg, err := govtypes.NewMsgSubmitProposal(spec.src, sdk.NewCoins(), []byte{})
 			require.NoError(t, err)
 
 			bz := msg.GetSignBytes()

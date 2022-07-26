@@ -314,7 +314,7 @@ func (suite *AnteTestSuite) runSigDecorators(params types.Params, _ bool, privs 
 	accSeqs := make([]uint64, len(privs))
 	// set accounts and create msg for each address
 	for i, priv := range privs {
-		addr := sdk.BytesToAccAddress(priv.PubKey().Address())
+		addr := sdk.AccAddress(priv.PubKey().Address())
 		acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr)
 		suite.Require().NoError(acc.SetAccountNumber(uint64(i)))
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)

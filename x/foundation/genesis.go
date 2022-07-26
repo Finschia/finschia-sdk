@@ -48,7 +48,7 @@ func ValidateGenesis(data GenesisState) error {
 
 	if info := data.Foundation; info != nil {
 		if operator := info.Operator; len(operator) != 0 {
-			if err := sdk.ValidateAccAddress(info.Operator); err != nil {
+			if _, err := sdk.AccAddressFromBech32(info.Operator); err != nil {
 				return err
 			}
 		}
@@ -95,7 +95,7 @@ func ValidateGenesis(data GenesisState) error {
 			return sdkerrors.ErrInvalidRequest.Wrapf("vote for a proposal which does not exist: id %d", vote.ProposalId)
 		}
 
-		if err := sdk.ValidateAccAddress(vote.Voter); err != nil {
+		if _, err := sdk.AccAddressFromBech32(vote.Voter); err != nil {
 			return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", vote.Voter)
 		}
 
@@ -109,7 +109,7 @@ func ValidateGenesis(data GenesisState) error {
 			return sdkerrors.ErrInvalidType.Wrap("invalid authorization")
 		}
 
-		if err := sdk.ValidateAccAddress(ga.Grantee); err != nil {
+		if _, err := sdk.AccAddressFromBech32(ga.Grantee); err != nil {
 			return err
 		}
 	}

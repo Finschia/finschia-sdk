@@ -81,7 +81,7 @@ func ValidateGenesis(data GenesisState) error {
 			return sdkerrors.ErrInvalidRequest.Wrap("balances cannot be empty")
 		}
 		for _, balance := range contractBalances.Balances {
-			if err := sdk.ValidateAccAddress(balance.Address); err != nil {
+			if _, err := sdk.AccAddressFromBech32(balance.Address); err != nil {
 				return err
 			}
 			if err := balance.Amount.ValidateBasic(); err != nil {
@@ -138,10 +138,10 @@ func ValidateGenesis(data GenesisState) error {
 			return sdkerrors.ErrInvalidRequest.Wrap("authorizations cannot be empty")
 		}
 		for _, authorization := range contractAuthorizations.Authorizations {
-			if err := sdk.ValidateAccAddress(authorization.Holder); err != nil {
+			if _, err := sdk.AccAddressFromBech32(authorization.Holder); err != nil {
 				return err
 			}
-			if err := sdk.ValidateAccAddress(authorization.Operator); err != nil {
+			if _, err := sdk.AccAddressFromBech32(authorization.Operator); err != nil {
 				return err
 			}
 		}
@@ -156,7 +156,7 @@ func ValidateGenesis(data GenesisState) error {
 			return sdkerrors.ErrInvalidRequest.Wrap("grants cannot be empty")
 		}
 		for _, grant := range contractGrants.Grants {
-			if err := sdk.ValidateAccAddress(grant.Grantee); err != nil {
+			if _, err := sdk.AccAddressFromBech32(grant.Grantee); err != nil {
 				return err
 			}
 			if err := ValidatePermission(grant.Permission); err != nil {

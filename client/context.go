@@ -335,28 +335,28 @@ func (ctx Context) printOutput(out []byte) error {
 // address is returned.
 func GetFromFields(kr keyring.Keyring, from string, genOnly bool) (sdk.AccAddress, string, keyring.KeyType, error) {
 	if from == "" {
-		return "", "", 0, nil
+		return nil, "", 0, nil
 	}
 
 	if genOnly {
-		err := sdk.ValidateAccAddress(from)
+		addr, err := sdk.AccAddressFromBech32(from)
 		if err != nil {
-			return sdk.AccAddress(from), "", 0, errors.Wrap(err, "must provide a valid Bech32 address in generate-only mode")
+			return nil, "", 0, errors.Wrap(err, "must provide a valid Bech32 address in generate-only mode")
 		}
 
-		return sdk.AccAddress(from), "", 0, nil
+		return addr, "", 0, nil
 	}
 
 	var info keyring.Info
-	if err := sdk.ValidateAccAddress(from); err == nil {
-		info, err = kr.KeyByAddress(sdk.AccAddress(from))
+	if addr, err := sdk.AccAddressFromBech32(from); err == nil {
+		info, err = kr.KeyByAddress(addr)
 		if err != nil {
-			return sdk.AccAddress(from), "", 0, err
+			return nil, "", 0, err
 		}
 	} else {
 		info, err = kr.Key(from)
 		if err != nil {
-			return "", "", 0, err
+			return nil, "", 0, err
 		}
 	}
 

@@ -87,14 +87,14 @@ $ %s query distribution validator-outstanding-rewards %s1lwjmdnks33xwnmfayc64ycp
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			err = sdk.ValidateValAddress(args[0])
+			validatorAddr, err := sdk.ValAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
 
 			res, err := queryClient.ValidatorOutstandingRewards(
 				cmd.Context(),
-				&types.QueryValidatorOutstandingRewardsRequest{ValidatorAddress: args[0]},
+				&types.QueryValidatorOutstandingRewardsRequest{ValidatorAddress: validatorAddr.String()},
 			)
 			if err != nil {
 				return err
@@ -132,14 +132,14 @@ $ %s query distribution commission %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			err = sdk.ValidateValAddress(args[0])
+			validatorAddr, err := sdk.ValAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
 
 			res, err := queryClient.ValidatorCommission(
 				cmd.Context(),
-				&types.QueryValidatorCommissionRequest{ValidatorAddress: args[0]},
+				&types.QueryValidatorCommissionRequest{ValidatorAddress: validatorAddr.String()},
 			)
 			if err != nil {
 				return err
@@ -177,7 +177,7 @@ $ %s query distribution slashes %svaloper1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			err = sdk.ValidateValAddress(args[0])
+			validatorAddr, err := sdk.ValAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
@@ -200,7 +200,7 @@ $ %s query distribution slashes %svaloper1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
 			res, err := queryClient.ValidatorSlashes(
 				cmd.Context(),
 				&types.QueryValidatorSlashesRequest{
-					ValidatorAddress: args[0],
+					ValidatorAddress: validatorAddr.String(),
 					StartingHeight:   startHeight,
 					EndingHeight:     endHeight,
 					Pagination:       pageReq,
@@ -245,7 +245,7 @@ $ %s query distribution rewards %s1gghjut3ccd8ay0zduzj64hwre2fxs9ld75ru9p %s1ggh
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			err = sdk.ValidateAccAddress(args[0])
+			delegatorAddr, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
@@ -253,14 +253,14 @@ $ %s query distribution rewards %s1gghjut3ccd8ay0zduzj64hwre2fxs9ld75ru9p %s1ggh
 			// query for rewards from a particular delegation
 			ctx := cmd.Context()
 			if len(args) == 2 {
-				err := sdk.ValidateValAddress(args[1])
+				validatorAddr, err := sdk.ValAddressFromBech32(args[1])
 				if err != nil {
 					return err
 				}
 
 				res, err := queryClient.DelegationRewards(
 					ctx,
-					&types.QueryDelegationRewardsRequest{DelegatorAddress: args[0], ValidatorAddress: args[1]},
+					&types.QueryDelegationRewardsRequest{DelegatorAddress: delegatorAddr.String(), ValidatorAddress: validatorAddr.String()},
 				)
 				if err != nil {
 					return err
@@ -271,7 +271,7 @@ $ %s query distribution rewards %s1gghjut3ccd8ay0zduzj64hwre2fxs9ld75ru9p %s1ggh
 
 			res, err := queryClient.DelegationTotalRewards(
 				ctx,
-				&types.QueryDelegationTotalRewardsRequest{DelegatorAddress: args[0]},
+				&types.QueryDelegationTotalRewardsRequest{DelegatorAddress: delegatorAddr.String()},
 			)
 			if err != nil {
 				return err

@@ -69,6 +69,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
+* (global) [\#603](https://github.com/line/lbm-sdk/pull/603) apply types/address.go from cosmos-sdk@v0.45.1
 
 ### Build, CI
 

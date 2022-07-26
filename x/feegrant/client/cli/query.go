@@ -49,17 +49,15 @@ $ %s query feegrant grant [granter] [grantee]
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := feegrant.NewQueryClient(clientCtx)
 
-			err := sdk.ValidateAccAddress(args[0])
+			granterAddr, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
-			granterAddr := sdk.AccAddress(args[0])
 
-			err = sdk.ValidateAccAddress(args[1])
+			granteeAddr, err := sdk.AccAddressFromBech32(args[1])
 			if err != nil {
 				return err
 			}
-			granteeAddr := sdk.AccAddress(args[1])
 
 			res, err := queryClient.Allowance(
 				cmd.Context(),
@@ -99,11 +97,10 @@ $ %s query feegrant grants [grantee]
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := feegrant.NewQueryClient(clientCtx)
 
-			err := sdk.ValidateAccAddress(args[0])
+			granteeAddr, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
-			granteeAddr := sdk.AccAddress(args[0])
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {

@@ -58,10 +58,6 @@ func NewBaseSendKeeper(
 	}
 }
 
-func AddressToPrefixKey(addr sdk.AccAddress) []byte {
-	return []byte(addr.String() + types.AddressDenomDelimiter)
-}
-
 // GetParams returns the total set of bank parameters.
 func (k BaseSendKeeper) GetParams(ctx sdk.Context) (params types.Params) {
 	k.paramSpace.GetParamSet(ctx, &params)
@@ -84,9 +80,12 @@ func (k BaseSendKeeper) InputOutputCoins(ctx sdk.Context, inputs []types.Input, 
 	}
 
 	for _, in := range inputs {
-		inAddress := sdk.AccAddress(in.Address)
+		inAddress, err := sdk.AccAddressFromBech32(in.Address)
+		if err != nil {
+			return err
+		}
 
-		err := k.subUnlockedCoins(ctx, inAddress, in.Coins)
+		err = k.subUnlockedCoins(ctx, inAddress, in.Coins)
 		if err != nil {
 			return err
 		}
@@ -100,8 +99,11 @@ func (k BaseSendKeeper) InputOutputCoins(ctx sdk.Context, inputs []types.Input, 
 	}
 
 	for _, out := range outputs {
-		outAddress := sdk.AccAddress(out.Address)
-		err := k.addCoins(ctx, outAddress, out.Coins)
+		outAddress, err := sdk.AccAddressFromBech32(out.Address)
+		if err != nil {
+			return err
+		}
+		err = k.addCoins(ctx, outAddress, out.Coins)
 		if err != nil {
 			return err
 		}

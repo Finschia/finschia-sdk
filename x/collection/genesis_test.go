@@ -12,7 +12,7 @@ import (
 )
 
 func TestValidateGenesis(t *testing.T) {
-	addr := sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	testCases := map[string]struct {
 		gs    *collection.GenesisState
 		valid bool

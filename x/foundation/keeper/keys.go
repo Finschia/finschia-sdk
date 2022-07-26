@@ -148,7 +148,7 @@ func grantKeyPrefixByGrantee(grantee sdk.AccAddress) []byte {
 func splitGrantKey(key []byte) (grantee sdk.AccAddress, url, granter string) {
 	begin := len(grantKeyPrefix) + 1
 	end := begin + int(key[begin-1])
-	grantee = sdk.AccAddress(key[begin:end])
+	grantee = key[begin:end]
 
 	begin = end + 1
 	end = begin + int(key[begin-1])
