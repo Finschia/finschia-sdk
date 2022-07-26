@@ -11370,6 +11370,24 @@ paths:
                   properties:
                     address:
                       type: string
+                    start_height:
+                      type: string
+                      format: int64
+                      title: >-
+                        Height at which validator was first a candidate OR was
+                        unjailed
+                    index_offset:
+                      type: string
+                      format: int64
+                      description: >-
+                        Index which is incremented each time the validator was a
+                        bonded
+
+                        in a block and may have signed a precommit or not. This
+                        in conjunction with the
+
+                        `SignedBlocksWindow` param determines the index in the
+                        `MissedBlocksBitArray`.
                     jailed_until:
                       type: string
                       format: date-time
@@ -11388,10 +11406,6 @@ paths:
                       title: >-
                         missed blocks counter (to avoid scanning the array every
                         time)
-                    voter_set_counter:
-                      type: string
-                      format: int64
-                      title: how many times the validator joined to voter set
                   description: >-
                     ValidatorSigningInfo defines a validator's signing info for
                     monitoring their
@@ -11528,6 +11542,24 @@ paths:
                 properties:
                   address:
                     type: string
+                  start_height:
+                    type: string
+                    format: int64
+                    title: >-
+                      Height at which validator was first a candidate OR was
+                      unjailed
+                  index_offset:
+                    type: string
+                    format: int64
+                    description: >-
+                      Index which is incremented each time the validator was a
+                      bonded
+
+                      in a block and may have signed a precommit or not. This in
+                      conjunction with the
+
+                      `SignedBlocksWindow` param determines the index in the
+                      `MissedBlocksBitArray`.
                   jailed_until:
                     type: string
                     format: date-time
@@ -11546,10 +11578,6 @@ paths:
                     title: >-
                       missed blocks counter (to avoid scanning the array every
                       time)
-                  voter_set_counter:
-                    type: string
-                    format: int64
-                    title: how many times the validator joined to voter set
                 description: >-
                   ValidatorSigningInfo defines a validator's signing info for
                   monitoring their
@@ -53628,6 +53656,21 @@ definitions:
         properties:
           address:
             type: string
+          start_height:
+            type: string
+            format: int64
+            title: Height at which validator was first a candidate OR was unjailed
+          index_offset:
+            type: string
+            format: int64
+            description: >-
+              Index which is incremented each time the validator was a bonded
+
+              in a block and may have signed a precommit or not. This in
+              conjunction with the
+
+              `SignedBlocksWindow` param determines the index in the
+              `MissedBlocksBitArray`.
           jailed_until:
             type: string
             format: date-time
@@ -53644,10 +53687,6 @@ definitions:
             type: string
             format: int64
             title: missed blocks counter (to avoid scanning the array every time)
-          voter_set_counter:
-            type: string
-            format: int64
-            title: how many times the validator joined to voter set
         description: >-
           ValidatorSigningInfo defines a validator's signing info for monitoring
           their
@@ -53669,6 +53708,21 @@ definitions:
           properties:
             address:
               type: string
+            start_height:
+              type: string
+              format: int64
+              title: Height at which validator was first a candidate OR was unjailed
+            index_offset:
+              type: string
+              format: int64
+              description: >-
+                Index which is incremented each time the validator was a bonded
+
+                in a block and may have signed a precommit or not. This in
+                conjunction with the
+
+                `SignedBlocksWindow` param determines the index in the
+                `MissedBlocksBitArray`.
             jailed_until:
               type: string
               format: date-time
@@ -53685,10 +53739,6 @@ definitions:
               type: string
               format: int64
               title: missed blocks counter (to avoid scanning the array every time)
-            voter_set_counter:
-              type: string
-              format: int64
-              title: how many times the validator joined to voter set
           description: >-
             ValidatorSigningInfo defines a validator's signing info for
             monitoring their
@@ -53730,6 +53780,21 @@ definitions:
     properties:
       address:
         type: string
+      start_height:
+        type: string
+        format: int64
+        title: Height at which validator was first a candidate OR was unjailed
+      index_offset:
+        type: string
+        format: int64
+        description: >-
+          Index which is incremented each time the validator was a bonded
+
+          in a block and may have signed a precommit or not. This in conjunction
+          with the
+
+          `SignedBlocksWindow` param determines the index in the
+          `MissedBlocksBitArray`.
       jailed_until:
         type: string
         format: date-time
@@ -53746,10 +53811,6 @@ definitions:
         type: string
         format: int64
         title: missed blocks counter (to avoid scanning the array every time)
-      voter_set_counter:
-        type: string
-        format: int64
-        title: how many times the validator joined to voter set
     description: >-
       ValidatorSigningInfo defines a validator's signing info for monitoring
       their
@@ -58279,6 +58340,10 @@ definitions:
                         timestamp:
                           type: string
                           format: date-time
+                        voting_weight:
+                          type: string
+                          format: int64
+                          title: '*** Ostracon Extended Fields ***'
                       description: >-
                         DuplicateVoteEvidence contains evidence of a validator
                         signed two conflicting votes.
@@ -58459,6 +58524,10 @@ definitions:
                                       proposer_priority:
                                         type: string
                                         format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
                                 proposer:
                                   type: object
                                   properties:
@@ -58483,6 +58552,10 @@ definitions:
                                     proposer_priority:
                                       type: string
                                       format: int64
+                                    voting_weight:
+                                      type: string
+                                      format: int64
+                                      title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -58515,6 +58588,10 @@ definitions:
                               proposer_priority:
                                 type: string
                                 format: int64
+                              voting_weight:
+                                type: string
+                                format: int64
+                                title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64

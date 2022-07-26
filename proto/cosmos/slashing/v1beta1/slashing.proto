@@ -15,16 +15,20 @@ message ValidatorSigningInfo {
   option (gogoproto.goproto_stringer) = false;
 
   string address = 1;
+  // Height at which validator was first a candidate OR was unjailed
+  int64 start_height = 2;
+  // Index which is incremented each time the validator was a bonded
+  // in a block and may have signed a precommit or not. This in conjunction with the
+  // `SignedBlocksWindow` param determines the index in the `MissedBlocksBitArray`.
+  int64 index_offset = 3;
   // timestamp validator cannot be unjailed until
-  google.protobuf.Timestamp jailed_until = 2
+  google.protobuf.Timestamp jailed_until = 4
       [(gogoproto.moretags) = "yaml:\"jailed_until\"", (gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   // whether or not a validator has been tombstoned (killed out of validator
   // set)
-  bool tombstoned = 3;
+  bool tombstoned = 5;
   // missed blocks counter (to avoid scanning the array every time)
-  int64 missed_blocks_counter = 4 [(gogoproto.moretags) = "yaml:\"missed_blocks_counter\""];
-  // how many times the validator joined to voter set
-  int64 voter_set_counter = 5 [(gogoproto.moretags) = "yaml:\"voter_set_counter\""];
+  int64 missed_blocks_counter = 6 [(gogoproto.moretags) = "yaml:\"missed_blocks_counter\""];
 }
 
 // Params represents the parameters used for by the slashing module.

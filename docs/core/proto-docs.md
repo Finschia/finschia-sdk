@@ -6490,10 +6490,11 @@ liveness activity.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
+| `start_height` | [int64](#int64) |  | Height at which validator was first a candidate OR was unjailed |
+| `index_offset` | [int64](#int64) |  | Index which is incremented each time the validator was a bonded in a block and may have signed a precommit or not. This in conjunction with the `SignedBlocksWindow` param determines the index in the `MissedBlocksBitArray`. |
 | `jailed_until` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp validator cannot be unjailed until |
 | `tombstoned` | [bool](#bool) |  | whether or not a validator has been tombstoned (killed out of validator set) |
 | `missed_blocks_counter` | [int64](#int64) |  | missed blocks counter (to avoid scanning the array every time) |
-| `voter_set_counter` | [int64](#int64) |  | how many times the validator joined to voter set |
 
 
 
