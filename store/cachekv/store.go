@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/internal/conv"
 	"github.com/line/lbm-sdk/store/listenkv"
@@ -31,7 +31,7 @@ type Store struct {
 	cache         sync.Map
 	deleted       sync.Map
 	unsortedCache sync.Map
-	sortedCache   *memdb.MemDB // always ascending sorted
+	sortedCache   *dbm.MemDB // always ascending sorted
 	parent        types.KVStore
 }
 
@@ -43,7 +43,7 @@ func NewStore(parent types.KVStore) *Store {
 		cache:         sync.Map{},
 		deleted:       sync.Map{},
 		unsortedCache: sync.Map{},
-		sortedCache:   memdb.NewDB(),
+		sortedCache:   dbm.NewMemDB(),
 		parent:        parent,
 	}
 }
@@ -136,7 +136,7 @@ func (store *Store) Write() {
 	store.cache = sync.Map{}
 	store.deleted = sync.Map{}
 	store.unsortedCache = sync.Map{}
-	store.sortedCache = memdb.NewDB()
+	store.sortedCache = dbm.NewMemDB()
 }
 
 // CacheWrap implements CacheWrapper.

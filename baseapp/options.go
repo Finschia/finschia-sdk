@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"io"
 
-	tmdb "github.com/line/tm-db/v2"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/cache"
-	"github.com/line/lbm-sdk/store/iavl"
 
 	"github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/snapshots"
@@ -71,17 +70,6 @@ func SetInterBlockCache(cache sdk.MultiStorePersistentCache) func(*BaseApp) {
 	return func(app *BaseApp) { app.setInterBlockCache(cache) }
 }
 
-// SetIAVLCacheManager provides a BaseApp option function that sets the iavl CacheManager
-func SetIAVLCacheManager(size int, provider iavl.MetricsProvider) func(*BaseApp) {
-	return func(app *BaseApp) {
-		if size == 0 {
-			app.cms.SetIAVLCacheManager(iavl.NewCacheManagerNoCache())
-		} else {
-			app.cms.SetIAVLCacheManager(iavl.NewCacheManagerSingleton(size, provider))
-		}
-	}
-}
-
 // SetSnapshotInterval sets the snapshot interval.
 func SetSnapshotInterval(interval uint64) func(*BaseApp) {
 	return func(app *BaseApp) { app.SetSnapshotInterval(interval) }
@@ -127,7 +115,7 @@ func (app *BaseApp) SetProtocolVersion(v uint64) {
 	app.appVersion = v
 }
 
-func (app *BaseApp) SetDB(db tmdb.DB) {
+func (app *BaseApp) SetDB(db dbm.DB) {
 	if app.sealed {
 		panic("SetDB() on sealed BaseApp")
 	}
@@ -257,10 +245,10 @@ func (app *BaseApp) SetInterfaceRegistry(registry types.InterfaceRegistry) {
 	app.msgServiceRouter.SetInterfaceRegistry(registry)
 }
 
-func MetricsProvider(prometheus bool) (cache.MetricsProvider, iavl.MetricsProvider) {
+func MetricsProvider(prometheus bool) cache.MetricsProvider {
 	namespace := "app"
 	if prometheus {
-		return cache.PrometheusMetricsProvider(namespace), iavl.PrometheusMetricsProvider(namespace)
+		return cache.PrometheusMetricsProvider(namespace)
 	}
-	return cache.NopMetricsProvider(), iavl.NopMetricsProvider()
+	return cache.NopMetricsProvider()
 }

@@ -3,7 +3,7 @@ package cachekv_test
 import (
 	"testing"
 
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/lbm-sdk/store/dbadapter"
@@ -15,7 +15,7 @@ const defaultValueSizeBz = 1 << 12
 
 // This benchmark measures the time of iterator.Next() when the parent store is blank
 func benchmarkBlankParentIteratorNext(b *testing.B, keysize int) {
-	mem := dbadapter.Store{DB: memdb.NewDB()}
+	mem := dbadapter.Store{DB: dbm.NewMemDB()}
 	kvstore := cachekv.NewStore(mem)
 	// Use a singleton for value, to not waste time computing it
 	value := randSlice(defaultValueSizeBz)
@@ -43,7 +43,7 @@ func benchmarkBlankParentIteratorNext(b *testing.B, keysize int) {
 
 // Benchmark setting New keys to a store, where the new keys are in sequence.
 func benchmarkBlankParentAppend(b *testing.B, keysize int) {
-	mem := dbadapter.Store{DB: memdb.NewDB()}
+	mem := dbadapter.Store{DB: dbm.NewMemDB()}
 	kvstore := cachekv.NewStore(mem)
 
 	// Use a singleton for value, to not waste time computing it
@@ -65,7 +65,7 @@ func benchmarkBlankParentAppend(b *testing.B, keysize int) {
 // Benchmark setting New keys to a store, where the new keys are random.
 // the speed of this function does not depend on the values in the parent store
 func benchmarkRandomSet(b *testing.B, keysize int) {
-	mem := dbadapter.Store{DB: memdb.NewDB()}
+	mem := dbadapter.Store{DB: dbm.NewMemDB()}
 	kvstore := cachekv.NewStore(mem)
 
 	// Use a singleton for value, to not waste time computing it
@@ -93,7 +93,7 @@ func benchmarkRandomSet(b *testing.B, keysize int) {
 // We essentially are benchmarking the cacheKV iterator creation & iteration times
 // with the number of entries deleted in the parent.
 func benchmarkIteratorOnParentWithManyDeletes(b *testing.B, numDeletes int) {
-	mem := dbadapter.Store{DB: memdb.NewDB()}
+	mem := dbadapter.Store{DB: dbm.NewMemDB()}
 
 	// Use a singleton for value, to not waste time computing it
 	value := randSlice(32)

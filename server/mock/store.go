@@ -3,7 +3,7 @@ package mock
 import (
 	"io"
 
-	tmdb "github.com/line/tm-db/v2"
+	dbm "github.com/tendermint/tm-db"
 
 	store "github.com/line/lbm-sdk/store/types"
 	sdk "github.com/line/lbm-sdk/types"
@@ -79,7 +79,7 @@ func (ms multiStore) GetCommitStore(key sdk.StoreKey) sdk.CommitStore {
 	panic("not implemented")
 }
 
-func (ms multiStore) MountStoreWithDB(key sdk.StoreKey, typ sdk.StoreType, db tmdb.DB) {
+func (ms multiStore) MountStoreWithDB(key sdk.StoreKey, typ sdk.StoreType, db dbm.DB) {
 	ms.kv[key] = kvStore{store: make(map[string][]byte)}
 }
 
@@ -129,10 +129,6 @@ func (ms multiStore) Snapshot(height uint64, format uint32) (<-chan io.ReadClose
 func (ms multiStore) Restore(
 	height uint64, format uint32, chunks <-chan io.ReadCloser, ready chan<- struct{},
 ) error {
-	panic("not implemented")
-}
-
-func (ms multiStore) SetIAVLCacheManager(cacheManager store.CacheManager) {
 	panic("not implemented")
 }
 
@@ -201,10 +197,6 @@ func (kv kvStore) SubspaceIterator(prefix []byte) sdk.Iterator {
 }
 
 func (kv kvStore) ReverseSubspaceIterator(prefix []byte) sdk.Iterator {
-	panic("not implemented")
-}
-
-func (kv kvStore) SetIAVLCacheManager(cacheManager store.CacheManager) {
 	panic("not implemented")
 }
 

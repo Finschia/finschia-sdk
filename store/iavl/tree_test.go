@@ -3,14 +3,15 @@ package iavl
 import (
 	"testing"
 
-	"github.com/line/iavl/v2"
-	"github.com/line/tm-db/v2/memdb"
+	"github.com/cosmos/iavl"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 )
 
 func TestImmutableTreePanics(t *testing.T) {
 	t.Parallel()
-	immTree := iavl.NewImmutableTree(memdb.NewDB(), 100)
+	db := dbm.NewMemDB()
+	immTree := iavl.NewImmutableTree(db, 100)
 	it := &immutableTree{immTree}
 	require.Panics(t, func() { it.Set([]byte{}, []byte{}) })
 	require.Panics(t, func() { it.Remove([]byte{}) })

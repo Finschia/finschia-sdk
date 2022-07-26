@@ -6,15 +6,15 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 	ocprototypes "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
 	sdk "github.com/line/lbm-sdk/types"
 )
 
 func TestGetBlockRentionHeight(t *testing.T) {
 	logger := defaultLogger()
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	name := t.Name()
 
 	testCases := map[string]struct {
@@ -103,7 +103,7 @@ func TestGetBlockRentionHeight(t *testing.T) {
 	for name, tc := range testCases {
 		tc := tc
 
-		tc.bapp.SetParamStore(&paramStore{db: memdb.NewDB()})
+		tc.bapp.SetParamStore(&paramStore{db: dbm.NewMemDB()})
 		tc.bapp.InitChain(abci.RequestInitChain{
 			ConsensusParams: &abci.ConsensusParams{
 				Evidence: &ocprototypes.EvidenceParams{
@@ -124,7 +124,7 @@ func TestBaseAppCreateQueryContextRejectsNegativeHeights(t *testing.T) {
 	t.Parallel()
 
 	logger := defaultLogger()
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	name := t.Name()
 	app := NewBaseApp(name, logger, db, nil)
 
