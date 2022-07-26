@@ -344,9 +344,9 @@ func TestBankQuerierBalance(t *testing.T) {
 }
 
 func TestContractInfoWasmQuerier(t *testing.T) {
-	var myValidContractAddr = RandomBech32AccountAddress(t)
-	var myCreatorAddr = RandomBech32AccountAddress(t)
-	var myAdminAddr = RandomBech32AccountAddress(t)
+	myValidContractAddr := RandomBech32AccountAddress(t)
+	myCreatorAddr := RandomBech32AccountAddress(t)
+	myAdminAddr := RandomBech32AccountAddress(t)
 	var ctx sdk.Context
 
 	specs := map[string]struct {
@@ -465,7 +465,7 @@ func TestQueryErrors(t *testing.T) {
 				return nil, spec.src
 			})
 			ctx := sdk.Context{}.WithGasMeter(sdk.NewInfiniteGasMeter()).WithMultiStore(store.NewCommitMultiStore(memdb.NewDB()))
-			q := NewQueryHandler(ctx, mock, sdk.AccAddress(""), NewGasMultiplier(types.DefaultGasMultiplier))
+			q := NewQueryHandler(ctx, mock, sdk.AccAddress{}, NewGasMultiplier(types.DefaultGasMultiplier))
 			_, gotErr := q.Query(wasmvmtypes.QueryRequest{}, 1)
 			assert.Equal(t, spec.expErr, gotErr)
 		})

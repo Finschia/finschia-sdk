@@ -45,10 +45,15 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 
 		for _, balance := range contractBalances.Balances {
 			for _, coin := range balance.Amount {
-				k.setBalance(ctx, contractID, sdk.AccAddress(balance.Address), coin.TokenId, coin.Amount)
+				addr, err := sdk.AccAddressFromBech32(balance.Address)
+				if err != nil {
+					panic(err)
+				}
+
+				k.setBalance(ctx, contractID, addr, coin.TokenId, coin.Amount)
 
 				if err := collection.ValidateNFTID(coin.TokenId); err == nil {
-					k.setOwner(ctx, contractID, coin.TokenId, sdk.AccAddress(balance.Address))
+					k.setOwner(ctx, contractID, coin.TokenId, addr)
 				}
 			}
 		}
@@ -75,13 +80,25 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
 
 	for _, contractAuthorizations := range data.Authorizations {
 		for _, authorization := range contractAuthorizations.Authorizations {
-			k.setAuthorization(ctx, contractAuthorizations.ContractId, sdk.AccAddress(authorization.Holder), sdk.AccAddress(authorization.Operator))
+			holderAddr, err := sdk.AccAddressFromBech32(authorization.Holder)
+			if err != nil {
+				panic(err)
+			}
+			operatorAddr, err := sdk.AccAddressFromBech32(authorization.Operator)
+			if err != nil {
+				panic(err)
+			}
+			k.setAuthorization(ctx, contractAuthorizations.ContractId, holderAddr, operatorAddr)
 		}
 	}
 
 	for _, contractGrants := range data.Grants {
 		for _, grant := range contractGrants.Grants {
-			k.setGrant(ctx, contractGrants.ContractId, sdk.AccAddress(grant.Grantee), grant.Permission)
+			granteeAddr, err := sdk.AccAddressFromBech32(grant.Grantee)
+			if err != nil {
+				panic(err)
+			}
+			k.setGrant(ctx, contractGrants.ContractId, granteeAddr, grant.Permission)
 		}
 	}
 
@@ -204,10 +221,10 @@ func (k Keeper) getBalances(ctx sdk.Context, contracts []collection.Contract) []
 
 func (k Keeper) getContractBalances(ctx sdk.Context, contractID string) []collection.Balance {
 	var balances []collection.Balance
-	addressToBalanceIndex := make(map[sdk.AccAddress]int)
+	addressToBalanceIndex := make(map[string]int)
 
 	k.iterateContractBalances(ctx, contractID, func(address sdk.AccAddress, balance collection.Coin) (stop bool) {
-		index, ok := addressToBalanceIndex[address]
+		index, ok := addressToBalanceIndex[address.String()]
 		if ok {
 			balances[index].Amount = append(balances[index].Amount, balance)
 			return false
@@ -218,7 +235,7 @@ func (k Keeper) getContractBalances(ctx sdk.Context, contractID string) []collec
 			Amount:  collection.Coins{balance},
 		}
 		balances = append(balances, accountBalance)
-		addressToBalanceIndex[address] = len(balances) - 1
+		addressToBalanceIndex[address.String()] = len(balances) - 1
 		return false
 	})
 

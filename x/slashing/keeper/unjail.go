@@ -15,7 +15,7 @@ func (k Keeper) Unjail(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 	}
 
 	// cannot be unjailed if no self-delegation exists
-	selfDel := k.sk.Delegation(ctx, validatorAddr.ToAccAddress(), validatorAddr)
+	selfDel := k.sk.Delegation(ctx, sdk.AccAddress(validatorAddr), validatorAddr)
 	if selfDel == nil {
 		return types.ErrMissingSelfDelegation
 	}

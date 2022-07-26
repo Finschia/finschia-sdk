@@ -34,7 +34,11 @@ var _ foundation.MsgServer = msgServer{}
 // FundTreasury defines a method to fund the treasury.
 func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasury) (*foundation.MsgFundTreasuryResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.FundTreasury(ctx, sdk.AccAddress(req.From), req.Amount); err != nil {
+	from, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.keeper.FundTreasury(ctx, from, req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -56,11 +60,15 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 		return nil, err
 	}
 
-	if err := s.keeper.Accept(ctx, foundation.ModuleName, sdk.AccAddress(req.To), req); err != nil {
+	to, err := sdk.AccAddressFromBech32(req.To)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.keeper.Accept(ctx, foundation.ModuleName, to, req); err != nil {
 		return nil, err
 	}
 
-	if err := s.keeper.WithdrawFromTreasury(ctx, sdk.AccAddress(req.To), req.Amount); err != nil {
+	if err := s.keeper.WithdrawFromTreasury(ctx, to, req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -273,7 +281,11 @@ func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundati
 	}
 
 	authorization := req.GetAuthorization()
-	if err := s.keeper.Grant(ctx, foundation.ModuleName, sdk.AccAddress(req.Grantee), authorization); err != nil {
+	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.keeper.Grant(ctx, foundation.ModuleName, grantee, authorization); err != nil {
 		return nil, err
 	}
 
@@ -291,7 +303,11 @@ func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*founda
 		return nil, sdkerrors.ErrUnauthorized.Wrapf("foundation cannot revoke %s", req.MsgTypeUrl)
 	}
 
-	if err := s.keeper.Revoke(ctx, foundation.ModuleName, sdk.AccAddress(req.Grantee), req.MsgTypeUrl); err != nil {
+	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.keeper.Revoke(ctx, foundation.ModuleName, grantee, req.MsgTypeUrl); err != nil {
 		return nil, err
 	}
 

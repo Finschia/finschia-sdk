@@ -283,7 +283,7 @@ func TestProposalPassedEndblocker(t *testing.T) {
 	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
-	valAddr := addrs[0].ToValAddress()
+	valAddr := sdk.ValAddress(addrs[0])
 
 	createValidators(t, stakingHandler, ctx, []sdk.ValAddress{valAddr}, []int64{10})
 	staking.EndBlocker(ctx, app.StakingKeeper)
@@ -332,7 +332,7 @@ func TestEndBlockerProposalHandlerFailed(t *testing.T) {
 	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
-	valAddr := addrs[0].ToValAddress()
+	valAddr := sdk.ValAddress(addrs[0])
 
 	createValidators(t, stakingHandler, ctx, []sdk.ValAddress{valAddr}, []int64{10})
 	staking.EndBlocker(ctx, app.StakingKeeper)

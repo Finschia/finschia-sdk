@@ -200,10 +200,10 @@ func (m MsgTransferFT) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
@@ -216,7 +216,7 @@ func (m MsgTransferFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgTransferFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -228,13 +228,13 @@ func (m MsgTransferFTFrom) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
 	}
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
@@ -247,7 +247,7 @@ func (m MsgTransferFTFrom) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgTransferFTFrom) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Proxy)
+	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
 }
 
@@ -259,10 +259,10 @@ func (m MsgTransferNFT) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
@@ -280,7 +280,7 @@ func (m MsgTransferNFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgTransferNFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -292,13 +292,13 @@ func (m MsgTransferNFTFrom) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
 	}
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
@@ -316,7 +316,7 @@ func (m MsgTransferNFTFrom) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgTransferNFTFrom) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Proxy)
+	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
 }
 
@@ -328,10 +328,10 @@ func (m MsgApprove) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Approver); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Approver); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", m.Approver)
 	}
-	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
 	}
 
@@ -340,7 +340,7 @@ func (m MsgApprove) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgApprove) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Approver)
+	signer, _ := sdk.AccAddressFromBech32(m.Approver)
 	return []sdk.AccAddress{signer}
 }
 
@@ -352,10 +352,10 @@ func (m MsgDisapprove) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Approver); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Approver); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", m.Approver)
 	}
-	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
 	}
 
@@ -364,7 +364,7 @@ func (m MsgDisapprove) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgDisapprove) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Approver)
+	signer, _ := sdk.AccAddressFromBech32(m.Approver)
 	return []sdk.AccAddress{signer}
 }
 
@@ -372,7 +372,7 @@ var _ sdk.Msg = (*MsgCreateContract)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgCreateContract) ValidateBasic() error {
-	if err := sdk.ValidateAccAddress(m.Owner); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Owner); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", m.Owner)
 	}
 
@@ -393,7 +393,7 @@ func (m MsgCreateContract) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgCreateContract) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Owner)
+	signer, _ := sdk.AccAddressFromBech32(m.Owner)
 	return []sdk.AccAddress{signer}
 }
 
@@ -405,7 +405,7 @@ func (m MsgIssueFT) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Owner); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Owner); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", m.Owner)
 	}
 
@@ -424,7 +424,7 @@ func (m MsgIssueFT) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
@@ -438,7 +438,7 @@ func (m MsgIssueFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgIssueFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Owner)
+	signer, _ := sdk.AccAddressFromBech32(m.Owner)
 	return []sdk.AccAddress{signer}
 }
 
@@ -458,7 +458,7 @@ func (m MsgIssueNFT) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Owner); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Owner); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", m.Owner)
 	}
 
@@ -467,7 +467,7 @@ func (m MsgIssueNFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgIssueNFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Owner)
+	signer, _ := sdk.AccAddressFromBech32(m.Owner)
 	return []sdk.AccAddress{signer}
 }
 
@@ -479,10 +479,10 @@ func (m MsgMintFT) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
@@ -495,7 +495,7 @@ func (m MsgMintFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgMintFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -507,10 +507,10 @@ func (m MsgMintNFT) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
@@ -537,7 +537,7 @@ func (m MsgMintNFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgMintNFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -549,7 +549,7 @@ func (m MsgBurnFT) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
@@ -562,7 +562,7 @@ func (m MsgBurnFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgBurnFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -574,10 +574,10 @@ func (m MsgBurnFTFrom) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
 	}
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
@@ -590,7 +590,7 @@ func (m MsgBurnFTFrom) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgBurnFTFrom) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Proxy)
+	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
 }
 
@@ -602,7 +602,7 @@ func (m MsgBurnNFT) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
@@ -620,7 +620,7 @@ func (m MsgBurnNFT) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgBurnNFT) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -632,10 +632,10 @@ func (m MsgBurnNFTFrom) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
 	}
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
@@ -653,7 +653,7 @@ func (m MsgBurnNFTFrom) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgBurnNFTFrom) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Proxy)
+	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
 }
 
@@ -665,7 +665,7 @@ func (m MsgModify) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Owner); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Owner); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", m.Owner)
 	}
 
@@ -721,7 +721,7 @@ func (m MsgModify) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgModify) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Owner)
+	signer, _ := sdk.AccAddressFromBech32(m.Owner)
 	return []sdk.AccAddress{signer}
 }
 
@@ -733,10 +733,10 @@ func (m MsgGrantPermission) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
-	if err := sdk.ValidateAccAddress(m.To); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
@@ -749,7 +749,7 @@ func (m MsgGrantPermission) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgGrantPermission) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -761,7 +761,7 @@ func (m MsgRevokePermission) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
@@ -774,7 +774,7 @@ func (m MsgRevokePermission) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgRevokePermission) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -786,7 +786,7 @@ func (m MsgAttach) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
@@ -806,7 +806,7 @@ func (m MsgAttach) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgAttach) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -818,7 +818,7 @@ func (m MsgDetach) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
@@ -831,7 +831,7 @@ func (m MsgDetach) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgDetach) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.From)
+	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
@@ -843,10 +843,10 @@ func (m MsgAttachFrom) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
 	}
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
@@ -866,7 +866,7 @@ func (m MsgAttachFrom) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgAttachFrom) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Proxy)
+	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
 }
 
@@ -878,10 +878,10 @@ func (m MsgDetachFrom) ValidateBasic() error {
 		return err
 	}
 
-	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
 	}
-	if err := sdk.ValidateAccAddress(m.From); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
 	}
 
@@ -894,6 +894,6 @@ func (m MsgDetachFrom) ValidateBasic() error {
 
 // GetSigners implements Msg
 func (m MsgDetachFrom) GetSigners() []sdk.AccAddress {
-	signer := sdk.AccAddress(m.Proxy)
+	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
 }

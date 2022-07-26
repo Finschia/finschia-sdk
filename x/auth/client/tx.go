@@ -51,7 +51,7 @@ func SignTx(txFactory tx.Factory, clientCtx client.Context, name string, txBuild
 		txFactory = txFactory.WithSignMode(signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON)
 	}
 
-	addr := sdk.BytesToAccAddress(info.GetPubKey().Address())
+	addr := sdk.AccAddress(info.GetPubKey().Address())
 	if !isTxSigner(addr, txBuilder.GetTx().GetSigners()) {
 		return fmt.Errorf("%s: %s", sdkerrors.ErrorInvalidSigner, name)
 	}

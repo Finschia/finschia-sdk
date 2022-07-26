@@ -245,9 +245,15 @@ func (k Keeper) SlashRedelegation(ctx sdk.Context, srcValidator types.Validator,
 			continue
 		}
 
-		valDstAddr := sdk.ValAddress(redelegation.ValidatorDstAddress)
+		valDstAddr, err := sdk.ValAddressFromBech32(redelegation.ValidatorDstAddress)
+		if err != nil {
+			panic(err)
+		}
 
-		delegatorAddress := sdk.AccAddress(redelegation.DelegatorAddress)
+		delegatorAddress, err := sdk.AccAddressFromBech32(redelegation.DelegatorAddress)
+		if err != nil {
+			panic(err)
+		}
 
 		delegation, found := k.GetDelegation(ctx, delegatorAddress, valDstAddr)
 		if !found {

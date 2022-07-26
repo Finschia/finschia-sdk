@@ -70,7 +70,7 @@ func NewQueryCmdBalances() *cobra.Command {
 			}
 
 			address := args[1]
-			if err := sdk.ValidateAccAddress(address); err != nil {
+			if _, err := sdk.AccAddressFromBech32(address); err != nil {
 				return err
 			}
 
@@ -731,7 +731,7 @@ func NewQueryCmdGranteeGrants() *cobra.Command {
 			}
 
 			grantee := args[1]
-			if err := sdk.ValidateAccAddress(grantee); err != nil {
+			if _, err := sdk.AccAddressFromBech32(grantee); err != nil {
 				return err
 			}
 
@@ -770,12 +770,12 @@ func NewQueryCmdApproved() *cobra.Command {
 			}
 
 			operator := args[1]
-			if err := sdk.ValidateAccAddress(operator); err != nil {
+			if _, err := sdk.AccAddressFromBech32(operator); err != nil {
 				return err
 			}
 
 			holder := args[2]
-			if err := sdk.ValidateAccAddress(holder); err != nil {
+			if _, err := sdk.AccAddressFromBech32(holder); err != nil {
 				return err
 			}
 
@@ -815,7 +815,7 @@ func NewQueryCmdApprovers() *cobra.Command {
 			}
 
 			operator := args[1]
-			if err := sdk.ValidateAccAddress(operator); err != nil {
+			if _, err := sdk.AccAddressFromBech32(operator); err != nil {
 				return err
 			}
 

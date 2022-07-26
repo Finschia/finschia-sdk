@@ -73,7 +73,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor, s.stranger} {
 		s.mintFT(s.contractID, s.vendor, to, s.ftClassID, s.balance)
 
-		if to == s.vendor {
+		if to.Equals(s.vendor) {
 			tokenID := collection.NewFTID(s.ftClassID)
 			amount := collection.NewCoins(collection.NewCoin(tokenID, s.balance))
 			s.burnFT(s.contractID, s.vendor, amount)

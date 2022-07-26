@@ -13,7 +13,7 @@ import (
 func TestMsgTransferFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	amount := collection.NewCoins(
@@ -86,25 +86,25 @@ func TestMsgTransferFT(t *testing.T) {
 			Amount:     tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
-
 		if tc.panic {
 			require.Panics(t, func() { msg.ValidateBasic() }, name)
 			continue
 		}
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 	}
 }
 
 func TestMsgTransferFTFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	amount := collection.NewCoins(
@@ -171,21 +171,21 @@ func TestMsgTransferFTFrom(t *testing.T) {
 			Amount:     tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
 	}
 }
 
 func TestMsgTransferNFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	ids := []string{collection.NewNFTID("deadbeef", 1)}
@@ -240,21 +240,21 @@ func TestMsgTransferNFT(t *testing.T) {
 			TokenIds:   tc.ids,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 	}
 }
 
 func TestMsgTransferNFTFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	ids := []string{collection.NewNFTID("deadbeef", 1)}
@@ -323,21 +323,21 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 			TokenIds:   tc.ids,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
 	}
 }
 
 func TestMsgApprove(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -373,21 +373,21 @@ func TestMsgApprove(t *testing.T) {
 			Proxy:      tc.proxy.String(),
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
 	}
 }
 
 func TestMsgDisapprove(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -423,21 +423,21 @@ func TestMsgDisapprove(t *testing.T) {
 			Proxy:      tc.proxy.String(),
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
 	}
 }
 
 func TestMsgCreateContract(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	name := "tibetian fox"
@@ -490,21 +490,21 @@ func TestMsgCreateContract(t *testing.T) {
 			Meta:       tc.meta,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
 	}
 }
 
 func TestMsgIssueFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -613,21 +613,21 @@ func TestMsgIssueFT(t *testing.T) {
 			Amount:     tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
 	}
 }
 
 func TestMsgIssueNFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -679,21 +679,21 @@ func TestMsgIssueNFT(t *testing.T) {
 			Meta:       tc.meta,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 	}
 }
 
 func TestMsgMintFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	amount := collection.NewCoins(
@@ -748,21 +748,21 @@ func TestMsgMintFT(t *testing.T) {
 			Amount:     tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 	}
 }
 
 func TestMsgMintNFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	params := []collection.MintNFTParam{{
@@ -838,21 +838,21 @@ func TestMsgMintNFT(t *testing.T) {
 			Params:     tc.params,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
 	}
 }
 
 func TestMsgBurnFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	amount := collection.NewCoins(
@@ -895,21 +895,21 @@ func TestMsgBurnFT(t *testing.T) {
 			Amount:     tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 	}
 }
 
 func TestMsgBurnFTFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	amount := collection.NewCoins(
@@ -963,21 +963,21 @@ func TestMsgBurnFTFrom(t *testing.T) {
 			Amount:     tc.amount,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
 	}
 }
 
 func TestMsgBurnNFT(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	ids := []string{collection.NewNFTID("deadbeef", 1)}
@@ -1020,21 +1020,21 @@ func TestMsgBurnNFT(t *testing.T) {
 			TokenIds:   tc.ids,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 	}
 }
 
 func TestMsgBurnNFTFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	ids := []string{collection.NewNFTID("deadbeef", 1)}
@@ -1089,21 +1089,21 @@ func TestMsgBurnNFTFrom(t *testing.T) {
 			TokenIds:   tc.ids,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
 	}
 }
 
 func TestMsgModify(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	changes := []collection.Change{{Field: "name", Value: "New test"}}
@@ -1179,21 +1179,21 @@ func TestMsgModify(t *testing.T) {
 			Changes:    tc.changes,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
 	}
 }
 
 func TestMsgGrantPermission(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -1240,21 +1240,21 @@ func TestMsgGrantPermission(t *testing.T) {
 			Permission: tc.permission,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 	}
 }
 
 func TestMsgRevokePermission(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -1290,21 +1290,21 @@ func TestMsgRevokePermission(t *testing.T) {
 			Permission: tc.permission,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 	}
 }
 
 func TestMsgAttach(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -1363,21 +1363,21 @@ func TestMsgAttach(t *testing.T) {
 			ToTokenId:  tc.toTokenID,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 	}
 }
 
 func TestMsgDetach(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	contractID := "deadbeef"
@@ -1416,21 +1416,21 @@ func TestMsgDetach(t *testing.T) {
 			TokenId:    tc.tokenID,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
 	}
 }
 
 func TestMsgAttachFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	tokenIDs := []string{
@@ -1502,21 +1502,21 @@ func TestMsgAttachFrom(t *testing.T) {
 			ToTokenId:  tc.toTokenID,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
 	}
 }
 
 func TestMsgDetachFrom(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 2)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	tokenID := collection.NewNFTID("deadbeef", 1)
@@ -1565,13 +1565,13 @@ func TestMsgDetachFrom(t *testing.T) {
 			TokenId:    tc.tokenID,
 		}
 
-		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
-
 		err := msg.ValidateBasic()
-		if tc.valid {
-			require.NoError(t, err, name)
-		} else {
+		if !tc.valid {
 			require.Error(t, err, name)
+			return
 		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
 	}
 }

@@ -38,7 +38,8 @@ func (s queryServer) Balance(c context.Context, req *collection.QueryBalanceRequ
 		return nil, err
 	}
 
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
 	}
 
@@ -47,7 +48,7 @@ func (s queryServer) Balance(c context.Context, req *collection.QueryBalanceRequ
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	balance := s.keeper.GetBalance(ctx, req.ContractId, sdk.AccAddress(req.Address), req.TokenId)
+	balance := s.keeper.GetBalance(ctx, req.ContractId, addr, req.TokenId)
 	coin := collection.NewCoin(req.TokenId, balance)
 
 	return &collection.QueryBalanceResponse{Balance: coin}, nil
@@ -63,13 +64,14 @@ func (s queryServer) AllBalances(c context.Context, req *collection.QueryAllBala
 		return nil, err
 	}
 
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
-	balanceStore := prefix.NewStore(store, balanceKeyPrefixByAddress(req.ContractId, sdk.AccAddress(req.Address)))
+	balanceStore := prefix.NewStore(store, balanceKeyPrefixByAddress(req.ContractId, addr))
 	var balances []collection.Coin
 	pageRes, err := query.Paginate(balanceStore, req.Pagination, func(key []byte, value []byte) error {
 		tokenID := string(key)
@@ -572,13 +574,14 @@ func (s queryServer) GranteeGrants(c context.Context, req *collection.QueryGrant
 		return nil, err
 	}
 
-	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
+	granteeAddr, err := sdk.AccAddressFromBech32(req.Grantee)
+	if err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
-	grantStore := prefix.NewStore(store, grantKeyPrefixByGrantee(req.ContractId, sdk.AccAddress(req.Grantee)))
+	grantStore := prefix.NewStore(store, grantKeyPrefixByGrantee(req.ContractId, granteeAddr))
 	var grants []collection.Grant
 	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, _ []byte) error {
 		permission := collection.Permission(key[0])
@@ -604,15 +607,17 @@ func (s queryServer) Approved(c context.Context, req *collection.QueryApprovedRe
 		return nil, err
 	}
 
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Approver); err != nil {
+	approverAddr, err := sdk.AccAddressFromBech32(req.Approver)
+	if err != nil {
 		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.Approver), sdk.AccAddress(req.Address))
+	_, err = s.keeper.GetAuthorization(ctx, req.ContractId, approverAddr, addr)
 	approved := (err == nil)
 
 	return &collection.QueryApprovedResponse{Approved: approved}, nil
@@ -627,17 +632,18 @@ func (s queryServer) Approvers(c context.Context, req *collection.QueryApprovers
 		return nil, err
 	}
 
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address address: %s", req.Address)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
-	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, sdk.AccAddress(req.Address)))
+	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, addr))
 	var approvers []string
 	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key []byte, value []byte) error {
-		holder := string(key)
-		approvers = append(approvers, holder)
+		holder := sdk.AccAddress(key)
+		approvers = append(approvers, holder.String())
 		return nil
 	})
 	if err != nil {

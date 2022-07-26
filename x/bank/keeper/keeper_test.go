@@ -152,7 +152,7 @@ func (suite *IntegrationTestSuite) TestSendCoinsFromModuleToAccount_Blacklist() 
 	maccPerms[multiPerm] = []string{authtypes.Burner, authtypes.Minter, authtypes.Staking}
 	maccPerms[randomPerm] = []string{"random"}
 
-	addr1 := sdk.BytesToAccAddress([]byte("addr1_______________"))
+	addr1 := sdk.AccAddress([]byte("addr1_______________"))
 
 	authKeeper := authkeeper.NewAccountKeeper(
 		appCodec, app.GetKey(types.StoreKey), app.GetSubspace(types.ModuleName),
@@ -353,7 +353,7 @@ func (suite *IntegrationTestSuite) TestInputOutputNewAccount() {
 	app, ctx := suite.app, suite.ctx
 
 	balances := sdk.NewCoins(newFooCoin(100), newBarCoin(50))
-	addr1 := sdk.BytesToAccAddress([]byte("addr1_______________"))
+	addr1 := sdk.AccAddress([]byte("addr1_______________"))
 	acc1 := app.AccountKeeper.NewAccountWithAddress(ctx, addr1)
 	app.AccountKeeper.SetAccount(ctx, acc1)
 	suite.Require().NoError(simapp.FundAccount(app, ctx, addr1, balances))
@@ -361,7 +361,7 @@ func (suite *IntegrationTestSuite) TestInputOutputNewAccount() {
 	acc1Balances := app.BankKeeper.GetAllBalances(ctx, addr1)
 	suite.Require().Equal(balances, acc1Balances)
 
-	addr2 := sdk.BytesToAccAddress([]byte("addr2_______________"))
+	addr2 := sdk.AccAddress([]byte("addr2_______________"))
 
 	suite.Require().Nil(app.AccountKeeper.GetAccount(ctx, addr2))
 	suite.Require().Empty(app.BankKeeper.GetAllBalances(ctx, addr2))
@@ -385,15 +385,15 @@ func (suite *IntegrationTestSuite) TestInputOutputCoins() {
 	app, ctx := suite.app, suite.ctx
 	balances := sdk.NewCoins(newFooCoin(90), newBarCoin(30))
 
-	addr1 := sdk.BytesToAccAddress([]byte("addr1_______________"))
+	addr1 := sdk.AccAddress([]byte("addr1_______________"))
 	acc1 := app.AccountKeeper.NewAccountWithAddress(ctx, addr1)
 	app.AccountKeeper.SetAccount(ctx, acc1)
 
-	addr2 := sdk.BytesToAccAddress([]byte("addr2_______________"))
+	addr2 := sdk.AccAddress([]byte("addr2_______________"))
 	acc2 := app.AccountKeeper.NewAccountWithAddress(ctx, addr2)
 	app.AccountKeeper.SetAccount(ctx, acc2)
 
-	addr3 := sdk.BytesToAccAddress([]byte("addr3_______________"))
+	addr3 := sdk.AccAddress([]byte("addr3_______________"))
 	acc3 := app.AccountKeeper.NewAccountWithAddress(ctx, addr3)
 	app.AccountKeeper.SetAccount(ctx, acc3)
 
@@ -604,10 +604,10 @@ func (suite *IntegrationTestSuite) TestMsgMultiSendEvents() {
 
 	app.BankKeeper.SetParams(ctx, types.DefaultParams())
 
-	addr := sdk.BytesToAccAddress([]byte("addr1_______________"))
-	addr2 := sdk.BytesToAccAddress([]byte("addr2_______________"))
-	addr3 := sdk.BytesToAccAddress([]byte("addr3_______________"))
-	addr4 := sdk.BytesToAccAddress([]byte("addr4_______________"))
+	addr := sdk.AccAddress([]byte("addr1_______________"))
+	addr2 := sdk.AccAddress([]byte("addr2_______________"))
+	addr3 := sdk.AccAddress([]byte("addr3_______________"))
+	addr4 := sdk.AccAddress([]byte("addr4_______________"))
 	acc := app.AccountKeeper.NewAccountWithAddress(ctx, addr)
 	acc2 := app.AccountKeeper.NewAccountWithAddress(ctx, addr2)
 
@@ -1076,7 +1076,7 @@ func (suite *IntegrationTestSuite) TestBalanceTrackingEvents() {
 			sdk.NewCoins(sdk.NewCoin("utxo", sdk.NewInt(100000)))),
 	)
 	// send coins to address
-	addr1 := sdk.BytesToAccAddress([]byte("addr1_______________"))
+	addr1 := sdk.AccAddress("addr1_______________")
 	suite.Require().NoError(
 		suite.app.BankKeeper.SendCoinsFromModuleToAccount(
 			suite.ctx,
@@ -1115,17 +1115,15 @@ func (suite *IntegrationTestSuite) TestBalanceTrackingEvents() {
 		case types.EventTypeCoinSpent:
 			coinsSpent, err := sdk.ParseCoinsNormalized((string)(e.Attributes[1].Value))
 			suite.Require().NoError(err)
-			err = sdk.ValidateAccAddress(string(e.Attributes[0].Value))
+			spender, err := sdk.AccAddressFromBech32((string)(e.Attributes[0].Value))
 			suite.Require().NoError(err)
-			spender := sdk.AccAddress(e.Attributes[0].Value)
 			balances[spender.String()] = balances[spender.String()].Sub(coinsSpent)
 
 		case types.EventTypeCoinReceived:
 			coinsRecv, err := sdk.ParseCoinsNormalized((string)(e.Attributes[1].Value))
 			suite.Require().NoError(err)
-			err = sdk.ValidateAccAddress(string(e.Attributes[0].Value))
+			receiver, err := sdk.AccAddressFromBech32((string)(e.Attributes[0].Value))
 			suite.Require().NoError(err)
-			receiver := sdk.AccAddress(e.Attributes[0].Value)
 			balances[receiver.String()] = balances[receiver.String()].Add(coinsRecv...)
 		}
 	}
