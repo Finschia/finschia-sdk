@@ -11,22 +11,21 @@ The bank module emits the following events:
 ### MsgSend
 
 | Type     | Attribute Key | Attribute Value    |
-| -------- | ------------- | ------------------ |
+|----------|---------------|--------------------|
 | transfer | recipient     | {recipientAddress} |
+| transfer | sender        | {senderAddress}    |
 | transfer | amount        | {amount}           |
-| message  | module        | bank               |
-| message  | action        | send               |
 | message  | sender        | {senderAddress}    |
+| message  | module        | bank               |
 
 ### MsgMultiSend
 
 | Type     | Attribute Key | Attribute Value    |
-| -------- | ------------- | ------------------ |
+|----------|---------------|--------------------|
+| message  | sender        | {senderAddress}    |
 | transfer | recipient     | {recipientAddress} |
 | transfer | amount        | {amount}           |
 | message  | module        | bank               |
-| message  | action        | multisend          |
-| message  | sender        | {senderAddress}    |
 
 ## Keeper events
 
