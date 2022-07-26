@@ -47,6 +47,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#571](https://github.com/line/lbm-sdk/pull/571) add x/collection proto
 * (x/collection) [\#574](https://github.com/line/lbm-sdk/pull/574) implement x/collection
 * (amino) [\600](https://github.com/line/lbm-sdk/pull/600) change amino codec path from `lbm-sdk/` to `cosmos-sdk/`
+* (server/grpc) [\#607](https://github.com/line/lbm-sdk/pull/607) revert gRPC block height header.
 
 ### Improvements
 

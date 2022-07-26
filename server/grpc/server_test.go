@@ -190,7 +190,7 @@ func (s *IntegrationTestSuite) TestGRPCServer_BroadcastTx() {
 }
 
 // Test and enforce that we upfront reject any connections to baseapp containing
-// invalid initial x-lbm-block-height that aren't positive  and in the range [0, max(int64)]
+// invalid initial x-cosmos-block-height that aren't positive  and in the range [0, max(int64)]
 // See issue https://github.com/cosmos/cosmos-sdk/issues/7662.
 func (s *IntegrationTestSuite) TestGRPCServerInvalidHeaderHeights() {
 	t := s.T()
