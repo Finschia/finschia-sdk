@@ -40262,7 +40262,7 @@ paths:
           - `contract_id` is of invalid format.
         - ErrInvalidAddress
           - `proxy` is of invalid format.
-      operationId: Approvers
+      operationId: CollectionApprovers
       responses:
         '200':
           description: A successful response.
