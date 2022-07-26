@@ -69,7 +69,7 @@ func (i localInfo) GetPubKey() cryptotypes.PubKey {
 
 // GetType implements Info interface
 func (i localInfo) GetAddress() types.AccAddress {
-	return types.BytesToAccAddress(i.PubKey.Address())
+	return i.PubKey.Address().Bytes()
 }
 
 // GetType implements Info interface
@@ -117,7 +117,7 @@ func (i ledgerInfo) GetPubKey() cryptotypes.PubKey {
 
 // GetAddress implements Info interface
 func (i ledgerInfo) GetAddress() types.AccAddress {
-	return types.BytesToAccAddress(i.PubKey.Address())
+	return i.PubKey.Address().Bytes()
 }
 
 // GetPath implements Info interface
@@ -169,7 +169,7 @@ func (i offlineInfo) GetAlgo() hd.PubKeyType {
 
 // GetAddress implements Info interface
 func (i offlineInfo) GetAddress() types.AccAddress {
-	return types.BytesToAccAddress(i.PubKey.Address())
+	return i.PubKey.Address().Bytes()
 }
 
 // GetPath implements Info interface
@@ -222,7 +222,7 @@ func (i multiInfo) GetPubKey() cryptotypes.PubKey {
 
 // GetAddress implements Info interface
 func (i multiInfo) GetAddress() types.AccAddress {
-	return types.BytesToAccAddress(i.PubKey.Address())
+	return i.PubKey.Address().Bytes()
 }
 
 // GetPath implements Info interface

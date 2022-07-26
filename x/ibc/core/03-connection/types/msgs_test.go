@@ -78,7 +78,7 @@ func TestMsgTestSuite(t *testing.T) {
 
 func (suite *MsgTestSuite) TestNewMsgConnectionOpenInit() {
 	prefix := commitmenttypes.NewMerklePrefix([]byte("storePrefixKey"))
-	signer := sdk.AccAddress("link1kerpa33qxdwvrgms5qr7xegfxnewzm6s46ce7t")
+	signer, _ := sdk.AccAddressFromBech32("link1kerpa33qxdwvrgms5qr7xegfxnewzm6s46ce7t")
 	// empty versions are considered valid, the default compatible versions
 	// will be used in protocol.
 	var version *types.Version
@@ -93,7 +93,7 @@ func (suite *MsgTestSuite) TestNewMsgConnectionOpenInit() {
 		{"invalid counterparty connection ID", &types.MsgConnectionOpenInit{connectionID, types.NewCounterparty("clienttotest", "connectiontotest", prefix), version, 500, signer.String()}, false},
 		{"empty counterparty prefix", types.NewMsgConnectionOpenInit("clienttotest", "clienttotest", emptyPrefix, version, 500, signer), false},
 		{"supplied version fails basic validation", types.NewMsgConnectionOpenInit("clienttotest", "clienttotest", prefix, &types.Version{}, 500, signer), false},
-		{"empty singer", types.NewMsgConnectionOpenInit("clienttotest", "clienttotest", prefix, version, 500, ""), false},
+		{"empty singer", types.NewMsgConnectionOpenInit("clienttotest", "clienttotest", prefix, version, 500, nil), false},
 		{"success", types.NewMsgConnectionOpenInit("clienttotest", "clienttotest", prefix, version, 500, signer), true},
 	}
 
@@ -109,7 +109,7 @@ func (suite *MsgTestSuite) TestNewMsgConnectionOpenInit() {
 
 func (suite *MsgTestSuite) TestNewMsgConnectionOpenTry() {
 	prefix := commitmenttypes.NewMerklePrefix([]byte("storePrefixKey"))
-	signer := sdk.AccAddress("link10czqumeld9k6dm32ud0xpqs0kn4m6xtrxy024r")
+	signer, _ := sdk.AccAddressFromBech32("link10czqumeld9k6dm32ud0xpqs0kn4m6xtrxy024r")
 
 	clientState := ibctmtypes.NewClientState(
 		chainID, ibctmtypes.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false,
@@ -147,7 +147,7 @@ func (suite *MsgTestSuite) TestNewMsgConnectionOpenTry() {
 		{"empty proofConsensus", types.NewMsgConnectionOpenTry(connectionID, "clienttotesta", "connectiontotest", "clienttotest", clientState, prefix, []*types.Version{ibctesting.ConnectionVersion}, 500, suite.proof, suite.proof, emptyProof, clientHeight, clientHeight, signer), false},
 		{"invalid proofHeight", types.NewMsgConnectionOpenTry(connectionID, "clienttotesta", "connectiontotest", "clienttotest", clientState, prefix, []*types.Version{ibctesting.ConnectionVersion}, 500, suite.proof, suite.proof, suite.proof, clienttypes.ZeroHeight(), clientHeight, signer), false},
 		{"invalid consensusHeight", types.NewMsgConnectionOpenTry(connectionID, "clienttotesta", "connectiontotest", "clienttotest", clientState, prefix, []*types.Version{ibctesting.ConnectionVersion}, 500, suite.proof, suite.proof, suite.proof, clientHeight, clienttypes.ZeroHeight(), signer), false},
-		{"empty singer", types.NewMsgConnectionOpenTry(connectionID, "clienttotesta", "connectiontotest", "clienttotest", clientState, prefix, []*types.Version{ibctesting.ConnectionVersion}, 500, suite.proof, suite.proof, suite.proof, clientHeight, clientHeight, ""), false},
+		{"empty singer", types.NewMsgConnectionOpenTry(connectionID, "clienttotesta", "connectiontotest", "clienttotest", clientState, prefix, []*types.Version{ibctesting.ConnectionVersion}, 500, suite.proof, suite.proof, suite.proof, clientHeight, clientHeight, nil), false},
 		{"success", types.NewMsgConnectionOpenTry(connectionID, "clienttotesta", "connectiontotest", "clienttotest", clientState, prefix, []*types.Version{ibctesting.ConnectionVersion}, 500, suite.proof, suite.proof, suite.proof, clientHeight, clientHeight, signer), true},
 		{"invalid version", types.NewMsgConnectionOpenTry(connectionID, "clienttotesta", "connectiontotest", "clienttotest", clientState, prefix, []*types.Version{{}}, 500, suite.proof, suite.proof, suite.proof, clientHeight, clientHeight, signer), false},
 	}
@@ -163,7 +163,7 @@ func (suite *MsgTestSuite) TestNewMsgConnectionOpenTry() {
 }
 
 func (suite *MsgTestSuite) TestNewMsgConnectionOpenAck() {
-	signer := sdk.AccAddress("link1amsfdt72u7ysc8542p0mmafq9ys8c7qxh74wf5")
+	signer, _ := sdk.AccAddressFromBech32("link1amsfdt72u7ysc8542p0mmafq9ys8c7qxh74wf5")
 	clientState := ibctmtypes.NewClientState(
 		chainID, ibctmtypes.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false,
 	)
@@ -196,7 +196,7 @@ func (suite *MsgTestSuite) TestNewMsgConnectionOpenAck() {
 		{"invalid proofHeight", types.NewMsgConnectionOpenAck(connectionID, connectionID, clientState, suite.proof, suite.proof, suite.proof, clienttypes.ZeroHeight(), clientHeight, ibctesting.ConnectionVersion, signer), false},
 		{"invalid consensusHeight", types.NewMsgConnectionOpenAck(connectionID, connectionID, clientState, suite.proof, suite.proof, suite.proof, clientHeight, clienttypes.ZeroHeight(), ibctesting.ConnectionVersion, signer), false},
 		{"invalid version", types.NewMsgConnectionOpenAck(connectionID, connectionID, clientState, suite.proof, suite.proof, suite.proof, clientHeight, clientHeight, &types.Version{}, signer), false},
-		{"empty signer", types.NewMsgConnectionOpenAck(connectionID, connectionID, clientState, suite.proof, suite.proof, suite.proof, clientHeight, clientHeight, ibctesting.ConnectionVersion, ""), false},
+		{"empty signer", types.NewMsgConnectionOpenAck(connectionID, connectionID, clientState, suite.proof, suite.proof, suite.proof, clientHeight, clientHeight, ibctesting.ConnectionVersion, nil), false},
 		{"success", types.NewMsgConnectionOpenAck(connectionID, connectionID, clientState, suite.proof, suite.proof, suite.proof, clientHeight, clientHeight, ibctesting.ConnectionVersion, signer), true},
 	}
 
@@ -211,13 +211,13 @@ func (suite *MsgTestSuite) TestNewMsgConnectionOpenAck() {
 }
 
 func (suite *MsgTestSuite) TestNewMsgConnectionOpenConfirm() {
-	signer := sdk.AccAddress("link1ptg03mk43x5qcp9xnankk7cwt4vzrkpxqpcff3")
+	signer, _ := sdk.AccAddressFromBech32("link1ptg03mk43x5qcp9xnankk7cwt4vzrkpxqpcff3")
 
 	testMsgs := []*types.MsgConnectionOpenConfirm{
 		types.NewMsgConnectionOpenConfirm("test/conn1", suite.proof, clientHeight, signer),
 		types.NewMsgConnectionOpenConfirm(connectionID, emptyProof, clientHeight, signer),
 		types.NewMsgConnectionOpenConfirm(connectionID, suite.proof, clienttypes.ZeroHeight(), signer),
-		types.NewMsgConnectionOpenConfirm(connectionID, suite.proof, clientHeight, ""),
+		types.NewMsgConnectionOpenConfirm(connectionID, suite.proof, clientHeight, nil),
 		types.NewMsgConnectionOpenConfirm(connectionID, suite.proof, clientHeight, signer),
 	}
 

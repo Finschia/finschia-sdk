@@ -63,11 +63,11 @@ func handleStoreCodeProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types
 		return err
 	}
 
-	err := sdk.ValidateAccAddress(p.RunAs)
+	runAsAddr, err := sdk.AccAddressFromBech32(p.RunAs)
 	if err != nil {
 		return sdkerrors.Wrap(err, "run as address")
 	}
-	codeID, err := k.Create(ctx, sdk.AccAddress(p.RunAs), p.WASMByteCode, p.InstantiatePermission)
+	codeID, err := k.Create(ctx, runAsAddr, p.WASMByteCode, p.InstantiatePermission)
 	if err != nil {
 		return err
 	}
@@ -78,18 +78,18 @@ func handleInstantiateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p typ
 	if err := p.ValidateBasic(); err != nil {
 		return err
 	}
-	err := sdk.ValidateAccAddress(p.RunAs)
+	runAsAddr, err := sdk.AccAddressFromBech32(p.RunAs)
 	if err != nil {
 		return sdkerrors.Wrap(err, "run as address")
 	}
+	var adminAddr sdk.AccAddress
 	if p.Admin != "" {
-		err = sdk.ValidateAccAddress(p.Admin)
-		if err != nil {
+		if adminAddr, err = sdk.AccAddressFromBech32(p.Admin); err != nil {
 			return sdkerrors.Wrap(err, "admin")
 		}
 	}
 
-	_, data, err := k.Instantiate(ctx, p.CodeID, sdk.AccAddress(p.RunAs), sdk.AccAddress(p.Admin), p.Msg, p.Label, p.Funds)
+	_, data, err := k.Instantiate(ctx, p.CodeID, runAsAddr, adminAddr, p.Msg, p.Label, p.Funds)
 	if err != nil {
 		return err
 	}
@@ -106,15 +106,16 @@ func handleMigrateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.M
 		return err
 	}
 
-	err := sdk.ValidateAccAddress(p.Contract)
+	contractAddr, err := sdk.AccAddressFromBech32(p.Contract)
 	if err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
 	// runAs is not used if this is permissioned, so just put any valid address there (second contractAddr)
-	data, err := k.Migrate(ctx, sdk.AccAddress(p.Contract), sdk.AccAddress(p.Contract), p.CodeID, p.Msg)
+	data, err := k.Migrate(ctx, contractAddr, contractAddr, p.CodeID, p.Msg)
 	if err != nil {
 		return err
 	}
+
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		types.EventTypeGovContractResult,
 		sdk.NewAttribute(types.AttributeKeyResultDataHex, hex.EncodeToString(data)),
@@ -126,11 +127,12 @@ func handleSudoProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.Sudo
 	if err := p.ValidateBasic(); err != nil {
 		return err
 	}
-	err := sdk.ValidateAccAddress(p.Contract)
+
+	contractAddr, err := sdk.AccAddressFromBech32(p.Contract)
 	if err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
-	data, err := k.Sudo(ctx, sdk.AccAddress(p.Contract), p.Msg)
+	data, err := k.Sudo(ctx, contractAddr, p.Msg)
 	if err != nil {
 		return err
 	}
@@ -147,15 +149,15 @@ func handleExecuteProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.E
 		return err
 	}
 
-	err := sdk.ValidateAccAddress(p.Contract)
+	contractAddr, err := sdk.AccAddressFromBech32(p.Contract)
 	if err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
-	err = sdk.ValidateAccAddress(p.RunAs)
+	runAsAddr, err := sdk.AccAddressFromBech32(p.RunAs)
 	if err != nil {
 		return sdkerrors.Wrap(err, "run as address")
 	}
-	data, err := k.Execute(ctx, sdk.AccAddress(p.Contract), sdk.AccAddress(p.RunAs), p.Msg, p.Funds)
+	data, err := k.Execute(ctx, contractAddr, runAsAddr, p.Msg, p.Funds)
 	if err != nil {
 		return err
 	}
@@ -171,16 +173,16 @@ func handleUpdateAdminProposal(ctx sdk.Context, k types.ContractOpsKeeper, p typ
 	if err := p.ValidateBasic(); err != nil {
 		return err
 	}
-	err := sdk.ValidateAccAddress(p.Contract)
+	contractAddr, err := sdk.AccAddressFromBech32(p.Contract)
 	if err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
-	err = sdk.ValidateAccAddress(p.NewAdmin)
+	newAdminAddr, err := sdk.AccAddressFromBech32(p.NewAdmin)
 	if err != nil {
 		return sdkerrors.Wrap(err, "run as address")
 	}
 
-	if err := k.UpdateContractAdmin(ctx, sdk.AccAddress(p.Contract), "", sdk.AccAddress(p.NewAdmin)); err != nil {
+	if err := k.UpdateContractAdmin(ctx, contractAddr, nil, newAdminAddr); err != nil {
 		return err
 	}
 
@@ -198,11 +200,11 @@ func handleClearAdminProposal(ctx sdk.Context, k types.ContractOpsKeeper, p type
 		return err
 	}
 
-	err := sdk.ValidateAccAddress(p.Contract)
+	contractAddr, err := sdk.AccAddressFromBech32(p.Contract)
 	if err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
-	if err := k.ClearContractAdmin(ctx, sdk.AccAddress(p.Contract), ""); err != nil {
+	if err := k.ClearContractAdmin(ctx, contractAddr, nil); err != nil {
 		return err
 	}
 
@@ -275,11 +277,11 @@ func handleUpdateContractStatusProposal(ctx sdk.Context, k types.ContractOpsKeep
 	if err := p.ValidateBasic(); err != nil {
 		return err
 	}
-	err := sdk.ValidateAccAddress(p.Contract)
+	contractAddr, err := sdk.AccAddressFromBech32(p.Contract)
 	if err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
-	if err = k.UpdateContractStatus(ctx, sdk.AccAddress(p.Contract), "", p.Status); err != nil {
+	if err = k.UpdateContractStatus(ctx, contractAddr, nil, p.Status); err != nil {
 		return err
 	}
 

@@ -13,7 +13,7 @@ import (
 
 func TestEquivocation_Valid(t *testing.T) {
 	n, _ := time.Parse(time.RFC3339, "2006-01-02T15:04:05Z")
-	addr := sdk.BytesToConsAddress([]byte("foo_________________"))
+	addr := sdk.ConsAddress("foo_________________")
 
 	e := types.Equivocation{
 		Height:           100,
@@ -36,7 +36,7 @@ func TestEquivocation_Valid(t *testing.T) {
 
 func TestEquivocationValidateBasic(t *testing.T) {
 	var zeroTime time.Time
-	addr := sdk.BytesToConsAddress([]byte("foo_________________"))
+	addr := sdk.ConsAddress("foo_________________")
 
 	n, _ := time.Parse(time.RFC3339, "2006-01-02T15:04:05Z")
 	testCases := []struct {
@@ -74,7 +74,6 @@ func TestEvidenceAddressConversion(t *testing.T) {
 	evidence := types.FromABCIEvidence(tmEvidence).(*types.Equivocation)
 	consAddr := evidence.GetConsensusAddress()
 	// Check the address is the same after conversion
-	consAddrBytes, _ := sdk.ConsAddressToBytes(consAddr.String())
-	require.Equal(t, tmEvidence.Validator.Address, consAddrBytes)
+	require.Equal(t, tmEvidence.Validator.Address, consAddr.Bytes())
 	sdk.GetConfig().SetBech32PrefixForConsensusNode(sdk.Bech32PrefixConsAddr, sdk.Bech32PrefixConsPub)
 }

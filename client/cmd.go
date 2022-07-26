@@ -220,15 +220,16 @@ func readTxCommandFlags(clientCtx Context, flagSet *pflag.FlagSet) (Context, err
 		clientCtx = clientCtx.WithSignModeStr(signModeStr)
 	}
 
-	if clientCtx.FeeGranter == "" || flagSet.Changed(flags.FlagFeeAccount) {
+	if clientCtx.FeeGranter == nil || flagSet.Changed(flags.FlagFeeAccount) {
 		granter, _ := flagSet.GetString(flags.FlagFeeAccount)
 
 		if granter != "" {
-			err := sdk.ValidateAccAddress(granter)
+			granterAcc, err := sdk.AccAddressFromBech32(granter)
 			if err != nil {
 				return clientCtx, err
 			}
-			clientCtx = clientCtx.WithFeeGranterAddress(sdk.AccAddress(granter))
+
+			clientCtx = clientCtx.WithFeeGranterAddress(granterAcc)
 		}
 	}
 

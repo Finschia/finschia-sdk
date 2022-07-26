@@ -24,16 +24,18 @@ func (k BaseKeeper) Balance(ctx context.Context, req *types.QueryBalanceRequest)
 		return nil, status.Error(codes.InvalidArgument, "address cannot be empty")
 	}
 
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid bech32 format")
-	}
-
 	if req.Denom == "" {
 		return nil, status.Error(codes.InvalidArgument, "invalid denom")
 	}
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	balance := k.GetBalance(sdkCtx, sdk.AccAddress(req.Address), req.Denom)
+	address, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid address: %s", err.Error())
+	}
+
+	balance := k.GetBalance(sdkCtx, address, req.Denom)
+
 	return &types.QueryBalanceResponse{Balance: &balance}, nil
 }
 
@@ -47,14 +49,15 @@ func (k BaseKeeper) AllBalances(ctx context.Context, req *types.QueryAllBalances
 		return nil, status.Error(codes.InvalidArgument, "address cannot be empty")
 	}
 
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid bech32 format")
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid address: %s", err.Error())
 	}
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	balances := sdk.NewCoins()
-	accountStore := k.getAccountStore(sdkCtx, sdk.AccAddress(req.Address))
+	accountStore := k.getAccountStore(sdkCtx, addr)
 
 	pageRes, err := query.Paginate(accountStore, req.Pagination, func(_, value []byte) error {
 		var result sdk.Coin

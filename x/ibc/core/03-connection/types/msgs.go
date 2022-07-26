@@ -64,7 +64,8 @@ func (msg MsgConnectionOpenInit) ValidateBasic() error {
 			return sdkerrors.Wrap(err, "basic validation of the provided version failed")
 		}
 	}
-	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+	_, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
 	return msg.Counterparty.ValidateBasic()
@@ -78,7 +79,10 @@ func (msg MsgConnectionOpenInit) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgConnectionOpenInit) GetSigners() []sdk.AccAddress {
-	accAddr := sdk.AccAddress(msg.Signer)
+	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{accAddr}
 }
 
@@ -168,7 +172,8 @@ func (msg MsgConnectionOpenTry) ValidateBasic() error {
 	if msg.ConsensusHeight.IsZero() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidHeight, "consensus height must be non-zero")
 	}
-	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+	_, err = sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
 	return msg.Counterparty.ValidateBasic()
@@ -187,7 +192,10 @@ func (msg MsgConnectionOpenTry) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgConnectionOpenTry) GetSigners() []sdk.AccAddress {
-	accAddr := sdk.AccAddress(msg.Signer)
+	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{accAddr}
 }
 
@@ -266,7 +274,8 @@ func (msg MsgConnectionOpenAck) ValidateBasic() error {
 	if msg.ConsensusHeight.IsZero() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidHeight, "consensus height must be non-zero")
 	}
-	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+	_, err = sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
 	return nil
@@ -280,7 +289,10 @@ func (msg MsgConnectionOpenAck) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgConnectionOpenAck) GetSigners() []sdk.AccAddress {
-	accAddr := sdk.AccAddress(msg.Signer)
+	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{accAddr}
 }
 
@@ -319,7 +331,8 @@ func (msg MsgConnectionOpenConfirm) ValidateBasic() error {
 	if msg.ProofHeight.IsZero() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidHeight, "proof height must be non-zero")
 	}
-	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+	_, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
 	return nil
@@ -333,6 +346,9 @@ func (msg MsgConnectionOpenConfirm) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgConnectionOpenConfirm) GetSigners() []sdk.AccAddress {
-	accAddr := sdk.AccAddress(msg.Signer)
+	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{accAddr}
 }

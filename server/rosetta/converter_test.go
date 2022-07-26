@@ -3,10 +3,11 @@ package rosetta_test
 import (
 	"encoding/hex"
 	"encoding/json"
+	"testing"
+
 	"github.com/line/lbm-sdk/testutil/testdata"
 	"github.com/line/lbm-sdk/types/tx/signing"
 	authtx "github.com/line/lbm-sdk/x/auth/tx"
-	"testing"
 
 	rosettatypes "github.com/coinbase/rosetta-sdk-go/types"
 	"github.com/stretchr/testify/suite"
@@ -104,18 +105,18 @@ func (s *ConverterTestSuite) SetupTest() {
 }
 
 func (s *ConverterTestSuite) TestFromRosettaOpsToTxSuccess() {
-	addr1 := sdk.BytesToAccAddress([]byte("address1"))
-	addr2 := sdk.BytesToAccAddress([]byte("address2"))
+	addr1 := sdk.AccAddress("address1").String()
+	addr2 := sdk.AccAddress("address2").String()
 
 	msg1 := &bank.MsgSend{
-		FromAddress: addr1.String(),
-		ToAddress:   addr2.String(),
+		FromAddress: addr1,
+		ToAddress:   addr2,
 		Amount:      sdk.NewCoins(sdk.NewInt64Coin("test", 10)),
 	}
 
 	msg2 := &bank.MsgSend{
-		FromAddress: addr2.String(),
-		ToAddress:   addr1.String(),
+		FromAddress: addr2,
+		ToAddress:   addr1,
 		Amount:      sdk.NewCoins(sdk.NewInt64Coin("utxo", 10)),
 	}
 

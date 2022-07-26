@@ -30,11 +30,11 @@ func (msg MsgCreateVestingAccount) Type() string { return TypeMsgCreateVestingAc
 
 // ValidateBasic Implements Msg.
 func (msg MsgCreateVestingAccount) ValidateBasic() error {
-	from, err := sdk.AccAddressToBytes(msg.FromAddress)
+	from, err := sdk.AccAddressFromBech32(msg.FromAddress)
 	if err != nil {
 		return err
 	}
-	to, err := sdk.AccAddressToBytes(msg.ToAddress)
+	to, err := sdk.AccAddressFromBech32(msg.ToAddress)
 	if err != nil {
 		return err
 	}
@@ -69,9 +69,9 @@ func (msg MsgCreateVestingAccount) GetSignBytes() []byte {
 
 // GetSigners returns the expected signers for a MsgCreateVestingAccount.
 func (msg MsgCreateVestingAccount) GetSigners() []sdk.AccAddress {
-	err := sdk.ValidateAccAddress(msg.FromAddress)
+	from, err := sdk.AccAddressFromBech32(msg.FromAddress)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{sdk.AccAddress(msg.FromAddress)}
+	return []sdk.AccAddress{from}
 }

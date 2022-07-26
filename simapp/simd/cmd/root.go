@@ -243,11 +243,6 @@ func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, a
 			cast.ToInt(appOpts.Get(server.FlagInterBlockCacheSize)), ibCacheMetricsProvider)
 	}
 
-	bech32CacheSize := cast.ToInt(appOpts.Get(server.FlagBech32CacheSize))
-	if bech32CacheSize > 0 {
-		sdk.SetBech32Cache(int64(bech32CacheSize))
-	}
-
 	skipUpgradeHeights := make(map[int64]bool)
 	for _, h := range cast.ToIntSlice(appOpts.Get(server.FlagUnsafeSkipUpgrades)) {
 		skipUpgradeHeights[int64(h)] = true

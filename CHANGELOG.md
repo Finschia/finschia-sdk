@@ -48,6 +48,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#574](https://github.com/line/lbm-sdk/pull/574) implement x/collection
 * (amino) [\#600](https://github.com/line/lbm-sdk/pull/600) change amino codec path from `lbm-sdk/` to `cosmos-sdk/`
 * (store) [\#605](https://github.com/line/lbm-sdk/pull/605) replace line/iavl and line/tm-db with cosmos/iavl and tendermint/tm-db.
+* (server/grpc) [\#607](https://github.com/line/lbm-sdk/pull/607) revert gRPC block height header.
 
 ### Improvements
 
@@ -66,9 +67,11 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/auth) [\#563](https://github.com/line/lbm-sdk/pull/563) fix unmarshal bug of `BaseAccountJSON`
 * (client) [\#565](https://github.com/line/lbm-sdk/pull/565) fix the data race problem in `TestQueryABCIHeight`
 * (x/token) [\#589](https://github.com/line/lbm-sdk/pull/589) fix naming collision in x/token enums
+* (x/token) [\#599](https://github.com/line/lbm-sdk/pull/599) fix the order of events
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
+* (global) [\#603](https://github.com/line/lbm-sdk/pull/603) apply types/address.go from cosmos-sdk@v0.45.1
 
 ### Build, CI
 

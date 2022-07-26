@@ -41,11 +41,11 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			serverCtx := server.GetServerContextFromCmd(cmd)
 			config := serverCtx.Config
+
 			config.SetRoot(clientCtx.HomeDir)
 
 			var kb keyring.Keyring
-			addr := sdk.AccAddress(args[0])
-			err := sdk.ValidateAccAddress(args[0])
+			addr, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				inBuf := bufio.NewReader(cmd.InOrStdin())
 				keyringBackend, _ := cmd.Flags().GetString(flags.FlagKeyringBackend)

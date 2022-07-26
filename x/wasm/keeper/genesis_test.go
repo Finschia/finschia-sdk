@@ -65,9 +65,9 @@ func TestGenesisExportImport(t *testing.T) {
 		f.Fuzz(&pinned)
 		f.Fuzz(&contractExtension)
 
-		err := sdk.ValidateAccAddress(codeInfo.Creator)
+		creatorAddr, err := sdk.AccAddressFromBech32(codeInfo.Creator)
 		require.NoError(t, err)
-		codeID, err := contractKeeper.Create(srcCtx, sdk.AccAddress(codeInfo.Creator), wasmCode, &codeInfo.InstantiateConfig)
+		codeID, err := contractKeeper.Create(srcCtx, creatorAddr, wasmCode, &codeInfo.InstantiateConfig)
 		require.NoError(t, err)
 		if pinned {
 			contractKeeper.PinCode(srcCtx, codeID)
@@ -258,7 +258,8 @@ func TestGenesisInit(t *testing.T) {
 					},
 				},
 				Params: types.DefaultParams(),
-			}},
+			},
+		},
 		"happy path: code id in info and contract do match": {
 			src: types.GenesisState{
 				Codes: []types.Code{{
@@ -538,7 +539,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 	assert.Equal(t, expCodeInfo, *gotCodeInfo)
 
 	// verify contract
-	contractAddr := sdk.AccAddress("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
+	contractAddr, _ := sdk.AccAddressFromBech32("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
 	gotContractInfo := keeper.GetContractInfo(ctx, contractAddr)
 	require.NotNil(t, gotContractInfo)
 	contractCreatorAddr := "link1p0yx9c9q4xsnedlcn24gqfry5dcu6e9xkhv9aj"
@@ -554,11 +555,12 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 	}
 	assert.Equal(t, expContractInfo, *gotContractInfo)
 
-	expHistory := []types.ContractCodeHistoryEntry{{
-		Operation: types.ContractCodeHistoryOperationTypeGenesis,
-		CodeID:    firstCodeID,
-		Updated:   types.NewAbsoluteTxPosition(ctx),
-	},
+	expHistory := []types.ContractCodeHistoryEntry{
+		{
+			Operation: types.ContractCodeHistoryOperationTypeGenesis,
+			CodeID:    firstCodeID,
+			Updated:   types.NewAbsoluteTxPosition(ctx),
+		},
 	}
 	assert.Equal(t, expHistory, keeper.GetContractHistory(ctx, contractAddr))
 	assert.Equal(t, uint64(2), keeper.PeekAutoIncrementID(ctx, types.KeyLastCodeID))
@@ -569,9 +571,9 @@ func TestSupportedGenMsgTypes(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 	var (
-		myAddress          = sdk.BytesToAccAddress(bytes.Repeat([]byte{1}, types.ContractAddrLen))
-		verifierAddress    = sdk.BytesToAccAddress(bytes.Repeat([]byte{2}, types.ContractAddrLen))
-		beneficiaryAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{3}, types.ContractAddrLen))
+		myAddress          sdk.AccAddress = bytes.Repeat([]byte{1}, types.ContractAddrLen)
+		verifierAddress    sdk.AccAddress = bytes.Repeat([]byte{2}, types.ContractAddrLen)
+		beneficiaryAddress sdk.AccAddress = bytes.Repeat([]byte{3}, types.ContractAddrLen)
 	)
 	const denom = "stake"
 	importState := types.GenesisState{

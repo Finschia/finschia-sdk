@@ -47,9 +47,6 @@ func (m MsgSubmitEvidence) ValidateBasic() error {
 	if m.Submitter == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, m.Submitter)
 	}
-	if err := sdk.ValidateAccAddress(m.Submitter); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid submitter address (%s)", err)
-	}
 
 	evi := m.GetEvidence()
 	if evi == nil {
@@ -70,7 +67,12 @@ func (m MsgSubmitEvidence) GetSignBytes() []byte {
 
 // GetSigners returns the single expected signer for a MsgSubmitEvidence.
 func (m MsgSubmitEvidence) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{sdk.AccAddress(m.Submitter)}
+	accAddr, err := sdk.AccAddressFromBech32(m.Submitter)
+	if err != nil {
+		return nil
+	}
+
+	return []sdk.AccAddress{accAddr}
 }
 
 func (m MsgSubmitEvidence) GetEvidence() exported.Evidence {
@@ -82,7 +84,11 @@ func (m MsgSubmitEvidence) GetEvidence() exported.Evidence {
 }
 
 func (m MsgSubmitEvidence) GetSubmitter() sdk.AccAddress {
-	return sdk.AccAddress(m.Submitter)
+	accAddr, err := sdk.AccAddressFromBech32(m.Submitter)
+	if err != nil {
+		return nil
+	}
+	return accAddr
 }
 
 func (m MsgSubmitEvidence) UnpackInterfaces(ctx types.AnyUnpacker) error {

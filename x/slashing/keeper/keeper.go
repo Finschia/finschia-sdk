@@ -56,7 +56,7 @@ func (k Keeper) GetPubkey(ctx sdk.Context, a cryptotypes.Address) (cryptotypes.P
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.AddrPubkeyRelationKey(a))
 	if bz == nil {
-		return nil, fmt.Errorf("address %s not found", sdk.BytesToConsAddress(a))
+		return nil, fmt.Errorf("address %s not found", sdk.ConsAddress(a))
 	}
 	var pk cryptotypes.PubKey
 	return pk, k.cdc.UnmarshalInterface(bz, &pk)
