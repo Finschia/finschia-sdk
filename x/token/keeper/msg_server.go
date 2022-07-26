@@ -53,46 +53,6 @@ func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendRe
 	return &token.MsgSendResponse{}, nil
 }
 
-// OperatorSend defines a method to send tokens from one account to another account by the operator
-func (s msgServer) OperatorSend(c context.Context, req *token.MsgOperatorSend) (*token.MsgOperatorSendResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-
-	from, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
-	}
-	operator, err := sdk.AccAddressFromBech32(req.Operator)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
-	}
-	to, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", req.To)
-	}
-
-	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, from, operator); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
-	}
-
-	if err := s.keeper.Send(ctx, req.ContractId, from, to, req.Amount); err != nil {
-		return nil, err
-	}
-
-	event := token.EventSent{
-		ContractId: req.ContractId,
-		Operator:   req.Operator,
-		From:       req.From,
-		To:         req.To,
-		Amount:     req.Amount,
-	}
-	ctx.EventManager().EmitEvent(token.NewEventTransferFrom(event))
-	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		panic(err)
-	}
-
-	return &token.MsgOperatorSendResponse{}, nil
-}
-
 // TransferFrom defines a method to send tokens from one account to another account by the proxy
 func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (*token.MsgTransferFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
@@ -131,34 +91,6 @@ func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (
 	}
 
 	return &token.MsgTransferFromResponse{}, nil
-}
-
-// AuthorizeOperator allows one to send tokens on behalf of the token holder
-func (s msgServer) AuthorizeOperator(c context.Context, req *token.MsgAuthorizeOperator) (*token.MsgAuthorizeOperatorResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-	holder, err := sdk.AccAddressFromBech32(req.Holder)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", req.Holder)
-	}
-	operator, err := sdk.AccAddressFromBech32(req.Operator)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
-	}
-	if err := s.keeper.AuthorizeOperator(ctx, req.ContractId, holder, operator); err != nil {
-		return nil, err
-	}
-
-	event := token.EventAuthorizedOperator{
-		ContractId: req.ContractId,
-		Holder:     req.Holder,
-		Operator:   req.Operator,
-	}
-	ctx.EventManager().EmitEvent(token.NewEventApproveToken(event))
-	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
-		panic(err)
-	}
-
-	return &token.MsgAuthorizeOperatorResponse{}, nil
 }
 
 // RevokeOperator revokes one to send tokens on behalf of the token holder
@@ -240,62 +172,6 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 	s.keeper.Issue(ctx, class, owner, to, req.Amount)
 
 	return &token.MsgIssueResponse{Id: contractID}, nil
-}
-
-// Grant allows one to mint or burn tokens or modify a token metadata
-func (s msgServer) Grant(c context.Context, req *token.MsgGrant) (*token.MsgGrantResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-
-	granter, err := sdk.AccAddressFromBech32(req.Granter)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", req.Granter)
-	}
-	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
-	}
-	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, req.Permission); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
-	}
-	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, req.Permission); err == nil {
-		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, req.Permission)
-	}
-
-	s.keeper.Grant(ctx, req.ContractId, granter, grantee, req.Permission)
-
-	event := token.EventGrant{
-		ContractId: req.ContractId,
-		Granter:    req.Granter,
-		Grantee:    req.Grantee,
-		Permission: req.Permission,
-	}
-	ctx.EventManager().EmitEvent(token.NewEventGrantPermToken(event))
-
-	return &token.MsgGrantResponse{}, nil
-}
-
-// Abandon abandons the permission
-func (s msgServer) Abandon(c context.Context, req *token.MsgAbandon) (*token.MsgAbandonResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-
-	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
-	}
-	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, req.Permission); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
-	}
-
-	s.keeper.Abandon(ctx, req.ContractId, grantee, req.Permission)
-
-	event := token.EventAbandon{
-		ContractId: req.ContractId,
-		Grantee:    req.Grantee,
-		Permission: req.Permission,
-	}
-	ctx.EventManager().EmitEvent(token.NewEventRevokePermToken(event))
-
-	return &token.MsgAbandonResponse{}, nil
 }
 
 // GrantPermission allows one to mint or burn tokens or modify a token metadata
@@ -386,24 +262,6 @@ func (s msgServer) Burn(c context.Context, req *token.MsgBurn) (*token.MsgBurnRe
 	}
 
 	return &token.MsgBurnResponse{}, nil
-}
-
-// OperatorBurn defines a method for the operator to burn tokens on the behalf of the holder.
-func (s msgServer) OperatorBurn(c context.Context, req *token.MsgOperatorBurn) (*token.MsgOperatorBurnResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-	operator, err := sdk.AccAddressFromBech32(req.Operator)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
-	}
-	from, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
-	}
-	if err := s.keeper.OperatorBurn(ctx, req.ContractId, operator, from, req.Amount); err != nil {
-		return nil, err
-	}
-
-	return &token.MsgOperatorBurnResponse{}, nil
 }
 
 // BurnFrom defines a method for the proxy to burn tokens on the behalf of the holder.

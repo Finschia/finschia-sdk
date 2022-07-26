@@ -38,15 +38,15 @@ func NewTxCmd() *cobra.Command {
 
 	txCmd.AddCommand(
 		NewTxCmdSend(),
-		NewTxCmdOperatorSend(),
-		NewTxCmdAuthorizeOperator(),
+		NewTxCmdTransferFrom(),
+		NewTxCmdApprove(),
 		NewTxCmdRevokeOperator(),
 		NewTxCmdIssue(),
-		NewTxCmdGrant(),
-		NewTxCmdAbandon(),
+		NewTxCmdGrantPermission(),
+		NewTxCmdRevokePermission(),
 		NewTxCmdMint(),
 		NewTxCmdBurn(),
-		NewTxCmdOperatorBurn(),
+		NewTxCmdBurnFrom(),
 		NewTxCmdModify(),
 	)
 
@@ -55,11 +55,11 @@ func NewTxCmd() *cobra.Command {
 
 func NewTxCmdSend() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "send [class-id] [from] [to] [amount]",
+		Use:   "send [contract-id] [from] [to] [amount]",
 		Args:  cobra.ExactArgs(4),
 		Short: "send tokens",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s send <class-id> <from> <to> <amount>`, version.AppName, token.ModuleName),
+			$ %s tx %s send <contract-id> <from> <to> <amount>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -89,13 +89,13 @@ func NewTxCmdSend() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdOperatorSend() *cobra.Command {
+func NewTxCmdTransferFrom() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "operator-send [class-id] [operator] [from] [to] [amount]",
+		Use:   "transfer-from [contract-id] [operator] [from] [to] [amount]",
 		Args:  cobra.ExactArgs(5),
 		Short: "send tokens by operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s operator-send <class-id> <operator> <from> <to> <amount>`, version.AppName, token.ModuleName),
+			$ %s tx %s transfer-from <contract-id> <operator> <from> <to> <amount>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -108,9 +108,9 @@ func NewTxCmdOperatorSend() *cobra.Command {
 			if !ok {
 				return sdkerrors.ErrInvalidType.Wrapf("failed to set amount: %s", amountStr)
 			}
-			msg := token.MsgOperatorSend{
+			msg := token.MsgTransferFrom{
 				ContractId: args[0],
-				Operator:   args[1],
+				Proxy:      args[1],
 				From:       args[2],
 				To:         args[3],
 				Amount:     amount,
@@ -126,13 +126,13 @@ func NewTxCmdOperatorSend() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdAuthorizeOperator() *cobra.Command {
+func NewTxCmdApprove() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "authorize-operator [class-id] [holder] [operator]",
+		Use:   "approve [contract-id] [holder] [operator]",
 		Args:  cobra.ExactArgs(3),
 		Short: "authorize operator to send tokens to a given operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s authorize-operator <class-id> <holder> <operator>`, version.AppName, token.ModuleName),
+			$ %s tx %s approve <contract-id> <holder> <operator>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -140,10 +140,10 @@ func NewTxCmdAuthorizeOperator() *cobra.Command {
 				return err
 			}
 
-			msg := token.MsgAuthorizeOperator{
+			msg := token.MsgApprove{
 				ContractId: args[0],
-				Holder:     args[1],
-				Operator:   args[2],
+				Approver:   args[1],
+				Proxy:      args[2],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -158,11 +158,11 @@ func NewTxCmdAuthorizeOperator() *cobra.Command {
 
 func NewTxCmdRevokeOperator() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "revoke-operator [class-id] [holder] [operator]",
+		Use:   "revoke-operator [contract-id] [holder] [operator]",
 		Args:  cobra.ExactArgs(3),
 		Short: "revoke operator to send tokens to a given operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s revoke-operator <class-id> <holder> <operator>`, version.AppName, token.ModuleName),
+			$ %s tx %s revoke-operator <contract-id> <holder> <operator>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -257,27 +257,25 @@ func NewTxCmdIssue() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdGrant() *cobra.Command {
+func NewTxCmdGrantPermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "grant [class-id] [granter] [grantee] [permission]",
+		Use:   "grant-permission [contract-id] [granter] [grantee] [permission]",
 		Args:  cobra.ExactArgs(4),
 		Short: "grant a permission for mint, burn and modify",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s grant <class-id> <granter> <grantee> <permission>`, version.AppName, token.ModuleName),
+			$ %s tx %s grant-permission <contract-id> <granter> <grantee> <permission>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			permission := token.Permission(token.Permission_value[args[3]])
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := token.MsgGrant{
+			msg := token.MsgGrantPermission{
 				ContractId: args[0],
-				Granter:    args[1],
-				Grantee:    args[2],
-				Permission: permission,
+				From:       args[1],
+				To:         args[2],
+				Permission: args[3],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -290,25 +288,24 @@ func NewTxCmdGrant() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdAbandon() *cobra.Command {
+func NewTxCmdRevokePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "abandon [class-id] [grantee] [permission]",
+		Use:   "revoke-permission [contract-id] [grantee] [permission]",
 		Args:  cobra.ExactArgs(3),
 		Short: "abandon a permission by a given grantee",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s revoke <class-id> <grantee> <permission>`, version.AppName, token.ModuleName),
+			$ %s tx %s revoke-permission <contract-id> <grantee> <permission>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			permission := token.Permission(token.Permission_value[args[2]])
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := token.MsgAbandon{
+			msg := token.MsgRevokePermission{
 				ContractId: args[0],
-				Grantee:    args[1],
-				Permission: permission,
+				From:       args[1],
+				Permission: args[2],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -323,11 +320,11 @@ func NewTxCmdAbandon() *cobra.Command {
 
 func NewTxCmdMint() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint [class-id] [grantee] [to] [amount]",
+		Use:   "mint [contract-id] [grantee] [to] [amount]",
 		Args:  cobra.ExactArgs(4),
 		Short: "mint tokens",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s mint <class-id> <grantee> <to> <amount>`, version.AppName, token.ModuleName),
+			$ %s tx %s mint <contract-id> <grantee> <to> <amount>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -360,11 +357,11 @@ func NewTxCmdMint() *cobra.Command {
 
 func NewTxCmdBurn() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn [class-id] [from] [amount]",
+		Use:   "burn [contract-id] [from] [amount]",
 		Args:  cobra.ExactArgs(3),
 		Short: "burn tokens",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s burn <class-id> <from> <amount>`, version.AppName, token.ModuleName),
+			$ %s tx %s burn <contract-id> <from> <amount>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -394,13 +391,13 @@ func NewTxCmdBurn() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdOperatorBurn() *cobra.Command {
+func NewTxCmdBurnFrom() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "operator-burn [class-id] [grantee] [from] [amount]",
+		Use:   "burn-from [contract-id] [grantee] [from] [amount]",
 		Args:  cobra.ExactArgs(4),
 		Short: "burn tokens by a given grantee",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s burn-from <class-id> <grantee> <from> <amount>`, version.AppName, token.ModuleName),
+			$ %s tx %s burn-from <contract-id> <grantee> <from> <amount>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -414,9 +411,9 @@ func NewTxCmdOperatorBurn() *cobra.Command {
 				return sdkerrors.ErrInvalidType.Wrapf("failed to set amount: %s", amountStr)
 			}
 
-			msg := token.MsgOperatorBurn{
+			msg := token.MsgBurnFrom{
 				ContractId: args[0],
-				Operator:   args[1],
+				Proxy:      args[1],
 				From:       args[2],
 				Amount:     amount,
 			}
@@ -433,11 +430,11 @@ func NewTxCmdOperatorBurn() *cobra.Command {
 
 func NewTxCmdModify() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "modify [class-id] [grantee] [key] [value]",
+		Use:   "modify [contract-id] [grantee] [key] [value]",
 		Args:  cobra.ExactArgs(4),
 		Short: "modify token metadata",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s modify <class-id> <grantee> <key> <value>`, version.AppName, token.ModuleName),
+			$ %s tx %s modify <contract-id> <grantee> <key> <value>`, version.AppName, token.ModuleName),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
