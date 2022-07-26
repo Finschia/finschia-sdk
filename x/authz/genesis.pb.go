@@ -7,21 +7,15 @@ import (
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
-	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
-	types "github.com/line/lbm-sdk/codec/types"
-	_ "github.com/regen-network/cosmos-proto"
-	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"
 	math_bits "math/bits"
-	time "time"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
-var _ = time.Kitchen
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -74,78 +68,8 @@ func (m *GenesisState) GetAuthorization() []GrantAuthorization {
 	return nil
 }
 
-// GrantAuthorization defines the GenesisState/GrantAuthorization type.
-type GrantAuthorization struct {
-	Granter       string     `protobuf:"bytes,1,opt,name=granter,proto3" json:"granter,omitempty"`
-	Grantee       string     `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
-	Authorization *types.Any `protobuf:"bytes,3,opt,name=authorization,proto3" json:"authorization,omitempty"`
-	Expiration    time.Time  `protobuf:"bytes,4,opt,name=expiration,proto3,stdtime" json:"expiration"`
-}
-
-func (m *GrantAuthorization) Reset()         { *m = GrantAuthorization{} }
-func (m *GrantAuthorization) String() string { return proto.CompactTextString(m) }
-func (*GrantAuthorization) ProtoMessage()    {}
-func (*GrantAuthorization) Descriptor() ([]byte, []int) {
-	return fileDescriptor_4c2fbb971da7c892, []int{1}
-}
-func (m *GrantAuthorization) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GrantAuthorization) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GrantAuthorization.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GrantAuthorization) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GrantAuthorization.Merge(m, src)
-}
-func (m *GrantAuthorization) XXX_Size() int {
-	return m.Size()
-}
-func (m *GrantAuthorization) XXX_DiscardUnknown() {
-	xxx_messageInfo_GrantAuthorization.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GrantAuthorization proto.InternalMessageInfo
-
-func (m *GrantAuthorization) GetGranter() string {
-	if m != nil {
-		return m.Granter
-	}
-	return ""
-}
-
-func (m *GrantAuthorization) GetGrantee() string {
-	if m != nil {
-		return m.Grantee
-	}
-	return ""
-}
-
-func (m *GrantAuthorization) GetAuthorization() *types.Any {
-	if m != nil {
-		return m.Authorization
-	}
-	return nil
-}
-
-func (m *GrantAuthorization) GetExpiration() time.Time {
-	if m != nil {
-		return m.Expiration
-	}
-	return time.Time{}
-}
-
 func init() {
 	proto.RegisterType((*GenesisState)(nil), "cosmos.authz.v1beta1.GenesisState")
-	proto.RegisterType((*GrantAuthorization)(nil), "cosmos.authz.v1beta1.GrantAuthorization")
 }
 
 func init() {
@@ -153,28 +77,20 @@ func init() {
 }
 
 var fileDescriptor_4c2fbb971da7c892 = []byte{
-	// 338 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x52, 0xbb, 0x6e, 0xc2, 0x30,
-	0x14, 0x8d, 0x0b, 0xea, 0xc3, 0x94, 0xa1, 0x11, 0x43, 0xca, 0x90, 0x20, 0xa6, 0x2c, 0xd8, 0x82,
-	0x4e, 0x1d, 0x89, 0x2a, 0x31, 0x75, 0xa1, 0x4c, 0x5d, 0x2a, 0x07, 0x5c, 0x63, 0x95, 0xd8, 0x28,
-	0x36, 0x15, 0xf0, 0x15, 0x7c, 0x4c, 0x3f, 0x02, 0x75, 0x62, 0xec, 0xd2, 0x87, 0xe0, 0x47, 0xaa,
-	0xd8, 0x44, 0xe5, 0xd1, 0xed, 0x5e, 0x9f, 0x73, 0xcf, 0x39, 0xbe, 0x36, 0xac, 0xf7, 0xa5, 0x4a,
-	0xa4, 0xc2, 0x64, 0xa2, 0x87, 0x73, 0xfc, 0xda, 0x8c, 0xa9, 0x26, 0x4d, 0xcc, 0xa8, 0xa0, 0x8a,
-	0x2b, 0x34, 0x4e, 0xa5, 0x96, 0x6e, 0xc5, 0x72, 0x90, 0xe1, 0xa0, 0x2d, 0xa7, 0x1a, 0x30, 0x29,
-	0xd9, 0x88, 0x62, 0xc3, 0x89, 0x27, 0xcf, 0x58, 0xf3, 0x84, 0x2a, 0x4d, 0x92, 0xb1, 0x1d, 0xab,
-	0x5e, 0x1f, 0x12, 0x88, 0x98, 0x6d, 0xa1, 0x0a, 0x93, 0x4c, 0x9a, 0x12, 0x67, 0x55, 0x3e, 0x60,
-	0x7d, 0x9e, 0x2c, 0xb0, 0x35, 0x35, 0x4d, 0x7d, 0x00, 0x2f, 0x3b, 0x36, 0xd3, 0x83, 0x26, 0x9a,
-	0xba, 0x3d, 0x58, 0xce, 0xd2, 0xc8, 0x94, 0xcf, 0x89, 0xe6, 0x52, 0x78, 0xa0, 0x56, 0x08, 0x4b,
-	0xad, 0x10, 0xfd, 0x17, 0x15, 0x75, 0x52, 0x22, 0x74, 0x7b, 0x97, 0x1f, 0x15, 0x97, 0x5f, 0x81,
-	0xd3, 0xdd, 0x17, 0xa9, 0x7f, 0x02, 0xe8, 0x1e, 0x73, 0x5d, 0x0f, 0x9e, 0xb1, 0xec, 0x94, 0xa6,
-	0x1e, 0xa8, 0x81, 0xf0, 0xa2, 0x9b, 0xb7, 0x7f, 0x08, 0xf5, 0x4e, 0x76, 0x11, 0xea, 0xde, 0x1f,
-	0x06, 0x2c, 0xd4, 0x40, 0x58, 0x6a, 0x55, 0x90, 0x5d, 0x0a, 0xca, 0x97, 0x82, 0xda, 0x62, 0x16,
-	0x5d, 0xbd, 0xbf, 0x35, 0xca, 0x7b, 0x9e, 0x07, 0xc9, 0xdc, 0x3b, 0x08, 0xe9, 0x74, 0xcc, 0x53,
-	0xab, 0x55, 0x34, 0x5a, 0xd5, 0x23, 0xad, 0x5e, 0xfe, 0x02, 0xd1, 0x79, 0x76, 0xbd, 0xc5, 0x77,
-	0x00, 0xba, 0x3b, 0x73, 0xd1, 0xed, 0x72, 0xed, 0x83, 0xd5, 0xda, 0x07, 0x3f, 0x6b, 0x1f, 0x2c,
-	0x36, 0xbe, 0xb3, 0xda, 0xf8, 0xce, 0xc7, 0xc6, 0x77, 0x1e, 0x03, 0xc6, 0xf5, 0x70, 0x12, 0xa3,
-	0xbe, 0x4c, 0xf0, 0x88, 0x0b, 0x8a, 0x47, 0x71, 0xd2, 0x50, 0x83, 0x17, 0x3c, 0xb5, 0x3f, 0x23,
-	0x3e, 0x35, 0x26, 0x37, 0xbf, 0x01, 0x00, 0x00, 0xff, 0xff, 0xc8, 0x63, 0x22, 0x3b, 0x30, 0x02,
+	// 210 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0x4a, 0xce, 0x2f, 0xce,
+	0xcd, 0x2f, 0xd6, 0x4f, 0x2c, 0x2d, 0xc9, 0xa8, 0xd2, 0x2f, 0x33, 0x4c, 0x4a, 0x2d, 0x49, 0x34,
+	0xd4, 0x4f, 0x4f, 0xcd, 0x4b, 0x2d, 0xce, 0x2c, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12,
+	0x81, 0xa8, 0xd1, 0x03, 0xab, 0xd1, 0x83, 0xaa, 0x91, 0x12, 0x49, 0xcf, 0x4f, 0xcf, 0x07, 0x2b,
+	0xd0, 0x07, 0xb1, 0x20, 0x6a, 0xa5, 0x14, 0xb0, 0x9a, 0x07, 0xd1, 0x09, 0x56, 0xa1, 0x94, 0xc2,
+	0xc5, 0xe3, 0x0e, 0x31, 0x3e, 0xb8, 0x24, 0xb1, 0x24, 0x55, 0x28, 0x84, 0x8b, 0x17, 0x24, 0x9d,
+	0x5f, 0x94, 0x59, 0x95, 0x58, 0x92, 0x99, 0x9f, 0x27, 0xc1, 0xa8, 0xc0, 0xac, 0xc1, 0x6d, 0xa4,
+	0xa1, 0x87, 0xcd, 0x56, 0x3d, 0xf7, 0xa2, 0xc4, 0xbc, 0x12, 0x47, 0x64, 0xf5, 0x4e, 0x2c, 0x27,
+	0xee, 0xc9, 0x33, 0x04, 0xa1, 0x1a, 0xe2, 0x64, 0x79, 0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72,
+	0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7,
+	0x72, 0x0c, 0x51, 0xf2, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0x39,
+	0x99, 0x79, 0xa9, 0xfa, 0x39, 0x49, 0xb9, 0xba, 0xc5, 0x29, 0xd9, 0xfa, 0x15, 0x10, 0x67, 0x26,
+	0xb1, 0x81, 0xdd, 0x69, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0xf6, 0x59, 0x38, 0x3a, 0x1b, 0x01,
 	0x00, 0x00,
 }
 
@@ -215,63 +131,6 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *GrantAuthorization) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GrantAuthorization) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GrantAuthorization) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.Expiration, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.Expiration):])
-	if err1 != nil {
-		return 0, err1
-	}
-	i -= n1
-	i = encodeVarintGenesis(dAtA, i, uint64(n1))
-	i--
-	dAtA[i] = 0x22
-	if m.Authorization != nil {
-		{
-			size, err := m.Authorization.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintGenesis(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Grantee) > 0 {
-		i -= len(m.Grantee)
-		copy(dAtA[i:], m.Grantee)
-		i = encodeVarintGenesis(dAtA, i, uint64(len(m.Grantee)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Granter) > 0 {
-		i -= len(m.Granter)
-		copy(dAtA[i:], m.Granter)
-		i = encodeVarintGenesis(dAtA, i, uint64(len(m.Granter)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
 func encodeVarintGenesis(dAtA []byte, offset int, v uint64) int {
 	offset -= sovGenesis(v)
 	base := offset
@@ -295,29 +154,6 @@ func (m *GenesisState) Size() (n int) {
 			n += 1 + l + sovGenesis(uint64(l))
 		}
 	}
-	return n
-}
-
-func (m *GrantAuthorization) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Granter)
-	if l > 0 {
-		n += 1 + l + sovGenesis(uint64(l))
-	}
-	l = len(m.Grantee)
-	if l > 0 {
-		n += 1 + l + sovGenesis(uint64(l))
-	}
-	if m.Authorization != nil {
-		l = m.Authorization.Size()
-		n += 1 + l + sovGenesis(uint64(l))
-	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.Expiration)
-	n += 1 + l + sovGenesis(uint64(l))
 	return n
 }
 
@@ -387,189 +223,6 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			}
 			m.Authorization = append(m.Authorization, GrantAuthorization{})
 			if err := m.Authorization[len(m.Authorization)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipGenesis(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GrantAuthorization) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowGenesis
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GrantAuthorization: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GrantAuthorization: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Granter", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowGenesis
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Granter = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Grantee", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowGenesis
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Grantee = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Authorization", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowGenesis
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Authorization == nil {
-				m.Authorization = &types.Any{}
-			}
-			if err := m.Authorization.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Expiration", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowGenesis
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthGenesis
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.Expiration, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

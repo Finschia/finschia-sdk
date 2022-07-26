@@ -3,10 +3,10 @@ package server
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/store/rootmulti"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/store/rootmulti"
+	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	"github.com/spf13/cobra"
-	tmcmd "github.com/tendermint/tendermint/cmd/tendermint/commands"
 )
 
 // NewRollbackCmd creates a command to rollback tendermint and multistore state by one height.
@@ -31,7 +31,7 @@ application.
 				return err
 			}
 			// rollback tendermint state
-			height, hash, err := tmcmd.RollbackState(ctx.Config)
+			height, hash, err := ostcmd.RollbackState(ctx.Config)
 			if err != nil {
 				return fmt.Errorf("failed to rollback tendermint state: %w", err)
 			}

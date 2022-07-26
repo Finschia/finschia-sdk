@@ -3,8 +3,8 @@ package tx
 import (
 	"context"
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/line/lbm-sdk/client/grpc/tmservice"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"strings"
 
 	gogogrpc "github.com/gogo/protobuf/grpc"

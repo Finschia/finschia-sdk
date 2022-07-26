@@ -18,7 +18,7 @@ option go_package = "github.com/line/lbm-sdk/x/staking/types";
 // (`n` is set by the staking module's `historical_entries` parameter).
 message HistoricalInfo {
   ostracon.types.Header header = 1 [(gogoproto.nullable) = false];
-  repeated Validator      valset = 2 [(gogoproto.nullable) = false];
+  repeated Validator    valset = 2 [(gogoproto.nullable) = false];
 }
 
 // CommissionRates defines the initial commission rates to be used for creating
@@ -245,8 +245,7 @@ message RedelegationEntry {
     (gogoproto.moretags)   = "yaml:\"initial_balance\""
   ];
   // shares_dst is the amount of destination-validator shares created by redelegation.
-  string shares_dst = 4
-      [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec", (gogoproto.nullable) = false];
+  string shares_dst = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 // Redelegation contains the list of a particular delegator's redelegating bonds

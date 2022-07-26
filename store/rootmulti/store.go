@@ -16,7 +16,6 @@ import (
 	"github.com/pkg/errors"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/snapshots"
 	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
 	"github.com/line/lbm-sdk/store/cachemulti"
 	"github.com/line/lbm-sdk/store/dbadapter"

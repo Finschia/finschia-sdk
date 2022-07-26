@@ -9,6 +9,7 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
+	sdk "github.com/line/lbm-sdk/types"
 	authclient "github.com/line/lbm-sdk/x/auth/client"
 )
 
