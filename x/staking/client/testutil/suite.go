@@ -1376,7 +1376,7 @@ func (s *IntegrationTestSuite) TestEditValidatorMoniker() {
 	queryCmd := cli.GetCmdQueryValidator()
 	res, err := clitestutil.ExecTestCLICmd(
 		val.ClientCtx, queryCmd,
-		[]string{val.ValAddress.String(), fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+		[]string{val.ValAddress.String(), fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 	)
 	require.NoError(err)
 	var result types.Validator
@@ -1395,7 +1395,7 @@ func (s *IntegrationTestSuite) TestEditValidatorMoniker() {
 
 	res, err = clitestutil.ExecTestCLICmd(
 		val.ClientCtx, queryCmd,
-		[]string{val.ValAddress.String(), fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+		[]string{val.ValAddress.String(), fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 	)
 	require.NoError(err)
 

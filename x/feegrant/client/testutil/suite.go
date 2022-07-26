@@ -268,7 +268,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrantsByGranter() {
 			"wrong grantee",
 			[]string{
 				"wrong_grantee",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true, nil, 0,
 		},
@@ -276,7 +276,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrantsByGranter() {
 			"non existent grantee",
 			[]string{
 				"cosmos1nph3cfzk6trsmfxkeu943nvach5qw4vwstnvkl",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false, &feegrant.QueryAllowancesByGranterResponse{}, 0,
 		},
@@ -284,7 +284,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrantsByGranter() {
 			"valid req",
 			[]string{
 				granter.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false, &feegrant.QueryAllowancesByGranterResponse{}, 1,
 		},

@@ -98,7 +98,6 @@ import (
 	"github.com/line/lbm-sdk/x/slashing"
 	slashingkeeper "github.com/line/lbm-sdk/x/slashing/keeper"
 	slashingtypes "github.com/line/lbm-sdk/x/slashing/types"
-	"github.com/line/lbm-sdk/x/staking"
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	stakingplusmodule "github.com/line/lbm-sdk/x/stakingplus/module"

@@ -312,6 +312,8 @@
 - [cosmos/feegrant/v1beta1/query.proto](#cosmos/feegrant/v1beta1/query.proto)
     - [QueryAllowanceRequest](#cosmos.feegrant.v1beta1.QueryAllowanceRequest)
     - [QueryAllowanceResponse](#cosmos.feegrant.v1beta1.QueryAllowanceResponse)
+    - [QueryAllowancesByGranterRequest](#cosmos.feegrant.v1beta1.QueryAllowancesByGranterRequest)
+    - [QueryAllowancesByGranterResponse](#cosmos.feegrant.v1beta1.QueryAllowancesByGranterResponse)
     - [QueryAllowancesRequest](#cosmos.feegrant.v1beta1.QueryAllowancesRequest)
     - [QueryAllowancesResponse](#cosmos.feegrant.v1beta1.QueryAllowancesResponse)
   
@@ -5277,6 +5279,38 @@ QueryAllowanceResponse is the response type for the Query/Allowance RPC method.
 
 
 
+<a name="cosmos.feegrant.v1beta1.QueryAllowancesByGranterRequest"></a>
+
+### QueryAllowancesByGranterRequest
+QueryAllowancesByGranterRequest is the request type for the Query/AllowancesByGranter RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an pagination for the request. |
+
+
+
+
+
+
+<a name="cosmos.feegrant.v1beta1.QueryAllowancesByGranterResponse"></a>
+
+### QueryAllowancesByGranterResponse
+QueryAllowancesByGranterResponse is the response type for the Query/AllowancesByGranter RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allowances` | [Grant](#cosmos.feegrant.v1beta1.Grant) | repeated | allowances that have been issued by the granter. |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines an pagination for the response. |
+
+
+
+
+
+
 <a name="cosmos.feegrant.v1beta1.QueryAllowancesRequest"></a>
 
 ### QueryAllowancesRequest
@@ -5324,6 +5358,7 @@ Query defines the gRPC querier service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Allowance` | [QueryAllowanceRequest](#cosmos.feegrant.v1beta1.QueryAllowanceRequest) | [QueryAllowanceResponse](#cosmos.feegrant.v1beta1.QueryAllowanceResponse) | Allowance returns fee granted to the grantee by the granter. | GET|/cosmos/feegrant/v1beta1/allowance/{granter}/{grantee}|
 | `Allowances` | [QueryAllowancesRequest](#cosmos.feegrant.v1beta1.QueryAllowancesRequest) | [QueryAllowancesResponse](#cosmos.feegrant.v1beta1.QueryAllowancesResponse) | Allowances returns all the grants for address. | GET|/cosmos/feegrant/v1beta1/allowances/{grantee}|
+| `AllowancesByGranter` | [QueryAllowancesByGranterRequest](#cosmos.feegrant.v1beta1.QueryAllowancesByGranterRequest) | [QueryAllowancesByGranterResponse](#cosmos.feegrant.v1beta1.QueryAllowancesByGranterResponse) | AllowancesByGranter returns all the grants given by an address Since v0.46 | GET|/cosmos/feegrant/v1beta1/issued/{granter}|
 
  <!-- end services -->
 
