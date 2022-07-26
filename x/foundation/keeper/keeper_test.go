@@ -21,8 +21,8 @@ import (
 
 var (
 	delPk   = ed25519.GenPrivKey().PubKey()
-	delAddr = sdk.BytesToAccAddress(delPk.Address())
-	valAddr = delAddr.ToValAddress()
+	delAddr = sdk.AccAddress(delPk.Address())
+	valAddr = sdk.ValAddress(delAddr)
 )
 
 func TestCleanup(t *testing.T) {
@@ -70,7 +70,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.msgServer = keeper.NewMsgServer(s.keeper)
 
 	createAddress := func() sdk.AccAddress {
-		return sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	s.operator = s.keeper.GetOperator(s.ctx)

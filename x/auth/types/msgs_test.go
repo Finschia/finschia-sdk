@@ -18,9 +18,9 @@ func TestMsgSendRoute(t *testing.T) {
 }
 
 func TestMsgSendValidation(t *testing.T) {
-	addr1 := sdk.BytesToAccAddress([]byte("from________________"))
+	addr1 := sdk.AccAddress([]byte("from________________"))
 	addrEmpty := sdk.AccAddress("")
-	addrLong := sdk.BytesToAccAddress([]byte("Accidentally used 33 bytes pubkey"))
+	addrLong := sdk.AccAddress([]byte("Accidentally used 33 bytes pubkey"))
 
 	cases := []struct {
 		expectedErr string // empty means no error expected
@@ -42,14 +42,14 @@ func TestMsgSendValidation(t *testing.T) {
 }
 
 func TestMsgSendGetSignBytes(t *testing.T) {
-	res := NewMsgEmpty(sdk.BytesToAccAddress([]byte("input"))).GetSignBytes()
+	res := NewMsgEmpty(sdk.AccAddress([]byte("input"))).GetSignBytes()
 
 	expected := `{"type":"cosmos-sdk/MsgEmpty","value":{"from_address":"link1d9h8qat5fnwd3e"}}`
 	require.Equal(t, expected, string(res))
 }
 
 func TestMsgSendGetSigners(t *testing.T) {
-	res := NewMsgEmpty(sdk.BytesToAccAddress([]byte("input111111111111111"))).GetSigners()
-	bytes, _ := sdk.AccAddressToBytes(res[0].String())
-	require.Equal(t, fmt.Sprintf("%v", hex.EncodeToString(bytes)), "696e707574313131313131313131313131313131")
+	res := NewMsgEmpty(sdk.AccAddress([]byte("input111111111111111"))).GetSigners()
+	bytes, _ := sdk.AccAddressFromBech32(res[0].String())
+	require.Equal(t, "696e707574313131313131313131313131313131", fmt.Sprintf("%v", hex.EncodeToString(bytes)))
 }

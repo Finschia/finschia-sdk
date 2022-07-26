@@ -65,7 +65,11 @@ func (s queryServer) Member(c context.Context, req *foundation.QueryMemberReques
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	member, err := s.keeper.GetMember(ctx, sdk.AccAddress(req.Address))
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, err
+	}
+	member, err := s.keeper.GetMember(ctx, addr)
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +141,11 @@ func (s queryServer) Vote(c context.Context, req *foundation.QueryVoteRequest) (
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	vote, err := s.keeper.GetVote(ctx, req.ProposalId, sdk.AccAddress(req.Voter))
+	voter, err := sdk.AccAddressFromBech32(req.Voter)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid voter address")
+	}
+	vote, err := s.keeper.GetVote(ctx, req.ProposalId, voter)
 	if err != nil {
 		return nil, err
 	}
@@ -191,7 +199,8 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
+	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
+	if err != nil {
 		return nil, err
 	}
 
@@ -199,11 +208,11 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 	store := ctx.KVStore(s.keeper.storeKey)
 
 	if req.MsgTypeUrl != "" {
-		keyPrefix := grantKeyPrefixByURL(sdk.AccAddress(req.Grantee), req.MsgTypeUrl)
+		keyPrefix := grantKeyPrefixByURL(grantee, req.MsgTypeUrl)
 		grantStore := prefix.NewStore(store, keyPrefix)
 
 		var authorizations []*codectypes.Any
-		_, err := query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
+		_, err = query.Paginate(grantStore, req.Pagination, func(key []byte, value []byte) error {
 			var authorization foundation.Authorization
 			if err := s.keeper.cdc.UnmarshalInterface(value, &authorization); err != nil {
 				panic(err)
@@ -229,7 +238,7 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 
 	}
 
-	keyPrefix := grantKeyPrefixByGrantee(sdk.AccAddress(req.Grantee))
+	keyPrefix := grantKeyPrefixByGrantee(grantee)
 	grantStore := prefix.NewStore(store, keyPrefix)
 
 	var authorizations []*codectypes.Any

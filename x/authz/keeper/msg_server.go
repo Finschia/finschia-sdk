@@ -13,17 +13,14 @@ var _ authz.MsgServer = Keeper{}
 // GrantAuthorization implements the MsgServer.Grant method to create a new grant.
 func (k Keeper) Grant(goCtx context.Context, msg *authz.MsgGrant) (*authz.MsgGrantResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	err := sdk.ValidateAccAddress(msg.Grantee)
+	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
 	if err != nil {
 		return nil, err
 	}
-	grantee := sdk.AccAddress(msg.Grantee)
-
-	err = sdk.ValidateAccAddress(msg.Granter)
+	granter, err := sdk.AccAddressFromBech32(msg.Granter)
 	if err != nil {
 		return nil, err
 	}
-	granter := sdk.AccAddress(msg.Granter)
 
 	authorization := msg.GetAuthorization()
 	if authorization == nil {
@@ -45,17 +42,14 @@ func (k Keeper) Grant(goCtx context.Context, msg *authz.MsgGrant) (*authz.MsgGra
 // RevokeAuthorization implements the MsgServer.Revoke method.
 func (k Keeper) Revoke(goCtx context.Context, msg *authz.MsgRevoke) (*authz.MsgRevokeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	err := sdk.ValidateAccAddress(msg.Grantee)
+	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
 	if err != nil {
 		return nil, err
 	}
-	grantee := sdk.AccAddress(msg.Grantee)
-
-	err = sdk.ValidateAccAddress(msg.Granter)
+	granter, err := sdk.AccAddressFromBech32(msg.Granter)
 	if err != nil {
 		return nil, err
 	}
-	granter := sdk.AccAddress(msg.Granter)
 
 	err = k.DeleteGrant(ctx, grantee, granter, msg.MsgTypeUrl)
 	if err != nil {
@@ -68,11 +62,10 @@ func (k Keeper) Revoke(goCtx context.Context, msg *authz.MsgRevoke) (*authz.MsgR
 // Exec implements the MsgServer.Exec method.
 func (k Keeper) Exec(goCtx context.Context, msg *authz.MsgExec) (*authz.MsgExecResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	err := sdk.ValidateAccAddress(msg.Grantee)
+	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
 	if err != nil {
 		return nil, err
 	}
-	grantee := sdk.AccAddress(msg.Grantee)
 	msgs, err := msg.GetMessages()
 	if err != nil {
 		return nil, err

@@ -22,7 +22,7 @@ func TestBeginBlocker(t *testing.T) {
 
 	pks := simapp.CreateTestPubKeys(1)
 	simapp.AddTestAddrsFromPubKeys(app, ctx, pks, app.StakingKeeper.TokensFromConsensusPower(ctx, 200))
-	addr, pk := sdk.BytesToValAddress(pks[0].Address()), pks[0]
+	addr, pk := sdk.ValAddress(pks[0].Address()), pks[0]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 
 	// bond the validator
@@ -30,7 +30,7 @@ func TestBeginBlocker(t *testing.T) {
 	amt := tstaking.CreateValidatorWithValPower(addr, pk, power, true)
 	staking.EndBlocker(ctx, app.StakingKeeper)
 	require.Equal(
-		t, app.BankKeeper.GetAllBalances(ctx, addr.ToAccAddress()),
+		t, app.BankKeeper.GetAllBalances(ctx, sdk.AccAddress(addr)),
 		sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.GetParams(ctx).BondDenom, InitTokens.Sub(amt))),
 	)
 	require.Equal(t, amt, app.StakingKeeper.Validator(ctx, addr).GetBondedTokens())
@@ -53,7 +53,7 @@ func TestBeginBlocker(t *testing.T) {
 
 	slashing.BeginBlocker(ctx, req, app.SlashingKeeper)
 
-	info, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.BytesToConsAddress(pk.Address()))
+	info, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(pk.Address()))
 	require.True(t, found)
 	require.Equal(t, int64(1), info.VoterSetCounter)
 	require.Equal(t, time.Unix(0, 0).UTC(), info.JailedUntil)

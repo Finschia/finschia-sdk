@@ -232,9 +232,9 @@ func TestSimulateMsgBeginRedelegate(t *testing.T) {
 
 	// setup accounts[2] as delegator
 	delegator := accounts[2]
-	delegation := types.NewDelegation(delegator.Address, validator0.GetOperator(), issuedShares)
+	delegation := types.NewDelegation(delegator.Address, validator1.GetOperator(), issuedShares)
 	app.StakingKeeper.SetDelegation(ctx, delegation)
-	app.DistrKeeper.SetDelegatorStartingInfo(ctx, validator0.GetOperator(), delegator.Address, distrtypes.NewDelegatorStartingInfo(2, sdk.OneDec(), 200))
+	app.DistrKeeper.SetDelegatorStartingInfo(ctx, validator1.GetOperator(), delegator.Address, distrtypes.NewDelegatorStartingInfo(2, sdk.OneDec(), 200))
 
 	setupValidatorRewards(app, ctx, validator0.GetOperator())
 	setupValidatorRewards(app, ctx, validator1.GetOperator())
@@ -257,8 +257,8 @@ func TestSimulateMsgBeginRedelegate(t *testing.T) {
 	require.Equal(t, "489348507626016866", msg.Amount.Amount.String())
 	require.Equal(t, "stake", msg.Amount.Denom)
 	require.Equal(t, types.TypeMsgBeginRedelegate, msg.Type())
-	require.Equal(t, "linkvaloper17s94pzwhsn4ah25tec27w70n65h5t2sc2g5u4z", msg.ValidatorDstAddress)
-	require.Equal(t, "linkvaloper1h6a7shta7jyc72hyznkys683z98z36e0qrqd3d", msg.ValidatorSrcAddress)
+	require.Equal(t, "linkvaloper1h6a7shta7jyc72hyznkys683z98z36e0qrqd3d", msg.ValidatorDstAddress)
+	require.Equal(t, "linkvaloper17s94pzwhsn4ah25tec27w70n65h5t2sc2g5u4z", msg.ValidatorSrcAddress)
 	require.Len(t, futureOperations, 0)
 }
 
@@ -303,7 +303,7 @@ func getTestingValidator1(t *testing.T, app *simapp.SimApp, ctx sdk.Context, acc
 func getTestingValidator(t *testing.T, app *simapp.SimApp, ctx sdk.Context, accounts []simtypes.Account, commission types.Commission, n int) types.Validator {
 	account := accounts[n]
 	valPubKey := account.PubKey
-	valAddr := sdk.BytesToValAddress(account.PubKey.Address())
+	valAddr := sdk.ValAddress(account.PubKey.Address().Bytes())
 	validator := teststaking.NewValidator(t, valAddr, valPubKey)
 	validator, err := validator.SetInitialCommission(commission)
 	require.NoError(t, err)

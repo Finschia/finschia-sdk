@@ -125,7 +125,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorOutstandingRewards() {
 			"json output",
 			[]string{
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
-				val.Address.ToValAddress().String(),
+				sdk.ValAddress(val.Address).String(),
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
@@ -136,7 +136,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorOutstandingRewards() {
 			[]string{
 				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
-				val.Address.ToValAddress().String(),
+				sdk.ValAddress(val.Address).String(),
 			},
 			false,
 			`rewards:
@@ -188,7 +188,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorCommission() {
 			"json output",
 			[]string{
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
-				val.Address.ToValAddress().String(),
+				sdk.ValAddress(val.Address).String(),
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
@@ -199,7 +199,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorCommission() {
 			[]string{
 				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
-				val.Address.ToValAddress().String(),
+				sdk.ValAddress(val.Address).String(),
 			},
 			false,
 			`commission:
@@ -251,7 +251,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorSlashes() {
 			"invalid start height",
 			[]string{
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
-				val.Address.ToValAddress().String(), "-1", "3",
+				sdk.ValAddress(val.Address).String(), "-1", "3",
 			},
 			true,
 			"",
@@ -260,7 +260,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorSlashes() {
 			"invalid end height",
 			[]string{
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
-				val.Address.ToValAddress().String(), "1", "-3",
+				sdk.ValAddress(val.Address).String(), "1", "-3",
 			},
 			true,
 			"",
@@ -269,7 +269,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorSlashes() {
 			"json output",
 			[]string{
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
-				val.Address.ToValAddress().String(), "1", "3",
+				sdk.ValAddress(val.Address).String(), "1", "3",
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
@@ -280,7 +280,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorSlashes() {
 			[]string{
 				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
-				val.Address.ToValAddress().String(), "1", "3",
+				sdk.ValAddress(val.Address).String(), "1", "3",
 			},
 			false,
 			"pagination:\n  next_key: null\n  total: \"0\"\nslashes: []",
@@ -308,7 +308,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorSlashes() {
 func (s *IntegrationTestSuite) TestGetCmdQueryDelegatorRewards() {
 	val := s.network.Validators[0]
 	addr := val.Address
-	valAddr := addr.ToValAddress()
+	valAddr := sdk.ValAddress(addr)
 
 	_, err := s.network.WaitForHeightWithTimeout(11, time.Minute)
 	s.Require().NoError(err)
@@ -469,7 +469,7 @@ func (s *IntegrationTestSuite) TestNewWithdrawRewardsCmd() {
 		},
 		{
 			"valid transaction",
-			val.Address.ToValAddress(),
+			sdk.ValAddress(val.Address),
 			[]string{
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -480,7 +480,7 @@ func (s *IntegrationTestSuite) TestNewWithdrawRewardsCmd() {
 		},
 		{
 			"valid transaction (with commission)",
-			val.Address.ToValAddress(),
+			sdk.ValAddress(val.Address),
 			[]string{
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),

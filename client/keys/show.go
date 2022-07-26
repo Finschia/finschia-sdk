@@ -169,11 +169,10 @@ func fetchKey(kb keyring.Keyring, keyref string) (keyring.Info, error) {
 	if err == nil || !sdkerr.IsOf(err, sdkerr.ErrIO, sdkerr.ErrKeyNotFound) {
 		return info, err
 	}
-	err = sdk.ValidateAccAddress(keyref)
+	accAddr, err := sdk.AccAddressFromBech32(keyref)
 	if err != nil {
 		return info, err
 	}
-	accAddr := sdk.AccAddress(keyref)
 
 	info, err = kb.KeyByAddress(accAddr)
 	return info, sdkerr.Wrap(err, "Invalid key")

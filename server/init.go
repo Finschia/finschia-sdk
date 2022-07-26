@@ -19,9 +19,10 @@ func GenerateCoinKey(algo keyring.SignatureAlgo) (sdk.AccAddress, string, error)
 		algo,
 	)
 	if err != nil {
-		return sdk.AccAddress(""), "", err
+		return sdk.AccAddress{}, "", err
 	}
-	return sdk.BytesToAccAddress(info.GetPubKey().Address()), secret, nil
+
+	return sdk.AccAddress(info.GetPubKey().Address()), secret, nil
 }
 
 // Deprecated: GenerateSaveCoinKey generates a new key mnemonic with its addrress.
@@ -43,20 +44,20 @@ func GenerateSaveCoinKey(
 
 	// ensure no overwrite
 	if !overwrite && exists {
-		return sdk.AccAddress(""), "", fmt.Errorf("key already exists, overwrite is disabled")
+		return sdk.AccAddress{}, "", fmt.Errorf("key already exists, overwrite is disabled")
 	}
 
 	// remove the old key by name if it exists
 	if exists {
 		if err := keybase.Delete(keyName); err != nil {
-			return sdk.AccAddress(""), "", fmt.Errorf("failed to overwrite key")
+			return sdk.AccAddress{}, "", fmt.Errorf("failed to overwrite key")
 		}
 	}
 
 	k, mnemonic, err := keybase.NewMnemonic(keyName, keyring.English, sdk.GetConfig().GetFullBIP44Path(), keyring.DefaultBIP39Passphrase, algo)
 	if err != nil {
-		return sdk.AccAddress(""), "", err
+		return sdk.AccAddress{}, "", err
 	}
 
-	return sdk.BytesToAccAddress(k.GetPubKey().Address()), mnemonic, nil
+	return k.GetAddress(), mnemonic, nil
 }

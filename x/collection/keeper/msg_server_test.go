@@ -559,6 +559,7 @@ func (s *KeeperTestSuite) TestMsgIssueFT() {
 			req := &collection.MsgIssueFT{
 				ContractId: tc.contractID,
 				Owner:      tc.owner.String(),
+				To:         s.customer.String(),
 				Amount:     tc.amount,
 			}
 			res, err := s.msgServer.IssueFT(sdk.WrapSDKContext(ctx), req)

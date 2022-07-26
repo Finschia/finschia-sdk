@@ -104,11 +104,11 @@ func parseStoreCodeArgs(file string, sender sdk.AccAddress, flags *flag.FlagSet)
 		return types.MsgStoreCode{}, fmt.Errorf("instantiate by address: %s", err)
 	}
 	if onlyAddrStr != "" {
-		err := sdk.ValidateAccAddress(onlyAddrStr)
+		allowedAddr, err := sdk.AccAddressFromBech32(onlyAddrStr)
 		if err != nil {
 			return types.MsgStoreCode{}, sdkerrors.Wrap(err, flagInstantiateByAddress)
 		}
-		x := types.AccessTypeOnlyAddress.With(sdk.AccAddress(onlyAddrStr))
+		x := types.AccessTypeOnlyAddress.With(allowedAddr)
 		perm = &x
 	} else {
 		everybodyStr, err := flags.GetString(flagInstantiateByEverybody)
@@ -161,6 +161,7 @@ func InstantiateContractCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
 			msg, err := parseInstantiateArgs(args[0], args[1], clientCtx.GetFromAddress(), cmd.Flags())
 			if err != nil {
 				return err
@@ -285,11 +286,11 @@ func parseStoreCodeAndInstantiateContractArgs(file string, initMsg string, sende
 		return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("instantiate by address: %s", err)
 	}
 	if onlyAddrStr != "" {
-		err := sdk.ValidateAccAddress(onlyAddrStr)
+		addr, err := sdk.AccAddressFromBech32(onlyAddrStr)
 		if err != nil {
 			return types.MsgStoreCodeAndInstantiateContract{}, sdkerrors.Wrap(err, flagInstantiateByAddress)
 		}
-		x := types.AccessTypeOnlyAddress.With(sdk.AccAddress(onlyAddrStr))
+		x := types.AccessTypeOnlyAddress.With(addr)
 		perm = &x
 	} else {
 		everybodyStr, err := flags.GetString(flagInstantiateByEverybody)
