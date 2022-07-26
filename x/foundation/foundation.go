@@ -33,7 +33,7 @@ func validateProposers(proposers []string) error {
 		}
 		addrs[proposer] = true
 
-		if err := sdk.ValidateAccAddress(proposer); err != nil {
+		if _, err := sdk.AccAddressFromBech32(proposer); err != nil {
 			return sdkerrors.ErrInvalidAddress.Wrapf("invalid proposer address: %s", proposer)
 		}
 	}
@@ -82,7 +82,7 @@ func validateMembers(members []Member) error {
 }
 
 func (m Member) ValidateBasic() error {
-	if err := sdk.ValidateAccAddress(m.Address); err != nil {
+	if _, err := sdk.AccAddressFromBech32(m.Address); err != nil {
 		return err
 	}
 
@@ -136,7 +136,7 @@ func (t *TallyResult) Add(option VoteOption) error {
 	case VOTE_OPTION_NO_WITH_VETO:
 		t.NoWithVetoCount = t.NoWithVetoCount.Add(weight)
 	default:
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "unknown vote option %s", option.String())
+		return sdkerrors.ErrInvalidRequest.Wrapf("unknown vote option %s", option)
 	}
 
 	return nil

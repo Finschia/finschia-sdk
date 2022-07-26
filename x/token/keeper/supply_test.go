@@ -36,14 +36,16 @@ func (s *KeeperTestSuite) TestIssue() {
 }
 
 func (s *KeeperTestSuite) TestMint() {
-	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor:   "vendor",
-		s.operator: "operator",
-		s.customer: "customer",
+	userDescriptions := map[string]string{
+		s.vendor.String():   "vendor",
+		s.operator.String(): "operator",
+		s.customer.String(): "customer",
 	}
 	to := s.vendor
 	amount := sdk.OneInt()
-	for grantee, desc := range userDescriptions {
+	for granteeStr, desc := range userDescriptions {
+		grantee, err := sdk.AccAddressFromBech32(granteeStr)
+		s.Require().NoError(err)
 		name := fmt.Sprintf("Grantee: %s", desc)
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
@@ -60,16 +62,18 @@ func (s *KeeperTestSuite) TestMint() {
 }
 
 func (s *KeeperTestSuite) TestBurn() {
-	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor:   "vendor",
-		s.operator: "operator",
-		s.customer: "customer",
+	userDescriptions := map[string]string{
+		s.vendor.String():   "vendor",
+		s.operator.String(): "operator",
+		s.customer.String(): "customer",
 	}
 	amountDescriptions := map[sdk.Int]string{
 		s.balance:                   "limit",
 		s.balance.Add(sdk.OneInt()): "excess",
 	}
-	for from, fromDesc := range userDescriptions {
+	for fromStr, fromDesc := range userDescriptions {
+		from, err := sdk.AccAddressFromBech32(fromStr)
+		s.Require().NoError(err)
 		for amount, amountDesc := range amountDescriptions {
 			name := fmt.Sprintf("From: %s, Amount: %s", fromDesc, amountDesc)
 			s.Run(name, func() {
@@ -88,17 +92,21 @@ func (s *KeeperTestSuite) TestBurn() {
 }
 
 func (s *KeeperTestSuite) TestOperatorBurn() {
-	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor:   "vendor",
-		s.operator: "operator",
-		s.customer: "customer",
+	userDescriptions := map[string]string{
+		s.vendor.String():   "vendor",
+		s.operator.String(): "operator",
+		s.customer.String(): "customer",
 	}
 	amountDescriptions := map[sdk.Int]string{
 		s.balance:                   "limit",
 		s.balance.Add(sdk.OneInt()): "excess",
 	}
-	for operator, operatorDesc := range userDescriptions {
-		for from, fromDesc := range userDescriptions {
+	for operatorStr, operatorDesc := range userDescriptions {
+		operator, err := sdk.AccAddressFromBech32(operatorStr)
+		s.Require().NoError(err)
+		for fromStr, fromDesc := range userDescriptions {
+			from, err := sdk.AccAddressFromBech32(fromStr)
+			s.Require().NoError(err)
 			for amount, amountDesc := range amountDescriptions {
 				name := fmt.Sprintf("Operator: %s, From: %s, Amount: %s", operatorDesc, fromDesc, amountDesc)
 				s.Run(name, func() {
@@ -123,10 +131,10 @@ func (s *KeeperTestSuite) TestModify() {
 		s.contractID: "valid",
 		"fee1dead":   "not-exist",
 	}
-	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor:   "vendor",
-		s.operator: "operator",
-		s.customer: "customer",
+	userDescriptions := map[string]string{
+		s.vendor.String():   "vendor",
+		s.operator.String(): "operator",
+		s.customer.String(): "customer",
 	}
 	changes := []token.Pair{
 		{Field: token.AttributeKeyName.String(), Value: "new name"},
@@ -135,7 +143,9 @@ func (s *KeeperTestSuite) TestModify() {
 	}
 
 	for contractID, contractDesc := range contractDescriptions {
-		for grantee, granteeDesc := range userDescriptions {
+		for granteeStr, granteeDesc := range userDescriptions {
+			grantee, err := sdk.AccAddressFromBech32(granteeStr)
+			s.Require().NoError(err)
 			name := fmt.Sprintf("Grantee: %s, Contract: %s", granteeDesc, contractDesc)
 			s.Run(name, func() {
 				ctx, _ := s.ctx.CacheContext()

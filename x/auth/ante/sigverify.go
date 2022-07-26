@@ -77,7 +77,7 @@ func (spkd SetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 			pk = simSecp256k1Pubkey
 		}
 		// Only make check if simulate=false
-		if !simulate && !sdk.BytesToAccAddress(pk.Address()).Equals(signers[i]) {
+		if !simulate && !bytes.Equal(pk.Address(), signers[i]) {
 			return ctx, sdkerrors.Wrapf(sdkerrors.ErrInvalidPubKey,
 				"pubKey does not match signer address %s with signer index: %d", signers[i], i)
 		}
@@ -394,13 +394,11 @@ func (svd *SigVerificationDecorator) checkCache(sigKey string, txHash []byte) (v
 // client. It is recommended to instead use multiple messages in a tx.
 type IncrementSequenceDecorator struct {
 	ak AccountKeeper
-	bk types.BankKeeper
 }
 
-func NewIncrementSequenceDecorator(ak AccountKeeper, bk types.BankKeeper) IncrementSequenceDecorator {
+func NewIncrementSequenceDecorator(ak AccountKeeper) IncrementSequenceDecorator {
 	return IncrementSequenceDecorator{
 		ak: ak,
-		bk: bk,
 	}
 }
 
@@ -418,11 +416,6 @@ func (isd IncrementSequenceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, sim
 		}
 
 		isd.ak.SetAccount(ctx, acc)
-	}
-
-	// prefetching
-	if ctx.IsCheckTx() {
-		isd.bk.Prefetch(ctx, tx)
 	}
 
 	return next(ctx, tx, simulate)

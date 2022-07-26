@@ -92,11 +92,11 @@ func registerTestCodec(cdc *codec.LegacyAmino) {
 	sdk.RegisterLegacyAminoCodec(cdc)
 
 	// register test types
-	cdc.RegisterConcrete(&txTest{}, "lbm-sdk/baseapp/txTest", nil)
-	cdc.RegisterConcrete(&msgCounter{}, "lbm-sdk/baseapp/msgCounter", nil)
-	cdc.RegisterConcrete(&msgCounter2{}, "lbm-sdk/baseapp/msgCounter2", nil)
-	cdc.RegisterConcrete(&msgKeyValue{}, "lbm-sdk/baseapp/msgKeyValue", nil)
-	cdc.RegisterConcrete(&msgNoRoute{}, "lbm-sdk/baseapp/msgNoRoute", nil)
+	cdc.RegisterConcrete(&txTest{}, "cosmos-sdk/baseapp/txTest", nil)
+	cdc.RegisterConcrete(&msgCounter{}, "cosmos-sdk/baseapp/msgCounter", nil)
+	cdc.RegisterConcrete(&msgCounter2{}, "cosmos-sdk/baseapp/msgCounter2", nil)
+	cdc.RegisterConcrete(&msgKeyValue{}, "cosmos-sdk/baseapp/msgKeyValue", nil)
+	cdc.RegisterConcrete(&msgNoRoute{}, "cosmos-sdk/baseapp/msgNoRoute", nil)
 }
 
 // aminoTxEncoder creates a amino TxEncoder for testing purposes.
@@ -1259,7 +1259,7 @@ func TestRunInvalidTransaction(t *testing.T) {
 		// new codec so we can encode the tx, but we shouldn't be able to decode
 		newCdc := codec.NewLegacyAmino()
 		registerTestCodec(newCdc)
-		newCdc.RegisterConcrete(&msgNoDecode{}, "lbm-sdk/baseapp/msgNoDecode", nil)
+		newCdc.RegisterConcrete(&msgNoDecode{}, "cosmos-sdk/baseapp/msgNoDecode", nil)
 
 		txBytes, err := newCdc.Marshal(tx)
 		require.NoError(t, err)

@@ -10,8 +10,8 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/keeper"
-	"github.com/line/lbm-sdk/x/stakingplus"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
 func newParams(enabled bool) *foundation.Params {
@@ -59,8 +59,10 @@ func TestProposalHandler(t *testing.T) {
 	require.NoError(t, ap.ValidateBasic())
 	require.NoError(t, handler(ctx, ap))
 	for i := range adding {
-		grantee := sdk.ValAddress(adding[i].OperatorAddress).ToAccAddress()
-		_, err := k.GetAuthorization(ctx, govtypes.ModuleName, grantee, msgTypeURL)
+		valAddr, err := sdk.ValAddressFromBech32(adding[i].OperatorAddress)
+		grantee := sdk.AccAddress(valAddr)
+		require.NoError(t, err)
+		_, err = k.GetAuthorization(ctx, govtypes.ModuleName, grantee, msgTypeURL)
 		require.NoError(t, err)
 	}
 
@@ -70,8 +72,9 @@ func TestProposalHandler(t *testing.T) {
 	require.NoError(t, dp.ValidateBasic())
 	require.NoError(t, handler(ctx, dp))
 	for i := range deleting {
-		grantee := sdk.ValAddress(adding[i].OperatorAddress).ToAccAddress()
-		_, err := k.GetAuthorization(ctx, govtypes.ModuleName, grantee, msgTypeURL)
+		valAddr, err := sdk.ValAddressFromBech32(adding[i].OperatorAddress)
+		grantee := sdk.AccAddress(valAddr)
+		_, err = k.GetAuthorization(ctx, govtypes.ModuleName, grantee, msgTypeURL)
 		require.Error(t, err)
 	}
 
@@ -89,36 +92,36 @@ func TestProposalHandler(t *testing.T) {
 }
 
 func (s *KeeperTestSuite) TestSubmitProposal() {
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		proposers []string
-		metadata string
-		msg sdk.Msg
-		valid bool
+		metadata  string
+		msg       sdk.Msg
+		valid     bool
 	}{
 		"valid proposal": {
 			proposers: []string{s.members[0].String()},
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.operator.String(),
-				To: s.stranger.String(),
-				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				To:       s.stranger.String(),
+				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 			},
 			valid: true,
 		},
 		"long metadata": {
 			proposers: []string{s.members[0].String()},
-			metadata: string(make([]rune, 256)),
+			metadata:  string(make([]rune, 256)),
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.operator.String(),
-				To: s.stranger.String(),
-				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				To:       s.stranger.String(),
+				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 			},
 		},
 		"unauthorized msg": {
 			proposers: []string{s.members[0].String()},
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.stranger.String(),
-				To: s.stranger.String(),
-				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				To:       s.stranger.String(),
+				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 			},
 		},
 	}
@@ -138,12 +141,12 @@ func (s *KeeperTestSuite) TestSubmitProposal() {
 }
 
 func (s *KeeperTestSuite) TestWithdrawProposal() {
-	testCases := map[string]struct{
-		id uint64
+	testCases := map[string]struct {
+		id    uint64
 		valid bool
 	}{
 		"valid proposal": {
-			id: s.activeProposal,
+			id:    s.activeProposal,
 			valid: true,
 		},
 		"not active": {

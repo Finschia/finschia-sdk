@@ -34,7 +34,11 @@ var _ foundation.MsgServer = msgServer{}
 // FundTreasury defines a method to fund the treasury.
 func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasury) (*foundation.MsgFundTreasuryResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.FundTreasury(ctx, sdk.AccAddress(req.From), req.Amount); err != nil {
+	from, err := sdk.AccAddressFromBech32(req.From)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.keeper.FundTreasury(ctx, from, req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -42,7 +46,7 @@ func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasu
 		From:   req.From,
 		Amount: req.Amount,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgFundTreasuryResponse{}, nil
@@ -56,11 +60,15 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 		return nil, err
 	}
 
-	if err := s.keeper.Accept(ctx, foundation.ModuleName, sdk.AccAddress(req.To), req); err != nil {
+	to, err := sdk.AccAddressFromBech32(req.To)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.keeper.Accept(ctx, foundation.ModuleName, to, req); err != nil {
 		return nil, err
 	}
 
-	if err := s.keeper.WithdrawFromTreasury(ctx, sdk.AccAddress(req.To), req.Amount); err != nil {
+	if err := s.keeper.WithdrawFromTreasury(ctx, to, req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -68,7 +76,7 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 		To:     req.To,
 		Amount: req.Amount,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgWithdrawFromTreasuryResponse{}, nil
@@ -88,7 +96,7 @@ func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMem
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateMembers{
 		MemberUpdates: req.MemberUpdates,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgUpdateMembersResponse{}, nil
@@ -111,7 +119,7 @@ func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUp
 		return nil, err
 	}
 	if err := ctx.EventManager().EmitTypedEvent(event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgUpdateDecisionPolicyResponse{}, nil
@@ -129,11 +137,14 @@ func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitPr
 		return nil, err
 	}
 
-	proposal, _ := s.keeper.GetProposal(ctx, id)
+	proposal, err := s.keeper.GetProposal(ctx, id)
+	if err != nil {
+		panic(err)
+	}
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventSubmitProposal{
 		Proposal: *proposal,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	// Try to execute proposal immediately
@@ -187,7 +198,7 @@ func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdr
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventWithdrawProposal{
 		ProposalId: id,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgWithdrawProposalResponse{}, nil
@@ -251,7 +262,7 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventLeaveFoundation{
 		Address: req.Address,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgLeaveFoundationResponse{}, nil
@@ -270,7 +281,11 @@ func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundati
 	}
 
 	authorization := req.GetAuthorization()
-	if err := s.keeper.Grant(ctx, foundation.ModuleName, sdk.AccAddress(req.Grantee), authorization); err != nil {
+	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.keeper.Grant(ctx, foundation.ModuleName, grantee, authorization); err != nil {
 		return nil, err
 	}
 
@@ -288,7 +303,11 @@ func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*founda
 		return nil, sdkerrors.ErrUnauthorized.Wrapf("foundation cannot revoke %s", req.MsgTypeUrl)
 	}
 
-	if err := s.keeper.Revoke(ctx, foundation.ModuleName, sdk.AccAddress(req.Grantee), req.MsgTypeUrl); err != nil {
+	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.keeper.Revoke(ctx, foundation.ModuleName, grantee, req.MsgTypeUrl); err != nil {
 		return nil, err
 	}
 

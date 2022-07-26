@@ -44,12 +44,16 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#518](https://github.com/line/lbm-sdk/pull/518) add foundation treasury feature to x/foundation
 * (x/foundation) [\#528](https://github.com/line/lbm-sdk/pull/528) add a feature of whitelist for /lbm.foundation.v1.MsgWithdrawFromTreasury
 * (proto) [\#584](https://github.com/line/lbm-sdk/pull/564) remove `prove` field in the `GetTxsEventRequest` of `tx` proto
+* (x/collection) [\#571](https://github.com/line/lbm-sdk/pull/571) add x/collection proto
+* (x/collection) [\#574](https://github.com/line/lbm-sdk/pull/574) implement x/collection
+* (amino) [\600](https://github.com/line/lbm-sdk/pull/600) change amino codec path from `lbm-sdk/` to `cosmos-sdk/`
 
 ### Improvements
 
 * (refactor) [\#493](https://github.com/line/lbm-sdk/pull/493) restructure x/consortium
 * (server/grpc) [\#526](https://github.com/line/lbm-sdk/pull/526) add index field into TxResponse
 * (cli) [\#535](https://github.com/line/lbm-sdk/pull/536) updated ostracon to v1.0.5; `unsafe-reset-all` command has been moved to the `ostracon` sub-command.
+* (x/foundation) [\#597](https://github.com/line/lbm-sdk/pull/597) tidy up x/foundation
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
@@ -65,6 +69,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
+* (global) [\#603](https://github.com/line/lbm-sdk/pull/603) apply types/address.go from cosmos-sdk@v0.45.1
 
 ### Build, CI
 

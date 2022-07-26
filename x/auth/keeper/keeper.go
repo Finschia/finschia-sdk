@@ -43,8 +43,6 @@ type AccountKeeperI interface {
 	// Fetch the sequence of an account at a specified address.
 	GetSequence(sdk.Context, sdk.AccAddress) (uint64, error)
 
-	// Prefetch an account, i.e. pre-fetch
-	Prefetch(sdk.Context, sdk.AccAddress, bool)
 	// Fetch the next account number, and increment the internal counter.
 	GetNextAccountNumber(sdk.Context) uint64
 }
@@ -162,7 +160,7 @@ func (ak AccountKeeper) ValidatePermissions(macc types.ModuleAccountI) error {
 func (ak AccountKeeper) GetModuleAddress(moduleName string) sdk.AccAddress {
 	permAddr, ok := ak.permAddrs[moduleName]
 	if !ok {
-		return ""
+		return nil
 	}
 
 	return permAddr.GetAddress()

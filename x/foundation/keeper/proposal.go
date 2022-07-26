@@ -20,15 +20,24 @@ func (k Keeper) handleUpdateFoundationParamsProposal(ctx sdk.Context, p *foundat
 		k.Cleanup(ctx)
 	}
 
-	return ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateFoundationParams{
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateFoundationParams{
 		Params: params,
-	})
+	}); err != nil {
+		panic(err)
+	}
+
+	return nil
 }
 
 // handleUpdateValidatorAuthsProposal is a handler for update validator auths proposal
 func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *foundation.UpdateValidatorAuthsProposal) error {
 	for _, auth := range p.Auths {
-		grantee := sdk.ValAddress(auth.OperatorAddress).ToAccAddress()
+		valAddr, err := sdk.ValAddressFromBech32(auth.OperatorAddress)
+		grantee := sdk.AccAddress(valAddr)
+
+		if err != nil {
+			return err
+		}
 		if auth.CreationAllowed {
 			authorization := &stakingplus.CreateValidatorAuthorization{
 				ValidatorAddress: auth.OperatorAddress,
@@ -74,7 +83,11 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata str
 	}
 
 	foundationInfo := k.GetFoundationInfo(ctx)
-	if err := ensureMsgAuthz(msgs, sdk.AccAddress(foundationInfo.Operator)); err != nil {
+	operator, err := sdk.AccAddressFromBech32(foundationInfo.Operator)
+	if err != nil {
+		return 0, err
+	}
+	if err := ensureMsgAuthz(msgs, operator); err != nil {
 		return 0, err
 	}
 
@@ -95,9 +108,7 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata str
 		return 0, err
 	}
 
-	if err := k.setProposal(ctx, proposal); err != nil {
-		return 0, err
-	}
+	k.setProposal(ctx, proposal)
 	k.addProposalToVPEndQueue(ctx, proposal)
 
 	return id, nil
@@ -111,7 +122,7 @@ func (k Keeper) WithdrawProposal(ctx sdk.Context, proposalID uint64) error {
 
 	// Ensure the proposal can be withdrawn.
 	if proposal.Status != foundation.PROPOSAL_STATUS_SUBMITTED {
-		return sdkerrors.ErrInvalidRequest.Wrapf("cannot withdraw a proposal with the status of %s", proposal.Status.String())
+		return sdkerrors.ErrInvalidRequest.Wrapf("cannot withdraw a proposal with the status of %s", proposal.Status)
 	}
 
 	proposal.Status = foundation.PROPOSAL_STATUS_WITHDRAWN
@@ -209,9 +220,7 @@ func (k Keeper) UpdateTallyOfVPEndProposals(ctx sdk.Context) {
 			panic(err)
 		}
 
-		if err := k.setProposal(ctx, proposal); err != nil {
-			panic(err)
-		}
+		k.setProposal(ctx, proposal)
 
 		return false
 	})
@@ -222,27 +231,21 @@ func (k Keeper) GetProposal(ctx sdk.Context, id uint64) (*foundation.Proposal, e
 	key := proposalKey(id)
 	bz := store.Get(key)
 	if len(bz) == 0 {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "No proposal for id: %d", id)
+		return nil, sdkerrors.ErrNotFound.Wrapf("No proposal for id: %d", id)
 	}
 
 	var proposal foundation.Proposal
-	if err := k.cdc.Unmarshal(bz, &proposal); err != nil {
-		return nil, err
-	}
+	k.cdc.MustUnmarshal(bz, &proposal)
+
 	return &proposal, nil
 }
 
-func (k Keeper) setProposal(ctx sdk.Context, proposal foundation.Proposal) error {
-	bz, err := k.cdc.Marshal(&proposal)
-	if err != nil {
-		return err
-	}
-
+func (k Keeper) setProposal(ctx sdk.Context, proposal foundation.Proposal) {
 	store := ctx.KVStore(k.storeKey)
 	key := proposalKey(proposal.Id)
-	store.Set(key, bz)
 
-	return nil
+	bz := k.cdc.MustMarshal(&proposal)
+	store.Set(key, bz)
 }
 
 func (k Keeper) deleteProposal(ctx sdk.Context, proposalID uint64) {

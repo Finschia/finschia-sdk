@@ -38,7 +38,7 @@ func TestLegacyQueryContractState(t *testing.T) {
 	initMsgBz, err := json.Marshal(initMsg)
 	require.NoError(t, err)
 
-	addr, _, err := keepers.ContractKeeper.Instantiate(ctx, contractID, creator, "", initMsgBz, "demo contract to query", deposit)
+	addr, _, err := keepers.ContractKeeper.Instantiate(ctx, contractID, creator, nil, initMsgBz, "demo contract to query", deposit)
 	require.NoError(t, err)
 
 	contractModel := []types.Model{
@@ -193,7 +193,7 @@ func TestLegacyQueryContractListByCodeOrdering(t *testing.T) {
 			ctx = setBlock(ctx, h)
 			h++
 		}
-		_, _, err = keepers.ContractKeeper.Instantiate(ctx, codeID, creator, "", initMsgBz, fmt.Sprintf("contract %d", i), topUp)
+		_, _, err = keepers.ContractKeeper.Instantiate(ctx, codeID, creator, nil, initMsgBz, fmt.Sprintf("contract %d", i), topUp)
 		require.NoError(t, err)
 	}
 
@@ -221,9 +221,7 @@ func TestLegacyQueryContractHistory(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	keeper := keepers.WasmKeeper
 
-	var (
-		otherAddr sdk.AccAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, types.ContractAddrLen))
-	)
+	var otherAddr sdk.AccAddress = bytes.Repeat([]byte{0x2}, types.ContractAddrLen)
 
 	specs := map[string]struct {
 		srcQueryAddr sdk.AccAddress
@@ -293,7 +291,7 @@ func TestLegacyQueryContractHistory(t *testing.T) {
 			var defaultQueryGasLimit sdk.Gas = 3000000
 			q := NewLegacyQuerier(keeper, defaultQueryGasLimit)
 			queryContractAddr := spec.srcQueryAddr
-			if queryContractAddr.Empty() {
+			if queryContractAddr == nil {
 				queryContractAddr = myContractAddr
 			}
 

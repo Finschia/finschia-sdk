@@ -8,9 +8,9 @@ import (
 
 // RegisterLegacyAminoCodec registers concrete types on the LegacyAmino codec
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(Plan{}, "lbm-sdk/Plan", nil)
-	cdc.RegisterConcrete(&SoftwareUpgradeProposal{}, "lbm-sdk/SoftwareUpgradeProposal", nil)
-	cdc.RegisterConcrete(&CancelSoftwareUpgradeProposal{}, "lbm-sdk/CancelSoftwareUpgradeProposal", nil)
+	cdc.RegisterConcrete(Plan{}, "cosmos-sdk/Plan", nil)
+	cdc.RegisterConcrete(&SoftwareUpgradeProposal{}, "cosmos-sdk/SoftwareUpgradeProposal", nil)
+	cdc.RegisterConcrete(&CancelSoftwareUpgradeProposal{}, "cosmos-sdk/CancelSoftwareUpgradeProposal", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

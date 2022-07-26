@@ -42,16 +42,10 @@ func (k Keeper) GetFoundationInfo(ctx sdk.Context) foundation.FoundationInfo {
 	return info
 }
 
-func (k Keeper) setFoundationInfo(ctx sdk.Context, info foundation.FoundationInfo) error {
-	bz, err := k.cdc.Marshal(&info)
-	if err != nil {
-		return err
-	}
-
+func (k Keeper) setFoundationInfo(ctx sdk.Context, info foundation.FoundationInfo) {
 	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshal(&info)
 	store.Set(foundationInfoKey, bz)
-
-	return nil
 }
 
 func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.Member) error {
@@ -62,7 +56,11 @@ func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.Member) erro
 		}
 
 		new.AddedAt = ctx.BlockTime()
-		old, err := k.GetMember(ctx, sdk.AccAddress(new.Address))
+		newAddr, err := sdk.AccAddressFromBech32(new.Address)
+		if err != nil {
+			return sdkerrors.ErrInvalidAddress.Wrapf("invalid new address: %s", new.Address)
+		}
+		old, err := k.GetMember(ctx, newAddr)
 		if err == nil {
 			weightUpdate = weightUpdate.Sub(sdk.OneDec())
 			new.AddedAt = old.AddedAt
@@ -74,7 +72,11 @@ func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.Member) erro
 		}
 
 		if deleting {
-			k.deleteMember(ctx, sdk.AccAddress(old.Address))
+			oldAddr, err := sdk.AccAddressFromBech32(old.Address)
+			if err != nil {
+				return sdkerrors.ErrInvalidAddress.Wrapf("invalid old address: %s", old.Address)
+			}
+			k.deleteMember(ctx, oldAddr)
 		} else {
 			weightUpdate = weightUpdate.Add(sdk.OneDec())
 			k.setMember(ctx, new)
@@ -97,27 +99,25 @@ func (k Keeper) GetMember(ctx sdk.Context, address sdk.AccAddress) (*foundation.
 	key := memberKey(address)
 	bz := store.Get(key)
 	if len(bz) == 0 {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "No such member: %s", address.String())
+		return nil, sdkerrors.ErrNotFound.Wrapf("No such member: %s", address)
 	}
 
 	var member foundation.Member
-	if err := k.cdc.Unmarshal(bz, &member); err != nil {
-		return nil, err
-	}
+	k.cdc.MustUnmarshal(bz, &member)
+
 	return &member, nil
 }
 
-func (k Keeper) setMember(ctx sdk.Context, member foundation.Member) error {
-	bz, err := k.cdc.Marshal(&member)
-	if err != nil {
-		return err
-	}
-
+func (k Keeper) setMember(ctx sdk.Context, member foundation.Member) {
 	store := ctx.KVStore(k.storeKey)
-	key := memberKey(sdk.AccAddress(member.Address))
-	store.Set(key, bz)
+	addr, err := sdk.AccAddressFromBech32(member.Address)
+	if err != nil {
+		panic(err)
+	}
+	key := memberKey(addr)
 
-	return nil
+	bz := k.cdc.MustMarshal(&member)
+	store.Set(key, bz)
 }
 
 func (k Keeper) deleteMember(ctx sdk.Context, address sdk.AccAddress) {
@@ -153,7 +153,11 @@ func (k Keeper) GetMembers(ctx sdk.Context) []foundation.Member {
 
 func (k Keeper) GetOperator(ctx sdk.Context) sdk.AccAddress {
 	info := k.GetFoundationInfo(ctx)
-	return sdk.AccAddress(info.Operator)
+	operator, err := sdk.AccAddressFromBech32(info.Operator)
+	if err != nil {
+		panic(err)
+	}
+	return operator
 }
 
 func (k Keeper) UpdateOperator(ctx sdk.Context, operator sdk.AccAddress) error {
@@ -163,9 +167,7 @@ func (k Keeper) UpdateOperator(ctx sdk.Context, operator sdk.AccAddress) error {
 	}
 
 	info.Operator = operator.String()
-	if err := k.setFoundationInfo(ctx, info); err != nil {
-		return err
-	}
+	k.setFoundationInfo(ctx, info)
 
 	return nil
 }
@@ -175,7 +177,13 @@ func (k Keeper) GetAdmin(ctx sdk.Context) sdk.AccAddress {
 }
 
 func (k Keeper) validateOperator(ctx sdk.Context, operator string) error {
-	if sdk.AccAddress(operator) != k.GetOperator(ctx) {
+	addr, err := sdk.AccAddressFromBech32(operator)
+
+	if err != nil {
+		return err
+	}
+
+	if !addr.Equals(k.GetOperator(ctx)) {
 		return sdkerrors.ErrUnauthorized.Wrapf("%s is not the operator", operator)
 	}
 
@@ -184,7 +192,11 @@ func (k Keeper) validateOperator(ctx sdk.Context, operator string) error {
 
 func (k Keeper) validateMembers(ctx sdk.Context, members []string) error {
 	for _, member := range members {
-		if _, err := k.GetMember(ctx, sdk.AccAddress(member)); err != nil {
+		addr, err := sdk.AccAddressFromBech32(member)
+		if err != nil {
+			return sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", member)
+		}
+		if _, err := k.GetMember(ctx, addr); err != nil {
 			return sdkerrors.ErrUnauthorized.Wrapf("%s is not a member", member)
 		}
 	}

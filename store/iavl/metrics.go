@@ -15,11 +15,10 @@ const (
 
 // Metrics contains metrics exposed by this package.
 type Metrics struct {
-	IAVLCacheHits      metrics.Gauge
-	IAVLCacheMisses    metrics.Gauge
-	IAVLCacheEntries   metrics.Gauge
-	IAVLCacheBytes     metrics.Gauge
-	IAVLCachePeakBytes metrics.Gauge
+	IAVLCacheHits    metrics.Gauge
+	IAVLCacheMisses  metrics.Gauge
+	IAVLCacheEntries metrics.Gauge
+	IAVLCacheBytes   metrics.Gauge
 }
 
 // PrometheusMetrics returns Metrics build using Prometheus client library.
@@ -55,23 +54,16 @@ func PrometheusMetrics(namespace string, labelsAndValues ...string) *Metrics {
 			Name:      "bytes_size",
 			Help:      "Cache bytes size of the iavl cache",
 		}, labels).With(labelsAndValues...),
-		IAVLCachePeakBytes: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
-			Namespace: namespace,
-			Subsystem: MetricsSubsystem,
-			Name:      "peak_bytes_size",
-			Help:      "Peak cache bytes size of the iavl cache",
-		}, labels).With(labelsAndValues...),
 	}
 }
 
 // NopMetrics returns no-op Metrics.
 func NopMetrics() *Metrics {
 	return &Metrics{
-		IAVLCacheHits:      discard.NewGauge(),
-		IAVLCacheMisses:    discard.NewGauge(),
-		IAVLCacheEntries:   discard.NewGauge(),
-		IAVLCacheBytes:     discard.NewGauge(),
-		IAVLCachePeakBytes: discard.NewGauge(),
+		IAVLCacheHits:    discard.NewGauge(),
+		IAVLCacheMisses:  discard.NewGauge(),
+		IAVLCacheEntries: discard.NewGauge(),
+		IAVLCacheBytes:   discard.NewGauge(),
 	}
 }
 

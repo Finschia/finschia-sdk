@@ -25,7 +25,7 @@ const (
 )
 
 var (
-	addr1     = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr1     = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	addr2     = sdk.AccAddress("testaddr2").String()
 	emptyAddr sdk.AccAddress
 
@@ -54,7 +54,7 @@ func TestMsgTransferType(t *testing.T) {
 
 func TestMsgTransferGetSignBytes(t *testing.T) {
 	msg := NewMsgTransfer(validPort, validChannel, coin, addr1, addr2, timeoutHeight, 0)
-	expected := fmt.Sprintf(`{"type":"lbm-sdk/MsgTransfer","value":{"receiver":"%s","sender":"%s","source_channel":"testchannel","source_port":"testportid","timeout_height":{"revision_height":"10"},"token":{"amount":"100","denom":"atom"}}}`, addr2, addr1)
+	expected := fmt.Sprintf(`{"type":"cosmos-sdk/MsgTransfer","value":{"receiver":"%s","sender":"%s","source_channel":"testchannel","source_port":"testportid","timeout_height":{"revision_height":"10"},"token":{"amount":"100","denom":"atom"}}}`, addr2, addr1)
 	require.NotPanics(t, func() {
 		res := msg.GetSignBytes()
 		require.Equal(t, expected, string(res))

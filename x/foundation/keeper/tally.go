@@ -58,7 +58,12 @@ func (k Keeper) tally(ctx sdk.Context, p foundation.Proposal) (foundation.TallyR
 	tallyResult := foundation.DefaultTallyResult()
 	var errors []error
 	k.iterateVotes(ctx, p.Id, func(vote foundation.Vote) (stop bool) {
-		_, err := k.GetMember(ctx, sdk.AccAddress(vote.Voter))
+		voter, err := sdk.AccAddressFromBech32(vote.Voter)
+		if err != nil {
+			errors = append(errors, err)
+			return true
+		}
+		_, err = k.GetMember(ctx, voter)
 		switch {
 		case sdkerrors.ErrNotFound.Is(err):
 			// If the member left the group after voting, then we simply skip the

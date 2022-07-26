@@ -11,9 +11,7 @@ func (k Keeper) Grant(ctx sdk.Context, granter string, grantee sdk.AccAddress, a
 		return sdkerrors.ErrInvalidRequest.Wrapf("authorization for %s already exists", authorization.MsgTypeURL())
 	}
 
-	if err := k.setAuthorization(ctx, granter, grantee, authorization); err != nil {
-		return err
-	}
+	k.setAuthorization(ctx, granter, grantee, authorization)
 
 	any, err := foundation.SetAuthorization(authorization)
 	if err != nil {
@@ -24,7 +22,7 @@ func (k Keeper) Grant(ctx sdk.Context, granter string, grantee sdk.AccAddress, a
 		Grantee:       grantee.String(),
 		Authorization: any,
 	}); err != nil {
-		return err
+		panic(err)
 	}
 
 	return nil
@@ -41,7 +39,7 @@ func (k Keeper) Revoke(ctx sdk.Context, granter string, grantee sdk.AccAddress, 
 		Grantee:    grantee.String(),
 		MsgTypeUrl: msgTypeURL,
 	}); err != nil {
-		return err
+		panic(err)
 	}
 
 	return nil
@@ -57,23 +55,21 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, granter string, grantee sdk.Ac
 
 	var auth foundation.Authorization
 	if err := k.cdc.UnmarshalInterface(bz, &auth); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return auth, nil
 }
 
-func (k Keeper) setAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, authorization foundation.Authorization) error {
+func (k Keeper) setAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, authorization foundation.Authorization) {
 	store := ctx.KVStore(k.storeKey)
 	key := grantKey(grantee, authorization.MsgTypeURL(), granter)
 
 	bz, err := k.cdc.MarshalInterface(authorization)
 	if err != nil {
-		return err
+		panic(err)
 	}
 	store.Set(key, bz)
-
-	return nil
 }
 
 func (k Keeper) deleteAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, msgTypeURL string) {
@@ -97,9 +93,7 @@ func (k Keeper) Accept(ctx sdk.Context, granter string, grantee sdk.AccAddress, 
 	if resp.Delete {
 		k.deleteAuthorization(ctx, granter, grantee, msgTypeURL)
 	} else if resp.Updated != nil {
-		if err := k.setAuthorization(ctx, granter, grantee, resp.Updated); err != nil {
-			return err
-		}
+		k.setAuthorization(ctx, granter, grantee, resp.Updated)
 	}
 
 	if !resp.Accept {

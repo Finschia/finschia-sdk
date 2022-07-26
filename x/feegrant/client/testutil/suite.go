@@ -52,10 +52,9 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		s.T().Skip("skipping test in unit-tests mode.")
 	}
 
-	var err error
 	s.network = network.New(s.T(), s.cfg)
 
-	_, err = s.network.WaitForHeight(1)
+	_, err := s.network.WaitForHeight(1)
 	s.Require().NoError(err)
 
 	val := s.network.Validators[0]
@@ -561,7 +560,8 @@ func (s *IntegrationTestSuite) TestNewCmdRevokeFeegrant() {
 	}
 
 	// Create new fee grant specifically to test amino.
-	aminoGrantee := sdk.AccAddress("link1zp4lzwuwzvhq7xhe8xj688vv00dxv2zyue4xuj")
+	aminoGrantee, err := sdk.AccAddressFromBech32("link1zp4lzwuwzvhq7xhe8xj688vv00dxv2zyue4xuj")
+	s.Require().NoError(err)
 	s.createGrant(granter, aminoGrantee)
 
 	testCases := []struct {
@@ -660,10 +660,9 @@ func (s *IntegrationTestSuite) TestTxWithFeeGrant() {
 	granter := val.Address
 
 	// creating an account manually (This account won't be exist in state)
-	k, _, err := val.ClientCtx.Keyring.NewMnemonic("grantee", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
+	info, _, err := val.ClientCtx.Keyring.NewMnemonic("grantee", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	s.Require().NoError(err)
-	pub := k.GetPubKey()
-	grantee := sdk.BytesToAccAddress(pub.Address())
+	grantee := sdk.AccAddress(info.GetPubKey().Address())
 
 	commonFlags := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -708,10 +707,9 @@ func (s *IntegrationTestSuite) TestFilteredFeeAllowance() {
 	val := s.network.Validators[0]
 
 	granter := val.Address
-	k, _, err := val.ClientCtx.Keyring.NewMnemonic("grantee1", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
+	info, _, err := val.ClientCtx.Keyring.NewMnemonic("grantee1", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	s.Require().NoError(err)
-	pub := k.GetPubKey()
-	grantee := sdk.BytesToAccAddress(pub.Address())
+	grantee := sdk.AccAddress(info.GetPubKey().Address())
 
 	clientCtx := val.ClientCtx
 

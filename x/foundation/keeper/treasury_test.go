@@ -7,11 +7,11 @@ import (
 func (s *KeeperTestSuite) TestFundTreasury() {
 	testCases := map[string]struct {
 		amount sdk.Int
-		valid bool
+		valid  bool
 	}{
 		"valid amount": {
 			amount: s.balance,
-			valid: true,
+			valid:  true,
 		},
 		"insufficient coins": {
 			amount: s.balance.Add(sdk.OneInt()),
@@ -36,11 +36,11 @@ func (s *KeeperTestSuite) TestFundTreasury() {
 func (s *KeeperTestSuite) TestWithDrawFromTreasury() {
 	testCases := map[string]struct {
 		amount sdk.Int
-		valid bool
+		valid  bool
 	}{
 		"valid amount": {
 			amount: s.balance,
-			valid: true,
+			valid:  true,
 		},
 		"insufficient coins": {
 			amount: s.balance.Add(sdk.OneInt()),

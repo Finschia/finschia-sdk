@@ -180,10 +180,6 @@ func (kv kvStore) Delete(key []byte) {
 	delete(kv.store, string(key))
 }
 
-func (kv kvStore) Prefetch(key []byte, forSet bool) (hits, misses int, value []byte) {
-	return 0, 0, nil
-}
-
 func (kv kvStore) Prefix(prefix []byte) sdk.KVStore {
 	panic("not implemented")
 }

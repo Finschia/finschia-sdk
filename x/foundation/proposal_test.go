@@ -13,15 +13,15 @@ import (
 func TestUpdateFoundationParamsProposal(t *testing.T) {
 	testCases := map[string]struct {
 		params *foundation.Params
-		valid   bool
+		valid  bool
 	}{
 		"valid proposal": {
 			params: foundation.DefaultParams(),
-			valid:   true,
+			valid:  true,
 		},
 		"attempt to enable foundation": {
 			params: &foundation.Params{
-				Enabled: true,
+				Enabled:       true,
 				FoundationTax: sdk.ZeroDec(),
 			},
 		},
@@ -52,7 +52,7 @@ func TestUpdateFoundationParamsProposal(t *testing.T) {
 func TestUpdateValidatorAuthsProposal(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
-		addrs[i] = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
 	testCases := map[string]struct {
@@ -61,10 +61,10 @@ func TestUpdateValidatorAuthsProposal(t *testing.T) {
 	}{
 		"valid proposal": {
 			updates: []foundation.ValidatorAuth{{
-				OperatorAddress: addrs[0].ToValAddress().String(),
+				OperatorAddress: sdk.ValAddress(addrs[0]).String(),
 				CreationAllowed: true,
 			}},
-			valid:   true,
+			valid: true,
 		},
 		"empty auths": {
 			updates: []foundation.ValidatorAuth{},
@@ -75,11 +75,11 @@ func TestUpdateValidatorAuthsProposal(t *testing.T) {
 		"duplicate addresses": {
 			updates: []foundation.ValidatorAuth{
 				{
-					OperatorAddress: addrs[0].ToValAddress().String(),
+					OperatorAddress: sdk.ValAddress(addrs[0]).String(),
 					CreationAllowed: true,
 				},
 				{
-					OperatorAddress: addrs[0].ToValAddress().String(),
+					OperatorAddress: sdk.ValAddress(addrs[0]).String(),
 				},
 			},
 		},

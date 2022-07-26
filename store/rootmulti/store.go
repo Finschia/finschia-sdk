@@ -9,7 +9,6 @@ import (
 	"math"
 	"sort"
 	"strings"
-	"sync"
 
 	protoio "github.com/gogo/protobuf/io"
 	gogotypes "github.com/gogo/protobuf/types"
@@ -64,9 +63,6 @@ type Store struct {
 	interBlockCache  types.MultiStorePersistentCache
 	iavlCacheManager types.CacheManager
 
-	pruneLock *sync.Mutex
-	prunePass chan bool
-
 	listeners map[types.StoreKey][]types.WriteListener
 }
 
@@ -87,8 +83,6 @@ func NewStore(db tmdb.DB) *Store {
 		stores:        make(map[types.StoreKey]types.CommitKVStore),
 		keysByName:    make(map[string]types.StoreKey),
 		pruneHeights:  make([]int64, 0),
-		pruneLock:     &sync.Mutex{},
-		prunePass:     make(chan bool, 1),
 		listeners:     make(map[types.StoreKey][]types.WriteListener),
 		iavlCacheSize: iavl.DefaultIAVLCacheSize,
 	}
@@ -407,21 +401,16 @@ func (rs *Store) Commit() types.CommitID {
 		// - KeepEvery % (height - KeepRecent) != 0 as that means the height is not
 		// a 'snapshot' height.
 		if rs.pruningOpts.KeepEvery == 0 || pruneHeight%int64(rs.pruningOpts.KeepEvery) != 0 {
-			rs.pruneLock.Lock()
 			rs.pruneHeights = append(rs.pruneHeights, pruneHeight)
-			rs.pruneLock.Unlock()
 		}
 	}
 
 	// batch prune if the current height is a pruning interval height
 	if rs.pruningOpts.Interval > 0 && version%int64(rs.pruningOpts.Interval) == 0 {
-		go rs.pruneStores()
+		rs.pruneStores()
 	}
 
-	rs.pruneLock.Lock()
-	pruneHeights := rs.pruneHeights
-	rs.pruneLock.Unlock()
-	flushMetadata(rs.db, version, rs.lastCommitInfo, pruneHeights)
+	flushMetadata(rs.db, version, rs.lastCommitInfo, rs.pruneHeights)
 
 	return types.CommitID{
 		Version: version,
@@ -429,32 +418,10 @@ func (rs *Store) Commit() types.CommitID {
 	}
 }
 
-func (rs *Store) prunePassEnter() bool {
-	select {
-	case rs.prunePass <- true:
-		return true
-	default:
-		return false
-	}
-}
-
-func (rs *Store) prunePassLeave() {
-	<-rs.prunePass
-}
-
 // pruneStores will batch delete a list of heights from each mounted sub-store.
 // Afterwards, pruneHeights is reset.
 func (rs *Store) pruneStores() {
-	if !rs.prunePassEnter() {
-		return
-	}
-	defer rs.prunePassLeave()
-
-	rs.pruneLock.Lock()
-	pruneHeights := make([]int64, len(rs.pruneHeights))
-	copy(pruneHeights, rs.pruneHeights)
-	rs.pruneLock.Unlock()
-	if len(pruneHeights) == 0 {
+	if len(rs.pruneHeights) == 0 {
 		return
 	}
 
@@ -464,7 +431,7 @@ func (rs *Store) pruneStores() {
 			// it to get the underlying IAVL store.
 			store = rs.GetCommitKVStore(key)
 
-			if err := store.(*iavl.Store).DeleteVersions(pruneHeights...); err != nil {
+			if err := store.(*iavl.Store).DeleteVersions(rs.pruneHeights...); err != nil {
 				if err == iavltree.ErrBusy {
 					return
 				}
@@ -475,21 +442,7 @@ func (rs *Store) pruneStores() {
 		}
 	}
 
-	// remove pruned heights from rs.pruneHeights
-	// new rs.pruneHeights will be updated by next flushMetaData cycle
-	rs.pruneLock.Lock()
-	rph := map[int64]bool{}
-	for _, h := range pruneHeights {
-		rph[h] = true
-	}
-	nph := make([]int64, 0, len(rs.pruneHeights))
-	for _, h := range rs.pruneHeights {
-		if _, ok := rph[h]; !ok {
-			nph = append(nph, h)
-		}
-	}
-	rs.pruneHeights = nph
-	rs.pruneLock.Unlock()
+	rs.pruneHeights = make([]int64, 0)
 }
 
 // CacheWrap implements CacheWrapper/Store/CommitStore.
@@ -1019,24 +972,20 @@ func getLatestVersion(db tmdb.DB) int64 {
 
 // Commits each store and returns a new commitInfo.
 func commitStores(version int64, storeMap map[types.StoreKey]types.CommitKVStore) *types.CommitInfo {
-	storeInfos := make([]types.StoreInfo, len(storeMap))
+	storeInfos := make([]types.StoreInfo, 0, len(storeMap))
 
-	var wg sync.WaitGroup
-	ix := 0
 	for key, store := range storeMap {
-		wg.Add(1)
-		go func(i int, k types.StoreKey, s types.CommitKVStore) {
-			commitID := s.Commit()
+		commitID := store.Commit()
 
-			si := types.StoreInfo{}
-			si.Name = k.Name()
-			si.CommitId = commitID
-			storeInfos[i] = si
-			wg.Done()
-		}(ix, key, store)
-		ix++
+		if store.GetStoreType() == types.StoreTypeTransient {
+			continue
+		}
+
+		si := types.StoreInfo{}
+		si.Name = key.Name()
+		si.CommitId = commitID
+		storeInfos = append(storeInfos, si)
 	}
-	wg.Wait()
 
 	return &types.CommitInfo{
 		Version:    version,

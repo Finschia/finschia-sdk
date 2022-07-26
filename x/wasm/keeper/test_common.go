@@ -249,7 +249,8 @@ func createTestInput(
 		keys[paramstypes.StoreKey],
 		tkeys[paramstypes.TStoreKey],
 	)
-	for _, m := range []string{authtypes.ModuleName,
+	for _, m := range []string{
+		authtypes.ModuleName,
 		banktypes.ModuleName,
 		stakingtypes.ModuleName,
 		minttypes.ModuleName,
@@ -260,7 +261,8 @@ func createTestInput(
 		capabilitytypes.ModuleName,
 		ibchost.ModuleName,
 		govtypes.ModuleName,
-		types.ModuleName} {
+		types.ModuleName,
+	} {
 		paramsKeeper.Subspace(m)
 	}
 	subspace := func(m string) paramstypes.Subspace {
@@ -465,11 +467,11 @@ func TestHandler(k types.ContractOpsKeeper) sdk.Handler {
 }
 
 func handleStoreCode(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgStoreCode) (*sdk.Result, error) {
-	err := sdk.ValidateAccAddress(msg.Sender)
+	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	codeID, err := k.Create(ctx, sdk.AccAddress(msg.Sender), msg.WASMByteCode, msg.InstantiatePermission)
+	codeID, err := k.Create(ctx, senderAddr, msg.WASMByteCode, msg.InstantiatePermission)
 	if err != nil {
 		return nil, err
 	}
@@ -481,38 +483,38 @@ func handleStoreCode(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgS
 }
 
 func handleInstantiate(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgInstantiateContract) (*sdk.Result, error) {
-	err := sdk.ValidateAccAddress(msg.Sender)
+	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
+	var adminAddr sdk.AccAddress
 	if msg.Admin != "" {
-		if err = sdk.ValidateAccAddress(msg.Admin); err != nil {
+		if adminAddr, err = sdk.AccAddressFromBech32(msg.Admin); err != nil {
 			return nil, sdkerrors.Wrap(err, "admin")
 		}
 	}
 
-	contractAddr, _, err := k.Instantiate(ctx, msg.CodeID, sdk.AccAddress(msg.Sender), sdk.AccAddress(msg.Admin),
-		msg.Msg, msg.Label, msg.Funds)
+	contractAddr, _, err := k.Instantiate(ctx, msg.CodeID, senderAddr, adminAddr, msg.Msg, msg.Label, msg.Funds)
 	if err != nil {
 		return nil, err
 	}
 
 	return &sdk.Result{
-		Data:   contractAddr.Bytes(),
+		Data:   contractAddr,
 		Events: ctx.EventManager().Events().ToABCIEvents(),
 	}, nil
 }
 
 func handleExecute(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgExecuteContract) (*sdk.Result, error) {
-	err := sdk.ValidateAccAddress(msg.Sender)
+	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	err = sdk.ValidateAccAddress(msg.Contract)
+	contractAddr, err := sdk.AccAddressFromBech32(msg.Contract)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "admin")
 	}
-	data, err := k.Execute(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender), msg.Msg, msg.Funds)
+	data, err := k.Execute(ctx, contractAddr, senderAddr, msg.Msg, msg.Funds)
 	if err != nil {
 		return nil, err
 	}
@@ -602,7 +604,8 @@ func StoreRandomContractWithAccessConfig(
 	t testing.TB, ctx sdk.Context,
 	keepers TestKeepers,
 	mock types.WasmerEngine,
-	cfg *types.AccessConfig) ExampleContract {
+	cfg *types.AccessConfig,
+) ExampleContract {
 	t.Helper()
 	anyAmount := sdk.NewCoins(sdk.NewInt64Coin("denom", 1000))
 	creator, _, creatorAddr := keyPubAddr()
@@ -613,7 +616,6 @@ func StoreRandomContractWithAccessConfig(
 	require.NoError(t, err)
 	exampleContract := ExampleContract{InitialAmount: anyAmount, Creator: creator, CreatorAddr: creatorAddr, CodeID: codeID}
 	return exampleContract
-
 }
 
 type HackatomExampleInstance struct {
@@ -731,6 +733,6 @@ func keyPubAddr() (crypto.PrivKey, crypto.PubKey, sdk.AccAddress) {
 
 	key := ed25519.GenPrivKeyFromSecret(seed)
 	pub := key.PubKey()
-	addr := sdk.BytesToAccAddress(pub.Address())
+	addr := sdk.AccAddress(pub.Address())
 	return key, pub, addr
 }

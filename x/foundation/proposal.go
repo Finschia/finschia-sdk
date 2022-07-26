@@ -36,7 +36,7 @@ func (p *UpdateFoundationParamsProposal) ProposalType() string {
 func (p *UpdateFoundationParamsProposal) ValidateBasic() error {
 	params := p.Params
 	if params.Enabled {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "cannot enable foundation")
+		return sdkerrors.ErrInvalidRequest.Wrap("cannot enable foundation")
 	}
 
 	if err := validateRatio(params.FoundationTax, "tax rate"); err != nil {
@@ -68,17 +68,17 @@ func (p *UpdateValidatorAuthsProposal) ProposalType() string   { return Proposal
 
 func (p *UpdateValidatorAuthsProposal) ValidateBasic() error {
 	if len(p.Auths) == 0 {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "empty auths")
+		return sdkerrors.ErrInvalidRequest.Wrap("empty auths")
 	}
 
 	usedAddrs := map[string]bool{}
 	for _, auth := range p.Auths {
 		addr := auth.OperatorAddress
-		if err := sdk.ValidateValAddress(addr); err != nil {
+		if _, err := sdk.ValAddressFromBech32(addr); err != nil {
 			return err
 		}
 		if usedAddrs[addr] {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "multiple auths for same validator: %s", addr)
+			return sdkerrors.ErrInvalidRequest.Wrapf("multiple auths for same validator: %s", addr)
 		}
 		usedAddrs[addr] = true
 	}

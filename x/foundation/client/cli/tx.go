@@ -461,7 +461,7 @@ Example of the content of policy-json:
   "threshold": "10",
   "windows": {
     "voting_period": "24h",
-    "min_execution_period": "0s",
+    "min_execution_period": "0s"
   }
 }
 `,

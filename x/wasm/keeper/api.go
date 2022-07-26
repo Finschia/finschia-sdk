@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	wasmvm "github.com/line/wasmvm"
 	wasmvmtypes "github.com/line/wasmvm/types"
 
@@ -29,15 +27,14 @@ var (
 func (a cosmwasmAPIImpl) humanAddress(canon []byte) (string, uint64, error) {
 	gas := a.gasMultiplier.FromWasmVMGas(5)
 	if err := sdk.VerifyAddressFormat(canon); err != nil {
-		//nolint:stylecheck
-		return "", gas, fmt.Errorf("expected %d byte address", sdk.BytesAddrLen)
+		return "", gas, err
 	}
 
-	return sdk.BytesToAccAddress(canon).String(), gas, nil
+	return sdk.AccAddress(canon).String(), gas, nil
 }
 
 func (a cosmwasmAPIImpl) canonicalAddress(human string) ([]byte, uint64, error) {
-	bz, err := sdk.AccAddressToBytes(human)
+	bz, err := sdk.AccAddressFromBech32(human)
 	return bz, a.gasMultiplier.ToWasmVMGas(4), err
 }
 

@@ -228,9 +228,6 @@ type KVStore interface {
 	// Delete deletes the key. Panics on nil key.
 	Delete(key []byte)
 
-	// Prefetch fetches the key'ed object, filling ibc & iavl cache along the way.
-	Prefetch(key []byte, forSet bool) (hits, misses int, value []byte)
-
 	// Iterator over a domain of keys in ascending order. End is exclusive.
 	// Start must be less than end, or the Iterator is invalid.
 	// Iterator must be closed by caller.

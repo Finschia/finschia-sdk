@@ -42,7 +42,7 @@ func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.Acc
 	for _, permission := range permissions {
 		eventGrant.Permission = permission
 		ctx.EventManager().EmitEvent(token.NewEventGrantPermTokenBody(eventGrant))
-		k.Grant(ctx, class.ContractId, "", owner, permission)
+		k.Grant(ctx, class.ContractId, nil, owner, permission)
 	}
 
 	k.mintToken(ctx, class.ContractId, to, amount)

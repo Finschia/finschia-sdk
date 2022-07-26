@@ -27,7 +27,6 @@ func TestStore(t *testing.T) {
 	require.False(t, store.Has(k))
 	store.Set(k, v)
 	require.True(t, store.Has(k))
-	store.Prefetch(k, false)
 	require.Equal(t, v, store.Get(k))
 	store.Delete(k)
 	require.False(t, store.Has(k))

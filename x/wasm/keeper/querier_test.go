@@ -297,7 +297,7 @@ func TestQueryContractListByCodeOrdering(t *testing.T) {
 			ctx = setBlock(ctx, h)
 			h++
 		}
-		_, _, err = keepers.ContractKeeper.Instantiate(ctx, codeID, creator, "", initMsgBz, fmt.Sprintf("contract %d", i), topUp)
+		_, _, err = keepers.ContractKeeper.Instantiate(ctx, codeID, creator, nil, initMsgBz, fmt.Sprintf("contract %d", i), topUp)
 		require.NoError(t, err)
 	}
 
@@ -436,7 +436,7 @@ func TestQueryContractHistory(t *testing.T) {
 		t.Run(msg, func(t *testing.T) {
 			xCtx, _ := ctx.CacheContext()
 
-			cAddr := sdk.AccAddress(myContractBech32Addr)
+			cAddr, _ := sdk.AccAddressFromBech32(myContractBech32Addr)
 			keeper.appendToContractHistory(xCtx, cAddr, spec.srcHistory...)
 
 			// when
@@ -725,17 +725,13 @@ func TestQueryPinnedCodes(t *testing.T) {
 }
 
 func TestQueryCodeInfo(t *testing.T) {
-
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	keeper := keepers.WasmKeeper
 
-	const anyAddress = "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"
-	err = sdk.ValidateAccAddress(anyAddress)
-	require.NoError(t, err)
-
+	anyAddress, err := sdk.AccAddressFromBech32("link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5")
 	require.NoError(t, err)
 	specs := map[string]struct {
 		codeId       uint64
@@ -751,7 +747,7 @@ func TestQueryCodeInfo(t *testing.T) {
 		},
 		"with_address": {
 			codeId:       20,
-			accessConfig: types.AccessTypeOnlyAddress.With(sdk.AccAddress(anyAddress)),
+			accessConfig: types.AccessTypeOnlyAddress.With(anyAddress),
 		},
 	}
 	for msg, spec := range specs {
@@ -791,9 +787,7 @@ func TestQueryCodeInfoList(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	keeper := keepers.WasmKeeper
 
-	const anyAddress = "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"
-	err = sdk.ValidateAccAddress(anyAddress)
-	require.NoError(t, err)
+	anyAddress, err := sdk.AccAddressFromBech32("link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5")
 	require.NoError(t, err)
 	codeInfoWithConfig := func(accessConfig types.AccessConfig) types.CodeInfo {
 		codeInfo := types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode))
@@ -819,7 +813,7 @@ func TestQueryCodeInfoList(t *testing.T) {
 		{
 			name:     "with_address",
 			codeId:   20,
-			codeInfo: codeInfoWithConfig(types.AccessTypeOnlyAddress.With(sdk.AccAddress(anyAddress))),
+			codeInfo: codeInfoWithConfig(types.AccessTypeOnlyAddress.With(anyAddress)),
 		},
 	}
 
@@ -848,7 +842,6 @@ func TestQueryCodeInfoList(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, got.CodeInfos, 3)
 	require.EqualValues(t, allCodesResponse, got.CodeInfos)
-
 }
 
 func fromBase64(s string) []byte {

@@ -32,7 +32,6 @@ func TestGasKVStoreBasic(t *testing.T) {
 	require.Panics(t, func() { st.Set([]byte(""), []byte("value")) }, "setting an empty key should panic")
 
 	require.Empty(t, st.Get(keyFmt(1)), "Expected `key1` to be empty")
-	st.Prefetch(keyFmt(1), false)
 	st.Set(keyFmt(1), valFmt(1))
 	require.Equal(t, valFmt(1), st.Get(keyFmt(1)))
 	st.Delete(keyFmt(1))

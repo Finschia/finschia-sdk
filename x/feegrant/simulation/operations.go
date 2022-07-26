@@ -121,8 +121,14 @@ func SimulateMsgRevokeAllowance(ak feegrant.AccountKeeper, bk feegrant.BankKeepe
 		var granteeAddr sdk.AccAddress
 		k.IterateAllFeeAllowances(ctx, func(grant feegrant.Grant) bool {
 
-			granter := sdk.AccAddress(grant.Granter)
-			grantee := sdk.AccAddress(grant.Grantee)
+			granter, err := sdk.AccAddressFromBech32(grant.Granter)
+			if err != nil {
+				panic(err)
+			}
+			grantee, err := sdk.AccAddressFromBech32(grant.Grantee)
+			if err != nil {
+				panic(err)
+			}
 			granterAddr = granter
 			granteeAddr = grantee
 			hasGrant = true

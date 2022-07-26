@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
 	"time"
 
 	ics23 "github.com/confio/ics23/go"
@@ -55,16 +54,12 @@ func (cms *CacheManagerSingleton) GetCache() types.Cache {
 
 func NewCacheManagerSingleton(cacheSize int, provider MetricsProvider) types.CacheManager {
 	cm := &CacheManagerSingleton{
-		cache: NewFastCache(cacheSize),
-		// cache: NewRistrettoCache(cacheSize),
-		// cache: NewFreeCache(cacheSize),
+		cache:   NewFastCache(cacheSize),
 		metrics: provider(),
 	}
 	startCacheMetricUpdator(cm.cache, cm.metrics)
 	return cm
 }
-
-var peakCacheBytes uint64
 
 func startCacheMetricUpdator(cache types.Cache, metrics *Metrics) {
 	// Execution time of `fastcache.UpdateStats()` can increase linearly as cache entries grows
@@ -76,10 +71,6 @@ func startCacheMetricUpdator(cache types.Cache, metrics *Metrics) {
 			metrics.IAVLCacheMisses.Set(float64(misses))
 			metrics.IAVLCacheEntries.Set(float64(entries))
 			metrics.IAVLCacheBytes.Set(float64(bytes))
-			if bytes > peakCacheBytes {
-				peakCacheBytes = bytes
-				metrics.IAVLCachePeakBytes.Set(float64(bytes))
-			}
 			time.Sleep(10 * time.Second)
 		}
 	}()
@@ -256,15 +247,6 @@ func (st *Store) Has(key []byte) (exists bool) {
 func (st *Store) Delete(key []byte) {
 	defer telemetry.MeasureSince(time.Now(), "store", "iavl", "delete")
 	st.tree.Remove(key)
-}
-
-func init() {
-	if os.Getenv("USE_PREFETCH") != "NO" {
-		usePrefetch = 1
-	} else {
-		usePrefetch = -1
-	}
-	prefetcher()
 }
 
 // DeleteVersions deletes a series of versions from the MutableTree. An error

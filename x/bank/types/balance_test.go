@@ -118,9 +118,9 @@ func TestBalanceValidate(t *testing.T) {
 
 func TestBalance_GetAddress(t *testing.T) {
 	tests := []struct {
-		name    string
-		Address string
-		expErr  bool
+		name      string
+		Address   string
+		wantPanic bool
 	}{
 		{"empty address", "", true},
 		{"malformed address", "invalid", true},
@@ -130,11 +130,10 @@ func TestBalance_GetAddress(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			b := bank.Balance{Address: tt.Address}
-			err := sdk.ValidateAccAddress(b.GetAddress().String())
-			if tt.expErr {
-				require.Error(t, err)
+			if tt.wantPanic {
+				require.Panics(t, func() { b.GetAddress() })
 			} else {
-				require.NoError(t, err)
+				require.False(t, b.GetAddress().Empty())
 			}
 		})
 	}
@@ -166,7 +165,7 @@ func TestSanitizeBalances(t *testing.T) {
 		for j := i + 1; j < len(sorted); j++ {
 			aj := sorted[j]
 
-			if got := bytes.Compare(ai.GetAddress().Bytes(), aj.GetAddress().Bytes()); got > 0 {
+			if got := bytes.Compare(ai.GetAddress(), aj.GetAddress()); got > 0 {
 				t.Errorf("Balance(%d) > Balance(%d)", i, j)
 			}
 		}

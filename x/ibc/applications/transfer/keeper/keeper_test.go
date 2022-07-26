@@ -37,7 +37,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 }
 
 func (suite *KeeperTestSuite) TestGetTransferAccount() {
-	expectedMaccAddr := sdk.BytesToAccAddress(crypto.AddressHash([]byte(types.ModuleName)))
+	expectedMaccAddr := sdk.AccAddress(crypto.AddressHash([]byte(types.ModuleName)))
 
 	macc := suite.chainA.App.TransferKeeper.GetTransferAccount(suite.chainA.GetContext())
 

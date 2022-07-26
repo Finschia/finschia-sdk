@@ -22,7 +22,7 @@ import (
 
 var (
 	priv = ed25519.GenPrivKey()
-	addr = sdk.BytesToAccAddress(priv.PubKey().Address())
+	addr = sdk.AccAddress(priv.PubKey().Address())
 )
 
 func TestParseQueryResponse(t *testing.T) {
@@ -153,6 +153,6 @@ func makeCodec() *codec.LegacyAmino {
 	sdk.RegisterLegacyAminoCodec(cdc)
 	cryptocodec.RegisterCrypto(cdc)
 	authtypes.RegisterLegacyAminoCodec(cdc)
-	cdc.RegisterConcrete(testdata.TestMsg{}, "lbm-sdk/Test", nil)
+	cdc.RegisterConcrete(testdata.TestMsg{}, "cosmos-sdk/Test", nil)
 	return cdc
 }

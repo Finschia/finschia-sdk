@@ -9,14 +9,14 @@ import (
 )
 
 func TestReceiveFromTreasuryAuthorization(t *testing.T) {
-	testCases := map[string]struct{
-		msg sdk.Msg
-		valid bool
+	testCases := map[string]struct {
+		msg    sdk.Msg
+		valid  bool
 		accept bool
 	}{
 		"valid": {
-			msg: &foundation.MsgWithdrawFromTreasury{},
-			valid: true,
+			msg:    &foundation.MsgWithdrawFromTreasury{},
+			valid:  true,
 			accept: true,
 		},
 		"msg mismatch": {

@@ -21,8 +21,6 @@ import (
 	"github.com/line/lbm-sdk/telemetry"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-
-	iavlstore "github.com/line/lbm-sdk/store/iavl"
 )
 
 // InitChain implements the ABCI interface. It runs the initialization logic
@@ -280,13 +278,11 @@ func (app *BaseApp) CheckTxAsync(req abci.RequestCheckTx, callback abci.CheckTxC
 func (app *BaseApp) BeginRecheckTx(req abci.RequestBeginRecheckTx) abci.ResponseBeginRecheckTx {
 	// NOTE: This is safe because Ostracon holds a lock on the mempool for Rechecking.
 	app.setCheckState(req.Header)
-	iavlstore.PausePrefetcher()
 	return abci.ResponseBeginRecheckTx{Code: abci.CodeTypeOK}
 }
 
 // EndRecheckTx implements the ABCI interface.
 func (app *BaseApp) EndRecheckTx(req abci.RequestEndRecheckTx) abci.ResponseEndRecheckTx {
-	iavlstore.ResumePrefetcher()
 	return abci.ResponseEndRecheckTx{Code: abci.CodeTypeOK}
 }
 
@@ -344,9 +340,7 @@ func (app *BaseApp) Commit() (res abci.ResponseCommit) {
 	// The write to the DeliverTx state writes all state transitions to the root
 	// MultiStore (app.cms) so when Commit() is called is persists those values.
 	app.deliverState.ms.Write()
-	iavlstore.PausePrefetcher()
 	commitID := app.cms.Commit()
-	iavlstore.ResumePrefetcher()
 	app.logger.Info("commit synced", "commit", fmt.Sprintf("%X", commitID))
 
 	// iavl, db & disk stats
