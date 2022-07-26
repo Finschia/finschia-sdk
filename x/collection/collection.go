@@ -286,7 +286,16 @@ func ParseCoins(coinsStr string) (Coins, error) {
 	return NewCoins(coins...), nil
 }
 
-// Deprecated: do not use
 type Token interface {
 	proto.Message
+}
+
+func TokenFromAny(any *codectypes.Any) Token {
+	class := any.GetCachedValue().(Token)
+	return class
+}
+
+func TokenUnpackInterfaces(any *codectypes.Any, unpacker codectypes.AnyUnpacker) error {
+	var token Token
+	return unpacker.UnpackAny(any, &token)
 }

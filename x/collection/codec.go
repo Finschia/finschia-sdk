@@ -8,27 +8,13 @@ import (
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgSend{},
-		&MsgOperatorSend{},
-		&MsgAuthorizeOperator{},
-		&MsgRevokeOperator{},
 		&MsgCreateContract{},
 		&MsgIssueFT{},
 		&MsgIssueNFT{},
 		&MsgMintFT{},
 		&MsgMintNFT{},
-		&MsgBurn{},
-		&MsgOperatorBurn{},
-		&MsgModifyContract{},
-		&MsgModifyTokenClass{},
-		&MsgModifyNFT{},
-		&MsgGrant{},
-		&MsgAbandon{},
 		&MsgAttach{},
-		&MsgOperatorAttach{},
 		&MsgDetach{},
-		&MsgOperatorDetach{},
-		// deprecated msgs
 		&MsgTransferFT{},
 		&MsgTransferFTFrom{},
 		&MsgTransferNFT{},
@@ -51,6 +37,13 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		(*TokenClass)(nil),
 		&FTClass{},
 		&NFTClass{},
+	)
+
+	registry.RegisterInterface(
+		"lbm.collection.v1.Token",
+		(*Token)(nil),
+		&FT{},
+		&OwnerNFT{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

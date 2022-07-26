@@ -29,21 +29,24 @@ func NewQueryCmd() *cobra.Command {
 
 	queryCmd.AddCommand(
 		NewQueryCmdBalances(),
-		NewQueryCmdSupply(),
-		NewQueryCmdMinted(),
-		NewQueryCmdBurnt(),
+		NewQueryCmdFTSupply(),
+		NewQueryCmdFTMinted(),
+		NewQueryCmdFTBurnt(),
+		NewQueryCmdNFTSupply(),
+		NewQueryCmdNFTMinted(),
+		NewQueryCmdNFTBurnt(),
 		NewQueryCmdContract(),
-		NewQueryCmdContracts(),
-		NewQueryCmdNFT(),
-		// NewQueryCmdNFTs(),
-		NewQueryCmdOwner(),
+		NewQueryCmdToken(),
+		// NewQueryCmdTokensWithTokenType(),
+		NewQueryCmdTokens(),
+		NewQueryCmdTokenType(),
+		NewQueryCmdTokenTypes(),
 		NewQueryCmdRoot(),
 		NewQueryCmdParent(),
 		NewQueryCmdChildren(),
-		NewQueryCmdGrant(),
 		NewQueryCmdGranteeGrants(),
-		NewQueryCmdAuthorization(),
-		NewQueryCmdOperatorAuthorizations(),
+		NewQueryCmdApproved(),
+		NewQueryCmdApprovers(),
 	)
 
 	return queryCmd
@@ -119,12 +122,12 @@ func NewQueryCmdBalances() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdSupply() *cobra.Command {
+func NewQueryCmdFTSupply() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "supply [contract-id] [class-id]",
+		Use:     "ft-supply [contract-id] [token-id]",
 		Args:    cobra.ExactArgs(2),
-		Short:   "query the supply of tokens of the class",
-		Example: fmt.Sprintf(`$ %s query %s supply [contract-id] [class-id]`, version.AppName, collection.ModuleName),
+		Short:   "query the supply of tokens",
+		Example: fmt.Sprintf(`$ %s ft-query %s supply [contract-id] [token-id]`, version.AppName, collection.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -136,17 +139,17 @@ func NewQueryCmdSupply() *cobra.Command {
 				return err
 			}
 
-			classID := args[1]
-			if err := collection.ValidateClassID(classID); err != nil {
+			tokenID := args[1]
+			if err := collection.ValidateTokenID(tokenID); err != nil {
 				return err
 			}
 
 			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QuerySupplyRequest{
+			req := &collection.QueryFTSupplyRequest{
 				ContractId: contractID,
-				ClassId:    classID,
+				TokenId:    tokenID,
 			}
-			res, err := queryClient.Supply(cmd.Context(), req)
+			res, err := queryClient.FTSupply(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -158,12 +161,129 @@ func NewQueryCmdSupply() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdMinted() *cobra.Command {
+func NewQueryCmdFTMinted() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "minted [contract-id] [class-id]",
+		Use:     "ft-minted [contract-id] [token-id]",
+		Args:    cobra.ExactArgs(2),
+		Short:   "query the minted tokens",
+		Example: fmt.Sprintf(`$ %s query %s ft-minted [contract-id] [token-id]`, version.AppName, collection.ModuleName),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			contractID := args[0]
+			if err := collection.ValidateContractID(contractID); err != nil {
+				return err
+			}
+
+			tokenID := args[1]
+			if err := collection.ValidateTokenID(tokenID); err != nil {
+				return err
+			}
+
+			queryClient := collection.NewQueryClient(clientCtx)
+			req := &collection.QueryFTMintedRequest{
+				ContractId: contractID,
+				TokenId:    tokenID,
+			}
+			res, err := queryClient.FTMinted(cmd.Context(), req)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewQueryCmdFTBurnt() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "ft-burnt [contract-id] [token-id]",
+		Args:    cobra.ExactArgs(2),
+		Short:   "query the burnt tokens",
+		Example: fmt.Sprintf(`$ %s query %s ft-burnt [contract-id] [token-id]`, version.AppName, collection.ModuleName),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			contractID := args[0]
+			if err := collection.ValidateContractID(contractID); err != nil {
+				return err
+			}
+
+			tokenID := args[1]
+			if err := collection.ValidateTokenID(tokenID); err != nil {
+				return err
+			}
+
+			queryClient := collection.NewQueryClient(clientCtx)
+			req := &collection.QueryFTBurntRequest{
+				ContractId: contractID,
+				TokenId:    tokenID,
+			}
+			res, err := queryClient.FTBurnt(cmd.Context(), req)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewQueryCmdNFTSupply() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "nft-supply [contract-id] [token-type]",
+		Args:    cobra.ExactArgs(2),
+		Short:   "query the supply of tokens",
+		Example: fmt.Sprintf(`$ %s query %s nft-supply [contract-id] [token-type]`, version.AppName, collection.ModuleName),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			contractID := args[0]
+			if err := collection.ValidateContractID(contractID); err != nil {
+				return err
+			}
+
+			tokenType := args[1]
+			if err := collection.ValidateClassID(tokenType); err != nil {
+				return err
+			}
+
+			queryClient := collection.NewQueryClient(clientCtx)
+			req := &collection.QueryNFTSupplyRequest{
+				ContractId: contractID,
+				TokenType:  tokenType,
+			}
+			res, err := queryClient.NFTSupply(cmd.Context(), req)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewQueryCmdNFTMinted() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "nft-minted [contract-id] [token-type]",
 		Args:    cobra.ExactArgs(2),
 		Short:   "query the minted tokens of the class",
-		Example: fmt.Sprintf(`$ %s query %s minted [contract-id] [class-id]`, version.AppName, collection.ModuleName),
+		Example: fmt.Sprintf(`$ %s query %s nft-minted [contract-id] [token-type]`, version.AppName, collection.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -175,17 +295,17 @@ func NewQueryCmdMinted() *cobra.Command {
 				return err
 			}
 
-			classID := args[1]
-			if err := collection.ValidateClassID(classID); err != nil {
+			tokenType := args[1]
+			if err := collection.ValidateClassID(tokenType); err != nil {
 				return err
 			}
 
 			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QueryMintedRequest{
+			req := &collection.QueryNFTMintedRequest{
 				ContractId: contractID,
-				ClassId:    classID,
+				TokenType:  tokenType,
 			}
-			res, err := queryClient.Minted(cmd.Context(), req)
+			res, err := queryClient.NFTMinted(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -197,12 +317,12 @@ func NewQueryCmdMinted() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdBurnt() *cobra.Command {
+func NewQueryCmdNFTBurnt() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "burnt [contract-id] [class-id]",
+		Use:     "nft-burnt [contract-id] [token-type]",
 		Args:    cobra.ExactArgs(2),
 		Short:   "query the burnt tokens of the class",
-		Example: fmt.Sprintf(`$ %s query %s burnt [contract-id] [class-id]`, version.AppName, collection.ModuleName),
+		Example: fmt.Sprintf(`$ %s query %s nft-burnt [contract-id] [token-type]`, version.AppName, collection.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -214,17 +334,17 @@ func NewQueryCmdBurnt() *cobra.Command {
 				return err
 			}
 
-			classID := args[1]
-			if err := collection.ValidateClassID(classID); err != nil {
+			tokenType := args[1]
+			if err := collection.ValidateClassID(tokenType); err != nil {
 				return err
 			}
 
 			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QueryBurntRequest{
+			req := &collection.QueryNFTBurntRequest{
 				ContractId: contractID,
-				ClassId:    classID,
+				TokenType:  tokenType,
 			}
-			res, err := queryClient.Burnt(cmd.Context(), req)
+			res, err := queryClient.NFTBurnt(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -269,15 +389,59 @@ func NewQueryCmdContract() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdContracts() *cobra.Command {
+func NewQueryCmdTokenType() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "contracts",
-		Args:    cobra.NoArgs,
-		Short:   "query all contract metadata",
-		Example: fmt.Sprintf(`$ %s query %s contracts`, version.AppName, collection.ModuleName),
+		Use:     "token-type [contract-id] [token-type]",
+		Args:    cobra.ExactArgs(2),
+		Short:   "query token type",
+		Example: fmt.Sprintf(`$ %s query %s token-type [contract-id] [token-type]`, version.AppName, collection.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
+				return err
+			}
+
+			contractID := args[0]
+			if err := collection.ValidateContractID(contractID); err != nil {
+				return err
+			}
+
+			classID := args[1]
+			if err := collection.ValidateClassID(classID); err != nil {
+				return err
+			}
+
+			queryClient := collection.NewQueryClient(clientCtx)
+			req := &collection.QueryTokenTypeRequest{
+				ContractId: contractID,
+				TokenType:  classID,
+			}
+			res, err := queryClient.TokenType(cmd.Context(), req)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewQueryCmdTokenTypes() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "token-types [contract-id]",
+		Args:    cobra.ExactArgs(1),
+		Short:   "query all token types metadata",
+		Example: fmt.Sprintf(`$ %s query %s token-types [contract-id]`, version.AppName, collection.ModuleName),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			contractID := args[0]
+			if err := collection.ValidateContractID(contractID); err != nil {
 				return err
 			}
 
@@ -286,10 +450,11 @@ func NewQueryCmdContracts() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			req := &collection.QueryContractsRequest{
+			req := &collection.QueryTokenTypesRequest{
+				ContractId: contractID,
 				Pagination: pageReq,
 			}
-			res, err := queryClient.Contracts(cmd.Context(), req)
+			res, err := queryClient.TokenTypes(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -298,172 +463,16 @@ func NewQueryCmdContracts() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
-	flags.AddPaginationFlagsToCmd(cmd, "contracts")
+	flags.AddPaginationFlagsToCmd(cmd, "tokentypes")
 	return cmd
 }
 
-func NewQueryCmdFTClass() *cobra.Command {
+func NewQueryCmdToken() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "ft-class [contract-id] [class-id]",
+		Use:     "token [contract-id] [token-id]",
 		Args:    cobra.ExactArgs(2),
-		Short:   "query ft class metadata based on its id",
-		Example: fmt.Sprintf(`$ %s query %s ft-class [contract-id] [class-id]`, version.AppName, collection.ModuleName),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			contractID := args[0]
-			if err := collection.ValidateContractID(contractID); err != nil {
-				return err
-			}
-
-			classID := args[1]
-			if err := collection.ValidateClassID(classID); err != nil {
-				return err
-			}
-
-			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QueryFTClassRequest{
-				ContractId: contractID,
-				ClassId:    classID,
-			}
-			res, err := queryClient.FTClass(cmd.Context(), req)
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-	return cmd
-}
-
-func NewQueryCmdNFTClass() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     "nft-class [contract-id] [class-id]",
-		Args:    cobra.ExactArgs(2),
-		Short:   "query nft class metadata based on its id",
-		Example: fmt.Sprintf(`$ %s query %s nft-class [contract-id] [class-id]`, version.AppName, collection.ModuleName),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			contractID := args[0]
-			if err := collection.ValidateContractID(contractID); err != nil {
-				return err
-			}
-
-			classID := args[1]
-			if err := collection.ValidateClassID(classID); err != nil {
-				return err
-			}
-
-			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QueryNFTClassRequest{
-				ContractId: contractID,
-				ClassId:    classID,
-			}
-			res, err := queryClient.NFTClass(cmd.Context(), req)
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-	return cmd
-}
-
-func NewQueryCmdTokenClassTypeName() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     "token-class-type-name [contract-id] [class-id]",
-		Args:    cobra.ExactArgs(2),
-		Short:   "query token class type name based on its id",
-		Example: fmt.Sprintf(`$ %s query %s token-class-type-name [contract-id] [class-id]`, version.AppName, collection.ModuleName),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			contractID := args[0]
-			if err := collection.ValidateContractID(contractID); err != nil {
-				return err
-			}
-
-			classID := args[1]
-			if err := collection.ValidateClassID(classID); err != nil {
-				return err
-			}
-
-			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QueryTokenClassTypeNameRequest{
-				ContractId: contractID,
-				ClassId:    classID,
-			}
-			res, err := queryClient.TokenClassTypeName(cmd.Context(), req)
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-	return cmd
-}
-
-// func NewQueryCmdTokenClasses() *cobra.Command {
-// 	cmd := &cobra.Command{
-// 		Use:     "classes [contract-id]",
-// 		Args:    cobra.ExactArgs(1),
-// 		Short:   "query all token class metadata",
-// 		Example: fmt.Sprintf(`$ %s query %s classes [contract-id]`, version.AppName, collection.ModuleName),
-// 		RunE: func(cmd *cobra.Command, args []string) error {
-// 			clientCtx, err := client.GetClientQueryContext(cmd)
-// 			if err != nil {
-// 				return err
-// 			}
-
-// 			contractID := args[0]
-// 			if err := collection.ValidateContractID(contractID); err != nil {
-// 				return err
-// 			}
-
-// 			queryClient := collection.NewQueryClient(clientCtx)
-// 			pageReq, err := client.ReadPageRequest(cmd.Flags())
-// 			if err != nil {
-// 				return err
-// 			}
-// 			req := &collection.QueryTokenClassesRequest{
-// 				ContractId: contractID,
-// 				Pagination: pageReq,
-// 			}
-// 			res, err := queryClient.TokenClasses(cmd.Context(), req)
-// 			if err != nil {
-// 				return err
-// 			}
-// 			return clientCtx.PrintProto(res)
-// 		},
-// 	}
-
-// 	flags.AddQueryFlagsToCmd(cmd)
-// 	flags.AddPaginationFlagsToCmd(cmd, "classes")
-// 	return cmd
-// }
-
-func NewQueryCmdNFT() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     "nft [contract-id] [token-id]",
-		Args:    cobra.ExactArgs(2),
-		Short:   "query nft metadata based on its id",
-		Example: fmt.Sprintf(`$ %s query %s nft [contract-id] [token-id]`, version.AppName, collection.ModuleName),
+		Short:   "query token metadata",
+		Example: fmt.Sprintf(`$ %s query %s token [contract-id] [token-id]`, version.AppName, collection.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -481,11 +490,11 @@ func NewQueryCmdNFT() *cobra.Command {
 			}
 
 			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QueryNFTRequest{
+			req := &collection.QueryTokenRequest{
 				ContractId: contractID,
 				TokenId:    tokenID,
 			}
-			res, err := queryClient.NFT(cmd.Context(), req)
+			res, err := queryClient.Token(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -497,51 +506,12 @@ func NewQueryCmdNFT() *cobra.Command {
 	return cmd
 }
 
-// func NewQueryCmdNFTs() *cobra.Command {
-// 	cmd := &cobra.Command{
-// 		Use:     "nfts [contract-id]",
-// 		Args:    cobra.ExactArgs(1),
-// 		Short:   "query all nft metadata",
-// 		Example: fmt.Sprintf(`$ %s query %s nfts [contract-id]`, version.AppName, collection.ModuleName),
-// 		RunE: func(cmd *cobra.Command, args []string) error {
-// 			clientCtx, err := client.GetClientQueryContext(cmd)
-// 			if err != nil {
-// 				return err
-// 			}
-
-// 			contractID := args[0]
-// 			if err := collection.ValidateContractID(contractID); err != nil {
-// 				return err
-// 			}
-
-// 			queryClient := collection.NewQueryClient(clientCtx)
-// 			pageReq, err := client.ReadPageRequest(cmd.Flags())
-// 			if err != nil {
-// 				return err
-// 			}
-// 			req := &collection.QueryNFTsRequest{
-// 				ContractId: contractID,
-// 				Pagination: pageReq,
-// 			}
-// 			res, err := queryClient.NFTs(cmd.Context(), req)
-// 			if err != nil {
-// 				return err
-// 			}
-// 			return clientCtx.PrintProto(res)
-// 		},
-// 	}
-
-// 	flags.AddQueryFlagsToCmd(cmd)
-// 	flags.AddPaginationFlagsToCmd(cmd, "nfts")
-// 	return cmd
-// }
-
-func NewQueryCmdOwner() *cobra.Command {
+func NewQueryCmdTokensWithTokenType() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "owner [contract-id] [token-id]",
+		Use:     "tokens-with-token-type [contract-id] [token-type]",
 		Args:    cobra.ExactArgs(2),
-		Short:   "query owner of an nft",
-		Example: fmt.Sprintf(`$ %s query %s owner [contract-id] [token-id]`, version.AppName, collection.ModuleName),
+		Short:   "query all tokens with token type",
+		Example: fmt.Sprintf(`$ %s query %s tokens [contract-id] [token-type]`, version.AppName, collection.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -553,17 +523,22 @@ func NewQueryCmdOwner() *cobra.Command {
 				return err
 			}
 
-			tokenID := args[1]
-			if err := collection.ValidateNFTID(tokenID); err != nil {
+			classID := args[1]
+			if err := collection.ValidateClassID(classID); err != nil {
 				return err
 			}
 
 			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QueryOwnerRequest{
-				ContractId: contractID,
-				TokenId:    tokenID,
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
 			}
-			res, err := queryClient.Owner(cmd.Context(), req)
+			req := &collection.QueryTokensWithTokenTypeRequest{
+				ContractId: contractID,
+				TokenType:  classID,
+				Pagination: pageReq,
+			}
+			res, err := queryClient.TokensWithTokenType(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -572,6 +547,46 @@ func NewQueryCmdOwner() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "tokens")
+	return cmd
+}
+
+func NewQueryCmdTokens() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "tokens [contract-id]",
+		Args:    cobra.ExactArgs(1),
+		Short:   "query all token metadata",
+		Example: fmt.Sprintf(`$ %s query %s tokens [contract-id]`, version.AppName, collection.ModuleName),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			contractID := args[0]
+			if err := collection.ValidateContractID(contractID); err != nil {
+				return err
+			}
+
+			queryClient := collection.NewQueryClient(clientCtx)
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+			req := &collection.QueryTokensRequest{
+				ContractId: contractID,
+				Pagination: pageReq,
+			}
+			res, err := queryClient.Tokens(cmd.Context(), req)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "tokens")
 	return cmd
 }
 
@@ -698,48 +713,6 @@ func NewQueryCmdChildren() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdGrant() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     "grant [contract-id] [grantee] [permission]",
-		Args:    cobra.ExactArgs(3),
-		Short:   "query a permission on a given grantee",
-		Example: fmt.Sprintf(`$ %s query %s grant [contract-id] [grantee] [permission]`, version.AppName, collection.ModuleName),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			contractID := args[0]
-			if err := collection.ValidateContractID(contractID); err != nil {
-				return err
-			}
-
-			grantee := args[1]
-			if _, err := sdk.AccAddressFromBech32(grantee); err != nil {
-				return err
-			}
-
-			permission := collection.Permission(collection.Permission_value[args[2]])
-
-			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QueryGrantRequest{
-				ContractId: contractID,
-				Grantee:    grantee,
-				Permission: permission,
-			}
-			res, err := queryClient.Grant(cmd.Context(), req)
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-	return cmd
-}
-
 func NewQueryCmdGranteeGrants() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "grantee-grants [contract-id] [grantee]",
@@ -779,12 +752,12 @@ func NewQueryCmdGranteeGrants() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdAuthorization() *cobra.Command {
+func NewQueryCmdApproved() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "authorization [contract-id] [operator] [holder]",
+		Use:     "approved [contract-id] [operator] [holder]",
 		Args:    cobra.ExactArgs(3),
 		Short:   "query authorization on its operator and the token holder",
-		Example: fmt.Sprintf(`$ %s query %s authorization [contract-id] [operator] [holder]`, version.AppName, collection.ModuleName),
+		Example: fmt.Sprintf(`$ %s query %s approved [contract-id] [operator] [holder]`, version.AppName, collection.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -807,12 +780,12 @@ func NewQueryCmdAuthorization() *cobra.Command {
 			}
 
 			queryClient := collection.NewQueryClient(clientCtx)
-			req := &collection.QueryAuthorizationRequest{
+			req := &collection.QueryApprovedRequest{
 				ContractId: contractID,
-				Operator:   operator,
-				Holder:     holder,
+				Address:    operator,
+				Approver:   holder,
 			}
-			res, err := queryClient.Authorization(cmd.Context(), req)
+			res, err := queryClient.Approved(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -824,12 +797,12 @@ func NewQueryCmdAuthorization() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdOperatorAuthorizations() *cobra.Command {
+func NewQueryCmdApprovers() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "operator-authorizations [contract-id] [operator]",
+		Use:     "approvers [contract-id] [operator]",
 		Args:    cobra.ExactArgs(2),
 		Short:   "query all authorizations on a given operator",
-		Example: fmt.Sprintf(`$ %s query %s operator-authorizations [contract-id] [operator]`, version.AppName, collection.ModuleName),
+		Example: fmt.Sprintf(`$ %s query %s approvers [contract-id] [operator]`, version.AppName, collection.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -851,12 +824,12 @@ func NewQueryCmdOperatorAuthorizations() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			req := &collection.QueryOperatorAuthorizationsRequest{
+			req := &collection.QueryApproversRequest{
 				ContractId: contractID,
-				Operator:   operator,
+				Address:    operator,
 				Pagination: pageReq,
 			}
-			res, err := queryClient.OperatorAuthorizations(cmd.Context(), req)
+			res, err := queryClient.Approvers(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -865,6 +838,6 @@ func NewQueryCmdOperatorAuthorizations() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
-	flags.AddPaginationFlagsToCmd(cmd, "authorizations")
+	flags.AddPaginationFlagsToCmd(cmd, "approvers")
 	return cmd
 }
