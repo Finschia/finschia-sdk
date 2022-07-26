@@ -17,10 +17,9 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	tmdb "github.com/line/tm-db/v2"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/snapshots"
@@ -39,7 +38,7 @@ var (
 )
 
 type paramStore struct {
-	db *memdb.MemDB
+	db *dbm.MemDB
 }
 
 func (ps *paramStore) Set(_ sdk.Context, key []byte, value interface{}) {
@@ -81,7 +80,7 @@ func defaultLogger() log.Logger {
 
 func newBaseApp(name string, options ...func(*BaseApp)) *BaseApp {
 	logger := defaultLogger()
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	codec := codec.NewLegacyAmino()
 	registerTestCodec(codec)
 	return NewBaseApp(name, logger, db, testTxDecoder(codec), options...)
@@ -113,7 +112,7 @@ func setupBaseApp(t *testing.T, options ...func(*BaseApp)) *BaseApp {
 	require.Equal(t, t.Name(), app.Name())
 
 	app.MountStores(capKey1, capKey2)
-	app.SetParamStore(&paramStore{db: memdb.NewDB()})
+	app.SetParamStore(&paramStore{db: dbm.NewMemDB()})
 
 	// stores are mounted
 	err := app.LoadLatestVersion()
@@ -137,7 +136,7 @@ func setupBaseAppWithSnapshots(t *testing.T, blocks uint, blockTxs int, options 
 	snapshotTimeout := 1 * time.Minute
 	snapshotDir, err := ioutil.TempDir("", "baseapp")
 	require.NoError(t, err)
-	snapshotStore, err := snapshots.NewStore(memdb.NewDB(), snapshotDir)
+	snapshotStore, err := snapshots.NewStore(dbm.NewMemDB(), snapshotDir)
 	require.NoError(t, err)
 	teardown := func() {
 		os.RemoveAll(snapshotDir)
@@ -208,7 +207,7 @@ func TestMountStores(t *testing.T) {
 func TestLoadVersion(t *testing.T) {
 	logger := defaultLogger()
 	pruningOpt := SetPruning(store.PruneNothing)
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	name := t.Name()
 	app := NewBaseApp(name, logger, db, nil, pruningOpt)
 
@@ -258,7 +257,7 @@ func useDefaultLoader(app *BaseApp) {
 	app.SetStoreLoader(DefaultStoreLoader)
 }
 
-func initStore(t *testing.T, db tmdb.DB, storeKey string, k, v []byte) {
+func initStore(t *testing.T, db dbm.DB, storeKey string, k, v []byte) {
 	rs := rootmulti.NewStore(db)
 	rs.SetPruning(store.PruneNothing)
 	key := sdk.NewKVStoreKey(storeKey)
@@ -275,7 +274,7 @@ func initStore(t *testing.T, db tmdb.DB, storeKey string, k, v []byte) {
 	require.Equal(t, int64(1), commitID.Version)
 }
 
-func checkStore(t *testing.T, db tmdb.DB, ver int64, storeKey string, k, v []byte) {
+func checkStore(t *testing.T, db dbm.DB, ver int64, storeKey string, k, v []byte) {
 	rs := rootmulti.NewStore(db)
 	rs.SetPruning(store.PruneDefault)
 	key := sdk.NewKVStoreKey(storeKey)
@@ -316,7 +315,7 @@ func TestSetLoader(t *testing.T) {
 		tc := tc
 		t.Run(name, func(t *testing.T) {
 			// prepare a db with some data
-			db := memdb.NewDB()
+			db := dbm.NewMemDB()
 			initStore(t, db, tc.origStoreKey, k, v)
 
 			// load the app with the existing db
@@ -344,7 +343,7 @@ func TestSetLoader(t *testing.T) {
 func TestVersionSetterGetter(t *testing.T) {
 	logger := defaultLogger()
 	pruningOpt := SetPruning(store.PruneDefault)
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	name := t.Name()
 	app := NewBaseApp(name, logger, db, nil, pruningOpt)
 
@@ -364,7 +363,7 @@ func TestVersionSetterGetter(t *testing.T) {
 func TestLoadVersionInvalid(t *testing.T) {
 	logger := log.NewNopLogger()
 	pruningOpt := SetPruning(store.PruneNothing)
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	name := t.Name()
 	app := NewBaseApp(name, logger, db, nil, pruningOpt)
 
@@ -401,7 +400,7 @@ func TestLoadVersionPruning(t *testing.T) {
 		Interval:   1,
 	}
 	pruningOpt := SetPruning(pruningOptions)
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	name := t.Name()
 	app := NewBaseApp(name, logger, db, nil, pruningOpt)
 
@@ -458,7 +457,7 @@ func testLoadVersionHelper(t *testing.T, app *BaseApp, expectedHeight int64, exp
 
 func TestOptionFunction(t *testing.T) {
 	logger := defaultLogger()
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	bap := NewBaseApp("starting name", logger, db, nil, testChangeNameHelper("new name"))
 	require.Equal(t, bap.name, "new name", "BaseApp should have had name changed via option function")
 }
@@ -555,7 +554,7 @@ func TestInitChainer(t *testing.T) {
 	name := t.Name()
 	// keep the db and logger ourselves so
 	// we can reload the same  app later
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	logger := defaultLogger()
 	app := NewBaseApp(name, logger, db, nil)
 	capKey := sdk.NewKVStoreKey("main")
@@ -634,7 +633,7 @@ func TestInitChainer(t *testing.T) {
 
 func TestInitChain_WithInitialHeight(t *testing.T) {
 	name := t.Name()
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	logger := defaultLogger()
 	app := NewBaseApp(name, logger, db, nil)
 
@@ -650,7 +649,7 @@ func TestInitChain_WithInitialHeight(t *testing.T) {
 
 func TestBeginBlock_WithInitialHeight(t *testing.T) {
 	name := t.Name()
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	logger := defaultLogger()
 	app := NewBaseApp(name, logger, db, nil)
 
@@ -2014,7 +2013,7 @@ func TestWithRouter(t *testing.T) {
 }
 
 func TestBaseApp_EndBlock(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	name := t.Name()
 	logger := defaultLogger()
 
@@ -2025,7 +2024,7 @@ func TestBaseApp_EndBlock(t *testing.T) {
 	}
 
 	app := NewBaseApp(name, logger, db, nil)
-	app.SetParamStore(&paramStore{db: memdb.NewDB()})
+	app.SetParamStore(&paramStore{db: dbm.NewMemDB()})
 	app.InitChain(abci.RequestInitChain{
 		ConsensusParams: cp,
 	})

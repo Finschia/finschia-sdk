@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/dbadapter"
 	"github.com/line/lbm-sdk/store/prefix"
@@ -38,10 +38,10 @@ func newTraceKVStore(w io.Writer) *tracekv.Store {
 }
 
 func newEmptyTraceKVStore(w io.Writer) *tracekv.Store {
-	memDB := dbadapter.Store{DB: memdb.NewDB()}
+	dbm := dbadapter.Store{DB: dbm.NewMemDB()}
 	tc := types.TraceContext(map[string]interface{}{"blockHeight": 64})
 
-	return tracekv.NewStore(memDB, w, tc)
+	return tracekv.NewStore(dbm, w, tc)
 }
 
 func TestTraceKVStoreGet(t *testing.T) {
@@ -164,6 +164,10 @@ func TestTestTraceKVStoreIterator(t *testing.T) {
 	store := newTraceKVStore(&buf)
 	iterator := store.Iterator(nil, nil)
 
+	s, e := iterator.Domain()
+	require.Equal(t, []byte(nil), s)
+	require.Equal(t, []byte(nil), e)
+
 	testCases := []struct {
 		expectedKey      []byte
 		expectedValue    []byte
@@ -215,6 +219,10 @@ func TestTestTraceKVStoreReverseIterator(t *testing.T) {
 
 	store := newTraceKVStore(&buf)
 	iterator := store.ReverseIterator(nil, nil)
+
+	s, e := iterator.Domain()
+	require.Equal(t, []byte(nil), s)
+	require.Equal(t, []byte(nil), e)
 
 	testCases := []struct {
 		expectedKey      []byte
@@ -269,9 +277,9 @@ func TestTraceKVStorePrefix(t *testing.T) {
 }
 
 func TestTraceKVStoreGetStoreType(t *testing.T) {
-	memDB := dbadapter.Store{DB: memdb.NewDB()}
+	dbm := dbadapter.Store{DB: dbm.NewMemDB()}
 	store := newEmptyTraceKVStore(nil)
-	require.Equal(t, memDB.GetStoreType(), store.GetStoreType())
+	require.Equal(t, dbm.GetStoreType(), store.GetStoreType())
 }
 
 func TestTraceKVStoreCacheWrap(t *testing.T) {

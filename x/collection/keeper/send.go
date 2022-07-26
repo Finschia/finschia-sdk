@@ -14,6 +14,23 @@ func (k Keeper) SendCoins(ctx sdk.Context, contractID string, from, to sdk.AccAd
 		return err
 	}
 
+	// legacy
+	for _, coin := range amount {
+		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
+			k.iterateDescendants(ctx, contractID, coin.TokenId, func(descendantID string, _ int) (stop bool) {
+				event := collection.EventOwnerChanged{
+					ContractId: contractID,
+					TokenId:    descendantID,
+				}
+				ctx.EventManager().EmitEvent(collection.NewEventOperationTransferNFT(event))
+				if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+					panic(err)
+				}
+				return false
+			})
+		}
+	}
+
 	return nil
 }
 
@@ -25,9 +42,6 @@ func (k Keeper) addCoins(ctx sdk.Context, contractID string, address sdk.AccAddr
 
 		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
 			k.setOwner(ctx, contractID, coin.TokenId, address)
-
-			// legacy
-			k.emitEventOnDescendants(ctx, contractID, coin.TokenId, collection.NewEventOperationTransferNFT)
 		}
 	}
 

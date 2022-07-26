@@ -6,19 +6,18 @@ import (
 	"fmt"
 	"time"
 
-	tmdb "github.com/line/tm-db/v2"
-	"github.com/line/tm-db/v2/metadb"
+	dbm "github.com/tendermint/tm-db"
 )
 
 var (
 	// This is set at compile time. Could be cleveldb, defaults is goleveldb.
 	DBBackend = ""
-	backend   = metadb.GoLevelDBBackend
+	backend   = dbm.GoLevelDBBackend
 )
 
 func init() {
 	if len(DBBackend) != 0 {
-		backend = metadb.BackendType(DBBackend)
+		backend = dbm.BackendType(DBBackend)
 	}
 }
 
@@ -86,14 +85,14 @@ func ParseTimeBytes(bz []byte) (time.Time, error) {
 }
 
 // NewLevelDB instantiate a new LevelDB instance according to DBBackend.
-func NewLevelDB(name, dir string) (db tmdb.DB, err error) {
+func NewLevelDB(name, dir string) (db dbm.DB, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("couldn't create db: %v", r)
 		}
 	}()
 
-	return metadb.NewDB(name, backend, dir)
+	return dbm.NewDB(name, backend, dir)
 }
 
 // copy bytes

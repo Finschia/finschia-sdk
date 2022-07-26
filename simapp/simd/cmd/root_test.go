@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/line/ostracon/libs/log"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/server"
@@ -17,7 +17,7 @@ import (
 func TestNewApp(t *testing.T) {
 	encodingConfig := simapp.MakeTestEncodingConfig()
 	a := appCreator{encodingConfig}
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	tempDir := t.TempDir()
 	ctx := server.NewDefaultContext()
 	ctx.Viper.Set(flags.FlagHome, tempDir)

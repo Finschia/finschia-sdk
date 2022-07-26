@@ -11,7 +11,7 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/tests/mocks"
@@ -42,7 +42,7 @@ import (
 
 func TestSimAppExportAndBlockedAddrs(t *testing.T) {
 	encCfg := MakeTestEncodingConfig()
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	app := NewSimApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{}, nil)
 
 	for acc := range maccPerms {
@@ -75,7 +75,7 @@ func TestGetMaccPerms(t *testing.T) {
 }
 
 func TestRunMigrations(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	encCfg := MakeTestEncodingConfig()
 	logger := log.NewOCLogger(log.NewSyncWriter(os.Stdout))
 	app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{}, nil)
@@ -203,7 +203,7 @@ func TestRunMigrations(t *testing.T) {
 }
 
 func TestInitGenesisOnMigration(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	encCfg := MakeTestEncodingConfig()
 	logger := log.NewOCLogger(log.NewSyncWriter(os.Stdout))
 	app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{}, nil)
@@ -252,7 +252,7 @@ func TestInitGenesisOnMigration(t *testing.T) {
 
 func TestUpgradeStateOnGenesis(t *testing.T) {
 	encCfg := MakeTestEncodingConfig()
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	app := NewSimApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{}, nil)
 	genesisState := NewDefaultGenesisState(encCfg.Marshaler)
 	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")

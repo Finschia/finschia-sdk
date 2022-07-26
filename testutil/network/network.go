@@ -21,8 +21,8 @@ import (
 	ostrand "github.com/line/ostracon/libs/rand"
 	"github.com/line/ostracon/node"
 	ostclient "github.com/line/ostracon/rpc/client"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 	"google.golang.org/grpc"
 
 	"github.com/line/lbm-sdk/baseapp"
@@ -59,7 +59,7 @@ type AppConstructor = func(val Validator) servertypes.Application
 func NewAppConstructor(encodingCfg params.EncodingConfig) AppConstructor {
 	return func(val Validator) servertypes.Application {
 		return simapp.NewSimApp(
-			val.Ctx.Logger, memdb.NewDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
+			val.Ctx.Logger, dbm.NewMemDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
 			encodingCfg,
 			simapp.EmptyAppOptions{},
 			nil,

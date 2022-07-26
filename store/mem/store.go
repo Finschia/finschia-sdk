@@ -3,7 +3,7 @@ package mem
 import (
 	"io"
 
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/lbm-sdk/store/dbadapter"
@@ -24,10 +24,10 @@ type Store struct {
 }
 
 func NewStore() *Store {
-	return NewStoreWithDB(memdb.NewDB())
+	return NewStoreWithDB(dbm.NewMemDB())
 }
 
-func NewStoreWithDB(db *memdb.MemDB) *Store { // nolint: interfacer
+func NewStoreWithDB(db *dbm.MemDB) *Store { // nolint: interfacer
 	return &Store{Store: dbadapter.Store{DB: db}}
 }
 

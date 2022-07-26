@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	liavl "github.com/line/iavl/v2"
+	liavl "github.com/cosmos/iavl"
 	"github.com/line/lbm-sdk/store/cachekv"
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/dbadapter"
 	"github.com/line/lbm-sdk/store/gaskv"
@@ -88,7 +88,7 @@ func testPrefixStore(t *testing.T, baseStore types.KVStore, prefix []byte) {
 }
 
 func TestIAVLStorePrefix(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	tree, err := liavl.NewMutableTree(db, cacheSize)
 	require.NoError(t, err)
 	iavlStore := iavl.UnsafeNewStore(tree)
@@ -98,13 +98,13 @@ func TestIAVLStorePrefix(t *testing.T) {
 
 func TestPrefixKVStoreNoNilSet(t *testing.T) {
 	meter := types.NewGasMeter(100000000)
-	mem := dbadapter.Store{DB: memdb.NewDB()}
+	mem := dbadapter.Store{DB: dbm.NewMemDB()}
 	gasStore := gaskv.NewStore(mem, meter, types.KVGasConfig())
 	require.Panics(t, func() { gasStore.Set([]byte("key"), nil) }, "setting a nil value should panic")
 }
 
 func TestPrefixStoreIterate(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	baseStore := dbadapter.Store{DB: db}
 	prefix := []byte("test")
 	prefixStore := NewStore(baseStore, prefix)
@@ -150,7 +150,7 @@ func TestCloneAppend(t *testing.T) {
 }
 
 func TestPrefixStoreIteratorEdgeCase(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	baseStore := dbadapter.Store{DB: db}
 
 	// overflow in cpIncr
@@ -168,6 +168,7 @@ func TestPrefixStoreIteratorEdgeCase(t *testing.T) {
 
 	iter := prefixStore.Iterator(nil, nil)
 
+	checkDomain(t, iter, nil, nil)
 	checkItem(t, iter, []byte{}, bz(""))
 	checkNext(t, iter, true)
 	checkItem(t, iter, []byte{0x00}, bz(""))
@@ -179,7 +180,7 @@ func TestPrefixStoreIteratorEdgeCase(t *testing.T) {
 }
 
 func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	baseStore := dbadapter.Store{DB: db}
 
 	// overflow in cpIncr
@@ -197,6 +198,7 @@ func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
 
 	iter := prefixStore.ReverseIterator(nil, nil)
 
+	checkDomain(t, iter, nil, nil)
 	checkItem(t, iter, []byte{0x00}, bz(""))
 	checkNext(t, iter, true)
 	checkItem(t, iter, []byte{}, bz(""))
@@ -206,7 +208,7 @@ func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
 
 	iter.Close()
 
-	db = memdb.NewDB()
+	db = dbm.NewMemDB()
 	baseStore = dbadapter.Store{DB: db}
 
 	// underflow in cpDecr
@@ -223,6 +225,7 @@ func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
 
 	iter = prefixStore.ReverseIterator(nil, nil)
 
+	checkDomain(t, iter, nil, nil)
 	checkItem(t, iter, []byte{0x00}, bz(""))
 	checkNext(t, iter, true)
 	checkItem(t, iter, []byte{}, bz(""))
@@ -236,7 +239,7 @@ func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
 // Tests below are ported from https://github.com/tendermint/tendermint/blob/master/libs/db/prefix_db_test.go
 
 func mockStoreWithStuff() types.KVStore {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	store := dbadapter.Store{DB: db}
 	// Under "key" prefix
 	store.Set(bz("key"), bz("value"))
@@ -264,6 +267,12 @@ func checkNext(t *testing.T, itr types.Iterator, expected bool) {
 	itr.Next()
 	valid := itr.Valid()
 	require.Equal(t, expected, valid)
+}
+
+func checkDomain(t *testing.T, itr types.Iterator, start, end []byte) {
+	ds, de := itr.Domain()
+	require.Equal(t, start, ds)
+	require.Equal(t, end, de)
 }
 
 func checkItem(t *testing.T, itr types.Iterator, key, value []byte) {
@@ -313,6 +322,7 @@ func TestPrefixDBIterator1(t *testing.T) {
 	pstore := NewStore(store, bz("key"))
 
 	itr := pstore.Iterator(nil, nil)
+	checkDomain(t, itr, nil, nil)
 	checkItem(t, itr, bz(""), bz("value"))
 	checkNext(t, itr, true)
 	checkItem(t, itr, bz("1"), bz("value1"))
@@ -330,6 +340,7 @@ func TestPrefixDBIterator2(t *testing.T) {
 	pstore := NewStore(store, bz("key"))
 
 	itr := pstore.Iterator(nil, bz(""))
+	checkDomain(t, itr, nil, bz(""))
 	checkInvalid(t, itr)
 	itr.Close()
 }
@@ -339,6 +350,7 @@ func TestPrefixDBIterator3(t *testing.T) {
 	pstore := NewStore(store, bz("key"))
 
 	itr := pstore.Iterator(bz(""), nil)
+	checkDomain(t, itr, bz(""), nil)
 	checkItem(t, itr, bz(""), bz("value"))
 	checkNext(t, itr, true)
 	checkItem(t, itr, bz("1"), bz("value1"))
@@ -356,6 +368,7 @@ func TestPrefixDBIterator4(t *testing.T) {
 	pstore := NewStore(store, bz("key"))
 
 	itr := pstore.Iterator(bz(""), bz(""))
+	checkDomain(t, itr, bz(""), bz(""))
 	checkInvalid(t, itr)
 	itr.Close()
 }
@@ -365,6 +378,7 @@ func TestPrefixDBReverseIterator1(t *testing.T) {
 	pstore := NewStore(store, bz("key"))
 
 	itr := pstore.ReverseIterator(nil, nil)
+	checkDomain(t, itr, nil, nil)
 	checkItem(t, itr, bz("3"), bz("value3"))
 	checkNext(t, itr, true)
 	checkItem(t, itr, bz("2"), bz("value2"))
@@ -382,6 +396,7 @@ func TestPrefixDBReverseIterator2(t *testing.T) {
 	pstore := NewStore(store, bz("key"))
 
 	itr := pstore.ReverseIterator(bz(""), nil)
+	checkDomain(t, itr, bz(""), nil)
 	checkItem(t, itr, bz("3"), bz("value3"))
 	checkNext(t, itr, true)
 	checkItem(t, itr, bz("2"), bz("value2"))
@@ -399,6 +414,7 @@ func TestPrefixDBReverseIterator3(t *testing.T) {
 	pstore := NewStore(store, bz("key"))
 
 	itr := pstore.ReverseIterator(nil, bz(""))
+	checkDomain(t, itr, nil, bz(""))
 	checkInvalid(t, itr)
 	itr.Close()
 }
@@ -413,7 +429,7 @@ func TestPrefixDBReverseIterator4(t *testing.T) {
 }
 
 func TestCacheWraps(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	store := dbadapter.Store{DB: db}
 
 	cacheWrapper := store.CacheWrap()

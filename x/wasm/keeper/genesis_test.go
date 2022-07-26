@@ -17,9 +17,9 @@ import (
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/proto/ostracon/crypto"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store"
 	"github.com/line/lbm-sdk/store/prefix"
@@ -649,7 +649,7 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 		keyWasm    = sdk.NewKVStoreKey(wasmTypes.StoreKey)
 	)
 
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	ms := store.NewCommitMultiStore(db)
 	ms.MountStoreWithDB(keyWasm, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(keyParams, sdk.StoreTypeIAVL, db)

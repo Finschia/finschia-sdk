@@ -10,9 +10,8 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	tmdb "github.com/line/tm-db/v2"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/store/rootmulti"
@@ -30,7 +29,7 @@ func defaultLogger() log.Logger {
 	return log.NewOCLogger(log.NewSyncWriter(os.Stdout)).With("module", "sdk/app")
 }
 
-func initStore(t *testing.T, db tmdb.DB, storeKey string, k, v []byte) {
+func initStore(t *testing.T, db dbm.DB, storeKey string, k, v []byte) {
 	rs := rootmulti.NewStore(db)
 	rs.SetPruning(store.PruneNothing)
 	key := sdk.NewKVStoreKey(storeKey)
@@ -47,7 +46,7 @@ func initStore(t *testing.T, db tmdb.DB, storeKey string, k, v []byte) {
 	require.Equal(t, int64(1), commitID.Version)
 }
 
-func checkStore(t *testing.T, db tmdb.DB, ver int64, storeKey string, k, v []byte) {
+func checkStore(t *testing.T, db dbm.DB, ver int64, storeKey string, k, v []byte) {
 	rs := rootmulti.NewStore(db)
 	rs.SetPruning(store.PruneNothing)
 	key := sdk.NewKVStoreKey(storeKey)
@@ -113,7 +112,7 @@ func TestSetLoader(t *testing.T) {
 		tc := tc
 		t.Run(name, func(t *testing.T) {
 			// prepare a db with some data
-			db := memdb.NewDB()
+			db := dbm.NewMemDB()
 
 			initStore(t, db, tc.origStoreKey, k, v)
 
