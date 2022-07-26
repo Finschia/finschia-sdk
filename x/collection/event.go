@@ -688,11 +688,11 @@ func NewEventDetachFrom(event EventDetached, oldRoot string) sdk.Event {
 }
 
 // Deprecated: do not use.
-func NewEventOperationTransferNFT(contractID string, tokenID string) sdk.Event {
+func NewEventOperationTransferNFT(event EventOwnerChanged) sdk.Event {
 	eventType := EventTypeOperationTransferNFT.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: contractID,
-		AttributeKeyTokenID:    tokenID,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyTokenID:    event.TokenId,
 	}
 
 	res := sdk.NewEvent(eventType)
@@ -720,11 +720,11 @@ func NewEventOperationBurnNFT(contractID string, tokenID string) sdk.Event {
 }
 
 // Deprecated: do not use.
-func NewEventOperationRootChanged(contractID string, tokenID string) sdk.Event {
+func NewEventOperationRootChanged(event EventRootChanged) sdk.Event {
 	eventType := EventTypeOperationRootChanged.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: contractID,
-		AttributeKeyTokenID:    tokenID,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyTokenID:    event.TokenId,
 	}
 
 	res := sdk.NewEvent(eventType)

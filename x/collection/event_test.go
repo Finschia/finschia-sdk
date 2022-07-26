@@ -896,15 +896,17 @@ func TestNewEventOperationTransferNFT(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
 	str := func() string { return randomString(8) }
 
-	contractID := str()
-	tokenID := str()
-	legacy := collection.NewEventOperationTransferNFT(contractID, tokenID)
+	event := collection.EventOwnerChanged{
+		ContractId: str(),
+		TokenId:    str(),
+	}
+	legacy := collection.NewEventOperationTransferNFT(event)
 
 	require.Equal(t, collection.EventTypeOperationTransferNFT.String(), legacy.Type)
 
 	attributes := map[collection.AttributeKey]string{
-		collection.AttributeKeyContractID: contractID,
-		collection.AttributeKeyTokenID:    tokenID,
+		collection.AttributeKeyContractID: event.ContractId,
+		collection.AttributeKeyTokenID:    event.TokenId,
 	}
 	for key, value := range attributes {
 		require.True(t, assertAttribute(legacy, key.String(), value), key)
@@ -934,15 +936,17 @@ func TestNewEventOperationRootChanged(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
 	str := func() string { return randomString(8) }
 
-	contractID := str()
-	tokenID := str()
-	legacy := collection.NewEventOperationRootChanged(contractID, tokenID)
+	event := collection.EventRootChanged{
+		ContractId: str(),
+		TokenId:    str(),
+	}
+	legacy := collection.NewEventOperationRootChanged(event)
 
 	require.Equal(t, collection.EventTypeOperationRootChanged.String(), legacy.Type)
 
 	attributes := map[collection.AttributeKey]string{
-		collection.AttributeKeyContractID: contractID,
-		collection.AttributeKeyTokenID:    tokenID,
+		collection.AttributeKeyContractID: event.ContractId,
+		collection.AttributeKeyTokenID:    event.TokenId,
 	}
 	for key, value := range attributes {
 		require.True(t, assertAttribute(legacy, key.String(), value), key)
