@@ -107,7 +107,8 @@ func TestHandleNewValidator(t *testing.T) {
 
 	info, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
-	require.Equal(t, int64(2), info.VoterSetCounter)
+	require.Equal(t, app.SlashingKeeper.SignedBlocksWindow(ctx)+1, info.StartHeight)
+	require.Equal(t, int64(2), info.IndexOffset)
 	require.Equal(t, int64(1), info.MissedBlocksCounter)
 	require.Equal(t, time.Unix(0, 0).UTC(), info.JailedUntil)
 
@@ -240,6 +241,12 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	// 100 times + (kicked) + 501 times + 398 times = 999 times
 	tstaking.CheckValidator(valAddr, stakingtypes.Bonded, false)
 
+	// check all the signing information
+	signInfo, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
+	require.True(t, found)
+	require.Equal(t, int64(501), signInfo.MissedBlocksCounter)
+	require.Equal(t, int64(999), signInfo.IndexOffset)
+
 	// another block happened
 	ctx = ctx.WithBlockHeight(height)
 	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, true)
@@ -250,10 +257,10 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	tstaking.CheckValidator(valAddr, stakingtypes.Unbonding, true)
 
 	// check all the signing information
-	signInfo, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
+	signInfo, found = app.SlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
 	require.True(t, found)
 	require.Equal(t, int64(0), signInfo.MissedBlocksCounter)
-	require.Equal(t, int64(1000), signInfo.VoterSetCounter)
+	require.Equal(t, int64(0), signInfo.IndexOffset)
 	// array should be cleared
 	for offset := int64(0); offset < app.SlashingKeeper.SignedBlocksWindow(ctx); offset++ {
 		missed := app.SlashingKeeper.GetValidatorMissedBlockBitArray(ctx, consAddr, offset)
@@ -262,30 +269,6 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 
 	// some blocks pass
 	height = int64(5000)
-	ctx = ctx.WithBlockHeight(height)
-
-	// validator rejoins and starts signing again
-	app.StakingKeeper.Unjail(ctx, consAddr)
-	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, true)
-	height++
-
-	// validator should not be kicked since we reset counter/array when it was jailed
-	staking.EndBlocker(ctx, app.StakingKeeper)
-	tstaking.CheckValidator(valAddr, stakingtypes.Bonded, false)
-
-	// validator misses 501 blocks
-	latest = height
-	for ; height < latest+501; height++ {
-		ctx = ctx.WithBlockHeight(height)
-		app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, false)
-	}
-
-	// validator should now be jailed & kicked
-	staking.EndBlocker(ctx, app.StakingKeeper)
-	tstaking.CheckValidator(valAddr, stakingtypes.Unbonding, true)
-
-	// some blocks pass
-	height = int64(10000)
 	ctx = ctx.WithBlockHeight(height)
 
 	// validator rejoins and starts signing again
@@ -320,5 +303,4 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	// validator should now be jailed & kicked
 	staking.EndBlocker(ctx, app.StakingKeeper)
 	tstaking.CheckValidator(valAddr, stakingtypes.Unbonding, true)
-
 }

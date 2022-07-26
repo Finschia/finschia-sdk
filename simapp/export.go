@@ -180,7 +180,7 @@ func (app *SimApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs []
 	app.SlashingKeeper.IterateValidatorSigningInfos(
 		ctx,
 		func(addr sdk.ConsAddress, info slashingtypes.ValidatorSigningInfo) (stop bool) {
-			info.VoterSetCounter = 0
+			info.StartHeight = 0
 			app.SlashingKeeper.SetValidatorSigningInfo(ctx, addr, info)
 			return false
 		},

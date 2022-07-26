@@ -27,9 +27,8 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr cryptotypes.Addre
 
 	// this is a relative index, so it counts blocks the validator *should* have signed
 	// will use the 0-value default signing info if not present, except for the beginning
-	signInfo.VoterSetCounter++
-	voterSetCounter := signInfo.VoterSetCounter
-	index := (voterSetCounter - 1) % k.SignedBlocksWindow(ctx)
+	index := signInfo.IndexOffset % k.SignedBlocksWindow(ctx)
+	signInfo.IndexOffset++
 
 	// Update signed block bit array & counter
 	// This counter just tracks the sum of the bit array
@@ -70,11 +69,12 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr cryptotypes.Addre
 		)
 	}
 
-	minVoterSetCount := k.SignedBlocksWindow(ctx)
+	numVotes := signInfo.IndexOffset
+	minVotes := k.SignedBlocksWindow(ctx)
 	maxMissed := k.SignedBlocksWindow(ctx) - minSignedPerWindow
 
 	// if we have joined enough times to voter set and the validator has missed too many blocks, punish them
-	if voterSetCounter >= minVoterSetCount && signInfo.MissedBlocksCounter > maxMissed {
+	if numVotes >= minVotes && signInfo.MissedBlocksCounter > maxMissed {
 		validator := k.sk.ValidatorByConsAddr(ctx, consAddr)
 		if validator != nil && !validator.IsJailed() {
 			// Downtime confirmed: slash and jail the validator
@@ -101,13 +101,14 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr cryptotypes.Addre
 
 			// We need to reset the counter & array so that the validator won't be immediately slashed for downtime upon rebonding.
 			signInfo.MissedBlocksCounter = 0
+			signInfo.IndexOffset = 0
 			k.clearValidatorMissedBlockBitArray(ctx, consAddr)
 
 			logger.Info(
 				"slashing and jailing validator due to liveness fault",
 				"height", height,
 				"validator", consAddr.String(),
-				"voter_set_counter", voterSetCounter,
+				"min_votes", minVotes,
 				"threshold", minSignedPerWindow,
 				"slashed", k.SlashFractionDowntime(ctx).String(),
 				"jailed_until", signInfo.JailedUntil,
