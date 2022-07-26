@@ -263,6 +263,14 @@ func (s msgServer) Grant(c context.Context, req *token.MsgGrant) (*token.MsgGran
 
 	s.keeper.Grant(ctx, req.ContractId, granter, grantee, req.Permission)
 
+	event := token.EventGrant{
+		ContractId: req.ContractId,
+		Granter:    req.Granter,
+		Grantee:    req.Grantee,
+		Permission: req.Permission,
+	}
+	ctx.EventManager().EmitEvent(token.NewEventGrantPermToken(event))
+
 	return &token.MsgGrantResponse{}, nil
 }
 
@@ -279,6 +287,13 @@ func (s msgServer) Abandon(c context.Context, req *token.MsgAbandon) (*token.Msg
 	}
 
 	s.keeper.Abandon(ctx, req.ContractId, grantee, req.Permission)
+
+	event := token.EventAbandon{
+		ContractId: req.ContractId,
+		Grantee:    req.Grantee,
+		Permission: req.Permission,
+	}
+	ctx.EventManager().EmitEvent(token.NewEventRevokePermToken(event))
 
 	return &token.MsgAbandonResponse{}, nil
 }
@@ -305,6 +320,14 @@ func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermiss
 
 	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
 
+	event := token.EventGrant{
+		ContractId: req.ContractId,
+		Granter:    req.From,
+		Grantee:    req.To,
+		Permission: permission,
+	}
+	ctx.EventManager().EmitEvent(token.NewEventGrantPermToken(event))
+
 	return &token.MsgGrantPermissionResponse{}, nil
 }
 
@@ -322,6 +345,13 @@ func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermi
 	}
 
 	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
+
+	event := token.EventAbandon{
+		ContractId: req.ContractId,
+		Grantee:    req.From,
+		Permission: permission,
+	}
+	ctx.EventManager().EmitEvent(token.NewEventRevokePermToken(event))
 
 	return &token.MsgRevokePermissionResponse{}, nil
 }
