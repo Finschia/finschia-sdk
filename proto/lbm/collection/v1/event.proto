@@ -299,3 +299,23 @@ message EventDetached {
   // token being detached.
   string subject = 4;
 }
+
+// EventOwnerChanged is emitted when the owner of token is changed by operation applied to its ancestor.
+//
+// Since: 0.46.0 (finschia)
+message EventOwnerChanged {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // token id associated with the token.
+  string token_id = 2;
+}
+
+// EventRootChanged is emitted when the root of token is changed by operation applied to its ancestor.
+//
+// Since: 0.46.0 (finschia)
+message EventRootChanged {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // token id associated with the token.
+  string token_id = 2;
+}

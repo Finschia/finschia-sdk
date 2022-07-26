@@ -94,7 +94,17 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 	}
 
 	// legacy
-	k.emitEventOnDescendants(ctx, contractID, subject, collection.NewEventOperationRootChanged)
+	k.iterateDescendants(ctx, contractID, subject, func(descendantID string, _ int) (stop bool) {
+		event := collection.EventRootChanged{
+			ContractId: contractID,
+			TokenId:    descendantID,
+		}
+		ctx.EventManager().EmitEvent(collection.NewEventOperationRootChanged(event))
+		if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+			panic(err)
+		}
+		return false
+	})
 
 	return nil
 }
@@ -121,7 +131,17 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 	k.deleteChild(ctx, contractID, *parent, subject)
 
 	// legacy
-	k.emitEventOnDescendants(ctx, contractID, subject, collection.NewEventOperationRootChanged)
+	k.iterateDescendants(ctx, contractID, subject, func(descendantID string, _ int) (stop bool) {
+		event := collection.EventRootChanged{
+			ContractId: contractID,
+			TokenId:    descendantID,
+		}
+		ctx.EventManager().EmitEvent(collection.NewEventOperationRootChanged(event))
+		if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+			panic(err)
+		}
+		return false
+	})
 
 	return nil
 }
@@ -273,15 +293,6 @@ func (k Keeper) setLegacyTokenType(ctx sdk.Context, contractID string, tokenType
 	store := ctx.KVStore(k.storeKey)
 	key := legacyTokenTypeKey(contractID, tokenType)
 	store.Set(key, []byte{})
-}
-
-// Deprecated
-func (k Keeper) emitEventOnDescendants(ctx sdk.Context, contractID string, tokenID string, generator func(contractID string, descendantID string) sdk.Event) {
-	k.iterateDescendants(ctx, contractID, tokenID, func(descendantID string, _ int) (stop bool) {
-		event := generator(contractID, descendantID)
-		ctx.EventManager().EmitEvent(event)
-		return false
-	})
 }
 
 // Deprecated

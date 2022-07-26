@@ -10,13 +10,12 @@ import (
 	"sort"
 	"strings"
 
+	iavltree "github.com/cosmos/iavl"
 	protoio "github.com/gogo/protobuf/io"
 	gogotypes "github.com/gogo/protobuf/types"
-	iavltree "github.com/line/iavl/v2"
 	abci "github.com/line/ostracon/abci/types"
-	tmdb "github.com/line/tm-db/v2"
-	"github.com/line/tm-db/v2/prefixdb"
 	"github.com/pkg/errors"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/snapshots"
 	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
@@ -46,7 +45,7 @@ const (
 // cacheMultiStore which is used for branching other MultiStores. It implements
 // the CommitMultiStore interface.
 type Store struct {
-	db             tmdb.DB
+	db             dbm.DB
 	lastCommitInfo *types.CommitInfo
 	pruningOpts    types.PruningOptions
 	iavlCacheSize  int
@@ -60,8 +59,7 @@ type Store struct {
 	traceWriter  io.Writer
 	traceContext types.TraceContext
 
-	interBlockCache  types.MultiStorePersistentCache
-	iavlCacheManager types.CacheManager
+	interBlockCache types.MultiStorePersistentCache
 
 	listeners map[types.StoreKey][]types.WriteListener
 }
@@ -75,7 +73,7 @@ var (
 // store will be created with a PruneNothing pruning strategy by default. After
 // a store is created, KVStores must be mounted and finally LoadLatestVersion or
 // LoadVersion must be called.
-func NewStore(db tmdb.DB) *Store {
+func NewStore(db dbm.DB) *Store {
 	return &Store{
 		db:            db,
 		pruningOpts:   types.PruneNothing,
@@ -109,17 +107,13 @@ func (rs *Store) SetLazyLoading(lazyLoading bool) {
 	rs.lazyLoading = lazyLoading
 }
 
-func (rs *Store) SetIAVLCacheManager(cacheManager types.CacheManager) {
-	rs.iavlCacheManager = cacheManager
-}
-
 // GetStoreType implements Store.
 func (rs *Store) GetStoreType() types.StoreType {
 	return types.StoreTypeMulti
 }
 
 // MountStoreWithDB implements CommitMultiStore.
-func (rs *Store) MountStoreWithDB(key types.StoreKey, typ types.StoreType, db tmdb.DB) {
+func (rs *Store) MountStoreWithDB(key types.StoreKey, typ types.StoreType, db dbm.DB) {
 	if key == nil {
 		panic("MountIAVLStore() key cannot be nil")
 	}
@@ -432,9 +426,6 @@ func (rs *Store) pruneStores() {
 			store = rs.GetCommitKVStore(key)
 
 			if err := store.(*iavl.Store).DeleteVersions(rs.pruneHeights...); err != nil {
-				if err == iavltree.ErrBusy {
-					return
-				}
 				if errCause := errors.Cause(err); errCause != nil && errCause != iavltree.ErrVersionDoesNotExist {
 					panic(err)
 				}
@@ -873,13 +864,13 @@ func (rs *Store) Restore(
 }
 
 func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID, params storeParams) (types.CommitKVStore, error) {
-	var db tmdb.DB
+	var db dbm.DB
 
 	if params.db != nil {
-		db = prefixdb.NewDB(params.db, []byte("s/_/"))
+		db = dbm.NewPrefixDB(params.db, []byte("s/_/"))
 	} else {
 		prefix := "s/k:" + params.key.Name() + "/"
-		db = prefixdb.NewDB(rs.db, []byte(prefix))
+		db = dbm.NewPrefixDB(rs.db, []byte(prefix))
 	}
 
 	switch params.typ {
@@ -891,9 +882,9 @@ func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID
 		var err error
 
 		if params.initialVersion == 0 {
-			store, err = iavl.LoadStore(db, rs.iavlCacheManager, id, rs.lazyLoading, rs.iavlCacheSize)
+			store, err = iavl.LoadStore(db, id, rs.lazyLoading, rs.iavlCacheSize)
 		} else {
-			store, err = iavl.LoadStoreWithInitialVersion(db, rs.iavlCacheManager, id, rs.lazyLoading, params.initialVersion, rs.iavlCacheSize)
+			store, err = iavl.LoadStoreWithInitialVersion(db, id, rs.lazyLoading, params.initialVersion, rs.iavlCacheSize)
 		}
 
 		if err != nil {
@@ -948,12 +939,12 @@ func (rs *Store) buildCommitInfo(version int64) *types.CommitInfo {
 
 type storeParams struct {
 	key            types.StoreKey
-	db             tmdb.DB
+	db             dbm.DB
 	typ            types.StoreType
 	initialVersion uint64
 }
 
-func getLatestVersion(db tmdb.DB) int64 {
+func getLatestVersion(db dbm.DB) int64 {
 	bz, err := db.Get([]byte(latestVersionKey))
 	if err != nil {
 		panic(err)
@@ -994,7 +985,7 @@ func commitStores(version int64, storeMap map[types.StoreKey]types.CommitKVStore
 }
 
 // Gets commitInfo from disk.
-func getCommitInfo(db tmdb.DB, ver int64) (*types.CommitInfo, error) {
+func getCommitInfo(db dbm.DB, ver int64) (*types.CommitInfo, error) {
 	cInfoKey := fmt.Sprintf(commitInfoKeyFmt, ver)
 
 	bz, err := db.Get([]byte(cInfoKey))
@@ -1012,7 +1003,7 @@ func getCommitInfo(db tmdb.DB, ver int64) (*types.CommitInfo, error) {
 	return cInfo, nil
 }
 
-func setCommitInfo(batch tmdb.Batch, version int64, cInfo *types.CommitInfo) {
+func setCommitInfo(batch dbm.Batch, version int64, cInfo *types.CommitInfo) {
 	bz, err := cInfo.Marshal()
 	if err != nil {
 		panic(err)
@@ -1022,7 +1013,7 @@ func setCommitInfo(batch tmdb.Batch, version int64, cInfo *types.CommitInfo) {
 	batch.Set([]byte(cInfoKey), bz)
 }
 
-func setLatestVersion(batch tmdb.Batch, version int64) {
+func setLatestVersion(batch dbm.Batch, version int64) {
 	bz, err := gogotypes.StdInt64Marshal(version)
 	if err != nil {
 		panic(err)
@@ -1031,7 +1022,7 @@ func setLatestVersion(batch tmdb.Batch, version int64) {
 	batch.Set([]byte(latestVersionKey), bz)
 }
 
-func setPruningHeights(batch tmdb.Batch, pruneHeights []int64) {
+func setPruningHeights(batch dbm.Batch, pruneHeights []int64) {
 	bz := make([]byte, 0)
 	for _, ph := range pruneHeights {
 		buf := make([]byte, 8)
@@ -1042,7 +1033,7 @@ func setPruningHeights(batch tmdb.Batch, pruneHeights []int64) {
 	batch.Set([]byte(pruneHeightsKey), bz)
 }
 
-func getPruningHeights(db tmdb.DB) ([]int64, error) {
+func getPruningHeights(db dbm.DB) ([]int64, error) {
 	bz, err := db.Get([]byte(pruneHeightsKey))
 	if err != nil {
 		return nil, fmt.Errorf("failed to get pruned heights: %w", err)
@@ -1062,7 +1053,7 @@ func getPruningHeights(db tmdb.DB) ([]int64, error) {
 	return prunedHeights, nil
 }
 
-func flushMetadata(db tmdb.DB, version int64, cInfo *types.CommitInfo, pruneHeights []int64) {
+func flushMetadata(db dbm.DB, version int64, cInfo *types.CommitInfo, pruneHeights []int64) {
 	batch := db.NewBatch()
 	defer batch.Close()
 

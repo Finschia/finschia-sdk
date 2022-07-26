@@ -9,30 +9,6 @@ import (
 func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.AccAddress, amount sdk.Int) {
 	k.issue(ctx, class)
 
-	permissions := []token.Permission{
-		token.PermissionModify,
-	}
-	if class.Mintable {
-		permissions = append(permissions,
-			token.PermissionMint,
-			token.PermissionBurn,
-		)
-	}
-	for _, permission := range permissions {
-		k.Grant(ctx, class.ContractId, nil, owner, permission)
-	}
-
-	k.mintToken(ctx, class.ContractId, to, amount)
-
-	if err := ctx.EventManager().EmitTypedEvent(&token.EventMinted{
-		ContractId: class.ContractId,
-		Operator:   owner.String(),
-		To:         to.String(),
-		Amount:     amount,
-	}); err != nil {
-		panic(err)
-	}
-
 	event := token.EventIssue{
 		ContractId: class.ContractId,
 		Name:       class.Name,
@@ -44,6 +20,39 @@ func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.Acc
 	}
 	ctx.EventManager().EmitEvent(token.NewEventIssueToken(event, owner, to, amount)) // deprecated
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		panic(err)
+	}
+
+	permissions := []token.Permission{
+		token.PermissionModify,
+	}
+	if class.Mintable {
+		permissions = append(permissions,
+			token.PermissionMint,
+			token.PermissionBurn,
+		)
+	}
+
+	// legacy
+	eventGrant := token.EventGrant{
+		ContractId: class.ContractId,
+		Grantee:    to.String(),
+	}
+	ctx.EventManager().EmitEvent(token.NewEventGrantPermTokenHead(eventGrant))
+	for _, permission := range permissions {
+		eventGrant.Permission = permission
+		ctx.EventManager().EmitEvent(token.NewEventGrantPermTokenBody(eventGrant))
+		k.Grant(ctx, class.ContractId, nil, owner, permission)
+	}
+
+	k.mintToken(ctx, class.ContractId, to, amount)
+
+	if err := ctx.EventManager().EmitTypedEvent(&token.EventMinted{
+		ContractId: class.ContractId,
+		Operator:   owner.String(),
+		To:         to.String(),
+		Amount:     amount,
+	}); err != nil {
 		panic(err)
 	}
 }

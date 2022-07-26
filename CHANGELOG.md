@@ -46,7 +46,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (proto) [\#584](https://github.com/line/lbm-sdk/pull/564) remove `prove` field in the `GetTxsEventRequest` of `tx` proto
 * (x/collection) [\#571](https://github.com/line/lbm-sdk/pull/571) add x/collection proto
 * (x/collection) [\#574](https://github.com/line/lbm-sdk/pull/574) implement x/collection
-* (amino) [\600](https://github.com/line/lbm-sdk/pull/600) change amino codec path from `lbm-sdk/` to `cosmos-sdk/`
+* (amino) [\#600](https://github.com/line/lbm-sdk/pull/600) change amino codec path from `lbm-sdk/` to `cosmos-sdk/`
+* (store) [\#605](https://github.com/line/lbm-sdk/pull/605) replace line/iavl and line/tm-db with cosmos/iavl and tendermint/tm-db.
+* (server/grpc) [\#607](https://github.com/line/lbm-sdk/pull/607) revert gRPC block height header.
 
 ### Improvements
 
@@ -54,6 +56,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (server/grpc) [\#526](https://github.com/line/lbm-sdk/pull/526) add index field into TxResponse
 * (cli) [\#535](https://github.com/line/lbm-sdk/pull/536) updated ostracon to v1.0.5; `unsafe-reset-all` command has been moved to the `ostracon` sub-command.
 * (x/foundation) [\#597](https://github.com/line/lbm-sdk/pull/597) tidy up x/foundation
+* (x/collection) [\#604](https://github.com/line/lbm-sdk/pull/604) add EventOwnerChanged and EventRootChanged
 * (x/token) [\#609](https://github.com/line/lbm-sdk/pull/609) remove new APIs on x/token
 
 ### Bug Fixes
@@ -66,6 +69,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/auth) [\#563](https://github.com/line/lbm-sdk/pull/563) fix unmarshal bug of `BaseAccountJSON`
 * (client) [\#565](https://github.com/line/lbm-sdk/pull/565) fix the data race problem in `TestQueryABCIHeight`
 * (x/token) [\#589](https://github.com/line/lbm-sdk/pull/589) fix naming collision in x/token enums
+* (x/token) [\#599](https://github.com/line/lbm-sdk/pull/599) fix the order of events
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
@@ -75,7 +79,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 * (ci) [\#457](https://github.com/line/lbm-sdk/pull/457), [\#471](https://github.com/line/lbm-sdk/pull/471) add swagger check
 * (ci) [\#469](https://github.com/line/lbm-sdk/pull/469) publish docker image on tag push
-* (ci) [\#580](https://github.com/line/lbm-sdk/pull/580) fix the problem that the registered docker image couldn't  run on M1.
+* (ci) [\#580](https://github.com/line/lbm-sdk/pull/580) fix the problem that the registered docker image couldn't run on M1.
 * (simapp) [\#591](https://github.com/line/lbm-sdk/pull/591) chore: add x/wasm module to simapp
 
 ### Document Updates

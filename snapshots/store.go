@@ -11,7 +11,7 @@ import (
 	"sync"
 
 	"github.com/gogo/protobuf/proto"
-	tmdb "github.com/line/tm-db/v2"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/snapshots/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
@@ -24,7 +24,7 @@ const (
 
 // Store is a snapshot store, containing snapshot metadata and binary chunks.
 type Store struct {
-	db  tmdb.DB
+	db  dbm.DB
 	dir string
 
 	mtx    sync.Mutex
@@ -32,7 +32,7 @@ type Store struct {
 }
 
 // NewStore creates a new snapshot store.
-func NewStore(db tmdb.DB, dir string) (*Store, error) {
+func NewStore(db dbm.DB, dir string) (*Store, error) {
 	if dir == "" {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrLogic, "snapshot directory not given")
 	}

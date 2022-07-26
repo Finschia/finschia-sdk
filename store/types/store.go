@@ -6,7 +6,7 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 	oststrings "github.com/line/ostracon/libs/strings"
-	tmdb "github.com/line/tm-db/v2"
+	dbm "github.com/tendermint/tm-db"
 
 	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
 	"github.com/line/lbm-sdk/types/kv"
@@ -15,18 +15,6 @@ import (
 type Store interface {
 	GetStoreType() StoreType
 	CacheWrapper
-}
-
-type Cache interface {
-	Set(key, value []byte)
-	Has(key []byte) bool
-	Get(dst, key []byte) []byte
-	Del(key []byte)
-	Stats() (hits, misses, entries, bytes uint64)
-}
-
-type CacheManager interface {
-	GetCache() Cache
 }
 
 // something that can persist to disk
@@ -165,7 +153,7 @@ type CommitMultiStore interface {
 
 	// Mount a store of type using the given db.
 	// If db == nil, the new store will use the CommitMultiStore db.
-	MountStoreWithDB(key StoreKey, typ StoreType, db tmdb.DB)
+	MountStoreWithDB(key StoreKey, typ StoreType, db dbm.DB)
 
 	// Panics on a nil key.
 	GetCommitStore(key StoreKey) CommitStore
@@ -200,10 +188,6 @@ type CommitMultiStore interface {
 	// SetInitialVersion sets the initial version of the IAVL tree. It is used when
 	// starting a new chain at an arbitrary height.
 	SetInitialVersion(version int64) error
-
-	// SetIAVLCacheManager sets the CacheManager that is holding nodedb cache of IAVL tree
-	// If a cacheManager is not set, then IAVL tree does not use cache
-	SetIAVLCacheManager(cacheManager CacheManager)
 
 	// SetIAVLCacheSize sets the cache size of the IAVL tree.
 	SetIAVLCacheSize(size int)
@@ -245,7 +229,7 @@ type KVStore interface {
 }
 
 // Iterator is an alias db's Iterator for convenience.
-type Iterator = tmdb.Iterator
+type Iterator = dbm.Iterator
 
 // CacheKVStore branches a KVStore and provides read cache functionality.
 // After calling .Write() on the CacheKVStore, all previously created

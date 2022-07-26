@@ -32,178 +32,210 @@ func AttributeKeyFromString(name string) AttributeKey {
 	return AttributeKey(AttributeKey_value[attributeKeyName])
 }
 
-func NewEventIssueToken(e EventIssue, grantee, to sdk.AccAddress, amount sdk.Int) sdk.Event {
+func NewEventIssueToken(event EventIssue, grantee, to sdk.AccAddress, amount sdk.Int) sdk.Event {
 	eventType := EventTypeIssueToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyName:       e.Name,
-		AttributeKeySymbol:     e.Symbol,
-		AttributeKeyImageURI:   e.Uri,
-		AttributeKeyMeta:       e.Meta,
-		AttributeKeyDecimals:   fmt.Sprintf("%d", e.Decimals),
-		AttributeKeyMintable:   fmt.Sprintf("%t", e.Mintable),
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyName:       event.Name,
+		AttributeKeySymbol:     event.Symbol,
+		AttributeKeyImageURI:   event.Uri,
+		AttributeKeyMeta:       event.Meta,
+		AttributeKeyDecimals:   fmt.Sprintf("%d", event.Decimals),
+		AttributeKeyMintable:   fmt.Sprintf("%t", event.Mintable),
 
 		AttributeKeyOwner:  grantee.String(),
 		AttributeKeyTo:     to.String(),
 		AttributeKeyAmount: amount.String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
-func NewEventMintToken(e EventMinted) sdk.Event {
+func NewEventMintToken(event EventMinted) sdk.Event {
 	eventType := EventTypeMintToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyFrom:       e.Operator,
-		AttributeKeyTo:         e.To,
-		AttributeKeyAmount:     e.Amount.String(),
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyFrom:       event.Operator,
+		AttributeKeyTo:         event.To,
+		AttributeKeyAmount:     event.Amount.String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
-func NewEventBurnToken(e EventBurned) sdk.Event {
+func NewEventBurnToken(event EventBurned) sdk.Event {
 	eventType := EventTypeBurnToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyFrom:       e.From,
-		AttributeKeyAmount:     e.Amount.String(),
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyFrom:       event.From,
+		AttributeKeyAmount:     event.Amount.String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
-func NewEventBurnTokenFrom(e EventBurned) sdk.Event {
+func NewEventBurnTokenFrom(event EventBurned) sdk.Event {
 	eventType := EventTypeBurnTokenFrom.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyProxy:      e.Operator,
-		AttributeKeyFrom:       e.From,
-		AttributeKeyAmount:     e.Amount.String(),
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyProxy:      event.Operator,
+		AttributeKeyFrom:       event.From,
+		AttributeKeyAmount:     event.Amount.String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
-func NewEventModifyToken(e EventModified) []sdk.Event {
+func NewEventModifyToken(event EventModified) []sdk.Event {
 	eventType := EventTypeModifyToken.String()
-	new := []sdk.Event{
+	res := []sdk.Event{
 		sdk.NewEvent(eventType,
-			sdk.NewAttribute(AttributeKeyContractID.String(), e.ContractId),
+			sdk.NewAttribute(AttributeKeyContractID.String(), event.ContractId),
 		),
 	}
 
-	for _, pair := range e.Changes {
+	for _, pair := range event.Changes {
 		attribute := sdk.NewAttribute(pair.Field, pair.Value)
 		event := sdk.NewEvent(eventType, attribute)
-		new = append(new, event)
+		res = append(res, event)
 	}
-	return new
+	return res
 }
 
-func NewEventTransfer(e EventSent) sdk.Event {
+func NewEventTransfer(event EventSent) sdk.Event {
 	eventType := EventTypeTransfer.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyFrom:       e.From,
-		AttributeKeyTo:         e.To,
-		AttributeKeyAmount:     e.Amount.String(),
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyFrom:       event.From,
+		AttributeKeyTo:         event.To,
+		AttributeKeyAmount:     event.Amount.String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
-func NewEventTransferFrom(e EventSent) sdk.Event {
+func NewEventTransferFrom(event EventSent) sdk.Event {
 	eventType := EventTypeTransferFrom.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyProxy:      e.Operator,
-		AttributeKeyFrom:       e.From,
-		AttributeKeyTo:         e.To,
-		AttributeKeyAmount:     e.Amount.String(),
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyProxy:      event.Operator,
+		AttributeKeyFrom:       event.From,
+		AttributeKeyTo:         event.To,
+		AttributeKeyAmount:     event.Amount.String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
-func NewEventGrantPermToken(e EventGrant) sdk.Event {
+func NewEventGrantPermToken(event EventGrant) sdk.Event {
 	eventType := EventTypeGrantPermToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyTo:         e.Grantee,
-		AttributeKeyPerm:       LegacyPermission(e.Permission).String(),
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyTo:         event.Grantee,
+		AttributeKeyPerm:       LegacyPermission(event.Permission).String(),
 	}
-	if e.Granter != e.Grantee {
-		attributes[AttributeKeyFrom] = e.Granter
+	if len(event.Granter) != 0 {
+		attributes[AttributeKeyFrom] = event.Granter
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
-func NewEventRevokePermToken(e EventAbandon) sdk.Event {
+func NewEventGrantPermTokenHead(event EventGrant) sdk.Event {
+	eventType := EventTypeGrantPermToken.String()
+	attributes := map[AttributeKey]string{
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyTo:         event.Grantee,
+	}
+	if len(event.Granter) != 0 {
+		attributes[AttributeKeyFrom] = event.Granter
+	}
+
+	res := sdk.NewEvent(eventType)
+	for key, value := range attributes {
+		attribute := sdk.NewAttribute(key.String(), value)
+		res = res.AppendAttributes(attribute)
+	}
+	return res
+}
+
+func NewEventGrantPermTokenBody(event EventGrant) sdk.Event {
+	eventType := EventTypeGrantPermToken.String()
+	attributes := map[AttributeKey]string{
+		AttributeKeyPerm: LegacyPermission(event.Permission).String(),
+	}
+
+	res := sdk.NewEvent(eventType)
+	for key, value := range attributes {
+		attribute := sdk.NewAttribute(key.String(), value)
+		res = res.AppendAttributes(attribute)
+	}
+	return res
+}
+
+func NewEventRevokePermToken(event EventAbandon) sdk.Event {
 	eventType := EventTypeRevokePermToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyFrom:       e.Grantee,
-		AttributeKeyPerm:       LegacyPermission(e.Permission).String(),
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyFrom:       event.Grantee,
+		AttributeKeyPerm:       LegacyPermission(event.Permission).String(),
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
 
-func NewEventApproveToken(e EventAuthorizedOperator) sdk.Event {
+func NewEventApproveToken(event EventAuthorizedOperator) sdk.Event {
 	eventType := EventTypeApproveToken.String()
 	attributes := map[AttributeKey]string{
-		AttributeKeyContractID: e.ContractId,
-		AttributeKeyApprover:   e.Holder,
-		AttributeKeyProxy:      e.Operator,
+		AttributeKeyContractID: event.ContractId,
+		AttributeKeyApprover:   event.Holder,
+		AttributeKeyProxy:      event.Operator,
 	}
 
-	new := sdk.NewEvent(eventType)
+	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
-		new.AppendAttributes(attribute)
+		res = res.AppendAttributes(attribute)
 	}
-	return new
+	return res
 }
