@@ -7,6 +7,7 @@ import (
 	ostcli "github.com/line/ostracon/libs/cli"
 
 	"github.com/line/lbm-sdk/client/flags"
+	codectypes "github.com/line/lbm-sdk/codec/types"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/query"
@@ -82,7 +83,235 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdSupply() {
+func (s *IntegrationTestSuite) TestNewQueryCmdFTSupply() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	tokenID := collection.NewFTID(s.ftClassID)
+	testCases := map[string]struct {
+		args     []string
+		valid    bool
+		expected proto.Message
+	}{
+		"valid query": {
+			[]string{
+				s.contractID,
+				tokenID,
+			},
+			true,
+			&collection.QueryFTSupplyResponse{
+				Supply: s.balance.Mul(sdk.NewInt(4)),
+			},
+		},
+		"extra args": {
+			[]string{
+				s.contractID,
+				tokenID,
+				"extra",
+			},
+			false,
+			nil,
+		},
+		"not enough args": {
+			[]string{
+				s.contractID,
+			},
+			false,
+			nil,
+		},
+		"invalid contract id": {
+			[]string{
+				"",
+				tokenID,
+			},
+			false,
+			nil,
+		},
+		"invalid class id": {
+			[]string{
+				s.contractID,
+				"",
+			},
+			false,
+			nil,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdFTSupply()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual collection.QueryFTSupplyResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().Equal(tc.expected, &actual)
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdFTMinted() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	tokenID := collection.NewFTID(s.ftClassID)
+	testCases := map[string]struct {
+		args     []string
+		valid    bool
+		expected proto.Message
+	}{
+		"valid query": {
+			[]string{
+				s.contractID,
+				tokenID,
+			},
+			true,
+			&collection.QueryFTMintedResponse{
+				Minted: s.balance.Mul(sdk.NewInt(5)),
+			},
+		},
+		"extra args": {
+			[]string{
+				s.contractID,
+				tokenID,
+				"extra",
+			},
+			false,
+			nil,
+		},
+		"not enough args": {
+			[]string{
+				s.contractID,
+			},
+			false,
+			nil,
+		},
+		"invalid contract id": {
+			[]string{
+				"",
+				tokenID,
+			},
+			false,
+			nil,
+		},
+		"invalid class id": {
+			[]string{
+				s.contractID,
+				"",
+			},
+			false,
+			nil,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdFTMinted()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual collection.QueryFTMintedResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().Equal(tc.expected, &actual)
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdFTBurnt() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	tokenID := collection.NewFTID(s.ftClassID)
+	testCases := map[string]struct {
+		args     []string
+		valid    bool
+		expected proto.Message
+	}{
+		"valid query": {
+			[]string{
+				s.contractID,
+				tokenID,
+			},
+			true,
+			&collection.QueryFTBurntResponse{
+				Burnt: s.balance,
+			},
+		},
+		"extra args": {
+			[]string{
+				s.contractID,
+				tokenID,
+				"extra",
+			},
+			false,
+			nil,
+		},
+		"not enough args": {
+			[]string{
+				s.contractID,
+			},
+			false,
+			nil,
+		},
+		"invalid contract id": {
+			[]string{
+				"",
+				tokenID,
+			},
+			false,
+			nil,
+		},
+		"invalid class id": {
+			[]string{
+				s.contractID,
+				"",
+			},
+			false,
+			nil,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdFTBurnt()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual collection.QueryFTBurntResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().Equal(tc.expected, &actual)
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdNFTSupply() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -100,8 +329,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdSupply() {
 				s.ftClassID,
 			},
 			true,
-			&collection.QuerySupplyResponse{
-				Supply: s.balance.Mul(sdk.NewInt(3)),
+			&collection.QueryNFTSupplyResponse{
+				Supply: s.balance.Mul(sdk.NewInt(4)),
 			},
 		},
 		"extra args": {
@@ -142,7 +371,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdSupply() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdSupply()
+			cmd := cli.NewQueryCmdNFTSupply()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -150,14 +379,14 @@ func (s *IntegrationTestSuite) TestNewQueryCmdSupply() {
 			}
 			s.Require().NoError(err)
 
-			var actual collection.QuerySupplyResponse
+			var actual collection.QueryNFTSupplyResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdMinted() {
+func (s *IntegrationTestSuite) TestNewQueryCmdNFTMinted() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -175,8 +404,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMinted() {
 				s.ftClassID,
 			},
 			true,
-			&collection.QueryMintedResponse{
-				Minted: s.balance.Mul(sdk.NewInt(4)),
+			&collection.QueryNFTMintedResponse{
+				Minted: s.balance.Mul(sdk.NewInt(5)),
 			},
 		},
 		"extra args": {
@@ -217,7 +446,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMinted() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdMinted()
+			cmd := cli.NewQueryCmdNFTMinted()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -225,14 +454,14 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMinted() {
 			}
 			s.Require().NoError(err)
 
-			var actual collection.QueryMintedResponse
+			var actual collection.QueryNFTMintedResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdBurnt() {
+func (s *IntegrationTestSuite) TestNewQueryCmdNFTBurnt() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -250,7 +479,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBurnt() {
 				s.ftClassID,
 			},
 			true,
-			&collection.QueryBurntResponse{
+			&collection.QueryNFTBurntResponse{
 				Burnt: s.balance,
 			},
 		},
@@ -292,7 +521,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBurnt() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdBurnt()
+			cmd := cli.NewQueryCmdNFTBurnt()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -300,7 +529,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBurnt() {
 			}
 			s.Require().NoError(err)
 
-			var actual collection.QueryBurntResponse
+			var actual collection.QueryNFTBurntResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
@@ -362,55 +591,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdContract() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdContracts() {
-	val := s.network.Validators[0]
-	commonArgs := []string{
-		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
-	}
-
-	testCases := map[string]struct {
-		args     []string
-		valid    bool
-		expected proto.Message
-	}{
-		"query all": {
-			[]string{},
-			true,
-			&collection.QueryContractsResponse{
-				Contracts:  []collection.Contract{{ContractId: s.contractID}},
-				Pagination: &query.PageResponse{},
-			},
-		},
-		"extra args": {
-			[]string{
-				"extra",
-			},
-			false,
-			nil,
-		},
-	}
-
-	for name, tc := range testCases {
-		tc := tc
-
-		s.Run(name, func() {
-			cmd := cli.NewQueryCmdContracts()
-			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-
-			var actual collection.QueryContractsResponse
-			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
-			s.Require().Equal(tc.expected, &actual)
-		})
-	}
-}
-
-func (s *IntegrationTestSuite) TestNewQueryCmdFTClass() {
+func (s *IntegrationTestSuite) TestNewQueryCmdTokenType() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -425,87 +606,19 @@ func (s *IntegrationTestSuite) TestNewQueryCmdFTClass() {
 		"valid query": {
 			[]string{
 				s.contractID,
-				s.ftClassID,
+				s.nftClassID,
 			},
 			true,
-			&collection.QueryFTClassResponse{
-				Class: collection.FTClass{
-					Id:       s.ftClassID,
-					Decimals: 8,
-					Mintable: true,
+			&collection.QueryTokenTypeResponse{
+				TokenType: collection.TokenType{
+					ContractId: s.contractID,
+					TokenType:  s.nftClassID,
 				},
 			},
 		},
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.ftClassID,
-				"extra",
-			},
-			false,
-			nil,
-		},
-		"not enough args": {
-			[]string{
-				s.contractID,
-			},
-			false,
-			nil,
-		},
-		"class not found": {
-			[]string{
-				s.contractID,
-				"00bab10c",
-			},
-			false,
-			nil,
-		},
-	}
-
-	for name, tc := range testCases {
-		tc := tc
-
-		s.Run(name, func() {
-			cmd := cli.NewQueryCmdFTClass()
-			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-
-			var actual collection.QueryFTClassResponse
-			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
-			s.Require().Equal(tc.expected, &actual)
-		})
-	}
-}
-
-func (s *IntegrationTestSuite) TestNewQueryCmdNFTClass() {
-	val := s.network.Validators[0]
-	commonArgs := []string{
-		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
-	}
-
-	testCases := map[string]struct {
-		args     []string
-		valid    bool
-		expected proto.Message
-	}{
-		"valid query": {
-			[]string{
-				s.contractID,
-				s.nftClassID,
-			},
-			true,
-			&collection.QueryNFTClassResponse{
-				Class: collection.NFTClass{Id: s.nftClassID},
-			},
-		},
-		"extra args": {
-			[]string{
-				s.contractID,
 				s.nftClassID,
 				"extra",
 			},
@@ -519,7 +632,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTClass() {
 			false,
 			nil,
 		},
-		"class not found": {
+		"token not found": {
 			[]string{
 				s.contractID,
 				"deadbeef",
@@ -533,7 +646,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTClass() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdNFTClass()
+			cmd := cli.NewQueryCmdTokenType()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -541,14 +654,73 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFTClass() {
 			}
 			s.Require().NoError(err)
 
-			var actual collection.QueryNFTClassResponse
+			var actual collection.QueryTokenTypeResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdNFT() {
+func (s *IntegrationTestSuite) TestNewQueryCmdTokenTypes() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args     []string
+		valid    bool
+		expected proto.Message
+	}{
+		"valid query": {
+			[]string{
+				s.contractID,
+			},
+			true,
+			&collection.QueryTokenTypesResponse{
+				TokenTypes: []collection.TokenType{{
+					ContractId: s.contractID,
+					TokenType:  s.nftClassID,
+				}},
+				Pagination: &query.PageResponse{},
+			},
+		},
+		"extra args": {
+			[]string{
+				s.contractID,
+				"extra",
+			},
+			false,
+			nil,
+		},
+		"not enough args": {
+			[]string{},
+			false,
+			nil,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdTokenTypes()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual collection.QueryTokenTypesResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().Equal(tc.expected, &actual)
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -556,6 +728,12 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFT() {
 	}
 
 	tokenID := collection.NewNFTID(s.nftClassID, 1)
+	token, err := codectypes.NewAnyWithValue(&collection.OwnerNFT{
+		ContractId: s.contractID,
+		TokenId:    tokenID,
+		Owner:      s.customer.String(),
+	})
+	s.Require().NoError(err)
 
 	testCases := map[string]struct {
 		args     []string
@@ -568,10 +746,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFT() {
 				tokenID,
 			},
 			true,
-			&collection.QueryNFTResponse{
-				Token: collection.NFT{
-					Id: tokenID,
-				},
+			&collection.QueryTokenResponse{
+				Token: *token,
 			},
 		},
 		"extra args": {
@@ -604,7 +780,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdNFT()
+			cmd := cli.NewQueryCmdToken()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -612,8 +788,172 @@ func (s *IntegrationTestSuite) TestNewQueryCmdNFT() {
 			}
 			s.Require().NoError(err)
 
-			var actual collection.QueryNFTResponse
+			var actual collection.QueryTokenResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			err = collection.TokenUnpackInterfaces(&actual.Token, val.ClientCtx.InterfaceRegistry)
+			s.Require().NoError(err)
+			s.Require().Equal(tc.expected, &actual)
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdTokensWithTokenType() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	owners := []sdk.AccAddress{s.customer, s.operator, s.vendor, s.stranger}
+	tokens := make([]codectypes.Any, 0, s.lenChain*3*len(owners))
+	for _, owner := range owners {
+		for i := 0; i < s.lenChain*3; i++ {
+			token, err := codectypes.NewAnyWithValue(&collection.OwnerNFT{
+				ContractId: s.contractID,
+				TokenId:    collection.NewNFTID(s.nftClassID, len(tokens)+1),
+				Owner:      owner.String(),
+			})
+			s.Require().NoError(err)
+			tokens = append(tokens, *token)
+		}
+	}
+
+	testCases := map[string]struct {
+		args     []string
+		valid    bool
+		expected proto.Message
+	}{
+		"valid query": {
+			[]string{
+				s.contractID,
+				s.nftClassID,
+			},
+			true,
+			&collection.QueryTokensWithTokenTypeResponse{
+				Tokens:     tokens,
+				Pagination: &query.PageResponse{},
+			},
+		},
+		"extra args": {
+			[]string{
+				s.contractID,
+				s.nftClassID,
+				"extra",
+			},
+			false,
+			nil,
+		},
+		"not enough args": {
+			[]string{
+				s.contractID,
+			},
+			false,
+			nil,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdTokensWithTokenType()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual collection.QueryTokensWithTokenTypeResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			for i := range actual.Tokens {
+				err := collection.TokenUnpackInterfaces(&actual.Tokens[i], val.ClientCtx.InterfaceRegistry)
+				s.Require().NoError(err)
+			}
+			s.Require().Equal(tc.expected, &actual)
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdTokens() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	owners := []sdk.AccAddress{s.customer, s.operator, s.vendor, s.stranger}
+	tokens := make([]codectypes.Any, 0, s.lenChain*3*len(owners)+1)
+	token, err := codectypes.NewAnyWithValue(&collection.FT{
+		ContractId: s.contractID,
+		TokenId:    collection.NewFTID(s.ftClassID),
+		Name:       "tibetian fox",
+		Decimals:   8,
+		Mintable:   true,
+	})
+	s.Require().NoError(err)
+	tokens = append(tokens, *token)
+
+	for _, owner := range owners {
+		for i := 0; i < s.lenChain*3; i++ {
+			token, err := codectypes.NewAnyWithValue(&collection.OwnerNFT{
+				ContractId: s.contractID,
+				TokenId:    collection.NewNFTID(s.nftClassID, len(tokens)),
+				Owner:      owner.String(),
+			})
+			s.Require().NoError(err)
+			tokens = append(tokens, *token)
+		}
+	}
+
+	testCases := map[string]struct {
+		args     []string
+		valid    bool
+		expected proto.Message
+	}{
+		"valid query": {
+			[]string{
+				s.contractID,
+			},
+			true,
+			&collection.QueryTokensResponse{
+				Tokens:     tokens,
+				Pagination: &query.PageResponse{},
+			},
+		},
+		"extra args": {
+			[]string{
+				s.contractID,
+				"extra",
+			},
+			false,
+			nil,
+		},
+		"not enough args": {
+			[]string{},
+			false,
+			nil,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdTokens()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual collection.QueryTokensResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			for i := range actual.Tokens {
+				err := collection.TokenUnpackInterfaces(&actual.Tokens[i], val.ClientCtx.InterfaceRegistry)
+				s.Require().NoError(err)
+			}
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
@@ -833,80 +1173,6 @@ func (s *IntegrationTestSuite) TestNewQueryCmdChildren() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdGrant() {
-	val := s.network.Validators[0]
-	commonArgs := []string{
-		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
-		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
-	}
-
-	testCases := map[string]struct {
-		args     []string
-		valid    bool
-		expected proto.Message
-	}{
-		"valid query": {
-			[]string{
-				s.contractID,
-				s.operator.String(),
-				collection.PermissionIssue.String(),
-			},
-			true,
-			&collection.QueryGrantResponse{
-				Grant: collection.Grant{
-					Grantee:    s.operator.String(),
-					Permission: collection.PermissionIssue,
-				},
-			},
-		},
-		"extra args": {
-			[]string{
-				s.contractID,
-				s.operator.String(),
-				collection.PermissionIssue.String(),
-				"extra",
-			},
-			false,
-			nil,
-		},
-		"not enough args": {
-			[]string{
-				s.contractID,
-				s.operator.String(),
-			},
-			false,
-			nil,
-		},
-		"no permission found": {
-			[]string{
-				s.contractID,
-				s.customer.String(),
-				collection.PermissionIssue.String(),
-			},
-			false,
-			nil,
-		},
-	}
-
-	for name, tc := range testCases {
-		tc := tc
-
-		s.Run(name, func() {
-			cmd := cli.NewQueryCmdGrant()
-			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-
-			var actual collection.QueryGrantResponse
-			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
-			s.Require().Equal(tc.expected, &actual)
-		})
-	}
-}
-
 func (s *IntegrationTestSuite) TestNewQueryCmdGranteeGrants() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
@@ -986,7 +1252,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGranteeGrants() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdAuthorization() {
+func (s *IntegrationTestSuite) TestNewQueryCmdApproved() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -1005,11 +1271,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdAuthorization() {
 				s.customer.String(),
 			},
 			true,
-			&collection.QueryAuthorizationResponse{
-				Authorization: collection.Authorization{
-					Holder:   s.customer.String(),
-					Operator: s.operator.String(),
-				},
+			&collection.QueryApprovedResponse{
+				Approved: true,
 			},
 		},
 		"extra args": {
@@ -1030,22 +1293,13 @@ func (s *IntegrationTestSuite) TestNewQueryCmdAuthorization() {
 			false,
 			nil,
 		},
-		"no authorization found": {
-			[]string{
-				s.contractID,
-				s.customer.String(),
-				s.vendor.String(),
-			},
-			false,
-			nil,
-		},
 	}
 
 	for name, tc := range testCases {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdAuthorization()
+			cmd := cli.NewQueryCmdApproved()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -1053,14 +1307,14 @@ func (s *IntegrationTestSuite) TestNewQueryCmdAuthorization() {
 			}
 			s.Require().NoError(err)
 
-			var actual collection.QueryAuthorizationResponse
+			var actual collection.QueryApprovedResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdOperatorAuthorizations() {
+func (s *IntegrationTestSuite) TestNewQueryCmdApprovers() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -1075,23 +1329,18 @@ func (s *IntegrationTestSuite) TestNewQueryCmdOperatorAuthorizations() {
 		"valid query": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
+				s.vendor.String(),
 			},
 			true,
-			&collection.QueryOperatorAuthorizationsResponse{
-				Authorizations: []collection.Authorization{
-					{
-						Holder:   s.customer.String(),
-						Operator: s.operator.String(),
-					},
-				},
+			&collection.QueryApproversResponse{
+				Approvers:  []string{s.operator.String()},
 				Pagination: &query.PageResponse{},
 			},
 		},
 		"extra args": {
 			[]string{
 				s.contractID,
-				s.operator.String(),
+				s.vendor.String(),
 				"extra",
 			},
 			false,
@@ -1110,7 +1359,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdOperatorAuthorizations() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdOperatorAuthorizations()
+			cmd := cli.NewQueryCmdApprovers()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -1118,7 +1367,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdOperatorAuthorizations() {
 			}
 			s.Require().NoError(err)
 
-			var actual collection.QueryOperatorAuthorizationsResponse
+			var actual collection.QueryApproversResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})

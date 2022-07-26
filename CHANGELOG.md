@@ -57,6 +57,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (cli) [\#535](https://github.com/line/lbm-sdk/pull/536) updated ostracon to v1.0.5; `unsafe-reset-all` command has been moved to the `ostracon` sub-command.
 * (x/foundation) [\#597](https://github.com/line/lbm-sdk/pull/597) tidy up x/foundation
 * (x/collection) [\#604](https://github.com/line/lbm-sdk/pull/604) add EventOwnerChanged and EventRootChanged
+* (x/collection) [\#608](https://github.com/line/lbm-sdk/pull/608) remove new APIs on x/collection
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path

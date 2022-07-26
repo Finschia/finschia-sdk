@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"github.com/gogo/protobuf/proto"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/x/collection"
@@ -112,141 +111,6 @@ func (s *KeeperTestSuite) TestQueryAllBalances() {
 				Pagination: pageReq,
 			}
 			res, err := s.queryServer.AllBalances(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestQuerySupply() {
-	// empty request
-	_, err := s.queryServer.Supply(s.goCtx, nil)
-	s.Require().Error(err)
-
-	testCases := map[string]struct {
-		contractID string
-		classID    string
-		valid      bool
-		postTest   func(res *collection.QuerySupplyResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			classID:    s.ftClassID,
-			valid:      true,
-			postTest: func(res *collection.QuerySupplyResponse) {
-				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Supply)
-			},
-		},
-		"invalid contract id": {
-			classID: s.ftClassID,
-		},
-		"invalid class id": {
-			contractID: s.contractID,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			req := &collection.QuerySupplyRequest{
-				ContractId: tc.contractID,
-				ClassId:    tc.classID,
-			}
-			res, err := s.queryServer.Supply(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestQueryMinted() {
-	// empty request
-	_, err := s.queryServer.Minted(s.goCtx, nil)
-	s.Require().Error(err)
-
-	testCases := map[string]struct {
-		contractID string
-		classID    string
-		valid      bool
-		postTest   func(res *collection.QueryMintedResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			classID:    s.ftClassID,
-			valid:      true,
-			postTest: func(res *collection.QueryMintedResponse) {
-				s.Require().Equal(s.balance.Mul(sdk.NewInt(6)), res.Minted)
-			},
-		},
-		"invalid contract id": {
-			classID: s.ftClassID,
-		},
-		"invalid class id": {
-			contractID: s.contractID,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			req := &collection.QueryMintedRequest{
-				ContractId: tc.contractID,
-				ClassId:    tc.classID,
-			}
-			res, err := s.queryServer.Minted(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestQueryBurnt() {
-	// empty request
-	_, err := s.queryServer.Burnt(s.goCtx, nil)
-	s.Require().Error(err)
-
-	testCases := map[string]struct {
-		contractID string
-		classID    string
-		valid      bool
-		postTest   func(res *collection.QueryBurntResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			classID:    s.ftClassID,
-			valid:      true,
-			postTest: func(res *collection.QueryBurntResponse) {
-				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Burnt)
-			},
-		},
-		"invalid contract id": {
-			classID: s.ftClassID,
-		},
-		"invalid class id": {
-			contractID: s.contractID,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			req := &collection.QueryBurntRequest{
-				ContractId: tc.contractID,
-				ClassId:    tc.classID,
-			}
-			res, err := s.queryServer.Burnt(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -595,258 +459,6 @@ func (s *KeeperTestSuite) TestQueryContract() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryContracts() {
-	// empty request
-	_, err := s.queryServer.Contracts(s.goCtx, nil)
-	s.Require().Error(err)
-
-	testCases := map[string]struct {
-		valid    bool
-		count    uint64
-		postTest func(res *collection.QueryContractsResponse)
-	}{
-		"valid request": {
-			valid: true,
-			postTest: func(res *collection.QueryContractsResponse) {
-				s.Require().Equal(1, len(res.Contracts))
-			},
-		},
-		"valid request with limit": {
-			valid: true,
-			count: 1,
-			postTest: func(res *collection.QueryContractsResponse) {
-				s.Require().Equal(1, len(res.Contracts))
-			},
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			pageReq := &query.PageRequest{}
-			if tc.count != 0 {
-				pageReq.Limit = tc.count
-			}
-			req := &collection.QueryContractsRequest{
-				Pagination: pageReq,
-			}
-			res, err := s.queryServer.Contracts(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestQueryFTClass() {
-	// empty request
-	_, err := s.queryServer.FTClass(s.goCtx, nil)
-	s.Require().Error(err)
-
-	testCases := map[string]struct {
-		contractID string
-		classID    string
-		valid      bool
-		postTest   func(res *collection.QueryFTClassResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			classID:    s.ftClassID,
-			valid:      true,
-			postTest: func(res *collection.QueryFTClassResponse) {
-				s.Require().Equal(s.ftClassID, res.Class.GetId())
-			},
-		},
-		"invalid contract id": {
-			classID: s.ftClassID,
-		},
-		"invalid class id": {
-			contractID: s.contractID,
-		},
-		"no such a class": {
-			contractID: s.contractID,
-			classID:    "deadbeef",
-		},
-		"not a class of ft": {
-			contractID: s.contractID,
-			classID:    s.nftClassID,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			req := &collection.QueryFTClassRequest{
-				ContractId: tc.contractID,
-				ClassId:    tc.classID,
-			}
-			res, err := s.queryServer.FTClass(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestQueryNFTClass() {
-	// empty request
-	_, err := s.queryServer.NFTClass(s.goCtx, nil)
-	s.Require().Error(err)
-
-	testCases := map[string]struct {
-		contractID string
-		classID    string
-		valid      bool
-		postTest   func(res *collection.QueryNFTClassResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			classID:    s.nftClassID,
-			valid:      true,
-			postTest: func(res *collection.QueryNFTClassResponse) {
-				s.Require().Equal(s.nftClassID, res.Class.GetId())
-			},
-		},
-		"invalid contract id": {
-			classID: s.ftClassID,
-		},
-		"invalid class id": {
-			contractID: s.contractID,
-		},
-		"no such a class": {
-			contractID: s.contractID,
-			classID:    "deadbeef",
-		},
-		"not a class of nft": {
-			contractID: s.contractID,
-			classID:    s.ftClassID,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			req := &collection.QueryNFTClassRequest{
-				ContractId: tc.contractID,
-				ClassId:    tc.classID,
-			}
-			res, err := s.queryServer.NFTClass(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestQueryTokenClassTypeName() {
-	// empty request
-	_, err := s.queryServer.TokenClassTypeName(s.goCtx, nil)
-	s.Require().Error(err)
-
-	testCases := map[string]struct {
-		contractID string
-		classID    string
-		valid      bool
-		postTest   func(res *collection.QueryTokenClassTypeNameResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			classID:    s.ftClassID,
-			valid:      true,
-			postTest: func(res *collection.QueryTokenClassTypeNameResponse) {
-				s.Require().Equal(proto.MessageName(&collection.FTClass{}), res.Name)
-			},
-		},
-		"invalid contract id": {
-			classID: s.ftClassID,
-		},
-		"invalid class id": {
-			contractID: s.contractID,
-		},
-		"no such a class": {
-			contractID: s.contractID,
-			classID:    "00bab10c",
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			req := &collection.QueryTokenClassTypeNameRequest{
-				ContractId: tc.contractID,
-				ClassId:    tc.classID,
-			}
-			res, err := s.queryServer.TokenClassTypeName(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
-// func (s *KeeperTestSuite) TestQueryTokenClasses() {
-// 	// empty request
-// 	_, err := s.queryServer.TokenClasses(s.goCtx, nil)
-// 	s.Require().Error(err)
-
-// 	testCases := map[string]struct {
-// 		contractID string
-// 		valid      bool
-// 		count      uint64
-// 		postTest   func(res *collection.QueryTokenClassesResponse)
-// 	}{
-// 		"valid request": {
-// 			contractID: s.contractID,
-// 			valid:      true,
-// 			postTest: func(res *collection.QueryTokenClassesResponse) {
-// 				s.Require().Equal(2, len(res.Classes))
-// 			},
-// 		},
-// 		"valid request with limit": {
-// 			contractID: s.contractID,
-// 			valid:      true,
-// 			count:      1,
-// 			postTest: func(res *collection.QueryTokenClassesResponse) {
-// 				s.Require().Equal(1, len(res.Classes))
-// 			},
-// 		},
-// 		"invalid contract id": {},
-// 	}
-
-// 	for name, tc := range testCases {
-// 		s.Run(name, func() {
-// 			pageReq := &query.PageRequest{}
-// 			if tc.count != 0 {
-// 				pageReq.Limit = tc.count
-// 			}
-// 			req := &collection.QueryTokenClassesRequest{
-// 				ContractId: tc.contractID,
-// 				Pagination: pageReq,
-// 			}
-// 			res, err := s.queryServer.TokenClasses(s.goCtx, req)
-// 			if !tc.valid {
-// 				s.Require().Error(err)
-// 				return
-// 			}
-// 			s.Require().NoError(err)
-// 			s.Require().NotNil(res)
-// 			tc.postTest(res)
-// 		})
-// 	}
-// }
-
 func (s *KeeperTestSuite) TestQueryTokenType() {
 	// empty request
 	_, err := s.queryServer.TokenType(s.goCtx, nil)
@@ -971,6 +583,11 @@ func (s *KeeperTestSuite) TestQueryToken() {
 			valid:      true,
 			postTest: func(res *collection.QueryTokenResponse) {
 				s.Require().Equal("/lbm.collection.v1.FT", res.Token.TypeUrl)
+				token := collection.TokenFromAny(&res.Token)
+				ft, ok := token.(*collection.FT)
+				s.Require().True(ok)
+				s.Require().Equal(s.contractID, ft.ContractId)
+				s.Require().Equal(ftTokenID, ft.TokenId)
 			},
 		},
 		"valid nft request": {
@@ -979,6 +596,11 @@ func (s *KeeperTestSuite) TestQueryToken() {
 			valid:      true,
 			postTest: func(res *collection.QueryTokenResponse) {
 				s.Require().Equal("/lbm.collection.v1.OwnerNFT", res.Token.TypeUrl)
+				token := collection.TokenFromAny(&res.Token)
+				nft, ok := token.(*collection.OwnerNFT)
+				s.Require().True(ok)
+				s.Require().Equal(s.contractID, nft.ContractId)
+				s.Require().Equal(nftTokenID, nft.TokenId)
 			},
 		},
 		"invalid contract id": {
@@ -1004,6 +626,67 @@ func (s *KeeperTestSuite) TestQueryToken() {
 				TokenId:    tc.tokenID,
 			}
 			res, err := s.queryServer.Token(s.goCtx, req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+			tc.postTest(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestQueryTokensWithTokenType() {
+	// empty request
+	_, err := s.queryServer.TokensWithTokenType(s.goCtx, nil)
+	s.Require().Error(err)
+
+	testCases := map[string]struct {
+		contractID string
+		tokenType  string
+		valid      bool
+		count      uint64
+		postTest   func(res *collection.QueryTokensWithTokenTypeResponse)
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			tokenType:  s.nftClassID,
+			valid:      true,
+			count:      1000000,
+			postTest: func(res *collection.QueryTokensWithTokenTypeResponse) {
+				s.Require().Equal(s.numNFTs*3, len(res.Tokens))
+			},
+		},
+		"valid request with limit": {
+			contractID: s.contractID,
+			tokenType:  s.nftClassID,
+			valid:      true,
+			count:      1,
+			postTest: func(res *collection.QueryTokensWithTokenTypeResponse) {
+				s.Require().Equal(1, len(res.Tokens))
+			},
+		},
+		"invalid contract id": {
+			tokenType: s.nftClassID,
+		},
+		"invalid token type": {
+			contractID: s.contractID,
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			pageReq := &query.PageRequest{}
+			if tc.count != 0 {
+				pageReq.Limit = tc.count
+			}
+			req := &collection.QueryTokensWithTokenTypeRequest{
+				ContractId: tc.contractID,
+				TokenType:  tc.tokenType,
+				Pagination: pageReq,
+			}
+			res, err := s.queryServer.TokensWithTokenType(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -1056,158 +739,6 @@ func (s *KeeperTestSuite) TestQueryTokens() {
 				Pagination: pageReq,
 			}
 			res, err := s.queryServer.Tokens(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestQueryNFT() {
-	// empty request
-	_, err := s.queryServer.NFT(s.goCtx, nil)
-	s.Require().Error(err)
-
-	tokenID := collection.NewNFTID(s.nftClassID, 1)
-	testCases := map[string]struct {
-		contractID string
-		tokenID    string
-		valid      bool
-		postTest   func(res *collection.QueryNFTResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			tokenID:    tokenID,
-			valid:      true,
-			postTest: func(res *collection.QueryNFTResponse) {
-				s.Require().Equal(tokenID, res.Token.Id)
-			},
-		},
-		"invalid contract id": {
-			tokenID: tokenID,
-		},
-		"invalid token id": {
-			contractID: s.contractID,
-		},
-		"no such a token": {
-			contractID: s.contractID,
-			tokenID:    collection.NewNFTID("deadbeef", 1),
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			req := &collection.QueryNFTRequest{
-				ContractId: tc.contractID,
-				TokenId:    tc.tokenID,
-			}
-			res, err := s.queryServer.NFT(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
-// func (s *KeeperTestSuite) TestQueryNFTs() {
-// 	// empty request
-// 	_, err := s.queryServer.NFTs(s.goCtx, nil)
-// 	s.Require().Error(err)
-
-// 	testCases := map[string]struct {
-// 		contractID string
-// 		valid      bool
-// 		count      uint64
-// 		postTest   func(res *collection.QueryNFTsResponse)
-// 	}{
-// 		"valid request": {
-// 			contractID: s.contractID,
-// 			valid:      true,
-// 			count:      1000000,
-// 			postTest: func(res *collection.QueryNFTsResponse) {
-// 				s.Require().Equal(s.lenChain*6, len(res.Tokens))
-// 			},
-// 		},
-// 		"valid request with limit": {
-// 			contractID: s.contractID,
-// 			valid:      true,
-// 			count:      1,
-// 			postTest: func(res *collection.QueryNFTsResponse) {
-// 				s.Require().Equal(1, len(res.Tokens))
-// 			},
-// 		},
-// 		"invalid contract id": {},
-// 	}
-
-// 	for name, tc := range testCases {
-// 		s.Run(name, func() {
-// 			pageReq := &query.PageRequest{}
-// 			if tc.count != 0 {
-// 				pageReq.Limit = tc.count
-// 			}
-// 			req := &collection.QueryNFTsRequest{
-// 				ContractId: tc.contractID,
-// 				Pagination: pageReq,
-// 			}
-// 			res, err := s.queryServer.NFTs(s.goCtx, req)
-// 			if !tc.valid {
-// 				s.Require().Error(err)
-// 				return
-// 			}
-// 			s.Require().NoError(err)
-// 			s.Require().NotNil(res)
-// 			tc.postTest(res)
-// 		})
-// 	}
-// }
-
-func (s *KeeperTestSuite) TestQueryOwner() {
-	// empty request
-	_, err := s.queryServer.Owner(s.goCtx, nil)
-	s.Require().Error(err)
-
-	tokenID := collection.NewNFTID(s.nftClassID, 1)
-	testCases := map[string]struct {
-		contractID string
-		tokenID    string
-		valid      bool
-		postTest   func(res *collection.QueryOwnerResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			tokenID:    tokenID,
-			valid:      true,
-			postTest: func(res *collection.QueryOwnerResponse) {
-				s.Require().Equal(s.customer.String(), res.Owner)
-			},
-		},
-		"invalid contract id": {
-			tokenID: tokenID,
-		},
-		"invalid token id": {
-			contractID: s.contractID,
-		},
-		"no such a token": {
-			contractID: s.contractID,
-			tokenID:    collection.NewNFTID("deadbeef", 1),
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			req := &collection.QueryOwnerRequest{
-				ContractId: tc.contractID,
-				TokenId:    tc.tokenID,
-			}
-			res, err := s.queryServer.Owner(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -1386,66 +917,6 @@ func (s *KeeperTestSuite) TestQueryChildren() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryGrant() {
-	// empty request
-	_, err := s.queryServer.Grant(s.goCtx, nil)
-	s.Require().Error(err)
-
-	testCases := map[string]struct {
-		contractID string
-		grantee    sdk.AccAddress
-		permission collection.Permission
-		valid      bool
-		postTest   func(res *collection.QueryGrantResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			grantee:    s.vendor,
-			permission: collection.PermissionModify,
-			valid:      true,
-			postTest: func(res *collection.QueryGrantResponse) {
-				s.Require().Equal(s.vendor.String(), res.Grant.Grantee)
-				s.Require().Equal(collection.PermissionModify, res.Grant.Permission)
-			},
-		},
-		"invalid contract id": {
-			grantee:    s.vendor,
-			permission: collection.PermissionModify,
-		},
-		"invalid grantee": {
-			contractID: s.contractID,
-			permission: collection.PermissionModify,
-		},
-		"invalid permission": {
-			contractID: s.contractID,
-			grantee:    s.vendor,
-		},
-		"no permission": {
-			contractID: s.contractID,
-			grantee:    s.customer,
-			permission: collection.PermissionModify,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			req := &collection.QueryGrantRequest{
-				ContractId: tc.contractID,
-				Grantee:    tc.grantee.String(),
-				Permission: tc.permission,
-			}
-			res, err := s.queryServer.Grant(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
 func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 	// empty request
 	_, err := s.queryServer.GranteeGrants(s.goCtx, nil)
@@ -1480,129 +951,6 @@ func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 				Grantee:    tc.grantee.String(),
 			}
 			res, err := s.queryServer.GranteeGrants(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestQueryAuthorization() {
-	// empty request
-	_, err := s.queryServer.Authorization(s.goCtx, nil)
-	s.Require().Error(err)
-
-	testCases := map[string]struct {
-		contractID string
-		operator   sdk.AccAddress
-		holder     sdk.AccAddress
-		valid      bool
-		postTest   func(res *collection.QueryAuthorizationResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			operator:   s.operator,
-			holder:     s.customer,
-			valid:      true,
-			postTest: func(res *collection.QueryAuthorizationResponse) {
-				expected := collection.Authorization{
-					Holder:   s.customer.String(),
-					Operator: s.operator.String(),
-				}
-				s.Require().Equal(expected, res.Authorization)
-			},
-		},
-		"invalid contract id": {
-			operator: s.operator,
-			holder:   s.customer,
-		},
-		"invalid operator": {
-			contractID: s.contractID,
-			holder:     s.customer,
-		},
-		"invalid holder": {
-			contractID: s.contractID,
-			operator:   s.operator,
-		},
-		"no authorization found": {
-			contractID: s.contractID,
-			operator:   s.vendor,
-			holder:     s.customer,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			req := &collection.QueryAuthorizationRequest{
-				ContractId: tc.contractID,
-				Operator:   tc.operator.String(),
-				Holder:     tc.holder.String(),
-			}
-			res, err := s.queryServer.Authorization(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
-			s.Require().NotNil(res)
-			tc.postTest(res)
-		})
-	}
-}
-
-func (s *KeeperTestSuite) TestQueryOperatorAuthorizations() {
-	// empty request
-	_, err := s.queryServer.OperatorAuthorizations(s.goCtx, nil)
-	s.Require().Error(err)
-
-	testCases := map[string]struct {
-		contractID string
-		operator   sdk.AccAddress
-		valid      bool
-		count      uint64
-		postTest   func(res *collection.QueryOperatorAuthorizationsResponse)
-	}{
-		"valid request": {
-			contractID: s.contractID,
-			operator:   s.operator,
-			valid:      true,
-			postTest: func(res *collection.QueryOperatorAuthorizationsResponse) {
-				s.Require().Equal(1, len(res.Authorizations))
-			},
-		},
-		"valid request with limit": {
-			contractID: s.contractID,
-			operator:   s.operator,
-			valid:      true,
-			count:      1,
-			postTest: func(res *collection.QueryOperatorAuthorizationsResponse) {
-				s.Require().Equal(1, len(res.Authorizations))
-			},
-		},
-		"invalid contract id": {
-			operator: s.operator,
-		},
-		"invalid operator": {
-			contractID: s.contractID,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			pageReq := &query.PageRequest{}
-			if tc.count != 0 {
-				pageReq.Limit = tc.count
-			}
-			req := &collection.QueryOperatorAuthorizationsRequest{
-				ContractId: tc.contractID,
-				Operator:   tc.operator.String(),
-				Pagination: pageReq,
-			}
-			res, err := s.queryServer.OperatorAuthorizations(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

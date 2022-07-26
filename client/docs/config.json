@@ -190,15 +190,9 @@
           "Params": "CollectionParams",
           "Balance": "CollectionBalance",
           "AllBalances": "CollectionAllBalances",
-          "Grant": "CollectionGrant",
           "GranteeGrants": "CollectionGranteeGrants",
-          "Grants": "CollectionGrants",
           "Approved": "CollectionApproved",
-          "Authorization": "CollectionAuthorization",
-          "OperatorAuthorizations": "CollectionOperatorAuthorizations",
-          "Supply": "CollectionSupply",
-          "Minted": "CollectionMinted",
-          "Burnt": "CollectionBurnt",
+          "Approvers": "CollectionApprovers",
         }
       }
     },

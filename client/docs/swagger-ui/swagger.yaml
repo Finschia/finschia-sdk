@@ -40019,316 +40019,6 @@ paths:
           type: string
       tags:
         - Query
-  /lbm/collection/v1/contracts:
-    get:
-      summary: |-
-        Contracts queries metadata of all contracts.
-        Since: 0.46.0 (finschia)
-      operationId: Contracts
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              contracts:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    contract_id:
-                      type: string
-                      description: >-
-                        contract_id defines the unique identifier of the
-                        contract.
-                    name:
-                      type: string
-                      description: name defines the human-readable name of the contract.
-                    meta:
-                      type: string
-                      description: meta is a brief description of the contract.
-                    base_img_uri:
-                      type: string
-                      description: >-
-                        base img uri is an uri for the contract image stored off
-                        chain.
-                  description: >-
-                    Contract defines the information of the contract for the
-                    collection.
-                description: contracts are the informations of all the contracts.
-              pagination:
-                description: pagination defines the pagination in the response.
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-            title: >-
-              QueryContractsResponse is the response type for the
-              Query/Contracts RPC method.
-
-              Since: 0.46.0 (finschia)
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-          format: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-          format: boolean
-      tags:
-        - Query
   '/lbm/collection/v1/contracts/{contract_id}':
     get:
       summary: |-
@@ -40346,6 +40036,7 @@ paths:
             type: object
             properties:
               contract:
+                description: contract is the information of the contract.
                 type: object
                 properties:
                   contract_id:
@@ -40362,9 +40053,6 @@ paths:
                     description: >-
                       base img uri is an uri for the contract image stored off
                       chain.
-                description: >-
-                  Contract defines the information of the contract for the
-                  collection.
             description: >-
               QueryContractResponse is the response type for the Query/Contract
               RPC method.
@@ -40568,9 +40256,13 @@ paths:
   '/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers':
     get:
       summary: |-
-        Deprecated: use OperatorAuthorizations
-        Approvers queries approvers of a given operator.
-      operationId: Approvers
+        Approvers queries approvers of a given proxy.
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+        - ErrInvalidAddress
+          - `proxy` is of invalid format.
+      operationId: CollectionApprovers
       responses:
         '200':
           description: A successful response.
@@ -40602,7 +40294,6 @@ paths:
             description: >-
               QueryApproversResponse is the response type for the
               Query/Approvers RPC method.
-            title: 'Deprecated: do not use'
         default:
           description: An unexpected error response
           schema:
@@ -40799,7 +40490,7 @@ paths:
           required: true
           type: string
         - name: address
-          description: address of the operator.
+          description: address of the proxy.
           in: path
           required: true
           type: string
@@ -40866,8 +40557,15 @@ paths:
   '/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}':
     get:
       summary: |-
-        Deprecated: use Authorization
-        Approved queries whether the operator is approved by the approver.
+        Approved queries whether the proxy is approved by the approver.
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+        - ErrInvalidAddress
+          - `proxy` is of invalid format.
+          - `approver` is of invalid format.
+        - ErrNotFound
+          - there is no authorization given by `approver` to `proxy`.
       operationId: CollectionApproved
       responses:
         '200':
@@ -40881,7 +40579,6 @@ paths:
             description: >-
               QueryApprovedResponse is the response type for the Query/Approved
               RPC method.
-            title: 'Deprecated: do not use'
         default:
           description: An unexpected error response
           schema:
@@ -41078,589 +40775,12 @@ paths:
           required: true
           type: string
         - name: address
-          description: the address of the operator.
+          description: the address of the proxy.
           in: path
           required: true
           type: string
         - name: approver
-          description: the address of the token holder.
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  '/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}':
-    get:
-      summary: |-
-        OperatorAuthorizations queries authorizations on a given operator.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrInvalidAddress
-          - `operator` is of invalid format.
-        Since: 0.46.0 (finschia)
-      operationId: CollectionOperatorAuthorizations
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              authorizations:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    holder:
-                      type: string
-                      description: >-
-                        address of the holder which authorizes the manipulation
-                        of its tokens.
-                    operator:
-                      type: string
-                      description: >-
-                        address of the operator which the authorization is
-                        granted to.
-                  description: >-
-                    Authorization defines an authorization given to the operator
-                    on tokens of the holder.
-
-
-                    Since: 0.46.0 (finschia)
-              pagination:
-                description: pagination defines the pagination in the response.
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-            description: >-
-              QueryOperatorAuthorizationsResponse is the response type for the
-              Query/OperatorAuthorizations RPC method.
-
-
-              Since: 0.46.0 (finschia)
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: operator
-          description: address of the operator.
-          in: path
-          required: true
-          type: string
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-          format: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-          format: boolean
-      tags:
-        - Query
-  '/lbm/collection/v1/contracts/{contract_id}/authorizations/{operator}/{holder}':
-    get:
-      summary: >-
-        Authorization queries an authorization on a given operator approver
-        pair.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrInvalidAddress
-          - `operator` is of invalid format.
-          - `holder` is of invalid format.
-        - ErrNotFound
-          - there is no authorization given by `holder` to `operator`.
-        Since: 0.46.0 (finschia)
-      operationId: CollectionAuthorization
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              authorization:
-                type: object
-                properties:
-                  holder:
-                    type: string
-                    description: >-
-                      address of the holder which authorizes the manipulation of
-                      its tokens.
-                  operator:
-                    type: string
-                    description: >-
-                      address of the operator which the authorization is granted
-                      to.
-                description: >-
-                  Authorization defines an authorization given to the operator
-                  on tokens of the holder.
-
-
-                  Since: 0.46.0 (finschia)
-            description: >-
-              QueryAuthorizationResponse is the response type for the
-              Query/Authorization RPC method.
-
-
-              Since: 0.46.0 (finschia)
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: operator
-          description: the address of the operator.
-          in: path
-          required: true
-          type: string
-        - name: holder
-          description: the address of the token holder.
+          description: the address of the token approver.
           in: path
           required: true
           type: string
@@ -41678,7 +40798,6 @@ paths:
           - `contract_id` is of invalid format.
         - ErrInvalidAddress
           - `address` is of invalid format.
-        Since: 0.46.0 (finschia)
       operationId: CollectionAllBalances
       responses:
         '200':
@@ -41720,9 +40839,6 @@ paths:
             description: >-
               QueryAllBalancesResponse is the response type for the
               Query/AllBalances RPC method.
-
-
-              Since: 0.46.0 (finschia)
         default:
           description: An unexpected error response
           schema:
@@ -42222,270 +41338,19 @@ paths:
           type: string
       tags:
         - Query
-  '/lbm/collection/v1/contracts/{contract_id}/ft_classes/{class_id}':
+  '/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt':
     get:
-      summary: |-
-        FTClass queries a metadata of a fungible token class from its class id.
+      summary: >-
+        FTBurnt queries the number of burnt tokens from a given contract id and
+        token id.
+
         Throws:
+
         - ErrInvalidRequest
           - `contract_id` is of invalid format.
           - `class_id` is of invalid format.
         - ErrNotFound
           - there is no token class of `class_id`.
-        Since: 0.46.0 (finschia)
-      operationId: FTClass
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              class:
-                description: class is the information of the token class.
-                type: object
-                properties:
-                  id:
-                    type: string
-                    description: >-
-                      id defines the unique identifier of the token class.
-
-                      Note: size of the class id is 8 in length.
-
-                      Note: token id of the fungible token would be `id` +
-                      `00000000`.
-                  name:
-                    type: string
-                    description: name defines the human-readable name of the token class.
-                  meta:
-                    type: string
-                    description: meta is a brief description of the token class.
-                  decimals:
-                    type: integer
-                    format: int32
-                    description: >-
-                      decimals is the number of decimals which one must divide
-                      the amount by to get its user representation.
-                  mintable:
-                    type: boolean
-                    format: boolean
-                    description: >-
-                      mintable represents whether the token class is allowed to
-                      mint or burn its tokens.
-            description: >-
-              QueryFTClassResponse is the response type for the Query/FTClass
-              RPC method.
-
-
-              Since: 0.46.0 (finschia)
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: class_id
-          description: class id associated with the token class.
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  '/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt':
-    get:
-      summary: >-
-        Deprecated: use Burnt
-
-        FTBurnt queries the number of burnt tokens from a given contract id and
-        token id.
       operationId: FTBurnt
       responses:
         '200':
@@ -42499,7 +41364,6 @@ paths:
             description: >-
               QueryFTBurntResponse is the response type for the Query/FTBurnt
               RPC method.
-            title: 'Deprecated: do not use'
         default:
           description: An unexpected error response
           schema:
@@ -42705,10 +41569,16 @@ paths:
   '/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted':
     get:
       summary: >-
-        Deprecated: use Minted
-
         FTMinted queries the number of minted tokens from a given contract id
         and token id.
+
+        Throws:
+
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+          - `class_id` is of invalid format.
+        - ErrNotFound
+          - there is no token class of `class_id`.
       operationId: FTMinted
       responses:
         '200':
@@ -42722,7 +41592,6 @@ paths:
             description: >-
               QueryFTMintedResponse is the response type for the Query/FTMinted
               RPC method.
-            title: 'Deprecated: do not use'
         default:
           description: An unexpected error response
           schema:
@@ -42928,10 +41797,16 @@ paths:
   '/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply':
     get:
       summary: >-
-        Deprecated: use Supply
-
         FTSupply queries the number of tokens from a given contract id and token
         id.
+
+        Throws:
+
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+          - `class_id` is of invalid format.
+        - ErrNotFound
+          - there is no token class of `class_id`.
       operationId: FTSupply
       responses:
         '200':
@@ -42945,7 +41820,6 @@ paths:
             description: >-
               QueryFTSupplyResponse is the response type for the Query/FTSupply
               RPC method.
-            title: 'Deprecated: do not use'
         default:
           description: An unexpected error response
           schema:
@@ -43157,7 +42031,6 @@ paths:
           - `contract_id` is of invalid format.
         - ErrInvalidAddress
           - `grantee` is of invalid format.
-        Since: 0.46.0 (finschia)
       operationId: CollectionGranteeGrants
       responses:
         '200':
@@ -43208,9 +42081,6 @@ paths:
             description: >-
               QueryGranteeGrantsResponse is the response type for the
               Query/GranteeGrants RPC method.
-
-
-              Since: 0.46.0 (finschia)
         default:
           description: An unexpected error response
           schema:
@@ -43469,748 +42339,6 @@ paths:
           required: false
           type: boolean
           format: boolean
-      tags:
-        - Query
-  '/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}/{permission}':
-    get:
-      summary: |-
-        Grant queries a permission on a given grantee.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `permission` is not a valid permission.
-        - ErrInvalidAddress
-          - `grantee` is of invalid format.
-        - ErrNotFound
-          - there is no permission of `permission` on `grantee`.
-        Since: 0.46.0 (finschia)
-      operationId: CollectionGrant
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              grant:
-                type: object
-                properties:
-                  grantee:
-                    type: string
-                    description: address of the grantee.
-                  permission:
-                    description: permission on the contract.
-                    type: string
-                    enum:
-                      - PERMISSION_UNSPECIFIED
-                      - PERMISSION_ISSUE
-                      - PERMISSION_MODIFY
-                      - PERMISSION_MINT
-                      - PERMISSION_BURN
-                    default: PERMISSION_UNSPECIFIED
-                description: |-
-                  Grant defines permission given to a grantee.
-
-                  Since: 0.46.0 (finschia)
-            description: >-
-              QueryGrantResponse is the response type for the Query/Grant RPC
-              method.
-
-
-              Since: 0.46.0 (finschia)
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: grantee
-          description: the address of the grantee.
-          in: path
-          required: true
-          type: string
-        - name: permission
-          description: permission on the contract.
-          in: path
-          required: true
-          type: string
-          enum:
-            - PERMISSION_UNSPECIFIED
-            - PERMISSION_ISSUE
-            - PERMISSION_MODIFY
-            - PERMISSION_MINT
-            - PERMISSION_BURN
-      tags:
-        - Query
-  '/lbm/collection/v1/contracts/{contract_id}/nft_classes/{class_id}':
-    get:
-      summary: >-
-        NFTClass queries a metadata of a non-fungible token class from its class
-        id.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `class_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `class_id`.
-        Since: 0.46.0 (finschia)
-      operationId: NFTClass
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              class:
-                description: class is the information of the token class.
-                type: object
-                properties:
-                  id:
-                    type: string
-                    description: |-
-                      id defines the unique identifier of the token class.
-                      Note: size of the class id is 8 in length.
-                  name:
-                    type: string
-                    description: name defines the human-readable name of the token class.
-                  meta:
-                    type: string
-                    description: meta is a brief description of the token class.
-            description: >-
-              QueryNFTClassResponse is the response type for the Query/NFTClass
-              RPC method.
-
-
-              Since: 0.46.0 (finschia)
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: class_id
-          description: class id associated with the token class.
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  '/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}':
-    get:
-      summary: |-
-        NFT queries a metadata of a non-fungible token.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `token_id` is of invalid format.
-        - ErrNotFound
-          - there is no token of `token_id`.
-        Since: 0.46.0 (finschia)
-      operationId: NFT
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              token:
-                description: token is the information of the non-fungible token.
-                type: object
-                properties:
-                  id:
-                    type: string
-                    description: id defines the unique identifier of the token.
-                  name:
-                    type: string
-                    description: name defines the human-readable name of the token.
-                  meta:
-                    type: string
-                    description: meta is a brief description of the token.
-            description: >-
-              QueryNFTResponse is the response type for the Query/NFT RPC
-              method.
-
-
-              Since: 0.46.0 (finschia)
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: token_id
-          description: token id associated with the non-fungible token.
-          in: path
-          required: true
-          type: string
       tags:
         - Query
   '/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children':
@@ -44526,235 +42654,6 @@ paths:
           required: false
           type: boolean
           format: boolean
-      tags:
-        - Query
-  '/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/owner':
-    get:
-      summary: |-
-        Owner queries the owner of the token.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `token_id` is of invalid format.
-        - ErrNotFound
-          - there is no token of `token_id`.
-        Since: 0.46.0 (finschia)
-      operationId: Owner
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              owner:
-                type: string
-                description: owner of the token.
-            description: >-
-              QueryOwnerResponse is the response type for the Query/Owner RPC
-              method.
-
-
-              Since: 0.46.0 (finschia)
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: token_id
-          description: token id associated with the non-fungible token.
-          in: path
-          required: true
-          type: string
       tags:
         - Query
   '/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent':
@@ -45234,948 +43133,15 @@ paths:
           type: string
       tags:
         - Query
-  '/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/burnt':
-    get:
-      summary: >-
-        Burnt queries the number of burnt tokens from a given contract id and
-        class id.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `class_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `class_id`.
-        Info: one can query for both fungible tokens and non-fungible token
-        classes.
-
-        Since: 0.46.0 (finschia)
-      operationId: CollectionBurnt
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              burnt:
-                type: string
-                description: burnt is the amount of the burnt tokens.
-            description: >-
-              QueryBurntResponse is the response type for the Query/Burnt RPC
-              method.
-
-
-              Since: 0.46.0 (finschia)
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: class_id
-          description: class id associated with the token class.
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  '/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/minted':
-    get:
-      summary: >-
-        Minted queries the number of minted tokens from a given contract id and
-        class id.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `class_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `class_id`.
-        Info: one can query for both fungible tokens and non-fungible token
-        classes.
-
-        Since: 0.46.0 (finschia)
-      operationId: CollectionMinted
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              minted:
-                type: string
-                description: minted is the amount of the minted tokens.
-            description: >-
-              QueryMintedResponse is the response type for the Query/Minted RPC
-              method.
-
-
-              Since: 0.46.0 (finschia)
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: class_id
-          description: class id associated with the token class.
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  '/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/supply':
-    get:
-      summary: >-
-        Supply queries the number of tokens from a given contract id and class
-        id.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `class_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `class_id`.
-        Info: one can query for both fungible tokens and non-fungible token
-        classes.
-
-        Since: 0.46.0 (finschia)
-      operationId: CollectionSupply
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              supply:
-                type: string
-                description: supply is the supply of the tokens.
-            description: >-
-              QuerySupplyResponse is the response type for the Query/Supply RPC
-              method.
-
-
-              Since: 0.46.0 (finschia)
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: class_id
-          description: class id associated with the token class.
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  '/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/type_name':
-    get:
-      summary: >-
-        TokenClassTypeName queries the fully qualified message type name of a
-        token class from its class id.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `class_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `class_id`.
-        Since: 0.46.0 (finschia)
-      operationId: TokenClassTypeName
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-                description: type name of the token class.
-            description: >-
-              QueryTokenClassTypeNameResponse is the response type for the
-              Query/TokenClassTypeName RPC method.
-
-
-              Since: 0.46.0 (finschia)
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                      description: >-
-                        A URL/resource name that uniquely identifies the type of
-                        the serialized
-
-                        protocol buffer message. This string must contain at
-                        least
-
-                        one "/" character. The last segment of the URL's path
-                        must represent
-
-                        the fully qualified name of the type (as in
-
-                        `path/google.protobuf.Duration`). The name should be in
-                        a canonical form
-
-                        (e.g., leading "." is not accepted).
-
-
-                        In practice, teams usually precompile into the binary
-                        all types that they
-
-                        expect it to use in the context of Any. However, for
-                        URLs which use the
-
-                        scheme `http`, `https`, or no scheme, one can optionally
-                        set up a type
-
-                        server that maps type URLs to message definitions as
-                        follows:
-
-
-                        * If no scheme is provided, `https` is assumed.
-
-                        * An HTTP GET on the URL must yield a
-                        [google.protobuf.Type][]
-                          value in binary format, or produce an error.
-                        * Applications are allowed to cache lookup results based
-                        on the
-                          URL, or have them precompiled into a binary to avoid any
-                          lookup. Therefore, binary compatibility needs to be preserved
-                          on changes to types. (Use versioned type names to manage
-                          breaking changes.)
-
-                        Note: this functionality is not currently available in
-                        the official
-
-                        protobuf release, and it is not used for type URLs
-                        beginning with
-
-                        type.googleapis.com.
-
-
-                        Schemes other than `http`, `https` (or the empty scheme)
-                        might be
-
-                        used with implementation specific semantics.
-                    value:
-                      type: string
-                      format: byte
-                      description: >-
-                        Must be a valid serialized protocol buffer of the above
-                        specified type.
-                  description: >-
-                    `Any` contains an arbitrary serialized protocol buffer
-                    message along with a
-
-                    URL that describes the type of the serialized message.
-
-
-                    Protobuf library provides support to pack/unpack Any values
-                    in the form
-
-                    of utility functions or additional generated methods of the
-                    Any type.
-
-
-                    Example 1: Pack and unpack a message in C++.
-
-                        Foo foo = ...;
-                        Any any;
-                        any.PackFrom(foo);
-                        ...
-                        if (any.UnpackTo(&foo)) {
-                          ...
-                        }
-
-                    Example 2: Pack and unpack a message in Java.
-
-                        Foo foo = ...;
-                        Any any = Any.pack(foo);
-                        ...
-                        if (any.is(Foo.class)) {
-                          foo = any.unpack(Foo.class);
-                        }
-
-                     Example 3: Pack and unpack a message in Python.
-
-                        foo = Foo(...)
-                        any = Any()
-                        any.Pack(foo)
-                        ...
-                        if any.Is(Foo.DESCRIPTOR):
-                          any.Unpack(foo)
-                          ...
-
-                     Example 4: Pack and unpack a message in Go
-
-                         foo := &pb.Foo{...}
-                         any, err := ptypes.MarshalAny(foo)
-                         ...
-                         foo := &pb.Foo{}
-                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
-                           ...
-                         }
-
-                    The pack methods provided by protobuf library will by
-                    default use
-
-                    'type.googleapis.com/full.type.name' as the type URL and the
-                    unpack
-
-                    methods only use the fully qualified type name after the
-                    last '/'
-
-                    in the type URL, for example "foo.bar.com/x/y.z" will yield
-                    type
-
-                    name "y.z".
-
-
-
-                    JSON
-
-                    ====
-
-                    The JSON representation of an `Any` value uses the regular
-
-                    representation of the deserialized, embedded message, with
-                    an
-
-                    additional field `@type` which contains the type URL.
-                    Example:
-
-                        package google.profile;
-                        message Person {
-                          string first_name = 1;
-                          string last_name = 2;
-                        }
-
-                        {
-                          "@type": "type.googleapis.com/google.profile.Person",
-                          "firstName": <string>,
-                          "lastName": <string>
-                        }
-
-                    If the embedded message type is well-known and has a custom
-                    JSON
-
-                    representation, that representation will be embedded adding
-                    a field
-
-                    `value` which holds the custom JSON in addition to the
-                    `@type`
-
-                    field. Example (for message [google.protobuf.Duration][]):
-
-                        {
-                          "@type": "type.googleapis.com/google.protobuf.Duration",
-                          "value": "1.212s"
-                        }
-      parameters:
-        - name: contract_id
-          description: contract id associated with the contract.
-          in: path
-          required: true
-          type: string
-        - name: class_id
-          description: class id associated with the token class.
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
   '/lbm/collection/v1/contracts/{contract_id}/token_types':
     get:
       summary: |-
         TokenTypes queries metadata of all the token types.
-        Note: deprecated
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+        - ErrNotFound
+          - there is no token contract of `contract_id`.
       operationId: TokenTypes
       responses:
         '200':
@@ -46226,7 +43192,6 @@ paths:
             description: >-
               QueryTokenTypesResponse is the response type for the
               Query/TokenTypes RPC method.
-            title: 'Deprecated: do not use'
         default:
           description: An unexpected error response
           schema:
@@ -46485,8 +43450,13 @@ paths:
   '/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}':
     get:
       summary: |-
-        Deprecated: use NFTClass
         TokenType queries metadata of a token type.
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+          - `class_id` is of invalid format.
+        - ErrNotFound
+          - there is no token class of `class_id`.
       operationId: TokenType
       responses:
         '200':
@@ -46516,7 +43486,6 @@ paths:
             description: >-
               QueryTokenTypeResponse is the response type for the
               Query/TokenType RPC method.
-            title: 'Deprecated: do not use'
         default:
           description: An unexpected error response
           schema:
@@ -46722,10 +43691,16 @@ paths:
   '/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt':
     get:
       summary: >-
-        Deprecated: use Burnt
-
         NFTBurnt queries the number of burnt tokens from a given contract id and
         token type.
+
+        Throws:
+
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+          - `class_id` is of invalid format.
+        - ErrNotFound
+          - there is no token class of `class_id`.
       operationId: NFTBurnt
       responses:
         '200':
@@ -46739,7 +43714,6 @@ paths:
             description: >-
               QueryNFTBurntResponse is the response type for the Query/NFTBurnt
               RPC method.
-            title: 'Deprecated: do not use'
         default:
           description: An unexpected error response
           schema:
@@ -46945,10 +43919,16 @@ paths:
   '/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted':
     get:
       summary: >-
-        Deprecated: use Minted
-
         NFTMinted queries the number of minted tokens from a given contract id
         and token type.
+
+        Throws:
+
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+          - `class_id` is of invalid format.
+        - ErrNotFound
+          - there is no token class of `class_id`.
       operationId: NFTMinted
       responses:
         '200':
@@ -46962,7 +43942,6 @@ paths:
             description: >-
               QueryNFTMintedResponse is the response type for the
               Query/NFTMinted RPC method.
-            title: 'Deprecated: do not use'
         default:
           description: An unexpected error response
           schema:
@@ -47168,10 +44147,16 @@ paths:
   '/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply':
     get:
       summary: >-
-        Deprecated: use Supply
-
         NFTSupply queries the number of tokens from a given contract id and
         token type.
+
+        Throws:
+
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+          - `class_id` is of invalid format.
+        - ErrNotFound
+          - there is no token class of `class_id`.
       operationId: NFTSupply
       responses:
         '200':
@@ -47185,7 +44170,6 @@ paths:
             description: >-
               QueryNFTSupplyResponse is the response type for the
               Query/NFTSupply RPC method.
-            title: 'Deprecated: do not use'
         default:
           description: An unexpected error response
           schema:
@@ -47388,11 +44372,491 @@ paths:
           type: string
       tags:
         - Query
+  '/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/tokens':
+    get:
+      summary: |-
+        TokensWithTokenType queries all token metadata with token type.
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+          - `token_type` is of invalid format.
+        - ErrNotFound
+          - there is no contract of `contract_id`.
+      operationId: TokensWithTokenType
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              tokens:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := ptypes.MarshalAny(foo)
+                         ...
+                         foo := &pb.Foo{}
+                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+                description: informations of all the tokens.
+              pagination:
+                description: pagination defines the pagination in the response.
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+            description: >-
+              QueryTokensWithTokenTypeResponse is the response type for the
+              Query/TokensWithTokenType RPC method.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := ptypes.MarshalAny(foo)
+                         ...
+                         foo := &pb.Foo{}
+                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: contract_id
+          description: contract id associated with the contract.
+          in: path
+          required: true
+          type: string
+        - name: token_type
+          description: token type associated with the token type.
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+      tags:
+        - Query
   '/lbm/collection/v1/contracts/{contract_id}/tokens':
     get:
       summary: |-
         Tokens queries all token metadata.
-        Note: deprecated
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+        - ErrNotFound
+          - there is no contract of `contract_id`.
       operationId: Tokens
       responses:
         '200':
@@ -47599,7 +45063,6 @@ paths:
             description: >-
               QueryTokensResponse is the response type for the Query/Tokens RPC
               method.
-            title: 'Deprecated: do not use'
         default:
           description: An unexpected error response
           schema:
@@ -47858,8 +45321,13 @@ paths:
   '/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}':
     get:
       summary: |-
-        Deprecated: use FTClass or NFT
         Token queries a metadata of a token from its token id.
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+          - `token_id` is of invalid format.
+        - ErrNotFound
+          - there is no token of `token_id`.
       operationId: Token
       responses:
         '200':
@@ -48041,7 +45509,6 @@ paths:
             description: >-
               QueryTokenResponse is the response type for the Query/Token RPC
               method.
-            title: 'Deprecated: do not use'
         default:
           description: An unexpected error response
           schema:
@@ -73204,21 +70671,6 @@ definitions:
         format: boolean
         description: mintable represents whether the token is allowed to mint or burn.
     description: TokenClass defines token information.
-  lbm.collection.v1.Authorization:
-    type: object
-    properties:
-      holder:
-        type: string
-        description: address of the holder which authorizes the manipulation of its tokens.
-      operator:
-        type: string
-        description: address of the operator which the authorization is granted to.
-    description: >-
-      Authorization defines an authorization given to the operator on tokens of
-      the holder.
-
-
-      Since: 0.46.0 (finschia)
   lbm.collection.v1.Coin:
     type: object
     properties:
@@ -73245,37 +70697,6 @@ definitions:
         type: string
         description: base img uri is an uri for the contract image stored off chain.
     description: Contract defines the information of the contract for the collection.
-  lbm.collection.v1.FTClass:
-    type: object
-    properties:
-      id:
-        type: string
-        description: |-
-          id defines the unique identifier of the token class.
-          Note: size of the class id is 8 in length.
-          Note: token id of the fungible token would be `id` + `00000000`.
-      name:
-        type: string
-        description: name defines the human-readable name of the token class.
-      meta:
-        type: string
-        description: meta is a brief description of the token class.
-      decimals:
-        type: integer
-        format: int32
-        description: >-
-          decimals is the number of decimals which one must divide the amount by
-          to get its user representation.
-      mintable:
-        type: boolean
-        format: boolean
-        description: >-
-          mintable represents whether the token class is allowed to mint or burn
-          its tokens.
-    description: |-
-      FTClass defines the class of fungible token.
-
-      Since: 0.46.0 (finschia)
   lbm.collection.v1.Grant:
     type: object
     properties:
@@ -73310,24 +70731,6 @@ definitions:
         description: meta is a brief description of the token.
     description: |-
       NFT defines the information of non-fungible token.
-
-      Since: 0.46.0 (finschia)
-  lbm.collection.v1.NFTClass:
-    type: object
-    properties:
-      id:
-        type: string
-        description: |-
-          id defines the unique identifier of the token class.
-          Note: size of the class id is 8 in length.
-      name:
-        type: string
-        description: name defines the human-readable name of the token class.
-      meta:
-        type: string
-        description: meta is a brief description of the token class.
-    description: |-
-      NFTClass defines the class of non-fungible token.
 
       Since: 0.46.0 (finschia)
   lbm.collection.v1.Permission:
@@ -73384,9 +70787,6 @@ definitions:
     description: >-
       QueryAllBalancesResponse is the response type for the Query/AllBalances
       RPC method.
-
-
-      Since: 0.46.0 (finschia)
   lbm.collection.v1.QueryApprovedResponse:
     type: object
     properties:
@@ -73396,7 +70796,6 @@ definitions:
     description: >-
       QueryApprovedResponse is the response type for the Query/Approved RPC
       method.
-    title: 'Deprecated: do not use'
   lbm.collection.v1.QueryApproversResponse:
     type: object
     properties:
@@ -73425,33 +70824,6 @@ definitions:
     description: >-
       QueryApproversResponse is the response type for the Query/Approvers RPC
       method.
-    title: 'Deprecated: do not use'
-  lbm.collection.v1.QueryAuthorizationResponse:
-    type: object
-    properties:
-      authorization:
-        type: object
-        properties:
-          holder:
-            type: string
-            description: >-
-              address of the holder which authorizes the manipulation of its
-              tokens.
-          operator:
-            type: string
-            description: address of the operator which the authorization is granted to.
-        description: >-
-          Authorization defines an authorization given to the operator on tokens
-          of the holder.
-
-
-          Since: 0.46.0 (finschia)
-    description: >-
-      QueryAuthorizationResponse is the response type for the
-      Query/Authorization RPC method.
-
-
-      Since: 0.46.0 (finschia)
   lbm.collection.v1.QueryBalanceResponse:
     type: object
     properties:
@@ -73468,16 +70840,6 @@ definitions:
     description: >-
       QueryBalanceResponse is the response type for the Query/Balance RPC
       method.
-  lbm.collection.v1.QueryBurntResponse:
-    type: object
-    properties:
-      burnt:
-        type: string
-        description: burnt is the amount of the burnt tokens.
-    description: |-
-      QueryBurntResponse is the response type for the Query/Burnt RPC method.
-
-      Since: 0.46.0 (finschia)
   lbm.collection.v1.QueryChildrenResponse:
     type: object
     properties:
@@ -73525,6 +70887,7 @@ definitions:
     type: object
     properties:
       contract:
+        description: contract is the information of the contract.
         type: object
         properties:
           contract_id:
@@ -73539,55 +70902,9 @@ definitions:
           base_img_uri:
             type: string
             description: base img uri is an uri for the contract image stored off chain.
-        description: Contract defines the information of the contract for the collection.
     description: >-
       QueryContractResponse is the response type for the Query/Contract RPC
       method.
-  lbm.collection.v1.QueryContractsResponse:
-    type: object
-    properties:
-      contracts:
-        type: array
-        items:
-          type: object
-          properties:
-            contract_id:
-              type: string
-              description: contract_id defines the unique identifier of the contract.
-            name:
-              type: string
-              description: name defines the human-readable name of the contract.
-            meta:
-              type: string
-              description: meta is a brief description of the contract.
-            base_img_uri:
-              type: string
-              description: base img uri is an uri for the contract image stored off chain.
-          description: Contract defines the information of the contract for the collection.
-        description: contracts are the informations of all the contracts.
-      pagination:
-        description: pagination defines the pagination in the response.
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            title: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-    title: >-
-      QueryContractsResponse is the response type for the Query/Contracts RPC
-      method.
-
-      Since: 0.46.0 (finschia)
   lbm.collection.v1.QueryFTBurntResponse:
     type: object
     properties:
@@ -73597,44 +70914,6 @@ definitions:
     description: >-
       QueryFTBurntResponse is the response type for the Query/FTBurnt RPC
       method.
-    title: 'Deprecated: do not use'
-  lbm.collection.v1.QueryFTClassResponse:
-    type: object
-    properties:
-      class:
-        description: class is the information of the token class.
-        type: object
-        properties:
-          id:
-            type: string
-            description: |-
-              id defines the unique identifier of the token class.
-              Note: size of the class id is 8 in length.
-              Note: token id of the fungible token would be `id` + `00000000`.
-          name:
-            type: string
-            description: name defines the human-readable name of the token class.
-          meta:
-            type: string
-            description: meta is a brief description of the token class.
-          decimals:
-            type: integer
-            format: int32
-            description: >-
-              decimals is the number of decimals which one must divide the
-              amount by to get its user representation.
-          mintable:
-            type: boolean
-            format: boolean
-            description: >-
-              mintable represents whether the token class is allowed to mint or
-              burn its tokens.
-    description: >-
-      QueryFTClassResponse is the response type for the Query/FTClass RPC
-      method.
-
-
-      Since: 0.46.0 (finschia)
   lbm.collection.v1.QueryFTMintedResponse:
     type: object
     properties:
@@ -73644,7 +70923,6 @@ definitions:
     description: >-
       QueryFTMintedResponse is the response type for the Query/FTMinted RPC
       method.
-    title: 'Deprecated: do not use'
   lbm.collection.v1.QueryFTSupplyResponse:
     type: object
     properties:
@@ -73654,34 +70932,6 @@ definitions:
     description: >-
       QueryFTSupplyResponse is the response type for the Query/FTSupply RPC
       method.
-    title: 'Deprecated: do not use'
-  lbm.collection.v1.QueryGrantResponse:
-    type: object
-    properties:
-      grant:
-        type: object
-        properties:
-          grantee:
-            type: string
-            description: address of the grantee.
-          permission:
-            description: permission on the contract.
-            type: string
-            enum:
-              - PERMISSION_UNSPECIFIED
-              - PERMISSION_ISSUE
-              - PERMISSION_MODIFY
-              - PERMISSION_MINT
-              - PERMISSION_BURN
-            default: PERMISSION_UNSPECIFIED
-        description: |-
-          Grant defines permission given to a grantee.
-
-          Since: 0.46.0 (finschia)
-    description: |-
-      QueryGrantResponse is the response type for the Query/Grant RPC method.
-
-      Since: 0.46.0 (finschia)
   lbm.collection.v1.QueryGranteeGrantsResponse:
     type: object
     properties:
@@ -73728,19 +70978,6 @@ definitions:
     description: >-
       QueryGranteeGrantsResponse is the response type for the
       Query/GranteeGrants RPC method.
-
-
-      Since: 0.46.0 (finschia)
-  lbm.collection.v1.QueryMintedResponse:
-    type: object
-    properties:
-      minted:
-        type: string
-        description: minted is the amount of the minted tokens.
-    description: |-
-      QueryMintedResponse is the response type for the Query/Minted RPC method.
-
-      Since: 0.46.0 (finschia)
   lbm.collection.v1.QueryNFTBurntResponse:
     type: object
     properties:
@@ -73750,31 +70987,6 @@ definitions:
     description: >-
       QueryNFTBurntResponse is the response type for the Query/NFTBurnt RPC
       method.
-    title: 'Deprecated: do not use'
-  lbm.collection.v1.QueryNFTClassResponse:
-    type: object
-    properties:
-      class:
-        description: class is the information of the token class.
-        type: object
-        properties:
-          id:
-            type: string
-            description: |-
-              id defines the unique identifier of the token class.
-              Note: size of the class id is 8 in length.
-          name:
-            type: string
-            description: name defines the human-readable name of the token class.
-          meta:
-            type: string
-            description: meta is a brief description of the token class.
-    description: >-
-      QueryNFTClassResponse is the response type for the Query/NFTClass RPC
-      method.
-
-
-      Since: 0.46.0 (finschia)
   lbm.collection.v1.QueryNFTMintedResponse:
     type: object
     properties:
@@ -73784,27 +70996,6 @@ definitions:
     description: >-
       QueryNFTMintedResponse is the response type for the Query/NFTMinted RPC
       method.
-    title: 'Deprecated: do not use'
-  lbm.collection.v1.QueryNFTResponse:
-    type: object
-    properties:
-      token:
-        description: token is the information of the non-fungible token.
-        type: object
-        properties:
-          id:
-            type: string
-            description: id defines the unique identifier of the token.
-          name:
-            type: string
-            description: name defines the human-readable name of the token.
-          meta:
-            type: string
-            description: meta is a brief description of the token.
-    description: |-
-      QueryNFTResponse is the response type for the Query/NFT RPC method.
-
-      Since: 0.46.0 (finschia)
   lbm.collection.v1.QueryNFTSupplyResponse:
     type: object
     properties:
@@ -73814,63 +71005,6 @@ definitions:
     description: >-
       QueryNFTSupplyResponse is the response type for the Query/NFTSupply RPC
       method.
-    title: 'Deprecated: do not use'
-  lbm.collection.v1.QueryOperatorAuthorizationsResponse:
-    type: object
-    properties:
-      authorizations:
-        type: array
-        items:
-          type: object
-          properties:
-            holder:
-              type: string
-              description: >-
-                address of the holder which authorizes the manipulation of its
-                tokens.
-            operator:
-              type: string
-              description: address of the operator which the authorization is granted to.
-          description: >-
-            Authorization defines an authorization given to the operator on
-            tokens of the holder.
-
-
-            Since: 0.46.0 (finschia)
-      pagination:
-        description: pagination defines the pagination in the response.
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            title: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-    description: >-
-      QueryOperatorAuthorizationsResponse is the response type for the
-      Query/OperatorAuthorizations RPC method.
-
-
-      Since: 0.46.0 (finschia)
-  lbm.collection.v1.QueryOwnerResponse:
-    type: object
-    properties:
-      owner:
-        type: string
-        description: owner of the token.
-    description: |-
-      QueryOwnerResponse is the response type for the Query/Owner RPC method.
-
-      Since: 0.46.0 (finschia)
   lbm.collection.v1.QueryParentResponse:
     type: object
     properties:
@@ -73911,28 +71045,6 @@ definitions:
 
           Since: 0.46.0 (finschia)
     description: QueryRootResponse is the response type for the Query/Root RPC method.
-  lbm.collection.v1.QuerySupplyResponse:
-    type: object
-    properties:
-      supply:
-        type: string
-        description: supply is the supply of the tokens.
-    description: |-
-      QuerySupplyResponse is the response type for the Query/Supply RPC method.
-
-      Since: 0.46.0 (finschia)
-  lbm.collection.v1.QueryTokenClassTypeNameResponse:
-    type: object
-    properties:
-      name:
-        type: string
-        description: type name of the token class.
-    description: >-
-      QueryTokenClassTypeNameResponse is the response type for the
-      Query/TokenClassTypeName RPC method.
-
-
-      Since: 0.46.0 (finschia)
   lbm.collection.v1.QueryTokenResponse:
     type: object
     properties:
@@ -74096,7 +71208,6 @@ definitions:
                 "value": "1.212s"
               }
     description: QueryTokenResponse is the response type for the Query/Token RPC method.
-    title: 'Deprecated: do not use'
   lbm.collection.v1.QueryTokenTypeResponse:
     type: object
     properties:
@@ -74120,7 +71231,6 @@ definitions:
     description: >-
       QueryTokenTypeResponse is the response type for the Query/TokenType RPC
       method.
-    title: 'Deprecated: do not use'
   lbm.collection.v1.QueryTokenTypesResponse:
     type: object
     properties:
@@ -74165,7 +71275,6 @@ definitions:
     description: >-
       QueryTokenTypesResponse is the response type for the Query/TokenTypes RPC
       method.
-    title: 'Deprecated: do not use'
   lbm.collection.v1.QueryTokensResponse:
     type: object
     properties:
@@ -74353,7 +71462,195 @@ definitions:
 
               was set, its value is undefined otherwise
     description: QueryTokensResponse is the response type for the Query/Tokens RPC method.
-    title: 'Deprecated: do not use'
+  lbm.collection.v1.QueryTokensWithTokenTypeResponse:
+    type: object
+    properties:
+      tokens:
+        type: array
+        items:
+          type: object
+          properties:
+            type_url:
+              type: string
+              description: >-
+                A URL/resource name that uniquely identifies the type of the
+                serialized
+
+                protocol buffer message. This string must contain at least
+
+                one "/" character. The last segment of the URL's path must
+                represent
+
+                the fully qualified name of the type (as in
+
+                `path/google.protobuf.Duration`). The name should be in a
+                canonical form
+
+                (e.g., leading "." is not accepted).
+
+
+                In practice, teams usually precompile into the binary all types
+                that they
+
+                expect it to use in the context of Any. However, for URLs which
+                use the
+
+                scheme `http`, `https`, or no scheme, one can optionally set up
+                a type
+
+                server that maps type URLs to message definitions as follows:
+
+
+                * If no scheme is provided, `https` is assumed.
+
+                * An HTTP GET on the URL must yield a [google.protobuf.Type][]
+                  value in binary format, or produce an error.
+                * Applications are allowed to cache lookup results based on the
+                  URL, or have them precompiled into a binary to avoid any
+                  lookup. Therefore, binary compatibility needs to be preserved
+                  on changes to types. (Use versioned type names to manage
+                  breaking changes.)
+
+                Note: this functionality is not currently available in the
+                official
+
+                protobuf release, and it is not used for type URLs beginning
+                with
+
+                type.googleapis.com.
+
+
+                Schemes other than `http`, `https` (or the empty scheme) might
+                be
+
+                used with implementation specific semantics.
+            value:
+              type: string
+              format: byte
+              description: >-
+                Must be a valid serialized protocol buffer of the above
+                specified type.
+          description: >-
+            `Any` contains an arbitrary serialized protocol buffer message along
+            with a
+
+            URL that describes the type of the serialized message.
+
+
+            Protobuf library provides support to pack/unpack Any values in the
+            form
+
+            of utility functions or additional generated methods of the Any
+            type.
+
+
+            Example 1: Pack and unpack a message in C++.
+
+                Foo foo = ...;
+                Any any;
+                any.PackFrom(foo);
+                ...
+                if (any.UnpackTo(&foo)) {
+                  ...
+                }
+
+            Example 2: Pack and unpack a message in Java.
+
+                Foo foo = ...;
+                Any any = Any.pack(foo);
+                ...
+                if (any.is(Foo.class)) {
+                  foo = any.unpack(Foo.class);
+                }
+
+             Example 3: Pack and unpack a message in Python.
+
+                foo = Foo(...)
+                any = Any()
+                any.Pack(foo)
+                ...
+                if any.Is(Foo.DESCRIPTOR):
+                  any.Unpack(foo)
+                  ...
+
+             Example 4: Pack and unpack a message in Go
+
+                 foo := &pb.Foo{...}
+                 any, err := ptypes.MarshalAny(foo)
+                 ...
+                 foo := &pb.Foo{}
+                 if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                   ...
+                 }
+
+            The pack methods provided by protobuf library will by default use
+
+            'type.googleapis.com/full.type.name' as the type URL and the unpack
+
+            methods only use the fully qualified type name after the last '/'
+
+            in the type URL, for example "foo.bar.com/x/y.z" will yield type
+
+            name "y.z".
+
+
+
+            JSON
+
+            ====
+
+            The JSON representation of an `Any` value uses the regular
+
+            representation of the deserialized, embedded message, with an
+
+            additional field `@type` which contains the type URL. Example:
+
+                package google.profile;
+                message Person {
+                  string first_name = 1;
+                  string last_name = 2;
+                }
+
+                {
+                  "@type": "type.googleapis.com/google.profile.Person",
+                  "firstName": <string>,
+                  "lastName": <string>
+                }
+
+            If the embedded message type is well-known and has a custom JSON
+
+            representation, that representation will be embedded adding a field
+
+            `value` which holds the custom JSON in addition to the `@type`
+
+            field. Example (for message [google.protobuf.Duration][]):
+
+                {
+                  "@type": "type.googleapis.com/google.protobuf.Duration",
+                  "value": "1.212s"
+                }
+        description: informations of all the tokens.
+      pagination:
+        description: pagination defines the pagination in the response.
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+    description: >-
+      QueryTokensWithTokenTypeResponse is the response type for the
+      Query/TokensWithTokenType RPC method.
   lbm.collection.v1.TokenType:
     type: object
     properties:
