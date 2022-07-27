@@ -49,6 +49,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (amino) [\#600](https://github.com/line/lbm-sdk/pull/600) change amino codec path from `lbm-sdk/` to `cosmos-sdk/`
 * (store) [\#605](https://github.com/line/lbm-sdk/pull/605) replace line/iavl and line/tm-db with cosmos/iavl and tendermint/tm-db.
 * (server/grpc) [\#607](https://github.com/line/lbm-sdk/pull/607) revert gRPC block height header.
+* (ostracon) [\#610](https://github.com/line/lbm-sdk/pull/610) apply change of prefix of key name in ostracon
 
 ### Improvements
 

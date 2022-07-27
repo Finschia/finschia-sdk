@@ -31,7 +31,7 @@ func TestPublicKeyUnsafe(t *testing.T) {
 func checkDefaultPubKey(t *testing.T, priv types.LedgerPrivKey) {
 	require.NotNil(t, priv)
 	expectedPkStr := "PubKeySecp256k1{02BCD96CAB102304AC10E90C5A0F29358E3A4A6FB1217B83E5DB657918EA28BEC1}"
-	require.Equal(t, "c03701b72102bcd96cab102304ac10e90c5a0f29358e3a4a6fb1217b83e5db657918ea28bec1",
+	require.Equal(t, "eb5ae9872102bcd96cab102304ac10e90c5a0f29358e3a4a6fb1217b83e5db657918ea28bec1",
 		fmt.Sprintf("%x", cdc.Amino.MustMarshalBinaryBare(priv.PubKey())),
 		"Is your device using test mnemonic: %s ?", testdata.TestMnemonic)
 	require.Equal(t, expectedPkStr, priv.PubKey().String())

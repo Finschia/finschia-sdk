@@ -20,7 +20,7 @@ func TestBeach32ifPbKey(t *testing.T) {
 
 	pubKeyAddr, err := MarshalPubKey(AccPK, priv.PubKey())
 	require.NoError(err)
-	require.Equal("linkpub1cqmsrdepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzygzwr2",
+	require.Equal("linkpub1addwnpepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzszgelc",
 		pubKeyAddr, "Is your device using test mnemonic: %s ?", testdata.TestMnemonic)
 
 }
