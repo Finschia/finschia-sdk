@@ -673,7 +673,7 @@ func (rs *Store) Snapshot(height uint64, protoWriter protoio.Writer) error {
 		switch store := rs.GetCommitKVStore(key).(type) {
 		case *iavl.Store:
 			stores = append(stores, namedStore{name: key.Name(), Store: store})
-		case *mem.Store:
+		case *transient.Store, *mem.Store:
 			// Non-persisted stores shouldn't be snapshotted
 			continue
 		default:
@@ -879,6 +879,9 @@ func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID
 func (rs *Store) buildCommitInfo(version int64) *types.CommitInfo {
 	storeInfos := []types.StoreInfo{}
 	for key, store := range rs.stores {
+		if store.GetStoreType() == types.StoreTypeTransient {
+			continue
+		}
 		storeInfos = append(storeInfos, types.StoreInfo{
 			Name:     key.Name(),
 			CommitId: store.LastCommitID(),

@@ -275,7 +275,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrantsByGranter() {
 		{
 			"non existent grantee",
 			[]string{
-				"cosmos1nph3cfzk6trsmfxkeu943nvach5qw4vwstnvkl",
+				"link1nph3cfzk6trsmfxkeu943nvach5qw4vw99nwdh",
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false, &feegrant.QueryAllowancesByGranterResponse{}, 0,

@@ -2,10 +2,13 @@ package rootmulti
 
 import (
 	"bytes"
+	"encoding/binary"
 	"fmt"
+	"math/rand"
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	abci "github.com/line/ostracon/abci/types"
@@ -13,7 +16,6 @@ import (
 
 	"github.com/line/lbm-sdk/codec"
 	codecTypes "github.com/line/lbm-sdk/codec/types"
-	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
 	"github.com/line/lbm-sdk/store/cachemulti"
 	"github.com/line/lbm-sdk/store/iavl"
 	sdkmaps "github.com/line/lbm-sdk/store/internal/maps"
@@ -555,113 +557,23 @@ func TestMultiStore_PruningRestart(t *testing.T) {
 	}
 }
 
-func TestMultistoreSnapshot_Checksum(t *testing.T) {
-	// Chunks from different nodes must fit together, so all nodes must produce identical chunks.
-	// This checksum test makes sure that the byte stream remains identical. If the test fails
-	// without having changed the data (e.g. because the Protobuf or zlib encoding changes),
-	// snapshottypes.CurrentFormat must be bumped.
-	store := newMultiStoreWithGeneratedData(dbm.NewMemDB(), 5, 10000)
-	version := uint64(store.LastCommitID().Version)
-
-	testcases := []struct {
-		format      uint32
-		chunkHashes []string
-	}{
-		{1, []string{
-			"503e5b51b657055b77e88169fadae543619368744ad15f1de0736c0a20482f24",
-			"e1a0daaa738eeb43e778aefd2805e3dd720798288a410b06da4b8459c4d8f72e",
-			"aa048b4ee0f484965d7b3b06822cf0772cdcaad02f3b1b9055e69f2cb365ef3c",
-			"7921eaa3ed4921341e504d9308a9877986a879fe216a099c86e8db66fcba4c63",
-			"a4a864e6c02c9fca5837ec80dc84f650b25276ed7e4820cf7516ced9f9901b86",
-			"ca2879ac6e7205d257440131ba7e72bef784cd61642e32b847729e543c1928b9",
-		}},
+func assertStoresEqual(t *testing.T, expect, actual types.CommitKVStore, msgAndArgs ...interface{}) {
+	assert.Equal(t, expect.LastCommitID(), actual.LastCommitID())
+	expectIter := expect.Iterator(nil, nil)
+	expectMap := map[string][]byte{}
+	for ; expectIter.Valid(); expectIter.Next() {
+		expectMap[string(expectIter.Key())] = expectIter.Value()
 	}
-	for _, tc := range testcases {
-		tc := tc
-		t.Run(fmt.Sprintf("Format %v", tc.format), func(t *testing.T) {
-			chunks, err := store.Snapshot(version, tc.format)
-			require.NoError(t, err)
-			hashes := []string{}
-			hasher := sha256.New()
-			for chunk := range chunks {
-				hasher.Reset()
-				_, err := io.Copy(hasher, chunk)
-				require.NoError(t, err)
-				hashes = append(hashes, hex.EncodeToString(hasher.Sum(nil)))
-			}
-			assert.Equal(t, tc.chunkHashes, hashes,
-				"Snapshot output for format %v has changed", tc.format)
-		})
+	require.NoError(t, expectIter.Error())
+
+	actualIter := expect.Iterator(nil, nil)
+	actualMap := map[string][]byte{}
+	for ; actualIter.Valid(); actualIter.Next() {
+		actualMap[string(actualIter.Key())] = actualIter.Value()
 	}
-}
+	require.NoError(t, actualIter.Error())
 
-func TestMultistoreSnapshot_Errors(t *testing.T) {
-	store := newMultiStoreWithMixedMountsAndBasicData(dbm.NewMemDB())
-
-	testcases := map[string]struct {
-		height     uint64
-		format     uint32
-		expectType error
-	}{
-		"0 height":       {0, snapshottypes.CurrentFormat, nil},
-		"0 format":       {1, 0, snapshottypes.ErrUnknownFormat},
-		"unknown height": {9, snapshottypes.CurrentFormat, nil},
-		"unknown format": {1, 9, snapshottypes.ErrUnknownFormat},
-	}
-	for name, tc := range testcases {
-		tc := tc
-		t.Run(name, func(t *testing.T) {
-			_, err := store.Snapshot(tc.height, tc.format)
-			require.Error(t, err)
-			if tc.expectType != nil {
-				assert.True(t, errors.Is(err, tc.expectType))
-			}
-		})
-	}
-}
-
-func TestMultistoreRestore_Errors(t *testing.T) {
-	store := newMultiStoreWithMixedMounts(dbm.NewMemDB())
-
-	testcases := map[string]struct {
-		height     uint64
-		format     uint32
-		expectType error
-	}{
-		"0 height":       {0, snapshottypes.CurrentFormat, nil},
-		"0 format":       {1, 0, snapshottypes.ErrUnknownFormat},
-		"unknown format": {1, 9, snapshottypes.ErrUnknownFormat},
-	}
-	for name, tc := range testcases {
-		tc := tc
-		t.Run(name, func(t *testing.T) {
-			err := store.Restore(tc.height, tc.format, nil, nil)
-			require.Error(t, err)
-			if tc.expectType != nil {
-				assert.True(t, errors.Is(err, tc.expectType))
-			}
-		})
-	}
-}
-
-func TestMultistoreSnapshotRestore(t *testing.T) {
-	source := newMultiStoreWithMixedMountsAndBasicData(dbm.NewMemDB())
-	target := newMultiStoreWithMixedMounts(dbm.NewMemDB())
-	version := uint64(source.LastCommitID().Version)
-	require.EqualValues(t, 3, version)
-
-	chunks, err := source.Snapshot(version, snapshottypes.CurrentFormat)
-	require.NoError(t, err)
-	ready := make(chan struct{})
-	err = target.Restore(version, snapshottypes.CurrentFormat, chunks, ready)
-	require.NoError(t, err)
-	assert.EqualValues(t, struct{}{}, <-ready)
-
-	assert.Equal(t, source.LastCommitID(), target.LastCommitID())
-	for key, sourceStore := range source.stores {
-		targetStore := target.getStoreByName(key.Name()).(types.CommitKVStore)
-		assertStoresEqual(t, sourceStore, targetStore, "store %q not equal", key.Name())
-	}
+	assert.Equal(t, expectMap, actualMap, msgAndArgs...)
 }
 
 func TestSetInitialVersion(t *testing.T) {
@@ -877,29 +789,6 @@ func newMultiStoreWithMixedMounts(db dbm.DB) *Store {
 	store.MountStoreWithDB(types.NewKVStoreKey("iavl2"), types.StoreTypeIAVL, nil)
 	store.MountStoreWithDB(types.NewKVStoreKey("iavl3"), types.StoreTypeIAVL, nil)
 	store.LoadLatestVersion()
-
-	return store
-}
-
-func newMultiStoreWithMixedMountsAndBasicData(db dbm.DB) *Store {
-	store := newMultiStoreWithMixedMounts(db)
-	store1 := store.getStoreByName("iavl1").(types.CommitKVStore)
-	store2 := store.getStoreByName("iavl2").(types.CommitKVStore)
-
-	store1.Set([]byte("a"), []byte{1})
-	store1.Set([]byte("b"), []byte{1})
-	store2.Set([]byte("X"), []byte{255})
-	store2.Set([]byte("A"), []byte{101})
-	store.Commit()
-
-	store1.Set([]byte("b"), []byte{2})
-	store1.Set([]byte("c"), []byte{3})
-	store2.Set([]byte("B"), []byte{102})
-	store.Commit()
-
-	store2.Set([]byte("C"), []byte{103})
-	store2.Delete([]byte("X"))
-	store.Commit()
 
 	return store
 }
