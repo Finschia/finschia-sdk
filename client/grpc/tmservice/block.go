@@ -48,7 +48,7 @@ func GetProtoBlock(ctx context.Context, clientCtx client.Context, height *int64)
 	if err != nil {
 		return ocproto.BlockID{}, nil, err
 	}
-	protoBlockId := block.BlockID.ToProto()
+	protoBlockID := block.BlockID.ToProto()
 
-	return protoBlockId, protoBlock, nil
+	return protoBlockID, protoBlock, nil
 }

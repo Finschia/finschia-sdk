@@ -3,9 +3,10 @@ package tx
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/line/lbm-sdk/client/grpc/tmservice"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"strings"
 
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/golang/protobuf/proto" // nolint: staticcheck
@@ -180,7 +181,7 @@ func (s txServer) GetBlockWithTxs(ctx context.Context, req *txtypes.GetBlockWith
 			"or greater than the current height %d", req.Height, currentHeight)
 	}
 
-	blockId, block, err := tmservice.GetProtoBlock(ctx, s.clientCtx, &req.Height)
+	blockID, block, err := tmservice.GetProtoBlock(ctx, s.clientCtx, &req.Height)
 	if err != nil {
 		return nil, err
 	}
@@ -229,7 +230,7 @@ func (s txServer) GetBlockWithTxs(ctx context.Context, req *txtypes.GetBlockWith
 
 	return &txtypes.GetBlockWithTxsResponse{
 		Txs:     txs,
-		BlockId: &blockId,
+		BlockId: &blockID,
 		Block:   block,
 		Pagination: &pagination.PageResponse{
 			Total: blockTxsLn,
