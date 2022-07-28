@@ -187,6 +187,12 @@ func (s *abciTestSuite) TestABCIInfoSerializeErr() {
 	}
 }
 
+func (s *abciTestSuite) TestQueryResultWithDebug() {
+	q := QueryResultWithDebug(Wrap(errInternal, "test error"), true)
+	s.Require().Equal(q.Code, uint32(1))
+	s.Require().Equal(q.Codespace, "undefined")
+}
+
 // customErr is a custom implementation of an error that provides an ABCICode
 // method.
 type customErr struct{}

@@ -14,10 +14,12 @@ import (
 	"github.com/line/lbm-sdk/crypto/keyring"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/testutil/network"
 	sdk "github.com/line/lbm-sdk/types"
 	txtypes "github.com/line/lbm-sdk/types/tx"
 	signingtypes "github.com/line/lbm-sdk/types/tx/signing"
 	"github.com/line/lbm-sdk/x/auth/signing"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 )
 
@@ -98,11 +100,8 @@ func TestCalculateGas(t *testing.T) {
 func TestBuildSimTx(t *testing.T) {
 	txCfg := NewTestTxConfig()
 
+	msg := banktypes.NewMsgSend(sdk.AccAddress("from"), sdk.AccAddress("to"), nil)
 	kb, err := keyring.New(t.Name(), "test", t.TempDir(), nil)
-	require.NoError(t, err)
-
-	path := hd.CreateHDPath(118, 0, 0).String()
-	_, _, err = kb.NewMnemonic("test_key1", keyring.English, path, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	require.NoError(t, err)
 
 	txf := tx.Factory{}.
@@ -115,10 +114,25 @@ func TestBuildSimTx(t *testing.T) {
 		WithSignMode(txCfg.SignModeHandler().DefaultMode()).
 		WithKeybase(kb)
 
-	msg := banktypes.NewMsgSend(sdk.AccAddress("from"), sdk.AccAddress("to"), nil)
+	// empty keybase list
 	bz, err := tx.BuildSimTx(txf, msg)
+	require.Error(t, err)
+	require.Nil(t, bz)
+
+	// with keybase list
+	path := hd.CreateHDPath(118, 0, 0).String()
+	_, _, err = kb.NewMnemonic("test_key1", keyring.English, path, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
+	require.NoError(t, err)
+	txf = txf.WithKeybase(kb)
+	bz, err = tx.BuildSimTx(txf, msg)
 	require.NoError(t, err)
 	require.NotNil(t, bz)
+
+	// no ChainID
+	txf = txf.WithChainID("")
+	bz, err = tx.BuildSimTx(txf, msg)
+	require.Error(t, err)
+	require.Nil(t, bz)
 }
 
 func TestBuildUnsignedTx(t *testing.T) {
@@ -134,18 +148,65 @@ func TestBuildUnsignedTx(t *testing.T) {
 		WithTxConfig(NewTestTxConfig()).
 		WithAccountNumber(50).
 		WithSequence(23).
+		WithGasPrices("50stake,50cony").
+		WithMemo("memo").
+		WithChainID("test-chain")
+
+	msg := banktypes.NewMsgSend(sdk.AccAddress("from"), sdk.AccAddress("to"), nil)
+	txBuiler, err := tx.BuildUnsignedTx(txf, msg)
+	require.NoError(t, err)
+	require.NotNil(t, txBuiler)
+
+	sigs, err := txBuiler.GetTx().(signing.SigVerifiableTx).GetSignaturesV2()
+	require.NoError(t, err)
+	require.Empty(t, sigs)
+
+	// no ChainID
+	txf = txf.WithChainID("")
+	txBuiler, err = tx.BuildUnsignedTx(txf, msg)
+	require.Nil(t, txBuiler)
+	require.Error(t, err)
+
+	// both fees and gas prices
+	txf = txf.
+		WithChainID("test-chain").
+		WithFees("50stake")
+	txBuiler, err = tx.BuildUnsignedTx(txf, msg)
+	require.Nil(t, txBuiler)
+	require.Error(t, err)
+}
+
+func TestPrintUnsignedTx(t *testing.T) {
+	txConfig := NewTestTxConfig()
+	txf := tx.Factory{}.
+		WithTxConfig(txConfig).
+		WithAccountNumber(50).
+		WithSequence(23).
 		WithFees("50stake").
 		WithMemo("memo").
 		WithChainID("test-chain")
 
 	msg := banktypes.NewMsgSend(sdk.AccAddress("from"), sdk.AccAddress("to"), nil)
-	tx, err := tx.BuildUnsignedTx(txf, msg)
+	clientCtx := client.Context{}.
+		WithTxConfig(txConfig)
+	err := txf.PrintUnsignedTx(clientCtx, msg)
 	require.NoError(t, err)
-	require.NotNil(t, tx)
 
-	sigs, err := tx.GetTx().(signing.SigVerifiableTx).GetSignaturesV2()
-	require.NoError(t, err)
-	require.Empty(t, sigs)
+	// no ChainID
+	txf = txf.WithChainID("")
+	err = txf.PrintUnsignedTx(clientCtx, msg)
+	require.Error(t, err)
+
+	// SimulateAndExecute
+	// failed at CaculateGas
+	txf = txf.WithSimulateAndExecute(true)
+	err = txf.PrintUnsignedTx(clientCtx, msg)
+	require.Error(t, err)
+
+	// Offline
+	clientCtx = clientCtx.WithOffline(true)
+	err = txf.PrintUnsignedTx(clientCtx, msg)
+	require.Error(t, err)
 }
 
 func TestSign(t *testing.T) {
@@ -292,4 +353,26 @@ func testSigners(require *require.Assertions, tr signing.Tx, pks ...cryptotypes.
 		require.True(sigs[i].PubKey.Equals(pks[i]), "Signature is signed with a wrong pubkey. Got: %s, expected: %s", sigs[i].PubKey, pks[i])
 	}
 	return sigs
+}
+
+func TestPrepare(t *testing.T) {
+	txf := tx.Factory{}.
+		WithAccountRetriever(authtypes.AccountRetriever{})
+
+	cfg := network.DefaultConfig()
+	cfg.NumValidators = 1
+
+	network := network.New(t, cfg)
+	defer network.Cleanup()
+
+	_, err := network.WaitForHeight(3)
+	require.NoError(t, err)
+
+	val := network.Validators[0]
+	clientCtx := val.ClientCtx.
+		WithHeight(2).
+		WithFromAddress(val.Address)
+
+	_, err = txf.Prepare(clientCtx)
+	require.NoError(t, err)
 }

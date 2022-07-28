@@ -11,7 +11,10 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"io"
+	"math/big"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 const TestCount = 1000
@@ -234,5 +237,56 @@ func BenchmarkRecover(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		RecoverPubkey(msg, sig)
+	}
+}
+
+func TestScalarMult(t *testing.T) {
+	theCurve := new(BitCurve)
+	bx, _ := new(big.Int).SetString("115792089237316195423570985008687907853269984665640564039457584007913129639936", 10)
+	by, _ := new(big.Int).SetString("115792089237316195423570985008687907853269984665640564039457584007913129639936", 10)
+	assert.Panics(t, func() { theCurve.ScalarMult(bx, by, []byte("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")) })
+
+	x, y := theCurve.ScalarMult(bx, by, []byte("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"))
+	var res big.Int
+	res.SetInt64(int64(0))
+	if x.Cmp(&res) != 0 || y.Cmp(&res) != 0 {
+		t.Errorf("x: %s, y: %s, res: %s", x.String(), y.String(), res.String())
+	}
+}
+
+func TestBitCurveAdd(t *testing.T) {
+	theCurve := new(BitCurve)
+	theCurve.P = new(big.Int).SetInt64(int64(1))
+
+	x1 := new(big.Int).SetInt64(int64(0))
+	y1 := new(big.Int).SetInt64(int64(0))
+	x2 := new(big.Int).SetInt64(int64(1))
+	y2 := new(big.Int).SetInt64(int64(1))
+
+	x, y := theCurve.Add(x1, y1, x2, y2)
+	if x.Cmp(x2) != 0 || y.Cmp(y2) != 0 {
+		t.Errorf("BitCurve(%s, %s, %s, %s) = %s, %s", x1.String(), y1.String(), x2.String(), y2.String(), x.String(), y.String())
+	}
+
+	x1 = new(big.Int).SetInt64(int64(1))
+	y1 = new(big.Int).SetInt64(int64(1))
+	x2 = new(big.Int).SetInt64(int64(0))
+	y2 = new(big.Int).SetInt64(int64(0))
+
+	x, y = theCurve.Add(x1, y1, x2, y2)
+	if x.Cmp(x1) != 0 || y.Cmp(y1) != 0 {
+		t.Errorf("BitCurve(%s, %s, %s, %s) = %s, %s", x1.String(), y1.String(), x2.String(), y2.String(), x.String(), y.String())
+	}
+
+	x1 = new(big.Int).SetInt64(int64(1))
+	y1 = new(big.Int).SetInt64(int64(1))
+	x2 = new(big.Int).SetInt64(int64(1))
+	y2 = new(big.Int).SetInt64(int64(1))
+
+	x, y = theCurve.Add(x1, y1, x2, y2)
+	var res big.Int
+	res.SetInt64(int64(0))
+	if x.Cmp(&res) != 0 || y.Cmp(&res) != 0 {
+		t.Errorf("BitCurve(%s, %s, %s, %s) = %s, %s", x1.String(), y1.String(), x2.String(), y2.String(), x.String(), y.String())
 	}
 }
