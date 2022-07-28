@@ -390,7 +390,7 @@ devdoc-update:
 # easyjson must be used for types that are not registered in amino by RegisterConcrete.
 easyjson-gen:
 	@echo "Generating easyjson files"
-	go get github.com/mailru/easyjson@v0.7.7
+	go install github.com/mailru/easyjson@v0.7.7
 	easyjson ./types/result.go
 
 ###############################################################################
