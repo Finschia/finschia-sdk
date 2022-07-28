@@ -36,9 +36,9 @@ func TestBeginBlocker(t *testing.T) {
 	require.Equal(t, amt, app.StakingKeeper.Validator(ctx, addr).GetBondedTokens())
 
 	val := abci.Validator{
-		Address:     pk.Address(),
-		Power:       power,
-		VotingPower: power,
+		Address:      pk.Address(),
+		Power:        power,
+		VotingWeight: power,
 	}
 
 	// mark the validator as having signed

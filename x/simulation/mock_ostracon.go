@@ -156,9 +156,9 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 
 		voteInfos[i] = abci.VoteInfo{
 			Validator: abci.Validator{
-				Address:     pubkey.Address(),
-				Power:       mVal.val.Power,
-				VotingPower: mVal.val.Power,
+				Address:      pubkey.Address(),
+				Power:        mVal.val.Power,
+				VotingWeight: mVal.val.Power,
 			},
 			SignedLastBlock: signed,
 		}
