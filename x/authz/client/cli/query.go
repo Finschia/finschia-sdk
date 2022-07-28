@@ -90,7 +90,7 @@ $ %s query %s grants link1skjw.. link1skjwj.. %s
 		},
 	}
 	flags.AddQueryFlagsToCmd(cmd)
-	flags.AddPaginationFlagsToCmd(cmd, "authorizations")
+	flags.AddPaginationFlagsToCmd(cmd, "grants")
 	return cmd
 }
 
