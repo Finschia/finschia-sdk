@@ -106,9 +106,9 @@ type TestChain struct {
 	Connections []*TestConnection // track connectionID's created for this chain
 }
 
-func NewTestValidator(pubkey crypto.PubKey, stakingPower int64) *octypes.Validator {
-	val := octypes.NewValidator(pubkey, stakingPower)
-	val.VotingPower = val.StakingPower
+func NewTestValidator(pubkey crypto.PubKey, votingPower int64) *octypes.Validator {
+	val := octypes.NewValidator(pubkey, votingPower)
+	val.VotingWeight = val.VotingPower
 	return val
 }
 
@@ -367,9 +367,9 @@ func (chain *TestChain) GetVotersAtHeight(height int64) (*octypes.VoterSet, bool
 		panic(err)
 	}
 	// Validators saved in HistoricalInfo store have no voting power.
-	// We set voting power same as staking power for test.
+	// We set voting weight same as voting power for test.
 	for i := 0; i < len(ocVoters); i++ {
-		ocVoters[i].VotingPower = ocVoters[i].StakingPower
+		ocVoters[i].VotingWeight = ocVoters[i].VotingPower
 	}
 	return octypes.WrapValidatorsToVoterSet(ocVoters), true
 }
