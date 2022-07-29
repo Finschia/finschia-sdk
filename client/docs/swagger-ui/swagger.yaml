@@ -7149,6 +7149,10 @@ paths:
                                 timestamp:
                                   type: string
                                   format: date-time
+                                voting_weight:
+                                  type: string
+                                  format: int64
+                                  title: '*** Ostracon Extended Fields ***'
                               description: >-
                                 DuplicateVoteEvidence contains evidence of a
                                 validator signed two conflicting votes.
@@ -7330,6 +7334,10 @@ paths:
                                               proposer_priority:
                                                 type: string
                                                 format: int64
+                                              voting_weight:
+                                                type: string
+                                                format: int64
+                                                title: '*** Ostracon Extended Fields ***'
                                         proposer:
                                           type: object
                                           properties:
@@ -7354,6 +7362,10 @@ paths:
                                             proposer_priority:
                                               type: string
                                               format: int64
+                                            voting_weight:
+                                              type: string
+                                              format: int64
+                                              title: '*** Ostracon Extended Fields ***'
                                         total_voting_power:
                                           type: string
                                           format: int64
@@ -7386,6 +7398,10 @@ paths:
                                       proposer_priority:
                                         type: string
                                         format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -7907,6 +7923,10 @@ paths:
                                 timestamp:
                                   type: string
                                   format: date-time
+                                voting_weight:
+                                  type: string
+                                  format: int64
+                                  title: '*** Ostracon Extended Fields ***'
                               description: >-
                                 DuplicateVoteEvidence contains evidence of a
                                 validator signed two conflicting votes.
@@ -8088,6 +8108,10 @@ paths:
                                               proposer_priority:
                                                 type: string
                                                 format: int64
+                                              voting_weight:
+                                                type: string
+                                                format: int64
+                                                title: '*** Ostracon Extended Fields ***'
                                         proposer:
                                           type: object
                                           properties:
@@ -8112,6 +8136,10 @@ paths:
                                             proposer_priority:
                                               type: string
                                               format: int64
+                                            voting_weight:
+                                              type: string
+                                              format: int64
+                                              title: '*** Ostracon Extended Fields ***'
                                         total_voting_power:
                                           type: string
                                           format: int64
@@ -8144,6 +8172,10 @@ paths:
                                       proposer_priority:
                                         type: string
                                         format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -8671,6 +8703,10 @@ paths:
                                 timestamp:
                                   type: string
                                   format: date-time
+                                voting_weight:
+                                  type: string
+                                  format: int64
+                                  title: '*** Ostracon Extended Fields ***'
                               description: >-
                                 DuplicateVoteEvidence contains evidence of a
                                 validator signed two conflicting votes.
@@ -8852,6 +8888,10 @@ paths:
                                               proposer_priority:
                                                 type: string
                                                 format: int64
+                                              voting_weight:
+                                                type: string
+                                                format: int64
+                                                title: '*** Ostracon Extended Fields ***'
                                         proposer:
                                           type: object
                                           properties:
@@ -8876,6 +8916,10 @@ paths:
                                             proposer_priority:
                                               type: string
                                               format: int64
+                                            voting_weight:
+                                              type: string
+                                              format: int64
+                                              title: '*** Ostracon Extended Fields ***'
                                         total_voting_power:
                                           type: string
                                           format: int64
@@ -8908,6 +8952,10 @@ paths:
                                       proposer_priority:
                                         type: string
                                         format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -48997,6 +49045,10 @@ definitions:
                         timestamp:
                           type: string
                           format: date-time
+                        voting_weight:
+                          type: string
+                          format: int64
+                          title: '*** Ostracon Extended Fields ***'
                       description: >-
                         DuplicateVoteEvidence contains evidence of a validator
                         signed two conflicting votes.
@@ -49177,6 +49229,10 @@ definitions:
                                       proposer_priority:
                                         type: string
                                         format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
                                 proposer:
                                   type: object
                                   properties:
@@ -49201,6 +49257,10 @@ definitions:
                                     proposer_priority:
                                       type: string
                                       format: int64
+                                    voting_weight:
+                                      type: string
+                                      format: int64
+                                      title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -49233,6 +49293,10 @@ definitions:
                               proposer_priority:
                                 type: string
                                 format: int64
+                              voting_weight:
+                                type: string
+                                format: int64
+                                title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64
@@ -49548,6 +49612,10 @@ definitions:
                         timestamp:
                           type: string
                           format: date-time
+                        voting_weight:
+                          type: string
+                          format: int64
+                          title: '*** Ostracon Extended Fields ***'
                       description: >-
                         DuplicateVoteEvidence contains evidence of a validator
                         signed two conflicting votes.
@@ -49728,6 +49796,10 @@ definitions:
                                       proposer_priority:
                                         type: string
                                         format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
                                 proposer:
                                   type: object
                                   properties:
@@ -49752,6 +49824,10 @@ definitions:
                                     proposer_priority:
                                       type: string
                                       format: int64
+                                    voting_weight:
+                                      type: string
+                                      format: int64
+                                      title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -49784,6 +49860,10 @@ definitions:
                               proposer_priority:
                                 type: string
                                 format: int64
+                              voting_weight:
+                                type: string
+                                format: int64
+                                title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64
@@ -50330,6 +50410,10 @@ definitions:
                         timestamp:
                           type: string
                           format: date-time
+                        voting_weight:
+                          type: string
+                          format: int64
+                          title: '*** Ostracon Extended Fields ***'
                       description: >-
                         DuplicateVoteEvidence contains evidence of a validator
                         signed two conflicting votes.
@@ -50510,6 +50594,10 @@ definitions:
                                       proposer_priority:
                                         type: string
                                         format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
                                 proposer:
                                   type: object
                                   properties:
@@ -50534,6 +50622,10 @@ definitions:
                                     proposer_priority:
                                       type: string
                                       format: int64
+                                    voting_weight:
+                                      type: string
+                                      format: int64
+                                      title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -50566,6 +50658,10 @@ definitions:
                               proposer_priority:
                                 type: string
                                 format: int64
+                              voting_weight:
+                                type: string
+                                format: int64
+                                title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64
@@ -52004,6 +52100,10 @@ definitions:
                     timestamp:
                       type: string
                       format: date-time
+                    voting_weight:
+                      type: string
+                      format: int64
+                      title: '*** Ostracon Extended Fields ***'
                   description: >-
                     DuplicateVoteEvidence contains evidence of a validator
                     signed two conflicting votes.
@@ -52183,6 +52283,10 @@ definitions:
                                   proposer_priority:
                                     type: string
                                     format: int64
+                                  voting_weight:
+                                    type: string
+                                    format: int64
+                                    title: '*** Ostracon Extended Fields ***'
                             proposer:
                               type: object
                               properties:
@@ -52207,6 +52311,10 @@ definitions:
                                 proposer_priority:
                                   type: string
                                   format: int64
+                                voting_weight:
+                                  type: string
+                                  format: int64
+                                  title: '*** Ostracon Extended Fields ***'
                             total_voting_power:
                               type: string
                               format: int64
@@ -52239,6 +52347,10 @@ definitions:
                           proposer_priority:
                             type: string
                             format: int64
+                          voting_weight:
+                            type: string
+                            format: int64
+                            title: '*** Ostracon Extended Fields ***'
                     total_voting_power:
                       type: string
                       format: int64
@@ -52542,6 +52654,10 @@ definitions:
       timestamp:
         type: string
         format: date-time
+      voting_weight:
+        type: string
+        format: int64
+        title: '*** Ostracon Extended Fields ***'
     description: >-
       DuplicateVoteEvidence contains evidence of a validator signed two
       conflicting votes.
@@ -52672,6 +52788,10 @@ definitions:
           timestamp:
             type: string
             format: date-time
+          voting_weight:
+            type: string
+            format: int64
+            title: '*** Ostracon Extended Fields ***'
         description: >-
           DuplicateVoteEvidence contains evidence of a validator signed two
           conflicting votes.
@@ -52847,6 +52967,10 @@ definitions:
                         proposer_priority:
                           type: string
                           format: int64
+                        voting_weight:
+                          type: string
+                          format: int64
+                          title: '*** Ostracon Extended Fields ***'
                   proposer:
                     type: object
                     properties:
@@ -52871,6 +52995,10 @@ definitions:
                       proposer_priority:
                         type: string
                         format: int64
+                      voting_weight:
+                        type: string
+                        format: int64
+                        title: '*** Ostracon Extended Fields ***'
                   total_voting_power:
                     type: string
                     format: int64
@@ -52903,6 +53031,10 @@ definitions:
                 proposer_priority:
                   type: string
                   format: int64
+                voting_weight:
+                  type: string
+                  format: int64
+                  title: '*** Ostracon Extended Fields ***'
           total_voting_power:
             type: string
             format: int64
@@ -53046,6 +53178,10 @@ definitions:
                 timestamp:
                   type: string
                   format: date-time
+                voting_weight:
+                  type: string
+                  format: int64
+                  title: '*** Ostracon Extended Fields ***'
               description: >-
                 DuplicateVoteEvidence contains evidence of a validator signed
                 two conflicting votes.
@@ -53223,6 +53359,10 @@ definitions:
                               proposer_priority:
                                 type: string
                                 format: int64
+                              voting_weight:
+                                type: string
+                                format: int64
+                                title: '*** Ostracon Extended Fields ***'
                         proposer:
                           type: object
                           properties:
@@ -53247,6 +53387,10 @@ definitions:
                             proposer_priority:
                               type: string
                               format: int64
+                            voting_weight:
+                              type: string
+                              format: int64
+                              title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64
@@ -53279,6 +53423,10 @@ definitions:
                       proposer_priority:
                         type: string
                         format: int64
+                      voting_weight:
+                        type: string
+                        format: int64
+                        title: '*** Ostracon Extended Fields ***'
                 total_voting_power:
                   type: string
                   format: int64
@@ -53566,6 +53714,10 @@ definitions:
                 proposer_priority:
                   type: string
                   format: int64
+                voting_weight:
+                  type: string
+                  format: int64
+                  title: '*** Ostracon Extended Fields ***'
           proposer:
             type: object
             properties:
@@ -53590,6 +53742,10 @@ definitions:
               proposer_priority:
                 type: string
                 format: int64
+              voting_weight:
+                type: string
+                format: int64
+                title: '*** Ostracon Extended Fields ***'
           total_voting_power:
             type: string
             format: int64
@@ -53763,6 +53919,10 @@ definitions:
                     proposer_priority:
                       type: string
                       format: int64
+                    voting_weight:
+                      type: string
+                      format: int64
+                      title: '*** Ostracon Extended Fields ***'
               proposer:
                 type: object
                 properties:
@@ -53787,6 +53947,10 @@ definitions:
                   proposer_priority:
                     type: string
                     format: int64
+                  voting_weight:
+                    type: string
+                    format: int64
+                    title: '*** Ostracon Extended Fields ***'
               total_voting_power:
                 type: string
                 format: int64
@@ -53819,6 +53983,10 @@ definitions:
             proposer_priority:
               type: string
               format: int64
+            voting_weight:
+              type: string
+              format: int64
+              title: '*** Ostracon Extended Fields ***'
       total_voting_power:
         type: string
         format: int64
@@ -54006,6 +54174,10 @@ definitions:
       proposer_priority:
         type: string
         format: int64
+      voting_weight:
+        type: string
+        format: int64
+        title: '*** Ostracon Extended Fields ***'
   ostracon.types.ValidatorParams:
     type: object
     properties:
@@ -54045,6 +54217,10 @@ definitions:
             proposer_priority:
               type: string
               format: int64
+            voting_weight:
+              type: string
+              format: int64
+              title: '*** Ostracon Extended Fields ***'
       proposer:
         type: object
         properties:
@@ -54069,6 +54245,10 @@ definitions:
           proposer_priority:
             type: string
             format: int64
+          voting_weight:
+            type: string
+            format: int64
+            title: '*** Ostracon Extended Fields ***'
       total_voting_power:
         type: string
         format: int64

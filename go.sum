@@ -732,8 +732,8 @@ github.com/libp2p/go-buffer-pool v0.1.0/go.mod h1:N+vh8gMqimBzdKkSMVuydVDq+UV5QT
 github.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20190605223551-bc2310a04743/go.mod h1:qklhhLq1aX+mtWk9cPHPzaBjWImj5ULL6C7HFJtXQMM=
 github.com/lightstep/lightstep-tracer-go v0.18.1/go.mod h1:jlF1pusYV4pidLvZ+XD0UBX0ZE6WURAspgAczcDHrL4=
 github.com/line/gorocksdb v0.0.0-20210406043732-d4bea34b6d55/go.mod h1:DHRJroSL7NaRkpvocRx3OtRsleXVsYSxBI9SfHFlTQ0=
-github.com/line/ostracon v1.0.7-0.20220727044439-81b4fb7095a8 h1:dm25pZI2k7kM00jKHX17xYQuOuOlaiBVA55DrHjx5JQ=
-github.com/line/ostracon v1.0.7-0.20220727044439-81b4fb7095a8/go.mod h1:8gnHCqwRjbJfhVtQkl7KIfcubtpsIEmiN0u91B4EYWY=
+github.com/line/ostracon v1.0.7-0.20220729051742-2231684789c6 h1:WKz4yaIW+TJgJv5uhmrHYC3UnohDHlXDT6GccvgV0AA=
+github.com/line/ostracon v1.0.7-0.20220729051742-2231684789c6/go.mod h1:8gnHCqwRjbJfhVtQkl7KIfcubtpsIEmiN0u91B4EYWY=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486 h1:uvXQdcWaUyNsgkXBz375FpQ285WEJaLXhQ5HtoNK/GU=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486/go.mod h1:wmkyPabXjtVZ1dvRofmurjaceghywtCSYGqFuFS+TbI=
 github.com/line/wasmvm v1.0.0-0.10.0 h1:lxKdyNrRug/Sk7h2pb0aBsbTMNTesQU+TM/edSS9cg0=
@@ -1108,6 +1108,8 @@ github.com/tklauser/go-sysconf v0.3.5/go.mod h1:MkWzOF4RMCshBAMXuhXJs64Rte09mITn
 github.com/tklauser/numcpus v0.2.2/go.mod h1:x3qojaO3uyYt0i56EW/VUYs7uBvdl2fkfZFu0T9wgjM=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20170815181823-89b8d40f7ca8/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
+github.com/tnasu/ostracon v1.0.3-0.20220729034634-5673e418c251 h1:0MBnlFqUFejtabXDfPQg1XxE7Rv5f3up+qslFuct1SQ=
+github.com/tnasu/ostracon v1.0.3-0.20220729034634-5673e418c251/go.mod h1:8gnHCqwRjbJfhVtQkl7KIfcubtpsIEmiN0u91B4EYWY=
 github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926/go.mod h1:9ESjWnEqriFuLhtthL60Sar/7RFoluCcXsuvEwTV5KM=
 github.com/tyler-smith/go-bip39 v1.0.1-0.20181017060643-dbb3b84ba2ef/go.mod h1:sJ5fKU0s6JVwZjjcUEX2zFOnvq0ASQ2K9Zr6cf67kNs=
 github.com/tyler-smith/go-bip39 v1.0.2/go.mod h1:sJ5fKU0s6JVwZjjcUEX2zFOnvq0ASQ2K9Zr6cf67kNs=
