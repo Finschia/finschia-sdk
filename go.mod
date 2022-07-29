@@ -30,7 +30,7 @@ require (
 	github.com/hdevalence/ed25519consensus v0.0.0-20220222234857-c00d1f31bab3
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/jhump/protoreflect v1.10.3
-	github.com/line/ostracon v1.0.7-0.20220727044439-81b4fb7095a8
+	github.com/line/ostracon v1.0.7-0.20220729051742-2231684789c6
 	github.com/line/wasmvm v1.0.0-0.10.0
 	github.com/magiconair/properties v1.8.6
 	github.com/mailru/easyjson v0.7.7
@@ -63,7 +63,6 @@ require (
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.1.7-0.20210622111912-ef00f8ac3d76
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	github.com/line/ostracon => github.com/tnasu/ostracon v1.0.3-0.20220729034634-5673e418c251
 
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )

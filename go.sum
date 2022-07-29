@@ -732,6 +732,8 @@ github.com/libp2p/go-buffer-pool v0.1.0/go.mod h1:N+vh8gMqimBzdKkSMVuydVDq+UV5QT
 github.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20190605223551-bc2310a04743/go.mod h1:qklhhLq1aX+mtWk9cPHPzaBjWImj5ULL6C7HFJtXQMM=
 github.com/lightstep/lightstep-tracer-go v0.18.1/go.mod h1:jlF1pusYV4pidLvZ+XD0UBX0ZE6WURAspgAczcDHrL4=
 github.com/line/gorocksdb v0.0.0-20210406043732-d4bea34b6d55/go.mod h1:DHRJroSL7NaRkpvocRx3OtRsleXVsYSxBI9SfHFlTQ0=
+github.com/line/ostracon v1.0.7-0.20220729051742-2231684789c6 h1:WKz4yaIW+TJgJv5uhmrHYC3UnohDHlXDT6GccvgV0AA=
+github.com/line/ostracon v1.0.7-0.20220729051742-2231684789c6/go.mod h1:8gnHCqwRjbJfhVtQkl7KIfcubtpsIEmiN0u91B4EYWY=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486 h1:uvXQdcWaUyNsgkXBz375FpQ285WEJaLXhQ5HtoNK/GU=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486/go.mod h1:wmkyPabXjtVZ1dvRofmurjaceghywtCSYGqFuFS+TbI=
 github.com/line/wasmvm v1.0.0-0.10.0 h1:lxKdyNrRug/Sk7h2pb0aBsbTMNTesQU+TM/edSS9cg0=
