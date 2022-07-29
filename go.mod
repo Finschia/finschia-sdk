@@ -63,7 +63,7 @@ require (
 replace (
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.1.7-0.20210622111912-ef00f8ac3d76
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	github.com/line/ostracon => github.com/tnasu/ostracon v1.0.3-0.20220728111707-feba108bf018
+	github.com/line/ostracon => github.com/tnasu/ostracon v1.0.3-0.20220729034634-5673e418c251
 
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
