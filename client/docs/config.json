@@ -148,7 +148,7 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/lbm/wasm/v1/query.swagger.json"
+      "url": "./tmp-swagger-gen/cosmwasm/wasm/v1/query.swagger.json"
     },
     {
       "url": "./tmp-swagger-gen/lbm/foundation/v1/query.swagger.json",
