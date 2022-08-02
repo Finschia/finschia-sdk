@@ -5,12 +5,12 @@ package keeper
 // 	"encoding/hex"
 // 	"io"
 
-// 	snapshot "github.com/cosmos/cosmos-sdk/snapshots/types"
-// 	sdk "github.com/cosmos/cosmos-sdk/types"
-// 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+// 	snapshot "github.com/line/lbm-sdk/snapshots/types"
+// 	sdk "github.com/line/lbm-sdk/types"
+// 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 // 	protoio "github.com/gogo/protobuf/io"
-// 	"github.com/tendermint/tendermint/libs/log"
-// 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+// 	"github.com/line/ostracon/libs/log"
+// 	tmproto "github.com/line/ostracon/proto/ostracon/types"
 
 // 	"github.com/CosmWasm/wasmd/x/wasm/ioutils"
 // 	"github.com/CosmWasm/wasmd/x/wasm/types"

@@ -282,6 +282,7 @@ func AddCommands(rootCmd *cobra.Command, defaultNodeHome string, appCreator type
 		ostcmd.ResetAllCmd,
 		ostcmd.ResetStateCmd,
 	)
+
 	startCmd := StartCmd(appCreator, defaultNodeHome)
 	addStartFlags(startCmd)
 
@@ -290,6 +291,7 @@ func AddCommands(rootCmd *cobra.Command, defaultNodeHome string, appCreator type
 		ostraconCmd,
 		ExportCmd(appExport, defaultNodeHome),
 		version.NewVersionCommand(),
+		NewRollbackCmd(defaultNodeHome),
 	)
 }
 

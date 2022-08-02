@@ -1,5 +1,5 @@
 # Simple usage with a mounted data directory:
-# > docker build --platform="linux/amd64" -t simapp .
+# > docker build --platform="linux/amd64" -t simapp . --build-arg ARCH=x86_64
 #
 # Server:
 # > docker run -it -p 26657:26657 -p 26656:26656 -v ~/.simapp:/root/.simapp simapp simd init test-chain
@@ -11,6 +11,7 @@
 # > docker run -it -p 26657:26657 -p 26656:26656 -v ~/.simappcli:/root/.simapp simapp simd keys list
 # TODO: demo connecting rest-server (or is this in server now?)
 FROM golang:alpine AS build-env
+ARG ARCH=$ARCH
 
 # Install minimum necessary dependencies,
 ENV PACKAGES curl make git libc-dev bash gcc g++ linux-headers eudev-dev python3
@@ -29,27 +30,20 @@ COPY ./go.mod /go/src/github.com/line/lbm-sdk/go.mod
 COPY ./go.sum /go/src/github.com/line/lbm-sdk/go.sum
 RUN go mod download
 
-# Build cosmwasm
-ENV RUSTUP_HOME=/usr/local/rustup
-ENV CARGO_HOME=/usr/local/cargo
-ENV PATH=$CARGO_HOME/bin:$PATH
+# See https://github.com/line/wasmvm/releases
+# See https://github.com/line/wasmvm/releases
+ADD https://github.com/line/wasmvm/releases/download/v1.0.0-0.10.0/libwasmvm_static.x86_64.a /lib/libwasmvm_static.x86_64.a
+ADD https://github.com/line/wasmvm/releases/download/v1.0.0-0.10.0/libwasmvm_static.aarch64.a /lib/libwasmvm_static.aarch64.a
+RUN sha256sum /lib/libwasmvm_static.aarch64.a | grep bc3db72ba32f34ad88ceb1d20479411bd7f50ccd6a5ca50cc8ca462a561e6189
+RUN sha256sum /lib/libwasmvm_static.x86_64.a | grep 352fa5de5f9dba66f0a38082541d3e63e21394fee3e577ea35e0906294c61276
 
-RUN wget "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-musl/rustup-init"
-RUN chmod +x rustup-init
-RUN ./rustup-init -y --no-modify-path --default-toolchain 1.57.0; rm rustup-init
-RUN chmod -R a+w $RUSTUP_HOME $CARGO_HOME
-RUN cd $(go list -f "{{ .Dir }}" -m github.com/line/wasmvm) && \
-    cd ./libwasmvm && \
-    RUSTFLAGS='-C target-feature=-crt-static' cargo build --release --example staticlib && \
-    mv -f target/release/examples/libstaticlib.a /usr/lib/libwasmvm_static.a && \
-    rm -rf target
+RUN ln -s /lib/libwasmvm_static.${ARCH}.a /usr/lib/libwasmvm_static.a
 
 # Add source files
 COPY . .
 
 # install simapp, remove packages
 RUN BUILD_TAGS=static make build CGO_ENABLED=1
-
 
 # Final image
 FROM alpine:edge
