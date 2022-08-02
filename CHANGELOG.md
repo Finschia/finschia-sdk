@@ -78,6 +78,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (amino) [\#600](https://github.com/line/lbm-sdk/pull/600) change amino codec path from `lbm-sdk/` to `cosmos-sdk/`
 * (ostracon) [\#610](https://github.com/line/lbm-sdk/pull/610) apply change of prefix of key name in ostracon
 * (ostracon) [\#614](https://github.com/line/lbm-sdk/pull/614) apply Ostracon's changes that replace `StakingPower` with `VotingPower` and `StakingPower` with `VotingPower`
+* (proto) [\#617](https://github.com/line/lbm-sdk/pull/617) change wasm gRPC path to original `cosmwasm` path.
 
 ### Build, CI
 
@@ -85,6 +86,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ci) [\#469](https://github.com/line/lbm-sdk/pull/469) publish docker image on tag push
 * (ci) [\#580](https://github.com/line/lbm-sdk/pull/580) fix the problem that the registered docker image couldn't run on M1.
 * (simapp) [\#591](https://github.com/line/lbm-sdk/pull/591) chore: add x/wasm module to simapp
+* (ci) [\#618](https://github.com/line/lbm-sdk/pull/618) remove stale action
 
 ### Document Updates
 
