@@ -84,6 +84,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ci) [\#469](https://github.com/line/lbm-sdk/pull/469) publish docker image on tag push
 * (ci) [\#580](https://github.com/line/lbm-sdk/pull/580) fix the problem that the registered docker image couldn't run on M1.
 * (simapp) [\#591](https://github.com/line/lbm-sdk/pull/591) chore: add x/wasm module to simapp
+* (ci) [\#618](https://github.com/line/lbm-sdk/pull/618) remove stale action
 
 ### Document Updates
 
