@@ -48,6 +48,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#574](https://github.com/line/lbm-sdk/pull/574) implement x/collection
 * (store) [\#605](https://github.com/line/lbm-sdk/pull/605) replace line/iavl and line/tm-db with cosmos/iavl and tendermint/tm-db.
 * (server/grpc) [\#607](https://github.com/line/lbm-sdk/pull/607) revert gRPC block height header.
+* (x/collection) [\#622](https://github.com/line/lbm-sdk/pull/622) add Query/TokenClassTypeName
 
 ### Improvements
 
