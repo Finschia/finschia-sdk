@@ -2060,11 +2060,11 @@ func TestSnapshotManager(t *testing.T) {
 	tempDir := t.TempDir()
 	snapshotDB, err := sdk.NewLevelDB("metadata", tempDir)
 	if err != nil {
-		panic(err)
+		require.NoError(t, err)
 	}
 	snapshotStore, err := snapshots.NewStore(snapshotDB, tempDir)
 	if err != nil {
-		panic(err)
+		require.NoError(t, err)
 	}
 	app.SetSnapshotStore(snapshotStore)
 	require.NotNil(t, app.SnapshotManager())
