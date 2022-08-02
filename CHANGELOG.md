@@ -46,7 +46,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (proto) [\#584](https://github.com/line/lbm-sdk/pull/564) remove `prove` field in the `GetTxsEventRequest` of `tx` proto
 * (x/collection) [\#571](https://github.com/line/lbm-sdk/pull/571) add x/collection proto
 * (x/collection) [\#574](https://github.com/line/lbm-sdk/pull/574) implement x/collection
-* (amino) [\#600](https://github.com/line/lbm-sdk/pull/600) change amino codec path from `lbm-sdk/` to `cosmos-sdk/`
 * (store) [\#605](https://github.com/line/lbm-sdk/pull/605) replace line/iavl and line/tm-db with cosmos/iavl and tendermint/tm-db.
 * (server/grpc) [\#607](https://github.com/line/lbm-sdk/pull/607) revert gRPC block height header.
 
@@ -58,6 +57,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#597](https://github.com/line/lbm-sdk/pull/597) tidy up x/foundation
 * (x/collection) [\#604](https://github.com/line/lbm-sdk/pull/604) add EventOwnerChanged and EventRootChanged
 * (x/collection) [\#608](https://github.com/line/lbm-sdk/pull/608) remove new APIs on x/collection
+* (x/token) [\#609](https://github.com/line/lbm-sdk/pull/609) remove new APIs on x/token
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
@@ -74,6 +74,10 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
 * (global) [\#603](https://github.com/line/lbm-sdk/pull/603) apply types/address.go from cosmos-sdk@v0.45.1
+* (amino) [\#600](https://github.com/line/lbm-sdk/pull/600) change amino codec path from `lbm-sdk/` to `cosmos-sdk/`
+* (ostracon) [\#610](https://github.com/line/lbm-sdk/pull/610) apply change of prefix of key name in ostracon
+* (ostracon) [\#614](https://github.com/line/lbm-sdk/pull/614) apply Ostracon's changes that replace `StakingPower` with `VotingPower` and `StakingPower` with `VotingPower`
+* (proto) [\#617](https://github.com/line/lbm-sdk/pull/617) change wasm gRPC path to original `cosmwasm` path.
 
 ### Build, CI
 
@@ -81,8 +85,10 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ci) [\#469](https://github.com/line/lbm-sdk/pull/469) publish docker image on tag push
 * (ci) [\#580](https://github.com/line/lbm-sdk/pull/580) fix the problem that the registered docker image couldn't run on M1.
 * (simapp) [\#591](https://github.com/line/lbm-sdk/pull/591) chore: add x/wasm module to simapp
+* (ci) [\#618](https://github.com/line/lbm-sdk/pull/618) remove stale action
 
 ### Document Updates
 
 * (docs) [\#483](https://github.com/line/lbm-sdk/pull/483) update documents on x/stakingplus
 * (docs) [\#490](https://github.com/line/lbm-sdk/pull/490) update documents on x/consortium
+* (docs) [\#602](https://github.com/line/lbm-sdk/pull/602) update outdated events in specs

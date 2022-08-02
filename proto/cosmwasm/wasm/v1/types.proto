@@ -1,5 +1,5 @@
 syntax = "proto3";
-package lbm.wasm.v1;
+package cosmwasm.wasm.v1;
 
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
@@ -89,11 +89,11 @@ message ContractInfo {
   // use for sorting
   AbsoluteTxPosition created     = 5;
   string             ibc_port_id = 6 [(gogoproto.customname) = "IBCPortID"];
-  // Status is a status of a contract
-  ContractStatus status = 7;
   // Extension is an extension point to store custom metadata within the
   // persistence model.
-  google.protobuf.Any extension = 8 [(cosmos_proto.accepts_interface) = "ContractInfoExtension"];
+  google.protobuf.Any extension = 7 [(cosmos_proto.accepts_interface) = "ContractInfoExtension"];
+  // Status is a status of a contract
+  ContractStatus status = 8;
 }
 
 // ContractCodeHistoryOperationType actions that caused a code change

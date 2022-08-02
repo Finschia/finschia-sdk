@@ -7149,6 +7149,10 @@ paths:
                                 timestamp:
                                   type: string
                                   format: date-time
+                                voting_weight:
+                                  type: string
+                                  format: int64
+                                  title: '*** Ostracon Extended Fields ***'
                               description: >-
                                 DuplicateVoteEvidence contains evidence of a
                                 validator signed two conflicting votes.
@@ -7330,6 +7334,10 @@ paths:
                                               proposer_priority:
                                                 type: string
                                                 format: int64
+                                              voting_weight:
+                                                type: string
+                                                format: int64
+                                                title: '*** Ostracon Extended Fields ***'
                                         proposer:
                                           type: object
                                           properties:
@@ -7354,6 +7362,10 @@ paths:
                                             proposer_priority:
                                               type: string
                                               format: int64
+                                            voting_weight:
+                                              type: string
+                                              format: int64
+                                              title: '*** Ostracon Extended Fields ***'
                                         total_voting_power:
                                           type: string
                                           format: int64
@@ -7386,6 +7398,10 @@ paths:
                                       proposer_priority:
                                         type: string
                                         format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -7907,6 +7923,10 @@ paths:
                                 timestamp:
                                   type: string
                                   format: date-time
+                                voting_weight:
+                                  type: string
+                                  format: int64
+                                  title: '*** Ostracon Extended Fields ***'
                               description: >-
                                 DuplicateVoteEvidence contains evidence of a
                                 validator signed two conflicting votes.
@@ -8088,6 +8108,10 @@ paths:
                                               proposer_priority:
                                                 type: string
                                                 format: int64
+                                              voting_weight:
+                                                type: string
+                                                format: int64
+                                                title: '*** Ostracon Extended Fields ***'
                                         proposer:
                                           type: object
                                           properties:
@@ -8112,6 +8136,10 @@ paths:
                                             proposer_priority:
                                               type: string
                                               format: int64
+                                            voting_weight:
+                                              type: string
+                                              format: int64
+                                              title: '*** Ostracon Extended Fields ***'
                                         total_voting_power:
                                           type: string
                                           format: int64
@@ -8144,6 +8172,10 @@ paths:
                                       proposer_priority:
                                         type: string
                                         format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -8671,6 +8703,10 @@ paths:
                                 timestamp:
                                   type: string
                                   format: date-time
+                                voting_weight:
+                                  type: string
+                                  format: int64
+                                  title: '*** Ostracon Extended Fields ***'
                               description: >-
                                 DuplicateVoteEvidence contains evidence of a
                                 validator signed two conflicting votes.
@@ -8852,6 +8888,10 @@ paths:
                                               proposer_priority:
                                                 type: string
                                                 format: int64
+                                              voting_weight:
+                                                type: string
+                                                format: int64
+                                                title: '*** Ostracon Extended Fields ***'
                                         proposer:
                                           type: object
                                           properties:
@@ -8876,6 +8916,10 @@ paths:
                                             proposer_priority:
                                               type: string
                                               format: int64
+                                            voting_weight:
+                                              type: string
+                                              format: int64
+                                              title: '*** Ostracon Extended Fields ***'
                                         total_voting_power:
                                           type: string
                                           format: int64
@@ -8908,6 +8952,10 @@ paths:
                                       proposer_priority:
                                         type: string
                                         format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -32731,7 +32779,7 @@ paths:
                       format: byte
       tags:
         - Query
-  /lbm/wasm/v1/code:
+  /cosmwasm/wasm/v1/code:
     get:
       summary: Codes gets the metadata for all stored wasm codes
       operationId: Codes
@@ -33047,7 +33095,7 @@ paths:
           format: boolean
       tags:
         - Query
-  '/lbm/wasm/v1/code/{code_id}':
+  '/cosmwasm/wasm/v1/code/{code_id}':
     get:
       summary: Code gets the binary code and metadata for a singe wasm code
       operationId: Code
@@ -33293,7 +33341,7 @@ paths:
           format: uint64
       tags:
         - Query
-  '/lbm/wasm/v1/code/{code_id}/contracts':
+  '/cosmwasm/wasm/v1/code/{code_id}/contracts':
     get:
       summary: ContractsByCode lists all smart contracts for a code id
       operationId: ContractsByCode
@@ -33584,7 +33632,7 @@ paths:
           format: boolean
       tags:
         - Query
-  /lbm/wasm/v1/codes/pinned:
+  /cosmwasm/wasm/v1/codes/pinned:
     get:
       summary: PinnedCodes gets the pinned code ids
       operationId: PinnedCodes
@@ -33870,7 +33918,7 @@ paths:
           format: boolean
       tags:
         - Query
-  '/lbm/wasm/v1/contract/{address}':
+  '/cosmwasm/wasm/v1/contract/{address}':
     get:
       summary: ContractInfo gets the contract meta data
       operationId: ContractInfo
@@ -33930,18 +33978,6 @@ paths:
                       ordering of transactions.
                   ibc_port_id:
                     type: string
-                  status:
-                    title: Status is a status of a contract
-                    type: string
-                    enum:
-                      - CONTRACT_STATUS_UNSPECIFIED
-                      - CONTRACT_STATUS_ACTIVE
-                      - CONTRACT_STATUS_INACTIVE
-                    default: CONTRACT_STATUS_UNSPECIFIED
-                    description: |-
-                      - CONTRACT_STATUS_UNSPECIFIED: ContractStatus unspecified
-                       - CONTRACT_STATUS_ACTIVE: ContractStatus active
-                       - CONTRACT_STATUS_INACTIVE: ContractStatus inactive
                   extension:
                     type: object
                     properties:
@@ -34117,6 +34153,18 @@ paths:
                             "@type": "type.googleapis.com/google.protobuf.Duration",
                             "value": "1.212s"
                           }
+                  status:
+                    title: Status is a status of a contract
+                    type: string
+                    enum:
+                      - CONTRACT_STATUS_UNSPECIFIED
+                      - CONTRACT_STATUS_ACTIVE
+                      - CONTRACT_STATUS_INACTIVE
+                    default: CONTRACT_STATUS_UNSPECIFIED
+                    description: |-
+                      - CONTRACT_STATUS_UNSPECIFIED: ContractStatus unspecified
+                       - CONTRACT_STATUS_ACTIVE: ContractStatus active
+                       - CONTRACT_STATUS_INACTIVE: ContractStatus inactive
                 title: ContractInfo stores a WASM contract instance
             title: >-
               QueryContractInfoResponse is the response type for the
@@ -34318,7 +34366,7 @@ paths:
           type: string
       tags:
         - Query
-  '/lbm/wasm/v1/contract/{address}/history':
+  '/cosmwasm/wasm/v1/contract/{address}/history':
     get:
       summary: ContractHistory gets the contract code history
       operationId: ContractHistory
@@ -34651,7 +34699,7 @@ paths:
           format: boolean
       tags:
         - Query
-  '/lbm/wasm/v1/contract/{address}/raw/{query_data}':
+  '/cosmwasm/wasm/v1/contract/{address}/raw/{query_data}':
     get:
       summary: RawContractState gets single key from the raw store data of a contract
       operationId: RawContractState
@@ -34870,7 +34918,7 @@ paths:
           format: byte
       tags:
         - Query
-  '/lbm/wasm/v1/contract/{address}/smart/{query_data}':
+  '/cosmwasm/wasm/v1/contract/{address}/smart/{query_data}':
     get:
       summary: SmartContractState get smart query result from the contract
       operationId: SmartContractState
@@ -35090,7 +35138,7 @@ paths:
           format: byte
       tags:
         - Query
-  '/lbm/wasm/v1/contract/{address}/state':
+  '/cosmwasm/wasm/v1/contract/{address}/state':
     get:
       summary: AllContractState gets all raw store data for a single contract
       operationId: AllContractState
@@ -39026,9 +39074,7 @@ paths:
         - Query
   /lbm/token/v1/token_classes:
     get:
-      summary: |-
-        TokenClasses queries all token metadata.
-        Since: finschia
+      summary: TokenClasses queries all token metadata.
       operationId: TokenClasses
       responses:
         '200':
@@ -39099,8 +39145,6 @@ paths:
             title: >-
               QueryTokenClassesResponse is the response type for the
               Query/TokenClasses RPC method
-
-              Since: finschia
         default:
           description: An unexpected error response
           schema:
@@ -39272,26 +39316,48 @@ paths:
           type: string
       tags:
         - Query
-  '/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/proxies/{approver}':
+  '/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/approvers':
     get:
       summary: |-
-        Approved queries authorization on a given proxy approver pair.
-        NOTE: deprecated (use Authorization)
-      operationId: TokenApproved
+        Approvers queries approvers on a given proxy.
+        Throws:
+        - ErrInvalidRequest
+          - `contract_id` is of invalid format.
+        - ErrInvalidAddress
+          - `proxy` is of invalid format.
+      operationId: TokenApprovers
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              approved:
-                type: boolean
-                format: boolean
-            title: >-
-              QueryApprovedResponse is the response type for the Query/Approved
-              RPC method
+              approvers:
+                type: array
+                items:
+                  type: string
+                description: all the authorizations on the proxy.
+              pagination:
+                description: pagination defines the pagination in the response.
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
 
-              NOTE: deprecated
+                      was set, its value is undefined otherwise
+            title: >-
+              QueryApproversResponse is the response type for the
+              Query/Approvers RPC method
         default:
           description: An unexpected error response
           schema:
@@ -39321,106 +39387,7 @@ paths:
           required: true
           type: string
         - name: address
-          description: address of the operator which the authorization is granted to.
-          in: path
-          required: true
-          type: string
-        - name: approver
-          description: approver is the address of the approver of the authorization.
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  '/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}':
-    get:
-      summary: |-
-        OperatorAuthorizations queries authorization on a given operator.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrInvalidAddress
-          - `operator` is of invalid format.
-        Since: finschia
-      operationId: TokenOperatorAuthorizations
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              authorizations:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    holder:
-                      type: string
-                      description: >-
-                        address of the token holder which approves the
-                        authorization.
-                    operator:
-                      type: string
-                      description: >-
-                        address of the operator which the authorization is
-                        granted to.
-                  description: >-
-                    Authorization defines an authorization given to the operator
-                    on tokens of the holder.
-                description: all the authorizations on the operator.
-              pagination:
-                description: pagination defines the pagination in the response.
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    title: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-            title: >-
-              QueryOperatorAuthorizationsResponse is the response type for the
-              Query/OperatorAuthorizations RPC method
-
-              Since: finschia
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: contract_id
-          description: contract id associated with the token class.
-          in: path
-          required: true
-          type: string
-        - name: operator
-          description: address of the operator which the authorization is granted to.
+          description: address of the proxy which the authorization is granted to.
           in: path
           required: true
           type: string
@@ -39484,47 +39451,29 @@ paths:
           format: boolean
       tags:
         - Query
-  '/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}/{holder}':
+  '/lbm/token/v1/token_classes/{contract_id}/accounts/{approver}/proxies/{proxy}':
     get:
       summary: |-
-        Authorization queries authorization on a given operator holder pair.
+        Approved queries authorization on a given proxy approver pair.
         Throws:
         - ErrInvalidRequest
           - `contract_id` is of invalid format.
         - ErrInvalidAddress
-          - `operator` is of invalid format.
-          - `holder` is of invalid format.
-        - ErrNotFound
-          - there is no authorization given by `holder` to `operator`.
-        Since: finschia
-      operationId: TokenAuthorization
+          - `proxy` is of invalid format.
+          - `approver` is of invalid format.
+      operationId: TokenApproved
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              authorization:
-                type: object
-                properties:
-                  holder:
-                    type: string
-                    description: >-
-                      address of the token holder which approves the
-                      authorization.
-                  operator:
-                    type: string
-                    description: >-
-                      address of the operator which the authorization is granted
-                      to.
-                description: >-
-                  Authorization defines an authorization given to the operator
-                  on tokens of the holder.
+              approved:
+                type: boolean
+                format: boolean
             title: >-
-              QueryAuthorizationResponse is the response type for the
-              Query/Authorization RPC method
-
-              Since: finschia
+              QueryApprovedResponse is the response type for the Query/Approved
+              RPC method
         default:
           description: An unexpected error response
           schema:
@@ -39553,13 +39502,13 @@ paths:
           in: path
           required: true
           type: string
-        - name: operator
-          description: address of the operator which the authorization is granted to.
+        - name: approver
+          description: approver is the address of the approver of the authorization.
           in: path
           required: true
           type: string
-        - name: holder
-          description: address of the token holder which has approved the authorization.
+        - name: proxy
+          description: address of the proxy which the authorization is granted to.
           in: path
           required: true
           type: string
@@ -39686,7 +39635,6 @@ paths:
           - `contract_id` is of invalid format.
         - ErrInvalidAddress
           - `grantee` is of invalid format.
-        Since: finschia
       operationId: TokenGranteeGrants
       responses:
         '200':
@@ -39734,8 +39682,6 @@ paths:
             title: >-
               QueryGranteeGrantsResponse is the response type for the
               Query/GranteeGrants RPC method
-
-              Since: finschia
         default:
           description: An unexpected error response
           schema:
@@ -39827,92 +39773,6 @@ paths:
           required: false
           type: boolean
           format: boolean
-      tags:
-        - Query
-  '/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}':
-    get:
-      summary: |-
-        Grant queries a permission on a given grantee permission pair.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `permission` is not a valid permission.
-        - ErrInvalidAddress
-          - `grantee` is of invalid format.
-        - ErrNotFound
-          - there is no permission of `permission` on `grantee`.
-        Since: finschia
-      operationId: TokenGrant
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              grant:
-                type: object
-                properties:
-                  grantee:
-                    type: string
-                    description: address of the grantee.
-                  permission:
-                    description: permission on the token class.
-                    type: string
-                    enum:
-                      - PERMISSION_UNSPECIFIED
-                      - PERMISSION_MODIFY
-                      - PERMISSION_MINT
-                      - PERMISSION_BURN
-                    default: PERMISSION_UNSPECIFIED
-                description: Grant defines permission given to a grantee.
-            title: >-
-              QueryGrantResponse is the response type for the Query/Grant RPC
-              method
-
-              Since: finschia
-        default:
-          description: An unexpected error response
-          schema:
-            type: object
-            properties:
-              error:
-                type: string
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    type_url:
-                      type: string
-                    value:
-                      type: string
-                      format: byte
-      parameters:
-        - name: contract_id
-          description: contract id associated with the token class.
-          in: path
-          required: true
-          type: string
-        - name: grantee
-          description: grantee which has permissions on the token class.
-          in: path
-          required: true
-          type: string
-        - name: permission
-          description: a permission given to the grantee.
-          in: path
-          required: true
-          type: string
-          enum:
-            - PERMISSION_UNSPECIFIED
-            - PERMISSION_MODIFY
-            - PERMISSION_MINT
-            - PERMISSION_BURN
       tags:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/minted':
@@ -49185,6 +49045,10 @@ definitions:
                         timestamp:
                           type: string
                           format: date-time
+                        voting_weight:
+                          type: string
+                          format: int64
+                          title: '*** Ostracon Extended Fields ***'
                       description: >-
                         DuplicateVoteEvidence contains evidence of a validator
                         signed two conflicting votes.
@@ -49365,6 +49229,10 @@ definitions:
                                       proposer_priority:
                                         type: string
                                         format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
                                 proposer:
                                   type: object
                                   properties:
@@ -49389,6 +49257,10 @@ definitions:
                                     proposer_priority:
                                       type: string
                                       format: int64
+                                    voting_weight:
+                                      type: string
+                                      format: int64
+                                      title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -49421,6 +49293,10 @@ definitions:
                               proposer_priority:
                                 type: string
                                 format: int64
+                              voting_weight:
+                                type: string
+                                format: int64
+                                title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64
@@ -49736,6 +49612,10 @@ definitions:
                         timestamp:
                           type: string
                           format: date-time
+                        voting_weight:
+                          type: string
+                          format: int64
+                          title: '*** Ostracon Extended Fields ***'
                       description: >-
                         DuplicateVoteEvidence contains evidence of a validator
                         signed two conflicting votes.
@@ -49916,6 +49796,10 @@ definitions:
                                       proposer_priority:
                                         type: string
                                         format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
                                 proposer:
                                   type: object
                                   properties:
@@ -49940,6 +49824,10 @@ definitions:
                                     proposer_priority:
                                       type: string
                                       format: int64
+                                    voting_weight:
+                                      type: string
+                                      format: int64
+                                      title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -49972,6 +49860,10 @@ definitions:
                               proposer_priority:
                                 type: string
                                 format: int64
+                              voting_weight:
+                                type: string
+                                format: int64
+                                title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64
@@ -50518,6 +50410,10 @@ definitions:
                         timestamp:
                           type: string
                           format: date-time
+                        voting_weight:
+                          type: string
+                          format: int64
+                          title: '*** Ostracon Extended Fields ***'
                       description: >-
                         DuplicateVoteEvidence contains evidence of a validator
                         signed two conflicting votes.
@@ -50698,6 +50594,10 @@ definitions:
                                       proposer_priority:
                                         type: string
                                         format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
                                 proposer:
                                   type: object
                                   properties:
@@ -50722,6 +50622,10 @@ definitions:
                                     proposer_priority:
                                       type: string
                                       format: int64
+                                    voting_weight:
+                                      type: string
+                                      format: int64
+                                      title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -50754,6 +50658,10 @@ definitions:
                               proposer_priority:
                                 type: string
                                 format: int64
+                              voting_weight:
+                                type: string
+                                format: int64
+                                title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64
@@ -52192,6 +52100,10 @@ definitions:
                     timestamp:
                       type: string
                       format: date-time
+                    voting_weight:
+                      type: string
+                      format: int64
+                      title: '*** Ostracon Extended Fields ***'
                   description: >-
                     DuplicateVoteEvidence contains evidence of a validator
                     signed two conflicting votes.
@@ -52371,6 +52283,10 @@ definitions:
                                   proposer_priority:
                                     type: string
                                     format: int64
+                                  voting_weight:
+                                    type: string
+                                    format: int64
+                                    title: '*** Ostracon Extended Fields ***'
                             proposer:
                               type: object
                               properties:
@@ -52395,6 +52311,10 @@ definitions:
                                 proposer_priority:
                                   type: string
                                   format: int64
+                                voting_weight:
+                                  type: string
+                                  format: int64
+                                  title: '*** Ostracon Extended Fields ***'
                             total_voting_power:
                               type: string
                               format: int64
@@ -52427,6 +52347,10 @@ definitions:
                           proposer_priority:
                             type: string
                             format: int64
+                          voting_weight:
+                            type: string
+                            format: int64
+                            title: '*** Ostracon Extended Fields ***'
                     total_voting_power:
                       type: string
                       format: int64
@@ -52730,6 +52654,10 @@ definitions:
       timestamp:
         type: string
         format: date-time
+      voting_weight:
+        type: string
+        format: int64
+        title: '*** Ostracon Extended Fields ***'
     description: >-
       DuplicateVoteEvidence contains evidence of a validator signed two
       conflicting votes.
@@ -52860,6 +52788,10 @@ definitions:
           timestamp:
             type: string
             format: date-time
+          voting_weight:
+            type: string
+            format: int64
+            title: '*** Ostracon Extended Fields ***'
         description: >-
           DuplicateVoteEvidence contains evidence of a validator signed two
           conflicting votes.
@@ -53035,6 +52967,10 @@ definitions:
                         proposer_priority:
                           type: string
                           format: int64
+                        voting_weight:
+                          type: string
+                          format: int64
+                          title: '*** Ostracon Extended Fields ***'
                   proposer:
                     type: object
                     properties:
@@ -53059,6 +52995,10 @@ definitions:
                       proposer_priority:
                         type: string
                         format: int64
+                      voting_weight:
+                        type: string
+                        format: int64
+                        title: '*** Ostracon Extended Fields ***'
                   total_voting_power:
                     type: string
                     format: int64
@@ -53091,6 +53031,10 @@ definitions:
                 proposer_priority:
                   type: string
                   format: int64
+                voting_weight:
+                  type: string
+                  format: int64
+                  title: '*** Ostracon Extended Fields ***'
           total_voting_power:
             type: string
             format: int64
@@ -53234,6 +53178,10 @@ definitions:
                 timestamp:
                   type: string
                   format: date-time
+                voting_weight:
+                  type: string
+                  format: int64
+                  title: '*** Ostracon Extended Fields ***'
               description: >-
                 DuplicateVoteEvidence contains evidence of a validator signed
                 two conflicting votes.
@@ -53411,6 +53359,10 @@ definitions:
                               proposer_priority:
                                 type: string
                                 format: int64
+                              voting_weight:
+                                type: string
+                                format: int64
+                                title: '*** Ostracon Extended Fields ***'
                         proposer:
                           type: object
                           properties:
@@ -53435,6 +53387,10 @@ definitions:
                             proposer_priority:
                               type: string
                               format: int64
+                            voting_weight:
+                              type: string
+                              format: int64
+                              title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64
@@ -53467,6 +53423,10 @@ definitions:
                       proposer_priority:
                         type: string
                         format: int64
+                      voting_weight:
+                        type: string
+                        format: int64
+                        title: '*** Ostracon Extended Fields ***'
                 total_voting_power:
                   type: string
                   format: int64
@@ -53754,6 +53714,10 @@ definitions:
                 proposer_priority:
                   type: string
                   format: int64
+                voting_weight:
+                  type: string
+                  format: int64
+                  title: '*** Ostracon Extended Fields ***'
           proposer:
             type: object
             properties:
@@ -53778,6 +53742,10 @@ definitions:
               proposer_priority:
                 type: string
                 format: int64
+              voting_weight:
+                type: string
+                format: int64
+                title: '*** Ostracon Extended Fields ***'
           total_voting_power:
             type: string
             format: int64
@@ -53951,6 +53919,10 @@ definitions:
                     proposer_priority:
                       type: string
                       format: int64
+                    voting_weight:
+                      type: string
+                      format: int64
+                      title: '*** Ostracon Extended Fields ***'
               proposer:
                 type: object
                 properties:
@@ -53975,6 +53947,10 @@ definitions:
                   proposer_priority:
                     type: string
                     format: int64
+                  voting_weight:
+                    type: string
+                    format: int64
+                    title: '*** Ostracon Extended Fields ***'
               total_voting_power:
                 type: string
                 format: int64
@@ -54007,6 +53983,10 @@ definitions:
             proposer_priority:
               type: string
               format: int64
+            voting_weight:
+              type: string
+              format: int64
+              title: '*** Ostracon Extended Fields ***'
       total_voting_power:
         type: string
         format: int64
@@ -54194,6 +54174,10 @@ definitions:
       proposer_priority:
         type: string
         format: int64
+      voting_weight:
+        type: string
+        format: int64
+        title: '*** Ostracon Extended Fields ***'
   ostracon.types.ValidatorParams:
     type: object
     properties:
@@ -54233,6 +54217,10 @@ definitions:
             proposer_priority:
               type: string
               format: int64
+            voting_weight:
+              type: string
+              format: int64
+              title: '*** Ostracon Extended Fields ***'
       proposer:
         type: object
         properties:
@@ -54257,6 +54245,10 @@ definitions:
           proposer_priority:
             type: string
             format: int64
+          voting_weight:
+            type: string
+            format: int64
+            title: '*** Ostracon Extended Fields ***'
       total_voting_power:
         type: string
         format: int64
@@ -67802,7 +67794,7 @@ definitions:
 
               chain.
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
-  lbm.wasm.v1.AbsoluteTxPosition:
+  cosmwasm.wasm.v1.AbsoluteTxPosition:
     type: object
     properties:
       block_height:
@@ -67820,7 +67812,7 @@ definitions:
     description: |-
       AbsoluteTxPosition is a unique transaction position that allows for global
       ordering of transactions.
-  lbm.wasm.v1.AccessConfig:
+  cosmwasm.wasm.v1.AccessConfig:
     type: object
     properties:
       permission:
@@ -67841,7 +67833,7 @@ definitions:
       address:
         type: string
     description: AccessConfig access control type.
-  lbm.wasm.v1.AccessType:
+  cosmwasm.wasm.v1.AccessType:
     type: string
     enum:
       - ACCESS_TYPE_UNSPECIFIED
@@ -67856,7 +67848,7 @@ definitions:
        - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
        - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
     title: AccessType permission types
-  lbm.wasm.v1.CodeInfoResponse:
+  cosmwasm.wasm.v1.CodeInfoResponse:
     type: object
     properties:
       code_id:
@@ -67889,7 +67881,7 @@ definitions:
             type: string
         description: AccessConfig access control type.
     title: CodeInfoResponse contains code meta data from CodeInfo
-  lbm.wasm.v1.ContractCodeHistoryEntry:
+  cosmwasm.wasm.v1.ContractCodeHistoryEntry:
     type: object
     properties:
       operation:
@@ -67932,7 +67924,7 @@ definitions:
         type: string
         format: byte
     description: ContractCodeHistoryEntry metadata to a contract.
-  lbm.wasm.v1.ContractCodeHistoryOperationType:
+  cosmwasm.wasm.v1.ContractCodeHistoryOperationType:
     type: string
     enum:
       - CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED
@@ -67947,7 +67939,7 @@ definitions:
        - CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE: ContractCodeHistoryOperationTypeMigrate code migration
        - CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS: ContractCodeHistoryOperationTypeGenesis based on genesis data
     title: ContractCodeHistoryOperationType actions that caused a code change
-  lbm.wasm.v1.ContractInfo:
+  cosmwasm.wasm.v1.ContractInfo:
     type: object
     properties:
       code_id:
@@ -67992,18 +67984,6 @@ definitions:
           ordering of transactions.
       ibc_port_id:
         type: string
-      status:
-        title: Status is a status of a contract
-        type: string
-        enum:
-          - CONTRACT_STATUS_UNSPECIFIED
-          - CONTRACT_STATUS_ACTIVE
-          - CONTRACT_STATUS_INACTIVE
-        default: CONTRACT_STATUS_UNSPECIFIED
-        description: |-
-          - CONTRACT_STATUS_UNSPECIFIED: ContractStatus unspecified
-           - CONTRACT_STATUS_ACTIVE: ContractStatus active
-           - CONTRACT_STATUS_INACTIVE: ContractStatus inactive
       extension:
         type: object
         properties:
@@ -68163,8 +68143,20 @@ definitions:
                 "@type": "type.googleapis.com/google.protobuf.Duration",
                 "value": "1.212s"
               }
+      status:
+        title: Status is a status of a contract
+        type: string
+        enum:
+          - CONTRACT_STATUS_UNSPECIFIED
+          - CONTRACT_STATUS_ACTIVE
+          - CONTRACT_STATUS_INACTIVE
+        default: CONTRACT_STATUS_UNSPECIFIED
+        description: |-
+          - CONTRACT_STATUS_UNSPECIFIED: ContractStatus unspecified
+           - CONTRACT_STATUS_ACTIVE: ContractStatus active
+           - CONTRACT_STATUS_INACTIVE: ContractStatus inactive
     title: ContractInfo stores a WASM contract instance
-  lbm.wasm.v1.ContractStatus:
+  cosmwasm.wasm.v1.ContractStatus:
     type: string
     enum:
       - CONTRACT_STATUS_UNSPECIFIED
@@ -68176,7 +68168,7 @@ definitions:
        - CONTRACT_STATUS_ACTIVE: ContractStatus active
        - CONTRACT_STATUS_INACTIVE: ContractStatus inactive
     title: ContractStatus types
-  lbm.wasm.v1.Model:
+  cosmwasm.wasm.v1.Model:
     type: object
     properties:
       key:
@@ -68188,7 +68180,7 @@ definitions:
         format: byte
         title: base64-encode raw value
     title: Model is a struct that holds a KV pair
-  lbm.wasm.v1.QueryAllContractStateResponse:
+  cosmwasm.wasm.v1.QueryAllContractStateResponse:
     type: object
     properties:
       models:
@@ -68226,7 +68218,7 @@ definitions:
     title: |-
       QueryAllContractStateResponse is the response type for the
       Query/AllContractState RPC method
-  lbm.wasm.v1.QueryCodeResponse:
+  cosmwasm.wasm.v1.QueryCodeResponse:
     type: object
     properties:
       code_info:
@@ -68266,7 +68258,7 @@ definitions:
         type: string
         format: byte
     title: QueryCodeResponse is the response type for the Query/Code RPC method
-  lbm.wasm.v1.QueryCodesResponse:
+  cosmwasm.wasm.v1.QueryCodesResponse:
     type: object
     properties:
       code_infos:
@@ -68323,7 +68315,7 @@ definitions:
 
               was set, its value is undefined otherwise
     title: QueryCodesResponse is the response type for the Query/Codes RPC method
-  lbm.wasm.v1.QueryContractHistoryResponse:
+  cosmwasm.wasm.v1.QueryContractHistoryResponse:
     type: object
     properties:
       entries:
@@ -68394,7 +68386,7 @@ definitions:
     title: >-
       QueryContractHistoryResponse is the response type for the
       Query/ContractHistory RPC method
-  lbm.wasm.v1.QueryContractInfoResponse:
+  cosmwasm.wasm.v1.QueryContractInfoResponse:
     type: object
     properties:
       address:
@@ -68445,18 +68437,6 @@ definitions:
               ordering of transactions.
           ibc_port_id:
             type: string
-          status:
-            title: Status is a status of a contract
-            type: string
-            enum:
-              - CONTRACT_STATUS_UNSPECIFIED
-              - CONTRACT_STATUS_ACTIVE
-              - CONTRACT_STATUS_INACTIVE
-            default: CONTRACT_STATUS_UNSPECIFIED
-            description: |-
-              - CONTRACT_STATUS_UNSPECIFIED: ContractStatus unspecified
-               - CONTRACT_STATUS_ACTIVE: ContractStatus active
-               - CONTRACT_STATUS_INACTIVE: ContractStatus inactive
           extension:
             type: object
             properties:
@@ -68622,11 +68602,23 @@ definitions:
                     "@type": "type.googleapis.com/google.protobuf.Duration",
                     "value": "1.212s"
                   }
+          status:
+            title: Status is a status of a contract
+            type: string
+            enum:
+              - CONTRACT_STATUS_UNSPECIFIED
+              - CONTRACT_STATUS_ACTIVE
+              - CONTRACT_STATUS_INACTIVE
+            default: CONTRACT_STATUS_UNSPECIFIED
+            description: |-
+              - CONTRACT_STATUS_UNSPECIFIED: ContractStatus unspecified
+               - CONTRACT_STATUS_ACTIVE: ContractStatus active
+               - CONTRACT_STATUS_INACTIVE: ContractStatus inactive
         title: ContractInfo stores a WASM contract instance
     title: >-
       QueryContractInfoResponse is the response type for the Query/ContractInfo
       RPC method
-  lbm.wasm.v1.QueryContractsByCodeResponse:
+  cosmwasm.wasm.v1.QueryContractsByCodeResponse:
     type: object
     properties:
       contracts:
@@ -68655,7 +68647,7 @@ definitions:
     title: |-
       QueryContractsByCodeResponse is the response type for the
       Query/ContractsByCode RPC method
-  lbm.wasm.v1.QueryPinnedCodesResponse:
+  cosmwasm.wasm.v1.QueryPinnedCodesResponse:
     type: object
     properties:
       code_ids:
@@ -68684,7 +68676,7 @@ definitions:
     title: |-
       QueryPinnedCodesResponse is the response type for the
       Query/PinnedCodes RPC method
-  lbm.wasm.v1.QueryRawContractStateResponse:
+  cosmwasm.wasm.v1.QueryRawContractStateResponse:
     type: object
     properties:
       data:
@@ -68694,7 +68686,7 @@ definitions:
     title: |-
       QueryRawContractStateResponse is the response type for the
       Query/RawContractState RPC method
-  lbm.wasm.v1.QuerySmartContractStateResponse:
+  cosmwasm.wasm.v1.QuerySmartContractStateResponse:
     type: object
     properties:
       data:
@@ -70321,18 +70313,6 @@ definitions:
        - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
        - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
        - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
-  lbm.token.v1.Authorization:
-    type: object
-    properties:
-      holder:
-        type: string
-        description: address of the token holder which approves the authorization.
-      operator:
-        type: string
-        description: address of the operator which the authorization is granted to.
-    description: >-
-      Authorization defines an authorization given to the operator on tokens of
-      the holder.
   lbm.token.v1.Grant:
     type: object
     properties:
@@ -70373,28 +70353,35 @@ definitions:
     title: >-
       QueryApprovedResponse is the response type for the Query/Approved RPC
       method
-
-      NOTE: deprecated
-  lbm.token.v1.QueryAuthorizationResponse:
+  lbm.token.v1.QueryApproversResponse:
     type: object
     properties:
-      authorization:
+      approvers:
+        type: array
+        items:
+          type: string
+        description: all the authorizations on the proxy.
+      pagination:
+        description: pagination defines the pagination in the response.
         type: object
         properties:
-          holder:
+          next_key:
             type: string
-            description: address of the token holder which approves the authorization.
-          operator:
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
             type: string
-            description: address of the operator which the authorization is granted to.
-        description: >-
-          Authorization defines an authorization given to the operator on tokens
-          of the holder.
-    title: >-
-      QueryAuthorizationResponse is the response type for the
-      Query/Authorization RPC method
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
 
-      Since: finschia
+              was set, its value is undefined otherwise
+    title: >-
+      QueryApproversResponse is the response type for the Query/Approvers RPC
+      method
   lbm.token.v1.QueryBalanceResponse:
     type: object
     properties:
@@ -70409,28 +70396,6 @@ definitions:
         type: string
         description: the amount of the burnt tokens.
     title: QueryBurntResponse is the response type for the Query/Burnt RPC method
-  lbm.token.v1.QueryGrantResponse:
-    type: object
-    properties:
-      grant:
-        type: object
-        properties:
-          grantee:
-            type: string
-            description: address of the grantee.
-          permission:
-            description: permission on the token class.
-            type: string
-            enum:
-              - PERMISSION_UNSPECIFIED
-              - PERMISSION_MODIFY
-              - PERMISSION_MINT
-              - PERMISSION_BURN
-            default: PERMISSION_UNSPECIFIED
-        description: Grant defines permission given to a grantee.
-    title: |-
-      QueryGrantResponse is the response type for the Query/Grant RPC method
-      Since: finschia
   lbm.token.v1.QueryGranteeGrantsResponse:
     type: object
     properties:
@@ -70474,8 +70439,6 @@ definitions:
     title: >-
       QueryGranteeGrantsResponse is the response type for the
       Query/GranteeGrants RPC method
-
-      Since: finschia
   lbm.token.v1.QueryMintedResponse:
     type: object
     properties:
@@ -70483,47 +70446,6 @@ definitions:
         type: string
         description: the amount of the minted tokens.
     title: QueryMintedResponse is the response type for the Query/Minted RPC method
-  lbm.token.v1.QueryOperatorAuthorizationsResponse:
-    type: object
-    properties:
-      authorizations:
-        type: array
-        items:
-          type: object
-          properties:
-            holder:
-              type: string
-              description: address of the token holder which approves the authorization.
-            operator:
-              type: string
-              description: address of the operator which the authorization is granted to.
-          description: >-
-            Authorization defines an authorization given to the operator on
-            tokens of the holder.
-        description: all the authorizations on the operator.
-      pagination:
-        description: pagination defines the pagination in the response.
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            title: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-    title: >-
-      QueryOperatorAuthorizationsResponse is the response type for the
-      Query/OperatorAuthorizations RPC method
-
-      Since: finschia
   lbm.token.v1.QuerySupplyResponse:
     type: object
     properties:
@@ -70636,8 +70558,6 @@ definitions:
     title: >-
       QueryTokenClassesResponse is the response type for the Query/TokenClasses
       RPC method
-
-      Since: finschia
   lbm.token.v1.TokenClass:
     type: object
     properties:

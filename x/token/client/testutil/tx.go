@@ -80,7 +80,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdOperatorSend() {
+func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.vendor),
@@ -139,7 +139,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorSend() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdOperatorSend()
+			cmd := cli.NewTxCmdTransferFrom()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -154,7 +154,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorSend() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdAuthorizeOperator() {
+func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.vendor),
@@ -197,7 +197,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAuthorizeOperator() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdAuthorizeOperator()
+			cmd := cli.NewTxCmdApprove()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -336,7 +336,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdIssue() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
+func (s *IntegrationTestSuite) TestNewTxCmdGrantPermission() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.vendor),
@@ -354,7 +354,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 				s.classes[1].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
-				token.PermissionMint.String(),
+				token.LegacyPermissionMint.String(),
 			},
 			true,
 		},
@@ -363,7 +363,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 				s.classes[1].ContractId,
 				s.vendor.String(),
 				s.customer.String(),
-				token.PermissionMint.String(),
+				token.LegacyPermissionMint.String(),
 				"extra",
 			},
 			false,
@@ -382,7 +382,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdGrant()
+			cmd := cli.NewTxCmdGrantPermission()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -397,7 +397,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdAbandon() {
+func (s *IntegrationTestSuite) TestNewTxCmdRevokePermission() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.vendor),
@@ -414,7 +414,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAbandon() {
 			[]string{
 				s.classes[1].ContractId,
 				s.vendor.String(),
-				token.PermissionModify.String(),
+				token.LegacyPermissionModify.String(),
 			},
 			true,
 		},
@@ -422,7 +422,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAbandon() {
 			[]string{
 				s.classes[1].ContractId,
 				s.vendor.String(),
-				token.PermissionModify.String(),
+				token.LegacyPermissionModify.String(),
 				"extra",
 			},
 			false,
@@ -440,7 +440,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAbandon() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdAbandon()
+			cmd := cli.NewTxCmdRevokePermission()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -574,7 +574,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurn() {
+func (s *IntegrationTestSuite) TestNewTxCmdBurnFrom() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.vendor),
@@ -620,7 +620,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurn() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdOperatorBurn()
+			cmd := cli.NewTxCmdBurnFrom()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)

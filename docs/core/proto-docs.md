@@ -572,6 +572,86 @@
     - [PeriodicVestingAccount](#cosmos.vesting.v1beta1.PeriodicVestingAccount)
     - [PermanentLockedAccount](#cosmos.vesting.v1beta1.PermanentLockedAccount)
   
+- [cosmwasm/wasm/v1/types.proto](#cosmwasm/wasm/v1/types.proto)
+    - [AbsoluteTxPosition](#cosmwasm.wasm.v1.AbsoluteTxPosition)
+    - [AccessConfig](#cosmwasm.wasm.v1.AccessConfig)
+    - [AccessTypeParam](#cosmwasm.wasm.v1.AccessTypeParam)
+    - [CodeInfo](#cosmwasm.wasm.v1.CodeInfo)
+    - [ContractCodeHistoryEntry](#cosmwasm.wasm.v1.ContractCodeHistoryEntry)
+    - [ContractInfo](#cosmwasm.wasm.v1.ContractInfo)
+    - [Model](#cosmwasm.wasm.v1.Model)
+    - [Params](#cosmwasm.wasm.v1.Params)
+  
+    - [AccessType](#cosmwasm.wasm.v1.AccessType)
+    - [ContractCodeHistoryOperationType](#cosmwasm.wasm.v1.ContractCodeHistoryOperationType)
+    - [ContractStatus](#cosmwasm.wasm.v1.ContractStatus)
+  
+- [cosmwasm/wasm/v1/tx.proto](#cosmwasm/wasm/v1/tx.proto)
+    - [MsgClearAdmin](#cosmwasm.wasm.v1.MsgClearAdmin)
+    - [MsgClearAdminResponse](#cosmwasm.wasm.v1.MsgClearAdminResponse)
+    - [MsgExecuteContract](#cosmwasm.wasm.v1.MsgExecuteContract)
+    - [MsgExecuteContractResponse](#cosmwasm.wasm.v1.MsgExecuteContractResponse)
+    - [MsgInstantiateContract](#cosmwasm.wasm.v1.MsgInstantiateContract)
+    - [MsgInstantiateContractResponse](#cosmwasm.wasm.v1.MsgInstantiateContractResponse)
+    - [MsgMigrateContract](#cosmwasm.wasm.v1.MsgMigrateContract)
+    - [MsgMigrateContractResponse](#cosmwasm.wasm.v1.MsgMigrateContractResponse)
+    - [MsgStoreCode](#cosmwasm.wasm.v1.MsgStoreCode)
+    - [MsgStoreCodeAndInstantiateContract](#cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContract)
+    - [MsgStoreCodeAndInstantiateContractResponse](#cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse)
+    - [MsgStoreCodeResponse](#cosmwasm.wasm.v1.MsgStoreCodeResponse)
+    - [MsgUpdateAdmin](#cosmwasm.wasm.v1.MsgUpdateAdmin)
+    - [MsgUpdateAdminResponse](#cosmwasm.wasm.v1.MsgUpdateAdminResponse)
+  
+    - [Msg](#cosmwasm.wasm.v1.Msg)
+  
+- [cosmwasm/wasm/v1/genesis.proto](#cosmwasm/wasm/v1/genesis.proto)
+    - [Code](#cosmwasm.wasm.v1.Code)
+    - [Contract](#cosmwasm.wasm.v1.Contract)
+    - [GenesisState](#cosmwasm.wasm.v1.GenesisState)
+    - [GenesisState.GenMsgs](#cosmwasm.wasm.v1.GenesisState.GenMsgs)
+    - [Sequence](#cosmwasm.wasm.v1.Sequence)
+  
+- [cosmwasm/wasm/v1/ibc.proto](#cosmwasm/wasm/v1/ibc.proto)
+    - [MsgIBCCloseChannel](#cosmwasm.wasm.v1.MsgIBCCloseChannel)
+    - [MsgIBCSend](#cosmwasm.wasm.v1.MsgIBCSend)
+  
+- [cosmwasm/wasm/v1/proposal.proto](#cosmwasm/wasm/v1/proposal.proto)
+    - [AccessConfigUpdate](#cosmwasm.wasm.v1.AccessConfigUpdate)
+    - [ClearAdminProposal](#cosmwasm.wasm.v1.ClearAdminProposal)
+    - [ExecuteContractProposal](#cosmwasm.wasm.v1.ExecuteContractProposal)
+    - [InstantiateContractProposal](#cosmwasm.wasm.v1.InstantiateContractProposal)
+    - [MigrateContractProposal](#cosmwasm.wasm.v1.MigrateContractProposal)
+    - [PinCodesProposal](#cosmwasm.wasm.v1.PinCodesProposal)
+    - [StoreCodeProposal](#cosmwasm.wasm.v1.StoreCodeProposal)
+    - [SudoContractProposal](#cosmwasm.wasm.v1.SudoContractProposal)
+    - [UnpinCodesProposal](#cosmwasm.wasm.v1.UnpinCodesProposal)
+    - [UpdateAdminProposal](#cosmwasm.wasm.v1.UpdateAdminProposal)
+    - [UpdateContractStatusProposal](#cosmwasm.wasm.v1.UpdateContractStatusProposal)
+    - [UpdateInstantiateConfigProposal](#cosmwasm.wasm.v1.UpdateInstantiateConfigProposal)
+  
+- [cosmwasm/wasm/v1/query.proto](#cosmwasm/wasm/v1/query.proto)
+    - [CodeInfoResponse](#cosmwasm.wasm.v1.CodeInfoResponse)
+    - [QueryAllContractStateRequest](#cosmwasm.wasm.v1.QueryAllContractStateRequest)
+    - [QueryAllContractStateResponse](#cosmwasm.wasm.v1.QueryAllContractStateResponse)
+    - [QueryCodeRequest](#cosmwasm.wasm.v1.QueryCodeRequest)
+    - [QueryCodeResponse](#cosmwasm.wasm.v1.QueryCodeResponse)
+    - [QueryCodesRequest](#cosmwasm.wasm.v1.QueryCodesRequest)
+    - [QueryCodesResponse](#cosmwasm.wasm.v1.QueryCodesResponse)
+    - [QueryContractHistoryRequest](#cosmwasm.wasm.v1.QueryContractHistoryRequest)
+    - [QueryContractHistoryResponse](#cosmwasm.wasm.v1.QueryContractHistoryResponse)
+    - [QueryContractInfoRequest](#cosmwasm.wasm.v1.QueryContractInfoRequest)
+    - [QueryContractInfoResponse](#cosmwasm.wasm.v1.QueryContractInfoResponse)
+    - [QueryContractsByCodeRequest](#cosmwasm.wasm.v1.QueryContractsByCodeRequest)
+    - [QueryContractsByCodeResponse](#cosmwasm.wasm.v1.QueryContractsByCodeResponse)
+    - [QueryPinnedCodesRequest](#cosmwasm.wasm.v1.QueryPinnedCodesRequest)
+    - [QueryPinnedCodesResponse](#cosmwasm.wasm.v1.QueryPinnedCodesResponse)
+    - [QueryRawContractStateRequest](#cosmwasm.wasm.v1.QueryRawContractStateRequest)
+    - [QueryRawContractStateResponse](#cosmwasm.wasm.v1.QueryRawContractStateResponse)
+    - [QuerySmartContractStateRequest](#cosmwasm.wasm.v1.QuerySmartContractStateRequest)
+    - [QuerySmartContractStateResponse](#cosmwasm.wasm.v1.QuerySmartContractStateResponse)
+  
+    - [Query](#cosmwasm.wasm.v1.Query)
+  
 - [ibc/applications/transfer/v1/transfer.proto](#ibc/applications/transfer/v1/transfer.proto)
     - [DenomTrace](#ibc.applications.transfer.v1.DenomTrace)
     - [FungibleTokenPacketData](#ibc.applications.transfer.v1.FungibleTokenPacketData)
@@ -1094,20 +1174,16 @@
 - [lbm/token/v1/query.proto](#lbm/token/v1/query.proto)
     - [QueryApprovedRequest](#lbm.token.v1.QueryApprovedRequest)
     - [QueryApprovedResponse](#lbm.token.v1.QueryApprovedResponse)
-    - [QueryAuthorizationRequest](#lbm.token.v1.QueryAuthorizationRequest)
-    - [QueryAuthorizationResponse](#lbm.token.v1.QueryAuthorizationResponse)
+    - [QueryApproversRequest](#lbm.token.v1.QueryApproversRequest)
+    - [QueryApproversResponse](#lbm.token.v1.QueryApproversResponse)
     - [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest)
     - [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse)
     - [QueryBurntRequest](#lbm.token.v1.QueryBurntRequest)
     - [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse)
-    - [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest)
-    - [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse)
     - [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest)
     - [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse)
     - [QueryMintedRequest](#lbm.token.v1.QueryMintedRequest)
     - [QueryMintedResponse](#lbm.token.v1.QueryMintedResponse)
-    - [QueryOperatorAuthorizationsRequest](#lbm.token.v1.QueryOperatorAuthorizationsRequest)
-    - [QueryOperatorAuthorizationsResponse](#lbm.token.v1.QueryOperatorAuthorizationsResponse)
     - [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest)
     - [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse)
     - [QueryTokenClassRequest](#lbm.token.v1.QueryTokenClassRequest)
@@ -1118,30 +1194,20 @@
     - [Query](#lbm.token.v1.Query)
   
 - [lbm/token/v1/tx.proto](#lbm/token/v1/tx.proto)
-    - [MsgAbandon](#lbm.token.v1.MsgAbandon)
-    - [MsgAbandonResponse](#lbm.token.v1.MsgAbandonResponse)
     - [MsgApprove](#lbm.token.v1.MsgApprove)
     - [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse)
-    - [MsgAuthorizeOperator](#lbm.token.v1.MsgAuthorizeOperator)
-    - [MsgAuthorizeOperatorResponse](#lbm.token.v1.MsgAuthorizeOperatorResponse)
     - [MsgBurn](#lbm.token.v1.MsgBurn)
     - [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom)
     - [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse)
     - [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse)
-    - [MsgGrant](#lbm.token.v1.MsgGrant)
     - [MsgGrantPermission](#lbm.token.v1.MsgGrantPermission)
     - [MsgGrantPermissionResponse](#lbm.token.v1.MsgGrantPermissionResponse)
-    - [MsgGrantResponse](#lbm.token.v1.MsgGrantResponse)
     - [MsgIssue](#lbm.token.v1.MsgIssue)
     - [MsgIssueResponse](#lbm.token.v1.MsgIssueResponse)
     - [MsgMint](#lbm.token.v1.MsgMint)
     - [MsgMintResponse](#lbm.token.v1.MsgMintResponse)
     - [MsgModify](#lbm.token.v1.MsgModify)
     - [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse)
-    - [MsgOperatorBurn](#lbm.token.v1.MsgOperatorBurn)
-    - [MsgOperatorBurnResponse](#lbm.token.v1.MsgOperatorBurnResponse)
-    - [MsgOperatorSend](#lbm.token.v1.MsgOperatorSend)
-    - [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse)
     - [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator)
     - [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse)
     - [MsgRevokePermission](#lbm.token.v1.MsgRevokePermission)
@@ -1152,86 +1218,6 @@
     - [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse)
   
     - [Msg](#lbm.token.v1.Msg)
-  
-- [lbm/wasm/v1/types.proto](#lbm/wasm/v1/types.proto)
-    - [AbsoluteTxPosition](#lbm.wasm.v1.AbsoluteTxPosition)
-    - [AccessConfig](#lbm.wasm.v1.AccessConfig)
-    - [AccessTypeParam](#lbm.wasm.v1.AccessTypeParam)
-    - [CodeInfo](#lbm.wasm.v1.CodeInfo)
-    - [ContractCodeHistoryEntry](#lbm.wasm.v1.ContractCodeHistoryEntry)
-    - [ContractInfo](#lbm.wasm.v1.ContractInfo)
-    - [Model](#lbm.wasm.v1.Model)
-    - [Params](#lbm.wasm.v1.Params)
-  
-    - [AccessType](#lbm.wasm.v1.AccessType)
-    - [ContractCodeHistoryOperationType](#lbm.wasm.v1.ContractCodeHistoryOperationType)
-    - [ContractStatus](#lbm.wasm.v1.ContractStatus)
-  
-- [lbm/wasm/v1/tx.proto](#lbm/wasm/v1/tx.proto)
-    - [MsgClearAdmin](#lbm.wasm.v1.MsgClearAdmin)
-    - [MsgClearAdminResponse](#lbm.wasm.v1.MsgClearAdminResponse)
-    - [MsgExecuteContract](#lbm.wasm.v1.MsgExecuteContract)
-    - [MsgExecuteContractResponse](#lbm.wasm.v1.MsgExecuteContractResponse)
-    - [MsgInstantiateContract](#lbm.wasm.v1.MsgInstantiateContract)
-    - [MsgInstantiateContractResponse](#lbm.wasm.v1.MsgInstantiateContractResponse)
-    - [MsgMigrateContract](#lbm.wasm.v1.MsgMigrateContract)
-    - [MsgMigrateContractResponse](#lbm.wasm.v1.MsgMigrateContractResponse)
-    - [MsgStoreCode](#lbm.wasm.v1.MsgStoreCode)
-    - [MsgStoreCodeAndInstantiateContract](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContract)
-    - [MsgStoreCodeAndInstantiateContractResponse](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse)
-    - [MsgStoreCodeResponse](#lbm.wasm.v1.MsgStoreCodeResponse)
-    - [MsgUpdateAdmin](#lbm.wasm.v1.MsgUpdateAdmin)
-    - [MsgUpdateAdminResponse](#lbm.wasm.v1.MsgUpdateAdminResponse)
-  
-    - [Msg](#lbm.wasm.v1.Msg)
-  
-- [lbm/wasm/v1/genesis.proto](#lbm/wasm/v1/genesis.proto)
-    - [Code](#lbm.wasm.v1.Code)
-    - [Contract](#lbm.wasm.v1.Contract)
-    - [GenesisState](#lbm.wasm.v1.GenesisState)
-    - [GenesisState.GenMsgs](#lbm.wasm.v1.GenesisState.GenMsgs)
-    - [Sequence](#lbm.wasm.v1.Sequence)
-  
-- [lbm/wasm/v1/ibc.proto](#lbm/wasm/v1/ibc.proto)
-    - [MsgIBCCloseChannel](#lbm.wasm.v1.MsgIBCCloseChannel)
-    - [MsgIBCSend](#lbm.wasm.v1.MsgIBCSend)
-  
-- [lbm/wasm/v1/proposal.proto](#lbm/wasm/v1/proposal.proto)
-    - [AccessConfigUpdate](#lbm.wasm.v1.AccessConfigUpdate)
-    - [ClearAdminProposal](#lbm.wasm.v1.ClearAdminProposal)
-    - [ExecuteContractProposal](#lbm.wasm.v1.ExecuteContractProposal)
-    - [InstantiateContractProposal](#lbm.wasm.v1.InstantiateContractProposal)
-    - [MigrateContractProposal](#lbm.wasm.v1.MigrateContractProposal)
-    - [PinCodesProposal](#lbm.wasm.v1.PinCodesProposal)
-    - [StoreCodeProposal](#lbm.wasm.v1.StoreCodeProposal)
-    - [SudoContractProposal](#lbm.wasm.v1.SudoContractProposal)
-    - [UnpinCodesProposal](#lbm.wasm.v1.UnpinCodesProposal)
-    - [UpdateAdminProposal](#lbm.wasm.v1.UpdateAdminProposal)
-    - [UpdateContractStatusProposal](#lbm.wasm.v1.UpdateContractStatusProposal)
-    - [UpdateInstantiateConfigProposal](#lbm.wasm.v1.UpdateInstantiateConfigProposal)
-  
-- [lbm/wasm/v1/query.proto](#lbm/wasm/v1/query.proto)
-    - [CodeInfoResponse](#lbm.wasm.v1.CodeInfoResponse)
-    - [QueryAllContractStateRequest](#lbm.wasm.v1.QueryAllContractStateRequest)
-    - [QueryAllContractStateResponse](#lbm.wasm.v1.QueryAllContractStateResponse)
-    - [QueryCodeRequest](#lbm.wasm.v1.QueryCodeRequest)
-    - [QueryCodeResponse](#lbm.wasm.v1.QueryCodeResponse)
-    - [QueryCodesRequest](#lbm.wasm.v1.QueryCodesRequest)
-    - [QueryCodesResponse](#lbm.wasm.v1.QueryCodesResponse)
-    - [QueryContractHistoryRequest](#lbm.wasm.v1.QueryContractHistoryRequest)
-    - [QueryContractHistoryResponse](#lbm.wasm.v1.QueryContractHistoryResponse)
-    - [QueryContractInfoRequest](#lbm.wasm.v1.QueryContractInfoRequest)
-    - [QueryContractInfoResponse](#lbm.wasm.v1.QueryContractInfoResponse)
-    - [QueryContractsByCodeRequest](#lbm.wasm.v1.QueryContractsByCodeRequest)
-    - [QueryContractsByCodeResponse](#lbm.wasm.v1.QueryContractsByCodeResponse)
-    - [QueryPinnedCodesRequest](#lbm.wasm.v1.QueryPinnedCodesRequest)
-    - [QueryPinnedCodesResponse](#lbm.wasm.v1.QueryPinnedCodesResponse)
-    - [QueryRawContractStateRequest](#lbm.wasm.v1.QueryRawContractStateRequest)
-    - [QueryRawContractStateResponse](#lbm.wasm.v1.QueryRawContractStateResponse)
-    - [QuerySmartContractStateRequest](#lbm.wasm.v1.QuerySmartContractStateRequest)
-    - [QuerySmartContractStateResponse](#lbm.wasm.v1.QuerySmartContractStateResponse)
-  
-    - [Query](#lbm.wasm.v1.Query)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -8720,6 +8706,1195 @@ Since: cosmos-sdk 0.43
  <!-- end enums -->
 
  <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmwasm/wasm/v1/types.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmwasm/wasm/v1/types.proto
+
+
+
+<a name="cosmwasm.wasm.v1.AbsoluteTxPosition"></a>
+
+### AbsoluteTxPosition
+AbsoluteTxPosition is a unique transaction position that allows for global
+ordering of transactions.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `block_height` | [uint64](#uint64) |  | BlockHeight is the block the contract was created at |
+| `tx_index` | [uint64](#uint64) |  | TxIndex is a monotonic counter within the block (actual transaction index, or gas consumed) |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.AccessConfig"></a>
+
+### AccessConfig
+AccessConfig access control type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `permission` | [AccessType](#cosmwasm.wasm.v1.AccessType) |  |  |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.AccessTypeParam"></a>
+
+### AccessTypeParam
+AccessTypeParam
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `value` | [AccessType](#cosmwasm.wasm.v1.AccessType) |  |  |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.CodeInfo"></a>
+
+### CodeInfo
+CodeInfo is data for the uploaded contract WASM code
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_hash` | [bytes](#bytes) |  | CodeHash is the unique identifier created by wasmvm |
+| `creator` | [string](#string) |  | Creator address who initially stored the code |
+| `instantiate_config` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  | InstantiateConfig access control to apply on contract creation, optional |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.ContractCodeHistoryEntry"></a>
+
+### ContractCodeHistoryEntry
+ContractCodeHistoryEntry metadata to a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operation` | [ContractCodeHistoryOperationType](#cosmwasm.wasm.v1.ContractCodeHistoryOperationType) |  |  |
+| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
+| `updated` | [AbsoluteTxPosition](#cosmwasm.wasm.v1.AbsoluteTxPosition) |  | Updated Tx position when the operation was executed. |
+| `msg` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.ContractInfo"></a>
+
+### ContractInfo
+ContractInfo stores a WASM contract instance
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored Wasm code |
+| `creator` | [string](#string) |  | Creator address who initially instantiated the contract |
+| `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
+| `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
+| `created` | [AbsoluteTxPosition](#cosmwasm.wasm.v1.AbsoluteTxPosition) |  | Created Tx position when the contract was instantiated. This data should kept internal and not be exposed via query results. Just use for sorting |
+| `ibc_port_id` | [string](#string) |  |  |
+| `extension` | [google.protobuf.Any](#google.protobuf.Any) |  | Extension is an extension point to store custom metadata within the persistence model. |
+| `status` | [ContractStatus](#cosmwasm.wasm.v1.ContractStatus) |  | Status is a status of a contract |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.Model"></a>
+
+### Model
+Model is a struct that holds a KV pair
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  | hex-encode key to read it better (this is often ascii) |
+| `value` | [bytes](#bytes) |  | base64-encode raw value |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.Params"></a>
+
+### Params
+Params defines the set of wasm parameters.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_upload_access` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  |  |
+| `instantiate_default_permission` | [AccessType](#cosmwasm.wasm.v1.AccessType) |  |  |
+| `gas_multiplier` | [uint64](#uint64) |  |  |
+| `instance_cost` | [uint64](#uint64) |  |  |
+| `compile_cost` | [uint64](#uint64) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="cosmwasm.wasm.v1.AccessType"></a>
+
+### AccessType
+AccessType permission types
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| ACCESS_TYPE_UNSPECIFIED | 0 | AccessTypeUnspecified placeholder for empty value |
+| ACCESS_TYPE_NOBODY | 1 | AccessTypeNobody forbidden |
+| ACCESS_TYPE_ONLY_ADDRESS | 2 | AccessTypeOnlyAddress restricted to an address |
+| ACCESS_TYPE_EVERYBODY | 3 | AccessTypeEverybody unrestricted |
+
+
+
+<a name="cosmwasm.wasm.v1.ContractCodeHistoryOperationType"></a>
+
+### ContractCodeHistoryOperationType
+ContractCodeHistoryOperationType actions that caused a code change
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED | 0 | ContractCodeHistoryOperationTypeUnspecified placeholder for empty value |
+| CONTRACT_CODE_HISTORY_OPERATION_TYPE_INIT | 1 | ContractCodeHistoryOperationTypeInit on chain contract instantiation |
+| CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE | 2 | ContractCodeHistoryOperationTypeMigrate code migration |
+| CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS | 3 | ContractCodeHistoryOperationTypeGenesis based on genesis data |
+
+
+
+<a name="cosmwasm.wasm.v1.ContractStatus"></a>
+
+### ContractStatus
+ContractStatus types
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| CONTRACT_STATUS_UNSPECIFIED | 0 | ContractStatus unspecified |
+| CONTRACT_STATUS_ACTIVE | 1 | ContractStatus active |
+| CONTRACT_STATUS_INACTIVE | 2 | ContractStatus inactive |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmwasm/wasm/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmwasm/wasm/v1/tx.proto
+
+
+
+<a name="cosmwasm.wasm.v1.MsgClearAdmin"></a>
+
+### MsgClearAdmin
+MsgClearAdmin removes any admin stored for a smart contract
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MsgClearAdminResponse"></a>
+
+### MsgClearAdminResponse
+MsgClearAdminResponse returns empty data
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MsgExecuteContract"></a>
+
+### MsgExecuteContract
+MsgExecuteContract submits the given message data to a smart contract
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract |
+| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on execution |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MsgExecuteContractResponse"></a>
+
+### MsgExecuteContractResponse
+MsgExecuteContractResponse returns execution result data.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `data` | [bytes](#bytes) |  | Data contains base64-encoded bytes to returned from the contract |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MsgInstantiateContract"></a>
+
+### MsgInstantiateContract
+MsgInstantiateContract create a new smart contract instance for the given
+code id.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
+| `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
+| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
+| `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on instantiation |
+| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MsgInstantiateContractResponse"></a>
+
+### MsgInstantiateContractResponse
+MsgInstantiateContractResponse return instantiation result data
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | Address is the bech32 address of the new contract instance. |
+| `data` | [bytes](#bytes) |  | Data contains base64-encoded bytes to returned from the contract |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MsgMigrateContract"></a>
+
+### MsgMigrateContract
+MsgMigrateContract runs a code upgrade/ downgrade for a smart contract
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+| `code_id` | [uint64](#uint64) |  | CodeID references the new WASM code |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on migration |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MsgMigrateContractResponse"></a>
+
+### MsgMigrateContractResponse
+MsgMigrateContractResponse returns contract migration result data.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `data` | [bytes](#bytes) |  | Data contains same raw bytes returned as data from the wasm contract. (May be empty) |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MsgStoreCode"></a>
+
+### MsgStoreCode
+MsgStoreCode submit Wasm code to the system
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
+| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
+| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  | InstantiatePermission access control to apply on contract creation, optional |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContract"></a>
+
+### MsgStoreCodeAndInstantiateContract
+MsgStoreCodeAndInstantiateContract submit Wasm code to the system and instantiate a contract using it.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
+| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
+| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  |  |
+| `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
+| `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on instantiation |
+| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse"></a>
+
+### MsgStoreCodeAndInstantiateContractResponse
+MsgStoreCodeAndInstantiateContractResponse returns store and instantiate result data.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
+| `address` | [string](#string) |  | Address is the bech32 address of the new contract instance. |
+| `data` | [bytes](#bytes) |  | Data contains base64-encoded bytes to returned from the contract |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MsgStoreCodeResponse"></a>
+
+### MsgStoreCodeResponse
+MsgStoreCodeResponse returns store result data.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MsgUpdateAdmin"></a>
+
+### MsgUpdateAdmin
+MsgUpdateAdmin sets a new admin for a smart contract
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
+| `new_admin` | [string](#string) |  | NewAdmin address to be set |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MsgUpdateAdminResponse"></a>
+
+### MsgUpdateAdminResponse
+MsgUpdateAdminResponse returns empty data
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="cosmwasm.wasm.v1.Msg"></a>
+
+### Msg
+Msg defines the wasm Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `StoreCode` | [MsgStoreCode](#cosmwasm.wasm.v1.MsgStoreCode) | [MsgStoreCodeResponse](#cosmwasm.wasm.v1.MsgStoreCodeResponse) | StoreCode to submit Wasm code to the system | |
+| `InstantiateContract` | [MsgInstantiateContract](#cosmwasm.wasm.v1.MsgInstantiateContract) | [MsgInstantiateContractResponse](#cosmwasm.wasm.v1.MsgInstantiateContractResponse) | Instantiate creates a new smart contract instance for the given code id. | |
+| `StoreCodeAndInstantiateContract` | [MsgStoreCodeAndInstantiateContract](#cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContract) | [MsgStoreCodeAndInstantiateContractResponse](#cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse) | StoreCodeAndInstantiatecontract upload code and instantiate a contract using it. | |
+| `ExecuteContract` | [MsgExecuteContract](#cosmwasm.wasm.v1.MsgExecuteContract) | [MsgExecuteContractResponse](#cosmwasm.wasm.v1.MsgExecuteContractResponse) | Execute submits the given message data to a smart contract | |
+| `MigrateContract` | [MsgMigrateContract](#cosmwasm.wasm.v1.MsgMigrateContract) | [MsgMigrateContractResponse](#cosmwasm.wasm.v1.MsgMigrateContractResponse) | Migrate runs a code upgrade/ downgrade for a smart contract | |
+| `UpdateAdmin` | [MsgUpdateAdmin](#cosmwasm.wasm.v1.MsgUpdateAdmin) | [MsgUpdateAdminResponse](#cosmwasm.wasm.v1.MsgUpdateAdminResponse) | UpdateAdmin sets a new admin for a smart contract | |
+| `ClearAdmin` | [MsgClearAdmin](#cosmwasm.wasm.v1.MsgClearAdmin) | [MsgClearAdminResponse](#cosmwasm.wasm.v1.MsgClearAdminResponse) | ClearAdmin removes any admin stored for a smart contract | |
+
+ <!-- end services -->
+
+
+
+<a name="cosmwasm/wasm/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmwasm/wasm/v1/genesis.proto
+
+
+
+<a name="cosmwasm.wasm.v1.Code"></a>
+
+### Code
+Code struct encompasses CodeInfo and CodeBytes
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_id` | [uint64](#uint64) |  |  |
+| `code_info` | [CodeInfo](#cosmwasm.wasm.v1.CodeInfo) |  |  |
+| `code_bytes` | [bytes](#bytes) |  |  |
+| `pinned` | [bool](#bool) |  | Pinned to wasmvm cache |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.Contract"></a>
+
+### Contract
+Contract struct encompasses ContractAddress, ContractInfo, and ContractState
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_address` | [string](#string) |  |  |
+| `contract_info` | [ContractInfo](#cosmwasm.wasm.v1.ContractInfo) |  |  |
+| `contract_state` | [Model](#cosmwasm.wasm.v1.Model) | repeated |  |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState - genesis state of x/wasm
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#cosmwasm.wasm.v1.Params) |  |  |
+| `codes` | [Code](#cosmwasm.wasm.v1.Code) | repeated |  |
+| `contracts` | [Contract](#cosmwasm.wasm.v1.Contract) | repeated |  |
+| `sequences` | [Sequence](#cosmwasm.wasm.v1.Sequence) | repeated |  |
+| `gen_msgs` | [GenesisState.GenMsgs](#cosmwasm.wasm.v1.GenesisState.GenMsgs) | repeated |  |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.GenesisState.GenMsgs"></a>
+
+### GenesisState.GenMsgs
+GenMsgs define the messages that can be executed during genesis phase in order.
+The intention is to have more human readable data that is auditable.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `store_code` | [MsgStoreCode](#cosmwasm.wasm.v1.MsgStoreCode) |  |  |
+| `instantiate_contract` | [MsgInstantiateContract](#cosmwasm.wasm.v1.MsgInstantiateContract) |  |  |
+| `execute_contract` | [MsgExecuteContract](#cosmwasm.wasm.v1.MsgExecuteContract) |  |  |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.Sequence"></a>
+
+### Sequence
+Sequence key and value of an id generation counter
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id_key` | [bytes](#bytes) |  |  |
+| `value` | [uint64](#uint64) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmwasm/wasm/v1/ibc.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmwasm/wasm/v1/ibc.proto
+
+
+
+<a name="cosmwasm.wasm.v1.MsgIBCCloseChannel"></a>
+
+### MsgIBCCloseChannel
+MsgIBCCloseChannel port and channel need to be owned by the contract
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `channel` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MsgIBCSend"></a>
+
+### MsgIBCSend
+MsgIBCSend
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `channel` | [string](#string) |  | the channel by which the packet will be sent |
+| `timeout_height` | [uint64](#uint64) |  | Timeout height relative to the current block height. The timeout is disabled when set to 0. |
+| `timeout_timestamp` | [uint64](#uint64) |  | Timeout timestamp (in nanoseconds) relative to the current block timestamp. The timeout is disabled when set to 0. |
+| `data` | [bytes](#bytes) |  | Data is the payload to transfer. We must not make assumption what format or content is in here. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmwasm/wasm/v1/proposal.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmwasm/wasm/v1/proposal.proto
+
+
+
+<a name="cosmwasm.wasm.v1.AccessConfigUpdate"></a>
+
+### AccessConfigUpdate
+AccessConfigUpdate contains the code id and the access config to be
+applied.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code to be updated |
+| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply to the set of code ids |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.ClearAdminProposal"></a>
+
+### ClearAdminProposal
+ClearAdminProposal gov proposal content type to clear the admin of a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.ExecuteContractProposal"></a>
+
+### ExecuteContractProposal
+ExecuteContractProposal gov proposal content type to call execute on a
+contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract as execute |
+| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.InstantiateContractProposal"></a>
+
+### InstantiateContractProposal
+InstantiateContractProposal gov proposal content type to instantiate a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
+| `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
+| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
+| `label` | [string](#string) |  | Label is optional metadata to be stored with a constract instance. |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on instantiation |
+| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.MigrateContractProposal"></a>
+
+### MigrateContractProposal
+MigrateContractProposal gov proposal content type to migrate a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text
+
+Note: skipping 3 as this was previously used for unneeded run_as |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+| `code_id` | [uint64](#uint64) |  | CodeID references the new WASM code |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on migration |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.PinCodesProposal"></a>
+
+### PinCodesProposal
+PinCodesProposal gov proposal content type to pin a set of code ids in the wasmvm cache.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `code_ids` | [uint64](#uint64) | repeated | CodeIDs references the new WASM codes |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.StoreCodeProposal"></a>
+
+### StoreCodeProposal
+StoreCodeProposal gov proposal content type to submit WASM code to the system
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
+| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
+| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply on contract creation, optional |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.SudoContractProposal"></a>
+
+### SudoContractProposal
+SudoContractProposal gov proposal content type to call sudo on a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract as sudo |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.UnpinCodesProposal"></a>
+
+### UnpinCodesProposal
+UnpinCodesProposal gov proposal content type to unpin a set of code ids in the wasmvm cache.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `code_ids` | [uint64](#uint64) | repeated | CodeIDs references the WASM codes |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.UpdateAdminProposal"></a>
+
+### UpdateAdminProposal
+UpdateAdminProposal gov proposal content type to set an admin for a contract.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `new_admin` | [string](#string) |  | NewAdmin address to be set |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.UpdateContractStatusProposal"></a>
+
+### UpdateContractStatusProposal
+UpdateStatusProposal gov proposal content type to update the contract status.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `contract` | [string](#string) |  | Contract is the address of the smart contract |
+| `status` | [ContractStatus](#cosmwasm.wasm.v1.ContractStatus) |  | Status to be set |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.UpdateInstantiateConfigProposal"></a>
+
+### UpdateInstantiateConfigProposal
+UpdateInstantiateConfigProposal gov proposal content type to update
+instantiate config to a  set of code ids.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `access_config_updates` | [AccessConfigUpdate](#cosmwasm.wasm.v1.AccessConfigUpdate) | repeated | AccessConfigUpdate contains the list of code ids and the access config to be applied. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="cosmwasm/wasm/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmwasm/wasm/v1/query.proto
+
+
+
+<a name="cosmwasm.wasm.v1.CodeInfoResponse"></a>
+
+### CodeInfoResponse
+CodeInfoResponse contains code meta data from CodeInfo
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_id` | [uint64](#uint64) |  | id for legacy support |
+| `creator` | [string](#string) |  |  |
+| `data_hash` | [bytes](#bytes) |  |  |
+| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  |  |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryAllContractStateRequest"></a>
+
+### QueryAllContractStateRequest
+QueryAllContractStateRequest is the request type for the Query/AllContractState RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | address is the address of the contract |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryAllContractStateResponse"></a>
+
+### QueryAllContractStateResponse
+QueryAllContractStateResponse is the response type for the
+Query/AllContractState RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `models` | [Model](#cosmwasm.wasm.v1.Model) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryCodeRequest"></a>
+
+### QueryCodeRequest
+QueryCodeRequest is the request type for the Query/Code RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_id` | [uint64](#uint64) |  | grpc-gateway_out does not support Go style CodID |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryCodeResponse"></a>
+
+### QueryCodeResponse
+QueryCodeResponse is the response type for the Query/Code RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_info` | [CodeInfoResponse](#cosmwasm.wasm.v1.CodeInfoResponse) |  |  |
+| `data` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryCodesRequest"></a>
+
+### QueryCodesRequest
+QueryCodesRequest is the request type for the Query/Codes RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryCodesResponse"></a>
+
+### QueryCodesResponse
+QueryCodesResponse is the response type for the Query/Codes RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_infos` | [CodeInfoResponse](#cosmwasm.wasm.v1.CodeInfoResponse) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryContractHistoryRequest"></a>
+
+### QueryContractHistoryRequest
+QueryContractHistoryRequest is the request type for the Query/ContractHistory RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | address is the address of the contract to query |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryContractHistoryResponse"></a>
+
+### QueryContractHistoryResponse
+QueryContractHistoryResponse is the response type for the Query/ContractHistory RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `entries` | [ContractCodeHistoryEntry](#cosmwasm.wasm.v1.ContractCodeHistoryEntry) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryContractInfoRequest"></a>
+
+### QueryContractInfoRequest
+QueryContractInfoRequest is the request type for the Query/ContractInfo RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | address is the address of the contract to query |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryContractInfoResponse"></a>
+
+### QueryContractInfoResponse
+QueryContractInfoResponse is the response type for the Query/ContractInfo RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | address is the address of the contract |
+| `contract_info` | [ContractInfo](#cosmwasm.wasm.v1.ContractInfo) |  |  |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryContractsByCodeRequest"></a>
+
+### QueryContractsByCodeRequest
+QueryContractsByCodeRequest is the request type for the Query/ContractsByCode RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_id` | [uint64](#uint64) |  | grpc-gateway_out does not support Go style CodID |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryContractsByCodeResponse"></a>
+
+### QueryContractsByCodeResponse
+QueryContractsByCodeResponse is the response type for the
+Query/ContractsByCode RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contracts` | [string](#string) | repeated | contracts are a set of contract addresses |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryPinnedCodesRequest"></a>
+
+### QueryPinnedCodesRequest
+QueryPinnedCodesRequest is the request type for the Query/PinnedCodes
+RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryPinnedCodesResponse"></a>
+
+### QueryPinnedCodesResponse
+QueryPinnedCodesResponse is the response type for the
+Query/PinnedCodes RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_ids` | [uint64](#uint64) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryRawContractStateRequest"></a>
+
+### QueryRawContractStateRequest
+QueryRawContractStateRequest is the request type for the
+Query/RawContractState RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | address is the address of the contract |
+| `query_data` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QueryRawContractStateResponse"></a>
+
+### QueryRawContractStateResponse
+QueryRawContractStateResponse is the response type for the
+Query/RawContractState RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `data` | [bytes](#bytes) |  | Data contains the raw store data |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QuerySmartContractStateRequest"></a>
+
+### QuerySmartContractStateRequest
+QuerySmartContractStateRequest is the request type for the
+Query/SmartContractState RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | address is the address of the contract |
+| `query_data` | [bytes](#bytes) |  | QueryData contains the query data passed to the contract |
+
+
+
+
+
+
+<a name="cosmwasm.wasm.v1.QuerySmartContractStateResponse"></a>
+
+### QuerySmartContractStateResponse
+QuerySmartContractStateResponse is the response type for the
+Query/SmartContractState RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `data` | [bytes](#bytes) |  | Data contains the json data returned from the smart contract |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="cosmwasm.wasm.v1.Query"></a>
+
+### Query
+Query provides defines the gRPC querier service
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `ContractInfo` | [QueryContractInfoRequest](#cosmwasm.wasm.v1.QueryContractInfoRequest) | [QueryContractInfoResponse](#cosmwasm.wasm.v1.QueryContractInfoResponse) | ContractInfo gets the contract meta data | GET|/cosmwasm/wasm/v1/contract/{address}|
+| `ContractHistory` | [QueryContractHistoryRequest](#cosmwasm.wasm.v1.QueryContractHistoryRequest) | [QueryContractHistoryResponse](#cosmwasm.wasm.v1.QueryContractHistoryResponse) | ContractHistory gets the contract code history | GET|/cosmwasm/wasm/v1/contract/{address}/history|
+| `ContractsByCode` | [QueryContractsByCodeRequest](#cosmwasm.wasm.v1.QueryContractsByCodeRequest) | [QueryContractsByCodeResponse](#cosmwasm.wasm.v1.QueryContractsByCodeResponse) | ContractsByCode lists all smart contracts for a code id | GET|/cosmwasm/wasm/v1/code/{code_id}/contracts|
+| `AllContractState` | [QueryAllContractStateRequest](#cosmwasm.wasm.v1.QueryAllContractStateRequest) | [QueryAllContractStateResponse](#cosmwasm.wasm.v1.QueryAllContractStateResponse) | AllContractState gets all raw store data for a single contract | GET|/cosmwasm/wasm/v1/contract/{address}/state|
+| `RawContractState` | [QueryRawContractStateRequest](#cosmwasm.wasm.v1.QueryRawContractStateRequest) | [QueryRawContractStateResponse](#cosmwasm.wasm.v1.QueryRawContractStateResponse) | RawContractState gets single key from the raw store data of a contract | GET|/cosmwasm/wasm/v1/contract/{address}/raw/{query_data}|
+| `SmartContractState` | [QuerySmartContractStateRequest](#cosmwasm.wasm.v1.QuerySmartContractStateRequest) | [QuerySmartContractStateResponse](#cosmwasm.wasm.v1.QuerySmartContractStateResponse) | SmartContractState get smart query result from the contract | GET|/cosmwasm/wasm/v1/contract/{address}/smart/{query_data}|
+| `Code` | [QueryCodeRequest](#cosmwasm.wasm.v1.QueryCodeRequest) | [QueryCodeResponse](#cosmwasm.wasm.v1.QueryCodeResponse) | Code gets the binary code and metadata for a singe wasm code | GET|/cosmwasm/wasm/v1/code/{code_id}|
+| `Codes` | [QueryCodesRequest](#cosmwasm.wasm.v1.QueryCodesRequest) | [QueryCodesResponse](#cosmwasm.wasm.v1.QueryCodesResponse) | Codes gets the metadata for all stored wasm codes | GET|/cosmwasm/wasm/v1/code|
+| `PinnedCodes` | [QueryPinnedCodesRequest](#cosmwasm.wasm.v1.QueryPinnedCodesRequest) | [QueryPinnedCodesResponse](#cosmwasm.wasm.v1.QueryPinnedCodesResponse) | PinnedCodes gets the pinned code ids | GET|/cosmwasm/wasm/v1/codes/pinned|
 
  <!-- end services -->
 
@@ -16417,13 +17592,12 @@ GenesisState defines the token module's genesis state.
 
 ### QueryApprovedRequest
 QueryApprovedRequest is the request type for the Query/Approved RPC method
-NOTE: deprecated (use QueryApproved)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `address` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `proxy` | [string](#string) |  | address of the proxy which the authorization is granted to. |
 | `approver` | [string](#string) |  | approver is the address of the approver of the authorization. |
 
 
@@ -16435,7 +17609,6 @@ NOTE: deprecated (use QueryApproved)
 
 ### QueryApprovedResponse
 QueryApprovedResponse is the response type for the Query/Approved RPC method
-NOTE: deprecated
 
 
 | Field | Type | Label | Description |
@@ -16447,34 +17620,33 @@ NOTE: deprecated
 
 
 
-<a name="lbm.token.v1.QueryAuthorizationRequest"></a>
+<a name="lbm.token.v1.QueryApproversRequest"></a>
 
-### QueryAuthorizationRequest
-QueryAuthorizationRequest is the request type for the Query/Authorization RPC method
-Since: finschia
+### QueryApproversRequest
+QueryApproversRequest is the request type for the Query/Approvers RPC method
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
-| `holder` | [string](#string) |  | address of the token holder which has approved the authorization. |
+| `address` | [string](#string) |  | address of the proxy which the authorization is granted to. |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.token.v1.QueryAuthorizationResponse"></a>
+<a name="lbm.token.v1.QueryApproversResponse"></a>
 
-### QueryAuthorizationResponse
-QueryAuthorizationResponse is the response type for the Query/Authorization RPC method
-Since: finschia
+### QueryApproversResponse
+QueryApproversResponse is the response type for the Query/Approvers RPC method
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `authorization` | [Authorization](#lbm.token.v1.Authorization) |  |  |
+| `approvers` | [string](#string) | repeated | all the authorizations on the proxy. |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -16542,45 +17714,10 @@ QueryBurntResponse is the response type for the Query/Burnt RPC method
 
 
 
-<a name="lbm.token.v1.QueryGrantRequest"></a>
-
-### QueryGrantRequest
-QueryGrantRequest is the request type for the Query/Grant RPC method
-Since: finschia
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `grantee` | [string](#string) |  | grantee which has permissions on the token class. |
-| `permission` | [Permission](#lbm.token.v1.Permission) |  | a permission given to the grantee. |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryGrantResponse"></a>
-
-### QueryGrantResponse
-QueryGrantResponse is the response type for the Query/Grant RPC method
-Since: finschia
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `grant` | [Grant](#lbm.token.v1.Grant) |  |  |
-
-
-
-
-
-
 <a name="lbm.token.v1.QueryGranteeGrantsRequest"></a>
 
 ### QueryGranteeGrantsRequest
 QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method
-Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -16598,7 +17735,6 @@ Since: finschia
 
 ### QueryGranteeGrantsResponse
 QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC method
-Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -16635,41 +17771,6 @@ QueryMintedResponse is the response type for the Query/Minted RPC method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `amount` | [string](#string) |  | the amount of the minted tokens. |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryOperatorAuthorizationsRequest"></a>
-
-### QueryOperatorAuthorizationsRequest
-QueryOperatorAuthorizationsRequest is the request type for the Query/OperatorAuthorizations RPC method
-Since: finschia
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `operator` | [string](#string) |  | address of the operator which the authorization is granted to. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryOperatorAuthorizationsResponse"></a>
-
-### QueryOperatorAuthorizationsResponse
-QueryOperatorAuthorizationsResponse is the response type for the Query/OperatorAuthorizations RPC method
-Since: finschia
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `authorizations` | [Authorization](#lbm.token.v1.Authorization) | repeated | all the authorizations on the operator. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -16740,7 +17841,6 @@ QueryTokenClassResponse is the response type for the Query/TokenClass RPC method
 
 ### QueryTokenClassesRequest
 QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method
-Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -16756,7 +17856,6 @@ Since: finschia
 
 ### QueryTokenClassesResponse
 QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method
-Since: finschia
 
 
 | Field | Type | Label | Description |
@@ -16787,12 +17886,10 @@ Query defines the gRPC querier service.
 | `Minted` | [QueryMintedRequest](#lbm.token.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.token.v1.QueryMintedResponse) | Minted queries the number of minted tokens from the given contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}/minted|
 | `Burnt` | [QueryBurntRequest](#lbm.token.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from the given contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}/burnt|
 | `TokenClass` | [QueryTokenClassRequest](#lbm.token.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.token.v1.QueryTokenClassResponse) | TokenClass queries an token metadata based on its contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}|
-| `TokenClasses` | [QueryTokenClassesRequest](#lbm.token.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.token.v1.QueryTokenClassesResponse) | TokenClasses queries all token metadata. Since: finschia | GET|/lbm/token/v1/token_classes|
-| `Grant` | [QueryGrantRequest](#lbm.token.v1.QueryGrantRequest) | [QueryGrantResponse](#lbm.token.v1.QueryGrantResponse) | Grant queries a permission on a given grantee permission pair. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `permission` is not a valid permission. - ErrInvalidAddress - `grantee` is of invalid format. - ErrNotFound - there is no permission of `permission` on `grantee`. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}/{permission}|
-| `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse) | GranteeGrants queries permissions on a given grantee. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `grantee` is of invalid format. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
-| `Authorization` | [QueryAuthorizationRequest](#lbm.token.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.token.v1.QueryAuthorizationResponse) | Authorization queries authorization on a given operator holder pair. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `operator` is of invalid format. - `holder` is of invalid format. - ErrNotFound - there is no authorization given by `holder` to `operator`. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}/{holder}|
-| `OperatorAuthorizations` | [QueryOperatorAuthorizationsRequest](#lbm.token.v1.QueryOperatorAuthorizationsRequest) | [QueryOperatorAuthorizationsResponse](#lbm.token.v1.QueryOperatorAuthorizationsResponse) | OperatorAuthorizations queries authorization on a given operator. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `operator` is of invalid format. Since: finschia | GET|/lbm/token/v1/token_classes/{contract_id}/authorizations/{operator}|
-| `Approved` | [QueryApprovedRequest](#lbm.token.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.token.v1.QueryApprovedResponse) | Approved queries authorization on a given proxy approver pair. NOTE: deprecated (use Authorization) | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/proxies/{approver}|
+| `TokenClasses` | [QueryTokenClassesRequest](#lbm.token.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.token.v1.QueryTokenClassesResponse) | TokenClasses queries all token metadata. | GET|/lbm/token/v1/token_classes|
+| `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse) | GranteeGrants queries permissions on a given grantee. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `grantee` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
+| `Approved` | [QueryApprovedRequest](#lbm.token.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.token.v1.QueryApprovedResponse) | Approved queries authorization on a given proxy approver pair. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. - `approver` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{approver}/proxies/{proxy}|
+| `Approvers` | [QueryApproversRequest](#lbm.token.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.token.v1.QueryApproversResponse) | Approvers queries approvers on a given proxy. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/approvers|
 
  <!-- end services -->
 
@@ -16805,59 +17902,26 @@ Query defines the gRPC querier service.
 
 
 
-<a name="lbm.token.v1.MsgAbandon"></a>
-
-### MsgAbandon
-MsgAbandon defines the Msg/Abandon request type.
-
-Throws:
-- ErrInvalidAddress
-  - `grantee` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `permission` is not a valid permission.
-
-Signer: `grantee`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `grantee` | [string](#string) |  | address of the grantee which abandons the permission. |
-| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgAbandonResponse"></a>
-
-### MsgAbandonResponse
-MsgAbandonResponse defines the Msg/Abandon response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
 <a name="lbm.token.v1.MsgApprove"></a>
 
 ### MsgApprove
 MsgApprove defines the Msg/Approve request type.
 
-Note: deprecated (use MsgAuthorizeOperator)
+Throws:
+- ErrInvalidAddress
+  - `approver` is of invalid format.
+  - `proxy` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+
+Signer: `approver`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `approver` | [string](#string) |  | address of the token holder which approves the authorization. |
-| `proxy` | [string](#string) |  | address of the operator which the authorization is granted to. |
+| `approver` | [string](#string) |  | address of the token approver which approves the authorization. |
+| `proxy` | [string](#string) |  | address of the proxy which the authorization is granted to. |
 
 
 
@@ -16868,48 +17932,6 @@ Note: deprecated (use MsgAuthorizeOperator)
 
 ### MsgApproveResponse
 MsgApproveResponse defines the Msg/Approve response type.
-
-Note: deprecated
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgAuthorizeOperator"></a>
-
-### MsgAuthorizeOperator
-MsgAuthorizeOperator defines the Msg/AuthorizeOperator request type.
-
-Throws:
-- ErrInvalidAddress
-  - `holder` is of invalid format.
-  - `operator` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-
-Signer: `holder`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `holder` | [string](#string) |  | address of a holder which authorizes the `operator` address as an operator. |
-| `operator` | [string](#string) |  | address to set as an operator for `holder`. |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgAuthorizeOperatorResponse"></a>
-
-### MsgAuthorizeOperatorResponse
-MsgAuthorizeOperatorResponse defines the Msg/AuthorizeOperator response type.
-
-Since: 0.46.0 (finschia)
 
 
 
@@ -16934,7 +17956,7 @@ Signer: `from`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `from` | [string](#string) |  | holder whose tokens are being burned. |
+| `from` | [string](#string) |  | address whose tokens are being burned. |
 | `amount` | [string](#string) |  | number of tokens to burn. |
 
 
@@ -16947,7 +17969,15 @@ Signer: `from`
 ### MsgBurnFrom
 MsgBurnFrom defines the Msg/BurnFrom request type.
 
-Note: deprecated (use MsgOperatorBurn)
+Throws:
+- ErrInvalidAddress
+  - `proxy` is of invalid format.
+  - `from` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+  - `amount` is not positive.
+
+Signer: `proxy`
 
 
 | Field | Type | Label | Description |
@@ -16967,8 +17997,6 @@ Note: deprecated (use MsgOperatorBurn)
 ### MsgBurnFromResponse
 MsgBurnFromResponse defines the Msg/BurnFrom response type.
 
-Note: deprecated
-
 
 
 
@@ -16984,10 +18012,10 @@ MsgBurnResponse defines the Msg/Burn response type.
 
 
 
-<a name="lbm.token.v1.MsgGrant"></a>
+<a name="lbm.token.v1.MsgGrantPermission"></a>
 
-### MsgGrant
-MsgGrant defines the Msg/Grant request type.
+### MsgGrantPermission
+MsgGrantPermission defines the Msg/GrantPermission request type.
 
 Throws:
 - ErrInvalidAddress
@@ -16998,28 +18026,6 @@ Throws:
   - `permission` is not a valid permission.
 
 Signer: `granter`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `granter` | [string](#string) |  | address of the granter which must have the permission to give. |
-| `grantee` | [string](#string) |  | address of the grantee. |
-| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgGrantPermission"></a>
-
-### MsgGrantPermission
-MsgGrantPermission defines the Msg/GrantPermission request type.
-
-Note: deprecated (use MsgGrant)
 
 
 | Field | Type | Label | Description |
@@ -17038,20 +18044,6 @@ Note: deprecated (use MsgGrant)
 
 ### MsgGrantPermissionResponse
 MsgGrantPermissionResponse defines the Msg/GrantPermission response type.
-
-Note: deprecated
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgGrantResponse"></a>
-
-### MsgGrantResponse
-MsgGrantResponse defines the Msg/Grant response type.
-
-Since: 0.46.0 (finschia)
 
 
 
@@ -17187,92 +18179,6 @@ MsgModifyResponse defines the Msg/Modify response type.
 
 
 
-<a name="lbm.token.v1.MsgOperatorBurn"></a>
-
-### MsgOperatorBurn
-MsgOperatorBurn defines the Msg/OperatorBurn request type.
-
-Throws:
-- ErrInvalidAddress
-  - `operator` is of invalid format.
-  - `from` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `amount` is not positive.
-
-Signer: `operator`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `operator` | [string](#string) |  | address which triggers the burn. |
-| `from` | [string](#string) |  | holder whose tokens are being burned. |
-| `amount` | [string](#string) |  | number of tokens to burn. |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgOperatorBurnResponse"></a>
-
-### MsgOperatorBurnResponse
-MsgOperatorBurnResponse defines the Msg/OperatorBurn response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgOperatorSend"></a>
-
-### MsgOperatorSend
-MsgOperatorSend defines the Msg/OperatorSend request type.
-
-Throws:
-- ErrInvalidAddress
-  - `operator` is of invalid format.
-  - `from` is of invalid format.
-  - `to` is of invalid format.
-- ErrInvalidRequest
-  - `contract_id` is of invalid format.
-  - `amount` is not positive.
-
-Signer: `operator`
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `operator` | [string](#string) |  | address which triggers the send. |
-| `from` | [string](#string) |  | holder whose tokens are being sent. |
-| `to` | [string](#string) |  | recipient of the tokens. |
-| `amount` | [string](#string) |  | number of tokens to send. |
-
-
-
-
-
-
-<a name="lbm.token.v1.MsgOperatorSendResponse"></a>
-
-### MsgOperatorSendResponse
-MsgOperatorSendResponse defines the Msg/OperatorSend response type.
-
-Since: 0.46.0 (finschia)
-
-
-
-
-
-
 <a name="lbm.token.v1.MsgRevokeOperator"></a>
 
 ### MsgRevokeOperator
@@ -17318,7 +18224,14 @@ Since: 0.46.0 (finschia)
 ### MsgRevokePermission
 MsgRevokePermission defines the Msg/RevokePermission request type.
 
-Note: deprecated (use MsgAbandon)
+Throws:
+- ErrInvalidAddress
+  - `grantee` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+  - `permission` is not a valid permission.
+
+Signer: `grantee`
 
 
 | Field | Type | Label | Description |
@@ -17336,8 +18249,6 @@ Note: deprecated (use MsgAbandon)
 
 ### MsgRevokePermissionResponse
 MsgRevokePermissionResponse defines the Msg/RevokePermission response type.
-
-Note: deprecated
 
 
 
@@ -17363,7 +18274,7 @@ Signer: `from`
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `from` | [string](#string) |  | holder whose tokens are being sent. |
+| `from` | [string](#string) |  | approver whose tokens are being sent. |
 | `to` | [string](#string) |  | recipient of the tokens. |
 | `amount` | [string](#string) |  | number of tokens to send. |
 
@@ -17386,14 +18297,22 @@ MsgSendResponse defines the Msg/Send response type.
 
 ### MsgTransferFrom
 MsgTransferFrom defines the Msg/TransferFrom request type.
+Throws:
+- ErrInvalidAddress
+  - `proxy` is of invalid format.
+  - `from` is of invalid format.
+  - `to` is of invalid format.
+- ErrInvalidRequest
+  - `contract_id` is of invalid format.
+  - `amount` is not positive.
 
-Note: deprecated (use MsgOperatorSend)
+Signer: `proxy`
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `proxy` | [string](#string) |  | the address of the operator. |
+| `proxy` | [string](#string) |  | the address of the proxy. |
 | `from` | [string](#string) |  | the address which the transfer is from. |
 | `to` | [string](#string) |  | the address which the transfer is to. |
 | `amount` | [string](#string) |  | the amount of the transfer. |
@@ -17407,8 +18326,6 @@ Note: deprecated (use MsgOperatorSend)
 
 ### MsgTransferFromResponse
 MsgTransferFromResponse defines the Msg/TransferFrom response type.
-
-Note: deprecated
 
 
 
@@ -17428,1211 +18345,17 @@ Msg defines the token Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Send` | [MsgSend](#lbm.token.v1.MsgSend) | [MsgSendResponse](#lbm.token.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. Fires: - EventSent - transfer (deprecated, not typed) Throws: - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to spend. | |
-| `OperatorSend` | [MsgOperatorSend](#lbm.token.v1.MsgOperatorSend) | [MsgOperatorSendResponse](#lbm.token.v1.MsgOperatorSendResponse) | OperatorSend defines a method to send tokens from one account to another account by the operator. Fires: - EventSent - transfer_from (deprecated, not typed) Throws: - ErrUnauthorized: - the holder has not authorized the operator. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to spend. Since: 0.46.0 (finschia) | |
-| `TransferFrom` | [MsgTransferFrom](#lbm.token.v1.MsgTransferFrom) | [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse) | TransferFrom defines a method to send tokens from one account to another account by the operator. Note: the approval has no value of limit (not ERC20 compliant). Note: deprecated (use OperatorSend) | |
-| `AuthorizeOperator` | [MsgAuthorizeOperator](#lbm.token.v1.MsgAuthorizeOperator) | [MsgAuthorizeOperatorResponse](#lbm.token.v1.MsgAuthorizeOperatorResponse) | AuthorizeOperator allows one to send tokens on behalf of the holder. Fires: - EventAuthorizedOperator - approve_token (deprecated, not typed) Throws: - ErrNotFound: - there is no token class of `contract_id`. - ErrInvalidRequest: - `holder` has already authorized `operator`. Since: 0.46.0 (finschia) | |
+| `Send` | [MsgSend](#lbm.token.v1.MsgSend) | [MsgSendResponse](#lbm.token.v1.MsgSendResponse) | Send defines a method to send tokens from one account to another account. Fires: - EventSent - transfer (deprecated, not typed) Throws: - ErrInvalidRequest: - the balance of `from` does not have enough tokens to spend. | |
+| `TransferFrom` | [MsgTransferFrom](#lbm.token.v1.MsgTransferFrom) | [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse) | TransferFrom defines a method to send tokens from one account to another account by the proxy. Fires: - EventSent - transfer_from (deprecated, not typed) Throws: - ErrUnauthorized: - the approver has not authorized the proxy. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to spend. Note: the approval has no value of limit (not ERC20 compliant). | |
 | `RevokeOperator` | [MsgRevokeOperator](#lbm.token.v1.MsgRevokeOperator) | [MsgRevokeOperatorResponse](#lbm.token.v1.MsgRevokeOperatorResponse) | RevokeOperator revoke the authorization of the operator to send the holder's tokens. Fires: - EventRevokedOperator Throws: - ErrNotFound: - there is no token class of `contract_id`. - there is no authorization by `holder` to `operator`. Note: it introduces breaking change, because the legacy clients cannot track this revocation. Since: 0.46.0 (finschia) | |
-| `Approve` | [MsgApprove](#lbm.token.v1.MsgApprove) | [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the holder. Note: deprecated (use AuthorizeOperator) | |
+| `Approve` | [MsgApprove](#lbm.token.v1.MsgApprove) | [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse) | Approve allows one to send tokens on behalf of the approver. Fires: - EventAuthorizedOperator - approve_token (deprecated, not typed) Throws: - ErrNotFound: - there is no token class of `contract_id`. - ErrInvalidRequest: - `approver` has already authorized `proxy`. | |
 | `Issue` | [MsgIssue](#lbm.token.v1.MsgIssue) | [MsgIssueResponse](#lbm.token.v1.MsgIssueResponse) | Issue defines a method to create a class of token. it grants `mint`, `burn` and `modify` permissions on the token class to its creator (see also `mintable`). Fires: - EventIssue - EventMinted - issue (deprecated, not typed) | |
-| `Grant` | [MsgGrant](#lbm.token.v1.MsgGrant) | [MsgGrantResponse](#lbm.token.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify a token metadata. Fires: - EventGrant - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. Since: 0.46.0 (finschia) | |
-| `Abandon` | [MsgAbandon](#lbm.token.v1.MsgAbandon) | [MsgAbandonResponse](#lbm.token.v1.MsgAbandonResponse) | Abandon abandons a permission. Fires: - EventAbandon - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. Since: 0.46.0 (finschia) | |
-| `GrantPermission` | [MsgGrantPermission](#lbm.token.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.token.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify a token metadata. Note: deprecated (use Grant) | |
-| `RevokePermission` | [MsgRevokePermission](#lbm.token.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.token.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Note: deprecated (use Abandon) | |
+| `GrantPermission` | [MsgGrantPermission](#lbm.token.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.token.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify a token metadata. Fires: - EventGrant - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. | |
+| `RevokePermission` | [MsgRevokePermission](#lbm.token.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.token.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Fires: - EventAbandon - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. | |
 | `Mint` | [MsgMint](#lbm.token.v1.MsgMint) | [MsgMintResponse](#lbm.token.v1.MsgMintResponse) | Mint defines a method to mint tokens. Fires: - EventMinted - mint (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `mint` permission. | |
-| `Burn` | [MsgBurn](#lbm.token.v1.MsgBurn) | [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Fires: - EventBurned - burn (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. | |
-| `OperatorBurn` | [MsgOperatorBurn](#lbm.token.v1.MsgOperatorBurn) | [MsgOperatorBurnResponse](#lbm.token.v1.MsgOperatorBurnResponse) | OperatorBurn defines a method to burn tokens by the operator. Fires: - EventBurned - burn_from (deprecated, not typed) Throws: - ErrUnauthorized - `operator` does not have `burn` permission. - the holder has not authorized `operator`. - ErrInsufficientFunds: - the balance of `from` does not have enough tokens to burn. Since: 0.46.0 (finschia) | |
-| `BurnFrom` | [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom) | [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse) | BurnFrom defines a method to burn tokens by the operator. Note: deprecated (use OperatorBurn) | |
-| `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token class. Fires: - EventModified - modify_token (deprecated, not typed) Throws: - ErrUnauthorized - the operator does not have `modify` permission. - ErrNotFound - there is no token class of `contract_id`. | |
-
- <!-- end services -->
-
-
-
-<a name="lbm/wasm/v1/types.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/wasm/v1/types.proto
-
-
-
-<a name="lbm.wasm.v1.AbsoluteTxPosition"></a>
-
-### AbsoluteTxPosition
-AbsoluteTxPosition is a unique transaction position that allows for global
-ordering of transactions.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `block_height` | [uint64](#uint64) |  | BlockHeight is the block the contract was created at |
-| `tx_index` | [uint64](#uint64) |  | TxIndex is a monotonic counter within the block (actual transaction index, or gas consumed) |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.AccessConfig"></a>
-
-### AccessConfig
-AccessConfig access control type.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `permission` | [AccessType](#lbm.wasm.v1.AccessType) |  |  |
-| `address` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.AccessTypeParam"></a>
-
-### AccessTypeParam
-AccessTypeParam
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `value` | [AccessType](#lbm.wasm.v1.AccessType) |  |  |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.CodeInfo"></a>
-
-### CodeInfo
-CodeInfo is data for the uploaded contract WASM code
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_hash` | [bytes](#bytes) |  | CodeHash is the unique identifier created by wasmvm |
-| `creator` | [string](#string) |  | Creator address who initially stored the code |
-| `instantiate_config` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiateConfig access control to apply on contract creation, optional |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.ContractCodeHistoryEntry"></a>
-
-### ContractCodeHistoryEntry
-ContractCodeHistoryEntry metadata to a contract.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `operation` | [ContractCodeHistoryOperationType](#lbm.wasm.v1.ContractCodeHistoryOperationType) |  |  |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
-| `updated` | [AbsoluteTxPosition](#lbm.wasm.v1.AbsoluteTxPosition) |  | Updated Tx position when the operation was executed. |
-| `msg` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.ContractInfo"></a>
-
-### ContractInfo
-ContractInfo stores a WASM contract instance
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored Wasm code |
-| `creator` | [string](#string) |  | Creator address who initially instantiated the contract |
-| `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
-| `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
-| `created` | [AbsoluteTxPosition](#lbm.wasm.v1.AbsoluteTxPosition) |  | Created Tx position when the contract was instantiated. This data should kept internal and not be exposed via query results. Just use for sorting |
-| `ibc_port_id` | [string](#string) |  |  |
-| `status` | [ContractStatus](#lbm.wasm.v1.ContractStatus) |  | Status is a status of a contract |
-| `extension` | [google.protobuf.Any](#google.protobuf.Any) |  | Extension is an extension point to store custom metadata within the persistence model. |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.Model"></a>
-
-### Model
-Model is a struct that holds a KV pair
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  | hex-encode key to read it better (this is often ascii) |
-| `value` | [bytes](#bytes) |  | base64-encode raw value |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.Params"></a>
-
-### Params
-Params defines the set of wasm parameters.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_upload_access` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
-| `instantiate_default_permission` | [AccessType](#lbm.wasm.v1.AccessType) |  |  |
-| `gas_multiplier` | [uint64](#uint64) |  |  |
-| `instance_cost` | [uint64](#uint64) |  |  |
-| `compile_cost` | [uint64](#uint64) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
-
-<a name="lbm.wasm.v1.AccessType"></a>
-
-### AccessType
-AccessType permission types
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| ACCESS_TYPE_UNSPECIFIED | 0 | AccessTypeUnspecified placeholder for empty value |
-| ACCESS_TYPE_NOBODY | 1 | AccessTypeNobody forbidden |
-| ACCESS_TYPE_ONLY_ADDRESS | 2 | AccessTypeOnlyAddress restricted to an address |
-| ACCESS_TYPE_EVERYBODY | 3 | AccessTypeEverybody unrestricted |
-
-
-
-<a name="lbm.wasm.v1.ContractCodeHistoryOperationType"></a>
-
-### ContractCodeHistoryOperationType
-ContractCodeHistoryOperationType actions that caused a code change
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED | 0 | ContractCodeHistoryOperationTypeUnspecified placeholder for empty value |
-| CONTRACT_CODE_HISTORY_OPERATION_TYPE_INIT | 1 | ContractCodeHistoryOperationTypeInit on chain contract instantiation |
-| CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE | 2 | ContractCodeHistoryOperationTypeMigrate code migration |
-| CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS | 3 | ContractCodeHistoryOperationTypeGenesis based on genesis data |
-
-
-
-<a name="lbm.wasm.v1.ContractStatus"></a>
-
-### ContractStatus
-ContractStatus types
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| CONTRACT_STATUS_UNSPECIFIED | 0 | ContractStatus unspecified |
-| CONTRACT_STATUS_ACTIVE | 1 | ContractStatus active |
-| CONTRACT_STATUS_INACTIVE | 2 | ContractStatus inactive |
-
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/wasm/v1/tx.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/wasm/v1/tx.proto
-
-
-
-<a name="lbm.wasm.v1.MsgClearAdmin"></a>
-
-### MsgClearAdmin
-MsgClearAdmin removes any admin stored for a smart contract
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgClearAdminResponse"></a>
-
-### MsgClearAdminResponse
-MsgClearAdminResponse returns empty data
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgExecuteContract"></a>
-
-### MsgExecuteContract
-MsgExecuteContract submits the given message data to a smart contract
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract |
-| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on execution |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgExecuteContractResponse"></a>
-
-### MsgExecuteContractResponse
-MsgExecuteContractResponse returns execution result data.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `data` | [bytes](#bytes) |  | Data contains base64-encoded bytes to returned from the contract |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgInstantiateContract"></a>
-
-### MsgInstantiateContract
-MsgInstantiateContract create a new smart contract instance for the given
-code id.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
-| `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on instantiation |
-| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgInstantiateContractResponse"></a>
-
-### MsgInstantiateContractResponse
-MsgInstantiateContractResponse return instantiation result data
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | Address is the bech32 address of the new contract instance. |
-| `data` | [bytes](#bytes) |  | Data contains base64-encoded bytes to returned from the contract |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgMigrateContract"></a>
-
-### MsgMigrateContract
-MsgMigrateContract runs a code upgrade/ downgrade for a smart contract
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `code_id` | [uint64](#uint64) |  | CodeID references the new WASM code |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on migration |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgMigrateContractResponse"></a>
-
-### MsgMigrateContractResponse
-MsgMigrateContractResponse returns contract migration result data.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `data` | [bytes](#bytes) |  | Data contains same raw bytes returned as data from the wasm contract. (May be empty) |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgStoreCode"></a>
-
-### MsgStoreCode
-MsgStoreCode submit Wasm code to the system
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
-| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission access control to apply on contract creation, optional |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgStoreCodeAndInstantiateContract"></a>
-
-### MsgStoreCodeAndInstantiateContract
-MsgStoreCodeAndInstantiateContract submit Wasm code to the system and instantiate a contract using it.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
-| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
-| `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
-| `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on instantiation |
-| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse"></a>
-
-### MsgStoreCodeAndInstantiateContractResponse
-MsgStoreCodeAndInstantiateContractResponse returns store and instantiate result data.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
-| `address` | [string](#string) |  | Address is the bech32 address of the new contract instance. |
-| `data` | [bytes](#bytes) |  | Data contains base64-encoded bytes to returned from the contract |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgStoreCodeResponse"></a>
-
-### MsgStoreCodeResponse
-MsgStoreCodeResponse returns store result data.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgUpdateAdmin"></a>
-
-### MsgUpdateAdmin
-MsgUpdateAdmin sets a new admin for a smart contract
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `new_admin` | [string](#string) |  | NewAdmin address to be set |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgUpdateAdminResponse"></a>
-
-### MsgUpdateAdminResponse
-MsgUpdateAdminResponse returns empty data
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="lbm.wasm.v1.Msg"></a>
-
-### Msg
-Msg defines the wasm Msg service.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `StoreCode` | [MsgStoreCode](#lbm.wasm.v1.MsgStoreCode) | [MsgStoreCodeResponse](#lbm.wasm.v1.MsgStoreCodeResponse) | StoreCode to submit Wasm code to the system | |
-| `InstantiateContract` | [MsgInstantiateContract](#lbm.wasm.v1.MsgInstantiateContract) | [MsgInstantiateContractResponse](#lbm.wasm.v1.MsgInstantiateContractResponse) | Instantiate creates a new smart contract instance for the given code id. | |
-| `StoreCodeAndInstantiateContract` | [MsgStoreCodeAndInstantiateContract](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContract) | [MsgStoreCodeAndInstantiateContractResponse](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse) | StoreCodeAndInstantiatecontract upload code and instantiate a contract using it. | |
-| `ExecuteContract` | [MsgExecuteContract](#lbm.wasm.v1.MsgExecuteContract) | [MsgExecuteContractResponse](#lbm.wasm.v1.MsgExecuteContractResponse) | Execute submits the given message data to a smart contract | |
-| `MigrateContract` | [MsgMigrateContract](#lbm.wasm.v1.MsgMigrateContract) | [MsgMigrateContractResponse](#lbm.wasm.v1.MsgMigrateContractResponse) | Migrate runs a code upgrade/ downgrade for a smart contract | |
-| `UpdateAdmin` | [MsgUpdateAdmin](#lbm.wasm.v1.MsgUpdateAdmin) | [MsgUpdateAdminResponse](#lbm.wasm.v1.MsgUpdateAdminResponse) | UpdateAdmin sets a new admin for a smart contract | |
-| `ClearAdmin` | [MsgClearAdmin](#lbm.wasm.v1.MsgClearAdmin) | [MsgClearAdminResponse](#lbm.wasm.v1.MsgClearAdminResponse) | ClearAdmin removes any admin stored for a smart contract | |
-
- <!-- end services -->
-
-
-
-<a name="lbm/wasm/v1/genesis.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/wasm/v1/genesis.proto
-
-
-
-<a name="lbm.wasm.v1.Code"></a>
-
-### Code
-Code struct encompasses CodeInfo and CodeBytes
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  |  |
-| `code_info` | [CodeInfo](#lbm.wasm.v1.CodeInfo) |  |  |
-| `code_bytes` | [bytes](#bytes) |  |  |
-| `pinned` | [bool](#bool) |  | Pinned to wasmvm cache |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.Contract"></a>
-
-### Contract
-Contract struct encompasses ContractAddress, ContractInfo, and ContractState
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_address` | [string](#string) |  |  |
-| `contract_info` | [ContractInfo](#lbm.wasm.v1.ContractInfo) |  |  |
-| `contract_state` | [Model](#lbm.wasm.v1.Model) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.GenesisState"></a>
-
-### GenesisState
-GenesisState - genesis state of x/wasm
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.wasm.v1.Params) |  |  |
-| `codes` | [Code](#lbm.wasm.v1.Code) | repeated |  |
-| `contracts` | [Contract](#lbm.wasm.v1.Contract) | repeated |  |
-| `sequences` | [Sequence](#lbm.wasm.v1.Sequence) | repeated |  |
-| `gen_msgs` | [GenesisState.GenMsgs](#lbm.wasm.v1.GenesisState.GenMsgs) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.GenesisState.GenMsgs"></a>
-
-### GenesisState.GenMsgs
-GenMsgs define the messages that can be executed during genesis phase in order.
-The intention is to have more human readable data that is auditable.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `store_code` | [MsgStoreCode](#lbm.wasm.v1.MsgStoreCode) |  |  |
-| `instantiate_contract` | [MsgInstantiateContract](#lbm.wasm.v1.MsgInstantiateContract) |  |  |
-| `execute_contract` | [MsgExecuteContract](#lbm.wasm.v1.MsgExecuteContract) |  |  |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.Sequence"></a>
-
-### Sequence
-Sequence key and value of an id generation counter
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `id_key` | [bytes](#bytes) |  |  |
-| `value` | [uint64](#uint64) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/wasm/v1/ibc.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/wasm/v1/ibc.proto
-
-
-
-<a name="lbm.wasm.v1.MsgIBCCloseChannel"></a>
-
-### MsgIBCCloseChannel
-MsgIBCCloseChannel port and channel need to be owned by the contract
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `channel` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MsgIBCSend"></a>
-
-### MsgIBCSend
-MsgIBCSend
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `channel` | [string](#string) |  | the channel by which the packet will be sent |
-| `timeout_height` | [uint64](#uint64) |  | Timeout height relative to the current block height. The timeout is disabled when set to 0. |
-| `timeout_timestamp` | [uint64](#uint64) |  | Timeout timestamp (in nanoseconds) relative to the current block timestamp. The timeout is disabled when set to 0. |
-| `data` | [bytes](#bytes) |  | Data is the payload to transfer. We must not make assumption what format or content is in here. |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/wasm/v1/proposal.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/wasm/v1/proposal.proto
-
-
-
-<a name="lbm.wasm.v1.AccessConfigUpdate"></a>
-
-### AccessConfigUpdate
-AccessConfigUpdate contains the code id and the access config to be
-applied.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code to be updated |
-| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply to the set of code ids |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.ClearAdminProposal"></a>
-
-### ClearAdminProposal
-ClearAdminProposal gov proposal content type to clear the admin of a contract.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.ExecuteContractProposal"></a>
-
-### ExecuteContractProposal
-ExecuteContractProposal gov proposal content type to call execute on a
-contract.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract as execute |
-| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.InstantiateContractProposal"></a>
-
-### InstantiateContractProposal
-InstantiateContractProposal gov proposal content type to instantiate a contract.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
-| `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
-| `label` | [string](#string) |  | Label is optional metadata to be stored with a constract instance. |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on instantiation |
-| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.MigrateContractProposal"></a>
-
-### MigrateContractProposal
-MigrateContractProposal gov proposal content type to migrate a contract.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text
-
-Note: skipping 3 as this was previously used for unneeded run_as |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `code_id` | [uint64](#uint64) |  | CodeID references the new WASM code |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on migration |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.PinCodesProposal"></a>
-
-### PinCodesProposal
-PinCodesProposal gov proposal content type to pin a set of code ids in the wasmvm cache.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `code_ids` | [uint64](#uint64) | repeated | CodeIDs references the new WASM codes |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.StoreCodeProposal"></a>
-
-### StoreCodeProposal
-StoreCodeProposal gov proposal content type to submit WASM code to the system
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
-| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
-| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply on contract creation, optional |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.SudoContractProposal"></a>
-
-### SudoContractProposal
-SudoContractProposal gov proposal content type to call sudo on a contract.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract as sudo |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.UnpinCodesProposal"></a>
-
-### UnpinCodesProposal
-UnpinCodesProposal gov proposal content type to unpin a set of code ids in the wasmvm cache.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `code_ids` | [uint64](#uint64) | repeated | CodeIDs references the WASM codes |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.UpdateAdminProposal"></a>
-
-### UpdateAdminProposal
-UpdateAdminProposal gov proposal content type to set an admin for a contract.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `new_admin` | [string](#string) |  | NewAdmin address to be set |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.UpdateContractStatusProposal"></a>
-
-### UpdateContractStatusProposal
-UpdateStatusProposal gov proposal content type to update the contract status.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `status` | [ContractStatus](#lbm.wasm.v1.ContractStatus) |  | Status to be set |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.UpdateInstantiateConfigProposal"></a>
-
-### UpdateInstantiateConfigProposal
-UpdateInstantiateConfigProposal gov proposal content type to update
-instantiate config to a  set of code ids.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `access_config_updates` | [AccessConfigUpdate](#lbm.wasm.v1.AccessConfigUpdate) | repeated | AccessConfigUpdate contains the list of code ids and the access config to be applied. |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/wasm/v1/query.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/wasm/v1/query.proto
-
-
-
-<a name="lbm.wasm.v1.CodeInfoResponse"></a>
-
-### CodeInfoResponse
-CodeInfoResponse contains code meta data from CodeInfo
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | id for legacy support |
-| `creator` | [string](#string) |  |  |
-| `data_hash` | [bytes](#bytes) |  |  |
-| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryAllContractStateRequest"></a>
-
-### QueryAllContractStateRequest
-QueryAllContractStateRequest is the request type for the Query/AllContractState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | address is the address of the contract |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryAllContractStateResponse"></a>
-
-### QueryAllContractStateResponse
-QueryAllContractStateResponse is the response type for the
-Query/AllContractState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `models` | [Model](#lbm.wasm.v1.Model) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryCodeRequest"></a>
-
-### QueryCodeRequest
-QueryCodeRequest is the request type for the Query/Code RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | grpc-gateway_out does not support Go style CodID |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryCodeResponse"></a>
-
-### QueryCodeResponse
-QueryCodeResponse is the response type for the Query/Code RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_info` | [CodeInfoResponse](#lbm.wasm.v1.CodeInfoResponse) |  |  |
-| `data` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryCodesRequest"></a>
-
-### QueryCodesRequest
-QueryCodesRequest is the request type for the Query/Codes RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryCodesResponse"></a>
-
-### QueryCodesResponse
-QueryCodesResponse is the response type for the Query/Codes RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_infos` | [CodeInfoResponse](#lbm.wasm.v1.CodeInfoResponse) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryContractHistoryRequest"></a>
-
-### QueryContractHistoryRequest
-QueryContractHistoryRequest is the request type for the Query/ContractHistory RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | address is the address of the contract to query |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryContractHistoryResponse"></a>
-
-### QueryContractHistoryResponse
-QueryContractHistoryResponse is the response type for the Query/ContractHistory RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `entries` | [ContractCodeHistoryEntry](#lbm.wasm.v1.ContractCodeHistoryEntry) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryContractInfoRequest"></a>
-
-### QueryContractInfoRequest
-QueryContractInfoRequest is the request type for the Query/ContractInfo RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | address is the address of the contract to query |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryContractInfoResponse"></a>
-
-### QueryContractInfoResponse
-QueryContractInfoResponse is the response type for the Query/ContractInfo RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | address is the address of the contract |
-| `contract_info` | [ContractInfo](#lbm.wasm.v1.ContractInfo) |  |  |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryContractsByCodeRequest"></a>
-
-### QueryContractsByCodeRequest
-QueryContractsByCodeRequest is the request type for the Query/ContractsByCode RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | grpc-gateway_out does not support Go style CodID |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryContractsByCodeResponse"></a>
-
-### QueryContractsByCodeResponse
-QueryContractsByCodeResponse is the response type for the
-Query/ContractsByCode RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contracts` | [string](#string) | repeated | contracts are a set of contract addresses |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryPinnedCodesRequest"></a>
-
-### QueryPinnedCodesRequest
-QueryPinnedCodesRequest is the request type for the Query/PinnedCodes
-RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryPinnedCodesResponse"></a>
-
-### QueryPinnedCodesResponse
-QueryPinnedCodesResponse is the response type for the
-Query/PinnedCodes RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_ids` | [uint64](#uint64) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryRawContractStateRequest"></a>
-
-### QueryRawContractStateRequest
-QueryRawContractStateRequest is the request type for the
-Query/RawContractState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | address is the address of the contract |
-| `query_data` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QueryRawContractStateResponse"></a>
-
-### QueryRawContractStateResponse
-QueryRawContractStateResponse is the response type for the
-Query/RawContractState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `data` | [bytes](#bytes) |  | Data contains the raw store data |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QuerySmartContractStateRequest"></a>
-
-### QuerySmartContractStateRequest
-QuerySmartContractStateRequest is the request type for the
-Query/SmartContractState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | address is the address of the contract |
-| `query_data` | [bytes](#bytes) |  | QueryData contains the query data passed to the contract |
-
-
-
-
-
-
-<a name="lbm.wasm.v1.QuerySmartContractStateResponse"></a>
-
-### QuerySmartContractStateResponse
-QuerySmartContractStateResponse is the response type for the
-Query/SmartContractState RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `data` | [bytes](#bytes) |  | Data contains the json data returned from the smart contract |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="lbm.wasm.v1.Query"></a>
-
-### Query
-Query provides defines the gRPC querier service
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `ContractInfo` | [QueryContractInfoRequest](#lbm.wasm.v1.QueryContractInfoRequest) | [QueryContractInfoResponse](#lbm.wasm.v1.QueryContractInfoResponse) | ContractInfo gets the contract meta data | GET|/lbm/wasm/v1/contract/{address}|
-| `ContractHistory` | [QueryContractHistoryRequest](#lbm.wasm.v1.QueryContractHistoryRequest) | [QueryContractHistoryResponse](#lbm.wasm.v1.QueryContractHistoryResponse) | ContractHistory gets the contract code history | GET|/lbm/wasm/v1/contract/{address}/history|
-| `ContractsByCode` | [QueryContractsByCodeRequest](#lbm.wasm.v1.QueryContractsByCodeRequest) | [QueryContractsByCodeResponse](#lbm.wasm.v1.QueryContractsByCodeResponse) | ContractsByCode lists all smart contracts for a code id | GET|/lbm/wasm/v1/code/{code_id}/contracts|
-| `AllContractState` | [QueryAllContractStateRequest](#lbm.wasm.v1.QueryAllContractStateRequest) | [QueryAllContractStateResponse](#lbm.wasm.v1.QueryAllContractStateResponse) | AllContractState gets all raw store data for a single contract | GET|/lbm/wasm/v1/contract/{address}/state|
-| `RawContractState` | [QueryRawContractStateRequest](#lbm.wasm.v1.QueryRawContractStateRequest) | [QueryRawContractStateResponse](#lbm.wasm.v1.QueryRawContractStateResponse) | RawContractState gets single key from the raw store data of a contract | GET|/lbm/wasm/v1/contract/{address}/raw/{query_data}|
-| `SmartContractState` | [QuerySmartContractStateRequest](#lbm.wasm.v1.QuerySmartContractStateRequest) | [QuerySmartContractStateResponse](#lbm.wasm.v1.QuerySmartContractStateResponse) | SmartContractState get smart query result from the contract | GET|/lbm/wasm/v1/contract/{address}/smart/{query_data}|
-| `Code` | [QueryCodeRequest](#lbm.wasm.v1.QueryCodeRequest) | [QueryCodeResponse](#lbm.wasm.v1.QueryCodeResponse) | Code gets the binary code and metadata for a singe wasm code | GET|/lbm/wasm/v1/code/{code_id}|
-| `Codes` | [QueryCodesRequest](#lbm.wasm.v1.QueryCodesRequest) | [QueryCodesResponse](#lbm.wasm.v1.QueryCodesResponse) | Codes gets the metadata for all stored wasm codes | GET|/lbm/wasm/v1/code|
-| `PinnedCodes` | [QueryPinnedCodesRequest](#lbm.wasm.v1.QueryPinnedCodesRequest) | [QueryPinnedCodesResponse](#lbm.wasm.v1.QueryPinnedCodesResponse) | PinnedCodes gets the pinned code ids | GET|/lbm/wasm/v1/codes/pinned|
+| `Burn` | [MsgBurn](#lbm.token.v1.MsgBurn) | [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Fires: - EventBurned - burn (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
+| `BurnFrom` | [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom) | [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse) | BurnFrom defines a method to burn tokens by the proxy. Fires: - EventBurned - burn_from (deprecated, not typed) Throws: - ErrUnauthorized - `proxy` does not have `burn` permission. - the approver has not authorized `proxy`. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
+| `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token class. Fires: - EventModified - modify_token (deprecated, not typed) Throws: - ErrUnauthorized - the proxy does not have `modify` permission. - ErrNotFound - there is no token class of `contract_id`. | |
 
  <!-- end services -->
 

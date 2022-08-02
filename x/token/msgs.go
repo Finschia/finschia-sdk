@@ -33,37 +33,6 @@ func (m MsgSend) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
-var _ sdk.Msg = (*MsgOperatorSend)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgOperatorSend) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
-	}
-	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
-	}
-
-	if err := validateAmount(m.Amount); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgOperatorSend) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Operator)
-	return []sdk.AccAddress{signer}
-}
-
 var _ sdk.Msg = (*MsgTransferFrom)(nil)
 
 // ValidateBasic implements Msg.
@@ -92,30 +61,6 @@ func (m MsgTransferFrom) ValidateBasic() error {
 // GetSigners implements Msg
 func (m MsgTransferFrom) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgAuthorizeOperator)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgAuthorizeOperator) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if _, err := sdk.AccAddressFromBech32(m.Holder); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", m.Holder)
-	}
-	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg.
-func (m MsgAuthorizeOperator) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Holder)
 	return []sdk.AccAddress{signer}
 }
 
@@ -209,59 +154,6 @@ func (m MsgIssue) ValidateBasic() error {
 // GetSigners implements Msg.
 func (m MsgIssue) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.Owner)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgGrant)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgGrant) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if _, err := sdk.AccAddressFromBech32(m.Granter); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", m.Granter)
-	}
-	if _, err := sdk.AccAddressFromBech32(m.Grantee); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
-	}
-
-	if err := ValidatePermission(m.Permission); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgGrant) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Granter)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgAbandon)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgAbandon) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if _, err := sdk.AccAddressFromBech32(m.Grantee); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Grantee)
-	}
-
-	if err := ValidatePermission(m.Permission); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgAbandon) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Grantee)
 	return []sdk.AccAddress{signer}
 }
 
@@ -367,34 +259,6 @@ func (m MsgBurn) ValidateBasic() error {
 // GetSigners implements Msg
 func (m MsgBurn) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.From)
-	return []sdk.AccAddress{signer}
-}
-
-var _ sdk.Msg = (*MsgOperatorBurn)(nil)
-
-// ValidateBasic implements Msg.
-func (m MsgOperatorBurn) ValidateBasic() error {
-	if err := ValidateContractID(m.ContractId); err != nil {
-		return err
-	}
-
-	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
-	}
-	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
-	}
-
-	if err := validateAmount(m.Amount); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// GetSigners implements Msg
-func (m MsgOperatorBurn) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
