@@ -23,7 +23,6 @@ import (
 	"github.com/line/lbm-sdk/x/distribution/keeper"
 	"github.com/line/lbm-sdk/x/distribution/simulation"
 	"github.com/line/lbm-sdk/x/distribution/types"
-	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 )
 
 var (
@@ -95,13 +94,13 @@ type AppModule struct {
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
-	stakingKeeper stakingkeeper.Keeper
+	stakingKeeper types.StakingKeeper
 }
 
 // NewAppModule creates a new AppModule object
 func NewAppModule(
 	cdc codec.Codec, keeper keeper.Keeper, accountKeeper types.AccountKeeper,
-	bankKeeper types.BankKeeper, stakingKeeper stakingkeeper.Keeper,
+	bankKeeper types.BankKeeper, stakingKeeper types.StakingKeeper,
 ) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},

@@ -8,8 +8,7 @@ import "gogoproto/gogo.proto";
 // Minter represents the minting state.
 message Minter {
   // current annual inflation rate
-  string inflation = 1
-      [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec", (gogoproto.nullable) = false];
+  string inflation = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec", (gogoproto.nullable) = false];
   // current annual expected provisions
   string annual_provisions = 2 [
     (gogoproto.moretags)   = "yaml:\"annual_provisions\"",

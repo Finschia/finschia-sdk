@@ -10,14 +10,14 @@ package keeper_test
 
 // 	"github.com/stretchr/testify/assert"
 
-// 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
-// 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
-// 	sdk "github.com/cosmos/cosmos-sdk/types"
-// 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-// 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+// 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
+// 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
+// 	sdk "github.com/line/lbm-sdk/types"
+// 	authtypes "github.com/line/lbm-sdk/x/auth/types"
+// 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 // 	"github.com/stretchr/testify/require"
-// 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-// 	tmtypes "github.com/tendermint/tendermint/types"
+// 	tmproto "github.com/line/ostracon/proto/ostracon/types"
+// 	tmtypes "github.com/line/ostracon/types"
 
 // 	"github.com/CosmWasm/wasmd/app"
 // 	"github.com/CosmWasm/wasmd/x/wasm/keeper"

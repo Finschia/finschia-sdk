@@ -202,7 +202,7 @@ func (app *SimApp) registerUpgradeHandlers() {
 Add `storetypes` to imports:
 
 ```go
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	storetypes "github.com/line/lbm-sdk/store/types"
 ```
 
 Build the `simd` binary for `v0.44.x` (the upgrade binary):

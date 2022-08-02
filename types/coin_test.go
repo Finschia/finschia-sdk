@@ -656,6 +656,34 @@ func (s *coinTestSuite) TestCoins_Validate() {
 	}
 }
 
+func (s *coinTestSuite) TestMinMax() {
+	one := sdk.OneInt()
+	two := sdk.NewInt(2)
+
+	cases := []struct {
+		name   string
+		input1 sdk.Coins
+		input2 sdk.Coins
+		min    sdk.Coins
+		max    sdk.Coins
+	}{
+		{"zero-zero", sdk.Coins{}, sdk.Coins{}, sdk.Coins{}, sdk.Coins{}},
+		{"zero-one", sdk.Coins{}, sdk.Coins{{testDenom1, one}}, sdk.Coins{}, sdk.Coins{{testDenom1, one}}},
+		{"two-zero", sdk.Coins{{testDenom2, two}}, sdk.Coins{}, sdk.Coins{}, sdk.Coins{{testDenom2, two}}},
+		{"disjoint", sdk.Coins{{testDenom1, one}}, sdk.Coins{{testDenom2, two}}, sdk.Coins{}, sdk.Coins{{testDenom1, one}, {testDenom2, two}}},
+		{"disjoint2", sdk.Coins{{testDenom2, one}}, sdk.Coins{{testDenom1, two}}, sdk.Coins{}, sdk.Coins{{testDenom1, two}, {testDenom2, one}}},
+		{"overlap", sdk.Coins{{testDenom1, one}, {testDenom2, two}}, sdk.Coins{{testDenom1, two}, {testDenom2, one}},
+			sdk.Coins{{testDenom1, one}, {testDenom2, one}}, sdk.Coins{{testDenom1, two}, {testDenom2, two}}},
+	}
+
+	for _, tc := range cases {
+		min := tc.input1.Min(tc.input2)
+		max := tc.input1.Max(tc.input2)
+		s.Require().True(min.IsEqual(tc.min), tc.name)
+		s.Require().True(max.IsEqual(tc.max), tc.name)
+	}
+}
+
 func (s *coinTestSuite) TestCoinsGT() {
 	one := sdk.OneInt()
 	two := sdk.NewInt(2)
@@ -724,6 +752,7 @@ func (s *coinTestSuite) TestParseCoins() {
 		{"10atom10", true, sdk.Coins{{"atom10", sdk.NewInt(10)}}},
 		{"200transfer/channelToA/uatom", true, sdk.Coins{{"transfer/channelToA/uatom", sdk.NewInt(200)}}},
 		{"50ibc/7F1D3FCF4AE79E1554D670D1AD949A9BA4E4A3C76C63093E17E446A46061A7A2", true, sdk.Coins{{"ibc/7F1D3FCF4AE79E1554D670D1AD949A9BA4E4A3C76C63093E17E446A46061A7A2", sdk.NewInt(50)}}},
+		{"120000000000000000000000000000000000000000000000000000000000000000000000000000btc", false, nil},
 	}
 
 	for tcIndex, tc := range cases {
