@@ -98,6 +98,8 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 		event := collection.EventRootChanged{
 			ContractId: contractID,
 			TokenId:    descendantID,
+			From:       subject,
+			To:         root,
 		}
 		ctx.EventManager().EmitEvent(collection.NewEventOperationRootChanged(event))
 		if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -131,10 +133,13 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 	k.deleteChild(ctx, contractID, *parent, subject)
 
 	// legacy
+	root := k.GetRoot(ctx, contractID, *parent)
 	k.iterateDescendants(ctx, contractID, subject, func(descendantID string, _ int) (stop bool) {
 		event := collection.EventRootChanged{
 			ContractId: contractID,
 			TokenId:    descendantID,
+			From:       root,
+			To:         subject,
 		}
 		ctx.EventManager().EmitEvent(collection.NewEventOperationRootChanged(event))
 		if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {

@@ -308,6 +308,10 @@ message EventOwnerChanged {
   string contract_id = 1;
   // token id associated with the token.
   string token_id = 2;
+  // address of the previous owner before the change.
+  string from = 3;
+  // address of the new owner.
+  string to = 4;
 }
 
 // EventRootChanged is emitted when the root of token is changed by operation applied to its ancestor.
@@ -318,4 +322,8 @@ message EventRootChanged {
   string contract_id = 1;
   // token id associated with the token.
   string token_id = 2;
+  // id of the previous root before the change.
+  string from = 3;
+  // id of the new root.
+  string to = 4;
 }
