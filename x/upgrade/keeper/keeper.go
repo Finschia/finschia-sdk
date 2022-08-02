@@ -26,6 +26,12 @@ import (
 // UpgradeInfoFileName file to store upgrade information
 const UpgradeInfoFileName string = "upgrade-info.json"
 
+// upgrade defines a comparable structure for sorting upgrades.
+type upgrade struct {
+	Name        string
+	BlockHeight int64
+}
+
 type Keeper struct {
 	homePath           string                          // root directory of app config
 	skipUpgradeHeights map[int64]bool                  // map of heights to skip for an upgrade
@@ -171,7 +177,9 @@ func (k Keeper) ScheduleUpgrade(ctx sdk.Context, plan types.Plan) error {
 		return err
 	}
 
-	if plan.Height <= ctx.BlockHeight() {
+	// NOTE: allow for the possibility of chains to schedule upgrades in begin block of the same block
+	// as a strategy for emergency hard fork recoveries
+	if plan.Height < ctx.BlockHeight() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "upgrade cannot be scheduled in the past")
 	}
 
@@ -234,8 +242,22 @@ func (k Keeper) GetUpgradedConsensusState(ctx sdk.Context, lastHeight int64) ([]
 func (k Keeper) GetLastCompletedUpgrade(ctx sdk.Context) (string, int64) {
 	iter := sdk.KVStoreReversePrefixIterator(ctx.KVStore(k.storeKey), []byte{types.DoneByte})
 	defer iter.Close()
-	if iter.Valid() {
-		return parseDoneKey(iter.Key()), int64(binary.BigEndian.Uint64(iter.Value()))
+
+	var upgrades []upgrade
+	for ; iter.Valid(); iter.Next() {
+		name := parseDoneKey(iter.Key())
+		value := int64(sdk.BigEndianToUint64(iter.Value()))
+
+		upgrades = append(upgrades, upgrade{Name: name, BlockHeight: value})
+	}
+
+	// sort upgrades in descending order by block height
+	sort.SliceStable(upgrades, func(i, j int) bool {
+		return upgrades[i].BlockHeight > upgrades[j].BlockHeight
+	})
+
+	if len(upgrades) > 0 {
+		return upgrades[0].Name, upgrades[0].BlockHeight
 	}
 
 	return "", 0
@@ -375,7 +397,7 @@ func (k Keeper) DumpUpgradeInfoWithInfoToDisk(height int64, name string, info st
 		return err
 	}
 
-	return ioutil.WriteFile(upgradeInfoFilePath, bz, 0600)
+	return os.WriteFile(upgradeInfoFilePath, bz, 0o600)
 }
 
 // GetUpgradeInfoPath returns the upgrade info file path

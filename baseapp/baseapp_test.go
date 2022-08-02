@@ -2043,3 +2043,29 @@ func TestBaseApp_EndBlock(t *testing.T) {
 	require.Equal(t, int64(100), res.GetValidatorUpdates()[0].Power)
 	require.Equal(t, cp.Block.MaxGas, res.ConsensusParamUpdates.Block.MaxGas)
 }
+
+func TestCommitMultiStore(t *testing.T) {
+	app := newBaseApp(t.Name())
+	cms := app.CommitMultiStore()
+	require.NotNil(t, cms)
+
+	app.Seal()
+	require.Panics(t, func() { app.CommitMultiStore() })
+}
+
+func TestSnapshotManager(t *testing.T) {
+	app := newBaseApp(t.Name())
+	require.Nil(t, app.SnapshotManager())
+
+	tempDir := t.TempDir()
+	snapshotDB, err := sdk.NewLevelDB("metadata", tempDir)
+	if err != nil {
+		require.NoError(t, err)
+	}
+	snapshotStore, err := snapshots.NewStore(snapshotDB, tempDir)
+	if err != nil {
+		require.NoError(t, err)
+	}
+	app.SetSnapshotStore(snapshotStore)
+	require.NotNil(t, app.SnapshotManager())
+}

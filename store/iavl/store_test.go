@@ -454,6 +454,26 @@ func TestIAVLNoPrune(t *testing.T) {
 	}
 }
 
+func TestIAVLGetAllVersions(t *testing.T) {
+	db := dbm.NewMemDB()
+	tree, err := iavl.NewMutableTree(db, cacheSize)
+	require.NoError(t, err)
+
+	iavlStore := UnsafeNewStore(tree)
+	nextVersion(iavlStore)
+
+	for i := 1; i < 100; i++ {
+		for _, ver := range iavlStore.GetAllVersions() {
+			require.True(t, iavlStore.VersionExists(int64(ver)),
+				"Missing version %d with latest version %d. Should be storing all versions",
+				ver, i)
+
+		}
+
+		nextVersion(iavlStore)
+	}
+}
+
 func TestIAVLStoreQuery(t *testing.T) {
 	db := dbm.NewMemDB()
 	tree, err := iavl.NewMutableTree(db, cacheSize)

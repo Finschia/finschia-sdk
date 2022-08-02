@@ -154,6 +154,16 @@ func VerifyAddressFormat(bz []byte) error {
 	return nil
 }
 
+// MustAccAddressFromBech32 calls AccAddressFromBech32 and panics on error.
+func MustAccAddressFromBech32(address string) AccAddress {
+	addr, err := AccAddressFromBech32(address)
+	if err != nil {
+		panic(err)
+	}
+
+	return addr
+}
+
 // AccAddressFromBech32 creates an AccAddress from a Bech32 string.
 func AccAddressFromBech32(address string) (addr AccAddress, err error) {
 	if len(strings.TrimSpace(address)) == 0 {
@@ -186,7 +196,7 @@ func (aa AccAddress) Equals(aa2 Address) bool {
 
 // Returns boolean for whether an AccAddress is empty
 func (aa AccAddress) Empty() bool {
-	return aa == nil || len(aa) == 0
+	return len(aa) == 0
 }
 
 // Marshal returns the raw address bytes. It is needed for protobuf
@@ -335,7 +345,7 @@ func (va ValAddress) Equals(va2 Address) bool {
 
 // Returns boolean for whether an AccAddress is empty
 func (va ValAddress) Empty() bool {
-	return va == nil || len(va) == 0
+	return len(va) == 0
 }
 
 // Marshal returns the raw address bytes. It is needed for protobuf
@@ -490,7 +500,7 @@ func (ca ConsAddress) Equals(ca2 Address) bool {
 
 // Returns boolean for whether an ConsAddress is empty
 func (ca ConsAddress) Empty() bool {
-	return ca == nil || len(ca) == 0
+	return len(ca) == 0
 }
 
 // Marshal returns the raw address bytes. It is needed for protobuf

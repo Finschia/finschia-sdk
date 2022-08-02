@@ -14,10 +14,12 @@ import (
 	"github.com/line/lbm-sdk/crypto/keyring"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/testutil/network"
 	sdk "github.com/line/lbm-sdk/types"
 	txtypes "github.com/line/lbm-sdk/types/tx"
 	signingtypes "github.com/line/lbm-sdk/types/tx/signing"
 	"github.com/line/lbm-sdk/x/auth/signing"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 )
 
@@ -45,6 +47,7 @@ func (m mockContext) Invoke(grpcCtx gocontext.Context, method string, req, reply
 
 	return nil
 }
+
 func (mockContext) NewStream(gocontext.Context, *grpc.StreamDesc, string, ...grpc.CallOption) (grpc.ClientStream, error) {
 	panic("not implemented")
 }
@@ -97,6 +100,10 @@ func TestCalculateGas(t *testing.T) {
 func TestBuildSimTx(t *testing.T) {
 	txCfg := NewTestTxConfig()
 
+	msg := banktypes.NewMsgSend(sdk.AccAddress("from"), sdk.AccAddress("to"), nil)
+	kb, err := keyring.New(t.Name(), "test", t.TempDir(), nil)
+	require.NoError(t, err)
+
 	txf := tx.Factory{}.
 		WithTxConfig(txCfg).
 		WithAccountNumber(50).
@@ -104,17 +111,75 @@ func TestBuildSimTx(t *testing.T) {
 		WithFees("50stake").
 		WithMemo("memo").
 		WithChainID("test-chain").
-		WithSignMode(txCfg.SignModeHandler().DefaultMode())
+		WithSignMode(txCfg.SignModeHandler().DefaultMode()).
+		WithKeybase(kb)
 
-	msg := banktypes.NewMsgSend(sdk.AccAddress("from"), sdk.AccAddress("to"), nil)
+	// empty keybase list
 	bz, err := tx.BuildSimTx(txf, msg)
+	require.Error(t, err)
+	require.Nil(t, bz)
+
+	// with keybase list
+	path := hd.CreateHDPath(118, 0, 0).String()
+	_, _, err = kb.NewMnemonic("test_key1", keyring.English, path, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
+	require.NoError(t, err)
+	txf = txf.WithKeybase(kb)
+	bz, err = tx.BuildSimTx(txf, msg)
 	require.NoError(t, err)
 	require.NotNil(t, bz)
+
+	// no ChainID
+	txf = txf.WithChainID("")
+	bz, err = tx.BuildSimTx(txf, msg)
+	require.Error(t, err)
+	require.Nil(t, bz)
 }
 
 func TestBuildUnsignedTx(t *testing.T) {
+	kb, err := keyring.New(t.Name(), "test", t.TempDir(), nil)
+	require.NoError(t, err)
+
+	path := hd.CreateHDPath(118, 0, 0).String()
+
+	_, _, err = kb.NewMnemonic("test_key1", keyring.English, path, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
+	require.NoError(t, err)
+
 	txf := tx.Factory{}.
 		WithTxConfig(NewTestTxConfig()).
+		WithAccountNumber(50).
+		WithSequence(23).
+		WithGasPrices("50stake,50cony").
+		WithMemo("memo").
+		WithChainID("test-chain")
+
+	msg := banktypes.NewMsgSend(sdk.AccAddress("from"), sdk.AccAddress("to"), nil)
+	txBuiler, err := tx.BuildUnsignedTx(txf, msg)
+	require.NoError(t, err)
+	require.NotNil(t, txBuiler)
+
+	sigs, err := txBuiler.GetTx().(signing.SigVerifiableTx).GetSignaturesV2()
+	require.NoError(t, err)
+	require.Empty(t, sigs)
+
+	// no ChainID
+	txf = txf.WithChainID("")
+	txBuiler, err = tx.BuildUnsignedTx(txf, msg)
+	require.Nil(t, txBuiler)
+	require.Error(t, err)
+
+	// both fees and gas prices
+	txf = txf.
+		WithChainID("test-chain").
+		WithFees("50stake")
+	txBuiler, err = tx.BuildUnsignedTx(txf, msg)
+	require.Nil(t, txBuiler)
+	require.Error(t, err)
+}
+
+func TestPrintUnsignedTx(t *testing.T) {
+	txConfig := NewTestTxConfig()
+	txf := tx.Factory{}.
+		WithTxConfig(txConfig).
 		WithAccountNumber(50).
 		WithSequence(23).
 		WithFees("50stake").
@@ -122,13 +187,26 @@ func TestBuildUnsignedTx(t *testing.T) {
 		WithChainID("test-chain")
 
 	msg := banktypes.NewMsgSend(sdk.AccAddress("from"), sdk.AccAddress("to"), nil)
-	tx, err := tx.BuildUnsignedTx(txf, msg)
+	clientCtx := client.Context{}.
+		WithTxConfig(txConfig)
+	err := txf.PrintUnsignedTx(clientCtx, msg)
 	require.NoError(t, err)
-	require.NotNil(t, tx)
 
-	sigs, err := tx.GetTx().(signing.SigVerifiableTx).GetSignaturesV2()
-	require.NoError(t, err)
-	require.Empty(t, sigs)
+	// no ChainID
+	txf = txf.WithChainID("")
+	err = txf.PrintUnsignedTx(clientCtx, msg)
+	require.Error(t, err)
+
+	// SimulateAndExecute
+	// failed at CaculateGas
+	txf = txf.WithSimulateAndExecute(true)
+	err = txf.PrintUnsignedTx(clientCtx, msg)
+	require.Error(t, err)
+
+	// Offline
+	clientCtx = clientCtx.WithOffline(true)
+	err = txf.PrintUnsignedTx(clientCtx, msg)
+	require.Error(t, err)
 }
 
 func TestSign(t *testing.T) {
@@ -137,8 +215,8 @@ func TestSign(t *testing.T) {
 	kr, err := keyring.New(t.Name(), "test", t.TempDir(), nil)
 	requireT.NoError(err)
 
-	var from1 = "test_key1"
-	var from2 = "test_key2"
+	from1 := "test_key1"
+	from2 := "test_key2"
 
 	// create a new key using a mnemonic generator and test if we can reuse seed to recreate that account
 	_, seed, err := kr.NewMnemonic(from1, keyring.English, path, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
@@ -169,6 +247,7 @@ func TestSign(t *testing.T) {
 		WithSignMode(signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON)
 	msg1 := banktypes.NewMsgSend(info1.GetAddress(), sdk.AccAddress("to"), nil)
 	msg2 := banktypes.NewMsgSend(info2.GetAddress(), sdk.AccAddress("to"), nil)
+
 	txb, err := tx.BuildUnsignedTx(txfNoKeybase, msg1, msg2)
 	requireT.NoError(err)
 	txb2, err := tx.BuildUnsignedTx(txfNoKeybase, msg1, msg2)
@@ -185,35 +264,71 @@ func TestSign(t *testing.T) {
 		expectedPKs  []cryptotypes.PubKey
 		matchingSigs []int // if not nil, check matching signature against old ones.
 	}{
-		{"should fail if txf without keyring",
-			txfNoKeybase, txb, from1, true, nil, nil},
-		{"should fail for non existing key",
-			txfAmino, txb, "unknown", true, nil, nil},
-		{"amino: should succeed with keyring",
-			txfAmino, txbSimple, from1, true, []cryptotypes.PubKey{pubKey1}, nil},
-		{"direct: should succeed with keyring",
-			txfDirect, txbSimple, from1, true, []cryptotypes.PubKey{pubKey1}, nil},
+		{
+			"should fail if txf without keyring",
+			txfNoKeybase, txb, from1, true, nil, nil,
+		},
+		{
+			"should fail for non existing key",
+			txfAmino, txb, "unknown", true, nil, nil,
+		},
+		{
+			"amino: should succeed with keyring",
+			txfAmino, txbSimple, from1, true,
+			[]cryptotypes.PubKey{pubKey1},
+			nil,
+		},
+		{
+			"direct: should succeed with keyring",
+			txfDirect, txbSimple, from1, true,
+			[]cryptotypes.PubKey{pubKey1},
+			nil,
+		},
 
 		/**** test double sign Amino mode ****/
-		{"amino: should sign multi-signers tx",
-			txfAmino, txb, from1, true, []cryptotypes.PubKey{pubKey1}, nil},
-		{"amino: should append a second signature and not overwrite",
-			txfAmino, txb, from2, false, []cryptotypes.PubKey{pubKey1, pubKey2}, []int{0, 0}},
-		{"amino: should overwrite a signature",
-			txfAmino, txb, from2, true, []cryptotypes.PubKey{pubKey2}, []int{1, 0}},
+		{
+			"amino: should sign multi-signers tx",
+			txfAmino, txb, from1, true,
+			[]cryptotypes.PubKey{pubKey1},
+			nil,
+		},
+		{
+			"amino: should append a second signature and not overwrite",
+			txfAmino, txb, from2, false,
+			[]cryptotypes.PubKey{pubKey1, pubKey2},
+			[]int{0, 0},
+		},
+		{
+			"amino: should overwrite a signature",
+			txfAmino, txb, from2, true,
+			[]cryptotypes.PubKey{pubKey2},
+			[]int{1, 0},
+		},
 
 		/**** test double sign Direct mode
 		  signing transaction with more than 2 signers should fail in DIRECT mode ****/
-		{"direct: should fail to append a signature with different mode",
-			txfDirect, txb, from1, false, []cryptotypes.PubKey{}, nil},
-		{"direct: should fail to sign multi-signers tx",
-			txfDirect, txb2, from1, false, []cryptotypes.PubKey{}, nil},
-		{"direct: should fail to overwrite multi-signers tx",
-			txfDirect, txb2, from1, true, []cryptotypes.PubKey{}, nil},
+		{
+			"direct: should fail to append a signature with different mode",
+			txfDirect, txb, from1, false,
+			[]cryptotypes.PubKey{},
+			nil,
+		},
+		{
+			"direct: should fail to sign multi-signers tx",
+			txfDirect, txb2, from1, false,
+			[]cryptotypes.PubKey{},
+			nil,
+		},
+		{
+			"direct: should fail to overwrite multi-signers tx",
+			txfDirect, txb2, from1, true,
+			[]cryptotypes.PubKey{},
+			nil,
+		},
 	}
 	var prevSigs []signingtypes.SignatureV2
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
+		t.Run(tc.name, func(_ *testing.T) {
 			err = tx.Sign(tc.txf, tc.from, tc.txb, tc.overwrite)
 			if len(tc.expectedPKs) == 0 {
 				requireT.Error(err)
@@ -238,4 +353,26 @@ func testSigners(require *require.Assertions, tr signing.Tx, pks ...cryptotypes.
 		require.True(sigs[i].PubKey.Equals(pks[i]), "Signature is signed with a wrong pubkey. Got: %s, expected: %s", sigs[i].PubKey, pks[i])
 	}
 	return sigs
+}
+
+func TestPrepare(t *testing.T) {
+	txf := tx.Factory{}.
+		WithAccountRetriever(authtypes.AccountRetriever{})
+
+	cfg := network.DefaultConfig()
+	cfg.NumValidators = 1
+
+	network := network.New(t, cfg)
+	defer network.Cleanup()
+
+	_, err := network.WaitForHeight(3)
+	require.NoError(t, err)
+
+	val := network.Validators[0]
+	clientCtx := val.ClientCtx.
+		WithHeight(2).
+		WithFromAddress(val.Address)
+
+	_, err = txf.Prepare(clientCtx)
+	require.NoError(t, err)
 }
