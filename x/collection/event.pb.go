@@ -1491,9 +1491,9 @@ type EventRootChanged struct {
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// token id associated with the token.
 	TokenId string `protobuf:"bytes,2,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
-	// id of the previous root before the change.
+	// token id of the previous root before the change.
 	From string `protobuf:"bytes,3,opt,name=from,proto3" json:"from,omitempty"`
-	// id of the new root.
+	// token id of the new root.
 	To string `protobuf:"bytes,4,opt,name=to,proto3" json:"to,omitempty"`
 }
 

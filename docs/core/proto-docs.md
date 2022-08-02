@@ -14159,8 +14159,8 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `token_id` | [string](#string) |  | token id associated with the token. |
-| `from` | [string](#string) |  | id of the previous root before the change. |
-| `to` | [string](#string) |  | id of the new root. |
+| `from` | [string](#string) |  | token id of the previous root before the change. |
+| `to` | [string](#string) |  | token id of the new root. |
 
 
 
