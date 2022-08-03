@@ -30,7 +30,12 @@ func NewHandler(k types.ContractOpsKeeper) sdk.Handler {
 		case *MsgInstantiateContract:
 			res, err = msgServer.InstantiateContract(sdk.WrapSDKContext(ctx), msg)
 		case *MsgStoreCodeAndInstantiateContract:
-			res, err = msgServer.StoreCodeAndInstantiateContract(sdk.WrapSDKContext(ctx), msg)
+			lbmMsgServer, ok := msgServer.(types.MsgExtensionServer)
+			if !ok {
+				errMsg := fmt.Sprintf("unrecognized wasm message type: %T", msg)
+				return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, errMsg)
+			}
+			res, err = lbmMsgServer.StoreCodeAndInstantiateContract(sdk.WrapSDKContext(ctx), msg)
 		case *MsgExecuteContract:
 			res, err = msgServer.ExecuteContract(sdk.WrapSDKContext(ctx), msg)
 		case *MsgMigrateContract:

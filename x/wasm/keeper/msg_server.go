@@ -10,6 +10,7 @@ import (
 )
 
 var _ types.MsgServer = msgServer{}
+var _ types.MsgExtensionServer = msgServer{}
 
 type msgServer struct {
 	keeper types.ContractOpsKeeper

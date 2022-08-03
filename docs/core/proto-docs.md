@@ -606,8 +606,6 @@
     - [MsgMigrateContract](#cosmwasm.wasm.v1.MsgMigrateContract)
     - [MsgMigrateContractResponse](#cosmwasm.wasm.v1.MsgMigrateContractResponse)
     - [MsgStoreCode](#cosmwasm.wasm.v1.MsgStoreCode)
-    - [MsgStoreCodeAndInstantiateContract](#cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContract)
-    - [MsgStoreCodeAndInstantiateContractResponse](#cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse)
     - [MsgStoreCodeResponse](#cosmwasm.wasm.v1.MsgStoreCodeResponse)
     - [MsgUpdateAdmin](#cosmwasm.wasm.v1.MsgUpdateAdmin)
     - [MsgUpdateAdminResponse](#cosmwasm.wasm.v1.MsgUpdateAdminResponse)
@@ -1228,6 +1226,12 @@
     - [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse)
   
     - [Msg](#lbm.token.v1.Msg)
+  
+- [lbm/wasm/v1/tx_extension.proto](#lbm/wasm/v1/tx_extension.proto)
+    - [MsgStoreCodeAndInstantiateContract](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContract)
+    - [MsgStoreCodeAndInstantiateContractResponse](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse)
+  
+    - [MsgExtension](#lbm.wasm.v1.MsgExtension)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -9276,44 +9280,6 @@ MsgStoreCode submit Wasm code to the system
 
 
 
-<a name="cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContract"></a>
-
-### MsgStoreCodeAndInstantiateContract
-MsgStoreCodeAndInstantiateContract submit Wasm code to the system and instantiate a contract using it.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
-| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  |  |
-| `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
-| `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
-| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on instantiation |
-| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse"></a>
-
-### MsgStoreCodeAndInstantiateContractResponse
-MsgStoreCodeAndInstantiateContractResponse returns store and instantiate result data.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
-| `address` | [string](#string) |  | Address is the bech32 address of the new contract instance. |
-| `data` | [bytes](#bytes) |  | Data contains base64-encoded bytes to returned from the contract |
-
-
-
-
-
-
 <a name="cosmwasm.wasm.v1.MsgStoreCodeResponse"></a>
 
 ### MsgStoreCodeResponse
@@ -9371,7 +9337,6 @@ Msg defines the wasm Msg service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `StoreCode` | [MsgStoreCode](#cosmwasm.wasm.v1.MsgStoreCode) | [MsgStoreCodeResponse](#cosmwasm.wasm.v1.MsgStoreCodeResponse) | StoreCode to submit Wasm code to the system | |
 | `InstantiateContract` | [MsgInstantiateContract](#cosmwasm.wasm.v1.MsgInstantiateContract) | [MsgInstantiateContractResponse](#cosmwasm.wasm.v1.MsgInstantiateContractResponse) | Instantiate creates a new smart contract instance for the given code id. | |
-| `StoreCodeAndInstantiateContract` | [MsgStoreCodeAndInstantiateContract](#cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContract) | [MsgStoreCodeAndInstantiateContractResponse](#cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse) | StoreCodeAndInstantiatecontract upload code and instantiate a contract using it. | |
 | `ExecuteContract` | [MsgExecuteContract](#cosmwasm.wasm.v1.MsgExecuteContract) | [MsgExecuteContractResponse](#cosmwasm.wasm.v1.MsgExecuteContractResponse) | Execute submits the given message data to a smart contract | |
 | `MigrateContract` | [MsgMigrateContract](#cosmwasm.wasm.v1.MsgMigrateContract) | [MsgMigrateContractResponse](#cosmwasm.wasm.v1.MsgMigrateContractResponse) | Migrate runs a code upgrade/ downgrade for a smart contract | |
 | `UpdateAdmin` | [MsgUpdateAdmin](#cosmwasm.wasm.v1.MsgUpdateAdmin) | [MsgUpdateAdminResponse](#cosmwasm.wasm.v1.MsgUpdateAdminResponse) | UpdateAdmin sets a new admin for a smart contract | |
@@ -18571,6 +18536,70 @@ Msg defines the token Msg service.
 | `Burn` | [MsgBurn](#lbm.token.v1.MsgBurn) | [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse) | Burn defines a method to burn tokens. Fires: - EventBurned - burn (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
 | `BurnFrom` | [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom) | [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse) | BurnFrom defines a method to burn tokens by the proxy. Fires: - EventBurned - burn_from (deprecated, not typed) Throws: - ErrUnauthorized - `proxy` does not have `burn` permission. - the approver has not authorized `proxy`. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
 | `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token class. Fires: - EventModified - modify_token (deprecated, not typed) Throws: - ErrUnauthorized - the proxy does not have `modify` permission. - ErrNotFound - there is no token class of `contract_id`. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/wasm/v1/tx_extension.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/wasm/v1/tx_extension.proto
+
+
+
+<a name="lbm.wasm.v1.MsgStoreCodeAndInstantiateContract"></a>
+
+### MsgStoreCodeAndInstantiateContract
+MsgStoreCodeAndInstantiateContract submit Wasm code to the system and instantiate a contract using it.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
+| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
+| `instantiate_permission` | [cosmwasm.wasm.v1.AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  |  |
+| `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
+| `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
+| `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract on instantiation |
+| `funds` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse"></a>
+
+### MsgStoreCodeAndInstantiateContractResponse
+MsgStoreCodeAndInstantiateContractResponse returns store and instantiate result data.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
+| `address` | [string](#string) |  | Address is the bech32 address of the new contract instance. |
+| `data` | [bytes](#bytes) |  | Data contains base64-encoded bytes to returned from the contract |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.wasm.v1.MsgExtension"></a>
+
+### MsgExtension
+MsgExtension defines the wasm Msg service for lbm-sdk.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `StoreCodeAndInstantiateContract` | [MsgStoreCodeAndInstantiateContract](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContract) | [MsgStoreCodeAndInstantiateContractResponse](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse) | StoreCodeAndInstantiateContract upload code and instantiate a contract using it. | |
 
  <!-- end services -->
 
