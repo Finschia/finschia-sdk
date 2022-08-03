@@ -122,9 +122,6 @@ func DefaultParams() Params {
 	return Params{
 		CodeUploadAccess:             AllowEverybody,
 		InstantiateDefaultPermission: AccessTypeEverybody,
-		GasMultiplier:                DefaultGasMultiplier,
-		InstanceCost:                 DefaultInstanceCost,
-		CompileCost:                  DefaultCompileCost,
 	}
 }
 
@@ -141,9 +138,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(ParamStoreKeyUploadAccess, &p.CodeUploadAccess, validateAccessConfig),
 		paramtypes.NewParamSetPair(ParamStoreKeyInstantiateAccess, &p.InstantiateDefaultPermission, validateAccessType),
-		paramtypes.NewParamSetPair(ParamStoreKeyGasMultiplier, &p.GasMultiplier, validateGasMultiplier),
-		paramtypes.NewParamSetPair(ParamStoreKeyInstanceCost, &p.InstanceCost, validateInstanceCost),
-		paramtypes.NewParamSetPair(ParamStoreKeyCompileCost, &p.CompileCost, validateCompileCost),
 	}
 }
 
@@ -154,15 +148,6 @@ func (p Params) ValidateBasic() error {
 	}
 	if err := validateAccessConfig(p.CodeUploadAccess); err != nil {
 		return errors.Wrap(err, "upload access")
-	}
-	if err := validateGasMultiplier(p.GasMultiplier); err != nil {
-		return errors.Wrap(err, "gas multiplier")
-	}
-	if err := validateInstanceCost(p.InstanceCost); err != nil {
-		return errors.Wrap(err, "instance cost")
-	}
-	if err := validateCompileCost(p.CompileCost); err != nil {
-		return errors.Wrap(err, "compile cost")
 	}
 	return nil
 }

@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	lbmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -16,7 +17,7 @@ type ValidatorSetSource interface {
 // InitGenesis sets supply information for genesis.
 //
 // CONTRACT: all types of accounts must have been already initialized/created
-func InitGenesis(ctx sdk.Context, keeper *Keeper, data types.GenesisState, stakingKeeper ValidatorSetSource, msgHandler sdk.Handler) ([]abci.ValidatorUpdate, error) {
+func InitGenesis(ctx sdk.Context, keeper *Keeper, data lbmtypes.GenesisState, stakingKeeper ValidatorSetSource, msgHandler sdk.Handler) ([]abci.ValidatorUpdate, error) {
 	contractKeeper := NewGovPermissionKeeper(keeper)
 	keeper.setParams(ctx, data.Params)
 	var maxCodeID uint64
@@ -82,8 +83,8 @@ func InitGenesis(ctx sdk.Context, keeper *Keeper, data types.GenesisState, staki
 }
 
 // ExportGenesis returns a GenesisState for a given context and keeper.
-func ExportGenesis(ctx sdk.Context, keeper *Keeper) *types.GenesisState {
-	var genState types.GenesisState
+func ExportGenesis(ctx sdk.Context, keeper *Keeper) *lbmtypes.GenesisState {
+	var genState lbmtypes.GenesisState
 
 	genState.Params = keeper.GetParams(ctx)
 

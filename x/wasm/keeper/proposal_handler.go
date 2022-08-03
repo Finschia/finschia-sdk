@@ -48,8 +48,6 @@ func NewWasmProposalHandlerX(k types.ContractOpsKeeper, enabledProposalTypes []t
 			return handlePinCodesProposal(ctx, k, *c)
 		case *types.UnpinCodesProposal:
 			return handleUnpinCodesProposal(ctx, k, *c)
-		case *types.UpdateContractStatusProposal:
-			return handleUpdateContractStatusProposal(ctx, k, *c)
 		case *types.UpdateInstantiateConfigProposal:
 			return handleUpdateInstantiateConfigProposal(ctx, k, *c)
 		default:
@@ -270,26 +268,6 @@ func handleUnpinCodesProposal(ctx sdk.Context, k types.ContractOpsKeeper, p type
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
 
-	return nil
-}
-
-func handleUpdateContractStatusProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.UpdateContractStatusProposal) error {
-	if err := p.ValidateBasic(); err != nil {
-		return err
-	}
-	contractAddr, err := sdk.AccAddressFromBech32(p.Contract)
-	if err != nil {
-		return sdkerrors.Wrap(err, "contract")
-	}
-	if err = k.UpdateContractStatus(ctx, contractAddr, nil, p.Status); err != nil {
-		return err
-	}
-
-	ctx.EventManager().EmitEvent(sdk.NewEvent(
-		types.EventTypeUpdateContractStatus,
-		sdk.NewAttribute(types.AttributeKeyContractAddr, p.Contract),
-		sdk.NewAttribute(types.AttributeKeyContractStatus, p.Status.String()),
-	))
 	return nil
 }
 

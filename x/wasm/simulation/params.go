@@ -7,6 +7,7 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/simulation"
+	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -30,11 +31,11 @@ func ParamChanges(r *rand.Rand, cdc codec.Codec) []simtypes.ParamChange {
 	}
 }
 
-func RandomParams(r *rand.Rand) types.Params {
+func RandomParams(r *rand.Rand) lbmwasmtypes.Params {
 	permissionType := types.AccessType(simtypes.RandIntBetween(r, 1, 3))
 	account, _ := simtypes.RandomAcc(r, simtypes.RandomAccounts(r, 10))
 	accessConfig := permissionType.With(account.Address)
-	return types.Params{
+	return lbmwasmtypes.Params{
 		CodeUploadAccess:             accessConfig,
 		InstantiateDefaultPermission: accessConfig.Permission,
 		GasMultiplier:                types.DefaultGasMultiplier,

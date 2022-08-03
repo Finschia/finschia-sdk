@@ -3,6 +3,7 @@ package wasm
 
 import (
 	"github.com/line/lbm-sdk/x/wasm/keeper"
+	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -34,7 +35,7 @@ var (
 	// functions aliases
 	RegisterCodec             = types.RegisterLegacyAminoCodec
 	RegisterInterfaces        = types.RegisterInterfaces
-	ValidateGenesis           = types.ValidateGenesis
+	ValidateGenesis           = lbmwasmtypes.ValidateGenesis
 	ConvertToProposals        = types.ConvertToProposals
 	GetCodeKey                = types.GetCodeKey
 	GetContractAddressKey     = types.GetContractAddressKey
@@ -45,7 +46,7 @@ var (
 	NewEnv                    = types.NewEnv
 	NewWasmCoins              = types.NewWasmCoins
 	DefaultWasmConfig         = types.DefaultWasmConfig
-	DefaultParams             = types.DefaultParams
+	DefaultParams             = lbmwasmtypes.DefaultParams
 	InitGenesis               = keeper.InitGenesis
 	ExportGenesis             = keeper.ExportGenesis
 	NewMessageHandler         = keeper.NewDefaultMessageHandler
@@ -90,15 +91,15 @@ var (
 
 type (
 	ProposalType                               = types.ProposalType
-	GenesisState                               = types.GenesisState
+	GenesisState                               = lbmwasmtypes.GenesisState
 	Code                                       = types.Code
 	Contract                                   = types.Contract
 	MsgStoreCode                               = types.MsgStoreCode
 	MsgStoreCodeResponse                       = types.MsgStoreCodeResponse
 	MsgInstantiateContract                     = types.MsgInstantiateContract
 	MsgInstantiateContractResponse             = types.MsgInstantiateContractResponse
-	MsgStoreCodeAndInstantiateContract         = types.MsgStoreCodeAndInstantiateContract
-	MsgStoreCodeAndInstantiateContractResponse = types.MsgStoreCodeAndInstantiateContractResponse
+	MsgStoreCodeAndInstantiateContract         = lbmwasmtypes.MsgStoreCodeAndInstantiateContract
+	MsgStoreCodeAndInstantiateContractResponse = lbmwasmtypes.MsgStoreCodeAndInstantiateContractResponse
 	MsgExecuteContract                         = types.MsgExecuteContract
 	MsgExecuteContractResponse                 = types.MsgExecuteContractResponse
 	MsgMigrateContract                         = types.MsgMigrateContract

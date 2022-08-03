@@ -1,0 +1,29 @@
+syntax = "proto3";
+package lbm.wasm.v1;
+
+import "gogoproto/gogo.proto";
+import "cosmwasm/wasm/v1/types.proto";
+import "cosmwasm/wasm/v1/genesis.proto";
+import "lbm/wasm/v1/types.proto";
+
+option go_package = "github.com/line/lbm-sdk/x/wasm/lbm/types";
+
+message GenesisState {
+  // Params sdk type Params for wasm
+  Params            params    = 1 [(gogoproto.nullable) = false];
+
+  // Codes has all stored wasm codes and metadata
+  repeated cosmwasm.wasm.v1.Code     codes     = 2 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "codes,omitempty"];
+
+  // Contracts contains all instantiated contracts, state and metadata
+  repeated cosmwasm.wasm.v1.Contract contracts = 3 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "contracts,omitempty"];
+
+  // Sequences names and values
+  repeated cosmwasm.wasm.v1.Sequence sequences = 4 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "sequences,omitempty"];
+
+  // GenMsgs has wasmd sdk type messages to execute in the genesis phase
+  repeated cosmwasm.wasm.v1.GenesisState.GenMsgs  gen_msgs  = 5 [(gogoproto.nullable) = false, (gogoproto.jsontag) = "gen_msgs,omitempty"];
+
+  // InactiveContractAddresses is a list of contract address that set inactive
+  repeated string inactive_contract_addresses = 6 [(gogoproto.jsontag) = "inactive_contract_address, omitempty"];
+}

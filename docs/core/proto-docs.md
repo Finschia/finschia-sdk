@@ -594,7 +594,6 @@
   
     - [AccessType](#cosmwasm.wasm.v1.AccessType)
     - [ContractCodeHistoryOperationType](#cosmwasm.wasm.v1.ContractCodeHistoryOperationType)
-    - [ContractStatus](#cosmwasm.wasm.v1.ContractStatus)
   
 - [cosmwasm/wasm/v1/tx.proto](#cosmwasm/wasm/v1/tx.proto)
     - [MsgClearAdmin](#cosmwasm.wasm.v1.MsgClearAdmin)
@@ -634,7 +633,6 @@
     - [SudoContractProposal](#cosmwasm.wasm.v1.SudoContractProposal)
     - [UnpinCodesProposal](#cosmwasm.wasm.v1.UnpinCodesProposal)
     - [UpdateAdminProposal](#cosmwasm.wasm.v1.UpdateAdminProposal)
-    - [UpdateContractStatusProposal](#cosmwasm.wasm.v1.UpdateContractStatusProposal)
     - [UpdateInstantiateConfigProposal](#cosmwasm.wasm.v1.UpdateInstantiateConfigProposal)
   
 - [cosmwasm/wasm/v1/query.proto](#cosmwasm/wasm/v1/query.proto)
@@ -1227,11 +1225,17 @@
   
     - [Msg](#lbm.token.v1.Msg)
   
-- [lbm/wasm/v1/tx_extension.proto](#lbm/wasm/v1/tx_extension.proto)
+- [lbm/wasm/v1/types.proto](#lbm/wasm/v1/types.proto)
+    - [Params](#lbm.wasm.v1.Params)
+  
+- [lbm/wasm/v1/genesis.proto](#lbm/wasm/v1/genesis.proto)
+    - [GenesisState](#lbm.wasm.v1.GenesisState)
+  
+- [lbm/wasm/v1/tx.proto](#lbm/wasm/v1/tx.proto)
     - [MsgStoreCodeAndInstantiateContract](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContract)
     - [MsgStoreCodeAndInstantiateContractResponse](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse)
   
-    - [MsgExtension](#lbm.wasm.v1.MsgExtension)
+    - [Msg](#lbm.wasm.v1.Msg)
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -9035,7 +9039,6 @@ ContractInfo stores a WASM contract instance
 | `created` | [AbsoluteTxPosition](#cosmwasm.wasm.v1.AbsoluteTxPosition) |  | Created Tx position when the contract was instantiated. This data should kept internal and not be exposed via query results. Just use for sorting |
 | `ibc_port_id` | [string](#string) |  |  |
 | `extension` | [google.protobuf.Any](#google.protobuf.Any) |  | Extension is an extension point to store custom metadata within the persistence model. |
-| `status` | [ContractStatus](#cosmwasm.wasm.v1.ContractStatus) |  | Status is a status of a contract |
 
 
 
@@ -9068,9 +9071,6 @@ Params defines the set of wasm parameters.
 | ----- | ---- | ----- | ----------- |
 | `code_upload_access` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  |  |
 | `instantiate_default_permission` | [AccessType](#cosmwasm.wasm.v1.AccessType) |  |  |
-| `gas_multiplier` | [uint64](#uint64) |  |  |
-| `instance_cost` | [uint64](#uint64) |  |  |
-| `compile_cost` | [uint64](#uint64) |  |  |
 
 
 
@@ -9104,19 +9104,6 @@ ContractCodeHistoryOperationType actions that caused a code change
 | CONTRACT_CODE_HISTORY_OPERATION_TYPE_INIT | 1 | ContractCodeHistoryOperationTypeInit on chain contract instantiation |
 | CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE | 2 | ContractCodeHistoryOperationTypeMigrate code migration |
 | CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS | 3 | ContractCodeHistoryOperationTypeGenesis based on genesis data |
-
-
-
-<a name="cosmwasm.wasm.v1.ContractStatus"></a>
-
-### ContractStatus
-ContractStatus types
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| CONTRACT_STATUS_UNSPECIFIED | 0 | ContractStatus unspecified |
-| CONTRACT_STATUS_ACTIVE | 1 | ContractStatus active |
-| CONTRACT_STATUS_INACTIVE | 2 | ContractStatus inactive |
 
 
  <!-- end enums -->
@@ -9687,24 +9674,6 @@ UpdateAdminProposal gov proposal content type to set an admin for a contract.
 | `description` | [string](#string) |  | Description is a human readable text |
 | `new_admin` | [string](#string) |  | NewAdmin address to be set |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
-
-
-
-
-
-
-<a name="cosmwasm.wasm.v1.UpdateContractStatusProposal"></a>
-
-### UpdateContractStatusProposal
-UpdateStatusProposal gov proposal content type to update the contract status.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  | Title is a short summary |
-| `description` | [string](#string) |  | Description is a human readable text |
-| `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `status` | [ContractStatus](#cosmwasm.wasm.v1.ContractStatus) |  | Status to be set |
 
 
 
@@ -18541,10 +18510,81 @@ Msg defines the token Msg service.
 
 
 
-<a name="lbm/wasm/v1/tx_extension.proto"></a>
+<a name="lbm/wasm/v1/types.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/wasm/v1/tx_extension.proto
+## lbm/wasm/v1/types.proto
+
+
+
+<a name="lbm.wasm.v1.Params"></a>
+
+### Params
+Params defines the set of wasm parameters.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_upload_access` | [cosmwasm.wasm.v1.AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  |  |
+| `instantiate_default_permission` | [cosmwasm.wasm.v1.AccessType](#cosmwasm.wasm.v1.AccessType) |  |  |
+| `gas_multiplier` | [uint64](#uint64) |  |  |
+| `instance_cost` | [uint64](#uint64) |  |  |
+| `compile_cost` | [uint64](#uint64) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/wasm/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/wasm/v1/genesis.proto
+
+
+
+<a name="lbm.wasm.v1.GenesisState"></a>
+
+### GenesisState
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.wasm.v1.Params) |  | Params sdk type Params for wasm |
+| `codes` | [cosmwasm.wasm.v1.Code](#cosmwasm.wasm.v1.Code) | repeated | Codes has all stored wasm codes and metadata |
+| `contracts` | [cosmwasm.wasm.v1.Contract](#cosmwasm.wasm.v1.Contract) | repeated | Contracts contains all instantiated contracts, state and metadata |
+| `sequences` | [cosmwasm.wasm.v1.Sequence](#cosmwasm.wasm.v1.Sequence) | repeated | Sequences names and values |
+| `gen_msgs` | [cosmwasm.wasm.v1.GenesisState.GenMsgs](#cosmwasm.wasm.v1.GenesisState.GenMsgs) | repeated | GenMsgs has wasmd sdk type messages to execute in the genesis phase |
+| `inactive_contract_addresses` | [string](#string) | repeated | InactiveContractAddresses is a list of contract address that set inactive |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/wasm/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/wasm/v1/tx.proto
 
 
 
@@ -18592,10 +18632,10 @@ MsgStoreCodeAndInstantiateContractResponse returns store and instantiate result 
  <!-- end HasExtensions -->
 
 
-<a name="lbm.wasm.v1.MsgExtension"></a>
+<a name="lbm.wasm.v1.Msg"></a>
 
-### MsgExtension
-MsgExtension defines the wasm Msg service for lbm-sdk.
+### Msg
+Msg defines the wasm Msg service for lbm-sdk.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |

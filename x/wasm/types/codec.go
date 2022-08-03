@@ -13,7 +13,6 @@ import (
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) { //nolint:staticcheck
 	cdc.RegisterConcrete(&MsgStoreCode{}, "wasm/MsgStoreCode", nil)
 	cdc.RegisterConcrete(&MsgInstantiateContract{}, "wasm/MsgInstantiateContract", nil)
-	cdc.RegisterConcrete(&MsgStoreCodeAndInstantiateContract{}, "wasm/StoreCodeAndInstantiateContract", nil)
 	cdc.RegisterConcrete(&MsgExecuteContract{}, "wasm/MsgExecuteContract", nil)
 	cdc.RegisterConcrete(&MsgMigrateContract{}, "wasm/MsgMigrateContract", nil)
 	cdc.RegisterConcrete(&MsgUpdateAdmin{}, "wasm/MsgUpdateAdmin", nil)
@@ -28,7 +27,6 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) { //nolint:staticcheck
 	cdc.RegisterConcrete(&ExecuteContractProposal{}, "wasm/ExecuteContractProposal", nil)
 	cdc.RegisterConcrete(&UpdateAdminProposal{}, "wasm/UpdateAdminProposal", nil)
 	cdc.RegisterConcrete(&ClearAdminProposal{}, "wasm/ClearAdminProposal", nil)
-	cdc.RegisterConcrete(&UpdateContractStatusProposal{}, "wasm/UpdateContractStatusProposal", nil)
 	cdc.RegisterConcrete(&UpdateInstantiateConfigProposal{}, "wasm/UpdateInstantiateConfigProposal", nil)
 }
 
@@ -37,7 +35,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		(*sdk.Msg)(nil),
 		&MsgStoreCode{},
 		&MsgInstantiateContract{},
-		&MsgStoreCodeAndInstantiateContract{},
 		&MsgExecuteContract{},
 		&MsgMigrateContract{},
 		&MsgUpdateAdmin{},
@@ -56,7 +53,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&ClearAdminProposal{},
 		&PinCodesProposal{},
 		&UnpinCodesProposal{},
-		&UpdateContractStatusProposal{},
 		&UpdateInstantiateConfigProposal{},
 	)
 
