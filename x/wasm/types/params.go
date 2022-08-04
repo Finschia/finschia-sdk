@@ -176,39 +176,6 @@ func validateAccessType(i interface{}) error {
 	return sdkerrors.Wrapf(ErrInvalid, "unknown type: %q", a)
 }
 
-func validateGasMultiplier(i interface{}) error {
-	a, ok := i.(uint64)
-	if !ok {
-		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
-	}
-	if a == 0 {
-		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
-	}
-	return nil
-}
-
-func validateInstanceCost(i interface{}) error {
-	a, ok := i.(uint64)
-	if !ok {
-		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
-	}
-	if a == 0 {
-		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
-	}
-	return nil
-}
-
-func validateCompileCost(i interface{}) error {
-	a, ok := i.(uint64)
-	if !ok {
-		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
-	}
-	if a == 0 {
-		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
-	}
-	return nil
-}
-
 func (a AccessConfig) ValidateBasic() error {
 	switch a.Permission {
 	case AccessTypeUnspecified:
