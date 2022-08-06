@@ -21,6 +21,8 @@ func (k Keeper) SendCoins(ctx sdk.Context, contractID string, from, to sdk.AccAd
 				event := collection.EventOwnerChanged{
 					ContractId: contractID,
 					TokenId:    descendantID,
+					From:       from.String(),
+					To:         to.String(),
 				}
 				ctx.EventManager().EmitEvent(collection.NewEventOperationTransferNFT(event))
 				if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
