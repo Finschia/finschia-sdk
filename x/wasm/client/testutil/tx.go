@@ -2,12 +2,13 @@ package testutil
 
 import (
 	"fmt"
+	"io/ioutil"
+
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/wasm/client/cli"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
-	"io/ioutil"
 )
 
 func (s *IntegrationTestSuite) TestInstantiateContractCmd() {
@@ -20,7 +21,7 @@ func (s *IntegrationTestSuite) TestInstantiateContractCmd() {
 	}{
 		"valid instantiateContract": {
 			[]string{
-				s.codeId,
+				s.codeID,
 				fmt.Sprintf("{\"verifier\": \"%s\", \"beneficiary\": \"%s\"}", owner, keeper.RandomAccountAddress(s.T())),
 				fmt.Sprintf("--label=%v", "TestContract"),
 				fmt.Sprintf("--admin=%v", owner),
@@ -34,14 +35,14 @@ func (s *IntegrationTestSuite) TestInstantiateContractCmd() {
 		},
 		"no label error": {
 			[]string{
-				s.codeId,
+				s.codeID,
 				fmt.Sprintf("{\"verifier\": \"%s\", \"beneficiary\": \"%s\"}", owner, keeper.RandomAccountAddress(s.T())),
 			},
 			false,
 		},
 		"no admin error": {
 			[]string{
-				s.codeId,
+				s.codeID,
 				fmt.Sprintf("{\"verifier\": \"%s\", \"beneficiary\": \"%s\"}", owner, keeper.RandomAccountAddress(s.T())),
 				fmt.Sprintf("--label=%v", "TestContract"),
 			},
@@ -49,7 +50,7 @@ func (s *IntegrationTestSuite) TestInstantiateContractCmd() {
 		},
 		"no sender error": {
 			[]string{
-				s.codeId,
+				s.codeID,
 				fmt.Sprintf("{\"verifier\": \"%s\", \"beneficiary\": \"%s\"}", owner, keeper.RandomAccountAddress(s.T())),
 				fmt.Sprintf("--label=%v", "TestContract"),
 				fmt.Sprintf("--admin=%v", owner),
@@ -58,14 +59,14 @@ func (s *IntegrationTestSuite) TestInstantiateContractCmd() {
 		},
 		"no instantiate params error": {
 			[]string{
-				s.codeId,
+				s.codeID,
 				fmt.Sprintf("--label=%v", "TestContract"),
 				fmt.Sprintf("--admin=%v", owner),
 				fmt.Sprintf("--%s=%v", flags.FlagFrom, val.Address.String()),
 			},
 			false,
 		},
-		"no exist codeId error": {
+		"no exist codeID error": {
 			[]string{
 				"0",
 				fmt.Sprintf("{\"verifier\": \"%s\", \"beneficiary\": \"%s\"}", owner, keeper.RandomAccountAddress(s.T())),
@@ -100,7 +101,7 @@ func (s *IntegrationTestSuite) TestExecuteContractCmd() {
 	val := s.network.Validators[0]
 
 	params := fmt.Sprintf("{\"verifier\": \"%s\", \"beneficiary\": \"%s\"}", s.network.Validators[0].Address.String(), keeper.RandomAccountAddress(s.T()))
-	contractAddr := s.instantiate(s.codeId, params)
+	contractAddr := s.instantiate(s.codeID, params)
 
 	testCases := map[string]struct {
 		args  []string
@@ -109,7 +110,7 @@ func (s *IntegrationTestSuite) TestExecuteContractCmd() {
 		"valid executeContract": {
 			[]string{
 				contractAddr,
-				fmt.Sprintf("{\"release\":{}}"),
+				"{\"release\":{}}",
 				fmt.Sprintf("--%s=%v", flags.FlagFrom, val.Address.String()),
 			},
 			true,
@@ -117,7 +118,7 @@ func (s *IntegrationTestSuite) TestExecuteContractCmd() {
 		"wrong amount": {
 			[]string{
 				contractAddr,
-				fmt.Sprintf("{\"release\":{}}"),
+				"{\"release\":{}}",
 				fmt.Sprintf("--%s=%v", "amount", "100"),
 				fmt.Sprintf("--%s=%v", flags.FlagFrom, val.Address.String()),
 			},
@@ -126,7 +127,7 @@ func (s *IntegrationTestSuite) TestExecuteContractCmd() {
 		"wrong param": {
 			[]string{
 				contractAddr,
-				fmt.Sprintf("{release:{}}"),
+				"{release:{}}",
 				fmt.Sprintf("--%s=%v", flags.FlagFrom, val.Address.String()),
 			},
 			false,
@@ -140,7 +141,7 @@ func (s *IntegrationTestSuite) TestExecuteContractCmd() {
 		"no sender": {
 			[]string{
 				contractAddr,
-				fmt.Sprintf("{\"release\":{}}"),
+				"{\"release\":{}}",
 			},
 			false,
 		},

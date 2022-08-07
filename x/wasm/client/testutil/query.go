@@ -3,12 +3,13 @@ package testutil
 import (
 	"encoding/hex"
 	"fmt"
+	"strconv"
+
 	"github.com/gogo/protobuf/proto"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/x/wasm/client/cli"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"strconv"
 )
 
 func (s *IntegrationTestSuite) TestGetCmdListCode() {
@@ -19,13 +20,13 @@ func (s *IntegrationTestSuite) TestGetCmdListCode() {
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(args, s.queryCommonArgs()...))
 	s.Require().NoError(err)
 
-	codeId, err := strconv.ParseUint(s.codeId, 10, 64)
+	codeID, err := strconv.ParseUint(s.codeID, 10, 64)
 	s.Require().NoError(err)
 
 	var codes types.QueryCodesResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &codes), out.String())
 	s.Require().GreaterOrEqual(1, len(codes.CodeInfos))
-	s.Require().Equal(codes.CodeInfos[0].CodeID, codeId)
+	s.Require().Equal(codes.CodeInfos[0].CodeID, codeID)
 }
 
 func (s *IntegrationTestSuite) TestGetCmdListContractByCode() {
@@ -38,7 +39,7 @@ func (s *IntegrationTestSuite) TestGetCmdListContractByCode() {
 	}{
 		"valid query": {
 			[]string{
-				s.codeId,
+				s.codeID,
 			},
 			true,
 			&types.QueryContractsByCodeResponse{
@@ -46,7 +47,7 @@ func (s *IntegrationTestSuite) TestGetCmdListContractByCode() {
 				Pagination: &query.PageResponse{},
 			},
 		},
-		"no codeId": {
+		"no codeID": {
 			[]string{},
 			false,
 			nil,
@@ -75,7 +76,7 @@ func (s *IntegrationTestSuite) TestGetCmdListContractByCode() {
 func (s *IntegrationTestSuite) TestGetCmdQueryCodeInfo() {
 	val := s.network.Validators[0]
 
-	codeId, err := strconv.ParseUint(s.codeId, 10, 64)
+	codeID, err := strconv.ParseUint(s.codeID, 10, 64)
 	s.Require().NoError(err)
 	dataHash, err := hex.DecodeString("470C5B703A682F778B8B088D48169B8D6E43F7F44AC70316692CDBE69E6605E3")
 	s.Require().NoError(err)
@@ -87,22 +88,22 @@ func (s *IntegrationTestSuite) TestGetCmdQueryCodeInfo() {
 	}{
 		"valid query": {
 			[]string{
-				s.codeId,
+				s.codeID,
 			},
 			true,
 			&types.CodeInfoResponse{
-				CodeID:                codeId,
+				CodeID:                codeID,
 				Creator:               val.Address.String(),
 				DataHash:              dataHash,
 				InstantiatePermission: types.AllowEverybody,
 			},
 		},
-		"no codeId": {
+		"no codeID": {
 			[]string{},
 			false,
 			nil,
 		},
-		"no exist codeId": {
+		"no exist codeID": {
 			[]string{"100"},
 			false,
 			nil,
@@ -131,7 +132,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryCodeInfo() {
 func (s *IntegrationTestSuite) TestGetCmdGetContractInfo() {
 	val := s.network.Validators[0]
 
-	codeId, err := strconv.ParseUint(s.codeId, 10, 64)
+	codeID, err := strconv.ParseUint(s.codeID, 10, 64)
 	s.Require().NoError(err)
 
 	testCases := map[string]struct {
@@ -147,7 +148,7 @@ func (s *IntegrationTestSuite) TestGetCmdGetContractInfo() {
 			&types.QueryContractInfoResponse{
 				Address: s.contractAddress,
 				ContractInfo: types.ContractInfo{
-					CodeID:    codeId,
+					CodeID:    codeID,
 					Creator:   val.Address.String(),
 					Admin:     val.Address.String(),
 					Label:     "TestContract",
@@ -385,7 +386,7 @@ func (s *IntegrationTestSuite) TestGetCmdGetContractStateSmart() {
 func (s *IntegrationTestSuite) TestGetCmdGetContractHistory() {
 	val := s.network.Validators[0]
 
-	codeId, err := strconv.ParseUint(s.codeId, 10, 64)
+	codeID, err := strconv.ParseUint(s.codeID, 10, 64)
 	s.Require().NoError(err)
 
 	testCases := map[string]struct {
@@ -402,7 +403,7 @@ func (s *IntegrationTestSuite) TestGetCmdGetContractHistory() {
 				Entries: []types.ContractCodeHistoryEntry{
 					{
 						Operation: types.ContractCodeHistoryOperationTypeInit,
-						CodeID:    codeId,
+						CodeID:    codeID,
 						Updated:   nil,
 						Msg:       []byte(fmt.Sprintf("{\"verifier\":\"%s\",\"beneficiary\":\"%s\"}", s.verifier, s.beneficiary)),
 					},

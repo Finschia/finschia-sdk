@@ -2,6 +2,9 @@ package testutil
 
 import (
 	"fmt"
+	"io/ioutil"
+	"testing"
+
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	"github.com/line/lbm-sdk/testutil/network"
@@ -10,8 +13,6 @@ import (
 	"github.com/line/lbm-sdk/x/wasm/keeper"
 	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
-	"io/ioutil"
-	"testing"
 )
 
 type IntegrationTestSuite struct {
@@ -22,7 +23,7 @@ type IntegrationTestSuite struct {
 
 	setupHeight int64
 
-	codeId          string
+	codeID          string
 	contractAddress string
 
 	// for hackatom contract
@@ -52,13 +53,13 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 
 	// deploy contract
-	s.codeId = s.deployContract()
-	fmt.Printf("codeId: %s\n", s.codeId)
+	s.codeID = s.deployContract()
+	fmt.Printf("codeID: %s\n", s.codeID)
 
 	s.verifier = s.network.Validators[0].Address.String()
 	s.beneficiary = keeper.RandomAccountAddress(s.T())
 	params := fmt.Sprintf("{\"verifier\": \"%s\", \"beneficiary\": \"%s\"}", s.verifier, s.beneficiary)
-	s.contractAddress = s.instantiate(s.codeId, params)
+	s.contractAddress = s.instantiate(s.codeID, params)
 	fmt.Printf("contractAddress: %s\n", s.contractAddress)
 
 	s.setupHeight, err = s.network.LatestHeight()
@@ -100,7 +101,7 @@ func (s *IntegrationTestSuite) deployContract() string {
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().EqualValues(0, res.Code, out.String())
 
-	// parse codeId
+	// parse codeID
 	for _, v := range res.Events {
 		if v.Type == "store_code" {
 			return string(v.Attributes[0].Value)
@@ -110,12 +111,12 @@ func (s *IntegrationTestSuite) deployContract() string {
 	return ""
 }
 
-func (s *IntegrationTestSuite) instantiate(codeId, params string) string {
+func (s *IntegrationTestSuite) instantiate(codeID, params string) string {
 	val := s.network.Validators[0]
 	owner := val.Address.String()
 
 	args := append([]string{
-		codeId,
+		codeID,
 		params,
 		fmt.Sprintf("--label=%v", "TestContract"),
 		fmt.Sprintf("--admin=%v", owner),
