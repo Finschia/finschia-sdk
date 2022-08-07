@@ -233,7 +233,7 @@ func parseInstantiateArgs(rawCodeID, initMsg string, sender sdk.AccAddress, flag
 	return msg, nil
 }
 
-// StoreCodeAndInstantiatecontractcmd will upload code and instantiate a contract using it
+// StoreCodeAndInstantiateContractCmd will upload code and instantiate a contract using it
 func StoreCodeAndInstantiateContractCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "store-instantiate [wasm file] [json_encoded_init_args] --label [text] --admin [address,optional] --amount [coins,optional]",

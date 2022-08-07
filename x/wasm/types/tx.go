@@ -116,7 +116,6 @@ func (msg MsgInstantiateContract) ValidateBasic() error {
 
 func (msg MsgInstantiateContract) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
-
 }
 
 func (msg MsgInstantiateContract) GetSigners() []sdk.AccAddress {
