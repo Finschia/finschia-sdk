@@ -200,6 +200,61 @@ func TestHandleInstantiate(t *testing.T) {
 	})
 }
 
+func TestHandleStoreAndInstantiate(t *testing.T) {
+	data := setupTest(t)
+	creator := data.faucet.NewFundedAccount(data.ctx, sdk.NewInt64Coin("denom", 100000))
+
+	h := data.module.Route().Handler()
+	q := data.module.LegacyQuerierHandler(nil)
+
+	_, _, bob := keyPubAddr()
+	_, _, fred := keyPubAddr()
+
+	initMsg := initMsg{
+		Verifier:    fred,
+		Beneficiary: bob,
+	}
+	msgBz, err := json.Marshal(initMsg)
+	require.NoError(t, err)
+
+	// create with no balance is legal
+	msg := &MsgStoreCodeAndInstantiateContract{
+		Sender:       creator.String(),
+		WASMByteCode: testContract,
+		Msg:          msgBz,
+		Label:        "contract for test",
+		Funds:        nil,
+	}
+	res, err := h(data.ctx, msg)
+	require.NoError(t, err)
+	codeID, contractBech32Addr := parseStoreAndInitResponse(t, res.Data)
+
+	require.Equal(t, uint64(1), codeID)
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8", contractBech32Addr)
+	// this should be standard x/wasm init event, nothing from contract
+	require.Equal(t, 4, len(res.Events), prettyEvents(res.Events))
+	assert.Equal(t, "store_code", res.Events[0].Type)
+	assertAttribute(t, "code_id", "1", res.Events[0].Attributes[0])
+	assert.Equal(t, "message", res.Events[1].Type)
+	assertAttribute(t, "module", "wasm", res.Events[1].Attributes[0])
+	assert.Equal(t, "instantiate", res.Events[2].Type)
+	assertAttribute(t, "_contract_address", contractBech32Addr, res.Events[2].Attributes[0])
+	assertAttribute(t, "code_id", "1", res.Events[2].Attributes[1])
+	assert.Equal(t, "wasm", res.Events[3].Type)
+	assertAttribute(t, "_contract_address", contractBech32Addr, res.Events[3].Attributes[0])
+
+	assertCodeList(t, q, data.ctx, 1)
+	assertCodeBytes(t, q, data.ctx, 1, testContract)
+
+	assertContractList(t, q, data.ctx, 1, []string{contractBech32Addr})
+	assertContractInfo(t, q, data.ctx, contractBech32Addr, 1, creator)
+	assertContractState(t, q, data.ctx, contractBech32Addr, state{
+		Verifier:    fred.String(),
+		Beneficiary: bob.String(),
+		Funder:      creator.String(),
+	})
+}
+
 func TestErrorsCreateAndInstantiate(t *testing.T) {
 	// init messages
 	_, _, bob := keyPubAddr()
