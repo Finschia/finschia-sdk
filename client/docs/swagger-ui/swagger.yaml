@@ -11391,21 +11391,26 @@ paths:
                     jailed_until:
                       type: string
                       format: date-time
-                      title: timestamp validator cannot be unjailed until
+                      description: >-
+                        Timestamp until which the validator is jailed due to
+                        liveness downtime.
                     tombstoned:
                       type: boolean
                       format: boolean
-                      title: >-
-                        whether or not a validator has been tombstoned (killed
-                        out of validator
+                      description: >-
+                        Whether or not a validator has been tombstoned (killed
+                        out of validator set). It is set
 
-                        set)
+                        once the validator commits an equivocation or for any
+                        other configured misbehiavor.
                     missed_blocks_counter:
                       type: string
                       format: int64
-                      title: >-
-                        missed blocks counter (to avoid scanning the array every
-                        time)
+                      description: >-
+                        A counter kept to avoid unnecessary array reads.
+
+                        Note that `Sum(MissedBlocksBitArray)` always equals
+                        `MissedBlocksCounter`.
                   description: >-
                     ValidatorSigningInfo defines a validator's signing info for
                     monitoring their
@@ -11563,21 +11568,26 @@ paths:
                   jailed_until:
                     type: string
                     format: date-time
-                    title: timestamp validator cannot be unjailed until
+                    description: >-
+                      Timestamp until which the validator is jailed due to
+                      liveness downtime.
                   tombstoned:
                     type: boolean
                     format: boolean
-                    title: >-
-                      whether or not a validator has been tombstoned (killed out
-                      of validator
+                    description: >-
+                      Whether or not a validator has been tombstoned (killed out
+                      of validator set). It is set
 
-                      set)
+                      once the validator commits an equivocation or for any
+                      other configured misbehiavor.
                   missed_blocks_counter:
                     type: string
                     format: int64
-                    title: >-
-                      missed blocks counter (to avoid scanning the array every
-                      time)
+                    description: >-
+                      A counter kept to avoid unnecessary array reads.
+
+                      Note that `Sum(MissedBlocksBitArray)` always equals
+                      `MissedBlocksCounter`.
                 description: >-
                   ValidatorSigningInfo defines a validator's signing info for
                   monitoring their
@@ -53906,19 +53916,26 @@ definitions:
           jailed_until:
             type: string
             format: date-time
-            title: timestamp validator cannot be unjailed until
+            description: >-
+              Timestamp until which the validator is jailed due to liveness
+              downtime.
           tombstoned:
             type: boolean
             format: boolean
-            title: >-
-              whether or not a validator has been tombstoned (killed out of
-              validator
+            description: >-
+              Whether or not a validator has been tombstoned (killed out of
+              validator set). It is set
 
-              set)
+              once the validator commits an equivocation or for any other
+              configured misbehiavor.
           missed_blocks_counter:
             type: string
             format: int64
-            title: missed blocks counter (to avoid scanning the array every time)
+            description: >-
+              A counter kept to avoid unnecessary array reads.
+
+              Note that `Sum(MissedBlocksBitArray)` always equals
+              `MissedBlocksCounter`.
         description: >-
           ValidatorSigningInfo defines a validator's signing info for monitoring
           their
@@ -53958,19 +53975,26 @@ definitions:
             jailed_until:
               type: string
               format: date-time
-              title: timestamp validator cannot be unjailed until
+              description: >-
+                Timestamp until which the validator is jailed due to liveness
+                downtime.
             tombstoned:
               type: boolean
               format: boolean
-              title: >-
-                whether or not a validator has been tombstoned (killed out of
-                validator
+              description: >-
+                Whether or not a validator has been tombstoned (killed out of
+                validator set). It is set
 
-                set)
+                once the validator commits an equivocation or for any other
+                configured misbehiavor.
             missed_blocks_counter:
               type: string
               format: int64
-              title: missed blocks counter (to avoid scanning the array every time)
+              description: >-
+                A counter kept to avoid unnecessary array reads.
+
+                Note that `Sum(MissedBlocksBitArray)` always equals
+                `MissedBlocksCounter`.
           description: >-
             ValidatorSigningInfo defines a validator's signing info for
             monitoring their
@@ -54030,19 +54054,26 @@ definitions:
       jailed_until:
         type: string
         format: date-time
-        title: timestamp validator cannot be unjailed until
+        description: >-
+          Timestamp until which the validator is jailed due to liveness
+          downtime.
       tombstoned:
         type: boolean
         format: boolean
-        title: >-
-          whether or not a validator has been tombstoned (killed out of
-          validator
+        description: >-
+          Whether or not a validator has been tombstoned (killed out of
+          validator set). It is set
 
-          set)
+          once the validator commits an equivocation or for any other configured
+          misbehiavor.
       missed_blocks_counter:
         type: string
         format: int64
-        title: missed blocks counter (to avoid scanning the array every time)
+        description: >-
+          A counter kept to avoid unnecessary array reads.
+
+          Note that `Sum(MissedBlocksBitArray)` always equals
+          `MissedBlocksCounter`.
     description: >-
       ValidatorSigningInfo defines a validator's signing info for monitoring
       their
