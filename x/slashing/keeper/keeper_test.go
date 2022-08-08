@@ -244,8 +244,9 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	// check all the signing information
 	signInfo, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
 	require.True(t, found)
-	require.Equal(t, int64(501), signInfo.MissedBlocksCounter)
+	require.Equal(t, int64(0), signInfo.StartHeight)
 	require.Equal(t, int64(999), signInfo.IndexOffset)
+	require.Equal(t, int64(501), signInfo.MissedBlocksCounter)
 
 	// another block happened
 	ctx = ctx.WithBlockHeight(height)
@@ -259,8 +260,9 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	// check all the signing information
 	signInfo, found = app.SlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
 	require.True(t, found)
-	require.Equal(t, int64(0), signInfo.MissedBlocksCounter)
+	require.Equal(t, int64(0), signInfo.StartHeight)
 	require.Equal(t, int64(0), signInfo.IndexOffset)
+	require.Equal(t, int64(0), signInfo.MissedBlocksCounter)
 	// array should be cleared
 	for offset := int64(0); offset < app.SlashingKeeper.SignedBlocksWindow(ctx); offset++ {
 		missed := app.SlashingKeeper.GetValidatorMissedBlockBitArray(ctx, consAddr, offset)

@@ -30,6 +30,7 @@ func TestGetSetValidatorSigningInfo(t *testing.T) {
 	app.SlashingKeeper.SetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]), newInfo)
 	info, found = app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]))
 	require.True(t, found)
+	require.Equal(t, info.StartHeight, int64(4))
 	require.Equal(t, info.IndexOffset, int64(3))
 	require.Equal(t, info.JailedUntil, time.Unix(2, 0).UTC())
 	require.Equal(t, info.MissedBlocksCounter, int64(10))

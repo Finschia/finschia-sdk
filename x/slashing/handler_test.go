@@ -165,6 +165,7 @@ func TestHandleAbsentValidator(t *testing.T) {
 	// will exist since the validator has been bonded
 	info, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
+	require.Equal(t, int64(0), info.StartHeight)
 	require.Equal(t, int64(0), info.IndexOffset)
 	require.Equal(t, int64(0), info.MissedBlocksCounter)
 	require.Equal(t, time.Unix(0, 0).UTC(), info.JailedUntil)
@@ -177,6 +178,7 @@ func TestHandleAbsentValidator(t *testing.T) {
 	}
 	info, found = app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
+	require.Equal(t, int64(0), info.StartHeight)
 	require.Equal(t, int64(1000), info.IndexOffset)
 	require.Equal(t, int64(0), info.MissedBlocksCounter)
 
@@ -187,6 +189,7 @@ func TestHandleAbsentValidator(t *testing.T) {
 	}
 	info, found = app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
+	require.Equal(t, int64(0), info.StartHeight)
 	require.Equal(t, int64(1500), info.IndexOffset)
 	require.Equal(t, app.SlashingKeeper.SignedBlocksWindow(ctx)-app.SlashingKeeper.MinSignedPerWindow(ctx), info.MissedBlocksCounter)
 
@@ -202,6 +205,7 @@ func TestHandleAbsentValidator(t *testing.T) {
 	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, false)
 	info, found = app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
+	require.Equal(t, int64(0), info.StartHeight)
 	require.Equal(t, int64(0), info.IndexOffset)
 	// counter now reset to zero
 	require.Equal(t, int64(0), info.MissedBlocksCounter)
@@ -224,6 +228,7 @@ func TestHandleAbsentValidator(t *testing.T) {
 	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, false)
 	info, found = app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
+	require.Equal(t, int64(0), info.StartHeight)
 	require.Equal(t, int64(1), info.IndexOffset)
 	require.Equal(t, int64(1), info.MissedBlocksCounter)
 
@@ -258,6 +263,7 @@ func TestHandleAbsentValidator(t *testing.T) {
 	// Validator voter set counter should not have been changed
 	info, found = app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
+	require.Equal(t, int64(0), info.StartHeight)
 	require.Equal(t, int64(1), info.IndexOffset)
 	// we've missed 2 blocks more than the maximum, so the counter was reset to 0 at 1 block more and is now 1
 	require.Equal(t, int64(1), info.MissedBlocksCounter)
