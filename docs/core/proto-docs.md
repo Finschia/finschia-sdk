@@ -989,6 +989,8 @@
     - [QueryParentResponse](#lbm.collection.v1.QueryParentResponse)
     - [QueryRootRequest](#lbm.collection.v1.QueryRootRequest)
     - [QueryRootResponse](#lbm.collection.v1.QueryRootResponse)
+    - [QueryTokenClassTypeNameRequest](#lbm.collection.v1.QueryTokenClassTypeNameRequest)
+    - [QueryTokenClassTypeNameResponse](#lbm.collection.v1.QueryTokenClassTypeNameResponse)
     - [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest)
     - [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse)
     - [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest)
@@ -14121,6 +14123,8 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `token_id` | [string](#string) |  | token id associated with the token. |
+| `from` | [string](#string) |  | address of the previous owner before the change. |
+| `to` | [string](#string) |  | address of the new owner. |
 
 
 
@@ -14158,6 +14162,8 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `token_id` | [string](#string) |  | token id associated with the token. |
+| `from` | [string](#string) |  | token id of the previous root before the change. |
+| `to` | [string](#string) |  | token id of the new root. |
 
 
 
@@ -15000,6 +15006,41 @@ QueryRootResponse is the response type for the Query/Root RPC method.
 
 
 
+<a name="lbm.collection.v1.QueryTokenClassTypeNameRequest"></a>
+
+### QueryTokenClassTypeNameRequest
+QueryTokenClassTypeNameRequest is the request type for the Query/TokenClassTypeName RPC method.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `class_id` | [string](#string) |  | class id associated with the token class. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryTokenClassTypeNameResponse"></a>
+
+### QueryTokenClassTypeNameResponse
+QueryTokenClassTypeNameResponse is the response type for the Query/TokenClassTypeName RPC method.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | type name of the token class. |
+
+
+
+
+
+
 <a name="lbm.collection.v1.QueryTokenRequest"></a>
 
 ### QueryTokenRequest
@@ -15181,6 +15222,7 @@ Query defines the gRPC querier service.
 | `NFTMinted` | [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest) | [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse) | NFTMinted queries the number of minted tokens from a given contract id and token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted|
 | `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | NFTBurnt queries the number of burnt tokens from a given contract id and token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
 | `Contract` | [QueryContractRequest](#lbm.collection.v1.QueryContractRequest) | [QueryContractResponse](#lbm.collection.v1.QueryContractResponse) | Contract queries a contract metadata based on its contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}|
+| `TokenClassTypeName` | [QueryTokenClassTypeNameRequest](#lbm.collection.v1.QueryTokenClassTypeNameRequest) | [QueryTokenClassTypeNameResponse](#lbm.collection.v1.QueryTokenClassTypeNameResponse) | TokenClassTypeName queries the fully qualified message type name of a token class from its class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/type_name|
 | `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
 | `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
 | `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Token queries a metadata of a token from its token id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
