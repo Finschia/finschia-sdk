@@ -109,6 +109,18 @@ service Query {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}";
   }
 
+  // TokenClassTypeName queries the fully qualified message type name of a token class from its class id.
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `contract_id` is of invalid format.
+  //   - `class_id` is of invalid format.
+  // - ErrNotFound
+  //   - there is no token class of `class_id`.
+  // Since: 0.46.0 (finschia)
+  rpc TokenClassTypeName(QueryTokenClassTypeNameRequest) returns (QueryTokenClassTypeNameResponse) {
+    option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/type_name";
+  }
+
   // TokenType queries metadata of a token type.
   // Throws:
   // - ErrInvalidRequest
@@ -358,6 +370,24 @@ message QueryContractRequest {
 message QueryContractResponse {
   // contract is the information of the contract.
   Contract contract = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryTokenClassTypeNameRequest is the request type for the Query/TokenClassTypeName RPC method.
+//
+// Since: 0.46.0 (finschia)
+message QueryTokenClassTypeNameRequest {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // class id associated with the token class.
+  string class_id = 2;
+}
+
+// QueryTokenClassTypeNameResponse is the response type for the Query/TokenClassTypeName RPC method.
+//
+// Since: 0.46.0 (finschia)
+message QueryTokenClassTypeNameResponse {
+  // type name of the token class.
+  string name = 1;
 }
 
 // QueryTokenTypeRequest is the request type for the Query/TokenType RPC method.

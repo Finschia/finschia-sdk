@@ -6,6 +6,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/gogo/protobuf/proto"
+
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
@@ -249,6 +251,30 @@ func (s queryServer) Contract(c context.Context, req *collection.QueryContractRe
 	}
 
 	return &collection.QueryContractResponse{Contract: *contract}, nil
+}
+
+// TokenClassTypeName queries the fully qualified message type name of a token class based on its class id.
+func (s queryServer) TokenClassTypeName(c context.Context, req *collection.QueryTokenClassTypeNameRequest) (*collection.QueryTokenClassTypeNameResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if err := collection.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+
+	if err := collection.ValidateClassID(req.ClassId); err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	class, err := s.keeper.GetTokenClass(ctx, req.ContractId, req.ClassId)
+	if err != nil {
+		return nil, err
+	}
+	name := proto.MessageName(class)
+
+	return &collection.QueryTokenClassTypeNameResponse{Name: name}, nil
 }
 
 func (s queryServer) TokenType(c context.Context, req *collection.QueryTokenTypeRequest) (*collection.QueryTokenTypeResponse, error) {
