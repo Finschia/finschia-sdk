@@ -50,6 +50,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (server/grpc) [\#607](https://github.com/line/lbm-sdk/pull/607) revert gRPC block height header.
 * (global) [\#611](https://github.com/line/lbm-sdk/pull/611) bump github.com/cosmos/cosmos-sdk from v0.45.1 to v0.45.6
 * (simapp) [\#620](https://github.com/line/lbm-sdk/pull/620) chore: add iterator feature for simapp
+* (x/collection) [\#622](https://github.com/line/lbm-sdk/pull/622) add Query/TokenClassTypeName
 * (x/bank) [\#629](https://github.com/line/lbm-sdk/pull/629) remove unsafe balance changing methods from bank keeper such as `SetBalance` and `SetSupply`.
 
 ### Improvements
