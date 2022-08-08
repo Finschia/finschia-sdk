@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	sdk "github.com/line/lbm-sdk/types"
 	"testing"
 
 	"github.com/line/lbm-sdk/x/wasm/types"
@@ -12,7 +13,6 @@ import (
 )
 
 func BenchmarkExecution(b *testing.B) {
-
 	specs := map[string]struct {
 		pinned bool
 		db     func() dbm.DB
@@ -55,4 +55,35 @@ func BenchmarkExecution(b *testing.B) {
 			}
 		})
 	}
+}
+
+func BenchmarkAPI(b *testing.B) {
+	wasmConfig := types.WasmConfig{MemoryCacheSize: 0}
+	ctx, keepers := createTestInput(b, false, SupportedFeatures, nil, nil, wasmConfig, memdb.NewDB())
+	example := InstantiateHackatomExampleContract(b, ctx, keepers)
+	api := keepers.WasmKeeper.cosmwasmAPI(ctx)
+	addrStr := example.Contract.String()
+	addrBytes, err := sdk.AccAddressToBytes(example.Contract.String())
+	require.NoError(b, err)
+	b.Run("GetContractEnv", func(b *testing.B) {
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			_, _, _, _, _, _, _, err := api.GetContractEnv(addrStr)
+			require.NoError(b, err)
+		}
+	})
+
+	b.Run("CanonicalAddress", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			_, _, err := api.CanonicalAddress(addrStr)
+			require.NoError(b, err)
+		}
+	})
+
+	b.Run("HumanAddress", func(b *testing.B) {
+		for i := 0; i < b.N; i++ {
+			_, _, err := api.HumanAddress(addrBytes)
+			require.NoError(b, err)
+		}
+	})
 }
