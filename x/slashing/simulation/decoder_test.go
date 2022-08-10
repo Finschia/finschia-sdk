@@ -28,7 +28,7 @@ func TestDecodeStore(t *testing.T) {
 	cdc := simapp.MakeTestEncodingConfig().Marshaler
 	dec := simulation.NewDecodeStore(cdc)
 
-	info := types.NewValidatorSigningInfo(consAddr1, time.Now().UTC(), false, 0, 1)
+	info := types.NewValidatorSigningInfo(consAddr1, 0, 1, time.Now().UTC(), false, 0)
 	missed := gogotypes.BoolValue{Value: true}
 	bz, err := cdc.MarshalInterface(delPk1)
 	require.NoError(t, err)
