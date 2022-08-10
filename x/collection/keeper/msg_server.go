@@ -3,6 +3,8 @@ package keeper
 import (
 	"context"
 
+	"github.com/gogo/protobuf/proto"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/collection"
@@ -646,6 +648,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 					Operator:   operator.String(),
 					ClassId:    classID,
 					Changes:    changes,
+					TypeName:   proto.MessageName(&collection.FTClass{}),
 				}
 
 				ctx.EventManager().EmitEvents(collection.NewEventModifyTokenOfFTClass(event))
@@ -661,6 +664,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 				Operator:   operator.String(),
 				ClassId:    classID,
 				Changes:    changes,
+				TypeName:   proto.MessageName(&collection.NFTClass{}),
 			}
 			ctx.EventManager().EmitEvents(collection.NewEventModifyTokenType(event))
 			if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {

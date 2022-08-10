@@ -14109,6 +14109,7 @@ Since: 0.46.0 (finschia)
 | `operator` | [string](#string) |  | address which triggered the modify. |
 | `class_id` | [string](#string) |  | class id associated with the token class. |
 | `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. |
+| `type_name` | [string](#string) |  | type name of the token class. |
 
 
 

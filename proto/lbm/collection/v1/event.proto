@@ -260,6 +260,8 @@ message EventModifiedTokenClass {
   string class_id = 3;
   // changes of the attributes applied.
   repeated Attribute changes = 4 [(gogoproto.nullable) = false];
+  // type name of the token class.
+  string type_name = 5;
 }
 
 // EventModifiedNFT is emitted when the information of a non-fungible token is modified.
