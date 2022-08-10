@@ -282,6 +282,7 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 
 	event := collection.EventCreatedFTClass{
 		ContractId: req.ContractId,
+		Operator:   req.Owner,
 		ClassId:    *id,
 		Name:       class.Name,
 		Meta:       class.Meta,
@@ -294,7 +295,7 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 		return nil, err
 	}
 
-	ctx.EventManager().EmitEvent(collection.NewEventIssueFT(event, ownerAddr, toAddr, req.Amount))
+	ctx.EventManager().EmitEvent(collection.NewEventIssueFT(event, toAddr, req.Amount))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -340,6 +341,7 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 
 	event := collection.EventCreatedNFTClass{
 		ContractId: req.ContractId,
+		Operator:   req.Owner,
 		ClassId:    *id,
 		Name:       class.Name,
 		Meta:       class.Meta,
