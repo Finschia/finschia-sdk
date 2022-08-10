@@ -62,6 +62,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#608](https://github.com/line/lbm-sdk/pull/608) remove new APIs on x/collection
 * (x/token) [\#609](https://github.com/line/lbm-sdk/pull/609) remove new APIs on x/token
 * (x/collection) [\#621](https://github.com/line/lbm-sdk/pull/621) add additional information into EventXXXChanged
+* (x/collection) [\#639](https://github.com/line/lbm-sdk/pull/639) rename x/collection events
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
