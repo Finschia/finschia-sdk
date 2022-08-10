@@ -791,11 +791,17 @@ func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collec
 	}
 	oldRoot := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
 
+	// for the additional field of the event
+	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
+	if err != nil {
+		return nil, err
+	}
 	event := collection.EventDetached{
-		ContractId: req.ContractId,
-		Operator:   req.From,
-		Holder:     req.From,
-		Subject:    req.TokenId,
+		ContractId:     req.ContractId,
+		Operator:       req.From,
+		Holder:         req.From,
+		Subject:        req.TokenId,
+		PreviousParent: *parent,
 	}
 	ctx.EventManager().EmitEvent(collection.NewEventDetachToken(event, oldRoot))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -874,11 +880,17 @@ func (s msgServer) DetachFrom(c context.Context, req *collection.MsgDetachFrom) 
 	}
 	oldRoot := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
 
+	// for the additional field of the event
+	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
+	if err != nil {
+		return nil, err
+	}
 	event := collection.EventDetached{
-		ContractId: req.ContractId,
-		Operator:   req.Proxy,
-		Holder:     req.From,
-		Subject:    req.TokenId,
+		ContractId:     req.ContractId,
+		Operator:       req.Proxy,
+		Holder:         req.From,
+		Subject:        req.TokenId,
+		PreviousParent: *parent,
 	}
 	ctx.EventManager().EmitEvent(collection.NewEventDetachFrom(event, oldRoot))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {

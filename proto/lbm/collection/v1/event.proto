@@ -304,6 +304,8 @@ message EventDetached {
   string holder = 3;
   // token being detached.
   string subject = 4;
+  // parent token before the detach.
+  string previous_parent = 5;
 }
 
 // EventOwnerChanged is emitted when the owner of token is changed by operation applied to its ancestor.

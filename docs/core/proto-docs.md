@@ -13987,6 +13987,7 @@ Since: 0.46.0 (finschia)
 | `operator` | [string](#string) |  | address which triggered the detach. |
 | `holder` | [string](#string) |  | address which holds the token. |
 | `subject` | [string](#string) |  | token being detached. |
+| `previous_parent` | [string](#string) |  | parent token before the detach. |
 
 
 
