@@ -91,8 +91,6 @@ func (li *listenIterator) Domain() (start []byte, end []byte) {
 	return li.parent.Domain()
 }
 
-// TODO(dudong2): remove Domain() func (removed in other stores by woosang). Add it later, if it's needed.
-
 // Valid implements the Iterator interface.
 func (li *listenIterator) Valid() bool {
 	return li.parent.Valid()
