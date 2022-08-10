@@ -525,7 +525,7 @@ func (m *EventGranted) GetPermission() Permission {
 	return PermissionUnspecified
 }
 
-// EventRenounced is emitted when a grantee abandons its permission.
+// EventRenounced is emitted when a grantee renounces its permission.
 //
 // Since: 0.46.0 (finschia)
 type EventRenounced struct {
