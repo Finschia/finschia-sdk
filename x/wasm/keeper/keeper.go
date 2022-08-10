@@ -26,7 +26,7 @@ import (
 	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
 	"github.com/line/lbm-sdk/x/wasm/ioutils"
-	lbmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
+	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -120,7 +120,7 @@ func NewKeeper(
 	}
 	// set KeyTable if it has not already been set
 	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(lbmtypes.ParamKeyTable())
+		paramSpace = paramSpace.WithKeyTable(lbmwasmtypes.ParamKeyTable())
 	}
 
 	keeper := &Keeper{
@@ -220,13 +220,13 @@ func (k Keeper) compileCosts(ctx sdk.Context, byteLength int) storetypes.Gas {
 }
 
 // GetParams returns the total set of wasm parameters.
-func (k Keeper) GetParams(ctx sdk.Context) lbmtypes.Params {
-	var params lbmtypes.Params
+func (k Keeper) GetParams(ctx sdk.Context) lbmwasmtypes.Params {
+	var params lbmwasmtypes.Params
 	k.paramSpace.GetParamSet(ctx, &params)
 	return params
 }
 
-func (k Keeper) setParams(ctx sdk.Context, ps lbmtypes.Params) {
+func (k Keeper) setParams(ctx sdk.Context, ps lbmwasmtypes.Params) {
 	k.paramSpace.SetParamSet(ctx, &ps)
 }
 

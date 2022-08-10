@@ -11,39 +11,6 @@ import (
 	wasmtypes "github.com/line/lbm-sdk/x/wasm/types"
 )
 
-//const (
-//	// DefaultGasMultiplier is how many CosmWasm gas points = 1 Cosmos SDK gas point.
-//	//
-//	// CosmWasm gas strategy is documented in https://https://github.com/line/cosmwasm/blob/v1.0.0-0.6.0/docs/GAS.md.
-//	// LBM SDK reference costs can be found here: https://github.com/line/lbm-sdk/blob/main/store/types/gas.go#L199-L209.
-//	//
-//	// The original multiplier of 100 up to CosmWasm 0.16 was based on
-//	//     "A write at ~3000 gas and ~200us = 10 gas per us (microsecond) cpu/io
-//	//     Rough timing have 88k gas at 90us, which is equal to 1k sdk gas... (one read)"
-//	// as well as manual Wasmer benchmarks from 2019. This was then multiplied by 150_000
-//	// in the 0.16 -> 1.0 upgrade (https://github.com/CosmWasm/cosmwasm/pull/1120).
-//	//
-//	// The multiplier deserves more reproducible benchmarking and a strategy that allows easy adjustments.
-//	// This is tracked in https://github.com/CosmWasm/wasmd/issues/566 and https://github.com/CosmWasm/wasmd/issues/631.
-//	// Gas adjustments are consensus breaking but may happen in any release marked as consensus breaking.
-//	// Do not make assumptions on how much gas an operation will consume in places that are hard to adjust,
-//	// such as hardcoding them in contracts.
-//	//
-//	// Please note that all gas prices returned to wasmvm should have this multiplied.
-//	DefaultGasMultiplier uint64 = 140_000_000
-//	// InstanceCost is how much SDK gas we charge each time we load a WASM instance.
-//	// Creating a new instance is costly, and this helps put a recursion limit to contracts calling contracts.
-//	DefaultInstanceCost = 60_000
-//	// CompileCost is how much SDK gas we charge *per byte* for compiling WASM code.
-//	DefaultCompileCost = 3
-//)
-
-//var ParamStoreKeyUploadAccess = []byte("uploadAccess")
-//var ParamStoreKeyInstantiateAccess = []byte("instantiateAccess")
-//var ParamStoreKeyGasMultiplier = []byte("gasMultiplier")
-//var ParamStoreKeyInstanceCost = []byte("instanceCost")
-//var ParamStoreKeyCompileCost = []byte("compileCost")
-
 // ParamKeyTable returns the parameter key table.
 func ParamKeyTable() paramtypes.KeyTable {
 	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})

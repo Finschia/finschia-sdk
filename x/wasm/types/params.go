@@ -33,15 +33,18 @@ const (
 	//
 	// Please note that all gas prices returned to wasmvm should have this multiplied.
 	DefaultGasMultiplier uint64 = 140_000_000
-	// InstanceCost is how much SDK gas we charge each time we load a WASM instance.
-	// Creating a new instance is costly, and this helps put a recursion limit to contracts calling contracts.
+	// DefaultInstanceCost is how much SDK gas we charge each time we load a WASM instance.
+	// Creating a new instance is costly, and this helps put a recursion limit to contract calling contracts.
 	DefaultInstanceCost = 60_000
-	// CompileCost is how much SDK gas we charge *per byte* for compiling WASM code.
+	// DefaultCompileCost is how much SDK gas we charge *per byte* for compiling WASM code.
 	DefaultCompileCost = 3
 )
 
 var ParamStoreKeyUploadAccess = []byte("uploadAccess")
 var ParamStoreKeyInstantiateAccess = []byte("instantiateAccess")
+
+// TODO: detach below params because these are  lbm-sdk custom params
+
 var ParamStoreKeyGasMultiplier = []byte("gasMultiplier")
 var ParamStoreKeyInstanceCost = []byte("instanceCost")
 var ParamStoreKeyCompileCost = []byte("compileCost")

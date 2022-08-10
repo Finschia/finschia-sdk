@@ -54,13 +54,11 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	// deploy contract
 	s.codeID = s.deployContract()
-	fmt.Printf("codeID: %s\n", s.codeID)
 
 	s.verifier = s.network.Validators[0].Address.String()
 	s.beneficiary = keeper.RandomAccountAddress(s.T())
 	params := fmt.Sprintf("{\"verifier\": \"%s\", \"beneficiary\": \"%s\"}", s.verifier, s.beneficiary)
 	s.contractAddress = s.instantiate(s.codeID, params)
-	fmt.Printf("contractAddress: %s\n", s.contractAddress)
 
 	s.setupHeight, err = s.network.LatestHeight()
 	s.Require().NoError(err)
@@ -93,9 +91,7 @@ func (s *IntegrationTestSuite) deployContract() string {
 	}, commonArgs...)
 
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.StoreCodeCmd(), args)
-	fmt.Printf("err: %v\n", err)
 	s.Require().NoError(err)
-	fmt.Printf("out: %v\n", out)
 
 	var res sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
@@ -123,10 +119,8 @@ func (s *IntegrationTestSuite) instantiate(codeID, params string) string {
 		fmt.Sprintf("--%s=%v", flags.FlagFrom, val.Address.String()),
 	}, commonArgs...)
 
-	//fmt.Printf("instantiate args: %v\n", args)
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.InstantiateContractCmd(), args)
 	s.Require().NoError(err)
-	//fmt.Printf("instantiate out: %v\n", out)
 
 	var res sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
