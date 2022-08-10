@@ -32,7 +32,7 @@ func AttributeKeyFromString(name string) AttributeKey {
 	return AttributeKey(AttributeKey_value[attributeKeyName])
 }
 
-func NewEventIssueToken(event EventIssue, grantee, to sdk.AccAddress, amount sdk.Int) sdk.Event {
+func NewEventIssueToken(event EventIssue, to sdk.AccAddress, amount sdk.Int) sdk.Event {
 	eventType := EventTypeIssueToken.String()
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: event.ContractId,
@@ -43,7 +43,7 @@ func NewEventIssueToken(event EventIssue, grantee, to sdk.AccAddress, amount sdk
 		AttributeKeyDecimals:   fmt.Sprintf("%d", event.Decimals),
 		AttributeKeyMintable:   fmt.Sprintf("%t", event.Mintable),
 
-		AttributeKeyOwner:  grantee.String(),
+		AttributeKeyOwner:  event.Creator,
 		AttributeKeyTo:     to.String(),
 		AttributeKeyAmount: amount.String(),
 	}
