@@ -920,7 +920,6 @@
     - [Permission](#lbm.collection.v1.Permission)
   
 - [lbm/collection/v1/event.proto](#lbm/collection/v1/event.proto)
-    - [EventAbandon](#lbm.collection.v1.EventAbandon)
     - [EventAttached](#lbm.collection.v1.EventAttached)
     - [EventAuthorizedOperator](#lbm.collection.v1.EventAuthorizedOperator)
     - [EventBurned](#lbm.collection.v1.EventBurned)
@@ -928,13 +927,14 @@
     - [EventCreatedFTClass](#lbm.collection.v1.EventCreatedFTClass)
     - [EventCreatedNFTClass](#lbm.collection.v1.EventCreatedNFTClass)
     - [EventDetached](#lbm.collection.v1.EventDetached)
-    - [EventGrant](#lbm.collection.v1.EventGrant)
+    - [EventGranted](#lbm.collection.v1.EventGranted)
     - [EventMintedFT](#lbm.collection.v1.EventMintedFT)
     - [EventMintedNFT](#lbm.collection.v1.EventMintedNFT)
     - [EventModifiedContract](#lbm.collection.v1.EventModifiedContract)
     - [EventModifiedNFT](#lbm.collection.v1.EventModifiedNFT)
     - [EventModifiedTokenClass](#lbm.collection.v1.EventModifiedTokenClass)
     - [EventOwnerChanged](#lbm.collection.v1.EventOwnerChanged)
+    - [EventRenounced](#lbm.collection.v1.EventRenounced)
     - [EventRevokedOperator](#lbm.collection.v1.EventRevokedOperator)
     - [EventRootChanged](#lbm.collection.v1.EventRootChanged)
     - [EventSent](#lbm.collection.v1.EventSent)
@@ -13829,25 +13829,6 @@ Permission enumerates the valid permissions on a contract.
 
 
 
-<a name="lbm.collection.v1.EventAbandon"></a>
-
-### EventAbandon
-EventAbandon is emitted when a grantee abandons its permission.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
-| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.EventAttached"></a>
 
 ### EventAttached
@@ -13990,10 +13971,10 @@ Since: 0.46.0 (finschia)
 
 
 
-<a name="lbm.collection.v1.EventGrant"></a>
+<a name="lbm.collection.v1.EventGranted"></a>
 
-### EventGrant
-EventGrant is emitted when a granter grants its permission to a grantee.
+### EventGranted
+EventGranted is emitted when a granter grants its permission to a grantee.
 
 Info: `granter` would be empty if the permission is granted by an issuance.
 
@@ -14125,6 +14106,25 @@ Since: 0.46.0 (finschia)
 | `token_id` | [string](#string) |  | token id associated with the token. |
 | `from` | [string](#string) |  | address of the previous owner before the change. |
 | `to` | [string](#string) |  | address of the new owner. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventRenounced"></a>
+
+### EventRenounced
+EventRenounced is emitted when a grantee renounced its permission.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
+| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
 
 
 

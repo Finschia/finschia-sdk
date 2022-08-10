@@ -633,7 +633,7 @@ func TestNewEventGrantPermToken(t *testing.T) {
 		return collection.Permission(1 + rand.Intn(n))
 	}
 
-	event := collection.EventGrant{
+	event := collection.EventGranted{
 		ContractId: str(),
 		Granter:    str(),
 		Grantee:    str(),
@@ -662,7 +662,7 @@ func TestNewEventGrantPermTokenHead(t *testing.T) {
 		return collection.Permission(1 + rand.Intn(n))
 	}
 
-	event := collection.EventGrant{
+	event := collection.EventGranted{
 		ContractId: str(),
 		Granter:    str(),
 		Grantee:    str(),
@@ -689,7 +689,7 @@ func TestNewEventGrantPermTokenBody(t *testing.T) {
 		return collection.Permission(1 + rand.Intn(n))
 	}
 
-	event := collection.EventGrant{
+	event := collection.EventGranted{
 		ContractId: str(),
 		Granter:    str(),
 		Grantee:    str(),
@@ -715,7 +715,7 @@ func TestNewEventRevokePermToken(t *testing.T) {
 		return collection.Permission(1 + rand.Intn(n))
 	}
 
-	event := collection.EventAbandon{
+	event := collection.EventRenounced{
 		ContractId: str(),
 		Grantee:    str(),
 		Permission: permission(),

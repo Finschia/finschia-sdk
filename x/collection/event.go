@@ -499,7 +499,7 @@ func NewEventTransferNFTFrom(event EventSent) sdk.Events {
 }
 
 // Deprecated: use EventGrant.
-func NewEventGrantPermToken(event EventGrant) sdk.Event {
+func NewEventGrantPermToken(event EventGranted) sdk.Event {
 	eventType := EventTypeGrantPermToken.String()
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: event.ContractId,
@@ -519,7 +519,7 @@ func NewEventGrantPermToken(event EventGrant) sdk.Event {
 }
 
 // Deprecated: use EventGrant.
-func NewEventGrantPermTokenHead(event EventGrant) sdk.Event {
+func NewEventGrantPermTokenHead(event EventGranted) sdk.Event {
 	eventType := EventTypeGrantPermToken.String()
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: event.ContractId,
@@ -538,7 +538,7 @@ func NewEventGrantPermTokenHead(event EventGrant) sdk.Event {
 }
 
 // Deprecated: use EventGrant.
-func NewEventGrantPermTokenBody(event EventGrant) sdk.Event {
+func NewEventGrantPermTokenBody(event EventGranted) sdk.Event {
 	eventType := EventTypeGrantPermToken.String()
 	attributes := map[AttributeKey]string{
 		AttributeKeyPerm: LegacyPermission(event.Permission).String(),
@@ -553,7 +553,7 @@ func NewEventGrantPermTokenBody(event EventGrant) sdk.Event {
 }
 
 // Deprecated: use EventAbandon.
-func NewEventRevokePermToken(event EventAbandon) sdk.Event {
+func NewEventRevokePermToken(event EventRenounced) sdk.Event {
 	eventType := EventTypeRevokePermToken.String()
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: event.ContractId,
