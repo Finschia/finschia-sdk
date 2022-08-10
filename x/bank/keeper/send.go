@@ -312,13 +312,3 @@ func (k BaseSendKeeper) IsSendEnabledCoin(ctx sdk.Context, coin sdk.Coin) bool {
 func (k BaseSendKeeper) BlockedAddr(addr sdk.AccAddress) bool {
 	return k.blockedAddrs[addr.String()]
 }
-
-func (k BaseSendKeeper) ChangeBlockedAddrState(addr sdk.AccAddress, isBlocked bool) error {
-	key := addr.String()
-	if _, ok := k.blockedAddrs[key]; !ok {
-		return sdkerrors.Wrapf(types.ErrInvalidKey, "%s is not in blockedAddrs", key)
-	}
-
-	k.blockedAddrs[key] = isBlocked
-	return nil
-}
