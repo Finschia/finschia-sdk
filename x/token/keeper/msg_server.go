@@ -196,7 +196,7 @@ func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermiss
 
 	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
 
-	event := token.EventGrant{
+	event := token.EventGranted{
 		ContractId: req.ContractId,
 		Granter:    req.From,
 		Grantee:    req.To,
@@ -222,7 +222,7 @@ func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermi
 
 	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
 
-	event := token.EventAbandon{
+	event := token.EventRenounced{
 		ContractId: req.ContractId,
 		Grantee:    req.From,
 		Permission: permission,

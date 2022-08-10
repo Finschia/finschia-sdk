@@ -50,7 +50,7 @@ func TestNewEventIssueToken(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
 	str := func() string { return randomString(8) }
 
-	event := token.EventIssue{
+	event := token.EventIssued{
 		ContractId: str(),
 		Name:       str(),
 		Symbol:     str(),
@@ -257,7 +257,7 @@ func TestNewEventGrantPermToken(t *testing.T) {
 		return token.Permission(1 + rand.Intn(n))
 	}
 
-	event := token.EventGrant{
+	event := token.EventGranted{
 		ContractId: str(),
 		Granter:    str(),
 		Grantee:    str(),
@@ -286,7 +286,7 @@ func TestNewEventGrantPermTokenHead(t *testing.T) {
 		return token.Permission(1 + rand.Intn(n))
 	}
 
-	event := token.EventGrant{
+	event := token.EventGranted{
 		ContractId: str(),
 		Granter:    str(),
 		Grantee:    str(),
@@ -313,7 +313,7 @@ func TestNewEventGrantPermTokenBody(t *testing.T) {
 		return token.Permission(1 + rand.Intn(n))
 	}
 
-	event := token.EventGrant{
+	event := token.EventGranted{
 		ContractId: str(),
 		Granter:    str(),
 		Grantee:    str(),
@@ -339,7 +339,7 @@ func TestNewEventRevokePermToken(t *testing.T) {
 		return token.Permission(1 + rand.Intn(n))
 	}
 
-	event := token.EventAbandon{
+	event := token.EventRenounced{
 		ContractId: str(),
 		Grantee:    str(),
 		Permission: permission(),
