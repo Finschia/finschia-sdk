@@ -1,11 +1,13 @@
 package types
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	wasmTypes "github.com/line/lbm-sdk/x/wasm/types"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
+
+	sdk "github.com/line/lbm-sdk/types"
+	wasmTypes "github.com/line/lbm-sdk/x/wasm/types"
 )
 
 func TestStoreCodeAndInstantiateContractValidation(t *testing.T) {
