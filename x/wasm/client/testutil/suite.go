@@ -11,6 +11,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/wasm/client/cli"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
+	"github.com/line/lbm-sdk/x/wasm/types"
 	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
 )
@@ -23,8 +24,9 @@ type IntegrationTestSuite struct {
 
 	setupHeight int64
 
-	codeID          string
-	contractAddress string
+	codeID               string
+	contractAddress      string
+	nonExistValidAddress string
 
 	// for hackatom contract
 	verifier    string
@@ -60,6 +62,8 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	params := fmt.Sprintf("{\"verifier\": \"%s\", \"beneficiary\": \"%s\"}", s.verifier, s.beneficiary)
 	s.contractAddress = s.instantiate(s.codeID, params)
 
+	s.nonExistValidAddress = keeper.RandomAccountAddress(s.T()).String()
+
 	s.setupHeight, err = s.network.LatestHeight()
 	s.Require().NoError(err)
 	s.Require().NoError(s.network.WaitForNextBlock())
@@ -86,8 +90,8 @@ func (s *IntegrationTestSuite) deployContract() string {
 
 	args := append([]string{
 		wasmPath,
-		fmt.Sprintf("--%s=%v", flags.FlagFrom, val.Address.String()),
-		fmt.Sprintf("--%s=%v", flags.FlagGas, 1500000),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%d", flags.FlagGas, 1500000),
 	}, commonArgs...)
 
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.StoreCodeCmd(), args)
@@ -99,7 +103,7 @@ func (s *IntegrationTestSuite) deployContract() string {
 
 	// parse codeID
 	for _, v := range res.Events {
-		if v.Type == "store_code" {
+		if v.Type == types.EventTypeStoreCode {
 			return string(v.Attributes[0].Value)
 		}
 	}
@@ -114,9 +118,9 @@ func (s *IntegrationTestSuite) instantiate(codeID, params string) string {
 	args := append([]string{
 		codeID,
 		params,
-		fmt.Sprintf("--label=%v", "TestContract"),
-		fmt.Sprintf("--admin=%v", owner),
-		fmt.Sprintf("--%s=%v", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--label=%s", "TestContract"),
+		fmt.Sprintf("--admin=%s", owner),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 	}, commonArgs...)
 
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.InstantiateContractCmd(), args)
@@ -128,7 +132,7 @@ func (s *IntegrationTestSuite) instantiate(codeID, params string) string {
 
 	// parse contractAddress
 	for _, v := range res.Events {
-		if v.Type == "instantiate" {
+		if v.Type == types.EventTypeInstantiate {
 			return string(v.Attributes[0].Value)
 		}
 	}

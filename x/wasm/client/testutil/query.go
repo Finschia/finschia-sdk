@@ -78,7 +78,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryCodeInfo() {
 
 	codeID, err := strconv.ParseUint(s.codeID, 10, 64)
 	s.Require().NoError(err)
-	dataHash, err := hex.DecodeString("470C5B703A682F778B8B088D48169B8D6E43F7F44AC70316692CDBE69E6605E3")
+	expectedDataHash, err := hex.DecodeString("470C5B703A682F778B8B088D48169B8D6E43F7F44AC70316692CDBE69E6605E3")
 	s.Require().NoError(err)
 
 	testCases := map[string]struct {
@@ -94,7 +94,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryCodeInfo() {
 			&types.CodeInfoResponse{
 				CodeID:                codeID,
 				Creator:               val.Address.String(),
-				DataHash:              dataHash,
+				DataHash:              expectedDataHash,
 				InstantiatePermission: types.AllowEverybody,
 			},
 		},
@@ -223,7 +223,7 @@ func (s *IntegrationTestSuite) TestGetCmdGetContractStateAll() {
 		},
 		"no exist bech32_address": {
 			[]string{
-				"link1hmayw7vv0p3gzeh3jzwmw9xj8fy8a3kmpqgjrysljdnecqkps02qrq5rvm",
+				s.nonExistValidAddress,
 			},
 			false,
 			nil,
@@ -260,7 +260,7 @@ func (s *IntegrationTestSuite) TestGetCmdGetContractStateRaw() {
 		"valid query": {
 			[]string{
 				s.contractAddress,
-				"636F6E666967", // hex.EncodeToString([]byte("config")),
+				hex.EncodeToString([]byte("config")), // "636F6E666967"
 			},
 			true,
 			&types.QueryRawContractStateResponse{
@@ -270,7 +270,7 @@ func (s *IntegrationTestSuite) TestGetCmdGetContractStateRaw() {
 		"no exist key": {
 			[]string{
 				s.contractAddress,
-				hex.EncodeToString([]byte("verifier")),
+				hex.EncodeToString([]byte("verifier")), // "7665726966696572",
 			},
 			true,
 			&types.QueryRawContractStateResponse{Data: nil},
@@ -278,15 +278,15 @@ func (s *IntegrationTestSuite) TestGetCmdGetContractStateRaw() {
 		"wrong bech32_address": {
 			[]string{
 				"xxx",
-				"636F6E666967",
+				hex.EncodeToString([]byte("config")), // "636F6E666967"
 			},
 			false,
 			nil,
 		},
 		"no exist bech32_address": {
 			[]string{
-				"link1hmayw7vv0p3gzeh3jzwmw9xj8fy8a3kmpqgjrysljdnecqkps02qrq5rvm",
-				"636F6E666967",
+				s.nonExistValidAddress,
+				hex.EncodeToString([]byte("config")), // "636F6E666967"
 			},
 			false,
 			nil,
@@ -356,7 +356,7 @@ func (s *IntegrationTestSuite) TestGetCmdGetContractStateSmart() {
 		},
 		"no exist bech32_address": {
 			[]string{
-				"link1hmayw7vv0p3gzeh3jzwmw9xj8fy8a3kmpqgjrysljdnecqkps02qrq5rvm",
+				s.nonExistValidAddress,
 				"{\"verifier\":{}}",
 			},
 			false,

@@ -20,7 +20,7 @@ func validateLabel(label string) error {
 		return sdkerrors.Wrap(wasmtypes.ErrEmpty, "is required")
 	}
 	if len(label) > wasmtypes.MaxLabelSize {
-		return sdkerrors.Wrap(wasmtypes.ErrLimit, "cannot be longer than 128 characters")
+		return sdkerrors.Wrapf(wasmtypes.ErrLimit, "cannot be longer than %d characters", wasmtypes.MaxWasmSize)
 	}
 	return nil
 }
