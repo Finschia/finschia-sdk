@@ -74,7 +74,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (client) [\#565](https://github.com/line/lbm-sdk/pull/565) fix the data race problem in `TestQueryABCIHeight`
 * (x/token) [\#589](https://github.com/line/lbm-sdk/pull/589) fix naming collision in x/token enums
 * (x/token) [\#599](https://github.com/line/lbm-sdk/pull/599) fix the order of events
-* (amino) [\#635](https://github.com/line/lbm-sdk/pull/635) fix wrong proto path and add minor changes
+* (amino) [\#635](https://github.com/line/lbm-sdk/pull/635) change some minor things that haven't been fixed in #549
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
