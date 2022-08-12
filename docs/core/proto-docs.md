@@ -1225,11 +1225,25 @@
   
     - [Msg](#lbm.token.v1.Msg)
   
+- [lbm/wasm/v1/event.proto](#lbm/wasm/v1/event.proto)
+    - [EventActivateContractProposal](#lbm.wasm.v1.EventActivateContractProposal)
+    - [EventDeactivateContractProposal](#lbm.wasm.v1.EventDeactivateContractProposal)
+  
 - [lbm/wasm/v1/types.proto](#lbm/wasm/v1/types.proto)
     - [Params](#lbm.wasm.v1.Params)
   
 - [lbm/wasm/v1/genesis.proto](#lbm/wasm/v1/genesis.proto)
     - [GenesisState](#lbm.wasm.v1.GenesisState)
+  
+- [lbm/wasm/v1/proposal.proto](#lbm/wasm/v1/proposal.proto)
+    - [ActivateContract](#lbm.wasm.v1.ActivateContract)
+    - [DeactivateContract](#lbm.wasm.v1.DeactivateContract)
+  
+- [lbm/wasm/v1/query.proto](#lbm/wasm/v1/query.proto)
+    - [QueryInactiveContractsRequest](#lbm.wasm.v1.QueryInactiveContractsRequest)
+    - [QueryInactiveContractsResponse](#lbm.wasm.v1.QueryInactiveContractsResponse)
+  
+    - [Query](#lbm.wasm.v1.Query)
   
 - [lbm/wasm/v1/tx.proto](#lbm/wasm/v1/tx.proto)
     - [MsgStoreCodeAndInstantiateContract](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContract)
@@ -18510,6 +18524,52 @@ Msg defines the token Msg service.
 
 
 
+<a name="lbm/wasm/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/wasm/v1/event.proto
+
+
+
+<a name="lbm.wasm.v1.EventActivateContractProposal"></a>
+
+### EventActivateContractProposal
+EventActivateContractProposal is the event that is emitted when the contract is activates.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contractAddress` | [string](#string) |  | contractAddress is the smart contract's address |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.EventDeactivateContractProposal"></a>
+
+### EventDeactivateContractProposal
+EventDeactivateContractProposal is the event that is emitted when the contract is deactivate
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contractAddress` | [string](#string) |  | contractAddress is the smart contract's address |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="lbm/wasm/v1/types.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -18576,6 +18636,113 @@ Params defines the set of wasm parameters.
  <!-- end enums -->
 
  <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/wasm/v1/proposal.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/wasm/v1/proposal.proto
+
+
+
+<a name="lbm.wasm.v1.ActivateContract"></a>
+
+### ActivateContract
+ActivateContract gov proposal content type deletes a contract from inactive list
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `contract` | [string](#string) |  | Contract is the smart contract address to activate. |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.DeactivateContract"></a>
+
+### DeactivateContract
+DeactivateContract gov proposal content type adds a contract to inactive list.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `contract` | [string](#string) |  | Contract is the smart contract address to deactivate. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/wasm/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/wasm/v1/query.proto
+
+
+
+<a name="lbm.wasm.v1.QueryInactiveContractsRequest"></a>
+
+### QueryInactiveContractsRequest
+QueryInactiveContractsRequest is the request type for Query/InactiveContract RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.QueryInactiveContractsResponse"></a>
+
+### QueryInactiveContractsResponse
+QueryInactiveContractsResponse is the response type for the Query/InactiveContract RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `addresses` | [string](#string) | repeated | addresses is the inactive address list |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.wasm.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `InactiveContracts` | [QueryInactiveContractsRequest](#lbm.wasm.v1.QueryInactiveContractsRequest) | [QueryInactiveContractsResponse](#lbm.wasm.v1.QueryInactiveContractsResponse) | InactiveContracts queries all inactive contracts. | GET|/lbm/wasm/v1/inactive_contracts|
 
  <!-- end services -->
 
