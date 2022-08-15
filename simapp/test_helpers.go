@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"testing"
@@ -24,6 +25,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/simapp/helpers"
+	"github.com/line/lbm-sdk/snapshots"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/errors"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
@@ -61,6 +63,24 @@ func setup(withGenesis bool, invCheckPeriod uint) (*SimApp, GenesisState) {
 	return app, GenesisState{}
 }
 
+func setupWithSnapshot(t testing.TB, withGenesis bool, invCheckPeriod uint) (*SimApp, GenesisState) {
+	nodeHome := t.TempDir()
+	snapshotDir := filepath.Join(nodeHome, "data", "snapshots")
+	snapshotDB, err := sdk.NewLevelDB("metadata", snapshotDir)
+	require.NoError(t, err)
+	snapshotStore, err := snapshots.NewStore(snapshotDB, snapshotDir)
+	require.NoError(t, err)
+	baseAppOpts := []func(*bam.BaseApp){bam.SetSnapshotStore(snapshotStore), bam.SetSnapshotKeepRecent(2)}
+
+	db := dbm.NewMemDB()
+	encCdc := MakeTestEncodingConfig()
+	app := NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, encCdc, EmptyAppOptions{}, nil, baseAppOpts...)
+	if withGenesis {
+		return app, NewDefaultGenesisState(encCdc.Marshaler)
+	}
+	return app, GenesisState{}
+}
+
 // Setup initializes a new SimApp. A Nop logger is set in SimApp.
 func Setup(isCheckTx bool) *SimApp {
 	app, genesisState := setup(!isCheckTx, 5)
@@ -88,8 +108,18 @@ func Setup(isCheckTx bool) *SimApp {
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
 // of one consensus engine unit (10^6) in the default token of the simapp from first genesis
 // account. A Nop logger is set in SimApp.
-func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *SimApp {
-	app, genesisState := setup(true, 5)
+func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs []authtypes.GenesisAccount, snapshot bool, balances ...banktypes.Balance) *SimApp {
+	var (
+		app          *SimApp
+		genesisState GenesisState
+	)
+
+	if snapshot {
+		app, genesisState = setupWithSnapshot(t, true, 5)
+	} else {
+		app, genesisState = setup(true, 5)
+	}
+
 	// set genesis accounts
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)
 	genesisState[authtypes.ModuleName] = app.AppCodec().MustMarshalJSON(authGenesis)
@@ -162,6 +192,12 @@ func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs 
 		NextValidatorsHash: valSet.Hash(),
 	}})
 
+	return app
+}
+
+// SetupWithEmptyStore setup a wasmd app instance with empty DB
+func SetupWithEmptyStore(t testing.TB) *SimApp {
+	app, _ := setupWithSnapshot(t, false, 5)
 	return app
 }
 

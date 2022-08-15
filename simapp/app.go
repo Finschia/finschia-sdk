@@ -114,6 +114,7 @@ import (
 	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 	"github.com/line/lbm-sdk/x/wasm"
 	wasmclient "github.com/line/lbm-sdk/x/wasm/client"
+	wasmkeeper "github.com/line/lbm-sdk/x/wasm/keeper"
 
 	// unnamed import of statik for swagger UI support
 	_ "github.com/line/lbm-sdk/client/docs/statik"
@@ -617,6 +618,18 @@ func NewSimApp(
 	app.SetAnteHandler(anteHandler)
 	app.SetEndBlocker(app.EndBlocker)
 
+	// must be before Loading version
+	// requires the snapshot store to be created and registered as a BaseAppOption
+	// see simapp/simd/cmd/root.go: 257 - 261 approx
+	if manager := app.SnapshotManager(); manager != nil {
+		err := manager.RegisterExtensions(
+			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper),
+		)
+		if err != nil {
+			panic(fmt.Errorf("failed to register snapshot extension: %s", err))
+		}
+	}
+
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
 			ostos.Exit(err.Error())
@@ -639,18 +652,17 @@ func NewSimApp(
 	// note replicate if you do not need to test core IBC or light clients.
 	app.ScopedIBCMockKeeper = scopedIBCMockKeeper
 
-	// FIXME: After applying cosmos-sdk@0.45.4
 	// must be before Loading version
 	// requires the snapshot store to be created and registered as a BaseAppOption
 	// see cmd/wasmd/root.go: 206 - 214 approx
-	// if manager := app.SnapshotManager(); manager != nil {
-	// 	err := manager.RegisterExtensions(
-	// 		wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.wasmKeeper),
-	// 	)
-	// 	if err != nil {
-	// 		panic(fmt.Errorf("failed to register snapshot extension: %s", err))
-	// 	}
-	// }
+	if manager := app.SnapshotManager(); manager != nil {
+		err := manager.RegisterExtensions(
+			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper),
+		)
+		if err != nil {
+			panic(fmt.Errorf("failed to register snapshot extension: %s", err))
+		}
+	}
 
 	var dummy bool
 	if dummy {
