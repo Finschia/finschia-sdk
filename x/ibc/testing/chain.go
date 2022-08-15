@@ -139,7 +139,7 @@ func NewTestChain(t *testing.T, chainID string) *TestChain {
 		Coins:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100000000000000))),
 	}
 
-	app := simapp.SetupWithGenesisValSet(t, valSet, []authtypes.GenesisAccount{acc}, balance)
+	app := simapp.SetupWithGenesisValSet(t, valSet, []authtypes.GenesisAccount{acc}, false, balance)
 
 	// create current header and call begin block
 	header := ocproto.Header{
