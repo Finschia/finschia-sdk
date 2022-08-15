@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
 	"testing"
 
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 	dbm "github.com/line/tm-db/v2"
 	"github.com/line/tm-db/v2/goleveldb"
@@ -65,7 +65,9 @@ func BenchmarkAPI(b *testing.B) {
 	addrStr := example.Contract.String()
 	addrBytes, err := sdk.AccAddressToBytes(example.Contract.String())
 	require.NoError(b, err)
+
 	b.Run("GetContractEnv", func(b *testing.B) {
+		b.ReportAllocs()
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			_, _, _, _, _, _, _, err := api.GetContractEnv(addrStr)
@@ -74,6 +76,8 @@ func BenchmarkAPI(b *testing.B) {
 	})
 
 	b.Run("CanonicalAddress", func(b *testing.B) {
+		b.ReportAllocs()
+		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			_, _, err := api.CanonicalAddress(addrStr)
 			require.NoError(b, err)
@@ -81,6 +85,8 @@ func BenchmarkAPI(b *testing.B) {
 	})
 
 	b.Run("HumanAddress", func(b *testing.B) {
+		b.ReportAllocs()
+		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
 			_, _, err := api.HumanAddress(addrBytes)
 			require.NoError(b, err)
