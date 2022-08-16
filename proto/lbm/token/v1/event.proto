@@ -91,10 +91,10 @@ message EventRevokedOperator {
   string operator = 3;
 }
 
-// EventIssue is emitted when a new token class is created.
+// EventIssued is emitted when a new token class is created.
 //
 // Since: 0.46.0 (finschia)
-message EventIssue {
+message EventIssued {
   // address which created the contract.
   string creator = 1;
   // contract id associated with the token class.
@@ -113,12 +113,12 @@ message EventIssue {
   bool mintable = 8;
 }
 
-// EventGrant is emitted when a granter grants its permission to a grantee.
+// EventGranted is emitted when a granter grants its permission to a grantee.
 //
 // Info: `granter` would be empty if the permission is granted by an issuance.
 //
 // Since: 0.46.0 (finschia)
-message EventGrant {
+message EventGranted {
   // contract id associated with the token class.
   string contract_id = 1;
   // address which granted the permission to `grantee`.
@@ -130,10 +130,10 @@ message EventGrant {
   Permission permission = 4;
 }
 
-// EventAbandon is emitted when a grantee abandons its permission.
+// EventRenounced is emitted when a grantee renounces its permission.
 //
 // Since: 0.46.0 (finschia)
-message EventAbandon {
+message EventRenounced {
   // contract id associated with the token class.
   string contract_id = 1;
   // address of the grantee which abandons its grant.

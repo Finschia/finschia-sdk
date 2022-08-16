@@ -9,7 +9,7 @@ import (
 func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.AccAddress, amount sdk.Int) {
 	k.issue(ctx, class)
 
-	event := token.EventIssue{
+	event := token.EventIssued{
 		Creator:    owner.String(),
 		ContractId: class.ContractId,
 		Name:       class.Name,
@@ -35,7 +35,7 @@ func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.Acc
 	}
 
 	// legacy
-	eventGrant := token.EventGrant{
+	eventGrant := token.EventGranted{
 		ContractId: class.ContractId,
 		Grantee:    to.String(),
 	}
@@ -308,7 +308,7 @@ func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Pair)
 func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.AccAddress, permission token.Permission) {
 	k.grant(ctx, contractID, grantee, permission)
 
-	event := token.EventGrant{
+	event := token.EventGranted{
 		ContractId: contractID,
 		Granter:    granter.String(),
 		Grantee:    grantee.String(),
@@ -331,7 +331,7 @@ func (k Keeper) grant(ctx sdk.Context, contractID string, grantee sdk.AccAddress
 func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) {
 	k.deleteGrant(ctx, contractID, grantee, permission)
 
-	event := token.EventAbandon{
+	event := token.EventRenounced{
 		ContractId: contractID,
 		Grantee:    grantee.String(),
 		Permission: permission,
