@@ -51,6 +51,7 @@ func TestNewEventIssueToken(t *testing.T) {
 	str := func() string { return randomString(8) }
 
 	event := token.EventIssued{
+		Creator:    str(),
 		ContractId: str(),
 		Name:       str(),
 		Symbol:     str(),
@@ -59,10 +60,9 @@ func TestNewEventIssueToken(t *testing.T) {
 		Decimals:   0,
 		Mintable:   true,
 	}
-	operator := sdk.AccAddress(str())
 	to := sdk.AccAddress(str())
 	amount := sdk.OneInt()
-	legacy := token.NewEventIssueToken(event, operator, to, amount)
+	legacy := token.NewEventIssueToken(event, to, amount)
 
 	require.Equal(t, token.EventTypeIssueToken.String(), legacy.Type)
 
@@ -75,7 +75,7 @@ func TestNewEventIssueToken(t *testing.T) {
 		token.AttributeKeyMintable:   fmt.Sprintf("%v", event.Mintable),
 		token.AttributeKeyDecimals:   fmt.Sprintf("%d", event.Decimals),
 		token.AttributeKeyAmount:     amount.String(),
-		token.AttributeKeyOwner:      operator.String(),
+		token.AttributeKeyOwner:      event.Creator,
 		token.AttributeKeyTo:         to.String(),
 	}
 	for key, value := range attributes {

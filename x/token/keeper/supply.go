@@ -10,6 +10,7 @@ func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.Acc
 	k.issue(ctx, class)
 
 	event := token.EventIssued{
+		Creator:    owner.String(),
 		ContractId: class.ContractId,
 		Name:       class.Name,
 		Symbol:     class.Symbol,
@@ -18,7 +19,7 @@ func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.Acc
 		Decimals:   class.Decimals,
 		Mintable:   class.Mintable,
 	}
-	ctx.EventManager().EmitEvent(token.NewEventIssueToken(event, owner, to, amount)) // deprecated
+	ctx.EventManager().EmitEvent(token.NewEventIssueToken(event, to, amount)) // deprecated
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}

@@ -95,20 +95,22 @@ message EventRevokedOperator {
 //
 // Since: 0.46.0 (finschia)
 message EventIssued {
+  // address which created the contract.
+  string creator = 1;
   // contract id associated with the token class.
-  string contract_id = 1;
+  string contract_id = 2;
   // name defines the human-readable name of the token class.
-  string name = 2;
+  string name = 3;
   // symbol is an abbreviated name for token class.
-  string symbol = 3;
+  string symbol = 4;
   // uri is an uri for the resource of the token class stored off chain.
-  string uri = 4;
+  string uri = 5;
   // meta is a brief description of token class.
-  string meta = 5;
+  string meta = 6;
   // decimals is the number of decimals which one must divide the amount by to get its user representation.
-  int32 decimals = 6;
+  int32 decimals = 7;
   // mintable represents whether the token is allowed to mint.
-  bool mintable = 7;
+  bool mintable = 8;
 }
 
 // EventGranted is emitted when a granter grants its permission to a grantee.

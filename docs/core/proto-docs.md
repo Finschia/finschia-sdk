@@ -17535,6 +17535,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `creator` | [string](#string) |  | address which created the contract. |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `name` | [string](#string) |  | name defines the human-readable name of the token class. |
 | `symbol` | [string](#string) |  | symbol is an abbreviated name for token class. |
