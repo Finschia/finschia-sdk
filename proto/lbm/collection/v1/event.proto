@@ -166,12 +166,12 @@ message EventCreatedNFTClass {
   string meta = 5;
 }
 
-// EventGrant is emitted when a granter grants its permission to a grantee.
+// EventGranted is emitted when a granter grants its permission to a grantee.
 //
 // Info: `granter` would be empty if the permission is granted by an issuance.
 //
 // Since: 0.46.0 (finschia)
-message EventGrant {
+message EventGranted {
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the granter which grants the permission.
@@ -182,10 +182,10 @@ message EventGrant {
   Permission permission = 4;
 }
 
-// EventAbandon is emitted when a grantee abandons its permission.
+// EventRenounced is emitted when a grantee renounced its permission.
 //
 // Since: 0.46.0 (finschia)
-message EventAbandon {
+message EventRenounced {
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the grantee which abandons its grant.

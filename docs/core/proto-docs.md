@@ -920,7 +920,6 @@
     - [Permission](#lbm.collection.v1.Permission)
   
 - [lbm/collection/v1/event.proto](#lbm/collection/v1/event.proto)
-    - [EventAbandon](#lbm.collection.v1.EventAbandon)
     - [EventAttached](#lbm.collection.v1.EventAttached)
     - [EventAuthorizedOperator](#lbm.collection.v1.EventAuthorizedOperator)
     - [EventBurned](#lbm.collection.v1.EventBurned)
@@ -928,13 +927,14 @@
     - [EventCreatedFTClass](#lbm.collection.v1.EventCreatedFTClass)
     - [EventCreatedNFTClass](#lbm.collection.v1.EventCreatedNFTClass)
     - [EventDetached](#lbm.collection.v1.EventDetached)
-    - [EventGrant](#lbm.collection.v1.EventGrant)
+    - [EventGranted](#lbm.collection.v1.EventGranted)
     - [EventMintedFT](#lbm.collection.v1.EventMintedFT)
     - [EventMintedNFT](#lbm.collection.v1.EventMintedNFT)
     - [EventModifiedContract](#lbm.collection.v1.EventModifiedContract)
     - [EventModifiedNFT](#lbm.collection.v1.EventModifiedNFT)
     - [EventModifiedTokenClass](#lbm.collection.v1.EventModifiedTokenClass)
     - [EventOwnerChanged](#lbm.collection.v1.EventOwnerChanged)
+    - [EventRenounced](#lbm.collection.v1.EventRenounced)
     - [EventRevokedOperator](#lbm.collection.v1.EventRevokedOperator)
     - [EventRootChanged](#lbm.collection.v1.EventRootChanged)
     - [EventSent](#lbm.collection.v1.EventSent)
@@ -13829,25 +13829,6 @@ Permission enumerates the valid permissions on a contract.
 
 
 
-<a name="lbm.collection.v1.EventAbandon"></a>
-
-### EventAbandon
-EventAbandon is emitted when a grantee abandons its permission.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
-| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.EventAttached"></a>
 
 ### EventAttached
@@ -13994,10 +13975,10 @@ Since: 0.46.0 (finschia)
 
 
 
-<a name="lbm.collection.v1.EventGrant"></a>
+<a name="lbm.collection.v1.EventGranted"></a>
 
-### EventGrant
-EventGrant is emitted when a granter grants its permission to a grantee.
+### EventGranted
+EventGranted is emitted when a granter grants its permission to a grantee.
 
 Info: `granter` would be empty if the permission is granted by an issuance.
 
@@ -14130,6 +14111,25 @@ Since: 0.46.0 (finschia)
 | `token_id` | [string](#string) |  | token id associated with the token. |
 | `from` | [string](#string) |  | address of the previous owner before the change. |
 | `to` | [string](#string) |  | address of the new owner. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventRenounced"></a>
+
+### EventRenounced
+EventRenounced is emitted when a grantee renounced its permission.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
+| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
 
 
 
@@ -16011,8 +16011,8 @@ Msg defines the collection Msg service.
 | `BurnNFT` | [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT) | [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse) | BurnNFT defines a method to burn non-fungible tokens. Fires: - EventBurned - burn_ft (deprecated, not typed) - burn_nft (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
 | `BurnNFTFrom` | [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom) | [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse) | BurnNFTFrom defines a method to burn non-fungible tokens of the approver by the proxy. Fires: - EventBurned - burn_ft_from (deprecated, not typed) - burn_nft_from (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `proxy` does not have `burn` permission. - the approver has not authorized `proxy`. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
 | `Modify` | [MsgModify](#lbm.collection.v1.MsgModify) | [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse) | Modify defines a method to modify metadata. Fires: - EventModifiedContract - modify_collection (deprecated, not typed) - EventModifiedTokenClass - modify_token_type (deprecated, not typed) - modify_token (deprecated, not typed) - EventModifiedNFT Throws: - ErrUnauthorized - the proxy does not have `modify` permission. - ErrNotFound - there is no contract of `contract_id`. - there is no token type of `token_type`. - there is no token of `token_id`. | |
-| `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify metadata. Fires: - EventGrant - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. | |
-| `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Fires: - EventAbandon - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. | |
+| `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify metadata. Fires: - EventGranted - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. | |
+| `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Fires: - EventRenounced - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. | |
 | `Attach` | [MsgAttach](#lbm.collection.v1.MsgAttach) | [MsgAttachResponse](#lbm.collection.v1.MsgAttachResponse) | Attach defines a method to attach a token to another token. Fires: - EventAttach - attach (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrInvalidRequest - `owner` does not owns `id`. - `owner` does not owns `to`. - `token_id` is not root. - `token_id` is an ancestor of `to_token_id`, which creates a cycle as a result. - depth of `to_token_id` exceeds an app-specific limit. | |
 | `Detach` | [MsgDetach](#lbm.collection.v1.MsgDetach) | [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse) | Detach defines a method to detach a token from another token. Fires: - EventDetach - detach (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrInvalidRequest - `owner` does not owns `token_id`. | |
 | `AttachFrom` | [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom) | [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse) | AttachFrom defines a method to attach a token to another token by proxy. Fires: - EventAttach - attach_from (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrUnauthorized - the approver has not authorized `proxy`. - ErrInvalidRequest - `owner` does not owns `subject`. - `owner` does not owns `target`. - `subject` is not root. - `subject` is an ancestor of `target`, which creates a cycle as a result. - depth of `to` exceeds an app-specific limit. | |

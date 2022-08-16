@@ -65,6 +65,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#621](https://github.com/line/lbm-sdk/pull/621) add additional information into EventXXXChanged
 * (x/token) [\#636](https://github.com/line/lbm-sdk/pull/636) add creator into x/token EventIssue
 * (x/token) [\#637](https://github.com/line/lbm-sdk/pull/637) rename x/token events
+* (x/collection) [\#639](https://github.com/line/lbm-sdk/pull/639) rename x/collection events
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
