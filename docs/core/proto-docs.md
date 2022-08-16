@@ -1161,13 +1161,13 @@
     - [Permission](#lbm.token.v1.Permission)
   
 - [lbm/token/v1/event.proto](#lbm/token/v1/event.proto)
-    - [EventAbandon](#lbm.token.v1.EventAbandon)
     - [EventAuthorizedOperator](#lbm.token.v1.EventAuthorizedOperator)
     - [EventBurned](#lbm.token.v1.EventBurned)
-    - [EventGrant](#lbm.token.v1.EventGrant)
-    - [EventIssue](#lbm.token.v1.EventIssue)
+    - [EventGranted](#lbm.token.v1.EventGranted)
+    - [EventIssued](#lbm.token.v1.EventIssued)
     - [EventMinted](#lbm.token.v1.EventMinted)
     - [EventModified](#lbm.token.v1.EventModified)
+    - [EventRenounced](#lbm.token.v1.EventRenounced)
     - [EventRevokedOperator](#lbm.token.v1.EventRevokedOperator)
     - [EventSent](#lbm.token.v1.EventSent)
   
@@ -13899,6 +13899,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `creator` | [string](#string) |  | address which created the contract. |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `name` | [string](#string) |  | name of the contract. |
 | `meta` | [string](#string) |  | metadata of the contract. |
@@ -13920,6 +13921,7 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address which triggered the create. |
 | `class_id` | [string](#string) |  | class id associated with the token class. |
 | `name` | [string](#string) |  | name of the token class. |
 | `meta` | [string](#string) |  | metadata of the token class. |
@@ -13942,6 +13944,7 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address which triggered the create. |
 | `class_id` | [string](#string) |  | class id associated with the token class. |
 | `name` | [string](#string) |  | name of the token class. |
 | `meta` | [string](#string) |  | metadata of the token class. |
@@ -13965,6 +13968,7 @@ Since: 0.46.0 (finschia)
 | `operator` | [string](#string) |  | address which triggered the detach. |
 | `holder` | [string](#string) |  | address which holds the token. |
 | `subject` | [string](#string) |  | token being detached. |
+| `previous_parent` | [string](#string) |  | parent token before the detach. |
 
 
 
@@ -14086,6 +14090,7 @@ Since: 0.46.0 (finschia)
 | `operator` | [string](#string) |  | address which triggered the modify. |
 | `class_id` | [string](#string) |  | class id associated with the token class. |
 | `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. |
+| `type_name` | [string](#string) |  | type name of the token class. |
 
 
 
@@ -17464,25 +17469,6 @@ Permission enumerates the valid permissions on a token class.
 
 
 
-<a name="lbm.token.v1.EventAbandon"></a>
-
-### EventAbandon
-EventAbandon is emitted when a grantee abandons its permission.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
-| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
-
-
-
-
-
-
 <a name="lbm.token.v1.EventAuthorizedOperator"></a>
 
 ### EventAuthorizedOperator
@@ -17522,10 +17508,10 @@ Since: 0.46.0 (finschia)
 
 
 
-<a name="lbm.token.v1.EventGrant"></a>
+<a name="lbm.token.v1.EventGranted"></a>
 
-### EventGrant
-EventGrant is emitted when a granter grants its permission to a grantee.
+### EventGranted
+EventGranted is emitted when a granter grants its permission to a grantee.
 
 Info: `granter` would be empty if the permission is granted by an issuance.
 
@@ -17544,16 +17530,17 @@ Since: 0.46.0 (finschia)
 
 
 
-<a name="lbm.token.v1.EventIssue"></a>
+<a name="lbm.token.v1.EventIssued"></a>
 
-### EventIssue
-EventIssue is emitted when a new token class is created.
+### EventIssued
+EventIssued is emitted when a new token class is created.
 
 Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `creator` | [string](#string) |  | address which created the contract. |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `name` | [string](#string) |  | name defines the human-readable name of the token class. |
 | `symbol` | [string](#string) |  | symbol is an abbreviated name for token class. |
@@ -17600,6 +17587,25 @@ Since: 0.46.0 (finschia)
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
 | `changes` | [Pair](#lbm.token.v1.Pair) | repeated | changes on the metadata of the class. |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventRenounced"></a>
+
+### EventRenounced
+EventRenounced is emitted when a grantee renounces its permission.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
+| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
 
 
 

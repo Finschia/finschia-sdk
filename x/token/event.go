@@ -32,7 +32,7 @@ func AttributeKeyFromString(name string) AttributeKey {
 	return AttributeKey(AttributeKey_value[attributeKeyName])
 }
 
-func NewEventIssueToken(event EventIssue, grantee, to sdk.AccAddress, amount sdk.Int) sdk.Event {
+func NewEventIssueToken(event EventIssued, to sdk.AccAddress, amount sdk.Int) sdk.Event {
 	eventType := EventTypeIssueToken.String()
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: event.ContractId,
@@ -43,7 +43,7 @@ func NewEventIssueToken(event EventIssue, grantee, to sdk.AccAddress, amount sdk
 		AttributeKeyDecimals:   fmt.Sprintf("%d", event.Decimals),
 		AttributeKeyMintable:   fmt.Sprintf("%t", event.Mintable),
 
-		AttributeKeyOwner:  grantee.String(),
+		AttributeKeyOwner:  event.Creator,
 		AttributeKeyTo:     to.String(),
 		AttributeKeyAmount: amount.String(),
 	}
@@ -157,7 +157,7 @@ func NewEventTransferFrom(event EventSent) sdk.Event {
 	return res
 }
 
-func NewEventGrantPermToken(event EventGrant) sdk.Event {
+func NewEventGrantPermToken(event EventGranted) sdk.Event {
 	eventType := EventTypeGrantPermToken.String()
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: event.ContractId,
@@ -176,7 +176,7 @@ func NewEventGrantPermToken(event EventGrant) sdk.Event {
 	return res
 }
 
-func NewEventGrantPermTokenHead(event EventGrant) sdk.Event {
+func NewEventGrantPermTokenHead(event EventGranted) sdk.Event {
 	eventType := EventTypeGrantPermToken.String()
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: event.ContractId,
@@ -194,7 +194,7 @@ func NewEventGrantPermTokenHead(event EventGrant) sdk.Event {
 	return res
 }
 
-func NewEventGrantPermTokenBody(event EventGrant) sdk.Event {
+func NewEventGrantPermTokenBody(event EventGranted) sdk.Event {
 	eventType := EventTypeGrantPermToken.String()
 	attributes := map[AttributeKey]string{
 		AttributeKeyPerm: LegacyPermission(event.Permission).String(),
@@ -208,7 +208,7 @@ func NewEventGrantPermTokenBody(event EventGrant) sdk.Event {
 	return res
 }
 
-func NewEventRevokePermToken(event EventAbandon) sdk.Event {
+func NewEventRevokePermToken(event EventRenounced) sdk.Event {
 	eventType := EventTypeRevokePermToken.String()
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: event.ContractId,

@@ -10,12 +10,13 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 	contractID := k.createContract(ctx, contract)
 
 	event := collection.EventCreatedContract{
+		Creator:    creator.String(),
 		ContractId: contractID,
 		Name:       contract.Name,
 		Meta:       contract.Meta,
 		BaseImgUri: contract.BaseImgUri,
 	}
-	ctx.EventManager().EmitEvent(collection.NewEventCreateCollection(event, creator))
+	ctx.EventManager().EmitEvent(collection.NewEventCreateCollection(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}

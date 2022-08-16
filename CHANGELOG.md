@@ -51,6 +51,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (global) [\#611](https://github.com/line/lbm-sdk/pull/611) bump github.com/cosmos/cosmos-sdk from v0.45.1 to v0.45.6
 * (simapp) [\#620](https://github.com/line/lbm-sdk/pull/620) chore: add iterator feature for simapp
 * (x/collection) [\#622](https://github.com/line/lbm-sdk/pull/622) add Query/TokenClassTypeName
+* (x/bank) [\#629](https://github.com/line/lbm-sdk/pull/629) remove unsafe balance changing methods from bank keeper such as `SetBalance` and `SetSupply`.
 
 ### Improvements
 
@@ -62,6 +63,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#608](https://github.com/line/lbm-sdk/pull/608) remove new APIs on x/collection
 * (x/token) [\#609](https://github.com/line/lbm-sdk/pull/609) remove new APIs on x/token
 * (x/collection) [\#621](https://github.com/line/lbm-sdk/pull/621) add additional information into EventXXXChanged
+* (x/token) [\#636](https://github.com/line/lbm-sdk/pull/636) add creator into x/token EventIssue
+* (x/token) [\#637](https://github.com/line/lbm-sdk/pull/637) rename x/token events
 * (x/collection) [\#639](https://github.com/line/lbm-sdk/pull/639) rename x/collection events
 
 ### Bug Fixes

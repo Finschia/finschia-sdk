@@ -34,7 +34,7 @@ func AttributeKeyFromString(name string) AttributeKey {
 }
 
 // Deprecated: use EventCreatedContract.
-func NewEventCreateCollection(event EventCreatedContract, creator sdk.AccAddress) sdk.Event {
+func NewEventCreateCollection(event EventCreatedContract) sdk.Event {
 	eventType := EventTypeCreateCollection.String()
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: event.ContractId,
@@ -42,7 +42,7 @@ func NewEventCreateCollection(event EventCreatedContract, creator sdk.AccAddress
 		AttributeKeyMeta:       event.Meta,
 		AttributeKeyBaseImgURI: event.BaseImgUri,
 
-		AttributeKeyOwner: creator.String(),
+		AttributeKeyOwner: event.Creator,
 	}
 
 	res := sdk.NewEvent(eventType)
@@ -54,7 +54,7 @@ func NewEventCreateCollection(event EventCreatedContract, creator sdk.AccAddress
 }
 
 // Deprecated: use EventCreatedFTClass.
-func NewEventIssueFT(event EventCreatedFTClass, operator, to sdk.AccAddress, amount sdk.Int) sdk.Event {
+func NewEventIssueFT(event EventCreatedFTClass, to sdk.AccAddress, amount sdk.Int) sdk.Event {
 	eventType := EventTypeIssueFT.String()
 	attributes := map[AttributeKey]string{
 		AttributeKeyContractID: event.ContractId,
@@ -64,7 +64,7 @@ func NewEventIssueFT(event EventCreatedFTClass, operator, to sdk.AccAddress, amo
 		AttributeKeyDecimals:   fmt.Sprintf("%d", event.Decimals),
 		AttributeKeyMintable:   fmt.Sprintf("%t", event.Mintable),
 
-		AttributeKeyOwner:  operator.String(),
+		AttributeKeyOwner:  event.Operator,
 		AttributeKeyTo:     to.String(),
 		AttributeKeyAmount: amount.String(),
 	}

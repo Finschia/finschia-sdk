@@ -29,7 +29,6 @@ type Keeper interface {
 	HasSupply(ctx sdk.Context, denom string) bool
 	GetPaginatedTotalSupply(ctx sdk.Context, pagination *query.PageRequest) (sdk.Coins, *query.PageResponse, error)
 	IterateTotalSupply(ctx sdk.Context, cb func(sdk.Coin) bool)
-	SetSupply(ctx sdk.Context, coin sdk.Coin) // TODO(dudong2): remove after x/wasm version up(>= v0.22.0)
 
 	GetDenomMetaData(ctx sdk.Context, denom string) (types.Metadata, bool)
 	SetDenomMetaData(ctx sdk.Context, denomMetaData types.Metadata)
@@ -471,24 +470,6 @@ func (k BaseKeeper) BurnCoins(ctx sdk.Context, moduleName string, amounts sdk.Co
 
 // setSupply sets the supply for the given coin
 func (k BaseKeeper) setSupply(ctx sdk.Context, coin sdk.Coin) {
-	intBytes, err := coin.Amount.Marshal()
-	if err != nil {
-		panic(fmt.Errorf("unable to marshal amount value %v", err))
-	}
-
-	store := ctx.KVStore(k.storeKey)
-	supplyStore := prefix.NewStore(store, types.SupplyKey)
-
-	// Bank invariants and IBC requires to remove zero coins.
-	if coin.IsZero() {
-		supplyStore.Delete(conv.UnsafeStrToBytes(coin.GetDenom()))
-	} else {
-		supplyStore.Set([]byte(coin.GetDenom()), intBytes)
-	}
-}
-
-// SetSupply sets the supply for the given coin
-func (k BaseKeeper) SetSupply(ctx sdk.Context, coin sdk.Coin) {
 	intBytes, err := coin.Amount.Marshal()
 	if err != nil {
 		panic(fmt.Errorf("unable to marshal amount value %v", err))

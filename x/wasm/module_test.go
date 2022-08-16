@@ -202,9 +202,7 @@ func TestHandleInstantiate(t *testing.T) {
 
 func TestHandleStoreAndInstantiate(t *testing.T) {
 	data := setupTest(t)
-
-	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
-	creator := createFakeFundedAccount(t, data.ctx, data.acctKeeper, data.bankKeeper, deposit)
+	creator := data.faucet.NewFundedAccount(data.ctx, sdk.NewInt64Coin("denom", 100000))
 
 	h := data.module.Route().Handler()
 	q := data.module.LegacyQuerierHandler(nil)
@@ -760,14 +758,4 @@ func assertContractInfo(t *testing.T, q sdk.Querier, ctx sdk.Context, contractBe
 
 	assert.Equal(t, codeID, res.CodeID)
 	assert.Equal(t, creator.String(), res.Creator)
-}
-func createFakeFundedAccount(t *testing.T, ctx sdk.Context, am authkeeper.AccountKeeper, bankKeeper bankkeeper.Keeper, coins sdk.Coins) sdk.AccAddress {
-	t.Helper()
-	_, _, addr := keyPubAddr()
-	acc := am.NewAccountWithAddress(ctx, addr)
-	am.SetAccount(ctx, acc)
-	for _, coin := range coins {
-		require.NoError(t, bankKeeper.SetBalance(ctx, addr, coin))
-	}
-	return addr
 }

@@ -51,13 +51,13 @@ func TestNewEventCreateCollection(t *testing.T) {
 	str := func() string { return randomString(8) }
 
 	event := collection.EventCreatedContract{
+		Creator:    str(),
 		ContractId: str(),
 		Name:       str(),
 		Meta:       str(),
 		BaseImgUri: str(),
 	}
-	creator := sdk.AccAddress(str())
-	legacy := collection.NewEventCreateCollection(event, creator)
+	legacy := collection.NewEventCreateCollection(event)
 
 	require.Equal(t, collection.EventTypeCreateCollection.String(), legacy.Type)
 
@@ -66,7 +66,7 @@ func TestNewEventCreateCollection(t *testing.T) {
 		collection.AttributeKeyName:       event.Name,
 		collection.AttributeKeyMeta:       event.Meta,
 		collection.AttributeKeyBaseImgURI: event.BaseImgUri,
-		collection.AttributeKeyOwner:      creator.String(),
+		collection.AttributeKeyOwner:      event.Creator,
 	}
 	for key, value := range attributes {
 		require.True(t, assertAttribute(legacy, key.String(), value), key)
@@ -79,16 +79,16 @@ func TestNewEventIssueFT(t *testing.T) {
 
 	event := collection.EventCreatedFTClass{
 		ContractId: str(),
+		Operator:   str(),
 		ClassId:    str(),
 		Name:       str(),
 		Meta:       str(),
 		Decimals:   0,
 		Mintable:   true,
 	}
-	operator := sdk.AccAddress(str())
 	to := sdk.AccAddress(str())
 	amount := sdk.OneInt()
-	legacy := collection.NewEventIssueFT(event, operator, to, amount)
+	legacy := collection.NewEventIssueFT(event, to, amount)
 
 	require.Equal(t, collection.EventTypeIssueFT.String(), legacy.Type)
 
@@ -100,7 +100,7 @@ func TestNewEventIssueFT(t *testing.T) {
 		collection.AttributeKeyMintable:   fmt.Sprintf("%v", event.Mintable),
 		collection.AttributeKeyDecimals:   fmt.Sprintf("%d", event.Decimals),
 		collection.AttributeKeyAmount:     amount.String(),
-		collection.AttributeKeyOwner:      operator.String(),
+		collection.AttributeKeyOwner:      event.Operator,
 		collection.AttributeKeyTo:         to.String(),
 	}
 	for key, value := range attributes {
