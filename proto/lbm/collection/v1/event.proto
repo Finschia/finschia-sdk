@@ -118,14 +118,16 @@ message EventRevokedOperator {
 //
 // Since: 0.46.0 (finschia)
 message EventCreatedContract {
+  // address which created the contract.
+  string creator = 1;
   // contract id associated with the contract.
-  string contract_id = 1;
+  string contract_id = 2;
   // name of the contract.
-  string name = 2;
+  string name = 3;
   // metadata of the contract.
-  string meta = 3;
+  string meta = 4;
   // uri for the contract image stored off chain.
-  string base_img_uri = 4;
+  string base_img_uri = 5;
 }
 
 // EventCreatedFTClass is emitted when a new fungible token class is created.
@@ -134,16 +136,18 @@ message EventCreatedContract {
 message EventCreatedFTClass {
   // contract id associated with the contract.
   string contract_id = 1;
+  // address which triggered the create.
+  string operator = 2;
   // class id associated with the token class.
-  string class_id = 2;
+  string class_id = 3;
   // name of the token class.
-  string name = 3;
+  string name = 4;
   // metadata of the token class.
-  string meta = 4;
+  string meta = 5;
   // decimals of the token class.
-  int32 decimals = 5;
+  int32 decimals = 6;
   // mintable represents whether the token class is allowed to mint or burn its tokens.
-  bool mintable = 6;
+  bool mintable = 7;
 }
 
 // EventCreatedNFTClass is emitted when a new non-fungible token class is created.
@@ -152,20 +156,22 @@ message EventCreatedFTClass {
 message EventCreatedNFTClass {
   // contract id associated with the contract.
   string contract_id = 1;
+  // address which triggered the create.
+  string operator = 2;
   // class id associated with the token class.
-  string class_id = 2;
+  string class_id = 3;
   // name of the token class.
-  string name = 3;
+  string name = 4;
   // metadata of the token class.
-  string meta = 4;
+  string meta = 5;
 }
 
-// EventGrant is emitted when a granter grants its permission to a grantee.
+// EventGranted is emitted when a granter grants its permission to a grantee.
 //
 // Info: `granter` would be empty if the permission is granted by an issuance.
 //
 // Since: 0.46.0 (finschia)
-message EventGrant {
+message EventGranted {
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the granter which grants the permission.
@@ -176,10 +182,10 @@ message EventGrant {
   Permission permission = 4;
 }
 
-// EventAbandon is emitted when a grantee abandons its permission.
+// EventRenounced is emitted when a grantee renounced its permission.
 //
 // Since: 0.46.0 (finschia)
-message EventAbandon {
+message EventRenounced {
   // contract id associated with the contract.
   string contract_id = 1;
   // address of the grantee which abandons its grant.
@@ -254,6 +260,8 @@ message EventModifiedTokenClass {
   string class_id = 3;
   // changes of the attributes applied.
   repeated Attribute changes = 4 [(gogoproto.nullable) = false];
+  // type name of the token class.
+  string type_name = 5;
 }
 
 // EventModifiedNFT is emitted when the information of a non-fungible token is modified.
@@ -298,6 +306,8 @@ message EventDetached {
   string holder = 3;
   // token being detached.
   string subject = 4;
+  // parent token before the detach.
+  string previous_parent = 5;
 }
 
 // EventOwnerChanged is emitted when the owner of token is changed by operation applied to its ancestor.

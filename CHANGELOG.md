@@ -63,6 +63,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#608](https://github.com/line/lbm-sdk/pull/608) remove new APIs on x/collection
 * (x/token) [\#609](https://github.com/line/lbm-sdk/pull/609) remove new APIs on x/token
 * (x/collection) [\#621](https://github.com/line/lbm-sdk/pull/621) add additional information into EventXXXChanged
+* (x/token) [\#636](https://github.com/line/lbm-sdk/pull/636) add creator into x/token EventIssue
+* (x/token) [\#637](https://github.com/line/lbm-sdk/pull/637) rename x/token events
+* (x/collection) [\#639](https://github.com/line/lbm-sdk/pull/639) rename x/collection events
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
@@ -76,6 +79,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/token) [\#589](https://github.com/line/lbm-sdk/pull/589) fix naming collision in x/token enums
 * (x/token) [\#599](https://github.com/line/lbm-sdk/pull/599) fix the order of events
 * (x/wasm) [\#640](https://github.com/line/lbm-sdk/pull/640) remove legacy codes of wasm
+* (amino) [\#635](https://github.com/line/lbm-sdk/pull/635) change some minor things that haven't been fixed in #549
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path

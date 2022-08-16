@@ -2969,7 +2969,7 @@ type MsgClient interface {
 	Modify(ctx context.Context, in *MsgModify, opts ...grpc.CallOption) (*MsgModifyResponse, error)
 	// GrantPermission allows one to mint or burn tokens or modify metadata.
 	// Fires:
-	// - EventGrant
+	// - EventGranted
 	// - grant_perm (deprecated, not typed)
 	// Throws:
 	// - ErrUnauthorized
@@ -2979,7 +2979,7 @@ type MsgClient interface {
 	GrantPermission(ctx context.Context, in *MsgGrantPermission, opts ...grpc.CallOption) (*MsgGrantPermissionResponse, error)
 	// RevokePermission abandons a permission.
 	// Fires:
-	// - EventAbandon
+	// - EventRenounced
 	// - revoke_perm (deprecated, not typed)
 	// Throws:
 	// - ErrUnauthorized
@@ -3403,7 +3403,7 @@ type MsgServer interface {
 	Modify(context.Context, *MsgModify) (*MsgModifyResponse, error)
 	// GrantPermission allows one to mint or burn tokens or modify metadata.
 	// Fires:
-	// - EventGrant
+	// - EventGranted
 	// - grant_perm (deprecated, not typed)
 	// Throws:
 	// - ErrUnauthorized
@@ -3413,7 +3413,7 @@ type MsgServer interface {
 	GrantPermission(context.Context, *MsgGrantPermission) (*MsgGrantPermissionResponse, error)
 	// RevokePermission abandons a permission.
 	// Fires:
-	// - EventAbandon
+	// - EventRenounced
 	// - revoke_perm (deprecated, not typed)
 	// Throws:
 	// - ErrUnauthorized
