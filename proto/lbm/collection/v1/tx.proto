@@ -187,7 +187,7 @@ service Msg {
 
   // GrantPermission allows one to mint or burn tokens or modify metadata.
   // Fires:
-  // - EventGrant
+  // - EventGranted
   // - grant_perm (deprecated, not typed)
   // Throws:
   // - ErrUnauthorized
@@ -198,7 +198,7 @@ service Msg {
 
   // RevokePermission abandons a permission.
   // Fires:
-  // - EventAbandon
+  // - EventRenounced
   // - revoke_perm (deprecated, not typed)
   // Throws:
   // - ErrUnauthorized

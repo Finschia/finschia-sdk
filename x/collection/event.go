@@ -498,7 +498,7 @@ func NewEventTransferNFTFrom(event EventSent) sdk.Events {
 	return res
 }
 
-// Deprecated: use EventGrant.
+// Deprecated: use EventGranted.
 func NewEventGrantPermToken(event EventGranted) sdk.Event {
 	eventType := EventTypeGrantPermToken.String()
 	attributes := map[AttributeKey]string{
@@ -518,7 +518,7 @@ func NewEventGrantPermToken(event EventGranted) sdk.Event {
 	return res
 }
 
-// Deprecated: use EventGrant.
+// Deprecated: use EventGranted.
 func NewEventGrantPermTokenHead(event EventGranted) sdk.Event {
 	eventType := EventTypeGrantPermToken.String()
 	attributes := map[AttributeKey]string{
@@ -537,7 +537,7 @@ func NewEventGrantPermTokenHead(event EventGranted) sdk.Event {
 	return res
 }
 
-// Deprecated: use EventGrant.
+// Deprecated: use EventGranted.
 func NewEventGrantPermTokenBody(event EventGranted) sdk.Event {
 	eventType := EventTypeGrantPermToken.String()
 	attributes := map[AttributeKey]string{
@@ -552,7 +552,7 @@ func NewEventGrantPermTokenBody(event EventGranted) sdk.Event {
 	return res
 }
 
-// Deprecated: use EventAbandon.
+// Deprecated: use EventRenounced.
 func NewEventRevokePermToken(event EventRenounced) sdk.Event {
 	eventType := EventTypeRevokePermToken.String()
 	attributes := map[AttributeKey]string{
