@@ -13918,6 +13918,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `creator` | [string](#string) |  | address which created the contract. |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `name` | [string](#string) |  | name of the contract. |
 | `meta` | [string](#string) |  | metadata of the contract. |
@@ -13939,6 +13940,7 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address which triggered the create. |
 | `class_id` | [string](#string) |  | class id associated with the token class. |
 | `name` | [string](#string) |  | name of the token class. |
 | `meta` | [string](#string) |  | metadata of the token class. |
@@ -13961,6 +13963,7 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address which triggered the create. |
 | `class_id` | [string](#string) |  | class id associated with the token class. |
 | `name` | [string](#string) |  | name of the token class. |
 | `meta` | [string](#string) |  | metadata of the token class. |
@@ -13984,6 +13987,7 @@ Since: 0.46.0 (finschia)
 | `operator` | [string](#string) |  | address which triggered the detach. |
 | `holder` | [string](#string) |  | address which holds the token. |
 | `subject` | [string](#string) |  | token being detached. |
+| `previous_parent` | [string](#string) |  | parent token before the detach. |
 
 
 
@@ -14105,6 +14109,7 @@ Since: 0.46.0 (finschia)
 | `operator` | [string](#string) |  | address which triggered the modify. |
 | `class_id` | [string](#string) |  | class id associated with the token class. |
 | `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. |
+| `type_name` | [string](#string) |  | type name of the token class. |
 
 
 
