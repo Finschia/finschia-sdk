@@ -23,19 +23,6 @@ enum AccessType {
   ACCESS_TYPE_EVERYBODY = 3 [(gogoproto.enumvalue_customname) = "AccessTypeEverybody"];
 }
 
-// ContractStatus types
-enum ContractStatus {
-  option (gogoproto.goproto_enum_prefix)   = false;
-  option (gogoproto.goproto_enum_stringer) = false;
-
-  // ContractStatus unspecified
-  CONTRACT_STATUS_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "ContractStatusUnspecified"];
-  // ContractStatus active
-  CONTRACT_STATUS_ACTIVE = 1 [(gogoproto.enumvalue_customname) = "ContractStatusActive"];
-  // ContractStatus inactive
-  CONTRACT_STATUS_INACTIVE = 2 [(gogoproto.enumvalue_customname) = "ContractStatusInactive"];
-}
-
 // AccessTypeParam
 message AccessTypeParam {
   option (gogoproto.goproto_stringer) = true;
@@ -55,9 +42,6 @@ message Params {
   AccessConfig code_upload_access     = 1
       [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"code_upload_access\""];
   AccessType instantiate_default_permission = 2 [(gogoproto.moretags) = "yaml:\"instantiate_default_permission\""];
-  uint64     gas_multiplier                 = 3 [(gogoproto.moretags) = "yaml:\"max_gas\""];
-  uint64     instance_cost                  = 4 [(gogoproto.moretags) = "yaml:\"instance_cost\""];
-  uint64     compile_cost                   = 5 [(gogoproto.moretags) = "yaml:\"compile_cost\""];
 }
 
 // CodeInfo is data for the uploaded contract WASM code
@@ -92,8 +76,6 @@ message ContractInfo {
   // Extension is an extension point to store custom metadata within the
   // persistence model.
   google.protobuf.Any extension = 7 [(cosmos_proto.accepts_interface) = "ContractInfoExtension"];
-  // Status is a status of a contract
-  ContractStatus status = 8;
 }
 
 // ContractCodeHistoryOperationType actions that caused a code change

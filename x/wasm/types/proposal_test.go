@@ -532,61 +532,6 @@ func TestValidateClearAdminProposal(t *testing.T) {
 	}
 }
 
-func TestValidateUpdateContractStatusProposal(t *testing.T) {
-	var (
-		invalidAddress = "invalid address"
-	)
-
-	specs := map[string]struct {
-		src    *UpdateContractStatusProposal
-		expErr bool
-	}{
-		"all good": {
-			src: UpdateContractStatusProposalFixture(),
-		},
-		"base data missing": {
-			src: UpdateContractStatusProposalFixture(func(p *UpdateContractStatusProposal) {
-				p.Title = ""
-			}),
-			expErr: true,
-		},
-		"contract missing": {
-			src: UpdateContractStatusProposalFixture(func(p *UpdateContractStatusProposal) {
-				p.Contract = ""
-			}),
-			expErr: true,
-		},
-		"contract invalid": {
-			src: UpdateContractStatusProposalFixture(func(p *UpdateContractStatusProposal) {
-				p.Contract = invalidAddress
-			}),
-			expErr: true,
-		},
-		"status missing": {
-			src: UpdateContractStatusProposalFixture(func(p *UpdateContractStatusProposal) {
-				p.Status = ContractStatusUnspecified
-			}),
-			expErr: true,
-		},
-		"status invalid": {
-			src: UpdateContractStatusProposalFixture(func(p *UpdateContractStatusProposal) {
-				p.Status = 3
-			}),
-			expErr: true,
-		},
-	}
-	for msg, spec := range specs {
-		t.Run(msg, func(t *testing.T) {
-			err := spec.src.ValidateBasic()
-			if spec.expErr {
-				require.Error(t, err)
-			} else {
-				require.NoError(t, err)
-			}
-		})
-	}
-}
-
 func TestProposalStrings(t *testing.T) {
 	specs := map[string]struct {
 		src govtypes.Content

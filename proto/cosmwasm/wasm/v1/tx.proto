@@ -14,9 +14,6 @@ service Msg {
   rpc StoreCode(MsgStoreCode) returns (MsgStoreCodeResponse);
   // Instantiate creates a new smart contract instance for the given code id.
   rpc InstantiateContract(MsgInstantiateContract) returns (MsgInstantiateContractResponse);
-  // StoreCodeAndInstantiatecontract upload code and instantiate a contract using it.
-  rpc StoreCodeAndInstantiateContract(MsgStoreCodeAndInstantiateContract)
-      returns (MsgStoreCodeAndInstantiateContractResponse);
   // Execute submits the given message data to a smart contract
   rpc ExecuteContract(MsgExecuteContract) returns (MsgExecuteContractResponse);
   // Migrate runs a code upgrade/ downgrade for a smart contract
@@ -56,6 +53,7 @@ message MsgInstantiateContract {
   uint64 code_id = 3 [(gogoproto.customname) = "CodeID"];
   // Label is optional metadata to be stored with a contract instance.
   string label = 4;
+
   // Msg json encoded message to be passed to the contract on instantiation
   bytes msg = 5 [(gogoproto.casttype) = "RawContractMessage"];
   // Funds coins that are transferred to the contract on instantiation
@@ -68,35 +66,6 @@ message MsgInstantiateContractResponse {
   string address = 1;
   // Data contains base64-encoded bytes to returned from the contract
   bytes data = 2;
-}
-
-// MsgStoreCodeAndInstantiateContract submit Wasm code to the system and instantiate a contract using it.
-message MsgStoreCodeAndInstantiateContract {
-  // Sender is the that actor that signed the messages
-  string sender = 1;
-  // WASMByteCode can be raw or gzip compressed
-  bytes wasm_byte_code = 2 [(gogoproto.customname) = "WASMByteCode"];
-  // Used in v1beta1
-  reserved 3, 4;
-  AccessConfig instantiate_permission = 5;
-  // Admin is an optional address that can execute migrations
-  string admin = 6;
-  // Label is optional metadata to be stored with a contract instance.
-  string label = 7;
-  // Msg json encoded message to be passed to the contract on instantiation
-  bytes msg = 8 [(gogoproto.casttype) = "RawContractMessage"];
-  // Funds coins that are transferred to the contract on instantiation
-  repeated cosmos.base.v1beta1.Coin funds = 9
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
-}
-// MsgStoreCodeAndInstantiateContractResponse returns store and instantiate result data.
-message MsgStoreCodeAndInstantiateContractResponse {
-  // CodeID is the reference to the stored WASM code
-  uint64 code_id = 1 [(gogoproto.customname) = "CodeID"];
-  // Address is the bech32 address of the new contract instance.
-  string address = 2;
-  // Data contains base64-encoded bytes to returned from the contract
-  bytes data = 3;
 }
 
 // MsgExecuteContract submits the given message data to a smart contract

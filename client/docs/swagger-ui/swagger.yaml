@@ -31578,18 +31578,6 @@ paths:
                             "@type": "type.googleapis.com/google.protobuf.Duration",
                             "value": "1.212s"
                           }
-                  status:
-                    title: Status is a status of a contract
-                    type: string
-                    enum:
-                      - CONTRACT_STATUS_UNSPECIFIED
-                      - CONTRACT_STATUS_ACTIVE
-                      - CONTRACT_STATUS_INACTIVE
-                    default: CONTRACT_STATUS_UNSPECIFIED
-                    description: |-
-                      - CONTRACT_STATUS_UNSPECIFIED: ContractStatus unspecified
-                       - CONTRACT_STATUS_ACTIVE: ContractStatus active
-                       - CONTRACT_STATUS_INACTIVE: ContractStatus inactive
                 title: ContractInfo stores a WASM contract instance
             title: >-
               QueryContractInfoResponse is the response type for the
@@ -58279,6 +58267,10 @@ definitions:
                         timestamp:
                           type: string
                           format: date-time
+                        voting_weight:
+                          type: string
+                          format: int64
+                          title: '*** Ostracon Extended Fields ***'
                       description: >-
                         DuplicateVoteEvidence contains evidence of a validator
                         signed two conflicting votes.
@@ -58459,6 +58451,10 @@ definitions:
                                       proposer_priority:
                                         type: string
                                         format: int64
+                                      voting_weight:
+                                        type: string
+                                        format: int64
+                                        title: '*** Ostracon Extended Fields ***'
                                 proposer:
                                   type: object
                                   properties:
@@ -58483,6 +58479,10 @@ definitions:
                                     proposer_priority:
                                       type: string
                                       format: int64
+                                    voting_weight:
+                                      type: string
+                                      format: int64
+                                      title: '*** Ostracon Extended Fields ***'
                                 total_voting_power:
                                   type: string
                                   format: int64
@@ -58515,6 +58515,10 @@ definitions:
                               proposer_priority:
                                 type: string
                                 format: int64
+                              voting_weight:
+                                type: string
+                                format: int64
+                                title: '*** Ostracon Extended Fields ***'
                         total_voting_power:
                           type: string
                           format: int64
@@ -66562,31 +66566,7 @@ definitions:
                 "@type": "type.googleapis.com/google.protobuf.Duration",
                 "value": "1.212s"
               }
-      status:
-        title: Status is a status of a contract
-        type: string
-        enum:
-          - CONTRACT_STATUS_UNSPECIFIED
-          - CONTRACT_STATUS_ACTIVE
-          - CONTRACT_STATUS_INACTIVE
-        default: CONTRACT_STATUS_UNSPECIFIED
-        description: |-
-          - CONTRACT_STATUS_UNSPECIFIED: ContractStatus unspecified
-           - CONTRACT_STATUS_ACTIVE: ContractStatus active
-           - CONTRACT_STATUS_INACTIVE: ContractStatus inactive
     title: ContractInfo stores a WASM contract instance
-  cosmwasm.wasm.v1.ContractStatus:
-    type: string
-    enum:
-      - CONTRACT_STATUS_UNSPECIFIED
-      - CONTRACT_STATUS_ACTIVE
-      - CONTRACT_STATUS_INACTIVE
-    default: CONTRACT_STATUS_UNSPECIFIED
-    description: |-
-      - CONTRACT_STATUS_UNSPECIFIED: ContractStatus unspecified
-       - CONTRACT_STATUS_ACTIVE: ContractStatus active
-       - CONTRACT_STATUS_INACTIVE: ContractStatus inactive
-    title: ContractStatus types
   cosmwasm.wasm.v1.Model:
     type: object
     properties:
@@ -67021,18 +67001,6 @@ definitions:
                     "@type": "type.googleapis.com/google.protobuf.Duration",
                     "value": "1.212s"
                   }
-          status:
-            title: Status is a status of a contract
-            type: string
-            enum:
-              - CONTRACT_STATUS_UNSPECIFIED
-              - CONTRACT_STATUS_ACTIVE
-              - CONTRACT_STATUS_INACTIVE
-            default: CONTRACT_STATUS_UNSPECIFIED
-            description: |-
-              - CONTRACT_STATUS_UNSPECIFIED: ContractStatus unspecified
-               - CONTRACT_STATUS_ACTIVE: ContractStatus active
-               - CONTRACT_STATUS_INACTIVE: ContractStatus inactive
         title: ContractInfo stores a WASM contract instance
     title: >-
       QueryContractInfoResponse is the response type for the Query/ContractInfo

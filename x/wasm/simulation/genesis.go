@@ -5,13 +5,14 @@ import (
 	"fmt"
 
 	"github.com/line/lbm-sdk/types/module"
+	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 // RandomizedGenState RandomizeGenState generates a random GenesisState for wasm
 func RandomizedGenState(simState *module.SimulationState) {
 	params := RandomParams(simState.Rand)
-	wasmGenesis := types.GenesisState{
+	wasmGenesis := lbmwasmtypes.GenesisState{
 		Params:    params,
 		Codes:     nil,
 		Contracts: nil,

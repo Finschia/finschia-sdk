@@ -11,6 +11,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/rest"
 	"github.com/line/lbm-sdk/x/wasm/ioutils"
+	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -156,7 +157,7 @@ func storeCodeAndInstantiateContractHandlerFn(cliCtx client.Context) http.Handle
 		}
 
 		// build and sign the transaction, then broadcast to Tendermint
-		msg := types.MsgStoreCodeAndInstantiateContract{
+		msg := lbmwasmtypes.MsgStoreCodeAndInstantiateContract{
 			Sender:       req.BaseReq.From,
 			WASMByteCode: wasm,
 			Label:        req.Label,

@@ -26,6 +26,7 @@ import (
 	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
 	"github.com/line/lbm-sdk/x/wasm/ioutils"
+	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -119,7 +120,7 @@ func NewKeeper(
 	}
 	// set KeyTable if it has not already been set
 	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
+		paramSpace = paramSpace.WithKeyTable(lbmwasmtypes.ParamKeyTable())
 	}
 
 	keeper := &Keeper{
@@ -219,13 +220,13 @@ func (k Keeper) compileCosts(ctx sdk.Context, byteLength int) storetypes.Gas {
 }
 
 // GetParams returns the total set of wasm parameters.
-func (k Keeper) GetParams(ctx sdk.Context) types.Params {
-	var params types.Params
+func (k Keeper) GetParams(ctx sdk.Context) lbmwasmtypes.Params {
+	var params lbmwasmtypes.Params
 	k.paramSpace.GetParamSet(ctx, &params)
 	return params
 }
 
-func (k Keeper) setParams(ctx sdk.Context, ps types.Params) {
+func (k Keeper) setParams(ctx sdk.Context, ps lbmwasmtypes.Params) {
 	k.paramSpace.SetParamSet(ctx, &ps)
 }
 
@@ -367,7 +368,7 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 
 	// persist instance first
 	createdAt := types.NewAbsoluteTxPosition(ctx)
-	contractInfo := types.NewContractInfo(codeID, creator, admin, label, createdAt, types.ContractStatusActive)
+	contractInfo := types.NewContractInfo(codeID, creator, admin, label, createdAt)
 
 	// check for IBC flag
 	report, err := k.wasmVM.AnalyzeCode(codeInfo.CodeHash)
@@ -409,9 +410,6 @@ func (k Keeper) execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	contractInfo, codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddress)
 	if err != nil {
 		return nil, err
-	}
-	if contractInfo.Status != types.ContractStatusActive {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
 	}
 
 	executeCosts := k.instantiateContractCosts(k.gasRegister, ctx, k.IsPinnedCode(ctx, contractInfo.CodeID), len(msg))
@@ -458,9 +456,6 @@ func (k Keeper) migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	contractInfo := k.GetContractInfo(ctx, contractAddress)
 	if contractInfo == nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
-	}
-	if contractInfo.Status != types.ContractStatusActive {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
 	}
 	if !authZ.CanModifyContract(contractInfo.AdminAddr(), caller) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not migrate")
@@ -623,36 +618,10 @@ func (k Keeper) IterateContractsByCode(ctx sdk.Context, codeID uint64, cb func(a
 	}
 }
 
-func (k Keeper) setContractStatus(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus, authZ AuthorizationPolicy) error {
-	if !authZ.CanUpdateContractStatus() {
-		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not update contract status")
-	}
-
-	contractInfo := k.GetContractInfo(ctx, contractAddress)
-	if contractInfo == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
-	}
-	if contractInfo.Status != status {
-		contractInfo.Status = status
-		k.storeContractInfo(ctx, contractAddress, contractInfo)
-
-		switch status {
-		case types.ContractStatusInactive:
-			k.bank.AddToInactiveAddr(ctx, contractAddress)
-		case types.ContractStatusActive:
-			k.bank.DeleteFromInactiveAddr(ctx, contractAddress)
-		}
-	}
-	return nil
-}
-
 func (k Keeper) setContractAdmin(ctx sdk.Context, contractAddress, caller, newAdmin sdk.AccAddress, authZ AuthorizationPolicy) error {
 	contractInfo := k.GetContractInfo(ctx, contractAddress)
 	if contractInfo == nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
-	}
-	if contractInfo.Status != types.ContractStatusActive {
-		return sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
 	}
 	if !authZ.CanModifyContract(contractInfo.AdminAddr(), caller) {
 		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not modify contract")

@@ -23,6 +23,7 @@ import (
 	"github.com/line/lbm-sdk/x/wasm/client/cli"
 	"github.com/line/lbm-sdk/x/wasm/client/rest"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
+	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 	"github.com/line/lbm-sdk/x/wasm/simulation"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
@@ -93,7 +94,7 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 
 // RegisterInterfaces implements InterfaceModule
 func (b AppModuleBasic) RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
-	types.RegisterInterfaces(registry)
+	lbmwasmtypes.RegisterInterfaces(registry)
 }
 
 // ____________________________________________________________________________
@@ -162,7 +163,7 @@ func (AppModule) QuerierRoute() string {
 // InitGenesis performs genesis initialization for the wasm module. It returns
 // no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
-	var genesisState GenesisState
+	var genesisState lbmwasmtypes.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 	validators, err := InitGenesis(ctx, am.keeper, genesisState, am.validatorSetSource, am.Route().Handler())
 	if err != nil {

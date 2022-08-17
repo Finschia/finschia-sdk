@@ -60,6 +60,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#604](https://github.com/line/lbm-sdk/pull/604) add EventOwnerChanged and EventRootChanged
 * (x/collection) [\#608](https://github.com/line/lbm-sdk/pull/608) remove new APIs on x/collection
 * (x/token) [\#609](https://github.com/line/lbm-sdk/pull/609) remove new APIs on x/token
+* (x/wasm) [\#625](https://github.com/line/lbm-sdk/pull/625) detaching `StoreCodeAndInstantiateContract` from wasm's tx.proto
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path

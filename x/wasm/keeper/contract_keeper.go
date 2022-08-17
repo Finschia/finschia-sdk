@@ -18,7 +18,6 @@ type decoratedKeeper interface {
 	execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) ([]byte, error)
 	Sudo(ctx sdk.Context, contractAddress sdk.AccAddress, msg []byte) ([]byte, error)
 	setContractInfoExtension(ctx sdk.Context, contract sdk.AccAddress, extra types.ContractInfoExtension) error
-	setContractStatus(ctx sdk.Context, contract sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus, authZ AuthorizationPolicy) error
 	setAccessConfig(ctx sdk.Context, codeID uint64, config types.AccessConfig) error
 }
 
@@ -78,10 +77,6 @@ func (p PermissionedKeeper) UnpinCode(ctx sdk.Context, codeID uint64) error {
 // SetExtraContractAttributes updates the extra attributes that can be stored with the contract info
 func (p PermissionedKeeper) SetContractInfoExtension(ctx sdk.Context, contract sdk.AccAddress, extra types.ContractInfoExtension) error {
 	return p.nested.setContractInfoExtension(ctx, contract, extra)
-}
-
-func (p PermissionedKeeper) UpdateContractStatus(ctx sdk.Context, contract sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus) error {
-	return p.nested.setContractStatus(ctx, contract, caller, status, p.authZPolicy)
 }
 
 // SetAccessConfig updates the access config of a code id.

@@ -31,6 +31,7 @@ import (
 	paramskeeper "github.com/line/lbm-sdk/x/params/keeper"
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
+	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 	wasmTypes "github.com/line/lbm-sdk/x/wasm/types"
 )
@@ -47,7 +48,7 @@ func TestGenesisExportImport(t *testing.T) {
 	// store some test data
 	f := fuzz.New().Funcs(ModelFuzzers...)
 
-	wasmKeeper.setParams(srcCtx, types.DefaultParams())
+	wasmKeeper.setParams(srcCtx, lbmwasmtypes.DefaultParams())
 
 	for i := 0; i < 25; i++ {
 		var (
@@ -87,7 +88,7 @@ func TestGenesisExportImport(t *testing.T) {
 		wasmKeeper.appendToContractHistory(srcCtx, contractAddr, history...)
 		wasmKeeper.importContractState(srcCtx, contractAddr, stateModels)
 	}
-	var wasmParams types.Params
+	var wasmParams lbmwasmtypes.Params
 	f.NilChance(0).Fuzz(&wasmParams)
 	wasmKeeper.setParams(srcCtx, wasmParams)
 
@@ -128,7 +129,7 @@ func TestGenesisExportImport(t *testing.T) {
 	})
 
 	// re-import
-	var importState wasmTypes.GenesisState
+	var importState lbmwasmtypes.GenesisState
 	err = dstKeeper.cdc.UnmarshalJSON(exportedGenesis, &importState)
 	require.NoError(t, err)
 	InitGenesis(dstCtx, dstKeeper, importState, &StakingKeeperMock{}, TestHandler(contractKeeper))
@@ -159,13 +160,13 @@ func TestGenesisInit(t *testing.T) {
 
 	myCodeInfo := wasmTypes.CodeInfoFixture(wasmTypes.WithSHA256CodeHash(wasmCode))
 	specs := map[string]struct {
-		src            types.GenesisState
+		src            lbmwasmtypes.GenesisState
 		stakingMock    StakingKeeperMock
 		msgHandlerMock MockMsgHandler
 		expSuccess     bool
 	}{
 		"happy path: code info correct": {
-			src: types.GenesisState{
+			src: lbmwasmtypes.GenesisState{
 				Codes: []types.Code{{
 					CodeID:    firstCodeID,
 					CodeInfo:  myCodeInfo,
@@ -175,12 +176,12 @@ func TestGenesisInit(t *testing.T) {
 					{IDKey: types.KeyLastCodeID, Value: 2},
 					{IDKey: types.KeyLastInstanceID, Value: 1},
 				},
-				Params: types.DefaultParams(),
+				Params: lbmwasmtypes.DefaultParams(),
 			},
 			expSuccess: true,
 		},
 		"happy path: code ids can contain gaps": {
-			src: types.GenesisState{
+			src: lbmwasmtypes.GenesisState{
 				Codes: []types.Code{{
 					CodeID:    firstCodeID,
 					CodeInfo:  myCodeInfo,
@@ -194,12 +195,12 @@ func TestGenesisInit(t *testing.T) {
 					{IDKey: types.KeyLastCodeID, Value: 10},
 					{IDKey: types.KeyLastInstanceID, Value: 1},
 				},
-				Params: types.DefaultParams(),
+				Params: lbmwasmtypes.DefaultParams(),
 			},
 			expSuccess: true,
 		},
 		"happy path: code order does not matter": {
-			src: types.GenesisState{
+			src: lbmwasmtypes.GenesisState{
 				Codes: []types.Code{{
 					CodeID:    2,
 					CodeInfo:  myCodeInfo,
@@ -214,19 +215,19 @@ func TestGenesisInit(t *testing.T) {
 					{IDKey: types.KeyLastCodeID, Value: 3},
 					{IDKey: types.KeyLastInstanceID, Value: 1},
 				},
-				Params: types.DefaultParams(),
+				Params: lbmwasmtypes.DefaultParams(),
 			},
 			expSuccess: true,
 		},
-		"prevent code hash mismatch": {src: types.GenesisState{
+		"prevent code hash mismatch": {src: lbmwasmtypes.GenesisState{
 			Codes: []types.Code{{
 				CodeID:    firstCodeID,
 				CodeInfo:  wasmTypes.CodeInfoFixture(func(i *wasmTypes.CodeInfo) { i.CodeHash = make([]byte, sha256.Size) }),
 				CodeBytes: wasmCode,
 			}},
-			Params: types.DefaultParams(),
+			Params: lbmwasmtypes.DefaultParams(),
 		}},
-		"prevent duplicate codeIDs": {src: types.GenesisState{
+		"prevent duplicate codeIDs": {src: lbmwasmtypes.GenesisState{
 			Codes: []types.Code{
 				{
 					CodeID:    firstCodeID,
@@ -239,10 +240,10 @@ func TestGenesisInit(t *testing.T) {
 					CodeBytes: wasmCode,
 				},
 			},
-			Params: types.DefaultParams(),
+			Params: lbmwasmtypes.DefaultParams(),
 		}},
 		"codes with same checksum can be pinned": {
-			src: types.GenesisState{
+			src: lbmwasmtypes.GenesisState{
 				Codes: []types.Code{
 					{
 						CodeID:    firstCodeID,
@@ -257,11 +258,11 @@ func TestGenesisInit(t *testing.T) {
 						Pinned:    true,
 					},
 				},
-				Params: types.DefaultParams(),
+				Params: lbmwasmtypes.DefaultParams(),
 			},
 		},
 		"happy path: code id in info and contract do match": {
-			src: types.GenesisState{
+			src: lbmwasmtypes.GenesisState{
 				Codes: []types.Code{{
 					CodeID:    firstCodeID,
 					CodeInfo:  myCodeInfo,
@@ -277,12 +278,12 @@ func TestGenesisInit(t *testing.T) {
 					{IDKey: types.KeyLastCodeID, Value: 2},
 					{IDKey: types.KeyLastInstanceID, Value: 2},
 				},
-				Params: types.DefaultParams(),
+				Params: lbmwasmtypes.DefaultParams(),
 			},
 			expSuccess: true,
 		},
 		"happy path: code info with two contracts": {
-			src: types.GenesisState{
+			src: lbmwasmtypes.GenesisState{
 				Codes: []types.Code{{
 					CodeID:    firstCodeID,
 					CodeInfo:  myCodeInfo,
@@ -301,23 +302,23 @@ func TestGenesisInit(t *testing.T) {
 					{IDKey: types.KeyLastCodeID, Value: 2},
 					{IDKey: types.KeyLastInstanceID, Value: 3},
 				},
-				Params: types.DefaultParams(),
+				Params: lbmwasmtypes.DefaultParams(),
 			},
 			expSuccess: true,
 		},
 		"prevent contracts that points to non existing codeID": {
-			src: types.GenesisState{
+			src: lbmwasmtypes.GenesisState{
 				Contracts: []types.Contract{
 					{
 						ContractAddress: BuildContractAddress(1, 1).String(),
 						ContractInfo:    types.ContractInfoFixture(func(c *wasmTypes.ContractInfo) { c.CodeID = 1 }, types.OnlyGenesisFields),
 					},
 				},
-				Params: types.DefaultParams(),
+				Params: lbmwasmtypes.DefaultParams(),
 			},
 		},
 		"prevent duplicate contract address": {
-			src: types.GenesisState{
+			src: lbmwasmtypes.GenesisState{
 				Codes: []types.Code{{
 					CodeID:    firstCodeID,
 					CodeInfo:  myCodeInfo,
@@ -332,11 +333,11 @@ func TestGenesisInit(t *testing.T) {
 						ContractInfo:    types.ContractInfoFixture(func(c *wasmTypes.ContractInfo) { c.CodeID = 1 }, types.OnlyGenesisFields),
 					},
 				},
-				Params: types.DefaultParams(),
+				Params: lbmwasmtypes.DefaultParams(),
 			},
 		},
 		"prevent duplicate contract model keys": {
-			src: types.GenesisState{
+			src: lbmwasmtypes.GenesisState{
 				Codes: []types.Code{{
 					CodeID:    firstCodeID,
 					CodeInfo:  myCodeInfo,
@@ -358,20 +359,20 @@ func TestGenesisInit(t *testing.T) {
 						},
 					},
 				},
-				Params: types.DefaultParams(),
+				Params: lbmwasmtypes.DefaultParams(),
 			},
 		},
 		"prevent duplicate sequences": {
-			src: types.GenesisState{
+			src: lbmwasmtypes.GenesisState{
 				Sequences: []types.Sequence{
 					{IDKey: []byte("foo"), Value: 1},
 					{IDKey: []byte("foo"), Value: 9999},
 				},
-				Params: types.DefaultParams(),
+				Params: lbmwasmtypes.DefaultParams(),
 			},
 		},
 		"prevent code id seq init value == max codeID used": {
-			src: types.GenesisState{
+			src: lbmwasmtypes.GenesisState{
 				Codes: []types.Code{{
 					CodeID:    2,
 					CodeInfo:  myCodeInfo,
@@ -380,11 +381,11 @@ func TestGenesisInit(t *testing.T) {
 				Sequences: []types.Sequence{
 					{IDKey: types.KeyLastCodeID, Value: 1},
 				},
-				Params: types.DefaultParams(),
+				Params: lbmwasmtypes.DefaultParams(),
 			},
 		},
 		"prevent contract id seq init value == count contracts": {
-			src: types.GenesisState{
+			src: lbmwasmtypes.GenesisState{
 				Codes: []types.Code{{
 					CodeID:    firstCodeID,
 					CodeInfo:  myCodeInfo,
@@ -400,17 +401,17 @@ func TestGenesisInit(t *testing.T) {
 					{IDKey: types.KeyLastCodeID, Value: 2},
 					{IDKey: types.KeyLastInstanceID, Value: 1},
 				},
-				Params: types.DefaultParams(),
+				Params: lbmwasmtypes.DefaultParams(),
 			},
 		},
 		"validator set update called for any genesis messages": {
-			src: wasmTypes.GenesisState{
+			src: lbmwasmtypes.GenesisState{
 				GenMsgs: []types.GenesisState_GenMsgs{
 					{Sum: &types.GenesisState_GenMsgs_StoreCode{
 						StoreCode: types.MsgStoreCodeFixture(),
 					}},
 				},
-				Params: types.DefaultParams(),
+				Params: lbmwasmtypes.DefaultParams(),
 			},
 			stakingMock: StakingKeeperMock{expCalls: 1, validatorUpdate: []abci.ValidatorUpdate{
 				{PubKey: crypto.PublicKey{Sum: &crypto.PublicKey_Ed25519{
@@ -422,13 +423,13 @@ func TestGenesisInit(t *testing.T) {
 			expSuccess:     true,
 		},
 		"validator set update not called on genesis msg handler errors": {
-			src: wasmTypes.GenesisState{
+			src: lbmwasmtypes.GenesisState{
 				GenMsgs: []types.GenesisState_GenMsgs{
 					{Sum: &types.GenesisState_GenMsgs_StoreCode{
 						StoreCode: types.MsgStoreCodeFixture(),
 					}},
 				},
-				Params: types.DefaultParams(),
+				Params: lbmwasmtypes.DefaultParams(),
 			},
 			msgHandlerMock: MockMsgHandler{expCalls: 1, err: errors.New("test error response")},
 			stakingMock:    StakingKeeperMock{expCalls: 0},
@@ -438,7 +439,7 @@ func TestGenesisInit(t *testing.T) {
 		t.Run(msg, func(t *testing.T) {
 			keeper, ctx, _ := setupKeeper(t)
 
-			require.NoError(t, types.ValidateGenesis(spec.src))
+			require.NoError(t, lbmwasmtypes.ValidateGenesis(spec.src))
 			gotValidatorSet, gotErr := InitGenesis(ctx, keeper, spec.src, &spec.stakingMock, spec.msgHandlerMock.Handle)
 			if !spec.expSuccess {
 				require.Error(t, gotErr)
@@ -488,8 +489,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
         "code_id": "1",
         "creator": "link1p0yx9c9q4xsnedlcn24gqfry5dcu6e9xkhv9aj",
         "admin": "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
-        "label": "ȀĴnZV芢毤",
-        "status": "Active"
+        "label": "ȀĴnZV芢毤"
       }
     }
   ],
@@ -508,7 +508,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 	enc64 := base64.StdEncoding.EncodeToString
 	genesisStr := fmt.Sprintf(genesisTemplate, enc64(wasmCodeHash[:]), enc64(wasmCode))
 
-	var importState wasmTypes.GenesisState
+	var importState lbmwasmtypes.GenesisState
 	err = keeper.cdc.UnmarshalJSON([]byte(genesisStr), &importState)
 	require.NoError(t, err)
 	require.NoError(t, importState.ValidateBasic(), genesisStr)
@@ -551,7 +551,6 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 		Admin:   adminAddr,
 		Label:   "ȀĴnZV芢毤",
 		Created: &types.AbsoluteTxPosition{BlockHeight: 0, TxIndex: 0},
-		Status:  wasmTypes.ContractStatusActive,
 	}
 	assert.Equal(t, expContractInfo, *gotContractInfo)
 
@@ -576,8 +575,8 @@ func TestSupportedGenMsgTypes(t *testing.T) {
 		beneficiaryAddress sdk.AccAddress = bytes.Repeat([]byte{3}, types.ContractAddrLen)
 	)
 	const denom = "stake"
-	importState := types.GenesisState{
-		Params: types.DefaultParams(),
+	importState := lbmwasmtypes.GenesisState{
+		Params: lbmwasmtypes.DefaultParams(),
 		GenMsgs: []types.GenesisState_GenMsgs{
 			{
 				Sum: &types.GenesisState_GenMsgs_StoreCode{
