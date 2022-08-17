@@ -117,7 +117,7 @@ func NewTxCmdTransferFTFrom() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "transfer-ft-from [contract-id] [operator] [from] [to] [amount]",
 		Args:  cobra.ExactArgs(5),
-		Short: "send tokens by operator",
+		Short: "send fungible tokens by operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
 			$ %s tx %s operator-send [contract-id] [operator] [from] [to] [amount]`, version.AppName, collection.ModuleName),
 		),
@@ -196,7 +196,7 @@ func NewTxCmdTransferNFTFrom() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "transfer-nft-from [contract-id] [operator] [from] [to] [amount]",
 		Args:  cobra.ExactArgs(5),
-		Short: "send tokens by operator",
+		Short: "send non-fungible tokens by operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
 			$ %s tx %s transfer-nft-from [contract-id] [operator] [from] [to] [amount]`, version.AppName, collection.ModuleName),
 		),
@@ -518,7 +518,7 @@ func NewTxCmdBurnFT() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "burn-ft [contract-id] [from] [amount]",
 		Args:  cobra.ExactArgs(3),
-		Short: "burn tokens",
+		Short: "burn fungible tokens",
 		Long: strings.TrimSpace(fmt.Sprintf(`
 			$ %s tx %s burn-ft [contract-id] [from] [amount]`, version.AppName, collection.ModuleName),
 		),
@@ -559,7 +559,7 @@ func NewTxCmdBurnFTFrom() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "burn-ft-from [contract-id] [operator] [from] [amount]",
 		Args:  cobra.ExactArgs(4),
-		Short: "burn tokens by a given operator",
+		Short: "burn fungible tokens by a given operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
 			$ %s tx %s burn-ft-from [contract-id] [operator] [from] [amount]`, version.AppName, collection.ModuleName),
 		),
@@ -601,7 +601,7 @@ func NewTxCmdBurnNFT() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "burn-nft [contract-id] [from] [token-id]",
 		Args:  cobra.ExactArgs(3),
-		Short: "burn tokens",
+		Short: "burn non-fungible tokens",
 		Long: strings.TrimSpace(fmt.Sprintf(`
 			$ %s tx %s burn-nft [contract-id] [from] [token-id]`, version.AppName, collection.ModuleName),
 		),
@@ -636,7 +636,7 @@ func NewTxCmdBurnNFTFrom() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "burn-nft-from [contract-id] [operator] [from] [token-id]",
 		Args:  cobra.ExactArgs(4),
-		Short: "burn tokens by a given operator",
+		Short: "burn non-fungible tokens by a given operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
 			$ %s tx %s burn-nft-from [contract-id] [operator] [from] [token-id]`, version.AppName, collection.ModuleName),
 		),
@@ -672,7 +672,7 @@ func NewTxCmdModify() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "modify [contract-id] [operator] [token-type] [token-index] [key] [value]",
 		Args:  cobra.ExactArgs(6),
-		Short: "modify",
+		Short: "modify a contract or a token-class or a token",
 		Long: strings.TrimSpace(fmt.Sprintf(`
 			$ %s tx %s modify [contract-id] [operator] [token-type] [token-index] [key] [value]`, version.AppName, collection.ModuleName),
 		),
@@ -713,7 +713,7 @@ func NewTxCmdAttach() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "attach [contract-id] [holder] [subject] [target]",
 		Args:  cobra.ExactArgs(4),
-		Short: "attach a token to another",
+		Short: "attach a (non-fungible) token to another",
 		Long: strings.TrimSpace(fmt.Sprintf(`
 			$ %s tx %s attach [contract-id] [holder] [subject] [target]`, version.AppName, collection.ModuleName),
 		),
@@ -749,7 +749,7 @@ func NewTxCmdDetach() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "detach [contract-id] [holder] [subject]",
 		Args:  cobra.ExactArgs(3),
-		Short: "detach a token from its parent",
+		Short: "detach a (non-fungible) token from its parent",
 		Long: strings.TrimSpace(fmt.Sprintf(`
 			$ %s tx %s detach [contract-id] [holder] [subject]`, version.AppName, collection.ModuleName),
 		),
@@ -784,7 +784,7 @@ func NewTxCmdAttachFrom() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "attach-from [contract-id] [operator] [holder] [subject] [target]",
 		Args:  cobra.ExactArgs(5),
-		Short: "attach a token to another by the operator",
+		Short: "attach a (non-fungible) token to another by the operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
 			$ %s tx %s attach-from [contract-id] [operator] [holder] [subject] [target]`, version.AppName, collection.ModuleName),
 		),
@@ -821,7 +821,7 @@ func NewTxCmdDetachFrom() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "detach-from [contract-id] [operator] [holder] [subject]",
 		Args:  cobra.ExactArgs(4),
-		Short: "detach a token from its parent by the operator",
+		Short: "detach a (non-fungible) token from its parent by the operator",
 		Long: strings.TrimSpace(fmt.Sprintf(`
 			$ %s tx %s detach-from [contract-id] [operator] [holder] [subject]`, version.AppName, collection.ModuleName),
 		),
