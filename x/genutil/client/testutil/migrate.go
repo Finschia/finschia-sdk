@@ -26,7 +26,15 @@ func (s *IntegrationTestSuite) TestMigrateGenesis() {
 		expErr    bool
 		expErrMsg string
 		check     func(jsonOut string)
-	}{}
+	}{
+		{
+			"migrate 0.42 to 0.43(result error)",
+			v040Valid,
+			"v0.43",
+			true, "",
+			nil,
+		},
+	}
 
 	for _, tc := range testCases {
 		tc := tc
