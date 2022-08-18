@@ -286,11 +286,11 @@ func NewTxCmdCreateContract() *cobra.Command {
 
 func NewTxCmdIssueFT() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "issue-ft [contract-id] [operator]",
+		Use:   fmt.Sprintf("issue-ft [contract-id] [operator] --%s [%s] --%s [%s]", FlagName, FlagName, FlagTo, FlagTo),
 		Args:  cobra.ExactArgs(2),
 		Short: "create a fungible token class",
 		Long: strings.TrimSpace(fmt.Sprintf(`
-			$ %s tx %s issue-ft [contract-id] [operator]`, version.AppName, collection.ModuleName),
+			$ %s tx %s issue-ft [contract-id] [operator] --%s [%s] --%s [%s]`, version.AppName, collection.ModuleName, FlagName, FlagName, FlagTo, FlagTo),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			operator := args[1]
