@@ -61,7 +61,12 @@ func (s queryServer) Balance(c context.Context, req *collection.QueryBalanceRequ
 	}
 
 	balance := s.keeper.GetBalance(ctx, req.ContractId, addr, req.TokenId)
-	coin := collection.NewCoin(req.TokenId, balance)
+
+	// amount could be zero.
+	coin := collection.Coin{
+		TokenId: req.TokenId,
+		Amount:  balance,
+	}
 
 	return &collection.QueryBalanceResponse{Balance: coin}, nil
 }
