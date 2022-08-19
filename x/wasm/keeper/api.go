@@ -28,6 +28,7 @@ func (a cosmwasmAPIImpl) canonicalAddress(human string) ([]byte, uint64, error) 
 	bz, err := sdk.AccAddressToBytes(human)
 	return bz, 4 * a.gasMultiplier, err
 }
+
 func (a cosmwasmAPIImpl) GetContractEnv(contractAddrStr string) (wasmvm.Env, *wasmvm.Cache, wasmvm.KVStore, wasmvm.Querier, wasmvm.GasMeter, []byte, uint64, error) {
 	contractAddr := sdk.AccAddress(contractAddrStr)
 	_, codeInfo, prefixStore, err := a.keeper.contractInstance(*a.ctx, contractAddr)
