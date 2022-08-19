@@ -48,8 +48,25 @@ func (s queryServer) Balance(c context.Context, req *collection.QueryBalanceRequ
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	// legacy compat.
+	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
+	// legacy compat.
+	classID := collection.SplitTokenID(req.TokenId)
+	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
+		return nil, sdkerrors.Wrapf(err, "corresponding token class not exists")
+	}
+
 	balance := s.keeper.GetBalance(ctx, req.ContractId, addr, req.TokenId)
-	coin := collection.NewCoin(req.TokenId, balance)
+
+	// amount could be zero.
+	coin := collection.Coin{
+		TokenId: req.TokenId,
+		Amount:  balance,
+	}
 
 	return &collection.QueryBalanceResponse{Balance: coin}, nil
 }
@@ -70,6 +87,12 @@ func (s queryServer) AllBalances(c context.Context, req *collection.QueryAllBala
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	// legacy compat.
+	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	store := ctx.KVStore(s.keeper.storeKey)
 	balanceStore := prefix.NewStore(store, balanceKeyPrefixByAddress(req.ContractId, addr))
 	var balances []collection.Coin
@@ -108,9 +131,12 @@ func (s queryServer) FTSupply(c context.Context, req *collection.QueryFTSupplyRe
 	classID := collection.SplitTokenID(req.TokenId)
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	// legacy compat.
 	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
 		return nil, err
 	}
+
 	supply := s.keeper.GetSupply(ctx, req.ContractId, classID)
 
 	return &collection.QueryFTSupplyResponse{Supply: supply}, nil
@@ -132,9 +158,12 @@ func (s queryServer) FTMinted(c context.Context, req *collection.QueryFTMintedRe
 	classID := collection.SplitTokenID(req.TokenId)
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	// legacy compat.
 	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
 		return nil, err
 	}
+
 	minted := s.keeper.GetMinted(ctx, req.ContractId, classID)
 
 	return &collection.QueryFTMintedResponse{Minted: minted}, nil
@@ -156,9 +185,12 @@ func (s queryServer) FTBurnt(c context.Context, req *collection.QueryFTBurntRequ
 	classID := collection.SplitTokenID(req.TokenId)
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	// legacy compat.
 	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
 		return nil, err
 	}
+
 	burnt := s.keeper.GetBurnt(ctx, req.ContractId, classID)
 
 	return &collection.QueryFTBurntResponse{Burnt: burnt}, nil
@@ -179,9 +211,12 @@ func (s queryServer) NFTSupply(c context.Context, req *collection.QueryNFTSupply
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	// legacy compat.
 	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
 		return nil, err
 	}
+
 	supply := s.keeper.GetSupply(ctx, req.ContractId, classID)
 
 	return &collection.QueryNFTSupplyResponse{Supply: supply}, nil
@@ -202,9 +237,12 @@ func (s queryServer) NFTMinted(c context.Context, req *collection.QueryNFTMinted
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	// legacy compat.
 	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
 		return nil, err
 	}
+
 	minted := s.keeper.GetMinted(ctx, req.ContractId, classID)
 
 	return &collection.QueryNFTMintedResponse{Minted: minted}, nil
@@ -225,9 +263,12 @@ func (s queryServer) NFTBurnt(c context.Context, req *collection.QueryNFTBurntRe
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
+
+	// legacy compat.
 	if _, err := s.keeper.GetTokenClass(ctx, req.ContractId, classID); err != nil {
 		return nil, err
 	}
+
 	burnt := s.keeper.GetBurnt(ctx, req.ContractId, classID)
 
 	return &collection.QueryNFTBurntResponse{Burnt: burnt}, nil
