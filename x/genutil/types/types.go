@@ -19,8 +19,8 @@ type (
 	// TODO: MigrationCallback should also return an error upon failure.
 	MigrationCallback func(AppMap, client.Context) AppMap
 
-	// VersionMap defines a mapping from a version to a MigrationCallback.
-	VersionMap map[string]MigrationCallback
+	// MigrationMap defines a mapping from a version to a MigrationCallback.
+	MigrationMap map[string]MigrationCallback
 )
 
 // ModuleName is genutil
