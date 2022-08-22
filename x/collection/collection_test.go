@@ -171,3 +171,13 @@ func TestParseCoins(t *testing.T) {
 		})
 	}
 }
+
+func TestAttributeFromChange(t *testing.T) {
+	change := collection.Change{
+		Field: string(make([]rune, 1000)),
+		Value: string(make([]rune, 1000)),
+	}
+	attribute := collection.AttributeFromChange(change)
+	require.Equal(t, change.Field, attribute.Key)
+	require.Equal(t, change.Value, attribute.Value)
+}
