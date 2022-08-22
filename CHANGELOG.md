@@ -78,6 +78,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (client) [\#565](https://github.com/line/lbm-sdk/pull/565) fix the data race problem in `TestQueryABCIHeight`
 * (x/token) [\#589](https://github.com/line/lbm-sdk/pull/589) fix naming collision in x/token enums
 * (x/token) [\#599](https://github.com/line/lbm-sdk/pull/599) fix the order of events
+* (x/wasm) [\#640](https://github.com/line/lbm-sdk/pull/640) remove legacy codes of wasm
 * (amino) [\#635](https://github.com/line/lbm-sdk/pull/635) change some minor things that haven't been fixed in #549
 
 ### Breaking Changes
