@@ -2,6 +2,7 @@ package collection_test
 
 import (
 	"fmt"
+	"math/rand"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -173,9 +174,18 @@ func TestParseCoins(t *testing.T) {
 }
 
 func TestAttributeFromChange(t *testing.T) {
+	randomString := func(length int) string {
+		letters := []rune("0123456789abcdef")
+		res := make([]rune, length)
+		for i := range res {
+			res[i] = letters[rand.Intn(len(letters))]
+		}
+		return string(res)
+	}
+
 	change := collection.Change{
-		Field: string(make([]rune, 1000)),
-		Value: string(make([]rune, 1000)),
+		Field: randomString(1000),
+		Value: randomString(1000),
 	}
 	attribute := collection.AttributeFromChange(change)
 	require.Equal(t, change.Field, attribute.Key)
