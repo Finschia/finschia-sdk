@@ -616,7 +616,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 		for i, change := range req.Changes {
 			changes[i] = collection.Attribute{
 				Key:   change.Field,
-				Value: change.Field,
+				Value: change.Value,
 			}
 		}
 
