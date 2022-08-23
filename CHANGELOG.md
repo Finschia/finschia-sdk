@@ -72,6 +72,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/token) [\#599](https://github.com/line/lbm-sdk/pull/599) fix the order of events
 * (x/collection) [\#644](https://github.com/line/lbm-sdk/pull/644) add omitted cli commands on x/collection
 * (x/collection) [\#645](https://github.com/line/lbm-sdk/pull/645) make x/collection Query/Balance not to panic on amount of zero in return
+* (x/collection) [\#647](https://github.com/line/lbm-sdk/pull/647) fix bugs in x/collection MsgModify
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path

@@ -299,3 +299,10 @@ func TokenUnpackInterfaces(any *codectypes.Any, unpacker codectypes.AnyUnpacker)
 	var token Token
 	return unpacker.UnpackAny(any, &token)
 }
+
+func AttributeFromChange(change Change) Attribute {
+	return Attribute{
+		Key:   change.Field,
+		Value: change.Value,
+	}
+}
