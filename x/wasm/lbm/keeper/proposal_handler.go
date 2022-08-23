@@ -47,12 +47,10 @@ func handleDeactivateContractProposal(ctx sdk.Context, k lbmwasmtypes.ContractOp
 		return err
 	}
 
-	contractAddress, err := sdk.AccAddressFromBech32(p.Contract)
-	if err != nil {
-		return sdkerrors.Wrap(err, "contract")
-	}
+	// The error is already checked in ValidateBasic.
+	contractAddress, _ := sdk.AccAddressFromBech32(p.Contract)
 
-	err = k.DeactivateContract(ctx, contractAddress)
+	err := k.DeactivateContract(ctx, contractAddress)
 	if err != nil {
 		return err
 	}
@@ -72,12 +70,10 @@ func handleActivateContractProposal(ctx sdk.Context, k lbmwasmtypes.ContractOpsK
 		return err
 	}
 
-	contractAddress, err := sdk.AccAddressFromBech32(p.Contract)
-	if err != nil {
-		return sdkerrors.Wrap(err, "contract")
-	}
+	// The error is already checked in ValidateBasic.
+	contractAddress, _ := sdk.AccAddressFromBech32(p.Contract)
 
-	err = k.ActivateContract(ctx, contractAddress)
+	err := k.ActivateContract(ctx, contractAddress)
 	if err != nil {
 		return err
 	}

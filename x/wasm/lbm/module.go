@@ -13,7 +13,6 @@ import (
 	wasmkeeper "github.com/line/lbm-sdk/x/wasm/keeper"
 	lbmwasmkeeper "github.com/line/lbm-sdk/x/wasm/lbm/keeper"
 	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
-	wasmsim "github.com/line/lbm-sdk/x/wasm/simulation"
 	wasmsimulation "github.com/line/lbm-sdk/x/wasm/simulation"
 	wasmtypes "github.com/line/lbm-sdk/x/wasm/types"
 	abci "github.com/line/ostracon/abci/types"
@@ -111,7 +110,7 @@ func (AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.Validato
 
 // GenerateGenesisState creates a randomized GenState of the bank module.
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
-	wasmsim.RandomizedGenState(simState)
+	wasmsimulation.RandomizedGenState(simState)
 }
 
 // ProposalContents doesn't return any content functions for governance proposals.

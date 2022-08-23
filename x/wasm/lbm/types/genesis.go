@@ -1,6 +1,9 @@
 package types
 
-import sdkerrors "github.com/line/lbm-sdk/types/errors"
+import (
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+)
 
 func (s GenesisState) ValidateBasic() error {
 	if err := s.Params.ValidateBasic(); err != nil {
@@ -24,6 +27,11 @@ func (s GenesisState) ValidateBasic() error {
 	for i := range s.GenMsgs {
 		if err := s.GenMsgs[i].ValidateBasic(); err != nil {
 			return sdkerrors.Wrapf(err, "gen message: %d", i)
+		}
+	}
+	for i, addr := range s.InactiveContractAddresses {
+		if _, err := sdk.AccAddressFromBech32(addr); err != nil {
+			return sdkerrors.Wrapf(err, "inactive contract address: %d", i)
 		}
 	}
 	return nil

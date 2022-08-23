@@ -7,7 +7,8 @@ import (
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
 	wasmkeeper "github.com/line/lbm-sdk/x/wasm/keeper"
-	"github.com/line/lbm-sdk/x/wasm/types"
+	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
+	wasmtypes "github.com/line/lbm-sdk/x/wasm/types"
 )
 
 type Keeper struct {
@@ -22,22 +23,27 @@ func NewKeeper(
 	storeKey sdk.StoreKey,
 	paramSpace paramtypes.Subspace,
 	accountKeeper authkeeper.AccountKeeper,
-	bankKeeper types.BankKeeper,
-	stakingKeeper types.StakingKeeper,
-	distKeeper types.DistributionKeeper,
-	channelKeeper types.ChannelKeeper,
-	portKeeper types.PortKeeper,
-	capabilityKeeper types.CapabilityKeeper,
-	portSource types.ICS20TransferPortSource,
+	bankKeeper wasmtypes.BankKeeper,
+	stakingKeeper wasmtypes.StakingKeeper,
+	distKeeper wasmtypes.DistributionKeeper,
+	channelKeeper wasmtypes.ChannelKeeper,
+	portKeeper wasmtypes.PortKeeper,
+	capabilityKeeper wasmtypes.CapabilityKeeper,
+	portSource wasmtypes.ICS20TransferPortSource,
 	router wasmkeeper.MessageRouter,
 	queryRouter wasmkeeper.GRPCQueryRouter,
 	homeDir string,
-	wasmConfig types.WasmConfig,
+	wasmConfig wasmtypes.WasmConfig,
 	supportedFeatures string,
 	customEncoders *wasmkeeper.MessageEncoders,
 	customPlugins *wasmkeeper.QueryPlugins,
 	opts ...wasmkeeper.Option,
 ) Keeper {
+	// set KeyTable if it has not already been set
+	if !paramSpace.HasKeyTable() {
+		paramSpace = paramSpace.WithKeyTable(lbmwasmtypes.ParamKeyTable())
+	}
+
 	wasmKeeper := wasmkeeper.NewKeeper(cdc, storeKey, paramSpace, accountKeeper, bankKeeper, stakingKeeper, distKeeper,
 		channelKeeper, portKeeper, capabilityKeeper, portSource, router, queryRouter, homeDir, wasmConfig,
 		supportedFeatures, customEncoders, customPlugins, opts...)
@@ -81,22 +87,30 @@ func (k Keeper) deleteInactiveContract(ctx sdk.Context, contractAddress sdk.AccA
 	store.Delete(key)
 }
 
+// activateContract delete the contract address from inactivateContract list if the contract is deactivated.
 func (k Keeper) activateContract(ctx sdk.Context, contractAddress sdk.AccAddress) error {
-	if k.IsInactiveContract(ctx, contractAddress) {
-		return sdkerrors.Wrap(types.ErrAccountExists, "inactivate contract")
+	if !k.IsInactiveContract(ctx, contractAddress) {
+		return sdkerrors.Wrapf(wasmtypes.ErrNotFound, "no inactivate contract %s", contractAddress.String())
+	}
+	if !k.HasContractInfo(ctx, contractAddress) {
+		return sdkerrors.Wrapf(wasmtypes.ErrInvalid, "no contract %s", contractAddress)
 	}
 
-	k.addInactiveContract(ctx, contractAddress)
+	k.deleteInactiveContract(ctx, contractAddress)
 
 	return nil
 }
 
+// deactivateContract add the contract address to inactivateContract list.
 func (k Keeper) deactivateContract(ctx sdk.Context, contractAddress sdk.AccAddress) error {
-	if !k.IsInactiveContract(ctx, contractAddress) {
-		return sdkerrors.Wrap(types.ErrNotFound, "deactivate contract")
+	if k.IsInactiveContract(ctx, contractAddress) {
+		return sdkerrors.Wrapf(wasmtypes.ErrAccountExists, "already inactivate contract %s", contractAddress.String())
+	}
+	if !k.HasContractInfo(ctx, contractAddress) {
+		return sdkerrors.Wrapf(wasmtypes.ErrInvalid, "no contract %s", contractAddress)
 	}
 
-	k.deleteInactiveContract(ctx, contractAddress)
+	k.addInactiveContract(ctx, contractAddress)
 
 	return nil
 }
