@@ -1,9 +1,11 @@
 package lbm
 
 import (
+	"encoding/json"
 	"math/rand"
 
-	"encoding/json"
+	abci "github.com/line/ostracon/abci/types"
+
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
@@ -15,7 +17,6 @@ import (
 	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 	wasmsimulation "github.com/line/lbm-sdk/x/wasm/simulation"
 	wasmtypes "github.com/line/lbm-sdk/x/wasm/types"
-	abci "github.com/line/ostracon/abci/types"
 )
 
 // AppModule implements an application module for the wasm module.
