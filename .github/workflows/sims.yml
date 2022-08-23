@@ -41,7 +41,7 @@ jobs:
         run: go version
       - name: Install runsim
         run: export GO111MODULE="on" && go install github.com/cosmos/tools/cmd/runsim@v1.0.0
-      - uses: actions/cache@v3.0.7
+      - uses: actions/cache@v3.0.8
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
@@ -63,7 +63,7 @@ jobs:
             !**/**_test.go
             go.mod
             go.sum
-      - uses: actions/cache@v3.0.7
+      - uses: actions/cache@v3.0.8
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
@@ -92,7 +92,7 @@ jobs:
             go.sum
           SET_ENV_NAME_INSERTIONS: 1
           SET_ENV_NAME_LINES: 1
-      - uses: actions/cache@v3.0.7
+      - uses: actions/cache@v3.0.8
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
@@ -121,7 +121,7 @@ jobs:
             go.sum
           SET_ENV_NAME_INSERTIONS: 1
           SET_ENV_NAME_LINES: 1
-      - uses: actions/cache@v3.0.7
+      - uses: actions/cache@v3.0.8
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
@@ -150,7 +150,7 @@ jobs:
             go.sum
           SET_ENV_NAME_INSERTIONS: 1
           SET_ENV_NAME_LINES: 1
-      - uses: actions/cache@v3.0.7
+      - uses: actions/cache@v3.0.8
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
