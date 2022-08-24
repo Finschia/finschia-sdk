@@ -66,6 +66,8 @@ func InitGenesis(ctx sdk.Context, keeper *Keeper, data lbmwasmtypes.GenesisState
 		return nil, sdkerrors.Wrapf(types.ErrInvalid, "seq %s with value: %d must be greater than: %d ", string(types.KeyLastInstanceID), seqVal, maxContractID)
 	}
 
+	// TODO: should add inactive contract address to keeper (lbm's keeper)
+
 	if len(data.GenMsgs) == 0 {
 		return nil, nil
 	}
@@ -124,6 +126,8 @@ func ExportGenesis(ctx sdk.Context, keeper *Keeper) *lbmwasmtypes.GenesisState {
 			Value: keeper.PeekAutoIncrementID(ctx, k),
 		})
 	}
+
+	// TODO: should add inactive contract address extraction (lbm's keeper)
 
 	return &genState
 }

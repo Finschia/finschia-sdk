@@ -112,9 +112,10 @@ import (
 	upgradekeeper "github.com/line/lbm-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 	"github.com/line/lbm-sdk/x/wasm"
-	wasmclient "github.com/line/lbm-sdk/x/wasm/client"
 	lbmwasm "github.com/line/lbm-sdk/x/wasm/lbm"
+	lbmwasmclient "github.com/line/lbm-sdk/x/wasm/lbm/client"
 	lbmwasmkeeper "github.com/line/lbm-sdk/x/wasm/lbm/keeper"
+	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 
 	// unnamed import of statik for swagger UI support
 	_ "github.com/line/lbm-sdk/client/docs/statik"
@@ -140,7 +141,7 @@ var (
 		foundationmodule.AppModuleBasic{},
 		gov.NewAppModuleBasic(
 			append(
-				wasmclient.ProposalHandlers,
+				lbmwasmclient.ProposalHandlers,
 				foundationclient.UpdateFoundationParamsProposalHandler,
 				foundationclient.UpdateValidatorAuthsProposalHandler,
 				paramsclient.ProposalHandler,
@@ -409,7 +410,7 @@ func NewSimApp(
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
 		AddRoute(foundation.RouterKey, foundationkeeper.NewProposalHandler(app.FoundationKeeper)).
-		AddRoute(wasm.RouterKey, lbmwasmkeeper.NewWasmProposalHandler(app.WasmKeeper, wasm.EnableAllProposals))
+		AddRoute(wasm.RouterKey, lbmwasmkeeper.NewWasmProposalHandler(app.WasmKeeper, lbmwasmtypes.EnableAllProposals))
 
 	govKeeper := govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,

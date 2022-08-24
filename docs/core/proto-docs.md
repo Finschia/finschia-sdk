@@ -1236,8 +1236,8 @@
     - [GenesisState](#lbm.wasm.v1.GenesisState)
   
 - [lbm/wasm/v1/proposal.proto](#lbm/wasm/v1/proposal.proto)
-    - [ActivateContract](#lbm.wasm.v1.ActivateContract)
-    - [DeactivateContract](#lbm.wasm.v1.DeactivateContract)
+    - [ActivateContractProposal](#lbm.wasm.v1.ActivateContractProposal)
+    - [DeactivateContractProposal](#lbm.wasm.v1.DeactivateContractProposal)
   
 - [lbm/wasm/v1/query.proto](#lbm/wasm/v1/query.proto)
     - [QueryInactiveContractsRequest](#lbm.wasm.v1.QueryInactiveContractsRequest)
@@ -18648,10 +18648,10 @@ Params defines the set of wasm parameters.
 
 
 
-<a name="lbm.wasm.v1.ActivateContract"></a>
+<a name="lbm.wasm.v1.ActivateContractProposal"></a>
 
-### ActivateContract
-ActivateContract gov proposal content type deletes a contract from inactive list
+### ActivateContractProposal
+ActivateContractProposal gov proposal content type deletes a contract from inactive list
 
 
 | Field | Type | Label | Description |
@@ -18665,10 +18665,10 @@ ActivateContract gov proposal content type deletes a contract from inactive list
 
 
 
-<a name="lbm.wasm.v1.DeactivateContract"></a>
+<a name="lbm.wasm.v1.DeactivateContractProposal"></a>
 
-### DeactivateContract
-DeactivateContract gov proposal content type adds a contract to inactive list.
+### DeactivateContractProposal
+DeactivateContractProposal gov proposal content type adds a contract to inactive list.
 
 
 | Field | Type | Label | Description |

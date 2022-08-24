@@ -30,9 +30,9 @@ func NewWasmProposalHandlerX(wasmProposalHandler govtypes.Handler, k lbmwasmtype
 				return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unsupported wasm proposal content type: %q", content.ProposalType())
 			}
 			switch c := content.(type) {
-			case *lbmwasmtypes.DeactivateContract:
+			case *lbmwasmtypes.DeactivateContractProposal:
 				return handleDeactivateContractProposal(ctx, k, *c)
-			case *lbmwasmtypes.ActivateContract:
+			case *lbmwasmtypes.ActivateContractProposal:
 				return handleActivateContractProposal(ctx, k, *c)
 			default:
 				return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized wasm proposal content type: %T", c)
@@ -42,7 +42,7 @@ func NewWasmProposalHandlerX(wasmProposalHandler govtypes.Handler, k lbmwasmtype
 	}
 }
 
-func handleDeactivateContractProposal(ctx sdk.Context, k lbmwasmtypes.ContractOpsKeeper, p lbmwasmtypes.DeactivateContract) error {
+func handleDeactivateContractProposal(ctx sdk.Context, k lbmwasmtypes.ContractOpsKeeper, p lbmwasmtypes.DeactivateContractProposal) error {
 	if err := p.ValidateBasic(); err != nil {
 		return err
 	}
@@ -65,7 +65,7 @@ func handleDeactivateContractProposal(ctx sdk.Context, k lbmwasmtypes.ContractOp
 	return nil
 }
 
-func handleActivateContractProposal(ctx sdk.Context, k lbmwasmtypes.ContractOpsKeeper, p lbmwasmtypes.ActivateContract) error {
+func handleActivateContractProposal(ctx sdk.Context, k lbmwasmtypes.ContractOpsKeeper, p lbmwasmtypes.ActivateContractProposal) error {
 	if err := p.ValidateBasic(); err != nil {
 		return err
 	}

@@ -22,19 +22,21 @@ var EnableAllProposals = append([]wasmtypes.ProposalType{
 func init() {
 	govtypes.RegisterProposalType(string(ProposalTypeDeactivateContract))
 	govtypes.RegisterProposalType(string(ProposalTypeActivateContract))
-	govtypes.RegisterProposalTypeCodec(&DeactivateContract{}, "wasm/DeactivateContractProposal")
-	govtypes.RegisterProposalTypeCodec(&ActivateContract{}, "wasm/ActivateContractProposal")
+	govtypes.RegisterProposalTypeCodec(&DeactivateContractProposal{}, "wasm/DeactivateContractProposal")
+	govtypes.RegisterProposalTypeCodec(&ActivateContractProposal{}, "wasm/ActivateContractProposal")
 }
 
-func (p DeactivateContract) GetTitle() string { return p.Title }
+func (p DeactivateContractProposal) GetTitle() string { return p.Title }
 
-func (p DeactivateContract) GetDescription() string { return p.Description }
+func (p DeactivateContractProposal) GetDescription() string { return p.Description }
 
-func (p DeactivateContract) ProposalRoute() string { return wasmtypes.RouterKey }
+func (p DeactivateContractProposal) ProposalRoute() string { return wasmtypes.RouterKey }
 
-func (p DeactivateContract) ProposalType() string { return string(ProposalTypeDeactivateContract) }
+func (p DeactivateContractProposal) ProposalType() string {
+	return string(ProposalTypeDeactivateContract)
+}
 
-func (p DeactivateContract) ValidateBasic() error {
+func (p DeactivateContractProposal) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(p.Contract); err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "contract")
 	}
@@ -42,7 +44,7 @@ func (p DeactivateContract) ValidateBasic() error {
 	return nil
 }
 
-func (p DeactivateContract) String() string {
+func (p DeactivateContractProposal) String() string {
 	return fmt.Sprintf(`Deactivate Contract Proposal:
   Title: 	   %s
   Description: %s
@@ -50,15 +52,15 @@ func (p DeactivateContract) String() string {
 `, p.Title, p.Description, p.Contract)
 }
 
-func (p ActivateContract) GetTitle() string { return p.Title }
+func (p ActivateContractProposal) GetTitle() string { return p.Title }
 
-func (p ActivateContract) GetDescription() string { return p.Description }
+func (p ActivateContractProposal) GetDescription() string { return p.Description }
 
-func (p ActivateContract) ProposalRoute() string { return wasmtypes.RouterKey }
+func (p ActivateContractProposal) ProposalRoute() string { return wasmtypes.RouterKey }
 
-func (p ActivateContract) ProposalType() string { return string(ProposalTypeActivateContract) }
+func (p ActivateContractProposal) ProposalType() string { return string(ProposalTypeActivateContract) }
 
-func (p ActivateContract) ValidateBasic() error {
+func (p ActivateContractProposal) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(p.Contract); err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "contract")
 	}
@@ -66,7 +68,7 @@ func (p ActivateContract) ValidateBasic() error {
 	return nil
 }
 
-func (p ActivateContract) String() string {
+func (p ActivateContractProposal) String() string {
 	return fmt.Sprintf(`Activate Contract Proposal:
   Title: 	   %s
   Description: %s

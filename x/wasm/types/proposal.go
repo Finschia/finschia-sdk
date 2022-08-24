@@ -22,7 +22,6 @@ const (
 	ProposalTypeClearAdmin              ProposalType = "ClearAdmin"
 	ProposalTypePinCodes                ProposalType = "PinCodes"
 	ProposalTypeUnpinCodes              ProposalType = "UnpinCodes"
-	ProposalTypeUpdateContractStatus    ProposalType = "UpdateContractStatus"
 	ProposalTypeUpdateInstantiateConfig ProposalType = "UpdateInstantiateConfig"
 )
 
@@ -40,7 +39,6 @@ var EnableAllProposals = []ProposalType{
 	ProposalTypeClearAdmin,
 	ProposalTypePinCodes,
 	ProposalTypeUnpinCodes,
-	ProposalTypeUpdateContractStatus,
 	ProposalTypeUpdateInstantiateConfig,
 }
 

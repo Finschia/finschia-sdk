@@ -61,6 +61,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#608](https://github.com/line/lbm-sdk/pull/608) remove new APIs on x/collection
 * (x/token) [\#609](https://github.com/line/lbm-sdk/pull/609) remove new APIs on x/token
 * (x/wasm) [\#625](https://github.com/line/lbm-sdk/pull/625) detaching `StoreCodeAndInstantiateContract` from wasm's tx.proto
+* (x/wasm) [\#646](https://github.com/line/lbm-sdk/pull/646) add inactive contract management in wasm (This replaces the contract blacklist function of contractStatus)
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path

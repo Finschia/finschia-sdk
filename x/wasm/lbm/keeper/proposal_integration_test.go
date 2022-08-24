@@ -19,7 +19,7 @@ func TestValidateDeactivateContractProposal(t *testing.T) {
 	wasmtesting.MakeInstantiable(&mock)
 	example := wasmkeeper.SeedNewContractInstance(t, ctx, keepers.TestKeepers, &mock)
 
-	src := lbmwasmtypes.DeactivateContract{
+	src := lbmwasmtypes.DeactivateContractProposal{
 		Title:       "Foo",
 		Description: "Bar",
 		Contract:    example.Contract.String(),
@@ -52,7 +52,7 @@ func TestActivateContractProposal(t *testing.T) {
 	err := wasmKeeper.deactivateContract(ctx, example.Contract)
 	require.NoError(t, err)
 
-	src := lbmwasmtypes.ActivateContract{
+	src := lbmwasmtypes.ActivateContractProposal{
 		Title:       "Foo",
 		Description: "Bar",
 		Contract:    example.Contract.String(),

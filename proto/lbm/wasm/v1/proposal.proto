@@ -8,8 +8,8 @@ option (gogoproto.goproto_stringer_all) = false;
 option (gogoproto.goproto_getters_all)  = false;
 option (gogoproto.equal_all)            = true;
 
-// DeactivateContract gov proposal content type adds a contract to inactive list.
-message DeactivateContract {
+// DeactivateContractProposal gov proposal content type adds a contract to inactive list.
+message DeactivateContractProposal {
   // Title is a short summary
   string title = 1 [(gogoproto.moretags) = "yaml:\"title\""];
   // Description is a human readable text
@@ -18,8 +18,8 @@ message DeactivateContract {
   string contract = 3 [(gogoproto.moretags) = "yaml:\"contract\""];
 }
 
-// ActivateContract gov proposal content type deletes a contract from inactive list
-message ActivateContract {
+// ActivateContractProposal gov proposal content type deletes a contract from inactive list
+message ActivateContractProposal {
   // Title is a short summary
   string title = 1 [(gogoproto.moretags) = "yaml:\"title\""];
   // Description is a human readable text
