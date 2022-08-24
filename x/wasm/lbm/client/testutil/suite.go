@@ -28,7 +28,7 @@ type IntegrationTestSuite struct {
 	codeID                  string
 	contractAddress         string
 	nonExistValidAddress    string
-	inactiveContractAddress string
+	inactiveContractAddress string // nolint: unused
 
 	// for hackatom contract
 	verifier    string
@@ -91,6 +91,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	s.network.Cleanup()
 }
 
+// nolint: unused
 func (s *IntegrationTestSuite) queryCommonArgs() []string {
 	return []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
