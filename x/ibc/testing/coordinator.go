@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/require"
 	abci "github.com/line/ostracon/abci/types"
+	"github.com/stretchr/testify/require"
 )
 
 var (

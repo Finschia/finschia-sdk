@@ -3,10 +3,10 @@ package keeper
 import (
 	"bytes"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/line/lbm-sdk/telemetry"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/gogo/protobuf/proto"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"

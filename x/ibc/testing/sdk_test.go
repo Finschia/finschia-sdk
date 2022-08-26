@@ -22,9 +22,9 @@ import (
 	authcli "github.com/line/lbm-sdk/x/auth/client/cli"
 	authrest "github.com/line/lbm-sdk/x/auth/client/rest"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	tmrand "github.com/line/ostracon/libs/rand"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/suite"
-	tmrand "github.com/line/ostracon/libs/rand"
 	dbm "github.com/tendermint/tm-db"
 
 	ibcclientcli "github.com/line/lbm-sdk/x/ibc/core/02-client/client/cli"

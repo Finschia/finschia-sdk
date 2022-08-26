@@ -6,8 +6,8 @@ import (
 	"net/url"
 
 	ics23 "github.com/confio/ics23/go"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/gogo/protobuf/proto"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	tmcrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
 	"github.com/line/lbm-sdk/x/ibc/core/exported"

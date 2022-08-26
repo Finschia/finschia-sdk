@@ -18,11 +18,11 @@ import (
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
-	"github.com/stretchr/testify/require"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	tmtypes "github.com/line/ostracon/types"
+	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/x/ibc/testing/simapp/helpers"

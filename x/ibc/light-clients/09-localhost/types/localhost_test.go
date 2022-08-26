@@ -5,8 +5,8 @@ import (
 
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/stretchr/testify/suite"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/stretchr/testify/suite"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"

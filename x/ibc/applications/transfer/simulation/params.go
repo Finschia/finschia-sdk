@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"math/rand"
 
+	gogotypes "github.com/gogo/protobuf/types"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/simulation"
-	gogotypes "github.com/gogo/protobuf/types"
 
 	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 )

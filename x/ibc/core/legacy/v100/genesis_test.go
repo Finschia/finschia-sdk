@@ -6,8 +6,8 @@ import (
 	"github.com/line/lbm-sdk/client"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
-	"github.com/stretchr/testify/suite"
 	tmtypes "github.com/line/ostracon/types"
+	"github.com/stretchr/testify/suite"
 
 	ibcclient "github.com/line/lbm-sdk/x/ibc/core/02-client"
 	clientv100 "github.com/line/lbm-sdk/x/ibc/core/02-client/legacy/v100"

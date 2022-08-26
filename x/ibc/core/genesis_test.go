@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/line/lbm-sdk/codec"
-	"github.com/stretchr/testify/suite"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/stretchr/testify/suite"
 
 	ibc "github.com/line/lbm-sdk/x/ibc/core"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
@@ -15,8 +15,8 @@ import (
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	"github.com/line/lbm-sdk/x/ibc/core/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	localhosttypes "github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )

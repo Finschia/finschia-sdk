@@ -5,8 +5,8 @@ import (
 
 	"github.com/line/lbm-sdk/baseapp"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/stretchr/testify/suite"
 	"github.com/line/ostracon/crypto"
+	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"

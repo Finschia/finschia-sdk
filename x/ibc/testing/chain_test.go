@@ -3,8 +3,8 @@ package ibctesting_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
 	tmtypes "github.com/line/ostracon/types"
+	"github.com/stretchr/testify/require"
 
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 	"github.com/line/lbm-sdk/x/ibc/testing/mock"

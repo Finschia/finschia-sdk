@@ -9,8 +9,8 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/version"
 	"github.com/line/lbm-sdk/x/auth/tx"
-	"github.com/spf13/cobra"
 	abci "github.com/line/ostracon/abci/types"
+	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/host/types"
 	icatypes "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/types"

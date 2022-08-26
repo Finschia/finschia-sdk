@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/stretchr/testify/suite"
 	abcitypes "github.com/line/ostracon/abci/types"
 	tmprotostate "github.com/line/ostracon/proto/ostracon/state"
 	tmstate "github.com/line/ostracon/state"
+	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"

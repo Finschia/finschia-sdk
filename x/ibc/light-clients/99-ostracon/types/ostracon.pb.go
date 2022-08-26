@@ -6,11 +6,11 @@ package types
 import (
 	fmt "fmt"
 	_go "github.com/confio/ics23/go"
-	types "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	types1 "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
+	types "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	types1 "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	github_com_tendermint_tendermint_libs_bytes "github.com/line/ostracon/libs/bytes"
 	types2 "github.com/line/ostracon/proto/ostracon/types"
 	_ "google.golang.org/protobuf/types/known/durationpb"

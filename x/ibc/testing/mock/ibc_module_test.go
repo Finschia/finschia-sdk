@@ -2,7 +2,7 @@ package mock_test
 
 import (
 	"testing"
-	
+
 	"github.com/stretchr/testify/require"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"

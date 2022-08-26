@@ -3,9 +3,9 @@ package ica_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/suite"
 	"github.com/line/ostracon/libs/log"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
 
 	ica "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts"

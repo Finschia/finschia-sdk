@@ -8,8 +8,8 @@ import (
 	"github.com/line/lbm-sdk/store/iavl"
 	"github.com/line/lbm-sdk/store/rootmulti"
 	storetypes "github.com/line/lbm-sdk/store/types"
-	"github.com/stretchr/testify/suite"
 	abci "github.com/line/ostracon/abci/types"
+	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"

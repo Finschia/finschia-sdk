@@ -5,9 +5,9 @@ package types
 
 import (
 	fmt "fmt"
-	types "github.com/line/lbm-sdk/codec/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
+	types "github.com/line/lbm-sdk/codec/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"

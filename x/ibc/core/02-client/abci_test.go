@@ -4,15 +4,15 @@ import (
 	"testing"
 
 	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
-	"github.com/stretchr/testify/suite"
 	abci "github.com/line/ostracon/abci/types"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/stretchr/testify/suite"
 
 	client "github.com/line/lbm-sdk/x/ibc/core/02-client"
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	localhosttypes "github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 

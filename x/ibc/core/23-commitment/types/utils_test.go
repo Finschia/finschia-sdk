@@ -3,9 +3,9 @@ package types_test
 import (
 	"fmt"
 
-	"github.com/stretchr/testify/require"
 	abci "github.com/line/ostracon/abci/types"
 	crypto "github.com/line/ostracon/proto/ostracon/crypto"
+	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 )

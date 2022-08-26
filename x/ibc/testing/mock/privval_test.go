@@ -3,9 +3,9 @@ package mock_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	tmtypes "github.com/line/ostracon/types"
+	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/x/ibc/testing/mock"
 )

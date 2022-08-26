@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/stretchr/testify/suite"
 	"github.com/line/ostracon/crypto"
+	"github.com/stretchr/testify/suite"
 
 	icatypes "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/types"
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"

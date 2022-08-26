@@ -1,9 +1,9 @@
 package exported
 
 import (
+	proto "github.com/gogo/protobuf/proto"
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
-	proto "github.com/gogo/protobuf/proto"
 )
 
 // Status represents the status of a client

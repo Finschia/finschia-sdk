@@ -12,9 +12,9 @@ import (
 	"github.com/line/lbm-sdk/types/module"
 	"github.com/line/lbm-sdk/x/genutil"
 	genutiltest "github.com/line/lbm-sdk/x/genutil/client/testutil"
+	"github.com/line/ostracon/libs/log"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
-	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 	simcmd "github.com/line/lbm-sdk/x/ibc/testing/simapp/simd/cmd"

@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/gogo/protobuf/proto"
 	sdk "github.com/line/lbm-sdk/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
-	"github.com/gogo/protobuf/proto"
-	"github.com/stretchr/testify/suite"
 	abcitypes "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto"
 	tmprotostate "github.com/line/ostracon/proto/ostracon/state"
 	tmstate "github.com/line/ostracon/state"
+	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/host/types"
 	icatypes "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/types"

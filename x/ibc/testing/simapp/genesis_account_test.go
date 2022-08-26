@@ -7,8 +7,8 @@ import (
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	sdk "github.com/line/lbm-sdk/types"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	"github.com/stretchr/testify/require"
 	"github.com/line/ostracon/crypto"
+	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )

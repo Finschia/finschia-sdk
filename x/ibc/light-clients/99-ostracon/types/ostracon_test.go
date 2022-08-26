@@ -6,10 +6,10 @@ import (
 
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/stretchr/testify/suite"
 	tmbytes "github.com/line/ostracon/libs/bytes"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	tmtypes "github.com/line/ostracon/types"
+	"github.com/stretchr/testify/suite"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"

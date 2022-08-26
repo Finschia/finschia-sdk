@@ -6,9 +6,9 @@ import (
 	"sort"
 	"strings"
 
+	proto "github.com/gogo/protobuf/proto"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	proto "github.com/gogo/protobuf/proto"
 
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"

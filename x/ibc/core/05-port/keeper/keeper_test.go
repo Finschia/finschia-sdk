@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	sdk "github.com/line/lbm-sdk/types"
+	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/x/ibc/core/05-port/keeper"
 	"github.com/line/lbm-sdk/x/ibc/testing/simapp"

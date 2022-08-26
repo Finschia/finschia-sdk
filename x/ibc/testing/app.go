@@ -16,11 +16,11 @@ import (
 	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
-	"github.com/stretchr/testify/require"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	tmtypes "github.com/line/ostracon/types"
+	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/x/ibc/core/keeper"

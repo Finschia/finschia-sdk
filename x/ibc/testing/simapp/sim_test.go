@@ -23,10 +23,10 @@ import (
 	"github.com/line/lbm-sdk/x/simulation"
 	slashingtypes "github.com/line/lbm-sdk/x/slashing/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
-	"github.com/stretchr/testify/require"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"
 
 	ibctransfertypes "github.com/line/lbm-sdk/x/ibc/applications/transfer/types"

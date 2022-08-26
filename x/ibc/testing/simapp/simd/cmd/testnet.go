@@ -25,12 +25,12 @@ import (
 	"github.com/line/lbm-sdk/x/genutil"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
-	"github.com/spf13/cobra"
 	tmconfig "github.com/line/ostracon/config"
 	tmos "github.com/line/ostracon/libs/os"
 	tmrand "github.com/line/ostracon/libs/rand"
 	"github.com/line/ostracon/types"
 	tmtime "github.com/line/ostracon/types/time"
+	"github.com/spf13/cobra"
 )
 
 var (
