@@ -127,7 +127,8 @@
       "url": "./tmp-swagger-gen/ibc/core/client/v1/query.swagger.json",
       "operationIds": {
         "rename": {
-          "Params": "IBCClientParams"
+          "Params": "IBCClientParams",
+          "UpgradedConsensusState": "IBCUpgradedConsensusState"
         }
       }
     },
@@ -176,7 +177,7 @@
           "Approvers": "TokenApprovers",
           "Supply": "TokenSupply",
           "Minted": "TokenMinted",
-          "Burnt": "TokenBurnt",
+          "Burnt": "TokenBurnt"
         }
       }
     },
@@ -189,7 +190,7 @@
           "AllBalances": "CollectionAllBalances",
           "GranteeGrants": "CollectionGranteeGrants",
           "Approved": "CollectionApproved",
-          "Approvers": "CollectionApprovers",
+          "Approvers": "CollectionApprovers"
         }
       }
     },
