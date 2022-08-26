@@ -23,4 +23,5 @@ var (
 	ErrUnbondingPeriodExpired  = sdkerrors.Register(SubModuleName, 12, "time since latest trusted state has passed the unbonding period")
 	ErrInvalidProofSpecs       = sdkerrors.Register(SubModuleName, 13, "invalid proof specs")
 	ErrInvalidValidatorSet     = sdkerrors.Register(SubModuleName, 14, "invalid validator set")
+	ErrInvalidVoterSet         = sdkerrors.Register(SubModuleName, 99, "invalid voter set")
 )

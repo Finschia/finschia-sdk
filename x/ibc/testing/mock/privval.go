@@ -23,7 +23,7 @@ func NewPV() PV {
 
 // GetPubKey implements PrivValidator interface
 func (pv PV) GetPubKey() (crypto.PubKey, error) {
-	return cryptocodec.ToTmPubKeyInterface(pv.PrivKey.PubKey())
+	return cryptocodec.ToOcPubKeyInterface(pv.PrivKey.PubKey())
 }
 
 // SignVote implements PrivValidator interface
@@ -46,4 +46,8 @@ func (pv PV) SignProposal(chainID string, proposal *tmproto.Proposal) error {
 	}
 	proposal.Signature = sig
 	return nil
+}
+
+func (pv PV) GenerateVRFProof(message []byte) (crypto.Proof, error) {
+	return nil, nil
 }

@@ -20,10 +20,11 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 	altPubKey, err := altPrivVal.GetPubKey()
 	suite.Require().NoError(err)
 
-	altVal := tmtypes.NewValidator(altPubKey, 4)
+	altVal := ibctesting.NewTestValidator(altPubKey, 4)
 
 	// Create bothValSet with both suite validator and altVal
 	bothValSet := tmtypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
+	bothVoterSet := tmtypes.WrapValidatorsToVoterSet(bothValSet.Validators) // OSTRACON_CODE
 	bothValsHash := bothValSet.Hash()
 	// Create alternative validator set with only altVal
 	altValSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{altVal})
@@ -57,8 +58,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -72,8 +73,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+3), height, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+3), height, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -87,8 +88,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+3), height, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Hour), bothValSet, bothValSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+3), height, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Hour), bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -102,8 +103,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			heightMinus1,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now.Add(time.Minute), bothValSet, bothValSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now.Add(time.Minute), bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -117,8 +118,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), suite.valsHash),
 			heightMinus3,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -132,8 +133,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), suite.valsHash),
 			heightMinus3,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainIDRevision0, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainIDRevision0, int64(height.RevisionHeight+1), heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainIDRevision0, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainIDRevision0, int64(height.RevisionHeight+1), heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -147,8 +148,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), suite.valsHash),
 			heightMinus3,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainIDRevision0, 3, heightMinus1, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainIDRevision0, 3, heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainIDRevision0, 3, heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainIDRevision0, 3, heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -162,8 +163,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), suite.valsHash),
 			heightMinus3,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainIDRevision1, 1, heightMinus1, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainIDRevision1, 1, heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainIDRevision1, 1, heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainIDRevision1, 1, heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -177,8 +178,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), suite.valsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, suite.valSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -192,8 +193,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -207,8 +208,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+3), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+3), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -222,8 +223,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader("ethermint", int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader("ethermint", int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader("ethermint", int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader("ethermint", int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -237,8 +238,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), suite.valsHash),
 			heightMinus3,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -252,8 +253,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), suite.valsHash),
 			heightMinus3,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus3, suite.now.Add(time.Minute), bothValSet, bothValSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus3, suite.now.Add(time.Minute), bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -267,8 +268,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -282,8 +283,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -308,8 +309,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now.Add(time.Minute), bothValSet, bothValSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now.Add(time.Minute), bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -323,8 +324,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				ClientId: chainID,
 			},
 			suite.now.Add(trustingPeriod),
@@ -338,8 +339,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, suite.valSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, suite.valSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -353,8 +354,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, altValSet, bothValSet, altSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, altValSet, bothValSet, tmtypes.WrapValidatorsToVoterSet(altValSet.Validators), bothVoterSet, altSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -368,8 +369,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), altValSet, bothValSet, altSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), altValSet, bothValSet, tmtypes.WrapValidatorsToVoterSet(altValSet.Validators), bothVoterSet, altSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -383,8 +384,8 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, altValSet, bothValSet, altSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), altValSet, bothValSet, altSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, altValSet, bothValSet, tmtypes.WrapValidatorsToVoterSet(altValSet.Validators), bothVoterSet, altSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), altValSet, bothValSet, tmtypes.WrapValidatorsToVoterSet(altValSet.Validators), bothVoterSet, altSigners),
 				ClientId: chainID,
 			},
 			suite.now,

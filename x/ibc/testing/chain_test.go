@@ -19,8 +19,8 @@ func TestCreateSortedSignerArray(t *testing.T) {
 	pubKey2, err := privVal2.GetPubKey()
 	require.NoError(t, err)
 
-	validator1 := tmtypes.NewValidator(pubKey1, 1)
-	validator2 := tmtypes.NewValidator(pubKey2, 2)
+	validator1 := ibctesting.NewTestValidator(pubKey1, 1)
+	validator2 := ibctesting.NewTestValidator(pubKey2, 2)
 
 	expected := []tmtypes.PrivValidator{privVal2, privVal1}
 

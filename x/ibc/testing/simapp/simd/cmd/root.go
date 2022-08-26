@@ -28,6 +28,7 @@ import (
 	"github.com/line/ostracon/libs/log"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
@@ -231,8 +232,10 @@ type appCreator struct {
 func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts servertypes.AppOptions) servertypes.Application {
 	var cache sdk.MultiStorePersistentCache
 
+	ibCacheMetricsProvider := baseapp.MetricsProvider(cast.ToBool(viper.GetBool(server.FlagPrometheus)))
 	if cast.ToBool(appOpts.Get(server.FlagInterBlockCache)) {
-		cache = store.NewCommitKVStoreCacheManager()
+		cache = store.NewCommitKVStoreCacheManager(
+			cast.ToInt(appOpts.Get(server.FlagInterBlockCacheSize)), ibCacheMetricsProvider)
 	}
 
 	skipUpgradeHeights := make(map[int64]bool)

@@ -52,11 +52,12 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 
 	now := time.Now().UTC()
 
-	val := tmtypes.NewValidator(pubKey, 10)
+	val := ibctesting.NewTestValidator(pubKey, 10)
 	valSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{val})
+	voterSet := tmtypes.WrapValidatorsToVoterSet(valSet.Validators)
 
 	heightMinus1 := types.NewHeight(0, height-1)
-	header := suite.chainA.CreateTMClientHeader(chainID, int64(clientHeight.RevisionHeight), heightMinus1, now, valSet, valSet, []tmtypes.PrivValidator{privVal})
+	header := suite.chainA.CreateTMClientHeader(chainID, int64(clientHeight.RevisionHeight), heightMinus1, now, valSet, valSet, voterSet, voterSet, []tmtypes.PrivValidator{privVal})
 
 	testCases := []struct {
 		name     string

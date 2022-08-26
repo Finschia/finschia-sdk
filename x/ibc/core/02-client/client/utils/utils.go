@@ -150,8 +150,20 @@ func QueryTendermintHeader(clientCtx client.Context) (ibctmtypes.Header, int64, 
 		return ibctmtypes.Header{}, 0, err
 	}
 
+	page = 0
+	count = 10_000
+	voters, err := node.Voters(context.Background(), &height, &page, &count)
+	if err != nil {
+		return ibctmtypes.Header{}, 0, err
+	}
+
 	protoCommit := commit.SignedHeader.ToProto()
 	protoValset, err := tmtypes.NewValidatorSet(validators.Validators).ToProto()
+	if err != nil {
+		return ibctmtypes.Header{}, 0, err
+	}
+
+	protoVoterSet, err := tmtypes.WrapValidatorsToVoterSet(voters.Voters).ToProto()
 	if err != nil {
 		return ibctmtypes.Header{}, 0, err
 	}
@@ -159,6 +171,7 @@ func QueryTendermintHeader(clientCtx client.Context) (ibctmtypes.Header, int64, 
 	header := ibctmtypes.Header{
 		SignedHeader: protoCommit,
 		ValidatorSet: protoValset,
+		VoterSet:     protoVoterSet,
 	}
 
 	return header, height, nil

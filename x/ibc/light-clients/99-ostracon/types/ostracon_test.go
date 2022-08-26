@@ -19,10 +19,10 @@ import (
 )
 
 const (
-	chainID                        = "gaia"
-	chainIDRevision0               = "gaia-revision-0"
-	chainIDRevision1               = "gaia-revision-1"
-	clientID                       = "gaiamainnet"
+	chainID                        = "lbm"
+	chainIDRevision0               = "lbm-revision-0"
+	chainIDRevision1               = "lbm-revision-1"
+	clientID                       = "lbmmainnet"
 	trustingPeriod   time.Duration = time.Hour * 24 * 7 * 2
 	ubdPeriod        time.Duration = time.Hour * 24 * 7 * 3
 	maxClockDrift    time.Duration = time.Second * 10
@@ -83,10 +83,11 @@ func (suite *TendermintTestSuite) SetupTest() {
 
 	heightMinus1 := clienttypes.NewHeight(0, height.RevisionHeight-1)
 
-	val := tmtypes.NewValidator(pubKey, 10)
+	val := ibctesting.NewTestValidator(pubKey, 10)
 	suite.valSet = tmtypes.NewValidatorSet([]*tmtypes.Validator{val})
 	suite.valsHash = suite.valSet.Hash()
-	suite.header = suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight), heightMinus1, suite.now, suite.valSet, suite.valSet, []tmtypes.PrivValidator{suite.privVal})
+	voterSet := tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators)
+	suite.header = suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight), heightMinus1, suite.now, suite.valSet, suite.valSet, voterSet, voterSet, []tmtypes.PrivValidator{suite.privVal})
 	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{Height: 1, Time: suite.now})
 }
 

@@ -9,6 +9,7 @@ import (
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/store"
+	"github.com/line/lbm-sdk/store/cache"
 	sdk "github.com/line/lbm-sdk/types"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
@@ -54,7 +55,8 @@ func fauxMerkleModeOpt(bapp *baseapp.BaseApp) {
 // interBlockCacheOpt returns a BaseApp option function that sets the persistent
 // inter-block write-through cache.
 func interBlockCacheOpt() func(*baseapp.BaseApp) {
-	return baseapp.SetInterBlockCache(store.NewCommitKVStoreCacheManager())
+	return baseapp.SetInterBlockCache(store.NewCommitKVStoreCacheManager(
+		cache.DefaultCommitKVStoreCacheSize, cache.NopMetricsProvider()))
 }
 
 func TestFullAppSimulation(t *testing.T) {

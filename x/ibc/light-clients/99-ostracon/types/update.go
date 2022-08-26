@@ -182,7 +182,7 @@ func checkValidity(
 		)
 	}
 
-	tmTrustedValidators, err := tmtypes.ValidatorSetFromProto(header.TrustedValidators)
+	tmTrustedVoters, err := tmtypes.VoterSetFromProto(header.TrustedVoters)
 	if err != nil {
 		return sdkerrors.Wrap(err, "trusted validator set in not tendermint validator set type")
 	}
@@ -192,7 +192,7 @@ func checkValidity(
 		return sdkerrors.Wrap(err, "signed header in not tendermint signed header type")
 	}
 
-	tmValidatorSet, err := tmtypes.ValidatorSetFromProto(header.ValidatorSet)
+	tmVoterSet, err := tmtypes.VoterSetFromProto(header.VoterSet)
 	if err != nil {
 		return sdkerrors.Wrap(err, "validator set in not tendermint validator set type")
 	}
@@ -233,9 +233,9 @@ func checkValidity(
 	// - assert header timestamp is not past the trusting period
 	// - assert header timestamp is past latest stored consensus state timestamp
 	// - assert that a TrustLevel proportion of TrustedValidators signed new Commit
-	err = light.Verify(
+	err = light.VerifyWithVoterSet(
 		&signedHeader,
-		tmTrustedValidators, tmSignedHeader, tmValidatorSet,
+		tmTrustedVoters, tmSignedHeader, tmVoterSet,
 		clientState.TrustingPeriod, currentTimestamp, clientState.MaxClockDrift, clientState.TrustLevel.ToTendermint(),
 	)
 	if err != nil {
