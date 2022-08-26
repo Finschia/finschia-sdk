@@ -1,19 +1,19 @@
 syntax = "proto3";
-package ibc.lightclients.ostracon.v1;
 
-option go_package = "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types";
+package ibc.lightclients.tendermint.v1;
 
-import "ostracon/types/validator.proto";
-import "ostracon/types/voter.proto";
-import "ostracon/types/types.proto";
-import "confio/proofs.proto";
+option go_package = "github.com/cosmos/ibc-go/v3/modules/light-clients/07-tendermint/types";
+
+import "tendermint/types/validator.proto";
+import "tendermint/types/types.proto";
+import "proofs.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 import "ibc/core/client/v1/client.proto";
 import "ibc/core/commitment/v1/commitment.proto";
 import "gogoproto/gogo.proto";
 
-// ClientState from Ostracon tracks the current validator set, latest height,
+// ClientState from Tendermint tracks the current validator set, latest height,
 // and a possible frozen height.
 message ClientState {
   option (gogoproto.goproto_getters) = false;
@@ -44,10 +44,12 @@ message ClientState {
   repeated ics23.ProofSpec proof_specs = 8 [(gogoproto.moretags) = "yaml:\"proof_specs\""];
 
   // Path at which next upgraded client will be committed.
-  // Each element corresponds to the key for a single CommitmentProof in the chained proof.
-  // NOTE: ClientState must stored under `{upgradePath}/{upgradeHeight}/clientState`
-  // ConsensusState must be stored under `{upgradepath}/{upgradeHeight}/consensusState`
-  // For SDK chains using the default upgrade module, upgrade_path should be []string{"upgrade", "upgradedIBCState"}`
+  // Each element corresponds to the key for a single CommitmentProof in the
+  // chained proof. NOTE: ClientState must stored under
+  // `{upgradePath}/{upgradeHeight}/clientState` ConsensusState must be stored
+  // under `{upgradepath}/{upgradeHeight}/consensusState` For SDK chains using
+  // the default upgrade module, upgrade_path should be []string{"upgrade",
+  // "upgradedIBCState"}`
   repeated string upgrade_path = 9 [(gogoproto.moretags) = "yaml:\"upgrade_path\""];
 
   // This flag, when set to true, will allow governance to recover a client
@@ -58,7 +60,7 @@ message ClientState {
   bool allow_update_after_misbehaviour = 11 [(gogoproto.moretags) = "yaml:\"allow_update_after_misbehaviour\""];
 }
 
-// ConsensusState defines the consensus state from Ostracon.
+// ConsensusState defines the consensus state from Tendermint.
 message ConsensusState {
   option (gogoproto.goproto_getters) = false;
 
@@ -68,7 +70,7 @@ message ConsensusState {
   // commitment root (i.e app hash)
   ibc.core.commitment.v1.MerkleRoot root                 = 2 [(gogoproto.nullable) = false];
   bytes                             next_validators_hash = 3 [
-    (gogoproto.casttype) = "github.com/line/ostracon/libs/bytes.HexBytes",
+    (gogoproto.casttype) = "github.com/tendermint/tendermint/libs/bytes.HexBytes",
     (gogoproto.moretags) = "yaml:\"next_validators_hash\""
   ];
 }
@@ -83,9 +85,9 @@ message Misbehaviour {
   Header header_2  = 3 [(gogoproto.customname) = "Header2", (gogoproto.moretags) = "yaml:\"header_2\""];
 }
 
-// Header defines the Ostracon client consensus Header.
+// Header defines the Tendermint client consensus Header.
 // It encapsulates all the information necessary to update from a trusted
-// Ostracon ConsensusState. The inclusion of TrustedHeight and
+// Tendermint ConsensusState. The inclusion of TrustedHeight and
 // TrustedValidators allows this update to process correctly, so long as the
 // ConsensusState for the TrustedHeight exists, this removes race conditions
 // among relayers The SignedHeader and ValidatorSet are the new untrusted update
@@ -96,18 +98,17 @@ message Misbehaviour {
 // hash to TrustedConsensusState.NextValidatorsHash since that is the last
 // trusted validator set at the TrustedHeight.
 message Header {
-  .ostracon.types.SignedHeader signed_header = 1
+  .tendermint.types.SignedHeader signed_header = 1
       [(gogoproto.embed) = true, (gogoproto.moretags) = "yaml:\"signed_header\""];
 
-  .ostracon.types.ValidatorSet validator_set  = 2 [(gogoproto.moretags) = "yaml:\"validator_set\""];
-  .ostracon.types.VoterSet     voter_set      = 3 [(gogoproto.moretags) = "yaml:\"voter_set\""];
-  ibc.core.client.v1.Height    trusted_height = 4
+  .tendermint.types.ValidatorSet validator_set  = 2 [(gogoproto.moretags) = "yaml:\"validator_set\""];
+  ibc.core.client.v1.Height      trusted_height = 3
       [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"trusted_height\""];
-  .ostracon.types.ValidatorSet trusted_validators = 5 [(gogoproto.moretags) = "yaml:\"trusted_validators\""];
-  .ostracon.types.VoterSet     trusted_voters     = 6 [(gogoproto.moretags) = "yaml:\"trusted_voters\""];
+  .tendermint.types.ValidatorSet trusted_validators = 4 [(gogoproto.moretags) = "yaml:\"trusted_validators\""];
 }
 
-// Fraction defines the protobuf message type for tmmath.Fraction that only supports positive values.
+// Fraction defines the protobuf message type for tmmath.Fraction that only
+// supports positive values.
 message Fraction {
   uint64 numerator   = 1;
   uint64 denominator = 2;
