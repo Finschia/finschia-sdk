@@ -20069,19 +20069,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             description: >-
               QueryChannelsResponse is the response type for the Query/Channels
               RPC method.
@@ -20437,19 +20439,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             description: >-
               QueryChannelResponse is the response type for the Query/Channel
               RPC method.
@@ -20880,19 +20884,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: |-
               QueryChannelClientStateResponse is the Response type for the
               Query/QueryChannelClientState RPC method
@@ -21303,19 +21309,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: |-
               QueryChannelClientStateResponse is the Response type for the
               Query/QueryChannelClientState RPC method
@@ -21567,19 +21575,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: |-
               QuerySequenceResponse is the request type for the
               Query/QueryNextSequenceReceiveResponse RPC method
@@ -21870,19 +21880,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: |-
               QueryPacketAcknowledgemetsResponse is the request type for the
               Query/QueryPacketAcknowledgements RPC method
@@ -22144,6 +22156,15 @@ paths:
           required: false
           type: boolean
           format: boolean
+        - name: packet_commitment_sequences
+          description: list of packet sequences.
+          in: query
+          required: false
+          type: array
+          items:
+            type: string
+            format: uint64
+          collectionFormat: multi
       tags:
         - Query
   '/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_acks/{sequence}':
@@ -22178,19 +22199,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: >-
               QueryPacketAcknowledgementResponse defines the client query
               response for a
@@ -22489,19 +22512,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: |-
               QueryPacketCommitmentsResponse is the request type for the
               Query/QueryPacketCommitments RPC method
@@ -22769,9 +22794,9 @@ paths:
     get:
       summary: >-
         UnreceivedAcks returns all the unreceived IBC acknowledgements
-        associated with a
+        associated
 
-        channel and sequences.
+        with a channel and sequences.
       operationId: UnreceivedAcks
       responses:
         '200':
@@ -22799,19 +22824,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: |-
               QueryUnreceivedAcksResponse is the response type for the
               Query/UnreceivedAcks RPC method
@@ -23061,19 +23088,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: |-
               QueryUnreceivedPacketsResponse is the response type for the
               Query/UnreceivedPacketCommitments RPC method
@@ -23321,19 +23350,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: >-
               QueryPacketCommitmentResponse defines the client query response
               for a packet
@@ -23554,7 +23585,9 @@ paths:
     get:
       summary: >-
         PacketReceipt queries if a given packet sequence has been received on
-        the queried chain
+        the
+
+        queried chain
       operationId: PacketReceipt
       responses:
         '200':
@@ -23584,25 +23617,27 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: >-
               QueryPacketReceiptResponse defines the client query response for a
-              packet receipt
+              packet
 
-              which also includes a proof, and the height from which the proof
-              was
+              receipt which also includes a proof, and the height from which the
+              proof was
 
               retrieved
         default:
@@ -23947,19 +23982,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: |-
               QueryConnectionChannelsResponse is the Response type for the
               Query/QueryConnectionChannels RPC method
@@ -25692,7 +25729,9 @@ paths:
                       types.
             description: >-
               QueryClientParamsResponse is the response type for the
-              Query/ClientParams RPC method.
+              Query/ClientParams RPC
+
+              method.
         default:
           description: An unexpected error response
           schema:
@@ -26569,19 +26608,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             description: >-
               QueryClientStateResponse is the response type for the
               Query/ClientState RPC
@@ -26787,6 +26828,220 @@ paths:
           type: string
       tags:
         - Query
+  '/ibc/core/client/v1/client_status/{client_id}':
+    get:
+      summary: Status queries the status of an IBC client.
+      operationId: ClientStatus
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+            description: >-
+              QueryClientStatusResponse is the response type for the
+              Query/ClientStatus RPC
+
+              method. It returns the current status of the IBC client.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := ptypes.MarshalAny(foo)
+                         ...
+                         foo := &pb.Foo{}
+                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
+      parameters:
+        - name: client_id
+          description: client unique identifier
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   '/ibc/core/client/v1/consensus_states/{client_id}':
     get:
       summary: |-
@@ -26818,18 +27073,20 @@ paths:
                           title: the height within the given revision
                       description: >-
                         Normally the RevisionHeight is incremented at each
-                        height while keeping RevisionNumber
+                        height while keeping
 
-                        the same. However some consensus algorithms may choose
-                        to reset the
+                        RevisionNumber the same. However some consensus
+                        algorithms may choose to
 
-                        height in certain conditions e.g. hard forks,
-                        state-machine breaking changes
+                        reset the height in certain conditions e.g. hard forks,
+                        state-machine
 
-                        In these cases, the RevisionNumber is incremented so
-                        that height continues to
+                        breaking changes In these cases, the RevisionNumber is
+                        incremented so that
 
-                        be monitonically increasing even as the RevisionHeight
+                        height continues to be monitonically increasing even as
+                        the RevisionHeight
+
                         gets reset
                     consensus_state:
                       type: object
@@ -27011,7 +27268,9 @@ paths:
                       title: consensus state
                   description: >-
                     ConsensusStateWithHeight defines a consensus state with an
-                    additional height field.
+                    additional height
+
+                    field.
                 title: consensus states associated with the identifier
               pagination:
                 title: pagination response
@@ -27505,19 +27764,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: >-
               QueryConsensusStateResponse is the response type for the
               Query/ConsensusState
@@ -27742,7 +28003,7 @@ paths:
           format: boolean
       tags:
         - Query
-  '/ibc/core/client/v1/upgraded_client_states/{client_id}':
+  /ibc/core/client/v1/upgraded_client_states:
     get:
       summary: UpgradedClientState queries an Upgraded IBC light client.
       operationId: UpgradedClientState
@@ -27924,11 +28185,9 @@ paths:
                         "value": "1.212s"
                       }
                 title: client state associated with the request identifier
-            description: >-
+            description: |-
               QueryUpgradedClientStateResponse is the response type for the
-              Query/UpgradedClientState RPC
-
-              method.
+              Query/UpgradedClientState RPC method.
         default:
           description: An unexpected error response
           schema:
@@ -28118,20 +28377,382 @@ paths:
                           "@type": "type.googleapis.com/google.protobuf.Duration",
                           "value": "1.212s"
                         }
-      parameters:
-        - name: client_id
-          description: client state unique identifier
-          in: path
-          required: true
-          type: string
-        - name: plan_height
-          description: |-
-            plan height of the current chain must be sent in request
-            as this is the height under which upgraded client state is stored.
-          in: query
-          required: false
-          type: string
-          format: int64
+      tags:
+        - Query
+  /ibc/core/client/v1/upgraded_consensus_states:
+    get:
+      summary: UpgradedConsensusState queries an Upgraded IBC consensus state.
+      operationId: IBCUpgradedConsensusState
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              upgraded_consensus_state:
+                type: object
+                properties:
+                  type_url:
+                    type: string
+                    description: >-
+                      A URL/resource name that uniquely identifies the type of
+                      the serialized
+
+                      protocol buffer message. This string must contain at least
+
+                      one "/" character. The last segment of the URL's path must
+                      represent
+
+                      the fully qualified name of the type (as in
+
+                      `path/google.protobuf.Duration`). The name should be in a
+                      canonical form
+
+                      (e.g., leading "." is not accepted).
+
+
+                      In practice, teams usually precompile into the binary all
+                      types that they
+
+                      expect it to use in the context of Any. However, for URLs
+                      which use the
+
+                      scheme `http`, `https`, or no scheme, one can optionally
+                      set up a type
+
+                      server that maps type URLs to message definitions as
+                      follows:
+
+
+                      * If no scheme is provided, `https` is assumed.
+
+                      * An HTTP GET on the URL must yield a
+                      [google.protobuf.Type][]
+                        value in binary format, or produce an error.
+                      * Applications are allowed to cache lookup results based
+                      on the
+                        URL, or have them precompiled into a binary to avoid any
+                        lookup. Therefore, binary compatibility needs to be preserved
+                        on changes to types. (Use versioned type names to manage
+                        breaking changes.)
+
+                      Note: this functionality is not currently available in the
+                      official
+
+                      protobuf release, and it is not used for type URLs
+                      beginning with
+
+                      type.googleapis.com.
+
+
+                      Schemes other than `http`, `https` (or the empty scheme)
+                      might be
+
+                      used with implementation specific semantics.
+                  value:
+                    type: string
+                    format: byte
+                    description: >-
+                      Must be a valid serialized protocol buffer of the above
+                      specified type.
+                description: >-
+                  `Any` contains an arbitrary serialized protocol buffer message
+                  along with a
+
+                  URL that describes the type of the serialized message.
+
+
+                  Protobuf library provides support to pack/unpack Any values in
+                  the form
+
+                  of utility functions or additional generated methods of the
+                  Any type.
+
+
+                  Example 1: Pack and unpack a message in C++.
+
+                      Foo foo = ...;
+                      Any any;
+                      any.PackFrom(foo);
+                      ...
+                      if (any.UnpackTo(&foo)) {
+                        ...
+                      }
+
+                  Example 2: Pack and unpack a message in Java.
+
+                      Foo foo = ...;
+                      Any any = Any.pack(foo);
+                      ...
+                      if (any.is(Foo.class)) {
+                        foo = any.unpack(Foo.class);
+                      }
+
+                   Example 3: Pack and unpack a message in Python.
+
+                      foo = Foo(...)
+                      any = Any()
+                      any.Pack(foo)
+                      ...
+                      if any.Is(Foo.DESCRIPTOR):
+                        any.Unpack(foo)
+                        ...
+
+                   Example 4: Pack and unpack a message in Go
+
+                       foo := &pb.Foo{...}
+                       any, err := ptypes.MarshalAny(foo)
+                       ...
+                       foo := &pb.Foo{}
+                       if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                         ...
+                       }
+
+                  The pack methods provided by protobuf library will by default
+                  use
+
+                  'type.googleapis.com/full.type.name' as the type URL and the
+                  unpack
+
+                  methods only use the fully qualified type name after the last
+                  '/'
+
+                  in the type URL, for example "foo.bar.com/x/y.z" will yield
+                  type
+
+                  name "y.z".
+
+
+
+                  JSON
+
+                  ====
+
+                  The JSON representation of an `Any` value uses the regular
+
+                  representation of the deserialized, embedded message, with an
+
+                  additional field `@type` which contains the type URL. Example:
+
+                      package google.profile;
+                      message Person {
+                        string first_name = 1;
+                        string last_name = 2;
+                      }
+
+                      {
+                        "@type": "type.googleapis.com/google.profile.Person",
+                        "firstName": <string>,
+                        "lastName": <string>
+                      }
+
+                  If the embedded message type is well-known and has a custom
+                  JSON
+
+                  representation, that representation will be embedded adding a
+                  field
+
+                  `value` which holds the custom JSON in addition to the `@type`
+
+                  field. Example (for message [google.protobuf.Duration][]):
+
+                      {
+                        "@type": "type.googleapis.com/google.protobuf.Duration",
+                        "value": "1.212s"
+                      }
+                title: Consensus state associated with the request identifier
+            description: |-
+              QueryUpgradedConsensusStateResponse is the response type for the
+              Query/UpgradedConsensusState RPC method.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                      description: >-
+                        A URL/resource name that uniquely identifies the type of
+                        the serialized
+
+                        protocol buffer message. This string must contain at
+                        least
+
+                        one "/" character. The last segment of the URL's path
+                        must represent
+
+                        the fully qualified name of the type (as in
+
+                        `path/google.protobuf.Duration`). The name should be in
+                        a canonical form
+
+                        (e.g., leading "." is not accepted).
+
+
+                        In practice, teams usually precompile into the binary
+                        all types that they
+
+                        expect it to use in the context of Any. However, for
+                        URLs which use the
+
+                        scheme `http`, `https`, or no scheme, one can optionally
+                        set up a type
+
+                        server that maps type URLs to message definitions as
+                        follows:
+
+
+                        * If no scheme is provided, `https` is assumed.
+
+                        * An HTTP GET on the URL must yield a
+                        [google.protobuf.Type][]
+                          value in binary format, or produce an error.
+                        * Applications are allowed to cache lookup results based
+                        on the
+                          URL, or have them precompiled into a binary to avoid any
+                          lookup. Therefore, binary compatibility needs to be preserved
+                          on changes to types. (Use versioned type names to manage
+                          breaking changes.)
+
+                        Note: this functionality is not currently available in
+                        the official
+
+                        protobuf release, and it is not used for type URLs
+                        beginning with
+
+                        type.googleapis.com.
+
+
+                        Schemes other than `http`, `https` (or the empty scheme)
+                        might be
+
+                        used with implementation specific semantics.
+                    value:
+                      type: string
+                      format: byte
+                      description: >-
+                        Must be a valid serialized protocol buffer of the above
+                        specified type.
+                  description: >-
+                    `Any` contains an arbitrary serialized protocol buffer
+                    message along with a
+
+                    URL that describes the type of the serialized message.
+
+
+                    Protobuf library provides support to pack/unpack Any values
+                    in the form
+
+                    of utility functions or additional generated methods of the
+                    Any type.
+
+
+                    Example 1: Pack and unpack a message in C++.
+
+                        Foo foo = ...;
+                        Any any;
+                        any.PackFrom(foo);
+                        ...
+                        if (any.UnpackTo(&foo)) {
+                          ...
+                        }
+
+                    Example 2: Pack and unpack a message in Java.
+
+                        Foo foo = ...;
+                        Any any = Any.pack(foo);
+                        ...
+                        if (any.is(Foo.class)) {
+                          foo = any.unpack(Foo.class);
+                        }
+
+                     Example 3: Pack and unpack a message in Python.
+
+                        foo = Foo(...)
+                        any = Any()
+                        any.Pack(foo)
+                        ...
+                        if any.Is(Foo.DESCRIPTOR):
+                          any.Unpack(foo)
+                          ...
+
+                     Example 4: Pack and unpack a message in Go
+
+                         foo := &pb.Foo{...}
+                         any, err := ptypes.MarshalAny(foo)
+                         ...
+                         foo := &pb.Foo{}
+                         if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                           ...
+                         }
+
+                    The pack methods provided by protobuf library will by
+                    default use
+
+                    'type.googleapis.com/full.type.name' as the type URL and the
+                    unpack
+
+                    methods only use the fully qualified type name after the
+                    last '/'
+
+                    in the type URL, for example "foo.bar.com/x/y.z" will yield
+                    type
+
+                    name "y.z".
+
+
+
+                    JSON
+
+                    ====
+
+                    The JSON representation of an `Any` value uses the regular
+
+                    representation of the deserialized, embedded message, with
+                    an
+
+                    additional field `@type` which contains the type URL.
+                    Example:
+
+                        package google.profile;
+                        message Person {
+                          string first_name = 1;
+                          string last_name = 2;
+                        }
+
+                        {
+                          "@type": "type.googleapis.com/google.profile.Person",
+                          "firstName": <string>,
+                          "lastName": <string>
+                        }
+
+                    If the embedded message type is well-known and has a custom
+                    JSON
+
+                    representation, that representation will be embedded adding
+                    a field
+
+                    `value` which holds the custom JSON in addition to the
+                    `@type`
+
+                    field. Example (for message [google.protobuf.Duration][]):
+
+                        {
+                          "@type": "type.googleapis.com/google.protobuf.Duration",
+                          "value": "1.212s"
+                        }
       tags:
         - Query
   '/ibc/core/connection/v1/client_connections/{client_id}':
@@ -28169,19 +28790,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: |-
               QueryClientConnectionsResponse is the response type for the
               Query/ClientConnections RPC method
@@ -28521,19 +29144,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             description: >-
               QueryConnectionsResponse is the response type for the
               Query/Connections RPC
@@ -28877,9 +29502,11 @@ paths:
                     format: uint64
                     description: >-
                       delay period that must pass before a consensus state can
-                      be used for packet-verification
+                      be used for
 
-                      NOTE: delay period logic is only implemented by some
+                      packet-verification NOTE: delay period logic is only
+                      implemented by some
+
                       clients.
                 description: >-
                   ConnectionEnd defines a stateful object on a chain connected
@@ -28908,19 +29535,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             description: >-
               QueryConnectionResponse is the response type for the
               Query/Connection RPC
@@ -29344,19 +29973,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: |-
               QueryConnectionClientStateResponse is the response type for the
               Query/ConnectionClientState RPC method
@@ -29762,19 +30393,21 @@ paths:
                     title: the height within the given revision
                 description: >-
                   Normally the RevisionHeight is incremented at each height
-                  while keeping RevisionNumber
+                  while keeping
 
-                  the same. However some consensus algorithms may choose to
-                  reset the
+                  RevisionNumber the same. However some consensus algorithms may
+                  choose to
 
-                  height in certain conditions e.g. hard forks, state-machine
-                  breaking changes
+                  reset the height in certain conditions e.g. hard forks,
+                  state-machine
 
-                  In these cases, the RevisionNumber is incremented so that
-                  height continues to
+                  breaking changes In these cases, the RevisionNumber is
+                  incremented so that
 
-                  be monitonically increasing even as the RevisionHeight gets
-                  reset
+                  height continues to be monitonically increasing even as the
+                  RevisionHeight
+
+                  gets reset
             title: |-
               QueryConnectionConsensusStateResponse is the response type for the
               Query/ConnectionConsensusState RPC method
@@ -29985,7 +30618,55 @@ paths:
           format: uint64
       tags:
         - Query
-  /ibc/applications/transfer/v1/denom_traces:
+  '/ibc/apps/transfer/v1/denom_hashes/{trace}':
+    get:
+      summary: DenomHash queries a denomination hash information.
+      operationId: DenomHash
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              hash:
+                type: string
+                description: hash (in hex format) of the denomination trace information.
+            description: >-
+              QueryDenomHashResponse is the response type for the
+              Query/DenomHash RPC
+
+              method.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: trace
+          description: 'The denomination trace ([port_id]/[channel_id])+/[denom]'
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /ibc/apps/transfer/v1/denom_traces:
     get:
       summary: DenomTraces queries all denomination traces.
       operationId: DenomTraces
@@ -30122,7 +30803,7 @@ paths:
           format: boolean
       tags:
         - Query
-  '/ibc/applications/transfer/v1/denom_traces/{hash}':
+  '/ibc/apps/transfer/v1/denom_traces/{hash}':
     get:
       summary: DenomTrace queries a denomination trace information.
       operationId: DenomTrace
@@ -30185,7 +30866,7 @@ paths:
           type: string
       tags:
         - Query
-  /ibc/applications/transfer/v1/params:
+  /ibc/apps/transfer/v1/params:
     get:
       summary: Params queries all parameters of the ibc-transfer module.
       operationId: IBCTransferParams
@@ -62034,17 +62715,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: |-
       QueryChannelClientStateResponse is the Response type for the
       Query/QueryChannelClientState RPC method
@@ -62232,17 +62916,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: |-
       QueryChannelClientStateResponse is the Response type for the
       Query/QueryChannelClientState RPC method
@@ -62336,17 +63023,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     description: >-
       QueryChannelResponse is the response type for the Query/Channel RPC
       method.
@@ -62472,17 +63162,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     description: >-
       QueryChannelsResponse is the response type for the Query/Channels RPC
       method.
@@ -62604,17 +63297,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: |-
       QueryConnectionChannelsResponse is the Response type for the
       Query/QueryConnectionChannels RPC method
@@ -62643,17 +63339,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: |-
       QuerySequenceResponse is the request type for the
       Query/QueryNextSequenceReceiveResponse RPC method
@@ -62682,17 +63381,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: |-
       QueryPacketAcknowledgementResponse defines the client query response for a
       packet which also includes a proof and the height from which the
@@ -62768,17 +63470,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: |-
       QueryPacketAcknowledgemetsResponse is the request type for the
       Query/QueryPacketAcknowledgements RPC method
@@ -62807,17 +63512,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: >-
       QueryPacketCommitmentResponse defines the client query response for a
       packet
@@ -62896,17 +63604,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: |-
       QueryPacketCommitmentsResponse is the request type for the
       Query/QueryPacketCommitments RPC method
@@ -62935,22 +63646,25 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: >-
       QueryPacketReceiptResponse defines the client query response for a packet
-      receipt
 
-      which also includes a proof, and the height from which the proof was
+      receipt which also includes a proof, and the height from which the proof
+      was
 
       retrieved
   ibc.core.channel.v1.QueryUnreceivedAcksResponse:
@@ -62976,17 +63690,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: |-
       QueryUnreceivedAcksResponse is the response type for the
       Query/UnreceivedAcks RPC method
@@ -63013,17 +63730,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: |-
       QueryUnreceivedPacketsResponse is the response type for the
       Query/UnreceivedPacketCommitments RPC method
@@ -63058,19 +63778,13 @@ definitions:
         type: string
         format: uint64
         title: the height within the given revision
-    description: >-
+    description: |-
       Normally the RevisionHeight is incremented at each height while keeping
-      RevisionNumber
-
-      the same. However some consensus algorithms may choose to reset the
-
-      height in certain conditions e.g. hard forks, state-machine breaking
-      changes
-
-      In these cases, the RevisionNumber is incremented so that height continues
-      to
-
-      be monitonically increasing even as the RevisionHeight gets reset
+      RevisionNumber the same. However some consensus algorithms may choose to
+      reset the height in certain conditions e.g. hard forks, state-machine
+      breaking changes In these cases, the RevisionNumber is incremented so that
+      height continues to be monitonically increasing even as the RevisionHeight
+      gets reset
     title: >-
       Height is a monotonically increasing data type
 
@@ -64236,17 +64950,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
       consensus_state:
         type: object
         properties:
@@ -64409,7 +65126,9 @@ definitions:
         title: consensus state
     description: >-
       ConsensusStateWithHeight defines a consensus state with an additional
-      height field.
+      height
+
+      field.
   ibc.core.client.v1.Params:
     type: object
     properties:
@@ -64433,7 +65152,9 @@ definitions:
             description: allowed_clients defines the list of allowed client state types.
     description: >-
       QueryClientParamsResponse is the response type for the Query/ClientParams
-      RPC method.
+      RPC
+
+      method.
   ibc.core.client.v1.QueryClientStateResponse:
     type: object
     properties:
@@ -64615,17 +65336,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     description: >-
       QueryClientStateResponse is the response type for the Query/ClientState
       RPC
@@ -64851,6 +65575,16 @@ definitions:
       RPC
 
       method.
+  ibc.core.client.v1.QueryClientStatusResponse:
+    type: object
+    properties:
+      status:
+        type: string
+    description: >-
+      QueryClientStatusResponse is the response type for the Query/ClientStatus
+      RPC
+
+      method. It returns the current status of the IBC client.
   ibc.core.client.v1.QueryConsensusStateResponse:
     type: object
     properties:
@@ -65034,17 +65768,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: >-
       QueryConsensusStateResponse is the response type for the
       Query/ConsensusState
@@ -65072,19 +65809,21 @@ definitions:
                   title: the height within the given revision
               description: >-
                 Normally the RevisionHeight is incremented at each height while
-                keeping RevisionNumber
+                keeping
 
-                the same. However some consensus algorithms may choose to reset
-                the
+                RevisionNumber the same. However some consensus algorithms may
+                choose to
 
-                height in certain conditions e.g. hard forks, state-machine
-                breaking changes
+                reset the height in certain conditions e.g. hard forks,
+                state-machine
 
-                In these cases, the RevisionNumber is incremented so that height
-                continues to
+                breaking changes In these cases, the RevisionNumber is
+                incremented so that
 
-                be monitonically increasing even as the RevisionHeight gets
-                reset
+                height continues to be monitonically increasing even as the
+                RevisionHeight
+
+                gets reset
             consensus_state:
               type: object
               properties:
@@ -65257,7 +65996,9 @@ definitions:
               title: consensus state
           description: >-
             ConsensusStateWithHeight defines a consensus state with an
-            additional height field.
+            additional height
+
+            field.
         title: consensus states associated with the identifier
       pagination:
         title: pagination response
@@ -65451,11 +66192,175 @@ definitions:
                 "value": "1.212s"
               }
         title: client state associated with the request identifier
-    description: >-
+    description: |-
       QueryUpgradedClientStateResponse is the response type for the
-      Query/UpgradedClientState RPC
+      Query/UpgradedClientState RPC method.
+  ibc.core.client.v1.QueryUpgradedConsensusStateResponse:
+    type: object
+    properties:
+      upgraded_consensus_state:
+        type: object
+        properties:
+          type_url:
+            type: string
+            description: >-
+              A URL/resource name that uniquely identifies the type of the
+              serialized
 
-      method.
+              protocol buffer message. This string must contain at least
+
+              one "/" character. The last segment of the URL's path must
+              represent
+
+              the fully qualified name of the type (as in
+
+              `path/google.protobuf.Duration`). The name should be in a
+              canonical form
+
+              (e.g., leading "." is not accepted).
+
+
+              In practice, teams usually precompile into the binary all types
+              that they
+
+              expect it to use in the context of Any. However, for URLs which
+              use the
+
+              scheme `http`, `https`, or no scheme, one can optionally set up a
+              type
+
+              server that maps type URLs to message definitions as follows:
+
+
+              * If no scheme is provided, `https` is assumed.
+
+              * An HTTP GET on the URL must yield a [google.protobuf.Type][]
+                value in binary format, or produce an error.
+              * Applications are allowed to cache lookup results based on the
+                URL, or have them precompiled into a binary to avoid any
+                lookup. Therefore, binary compatibility needs to be preserved
+                on changes to types. (Use versioned type names to manage
+                breaking changes.)
+
+              Note: this functionality is not currently available in the
+              official
+
+              protobuf release, and it is not used for type URLs beginning with
+
+              type.googleapis.com.
+
+
+              Schemes other than `http`, `https` (or the empty scheme) might be
+
+              used with implementation specific semantics.
+          value:
+            type: string
+            format: byte
+            description: >-
+              Must be a valid serialized protocol buffer of the above specified
+              type.
+        description: >-
+          `Any` contains an arbitrary serialized protocol buffer message along
+          with a
+
+          URL that describes the type of the serialized message.
+
+
+          Protobuf library provides support to pack/unpack Any values in the
+          form
+
+          of utility functions or additional generated methods of the Any type.
+
+
+          Example 1: Pack and unpack a message in C++.
+
+              Foo foo = ...;
+              Any any;
+              any.PackFrom(foo);
+              ...
+              if (any.UnpackTo(&foo)) {
+                ...
+              }
+
+          Example 2: Pack and unpack a message in Java.
+
+              Foo foo = ...;
+              Any any = Any.pack(foo);
+              ...
+              if (any.is(Foo.class)) {
+                foo = any.unpack(Foo.class);
+              }
+
+           Example 3: Pack and unpack a message in Python.
+
+              foo = Foo(...)
+              any = Any()
+              any.Pack(foo)
+              ...
+              if any.Is(Foo.DESCRIPTOR):
+                any.Unpack(foo)
+                ...
+
+           Example 4: Pack and unpack a message in Go
+
+               foo := &pb.Foo{...}
+               any, err := ptypes.MarshalAny(foo)
+               ...
+               foo := &pb.Foo{}
+               if err := ptypes.UnmarshalAny(any, foo); err != nil {
+                 ...
+               }
+
+          The pack methods provided by protobuf library will by default use
+
+          'type.googleapis.com/full.type.name' as the type URL and the unpack
+
+          methods only use the fully qualified type name after the last '/'
+
+          in the type URL, for example "foo.bar.com/x/y.z" will yield type
+
+          name "y.z".
+
+
+
+          JSON
+
+          ====
+
+          The JSON representation of an `Any` value uses the regular
+
+          representation of the deserialized, embedded message, with an
+
+          additional field `@type` which contains the type URL. Example:
+
+              package google.profile;
+              message Person {
+                string first_name = 1;
+                string last_name = 2;
+              }
+
+              {
+                "@type": "type.googleapis.com/google.profile.Person",
+                "firstName": <string>,
+                "lastName": <string>
+              }
+
+          If the embedded message type is well-known and has a custom JSON
+
+          representation, that representation will be embedded adding a field
+
+          `value` which holds the custom JSON in addition to the `@type`
+
+          field. Example (for message [google.protobuf.Duration][]):
+
+              {
+                "@type": "type.googleapis.com/google.protobuf.Duration",
+                "value": "1.212s"
+              }
+        title: Consensus state associated with the request identifier
+    description: |-
+      QueryUpgradedConsensusStateResponse is the response type for the
+      Query/UpgradedConsensusState RPC method.
   ibc.core.commitment.v1.MerklePrefix:
     type: object
     properties:
@@ -65541,9 +66446,11 @@ definitions:
         format: uint64
         description: >-
           delay period that must pass before a consensus state can be used for
-          packet-verification
 
-          NOTE: delay period logic is only implemented by some clients.
+          packet-verification NOTE: delay period logic is only implemented by
+          some
+
+          clients.
     description: |-
       ConnectionEnd defines a stateful object on a chain connected to another
       separate one.
@@ -65689,17 +66596,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: |-
       QueryClientConnectionsResponse is the response type for the
       Query/ClientConnections RPC method
@@ -65900,17 +66810,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: |-
       QueryConnectionClientStateResponse is the response type for the
       Query/ConnectionClientState RPC method
@@ -66098,17 +67011,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     title: |-
       QueryConnectionConsensusStateResponse is the response type for the
       Query/ConnectionConsensusState RPC method
@@ -66191,9 +67107,12 @@ definitions:
             format: uint64
             description: >-
               delay period that must pass before a consensus state can be used
-              for packet-verification
+              for
 
-              NOTE: delay period logic is only implemented by some clients.
+              packet-verification NOTE: delay period logic is only implemented
+              by some
+
+              clients.
         description: >-
           ConnectionEnd defines a stateful object on a chain connected to
           another
@@ -66221,17 +67140,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     description: >-
       QueryConnectionResponse is the response type for the Query/Connection RPC
 
@@ -66365,17 +67287,20 @@ definitions:
             title: the height within the given revision
         description: >-
           Normally the RevisionHeight is incremented at each height while
-          keeping RevisionNumber
+          keeping
 
-          the same. However some consensus algorithms may choose to reset the
+          RevisionNumber the same. However some consensus algorithms may choose
+          to
 
-          height in certain conditions e.g. hard forks, state-machine breaking
-          changes
+          reset the height in certain conditions e.g. hard forks, state-machine
 
-          In these cases, the RevisionNumber is incremented so that height
-          continues to
+          breaking changes In these cases, the RevisionNumber is incremented so
+          that
 
-          be monitonically increasing even as the RevisionHeight gets reset
+          height continues to be monitonically increasing even as the
+          RevisionHeight
+
+          gets reset
     description: >-
       QueryConnectionsResponse is the response type for the Query/Connections
       RPC
@@ -66458,6 +67383,15 @@ definitions:
       SendEnabled
 
       parameter for the denomination to false.
+  ibc.applications.transfer.v1.QueryDenomHashResponse:
+    type: object
+    properties:
+      hash:
+        type: string
+        description: hash (in hex format) of the denomination trace information.
+    description: |-
+      QueryDenomHashResponse is the response type for the Query/DenomHash RPC
+      method.
   ibc.applications.transfer.v1.QueryDenomTraceResponse:
     type: object
     properties:
