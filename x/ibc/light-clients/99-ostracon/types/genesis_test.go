@@ -1,11 +1,11 @@
 package types_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 
-	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	"github.com/cosmos/ibc-go/v3/modules/light-clients/07-tendermint/types"
-	ibctesting "github.com/cosmos/ibc-go/v3/testing"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 // expected export ordering:

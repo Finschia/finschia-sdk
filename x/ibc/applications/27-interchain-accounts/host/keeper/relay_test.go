@@ -3,19 +3,19 @@ package keeper_test
 import (
 	"time"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	disttypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
+	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	disttypes "github.com/line/lbm-sdk/x/distribution/types"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 
-	"github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host/types"
-	icatypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/types"
-	transfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
-	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	channeltypes "github.com/cosmos/ibc-go/v3/modules/core/04-channel/types"
-	ibctesting "github.com/cosmos/ibc-go/v3/testing"
+	"github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/host/types"
+	icatypes "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/types"
+	transfertypes "github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 func (suite *KeeperTestSuite) TestOnRecvPacket() {

@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/line/lbm-sdk/codec"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 
-	"github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
-	ibctmtypes "github.com/cosmos/ibc-go/v3/modules/light-clients/07-tendermint/types"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // MigrateGenesis accepts exported v1.0.0 IBC client genesis file and migrates it to:

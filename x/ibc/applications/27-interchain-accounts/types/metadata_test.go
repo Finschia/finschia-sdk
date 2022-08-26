@@ -1,8 +1,8 @@
 package types_test
 
 import (
-	"github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/types"
-	ibctesting "github.com/cosmos/ibc-go/v3/testing"
+	"github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 // use TestVersion as metadata being compared against

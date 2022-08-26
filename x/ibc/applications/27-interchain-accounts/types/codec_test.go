@@ -1,13 +1,13 @@
 package types_test
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 
-	"github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/types"
-	"github.com/cosmos/ibc-go/v3/testing/simapp"
+	"github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/types"
+	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 // caseRawBytes defines a helper struct, used for testing codec operations

@@ -3,16 +3,16 @@ package types
 import (
 	"reflect"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	"github.com/line/lbm-sdk/codec"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/tx/signing"
 
-	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	commitmenttypes "github.com/cosmos/ibc-go/v3/modules/core/23-commitment/types"
-	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 var _ exported.ClientState = (*ClientState)(nil)

@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
-	ibctesting "github.com/cosmos/ibc-go/v3/testing"
+	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 type KeeperTestSuite struct {

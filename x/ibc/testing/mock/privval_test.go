@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtypes "github.com/tendermint/tendermint/types"
+	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	tmtypes "github.com/line/ostracon/types"
 
-	"github.com/cosmos/ibc-go/v3/testing/mock"
+	"github.com/line/lbm-sdk/x/ibc/testing/mock"
 )
 
 const chainID = "testChain"

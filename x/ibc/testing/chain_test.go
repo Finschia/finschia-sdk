@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	tmtypes "github.com/tendermint/tendermint/types"
+	tmtypes "github.com/line/ostracon/types"
 
-	ibctesting "github.com/cosmos/ibc-go/v3/testing"
-	"github.com/cosmos/ibc-go/v3/testing/mock"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
+	"github.com/line/lbm-sdk/x/ibc/testing/mock"
 )
 
 func TestCreateSortedSignerArray(t *testing.T) {

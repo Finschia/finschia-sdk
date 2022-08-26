@@ -3,13 +3,13 @@ package keeper_test
 import (
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	tmproto "github.com/line/ostracon/proto/ostracon/types"
 
-	"github.com/cosmos/ibc-go/v3/modules/core/05-port/keeper"
-	"github.com/cosmos/ibc-go/v3/testing/simapp"
+	"github.com/line/lbm-sdk/x/ibc/core/05-port/keeper"
+	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 var (

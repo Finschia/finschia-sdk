@@ -3,13 +3,13 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
-	"github.com/tendermint/tendermint/libs/log"
+	sdk "github.com/line/lbm-sdk/types"
+	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
+	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+	"github.com/line/ostracon/libs/log"
 
-	"github.com/cosmos/ibc-go/v3/modules/core/05-port/types"
-	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/core/05-port/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 )
 
 // Keeper defines the IBC connection keeper

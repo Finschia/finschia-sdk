@@ -3,16 +3,16 @@ package ante_test
 import (
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	channeltypes "github.com/cosmos/ibc-go/v3/modules/core/04-channel/types"
-	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
-	"github.com/cosmos/ibc-go/v3/modules/core/ante"
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
-	ibctesting "github.com/cosmos/ibc-go/v3/testing"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/core/ante"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 type AnteTestSuite struct {

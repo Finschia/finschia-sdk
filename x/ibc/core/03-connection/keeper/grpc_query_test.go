@@ -3,13 +3,13 @@ package keeper_test
 import (
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/query"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/query"
 
-	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	"github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
-	ibctesting "github.com/cosmos/ibc-go/v3/testing"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 func (suite *KeeperTestSuite) TestQueryConnection() {

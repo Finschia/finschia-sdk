@@ -3,9 +3,9 @@ package types
 import (
 	"strings"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 var (

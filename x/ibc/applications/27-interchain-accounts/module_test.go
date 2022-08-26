@@ -4,16 +4,16 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
-	"github.com/tendermint/tendermint/libs/log"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	"github.com/line/ostracon/libs/log"
+	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	dbm "github.com/tendermint/tm-db"
 
-	ica "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts"
-	controllertypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/controller/types"
-	hosttypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host/types"
-	"github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/types"
-	ibctesting "github.com/cosmos/ibc-go/v3/testing"
-	"github.com/cosmos/ibc-go/v3/testing/simapp"
+	ica "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts"
+	controllertypes "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/controller/types"
+	hosttypes "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/host/types"
+	"github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
+	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 type InterchainAccountsTestSuite struct {

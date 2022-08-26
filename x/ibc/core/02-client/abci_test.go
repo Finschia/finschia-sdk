@@ -3,17 +3,17 @@ package client_test
 import (
 	"testing"
 
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 	"github.com/stretchr/testify/suite"
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	abci "github.com/line/ostracon/abci/types"
+	tmproto "github.com/line/ostracon/proto/ostracon/types"
 
-	client "github.com/cosmos/ibc-go/v3/modules/core/02-client"
-	"github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
-	ibctmtypes "github.com/cosmos/ibc-go/v3/modules/light-clients/07-tendermint/types"
-	localhosttypes "github.com/cosmos/ibc-go/v3/modules/light-clients/09-localhost/types"
-	ibctesting "github.com/cosmos/ibc-go/v3/testing"
+	client "github.com/line/lbm-sdk/x/ibc/core/02-client"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	localhosttypes "github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 type ClientTestSuite struct {

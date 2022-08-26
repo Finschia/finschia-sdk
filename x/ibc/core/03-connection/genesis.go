@@ -1,10 +1,10 @@
 package connection
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 
-	"github.com/cosmos/ibc-go/v3/modules/core/03-connection/keeper"
-	"github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
+	"github.com/line/lbm-sdk/x/ibc/core/03-connection/keeper"
+	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 )
 
 // InitGenesis initializes the ibc connection submodule's state from a provided genesis

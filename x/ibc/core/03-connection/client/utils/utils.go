@@ -6,17 +6,17 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 
-	clientutils "github.com/cosmos/ibc-go/v3/modules/core/02-client/client/utils"
-	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	"github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
-	commitmenttypes "github.com/cosmos/ibc-go/v3/modules/core/23-commitment/types"
-	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
-	ibcclient "github.com/cosmos/ibc-go/v3/modules/core/client"
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	clientutils "github.com/line/lbm-sdk/x/ibc/core/02-client/client/utils"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
+	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	ibcclient "github.com/line/lbm-sdk/x/ibc/core/client"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 // QueryConnection returns a connection end.

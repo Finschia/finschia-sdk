@@ -3,17 +3,17 @@ package utils
 import (
 	"context"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	tmtypes "github.com/tendermint/tendermint/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	tmtypes "github.com/line/ostracon/types"
 
-	"github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	commitmenttypes "github.com/cosmos/ibc-go/v3/modules/core/23-commitment/types"
-	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
-	ibcclient "github.com/cosmos/ibc-go/v3/modules/core/client"
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
-	ibctmtypes "github.com/cosmos/ibc-go/v3/modules/light-clients/07-tendermint/types"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	ibcclient "github.com/line/lbm-sdk/x/ibc/core/client"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // QueryClientState returns a client state. If prove is true, it performs an ABCI store query

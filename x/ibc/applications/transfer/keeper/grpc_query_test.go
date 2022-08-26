@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/query"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/query"
 
-	"github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 )
 
 func (suite *KeeperTestSuite) TestQueryDenomTrace() {

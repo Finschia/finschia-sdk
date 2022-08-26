@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/types/kv"
+	"github.com/line/lbm-sdk/types/kv"
 
-	"github.com/cosmos/ibc-go/v3/modules/core/02-client/keeper"
-	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/keeper"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 var _ ClientUnmarshaler = (*keeper.Keeper)(nil)

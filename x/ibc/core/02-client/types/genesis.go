@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"sort"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	codectypes "github.com/line/lbm-sdk/codec/types"
 
-	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 var (

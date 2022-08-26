@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"time"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	tmtypes "github.com/tendermint/tendermint/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	tmtypes "github.com/line/ostracon/types"
 
-	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	commitmenttypes "github.com/cosmos/ibc-go/v3/modules/core/23-commitment/types"
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 var _ exported.Header = &Header{}

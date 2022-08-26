@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 
-	"github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/controller/types"
+	"github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/controller/types"
 )
 
 // IsControllerEnabled retrieves the host enabled boolean from the paramstore.

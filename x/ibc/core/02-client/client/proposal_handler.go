@@ -3,12 +3,12 @@ package client
 import (
 	"net/http"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/types/rest"
-	govclient "github.com/cosmos/cosmos-sdk/x/gov/client"
-	govrest "github.com/cosmos/cosmos-sdk/x/gov/client/rest"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/types/rest"
+	govclient "github.com/line/lbm-sdk/x/gov/client"
+	govrest "github.com/line/lbm-sdk/x/gov/client/rest"
 
-	"github.com/cosmos/ibc-go/v3/modules/core/02-client/client/cli"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/client/cli"
 )
 
 var (

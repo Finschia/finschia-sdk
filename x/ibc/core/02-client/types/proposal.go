@@ -3,12 +3,12 @@ package types
 import (
 	"fmt"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 const (

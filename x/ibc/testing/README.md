@@ -252,11 +252,11 @@ package transfertesting
 import (
 	"encoding/json"
 
-	"github.com/tendermint/tendermint/libs/log"
+	"github.com/line/ostracon/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/cosmos/ibc-go/v3/modules/apps/transfer/simapp"
-	ibctesting "github.com/cosmos/ibc-go/v3/testing"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/simapp"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 func SetupTransferTestingApp() (ibctesting.TestingApp, map[string]json.RawMessage) {

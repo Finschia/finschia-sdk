@@ -5,14 +5,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/types/kv"
+	"github.com/line/lbm-sdk/types/kv"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/ibc-go/v3/modules/core/02-client/simulation"
-	"github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
-	ibctmtypes "github.com/cosmos/ibc-go/v3/modules/light-clients/07-tendermint/types"
-	"github.com/cosmos/ibc-go/v3/testing/simapp"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/simulation"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 func TestDecodeStore(t *testing.T) {

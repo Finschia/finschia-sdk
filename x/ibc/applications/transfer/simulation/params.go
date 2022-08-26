@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"math/rand"
 
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/simulation"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/simulation"
 	gogotypes "github.com/gogo/protobuf/types"
 
-	"github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 )
 
 // ParamChanges defines the parameters that can be modified by param change proposals

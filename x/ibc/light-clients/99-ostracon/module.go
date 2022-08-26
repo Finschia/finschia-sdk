@@ -1,7 +1,7 @@
 package tendermint
 
 import (
-	"github.com/cosmos/ibc-go/v3/modules/light-clients/07-tendermint/types"
+	"github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // Name returns the IBC client name

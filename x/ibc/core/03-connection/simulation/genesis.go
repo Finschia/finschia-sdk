@@ -3,9 +3,9 @@ package simulation
 import (
 	"math/rand"
 
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
 
-	"github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
+	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 )
 
 // GenConnectionGenesis returns the default connection genesis state.

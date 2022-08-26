@@ -1,12 +1,12 @@
 package types_test
 
 import (
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/types/tx/signing"
 
-	"github.com/cosmos/ibc-go/v3/modules/light-clients/06-solomachine/types"
-	solomachinetypes "github.com/cosmos/ibc-go/v3/modules/light-clients/06-solomachine/types"
-	ibctesting "github.com/cosmos/ibc-go/v3/testing"
+	"github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
+	solomachinetypes "github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 func (suite *SoloMachineTestSuite) TestVerifySignature() {

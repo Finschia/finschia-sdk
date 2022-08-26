@@ -3,9 +3,9 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 
-	"github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 )
 
 // InitGenesis initializes the ibc-transfer state and binds to PortID.

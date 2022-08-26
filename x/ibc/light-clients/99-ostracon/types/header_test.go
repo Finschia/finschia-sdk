@@ -3,11 +3,11 @@ package types_test
 import (
 	"time"
 
-	tmprotocrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
+	tmprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
-	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
-	"github.com/cosmos/ibc-go/v3/modules/light-clients/07-tendermint/types"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	"github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 func (suite *TendermintTestSuite) TestGetHeight() {

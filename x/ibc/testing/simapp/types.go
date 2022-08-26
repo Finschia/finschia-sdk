@@ -1,11 +1,11 @@
 package simapp
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/server/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/server/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/module"
+	abci "github.com/line/ostracon/abci/types"
 )
 
 // App implements the common methods for a Cosmos SDK-based application

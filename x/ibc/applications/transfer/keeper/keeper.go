@@ -1,18 +1,18 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	tmbytes "github.com/tendermint/tendermint/libs/bytes"
-	"github.com/tendermint/tendermint/libs/log"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/store/prefix"
+	sdk "github.com/line/lbm-sdk/types"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
+	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
+	tmbytes "github.com/line/ostracon/libs/bytes"
+	"github.com/line/ostracon/libs/log"
 
-	"github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
-	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 )
 
 // Keeper defines the IBC fungible transfer keeper

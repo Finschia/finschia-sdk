@@ -3,21 +3,21 @@ package v100_test
 import (
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/line/lbm-sdk/client"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
 	"github.com/stretchr/testify/suite"
-	tmtypes "github.com/tendermint/tendermint/types"
+	tmtypes "github.com/line/ostracon/types"
 
-	ibcclient "github.com/cosmos/ibc-go/v3/modules/core/02-client"
-	clientv100 "github.com/cosmos/ibc-go/v3/modules/core/02-client/legacy/v100"
-	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
-	connectiontypes "github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
-	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
-	"github.com/cosmos/ibc-go/v3/modules/core/legacy/v100"
-	"github.com/cosmos/ibc-go/v3/modules/core/types"
-	ibctesting "github.com/cosmos/ibc-go/v3/testing"
-	"github.com/cosmos/ibc-go/v3/testing/simapp"
+	ibcclient "github.com/line/lbm-sdk/x/ibc/core/02-client"
+	clientv100 "github.com/line/lbm-sdk/x/ibc/core/02-client/legacy/v100"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/core/legacy/v100"
+	"github.com/line/lbm-sdk/x/ibc/core/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
+	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 type LegacyTestSuite struct {

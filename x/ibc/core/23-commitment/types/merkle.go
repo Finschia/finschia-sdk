@@ -6,11 +6,11 @@ import (
 	"net/url"
 
 	ics23 "github.com/confio/ics23/go"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/gogo/protobuf/proto"
-	tmcrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
+	tmcrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
-	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 // var representing the proofspecs for a SDK chain

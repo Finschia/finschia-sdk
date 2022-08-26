@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/require"
 
-	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 )
 
 // define constants used for testing

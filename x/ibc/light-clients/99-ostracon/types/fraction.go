@@ -1,8 +1,8 @@
 package types
 
 import (
-	tmmath "github.com/tendermint/tendermint/libs/math"
-	"github.com/tendermint/tendermint/light"
+	tmmath "github.com/line/ostracon/libs/math"
+	"github.com/line/ostracon/light"
 )
 
 // DefaultTrustLevel is the tendermint light client default trust level

@@ -3,14 +3,14 @@ package types_test
 import (
 	"testing"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/stretchr/testify/suite"
-	abcitypes "github.com/tendermint/tendermint/abci/types"
-	tmprotostate "github.com/tendermint/tendermint/proto/tendermint/state"
-	tmstate "github.com/tendermint/tendermint/state"
+	abcitypes "github.com/line/ostracon/abci/types"
+	tmprotostate "github.com/line/ostracon/proto/ostracon/state"
+	tmstate "github.com/line/ostracon/state"
 
-	"github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
-	ibctesting "github.com/cosmos/ibc-go/v3/testing"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 const (

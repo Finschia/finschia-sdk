@@ -1,6 +1,6 @@
 package keeper_test
 
-import "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/controller/types"
+import "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/controller/types"
 
 func (suite *KeeperTestSuite) TestParams() {
 	expParams := types.DefaultParams()
