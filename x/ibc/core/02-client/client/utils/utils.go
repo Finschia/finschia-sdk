@@ -3,18 +3,17 @@ package utils
 import (
 	"context"
 
-	octypes "github.com/line/ostracon/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/line/lbm-sdk/client"
-
-	"github.com/line/lbm-sdk/codec"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
-	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
-	ibcclient "github.com/line/lbm-sdk/x/ibc/core/client"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	commitmenttypes "github.com/cosmos/ibc-go/v3/modules/core/23-commitment/types"
+	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	ibcclient "github.com/cosmos/ibc-go/v3/modules/core/client"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	ibctmtypes "github.com/cosmos/ibc-go/v3/modules/light-clients/07-tendermint/types"
 )
 
 // QueryClientState returns a client state. If prove is true, it performs an ABCI store query
@@ -118,9 +117,9 @@ func QueryConsensusStateABCI(
 	return types.NewQueryConsensusStateResponse(anyConsensusState, proofBz, proofHeight), nil
 }
 
-// QueryOstraconHeader takes a client context and returns the appropriate
-// ostracon header
-func QueryOstraconHeader(clientCtx client.Context) (ibctmtypes.Header, int64, error) {
+// QueryTendermintHeader takes a client context and returns the appropriate
+// tendermint header
+func QueryTendermintHeader(clientCtx client.Context) (ibctmtypes.Header, int64, error) {
 	node, err := clientCtx.GetNode()
 	if err != nil {
 		return ibctmtypes.Header{}, 0, err
@@ -151,20 +150,8 @@ func QueryOstraconHeader(clientCtx client.Context) (ibctmtypes.Header, int64, er
 		return ibctmtypes.Header{}, 0, err
 	}
 
-	page = 0
-	count = 10_000
-	voters, err := node.Voters(context.Background(), &height, &page, &count)
-	if err != nil {
-		return ibctmtypes.Header{}, 0, err
-	}
-
 	protoCommit := commit.SignedHeader.ToProto()
-	protoValset, err := octypes.NewValidatorSet(validators.Validators).ToProto()
-	if err != nil {
-		return ibctmtypes.Header{}, 0, err
-	}
-
-	protoVoterSet, err := octypes.WrapValidatorsToVoterSet(voters.Voters).ToProto()
+	protoValset, err := tmtypes.NewValidatorSet(validators.Validators).ToProto()
 	if err != nil {
 		return ibctmtypes.Header{}, 0, err
 	}
@@ -172,15 +159,14 @@ func QueryOstraconHeader(clientCtx client.Context) (ibctmtypes.Header, int64, er
 	header := ibctmtypes.Header{
 		SignedHeader: protoCommit,
 		ValidatorSet: protoValset,
-		VoterSet:     protoVoterSet,
 	}
 
 	return header, height, nil
 }
 
-// QueryNodeConsensusState takes a client context and returns the appropriate
+// QuerySelfConsensusState takes a client context and returns the appropriate
 // tendermint consensus state
-func QueryNodeConsensusState(clientCtx client.Context) (*ibctmtypes.ConsensusState, int64, error) {
+func QuerySelfConsensusState(clientCtx client.Context) (*ibctmtypes.ConsensusState, int64, error) {
 	node, err := clientCtx.GetNode()
 	if err != nil {
 		return &ibctmtypes.ConsensusState{}, 0, err
@@ -215,7 +201,7 @@ func QueryNodeConsensusState(clientCtx client.Context) (*ibctmtypes.ConsensusSta
 	state := &ibctmtypes.ConsensusState{
 		Timestamp:          commit.Time,
 		Root:               commitmenttypes.NewMerkleRoot(commit.AppHash),
-		NextValidatorsHash: octypes.NewValidatorSet(nextVals.Validators).Hash(),
+		NextValidatorsHash: tmtypes.NewValidatorSet(nextVals.Validators).Hash(),
 	}
 
 	return state, height, nil

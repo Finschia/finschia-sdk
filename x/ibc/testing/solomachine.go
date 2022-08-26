@@ -3,30 +3,28 @@ package ibctesting
 import (
 	"testing"
 
+	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	kmultisig "github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
+	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/codec"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	kmultisig "github.com/line/lbm-sdk/crypto/keys/multisig"
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	"github.com/line/lbm-sdk/crypto/types/multisig"
-	"github.com/line/lbm-sdk/types/tx/signing"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
-	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	solomachinetypes "github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
+	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	commitmenttypes "github.com/cosmos/ibc-go/v3/modules/core/23-commitment/types"
+	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	solomachinetypes "github.com/cosmos/ibc-go/v3/modules/light-clients/06-solomachine/types"
 )
-
-var prefix = commitmenttypes.NewMerklePrefix([]byte("ibc"))
 
 // Solomachine is a testing helper used to simulate a counterparty
 // solo machine client.
 type Solomachine struct {
 	t *testing.T
 
-	cdc         codec.Codec
+	cdc         codec.BinaryCodec
 	ClientID    string
 	PrivateKeys []cryptotypes.PrivKey // keys used for signing
 	PublicKeys  []cryptotypes.PubKey  // keys used for generating solo machine pub key
@@ -39,7 +37,7 @@ type Solomachine struct {
 // NewSolomachine returns a new solomachine instance with an `nKeys` amount of
 // generated private/public key pairs and a sequence starting at 1. If nKeys
 // is greater than 1 then a multisig public key is used.
-func NewSolomachine(t *testing.T, cdc codec.Codec, clientID, diversifier string, nKeys uint64) *Solomachine {
+func NewSolomachine(t *testing.T, cdc codec.BinaryCodec, clientID, diversifier string, nKeys uint64) *Solomachine {
 	privKeys, pubKeys, pk := GenerateKeys(t, nKeys)
 
 	return &Solomachine{

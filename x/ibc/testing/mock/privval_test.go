@@ -3,11 +3,11 @@ package mock_test
 import (
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/line/lbm-sdk/x/ibc/testing/mock"
+	"github.com/cosmos/ibc-go/v3/testing/mock"
 )
 
 const chainID = "testChain"
@@ -23,10 +23,10 @@ func TestSignVote(t *testing.T) {
 	pv := mock.NewPV()
 	pk, _ := pv.GetPubKey()
 
-	vote := &ocproto.Vote{Height: 2}
+	vote := &tmproto.Vote{Height: 2}
 	pv.SignVote(chainID, vote)
 
-	msg := octypes.VoteSignBytes(chainID, vote)
+	msg := tmtypes.VoteSignBytes(chainID, vote)
 	ok := pk.VerifySignature(msg, vote.Signature)
 	require.True(t, ok)
 }
@@ -35,10 +35,10 @@ func TestSignProposal(t *testing.T) {
 	pv := mock.NewPV()
 	pk, _ := pv.GetPubKey()
 
-	proposal := &ocproto.Proposal{Round: 2}
+	proposal := &tmproto.Proposal{Round: 2}
 	pv.SignProposal(chainID, proposal)
 
-	msg := octypes.ProposalSignBytes(chainID, proposal)
+	msg := tmtypes.ProposalSignBytes(chainID, proposal)
 	ok := pk.VerifySignature(msg, proposal.Signature)
 	require.True(t, ok)
 }

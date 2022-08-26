@@ -1,16 +1,17 @@
 package types
 
 import (
-	"github.com/line/lbm-sdk/codec"
-	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	"github.com/line/lbm-sdk/crypto/types/multisig"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/types/tx/signing"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
-	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
-	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	"github.com/cosmos/cosmos-sdk/codec"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+
+	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	connectiontypes "github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
+	channeltypes "github.com/cosmos/ibc-go/v3/modules/core/04-channel/types"
+	commitmenttypes "github.com/cosmos/ibc-go/v3/modules/core/23-commitment/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 )
 
 // VerifySignature verifies if the the provided public key generated the signature
@@ -50,7 +51,7 @@ func VerifySignature(pubKey cryptotypes.PubKey, signBytes []byte, sigData signin
 
 // MisbehaviourSignBytes returns the sign bytes for verification of misbehaviour.
 func MisbehaviourSignBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	sequence, timestamp uint64,
 	diversifier string,
 	dataType DataType,
@@ -68,7 +69,7 @@ func MisbehaviourSignBytes(
 
 // HeaderSignBytes returns the sign bytes for verification of misbehaviour.
 func HeaderSignBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	header *Header,
 ) ([]byte, error) {
 	data := &HeaderData{
@@ -95,7 +96,7 @@ func HeaderSignBytes(
 // ClientStateSignBytes returns the sign bytes for verification of the
 // client state.
 func ClientStateSignBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	sequence, timestamp uint64,
 	diversifier string,
 	path commitmenttypes.MerklePath,
@@ -120,7 +121,7 @@ func ClientStateSignBytes(
 // ClientStateDataBytes returns the client state data bytes used in constructing
 // SignBytes.
 func ClientStateDataBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	path commitmenttypes.MerklePath, // nolint: interfacer
 	clientState exported.ClientState,
 ) ([]byte, error) {
@@ -145,7 +146,7 @@ func ClientStateDataBytes(
 // ConsensusStateSignBytes returns the sign bytes for verification of the
 // consensus state.
 func ConsensusStateSignBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	sequence, timestamp uint64,
 	diversifier string,
 	path commitmenttypes.MerklePath,
@@ -170,7 +171,7 @@ func ConsensusStateSignBytes(
 // ConsensusStateDataBytes returns the consensus state data bytes used in constructing
 // SignBytes.
 func ConsensusStateDataBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	path commitmenttypes.MerklePath, // nolint: interfacer
 	consensusState exported.ConsensusState,
 ) ([]byte, error) {
@@ -195,7 +196,7 @@ func ConsensusStateDataBytes(
 // ConnectionStateSignBytes returns the sign bytes for verification of the
 // connection state.
 func ConnectionStateSignBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	sequence, timestamp uint64,
 	diversifier string,
 	path commitmenttypes.MerklePath,
@@ -220,7 +221,7 @@ func ConnectionStateSignBytes(
 // ConnectionStateDataBytes returns the connection state data bytes used in constructing
 // SignBytes.
 func ConnectionStateDataBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	path commitmenttypes.MerklePath, // nolint: interfacer
 	connectionEnd exported.ConnectionI,
 ) ([]byte, error) {
@@ -248,7 +249,7 @@ func ConnectionStateDataBytes(
 // ChannelStateSignBytes returns the sign bytes for verification of the
 // channel state.
 func ChannelStateSignBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	sequence, timestamp uint64,
 	diversifier string,
 	path commitmenttypes.MerklePath,
@@ -273,7 +274,7 @@ func ChannelStateSignBytes(
 // ChannelStateDataBytes returns the channel state data bytes used in constructing
 // SignBytes.
 func ChannelStateDataBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	path commitmenttypes.MerklePath, // nolint: interfacer
 	channelEnd exported.ChannelI,
 ) ([]byte, error) {
@@ -300,7 +301,7 @@ func ChannelStateDataBytes(
 // PacketCommitmentSignBytes returns the sign bytes for verification of the
 // packet commitment.
 func PacketCommitmentSignBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	sequence, timestamp uint64,
 	diversifier string,
 	path commitmenttypes.MerklePath,
@@ -325,7 +326,7 @@ func PacketCommitmentSignBytes(
 // PacketCommitmentDataBytes returns the packet commitment data bytes used in constructing
 // SignBytes.
 func PacketCommitmentDataBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	path commitmenttypes.MerklePath, // nolint: interfacer
 	commitmentBytes []byte,
 ) ([]byte, error) {
@@ -345,7 +346,7 @@ func PacketCommitmentDataBytes(
 // PacketAcknowledgementSignBytes returns the sign bytes for verification of
 // the acknowledgement.
 func PacketAcknowledgementSignBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	sequence, timestamp uint64,
 	diversifier string,
 	path commitmenttypes.MerklePath,
@@ -370,7 +371,7 @@ func PacketAcknowledgementSignBytes(
 // PacketAcknowledgementDataBytes returns the packet acknowledgement data bytes used in constructing
 // SignBytes.
 func PacketAcknowledgementDataBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	path commitmenttypes.MerklePath, // nolint: interfacer
 	acknowledgement []byte,
 ) ([]byte, error) {
@@ -390,7 +391,7 @@ func PacketAcknowledgementDataBytes(
 // PacketReceiptAbsenceSignBytes returns the sign bytes for verification
 // of the absence of an receipt.
 func PacketReceiptAbsenceSignBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	sequence, timestamp uint64,
 	diversifier string,
 	path commitmenttypes.MerklePath,
@@ -414,7 +415,7 @@ func PacketReceiptAbsenceSignBytes(
 // PacketReceiptAbsenceDataBytes returns the packet receipt absence data bytes
 // used in constructing SignBytes.
 func PacketReceiptAbsenceDataBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	path commitmenttypes.MerklePath, // nolint: interfacer
 ) ([]byte, error) {
 	data := &PacketReceiptAbsenceData{
@@ -432,7 +433,7 @@ func PacketReceiptAbsenceDataBytes(
 // NextSequenceRecvSignBytes returns the sign bytes for verification of the next
 // sequence to be received.
 func NextSequenceRecvSignBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	sequence, timestamp uint64,
 	diversifier string,
 	path commitmenttypes.MerklePath,
@@ -457,7 +458,7 @@ func NextSequenceRecvSignBytes(
 // NextSequenceRecvDataBytes returns the next sequence recv data bytes used in constructing
 // SignBytes.
 func NextSequenceRecvDataBytes(
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	path commitmenttypes.MerklePath, // nolint: interfacer
 	nextSequenceRecv uint64,
 ) ([]byte, error) {

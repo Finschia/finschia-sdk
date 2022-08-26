@@ -4,18 +4,13 @@ import (
 	"github.com/gogo/protobuf/grpc"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/x/ibc/core/03-connection/client/cli"
-	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/03-connection/client/cli"
+	"github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
 )
 
 // Name returns the IBC connection ICS name.
 func Name() string {
 	return types.SubModuleName
-}
-
-// GetTxCmd returns the root tx command for the IBC connections.
-func GetTxCmd() *cobra.Command {
-	return cli.NewTxCmd()
 }
 
 // GetQueryCmd returns the root query command for the IBC connections.

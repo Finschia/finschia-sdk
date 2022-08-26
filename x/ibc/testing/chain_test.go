@@ -3,11 +3,11 @@ package ibctesting_test
 import (
 	"testing"
 
-	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
+	tmtypes "github.com/tendermint/tendermint/types"
 
-	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
-	"github.com/line/lbm-sdk/x/ibc/testing/mock"
+	ibctesting "github.com/cosmos/ibc-go/v3/testing"
+	"github.com/cosmos/ibc-go/v3/testing/mock"
 )
 
 func TestCreateSortedSignerArray(t *testing.T) {
@@ -19,10 +19,10 @@ func TestCreateSortedSignerArray(t *testing.T) {
 	pubKey2, err := privVal2.GetPubKey()
 	require.NoError(t, err)
 
-	validator1 := ibctesting.NewTestValidator(pubKey1, 1)
-	validator2 := ibctesting.NewTestValidator(pubKey2, 2)
+	validator1 := tmtypes.NewValidator(pubKey1, 1)
+	validator2 := tmtypes.NewValidator(pubKey2, 2)
 
-	expected := []octypes.PrivValidator{privVal2, privVal1}
+	expected := []tmtypes.PrivValidator{privVal2, privVal1}
 
 	actual := ibctesting.CreateSortedSignerArray(privVal1, privVal2, validator1, validator2)
 	require.Equal(t, expected, actual)
@@ -36,7 +36,7 @@ func TestCreateSortedSignerArray(t *testing.T) {
 	validator2.Address = []byte{2}
 	validator2.VotingPower = 1
 
-	expected = []octypes.PrivValidator{privVal1, privVal2}
+	expected = []tmtypes.PrivValidator{privVal1, privVal2}
 
 	actual = ibctesting.CreateSortedSignerArray(privVal1, privVal2, validator1, validator2)
 	require.Equal(t, expected, actual)

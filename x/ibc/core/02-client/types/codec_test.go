@@ -1,13 +1,14 @@
 package types_test
 
 import (
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	localhoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
-	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+
+	"github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	commitmenttypes "github.com/cosmos/ibc-go/v3/modules/core/23-commitment/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	ibctmtypes "github.com/cosmos/ibc-go/v3/modules/light-clients/07-tendermint/types"
+	localhosttypes "github.com/cosmos/ibc-go/v3/modules/light-clients/09-localhost/types"
+	ibctesting "github.com/cosmos/ibc-go/v3/testing"
 )
 
 type caseAny struct {
@@ -35,7 +36,7 @@ func (suite *TypesTestSuite) TestPackClientState() {
 		},
 		{
 			"localhost client",
-			localhoctypes.NewClientState(chainID, clientHeight),
+			localhosttypes.NewClientState(chainID, clientHeight),
 			true,
 		},
 		{

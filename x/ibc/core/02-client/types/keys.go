@@ -6,8 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
 )
 
 const (
@@ -33,7 +34,7 @@ func FormatClientIdentifier(clientType string, sequence uint64) string {
 
 // IsClientIDFormat checks if a clientID is in the format required on the SDK for
 // parsing client identifiers. The client identifier must be in the form: `{client-type}-{N}
-var IsClientIDFormat = regexp.MustCompile(`^.*[^-]-[0-9]{1,20}$`).MatchString
+var IsClientIDFormat = regexp.MustCompile(`^.*[^\n-]-[0-9]{1,20}$`).MatchString
 
 // IsValidClientID checks if the clientID is valid and can be parsed into the client
 // identifier format.

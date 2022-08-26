@@ -3,9 +3,9 @@ package keeper
 import (
 	"context"
 
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
-	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
+	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	connectiontypes "github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
+	channeltypes "github.com/cosmos/ibc-go/v3/modules/core/04-channel/types"
 )
 
 // ClientState implements the IBC QueryServer interface
@@ -26,6 +26,11 @@ func (q Keeper) ConsensusState(c context.Context, req *clienttypes.QueryConsensu
 // ConsensusStates implements the IBC QueryServer interface
 func (q Keeper) ConsensusStates(c context.Context, req *clienttypes.QueryConsensusStatesRequest) (*clienttypes.QueryConsensusStatesResponse, error) {
 	return q.ClientKeeper.ConsensusStates(c, req)
+}
+
+// ClientStatus implements the IBC QueryServer interface
+func (q Keeper) ClientStatus(c context.Context, req *clienttypes.QueryClientStatusRequest) (*clienttypes.QueryClientStatusResponse, error) {
+	return q.ClientKeeper.ClientStatus(c, req)
 }
 
 // ClientParams implements the IBC QueryServer interface

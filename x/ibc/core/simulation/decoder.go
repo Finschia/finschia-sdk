@@ -3,12 +3,13 @@ package simulation
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/types/kv"
-	clientsim "github.com/line/lbm-sdk/x/ibc/core/02-client/simulation"
-	connectionsim "github.com/line/lbm-sdk/x/ibc/core/03-connection/simulation"
-	channelsim "github.com/line/lbm-sdk/x/ibc/core/04-channel/simulation"
-	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/x/ibc/core/keeper"
+	"github.com/cosmos/cosmos-sdk/types/kv"
+
+	clientsim "github.com/cosmos/ibc-go/v3/modules/core/02-client/simulation"
+	connectionsim "github.com/cosmos/ibc-go/v3/modules/core/03-connection/simulation"
+	channelsim "github.com/cosmos/ibc-go/v3/modules/core/04-channel/simulation"
+	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	"github.com/cosmos/ibc-go/v3/modules/core/keeper"
 )
 
 // NewDecodeStore returns a decoder function closure that unmarshals the KVPair's

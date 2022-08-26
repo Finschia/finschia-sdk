@@ -6,16 +6,15 @@ import (
 	"reflect"
 	"strings"
 
-	ics23 "github.com/confio/ics23/go"
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
-	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
-	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	connectiontypes "github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
+	channeltypes "github.com/cosmos/ibc-go/v3/modules/core/04-channel/types"
+	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 )
 
 var _ exported.ClientState = (*ClientState)(nil)
@@ -43,14 +42,10 @@ func (cs ClientState) GetLatestHeight() exported.Height {
 	return cs.Height
 }
 
-// IsFrozen returns false.
-func (cs ClientState) IsFrozen() bool {
-	return false
-}
-
-// GetFrozenHeight returns an uninitialized IBC Height.
-func (cs ClientState) GetFrozenHeight() exported.Height {
-	return clienttypes.ZeroHeight()
+// Status always returns Active. The localhost status cannot be changed.
+func (cs ClientState) Status(_ sdk.Context, _ sdk.KVStore, _ codec.BinaryCodec,
+) exported.Status {
+	return exported.Active
 }
 
 // Validate performs a basic validation of the client state fields.
@@ -64,18 +59,13 @@ func (cs ClientState) Validate() error {
 	return nil
 }
 
-// GetProofSpecs returns nil since localhost does not have to verify proofs
-func (cs ClientState) GetProofSpecs() []*ics23.ProofSpec {
-	return nil
-}
-
 // ZeroCustomFields returns the same client state since there are no custom fields in localhost
 func (cs ClientState) ZeroCustomFields() exported.ClientState {
 	return &cs
 }
 
 // Initialize ensures that initial consensus state for localhost is nil
-func (cs ClientState) Initialize(_ sdk.Context, _ codec.Codec, _ sdk.KVStore, consState exported.ConsensusState) error {
+func (cs ClientState) Initialize(_ sdk.Context, _ codec.BinaryCodec, _ sdk.KVStore, consState exported.ConsensusState) error {
 	if consState != nil {
 		return sdkerrors.Wrap(clienttypes.ErrInvalidConsensus, "initial consensus state for localhost must be nil.")
 	}
@@ -89,7 +79,7 @@ func (cs ClientState) ExportMetadata(_ sdk.KVStore) []exported.GenesisMetadata {
 
 // CheckHeaderAndUpdateState updates the localhost client. It only needs access to the context
 func (cs *ClientState) CheckHeaderAndUpdateState(
-	ctx sdk.Context, _ codec.Codec, _ sdk.KVStore, _ exported.Header,
+	ctx sdk.Context, _ codec.BinaryCodec, _ sdk.KVStore, _ exported.Header,
 ) (exported.ClientState, exported.ConsensusState, error) {
 	// use the chain ID from context since the localhost client is from the running chain (i.e self).
 	cs.ChainId = ctx.ChainID()
@@ -102,7 +92,7 @@ func (cs *ClientState) CheckHeaderAndUpdateState(
 // Since localhost is the client of the running chain, misbehaviour cannot be submitted to it
 // Thus, CheckMisbehaviourAndUpdateState returns an error for localhost
 func (cs ClientState) CheckMisbehaviourAndUpdateState(
-	_ sdk.Context, _ codec.Codec, _ sdk.KVStore, _ exported.Misbehaviour,
+	_ sdk.Context, _ codec.BinaryCodec, _ sdk.KVStore, _ exported.Misbehaviour,
 ) (exported.ClientState, error) {
 	return nil, sdkerrors.Wrap(clienttypes.ErrInvalidMisbehaviour, "cannot submit misbehaviour to localhost client")
 }
@@ -110,15 +100,15 @@ func (cs ClientState) CheckMisbehaviourAndUpdateState(
 // CheckSubstituteAndUpdateState returns an error. The localhost cannot be modified by
 // proposals.
 func (cs ClientState) CheckSubstituteAndUpdateState(
-	ctx sdk.Context, _ codec.Codec, _, _ sdk.KVStore,
-	_ exported.ClientState, _ exported.Height,
+	ctx sdk.Context, _ codec.BinaryCodec, _, _ sdk.KVStore,
+	_ exported.ClientState,
 ) (exported.ClientState, error) {
 	return nil, sdkerrors.Wrap(clienttypes.ErrUpdateClientFailed, "cannot update localhost client with a proposal")
 }
 
 // VerifyUpgradeAndUpdateState returns an error since localhost cannot be upgraded
 func (cs ClientState) VerifyUpgradeAndUpdateState(
-	_ sdk.Context, _ codec.Codec, _ sdk.KVStore,
+	_ sdk.Context, _ codec.BinaryCodec, _ sdk.KVStore,
 	_ exported.ClientState, _ exported.ConsensusState, _, _ []byte,
 ) (exported.ClientState, exported.ConsensusState, error) {
 	return nil, nil, sdkerrors.Wrap(clienttypes.ErrInvalidUpgradeClient, "cannot upgrade localhost client")
@@ -126,7 +116,7 @@ func (cs ClientState) VerifyUpgradeAndUpdateState(
 
 // VerifyClientState verifies that the localhost client state is stored locally
 func (cs ClientState) VerifyClientState(
-	store sdk.KVStore, cdc codec.Codec,
+	store sdk.KVStore, cdc codec.BinaryCodec,
 	_ exported.Height, _ exported.Prefix, _ string, _ []byte, clientState exported.ClientState,
 ) error {
 	path := host.KeyClientState
@@ -150,7 +140,7 @@ func (cs ClientState) VerifyClientState(
 // VerifyClientConsensusState returns nil since a local host client does not store consensus
 // states.
 func (cs ClientState) VerifyClientConsensusState(
-	sdk.KVStore, codec.Codec,
+	sdk.KVStore, codec.BinaryCodec,
 	exported.Height, string, exported.Height, exported.Prefix,
 	[]byte, exported.ConsensusState,
 ) error {
@@ -161,7 +151,7 @@ func (cs ClientState) VerifyClientConsensusState(
 // specified connection end stored locally.
 func (cs ClientState) VerifyConnectionState(
 	store sdk.KVStore,
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	_ exported.Height,
 	_ exported.Prefix,
 	_ []byte,
@@ -194,7 +184,7 @@ func (cs ClientState) VerifyConnectionState(
 // channel end, under the specified port, stored on the local machine.
 func (cs ClientState) VerifyChannelState(
 	store sdk.KVStore,
-	cdc codec.Codec,
+	cdc codec.BinaryCodec,
 	_ exported.Height,
 	prefix exported.Prefix,
 	_ []byte,
@@ -227,8 +217,9 @@ func (cs ClientState) VerifyChannelState(
 // VerifyPacketCommitment verifies a proof of an outgoing packet commitment at
 // the specified port, specified channel, and specified sequence.
 func (cs ClientState) VerifyPacketCommitment(
+	ctx sdk.Context,
 	store sdk.KVStore,
-	_ codec.Codec,
+	_ codec.BinaryCodec,
 	_ exported.Height,
 	_ uint64,
 	_ uint64,
@@ -259,8 +250,9 @@ func (cs ClientState) VerifyPacketCommitment(
 // VerifyPacketAcknowledgement verifies a proof of an incoming packet
 // acknowledgement at the specified port, specified channel, and specified sequence.
 func (cs ClientState) VerifyPacketAcknowledgement(
+	ctx sdk.Context,
 	store sdk.KVStore,
-	_ codec.Codec,
+	_ codec.BinaryCodec,
 	_ exported.Height,
 	_ uint64,
 	_ uint64,
@@ -292,8 +284,9 @@ func (cs ClientState) VerifyPacketAcknowledgement(
 // incoming packet receipt at the specified port, specified channel, and
 // specified sequence.
 func (cs ClientState) VerifyPacketReceiptAbsence(
+	ctx sdk.Context,
 	store sdk.KVStore,
-	_ codec.Codec,
+	_ codec.BinaryCodec,
 	_ exported.Height,
 	_ uint64,
 	_ uint64,
@@ -316,8 +309,9 @@ func (cs ClientState) VerifyPacketReceiptAbsence(
 // VerifyNextSequenceRecv verifies a proof of the next sequence number to be
 // received of the specified channel at the specified port.
 func (cs ClientState) VerifyNextSequenceRecv(
+	ctx sdk.Context,
 	store sdk.KVStore,
-	_ codec.Codec,
+	_ codec.BinaryCodec,
 	_ exported.Height,
 	_ uint64,
 	_ uint64,

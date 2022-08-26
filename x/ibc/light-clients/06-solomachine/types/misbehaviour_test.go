@@ -1,9 +1,9 @@
 package types_test
 
 import (
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	"github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	"github.com/cosmos/ibc-go/v3/modules/light-clients/06-solomachine/types"
+	ibctesting "github.com/cosmos/ibc-go/v3/testing"
 )
 
 func (suite *SoloMachineTestSuite) TestMisbehaviour() {
@@ -11,8 +11,6 @@ func (suite *SoloMachineTestSuite) TestMisbehaviour() {
 
 	suite.Require().Equal(exported.Solomachine, misbehaviour.ClientType())
 	suite.Require().Equal(suite.solomachine.ClientID, misbehaviour.GetClientID())
-	suite.Require().Equal(uint64(0), misbehaviour.GetHeight().GetRevisionNumber())
-	suite.Require().Equal(suite.solomachine.Sequence, misbehaviour.GetHeight().GetRevisionHeight())
 }
 
 func (suite *SoloMachineTestSuite) TestMisbehaviourValidateBasic() {

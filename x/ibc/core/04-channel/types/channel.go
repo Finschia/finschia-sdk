@@ -1,9 +1,10 @@
 package types
 
 import (
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 )
 
 var (

@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/cosmos/cosmos-sdk/types/kv"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/types/kv"
-	"github.com/line/lbm-sdk/x/ibc/core/03-connection/simulation"
-	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
-	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/cosmos/ibc-go/v3/modules/core/03-connection/simulation"
+	"github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
+	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	"github.com/cosmos/ibc-go/v3/testing/simapp"
 )
 
 func TestDecodeStore(t *testing.T) {

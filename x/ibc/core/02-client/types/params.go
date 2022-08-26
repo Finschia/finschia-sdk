@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	paramtypes "github.com/line/lbm-sdk/x/params/types"
+	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 )
 
 var (
-	// DefaultAllowedClients are "06-solomachine" and "99-ostracon"
-	DefaultAllowedClients = []string{exported.Solomachine, exported.Ostracon}
+	// DefaultAllowedClients are "06-solomachine" and "07-tendermint"
+	DefaultAllowedClients = []string{exported.Solomachine, exported.Tendermint}
 
 	// KeyAllowedClients is store's key for AllowedClients Params
 	KeyAllowedClients = []byte("AllowedClients")
@@ -21,19 +22,19 @@ func ParamKeyTable() paramtypes.KeyTable {
 	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
 }
 
-// NewParams creates a new parameter configuration for the ibc transfer module
+// NewParams creates a new parameter configuration for the ibc client module
 func NewParams(allowedClients ...string) Params {
 	return Params{
 		AllowedClients: allowedClients,
 	}
 }
 
-// DefaultParams is the default parameter configuration for the ibc-transfer module
+// DefaultParams is the default parameter configuration for the ibc-client module
 func DefaultParams() Params {
 	return NewParams(DefaultAllowedClients...)
 }
 
-// Validate all ibc-transfer module parameters
+// Validate all ibc-client module parameters
 func (p Params) Validate() error {
 	return validateClients(p.AllowedClients)
 }

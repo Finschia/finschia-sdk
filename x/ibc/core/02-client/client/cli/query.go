@@ -4,14 +4,14 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/version"
-	"github.com/line/lbm-sdk/x/ibc/core/02-client/client/utils"
-	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/cosmos/ibc-go/v3/modules/core/02-client/client/utils"
+	"github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
 )
 
 const (
@@ -58,7 +58,7 @@ func GetCmdQueryClientStates() *cobra.Command {
 }
 
 // GetCmdQueryClientState defines the command to query the state of a client with
-// a given id as defined in https://github.com/cosmos/ics/tree/master/spec/ics-002-client-semantics#query
+// a given id as defined in https://github.com/cosmos/ibc/tree/master/spec/core/ics-002-client-semantics#query
 func GetCmdQueryClientState() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "state [client-id]",
@@ -85,6 +85,39 @@ func GetCmdQueryClientState() *cobra.Command {
 
 	cmd.Flags().Bool(flags.FlagProve, true, "show proofs for the query results")
 	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryClientStatus defines the command to query the status of a client with a given id
+func GetCmdQueryClientStatus() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "status [client-id]",
+		Short:   "Query client status",
+		Long:    "Query client activity status. Any client without an 'Active' status is considered inactive",
+		Example: fmt.Sprintf("%s query %s %s status [client-id]", version.AppName, host.ModuleName, types.SubModuleName),
+		Args:    cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			clientID := args[0]
+			queryClient := types.NewQueryClient(clientCtx)
+
+			req := &types.QueryClientStatusRequest{
+				ClientId: clientID,
+			}
+
+			clientStatusRes, err := queryClient.ClientStatus(cmd.Context(), req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(clientStatusRes)
+		},
+	}
 
 	return cmd
 }
@@ -132,7 +165,7 @@ func GetCmdQueryConsensusStates() *cobra.Command {
 }
 
 // GetCmdQueryConsensusState defines the command to query the consensus state of
-// the chain as defined in https://github.com/cosmos/ics/tree/master/spec/ics-002-client-semantics#query
+// the chain as defined in https://github.com/cosmos/ibc/tree/master/spec/core/ics-002-client-semantics#query
 func GetCmdQueryConsensusState() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "consensus-state [client-id] [height]",
@@ -192,7 +225,7 @@ func GetCmdQueryHeader() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			header, _, err := utils.QueryOstraconHeader(clientCtx)
+			header, _, err := utils.QueryTendermintHeader(clientCtx)
 			if err != nil {
 				return err
 			}
@@ -206,21 +239,20 @@ func GetCmdQueryHeader() *cobra.Command {
 	return cmd
 }
 
-// GetCmdNodeConsensusState defines the command to query the latest consensus state of a node
-// The result is feed to client creation
-func GetCmdNodeConsensusState() *cobra.Command {
+// GetCmdSelfConsensusState defines the command to query the self consensus state of a chain
+func GetCmdSelfConsensusState() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "node-state",
-		Short:   "Query a node consensus state",
-		Long:    "Query a node consensus state. This result is feed to the client creation transaction.",
-		Example: fmt.Sprintf("%s query %s %s node-state", version.AppName, host.ModuleName, types.SubModuleName),
+		Use:     "self-consensus-state",
+		Short:   "Query the self consensus state for this chain",
+		Long:    "Query the self consensus state for this chain. This result may be used for verifying IBC clients representing this chain which are hosted on counterparty chains.",
+		Example: fmt.Sprintf("%s query %s %s self-consensus-state", version.AppName, host.ModuleName, types.SubModuleName),
 		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
-			state, _, err := utils.QueryNodeConsensusState(clientCtx)
+			state, _, err := utils.QuerySelfConsensusState(clientCtx)
 			if err != nil {
 				return err
 			}

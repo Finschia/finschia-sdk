@@ -6,27 +6,27 @@ import (
 	"fmt"
 	"math/rand"
 
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
+	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
+	abci "github.com/tendermint/tendermint/abci/types"
 
-	abci "github.com/line/ostracon/abci/types"
-
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/codec"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/module"
-	simtypes "github.com/line/lbm-sdk/types/simulation"
-	ibcclient "github.com/line/lbm-sdk/x/ibc/core/02-client"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
-	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
-	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/x/ibc/core/client/cli"
-	"github.com/line/lbm-sdk/x/ibc/core/keeper"
-	"github.com/line/lbm-sdk/x/ibc/core/simulation"
-	"github.com/line/lbm-sdk/x/ibc/core/types"
+	ibcclient "github.com/cosmos/ibc-go/v3/modules/core/02-client"
+	clientkeeper "github.com/cosmos/ibc-go/v3/modules/core/02-client/keeper"
+	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	connectiontypes "github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
+	channeltypes "github.com/cosmos/ibc-go/v3/modules/core/04-channel/types"
+	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	"github.com/cosmos/ibc-go/v3/modules/core/client/cli"
+	"github.com/cosmos/ibc-go/v3/modules/core/keeper"
+	"github.com/cosmos/ibc-go/v3/modules/core/simulation"
+	"github.com/cosmos/ibc-go/v3/modules/core/types"
 )
 
 var (
@@ -117,7 +117,7 @@ func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
 
 // Route returns the message routing key for the ibc module.
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(host.RouterKey, NewHandler(*am.keeper))
+	return sdk.Route{}
 }
 
 // QuerierRoute returns the ibc module's querier route name.
@@ -136,6 +136,9 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	connectiontypes.RegisterMsgServer(cfg.MsgServer(), am.keeper)
 	channeltypes.RegisterMsgServer(cfg.MsgServer(), am.keeper)
 	types.RegisterQueryService(cfg.QueryServer(), am.keeper)
+
+	m := clientkeeper.NewMigrator(am.keeper.ClientKeeper)
+	cfg.RegisterMigration(host.ModuleName, 1, m.Migrate1to2)
 }
 
 // InitGenesis performs genesis initialization for the ibc module. It returns
@@ -157,7 +160,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 }
 
 // ConsensusVersion implements AppModule/ConsensusVersion.
-func (AppModule) ConsensusVersion() uint64 { return 1 }
+func (AppModule) ConsensusVersion() uint64 { return 2 }
 
 // BeginBlock returns the begin blocker for the ibc module.
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {

@@ -3,11 +3,12 @@ package types
 import (
 	"reflect"
 
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 )
 
 // CheckSubstituteAndUpdateState verifies that the subject is allowed to be updated by
@@ -18,9 +19,8 @@ import (
 // the substitute is not a solo machine, or the current public key equals
 // the new public key.
 func (cs ClientState) CheckSubstituteAndUpdateState(
-	ctx sdk.Context, cdc codec.Codec, subjectClientStore,
+	ctx sdk.Context, cdc codec.BinaryCodec, subjectClientStore,
 	_ sdk.KVStore, substituteClient exported.ClientState,
-	_ exported.Height,
 ) (exported.ClientState, error) {
 
 	if !cs.AllowUpdateAfterProposal {
@@ -58,7 +58,7 @@ func (cs ClientState) CheckSubstituteAndUpdateState(
 	// update to substitute parameters
 	clientState.Sequence = substituteClientState.Sequence
 	clientState.ConsensusState = substituteClientState.ConsensusState
-	clientState.FrozenSequence = 0
+	clientState.IsFrozen = false
 
 	return clientState, nil
 }

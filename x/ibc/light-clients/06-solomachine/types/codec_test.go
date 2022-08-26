@@ -1,11 +1,11 @@
 package types_test
 
 import (
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
-	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
-	"github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
+	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	connectiontypes "github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
+	channeltypes "github.com/cosmos/ibc-go/v3/modules/core/04-channel/types"
+	"github.com/cosmos/ibc-go/v3/modules/light-clients/06-solomachine/types"
+	ibctesting "github.com/cosmos/ibc-go/v3/testing"
 )
 
 func (suite SoloMachineTestSuite) TestUnmarshalDataByType() {
@@ -67,7 +67,7 @@ func (suite SoloMachineTestSuite) TestUnmarshalDataByType() {
 			},
 			{
 				"connection", types.CONNECTION, func() {
-					counterparty := connectiontypes.NewCounterparty("clientB", testConnectionID, prefix)
+					counterparty := connectiontypes.NewCounterparty("clientB", testConnectionID, *prefix)
 					conn := connectiontypes.NewConnectionEnd(connectiontypes.OPEN, "clientA", counterparty, connectiontypes.ExportedVersionsToProto(connectiontypes.GetCompatibleVersions()), 0)
 					path := solomachine.GetConnectionStatePath("connectionID")
 
@@ -98,7 +98,7 @@ func (suite SoloMachineTestSuite) TestUnmarshalDataByType() {
 			},
 			{
 				"bad channel (uses connection data)", types.CHANNEL, func() {
-					counterparty := connectiontypes.NewCounterparty("clientB", testConnectionID, prefix)
+					counterparty := connectiontypes.NewCounterparty("clientB", testConnectionID, *prefix)
 					conn := connectiontypes.NewConnectionEnd(connectiontypes.OPEN, "clientA", counterparty, connectiontypes.ExportedVersionsToProto(connectiontypes.GetCompatibleVersions()), 0)
 					path := solomachine.GetConnectionStatePath("connectionID")
 

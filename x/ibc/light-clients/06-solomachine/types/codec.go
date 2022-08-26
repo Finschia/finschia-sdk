@@ -1,12 +1,13 @@
 package types
 
 import (
-	"github.com/line/lbm-sdk/codec"
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/types/tx/signing"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	"github.com/cosmos/cosmos-sdk/codec"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+
+	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 )
 
 // RegisterInterfaces register the ibc channel submodule interfaces to protobuf
@@ -30,7 +31,7 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	)
 }
 
-func UnmarshalSignatureData(cdc codec.Codec, data []byte) (signing.SignatureData, error) {
+func UnmarshalSignatureData(cdc codec.BinaryCodec, data []byte) (signing.SignatureData, error) {
 	protoSigData := &signing.SignatureDescriptor_Data{}
 	if err := cdc.Unmarshal(data, protoSigData); err != nil {
 		return nil, sdkerrors.Wrapf(err, "failed to unmarshal proof into type %T", protoSigData)
@@ -43,7 +44,7 @@ func UnmarshalSignatureData(cdc codec.Codec, data []byte) (signing.SignatureData
 
 // UnmarshalDataByType attempts to unmarshal the data to the specified type. An error is
 // return if it fails.
-func UnmarshalDataByType(cdc codec.Codec, dataType DataType, data []byte) (Data, error) {
+func UnmarshalDataByType(cdc codec.BinaryCodec, dataType DataType, data []byte) (Data, error) {
 	if len(data) == 0 {
 		return nil, sdkerrors.Wrap(ErrInvalidSignatureAndData, "data cannot be empty")
 	}

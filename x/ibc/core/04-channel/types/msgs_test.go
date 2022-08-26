@@ -4,21 +4,19 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/cosmos/cosmos-sdk/store/iavl"
+	"github.com/cosmos/cosmos-sdk/store/rootmulti"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/suite"
-
+	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
-	abci "github.com/line/ostracon/abci/types"
-
-	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/store/iavl"
-	"github.com/line/lbm-sdk/store/rootmulti"
-	storetypes "github.com/line/lbm-sdk/store/types"
-	sdk "github.com/line/lbm-sdk/types"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
-	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/04-channel/types"
+	commitmenttypes "github.com/cosmos/ibc-go/v3/modules/core/23-commitment/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	"github.com/cosmos/ibc-go/v3/testing/simapp"
 )
 
 const (
@@ -33,7 +31,8 @@ const (
 	// invalid constants used for testing
 	invalidPort      = "(invalidport1)"
 	invalidShortPort = "p"
-	invalidLongPort  = "invalidlongportinvalidlongportinvalidlongportidinvalidlongportidinvalidinvalidlongportinvalidlongportinvalidlongportinvalidlongport"
+	// 195 characters
+	invalidLongPort = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eros neque, ultricies vel ligula ac, convallis porttitor elit. Maecenas tincidunt turpis elit, vel faucibus nisl pellentesque sodales"
 
 	invalidChannel      = "(invalidchannel1)"
 	invalidShortChannel = "invalid"
@@ -60,8 +59,8 @@ var (
 	invalidProofs1 = exported.Proof(nil)
 	invalidProofs2 = emptyProof
 
-	addr      = sdk.AccAddress("testaddr111111111111")
-	emptyAddr sdk.AccAddress
+	addr      = sdk.AccAddress("testaddr111111111111").String()
+	emptyAddr string
 
 	connHops             = []string{"testconnection"}
 	invalidConnHops      = []string{"testconnection", "testconnection"}
@@ -126,7 +125,7 @@ func (suite *TypesTestSuite) TestMsgChannelOpenInitValidateBasic() {
 		{"connection id contains non-alpha", types.NewMsgChannelOpenInit(portid, version, types.UNORDERED, []string{invalidConnection}, cpportid, addr), false},
 		{"", types.NewMsgChannelOpenInit(portid, "", types.UNORDERED, connHops, cpportid, addr), true},
 		{"invalid counterparty port id", types.NewMsgChannelOpenInit(portid, version, types.UNORDERED, connHops, invalidPort, addr), false},
-		{"channel not in INIT state", &types.MsgChannelOpenInit{portid, tryOpenChannel, addr.String()}, false},
+		{"channel not in INIT state", &types.MsgChannelOpenInit{portid, tryOpenChannel, addr}, false},
 	}
 
 	for _, tc := range testCases {
@@ -170,7 +169,7 @@ func (suite *TypesTestSuite) TestMsgChannelOpenTryValidateBasic() {
 		{"invalid counterparty port id", types.NewMsgChannelOpenTry(portid, chanid, version, types.UNORDERED, connHops, invalidPort, cpchanid, version, suite.proof, height, addr), false},
 		{"invalid counterparty channel id", types.NewMsgChannelOpenTry(portid, chanid, version, types.UNORDERED, connHops, cpportid, invalidChannel, version, suite.proof, height, addr), false},
 		{"empty proof", types.NewMsgChannelOpenTry(portid, chanid, version, types.UNORDERED, connHops, cpportid, cpchanid, version, emptyProof, height, addr), false},
-		{"channel not in TRYOPEN state", &types.MsgChannelOpenTry{portid, chanid, initChannel, version, suite.proof, height, addr.String()}, false},
+		{"channel not in TRYOPEN state", &types.MsgChannelOpenTry{portid, chanid, initChannel, version, suite.proof, height, addr}, false},
 	}
 
 	for _, tc := range testCases {
@@ -314,12 +313,6 @@ func (suite *TypesTestSuite) TestMsgChannelCloseConfirmValidateBasic() {
 			}
 		})
 	}
-}
-
-func (suite *TypesTestSuite) TestMsgRecvPacketType() {
-	msg := types.NewMsgRecvPacket(packet, suite.proof, height, addr)
-
-	suite.Equal("recv_packet", msg.Type())
 }
 
 func (suite *TypesTestSuite) TestMsgRecvPacketValidateBasic() {

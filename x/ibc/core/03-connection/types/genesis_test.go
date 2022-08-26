@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
-	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
-	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
+	"github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
+	commitmenttypes "github.com/cosmos/ibc-go/v3/modules/core/23-commitment/types"
+	ibctesting "github.com/cosmos/ibc-go/v3/testing"
 )
 
 func TestValidateGenesis(t *testing.T) {
@@ -32,6 +32,7 @@ func TestValidateGenesis(t *testing.T) {
 					{clientID, []string{connectionID}},
 				},
 				0,
+				types.DefaultParams(),
 			),
 			expPass: true,
 		},
@@ -45,6 +46,7 @@ func TestValidateGenesis(t *testing.T) {
 					{clientID, []string{connectionID}},
 				},
 				0,
+				types.DefaultParams(),
 			),
 			expPass: false,
 		},
@@ -58,6 +60,7 @@ func TestValidateGenesis(t *testing.T) {
 					{"(CLIENTIDONE)", []string{connectionID}},
 				},
 				0,
+				types.DefaultParams(),
 			),
 			expPass: false,
 		},
@@ -71,6 +74,7 @@ func TestValidateGenesis(t *testing.T) {
 					{clientID, []string{invalidConnectionID}},
 				},
 				0,
+				types.DefaultParams(),
 			),
 			expPass: false,
 		},
@@ -84,6 +88,7 @@ func TestValidateGenesis(t *testing.T) {
 					{clientID, []string{connectionID}},
 				},
 				0,
+				types.DefaultParams(),
 			),
 			expPass: false,
 		},
@@ -97,6 +102,21 @@ func TestValidateGenesis(t *testing.T) {
 					{clientID, []string{connectionID}},
 				},
 				0,
+				types.DefaultParams(),
+			),
+			expPass: false,
+		},
+		{
+			name: "invalid params",
+			genState: types.NewGenesisState(
+				[]types.IdentifiedConnection{
+					types.NewIdentifiedConnection(connectionID, types.NewConnectionEnd(types.INIT, clientID, types.Counterparty{clientID2, connectionID2, commitmenttypes.NewMerklePrefix([]byte("prefix"))}, []*types.Version{ibctesting.ConnectionVersion}, 500)),
+				},
+				[]types.ConnectionPaths{
+					{clientID, []string{connectionID}},
+				},
+				0,
+				types.Params{},
 			),
 			expPass: false,
 		},

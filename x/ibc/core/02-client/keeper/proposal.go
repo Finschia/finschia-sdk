@@ -2,23 +2,22 @@ package keeper
 
 import (
 	"github.com/armon/go-metrics"
+	"github.com/cosmos/cosmos-sdk/telemetry"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"github.com/line/lbm-sdk/telemetry"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	"github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 )
 
 // ClientUpdateProposal will retrieve the subject and substitute client.
-// The initial height must be greater than the latest height of the subject
-// client. A callback will occur to the subject client state with the client
+// A callback will occur to the subject client state with the client
 // prefixed store being provided for both the subject and the substitute client.
 // The localhost client is not allowed to be modified with a proposal. The IBC
 // client implementations are responsible for validating the parameters of the
 // subtitute (enusring they match the subject's parameters) as well as copying
 // the necessary consensus states from the subtitute to the subject client
-// store.
+// store. The substitute must be Active and the subject must not be Active.
 func (k Keeper) ClientUpdateProposal(ctx sdk.Context, p *types.ClientUpdateProposal) error {
 	if p.SubjectClientId == exported.Localhost || p.SubstituteClientId == exported.Localhost {
 		return sdkerrors.Wrap(types.ErrInvalidUpdateClientProposal, "cannot update localhost client with proposal")
@@ -29,8 +28,10 @@ func (k Keeper) ClientUpdateProposal(ctx sdk.Context, p *types.ClientUpdatePropo
 		return sdkerrors.Wrapf(types.ErrClientNotFound, "subject client with ID %s", p.SubjectClientId)
 	}
 
-	if subjectClientState.GetLatestHeight().GTE(p.InitialHeight) {
-		return sdkerrors.Wrapf(types.ErrInvalidHeight, "subject client state latest height is greater or equal to initial height (%s >= %s)", subjectClientState.GetLatestHeight(), p.InitialHeight)
+	subjectClientStore := k.ClientStore(ctx, p.SubjectClientId)
+
+	if status := subjectClientState.Status(ctx, subjectClientStore, k.cdc); status == exported.Active {
+		return sdkerrors.Wrap(types.ErrInvalidUpdateClientProposal, "cannot update Active subject client")
 	}
 
 	substituteClientState, found := k.GetClientState(ctx, p.SubstituteClientId)
@@ -38,7 +39,17 @@ func (k Keeper) ClientUpdateProposal(ctx sdk.Context, p *types.ClientUpdatePropo
 		return sdkerrors.Wrapf(types.ErrClientNotFound, "substitute client with ID %s", p.SubstituteClientId)
 	}
 
-	clientState, err := subjectClientState.CheckSubstituteAndUpdateState(ctx, k.cdc, k.ClientStore(ctx, p.SubjectClientId), k.ClientStore(ctx, p.SubstituteClientId), substituteClientState, p.InitialHeight)
+	if subjectClientState.GetLatestHeight().GTE(substituteClientState.GetLatestHeight()) {
+		return sdkerrors.Wrapf(types.ErrInvalidHeight, "subject client state latest height is greater or equal to substitute client state latest height (%s >= %s)", subjectClientState.GetLatestHeight(), substituteClientState.GetLatestHeight())
+	}
+
+	substituteClientStore := k.ClientStore(ctx, p.SubstituteClientId)
+
+	if status := substituteClientState.Status(ctx, substituteClientStore, k.cdc); status != exported.Active {
+		return sdkerrors.Wrapf(types.ErrClientNotActive, "substitute client is not Active, status is %s", status)
+	}
+
+	clientState, err := subjectClientState.CheckSubstituteAndUpdateState(ctx, k.cdc, subjectClientStore, substituteClientStore, substituteClientState)
 	if err != nil {
 		return err
 	}
@@ -51,22 +62,15 @@ func (k Keeper) ClientUpdateProposal(ctx sdk.Context, p *types.ClientUpdatePropo
 			[]string{"ibc", "client", "update"},
 			1,
 			[]metrics.Label{
-				telemetry.NewLabel("client-type", clientState.ClientType()),
-				telemetry.NewLabel("client-id", p.SubjectClientId),
-				telemetry.NewLabel("update-type", "proposal"),
+				telemetry.NewLabel(types.LabelClientType, clientState.ClientType()),
+				telemetry.NewLabel(types.LabelClientID, p.SubjectClientId),
+				telemetry.NewLabel(types.LabelUpdateType, "proposal"),
 			},
 		)
 	}()
 
 	// emitting events in the keeper for proposal updates to clients
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeUpdateClientProposal,
-			sdk.NewAttribute(types.AttributeKeySubjectClientID, p.SubjectClientId),
-			sdk.NewAttribute(types.AttributeKeyClientType, clientState.ClientType()),
-			sdk.NewAttribute(types.AttributeKeyConsensusHeight, clientState.GetLatestHeight().String()),
-		),
-	)
+	EmitUpdateClientProposalEvent(ctx, p.SubjectClientId, clientState)
 
 	return nil
 }

@@ -1,12 +1,13 @@
 package types_test
 
 import (
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	"github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
-	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
+	"github.com/cosmos/ibc-go/v3/modules/light-clients/06-solomachine/types"
+	ibctmtypes "github.com/cosmos/ibc-go/v3/modules/light-clients/07-tendermint/types"
+	ibctesting "github.com/cosmos/ibc-go/v3/testing"
 )
 
 func (suite *SoloMachineTestSuite) TestCheckHeaderAndUpdateState() {
@@ -167,7 +168,7 @@ func (suite *SoloMachineTestSuite) TestCheckHeaderAndUpdateState() {
 				if tc.expPass {
 					suite.Require().NoError(err)
 					suite.Require().Equal(header.(*types.Header).NewPublicKey, clientState.(*types.ClientState).ConsensusState.PublicKey)
-					suite.Require().Equal(uint64(0), clientState.(*types.ClientState).FrozenSequence)
+					suite.Require().Equal(false, clientState.(*types.ClientState).IsFrozen)
 					suite.Require().Equal(header.(*types.Header).Sequence+1, clientState.(*types.ClientState).Sequence)
 					suite.Require().Equal(consensusState, clientState.(*types.ClientState).ConsensusState)
 				} else {

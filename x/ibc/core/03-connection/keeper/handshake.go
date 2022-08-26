@@ -3,15 +3,15 @@ package keeper
 import (
 	"bytes"
 
+	"github.com/cosmos/cosmos-sdk/telemetry"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/line/lbm-sdk/telemetry"
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
-	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
+	commitmenttypes "github.com/cosmos/ibc-go/v3/modules/core/23-commitment/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 )
 
 // ConnOpenInit initialises a connection attempt on chain A. The generated connection identifier
@@ -49,6 +49,8 @@ func (k Keeper) ConnOpenInit(
 	defer func() {
 		telemetry.IncrCounter(1, "ibc", "connection", "open-init")
 	}()
+
+	EmitConnectionOpenInitEvent(ctx, connectionID, clientID, counterparty)
 
 	return connectionID, nil
 }
@@ -125,9 +127,9 @@ func (k Keeper) ConnOpenTry(
 		return "", err
 	}
 
-	expectedConsensusState, found := k.clientKeeper.GetSelfConsensusState(ctx, consensusHeight)
-	if !found {
-		return "", sdkerrors.Wrap(clienttypes.ErrSelfConsensusStateNotFound, consensusHeight.String())
+	expectedConsensusState, err := k.clientKeeper.GetSelfConsensusState(ctx, consensusHeight)
+	if err != nil {
+		return "", sdkerrors.Wrapf(err, "self consensus state not found for height %s", consensusHeight.String())
 	}
 
 	// expectedConnection defines Chain A's ConnectionEnd
@@ -184,6 +186,8 @@ func (k Keeper) ConnOpenTry(
 	defer func() {
 		telemetry.IncrCounter(1, "ibc", "connection", "open-try")
 	}()
+
+	EmitConnectionOpenTryEvent(ctx, connectionID, clientID, counterparty)
 
 	return connectionID, nil
 }
@@ -250,9 +254,9 @@ func (k Keeper) ConnOpenAck(
 	}
 
 	// Retrieve chainA's consensus state at consensusheight
-	expectedConsensusState, found := k.clientKeeper.GetSelfConsensusState(ctx, consensusHeight)
-	if !found {
-		return clienttypes.ErrSelfConsensusStateNotFound
+	expectedConsensusState, err := k.clientKeeper.GetSelfConsensusState(ctx, consensusHeight)
+	if err != nil {
+		return sdkerrors.Wrapf(err, "self consensus state not found for height %s", consensusHeight.String())
 	}
 
 	prefix := k.GetCommitmentPrefix()
@@ -290,6 +294,9 @@ func (k Keeper) ConnOpenAck(
 	connection.Versions = []*types.Version{version}
 	connection.Counterparty.ConnectionId = counterpartyConnectionID
 	k.SetConnection(ctx, connectionID, connection)
+
+	EmitConnectionOpenAckEvent(ctx, connectionID, connection)
+
 	return nil
 }
 
@@ -337,6 +344,8 @@ func (k Keeper) ConnOpenConfirm(
 	defer func() {
 		telemetry.IncrCounter(1, "ibc", "connection", "open-confirm")
 	}()
+
+	EmitConnectionOpenConfirmEvent(ctx, connectionID, connection)
 
 	return nil
 }

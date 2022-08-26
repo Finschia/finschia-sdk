@@ -1,14 +1,10 @@
 package types
 
 import (
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
-)
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 
-var (
-	_ codectypes.UnpackInterfacesMessage = QueryChannelClientStateResponse{}
-	_ codectypes.UnpackInterfacesMessage = QueryChannelConsensusStateResponse{}
+	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 )
 
 var (

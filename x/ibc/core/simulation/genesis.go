@@ -7,15 +7,16 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/line/lbm-sdk/types/module"
-	clientsims "github.com/line/lbm-sdk/x/ibc/core/02-client/simulation"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	connectionsims "github.com/line/lbm-sdk/x/ibc/core/03-connection/simulation"
-	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
-	channelsims "github.com/line/lbm-sdk/x/ibc/core/04-channel/simulation"
-	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
-	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/x/ibc/core/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
+
+	clientsims "github.com/cosmos/ibc-go/v3/modules/core/02-client/simulation"
+	clienttypes "github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	connectionsims "github.com/cosmos/ibc-go/v3/modules/core/03-connection/simulation"
+	connectiontypes "github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
+	channelsims "github.com/cosmos/ibc-go/v3/modules/core/04-channel/simulation"
+	channeltypes "github.com/cosmos/ibc-go/v3/modules/core/04-channel/types"
+	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
+	"github.com/cosmos/ibc-go/v3/modules/core/types"
 )
 
 // Simulation parameter constants

@@ -3,8 +3,7 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/03-connection/types"
 )
 
 // GetQueryCmd returns the query commands for IBC connections
@@ -23,24 +22,4 @@ func GetQueryCmd() *cobra.Command {
 	)
 
 	return queryCmd
-}
-
-// NewTxCmd returns a CLI command handler for all x/ibc connection transaction commands.
-func NewTxCmd() *cobra.Command {
-	txCmd := &cobra.Command{
-		Use:                        types.SubModuleName,
-		Short:                      "IBC connection transaction subcommands",
-		DisableFlagParsing:         true,
-		SuggestionsMinimumDistance: 2,
-		RunE:                       client.ValidateCmd,
-	}
-
-	txCmd.AddCommand(
-		NewConnectionOpenInitCmd(),
-		NewConnectionOpenTryCmd(),
-		NewConnectionOpenAckCmd(),
-		NewConnectionOpenConfirmCmd(),
-	)
-
-	return txCmd
 }

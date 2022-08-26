@@ -6,11 +6,11 @@ import (
 	"net/url"
 
 	ics23 "github.com/confio/ics23/go"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/gogo/protobuf/proto"
-	occrypto "github.com/line/ostracon/proto/ostracon/crypto"
+	tmcrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
 
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 )
 
 // var representing the proofspecs for a SDK chain
@@ -253,8 +253,8 @@ func verifyChainedMembershipProof(root []byte, specs []*ics23.ProofSpec, proofs 
 			value = subroot
 		case *ics23.CommitmentProof_Nonexist:
 			return sdkerrors.Wrapf(ErrInvalidProof,
-				"chained membership proof contains nonexistence proof at index %d. If this is unexpected, please ensure that proof was queried from the height that contained the value in store and was queried with the correct key.",
-				i)
+				"chained membership proof contains nonexistence proof at index %d. If this is unexpected, please ensure that proof was queried from a height that contained the value in store and was queried with the correct key. The key used: %s",
+				i, keys)
 		default:
 			return sdkerrors.Wrapf(ErrInvalidProof,
 				"expected proof type: %T, got: %T", &ics23.CommitmentProof_Exist{}, proofs[i].Proof)
@@ -272,7 +272,7 @@ func verifyChainedMembershipProof(root []byte, specs []*ics23.ProofSpec, proofs 
 // blankMerkleProof and blankProofOps will be used to compare against their zero values,
 // and are declared as globals to avoid having to unnecessarily re-allocate on every comparison.
 var blankMerkleProof = &MerkleProof{}
-var blankProofOps = &occrypto.ProofOps{}
+var blankProofOps = &tmcrypto.ProofOps{}
 
 // Empty returns true if the root is empty
 func (proof *MerkleProof) Empty() bool {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 )
 
 func TestValidateParams(t *testing.T) {
@@ -15,7 +15,7 @@ func TestValidateParams(t *testing.T) {
 		expPass bool
 	}{
 		{"default params", DefaultParams(), true},
-		{"custom params", NewParams(exported.Ostracon), true},
+		{"custom params", NewParams(exported.Tendermint), true},
 		{"blank client", NewParams(" "), false},
 	}
 

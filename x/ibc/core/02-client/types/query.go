@@ -1,8 +1,9 @@
 package types
 
 import (
-	codectypes "github.com/line/lbm-sdk/codec/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 )
 
 var (

@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 
-	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
 )
 
 // IBC connection events
@@ -16,10 +16,10 @@ const (
 
 // IBC connection events vars
 var (
-	EventTypeConnectionOpenInit    = MsgConnectionOpenInit{}.Type()
-	EventTypeConnectionOpenTry     = MsgConnectionOpenTry{}.Type()
-	EventTypeConnectionOpenAck     = MsgConnectionOpenAck{}.Type()
-	EventTypeConnectionOpenConfirm = MsgConnectionOpenConfirm{}.Type()
+	EventTypeConnectionOpenInit    = "connection_open_init"
+	EventTypeConnectionOpenTry     = "connection_open_try"
+	EventTypeConnectionOpenAck     = "connection_open_ack"
+	EventTypeConnectionOpenConfirm = "connection_open_confirm"
 
 	AttributeValueCategory = fmt.Sprintf("%s_%s", host.ModuleName, SubModuleName)
 )

@@ -1,11 +1,12 @@
 package client
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
-	"github.com/line/lbm-sdk/x/ibc/core/02-client/keeper"
-	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+
+	"github.com/cosmos/ibc-go/v3/modules/core/02-client/keeper"
+	"github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
 )
 
 // NewClientProposalHandler defines the 02-client proposal handler

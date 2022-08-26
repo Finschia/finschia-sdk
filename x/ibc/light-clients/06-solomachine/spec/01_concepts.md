@@ -53,10 +53,10 @@ data := &ClientStateData{
   ClientState: any,
 }
 
-dataBz, err := cdc.MarshalBinaryBare(data)
+dataBz, err := cdc.Marshal(data)
 ```
 
-The helper functions `...DataBytes()` in [proofs.go](../types/proofs.go) handle this
+The helper functions `...DataBytes()` in [proof.go](../types/proof.go) handle this
 functionality. 
 
 2. Construct the `SignBytes` and marshal it.
@@ -72,10 +72,10 @@ signBytes := &SignBytes{
   Data:        dataBz,
 }
 
-signBz, err := cdc.MarshalBinaryBare(signBytes)
+signBz, err := cdc.Marshal(signBytes)
 ```
 
-The helper functions `...SignBytes()` in [proofs.go](../types/proofs.go) handle this functionality.
+The helper functions `...SignBytes()` in [proof.go](../types/proof.go) handle this functionality.
 The `DataType` field is used to disambiguate what type of data was signed to prevent potential 
 proto encoding overlap.
 
@@ -91,7 +91,7 @@ sigData := &signing.SingleSignatureData{
 }
 
 protoSigData := signing.SignatureDataToProto(sigData)
-bz, err := cdc.MarshalBinaryBare(protoSigData)
+bz, err := cdc.Marshal(protoSigData)
 ```
 
 4. Construct a `TimestampedSignatureData` and marshal it. The marshaled result can be passed in 
@@ -105,8 +105,11 @@ timestampedSignatureData := &types.TimestampedSignatureData{
   Timestamp: solomachine.Time,
 }
 
-proof, err := cdc.MarshalBinaryBare(timestampedSignatureData)
+proof, err := cdc.Marshal(timestampedSignatureData)
 ```
+
+NOTE: At the end of this process, the sequence associated with the key needs to be updated. 
+The sequence must be incremented each time proof is generated. 
 
 ## Updates By Header
 

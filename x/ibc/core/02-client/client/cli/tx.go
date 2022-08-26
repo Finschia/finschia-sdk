@@ -3,21 +3,21 @@ package cli
 import (
 	"fmt"
 	"io/ioutil"
+	"strconv"
 
-	"github.com/pkg/errors"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/version"
+	govcli "github.com/cosmos/cosmos-sdk/x/gov/client/cli"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/client/flags"
-	"github.com/line/lbm-sdk/client/tx"
-	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/version"
-	govcli "github.com/line/lbm-sdk/x/gov/client/cli"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
-	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/02-client/types"
+	"github.com/cosmos/ibc-go/v3/modules/core/exported"
 )
 
 // NewCreateClientCmd defines the command to create a new IBC light client.
@@ -45,11 +45,11 @@ func NewCreateClientCmd() *cobra.Command {
 				// check for file path if JSON input is not provided
 				contents, err := ioutil.ReadFile(clientContentOrFileName)
 				if err != nil {
-					return errors.Wrap(err, "neither JSON input nor path to .json file for client state were provided")
+					return fmt.Errorf("neither JSON input nor path to .json file for client state were provided: %w", err)
 				}
 
 				if err := cdc.UnmarshalInterfaceJSON(contents, &clientState); err != nil {
-					return errors.Wrap(err, "error unmarshalling client state file")
+					return fmt.Errorf("error unmarshalling client state file: %w", err)
 				}
 			}
 
@@ -61,15 +61,15 @@ func NewCreateClientCmd() *cobra.Command {
 				// check for file path if JSON input is not provided
 				contents, err := ioutil.ReadFile(consensusContentOrFileName)
 				if err != nil {
-					return errors.Wrap(err, "neither JSON input nor path to .json file for consensus state were provided")
+					return fmt.Errorf("neither JSON input nor path to .json file for consensus state were provided: %w", err)
 				}
 
 				if err := cdc.UnmarshalInterfaceJSON(contents, &consensusState); err != nil {
-					return errors.Wrap(err, "error unmarshalling consensus state file")
+					return fmt.Errorf("error unmarshalling consensus state file: %w", err)
 				}
 			}
 
-			msg, err := types.NewMsgCreateClient(clientState, consensusState, clientCtx.GetFromAddress())
+			msg, err := types.NewMsgCreateClient(clientState, consensusState, clientCtx.GetFromAddress().String())
 			if err != nil {
 				return err
 			}
@@ -107,15 +107,15 @@ func NewUpdateClientCmd() *cobra.Command {
 				// check for file path if JSON input is not provided
 				contents, err := ioutil.ReadFile(headerContentOrFileName)
 				if err != nil {
-					return errors.Wrap(err, "neither JSON input nor path to .json file for header were provided")
+					return fmt.Errorf("neither JSON input nor path to .json file for header were provided: %w", err)
 				}
 
 				if err := cdc.UnmarshalInterfaceJSON(contents, &header); err != nil {
-					return errors.Wrap(err, "error unmarshalling header file")
+					return fmt.Errorf("error unmarshalling header file: %w", err)
 				}
 			}
 
-			msg, err := types.NewMsgUpdateClient(clientID, header, clientCtx.GetFromAddress())
+			msg, err := types.NewMsgUpdateClient(clientID, header, clientCtx.GetFromAddress().String())
 			if err != nil {
 				return err
 			}
@@ -148,15 +148,15 @@ func NewSubmitMisbehaviourCmd() *cobra.Command {
 				// check for file path if JSON input is not provided
 				contents, err := ioutil.ReadFile(misbehaviourContentOrFileName)
 				if err != nil {
-					return errors.Wrap(err, "neither JSON input nor path to .json file for misbehaviour were provided")
+					return fmt.Errorf("neither JSON input nor path to .json file for misbehaviour were provided: %w", err)
 				}
 
 				if err := cdc.UnmarshalInterfaceJSON(contents, misbehaviour); err != nil {
-					return errors.Wrap(err, "error unmarshalling misbehaviour file")
+					return fmt.Errorf("error unmarshalling misbehaviour file: %w", err)
 				}
 			}
 
-			msg, err := types.NewMsgSubmitMisbehaviour(misbehaviour.GetClientID(), misbehaviour, clientCtx.GetFromAddress())
+			msg, err := types.NewMsgSubmitMisbehaviour(misbehaviour.GetClientID(), misbehaviour, clientCtx.GetFromAddress().String())
 			if err != nil {
 				return err
 			}
@@ -192,11 +192,11 @@ func NewUpgradeClientCmd() *cobra.Command {
 				// check for file path if JSON input is not provided
 				contents, err := ioutil.ReadFile(clientContentOrFileName)
 				if err != nil {
-					return errors.Wrap(err, "neither JSON input nor path to .json file for client state were provided")
+					return fmt.Errorf("neither JSON input nor path to .json file for client state were provided: %w", err)
 				}
 
 				if err := cdc.UnmarshalInterfaceJSON(contents, &clientState); err != nil {
-					return errors.Wrap(err, "error unmarshalling client state file")
+					return fmt.Errorf("error unmarshalling client state file: %w", err)
 				}
 			}
 
@@ -208,18 +208,18 @@ func NewUpgradeClientCmd() *cobra.Command {
 				// check for file path if JSON input is not provided
 				contents, err := ioutil.ReadFile(consensusContentOrFileName)
 				if err != nil {
-					return errors.Wrap(err, "neither JSON input nor path to .json file for consensus state were provided")
+					return fmt.Errorf("neither JSON input nor path to .json file for consensus state were provided: %w", err)
 				}
 
 				if err := cdc.UnmarshalInterfaceJSON(contents, &consensusState); err != nil {
-					return errors.Wrap(err, "error unmarshalling consensus state file")
+					return fmt.Errorf("error unmarshalling consensus state file: %w", err)
 				}
 			}
 
 			proofUpgradeClient := []byte(args[3])
 			proofUpgradeConsensus := []byte(args[4])
 
-			msg, err := types.NewMsgUpgradeClient(clientID, clientState, consensusState, proofUpgradeClient, proofUpgradeConsensus, clientCtx.GetFromAddress())
+			msg, err := types.NewMsgUpgradeClient(clientID, clientState, consensusState, proofUpgradeClient, proofUpgradeConsensus, clientCtx.GetFromAddress().String())
 			if err != nil {
 				return err
 			}
@@ -236,12 +236,12 @@ func NewUpgradeClientCmd() *cobra.Command {
 // NewCmdSubmitUpdateClientProposal implements a command handler for submitting an update IBC client proposal transaction.
 func NewCmdSubmitUpdateClientProposal() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-client [subject-client-id] [substitute-client-id] [initial-height] [flags]",
-		Args:  cobra.ExactArgs(3),
+		Use:   "update-client [subject-client-id] [substitute-client-id]",
+		Args:  cobra.ExactArgs(2),
 		Short: "Submit an update IBC client proposal",
 		Long: "Submit an update IBC client proposal along with an initial deposit.\n" +
 			"Please specify a subject client identifier you want to update..\n" +
-			"Please specify the substitute client the subject client will use and the initial height to reference the substitute client's state.",
+			"Please specify the substitute client the subject client will be updated to.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -261,12 +261,7 @@ func NewCmdSubmitUpdateClientProposal() *cobra.Command {
 			subjectClientID := args[0]
 			substituteClientID := args[1]
 
-			initialHeight, err := types.ParseHeight(args[2])
-			if err != nil {
-				return err
-			}
-
-			content := types.NewClientUpdateProposal(title, description, subjectClientID, substituteClientID, initialHeight)
+			content := types.NewClientUpdateProposal(title, description, subjectClientID, substituteClientID)
 
 			from := clientCtx.GetFromAddress()
 
@@ -306,7 +301,17 @@ func NewCmdSubmitUpgradeProposal() *cobra.Command {
 		Args:  cobra.ExactArgs(3),
 		Short: "Submit an IBC upgrade proposal",
 		Long: "Submit an IBC client breaking upgrade proposal along with an initial deposit.\n" +
-			"The client state specified is the upgraded client state representing the upgraded chain",
+			"The client state specified is the upgraded client state representing the upgraded chain\n" +
+			`Example Upgraded Client State JSON: 
+{
+	"@type":"/ibc.lightclients.tendermint.v1.ClientState",
+ 	"chain_id":"testchain1",
+	"unbonding_period":"1814400s",
+	"latest_height":{"revision_number":"0","revision_height":"2"},
+	"proof_specs":[{"leaf_spec":{"hash":"SHA256","prehash_key":"NO_HASH","prehash_value":"SHA256","length":"VAR_PROTO","prefix":"AA=="},"inner_spec":{"child_order":[0,1],"child_size":33,"min_prefix_length":4,"max_prefix_length":12,"empty_child":null,"hash":"SHA256"},"max_depth":0,"min_depth":0},{"leaf_spec":{"hash":"SHA256","prehash_key":"NO_HASH","prehash_value":"SHA256","length":"VAR_PROTO","prefix":"AA=="},"inner_spec":{"child_order":[0,1],"child_size":32,"min_prefix_length":1,"max_prefix_length":1,"empty_child":null,"hash":"SHA256"},"max_depth":0,"min_depth":0}],
+	"upgrade_path":["upgrade","upgradedIBCState"],
+}
+			`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -326,7 +331,7 @@ func NewCmdSubmitUpgradeProposal() *cobra.Command {
 
 			name := args[0]
 
-			height, err := cmd.Flags().GetInt64(args[1])
+			height, err := strconv.ParseInt(args[1], 10, 64)
 			if err != nil {
 				return err
 			}
@@ -344,11 +349,11 @@ func NewCmdSubmitUpgradeProposal() *cobra.Command {
 				// check for file path if JSON input is not provided
 				contents, err := ioutil.ReadFile(clientContentOrFileName)
 				if err != nil {
-					return errors.Wrap(err, "neither JSON input nor path to .json file for client state were provided")
+					return fmt.Errorf("neither JSON input nor path to .json file for client state were provided: %w", err)
 				}
 
 				if err := cdc.UnmarshalInterfaceJSON(contents, &clientState); err != nil {
-					return errors.Wrap(err, "error unmarshalling client state file")
+					return fmt.Errorf("error unmarshalling client state file: %w", err)
 				}
 			}
 
