@@ -2,11 +2,11 @@
 // source: lbm/wasm/v1/query.proto
 
 /*
-Package types is a reverse proxy.
+Package lbmtypes is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package types
+package lbmtypes
 
 import (
 	"context"

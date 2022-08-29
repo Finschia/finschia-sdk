@@ -112,11 +112,9 @@ import (
 	upgradekeeper "github.com/line/lbm-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 	"github.com/line/lbm-sdk/x/wasm"
-	lbmwasm "github.com/line/lbm-sdk/x/wasm/lbm"
-	lbmwasmclient "github.com/line/lbm-sdk/x/wasm/lbm/client"
-	lbmwasmkeeper "github.com/line/lbm-sdk/x/wasm/lbm/keeper"
-	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
-
+	wasmclient "github.com/line/lbm-sdk/x/wasm/client"
+	wasmkeeper "github.com/line/lbm-sdk/x/wasm/keeper"
+	wasmlbmtypes "github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	// unnamed import of statik for swagger UI support
 	_ "github.com/line/lbm-sdk/client/docs/statik"
 )
@@ -141,7 +139,7 @@ var (
 		foundationmodule.AppModuleBasic{},
 		gov.NewAppModuleBasic(
 			append(
-				lbmwasmclient.ProposalHandlers,
+				wasmclient.ProposalHandlers,
 				foundationclient.UpdateFoundationParamsProposalHandler,
 				foundationclient.UpdateValidatorAuthsProposalHandler,
 				paramsclient.ProposalHandler,
@@ -226,7 +224,7 @@ type SimApp struct {
 	FeeGrantKeeper   feegrantkeeper.Keeper
 	TokenKeeper      tokenkeeper.Keeper
 	CollectionKeeper collectionkeeper.Keeper
-	WasmKeeper       lbmwasmkeeper.Keeper
+	WasmKeeper       wasmkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -380,7 +378,7 @@ func NewSimApp(
 	// The last arguments can contain custom message handlers, and custom query handlers,
 	// if we want to allow any custom callbacks
 	supportedFeatures := "iterator,staking,stargate"
-	app.WasmKeeper = lbmwasmkeeper.NewKeeper(
+	app.WasmKeeper = wasmkeeper.NewKeeper(
 		appCodec,
 		keys[wasm.StoreKey],
 		app.GetSubspace(wasm.ModuleName),
@@ -410,7 +408,7 @@ func NewSimApp(
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
 		AddRoute(foundation.RouterKey, foundationkeeper.NewProposalHandler(app.FoundationKeeper)).
-		AddRoute(wasm.RouterKey, lbmwasmkeeper.NewWasmProposalHandler(app.WasmKeeper, lbmwasmtypes.EnableAllProposals))
+		AddRoute(wasm.RouterKey, wasmkeeper.NewWasmProposalHandler(app.WasmKeeper, wasmlbmtypes.EnableAllProposals))
 
 	govKeeper := govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
@@ -475,7 +473,7 @@ func NewSimApp(
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		stakingplusmodule.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.FoundationKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
-		lbmwasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
+		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper, app.AccountKeeper, app.BankKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),

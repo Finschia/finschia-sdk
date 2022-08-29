@@ -8,23 +8,23 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/line/lbm-sdk/x/params/client/utils"
 	wasmvm "github.com/line/wasmvm"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/line/lbm-sdk/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/x/params/client/utils"
 	"github.com/line/lbm-sdk/x/params/types/proposal"
 	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
-	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 func TestStoreCodeProposal(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
-	wasmKeeper.setParams(ctx, lbmwasmtypes.Params{
+	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
 		GasMultiplier:                types.DefaultGasMultiplier,
@@ -64,7 +64,7 @@ func TestStoreCodeProposal(t *testing.T) {
 func TestInstantiateProposal(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
-	wasmKeeper.setParams(ctx, lbmwasmtypes.Params{
+	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
 		GasMultiplier:                types.DefaultGasMultiplier,
@@ -132,7 +132,7 @@ func TestInstantiateProposal(t *testing.T) {
 func TestInstantiateProposal_NoAdmin(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
-	wasmKeeper.setParams(ctx, lbmwasmtypes.Params{
+	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
 		GasMultiplier:                types.DefaultGasMultiplier,
@@ -207,7 +207,7 @@ func TestInstantiateProposal_NoAdmin(t *testing.T) {
 func TestMigrateProposal(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
-	wasmKeeper.setParams(ctx, lbmwasmtypes.Params{
+	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
 		GasMultiplier:                types.DefaultGasMultiplier,
@@ -461,7 +461,7 @@ func TestAdminProposals(t *testing.T) {
 		t.Run(msg, func(t *testing.T) {
 			ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 			govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
-			wasmKeeper.setParams(ctx, lbmwasmtypes.Params{
+			wasmKeeper.setParams(ctx, types.Params{
 				CodeUploadAccess:             types.AllowNobody,
 				InstantiateDefaultPermission: types.AccessTypeNobody,
 				GasMultiplier:                types.DefaultGasMultiplier,
@@ -553,7 +553,7 @@ func TestUpdateParamsProposal(t *testing.T) {
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			wasmKeeper.setParams(ctx, lbmwasmtypes.DefaultParams())
+			wasmKeeper.setParams(ctx, types.DefaultParams())
 
 			// encode + decode as CLI to play nice with amino
 			bz := legacyAmino.MustMarshalJSON(&utils.ParamChangeProposalJSON{
@@ -855,4 +855,67 @@ func TestUpdateInstantiateConfigProposal(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestValidateDeactivateContractProposal(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
+	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
+
+	var mock wasmtesting.MockWasmer
+	wasmtesting.MakeInstantiable(&mock)
+	example := SeedNewContractInstance(t, ctx, keepers, &mock)
+
+	src := lbmtypes.DeactivateContractProposal{
+		Title:       "Foo",
+		Description: "Bar",
+		Contract:    example.Contract.String(),
+	}
+
+	em := sdk.NewEventManager()
+
+	// when stored
+	storedProposal, err := govKeeper.SubmitProposal(ctx, &src)
+	require.NoError(t, err)
+
+	// proposal execute
+	handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
+	err = handler(ctx.WithEventManager(em), storedProposal.GetContent())
+	require.NoError(t, err)
+
+	// then
+	isInactive := wasmKeeper.IsInactiveContract(ctx, example.Contract)
+	require.True(t, isInactive)
+}
+
+func TestActivateContractProposal(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
+	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
+
+	var mock wasmtesting.MockWasmer
+	wasmtesting.MakeInstantiable(&mock)
+	example := SeedNewContractInstance(t, ctx, keepers, &mock)
+	// set deactivate
+	err := wasmKeeper.deactivateContract(ctx, example.Contract)
+	require.NoError(t, err)
+
+	src := lbmtypes.ActivateContractProposal{
+		Title:       "Foo",
+		Description: "Bar",
+		Contract:    example.Contract.String(),
+	}
+
+	em := sdk.NewEventManager()
+
+	// when stored
+	storedProposal, err := govKeeper.SubmitProposal(ctx, &src)
+	require.NoError(t, err)
+
+	// proposal execute
+	handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
+	err = handler(ctx.WithEventManager(em), storedProposal.GetContent())
+	require.NoError(t, err)
+
+	// then
+	isInactive := wasmKeeper.IsInactiveContract(ctx, example.Contract)
+	require.False(t, isInactive)
 }

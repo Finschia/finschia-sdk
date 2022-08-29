@@ -280,6 +280,52 @@ func TestGovRestHandlers(t *testing.T) {
 			},
 			expCode: http.StatusOK,
 		},
+		"deactivate contract": {
+			srcPath: "/gov/proposals/deactivate_contract",
+			srcBody: dict{
+				"title":       "Test Proposal",
+				"description": "My proposal",
+				"deposit":     []dict{{"denom": "cony", "amount": "10"}},
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
+				"contract":    "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt",
+				"base_req":    aBaseReq,
+			},
+			expCode: http.StatusOK,
+		},
+		"deactivate contract with no contract": {
+			srcPath: "/gov/proposals/deactivate_contract",
+			srcBody: dict{
+				"title":       "Test Proposal",
+				"description": "My proposal",
+				"deposit":     []dict{{"denom": "cony", "amount": "10"}},
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
+				"base_req":    aBaseReq,
+			},
+			expCode: http.StatusBadRequest,
+		},
+		"activate contract": {
+			srcPath: "/gov/proposals/activate_contract",
+			srcBody: dict{
+				"title":       "Test Proposal",
+				"description": "My proposal",
+				"deposit":     []dict{{"denom": "cony", "amount": "10"}},
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
+				"contract":    "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt",
+				"base_req":    aBaseReq,
+			},
+			expCode: http.StatusOK,
+		},
+		"activate contract with no contract": {
+			srcPath: "/gov/proposals/activate_contract",
+			srcBody: dict{
+				"title":       "Test Proposal",
+				"description": "My proposal",
+				"deposit":     []dict{{"denom": "cony", "amount": "10"}},
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
+				"base_req":    aBaseReq,
+			},
+			expCode: http.StatusBadRequest,
+		},
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {

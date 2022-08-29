@@ -1,4 +1,4 @@
-package types
+package lbmtypes
 
 import (
 	sdk "github.com/line/lbm-sdk/types"

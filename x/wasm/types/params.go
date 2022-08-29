@@ -125,6 +125,9 @@ func DefaultParams() Params {
 	return Params{
 		CodeUploadAccess:             AllowEverybody,
 		InstantiateDefaultPermission: AccessTypeEverybody,
+		GasMultiplier:                DefaultGasMultiplier,
+		InstanceCost:                 DefaultInstanceCost,
+		CompileCost:                  DefaultCompileCost,
 	}
 }
 
@@ -141,6 +144,9 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(ParamStoreKeyUploadAccess, &p.CodeUploadAccess, validateAccessConfig),
 		paramtypes.NewParamSetPair(ParamStoreKeyInstantiateAccess, &p.InstantiateDefaultPermission, validateAccessType),
+		paramtypes.NewParamSetPair(ParamStoreKeyGasMultiplier, &p.GasMultiplier, validateGasMultiplier),
+		paramtypes.NewParamSetPair(ParamStoreKeyInstanceCost, &p.InstanceCost, validateInstanceCost),
+		paramtypes.NewParamSetPair(ParamStoreKeyCompileCost, &p.CompileCost, validateCompileCost),
 	}
 }
 
@@ -193,6 +199,39 @@ func (a AccessConfig) ValidateBasic() error {
 		return err
 	}
 	return sdkerrors.Wrapf(ErrInvalid, "unknown type: %q", a.Permission)
+}
+
+func validateGasMultiplier(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
+	}
+	return nil
+}
+
+func validateInstanceCost(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
+	}
+	return nil
+}
+
+func validateCompileCost(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
+	}
+	return nil
 }
 
 func (a AccessConfig) Allowed(actor sdk.AccAddress) bool {

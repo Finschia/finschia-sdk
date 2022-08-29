@@ -10,7 +10,6 @@ import (
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/simulation"
-	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -24,7 +23,7 @@ const (
 
 // WasmKeeper is a subset of the wasm keeper used by simulations
 type WasmKeeper interface {
-	GetParams(ctx sdk.Context) lbmwasmtypes.Params
+	GetParams(ctx sdk.Context) types.Params
 	IterateCodeInfos(ctx sdk.Context, cb func(uint64, types.CodeInfo) bool)
 }
 

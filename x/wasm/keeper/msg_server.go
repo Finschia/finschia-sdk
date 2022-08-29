@@ -5,12 +5,11 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 var _ types.MsgServer = msgServer{}
-var _ lbmwasmtypes.MsgServer = msgServer{}
 
 type msgServer struct {
 	keeper types.ContractOpsKeeper
@@ -75,7 +74,7 @@ func (m msgServer) InstantiateContract(goCtx context.Context, msg *types.MsgInst
 }
 
 func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context,
-	msg *lbmwasmtypes.MsgStoreCodeAndInstantiateContract) (*lbmwasmtypes.MsgStoreCodeAndInstantiateContractResponse, error) {
+	msg *lbmtypes.MsgStoreCodeAndInstantiateContract) (*lbmtypes.MsgStoreCodeAndInstantiateContractResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
@@ -106,7 +105,7 @@ func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context,
 		return nil, err
 	}
 
-	return &lbmwasmtypes.MsgStoreCodeAndInstantiateContractResponse{
+	return &lbmtypes.MsgStoreCodeAndInstantiateContractResponse{
 		CodeID:  codeID,
 		Address: contractAddr.String(),
 		Data:    data,

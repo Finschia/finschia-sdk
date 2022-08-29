@@ -30,7 +30,6 @@ import (
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
-	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -41,8 +40,8 @@ var myWellFundedAccount = keeper.RandomBech32AccountAddress(nil)
 const defaultTestKeyName = "my-key-name"
 
 func TestGenesisStoreCodeCmd(t *testing.T) {
-	minimalWasmGenesis := lbmwasmtypes.GenesisState{
-		Params: lbmwasmtypes.DefaultParams(),
+	minimalWasmGenesis := types.GenesisState{
+		Params: types.DefaultParams(),
 	}
 	anyValidWasmFile, err := ioutil.TempFile(t.TempDir(), "wasm")
 	require.NoError(t, err)
@@ -50,7 +49,7 @@ func TestGenesisStoreCodeCmd(t *testing.T) {
 	require.NoError(t, anyValidWasmFile.Close())
 
 	specs := map[string]struct {
-		srcGenesis lbmwasmtypes.GenesisState
+		srcGenesis types.GenesisState
 		mutator    func(cmd *cobra.Command)
 		expError   bool
 	}{
@@ -108,8 +107,8 @@ func TestGenesisStoreCodeCmd(t *testing.T) {
 }
 
 func TestInstantiateContractCmd(t *testing.T) {
-	minimalWasmGenesis := lbmwasmtypes.GenesisState{
-		Params: lbmwasmtypes.DefaultParams(),
+	minimalWasmGenesis := types.GenesisState{
+		Params: types.DefaultParams(),
 	}
 	anyValidWasmFile, err := ioutil.TempFile(t.TempDir(), "wasm")
 	require.NoError(t, err)
@@ -117,14 +116,14 @@ func TestInstantiateContractCmd(t *testing.T) {
 	require.NoError(t, anyValidWasmFile.Close())
 
 	specs := map[string]struct {
-		srcGenesis  lbmwasmtypes.GenesisState
+		srcGenesis  types.GenesisState
 		mutator     func(cmd *cobra.Command)
 		expMsgCount int
 		expError    bool
 	}{
 		"all good with code id in genesis codes": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				Codes: []types.Code{
 					{
 						CodeID: 1,
@@ -149,8 +148,8 @@ func TestInstantiateContractCmd(t *testing.T) {
 			expMsgCount: 1,
 		},
 		"all good with code id from genesis store messages without initial sequence": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				GenMsgs: []types.GenesisState_GenMsgs{
 					{Sum: &types.GenesisState_GenMsgs_StoreCode{StoreCode: types.MsgStoreCodeFixture()}},
 				},
@@ -165,8 +164,8 @@ func TestInstantiateContractCmd(t *testing.T) {
 			expMsgCount: 2,
 		},
 		"all good with code id from genesis store messages and sequence set": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				GenMsgs: []types.GenesisState_GenMsgs{
 					{Sum: &types.GenesisState_GenMsgs_StoreCode{StoreCode: types.MsgStoreCodeFixture()}},
 				},
@@ -195,8 +194,8 @@ func TestInstantiateContractCmd(t *testing.T) {
 			expError: true,
 		},
 		"fails when instantiation permissions not granted": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				GenMsgs: []types.GenesisState_GenMsgs{
 					{Sum: &types.GenesisState_GenMsgs_StoreCode{StoreCode: types.MsgStoreCodeFixture(func(code *types.MsgStoreCode) {
 						code.InstantiatePermission = &types.AllowNobody
@@ -213,8 +212,8 @@ func TestInstantiateContractCmd(t *testing.T) {
 			expError: true,
 		},
 		"fails if no explicit --no-admin passed": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				Codes: []types.Code{
 					{
 						CodeID: 1,
@@ -238,8 +237,8 @@ func TestInstantiateContractCmd(t *testing.T) {
 			expError: true,
 		},
 		"fails if both --admin and --no-admin passed": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				Codes: []types.Code{
 					{
 						CodeID: 1,
@@ -265,8 +264,8 @@ func TestInstantiateContractCmd(t *testing.T) {
 			expError: true,
 		},
 		"succeeds with unknown account when no funds": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				Codes: []types.Code{
 					{
 						CodeID: 1,
@@ -291,8 +290,8 @@ func TestInstantiateContractCmd(t *testing.T) {
 			expMsgCount: 1,
 		},
 		"succeeds with funds from well funded account": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				Codes: []types.Code{
 					{
 						CodeID: 1,
@@ -318,8 +317,8 @@ func TestInstantiateContractCmd(t *testing.T) {
 			expMsgCount: 1,
 		},
 		"fails without enough sender balance": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				Codes: []types.Code{
 					{
 						CodeID: 1,
@@ -367,8 +366,8 @@ func TestInstantiateContractCmd(t *testing.T) {
 
 func TestExecuteContractCmd(t *testing.T) {
 	const firstContractAddress = "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"
-	minimalWasmGenesis := lbmwasmtypes.GenesisState{
-		Params: lbmwasmtypes.DefaultParams(),
+	minimalWasmGenesis := types.GenesisState{
+		Params: types.DefaultParams(),
 	}
 	anyValidWasmFile, err := ioutil.TempFile(t.TempDir(), "wasm")
 	require.NoError(t, err)
@@ -376,14 +375,14 @@ func TestExecuteContractCmd(t *testing.T) {
 	require.NoError(t, anyValidWasmFile.Close())
 
 	specs := map[string]struct {
-		srcGenesis  lbmwasmtypes.GenesisState
+		srcGenesis  types.GenesisState
 		mutator     func(cmd *cobra.Command)
 		expMsgCount int
 		expError    bool
 	}{
 		"all good with contract in genesis contracts": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				Codes: []types.Code{
 					{
 						CodeID:    1,
@@ -409,8 +408,8 @@ func TestExecuteContractCmd(t *testing.T) {
 			expMsgCount: 1,
 		},
 		"all good with contract from genesis store messages without initial sequence": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				Codes: []types.Code{
 					{
 						CodeID:    1,
@@ -430,8 +429,8 @@ func TestExecuteContractCmd(t *testing.T) {
 			expMsgCount: 2,
 		},
 		"all good with contract from genesis store messages and contract sequence set": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				Codes: []types.Code{
 					{
 						CodeID:    1,
@@ -464,8 +463,8 @@ func TestExecuteContractCmd(t *testing.T) {
 			expError: true,
 		},
 		"succeeds with unknown account when no funds": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				Codes: []types.Code{
 					{
 						CodeID:    1,
@@ -491,8 +490,8 @@ func TestExecuteContractCmd(t *testing.T) {
 			expMsgCount: 1,
 		},
 		"succeeds with funds from well funded account": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				Codes: []types.Code{
 					{
 						CodeID:    1,
@@ -519,8 +518,8 @@ func TestExecuteContractCmd(t *testing.T) {
 			expMsgCount: 1,
 		},
 		"fails without enough sender balance": {
-			srcGenesis: lbmwasmtypes.GenesisState{
-				Params: lbmwasmtypes.DefaultParams(),
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
 				Codes: []types.Code{
 					{
 						CodeID:    1,
@@ -568,11 +567,11 @@ func TestExecuteContractCmd(t *testing.T) {
 }
 func TestGetAllContracts(t *testing.T) {
 	specs := map[string]struct {
-		src lbmwasmtypes.GenesisState
+		src types.GenesisState
 		exp []ContractMeta
 	}{
 		"read from contracts state": {
-			src: lbmwasmtypes.GenesisState{
+			src: types.GenesisState{
 				Contracts: []types.Contract{
 					{
 						ContractAddress: "first-contract",
@@ -596,7 +595,7 @@ func TestGetAllContracts(t *testing.T) {
 			},
 		},
 		"read from message state": {
-			src: lbmwasmtypes.GenesisState{
+			src: types.GenesisState{
 				GenMsgs: []types.GenesisState_GenMsgs{
 					{Sum: &types.GenesisState_GenMsgs_InstantiateContract{InstantiateContract: &types.MsgInstantiateContract{Label: "first"}}},
 					{Sum: &types.GenesisState_GenMsgs_InstantiateContract{InstantiateContract: &types.MsgInstantiateContract{Label: "second"}}},
@@ -614,7 +613,7 @@ func TestGetAllContracts(t *testing.T) {
 			},
 		},
 		"read from message state with contract sequence": {
-			src: lbmwasmtypes.GenesisState{
+			src: types.GenesisState{
 				Sequences: []types.Sequence{
 					{IDKey: types.KeyLastInstanceID, Value: 100},
 				},
@@ -630,7 +629,7 @@ func TestGetAllContracts(t *testing.T) {
 			},
 		},
 		"read from contract and message state with contract sequence": {
-			src: lbmwasmtypes.GenesisState{
+			src: types.GenesisState{
 				Contracts: []types.Contract{
 					{
 						ContractAddress: "first-contract",
@@ -665,7 +664,7 @@ func TestGetAllContracts(t *testing.T) {
 
 }
 
-func setupGenesis(t *testing.T, wasmGenesis lbmwasmtypes.GenesisState) string {
+func setupGenesis(t *testing.T, wasmGenesis types.GenesisState) string {
 	appCodec := keeper.MakeEncodingConfig(t).Marshaler
 	homeDir := t.TempDir()
 
@@ -730,14 +729,14 @@ func executeCmdWithContext(t *testing.T, homeDir string, cmd *cobra.Command) err
 	return cmd.ExecuteContext(ctx)
 }
 
-func loadModuleState(t *testing.T, homeDir string) lbmwasmtypes.GenesisState {
+func loadModuleState(t *testing.T, homeDir string) types.GenesisState {
 	genFilename := path.Join(homeDir, "config", "genesis.json")
 	appState, _, err := genutiltypes.GenesisStateFromGenFile(genFilename)
 	require.NoError(t, err)
 	require.Contains(t, appState, types.ModuleName)
 
 	appCodec := keeper.MakeEncodingConfig(t).Marshaler
-	var moduleState lbmwasmtypes.GenesisState
+	var moduleState types.GenesisState
 	require.NoError(t, appCodec.UnmarshalJSON(appState[types.ModuleName], &moduleState))
 	return moduleState
 }

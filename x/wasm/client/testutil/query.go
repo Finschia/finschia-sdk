@@ -6,9 +6,11 @@ import (
 	"strconv"
 
 	"github.com/gogo/protobuf/proto"
+
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/x/wasm/client/cli"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -463,4 +465,20 @@ func (s *IntegrationTestSuite) TestGetCmdListPinnedCode() {
 	var contractInfo types.QueryPinnedCodesResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &contractInfo), out.String())
 	s.Require().Equal(expcted, &contractInfo)
+}
+
+func (s *IntegrationTestSuite) TestGetCmdListInactiveContract() {
+	val := s.network.Validators[0]
+
+	cmd := cli.GetCmdListInactiveContract()
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, s.queryCommonArgs())
+	s.Require().NoError(err)
+
+	expected := &lbmtypes.QueryInactiveContractsResponse{
+		Addresses:  []string{},
+		Pagination: &query.PageResponse{},
+	}
+	var resInfo lbmtypes.QueryInactiveContractsResponse
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &resInfo), out.String())
+	s.Require().Equal(expected, &resInfo)
 }

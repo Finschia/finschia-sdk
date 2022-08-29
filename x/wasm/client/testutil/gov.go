@@ -8,7 +8,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	govcli "github.com/line/lbm-sdk/x/gov/client/cli"
 	"github.com/line/lbm-sdk/x/gov/types"
-	"github.com/line/lbm-sdk/x/wasm/lbm/client/cli"
+	"github.com/line/lbm-sdk/x/wasm/client/cli"
 )
 
 func (s *IntegrationTestSuite) TestProposalDeactivateContractCmd() {
@@ -81,7 +81,7 @@ func (s *IntegrationTestSuite) TestProposalActivateContractCmd() {
 		// TODO: should fix this valid test after adding InitGenesis of lbm's wasm
 		//"valid activateContract proposal": {
 		//	[]string{
-		//		s.contractAddress,
+		//		s.inactiveContractAddress,
 		//		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		//		fmt.Sprintf("--%s=%s", govcli.FlagTitle, "My Proposal"),
 		//		fmt.Sprintf("--%s=%s", govcli.FlagDescription, "Test proposal"),

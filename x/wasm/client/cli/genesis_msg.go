@@ -8,8 +8,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/line/lbm-sdk/x/wasm/keeper"
-
 	octypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
 
@@ -22,7 +20,7 @@ import (
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/genutil"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
-	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
+	"github.com/line/lbm-sdk/x/wasm/keeper"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -38,7 +36,7 @@ type GenesisMutator interface {
 	// unmarshalls the wasm module section into the object representation
 	// calls the callback function to modify it
 	// and marshals the modified state back into the genesis file
-	AlterWasmModuleState(cmd *cobra.Command, callback func(state *lbmwasmtypes.GenesisState, appState map[string]json.RawMessage) error) error
+	AlterWasmModuleState(cmd *cobra.Command, callback func(state *types.GenesisState, appState map[string]json.RawMessage) error) error
 }
 
 // GenesisStoreCodeCmd cli command to add a `MsgStoreCode` to the wasm section of the genesis
@@ -62,7 +60,7 @@ func GenesisStoreCodeCmd(defaultNodeHome string, genesisMutator GenesisMutator) 
 				return err
 			}
 
-			return genesisMutator.AlterWasmModuleState(cmd, func(state *lbmwasmtypes.GenesisState, _ map[string]json.RawMessage) error {
+			return genesisMutator.AlterWasmModuleState(cmd, func(state *types.GenesisState, _ map[string]json.RawMessage) error {
 				state.GenMsgs = append(state.GenMsgs, types.GenesisState_GenMsgs{
 					Sum: &types.GenesisState_GenMsgs_StoreCode{StoreCode: &msg},
 				})
@@ -102,7 +100,7 @@ func GenesisInstantiateContractCmd(defaultNodeHome string, genesisMutator Genesi
 				return err
 			}
 
-			return genesisMutator.AlterWasmModuleState(cmd, func(state *lbmwasmtypes.GenesisState, appState map[string]json.RawMessage) error {
+			return genesisMutator.AlterWasmModuleState(cmd, func(state *types.GenesisState, appState map[string]json.RawMessage) error {
 				// simple sanity check that sender has some balance although it may be consumed by appState previous message already
 				switch ok, err := hasAccountBalance(cmd, appState, senderAddr, msg.Funds); {
 				case err != nil:
@@ -170,7 +168,7 @@ func GenesisExecuteContractCmd(defaultNodeHome string, genesisMutator GenesisMut
 				return err
 			}
 
-			return genesisMutator.AlterWasmModuleState(cmd, func(state *lbmwasmtypes.GenesisState, appState map[string]json.RawMessage) error {
+			return genesisMutator.AlterWasmModuleState(cmd, func(state *types.GenesisState, appState map[string]json.RawMessage) error {
 				// simple sanity check that sender has some balance although it may be consumed by appState previous message already
 				switch ok, err := hasAccountBalance(cmd, appState, senderAddr, msg.Funds); {
 				case err != nil:
@@ -260,7 +258,7 @@ type CodeMeta struct {
 	Info   types.CodeInfo `json:"info"`
 }
 
-func getAllCodes(state *lbmwasmtypes.GenesisState) ([]CodeMeta, error) {
+func getAllCodes(state *types.GenesisState) ([]CodeMeta, error) {
 	all := make([]CodeMeta, len(state.Codes))
 	for i, c := range state.Codes {
 		all[i] = CodeMeta{
@@ -303,7 +301,7 @@ type ContractMeta struct {
 	Info            types.ContractInfo `json:"info"`
 }
 
-func getAllContracts(state *lbmwasmtypes.GenesisState) []ContractMeta {
+func getAllContracts(state *types.GenesisState) []ContractMeta {
 	all := make([]ContractMeta, len(state.Contracts))
 	for i, c := range state.Contracts {
 		all[i] = ContractMeta{
@@ -348,7 +346,7 @@ func hasAccountBalance(cmd *cobra.Command, appState map[string]json.RawMessage, 
 	return true, nil
 }
 
-func hasContract(state *lbmwasmtypes.GenesisState, contractAddr string) bool {
+func hasContract(state *types.GenesisState, contractAddr string) bool {
 	for _, c := range state.Contracts {
 		if c.ContractAddress == contractAddr {
 			return true
@@ -371,10 +369,10 @@ type GenesisData struct {
 	GenesisFile     string
 	GenDoc          *octypes.GenesisDoc
 	AppState        map[string]json.RawMessage
-	WasmModuleState *lbmwasmtypes.GenesisState
+	WasmModuleState *types.GenesisState
 }
 
-func NewGenesisData(genesisFile string, genDoc *octypes.GenesisDoc, appState map[string]json.RawMessage, wasmModuleState *lbmwasmtypes.GenesisState) *GenesisData {
+func NewGenesisData(genesisFile string, genDoc *octypes.GenesisDoc, appState map[string]json.RawMessage, wasmModuleState *types.GenesisState) *GenesisData {
 	return &GenesisData{GenesisFile: genesisFile, GenDoc: genDoc, AppState: appState, WasmModuleState: wasmModuleState}
 }
 
@@ -391,7 +389,7 @@ func (d DefaultGenesisReader) ReadWasmGenesis(cmd *cobra.Command) (*GenesisData,
 	if err != nil {
 		return nil, fmt.Errorf("failed to unmarshal genesis state: %w", err)
 	}
-	var wasmGenesisState lbmwasmtypes.GenesisState
+	var wasmGenesisState types.GenesisState
 	if appState[types.ModuleName] != nil {
 		clientCtx := client.GetClientContextFromCmd(cmd)
 		clientCtx.Codec.MustUnmarshalJSON(appState[types.ModuleName], &wasmGenesisState)
@@ -423,7 +421,7 @@ func NewDefaultGenesisIO() *DefaultGenesisIO {
 // unmarshalls the wasm module section into the object representation
 // calls the callback function to modify it
 // and marshals the modified state back into the genesis file
-func (x DefaultGenesisIO) AlterWasmModuleState(cmd *cobra.Command, callback func(state *lbmwasmtypes.GenesisState, appState map[string]json.RawMessage) error) error {
+func (x DefaultGenesisIO) AlterWasmModuleState(cmd *cobra.Command, callback func(state *types.GenesisState, appState map[string]json.RawMessage) error) error {
 	g, err := x.ReadWasmGenesis(cmd)
 	if err != nil {
 		return err
@@ -453,7 +451,7 @@ func (x DefaultGenesisIO) AlterWasmModuleState(cmd *cobra.Command, callback func
 
 // contractSeqValue reads the contract sequence from the genesis or
 // returns default start value used in the keeper
-func contractSeqValue(state *lbmwasmtypes.GenesisState) uint64 {
+func contractSeqValue(state *types.GenesisState) uint64 {
 	var seq uint64 = 1
 	for _, s := range state.Sequences {
 		if bytes.Equal(s.IDKey, types.KeyLastInstanceID) {
@@ -466,7 +464,7 @@ func contractSeqValue(state *lbmwasmtypes.GenesisState) uint64 {
 
 // codeSeqValue reads the code sequence from the genesis or
 // returns default start value used in the keeper
-func codeSeqValue(state *lbmwasmtypes.GenesisState) uint64 {
+func codeSeqValue(state *types.GenesisState) uint64 {
 	var seq uint64 = 1
 	for _, s := range state.Sequences {
 		if bytes.Equal(s.IDKey, types.KeyLastCodeID) {

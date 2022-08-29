@@ -1,4 +1,4 @@
-package types
+package lbmtypes
 
 import (
 	"github.com/line/lbm-sdk/codec"
