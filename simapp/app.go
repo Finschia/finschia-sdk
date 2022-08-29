@@ -115,6 +115,7 @@ import (
 	wasmclient "github.com/line/lbm-sdk/x/wasm/client"
 	wasmkeeper "github.com/line/lbm-sdk/x/wasm/keeper"
 	wasmlbmtypes "github.com/line/lbm-sdk/x/wasm/lbmtypes"
+
 	// unnamed import of statik for swagger UI support
 	_ "github.com/line/lbm-sdk/client/docs/statik"
 )

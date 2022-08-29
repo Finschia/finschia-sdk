@@ -47,7 +47,7 @@ func TestGenesisExportImport(t *testing.T) {
 	// store some test data
 	f := fuzz.New().Funcs(ModelFuzzers...)
 
-	wasmKeeper.setParams(srcCtx, types.DefaultParams())
+	wasmKeeper.SetParams(srcCtx, types.DefaultParams())
 
 	for i := 0; i < 25; i++ {
 		var (
@@ -89,7 +89,7 @@ func TestGenesisExportImport(t *testing.T) {
 	}
 	var wasmParams types.Params
 	f.NilChance(0).Fuzz(&wasmParams)
-	wasmKeeper.setParams(srcCtx, wasmParams)
+	wasmKeeper.SetParams(srcCtx, wasmParams)
 
 	// export
 	exportedState := ExportGenesis(srcCtx, wasmKeeper)

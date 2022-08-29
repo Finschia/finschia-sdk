@@ -396,7 +396,7 @@ func createTestInput(
 		queriers,
 		opts...,
 	)
-	keeper.setParams(ctx, types.DefaultParams())
+	keeper.SetParams(ctx, types.DefaultParams())
 	// add wasm handler so we can loop-back (contracts calling contracts)
 	contractKeeper := NewDefaultPermissionKeeper(&keeper)
 	router.AddRoute(sdk.NewRoute(types.RouterKey, TestHandler(contractKeeper)))

@@ -24,7 +24,7 @@ import (
 func TestStoreCodeProposal(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
-	wasmKeeper.setParams(ctx, types.Params{
+	wasmKeeper.SetParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
 		GasMultiplier:                types.DefaultGasMultiplier,
@@ -64,7 +64,7 @@ func TestStoreCodeProposal(t *testing.T) {
 func TestInstantiateProposal(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
-	wasmKeeper.setParams(ctx, types.Params{
+	wasmKeeper.SetParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
 		GasMultiplier:                types.DefaultGasMultiplier,
@@ -132,7 +132,7 @@ func TestInstantiateProposal(t *testing.T) {
 func TestInstantiateProposal_NoAdmin(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
-	wasmKeeper.setParams(ctx, types.Params{
+	wasmKeeper.SetParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
 		GasMultiplier:                types.DefaultGasMultiplier,
@@ -207,7 +207,7 @@ func TestInstantiateProposal_NoAdmin(t *testing.T) {
 func TestMigrateProposal(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
-	wasmKeeper.setParams(ctx, types.Params{
+	wasmKeeper.SetParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
 		GasMultiplier:                types.DefaultGasMultiplier,
@@ -461,7 +461,7 @@ func TestAdminProposals(t *testing.T) {
 		t.Run(msg, func(t *testing.T) {
 			ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 			govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
-			wasmKeeper.setParams(ctx, types.Params{
+			wasmKeeper.SetParams(ctx, types.Params{
 				CodeUploadAccess:             types.AllowNobody,
 				InstantiateDefaultPermission: types.AccessTypeNobody,
 				GasMultiplier:                types.DefaultGasMultiplier,
@@ -553,7 +553,7 @@ func TestUpdateParamsProposal(t *testing.T) {
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			wasmKeeper.setParams(ctx, types.DefaultParams())
+			wasmKeeper.SetParams(ctx, types.DefaultParams())
 
 			// encode + decode as CLI to play nice with amino
 			bz := legacyAmino.MustMarshalJSON(&utils.ParamChangeProposalJSON{

@@ -120,7 +120,7 @@ func TestCreateStoresInstantiatePermission(t *testing.T) {
 		t.Run(msg, func(t *testing.T) {
 			ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 			accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.BankKeeper
-			keepers.WasmKeeper.setParams(ctx, types.Params{
+			keepers.WasmKeeper.SetParams(ctx, types.Params{
 				CodeUploadAccess:             types.AllowEverybody,
 				InstantiateDefaultPermission: spec.srcPermission,
 				GasMultiplier:                types.DefaultGasMultiplier,
@@ -173,7 +173,7 @@ func TestCreateWithParamPermissions(t *testing.T) {
 		t.Run(msg, func(t *testing.T) {
 			params := types.DefaultParams()
 			params.CodeUploadAccess = spec.srcPermission
-			keepers.WasmKeeper.setParams(ctx, params)
+			keepers.WasmKeeper.SetParams(ctx, params)
 			_, err := keeper.Create(ctx, creator, hackatomWasm, nil)
 			require.True(t, spec.expError.Is(err), err)
 			if spec.expError != nil {
@@ -250,7 +250,7 @@ func TestEnforceValidPermissionsOnCreate(t *testing.T) {
 		t.Run(msg, func(t *testing.T) {
 			params := types.DefaultParams()
 			params.InstantiateDefaultPermission = spec.defaultPermssion
-			keeper.setParams(ctx, params)
+			keeper.SetParams(ctx, params)
 			codeID, err := contractKeeper.Create(ctx, creator, hackatomWasm, spec.requestedPermission)
 			require.True(t, spec.expError.Is(err), err)
 			if spec.expError == nil {
@@ -623,7 +623,7 @@ func TestExecute(t *testing.T) {
 	// make sure gas is properly deducted from ctx
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x16bb4), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x16f9c), gasAfter-gasBefore)
 	}
 	// ensure bob now exists and got both payments released
 	bobAcct = accKeeper.GetAccount(ctx, bob)
@@ -1616,7 +1616,7 @@ func TestPinnedContractLoops(t *testing.T) {
 			},
 		}, 0, nil
 	}
-	ctx = ctx.WithGasMeter(sdk.NewGasMeter(20000))
+	ctx = ctx.WithGasMeter(sdk.NewGasMeter(21000))
 	require.PanicsWithValue(t, sdk.ErrorOutOfGas{Descriptor: "ReadFlat"}, func() {
 		_, err := k.execute(ctx, example.Contract, RandomAccountAddress(t), anyMsg, nil)
 		require.NoError(t, err)
