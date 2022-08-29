@@ -51,20 +51,17 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		s.T().Skip("skipping test in unit-tests mode.")
 	}
 
-	keeper.BuildContractAddress(1, 100)
-	s.inactiveContractAddress = "link1mujpjkwhut9yjw4xueyugc02evfv46y0dtmnz4lh8xxkkdapym9skz93hr"
+	s.inactiveContractAddress = "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"
 
 	// add inactive contract to genesis
 	var wasmData types.GenesisState
 	genesisState := s.cfg.GenesisState
-	s.Require().NoError(s.cfg.Codec.UnmarshalJSON(genesisState[types.ModuleName], &wasmData))
-	wasmData.InactiveContractAddresses = []string{s.inactiveContractAddress}
-	// TODO: should add stored contract in genesis
-
+	genesisData, err := ioutil.ReadFile("./testdata/wasm_genesis.json")
+	s.Require().NoError(err)
+	s.Require().NoError(s.cfg.Codec.UnmarshalJSON(genesisData, &wasmData))
 	wasmDataBz, err := s.cfg.Codec.MarshalJSON(&wasmData)
 	s.Require().NoError(err)
 	genesisState[types.ModuleName] = wasmDataBz
-
 	s.cfg.GenesisState = genesisState
 
 	s.network = network.New(s.T(), s.cfg)

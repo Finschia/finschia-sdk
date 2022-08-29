@@ -78,17 +78,16 @@ func (s *IntegrationTestSuite) TestProposalActivateContractCmd() {
 		args  []string
 		valid bool
 	}{
-		// TODO: should fix this valid test after adding InitGenesis of lbm's wasm
-		//"valid activateContract proposal": {
-		//	[]string{
-		//		s.inactiveContractAddress,
-		//		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		//		fmt.Sprintf("--%s=%s", govcli.FlagTitle, "My Proposal"),
-		//		fmt.Sprintf("--%s=%s", govcli.FlagDescription, "Test proposal"),
-		//		fmt.Sprintf("--%s=%s", govcli.FlagDeposit, initialDeposit),
-		//	},
-		//	true,
-		//},
+		"valid activateContract proposal": {
+			[]string{
+				s.inactiveContractAddress,
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+				fmt.Sprintf("--%s=%s", govcli.FlagTitle, "My Proposal"),
+				fmt.Sprintf("--%s=%s", govcli.FlagDescription, "Test proposal"),
+				fmt.Sprintf("--%s=%s", govcli.FlagDeposit, initialDeposit),
+			},
+			true,
+		},
 		"no proposer": {
 			[]string{
 				s.contractAddress,

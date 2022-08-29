@@ -27,8 +27,8 @@ func (s *IntegrationTestSuite) TestGetCmdListCode() {
 
 	var codes types.QueryCodesResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &codes), out.String())
-	s.Require().GreaterOrEqual(1, len(codes.CodeInfos))
-	s.Require().Equal(codes.CodeInfos[0].CodeID, codeID)
+	s.Require().GreaterOrEqual(2, len(codes.CodeInfos))
+	s.Require().Equal(codes.CodeInfos[1].CodeID, codeID)
 }
 
 func (s *IntegrationTestSuite) TestGetCmdListContractByCode() {
@@ -475,7 +475,7 @@ func (s *IntegrationTestSuite) TestGetCmdListInactiveContract() {
 	s.Require().NoError(err)
 
 	expected := &lbmtypes.QueryInactiveContractsResponse{
-		Addresses:  []string{},
+		Addresses:  []string{s.inactiveContractAddress},
 		Pagination: &query.PageResponse{},
 	}
 	var resInfo lbmtypes.QueryInactiveContractsResponse
