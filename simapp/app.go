@@ -652,7 +652,7 @@ func NewSimApp(
 	// 	}
 	// }
 
-	dummy := true
+	var dummy bool
 	if dummy {
 		fmt.Println("Dummy")
 	}
