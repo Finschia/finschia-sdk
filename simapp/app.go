@@ -1,6 +1,7 @@
 package simapp
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -650,6 +651,11 @@ func NewSimApp(
 	// 		panic(fmt.Errorf("failed to register snapshot extension: %s", err))
 	// 	}
 	// }
+
+	dummy := true
+	if dummy {
+		fmt.Println("Dummy")
+	}
 
 	return app
 }
