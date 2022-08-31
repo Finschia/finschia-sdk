@@ -335,3 +335,20 @@ func (q GrpcQuerier) InactiveContracts(c context.Context, req *lbmtypes.QueryIna
 		Pagination: pageRes,
 	}, nil
 }
+
+func (q GrpcQuerier) InactiveContract(c context.Context, req *lbmtypes.QueryInactiveContractRequest) (*lbmtypes.QueryInactiveContractResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+
+	contractAddr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, err
+	}
+
+	inactivated := q.keeper.IsInactiveContract(ctx, contractAddr)
+	return &lbmtypes.QueryInactiveContractResponse{
+		Inactivated: inactivated,
+	}, nil
+}

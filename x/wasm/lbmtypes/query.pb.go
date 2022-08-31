@@ -110,38 +110,123 @@ func (m *QueryInactiveContractsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryInactiveContractsResponse proto.InternalMessageInfo
 
+// QueryIsInactiveContractRequest is the request type for Query/IsInactiveContract RPC method
+type QueryInactiveContractRequest struct {
+	// address is the address of the contract
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *QueryInactiveContractRequest) Reset()         { *m = QueryInactiveContractRequest{} }
+func (m *QueryInactiveContractRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryInactiveContractRequest) ProtoMessage()    {}
+func (*QueryInactiveContractRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1bdb66850244231, []int{2}
+}
+func (m *QueryInactiveContractRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryInactiveContractRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryInactiveContractRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryInactiveContractRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryInactiveContractRequest.Merge(m, src)
+}
+func (m *QueryInactiveContractRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryInactiveContractRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryInactiveContractRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryInactiveContractRequest proto.InternalMessageInfo
+
+// QueryInactiveContractsResponse is the response type for the Query/IsInactiveContract RPC method
+type QueryInactiveContractResponse struct {
+	// inactivated is the result if the contract is inactive contract or not
+	Inactivated bool `protobuf:"varint,1,opt,name=inactivated,proto3" json:"inactivated,omitempty"`
+}
+
+func (m *QueryInactiveContractResponse) Reset()         { *m = QueryInactiveContractResponse{} }
+func (m *QueryInactiveContractResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryInactiveContractResponse) ProtoMessage()    {}
+func (*QueryInactiveContractResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f1bdb66850244231, []int{3}
+}
+func (m *QueryInactiveContractResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryInactiveContractResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryInactiveContractResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryInactiveContractResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryInactiveContractResponse.Merge(m, src)
+}
+func (m *QueryInactiveContractResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryInactiveContractResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryInactiveContractResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryInactiveContractResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*QueryInactiveContractsRequest)(nil), "lbm.wasm.v1.QueryInactiveContractsRequest")
 	proto.RegisterType((*QueryInactiveContractsResponse)(nil), "lbm.wasm.v1.QueryInactiveContractsResponse")
+	proto.RegisterType((*QueryInactiveContractRequest)(nil), "lbm.wasm.v1.QueryInactiveContractRequest")
+	proto.RegisterType((*QueryInactiveContractResponse)(nil), "lbm.wasm.v1.QueryInactiveContractResponse")
 }
 
 func init() { proto.RegisterFile("lbm/wasm/v1/query.proto", fileDescriptor_f1bdb66850244231) }
 
 var fileDescriptor_f1bdb66850244231 = []byte{
-	// 363 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x91, 0x4f, 0x4b, 0xfb, 0x30,
-	0x18, 0xc7, 0x9b, 0xfd, 0xf8, 0x09, 0xcb, 0x4e, 0x16, 0xc1, 0x31, 0x66, 0x9c, 0x3b, 0xb8, 0x31,
-	0x31, 0xa1, 0xf3, 0x1d, 0x28, 0x28, 0xbb, 0xe9, 0x8e, 0x5e, 0x24, 0xed, 0x42, 0x2c, 0xb6, 0x49,
-	0xd7, 0x64, 0xd5, 0x5d, 0xbd, 0x78, 0x15, 0xc4, 0xb3, 0x57, 0x5f, 0xca, 0x8e, 0x03, 0x2f, 0x1e,
-	0xb5, 0xf3, 0x85, 0x48, 0x9b, 0xca, 0x2a, 0xe2, 0x9f, 0x5b, 0x78, 0x9e, 0xef, 0x9f, 0x0f, 0x79,
-	0xe0, 0x7a, 0xe0, 0x86, 0xe4, 0x92, 0xaa, 0x90, 0x24, 0x0e, 0x19, 0x4f, 0x58, 0x3c, 0xc5, 0x51,
-	0x2c, 0xb5, 0xb4, 0x6b, 0x81, 0x1b, 0xe2, 0x6c, 0x81, 0x13, 0xa7, 0xb1, 0xc6, 0x25, 0x97, 0xf9,
-	0x9c, 0x64, 0x2f, 0x23, 0x69, 0x34, 0xb9, 0x94, 0x3c, 0x60, 0x84, 0x46, 0x3e, 0xa1, 0x42, 0x48,
-	0x4d, 0xb5, 0x2f, 0x85, 0x2a, 0xb6, 0x3d, 0x4f, 0xaa, 0x50, 0x2a, 0xe2, 0x52, 0xc5, 0x4c, 0x32,
-	0x49, 0x1c, 0x97, 0x69, 0xea, 0x90, 0x88, 0x72, 0x5f, 0xe4, 0x62, 0xa3, 0x6d, 0x73, 0xb8, 0x71,
-	0x92, 0x29, 0x06, 0x82, 0x7a, 0xda, 0x4f, 0xd8, 0x81, 0x14, 0x3a, 0xa6, 0x9e, 0x56, 0x43, 0x36,
-	0x9e, 0x30, 0xa5, 0xed, 0x43, 0x08, 0x97, 0xa6, 0x3a, 0x68, 0x81, 0x6e, 0xad, 0xbf, 0x8d, 0x4d,
-	0x03, 0xce, 0x1a, 0xb0, 0x61, 0x2f, 0x1a, 0xf0, 0x31, 0xe5, 0xac, 0xf0, 0x0e, 0x4b, 0xce, 0xf6,
-	0x0d, 0x80, 0xe8, 0xbb, 0x26, 0x15, 0x49, 0xa1, 0x98, 0xdd, 0x84, 0x55, 0x3a, 0x1a, 0xc5, 0x4c,
-	0x29, 0xa6, 0xea, 0xa0, 0xf5, 0xaf, 0x5b, 0x1d, 0x2e, 0x07, 0xf6, 0xd1, 0x27, 0x90, 0x4a, 0x0e,
-	0xd2, 0xf9, 0x15, 0xc4, 0x44, 0x97, 0x49, 0xfa, 0x0f, 0x00, 0xfe, 0xcf, 0x49, 0xec, 0x7b, 0x00,
-	0x57, 0xbf, 0xe0, 0xd8, 0x3d, 0x5c, 0x3a, 0x00, 0xfe, 0xf1, 0x77, 0x1a, 0x3b, 0x7f, 0xd2, 0x1a,
-	0x88, 0x76, 0xe7, 0xfa, 0xe9, 0xed, 0xae, 0xb2, 0x65, 0x6f, 0x92, 0xf2, 0xe9, 0xfd, 0x42, 0x7f,
-	0xe6, 0x7d, 0x18, 0xf6, 0x07, 0xb3, 0x57, 0x64, 0x3d, 0xa6, 0xc8, 0x9a, 0xa5, 0x08, 0xcc, 0x53,
-	0x04, 0x5e, 0x52, 0x04, 0x6e, 0x17, 0xc8, 0x9a, 0x2f, 0x90, 0xf5, 0xbc, 0x40, 0xd6, 0x69, 0x87,
-	0xfb, 0xfa, 0x7c, 0xe2, 0x62, 0x4f, 0x86, 0x24, 0xf0, 0x05, 0xcb, 0x12, 0x77, 0xd5, 0xe8, 0x82,
-	0x5c, 0x99, 0xdc, 0xc0, 0x0d, 0xf5, 0x34, 0x62, 0xca, 0x5d, 0xc9, 0xcf, 0xbc, 0xf7, 0x1e, 0x00,
-	0x00, 0xff, 0xff, 0x10, 0xb4, 0xc5, 0x35, 0x6e, 0x02, 0x00, 0x00,
+	// 441 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0x3f, 0x8f, 0xd3, 0x30,
+	0x18, 0xc6, 0xe3, 0x22, 0xfe, 0xd4, 0x5d, 0xc0, 0x42, 0xa2, 0xaa, 0x8a, 0x29, 0x19, 0xe8, 0x5d,
+	0x4f, 0xd8, 0xca, 0xb1, 0xb0, 0x02, 0x12, 0xe8, 0x36, 0xc8, 0xc8, 0x82, 0x9c, 0xc4, 0x32, 0x11,
+	0x89, 0x9d, 0x8b, 0xdd, 0xc0, 0x09, 0xb1, 0xb0, 0xb0, 0x22, 0x21, 0x36, 0x3e, 0x00, 0x9f, 0x82,
+	0xf9, 0xc6, 0x93, 0x58, 0x18, 0x21, 0xe5, 0x83, 0xa0, 0xd8, 0xe9, 0x5d, 0x0a, 0xf4, 0xda, 0x2d,
+	0xf1, 0xfb, 0xbc, 0xcf, 0xf3, 0x7b, 0xfd, 0x26, 0xf0, 0x46, 0x16, 0xe5, 0xf4, 0x35, 0xd3, 0x39,
+	0xad, 0x02, 0x7a, 0x38, 0xe7, 0xe5, 0x11, 0x29, 0x4a, 0x65, 0x14, 0x1a, 0x64, 0x51, 0x4e, 0x9a,
+	0x02, 0xa9, 0x82, 0xd1, 0x75, 0xa1, 0x84, 0xb2, 0xe7, 0xb4, 0x79, 0x72, 0x92, 0xd1, 0x58, 0x28,
+	0x25, 0x32, 0x4e, 0x59, 0x91, 0x52, 0x26, 0xa5, 0x32, 0xcc, 0xa4, 0x4a, 0xea, 0xb6, 0x3a, 0x8b,
+	0x95, 0xce, 0x95, 0xa6, 0x11, 0xd3, 0xdc, 0x39, 0xd3, 0x2a, 0x88, 0xb8, 0x61, 0x01, 0x2d, 0x98,
+	0x48, 0xa5, 0x15, 0x3b, 0xad, 0x2f, 0xe0, 0xcd, 0x67, 0x8d, 0xe2, 0x40, 0xb2, 0xd8, 0xa4, 0x15,
+	0x7f, 0xa4, 0xa4, 0x29, 0x59, 0x6c, 0x74, 0xc8, 0x0f, 0xe7, 0x5c, 0x1b, 0xf4, 0x18, 0xc2, 0xb3,
+	0xa6, 0x21, 0x98, 0x80, 0x9d, 0xc1, 0xfe, 0x1d, 0xe2, 0x12, 0x48, 0x93, 0x40, 0x1c, 0x7b, 0x9b,
+	0x40, 0x9e, 0x32, 0xc1, 0xdb, 0xde, 0xb0, 0xd3, 0xe9, 0x7f, 0x00, 0x10, 0xaf, 0x4b, 0xd2, 0x85,
+	0x92, 0x9a, 0xa3, 0x31, 0xec, 0xb3, 0x24, 0x29, 0xb9, 0xd6, 0x5c, 0x0f, 0xc1, 0xe4, 0xc2, 0x4e,
+	0x3f, 0x3c, 0x3b, 0x40, 0x4f, 0x56, 0x40, 0x7a, 0x16, 0x64, 0xba, 0x11, 0xc4, 0x59, 0xaf, 0x90,
+	0xdc, 0x87, 0xe3, 0xff, 0x82, 0x2c, 0x27, 0x1e, 0xc2, 0xcb, 0x6d, 0xaa, 0x1d, 0xb7, 0x1f, 0x2e,
+	0x5f, 0xfd, 0x07, 0x6b, 0x2e, 0xeb, 0x74, 0x82, 0x09, 0x1c, 0xa4, 0xae, 0xc6, 0x0c, 0x4f, 0x6c,
+	0xfb, 0x95, 0xb0, 0x7b, 0xb4, 0xff, 0xad, 0x07, 0x2f, 0x5a, 0x0f, 0xf4, 0x19, 0xc0, 0x6b, 0xff,
+	0xdc, 0x05, 0x9a, 0x91, 0xce, 0xf6, 0xc9, 0xb9, 0xab, 0x19, 0xed, 0x6d, 0xa5, 0x75, 0x68, 0xfe,
+	0xf4, 0xfd, 0xf7, 0xdf, 0x9f, 0x7a, 0xb7, 0xd1, 0x2d, 0xda, 0xfd, 0xee, 0x5a, 0x34, 0xfe, 0x22,
+	0x3e, 0x25, 0xf8, 0x02, 0xe0, 0xd5, 0xbf, 0x6d, 0xd0, 0xee, 0xe6, 0xa8, 0x25, 0xd5, 0x6c, 0x1b,
+	0x69, 0x0b, 0x15, 0x58, 0xa8, 0x3d, 0xb4, 0xbb, 0x01, 0x8a, 0xbe, 0x6d, 0x57, 0xf0, 0xee, 0xe1,
+	0xc1, 0xf1, 0x2f, 0xec, 0x7d, 0xad, 0xb1, 0x77, 0x5c, 0x63, 0x70, 0x52, 0x63, 0xf0, 0xb3, 0xc6,
+	0xe0, 0xe3, 0x02, 0x7b, 0x27, 0x0b, 0xec, 0xfd, 0x58, 0x60, 0xef, 0xf9, 0x54, 0xa4, 0xe6, 0xe5,
+	0x3c, 0x22, 0xb1, 0xca, 0x69, 0x96, 0x4a, 0xde, 0x78, 0xdf, 0xd5, 0xc9, 0x2b, 0xfa, 0xc6, 0x25,
+	0x64, 0x51, 0x6e, 0x8e, 0x0a, 0xae, 0xa3, 0x4b, 0xf6, 0x17, 0xb8, 0xf7, 0x27, 0x00, 0x00, 0xff,
+	0xff, 0x84, 0x28, 0xe4, 0x11, 0x8a, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -158,6 +243,7 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// InactiveContracts queries all inactive contracts.
 	InactiveContracts(ctx context.Context, in *QueryInactiveContractsRequest, opts ...grpc.CallOption) (*QueryInactiveContractsResponse, error)
+	InactiveContract(ctx context.Context, in *QueryInactiveContractRequest, opts ...grpc.CallOption) (*QueryInactiveContractResponse, error)
 }
 
 type queryClient struct {
@@ -177,10 +263,20 @@ func (c *queryClient) InactiveContracts(ctx context.Context, in *QueryInactiveCo
 	return out, nil
 }
 
+func (c *queryClient) InactiveContract(ctx context.Context, in *QueryInactiveContractRequest, opts ...grpc.CallOption) (*QueryInactiveContractResponse, error) {
+	out := new(QueryInactiveContractResponse)
+	err := c.cc.Invoke(ctx, "/lbm.wasm.v1.Query/InactiveContract", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// InactiveContracts queries all inactive contracts.
 	InactiveContracts(context.Context, *QueryInactiveContractsRequest) (*QueryInactiveContractsResponse, error)
+	InactiveContract(context.Context, *QueryInactiveContractRequest) (*QueryInactiveContractResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -189,6 +285,9 @@ type UnimplementedQueryServer struct {
 
 func (*UnimplementedQueryServer) InactiveContracts(ctx context.Context, req *QueryInactiveContractsRequest) (*QueryInactiveContractsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InactiveContracts not implemented")
+}
+func (*UnimplementedQueryServer) InactiveContract(ctx context.Context, req *QueryInactiveContractRequest) (*QueryInactiveContractResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InactiveContract not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -213,6 +312,24 @@ func _Query_InactiveContracts_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_InactiveContract_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryInactiveContractRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).InactiveContract(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/lbm.wasm.v1.Query/InactiveContract",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).InactiveContract(ctx, req.(*QueryInactiveContractRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "lbm.wasm.v1.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -220,6 +337,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "InactiveContracts",
 			Handler:    _Query_InactiveContracts_Handler,
+		},
+		{
+			MethodName: "InactiveContract",
+			Handler:    _Query_InactiveContract_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -305,6 +426,69 @@ func (m *QueryInactiveContractsResponse) MarshalToSizedBuffer(dAtA []byte) (int,
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryInactiveContractRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryInactiveContractRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryInactiveContractRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryInactiveContractResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryInactiveContractResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryInactiveContractResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Inactivated {
+		i--
+		if m.Inactivated {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -344,6 +528,31 @@ func (m *QueryInactiveContractsResponse) Size() (n int) {
 	if m.Pagination != nil {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryInactiveContractRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryInactiveContractResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Inactivated {
+		n += 2
 	}
 	return n
 }
@@ -537,6 +746,158 @@ func (m *QueryInactiveContractsResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryInactiveContractRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryInactiveContractRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryInactiveContractRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryInactiveContractResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryInactiveContractResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryInactiveContractResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Inactivated", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Inactivated = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])

@@ -29,6 +29,7 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 	r.HandleFunc("/wasm/contract/{contractAddr}/smart/{query}", queryContractStateSmartHandlerFn(cliCtx)).Queries("encoding", "{encoding}").Methods("GET")
 	r.HandleFunc("/wasm/contract/{contractAddr}/raw/{key}", queryContractStateRawHandlerFn(cliCtx)).Queries("encoding", "{encoding}").Methods("GET")
 	r.HandleFunc("/wasm/inactive_contract", listInactiveContractsHandlerFn(cliCtx)).Queries("GET")
+	r.HandleFunc("/wasm/inactive_contract/{contractAddr}", queryInactiveContractHandlerFn(cliCtx)).Queries("GET")
 }
 
 func listCodesHandlerFn(cliCtx client.Context) http.HandlerFunc {
@@ -409,6 +410,37 @@ func listInactiveContractsHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		data := &lbmtypes.QueryInactiveContractsRequest{
 			Pagination: pageReq,
 		}
+		bs, err := cliCtx.LegacyAmino.MarshalJSON(data)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		res, height, err := cliCtx.QueryWithData(route, bs)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		cliCtx = cliCtx.WithHeight(height)
+		rest.PostProcessResponse(w, cliCtx, json.RawMessage(res))
+	}
+}
+
+func queryInactiveContractHandlerFn(cliCtx client.Context) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, keeper.QueryIsInactiveContract)
+		addr, err := sdk.AccAddressFromBech32(mux.Vars(r)["contractAddr"])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		data := lbmtypes.QueryInactiveContractRequest{Address: addr.String()}
 		bs, err := cliCtx.LegacyAmino.MarshalJSON(data)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())

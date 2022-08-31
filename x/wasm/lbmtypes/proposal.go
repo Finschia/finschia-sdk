@@ -46,7 +46,7 @@ func (p DeactivateContractProposal) ValidateBasic() error {
 
 func (p DeactivateContractProposal) String() string {
 	return fmt.Sprintf(`Deactivate Contract Proposal:
-  Title: 	   %s
+  Title:       %s
   Description: %s
   Contract:    %s
 `, p.Title, p.Description, p.Contract)
@@ -70,7 +70,7 @@ func (p ActivateContractProposal) ValidateBasic() error {
 
 func (p ActivateContractProposal) String() string {
 	return fmt.Sprintf(`Activate Contract Proposal:
-  Title: 	   %s
+  Title:       %s
   Description: %s
   Contract:    %s
 `, p.Title, p.Description, p.Contract)

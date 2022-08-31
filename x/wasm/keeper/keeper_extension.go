@@ -43,9 +43,6 @@ func (k Keeper) activateContract(ctx sdk.Context, contractAddress sdk.AccAddress
 	if !k.IsInactiveContract(ctx, contractAddress) {
 		return sdkerrors.Wrapf(wasmtypes.ErrNotFound, "no inactivate contract %s", contractAddress.String())
 	}
-	if !k.HasContractInfo(ctx, contractAddress) {
-		return sdkerrors.Wrapf(wasmtypes.ErrInvalid, "no contract %s", contractAddress)
-	}
 
 	k.deleteInactiveContract(ctx, contractAddress)
 	k.bank.DeleteFromInactiveAddr(ctx, contractAddress)

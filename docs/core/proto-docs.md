@@ -1234,6 +1234,8 @@
     - [DeactivateContractProposal](#lbm.wasm.v1.DeactivateContractProposal)
   
 - [lbm/wasm/v1/query.proto](#lbm/wasm/v1/query.proto)
+    - [QueryInactiveContractRequest](#lbm.wasm.v1.QueryInactiveContractRequest)
+    - [QueryInactiveContractResponse](#lbm.wasm.v1.QueryInactiveContractResponse)
     - [QueryInactiveContractsRequest](#lbm.wasm.v1.QueryInactiveContractsRequest)
     - [QueryInactiveContractsResponse](#lbm.wasm.v1.QueryInactiveContractsResponse)
   
@@ -18537,7 +18539,7 @@ EventActivateContractProposal is the event that is emitted when the contract is 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contractAddress` | [string](#string) |  | contractAddress is the smart contract's address |
+| `contract` | [string](#string) |  | contract is the smart contract's address |
 
 
 
@@ -18552,7 +18554,7 @@ EventDeactivateContractProposal is the event that is emitted when the contract i
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contractAddress` | [string](#string) |  | contractAddress is the smart contract's address |
+| `contract` | [string](#string) |  | contract is the smart contract's address |
 
 
 
@@ -18625,6 +18627,36 @@ DeactivateContractProposal gov proposal content type adds a contract to inactive
 
 
 
+<a name="lbm.wasm.v1.QueryInactiveContractRequest"></a>
+
+### QueryInactiveContractRequest
+QueryIsInactiveContractRequest is the request type for Query/IsInactiveContract RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | address is the address of the contract |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.QueryInactiveContractResponse"></a>
+
+### QueryInactiveContractResponse
+QueryInactiveContractsResponse is the response type for the Query/IsInactiveContract RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `inactivated` | [bool](#bool) |  | inactivated is the result if the contract is inactive contract or not |
+
+
+
+
+
+
 <a name="lbm.wasm.v1.QueryInactiveContractsRequest"></a>
 
 ### QueryInactiveContractsRequest
@@ -18670,6 +18702,7 @@ Query defines the gRPC querier service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `InactiveContracts` | [QueryInactiveContractsRequest](#lbm.wasm.v1.QueryInactiveContractsRequest) | [QueryInactiveContractsResponse](#lbm.wasm.v1.QueryInactiveContractsResponse) | InactiveContracts queries all inactive contracts. | GET|/lbm/wasm/v1/inactive_contracts|
+| `InactiveContract` | [QueryInactiveContractRequest](#lbm.wasm.v1.QueryInactiveContractRequest) | [QueryInactiveContractResponse](#lbm.wasm.v1.QueryInactiveContractResponse) |  | GET|/lbm/wasm/v1/inactive_contracts/{address}|
 
  <!-- end services -->
 

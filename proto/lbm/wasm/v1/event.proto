@@ -5,12 +5,12 @@ option go_package = "github.com/line/lbm-sdk/x/wasm/lbmtypes";
 
 // EventDeactivateContractProposal is the event that is emitted when the contract is deactivate
 message EventDeactivateContractProposal {
-  // contractAddress is the smart contract's address
-  string contractAddress = 1;
+  // contract is the smart contract's address
+  string contract = 1;
 }
 
 // EventActivateContractProposal is the event that is emitted when the contract is activates.
 message EventActivateContractProposal {
-  // contractAddress is the smart contract's address
-  string contractAddress = 1;
+  // contract is the smart contract's address
+  string contract = 1;
 }

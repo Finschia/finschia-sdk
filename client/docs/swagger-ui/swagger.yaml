@@ -44157,6 +44157,54 @@ paths:
           format: boolean
       tags:
         - Query
+  '/lbm/wasm/v1/inactive_contracts/{address}':
+    get:
+      operationId: InactiveContract
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              inactivated:
+                type: boolean
+                format: boolean
+                title: >-
+                  inactivated is the result if the contract is inactive contract
+                  or not
+            title: >-
+              QueryInactiveContractsResponse is the response type for the
+              Query/IsInactiveContract RPC method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: address
+          description: address is the address of the contract
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
 securityDefinitions:
   kms:
     type: basic
@@ -70472,6 +70520,16 @@ definitions:
     description: >-
       QueryAllowancesResponse is the response type for the Query/Allowances RPC
       method.
+  lbm.wasm.v1.QueryInactiveContractResponse:
+    type: object
+    properties:
+      inactivated:
+        type: boolean
+        format: boolean
+        title: inactivated is the result if the contract is inactive contract or not
+    title: >-
+      QueryInactiveContractsResponse is the response type for the
+      Query/IsInactiveContract RPC method
   lbm.wasm.v1.QueryInactiveContractsResponse:
     type: object
     properties:

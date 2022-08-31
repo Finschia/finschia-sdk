@@ -39,7 +39,8 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdGetContractState(),
 		GetCmdListPinnedCode(),
 		GetCmdLibVersion(),
-		GetCmdListInactiveContract(),
+		GetCmdListInactiveContracts(),
+		GetCmdIsInactiveContract(),
 	)
 	return queryCmd
 }
@@ -540,9 +541,9 @@ func withPageKeyDecoded(flagSet *flag.FlagSet) *flag.FlagSet {
 	return flagSet
 }
 
-func GetCmdListInactiveContract() *cobra.Command {
+func GetCmdListInactiveContracts() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:  "inactive-contract",
+		Use:  "inactive-contracts",
 		Long: "List all inactive contracts",
 		Args: cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -570,5 +571,33 @@ func GetCmdListInactiveContract() *cobra.Command {
 	}
 	flags.AddQueryFlagsToCmd(cmd)
 	flags.AddPaginationFlagsToCmd(cmd, "list of inactive contracts")
+	return cmd
+}
+
+func GetCmdIsInactiveContract() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:  "is-inactive [bech32_address]",
+		Long: "check if inactive contract or not",
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := lbmtypes.NewQueryClient(clientCtx)
+			res, err := queryClient.InactiveContract(
+				context.Background(),
+				&lbmtypes.QueryInactiveContractRequest{
+					Address: args[0],
+				},
+			)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+	flags.AddQueryFlagsToCmd(cmd)
 	return cmd
 }

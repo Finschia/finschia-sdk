@@ -295,15 +295,15 @@ func handleDeactivateContractProposal(ctx sdk.Context, k types.ContractOpsKeeper
 	}
 
 	// The error is already checked in ValidateBasic.
-	contractAddress, _ := sdk.AccAddressFromBech32(p.Contract)
+	contractAddr, _ := sdk.AccAddressFromBech32(p.Contract)
 
-	err := k.DeactivateContract(ctx, contractAddress)
+	err := k.DeactivateContract(ctx, contractAddr)
 	if err != nil {
 		return err
 	}
 
 	event := lbmtypes.EventDeactivateContractProposal{
-		ContractAddress: contractAddress.String(),
+		Contract: contractAddr.String(),
 	}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		return err
@@ -318,14 +318,14 @@ func handleActivateContractProposal(ctx sdk.Context, k types.ContractOpsKeeper, 
 	}
 
 	// The error is already checked in ValidateBasic.
-	contractAddress, _ := sdk.AccAddressFromBech32(p.Contract)
+	contractAddr, _ := sdk.AccAddressFromBech32(p.Contract)
 
-	err := k.ActivateContract(ctx, contractAddress)
+	err := k.ActivateContract(ctx, contractAddr)
 	if err != nil {
 		return err
 	}
 
-	event := lbmtypes.EventActivateContractProposal{ContractAddress: contractAddress.String()}
+	event := lbmtypes.EventActivateContractProposal{Contract: contractAddr.String()}
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		return nil
 	}

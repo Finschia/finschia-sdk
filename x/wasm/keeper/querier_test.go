@@ -877,3 +877,27 @@ func TestQueryInactiveContracts(t *testing.T) {
 		assert.Contains(t, res.Addresses, exp)
 	}
 }
+
+func TestQueryIsInactiveContract(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
+	var mock wasmtesting.MockWasmer
+	wasmtesting.MakeInstantiable(&mock)
+	example := SeedNewContractInstance(t, ctx, keepers, &mock)
+
+	q := Querier(keeper)
+	rq := lbmtypes.QueryInactiveContractRequest{Address: example.Contract.String()}
+	res, err := q.InactiveContract(sdk.WrapSDKContext(ctx), &rq)
+	require.NoError(t, err)
+	require.False(t, res.Inactivated)
+
+	// set inactive
+	err = keeper.deactivateContract(ctx, example.Contract)
+	require.NoError(t, err)
+
+	rq = lbmtypes.QueryInactiveContractRequest{Address: example.Contract.String()}
+	res, err = q.InactiveContract(sdk.WrapSDKContext(ctx), &rq)
+	require.NoError(t, err)
+	require.True(t, res.Inactivated)
+}
