@@ -52,6 +52,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (simapp) [\#620](https://github.com/line/lbm-sdk/pull/620) chore: add iterator feature for simapp
 * (x/collection) [\#622](https://github.com/line/lbm-sdk/pull/622) add Query/TokenClassTypeName
 * (x/bank) [\#629](https://github.com/line/lbm-sdk/pull/629) remove unsafe balance changing methods from bank keeper such as `SetBalance` and `SetSupply`.
+* (x/wasm) [\#649](https://github.com/line/lbm-sdk/pull/649) fix: wasm module's FIXME in the snapshotter.go file
 
 ### Improvements
 
