@@ -1,4 +1,4 @@
-name: Benchmark
+name: Benchmark APIs
 #  Benchmark workflow runs benchmarks
 #  This workflow is run on pushes to develop & every Pull Requests where a .go, .mod, .sum have been changed
 env:
@@ -26,5 +26,5 @@ jobs:
             go.sum
       - name: benchmark
         run: |
-          go test -mod=readonly -timeout 30m -bench=. -benchmem -run=^$ ./...
+          go test -mod=readonly -timeout 30m -bench=BenchmarkAPI -benchmem -run=^$ ./...
         if: env.GIT_DIFF
