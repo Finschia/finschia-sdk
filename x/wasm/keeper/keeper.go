@@ -410,7 +410,7 @@ func (k Keeper) execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 		return nil, err
 	}
 	if k.IsInactiveContract(ctx, contractAddress) {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
+		return nil, sdkerrors.Wrap(types.ErrInactiveContract, "can not execute")
 	}
 
 	executeCosts := k.instantiateContractCosts(k.gasRegister, ctx, k.IsPinnedCode(ctx, contractInfo.CodeID), len(msg))
@@ -459,7 +459,7 @@ func (k Keeper) migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
 	}
 	if k.IsInactiveContract(ctx, contractAddress) {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
+		return nil, sdkerrors.Wrap(types.ErrInactiveContract, "can not migrate")
 	}
 	if !authZ.CanModifyContract(contractInfo.AdminAddr(), caller) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not migrate")
@@ -628,7 +628,7 @@ func (k Keeper) setContractAdmin(ctx sdk.Context, contractAddress, caller, newAd
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
 	}
 	if k.IsInactiveContract(ctx, contractAddress) {
-		return sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
+		return sdkerrors.Wrap(types.ErrInactiveContract, "can not modify contract")
 	}
 	if !authZ.CanModifyContract(contractInfo.AdminAddr(), caller) {
 		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not modify contract")

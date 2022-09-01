@@ -1867,7 +1867,7 @@ func TestActivateContract(t *testing.T) {
 	err := k.activateContract(ctx, example.CreatorAddr)
 	require.Error(t, err, fmt.Sprintf("no contract %s", example.CreatorAddr))
 
-	// first activate -> fail
+	// try to activate an activated contract -> fail
 	err = k.activateContract(ctx.WithEventManager(em), example.Contract)
 	require.Error(t, err, fmt.Sprintf("no inactivate contract %s", example.Contract))
 
@@ -1875,7 +1875,7 @@ func TestActivateContract(t *testing.T) {
 	err = k.deactivateContract(ctx, example.Contract)
 	require.NoError(t, err)
 
-	// second activate -> success
+	// try to activate an inactivated contract -> success
 	err = k.activateContract(ctx, example.Contract)
 	require.NoError(t, err)
 }
@@ -1923,6 +1923,7 @@ func TestIterateInactiveContracts(t *testing.T) {
 		inactiveContracts = append(inactiveContracts, contractAddress)
 		return false
 	})
-	expectList := []sdk.AccAddress{example2.Contract, example1.Contract}
-	assert.Equal(t, expectList, inactiveContracts)
+	assert.Equal(t, 2, len(inactiveContracts))
+	expectList := []sdk.AccAddress{example1.Contract, example2.Contract}
+	assert.ElementsMatch(t, expectList, inactiveContracts)
 }
