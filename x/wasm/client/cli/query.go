@@ -577,7 +577,7 @@ func GetCmdListInactiveContracts() *cobra.Command {
 func GetCmdIsInactiveContract() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:  "is-inactive [bech32_address]",
-		Long: "check if inactive contract or not",
+		Long: "Check if inactive contract or not",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)

@@ -728,7 +728,7 @@ $ %s tx gov submit-proposal update-instantiate-config 1,nobody 2,everybody 3,%s1
 func ProposalDeactivateContractCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "deactivate-contract [contract_addr_bech32]",
-		Short: "deactivate the contract. This contract will not be executed after that.",
+		Short: "Deactivate the contract. This contract will not be executed after that.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
