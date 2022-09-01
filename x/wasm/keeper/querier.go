@@ -347,6 +347,10 @@ func (q GrpcQuerier) InactiveContract(c context.Context, req *lbmtypes.QueryInac
 		return nil, err
 	}
 
+	if !q.keeper.HasContractInfo(ctx, contractAddr) {
+		return nil, types.ErrNotFound
+	}
+
 	inactivated := q.keeper.IsInactiveContract(ctx, contractAddr)
 	return &lbmtypes.QueryInactiveContractResponse{
 		Inactivated: inactivated,

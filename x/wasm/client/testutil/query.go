@@ -504,10 +504,8 @@ func (s *IntegrationTestSuite) TestGetCmdIsInactiveContract() {
 			[]string{
 				"link1hmayw7vv0p3gzeh3jzwmw9xj8fy8a3kmpqgjrysljdnecqkps02qrq5rvm",
 			},
-			true,
-			&lbmtypes.QueryInactiveContractResponse{
-				Inactivated: false,
-			},
+			false,
+			nil,
 		},
 		"wrong bech32_address": {
 			[]string{
