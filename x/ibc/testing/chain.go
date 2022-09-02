@@ -292,18 +292,18 @@ func (chain *TestChain) NextBlock() {
 	chain.App.BeginBlock(abci.RequestBeginBlock{Header: chain.CurrentHeader})
 }
 
-// sendMsgs delivers a transaction through the application without returning the result.
-func (chain *TestChain) sendMsgs(msgs ...sdk.Msg) error {
-	_, err := chain.SendMsgs(msgs...)
-	return err
-}
-
 func (chain *TestChain) CommitBlock() {
 	chain.App.EndBlock(abci.RequestEndBlock{Height: chain.CurrentHeader.Height})
 	chain.App.Commit()
 
 	chain.App.BeginRecheckTx(abci.RequestBeginRecheckTx{Header: chain.CurrentHeader})
 	chain.App.EndRecheckTx(abci.RequestEndRecheckTx{Height: chain.CurrentHeader.Height})
+}
+
+// sendMsgs delivers a transaction through the application without returning the result.
+func (chain *TestChain) sendMsgs(msgs ...sdk.Msg) error {
+	_, err := chain.SendMsgs(msgs...)
+	return err
 }
 
 // SendMsgs delivers a transaction through the application. It updates the senders sequence
@@ -529,16 +529,14 @@ func (chain *TestChain) CreateTMClientHeader(chainID string, blockHeight int64, 
 		require.NoError(chain.T, err)
 	}
 
-	voterSet, err = tmVoterSet.ToProto()
-	if err != nil {
-		panic(err)
+	if tmVoterSet != nil {
+		voterSet, err = tmVoterSet.ToProto()
+		require.NoError(chain.T, err)
 	}
 
 	if tmTrustedVoterSet != nil {
 		trustedVoters, err = tmTrustedVoterSet.ToProto()
-		if err != nil {
-			panic(err)
-		}
+		require.NoError(chain.T, err)
 	}
 
 	// The trusted fields may be nil. They may be filled before relaying messages to a client.
