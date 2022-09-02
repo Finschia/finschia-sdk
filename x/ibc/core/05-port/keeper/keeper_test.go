@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/x/ibc/core/05-port/keeper"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 var (

@@ -27,9 +27,9 @@ import (
 	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/simapp/params"
 	ibcclientcli "github.com/line/lbm-sdk/x/ibc/core/02-client/client/cli"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp/params"
 )
 
 /*

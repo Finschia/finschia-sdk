@@ -8,12 +8,12 @@ import (
 	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/line/lbm-sdk/simapp"
 	ica "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts"
 	controllertypes "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/controller/types"
 	hosttypes "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/host/types"
 	"github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 type InterchainAccountsTestSuite struct {

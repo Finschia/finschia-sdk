@@ -5,12 +5,12 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 
+	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 // test sending from chainA to chainB using both coin that orignate on

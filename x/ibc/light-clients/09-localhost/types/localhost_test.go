@@ -8,9 +8,9 @@ import (
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/line/lbm-sdk/simapp"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 const (

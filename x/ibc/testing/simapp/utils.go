@@ -13,7 +13,7 @@ import (
 	"github.com/line/ostracon/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp/helpers"
+	"github.com/line/lbm-sdk/simapp/helpers"
 )
 
 // SetupSimulation creates the config, db (levelDB), temporary directory and logger for

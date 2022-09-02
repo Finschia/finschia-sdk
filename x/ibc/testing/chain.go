@@ -27,6 +27,7 @@ import (
 	tmversion "github.com/line/ostracon/version"
 	"github.com/stretchr/testify/require"
 
+	"github.com/line/lbm-sdk/simapp"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
@@ -34,7 +35,6 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/core/types"
 	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	"github.com/line/lbm-sdk/x/ibc/testing/mock"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 var MaxAccounts = 10

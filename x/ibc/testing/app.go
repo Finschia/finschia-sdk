@@ -23,8 +23,8 @@ import (
 	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/x/ibc/core/keeper"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 var DefaultTestingAppInit func() (TestingApp, map[string]json.RawMessage) = SetupTestingApp

@@ -31,8 +31,8 @@ import (
 	"github.com/spf13/viper"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp/params"
+	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/simapp/params"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the

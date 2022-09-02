@@ -11,11 +11,11 @@ import (
 	tmtypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/line/lbm-sdk/simapp"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 	ibctestingmock "github.com/line/lbm-sdk/x/ibc/testing/mock"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 const (

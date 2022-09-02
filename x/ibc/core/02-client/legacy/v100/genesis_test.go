@@ -9,6 +9,7 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 
+	"github.com/line/lbm-sdk/simapp"
 	ibcclient "github.com/line/lbm-sdk/x/ibc/core/02-client"
 	v100 "github.com/line/lbm-sdk/x/ibc/core/02-client/legacy/v100"
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
@@ -16,7 +17,6 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 func (suite *LegacyTestSuite) TestMigrateGenesisSolomachine() {

@@ -8,6 +8,7 @@ import (
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/line/lbm-sdk/simapp"
 	ibc "github.com/line/lbm-sdk/x/ibc/core"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
@@ -18,7 +19,6 @@ import (
 	localhosttypes "github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
 	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 const (

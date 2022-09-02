@@ -9,15 +9,15 @@ import (
 	tmtypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/line/lbm-sdk/simapp"
 	ibcclient "github.com/line/lbm-sdk/x/ibc/core/02-client"
 	clientv100 "github.com/line/lbm-sdk/x/ibc/core/02-client/legacy/v100"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/x/ibc/core/legacy/v100"
+	v100 "github.com/line/lbm-sdk/x/ibc/core/legacy/v100"
 	"github.com/line/lbm-sdk/x/ibc/core/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 type LegacyTestSuite struct {

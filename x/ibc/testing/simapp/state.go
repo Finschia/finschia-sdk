@@ -19,7 +19,7 @@ import (
 	tmjson "github.com/line/ostracon/libs/json"
 	tmtypes "github.com/line/ostracon/types"
 
-	simappparams "github.com/line/lbm-sdk/x/ibc/testing/simapp/params"
+	simappparams "github.com/line/lbm-sdk/simapp/params"
 )
 
 // AppStateFn returns the initial application state using a genesis or the simulation parameters.

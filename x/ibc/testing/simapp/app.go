@@ -24,6 +24,7 @@ import (
 	"github.com/line/lbm-sdk/server/api"
 	"github.com/line/lbm-sdk/server/config"
 	servertypes "github.com/line/lbm-sdk/server/types"
+	simappparams "github.com/line/lbm-sdk/simapp/params"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
@@ -43,7 +44,6 @@ import (
 	"github.com/line/lbm-sdk/x/capability"
 	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
-	simappparams "github.com/line/lbm-sdk/x/ibc/testing/simapp/params"
 
 	"github.com/line/lbm-sdk/x/crisis"
 	crisiskeeper "github.com/line/lbm-sdk/x/crisis/keeper"

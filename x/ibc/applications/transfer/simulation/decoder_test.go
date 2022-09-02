@@ -7,9 +7,9 @@ import (
 	"github.com/line/lbm-sdk/types/kv"
 	"github.com/stretchr/testify/require"
 
+	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/x/ibc/applications/transfer/simulation"
 	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 func TestDecodeStore(t *testing.T) {

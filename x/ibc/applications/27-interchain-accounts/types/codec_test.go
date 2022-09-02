@@ -6,8 +6,8 @@ import (
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 
+	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/types"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 // caseRawBytes defines a helper struct, used for testing codec operations

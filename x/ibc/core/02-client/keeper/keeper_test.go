@@ -15,6 +15,7 @@ import (
 	tmtypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/keeper"
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
@@ -23,7 +24,6 @@ import (
 	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 	ibctestingmock "github.com/line/lbm-sdk/x/ibc/testing/mock"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
 )
 
 const (

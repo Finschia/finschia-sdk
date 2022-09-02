@@ -30,9 +30,9 @@ import (
 	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/line/lbm-sdk/simapp/helpers"
 	ibctransfertypes "github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 	ibchost "github.com/line/lbm-sdk/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp/helpers"
 )
 
 // Get flags every time the simulator is run

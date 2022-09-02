@@ -6,8 +6,8 @@ import (
 	"github.com/line/lbm-sdk/server"
 	svrcmd "github.com/line/lbm-sdk/server/cmd"
 
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp/simd/cmd"
+	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/simapp/simd/cmd"
 )
 
 func main() {

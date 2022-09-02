@@ -3,7 +3,7 @@ package simapp
 import (
 	"github.com/line/lbm-sdk/std"
 
-	simappparams "github.com/line/lbm-sdk/x/ibc/testing/simapp/params"
+	simappparams "github.com/line/lbm-sdk/simapp/params"
 )
 
 // MakeTestEncodingConfig creates an EncodingConfig for testing. This function

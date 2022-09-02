@@ -10,7 +10,7 @@ import (
 	"github.com/line/ostracon/crypto"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/x/ibc/testing/simapp"
+	"github.com/line/lbm-sdk/simapp"
 )
 
 func TestSimGenesisAccountValidate(t *testing.T) {
