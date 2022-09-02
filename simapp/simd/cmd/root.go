@@ -17,10 +17,11 @@ import (
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/client"
-	config "github.com/line/lbm-sdk/client/config"
+	"github.com/line/lbm-sdk/client/config"
 	"github.com/line/lbm-sdk/client/debug"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/keys"
+	"github.com/line/lbm-sdk/client/pruning"
 	"github.com/line/lbm-sdk/client/rpc"
 	"github.com/line/lbm-sdk/server"
 	serverconfig "github.com/line/lbm-sdk/server/config"
@@ -148,6 +149,7 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 	cfg := sdk.GetConfig()
 	cfg.Seal()
 
+	a := appCreator{encodingConfig}
 	rootCmd.AddCommand(
 		genutilcli.InitCmd(simapp.ModuleBasics, simapp.DefaultNodeHome),
 		genutilcli.CollectGenTxsCmd(banktypes.GenesisBalancesIterator{}, simapp.DefaultNodeHome),
@@ -159,9 +161,9 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 		testnetCmd(simapp.ModuleBasics, banktypes.GenesisBalancesIterator{}),
 		debug.Cmd(),
 		config.Cmd(),
+		pruning.PruningCmd(a.newApp),
 	)
 
-	a := appCreator{encodingConfig}
 	server.AddCommands(rootCmd, simapp.DefaultNodeHome, a.newApp, a.appExport, addModuleInitFlags)
 
 	// add keybase, auxiliary RPC, query, and tx child commands
