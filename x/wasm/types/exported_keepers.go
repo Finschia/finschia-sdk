@@ -68,7 +68,7 @@ type IBCContractKeeper interface {
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
 		msg wasmvmtypes.IBCChannelOpenMsg,
-	) error
+	) (string, error)
 	OnConnectChannel(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
