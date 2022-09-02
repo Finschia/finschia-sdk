@@ -18580,14 +18580,14 @@ EventDeactivateContractProposal is the event that is emitted when the contract i
 <a name="lbm.wasm.v1.ActivateContractProposal"></a>
 
 ### ActivateContractProposal
-ActivateContractProposal gov proposal content type deletes a contract from inactive list
+ActivateContractProposal gov proposal content type deletes a contract from inactive list.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  | Title is a short summary |
 | `description` | [string](#string) |  | Description is a human readable text |
-| `contract` | [string](#string) |  | Contract is the smart contract address to activate. |
+| `contract` | [string](#string) |  | Contract is the smart contract address to activate |
 
 
 
@@ -18604,7 +18604,7 @@ DeactivateContractProposal gov proposal content type adds a contract to inactive
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  | Title is a short summary |
 | `description` | [string](#string) |  | Description is a human readable text |
-| `contract` | [string](#string) |  | Contract is the smart contract address to deactivate. |
+| `contract` | [string](#string) |  | Contract is the smart contract address to deactivate |
 
 
 

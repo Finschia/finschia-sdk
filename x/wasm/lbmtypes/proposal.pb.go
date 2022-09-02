@@ -29,7 +29,7 @@ type DeactivateContractProposal struct {
 	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty" yaml:"title"`
 	// Description is a human readable text
 	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty" yaml:"description"`
-	// Contract is the smart contract address to deactivate.
+	// Contract is the smart contract address to deactivate
 	Contract string `protobuf:"bytes,3,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
 }
 
@@ -65,13 +65,13 @@ func (m *DeactivateContractProposal) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_DeactivateContractProposal proto.InternalMessageInfo
 
-// ActivateContractProposal gov proposal content type deletes a contract from inactive list
+// ActivateContractProposal gov proposal content type deletes a contract from inactive list.
 type ActivateContractProposal struct {
 	// Title is a short summary
 	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty" yaml:"title"`
 	// Description is a human readable text
 	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty" yaml:"description"`
-	// Contract is the smart contract address to activate.
+	// Contract is the smart contract address to activate
 	Contract string `protobuf:"bytes,3,opt,name=contract,proto3" json:"contract,omitempty" yaml:"contract"`
 }
 
