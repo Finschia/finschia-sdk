@@ -44040,7 +44040,7 @@ paths:
         - Query
   /lbm/wasm/v1/inactive_contracts:
     get:
-      summary: InactiveContracts queries all inactive contracts.
+      summary: InactiveContracts queries all inactive contracts
       operationId: InactiveContracts
       responses:
         '200':
@@ -44054,7 +44054,7 @@ paths:
                   type: string
                 title: addresses is the inactive address list
               pagination:
-                description: pagination defines the pagination in the response.
+                title: pagination defines the pagination in the response
                 type: object
                 properties:
                   next_key:
@@ -44071,9 +44071,19 @@ paths:
                       PageRequest.count_total
 
                       was set, its value is undefined otherwise
-            title: >-
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+            description: >-
               QueryInactiveContractsResponse is the response type for the
-              Query/InactiveContract RPC method
+              Query/InactiveContract RPC method.
         default:
           description: An unexpected error response
           schema:
@@ -44172,9 +44182,9 @@ paths:
                 title: >-
                   inactivated is the result if the contract is inactive contract
                   or not
-            title: >-
+            description: >-
               QueryInactiveContractsResponse is the response type for the
-              Query/IsInactiveContract RPC method
+              Query/IsInactiveContract RPC method.
         default:
           description: An unexpected error response
           schema:
@@ -70527,9 +70537,9 @@ definitions:
         type: boolean
         format: boolean
         title: inactivated is the result if the contract is inactive contract or not
-    title: >-
+    description: >-
       QueryInactiveContractsResponse is the response type for the
-      Query/IsInactiveContract RPC method
+      Query/IsInactiveContract RPC method.
   lbm.wasm.v1.QueryInactiveContractsResponse:
     type: object
     properties:
@@ -70539,7 +70549,7 @@ definitions:
           type: string
         title: addresses is the inactive address list
       pagination:
-        description: pagination defines the pagination in the response.
+        title: pagination defines the pagination in the response
         type: object
         properties:
           next_key:
@@ -70556,6 +70566,14 @@ definitions:
               PageRequest.count_total
 
               was set, its value is undefined otherwise
-    title: >-
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+    description: >-
       QueryInactiveContractsResponse is the response type for the
-      Query/InactiveContract RPC method
+      Query/InactiveContract RPC method.

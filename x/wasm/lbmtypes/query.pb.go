@@ -30,9 +30,9 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// QueryInactiveContractsRequest is the request type for Query/InactiveContract RPC method
+// QueryInactiveContractsRequest is the request type for Query/InactiveContract RPC method.
 type QueryInactiveContractsRequest struct {
-	// pagination defines an optional pagination for the request.
+	// pagination defines an optional pagination for the request
 	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
@@ -69,11 +69,11 @@ func (m *QueryInactiveContractsRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryInactiveContractsRequest proto.InternalMessageInfo
 
-// QueryInactiveContractsResponse is the response type for the Query/InactiveContract RPC method
+// QueryInactiveContractsResponse is the response type for the Query/InactiveContract RPC method.
 type QueryInactiveContractsResponse struct {
 	// addresses is the inactive address list
 	Addresses []string `protobuf:"bytes,1,rep,name=addresses,proto3" json:"addresses,omitempty"`
-	// pagination defines the pagination in the response.
+	// pagination defines the pagination in the response
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
@@ -110,7 +110,7 @@ func (m *QueryInactiveContractsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryInactiveContractsResponse proto.InternalMessageInfo
 
-// QueryIsInactiveContractRequest is the request type for Query/IsInactiveContract RPC method
+// QueryIsInactiveContractRequest is the request type for Query/IsInactiveContract RPC method.
 type QueryInactiveContractRequest struct {
 	// address is the address of the contract
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
@@ -149,7 +149,7 @@ func (m *QueryInactiveContractRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryInactiveContractRequest proto.InternalMessageInfo
 
-// QueryInactiveContractsResponse is the response type for the Query/IsInactiveContract RPC method
+// QueryInactiveContractsResponse is the response type for the Query/IsInactiveContract RPC method.
 type QueryInactiveContractResponse struct {
 	// inactivated is the result if the contract is inactive contract or not
 	Inactivated bool `protobuf:"varint,1,opt,name=inactivated,proto3" json:"inactivated,omitempty"`
@@ -241,7 +241,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// InactiveContracts queries all inactive contracts.
+	// InactiveContracts queries all inactive contracts
 	InactiveContracts(ctx context.Context, in *QueryInactiveContractsRequest, opts ...grpc.CallOption) (*QueryInactiveContractsResponse, error)
 	InactiveContract(ctx context.Context, in *QueryInactiveContractRequest, opts ...grpc.CallOption) (*QueryInactiveContractResponse, error)
 }
@@ -274,7 +274,7 @@ func (c *queryClient) InactiveContract(ctx context.Context, in *QueryInactiveCon
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// InactiveContracts queries all inactive contracts.
+	// InactiveContracts queries all inactive contracts
 	InactiveContracts(context.Context, *QueryInactiveContractsRequest) (*QueryInactiveContractsResponse, error)
 	InactiveContract(context.Context, *QueryInactiveContractRequest) (*QueryInactiveContractResponse, error)
 }

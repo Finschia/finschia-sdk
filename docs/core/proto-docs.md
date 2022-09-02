@@ -18549,7 +18549,7 @@ EventActivateContractProposal is the event that is emitted when the contract is 
 <a name="lbm.wasm.v1.EventDeactivateContractProposal"></a>
 
 ### EventDeactivateContractProposal
-EventDeactivateContractProposal is the event that is emitted when the contract is deactivate
+EventDeactivateContractProposal is the event that is emitted when the contract is deactivate.
 
 
 | Field | Type | Label | Description |
@@ -18630,7 +18630,7 @@ DeactivateContractProposal gov proposal content type adds a contract to inactive
 <a name="lbm.wasm.v1.QueryInactiveContractRequest"></a>
 
 ### QueryInactiveContractRequest
-QueryIsInactiveContractRequest is the request type for Query/IsInactiveContract RPC method
+QueryIsInactiveContractRequest is the request type for Query/IsInactiveContract RPC method.
 
 
 | Field | Type | Label | Description |
@@ -18645,7 +18645,7 @@ QueryIsInactiveContractRequest is the request type for Query/IsInactiveContract 
 <a name="lbm.wasm.v1.QueryInactiveContractResponse"></a>
 
 ### QueryInactiveContractResponse
-QueryInactiveContractsResponse is the response type for the Query/IsInactiveContract RPC method
+QueryInactiveContractsResponse is the response type for the Query/IsInactiveContract RPC method.
 
 
 | Field | Type | Label | Description |
@@ -18660,12 +18660,12 @@ QueryInactiveContractsResponse is the response type for the Query/IsInactiveCont
 <a name="lbm.wasm.v1.QueryInactiveContractsRequest"></a>
 
 ### QueryInactiveContractsRequest
-QueryInactiveContractsRequest is the request type for Query/InactiveContract RPC method
+QueryInactiveContractsRequest is the request type for Query/InactiveContract RPC method.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request |
 
 
 
@@ -18675,13 +18675,13 @@ QueryInactiveContractsRequest is the request type for Query/InactiveContract RPC
 <a name="lbm.wasm.v1.QueryInactiveContractsResponse"></a>
 
 ### QueryInactiveContractsResponse
-QueryInactiveContractsResponse is the response type for the Query/InactiveContract RPC method
+QueryInactiveContractsResponse is the response type for the Query/InactiveContract RPC method.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `addresses` | [string](#string) | repeated | addresses is the inactive address list |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response |
 
 
 
@@ -18701,7 +18701,7 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `InactiveContracts` | [QueryInactiveContractsRequest](#lbm.wasm.v1.QueryInactiveContractsRequest) | [QueryInactiveContractsResponse](#lbm.wasm.v1.QueryInactiveContractsResponse) | InactiveContracts queries all inactive contracts. | GET|/lbm/wasm/v1/inactive_contracts|
+| `InactiveContracts` | [QueryInactiveContractsRequest](#lbm.wasm.v1.QueryInactiveContractsRequest) | [QueryInactiveContractsResponse](#lbm.wasm.v1.QueryInactiveContractsResponse) | InactiveContracts queries all inactive contracts | GET|/lbm/wasm/v1/inactive_contracts|
 | `InactiveContract` | [QueryInactiveContractRequest](#lbm.wasm.v1.QueryInactiveContractRequest) | [QueryInactiveContractResponse](#lbm.wasm.v1.QueryInactiveContractResponse) |  | GET|/lbm/wasm/v1/inactive_contracts/{address}|
 
  <!-- end services -->
@@ -18745,7 +18745,7 @@ MsgStoreCodeAndInstantiateContractResponse returns store and instantiate result 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
-| `address` | [string](#string) |  | Address is the bech32 address of the new contract instance. |
+| `address` | [string](#string) |  | Address is the bech32 address of the new contract instance |
 | `data` | [bytes](#bytes) |  | Data contains base64-encoded bytes to returned from the contract |
 
 
@@ -18766,7 +18766,7 @@ Msg defines the wasm Msg service for lbm-sdk.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `StoreCodeAndInstantiateContract` | [MsgStoreCodeAndInstantiateContract](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContract) | [MsgStoreCodeAndInstantiateContractResponse](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse) | StoreCodeAndInstantiateContract upload code and instantiate a contract using it. | |
+| `StoreCodeAndInstantiateContract` | [MsgStoreCodeAndInstantiateContract](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContract) | [MsgStoreCodeAndInstantiateContractResponse](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse) | StoreCodeAndInstantiateContract upload code and instantiate a contract using it | |
 
  <!-- end services -->
 

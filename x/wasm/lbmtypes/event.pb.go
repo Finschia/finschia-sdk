@@ -22,7 +22,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// EventDeactivateContractProposal is the event that is emitted when the contract is deactivate
+// EventDeactivateContractProposal is the event that is emitted when the contract is deactivate.
 type EventDeactivateContractProposal struct {
 	// contract is the smart contract's address
 	Contract string `protobuf:"bytes,1,opt,name=contract,proto3" json:"contract,omitempty"`

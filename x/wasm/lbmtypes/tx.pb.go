@@ -86,7 +86,7 @@ var xxx_messageInfo_MsgStoreCodeAndInstantiateContract proto.InternalMessageInfo
 type MsgStoreCodeAndInstantiateContractResponse struct {
 	// CodeID is the reference to the stored WASM code
 	CodeID uint64 `protobuf:"varint,1,opt,name=code_id,json=codeId,proto3" json:"code_id,omitempty"`
-	// Address is the bech32 address of the new contract instance.
+	// Address is the bech32 address of the new contract instance
 	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
 	// Data contains base64-encoded bytes to returned from the contract
 	Data []byte `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
@@ -186,7 +186,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	// StoreCodeAndInstantiateContract upload code and instantiate a contract using it.
+	// StoreCodeAndInstantiateContract upload code and instantiate a contract using it
 	StoreCodeAndInstantiateContract(ctx context.Context, in *MsgStoreCodeAndInstantiateContract, opts ...grpc.CallOption) (*MsgStoreCodeAndInstantiateContractResponse, error)
 }
 
@@ -209,7 +209,7 @@ func (c *msgClient) StoreCodeAndInstantiateContract(ctx context.Context, in *Msg
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	// StoreCodeAndInstantiateContract upload code and instantiate a contract using it.
+	// StoreCodeAndInstantiateContract upload code and instantiate a contract using it
 	StoreCodeAndInstantiateContract(context.Context, *MsgStoreCodeAndInstantiateContract) (*MsgStoreCodeAndInstantiateContractResponse, error)
 }
 
