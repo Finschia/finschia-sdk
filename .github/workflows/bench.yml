@@ -1,5 +1,5 @@
-name: Benchmark APIs
-#  Benchmark workflow runs benchmarks
+name: Benchmark
+#  Benchmark workflow runs benchmarks (now, only for CosmWasmAPI)
 #  This workflow is run on pushes to develop & every Pull Requests where a .go, .mod, .sum have been changed
 env:
   GOPRIVATE: "github.com/line/*"
