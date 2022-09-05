@@ -3,6 +3,8 @@ package keeper
 import (
 	"context"
 
+	"github.com/gogo/protobuf/proto"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/collection"
@@ -282,6 +284,7 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 
 	event := collection.EventCreatedFTClass{
 		ContractId: req.ContractId,
+		Operator:   req.Owner,
 		ClassId:    *id,
 		Name:       class.Name,
 		Meta:       class.Meta,
@@ -294,7 +297,7 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 		return nil, err
 	}
 
-	ctx.EventManager().EmitEvent(collection.NewEventIssueFT(event, ownerAddr, toAddr, req.Amount))
+	ctx.EventManager().EmitEvent(collection.NewEventIssueFT(event, toAddr, req.Amount))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
@@ -340,6 +343,7 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 
 	event := collection.EventCreatedNFTClass{
 		ContractId: req.ContractId,
+		Operator:   req.Owner,
 		ClassId:    *id,
 		Name:       class.Name,
 		Meta:       class.Meta,
@@ -644,6 +648,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 					Operator:   operator.String(),
 					ClassId:    classID,
 					Changes:    changes,
+					TypeName:   proto.MessageName(&collection.FTClass{}),
 				}
 
 				ctx.EventManager().EmitEvents(collection.NewEventModifyTokenOfFTClass(event))
@@ -659,6 +664,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 				Operator:   operator.String(),
 				ClassId:    classID,
 				Changes:    changes,
+				TypeName:   proto.MessageName(&collection.NFTClass{}),
 			}
 			ctx.EventManager().EmitEvents(collection.NewEventModifyTokenType(event))
 			if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -714,7 +720,7 @@ func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPe
 
 	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
 
-	event := collection.EventGrant{
+	event := collection.EventGranted{
 		ContractId: req.ContractId,
 		Granter:    granter.String(),
 		Grantee:    grantee.String(),
@@ -741,7 +747,7 @@ func (s msgServer) RevokePermission(c context.Context, req *collection.MsgRevoke
 
 	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
 
-	event := collection.EventAbandon{
+	event := collection.EventRenounced{
 		ContractId: req.ContractId,
 		Grantee:    grantee.String(),
 		Permission: permission,
@@ -789,11 +795,17 @@ func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collec
 	}
 	oldRoot := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
 
+	// for the additional field of the event
+	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
+	if err != nil {
+		return nil, err
+	}
 	event := collection.EventDetached{
-		ContractId: req.ContractId,
-		Operator:   req.From,
-		Holder:     req.From,
-		Subject:    req.TokenId,
+		ContractId:     req.ContractId,
+		Operator:       req.From,
+		Holder:         req.From,
+		Subject:        req.TokenId,
+		PreviousParent: *parent,
 	}
 	ctx.EventManager().EmitEvent(collection.NewEventDetachToken(event, oldRoot))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -872,11 +884,17 @@ func (s msgServer) DetachFrom(c context.Context, req *collection.MsgDetachFrom) 
 	}
 	oldRoot := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
 
+	// for the additional field of the event
+	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
+	if err != nil {
+		return nil, err
+	}
 	event := collection.EventDetached{
-		ContractId: req.ContractId,
-		Operator:   req.Proxy,
-		Holder:     req.From,
-		Subject:    req.TokenId,
+		ContractId:     req.ContractId,
+		Operator:       req.Proxy,
+		Holder:         req.From,
+		Subject:        req.TokenId,
+		PreviousParent: *parent,
 	}
 	ctx.EventManager().EmitEvent(collection.NewEventDetachFrom(event, oldRoot))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {

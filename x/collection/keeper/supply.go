@@ -10,17 +10,18 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 	contractID := k.createContract(ctx, contract)
 
 	event := collection.EventCreatedContract{
+		Creator:    creator.String(),
 		ContractId: contractID,
 		Name:       contract.Name,
 		Meta:       contract.Meta,
 		BaseImgUri: contract.BaseImgUri,
 	}
-	ctx.EventManager().EmitEvent(collection.NewEventCreateCollection(event, creator))
+	ctx.EventManager().EmitEvent(collection.NewEventCreateCollection(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
 
-	eventGrant := collection.EventGrant{
+	eventGrant := collection.EventGranted{
 		ContractId: contractID,
 		Grantee:    creator.String(),
 	}
@@ -411,7 +412,7 @@ func (k Keeper) ModifyNFT(ctx sdk.Context, contractID string, tokenID string, op
 func (k Keeper) Grant(ctx sdk.Context, contractID string, granter, grantee sdk.AccAddress, permission collection.Permission) {
 	k.grant(ctx, contractID, grantee, permission)
 
-	event := collection.EventGrant{
+	event := collection.EventGranted{
 		ContractId: contractID,
 		Granter:    granter.String(),
 		Grantee:    grantee.String(),
@@ -432,7 +433,7 @@ func (k Keeper) grant(ctx sdk.Context, contractID string, grantee sdk.AccAddress
 func (k Keeper) Abandon(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) {
 	k.deleteGrant(ctx, contractID, grantee, permission)
 
-	event := collection.EventAbandon{
+	event := collection.EventRenounced{
 		ContractId: contractID,
 		Grantee:    grantee.String(),
 		Permission: permission,

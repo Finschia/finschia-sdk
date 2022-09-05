@@ -50,6 +50,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (server/grpc) [\#607](https://github.com/line/lbm-sdk/pull/607) revert gRPC block height header.
 * (global) [\#611](https://github.com/line/lbm-sdk/pull/611) bump github.com/cosmos/cosmos-sdk from v0.45.1 to v0.45.6
 * (simapp) [\#620](https://github.com/line/lbm-sdk/pull/620) chore: add iterator feature for simapp
+* (x/collection) [\#622](https://github.com/line/lbm-sdk/pull/622) add Query/TokenClassTypeName
+* (x/bank) [\#629](https://github.com/line/lbm-sdk/pull/629) remove unsafe balance changing methods from bank keeper such as `SetBalance` and `SetSupply`.
+* (x/wasm) [\#649](https://github.com/line/lbm-sdk/pull/649) fix: wasm module's FIXME in the snapshotter.go file
 
 ### Improvements
 
@@ -60,6 +63,10 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#604](https://github.com/line/lbm-sdk/pull/604) add EventOwnerChanged and EventRootChanged
 * (x/collection) [\#608](https://github.com/line/lbm-sdk/pull/608) remove new APIs on x/collection
 * (x/token) [\#609](https://github.com/line/lbm-sdk/pull/609) remove new APIs on x/token
+* (x/collection) [\#621](https://github.com/line/lbm-sdk/pull/621) add additional information into EventXXXChanged
+* (x/token) [\#636](https://github.com/line/lbm-sdk/pull/636) add creator into x/token EventIssue
+* (x/token) [\#637](https://github.com/line/lbm-sdk/pull/637) rename x/token events
+* (x/collection) [\#639](https://github.com/line/lbm-sdk/pull/639) rename x/collection events
 * (x/wasm) [\#625](https://github.com/line/lbm-sdk/pull/625) detaching `StoreCodeAndInstantiateContract` from wasm's tx.proto
 * (x/wasm) [\#655](https://github.com/line/lbm-sdk/pull/655) add inactive contract management in wasm (This replaces the contract blacklist function of contractStatus)
 
@@ -74,6 +81,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (client) [\#565](https://github.com/line/lbm-sdk/pull/565) fix the data race problem in `TestQueryABCIHeight`
 * (x/token) [\#589](https://github.com/line/lbm-sdk/pull/589) fix naming collision in x/token enums
 * (x/token) [\#599](https://github.com/line/lbm-sdk/pull/599) fix the order of events
+* (x/wasm) [\#640](https://github.com/line/lbm-sdk/pull/640) remove legacy codes of wasm
+* (amino) [\#635](https://github.com/line/lbm-sdk/pull/635) change some minor things that haven't been fixed in #549
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
@@ -82,6 +91,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ostracon) [\#610](https://github.com/line/lbm-sdk/pull/610) apply change of prefix of key name in ostracon
 * (ostracon) [\#614](https://github.com/line/lbm-sdk/pull/614) apply Ostracon's changes that replace `StakingPower` with `VotingPower` and `StakingPower` with `VotingPower`
 * (proto) [\#617](https://github.com/line/lbm-sdk/pull/617) change wasm gRPC path to original `cosmwasm` path.
+* (proto) [\#627](https://github.com/line/lbm-sdk/pull/627) revert changes in x/slashing proto
 
 ### Build, CI
 

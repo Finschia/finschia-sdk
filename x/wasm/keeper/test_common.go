@@ -715,9 +715,6 @@ func (m BurnerExampleInitMsg) GetBytes(t testing.TB) []byte {
 func fundAccounts(t testing.TB, ctx sdk.Context, am authkeeper.AccountKeeper, bank bankkeeper.Keeper, addr sdk.AccAddress, coins sdk.Coins) {
 	acc := am.NewAccountWithAddress(ctx, addr)
 	am.SetAccount(ctx, acc)
-	for _, coin := range coins {
-		require.NoError(t, bank.SetBalance(ctx, addr, coin))
-	}
 	NewTestFaucet(t, ctx, bank, minttypes.ModuleName, coins...).Fund(ctx, addr, coins...)
 }
 

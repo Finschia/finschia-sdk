@@ -17,8 +17,6 @@ type SendKeeper interface {
 	InputOutputCoins(ctx sdk.Context, inputs []types.Input, outputs []types.Output) error
 	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 
-	SetBalance(ctx sdk.Context, addr sdk.AccAddress, balance sdk.Coin) error // TODO(dudong2): remove after x/wasm version up(>= v0.22.0)
-
 	GetParams(ctx sdk.Context) types.Params
 	SetParams(ctx sdk.Context, params types.Params)
 
@@ -268,28 +266,6 @@ func (k BaseSendKeeper) setBalance(ctx sdk.Context, addr sdk.AccAddress, balance
 	return nil
 }
 
-// SetBalance sets the coin balance for an account by address.
-func (k BaseSendKeeper) SetBalance(ctx sdk.Context, addr sdk.AccAddress, balance sdk.Coin) error {
-	if !balance.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, balance.String())
-	}
-
-	accountStore := k.getAccountStore(ctx, addr)
-
-	// Bank invariants require to not store zero balances.
-	if balance.IsZero() {
-		accountStore.Delete([]byte(balance.Denom))
-	} else {
-		bz, err := balance.Marshal()
-		if err != nil {
-			return err
-		}
-		accountStore.Set([]byte(balance.Denom), bz)
-	}
-
-	return nil
-}
-
 // IsSendEnabledCoins checks the coins provide and returns an ErrSendDisabled if
 // any of the coins are not configured for sending.  Returns nil if sending is enabled
 // for all provided coin
@@ -311,14 +287,4 @@ func (k BaseSendKeeper) IsSendEnabledCoin(ctx sdk.Context, coin sdk.Coin) bool {
 // receiving funds.
 func (k BaseSendKeeper) BlockedAddr(addr sdk.AccAddress) bool {
 	return k.blockedAddrs[addr.String()]
-}
-
-func (k BaseSendKeeper) ChangeBlockedAddrState(addr sdk.AccAddress, isBlocked bool) error {
-	key := addr.String()
-	if _, ok := k.blockedAddrs[key]; !ok {
-		return sdkerrors.Wrapf(types.ErrInvalidKey, "%s is not in blockedAddrs", key)
-	}
-
-	k.blockedAddrs[key] = isBlocked
-	return nil
 }

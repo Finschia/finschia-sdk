@@ -1,6 +1,7 @@
 package simapp
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -618,6 +619,18 @@ func NewSimApp(
 	app.SetAnteHandler(anteHandler)
 	app.SetEndBlocker(app.EndBlocker)
 
+	// must be before Loading version
+	// requires the snapshot store to be created and registered as a BaseAppOption
+	// see simapp/simd/cmd/root.go: 257 - 261 approx
+	if manager := app.SnapshotManager(); manager != nil {
+		err := manager.RegisterExtensions(
+			wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.WasmKeeper),
+		)
+		if err != nil {
+			panic(fmt.Errorf("failed to register snapshot extension: %s", err))
+		}
+	}
+
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
 			ostos.Exit(err.Error())
@@ -639,19 +652,6 @@ func NewSimApp(
 	// NOTE: the IBC mock keeper and application module is used only for testing core IBC. Do
 	// note replicate if you do not need to test core IBC or light clients.
 	app.ScopedIBCMockKeeper = scopedIBCMockKeeper
-
-	// FIXME: After applying cosmos-sdk@0.45.4
-	// must be before Loading version
-	// requires the snapshot store to be created and registered as a BaseAppOption
-	// see cmd/wasmd/root.go: 206 - 214 approx
-	// if manager := app.SnapshotManager(); manager != nil {
-	// 	err := manager.RegisterExtensions(
-	// 		wasmkeeper.NewWasmSnapshotter(app.CommitMultiStore(), &app.wasmKeeper),
-	// 	)
-	// 	if err != nil {
-	// 		panic(fmt.Errorf("failed to register snapshot extension: %s", err))
-	// 	}
-	// }
 
 	return app
 }

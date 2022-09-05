@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"github.com/gogo/protobuf/proto"
+
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/x/collection"
@@ -448,6 +450,55 @@ func (s *KeeperTestSuite) TestQueryContract() {
 				ContractId: tc.contractID,
 			}
 			res, err := s.queryServer.Contract(s.goCtx, req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+			tc.postTest(res)
+		})
+	}
+}
+
+func (s *KeeperTestSuite) TestQueryTokenClassTypeName() {
+	// empty request
+	_, err := s.queryServer.TokenClassTypeName(s.goCtx, nil)
+	s.Require().Error(err)
+
+	testCases := map[string]struct {
+		contractID string
+		classID    string
+		valid      bool
+		postTest   func(res *collection.QueryTokenClassTypeNameResponse)
+	}{
+		"valid request": {
+			contractID: s.contractID,
+			classID:    s.ftClassID,
+			valid:      true,
+			postTest: func(res *collection.QueryTokenClassTypeNameResponse) {
+				s.Require().Equal(proto.MessageName(&collection.FTClass{}), res.Name)
+			},
+		},
+		"invalid contract id": {
+			classID: s.ftClassID,
+		},
+		"invalid class id": {
+			contractID: s.contractID,
+		},
+		"no such a class": {
+			contractID: s.contractID,
+			classID:    "00bab10c",
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			req := &collection.QueryTokenClassTypeNameRequest{
+				ContractId: tc.contractID,
+				ClassId:    tc.classID,
+			}
+			res, err := s.queryServer.TokenClassTypeName(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

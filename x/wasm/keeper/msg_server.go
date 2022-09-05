@@ -210,10 +210,6 @@ func (m msgServer) ClearAdmin(goCtx context.Context, msg *types.MsgClearAdmin) (
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
 	))
-	ctx.EventManager().EmitEvent(sdk.NewEvent(
-		types.EventTypeUpdateAdmin,
-		sdk.NewAttribute(types.AttributeKeyContractAddr, msg.Contract),
-	))
 
 	if err := m.keeper.ClearContractAdmin(ctx, contractAddr, senderAddr); err != nil {
 		return nil, err

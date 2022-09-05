@@ -916,7 +916,6 @@
     - [Permission](#lbm.collection.v1.Permission)
   
 - [lbm/collection/v1/event.proto](#lbm/collection/v1/event.proto)
-    - [EventAbandon](#lbm.collection.v1.EventAbandon)
     - [EventAttached](#lbm.collection.v1.EventAttached)
     - [EventAuthorizedOperator](#lbm.collection.v1.EventAuthorizedOperator)
     - [EventBurned](#lbm.collection.v1.EventBurned)
@@ -924,13 +923,14 @@
     - [EventCreatedFTClass](#lbm.collection.v1.EventCreatedFTClass)
     - [EventCreatedNFTClass](#lbm.collection.v1.EventCreatedNFTClass)
     - [EventDetached](#lbm.collection.v1.EventDetached)
-    - [EventGrant](#lbm.collection.v1.EventGrant)
+    - [EventGranted](#lbm.collection.v1.EventGranted)
     - [EventMintedFT](#lbm.collection.v1.EventMintedFT)
     - [EventMintedNFT](#lbm.collection.v1.EventMintedNFT)
     - [EventModifiedContract](#lbm.collection.v1.EventModifiedContract)
     - [EventModifiedNFT](#lbm.collection.v1.EventModifiedNFT)
     - [EventModifiedTokenClass](#lbm.collection.v1.EventModifiedTokenClass)
     - [EventOwnerChanged](#lbm.collection.v1.EventOwnerChanged)
+    - [EventRenounced](#lbm.collection.v1.EventRenounced)
     - [EventRevokedOperator](#lbm.collection.v1.EventRevokedOperator)
     - [EventRootChanged](#lbm.collection.v1.EventRootChanged)
     - [EventSent](#lbm.collection.v1.EventSent)
@@ -985,6 +985,8 @@
     - [QueryParentResponse](#lbm.collection.v1.QueryParentResponse)
     - [QueryRootRequest](#lbm.collection.v1.QueryRootRequest)
     - [QueryRootResponse](#lbm.collection.v1.QueryRootResponse)
+    - [QueryTokenClassTypeNameRequest](#lbm.collection.v1.QueryTokenClassTypeNameRequest)
+    - [QueryTokenClassTypeNameResponse](#lbm.collection.v1.QueryTokenClassTypeNameResponse)
     - [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest)
     - [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse)
     - [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest)
@@ -1155,13 +1157,13 @@
     - [Permission](#lbm.token.v1.Permission)
   
 - [lbm/token/v1/event.proto](#lbm/token/v1/event.proto)
-    - [EventAbandon](#lbm.token.v1.EventAbandon)
     - [EventAuthorizedOperator](#lbm.token.v1.EventAuthorizedOperator)
     - [EventBurned](#lbm.token.v1.EventBurned)
-    - [EventGrant](#lbm.token.v1.EventGrant)
-    - [EventIssue](#lbm.token.v1.EventIssue)
+    - [EventGranted](#lbm.token.v1.EventGranted)
+    - [EventIssued](#lbm.token.v1.EventIssued)
     - [EventMinted](#lbm.token.v1.EventMinted)
     - [EventModified](#lbm.token.v1.EventModified)
+    - [EventRenounced](#lbm.token.v1.EventRenounced)
     - [EventRevokedOperator](#lbm.token.v1.EventRevokedOperator)
     - [EventSent](#lbm.token.v1.EventSent)
   
@@ -6508,10 +6510,11 @@ liveness activity.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
-| `jailed_until` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp validator cannot be unjailed until |
-| `tombstoned` | [bool](#bool) |  | whether or not a validator has been tombstoned (killed out of validator set) |
-| `missed_blocks_counter` | [int64](#int64) |  | missed blocks counter (to avoid scanning the array every time) |
-| `voter_set_counter` | [int64](#int64) |  | how many times the validator joined to voter set |
+| `start_height` | [int64](#int64) |  | Height at which validator was first a candidate OR was unjailed |
+| `index_offset` | [int64](#int64) |  | Index which is incremented each time the validator was a bonded in a block and may have signed a precommit or not. This in conjunction with the `SignedBlocksWindow` param determines the index in the `MissedBlocksBitArray`. |
+| `jailed_until` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | Timestamp until which the validator is jailed due to liveness downtime. |
+| `tombstoned` | [bool](#bool) |  | Whether or not a validator has been tombstoned (killed out of validator set). It is set once the validator commits an equivocation or for any other configured misbehiavor. |
+| `missed_blocks_counter` | [int64](#int64) |  | A counter kept to avoid unnecessary array reads. Note that `Sum(MissedBlocksBitArray)` always equals `MissedBlocksCounter`. |
 
 
 
@@ -13774,25 +13777,6 @@ Permission enumerates the valid permissions on a contract.
 
 
 
-<a name="lbm.collection.v1.EventAbandon"></a>
-
-### EventAbandon
-EventAbandon is emitted when a grantee abandons its permission.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
-| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.EventAttached"></a>
 
 ### EventAttached
@@ -13863,6 +13847,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `creator` | [string](#string) |  | address which created the contract. |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `name` | [string](#string) |  | name of the contract. |
 | `meta` | [string](#string) |  | metadata of the contract. |
@@ -13884,6 +13869,7 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address which triggered the create. |
 | `class_id` | [string](#string) |  | class id associated with the token class. |
 | `name` | [string](#string) |  | name of the token class. |
 | `meta` | [string](#string) |  | metadata of the token class. |
@@ -13906,6 +13892,7 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address which triggered the create. |
 | `class_id` | [string](#string) |  | class id associated with the token class. |
 | `name` | [string](#string) |  | name of the token class. |
 | `meta` | [string](#string) |  | metadata of the token class. |
@@ -13929,16 +13916,17 @@ Since: 0.46.0 (finschia)
 | `operator` | [string](#string) |  | address which triggered the detach. |
 | `holder` | [string](#string) |  | address which holds the token. |
 | `subject` | [string](#string) |  | token being detached. |
+| `previous_parent` | [string](#string) |  | parent token before the detach. |
 
 
 
 
 
 
-<a name="lbm.collection.v1.EventGrant"></a>
+<a name="lbm.collection.v1.EventGranted"></a>
 
-### EventGrant
-EventGrant is emitted when a granter grants its permission to a grantee.
+### EventGranted
+EventGranted is emitted when a granter grants its permission to a grantee.
 
 Info: `granter` would be empty if the permission is granted by an issuance.
 
@@ -14050,6 +14038,7 @@ Since: 0.46.0 (finschia)
 | `operator` | [string](#string) |  | address which triggered the modify. |
 | `class_id` | [string](#string) |  | class id associated with the token class. |
 | `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. |
+| `type_name` | [string](#string) |  | type name of the token class. |
 
 
 
@@ -14068,6 +14057,27 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `token_id` | [string](#string) |  | token id associated with the token. |
+| `from` | [string](#string) |  | address of the previous owner before the change. |
+| `to` | [string](#string) |  | address of the new owner. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.EventRenounced"></a>
+
+### EventRenounced
+EventRenounced is emitted when a grantee renounced its permission.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
+| `permission` | [Permission](#lbm.collection.v1.Permission) |  | permission on the contract. |
 
 
 
@@ -14105,6 +14115,8 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `token_id` | [string](#string) |  | token id associated with the token. |
+| `from` | [string](#string) |  | token id of the previous root before the change. |
+| `to` | [string](#string) |  | token id of the new root. |
 
 
 
@@ -14947,6 +14959,41 @@ QueryRootResponse is the response type for the Query/Root RPC method.
 
 
 
+<a name="lbm.collection.v1.QueryTokenClassTypeNameRequest"></a>
+
+### QueryTokenClassTypeNameRequest
+QueryTokenClassTypeNameRequest is the request type for the Query/TokenClassTypeName RPC method.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `class_id` | [string](#string) |  | class id associated with the token class. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryTokenClassTypeNameResponse"></a>
+
+### QueryTokenClassTypeNameResponse
+QueryTokenClassTypeNameResponse is the response type for the Query/TokenClassTypeName RPC method.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | type name of the token class. |
+
+
+
+
+
+
 <a name="lbm.collection.v1.QueryTokenRequest"></a>
 
 ### QueryTokenRequest
@@ -15128,6 +15175,7 @@ Query defines the gRPC querier service.
 | `NFTMinted` | [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest) | [QueryNFTMintedResponse](#lbm.collection.v1.QueryNFTMintedResponse) | NFTMinted queries the number of minted tokens from a given contract id and token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted|
 | `NFTBurnt` | [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest) | [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse) | NFTBurnt queries the number of burnt tokens from a given contract id and token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt|
 | `Contract` | [QueryContractRequest](#lbm.collection.v1.QueryContractRequest) | [QueryContractResponse](#lbm.collection.v1.QueryContractResponse) | Contract queries a contract metadata based on its contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}|
+| `TokenClassTypeName` | [QueryTokenClassTypeNameRequest](#lbm.collection.v1.QueryTokenClassTypeNameRequest) | [QueryTokenClassTypeNameResponse](#lbm.collection.v1.QueryTokenClassTypeNameResponse) | TokenClassTypeName queries the fully qualified message type name of a token class from its class id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. Since: 0.46.0 (finschia) | GET|/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/type_name|
 | `TokenType` | [QueryTokenTypeRequest](#lbm.collection.v1.QueryTokenTypeRequest) | [QueryTokenTypeResponse](#lbm.collection.v1.QueryTokenTypeResponse) | TokenType queries metadata of a token type. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `class_id` is of invalid format. - ErrNotFound - there is no token class of `class_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}|
 | `TokenTypes` | [QueryTokenTypesRequest](#lbm.collection.v1.QueryTokenTypesRequest) | [QueryTokenTypesResponse](#lbm.collection.v1.QueryTokenTypesResponse) | TokenTypes queries metadata of all the token types. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token contract of `contract_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/token_types|
 | `Token` | [QueryTokenRequest](#lbm.collection.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.collection.v1.QueryTokenResponse) | Token queries a metadata of a token from its token id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. | GET|/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}|
@@ -15911,8 +15959,8 @@ Msg defines the collection Msg service.
 | `BurnNFT` | [MsgBurnNFT](#lbm.collection.v1.MsgBurnNFT) | [MsgBurnNFTResponse](#lbm.collection.v1.MsgBurnNFTResponse) | BurnNFT defines a method to burn non-fungible tokens. Fires: - EventBurned - burn_ft (deprecated, not typed) - burn_nft (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `from` does not have `burn` permission. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
 | `BurnNFTFrom` | [MsgBurnNFTFrom](#lbm.collection.v1.MsgBurnNFTFrom) | [MsgBurnNFTFromResponse](#lbm.collection.v1.MsgBurnNFTFromResponse) | BurnNFTFrom defines a method to burn non-fungible tokens of the approver by the proxy. Fires: - EventBurned - burn_ft_from (deprecated, not typed) - burn_nft_from (deprecated, not typed) - operation_burn_nft (deprecated, not typed) Throws: - ErrUnauthorized - `proxy` does not have `burn` permission. - the approver has not authorized `proxy`. - ErrInvalidRequest: - the balance of `from` does not have enough tokens to burn. | |
 | `Modify` | [MsgModify](#lbm.collection.v1.MsgModify) | [MsgModifyResponse](#lbm.collection.v1.MsgModifyResponse) | Modify defines a method to modify metadata. Fires: - EventModifiedContract - modify_collection (deprecated, not typed) - EventModifiedTokenClass - modify_token_type (deprecated, not typed) - modify_token (deprecated, not typed) - EventModifiedNFT Throws: - ErrUnauthorized - the proxy does not have `modify` permission. - ErrNotFound - there is no contract of `contract_id`. - there is no token type of `token_type`. - there is no token of `token_id`. | |
-| `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify metadata. Fires: - EventGrant - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. | |
-| `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Fires: - EventAbandon - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. | |
+| `GrantPermission` | [MsgGrantPermission](#lbm.collection.v1.MsgGrantPermission) | [MsgGrantPermissionResponse](#lbm.collection.v1.MsgGrantPermissionResponse) | GrantPermission allows one to mint or burn tokens or modify metadata. Fires: - EventGranted - grant_perm (deprecated, not typed) Throws: - ErrUnauthorized - `granter` does not have `permission`. - ErrInvalidRequest - `grantee` already has `permission`. | |
+| `RevokePermission` | [MsgRevokePermission](#lbm.collection.v1.MsgRevokePermission) | [MsgRevokePermissionResponse](#lbm.collection.v1.MsgRevokePermissionResponse) | RevokePermission abandons a permission. Fires: - EventRenounced - revoke_perm (deprecated, not typed) Throws: - ErrUnauthorized - `grantee` does not have `permission`. | |
 | `Attach` | [MsgAttach](#lbm.collection.v1.MsgAttach) | [MsgAttachResponse](#lbm.collection.v1.MsgAttachResponse) | Attach defines a method to attach a token to another token. Fires: - EventAttach - attach (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrInvalidRequest - `owner` does not owns `id`. - `owner` does not owns `to`. - `token_id` is not root. - `token_id` is an ancestor of `to_token_id`, which creates a cycle as a result. - depth of `to_token_id` exceeds an app-specific limit. | |
 | `Detach` | [MsgDetach](#lbm.collection.v1.MsgDetach) | [MsgDetachResponse](#lbm.collection.v1.MsgDetachResponse) | Detach defines a method to detach a token from another token. Fires: - EventDetach - detach (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrInvalidRequest - `owner` does not owns `token_id`. | |
 | `AttachFrom` | [MsgAttachFrom](#lbm.collection.v1.MsgAttachFrom) | [MsgAttachFromResponse](#lbm.collection.v1.MsgAttachFromResponse) | AttachFrom defines a method to attach a token to another token by proxy. Fires: - EventAttach - attach_from (deprecated, not typed) - operation_root_changed (deprecated, not typed) Throws: - ErrUnauthorized - the approver has not authorized `proxy`. - ErrInvalidRequest - `owner` does not owns `subject`. - `owner` does not owns `target`. - `subject` is not root. - `subject` is an ancestor of `target`, which creates a cycle as a result. - depth of `to` exceeds an app-specific limit. | |
@@ -17369,25 +17417,6 @@ Permission enumerates the valid permissions on a token class.
 
 
 
-<a name="lbm.token.v1.EventAbandon"></a>
-
-### EventAbandon
-EventAbandon is emitted when a grantee abandons its permission.
-
-Since: 0.46.0 (finschia)
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
-| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
-
-
-
-
-
-
 <a name="lbm.token.v1.EventAuthorizedOperator"></a>
 
 ### EventAuthorizedOperator
@@ -17427,10 +17456,10 @@ Since: 0.46.0 (finschia)
 
 
 
-<a name="lbm.token.v1.EventGrant"></a>
+<a name="lbm.token.v1.EventGranted"></a>
 
-### EventGrant
-EventGrant is emitted when a granter grants its permission to a grantee.
+### EventGranted
+EventGranted is emitted when a granter grants its permission to a grantee.
 
 Info: `granter` would be empty if the permission is granted by an issuance.
 
@@ -17449,16 +17478,17 @@ Since: 0.46.0 (finschia)
 
 
 
-<a name="lbm.token.v1.EventIssue"></a>
+<a name="lbm.token.v1.EventIssued"></a>
 
-### EventIssue
-EventIssue is emitted when a new token class is created.
+### EventIssued
+EventIssued is emitted when a new token class is created.
 
 Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+| `creator` | [string](#string) |  | address which created the contract. |
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `name` | [string](#string) |  | name defines the human-readable name of the token class. |
 | `symbol` | [string](#string) |  | symbol is an abbreviated name for token class. |
@@ -17505,6 +17535,25 @@ Since: 0.46.0 (finschia)
 | `contract_id` | [string](#string) |  | contract id associated with the token class. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
 | `changes` | [Pair](#lbm.token.v1.Pair) | repeated | changes on the metadata of the class. |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventRenounced"></a>
+
+### EventRenounced
+EventRenounced is emitted when a grantee renounces its permission.
+
+Since: 0.46.0 (finschia)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
+| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
 
 
 
