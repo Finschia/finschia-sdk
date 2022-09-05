@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"math"
 	"testing"
@@ -22,7 +23,6 @@ import (
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	distributiontypes "github.com/line/lbm-sdk/x/distribution/types"
 	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
-	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -120,7 +120,7 @@ func TestCreateStoresInstantiatePermission(t *testing.T) {
 		t.Run(msg, func(t *testing.T) {
 			ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 			accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.BankKeeper
-			keepers.WasmKeeper.setParams(ctx, lbmwasmtypes.Params{
+			keepers.WasmKeeper.SetParams(ctx, types.Params{
 				CodeUploadAccess:             types.AllowEverybody,
 				InstantiateDefaultPermission: spec.srcPermission,
 				GasMultiplier:                types.DefaultGasMultiplier,
@@ -171,9 +171,9 @@ func TestCreateWithParamPermissions(t *testing.T) {
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			params := lbmwasmtypes.DefaultParams()
+			params := types.DefaultParams()
 			params.CodeUploadAccess = spec.srcPermission
-			keepers.WasmKeeper.setParams(ctx, params)
+			keepers.WasmKeeper.SetParams(ctx, params)
 			_, err := keeper.Create(ctx, creator, hackatomWasm, nil)
 			require.True(t, spec.expError.Is(err), err)
 			if spec.expError != nil {
@@ -248,9 +248,9 @@ func TestEnforceValidPermissionsOnCreate(t *testing.T) {
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			params := lbmwasmtypes.DefaultParams()
+			params := types.DefaultParams()
 			params.InstantiateDefaultPermission = spec.defaultPermssion
-			keeper.setParams(ctx, params)
+			keeper.SetParams(ctx, params)
 			codeID, err := contractKeeper.Create(ctx, creator, hackatomWasm, spec.requestedPermission)
 			require.True(t, spec.expError.Is(err), err)
 			if spec.expError == nil {
@@ -623,7 +623,7 @@ func TestExecute(t *testing.T) {
 	// make sure gas is properly deducted from ctx
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x16bb4), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x16f9c), gasAfter-gasBefore)
 	}
 	// ensure bob now exists and got both payments released
 	bobAcct = accKeeper.GetAccount(ctx, bob)
@@ -1616,7 +1616,7 @@ func TestPinnedContractLoops(t *testing.T) {
 			},
 		}, 0, nil
 	}
-	ctx = ctx.WithGasMeter(sdk.NewGasMeter(20000))
+	ctx = ctx.WithGasMeter(sdk.NewGasMeter(21000))
 	require.PanicsWithValue(t, sdk.ErrorOutOfGas{Descriptor: "ReadFlat"}, func() {
 		_, err := k.execute(ctx, example.Contract, RandomAccountAddress(t), anyMsg, nil)
 		require.NoError(t, err)
@@ -1852,4 +1852,78 @@ func TestBuildContractAddress(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestActivateContract(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+
+	k := keepers.WasmKeeper
+	var mock wasmtesting.MockWasmer
+	wasmtesting.MakeInstantiable(&mock)
+	example := SeedNewContractInstance(t, ctx, keepers, &mock)
+	em := sdk.NewEventManager()
+
+	// request no contract address -> fail
+	err := k.activateContract(ctx, example.CreatorAddr)
+	require.Error(t, err, fmt.Sprintf("no contract %s", example.CreatorAddr))
+
+	// try to activate an activated contract -> fail
+	err = k.activateContract(ctx.WithEventManager(em), example.Contract)
+	require.Error(t, err, fmt.Sprintf("no inactivate contract %s", example.Contract))
+
+	// add to inactive contract
+	err = k.deactivateContract(ctx, example.Contract)
+	require.NoError(t, err)
+
+	// try to activate an inactivated contract -> success
+	err = k.activateContract(ctx, example.Contract)
+	require.NoError(t, err)
+}
+
+func TestDeactivateContract(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+
+	k := keepers.WasmKeeper
+	var mock wasmtesting.MockWasmer
+	wasmtesting.MakeInstantiable(&mock)
+	example := SeedNewContractInstance(t, ctx, keepers, &mock)
+	em := sdk.NewEventManager()
+
+	// request no contract address -> fail
+	err := k.deactivateContract(ctx, example.CreatorAddr)
+	require.Error(t, err, fmt.Sprintf("no contract %s", example.CreatorAddr))
+
+	// success case
+	err = k.deactivateContract(ctx, example.Contract)
+	require.NoError(t, err)
+
+	// already inactivate contract -> fail
+	err = k.deactivateContract(ctx.WithEventManager(em), example.Contract)
+	require.Error(t, err, fmt.Sprintf("already inactivate contract %s", example.Contract))
+}
+
+func TestIterateInactiveContracts(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	k := keepers.WasmKeeper
+
+	var mock wasmtesting.MockWasmer
+	wasmtesting.MakeInstantiable(&mock)
+	example1 := SeedNewContractInstance(t, ctx, keepers, &mock)
+	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
+	example2 := SeedNewContractInstance(t, ctx, keepers, &mock)
+	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
+
+	err := k.deactivateContract(ctx, example1.Contract)
+	require.NoError(t, err)
+	err = k.deactivateContract(ctx, example2.Contract)
+	require.NoError(t, err)
+
+	var inactiveContracts []sdk.AccAddress
+	k.IterateInactiveContracts(ctx, func(contractAddress sdk.AccAddress) (stop bool) {
+		inactiveContracts = append(inactiveContracts, contractAddress)
+		return false
+	})
+	assert.Equal(t, 2, len(inactiveContracts))
+	expectList := []sdk.AccAddress{example1.Contract, example2.Contract}
+	assert.ElementsMatch(t, expectList, inactiveContracts)
 }

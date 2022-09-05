@@ -3,7 +3,7 @@ package wasm
 
 import (
 	"github.com/line/lbm-sdk/x/wasm/keeper"
-	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -35,7 +35,7 @@ var (
 	// functions aliases
 	RegisterCodec             = types.RegisterLegacyAminoCodec
 	RegisterInterfaces        = types.RegisterInterfaces
-	ValidateGenesis           = lbmwasmtypes.ValidateGenesis
+	ValidateGenesis           = types.ValidateGenesis
 	ConvertToProposals        = types.ConvertToProposals
 	GetCodeKey                = types.GetCodeKey
 	GetContractAddressKey     = types.GetContractAddressKey
@@ -46,7 +46,7 @@ var (
 	NewEnv                    = types.NewEnv
 	NewWasmCoins              = types.NewWasmCoins
 	DefaultWasmConfig         = types.DefaultWasmConfig
-	DefaultParams             = lbmwasmtypes.DefaultParams
+	DefaultParams             = types.DefaultParams
 	InitGenesis               = keeper.InitGenesis
 	ExportGenesis             = keeper.ExportGenesis
 	NewMessageHandler         = keeper.NewDefaultMessageHandler
@@ -91,15 +91,15 @@ var (
 
 type (
 	ProposalType                               = types.ProposalType
-	GenesisState                               = lbmwasmtypes.GenesisState
+	GenesisState                               = types.GenesisState
 	Code                                       = types.Code
 	Contract                                   = types.Contract
 	MsgStoreCode                               = types.MsgStoreCode
 	MsgStoreCodeResponse                       = types.MsgStoreCodeResponse
 	MsgInstantiateContract                     = types.MsgInstantiateContract
 	MsgInstantiateContractResponse             = types.MsgInstantiateContractResponse
-	MsgStoreCodeAndInstantiateContract         = lbmwasmtypes.MsgStoreCodeAndInstantiateContract
-	MsgStoreCodeAndInstantiateContractResponse = lbmwasmtypes.MsgStoreCodeAndInstantiateContractResponse
+	MsgStoreCodeAndInstantiateContract         = lbmtypes.MsgStoreCodeAndInstantiateContract
+	MsgStoreCodeAndInstantiateContractResponse = lbmtypes.MsgStoreCodeAndInstantiateContractResponse
 	MsgExecuteContract                         = types.MsgExecuteContract
 	MsgExecuteContractResponse                 = types.MsgExecuteContractResponse
 	MsgMigrateContract                         = types.MsgMigrateContract

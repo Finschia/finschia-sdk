@@ -24,9 +24,10 @@ type IntegrationTestSuite struct {
 
 	setupHeight int64
 
-	codeID               string
-	contractAddress      string
-	nonExistValidAddress string
+	codeID                  string
+	contractAddress         string
+	nonExistValidAddress    string
+	inactiveContractAddress string
 
 	// for hackatom contract
 	verifier    string
@@ -50,8 +51,21 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		s.T().Skip("skipping test in unit-tests mode.")
 	}
 
+	s.inactiveContractAddress = "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"
+
+	// add inactive contract to genesis
+	var wasmData types.GenesisState
+	genesisState := s.cfg.GenesisState
+	genesisData, err := ioutil.ReadFile("./testdata/wasm_genesis.json")
+	s.Require().NoError(err)
+	s.Require().NoError(s.cfg.Codec.UnmarshalJSON(genesisData, &wasmData))
+	wasmDataBz, err := s.cfg.Codec.MarshalJSON(&wasmData)
+	s.Require().NoError(err)
+	genesisState[types.ModuleName] = wasmDataBz
+	s.cfg.GenesisState = genesisState
+
 	s.network = network.New(s.T(), s.cfg)
-	_, err := s.network.WaitForHeight(1)
+	_, err = s.network.WaitForHeight(1)
 	s.Require().NoError(err)
 
 	// deploy contract

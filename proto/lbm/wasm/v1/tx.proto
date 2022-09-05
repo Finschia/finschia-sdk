@@ -5,12 +5,12 @@ import "gogoproto/gogo.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "cosmwasm/wasm/v1/types.proto";
 
-option go_package                      = "github.com/line/lbm-sdk/x/wasm/lbm/types";
+option go_package                      = "github.com/line/lbm-sdk/x/wasm/lbmtypes";
 option (gogoproto.goproto_getters_all) = false;
 
 // Msg defines the wasm Msg service for lbm-sdk.
 service Msg {
-  // StoreCodeAndInstantiateContract upload code and instantiate a contract using it.
+  // StoreCodeAndInstantiateContract upload code and instantiate a contract using it
   rpc StoreCodeAndInstantiateContract(MsgStoreCodeAndInstantiateContract)
       returns (MsgStoreCodeAndInstantiateContractResponse);
 }
@@ -39,7 +39,7 @@ message MsgStoreCodeAndInstantiateContract {
 message MsgStoreCodeAndInstantiateContractResponse {
   // CodeID is the reference to the stored WASM code
   uint64 code_id = 1 [(gogoproto.customname) = "CodeID"];
-  // Address is the bech32 address of the new contract instance.
+  // Address is the bech32 address of the new contract instance
   string address = 2;
   // Data contains base64-encoded bytes to returned from the contract
   bytes data = 3;

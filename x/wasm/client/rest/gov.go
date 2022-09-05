@@ -10,6 +10,7 @@ import (
 	"github.com/line/lbm-sdk/types/rest"
 	govrest "github.com/line/lbm-sdk/x/gov/client/rest"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -449,6 +450,61 @@ func UpdateInstantiateConfigProposalHandler(cliCtx client.Context) govrest.Propo
 		SubRoute: "update_instantiate_config",
 		Handler: func(w http.ResponseWriter, r *http.Request) {
 			var req UpdateInstantiateConfigProposalJSONReq
+			if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
+				return
+			}
+			toStdTxResponse(cliCtx, w, req)
+		},
+	}
+}
+
+type InactiveContractProposalJSONReq struct {
+	BaseReq rest.BaseReq `json:"base_req" yaml:"base_req"`
+
+	Title       string    `json:"title" yaml:"title"`
+	Description string    `json:"description" yaml:"description"`
+	Proposer    string    `json:"proposer" yaml:"proposer"`
+	Deposit     sdk.Coins `json:"deposit" yaml:"deposit"`
+
+	Contract string `json:"contract" yaml:"contract"`
+}
+
+func (s InactiveContractProposalJSONReq) Content() govtypes.Content {
+	return &lbmtypes.DeactivateContractProposal{
+		Title:       s.Title,
+		Description: s.Description,
+		Contract:    s.Contract,
+	}
+}
+
+func (s InactiveContractProposalJSONReq) GetProposer() string {
+	return s.Proposer
+}
+func (s InactiveContractProposalJSONReq) GetDeposit() sdk.Coins {
+	return s.Deposit
+}
+func (s InactiveContractProposalJSONReq) GetBaseReq() rest.BaseReq {
+	return s.BaseReq
+}
+
+func DeactivateContractProposalHandler(cliCtx client.Context) govrest.ProposalRESTHandler {
+	return govrest.ProposalRESTHandler{
+		SubRoute: "deactivate_contract",
+		Handler: func(w http.ResponseWriter, r *http.Request) {
+			var req InactiveContractProposalJSONReq
+			if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
+				return
+			}
+			toStdTxResponse(cliCtx, w, req)
+		},
+	}
+}
+
+func ActivateContractProposalHandler(cliCtx client.Context) govrest.ProposalRESTHandler {
+	return govrest.ProposalRESTHandler{
+		SubRoute: "activate_contract",
+		Handler: func(w http.ResponseWriter, r *http.Request) {
+			var req InactiveContractProposalJSONReq
 			if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
 				return
 			}

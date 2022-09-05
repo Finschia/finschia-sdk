@@ -1225,11 +1225,21 @@
   
     - [Msg](#lbm.token.v1.Msg)
   
-- [lbm/wasm/v1/types.proto](#lbm/wasm/v1/types.proto)
-    - [Params](#lbm.wasm.v1.Params)
+- [lbm/wasm/v1/event.proto](#lbm/wasm/v1/event.proto)
+    - [EventActivateContractProposal](#lbm.wasm.v1.EventActivateContractProposal)
+    - [EventDeactivateContractProposal](#lbm.wasm.v1.EventDeactivateContractProposal)
   
-- [lbm/wasm/v1/genesis.proto](#lbm/wasm/v1/genesis.proto)
-    - [GenesisState](#lbm.wasm.v1.GenesisState)
+- [lbm/wasm/v1/proposal.proto](#lbm/wasm/v1/proposal.proto)
+    - [ActivateContractProposal](#lbm.wasm.v1.ActivateContractProposal)
+    - [DeactivateContractProposal](#lbm.wasm.v1.DeactivateContractProposal)
+  
+- [lbm/wasm/v1/query.proto](#lbm/wasm/v1/query.proto)
+    - [QueryInactiveContractRequest](#lbm.wasm.v1.QueryInactiveContractRequest)
+    - [QueryInactiveContractResponse](#lbm.wasm.v1.QueryInactiveContractResponse)
+    - [QueryInactiveContractsRequest](#lbm.wasm.v1.QueryInactiveContractsRequest)
+    - [QueryInactiveContractsResponse](#lbm.wasm.v1.QueryInactiveContractsResponse)
+  
+    - [Query](#lbm.wasm.v1.Query)
   
 - [lbm/wasm/v1/tx.proto](#lbm/wasm/v1/tx.proto)
     - [MsgStoreCodeAndInstantiateContract](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContract)
@@ -9071,6 +9081,9 @@ Params defines the set of wasm parameters.
 | ----- | ---- | ----- | ----------- |
 | `code_upload_access` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  |  |
 | `instantiate_default_permission` | [AccessType](#cosmwasm.wasm.v1.AccessType) |  |  |
+| `gas_multiplier` | [uint64](#uint64) |  |  |
+| `instance_cost` | [uint64](#uint64) |  |  |
+| `compile_cost` | [uint64](#uint64) |  |  |
 
 
 
@@ -9388,6 +9401,7 @@ GenesisState - genesis state of x/wasm
 | `contracts` | [Contract](#cosmwasm.wasm.v1.Contract) | repeated |  |
 | `sequences` | [Sequence](#cosmwasm.wasm.v1.Sequence) | repeated |  |
 | `gen_msgs` | [GenesisState.GenMsgs](#cosmwasm.wasm.v1.GenesisState.GenMsgs) | repeated |  |
+| `inactive_contract_addresses` | [string](#string) | repeated | InactiveContractAddresses is a list of contract address that set inactive |
 
 
 
@@ -18510,26 +18524,37 @@ Msg defines the token Msg service.
 
 
 
-<a name="lbm/wasm/v1/types.proto"></a>
+<a name="lbm/wasm/v1/event.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/wasm/v1/types.proto
+## lbm/wasm/v1/event.proto
 
 
 
-<a name="lbm.wasm.v1.Params"></a>
+<a name="lbm.wasm.v1.EventActivateContractProposal"></a>
 
-### Params
-Params defines the set of wasm parameters.
+### EventActivateContractProposal
+EventActivateContractProposal is the event that is emitted when the contract is activates.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `code_upload_access` | [cosmwasm.wasm.v1.AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  |  |
-| `instantiate_default_permission` | [cosmwasm.wasm.v1.AccessType](#cosmwasm.wasm.v1.AccessType) |  |  |
-| `gas_multiplier` | [uint64](#uint64) |  |  |
-| `instance_cost` | [uint64](#uint64) |  |  |
-| `compile_cost` | [uint64](#uint64) |  |  |
+| `contract` | [string](#string) |  | contract is the smart contract's address |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.EventDeactivateContractProposal"></a>
+
+### EventDeactivateContractProposal
+EventDeactivateContractProposal is the event that is emitted when the contract is deactivate.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract` | [string](#string) |  | contract is the smart contract's address |
 
 
 
@@ -18545,27 +18570,41 @@ Params defines the set of wasm parameters.
 
 
 
-<a name="lbm/wasm/v1/genesis.proto"></a>
+<a name="lbm/wasm/v1/proposal.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/wasm/v1/genesis.proto
+## lbm/wasm/v1/proposal.proto
 
 
 
-<a name="lbm.wasm.v1.GenesisState"></a>
+<a name="lbm.wasm.v1.ActivateContractProposal"></a>
 
-### GenesisState
-
+### ActivateContractProposal
+ActivateContractProposal gov proposal content type deletes a contract from inactive list.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.wasm.v1.Params) |  | Params sdk type Params for wasm |
-| `codes` | [cosmwasm.wasm.v1.Code](#cosmwasm.wasm.v1.Code) | repeated | Codes has all stored wasm codes and metadata |
-| `contracts` | [cosmwasm.wasm.v1.Contract](#cosmwasm.wasm.v1.Contract) | repeated | Contracts contains all instantiated contracts, state and metadata |
-| `sequences` | [cosmwasm.wasm.v1.Sequence](#cosmwasm.wasm.v1.Sequence) | repeated | Sequences names and values |
-| `gen_msgs` | [cosmwasm.wasm.v1.GenesisState.GenMsgs](#cosmwasm.wasm.v1.GenesisState.GenMsgs) | repeated | GenMsgs has wasmd sdk type messages to execute in the genesis phase |
-| `inactive_contract_addresses` | [string](#string) | repeated | InactiveContractAddresses is a list of contract address that set inactive |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `contract` | [string](#string) |  | Contract is the smart contract address to activate |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.DeactivateContractProposal"></a>
+
+### DeactivateContractProposal
+DeactivateContractProposal gov proposal content type adds a contract to inactive list.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  | Title is a short summary |
+| `description` | [string](#string) |  | Description is a human readable text |
+| `contract` | [string](#string) |  | Contract is the smart contract address to deactivate |
 
 
 
@@ -18576,6 +18615,94 @@ Params defines the set of wasm parameters.
  <!-- end enums -->
 
  <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/wasm/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/wasm/v1/query.proto
+
+
+
+<a name="lbm.wasm.v1.QueryInactiveContractRequest"></a>
+
+### QueryInactiveContractRequest
+QueryIsInactiveContractRequest is the request type for Query/IsInactiveContract RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | address is the address of the contract |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.QueryInactiveContractResponse"></a>
+
+### QueryInactiveContractResponse
+QueryInactiveContractsResponse is the response type for the Query/IsInactiveContract RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `inactivated` | [bool](#bool) |  | inactivated is the result if the contract is inactive contract or not |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.QueryInactiveContractsRequest"></a>
+
+### QueryInactiveContractsRequest
+QueryInactiveContractsRequest is the request type for Query/InactiveContract RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.QueryInactiveContractsResponse"></a>
+
+### QueryInactiveContractsResponse
+QueryInactiveContractsResponse is the response type for the Query/InactiveContract RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `addresses` | [string](#string) | repeated | addresses is the inactive address list |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.wasm.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `InactiveContracts` | [QueryInactiveContractsRequest](#lbm.wasm.v1.QueryInactiveContractsRequest) | [QueryInactiveContractsResponse](#lbm.wasm.v1.QueryInactiveContractsResponse) | InactiveContracts queries all inactive contracts | GET|/lbm/wasm/v1/inactive_contracts|
+| `InactiveContract` | [QueryInactiveContractRequest](#lbm.wasm.v1.QueryInactiveContractRequest) | [QueryInactiveContractResponse](#lbm.wasm.v1.QueryInactiveContractResponse) |  | GET|/lbm/wasm/v1/inactive_contracts/{address}|
 
  <!-- end services -->
 
@@ -18618,7 +18745,7 @@ MsgStoreCodeAndInstantiateContractResponse returns store and instantiate result 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
-| `address` | [string](#string) |  | Address is the bech32 address of the new contract instance. |
+| `address` | [string](#string) |  | Address is the bech32 address of the new contract instance |
 | `data` | [bytes](#bytes) |  | Data contains base64-encoded bytes to returned from the contract |
 
 
@@ -18639,7 +18766,7 @@ Msg defines the wasm Msg service for lbm-sdk.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `StoreCodeAndInstantiateContract` | [MsgStoreCodeAndInstantiateContract](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContract) | [MsgStoreCodeAndInstantiateContractResponse](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse) | StoreCodeAndInstantiateContract upload code and instantiate a contract using it. | |
+| `StoreCodeAndInstantiateContract` | [MsgStoreCodeAndInstantiateContract](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContract) | [MsgStoreCodeAndInstantiateContractResponse](#lbm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse) | StoreCodeAndInstantiateContract upload code and instantiate a contract using it | |
 
  <!-- end services -->
 

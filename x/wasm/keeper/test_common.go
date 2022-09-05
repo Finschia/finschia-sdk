@@ -71,7 +71,7 @@ import (
 	"github.com/line/lbm-sdk/x/upgrade"
 	upgradeclient "github.com/line/lbm-sdk/x/upgrade/client"
 	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
-	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
 
 	wasmappparams "github.com/line/lbm-sdk/simapp/params"
@@ -111,8 +111,8 @@ func MakeEncodingConfig(_ testing.TB) wasmappparams.EncodingConfig {
 	ModuleBasics.RegisterLegacyAminoCodec(amino)
 	ModuleBasics.RegisterInterfaces(interfaceRegistry)
 	// add wasmd types
-	lbmwasmtypes.RegisterInterfaces(interfaceRegistry)
-	lbmwasmtypes.RegisterLegacyAminoCodec(amino)
+	lbmtypes.RegisterInterfaces(interfaceRegistry)
+	lbmtypes.RegisterLegacyAminoCodec(amino)
 
 	return encodingConfig
 }
@@ -396,7 +396,7 @@ func createTestInput(
 		queriers,
 		opts...,
 	)
-	keeper.setParams(ctx, lbmwasmtypes.DefaultParams())
+	keeper.SetParams(ctx, types.DefaultParams())
 	// add wasm handler so we can loop-back (contracts calling contracts)
 	contractKeeper := NewDefaultPermissionKeeper(&keeper)
 	router.AddRoute(sdk.NewRoute(types.RouterKey, TestHandler(contractKeeper)))
@@ -414,7 +414,7 @@ func createTestInput(
 		AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(paramsKeeper)).
 		AddRoute(distributiontypes.RouterKey, distribution.NewCommunityPoolSpendProposalHandler(distKeeper)).
-		AddRoute(types.RouterKey, NewWasmProposalHandler(&keeper, types.EnableAllProposals))
+		AddRoute(types.RouterKey, NewWasmProposalHandler(&keeper, lbmtypes.EnableAllProposals))
 
 	govKeeper := govkeeper.NewKeeper(
 		appCodec,

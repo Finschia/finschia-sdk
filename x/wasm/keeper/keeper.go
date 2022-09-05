@@ -15,18 +15,16 @@ import (
 	wasmvm "github.com/line/wasmvm"
 	wasmvmtypes "github.com/line/wasmvm/types"
 
-	"github.com/line/lbm-sdk/types/address"
-
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/store/prefix"
 	storetypes "github.com/line/lbm-sdk/store/types"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/address"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
 	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
 	"github.com/line/lbm-sdk/x/wasm/ioutils"
-	lbmwasmtypes "github.com/line/lbm-sdk/x/wasm/lbm/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -120,7 +118,7 @@ func NewKeeper(
 	}
 	// set KeyTable if it has not already been set
 	if !paramSpace.HasKeyTable() {
-		paramSpace = paramSpace.WithKeyTable(lbmwasmtypes.ParamKeyTable())
+		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
 	}
 
 	keeper := &Keeper{
@@ -220,13 +218,13 @@ func (k Keeper) compileCosts(ctx sdk.Context, byteLength int) storetypes.Gas {
 }
 
 // GetParams returns the total set of wasm parameters.
-func (k Keeper) GetParams(ctx sdk.Context) lbmwasmtypes.Params {
-	var params lbmwasmtypes.Params
+func (k Keeper) GetParams(ctx sdk.Context) types.Params {
+	var params types.Params
 	k.paramSpace.GetParamSet(ctx, &params)
 	return params
 }
 
-func (k Keeper) setParams(ctx sdk.Context, ps lbmwasmtypes.Params) {
+func (k Keeper) SetParams(ctx sdk.Context, ps types.Params) {
 	k.paramSpace.SetParamSet(ctx, &ps)
 }
 
@@ -411,6 +409,9 @@ func (k Keeper) execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	if err != nil {
 		return nil, err
 	}
+	if k.IsInactiveContract(ctx, contractAddress) {
+		return nil, sdkerrors.Wrap(types.ErrInactiveContract, "can not execute")
+	}
 
 	executeCosts := k.instantiateContractCosts(k.gasRegister, ctx, k.IsPinnedCode(ctx, contractInfo.CodeID), len(msg))
 	ctx.GasMeter().ConsumeGas(executeCosts, "Loading CosmWasm module: execute")
@@ -456,6 +457,9 @@ func (k Keeper) migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	contractInfo := k.GetContractInfo(ctx, contractAddress)
 	if contractInfo == nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
+	}
+	if k.IsInactiveContract(ctx, contractAddress) {
+		return nil, sdkerrors.Wrap(types.ErrInactiveContract, "can not migrate")
 	}
 	if !authZ.CanModifyContract(contractInfo.AdminAddr(), caller) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not migrate")
@@ -571,7 +575,7 @@ func (k Keeper) reply(ctx sdk.Context, contractAddress sdk.AccAddress, reply was
 	env := types.NewEnv(ctx, contractAddress)
 
 	// prepare querier
-	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddress, k.getGasMultiplier(ctx))
+	querier := k.newQueryHandler(ctx, contractAddress)
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
 	res, gasUsed, execErr := k.wasmVM.Reply(codeInfo.CodeHash, env, reply, wasmStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gas, costJSONDeserialization)
@@ -622,6 +626,9 @@ func (k Keeper) setContractAdmin(ctx sdk.Context, contractAddress, caller, newAd
 	contractInfo := k.GetContractInfo(ctx, contractAddress)
 	if contractInfo == nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
+	}
+	if k.IsInactiveContract(ctx, contractAddress) {
+		return sdkerrors.Wrap(types.ErrInactiveContract, "can not modify contract")
 	}
 	if !authZ.CanModifyContract(contractInfo.AdminAddr(), caller) {
 		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not modify contract")
