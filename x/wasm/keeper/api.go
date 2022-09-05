@@ -43,7 +43,11 @@ func (a cosmwasmAPIImpl) GetContractEnv(contractAddrStr string) (wasmvm.Env, *wa
 
 	// prepare querier
 	querier := NewQueryHandler(*a.ctx, a.keeper.wasmVMQueryHandler, contractAddr, a.gasMultiplier)
-	gas := 20 * a.gasMultiplier
+
+	// this gas cost is temporal value defined by
+	// https://github.com/line/lbm-sdk/runs/8150140720?check_suite_focus=true#step:5:483
+	// Before release, it is adjusted by benchmark taken in environment similar to the nodes.
+	gas := 11 * a.gasMultiplier
 	wasmStore := types.NewWasmStore(prefixStore)
 	env := types.NewEnv(*a.ctx, contractAddr)
 
