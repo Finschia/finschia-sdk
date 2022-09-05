@@ -67,8 +67,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/token) [\#636](https://github.com/line/lbm-sdk/pull/636) add creator into x/token EventIssue
 * (x/token) [\#637](https://github.com/line/lbm-sdk/pull/637) rename x/token events
 * (x/collection) [\#639](https://github.com/line/lbm-sdk/pull/639) rename x/collection events
-* (x/wasm) [\#625](https://github.com/line/lbm-sdk/pull/625) detaching `StoreCodeAndInstantiateContract` from wasm's tx.proto
-* (x/wasm) [\#655](https://github.com/line/lbm-sdk/pull/655) add inactive contract management in wasm (This replaces the contract blacklist function of contractStatus)
+* (x/wasm) [\#661](https://github.com/line/lbm-sdk/pull/625) x/wasm refactoring - detaching the custom wasm proto part of lbm-sdk. (apply changes of [\#625](https://github.com/line/lbm-sdk/pull/625) and [\#655](https://github.com/line/lbm-sdk/pull/655))
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
