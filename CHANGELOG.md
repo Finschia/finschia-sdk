@@ -1,7 +1,8 @@
 # Changelog
 
 ## [Unreleased]
-* (x/wasm) [\#633](https://github.com/line/lbm-sdk/pull/633)Add benchmarks for cosmwasm APIs
+* (x/wasm) [\#659](https://github.com/line/lbm-sdk/pull/659) Adjust gas cost for GetContractEnv of CosmWasmAPI
+* (x/wasm) [\#633](https://github.com/line/lbm-sdk/pull/633) Add benchmarks for cosmwasm APIs
 * (x/wasm) [\#509](https://github.com/line/lbm-sdk/pull/590) Add integration tests for dynamic call
 
 ## [v0.43.0](https://github.com/line/lbm-sdk/releases/tag/v0.43.0)
