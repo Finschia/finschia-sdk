@@ -10,7 +10,7 @@ import (
 )
 
 // MockIBCApp contains IBC application module callbacks as defined in 05-port.
-type MockIBCApp struct {
+type MockIBCApp struct { //nolint:golint
 	PortID       string
 	ScopedKeeper capabilitykeeper.ScopedKeeper
 

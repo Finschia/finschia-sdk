@@ -1,7 +1,7 @@
 package mock
 
 // MockEmptyAcknowledgement implements the exported.Acknowledgement interface and always returns an empty byte string as Response
-type MockEmptyAcknowledgement struct {
+type MockEmptyAcknowledgement struct { //nolint:golint
 	Response []byte
 }
 
