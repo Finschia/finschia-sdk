@@ -388,8 +388,8 @@ func TestDynamicCallCalleeFails(t *testing.T) {
 
 	callerContractAddress := parseInitResponse(t, res.Data)
 
-	// execute pong_panic
-	cosmwasmExecuteMsg := `{"callee_panic":{}}`
+	// execute do_panic
+	cosmwasmExecuteMsg := `{"do_panic":{}}`
 	executeMsg := MsgExecuteContract{
 		Sender:   addr1,
 		Contract: callerContractAddress,
