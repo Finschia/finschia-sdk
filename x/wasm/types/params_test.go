@@ -120,33 +120,6 @@ func TestValidateParams(t *testing.T) {
 			},
 			expErr: true,
 		},
-		"reject empty gas multiplier": {
-			src: Params{
-				CodeUploadAccess:             AllowNobody,
-				InstantiateDefaultPermission: AccessTypeNobody,
-				InstanceCost:                 DefaultInstanceCost,
-				CompileCost:                  DefaultCompileCost,
-			},
-			expErr: true,
-		},
-		"reject empty instance cost": {
-			src: Params{
-				CodeUploadAccess:             AllowNobody,
-				InstantiateDefaultPermission: AccessTypeNobody,
-				GasMultiplier:                DefaultGasMultiplier,
-				CompileCost:                  DefaultCompileCost,
-			},
-			expErr: true,
-		},
-		"reject empty compile cost": {
-			src: Params{
-				CodeUploadAccess:             AllowNobody,
-				InstantiateDefaultPermission: AccessTypeNobody,
-				GasMultiplier:                DefaultGasMultiplier,
-				InstanceCost:                 DefaultInstanceCost,
-			},
-			expErr: true,
-		},
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {

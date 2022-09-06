@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"math"
 	"testing"
@@ -119,7 +120,7 @@ func TestCreateStoresInstantiatePermission(t *testing.T) {
 		t.Run(msg, func(t *testing.T) {
 			ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 			accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.BankKeeper
-			keepers.WasmKeeper.setParams(ctx, types.Params{
+			keepers.WasmKeeper.SetParams(ctx, types.Params{
 				CodeUploadAccess:             types.AllowEverybody,
 				InstantiateDefaultPermission: spec.srcPermission,
 				GasMultiplier:                types.DefaultGasMultiplier,
@@ -172,7 +173,7 @@ func TestCreateWithParamPermissions(t *testing.T) {
 		t.Run(msg, func(t *testing.T) {
 			params := types.DefaultParams()
 			params.CodeUploadAccess = spec.srcPermission
-			keepers.WasmKeeper.setParams(ctx, params)
+			keepers.WasmKeeper.SetParams(ctx, params)
 			_, err := keeper.Create(ctx, creator, hackatomWasm, nil)
 			require.True(t, spec.expError.Is(err), err)
 			if spec.expError != nil {
@@ -249,7 +250,7 @@ func TestEnforceValidPermissionsOnCreate(t *testing.T) {
 		t.Run(msg, func(t *testing.T) {
 			params := types.DefaultParams()
 			params.InstantiateDefaultPermission = spec.defaultPermssion
-			keeper.setParams(ctx, params)
+			keeper.SetParams(ctx, params)
 			codeID, err := contractKeeper.Create(ctx, creator, hackatomWasm, spec.requestedPermission)
 			require.True(t, spec.expError.Is(err), err)
 			if spec.expError == nil {
@@ -389,7 +390,7 @@ func TestInstantiate(t *testing.T) {
 
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x18c38), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x18bfc), gasAfter-gasBefore)
 	}
 
 	// ensure it is stored properly
@@ -398,7 +399,6 @@ func TestInstantiate(t *testing.T) {
 	assert.Equal(t, creator.String(), info.Creator)
 	assert.Equal(t, codeID, info.CodeID)
 	assert.Equal(t, "demo contract 1", info.Label)
-	assert.Equal(t, types.ContractStatusActive, info.Status)
 
 	exp := []types.ContractCodeHistoryEntry{{
 		Operation: types.ContractCodeHistoryOperationTypeInit,
@@ -623,7 +623,7 @@ func TestExecute(t *testing.T) {
 	// make sure gas is properly deducted from ctx
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x16bba), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x16f9c), gasAfter-gasBefore)
 	}
 	// ensure bob now exists and got both payments released
 	bobAcct = accKeeper.GetAccount(ctx, bob)
@@ -1486,141 +1486,6 @@ func TestExecuteManualInactiveContractFailure(t *testing.T) {
 	addr, _, err := keeper.Instantiate(ctx, contractID, creator, nil, initMsgBz, "demo contract 3", deposit)
 	require.NoError(t, err)
 	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8", addr.String())
-
-	// execute inactive contract through manual
-	err = keeper.UpdateContractStatus(ctx, addr, creator, types.ContractStatusInactive)
-
-	// Contract status can only be changed through a gov proposal.
-	require.True(t, sdkerrors.ErrUnauthorized.Is(err), "expected %v but got %v", sdkerrors.ErrUnauthorized, err)
-}
-
-func TestMigrateInactivatedContractFailure(t *testing.T) {
-	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
-	keeper, govKeeper := keepers.ContractKeeper, keepers.GovKeeper
-
-	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
-	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
-	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
-	fred := keepers.Faucet.NewFundedAccount(ctx, topUp...)
-
-	originalCodeID := StoreHackatomExampleContract(t, ctx, keepers).CodeID
-	newCodeID := StoreHackatomExampleContract(t, ctx, keepers).CodeID
-	require.NotEqual(t, originalCodeID, newCodeID)
-
-	anyAddr := RandomAccountAddress(t)
-	newVerifierAddr := RandomAccountAddress(t)
-	initMsgBz := HackatomExampleInitMsg{
-		Verifier:    fred,
-		Beneficiary: anyAddr,
-	}.GetBytes(t)
-	migMsg := struct {
-		Verifier sdk.AccAddress `json:"verifier"`
-	}{Verifier: newVerifierAddr}
-	migMsgBz, err := json.Marshal(migMsg)
-
-	contractAddr, _, err := keeper.Instantiate(ctx, originalCodeID, creator, creator, initMsgBz, "demo contract", nil)
-
-	inactiveProposal := &types.UpdateContractStatusProposal{
-		Title:       "foo",
-		Description: "bar",
-		Contract:    contractAddr.String(),
-		Status:      types.ContractStatusInactive,
-	}
-	storedProposal, err := govKeeper.SubmitProposal(ctx, inactiveProposal)
-	require.NoError(t, err)
-
-	handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
-	err = handler(ctx, storedProposal.GetContent())
-	require.NoError(t, err)
-
-	_, err = keeper.Migrate(ctx, contractAddr, creator, newCodeID, migMsgBz)
-	require.True(t, types.ErrInvalid.Is(err), "expected %v but got %+v", types.ErrInvalid, err)
-}
-
-func TestUpdateContractAdminInactivatedContractFailure(t *testing.T) {
-	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
-	keeper, govKeeper := keepers.ContractKeeper, keepers.GovKeeper
-
-	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
-	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
-	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
-	fred := keepers.Faucet.NewFundedAccount(ctx, topUp...)
-
-	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
-	require.NoError(t, err)
-
-	originalContractID, err := keeper.Create(ctx, creator, wasmCode, nil)
-	require.NoError(t, err)
-
-	_, _, anyAddr := keyPubAddr()
-	initMsg := HackatomExampleInitMsg{
-		Verifier:    fred,
-		Beneficiary: anyAddr,
-	}
-	initMsgBz, err := json.Marshal(initMsg)
-	require.NoError(t, err)
-
-	addr, _, err := keeper.Instantiate(ctx, originalContractID, creator, fred, initMsgBz, "demo contract", nil)
-	require.NoError(t, err)
-
-	inactiveProposal := &types.UpdateContractStatusProposal{
-		Title:       "foo",
-		Description: "bar",
-		Contract:    addr.String(),
-		Status:      types.ContractStatusInactive,
-	}
-	storedProposal, err := govKeeper.SubmitProposal(ctx, inactiveProposal)
-	require.NoError(t, err)
-
-	handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
-	err = handler(ctx, storedProposal.GetContent())
-	require.NoError(t, err)
-
-	err = keeper.UpdateContractAdmin(ctx, addr, fred, anyAddr)
-	require.True(t, types.ErrInvalid.Is(err), "expected %v but got %+v", types.ErrInvalid, err)
-}
-
-func TestClearContractAdminInactivedContractFailure(t *testing.T) {
-	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
-	keeper, govKeeper := keepers.ContractKeeper, keepers.GovKeeper
-
-	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
-	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
-	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
-	fred := keepers.Faucet.NewFundedAccount(ctx, topUp...)
-
-	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
-	require.NoError(t, err)
-
-	originalContractID, err := keeper.Create(ctx, creator, wasmCode, nil)
-	require.NoError(t, err)
-
-	_, _, anyAddr := keyPubAddr()
-	initMsg := HackatomExampleInitMsg{
-		Verifier:    fred,
-		Beneficiary: anyAddr,
-	}
-	initMsgBz, err := json.Marshal(initMsg)
-	require.NoError(t, err)
-
-	addr, _, err := keeper.Instantiate(ctx, originalContractID, creator, fred, initMsgBz, "demo contract", nil)
-	require.NoError(t, err)
-
-	inactiveProposal := &types.UpdateContractStatusProposal{
-		Title:       "foo",
-		Description: "bar",
-		Contract:    addr.String(),
-		Status:      types.ContractStatusInactive,
-	}
-	storedProposal, err := govKeeper.SubmitProposal(ctx, inactiveProposal)
-	require.NoError(t, err)
-
-	handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
-	err = handler(ctx, storedProposal.GetContent())
-	require.NoError(t, err)
-
-	err = keeper.ClearContractAdmin(ctx, addr, fred)
-	require.True(t, types.ErrInvalid.Is(err), "expected %v but got %+v", types.ErrInvalid, err)
 }
 
 func TestPinCode(t *testing.T) {
@@ -1751,7 +1616,7 @@ func TestPinnedContractLoops(t *testing.T) {
 			},
 		}, 0, nil
 	}
-	ctx = ctx.WithGasMeter(sdk.NewGasMeter(20000))
+	ctx = ctx.WithGasMeter(sdk.NewGasMeter(21000))
 	require.PanicsWithValue(t, sdk.ErrorOutOfGas{Descriptor: "ReadFlat"}, func() {
 		_, err := k.execute(ctx, example.Contract, RandomAccountAddress(t), anyMsg, nil)
 		require.NoError(t, err)
@@ -1987,4 +1852,78 @@ func TestBuildContractAddress(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestActivateContract(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+
+	k := keepers.WasmKeeper
+	var mock wasmtesting.MockWasmer
+	wasmtesting.MakeInstantiable(&mock)
+	example := SeedNewContractInstance(t, ctx, keepers, &mock)
+	em := sdk.NewEventManager()
+
+	// request no contract address -> fail
+	err := k.activateContract(ctx, example.CreatorAddr)
+	require.Error(t, err, fmt.Sprintf("no contract %s", example.CreatorAddr))
+
+	// try to activate an activated contract -> fail
+	err = k.activateContract(ctx.WithEventManager(em), example.Contract)
+	require.Error(t, err, fmt.Sprintf("no inactivate contract %s", example.Contract))
+
+	// add to inactive contract
+	err = k.deactivateContract(ctx, example.Contract)
+	require.NoError(t, err)
+
+	// try to activate an inactivated contract -> success
+	err = k.activateContract(ctx, example.Contract)
+	require.NoError(t, err)
+}
+
+func TestDeactivateContract(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+
+	k := keepers.WasmKeeper
+	var mock wasmtesting.MockWasmer
+	wasmtesting.MakeInstantiable(&mock)
+	example := SeedNewContractInstance(t, ctx, keepers, &mock)
+	em := sdk.NewEventManager()
+
+	// request no contract address -> fail
+	err := k.deactivateContract(ctx, example.CreatorAddr)
+	require.Error(t, err, fmt.Sprintf("no contract %s", example.CreatorAddr))
+
+	// success case
+	err = k.deactivateContract(ctx, example.Contract)
+	require.NoError(t, err)
+
+	// already inactivate contract -> fail
+	err = k.deactivateContract(ctx.WithEventManager(em), example.Contract)
+	require.Error(t, err, fmt.Sprintf("already inactivate contract %s", example.Contract))
+}
+
+func TestIterateInactiveContracts(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	k := keepers.WasmKeeper
+
+	var mock wasmtesting.MockWasmer
+	wasmtesting.MakeInstantiable(&mock)
+	example1 := SeedNewContractInstance(t, ctx, keepers, &mock)
+	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
+	example2 := SeedNewContractInstance(t, ctx, keepers, &mock)
+	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
+
+	err := k.deactivateContract(ctx, example1.Contract)
+	require.NoError(t, err)
+	err = k.deactivateContract(ctx, example2.Contract)
+	require.NoError(t, err)
+
+	var inactiveContracts []sdk.AccAddress
+	k.IterateInactiveContracts(ctx, func(contractAddress sdk.AccAddress) (stop bool) {
+		inactiveContracts = append(inactiveContracts, contractAddress)
+		return false
+	})
+	assert.Equal(t, 2, len(inactiveContracts))
+	expectList := []sdk.AccAddress{example1.Contract, example2.Contract}
+	assert.ElementsMatch(t, expectList, inactiveContracts)
 }

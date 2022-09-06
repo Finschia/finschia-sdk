@@ -19,6 +19,8 @@ const (
 	QueryGetCode            = "code"
 	QueryListCode           = "list-code"
 	QueryContractHistory    = "contract-history"
+	QueryInactiveContracts  = "inactive-contracts"
+	QueryIsInactiveContract = "inactive-contract"
 )
 
 const (
@@ -71,6 +73,16 @@ func NewLegacyQuerier(keeper types.ViewKeeper, gasLimit sdk.Gas) sdk.Querier {
 			}
 			//nolint:staticcheck
 			rsp, err = queryContractHistory(ctx, contractAddr, keeper)
+		case QueryInactiveContracts:
+			//nolint:staticcheck
+			rsp = queryInactiveContracts(ctx, keeper)
+		case QueryIsInactiveContract:
+			contractAddr, addrErr := sdk.AccAddressFromBech32(path[1])
+			if addrErr != nil {
+				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, addrErr.Error())
+			}
+			//nolint:staticcheck
+			rsp = keeper.IsInactiveContract(ctx, contractAddr)
 		default:
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown data query endpoint")
 		}
@@ -155,6 +167,15 @@ func queryContractListByCode(ctx sdk.Context, codeID uint64, keeper types.ViewKe
 	var contracts []string
 	keeper.IterateContractsByCode(ctx, codeID, func(addr sdk.AccAddress) bool {
 		contracts = append(contracts, addr.String())
+		return false
+	})
+	return contracts
+}
+
+func queryInactiveContracts(ctx sdk.Context, keeper types.ViewKeeper) []string {
+	var contracts []string
+	keeper.IterateInactiveContracts(ctx, func(contractAddress sdk.AccAddress) bool {
+		contracts = append(contracts, contractAddress.String())
 		return false
 	})
 	return contracts

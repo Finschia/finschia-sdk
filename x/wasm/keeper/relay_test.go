@@ -34,12 +34,12 @@ func TestOnOpenChannel(t *testing.T) {
 		"consume contract gas": {
 			contractAddr: example.Contract,
 			contractGas:  myContractGas,
-			expGas:       myContractGas - 18, // FIXME remove x/ibc and use ibc-go
+			expGas:       myContractGas - 24, // FIXME remove x/ibc and use ibc-go
 		},
 		"consume max gas": {
 			contractAddr: example.Contract,
 			contractGas:  math.MaxUint64 / types.DefaultGasMultiplier,
-			expGas:       math.MaxUint64/types.DefaultGasMultiplier - 18, // FIXME remove x/ibc and use ibc-go
+			expGas:       math.MaxUint64/types.DefaultGasMultiplier - 24, // FIXME remove x/ibc and use ibc-go
 		},
 		"consume gas on error": {
 			contractAddr: example.Contract,
@@ -105,7 +105,7 @@ func TestOnConnectChannel(t *testing.T) {
 	}{
 		"consume contract gas": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 18, // FIXME remove x/ibc and use ibc-go,
+			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go,
 			contractResp:   &wasmvmtypes.IBCBasicResponse{},
 		},
 		"consume gas on error, ignore events + messages": {
@@ -120,14 +120,14 @@ func TestOnConnectChannel(t *testing.T) {
 		},
 		"dispatch contract messages on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Messages: []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}, {ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Custom: json.RawMessage(`{"foo":"bar"}`)}}},
 			},
 		},
 		"emit contract events on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 10 - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + 10 - 24, // FIXME remove x/ibc and use ibc-go
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
 			},
@@ -218,7 +218,7 @@ func TestOnCloseChannel(t *testing.T) {
 	}{
 		"consume contract gas": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
 			contractResp:   &wasmvmtypes.IBCBasicResponse{},
 		},
 		"consume gas on error, ignore events + messages": {
@@ -233,14 +233,14 @@ func TestOnCloseChannel(t *testing.T) {
 		},
 		"dispatch contract messages on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Messages: []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}, {ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Custom: json.RawMessage(`{"foo":"bar"}`)}}},
 			},
 		},
 		"emit contract events on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 10 - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + 10 - 24, // FIXME remove x/ibc and use ibc-go
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
 			},
@@ -332,7 +332,7 @@ func TestOnRecvPacket(t *testing.T) {
 	}{
 		"consume contract gas": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
 			contractResp: &wasmvmtypes.IBCReceiveResponse{
 				Acknowledgement: []byte("myAck"),
 			},
@@ -340,7 +340,7 @@ func TestOnRecvPacket(t *testing.T) {
 		},
 		"can return empty ack": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
 			contractResp:   &wasmvmtypes.IBCReceiveResponse{},
 		},
 		"consume gas on error, ignore events + messages": {
@@ -356,7 +356,7 @@ func TestOnRecvPacket(t *testing.T) {
 		},
 		"dispatch contract messages on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
 			contractResp: &wasmvmtypes.IBCReceiveResponse{
 				Acknowledgement: []byte("myAck"),
 				Messages:        []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}, {ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Custom: json.RawMessage(`{"foo":"bar"}`)}}},
@@ -365,7 +365,7 @@ func TestOnRecvPacket(t *testing.T) {
 		},
 		"emit contract attributes on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 10 - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + 10 - 24, // FIXME remove x/ibc and use ibc-go
 			contractResp: &wasmvmtypes.IBCReceiveResponse{
 				Acknowledgement: []byte("myAck"),
 				Attributes:      []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
@@ -375,7 +375,7 @@ func TestOnRecvPacket(t *testing.T) {
 		},
 		"emit contract events on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 46 - 18, // charge or custom event as well // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + 46 - 24, // charge or custom event as well // FIXME remove x/ibc and use ibc-go
 			contractResp: &wasmvmtypes.IBCReceiveResponse{
 				Acknowledgement: []byte("myAck"),
 				Attributes:      []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
@@ -404,7 +404,7 @@ func TestOnRecvPacket(t *testing.T) {
 		},
 		"submessage reply can overwrite ack data": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + storageCosts - 18*2, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + storageCosts - 24*2, // FIXME remove x/ibc and use ibc-go
 			contractResp: &wasmvmtypes.IBCReceiveResponse{
 				Acknowledgement: []byte("myAck"),
 				Messages:        []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyAlways, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}},
@@ -492,7 +492,7 @@ func TestOnAckPacket(t *testing.T) {
 	}{
 		"consume contract gas": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
 			contractResp:   &wasmvmtypes.IBCBasicResponse{},
 		},
 		"consume gas on error, ignore events + messages": {
@@ -507,14 +507,14 @@ func TestOnAckPacket(t *testing.T) {
 		},
 		"dispatch contract messages on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Messages: []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}, {ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Custom: json.RawMessage(`{"foo":"bar"}`)}}},
 			},
 		},
 		"emit contract events on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 10 - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + 10 - 24, // FIXME remove x/ibc and use ibc-go
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
 			},
@@ -600,7 +600,7 @@ func TestOnTimeoutPacket(t *testing.T) {
 	}{
 		"consume contract gas": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
 			contractResp:   &wasmvmtypes.IBCBasicResponse{},
 		},
 		"consume gas on error, ignore events + messages": {
@@ -615,7 +615,7 @@ func TestOnTimeoutPacket(t *testing.T) {
 		},
 		"dispatch contract messages on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
 
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Messages: []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}, {ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Custom: json.RawMessage(`{"foo":"bar"}`)}}},
@@ -623,7 +623,7 @@ func TestOnTimeoutPacket(t *testing.T) {
 		},
 		"emit contract attributes on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 10 - 18, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + 10 - 24, // FIXME remove x/ibc and use ibc-go
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
 			},
@@ -631,7 +631,7 @@ func TestOnTimeoutPacket(t *testing.T) {
 		},
 		"emit contract events on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 46 - 18, // cost for custom events // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + 46 - 24, // cost for custom events // FIXME remove x/ibc and use ibc-go
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
 				Events: []wasmvmtypes.Event{{

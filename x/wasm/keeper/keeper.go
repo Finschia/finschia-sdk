@@ -15,12 +15,11 @@ import (
 	wasmvm "github.com/line/wasmvm"
 	wasmvmtypes "github.com/line/wasmvm/types"
 
-	"github.com/line/lbm-sdk/types/address"
-
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/store/prefix"
 	storetypes "github.com/line/lbm-sdk/store/types"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/address"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
 	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
@@ -225,7 +224,7 @@ func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 	return params
 }
 
-func (k Keeper) setParams(ctx sdk.Context, ps types.Params) {
+func (k Keeper) SetParams(ctx sdk.Context, ps types.Params) {
 	k.paramSpace.SetParamSet(ctx, &ps)
 }
 
@@ -367,7 +366,7 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 
 	// persist instance first
 	createdAt := types.NewAbsoluteTxPosition(ctx)
-	contractInfo := types.NewContractInfo(codeID, creator, admin, label, createdAt, types.ContractStatusActive)
+	contractInfo := types.NewContractInfo(codeID, creator, admin, label, createdAt)
 
 	// check for IBC flag
 	report, err := k.wasmVM.AnalyzeCode(codeInfo.CodeHash)
@@ -410,8 +409,8 @@ func (k Keeper) execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	if err != nil {
 		return nil, err
 	}
-	if contractInfo.Status != types.ContractStatusActive {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
+	if k.IsInactiveContract(ctx, contractAddress) {
+		return nil, sdkerrors.Wrap(types.ErrInactiveContract, "can not execute")
 	}
 
 	executeCosts := k.instantiateContractCosts(k.gasRegister, ctx, k.IsPinnedCode(ctx, contractInfo.CodeID), len(msg))
@@ -459,8 +458,8 @@ func (k Keeper) migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	if contractInfo == nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
 	}
-	if contractInfo.Status != types.ContractStatusActive {
-		return nil, sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
+	if k.IsInactiveContract(ctx, contractAddress) {
+		return nil, sdkerrors.Wrap(types.ErrInactiveContract, "can not migrate")
 	}
 	if !authZ.CanModifyContract(contractInfo.AdminAddr(), caller) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not migrate")
@@ -576,7 +575,7 @@ func (k Keeper) reply(ctx sdk.Context, contractAddress sdk.AccAddress, reply was
 	env := types.NewEnv(ctx, contractAddress)
 
 	// prepare querier
-	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddress, k.getGasMultiplier(ctx))
+	querier := k.newQueryHandler(ctx, contractAddress)
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
 	res, gasUsed, execErr := k.wasmVM.Reply(codeInfo.CodeHash, env, reply, wasmStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gas, costJSONDeserialization)
@@ -623,36 +622,13 @@ func (k Keeper) IterateContractsByCode(ctx sdk.Context, codeID uint64, cb func(a
 	}
 }
 
-func (k Keeper) setContractStatus(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus, authZ AuthorizationPolicy) error {
-	if !authZ.CanUpdateContractStatus() {
-		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not update contract status")
-	}
-
-	contractInfo := k.GetContractInfo(ctx, contractAddress)
-	if contractInfo == nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
-	}
-	if contractInfo.Status != status {
-		contractInfo.Status = status
-		k.storeContractInfo(ctx, contractAddress, contractInfo)
-
-		switch status {
-		case types.ContractStatusInactive:
-			k.bank.AddToInactiveAddr(ctx, contractAddress)
-		case types.ContractStatusActive:
-			k.bank.DeleteFromInactiveAddr(ctx, contractAddress)
-		}
-	}
-	return nil
-}
-
 func (k Keeper) setContractAdmin(ctx sdk.Context, contractAddress, caller, newAdmin sdk.AccAddress, authZ AuthorizationPolicy) error {
 	contractInfo := k.GetContractInfo(ctx, contractAddress)
 	if contractInfo == nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
 	}
-	if contractInfo.Status != types.ContractStatusActive {
-		return sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
+	if k.IsInactiveContract(ctx, contractAddress) {
+		return sdkerrors.Wrap(types.ErrInactiveContract, "can not modify contract")
 	}
 	if !authZ.CanModifyContract(contractInfo.AdminAddr(), caller) {
 		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not modify contract")

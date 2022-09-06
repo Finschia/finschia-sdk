@@ -7,7 +7,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	simKeeper "github.com/line/lbm-sdk/x/simulation"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -20,9 +19,11 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
+	simKeeper "github.com/line/lbm-sdk/x/simulation"
 	"github.com/line/lbm-sdk/x/wasm/client/cli"
 	"github.com/line/lbm-sdk/x/wasm/client/rest"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/simulation"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
@@ -93,7 +94,7 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 
 // RegisterInterfaces implements InterfaceModule
 func (b AppModuleBasic) RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
-	types.RegisterInterfaces(registry)
+	lbmtypes.RegisterInterfaces(registry)
 }
 
 // ____________________________________________________________________________
@@ -135,6 +136,7 @@ func NewAppModule(
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(keeper.NewDefaultPermissionKeeper(am.keeper)))
 	types.RegisterQueryServer(cfg.QueryServer(), NewQuerier(am.keeper))
+	lbmtypes.RegisterQueryServer(cfg.QueryServer(), NewQuerier(am.keeper))
 
 	// m := keeper.NewMigrator(*am.keeper)
 	// if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
@@ -162,7 +164,7 @@ func (AppModule) QuerierRoute() string {
 // InitGenesis performs genesis initialization for the wasm module. It returns
 // no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
-	var genesisState GenesisState
+	var genesisState types.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 	validators, err := InitGenesis(ctx, am.keeper, genesisState, am.validatorSetSource, am.Route().Handler())
 	if err != nil {

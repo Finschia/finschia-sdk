@@ -8,8 +8,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/line/lbm-sdk/x/wasm/keeper"
-
 	octypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
 
@@ -22,6 +20,7 @@ import (
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/genutil"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
+	"github.com/line/lbm-sdk/x/wasm/keeper"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 

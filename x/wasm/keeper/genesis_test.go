@@ -47,7 +47,7 @@ func TestGenesisExportImport(t *testing.T) {
 	// store some test data
 	f := fuzz.New().Funcs(ModelFuzzers...)
 
-	wasmKeeper.setParams(srcCtx, types.DefaultParams())
+	wasmKeeper.SetParams(srcCtx, types.DefaultParams())
 
 	for i := 0; i < 25; i++ {
 		var (
@@ -89,7 +89,7 @@ func TestGenesisExportImport(t *testing.T) {
 	}
 	var wasmParams types.Params
 	f.NilChance(0).Fuzz(&wasmParams)
-	wasmKeeper.setParams(srcCtx, wasmParams)
+	wasmKeeper.SetParams(srcCtx, wasmParams)
 
 	// export
 	exportedState := ExportGenesis(srcCtx, wasmKeeper)
@@ -128,7 +128,7 @@ func TestGenesisExportImport(t *testing.T) {
 	})
 
 	// re-import
-	var importState wasmTypes.GenesisState
+	var importState types.GenesisState
 	err = dstKeeper.cdc.UnmarshalJSON(exportedGenesis, &importState)
 	require.NoError(t, err)
 	InitGenesis(dstCtx, dstKeeper, importState, &StakingKeeperMock{}, TestHandler(contractKeeper))
@@ -404,7 +404,7 @@ func TestGenesisInit(t *testing.T) {
 			},
 		},
 		"validator set update called for any genesis messages": {
-			src: wasmTypes.GenesisState{
+			src: types.GenesisState{
 				GenMsgs: []types.GenesisState_GenMsgs{
 					{Sum: &types.GenesisState_GenMsgs_StoreCode{
 						StoreCode: types.MsgStoreCodeFixture(),
@@ -422,7 +422,7 @@ func TestGenesisInit(t *testing.T) {
 			expSuccess:     true,
 		},
 		"validator set update not called on genesis msg handler errors": {
-			src: wasmTypes.GenesisState{
+			src: types.GenesisState{
 				GenMsgs: []types.GenesisState_GenMsgs{
 					{Sum: &types.GenesisState_GenMsgs_StoreCode{
 						StoreCode: types.MsgStoreCodeFixture(),
@@ -488,8 +488,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
         "code_id": "1",
         "creator": "link1p0yx9c9q4xsnedlcn24gqfry5dcu6e9xkhv9aj",
         "admin": "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
-        "label": "ȀĴnZV芢毤",
-        "status": "Active"
+        "label": "ȀĴnZV芢毤"
       }
     }
   ],
@@ -508,7 +507,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 	enc64 := base64.StdEncoding.EncodeToString
 	genesisStr := fmt.Sprintf(genesisTemplate, enc64(wasmCodeHash[:]), enc64(wasmCode))
 
-	var importState wasmTypes.GenesisState
+	var importState types.GenesisState
 	err = keeper.cdc.UnmarshalJSON([]byte(genesisStr), &importState)
 	require.NoError(t, err)
 	require.NoError(t, importState.ValidateBasic(), genesisStr)
@@ -551,7 +550,6 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 		Admin:   adminAddr,
 		Label:   "ȀĴnZV芢毤",
 		Created: &types.AbsoluteTxPosition{BlockHeight: 0, TxIndex: 0},
-		Status:  wasmTypes.ContractStatusActive,
 	}
 	assert.Equal(t, expContractInfo, *gotContractInfo)
 

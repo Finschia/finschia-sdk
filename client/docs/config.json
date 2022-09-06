@@ -201,6 +201,9 @@
           "Params": "FeegrantParams"
         }
       }
+    },
+    {
+      "url": "./tmp-swagger-gen/lbm/wasm/v1/query.swagger.json"
     }
   ]
 }
