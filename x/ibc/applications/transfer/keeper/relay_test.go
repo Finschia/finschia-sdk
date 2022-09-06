@@ -169,8 +169,8 @@ func (suite *KeeperTestSuite) TestOnRecvPacket() {
 		}, true, false},
 
 		// - coin being sent to module address on chainA
-		// MEMO: The SendCoinsFromModuleToAccount function in the Bankplus module does not
-		//       have a blacklist check, so this test does not generate an error.
+		// Change the original test (https://github.com/cosmos/ibc-go/blob/v3.0.0/modules/apps/transfer/keeper/relay_test.go#L171-L174)
+		// because the bankplus module SendCoinsFromModuleToAccount function does not have a blacklist check
 		{"failure: receive on module account", func() {
 			receiver = suite.chainA.GetSimApp().AccountKeeper.GetModuleAddress(types.ModuleName).String()
 		}, false, true},
