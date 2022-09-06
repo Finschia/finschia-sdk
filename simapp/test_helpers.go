@@ -176,12 +176,6 @@ func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs 
 	return app
 }
 
-// SetupWithEmptyStore setup a wasmd app instance with empty DB
-func SetupWithEmptyStore() *SimApp {
-	app, _ := setup(false, 5)
-	return app
-}
-
 // SetupWithGenesisAccounts initializes a new SimApp with the provided genesis
 // accounts and possible balances.
 func SetupWithGenesisAccounts(genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *SimApp {

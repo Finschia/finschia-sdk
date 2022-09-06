@@ -120,7 +120,7 @@ func newWasmExampleApp(t *testing.T) (*simapp.SimApp, sdk.AccAddress) {
 	}
 	validator := tmtypes.NewValidator(pubKey, 1)
 	valSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{validator})
-	simApp := simapp.SetupWithGenesisValSet(t, valSet, []authtypes.GenesisAccount{acc}, balance)
+	simApp := simapp.SetupWithGenesisValSet(t, valSet, []authtypes.GenesisAccount{acc}, nil, balance)
 
 	return simApp, senderAddr
 }
