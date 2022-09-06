@@ -6,6 +6,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -46,10 +47,12 @@ func NewWasmProposalHandlerX(k types.ContractOpsKeeper, enabledProposalTypes []t
 			return handlePinCodesProposal(ctx, k, *c)
 		case *types.UnpinCodesProposal:
 			return handleUnpinCodesProposal(ctx, k, *c)
-		case *types.UpdateContractStatusProposal:
-			return handleUpdateContractStatusProposal(ctx, k, *c)
 		case *types.UpdateInstantiateConfigProposal:
 			return handleUpdateInstantiateConfigProposal(ctx, k, *c)
+		case *lbmtypes.DeactivateContractProposal:
+			return handleDeactivateContractProposal(ctx, k, *c)
+		case *lbmtypes.ActivateContractProposal:
+			return handleActivateContractProposal(ctx, k, *c)
 		default:
 			return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized wasm proposal content type: %T", c)
 		}
@@ -223,26 +226,6 @@ func handleUnpinCodesProposal(ctx sdk.Context, k types.ContractOpsKeeper, p type
 	return nil
 }
 
-func handleUpdateContractStatusProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.UpdateContractStatusProposal) error {
-	if err := p.ValidateBasic(); err != nil {
-		return err
-	}
-	contractAddr, err := sdk.AccAddressFromBech32(p.Contract)
-	if err != nil {
-		return sdkerrors.Wrap(err, "contract")
-	}
-	if err = k.UpdateContractStatus(ctx, contractAddr, nil, p.Status); err != nil {
-		return err
-	}
-
-	ctx.EventManager().EmitEvent(sdk.NewEvent(
-		types.EventTypeUpdateContractStatus,
-		sdk.NewAttribute(types.AttributeKeyContractAddr, p.Contract),
-		sdk.NewAttribute(types.AttributeKeyContractStatus, p.Status.String()),
-	))
-	return nil
-}
-
 func handleUpdateInstantiateConfigProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.UpdateInstantiateConfigProposal) error {
 	if err := p.ValidateBasic(); err != nil {
 		return err
@@ -253,5 +236,49 @@ func handleUpdateInstantiateConfigProposal(ctx sdk.Context, k types.ContractOpsK
 			return sdkerrors.Wrapf(err, "code id: %d", accessConfigUpdate.CodeID)
 		}
 	}
+	return nil
+}
+
+func handleDeactivateContractProposal(ctx sdk.Context, k types.ContractOpsKeeper, p lbmtypes.DeactivateContractProposal) error {
+	if err := p.ValidateBasic(); err != nil {
+		return err
+	}
+
+	// The error is already checked in ValidateBasic.
+	contractAddr, _ := sdk.AccAddressFromBech32(p.Contract)
+
+	err := k.DeactivateContract(ctx, contractAddr)
+	if err != nil {
+		return err
+	}
+
+	event := lbmtypes.EventDeactivateContractProposal{
+		Contract: contractAddr.String(),
+	}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func handleActivateContractProposal(ctx sdk.Context, k types.ContractOpsKeeper, p lbmtypes.ActivateContractProposal) error {
+	if err := p.ValidateBasic(); err != nil {
+		return err
+	}
+
+	// The error is already checked in ValidateBasic.
+	contractAddr, _ := sdk.AccAddressFromBech32(p.Contract)
+
+	err := k.ActivateContract(ctx, contractAddr)
+	if err != nil {
+		return err
+	}
+
+	event := lbmtypes.EventActivateContractProposal{Contract: contractAddr.String()}
+	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
+		return nil
+	}
+
 	return nil
 }

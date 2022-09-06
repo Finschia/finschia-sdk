@@ -3,6 +3,7 @@ package wasm
 
 import (
 	"github.com/line/lbm-sdk/x/wasm/keeper"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -97,8 +98,8 @@ type (
 	MsgStoreCodeResponse                       = types.MsgStoreCodeResponse
 	MsgInstantiateContract                     = types.MsgInstantiateContract
 	MsgInstantiateContractResponse             = types.MsgInstantiateContractResponse
-	MsgStoreCodeAndInstantiateContract         = types.MsgStoreCodeAndInstantiateContract
-	MsgStoreCodeAndInstantiateContractResponse = types.MsgStoreCodeAndInstantiateContractResponse
+	MsgStoreCodeAndInstantiateContract         = lbmtypes.MsgStoreCodeAndInstantiateContract
+	MsgStoreCodeAndInstantiateContractResponse = lbmtypes.MsgStoreCodeAndInstantiateContractResponse
 	MsgExecuteContract                         = types.MsgExecuteContract
 	MsgExecuteContractResponse                 = types.MsgExecuteContractResponse
 	MsgMigrateContract                         = types.MsgMigrateContract
