@@ -5,6 +5,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"path/filepath"
 	"sort"
 	"strconv"
 	"testing"
@@ -24,6 +26,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/simapp/helpers"
+	"github.com/line/lbm-sdk/snapshots"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/errors"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
@@ -53,9 +56,16 @@ var DefaultConsensusParams = &abci.ConsensusParams{
 }
 
 func setup(withGenesis bool, invCheckPeriod uint, opts ...wasm.Option) (*SimApp, GenesisState) {
+	randDir, _ := ioutil.TempDir(DefaultNodeHome, "")
+	snapshotDir := filepath.Join(randDir, "data", "snapshots")
+	snapshotDB := dbm.NewMemDB()
+
+	snapshotStore, _ := snapshots.NewStore(snapshotDB, snapshotDir)
+	baseAppOpts := []func(*bam.BaseApp){bam.SetSnapshotStore(snapshotStore), bam.SetSnapshotKeepRecent(2)}
+
 	db := dbm.NewMemDB()
 	encCdc := MakeTestEncodingConfig()
-	app := NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, encCdc, EmptyAppOptions{}, opts)
+	app := NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, encCdc, EmptyAppOptions{}, opts, baseAppOpts...)
 	if withGenesis {
 		return app, NewDefaultGenesisState(encCdc.Marshaler)
 	}
@@ -163,6 +173,12 @@ func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs 
 		NextValidatorsHash: valSet.Hash(),
 	}})
 
+	return app
+}
+
+// SetupWithEmptyStore setup a wasmd app instance with empty DB
+func SetupWithEmptyStore() *SimApp {
+	app, _ := setup(false, 5)
 	return app
 }
 

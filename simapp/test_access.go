@@ -9,7 +9,6 @@ import (
 	"github.com/line/lbm-sdk/simapp/params"
 
 	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
 	bankkeeper "github.com/line/lbm-sdk/x/bank/keeper"
 	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
 	ibctransferkeeper "github.com/line/lbm-sdk/x/ibc/applications/transfer/keeper"
@@ -70,25 +69,4 @@ func (s TestSupport) GetBaseApp() *baseapp.BaseApp {
 
 func (s TestSupport) GetTxConfig() client.TxConfig {
 	return params.MakeTestEncodingConfig().TxConfig
-}
-
-// for x/ibc
-func (s TestSupport) GetStakingKeeper() stakingkeeper.Keeper {
-	return s.app.StakingKeeper
-}
-
-func (s TestSupport) GetIBCKeeper() *ibckeeper.Keeper {
-	return s.app.IBCKeeper
-}
-
-func (s TestSupport) GetScopedIBCKeeper() capabilitykeeper.ScopedKeeper {
-	return s.app.ScopedIBCKeeper
-}
-
-func (s TestSupport) LastCommitID() sdk.CommitID {
-	return s.app.LastCommitID()
-}
-
-func (s TestSupport) LastBlockHeight() int64 {
-	return s.app.LastBlockHeight()
 }

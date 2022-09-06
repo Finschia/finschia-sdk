@@ -10,8 +10,6 @@ const (
 	EventTypeInstantiate          = "instantiate"
 	EventTypeExecute              = "execute"
 	EventTypeMigrate              = "migrate"
-	EventTypeUpdateAdmin          = "update_admin"
-	EventTypeClearAdmin           = "clear_admin"
 	EventTypeUpdateContractStatus = "update_contract_status"
 	EventTypePinCode              = "pin_code"
 	EventTypeUnpinCode            = "unpin_code"

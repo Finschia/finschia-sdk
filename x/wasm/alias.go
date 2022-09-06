@@ -126,7 +126,4 @@ type (
 	CustomQuerier                              = keeper.CustomQuerier
 	QueryPlugins                               = keeper.QueryPlugins
 	Option                                     = keeper.Option
-
-	EncodeHandler = types.EncodeHandler
-	EncodeQuerier = types.EncodeQuerier
 )

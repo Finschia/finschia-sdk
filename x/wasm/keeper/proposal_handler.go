@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"encoding/hex"
-	"strconv"
-	"strings"
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
@@ -182,17 +180,7 @@ func handleUpdateAdminProposal(ctx sdk.Context, k types.ContractOpsKeeper, p typ
 		return sdkerrors.Wrap(err, "run as address")
 	}
 
-	if err := k.UpdateContractAdmin(ctx, contractAddr, nil, newAdminAddr); err != nil {
-		return err
-	}
-
-	ourEvent := sdk.NewEvent(
-		types.EventTypeUpdateAdmin,
-		sdk.NewAttribute(types.AttributeKeyContractAddr, p.Contract),
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-	)
-	ctx.EventManager().EmitEvent(ourEvent)
-	return nil
+	return k.UpdateContractAdmin(ctx, contractAddr, nil, newAdminAddr)
 }
 
 func handleClearAdminProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.ClearAdminProposal) error {
@@ -207,13 +195,6 @@ func handleClearAdminProposal(ctx sdk.Context, k types.ContractOpsKeeper, p type
 	if err := k.ClearContractAdmin(ctx, contractAddr, nil); err != nil {
 		return err
 	}
-
-	ourEvent := sdk.NewEvent(
-		types.EventTypeClearAdmin,
-		sdk.NewAttribute(types.AttributeKeyContractAddr, p.Contract),
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-	)
-	ctx.EventManager().EmitEvent(ourEvent)
 	return nil
 }
 
@@ -226,22 +207,6 @@ func handlePinCodesProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.
 			return sdkerrors.Wrapf(err, "code id: %d", v)
 		}
 	}
-	s := make([]string, len(p.CodeIDs))
-	for _, v := range p.CodeIDs {
-		ourEvent := sdk.NewEvent(
-			types.EventTypePinCode,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-			sdk.NewAttribute(types.AttributeKeyCodeID, strconv.FormatUint(v, 10)),
-		)
-		ctx.EventManager().EmitEvent(ourEvent)
-	}
-
-	ourEvent := sdk.NewEvent(
-		types.EventTypePinCode,
-		sdk.NewAttribute(types.AttributeKeyCodeIDs, strings.Join(s, ",")),
-	)
-	ctx.EventManager().EmitEvent(ourEvent)
-
 	return nil
 }
 
@@ -254,21 +219,6 @@ func handleUnpinCodesProposal(ctx sdk.Context, k types.ContractOpsKeeper, p type
 			return sdkerrors.Wrapf(err, "code id: %d", v)
 		}
 	}
-	s := make([]string, len(p.CodeIDs))
-	for _, v := range p.CodeIDs {
-		ourEvent := sdk.NewEvent(
-			types.EventTypeUnpinCode,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-			sdk.NewAttribute(types.AttributeKeyCodeID, strconv.FormatUint(v, 10)),
-		)
-		ctx.EventManager().EmitEvent(ourEvent)
-	}
-
-	ourEvent := sdk.NewEvent(
-		types.EventTypeUnpinCode,
-		sdk.NewAttribute(types.AttributeKeyCodeIDs, strings.Join(s, ",")),
-	)
-	ctx.EventManager().EmitEvent(ourEvent)
 
 	return nil
 }
