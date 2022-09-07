@@ -79,9 +79,6 @@ type BaseConfig struct {
 	// IAVL cache size; bytes size unit
 	IAVLCacheSize uint64 `mapstructure:"iavl-cache-size"`
 
-	// Bech32CacheSize is the maximum bytes size of bech32 cache (Default : 1GB)
-	Bech32CacheSize int `mapstructure:"bech32-cache-size"`
-
 	// When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
 	// It works when tendermint's prometheus option (config.toml) is set to true.
 	Prometheus bool `mapstructure:"prometheus"`
