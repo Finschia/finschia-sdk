@@ -93,6 +93,7 @@ func TestDynamicPingPongWorks(t *testing.T) {
 	assertAttribute(t, "returned_pong_with_struct", "hello world 101", res.Events[0].Attributes[2])
 	assertAttribute(t, "returned_pong_with_tuple", "(hello world, 42)", res.Events[0].Attributes[3])
 	assertAttribute(t, "returned_pong_with_tuple_takes_2_args", "(hello world, 42)", res.Events[0].Attributes[4])
+	assertAttribute(t, "returned_contract_address", calleeContractAddress, res.Events[0].Attributes[5])
 }
 
 // This tests re-entrancy in dynamic call fails
