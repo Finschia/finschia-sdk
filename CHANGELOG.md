@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+* (x/wasm) [\#669](https://github.com/line/lbm-sdk/pull/669) update wasmvm and update contracts for tests
+* (x/wasm) [\#656](https://github.com/line/lbm-sdk/pull/656) add unit test for dynamic link when callee fails
 * (global) [\#658](https://github.com/line/lbm-sdk/pull/658) Add benchmarking job to ci
 * (x/wasm) [\#659](https://github.com/line/lbm-sdk/pull/659) Adjust gas cost for GetContractEnv of CosmWasmAPI
 * (x/wasm) [\#633](https://github.com/line/lbm-sdk/pull/633) Add benchmarks for cosmwasm APIs
