@@ -7,6 +7,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
 	authzcodec "github.com/line/lbm-sdk/x/authz/codec"
+	govcodec "github.com/line/lbm-sdk/x/gov/codec"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
@@ -73,6 +74,7 @@ func init() {
 	sdk.RegisterLegacyAminoCodec(amino)
 
 	// Register all Amino interfaces and concrete types on the authz Amino codec so that this can later be
-	// used to properly serialize MsgGrant and MsgExec instances
+	// used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
 	RegisterLegacyAminoCodec(authzcodec.Amino)
+	RegisterLegacyAminoCodec(govcodec.Amino)
 }

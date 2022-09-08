@@ -14,6 +14,7 @@ import (
 	simappparams "github.com/line/lbm-sdk/simapp/params"
 	sdk "github.com/line/lbm-sdk/types"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
+	govcodec "github.com/line/lbm-sdk/x/gov/codec"
 	"github.com/line/lbm-sdk/x/gov/simulation"
 	"github.com/line/lbm-sdk/x/gov/types"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
@@ -113,7 +114,7 @@ func TestSimulateMsgSubmitProposal(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgSubmitProposal
-	err = types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = govcodec.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 	require.NoError(t, err)
 
 	require.True(t, operationMsg.OK)
@@ -157,7 +158,7 @@ func TestSimulateMsgDeposit(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgDeposit
-	err = types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = govcodec.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 	require.NoError(t, err)
 
 	require.True(t, operationMsg.OK)
@@ -200,7 +201,7 @@ func TestSimulateMsgVote(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgVote
-	err = types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = govcodec.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 	require.NoError(t, err)
 
 	require.True(t, operationMsg.OK)
@@ -243,7 +244,7 @@ func TestSimulateMsgVoteWeighted(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgVoteWeighted
-	err = types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = govcodec.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 	require.NoError(t, err)
 
 	require.True(t, operationMsg.OK)
