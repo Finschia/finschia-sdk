@@ -7,7 +7,7 @@ import (
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
 )
 
-// key for constant fee parameter
+// ParamStoreKeyConstantFee sets the key for constant fee parameter
 var ParamStoreKeyConstantFee = []byte("ConstantFee")
 
 // type declaration for parameters

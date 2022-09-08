@@ -100,19 +100,10 @@ func (*GrantAuthorization) ProtoMessage()    {}
 func (*GrantAuthorization) Descriptor() ([]byte, []int) {
 	return fileDescriptor_c5e13dd78b24d473, []int{1}
 }
-<<<<<<< HEAD:x/foundation/genesis.pb.go
 func (m *GrantAuthorization) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
 func (m *GrantAuthorization) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-=======
-
-func (m *LastValidatorPower) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-
-func (m *LastValidatorPower) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
->>>>>>> 0e166fa01 (chore: fumpt sdk v45 series #12442):x/staking/legacy/v040/genesis.pb.go
 	if deterministic {
 		return xxx_messageInfo_GrantAuthorization.Marshal(b, m, deterministic)
 	} else {
@@ -124,7 +115,6 @@ func (m *LastValidatorPower) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-<<<<<<< HEAD:x/foundation/genesis.pb.go
 func (m *GrantAuthorization) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GrantAuthorization.Merge(m, src)
 }
@@ -133,19 +123,6 @@ func (m *GrantAuthorization) XXX_Size() int {
 }
 func (m *GrantAuthorization) XXX_DiscardUnknown() {
 	xxx_messageInfo_GrantAuthorization.DiscardUnknown(m)
-=======
-
-func (m *LastValidatorPower) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_LastValidatorPower.Merge(m, src)
-}
-
-func (m *LastValidatorPower) XXX_Size() int {
-	return m.Size()
-}
-
-func (m *LastValidatorPower) XXX_DiscardUnknown() {
-	xxx_messageInfo_LastValidatorPower.DiscardUnknown(m)
->>>>>>> 0e166fa01 (chore: fumpt sdk v45 series #12442):x/staking/legacy/v040/genesis.pb.go
 }
 
 var xxx_messageInfo_GrantAuthorization proto.InternalMessageInfo
@@ -786,12 +763,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-<<<<<<< HEAD:x/foundation/genesis.pb.go
 func (m *GrantAuthorization) Unmarshal(dAtA []byte) error {
-=======
-
-func (m *LastValidatorPower) Unmarshal(dAtA []byte) error {
->>>>>>> 0e166fa01 (chore: fumpt sdk v45 series #12442):x/staking/legacy/v040/genesis.pb.go
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {

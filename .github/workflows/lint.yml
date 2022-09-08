@@ -5,8 +5,9 @@ name: Lint
 env:
   GOPRIVATE: "github.com/line/*"
 on:
-  pull_request:
   push:
+    tags:
+      - v*
     branches:
       - main
 jobs:
