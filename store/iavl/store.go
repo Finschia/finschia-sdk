@@ -25,7 +25,7 @@ import (
 const (
 	// DefaultIAVLCacheSize is default Iavl cache units size. 1 unit is 128 byte
 	// default 128MB
-	DefaultIAVLCacheSize = 1048576
+	DefaultIAVLCacheSize = 1024 * 1024
 )
 
 var (

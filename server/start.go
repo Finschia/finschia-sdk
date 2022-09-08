@@ -154,7 +154,7 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 	cmd.Flags().Uint64(FlagHaltTime, 0, "Minimum block time (in Unix seconds) at which to gracefully halt the chain and shutdown the node")
 	cmd.Flags().Bool(FlagInterBlockCache, true, "Enable inter-block caching")
 	cmd.Flags().Int(FlagInterBlockCacheSize, cache.DefaultCommitKVStoreCacheSize, "The maximum bytes size of the inter-block cache")
-	cmd.Flags().Int(FlagIAVLCacheSize, iavl.DefaultIAVLCacheSize, "The maximum units size of the iavl node cache. (1 unit is 128 bytes")
+	cmd.Flags().Int(FlagIAVLCacheSize, iavl.DefaultIAVLCacheSize, "The maximum units size of the iavl node cache (1 unit is 128 bytes).")
 	cmd.Flags().String(flagCPUProfile, "", "Enable CPU profiling and write to the provided file")
 	cmd.Flags().Bool(FlagTrace, false, "Provide full stack traces for errors in ABCI Log")
 	cmd.Flags().String(FlagPruning, storetypes.PruningOptionDefault, "Pruning strategy (default|nothing|everything|custom)")
