@@ -481,8 +481,8 @@ github.com/line/ostracon v0.34.9-0.20210930060702-30b70e254d83/go.mod h1:elTiUFL
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524/go.mod h1:wmkyPabXjtVZ1dvRofmurjaceghywtCSYGqFuFS+TbI=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20210824011847-fcfa67dd3c70 h1:Izv/u19P8salnSZGAgNHFugNlzWLgREiL+AmWK8C/lE=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20210824011847-fcfa67dd3c70/go.mod h1:wmkyPabXjtVZ1dvRofmurjaceghywtCSYGqFuFS+TbI=
-github.com/line/wasmvm v0.14.0-0.8.0.0.20220906084737-fa886102dd5c h1:8WJVUZGzsdwuhpzDGshkj2hGkfjznbrgVte74+t9nAo=
-github.com/line/wasmvm v0.14.0-0.8.0.0.20220906084737-fa886102dd5c/go.mod h1:cgsILoCDigfQ2XplFI4rOo2ImOLEZH/OM8sulxGoKUA=
+github.com/line/wasmvm v0.14.0-0.8.0.0.20220907082030-292fcde76aed h1:5Hu+DCtxqR2oV83ppfBBpNfu7KRMLqC8krdPZgRHJfU=
+github.com/line/wasmvm v0.14.0-0.8.0.0.20220907082030-292fcde76aed/go.mod h1:cgsILoCDigfQ2XplFI4rOo2ImOLEZH/OM8sulxGoKUA=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/magiconair/properties v1.8.1/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/magiconair/properties v1.8.5 h1:b6kJs+EmPFMYGkow9GiUyCyOvIwYetYJ3fSaWak/Gls=
