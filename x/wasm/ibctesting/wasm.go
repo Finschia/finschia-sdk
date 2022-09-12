@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	wasmd "github.com/line/lbm-sdk/simapp"
+	simapp "github.com/line/lbm-sdk/simapp"
 
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 
@@ -136,7 +136,7 @@ func (chain *TestChain) parseSDKResultData(r *sdk.Result) sdk.TxMsgData {
 // ContractInfo is a helper function to returns the ContractInfo for the given contract address
 func (chain *TestChain) ContractInfo(contractAddr sdk.AccAddress) *types.ContractInfo {
 	type testSupporter interface {
-		TestSupport() *wasmd.TestSupport
+		TestSupport() *simapp.TestSupport
 	}
 	return chain.App.(testSupporter).TestSupport().WasmKeeper().GetContractInfo(chain.GetContext(), contractAddr)
 }

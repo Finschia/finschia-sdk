@@ -38,7 +38,7 @@ import (
 	tmversion "github.com/line/ostracon/version"
 	"github.com/stretchr/testify/require"
 
-	wasmd "github.com/line/lbm-sdk/simapp"
+	simapp "github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/x/wasm"
 )
 
@@ -106,7 +106,7 @@ func NewTestChain(t *testing.T, coord *Coordinator, chainID string, opts ...wasm
 		Coins:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, amount)),
 	}
 
-	app := NewTestingAppDecorator(t, wasmd.SetupWithGenesisValSet(t, valSet, []authtypes.GenesisAccount{acc}, opts, balance))
+	app := NewTestingAppDecorator(t, simapp.SetupWithGenesisValSet(t, valSet, []authtypes.GenesisAccount{acc}, opts, balance))
 
 	// create current header and call begin block
 	header := tmproto.Header{
@@ -255,7 +255,7 @@ func (chain *TestChain) SendMsgs(msgs ...sdk.Msg) (*sdk.Result, error) {
 	// ensure the chain has the latest time
 	chain.Coordinator.UpdateTimeForChain(chain)
 
-	_, r, err := wasmd.SignAndDeliver(
+	_, r, err := simapp.SignAndDeliver(
 		chain.t,
 		chain.TxConfig,
 		chain.App.GetBaseApp(),
@@ -609,18 +609,18 @@ func (chain *TestChain) AllBalances(acc sdk.AccAddress) sdk.Coins {
 	return chain.GetTestSupport().BankKeeper().GetAllBalances(chain.GetContext(), acc)
 }
 
-func (chain TestChain) GetTestSupport() *wasmd.TestSupport {
+func (chain TestChain) GetTestSupport() *simapp.TestSupport {
 	return chain.App.(*TestingAppDecorator).TestSupport()
 }
 
 var _ ibctesting.TestingApp = TestingAppDecorator{}
 
 type TestingAppDecorator struct {
-	*wasmd.SimApp
+	*simapp.SimApp
 	t *testing.T
 }
 
-func NewTestingAppDecorator(t *testing.T, simApp *wasmd.SimApp) *TestingAppDecorator {
+func NewTestingAppDecorator(t *testing.T, simApp *simapp.SimApp) *TestingAppDecorator {
 	return &TestingAppDecorator{SimApp: simApp, t: t}
 }
 
@@ -644,6 +644,6 @@ func (a TestingAppDecorator) GetTxConfig() client.TxConfig {
 	return a.TestSupport().GetTxConfig()
 }
 
-func (a TestingAppDecorator) TestSupport() *wasmd.TestSupport {
-	return wasmd.NewTestSupport(a.t, a.SimApp)
+func (a TestingAppDecorator) TestSupport() *simapp.TestSupport {
+	return simapp.NewTestSupport(a.t, a.SimApp)
 }
