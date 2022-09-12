@@ -66,11 +66,8 @@ inter-block-cache = {{ .BaseConfig.InterBlockCache }}
 # InterBlockCacheSize is the maximum bytes size of the inter-block cache.
 inter-block-cache-size = {{ .BaseConfig.InterBlockCacheSize }}
 
-# IAVLCacheSize is the maximum bytes size of iavl node cache
+# IAVLCacheSize is the maximum units size of iavl node cache (1 unit is 128 bytes)
 iavl-cache-size = {{ .BaseConfig.IAVLCacheSize }}
-
-# Bech32CacheSize is the maximum bytes size of bech32 cache (Default : 1GB)
-bech32-cache-size = {{ .BaseConfig.Bech32CacheSize }}
 
 # IndexEvents defines the set of events in the form {eventType}.{attributeKey},
 # which informs Tendermint what to index. If empty, all events will be indexed.
