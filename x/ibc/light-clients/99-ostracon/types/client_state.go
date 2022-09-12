@@ -9,7 +9,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/ostracon/light"
-	tmtypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
@@ -103,13 +103,13 @@ func (cs ClientState) Validate() error {
 		return sdkerrors.Wrap(ErrInvalidChainID, "chain id cannot be empty string")
 	}
 
-	// NOTE: the value of tmtypes.MaxChainIDLen may change in the future.
+	// NOTE: the value of octypes.MaxChainIDLen may change in the future.
 	// If this occurs, the code here must account for potential difference
 	// between the ostracon version being run by the counterparty chain
 	// and the ostracon version used by this light client.
 	// https://github.com/cosmos/ibc-go/issues/177
-	if len(cs.ChainId) > tmtypes.MaxChainIDLen {
-		return sdkerrors.Wrapf(ErrInvalidChainID, "chainID is too long; got: %d, max: %d", len(cs.ChainId), tmtypes.MaxChainIDLen)
+	if len(cs.ChainId) > octypes.MaxChainIDLen {
+		return sdkerrors.Wrapf(ErrInvalidChainID, "chainID is too long; got: %d, max: %d", len(cs.ChainId), octypes.MaxChainIDLen)
 	}
 
 	if err := light.ValidateTrustLevel(cs.TrustLevel.ToOstracon()); err != nil {

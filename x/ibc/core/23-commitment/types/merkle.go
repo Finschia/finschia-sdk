@@ -8,7 +8,7 @@ import (
 	ics23 "github.com/confio/ics23/go"
 	"github.com/gogo/protobuf/proto"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	tmcrypto "github.com/line/ostracon/proto/ostracon/crypto"
+	occrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
@@ -272,7 +272,7 @@ func verifyChainedMembershipProof(root []byte, specs []*ics23.ProofSpec, proofs 
 // blankMerkleProof and blankProofOps will be used to compare against their zero values,
 // and are declared as globals to avoid having to unnecessarily re-allocate on every comparison.
 var blankMerkleProof = &MerkleProof{}
-var blankProofOps = &tmcrypto.ProofOps{}
+var blankProofOps = &occrypto.ProofOps{}
 
 // Empty returns true if the root is empty
 func (proof *MerkleProof) Empty() bool {

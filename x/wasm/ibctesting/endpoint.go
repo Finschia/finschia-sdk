@@ -14,7 +14,7 @@ import (
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // Endpoint is a which represents a channel endpoint and its associated
@@ -93,7 +93,7 @@ func (endpoint *Endpoint) CreateClient() (err error) {
 		require.True(endpoint.Chain.t, ok)
 
 		height := endpoint.Counterparty.Chain.LastHeader.GetHeight().(clienttypes.Height)
-		clientState = ibctmtypes.NewClientState(
+		clientState = ibcoctypes.NewClientState(
 			endpoint.Counterparty.Chain.ChainID, tmConfig.TrustLevel, tmConfig.TrustingPeriod, tmConfig.UnbondingPeriod, tmConfig.MaxClockDrift,
 			height, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, tmConfig.AllowUpdateAfterExpiry, tmConfig.AllowUpdateAfterMisbehaviour,
 		)

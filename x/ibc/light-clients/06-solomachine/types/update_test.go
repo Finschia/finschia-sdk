@@ -6,7 +6,7 @@ import (
 
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	"github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -35,7 +35,7 @@ func (suite *SoloMachineTestSuite) TestCheckHeaderAndUpdateState() {
 			{
 				"wrong client state type",
 				func() {
-					clientState = &ibctmtypes.ClientState{}
+					clientState = &ibcoctypes.ClientState{}
 					header = solomachine.CreateHeader()
 				},
 				false,
@@ -44,7 +44,7 @@ func (suite *SoloMachineTestSuite) TestCheckHeaderAndUpdateState() {
 				"invalid header type",
 				func() {
 					clientState = solomachine.ClientState()
-					header = &ibctmtypes.Header{}
+					header = &ibcoctypes.Header{}
 				},
 				false,
 			},

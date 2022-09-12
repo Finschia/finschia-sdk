@@ -4,7 +4,7 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/codec"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
-	tmtypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	clientv100 "github.com/line/lbm-sdk/x/ibc/core/02-client/legacy/v100"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
@@ -18,7 +18,7 @@ import (
 // - Update solo machine client state protobuf definition (v1 to v2)
 // - Remove all solo machine consensus states
 // - Remove all expired ostracon consensus states
-func MigrateGenesis(appState genutiltypes.AppMap, clientCtx client.Context, genDoc tmtypes.GenesisDoc, maxExpectedTimePerBlock uint64) (genutiltypes.AppMap, error) {
+func MigrateGenesis(appState genutiltypes.AppMap, clientCtx client.Context, genDoc octypes.GenesisDoc, maxExpectedTimePerBlock uint64) (genutiltypes.AppMap, error) {
 	if appState[host.ModuleName] != nil {
 		// ensure legacy solo machines are registered
 		clientv100.RegisterInterfaces(clientCtx.InterfaceRegistry)

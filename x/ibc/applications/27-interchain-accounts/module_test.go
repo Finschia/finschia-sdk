@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/line/ostracon/libs/log"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
 
@@ -36,7 +36,7 @@ func (suite *InterchainAccountsTestSuite) TestInitModule() {
 	appModule, ok := app.GetModuleManager().Modules[types.ModuleName].(ica.AppModule)
 	suite.Require().True(ok)
 
-	header := tmproto.Header{
+	header := ocproto.Header{
 		ChainID: "testchain",
 		Height:  1,
 		Time:    suite.coordinator.CurrentTime.UTC(),
@@ -99,7 +99,7 @@ func (suite *InterchainAccountsTestSuite) TestInitModule() {
 
 			// reset app state
 			app = simapp.NewSimApp(log.NewNopLogger(), dbm.NewMemDB(), nil, true, map[int64]bool{}, simapp.DefaultNodeHome, 5, simapp.MakeTestEncodingConfig(), simapp.EmptyAppOptions{}, nil)
-			header := tmproto.Header{
+			header := ocproto.Header{
 				ChainID: "testchain",
 				Height:  1,
 				Time:    suite.coordinator.CurrentTime.UTC(),

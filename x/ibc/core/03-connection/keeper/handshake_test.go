@@ -7,7 +7,7 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -135,7 +135,7 @@ func (suite *KeeperTestSuite) TestConnOpenTry() {
 			counterpartyClient = suite.chainA.GetClientState(path.EndpointA.ClientID)
 
 			// Set an invalid client of chainA on chainB
-			tmClient, ok := counterpartyClient.(*ibctmtypes.ClientState)
+			tmClient, ok := counterpartyClient.(*ibcoctypes.ClientState)
 			suite.Require().True(ok)
 			tmClient.ChainId = "wrongchainid"
 
@@ -192,7 +192,7 @@ func (suite *KeeperTestSuite) TestConnOpenTry() {
 			counterpartyClient = suite.chainA.GetClientState(path.EndpointA.ClientID)
 
 			// modify counterparty client without setting in store so it still passes validate but fails proof verification
-			tmClient, ok := counterpartyClient.(*ibctmtypes.ClientState)
+			tmClient, ok := counterpartyClient.(*ibcoctypes.ClientState)
 			suite.Require().True(ok)
 			tmClient.LatestHeight = tmClient.LatestHeight.Increment().(clienttypes.Height)
 		}, false},
@@ -204,7 +204,7 @@ func (suite *KeeperTestSuite) TestConnOpenTry() {
 			consState, found := suite.chainA.App.GetIBCKeeper().ClientKeeper.GetLatestClientConsensusState(suite.chainA.GetContext(), path.EndpointA.ClientID)
 			suite.Require().True(found)
 
-			tmConsState, ok := consState.(*ibctmtypes.ConsensusState)
+			tmConsState, ok := consState.(*ibcoctypes.ConsensusState)
 			suite.Require().True(ok)
 
 			tmConsState.Timestamp = time.Now()
@@ -365,7 +365,7 @@ func (suite *KeeperTestSuite) TestConnOpenAck() {
 			counterpartyClient = suite.chainB.GetClientState(path.EndpointB.ClientID)
 
 			// Set an invalid client of chainA on chainB
-			tmClient, ok := counterpartyClient.(*ibctmtypes.ClientState)
+			tmClient, ok := counterpartyClient.(*ibcoctypes.ClientState)
 			suite.Require().True(ok)
 			tmClient.ChainId = "wrongchainid"
 
@@ -528,7 +528,7 @@ func (suite *KeeperTestSuite) TestConnOpenAck() {
 			counterpartyClient = suite.chainB.GetClientState(path.EndpointB.ClientID)
 
 			// modify counterparty client without setting in store so it still passes validate but fails proof verification
-			tmClient, ok := counterpartyClient.(*ibctmtypes.ClientState)
+			tmClient, ok := counterpartyClient.(*ibcoctypes.ClientState)
 			suite.Require().True(ok)
 			tmClient.LatestHeight = tmClient.LatestHeight.Increment().(clienttypes.Height)
 
@@ -546,7 +546,7 @@ func (suite *KeeperTestSuite) TestConnOpenAck() {
 			consState, found := suite.chainB.App.GetIBCKeeper().ClientKeeper.GetLatestClientConsensusState(suite.chainB.GetContext(), path.EndpointB.ClientID)
 			suite.Require().True(found)
 
-			tmConsState, ok := consState.(*ibctmtypes.ConsensusState)
+			tmConsState, ok := consState.(*ibcoctypes.ConsensusState)
 			suite.Require().True(ok)
 
 			tmConsState.Timestamp = tmConsState.Timestamp.Add(time.Second)

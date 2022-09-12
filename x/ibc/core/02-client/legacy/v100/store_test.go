@@ -10,7 +10,7 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -146,15 +146,15 @@ func (suite *LegacyTestSuite) TestMigrateStoreOstracon() {
 			ctx := path.EndpointA.Chain.GetContext()
 			clientStore := path.EndpointA.Chain.App.GetIBCKeeper().ClientKeeper.ClientStore(ctx, path.EndpointA.ClientID)
 
-			processedTime, ok := ibctmtypes.GetProcessedTime(clientStore, pruneHeight)
+			processedTime, ok := ibcoctypes.GetProcessedTime(clientStore, pruneHeight)
 			suite.Require().True(ok)
 			suite.Require().NotNil(processedTime)
 
-			processedHeight, ok := ibctmtypes.GetProcessedHeight(clientStore, pruneHeight)
+			processedHeight, ok := ibcoctypes.GetProcessedHeight(clientStore, pruneHeight)
 			suite.Require().True(ok)
 			suite.Require().NotNil(processedHeight)
 
-			expectedConsKey := ibctmtypes.GetIterationKey(clientStore, pruneHeight)
+			expectedConsKey := ibcoctypes.GetIterationKey(clientStore, pruneHeight)
 			suite.Require().NotNil(expectedConsKey)
 		}
 		pruneHeightMap[path] = pruneHeights
@@ -174,8 +174,8 @@ func (suite *LegacyTestSuite) TestMigrateStoreOstracon() {
 		// remove processed height and iteration keys since these were missing from previous version of ibc module
 		clientStore := path.EndpointA.Chain.App.GetIBCKeeper().ClientKeeper.ClientStore(path.EndpointA.Chain.GetContext(), path.EndpointA.ClientID)
 		for _, height := range unexpiredHeights {
-			clientStore.Delete(ibctmtypes.ProcessedHeightKey(height))
-			clientStore.Delete(ibctmtypes.IterationKey(height))
+			clientStore.Delete(ibcoctypes.ProcessedHeightKey(height))
+			clientStore.Delete(ibcoctypes.IterationKey(height))
 		}
 
 		unexpiredHeightMap[path] = unexpiredHeights
@@ -198,15 +198,15 @@ func (suite *LegacyTestSuite) TestMigrateStoreOstracon() {
 			suite.Require().False(ok, i)
 			suite.Require().Nil(consState, i)
 
-			processedTime, ok := ibctmtypes.GetProcessedTime(clientStore, pruneHeight)
+			processedTime, ok := ibcoctypes.GetProcessedTime(clientStore, pruneHeight)
 			suite.Require().False(ok, i)
 			suite.Require().Equal(uint64(0), processedTime, i)
 
-			processedHeight, ok := ibctmtypes.GetProcessedHeight(clientStore, pruneHeight)
+			processedHeight, ok := ibcoctypes.GetProcessedHeight(clientStore, pruneHeight)
 			suite.Require().False(ok, i)
 			suite.Require().Nil(processedHeight, i)
 
-			expectedConsKey := ibctmtypes.GetIterationKey(clientStore, pruneHeight)
+			expectedConsKey := ibcoctypes.GetIterationKey(clientStore, pruneHeight)
 			suite.Require().Nil(expectedConsKey, i)
 		}
 
@@ -216,15 +216,15 @@ func (suite *LegacyTestSuite) TestMigrateStoreOstracon() {
 			suite.Require().True(ok)
 			suite.Require().NotNil(consState)
 
-			processedTime, ok := ibctmtypes.GetProcessedTime(clientStore, height)
+			processedTime, ok := ibcoctypes.GetProcessedTime(clientStore, height)
 			suite.Require().True(ok)
 			suite.Require().NotEqual(uint64(0), processedTime)
 
-			processedHeight, ok := ibctmtypes.GetProcessedHeight(clientStore, height)
+			processedHeight, ok := ibcoctypes.GetProcessedHeight(clientStore, height)
 			suite.Require().True(ok)
 			suite.Require().Equal(types.GetSelfHeight(path.EndpointA.Chain.GetContext()), processedHeight)
 
-			consKey := ibctmtypes.GetIterationKey(clientStore, height)
+			consKey := ibcoctypes.GetIterationKey(clientStore, height)
 			suite.Require().Equal(host.ConsensusStateKey(height), consKey)
 		}
 	}

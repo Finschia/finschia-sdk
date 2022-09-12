@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/line/ostracon/crypto/tmhash"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
-	tmtypes "github.com/line/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
@@ -15,10 +15,10 @@ import (
 )
 
 func (suite *OstraconTestSuite) TestMisbehaviour() {
-	signers := []tmtypes.PrivValidator{suite.privVal}
+	signers := []octypes.PrivValidator{suite.privVal}
 	heightMinus1 := clienttypes.NewHeight(0, height.RevisionHeight-1)
 
-	voterSet := tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators)
+	voterSet := octypes.WrapValidatorsToVoterSet(suite.valSet.Validators)
 	misbehaviour := &types.Misbehaviour{
 		Header1:  suite.header,
 		Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight), heightMinus1, suite.now, suite.valSet, suite.valSet, voterSet, voterSet, signers),
@@ -39,22 +39,22 @@ func (suite *OstraconTestSuite) TestMisbehaviourValidateBasic() {
 	altVal := ibctesting.NewTestValidator(altPubKey, revisionHeight)
 
 	// Create bothValSet with both suite validator and altVal
-	bothValSet := tmtypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
+	bothValSet := octypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
 	// Create alternative validator set with only altVal
-	altValSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{altVal})
+	altValSet := octypes.NewValidatorSet([]*octypes.Validator{altVal})
 
-	signers := []tmtypes.PrivValidator{suite.privVal}
+	signers := []octypes.PrivValidator{suite.privVal}
 
 	// Create signer array and ensure it is in same order as bothValSet
 	_, suiteVal := suite.valSet.GetByIndex(0)
 	bothSigners := ibctesting.CreateSortedSignerArray(altPrivVal, suite.privVal, altVal, suiteVal)
 
-	altSigners := []tmtypes.PrivValidator{altPrivVal}
+	altSigners := []octypes.PrivValidator{altPrivVal}
 
 	heightMinus1 := clienttypes.NewHeight(0, height.RevisionHeight-1)
 
-	voterSet := tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators)
-	bothVoterSet := tmtypes.WrapValidatorsToVoterSet(bothValSet.Validators)
+	voterSet := octypes.WrapValidatorsToVoterSet(suite.valSet.Validators)
+	bothVoterSet := octypes.WrapValidatorsToVoterSet(bothValSet.Validators)
 
 	testCases := []struct {
 		name                 string
@@ -183,13 +183,13 @@ func (suite *OstraconTestSuite) TestMisbehaviourValidateBasic() {
 			},
 			func(misbehaviour *types.Misbehaviour) error {
 				// voteSet contains only altVal which is less than 2/3 of total power (height/1height)
-				wrongVoteSet := tmtypes.NewVoteSet(chainID, int64(misbehaviour.Header1.GetHeight().GetRevisionHeight()), 1, tmproto.PrecommitType, tmtypes.WrapValidatorsToVoterSet(altValSet.Validators))
-				blockID, err := tmtypes.BlockIDFromProto(&misbehaviour.Header1.Commit.BlockID)
+				wrongVoteSet := octypes.NewVoteSet(chainID, int64(misbehaviour.Header1.GetHeight().GetRevisionHeight()), 1, ocproto.PrecommitType, octypes.WrapValidatorsToVoterSet(altValSet.Validators))
+				blockID, err := octypes.BlockIDFromProto(&misbehaviour.Header1.Commit.BlockID)
 				if err != nil {
 					return err
 				}
 
-				tmCommit, err := tmtypes.MakeCommit(*blockID, int64(misbehaviour.Header2.GetHeight().GetRevisionHeight()), misbehaviour.Header1.Commit.Round, wrongVoteSet, altSigners, suite.now)
+				tmCommit, err := octypes.MakeCommit(*blockID, int64(misbehaviour.Header2.GetHeight().GetRevisionHeight()), misbehaviour.Header1.Commit.Round, wrongVoteSet, altSigners, suite.now)
 				misbehaviour.Header1.Commit = tmCommit.ToProto()
 				return err
 			},
@@ -204,13 +204,13 @@ func (suite *OstraconTestSuite) TestMisbehaviourValidateBasic() {
 			},
 			func(misbehaviour *types.Misbehaviour) error {
 				// voteSet contains only altVal which is less than 2/3 of total power (height/1height)
-				wrongVoteSet := tmtypes.NewVoteSet(chainID, int64(misbehaviour.Header2.GetHeight().GetRevisionHeight()), 1, tmproto.PrecommitType, tmtypes.WrapValidatorsToVoterSet(altValSet.Validators))
-				blockID, err := tmtypes.BlockIDFromProto(&misbehaviour.Header2.Commit.BlockID)
+				wrongVoteSet := octypes.NewVoteSet(chainID, int64(misbehaviour.Header2.GetHeight().GetRevisionHeight()), 1, ocproto.PrecommitType, octypes.WrapValidatorsToVoterSet(altValSet.Validators))
+				blockID, err := octypes.BlockIDFromProto(&misbehaviour.Header2.Commit.BlockID)
 				if err != nil {
 					return err
 				}
 
-				tmCommit, err := tmtypes.MakeCommit(*blockID, int64(misbehaviour.Header2.GetHeight().GetRevisionHeight()), misbehaviour.Header2.Commit.Round, wrongVoteSet, altSigners, suite.now)
+				tmCommit, err := octypes.MakeCommit(*blockID, int64(misbehaviour.Header2.GetHeight().GetRevisionHeight()), misbehaviour.Header2.Commit.Round, wrongVoteSet, altSigners, suite.now)
 				misbehaviour.Header2.Commit = tmCommit.ToProto()
 				return err
 			},

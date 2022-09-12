@@ -262,7 +262,7 @@ func GetNextConsensusState(clientStore sdk.KVStore, cdc codec.BinaryCodec, heigh
 
 	csKey := iterator.Value()
 
-	return getTmConsensusState(clientStore, cdc, csKey)
+	return getOcConsensusState(clientStore, cdc, csKey)
 }
 
 // GetPreviousConsensusState returns the highest consensus state that is lower than the given height.
@@ -279,7 +279,7 @@ func GetPreviousConsensusState(clientStore sdk.KVStore, cdc codec.BinaryCodec, h
 
 	csKey := iterator.Value()
 
-	return getTmConsensusState(clientStore, cdc, csKey)
+	return getOcConsensusState(clientStore, cdc, csKey)
 }
 
 // PruneAllExpiredConsensusStates iterates over all consensus states for a given
@@ -319,7 +319,7 @@ func PruneAllExpiredConsensusStates(
 }
 
 // Helper function for GetNextConsensusState and GetPreviousConsensusState
-func getTmConsensusState(clientStore sdk.KVStore, cdc codec.BinaryCodec, key []byte) (*ConsensusState, bool) {
+func getOcConsensusState(clientStore sdk.KVStore, cdc codec.BinaryCodec, key []byte) (*ConsensusState, bool) {
 	bz := clientStore.Get(key)
 	if bz == nil {
 		return nil, false

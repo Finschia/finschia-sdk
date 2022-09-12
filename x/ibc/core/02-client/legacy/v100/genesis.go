@@ -10,7 +10,7 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // MigrateGenesis accepts exported v1.0.0 IBC client genesis file and migrates it to:
@@ -67,7 +67,7 @@ func MigrateGenesis(cdc codec.BinaryCodec, clientGenState *types.GenesisState, g
 
 				case exported.Ostracon:
 					// only add non expired consensus states to new clientsConsensus
-					tmClientState, ok := client.ClientState.GetCachedValue().(*ibctmtypes.ClientState)
+					tmClientState, ok := client.ClientState.GetCachedValue().(*ibcoctypes.ClientState)
 					if !ok {
 						return nil, types.ErrInvalidClient
 					}
@@ -75,7 +75,7 @@ func MigrateGenesis(cdc codec.BinaryCodec, clientGenState *types.GenesisState, g
 					// collect unexpired consensus states
 					var unexpiredConsensusStates []types.ConsensusStateWithHeight
 					for _, consState := range clientConsensusStates.ConsensusStates {
-						tmConsState := consState.ConsensusState.GetCachedValue().(*ibctmtypes.ConsensusState)
+						tmConsState := consState.ConsensusState.GetCachedValue().(*ibcoctypes.ConsensusState)
 						if !tmClientState.IsExpired(tmConsState.Timestamp, genesisBlockTime) {
 							unexpiredConsensusStates = append(unexpiredConsensusStates, consState)
 						}
@@ -109,18 +109,18 @@ func MigrateGenesis(cdc codec.BinaryCodec, clientGenState *types.GenesisState, g
 									// the previous version of IBC only contained the processed time metadata
 									// if we find the processed time metadata for an unexpired height, add the
 									// iteration key and processed height keys.
-									if bytes.Equal(metadata.Key, ibctmtypes.ProcessedTimeKey(height)) {
+									if bytes.Equal(metadata.Key, ibcoctypes.ProcessedTimeKey(height)) {
 										clientMetadata = append(clientMetadata,
 											// set the processed height using the current self height
 											// this is safe, it may cause delays in packet processing if there
 											// is a non zero connection delay time
 											types.GenesisMetadata{
-												Key:   ibctmtypes.ProcessedHeightKey(height),
+												Key:   ibcoctypes.ProcessedHeightKey(height),
 												Value: []byte(selfHeight.String()),
 											},
 											metadata, // processed time
 											types.GenesisMetadata{
-												Key:   ibctmtypes.IterationKey(height),
+												Key:   ibcoctypes.IterationKey(height),
 												Value: host.ConsensusStateKey(height),
 											})
 

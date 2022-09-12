@@ -5,11 +5,11 @@ import (
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/ostracon/crypto"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
-	tmtypes "github.com/line/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 )
 
-var _ tmtypes.PrivValidator = PV{}
+var _ octypes.PrivValidator = PV{}
 
 // MockPV implements PrivValidator without any safety or persistence.
 // Only use it for testing.
@@ -27,8 +27,8 @@ func (pv PV) GetPubKey() (crypto.PubKey, error) {
 }
 
 // SignVote implements PrivValidator interface
-func (pv PV) SignVote(chainID string, vote *tmproto.Vote) error {
-	signBytes := tmtypes.VoteSignBytes(chainID, vote)
+func (pv PV) SignVote(chainID string, vote *ocproto.Vote) error {
+	signBytes := octypes.VoteSignBytes(chainID, vote)
 	sig, err := pv.PrivKey.Sign(signBytes)
 	if err != nil {
 		return err
@@ -38,8 +38,8 @@ func (pv PV) SignVote(chainID string, vote *tmproto.Vote) error {
 }
 
 // SignProposal implements PrivValidator interface
-func (pv PV) SignProposal(chainID string, proposal *tmproto.Proposal) error {
-	signBytes := tmtypes.ProposalSignBytes(chainID, proposal)
+func (pv PV) SignProposal(chainID string, proposal *ocproto.Proposal) error {
+	signBytes := octypes.ProposalSignBytes(chainID, proposal)
 	sig, err := pv.PrivKey.Sign(signBytes)
 	if err != nil {
 		return err

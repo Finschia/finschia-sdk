@@ -13,7 +13,7 @@ import (
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/simulation"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 func TestDecodeStore(t *testing.T) {
@@ -25,7 +25,7 @@ func TestDecodeStore(t *testing.T) {
 	channelID := "channelidone"
 	portID := "portidone"
 
-	clientState := &ibctmtypes.ClientState{
+	clientState := &ibcoctypes.ClientState{
 		FrozenHeight: clienttypes.NewHeight(0, 10),
 	}
 	connection := connectiontypes.ConnectionEnd{

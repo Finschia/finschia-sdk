@@ -15,7 +15,7 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -134,7 +134,7 @@ func (suite *LegacyTestSuite) TestMigrateGenesisSolomachine() {
 		var updatedMetadata []types.GenesisMetadata
 		var iterationKeys []types.GenesisMetadata
 		for _, metadata := range clientMetadata.ClientMetadata {
-			if bytes.HasPrefix(metadata.Key, []byte(ibctmtypes.KeyIterateConsensusStatePrefix)) {
+			if bytes.HasPrefix(metadata.Key, []byte(ibcoctypes.KeyIterateConsensusStatePrefix)) {
 				iterationKeys = append(iterationKeys, metadata)
 			} else {
 				updatedMetadata = append(updatedMetadata, metadata)
@@ -233,7 +233,7 @@ func (suite *LegacyTestSuite) TestMigrateGenesisOstracon() {
 		var updatedMetadata []types.GenesisMetadata
 		var iterationKeys []types.GenesisMetadata
 		for _, metadata := range clientMetadata.ClientMetadata {
-			if bytes.HasPrefix(metadata.Key, []byte(ibctmtypes.KeyIterateConsensusStatePrefix)) {
+			if bytes.HasPrefix(metadata.Key, []byte(ibcoctypes.KeyIterateConsensusStatePrefix)) {
 				iterationKeys = append(iterationKeys, metadata)
 			} else {
 				updatedMetadata = append(updatedMetadata, metadata)
@@ -259,9 +259,9 @@ func (suite *LegacyTestSuite) TestMigrateGenesisOstracon() {
 		for _, client := range migrated.ClientsMetadata {
 			if client.ClientId == path1.EndpointA.ClientID {
 				for _, metadata := range client.ClientMetadata {
-					suite.Require().NotEqual(ibctmtypes.ProcessedTimeKey(height), metadata.Key)
-					suite.Require().NotEqual(ibctmtypes.ProcessedHeightKey(height), metadata.Key)
-					suite.Require().NotEqual(ibctmtypes.IterationKey(height), metadata.Key)
+					suite.Require().NotEqual(ibcoctypes.ProcessedTimeKey(height), metadata.Key)
+					suite.Require().NotEqual(ibcoctypes.ProcessedHeightKey(height), metadata.Key)
+					suite.Require().NotEqual(ibcoctypes.IterationKey(height), metadata.Key)
 				}
 			}
 		}
@@ -280,9 +280,9 @@ func (suite *LegacyTestSuite) TestMigrateGenesisOstracon() {
 		for _, client := range migrated.ClientsMetadata {
 			if client.ClientId == path2.EndpointA.ClientID {
 				for _, metadata := range client.ClientMetadata {
-					suite.Require().NotEqual(ibctmtypes.ProcessedTimeKey(height), metadata.Key)
-					suite.Require().NotEqual(ibctmtypes.ProcessedHeightKey(height), metadata.Key)
-					suite.Require().NotEqual(ibctmtypes.IterationKey(height), metadata.Key)
+					suite.Require().NotEqual(ibcoctypes.ProcessedTimeKey(height), metadata.Key)
+					suite.Require().NotEqual(ibcoctypes.ProcessedHeightKey(height), metadata.Key)
+					suite.Require().NotEqual(ibcoctypes.IterationKey(height), metadata.Key)
 				}
 			}
 

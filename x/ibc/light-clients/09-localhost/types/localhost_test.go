@@ -5,7 +5,7 @@ import (
 
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/simapp"
@@ -34,7 +34,7 @@ func (suite *LocalhostTestSuite) SetupTest() {
 	app := simapp.Setup(isCheckTx)
 
 	suite.cdc = app.AppCodec()
-	suite.ctx = app.BaseApp.NewContext(isCheckTx, tmproto.Header{Height: 1, ChainID: "ibc-chain"})
+	suite.ctx = app.BaseApp.NewContext(isCheckTx, ocproto.Header{Height: 1, ChainID: "ibc-chain"})
 	suite.store = app.IBCKeeper.ClientKeeper.ClientStore(suite.ctx, exported.Localhost)
 }
 

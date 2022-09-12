@@ -5,8 +5,8 @@ import (
 
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	abcitypes "github.com/line/ostracon/abci/types"
-	tmprotostate "github.com/line/ostracon/proto/ostracon/state"
-	tmstate "github.com/line/ostracon/state"
+	ocprotostate "github.com/line/ostracon/proto/ostracon/state"
+	ocstate "github.com/line/ostracon/state"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
@@ -53,29 +53,29 @@ func (suite *TypesTestSuite) TestABCICodeDeterminism() {
 	errDifferentABCICode := sdkerrors.ErrNotFound
 
 	deliverTx := sdkerrors.ResponseDeliverTx(err, gasUsed, gasWanted, false)
-	responses := tmprotostate.ABCIResponses{
+	responses := ocprotostate.ABCIResponses{
 		DeliverTxs: []*abcitypes.ResponseDeliverTx{
 			&deliverTx,
 		},
 	}
 
 	deliverTxSameABCICode := sdkerrors.ResponseDeliverTx(errSameABCICode, gasUsed, gasWanted, false)
-	responsesSameABCICode := tmprotostate.ABCIResponses{
+	responsesSameABCICode := ocprotostate.ABCIResponses{
 		DeliverTxs: []*abcitypes.ResponseDeliverTx{
 			&deliverTxSameABCICode,
 		},
 	}
 
 	deliverTxDifferentABCICode := sdkerrors.ResponseDeliverTx(errDifferentABCICode, gasUsed, gasWanted, false)
-	responsesDifferentABCICode := tmprotostate.ABCIResponses{
+	responsesDifferentABCICode := ocprotostate.ABCIResponses{
 		DeliverTxs: []*abcitypes.ResponseDeliverTx{
 			&deliverTxDifferentABCICode,
 		},
 	}
 
-	hash := tmstate.ABCIResponsesResultsHash(&responses)
-	hashSameABCICode := tmstate.ABCIResponsesResultsHash(&responsesSameABCICode)
-	hashDifferentABCICode := tmstate.ABCIResponsesResultsHash(&responsesDifferentABCICode)
+	hash := ocstate.ABCIResponsesResultsHash(&responses)
+	hashSameABCICode := ocstate.ABCIResponsesResultsHash(&responsesSameABCICode)
+	hashDifferentABCICode := ocstate.ABCIResponsesResultsHash(&responsesDifferentABCICode)
 
 	suite.Require().Equal(hash, hashSameABCICode)
 	suite.Require().NotEqual(hash, hashDifferentABCICode)

@@ -4,8 +4,8 @@ import (
 	"time"
 
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
-	tmtypes "github.com/line/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
@@ -99,11 +99,11 @@ func (misbehaviour Misbehaviour) ValidateBasic() error {
 		return sdkerrors.Wrapf(clienttypes.ErrInvalidMisbehaviour, "Header1 height is less than Header2 height (%s < %s)", misbehaviour.Header1.GetHeight(), misbehaviour.Header2.GetHeight())
 	}
 
-	blockID1, err := tmtypes.BlockIDFromProto(&misbehaviour.Header1.SignedHeader.Commit.BlockID)
+	blockID1, err := octypes.BlockIDFromProto(&misbehaviour.Header1.SignedHeader.Commit.BlockID)
 	if err != nil {
 		return sdkerrors.Wrap(err, "invalid block ID from header 1 in misbehaviour")
 	}
-	blockID2, err := tmtypes.BlockIDFromProto(&misbehaviour.Header2.SignedHeader.Commit.BlockID)
+	blockID2, err := octypes.BlockIDFromProto(&misbehaviour.Header2.SignedHeader.Commit.BlockID)
 	if err != nil {
 		return sdkerrors.Wrap(err, "invalid block ID from header 2 in misbehaviour")
 	}
@@ -120,12 +120,12 @@ func (misbehaviour Misbehaviour) ValidateBasic() error {
 }
 
 // validCommit checks if the given commit is a valid commit from the passed-in validatorset
-func validCommit(chainID string, blockID tmtypes.BlockID, commit *tmproto.Commit, voterSet *tmproto.VoterSet) (err error) {
-	tmCommit, err := tmtypes.CommitFromProto(commit)
+func validCommit(chainID string, blockID octypes.BlockID, commit *ocproto.Commit, voterSet *ocproto.VoterSet) (err error) {
+	tmCommit, err := octypes.CommitFromProto(commit)
 	if err != nil {
 		return sdkerrors.Wrap(err, "commit is not ostracon commit type")
 	}
-	tmVoterSet, err := tmtypes.VoterSetFromProto(voterSet)
+	tmVoterSet, err := octypes.VoterSetFromProto(voterSet)
 	if err != nil {
 		return sdkerrors.Wrap(err, "validator set is not ostracon validator set type")
 	}

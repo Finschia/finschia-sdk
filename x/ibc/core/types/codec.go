@@ -9,7 +9,7 @@ import (
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	solomachinetypes "github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
 	localhosttypes "github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // RegisterInterfaces registers x/ibc interfaces into protobuf Any.
@@ -18,7 +18,7 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	connectiontypes.RegisterInterfaces(registry)
 	channeltypes.RegisterInterfaces(registry)
 	solomachinetypes.RegisterInterfaces(registry)
-	ibctmtypes.RegisterInterfaces(registry)
+	ibcoctypes.RegisterInterfaces(registry)
 	localhosttypes.RegisterInterfaces(registry)
 	commitmenttypes.RegisterInterfaces(registry)
 }

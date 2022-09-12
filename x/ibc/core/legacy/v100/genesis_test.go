@@ -6,7 +6,7 @@ import (
 	"github.com/line/lbm-sdk/client"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
-	tmtypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/simapp"
@@ -156,7 +156,7 @@ func (suite *LegacyTestSuite) TestMigrateGenesisSolomachine() {
 	ibcGenState.ClientGenesis = clientGenState
 	clientv100.RegisterInterfaces(clientCtx.InterfaceRegistry)
 	appState[host.ModuleName] = clientCtx.JSONCodec.MustMarshalJSON(ibcGenState)
-	genDoc := tmtypes.GenesisDoc{
+	genDoc := octypes.GenesisDoc{
 		ChainID:       suite.chainA.ChainID,
 		GenesisTime:   suite.coordinator.CurrentTime,
 		InitialHeight: suite.chainA.GetContext().BlockHeight(),

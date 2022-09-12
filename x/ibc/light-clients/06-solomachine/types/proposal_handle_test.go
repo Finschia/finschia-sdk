@@ -3,7 +3,7 @@ package types_test
 import (
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	"github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -33,7 +33,7 @@ func (suite *SoloMachineTestSuite) TestCheckSubstituteAndUpdateState() {
 			},
 			{
 				"substitute is not the solo machine", func() {
-					substituteClientState = &ibctmtypes.ClientState{}
+					substituteClientState = &ibcoctypes.ClientState{}
 				}, false,
 			},
 			{

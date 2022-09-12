@@ -6,7 +6,7 @@ import (
 	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	"github.com/line/lbm-sdk/x/ibc/testing/mock"
 )
 
@@ -15,7 +15,7 @@ type ClientConfig interface {
 }
 
 type OstraconConfig struct {
-	TrustLevel                   ibctmtypes.Fraction
+	TrustLevel                   ibcoctypes.Fraction
 	TrustingPeriod               time.Duration
 	UnbondingPeriod              time.Duration
 	MaxClockDrift                time.Duration

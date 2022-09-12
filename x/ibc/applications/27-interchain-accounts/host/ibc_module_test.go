@@ -10,8 +10,8 @@ import (
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
 	abcitypes "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto"
-	tmprotostate "github.com/line/ostracon/proto/ostracon/state"
-	tmstate "github.com/line/ostracon/state"
+	ocprotostate "github.com/line/ostracon/proto/ostracon/state"
+	ocstate "github.com/line/ostracon/state"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/host/types"
@@ -738,7 +738,7 @@ func (suite *InterchainAccountsTestSuite) TestABCICodeDeterminism() {
 	deliverTx := abcitypes.ResponseDeliverTx{
 		Data: txResponse,
 	}
-	responses := tmprotostate.ABCIResponses{
+	responses := ocprotostate.ABCIResponses{
 		DeliverTxs: []*abcitypes.ResponseDeliverTx{
 			&deliverTx,
 		},
@@ -761,14 +761,14 @@ func (suite *InterchainAccountsTestSuite) TestABCICodeDeterminism() {
 		Data: differentTxResponse,
 	}
 
-	differentResponses := tmprotostate.ABCIResponses{
+	differentResponses := ocprotostate.ABCIResponses{
 		DeliverTxs: []*abcitypes.ResponseDeliverTx{
 			&differentDeliverTx,
 		},
 	}
 
-	hash := tmstate.ABCIResponsesResultsHash(&responses)
-	differentHash := tmstate.ABCIResponsesResultsHash(&differentResponses)
+	hash := ocstate.ABCIResponsesResultsHash(&responses)
+	differentHash := ocstate.ABCIResponsesResultsHash(&differentResponses)
 
 	suite.Require().NotEqual(hash, differentHash)
 }

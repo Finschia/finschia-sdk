@@ -12,7 +12,7 @@ import (
 	ibctransfertypes "github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	"github.com/line/lbm-sdk/x/ibc/testing/mock"
 )
 
@@ -45,7 +45,7 @@ var (
 	DefaultOpenInitVersion *connectiontypes.Version
 
 	// Default params variables used to create a TM client
-	DefaultTrustLevel ibctmtypes.Fraction = ibctmtypes.DefaultTrustLevel
+	DefaultTrustLevel ibcoctypes.Fraction = ibcoctypes.DefaultTrustLevel
 	TestCoin                              = sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100))
 
 	UpgradePath = []string{"upgrade", "upgradedIBCState"}

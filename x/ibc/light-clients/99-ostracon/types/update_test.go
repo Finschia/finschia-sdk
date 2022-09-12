@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	tmtypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
@@ -21,11 +21,11 @@ func (suite *OstraconTestSuite) TestCheckHeaderAndUpdateState() {
 		consStateHeight clienttypes.Height
 		newHeader       *types.Header
 		currentTime     time.Time
-		bothValSet      *tmtypes.ValidatorSet
-		voterSet        *tmtypes.VoterSet
-		bothVoterSet    *tmtypes.VoterSet
-		signers         []tmtypes.PrivValidator
-		bothSigners     []tmtypes.PrivValidator
+		bothValSet      *octypes.ValidatorSet
+		voterSet        *octypes.VoterSet
+		bothVoterSet    *octypes.VoterSet
+		signers         []octypes.PrivValidator
+		bothSigners     []octypes.PrivValidator
 	)
 
 	// Setup different validators and signers for testing different types of updates
@@ -43,9 +43,9 @@ func (suite *OstraconTestSuite) TestCheckHeaderAndUpdateState() {
 
 	altVal := ibctesting.NewTestValidator(altPubKey, revisionHeight)
 	// Create alternative validator set with only altVal, invalid update (too much change in valSet)
-	altValSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{altVal})
-	altVoterSet := tmtypes.WrapValidatorsToVoterSet(altValSet.Validators)
-	altSigners := []tmtypes.PrivValidator{altPrivVal}
+	altValSet := octypes.NewValidatorSet([]*octypes.Validator{altVal})
+	altVoterSet := octypes.WrapValidatorsToVoterSet(altValSet.Validators)
+	altSigners := []octypes.PrivValidator{altPrivVal}
 
 	testCases := []struct {
 		name      string
@@ -317,15 +317,15 @@ func (suite *OstraconTestSuite) TestCheckHeaderAndUpdateState() {
 		suite.Run(fmt.Sprintf("Case: %s", tc.name), func() {
 			suite.SetupTest() // reset metadata writes
 			// Create bothValSet with both suite validator and altVal. Would be valid update
-			bothValSet = tmtypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
-			signers = []tmtypes.PrivValidator{suite.privVal}
+			bothValSet = octypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
+			signers = []octypes.PrivValidator{suite.privVal}
 
 			// Create signer array and ensure it is in same order as bothValSet
 			_, suiteVal := suite.valSet.GetByIndex(0)
 			bothSigners = ibctesting.CreateSortedSignerArray(altPrivVal, suite.privVal, altVal, suiteVal)
 
-			voterSet = tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators)
-			bothVoterSet = tmtypes.WrapValidatorsToVoterSet(bothValSet.Validators)
+			voterSet = octypes.WrapValidatorsToVoterSet(suite.valSet.Validators)
+			bothVoterSet = octypes.WrapValidatorsToVoterSet(bothValSet.Validators)
 
 			consStateHeight = height // must be explicitly changed
 			// setup test

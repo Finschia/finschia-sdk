@@ -18,7 +18,7 @@ import (
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // Keeper represents a type that grants read and write permissions to any client
@@ -256,7 +256,7 @@ func (k Keeper) GetSelfConsensusState(ctx sdk.Context, height exported.Height) (
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no historical info found at height %d", selfHeight.RevisionHeight)
 	}
 
-	consensusState := &ibctmtypes.ConsensusState{
+	consensusState := &ibcoctypes.ConsensusState{
 		Timestamp:          histInfo.Header.Time,
 		Root:               commitmenttypes.NewMerkleRoot(histInfo.Header.GetAppHash()),
 		NextValidatorsHash: histInfo.Header.NextValidatorsHash,
@@ -268,10 +268,10 @@ func (k Keeper) GetSelfConsensusState(ctx sdk.Context, height exported.Height) (
 // This function is only used to validate the client state the counterparty stores for this chain
 // Client must be in same revision as the executing chain
 func (k Keeper) ValidateSelfClient(ctx sdk.Context, clientState exported.ClientState) error {
-	tmClient, ok := clientState.(*ibctmtypes.ClientState)
+	tmClient, ok := clientState.(*ibcoctypes.ClientState)
 	if !ok {
 		return sdkerrors.Wrapf(types.ErrInvalidClient, "client must be a Ostracon client, expected: %T, got: %T",
-			&ibctmtypes.ClientState{}, tmClient)
+			&ibcoctypes.ClientState{}, tmClient)
 	}
 
 	if !tmClient.FrozenHeight.IsZero() {

@@ -7,7 +7,7 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	tmtypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
@@ -37,11 +37,11 @@ func (cs ClientState) CheckMisbehaviourAndUpdateState(
 	// if heights are equal check that this is valid misbehaviour of a fork
 	// otherwise if heights are unequal check that this is valid misbehavior of BFT time violation
 	if tmMisbehaviour.Header1.GetHeight().EQ(tmMisbehaviour.Header2.GetHeight()) {
-		blockID1, err := tmtypes.BlockIDFromProto(&tmMisbehaviour.Header1.SignedHeader.Commit.BlockID)
+		blockID1, err := octypes.BlockIDFromProto(&tmMisbehaviour.Header1.SignedHeader.Commit.BlockID)
 		if err != nil {
 			return nil, sdkerrors.Wrap(err, "invalid block ID from header 1 in misbehaviour")
 		}
-		blockID2, err := tmtypes.BlockIDFromProto(&tmMisbehaviour.Header2.SignedHeader.Commit.BlockID)
+		blockID2, err := octypes.BlockIDFromProto(&tmMisbehaviour.Header2.SignedHeader.Commit.BlockID)
 		if err != nil {
 			return nil, sdkerrors.Wrap(err, "invalid block ID from header 2 in misbehaviour")
 		}
@@ -102,12 +102,12 @@ func checkMisbehaviourHeader(
 	clientState *ClientState, consState *ConsensusState, header *Header, currentTimestamp time.Time,
 ) error {
 
-	tmTrustedVoterSet, err := tmtypes.VoterSetFromProto(header.TrustedVoters)
+	tmTrustedVoterSet, err := octypes.VoterSetFromProto(header.TrustedVoters)
 	if err != nil {
 		return sdkerrors.Wrap(err, "trusted validator set is not ostracon validator set type")
 	}
 
-	tmCommit, err := tmtypes.CommitFromProto(header.Commit)
+	tmCommit, err := octypes.CommitFromProto(header.Commit)
 	if err != nil {
 		return sdkerrors.Wrap(err, "commit is not ostracon commit type")
 	}

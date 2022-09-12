@@ -3,8 +3,8 @@ package mock_test
 import (
 	"testing"
 
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
-	tmtypes "github.com/line/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/x/ibc/testing/mock"
@@ -23,10 +23,10 @@ func TestSignVote(t *testing.T) {
 	pv := mock.NewPV()
 	pk, _ := pv.GetPubKey()
 
-	vote := &tmproto.Vote{Height: 2}
+	vote := &ocproto.Vote{Height: 2}
 	pv.SignVote(chainID, vote)
 
-	msg := tmtypes.VoteSignBytes(chainID, vote)
+	msg := octypes.VoteSignBytes(chainID, vote)
 	ok := pk.VerifySignature(msg, vote.Signature)
 	require.True(t, ok)
 }
@@ -35,10 +35,10 @@ func TestSignProposal(t *testing.T) {
 	pv := mock.NewPV()
 	pk, _ := pv.GetPubKey()
 
-	proposal := &tmproto.Proposal{Round: 2}
+	proposal := &ocproto.Proposal{Round: 2}
 	pv.SignProposal(chainID, proposal)
 
-	msg := tmtypes.ProposalSignBytes(chainID, proposal)
+	msg := octypes.ProposalSignBytes(chainID, proposal)
 	ok := pk.VerifySignature(msg, proposal.Signature)
 	require.True(t, ok)
 }

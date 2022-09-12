@@ -14,7 +14,7 @@ import (
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	smtypes "github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // MigrateStore performs in-place store migrations from SDK v0.40 of the IBC module to v1.0.0 of ibc-go.
@@ -87,7 +87,7 @@ func MigrateStore(ctx sdk.Context, storeKey sdk.StoreKey, cdc codec.BinaryCodec)
 				return sdkerrors.Wrap(err, "failed to unmarshal client state bytes into ostracon client state")
 			}
 
-			tmClientState, ok := clientState.(*ibctmtypes.ClientState)
+			tmClientState, ok := clientState.(*ibcoctypes.ClientState)
 			if !ok {
 				return sdkerrors.Wrap(clienttypes.ErrInvalidClient, "client state is not ostracon even though client id contains 99-ostracon")
 			}
@@ -95,7 +95,7 @@ func MigrateStore(ctx sdk.Context, storeKey sdk.StoreKey, cdc codec.BinaryCodec)
 			// add iteration keys so pruning will be successful
 			addConsensusMetadata(ctx, clientStore)
 
-			if err = ibctmtypes.PruneAllExpiredConsensusStates(ctx, clientStore, cdc, tmClientState); err != nil {
+			if err = ibcoctypes.PruneAllExpiredConsensusStates(ctx, clientStore, cdc, tmClientState); err != nil {
 				return err
 			}
 
@@ -169,7 +169,7 @@ func addConsensusMetadata(ctx sdk.Context, clientStore sdk.KVStore) {
 	for _, height := range heights {
 		// set the iteration key and processed height
 		// these keys were not included in the SDK v0.42.0 release
-		ibctmtypes.SetProcessedHeight(clientStore, height, clienttypes.GetSelfHeight(ctx))
-		ibctmtypes.SetIterationKey(clientStore, height)
+		ibcoctypes.SetProcessedHeight(clientStore, height, clienttypes.GetSelfHeight(ctx))
+		ibcoctypes.SetIterationKey(clientStore, height)
 	}
 }

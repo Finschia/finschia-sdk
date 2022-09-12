@@ -9,7 +9,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/ostracon/light"
-	tmtypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
@@ -144,7 +144,7 @@ func (cs ClientState) CheckHeaderAndUpdateState(
 
 // checkTrustedHeader checks that consensus state matches trusted fields of Header
 func checkTrustedHeader(header *Header, consState *ConsensusState) error {
-	tmTrustedValidators, err := tmtypes.ValidatorSetFromProto(header.TrustedValidators)
+	tmTrustedValidators, err := octypes.ValidatorSetFromProto(header.TrustedValidators)
 	if err != nil {
 		return sdkerrors.Wrap(err, "trusted validator set in not ostracon validator set type")
 	}
@@ -182,17 +182,17 @@ func checkValidity(
 		)
 	}
 
-	tmTrustedVoters, err := tmtypes.VoterSetFromProto(header.TrustedVoters)
+	tmTrustedVoters, err := octypes.VoterSetFromProto(header.TrustedVoters)
 	if err != nil {
 		return sdkerrors.Wrap(err, "trusted validator set in not ostracon validator set type")
 	}
 
-	tmSignedHeader, err := tmtypes.SignedHeaderFromProto(header.SignedHeader)
+	tmSignedHeader, err := octypes.SignedHeaderFromProto(header.SignedHeader)
 	if err != nil {
 		return sdkerrors.Wrap(err, "signed header in not ostracon signed header type")
 	}
 
-	tmVoterSet, err := tmtypes.VoterSetFromProto(header.VoterSet)
+	tmVoterSet, err := octypes.VoterSetFromProto(header.VoterSet)
 	if err != nil {
 		return sdkerrors.Wrap(err, "validator set in not ostracon validator set type")
 	}
@@ -218,13 +218,13 @@ func checkValidity(
 
 	// Construct a trusted header using the fields in consensus state
 	// Only Height, Time, and NextValidatorsHash are necessary for verification
-	trustedHeader := tmtypes.Header{
+	trustedHeader := octypes.Header{
 		ChainID:            chainID,
 		Height:             int64(header.TrustedHeight.RevisionHeight),
 		Time:               consState.Timestamp,
 		NextValidatorsHash: consState.NextValidatorsHash,
 	}
-	signedHeader := tmtypes.SignedHeader{
+	signedHeader := octypes.SignedHeader{
 		Header: &trustedHeader,
 	}
 

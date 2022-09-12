@@ -4,8 +4,8 @@ import (
 	"time"
 
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	tmbytes "github.com/line/ostracon/libs/bytes"
-	tmtypes "github.com/line/ostracon/types"
+	ocbytes "github.com/line/ostracon/libs/bytes"
+	octypes "github.com/line/ostracon/types"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
@@ -17,7 +17,7 @@ const SentinelRoot = "sentinel_root"
 
 // NewConsensusState creates a new ConsensusState instance.
 func NewConsensusState(
-	timestamp time.Time, root commitmenttypes.MerkleRoot, nextValsHash tmbytes.HexBytes,
+	timestamp time.Time, root commitmenttypes.MerkleRoot, nextValsHash ocbytes.HexBytes,
 ) *ConsensusState {
 	return &ConsensusState{
 		Timestamp:          timestamp,
@@ -48,7 +48,7 @@ func (cs ConsensusState) ValidateBasic() error {
 	if cs.Root.Empty() {
 		return sdkerrors.Wrap(clienttypes.ErrInvalidConsensus, "root cannot be empty")
 	}
-	if err := tmtypes.ValidateHash(cs.NextValidatorsHash); err != nil {
+	if err := octypes.ValidateHash(cs.NextValidatorsHash); err != nil {
 		return sdkerrors.Wrap(err, "next validators hash is invalid")
 	}
 	if cs.Timestamp.Unix() <= 0 {

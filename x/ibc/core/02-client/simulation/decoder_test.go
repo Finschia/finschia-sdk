@@ -12,7 +12,7 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/simulation"
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 func TestDecodeStore(t *testing.T) {
@@ -21,11 +21,11 @@ func TestDecodeStore(t *testing.T) {
 
 	height := types.NewHeight(0, 10)
 
-	clientState := &ibctmtypes.ClientState{
+	clientState := &ibcoctypes.ClientState{
 		FrozenHeight: height,
 	}
 
-	consState := &ibctmtypes.ConsensusState{
+	consState := &ibcoctypes.ConsensusState{
 		Timestamp: time.Now().UTC(),
 	}
 

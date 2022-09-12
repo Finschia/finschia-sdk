@@ -5,14 +5,14 @@ import (
 
 	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 	abci "github.com/line/ostracon/abci/types"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
 	client "github.com/line/lbm-sdk/x/ibc/core/02-client"
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	localhosttypes "github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -74,7 +74,7 @@ func (suite *ClientTestSuite) TestBeginBlockerConsensusState() {
 	store.Set(upgradetypes.PlanKey(), bz)
 
 	nextValsHash := []byte("nextValsHash")
-	newCtx := suite.chainA.GetContext().WithBlockHeader(tmproto.Header{
+	newCtx := suite.chainA.GetContext().WithBlockHeader(ocproto.Header{
 		Height:             suite.chainA.GetContext().BlockHeight(),
 		NextValidatorsHash: nextValsHash,
 	})
@@ -88,7 +88,7 @@ func (suite *ClientTestSuite) TestBeginBlockerConsensusState() {
 	// plan Height is at ctx.BlockHeight+1
 	consState, found := suite.chainA.GetSimApp().UpgradeKeeper.GetUpgradedConsensusState(newCtx, plan.Height)
 	suite.Require().True(found)
-	bz, err = types.MarshalConsensusState(suite.chainA.App.AppCodec(), &ibctmtypes.ConsensusState{Timestamp: newCtx.BlockTime(), NextValidatorsHash: nextValsHash})
+	bz, err = types.MarshalConsensusState(suite.chainA.App.AppCodec(), &ibcoctypes.ConsensusState{Timestamp: newCtx.BlockTime(), NextValidatorsHash: nextValsHash})
 	suite.Require().NoError(err)
 	suite.Require().Equal(bz, consState)
 }

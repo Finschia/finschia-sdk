@@ -5,7 +5,7 @@ import (
 
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/keeper"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // BeginBlocker updates an existing localhost client with the latest block height.
@@ -20,7 +20,7 @@ func BeginBlocker(ctx sdk.Context, k keeper.Keeper) {
 		// within the trusting period of the last block time on this chain.
 		_, exists := k.GetUpgradedClient(ctx, plan.Height)
 		if exists && ctx.BlockHeight() == plan.Height-1 {
-			upgradedConsState := &ibctmtypes.ConsensusState{
+			upgradedConsState := &ibcoctypes.ConsensusState{
 				Timestamp:          ctx.BlockTime(),
 				NextValidatorsHash: ctx.BlockHeader().NextValidatorsHash,
 			}

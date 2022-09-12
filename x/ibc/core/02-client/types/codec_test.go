@@ -7,7 +7,7 @@ import (
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	localhosttypes "github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -31,7 +31,7 @@ func (suite *TypesTestSuite) TestPackClientState() {
 		},
 		{
 			"ostracon client",
-			ibctmtypes.NewClientState(chainID, ibctesting.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false),
+			ibcoctypes.NewClientState(chainID, ibctesting.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false),
 			true,
 		},
 		{
@@ -176,7 +176,7 @@ func (suite *TypesTestSuite) TestPackMisbehaviour() {
 		},
 		{
 			"ostracon misbehaviour",
-			ibctmtypes.NewMisbehaviour("ostracon-0", suite.chainA.LastHeader, suite.chainA.LastHeader),
+			ibcoctypes.NewMisbehaviour("ostracon-0", suite.chainA.LastHeader, suite.chainA.LastHeader),
 			true,
 		},
 		{

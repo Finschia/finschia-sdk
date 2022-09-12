@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/line/ostracon/crypto/tmhash"
-	tmtypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
@@ -23,18 +23,18 @@ func (suite *OstraconTestSuite) TestCheckMisbehaviourAndUpdateState() {
 	altVal := ibctesting.NewTestValidator(altPubKey, 4)
 
 	// Create bothValSet with both suite validator and altVal
-	bothValSet := tmtypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
-	bothVoterSet := tmtypes.WrapValidatorsToVoterSet(bothValSet.Validators) // OSTRACON_CODE
+	bothValSet := octypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
+	bothVoterSet := octypes.WrapValidatorsToVoterSet(bothValSet.Validators) // OSTRACON_CODE
 	bothValsHash := bothValSet.Hash()
 	// Create alternative validator set with only altVal
-	altValSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{altVal})
+	altValSet := octypes.NewValidatorSet([]*octypes.Validator{altVal})
 
 	_, suiteVal := suite.valSet.GetByIndex(0)
 
 	// Create signer array and ensure it is in same order as bothValSet
 	bothSigners := ibctesting.CreateSortedSignerArray(altPrivVal, suite.privVal, altVal, suiteVal)
 
-	altSigners := []tmtypes.PrivValidator{altPrivVal}
+	altSigners := []octypes.PrivValidator{altPrivVal}
 
 	heightMinus1 := clienttypes.NewHeight(height.RevisionNumber, height.RevisionHeight-1)
 	heightMinus3 := clienttypes.NewHeight(height.RevisionNumber, height.RevisionHeight-3)
@@ -119,7 +119,7 @@ func (suite *OstraconTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			heightMinus3,
 			&types.Misbehaviour{
 				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, octypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -134,7 +134,7 @@ func (suite *OstraconTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			heightMinus3,
 			&types.Misbehaviour{
 				Header1:  suite.chainA.CreateTMClientHeader(chainIDRevision0, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainIDRevision0, int64(height.RevisionHeight+1), heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainIDRevision0, int64(height.RevisionHeight+1), heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, octypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -149,7 +149,7 @@ func (suite *OstraconTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			heightMinus3,
 			&types.Misbehaviour{
 				Header1:  suite.chainA.CreateTMClientHeader(chainIDRevision0, 3, heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainIDRevision0, 3, heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainIDRevision0, 3, heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, octypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -164,7 +164,7 @@ func (suite *OstraconTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			heightMinus3,
 			&types.Misbehaviour{
 				Header1:  suite.chainA.CreateTMClientHeader(chainIDRevision1, 1, heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainIDRevision1, 1, heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainIDRevision1, 1, heightMinus3, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, octypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -178,8 +178,8 @@ func (suite *OstraconTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), suite.valsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, suite.valSet, bothVoterSet, octypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, octypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -239,7 +239,7 @@ func (suite *OstraconTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			heightMinus3,
 			&types.Misbehaviour{
 				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), heightMinus1, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, octypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -340,7 +340,7 @@ func (suite *OstraconTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			height,
 			&types.Misbehaviour{
 				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, suite.valSet, bothVoterSet, bothVoterSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, tmtypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, suite.valSet, bothVoterSet, octypes.WrapValidatorsToVoterSet(suite.valSet.Validators), bothSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -354,7 +354,7 @@ func (suite *OstraconTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, altValSet, bothValSet, tmtypes.WrapValidatorsToVoterSet(altValSet.Validators), bothVoterSet, altSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, altValSet, bothValSet, octypes.WrapValidatorsToVoterSet(altValSet.Validators), bothVoterSet, altSigners),
 				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
 				ClientId: chainID,
 			},
@@ -370,7 +370,7 @@ func (suite *OstraconTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			height,
 			&types.Misbehaviour{
 				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, bothValSet, bothValSet, bothVoterSet, bothVoterSet, bothSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), altValSet, bothValSet, tmtypes.WrapValidatorsToVoterSet(altValSet.Validators), bothVoterSet, altSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), altValSet, bothValSet, octypes.WrapValidatorsToVoterSet(altValSet.Validators), bothVoterSet, altSigners),
 				ClientId: chainID,
 			},
 			suite.now,
@@ -384,8 +384,8 @@ func (suite *OstraconTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,
 			&types.Misbehaviour{
-				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, altValSet, bothValSet, tmtypes.WrapValidatorsToVoterSet(altValSet.Validators), bothVoterSet, altSigners),
-				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), altValSet, bothValSet, tmtypes.WrapValidatorsToVoterSet(altValSet.Validators), bothVoterSet, altSigners),
+				Header1:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now, altValSet, bothValSet, octypes.WrapValidatorsToVoterSet(altValSet.Validators), bothVoterSet, altSigners),
+				Header2:  suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight+1), height, suite.now.Add(time.Minute), altValSet, bothValSet, octypes.WrapValidatorsToVoterSet(altValSet.Validators), bothVoterSet, altSigners),
 				ClientId: chainID,
 			},
 			suite.now,

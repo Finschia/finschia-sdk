@@ -18,8 +18,8 @@ import (
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
-	tmtypes "github.com/line/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"
 
@@ -58,7 +58,7 @@ func SetupTestingApp() (TestingApp, map[string]json.RawMessage) {
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
 // of one consensus engine unit (10^6) in the default token of the simapp from first genesis
 // account. A Nop logger is set in SimApp.
-func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs []authtypes.GenesisAccount, chainID string, powerReduction sdk.Int, balances ...banktypes.Balance) TestingApp {
+func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs []authtypes.GenesisAccount, chainID string, powerReduction sdk.Int, balances ...banktypes.Balance) TestingApp {
 	app, genesisState := DefaultTestingAppInit()
 
 	// set genesis accounts
@@ -132,7 +132,7 @@ func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs 
 	app.Commit()
 	app.BeginBlock(
 		abci.RequestBeginBlock{
-			Header: tmproto.Header{
+			Header: ocproto.Header{
 				ChainID:            chainID,
 				Height:             app.LastBlockHeight() + 1,
 				AppHash:            app.LastCommitID().Hash,

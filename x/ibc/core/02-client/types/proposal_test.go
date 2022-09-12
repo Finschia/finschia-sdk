@@ -9,7 +9,7 @@ import (
 	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -139,7 +139,7 @@ func (suite *TypesTestSuite) TestUpgradeProposalValidateBasic() {
 		},
 		{
 			"failed to unpack client state", func() {
-				any, err := types.PackConsensusState(&ibctmtypes.ConsensusState{})
+				any, err := types.PackConsensusState(&ibcoctypes.ConsensusState{})
 				suite.Require().NoError(err)
 
 				proposal = &types.UpgradeProposal{
@@ -174,7 +174,7 @@ func (suite *TypesTestSuite) TestMarshalUpgradeProposal() {
 		Name:   "upgrade ibc",
 		Height: 1000,
 	}
-	content, err := types.NewUpgradeProposal("title", "description", plan, &ibctmtypes.ClientState{})
+	content, err := types.NewUpgradeProposal("title", "description", plan, &ibcoctypes.ClientState{})
 	suite.Require().NoError(err)
 
 	up, ok := content.(*types.UpgradeProposal)
@@ -184,7 +184,7 @@ func (suite *TypesTestSuite) TestMarshalUpgradeProposal() {
 	ir := codectypes.NewInterfaceRegistry()
 	types.RegisterInterfaces(ir)
 	govtypes.RegisterInterfaces(ir)
-	ibctmtypes.RegisterInterfaces(ir)
+	ibcoctypes.RegisterInterfaces(ir)
 	cdc := codec.NewProtoCodec(ir)
 
 	// marshal message
@@ -209,10 +209,10 @@ func (suite *TypesTestSuite) TestUpgradeString() {
 		Height: 1000,
 	}
 
-	proposal, err := types.NewUpgradeProposal(ibctesting.Title, ibctesting.Description, plan, &ibctmtypes.ClientState{})
+	proposal, err := types.NewUpgradeProposal(ibctesting.Title, ibctesting.Description, plan, &ibcoctypes.ClientState{})
 	suite.Require().NoError(err)
 
-	expect := fmt.Sprintf("IBC Upgrade Proposal\n  Title: title\n  Description: description\n  Upgrade Plan\n  Name: ibc upgrade\n  Height: 1000\n  Info: https://foo.bar/baz.\n  Upgraded IBC Client: %s", &ibctmtypes.ClientState{})
+	expect := fmt.Sprintf("IBC Upgrade Proposal\n  Title: title\n  Description: description\n  Upgrade Plan\n  Name: ibc upgrade\n  Height: 1000\n  Info: https://foo.bar/baz.\n  Upgraded IBC Client: %s", &ibcoctypes.ClientState{})
 
 	suite.Require().Equal(expect, proposal.String())
 }

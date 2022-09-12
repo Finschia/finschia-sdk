@@ -5,7 +5,7 @@ import (
 	"time"
 
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	tmtypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
@@ -54,7 +54,7 @@ func (h Header) ValidateBasic() error {
 	if h.Header == nil {
 		return sdkerrors.Wrap(clienttypes.ErrInvalidHeader, "ostracon header cannot be nil")
 	}
-	tmSignedHeader, err := tmtypes.SignedHeaderFromProto(h.SignedHeader)
+	tmSignedHeader, err := octypes.SignedHeaderFromProto(h.SignedHeader)
 	if err != nil {
 		return sdkerrors.Wrap(err, "header is not a ostracon header")
 	}
@@ -71,7 +71,7 @@ func (h Header) ValidateBasic() error {
 	if h.ValidatorSet == nil {
 		return sdkerrors.Wrap(clienttypes.ErrInvalidHeader, "validator set is nil")
 	}
-	tmValset, err := tmtypes.ValidatorSetFromProto(h.ValidatorSet)
+	tmValset, err := octypes.ValidatorSetFromProto(h.ValidatorSet)
 	if err != nil {
 		return sdkerrors.Wrap(err, "validator set is not ostracon validator set")
 	}

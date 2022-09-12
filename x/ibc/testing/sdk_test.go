@@ -22,7 +22,7 @@ import (
 	authcli "github.com/line/lbm-sdk/x/auth/client/cli"
 	authrest "github.com/line/lbm-sdk/x/auth/client/rest"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	tmrand "github.com/line/ostracon/libs/rand"
+	ocrand "github.com/line/ostracon/libs/rand"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
@@ -108,7 +108,7 @@ func DefaultConfig() network.Config {
 		AppConstructor:    NewAppConstructor(encCfg),
 		GenesisState:      simapp.ModuleBasics.DefaultGenesis(encCfg.Marshaler),
 		TimeoutCommit:     2 * time.Second,
-		ChainID:           "chain-" + tmrand.NewRand().Str(6),
+		ChainID:           "chain-" + ocrand.NewRand().Str(6),
 		NumValidators:     4,
 		BondDenom:         sdk.DefaultBondDenom,
 		MinGasPrices:      fmt.Sprintf("0.000006%s", sdk.DefaultBondDenom),

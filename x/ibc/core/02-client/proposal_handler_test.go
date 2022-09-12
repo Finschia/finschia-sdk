@@ -7,7 +7,7 @@ import (
 
 	client "github.com/line/lbm-sdk/x/ibc/core/02-client"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -38,14 +38,14 @@ func (suite *ClientTestSuite) TestNewClientUpdateProposalHandler() {
 				suite.Require().NoError(err)
 				substituteClientState := suite.chainA.GetClientState(substitutePath.EndpointA.ClientID)
 
-				tmClientState, ok := subjectClientState.(*ibctmtypes.ClientState)
+				tmClientState, ok := subjectClientState.(*ibcoctypes.ClientState)
 				suite.Require().True(ok)
 				tmClientState.AllowUpdateAfterMisbehaviour = true
 				tmClientState.FrozenHeight = tmClientState.LatestHeight
 				suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientState(suite.chainA.GetContext(), subjectPath.EndpointA.ClientID, tmClientState)
 
 				// replicate changes to substitute (they must match)
-				tmClientState, ok = substituteClientState.(*ibctmtypes.ClientState)
+				tmClientState, ok = substituteClientState.(*ibcoctypes.ClientState)
 				suite.Require().True(ok)
 				tmClientState.AllowUpdateAfterMisbehaviour = true
 				suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientState(suite.chainA.GetContext(), substitutePath.EndpointA.ClientID, tmClientState)

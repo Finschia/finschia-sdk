@@ -24,7 +24,7 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	ibckeeper "github.com/line/lbm-sdk/x/ibc/core/keeper"
 	"github.com/line/lbm-sdk/x/ibc/core/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 	"github.com/line/lbm-sdk/x/ibc/testing/mock"
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
@@ -32,10 +32,10 @@ import (
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto/tmhash"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
-	tmprotoversion "github.com/line/ostracon/proto/ostracon/version"
-	tmtypes "github.com/line/ostracon/types"
-	tmversion "github.com/line/ostracon/version"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	ocprotoversion "github.com/line/ostracon/proto/ostracon/version"
+	octypes "github.com/line/ostracon/types"
+	ocversion "github.com/line/ostracon/version"
 	"github.com/stretchr/testify/require"
 
 	simapp "github.com/line/lbm-sdk/simapp"
@@ -53,15 +53,15 @@ type TestChain struct {
 	Coordinator   *Coordinator
 	App           ibctesting.TestingApp
 	ChainID       string
-	LastHeader    *ibctmtypes.Header // header for last block height committed
-	CurrentHeader tmproto.Header     // header for current block height
+	LastHeader    *ibcoctypes.Header // header for last block height committed
+	CurrentHeader ocproto.Header     // header for current block height
 	QueryServer   types.QueryServer
 	TxConfig      client.TxConfig
 	Codec         codec.BinaryCodec
 
-	Vals    *tmtypes.ValidatorSet
-	Voters  *tmtypes.VoterSet
-	Signers []tmtypes.PrivValidator
+	Vals    *octypes.ValidatorSet
+	Voters  *octypes.VoterSet
+	Signers []octypes.PrivValidator
 
 	senderPrivKey cryptotypes.PrivKey
 	SenderAccount authtypes.AccountI
@@ -91,9 +91,9 @@ func NewTestChain(t *testing.T, coord *Coordinator, chainID string, opts ...wasm
 
 	// create validator set with single validator
 	validator := ibctesting.NewTestValidator(pubKey, 1)
-	valSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{validator})
-	voterSet := tmtypes.WrapValidatorsToVoterSet(valSet.Validators)
-	signers := []tmtypes.PrivValidator{privVal}
+	valSet := octypes.NewValidatorSet([]*octypes.Validator{validator})
+	voterSet := octypes.WrapValidatorsToVoterSet(valSet.Validators)
+	signers := []octypes.PrivValidator{privVal}
 
 	// generate genesis account
 	senderPrivKey := secp256k1.GenPrivKey()
@@ -109,7 +109,7 @@ func NewTestChain(t *testing.T, coord *Coordinator, chainID string, opts ...wasm
 	app := NewTestingAppDecorator(t, simapp.SetupWithGenesisValSet(t, valSet, []authtypes.GenesisAccount{acc}, opts, balance))
 
 	// create current header and call begin block
-	header := tmproto.Header{
+	header := ocproto.Header{
 		ChainID: chainID,
 		Height:  1,
 		Time:    coord.CurrentTime.UTC(),
@@ -220,7 +220,7 @@ func (chain *TestChain) NextBlock() {
 	chain.LastHeader = chain.CurrentTMClientHeader()
 
 	// increment the current header
-	chain.CurrentHeader = tmproto.Header{
+	chain.CurrentHeader = ocproto.Header{
 		ChainID: chain.ChainID,
 		Height:  chain.App.LastBlockHeight() + 1,
 		AppHash: chain.App.LastCommitID().Hash,
@@ -316,7 +316,7 @@ func (chain *TestChain) GetConsensusState(clientID string, height exported.Heigh
 
 // GetValsAtHeight will return the validator set of the chain at a given height. It will return
 // a success boolean depending on if the validator set exists or not at that height.
-func (chain *TestChain) GetValsAtHeight(height int64) (*tmtypes.ValidatorSet, bool) {
+func (chain *TestChain) GetValsAtHeight(height int64) (*octypes.ValidatorSet, bool) {
 	histInfo, ok := chain.App.GetStakingKeeper().GetHistoricalInfo(chain.GetContext(), height)
 	if !ok {
 		return nil, false
@@ -328,10 +328,10 @@ func (chain *TestChain) GetValsAtHeight(height int64) (*tmtypes.ValidatorSet, bo
 	if err != nil {
 		panic(err)
 	}
-	return tmtypes.NewValidatorSet(tmValidators), true
+	return octypes.NewValidatorSet(tmValidators), true
 }
 
-func (chain *TestChain) GetVotersAtHeight(height int64) (*tmtypes.VoterSet, bool) {
+func (chain *TestChain) GetVotersAtHeight(height int64) (*octypes.VoterSet, bool) {
 	histInfo, ok := chain.App.GetStakingKeeper().GetHistoricalInfo(chain.GetContext(), height)
 	if !ok {
 		return nil, false
@@ -348,7 +348,7 @@ func (chain *TestChain) GetVotersAtHeight(height int64) (*tmtypes.VoterSet, bool
 	for i := 0; i < len(ocVoters); i++ {
 		ocVoters[i].VotingWeight = ocVoters[i].VotingPower
 	}
-	return tmtypes.WrapValidatorsToVoterSet(ocVoters), true
+	return octypes.WrapValidatorsToVoterSet(ocVoters), true
 }
 
 // GetAcknowledgement retrieves an acknowledgement for the provided packet. If the
@@ -367,21 +367,21 @@ func (chain *TestChain) GetPrefix() commitmenttypes.MerklePrefix {
 
 // ConstructUpdateTMClientHeader will construct a valid 99-ostracon Header to update the
 // light client on the source chain.
-func (chain *TestChain) ConstructUpdateTMClientHeader(counterparty *TestChain, clientID string) (*ibctmtypes.Header, error) {
+func (chain *TestChain) ConstructUpdateTMClientHeader(counterparty *TestChain, clientID string) (*ibcoctypes.Header, error) {
 	return chain.ConstructUpdateTMClientHeaderWithTrustedHeight(counterparty, clientID, clienttypes.ZeroHeight())
 }
 
 // ConstructUpdateTMClientHeader will construct a valid 99-ostracon Header to update the
 // light client on the source chain.
-func (chain *TestChain) ConstructUpdateTMClientHeaderWithTrustedHeight(counterparty *TestChain, clientID string, trustedHeight clienttypes.Height) (*ibctmtypes.Header, error) {
+func (chain *TestChain) ConstructUpdateTMClientHeaderWithTrustedHeight(counterparty *TestChain, clientID string, trustedHeight clienttypes.Height) (*ibcoctypes.Header, error) {
 	header := counterparty.LastHeader
 	// Relayer must query for LatestHeight on client to get TrustedHeight if the trusted height is not set
 	if trustedHeight.IsZero() {
 		trustedHeight = chain.GetClientState(clientID).GetLatestHeight().(clienttypes.Height)
 	}
 	var (
-		tmTrustedVals   *tmtypes.ValidatorSet
-		tmTrustedVoters *tmtypes.VoterSet
+		tmTrustedVals   *octypes.ValidatorSet
+		tmTrustedVoters *octypes.VoterSet
 		ok              bool
 	)
 	// Once we get TrustedHeight from client, we must query the validators from the counterparty chain
@@ -397,12 +397,12 @@ func (chain *TestChain) ConstructUpdateTMClientHeaderWithTrustedHeight(counterpa
 		// NextValidatorsHash
 		tmTrustedVals, ok = counterparty.GetValsAtHeight(int64(trustedHeight.RevisionHeight + 1))
 		if !ok {
-			return nil, sdkerrors.Wrapf(ibctmtypes.ErrInvalidHeaderHeight, "could not retrieve trusted validators at trustedHeight: %d", trustedHeight)
+			return nil, sdkerrors.Wrapf(ibcoctypes.ErrInvalidHeaderHeight, "could not retrieve trusted validators at trustedHeight: %d", trustedHeight)
 		}
 
 		tmTrustedVoters, ok = counterparty.GetVotersAtHeight(int64(trustedHeight.RevisionHeight + 1))
 		if !ok {
-			return nil, sdkerrors.Wrapf(ibctmtypes.ErrInvalidHeaderHeight, "could not retrieve trusted voters at trustedHeight: %d", trustedHeight)
+			return nil, sdkerrors.Wrapf(ibcoctypes.ErrInvalidHeaderHeight, "could not retrieve trusted voters at trustedHeight: %d", trustedHeight)
 		}
 	}
 	// inject trusted fields into last header
@@ -431,26 +431,26 @@ func (chain *TestChain) ExpireClient(amount time.Duration) {
 
 // CurrentTMClientHeader creates a TM header using the current header parameters
 // on the chain. The trusted fields in the header are set to nil.
-func (chain *TestChain) CurrentTMClientHeader() *ibctmtypes.Header {
+func (chain *TestChain) CurrentTMClientHeader() *ibcoctypes.Header {
 	return chain.CreateTMClientHeader(chain.ChainID, chain.CurrentHeader.Height, clienttypes.Height{}, chain.CurrentHeader.Time, chain.Vals, nil, chain.Voters, nil, chain.Signers)
 }
 
 // CreateTMClientHeader creates a TM header to update the TM client. Args are passed in to allow
 // caller flexibility to use params that differ from the chain.
-func (chain *TestChain) CreateTMClientHeader(chainID string, blockHeight int64, trustedHeight clienttypes.Height, timestamp time.Time, tmValSet, tmTrustedVals *tmtypes.ValidatorSet, tmVoterSet, tmTrustedVoterSet *tmtypes.VoterSet, signers []tmtypes.PrivValidator) *ibctmtypes.Header {
+func (chain *TestChain) CreateTMClientHeader(chainID string, blockHeight int64, trustedHeight clienttypes.Height, timestamp time.Time, tmValSet, tmTrustedVals *octypes.ValidatorSet, tmVoterSet, tmTrustedVoterSet *octypes.VoterSet, signers []octypes.PrivValidator) *ibcoctypes.Header {
 	var (
-		valSet        *tmproto.ValidatorSet
-		trustedVals   *tmproto.ValidatorSet
-		voterSet      *tmproto.VoterSet
-		trustedVoters *tmproto.VoterSet
+		valSet        *ocproto.ValidatorSet
+		trustedVals   *ocproto.ValidatorSet
+		voterSet      *ocproto.VoterSet
+		trustedVoters *ocproto.VoterSet
 	)
 	require.NotNil(chain.t, tmValSet)
 	require.NotNil(chain.t, tmVoterSet)
 
 	vsetHash := tmValSet.Hash()
 
-	tmHeader := tmtypes.Header{
-		Version:            tmprotoversion.Consensus{Block: tmversion.BlockProtocol, App: 2},
+	tmHeader := octypes.Header{
+		Version:            ocprotoversion.Consensus{Block: ocversion.BlockProtocol, App: 2},
 		ChainID:            chainID,
 		Height:             blockHeight,
 		Time:               timestamp,
@@ -469,12 +469,12 @@ func (chain *TestChain) CreateTMClientHeader(chainID string, blockHeight int64, 
 
 	hhash := tmHeader.Hash()
 	blockID := MakeBlockID(hhash, 3, tmhash.Sum([]byte("part_set")))
-	voteSet := tmtypes.NewVoteSet(chainID, blockHeight, 1, tmproto.PrecommitType, tmVoterSet)
+	voteSet := octypes.NewVoteSet(chainID, blockHeight, 1, ocproto.PrecommitType, tmVoterSet)
 
-	commit, err := tmtypes.MakeCommit(blockID, blockHeight, 1, voteSet, signers, timestamp)
+	commit, err := octypes.MakeCommit(blockID, blockHeight, 1, voteSet, signers, timestamp)
 	require.NoError(chain.t, err)
 
-	signedHeader := &tmproto.SignedHeader{
+	signedHeader := &ocproto.SignedHeader{
 		Header: tmHeader.ToProto(),
 		Commit: commit.ToProto(),
 	}
@@ -501,7 +501,7 @@ func (chain *TestChain) CreateTMClientHeader(chainID string, blockHeight int64, 
 
 	// The trusted fields may be nil. They may be filled before relaying messages to a client.
 	// The relayer is responsible for querying client and injecting appropriate trusted fields.
-	return &ibctmtypes.Header{
+	return &ibcoctypes.Header{
 		SignedHeader:      signedHeader,
 		ValidatorSet:      valSet,
 		VoterSet:          voterSet,
@@ -511,11 +511,11 @@ func (chain *TestChain) CreateTMClientHeader(chainID string, blockHeight int64, 
 	}
 }
 
-// MakeBlockID copied unimported test functions from tmtypes to use them here
-func MakeBlockID(hash []byte, partSetSize uint32, partSetHash []byte) tmtypes.BlockID {
-	return tmtypes.BlockID{
+// MakeBlockID copied unimported test functions from octypes to use them here
+func MakeBlockID(hash []byte, partSetSize uint32, partSetHash []byte) octypes.BlockID {
+	return octypes.BlockID{
 		Hash: hash,
-		PartSetHeader: tmtypes.PartSetHeader{
+		PartSetHeader: octypes.PartSetHeader{
 			Total: partSetSize,
 			Hash:  partSetHash,
 		},
@@ -526,19 +526,19 @@ func MakeBlockID(hash []byte, partSetSize uint32, partSetHash []byte) tmtypes.Bl
 // (including voting power). It returns a signer array of PrivValidators that matches the
 // sorting of ValidatorSet.
 // The sorting is first by .VotingPower (descending), with secondary index of .Address (ascending).
-func CreateSortedSignerArray(altPrivVal, suitePrivVal tmtypes.PrivValidator,
-	altVal, suiteVal *tmtypes.Validator,
-) []tmtypes.PrivValidator {
+func CreateSortedSignerArray(altPrivVal, suitePrivVal octypes.PrivValidator,
+	altVal, suiteVal *octypes.Validator,
+) []octypes.PrivValidator {
 	switch {
 	case altVal.VotingPower > suiteVal.VotingPower:
-		return []tmtypes.PrivValidator{altPrivVal, suitePrivVal}
+		return []octypes.PrivValidator{altPrivVal, suitePrivVal}
 	case altVal.VotingPower < suiteVal.VotingPower:
-		return []tmtypes.PrivValidator{suitePrivVal, altPrivVal}
+		return []octypes.PrivValidator{suitePrivVal, altPrivVal}
 	default:
 		if bytes.Compare(altVal.Address, suiteVal.Address) == -1 {
-			return []tmtypes.PrivValidator{altPrivVal, suitePrivVal}
+			return []octypes.PrivValidator{altPrivVal, suitePrivVal}
 		}
-		return []tmtypes.PrivValidator{suitePrivVal, altPrivVal}
+		return []octypes.PrivValidator{suitePrivVal, altPrivVal}
 	}
 }
 

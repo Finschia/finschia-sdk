@@ -11,7 +11,7 @@ import (
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	solomachinetypes "github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -55,7 +55,7 @@ func (suite *TypesTestSuite) TestMarshalMsgCreateClient() {
 		},
 		{
 			"ostracon client", func() {
-				ostraconClient := ibctmtypes.NewClientState(suite.chainA.ChainID, ibctesting.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false)
+				ostraconClient := ibcoctypes.NewClientState(suite.chainA.ChainID, ibctesting.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false)
 				msg, err = types.NewMsgCreateClient(ostraconClient, suite.chainA.CurrentTMClientHeader().ConsensusState(), suite.chainA.SenderAccount.GetAddress().String())
 				suite.Require().NoError(err)
 			},
@@ -100,7 +100,7 @@ func (suite *TypesTestSuite) TestMsgCreateClient_ValidateBasic() {
 		{
 			"valid - ostracon client",
 			func() {
-				ostraconClient := ibctmtypes.NewClientState(suite.chainA.ChainID, ibctesting.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false)
+				ostraconClient := ibcoctypes.NewClientState(suite.chainA.ChainID, ibctesting.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false)
 				msg, err = types.NewMsgCreateClient(ostraconClient, suite.chainA.CurrentTMClientHeader().ConsensusState(), suite.chainA.SenderAccount.GetAddress().String())
 				suite.Require().NoError(err)
 			},
@@ -109,7 +109,7 @@ func (suite *TypesTestSuite) TestMsgCreateClient_ValidateBasic() {
 		{
 			"invalid ostracon client",
 			func() {
-				msg, err = types.NewMsgCreateClient(&ibctmtypes.ClientState{}, suite.chainA.CurrentTMClientHeader().ConsensusState(), suite.chainA.SenderAccount.GetAddress().String())
+				msg, err = types.NewMsgCreateClient(&ibcoctypes.ClientState{}, suite.chainA.CurrentTMClientHeader().ConsensusState(), suite.chainA.SenderAccount.GetAddress().String())
 				suite.Require().NoError(err)
 			},
 			false,
@@ -124,7 +124,7 @@ func (suite *TypesTestSuite) TestMsgCreateClient_ValidateBasic() {
 		{
 			"failed to unpack consensus state",
 			func() {
-				ostraconClient := ibctmtypes.NewClientState(suite.chainA.ChainID, ibctesting.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false)
+				ostraconClient := ibcoctypes.NewClientState(suite.chainA.ChainID, ibctesting.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false)
 				msg, err = types.NewMsgCreateClient(ostraconClient, suite.chainA.CurrentTMClientHeader().ConsensusState(), suite.chainA.SenderAccount.GetAddress().String())
 				suite.Require().NoError(err)
 				msg.ConsensusState = nil
@@ -168,7 +168,7 @@ func (suite *TypesTestSuite) TestMsgCreateClient_ValidateBasic() {
 		{
 			"invalid - client state and consensus state client types do not match",
 			func() {
-				ostraconClient := ibctmtypes.NewClientState(suite.chainA.ChainID, ibctesting.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false)
+				ostraconClient := ibcoctypes.NewClientState(suite.chainA.ChainID, ibctesting.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false)
 				soloMachine := ibctesting.NewSolomachine(suite.T(), suite.chainA.Codec, "solomachine", "", 2)
 				msg, err = types.NewMsgCreateClient(ostraconClient, soloMachine.ConsensusState(), suite.chainA.SenderAccount.GetAddress().String())
 				suite.Require().NoError(err)
@@ -269,7 +269,7 @@ func (suite *TypesTestSuite) TestMsgUpdateClient_ValidateBasic() {
 		{
 			"invalid ostracon header",
 			func() {
-				msg, err = types.NewMsgUpdateClient("ostracon-0", &ibctmtypes.Header{}, suite.chainA.SenderAccount.GetAddress().String())
+				msg, err = types.NewMsgUpdateClient("ostracon-0", &ibcoctypes.Header{}, suite.chainA.SenderAccount.GetAddress().String())
 				suite.Require().NoError(err)
 			},
 			false,
@@ -339,8 +339,8 @@ func (suite *TypesTestSuite) TestMarshalMsgUpgradeClient() {
 		{
 			"client upgrades to new ostracon client",
 			func() {
-				ostraconClient := ibctmtypes.NewClientState(suite.chainA.ChainID, ibctesting.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false)
-				ostraconConsState := &ibctmtypes.ConsensusState{NextValidatorsHash: []byte("nextValsHash")}
+				ostraconClient := ibcoctypes.NewClientState(suite.chainA.ChainID, ibctesting.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false)
+				ostraconConsState := &ibcoctypes.ConsensusState{NextValidatorsHash: []byte("nextValsHash")}
 				msg, err = types.NewMsgUpgradeClient("clientid", ostraconClient, ostraconConsState, []byte("proofUpgradeClient"), []byte("proofUpgradeConsState"), suite.chainA.SenderAccount.GetAddress().String())
 				suite.Require().NoError(err)
 			},
@@ -452,8 +452,8 @@ func (suite *TypesTestSuite) TestMsgUpgradeClient_ValidateBasic() {
 	for _, tc := range cases {
 		tc := tc
 
-		clientState := ibctmtypes.NewClientState(suite.chainA.ChainID, ibctesting.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false)
-		consState := &ibctmtypes.ConsensusState{NextValidatorsHash: []byte("nextValsHash")}
+		clientState := ibcoctypes.NewClientState(suite.chainA.ChainID, ibctesting.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false)
+		consState := &ibcoctypes.ConsensusState{NextValidatorsHash: []byte("nextValsHash")}
 		msg, err := types.NewMsgUpgradeClient("testclientid", clientState, consState, []byte("proofUpgradeClient"), []byte("proofUpgradeConsState"), suite.chainA.SenderAccount.GetAddress().String())
 		suite.Require().NoError(err)
 
@@ -493,7 +493,7 @@ func (suite *TypesTestSuite) TestMarshalMsgSubmitMisbehaviour() {
 				header1 := suite.chainA.CreateTMClientHeader(suite.chainA.ChainID, int64(height.RevisionHeight), heightMinus1, suite.chainA.CurrentHeader.Time, suite.chainA.Vals, suite.chainA.Vals, suite.chainA.Voters, suite.chainA.Voters, suite.chainA.Signers)
 				header2 := suite.chainA.CreateTMClientHeader(suite.chainA.ChainID, int64(height.RevisionHeight), heightMinus1, suite.chainA.CurrentHeader.Time.Add(time.Minute), suite.chainA.Vals, suite.chainA.Vals, suite.chainA.Voters, suite.chainA.Voters, suite.chainA.Signers)
 
-				misbehaviour := ibctmtypes.NewMisbehaviour("ostracon-0", header1, header2)
+				misbehaviour := ibcoctypes.NewMisbehaviour("ostracon-0", header1, header2)
 				msg, err = types.NewMsgSubmitMisbehaviour("ostracon-0", misbehaviour, suite.chainA.SenderAccount.GetAddress().String())
 				suite.Require().NoError(err)
 
@@ -551,7 +551,7 @@ func (suite *TypesTestSuite) TestMsgSubmitMisbehaviour_ValidateBasic() {
 				header1 := suite.chainA.CreateTMClientHeader(suite.chainA.ChainID, int64(height.RevisionHeight), heightMinus1, suite.chainA.CurrentHeader.Time, suite.chainA.Vals, suite.chainA.Vals, suite.chainA.Voters, suite.chainA.Voters, suite.chainA.Signers)
 				header2 := suite.chainA.CreateTMClientHeader(suite.chainA.ChainID, int64(height.RevisionHeight), heightMinus1, suite.chainA.CurrentHeader.Time.Add(time.Minute), suite.chainA.Vals, suite.chainA.Vals, suite.chainA.Voters, suite.chainA.Voters, suite.chainA.Signers)
 
-				misbehaviour := ibctmtypes.NewMisbehaviour("ostracon-0", header1, header2)
+				misbehaviour := ibcoctypes.NewMisbehaviour("ostracon-0", header1, header2)
 				msg, err = types.NewMsgSubmitMisbehaviour("ostracon-0", misbehaviour, suite.chainA.SenderAccount.GetAddress().String())
 				suite.Require().NoError(err)
 			},
@@ -560,7 +560,7 @@ func (suite *TypesTestSuite) TestMsgSubmitMisbehaviour_ValidateBasic() {
 		{
 			"invalid ostracon misbehaviour",
 			func() {
-				msg, err = types.NewMsgSubmitMisbehaviour("ostracon-0", &ibctmtypes.Misbehaviour{}, suite.chainA.SenderAccount.GetAddress().String())
+				msg, err = types.NewMsgSubmitMisbehaviour("ostracon-0", &ibcoctypes.Misbehaviour{}, suite.chainA.SenderAccount.GetAddress().String())
 				suite.Require().NoError(err)
 			},
 			false,

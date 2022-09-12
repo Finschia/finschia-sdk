@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/line/lbm-sdk/codec"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/simapp"
@@ -17,7 +17,7 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	"github.com/line/lbm-sdk/x/ibc/core/types"
 	localhosttypes "github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -77,7 +77,7 @@ func (suite *IBCTestSuite) TestValidateGenesis() {
 				ClientGenesis: clienttypes.NewGenesisState(
 					[]clienttypes.IdentifiedClientState{
 						clienttypes.NewIdentifiedClientState(
-							clientID, ibctmtypes.NewClientState(suite.chainA.ChainID, ibctmtypes.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false),
+							clientID, ibcoctypes.NewClientState(suite.chainA.ChainID, ibcoctypes.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false),
 						),
 						clienttypes.NewIdentifiedClientState(
 							localhostID, localhosttypes.NewClientState("chaindID", clientHeight),
@@ -89,7 +89,7 @@ func (suite *IBCTestSuite) TestValidateGenesis() {
 							[]clienttypes.ConsensusStateWithHeight{
 								clienttypes.NewConsensusStateWithHeight(
 									header.GetHeight().(clienttypes.Height),
-									ibctmtypes.NewConsensusState(
+									ibcoctypes.NewConsensusState(
 										header.GetTime(), commitmenttypes.NewMerkleRoot(header.Header.AppHash), header.Header.NextValidatorsHash,
 									),
 								),
@@ -157,7 +157,7 @@ func (suite *IBCTestSuite) TestValidateGenesis() {
 				ClientGenesis: clienttypes.NewGenesisState(
 					[]clienttypes.IdentifiedClientState{
 						clienttypes.NewIdentifiedClientState(
-							clientID, ibctmtypes.NewClientState(suite.chainA.ChainID, ibctmtypes.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false),
+							clientID, ibcoctypes.NewClientState(suite.chainA.ChainID, ibcoctypes.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false),
 						),
 						clienttypes.NewIdentifiedClientState(
 							localhostID, localhosttypes.NewClientState("(chaindID)", clienttypes.ZeroHeight()),
@@ -241,7 +241,7 @@ func (suite *IBCTestSuite) TestInitGenesis() {
 				ClientGenesis: clienttypes.NewGenesisState(
 					[]clienttypes.IdentifiedClientState{
 						clienttypes.NewIdentifiedClientState(
-							clientID, ibctmtypes.NewClientState(suite.chainA.ChainID, ibctmtypes.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false),
+							clientID, ibcoctypes.NewClientState(suite.chainA.ChainID, ibcoctypes.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false),
 						),
 						clienttypes.NewIdentifiedClientState(
 							exported.Localhost, localhosttypes.NewClientState("chaindID", clientHeight),
@@ -253,7 +253,7 @@ func (suite *IBCTestSuite) TestInitGenesis() {
 							[]clienttypes.ConsensusStateWithHeight{
 								clienttypes.NewConsensusStateWithHeight(
 									header.GetHeight().(clienttypes.Height),
-									ibctmtypes.NewConsensusState(
+									ibcoctypes.NewConsensusState(
 										header.GetTime(), commitmenttypes.NewMerkleRoot(header.Header.AppHash), header.Header.NextValidatorsHash,
 									),
 								),
@@ -320,7 +320,7 @@ func (suite *IBCTestSuite) TestInitGenesis() {
 		app := simapp.Setup(false)
 
 		suite.NotPanics(func() {
-			ibc.InitGenesis(app.BaseApp.NewContext(false, tmproto.Header{Height: 1}), *app.IBCKeeper, true, tc.genState)
+			ibc.InitGenesis(app.BaseApp.NewContext(false, ocproto.Header{Height: 1}), *app.IBCKeeper, true, tc.genState)
 		})
 	}
 }
