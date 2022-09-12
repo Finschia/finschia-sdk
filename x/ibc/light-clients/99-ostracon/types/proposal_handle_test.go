@@ -13,7 +13,7 @@ var (
 	frozenHeight = clienttypes.NewHeight(0, 1)
 )
 
-func (suite *TendermintTestSuite) TestCheckSubstituteUpdateStateBasic() {
+func (suite *OstraconTestSuite) TestCheckSubstituteUpdateStateBasic() {
 	var (
 		substituteClientState exported.ClientState
 		substitutePath        *ibctesting.Path
@@ -71,7 +71,7 @@ func (suite *TendermintTestSuite) TestCheckSubstituteUpdateStateBasic() {
 
 // to expire clients, time needs to be fast forwarded on both chainA and chainB.
 // this is to prevent headers from failing when attempting to update later.
-func (suite *TendermintTestSuite) TestCheckSubstituteAndUpdateState() {
+func (suite *OstraconTestSuite) TestCheckSubstituteAndUpdateState() {
 	testCases := []struct {
 		name                         string
 		AllowUpdateAfterExpiry       bool
@@ -308,7 +308,7 @@ func (suite *TendermintTestSuite) TestCheckSubstituteAndUpdateState() {
 	}
 }
 
-func (suite *TendermintTestSuite) TestIsMatchingClientState() {
+func (suite *OstraconTestSuite) TestIsMatchingClientState() {
 	var (
 		subjectPath, substitutePath               *ibctesting.Path
 		subjectClientState, substituteClientState *types.ClientState

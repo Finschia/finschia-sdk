@@ -14,7 +14,7 @@ var (
 	newChainId = "newChainId-1"
 )
 
-func (suite *TendermintTestSuite) TestVerifyUpgrade() {
+func (suite *OstraconTestSuite) TestVerifyUpgrade() {
 	var (
 		upgradedClient                              exported.ClientState
 		upgradedConsState                           exported.ConsensusState

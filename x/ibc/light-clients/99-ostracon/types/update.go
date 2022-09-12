@@ -20,7 +20,7 @@ import (
 // create the consensus state for the header.Height
 // and update the client state if the header height is greater than the latest client state height
 // It returns an error if:
-// - the client or header provided are not parseable to tendermint types
+// - the client or header provided are not parseable to ostracon types
 // - the header is invalid
 // - header height is less than or equal to the trusted header height
 // - header revision is not equal to trusted header revision
@@ -36,8 +36,8 @@ import (
 // the new latest height
 // UpdateClient must only be used to update within a single revision, thus header revision number and trusted height's revision
 // number must be the same. To update to a new revision, use a separate upgrade path
-// Tendermint client validity checking uses the bisection algorithm described
-// in the [Tendermint spec](https://github.com/tendermint/spec/blob/master/spec/consensus/light-client.md).
+// Ostracon client validity checking uses the bisection algorithm described
+// in the [Ostracon spec](https://github.com/tendermint/spec/blob/master/spec/consensus/light-client.md).
 //
 // Misbehaviour Detection:
 // UpdateClient will detect implicit misbehaviour by enforcing certain invariants on any new update call and will return a frozen client.
@@ -146,7 +146,7 @@ func (cs ClientState) CheckHeaderAndUpdateState(
 func checkTrustedHeader(header *Header, consState *ConsensusState) error {
 	tmTrustedValidators, err := tmtypes.ValidatorSetFromProto(header.TrustedValidators)
 	if err != nil {
-		return sdkerrors.Wrap(err, "trusted validator set in not tendermint validator set type")
+		return sdkerrors.Wrap(err, "trusted validator set in not ostracon validator set type")
 	}
 
 	// assert that trustedVals is NextValidators of last trusted header
@@ -162,7 +162,7 @@ func checkTrustedHeader(header *Header, consState *ConsensusState) error {
 	return nil
 }
 
-// checkValidity checks if the Tendermint header is valid.
+// checkValidity checks if the Ostracon header is valid.
 // CONTRACT: consState.Height == header.TrustedHeight
 func checkValidity(
 	clientState *ClientState, consState *ConsensusState,
@@ -184,17 +184,17 @@ func checkValidity(
 
 	tmTrustedVoters, err := tmtypes.VoterSetFromProto(header.TrustedVoters)
 	if err != nil {
-		return sdkerrors.Wrap(err, "trusted validator set in not tendermint validator set type")
+		return sdkerrors.Wrap(err, "trusted validator set in not ostracon validator set type")
 	}
 
 	tmSignedHeader, err := tmtypes.SignedHeaderFromProto(header.SignedHeader)
 	if err != nil {
-		return sdkerrors.Wrap(err, "signed header in not tendermint signed header type")
+		return sdkerrors.Wrap(err, "signed header in not ostracon signed header type")
 	}
 
 	tmVoterSet, err := tmtypes.VoterSetFromProto(header.VoterSet)
 	if err != nil {
-		return sdkerrors.Wrap(err, "validator set in not tendermint validator set type")
+		return sdkerrors.Wrap(err, "validator set in not ostracon validator set type")
 	}
 
 	// assert header height is newer than consensus state
@@ -236,7 +236,7 @@ func checkValidity(
 	err = light.VerifyWithVoterSet(
 		&signedHeader,
 		tmTrustedVoters, tmSignedHeader, tmVoterSet,
-		clientState.TrustingPeriod, currentTimestamp, clientState.MaxClockDrift, clientState.TrustLevel.ToTendermint(),
+		clientState.TrustingPeriod, currentTimestamp, clientState.MaxClockDrift, clientState.TrustLevel.ToOstracon(),
 	)
 	if err != nil {
 		return sdkerrors.Wrap(err, "failed to verify header")

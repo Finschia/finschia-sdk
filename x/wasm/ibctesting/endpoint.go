@@ -52,7 +52,7 @@ func NewEndpoint(
 func NewDefaultEndpoint(chain *TestChain) *Endpoint {
 	return &Endpoint{
 		Chain:            chain,
-		ClientConfig:     ibctesting.NewTendermintConfig(),
+		ClientConfig:     ibctesting.NewOstraconConfig(),
 		ConnectionConfig: ibctesting.NewConnectionConfig(),
 		ChannelConfig:    ibctesting.NewChannelConfig(),
 	}
@@ -88,8 +88,8 @@ func (endpoint *Endpoint) CreateClient() (err error) {
 	)
 
 	switch endpoint.ClientConfig.GetClientType() {
-	case exported.Tendermint:
-		tmConfig, ok := endpoint.ClientConfig.(*ibctesting.TendermintConfig)
+	case exported.Ostracon:
+		tmConfig, ok := endpoint.ClientConfig.(*ibctesting.OstraconConfig)
 		require.True(endpoint.Chain.t, ok)
 
 		height := endpoint.Counterparty.Chain.LastHeader.GetHeight().(clienttypes.Height)
@@ -136,7 +136,7 @@ func (endpoint *Endpoint) UpdateClient() (err error) {
 	var header exported.Header
 
 	switch endpoint.ClientConfig.GetClientType() {
-	case exported.Tendermint:
+	case exported.Ostracon:
 		header, err = endpoint.Chain.ConstructUpdateTMClientHeader(endpoint.Counterparty.Chain, endpoint.ClientID)
 
 	default:

@@ -34,7 +34,7 @@ var (
 	upgradePath     = []string{"upgrade", "upgradedIBCState"}
 )
 
-type TendermintTestSuite struct {
+type OstraconTestSuite struct {
 	suite.Suite
 
 	coordinator *ibctesting.Coordinator
@@ -55,7 +55,7 @@ type TendermintTestSuite struct {
 	clientTime time.Time
 }
 
-func (suite *TendermintTestSuite) SetupTest() {
+func (suite *OstraconTestSuite) SetupTest() {
 	suite.coordinator = ibctesting.NewCoordinator(suite.T(), 2)
 	suite.chainA = suite.coordinator.GetChain(ibctesting.GetChainID(1))
 	suite.chainB = suite.coordinator.GetChain(ibctesting.GetChainID(2))
@@ -91,11 +91,11 @@ func (suite *TendermintTestSuite) SetupTest() {
 	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{Height: 1, Time: suite.now})
 }
 
-func getSuiteSigners(suite *TendermintTestSuite) []tmtypes.PrivValidator {
+func getSuiteSigners(suite *OstraconTestSuite) []tmtypes.PrivValidator {
 	return []tmtypes.PrivValidator{suite.privVal}
 }
 
-func getBothSigners(suite *TendermintTestSuite, altVal *tmtypes.Validator, altPrivVal tmtypes.PrivValidator) (*tmtypes.ValidatorSet, []tmtypes.PrivValidator) {
+func getBothSigners(suite *OstraconTestSuite, altVal *tmtypes.Validator, altPrivVal tmtypes.PrivValidator) (*tmtypes.ValidatorSet, []tmtypes.PrivValidator) {
 	// Create bothValSet with both suite validator and altVal. Would be valid update
 	bothValSet := tmtypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
 	// Create signer array and ensure it is in same order as bothValSet
@@ -104,6 +104,6 @@ func getBothSigners(suite *TendermintTestSuite, altVal *tmtypes.Validator, altPr
 	return bothValSet, bothSigners
 }
 
-func TestTendermintTestSuite(t *testing.T) {
-	suite.Run(t, new(TendermintTestSuite))
+func TestOstraconTestSuite(t *testing.T) {
+	suite.Run(t, new(OstraconTestSuite))
 }

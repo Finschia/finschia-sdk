@@ -117,7 +117,7 @@ func (suite *SoloMachineTestSuite) TestInitialize() {
 				false,
 			},
 			{
-				"invalid consensus state: Tendermint consensus state",
+				"invalid consensus state: Ostracon consensus state",
 				&ibctmtypes.ConsensusState{},
 				false,
 			},
@@ -145,7 +145,7 @@ func (suite *SoloMachineTestSuite) TestInitialize() {
 }
 
 func (suite *SoloMachineTestSuite) TestVerifyClientState() {
-	// create client for tendermint so we can use client state for verification
+	// create client for ostracon so we can use client state for verification
 	tmPath := ibctesting.NewPath(suite.chainA, suite.chainB)
 	suite.coordinator.SetupClients(tmPath)
 	clientState := suite.chainA.GetClientState(tmPath.EndpointA.ClientID)
@@ -264,7 +264,7 @@ func (suite *SoloMachineTestSuite) TestVerifyClientState() {
 }
 
 func (suite *SoloMachineTestSuite) TestVerifyClientConsensusState() {
-	// create client for tendermint so we can use consensus state for verification
+	// create client for ostracon so we can use consensus state for verification
 	tmPath := ibctesting.NewPath(suite.chainA, suite.chainB)
 	suite.coordinator.SetupClients(tmPath)
 	clientState := suite.chainA.GetClientState(tmPath.EndpointA.ClientID)

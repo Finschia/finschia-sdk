@@ -15,9 +15,9 @@ as valid. Upon verifying the misbehaviour the IBC client must freeze at that
 height so that any proof verifications for the frozen height or later fail.
 
 Note, there is a difference between the chain-level Misbehaviour that IBC is 
-concerned with and the validator-level Evidence that Tendermint is concerned 
-with. Tendermint must be able to detect, submit, and punish any evidence of 
-individual validators breaking the Tendermint consensus protocol and attempting 
+concerned with and the validator-level Evidence that Ostracon is concerned 
+with. Ostracon must be able to detect, submit, and punish any evidence of 
+individual validators breaking the Ostracon consensus protocol and attempting 
 to mount an attack. IBC clients must only act when an attack is successful 
 and the chain has successfully forked. In this case, valid Headers submitted 
 to the IBC client can no longer be trusted and the client must freeze.

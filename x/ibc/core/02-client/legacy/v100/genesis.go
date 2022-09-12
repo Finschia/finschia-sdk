@@ -17,13 +17,13 @@ import (
 //
 // - Update solo machine client state protobuf definition (v1 to v2)
 // - Remove all solo machine consensus states
-// - Remove all expired tendermint consensus states
-// - Adds ProcessedHeight and Iteration keys for unexpired tendermint consensus states
+// - Remove all expired ostracon consensus states
+// - Adds ProcessedHeight and Iteration keys for unexpired ostracon consensus states
 func MigrateGenesis(cdc codec.BinaryCodec, clientGenState *types.GenesisState, genesisBlockTime time.Time, selfHeight exported.Height) (*types.GenesisState, error) {
 	// To prune the consensus states, we will create new clientsConsensus
 	// and clientsMetadata. These slices will be filled up with consensus states
 	// which should not be pruned. No solo machine consensus states should be added
-	// and only unexpired consensus states for tendermint clients will be added.
+	// and only unexpired consensus states for ostracon clients will be added.
 	// The metadata keys for unexpired consensus states will be added to clientsMetadata
 	var (
 		clientsConsensus []types.ClientConsensusStates
@@ -65,7 +65,7 @@ func MigrateGenesis(cdc codec.BinaryCodec, clientGenState *types.GenesisState, g
 					// remove all consensus states for the solo machine
 					// do not add to new clientsConsensus
 
-				case exported.Tendermint:
+				case exported.Ostracon:
 					// only add non expired consensus states to new clientsConsensus
 					tmClientState, ok := client.ClientState.GetCachedValue().(*ibctmtypes.ClientState)
 					if !ok {
@@ -93,7 +93,7 @@ func MigrateGenesis(cdc codec.BinaryCodec, clientGenState *types.GenesisState, g
 					// collect metadata for unexpired consensus states
 					var clientMetadata []types.GenesisMetadata
 
-					// remove all expired tendermint consensus state metadata by adding only
+					// remove all expired ostracon consensus state metadata by adding only
 					// unexpired consensus state metadata
 					for _, consState := range unexpiredConsensusStates {
 						for _, identifiedGenMetadata := range clientGenState.ClientsMetadata {

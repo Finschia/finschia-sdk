@@ -40,7 +40,7 @@ func QueryConnection(
 func queryConnectionABCI(clientCtx client.Context, connectionID string) (*types.QueryConnectionResponse, error) {
 	key := host.ConnectionKey(connectionID)
 
-	value, proofBz, proofHeight, err := ibcclient.QueryTendermintProof(clientCtx, key)
+	value, proofBz, proofHeight, err := ibcclient.QueryOstraconProof(clientCtx, key)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func QueryClientConnections(
 func queryClientConnectionsABCI(clientCtx client.Context, clientID string) (*types.QueryClientConnectionsResponse, error) {
 	key := host.ClientConnectionsKey(clientID)
 
-	value, proofBz, proofHeight, err := ibcclient.QueryTendermintProof(clientCtx, key)
+	value, proofBz, proofHeight, err := ibcclient.QueryOstraconProof(clientCtx, key)
 	if err != nil {
 		return nil, err
 	}

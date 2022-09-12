@@ -54,7 +54,7 @@ A general pseudo algorithm would look like the following:
 3. Query the client state using the identifiers pair. Note that this query will return a `"Not
    Found"` response if the current chain is not connected to this channel.
 4. Retrieve the the client identifier or chain identifier from the client state (eg: on
-   Tendermint clients) and store it locally.
+   Ostracon clients) and store it locally.
 
 Using the gRPC gataway client service the steps above would be, with a given IBC token `ibc/7F1D3FCF4AE79E1554D670D1AD949A9BA4E4A3C76C63093E17E446A46061A7A2` stored on `chainB`:
 
@@ -101,7 +101,7 @@ In some [exceptional cases](https://github.com/cosmos/ibc-go/blob/main/docs/arch
 To mitigate this, a client update governance proposal can be submitted to update the frozen client
 with a new valid header. Once the proposal passes the client state will be unfrozen and the funds
 from the associated channels will then be unlocked. This mechanism only applies to clients that
-allow updates via governance, such as Tendermint clients.
+allow updates via governance, such as Ostracon clients.
 
 In addition to this, it's important to mention that a token must be sent back along the exact route
 that it took originally un order to return it to its original form on the source chain (eg: the

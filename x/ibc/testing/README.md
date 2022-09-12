@@ -15,7 +15,7 @@ be in the future. The coordinator also contains functions to do basic setup of c
 between two chains. 
 
 A chain is an SDK application (as represented by an app.go file). Inside the chain is an `TestingApp` which allows
-the chain to simulate block production and transaction processing. The chain contains by default a single tendermint
+the chain to simulate block production and transaction processing. The chain contains by default a single ostracon
 validator. A chain is used to process SDK messages.
 
 A path connects two channel endpoints. It contains all the information needed to relay between two endpoints. 
@@ -215,7 +215,7 @@ Here is a basic example of the testing package being used to simulate IBC functi
 ```go
     path := ibctesting.NewPath(suite.chainA, suite.chainB) // clientID, connectionID, channelID empty
     suite.coordinator.Setup(path) // clientID, connectionID, channelID filled
-    suite.Require().Equal("07-tendermint-0", path.EndpointA.ClientID)
+    suite.Require().Equal("99-ostracon-0", path.EndpointA.ClientID)
     suite.Require().Equal("connection-0", path.EndpointA.ClientID)
     suite.Require().Equal("channel-0", path.EndpointA.ClientID)
 

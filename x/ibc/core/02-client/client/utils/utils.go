@@ -39,7 +39,7 @@ func QueryClientStateABCI(
 ) (*types.QueryClientStateResponse, error) {
 	key := host.FullClientStateKey(clientID)
 
-	value, proofBz, proofHeight, err := ibcclient.QueryTendermintProof(clientCtx, key)
+	value, proofBz, proofHeight, err := ibcclient.QueryOstraconProof(clientCtx, key)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func QueryConsensusStateABCI(
 ) (*types.QueryConsensusStateResponse, error) {
 	key := host.FullConsensusStateKey(clientID, height)
 
-	value, proofBz, proofHeight, err := ibcclient.QueryTendermintProof(clientCtx, key)
+	value, proofBz, proofHeight, err := ibcclient.QueryOstraconProof(clientCtx, key)
 	if err != nil {
 		return nil, err
 	}
@@ -117,9 +117,9 @@ func QueryConsensusStateABCI(
 	return types.NewQueryConsensusStateResponse(anyConsensusState, proofBz, proofHeight), nil
 }
 
-// QueryTendermintHeader takes a client context and returns the appropriate
-// tendermint header
-func QueryTendermintHeader(clientCtx client.Context) (ibctmtypes.Header, int64, error) {
+// QueryOstraconHeader takes a client context and returns the appropriate
+// ostracon header
+func QueryOstraconHeader(clientCtx client.Context) (ibctmtypes.Header, int64, error) {
 	node, err := clientCtx.GetNode()
 	if err != nil {
 		return ibctmtypes.Header{}, 0, err
@@ -178,7 +178,7 @@ func QueryTendermintHeader(clientCtx client.Context) (ibctmtypes.Header, int64, 
 }
 
 // QuerySelfConsensusState takes a client context and returns the appropriate
-// tendermint consensus state
+// ostracon consensus state
 func QuerySelfConsensusState(clientCtx client.Context) (*ibctmtypes.ConsensusState, int64, error) {
 	node, err := clientCtx.GetNode()
 	if err != nil {

@@ -15,7 +15,7 @@ import (
 	ibctestingmock "github.com/line/lbm-sdk/x/ibc/testing/mock"
 )
 
-func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
+func (suite *OstraconTestSuite) TestCheckMisbehaviourAndUpdateState() {
 	altPrivVal := ibctestingmock.NewPV()
 	altPubKey, err := altPrivVal.GetPubKey()
 	suite.Require().NoError(err)
@@ -291,7 +291,7 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 			false,
 		},
 		{
-			"invalid tendermint misbehaviour",
+			"invalid ostracon misbehaviour",
 			types.NewClientState(chainID, types.DefaultTrustLevel, trustingPeriod, ubdPeriod, maxClockDrift, height, commitmenttypes.GetSDKSpecs(), upgradePath, false, false),
 			types.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot(tmhash.Sum([]byte("app_hash"))), bothValsHash),
 			height,

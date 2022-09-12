@@ -220,7 +220,7 @@ func parseInstantiateArgs(rawCodeID, initMsg string, sender sdk.AccAddress, flag
 		return types.MsgInstantiateContract{}, fmt.Errorf("you set an admin and passed --no-admin, those cannot both be true")
 	}
 
-	// build and sign the transaction, then broadcast to Tendermint
+	// build and sign the transaction, then broadcast to Ostracon
 	msg := types.MsgInstantiateContract{
 		Sender: sender.String(),
 		CodeID: codeID,

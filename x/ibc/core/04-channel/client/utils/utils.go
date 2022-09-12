@@ -38,7 +38,7 @@ func QueryChannel(
 func queryChannelABCI(clientCtx client.Context, portID, channelID string) (*types.QueryChannelResponse, error) {
 	key := host.ChannelKey(portID, channelID)
 
-	value, proofBz, proofHeight, err := ibcclient.QueryTendermintProof(clientCtx, key)
+	value, proofBz, proofHeight, err := ibcclient.QueryOstraconProof(clientCtx, key)
 	if err != nil {
 		return nil, err
 	}
@@ -180,7 +180,7 @@ func QueryNextSequenceReceive(
 func queryNextSequenceRecvABCI(clientCtx client.Context, portID, channelID string) (*types.QueryNextSequenceReceiveResponse, error) {
 	key := host.NextSequenceRecvKey(portID, channelID)
 
-	value, proofBz, proofHeight, err := ibcclient.QueryTendermintProof(clientCtx, key)
+	value, proofBz, proofHeight, err := ibcclient.QueryOstraconProof(clientCtx, key)
 	if err != nil {
 		return nil, err
 	}
@@ -221,7 +221,7 @@ func queryPacketCommitmentABCI(
 ) (*types.QueryPacketCommitmentResponse, error) {
 	key := host.PacketCommitmentKey(portID, channelID, sequence)
 
-	value, proofBz, proofHeight, err := ibcclient.QueryTendermintProof(clientCtx, key)
+	value, proofBz, proofHeight, err := ibcclient.QueryOstraconProof(clientCtx, key)
 	if err != nil {
 		return nil, err
 	}
@@ -260,7 +260,7 @@ func queryPacketReceiptABCI(
 ) (*types.QueryPacketReceiptResponse, error) {
 	key := host.PacketReceiptKey(portID, channelID, sequence)
 
-	value, proofBz, proofHeight, err := ibcclient.QueryTendermintProof(clientCtx, key)
+	value, proofBz, proofHeight, err := ibcclient.QueryOstraconProof(clientCtx, key)
 	if err != nil {
 		return nil, err
 	}
@@ -289,7 +289,7 @@ func QueryPacketAcknowledgement(clientCtx client.Context, portID, channelID stri
 func queryPacketAcknowledgementABCI(clientCtx client.Context, portID, channelID string, sequence uint64) (*types.QueryPacketAcknowledgementResponse, error) {
 	key := host.PacketAcknowledgementKey(portID, channelID, sequence)
 
-	value, proofBz, proofHeight, err := ibcclient.QueryTendermintProof(clientCtx, key)
+	value, proofBz, proofHeight, err := ibcclient.QueryOstraconProof(clientCtx, key)
 	if err != nil {
 		return nil, err
 	}

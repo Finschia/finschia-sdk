@@ -270,7 +270,7 @@ func (k Keeper) GetSelfConsensusState(ctx sdk.Context, height exported.Height) (
 func (k Keeper) ValidateSelfClient(ctx sdk.Context, clientState exported.ClientState) error {
 	tmClient, ok := clientState.(*ibctmtypes.ClientState)
 	if !ok {
-		return sdkerrors.Wrapf(types.ErrInvalidClient, "client must be a Tendermint client, expected: %T, got: %T",
+		return sdkerrors.Wrapf(types.ErrInvalidClient, "client must be a Ostracon client, expected: %T, got: %T",
 			&ibctmtypes.ClientState{}, tmClient)
 	}
 
@@ -303,7 +303,7 @@ func (k Keeper) ValidateSelfClient(ctx sdk.Context, clientState exported.ClientS
 			expectedProofSpecs, tmClient.ProofSpecs)
 	}
 
-	if err := light.ValidateTrustLevel(tmClient.TrustLevel.ToTendermint()); err != nil {
+	if err := light.ValidateTrustLevel(tmClient.TrustLevel.ToOstracon()); err != nil {
 		return sdkerrors.Wrapf(types.ErrInvalidClient, "trust-level invalid: %v", err)
 	}
 

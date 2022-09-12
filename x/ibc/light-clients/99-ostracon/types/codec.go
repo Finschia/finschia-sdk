@@ -6,7 +6,7 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
-// RegisterInterfaces registers the tendermint concrete client-related
+// RegisterInterfaces registers the ostracon concrete client-related
 // implementations and interfaces.
 func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	registry.RegisterImplementations(

@@ -11,7 +11,7 @@ import (
 // expected export ordering:
 // processed height and processed time per height
 // then all iteration keys
-func (suite *TendermintTestSuite) TestExportMetadata() {
+func (suite *OstraconTestSuite) TestExportMetadata() {
 	// test intializing client and exporting metadata
 	path := ibctesting.NewPath(suite.chainA, suite.chainB)
 	suite.coordinator.SetupClients(path)

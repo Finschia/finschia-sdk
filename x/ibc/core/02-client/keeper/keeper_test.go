@@ -30,9 +30,9 @@ const (
 	testChainID          = "gaiahub-0"
 	testChainIDRevision1 = "gaiahub-1"
 
-	testClientID  = "tendermint-0"
-	testClientID2 = "tendermint-1"
-	testClientID3 = "tendermint-2"
+	testClientID  = "ostracon-0"
+	testClientID2 = "ostracon-1"
+	testClientID3 = "ostracon-2"
 
 	height = 5
 
@@ -264,7 +264,7 @@ func (suite KeeperTestSuite) TestGetAllGenesisClients() {
 func (suite KeeperTestSuite) TestGetAllGenesisMetadata() {
 	expectedGenMetadata := []types.IdentifiedGenesisMetadata{
 		types.NewIdentifiedGenesisMetadata(
-			"07-tendermint-1",
+			"99-ostracon-1",
 			[]types.GenesisMetadata{
 				types.NewGenesisMetadata(ibctmtypes.ProcessedTimeKey(types.NewHeight(0, 1)), []byte("foo")),
 				types.NewGenesisMetadata(ibctmtypes.ProcessedTimeKey(types.NewHeight(0, 2)), []byte("bar")),
@@ -281,7 +281,7 @@ func (suite KeeperTestSuite) TestGetAllGenesisMetadata() {
 	}
 
 	genClients := []types.IdentifiedClientState{
-		types.NewIdentifiedClientState("07-tendermint-1", &ibctmtypes.ClientState{}), types.NewIdentifiedClientState("clientB", &ibctmtypes.ClientState{}),
+		types.NewIdentifiedClientState("99-ostracon-1", &ibctmtypes.ClientState{}), types.NewIdentifiedClientState("clientB", &ibctmtypes.ClientState{}),
 		types.NewIdentifiedClientState("clientC", &ibctmtypes.ClientState{}), types.NewIdentifiedClientState("clientD", &localhosttypes.ClientState{}),
 	}
 

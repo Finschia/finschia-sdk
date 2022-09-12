@@ -14,7 +14,7 @@ import (
 	ibctestingmock "github.com/line/lbm-sdk/x/ibc/testing/mock"
 )
 
-func (suite *TendermintTestSuite) TestMisbehaviour() {
+func (suite *OstraconTestSuite) TestMisbehaviour() {
 	signers := []tmtypes.PrivValidator{suite.privVal}
 	heightMinus1 := clienttypes.NewHeight(0, height.RevisionHeight-1)
 
@@ -25,11 +25,11 @@ func (suite *TendermintTestSuite) TestMisbehaviour() {
 		ClientId: clientID,
 	}
 
-	suite.Require().Equal(exported.Tendermint, misbehaviour.ClientType())
+	suite.Require().Equal(exported.Ostracon, misbehaviour.ClientType())
 	suite.Require().Equal(clientID, misbehaviour.GetClientID())
 }
 
-func (suite *TendermintTestSuite) TestMisbehaviourValidateBasic() {
+func (suite *OstraconTestSuite) TestMisbehaviourValidateBasic() {
 	altPrivVal := ibctestingmock.NewPV()
 	altPubKey, err := altPrivVal.GetPubKey()
 	suite.Require().NoError(err)

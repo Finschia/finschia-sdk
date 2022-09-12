@@ -17,8 +17,8 @@ import (
 
 const (
 	chainID         = "chainID"
-	tmClientID0     = "07-tendermint-0"
-	tmClientID1     = "07-tendermint-1"
+	tmClientID0     = "99-ostracon-0"
+	tmClientID1     = "99-ostracon-1"
 	invalidClientID = "myclient-0"
 	clientID        = tmClientID0
 
@@ -102,7 +102,7 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 						},
 					),
 				},
-				types.NewParams(exported.Tendermint, exported.Localhost),
+				types.NewParams(exported.Ostracon, exported.Localhost),
 				false,
 				2,
 			),
@@ -133,7 +133,7 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 					),
 				},
 				nil,
-				types.NewParams(exported.Tendermint),
+				types.NewParams(exported.Ostracon),
 				false,
 				0,
 			),
@@ -150,7 +150,7 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 				},
 				nil,
 				nil,
-				types.NewParams(exported.Tendermint),
+				types.NewParams(exported.Ostracon),
 				false,
 				0,
 			),
@@ -181,7 +181,7 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 					),
 				},
 				nil,
-				types.NewParams(exported.Tendermint),
+				types.NewParams(exported.Ostracon),
 				false,
 				0,
 			),
@@ -212,7 +212,7 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 					),
 				},
 				nil,
-				types.NewParams(exported.Tendermint),
+				types.NewParams(exported.Ostracon),
 				false,
 				0,
 			),
@@ -243,7 +243,7 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 					),
 				},
 				nil,
-				types.NewParams(exported.Tendermint),
+				types.NewParams(exported.Ostracon),
 				false,
 				0,
 			),
@@ -313,7 +313,7 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 						},
 					),
 				},
-				types.NewParams(exported.Tendermint, exported.Localhost),
+				types.NewParams(exported.Ostracon, exported.Localhost),
 				false,
 				0,
 			),
@@ -349,7 +349,7 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 						},
 					),
 				},
-				types.NewParams(exported.Tendermint),
+				types.NewParams(exported.Ostracon),
 				false,
 				0,
 			),
@@ -441,7 +441,7 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 					),
 				},
 				nil,
-				types.NewParams(exported.Tendermint),
+				types.NewParams(exported.Ostracon),
 				true,
 				2,
 			),
@@ -472,7 +472,7 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 					),
 				},
 				nil,
-				types.NewParams(exported.Tendermint, exported.Localhost),
+				types.NewParams(exported.Ostracon, exported.Localhost),
 				false,
 				0,
 			),
@@ -503,7 +503,7 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 					),
 				},
 				nil,
-				types.NewParams(exported.Tendermint, exported.Localhost),
+				types.NewParams(exported.Ostracon, exported.Localhost),
 				false,
 				5,
 			),
@@ -531,7 +531,7 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 					),
 				},
 				nil,
-				types.NewParams(exported.Tendermint, exported.Localhost),
+				types.NewParams(exported.Ostracon, exported.Localhost),
 				false,
 				5,
 			),

@@ -16,8 +16,8 @@ const (
 	// Solomachine is used to indicate that the light client is a solo machine.
 	Solomachine string = "06-solomachine"
 
-	// Tendermint is used to indicate that the client uses the Tendermint Consensus Algorithm.
-	Tendermint string = "07-tendermint"
+	// Ostracon is used to indicate that the client uses the Ostracon Consensus Algorithm.
+	Ostracon string = "99-ostracon"
 
 	// Localhost is the client type for a localhost client. It is also used as the clientID
 	// for the localhost client.

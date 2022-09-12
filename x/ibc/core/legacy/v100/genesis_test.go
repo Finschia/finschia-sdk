@@ -58,7 +58,7 @@ func (suite *LegacyTestSuite) TestMigrateGenesisSolomachine() {
 	solomachine := ibctesting.NewSolomachine(suite.T(), suite.chainA.Codec, "06-solomachine-0", "testing", 1)
 	solomachineMulti := ibctesting.NewSolomachine(suite.T(), suite.chainA.Codec, "06-solomachine-1", "testing", 4)
 
-	// create tendermint clients
+	// create ostracon clients
 	// NOTE: only 1 set of metadata is created, we aren't testing ordering
 	// The purpose of this test is to ensure the genesis states can be marshalled/unmarshalled
 	suite.coordinator.SetupClients(path)
@@ -140,7 +140,7 @@ func (suite *LegacyTestSuite) TestMigrateGenesisSolomachine() {
 		clientStore.Set(host.ConsensusStateKey(height2), bz)
 		clientStore.Set(host.ConsensusStateKey(height3), bz)
 	}
-	// solo machine clients must come before tendermint in expected
+	// solo machine clients must come before ostracon in expected
 	clientGenState.Clients = append(clients, clientGenState.Clients...)
 
 	// migrate store get expected genesis
@@ -162,7 +162,7 @@ func (suite *LegacyTestSuite) TestMigrateGenesisSolomachine() {
 		InitialHeight: suite.chainA.GetContext().BlockHeight(),
 	}
 
-	// NOTE: genesis time isn't updated since we aren't testing for tendermint consensus state pruning
+	// NOTE: genesis time isn't updated since we aren't testing for ostracon consensus state pruning
 	migrated, err := v100.MigrateGenesis(appState, clientCtx, genDoc, uint64(connectiontypes.DefaultTimePerBlock))
 	suite.Require().NoError(err)
 

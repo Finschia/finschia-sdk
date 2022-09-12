@@ -14,7 +14,7 @@ type ClientConfig interface {
 	GetClientType() string
 }
 
-type TendermintConfig struct {
+type OstraconConfig struct {
 	TrustLevel                   ibctmtypes.Fraction
 	TrustingPeriod               time.Duration
 	UnbondingPeriod              time.Duration
@@ -23,8 +23,8 @@ type TendermintConfig struct {
 	AllowUpdateAfterMisbehaviour bool
 }
 
-func NewTendermintConfig() *TendermintConfig {
-	return &TendermintConfig{
+func NewOstraconConfig() *OstraconConfig {
+	return &OstraconConfig{
 		TrustLevel:                   DefaultTrustLevel,
 		TrustingPeriod:               TrustingPeriod,
 		UnbondingPeriod:              UnbondingPeriod,
@@ -34,8 +34,8 @@ func NewTendermintConfig() *TendermintConfig {
 	}
 }
 
-func (tmcfg *TendermintConfig) GetClientType() string {
-	return exported.Tendermint
+func (tmcfg *OstraconConfig) GetClientType() string {
+	return exported.Ostracon
 }
 
 type ConnectionConfig struct {

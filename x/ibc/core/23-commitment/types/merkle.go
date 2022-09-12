@@ -76,7 +76,7 @@ func NewMerklePath(keyPath ...string) MerklePath {
 }
 
 // String implements fmt.Stringer.
-// This represents the path in the same way the tendermint KeyPath will
+// This represents the path in the same way the ostracon KeyPath will
 // represent a key path. The backslashes partition the key path into
 // the respective stores they belong to.
 func (mp MerklePath) String() string {

@@ -18,7 +18,7 @@ const (
 // the packet acknowledgement.
 func NewErrorAcknowledgement(err error) channeltypes.Acknowledgement {
 	// the ABCI code is included in the abcitypes.ResponseDeliverTx hash
-	// constructed in Tendermint and is therefore determinstic
+	// constructed in Ostracon and is therefore determinstic
 	_, code, _ := sdkerrors.ABCIInfo(err, false) // discard non-deterministic codespace and log values
 
 	errorString := fmt.Sprintf("ABCI code: %d: %s", code, ackErrorString)

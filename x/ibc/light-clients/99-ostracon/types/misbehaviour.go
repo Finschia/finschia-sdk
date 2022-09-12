@@ -26,9 +26,9 @@ func NewMisbehaviour(clientID string, header1, header2 *Header) *Misbehaviour {
 	}
 }
 
-// ClientType is Tendermint light client
+// ClientType is Ostracon light client
 func (misbehaviour Misbehaviour) ClientType() string {
-	return exported.Tendermint
+	return exported.Ostracon
 }
 
 // GetClientID returns the ID of the client that committed a misbehaviour.
@@ -123,11 +123,11 @@ func (misbehaviour Misbehaviour) ValidateBasic() error {
 func validCommit(chainID string, blockID tmtypes.BlockID, commit *tmproto.Commit, voterSet *tmproto.VoterSet) (err error) {
 	tmCommit, err := tmtypes.CommitFromProto(commit)
 	if err != nil {
-		return sdkerrors.Wrap(err, "commit is not tendermint commit type")
+		return sdkerrors.Wrap(err, "commit is not ostracon commit type")
 	}
 	tmVoterSet, err := tmtypes.VoterSetFromProto(voterSet)
 	if err != nil {
-		return sdkerrors.Wrap(err, "validator set is not tendermint validator set type")
+		return sdkerrors.Wrap(err, "validator set is not ostracon validator set type")
 	}
 
 	if err := tmVoterSet.VerifyCommitLight(chainID, blockID, tmCommit.Height, tmCommit); err != nil {

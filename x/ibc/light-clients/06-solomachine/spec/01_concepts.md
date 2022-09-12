@@ -23,7 +23,7 @@ is used on.
 ## Public Key
 
 The public key can be a single public key or a multi-signature public key. The public key type used
-must fulfill the tendermint public key interface (this will become the SDK public key interface in the
+must fulfill the ostracon public key interface (this will become the SDK public key interface in the
 near future). The public key must be registered on the application codec otherwise encoding/decoding 
 errors will arise. The public key stored in the consensus state is represented as a protobuf `Any`. 
 This allows for flexibility in what other public key types can be supported in the future. 

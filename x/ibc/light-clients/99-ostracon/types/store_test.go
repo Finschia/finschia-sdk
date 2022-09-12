@@ -13,7 +13,7 @@ import (
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
-func (suite *TendermintTestSuite) TestGetConsensusState() {
+func (suite *OstraconTestSuite) TestGetConsensusState() {
 	var (
 		height exported.Height
 		path   *ibctesting.Path
@@ -80,7 +80,7 @@ func (suite *TendermintTestSuite) TestGetConsensusState() {
 	}
 }
 
-func (suite *TendermintTestSuite) TestGetProcessedTime() {
+func (suite *OstraconTestSuite) TestGetProcessedTime() {
 	// setup
 	path := ibctesting.NewPath(suite.chainA, suite.chainB)
 
@@ -121,7 +121,7 @@ func (suite *TendermintTestSuite) TestGetProcessedTime() {
 	suite.Require().False(ok, "retrieved processed time for a non-existent consensus state")
 }
 
-func (suite *TendermintTestSuite) TestIterationKey() {
+func (suite *OstraconTestSuite) TestIterationKey() {
 	testHeights := []exported.Height{
 		clienttypes.NewHeight(0, 1),
 		clienttypes.NewHeight(0, 1234),
@@ -135,7 +135,7 @@ func (suite *TendermintTestSuite) TestIterationKey() {
 	}
 }
 
-func (suite *TendermintTestSuite) TestIterateConsensusStates() {
+func (suite *OstraconTestSuite) TestIterateConsensusStates() {
 	nextValsHash := []byte("nextVals")
 
 	// Set iteration keys and consensus states
@@ -161,7 +161,7 @@ func (suite *TendermintTestSuite) TestIterateConsensusStates() {
 	suite.Require().Equal(expectedArr, testArr)
 }
 
-func (suite *TendermintTestSuite) TestGetNeighboringConsensusStates() {
+func (suite *OstraconTestSuite) TestGetNeighboringConsensusStates() {
 	nextValsHash := []byte("nextVals")
 	cs01 := types.NewConsensusState(time.Now().UTC(), commitmenttypes.NewMerkleRoot([]byte("hash0-1")), nextValsHash)
 	cs04 := types.NewConsensusState(time.Now().UTC(), commitmenttypes.NewMerkleRoot([]byte("hash0-4")), nextValsHash)

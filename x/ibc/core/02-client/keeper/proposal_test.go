@@ -58,7 +58,7 @@ func (suite *KeeperTestSuite) TestClientUpdateProposal() {
 			}, false,
 		},
 		{
-			"cannot use solomachine as substitute for tendermint client", func() {
+			"cannot use solomachine as substitute for ostracon client", func() {
 				solomachine := ibctesting.NewSolomachine(suite.T(), suite.cdc, "solo machine", "", 1)
 				solomachine.Sequence = subjectClientState.GetLatestHeight().GetRevisionHeight() + 1
 				substituteClientState = solomachine.ClientState()

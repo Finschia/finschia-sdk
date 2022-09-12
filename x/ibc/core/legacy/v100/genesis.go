@@ -17,7 +17,7 @@ import (
 //
 // - Update solo machine client state protobuf definition (v1 to v2)
 // - Remove all solo machine consensus states
-// - Remove all expired tendermint consensus states
+// - Remove all expired ostracon consensus states
 func MigrateGenesis(appState genutiltypes.AppMap, clientCtx client.Context, genDoc tmtypes.GenesisDoc, maxExpectedTimePerBlock uint64) (genutiltypes.AppMap, error) {
 	if appState[host.ModuleName] != nil {
 		// ensure legacy solo machines are registered

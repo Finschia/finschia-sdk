@@ -104,12 +104,12 @@ func checkMisbehaviourHeader(
 
 	tmTrustedVoterSet, err := tmtypes.VoterSetFromProto(header.TrustedVoters)
 	if err != nil {
-		return sdkerrors.Wrap(err, "trusted validator set is not tendermint validator set type")
+		return sdkerrors.Wrap(err, "trusted validator set is not ostracon validator set type")
 	}
 
 	tmCommit, err := tmtypes.CommitFromProto(header.Commit)
 	if err != nil {
-		return sdkerrors.Wrap(err, "commit is not tendermint commit type")
+		return sdkerrors.Wrap(err, "commit is not ostracon commit type")
 	}
 
 	// check the trusted fields for the header against ConsensusState
@@ -136,7 +136,7 @@ func checkMisbehaviourHeader(
 	// - ValidatorSet must have TrustLevel similarity with trusted FromValidatorSet
 	// - ValidatorSets on both headers are valid given the last trusted ValidatorSet
 	if err := tmTrustedVoterSet.VerifyCommitLightTrusting(
-		chainID, tmCommit, clientState.TrustLevel.ToTendermint(),
+		chainID, tmCommit, clientState.TrustLevel.ToOstracon(),
 	); err != nil {
 		return sdkerrors.Wrapf(clienttypes.ErrInvalidMisbehaviour, "validator set in header has too much change from trusted validator set: %v", err)
 	}

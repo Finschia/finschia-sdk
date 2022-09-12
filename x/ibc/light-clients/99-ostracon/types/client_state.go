@@ -48,9 +48,9 @@ func (cs ClientState) GetChainID() string {
 	return cs.ChainId
 }
 
-// ClientType is tendermint.
+// ClientType is ostracon.
 func (cs ClientState) ClientType() string {
-	return exported.Tendermint
+	return exported.Ostracon
 }
 
 // GetLatestHeight returns latest block height.
@@ -58,7 +58,7 @@ func (cs ClientState) GetLatestHeight() exported.Height {
 	return cs.LatestHeight
 }
 
-// Status returns the status of the tendermint client.
+// Status returns the status of the ostracon client.
 // The client may be:
 // - Active: FrozenHeight is zero and client is not expired
 // - Frozen: Frozen Height is not zero
@@ -105,14 +105,14 @@ func (cs ClientState) Validate() error {
 
 	// NOTE: the value of tmtypes.MaxChainIDLen may change in the future.
 	// If this occurs, the code here must account for potential difference
-	// between the tendermint version being run by the counterparty chain
-	// and the tendermint version used by this light client.
+	// between the ostracon version being run by the counterparty chain
+	// and the ostracon version used by this light client.
 	// https://github.com/cosmos/ibc-go/issues/177
 	if len(cs.ChainId) > tmtypes.MaxChainIDLen {
 		return sdkerrors.Wrapf(ErrInvalidChainID, "chainID is too long; got: %d, max: %d", len(cs.ChainId), tmtypes.MaxChainIDLen)
 	}
 
-	if err := light.ValidateTrustLevel(cs.TrustLevel.ToTendermint()); err != nil {
+	if err := light.ValidateTrustLevel(cs.TrustLevel.ToOstracon()); err != nil {
 		return err
 	}
 	if cs.TrustingPeriod == 0 {
@@ -131,7 +131,7 @@ func (cs ClientState) Validate() error {
 			"latest height revision number must match chain id revision number (%d != %d)", cs.LatestHeight.RevisionNumber, clienttypes.ParseChainID(cs.ChainId))
 	}
 	if cs.LatestHeight.RevisionHeight == 0 {
-		return sdkerrors.Wrapf(ErrInvalidHeaderHeight, "tendermint client's latest height revision height cannot be zero")
+		return sdkerrors.Wrapf(ErrInvalidHeaderHeight, "ostracon client's latest height revision height cannot be zero")
 	}
 	if cs.TrustingPeriod >= cs.UnbondingPeriod {
 		return sdkerrors.Wrapf(
@@ -178,7 +178,7 @@ func (cs ClientState) ZeroCustomFields() exported.ClientState {
 	}
 }
 
-// Initialize will check that initial consensus state is a Tendermint consensus state
+// Initialize will check that initial consensus state is a Ostracon consensus state
 // and will store ProcessedTime for initial consensus state as ctx.BlockTime()
 func (cs ClientState) Initialize(ctx sdk.Context, _ codec.BinaryCodec, clientStore sdk.KVStore, consState exported.ConsensusState) error {
 	if _, ok := consState.(*ConsensusState); !ok {
@@ -230,7 +230,7 @@ func (cs ClientState) VerifyClientState(
 }
 
 // VerifyClientConsensusState verifies a proof of the consensus state of the
-// Tendermint client stored on the target machine.
+// Ostracon client stored on the target machine.
 func (cs ClientState) VerifyClientConsensusState(
 	store sdk.KVStore,
 	cdc codec.BinaryCodec,

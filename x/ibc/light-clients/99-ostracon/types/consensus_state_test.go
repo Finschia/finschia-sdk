@@ -8,7 +8,7 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
-func (suite *TendermintTestSuite) TestConsensusStateValidateBasic() {
+func (suite *OstraconTestSuite) TestConsensusStateValidateBasic() {
 	testCases := []struct {
 		msg            string
 		consensusState *types.ConsensusState
@@ -63,7 +63,7 @@ func (suite *TendermintTestSuite) TestConsensusStateValidateBasic() {
 		tc := tc
 
 		// check just to increase coverage
-		suite.Require().Equal(exported.Tendermint, tc.consensusState.ClientType())
+		suite.Require().Equal(exported.Ostracon, tc.consensusState.ClientType())
 		suite.Require().Equal(tc.consensusState.GetRoot(), tc.consensusState.Root)
 
 		err := tc.consensusState.ValidateBasic()

@@ -217,7 +217,7 @@ func GetCmdQueryHeader() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "header",
 		Short:   "Query the latest header of the running chain",
-		Long:    "Query the latest Tendermint header of the running chain",
+		Long:    "Query the latest Ostracon header of the running chain",
 		Example: fmt.Sprintf("%s query %s %s  header", version.AppName, host.ModuleName, types.SubModuleName),
 		Args:    cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
@@ -225,7 +225,7 @@ func GetCmdQueryHeader() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			header, _, err := utils.QueryTendermintHeader(clientCtx)
+			header, _, err := utils.QueryOstraconHeader(clientCtx)
 			if err != nil {
 				return err
 			}

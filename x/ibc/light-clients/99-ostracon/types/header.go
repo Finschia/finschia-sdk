@@ -23,12 +23,12 @@ func (h Header) ConsensusState() *ConsensusState {
 	}
 }
 
-// ClientType defines that the Header is a Tendermint consensus algorithm
+// ClientType defines that the Header is a Ostracon consensus algorithm
 func (h Header) ClientType() string {
-	return exported.Tendermint
+	return exported.Ostracon
 }
 
-// GetHeight returns the current height. It returns 0 if the tendermint
+// GetHeight returns the current height. It returns 0 if the ostracon
 // header is nil.
 // NOTE: the header.Header is checked to be non nil in ValidateBasic.
 func (h Header) GetHeight() exported.Height {
@@ -37,7 +37,7 @@ func (h Header) GetHeight() exported.Height {
 }
 
 // GetTime returns the current block timestamp. It returns a zero time if
-// the tendermint header is nil.
+// the ostracon header is nil.
 // NOTE: the header.Header is checked to be non nil in ValidateBasic.
 func (h Header) GetTime() time.Time {
 	return h.Header.Time
@@ -49,14 +49,14 @@ func (h Header) GetTime() time.Time {
 // with MsgCreateClient
 func (h Header) ValidateBasic() error {
 	if h.SignedHeader == nil {
-		return sdkerrors.Wrap(clienttypes.ErrInvalidHeader, "tendermint signed header cannot be nil")
+		return sdkerrors.Wrap(clienttypes.ErrInvalidHeader, "ostracon signed header cannot be nil")
 	}
 	if h.Header == nil {
-		return sdkerrors.Wrap(clienttypes.ErrInvalidHeader, "tendermint header cannot be nil")
+		return sdkerrors.Wrap(clienttypes.ErrInvalidHeader, "ostracon header cannot be nil")
 	}
 	tmSignedHeader, err := tmtypes.SignedHeaderFromProto(h.SignedHeader)
 	if err != nil {
-		return sdkerrors.Wrap(err, "header is not a tendermint header")
+		return sdkerrors.Wrap(err, "header is not a ostracon header")
 	}
 	if err := tmSignedHeader.ValidateBasic(h.Header.GetChainID()); err != nil {
 		return sdkerrors.Wrap(err, "header failed basic validation")
@@ -73,7 +73,7 @@ func (h Header) ValidateBasic() error {
 	}
 	tmValset, err := tmtypes.ValidatorSetFromProto(h.ValidatorSet)
 	if err != nil {
-		return sdkerrors.Wrap(err, "validator set is not tendermint validator set")
+		return sdkerrors.Wrap(err, "validator set is not ostracon validator set")
 	}
 	if !bytes.Equal(h.Header.ValidatorsHash, tmValset.Hash()) {
 		return sdkerrors.Wrap(clienttypes.ErrInvalidHeader, "validator set does not match hash")

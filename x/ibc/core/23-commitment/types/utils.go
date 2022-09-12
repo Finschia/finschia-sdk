@@ -9,7 +9,7 @@ import (
 // ConvertProofs converts crypto.ProofOps into MerkleProof
 func ConvertProofs(tmProof *crypto.ProofOps) (MerkleProof, error) {
 	if tmProof == nil {
-		return MerkleProof{}, sdkerrors.Wrapf(ErrInvalidMerkleProof, "tendermint proof is nil")
+		return MerkleProof{}, sdkerrors.Wrapf(ErrInvalidMerkleProof, "ostracon proof is nil")
 	}
 	// Unmarshal all proof ops to CommitmentProof
 	proofs := make([]*ics23.CommitmentProof, len(tmProof.Ops))
