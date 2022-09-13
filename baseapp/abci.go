@@ -182,7 +182,6 @@ func (app *BaseApp) BeginBlock(req abci.RequestBeginBlock) (res abci.ResponseBeg
 
 	app.deliverState.ctx = app.deliverState.ctx.
 		WithVoteInfos(app.voteInfos).
-		WithConsensusParams(app.GetConsensusParams(app.deliverState.ctx)).
 		WithBlockGasMeter(gasMeter).
 		WithHeaderHash(req.Hash).
 		WithConsensusParams(app.GetConsensusParams(app.deliverState.ctx))
@@ -192,7 +191,8 @@ func (app *BaseApp) BeginBlock(req abci.RequestBeginBlock) (res abci.ResponseBeg
 	if app.checkState != nil {
 		app.checkState.ctx = app.checkState.ctx.
 			WithBlockGasMeter(gasMeter).
-			WithHeaderHash(req.Hash)
+			WithHeaderHash(req.Hash).
+			WithConsensusParams(app.GetConsensusParams(app.deliverState.ctx))
 	}
 
 	if app.beginBlocker != nil {
