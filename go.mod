@@ -29,7 +29,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
 	github.com/hdevalence/ed25519consensus v0.0.0-20220222234857-c00d1f31bab3
 	github.com/improbable-eng/grpc-web v0.15.0
-	github.com/jhump/protoreflect v1.10.3
+	github.com/jhump/protoreflect v1.13.0
 	github.com/line/ostracon v1.0.7-0.20220729051742-2231684789c6
 	github.com/line/wasmvm v1.0.0-0.10.0
 	github.com/magiconair/properties v1.8.6
