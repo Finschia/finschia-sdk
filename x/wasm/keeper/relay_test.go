@@ -19,7 +19,7 @@ import (
 func TestOnOpenChannel(t *testing.T) {
 	var m wasmtesting.MockWasmer
 	wasmtesting.MakeIBCInstantiable(&m)
-	var messenger = &wasmtesting.MockMessageHandler{}
+	messenger := &wasmtesting.MockMessageHandler{}
 	parentCtx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil, WithMessageHandler(messenger))
 	example := SeedNewContractInstance(t, parentCtx, keepers, &m)
 	const myContractGas = 40
@@ -34,12 +34,12 @@ func TestOnOpenChannel(t *testing.T) {
 		"consume contract gas": {
 			contractAddr: example.Contract,
 			contractGas:  myContractGas,
-			expGas:       myContractGas - 24, // FIXME remove x/ibc and use ibc-go
+			expGas:       myContractGas,
 		},
 		"consume max gas": {
 			contractAddr: example.Contract,
 			contractGas:  math.MaxUint64 / types.DefaultGasMultiplier,
-			expGas:       math.MaxUint64/types.DefaultGasMultiplier - 24, // FIXME remove x/ibc and use ibc-go
+			expGas:       math.MaxUint64 / types.DefaultGasMultiplier,
 		},
 		"consume gas on error": {
 			contractAddr: example.Contract,
@@ -80,7 +80,7 @@ func TestOnOpenChannel(t *testing.T) {
 			}
 			require.NoError(t, err)
 			// verify gas consumed
-			const storageCosts = sdk.Gas(2903)
+			const storageCosts = sdk.Gas(2879)
 			assert.Equal(t, spec.expGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
 		})
 	}
@@ -89,7 +89,7 @@ func TestOnOpenChannel(t *testing.T) {
 func TestOnConnectChannel(t *testing.T) {
 	var m wasmtesting.MockWasmer
 	wasmtesting.MakeIBCInstantiable(&m)
-	var messenger = &wasmtesting.MockMessageHandler{}
+	messenger := &wasmtesting.MockMessageHandler{}
 	parentCtx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil, WithMessageHandler(messenger))
 	example := SeedNewContractInstance(t, parentCtx, keepers, &m)
 	const myContractGas = 40
@@ -105,7 +105,7 @@ func TestOnConnectChannel(t *testing.T) {
 	}{
 		"consume contract gas": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go,
+			expContractGas: myContractGas,
 			contractResp:   &wasmvmtypes.IBCBasicResponse{},
 		},
 		"consume gas on error, ignore events + messages": {
@@ -120,14 +120,14 @@ func TestOnConnectChannel(t *testing.T) {
 		},
 		"dispatch contract messages on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas,
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Messages: []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}, {ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Custom: json.RawMessage(`{"foo":"bar"}`)}}},
 			},
 		},
 		"emit contract events on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 10 - 24, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + 10,
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
 			},
@@ -184,11 +184,9 @@ func TestOnConnectChannel(t *testing.T) {
 				return
 			}
 			require.NoError(t, err)
-
 			// verify gas consumed
-			const storageCosts = sdk.Gas(2903)
+			const storageCosts = sdk.Gas(2879)
 			assert.Equal(t, spec.expContractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
-
 			// verify msgs dispatched
 			require.Len(t, *capturedMsgs, len(spec.contractResp.Messages))
 			for i, m := range spec.contractResp.Messages {
@@ -202,7 +200,7 @@ func TestOnConnectChannel(t *testing.T) {
 func TestOnCloseChannel(t *testing.T) {
 	var m wasmtesting.MockWasmer
 	wasmtesting.MakeIBCInstantiable(&m)
-	var messenger = &wasmtesting.MockMessageHandler{}
+	messenger := &wasmtesting.MockMessageHandler{}
 	parentCtx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil, WithMessageHandler(messenger))
 	example := SeedNewContractInstance(t, parentCtx, keepers, &m)
 	const myContractGas = 40
@@ -218,7 +216,7 @@ func TestOnCloseChannel(t *testing.T) {
 	}{
 		"consume contract gas": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas,
 			contractResp:   &wasmvmtypes.IBCBasicResponse{},
 		},
 		"consume gas on error, ignore events + messages": {
@@ -233,14 +231,14 @@ func TestOnCloseChannel(t *testing.T) {
 		},
 		"dispatch contract messages on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas,
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Messages: []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}, {ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Custom: json.RawMessage(`{"foo":"bar"}`)}}},
 			},
 		},
 		"emit contract events on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 10 - 24, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + 10,
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
 			},
@@ -297,9 +295,8 @@ func TestOnCloseChannel(t *testing.T) {
 			}
 			require.NoError(t, err)
 			// verify gas consumed
-			const storageCosts = sdk.Gas(2903)
+			const storageCosts = sdk.Gas(2879)
 			assert.Equal(t, spec.expContractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
-
 			// verify msgs dispatched
 			require.Len(t, *capturedMsgs, len(spec.contractResp.Messages))
 			for i, m := range spec.contractResp.Messages {
@@ -313,11 +310,11 @@ func TestOnCloseChannel(t *testing.T) {
 func TestOnRecvPacket(t *testing.T) {
 	var m wasmtesting.MockWasmer
 	wasmtesting.MakeIBCInstantiable(&m)
-	var messenger = &wasmtesting.MockMessageHandler{}
+	messenger := &wasmtesting.MockMessageHandler{}
 	parentCtx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil, WithMessageHandler(messenger))
 	example := SeedNewContractInstance(t, parentCtx, keepers, &m)
 	const myContractGas = 40
-	const storageCosts = sdk.Gas(2903)
+	const storageCosts = sdk.Gas(2879)
 
 	specs := map[string]struct {
 		contractAddr       sdk.AccAddress
@@ -332,7 +329,7 @@ func TestOnRecvPacket(t *testing.T) {
 	}{
 		"consume contract gas": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas,
 			contractResp: &wasmvmtypes.IBCReceiveResponse{
 				Acknowledgement: []byte("myAck"),
 			},
@@ -340,7 +337,7 @@ func TestOnRecvPacket(t *testing.T) {
 		},
 		"can return empty ack": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas,
 			contractResp:   &wasmvmtypes.IBCReceiveResponse{},
 		},
 		"consume gas on error, ignore events + messages": {
@@ -356,7 +353,7 @@ func TestOnRecvPacket(t *testing.T) {
 		},
 		"dispatch contract messages on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas,
 			contractResp: &wasmvmtypes.IBCReceiveResponse{
 				Acknowledgement: []byte("myAck"),
 				Messages:        []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}, {ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Custom: json.RawMessage(`{"foo":"bar"}`)}}},
@@ -365,7 +362,7 @@ func TestOnRecvPacket(t *testing.T) {
 		},
 		"emit contract attributes on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 10 - 24, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + 10,
 			contractResp: &wasmvmtypes.IBCReceiveResponse{
 				Acknowledgement: []byte("myAck"),
 				Attributes:      []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
@@ -375,7 +372,7 @@ func TestOnRecvPacket(t *testing.T) {
 		},
 		"emit contract events on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 46 - 24, // charge or custom event as well // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + 46, // charge or custom event as well
 			contractResp: &wasmvmtypes.IBCReceiveResponse{
 				Acknowledgement: []byte("myAck"),
 				Attributes:      []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
@@ -404,7 +401,7 @@ func TestOnRecvPacket(t *testing.T) {
 		},
 		"submessage reply can overwrite ack data": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + storageCosts - 24*2, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + storageCosts,
 			contractResp: &wasmvmtypes.IBCReceiveResponse{
 				Acknowledgement: []byte("myAck"),
 				Messages:        []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyAlways, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}},
@@ -460,9 +457,8 @@ func TestOnRecvPacket(t *testing.T) {
 			require.Equal(t, spec.expAck, gotAck)
 
 			// verify gas consumed
-			const storageCosts = sdk.Gas(2903)
+			const storageCosts = sdk.Gas(2879)
 			assert.Equal(t, spec.expContractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
-
 			// verify msgs dispatched
 			require.Len(t, *capturedMsgs, len(spec.contractResp.Messages))
 			for i, m := range spec.contractResp.Messages {
@@ -476,7 +472,7 @@ func TestOnRecvPacket(t *testing.T) {
 func TestOnAckPacket(t *testing.T) {
 	var m wasmtesting.MockWasmer
 	wasmtesting.MakeIBCInstantiable(&m)
-	var messenger = &wasmtesting.MockMessageHandler{}
+	messenger := &wasmtesting.MockMessageHandler{}
 	parentCtx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil, WithMessageHandler(messenger))
 	example := SeedNewContractInstance(t, parentCtx, keepers, &m)
 	const myContractGas = 40
@@ -492,7 +488,7 @@ func TestOnAckPacket(t *testing.T) {
 	}{
 		"consume contract gas": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas,
 			contractResp:   &wasmvmtypes.IBCBasicResponse{},
 		},
 		"consume gas on error, ignore events + messages": {
@@ -507,14 +503,14 @@ func TestOnAckPacket(t *testing.T) {
 		},
 		"dispatch contract messages on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas,
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Messages: []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}, {ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Custom: json.RawMessage(`{"foo":"bar"}`)}}},
 			},
 		},
 		"emit contract events on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 10 - 24, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + 10,
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
 			},
@@ -538,7 +534,6 @@ func TestOnAckPacket(t *testing.T) {
 	}
 	for name, spec := range specs {
 		t.Run(name, func(t *testing.T) {
-
 			myAck := wasmvmtypes.IBCPacketAckMsg{Acknowledgement: wasmvmtypes.IBCAcknowledgement{Data: []byte("myAck")}}
 			m.IBCPacketAckFn = func(codeID wasmvm.Checksum, env wasmvmtypes.Env, msg wasmvmtypes.IBCPacketAckMsg, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) (*wasmvmtypes.IBCBasicResponse, uint64, error) {
 				assert.Equal(t, myAck, msg)
@@ -566,11 +561,9 @@ func TestOnAckPacket(t *testing.T) {
 				return
 			}
 			require.NoError(t, err)
-
 			// verify gas consumed
-			const storageCosts = sdk.Gas(2903)
+			const storageCosts = sdk.Gas(2879)
 			assert.Equal(t, spec.expContractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
-
 			// verify msgs dispatched
 			require.Len(t, *capturedMsgs, len(spec.contractResp.Messages))
 			for i, m := range spec.contractResp.Messages {
@@ -584,7 +577,7 @@ func TestOnAckPacket(t *testing.T) {
 func TestOnTimeoutPacket(t *testing.T) {
 	var m wasmtesting.MockWasmer
 	wasmtesting.MakeIBCInstantiable(&m)
-	var messenger = &wasmtesting.MockMessageHandler{}
+	messenger := &wasmtesting.MockMessageHandler{}
 	parentCtx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil, WithMessageHandler(messenger))
 	example := SeedNewContractInstance(t, parentCtx, keepers, &m)
 	const myContractGas = 40
@@ -600,7 +593,7 @@ func TestOnTimeoutPacket(t *testing.T) {
 	}{
 		"consume contract gas": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas,
 			contractResp:   &wasmvmtypes.IBCBasicResponse{},
 		},
 		"consume gas on error, ignore events + messages": {
@@ -615,15 +608,14 @@ func TestOnTimeoutPacket(t *testing.T) {
 		},
 		"dispatch contract messages on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas - 24, // FIXME remove x/ibc and use ibc-go
-
+			expContractGas: myContractGas,
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Messages: []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}, {ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Custom: json.RawMessage(`{"foo":"bar"}`)}}},
 			},
 		},
 		"emit contract attributes on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 10 - 24, // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + 10,
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
 			},
@@ -631,7 +623,7 @@ func TestOnTimeoutPacket(t *testing.T) {
 		},
 		"emit contract events on success": {
 			contractAddr:   example.Contract,
-			expContractGas: myContractGas + 46 - 24, // cost for custom events // FIXME remove x/ibc and use ibc-go
+			expContractGas: myContractGas + 46, // cost for custom events
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
 				Events: []wasmvmtypes.Event{{
@@ -690,9 +682,8 @@ func TestOnTimeoutPacket(t *testing.T) {
 			}
 			require.NoError(t, err)
 			// verify gas consumed
-			const storageCosts = sdk.Gas(2903)
+			const storageCosts = sdk.Gas(2879)
 			assert.Equal(t, spec.expContractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
-
 			// verify msgs dispatched
 			require.Len(t, *capturedMsgs, len(spec.contractResp.Messages))
 			for i, m := range spec.contractResp.Messages {
