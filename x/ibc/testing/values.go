@@ -21,7 +21,7 @@ const (
 	FirstChannelID    = "channel-0"
 	FirstConnectionID = "connection-0"
 
-	// Default params constants used to create a TM client
+	// Default params constants used to create a OC client
 	TrustingPeriod     time.Duration = time.Hour * 24 * 7 * 2
 	UnbondingPeriod    time.Duration = time.Hour * 24 * 7 * 3
 	MaxClockDrift      time.Duration = time.Second * 10
@@ -44,7 +44,7 @@ const (
 var (
 	DefaultOpenInitVersion *connectiontypes.Version
 
-	// Default params variables used to create a TM client
+	// Default params variables used to create a OC client
 	DefaultTrustLevel ibcoctypes.Fraction = ibcoctypes.DefaultTrustLevel
 	TestCoin                              = sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100))
 

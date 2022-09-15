@@ -96,7 +96,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.valSet = octypes.NewValidatorSet([]*octypes.Validator{validator})
 	suite.valSetHash = suite.valSet.Hash()
 	voterSet := octypes.WrapValidatorsToVoterSet(suite.valSet.Validators)
-	suite.header = suite.chainA.CreateTMClientHeader(testChainID, int64(testClientHeight.RevisionHeight), testClientHeightMinus1, now2, suite.valSet, suite.valSet, voterSet, voterSet, []octypes.PrivValidator{suite.privVal})
+	suite.header = suite.chainA.CreateOCClientHeader(testChainID, int64(testClientHeight.RevisionHeight), testClientHeightMinus1, now2, suite.valSet, suite.valSet, voterSet, voterSet, []octypes.PrivValidator{suite.privVal})
 	suite.consensusState = ibcoctypes.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot([]byte("hash")), suite.valSetHash)
 
 	var validators stakingtypes.Validators
@@ -330,7 +330,7 @@ func (suite KeeperTestSuite) TestConsensusStateHelpers() {
 	testClientHeightPlus5 := types.NewHeight(0, height+5)
 	voterSet := octypes.WrapValidatorsToVoterSet(suite.valSet.Validators)
 
-	header := suite.chainA.CreateTMClientHeader(testClientID, int64(testClientHeightPlus5.RevisionHeight), testClientHeight, suite.header.Header.Time.Add(time.Minute),
+	header := suite.chainA.CreateOCClientHeader(testClientID, int64(testClientHeightPlus5.RevisionHeight), testClientHeight, suite.header.Header.Time.Add(time.Minute),
 		suite.valSet, suite.valSet, voterSet, voterSet, []octypes.PrivValidator{suite.privVal})
 
 	// mock update functionality

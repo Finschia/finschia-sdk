@@ -87,7 +87,7 @@ func (suite *OstraconTestSuite) SetupTest() {
 	suite.valSet = octypes.NewValidatorSet([]*octypes.Validator{val})
 	suite.valsHash = suite.valSet.Hash()
 	voterSet := octypes.WrapValidatorsToVoterSet(suite.valSet.Validators)
-	suite.header = suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight), heightMinus1, suite.now, suite.valSet, suite.valSet, voterSet, voterSet, []octypes.PrivValidator{suite.privVal})
+	suite.header = suite.chainA.CreateOCClientHeader(chainID, int64(height.RevisionHeight), heightMinus1, suite.now, suite.valSet, suite.valSet, voterSet, voterSet, []octypes.PrivValidator{suite.privVal})
 	suite.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{Height: 1, Time: suite.now})
 }
 

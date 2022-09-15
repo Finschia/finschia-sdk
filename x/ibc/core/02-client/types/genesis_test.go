@@ -57,7 +57,7 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 	voterSet := octypes.WrapValidatorsToVoterSet(valSet.Validators)
 
 	heightMinus1 := types.NewHeight(0, height-1)
-	header := suite.chainA.CreateTMClientHeader(chainID, int64(clientHeight.RevisionHeight), heightMinus1, now, valSet, valSet, voterSet, voterSet, []octypes.PrivValidator{privVal})
+	header := suite.chainA.CreateOCClientHeader(chainID, int64(clientHeight.RevisionHeight), heightMinus1, now, valSet, valSet, voterSet, voterSet, []octypes.PrivValidator{privVal})
 
 	testCases := []struct {
 		name     string

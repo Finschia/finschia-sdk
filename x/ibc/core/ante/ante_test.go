@@ -157,7 +157,7 @@ func (suite *AnteTestSuite) createUpdateClientMessage() sdk.Msg {
 
 	switch endpoint.ClientConfig.GetClientType() {
 	case exported.Ostracon:
-		header, _ = endpoint.Chain.ConstructUpdateTMClientHeader(endpoint.Counterparty.Chain, endpoint.ClientID)
+		header, _ = endpoint.Chain.ConstructUpdateOCClientHeader(endpoint.Counterparty.Chain, endpoint.ClientID)
 
 	default:
 	}

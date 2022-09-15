@@ -42,7 +42,7 @@ import (
 	"github.com/line/lbm-sdk/x/wasm"
 )
 
-// TestChain is a testing struct that wraps a simapp with the last TM Header, the current ABCI
+// TestChain is a testing struct that wraps a simapp with the last OC Header, the current ABCI
 // header and the validators of the TestChain. It also contains a field called ChainID. This
 // is the clientID that *other* chains use to refer to this TestChain. The SenderAccount
 // is used for delivering transactions through the application state.
@@ -217,7 +217,7 @@ func (chain *TestChain) QueryConsensusStateProof(clientID string) ([]byte, clien
 func (chain *TestChain) NextBlock() {
 	// set the last header to the current header
 	// use nil trusted fields
-	chain.LastHeader = chain.CurrentTMClientHeader()
+	chain.LastHeader = chain.CurrentOCClientHeader()
 
 	// increment the current header
 	chain.CurrentHeader = ocproto.Header{
@@ -365,15 +365,15 @@ func (chain *TestChain) GetPrefix() commitmenttypes.MerklePrefix {
 	return commitmenttypes.NewMerklePrefix(chain.App.GetIBCKeeper().ConnectionKeeper.GetCommitmentPrefix().Bytes())
 }
 
-// ConstructUpdateTMClientHeader will construct a valid 99-ostracon Header to update the
+// ConstructUpdateOCClientHeader will construct a valid 99-ostracon Header to update the
 // light client on the source chain.
-func (chain *TestChain) ConstructUpdateTMClientHeader(counterparty *TestChain, clientID string) (*ibcoctypes.Header, error) {
-	return chain.ConstructUpdateTMClientHeaderWithTrustedHeight(counterparty, clientID, clienttypes.ZeroHeight())
+func (chain *TestChain) ConstructUpdateOCClientHeader(counterparty *TestChain, clientID string) (*ibcoctypes.Header, error) {
+	return chain.ConstructUpdateOCClientHeaderWithTrustedHeight(counterparty, clientID, clienttypes.ZeroHeight())
 }
 
-// ConstructUpdateTMClientHeader will construct a valid 99-ostracon Header to update the
+// ConstructUpdateOCClientHeader will construct a valid 99-ostracon Header to update the
 // light client on the source chain.
-func (chain *TestChain) ConstructUpdateTMClientHeaderWithTrustedHeight(counterparty *TestChain, clientID string, trustedHeight clienttypes.Height) (*ibcoctypes.Header, error) {
+func (chain *TestChain) ConstructUpdateOCClientHeaderWithTrustedHeight(counterparty *TestChain, clientID string, trustedHeight clienttypes.Height) (*ibcoctypes.Header, error) {
 	header := counterparty.LastHeader
 	// Relayer must query for LatestHeight on client to get TrustedHeight if the trusted height is not set
 	if trustedHeight.IsZero() {
@@ -429,15 +429,15 @@ func (chain *TestChain) ExpireClient(amount time.Duration) {
 	chain.Coordinator.IncrementTimeBy(amount)
 }
 
-// CurrentTMClientHeader creates a TM header using the current header parameters
+// CurrentOCClientHeader creates a OC header using the current header parameters
 // on the chain. The trusted fields in the header are set to nil.
-func (chain *TestChain) CurrentTMClientHeader() *ibcoctypes.Header {
-	return chain.CreateTMClientHeader(chain.ChainID, chain.CurrentHeader.Height, clienttypes.Height{}, chain.CurrentHeader.Time, chain.Vals, nil, chain.Voters, nil, chain.Signers)
+func (chain *TestChain) CurrentOCClientHeader() *ibcoctypes.Header {
+	return chain.CreateOCClientHeader(chain.ChainID, chain.CurrentHeader.Height, clienttypes.Height{}, chain.CurrentHeader.Time, chain.Vals, nil, chain.Voters, nil, chain.Signers)
 }
 
-// CreateTMClientHeader creates a TM header to update the TM client. Args are passed in to allow
+// CreateOCClientHeader creates a OC header to update the OC client. Args are passed in to allow
 // caller flexibility to use params that differ from the chain.
-func (chain *TestChain) CreateTMClientHeader(chainID string, blockHeight int64, trustedHeight clienttypes.Height, timestamp time.Time, tmValSet, tmTrustedVals *octypes.ValidatorSet, tmVoterSet, tmTrustedVoterSet *octypes.VoterSet, signers []octypes.PrivValidator) *ibcoctypes.Header {
+func (chain *TestChain) CreateOCClientHeader(chainID string, blockHeight int64, trustedHeight clienttypes.Height, timestamp time.Time, tmValSet, tmTrustedVals *octypes.ValidatorSet, tmVoterSet, tmTrustedVoterSet *octypes.VoterSet, signers []octypes.PrivValidator) *ibcoctypes.Header {
 	var (
 		valSet        *ocproto.ValidatorSet
 		trustedVals   *ocproto.ValidatorSet
