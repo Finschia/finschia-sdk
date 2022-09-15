@@ -32,7 +32,7 @@ func (k Keeper) OnOpenChannel(
 	}
 
 	env := types.NewEnv(ctx, contractAddr)
-	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
+	querier := k.newQueryHandler(ctx, contractAddr)
 
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
@@ -68,7 +68,7 @@ func (k Keeper) OnConnectChannel(
 	}
 
 	env := types.NewEnv(ctx, contractAddr)
-	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
+	querier := k.newQueryHandler(ctx, contractAddr)
 
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
@@ -101,7 +101,7 @@ func (k Keeper) OnCloseChannel(
 	}
 
 	params := types.NewEnv(ctx, contractAddr)
-	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
+	querier := k.newQueryHandler(ctx, contractAddr)
 
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
@@ -133,7 +133,7 @@ func (k Keeper) OnRecvPacket(
 	}
 
 	env := types.NewEnv(ctx, contractAddr)
-	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
+	querier := k.newQueryHandler(ctx, contractAddr)
 
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
@@ -169,7 +169,7 @@ func (k Keeper) OnAckPacket(
 	}
 
 	env := types.NewEnv(ctx, contractAddr)
-	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
+	querier := k.newQueryHandler(ctx, contractAddr)
 
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
@@ -198,7 +198,7 @@ func (k Keeper) OnTimeoutPacket(
 	}
 
 	env := types.NewEnv(ctx, contractAddr)
-	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
+	querier := k.newQueryHandler(ctx, contractAddr)
 
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
