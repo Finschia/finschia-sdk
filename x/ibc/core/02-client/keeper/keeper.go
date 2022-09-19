@@ -5,34 +5,34 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/line/ostracon/libs/log"
-	"github.com/line/ostracon/light"
-
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
+	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
+	"github.com/line/ostracon/libs/log"
+	"github.com/line/ostracon/light"
+
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
-	paramtypes "github.com/line/lbm-sdk/x/params/types"
-	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // Keeper represents a type that grants read and write permissions to any client
 // state information
 type Keeper struct {
 	storeKey      sdk.StoreKey
-	cdc           codec.Codec
+	cdc           codec.BinaryCodec
 	paramSpace    paramtypes.Subspace
 	stakingKeeper types.StakingKeeper
 	upgradeKeeper types.UpgradeKeeper
 }
 
 // NewKeeper creates a new NewKeeper instance
-func NewKeeper(cdc codec.Codec, key sdk.StoreKey, paramSpace paramtypes.Subspace, sk types.StakingKeeper, uk types.UpgradeKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, key sdk.StoreKey, paramSpace paramtypes.Subspace, sk types.StakingKeeper, uk types.UpgradeKeeper) Keeper {
 	// set KeyTable if it has not already been set
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
@@ -241,40 +241,40 @@ func (k Keeper) GetLatestClientConsensusState(ctx sdk.Context, clientID string) 
 // GetSelfConsensusState introspects the (self) past historical info at a given height
 // and returns the expected consensus state at that height.
 // For now, can only retrieve self consensus states for the current revision
-func (k Keeper) GetSelfConsensusState(ctx sdk.Context, height exported.Height) (exported.ConsensusState, bool) {
+func (k Keeper) GetSelfConsensusState(ctx sdk.Context, height exported.Height) (exported.ConsensusState, error) {
 	selfHeight, ok := height.(types.Height)
 	if !ok {
-		return nil, false
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expected %T, got %T", types.Height{}, height)
 	}
 	// check that height revision matches chainID revision
 	revision := types.ParseChainID(ctx.ChainID())
 	if revision != height.GetRevisionNumber() {
-		return nil, false
+		return nil, sdkerrors.Wrapf(types.ErrInvalidHeight, "chainID revision number does not match height revision number: expected %d, got %d", revision, height.GetRevisionNumber())
 	}
 	histInfo, found := k.stakingKeeper.GetHistoricalInfo(ctx, int64(selfHeight.RevisionHeight))
 	if !found {
-		return nil, false
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrNotFound, "no historical info found at height %d", selfHeight.RevisionHeight)
 	}
 
-	consensusState := &ibctmtypes.ConsensusState{
+	consensusState := &ibcoctypes.ConsensusState{
 		Timestamp:          histInfo.Header.Time,
 		Root:               commitmenttypes.NewMerkleRoot(histInfo.Header.GetAppHash()),
 		NextValidatorsHash: histInfo.Header.NextValidatorsHash,
 	}
-	return consensusState, true
+	return consensusState, nil
 }
 
 // ValidateSelfClient validates the client parameters for a client of the running chain
 // This function is only used to validate the client state the counterparty stores for this chain
 // Client must be in same revision as the executing chain
 func (k Keeper) ValidateSelfClient(ctx sdk.Context, clientState exported.ClientState) error {
-	tmClient, ok := clientState.(*ibctmtypes.ClientState)
+	tmClient, ok := clientState.(*ibcoctypes.ClientState)
 	if !ok {
 		return sdkerrors.Wrapf(types.ErrInvalidClient, "client must be a Ostracon client, expected: %T, got: %T",
-			&ibctmtypes.ClientState{}, tmClient)
+			&ibcoctypes.ClientState{}, tmClient)
 	}
 
-	if clientState.IsFrozen() {
+	if !tmClient.FrozenHeight.IsZero() {
 		return types.ErrClientFrozen
 	}
 
@@ -337,6 +337,11 @@ func (k Keeper) GetUpgradePlan(ctx sdk.Context) (plan upgradetypes.Plan, havePla
 // GetUpgradedClient executes the upgrade keeper GetUpgradeClient function.
 func (k Keeper) GetUpgradedClient(ctx sdk.Context, planHeight int64) ([]byte, bool) {
 	return k.upgradeKeeper.GetUpgradedClient(ctx, planHeight)
+}
+
+// GetUpgradedConsensusState returns the upgraded consensus state
+func (k Keeper) GetUpgradedConsensusState(ctx sdk.Context, planHeight int64) ([]byte, bool) {
+	return k.upgradeKeeper.GetUpgradedConsensusState(ctx, planHeight)
 }
 
 // SetUpgradedConsensusState executes the upgrade keeper SetUpgradedConsensusState function.

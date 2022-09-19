@@ -4,6 +4,7 @@ import (
 	"bytes"
 
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
@@ -24,13 +25,6 @@ func (misbehaviour Misbehaviour) GetClientID() string {
 // Type implements Evidence interface.
 func (misbehaviour Misbehaviour) Type() string {
 	return exported.TypeClientMisbehaviour
-}
-
-// GetHeight returns the sequence at which misbehaviour occurred.
-// Return exported.Height to satisfy interface
-// Revision number is always 0 for a solo-machine
-func (misbehaviour Misbehaviour) GetHeight() exported.Height {
-	return clienttypes.NewHeight(0, misbehaviour.Sequence)
 }
 
 // ValidateBasic implements Evidence interface.

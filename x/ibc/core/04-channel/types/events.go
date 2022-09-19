@@ -14,14 +14,20 @@ const (
 	AttributeCounterpartyPortID    = "counterparty_port_id"
 	AttributeCounterpartyChannelID = "counterparty_channel_id"
 
-	EventTypeSendPacket        = "send_packet"
-	EventTypeRecvPacket        = "recv_packet"
-	EventTypeWriteAck          = "write_acknowledgement"
-	EventTypeAcknowledgePacket = "acknowledge_packet"
-	EventTypeTimeoutPacket     = "timeout_packet"
+	EventTypeSendPacket           = "send_packet"
+	EventTypeRecvPacket           = "recv_packet"
+	EventTypeWriteAck             = "write_acknowledgement"
+	EventTypeAcknowledgePacket    = "acknowledge_packet"
+	EventTypeTimeoutPacket        = "timeout_packet"
+	EventTypeTimeoutPacketOnClose = "timeout_on_close_packet"
 
-	AttributeKeyData             = "packet_data"
-	AttributeKeyAck              = "packet_ack"
+	// NOTE: DEPRECATED in favor of AttributeKeyDataHex
+	AttributeKeyData = "packet_data"
+	// NOTE: DEPRECATED in favor of AttributeKeyAckHex
+	AttributeKeyAck = "packet_ack"
+
+	AttributeKeyDataHex          = "packet_data_hex"
+	AttributeKeyAckHex           = "packet_ack_hex"
 	AttributeKeyTimeoutHeight    = "packet_timeout_height"
 	AttributeKeyTimeoutTimestamp = "packet_timeout_timestamp"
 	AttributeKeySequence         = "packet_sequence"
@@ -35,12 +41,12 @@ const (
 
 // IBC channel events vars
 var (
-	EventTypeChannelOpenInit     = MsgChannelOpenInit{}.Type()
-	EventTypeChannelOpenTry      = MsgChannelOpenTry{}.Type()
-	EventTypeChannelOpenAck      = MsgChannelOpenAck{}.Type()
-	EventTypeChannelOpenConfirm  = MsgChannelOpenConfirm{}.Type()
-	EventTypeChannelCloseInit    = MsgChannelCloseInit{}.Type()
-	EventTypeChannelCloseConfirm = MsgChannelCloseConfirm{}.Type()
+	EventTypeChannelOpenInit     = "channel_open_init"
+	EventTypeChannelOpenTry      = "channel_open_try"
+	EventTypeChannelOpenAck      = "channel_open_ack"
+	EventTypeChannelOpenConfirm  = "channel_open_confirm"
+	EventTypeChannelCloseInit    = "channel_close_init"
+	EventTypeChannelCloseConfirm = "channel_close_confirm"
 
 	AttributeValueCategory = fmt.Sprintf("%s_%s", host.ModuleName, SubModuleName)
 )

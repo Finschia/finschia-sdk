@@ -5,6 +5,7 @@ import (
 
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )

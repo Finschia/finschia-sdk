@@ -2,6 +2,7 @@ package types
 
 import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
+
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 

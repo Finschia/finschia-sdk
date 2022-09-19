@@ -7,13 +7,13 @@ import (
 	"sort"
 	"strings"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/query"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
@@ -188,6 +188,33 @@ func (q Keeper) ConsensusStates(c context.Context, req *types.QueryConsensusStat
 	}, nil
 }
 
+// ClientStatus implements the Query/ClientStatus gRPC method
+func (q Keeper) ClientStatus(c context.Context, req *types.QueryClientStatusRequest) (*types.QueryClientStatusResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if err := host.ClientIdentifierValidator(req.ClientId); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	clientState, found := q.GetClientState(ctx, req.ClientId)
+	if !found {
+		return nil, status.Error(
+			codes.NotFound,
+			sdkerrors.Wrap(types.ErrClientNotFound, req.ClientId).Error(),
+		)
+	}
+
+	clientStore := q.ClientStore(ctx, req.ClientId)
+	status := clientState.Status(ctx, clientStore, q.cdc)
+
+	return &types.QueryClientStatusResponse{
+		Status: status.String(),
+	}, nil
+}
+
 // ClientParams implements the Query/ClientParams gRPC method
 func (q Keeper) ClientParams(c context.Context, _ *types.QueryClientParamsRequest) (*types.QueryClientParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
@@ -204,11 +231,8 @@ func (q Keeper) UpgradedClientState(c context.Context, req *types.QueryUpgradedC
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	if err := host.ClientIdentifierValidator(req.ClientId); err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
 	ctx := sdk.UnwrapSDKContext(c)
+
 	plan, found := q.GetUpgradePlan(ctx)
 	if !found {
 		return nil, status.Error(
@@ -218,10 +242,7 @@ func (q Keeper) UpgradedClientState(c context.Context, req *types.QueryUpgradedC
 
 	bz, found := q.GetUpgradedClient(ctx, plan.Height)
 	if !found {
-		return nil, status.Error(
-			codes.NotFound,
-			sdkerrors.Wrap(types.ErrClientNotFound, req.ClientId).Error(),
-		)
+		return nil, status.Error(codes.NotFound, types.ErrClientNotFound.Error())
 	}
 
 	clientState, err := types.UnmarshalClientState(q.cdc, bz)
@@ -238,5 +259,35 @@ func (q Keeper) UpgradedClientState(c context.Context, req *types.QueryUpgradedC
 
 	return &types.QueryUpgradedClientStateResponse{
 		UpgradedClientState: any,
+	}, nil
+}
+
+// UpgradedConsensusState implements the Query/UpgradedConsensusState gRPC method
+func (q Keeper) UpgradedConsensusState(c context.Context, req *types.QueryUpgradedConsensusStateRequest) (*types.QueryUpgradedConsensusStateResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+
+	bz, found := q.GetUpgradedConsensusState(ctx, ctx.BlockHeight())
+	if !found {
+		return nil, status.Errorf(codes.NotFound, "%s, height %d", types.ErrConsensusStateNotFound.Error(), ctx.BlockHeight())
+	}
+
+	consensusState, err := types.UnmarshalConsensusState(q.cdc, bz)
+	if err != nil {
+		return nil, status.Error(
+			codes.Internal, err.Error(),
+		)
+	}
+
+	any, err := types.PackConsensusState(consensusState)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QueryUpgradedConsensusStateResponse{
+		UpgradedConsensusState: any,
 	}, nil
 }

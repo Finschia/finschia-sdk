@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/stretchr/testify/require"
+
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 )
 
@@ -16,7 +16,8 @@ const (
 	validPort        = "testportid"
 	invalidPort      = "(invalidport1)"
 	invalidShortPort = "p"
-	invalidLongPort  = "invalidlongportinvalidlongportinvalidlongportidinvalidlongportidinvalidinvalidlongportinvalidlongportinvalidlongportinvalidlongport"
+	// 195 characters
+	invalidLongPort = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis eros neque, ultricies vel ligula ac, convallis porttitor elit. Maecenas tincidunt turpis elit, vel faucibus nisl pellentesque sodales"
 
 	validChannel        = "testchannel"
 	invalidChannel      = "(invalidchannel1)"
@@ -25,13 +26,13 @@ const (
 )
 
 var (
-	addr1     = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr1     = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address()).String()
 	addr2     = sdk.AccAddress("testaddr2").String()
-	emptyAddr sdk.AccAddress
+	emptyAddr string
 
 	coin             = sdk.NewCoin("atom", sdk.NewInt(100))
 	ibcCoin          = sdk.NewCoin("ibc/7F1D3FCF4AE79E1554D670D1AD949A9BA4E4A3C76C63093E17E446A46061A7A2", sdk.NewInt(100))
-	invalidIBCCoin   = sdk.NewCoin("notibc/7F1D3FCF4AE79E1554D670D1AD949A9BA4E4A3C76C63093E17E446A46061A7A2", sdk.NewInt(100))
+	invalidIBCCoin   = sdk.NewCoin("ibc/7F1D3FCF4AE79E1554", sdk.NewInt(100))
 	invalidDenomCoin = sdk.Coin{Denom: "0atom", Amount: sdk.NewInt(100)}
 	zeroCoin         = sdk.Coin{Denom: "atoms", Amount: sdk.NewInt(0)}
 
@@ -96,8 +97,10 @@ func TestMsgTransferValidation(t *testing.T) {
 
 // TestMsgTransferGetSigners tests GetSigners for MsgTransfer
 func TestMsgTransferGetSigners(t *testing.T) {
-	msg := NewMsgTransfer(validPort, validChannel, coin, addr1, addr2, timeoutHeight, 0)
+	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+
+	msg := NewMsgTransfer(validPort, validChannel, coin, addr.String(), addr2, timeoutHeight, 0)
 	res := msg.GetSigners()
 
-	require.Equal(t, []sdk.AccAddress{addr1}, res)
+	require.Equal(t, []sdk.AccAddress{addr}, res)
 }

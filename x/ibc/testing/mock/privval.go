@@ -1,13 +1,12 @@
 package mock
 
 import (
-	"github.com/line/ostracon/crypto"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	octypes "github.com/line/ostracon/types"
-
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/ostracon/crypto"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 )
 
 var _ octypes.PrivValidator = PV{}
