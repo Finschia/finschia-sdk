@@ -30,13 +30,13 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
-const iavlDisablefastNodeDefault = false
-
 const (
 	latestVersionKey = "s/latest"
 	pruneHeightsKey  = "s/pruneheights"
 	commitInfoKeyFmt = "s/%d" // s/<version>
 )
+
+const iavlDisablefastNodeDefault = false
 
 // Store is composed of many CommitStores. Name contrasts with
 // cacheMultiStore which is used for branching other MultiStores. It implements

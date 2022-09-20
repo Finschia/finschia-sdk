@@ -228,15 +228,15 @@ func DefaultConfig() *Config {
 		BaseConfig: BaseConfig{
 			MinGasPrices:        defaultMinGasPrices,
 			InterBlockCache:     true,
-			InterBlockCacheSize: cache.DefaultCommitKVStoreCacheSize,
-			IAVLCacheSize:       iavl.DefaultIAVLCacheSize,
-			IAVLDisableFastNode: false,
 			Pruning:             storetypes.PruningOptionDefault,
 			PruningKeepRecent:   "0",
 			PruningKeepEvery:    "0",
 			PruningInterval:     "0",
 			MinRetainBlocks:     0,
 			IndexEvents:         make([]string, 0),
+			InterBlockCacheSize: cache.DefaultCommitKVStoreCacheSize,
+			IAVLCacheSize:       iavl.DefaultIAVLCacheSize,
+			IAVLDisableFastNode: false,
 			ChanCheckTxSize:     DefaultChanCheckTxSize,
 		},
 		Telemetry: telemetry.Config{
