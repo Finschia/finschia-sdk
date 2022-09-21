@@ -151,7 +151,6 @@ var (
 			append(
 				wasmclient.ProposalHandlers,
 				foundationclient.UpdateFoundationParamsProposalHandler,
-				foundationclient.UpdateValidatorAuthsProposalHandler,
 				paramsclient.ProposalHandler,
 				distrclient.ProposalHandler,
 				upgradeclient.ProposalHandler,

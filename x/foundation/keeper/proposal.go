@@ -6,8 +6,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/foundation"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
-	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
 // handleUpdateFoundationParamsProposal is a handler for update foundation params proposal
@@ -24,33 +22,6 @@ func (k Keeper) handleUpdateFoundationParamsProposal(ctx sdk.Context, p *foundat
 		Params: params,
 	}); err != nil {
 		panic(err)
-	}
-
-	return nil
-}
-
-// handleUpdateValidatorAuthsProposal is a handler for update validator auths proposal
-func (k Keeper) handleUpdateValidatorAuthsProposal(ctx sdk.Context, p *foundation.UpdateValidatorAuthsProposal) error {
-	for _, auth := range p.Auths {
-		valAddr, err := sdk.ValAddressFromBech32(auth.OperatorAddress)
-		grantee := sdk.AccAddress(valAddr)
-
-		if err != nil {
-			return err
-		}
-		if auth.CreationAllowed {
-			authorization := &stakingplus.CreateValidatorAuthorization{
-				ValidatorAddress: auth.OperatorAddress,
-			}
-
-			if err := k.Grant(ctx, govtypes.ModuleName, grantee, authorization); err != nil {
-				return err
-			}
-		} else {
-			if err := k.Revoke(ctx, govtypes.ModuleName, grantee, stakingplus.CreateValidatorAuthorization{}.MsgTypeURL()); err != nil {
-				return err
-			}
-		}
 	}
 
 	return nil
