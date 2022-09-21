@@ -81,8 +81,7 @@ func SetGasMeter(simulate bool, ctx sdk.Context, gasLimit uint64) sdk.Context {
 }
 
 func validateGasWanted(ctx sdk.Context) error {
-	// validate gasWanted only when checkTx
-	if !ctx.IsCheckTx() || ctx.IsReCheckTx() {
+	if !ctx.IsCheckTx() {
 		return nil
 	}
 
