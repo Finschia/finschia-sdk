@@ -85,7 +85,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	if info.GetDecisionPolicy() == nil ||
 		info.GetDecisionPolicy().ValidateBasic() != nil ||
 		info.GetDecisionPolicy().Validate(k.config) != nil {
-		policy := foundation.DefaultDecisionPolicy(k.config)
+		policy := foundation.DefaultDecisionPolicy()
 		if err := info.SetDecisionPolicy(policy); err != nil {
 			return err
 		}

@@ -11,7 +11,7 @@ import (
 
 func TestDecisionPolicy(t *testing.T) {
 	config := foundation.DefaultConfig()
-	policy := foundation.DefaultDecisionPolicy(config)
+	policy := foundation.DefaultDecisionPolicy()
 
 	require.NoError(t, policy.ValidateBasic())
 	require.NoError(t, policy.Validate(config))
@@ -53,24 +53,22 @@ func TestThresholdDecisionPolicy(t *testing.T) {
 		valid              bool
 	}{
 		"valid policy": {
-			threshold:          config.MinThreshold,
+			threshold:          sdk.OneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
 			validBasic:         true,
 			valid:              true,
 		},
-		"invalid policy (basic)": {
-			threshold:          config.MinThreshold,
-			minExecutionPeriod: config.MaxExecutionPeriod - time.Nanosecond,
-		},
-		"invalid policy": {
-			threshold:          config.MinThreshold.Sub(sdk.SmallestDec()),
+		"invalid threshold": {
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
-			validBasic:         true,
 		},
-		"invalid policy (windows)": {
-			threshold:          config.MinThreshold,
+		"invalid voting period": {
+			threshold:          sdk.OneDec(),
+			minExecutionPeriod: config.MaxExecutionPeriod - time.Nanosecond,
+		},
+		"invalid min execution period": {
+			threshold:          sdk.OneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour,
 			validBasic:         true,
@@ -133,8 +131,8 @@ func TestThresholdDecisionPolicyAllow(t *testing.T) {
 		},
 		"allow (member size < threshold)": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			totalWeight:     config.MinThreshold,
-			tally:           foundation.NewTallyResult(config.MinThreshold, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			totalWeight:     sdk.OneDec(),
+			tally:           foundation.NewTallyResult(sdk.OneDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
 			valid:           true,
 			final:           true,
 			allow:           true,
@@ -185,24 +183,22 @@ func TestPercentageDecisionPolicy(t *testing.T) {
 		valid              bool
 	}{
 		"valid policy": {
-			percentage:         config.MinPercentage,
+			percentage:         sdk.OneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
 			validBasic:         true,
 			valid:              true,
 		},
-		"invalid policy (basic)": {
-			percentage:         config.MinPercentage,
-			minExecutionPeriod: config.MaxExecutionPeriod - time.Nanosecond,
-		},
-		"invalid policy": {
-			percentage:         config.MinPercentage.Sub(sdk.SmallestDec()),
+		"invalid percentage": {
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
-			validBasic:         true,
 		},
-		"invalid policy (windows)": {
-			percentage:         config.MinPercentage,
+		"invalid voting period": {
+			percentage:         sdk.OneDec(),
+			minExecutionPeriod: config.MaxExecutionPeriod - time.Nanosecond,
+		},
+		"invalid min execution period": {
+			percentage:         sdk.OneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour,
 			validBasic:         true,

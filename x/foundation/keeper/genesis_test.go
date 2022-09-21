@@ -22,7 +22,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Operator:    s.keeper.GetAdmin(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 			},
 		},
 		"enabled with no create validator grantees": {
@@ -42,7 +42,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Operator:    s.keeper.GetAdmin(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 			},
 		},
 		"members": {
@@ -61,7 +61,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Operator:    s.keeper.GetAdmin(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Members: []foundation.Member{
 					{
 						Address:       s.members[0].String(),
@@ -98,7 +98,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Operator:    s.keeper.GetAdmin(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -140,7 +140,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Operator:    s.keeper.GetAdmin(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
 						Grantee: s.stranger.String(),
@@ -165,7 +165,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Operator:    s.keeper.GetAdmin(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
 						Grantee: s.stranger.String(),
