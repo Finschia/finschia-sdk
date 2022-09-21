@@ -10,7 +10,6 @@ import (
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
@@ -73,7 +72,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		Enabled:       true,
 		FoundationTax: sdk.ZeroDec(),
 	})
-	err := s.app.FoundationKeeper.Grant(s.ctx, govtypes.ModuleName, s.grantee, &stakingplus.CreateValidatorAuthorization{
+	err := s.app.FoundationKeeper.Grant(s.ctx, s.grantee, &stakingplus.CreateValidatorAuthorization{
 		ValidatorAddress: sdk.ValAddress(s.grantee).String(),
 	})
 	s.Require().NoError(err)

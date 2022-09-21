@@ -208,7 +208,7 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 	store := ctx.KVStore(s.keeper.storeKey)
 
 	if req.MsgTypeUrl != "" {
-		keyPrefix := grantKeyPrefixByURL(grantee, req.MsgTypeUrl)
+		keyPrefix := grantKey(grantee, req.MsgTypeUrl)
 		grantStore := prefix.NewStore(store, keyPrefix)
 
 		var authorizations []*codectypes.Any
