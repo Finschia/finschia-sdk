@@ -120,6 +120,8 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		k.setAuthorization(ctx, grantee, ga.GetAuthorization())
 	}
 
+	k.SetPool(ctx, data.Pool)
+
 	return nil
 }
 

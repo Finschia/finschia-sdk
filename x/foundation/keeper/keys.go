@@ -21,7 +21,7 @@ var (
 
 	grantKeyPrefix = []byte{0x20}
 
-	// treasuryKey = []byte{0x??}
+	poolKey = []byte{0x30}
 )
 
 // Uint64FromBytes converts a byte array to uint64
