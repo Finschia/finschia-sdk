@@ -86,8 +86,8 @@ message QueryTreasuryRequest {}
 // QueryTreasuryResponse is the response type for the
 // Query/Treasury RPC method.
 message QueryTreasuryResponse {
-  repeated cosmos.base.v1beta1.Coin amount = 1
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+  repeated cosmos.base.v1beta1.DecCoin amount = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.DecCoins"];
 }
 
 // QueryFoundationInfoRequest is the Query/FoundationInfo request type.

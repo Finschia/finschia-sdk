@@ -34,6 +34,9 @@ message GenesisState {
 
   // grants
   repeated GrantAuthorization authorizations = 7 [(gogoproto.nullable) = false];
+
+  // pool
+  Pool pool = 8 [(gogoproto.nullable) = false];
 }
 
 // GrantAuthorization defines authorization grant to grantee via route.

@@ -8,6 +8,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 
 // Params defines the parameters for the foundation module.
@@ -260,4 +261,10 @@ message Vote {
 
   // submit_time is the timestamp when the vote was submitted.
   google.protobuf.Timestamp submit_time = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}
+
+// Pool is used for tracking treasury.
+message Pool {
+  repeated cosmos.base.v1beta1.DecCoin treasury = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.DecCoins"];
 }
