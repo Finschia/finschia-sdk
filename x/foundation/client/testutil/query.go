@@ -163,9 +163,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMember() {
 			},
 			true,
 			&foundation.Member{
-				Address:       val.Address.String(),
-				Participating: true,
-				Metadata:      "genesis member",
+				Address:  val.Address.String(),
+				Metadata: "genesis member",
 			},
 		},
 		"extra args": {

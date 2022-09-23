@@ -148,26 +148,27 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 	testCases := map[string]struct {
 		operator sdk.AccAddress
-		member   foundation.Member
+		member   foundation.MemberRequest
 		valid    bool
 	}{
 		"valid request": {
 			operator: s.operator,
-			member: foundation.Member{
+			member: foundation.MemberRequest{
 				Address: s.members[0].String(),
 			},
 			valid: true,
 		},
 		"not authorized": {
 			operator: s.stranger,
-			member: foundation.Member{
+			member: foundation.MemberRequest{
 				Address: s.members[0].String(),
 			},
 		},
 		"remove a non-member": {
 			operator: s.operator,
-			member: foundation.Member{
+			member: foundation.MemberRequest{
 				Address: s.stranger.String(),
+				Remove:  true,
 			},
 		},
 	}
@@ -178,7 +179,7 @@ func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 
 			req := &foundation.MsgUpdateMembers{
 				Operator:      tc.operator.String(),
-				MemberUpdates: []foundation.Member{tc.member},
+				MemberUpdates: []foundation.MemberRequest{tc.member},
 			}
 			res, err := s.msgServer.UpdateMembers(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {

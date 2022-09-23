@@ -34,8 +34,7 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Members: []foundation.Member{
 					{
-						Address:       createAddress().String(),
-						Participating: true,
+						Address: createAddress().String(),
 					},
 				},
 			},
@@ -71,8 +70,7 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Members: []foundation.Member{
 					{
-						Address:       "invalid-address",
-						Participating: true,
+						Address: "invalid-address",
 					},
 				},
 			},

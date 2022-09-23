@@ -14,7 +14,10 @@ func TestDecisionPolicy(t *testing.T) {
 	policy := foundation.DefaultDecisionPolicy()
 
 	require.NoError(t, policy.ValidateBasic())
-	require.NoError(t, policy.Validate(config))
+	info := foundation.FoundationInfo{
+		TotalWeight: sdk.OneDec(),
+	}
+	require.NoError(t, policy.Validate(info, config))
 }
 
 func TestTallyResult(t *testing.T) {
@@ -49,6 +52,7 @@ func TestThresholdDecisionPolicy(t *testing.T) {
 		threshold          sdk.Dec
 		votingPeriod       time.Duration
 		minExecutionPeriod time.Duration
+		totalWeight        sdk.Dec
 		validBasic         bool
 		valid              bool
 	}{
@@ -56,21 +60,32 @@ func TestThresholdDecisionPolicy(t *testing.T) {
 			threshold:          sdk.OneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
+			totalWeight:        sdk.OneDec(),
 			validBasic:         true,
 			valid:              true,
 		},
 		"invalid threshold": {
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
+			totalWeight:        sdk.OneDec(),
 		},
 		"invalid voting period": {
 			threshold:          sdk.OneDec(),
 			minExecutionPeriod: config.MaxExecutionPeriod - time.Nanosecond,
+			totalWeight:        sdk.OneDec(),
 		},
 		"invalid min execution period": {
 			threshold:          sdk.OneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour,
+			totalWeight:        sdk.OneDec(),
+			validBasic:         true,
+		},
+		"invalid total weight": {
+			threshold:          sdk.OneDec(),
+			votingPeriod:       time.Hour,
+			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
+			totalWeight:        sdk.ZeroDec(),
 			validBasic:         true,
 		},
 	}
@@ -92,7 +107,10 @@ func TestThresholdDecisionPolicy(t *testing.T) {
 		}
 		require.NoError(t, err, name)
 
-		err = policy.Validate(config)
+		info := foundation.FoundationInfo{
+			TotalWeight: tc.totalWeight,
+		}
+		err = policy.Validate(info, config)
 		if !tc.valid {
 			require.Error(t, err, name)
 			continue
@@ -110,7 +128,11 @@ func TestThresholdDecisionPolicyAllow(t *testing.T) {
 		},
 	}
 	require.NoError(t, policy.ValidateBasic())
-	require.NoError(t, policy.Validate(config))
+
+	info := foundation.FoundationInfo{
+		TotalWeight: sdk.OneDec(),
+	}
+	require.NoError(t, policy.Validate(info, config))
 	require.Equal(t, time.Hour, policy.GetVotingPeriod())
 
 	testCases := map[string]struct {
@@ -179,6 +201,7 @@ func TestPercentageDecisionPolicy(t *testing.T) {
 		percentage         sdk.Dec
 		votingPeriod       time.Duration
 		minExecutionPeriod time.Duration
+		totalWeight        sdk.Dec
 		validBasic         bool
 		valid              bool
 	}{
@@ -186,21 +209,32 @@ func TestPercentageDecisionPolicy(t *testing.T) {
 			percentage:         sdk.OneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
+			totalWeight:        sdk.OneDec(),
 			validBasic:         true,
 			valid:              true,
 		},
 		"invalid percentage": {
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
+			totalWeight:        sdk.OneDec(),
 		},
 		"invalid voting period": {
 			percentage:         sdk.OneDec(),
 			minExecutionPeriod: config.MaxExecutionPeriod - time.Nanosecond,
+			totalWeight:        sdk.OneDec(),
 		},
 		"invalid min execution period": {
 			percentage:         sdk.OneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour,
+			totalWeight:        sdk.OneDec(),
+			validBasic:         true,
+		},
+		"invalid total weight": {
+			percentage:         sdk.OneDec(),
+			votingPeriod:       time.Hour,
+			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
+			totalWeight:        sdk.ZeroDec(),
 			validBasic:         true,
 		},
 	}
@@ -222,7 +256,10 @@ func TestPercentageDecisionPolicy(t *testing.T) {
 		}
 		require.NoError(t, err, name)
 
-		err = policy.Validate(config)
+		info := foundation.FoundationInfo{
+			TotalWeight: tc.totalWeight,
+		}
+		err = policy.Validate(info, config)
 		if !tc.valid {
 			require.Error(t, err, name)
 			continue
@@ -240,7 +277,11 @@ func TestPercentageDecisionPolicyAllow(t *testing.T) {
 		},
 	}
 	require.NoError(t, policy.ValidateBasic())
-	require.NoError(t, policy.Validate(config))
+
+	info := foundation.FoundationInfo{
+		TotalWeight: sdk.OneDec(),
+	}
+	require.NoError(t, policy.Validate(info, config))
 	require.Equal(t, time.Hour, policy.GetVotingPeriod())
 
 	totalWeight := sdk.NewDec(10)

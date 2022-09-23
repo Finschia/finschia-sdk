@@ -15,14 +15,14 @@ func validateMetadata(metadata string, config foundation.Config) error {
 }
 
 func (k Keeper) UpdateDecisionPolicy(ctx sdk.Context, policy foundation.DecisionPolicy) error {
-	if err := policy.Validate(k.config); err != nil {
-		return err
-	}
-
 	info := k.GetFoundationInfo(ctx)
 	info.SetDecisionPolicy(policy)
 	info.Version++
 	k.setFoundationInfo(ctx, info)
+
+	if err := policy.Validate(info, k.config); err != nil {
+		return err
+	}
 
 	// invalidate active proposals
 	k.abortOldProposals(ctx)
@@ -48,35 +48,33 @@ func (k Keeper) setFoundationInfo(ctx sdk.Context, info foundation.FoundationInf
 	store.Set(foundationInfoKey, bz)
 }
 
-func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.Member) error {
+func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.MemberRequest) error {
 	weightUpdate := sdk.ZeroDec()
-	for _, new := range members {
+	for _, request := range members {
+		new := foundation.Member{
+			Address:  request.Address,
+			Metadata: request.Metadata,
+			AddedAt:  ctx.BlockTime(),
+		}
+		if err := new.ValidateBasic(); err != nil {
+			return err
+		}
 		if err := validateMetadata(new.Metadata, k.config); err != nil {
 			return err
 		}
 
-		new.AddedAt = ctx.BlockTime()
-		newAddr, err := sdk.AccAddressFromBech32(new.Address)
-		if err != nil {
-			return sdkerrors.ErrInvalidAddress.Wrapf("invalid new address: %s", new.Address)
+		addr, _ := sdk.AccAddressFromBech32(new.Address)
+		old, err := k.GetMember(ctx, addr)
+		if err != nil && request.Remove { // the member must exist
+			return err
 		}
-		old, err := k.GetMember(ctx, newAddr)
-		if err == nil {
+		if err == nil { // overwrite
 			weightUpdate = weightUpdate.Sub(sdk.OneDec())
 			new.AddedAt = old.AddedAt
 		}
 
-		deleting := !new.Participating
-		if err != nil && deleting { // the member must exist
-			return err
-		}
-
-		if deleting {
-			oldAddr, err := sdk.AccAddressFromBech32(old.Address)
-			if err != nil {
-				return sdkerrors.ErrInvalidAddress.Wrapf("invalid old address: %s", old.Address)
-			}
-			k.deleteMember(ctx, oldAddr)
+		if request.Remove {
+			k.deleteMember(ctx, addr)
 		} else {
 			weightUpdate = weightUpdate.Add(sdk.OneDec())
 			k.setMember(ctx, new)
@@ -84,9 +82,13 @@ func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.Member) erro
 	}
 
 	info := k.GetFoundationInfo(ctx)
-	info.TotalWeight.Add(weightUpdate)
+	info.TotalWeight = info.TotalWeight.Add(weightUpdate)
 	info.Version++
 	k.setFoundationInfo(ctx, info)
+
+	if err := info.GetDecisionPolicy().Validate(info, k.config); err != nil {
+		return err
+	}
 
 	// invalidate active proposals
 	k.abortOldProposals(ctx)

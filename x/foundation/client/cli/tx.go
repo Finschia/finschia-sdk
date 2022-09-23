@@ -28,15 +28,15 @@ const (
 	ExecTry  = "try"
 )
 
-func parseMembers(codec codec.Codec, membersJSON string) ([]foundation.Member, error) {
+func parseMemberRequests(codec codec.Codec, membersJSON string) ([]foundation.MemberRequest, error) {
 	var cliMembers []json.RawMessage
 	if err := json.Unmarshal([]byte(membersJSON), &cliMembers); err != nil {
 		return nil, err
 	}
 
-	members := make([]foundation.Member, len(cliMembers))
+	members := make([]foundation.MemberRequest, len(cliMembers))
 	for i, cliMember := range cliMembers {
-		var member foundation.Member
+		var member foundation.MemberRequest
 		if err := codec.UnmarshalJSON(cliMember, &member); err != nil {
 			return nil, err
 		}
@@ -321,7 +321,7 @@ Set a member's participating to false to delete it.
 				return err
 			}
 
-			updates, err := parseMembers(clientCtx.Codec, args[1])
+			updates, err := parseMemberRequests(clientCtx.Codec, args[1])
 			if err != nil {
 				return err
 			}

@@ -49,39 +49,39 @@ func (s *KeeperTestSuite) TestUpdateDecisionPolicy() {
 
 func (s *KeeperTestSuite) TestUpdateMembers() {
 	testCases := map[string]struct {
-		updates []foundation.Member
+		updates []foundation.MemberRequest
 		valid   bool
 	}{
 		"add a new member": {
-			updates: []foundation.Member{
+			updates: []foundation.MemberRequest{
 				{
-					Address:       s.stranger.String(),
-					Participating: true,
+					Address: s.stranger.String(),
 				},
 			},
 			valid: true,
 		},
 		"remove a member": {
-			updates: []foundation.Member{
+			updates: []foundation.MemberRequest{
 				{
 					Address: s.members[0].String(),
+					Remove:  true,
 				},
 			},
 			valid: true,
 		},
 		"remove a non-member": {
-			updates: []foundation.Member{
+			updates: []foundation.MemberRequest{
 				{
 					Address: s.stranger.String(),
+					Remove:  true,
 				},
 			},
 		},
 		"long metadata": {
-			updates: []foundation.Member{
+			updates: []foundation.MemberRequest{
 				{
-					Address:       s.stranger.String(),
-					Participating: true,
-					Metadata:      string(make([]rune, 256)),
+					Address:  s.stranger.String(),
+					Metadata: string(make([]rune, 256)),
 				},
 			},
 		},
