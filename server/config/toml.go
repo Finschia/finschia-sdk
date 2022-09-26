@@ -67,6 +67,8 @@ inter-block-cache = {{ .BaseConfig.InterBlockCache }}
 inter-block-cache-size = {{ .BaseConfig.InterBlockCacheSize }}
 
 # IAVLCacheSize is the maximum units size of iavl node cache (1 unit is 128 bytes)
+# This iavl cache size is just one store cache size, and the store exists for each modules.
+# So be careful that all iavl cache size are difference from this iavl cache size value.
 iavl-cache-size = {{ .BaseConfig.IAVLCacheSize }}
 
 # IndexEvents defines the set of events in the form {eventType}.{attributeKey},
