@@ -111,6 +111,14 @@ message DecisionPolicyWindows {
   google.protobuf.Duration min_execution_period = 2 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
 }
 
+// OutsourcingDecisionPolicy is a dummy decision policy which is set after
+// the operator has been updated into x/group's group policy.
+message OutsourcingDecisionPolicy {
+  option (cosmos_proto.implements_interface) = "DecisionPolicy";
+
+  string description = 1;
+}
+
 // VoteOption enumerates the valid vote options for a given proposal.
 enum VoteOption {
   option (gogoproto.goproto_enum_prefix) = false;

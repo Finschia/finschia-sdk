@@ -1107,6 +1107,7 @@
     - [FoundationInfo](#lbm.foundation.v1.FoundationInfo)
     - [Member](#lbm.foundation.v1.Member)
     - [MemberRequest](#lbm.foundation.v1.MemberRequest)
+    - [OutsourcingDecisionPolicy](#lbm.foundation.v1.OutsourcingDecisionPolicy)
     - [Params](#lbm.foundation.v1.Params)
     - [PercentageDecisionPolicy](#lbm.foundation.v1.PercentageDecisionPolicy)
     - [Pool](#lbm.foundation.v1.Pool)
@@ -16840,6 +16841,22 @@ since this field cannot be set as part of requests.
 | `address` | [string](#string) |  | address is the member's account address. |
 | `remove` | [bool](#bool) |  | remove is the flag which allows one to remove the member by setting the flag to true. |
 | `metadata` | [string](#string) |  | metadata is any arbitrary metadata attached to the member. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.OutsourcingDecisionPolicy"></a>
+
+### OutsourcingDecisionPolicy
+OutsourcingDecisionPolicy is a dummy decision policy which is set after
+the operator has been updated into x/group's group policy.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `description` | [string](#string) |  |  |
 
 
 
