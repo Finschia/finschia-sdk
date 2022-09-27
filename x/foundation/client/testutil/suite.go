@@ -17,6 +17,7 @@ import (
 	bankcli "github.com/line/lbm-sdk/x/bank/client/cli"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/client/cli"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 type IntegrationTestSuite struct {
@@ -52,9 +53,12 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(s.cfg.Codec.UnmarshalJSON(genesisState[foundation.ModuleName], &foundationData))
 
 	// enable foundation
-	params := &foundation.Params{
-		Enabled:       true,
+	params := foundation.Params{
 		FoundationTax: sdk.MustNewDecFromStr("0.2"),
+		CensoredMsgTypeUrls: []string{
+			sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
+			sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+		},
 	}
 	foundationData.Params = params
 

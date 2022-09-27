@@ -11,21 +11,15 @@ import (
 
 func TestUpdateFoundationParamsProposal(t *testing.T) {
 	testCases := map[string]struct {
-		params *foundation.Params
+		params foundation.Params
 		valid  bool
 	}{
 		"valid proposal": {
 			params: foundation.DefaultParams(),
 			valid:  true,
 		},
-		"attempt to enable foundation": {
-			params: &foundation.Params{
-				Enabled:       true,
-				FoundationTax: sdk.ZeroDec(),
-			},
-		},
 		"invalid tax rate": {
-			params: &foundation.Params{
+			params: foundation.Params{
 				FoundationTax: sdk.NewDec(2),
 			},
 		},

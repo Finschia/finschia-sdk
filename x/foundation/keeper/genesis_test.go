@@ -4,6 +4,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 
 	"github.com/line/lbm-sdk/x/foundation"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
@@ -14,7 +15,9 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 		export *foundation.GenesisState
 	}{
 		"minimal": {
-			init:  &foundation.GenesisState{},
+			init: &foundation.GenesisState{
+				Params: foundation.DefaultParams(),
+			},
 			valid: true,
 			export: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
@@ -27,16 +30,20 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 		},
 		"enabled with no create validator grantees": {
 			init: &foundation.GenesisState{
-				Params: &foundation.Params{
-					Enabled:       true,
+				Params: foundation.Params{
 					FoundationTax: sdk.ZeroDec(),
+					CensoredMsgTypeUrls: []string{
+						sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
+					},
 				},
 			},
 			valid: true,
 			export: &foundation.GenesisState{
-				Params: &foundation.Params{
-					Enabled:       true,
+				Params: foundation.Params{
 					FoundationTax: sdk.ZeroDec(),
+					CensoredMsgTypeUrls: []string{
+						sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
+					},
 				},
 				Foundation: foundation.FoundationInfo{
 					Operator:    s.keeper.GetAdmin(s.ctx).String(),
@@ -47,6 +54,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 		},
 		"members": {
 			init: &foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Members: []foundation.Member{
 					{
 						Address: s.members[0].String(),
@@ -70,6 +78,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 		},
 		"proposals": {
 			init: &foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -125,6 +134,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 		},
 		"authorizations": {
 			init: &foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
 						Grantee: s.stranger.String(),
@@ -148,6 +158,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 		},
 		"create validator authorizations": {
 			init: &foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
 						Grantee: s.stranger.String(),
@@ -179,6 +190,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 		},
 		"member of long metadata": {
 			init: &foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Members: []foundation.Member{
 					{
 						Address:  s.members[0].String(),
@@ -189,6 +201,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 		},
 		"proposal of long metadata": {
 			init: &foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -205,6 +218,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 		},
 		"vote of long metadata": {
 			init: &foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,

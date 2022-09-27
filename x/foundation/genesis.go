@@ -14,9 +14,8 @@ func DefaultGenesisState() *GenesisState {
 	}
 }
 
-func DefaultParams() *Params {
-	return &Params{
-		Enabled:       false,
+func DefaultParams() Params {
+	return Params{
 		FoundationTax: sdk.ZeroDec(),
 	}
 }
@@ -39,11 +38,8 @@ func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error
 // ValidateGenesis validates the provided genesis state to ensure the
 // expected invariants holds.
 func ValidateGenesis(data GenesisState) error {
-	if data.Params != nil {
-		if data.Params.FoundationTax.IsNegative() ||
-			data.Params.FoundationTax.GT(sdk.OneDec()) {
-			return sdkerrors.ErrInvalidRequest.Wrap("foundation tax must be >= 0 and <= 1")
-		}
+	if err := data.Params.ValidateBasic(); err != nil {
+		return err
 	}
 
 	if info := data.Foundation; info != nil {

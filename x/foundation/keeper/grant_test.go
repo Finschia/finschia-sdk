@@ -7,14 +7,22 @@ import (
 
 func (s *KeeperTestSuite) TestGrant() {
 	testCases := map[string]struct {
-		grantee sdk.AccAddress
-		auth    foundation.Authorization
-		valid   bool
+		malleate func(ctx sdk.Context)
+		grantee  sdk.AccAddress
+		auth     foundation.Authorization
+		valid    bool
 	}{
 		"valid authz": {
 			grantee: s.members[0],
 			auth:    &foundation.ReceiveFromTreasuryAuthorization{},
 			valid:   true,
+		},
+		"not being censored": {
+			malleate: func(ctx sdk.Context) {
+				s.keeper.SetParams(ctx, foundation.Params{})
+			},
+			grantee: s.members[0],
+			auth:    &foundation.ReceiveFromTreasuryAuthorization{},
 		},
 		"override attempt": {
 			grantee: s.stranger,
@@ -25,6 +33,9 @@ func (s *KeeperTestSuite) TestGrant() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
+			if tc.malleate != nil {
+				tc.malleate(ctx)
+			}
 
 			err := s.keeper.Grant(ctx, tc.grantee, tc.auth)
 			if tc.valid {

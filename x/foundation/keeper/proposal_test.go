@@ -13,13 +13,7 @@ import (
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
-func newParams(enabled bool) *foundation.Params {
-	params := foundation.DefaultParams()
-	params.Enabled = enabled
-	return params
-}
-
-func newUpdateFoundationParamsProposal(params *foundation.Params) govtypes.Content {
+func newUpdateFoundationParamsProposal(params foundation.Params) govtypes.Content {
 	return foundation.NewUpdateFoundationParamsProposal("Test", "description", params)
 }
 

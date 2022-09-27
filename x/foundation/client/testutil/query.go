@@ -11,6 +11,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/client/cli"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
@@ -29,9 +30,12 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
 			[]string{},
 			true,
 			&foundation.QueryParamsResponse{
-				Params: &foundation.Params{
-					Enabled:       true,
+				Params: foundation.Params{
 					FoundationTax: sdk.MustNewDecFromStr("0.2"),
+					CensoredMsgTypeUrls: []string{
+						sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
+						sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+					},
 				},
 			},
 		},

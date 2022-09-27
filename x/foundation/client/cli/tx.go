@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -13,7 +12,6 @@ import (
 	"github.com/line/lbm-sdk/client/tx"
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/version"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/gov/client/cli"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
@@ -27,6 +25,15 @@ const (
 	FlagExec = "exec"
 	ExecTry  = "try"
 )
+
+func parseParams(codec codec.Codec, paramsJSON string) (*foundation.Params, error) {
+	var params foundation.Params
+	if err := codec.UnmarshalJSON([]byte(paramsJSON), &params); err != nil {
+		return nil, err
+	}
+
+	return &params, nil
+}
 
 func parseMemberRequests(codec codec.Codec, membersJSON string) ([]foundation.MemberRequest, error) {
 	var cliMembers []json.RawMessage
@@ -145,19 +152,21 @@ func NewTxCmd() *cobra.Command {
 // NewProposalCmdUpdateFoundationParams implements the command to submit an update-foundation-params proposal
 func NewProposalCmdUpdateFoundationParams() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-foundation-params",
-		Args:  cobra.NoArgs,
+		Use:   "update-foundation-params [params-json]",
+		Args:  cobra.ExactArgs(1),
 		Short: "Submit an update foundation params proposal",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Submit an update foundation params proposal.
-For now, you have no other options, so we make the corresponding params json file for you.
+		Long: `Submit an update foundation params proposal.
 
-Example:
-$ %s tx gov submit-proposal update-foundation-params [flags]
+Example of the content of params-json:
+
+{
+  "foundation_tax": "0.1",
+  "censored_msg_type_urls": [
+    "/cosmos.staking.v1beta1.MsgCreateValidator",
+    "/lbm.foundation.v1.MsgWithdrawFromTreasury"
+  ]
+}
 `,
-				version.AppName,
-			),
-		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -185,10 +194,12 @@ $ %s tx gov submit-proposal update-foundation-params [flags]
 				return err
 			}
 
-			params := &foundation.Params{
-				Enabled: false,
+			params, err := parseParams(clientCtx.Codec, args[0])
+			if err != nil {
+				return err
 			}
-			content := foundation.NewUpdateFoundationParamsProposal(title, description, params)
+
+			content := foundation.NewUpdateFoundationParamsProposal(title, description, *params)
 			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {
 				return err

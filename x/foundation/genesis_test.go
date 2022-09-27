@@ -13,8 +13,8 @@ import (
 
 func TestDefaultGenesisState(t *testing.T) {
 	gs := foundation.DefaultGenesisState()
-	require.Equal(t, false, gs.Params.Enabled)
 	require.Equal(t, sdk.ZeroDec(), gs.Params.FoundationTax)
+	require.Equal(t, 0, len(gs.Params.CensoredMsgTypeUrls))
 }
 
 func TestValidateGenesis(t *testing.T) {
@@ -27,11 +27,14 @@ func TestValidateGenesis(t *testing.T) {
 		valid bool
 	}{
 		"minimal": {
-			data:  foundation.GenesisState{},
+			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
+			},
 			valid: true,
 		},
 		"members": {
 			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Members: []foundation.Member{
 					{
 						Address: createAddress().String(),
@@ -42,6 +45,7 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"foundation info": {
 			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Foundation: &foundation.FoundationInfo{
 					Operator: createAddress().String(),
 					Version:  1,
@@ -51,6 +55,7 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"authorizations": {
 			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
 						Grantee: createAddress().String(),
@@ -61,7 +66,7 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid foundation tax": {
 			data: foundation.GenesisState{
-				Params: &foundation.Params{
+				Params: foundation.Params{
 					FoundationTax: sdk.NewDec(2),
 				},
 			},
@@ -73,6 +78,7 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid operator address": {
 			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Foundation: &foundation.FoundationInfo{
 					Operator: "invalid-address",
 					Version:  1,
@@ -81,11 +87,13 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid foundation version": {
 			data: foundation.GenesisState{
+				Params:     foundation.DefaultParams(),
 				Foundation: &foundation.FoundationInfo{},
 			},
 		},
 		"invalid decision policy": {
 			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Foundation: foundation.FoundationInfo{
 					Operator: createAddress().String(),
 					Version:  1,
@@ -96,11 +104,13 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid proposals": {
 			data: foundation.GenesisState{
+				Params:    foundation.DefaultParams(),
 				Proposals: []foundation.Proposal{{}},
 			},
 		},
 		"duplicate proposals": {
 			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -125,6 +135,7 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"no proposal for the vote": {
 			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Votes: []foundation.Vote{
 					{
 						ProposalId: 1,
@@ -136,6 +147,7 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid voter": {
 			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -158,6 +170,7 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid vote option": {
 			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -179,6 +192,7 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid authorization": {
 			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Authorizations: []foundation.GrantAuthorization{{
 					Grantee: createAddress().String(),
 				}},
@@ -186,6 +200,7 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid grantee": {
 			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
@@ -193,6 +208,7 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid pool": {
 			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
 				Pool: foundation.Pool{
 					Treasury: sdk.DecCoins{
 						{

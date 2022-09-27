@@ -66,6 +66,14 @@ func validateVoteOption(option VoteOption) error {
 	return nil
 }
 
+func (p Params) ValidateBasic() error {
+	if err := validateRatio(p.FoundationTax, "tax rate"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m Member) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Address); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid member address: %s", m.Address)

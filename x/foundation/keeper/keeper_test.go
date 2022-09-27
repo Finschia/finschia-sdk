@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
@@ -15,7 +14,6 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/keeper"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
-	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
 var (
@@ -23,20 +21,6 @@ var (
 	delAddr = sdk.AccAddress(delPk.Address())
 	valAddr = sdk.ValAddress(delAddr)
 )
-
-func TestCleanup(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
-
-	k := app.FoundationKeeper
-
-	// add grant
-	require.NoError(t, k.Grant(ctx, delAddr, &stakingplus.CreateValidatorAuthorization{}))
-
-	// cleanup
-	k.Cleanup(ctx)
-	require.Empty(t, k.GetGrants(ctx))
-}
 
 type KeeperTestSuite struct {
 	suite.Suite
@@ -68,6 +52,13 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	s.queryServer = keeper.NewQueryServer(s.keeper)
 	s.msgServer = keeper.NewMsgServer(s.keeper)
+
+	s.keeper.SetParams(s.ctx, foundation.Params{
+		FoundationTax: sdk.OneDec(),
+		CensoredMsgTypeUrls: []string{
+			sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+		},
+	})
 
 	createAddress := func() sdk.AccAddress {
 		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())

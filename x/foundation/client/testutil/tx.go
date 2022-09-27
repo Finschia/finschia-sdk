@@ -32,14 +32,14 @@ func (s *IntegrationTestSuite) TestNewProposalCmdUpdateFoundationParams() {
 	}{
 		{
 			"with wrong # of args",
-			append([]string{
-				"no-args-expected",
-			}, commonFlags...),
+			commonFlags,
 			true, 0, nil,
 		},
 		{
 			"valid transaction",
-			commonFlags,
+			append([]string{
+				fmt.Sprintf(`{"foundation_tax": "%s"}`, sdk.ZeroDec()),
+			}, commonFlags...),
 			false, 0, &sdk.TxResponse{},
 		},
 	}

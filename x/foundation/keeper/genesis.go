@@ -10,15 +10,12 @@ import (
 )
 
 func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *foundation.GenesisState) error {
-	params := data.Params
-	if params == nil {
-		params = foundation.DefaultParams()
-	}
-	k.SetParams(ctx, params)
+	k.SetParams(ctx, data.Params)
 
 	authorizations := data.Authorizations
 	createValidatorGrantees := getCreateValidatorGrantees(authorizations)
-	if k.GetEnabled(ctx) && len(createValidatorGrantees) == 0 {
+	isCreateValidatorCensored := k.IsCensoredMessage(ctx, sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)))
+	if isCreateValidatorCensored && len(createValidatorGrantees) == 0 {
 		// Allowed validators must exist if the module is enabled,
 		// so it should be the very first block of the chain.
 		// We gather the information from staking module.
@@ -188,7 +185,7 @@ func (k Keeper) GetGrants(ctx sdk.Context) []foundation.GrantAuthorization {
 }
 
 func getCreateValidatorGrantees(authorizations []foundation.GrantAuthorization) []sdk.AccAddress {
-	msgTypeURL := stakingplus.CreateValidatorAuthorization{}.MsgTypeURL()
+	msgTypeURL := sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil))
 	var grantees []sdk.AccAddress
 	for _, ga := range authorizations {
 		if ga.GetAuthorization().MsgTypeURL() == msgTypeURL {
