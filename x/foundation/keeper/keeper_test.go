@@ -6,7 +6,6 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
@@ -14,12 +13,6 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/keeper"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
-)
-
-var (
-	delPk   = ed25519.GenPrivKey().PubKey()
-	delAddr = sdk.AccAddress(delPk.Address())
-	valAddr = sdk.ValAddress(delAddr)
 )
 
 type KeeperTestSuite struct {

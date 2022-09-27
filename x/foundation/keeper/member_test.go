@@ -100,31 +100,3 @@ func (s *KeeperTestSuite) TestUpdateMembers() {
 		})
 	}
 }
-
-func (s *KeeperTestSuite) TestUpdateOperator() {
-	testCases := map[string]struct {
-		operator sdk.AccAddress
-		valid    bool
-	}{
-		"valid new operator": {
-			operator: s.stranger,
-			valid:    true,
-		},
-		"already the operator": {
-			operator: s.operator,
-		},
-	}
-
-	for name, tc := range testCases {
-		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
-
-			err := s.keeper.UpdateOperator(ctx, tc.operator)
-			if tc.valid {
-				s.Require().NoError(err)
-			} else {
-				s.Require().Error(err)
-			}
-		})
-	}
-}

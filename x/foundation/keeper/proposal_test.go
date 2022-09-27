@@ -10,12 +10,7 @@ import (
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
-
-func newUpdateFoundationParamsProposal(params foundation.Params) govtypes.Content {
-	return foundation.NewUpdateFoundationParamsProposal("Test", "description", params)
-}
 
 func (s *KeeperTestSuite) TestSubmitProposal() {
 	testCases := map[string]struct {

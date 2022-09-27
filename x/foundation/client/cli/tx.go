@@ -19,9 +19,6 @@ import (
 
 // Proposal flags
 const (
-	FlagAllowedValidatorAdd    = "add"
-	FlagAllowedValidatorDelete = "delete"
-
 	FlagExec = "exec"
 	ExecTry  = "try"
 )

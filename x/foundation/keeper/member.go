@@ -162,18 +162,6 @@ func (k Keeper) GetOperator(ctx sdk.Context) sdk.AccAddress {
 	return operator
 }
 
-func (k Keeper) UpdateOperator(ctx sdk.Context, operator sdk.AccAddress) error {
-	info := k.GetFoundationInfo(ctx)
-	if operator.String() == info.Operator {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s is already the operator", operator)
-	}
-
-	info.Operator = operator.String()
-	k.setFoundationInfo(ctx, info)
-
-	return nil
-}
-
 func (k Keeper) GetAdmin(ctx sdk.Context) sdk.AccAddress {
 	return k.authKeeper.GetModuleAccount(ctx, foundation.AdministratorName).GetAddress()
 }
