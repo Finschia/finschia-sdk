@@ -13,9 +13,9 @@ import "cosmos_proto/cosmos.proto";
 
 // Params defines the parameters for the foundation module.
 message Params {
-  bool   enabled        = 1;
-  string foundation_tax = 2
+  string foundation_tax = 1
       [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec", (gogoproto.nullable) = false];
+  repeated string censored_msg_type_urls = 2;
 }
 
 // UpdateFoundationParamsProposal details a proposal to update params of foundation module.
@@ -26,7 +26,11 @@ message UpdateFoundationParamsProposal {
 
   string title       = 1;
   string description = 2;
-  Params params      = 3;
+
+  // params defines the x/foundation parameters to update.
+  //
+  // Note: All parameters must be supplied.
+  Params params = 3 [(gogoproto.nullable) = false];
 }
 
 // Member represents a foundation member with an account address and metadata.

@@ -16854,8 +16854,8 @@ Params defines the parameters for the foundation module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `enabled` | [bool](#bool) |  |  |
 | `foundation_tax` | [string](#string) |  |  |
+| `censored_msg_type_urls` | [string](#string) | repeated |  |
 
 
 
@@ -16974,7 +16974,9 @@ UpdateFoundationParamsProposal details a proposal to update params of foundation
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  |  |
 | `description` | [string](#string) |  |  |
-| `params` | [Params](#lbm.foundation.v1.Params) |  |  |
+| `params` | [Params](#lbm.foundation.v1.Params) |  | params defines the x/foundation parameters to update.
+
+Note: All parameters must be supplied. |
 
 
 
