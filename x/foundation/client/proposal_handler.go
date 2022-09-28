@@ -7,4 +7,3 @@ import (
 )
 
 var UpdateFoundationParamsProposalHandler = govclient.NewProposalHandler(cli.NewProposalCmdUpdateFoundationParams, rest.DummyRESTHandler)
-var UpdateValidatorAuthsProposalHandler = govclient.NewProposalHandler(cli.NewProposalCmdUpdateValidatorAuths, rest.DummyRESTHandler)

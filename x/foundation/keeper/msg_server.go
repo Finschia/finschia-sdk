@@ -10,13 +10,6 @@ import (
 
 const gasCostPerIteration = uint64(20)
 
-func canFoundationAuthorize(msgTypeURL string) bool {
-	urls := map[string]bool{
-		foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(): true,
-	}
-	return urls[msgTypeURL]
-}
-
 type msgServer struct {
 	keeper Keeper
 }
@@ -64,7 +57,7 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 	if err != nil {
 		return nil, err
 	}
-	if err := s.keeper.Accept(ctx, foundation.ModuleName, to, req); err != nil {
+	if err := s.keeper.Accept(ctx, to, req); err != nil {
 		return nil, err
 	}
 
@@ -275,17 +268,12 @@ func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundati
 		return nil, err
 	}
 
-	msgTypeURL := req.GetAuthorization().MsgTypeURL()
-	if !canFoundationAuthorize(msgTypeURL) {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("foundation cannot grant %s", msgTypeURL)
-	}
-
 	authorization := req.GetAuthorization()
 	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
 	if err != nil {
 		return nil, err
 	}
-	if err := s.keeper.Grant(ctx, foundation.ModuleName, grantee, authorization); err != nil {
+	if err := s.keeper.Grant(ctx, grantee, authorization); err != nil {
 		return nil, err
 	}
 
@@ -299,15 +287,11 @@ func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*founda
 		return nil, err
 	}
 
-	if !canFoundationAuthorize(req.MsgTypeUrl) {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("foundation cannot revoke %s", req.MsgTypeUrl)
-	}
-
 	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
 	if err != nil {
 		return nil, err
 	}
-	if err := s.keeper.Revoke(ctx, foundation.ModuleName, grantee, req.MsgTypeUrl); err != nil {
+	if err := s.keeper.Revoke(ctx, grantee, req.MsgTypeUrl); err != nil {
 		return nil, err
 	}
 

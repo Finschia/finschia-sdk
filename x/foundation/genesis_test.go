@@ -54,7 +54,6 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Granter: foundation.ModuleName,
 						Grantee: createAddress().String(),
 					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
@@ -217,7 +216,6 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid authorization": {
 			data: foundation.GenesisState{
 				Authorizations: []foundation.GrantAuthorization{{
-					Granter: foundation.ModuleName,
 					Grantee: createAddress().String(),
 				}},
 			},
@@ -225,9 +223,7 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid grantee": {
 			data: foundation.GenesisState{
 				Authorizations: []foundation.GrantAuthorization{
-					*foundation.GrantAuthorization{
-						Granter: foundation.ModuleName,
-					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
+					*foundation.GrantAuthorization{}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
 			},
 		},

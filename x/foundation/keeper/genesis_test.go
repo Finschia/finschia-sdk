@@ -4,7 +4,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 
 	"github.com/line/lbm-sdk/x/foundation"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
@@ -130,7 +129,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			init: &foundation.GenesisState{
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Granter: foundation.ModuleName,
 						Grantee: s.stranger.String(),
 					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
@@ -145,7 +143,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Granter: foundation.ModuleName,
 						Grantee: s.stranger.String(),
 					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
@@ -155,7 +152,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			init: &foundation.GenesisState{
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Granter: govtypes.ModuleName,
 						Grantee: s.stranger.String(),
 					}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
 						ValidatorAddress: sdk.ValAddress(s.stranger).String(),
@@ -172,7 +168,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Granter: govtypes.ModuleName,
 						Grantee: s.stranger.String(),
 					}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
 						ValidatorAddress: sdk.ValAddress(s.stranger).String(),

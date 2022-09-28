@@ -7,5 +7,5 @@ import (
 // FoundationKeeper defines the expected foundation keeper
 type FoundationKeeper interface {
 	GetEnabled(ctx sdk.Context) bool
-	Accept(ctx sdk.Context, granter string, grantee sdk.AccAddress, msg sdk.Msg) error
+	Accept(ctx sdk.Context, grantee sdk.AccAddress, msg sdk.Msg) error
 }

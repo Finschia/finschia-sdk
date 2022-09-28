@@ -1112,8 +1112,6 @@
     - [TallyResult](#lbm.foundation.v1.TallyResult)
     - [ThresholdDecisionPolicy](#lbm.foundation.v1.ThresholdDecisionPolicy)
     - [UpdateFoundationParamsProposal](#lbm.foundation.v1.UpdateFoundationParamsProposal)
-    - [UpdateValidatorAuthsProposal](#lbm.foundation.v1.UpdateValidatorAuthsProposal)
-    - [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth)
     - [Vote](#lbm.foundation.v1.Vote)
   
     - [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult)
@@ -16940,39 +16938,6 @@ UpdateFoundationParamsProposal details a proposal to update params of foundation
 
 
 
-<a name="lbm.foundation.v1.UpdateValidatorAuthsProposal"></a>
-
-### UpdateValidatorAuthsProposal
-UpdateValidatorAuthsProposal details a proposal to update validator auths on foundation.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  |  |
-| `description` | [string](#string) |  |  |
-| `auths` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.ValidatorAuth"></a>
-
-### ValidatorAuth
-ValidatorAuth defines authorization info of a validator.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `operator_address` | [string](#string) |  |  |
-| `creation_allowed` | [bool](#bool) |  |  |
-
-
-
-
-
-
 <a name="lbm.foundation.v1.Vote"></a>
 
 ### Vote
@@ -17298,7 +17263,6 @@ GrantAuthorization defines authorization grant to grantee via route.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `granter` | [string](#string) |  |  |
 | `grantee` | [string](#string) |  |  |
 | `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 

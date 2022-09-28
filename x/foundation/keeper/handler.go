@@ -16,8 +16,6 @@ func NewProposalHandler(k Keeper) govtypes.Handler {
 		switch c := content.(type) {
 		case *foundation.UpdateFoundationParamsProposal:
 			return k.handleUpdateFoundationParamsProposal(ctx, c)
-		case *foundation.UpdateValidatorAuthsProposal:
-			return k.handleUpdateValidatorAuthsProposal(ctx, c)
 		default:
 			return sdkerrors.ErrUnknownRequest.Wrapf("unrecognized foundation proposal content type: %T", c)
 		}

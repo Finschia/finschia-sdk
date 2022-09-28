@@ -451,10 +451,6 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 			operator:      s.stranger,
 			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
 		},
-		"wrong granter": {
-			operator:      s.operator,
-			authorization: &stakingplus.CreateValidatorAuthorization{},
-		},
 	}
 
 	for name, tc := range testCases {

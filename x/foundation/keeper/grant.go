@@ -6,17 +6,20 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
-func (k Keeper) Grant(ctx sdk.Context, granter string, grantee sdk.AccAddress, authorization foundation.Authorization) error {
-	if _, err := k.GetAuthorization(ctx, granter, grantee, authorization.MsgTypeURL()); err == nil {
+func (k Keeper) Grant(ctx sdk.Context, grantee sdk.AccAddress, authorization foundation.Authorization) error {
+	if _, err := k.GetAuthorization(ctx, grantee, authorization.MsgTypeURL()); err == nil {
 		return sdkerrors.ErrInvalidRequest.Wrapf("authorization for %s already exists", authorization.MsgTypeURL())
 	}
 
-	k.setAuthorization(ctx, granter, grantee, authorization)
+	k.setAuthorization(ctx, grantee, authorization)
 
 	any, err := foundation.SetAuthorization(authorization)
 	if err != nil {
 		return err
 	}
+
+	// TODO: remove granter from the event proto.
+	granter := foundation.ModuleName
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventGrant{
 		Granter:       granter,
 		Grantee:       grantee.String(),
@@ -28,12 +31,14 @@ func (k Keeper) Grant(ctx sdk.Context, granter string, grantee sdk.AccAddress, a
 	return nil
 }
 
-func (k Keeper) Revoke(ctx sdk.Context, granter string, grantee sdk.AccAddress, msgTypeURL string) error {
-	if _, err := k.GetAuthorization(ctx, granter, grantee, msgTypeURL); err != nil {
+func (k Keeper) Revoke(ctx sdk.Context, grantee sdk.AccAddress, msgTypeURL string) error {
+	if _, err := k.GetAuthorization(ctx, grantee, msgTypeURL); err != nil {
 		return err
 	}
-	k.deleteAuthorization(ctx, granter, grantee, msgTypeURL)
+	k.deleteAuthorization(ctx, grantee, msgTypeURL)
 
+	// TODO: remove granter from the event proto.
+	granter := foundation.ModuleName
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventRevoke{
 		Granter:    granter,
 		Grantee:    grantee.String(),
@@ -45,9 +50,9 @@ func (k Keeper) Revoke(ctx sdk.Context, granter string, grantee sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) GetAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, msgTypeURL string) (foundation.Authorization, error) {
+func (k Keeper) GetAuthorization(ctx sdk.Context, grantee sdk.AccAddress, msgTypeURL string) (foundation.Authorization, error) {
 	store := ctx.KVStore(k.storeKey)
-	key := grantKey(grantee, msgTypeURL, granter)
+	key := grantKey(grantee, msgTypeURL)
 	bz := store.Get(key)
 	if bz == nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap("authorization not found")
@@ -61,9 +66,9 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, granter string, grantee sdk.Ac
 	return auth, nil
 }
 
-func (k Keeper) setAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, authorization foundation.Authorization) {
+func (k Keeper) setAuthorization(ctx sdk.Context, grantee sdk.AccAddress, authorization foundation.Authorization) {
 	store := ctx.KVStore(k.storeKey)
-	key := grantKey(grantee, authorization.MsgTypeURL(), granter)
+	key := grantKey(grantee, authorization.MsgTypeURL())
 
 	bz, err := k.cdc.MarshalInterface(authorization)
 	if err != nil {
@@ -72,15 +77,15 @@ func (k Keeper) setAuthorization(ctx sdk.Context, granter string, grantee sdk.Ac
 	store.Set(key, bz)
 }
 
-func (k Keeper) deleteAuthorization(ctx sdk.Context, granter string, grantee sdk.AccAddress, msgTypeURL string) {
+func (k Keeper) deleteAuthorization(ctx sdk.Context, grantee sdk.AccAddress, msgTypeURL string) {
 	store := ctx.KVStore(k.storeKey)
-	key := grantKey(grantee, msgTypeURL, granter)
+	key := grantKey(grantee, msgTypeURL)
 	store.Delete(key)
 }
 
-func (k Keeper) Accept(ctx sdk.Context, granter string, grantee sdk.AccAddress, msg sdk.Msg) error {
+func (k Keeper) Accept(ctx sdk.Context, grantee sdk.AccAddress, msg sdk.Msg) error {
 	msgTypeURL := sdk.MsgTypeURL(msg)
-	authorization, err := k.GetAuthorization(ctx, granter, grantee, msgTypeURL)
+	authorization, err := k.GetAuthorization(ctx, grantee, msgTypeURL)
 	if err != nil {
 		return err
 	}
@@ -91,9 +96,9 @@ func (k Keeper) Accept(ctx sdk.Context, granter string, grantee sdk.AccAddress, 
 	}
 
 	if resp.Delete {
-		k.deleteAuthorization(ctx, granter, grantee, msgTypeURL)
+		k.deleteAuthorization(ctx, grantee, msgTypeURL)
 	} else if resp.Updated != nil {
-		k.setAuthorization(ctx, granter, grantee, resp.Updated)
+		k.setAuthorization(ctx, grantee, resp.Updated)
 	}
 
 	if !resp.Accept {
@@ -103,11 +108,11 @@ func (k Keeper) Accept(ctx sdk.Context, granter string, grantee sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) iterateAuthorizations(ctx sdk.Context, fn func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool)) {
+func (k Keeper) iterateAuthorizations(ctx sdk.Context, fn func(grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool)) {
 	k.iterateAuthorizationsImpl(ctx, grantKeyPrefix, fn)
 }
 
-func (k Keeper) iterateAuthorizationsImpl(ctx sdk.Context, prefix []byte, fn func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool)) {
+func (k Keeper) iterateAuthorizationsImpl(ctx sdk.Context, prefix []byte, fn func(grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, prefix)
 	defer iterator.Close()
@@ -118,8 +123,8 @@ func (k Keeper) iterateAuthorizationsImpl(ctx sdk.Context, prefix []byte, fn fun
 			panic(err)
 		}
 
-		grantee, _, granter := splitGrantKey(iterator.Key())
-		if stop := fn(granter, grantee, authorization); stop {
+		grantee, _ := splitGrantKey(iterator.Key())
+		if stop := fn(grantee, authorization); stop {
 			break
 		}
 	}
