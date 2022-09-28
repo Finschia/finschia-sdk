@@ -14,7 +14,7 @@ import (
 func TestDefaultGenesisState(t *testing.T) {
 	gs := foundation.DefaultGenesisState()
 	require.Equal(t, sdk.ZeroDec(), gs.Params.FoundationTax)
-	require.Equal(t, 0, len(gs.Params.CensoredMsgTypeUrls))
+	require.Empty(t, gs.Params.CensoredMsgTypeUrls)
 }
 
 func TestValidateGenesis(t *testing.T) {

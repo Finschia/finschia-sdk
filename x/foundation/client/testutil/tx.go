@@ -115,7 +115,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -173,7 +173,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -229,7 +229,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -299,7 +299,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -366,7 +366,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -422,7 +422,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -488,7 +488,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -543,7 +543,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -594,7 +594,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -657,7 +657,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -715,7 +715,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }

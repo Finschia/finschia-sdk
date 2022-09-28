@@ -589,7 +589,7 @@ func TestOutsourcingDecisionPolicy(t *testing.T) {
 
 	for name, tc := range testCases {
 		policy := foundation.OutsourcingDecisionPolicy{}
-		require.Equal(t, time.Duration(0), policy.GetVotingPeriod())
+		require.Zero(t, policy.GetVotingPeriod())
 
 		err := policy.ValidateBasic()
 		if !tc.validBasic {
@@ -619,7 +619,7 @@ func TestOutsourcingDecisionPolicyAllow(t *testing.T) {
 		TotalWeight: sdk.OneDec(),
 	}
 	require.Error(t, policy.Validate(info, config))
-	require.Equal(t, time.Duration(0), policy.GetVotingPeriod())
+	require.Zero(t, policy.GetVotingPeriod())
 
 	testCases := map[string]struct {
 		sinceSubmission time.Duration

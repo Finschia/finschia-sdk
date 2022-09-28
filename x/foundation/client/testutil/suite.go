@@ -156,7 +156,7 @@ func (s *IntegrationTestSuite) addMembers(members []sdk.AccAddress) {
 
 	var res sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
-	s.Require().EqualValues(0, res.Code, out.String())
+	s.Require().Zero(res.Code, out.String())
 }
 
 // submit a proposal
@@ -180,7 +180,7 @@ func (s *IntegrationTestSuite) submitProposal(msg sdk.Msg, try bool) uint64 {
 
 	var res sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
-	s.Require().EqualValues(0, res.Code, out.String())
+	s.Require().Zero(res.Code, out.String())
 
 	events := res.Logs[0].Events
 	proposalEvent, _ := sdk.TypedEventToEvent(&foundation.EventSubmitProposal{})
@@ -211,7 +211,7 @@ func (s *IntegrationTestSuite) vote(proposalID uint64, voters []sdk.AccAddress) 
 
 		var res sdk.TxResponse
 		s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
-		s.Require().EqualValues(0, res.Code, out.String())
+		s.Require().Zero(res.Code, out.String())
 	}
 }
 
@@ -254,5 +254,5 @@ func (s *IntegrationTestSuite) createAccount(uid, mnemonic string) {
 
 	var res sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
-	s.Require().EqualValues(0, res.Code, out.String())
+	s.Require().Zero(res.Code, out.String())
 }
