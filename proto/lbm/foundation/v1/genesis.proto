@@ -18,7 +18,7 @@ message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
 
   // foundation is the foundation info.
-  FoundationInfo foundation = 2;
+  FoundationInfo foundation = 2 [(gogoproto.nullable) = false];
 
   // members is the list of the foundation members.
   repeated Member members = 3 [(gogoproto.nullable) = false];
