@@ -71,6 +71,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#639](https://github.com/line/lbm-sdk/pull/639) rename x/collection events
 * (x/wasm) [\#661](https://github.com/line/lbm-sdk/pull/661) x/wasm refactoring - detaching the custom wasm proto part of lbm-sdk. (apply changes of [\#625](https://github.com/line/lbm-sdk/pull/625) and [\#655](https://github.com/line/lbm-sdk/pull/655))
 * (refactor) [\#685](https://github.com/line/lbm-sdk/pull/685) remove x/foundation UpdateValidatorAuthsProposal
+* (refactor) [\#686](https://github.com/line/lbm-sdk/pull/686) remove `Minthreshold` and `MinPercentage` from x/foundation config
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
