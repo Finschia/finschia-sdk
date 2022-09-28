@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 
 	"github.com/line/lbm-sdk/x/foundation"
@@ -84,11 +85,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Id:                1,
 						Proposers:         []string{s.members[0].String()},
 						FoundationVersion: 1,
-					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-						Operator: s.operator.String(),
-						To:       s.stranger.String(),
-						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-					}}),
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg(s.operator)}),
 				},
 				Votes: []foundation.Vote{
 					{
@@ -117,11 +114,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 							AbstainCount:    sdk.ZeroDec(),
 							NoWithVetoCount: sdk.ZeroDec(),
 						},
-					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-						Operator: s.operator.String(),
-						To:       s.stranger.String(),
-						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-					}}),
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg(s.operator)}),
 				},
 				Votes: []foundation.Vote{
 					{
@@ -208,11 +201,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Metadata:          string(make([]rune, 256)),
 						Proposers:         []string{s.members[0].String()},
 						FoundationVersion: 1,
-					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-						Operator: s.operator.String(),
-						To:       s.stranger.String(),
-						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-					}}),
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg()}),
 				},
 			},
 		},
@@ -224,11 +213,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Id:                1,
 						Proposers:         []string{s.members[0].String()},
 						FoundationVersion: 1,
-					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-						Operator: s.operator.String(),
-						To:       s.stranger.String(),
-						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-					}}),
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg()}),
 				},
 				Votes: []foundation.Vote{
 					{

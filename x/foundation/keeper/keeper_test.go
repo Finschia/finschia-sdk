@@ -8,6 +8,7 @@ import (
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/foundation"
@@ -40,6 +41,8 @@ type KeeperTestSuite struct {
 func (s *KeeperTestSuite) SetupTest() {
 	checkTx := false
 	s.app = simapp.Setup(checkTx)
+	testdata.RegisterInterfaces(s.app.InterfaceRegistry())
+
 	s.ctx = s.app.BaseApp.NewContext(checkTx, ocproto.Header{})
 	s.keeper = s.app.FoundationKeeper
 
@@ -99,13 +102,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.Require().NoError(err)
 
 	// create a proposal
-	activeProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
-		&foundation.MsgWithdrawFromTreasury{
-			Operator: s.operator.String(),
-			To:       s.stranger.String(),
-			Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-		},
-	})
+	activeProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(s.operator)})
 	s.Require().NoError(err)
 	s.activeProposal = *activeProposal
 
@@ -119,13 +116,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	// create a proposal voted by all members
-	votedProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
-		&foundation.MsgWithdrawFromTreasury{
-			Operator: s.operator.String(),
-			To:       s.stranger.String(),
-			Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-		},
-	})
+	votedProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(s.operator)})
 	s.Require().NoError(err)
 	s.votedProposal = *votedProposal
 
@@ -139,13 +130,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	// create an withdrawn proposal
-	withdrawnProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
-		&foundation.MsgWithdrawFromTreasury{
-			Operator: s.operator.String(),
-			To:       s.stranger.String(),
-			Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-		},
-	})
+	withdrawnProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(s.operator)})
 	s.Require().NoError(err)
 	s.withdrawnProposal = *withdrawnProposal
 

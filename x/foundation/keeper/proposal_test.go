@@ -8,6 +8,7 @@ import (
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 )
@@ -21,29 +22,17 @@ func (s *KeeperTestSuite) TestSubmitProposal() {
 	}{
 		"valid proposal": {
 			proposers: []string{s.members[0].String()},
-			msg: &foundation.MsgWithdrawFromTreasury{
-				Operator: s.operator.String(),
-				To:       s.stranger.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-			},
-			valid: true,
+			msg:       testdata.NewTestMsg(s.operator),
+			valid:     true,
 		},
 		"long metadata": {
 			proposers: []string{s.members[0].String()},
 			metadata:  string(make([]rune, 256)),
-			msg: &foundation.MsgWithdrawFromTreasury{
-				Operator: s.operator.String(),
-				To:       s.stranger.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-			},
+			msg:       testdata.NewTestMsg(s.operator),
 		},
 		"unauthorized msg": {
 			proposers: []string{s.members[0].String()},
-			msg: &foundation.MsgWithdrawFromTreasury{
-				Operator: s.stranger.String(),
-				To:       s.stranger.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-			},
+			msg:       testdata.NewTestMsg(s.stranger),
 		},
 	}
 
@@ -92,6 +81,8 @@ func (s *KeeperTestSuite) TestWithdrawProposal() {
 func TestAbortProposal(t *testing.T) {
 	checkTx := false
 	app := simapp.Setup(checkTx)
+	testdata.RegisterInterfaces(app.InterfaceRegistry())
+
 	ctx := app.BaseApp.NewContext(checkTx, ocproto.Header{})
 	keeper := app.FoundationKeeper
 
@@ -112,17 +103,9 @@ func TestAbortProposal(t *testing.T) {
 	})
 	require.NoError(t, err)
 
-	stranger := createAddress()
-
 	// create proposals of different versions and abort them
 	for _, newMember := range members[1:] {
-		_, err := keeper.SubmitProposal(ctx, []string{members[0].String()}, "", []sdk.Msg{
-			&foundation.MsgWithdrawFromTreasury{
-				Operator: operator.String(),
-				To:       stranger.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-			},
-		})
+		_, err := keeper.SubmitProposal(ctx, []string{members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(operator)})
 		require.NoError(t, err)
 
 		err = keeper.UpdateMembers(ctx, []foundation.MemberRequest{

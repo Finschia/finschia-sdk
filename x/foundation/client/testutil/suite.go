@@ -10,6 +10,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/hd"
 	"github.com/line/lbm-sdk/crypto/keyring"
 	"github.com/line/lbm-sdk/testutil/network"
+	"github.com/line/lbm-sdk/testutil/testdata"
 
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
@@ -46,6 +47,7 @@ func NewIntegrationTestSuite(cfg network.Config) *IntegrationTestSuite {
 
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
+	testdata.RegisterInterfaces(s.cfg.InterfaceRegistry)
 
 	genesisState := s.cfg.GenesisState
 
@@ -111,11 +113,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.createAccount("leavingmember", leavingMemberMnemonic)
 
 	s.addMembers([]sdk.AccAddress{s.leavingMember})
-	id := s.submitProposal(&foundation.MsgWithdrawFromTreasury{
-		Operator: s.operator.String(),
-		To:       s.network.Validators[0].Address.String(),
-		Amount:   sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())),
-	}, false)
+	id := s.submitProposal(testdata.NewTestMsg(s.operator), false)
 	s.vote(id, []sdk.AccAddress{s.network.Validators[0].Address, s.leavingMember})
 	s.Require().NoError(s.network.WaitForNextBlock())
 

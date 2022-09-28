@@ -8,6 +8,7 @@ import (
 
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
+	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/client/cli"
@@ -322,11 +323,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 			[]string{
 				"test proposal",
 				fmt.Sprintf(proposers, val.Address),
-				s.msgToString(&foundation.MsgWithdrawFromTreasury{
-					Operator: s.operator.String(),
-					To:       val.Address.String(),
-					Amount:   sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())),
-				}),
+				s.msgToString(testdata.NewTestMsg()),
 			},
 			true,
 		},
@@ -334,11 +331,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 			[]string{
 				"test proposal",
 				fmt.Sprintf(proposers, val.Address),
-				s.msgToString(&foundation.MsgWithdrawFromTreasury{
-					Operator: s.operator.String(),
-					To:       val.Address.String(),
-					Amount:   sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())),
-				}),
+				s.msgToString(testdata.NewTestMsg()),
 				"extra",
 			},
 			false,
@@ -436,11 +429,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
-	id := s.submitProposal(&foundation.MsgWithdrawFromTreasury{
-		Operator: s.operator.String(),
-		To:       s.network.Validators[0].Address.String(),
-		Amount:   sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))),
-	}, false)
+	id := s.submitProposal(testdata.NewTestMsg(s.operator), false)
 	testCases := map[string]struct {
 		args  []string
 		valid bool

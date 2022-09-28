@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/testutil/testdata"
 
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
@@ -132,11 +133,7 @@ func TestValidateGenesis(t *testing.T) {
 						Id:                1,
 						Proposers:         []string{createAddress().String()},
 						FoundationVersion: 1,
-					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-						Operator: createAddress().String(),
-						To:       createAddress().String(),
-						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-					}}),
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg()}),
 				},
 			},
 		},
@@ -154,20 +151,12 @@ func TestValidateGenesis(t *testing.T) {
 						Id:                1,
 						Proposers:         []string{createAddress().String()},
 						FoundationVersion: 1,
-					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-						Operator: createAddress().String(),
-						To:       createAddress().String(),
-						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-					}}),
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg()}),
 					*foundation.Proposal{
 						Id:                1,
 						Proposers:         []string{createAddress().String()},
 						FoundationVersion: 1,
-					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-						Operator: createAddress().String(),
-						To:       createAddress().String(),
-						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-					}}),
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg()}),
 				},
 			},
 		},
@@ -191,11 +180,7 @@ func TestValidateGenesis(t *testing.T) {
 						Id:                1,
 						Proposers:         []string{createAddress().String()},
 						FoundationVersion: 1,
-					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-						Operator: createAddress().String(),
-						To:       createAddress().String(),
-						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-					}}),
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg()}),
 				},
 				Votes: []foundation.Vote{
 					{
@@ -214,11 +199,7 @@ func TestValidateGenesis(t *testing.T) {
 						Id:                1,
 						Proposers:         []string{createAddress().String()},
 						FoundationVersion: 1,
-					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-						Operator: createAddress().String(),
-						To:       createAddress().String(),
-						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-					}}),
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg()}),
 				},
 				Votes: []foundation.Vote{
 					{
