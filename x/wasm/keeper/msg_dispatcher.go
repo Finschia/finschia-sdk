@@ -1,11 +1,14 @@
 package keeper
 
 import (
+	"fmt"
+
+	abci "github.com/line/ostracon/abci/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	abci "github.com/line/ostracon/abci/types"
-	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 // Messenger is an extension point for custom wasmd message handling
@@ -16,7 +19,7 @@ type Messenger interface {
 
 // replyer is a subset of keeper that can handle replies to submessages
 type replyer interface {
-	reply(ctx sdk.Context, contractAddress sdk.AccAddress, reply wasmvmtypes.Reply) (*sdk.Result, error)
+	reply(ctx sdk.Context, contractAddress sdk.AccAddress, reply wasmvmtypes.Reply) ([]byte, error)
 }
 
 // MessageDispatcher coordinates message sending and submessage reply/ state commits
@@ -76,12 +79,14 @@ func (d MessageDispatcher) DispatchSubmessages(ctx sdk.Context, contractAddr sdk
 	var rsp []byte
 	for _, msg := range msgs {
 		switch msg.ReplyOn {
-		case wasmvmtypes.ReplySuccess, wasmvmtypes.ReplyError, wasmvmtypes.ReplyAlways:
+		case wasmvmtypes.ReplySuccess, wasmvmtypes.ReplyError, wasmvmtypes.ReplyAlways, wasmvmtypes.ReplyNever:
 		default:
-			return nil, sdkerrors.Wrap(types.ErrInvalid, "replyOn")
+			return nil, sdkerrors.Wrap(types.ErrInvalid, "replyOn value")
 		}
 		// first, we build a sub-context which we can use inside the submessages
 		subCtx, commit := ctx.CacheContext()
+		em := sdk.NewEventManager()
+		subCtx = subCtx.WithEventManager(em)
 
 		// check how much gas left locally, optionally wrap the gas meter
 		gasRemaining := ctx.GasMeter().Limit() - ctx.GasMeter().GasConsumed()
@@ -97,22 +102,23 @@ func (d MessageDispatcher) DispatchSubmessages(ctx sdk.Context, contractAddr sdk
 		}
 
 		// if it succeeds, commit state changes from submessage, and pass on events to Event Manager
+		var filteredEvents []sdk.Event
 		if err == nil {
 			commit()
-			ctx.EventManager().EmitEvents(events)
-		}
-		// on failure, revert state from sandbox, and ignore events (just skip doing the above)
+			filteredEvents = filterEvents(append(em.Events(), events...))
+			ctx.EventManager().EmitEvents(filteredEvents)
+		} // on failure, revert state from sandbox, and ignore events (just skip doing the above)
 
-		// we only callback if requested. Short-circuit here the two cases we don't want to
-		if msg.ReplyOn == wasmvmtypes.ReplySuccess && err != nil {
+		// we only callback if requested. Short-circuit here the cases we don't want to
+		if (msg.ReplyOn == wasmvmtypes.ReplySuccess || msg.ReplyOn == wasmvmtypes.ReplyNever) && err != nil {
 			return nil, err
 		}
-		if msg.ReplyOn == wasmvmtypes.ReplyError && err == nil {
+		if msg.ReplyOn == wasmvmtypes.ReplyNever || (msg.ReplyOn == wasmvmtypes.ReplyError && err == nil) {
 			continue
 		}
 
-		// otherwise, we create a SubcallResult and pass it into the calling contract
-		var result wasmvmtypes.SubcallResult
+		// otherwise, we create a SubMsgResult and pass it into the calling contract
+		var result wasmvmtypes.SubMsgResult
 		if err == nil {
 			// just take the first one for now if there are multiple sub-sdk messages
 			// and safely return nothing if no data
@@ -120,15 +126,17 @@ func (d MessageDispatcher) DispatchSubmessages(ctx sdk.Context, contractAddr sdk
 			if len(data) > 0 {
 				responseData = data[0]
 			}
-			result = wasmvmtypes.SubcallResult{
-				Ok: &wasmvmtypes.SubcallResponse{
-					Events: sdkEventsToWasmVMEvents(events),
+			result = wasmvmtypes.SubMsgResult{
+				Ok: &wasmvmtypes.SubMsgResponse{
+					Events: sdkEventsToWasmVMEvents(filteredEvents),
 					Data:   responseData,
 				},
 			}
 		} else {
-			result = wasmvmtypes.SubcallResult{
-				Err: err.Error(),
+			// Issue #759 - we don't return error string for worries of non-determinism
+			moduleLogger(ctx).Info("Redacting submessage error", "cause", err)
+			result = wasmvmtypes.SubMsgResult{
+				Err: redactError(err).Error(),
 			}
 		}
 
@@ -140,15 +148,43 @@ func (d MessageDispatcher) DispatchSubmessages(ctx sdk.Context, contractAddr sdk
 
 		// we can ignore any result returned as there is nothing to do with the data
 		// and the events are already in the ctx.EventManager()
-		rData, err := d.keeper.reply(ctx, contractAddr, reply)
+		rspData, err := d.keeper.reply(ctx, contractAddr, reply)
 		switch {
 		case err != nil:
 			return nil, sdkerrors.Wrap(err, "reply")
-		case rData.Data != nil:
-			rsp = rData.Data
+		case rspData != nil:
+			rsp = rspData
 		}
 	}
 	return rsp, nil
+}
+
+// Issue #759 - we don't return error string for worries of non-determinism
+func redactError(err error) error {
+	// Do not redact system errors
+	// SystemErrors must be created in x/wasm and we can ensure determinism
+	if wasmvmtypes.ToSystemError(err) != nil {
+		return err
+	}
+
+	// FIXME: do we want to hardcode some constant string mappings here as well?
+	// Or better document them? (SDK error string may change on a patch release to fix wording)
+	// sdk/11 is out of gas
+	// sdk/5 is insufficient funds (on bank send)
+	// (we can theoretically redact less in the future, but this is a first step to safety)
+	codespace, code, _ := sdkerrors.ABCIInfo(err, false)
+	return fmt.Errorf("codespace: %s, code: %d", codespace, code)
+}
+
+func filterEvents(events []sdk.Event) []sdk.Event {
+	// pre-allocate space for efficiency
+	res := make([]sdk.Event, 0, len(events))
+	for _, ev := range events {
+		if ev.Type != "message" {
+			res = append(res, ev)
+		}
+	}
+	return res
 }
 
 func sdkEventsToWasmVMEvents(events []sdk.Event) []wasmvmtypes.Event {

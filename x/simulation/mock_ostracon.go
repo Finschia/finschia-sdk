@@ -59,8 +59,6 @@ func (vals mockValidators) getKeys() []string {
 	return keys
 }
 
-//_________________________________________________________________________________
-
 // randomProposer picks a random proposer from the current validator set
 func (vals mockValidators) randomProposer(r *rand.Rand) ostbytes.HexBytes {
 	keys := vals.getKeys()
@@ -158,9 +156,9 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 
 		voteInfos[i] = abci.VoteInfo{
 			Validator: abci.Validator{
-				Address:     pubkey.Address(),
-				Power:       mVal.val.Power,
-				VotingPower: mVal.val.Power,
+				Address:      pubkey.Address(),
+				Power:        mVal.val.Power,
+				VotingWeight: mVal.val.Power,
 			},
 			SignedLastBlock: signed,
 		}

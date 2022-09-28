@@ -7,8 +7,8 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/suite"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/simapp"
@@ -20,21 +20,21 @@ import (
 type SubspaceTestSuite struct {
 	suite.Suite
 
-	cdc   codec.BinaryMarshaler
+	cdc   codec.BinaryCodec
 	amino *codec.LegacyAmino
 	ctx   sdk.Context
-	ss    *types.Subspace
+	ss    types.Subspace
 }
 
 func (suite *SubspaceTestSuite) SetupTest() {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 
 	ms := store.NewCommitMultiStore(db)
 	ms.MountStoreWithDB(key, sdk.StoreTypeIAVL, db)
 	suite.NoError(ms.LoadLatestVersion())
 
 	encCfg := simapp.MakeTestEncodingConfig()
-	ss := types.NewSubspace(encCfg.Marshaler, encCfg.Amino, key, "testsubspace")
+	ss := types.NewSubspace(encCfg.Marshaler, encCfg.Amino, key, tkey, "testsubspace")
 
 	suite.cdc = encCfg.Marshaler
 	suite.amino = encCfg.Amino
@@ -48,7 +48,7 @@ func (suite *SubspaceTestSuite) TestKeyTable() {
 		suite.ss.WithKeyTable(paramKeyTable())
 	})
 	suite.Require().NotPanics(func() {
-		ss := types.NewSubspace(suite.cdc, suite.amino, key, "testsubspace2")
+		ss := types.NewSubspace(suite.cdc, suite.amino, key, tkey, "testsubspace2")
 		ss = ss.WithKeyTable(paramKeyTable())
 	})
 }

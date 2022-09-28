@@ -10,12 +10,15 @@ import (
 	"io/ioutil"
 	"strconv"
 
+	wasmvm "github.com/line/wasmvm"
+	"github.com/spf13/cobra"
+	flag "github.com/spf13/pflag"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"github.com/spf13/cobra"
-	flag "github.com/spf13/pflag"
 )
 
 func GetQueryCmd() *cobra.Command {
@@ -30,20 +33,46 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdListCode(),
 		GetCmdListContractByCode(),
 		GetCmdQueryCode(),
+		GetCmdQueryCodeInfo(),
 		GetCmdGetContractInfo(),
 		GetCmdGetContractHistory(),
 		GetCmdGetContractState(),
+		GetCmdListPinnedCode(),
+		GetCmdLibVersion(),
+		GetCmdListInactiveContracts(),
+		GetCmdIsInactiveContract(),
 	)
 	return queryCmd
+}
+
+// GetCmdLibVersion gets current libwasmvm version.
+func GetCmdLibVersion() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "libwasmvm-version",
+		Short:   "Get libwasmvm version",
+		Long:    "Get libwasmvm version",
+		Aliases: []string{"lib-version"},
+		Args:    cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			version, err := wasmvm.LibwasmvmVersion()
+			if err != nil {
+				return fmt.Errorf("error retrieving libwasmvm version: %w", err)
+			}
+			fmt.Println(version)
+			return nil
+		},
+	}
+	return cmd
 }
 
 // GetCmdListCode lists all wasm code uploaded
 func GetCmdListCode() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-code",
-		Short: "List all wasm bytecode on the chain",
-		Long:  "List all wasm bytecode on the chain",
-		Args:  cobra.ExactArgs(0),
+		Use:     "list-code",
+		Short:   "List all wasm bytecode on the chain",
+		Long:    "List all wasm bytecode on the chain",
+		Aliases: []string{"list-codes", "codes", "lco"},
+		Args:    cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -75,10 +104,11 @@ func GetCmdListCode() *cobra.Command {
 // GetCmdListContractByCode lists all wasm code uploaded for given code id
 func GetCmdListContractByCode() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-contract-by-code [code_id]",
-		Short: "List wasm all bytecode on the chain for given code id",
-		Long:  "List wasm all bytecode on the chain for given code id",
-		Args:  cobra.ExactArgs(1),
+		Use:     "list-contract-by-code [code_id]",
+		Short:   "List wasm all bytecode on the chain for given code id",
+		Long:    "List wasm all bytecode on the chain for given code id",
+		Aliases: []string{"list-contracts-by-code", "list-contracts", "contracts", "lca"},
+		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -116,10 +146,11 @@ func GetCmdListContractByCode() *cobra.Command {
 // GetCmdQueryCode returns the bytecode for a given contract
 func GetCmdQueryCode() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "code [code_id] [output filename]",
-		Short: "Downloads wasm bytecode for given code id",
-		Long:  "Downloads wasm bytecode for given code id",
-		Args:  cobra.ExactArgs(2),
+		Use:     "code [code_id] [output filename]",
+		Short:   "Downloads wasm bytecode for given code id",
+		Long:    "Downloads wasm bytecode for given code id",
+		Aliases: []string{"source-code", "source"},
+		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -153,21 +184,60 @@ func GetCmdQueryCode() *cobra.Command {
 	return cmd
 }
 
-// GetCmdGetContractInfo gets details about a given contract
-func GetCmdGetContractInfo() *cobra.Command {
+// GetCmdQueryCodeInfo returns the code info for a given code id
+func GetCmdQueryCodeInfo() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "contract [bech32_address]",
-		Short: "Prints out metadata of a contract given its address",
-		Long:  "Prints out metadata of a contract given its address",
+		Use:   "code-info [code_id]",
+		Short: "Prints out metadata of a code id",
+		Long:  "Prints out metadata of a code id",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			err = sdk.ValidateAccAddress(args[0])
+			codeID, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.Code(
+				context.Background(),
+				&types.QueryCodeRequest{
+					CodeId: codeID,
+				},
+			)
+			if err != nil {
+				return err
+			}
+			if res.CodeInfoResponse == nil {
+				return fmt.Errorf("contract not found")
+			}
+
+			return clientCtx.PrintProto(res.CodeInfoResponse)
+		},
+	}
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+// GetCmdGetContractInfo gets details about a given contract
+func GetCmdGetContractInfo() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "contract [bech32_address]",
+		Short:   "Prints out metadata of a contract given its address",
+		Long:    "Prints out metadata of a contract given its address",
+		Aliases: []string{"meta", "c"},
+		Args:    cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			_, err = sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
@@ -193,6 +263,7 @@ func GetCmdGetContractState() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                        "contract-state",
 		Short:                      "Querying commands for the wasm module",
+		Aliases:                    []string{"state", "cs", "s"},
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
@@ -203,7 +274,6 @@ func GetCmdGetContractState() *cobra.Command {
 		GetCmdGetContractStateSmart(),
 	)
 	return cmd
-
 }
 
 func GetCmdGetContractStateAll() *cobra.Command {
@@ -218,7 +288,7 @@ func GetCmdGetContractStateAll() *cobra.Command {
 				return err
 			}
 
-			err = sdk.ValidateAccAddress(args[0])
+			_, err = sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
@@ -259,7 +329,7 @@ func GetCmdGetContractStateRaw() *cobra.Command {
 				return err
 			}
 
-			err = sdk.ValidateAccAddress(args[0])
+			_, err = sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
@@ -300,7 +370,7 @@ func GetCmdGetContractStateSmart() *cobra.Command {
 				return err
 			}
 
-			err = sdk.ValidateAccAddress(args[0])
+			_, err = sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
@@ -338,17 +408,18 @@ func GetCmdGetContractStateSmart() *cobra.Command {
 // GetCmdGetContractHistory prints the code history for a given contract
 func GetCmdGetContractHistory() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "contract-history [bech32_address]",
-		Short: "Prints out the code history for a contract given its address",
-		Long:  "Prints out the code history for a contract given its address",
-		Args:  cobra.ExactArgs(1),
+		Use:     "contract-history [bech32_address]",
+		Short:   "Prints out the code history for a contract given its address",
+		Long:    "Prints out the code history for a contract given its address",
+		Aliases: []string{"history", "hist", "ch"},
+		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			err = sdk.ValidateAccAddress(args[0])
+			_, err = sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
@@ -375,6 +446,41 @@ func GetCmdGetContractHistory() *cobra.Command {
 
 	flags.AddQueryFlagsToCmd(cmd)
 	flags.AddPaginationFlagsToCmd(cmd, "contract history")
+	return cmd
+}
+
+// GetCmdListPinnedCode lists all wasm code ids that are pinned
+func GetCmdListPinnedCode() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pinned",
+		Short: "List all pinned code ids",
+		Long:  "\t\tLong:    List all pinned code ids,\n",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			pageReq, err := client.ReadPageRequest(withPageKeyDecoded(cmd.Flags()))
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.PinnedCodes(
+				context.Background(),
+				&types.QueryPinnedCodesRequest{
+					Pagination: pageReq,
+				},
+			)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "list codes")
 	return cmd
 }
 
@@ -433,4 +539,65 @@ func withPageKeyDecoded(flagSet *flag.FlagSet) *flag.FlagSet {
 	}
 	flagSet.Set(flags.FlagPageKey, string(raw))
 	return flagSet
+}
+
+func GetCmdListInactiveContracts() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:  "inactive-contracts",
+		Long: "List all inactive contracts",
+		Args: cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			pageReq, err := client.ReadPageRequest(withPageKeyDecoded(cmd.Flags()))
+			if err != nil {
+				return err
+			}
+			queryClient := lbmtypes.NewQueryClient(clientCtx)
+			res, err := queryClient.InactiveContracts(
+				context.Background(),
+				&lbmtypes.QueryInactiveContractsRequest{
+					Pagination: pageReq,
+				},
+			)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "list of inactive contracts")
+	return cmd
+}
+
+func GetCmdIsInactiveContract() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:  "is-inactive [bech32_address]",
+		Long: "Check if inactive contract or not",
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			queryClient := lbmtypes.NewQueryClient(clientCtx)
+			res, err := queryClient.InactiveContract(
+				context.Background(),
+				&lbmtypes.QueryInactiveContractRequest{
+					Address: args[0],
+				},
+			)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
 }

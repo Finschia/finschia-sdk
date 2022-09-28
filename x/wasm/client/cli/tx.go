@@ -6,27 +6,28 @@ import (
 	"io/ioutil"
 	"strconv"
 
+	"github.com/spf13/cobra"
+	flag "github.com/spf13/pflag"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	wasmUtils "github.com/line/lbm-sdk/x/wasm/client/utils"
+	"github.com/line/lbm-sdk/x/wasm/ioutils"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"github.com/spf13/cobra"
-	flag "github.com/spf13/pflag"
 )
 
 const (
 	flagAmount                 = "amount"
-	flagSource                 = "source"
-	flagBuilder                = "builder"
 	flagLabel                  = "label"
 	flagAdmin                  = "admin"
+	flagNoAdmin                = "no-admin"
 	flagRunAs                  = "run-as"
 	flagInstantiateByEverybody = "instantiate-everybody"
+	flagInstantiateNobody      = "instantiate-nobody"
 	flagInstantiateByAddress   = "instantiate-only-address"
-	flagProposalType           = "type"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -46,7 +47,6 @@ func GetTxCmd() *cobra.Command {
 		MigrateContractCmd(),
 		UpdateContractAdminCmd(),
 		ClearContractAdminCmd(),
-		UpdateContractStatusCmd(),
 	)
 	return txCmd
 }
@@ -54,9 +54,10 @@ func GetTxCmd() *cobra.Command {
 // StoreCodeCmd will upload code to be reused.
 func StoreCodeCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "store [wasm file] --source [source] --builder [builder]",
-		Short: "Upload a wasm binary",
-		Args:  cobra.ExactArgs(1),
+		Use:     "store [wasm file]",
+		Short:   "Upload a wasm binary",
+		Aliases: []string{"upload", "st", "s"},
+		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -73,9 +74,8 @@ func StoreCodeCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(flagSource, "", "A valid URI reference to the contract's source code, optional")
-	cmd.Flags().String(flagBuilder, "", "A valid docker tag for the build system, optional")
 	cmd.Flags().String(flagInstantiateByEverybody, "", "Everybody can instantiate a contract from the code, optional")
+	cmd.Flags().String(flagInstantiateNobody, "", "Nobody except the governance process can instantiate a contract from the code, optional")
 	cmd.Flags().String(flagInstantiateByAddress, "", "Only this address can instantiate a contract instance from the code, optional")
 	flags.AddTxFlagsToCmd(cmd)
 	return cmd
@@ -88,13 +88,13 @@ func parseStoreCodeArgs(file string, sender sdk.AccAddress, flags *flag.FlagSet)
 	}
 
 	// gzip the wasm file
-	if wasmUtils.IsWasm(wasm) {
-		wasm, err = wasmUtils.GzipIt(wasm)
+	if ioutils.IsWasm(wasm) {
+		wasm, err = ioutils.GzipIt(wasm)
 
 		if err != nil {
 			return types.MsgStoreCode{}, err
 		}
-	} else if !wasmUtils.IsGzip(wasm) {
+	} else if !ioutils.IsGzip(wasm) {
 		return types.MsgStoreCode{}, fmt.Errorf("invalid input file. Use wasm binary or gzip")
 	}
 
@@ -104,11 +104,11 @@ func parseStoreCodeArgs(file string, sender sdk.AccAddress, flags *flag.FlagSet)
 		return types.MsgStoreCode{}, fmt.Errorf("instantiate by address: %s", err)
 	}
 	if onlyAddrStr != "" {
-		err := sdk.ValidateAccAddress(onlyAddrStr)
+		allowedAddr, err := sdk.AccAddressFromBech32(onlyAddrStr)
 		if err != nil {
 			return types.MsgStoreCode{}, sdkerrors.Wrap(err, flagInstantiateByAddress)
 		}
-		x := types.AccessTypeOnlyAddress.With(sdk.AccAddress(onlyAddrStr))
+		x := types.AccessTypeOnlyAddress.With(allowedAddr)
 		perm = &x
 	} else {
 		everybodyStr, err := flags.GetString(flagInstantiateByEverybody)
@@ -124,23 +124,26 @@ func parseStoreCodeArgs(file string, sender sdk.AccAddress, flags *flag.FlagSet)
 				perm = &types.AllowEverybody
 			}
 		}
-	}
 
-	// build and sign the transaction, then broadcast to Tendermint
-	source, err := flags.GetString(flagSource)
-	if err != nil {
-		return types.MsgStoreCode{}, fmt.Errorf("source: %s", err)
-	}
-	builder, err := flags.GetString(flagBuilder)
-	if err != nil {
-		return types.MsgStoreCode{}, fmt.Errorf("builder: %s", err)
+		nobodyStr, err := flags.GetString(flagInstantiateNobody)
+		if err != nil {
+			return types.MsgStoreCode{}, fmt.Errorf("instantiate by nobody: %s", err)
+		}
+		if nobodyStr != "" {
+			ok, err := strconv.ParseBool(nobodyStr)
+			if err != nil {
+				return types.MsgStoreCode{}, fmt.Errorf("boolean value expected for instantiate by nobody: %s", err)
+			}
+			if ok {
+				perm = &types.AllowNobody
+			}
+		}
+
 	}
 
 	msg := types.MsgStoreCode{
 		Sender:                sender.String(),
 		WASMByteCode:          wasm,
-		Source:                source,
-		Builder:               builder,
 		InstantiatePermission: perm,
 	}
 	return msg, nil
@@ -149,15 +152,16 @@ func parseStoreCodeArgs(file string, sender sdk.AccAddress, flags *flag.FlagSet)
 // InstantiateContractCmd will instantiate a contract from previously uploaded code.
 func InstantiateContractCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "instantiate [code_id_int64] [json_encoded_init_args] --label [text] --admin [address,optional] --amount [coins,optional]",
-		Short: "Instantiate a wasm contract",
-		Args:  cobra.ExactArgs(2),
+		Use:     "instantiate [code_id_int64] [json_encoded_init_args] --label [text] --admin [address,optional] --amount [coins,optional]",
+		Short:   "Instantiate a wasm contract",
+		Aliases: []string{"start", "init", "inst", "i"},
+		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
+
 			msg, err := parseInstantiateArgs(args[0], args[1], clientCtx.GetFromAddress(), cmd.Flags())
 			if err != nil {
 				return err
@@ -172,6 +176,7 @@ func InstantiateContractCmd() *cobra.Command {
 	cmd.Flags().String(flagAmount, "", "Coins to send to the contract during instantiation")
 	cmd.Flags().String(flagLabel, "", "A human-readable name for this contract in lists")
 	cmd.Flags().String(flagAdmin, "", "Address of an admin")
+	cmd.Flags().Bool(flagNoAdmin, false, "You must set this explicitly if you don't want an admin")
 	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
@@ -202,23 +207,35 @@ func parseInstantiateArgs(rawCodeID, initMsg string, sender sdk.AccAddress, flag
 	if err != nil {
 		return types.MsgInstantiateContract{}, fmt.Errorf("admin: %s", err)
 	}
+	noAdmin, err := flags.GetBool(flagNoAdmin)
+	if err != nil {
+		return types.MsgInstantiateContract{}, fmt.Errorf("no-admin: %s", err)
+	}
 
-	// build and sign the transaction, then broadcast to Tendermint
+	// ensure sensible admin is set (or explicitly immutable)
+	if adminStr == "" && !noAdmin {
+		return types.MsgInstantiateContract{}, fmt.Errorf("you must set an admin or explicitly pass --no-admin to make it immutible (wasmd issue #719)")
+	}
+	if adminStr != "" && noAdmin {
+		return types.MsgInstantiateContract{}, fmt.Errorf("you set an admin and passed --no-admin, those cannot both be true")
+	}
+
+	// build and sign the transaction, then broadcast to Ostracon
 	msg := types.MsgInstantiateContract{
-		Sender:  sender.String(),
-		CodeID:  codeID,
-		Label:   label,
-		Funds:   amount,
-		InitMsg: []byte(initMsg),
-		Admin:   adminStr,
+		Sender: sender.String(),
+		CodeID: codeID,
+		Label:  label,
+		Funds:  amount,
+		Msg:    []byte(initMsg),
+		Admin:  adminStr,
 	}
 	return msg, nil
 }
 
-// StoreCodeAndInstantiatecontractcmd will upload code and instantiate a contract using it
+// StoreCodeAndInstantiateContractCmd will upload code and instantiate a contract using it
 func StoreCodeAndInstantiateContractCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "store-instantiate [wasm file] [json_encoded_init_args] --source [source] --builder [builder] --label [text] --admin [address,optional] --amount [coins,optional]",
+		Use:   "store-instantiate [wasm file] [json_encoded_init_args] --label [text] --admin [address,optional] --amount [coins,optional]",
 		Short: "Upload a wasm binary and instantiate a wasm contract from the code",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -237,8 +254,6 @@ func StoreCodeAndInstantiateContractCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(flagSource, "", "A valid URI reference to the contract's source code, optional")
-	cmd.Flags().String(flagBuilder, "", "A valid docker tag for the build system, optional")
 	cmd.Flags().String(flagInstantiateByEverybody, "", "Everybody can instantiate a contract from the code, optional")
 	cmd.Flags().String(flagInstantiateByAddress, "", "Only this address can instantiate a contract instance from the code, optional")
 	cmd.Flags().String(flagAmount, "", "Coins to send to the contract during instantiation")
@@ -248,44 +263,44 @@ func StoreCodeAndInstantiateContractCmd() *cobra.Command {
 	return cmd
 }
 
-func parseStoreCodeAndInstantiateContractArgs(file string, initMsg string, sender sdk.AccAddress, flags *flag.FlagSet) (types.MsgStoreCodeAndInstantiateContract, error) {
+func parseStoreCodeAndInstantiateContractArgs(file string, initMsg string, sender sdk.AccAddress, flags *flag.FlagSet) (lbmtypes.MsgStoreCodeAndInstantiateContract, error) {
 	wasm, err := ioutil.ReadFile(file)
 	if err != nil {
-		return types.MsgStoreCodeAndInstantiateContract{}, err
+		return lbmtypes.MsgStoreCodeAndInstantiateContract{}, err
 	}
 
 	// gzip the wasm file
-	if wasmUtils.IsWasm(wasm) {
-		wasm, err = wasmUtils.GzipIt(wasm)
+	if ioutils.IsWasm(wasm) {
+		wasm, err = ioutils.GzipIt(wasm)
 
 		if err != nil {
-			return types.MsgStoreCodeAndInstantiateContract{}, err
+			return lbmtypes.MsgStoreCodeAndInstantiateContract{}, err
 		}
-	} else if !wasmUtils.IsGzip(wasm) {
-		return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("invalid input file. Use wasm binary or gzip")
+	} else if !ioutils.IsGzip(wasm) {
+		return lbmtypes.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("invalid input file. Use wasm binary or gzip")
 	}
 
 	var perm *types.AccessConfig
 	onlyAddrStr, err := flags.GetString(flagInstantiateByAddress)
 	if err != nil {
-		return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("instantiate by address: %s", err)
+		return lbmtypes.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("instantiate by address: %s", err)
 	}
 	if onlyAddrStr != "" {
-		err := sdk.ValidateAccAddress(onlyAddrStr)
+		addr, err := sdk.AccAddressFromBech32(onlyAddrStr)
 		if err != nil {
-			return types.MsgStoreCodeAndInstantiateContract{}, sdkerrors.Wrap(err, flagInstantiateByAddress)
+			return lbmtypes.MsgStoreCodeAndInstantiateContract{}, sdkerrors.Wrap(err, flagInstantiateByAddress)
 		}
-		x := types.AccessTypeOnlyAddress.With(sdk.AccAddress(onlyAddrStr))
+		x := types.AccessTypeOnlyAddress.With(addr)
 		perm = &x
 	} else {
 		everybodyStr, err := flags.GetString(flagInstantiateByEverybody)
 		if err != nil {
-			return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("instantiate by everybody: %s", err)
+			return lbmtypes.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("instantiate by everybody: %s", err)
 		}
 		if everybodyStr != "" {
 			ok, err := strconv.ParseBool(everybodyStr)
 			if err != nil {
-				return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("boolean value expected for instantiate by everybody: %s", err)
+				return lbmtypes.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("boolean value expected for instantiate by everybody: %s", err)
 			}
 			if ok {
 				perm = &types.AllowEverybody
@@ -293,45 +308,33 @@ func parseStoreCodeAndInstantiateContractArgs(file string, initMsg string, sende
 		}
 	}
 
-	// build and sign the transaction, then broadcast to Tendermint
-	source, err := flags.GetString(flagSource)
-	if err != nil {
-		return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("source: %s", err)
-	}
-	builder, err := flags.GetString(flagBuilder)
-	if err != nil {
-		return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("builder: %s", err)
-	}
-
 	amountStr, err := flags.GetString(flagAmount)
 	if err != nil {
-		return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("amount: %s", err)
+		return lbmtypes.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("amount: %s", err)
 	}
 	amount, err := sdk.ParseCoinsNormalized(amountStr)
 	if err != nil {
-		return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("amount: %s", err)
+		return lbmtypes.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("amount: %s", err)
 	}
 	label, err := flags.GetString(flagLabel)
 	if err != nil {
-		return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("label: %s", err)
+		return lbmtypes.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("label: %s", err)
 	}
 	if label == "" {
-		return types.MsgStoreCodeAndInstantiateContract{}, errors.New("label is required on all contracts")
+		return lbmtypes.MsgStoreCodeAndInstantiateContract{}, errors.New("label is required on all contracts")
 	}
 	adminStr, err := flags.GetString(flagAdmin)
 	if err != nil {
-		return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("admin: %s", err)
+		return lbmtypes.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("admin: %s", err)
 	}
 
-	msg := types.MsgStoreCodeAndInstantiateContract{
+	msg := lbmtypes.MsgStoreCodeAndInstantiateContract{
 		Sender:                sender.String(),
 		WASMByteCode:          wasm,
-		Source:                source,
-		Builder:               builder,
 		InstantiatePermission: perm,
 		Label:                 label,
 		Funds:                 amount,
-		InitMsg:               []byte(initMsg),
+		Msg:                   []byte(initMsg),
 		Admin:                 adminStr,
 	}
 	return msg, nil
@@ -340,9 +343,10 @@ func parseStoreCodeAndInstantiateContractArgs(file string, initMsg string, sende
 // ExecuteContractCmd will instantiate a contract from previously uploaded code.
 func ExecuteContractCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "execute [contract_addr_bech32] [json_encoded_send_args] --amount [coins,optional]",
-		Short: "Execute a command on a wasm contract",
-		Args:  cobra.ExactArgs(2),
+		Use:     "execute [contract_addr_bech32] [json_encoded_send_args] --amount [coins,optional]",
+		Short:   "Execute a command on a wasm contract",
+		Aliases: []string{"run", "call", "exec", "ex", "e"},
+		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {

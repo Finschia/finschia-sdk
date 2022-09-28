@@ -5,7 +5,9 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
+
 	abci "github.com/line/ostracon/abci/types"
+	ocbytes "github.com/line/ostracon/libs/bytes"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
@@ -25,6 +27,7 @@ type Context struct {
 	ctx           context.Context
 	ms            MultiStore
 	header        ocproto.Header
+	headerHash    ocbytes.HexBytes
 	chainID       string
 	txBytes       []byte
 	logger        log.Logger
@@ -61,6 +64,13 @@ func (c Context) EventManager() *EventManager { return c.eventManager }
 func (c Context) BlockHeader() ocproto.Header {
 	var msg = proto.Clone(&c.header).(*ocproto.Header)
 	return *msg
+}
+
+// HeaderHash returns a copy of the header hash obtained during abci.RequestBeginBlock
+func (c Context) HeaderHash() ocbytes.HexBytes {
+	hash := make([]byte, len(c.headerHash))
+	copy(hash, c.headerHash)
+	return hash
 }
 
 func (c Context) ConsensusParams() *abci.ConsensusParams {
@@ -101,6 +111,15 @@ func (c Context) WithBlockHeader(header ocproto.Header) Context {
 	// https://github.com/gogo/protobuf/issues/519
 	header.Time = header.Time.UTC()
 	c.header = header
+	return c
+}
+
+// WithHeaderHash returns a Context with an updated tendermint block header hash.
+func (c Context) WithHeaderHash(hash []byte) Context {
+	temp := make([]byte, len(hash))
+	copy(temp, hash)
+
+	c.headerHash = temp
 	return c
 }
 

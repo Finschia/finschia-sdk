@@ -7,8 +7,8 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/client/tx"
@@ -19,7 +19,7 @@ import (
 )
 
 func TestRegisterMsgService(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 
 	// Create an encoding config that doesn't register testdata Msg services.
 	encCfg := simapp.MakeTestEncodingConfig()
@@ -44,7 +44,7 @@ func TestRegisterMsgService(t *testing.T) {
 
 func TestRegisterMsgServiceTwice(t *testing.T) {
 	// Setup baseapp.
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	encCfg := simapp.MakeTestEncodingConfig()
 	app := baseapp.NewBaseApp("test", log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, encCfg.TxConfig.TxDecoder())
 	app.SetInterfaceRegistry(encCfg.InterfaceRegistry)
@@ -71,7 +71,7 @@ func TestMsgService(t *testing.T) {
 	priv, _, _ := testdata.KeyTestPubAddr()
 	encCfg := simapp.MakeTestEncodingConfig()
 	testdata.RegisterInterfaces(encCfg.InterfaceRegistry)
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	app := baseapp.NewBaseApp("test", log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, encCfg.TxConfig.TxDecoder())
 	app.SetInterfaceRegistry(encCfg.InterfaceRegistry)
 	testdata.RegisterMsgServer(
@@ -80,11 +80,11 @@ func TestMsgService(t *testing.T) {
 	)
 	_ = app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: 1}})
 
-	msg := testdata.NewServiceMsgCreateDog(&testdata.MsgCreateDog{Dog: &testdata.Dog{Name: "Spot"}})
+	msg := testdata.MsgCreateDog{Dog: &testdata.Dog{Name: "Spot"}}
 	txBuilder := encCfg.TxConfig.NewTxBuilder()
 	txBuilder.SetFeeAmount(testdata.NewTestFeeAmount())
 	txBuilder.SetGasLimit(testdata.NewTestGasLimit())
-	err := txBuilder.SetMsgs(msg)
+	err := txBuilder.SetMsgs(&msg)
 	require.NoError(t, err)
 
 	// First round: we gather all the signer infos. We use the "set empty
@@ -103,8 +103,9 @@ func TestMsgService(t *testing.T) {
 
 	// Second round: all signer infos are set, so each signer can sign.
 	signerData := authsigning.SignerData{
-		ChainID:  "test",
-		Sequence: 0,
+		ChainID:       "test",
+		AccountNumber: 0,
+		Sequence:      0,
 	}
 	sigV2, err = tx.SignWithPrivKey(
 		encCfg.TxConfig.SignModeHandler().DefaultMode(), signerData,

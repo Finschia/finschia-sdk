@@ -23,7 +23,7 @@ is used on.
 ## Public Key
 
 The public key can be a single public key or a multi-signature public key. The public key type used
-must fulfill the tendermint public key interface (this will become the SDK public key interface in the
+must fulfill the ostracon public key interface (this will become the SDK public key interface in the
 near future). The public key must be registered on the application codec otherwise encoding/decoding 
 errors will arise. The public key stored in the consensus state is represented as a protobuf `Any`. 
 This allows for flexibility in what other public key types can be supported in the future. 
@@ -53,10 +53,10 @@ data := &ClientStateData{
   ClientState: any,
 }
 
-dataBz, err := cdc.MarshalBinaryBare(data)
+dataBz, err := cdc.Marshal(data)
 ```
 
-The helper functions `...DataBytes()` in [proofs.go](../types/proofs.go) handle this
+The helper functions `...DataBytes()` in [proof.go](../types/proof.go) handle this
 functionality. 
 
 2. Construct the `SignBytes` and marshal it.
@@ -72,10 +72,10 @@ signBytes := &SignBytes{
   Data:        dataBz,
 }
 
-signBz, err := cdc.MarshalBinaryBare(signBytes)
+signBz, err := cdc.Marshal(signBytes)
 ```
 
-The helper functions `...SignBytes()` in [proofs.go](../types/proofs.go) handle this functionality.
+The helper functions `...SignBytes()` in [proof.go](../types/proof.go) handle this functionality.
 The `DataType` field is used to disambiguate what type of data was signed to prevent potential 
 proto encoding overlap.
 
@@ -91,7 +91,7 @@ sigData := &signing.SingleSignatureData{
 }
 
 protoSigData := signing.SignatureDataToProto(sigData)
-bz, err := cdc.MarshalBinaryBare(protoSigData)
+bz, err := cdc.Marshal(protoSigData)
 ```
 
 4. Construct a `TimestampedSignatureData` and marshal it. The marshaled result can be passed in 
@@ -105,8 +105,11 @@ timestampedSignatureData := &types.TimestampedSignatureData{
   Timestamp: solomachine.Time,
 }
 
-proof, err := cdc.MarshalBinaryBare(timestampedSignatureData)
+proof, err := cdc.Marshal(timestampedSignatureData)
 ```
+
+NOTE: At the end of this process, the sequence associated with the key needs to be updated. 
+The sequence must be incremented each time proof is generated. 
 
 ## Updates By Header
 
@@ -129,17 +132,14 @@ If the update is successful:
 
 An update by a governance proposal will only succeed if:
 
-- the header provided is parseable to solo machine header
+- the substitute provided is parseable to solo machine client state
 - the `AllowUpdateAfterProposal` client parameter is set to `true`
-- the new header public key does not equal the consensus state public key
+- the new consensus state public key does not equal the current consensus state public key
 
 If the update is successful:
 
-- the public key is updated
-- the diversifier is updated
-- the timestamp is updated
-- the sequence is updated
-- the new consensus state is set in the client state 
+- the subject client state is updated to the substitute client state
+- the subject consensus state is updated to the substitute consensus state
 - the client is unfrozen (if it was previously frozen)
 
 ## Misbehaviour

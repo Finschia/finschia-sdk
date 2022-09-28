@@ -1,10 +1,6 @@
 package legacytx
 
 import (
-	"fmt"
-
-	"gopkg.in/yaml.v2"
-
 	"github.com/line/lbm-sdk/codec/legacy"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
@@ -74,76 +70,25 @@ func (fee StdFee) GasPrices() sdk.DecCoins {
 	return sdk.NewDecCoinsFromCoins(fee.Amount...).QuoDec(sdk.NewDec(int64(fee.Gas)))
 }
 
-// Deprecated
-func NewStdSignature(pk cryptotypes.PubKey, sig []byte) StdSignature {
-	return StdSignature{PubKey: pk, Signature: sig}
-}
-
-// GetSignature returns the raw signature bytes.
-func (ss StdSignature) GetSignature() []byte {
-	return ss.Signature
-}
-
-// GetPubKey returns the public key of a signature as a cryptotypes.PubKey using the
-// Amino codec.
-func (ss StdSignature) GetPubKey() cryptotypes.PubKey {
-	return ss.PubKey
-}
-
-// MarshalYAML returns the YAML representation of the signature.
-func (ss StdSignature) MarshalYAML() (interface{}, error) {
-	var (
-		bz     []byte
-		pubkey string
-		err    error
-	)
-
-	if ss.PubKey != nil {
-		pubkey, err = sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, ss.GetPubKey())
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	bz, err = yaml.Marshal(struct {
-		PubKey    string
-		Signature string
-	}{
-		PubKey:    pubkey,
-		Signature: fmt.Sprintf("%X", ss.Signature),
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return string(bz), err
-}
-
-func (ss StdSignature) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
-	return codectypes.UnpackInterfaces(ss.PubKey, unpacker)
-}
-
 // StdTx is the legacy transaction format for wrapping a Msg with Fee and Signatures.
 // It only works with Amino, please prefer the new protobuf Tx in types/tx.
 // NOTE: the first signature is the fee payer (Signatures must not be nil).
 // Deprecated
 type StdTx struct {
-	Msgs           []sdk.Msg      `json:"msg" yaml:"msg"`
-	Fee            StdFee         `json:"fee" yaml:"fee"`
-	Signatures     []StdSignature `json:"signatures" yaml:"signatures"`
-	SigBlockHeight uint64         `json:"sig_block_height"`
-	Memo           string         `json:"memo" yaml:"memo"`
-	TimeoutHeight  uint64         `json:"timeout_height" yaml:"timeout_height"`
+	Msgs          []sdk.Msg      `json:"msg" yaml:"msg"`
+	Fee           StdFee         `json:"fee" yaml:"fee"`
+	Signatures    []StdSignature `json:"signatures" yaml:"signatures"`
+	Memo          string         `json:"memo" yaml:"memo"`
+	TimeoutHeight uint64         `json:"timeout_height" yaml:"timeout_height"`
 }
 
 // Deprecated
-func NewStdTx(msgs []sdk.Msg, fee StdFee, sigs []StdSignature, sbh uint64, memo string) StdTx {
+func NewStdTx(msgs []sdk.Msg, fee StdFee, sigs []StdSignature, memo string) StdTx {
 	return StdTx{
-		Msgs:           msgs,
-		Fee:            fee,
-		Signatures:     sigs,
-		SigBlockHeight: sbh,
-		Memo:           memo,
+		Msgs:       msgs,
+		Fee:        fee,
+		Signatures: sigs,
+		Memo:       memo,
 	}
 }
 
@@ -248,17 +193,15 @@ func (tx StdTx) GetSignaturesV2() ([]signing.SignatureV2, error) {
 
 // GetPubkeys returns the pubkeys of signers if the pubkey is included in the signature
 // If pubkey is not included in the signature, then nil is in the slice instead
-func (tx StdTx) GetPubKeys() []cryptotypes.PubKey {
+func (tx StdTx) GetPubKeys() ([]cryptotypes.PubKey, error) {
 	pks := make([]cryptotypes.PubKey, len(tx.Signatures))
 
 	for i, stdSig := range tx.Signatures {
 		pks[i] = stdSig.GetPubKey()
 	}
 
-	return pks
+	return pks, nil
 }
-
-func (tx StdTx) GetSigBlockHeight() uint64 { return tx.SigBlockHeight }
 
 // GetGas returns the Gas in StdFee
 func (tx StdTx) GetGas() uint64 { return tx.Fee.Gas }
@@ -273,12 +216,12 @@ func (tx StdTx) FeePayer() sdk.AccAddress {
 	if tx.GetSigners() != nil {
 		return tx.GetSigners()[0]
 	}
-	return ""
+	return sdk.AccAddress{}
 }
 
 // FeeGranter always returns nil for StdTx
 func (tx StdTx) FeeGranter() sdk.AccAddress {
-	return ""
+	return nil
 }
 
 func (tx StdTx) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
@@ -291,7 +234,7 @@ func (tx StdTx) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 
 	// Signatures contain PubKeys, which need to be unpacked.
 	for _, s := range tx.Signatures {
-		err := codectypes.UnpackInterfaces(s, unpacker)
+		err := s.UnpackInterfaces(unpacker)
 		if err != nil {
 			return err
 		}

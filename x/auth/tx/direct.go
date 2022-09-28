@@ -39,16 +39,17 @@ func (signModeDirectHandler) GetSignBytes(mode signingtypes.SignMode, data signi
 	bodyBz := protoTx.getBodyBytes()
 	authInfoBz := protoTx.getAuthInfoBytes()
 
-	return DirectSignBytes(bodyBz, authInfoBz, data.ChainID)
+	return DirectSignBytes(bodyBz, authInfoBz, data.ChainID, data.AccountNumber)
 }
 
 // DirectSignBytes returns the SIGN_MODE_DIRECT sign bytes for the provided TxBody bytes, AuthInfo bytes, chain ID,
-// and sequence.
-func DirectSignBytes(bodyBytes, authInfoBytes []byte, chainID string) ([]byte, error) {
+// account number.
+func DirectSignBytes(bodyBytes, authInfoBytes []byte, chainID string, accnum uint64) ([]byte, error) {
 	signDoc := types.SignDoc{
 		BodyBytes:     bodyBytes,
 		AuthInfoBytes: authInfoBytes,
 		ChainId:       chainID,
+		AccountNumber: accnum,
 	}
 	return signDoc.Marshal()
 }

@@ -23,8 +23,8 @@ var _ codec.AminoMarshaler = &PrivKey{}
 const (
 	PrivKeySize = 32
 	keyType     = "secp256k1"
-	PrivKeyName = "ostracon/PrivKeySecp256k1"
-	PubKeyName  = "ostracon/PubKeySecp256k1"
+	PrivKeyName = "tendermint/PrivKeySecp256k1"
+	PubKeyName  = "tendermint/PubKeySecp256k1"
 )
 
 // Bytes returns the byte representation of the Private Key.
@@ -151,12 +151,9 @@ func (pubKey *PubKey) Address() crypto.Address {
 		panic("length of pubkey is incorrect")
 	}
 
-	hasherSHA256 := sha256.New()
-	hasherSHA256.Write(pubKey.Key) // does not error
-	sha := hasherSHA256.Sum(nil)
-
+	sha := sha256.Sum256(pubKey.Key)
 	hasherRIPEMD160 := ripemd160.New()
-	hasherRIPEMD160.Write(sha) // does not error
+	hasherRIPEMD160.Write(sha[:]) // does not error
 	return crypto.Address(hasherRIPEMD160.Sum(nil))
 }
 

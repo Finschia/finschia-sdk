@@ -17,10 +17,9 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	tmdb "github.com/line/tm-db/v2"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/snapshots"
@@ -39,7 +38,7 @@ var (
 )
 
 type paramStore struct {
-	db *memdb.MemDB
+	db *dbm.MemDB
 }
 
 func (ps *paramStore) Set(_ sdk.Context, key []byte, value interface{}) {
@@ -81,7 +80,7 @@ func defaultLogger() log.Logger {
 
 func newBaseApp(name string, options ...func(*BaseApp)) *BaseApp {
 	logger := defaultLogger()
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	codec := codec.NewLegacyAmino()
 	registerTestCodec(codec)
 	return NewBaseApp(name, logger, db, testTxDecoder(codec), options...)
@@ -92,11 +91,11 @@ func registerTestCodec(cdc *codec.LegacyAmino) {
 	sdk.RegisterLegacyAminoCodec(cdc)
 
 	// register test types
-	cdc.RegisterConcrete(&txTest{}, "lbm-sdk/baseapp/txTest", nil)
-	cdc.RegisterConcrete(&msgCounter{}, "lbm-sdk/baseapp/msgCounter", nil)
-	cdc.RegisterConcrete(&msgCounter2{}, "lbm-sdk/baseapp/msgCounter2", nil)
-	cdc.RegisterConcrete(&msgKeyValue{}, "lbm-sdk/baseapp/msgKeyValue", nil)
-	cdc.RegisterConcrete(&msgNoRoute{}, "lbm-sdk/baseapp/msgNoRoute", nil)
+	cdc.RegisterConcrete(&txTest{}, "cosmos-sdk/baseapp/txTest", nil)
+	cdc.RegisterConcrete(&msgCounter{}, "cosmos-sdk/baseapp/msgCounter", nil)
+	cdc.RegisterConcrete(&msgCounter2{}, "cosmos-sdk/baseapp/msgCounter2", nil)
+	cdc.RegisterConcrete(&msgKeyValue{}, "cosmos-sdk/baseapp/msgKeyValue", nil)
+	cdc.RegisterConcrete(&msgNoRoute{}, "cosmos-sdk/baseapp/msgNoRoute", nil)
 }
 
 // aminoTxEncoder creates a amino TxEncoder for testing purposes.
@@ -113,7 +112,7 @@ func setupBaseApp(t *testing.T, options ...func(*BaseApp)) *BaseApp {
 	require.Equal(t, t.Name(), app.Name())
 
 	app.MountStores(capKey1, capKey2)
-	app.SetParamStore(&paramStore{db: memdb.NewDB()})
+	app.SetParamStore(&paramStore{db: dbm.NewMemDB()})
 
 	// stores are mounted
 	err := app.LoadLatestVersion()
@@ -137,7 +136,7 @@ func setupBaseAppWithSnapshots(t *testing.T, blocks uint, blockTxs int, options 
 	snapshotTimeout := 1 * time.Minute
 	snapshotDir, err := ioutil.TempDir("", "baseapp")
 	require.NoError(t, err)
-	snapshotStore, err := snapshots.NewStore(memdb.NewDB(), snapshotDir)
+	snapshotStore, err := snapshots.NewStore(dbm.NewMemDB(), snapshotDir)
 	require.NoError(t, err)
 	teardown := func() {
 		os.RemoveAll(snapshotDir)
@@ -165,7 +164,7 @@ func setupBaseAppWithSnapshots(t *testing.T, blocks uint, blockTxs int, options 
 				tx.Msgs = append(tx.Msgs, msgKeyValue{Key: key, Value: value})
 				keyCounter++
 			}
-			txBytes, err := codec.MarshalBinaryBare(tx)
+			txBytes, err := codec.Marshal(tx)
 			require.NoError(t, err)
 			resp := app.DeliverTx(abci.RequestDeliverTx{Tx: txBytes})
 			require.True(t, resp.IsOK(), "%v", resp.String())
@@ -208,7 +207,7 @@ func TestMountStores(t *testing.T) {
 func TestLoadVersion(t *testing.T) {
 	logger := defaultLogger()
 	pruningOpt := SetPruning(store.PruneNothing)
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	name := t.Name()
 	app := NewBaseApp(name, logger, db, nil, pruningOpt)
 
@@ -258,7 +257,7 @@ func useDefaultLoader(app *BaseApp) {
 	app.SetStoreLoader(DefaultStoreLoader)
 }
 
-func initStore(t *testing.T, db tmdb.DB, storeKey string, k, v []byte) {
+func initStore(t *testing.T, db dbm.DB, storeKey string, k, v []byte) {
 	rs := rootmulti.NewStore(db)
 	rs.SetPruning(store.PruneNothing)
 	key := sdk.NewKVStoreKey(storeKey)
@@ -275,7 +274,7 @@ func initStore(t *testing.T, db tmdb.DB, storeKey string, k, v []byte) {
 	require.Equal(t, int64(1), commitID.Version)
 }
 
-func checkStore(t *testing.T, db tmdb.DB, ver int64, storeKey string, k, v []byte) {
+func checkStore(t *testing.T, db dbm.DB, ver int64, storeKey string, k, v []byte) {
 	rs := rootmulti.NewStore(db)
 	rs.SetPruning(store.PruneDefault)
 	key := sdk.NewKVStoreKey(storeKey)
@@ -316,7 +315,7 @@ func TestSetLoader(t *testing.T) {
 		tc := tc
 		t.Run(name, func(t *testing.T) {
 			// prepare a db with some data
-			db := memdb.NewDB()
+			db := dbm.NewMemDB()
 			initStore(t, db, tc.origStoreKey, k, v)
 
 			// load the app with the existing db
@@ -341,21 +340,21 @@ func TestSetLoader(t *testing.T) {
 	}
 }
 
-func TestAppVersionSetterGetter(t *testing.T) {
+func TestVersionSetterGetter(t *testing.T) {
 	logger := defaultLogger()
 	pruningOpt := SetPruning(store.PruneDefault)
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	name := t.Name()
 	app := NewBaseApp(name, logger, db, nil, pruningOpt)
 
-	require.Equal(t, "", app.AppVersion())
+	require.Equal(t, "", app.Version())
 	res := app.Query(abci.RequestQuery{Path: "app/version"})
 	require.True(t, res.IsOK())
 	require.Equal(t, "", string(res.Value))
 
 	versionString := "1.0.0"
-	app.SetAppVersion(versionString)
-	require.Equal(t, versionString, app.AppVersion())
+	app.SetVersion(versionString)
+	require.Equal(t, versionString, app.Version())
 	res = app.Query(abci.RequestQuery{Path: "app/version"})
 	require.True(t, res.IsOK())
 	require.Equal(t, versionString, string(res.Value))
@@ -364,7 +363,7 @@ func TestAppVersionSetterGetter(t *testing.T) {
 func TestLoadVersionInvalid(t *testing.T) {
 	logger := log.NewNopLogger()
 	pruningOpt := SetPruning(store.PruneNothing)
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	name := t.Name()
 	app := NewBaseApp(name, logger, db, nil, pruningOpt)
 
@@ -401,7 +400,7 @@ func TestLoadVersionPruning(t *testing.T) {
 		Interval:   1,
 	}
 	pruningOpt := SetPruning(pruningOptions)
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	name := t.Name()
 	app := NewBaseApp(name, logger, db, nil, pruningOpt)
 
@@ -458,7 +457,7 @@ func testLoadVersionHelper(t *testing.T, app *BaseApp, expectedHeight int64, exp
 
 func TestOptionFunction(t *testing.T) {
 	logger := defaultLogger()
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	bap := NewBaseApp("starting name", logger, db, nil, testChangeNameHelper("new name"))
 	require.Equal(t, bap.name, "new name", "BaseApp should have had name changed via option function")
 }
@@ -477,7 +476,7 @@ func TestTxDecoder(t *testing.T) {
 
 	app := newBaseApp(t.Name())
 	tx := newTxCounter(1, 0)
-	txBytes := codec.MustMarshalBinaryBare(tx)
+	txBytes := codec.MustMarshal(tx)
 
 	dTx, err := app.txDecoder(txBytes)
 	require.NoError(t, err)
@@ -499,7 +498,7 @@ func TestInfo(t *testing.T) {
 	assert.Equal(t, t.Name(), res.GetData())
 	assert.Equal(t, int64(0), res.LastBlockHeight)
 	require.Equal(t, []uint8(nil), res.LastBlockAppHash)
-
+	require.Equal(t, app.AppVersion(), res.AppVersion)
 	// ----- test a proper response -------
 	// TODO
 }
@@ -511,7 +510,7 @@ func TestBaseAppOptionSeal(t *testing.T) {
 		app.SetName("")
 	})
 	require.Panics(t, func() {
-		app.SetAppVersion("")
+		app.SetVersion("")
 	})
 	require.Panics(t, func() {
 		app.SetDB(nil)
@@ -555,7 +554,7 @@ func TestInitChainer(t *testing.T) {
 	name := t.Name()
 	// keep the db and logger ourselves so
 	// we can reload the same  app later
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	logger := defaultLogger()
 	app := NewBaseApp(name, logger, db, nil)
 	capKey := sdk.NewKVStoreKey("main")
@@ -634,7 +633,7 @@ func TestInitChainer(t *testing.T) {
 
 func TestInitChain_WithInitialHeight(t *testing.T) {
 	name := t.Name()
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	logger := defaultLogger()
 	app := NewBaseApp(name, logger, db, nil)
 
@@ -650,7 +649,7 @@ func TestInitChain_WithInitialHeight(t *testing.T) {
 
 func TestBeginBlock_WithInitialHeight(t *testing.T) {
 	name := t.Name()
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	logger := defaultLogger()
 	app := NewBaseApp(name, logger, db, nil)
 
@@ -696,9 +695,8 @@ func (tx *txTest) setFailOnHandler(fail bool) {
 }
 
 // Implements Tx
-func (tx txTest) GetMsgs() []sdk.Msg        { return tx.Msgs }
-func (tx txTest) ValidateBasic() error      { return nil }
-func (tx txTest) GetSigBlockHeight() uint64 { return 0 }
+func (tx txTest) GetMsgs() []sdk.Msg   { return tx.Msgs }
+func (tx txTest) ValidateBasic() error { return nil }
 
 const (
 	routeMsgCounter  = "msgCounter"
@@ -806,7 +804,7 @@ func testTxDecoder(cdc *codec.LegacyAmino) sdk.TxDecoder {
 			return nil, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "tx bytes are empty")
 		}
 
-		err := cdc.UnmarshalBinaryBare(txBytes, &tx)
+		err := cdc.Unmarshal(txBytes, &tx)
 		if err != nil {
 			return nil, sdkerrors.ErrTxDecode
 		}
@@ -937,7 +935,7 @@ func TestCheckTx(t *testing.T) {
 
 	for i := int64(0); i < nTxs; i++ {
 		tx := newTxCounter(i, 0) // no messages
-		txBytes, err := codec.MarshalBinaryBare(tx)
+		txBytes, err := codec.Marshal(tx)
 		require.NoError(t, err)
 		r := app.CheckTxSync(abci.RequestCheckTx{Tx: txBytes})
 		require.Empty(t, r.GetEvents())
@@ -952,7 +950,11 @@ func TestCheckTx(t *testing.T) {
 
 	// If a block is committed, CheckTx state should be reset.
 	header := ocproto.Header{Height: 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(abci.RequestBeginBlock{Header: header, Hash: []byte("hash")})
+
+	require.NotNil(t, app.checkState.ctx.BlockGasMeter(), "block gas meter should have been set to checkState")
+	require.NotEmpty(t, app.checkState.ctx.HeaderHash())
+
 	app.EndBlock(abci.RequestEndBlock{})
 	app.Commit()
 
@@ -997,7 +999,7 @@ func TestDeliverTx(t *testing.T) {
 			counter := int64(blockN*txPerHeight + i)
 			tx := newTxCounter(counter, counter)
 
-			txBytes, err := codec.MarshalBinaryBare(tx)
+			txBytes, err := codec.Marshal(tx)
 			require.NoError(t, err)
 
 			res := app.DeliverTx(abci.RequestDeliverTx{Tx: txBytes})
@@ -1047,7 +1049,7 @@ func TestMultiMsgDeliverTx(t *testing.T) {
 	header := ocproto.Header{Height: 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 	tx := newTxCounter(0, 0, 1, 2)
-	txBytes, err := codec.MarshalBinaryBare(tx)
+	txBytes, err := codec.Marshal(tx)
 	require.NoError(t, err)
 	res := app.DeliverTx(abci.RequestDeliverTx{Tx: txBytes})
 	require.True(t, res.IsOK(), fmt.Sprintf("%v", res))
@@ -1067,7 +1069,7 @@ func TestMultiMsgDeliverTx(t *testing.T) {
 	tx = newTxCounter(1, 3)
 	tx.Msgs = append(tx.Msgs, msgCounter2{0})
 	tx.Msgs = append(tx.Msgs, msgCounter2{1})
-	txBytes, err = codec.MarshalBinaryBare(tx)
+	txBytes, err = codec.Marshal(tx)
 	require.NoError(t, err)
 	res = app.DeliverTx(abci.RequestDeliverTx{Tx: txBytes})
 	require.True(t, res.IsOK(), fmt.Sprintf("%v", res))
@@ -1129,7 +1131,7 @@ func TestSimulateTx(t *testing.T) {
 		app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 		tx := newTxCounter(count, count)
-		txBytes, err := cdc.MarshalBinaryBare(tx)
+		txBytes, err := cdc.Marshal(tx)
 		require.Nil(t, err)
 
 		// simulate a message, check gas reported
@@ -1256,9 +1258,9 @@ func TestRunInvalidTransaction(t *testing.T) {
 		// new codec so we can encode the tx, but we shouldn't be able to decode
 		newCdc := codec.NewLegacyAmino()
 		registerTestCodec(newCdc)
-		newCdc.RegisterConcrete(&msgNoDecode{}, "lbm-sdk/baseapp/msgNoDecode", nil)
+		newCdc.RegisterConcrete(&msgNoDecode{}, "cosmos-sdk/baseapp/msgNoDecode", nil)
 
-		txBytes, err := newCdc.MarshalBinaryBare(tx)
+		txBytes, err := newCdc.Marshal(tx)
 		require.NoError(t, err)
 
 		res := app.DeliverTx(abci.RequestDeliverTx{Tx: txBytes})
@@ -1526,7 +1528,7 @@ func TestBaseAppAnteHandler(t *testing.T) {
 	// the next txs ante handler execution (anteHandlerTxTest).
 	tx := newTxCounter(0, 0)
 	tx.setFailOnAnte(true)
-	txBytes, err := cdc.MarshalBinaryBare(tx)
+	txBytes, err := cdc.Marshal(tx)
 	require.NoError(t, err)
 	res := app.DeliverTx(abci.RequestDeliverTx{Tx: txBytes})
 	require.Empty(t, res.Events)
@@ -1541,11 +1543,12 @@ func TestBaseAppAnteHandler(t *testing.T) {
 	tx = newTxCounter(0, 0)
 	tx.setFailOnHandler(true)
 
-	txBytes, err = cdc.MarshalBinaryBare(tx)
+	txBytes, err = cdc.Marshal(tx)
 	require.NoError(t, err)
 
 	res = app.DeliverTx(abci.RequestDeliverTx{Tx: txBytes})
-	require.Empty(t, res.Events)
+	// should emit ante event
+	require.NotEmpty(t, res.Events)
 	require.False(t, res.IsOK(), fmt.Sprintf("%v", res))
 
 	ctx = app.deliverState.ctx
@@ -1557,7 +1560,7 @@ func TestBaseAppAnteHandler(t *testing.T) {
 	// implicitly checked by previous tx executions
 	tx = newTxCounter(1, 0)
 
-	txBytes, err = cdc.MarshalBinaryBare(tx)
+	txBytes, err = cdc.Marshal(tx)
 	require.NoError(t, err)
 
 	res = app.DeliverTx(abci.RequestDeliverTx{Tx: txBytes})
@@ -1630,7 +1633,7 @@ func TestGasConsumptionBadTx(t *testing.T) {
 
 	tx := newTxCounter(5, 0)
 	tx.setFailOnAnte(true)
-	txBytes, err := cdc.MarshalBinaryBare(tx)
+	txBytes, err := cdc.Marshal(tx)
 	require.NoError(t, err)
 
 	res := app.DeliverTx(abci.RequestDeliverTx{Tx: txBytes})
@@ -1638,7 +1641,7 @@ func TestGasConsumptionBadTx(t *testing.T) {
 
 	// require next tx to fail due to black gas limit
 	tx = newTxCounter(5, 0)
-	txBytes, err = cdc.MarshalBinaryBare(tx)
+	txBytes, err = cdc.Marshal(tx)
 	require.NoError(t, err)
 
 	res = app.DeliverTx(abci.RequestDeliverTx{Tx: txBytes})
@@ -1997,7 +2000,7 @@ func TestWithRouter(t *testing.T) {
 			counter := int64(blockN*txPerHeight + i)
 			tx := newTxCounter(counter, counter)
 
-			txBytes, err := codec.MarshalBinaryBare(tx)
+			txBytes, err := codec.Marshal(tx)
 			require.NoError(t, err)
 
 			res := app.DeliverTx(abci.RequestDeliverTx{Tx: txBytes})
@@ -2010,7 +2013,7 @@ func TestWithRouter(t *testing.T) {
 }
 
 func TestBaseApp_EndBlock(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	name := t.Name()
 	logger := defaultLogger()
 
@@ -2021,7 +2024,7 @@ func TestBaseApp_EndBlock(t *testing.T) {
 	}
 
 	app := NewBaseApp(name, logger, db, nil)
-	app.SetParamStore(&paramStore{db: memdb.NewDB()})
+	app.SetParamStore(&paramStore{db: dbm.NewMemDB()})
 	app.InitChain(abci.RequestInitChain{
 		ConsensusParams: cp,
 	})
@@ -2039,4 +2042,30 @@ func TestBaseApp_EndBlock(t *testing.T) {
 	require.Len(t, res.GetValidatorUpdates(), 1)
 	require.Equal(t, int64(100), res.GetValidatorUpdates()[0].Power)
 	require.Equal(t, cp.Block.MaxGas, res.ConsensusParamUpdates.Block.MaxGas)
+}
+
+func TestCommitMultiStore(t *testing.T) {
+	app := newBaseApp(t.Name())
+	cms := app.CommitMultiStore()
+	require.NotNil(t, cms)
+
+	app.Seal()
+	require.Panics(t, func() { app.CommitMultiStore() })
+}
+
+func TestSnapshotManager(t *testing.T) {
+	app := newBaseApp(t.Name())
+	require.Nil(t, app.SnapshotManager())
+
+	tempDir := t.TempDir()
+	snapshotDB, err := sdk.NewLevelDB("metadata", tempDir)
+	if err != nil {
+		require.NoError(t, err)
+	}
+	snapshotStore, err := snapshots.NewStore(snapshotDB, tempDir)
+	if err != nil {
+		require.NoError(t, err)
+	}
+	app.SetSnapshotStore(snapshotStore)
+	require.NotNil(t, app.SnapshotManager())
 }

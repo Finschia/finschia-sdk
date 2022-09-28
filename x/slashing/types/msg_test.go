@@ -9,12 +9,12 @@ import (
 )
 
 func TestMsgUnjailGetSignBytes(t *testing.T) {
-	addr := sdk.BytesToValAddress([]byte("abcd"))
+	addr := sdk.ValAddress("abcd")
 	msg := NewMsgUnjail(addr)
 	bytes := msg.GetSignBytes()
 	require.Equal(
 		t,
-		`{"type":"lbm-sdk/MsgUnjail","value":{"address":"linkvaloper1v93xxeqn4h65f"}}`,
+		`{"type":"cosmos-sdk/MsgUnjail","value":{"address":"linkvaloper1v93xxeqn4h65f"}}`,
 		string(bytes),
 	)
 }

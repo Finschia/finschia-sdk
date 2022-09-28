@@ -3,6 +3,7 @@ package types
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+
 	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
@@ -11,6 +12,7 @@ import (
 type ClientKeeper interface {
 	GetClientState(ctx sdk.Context, clientID string) (exported.ClientState, bool)
 	GetClientConsensusState(ctx sdk.Context, clientID string, height exported.Height) (exported.ConsensusState, bool)
+	ClientStore(ctx sdk.Context, clientID string) sdk.KVStore
 }
 
 // ConnectionKeeper expected account IBC connection keeper

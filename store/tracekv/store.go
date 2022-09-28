@@ -114,6 +114,11 @@ func newTraceIterator(w io.Writer, parent types.Iterator, tc types.TraceContext)
 	return &traceIterator{writer: w, parent: parent, context: tc}
 }
 
+// Domain implements the Iterator interface.
+func (ti *traceIterator) Domain() (start []byte, end []byte) {
+	return ti.parent.Domain()
+}
+
 // Valid implements the Iterator interface.
 func (ti *traceIterator) Valid() bool {
 	return ti.parent.Valid()
@@ -159,13 +164,18 @@ func (tkv *Store) GetStoreType() types.StoreType {
 // CacheWrap implements the KVStore interface. It panics because a Store
 // cannot be branched.
 func (tkv *Store) CacheWrap() types.CacheWrap {
-	panic("cannot CacheWrap a Store")
+	panic("cannot CacheWrap a TraceKVStore")
 }
 
 // CacheWrapWithTrace implements the KVStore interface. It panics as a
 // Store cannot be branched.
 func (tkv *Store) CacheWrapWithTrace(_ io.Writer, _ types.TraceContext) types.CacheWrap {
-	panic("cannot CacheWrapWithTrace a Store")
+	panic("cannot CacheWrapWithTrace a TraceKVStore")
+}
+
+// CacheWrapWithListeners implements the CacheWrapper interface.
+func (tkv *Store) CacheWrapWithListeners(_ types.StoreKey, _ []types.WriteListener) types.CacheWrap {
+	panic("cannot CacheWrapWithListeners a TraceKVStore")
 }
 
 // writeOperation writes a KVStore operation to the underlying io.Writer as

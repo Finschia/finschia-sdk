@@ -13,7 +13,7 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/rest"
-	authclient "github.com/line/lbm-sdk/x/auth/client"
+	authtx "github.com/line/lbm-sdk/x/auth/tx"
 	"github.com/line/lbm-sdk/x/auth/types"
 	genutilrest "github.com/line/lbm-sdk/x/genutil/client/rest"
 )
@@ -24,7 +24,10 @@ func QueryAccountRequestHandlerFn(storeName string, clientCtx client.Context) ht
 		vars := mux.Vars(r)
 		bech32addr := vars["address"]
 
-		addr := sdk.AccAddress(bech32addr)
+		addr, err := sdk.AccAddressFromBech32(bech32addr)
+		if rest.CheckInternalServerError(w, err) {
+			return
+		}
 
 		clientCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, clientCtx, r)
 		if !ok {
@@ -94,7 +97,7 @@ func QueryTxsRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		searchResult, err := authclient.QueryTxsByEvents(clientCtx, events, page, limit, "")
+		searchResult, err := authtx.QueryTxsByEvents(clientCtx, events, page, limit, "")
 		if rest.CheckInternalServerError(w, err) {
 			return
 		}
@@ -103,7 +106,7 @@ func QueryTxsRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			packStdTxResponse(w, clientCtx, txRes)
 		}
 
-		err = checkAminoMarshalError(clientCtx, searchResult, "/lbm/tx/v1/txs")
+		err = checkAminoMarshalError(clientCtx, searchResult, "/cosmos/tx/v1beta1/txs")
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 
@@ -126,7 +129,7 @@ func QueryTxRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		output, err := authclient.QueryTx(clientCtx, hashHexStr)
+		output, err := authtx.QueryTx(clientCtx, hashHexStr)
 		if err != nil {
 			if strings.Contains(err.Error(), hashHexStr) {
 				rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
@@ -146,7 +149,7 @@ func QueryTxRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			rest.WriteErrorResponse(w, http.StatusNotFound, fmt.Sprintf("no transaction found with hash %s", hashHexStr))
 		}
 
-		err = checkAminoMarshalError(clientCtx, output, "/lbm/tx/v1/txs/{txhash}")
+		err = checkAminoMarshalError(clientCtx, output, "/cosmos/tx/v1beta1/txs/{txhash}")
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 
@@ -205,7 +208,7 @@ func checkAminoMarshalError(ctx client.Context, resp interface{}, grpcEndPoint s
 		// If there's an unmarshalling error, we assume that it's because we're
 		// using amino to unmarshal a non-amino tx.
 		return fmt.Errorf("this transaction cannot be displayed via legacy REST endpoints, because it does not support"+
-			" Amino serialization. Please either use CLI, gRPC, gRPC-gateway, or directly query the Tendermint RPC"+
+			" Amino serialization. Please either use CLI, gRPC, gRPC-gateway, or directly query the Ostracon RPC"+
 			" endpoint to query this transaction. The new REST endpoint (via gRPC-gateway) is %s. Please also see the"+
 			"REST endpoints migration guide at %s for more info", grpcEndPoint, clientrest.DeprecationURL)
 

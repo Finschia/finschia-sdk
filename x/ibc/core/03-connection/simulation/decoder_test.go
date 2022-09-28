@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/line/lbm-sdk/types/kv"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/simapp"
-	"github.com/line/lbm-sdk/types/kv"
 	"github.com/line/lbm-sdk/x/ibc/core/03-connection/simulation"
 	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
@@ -32,11 +32,11 @@ func TestDecodeStore(t *testing.T) {
 		Pairs: []kv.Pair{
 			{
 				Key:   host.ClientConnectionsKey(connection.ClientId),
-				Value: cdc.MustMarshalBinaryBare(&paths),
+				Value: cdc.MustMarshal(&paths),
 			},
 			{
 				Key:   host.ConnectionKey(connectionID),
-				Value: cdc.MustMarshalBinaryBare(&connection),
+				Value: cdc.MustMarshal(&connection),
 			},
 			{
 				Key:   []byte{0x99},

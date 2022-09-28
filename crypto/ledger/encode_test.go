@@ -31,20 +31,16 @@ func checkAminoJSON(t *testing.T, src interface{}, dst interface{}, isNil bool) 
 // nolint: govet
 func ExamplePrintRegisteredTypes() {
 	cdc.PrintTypes(os.Stdout)
-	// | Type | Name | Prefix | Length | Notes |
-	// | ---- | ---- | ------ | ----- | ------ |
-	// | PrivKeyLedgerSecp256k1 | ostracon/PrivKeyLedgerSecp256k1 | 0x10CAB393 | variable |  |
-	// | PubKeyBLS12 | ostracon/PubKeyBLS12 | 0xD68FFBC1 | 0x30 | |
-	// | PubKey | ostracon/PubKeyEd25519 | 0x1624DE64 | variable |  |
-	// | PubKey | ostracon/PubKeySr25519 | 0x0DFB1005 | variable |  |
-	// | PubKey | ostracon/PubKeySecp256k1 | 0xEB5AE987 | variable |  |
-	// | PubKeyMultisigThreshold | ostracon/PubKeyMultisigThreshold | 0x22C1F7E2 | variable |  |
-	// | PubKeyComposite | ostracon/PubKeyComposite | 0x01886E34 | variable |  |
-	// | PrivKeyBLS12 | ostracon/PrivKeyBLS12 | 0xEAECF03F | 0x20 |  |
-	// | PrivKey | ostracon/PrivKeyEd25519 | 0xA3288910 | variable |  |
-	// | PrivKey | ostracon/PrivKeySr25519 | 0x2F82D78B | variable |  |
-	// | PrivKey | ostracon/PrivKeySecp256k1 | 0xE1B0F79B | variable |  |
-	// | PrivKeyComposite | ostracon/PrivKeyComposite | 0x9F3EE8F0 | variable | |
+	//| Type | Name | Prefix | Length | Notes |
+	//| ---- | ---- | ------ | ----- | ------ |
+	//| PrivKeyLedgerSecp256k1 | tendermint/PrivKeyLedgerSecp256k1 | 0x10CAB393 | variable |  |
+	//| PubKey | tendermint/PubKeySr25519 | 0x0DFB1005 | variable |  |
+	//| PubKey | tendermint/PubKeyEd25519 | 0x1624DE64 | variable |  |
+	//| PubKey | tendermint/PubKeySecp256k1 | 0xEB5AE987 | variable |  |
+	//| LegacyAminoPubKey | tendermint/PubKeyMultisigThreshold | 0x22C1F7E2 | variable |  |
+	//| PrivKey | tendermint/PrivKeySr25519 | 0x2F82D78B | variable |  |
+	//| PrivKey | tendermint/PrivKeyEd25519 | 0xA3288910 | variable |  |
+	//| PrivKey | tendermint/PrivKeySecp256k1 | 0xE1B0F79B | variable |  |
 }
 
 func TestNilEncodings(t *testing.T) {

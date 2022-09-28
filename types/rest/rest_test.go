@@ -180,10 +180,11 @@ func TestProcessPostResponse(t *testing.T) {
 
 	t.Parallel()
 	type mockAccount struct {
-		Address  types.AccAddress   `json:"address"`
-		Coins    types.Coins        `json:"coins"`
-		PubKey   cryptotypes.PubKey `json:"public_key"`
-		Sequence uint64             `json:"sequence"`
+		Address       types.AccAddress   `json:"address"`
+		Coins         types.Coins        `json:"coins"`
+		PubKey        cryptotypes.PubKey `json:"public_key"`
+		AccountNumber uint64             `json:"account_number"`
+		Sequence      uint64             `json:"sequence"`
 	}
 
 	// setup
@@ -195,12 +196,13 @@ func TestProcessPostResponse(t *testing.T) {
 	pubKey := privKey.PubKey()
 	addr := types.AccAddress(pubKey.Address())
 	coins := types.NewCoins(types.NewCoin("atom", types.NewInt(100)), types.NewCoin("tree", types.NewInt(125)))
+	accNumber := uint64(104)
 	sequence := uint64(32)
 
-	acc := mockAccount{addr, coins, pubKey, sequence}
+	acc := mockAccount{addr, coins, pubKey, accNumber, sequence}
 	cdc := codec.NewLegacyAmino()
 	cryptocodec.RegisterCrypto(cdc)
-	cdc.RegisterConcrete(&mockAccount{}, "lbm-sdk/mockAccount", nil)
+	cdc.RegisterConcrete(&mockAccount{}, "cosmos-sdk/mockAccount", nil)
 	ctx = ctx.WithLegacyAmino(cdc)
 
 	// setup expected results

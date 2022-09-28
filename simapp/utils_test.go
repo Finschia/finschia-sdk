@@ -41,6 +41,8 @@ func TestSetup(t *testing.T) {
 }
 
 func TestGetSimulationLog(t *testing.T) {
+	cdc := makeCodec(ModuleBasics)
+
 	decoders := make(sdk.StoreDecoderRegistry)
 	decoders[authtypes.StoreKey] = func(kvAs, kvBs kv.Pair) string { return "10" }
 
@@ -53,6 +55,11 @@ func TestGetSimulationLog(t *testing.T) {
 			"Empty",
 			[]kv.Pair{{}},
 			"",
+		},
+		{
+			authtypes.StoreKey,
+			[]kv.Pair{{Key: authtypes.GlobalAccountNumberKey, Value: cdc.MustMarshal(uint64(10))}},
+			"10",
 		},
 		{
 			"OtherStore",

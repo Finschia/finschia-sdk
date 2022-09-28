@@ -50,5 +50,6 @@ func TestRandomizedGenState(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, genAccounts, 3)
 	require.Equal(t, "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt", genAccounts[2].GetAddress().String())
+	require.Equal(t, uint64(0), genAccounts[2].GetAccountNumber())
 	require.Equal(t, uint64(0), genAccounts[2].GetSequence())
 }

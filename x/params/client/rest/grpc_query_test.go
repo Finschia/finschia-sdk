@@ -51,7 +51,7 @@ func (s *IntegrationTestSuite) TestQueryParamsGRPC() {
 	}{
 		{
 			"with no subspace, key",
-			fmt.Sprintf("%s/lbm/params/v1/params?subspace=%s&key=%s", baseURL, "", ""),
+			fmt.Sprintf("%s/cosmos/params/v1beta1/params?subspace=%s&key=%s", baseURL, "", ""),
 			map[string]string{},
 			true,
 			&proposal.QueryParamsResponse{},
@@ -65,7 +65,7 @@ func (s *IntegrationTestSuite) TestQueryParamsGRPC() {
 		},
 		{
 			"with wrong subspace",
-			fmt.Sprintf("%s/lbm/params/v1/params?subspace=%s&key=%s", baseURL, "wrongSubspace", "MaxValidators"),
+			fmt.Sprintf("%s/cosmos/params/v1beta1/params?subspace=%s&key=%s", baseURL, "wrongSubspace", "MaxValidators"),
 			map[string]string{},
 			true,
 			&proposal.QueryParamsResponse{},
@@ -79,7 +79,7 @@ func (s *IntegrationTestSuite) TestQueryParamsGRPC() {
 		},
 		{
 			"with wrong key",
-			fmt.Sprintf("%s/lbm/params/v1/params?subspace=%s&key=%s", baseURL, "staking", "wrongKey"),
+			fmt.Sprintf("%s/cosmos/params/v1beta1/params?subspace=%s&key=%s", baseURL, "staking", "wrongKey"),
 			map[string]string{},
 			false,
 			&proposal.QueryParamsResponse{},
@@ -93,7 +93,7 @@ func (s *IntegrationTestSuite) TestQueryParamsGRPC() {
 		},
 		{
 			"params",
-			fmt.Sprintf("%s/lbm/params/v1/params?subspace=%s&key=%s", baseURL, "staking", "MaxValidators"),
+			fmt.Sprintf("%s/cosmos/params/v1beta1/params?subspace=%s&key=%s", baseURL, "staking", "MaxValidators"),
 			map[string]string{},
 			false,
 			&proposal.QueryParamsResponse{},
@@ -113,7 +113,7 @@ func (s *IntegrationTestSuite) TestQueryParamsGRPC() {
 			resp, err := testutil.GetRequestWithHeaders(tc.url, tc.headers)
 			s.Require().NoError(err)
 
-			err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType)
+			err = val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType)
 
 			if tc.expErr {
 				s.Require().Error(err)

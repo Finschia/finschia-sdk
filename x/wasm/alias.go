@@ -3,22 +3,18 @@ package wasm
 
 import (
 	"github.com/line/lbm-sdk/x/wasm/keeper"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 const (
 	firstCodeID                     = 1
-	DefaultParamspace               = types.DefaultParamspace
 	ModuleName                      = types.ModuleName
 	StoreKey                        = types.StoreKey
 	TStoreKey                       = types.TStoreKey
 	QuerierRoute                    = types.QuerierRoute
 	RouterKey                       = types.RouterKey
-	MaxWasmSize                     = types.MaxWasmSize
-	MaxLabelSize                    = types.MaxLabelSize
-	BuildTagRegexp                  = types.BuildTagRegexp
-	MaxBuildTagSize                 = types.MaxBuildTagSize
-	CustomEventType                 = types.CustomEventType
+	WasmModuleEventType             = types.WasmModuleEventType
 	AttributeKeyContractAddr        = types.AttributeKeyContractAddr
 	ProposalTypeStoreCode           = types.ProposalTypeStoreCode
 	ProposalTypeInstantiateContract = types.ProposalTypeInstantiateContract
@@ -49,7 +45,6 @@ var (
 	NewContractInfo           = types.NewContractInfo
 	NewEnv                    = types.NewEnv
 	NewWasmCoins              = types.NewWasmCoins
-	ParseEvents               = types.ParseEvents
 	DefaultWasmConfig         = types.DefaultWasmConfig
 	DefaultParams             = types.DefaultParams
 	InitGenesis               = keeper.InitGenesis
@@ -71,6 +66,7 @@ var (
 	NewQuerier                = keeper.Querier
 	ContractFromPortID        = keeper.ContractFromPortID
 	WithWasmEngine            = keeper.WithWasmEngine
+	NewCountTXDecorator       = keeper.NewCountTXDecorator
 
 	// variable aliases
 	ModuleCdc            = types.ModuleCdc
@@ -102,8 +98,8 @@ type (
 	MsgStoreCodeResponse                       = types.MsgStoreCodeResponse
 	MsgInstantiateContract                     = types.MsgInstantiateContract
 	MsgInstantiateContractResponse             = types.MsgInstantiateContractResponse
-	MsgStoreCodeAndInstantiateContract         = types.MsgStoreCodeAndInstantiateContract
-	MsgStoreCodeAndInstantiateContractResponse = types.MsgStoreCodeAndInstantiateContractResponse
+	MsgStoreCodeAndInstantiateContract         = lbmtypes.MsgStoreCodeAndInstantiateContract
+	MsgStoreCodeAndInstantiateContractResponse = lbmtypes.MsgStoreCodeAndInstantiateContractResponse
 	MsgExecuteContract                         = types.MsgExecuteContract
 	MsgExecuteContractResponse                 = types.MsgExecuteContractResponse
 	MsgMigrateContract                         = types.MsgMigrateContract
@@ -131,7 +127,4 @@ type (
 	CustomQuerier                              = keeper.CustomQuerier
 	QueryPlugins                               = keeper.QueryPlugins
 	Option                                     = keeper.Option
-
-	EncodeHandler = types.EncodeHandler
-	EncodeQuerier = types.EncodeQuerier
 )

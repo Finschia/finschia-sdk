@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/big"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 
 	sdk "github.com/line/lbm-sdk/types"
 )
@@ -29,11 +30,15 @@ func (s *decimalTestSuite) mustNewDecFromStr(str string) (d sdk.Dec) {
 	return d
 }
 
-//_______________________________________
-
 func (s *decimalTestSuite) TestNewDecFromStr() {
-	largeBigInt, success := new(big.Int).SetString("3144605511029693144278234343371835", 10)
-	s.Require().True(success)
+	largeBigInt, ok := new(big.Int).SetString("3144605511029693144278234343371835", 10)
+	s.Require().True(ok)
+
+	largerBigInt, ok := new(big.Int).SetString("8888888888888888888888888888888888888888888888888888888888888888888844444440", 10)
+	s.Require().True(ok)
+
+	largestBigInt, ok := new(big.Int).SetString("33499189745056880149688856635597007162669032647290798121690100488888732861290034376435130433535", 10)
+	s.Require().True(ok)
 
 	tests := []struct {
 		decimalStr string
@@ -59,6 +64,9 @@ func (s *decimalTestSuite) TestNewDecFromStr() {
 		{"foobar", true, sdk.Dec{}},
 		{"0.foobar", true, sdk.Dec{}},
 		{"0.foobar.", true, sdk.Dec{}},
+		{"8888888888888888888888888888888888888888888888888888888888888888888844444440", false, sdk.NewDecFromBigInt(largerBigInt)},
+		{"33499189745056880149688856635597007162669032647290798121690100488888732861290.034376435130433535", false, sdk.NewDecFromBigIntWithPrec(largestBigInt, 18)},
+		{"133499189745056880149688856635597007162669032647290798121690100488888732861291", true, sdk.Dec{}},
 	}
 
 	for tcIndex, tc := range tests {
@@ -98,6 +106,28 @@ func (s *decimalTestSuite) TestDecString() {
 	}
 	for tcIndex, tc := range tests {
 		s.Require().Equal(tc.want, tc.d.String(), "bad String(), index: %v", tcIndex)
+	}
+}
+
+func (s *decimalTestSuite) TestDecFloat64() {
+	tests := []struct {
+		d    sdk.Dec
+		want float64
+	}{
+		{sdk.NewDec(0), 0.000000000000000000},
+		{sdk.NewDec(1), 1.000000000000000000},
+		{sdk.NewDec(10), 10.000000000000000000},
+		{sdk.NewDec(12340), 12340.000000000000000000},
+		{sdk.NewDecWithPrec(12340, 4), 1.234000000000000000},
+		{sdk.NewDecWithPrec(12340, 5), 0.123400000000000000},
+		{sdk.NewDecWithPrec(12340, 8), 0.000123400000000000},
+		{sdk.NewDecWithPrec(1009009009009009009, 17), 10.090090090090090090},
+	}
+	for tcIndex, tc := range tests {
+		value, err := tc.d.Float64()
+		s.Require().Nil(err, "error getting Float64(), index: %v", tcIndex)
+		s.Require().Equal(tc.want, value, "bad Float64(), index: %v", tcIndex)
+		s.Require().Equal(tc.want, tc.d.MustFloat64(), "bad MustFloat64(), index: %v", tcIndex)
 	}
 }
 
@@ -420,40 +450,87 @@ func (s *decimalTestSuite) TestDecSortableBytes() {
 }
 
 func (s *decimalTestSuite) TestDecEncoding() {
+	largestBigInt, ok := new(big.Int).SetString("33499189745056880149688856635597007162669032647290798121690100488888732861290034376435130433535", 10)
+	s.Require().True(ok)
+
+	smallestBigInt, ok := new(big.Int).SetString("-33499189745056880149688856635597007162669032647290798121690100488888732861290034376435130433535", 10)
+	s.Require().True(ok)
+
+	const maxDecBitLen = 315
+	maxInt, ok := new(big.Int).SetString(strings.Repeat("1", maxDecBitLen), 2)
+	s.Require().True(ok)
+
+	errMaxInt, ok := new(big.Int).SetString(strings.Repeat("1", maxDecBitLen+1), 2)
+	s.Require().True(ok)
+
 	testCases := []struct {
 		input   sdk.Dec
 		rawBz   string
 		jsonStr string
 		yamlStr string
+		isErr   bool
 	}{
 		{
 			sdk.NewDec(0), "30",
 			"\"0.000000000000000000\"",
 			"\"0.000000000000000000\"\n",
+			false,
 		},
 		{
 			sdk.NewDecWithPrec(4, 2),
 			"3430303030303030303030303030303030",
 			"\"0.040000000000000000\"",
 			"\"0.040000000000000000\"\n",
+			false,
 		},
 		{
 			sdk.NewDecWithPrec(-4, 2),
 			"2D3430303030303030303030303030303030",
 			"\"-0.040000000000000000\"",
 			"\"-0.040000000000000000\"\n",
+			false,
 		},
 		{
 			sdk.NewDecWithPrec(1414213562373095049, 18),
 			"31343134323133353632333733303935303439",
 			"\"1.414213562373095049\"",
 			"\"1.414213562373095049\"\n",
+			false,
 		},
 		{
 			sdk.NewDecWithPrec(-1414213562373095049, 18),
 			"2D31343134323133353632333733303935303439",
 			"\"-1.414213562373095049\"",
 			"\"-1.414213562373095049\"\n",
+			false,
+		},
+		{
+			sdk.NewDecFromBigIntWithPrec(largestBigInt, 18),
+			"3333343939313839373435303536383830313439363838383536363335353937303037313632363639303332363437323930373938313231363930313030343838383838373332383631323930303334333736343335313330343333353335",
+			"\"33499189745056880149688856635597007162669032647290798121690100488888732861290.034376435130433535\"",
+			"\"33499189745056880149688856635597007162669032647290798121690100488888732861290.034376435130433535\"\n",
+			false,
+		},
+		{
+			sdk.NewDecFromBigIntWithPrec(smallestBigInt, 18),
+			"2D3333343939313839373435303536383830313439363838383536363335353937303037313632363639303332363437323930373938313231363930313030343838383838373332383631323930303334333736343335313330343333353335",
+			"\"-33499189745056880149688856635597007162669032647290798121690100488888732861290.034376435130433535\"",
+			"\"-33499189745056880149688856635597007162669032647290798121690100488888732861290.034376435130433535\"\n",
+			false,
+		},
+		{
+			sdk.NewDecFromBigIntWithPrec(maxInt, 18),
+			"3636373439353934383732353238343430303734383434343238333137373938353033353831333334353136333233363435333939303630383435303530323434343434333636343330363435303137313838323137353635323136373637",
+			"\"66749594872528440074844428317798503581334516323645399060845050244444366430645.017188217565216767\"",
+			"\"66749594872528440074844428317798503581334516323645399060845050244444366430645.017188217565216767\"\n",
+			false,
+		},
+		{
+			sdk.NewDecFromBigIntWithPrec(errMaxInt, 18),
+			"313333343939313839373435303536383830313439363838383536363335353937303037313632363639303332363437323930373938313231363930313030343838383838373332383631323930303334333736343335313330343333353335",
+			"\"133499189745056880149688856635597007162669032647290798121690100488888732861290.034376435130433535\"",
+			"\"133499189745056880149688856635597007162669032647290798121690100488888732861290.034376435130433535\"\n",
+			true,
 		},
 	}
 
@@ -463,13 +540,21 @@ func (s *decimalTestSuite) TestDecEncoding() {
 		s.Require().Equal(tc.rawBz, fmt.Sprintf("%X", bz))
 
 		var other sdk.Dec
-		s.Require().NoError((&other).Unmarshal(bz))
+		if tc.isErr {
+			s.Require().Error((&other).Unmarshal(bz))
+		} else {
+			s.Require().NoError((&other).Unmarshal(bz))
+		}
 		s.Require().True(tc.input.Equal(other))
 
 		bz, err = json.Marshal(tc.input)
 		s.Require().NoError(err)
 		s.Require().Equal(tc.jsonStr, string(bz))
-		s.Require().NoError(json.Unmarshal(bz, &other))
+		if tc.isErr {
+			s.Require().Error(json.Unmarshal(bz, &other))
+		} else {
+			s.Require().NoError(json.Unmarshal(bz, &other))
+		}
 		s.Require().True(tc.input.Equal(other))
 
 		bz, err = yaml.Marshal(tc.input)
@@ -487,6 +572,7 @@ func (s *decimalTestSuite) TestOperationOrders() {
 }
 
 func BenchmarkMarshalTo(b *testing.B) {
+	b.ReportAllocs()
 	bis := []struct {
 		in   sdk.Dec
 		want []byte

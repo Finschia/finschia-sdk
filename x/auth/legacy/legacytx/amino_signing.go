@@ -43,7 +43,7 @@ func (stdTxSignModeHandler) GetSignBytes(mode signingtypes.SignMode, data signin
 	}
 
 	return StdSignBytes(
-		data.ChainID, stdTx.GetSigBlockHeight(), data.Sequence, stdTx.GetTimeoutHeight(), StdFee{Amount: stdTx.GetFee(), Gas: stdTx.GetGas()}, tx.GetMsgs(), stdTx.GetMemo(),
+		data.ChainID, data.AccountNumber, data.Sequence, stdTx.GetTimeoutHeight(), StdFee{Amount: stdTx.GetFee(), Gas: stdTx.GetGas()}, tx.GetMsgs(), stdTx.GetMemo(),
 	), nil
 }
 
@@ -64,7 +64,7 @@ func SignatureDataToAminoSignature(cdc *codec.LegacyAmino, data signingtypes.Sig
 			return nil, err
 		}
 
-		return cdc.MarshalBinaryBare(aminoMSig)
+		return cdc.Marshal(aminoMSig)
 	default:
 		return nil, fmt.Errorf("unexpected signature data %T", data)
 	}

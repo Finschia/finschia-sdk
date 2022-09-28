@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/line/ostracon/crypto/tmhash"
-	"github.com/line/ostracon/mempool"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/line/ostracon/mempool"
+	octypes "github.com/line/ostracon/types"
 
 	"github.com/line/lbm-sdk/client/flags"
 	sdk "github.com/line/lbm-sdk/types"
@@ -46,13 +47,13 @@ func (ctx Context) BroadcastTx(txBytes []byte) (res *sdk.TxResponse, err error) 
 // TODO: Avoid brittle string matching in favor of error matching. This requires
 // a change to Tendermint's RPCError type to allow retrieval or matching against
 // a concrete error type.
-func CheckTendermintError(err error, txBytes []byte) *sdk.TxResponse {
+func CheckTendermintError(err error, tx octypes.Tx) *sdk.TxResponse {
 	if err == nil {
 		return nil
 	}
 
 	errStr := strings.ToLower(err.Error())
-	txHash := fmt.Sprintf("%X", tmhash.Sum(txBytes))
+	txHash := fmt.Sprintf("%X", tx.Hash())
 
 	switch {
 	case strings.Contains(errStr, strings.ToLower(mempool.ErrTxInCache.Error())):

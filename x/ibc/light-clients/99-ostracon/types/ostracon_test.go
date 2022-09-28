@@ -4,16 +4,16 @@ import (
 	"testing"
 	"time"
 
-	ostbytes "github.com/line/ostracon/libs/bytes"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	ocbytes "github.com/line/ostracon/libs/bytes"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 	ibctestingmock "github.com/line/lbm-sdk/x/ibc/testing/mock"
 )
@@ -34,7 +34,7 @@ var (
 	upgradePath     = []string{"upgrade", "upgradedIBCState"}
 )
 
-type TendermintTestSuite struct {
+type OstraconTestSuite struct {
 	suite.Suite
 
 	coordinator *ibctesting.Coordinator
@@ -45,20 +45,20 @@ type TendermintTestSuite struct {
 
 	// TODO: deprecate usage in favor of testing package
 	ctx        sdk.Context
-	cdc        codec.Marshaler
+	cdc        codec.Codec
 	privVal    octypes.PrivValidator
 	valSet     *octypes.ValidatorSet
-	valsHash   ostbytes.HexBytes
-	header     *ibctmtypes.Header
+	valsHash   ocbytes.HexBytes
+	header     *ibcoctypes.Header
 	now        time.Time
 	headerTime time.Time
 	clientTime time.Time
 }
 
-func (suite *TendermintTestSuite) SetupTest() {
+func (suite *OstraconTestSuite) SetupTest() {
 	suite.coordinator = ibctesting.NewCoordinator(suite.T(), 2)
-	suite.chainA = suite.coordinator.GetChain(ibctesting.GetChainID(0))
-	suite.chainB = suite.coordinator.GetChain(ibctesting.GetChainID(1))
+	suite.chainA = suite.coordinator.GetChain(ibctesting.GetChainID(1))
+	suite.chainB = suite.coordinator.GetChain(ibctesting.GetChainID(2))
 	// commit some blocks so that QueryProof returns valid proof (cannot return valid query if height <= 1)
 	suite.coordinator.CommitNBlocks(suite.chainA, 2)
 	suite.coordinator.CommitNBlocks(suite.chainB, 2)
@@ -91,6 +91,19 @@ func (suite *TendermintTestSuite) SetupTest() {
 	suite.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{Height: 1, Time: suite.now})
 }
 
-func TestTendermintTestSuite(t *testing.T) {
-	suite.Run(t, new(TendermintTestSuite))
+func getSuiteSigners(suite *OstraconTestSuite) []octypes.PrivValidator {
+	return []octypes.PrivValidator{suite.privVal}
+}
+
+func getBothSigners(suite *OstraconTestSuite, altVal *octypes.Validator, altPrivVal octypes.PrivValidator) (*octypes.ValidatorSet, []octypes.PrivValidator) {
+	// Create bothValSet with both suite validator and altVal. Would be valid update
+	bothValSet := octypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
+	// Create signer array and ensure it is in same order as bothValSet
+	_, suiteVal := suite.valSet.GetByIndex(0)
+	bothSigners := ibctesting.CreateSortedSignerArray(altPrivVal, suite.privVal, altVal, suiteVal)
+	return bothValSet, bothSigners
+}
+
+func TestOstraconTestSuite(t *testing.T) {
+	suite.Run(t, new(OstraconTestSuite))
 }

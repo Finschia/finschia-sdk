@@ -24,9 +24,9 @@ func MakeTestHandlerMap() signing.SignModeHandler {
 
 func TestHandlerMap_GetSignBytes(t *testing.T) {
 	priv1 := secp256k1.GenPrivKey()
-	addr1 := sdk.BytesToAccAddress(priv1.PubKey().Address())
+	addr1 := sdk.AccAddress(priv1.PubKey().Address())
 	priv2 := secp256k1.GenPrivKey()
-	addr2 := sdk.BytesToAccAddress(priv2.PubKey().Address())
+	addr2 := sdk.AccAddress(priv2.PubKey().Address())
 
 	coins := sdk.Coins{sdk.NewInt64Coin("foocoin", 10)}
 
@@ -43,26 +43,26 @@ func TestHandlerMap_GetSignBytes(t *testing.T) {
 		},
 	}
 
+	tx := legacytx.StdTx{
+		Msgs:       msgs,
+		Fee:        fee,
+		Signatures: nil,
+		Memo:       memo,
+	}
+
 	var (
 		chainId        = "test-chain"
-		sbh     uint64 = 7
+		accNum  uint64 = 7
 		seqNum  uint64 = 7
 	)
-
-	tx := legacytx.StdTx{
-		Msgs:           msgs,
-		Fee:            fee,
-		Signatures:     nil,
-		SigBlockHeight: sbh,
-		Memo:           memo,
-	}
 
 	handler := MakeTestHandlerMap()
 	aminoJSONHandler := legacytx.NewStdTxSignModeHandler()
 
 	signingData := signing.SignerData{
-		ChainID:  chainId,
-		Sequence: seqNum,
+		ChainID:       chainId,
+		AccountNumber: accNum,
+		Sequence:      seqNum,
 	}
 	signBz, err := handler.GetSignBytes(signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON, signingData, tx)
 	require.NoError(t, err)

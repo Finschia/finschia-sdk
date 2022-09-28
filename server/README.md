@@ -8,6 +8,7 @@ and `ExportCmd` which creates commands to start the application and export state
 ## Preliminary
 
 The root command of an application typically is constructed with:
+
 + command to start an application binary
 + three meta commands: `query`, `tx`, and a few auxiliary commands such as `genesis`.
 utilities.
@@ -94,6 +95,8 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts server.A
 		logger, db, traceStore, true, skipUpgradeHeights,
 		cast.ToString(appOpts.Get(flags.FlagHome)),
 		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
+        simapp.EmptyAppOptions{},
+		nil,
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(cast.ToString(appOpts.Get(server.FlagMinGasPrices))),
 		baseapp.SetHaltHeight(cast.ToUint64(appOpts.Get(server.FlagHaltHeight))),

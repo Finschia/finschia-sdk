@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 

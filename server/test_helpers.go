@@ -3,6 +3,8 @@ package server
 import (
 	"fmt"
 	"net"
+
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 // Get a free address for a test ostracon server
@@ -13,15 +15,9 @@ func FreeTCPAddr() (addr, port string, err error) {
 		return "", "", err
 	}
 
-	closer := func() {
-		err := l.Close()
-		if err != nil {
-			// TODO: Handle with #870
-			panic(err)
-		}
+	if err := l.Close(); err != nil {
+		return "", "", sdkerrors.Wrap(err, "couldn't close the listener")
 	}
-
-	defer closer()
 
 	portI := l.Addr().(*net.TCPAddr).Port
 	port = fmt.Sprintf("%d", portI)

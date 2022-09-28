@@ -1,7 +1,7 @@
 package types
 
-import "C"
 import (
+	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
@@ -37,6 +37,11 @@ func (s GenesisState) ValidateBasic() error {
 			return sdkerrors.Wrapf(err, "gen message: %d", i)
 		}
 	}
+	for i, addr := range s.InactiveContractAddresses {
+		if _, err := sdk.AccAddressFromBech32(addr); err != nil {
+			return sdkerrors.Wrapf(err, "inactive contract address: %d", i)
+		}
+	}
 	return nil
 }
 
@@ -54,7 +59,7 @@ func (c Code) ValidateBasic() error {
 }
 
 func (c Contract) ValidateBasic() error {
-	if err := sdk.ValidateAccAddress(c.ContractAddress); err != nil {
+	if _, err := sdk.AccAddressFromBech32(c.ContractAddress); err != nil {
 		return sdkerrors.Wrap(err, "contract address")
 	}
 	if err := c.ContractInfo.ValidateBasic(); err != nil {
@@ -98,4 +103,23 @@ func (m GenesisState_GenMsgs) ValidateBasic() error {
 // error for any failed validation criteria.
 func ValidateGenesis(data GenesisState) error {
 	return data.ValidateBasic()
+}
+
+var _ codectypes.UnpackInterfacesMessage = GenesisState{}
+
+// UnpackInterfaces implements codectypes.UnpackInterfaces
+func (s GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	for _, v := range s.Contracts {
+		if err := v.UnpackInterfaces(unpacker); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+var _ codectypes.UnpackInterfacesMessage = &Contract{}
+
+// UnpackInterfaces implements codectypes.UnpackInterfaces
+func (c *Contract) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	return c.ContractInfo.UnpackInterfaces(unpacker)
 }

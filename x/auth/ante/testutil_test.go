@@ -19,6 +19,7 @@ import (
 	xauthsigning "github.com/line/lbm-sdk/x/auth/signing"
 	"github.com/line/lbm-sdk/x/auth/types"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	minttypes "github.com/line/lbm-sdk/x/mint/types"
 )
 
 // TestAccount represents an account used in the tests in x/auth/ante.
@@ -61,7 +62,18 @@ func (suite *AnteTestSuite) SetupTest(isCheckTx bool) {
 	suite.clientCtx = client.Context{}.
 		WithTxConfig(encodingConfig.TxConfig)
 
-	suite.anteHandler = ante.NewAnteHandler(suite.app.AccountKeeper, suite.app.BankKeeper, ante.DefaultSigVerificationGasConsumer, encodingConfig.TxConfig.SignModeHandler())
+	anteHandler, err := ante.NewAnteHandler(
+		ante.HandlerOptions{
+			AccountKeeper:   suite.app.AccountKeeper,
+			BankKeeper:      suite.app.BankKeeper,
+			FeegrantKeeper:  suite.app.FeeGrantKeeper,
+			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
+			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+		},
+	)
+
+	suite.Require().NoError(err)
+	suite.anteHandler = anteHandler
 }
 
 // CreateTestAccounts creates `numAccs` accounts, and return all relevant
@@ -72,10 +84,17 @@ func (suite *AnteTestSuite) CreateTestAccounts(numAccs int) []TestAccount {
 	for i := 0; i < numAccs; i++ {
 		priv, _, addr := testdata.KeyTestPubAddr()
 		acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr)
+		err := acc.SetAccountNumber(uint64(i))
+		suite.Require().NoError(err)
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
-		suite.app.BankKeeper.SetBalances(suite.ctx, addr, sdk.Coins{
+		someCoins := sdk.Coins{
 			sdk.NewInt64Coin("atom", 10000000),
-		})
+		}
+		err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, someCoins)
+		suite.Require().NoError(err)
+
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, someCoins)
+		suite.Require().NoError(err)
 
 		accounts = append(accounts, TestAccount{acc, priv})
 	}
@@ -84,12 +103,11 @@ func (suite *AnteTestSuite) CreateTestAccounts(numAccs int) []TestAccount {
 }
 
 // CreateTestTx is a helper function to create a tx given multiple inputs.
-func (suite *AnteTestSuite) CreateTestTx(privs []cryptotypes.PrivKey, sbh []uint64, accSeqs []uint64, chainID string) (xauthsigning.Tx, error) {
+func (suite *AnteTestSuite) CreateTestTx(privs []cryptotypes.PrivKey, accNums []uint64, accSeqs []uint64, chainID string) (xauthsigning.Tx, error) {
 	// First round: we gather all the signer infos. We use the "set empty
 	// signature" hack to do that.
 	var sigsV2 []signing.SignatureV2
 	for i, priv := range privs {
-		suite.txBuilder.SetSigBlockHeight(sbh[i])
 		sigV2 := signing.SignatureV2{
 			PubKey: priv.PubKey(),
 			Data: &signing.SingleSignatureData{
@@ -110,8 +128,9 @@ func (suite *AnteTestSuite) CreateTestTx(privs []cryptotypes.PrivKey, sbh []uint
 	sigsV2 = []signing.SignatureV2{}
 	for i, priv := range privs {
 		signerData := xauthsigning.SignerData{
-			ChainID:  chainID,
-			Sequence: accSeqs[i],
+			ChainID:       chainID,
+			AccountNumber: accNums[i],
+			Sequence:      accSeqs[i],
 		}
 		sigV2, err := tx.SignWithPrivKey(
 			suite.clientCtx.TxConfig.SignModeHandler().DefaultMode(), signerData,
@@ -140,7 +159,7 @@ type TestCase struct {
 }
 
 // CreateTestTx is a helper function to create a tx given multiple inputs.
-func (suite *AnteTestSuite) RunTestCase(privs []cryptotypes.PrivKey, msgs []sdk.Msg, feeAmount sdk.Coins, gasLimit uint64, sbh, accSeqs []uint64, chainID string, tc TestCase) {
+func (suite *AnteTestSuite) RunTestCase(privs []cryptotypes.PrivKey, msgs []sdk.Msg, feeAmount sdk.Coins, gasLimit uint64, accNums, accSeqs []uint64, chainID string, tc TestCase) {
 	suite.Run(fmt.Sprintf("Case %s", tc.desc), func() {
 		suite.Require().NoError(suite.txBuilder.SetMsgs(msgs...))
 		suite.txBuilder.SetFeeAmount(feeAmount)
@@ -149,7 +168,7 @@ func (suite *AnteTestSuite) RunTestCase(privs []cryptotypes.PrivKey, msgs []sdk.
 		// Theoretically speaking, ante handler unit tests should only test
 		// ante handlers, but here we sometimes also test the tx creation
 		// process.
-		tx, txErr := suite.CreateTestTx(privs, sbh, accSeqs, chainID)
+		tx, txErr := suite.CreateTestTx(privs, accNums, accSeqs, chainID)
 		newCtx, anteErr := suite.anteHandler(suite.ctx, tx, tc.simulate)
 
 		if tc.expPass {

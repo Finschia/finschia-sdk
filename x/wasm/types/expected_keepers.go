@@ -16,6 +16,7 @@ import (
 // BankViewKeeper defines a subset of methods implemented by the cosmos-sdk bank keeper
 type BankViewKeeper interface {
 	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
 }
 
 // Burner is a subset of the sdk bank keeper methods
@@ -28,14 +29,14 @@ type Burner interface {
 type BankKeeper interface {
 	BankViewKeeper
 	Burner
-	SendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) error
+	IsSendEnabledCoins(ctx sdk.Context, coins ...sdk.Coin) error
 	BlockedAddr(addr sdk.AccAddress) bool
 	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 }
 
 // AccountKeeper defines a subset of methods implemented by the cosmos-sdk account keeper
 type AccountKeeper interface {
-	// Return a new account with the specified address. Does not save the new account to the store.
+	// Return a new account with the next account number and the specified address. Does not save the new account to the store.
 	NewAccountWithAddress(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
 	// Retrieve an account from the store.
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
@@ -74,6 +75,7 @@ type ChannelKeeper interface {
 	ChanCloseInit(ctx sdk.Context, portID, channelID string, chanCap *capabilitytypes.Capability) error
 	GetAllChannels(ctx sdk.Context) (channels []channeltypes.IdentifiedChannel)
 	IterateChannels(ctx sdk.Context, cb func(channeltypes.IdentifiedChannel) bool)
+	SetChannel(ctx sdk.Context, portID, channelID string, channel channeltypes.Channel)
 }
 
 // ClientKeeper defines the expected IBC client keeper

@@ -124,8 +124,8 @@ func delegatorTxsHandlerFn(clientCtx client.Context) http.HandlerFunc {
 
 		vars := mux.Vars(r)
 		delegatorAddr := vars["delegatorAddr"]
-		err := sdk.ValidateAccAddress(delegatorAddr)
-		if rest.CheckBadRequestError(w, err) {
+
+		if _, err := sdk.AccAddressFromBech32(delegatorAddr); rest.CheckBadRequestError(w, err) {
 			return
 		}
 
@@ -151,20 +151,24 @@ func delegatorTxsHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			actions []string
 		)
 
+		// For each case, we search txs for both:
+		// - legacy messages: their Type() is a custom string, e.g. "delegate"
+		// - service Msgs: their Type() is their FQ method name, e.g. "/cosmos.staking.v1beta1.MsgDelegate"
+		// and we combine the results.
 		switch {
 		case isBondTx:
-			actions = append(actions, types.MsgDelegate{}.Type())
+			actions = append(actions, types.TypeMsgDelegate)
 
 		case isUnbondTx:
-			actions = append(actions, types.MsgUndelegate{}.Type())
+			actions = append(actions, types.TypeMsgUndelegate)
 
 		case isRedTx:
-			actions = append(actions, types.MsgBeginRedelegate{}.Type())
+			actions = append(actions, types.TypeMsgBeginRedelegate)
 
 		case noQuery:
-			actions = append(actions, types.MsgDelegate{}.Type())
-			actions = append(actions, types.MsgUndelegate{}.Type())
-			actions = append(actions, types.MsgBeginRedelegate{}.Type())
+			actions = append(actions, types.TypeMsgDelegate)
+			actions = append(actions, types.TypeMsgUndelegate)
+			actions = append(actions, types.TypeMsgBeginRedelegate)
 
 		default:
 			w.WriteHeader(http.StatusNoContent)
@@ -209,34 +213,28 @@ func redelegationsHandlerFn(clientCtx client.Context) http.HandlerFunc {
 		bechDstValidatorAddr := r.URL.Query().Get("validator_to")
 
 		if len(bechDelegatorAddr) != 0 {
-			err := sdk.ValidateAccAddress(bechDelegatorAddr)
+			delegatorAddr, err := sdk.AccAddressFromBech32(bechDelegatorAddr)
 			if rest.CheckBadRequestError(w, err) {
 				return
 			}
-
-			delegatorAddr := sdk.AccAddress(bechDelegatorAddr)
 
 			params.DelegatorAddr = delegatorAddr
 		}
 
 		if len(bechSrcValidatorAddr) != 0 {
-			err := sdk.ValidateValAddress(bechSrcValidatorAddr)
+			srcValidatorAddr, err := sdk.ValAddressFromBech32(bechSrcValidatorAddr)
 			if rest.CheckBadRequestError(w, err) {
 				return
 			}
-
-			srcValidatorAddr := sdk.ValAddress(bechSrcValidatorAddr)
 
 			params.SrcValidatorAddr = srcValidatorAddr
 		}
 
 		if len(bechDstValidatorAddr) != 0 {
-			err := sdk.ValidateValAddress(bechDstValidatorAddr)
+			dstValidatorAddr, err := sdk.ValAddressFromBech32(bechDstValidatorAddr)
 			if rest.CheckBadRequestError(w, err) {
 				return
 			}
-
-			dstValidatorAddr := sdk.ValAddress(bechDstValidatorAddr)
 
 			params.DstValidatorAddr = dstValidatorAddr
 		}

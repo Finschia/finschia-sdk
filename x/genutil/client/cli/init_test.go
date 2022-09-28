@@ -10,12 +10,13 @@ import (
 	"testing"
 	"time"
 
-	ed255192 "github.com/line/lbm-sdk/crypto/keys/ed25519"
 	abci_server "github.com/line/ostracon/abci/server"
 	"github.com/line/ostracon/libs/cli"
 	"github.com/line/ostracon/libs/log"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
+
+	ed255192 "github.com/line/lbm-sdk/crypto/keys/ed25519"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/codec"
@@ -48,8 +49,7 @@ func TestInitCmd(t *testing.T) {
 				}
 			},
 			shouldErr: false,
-
-			err: nil,
+			err:       nil,
 		},
 	}
 
@@ -65,7 +65,7 @@ func TestInitCmd(t *testing.T) {
 			interfaceRegistry := types.NewInterfaceRegistry()
 			marshaler := codec.NewProtoCodec(interfaceRegistry)
 			clientCtx := client.Context{}.
-				WithJSONMarshaler(marshaler).
+				WithCodec(marshaler).
 				WithLegacyAmino(makeCodec()).
 				WithHomeDir(home)
 
@@ -99,7 +99,7 @@ func TestInitRecover(t *testing.T) {
 	interfaceRegistry := types.NewInterfaceRegistry()
 	marshaler := codec.NewProtoCodec(interfaceRegistry)
 	clientCtx := client.Context{}.
-		WithJSONMarshaler(marshaler).
+		WithCodec(marshaler).
 		WithLegacyAmino(makeCodec()).
 		WithHomeDir(home)
 
@@ -130,7 +130,7 @@ func TestEmptyState(t *testing.T) {
 	interfaceRegistry := types.NewInterfaceRegistry()
 	marshaler := codec.NewProtoCodec(interfaceRegistry)
 	clientCtx := client.Context{}.
-		WithJSONMarshaler(marshaler).
+		WithCodec(marshaler).
 		WithLegacyAmino(makeCodec()).
 		WithHomeDir(home)
 

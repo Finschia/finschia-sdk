@@ -25,8 +25,8 @@ var (
 	priv2 = secp256k1.GenPrivKey()
 	pk1   = priv1.PubKey()
 	pk2   = priv2.PubKey()
-	addr1 = sdk.BytesToAccAddress(pk1.Address())
-	addr2 = sdk.BytesToAccAddress(pk2.Address())
+	addr1 = sdk.AccAddress(pk1.Address())
+	addr2 = sdk.AccAddress(pk2.Address())
 	desc  = stakingtypes.NewDescription("testname", "", "", "", "")
 	comm  = stakingtypes.CommissionRates{}
 )
@@ -53,10 +53,10 @@ func (suite *GenTxTestSuite) SetupTest() {
 	amount := sdk.NewInt64Coin(sdk.DefaultBondDenom, 50)
 	one := sdk.OneInt()
 	suite.msg1, err = stakingtypes.NewMsgCreateValidator(
-		sdk.BytesToValAddress(pk1.Address()), pk1, amount, desc, comm, one)
+		sdk.ValAddress(pk1.Address()), pk1, amount, desc, comm, one)
 	suite.NoError(err)
 	suite.msg2, err = stakingtypes.NewMsgCreateValidator(
-		sdk.BytesToValAddress(pk2.Address()), pk1, amount, desc, comm, one)
+		sdk.ValAddress(pk2.Address()), pk1, amount, desc, comm, one)
 	suite.NoError(err)
 }
 
@@ -64,9 +64,7 @@ func (suite *GenTxTestSuite) setAccountBalance(addr sdk.AccAddress, amount int64
 	acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr)
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 
-	err := suite.app.BankKeeper.SetBalances(
-		suite.ctx, addr, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 25)},
-	)
+	err := simapp.FundAccount(suite.app, suite.ctx, addr, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, amount)})
 	suite.Require().NoError(err)
 
 	bankGenesisState := suite.app.BankKeeper.ExportGenesis(suite.ctx)
@@ -232,7 +230,7 @@ func (suite *GenTxTestSuite) TestDeliverGenTxs() {
 			"success",
 			func() {
 				_ = suite.setAccountBalance(addr1, 50)
-				_ = suite.setAccountBalance(addr2, 0)
+				_ = suite.setAccountBalance(addr2, 1)
 
 				msg := banktypes.NewMsgSend(addr1, addr2, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 1)})
 				tx, err := helpers.GenTx(

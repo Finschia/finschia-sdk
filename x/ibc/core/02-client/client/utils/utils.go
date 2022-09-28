@@ -3,18 +3,17 @@ package utils
 import (
 	"context"
 
-	octypes "github.com/line/ostracon/types"
-
 	"github.com/line/lbm-sdk/client"
-
 	"github.com/line/lbm-sdk/codec"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	octypes "github.com/line/ostracon/types"
+
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	ibcclient "github.com/line/lbm-sdk/x/ibc/core/client"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // QueryClientState returns a client state. If prove is true, it performs an ABCI store query
@@ -40,7 +39,7 @@ func QueryClientStateABCI(
 ) (*types.QueryClientStateResponse, error) {
 	key := host.FullClientStateKey(clientID)
 
-	value, proofBz, proofHeight, err := ibcclient.QueryTendermintProof(clientCtx, key)
+	value, proofBz, proofHeight, err := ibcclient.QueryOstraconProof(clientCtx, key)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +92,7 @@ func QueryConsensusStateABCI(
 ) (*types.QueryConsensusStateResponse, error) {
 	key := host.FullConsensusStateKey(clientID, height)
 
-	value, proofBz, proofHeight, err := ibcclient.QueryTendermintProof(clientCtx, key)
+	value, proofBz, proofHeight, err := ibcclient.QueryOstraconProof(clientCtx, key)
 	if err != nil {
 		return nil, err
 	}
@@ -120,51 +119,56 @@ func QueryConsensusStateABCI(
 
 // QueryOstraconHeader takes a client context and returns the appropriate
 // ostracon header
-func QueryOstraconHeader(clientCtx client.Context) (ibctmtypes.Header, int64, error) {
+func QueryOstraconHeader(clientCtx client.Context) (ibcoctypes.Header, int64, error) {
 	node, err := clientCtx.GetNode()
 	if err != nil {
-		return ibctmtypes.Header{}, 0, err
+		return ibcoctypes.Header{}, 0, err
 	}
 
 	info, err := node.ABCIInfo(context.Background())
 	if err != nil {
-		return ibctmtypes.Header{}, 0, err
+		return ibcoctypes.Header{}, 0, err
 	}
 
-	height := info.Response.LastBlockHeight
+	var height int64
+	if clientCtx.Height != 0 {
+		height = clientCtx.Height
+	} else {
+		height = info.Response.LastBlockHeight
+	}
 
 	commit, err := node.Commit(context.Background(), &height)
 	if err != nil {
-		return ibctmtypes.Header{}, 0, err
+		return ibcoctypes.Header{}, 0, err
 	}
 
-	page := 0
+	page := 1
 	count := 10_000
 
 	validators, err := node.Validators(context.Background(), &height, &page, &count)
 	if err != nil {
-		return ibctmtypes.Header{}, 0, err
+		return ibcoctypes.Header{}, 0, err
 	}
 
 	page = 0
 	count = 10_000
 	voters, err := node.Voters(context.Background(), &height, &page, &count)
 	if err != nil {
-		return ibctmtypes.Header{}, 0, err
+		return ibcoctypes.Header{}, 0, err
 	}
 
 	protoCommit := commit.SignedHeader.ToProto()
 	protoValset, err := octypes.NewValidatorSet(validators.Validators).ToProto()
 	if err != nil {
-		return ibctmtypes.Header{}, 0, err
+		return ibcoctypes.Header{}, 0, err
 	}
 
 	protoVoterSet, err := octypes.WrapValidatorsToVoterSet(voters.Voters).ToProto()
 	if err != nil {
-		return ibctmtypes.Header{}, 0, err
+		return ibcoctypes.Header{}, 0, err
 	}
 
-	header := ibctmtypes.Header{
+	header := ibcoctypes.Header{
 		SignedHeader: protoCommit,
 		ValidatorSet: protoValset,
 		VoterSet:     protoVoterSet,
@@ -173,24 +177,29 @@ func QueryOstraconHeader(clientCtx client.Context) (ibctmtypes.Header, int64, er
 	return header, height, nil
 }
 
-// QueryNodeConsensusState takes a client context and returns the appropriate
-// tendermint consensus state
-func QueryNodeConsensusState(clientCtx client.Context) (*ibctmtypes.ConsensusState, int64, error) {
+// QuerySelfConsensusState takes a client context and returns the appropriate
+// ostracon consensus state
+func QuerySelfConsensusState(clientCtx client.Context) (*ibcoctypes.ConsensusState, int64, error) {
 	node, err := clientCtx.GetNode()
 	if err != nil {
-		return &ibctmtypes.ConsensusState{}, 0, err
+		return &ibcoctypes.ConsensusState{}, 0, err
 	}
 
 	info, err := node.ABCIInfo(context.Background())
 	if err != nil {
-		return &ibctmtypes.ConsensusState{}, 0, err
+		return &ibcoctypes.ConsensusState{}, 0, err
 	}
 
-	height := info.Response.LastBlockHeight
+	var height int64
+	if clientCtx.Height != 0 {
+		height = clientCtx.Height
+	} else {
+		height = info.Response.LastBlockHeight
+	}
 
 	commit, err := node.Commit(context.Background(), &height)
 	if err != nil {
-		return &ibctmtypes.ConsensusState{}, 0, err
+		return &ibcoctypes.ConsensusState{}, 0, err
 	}
 
 	page := 1
@@ -199,10 +208,10 @@ func QueryNodeConsensusState(clientCtx client.Context) (*ibctmtypes.ConsensusSta
 	nextHeight := height + 1
 	nextVals, err := node.Validators(context.Background(), &nextHeight, &page, &count)
 	if err != nil {
-		return &ibctmtypes.ConsensusState{}, 0, err
+		return &ibcoctypes.ConsensusState{}, 0, err
 	}
 
-	state := &ibctmtypes.ConsensusState{
+	state := &ibcoctypes.ConsensusState{
 		Timestamp:          commit.Time,
 		Root:               commitmenttypes.NewMerkleRoot(commit.AppHash),
 		NextValidatorsHash: octypes.NewValidatorSet(nextVals.Validators).Hash(),

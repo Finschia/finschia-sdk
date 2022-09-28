@@ -13,17 +13,19 @@ import (
 	kmultisig "github.com/line/lbm-sdk/crypto/keys/multisig"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/tx/signing"
 	"github.com/line/lbm-sdk/x/auth/ante"
 	"github.com/line/lbm-sdk/x/auth/types"
+	minttypes "github.com/line/lbm-sdk/x/mint/types"
 )
 
 // Test that simulate transaction accurately estimates gas cost
 func (suite *AnteTestSuite) TestSimulateGasCost() {
-	suite.SetupTest(true) // reset
+	suite.SetupTest(false) // reset
 
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(3)
@@ -36,7 +38,7 @@ func (suite *AnteTestSuite) TestSimulateGasCost() {
 	gasLimit := testdata.NewTestGasLimit()
 	accSeqs := []uint64{0, 0, 0}
 	privs := []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv}
-	sbh := []uint64{0, 1, 1}
+	accNums := []uint64{0, 1, 2}
 
 	testCases := []TestCase{
 		{
@@ -69,14 +71,14 @@ func (suite *AnteTestSuite) TestSimulateGasCost() {
 			suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
 			tc.malleate()
 
-			suite.RunTestCase(privs, msgs, feeAmount, gasLimit, sbh, accSeqs, suite.ctx.ChainID(), tc)
+			suite.RunTestCase(privs, msgs, feeAmount, gasLimit, accNums, accSeqs, suite.ctx.ChainID(), tc)
 		})
 	}
 }
 
 // Test various error cases in the AnteHandler control flow.
 func (suite *AnteTestSuite) TestAnteHandlerSigErrors() {
-	suite.SetupTest(true) // reset
+	suite.SetupTest(false) // reset
 
 	// Same data for every test cases
 	priv0, _, addr0 := testdata.KeyTestPubAddr()
@@ -92,7 +94,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSigErrors() {
 	// Variable data per test case
 	var (
 		privs   []cryptotypes.PrivKey
-		sbh     []uint64
+		accNums []uint64
 		accSeqs []uint64
 	)
 
@@ -100,11 +102,11 @@ func (suite *AnteTestSuite) TestAnteHandlerSigErrors() {
 		{
 			"check no signatures fails",
 			func() {
-				privs, sbh, accSeqs = []cryptotypes.PrivKey{}, []uint64{}, []uint64{}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{}, []uint64{}, []uint64{}
 
 				// Create tx manually to test the tx's signers
 				suite.Require().NoError(suite.txBuilder.SetMsgs(msgs...))
-				tx, err := suite.CreateTestTx(privs, sbh, accSeqs, suite.ctx.ChainID())
+				tx, err := suite.CreateTestTx(privs, accNums, accSeqs, suite.ctx.ChainID())
 				suite.Require().NoError(err)
 				// tx.GetSigners returns addresses in correct order: addr1, addr2, addr3
 				expectedSigners := []sdk.AccAddress{addr0, addr1, addr2}
@@ -117,7 +119,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSigErrors() {
 		{
 			"num sigs dont match GetSigners",
 			func() {
-				privs, sbh, accSeqs = []cryptotypes.PrivKey{priv0}, []uint64{0}, []uint64{0}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{priv0}, []uint64{0}, []uint64{0}
 			},
 			false,
 			false,
@@ -126,23 +128,25 @@ func (suite *AnteTestSuite) TestAnteHandlerSigErrors() {
 		{
 			"unrecognized account",
 			func() {
-				privs, sbh, accSeqs = []cryptotypes.PrivKey{priv0, priv1, priv2}, []uint64{0, 0, 0}, []uint64{0, 0, 0}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{priv0, priv1, priv2}, []uint64{0, 1, 2}, []uint64{0, 0, 0}
 			},
 			false,
 			false,
-			sdkerrors.ErrInsufficientFunds, // unknown account may send tx, but he doesn't have enough balance to pay fee
+			sdkerrors.ErrUnknownAddress, // unknown account may send tx, but he doesn't have enough balance to pay fee
 		},
 		{
 			"save the first account, but second is still unrecognized",
 			func() {
 				acc1 := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr0)
 				suite.app.AccountKeeper.SetAccount(suite.ctx, acc1)
-				err := suite.app.BankKeeper.SetBalances(suite.ctx, addr0, feeAmount)
+				err := suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, feeAmount)
+				suite.Require().NoError(err)
+				err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr0, feeAmount)
 				suite.Require().NoError(err)
 			},
 			false,
-			true,
-			nil, // unknown account may send tx; now they have enough money to pay fee
+			false,
+			sdkerrors.ErrUnknownAddress,
 		},
 	}
 
@@ -151,16 +155,14 @@ func (suite *AnteTestSuite) TestAnteHandlerSigErrors() {
 			suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
 			tc.malleate()
 
-			suite.RunTestCase(privs, msgs, feeAmount, gasLimit, sbh, accSeqs, suite.ctx.ChainID(), tc)
+			suite.RunTestCase(privs, msgs, feeAmount, gasLimit, accNums, accSeqs, suite.ctx.ChainID(), tc)
 		})
 	}
 }
 
-// Test logic around sig block height checking with one signer and many signers.
-func (suite *AnteTestSuite) TestAnteHandlerSigBlockHeight() {
+// Test logic around account number checking with one signer and many signers.
+func (suite *AnteTestSuite) TestAnteHandlerAccountNumbers() {
 	suite.SetupTest(false) // reset
-
-	suite.ctx = suite.ctx.WithBlockHeight(200) // init block height is 200
 
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(2)
@@ -169,7 +171,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSigBlockHeight() {
 
 	// Variable data per test case
 	var (
-		sbh     []uint64
+		accNums []uint64
 		msgs    []sdk.Msg
 		privs   []cryptotypes.PrivKey
 		accSeqs []uint64
@@ -182,46 +184,46 @@ func (suite *AnteTestSuite) TestAnteHandlerSigBlockHeight() {
 				msg := testdata.NewTestMsg(accounts[0].acc.GetAddress())
 				msgs = []sdk.Msg{msg}
 
-				privs, sbh, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{100}, []uint64{0}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{0}, []uint64{0}
 			},
 			false,
 			true,
 			nil,
 		},
 		{
-			"new tx from wrong sig block height",
+			"new tx from wrong account number",
 			func() {
-				privs, sbh, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{1}, []uint64{1}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{1}, []uint64{1}
 			},
 			false,
 			false,
-			sdkerrors.ErrInvalidSigBlockHeight,
+			sdkerrors.ErrUnauthorized,
 		},
 		{
-			"new tx from correct sig block height",
+			"new tx from correct account number",
 			func() {
-				privs, sbh, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{100}, []uint64{1}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{0}, []uint64{1}
 			},
 			false,
 			true,
 			nil,
 		},
 		{
-			"new tx with another signer and incorrect sig block height",
+			"new tx with another signer and incorrect account numbers",
 			func() {
 				msg1 := testdata.NewTestMsg(accounts[0].acc.GetAddress(), accounts[1].acc.GetAddress())
 				msg2 := testdata.NewTestMsg(accounts[1].acc.GetAddress(), accounts[0].acc.GetAddress())
 				msgs = []sdk.Msg{msg1, msg2}
-				privs, sbh, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv}, []uint64{1, 0}, []uint64{2, 0}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv}, []uint64{1, 0}, []uint64{2, 0}
 			},
 			false,
 			false,
-			sdkerrors.ErrInvalidSigBlockHeight,
+			sdkerrors.ErrUnauthorized,
 		},
 		{
-			"new tx with correct sig block height",
+			"new tx with correct account numbers",
 			func() {
-				privs, sbh, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv}, []uint64{100, 101}, []uint64{2, 0}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv}, []uint64{0, 1}, []uint64{2, 0}
 			},
 			false,
 			true,
@@ -234,13 +236,13 @@ func (suite *AnteTestSuite) TestAnteHandlerSigBlockHeight() {
 			suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
 			tc.malleate()
 
-			suite.RunTestCase(privs, msgs, feeAmount, gasLimit, sbh, accSeqs, suite.ctx.ChainID(), tc)
+			suite.RunTestCase(privs, msgs, feeAmount, gasLimit, accNums, accSeqs, suite.ctx.ChainID(), tc)
 		})
 	}
 }
 
-// Test logic around sig block height checking with many signers when BlockHeight is 0.
-func (suite *AnteTestSuite) TestAnteHandlerSigBlockHeightAtBlockHeightZero() {
+// Test logic around account number checking with many signers when BlockHeight is 0.
+func (suite *AnteTestSuite) TestAnteHandlerAccountNumbersAtBlockHeightZero() {
 	suite.SetupTest(false) // setup
 	suite.ctx = suite.ctx.WithBlockHeight(0)
 
@@ -271,16 +273,16 @@ func (suite *AnteTestSuite) TestAnteHandlerSigBlockHeightAtBlockHeightZero() {
 			nil,
 		},
 		{
-			"new tx from wrong sig block height",
+			"new tx from wrong account number",
 			func() {
 				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{1}, []uint64{1}
 			},
 			false,
 			false,
-			sdkerrors.ErrInvalidSigBlockHeight,
+			sdkerrors.ErrUnauthorized,
 		},
 		{
-			"new tx from correct sig block height",
+			"new tx from correct account number",
 			func() {
 				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{0}, []uint64{1}
 			},
@@ -289,20 +291,20 @@ func (suite *AnteTestSuite) TestAnteHandlerSigBlockHeightAtBlockHeightZero() {
 			nil,
 		},
 		{
-			"new tx with another signer and incorrect sig block height",
+			"new tx with another signer and incorrect account numbers",
 			func() {
 				msg1 := testdata.NewTestMsg(accounts[0].acc.GetAddress(), accounts[1].acc.GetAddress())
 				msg2 := testdata.NewTestMsg(accounts[1].acc.GetAddress(), accounts[0].acc.GetAddress())
 				msgs = []sdk.Msg{msg1, msg2}
 
-				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv}, []uint64{1, 1}, []uint64{2, 0}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv}, []uint64{1, 0}, []uint64{2, 0}
 			},
 			false,
 			false,
-			sdkerrors.ErrInvalidSigBlockHeight,
+			sdkerrors.ErrUnauthorized,
 		},
 		{
-			"new tx with another signer and correct sig block height",
+			"new tx with another signer and correct account numbers",
 			func() {
 				// Note that accNums is [0,0] at block 0.
 				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv}, []uint64{0, 0}, []uint64{2, 0}
@@ -378,7 +380,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSequences() {
 				msg2 := testdata.NewTestMsg(accounts[2].acc.GetAddress(), accounts[0].acc.GetAddress())
 				msgs = []sdk.Msg{msg1, msg2}
 
-				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv}, []uint64{0, 0, 0}, []uint64{2, 0, 0}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv}, []uint64{0, 1, 2}, []uint64{2, 0, 0}
 			},
 			false,
 			true,
@@ -396,7 +398,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSequences() {
 			func() {
 				msg := testdata.NewTestMsg(accounts[1].acc.GetAddress())
 				msgs = []sdk.Msg{msg}
-				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[1].priv}, []uint64{0}, []uint64{0}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[1].priv}, []uint64{1}, []uint64{0}
 			},
 			false,
 			false,
@@ -417,7 +419,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSequences() {
 				msg := testdata.NewTestMsg(accounts[0].acc.GetAddress(), accounts[1].acc.GetAddress())
 				msgs = []sdk.Msg{msg}
 
-				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv}, []uint64{0, 0}, []uint64{3, 2}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv}, []uint64{0, 1}, []uint64{3, 2}
 			},
 			false,
 			true,
@@ -437,7 +439,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSequences() {
 
 // Test logic around fee deduction.
 func (suite *AnteTestSuite) TestAnteHandlerFees() {
-	suite.SetupTest(true) // setup
+	suite.SetupTest(false) // setup
 
 	// Same data for every test cases
 	priv0, _, addr0 := testdata.KeyTestPubAddr()
@@ -468,7 +470,8 @@ func (suite *AnteTestSuite) TestAnteHandlerFees() {
 		{
 			"signer does not have enough funds to pay the fee",
 			func() {
-				suite.app.BankKeeper.SetBalances(suite.ctx, addr0, sdk.NewCoins(sdk.NewInt64Coin("atom", 149)))
+				err := simapp.FundAccount(suite.app, suite.ctx, addr0, sdk.NewCoins(sdk.NewInt64Coin("atom", 149)))
+				suite.Require().NoError(err)
 			},
 			false,
 			false,
@@ -477,12 +480,14 @@ func (suite *AnteTestSuite) TestAnteHandlerFees() {
 		{
 			"signer as enough funds, should pass",
 			func() {
+				accNums = []uint64{8}
 				modAcc := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, types.FeeCollectorName)
 
 				suite.Require().True(suite.app.BankKeeper.GetAllBalances(suite.ctx, modAcc.GetAddress()).Empty())
 				require.True(sdk.IntEq(suite.T(), suite.app.BankKeeper.GetAllBalances(suite.ctx, addr0).AmountOf("atom"), sdk.NewInt(149)))
 
-				suite.app.BankKeeper.SetBalances(suite.ctx, addr0, sdk.NewCoins(sdk.NewInt64Coin("atom", 150)))
+				err := simapp.FundAccount(suite.app, suite.ctx, addr0, sdk.NewCoins(sdk.NewInt64Coin("atom", 1)))
+				suite.Require().NoError(err)
 			},
 			false,
 			true,
@@ -602,14 +607,13 @@ func (suite *AnteTestSuite) TestAnteHandlerMultiSigner() {
 		accSeqs []uint64
 	)
 
-	// This test case is no longer meaningful because there is no account number any more.
 	testCases := []TestCase{
 		{
 			"signers in order",
 			func() {
 				msgs = []sdk.Msg{msg1, msg2, msg3}
-				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv}, []uint64{1, 1, 1}, []uint64{0, 0, 0}
-				suite.txBuilder.SetMemo("Check signers are in expected order works")
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv}, []uint64{0, 1, 2}, []uint64{0, 0, 0}
+				suite.txBuilder.SetMemo("Check signers are in expected order and different account numbers works")
 			},
 			false,
 			true,
@@ -619,7 +623,7 @@ func (suite *AnteTestSuite) TestAnteHandlerMultiSigner() {
 			"change sequence numbers (only accounts 0 and 1 sign)",
 			func() {
 				msgs = []sdk.Msg{msg1}
-				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv}, []uint64{1, 1}, []uint64{1, 1}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv}, []uint64{0, 1}, []uint64{1, 1}
 			},
 			false,
 			true,
@@ -629,7 +633,7 @@ func (suite *AnteTestSuite) TestAnteHandlerMultiSigner() {
 			"change sequence numbers (only accounts 1 and 2 sign)",
 			func() {
 				msgs = []sdk.Msg{msg2}
-				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[2].priv, accounts[0].priv}, []uint64{1, 1}, []uint64{1, 2}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[2].priv, accounts[0].priv}, []uint64{2, 0}, []uint64{1, 2}
 			},
 			false,
 			true,
@@ -639,7 +643,7 @@ func (suite *AnteTestSuite) TestAnteHandlerMultiSigner() {
 			"everyone signs again",
 			func() {
 				msgs = []sdk.Msg{msg1, msg2, msg3}
-				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv}, []uint64{1, 1, 1}, []uint64{3, 2, 2}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv}, []uint64{0, 1, 2}, []uint64{3, 2, 2}
 			},
 			false,
 			true,
@@ -666,7 +670,7 @@ func (suite *AnteTestSuite) TestAnteHandlerBadSignBytes() {
 
 	// Variable data per test case
 	var (
-		sbh       []uint64
+		accNums   []uint64
 		chainID   string
 		feeAmount sdk.Coins
 		gasLimit  uint64
@@ -683,7 +687,7 @@ func (suite *AnteTestSuite) TestAnteHandlerBadSignBytes() {
 				feeAmount = testdata.NewTestFeeAmount()
 				gasLimit = testdata.NewTestGasLimit()
 				msgs = []sdk.Msg{msg0}
-				privs, sbh, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{0}, []uint64{0}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{0}, []uint64{0}
 			},
 			false,
 			true,
@@ -710,19 +714,18 @@ func (suite *AnteTestSuite) TestAnteHandlerBadSignBytes() {
 			sdkerrors.ErrWrongSequence,
 		},
 		{
-			"test wrong sig block height",
+			"test wrong accNums",
 			func() {
 				accSeqs = []uint64{1} // Back to correct accSeqs
-				sbh = []uint64{2}
+				accNums = []uint64{1}
 			},
 			false,
 			false,
-			sdkerrors.ErrInvalidSigBlockHeight,
+			sdkerrors.ErrUnauthorized,
 		},
 		{
 			"test wrong msg",
 			func() {
-				sbh = []uint64{0} // Back to correct sig block height
 				msgs = []sdk.Msg{testdata.NewTestMsg(accounts[1].acc.GetAddress())}
 			},
 			false,
@@ -730,8 +733,6 @@ func (suite *AnteTestSuite) TestAnteHandlerBadSignBytes() {
 			sdkerrors.ErrInvalidPubKey,
 		},
 		{
-			// This test case succeed and this is normal. Different gasLimit does not matter to sign.
-			// The failure of the past was due to invalid account number
 			"test wrong fee gas",
 			func() {
 				msgs = []sdk.Msg{msg0} // Back to correct msgs
@@ -739,30 +740,26 @@ func (suite *AnteTestSuite) TestAnteHandlerBadSignBytes() {
 				gasLimit = testdata.NewTestGasLimit() + 100
 			},
 			false,
-			true,
-			nil,
+			false,
+			sdkerrors.ErrUnauthorized,
 		},
 		{
-			// This test case succeed and this is normal. Different feeAmount does not matter to sign.
-			// The failure of the past was due to invalid account number
 			"test wrong fee amount",
 			func() {
-				accSeqs = []uint64{2}
 				feeAmount = testdata.NewTestFeeAmount()
 				feeAmount[0].Amount = feeAmount[0].Amount.AddRaw(100)
 				gasLimit = testdata.NewTestGasLimit()
 			},
 			false,
-			true,
-			nil,
+			false,
+			sdkerrors.ErrUnauthorized,
 		},
 		{
 			"test wrong signer if public key exist",
 			func() {
-				accSeqs = []uint64{3}
 				feeAmount = testdata.NewTestFeeAmount()
 				gasLimit = testdata.NewTestGasLimit()
-				privs, sbh, accSeqs = []cryptotypes.PrivKey{accounts[1].priv}, []uint64{0}, []uint64{1}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[1].priv}, []uint64{0}, []uint64{1}
 			},
 			false,
 			false,
@@ -772,7 +769,7 @@ func (suite *AnteTestSuite) TestAnteHandlerBadSignBytes() {
 			"test wrong signer if public doesn't exist",
 			func() {
 				msgs = []sdk.Msg{testdata.NewTestMsg(accounts[1].acc.GetAddress())}
-				privs, sbh, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{0}, []uint64{0}
+				privs, accNums, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{1}, []uint64{0}
 			},
 			false,
 			false,
@@ -785,7 +782,7 @@ func (suite *AnteTestSuite) TestAnteHandlerBadSignBytes() {
 			suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
 			tc.malleate()
 
-			suite.RunTestCase(privs, msgs, feeAmount, gasLimit, sbh, accSeqs, chainID, tc)
+			suite.RunTestCase(privs, msgs, feeAmount, gasLimit, accNums, accSeqs, chainID, tc)
 		})
 	}
 }
@@ -902,8 +899,7 @@ func generatePubKeysAndSignatures(n int, msg []byte, _ bool) (pubkeys []cryptoty
 	pubkeys = make([]cryptotypes.PubKey, n)
 	signatures = make([][]byte, n)
 	for i := 0; i < n; i++ {
-		var privkey cryptotypes.PrivKey
-		privkey = secp256k1.GenPrivKey()
+		var privkey cryptotypes.PrivKey = secp256k1.GenPrivKey()
 
 		// TODO: also generate ed25519 keys as below when ed25519 keys are
 		//  actually supported, https://github.com/cosmos/cosmos-sdk/issues/4789
@@ -970,7 +966,7 @@ func TestCountSubkeys(t *testing.T) {
 }
 
 func (suite *AnteTestSuite) TestAnteHandlerSigLimitExceeded() {
-	suite.SetupTest(true) // setup
+	suite.SetupTest(false) // setup
 
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(8)
@@ -981,7 +977,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSigLimitExceeded() {
 		privs = append(privs, accounts[i].priv)
 	}
 	msgs := []sdk.Msg{testdata.NewTestMsg(addrs...)}
-	accNums, accSeqs := []uint64{0, 0, 0, 0, 0, 0, 0, 0}, []uint64{0, 0, 0, 0, 0, 0, 0, 0}
+	accNums, accSeqs := []uint64{0, 1, 2, 3, 4, 5, 6, 7}, []uint64{0, 0, 0, 0, 0, 0, 0, 0}
 	feeAmount := testdata.NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 
@@ -1007,18 +1003,29 @@ func (suite *AnteTestSuite) TestAnteHandlerSigLimitExceeded() {
 
 // Test custom SignatureVerificationGasConsumer
 func (suite *AnteTestSuite) TestCustomSignatureVerificationGasConsumer() {
-	suite.SetupTest(true) // setup
+	suite.SetupTest(false) // setup
 
 	// setup an ante handler that only accepts PubKeyEd25519
-	suite.anteHandler = ante.NewAnteHandler(suite.app.AccountKeeper, suite.app.BankKeeper, func(meter sdk.GasMeter, sig signing.SignatureV2, params types.Params) error {
-		switch pubkey := sig.PubKey.(type) {
-		case *ed25519.PubKey:
-			meter.ConsumeGas(params.SigVerifyCostED25519, "ante verify: ed25519")
-			return nil
-		default:
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidPubKey, "unrecognized public key type: %T", pubkey)
-		}
-	}, suite.clientCtx.TxConfig.SignModeHandler())
+	anteHandler, err := ante.NewAnteHandler(
+		ante.HandlerOptions{
+			AccountKeeper:   suite.app.AccountKeeper,
+			BankKeeper:      suite.app.BankKeeper,
+			FeegrantKeeper:  suite.app.FeeGrantKeeper,
+			SignModeHandler: suite.clientCtx.TxConfig.SignModeHandler(),
+			SigGasConsumer: func(meter sdk.GasMeter, sig signing.SignatureV2, params types.Params) error {
+				switch pubkey := sig.PubKey.(type) {
+				case *ed25519.PubKey:
+					meter.ConsumeGas(params.SigVerifyCostED25519, "ante verify: ed25519")
+					return nil
+				default:
+					return sdkerrors.Wrapf(sdkerrors.ErrInvalidPubKey, "unrecognized public key type: %T", pubkey)
+				}
+			},
+		},
+	)
+
+	suite.Require().NoError(err)
+	suite.anteHandler = anteHandler
 
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(1)
@@ -1057,7 +1064,7 @@ func (suite *AnteTestSuite) TestCustomSignatureVerificationGasConsumer() {
 }
 
 func (suite *AnteTestSuite) TestAnteHandlerReCheck() {
-	suite.SetupTest(true) // setup
+	suite.SetupTest(false) // setup
 	// Set recheck=true
 	suite.ctx = suite.ctx.WithIsReCheckTx(true)
 	suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
@@ -1085,7 +1092,6 @@ func (suite *AnteTestSuite) TestAnteHandlerReCheck() {
 	// since these decorators don't run on recheck, the tx should pass the antehandler
 	txBuilder, err := suite.clientCtx.TxConfig.WrapTxBuilder(tx)
 	suite.Require().NoError(err)
-	suite.Require().NoError(txBuilder.SetSignatures())
 
 	_, err = suite.anteHandler(suite.ctx, txBuilder.GetTx(), false)
 	suite.Require().Nil(err, "AnteHandler errored on recheck unexpectedly: %v", err)
@@ -1101,9 +1107,9 @@ func (suite *AnteTestSuite) TestAnteHandlerReCheck() {
 		name   string
 		params types.Params
 	}{
-		{"memo size check", types.NewParams(1, types.DefaultTxSigLimit, types.DefaultTxSizeCostPerByte, types.DefaultSigVerifyCostED25519, types.DefaultSigVerifyCostSecp256k1, types.DefaultValidSigBlockPeriod)},
-		{"txsize check", types.NewParams(types.DefaultMaxMemoCharacters, types.DefaultTxSigLimit, 10000000, types.DefaultSigVerifyCostED25519, types.DefaultSigVerifyCostSecp256k1, types.DefaultValidSigBlockPeriod)},
-		{"sig verify cost check", types.NewParams(types.DefaultMaxMemoCharacters, types.DefaultTxSigLimit, types.DefaultTxSizeCostPerByte, types.DefaultSigVerifyCostED25519, 100000000, types.DefaultValidSigBlockPeriod)},
+		{"memo size check", types.NewParams(1, types.DefaultTxSigLimit, types.DefaultTxSizeCostPerByte, types.DefaultSigVerifyCostED25519, types.DefaultSigVerifyCostSecp256k1)},
+		{"txsize check", types.NewParams(types.DefaultMaxMemoCharacters, types.DefaultTxSigLimit, 10000000, types.DefaultSigVerifyCostED25519, types.DefaultSigVerifyCostSecp256k1)},
+		{"sig verify cost check", types.NewParams(types.DefaultMaxMemoCharacters, types.DefaultTxSigLimit, types.DefaultTxSizeCostPerByte, types.DefaultSigVerifyCostED25519, 100000000)},
 	}
 	for _, tc := range testCases {
 		// set testcase parameters
@@ -1130,7 +1136,9 @@ func (suite *AnteTestSuite) TestAnteHandlerReCheck() {
 
 	// remove funds for account so antehandler fails on recheck
 	suite.app.AccountKeeper.SetAccount(suite.ctx, accounts[0].acc)
-	suite.app.BankKeeper.SetBalances(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewCoins())
+	balances := suite.app.BankKeeper.GetAllBalances(suite.ctx, accounts[0].acc.GetAddress())
+	err = suite.app.BankKeeper.SendCoinsFromAccountToModule(suite.ctx, accounts[0].acc.GetAddress(), minttypes.ModuleName, balances)
+	suite.Require().NoError(err)
 
 	_, err = suite.anteHandler(suite.ctx, tx, false)
 	suite.Require().NotNil(err, "antehandler on recheck did not fail once feePayer no longer has sufficient funds")

@@ -36,7 +36,7 @@ type InterfaceRegistry interface {
 	// as implementations of iface.
 	//
 	// Ex:
-	//   registry.RegisterInterface("lbm.base.v1.Msg", (*sdk.Msg)(nil))
+	//   registry.RegisterInterface("cosmos.base.v1beta1.Msg", (*sdk.Msg)(nil))
 	RegisterInterface(protoName string, iface interface{}, impls ...proto.Message)
 
 	// RegisterImplementations registers impls as concrete implementations of
@@ -45,17 +45,6 @@ type InterfaceRegistry interface {
 	// Ex:
 	//  registry.RegisterImplementations((*sdk.Msg)(nil), &MsgSend{}, &MsgMultiSend{})
 	RegisterImplementations(iface interface{}, impls ...proto.Message)
-
-	// RegisterCustomTypeURL allows a protobuf message to be registered as a
-	// google.protobuf.Any with a custom typeURL (besides its own canonical
-	// typeURL). iface should be an interface as type, as in RegisterInterface
-	// and RegisterImplementations.
-	//
-	// Ex:
-	// This will allow us to pack service methods in Any's using the full method name
-	// as the type URL and the request body as the value, and allow us to unpack
-	// such packed methods using the normal UnpackAny method for the interface iface.
-	RegisterCustomTypeURL(iface interface{}, typeURL string, impl proto.Message)
 
 	// ListAllInterfaces list the type URLs of all registered interfaces.
 	ListAllInterfaces() []string

@@ -13,7 +13,22 @@ func (ak AccountKeeper) NewAccountWithAddress(ctx sdk.Context, addr sdk.AccAddre
 		panic(err)
 	}
 
+	return ak.NewAccount(ctx, acc)
+}
+
+// NewAccount sets the next account number to a given account interface
+func (ak AccountKeeper) NewAccount(ctx sdk.Context, acc types.AccountI) types.AccountI {
+	if err := acc.SetAccountNumber(ak.GetNextAccountNumber(ctx)); err != nil {
+		panic(err)
+	}
+
 	return acc
+}
+
+// HasAccount implements AccountKeeperI.
+func (ak AccountKeeper) HasAccount(ctx sdk.Context, addr sdk.AccAddress) bool {
+	store := ctx.KVStore(ak.key)
+	return store.Has(types.AddressStoreKey(addr))
 }
 
 // GetAccount implements AccountKeeperI.
@@ -58,7 +73,8 @@ func (ak AccountKeeper) RemoveAccount(ctx sdk.Context, acc types.AccountI) {
 	store.Delete(types.AddressStoreKey(addr))
 }
 
-// IterateAccounts iterates over all the stored accounts and performs a callback function
+// IterateAccounts iterates over all the stored accounts and performs a callback function.
+// Stops iteration when callback returns true.
 func (ak AccountKeeper) IterateAccounts(ctx sdk.Context, cb func(account types.AccountI) (stop bool)) {
 	store := ctx.KVStore(ak.key)
 	iterator := sdk.KVStorePrefixIterator(store, types.AddressStoreKeyPrefix)

@@ -5,6 +5,7 @@ on:
   pull_request:
     branches:
       - "rc**"
+      - "release/*"
 
 jobs:
   cleanup-runs:
@@ -19,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-sims')"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: |
           make build
 
@@ -29,8 +30,8 @@ jobs:
     steps:
       - name: install runsim
         run: |
-          export GO111MODULE="on" && go get github.com/cosmos/tools/cmd/runsim@v1.0.0
-      - uses: actions/cache@v2.1.3
+          export GO111MODULE="on" && go install github.com/cosmos/tools/cmd/runsim@v1.0.0
+      - uses: actions/cache@v3.0.8
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
@@ -39,12 +40,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, install-runsim]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2.1.3
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3.0.8
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
       - name: test-sim-multi-seed-long-part1
+        env:
+          USE_PREFETCH: NO
+          USE_PRELOAD: 1,4
+          SAVE_BRANCH_LAUNCH_DEPTH: 1
         run: |
           make test-sim-multi-seed-long-part1
 
@@ -52,12 +57,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, install-runsim, test-sim-multi-seed-long-part1]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2.1.3
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3.0.8
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
       - name: test-sim-multi-seed-long-part2
+        env:
+          USE_PREFETCH: NO
+          USE_PRELOAD: 1,4
+          SAVE_BRANCH_LAUNCH_DEPTH: 1
         run: |
           make test-sim-multi-seed-long-part2
 
@@ -65,11 +74,15 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build, install-runsim, test-sim-multi-seed-long-part2]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2.1.3
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3.0.8
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
       - name: test-sim-multi-seed-long-part3
+        env:
+          USE_PREFETCH: NO
+          USE_PRELOAD: 1,4
+          SAVE_BRANCH_LAUNCH_DEPTH: 1
         run: |
           make test-sim-multi-seed-long-part3

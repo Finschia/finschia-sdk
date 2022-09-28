@@ -1,14 +1,9 @@
 package keeper_test
 
 import (
-	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
-
-	"github.com/line/lbm-sdk/simapp"
-
 	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/store"
+	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/testutil"
 	sdk "github.com/line/lbm-sdk/types"
 	paramskeeper "github.com/line/lbm-sdk/x/params/keeper"
 )
@@ -17,8 +12,9 @@ func testComponents() (*codec.LegacyAmino, sdk.Context, sdk.StoreKey, paramskeep
 	marshaler := simapp.MakeTestEncodingConfig().Marshaler
 	legacyAmino := createTestCodec()
 	mkey := sdk.NewKVStoreKey("test")
-	ctx := defaultContext(mkey)
-	keeper := paramskeeper.NewKeeper(marshaler, legacyAmino, mkey)
+	tkey := sdk.NewTransientStoreKey("transient_test")
+	ctx := testutil.DefaultContext(mkey, tkey)
+	keeper := paramskeeper.NewKeeper(marshaler, legacyAmino, mkey, tkey)
 
 	return legacyAmino, ctx, mkey, keeper
 }
@@ -35,16 +31,4 @@ func createTestCodec() *codec.LegacyAmino {
 	cdc.RegisterConcrete(s{}, "test/s", nil)
 	cdc.RegisterConcrete(invalid{}, "test/invalid", nil)
 	return cdc
-}
-
-func defaultContext(key sdk.StoreKey) sdk.Context {
-	db := memdb.NewDB()
-	cms := store.NewCommitMultiStore(db)
-	cms.MountStoreWithDB(key, sdk.StoreTypeIAVL, db)
-	err := cms.LoadLatestVersion()
-	if err != nil {
-		panic(err)
-	}
-	ctx := sdk.NewContext(cms, ocproto.Header{}, false, log.NewNopLogger())
-	return ctx
 }

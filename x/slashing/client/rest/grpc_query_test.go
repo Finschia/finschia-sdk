@@ -45,7 +45,7 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 	val := s.network.Validators[0]
 	baseURL := val.APIAddress
 
-	consAddr := sdk.BytesToConsAddress(val.PubKey.Address()).String()
+	consAddr := sdk.ConsAddress(val.PubKey.Address()).String()
 
 	testCases := []struct {
 		name     string
@@ -57,7 +57,7 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 	}{
 		{
 			"get signing infos (height specific)",
-			fmt.Sprintf("%s/lbm/slashing/v1/signing_infos", baseURL),
+			fmt.Sprintf("%s/cosmos/slashing/v1beta1/signing_infos", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -66,7 +66,7 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 			&types.QuerySigningInfosResponse{
 				Info: []types.ValidatorSigningInfo{
 					{
-						Address:     sdk.BytesToConsAddress(val.PubKey.Address()).String(),
+						Address:     sdk.ConsAddress(val.PubKey.Address()).String(),
 						JailedUntil: time.Unix(0, 0),
 					},
 				},
@@ -77,7 +77,7 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 		},
 		{
 			"get signing info (height specific)",
-			fmt.Sprintf("%s/lbm/slashing/v1/signing_infos/%s", baseURL, consAddr),
+			fmt.Sprintf("%s/cosmos/slashing/v1beta1/signing_infos/%s", baseURL, consAddr),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -85,14 +85,14 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 			&types.QuerySigningInfoResponse{},
 			&types.QuerySigningInfoResponse{
 				ValSigningInfo: types.ValidatorSigningInfo{
-					Address:     sdk.BytesToConsAddress(val.PubKey.Address()).String(),
+					Address:     sdk.ConsAddress(val.PubKey.Address()).String(),
 					JailedUntil: time.Unix(0, 0),
 				},
 			},
 		},
 		{
 			"get signing info wrong address",
-			fmt.Sprintf("%s/lbm/slashing/v1/signing_infos/%s", baseURL, "wrongAddress"),
+			fmt.Sprintf("%s/cosmos/slashing/v1beta1/signing_infos/%s", baseURL, "wrongAddress"),
 			map[string]string{},
 			true,
 			&types.QuerySigningInfoResponse{},
@@ -100,7 +100,7 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 		},
 		{
 			"params",
-			fmt.Sprintf("%s/lbm/slashing/v1/params", baseURL),
+			fmt.Sprintf("%s/cosmos/slashing/v1beta1/params", baseURL),
 			map[string]string{},
 			false,
 			&types.QueryParamsResponse{},
@@ -117,7 +117,7 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 			resp, err := testutil.GetRequestWithHeaders(tc.url, tc.headers)
 			s.Require().NoError(err)
 
-			err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType)
+			err = val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType)
 
 			if tc.expErr {
 				s.Require().Error(err)

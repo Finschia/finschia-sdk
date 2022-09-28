@@ -2,17 +2,18 @@ package tx
 
 import (
 	"bufio"
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
 	"os"
 
+	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/spf13/pflag"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/input"
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
@@ -20,7 +21,6 @@ import (
 	"github.com/line/lbm-sdk/types/tx"
 	"github.com/line/lbm-sdk/types/tx/signing"
 	authsigning "github.com/line/lbm-sdk/x/auth/signing"
-	authtx "github.com/line/lbm-sdk/x/auth/tx"
 )
 
 // GenerateOrBroadcastTxCLI will either generate and print and unsigned transaction
@@ -33,6 +33,16 @@ func GenerateOrBroadcastTxCLI(clientCtx client.Context, flagSet *pflag.FlagSet, 
 // GenerateOrBroadcastTxWithFactory will either generate and print and unsigned transaction
 // or sign it and broadcast it returning an error upon failure.
 func GenerateOrBroadcastTxWithFactory(clientCtx client.Context, txf Factory, msgs ...sdk.Msg) error {
+	// Validate all msgs before generating or broadcasting the tx.
+	// We were calling ValidateBasic separately in each CLI handler before.
+	// Right now, we're factorizing that call inside this function.
+	// ref: https://github.com/cosmos/cosmos-sdk/pull/9236#discussion_r623803504
+	for _, msg := range msgs {
+		if err := msg.ValidateBasic(); err != nil {
+			return err
+		}
+	}
+
 	if clientCtx.GenerateOnly {
 		return GenerateTx(clientCtx, txf, msgs...)
 	}
@@ -50,7 +60,7 @@ func GenerateTx(clientCtx client.Context, txf Factory, msgs ...sdk.Msg) error {
 			return errors.New("cannot estimate gas in offline mode")
 		}
 
-		_, adjusted, err := CalculateGas(clientCtx.QueryWithData, txf, msgs...)
+		_, adjusted, err := CalculateGas(clientCtx, txf, msgs...)
 		if err != nil {
 			return err
 		}
@@ -76,13 +86,13 @@ func GenerateTx(clientCtx client.Context, txf Factory, msgs ...sdk.Msg) error {
 // given set of messages. It will also simulate gas requirements if necessary.
 // It will return an error upon failure.
 func BroadcastTx(clientCtx client.Context, txf Factory, msgs ...sdk.Msg) error {
-	txf, err := PrepareFactory(clientCtx, txf)
+	txf, err := prepareFactory(clientCtx, txf)
 	if err != nil {
 		return err
 	}
 
 	if txf.SimulateAndExecute() || clientCtx.Simulate {
-		_, adjusted, err := CalculateGas(clientCtx.QueryWithData, txf, msgs...)
+		_, adjusted, err := CalculateGas(clientCtx, txf, msgs...)
 		if err != nil {
 			return err
 		}
@@ -117,6 +127,7 @@ func BroadcastTx(clientCtx client.Context, txf Factory, msgs ...sdk.Msg) error {
 		}
 	}
 
+	tx.SetFeeGranter(clientCtx.GetFeeGranterAddress())
 	err = Sign(txf, clientCtx.GetFromName(), tx, true)
 	if err != nil {
 		return err
@@ -141,8 +152,9 @@ func BroadcastTx(clientCtx client.Context, txf Factory, msgs ...sdk.Msg) error {
 // BaseReq. Upon any error, the error will be written to the http.ResponseWriter.
 // Note that this function returns the legacy StdTx Amino JSON format for compatibility
 // with legacy clients.
+// Deprecated: We are removing Amino soon.
 func WriteGeneratedTxResponse(
-	ctx client.Context, w http.ResponseWriter, br rest.BaseReq, msgs ...sdk.Msg,
+	clientCtx client.Context, w http.ResponseWriter, br rest.BaseReq, msgs ...sdk.Msg,
 ) {
 	gasAdj, ok := rest.ParseFloat64OrReturnBadRequest(w, br.GasAdjustment, flags.DefaultGasAdjustment)
 	if !ok {
@@ -155,14 +167,14 @@ func WriteGeneratedTxResponse(
 	}
 
 	txf := Factory{fees: br.Fees, gasPrices: br.GasPrices}.
-		WithSigBlockHeight(br.SigBlockHeight).
+		WithAccountNumber(br.AccountNumber).
 		WithSequence(br.Sequence).
 		WithGas(gasSetting.Gas).
 		WithGasAdjustment(gasAdj).
 		WithMemo(br.Memo).
 		WithChainID(br.ChainID).
 		WithSimulateAndExecute(br.Simulate).
-		WithTxConfig(ctx.TxConfig).
+		WithTxConfig(clientCtx.TxConfig).
 		WithTimeoutHeight(br.TimeoutHeight)
 
 	if br.Simulate || gasSetting.Simulate {
@@ -171,7 +183,7 @@ func WriteGeneratedTxResponse(
 			return
 		}
 
-		_, adjusted, err := CalculateGas(ctx.QueryWithData, txf, msgs...)
+		_, adjusted, err := CalculateGas(clientCtx, txf, msgs...)
 		if rest.CheckInternalServerError(w, err) {
 			return
 		}
@@ -179,7 +191,7 @@ func WriteGeneratedTxResponse(
 		txf = txf.WithGas(adjusted)
 
 		if br.Simulate {
-			rest.WriteSimulationResponse(w, ctx.LegacyAmino, txf.Gas())
+			rest.WriteSimulationResponse(w, clientCtx.LegacyAmino, txf.Gas())
 			return
 		}
 	}
@@ -189,12 +201,12 @@ func WriteGeneratedTxResponse(
 		return
 	}
 
-	stdTx, err := ConvertTxToStdTx(ctx.LegacyAmino, tx.GetTx())
+	stdTx, err := ConvertTxToStdTx(clientCtx.LegacyAmino, tx.GetTx())
 	if rest.CheckInternalServerError(w, err) {
 		return
 	}
 
-	output, err := ctx.LegacyAmino.MarshalJSON(stdTx)
+	output, err := clientCtx.LegacyAmino.MarshalJSON(stdTx)
 	if rest.CheckInternalServerError(w, err) {
 		return
 	}
@@ -208,129 +220,57 @@ func WriteGeneratedTxResponse(
 // transaction is initially created via the provided factory's generator. Once
 // created, the fee, memo, and messages are set.
 func BuildUnsignedTx(txf Factory, msgs ...sdk.Msg) (client.TxBuilder, error) {
-	if txf.chainID == "" {
-		return nil, fmt.Errorf("chain ID required but not specified")
-	}
-
-	fees := txf.fees
-
-	if !txf.gasPrices.IsZero() {
-		if !fees.IsZero() {
-			return nil, errors.New("cannot provide both fees and gas prices")
-		}
-
-		glDec := sdk.NewDec(int64(txf.gas))
-
-		// Derive the fees based on the provided gas prices, where
-		// fee = ceil(gasPrice * gasLimit).
-		fees = make(sdk.Coins, len(txf.gasPrices))
-
-		for i, gp := range txf.gasPrices {
-			fee := gp.Amount.Mul(glDec)
-			fees[i] = sdk.NewCoin(gp.Denom, fee.Ceil().RoundInt())
-		}
-	}
-
-	tx := txf.txConfig.NewTxBuilder()
-
-	if err := tx.SetMsgs(msgs...); err != nil {
-		return nil, err
-	}
-
-	tx.SetMemo(txf.memo)
-	tx.SetFeeAmount(fees)
-	tx.SetGasLimit(txf.gas)
-	tx.SetSigBlockHeight(txf.sigBlockHeight)
-	tx.SetTimeoutHeight(txf.TimeoutHeight())
-
-	return tx, nil
+	return txf.BuildUnsignedTx(msgs...)
 }
 
 // BuildSimTx creates an unsigned tx with an empty single signature and returns
 // the encoded transaction or an error if the unsigned transaction cannot be
 // built.
 func BuildSimTx(txf Factory, msgs ...sdk.Msg) ([]byte, error) {
-	txb, err := BuildUnsignedTx(txf, msgs...)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create an empty signature literal as the ante handler will populate with a
-	// sentinel pubkey.
-	sig := signing.SignatureV2{
-		PubKey: &secp256k1.PubKey{},
-		Data: &signing.SingleSignatureData{
-			SignMode: txf.signMode,
-		},
-		Sequence: txf.Sequence(),
-	}
-	if err := txb.SetSignatures(sig); err != nil {
-		return nil, err
-	}
-
-	protoProvider, ok := txb.(authtx.ProtoTxProvider)
-	if !ok {
-		return nil, fmt.Errorf("cannot simulate amino tx")
-	}
-	simReq := tx.SimulateRequest{Tx: protoProvider.GetProtoTx()}
-
-	return simReq.Marshal()
+	return txf.BuildSimTx(msgs...)
 }
 
 // CalculateGas simulates the execution of a transaction and returns the
 // simulation response obtained by the query and the adjusted gas amount.
 func CalculateGas(
-	queryFunc func(string, []byte) ([]byte, int64, error), txf Factory, msgs ...sdk.Msg,
-) (tx.SimulateResponse, uint64, error) {
+	clientCtx gogogrpc.ClientConn, txf Factory, msgs ...sdk.Msg,
+) (*tx.SimulateResponse, uint64, error) {
 	txBytes, err := BuildSimTx(txf, msgs...)
 	if err != nil {
-		return tx.SimulateResponse{}, 0, err
+		return nil, 0, err
 	}
 
-	// TODO This should use the generated tx service Client.
-	// https://github.com/line/lbm-sdk/issues/7726
-	bz, _, err := queryFunc("/lbm.tx.v1.Service/Simulate", txBytes)
+	txSvcClient := tx.NewServiceClient(clientCtx)
+	simRes, err := txSvcClient.Simulate(context.Background(), &tx.SimulateRequest{
+		TxBytes: txBytes,
+	})
 	if err != nil {
-		return tx.SimulateResponse{}, 0, err
-	}
-
-	var simRes tx.SimulateResponse
-
-	if err := simRes.Unmarshal(bz); err != nil {
-		return tx.SimulateResponse{}, 0, err
+		return nil, 0, err
 	}
 
 	return simRes, uint64(txf.GasAdjustment() * float64(simRes.GasInfo.GasUsed)), nil
 }
 
-// PrepareFactory set sig block height and account sequence to the tx factory.
-// It doesn't require that the account should exist.
-// If the account does not exist, then it use the zero sequence number.
-func PrepareFactory(clientCtx client.Context, txf Factory) (Factory, error) {
+// prepareFactory ensures the account defined by ctx.GetFromAddress() exists and
+// if the account number and/or the account sequence number are zero (not set),
+// they will be queried for and set on the provided Factory. A new Factory with
+// the updated fields will be returned.
+func prepareFactory(clientCtx client.Context, txf Factory) (Factory, error) {
 	from := clientCtx.GetFromAddress()
-	sigBlockHeight := txf.sigBlockHeight
 
-	if !clientCtx.Offline {
-		if sigBlockHeight == 0 {
-			height, err := txf.accountRetriever.GetLatestHeight(clientCtx)
-			if err != nil {
-				return txf, err
-			}
-			// `ctx.Height` of checkTx may be later by 1 block than consensus block height.
-			// Some cli integrated test fails because of this(sigBlockHeight = height).
-			sigBlockHeight = height - 1
-		}
+	if err := txf.accountRetriever.EnsureExists(clientCtx, from); err != nil {
+		return txf, err
 	}
 
-	txf = txf.WithSigBlockHeight(sigBlockHeight)
-
-	initSeq := txf.sequence
-	if initSeq == 0 && !clientCtx.Offline {
-		seq, err := txf.accountRetriever.GetAccountSequence(clientCtx, from)
+	initNum, initSeq := txf.accountNumber, txf.sequence
+	if initNum == 0 || initSeq == 0 {
+		num, seq, err := txf.accountRetriever.GetAccountNumberSequence(clientCtx, from)
 		if err != nil {
-			if cliError, ok := err.(*client.Error); !ok || cliError.Code != sdkerrors.ErrKeyNotFound.ABCICode() {
-				return txf, err
-			}
+			return txf, err
+		}
+
+		if initNum == 0 {
+			txf = txf.WithAccountNumber(num)
 		}
 
 		if initSeq == 0 {
@@ -411,8 +351,9 @@ func Sign(txf Factory, name string, txBuilder client.TxBuilder, overwriteSig boo
 	}
 	pubKey := key.GetPubKey()
 	signerData := authsigning.SignerData{
-		ChainID:  txf.chainID,
-		Sequence: txf.sequence,
+		ChainID:       txf.chainID,
+		AccountNumber: txf.accountNumber,
+		Sequence:      txf.sequence,
 	}
 
 	// For SIGN_MODE_DIRECT, calling SetSignatures calls setSignerInfos on

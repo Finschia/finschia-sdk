@@ -1,0 +1,718 @@
+syntax = "proto3";
+package lbm.collection.v1;
+
+import "gogoproto/gogo.proto";
+
+import "lbm/collection/v1/collection.proto";
+
+option go_package = "github.com/line/lbm-sdk/x/collection";
+
+option (gogoproto.equal_all) = false;
+
+// Msg defines the collection Msg service.
+service Msg {
+  // TransferFT defines a method to send fungible tokens from one account to another account.
+  // Fires:
+  // - EventSent
+  // - transfer_ft (deprecated, not typed)
+  // Throws:
+  // - ErrInvalidRequest:
+  //   - the balance of `from` does not have enough tokens to spend.
+  rpc TransferFT(MsgTransferFT) returns (MsgTransferFTResponse);
+
+  // TransferFTFrom defines a method to send fungible tokens from one account to another account by the proxy.
+  // Fires:
+  // - EventSent
+  // - transfer_ft_from (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized:
+  //   - the approver has not authorized the proxy.
+  // - ErrInvalidRequest:
+  //   - the balance of `from` does not have enough tokens to spend.
+  rpc TransferFTFrom(MsgTransferFTFrom) returns (MsgTransferFTFromResponse);
+
+  // TransferNFT defines a method to send non-fungible tokens from one account to another account.
+  // Fires:
+  // - EventSent
+  // - transfer_nft (deprecated, not typed)
+  // - operation_transfer_nft (deprecated, not typed)
+  // Throws:
+  // - ErrInvalidRequest:
+  //   - the balance of `from` does not have enough tokens to spend.
+  rpc TransferNFT(MsgTransferNFT) returns (MsgTransferNFTResponse);
+
+  // TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the proxy.
+  // Fires:
+  // - EventSent
+  // - transfer_nft_from (deprecated, not typed)
+  // - operation_transfer_nft (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized:
+  //   - the approver has not authorized the proxy.
+  // - ErrInvalidRequest:
+  //   - the balance of `from` does not have enough tokens to spend.
+  rpc TransferNFTFrom(MsgTransferNFTFrom) returns (MsgTransferNFTFromResponse);
+
+  // Approve allows one to send tokens on behalf of the approver.
+  // Fires:
+  // - EventAuthorizedOperator
+  // - approve_collection (deprecated, not typed)
+  // Throws:
+  // - ErrNotFound:
+  //   - there is no contract of `contract_id`.
+  // - ErrInvalidRequest:
+  //   - `approver` has already authorized `proxy`.
+  rpc Approve(MsgApprove) returns (MsgApproveResponse);
+
+  // Disapprove revokes the authorization of the proxy to send the approver's token.
+  // Fires:
+  // - EventRevokedOperator
+  // - disapprove_collection (deprecated, not typed)
+  // Throws:
+  // - ErrNotFound:
+  //   - there is no contract of `contract_id`.
+  //   - there is no authorization by `approver` to `proxy`.
+  rpc Disapprove(MsgDisapprove) returns (MsgDisapproveResponse);
+
+  // CreateContract defines a method to create a contract for collection.
+  // it grants `mint`, `burn`, `modify` and `issue` permissions on the contract to its creator.
+  // Fires:
+  // - EventCreatedContract
+  // - create_collection (deprecated, not typed)
+  rpc CreateContract(MsgCreateContract) returns (MsgCreateContractResponse);
+
+  // IssueFT defines a method to create a class of fungible token.
+  // Fires:
+  // - EventCreatedFTClass
+  // - EventMintedFT
+  // - issue_ft (deprecated, not typed)
+  // Note: it does not grant any permissions to its issuer.
+  rpc IssueFT(MsgIssueFT) returns (MsgIssueFTResponse);
+
+  // IssueNFT defines a method to create a class of non-fungible token.
+  // Fires:
+  // - EventCreatedNFTClass
+  // - issue_nft (deprecated, not typed)
+  // Note: it DOES grant `mint` and `burn` permissions to its issuer.
+  rpc IssueNFT(MsgIssueNFT) returns (MsgIssueNFTResponse);
+
+  // MintFT defines a method to mint fungible tokens.
+  // Fires:
+  // - EventMintedFT
+  // - mint_ft (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - `from` does not have `mint` permission.
+  rpc MintFT(MsgMintFT) returns (MsgMintFTResponse);
+
+  // MintNFT defines a method to mint non-fungible tokens.
+  // Fires:
+  // - EventMintedNFT
+  // - mint_nft (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - `from` does not have `mint` permission.
+  rpc MintNFT(MsgMintNFT) returns (MsgMintNFTResponse);
+
+  // BurnFT defines a method to burn fungible tokens.
+  // Fires:
+  // - EventBurned
+  // - burn_ft (deprecated, not typed)
+  // - burn_nft (deprecated, not typed)
+  // - operation_burn_nft (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - `from` does not have `burn` permission.
+  // - ErrInvalidRequest:
+  //   - the balance of `from` does not have enough tokens to burn.
+  rpc BurnFT(MsgBurnFT) returns (MsgBurnFTResponse);
+
+  // BurnFTFrom defines a method to burn fungible tokens of the approver by the proxy.
+  // Fires:
+  // - EventBurned
+  // - burn_ft_from (deprecated, not typed)
+  // - burn_nft_from (deprecated, not typed)
+  // - operation_burn_nft (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - `proxy` does not have `burn` permission.
+  //   - the approver has not authorized `proxy`.
+  // - ErrInvalidRequest:
+  //   - the balance of `from` does not have enough tokens to burn.
+  rpc BurnFTFrom(MsgBurnFTFrom) returns (MsgBurnFTFromResponse);
+
+  // BurnNFT defines a method to burn non-fungible tokens.
+  // Fires:
+  // - EventBurned
+  // - burn_ft (deprecated, not typed)
+  // - burn_nft (deprecated, not typed)
+  // - operation_burn_nft (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - `from` does not have `burn` permission.
+  // - ErrInvalidRequest:
+  //   - the balance of `from` does not have enough tokens to burn.
+  rpc BurnNFT(MsgBurnNFT) returns (MsgBurnNFTResponse);
+
+  // BurnNFTFrom defines a method to burn non-fungible tokens of the approver by the proxy.
+  // Fires:
+  // - EventBurned
+  // - burn_ft_from (deprecated, not typed)
+  // - burn_nft_from (deprecated, not typed)
+  // - operation_burn_nft (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - `proxy` does not have `burn` permission.
+  //   - the approver has not authorized `proxy`.
+  // - ErrInvalidRequest:
+  //   - the balance of `from` does not have enough tokens to burn.
+  rpc BurnNFTFrom(MsgBurnNFTFrom) returns (MsgBurnNFTFromResponse);
+
+  // Modify defines a method to modify metadata.
+  // Fires:
+  // - EventModifiedContract
+  // - modify_collection (deprecated, not typed)
+  // - EventModifiedTokenClass
+  // - modify_token_type (deprecated, not typed)
+  // - modify_token (deprecated, not typed)
+  // - EventModifiedNFT
+  // Throws:
+  // - ErrUnauthorized
+  //   - the proxy does not have `modify` permission.
+  // - ErrNotFound
+  //   - there is no contract of `contract_id`.
+  //   - there is no token type of `token_type`.
+  //   - there is no token of `token_id`.
+  rpc Modify(MsgModify) returns (MsgModifyResponse);
+
+  // GrantPermission allows one to mint or burn tokens or modify metadata.
+  // Fires:
+  // - EventGranted
+  // - grant_perm (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - `granter` does not have `permission`.
+  // - ErrInvalidRequest
+  //   - `grantee` already has `permission`.
+  rpc GrantPermission(MsgGrantPermission) returns (MsgGrantPermissionResponse);
+
+  // RevokePermission abandons a permission.
+  // Fires:
+  // - EventRenounced
+  // - revoke_perm (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - `grantee` does not have `permission`.
+  rpc RevokePermission(MsgRevokePermission) returns (MsgRevokePermissionResponse);
+
+  // Attach defines a method to attach a token to another token.
+  // Fires:
+  // - EventAttach
+  // - attach (deprecated, not typed)
+  // - operation_root_changed (deprecated, not typed)
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `owner` does not owns `id`.
+  //   - `owner` does not owns `to`.
+  //   - `token_id` is not root.
+  //   - `token_id` is an ancestor of `to_token_id`, which creates a cycle as a result.
+  //   - depth of `to_token_id` exceeds an app-specific limit.
+  rpc Attach(MsgAttach) returns (MsgAttachResponse);
+
+  // Detach defines a method to detach a token from another token.
+  // Fires:
+  // - EventDetach
+  // - detach (deprecated, not typed)
+  // - operation_root_changed (deprecated, not typed)
+  // Throws:
+  // - ErrInvalidRequest
+  //   - `owner` does not owns `token_id`.
+  rpc Detach(MsgDetach) returns (MsgDetachResponse);
+
+  // AttachFrom defines a method to attach a token to another token by proxy.
+  // Fires:
+  // - EventAttach
+  // - attach_from (deprecated, not typed)
+  // - operation_root_changed (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - the approver has not authorized `proxy`.
+  // - ErrInvalidRequest
+  //   - `owner` does not owns `subject`.
+  //   - `owner` does not owns `target`.
+  //   - `subject` is not root.
+  //   - `subject` is an ancestor of `target`, which creates a cycle as a result.
+  //   - depth of `to` exceeds an app-specific limit.
+  rpc AttachFrom(MsgAttachFrom) returns (MsgAttachFromResponse);
+
+  // DetachFrom defines a method to detach a token from another token by proxy.
+  // Fires:
+  // - EventDetach
+  // - detach_from (deprecated, not typed)
+  // - operation_root_changed (deprecated, not typed)
+  // Throws:
+  // - ErrUnauthorized
+  //   - the approver has not authorized `proxy`.
+  // - ErrInvalidRequest
+  //   - `owner` does not owns `subject`.
+  rpc DetachFrom(MsgDetachFrom) returns (MsgDetachFromResponse);
+}
+
+// MsgTransferFT is the Msg/TransferFT request type.
+message MsgTransferFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // the address which the transfer is from.
+  string from = 2;
+  // the address which the transfer is to.
+  string to = 3;
+  // the amount of the transfer.
+  // Note: amount may be empty.
+  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+// MsgTransferFTResponse is the Msg/TransferFT response type.
+message MsgTransferFTResponse {}
+
+// MsgTransferFTFrom is the Msg/TransferFTFrom request type.
+message MsgTransferFTFrom {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // the address of the proxy.
+  string proxy = 2;
+  // the address which the transfer is from.
+  string from = 3;
+  // the address which the transfer is to.
+  string to = 4;
+  // the amount of the transfer.
+  // Note: amount may be empty.
+  repeated Coin amount = 5 [(gogoproto.nullable) = false];
+}
+
+// MsgTransferFTFromResponse is the Msg/TransferFTFrom response type.
+message MsgTransferFTFromResponse {}
+
+// MsgTransferNFT is the Msg/TransferNFT request type.
+message MsgTransferNFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // the address which the transfer is from.
+  string from = 2;
+  // the address which the transfer is to.
+  string to = 3;
+  // the token ids to transfer.
+  repeated string token_ids = 4;
+}
+
+// MsgTransferNFTResponse is the Msg/TransferNFT response type.
+message MsgTransferNFTResponse {}
+
+// MsgTransferNFTFrom is the Msg/TransferNFTFrom request type.
+message MsgTransferNFTFrom {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // the address of the proxy.
+  string proxy = 2;
+  // the address which the transfer is from.
+  string from = 3;
+  // the address which the transfer is to.
+  string to = 4;
+  // the token ids to transfer.
+  repeated string token_ids = 5;
+}
+
+// MsgTransferNFTFromResponse is the Msg/TransferNFTFrom response type.
+message MsgTransferNFTFromResponse {}
+
+// MsgApprove is the Msg/Approve request type.
+message MsgApprove {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the approver who allows the manipulation of its token.
+  string approver = 2;
+  // address which the manipulation is allowed to.
+  string proxy = 3;
+}
+
+// MsgApproveResponse is the Msg/Approve response type.
+message MsgApproveResponse {}
+
+// MsgDisapprove is the Msg/Disapprove request type.
+message MsgDisapprove {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the approver who allows the manipulation of its token.
+  string approver = 2;
+  // address which the manipulation is allowed to.
+  string proxy = 3;
+}
+
+// MsgDisapproveResponse is the Msg/Disapprove response type.
+message MsgDisapproveResponse {}
+
+// MsgCreateContract is the Msg/CreateContract request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `owner` is of invalid format.
+// - ErrInvalidRequest
+//   - `name` exceeds the app-specific limit in length.
+//   - `base_img_uri` exceeds the app-specific limit in length.
+//   - `meta` exceeds the app-specific limit in length.
+//
+// Signer: `owner`
+message MsgCreateContract {
+  // address which all the permissions on the contract will be granted to (not a permanent property).
+  string owner = 1;
+
+  // name defines the human-readable name of the contract.
+  string name = 2;
+  // base img uri is an uri for the contract image stored off chain.
+  string base_img_uri = 3;
+  // meta is a brief description of the contract.
+  string meta = 4;
+}
+
+// MsgCreateContractResponse is the Msg/CreateContract response type.
+message MsgCreateContractResponse {
+  // id of the new contract.
+  string id = 1;
+}
+
+// MsgIssueFT is the Msg/IssueFT request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `owner` is of invalid format.
+//   - `to` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `name` is empty.
+//   - `name` exceeds the app-specific limit in length.
+//   - `meta` exceeds the app-specific limit in length.
+//   - `decimals` is lesser than 0 or greater than 18.
+//   - `amount` is not positive.
+//   - `mintable` == false, amount == 1 and decimals == 0 (weird, but for the backward compatibility).
+//
+// Signer: `owner`
+message MsgIssueFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // name defines the human-readable name of the token type.
+  string name = 2;
+  // meta is a brief description of the token type.
+  string meta = 3;
+  // decimals is the number of decimals which one must divide the amount by to get its user representation.
+  int32 decimals = 4;
+  // mintable represents whether the token is allowed to be minted or burnt.
+  bool mintable = 5;
+
+  // the address of the grantee which must have the permission to issue a token.
+  string owner = 6;
+
+  // the address to send the minted tokens to. mandatory.
+  string to = 7;
+  // the amount of tokens to mint on the issuance.
+  // Note: if you provide negative amount, a panic may result.
+  // Note: amount may be zero.
+  string amount = 8 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// MsgIssueFTResponse is the Msg/IssueFT response type.
+message MsgIssueFTResponse {
+  // id of the new token type.
+  string id = 1;
+}
+
+// MsgIssueNFT is the Msg/IssueNFT request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `owner` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `name` exceeds the app-specific limit in length.
+//   - `meta` exceeds the app-specific limit in length.
+//
+// Signer: `owner`
+message MsgIssueNFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // name defines the human-readable name of the token type.
+  string name = 2;
+  // meta is a brief description of the token type.
+  string meta = 3;
+
+  // the address of the grantee which must have the permission to issue a token.
+  string owner = 4;
+}
+
+// MsgIssueNFTResponse is the Msg/IssueNFT response type.
+message MsgIssueNFTResponse {
+  // id of the new token type.
+  string id = 1;
+}
+
+// MsgMintFT is the Msg/MintFT request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `from` is of invalid format.
+//   - `to` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `amount` is not positive.
+//
+// Signer: `from`
+message MsgMintFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the grantee which has the permission for the mint.
+  string from = 2;
+  // address which the minted tokens will be sent to.
+  string to = 3;
+  // the amount of the mint.
+  // Note: amount may be empty.
+  repeated Coin amount = 4 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "Coins"];
+}
+
+// MsgMintFTResponse is the Msg/MintFT response type.
+message MsgMintFTResponse {}
+
+// MsgMintNFT is the Msg/MintNFT request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `from` is of invalid format.
+//   - `to` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `params` is empty.
+//   - `params` has an invalid element.
+//
+// Signer: `from`
+message MsgMintNFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the grantee which has the permission for the mint.
+  string from = 2;
+  // address which the minted token will be sent to.
+  string to = 3;
+  // parameters for the minted tokens.
+  repeated MintNFTParam params = 4 [(gogoproto.nullable) = false];
+}
+
+// MsgMintNFTResponse is the Msg/MintNFT response type.
+message MsgMintNFTResponse {
+  // ids of the new non-fungible tokens.
+  repeated string ids = 1;
+}
+
+// MintNFTParam defines a parameter for minting nft.
+message MintNFTParam {
+  // token type or class id of the nft.
+  // Note: it cannot start with zero.
+  string token_type = 1;
+  // name defines the human-readable name of the nft (mandatory).
+  // Note: it has an app-specific limit in length.
+  string name = 2;
+  // meta is a brief description of the nft.
+  // Note: it has an app-specific limit in length.
+  string meta = 3;
+}
+
+// MsgBurnFT is the Msg/BurnFT request type.
+message MsgBurnFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which the tokens will be burnt from.
+  // Note: it must have the permission for the burn.
+  string from = 2;
+  // the amount of the burn.
+  // Note: amount may be empty.
+  repeated Coin amount = 3 [(gogoproto.nullable) = false];
+}
+
+// MsgBurnFTResponse is the Msg/BurnFT response type.
+message MsgBurnFTResponse {}
+
+// MsgBurnFTFrom is the Msg/BurnFTFrom request type.
+message MsgBurnFTFrom {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggers the burn.
+  // Note: it must have the permission for the burn.
+  // Note: it must have been authorized by from.
+  string proxy = 2;
+  // address which the tokens will be burnt from.
+  string from = 3;
+  // the amount of the burn.
+  // Note: amount may be empty.
+  repeated Coin amount = 4 [(gogoproto.nullable) = false];
+}
+
+// MsgBurnFTFromResponse is the Msg/BurnFTFrom response type.
+message MsgBurnFTFromResponse {}
+
+// MsgBurnNFT is the Msg/BurnNFT request type.
+message MsgBurnNFT {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which the tokens will be burnt from.
+  // Note: it must have the permission for the burn.
+  string from = 2;
+  // the token ids to burn.
+  // Note: id cannot start with zero.
+  repeated string token_ids = 3;
+}
+
+// MsgBurnNFTResponse is the Msg/BurnNFT response type.
+message MsgBurnNFTResponse {}
+
+// MsgBurnNFTFrom is the Msg/BurnNFTFrom request type.
+message MsgBurnNFTFrom {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address which triggers the burn.
+  // Note: it must have the permission for the burn.
+  // Note: it must have been authorized by from.
+  string proxy = 2;
+  // address which the tokens will be burnt from.
+  string from = 3;
+  // the token ids to burn.
+  // Note: id cannot start with zero.
+  repeated string token_ids = 4;
+}
+
+// MsgBurnNFTFromResponse is the Msg/BurnNFTFrom response type.
+message MsgBurnNFTFromResponse {}
+
+// MsgModify is the Msg/Modify request type.
+message MsgModify {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // the address of the grantee which must have modify permission.
+  string owner = 2;
+  // token type of the token.
+  string token_type = 3;
+  // token index of the token.
+  // if index is empty, it would modify the corresponding token type.
+  // if index is not empty, it would modify the corresponding nft.
+  // Note: if token type is of FTs, the index cannot be empty.
+  string token_index = 4;
+  // changes to apply.
+  // on modifying collection: name, base_img_uri, meta.
+  // on modifying token type and token: name, meta.
+  repeated Change changes = 5 [(gogoproto.nullable) = false];
+}
+
+// MsgModifyResponse is the Msg/Modify response type.
+message MsgModifyResponse {}
+
+// MsgGrantPermission is the Msg/GrantPermission request type.
+message MsgGrantPermission {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the granter which must have the permission to give.
+  string from = 2;
+  // address of the grantee.
+  string to = 3;
+  // permission on the contract.
+  string permission = 4;
+}
+
+// MsgGrantPermissionResponse is the Msg/GrantPermission response type.
+message MsgGrantPermissionResponse {}
+
+// MsgRevokePermission is the Msg/RevokePermission request type.
+message MsgRevokePermission {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the grantee which abandons the permission.
+  string from = 2;
+  // permission on the contract.
+  string permission = 3;
+}
+
+// MsgRevokePermissionResponse is the Msg/RevokePermission response type.
+message MsgRevokePermissionResponse {}
+
+// MsgAttach is the Msg/Attach request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `from` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `token_id` is of invalid format.
+//   - `to_token_id` is of invalid format.
+//   - `token_id` is equal to `to_token_id`.
+//
+// Signer: `from`
+message MsgAttach {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the owner of the token.
+  string from = 2;
+  // token id of the token to attach.
+  string token_id = 3;
+  // to token id which one attachs the token to.
+  string to_token_id = 4;
+}
+
+// MsgAttachResponse is the Msg/Attach response type.
+message MsgAttachResponse {}
+
+// MsgDetach is the Msg/Detach request type.
+//
+// Throws:
+// - ErrInvalidAddress
+//   - `from` is of invalid format.
+// - ErrInvalidRequest
+//   - `contract_id` is of invalid format.
+//   - `token_id` is of invalid format.
+//
+// Signer: `from`
+message MsgDetach {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the owner of the token.
+  string from = 2;
+  // token id of the token to detach.
+  string token_id = 3;
+}
+
+// MsgDetachResponse is the Msg/Detach response type.
+message MsgDetachResponse {}
+
+// MsgAttachFrom is the Msg/AttachFrom request type.
+message MsgAttachFrom {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the proxy.
+  string proxy = 2;
+  // address of the owner of the token.
+  string from = 3;
+  // token id of the token to attach.
+  string token_id = 4;
+  // to token id which one attachs the token to.
+  string to_token_id = 5;
+}
+
+// MsgAttachFromResponse is the Msg/AttachFrom response type.
+message MsgAttachFromResponse {}
+
+// MsgDetachFrom is the Msg/DetachFrom request type.
+message MsgDetachFrom {
+  // contract id associated with the contract.
+  string contract_id = 1;
+  // address of the proxy.
+  string proxy = 2;
+  // address of the owner of the token.
+  string from = 3;
+  // token id of the token to detach.
+  string token_id = 4;
+}
+
+// MsgDetachFromResponse is the Msg/DetachFrom response type.
+message MsgDetachFromResponse {}

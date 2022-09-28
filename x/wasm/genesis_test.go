@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"testing"
 
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 func TestInitGenesis(t *testing.T) {
@@ -13,8 +14,8 @@ func TestInitGenesis(t *testing.T) {
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
 	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
-	creator := createFakeFundedAccount(t, data.ctx, data.acctKeeper, data.bankKeeper, deposit.Add(deposit...))
-	fred := createFakeFundedAccount(t, data.ctx, data.acctKeeper, data.bankKeeper, topUp)
+	creator := data.faucet.NewFundedAccount(data.ctx, deposit.Add(deposit...)...)
+	fred := data.faucet.NewFundedAccount(data.ctx, topUp...)
 
 	h := data.module.Route().Handler()
 	q := data.module.LegacyQuerierHandler(nil)
@@ -22,8 +23,6 @@ func TestInitGenesis(t *testing.T) {
 	msg := MsgStoreCode{
 		Sender:       creator.String(),
 		WASMByteCode: testContract,
-		Source:       "https://github.com/line/lbm-sdk/blob/main/x/wasm/internal/keeper/testdata/hackatom.wasm",
-		Builder:      "confio/cosmwasm-opt:0.7.0",
 	}
 	err := msg.ValidateBasic()
 	require.NoError(t, err)
@@ -41,10 +40,10 @@ func TestInitGenesis(t *testing.T) {
 	require.NoError(t, err)
 
 	initCmd := MsgInstantiateContract{
-		Sender:  creator.String(),
-		CodeID:  firstCodeID,
-		InitMsg: initMsgBz,
-		Funds:   deposit,
+		Sender: creator.String(),
+		CodeID: firstCodeID,
+		Msg:    initMsgBz,
+		Funds:  deposit,
 	}
 	res, err = h(data.ctx, &initCmd)
 	require.NoError(t, err)

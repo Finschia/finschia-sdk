@@ -15,7 +15,7 @@ import (
 	"github.com/line/lbm-sdk/types/rest"
 )
 
-//BlockCommand returns the verified block data for a given heights
+// BlockCommand returns the verified block data for a given heights
 func BlockCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "block [height]",

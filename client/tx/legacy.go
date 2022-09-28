@@ -5,7 +5,6 @@ import (
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/codec"
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	"github.com/line/lbm-sdk/x/auth/signing"
 )
@@ -61,29 +60,7 @@ func CopyTx(tx signing.Tx, builder client.TxBuilder, ignoreSignatureError bool) 
 	builder.SetMemo(tx.GetMemo())
 	builder.SetFeeAmount(tx.GetFee())
 	builder.SetGasLimit(tx.GetGas())
-	builder.SetSigBlockHeight(tx.GetSigBlockHeight())
 	builder.SetTimeoutHeight(tx.GetTimeoutHeight())
 
 	return nil
-}
-
-// ConvertAndEncodeStdTx encodes the stdTx as a transaction in the format specified by txConfig
-func ConvertAndEncodeStdTx(txConfig client.TxConfig, stdTx legacytx.StdTx) ([]byte, error) {
-	builder := txConfig.NewTxBuilder()
-
-	var theTx sdk.Tx
-
-	// check if we need a StdTx anyway, in that case don't copy
-	if _, ok := builder.GetTx().(legacytx.StdTx); ok {
-		theTx = stdTx
-	} else {
-		err := CopyTx(stdTx, builder, false)
-		if err != nil {
-			return nil, err
-		}
-
-		theTx = builder.GetTx()
-	}
-
-	return txConfig.TxEncoder()(theTx)
 }

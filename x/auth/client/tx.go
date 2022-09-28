@@ -14,19 +14,12 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/tx"
 	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/crypto/keyring"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/tx/signing"
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 )
-
-// Codec defines the x/auth account codec to be used for use with the
-// AccountRetriever. The application must be sure to set this to their respective
-// codec that implements the Codec interface and must be the same codec that
-// passed to the x/auth module.
-//
-// TODO:/XXX: Using a package-level global isn't ideal and we should consider
-// refactoring the module manager to allow passing in the correct module codec.
-var Codec codec.Marshaler
 
 // GasEstimateResponse defines a response definition for tx gas estimation.
 type GasEstimateResponse struct {
@@ -46,13 +39,20 @@ func PrintUnsignedStdTx(txBldr tx.Factory, clientCtx client.Context, msgs []sdk.
 // SignTx signs a transaction managed by the TxBuilder using a `name` key stored in Keybase.
 // The new signature is appended to the TxBuilder when overwrite=false or overwritten otherwise.
 // Don't perform online validation or lookups if offline is true.
-func SignTx(txFactory tx.Factory, clientCtx client.Context, name string, stdTx client.TxBuilder, offline, overwriteSig bool) error {
+func SignTx(txFactory tx.Factory, clientCtx client.Context, name string, txBuilder client.TxBuilder, offline, overwriteSig bool) error {
 	info, err := txFactory.Keybase().Key(name)
 	if err != nil {
 		return err
 	}
-	addr := sdk.BytesToAccAddress(info.GetPubKey().Address())
-	if !isTxSigner(addr, stdTx.GetTx().GetSigners()) {
+
+	// Ledger and Multisigs only support LEGACY_AMINO_JSON signing.
+	if txFactory.SignMode() == signing.SignMode_SIGN_MODE_UNSPECIFIED &&
+		(info.GetType() == keyring.TypeLedger || info.GetType() == keyring.TypeMulti) {
+		txFactory = txFactory.WithSignMode(signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON)
+	}
+
+	addr := sdk.AccAddress(info.GetPubKey().Address())
+	if !isTxSigner(addr, txBuilder.GetTx().GetSigners()) {
 		return fmt.Errorf("%s: %s", sdkerrors.ErrorInvalidSigner, name)
 	}
 	if !offline {
@@ -62,14 +62,20 @@ func SignTx(txFactory tx.Factory, clientCtx client.Context, name string, stdTx c
 		}
 	}
 
-	return tx.Sign(txFactory, name, stdTx, overwriteSig)
+	return tx.Sign(txFactory, name, txBuilder, overwriteSig)
 }
 
 // SignTxWithSignerAddress attaches a signature to a transaction.
 // Don't perform online validation or lookups if offline is true, else
 // populate account and sequence numbers from a foreign account.
+// This function should only be used when signing with a multisig. For
+// normal keys, please use SignTx directly.
 func SignTxWithSignerAddress(txFactory tx.Factory, clientCtx client.Context, addr sdk.AccAddress,
 	name string, txBuilder client.TxBuilder, offline, overwrite bool) (err error) {
+	// Multisigs only support LEGACY_AMINO_JSON signing.
+	if txFactory.SignMode() == signing.SignMode_SIGN_MODE_UNSPECIFIED {
+		txFactory = txFactory.WithSignMode(signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON)
+	}
 
 	// check whether the address is a signer
 	if !isTxSigner(addr, txBuilder.GetTx().GetSigners()) {
@@ -143,12 +149,12 @@ func populateAccountFromState(
 	txBldr tx.Factory, clientCtx client.Context, addr sdk.AccAddress,
 ) (tx.Factory, error) {
 
-	seq, err := clientCtx.AccountRetriever.GetAccountSequence(clientCtx, addr)
+	num, seq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, addr)
 	if err != nil {
 		return txBldr, err
 	}
 
-	return txBldr.WithSequence(seq), nil
+	return txBldr.WithAccountNumber(num).WithSequence(seq), nil
 }
 
 // GetTxEncoder return tx encoder from global sdk configuration if ones is defined.

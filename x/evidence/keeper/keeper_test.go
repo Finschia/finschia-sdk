@@ -14,10 +14,10 @@ import (
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/evidence/exported"
 	"github.com/line/lbm-sdk/x/evidence/keeper"
 	"github.com/line/lbm-sdk/x/evidence/types"
+	minttypes "github.com/line/lbm-sdk/x/mint/types"
 	"github.com/line/lbm-sdk/x/staking"
 )
 
@@ -29,12 +29,13 @@ var (
 	}
 
 	valAddresses = []sdk.ValAddress{
-		sdk.BytesToValAddress(pubkeys[0].Address()),
-		sdk.BytesToValAddress(pubkeys[1].Address()),
-		sdk.BytesToValAddress(pubkeys[2].Address()),
+		sdk.ValAddress(pubkeys[0].Address()),
+		sdk.ValAddress(pubkeys[1].Address()),
+		sdk.ValAddress(pubkeys[2].Address()),
 	}
 
-	initAmt   = sdk.TokensFromConsensusPower(200)
+	// The default power validators are initialized to have within tests
+	initAmt   = sdk.TokensFromConsensusPower(200, sdk.DefaultPowerReduction)
 	initCoins = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, initAmt))
 )
 
@@ -97,8 +98,8 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.app = app
 
 	for i, addr := range valAddresses {
-		addr := addr.ToAccAddress()
-		app.AccountKeeper.SetAccount(suite.ctx, authtypes.NewBaseAccount(addr, pubkeys[i], 0))
+		addr := sdk.AccAddress(addr)
+		app.AccountKeeper.SetAccount(suite.ctx, authtypes.NewBaseAccount(addr, pubkeys[i], uint64(i), 0))
 	}
 
 	queryHelper := baseapp.NewQueryServerTestHelper(suite.ctx, app.InterfaceRegistry())
@@ -117,7 +118,7 @@ func (suite *KeeperTestSuite) populateEvidence(ctx sdk.Context, numEvidence int)
 			Height:           11,
 			Power:            100,
 			Time:             time.Now().UTC(),
-			ConsensusAddress: sdk.BytesToConsAddress(pk.PubKey().Address()).String(),
+			ConsensusAddress: sdk.ConsAddress(pk.PubKey().Address().Bytes()).String(),
 		}
 
 		suite.Nil(suite.app.EvidenceKeeper.SubmitEvidence(ctx, evidence[i]))
@@ -130,11 +131,10 @@ func (suite *KeeperTestSuite) populateValidators(ctx sdk.Context) {
 	// add accounts and set total supply
 	totalSupplyAmt := initAmt.MulRaw(int64(len(valAddresses)))
 	totalSupply := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, totalSupplyAmt))
-	suite.app.BankKeeper.SetSupply(ctx, banktypes.NewSupply(totalSupply))
+	suite.NoError(suite.app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, totalSupply))
 
 	for _, addr := range valAddresses {
-		err := suite.app.BankKeeper.AddCoins(ctx, addr.ToAccAddress(), initCoins)
-		suite.NoError(err)
+		suite.NoError(suite.app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, (sdk.AccAddress)(addr), initCoins))
 	}
 }
 
@@ -146,7 +146,7 @@ func (suite *KeeperTestSuite) TestSubmitValidEvidence() {
 		Height:           1,
 		Power:            100,
 		Time:             time.Now().UTC(),
-		ConsensusAddress: sdk.BytesToConsAddress(pk.PubKey().Address()).String(),
+		ConsensusAddress: sdk.ConsAddress(pk.PubKey().Address().Bytes()).String(),
 	}
 
 	suite.Nil(suite.app.EvidenceKeeper.SubmitEvidence(ctx, e))
@@ -164,7 +164,7 @@ func (suite *KeeperTestSuite) TestSubmitValidEvidence_Duplicate() {
 		Height:           1,
 		Power:            100,
 		Time:             time.Now().UTC(),
-		ConsensusAddress: sdk.BytesToConsAddress(pk.PubKey().Address()).String(),
+		ConsensusAddress: sdk.ConsAddress(pk.PubKey().Address().Bytes()).String(),
 	}
 
 	suite.Nil(suite.app.EvidenceKeeper.SubmitEvidence(ctx, e))
@@ -182,7 +182,7 @@ func (suite *KeeperTestSuite) TestSubmitInvalidEvidence() {
 		Height:           0,
 		Power:            100,
 		Time:             time.Now().UTC(),
-		ConsensusAddress: sdk.BytesToConsAddress(pk.PubKey().Address()).String(),
+		ConsensusAddress: sdk.ConsAddress(pk.PubKey().Address().Bytes()).String(),
 	}
 
 	suite.Error(suite.app.EvidenceKeeper.SubmitEvidence(ctx, e))

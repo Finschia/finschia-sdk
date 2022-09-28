@@ -16,13 +16,13 @@ import (
 
 var (
 	delPk1    = ed25519.GenPrivKey().PubKey()
-	delAddr1  = sdk.BytesToAccAddress(delPk1.Address())
-	valAddr1  = sdk.BytesToValAddress(delPk1.Address())
-	consAddr1 = sdk.BytesToConsAddress(delPk1.Address())
+	delAddr1  = sdk.AccAddress(delPk1.Address())
+	valAddr1  = sdk.ValAddress(delPk1.Address())
+	consAddr1 = sdk.ConsAddress(delPk1.Address().Bytes())
 )
 
 func TestDecodeDistributionStore(t *testing.T) {
-	cdc, _ := simapp.MakeCodecs()
+	cdc := simapp.MakeTestEncodingConfig().Marshaler
 	dec := simulation.NewDecodeStore(cdc)
 
 	decCoins := sdk.DecCoins{sdk.NewDecCoinFromDec(sdk.DefaultBondDenom, sdk.OneDec())}
@@ -37,15 +37,15 @@ func TestDecodeDistributionStore(t *testing.T) {
 
 	kvPairs := kv.Pairs{
 		Pairs: []kv.Pair{
-			{Key: types.FeePoolKey, Value: cdc.MustMarshalBinaryBare(&feePool)},
+			{Key: types.FeePoolKey, Value: cdc.MustMarshal(&feePool)},
 			{Key: types.ProposerKey, Value: consAddr1.Bytes()},
-			{Key: types.GetValidatorOutstandingRewardsKey(valAddr1), Value: cdc.MustMarshalBinaryBare(&outstanding)},
+			{Key: types.GetValidatorOutstandingRewardsKey(valAddr1), Value: cdc.MustMarshal(&outstanding)},
 			{Key: types.GetDelegatorWithdrawAddrKey(delAddr1), Value: delAddr1.Bytes()},
-			{Key: types.GetDelegatorStartingInfoKey(valAddr1, delAddr1), Value: cdc.MustMarshalBinaryBare(&info)},
-			{Key: types.GetValidatorHistoricalRewardsKey(valAddr1, 100), Value: cdc.MustMarshalBinaryBare(&historicalRewards)},
-			{Key: types.GetValidatorCurrentRewardsKey(valAddr1), Value: cdc.MustMarshalBinaryBare(&currentRewards)},
-			{Key: types.GetValidatorAccumulatedCommissionKey(valAddr1), Value: cdc.MustMarshalBinaryBare(&commission)},
-			{Key: types.GetValidatorSlashEventKeyPrefix(valAddr1, 13), Value: cdc.MustMarshalBinaryBare(&slashEvent)},
+			{Key: types.GetDelegatorStartingInfoKey(valAddr1, delAddr1), Value: cdc.MustMarshal(&info)},
+			{Key: types.GetValidatorHistoricalRewardsKey(valAddr1, 100), Value: cdc.MustMarshal(&historicalRewards)},
+			{Key: types.GetValidatorCurrentRewardsKey(valAddr1), Value: cdc.MustMarshal(&currentRewards)},
+			{Key: types.GetValidatorAccumulatedCommissionKey(valAddr1), Value: cdc.MustMarshal(&commission)},
+			{Key: types.GetValidatorSlashEventKeyPrefix(valAddr1, 13), Value: cdc.MustMarshal(&slashEvent)},
 			{Key: []byte{0x99}, Value: []byte{0x99}},
 		},
 	}

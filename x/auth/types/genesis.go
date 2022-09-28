@@ -48,7 +48,7 @@ func DefaultGenesisState() *GenesisState {
 
 // GetGenesisStateFromAppState returns x/auth GenesisState given raw application
 // genesis state.
-func GetGenesisStateFromAppState(cdc codec.Marshaler, appState map[string]json.RawMessage) GenesisState {
+func GetGenesisStateFromAppState(cdc codec.Codec, appState map[string]json.RawMessage) GenesisState {
 	var genesisState GenesisState
 
 	if appState[ModuleName] != nil {
@@ -76,7 +76,7 @@ func ValidateGenesis(data GenesisState) error {
 // SanitizeGenesisAccounts sorts accounts and coin sets.
 func SanitizeGenesisAccounts(genAccs GenesisAccounts) GenesisAccounts {
 	sort.Slice(genAccs, func(i, j int) bool {
-		return genAccs[i].GetAddress().String() < genAccs[j].GetAddress().String()
+		return genAccs[i].GetAccountNumber() < genAccs[j].GetAccountNumber()
 	})
 
 	return genAccs
@@ -110,7 +110,7 @@ type GenesisAccountIterator struct{}
 // appGenesis and invokes a callback on each genesis account. If any call
 // returns true, iteration stops.
 func (GenesisAccountIterator) IterateGenesisAccounts(
-	cdc codec.Marshaler, appGenesis map[string]json.RawMessage, cb func(AccountI) (stop bool),
+	cdc codec.Codec, appGenesis map[string]json.RawMessage, cb func(AccountI) (stop bool),
 ) {
 	for _, genAcc := range GetGenesisStateFromAppState(cdc, appGenesis).Accounts {
 		acc, ok := genAcc.GetCachedValue().(AccountI)

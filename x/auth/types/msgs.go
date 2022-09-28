@@ -18,19 +18,12 @@ func NewMsgEmpty(fromAddr sdk.AccAddress) *MsgEmpty {
 	return &MsgEmpty{FromAddress: fromAddr.String()}
 }
 
-func NewServiceMsgEmpty(fromAddr sdk.AccAddress) sdk.ServiceMsg {
-	return sdk.ServiceMsg{
-		MethodName: "/lbm.auth.v1.Msg/Empty",
-		Request:    NewMsgEmpty(fromAddr),
-	}
-}
-
 func (msg MsgEmpty) Route() string { return ModuleName }
 
 func (msg MsgEmpty) Type() string { return TypeMsgEmpty }
 
 func (msg MsgEmpty) ValidateBasic() error {
-	err := sdk.ValidateAccAddress(msg.FromAddress)
+	_, err := sdk.AccAddressFromBech32(msg.FromAddress)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
 	}
@@ -44,9 +37,9 @@ func (msg MsgEmpty) GetSignBytes() []byte {
 
 // GetSigners Implements Msg.
 func (msg MsgEmpty) GetSigners() []sdk.AccAddress {
-	err := sdk.ValidateAccAddress(msg.FromAddress)
+	addr, err := sdk.AccAddressFromBech32(msg.FromAddress)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{sdk.AccAddress(msg.FromAddress)}
+	return []sdk.AccAddress{addr}
 }

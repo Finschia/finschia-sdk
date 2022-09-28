@@ -14,9 +14,9 @@ import (
 
 func TestLegacyAminoJSONHandler_GetSignBytes(t *testing.T) {
 	priv1 := secp256k1.GenPrivKey()
-	addr1 := sdk.BytesToAccAddress(priv1.PubKey().Address())
+	addr1 := sdk.AccAddress(priv1.PubKey().Address())
 	priv2 := secp256k1.GenPrivKey()
-	addr2 := sdk.BytesToAccAddress(priv2.PubKey().Address())
+	addr2 := sdk.AccAddress(priv2.PubKey().Address())
 
 	coins := sdk.Coins{sdk.NewInt64Coin("foocoin", 10)}
 
@@ -31,29 +31,29 @@ func TestLegacyAminoJSONHandler_GetSignBytes(t *testing.T) {
 
 	var (
 		chainId              = "test-chain"
-		sbh           uint64 = 7
+		accNum        uint64 = 7
 		seqNum        uint64 = 7
 		timeoutHeight uint64 = 10
 	)
 
 	tx := StdTx{
-		Msgs:           msgs,
-		Fee:            fee,
-		Signatures:     nil,
-		Memo:           memo,
-		SigBlockHeight: sbh,
-		TimeoutHeight:  timeoutHeight,
+		Msgs:          msgs,
+		Fee:           fee,
+		Signatures:    nil,
+		Memo:          memo,
+		TimeoutHeight: timeoutHeight,
 	}
 
 	handler := stdTxSignModeHandler{}
 	signingData := signing.SignerData{
-		ChainID:  chainId,
-		Sequence: seqNum,
+		ChainID:       chainId,
+		AccountNumber: accNum,
+		Sequence:      seqNum,
 	}
 	signBz, err := handler.GetSignBytes(signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON, signingData, tx)
 	require.NoError(t, err)
 
-	expectedSignBz := StdSignBytes(chainId, sbh, seqNum, timeoutHeight, fee, msgs, memo)
+	expectedSignBz := StdSignBytes(chainId, accNum, seqNum, timeoutHeight, fee, msgs, memo)
 
 	require.Equal(t, expectedSignBz, signBz)
 

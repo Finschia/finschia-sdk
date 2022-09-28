@@ -15,18 +15,18 @@ import (
 )
 
 func init() {
-	sdk.PowerReduction = sdk.NewIntFromBigInt(new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil))
+	sdk.DefaultPowerReduction = sdk.NewIntFromBigInt(new(big.Int).Exp(big.NewInt(10), big.NewInt(18), nil))
 }
 
 // nolint:deadcode,unused,varcheck
 var (
 	priv1 = secp256k1.GenPrivKey()
-	addr1 = sdk.BytesToAccAddress(priv1.PubKey().Address())
+	addr1 = sdk.AccAddress(priv1.PubKey().Address())
 	priv2 = secp256k1.GenPrivKey()
-	addr2 = sdk.BytesToAccAddress(priv2.PubKey().Address())
+	addr2 = sdk.AccAddress(priv2.PubKey().Address())
 
 	valKey  = ed25519.GenPrivKey()
-	valAddr = sdk.BytesToAccAddress(valKey.PubKey().Address())
+	valAddr = sdk.AccAddress(valKey.PubKey().Address())
 
 	commissionRates = types.NewCommissionRates(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
 

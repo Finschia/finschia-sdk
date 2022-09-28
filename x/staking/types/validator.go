@@ -98,16 +98,12 @@ func (v Validators) Len() int {
 
 // Implements sort interface
 func (v Validators) Less(i, j int) bool {
-	valIBytes, _ := sdk.ValAddressToBytes(v[i].GetOperator().String())
-	valJBytes, _ := sdk.ValAddressToBytes(v[j].GetOperator().String())
-	return bytes.Compare(valIBytes, valJBytes) == -1
+	return bytes.Compare(v[i].GetOperator().Bytes(), v[j].GetOperator().Bytes()) == -1
 }
 
 // Implements sort interface
 func (v Validators) Swap(i, j int) {
-	it := v[i]
-	v[i] = v[j]
-	v[j] = it
+	v[i], v[j] = v[j], v[i]
 }
 
 // ValidatorsByVotingPower implements sort.Interface for []Validator based on
@@ -118,19 +114,17 @@ type ValidatorsByVotingPower []Validator
 
 func (valz ValidatorsByVotingPower) Len() int { return len(valz) }
 
-func (valz ValidatorsByVotingPower) Less(i, j int) bool {
-	if valz[i].ConsensusPower() == valz[j].ConsensusPower() {
+func (valz ValidatorsByVotingPower) Less(i, j int, r sdk.Int) bool {
+	if valz[i].ConsensusPower(r) == valz[j].ConsensusPower(r) {
 		addrI, errI := valz[i].GetConsAddr()
 		addrJ, errJ := valz[j].GetConsAddr()
 		// If either returns error, then return false
 		if errI != nil || errJ != nil {
 			return false
 		}
-		bytesI, _ := sdk.ConsAddressToBytes(addrI.String())
-		bytesJ, _ := sdk.ConsAddressToBytes(addrJ.String())
-		return bytes.Compare(bytesI, bytesJ) == -1
+		return bytes.Compare(addrI, addrJ) == -1
 	}
-	return valz[i].ConsensusPower() > valz[j].ConsensusPower()
+	return valz[i].ConsensusPower(r) > valz[j].ConsensusPower(r)
 }
 
 func (valz ValidatorsByVotingPower) Swap(i, j int) {
@@ -148,12 +142,12 @@ func (v Validators) UnpackInterfaces(c codectypes.AnyUnpacker) error {
 }
 
 // return the redelegation
-func MustMarshalValidator(cdc codec.BinaryMarshaler, validator *Validator) []byte {
-	return cdc.MustMarshalBinaryBare(validator)
+func MustMarshalValidator(cdc codec.BinaryCodec, validator *Validator) []byte {
+	return cdc.MustMarshal(validator)
 }
 
 // unmarshal a redelegation from a store value
-func MustUnmarshalValidator(cdc codec.BinaryMarshaler, value []byte) Validator {
+func MustUnmarshalValidator(cdc codec.BinaryCodec, value []byte) Validator {
 	validator, err := UnmarshalValidator(cdc, value)
 	if err != nil {
 		panic(err)
@@ -163,8 +157,8 @@ func MustUnmarshalValidator(cdc codec.BinaryMarshaler, value []byte) Validator {
 }
 
 // unmarshal a redelegation from a store value
-func UnmarshalValidator(cdc codec.BinaryMarshaler, value []byte) (v Validator, err error) {
-	err = cdc.UnmarshalBinaryBare(value, &v)
+func UnmarshalValidator(cdc codec.BinaryCodec, value []byte) (v Validator, err error) {
+	err = cdc.Unmarshal(value, &v)
 	return v, err
 }
 
@@ -261,28 +255,28 @@ func (d Description) EnsureLength() (Description, error) {
 
 // ABCIValidatorUpdate returns an abci.ValidatorUpdate from a staking validator type
 // with the full validator power
-func (v Validator) ABCIValidatorUpdate() abci.ValidatorUpdate {
-	tmProtoPk, err := v.OcConsPublicKey()
+func (v Validator) ABCIValidatorUpdate(r sdk.Int) abci.ValidatorUpdate {
+	ocProtoPk, err := v.OcConsPublicKey()
 	if err != nil {
 		panic(err)
 	}
 
 	return abci.ValidatorUpdate{
-		PubKey: tmProtoPk,
-		Power:  v.ConsensusPower(),
+		PubKey: ocProtoPk,
+		Power:  v.ConsensusPower(r),
 	}
 }
 
 // ABCIValidatorUpdateZero returns an abci.ValidatorUpdate from a staking validator type
 // with zero power used for validator updates.
 func (v Validator) ABCIValidatorUpdateZero() abci.ValidatorUpdate {
-	tmProtoPk, err := v.OcConsPublicKey()
+	ocprotoPk, err := v.OcConsPublicKey()
 	if err != nil {
 		panic(err)
 	}
 
 	return abci.ValidatorUpdate{
-		PubKey: tmProtoPk,
+		PubKey: ocprotoPk,
 		Power:  0,
 	}
 }
@@ -353,17 +347,17 @@ func (v Validator) BondedTokens() sdk.Int {
 
 // ConsensusPower gets the consensus-engine power. Aa reduction of 10^6 from
 // validator tokens is applied
-func (v Validator) ConsensusPower() int64 {
+func (v Validator) ConsensusPower(r sdk.Int) int64 {
 	if v.IsBonded() {
-		return v.PotentialConsensusPower()
+		return v.PotentialConsensusPower(r)
 	}
 
 	return 0
 }
 
 // PotentialConsensusPower returns the potential consensus-engine power.
-func (v Validator) PotentialConsensusPower() int64 {
-	return sdk.TokensToConsensusPower(v.Tokens)
+func (v Validator) PotentialConsensusPower(r sdk.Int) int64 {
+	return sdk.TokensToConsensusPower(v.Tokens, r)
 }
 
 // UpdateStatus updates the location of the shares within a validator
@@ -464,9 +458,13 @@ func (v Validator) GetMoniker() string    { return v.Description.Moniker }
 func (v Validator) GetStatus() BondStatus { return v.Status }
 func (v Validator) GetOperator() sdk.ValAddress {
 	if v.OperatorAddress == "" {
-		return ""
+		return nil
 	}
-	return sdk.ValAddress(v.OperatorAddress)
+	addr, err := sdk.ValAddressFromBech32(v.OperatorAddress)
+	if err != nil {
+		panic(err)
+	}
+	return addr
 }
 
 // ConsPubKey returns the validator PubKey as a cryptotypes.PubKey.
@@ -499,15 +497,17 @@ func (v Validator) OcConsPublicKey() (ocprotocrypto.PublicKey, error) {
 func (v Validator) GetConsAddr() (sdk.ConsAddress, error) {
 	pk, ok := v.ConsensusPubkey.GetCachedValue().(cryptotypes.PubKey)
 	if !ok {
-		return "", sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk)
 	}
 
-	return sdk.BytesToConsAddress(pk.Address()), nil
+	return sdk.ConsAddress(pk.Address()), nil
 }
 
-func (v Validator) GetTokens() sdk.Int            { return v.Tokens }
-func (v Validator) GetBondedTokens() sdk.Int      { return v.BondedTokens() }
-func (v Validator) GetConsensusPower() int64      { return v.ConsensusPower() }
+func (v Validator) GetTokens() sdk.Int       { return v.Tokens }
+func (v Validator) GetBondedTokens() sdk.Int { return v.BondedTokens() }
+func (v Validator) GetConsensusPower(r sdk.Int) int64 {
+	return v.ConsensusPower(r)
+}
 func (v Validator) GetCommission() sdk.Dec        { return v.Commission.Rate }
 func (v Validator) GetMinSelfDelegation() sdk.Int { return v.MinSelfDelegation }
 func (v Validator) GetDelegatorShares() sdk.Dec   { return v.DelegatorShares }

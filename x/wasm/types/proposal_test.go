@@ -6,11 +6,12 @@ import (
 	"strings"
 	"testing"
 
-	sdk "github.com/line/lbm-sdk/types"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
+
+	sdk "github.com/line/lbm-sdk/types"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 func TestValidateProposalCommons(t *testing.T) {
@@ -95,8 +96,8 @@ func TestValidateProposalCommons(t *testing.T) {
 
 func TestValidateStoreCodeProposal(t *testing.T) {
 	var (
-		anyAddress     = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x0}, sdk.BytesAddrLen))
-		invalidAddress = "invalid address"
+		anyAddress     sdk.AccAddress = bytes.Repeat([]byte{0x0}, ContractAddrLen)
+		invalidAddress                = "invalid address"
 	)
 
 	specs := map[string]struct {
@@ -110,12 +111,6 @@ func TestValidateStoreCodeProposal(t *testing.T) {
 			src: StoreCodeProposalFixture(func(p *StoreCodeProposal) {
 				accessConfig := AccessTypeOnlyAddress.With(anyAddress)
 				p.InstantiatePermission = &accessConfig
-			}),
-		},
-
-		"without source": {
-			src: StoreCodeProposalFixture(func(p *StoreCodeProposal) {
-				p.Source = ""
 			}),
 		},
 		"base data missing": {
@@ -145,18 +140,6 @@ func TestValidateStoreCodeProposal(t *testing.T) {
 		"wasm code invalid": {
 			src: StoreCodeProposalFixture(func(p *StoreCodeProposal) {
 				p.WASMByteCode = bytes.Repeat([]byte{0x0}, MaxWasmSize+1)
-			}),
-			expErr: true,
-		},
-		"source invalid": {
-			src: StoreCodeProposalFixture(func(p *StoreCodeProposal) {
-				p.Source = "not an url"
-			}),
-			expErr: true,
-		},
-		"builder invalid": {
-			src: StoreCodeProposalFixture(func(p *StoreCodeProposal) {
-				p.Builder = "not a builder"
 			}),
 			expErr: true,
 		},
@@ -198,13 +181,13 @@ func TestValidateInstantiateContractProposal(t *testing.T) {
 		},
 		"without init msg": {
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) {
-				p.InitMsg = nil
+				p.Msg = nil
 			}),
 			expErr: true,
 		},
 		"with invalid init msg": {
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) {
-				p.InitMsg = []byte("not a json string")
+				p.Msg = []byte("not a json string")
 			}),
 			expErr: true,
 		},
@@ -288,13 +271,13 @@ func TestValidateMigrateContractProposal(t *testing.T) {
 		},
 		"without migrate msg": {
 			src: MigrateContractProposalFixture(func(p *MigrateContractProposal) {
-				p.MigrateMsg = nil
+				p.Msg = nil
 			}),
 			expErr: true,
 		},
 		"migrate msg with invalid json": {
 			src: MigrateContractProposalFixture(func(p *MigrateContractProposal) {
-				p.MigrateMsg = []byte("not a json message")
+				p.Msg = []byte("not a json message")
 			}),
 			expErr: true,
 		},
@@ -322,14 +305,118 @@ func TestValidateMigrateContractProposal(t *testing.T) {
 			}),
 			expErr: true,
 		},
-		"run_as missing": {
-			src: MigrateContractProposalFixture(func(p *MigrateContractProposal) {
-				p.RunAs = ""
+	}
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			err := spec.src.ValidateBasic()
+			if spec.expErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestValidateSudoContractProposal(t *testing.T) {
+	var (
+		invalidAddress = "invalid address"
+	)
+
+	specs := map[string]struct {
+		src    *SudoContractProposal
+		expErr bool
+	}{
+		"all good": {
+			src: SudoContractProposalFixture(),
+		},
+		"msg is nil": {
+			src: SudoContractProposalFixture(func(p *SudoContractProposal) {
+				p.Msg = nil
 			}),
 			expErr: true,
 		},
-		"run_as invalid": {
-			src: MigrateContractProposalFixture(func(p *MigrateContractProposal) {
+		"msg with invalid json": {
+			src: SudoContractProposalFixture(func(p *SudoContractProposal) {
+				p.Msg = []byte("not a json message")
+			}),
+			expErr: true,
+		},
+		"base data missing": {
+			src: SudoContractProposalFixture(func(p *SudoContractProposal) {
+				p.Title = ""
+			}),
+			expErr: true,
+		},
+		"contract missing": {
+			src: SudoContractProposalFixture(func(p *SudoContractProposal) {
+				p.Contract = ""
+			}),
+			expErr: true,
+		},
+		"contract invalid": {
+			src: SudoContractProposalFixture(func(p *SudoContractProposal) {
+				p.Contract = invalidAddress
+			}),
+			expErr: true,
+		},
+	}
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			err := spec.src.ValidateBasic()
+			if spec.expErr {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestValidateExecuteContractProposal(t *testing.T) {
+	var (
+		invalidAddress = "invalid address"
+	)
+
+	specs := map[string]struct {
+		src    *ExecuteContractProposal
+		expErr bool
+	}{
+		"all good": {
+			src: ExecuteContractProposalFixture(),
+		},
+		"msg is nil": {
+			src: ExecuteContractProposalFixture(func(p *ExecuteContractProposal) {
+				p.Msg = nil
+			}),
+			expErr: true,
+		},
+		"msg with invalid json": {
+			src: ExecuteContractProposalFixture(func(p *ExecuteContractProposal) {
+				p.Msg = []byte("not a valid json message")
+			}),
+			expErr: true,
+		},
+		"base data missing": {
+			src: ExecuteContractProposalFixture(func(p *ExecuteContractProposal) {
+				p.Title = ""
+			}),
+			expErr: true,
+		},
+		"contract missing": {
+			src: ExecuteContractProposalFixture(func(p *ExecuteContractProposal) {
+				p.Contract = ""
+			}),
+			expErr: true,
+		},
+		"contract invalid": {
+			src: ExecuteContractProposalFixture(func(p *ExecuteContractProposal) {
+				p.Contract = invalidAddress
+			}),
+			expErr: true,
+		},
+		"run as is invalid": {
+			src: ExecuteContractProposalFixture(func(p *ExecuteContractProposal) {
 				p.RunAs = invalidAddress
 			}),
 			expErr: true,
@@ -445,61 +532,6 @@ func TestValidateClearAdminProposal(t *testing.T) {
 	}
 }
 
-func TestValidateUpdateContractStatusProposal(t *testing.T) {
-	var (
-		invalidAddress = "invalid address"
-	)
-
-	specs := map[string]struct {
-		src    *UpdateContractStatusProposal
-		expErr bool
-	}{
-		"all good": {
-			src: UpdateContractStatusProposalFixture(),
-		},
-		"base data missing": {
-			src: UpdateContractStatusProposalFixture(func(p *UpdateContractStatusProposal) {
-				p.Title = ""
-			}),
-			expErr: true,
-		},
-		"contract missing": {
-			src: UpdateContractStatusProposalFixture(func(p *UpdateContractStatusProposal) {
-				p.Contract = ""
-			}),
-			expErr: true,
-		},
-		"contract invalid": {
-			src: UpdateContractStatusProposalFixture(func(p *UpdateContractStatusProposal) {
-				p.Contract = invalidAddress
-			}),
-			expErr: true,
-		},
-		"status missing": {
-			src: UpdateContractStatusProposalFixture(func(p *UpdateContractStatusProposal) {
-				p.Status = ContractStatusUnspecified
-			}),
-			expErr: true,
-		},
-		"status invalid": {
-			src: UpdateContractStatusProposalFixture(func(p *UpdateContractStatusProposal) {
-				p.Status = 3
-			}),
-			expErr: true,
-		},
-	}
-	for msg, spec := range specs {
-		t.Run(msg, func(t *testing.T) {
-			err := spec.src.ValidateBasic()
-			if spec.expErr {
-				require.Error(t, err)
-			} else {
-				require.NoError(t, err)
-			}
-		})
-	}
-}
-
 func TestProposalStrings(t *testing.T) {
 	specs := map[string]struct {
 		src govtypes.Content
@@ -512,10 +544,8 @@ func TestProposalStrings(t *testing.T) {
 			exp: `Store Code Proposal:
   Title:       Foo
   Description: Bar
-  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
   WasmCode:    0102030405060708090A
-  Source:      https://example.com/code
-  Builder:     foo/bar:latest
 `,
 		},
 		"instantiate contract": {
@@ -525,11 +555,11 @@ func TestProposalStrings(t *testing.T) {
 			exp: `Instantiate Code Proposal:
   Title:       Foo
   Description: Bar
-  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
-  Admin:       link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
+  Admin:       link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
   Code id:     1
   Label:       testing
-  InitMsg:     "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23\"}"
   Funds:       1foo,2bar
 `,
 		},
@@ -538,11 +568,11 @@ func TestProposalStrings(t *testing.T) {
 			exp: `Instantiate Code Proposal:
   Title:       Foo
   Description: Bar
-  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
-  Admin:       link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
+  Admin:       link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
   Code id:     1
   Label:       testing
-  InitMsg:     "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23\"}"
   Funds:       
 `,
 		},
@@ -551,11 +581,11 @@ func TestProposalStrings(t *testing.T) {
 			exp: `Instantiate Code Proposal:
   Title:       Foo
   Description: Bar
-  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
   Admin:       
   Code id:     1
   Label:       testing
-  InitMsg:     "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23\"}"
   Funds:       
 `,
 		},
@@ -566,8 +596,7 @@ func TestProposalStrings(t *testing.T) {
   Description: Bar
   Contract:    link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
   Code id:     1
-  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
-  MigrateMsg   "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23\"}"
 `,
 		},
 		"update admin": {
@@ -576,7 +605,7 @@ func TestProposalStrings(t *testing.T) {
   Title:       Foo
   Description: Bar
   Contract:    link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
-  New Admin:   link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+  New Admin:   link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
 `,
 		},
 		"clear admin": {
@@ -630,10 +659,8 @@ func TestProposalYaml(t *testing.T) {
 			}),
 			exp: `title: Foo
 description: Bar
-run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
 wasm_byte_code: AQIDBAUGBwgJCg==
-source: https://example.com/code
-builder: foo/bar:latest
 instantiate_permission: null
 `,
 		},
@@ -643,11 +670,11 @@ instantiate_permission: null
 			}),
 			exp: `title: Foo
 description: Bar
-run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
-admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
+admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
 code_id: 1
 label: testing
-init_msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
+msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23"}'
 funds:
 - denom: foo
   amount: "1"
@@ -659,11 +686,11 @@ funds:
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) { p.Funds = nil }),
 			exp: `title: Foo
 description: Bar
-run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
-admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
+admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
 code_id: 1
 label: testing
-init_msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
+msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23"}'
 funds: []
 `,
 		},
@@ -671,11 +698,11 @@ funds: []
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) { p.Admin = "" }),
 			exp: `title: Foo
 description: Bar
-run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
 admin: ""
 code_id: 1
 label: testing
-init_msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
+msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23"}'
 funds: []
 `,
 		},
@@ -685,15 +712,14 @@ funds: []
 description: Bar
 contract: link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
 code_id: 1
-msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
-run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23"}'
 `,
 		},
 		"update admin": {
 			src: UpdateAdminProposalFixture(),
 			exp: `title: Foo
 description: Bar
-new_admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+new_admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqszqgpqyqsh9tp23
 contract: link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
 `,
 		},
@@ -780,7 +806,7 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 	"admin": "myAdminAddress",
 	"code_id": 1,
 	"funds": [{"denom": "ALX", "amount": "2"},{"denom": "BLX","amount": "3"}],
-	"init_msg": "e30=",
+	"msg": {},
 	"label": "testing",
 	"run_as": "myRunAsAddress"
 }`,
@@ -792,7 +818,7 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 				Admin:       "myAdminAddress",
 				CodeID:      1,
 				Label:       "testing",
-				InitMsg:     []byte("{}"),
+				Msg:         []byte("{}"),
 				Funds:       sdk.NewCoins(sdk.NewCoin("ALX", sdk.NewInt(2)), sdk.NewCoin("BLX", sdk.NewInt(3))),
 			},
 		},
@@ -803,17 +829,16 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 	"description": "bar",
 	"code_id": 1,
 	"contract": "myContractAddr",
-	"migrate_msg": "e30=",
+	"msg": {},
 	"run_as": "myRunAsAddress"
 }`,
 			got: &MigrateContractProposal{},
 			exp: &MigrateContractProposal{
 				Title:       "foo",
 				Description: "bar",
-				RunAs:       "myRunAsAddress",
 				Contract:    "myContractAddr",
 				CodeID:      1,
-				MigrateMsg:  []byte("{}"),
+				Msg:         []byte("{}"),
 			},
 		},
 	}
@@ -823,5 +848,38 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 			assert.Equal(t, spec.exp, spec.got)
 		})
 	}
+}
 
+func TestProposalJsonSignBytes(t *testing.T) {
+	const myInnerMsg = `{"foo":"bar"}`
+	specs := map[string]struct {
+		src govtypes.Content
+		exp string
+	}{
+		"instantiate contract": {
+			src: &InstantiateContractProposal{Msg: RawContractMessage(myInnerMsg)},
+			exp: `
+ {
+ 	"type":"cosmos-sdk/MsgSubmitProposal",
+ 	"value":{"content":{"type":"wasm/InstantiateContractProposal","value":{"funds":[],"msg":{"foo":"bar"}}},"initial_deposit":[]}
+ }`,
+		},
+		"migrate contract": {
+			src: &MigrateContractProposal{Msg: RawContractMessage(myInnerMsg)},
+			exp: `
+ {
+ 	"type":"cosmos-sdk/MsgSubmitProposal",
+ 	"value":{"content":{"type":"wasm/MigrateContractProposal","value":{"msg":{"foo":"bar"}}},"initial_deposit":[]}
+ }`,
+		},
+	}
+	for name, spec := range specs {
+		t.Run(name, func(t *testing.T) {
+			msg, err := govtypes.NewMsgSubmitProposal(spec.src, sdk.NewCoins(), []byte{})
+			require.NoError(t, err)
+
+			bz := msg.GetSignBytes()
+			assert.JSONEq(t, spec.exp, string(bz), "raw: %s", string(bz))
+		})
+	}
 }

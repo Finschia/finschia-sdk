@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"io"
 
+	dbm "github.com/tendermint/tm-db"
+
 	"github.com/line/lbm-sdk/store/cache"
-	"github.com/line/lbm-sdk/store/iavl"
-	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/snapshots"
@@ -19,7 +19,7 @@ import (
 
 // SetPruning sets a pruning option on the multistore associated with the app
 func SetPruning(opts sdk.PruningOptions) func(*BaseApp) {
-	return func(bap *BaseApp) { bap.cms.SetPruning(opts) }
+	return func(bapp *BaseApp) { bapp.cms.SetPruning(opts) }
 }
 
 // SetMinGasPrices returns an option that sets the minimum gas prices on the app.
@@ -29,17 +29,17 @@ func SetMinGasPrices(gasPricesStr string) func(*BaseApp) {
 		panic(fmt.Sprintf("invalid minimum gas prices: %v", err))
 	}
 
-	return func(bap *BaseApp) { bap.setMinGasPrices(gasPrices) }
+	return func(bapp *BaseApp) { bapp.setMinGasPrices(gasPrices) }
 }
 
 // SetHaltHeight returns a BaseApp option function that sets the halt block height.
 func SetHaltHeight(blockHeight uint64) func(*BaseApp) {
-	return func(bap *BaseApp) { bap.setHaltHeight(blockHeight) }
+	return func(bapp *BaseApp) { bapp.setHaltHeight(blockHeight) }
 }
 
 // SetHaltTime returns a BaseApp option function that sets the halt block time.
 func SetHaltTime(haltTime uint64) func(*BaseApp) {
-	return func(bap *BaseApp) { bap.setHaltTime(haltTime) }
+	return func(bapp *BaseApp) { bapp.setHaltTime(haltTime) }
 }
 
 // SetMinRetainBlocks returns a BaseApp option function that sets the minimum
@@ -59,21 +59,15 @@ func SetIndexEvents(ie []string) func(*BaseApp) {
 	return func(app *BaseApp) { app.setIndexEvents(ie) }
 }
 
+// SetIAVLCacheSize provides a BaseApp option function that sets the size of IAVL cache.
+func SetIAVLCacheSize(size int) func(*BaseApp) {
+	return func(bapp *BaseApp) { bapp.cms.SetIAVLCacheSize(size) }
+}
+
 // SetInterBlockCache provides a BaseApp option function that sets the
 // inter-block cache.
 func SetInterBlockCache(cache sdk.MultiStorePersistentCache) func(*BaseApp) {
 	return func(app *BaseApp) { app.setInterBlockCache(cache) }
-}
-
-// SetIAVLCacheManager provides a BaseApp option function that sets the iavl CacheManager
-func SetIAVLCacheManager(size int, provider iavl.MetricsProvider) func(*BaseApp) {
-	return func(app *BaseApp) {
-		if size == 0 {
-			app.cms.SetIAVLCacheManager(iavl.NewCacheManagerNoCache())
-		} else {
-			app.cms.SetIAVLCacheManager(iavl.NewCacheManagerSingleton(size, provider))
-		}
-	}
 }
 
 // SetSnapshotInterval sets the snapshot interval.
@@ -108,16 +102,20 @@ func (app *BaseApp) SetParamStore(ps ParamStore) {
 	app.paramStore = ps
 }
 
-// SetAppVersion sets the application's version string.
-func (app *BaseApp) SetAppVersion(v string) {
+// SetVersion sets the application's version string.
+func (app *BaseApp) SetVersion(v string) {
 	if app.sealed {
-		panic("SetAppVersion() on sealed BaseApp")
+		panic("SetVersion() on sealed BaseApp")
 	}
+	app.version = v
+}
 
+// SetProtocolVersion sets the application's protocol version
+func (app *BaseApp) SetProtocolVersion(v uint64) {
 	app.appVersion = v
 }
 
-func (app *BaseApp) SetDB(db tmdb.DB) {
+func (app *BaseApp) SetDB(db dbm.DB) {
 	if app.sealed {
 		panic("SetDB() on sealed BaseApp")
 	}
@@ -247,10 +245,10 @@ func (app *BaseApp) SetInterfaceRegistry(registry types.InterfaceRegistry) {
 	app.msgServiceRouter.SetInterfaceRegistry(registry)
 }
 
-func MetricsProvider(prometheus bool) (cache.MetricsProvider, iavl.MetricsProvider) {
+func MetricsProvider(prometheus bool) cache.MetricsProvider {
 	namespace := "app"
 	if prometheus {
-		return cache.PrometheusMetricsProvider(namespace), iavl.PrometheusMetricsProvider(namespace)
+		return cache.PrometheusMetricsProvider(namespace)
 	}
-	return cache.NopMetricsProvider(), iavl.NopMetricsProvider()
+	return cache.NopMetricsProvider()
 }

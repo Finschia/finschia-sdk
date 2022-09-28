@@ -39,9 +39,9 @@ type (
 		SetMsgs(msgs ...sdk.Msg) error
 		SetSignatures(signatures ...signingtypes.SignatureV2) error
 		SetMemo(memo string)
-		SetSigBlockHeight(sbh uint64)
 		SetFeeAmount(amount sdk.Coins)
 		SetGasLimit(limit uint64)
 		SetTimeoutHeight(height uint64)
+		SetFeeGranter(feeGranter sdk.AccAddress)
 	}
 )

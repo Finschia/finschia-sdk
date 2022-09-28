@@ -1,32 +1,43 @@
 package keeper
 
 import (
-	"fmt"
+	wasmvm "github.com/line/wasmvm"
+	wasmvmtypes "github.com/line/wasmvm/types"
 
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/wasm/types"
-	wasmvm "github.com/line/wasmvm"
+	types "github.com/line/lbm-sdk/x/wasm/types"
 )
 
 type cosmwasmAPIImpl struct {
-	gasMultiplier uint64
+	gasMultiplier GasMultiplier
 	keeper        *Keeper
 	ctx           *sdk.Context
 }
 
+const (
+	// DefaultDeserializationCostPerByte The formular should be `len(data) * deserializationCostPerByte`
+	DefaultDeserializationCostPerByte = 1
+)
+
+var (
+	costJSONDeserialization = wasmvmtypes.UFraction{
+		Numerator:   DefaultDeserializationCostPerByte * types.DefaultGasMultiplier,
+		Denominator: 1,
+	}
+)
+
 func (a cosmwasmAPIImpl) humanAddress(canon []byte) (string, uint64, error) {
-	gas := 5 * a.gasMultiplier
-	if len(canon) != sdk.BytesAddrLen {
-		//nolint:stylecheck
-		return "", gas, fmt.Errorf("expected %d byte address", sdk.BytesAddrLen)
+	gas := a.gasMultiplier.FromWasmVMGas(5)
+	if err := sdk.VerifyAddressFormat(canon); err != nil {
+		return "", gas, err
 	}
 
-	return sdk.BytesToAccAddress(canon).String(), gas, nil
+	return sdk.AccAddress(canon).String(), gas, nil
 }
 
 func (a cosmwasmAPIImpl) canonicalAddress(human string) ([]byte, uint64, error) {
-	bz, err := sdk.AccAddressToBytes(human)
-	return bz, 4 * a.gasMultiplier, err
+	bz, err := sdk.AccAddressFromBech32(human)
+	return bz, a.gasMultiplier.ToWasmVMGas(4), err
 }
 
 func (a cosmwasmAPIImpl) GetContractEnv(contractAddrStr string) (wasmvm.Env, *wasmvm.Cache, wasmvm.KVStore, wasmvm.Querier, wasmvm.GasMeter, []byte, uint64, error) {
@@ -47,7 +58,7 @@ func (a cosmwasmAPIImpl) GetContractEnv(contractAddrStr string) (wasmvm.Env, *wa
 	// this gas cost is temporal value defined by
 	// https://github.com/line/lbm-sdk/runs/8150140720?check_suite_focus=true#step:5:483
 	// Before release, it is adjusted by benchmark taken in environment similar to the nodes.
-	gas := 11 * a.gasMultiplier
+	gas := 11 * a.gasMultiplier.multiplier
 	wasmStore := types.NewWasmStore(prefixStore)
 	env := types.NewEnv(*a.ctx, contractAddr)
 

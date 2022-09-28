@@ -2,6 +2,7 @@ package channel
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+
 	"github.com/line/lbm-sdk/x/ibc/core/04-channel/keeper"
 	"github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 )
@@ -37,12 +38,13 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, gs types.GenesisState) {
 // ExportGenesis returns the ibc channel submodule's exported genesis.
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 	return types.GenesisState{
-		Channels:         k.GetAllChannels(ctx),
-		Acknowledgements: k.GetAllPacketAcks(ctx),
-		Commitments:      k.GetAllPacketCommitments(ctx),
-		Receipts:         k.GetAllPacketReceipts(ctx),
-		SendSequences:    k.GetAllPacketSendSeqs(ctx),
-		RecvSequences:    k.GetAllPacketRecvSeqs(ctx),
-		AckSequences:     k.GetAllPacketAckSeqs(ctx),
+		Channels:            k.GetAllChannels(ctx),
+		Acknowledgements:    k.GetAllPacketAcks(ctx),
+		Commitments:         k.GetAllPacketCommitments(ctx),
+		Receipts:            k.GetAllPacketReceipts(ctx),
+		SendSequences:       k.GetAllPacketSendSeqs(ctx),
+		RecvSequences:       k.GetAllPacketRecvSeqs(ctx),
+		AckSequences:        k.GetAllPacketAckSeqs(ctx),
+		NextChannelSequence: k.GetNextChannelSequence(ctx),
 	}
 }

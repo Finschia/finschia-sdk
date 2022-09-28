@@ -3,7 +3,6 @@ package types
 import (
 	"fmt"
 
-	codectypes "github.com/line/lbm-sdk/codec/types"
 	gov "github.com/line/lbm-sdk/x/gov/types"
 )
 
@@ -18,13 +17,12 @@ func NewSoftwareUpgradeProposal(title, description string, plan Plan) gov.Conten
 
 // Implements Proposal Interface
 var _ gov.Content = &SoftwareUpgradeProposal{}
-var _ codectypes.UnpackInterfacesMessage = SoftwareUpgradeProposal{}
 
 func init() {
 	gov.RegisterProposalType(ProposalTypeSoftwareUpgrade)
-	gov.RegisterProposalTypeCodec(&SoftwareUpgradeProposal{}, "lbm-sdk/SoftwareUpgradeProposal")
+	gov.RegisterProposalTypeCodec(&SoftwareUpgradeProposal{}, "cosmos-sdk/SoftwareUpgradeProposal")
 	gov.RegisterProposalType(ProposalTypeCancelSoftwareUpgrade)
-	gov.RegisterProposalTypeCodec(&CancelSoftwareUpgradeProposal{}, "lbm-sdk/CancelSoftwareUpgradeProposal")
+	gov.RegisterProposalTypeCodec(&CancelSoftwareUpgradeProposal{}, "cosmos-sdk/CancelSoftwareUpgradeProposal")
 }
 
 func (sup *SoftwareUpgradeProposal) GetTitle() string       { return sup.Title }
@@ -43,11 +41,6 @@ func (sup SoftwareUpgradeProposal) String() string {
   Title:       %s
   Description: %s
 `, sup.Title, sup.Description)
-}
-
-// UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
-func (sup SoftwareUpgradeProposal) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
-	return sup.Plan.UnpackInterfaces(unpacker)
 }
 
 func NewCancelSoftwareUpgradeProposal(title, description string) gov.Content {

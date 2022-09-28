@@ -14,7 +14,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr cryptotypes.Addre
 	height := ctx.BlockHeight()
 
 	// fetch the validator public key
-	consAddr := sdk.BytesToConsAddress(addr)
+	consAddr := sdk.ConsAddress(addr)
 	if _, err := k.GetPubkey(ctx, addr); err != nil {
 		panic(fmt.Sprintf("Validator consensus-address %s not found", consAddr))
 	}
@@ -26,7 +26,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr cryptotypes.Addre
 	}
 
 	// this is a relative index, so it counts blocks the validator *should* have signed
-	// will use the 0-value default signing info if not present, except for start height
+	// will use the 0-value default signing info if not present, except for the beginning
 	index := signInfo.IndexOffset % k.SignedBlocksWindow(ctx)
 	signInfo.IndexOffset++
 
@@ -69,11 +69,12 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr cryptotypes.Addre
 		)
 	}
 
-	minHeight := signInfo.StartHeight + k.SignedBlocksWindow(ctx)
+	numVotes := signInfo.IndexOffset
+	minVotes := k.SignedBlocksWindow(ctx)
 	maxMissed := k.SignedBlocksWindow(ctx) - minSignedPerWindow
 
-	// if we are past the minimum height and the validator has missed too many blocks, punish them
-	if height > minHeight && signInfo.MissedBlocksCounter > maxMissed {
+	// if we have joined enough times to voter set and the validator has missed too many blocks, punish them
+	if numVotes >= minVotes && signInfo.MissedBlocksCounter > maxMissed {
 		validator := k.sk.ValidatorByConsAddr(ctx, consAddr)
 		if validator != nil && !validator.IsJailed() {
 			// Downtime confirmed: slash and jail the validator
@@ -107,7 +108,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr cryptotypes.Addre
 				"slashing and jailing validator due to liveness fault",
 				"height", height,
 				"validator", consAddr.String(),
-				"min_height", minHeight,
+				"min_votes", minVotes,
 				"threshold", minSignedPerWindow,
 				"slashed", k.SlashFractionDowntime(ctx).String(),
 				"jailed_until", signInfo.JailedUntil,

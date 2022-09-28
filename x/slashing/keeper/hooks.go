@@ -3,12 +3,14 @@ package keeper
 import (
 	"time"
 
+	"github.com/line/ostracon/crypto"
+
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/slashing/types"
 )
 
 func (k Keeper) AfterValidatorBonded(ctx sdk.Context, address sdk.ConsAddress, _ sdk.ValAddress) {
-	// Update the signing info start height or create a new signing info
+	// Update the signing info voter set counter or create a new signing info
 	_, found := k.GetValidatorSigningInfo(ctx, address)
 	if !found {
 		signingInfo := types.NewValidatorSigningInfo(
@@ -37,11 +39,8 @@ func (k Keeper) AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress) e
 
 // AfterValidatorRemoved deletes the address-pubkey relation when a validator is removed,
 func (k Keeper) AfterValidatorRemoved(ctx sdk.Context, address sdk.ConsAddress) {
-	addrBytes, _ := sdk.ConsAddressToBytes(address.String())
-	k.deleteAddrPubkeyRelation(ctx, addrBytes)
+	k.deleteAddrPubkeyRelation(ctx, crypto.Address(address))
 }
-
-//_________________________________________________________________________________________
 
 // Hooks wrapper struct for slashing keeper
 type Hooks struct {

@@ -24,7 +24,7 @@ func TestAllocateTokensToValidatorWithCommission(t *testing.T) {
 
 	// create validator with 50% commission
 	tstaking.Commission = stakingtypes.NewCommissionRates(sdk.NewDecWithPrec(5, 1), sdk.NewDecWithPrec(5, 1), sdk.NewDec(0))
-	tstaking.CreateValidator(addrs[0].ToValAddress(), valConsPk1, sdk.NewInt(100), true)
+	tstaking.CreateValidator(sdk.ValAddress(addrs[0]), valConsPk1, sdk.NewInt(100), true)
 	val := app.StakingKeeper.Validator(ctx, valAddrs[0])
 
 	// allocate tokens
@@ -60,14 +60,14 @@ func TestAllocateTokensToManyValidators(t *testing.T) {
 	tstaking.CreateValidator(valAddrs[1], valConsPk2, sdk.NewInt(100), true)
 
 	abciValA := abci.Validator{
-		Address:     valConsPk1.Address(),
-		Power:       100,
-		VotingPower: 100,
+		Address:      valConsPk1.Address(),
+		Power:        100,
+		VotingWeight: 100,
 	}
 	abciValB := abci.Validator{
-		Address:     valConsPk2.Address(),
-		Power:       100,
-		VotingPower: 100,
+		Address:      valConsPk2.Address(),
+		Power:        100,
+		VotingWeight: 100,
 	}
 
 	// assert initial state: zero outstanding rewards, zero community pool, zero commission, zero current rewards
@@ -84,8 +84,9 @@ func TestAllocateTokensToManyValidators(t *testing.T) {
 	feeCollector := app.AccountKeeper.GetModuleAccount(ctx, types.FeeCollectorName)
 	require.NotNil(t, feeCollector)
 
-	err := app.BankKeeper.SetBalances(ctx, feeCollector.GetAddress(), fees)
-	require.NoError(t, err)
+	// fund fee collector
+	require.NoError(t, simapp.FundModuleAccount(app, ctx, feeCollector.GetName(), fees))
+
 	app.AccountKeeper.SetAccount(ctx, feeCollector)
 
 	votes := []abci.VoteInfo{
@@ -136,19 +137,19 @@ func TestAllocateTokensTruncation(t *testing.T) {
 	tstaking.CreateValidator(valAddrs[2], valConsPk3, sdk.NewInt(100), true)
 
 	abciValA := abci.Validator{
-		Address:     valConsPk1.Address(),
-		Power:       11,
-		VotingPower: 11,
+		Address:      valConsPk1.Address(),
+		Power:        11,
+		VotingWeight: 11,
 	}
 	abciValB := abci.Validator{
-		Address:     valConsPk2.Address(),
-		Power:       10,
-		VotingPower: 10,
+		Address:      valConsPk2.Address(),
+		Power:        10,
+		VotingWeight: 10,
 	}
 	abciValС := abci.Validator{
-		Address:     valConsPk3.Address(),
-		Power:       10,
-		VotingPower: 10,
+		Address:      valConsPk3.Address(),
+		Power:        10,
+		VotingWeight: 10,
 	}
 
 	// assert initial state: zero outstanding rewards, zero community pool, zero commission, zero current rewards
@@ -167,8 +168,7 @@ func TestAllocateTokensTruncation(t *testing.T) {
 	feeCollector := app.AccountKeeper.GetModuleAccount(ctx, types.FeeCollectorName)
 	require.NotNil(t, feeCollector)
 
-	err := app.BankKeeper.SetBalances(ctx, feeCollector.GetAddress(), fees)
-	require.NoError(t, err)
+	require.NoError(t, simapp.FundModuleAccount(app, ctx, feeCollector.GetName(), fees))
 
 	app.AccountKeeper.SetAccount(ctx, feeCollector)
 
@@ -186,7 +186,7 @@ func TestAllocateTokensTruncation(t *testing.T) {
 			SignedLastBlock: true,
 		},
 	}
-	app.DistrKeeper.AllocateTokens(ctx, 31, 31, sdk.BytesToConsAddress(valConsPk2.Address()), votes)
+	app.DistrKeeper.AllocateTokens(ctx, 31, 31, sdk.ConsAddress(valConsPk2.Address()), votes)
 
 	require.True(t, app.DistrKeeper.GetValidatorOutstandingRewards(ctx, valAddrs[0]).Rewards.IsValid())
 	require.True(t, app.DistrKeeper.GetValidatorOutstandingRewards(ctx, valAddrs[1]).Rewards.IsValid())

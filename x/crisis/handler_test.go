@@ -4,15 +4,12 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/crisis"
 	"github.com/line/lbm-sdk/x/crisis/types"
 	distrtypes "github.com/line/lbm-sdk/x/distribution/types"
@@ -26,9 +23,8 @@ var (
 )
 
 func createTestApp() (*simapp.SimApp, sdk.Context, []sdk.AccAddress) {
-	db := memdb.NewDB()
-	app := simapp.NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, simapp.DefaultNodeHome, 1, simapp.MakeTestEncodingConfig(), simapp.EmptyAppOptions{})
-	ctx := app.NewContext(true, ocproto.Header{})
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, ocproto.Header{})
 
 	constantFee := sdk.NewInt64Coin(sdk.DefaultBondDenom, 10)
 	app.CrisisKeeper.SetConstantFee(ctx, constantFee)
@@ -40,14 +36,11 @@ func createTestApp() (*simapp.SimApp, sdk.Context, []sdk.AccAddress) {
 	feePool := distrtypes.InitialFeePool()
 	feePool.CommunityPool = sdk.NewDecCoinsFromCoins(sdk.NewCoins(constantFee)...)
 	app.DistrKeeper.SetFeePool(ctx, feePool)
-	app.BankKeeper.SetSupply(ctx, banktypes.NewSupply(sdk.Coins{}))
 
 	addrs := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(10000))
 
 	return app, ctx, addrs
 }
-
-//____________________________________________________________________________
 
 func TestHandleMsgVerifyInvariant(t *testing.T) {
 	app, ctx, addrs := createTestApp()

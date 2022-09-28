@@ -100,18 +100,18 @@ func NonNegativePowerInvariant(k Keeper) sdk.Invariant {
 
 		iterator := k.ValidatorsPowerStoreIterator(ctx)
 		for ; iterator.Valid(); iterator.Next() {
-			validator, found := k.GetValidator(ctx, sdk.ValAddress(string(iterator.Value())))
+			validator, found := k.GetValidator(ctx, iterator.Value())
 			if !found {
 				panic(fmt.Sprintf("validator record not found for address: %X\n", iterator.Value()))
 			}
 
-			powerKey := types.GetValidatorsByPowerIndexKey(validator)
+			powerKey := types.GetValidatorsByPowerIndexKey(validator, k.PowerReduction(ctx))
 
 			if !bytes.Equal(iterator.Key(), powerKey) {
 				broken = true
 				msg += fmt.Sprintf("power store invariance:\n\tvalidator.Power: %v"+
 					"\n\tkey should be: %v\n\tkey in store: %v\n",
-					validator.GetConsensusPower(), powerKey, iterator.Key())
+					validator.GetConsensusPower(k.PowerReduction(ctx)), powerKey, iterator.Key())
 			}
 
 			if validator.Tokens.IsNegative() {
@@ -166,20 +166,30 @@ func DelegatorSharesInvariant(k Keeper) sdk.Invariant {
 		)
 
 		validators := k.GetAllValidators(ctx)
+		validatorsDelegationShares := map[string]sdk.Dec{}
+
+		// initialize a map: validator -> its delegation shares
 		for _, validator := range validators {
-			valTotalDelShares := validator.GetDelegatorShares()
-			totalDelShares := sdk.ZeroDec()
+			validatorsDelegationShares[validator.GetOperator().String()] = sdk.ZeroDec()
+		}
 
-			delegations := k.GetValidatorDelegations(ctx, validator.GetOperator())
-			for _, delegation := range delegations {
-				totalDelShares = totalDelShares.Add(delegation.Shares)
-			}
+		// iterate through all the delegations to calculate the total delegation shares for each validator
+		delegations := k.GetAllDelegations(ctx)
+		for _, delegation := range delegations {
+			delegationValidatorAddr := delegation.GetValidatorAddr().String()
+			validatorDelegationShares := validatorsDelegationShares[delegationValidatorAddr]
+			validatorsDelegationShares[delegationValidatorAddr] = validatorDelegationShares.Add(delegation.Shares)
+		}
 
-			if !valTotalDelShares.Equal(totalDelShares) {
+		// for each validator, check if its total delegation shares calculated from the step above equals to its expected delegation shares
+		for _, validator := range validators {
+			expValTotalDelShares := validator.GetDelegatorShares()
+			calculatedValTotalDelShares := validatorsDelegationShares[validator.GetOperator().String()]
+			if !calculatedValTotalDelShares.Equal(expValTotalDelShares) {
 				broken = true
 				msg += fmt.Sprintf("broken delegator shares invariance:\n"+
 					"\tvalidator.DelegatorShares: %v\n"+
-					"\tsum of Delegator.Shares: %v\n", valTotalDelShares, totalDelShares)
+					"\tsum of Delegator.Shares: %v\n", expValTotalDelShares, calculatedValTotalDelShares)
 			}
 		}
 

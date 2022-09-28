@@ -1,9 +1,9 @@
 package cli
 
 import (
+	"github.com/line/lbm-sdk/client"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 )
 
@@ -20,12 +20,33 @@ func GetQueryCmd() *cobra.Command {
 	queryCmd.AddCommand(
 		GetCmdQueryClientStates(),
 		GetCmdQueryClientState(),
+		GetCmdQueryClientStatus(),
 		GetCmdQueryConsensusStates(),
 		GetCmdQueryConsensusState(),
 		GetCmdQueryHeader(),
-		GetCmdNodeConsensusState(),
+		GetCmdSelfConsensusState(),
 		GetCmdParams(),
 	)
 
 	return queryCmd
+}
+
+// NewTxCmd returns the command to create and handle IBC clients
+func NewTxCmd() *cobra.Command {
+	txCmd := &cobra.Command{
+		Use:                        types.SubModuleName,
+		Short:                      "IBC client transaction subcommands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	txCmd.AddCommand(
+		NewCreateClientCmd(),
+		NewUpdateClientCmd(),
+		NewSubmitMisbehaviourCmd(),
+		NewUpgradeClientCmd(),
+	)
+
+	return txCmd
 }

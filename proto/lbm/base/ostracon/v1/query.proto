@@ -7,7 +7,7 @@ import "ostracon/p2p/types.proto";
 import "ostracon/types/block.proto";
 import "ostracon/types/types.proto";
 import "ostracon/abci/types.proto";
-import "lbm/base/query/v1/pagination.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 
 option go_package = "github.com/line/lbm-sdk/client/grpc/tmservice";
 
@@ -52,7 +52,7 @@ service Service {
 message GetValidatorSetByHeightRequest {
   int64 height = 1;
   // pagination defines an pagination for the request.
-  lbm.base.query.v1.PageRequest pagination = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 // GetValidatorSetByHeightResponse is the response type for the Query/GetValidatorSetByHeight RPC method.
@@ -60,13 +60,13 @@ message GetValidatorSetByHeightResponse {
   int64              block_height = 1;
   repeated Validator validators   = 2;
   // pagination defines an pagination for the response.
-  lbm.base.query.v1.PageResponse pagination = 3;
+  cosmos.base.query.v1beta1.PageResponse pagination = 3;
 }
 
 // GetLatestValidatorSetRequest is the request type for the Query/GetValidatorSetByHeight RPC method.
 message GetLatestValidatorSetRequest {
   // pagination defines an pagination for the request.
-  lbm.base.query.v1.PageRequest pagination = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // GetLatestValidatorSetResponse is the response type for the Query/GetValidatorSetByHeight RPC method.
@@ -74,7 +74,7 @@ message GetLatestValidatorSetResponse {
   int64              block_height = 1;
   repeated Validator validators   = 2;
   // pagination defines an pagination for the response.
-  lbm.base.query.v1.PageResponse pagination = 3;
+  cosmos.base.query.v1beta1.PageResponse pagination = 3;
 }
 
 // Validator is the type for the validator-set.
@@ -155,6 +155,8 @@ message VersionInfo {
   string          build_tags = 5;
   string          go_version = 6;
   repeated Module build_deps = 7;
+  // Since: cosmos-sdk 0.43
+  string lbm_sdk_version = 8;
 }
 
 // Module is the type for VersionInfo

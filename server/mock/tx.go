@@ -53,10 +53,6 @@ func (tx kvstoreTx) GetSignBytes() []byte {
 	return tx.bytes
 }
 
-func (tx kvstoreTx) GetSigBlockHeight() uint64 {
-	return 0
-}
-
 // Should the app be calling this? Or only handlers?
 func (tx kvstoreTx) ValidateBasic() error {
 	return nil

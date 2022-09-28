@@ -15,7 +15,6 @@ const (
 	DefaultTxSizeCostPerByte      uint64 = 10
 	DefaultSigVerifyCostED25519   uint64 = 590
 	DefaultSigVerifyCostSecp256k1 uint64 = 1000
-	DefaultValidSigBlockPeriod    uint64 = 100
 )
 
 // Parameter keys
@@ -25,15 +24,13 @@ var (
 	KeyTxSizeCostPerByte      = []byte("TxSizeCostPerByte")
 	KeySigVerifyCostED25519   = []byte("SigVerifyCostED25519")
 	KeySigVerifyCostSecp256k1 = []byte("SigVerifyCostSecp256k1")
-	KeyValidSigBlockPeriod    = []byte("ValidSigBlockPeriod")
 )
 
 var _ paramtypes.ParamSet = &Params{}
 
 // NewParams creates a new Params object
 func NewParams(
-	maxMemoCharacters, txSigLimit, txSizeCostPerByte, sigVerifyCostED25519, sigVerifyCostSecp256k1,
-	validSigBlockPeriod uint64,
+	maxMemoCharacters, txSigLimit, txSizeCostPerByte, sigVerifyCostED25519, sigVerifyCostSecp256k1 uint64,
 ) Params {
 	return Params{
 		MaxMemoCharacters:      maxMemoCharacters,
@@ -41,7 +38,6 @@ func NewParams(
 		TxSizeCostPerByte:      txSizeCostPerByte,
 		SigVerifyCostED25519:   sigVerifyCostED25519,
 		SigVerifyCostSecp256k1: sigVerifyCostSecp256k1,
-		ValidSigBlockPeriod:    validSigBlockPeriod,
 	}
 }
 
@@ -52,7 +48,6 @@ func ParamKeyTable() paramtypes.KeyTable {
 
 // ParamSetPairs implements the ParamSet interface and returns all the key/value pairs
 // pairs of auth module's parameters.
-// nolint
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeyMaxMemoCharacters, &p.MaxMemoCharacters, validateMaxMemoCharacters),
@@ -60,7 +55,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyTxSizeCostPerByte, &p.TxSizeCostPerByte, validateTxSizeCostPerByte),
 		paramtypes.NewParamSetPair(KeySigVerifyCostED25519, &p.SigVerifyCostED25519, validateSigVerifyCostED25519),
 		paramtypes.NewParamSetPair(KeySigVerifyCostSecp256k1, &p.SigVerifyCostSecp256k1, validateSigVerifyCostSecp256k1),
-		paramtypes.NewParamSetPair(KeyValidSigBlockPeriod, &p.ValidSigBlockPeriod, validateValidSigBlockPeriod),
 	}
 }
 
@@ -72,8 +66,17 @@ func DefaultParams() Params {
 		TxSizeCostPerByte:      DefaultTxSizeCostPerByte,
 		SigVerifyCostED25519:   DefaultSigVerifyCostED25519,
 		SigVerifyCostSecp256k1: DefaultSigVerifyCostSecp256k1,
-		ValidSigBlockPeriod:    DefaultValidSigBlockPeriod,
 	}
+}
+
+// SigVerifyCostSecp256r1 returns gas fee of secp256r1 signature verification.
+// Set by benchmarking current implementation:
+//     BenchmarkSig/secp256k1     4334   277167 ns/op   4128 B/op   79 allocs/op
+//     BenchmarkSig/secp256r1    10000   108769 ns/op   1672 B/op   33 allocs/op
+// Based on the results above secp256k1 is 2.7x is slwer. However we propose to discount it
+// because we are we don't compare the cgo implementation of secp256k1, which is faster.
+func (p Params) SigVerifyCostSecp256r1() uint64 {
+	return p.SigVerifyCostSecp256k1 / 2
 }
 
 // String implements the stringer interface.
@@ -116,19 +119,6 @@ func validateSigVerifyCostSecp256k1(i interface{}) error {
 
 	if v == 0 {
 		return fmt.Errorf("invalid SECK256k1 signature verification cost: %d", v)
-	}
-
-	return nil
-}
-
-func validateValidSigBlockPeriod(i interface{}) error {
-	v, ok := i.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v == 0 {
-		return fmt.Errorf("invalid validSigBlockPeriod: %d", v)
 	}
 
 	return nil
@@ -177,8 +167,6 @@ func (p Params) Validate() error {
 	if err := validateTxSizeCostPerByte(p.TxSizeCostPerByte); err != nil {
 		return err
 	}
-	if err := validateValidSigBlockPeriod(p.ValidSigBlockPeriod); err != nil {
-		return err
-	}
+
 	return nil
 }

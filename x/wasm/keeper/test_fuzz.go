@@ -4,17 +4,17 @@ import (
 	"encoding/json"
 
 	fuzz "github.com/google/gofuzz"
+	tmBytes "github.com/line/ostracon/libs/bytes"
+
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	tmBytes "github.com/line/ostracon/libs/bytes"
 )
 
 var ModelFuzzers = []interface{}{FuzzAddr, FuzzAddrString, FuzzAbsoluteTxPosition, FuzzContractInfo, FuzzStateModel, FuzzAccessType, FuzzAccessConfig, FuzzContractCodeHistory}
 
 func FuzzAddr(m *sdk.AccAddress, c fuzz.Continue) {
-	addrBytes := make([]byte, 20)
-	c.Read(addrBytes)
-	*m = sdk.BytesToAccAddress(addrBytes)
+	*m = make([]byte, 20)
+	c.Read(*m)
 }
 
 func FuzzAddrString(m *string, c fuzz.Continue) {
@@ -67,6 +67,7 @@ func FuzzAccessType(m *types.AccessType, c fuzz.Continue) {
 		pos--
 	}
 }
+
 func FuzzAccessConfig(m *types.AccessConfig, c fuzz.Continue) {
 	FuzzAccessType(&m.Permission, c)
 	var add sdk.AccAddress

@@ -5,11 +5,13 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/rest"
-	wasmUtils "github.com/line/lbm-sdk/x/wasm/client/utils"
+	"github.com/line/lbm-sdk/x/wasm/ioutils"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -30,7 +32,7 @@ type instantiateContractReq struct {
 	Label   string       `json:"label" yaml:"label"`
 	Deposit sdk.Coins    `json:"deposit" yaml:"deposit"`
 	Admin   string       `json:"admin,omitempty" yaml:"admin"`
-	InitMsg []byte       `json:"init_msg" yaml:"init_msg"`
+	Msg     []byte       `json:"msg" yaml:"msg"`
 }
 
 type storeCodeAndInstantiateContractReq struct {
@@ -39,7 +41,7 @@ type storeCodeAndInstantiateContractReq struct {
 	Label     string       `json:"label" yaml:"label"`
 	Deposit   sdk.Coins    `json:"deposit" yaml:"deposit"`
 	Admin     string       `json:"admin,omitempty" yaml:"admin"`
-	InitMsg   []byte       `json:"init_msg" yaml:"init_msg"`
+	Msg       []byte       `json:"msg" yaml:"msg"`
 }
 
 type executeContractReq struct {
@@ -64,18 +66,18 @@ func storeCodeHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		wasm := req.WasmBytes
 
 		// gzip the wasm file
-		if wasmUtils.IsWasm(wasm) {
-			wasm, err = wasmUtils.GzipIt(wasm)
+		if ioutils.IsWasm(wasm) {
+			wasm, err = ioutils.GzipIt(wasm)
 			if err != nil {
 				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 				return
 			}
-		} else if !wasmUtils.IsGzip(wasm) {
+		} else if !ioutils.IsGzip(wasm) {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, "Invalid input file, use wasm binary or zip")
 			return
 		}
 
-		// build and sign the transaction, then broadcast to Tendermint
+		// build and sign the transaction, then broadcast to Ostracon
 		msg := types.MsgStoreCode{
 			Sender:       req.BaseReq.From,
 			WASMByteCode: wasm,
@@ -97,7 +99,6 @@ func instantiateContractHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			return
 		}
 		vars := mux.Vars(r)
-		codeIDVar := vars["codeId"]
 
 		req.BaseReq = req.BaseReq.Sanitize()
 		if !req.BaseReq.ValidateBasic(w) {
@@ -105,18 +106,18 @@ func instantiateContractHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		}
 
 		// get the id of the code to instantiate
-		codeID, err := strconv.ParseUint(codeIDVar, 10, 64)
+		codeID, err := strconv.ParseUint(vars["codeId"], 10, 64)
 		if err != nil {
 			return
 		}
 
 		msg := types.MsgInstantiateContract{
-			Sender:  req.BaseReq.From,
-			CodeID:  codeID,
-			Label:   req.Label,
-			Funds:   req.Deposit,
-			InitMsg: req.InitMsg,
-			Admin:   req.Admin,
+			Sender: req.BaseReq.From,
+			CodeID: codeID,
+			Label:  req.Label,
+			Funds:  req.Deposit,
+			Msg:    req.Msg,
+			Admin:  req.Admin,
 		}
 
 		if err := msg.ValidateBasic(); err != nil {
@@ -144,24 +145,24 @@ func storeCodeAndInstantiateContractHandlerFn(cliCtx client.Context) http.Handle
 		wasm := req.WasmBytes
 
 		// gzip the wasm file
-		if wasmUtils.IsWasm(wasm) {
-			wasm, err = wasmUtils.GzipIt(wasm)
+		if ioutils.IsWasm(wasm) {
+			wasm, err = ioutils.GzipIt(wasm)
 			if err != nil {
 				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 				return
 			}
-		} else if !wasmUtils.IsGzip(wasm) {
+		} else if !ioutils.IsGzip(wasm) {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, "Invalid input file, use wasm binary or zip")
 			return
 		}
 
-		// build and sign the transaction, then broadcast to Tendermint
-		msg := types.MsgStoreCodeAndInstantiateContract{
+		// build and sign the transaction, then broadcast to Ostracon
+		msg := lbmtypes.MsgStoreCodeAndInstantiateContract{
 			Sender:       req.BaseReq.From,
 			WASMByteCode: wasm,
 			Label:        req.Label,
 			Funds:        req.Deposit,
-			InitMsg:      req.InitMsg,
+			Msg:          req.Msg,
 			Admin:        req.Admin,
 		}
 
