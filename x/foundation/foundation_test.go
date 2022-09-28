@@ -572,3 +572,81 @@ func TestProposal(t *testing.T) {
 		require.NoError(t, err, name)
 	}
 }
+
+func TestOutsourcingDecisionPolicy(t *testing.T) {
+	config := foundation.DefaultConfig()
+
+	testCases := map[string]struct {
+		totalWeight sdk.Dec
+		validBasic  bool
+		valid       bool
+	}{
+		"invalid policy": {
+			totalWeight: sdk.OneDec(),
+			validBasic:  true,
+		},
+	}
+
+	for name, tc := range testCases {
+		policy := foundation.OutsourcingDecisionPolicy{}
+		require.Equal(t, time.Duration(0), policy.GetVotingPeriod())
+
+		err := policy.ValidateBasic()
+		if !tc.validBasic {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
+
+		info := foundation.FoundationInfo{
+			TotalWeight: tc.totalWeight,
+		}
+		err = policy.Validate(info, config)
+		if !tc.valid {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
+	}
+}
+
+func TestOutsourcingDecisionPolicyAllow(t *testing.T) {
+	config := foundation.DefaultConfig()
+	policy := foundation.OutsourcingDecisionPolicy{}
+	require.NoError(t, policy.ValidateBasic())
+
+	info := foundation.FoundationInfo{
+		TotalWeight: sdk.OneDec(),
+	}
+	require.Error(t, policy.Validate(info, config))
+	require.Equal(t, time.Duration(0), policy.GetVotingPeriod())
+
+	testCases := map[string]struct {
+		sinceSubmission time.Duration
+		totalWeight     sdk.Dec
+		tally           foundation.TallyResult
+		valid           bool
+		final           bool
+		allow           bool
+	}{
+		"deny": {
+			sinceSubmission: 0,
+			totalWeight:     sdk.OneDec(),
+			tally:           foundation.NewTallyResult(sdk.OneDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+		},
+	}
+
+	for name, tc := range testCases {
+		result, err := policy.Allow(tc.tally, tc.totalWeight, tc.sinceSubmission)
+		if !tc.valid {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, tc.final, result.Final, name)
+		if tc.final {
+			require.Equal(t, tc.allow, result.Allow, name)
+		}
+	}
+}

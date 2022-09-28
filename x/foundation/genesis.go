@@ -42,6 +42,7 @@ func ValidateGenesis(data GenesisState) error {
 		return err
 	}
 
+	outsourcing := false
 	if info := data.Foundation; info != nil {
 		if operator := info.Operator; len(operator) != 0 {
 			if _, err := sdk.AccAddressFromBech32(info.Operator); err != nil {
@@ -53,19 +54,26 @@ func ValidateGenesis(data GenesisState) error {
 			return sdkerrors.ErrInvalidVersion.Wrap("version must be > 0")
 		}
 
-		if info.GetDecisionPolicy() != nil {
-			if err := info.GetDecisionPolicy().ValidateBasic(); err != nil {
+		if policy := info.GetDecisionPolicy(); policy != nil {
+			if err := policy.ValidateBasic(); err != nil {
 				return err
 			}
-		}
 
+			_, outsourcing = policy.(*OutsourcingDecisionPolicy)
+		}
 	}
 
+	if outsourcing && len(data.Members) != 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("outsourcing policy not allows members")
+	}
 	members := Members{Members: data.Members}
 	if err := members.ValidateBasic(); err != nil {
 		return err
 	}
 
+	if outsourcing && len(data.Proposals) != 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("outsourcing policy not allows proposals")
+	}
 	proposalIDs := map[uint64]bool{}
 	for _, proposal := range data.Proposals {
 		id := proposal.Id

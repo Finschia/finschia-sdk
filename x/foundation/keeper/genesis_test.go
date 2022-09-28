@@ -22,7 +22,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			export: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: foundation.FoundationInfo{
-					Operator:    s.keeper.GetAdmin(s.ctx).String(),
+					Operator:    s.keeper.GetDefaultOperator(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
@@ -46,7 +46,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					},
 				},
 				Foundation: foundation.FoundationInfo{
-					Operator:    s.keeper.GetAdmin(s.ctx).String(),
+					Operator:    s.keeper.GetDefaultOperator(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
@@ -65,7 +65,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			export: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: foundation.FoundationInfo{
-					Operator:    s.keeper.GetAdmin(s.ctx).String(),
+					Operator:    s.keeper.GetDefaultOperator(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
@@ -102,7 +102,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			export: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: foundation.FoundationInfo{
-					Operator:    s.keeper.GetAdmin(s.ctx).String(),
+					Operator:    s.keeper.GetDefaultOperator(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
@@ -145,7 +145,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			export: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: foundation.FoundationInfo{
-					Operator:    s.keeper.GetAdmin(s.ctx).String(),
+					Operator:    s.keeper.GetDefaultOperator(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
@@ -171,7 +171,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			export: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: foundation.FoundationInfo{
-					Operator:    s.keeper.GetAdmin(s.ctx).String(),
+					Operator:    s.keeper.GetDefaultOperator(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),

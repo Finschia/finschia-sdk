@@ -102,6 +102,44 @@ func TestValidateGenesis(t *testing.T) {
 				}),
 			},
 		},
+		"non empty members with outsourcing decision policy": {
+			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
+				Foundation: foundation.FoundationInfo{
+					Operator: createAddress().String(),
+					Version:  1,
+				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{
+					Description: "using x/group",
+				}),
+				Members: []foundation.Member{
+					{
+						Address: createAddress().String(),
+					},
+				},
+			},
+		},
+		"non empty proposals with outsourcing decision policy": {
+			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
+				Foundation: foundation.FoundationInfo{
+					Operator: createAddress().String(),
+					Version:  1,
+				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{
+					Description: "using x/group",
+				}),
+				Proposals: []foundation.Proposal{
+					*foundation.Proposal{
+						Id:                1,
+						Proposers:         []string{createAddress().String()},
+						FoundationVersion: 1,
+					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
+						Operator: createAddress().String(),
+						To:       createAddress().String(),
+						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+					}}),
+				},
+			},
+		},
 		"invalid proposals": {
 			data: foundation.GenesisState{
 				Params:    foundation.DefaultParams(),

@@ -68,7 +68,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	info.TotalWeight = sdk.NewDec(totalWeight)
 
 	if len(info.Operator) == 0 {
-		info.Operator = k.GetAdmin(ctx).String()
+		info.Operator = k.GetDefaultOperator(ctx).String()
 	}
 
 	if info.GetDecisionPolicy() == nil ||

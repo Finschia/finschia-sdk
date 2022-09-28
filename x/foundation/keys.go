@@ -10,6 +10,6 @@ const (
 	// RouterKey defines the module's message routing key
 	RouterKey = ModuleName
 
-	TreasuryName      = "treasury"
-	AdministratorName = "administrator"
+	TreasuryName        = "treasury"
+	DefaultOperatorName = "default_operator"
 )
