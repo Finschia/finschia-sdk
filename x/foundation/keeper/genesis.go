@@ -16,14 +16,15 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	createValidatorGrantees := getCreateValidatorGrantees(authorizations)
 	isCreateValidatorCensored := k.IsCensoredMessage(ctx, sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)))
 	if isCreateValidatorCensored && len(createValidatorGrantees) == 0 {
-		// Allowed validators must exist if the module is enabled,
-		// so it should be the very first block of the chain.
-		// We gather the information from staking module.
+		// Allowed validators must exist if the `Msg/CreateValidator` is
+		// being censored, or no validator would be created.
+		// We gather all the operator addresses from staking module,
+		// and allow them to create validators.
 		sk.IterateValidators(ctx, func(_ int64, addr stakingtypes.ValidatorI) (stop bool) {
 			grantee := sdk.AccAddress(addr.GetOperator())
 			createValidatorGrantees = append(createValidatorGrantees, grantee)
 
-			// add to authorizations
+			// add authorizations
 			authorization := &stakingplus.CreateValidatorAuthorization{
 				ValidatorAddress: sdk.ValAddress(grantee).String(),
 			}
@@ -39,14 +40,17 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		})
 	}
 
+	info := data.Foundation
 	members := data.Members
 	if len(members) == 0 {
-		for _, grantee := range createValidatorGrantees {
-			member := foundation.Member{
-				Address:  grantee.String(),
-				Metadata: "genesis member",
+		if _, outsourcing := info.GetDecisionPolicy().(*foundation.OutsourcingDecisionPolicy); !outsourcing {
+			for _, grantee := range createValidatorGrantees {
+				member := foundation.Member{
+					Address:  grantee.String(),
+					Metadata: "genesis member",
+				}
+				members = append(members, member)
 			}
-			members = append(members, member)
 		}
 	}
 	for _, member := range members {
@@ -57,30 +61,13 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		k.setMember(ctx, member)
 	}
 
-	info := data.Foundation
-	if info == nil {
-		info = &foundation.FoundationInfo{
-			Version: 1,
-		}
-	}
-
 	totalWeight := int64(len(members))
 	info.TotalWeight = sdk.NewDec(totalWeight)
 
 	if len(info.Operator) == 0 {
 		info.Operator = k.GetDefaultOperator(ctx).String()
 	}
-
-	if info.GetDecisionPolicy() == nil ||
-		info.GetDecisionPolicy().ValidateBasic() != nil ||
-		info.GetDecisionPolicy().Validate(*info, k.config) != nil {
-		policy := foundation.DefaultDecisionPolicy()
-		if err := info.SetDecisionPolicy(policy); err != nil {
-			return err
-		}
-	}
-
-	k.setFoundationInfo(ctx, *info)
+	k.setFoundationInfo(ctx, info)
 
 	k.setPreviousProposalID(ctx, data.PreviousProposalId)
 
@@ -125,46 +112,12 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 
 	return &foundation.GenesisState{
 		Params:             k.GetParams(ctx),
-		Foundation:         &info,
+		Foundation:         info,
 		Members:            k.GetMembers(ctx),
 		PreviousProposalId: k.getPreviousProposalID(ctx),
 		Proposals:          proposals,
 		Votes:              votes,
 		Authorizations:     k.GetGrants(ctx),
-	}
-}
-
-func (k Keeper) ResetState(ctx sdk.Context) {
-	store := ctx.KVStore(k.storeKey)
-	// TODO: reset validator list too
-
-	// reset foundation
-	store.Delete(foundationInfoKey)
-
-	// reset members
-	for _, member := range k.GetMembers(ctx) {
-		addr, err := sdk.AccAddressFromBech32(member.Address)
-		if err != nil {
-			panic(err)
-		}
-		store.Delete(memberKey(addr))
-	}
-
-	// id
-	store.Delete(previousProposalIDKey)
-
-	// reset proposals & votes
-	for _, proposal := range k.GetProposals(ctx) {
-		k.pruneProposal(ctx, proposal)
-	}
-
-	// reset authorizations
-	for _, ga := range k.GetGrants(ctx) {
-		grantee, err := sdk.AccAddressFromBech32(ga.Grantee)
-		if err != nil {
-			panic(err)
-		}
-		k.deleteAuthorization(ctx, grantee, ga.GetAuthorization().MsgTypeURL())
 	}
 }
 

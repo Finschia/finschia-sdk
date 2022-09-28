@@ -29,13 +29,15 @@ func TestValidateGenesis(t *testing.T) {
 	}{
 		"minimal": {
 			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 			},
 			valid: true,
 		},
 		"members": {
 			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Members: []foundation.Member{
 					{
 						Address: createAddress().String(),
@@ -47,16 +49,17 @@ func TestValidateGenesis(t *testing.T) {
 		"foundation info": {
 			data: foundation.GenesisState{
 				Params: foundation.DefaultParams(),
-				Foundation: &foundation.FoundationInfo{
+				Foundation: *foundation.FoundationInfo{
 					Operator: createAddress().String(),
 					Version:  1,
-				},
+				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{}),
 			},
 			valid: true,
 		},
 		"authorizations": {
 			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
 						Grantee: createAddress().String(),
@@ -70,34 +73,44 @@ func TestValidateGenesis(t *testing.T) {
 				Params: foundation.Params{
 					FoundationTax: sdk.NewDec(2),
 				},
+				Foundation: foundation.DefaultFoundation(),
 			},
 		},
 		"invalid members": {
 			data: foundation.GenesisState{
-				Members: []foundation.Member{{}},
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
+				Members:    []foundation.Member{{}},
 			},
 		},
 		"invalid operator address": {
 			data: foundation.GenesisState{
 				Params: foundation.DefaultParams(),
-				Foundation: &foundation.FoundationInfo{
+				Foundation: *foundation.FoundationInfo{
 					Operator: "invalid-address",
 					Version:  1,
-				},
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 			},
 		},
 		"invalid foundation version": {
 			data: foundation.GenesisState{
 				Params:     foundation.DefaultParams(),
-				Foundation: &foundation.FoundationInfo{},
+				Foundation: *foundation.FoundationInfo{}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
+			},
+		},
+		"no decision policy": {
+			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
+				Foundation: foundation.FoundationInfo{
+					Version: 1,
+				},
 			},
 		},
 		"invalid decision policy": {
 			data: foundation.GenesisState{
 				Params: foundation.DefaultParams(),
-				Foundation: foundation.FoundationInfo{
-					Operator: createAddress().String(),
-					Version:  1,
+				Foundation: *foundation.FoundationInfo{
+					Version: 1,
 				}.WithDecisionPolicy(&foundation.ThresholdDecisionPolicy{
 					Windows: &foundation.DecisionPolicyWindows{},
 				}),
@@ -106,7 +119,7 @@ func TestValidateGenesis(t *testing.T) {
 		"non empty members with outsourcing decision policy": {
 			data: foundation.GenesisState{
 				Params: foundation.DefaultParams(),
-				Foundation: foundation.FoundationInfo{
+				Foundation: *foundation.FoundationInfo{
 					Operator: createAddress().String(),
 					Version:  1,
 				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{
@@ -122,7 +135,7 @@ func TestValidateGenesis(t *testing.T) {
 		"non empty proposals with outsourcing decision policy": {
 			data: foundation.GenesisState{
 				Params: foundation.DefaultParams(),
-				Foundation: foundation.FoundationInfo{
+				Foundation: *foundation.FoundationInfo{
 					Operator: createAddress().String(),
 					Version:  1,
 				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{
@@ -137,15 +150,17 @@ func TestValidateGenesis(t *testing.T) {
 				},
 			},
 		},
-		"invalid proposals": {
+		"invalid proposal": {
 			data: foundation.GenesisState{
-				Params:    foundation.DefaultParams(),
-				Proposals: []foundation.Proposal{{}},
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
+				Proposals:  []foundation.Proposal{{}},
 			},
 		},
 		"duplicate proposals": {
 			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -162,7 +177,8 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"no proposal for the vote": {
 			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Votes: []foundation.Vote{
 					{
 						ProposalId: 1,
@@ -174,7 +190,8 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid voter": {
 			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -193,7 +210,8 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid vote option": {
 			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -211,7 +229,8 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid authorization": {
 			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Authorizations: []foundation.GrantAuthorization{{
 					Grantee: createAddress().String(),
 				}},
@@ -219,7 +238,8 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid grantee": {
 			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
@@ -227,7 +247,8 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid pool": {
 			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Pool: foundation.Pool{
 					Treasury: sdk.DecCoins{
 						{

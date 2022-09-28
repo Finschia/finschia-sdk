@@ -66,7 +66,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	var operatorMnemonic string
 	operatorMnemonic, s.operator = s.createMnemonic("operator")
-	info := &foundation.FoundationInfo{
+	info := foundation.FoundationInfo{
 		Operator: s.operator.String(),
 		Version:  1,
 	}

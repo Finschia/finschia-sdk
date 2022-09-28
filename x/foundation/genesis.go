@@ -10,8 +10,15 @@ import (
 // DefaultGenesisState creates a default GenesisState object
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
-		Params: DefaultParams(),
+		Params:     DefaultParams(),
+		Foundation: DefaultFoundation(),
 	}
+}
+
+func DefaultFoundation() FoundationInfo {
+	return *FoundationInfo{
+		Version: 1,
+	}.WithDecisionPolicy(DefaultDecisionPolicy())
 }
 
 func DefaultParams() Params {
@@ -21,10 +28,8 @@ func DefaultParams() Params {
 }
 
 func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
-	if data.Foundation != nil {
-		if err := data.Foundation.UnpackInterfaces(unpacker); err != nil {
-			return err
-		}
+	if err := data.Foundation.UnpackInterfaces(unpacker); err != nil {
+		return err
 	}
 
 	for _, ga := range data.Authorizations {
@@ -42,26 +47,25 @@ func ValidateGenesis(data GenesisState) error {
 		return err
 	}
 
-	outsourcing := false
-	if info := data.Foundation; info != nil {
-		if operator := info.Operator; len(operator) != 0 {
-			if _, err := sdk.AccAddressFromBech32(info.Operator); err != nil {
-				return err
-			}
-		}
-
-		if info.Version == 0 {
-			return sdkerrors.ErrInvalidVersion.Wrap("version must be > 0")
-		}
-
-		if policy := info.GetDecisionPolicy(); policy != nil {
-			if err := policy.ValidateBasic(); err != nil {
-				return err
-			}
-
-			_, outsourcing = policy.(*OutsourcingDecisionPolicy)
+	info := data.Foundation
+	if operator := info.Operator; len(operator) != 0 {
+		if _, err := sdk.AccAddressFromBech32(info.Operator); err != nil {
+			return err
 		}
 	}
+
+	if info.Version == 0 {
+		return sdkerrors.ErrInvalidVersion.Wrap("version must be > 0")
+	}
+
+	policy := info.GetDecisionPolicy()
+	if policy == nil {
+		return sdkerrors.ErrInvalidRequest.Wrap("must provide decision policy")
+	}
+	if err := policy.ValidateBasic(); err != nil {
+		return err
+	}
+	_, outsourcing := policy.(*OutsourcingDecisionPolicy)
 
 	if outsourcing && len(data.Members) != 0 {
 		return sdkerrors.ErrInvalidRequest.Wrap("outsourcing policy not allows members")

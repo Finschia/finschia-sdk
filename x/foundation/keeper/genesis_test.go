@@ -1,6 +1,13 @@
 package keeper_test
 
 import (
+	"testing"
+
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/stretchr/testify/require"
+
+	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 
@@ -9,7 +16,27 @@ import (
 	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
-func (s *KeeperTestSuite) TestImportExportGenesis() {
+func TestImportExportGenesis(t *testing.T) {
+	checkTx := false
+	app := simapp.Setup(checkTx)
+	testdata.RegisterInterfaces(app.InterfaceRegistry())
+
+	ctx := app.BaseApp.NewContext(checkTx, ocproto.Header{})
+	keeper := app.FoundationKeeper
+
+	createAddress := func() sdk.AccAddress {
+		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	operator := keeper.GetDefaultOperator(ctx)
+	member := createAddress()
+	stranger := createAddress()
+
+	validator := createAddress()
+	app.StakingKeeper.SetValidator(ctx, stakingtypes.Validator{
+		OperatorAddress: sdk.ValAddress(validator).String(),
+	})
+
 	testCases := map[string]struct {
 		init   *foundation.GenesisState
 		valid  bool
@@ -17,37 +44,14 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 	}{
 		"minimal": {
 			init: &foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 			},
 			valid: true,
 			export: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
-				Foundation: foundation.FoundationInfo{
-					Operator:    s.keeper.GetDefaultOperator(s.ctx).String(),
-					Version:     1,
-					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
-			},
-		},
-		"enabled with no create validator grantees": {
-			init: &foundation.GenesisState{
-				Params: foundation.Params{
-					FoundationTax: sdk.ZeroDec(),
-					CensoredMsgTypeUrls: []string{
-						sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
-					},
-				},
-			},
-			valid: true,
-			export: &foundation.GenesisState{
-				Params: foundation.Params{
-					FoundationTax: sdk.ZeroDec(),
-					CensoredMsgTypeUrls: []string{
-						sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
-					},
-				},
-				Foundation: foundation.FoundationInfo{
-					Operator:    s.keeper.GetDefaultOperator(s.ctx).String(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
@@ -55,42 +59,44 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 		},
 		"members": {
 			init: &foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Members: []foundation.Member{
 					{
-						Address: s.members[0].String(),
+						Address: member.String(),
 					},
 				},
 			},
 			valid: true,
 			export: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
-				Foundation: foundation.FoundationInfo{
-					Operator:    s.keeper.GetDefaultOperator(s.ctx).String(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Members: []foundation.Member{
 					{
-						Address: s.members[0].String(),
+						Address: member.String(),
 					},
 				},
 			},
 		},
 		"proposals": {
 			init: &foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
-						Proposers:         []string{s.members[0].String()},
+						Proposers:         []string{member.String()},
 						FoundationVersion: 1,
-					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg(s.operator)}),
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg(operator)}),
 				},
 				Votes: []foundation.Vote{
 					{
 						ProposalId: 1,
-						Voter:      s.members[0].String(),
+						Voter:      member.String(),
 						Option:     foundation.VOTE_OPTION_YES,
 					},
 				},
@@ -98,15 +104,15 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			valid: true,
 			export: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
-				Foundation: foundation.FoundationInfo{
-					Operator:    s.keeper.GetDefaultOperator(s.ctx).String(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
-						Proposers:         []string{s.members[0].String()},
+						Proposers:         []string{member.String()},
 						FoundationVersion: 1,
 						FinalTallyResult: foundation.TallyResult{
 							YesCount:        sdk.ZeroDec(),
@@ -114,12 +120,12 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 							AbstainCount:    sdk.ZeroDec(),
 							NoWithVetoCount: sdk.ZeroDec(),
 						},
-					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg(s.operator)}),
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg(operator)}),
 				},
 				Votes: []foundation.Vote{
 					{
 						ProposalId: 1,
-						Voter:      s.members[0].String(),
+						Voter:      member.String(),
 						Option:     foundation.VOTE_OPTION_YES,
 					},
 				},
@@ -127,66 +133,107 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 		},
 		"authorizations": {
 			init: &foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Grantee: s.stranger.String(),
+						Grantee: stranger.String(),
 					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
 			},
 			valid: true,
 			export: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
-				Foundation: foundation.FoundationInfo{
-					Operator:    s.keeper.GetDefaultOperator(s.ctx).String(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Grantee: s.stranger.String(),
+						Grantee: stranger.String(),
 					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
 			},
 		},
-		"create validator authorizations": {
+		"genesis members from the grantees": {
 			init: &foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Grantee: s.stranger.String(),
+						Grantee: stranger.String(),
 					}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
-						ValidatorAddress: sdk.ValAddress(s.stranger).String(),
+						ValidatorAddress: sdk.ValAddress(stranger).String(),
 					}),
 				},
 			},
 			valid: true,
 			export: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
-				Foundation: foundation.FoundationInfo{
-					Operator:    s.keeper.GetDefaultOperator(s.ctx).String(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Grantee: s.stranger.String(),
+						Grantee: stranger.String(),
 					}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
-						ValidatorAddress: sdk.ValAddress(s.stranger).String(),
+						ValidatorAddress: sdk.ValAddress(stranger).String(),
 					}),
 				},
 				Members: []foundation.Member{{
-					Address:  s.stranger.String(),
+					Address:  stranger.String(),
 					Metadata: "genesis member",
 				}},
 			},
 		},
+		"grantees from the validators": {
+			init: &foundation.GenesisState{
+				Params: foundation.Params{
+					FoundationTax: sdk.ZeroDec(),
+					CensoredMsgTypeUrls: []string{
+						sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
+					},
+				},
+				Foundation: *foundation.FoundationInfo{
+					Version: 1,
+				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{
+					Description: "using x/group",
+				}),
+			},
+			valid: true,
+			export: &foundation.GenesisState{
+				Params: foundation.Params{
+					FoundationTax: sdk.ZeroDec(),
+					CensoredMsgTypeUrls: []string{
+						sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
+					},
+				},
+				Foundation: *foundation.FoundationInfo{
+					Operator:    operator.String(),
+					Version:     1,
+					TotalWeight: sdk.ZeroDec(),
+				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{
+					Description: "using x/group",
+				}),
+				Authorizations: []foundation.GrantAuthorization{
+					*foundation.GrantAuthorization{
+						Grantee: validator.String(),
+					}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
+						ValidatorAddress: sdk.ValAddress(validator).String(),
+					}),
+				},
+			},
+		},
 		"member of long metadata": {
 			init: &foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Members: []foundation.Member{
 					{
-						Address:  s.members[0].String(),
+						Address:  member.String(),
 						Metadata: string(make([]rune, 256)),
 					},
 				},
@@ -194,12 +241,13 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 		},
 		"proposal of long metadata": {
 			init: &foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
 						Metadata:          string(make([]rune, 256)),
-						Proposers:         []string{s.members[0].String()},
+						Proposers:         []string{member.String()},
 						FoundationVersion: 1,
 					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg()}),
 				},
@@ -207,18 +255,19 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 		},
 		"vote of long metadata": {
 			init: &foundation.GenesisState{
-				Params: foundation.DefaultParams(),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
-						Proposers:         []string{s.members[0].String()},
+						Proposers:         []string{member.String()},
 						FoundationVersion: 1,
 					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg()}),
 				},
 				Votes: []foundation.Vote{
 					{
 						ProposalId: 1,
-						Voter:      s.members[0].String(),
+						Voter:      member.String(),
 						Option:     foundation.VOTE_OPTION_YES,
 						Metadata:   string(make([]rune, 256)),
 					},
@@ -228,22 +277,19 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 	}
 
 	for name, tc := range testCases {
-		s.Run(name, func() {
-			ctx, _ := s.ctx.CacheContext()
-			s.keeper.ResetState(ctx)
+		ctx, _ := ctx.CacheContext()
 
-			err := foundation.ValidateGenesis(*tc.init)
-			s.Require().NoError(err)
+		err := foundation.ValidateGenesis(*tc.init)
+		require.NoError(t, err, name)
 
-			err = s.keeper.InitGenesis(ctx, s.app.StakingKeeper, tc.init)
-			if !tc.valid {
-				s.Require().Error(err)
-				return
-			}
-			s.Require().NoError(err)
+		err = keeper.InitGenesis(ctx, app.StakingKeeper, tc.init)
+		if !tc.valid {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
 
-			actual := s.keeper.ExportGenesis(ctx)
-			s.Require().Equal(tc.export, actual)
-		})
+		actual := keeper.ExportGenesis(ctx)
+		require.Equal(t, tc.export, actual, name)
 	}
 }
