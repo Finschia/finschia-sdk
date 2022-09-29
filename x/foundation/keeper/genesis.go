@@ -89,10 +89,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	}
 
 	for _, ga := range authorizations {
-		grantee, err := sdk.AccAddressFromBech32(ga.Grantee)
-		if err != nil {
-			return err
-		}
+		grantee := sdk.MustAccAddressFromBech32(ga.Grantee)
 		k.setAuthorization(ctx, grantee, ga.GetAuthorization())
 	}
 
@@ -142,10 +139,7 @@ func getCreateValidatorGrantees(authorizations []foundation.GrantAuthorization) 
 	var grantees []sdk.AccAddress
 	for _, ga := range authorizations {
 		if ga.GetAuthorization().MsgTypeURL() == msgTypeURL {
-			grantee, err := sdk.AccAddressFromBech32(ga.Grantee)
-			if err != nil {
-				panic(err)
-			}
+			grantee := sdk.MustAccAddressFromBech32(ga.Grantee)
 			grantees = append(grantees, grantee)
 		}
 	}

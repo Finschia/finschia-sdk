@@ -51,10 +51,7 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata str
 	}
 
 	foundationInfo := k.GetFoundationInfo(ctx)
-	operator, err := sdk.AccAddressFromBech32(foundationInfo.Operator)
-	if err != nil {
-		return nil, err
-	}
+	operator := sdk.MustAccAddressFromBech32(foundationInfo.Operator)
 	if err := ensureMsgAuthz(msgs, operator); err != nil {
 		return nil, err
 	}

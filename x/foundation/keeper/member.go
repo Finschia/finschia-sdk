@@ -63,7 +63,7 @@ func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.MemberReques
 			return err
 		}
 
-		addr, _ := sdk.AccAddressFromBech32(new.Address)
+		addr := sdk.MustAccAddressFromBech32(new.Address)
 		old, err := k.GetMember(ctx, addr)
 		if err != nil && request.Remove { // the member must exist
 			return err
@@ -112,10 +112,7 @@ func (k Keeper) GetMember(ctx sdk.Context, address sdk.AccAddress) (*foundation.
 
 func (k Keeper) setMember(ctx sdk.Context, member foundation.Member) {
 	store := ctx.KVStore(k.storeKey)
-	addr, err := sdk.AccAddressFromBech32(member.Address)
-	if err != nil {
-		panic(err)
-	}
+	addr := sdk.MustAccAddressFromBech32(member.Address)
 	key := memberKey(addr)
 
 	bz := k.cdc.MustMarshal(&member)
@@ -155,10 +152,7 @@ func (k Keeper) GetMembers(ctx sdk.Context) []foundation.Member {
 
 func (k Keeper) GetOperator(ctx sdk.Context) sdk.AccAddress {
 	info := k.GetFoundationInfo(ctx)
-	operator, err := sdk.AccAddressFromBech32(info.Operator)
-	if err != nil {
-		panic(err)
-	}
+	operator := sdk.MustAccAddressFromBech32(info.Operator)
 	return operator
 }
 
@@ -167,12 +161,7 @@ func (k Keeper) GetDefaultOperator(ctx sdk.Context) sdk.AccAddress {
 }
 
 func (k Keeper) validateOperator(ctx sdk.Context, operator string) error {
-	addr, err := sdk.AccAddressFromBech32(operator)
-
-	if err != nil {
-		return err
-	}
-
+	addr := sdk.MustAccAddressFromBech32(operator)
 	if !addr.Equals(k.GetOperator(ctx)) {
 		return sdkerrors.ErrUnauthorized.Wrapf("%s is not the operator", operator)
 	}
@@ -182,10 +171,7 @@ func (k Keeper) validateOperator(ctx sdk.Context, operator string) error {
 
 func (k Keeper) validateMembers(ctx sdk.Context, members []string) error {
 	for _, member := range members {
-		addr, err := sdk.AccAddressFromBech32(member)
-		if err != nil {
-			return sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", member)
-		}
+		addr := sdk.MustAccAddressFromBech32(member)
 		if _, err := k.GetMember(ctx, addr); err != nil {
 			return sdkerrors.ErrUnauthorized.Wrapf("%s is not a member", member)
 		}
