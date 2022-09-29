@@ -82,7 +82,7 @@ func (s *KeeperTestSuite) TestWithdrawProposal() {
 			valid: true,
 		},
 		"not active": {
-			id: s.abortedProposal,
+			id: s.withdrawnProposal,
 		},
 	}
 
