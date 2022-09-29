@@ -12,9 +12,9 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
-func DefaultDecisionPolicy(config Config) DecisionPolicy {
+func DefaultDecisionPolicy() DecisionPolicy {
 	return &ThresholdDecisionPolicy{
-		Threshold: config.MinThreshold,
+		Threshold: sdk.OneDec(),
 		Windows: &DecisionPolicyWindows{
 			VotingPeriod: 24 * time.Hour,
 		},
@@ -275,7 +275,7 @@ func (p ThresholdDecisionPolicy) GetVotingPeriod() time.Duration {
 }
 
 func (p ThresholdDecisionPolicy) ValidateBasic() error {
-	if !p.Threshold.IsPositive() {
+	if p.Threshold.IsNil() || !p.Threshold.IsPositive() {
 		return sdkerrors.ErrInvalidRequest.Wrap("threshold must be a positive number")
 	}
 
@@ -286,10 +286,6 @@ func (p ThresholdDecisionPolicy) ValidateBasic() error {
 }
 
 func (p ThresholdDecisionPolicy) Validate(config Config) error {
-	if p.Threshold.LT(config.MinThreshold) {
-		return sdkerrors.ErrInvalidRequest.Wrap("threshold must be greater than or equal to min_threshold")
-	}
-
 	if err := validateDecisionPolicyWindows(*p.Windows, config); err != nil {
 		return err
 	}
@@ -343,10 +339,6 @@ func (p PercentageDecisionPolicy) ValidateBasic() error {
 }
 
 func (p PercentageDecisionPolicy) Validate(config Config) error {
-	if p.Percentage.LT(config.MinPercentage) {
-		return sdkerrors.ErrInvalidRequest.Wrap("percentage must be greater than or equal to min_percentage")
-	}
-
 	if err := validateDecisionPolicyWindows(*p.Windows, config); err != nil {
 		return err
 	}

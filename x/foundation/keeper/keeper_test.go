@@ -73,7 +73,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	s.operator = s.keeper.GetOperator(s.ctx)
-	s.members = make([]sdk.AccAddress, foundation.DefaultConfig().MinThreshold.TruncateInt64())
+	s.members = make([]sdk.AccAddress, 10)
 	for i := range s.members {
 		s.members[i] = createAddress()
 	}

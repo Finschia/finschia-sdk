@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	"time"
+
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/stakingplus"
@@ -98,7 +100,7 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 		"valid request": {
 			operator: s.operator,
 			policy: &foundation.ThresholdDecisionPolicy{
-				Threshold: foundation.DefaultConfig().MinThreshold,
+				Threshold: sdk.OneDec(),
 				Windows:   &foundation.DecisionPolicyWindows{},
 			},
 			valid: true,
@@ -106,15 +108,18 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 		"not authorized": {
 			operator: s.stranger,
 			policy: &foundation.ThresholdDecisionPolicy{
-				Threshold: foundation.DefaultConfig().MinThreshold,
+				Threshold: sdk.OneDec(),
 				Windows:   &foundation.DecisionPolicyWindows{},
 			},
 		},
-		"low threshold": {
+		"invalid policy": {
 			operator: s.operator,
 			policy: &foundation.ThresholdDecisionPolicy{
 				Threshold: sdk.OneDec(),
-				Windows:   &foundation.DecisionPolicyWindows{},
+				Windows: &foundation.DecisionPolicyWindows{
+					VotingPeriod:       time.Hour,
+					MinExecutionPeriod: foundation.DefaultConfig().MaxExecutionPeriod + time.Hour,
+				},
 			},
 		},
 	}
