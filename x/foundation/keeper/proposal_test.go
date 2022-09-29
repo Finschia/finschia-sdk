@@ -1,6 +1,13 @@
 package keeper_test
 
 import (
+	"testing"
+
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/stretchr/testify/require"
+
+	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
@@ -90,5 +97,56 @@ func (s *KeeperTestSuite) TestWithdrawProposal() {
 				s.Require().Error(err)
 			}
 		})
+	}
+}
+
+func TestAbortProposal(t *testing.T) {
+	checkTx := false
+	app := simapp.Setup(checkTx)
+	ctx := app.BaseApp.NewContext(checkTx, ocproto.Header{})
+	keeper := app.FoundationKeeper
+
+	createAddress := func() sdk.AccAddress {
+		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	operator := keeper.GetOperator(ctx)
+
+	members := make([]sdk.AccAddress, 10)
+	for i := range members {
+		members[i] = createAddress()
+	}
+	err := keeper.UpdateMembers(ctx, []foundation.Member{
+		{
+			Address:       members[0].String(),
+			Participating: true,
+		},
+	})
+	require.NoError(t, err)
+
+	stranger := createAddress()
+
+	// create proposals of different versions and abort them
+	for _, newMember := range members[1:] {
+		_, err := keeper.SubmitProposal(ctx, []string{members[0].String()}, "", []sdk.Msg{
+			&foundation.MsgWithdrawFromTreasury{
+				Operator: operator.String(),
+				To:       stranger.String(),
+				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+			},
+		})
+		require.NoError(t, err)
+
+		err = keeper.UpdateMembers(ctx, []foundation.Member{
+			{
+				Address:       newMember.String(),
+				Participating: true,
+			},
+		})
+		require.NoError(t, err)
+	}
+
+	for _, proposal := range keeper.GetProposals(ctx) {
+		require.Equal(t, foundation.PROPOSAL_STATUS_ABORTED, proposal.Status)
 	}
 }

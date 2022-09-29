@@ -130,7 +130,7 @@ func (k Keeper) abortOldProposals(ctx sdk.Context) {
 	latestVersion := k.GetFoundationInfo(ctx).Version
 
 	k.iterateProposals(ctx, func(proposal foundation.Proposal) (stop bool) {
-		if proposal.FoundationVersion != latestVersion-1 {
+		if proposal.FoundationVersion == latestVersion {
 			return true
 		}
 
