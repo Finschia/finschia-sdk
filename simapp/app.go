@@ -28,6 +28,7 @@ import (
 	"github.com/line/lbm-sdk/server/config"
 	servertypes "github.com/line/lbm-sdk/server/types"
 	simappparams "github.com/line/lbm-sdk/simapp/params"
+	"github.com/line/lbm-sdk/store/streaming"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
@@ -314,6 +315,12 @@ func NewSimApp(
 	// NOTE: The testingkey is just mounted for testing purposes. Actual applications should
 	// not include this key.
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey, "testingkey")
+
+	// configure state listening capabilities using AppOptions
+	// we are doing nothing with the returned streamingServices and waitGroup in this case
+	if _, _, err := streaming.LoadStreamingServices(bApp, appOpts, appCodec, keys); err != nil {
+		ostos.Exit(err.Error())
+	}
 
 	app := &SimApp{
 		BaseApp:           bApp,
