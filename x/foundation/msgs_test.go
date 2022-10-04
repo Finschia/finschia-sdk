@@ -45,7 +45,7 @@ func TestMsgFundTreasury(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -96,7 +96,7 @@ func TestMsgWithdrawFromTreasury(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -161,7 +161,7 @@ func TestMsgUpdateMembers(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -250,7 +250,7 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -336,7 +336,7 @@ func TestMsgSubmitProposal(t *testing.T) {
 		err = msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -377,7 +377,7 @@ func TestMsgWithdrawProposal(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -440,7 +440,7 @@ func TestMsgVote(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -481,7 +481,7 @@ func TestMsgExec(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -514,7 +514,7 @@ func TestMsgLeaveFoundation(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -566,7 +566,7 @@ func TestMsgGrant(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -616,7 +616,7 @@ func TestMsgRevoke(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
