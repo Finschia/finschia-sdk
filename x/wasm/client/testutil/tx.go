@@ -2,7 +2,7 @@ package testutil
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
@@ -171,7 +171,7 @@ func (s *IntegrationTestSuite) TestStoreCodeAndInstantiateContractCmd() {
 	owner := val.Address.String()
 
 	wasmPath := "../../keeper/testdata/hackatom.wasm"
-	_, err := ioutil.ReadFile(wasmPath)
+	_, err := os.ReadFile(wasmPath)
 	s.Require().NoError(err)
 
 	params := fmt.Sprintf("{\"verifier\": \"%s\", \"beneficiary\": \"%s\"}", s.network.Validators[0].Address.String(), keeper.RandomAccountAddress(s.T()))

@@ -1,8 +1,8 @@
 package simulation
 
 import (
-	"io/ioutil"
 	"math/rand"
+	"os"
 
 	"github.com/line/lbm-sdk/baseapp"
 	simappparams "github.com/line/lbm-sdk/simapp/params"
@@ -58,7 +58,7 @@ func WeightedOperations(
 		},
 	)
 
-	wasmBz, err := ioutil.ReadFile(wasmContractPath)
+	wasmBz, err := os.ReadFile(wasmContractPath)
 	if err != nil {
 		panic(err)
 	}

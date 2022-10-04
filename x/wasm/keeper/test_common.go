@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"testing"
 	"time"
 
@@ -554,7 +554,7 @@ func StoreIBCReflectContract(t testing.TB, ctx sdk.Context, keepers TestKeepers)
 }
 
 func StoreReflectContract(t testing.TB, ctx sdk.Context, keepers TestKeepers) uint64 {
-	wasmCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
+	wasmCode, err := os.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
 
 	_, _, creatorAddr := keyPubAddr()
@@ -568,7 +568,7 @@ func StoreExampleContract(t testing.TB, ctx sdk.Context, keepers TestKeepers, wa
 	creator, _, creatorAddr := keyPubAddr()
 	fundAccounts(t, ctx, keepers.AccountKeeper, keepers.BankKeeper, creatorAddr, anyAmount)
 
-	wasmCode, err := ioutil.ReadFile(wasmFile)
+	wasmCode, err := os.ReadFile(wasmFile)
 	require.NoError(t, err)
 
 	codeID, err := keepers.ContractKeeper.Create(ctx, creatorAddr, wasmCode, nil)

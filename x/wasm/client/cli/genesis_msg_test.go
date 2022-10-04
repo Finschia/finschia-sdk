@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"testing"
@@ -43,7 +42,7 @@ func TestGenesisStoreCodeCmd(t *testing.T) {
 	minimalWasmGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
 	}
-	anyValidWasmFile, err := ioutil.TempFile(t.TempDir(), "wasm")
+	anyValidWasmFile, err := os.CreateTemp(t.TempDir(), "wasm")
 	require.NoError(t, err)
 	anyValidWasmFile.Write(wasmIdent)
 	require.NoError(t, anyValidWasmFile.Close())
@@ -110,7 +109,7 @@ func TestInstantiateContractCmd(t *testing.T) {
 	minimalWasmGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
 	}
-	anyValidWasmFile, err := ioutil.TempFile(t.TempDir(), "wasm")
+	anyValidWasmFile, err := os.CreateTemp(t.TempDir(), "wasm")
 	require.NoError(t, err)
 	anyValidWasmFile.Write(wasmIdent)
 	require.NoError(t, anyValidWasmFile.Close())
@@ -369,7 +368,7 @@ func TestExecuteContractCmd(t *testing.T) {
 	minimalWasmGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
 	}
-	anyValidWasmFile, err := ioutil.TempFile(t.TempDir(), "wasm")
+	anyValidWasmFile, err := os.CreateTemp(t.TempDir(), "wasm")
 	require.NoError(t, err)
 	anyValidWasmFile.Write(wasmIdent)
 	require.NoError(t, anyValidWasmFile.Close())

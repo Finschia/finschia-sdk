@@ -3,7 +3,7 @@ package cli
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -82,7 +82,7 @@ func StoreCodeCmd() *cobra.Command {
 }
 
 func parseStoreCodeArgs(file string, sender sdk.AccAddress, flags *flag.FlagSet) (types.MsgStoreCode, error) {
-	wasm, err := ioutil.ReadFile(file)
+	wasm, err := os.ReadFile(file)
 	if err != nil {
 		return types.MsgStoreCode{}, err
 	}
@@ -264,7 +264,7 @@ func StoreCodeAndInstantiateContractCmd() *cobra.Command {
 }
 
 func parseStoreCodeAndInstantiateContractArgs(file string, initMsg string, sender sdk.AccAddress, flags *flag.FlagSet) (lbmtypes.MsgStoreCodeAndInstantiateContract, error) {
-	wasm, err := ioutil.ReadFile(file)
+	wasm, err := os.ReadFile(file)
 	if err != nil {
 		return lbmtypes.MsgStoreCodeAndInstantiateContract{}, err
 	}
