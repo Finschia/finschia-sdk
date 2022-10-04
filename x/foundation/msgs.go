@@ -25,7 +25,10 @@ func (m MsgFundTreasury) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgFundTreasury) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.From)
+	signer, err := sdk.AccAddressFromBech32(m.From)
+	if err != nil { // should never happen as valid basic rejects invalid addresses
+		panic(err.Error())
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -50,7 +53,10 @@ func (m MsgWithdrawFromTreasury) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgWithdrawFromTreasury) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Operator)
+	signer, err := sdk.AccAddressFromBech32(m.Operator)
+	if err != nil { // should never happen as valid basic rejects invalid addresses
+		panic(err.Error())
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -74,7 +80,10 @@ func (m MsgUpdateMembers) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgUpdateMembers) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Operator)
+	signer, err := sdk.AccAddressFromBech32(m.Operator)
+	if err != nil { // should never happen as valid basic rejects invalid addresses
+		panic(err.Error())
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -99,7 +108,10 @@ func (m MsgUpdateDecisionPolicy) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgUpdateDecisionPolicy) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Operator)
+	signer, err := sdk.AccAddressFromBech32(m.Operator)
+	if err != nil { // should never happen as valid basic rejects invalid addresses
+		panic(err.Error())
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -179,7 +191,10 @@ func (m MsgSubmitProposal) UnpackInterfaces(unpacker codectypes.AnyUnpacker) err
 func (m MsgSubmitProposal) GetSigners() []sdk.AccAddress {
 	signers := make([]sdk.AccAddress, len(m.Proposers))
 	for i, p := range m.Proposers {
-		proposer, _ := sdk.AccAddressFromBech32(p)
+		proposer, err := sdk.AccAddressFromBech32(p)
+		if err != nil { // should never happen as valid basic rejects invalid addresses
+			panic(err.Error())
+		}
 		signers[i] = proposer
 	}
 	return signers
@@ -202,7 +217,10 @@ func (m MsgWithdrawProposal) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgWithdrawProposal) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Address)
+	signer, err := sdk.AccAddressFromBech32(m.Address)
+	if err != nil { // should never happen as valid basic rejects invalid addresses
+		panic(err.Error())
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -231,7 +249,10 @@ func (m MsgVote) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgVote) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Voter)
+	signer, err := sdk.AccAddressFromBech32(m.Voter)
+	if err != nil { // should never happen as valid basic rejects invalid addresses
+		panic(err.Error())
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -252,7 +273,10 @@ func (m MsgExec) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgExec) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Signer)
+	signer, err := sdk.AccAddressFromBech32(m.Signer)
+	if err != nil { // should never happen as valid basic rejects invalid addresses
+		panic(err.Error())
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -269,7 +293,10 @@ func (m MsgLeaveFoundation) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgLeaveFoundation) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Address)
+	signer, err := sdk.AccAddressFromBech32(m.Address)
+	if err != nil { // should never happen as valid basic rejects invalid addresses
+		panic(err.Error())
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -325,7 +352,10 @@ func (m MsgGrant) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 
 // GetSigners implements Msg.
 func (m MsgGrant) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Operator)
+	signer, err := sdk.AccAddressFromBech32(m.Operator)
+	if err != nil { // should never happen as valid basic rejects invalid addresses
+		panic(err.Error())
+	}
 	return []sdk.AccAddress{signer}
 }
 
@@ -350,6 +380,9 @@ func (m MsgRevoke) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgRevoke) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Operator)
+	signer, err := sdk.AccAddressFromBech32(m.Operator)
+	if err != nil { // should never happen as valid basic rejects invalid addresses
+		panic(err.Error())
+	}
 	return []sdk.AccAddress{signer}
 }
