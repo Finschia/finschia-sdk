@@ -51,10 +51,10 @@ type KeeperTestSuite struct {
 	members  []sdk.AccAddress
 	stranger sdk.AccAddress
 
-	activeProposal  uint64
-	votedProposal   uint64
-	abortedProposal uint64
-	invalidProposal uint64
+	activeProposal    uint64
+	votedProposal     uint64
+	withdrawnProposal uint64
+	invalidProposal   uint64
 
 	balance sdk.Int
 }
@@ -147,8 +147,8 @@ func (s *KeeperTestSuite) SetupTest() {
 		s.Require().NoError(err)
 	}
 
-	// create an aborted proposal
-	s.abortedProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
+	// create an withdrawn proposal
+	s.withdrawnProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
 			Operator: s.operator.String(),
 			To:       s.stranger.String(),
@@ -156,7 +156,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		},
 	})
 	s.Require().NoError(err)
-	err = s.keeper.WithdrawProposal(s.ctx, s.abortedProposal)
+	err = s.keeper.WithdrawProposal(s.ctx, s.withdrawnProposal)
 	s.Require().NoError(err)
 
 	// create an invalid proposal which contains invalid message

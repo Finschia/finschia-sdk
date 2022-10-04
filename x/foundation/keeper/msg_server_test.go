@@ -294,7 +294,7 @@ func (s *KeeperTestSuite) TestMsgWithdrawProposal() {
 			address: s.stranger,
 		},
 		"inactive proposal": {
-			proposalID: s.abortedProposal,
+			proposalID: s.withdrawnProposal,
 			address:    s.members[0],
 		},
 	}

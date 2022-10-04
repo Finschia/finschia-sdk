@@ -88,6 +88,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (amino) [\#635](https://github.com/line/lbm-sdk/pull/635) change some minor things that haven't been fixed in #549
 * (store) [\#666](https://github.com/line/lbm-sdk/pull/666) change default `iavl-cache-size` and description 
 * (simapp) [\#679](https://github.com/line/lbm-sdk/pull/679) fix the bug not setting `iavl-cache-size` value of `app.toml`
+* (x/foundation) [\#687](https://github.com/line/lbm-sdk/pull/687) fix bugs on aborting x/foundation proposals
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path

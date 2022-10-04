@@ -17,8 +17,8 @@ func (s *KeeperTestSuite) TestExec() {
 			proposalID: s.invalidProposal,
 			valid:      true,
 		},
-		"aborted proposal": {
-			proposalID: s.abortedProposal,
+		"withdrawn proposal": {
+			proposalID: s.withdrawnProposal,
 		},
 	}
 

@@ -34,7 +34,7 @@ func (s *KeeperTestSuite) TestVote() {
 			option:     foundation.VOTE_OPTION_YES,
 		},
 		"inactive proposal": {
-			proposalID: s.abortedProposal,
+			proposalID: s.withdrawnProposal,
 			voter:      s.members[0],
 			option:     foundation.VOTE_OPTION_YES,
 		},
