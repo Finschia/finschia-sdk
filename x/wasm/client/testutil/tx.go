@@ -211,6 +211,17 @@ func (s *IntegrationTestSuite) TestStoreCodeAndInstantiateContractCmd() {
 			},
 			false,
 		},
+		"wrong wasm path error": {
+			[]string{
+				"../../keeper/testdata/noexist.wasm",
+				params,
+				fmt.Sprintf("--label=%s", "TestContract"),
+				fmt.Sprintf("--admin=%s", owner),
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+				fmt.Sprintf("--%s=%d", flags.FlagGas, 1600000),
+			},
+			false,
+		},
 	}
 
 	for name, tc := range testCases {
