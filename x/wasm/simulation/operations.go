@@ -1,8 +1,8 @@
 package simulation
 
 import (
-	"io/ioutil"
 	"math/rand"
+	"os"
 
 	"github.com/line/lbm-sdk/baseapp"
 	simappparams "github.com/line/lbm-sdk/simapp/params"
@@ -10,6 +10,7 @@ import (
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/simulation"
+	"github.com/line/lbm-sdk/x/wasm/keeper/testdata"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -53,14 +54,19 @@ func WeightedOperations(
 	)
 	simstate.AppParams.GetOrGenerate(simstate.Cdc, OpReflectContractPath, &wasmContractPath, nil,
 		func(_ *rand.Rand) {
-			// simulations are run from the `app` folder
-			wasmContractPath = "../x/wasm/keeper/testdata/reflect.wasm"
+			wasmContractPath = ""
 		},
 	)
 
-	wasmBz, err := ioutil.ReadFile(wasmContractPath)
-	if err != nil {
-		panic(err)
+	var wasmBz []byte
+	if wasmContractPath == "" {
+		wasmBz = testdata.ReflectContractWasm()
+	} else {
+		var err error
+		wasmBz, err = os.ReadFile(wasmContractPath)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	return simulation.WeightedOperations{
