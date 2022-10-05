@@ -1,6 +1,8 @@
 package foundation_test
 
 import (
+	"encoding/hex"
+	"fmt"
 	"testing"
 	"time"
 
@@ -10,6 +12,50 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 )
+
+func NewMsgFundTreasury(fromAddr sdk.AccAddress) *foundation.MsgFundTreasury {
+	return &foundation.MsgFundTreasury{From: fromAddr.String()}
+}
+
+func NewMsgWithdrawFromTreasury(fromAddr sdk.AccAddress) *foundation.MsgWithdrawFromTreasury {
+	return &foundation.MsgWithdrawFromTreasury{Operator: fromAddr.String()}
+}
+
+func NewMsgUpdateMembers(fromAddr sdk.AccAddress) *foundation.MsgUpdateMembers {
+	return &foundation.MsgUpdateMembers{Operator: fromAddr.String()}
+}
+
+func NewMsgUpdateDecisionPolicy(fromAddr sdk.AccAddress) *foundation.MsgUpdateDecisionPolicy {
+	return &foundation.MsgUpdateDecisionPolicy{Operator: fromAddr.String()}
+}
+
+func NewMsgSubmitProposal(fromAddr sdk.AccAddress) *foundation.MsgSubmitProposal {
+	return &foundation.MsgSubmitProposal{Proposers: []string{fromAddr.String()}}
+}
+
+func NewMsgWithdrawProposal(fromAddr sdk.AccAddress) *foundation.MsgWithdrawProposal {
+	return &foundation.MsgWithdrawProposal{Address: fromAddr.String()}
+}
+
+func NewMsgVote(fromAddr sdk.AccAddress) *foundation.MsgVote {
+	return &foundation.MsgVote{Voter: fromAddr.String()}
+}
+
+func NewMsgExec(fromAddr sdk.AccAddress) *foundation.MsgExec {
+	return &foundation.MsgExec{Signer: fromAddr.String()}
+}
+
+func NewMsgLeaveFoundation(fromAddr sdk.AccAddress) *foundation.MsgLeaveFoundation {
+	return &foundation.MsgLeaveFoundation{Address: fromAddr.String()}
+}
+
+func NewMsgGrant(fromAddr sdk.AccAddress) *foundation.MsgGrant {
+	return &foundation.MsgGrant{Operator: fromAddr.String()}
+}
+
+func NewMsgRevoke(fromAddr sdk.AccAddress) *foundation.MsgRevoke {
+	return &foundation.MsgRevoke{Operator: fromAddr.String()}
+}
 
 func TestMsgFundTreasury(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
@@ -622,4 +668,70 @@ func TestMsgRevoke(t *testing.T) {
 
 		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners(), name)
 	}
+}
+
+func TestMsgFundTreasuryGetSigners(t *testing.T) {
+	res := NewMsgFundTreasury(sdk.AccAddress([]byte("input111111111111111"))).GetSigners()
+	bytes := sdk.MustAccAddressFromBech32(res[0].String())
+	require.Equal(t, "696e707574313131313131313131313131313131", fmt.Sprintf("%v", hex.EncodeToString(bytes)))
+}
+
+func TestMsgWithdrawFromTreasuryGetSigners(t *testing.T) {
+	res := NewMsgFundTreasury(sdk.AccAddress([]byte("input111111111111111"))).GetSigners()
+	bytes := sdk.MustAccAddressFromBech32(res[0].String())
+	require.Equal(t, "696e707574313131313131313131313131313131", fmt.Sprintf("%v", hex.EncodeToString(bytes)))
+}
+
+func TestMsgUpdateMembersGetSigners(t *testing.T) {
+	res := NewMsgUpdateMembers(sdk.AccAddress([]byte("input111111111111111"))).GetSigners()
+	bytes := sdk.MustAccAddressFromBech32(res[0].String())
+	require.Equal(t, "696e707574313131313131313131313131313131", fmt.Sprintf("%v", hex.EncodeToString(bytes)))
+}
+
+func TestMsgUpdateDecisionPolicyGetSigners(t *testing.T) {
+	res := NewMsgUpdateDecisionPolicy(sdk.AccAddress([]byte("input111111111111111"))).GetSigners()
+	bytes := sdk.MustAccAddressFromBech32(res[0].String())
+	require.Equal(t, "696e707574313131313131313131313131313131", fmt.Sprintf("%v", hex.EncodeToString(bytes)))
+}
+
+func TestMsgSubmitProposalGetSigners(t *testing.T) {
+	res := NewMsgSubmitProposal(sdk.AccAddress([]byte("input111111111111111"))).GetSigners()
+	bytes := sdk.MustAccAddressFromBech32(res[0].String())
+	require.Equal(t, "696e707574313131313131313131313131313131", fmt.Sprintf("%v", hex.EncodeToString(bytes)))
+}
+
+func TestMsgWithdrawProposalGetSigners(t *testing.T) {
+	res := NewMsgWithdrawProposal(sdk.AccAddress([]byte("input111111111111111"))).GetSigners()
+	bytes := sdk.MustAccAddressFromBech32(res[0].String())
+	require.Equal(t, "696e707574313131313131313131313131313131", fmt.Sprintf("%v", hex.EncodeToString(bytes)))
+}
+
+func TestMsgVoteGetSigners(t *testing.T) {
+	res := NewMsgVote(sdk.AccAddress([]byte("input111111111111111"))).GetSigners()
+	bytes := sdk.MustAccAddressFromBech32(res[0].String())
+	require.Equal(t, "696e707574313131313131313131313131313131", fmt.Sprintf("%v", hex.EncodeToString(bytes)))
+}
+
+func TestMsgExecGetSigners(t *testing.T) {
+	res := NewMsgExec(sdk.AccAddress([]byte("input111111111111111"))).GetSigners()
+	bytes := sdk.MustAccAddressFromBech32(res[0].String())
+	require.Equal(t, "696e707574313131313131313131313131313131", fmt.Sprintf("%v", hex.EncodeToString(bytes)))
+}
+
+func TestMsgLeaveFoundationGetSigners(t *testing.T) {
+	res := NewMsgLeaveFoundation(sdk.AccAddress([]byte("input111111111111111"))).GetSigners()
+	bytes := sdk.MustAccAddressFromBech32(res[0].String())
+	require.Equal(t, "696e707574313131313131313131313131313131", fmt.Sprintf("%v", hex.EncodeToString(bytes)))
+}
+
+func TestMsgGrantGetSigners(t *testing.T) {
+	res := NewMsgGrant(sdk.AccAddress([]byte("input111111111111111"))).GetSigners()
+	bytes := sdk.MustAccAddressFromBech32(res[0].String())
+	require.Equal(t, "696e707574313131313131313131313131313131", fmt.Sprintf("%v", hex.EncodeToString(bytes)))
+}
+
+func TestMsgRevokeGetSigners(t *testing.T) {
+	res := NewMsgRevoke(sdk.AccAddress([]byte("input111111111111111"))).GetSigners()
+	bytes := sdk.MustAccAddressFromBech32(res[0].String())
+	require.Equal(t, "696e707574313131313131313131313131313131", fmt.Sprintf("%v", hex.EncodeToString(bytes)))
 }
