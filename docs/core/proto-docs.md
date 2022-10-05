@@ -1108,6 +1108,7 @@
     - [Member](#lbm.foundation.v1.Member)
     - [Params](#lbm.foundation.v1.Params)
     - [PercentageDecisionPolicy](#lbm.foundation.v1.PercentageDecisionPolicy)
+    - [Pool](#lbm.foundation.v1.Pool)
     - [Proposal](#lbm.foundation.v1.Proposal)
     - [TallyResult](#lbm.foundation.v1.TallyResult)
     - [ThresholdDecisionPolicy](#lbm.foundation.v1.ThresholdDecisionPolicy)
@@ -16859,6 +16860,21 @@ PercentageDecisionPolicy implements the DecisionPolicy interface
 
 
 
+<a name="lbm.foundation.v1.Pool"></a>
+
+### Pool
+Pool is used for tracking treasury.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `treasury` | [cosmos.base.v1beta1.DecCoin](#cosmos.base.v1beta1.DecCoin) | repeated |  |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.Proposal"></a>
 
 ### Proposal
@@ -17249,6 +17265,7 @@ GenesisState defines the foundation module's genesis state.
 | `proposals` | [Proposal](#lbm.foundation.v1.Proposal) | repeated | proposals is the list of proposals. |
 | `votes` | [Vote](#lbm.foundation.v1.Vote) | repeated | votes is the list of votes. |
 | `authorizations` | [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization) | repeated | grants |
+| `pool` | [Pool](#lbm.foundation.v1.Pool) |  | pool |
 
 
 
@@ -17542,7 +17559,7 @@ Query/Treasury RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `amount` | [cosmos.base.v1beta1.DecCoin](#cosmos.base.v1beta1.DecCoin) | repeated |  |
 
 
 

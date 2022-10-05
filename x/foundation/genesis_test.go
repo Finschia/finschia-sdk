@@ -227,6 +227,18 @@ func TestValidateGenesis(t *testing.T) {
 				},
 			},
 		},
+		"invalid pool": {
+			data: foundation.GenesisState{
+				Pool: foundation.Pool{
+					Treasury: sdk.DecCoins{
+						{
+							Denom:  sdk.DefaultBondDenom,
+							Amount: sdk.ZeroDec(),
+						},
+					},
+				},
+			},
+		},
 	}
 
 	for name, tc := range testCases {

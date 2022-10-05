@@ -425,3 +425,11 @@ func SetAuthorization(a Authorization) (*codectypes.Any, error) {
 	}
 	return any, nil
 }
+
+func (p Pool) ValidateBasic() error {
+	if err := p.Treasury.Validate(); err != nil {
+		return err
+	}
+
+	return nil
+}
