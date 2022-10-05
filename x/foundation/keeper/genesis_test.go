@@ -100,8 +100,9 @@ func TestImportExportGenesis(t *testing.T) {
 		},
 		"proposals": {
 			init: &foundation.GenesisState{
-				Params:     foundation.DefaultParams(),
-				Foundation: foundation.DefaultFoundation(),
+				Params:             foundation.DefaultParams(),
+				Foundation:         foundation.DefaultFoundation(),
+				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -125,6 +126,7 @@ func TestImportExportGenesis(t *testing.T) {
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
+				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -210,8 +212,9 @@ func TestImportExportGenesis(t *testing.T) {
 		},
 		"proposal of long metadata": {
 			init: &foundation.GenesisState{
-				Params:     foundation.DefaultParams(),
-				Foundation: foundation.DefaultFoundation(),
+				Params:             foundation.DefaultParams(),
+				Foundation:         foundation.DefaultFoundation(),
+				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -224,8 +227,9 @@ func TestImportExportGenesis(t *testing.T) {
 		},
 		"vote of long metadata": {
 			init: &foundation.GenesisState{
-				Params:     foundation.DefaultParams(),
-				Foundation: foundation.DefaultFoundation(),
+				Params:             foundation.DefaultParams(),
+				Foundation:         foundation.DefaultFoundation(),
+				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,

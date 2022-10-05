@@ -102,13 +102,20 @@ func ValidateGenesis(data GenesisState) error {
 	proposalIDs := map[uint64]bool{}
 	for _, proposal := range data.Proposals {
 		id := proposal.Id
+		if id > data.PreviousProposalId {
+			return sdkerrors.ErrInvalidRequest.Wrapf("proposal %d has not yet been submitted", id)
+		}
 		if proposalIDs[id] {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicated id: %d", id)
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicated proposal id of %d", id)
 		}
 		proposalIDs[id] = true
 
 		if err := proposal.ValidateBasic(); err != nil {
 			return err
+		}
+
+		if proposal.FoundationVersion > info.Version {
+			return sdkerrors.ErrInvalidRequest.Wrapf("invalid foundation version of proposal %d", id)
 		}
 	}
 

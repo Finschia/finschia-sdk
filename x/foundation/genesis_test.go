@@ -140,10 +140,39 @@ func TestValidateGenesis(t *testing.T) {
 				Proposals:  []foundation.Proposal{{}},
 			},
 		},
+		"proposal of too far ahead id": {
+			data: foundation.GenesisState{
+				Params:             foundation.DefaultParams(),
+				Foundation:         foundation.DefaultFoundation(),
+				PreviousProposalId: 0,
+				Proposals: []foundation.Proposal{
+					*foundation.Proposal{
+						Id:                1,
+						Proposers:         []string{createAddress().String()},
+						FoundationVersion: 1,
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg()}),
+				},
+			},
+		},
+		"proposal of too far ahead version": {
+			data: foundation.GenesisState{
+				Params:             foundation.DefaultParams(),
+				Foundation:         foundation.DefaultFoundation(),
+				PreviousProposalId: 1,
+				Proposals: []foundation.Proposal{
+					*foundation.Proposal{
+						Id:                1,
+						Proposers:         []string{createAddress().String()},
+						FoundationVersion: 2,
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg()}),
+				},
+			},
+		},
 		"duplicate proposals": {
 			data: foundation.GenesisState{
-				Params:     foundation.DefaultParams(),
-				Foundation: foundation.DefaultFoundation(),
+				Params:             foundation.DefaultParams(),
+				Foundation:         foundation.DefaultFoundation(),
+				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -173,8 +202,9 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid voter": {
 			data: foundation.GenesisState{
-				Params:     foundation.DefaultParams(),
-				Foundation: foundation.DefaultFoundation(),
+				Params:             foundation.DefaultParams(),
+				Foundation:         foundation.DefaultFoundation(),
+				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -193,8 +223,9 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid vote option": {
 			data: foundation.GenesisState{
-				Params:     foundation.DefaultParams(),
-				Foundation: foundation.DefaultFoundation(),
+				Params:             foundation.DefaultParams(),
+				Foundation:         foundation.DefaultFoundation(),
+				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
