@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"sort"
 	"strconv"
@@ -56,7 +56,7 @@ var DefaultConsensusParams = &abci.ConsensusParams{
 }
 
 func setup(withGenesis bool, invCheckPeriod uint, opts ...wasm.Option) (*SimApp, GenesisState) {
-	randDir, _ := ioutil.TempDir(DefaultNodeHome, "")
+	randDir, _ := os.MkdirTemp(DefaultNodeHome, "")
 	snapshotDir := filepath.Join(randDir, "data", "snapshots")
 	snapshotDB := dbm.NewMemDB()
 
