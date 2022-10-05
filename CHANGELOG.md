@@ -89,6 +89,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (store) [\#666](https://github.com/line/lbm-sdk/pull/666) change default `iavl-cache-size` and description 
 * (simapp) [\#679](https://github.com/line/lbm-sdk/pull/679) fix the bug not setting `iavl-cache-size` value of `app.toml`
 * (x/foundation) [\#687](https://github.com/line/lbm-sdk/pull/687) fix bugs on aborting x/foundation proposals
+* (global) [\#694](https://github.com/line/lbm-sdk/pull/694) replace deprecated functions since go 1.16 or 1.17
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
