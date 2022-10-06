@@ -134,8 +134,11 @@ func (s txServer) GetTx(ctx context.Context, req *txtypes.GetTxRequest) (*txtype
 		return nil, status.Error(codes.InvalidArgument, "request cannot be nil")
 	}
 
-	if len(req.Hash) == 0 {
-		return nil, status.Error(codes.InvalidArgument, "tx hash cannot be empty")
+	if n := len(req.Hash); n != 64 {
+		if n == 0 {
+			return nil, status.Error(codes.InvalidArgument, "tx hash cannot be empty")
+		}
+		return nil, status.Error(codes.InvalidArgument, "The length of tx hash must be 64")
 	}
 
 	// TODO We should also check the proof flag in gRPC header.
