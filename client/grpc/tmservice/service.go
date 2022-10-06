@@ -88,6 +88,13 @@ func (s queryServer) GetBlockByHeight(ctx context.Context, req *GetBlockByHeight
 
 // GetBlockByHash implements ServiceServer.GetBlockByHash
 func (s queryServer) GetBlockByHash(_ context.Context, req *GetBlockByHashRequest) (*GetBlockByHashResponse, error) {
+	if n := len(req.Hash); n != 64 {
+		if n == 0 {
+			return nil, status.Error(codes.InvalidArgument, "block hash cannot be empty")
+		}
+		return nil, status.Error(codes.InvalidArgument, "The length of blcok hash must be 64")
+	}
+
 	res, err := getBlockByHash(s.clientCtx, req.Hash)
 	if err != nil {
 		return nil, err
