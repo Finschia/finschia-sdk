@@ -114,6 +114,10 @@ func ValidateGenesis(data GenesisState) error {
 		}
 	}
 
+	if err := data.Pool.ValidateBasic(); err != nil {
+		return err
+	}
+
 	return nil
 }
 

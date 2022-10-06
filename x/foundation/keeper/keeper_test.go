@@ -80,6 +80,9 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.stranger = createAddress()
 
 	s.balance = sdk.NewInt(1000000)
+	s.keeper.SetPool(s.ctx, foundation.Pool{
+		Treasury: sdk.NewDecCoinsFromCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
+	})
 	holders := []sdk.AccAddress{
 		s.stranger,
 		s.app.AccountKeeper.GetModuleAccount(s.ctx, foundation.TreasuryName).GetAddress(),
