@@ -14,7 +14,6 @@ import (
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/keeper"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
 	"github.com/line/lbm-sdk/x/stakingplus"
 )
@@ -32,7 +31,7 @@ func TestCleanup(t *testing.T) {
 	k := app.FoundationKeeper
 
 	// add grant
-	require.NoError(t, k.Grant(ctx, govtypes.ModuleName, delAddr, &stakingplus.CreateValidatorAuthorization{}))
+	require.NoError(t, k.Grant(ctx, delAddr, &stakingplus.CreateValidatorAuthorization{}))
 
 	// cleanup
 	k.Cleanup(ctx)
@@ -52,10 +51,10 @@ type KeeperTestSuite struct {
 	members  []sdk.AccAddress
 	stranger sdk.AccAddress
 
-	activeProposal  uint64
-	votedProposal   uint64
-	abortedProposal uint64
-	invalidProposal uint64
+	activeProposal    uint64
+	votedProposal     uint64
+	withdrawnProposal uint64
+	invalidProposal   uint64
 
 	balance sdk.Int
 }
@@ -74,13 +73,16 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	s.operator = s.keeper.GetOperator(s.ctx)
-	s.members = make([]sdk.AccAddress, foundation.DefaultConfig().MinThreshold.TruncateInt64())
+	s.members = make([]sdk.AccAddress, 10)
 	for i := range s.members {
 		s.members[i] = createAddress()
 	}
 	s.stranger = createAddress()
 
 	s.balance = sdk.NewInt(1000000)
+	s.keeper.SetPool(s.ctx, foundation.Pool{
+		Treasury: sdk.NewDecCoinsFromCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
+	})
 	holders := []sdk.AccAddress{
 		s.stranger,
 		s.app.AccountKeeper.GetModuleAccount(s.ctx, foundation.TreasuryName).GetAddress(),
@@ -148,8 +150,8 @@ func (s *KeeperTestSuite) SetupTest() {
 		s.Require().NoError(err)
 	}
 
-	// create an aborted proposal
-	s.abortedProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
+	// create an withdrawn proposal
+	s.withdrawnProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
 			Operator: s.operator.String(),
 			To:       s.stranger.String(),
@@ -157,7 +159,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		},
 	})
 	s.Require().NoError(err)
-	err = s.keeper.WithdrawProposal(s.ctx, s.abortedProposal)
+	err = s.keeper.WithdrawProposal(s.ctx, s.withdrawnProposal)
 	s.Require().NoError(err)
 
 	// create an invalid proposal which contains invalid message
@@ -179,7 +181,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	// grant stranger to receive foundation treasury
-	err = s.keeper.Grant(s.ctx, foundation.ModuleName, s.stranger, &foundation.ReceiveFromTreasuryAuthorization{})
+	err = s.keeper.Grant(s.ctx, s.stranger, &foundation.ReceiveFromTreasuryAuthorization{})
 	s.Require().NoError(err)
 }
 

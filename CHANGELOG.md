@@ -53,6 +53,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/collection) [\#622](https://github.com/line/lbm-sdk/pull/622) add Query/TokenClassTypeName
 * (x/bank) [\#629](https://github.com/line/lbm-sdk/pull/629) remove unsafe balance changing methods from bank keeper such as `SetBalance` and `SetSupply`.
 * (x/wasm) [\#649](https://github.com/line/lbm-sdk/pull/649) fix: wasm module's FIXME in the snapshotter.go file
+* (x/ibc) [\#651](https://github.com/line/lbm-sdk/pull/651) feat: update x/ibc to support github.com/cosmos/ibc-go@v3.0.0
 * (config) [\#665](https://github.com/line/lbm-sdk/pull/665) remove bech32-cache-size
 
 ### Improvements
@@ -69,6 +70,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/token) [\#637](https://github.com/line/lbm-sdk/pull/637) rename x/token events
 * (x/collection) [\#639](https://github.com/line/lbm-sdk/pull/639) rename x/collection events
 * (x/wasm) [\#661](https://github.com/line/lbm-sdk/pull/661) x/wasm refactoring - detaching the custom wasm proto part of lbm-sdk. (apply changes of [\#625](https://github.com/line/lbm-sdk/pull/625) and [\#655](https://github.com/line/lbm-sdk/pull/655))
+* (refactor) [\#685](https://github.com/line/lbm-sdk/pull/685) remove x/foundation UpdateValidatorAuthsProposal
+* (x/foundation) [\#686](https://github.com/line/lbm-sdk/pull/686) remove `Minthreshold` and `MinPercentage` from x/foundation config
+* (x/foundation) [\#693](https://github.com/line/lbm-sdk/pull/693) add pool to the state of x/foundation
 * (x) [\#691](https://github.com/line/lbm-sdk/pull/691) change AccAddressFromBech32 to MustAccAddressFromBech32
 
 ### Bug Fixes
@@ -85,6 +89,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/wasm) [\#640](https://github.com/line/lbm-sdk/pull/640) remove legacy codes of wasm
 * (amino) [\#635](https://github.com/line/lbm-sdk/pull/635) change some minor things that haven't been fixed in #549
 * (store) [\#666](https://github.com/line/lbm-sdk/pull/666) change default `iavl-cache-size` and description 
+* (simapp) [\#679](https://github.com/line/lbm-sdk/pull/679) fix the bug not setting `iavl-cache-size` value of `app.toml`
+* (x/foundation) [\#687](https://github.com/line/lbm-sdk/pull/687) fix bugs on aborting x/foundation proposals
+* (global) [\#694](https://github.com/line/lbm-sdk/pull/694) replace deprecated functions since go 1.16 or 1.17
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path

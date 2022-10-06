@@ -208,7 +208,7 @@ func checkAminoMarshalError(ctx client.Context, resp interface{}, grpcEndPoint s
 		// If there's an unmarshalling error, we assume that it's because we're
 		// using amino to unmarshal a non-amino tx.
 		return fmt.Errorf("this transaction cannot be displayed via legacy REST endpoints, because it does not support"+
-			" Amino serialization. Please either use CLI, gRPC, gRPC-gateway, or directly query the Tendermint RPC"+
+			" Amino serialization. Please either use CLI, gRPC, gRPC-gateway, or directly query the Ostracon RPC"+
 			" endpoint to query this transaction. The new REST endpoint (via gRPC-gateway) is %s. Please also see the"+
 			"REST endpoints migration guide at %s for more info", grpcEndPoint, clientrest.DeprecationURL)
 

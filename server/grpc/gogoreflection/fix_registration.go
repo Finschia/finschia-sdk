@@ -19,7 +19,6 @@ import (
 var importsToFix = map[string]string{
 	"gogo.proto":   "gogoproto/gogo.proto",
 	"cosmos.proto": "cosmos_proto/cosmos.proto",
-	"proofs.proto": "confio/proofs.proto", // TODO(dudong2): after separating ibc module from lbm-sdk, remove this
 }
 
 // fixRegistration is required because certain files register themselves in a way

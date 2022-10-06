@@ -3,7 +3,6 @@ package upgrade_test
 import (
 	"encoding/json"
 	"errors"
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
@@ -395,7 +394,7 @@ func TestDumpUpgradeInfoToFile(t *testing.T) {
 	upgradeInfoFilePath, err := s.keeper.GetUpgradeInfoPath()
 	require.Nil(t, err)
 
-	data, err := ioutil.ReadFile(upgradeInfoFilePath)
+	data, err := os.ReadFile(upgradeInfoFilePath)
 	require.NoError(t, err)
 
 	var upgradeInfo storetypes.UpgradeInfo

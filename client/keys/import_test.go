@@ -3,7 +3,6 @@ package keys
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -95,7 +94,7 @@ Ax9IQsSq+jOWkPRDJQ69a5/uUm4XliPim/CbYDVoXO6D3fts5IEXcUTmIa60ynC/
 
 			keyfile := filepath.Join(kbHome, "key.asc")
 
-			require.NoError(t, ioutil.WriteFile(keyfile, []byte(armoredKey), 0644))
+			require.NoError(t, os.WriteFile(keyfile, []byte(armoredKey), 0644))
 
 			defer func() {
 				_ = os.RemoveAll(kbHome)

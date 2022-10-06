@@ -6,10 +6,11 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
+
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 )
 
 // VerifyUpgradeAndUpdateState checks if the upgraded client has been committed by the current client
@@ -24,7 +25,7 @@ import (
 // - any Ostracon chain specified parameter in upgraded client such as ChainID, UnbondingPeriod,
 //   and ProofSpecs do not match parameters set by committed client
 func (cs ClientState) VerifyUpgradeAndUpdateState(
-	ctx sdk.Context, cdc codec.Codec, clientStore sdk.KVStore,
+	ctx sdk.Context, cdc codec.BinaryCodec, clientStore sdk.KVStore,
 	upgradedClient exported.ClientState, upgradedConsState exported.ConsensusState,
 	proofUpgradeClient, proofUpgradeConsState []byte,
 ) (exported.ClientState, exported.ConsensusState, error) {
@@ -40,8 +41,8 @@ func (cs ClientState) VerifyUpgradeAndUpdateState(
 			upgradedClient.GetLatestHeight(), lastHeight)
 	}
 
-	// upgraded client state and consensus state must be IBC tendermint client state and consensus state
-	// this may be modified in the future to upgrade to a new IBC tendermint type
+	// upgraded client state and consensus state must be IBC ostracon client state and consensus state
+	// this may be modified in the future to upgrade to a new IBC ostracon type
 	// counterparty must also commit to the upgraded consensus state at a sub-path under the upgrade path specified
 	tmUpgradeClient, ok := upgradedClient.(*ClientState)
 	if !ok {
@@ -69,10 +70,6 @@ func (cs ClientState) VerifyUpgradeAndUpdateState(
 	consState, err := GetConsensusState(clientStore, cdc, lastHeight)
 	if err != nil {
 		return nil, nil, sdkerrors.Wrap(err, "could not retrieve consensus state for lastHeight")
-	}
-
-	if cs.IsExpired(consState.Timestamp, ctx.BlockTime()) {
-		return nil, nil, sdkerrors.Wrap(clienttypes.ErrInvalidClient, "cannot upgrade an expired client")
 	}
 
 	// Verify client proof
@@ -112,15 +109,18 @@ func (cs ClientState) VerifyUpgradeAndUpdateState(
 	}
 
 	// The new consensus state is merely used as a trusted kernel against which headers on the new
-	// chain can be verified. The root is empty as it cannot be known in advance, thus no proof verification will pass.
+	// chain can be verified. The root is just a stand-in sentinel value as it cannot be known in advance, thus no proof verification will pass.
 	// The timestamp and the NextValidatorsHash of the consensus state is the blocktime and NextValidatorsHash
 	// of the last block committed by the old chain. This will allow the first block of the new chain to be verified against
 	// the last validators of the old chain so long as it is submitted within the TrustingPeriod of this client.
 	// NOTE: We do not set processed time for this consensus state since this consensus state should not be used for packet verification
 	// as the root is empty. The next consensus state submitted using update will be usable for packet-verification.
 	newConsState := NewConsensusState(
-		tmUpgradeConsState.Timestamp, commitmenttypes.MerkleRoot{}, tmUpgradeConsState.NextValidatorsHash,
+		tmUpgradeConsState.Timestamp, commitmenttypes.NewMerkleRoot([]byte(SentinelRoot)), tmUpgradeConsState.NextValidatorsHash,
 	)
+
+	// set metadata for this consensus state
+	setConsensusMetadata(ctx, clientStore, tmUpgradeClient.LatestHeight)
 
 	return newClientState, newConsState, nil
 }

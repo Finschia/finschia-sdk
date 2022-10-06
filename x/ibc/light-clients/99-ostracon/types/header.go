@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"time"
 
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	octypes "github.com/line/ostracon/types"
 
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
@@ -54,32 +54,29 @@ func (h Header) ValidateBasic() error {
 	if h.Header == nil {
 		return sdkerrors.Wrap(clienttypes.ErrInvalidHeader, "ostracon header cannot be nil")
 	}
-	ocSignedHeader, err := octypes.SignedHeaderFromProto(h.SignedHeader)
+	tmSignedHeader, err := octypes.SignedHeaderFromProto(h.SignedHeader)
 	if err != nil {
 		return sdkerrors.Wrap(err, "header is not a ostracon header")
 	}
-	if err := ocSignedHeader.ValidateBasic(h.Header.GetChainID()); err != nil {
+	if err := tmSignedHeader.ValidateBasic(h.Header.GetChainID()); err != nil {
 		return sdkerrors.Wrap(err, "header failed basic validation")
 	}
 
-	// TrustedHeight is less than Header for updates
-	// and less than or equal to Header for misbehaviour
-	if h.TrustedHeight.GT(h.GetHeight()) {
-		return sdkerrors.Wrapf(ErrInvalidHeaderHeight, "TrustedHeight %d must be less than or equal to header height %d",
+	// TrustedHeight is less than Header for updates and misbehaviour
+	if h.TrustedHeight.GTE(h.GetHeight()) {
+		return sdkerrors.Wrapf(ErrInvalidHeaderHeight, "TrustedHeight %d must be less than header height %d",
 			h.TrustedHeight, h.GetHeight())
 	}
 
 	if h.ValidatorSet == nil {
 		return sdkerrors.Wrap(clienttypes.ErrInvalidHeader, "validator set is nil")
 	}
-	ocValset, err := octypes.ValidatorSetFromProto(h.ValidatorSet)
+	tmValset, err := octypes.ValidatorSetFromProto(h.ValidatorSet)
 	if err != nil {
 		return sdkerrors.Wrap(err, "validator set is not ostracon validator set")
 	}
-	if !bytes.Equal(h.Header.ValidatorsHash, ocValset.Hash()) {
+	if !bytes.Equal(h.Header.ValidatorsHash, tmValset.Hash()) {
 		return sdkerrors.Wrap(clienttypes.ErrInvalidHeader, "validator set does not match hash")
 	}
 	return nil
 }
-
-// TODO(dudong2): need to remove ibc from lbm-sdk(move to other repo)

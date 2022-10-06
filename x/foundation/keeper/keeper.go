@@ -7,7 +7,6 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
@@ -66,7 +65,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 func (k Keeper) Cleanup(ctx sdk.Context) {
 	msgTypeURL := stakingplus.CreateValidatorAuthorization{}.MsgTypeURL()
 	var createValidatorGrantees []sdk.AccAddress
-	k.iterateAuthorizations(ctx, func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
+	k.iterateAuthorizations(ctx, func(grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
 		if authorization.MsgTypeURL() == msgTypeURL {
 			createValidatorGrantees = append(createValidatorGrantees, grantee)
 		}
@@ -74,7 +73,7 @@ func (k Keeper) Cleanup(ctx sdk.Context) {
 	})
 
 	for _, grantee := range createValidatorGrantees {
-		if err := k.Revoke(ctx, govtypes.ModuleName, grantee, msgTypeURL); err != nil {
+		if err := k.Revoke(ctx, grantee, msgTypeURL); err != nil {
 			panic(err)
 		}
 	}

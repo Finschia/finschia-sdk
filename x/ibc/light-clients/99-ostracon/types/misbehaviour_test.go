@@ -14,7 +14,7 @@ import (
 	ibctestingmock "github.com/line/lbm-sdk/x/ibc/testing/mock"
 )
 
-func (suite *TendermintTestSuite) TestMisbehaviour() {
+func (suite *OstraconTestSuite) TestMisbehaviour() {
 	signers := []octypes.PrivValidator{suite.privVal}
 	heightMinus1 := clienttypes.NewHeight(0, height.RevisionHeight-1)
 
@@ -27,10 +27,9 @@ func (suite *TendermintTestSuite) TestMisbehaviour() {
 
 	suite.Require().Equal(exported.Ostracon, misbehaviour.ClientType())
 	suite.Require().Equal(clientID, misbehaviour.GetClientID())
-	suite.Require().Equal(height, misbehaviour.GetHeight())
 }
 
-func (suite *TendermintTestSuite) TestMisbehaviourValidateBasic() {
+func (suite *OstraconTestSuite) TestMisbehaviourValidateBasic() {
 	altPrivVal := ibctestingmock.NewPV()
 	altPubKey, err := altPrivVal.GetPubKey()
 	suite.Require().NoError(err)
@@ -64,10 +63,20 @@ func (suite *TendermintTestSuite) TestMisbehaviourValidateBasic() {
 		expPass              bool
 	}{
 		{
-			"valid misbehaviour",
+			"valid fork misbehaviour, two headers at same height have different time",
 			&types.Misbehaviour{
 				Header1:  suite.header,
 				Header2:  suite.chainA.CreateOCClientHeader(chainID, int64(height.RevisionHeight), heightMinus1, suite.now.Add(time.Minute), suite.valSet, suite.valSet, voterSet, voterSet, signers),
+				ClientId: clientID,
+			},
+			func(misbehaviour *types.Misbehaviour) error { return nil },
+			true,
+		},
+		{
+			"valid time misbehaviour, both headers at different heights are at same time",
+			&types.Misbehaviour{
+				Header1:  suite.chainA.CreateOCClientHeader(chainID, int64(height.RevisionHeight), heightMinus1, suite.now.Add(time.Minute), suite.valSet, suite.valSet, voterSet, voterSet, signers),
+				Header2:  suite.header,
 				ClientId: clientID,
 			},
 			func(misbehaviour *types.Misbehaviour) error { return nil },
@@ -156,20 +165,10 @@ func (suite *TendermintTestSuite) TestMisbehaviourValidateBasic() {
 			false,
 		},
 		{
-			"mismatched heights",
+			"header2 height is greater",
 			&types.Misbehaviour{
 				Header1:  suite.header,
-				Header2:  suite.chainA.CreateOCClientHeader(chainID, 6, clienttypes.NewHeight(0, 4), suite.now, suite.valSet, suite.valSet, voterSet, voterSet, signers),
-				ClientId: clientID,
-			},
-			func(misbehaviour *types.Misbehaviour) error { return nil },
-			false,
-		},
-		{
-			"same block id",
-			&types.Misbehaviour{
-				Header1:  suite.header,
-				Header2:  suite.header,
+				Header2:  suite.chainA.CreateOCClientHeader(chainID, 6, clienttypes.NewHeight(0, height.RevisionHeight+1), suite.now, suite.valSet, suite.valSet, voterSet, voterSet, signers),
 				ClientId: clientID,
 			},
 			func(misbehaviour *types.Misbehaviour) error { return nil },

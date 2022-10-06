@@ -82,7 +82,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	foundationData.Authorizations = make([]foundation.GrantAuthorization, len(grantees))
 	for i, grantee := range grantees {
 		ga := foundation.GrantAuthorization{
-			Granter: foundation.ModuleName,
 			Grantee: grantee.String(),
 		}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{})
 		s.Require().NotNil(ga)
