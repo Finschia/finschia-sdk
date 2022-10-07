@@ -55,6 +55,7 @@ type KeeperTestSuite struct {
 	votedProposal     uint64
 	withdrawnProposal uint64
 	invalidProposal   uint64
+	nextProposal      uint64
 
 	balance sdk.Int
 }
@@ -177,6 +178,9 @@ func (s *KeeperTestSuite) SetupTest() {
 	})
 	s.Require().NoError(err)
 	s.invalidProposal = *invalidProposal
+
+	// next proposal is the proposal id for the upcoming proposal
+	s.nextProposal = s.invalidProposal + 1
 
 	for _, member := range s.members {
 		err := s.keeper.Vote(s.ctx, foundation.Vote{

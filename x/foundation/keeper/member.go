@@ -57,7 +57,7 @@ func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.MemberReques
 			AddedAt:  ctx.BlockTime(),
 		}
 		if err := new.ValidateBasic(); err != nil {
-			return err
+			panic(err)
 		}
 		if err := validateMetadata(new.Metadata, k.config); err != nil {
 			return err

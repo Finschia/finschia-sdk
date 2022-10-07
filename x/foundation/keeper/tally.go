@@ -19,14 +19,13 @@ func (k Keeper) doTallyAndUpdate(ctx sdk.Context, p *foundation.Proposal) error 
 	policy := info.GetDecisionPolicy()
 	sinceSubmission := ctx.BlockTime().Sub(p.SubmitTime) // duration passed since proposal submission.
 	result, err := policy.Allow(tallyResult, info.TotalWeight, sinceSubmission)
+	if err != nil {
+		return err
+	}
+
 	// If the result was final (i.e. enough votes to pass) or if the voting
 	// period ended, then we consider the proposal as final.
-	isFinal := result.Final || ctx.BlockTime().After(p.VotingPeriodEnd)
-
-	switch {
-	case err != nil:
-		return err
-	case isFinal:
+	if isFinal := result.Final || ctx.BlockTime().After(p.VotingPeriodEnd); isFinal {
 		k.pruneVotes(ctx, p.Id)
 		p.FinalTallyResult = tallyResult
 		if result.Allow {
@@ -54,12 +53,9 @@ func (k Keeper) tally(ctx sdk.Context, p foundation.Proposal) (foundation.TallyR
 	tallyResult := foundation.DefaultTallyResult()
 	var errIter error
 	k.iterateVotes(ctx, p.Id, func(vote foundation.Vote) (stop bool) {
-		voter, err := sdk.AccAddressFromBech32(vote.Voter)
-		if err != nil {
-			errIter = err
-			return true
-		}
-		_, err = k.GetMember(ctx, voter)
+		voter := sdk.MustAccAddressFromBech32(vote.Voter)
+
+		_, err := k.GetMember(ctx, voter)
 		switch {
 		case sdkerrors.ErrNotFound.Is(err):
 			// If the member left the foundation after voting, then we simply skip the
@@ -72,8 +68,7 @@ func (k Keeper) tally(ctx sdk.Context, p foundation.Proposal) (foundation.TallyR
 		}
 
 		if err := tallyResult.Add(vote.Option); err != nil {
-			errIter = err
-			return true
+			panic(err)
 		}
 
 		return false

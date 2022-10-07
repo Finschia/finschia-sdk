@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/stretchr/testify/require"
@@ -341,5 +342,233 @@ func TestPercentageDecisionPolicyAllow(t *testing.T) {
 		if tc.final {
 			require.Equal(t, tc.allow, result.Allow, name)
 		}
+	}
+}
+
+func TestMembers(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 2)
+	for i := range addrs {
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	testCases := map[string]struct {
+		members []foundation.Member
+		valid   bool
+	}{
+		"valid members": {
+			members: []foundation.Member{
+				{
+					Address: addrs[0].String(),
+				},
+				{
+					Address: addrs[1].String(),
+				},
+			},
+			valid: true,
+		},
+		"invalid member": {
+			members: []foundation.Member{{}},
+		},
+		"duplicate members": {
+			members: []foundation.Member{
+				{
+					Address: addrs[1].String(),
+				},
+				{
+					Address: addrs[1].String(),
+				},
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		members := foundation.Members{tc.members}
+		err := members.ValidateBasic()
+		if !tc.valid {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
+	}
+}
+
+func TestMemberRequests(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 2)
+	for i := range addrs {
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	testCases := map[string]struct {
+		members []foundation.MemberRequest
+		valid   bool
+	}{
+		"valid requests": {
+			members: []foundation.MemberRequest{
+				{
+					Address: addrs[0].String(),
+				},
+				{
+					Address: addrs[1].String(),
+					Remove:  true,
+				},
+			},
+			valid: true,
+		},
+		"invalid member": {
+			members: []foundation.MemberRequest{{}},
+		},
+		"duplicate requests": {
+			members: []foundation.MemberRequest{
+				{
+					Address: addrs[1].String(),
+				},
+				{
+					Address: addrs[1].String(),
+					Remove:  true,
+				},
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		requests := foundation.MemberRequests{tc.members}
+		err := requests.ValidateBasic()
+		if !tc.valid {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
+	}
+}
+
+func TestProposal(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 4)
+	for i := range addrs {
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	testCases := map[string]struct {
+		id                uint64
+		foundationVersion uint64
+		proposers         []string
+		msgs              []sdk.Msg
+		valid             bool
+	}{
+		"valid proposal": {
+			id:                1,
+			foundationVersion: 1,
+			proposers: []string{
+				addrs[0].String(),
+				addrs[1].String(),
+			},
+			msgs: []sdk.Msg{
+				&foundation.MsgWithdrawFromTreasury{
+					Operator: addrs[2].String(),
+					To:       addrs[3].String(),
+					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				},
+			},
+			valid: true,
+		},
+		"invalid id": {
+			foundationVersion: 1,
+			proposers: []string{
+				addrs[0].String(),
+				addrs[1].String(),
+			},
+			msgs: []sdk.Msg{
+				&foundation.MsgWithdrawFromTreasury{
+					Operator: addrs[2].String(),
+					To:       addrs[3].String(),
+					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				},
+			},
+		},
+		"invalid version": {
+			id: 1,
+			proposers: []string{
+				addrs[0].String(),
+				addrs[1].String(),
+			},
+			msgs: []sdk.Msg{
+				&foundation.MsgWithdrawFromTreasury{
+					Operator: addrs[2].String(),
+					To:       addrs[3].String(),
+					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				},
+			},
+		},
+		"empty proposers": {
+			id:                1,
+			foundationVersion: 1,
+			msgs: []sdk.Msg{
+				&foundation.MsgWithdrawFromTreasury{
+					Operator: addrs[2].String(),
+					To:       addrs[3].String(),
+					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				},
+			},
+		},
+		"invalid proposer": {
+			id:                1,
+			foundationVersion: 1,
+			proposers:         []string{""},
+			msgs: []sdk.Msg{
+				&foundation.MsgWithdrawFromTreasury{
+					Operator: addrs[2].String(),
+					To:       addrs[3].String(),
+					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				},
+			},
+		},
+		"duplicate proposers": {
+			id:                1,
+			foundationVersion: 1,
+			proposers: []string{
+				addrs[0].String(),
+				addrs[0].String(),
+			},
+			msgs: []sdk.Msg{
+				&foundation.MsgWithdrawFromTreasury{
+					Operator: addrs[2].String(),
+					To:       addrs[3].String(),
+					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				},
+			},
+		},
+		"empty msgs": {
+			id:                1,
+			foundationVersion: 1,
+			proposers: []string{
+				addrs[0].String(),
+				addrs[1].String(),
+			},
+		},
+		"invalid msg": {
+			id:                1,
+			foundationVersion: 1,
+			proposers: []string{
+				addrs[0].String(),
+				addrs[1].String(),
+			},
+			msgs: []sdk.Msg{
+				&foundation.MsgWithdrawFromTreasury{},
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		proposal := foundation.Proposal{
+			Id:                tc.id,
+			FoundationVersion: tc.foundationVersion,
+			Proposers:         tc.proposers,
+		}.WithMsgs(tc.msgs)
+
+		err := proposal.ValidateBasic()
+		if !tc.valid {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
 	}
 }
