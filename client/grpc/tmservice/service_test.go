@@ -2,6 +2,7 @@ package tmservice_test
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"testing"
 
@@ -75,13 +76,27 @@ func (s IntegrationTestSuite) TestQuerySyncing() {
 
 func (s IntegrationTestSuite) TestQueryLatestBlock() {
 	val := s.network.Validators[0]
-
 	_, err := s.queryClient.GetLatestBlock(context.Background(), &tmservice.GetLatestBlockRequest{})
 	s.Require().NoError(err)
 
 	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1/blocks/latest", val.APIAddress))
 	s.Require().NoError(err)
 	var blockInfoRes tmservice.GetLatestBlockResponse
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &blockInfoRes))
+}
+
+func (s IntegrationTestSuite) TestQueryBlockByHash() {
+	val := s.network.Validators[0]
+	node, _ := val.ClientCtx.GetNode()
+	blk, _ := node.Block(context.Background(), nil)
+	blkhash := blk.BlockID.Hash
+	res, err := s.queryClient.GetBlockByHash(context.Background(), &tmservice.GetBlockByHashRequest{Hash: blkhash})
+	s.Require().NoError(err)
+	_ = res
+
+	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1/block/%s", val.APIAddress, base64.StdEncoding.EncodeToString(blkhash)))
+	s.Require().NoError(err)
+	var blockInfoRes tmservice.GetBlockByHashResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &blockInfoRes))
 }
 

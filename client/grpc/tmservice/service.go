@@ -3,6 +3,7 @@ package tmservice
 import (
 	"context"
 	"fmt"
+
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	abci "github.com/line/ostracon/abci/types"
