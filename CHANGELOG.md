@@ -74,6 +74,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#686](https://github.com/line/lbm-sdk/pull/686) remove `Minthreshold` and `MinPercentage` from x/foundation config
 * (x/foundation) [\#693](https://github.com/line/lbm-sdk/pull/693) add pool to the state of x/foundation
 * (x/wasm) [\#696](https://github.com/line/lbm-sdk/pull/696) x/wasm - add checking a wasm file size before reading it
+* (x/distribution) [\#696](https://github.com/line/lbm-sdk/pull/696) x/distribution - add checking a proposal file size before reading it
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
