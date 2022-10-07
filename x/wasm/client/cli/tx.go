@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/line/lbm-sdk/x/wasm/os"
+	"github.com/line/lbm-sdk/internal/os"
 
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
