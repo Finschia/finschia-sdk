@@ -2,8 +2,6 @@ package tmservice
 
 import (
 	"context"
-	"fmt"
-
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	abci "github.com/line/ostracon/abci/types"
@@ -97,10 +95,10 @@ func (s queryServer) GetBlockByHash(_ context.Context, req *GetBlockByHashReques
 
 	res, err := getBlockByHash(s.clientCtx, req.Hash)
 	if err != nil {
-		return nil, fmt.Errorf("%#v", res)
+		return nil, err
 	}
 	protoBlockID := res.BlockID.ToProto()
-	protoBlock, _ := res.Block.ToProto()
+	protoBlock, err := res.Block.ToProto()
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +106,6 @@ func (s queryServer) GetBlockByHash(_ context.Context, req *GetBlockByHashReques
 		BlockId: &protoBlockID,
 		Block:   protoBlock,
 	}, nil
-	//return &GetBlockByHashResponse{}, nil
 }
 
 // GetBlockResultsByHeight implements ServiceServer.GetBlockResultsByHeight

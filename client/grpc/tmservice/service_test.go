@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"github.com/line/ostracon/libs/bytes"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -90,9 +91,26 @@ func (s IntegrationTestSuite) TestQueryBlockByHash() {
 	node, _ := val.ClientCtx.GetNode()
 	blk, _ := node.Block(context.Background(), nil)
 	blkhash := blk.BlockID.Hash
-	res, err := s.queryClient.GetBlockByHash(context.Background(), &tmservice.GetBlockByHashRequest{Hash: blkhash})
-	s.Require().NoError(err)
-	_ = res
+
+	tcs := []struct {
+		hash  bytes.HexBytes
+		isErr bool
+		err   string
+	}{
+		{blkhash, false, ""},
+		{bytes.HexBytes("wrong hash"), true, "The length of blcok hash must be 32: invalid request"},
+		{bytes.HexBytes(""), true, "block hash cannot be empty"},
+	}
+
+	for _, tc := range tcs {
+		_, err := s.queryClient.GetBlockByHash(context.Background(), &tmservice.GetBlockByHashRequest{Hash: tc.hash})
+		if tc.isErr {
+			s.Require().Error(err)
+			s.Require().Contains(err.Error(), tc.err)
+		} else {
+			s.Require().NoError(err)
+		}
+	}
 
 	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1/block/%s", val.APIAddress, base64.StdEncoding.EncodeToString(blkhash)))
 	s.Require().NoError(err)

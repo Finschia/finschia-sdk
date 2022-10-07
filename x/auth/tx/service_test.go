@@ -357,7 +357,7 @@ func (s IntegrationTestSuite) TestGetTx_GRPC() {
 		{"nil request", nil, true, "request cannot be nil"},
 		{"empty request", &tx.GetTxRequest{}, true, "tx hash cannot be empty"},
 		{"request with dummy hash of wrong length", &tx.GetTxRequest{Hash: "deadbeef"}, true, "The length of tx hash must be 64"},
-		{"request with dummy hash of correct length", &tx.GetTxRequest{Hash: "2AAC6096A87A9B9ABF604316313950D518DFDD86F2E597DD84A5808582DD0C02"}, true, "code = NotFound desc = tx not found: 2AAC6096A87A9B9ABF604316313950D518DFDD86F2E597DD84A5808582DD0C02"},
+		{"request with dummy hash of correct length but invalid", &tx.GetTxRequest{Hash: "2AAC6096A87A9B9ABF604316313950D518DFDD86F2E597DD84A5808582DD0C02"}, true, "tx not found: 2AAC6096A87A9B9ABF604316313950D518DFDD86F2E597DD84A5808582DD0C02"},
 		{"good request", &tx.GetTxRequest{Hash: s.txRes.TxHash}, false, ""},
 	}
 	for _, tc := range testCases {
@@ -394,9 +394,9 @@ func (s IntegrationTestSuite) TestGetTx_GRPCGateway() {
 			true, "The length of tx hash must be 64",
 		},
 		{
-			"dummy hash of correct length",
+			"dummy hash of correct length but invalid",
 			fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", val.APIAddress, "2AAC6096A87A9B9ABF604316313950D518DFDD86F2E597DD84A5808582DD0C02"),
-			true, "code = NotFound desc = tx not found: 2AAC6096A87A9B9ABF604316313950D518DFDD86F2E597DD84A5808582DD0C02",
+			true, "tx not found: 2AAC6096A87A9B9ABF604316313950D518DFDD86F2E597DD84A5808582DD0C02",
 		},
 		{
 			"good hash",
