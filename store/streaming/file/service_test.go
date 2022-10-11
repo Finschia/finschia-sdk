@@ -10,8 +10,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	abci "github.com/line/ostracont/abci/types"
-	types1 "github.com/line/ostracont/proto/ostracon/types"
+	abci "github.com/line/ostracon/abci/types"
+	octypes "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/codec"
 	codecTypes "github.com/line/lbm-sdk/codec/types"
@@ -29,7 +29,7 @@ var (
 	// test abci message types
 	mockHash          = []byte{1, 2, 3, 4, 5, 6, 7, 8, 9}
 	testBeginBlockReq = abci.RequestBeginBlock{
-		Header: types1.Header{
+		Header: octypes.Header{
 			Height: 1,
 		},
 		ByzantineValidators: []abci.Evidence{},
