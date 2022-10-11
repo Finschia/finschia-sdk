@@ -1,9 +1,8 @@
 package cli
 
 import (
-	"os"
-
 	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/internal/os"
 	"github.com/line/lbm-sdk/x/distribution/types"
 )
 
@@ -11,7 +10,10 @@ import (
 func ParseCommunityPoolSpendProposalWithDeposit(cdc codec.JSONCodec, proposalFile string) (types.CommunityPoolSpendProposalWithDeposit, error) {
 	proposal := types.CommunityPoolSpendProposalWithDeposit{}
 
-	contents, err := os.ReadFile(proposalFile)
+	// 2M size limit is enough for a proposal.
+	// Check the proposals:
+	// https://hubble.figment.io/cosmos/chains/cosmoshub-4/governance
+	contents, err := os.ReadFileWithSizeLimit(proposalFile, 2*1024*1024)
 	if err != nil {
 		return proposal, err
 	}
