@@ -147,8 +147,8 @@ func GetCmdListContractByCode() *cobra.Command {
 func GetCmdQueryCode() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "code [code_id]",
-		Short:   "Downloads wasm bytecode for given code id",
-		Long:    "Downloads wasm bytecode for given code id",
+		Short:   "Downloads wasm bytecode for given code id to the current directory",
+		Long:    "Downloads wasm bytecode for given code id to the current directory as `contract-[code_id].wasm`",
 		Aliases: []string{"source-code", "source"},
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -176,7 +176,7 @@ func GetCmdQueryCode() *cobra.Command {
 				return fmt.Errorf("contract not found")
 			}
 
-			fileName := "wasm_bytecode-" + strconv.FormatUint(codeID, 10)
+			fileName := "contract-" + strconv.FormatUint(codeID, 10) + ".wasm"
 			fmt.Printf("Downloading wasm code to %s\n", fileName)
 			return ioutil.WriteFile(fileName, res.Data, 0600)
 		},
