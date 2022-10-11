@@ -75,6 +75,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#693](https://github.com/line/lbm-sdk/pull/693) add pool to the state of x/foundation
 * (x/wasm,distribution) [\#696](https://github.com/line/lbm-sdk/pull/696) x/wasm,distribution - add checking a file size before reading it
 * (x/foundation) [\#698](https://github.com/line/lbm-sdk/pull/698) update x/group relevant logic in x/foundation
+* (x) [\#691](https://github.com/line/lbm-sdk/pull/691) change AccAddressFromBech32 to MustAccAddressFromBech32
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
