@@ -173,7 +173,7 @@ func (suite *KeeperTestSuite) TestOnRecvPacket() {
 		// because the bankplus module SendCoinsFromModuleToAccount function does not have a blacklist check
 		{"failure: receive on module account", func() {
 			receiver = suite.chainA.GetSimApp().AccountKeeper.GetModuleAddress(types.ModuleName).String()
-		}, false, true},
+		}, false, false},
 
 		// - coin being sent back to original chain (chainB) to module address
 		{"failure: receive on module account on source chain", func() {
