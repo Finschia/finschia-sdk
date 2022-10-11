@@ -73,6 +73,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (refactor) [\#685](https://github.com/line/lbm-sdk/pull/685) remove x/foundation UpdateValidatorAuthsProposal
 * (x/foundation) [\#686](https://github.com/line/lbm-sdk/pull/686) remove `Minthreshold` and `MinPercentage` from x/foundation config
 * (x/foundation) [\#693](https://github.com/line/lbm-sdk/pull/693) add pool to the state of x/foundation
+* (x/wasm)  [\#690](https://github.com/line/lbm-sdk/pull/690) fix to prevent accepting file name
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
