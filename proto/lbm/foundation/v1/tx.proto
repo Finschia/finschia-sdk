@@ -79,8 +79,8 @@ message MsgUpdateMembers {
   string operator = 1;
 
   // member_updates is the list of members to update,
-  // set participating to false to remove a member.
-  repeated Member member_updates = 2 [(gogoproto.nullable) = false];
+  // set remove to true to remove a member.
+  repeated MemberRequest member_updates = 2 [(gogoproto.nullable) = false];
 }
 
 // MsgUpdateMembersResponse is the Msg/UpdateMembers response type.

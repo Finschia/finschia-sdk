@@ -66,24 +66,18 @@ func validateVoteOption(option VoteOption) error {
 	return nil
 }
 
-func validateMembers(members []Member) error {
-	addrs := map[string]bool{}
-	for _, member := range members {
-		if err := member.ValidateBasic(); err != nil {
-			return err
-		}
-		if addrs[member.Address] {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicated address: %s", member.Address)
-		}
-		addrs[member.Address] = true
+func (m Member) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Address); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid member address: %s", m.Address)
 	}
 
 	return nil
 }
 
-func (m Member) ValidateBasic() error {
+// ValidateBasic performs stateless validation on a member.
+func (m MemberRequest) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Address); err != nil {
-		return err
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid member address: %s", m.Address)
 	}
 
 	return nil
@@ -106,7 +100,7 @@ type DecisionPolicy interface {
 	Allow(tallyResult TallyResult, totalPower sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error)
 
 	ValidateBasic() error
-	Validate(config Config) error
+	Validate(info FoundationInfo, config Config) error
 }
 
 // DefaultTallyResult returns a TallyResult with all counts set to 0.
@@ -155,6 +149,22 @@ func (t TallyResult) TotalCounts() sdk.Dec {
 }
 
 var _ codectypes.UnpackInterfacesMessage = (*Proposal)(nil)
+
+func (p Proposal) ValidateBasic() error {
+	if p.Id == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("id must be > 0")
+	}
+	if p.FoundationVersion == 0 {
+		return sdkerrors.ErrInvalidVersion.Wrap("foundation version must be > 0")
+	}
+	if err := validateProposers(p.Proposers); err != nil {
+		return err
+	}
+	if err := validateMsgs(p.GetMsgs()); err != nil {
+		return err
+	}
+	return nil
+}
 
 func (p *Proposal) GetMsgs() []sdk.Msg {
 	msgs, err := GetMsgs(p.Messages, "proposal")
@@ -285,7 +295,11 @@ func (p ThresholdDecisionPolicy) ValidateBasic() error {
 	return nil
 }
 
-func (p ThresholdDecisionPolicy) Validate(config Config) error {
+func (p ThresholdDecisionPolicy) Validate(info FoundationInfo, config Config) error {
+	if !info.TotalWeight.IsPositive() {
+		return sdkerrors.ErrInvalidRequest.Wrapf("total weight must be positive")
+	}
+
 	if err := validateDecisionPolicyWindows(*p.Windows, config); err != nil {
 		return err
 	}
@@ -338,7 +352,13 @@ func (p PercentageDecisionPolicy) ValidateBasic() error {
 	return nil
 }
 
-func (p PercentageDecisionPolicy) Validate(config Config) error {
+func (p PercentageDecisionPolicy) Validate(info FoundationInfo, config Config) error {
+	// total weight must be positive, because the admin is group policy
+	// (in x/group words)
+	if !info.TotalWeight.IsPositive() {
+		return sdkerrors.ErrInvalidRequest.Wrapf("total weight must be positive")
+	}
+
 	if err := validateDecisionPolicyWindows(*p.Windows, config); err != nil {
 		return err
 	}
@@ -431,5 +451,53 @@ func (p Pool) ValidateBasic() error {
 		return err
 	}
 
+	return nil
+}
+
+// Members defines a repeated slice of Member objects.
+type Members struct {
+	Members []Member
+}
+
+// ValidateBasic performs stateless validation on an array of members. On top
+// of validating each member individually, it also makes sure there are no
+// duplicate addresses.
+func (ms Members) ValidateBasic() error {
+	index := make(map[string]struct{}, len(ms.Members))
+	for i := range ms.Members {
+		member := ms.Members[i]
+		if err := member.ValidateBasic(); err != nil {
+			return err
+		}
+		addr := member.Address
+		if _, exists := index[addr]; exists {
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicated address: %s", member.Address)
+		}
+		index[addr] = struct{}{}
+	}
+	return nil
+}
+
+// MemberRequests defines a repeated slice of MemberRequest objects.
+type MemberRequests struct {
+	Members []MemberRequest
+}
+
+// ValidateBasic performs stateless validation on an array of members. On top
+// of validating each member individually, it also makes sure there are no
+// duplicate addresses.
+func (ms MemberRequests) ValidateBasic() error {
+	index := make(map[string]struct{}, len(ms.Members))
+	for i := range ms.Members {
+		member := ms.Members[i]
+		if err := member.ValidateBasic(); err != nil {
+			return err
+		}
+		addr := member.Address
+		if _, exists := index[addr]; exists {
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicated address: %s", member.Address)
+		}
+		index[addr] = struct{}{}
+	}
 	return nil
 }

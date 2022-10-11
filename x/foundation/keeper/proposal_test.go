@@ -116,10 +116,9 @@ func TestAbortProposal(t *testing.T) {
 	for i := range members {
 		members[i] = createAddress()
 	}
-	err := keeper.UpdateMembers(ctx, []foundation.Member{
+	err := keeper.UpdateMembers(ctx, []foundation.MemberRequest{
 		{
-			Address:       members[0].String(),
-			Participating: true,
+			Address: members[0].String(),
 		},
 	})
 	require.NoError(t, err)
@@ -137,10 +136,9 @@ func TestAbortProposal(t *testing.T) {
 		})
 		require.NoError(t, err)
 
-		err = keeper.UpdateMembers(ctx, []foundation.Member{
+		err = keeper.UpdateMembers(ctx, []foundation.MemberRequest{
 			{
-				Address:       newMember.String(),
-				Participating: true,
+				Address: newMember.String(),
 			},
 		})
 		require.NoError(t, err)

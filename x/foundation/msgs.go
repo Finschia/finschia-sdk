@@ -65,7 +65,8 @@ func (m MsgUpdateMembers) ValidateBasic() error {
 	if len(m.MemberUpdates) == 0 {
 		return sdkerrors.ErrInvalidRequest.Wrap("empty updates")
 	}
-	if err := validateMembers(m.MemberUpdates); err != nil {
+	members := MemberRequests{Members: m.MemberUpdates}
+	if err := members.ValidateBasic(); err != nil {
 		return err
 	}
 
@@ -89,7 +90,6 @@ func (m MsgUpdateDecisionPolicy) ValidateBasic() error {
 	if m.GetDecisionPolicy() == nil {
 		return sdkerrors.ErrInvalidRequest.Wrap("nil decision policy")
 	}
-
 	if err := m.GetDecisionPolicy().ValidateBasic(); err != nil {
 		return err
 	}
@@ -244,7 +244,7 @@ func (m MsgExec) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Signer); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", m.Signer)
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid signer address: %s", m.Signer)
 	}
 
 	return nil
