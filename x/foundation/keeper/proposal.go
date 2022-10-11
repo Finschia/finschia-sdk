@@ -48,18 +48,24 @@ func (k Keeper) setPreviousProposalID(ctx sdk.Context, id uint64) {
 	store.Set(previousProposalIDKey, Uint64ToBytes(id))
 }
 
-func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata string, msgs []sdk.Msg) (uint64, error) {
+func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata string, msgs []sdk.Msg) (*uint64, error) {
 	if err := validateMetadata(metadata, k.config); err != nil {
-		return 0, err
+		return nil, err
 	}
 
 	foundationInfo := k.GetFoundationInfo(ctx)
 	operator, err := sdk.AccAddressFromBech32(foundationInfo.Operator)
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 	if err := ensureMsgAuthz(msgs, operator); err != nil {
-		return 0, err
+		return nil, err
+	}
+
+	// Prevent proposal that can not succeed.
+	policy := foundationInfo.GetDecisionPolicy()
+	if err := policy.Validate(foundationInfo, k.config); err != nil {
+		return nil, err
 	}
 
 	id := k.newProposalID(ctx)
@@ -69,20 +75,19 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata str
 		Proposers:         proposers,
 		SubmitTime:        ctx.BlockTime(),
 		FoundationVersion: foundationInfo.Version,
-		Result:            foundation.PROPOSAL_RESULT_UNFINALIZED,
 		Status:            foundation.PROPOSAL_STATUS_SUBMITTED,
 		ExecutorResult:    foundation.PROPOSAL_EXECUTOR_RESULT_NOT_RUN,
-		VotingPeriodEnd:   ctx.BlockTime().Add(foundationInfo.GetDecisionPolicy().GetVotingPeriod()),
+		VotingPeriodEnd:   ctx.BlockTime().Add(policy.GetVotingPeriod()),
 		FinalTallyResult:  foundation.DefaultTallyResult(),
 	}
 	if err := proposal.SetMsgs(msgs); err != nil {
-		return 0, err
+		return nil, err
 	}
 
 	k.setProposal(ctx, proposal)
 	k.addProposalToVPEndQueue(ctx, proposal)
 
-	return id, nil
+	return &id, nil
 }
 
 func (k Keeper) WithdrawProposal(ctx sdk.Context, proposalID uint64) error {

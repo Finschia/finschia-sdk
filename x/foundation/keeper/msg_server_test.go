@@ -148,26 +148,27 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 	testCases := map[string]struct {
 		operator sdk.AccAddress
-		member   foundation.Member
+		member   foundation.MemberRequest
 		valid    bool
 	}{
 		"valid request": {
 			operator: s.operator,
-			member: foundation.Member{
+			member: foundation.MemberRequest{
 				Address: s.members[0].String(),
 			},
 			valid: true,
 		},
 		"not authorized": {
 			operator: s.stranger,
-			member: foundation.Member{
+			member: foundation.MemberRequest{
 				Address: s.members[0].String(),
 			},
 		},
 		"remove a non-member": {
 			operator: s.operator,
-			member: foundation.Member{
+			member: foundation.MemberRequest{
 				Address: s.stranger.String(),
+				Remove:  true,
 			},
 		},
 	}
@@ -178,7 +179,7 @@ func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 
 			req := &foundation.MsgUpdateMembers{
 				Operator:      tc.operator.String(),
-				MemberUpdates: []foundation.Member{tc.member},
+				MemberUpdates: []foundation.MemberRequest{tc.member},
 			}
 			res, err := s.msgServer.UpdateMembers(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -198,6 +199,7 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 	}
 
 	testCases := map[string]struct {
+		malleate  func(ctx sdk.Context)
 		proposers []string
 		metadata  string
 		msg       sdk.Msg
@@ -249,11 +251,34 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 			},
 		},
+		"exec fails": {
+			malleate: func(ctx sdk.Context) {
+				// try exec will fail because of a non-zero MinExecutionPeriod.
+				err := s.keeper.UpdateDecisionPolicy(ctx, &foundation.ThresholdDecisionPolicy{
+					Threshold: sdk.OneDec(),
+					Windows: &foundation.DecisionPolicyWindows{
+						VotingPeriod:       time.Hour,
+						MinExecutionPeriod: time.Second,
+					},
+				})
+				s.Require().NoError(err)
+			},
+			proposers: members,
+			msg: &foundation.MsgWithdrawFromTreasury{
+				Operator: s.operator.String(),
+				To:       s.stranger.String(),
+				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
+			},
+			exec: foundation.Exec_EXEC_TRY,
+		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
+			if tc.malleate != nil {
+				tc.malleate(ctx)
+			}
 
 			req := &foundation.MsgSubmitProposal{
 				Proposers: tc.proposers,
@@ -291,7 +316,8 @@ func (s *KeeperTestSuite) TestMsgWithdrawProposal() {
 			valid:      true,
 		},
 		"not authorized": {
-			address: s.stranger,
+			proposalID: s.activeProposal,
+			address:    s.stranger,
 		},
 		"inactive proposal": {
 			proposalID: s.withdrawnProposal,
@@ -320,6 +346,7 @@ func (s *KeeperTestSuite) TestMsgWithdrawProposal() {
 
 func (s *KeeperTestSuite) TestMsgVote() {
 	testCases := map[string]struct {
+		malleate   func(ctx sdk.Context)
 		proposalID uint64
 		voter      sdk.AccAddress
 		msg        sdk.Msg
@@ -345,11 +372,52 @@ func (s *KeeperTestSuite) TestMsgVote() {
 			proposalID: s.votedProposal,
 			voter:      s.members[0],
 		},
+		"exec fails": {
+			malleate: func(ctx sdk.Context) {
+				// try exec will fail because of a non-zero MinExecutionPeriod.
+				err := s.keeper.UpdateDecisionPolicy(ctx, &foundation.ThresholdDecisionPolicy{
+					Threshold: sdk.OneDec(),
+					Windows: &foundation.DecisionPolicyWindows{
+						VotingPeriod:       time.Hour,
+						MinExecutionPeriod: time.Second,
+					},
+				})
+				s.Require().NoError(err)
+
+				// submit a proposal
+				proposers := make([]string, len(s.members))
+				for i, member := range s.members {
+					proposers[i] = member.String()
+				}
+				req := &foundation.MsgSubmitProposal{
+					Proposers: proposers,
+				}
+				err = req.SetMsgs([]sdk.Msg{
+					&foundation.MsgWithdrawFromTreasury{
+						Operator: s.operator.String(),
+						To:       s.stranger.String(),
+						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
+					}})
+				s.Require().NoError(err)
+
+				res, err := s.msgServer.SubmitProposal(sdk.WrapSDKContext(ctx), req)
+				s.Require().NoError(err)
+				s.Require().NotNil(res)
+
+				s.Require().Equal(s.nextProposal, res.ProposalId)
+			},
+			proposalID: s.nextProposal,
+			voter:      s.members[0],
+			exec:       foundation.Exec_EXEC_TRY,
+		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
+			if tc.malleate != nil {
+				tc.malleate(ctx)
+			}
 
 			req := &foundation.MsgVote{
 				ProposalId: tc.proposalID,
@@ -370,6 +438,7 @@ func (s *KeeperTestSuite) TestMsgVote() {
 
 func (s *KeeperTestSuite) TestMsgExec() {
 	testCases := map[string]struct {
+		malleate   func(ctx sdk.Context)
 		proposalID uint64
 		signer     sdk.AccAddress
 		valid      bool
@@ -387,6 +456,10 @@ func (s *KeeperTestSuite) TestMsgExec() {
 		"not authorized": {
 			proposalID: s.votedProposal,
 			signer:     s.stranger,
+		},
+		"no such a proposal": {
+			proposalID: s.nextProposal,
+			signer:     s.members[0],
 		},
 	}
 
@@ -411,8 +484,9 @@ func (s *KeeperTestSuite) TestMsgExec() {
 
 func (s *KeeperTestSuite) TestMsgLeaveFoundation() {
 	testCases := map[string]struct {
-		address sdk.AccAddress
-		valid   bool
+		malleate func(ctx sdk.Context)
+		address  sdk.AccAddress
+		valid    bool
 	}{
 		"valid request": {
 			address: s.members[0],
@@ -421,11 +495,30 @@ func (s *KeeperTestSuite) TestMsgLeaveFoundation() {
 		"not authorized": {
 			address: s.stranger,
 		},
+		"policy violation": {
+			malleate: func(ctx sdk.Context) {
+				// remove all members but the first one
+				// preset policy is a threshold policy with its threshold 1
+				requests := make([]foundation.MemberRequest, len(s.members)-1)
+				for i, member := range s.members[1:] {
+					requests[i] = foundation.MemberRequest{
+						Address: member.String(),
+						Remove:  true,
+					}
+				}
+				err := s.keeper.UpdateMembers(ctx, requests)
+				s.Require().NoError(err)
+			},
+			address: s.members[0],
+		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
+			if tc.malleate != nil {
+				tc.malleate(ctx)
+			}
 
 			req := &foundation.MsgLeaveFoundation{
 				Address: tc.address.String(),
@@ -444,16 +537,24 @@ func (s *KeeperTestSuite) TestMsgLeaveFoundation() {
 func (s *KeeperTestSuite) TestMsgGrant() {
 	testCases := map[string]struct {
 		operator      sdk.AccAddress
+		grantee       sdk.AccAddress
 		authorization foundation.Authorization
 		valid         bool
 	}{
 		"valid request": {
 			operator:      s.operator,
+			grantee:       s.members[0],
 			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
 			valid:         true,
 		},
 		"not authorized": {
 			operator:      s.stranger,
+			grantee:       s.members[0],
+			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
+		},
+		"already granted": {
+			operator:      s.operator,
+			grantee:       s.stranger,
 			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
 		},
 	}
@@ -464,7 +565,7 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 
 			req := &foundation.MsgGrant{
 				Operator: tc.operator.String(),
-				Grantee:  s.operator.String(),
+				Grantee:  tc.grantee.String(),
 			}
 			err := req.SetAuthorization(tc.authorization)
 			s.Require().NoError(err)

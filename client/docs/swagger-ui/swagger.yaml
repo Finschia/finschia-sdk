@@ -33888,12 +33888,6 @@ paths:
                     address:
                       type: string
                       description: address is the member's account address.
-                    participating:
-                      type: boolean
-                      format: boolean
-                      description: >-
-                        participating is the flag which allows one to remove the
-                        member by setting the flag to false.
                     metadata:
                       type: string
                       description: >-
@@ -34194,12 +34188,6 @@ paths:
                   address:
                     type: string
                     description: address is the member's account address.
-                  participating:
-                    type: boolean
-                    format: boolean
-                    description: >-
-                      participating is the flag which allows one to remove the
-                      member by setting the flag to false.
                   metadata:
                     type: string
                     description: >-
@@ -35146,24 +35134,11 @@ paths:
                       enum:
                         - PROPOSAL_STATUS_UNSPECIFIED
                         - PROPOSAL_STATUS_SUBMITTED
-                        - PROPOSAL_STATUS_CLOSED
+                        - PROPOSAL_STATUS_ACCEPTED
+                        - PROPOSAL_STATUS_REJECTED
                         - PROPOSAL_STATUS_ABORTED
                         - PROPOSAL_STATUS_WITHDRAWN
                       default: PROPOSAL_STATUS_UNSPECIFIED
-                    result:
-                      description: >-
-                        result is the final result based on the votes and
-                        election rule. Initial value is unfinalized.
-
-                        The result is persisted so that clients can always rely
-                        on this state and not have to replicate the logic.
-                      type: string
-                      enum:
-                        - PROPOSAL_RESULT_UNSPECIFIED
-                        - PROPOSAL_RESULT_UNFINALIZED
-                        - PROPOSAL_RESULT_ACCEPTED
-                        - PROPOSAL_RESULT_REJECTED
-                      default: PROPOSAL_RESULT_UNSPECIFIED
                     final_tally_result:
                       description: >-
                         final_tally_result contains the sums of all votes for
@@ -35731,24 +35706,11 @@ paths:
                     enum:
                       - PROPOSAL_STATUS_UNSPECIFIED
                       - PROPOSAL_STATUS_SUBMITTED
-                      - PROPOSAL_STATUS_CLOSED
+                      - PROPOSAL_STATUS_ACCEPTED
+                      - PROPOSAL_STATUS_REJECTED
                       - PROPOSAL_STATUS_ABORTED
                       - PROPOSAL_STATUS_WITHDRAWN
                     default: PROPOSAL_STATUS_UNSPECIFIED
-                  result:
-                    description: >-
-                      result is the final result based on the votes and election
-                      rule. Initial value is unfinalized.
-
-                      The result is persisted so that clients can always rely on
-                      this state and not have to replicate the logic.
-                    type: string
-                    enum:
-                      - PROPOSAL_RESULT_UNSPECIFIED
-                      - PROPOSAL_RESULT_UNFINALIZED
-                      - PROPOSAL_RESULT_ACCEPTED
-                      - PROPOSAL_RESULT_REJECTED
-                    default: PROPOSAL_RESULT_UNSPECIFIED
                   final_tally_result:
                     description: >-
                       final_tally_result contains the sums of all votes for this
@@ -68613,12 +68575,6 @@ definitions:
       address:
         type: string
         description: address is the member's account address.
-      participating:
-        type: boolean
-        format: boolean
-        description: >-
-          participating is the flag which allows one to remove the member by
-          setting the flag to false.
       metadata:
         type: string
         description: metadata is any arbitrary metadata to attached to the member.
@@ -68674,24 +68630,11 @@ definitions:
         enum:
           - PROPOSAL_STATUS_UNSPECIFIED
           - PROPOSAL_STATUS_SUBMITTED
-          - PROPOSAL_STATUS_CLOSED
+          - PROPOSAL_STATUS_ACCEPTED
+          - PROPOSAL_STATUS_REJECTED
           - PROPOSAL_STATUS_ABORTED
           - PROPOSAL_STATUS_WITHDRAWN
         default: PROPOSAL_STATUS_UNSPECIFIED
-      result:
-        description: >-
-          result is the final result based on the votes and election rule.
-          Initial value is unfinalized.
-
-          The result is persisted so that clients can always rely on this state
-          and not have to replicate the logic.
-        type: string
-        enum:
-          - PROPOSAL_RESULT_UNSPECIFIED
-          - PROPOSAL_RESULT_UNFINALIZED
-          - PROPOSAL_RESULT_ACCEPTED
-          - PROPOSAL_RESULT_REJECTED
-        default: PROPOSAL_RESULT_UNSPECIFIED
       final_tally_result:
         description: >-
           final_tally_result contains the sums of all votes for this
@@ -68935,27 +68878,13 @@ definitions:
        - PROPOSAL_EXECUTOR_RESULT_NOT_RUN: We have not yet run the executor.
        - PROPOSAL_EXECUTOR_RESULT_SUCCESS: The executor was successful and proposed action updated state.
        - PROPOSAL_EXECUTOR_RESULT_FAILURE: The executor returned an error and proposed action didn't update state.
-  lbm.foundation.v1.ProposalResult:
-    type: string
-    enum:
-      - PROPOSAL_RESULT_UNSPECIFIED
-      - PROPOSAL_RESULT_UNFINALIZED
-      - PROPOSAL_RESULT_ACCEPTED
-      - PROPOSAL_RESULT_REJECTED
-    default: PROPOSAL_RESULT_UNSPECIFIED
-    description: |-
-      ProposalResult defines types of proposal results.
-
-       - PROPOSAL_RESULT_UNSPECIFIED: An empty value is invalid and not allowed
-       - PROPOSAL_RESULT_UNFINALIZED: Until a final tally has happened the status is unfinalized
-       - PROPOSAL_RESULT_ACCEPTED: Final result of the tally
-       - PROPOSAL_RESULT_REJECTED: Final result of the tally
   lbm.foundation.v1.ProposalStatus:
     type: string
     enum:
       - PROPOSAL_STATUS_UNSPECIFIED
       - PROPOSAL_STATUS_SUBMITTED
-      - PROPOSAL_STATUS_CLOSED
+      - PROPOSAL_STATUS_ACCEPTED
+      - PROPOSAL_STATUS_REJECTED
       - PROPOSAL_STATUS_ABORTED
       - PROPOSAL_STATUS_WITHDRAWN
     default: PROPOSAL_STATUS_UNSPECIFIED
@@ -68963,11 +68892,15 @@ definitions:
       ProposalStatus defines proposal statuses.
 
        - PROPOSAL_STATUS_UNSPECIFIED: An empty value is invalid and not allowed.
-       - PROPOSAL_STATUS_SUBMITTED: Initial status of a proposal when persisted.
-       - PROPOSAL_STATUS_CLOSED: Final status of a proposal when the final tally was executed.
-       - PROPOSAL_STATUS_ABORTED: Final status of a proposal when the group was modified before the final tally.
-       - PROPOSAL_STATUS_WITHDRAWN: A proposal can be deleted before the voting start time by the owner. When this happens the final status
-      is Withdrawn.
+       - PROPOSAL_STATUS_SUBMITTED: Initial status of a proposal when submitted.
+       - PROPOSAL_STATUS_ACCEPTED: Final status of a proposal when the final tally is done and the outcome
+      passes the foundation's decision policy.
+       - PROPOSAL_STATUS_REJECTED: Final status of a proposal when the final tally is done and the outcome
+      is rejected by the foundation's decision policy.
+       - PROPOSAL_STATUS_ABORTED: Final status of a proposal when the decision policy is modified before the
+      final tally.
+       - PROPOSAL_STATUS_WITHDRAWN: A proposal can be withdrawn before the voting start time by the owner.
+      When this happens the final status is Withdrawn.
   lbm.foundation.v1.QueryFoundationInfoResponse:
     type: object
     properties:
@@ -69257,12 +69190,6 @@ definitions:
           address:
             type: string
             description: address is the member's account address.
-          participating:
-            type: boolean
-            format: boolean
-            description: >-
-              participating is the flag which allows one to remove the member by
-              setting the flag to false.
           metadata:
             type: string
             description: metadata is any arbitrary metadata to attached to the member.
@@ -69285,12 +69212,6 @@ definitions:
             address:
               type: string
               description: address is the member's account address.
-            participating:
-              type: boolean
-              format: boolean
-              description: >-
-                participating is the flag which allows one to remove the member
-                by setting the flag to false.
             metadata:
               type: string
               description: metadata is any arbitrary metadata to attached to the member.
@@ -69375,24 +69296,11 @@ definitions:
             enum:
               - PROPOSAL_STATUS_UNSPECIFIED
               - PROPOSAL_STATUS_SUBMITTED
-              - PROPOSAL_STATUS_CLOSED
+              - PROPOSAL_STATUS_ACCEPTED
+              - PROPOSAL_STATUS_REJECTED
               - PROPOSAL_STATUS_ABORTED
               - PROPOSAL_STATUS_WITHDRAWN
             default: PROPOSAL_STATUS_UNSPECIFIED
-          result:
-            description: >-
-              result is the final result based on the votes and election rule.
-              Initial value is unfinalized.
-
-              The result is persisted so that clients can always rely on this
-              state and not have to replicate the logic.
-            type: string
-            enum:
-              - PROPOSAL_RESULT_UNSPECIFIED
-              - PROPOSAL_RESULT_UNFINALIZED
-              - PROPOSAL_RESULT_ACCEPTED
-              - PROPOSAL_RESULT_REJECTED
-            default: PROPOSAL_RESULT_UNSPECIFIED
           final_tally_result:
             description: >-
               final_tally_result contains the sums of all votes for this
@@ -69673,24 +69581,11 @@ definitions:
               enum:
                 - PROPOSAL_STATUS_UNSPECIFIED
                 - PROPOSAL_STATUS_SUBMITTED
-                - PROPOSAL_STATUS_CLOSED
+                - PROPOSAL_STATUS_ACCEPTED
+                - PROPOSAL_STATUS_REJECTED
                 - PROPOSAL_STATUS_ABORTED
                 - PROPOSAL_STATUS_WITHDRAWN
               default: PROPOSAL_STATUS_UNSPECIFIED
-            result:
-              description: >-
-                result is the final result based on the votes and election rule.
-                Initial value is unfinalized.
-
-                The result is persisted so that clients can always rely on this
-                state and not have to replicate the logic.
-              type: string
-              enum:
-                - PROPOSAL_RESULT_UNSPECIFIED
-                - PROPOSAL_RESULT_UNFINALIZED
-                - PROPOSAL_RESULT_ACCEPTED
-                - PROPOSAL_RESULT_REJECTED
-              default: PROPOSAL_RESULT_UNSPECIFIED
             final_tally_result:
               description: >-
                 final_tally_result contains the sums of all votes for this
