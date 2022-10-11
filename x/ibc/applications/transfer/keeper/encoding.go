@@ -11,6 +11,7 @@ func (k Keeper) UnmarshalDenomTrace(bz []byte) (types.DenomTrace, error) {
 	if err := k.cdc.Unmarshal(bz, &denomTrace); err != nil {
 		return types.DenomTrace{}, err
 	}
+
 	return denomTrace, nil
 }
 

@@ -32,7 +32,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // MsgTransfer defines a msg to transfer fungible tokens (i.e Coins) between
 // ICS20 enabled chains. See ICS Spec here:
-// https://github.com/cosmos/ics/tree/master/spec/ics-020-fungible-token-transfer#data-structures
+// https://github.com/cosmos/ibc/tree/master/spec/app/ics-020-fungible-token-transfer#data-structures
 type MsgTransfer struct {
 	// the port on which the packet will be sent
 	SourcePort string `protobuf:"bytes,1,opt,name=source_port,json=sourcePort,proto3" json:"source_port,omitempty" yaml:"source_port"`
@@ -47,7 +47,7 @@ type MsgTransfer struct {
 	// Timeout height relative to the current block height.
 	// The timeout is disabled when set to 0.
 	TimeoutHeight types1.Height `protobuf:"bytes,6,opt,name=timeout_height,json=timeoutHeight,proto3" json:"timeout_height" yaml:"timeout_height"`
-	// Timeout timestamp (in nanoseconds) relative to the current block timestamp.
+	// Timeout timestamp in absolute nanoseconds since unix epoch.
 	// The timeout is disabled when set to 0.
 	TimeoutTimestamp uint64 `protobuf:"varint,7,opt,name=timeout_timestamp,json=timeoutTimestamp,proto3" json:"timeout_timestamp,omitempty" yaml:"timeout_timestamp"`
 }

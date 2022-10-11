@@ -13,52 +13,18 @@ func (s *KeeperTestSuite) TestUpdateDecisionPolicy() {
 		policy foundation.DecisionPolicy
 		valid  bool
 	}{
-		"threshold policy (valid)": {
-			policy: &foundation.ThresholdDecisionPolicy{
-				Threshold: config.MinThreshold,
-				Windows: &foundation.DecisionPolicyWindows{
-					VotingPeriod: time.Hour,
-				},
-			},
-			valid: true,
-		},
-		"threshold policy (low threshold)": {
+		"valid policy": {
 			policy: &foundation.ThresholdDecisionPolicy{
 				Threshold: sdk.OneDec(),
 				Windows: &foundation.DecisionPolicyWindows{
 					VotingPeriod: time.Hour,
 				},
 			},
-		},
-		"threshold policy (invalid min execution period)": {
-			policy: &foundation.ThresholdDecisionPolicy{
-				Threshold: config.MinThreshold,
-				Windows: &foundation.DecisionPolicyWindows{
-					VotingPeriod:       time.Hour,
-					MinExecutionPeriod: time.Hour + config.MaxExecutionPeriod,
-				},
-			},
-		},
-		"percentage policy (valid)": {
-			policy: &foundation.PercentageDecisionPolicy{
-				Percentage: config.MinPercentage,
-				Windows: &foundation.DecisionPolicyWindows{
-					VotingPeriod: time.Hour,
-				},
-			},
 			valid: true,
 		},
-		"percentage policy (low percentage)": {
-			policy: &foundation.PercentageDecisionPolicy{
-				Percentage: sdk.MustNewDecFromStr("0.1"),
-				Windows: &foundation.DecisionPolicyWindows{
-					VotingPeriod: time.Hour,
-				},
-			},
-		},
-		"percentage policy (invalid min execution period)": {
-			policy: &foundation.PercentageDecisionPolicy{
-				Percentage: config.MinPercentage,
+		"invalid policy (invalid min execution period)": {
+			policy: &foundation.ThresholdDecisionPolicy{
+				Threshold: sdk.OneDec(),
 				Windows: &foundation.DecisionPolicyWindows{
 					VotingPeriod:       time.Hour,
 					MinExecutionPeriod: time.Hour + config.MaxExecutionPeriod,

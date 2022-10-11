@@ -2,12 +2,12 @@ package keeper
 
 import (
 	"bytes"
-	"fmt"
 	"time"
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	"github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
@@ -68,11 +68,12 @@ func (k Keeper) SendPacket(
 	}
 
 	// prevent accidental sends with clients that cannot be updated
-	if clientState.IsFrozen() {
-		return sdkerrors.Wrapf(clienttypes.ErrClientFrozen, "cannot send packet on a frozen client with ID %s", connectionEnd.GetClientID())
+	clientStore := k.clientKeeper.ClientStore(ctx, connectionEnd.GetClientID())
+	if status := clientState.Status(ctx, clientStore, k.cdc); status != exported.Active {
+		return sdkerrors.Wrapf(clienttypes.ErrClientNotActive, "cannot send packet using client (%s) with status %s", connectionEnd.GetClientID(), status)
 	}
 
-	// check if packet timeouted on the receiving chain
+	// check if packet is timed out on the receiving chain
 	latestHeight := clientState.GetLatestHeight()
 	timeoutHeight := packet.GetTimeoutHeight()
 	if !timeoutHeight.IsZero() && latestHeight.GTE(timeoutHeight) {
@@ -82,16 +83,25 @@ func (k Keeper) SendPacket(
 		)
 	}
 
-	latestTimestamp, err := k.connectionKeeper.GetTimestampAtHeight(ctx, connectionEnd, latestHeight)
+	clientType, _, err := clienttypes.ParseClientIdentifier(connectionEnd.GetClientID())
 	if err != nil {
 		return err
 	}
 
-	if packet.GetTimeoutTimestamp() != 0 && latestTimestamp >= packet.GetTimeoutTimestamp() {
-		return sdkerrors.Wrapf(
-			types.ErrPacketTimeout,
-			"receiving chain block timestamp >= packet timeout timestamp (%s >= %s)", time.Unix(0, int64(latestTimestamp)), time.Unix(0, int64(packet.GetTimeoutTimestamp())),
-		)
+	// NOTE: this is a temporary fix. Solo machine does not support usage of 'GetTimestampAtHeight'
+	// A future change should move this function to be a ClientState callback.
+	if clientType != exported.Solomachine {
+		latestTimestamp, err := k.connectionKeeper.GetTimestampAtHeight(ctx, connectionEnd, latestHeight)
+		if err != nil {
+			return err
+		}
+
+		if packet.GetTimeoutTimestamp() != 0 && latestTimestamp >= packet.GetTimeoutTimestamp() {
+			return sdkerrors.Wrapf(
+				types.ErrPacketTimeout,
+				"receiving chain block timestamp >= packet timeout timestamp (%s >= %s)", time.Unix(0, int64(latestTimestamp)), time.Unix(0, int64(packet.GetTimeoutTimestamp())),
+			)
+		}
 	}
 
 	nextSequenceSend, found := k.GetNextSequenceSend(ctx, packet.GetSourcePort(), packet.GetSourceChannel())
@@ -115,31 +125,17 @@ func (k Keeper) SendPacket(
 	k.SetNextSequenceSend(ctx, packet.GetSourcePort(), packet.GetSourceChannel(), nextSequenceSend)
 	k.SetPacketCommitment(ctx, packet.GetSourcePort(), packet.GetSourceChannel(), packet.GetSequence(), commitment)
 
-	// Emit Event with Packet data along with other packet information for relayer to pick up
-	// and relay to other chain
-	ctx.EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			types.EventTypeSendPacket,
-			sdk.NewAttribute(types.AttributeKeyData, string(packet.GetData())),
-			sdk.NewAttribute(types.AttributeKeyTimeoutHeight, timeoutHeight.String()),
-			sdk.NewAttribute(types.AttributeKeyTimeoutTimestamp, fmt.Sprintf("%d", packet.GetTimeoutTimestamp())),
-			sdk.NewAttribute(types.AttributeKeySequence, fmt.Sprintf("%d", packet.GetSequence())),
-			sdk.NewAttribute(types.AttributeKeySrcPort, packet.GetSourcePort()),
-			sdk.NewAttribute(types.AttributeKeySrcChannel, packet.GetSourceChannel()),
-			sdk.NewAttribute(types.AttributeKeyDstPort, packet.GetDestPort()),
-			sdk.NewAttribute(types.AttributeKeyDstChannel, packet.GetDestChannel()),
-			sdk.NewAttribute(types.AttributeKeyChannelOrdering, channel.Ordering.String()),
-			// we only support 1-hop packets now, and that is the most important hop for a relayer
-			// (is it going to a chain I am connected to)
-			sdk.NewAttribute(types.AttributeKeyConnection, channel.ConnectionHops[0]),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-		),
-	})
+	EmitSendPacketEvent(ctx, packet, channel, timeoutHeight)
 
-	k.Logger(ctx).Info("packet sent", "packet", fmt.Sprintf("%v", packet))
+	k.Logger(ctx).Info(
+		"packet sent",
+		"sequence", packet.GetSequence(),
+		"src_port", packet.GetSourcePort(),
+		"src_channel", packet.GetSourceChannel(),
+		"dst_port", packet.GetDestPort(),
+		"dst_channel", packet.GetDestChannel(),
+	)
+
 	return nil
 }
 
@@ -237,10 +233,11 @@ func (k Keeper) RecvPacket(
 		// check if the packet receipt has been received already for unordered channels
 		_, found := k.GetPacketReceipt(ctx, packet.GetDestPort(), packet.GetDestChannel(), packet.GetSequence())
 		if found {
-			return sdkerrors.Wrapf(
-				types.ErrInvalidPacket,
-				"packet sequence (%d) already has been received", packet.GetSequence(),
-			)
+			EmitRecvPacketEvent(ctx, packet, channel)
+			// This error indicates that the packet has already been relayed. Core IBC will
+			// treat this error as a no-op in order to prevent an entire relay transaction
+			// from failing and consuming unnecessary fees.
+			return types.ErrNoOpMsg
 		}
 
 		// All verification complete, update state
@@ -259,9 +256,17 @@ func (k Keeper) RecvPacket(
 			)
 		}
 
+		if packet.GetSequence() < nextSequenceRecv {
+			EmitRecvPacketEvent(ctx, packet, channel)
+			// This error indicates that the packet has already been relayed. Core IBC will
+			// treat this error as a no-op in order to prevent an entire relay transaction
+			// from failing and consuming unnecessary fees.
+			return types.ErrNoOpMsg
+		}
+
 		if packet.GetSequence() != nextSequenceRecv {
 			return sdkerrors.Wrapf(
-				types.ErrInvalidPacket,
+				types.ErrPacketSequenceOutOfOrder,
 				"packet sequence ≠ next receive sequence (%d ≠ %d)", packet.GetSequence(), nextSequenceRecv,
 			)
 		}
@@ -277,30 +282,17 @@ func (k Keeper) RecvPacket(
 	}
 
 	// log that a packet has been received & executed
-	k.Logger(ctx).Info("packet received", "packet", fmt.Sprintf("%v", packet))
+	k.Logger(ctx).Info(
+		"packet received",
+		"sequence", packet.GetSequence(),
+		"src_port", packet.GetSourcePort(),
+		"src_channel", packet.GetSourceChannel(),
+		"dst_port", packet.GetDestPort(),
+		"dst_channel", packet.GetDestChannel(),
+	)
 
 	// emit an event that the relayer can query for
-	ctx.EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			types.EventTypeRecvPacket,
-			sdk.NewAttribute(types.AttributeKeyData, string(packet.GetData())),
-			sdk.NewAttribute(types.AttributeKeyTimeoutHeight, packet.GetTimeoutHeight().String()),
-			sdk.NewAttribute(types.AttributeKeyTimeoutTimestamp, fmt.Sprintf("%d", packet.GetTimeoutTimestamp())),
-			sdk.NewAttribute(types.AttributeKeySequence, fmt.Sprintf("%d", packet.GetSequence())),
-			sdk.NewAttribute(types.AttributeKeySrcPort, packet.GetSourcePort()),
-			sdk.NewAttribute(types.AttributeKeySrcChannel, packet.GetSourceChannel()),
-			sdk.NewAttribute(types.AttributeKeyDstPort, packet.GetDestPort()),
-			sdk.NewAttribute(types.AttributeKeyDstChannel, packet.GetDestChannel()),
-			sdk.NewAttribute(types.AttributeKeyChannelOrdering, channel.Ordering.String()),
-			// we only support 1-hop packets now, and that is the most important hop for a relayer
-			// (is it going to a chain I am connected to)
-			sdk.NewAttribute(types.AttributeKeyConnection, channel.ConnectionHops[0]),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-		),
-	})
+	EmitRecvPacketEvent(ctx, packet, channel)
 
 	return nil
 }
@@ -320,7 +312,7 @@ func (k Keeper) WriteAcknowledgement(
 	ctx sdk.Context,
 	chanCap *capabilitytypes.Capability,
 	packet exported.PacketI,
-	acknowledgement []byte,
+	acknowledgement exported.Acknowledgement,
 ) error {
 	channel, found := k.GetChannel(ctx, packet.GetDestPort(), packet.GetDestChannel())
 	if !found {
@@ -350,41 +342,32 @@ func (k Keeper) WriteAcknowledgement(
 		return types.ErrAcknowledgementExists
 	}
 
-	if len(acknowledgement) == 0 {
+	if acknowledgement == nil {
+		return sdkerrors.Wrap(types.ErrInvalidAcknowledgement, "acknowledgement cannot be nil")
+	}
+
+	bz := acknowledgement.Acknowledgement()
+	if len(bz) == 0 {
 		return sdkerrors.Wrap(types.ErrInvalidAcknowledgement, "acknowledgement cannot be empty")
 	}
 
 	// set the acknowledgement so that it can be verified on the other side
 	k.SetPacketAcknowledgement(
 		ctx, packet.GetDestPort(), packet.GetDestChannel(), packet.GetSequence(),
-		types.CommitAcknowledgement(acknowledgement),
+		types.CommitAcknowledgement(bz),
 	)
 
 	// log that a packet acknowledgement has been written
-	k.Logger(ctx).Info("acknowledged written", "packet", fmt.Sprintf("%v", packet))
+	k.Logger(ctx).Info(
+		"acknowledgement written",
+		"sequence", packet.GetSequence,
+		"src_port", packet.GetSourcePort(),
+		"src_channel", packet.GetSourceChannel(),
+		"dst_port", packet.GetDestPort(),
+		"dst_channel", packet.GetDestChannel(),
+	)
 
-	// emit an event that the relayer can query for
-	ctx.EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			types.EventTypeWriteAck,
-			sdk.NewAttribute(types.AttributeKeyData, string(packet.GetData())),
-			sdk.NewAttribute(types.AttributeKeyTimeoutHeight, packet.GetTimeoutHeight().String()),
-			sdk.NewAttribute(types.AttributeKeyTimeoutTimestamp, fmt.Sprintf("%d", packet.GetTimeoutTimestamp())),
-			sdk.NewAttribute(types.AttributeKeySequence, fmt.Sprintf("%d", packet.GetSequence())),
-			sdk.NewAttribute(types.AttributeKeySrcPort, packet.GetSourcePort()),
-			sdk.NewAttribute(types.AttributeKeySrcChannel, packet.GetSourceChannel()),
-			sdk.NewAttribute(types.AttributeKeyDstPort, packet.GetDestPort()),
-			sdk.NewAttribute(types.AttributeKeyDstChannel, packet.GetDestChannel()),
-			sdk.NewAttribute(types.AttributeKeyAck, string(acknowledgement)),
-			// we only support 1-hop packets now, and that is the most important hop for a relayer
-			// (is it going to a chain I am connected to)
-			sdk.NewAttribute(types.AttributeKeyConnection, channel.ConnectionHops[0]),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-		),
-	})
+	EmitWriteAcknowledgementEvent(ctx, packet, channel, bz)
 
 	return nil
 }
@@ -456,6 +439,15 @@ func (k Keeper) AcknowledgePacket(
 
 	commitment := k.GetPacketCommitment(ctx, packet.GetSourcePort(), packet.GetSourceChannel(), packet.GetSequence())
 
+	if len(commitment) == 0 {
+		EmitAcknowledgePacketEvent(ctx, packet, channel)
+		// This error indicates that the acknowledgement has already been relayed
+		// or there is a misconfigured relayer attempting to prove an acknowledgement
+		// for a packet never sent. Core IBC will treat this error as a no-op in order to
+		// prevent an entire relay transaction from failing and consuming unnecessary fees.
+		return types.ErrNoOpMsg
+	}
+
 	packetCommitment := types.CommitPacket(k.cdc, packet)
 
 	// verify we sent the packet and haven't cleared it out yet
@@ -467,7 +459,7 @@ func (k Keeper) AcknowledgePacket(
 		ctx, connectionEnd, proofHeight, proof, packet.GetDestPort(), packet.GetDestChannel(),
 		packet.GetSequence(), acknowledgement,
 	); err != nil {
-		return sdkerrors.Wrap(err, "packet acknowledgement verification failed")
+		return err
 	}
 
 	// assert packets acknowledged in order
@@ -482,7 +474,7 @@ func (k Keeper) AcknowledgePacket(
 
 		if packet.GetSequence() != nextSequenceAck {
 			return sdkerrors.Wrapf(
-				sdkerrors.ErrInvalidSequence,
+				types.ErrPacketSequenceOutOfOrder,
 				"packet sequence ≠ next ack sequence (%d ≠ %d)", packet.GetSequence(), nextSequenceAck,
 			)
 		}
@@ -500,29 +492,17 @@ func (k Keeper) AcknowledgePacket(
 	k.deletePacketCommitment(ctx, packet.GetSourcePort(), packet.GetSourceChannel(), packet.GetSequence())
 
 	// log that a packet has been acknowledged
-	k.Logger(ctx).Info("packet acknowledged", "packet", fmt.Sprintf("%v", packet))
+	k.Logger(ctx).Info(
+		"packet acknowledged",
+		"sequence", packet.GetSequence(),
+		"src_port", packet.GetSourcePort(),
+		"src_channel", packet.GetSourceChannel(),
+		"dst_port", packet.GetDestPort(),
+		"dst_channel", packet.GetDestChannel(),
+	)
 
 	// emit an event marking that we have processed the acknowledgement
-	ctx.EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			types.EventTypeAcknowledgePacket,
-			sdk.NewAttribute(types.AttributeKeyTimeoutHeight, packet.GetTimeoutHeight().String()),
-			sdk.NewAttribute(types.AttributeKeyTimeoutTimestamp, fmt.Sprintf("%d", packet.GetTimeoutTimestamp())),
-			sdk.NewAttribute(types.AttributeKeySequence, fmt.Sprintf("%d", packet.GetSequence())),
-			sdk.NewAttribute(types.AttributeKeySrcPort, packet.GetSourcePort()),
-			sdk.NewAttribute(types.AttributeKeySrcChannel, packet.GetSourceChannel()),
-			sdk.NewAttribute(types.AttributeKeyDstPort, packet.GetDestPort()),
-			sdk.NewAttribute(types.AttributeKeyDstChannel, packet.GetDestChannel()),
-			sdk.NewAttribute(types.AttributeKeyChannelOrdering, channel.Ordering.String()),
-			// we only support 1-hop packets now, and that is the most important hop for a relayer
-			// (is it going to a chain I am connected to)
-			sdk.NewAttribute(types.AttributeKeyConnection, channel.ConnectionHops[0]),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-		),
-	})
+	EmitAcknowledgePacketEvent(ctx, packet, channel)
 
 	return nil
 }

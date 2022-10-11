@@ -1,4 +1,4 @@
-package tendermint
+package ostracon
 
 import (
 	"github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"

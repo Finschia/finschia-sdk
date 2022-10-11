@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strconv"
 
 	wasmvm "github.com/line/wasmvm"
@@ -178,7 +178,7 @@ func GetCmdQueryCode() *cobra.Command {
 
 			fileName := "contract-" + strconv.FormatUint(codeID, 10) + ".wasm"
 			fmt.Printf("Downloading wasm code to %s\n", fileName)
-			return ioutil.WriteFile(fileName, res.Data, 0600)
+			return os.WriteFile(fileName, res.Data, 0600)
 		},
 	}
 	flags.AddQueryFlagsToCmd(cmd)

@@ -2,19 +2,18 @@ package keeper_test
 
 import (
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
+
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
-	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 )
 
 func (suite *KeeperTestSuite) TestClientUpdateProposal() {
 	var (
 		subject, substitute                       string
 		subjectClientState, substituteClientState exported.ClientState
-		initialHeight                             types.Height
 		content                                   govtypes.Content
 		err                                       error
 	)
@@ -26,43 +25,55 @@ func (suite *KeeperTestSuite) TestClientUpdateProposal() {
 	}{
 		{
 			"valid update client proposal", func() {
-				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute, initialHeight)
+				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute)
 			}, true,
 		},
 		{
 			"subject and substitute use different revision numbers", func() {
 				tmClientState, ok := substituteClientState.(*ibcoctypes.ClientState)
 				suite.Require().True(ok)
-				consState, found := suite.chainA.App.IBCKeeper.ClientKeeper.GetClientConsensusState(suite.chainA.GetContext(), substitute, tmClientState.LatestHeight)
+				consState, found := suite.chainA.App.GetIBCKeeper().ClientKeeper.GetClientConsensusState(suite.chainA.GetContext(), substitute, tmClientState.LatestHeight)
 				suite.Require().True(found)
 				newRevisionNumber := tmClientState.GetLatestHeight().GetRevisionNumber() + 1
 
 				tmClientState.LatestHeight = types.NewHeight(newRevisionNumber, tmClientState.GetLatestHeight().GetRevisionHeight())
-				initialHeight = types.NewHeight(newRevisionNumber, initialHeight.GetRevisionHeight())
-				suite.chainA.App.IBCKeeper.ClientKeeper.SetClientConsensusState(suite.chainA.GetContext(), substitute, tmClientState.LatestHeight, consState)
-				suite.chainA.App.IBCKeeper.ClientKeeper.SetClientState(suite.chainA.GetContext(), substitute, tmClientState)
 
-				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute, initialHeight)
+				suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientConsensusState(suite.chainA.GetContext(), substitute, tmClientState.LatestHeight, consState)
+				clientStore := suite.chainA.App.GetIBCKeeper().ClientKeeper.ClientStore(suite.chainA.GetContext(), substitute)
+				ibcoctypes.SetProcessedTime(clientStore, tmClientState.LatestHeight, 100)
+				ibcoctypes.SetProcessedHeight(clientStore, tmClientState.LatestHeight, types.NewHeight(0, 1))
+				suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientState(suite.chainA.GetContext(), substitute, tmClientState)
+
+				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute)
 			}, true,
 		},
 		{
 			"cannot use localhost as subject", func() {
-				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, exported.Localhost, substitute, initialHeight)
+				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, exported.Localhost, substitute)
 			}, false,
 		},
 		{
 			"cannot use localhost as substitute", func() {
-				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, exported.Localhost, initialHeight)
+				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, exported.Localhost)
+			}, false,
+		},
+		{
+			"cannot use solomachine as substitute for ostracon client", func() {
+				solomachine := ibctesting.NewSolomachine(suite.T(), suite.cdc, "solo machine", "", 1)
+				solomachine.Sequence = subjectClientState.GetLatestHeight().GetRevisionHeight() + 1
+				substituteClientState = solomachine.ClientState()
+				suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientState(suite.chainA.GetContext(), substitute, substituteClientState)
+				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute)
 			}, false,
 		},
 		{
 			"subject client does not exist", func() {
-				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, ibctesting.InvalidID, substitute, initialHeight)
+				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, ibctesting.InvalidID, substitute)
 			}, false,
 		},
 		{
 			"substitute client does not exist", func() {
-				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, ibctesting.InvalidID, initialHeight)
+				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, ibctesting.InvalidID)
 			}, false,
 		},
 		{
@@ -70,9 +81,9 @@ func (suite *KeeperTestSuite) TestClientUpdateProposal() {
 				tmClientState, ok := subjectClientState.(*ibcoctypes.ClientState)
 				suite.Require().True(ok)
 				tmClientState.LatestHeight = substituteClientState.GetLatestHeight().(types.Height)
-				suite.chainA.App.IBCKeeper.ClientKeeper.SetClientState(suite.chainA.GetContext(), subject, tmClientState)
+				suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientState(suite.chainA.GetContext(), subject, tmClientState)
 
-				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute, initialHeight)
+				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute)
 			}, false,
 		},
 		{
@@ -80,9 +91,19 @@ func (suite *KeeperTestSuite) TestClientUpdateProposal() {
 				tmClientState, ok := subjectClientState.(*ibcoctypes.ClientState)
 				suite.Require().True(ok)
 				tmClientState.FrozenHeight = types.ZeroHeight()
-				suite.chainA.App.IBCKeeper.ClientKeeper.SetClientState(suite.chainA.GetContext(), subject, tmClientState)
+				suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientState(suite.chainA.GetContext(), subject, tmClientState)
 
-				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute, initialHeight)
+				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute)
+			}, false,
+		},
+		{
+			"substitute is frozen", func() {
+				tmClientState, ok := substituteClientState.(*ibcoctypes.ClientState)
+				suite.Require().True(ok)
+				tmClientState.FrozenHeight = types.NewHeight(0, 1)
+				suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientState(suite.chainA.GetContext(), substitute, tmClientState)
+
+				content = types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute)
 			}, false,
 		},
 	}
@@ -93,14 +114,18 @@ func (suite *KeeperTestSuite) TestClientUpdateProposal() {
 		suite.Run(tc.name, func() {
 			suite.SetupTest() // reset
 
-			subject, _ = suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
+			subjectPath := ibctesting.NewPath(suite.chainA, suite.chainB)
+			suite.coordinator.SetupClients(subjectPath)
+			subject = subjectPath.EndpointA.ClientID
 			subjectClientState = suite.chainA.GetClientState(subject)
-			substitute, _ = suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
-			initialHeight = clienttypes.NewHeight(subjectClientState.GetLatestHeight().GetRevisionNumber(), subjectClientState.GetLatestHeight().GetRevisionHeight()+1)
+
+			substitutePath := ibctesting.NewPath(suite.chainA, suite.chainB)
+			suite.coordinator.SetupClients(substitutePath)
+			substitute = substitutePath.EndpointA.ClientID
 
 			// update substitute twice
-			suite.coordinator.UpdateClient(suite.chainA, suite.chainB, substitute, exported.Ostracon)
-			suite.coordinator.UpdateClient(suite.chainA, suite.chainB, substitute, exported.Ostracon)
+			substitutePath.EndpointA.UpdateClient()
+			substitutePath.EndpointA.UpdateClient()
 			substituteClientState = suite.chainA.GetClientState(substitute)
 
 			tmClientState, ok := subjectClientState.(*ibcoctypes.ClientState)
@@ -108,20 +133,19 @@ func (suite *KeeperTestSuite) TestClientUpdateProposal() {
 			tmClientState.AllowUpdateAfterMisbehaviour = true
 			tmClientState.AllowUpdateAfterExpiry = true
 			tmClientState.FrozenHeight = tmClientState.LatestHeight
-			suite.chainA.App.IBCKeeper.ClientKeeper.SetClientState(suite.chainA.GetContext(), subject, tmClientState)
+			suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientState(suite.chainA.GetContext(), subject, tmClientState)
 
 			tmClientState, ok = substituteClientState.(*ibcoctypes.ClientState)
 			suite.Require().True(ok)
 			tmClientState.AllowUpdateAfterMisbehaviour = true
 			tmClientState.AllowUpdateAfterExpiry = true
-			tmClientState.FrozenHeight = tmClientState.LatestHeight
-			suite.chainA.App.IBCKeeper.ClientKeeper.SetClientState(suite.chainA.GetContext(), substitute, tmClientState)
+			suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientState(suite.chainA.GetContext(), substitute, tmClientState)
 
 			tc.malleate()
 
 			updateProp, ok := content.(*types.ClientUpdateProposal)
 			suite.Require().True(ok)
-			err = suite.chainA.App.IBCKeeper.ClientKeeper.ClientUpdateProposal(suite.chainA.GetContext(), updateProp)
+			err = suite.chainA.App.GetIBCKeeper().ClientKeeper.ClientUpdateProposal(suite.chainA.GetContext(), updateProp)
 
 			if tc.expPass {
 				suite.Require().NoError(err)
@@ -175,17 +199,6 @@ func (suite *KeeperTestSuite) TestHandleUpgradeProposal() {
 				}
 			}, false,
 		},
-		{
-			"schedule upgrade fails - plan sets time and height", func() {
-				plan = upgradetypes.Plan{
-					Name:   "invalid plan",
-					Height: 1000,
-					Time:   suite.chainA.GetContext().BlockTime(),
-				}
-				content, err = types.NewUpgradeProposal(ibctesting.Title, ibctesting.Description, plan, upgradedClientState)
-				suite.Require().NoError(err)
-			}, false,
-		},
 	}
 
 	for _, tc := range testCases {
@@ -195,8 +208,9 @@ func (suite *KeeperTestSuite) TestHandleUpgradeProposal() {
 			suite.SetupTest()  // reset
 			oldPlan.Height = 0 //reset
 
-			clientID, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
-			upgradedClientState = suite.chainA.GetClientState(clientID).ZeroCustomFields().(*ibcoctypes.ClientState)
+			path := ibctesting.NewPath(suite.chainA, suite.chainB)
+			suite.coordinator.SetupClients(path)
+			upgradedClientState = suite.chainA.GetClientState(path.EndpointA.ClientID).ZeroCustomFields().(*ibcoctypes.ClientState)
 
 			// use height 1000 to distinguish from old plan
 			plan = upgradetypes.Plan{
@@ -209,33 +223,33 @@ func (suite *KeeperTestSuite) TestHandleUpgradeProposal() {
 			// set the old plan if it is not empty
 			if oldPlan.Height != 0 {
 				// set upgrade plan in the upgrade store
-				store := suite.chainA.GetContext().KVStore(suite.chainA.App.GetKey(upgradetypes.StoreKey))
+				store := suite.chainA.GetContext().KVStore(suite.chainA.GetSimApp().GetKey(upgradetypes.StoreKey))
 				bz := suite.chainA.App.AppCodec().MustMarshal(&oldPlan)
 				store.Set(upgradetypes.PlanKey(), bz)
 
 				bz, err := types.MarshalClientState(suite.chainA.App.AppCodec(), upgradedClientState)
 				suite.Require().NoError(err)
-				suite.chainA.App.UpgradeKeeper.SetUpgradedClient(suite.chainA.GetContext(), oldPlan.Height, bz)
+				suite.chainA.GetSimApp().UpgradeKeeper.SetUpgradedClient(suite.chainA.GetContext(), oldPlan.Height, bz)
 			}
 
 			upgradeProp, ok := content.(*types.UpgradeProposal)
 			suite.Require().True(ok)
-			err = suite.chainA.App.IBCKeeper.ClientKeeper.HandleUpgradeProposal(suite.chainA.GetContext(), upgradeProp)
+			err = suite.chainA.App.GetIBCKeeper().ClientKeeper.HandleUpgradeProposal(suite.chainA.GetContext(), upgradeProp)
 
 			if tc.expPass {
 				suite.Require().NoError(err)
 
 				// check that the correct plan is returned
-				storedPlan, found := suite.chainA.App.UpgradeKeeper.GetUpgradePlan(suite.chainA.GetContext())
+				storedPlan, found := suite.chainA.GetSimApp().UpgradeKeeper.GetUpgradePlan(suite.chainA.GetContext())
 				suite.Require().True(found)
 				suite.Require().Equal(plan, storedPlan)
 
 				// check that old upgraded client state is cleared
-				_, found = suite.chainA.App.UpgradeKeeper.GetUpgradedClient(suite.chainA.GetContext(), oldPlan.Height)
+				_, found = suite.chainA.GetSimApp().UpgradeKeeper.GetUpgradedClient(suite.chainA.GetContext(), oldPlan.Height)
 				suite.Require().False(found)
 
 				// check that client state was set
-				storedClientState, found := suite.chainA.App.UpgradeKeeper.GetUpgradedClient(suite.chainA.GetContext(), plan.Height)
+				storedClientState, found := suite.chainA.GetSimApp().UpgradeKeeper.GetUpgradedClient(suite.chainA.GetContext(), plan.Height)
 				suite.Require().True(found)
 				clientState, err := types.UnmarshalClientState(suite.chainA.App.AppCodec(), storedClientState)
 				suite.Require().NoError(err)
@@ -244,7 +258,7 @@ func (suite *KeeperTestSuite) TestHandleUpgradeProposal() {
 				suite.Require().Error(err)
 
 				// check that the new plan wasn't stored
-				storedPlan, found := suite.chainA.App.UpgradeKeeper.GetUpgradePlan(suite.chainA.GetContext())
+				storedPlan, found := suite.chainA.GetSimApp().UpgradeKeeper.GetUpgradePlan(suite.chainA.GetContext())
 				if oldPlan.Height != 0 {
 					// NOTE: this is only true if the ScheduleUpgrade function
 					// returns an error before clearing the old plan
@@ -256,7 +270,7 @@ func (suite *KeeperTestSuite) TestHandleUpgradeProposal() {
 				}
 
 				// check that client state was not set
-				_, found = suite.chainA.App.UpgradeKeeper.GetUpgradedClient(suite.chainA.GetContext(), plan.Height)
+				_, found = suite.chainA.GetSimApp().UpgradeKeeper.GetUpgradedClient(suite.chainA.GetContext(), plan.Height)
 				suite.Require().False(found)
 
 			}

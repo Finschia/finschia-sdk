@@ -5,12 +5,16 @@ import (
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/codec"
+
 	"github.com/line/lbm-sdk/simapp/params"
+
+	"github.com/line/lbm-sdk/codec"
 	bankkeeper "github.com/line/lbm-sdk/x/bank/keeper"
 	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
 	ibctransferkeeper "github.com/line/lbm-sdk/x/ibc/applications/transfer/keeper"
+	ibckeeper "github.com/line/lbm-sdk/x/ibc/core/keeper"
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
+
 	"github.com/line/lbm-sdk/x/wasm"
 )
 
@@ -21,6 +25,10 @@ type TestSupport struct {
 
 func NewTestSupport(t testing.TB, app *SimApp) *TestSupport {
 	return &TestSupport{t: t, app: app}
+}
+
+func (s TestSupport) IBCKeeper() *ibckeeper.Keeper {
+	return s.app.IBCKeeper
 }
 
 func (s TestSupport) WasmKeeper() wasm.Keeper {

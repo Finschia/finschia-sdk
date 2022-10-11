@@ -2,6 +2,7 @@ package types_test
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
@@ -9,7 +10,7 @@ import (
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	"github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 const (
@@ -18,6 +19,14 @@ const (
 	testChannelID    = "testchannelid"
 	testSequence     = 1
 )
+
+func (suite *LocalhostTestSuite) TestStatus() {
+	clientState := types.NewClientState("chainID", clienttypes.NewHeight(3, 10))
+
+	// localhost should always return active
+	status := clientState.Status(suite.ctx, nil, nil)
+	suite.Require().Equal(exported.Active, status)
+}
 
 func (suite *LocalhostTestSuite) TestValidate() {
 	testCases := []struct {
@@ -65,7 +74,7 @@ func (suite *LocalhostTestSuite) TestInitialize() {
 		},
 		{
 			"invalid consenus state",
-			&ibctmtypes.ConsensusState{},
+			&ibcoctypes.ConsensusState{},
 			false,
 		},
 	}
@@ -170,7 +179,7 @@ func (suite *LocalhostTestSuite) TestMisbehaviourAndUpdateState() {
 
 func (suite *LocalhostTestSuite) TestProposedHeaderAndUpdateState() {
 	clientState := types.NewClientState("chainID", clientHeight)
-	cs, err := clientState.CheckSubstituteAndUpdateState(suite.ctx, nil, nil, nil, nil, nil)
+	cs, err := clientState.CheckSubstituteAndUpdateState(suite.ctx, nil, nil, nil, nil)
 	suite.Require().Error(err)
 	suite.Require().Nil(cs)
 }
@@ -368,7 +377,7 @@ func (suite *LocalhostTestSuite) TestVerifyPacketCommitment() {
 			tc.malleate()
 
 			err := tc.clientState.VerifyPacketCommitment(
-				suite.store, suite.cdc, clientHeight, 0, 0, nil, []byte{}, testPortID, testChannelID, testSequence, tc.commitment,
+				suite.ctx, suite.store, suite.cdc, clientHeight, 0, 0, nil, []byte{}, testPortID, testChannelID, testSequence, tc.commitment,
 			)
 
 			if tc.expPass {
@@ -427,7 +436,7 @@ func (suite *LocalhostTestSuite) TestVerifyPacketAcknowledgement() {
 			tc.malleate()
 
 			err := tc.clientState.VerifyPacketAcknowledgement(
-				suite.store, suite.cdc, clientHeight, 0, 0, nil, []byte{}, testPortID, testChannelID, testSequence, tc.ack,
+				suite.ctx, suite.store, suite.cdc, clientHeight, 0, 0, nil, []byte{}, testPortID, testChannelID, testSequence, tc.ack,
 			)
 
 			if tc.expPass {
@@ -443,7 +452,7 @@ func (suite *LocalhostTestSuite) TestVerifyPacketReceiptAbsence() {
 	clientState := types.NewClientState("chainID", clientHeight)
 
 	err := clientState.VerifyPacketReceiptAbsence(
-		suite.store, suite.cdc, clientHeight, 0, 0, nil, nil, testPortID, testChannelID, testSequence,
+		suite.ctx, suite.store, suite.cdc, clientHeight, 0, 0, nil, nil, testPortID, testChannelID, testSequence,
 	)
 
 	suite.Require().NoError(err, "receipt absence failed")
@@ -451,7 +460,7 @@ func (suite *LocalhostTestSuite) TestVerifyPacketReceiptAbsence() {
 	suite.store.Set(host.PacketReceiptKey(testPortID, testChannelID, testSequence), []byte("receipt"))
 
 	err = clientState.VerifyPacketReceiptAbsence(
-		suite.store, suite.cdc, clientHeight, 0, 0, nil, nil, testPortID, testChannelID, testSequence,
+		suite.ctx, suite.store, suite.cdc, clientHeight, 0, 0, nil, nil, testPortID, testChannelID, testSequence,
 	)
 	suite.Require().Error(err, "receipt exists in store")
 }
@@ -507,7 +516,7 @@ func (suite *LocalhostTestSuite) TestVerifyNextSeqRecv() {
 			tc.malleate()
 
 			err := tc.clientState.VerifyNextSequenceRecv(
-				suite.store, suite.cdc, clientHeight, 0, 0, nil, []byte{}, testPortID, testChannelID, nextSeqRecv,
+				suite.ctx, suite.store, suite.cdc, clientHeight, 0, 0, nil, []byte{}, testPortID, testChannelID, nextSeqRecv,
 			)
 
 			if tc.expPass {

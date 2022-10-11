@@ -5,7 +5,6 @@ import (
 
 	"github.com/line/lbm-sdk/x/foundation"
 
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	"github.com/line/lbm-sdk/x/stakingplus"
 )
@@ -32,7 +31,6 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 				ValidatorAddress: sdk.ValAddress(grantee).String(),
 			}
 			ga := foundation.GrantAuthorization{
-				Granter: govtypes.ModuleName,
 				Grantee: grantee.String(),
 			}
 			if err := ga.SetAuthorization(authorization); err != nil {
@@ -87,7 +85,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	if info.GetDecisionPolicy() == nil ||
 		info.GetDecisionPolicy().ValidateBasic() != nil ||
 		info.GetDecisionPolicy().Validate(k.config) != nil {
-		policy := foundation.DefaultDecisionPolicy(k.config)
+		policy := foundation.DefaultDecisionPolicy()
 		if err := info.SetDecisionPolicy(policy); err != nil {
 			return err
 		}
@@ -119,8 +117,10 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		if err != nil {
 			return err
 		}
-		k.setAuthorization(ctx, ga.Granter, grantee, ga.GetAuthorization())
+		k.setAuthorization(ctx, grantee, ga.GetAuthorization())
 	}
+
+	k.SetPool(ctx, data.Pool)
 
 	return nil
 }
@@ -175,15 +175,14 @@ func (k Keeper) ResetState(ctx sdk.Context) {
 		if err != nil {
 			panic(err)
 		}
-		k.deleteAuthorization(ctx, ga.Granter, grantee, ga.GetAuthorization().MsgTypeURL())
+		k.deleteAuthorization(ctx, grantee, ga.GetAuthorization().MsgTypeURL())
 	}
 }
 
 func (k Keeper) GetGrants(ctx sdk.Context) []foundation.GrantAuthorization {
 	var grantAuthorizations []foundation.GrantAuthorization
-	k.iterateAuthorizations(ctx, func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
+	k.iterateAuthorizations(ctx, func(grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
 		grantAuthorization := foundation.GrantAuthorization{
-			Granter: granter,
 			Grantee: grantee.String(),
 		}
 		if err := grantAuthorization.SetAuthorization(authorization); err != nil {
@@ -197,11 +196,10 @@ func (k Keeper) GetGrants(ctx sdk.Context) []foundation.GrantAuthorization {
 }
 
 func getCreateValidatorGrantees(authorizations []foundation.GrantAuthorization) []sdk.AccAddress {
-	granter := govtypes.ModuleName
 	msgTypeURL := stakingplus.CreateValidatorAuthorization{}.MsgTypeURL()
 	var grantees []sdk.AccAddress
 	for _, ga := range authorizations {
-		if ga.Granter == granter && ga.GetAuthorization().MsgTypeURL() == msgTypeURL {
+		if ga.GetAuthorization().MsgTypeURL() == msgTypeURL {
 			grantee, err := sdk.AccAddressFromBech32(ga.Grantee)
 			if err != nil {
 				panic(err)

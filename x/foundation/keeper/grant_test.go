@@ -26,7 +26,7 @@ func (s *KeeperTestSuite) TestGrant() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			err := s.keeper.Grant(ctx, foundation.ModuleName, tc.grantee, tc.auth)
+			err := s.keeper.Grant(ctx, tc.grantee, tc.auth)
 			if tc.valid {
 				s.Require().NoError(err)
 			} else {
@@ -57,7 +57,7 @@ func (s *KeeperTestSuite) TestRevoke() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			err := s.keeper.Revoke(ctx, foundation.ModuleName, tc.grantee, tc.url)
+			err := s.keeper.Revoke(ctx, tc.grantee, tc.url)
 			if tc.valid {
 				s.Require().NoError(err)
 			} else {

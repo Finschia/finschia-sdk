@@ -3,13 +3,11 @@ package types_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/suite"
-
-	dbm "github.com/tendermint/tm-db"
-
 	"github.com/line/lbm-sdk/store/iavl"
 	"github.com/line/lbm-sdk/store/rootmulti"
 	storetypes "github.com/line/lbm-sdk/store/types"
+	"github.com/stretchr/testify/suite"
+	dbm "github.com/tendermint/tm-db"
 )
 
 type MerkleTestSuite struct {
