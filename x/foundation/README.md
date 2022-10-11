@@ -99,6 +99,13 @@ It's more suited for a foundation where the membership can be updated, as the
 percentage threshold stays the same, and doesn't depend on how the number of
 members get updated.
 
+### Outsourcing decision policy
+
+A outsourcing decision policy is a policy set after `x/foundation` decides to
+outsource its proposal relevant features to other modules (e.g. `x/group`).
+It means one can expect that any states relevant to the feature must be removed
+in the update to this policy.
+
 ## Proposal
 
 Any foundation member(s) can submit a proposal for the foundation policy
@@ -232,10 +239,10 @@ the [Msg/WithdrawFromTreasury](#msgwithdrawfromtreasury).
 
 `CreateValidatorAuthorization` implements the `Authorization` interface for the
 [Msg/CreateValidator](../stakingplus/spec/03_messages.md#msgcreatevalidator).
-An account must have this authorization prior to the creation.
+An account must have this authorization prior to sending the message.
 
 **Note:** If the chain starts with no authorizations of it in the genesis while
-the message type is being censored (`CensoringMessageUrls` contains the url of
+the message type is being censored (`CensoringMsgTypeUrls` contains the url of
 `Msg/CreateValidator`), the module authorizes all the operators included in the
 list of validators, from the staking module.
 
@@ -250,7 +257,7 @@ list of validators, from the staking module.
 
 The foundation can withdraw coins from the treasury. The recipient must have
 the corresponding authorization (`ReceiveFromTreasuryAuthorization`) prior to
-the withdrawal.
+sending the message `Msg/WithdrawFromTreasury`.
 
 **Note:** After setting the tax rate to zero, you cannot set it to a non-zero
 value again (irreversible), which means you must set it to a non-zero value in
@@ -266,9 +273,9 @@ the genesis to make it work.
 
 The value of `FoundationTax` is the foundation tax rate.
 
-### CensoringMessageUrls
+### CensoringMsgTypeUrls
 
-The `CensoringMessageUrls` contains the urls of the messages under the
+The `CensoringMsgTypeUrls` contains the urls of the messages under the
 censorship.
 
 ## FoundationInfo
@@ -365,7 +372,7 @@ Foundation members can be updated with the `MsgUpdateMembers`.
 +++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/foundation/v1/tx.proto#L76-L84
 
 In the list of `MemberUpdates`, an existing member can be removed by setting
-its `Participating` flag to false.
+its `remove` flag to true.
 
 It's expected to fail if:
 
@@ -626,7 +633,9 @@ Example Output:
 
 ```bash
 params:
-  enabled: true
+  censored_msg_type_urls:
+  - /cosmos.staking.v1beta1.MsgCreateValidator
+  - /lbm.foundation.v1.MsgWithdrawFromTreasury
   foundation_tax: "0.200000000000000000"
 ```
 
@@ -680,7 +689,6 @@ member:
   added_at: "0001-01-01T00:00:00Z"
   address: link1...
   metadata: genesis member
-  participating: true
 ```
 
 #### members
@@ -705,15 +713,12 @@ members:
 - added_at: "0001-01-01T00:00:00Z"
   address: link1...
   metadata: genesis member
-  participating: true
 - added_at: "0001-01-01T00:00:00Z"
   address: link1...
   metadata: genesis member
-  participating: true
 - added_at: "0001-01-01T00:00:00Z"
   address: link1...
   metadata: genesis member
-  participating: true
 pagination:
   next_key: null
   total: "3"
@@ -755,7 +760,6 @@ proposal:
   metadata: show-me-the-money
   proposers:
   - link1...
-  result: PROPOSAL_RESULT_UNFINALIZED
   status: PROPOSAL_STATUS_SUBMITTED
   submit_time: "2022-09-19T01:26:38.544943184Z"
   voting_period_end: "2022-09-20T01:26:38.544943184Z"
@@ -801,7 +805,6 @@ proposals:
   metadata: show-me-the-money
   proposers:
   - link1...
-  result: PROPOSAL_RESULT_UNFINALIZED
   status: PROPOSAL_STATUS_SUBMITTED
   submit_time: "2022-09-19T01:26:38.544943184Z"
   voting_period_end: "2022-09-20T01:26:38.544943184Z"
@@ -928,7 +931,7 @@ Example Output:
 
 ```bash
 amount:
-- amount: "1000000000000"
+- amount: "1000000000000.000000000000000000"
   denom: stake
 ```
 
@@ -959,12 +962,11 @@ simd tx foundation update-members link1... \
     '[
        {
          "address": "link1...",
-         "participating": true,
          "metadata": "some new metadata"
        },
        {
          "address": "link1...",
-         "participating": false,
+         "remove": true,
        }
      ]'
 ```
@@ -1095,7 +1097,7 @@ simd tx foundation grant [operator] [grantee] [authorization-json] [flags]
 Example:
 
 ```bash
-simd tx foundation grant link1.. link... \
+simd tx foundation grant link1.. link1... \
     '{
        "@type": "/lbm.foundation.v1.ReceiveFromTreasuryAuthorization",
      }'
@@ -1179,8 +1181,11 @@ Example Output:
 ```bash
 {
   "params": {
-    "enabled": true,
     "foundationTax": "200000000000000000"
+    "censoredMsgTypeUrls": [
+      "/cosmos.staking.v1beta1.MsgCreateValidator",
+      "/lbm.foundation.v1.MsgWithdrawFromTreasury"
+    ]
   }
 }
 ```
@@ -1235,7 +1240,6 @@ Example Output:
 {
   "member": {
     "address": "link1...",
-    "participating": true,
     "metadata": "genesis member",
     "addedAt": "0001-01-01T00:00:00Z"
   }
@@ -1265,19 +1269,16 @@ Example Output:
   "members": [
     {
       "address": "link1...",
-      "participating": true,
       "metadata": "genesis member",
       "addedAt": "0001-01-01T00:00:00Z"
     },
     {
       "address": "link1...",
-      "participating": true,
       "metadata": "genesis member",
       "addedAt": "0001-01-01T00:00:00Z"
     },
     {
       "address": "link1...",
-      "participating": true,
       "metadata": "genesis member",
       "addedAt": "0001-01-01T00:00:00Z"
     }
@@ -1317,7 +1318,6 @@ Example Output:
     "submitTime": "2022-09-19T01:26:38.544943184Z",
     "foundationVersion": "1",
     "status": "PROPOSAL_STATUS_SUBMITTED",
-    "result": "PROPOSAL_RESULT_UNFINALIZED",
     "finalTallyResult": {
       "yesCount": "0",
       "abstainCount": "0",
@@ -1363,7 +1363,6 @@ Example Output:
       "submitTime": "2022-09-19T01:26:38.544943184Z",
       "foundationVersion": "1",
       "status": "PROPOSAL_STATUS_SUBMITTED",
-      "result": "PROPOSAL_RESULT_UNFINALIZED",
       "finalTallyResult": {
         "yesCount": "0",
         "abstainCount": "0",
@@ -1528,7 +1527,7 @@ Example Output:
   "amount": [
     {
       "denom": "stake",
-      "amount": "1000000000000"
+      "amount": "1000000000000000000000000000000"
     }
   ]
 }
