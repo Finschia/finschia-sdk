@@ -2,11 +2,9 @@ package tx
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
 	"strings"
-
-	"github.com/line/lbm-sdk/client/grpc/tmservice"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/golang/protobuf/proto" // nolint: staticcheck
@@ -15,8 +13,10 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/grpc/tmservice"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	pagination "github.com/line/lbm-sdk/types/query"
 	txtypes "github.com/line/lbm-sdk/types/tx"
 )
@@ -134,7 +134,7 @@ func (s txServer) GetTx(ctx context.Context, req *txtypes.GetTxRequest) (*txtype
 		return nil, status.Error(codes.InvalidArgument, "request cannot be nil")
 	}
 
-	if n := len(req.Hash); n != 64 {
+	if n := len(req.Hash); n != sha256.Size*2 {
 		if n == 0 {
 			return nil, status.Error(codes.InvalidArgument, "tx hash cannot be empty")
 		}
