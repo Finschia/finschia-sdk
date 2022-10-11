@@ -73,6 +73,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (refactor) [\#685](https://github.com/line/lbm-sdk/pull/685) remove x/foundation UpdateValidatorAuthsProposal
 * (x/foundation) [\#686](https://github.com/line/lbm-sdk/pull/686) remove `Minthreshold` and `MinPercentage` from x/foundation config
 * (x/foundation) [\#693](https://github.com/line/lbm-sdk/pull/693) add pool to the state of x/foundation
+* (x/foundation) [\#698](https://github.com/line/lbm-sdk/pull/698) update x/group relevant logic in x/foundation
 * (x) [\#691](https://github.com/line/lbm-sdk/pull/691) change AccAddressFromBech32 to MustAccAddressFromBech32
 
 ### Bug Fixes

@@ -32,7 +32,7 @@ message EventWithdrawFromTreasury {
 
 // EventUpdateMembers is an event emitted when the members have been updated.
 message EventUpdateMembers {
-  repeated Member member_updates = 1 [(gogoproto.nullable) = false];
+  repeated MemberRequest member_updates = 1 [(gogoproto.nullable) = false];
 }
 
 // EventUpdateDecisionPolicy is an event emitted when the decision policy have been updated.
@@ -65,6 +65,9 @@ message EventExec {
 
   // result is the proposal execution result.
   ProposalExecutorResult result = 2;
+
+  // logs contains error logs in case the execution result is FAILURE.
+  string logs = 3;
 }
 
 // EventLeaveFoundation is an event emitted when a foundation member leaves the foundation.
