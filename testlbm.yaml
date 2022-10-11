@@ -1,0 +1,15 @@
+services:
+  lbmdummy:
+    image: lbmdummy
+    build:
+      context: .
+      dockerfile: test.Dockerfile
+      args:
+        - ARCH=x86_64
+    ports:
+      - "26657:26657"
+      - "1317:1317"
+      - "9090:9090"
+      - "9091:9091"
+
+
