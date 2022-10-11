@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 
@@ -42,6 +40,8 @@ func (k Keeper) UpdateParams(ctx sdk.Context, params foundation.Params) error {
 
 	// clean up relevant authorizations
 	for url, removed := range urlRemoved {
+		url := url
+
 		if !removed {
 			continue
 		}
