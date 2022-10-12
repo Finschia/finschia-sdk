@@ -326,7 +326,7 @@ func (s msgServer) OneTimeMint(c context.Context, req *foundation.MsgOneTimeMint
 		return nil, err
 	}
 
-	oneTimeMintCount -= 1
+	oneTimeMintCount--
 	s.keeper.SetOneTimeMintCount(ctx, oneTimeMintCount)
 
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventOneTimeMint{
