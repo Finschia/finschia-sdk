@@ -12,8 +12,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 
 	"github.com/line/lbm-sdk/x/foundation"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
-	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
 func TestImportExportGenesis(t *testing.T) {
@@ -35,11 +33,6 @@ func TestImportExportGenesis(t *testing.T) {
 
 	member := createAddress()
 	stranger := createAddress()
-
-	validator := createAddress()
-	app.StakingKeeper.SetValidator(ctx, stakingtypes.Validator{
-		OperatorAddress: sdk.ValAddress(validator).String(),
-	})
 
 	testCases := map[string]struct {
 		init   *foundation.GenesisState
@@ -179,46 +172,6 @@ func TestImportExportGenesis(t *testing.T) {
 				},
 			},
 		},
-		"grantees from the validators": {
-			init: &foundation.GenesisState{
-				Params: foundation.Params{
-					FoundationTax: sdk.ZeroDec(),
-					CensoredMsgTypeUrls: []string{
-						sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
-					},
-				},
-				Foundation: *foundation.FoundationInfo{
-					Operator:    operator.String(),
-					Version:     1,
-					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{
-					Description: "using x/group",
-				}),
-			},
-			valid: true,
-			export: &foundation.GenesisState{
-				Params: foundation.Params{
-					FoundationTax: sdk.ZeroDec(),
-					CensoredMsgTypeUrls: []string{
-						sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
-					},
-				},
-				Foundation: *foundation.FoundationInfo{
-					Operator:    operator.String(),
-					Version:     1,
-					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{
-					Description: "using x/group",
-				}),
-				Authorizations: []foundation.GrantAuthorization{
-					*foundation.GrantAuthorization{
-						Grantee: validator.String(),
-					}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
-						ValidatorAddress: sdk.ValAddress(validator).String(),
-					}),
-				},
-			},
-		},
 		"operator not exists": {
 			init: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
@@ -298,7 +251,7 @@ func TestImportExportGenesis(t *testing.T) {
 		err := foundation.ValidateGenesis(*tc.init)
 		require.NoError(t, err, name)
 
-		err = keeper.InitGenesis(ctx, app.StakingKeeper, tc.init)
+		err = keeper.InitGenesis(ctx, tc.init)
 		if !tc.valid {
 			require.Error(t, err, name)
 			continue

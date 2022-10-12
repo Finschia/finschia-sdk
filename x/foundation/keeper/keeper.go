@@ -20,9 +20,8 @@ type Keeper struct {
 	router *baseapp.MsgServiceRouter
 
 	// keepers
-	authKeeper    foundation.AuthKeeper
-	bankKeeper    foundation.BankKeeper
-	stakingKeeper foundation.StakingKeeper
+	authKeeper foundation.AuthKeeper
+	bankKeeper foundation.BankKeeper
 
 	feeCollectorName string
 
@@ -39,7 +38,6 @@ func NewKeeper(
 	router *baseapp.MsgServiceRouter,
 	authKeeper foundation.AuthKeeper,
 	bankKeeper foundation.BankKeeper,
-	stakingKeeper foundation.StakingKeeper,
 	feeCollectorName string,
 	config foundation.Config,
 ) Keeper {
@@ -49,7 +47,6 @@ func NewKeeper(
 		router:           router,
 		authKeeper:       authKeeper,
 		bankKeeper:       bankKeeper,
-		stakingKeeper:    stakingKeeper,
 		feeCollectorName: feeCollectorName,
 		config:           config,
 	}

@@ -7,40 +7,10 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
-	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
-func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *foundation.GenesisState) error {
+func (k Keeper) InitGenesis(ctx sdk.Context, data *foundation.GenesisState) error {
 	k.SetParams(ctx, data.Params)
-
-	authorizations := data.Authorizations
-	createValidatorGrantees := getCreateValidatorGrantees(authorizations)
-	isCreateValidatorCensored := k.IsCensoredMessage(ctx, sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)))
-	if isCreateValidatorCensored && len(createValidatorGrantees) == 0 {
-		// Allowed validators must exist if the `Msg/CreateValidator` is
-		// being censored, or no validator would be created.
-		// We gather all the operator addresses from staking module,
-		// and allow them to create validators.
-		sk.IterateValidators(ctx, func(_ int64, addr stakingtypes.ValidatorI) (stop bool) {
-			grantee := sdk.AccAddress(addr.GetOperator())
-			createValidatorGrantees = append(createValidatorGrantees, grantee)
-
-			// add authorizations
-			authorization := &stakingplus.CreateValidatorAuthorization{
-				ValidatorAddress: sdk.ValAddress(grantee).String(),
-			}
-			ga := foundation.GrantAuthorization{
-				Grantee: grantee.String(),
-			}
-			if err := ga.SetAuthorization(authorization); err != nil {
-				panic(err)
-			}
-			authorizations = append(authorizations, ga)
-
-			return false
-		})
-	}
 
 	info := data.Foundation
 	if addr := sdk.MustAccAddressFromBech32(info.Operator); !addr.Equals(foundation.DefaultOperator()) {
@@ -81,7 +51,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		k.setVote(ctx, vote)
 	}
 
-	for _, ga := range authorizations {
+	for _, ga := range data.Authorizations {
 		grantee := sdk.MustAccAddressFromBech32(ga.Grantee)
 		k.setAuthorization(ctx, grantee, ga.GetAuthorization())
 	}
@@ -125,17 +95,4 @@ func (k Keeper) GetGrants(ctx sdk.Context) []foundation.GrantAuthorization {
 		return false
 	})
 	return grantAuthorizations
-}
-
-func getCreateValidatorGrantees(authorizations []foundation.GrantAuthorization) []sdk.AccAddress {
-	msgTypeURL := sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil))
-	var grantees []sdk.AccAddress
-	for _, ga := range authorizations {
-		if ga.GetAuthorization().MsgTypeURL() == msgTypeURL {
-			grantee := sdk.MustAccAddressFromBech32(ga.Grantee)
-			grantees = append(grantees, grantee)
-		}
-	}
-
-	return grantees
 }
