@@ -43,29 +43,6 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	}
 
 	info := data.Foundation
-	members := data.Members
-	if len(members) == 0 {
-		if _, outsourcing := info.GetDecisionPolicy().(*foundation.OutsourcingDecisionPolicy); !outsourcing {
-			for _, grantee := range createValidatorGrantees {
-				member := foundation.Member{
-					Address:  grantee.String(),
-					Metadata: "genesis member",
-				}
-				members = append(members, member)
-			}
-		}
-	}
-	for _, member := range members {
-		if err := validateMetadata(member.Metadata, k.config); err != nil {
-			return err
-		}
-
-		k.setMember(ctx, member)
-	}
-
-	totalWeight := int64(len(members))
-	info.TotalWeight = sdk.NewDec(totalWeight)
-
 	if addr := sdk.MustAccAddressFromBech32(info.Operator); !addr.Equals(foundation.DefaultOperator()) {
 		account := k.authKeeper.GetAccount(ctx, addr)
 		if account == nil {
@@ -78,6 +55,14 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	k.setFoundationInfo(ctx, info)
 
 	k.setPreviousProposalID(ctx, data.PreviousProposalId)
+
+	for _, member := range data.Members {
+		if err := validateMetadata(member.Metadata, k.config); err != nil {
+			return err
+		}
+
+		k.setMember(ctx, member)
+	}
 
 	for _, proposal := range data.Proposals {
 		if err := validateMetadata(proposal.Metadata, k.config); err != nil {

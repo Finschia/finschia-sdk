@@ -29,6 +29,10 @@ func TestImportExportGenesis(t *testing.T) {
 	}
 
 	operator := foundation.DefaultOperator()
+	existingAccount := createAddress()
+	app.AccountKeeper.SetAccount(ctx, app.AccountKeeper.NewAccountWithAddress(ctx, existingAccount))
+	anotherModuleAccount := app.AccountKeeper.GetModuleAccount(ctx, foundation.TreasuryName).GetAddress()
+
 	member := createAddress()
 	stranger := createAddress()
 
@@ -49,9 +53,24 @@ func TestImportExportGenesis(t *testing.T) {
 			},
 			valid: true,
 			export: &foundation.GenesisState{
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
+			},
+		},
+		"operator is another module account": {
+			init: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
-					Operator:    operator.String(),
+					Operator:    anotherModuleAccount.String(),
+					Version:     1,
+					TotalWeight: sdk.ZeroDec(),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
+			},
+			valid: true,
+			export: &foundation.GenesisState{
+				Params: foundation.DefaultParams(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    anotherModuleAccount.String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
@@ -59,8 +78,12 @@ func TestImportExportGenesis(t *testing.T) {
 		},
 		"members": {
 			init: &foundation.GenesisState{
-				Params:     foundation.DefaultParams(),
-				Foundation: foundation.DefaultFoundation(),
+				Params: foundation.DefaultParams(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    operator.String(),
+					Version:     1,
+					TotalWeight: sdk.OneDec(),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Members: []foundation.Member{
 					{
 						Address: member.String(),
@@ -156,39 +179,6 @@ func TestImportExportGenesis(t *testing.T) {
 				},
 			},
 		},
-		"genesis members from the grantees": {
-			init: &foundation.GenesisState{
-				Params:     foundation.DefaultParams(),
-				Foundation: foundation.DefaultFoundation(),
-				Authorizations: []foundation.GrantAuthorization{
-					*foundation.GrantAuthorization{
-						Grantee: stranger.String(),
-					}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
-						ValidatorAddress: sdk.ValAddress(stranger).String(),
-					}),
-				},
-			},
-			valid: true,
-			export: &foundation.GenesisState{
-				Params: foundation.DefaultParams(),
-				Foundation: *foundation.FoundationInfo{
-					Operator:    operator.String(),
-					Version:     1,
-					TotalWeight: sdk.OneDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
-				Authorizations: []foundation.GrantAuthorization{
-					*foundation.GrantAuthorization{
-						Grantee: stranger.String(),
-					}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
-						ValidatorAddress: sdk.ValAddress(stranger).String(),
-					}),
-				},
-				Members: []foundation.Member{{
-					Address:  stranger.String(),
-					Metadata: "genesis member",
-				}},
-			},
-		},
 		"grantees from the validators": {
 			init: &foundation.GenesisState{
 				Params: foundation.Params{
@@ -198,8 +188,9 @@ func TestImportExportGenesis(t *testing.T) {
 					},
 				},
 				Foundation: *foundation.FoundationInfo{
-					Operator: operator.String(),
-					Version:  1,
+					Operator:    operator.String(),
+					Version:     1,
+					TotalWeight: sdk.ZeroDec(),
 				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{
 					Description: "using x/group",
 				}),
@@ -228,10 +219,34 @@ func TestImportExportGenesis(t *testing.T) {
 				},
 			},
 		},
+		"operator not exists": {
+			init: &foundation.GenesisState{
+				Params: foundation.DefaultParams(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    createAddress().String(),
+					Version:     1,
+					TotalWeight: sdk.ZeroDec(),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
+			},
+		},
+		"operator is not module account": {
+			init: &foundation.GenesisState{
+				Params: foundation.DefaultParams(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    existingAccount.String(),
+					Version:     1,
+					TotalWeight: sdk.ZeroDec(),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
+			},
+		},
 		"member of long metadata": {
 			init: &foundation.GenesisState{
-				Params:     foundation.DefaultParams(),
-				Foundation: foundation.DefaultFoundation(),
+				Params: foundation.DefaultParams(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    operator.String(),
+					Version:     1,
+					TotalWeight: sdk.OneDec(),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Members: []foundation.Member{
 					{
 						Address:  member.String(),

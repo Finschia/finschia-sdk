@@ -18,8 +18,9 @@ func DefaultGenesisState() *GenesisState {
 
 func DefaultFoundation() FoundationInfo {
 	return *FoundationInfo{
-		Operator: DefaultOperator().String(),
-		Version:  1,
+		Operator:    DefaultOperator().String(),
+		Version:     1,
+		TotalWeight: sdk.ZeroDec(),
 	}.WithDecisionPolicy(DefaultDecisionPolicy())
 }
 
@@ -55,6 +56,10 @@ func (i FoundationInfo) ValidateBasic() error {
 		return sdkerrors.ErrInvalidVersion.Wrap("version must be > 0")
 	}
 
+	if i.TotalWeight.IsNil() || i.TotalWeight.IsNegative() {
+		return sdkerrors.ErrInvalidRequest.Wrap("total weight must be >= 0")
+	}
+
 	policy := i.GetDecisionPolicy()
 	if policy == nil {
 		return sdkerrors.ErrInvalidRequest.Wrap("must provide decision policy")
@@ -76,6 +81,9 @@ func ValidateGenesis(data GenesisState) error {
 	info := data.Foundation
 	if err := info.ValidateBasic(); err != nil {
 		return err
+	}
+	if realWeight := sdk.NewDecFromInt(sdk.NewInt(int64(len(data.Members)))); !info.TotalWeight.Equal(realWeight) {
+		return sdkerrors.ErrInvalidRequest.Wrapf("total weight not match, %s != %s", info.TotalWeight, realWeight)
 	}
 
 	_, outsourcing := info.GetDecisionPolicy().(*OutsourcingDecisionPolicy)

@@ -36,23 +36,17 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"members": {
 			data: foundation.GenesisState{
-				Params:     foundation.DefaultParams(),
-				Foundation: foundation.DefaultFoundation(),
+				Params: foundation.DefaultParams(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    foundation.DefaultOperator().String(),
+					Version:     1,
+					TotalWeight: sdk.OneDec(),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Members: []foundation.Member{
 					{
 						Address: createAddress().String(),
 					},
 				},
-			},
-			valid: true,
-		},
-		"foundation info": {
-			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
-				Foundation: *foundation.FoundationInfo{
-					Operator: createAddress().String(),
-					Version:  1,
-				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{}),
 			},
 			valid: true,
 		},
@@ -78,50 +72,38 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid members": {
 			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    createAddress().String(),
+					Version:     1,
+					TotalWeight: sdk.OneDec(),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
+				Members: []foundation.Member{{}},
+			},
+		},
+		"invalid foundation info": {
+			data: foundation.GenesisState{
+				Params: foundation.DefaultParams(),
+			},
+		},
+		"invalid total weight": {
+			data: foundation.GenesisState{
 				Params:     foundation.DefaultParams(),
 				Foundation: foundation.DefaultFoundation(),
-				Members:    []foundation.Member{{}},
-			},
-		},
-		"invalid operator address": {
-			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
-				Foundation: *foundation.FoundationInfo{
-					Operator: "invalid-address",
-					Version:  1,
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
-			},
-		},
-		"invalid foundation version": {
-			data: foundation.GenesisState{
-				Params:     foundation.DefaultParams(),
-				Foundation: *foundation.FoundationInfo{}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
-			},
-		},
-		"no decision policy": {
-			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
-				Foundation: foundation.FoundationInfo{
-					Version: 1,
+				Members: []foundation.Member{
+					{
+						Address: createAddress().String(),
+					},
 				},
-			},
-		},
-		"invalid decision policy": {
-			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
-				Foundation: *foundation.FoundationInfo{
-					Version: 1,
-				}.WithDecisionPolicy(&foundation.ThresholdDecisionPolicy{
-					Windows: &foundation.DecisionPolicyWindows{},
-				}),
 			},
 		},
 		"non empty members with outsourcing decision policy": {
 			data: foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
-					Operator: createAddress().String(),
-					Version:  1,
+					Operator:    createAddress().String(),
+					Version:     1,
+					TotalWeight: sdk.OneDec(),
 				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{
 					Description: "using x/group",
 				}),
@@ -136,8 +118,9 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
-					Operator: createAddress().String(),
-					Version:  1,
+					Operator:    createAddress().String(),
+					Version:     1,
+					TotalWeight: sdk.ZeroDec(),
 				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{
 					Description: "using x/group",
 				}),
@@ -268,5 +251,73 @@ func TestValidateGenesis(t *testing.T) {
 		} else {
 			require.Error(t, err, name)
 		}
+	}
+}
+
+func TestFoundationInfo(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 1)
+	for i := range addrs {
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	testCases := map[string]struct {
+		operator    sdk.AccAddress
+		version     uint64
+		totalWeight sdk.Dec
+		policy      foundation.DecisionPolicy
+		valid       bool
+	}{
+		"valid info": {
+			operator:    addrs[0],
+			version:     1,
+			totalWeight: sdk.ZeroDec(),
+			policy:      foundation.DefaultDecisionPolicy(),
+			valid:       true,
+		},
+		"invalid operator": {
+			version:     1,
+			totalWeight: sdk.ZeroDec(),
+			policy:      foundation.DefaultDecisionPolicy(),
+		},
+		"invalid version": {
+			operator:    addrs[0],
+			totalWeight: sdk.ZeroDec(),
+			policy:      foundation.DefaultDecisionPolicy(),
+		},
+		"invalid total weight": {
+			operator: addrs[0],
+			version:  1,
+			policy:   foundation.DefaultDecisionPolicy(),
+		},
+		"empty policy": {
+			operator:    addrs[0],
+			version:     1,
+			totalWeight: sdk.ZeroDec(),
+		},
+		"invalid policy": {
+			operator:    addrs[0],
+			version:     1,
+			totalWeight: sdk.ZeroDec(),
+			policy:      &foundation.ThresholdDecisionPolicy{},
+		},
+	}
+
+	for name, tc := range testCases {
+		info := foundation.FoundationInfo{
+			Operator:    tc.operator.String(),
+			Version:     tc.version,
+			TotalWeight: tc.totalWeight,
+		}
+		if tc.policy != nil {
+			err := info.SetDecisionPolicy(tc.policy)
+			require.NoError(t, err, name)
+		}
+
+		err := info.ValidateBasic()
+		if !tc.valid {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
 	}
 }

@@ -67,8 +67,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	}
 	foundationData.Params = params
 
-	foundationData.Foundation = foundation.DefaultFoundation()
-
 	var strangerMnemonic string
 	strangerMnemonic, s.stranger = s.createMnemonic("stranger")
 	var leavingMemberMnemonic string
@@ -86,6 +84,10 @@ func (s *IntegrationTestSuite) SetupSuite() {
 			Metadata: "permanent member",
 		},
 	}
+
+	info := foundation.DefaultFoundation()
+	info.TotalWeight = sdk.NewDecFromInt(sdk.NewInt(int64(len(foundationData.Members))))
+	foundationData.Foundation = info
 
 	grantees := []sdk.AccAddress{s.stranger, s.leavingMember}
 	foundationData.Authorizations = make([]foundation.GrantAuthorization, len(grantees))
