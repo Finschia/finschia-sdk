@@ -46,9 +46,8 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	if len(members) == 0 {
 		for _, grantee := range createValidatorGrantees {
 			member := foundation.Member{
-				Address:       grantee.String(),
-				Participating: true,
-				Metadata:      "genesis member",
+				Address:  grantee.String(),
+				Metadata: "genesis member",
 			}
 			members = append(members, member)
 		}
@@ -58,9 +57,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 			return err
 		}
 
-		if member.Participating {
-			k.setMember(ctx, member)
-		}
+		k.setMember(ctx, member)
 	}
 
 	info := data.Foundation
@@ -70,12 +67,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 		}
 	}
 
-	totalWeight := int64(0)
-	for _, member := range members {
-		if member.Participating {
-			totalWeight++
-		}
-	}
+	totalWeight := int64(len(members))
 	info.TotalWeight = sdk.NewDec(totalWeight)
 
 	if len(info.Operator) == 0 {
@@ -84,7 +76,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 
 	if info.GetDecisionPolicy() == nil ||
 		info.GetDecisionPolicy().ValidateBasic() != nil ||
-		info.GetDecisionPolicy().Validate(k.config) != nil {
+		info.GetDecisionPolicy().Validate(*info, k.config) != nil {
 		policy := foundation.DefaultDecisionPolicy()
 		if err := info.SetDecisionPolicy(policy); err != nil {
 			return err

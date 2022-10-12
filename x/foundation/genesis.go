@@ -66,7 +66,8 @@ func ValidateGenesis(data GenesisState) error {
 
 	}
 
-	if err := validateMembers(data.Members); err != nil {
+	members := Members{Members: data.Members}
+	if err := members.ValidateBasic(); err != nil {
 		return err
 	}
 
@@ -78,15 +79,7 @@ func ValidateGenesis(data GenesisState) error {
 		}
 		proposalIDs[id] = true
 
-		if err := validateProposers(proposal.Proposers); err != nil {
-			return err
-		}
-
-		if proposal.FoundationVersion == 0 {
-			return sdkerrors.ErrInvalidVersion.Wrap("foundation version must be > 0")
-		}
-
-		if err := validateMsgs(proposal.GetMsgs()); err != nil {
+		if err := proposal.ValidateBasic(); err != nil {
 			return err
 		}
 	}

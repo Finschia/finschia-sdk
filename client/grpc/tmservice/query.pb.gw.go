@@ -734,7 +734,7 @@ var (
 
 	pattern_Service_GetBlockByHeight_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"lbm", "base", "ostracon", "v1", "blocks", "height"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Service_GetBlockByHash_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"lbm", "base", "ostracon", "v1", "blocks", "hash"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Service_GetBlockByHash_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"lbm", "base", "ostracon", "v1", "block", "hash"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Service_GetBlockResultsByHeight_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"lbm", "base", "ostracon", "v1", "blockresults", "height"}, "", runtime.AssumeColonVerbOpt(false)))
 

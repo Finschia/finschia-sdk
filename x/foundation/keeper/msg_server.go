@@ -130,7 +130,7 @@ func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitPr
 		return nil, err
 	}
 
-	proposal, err := s.keeper.GetProposal(ctx, id)
+	proposal, err := s.keeper.GetProposal(ctx, *id)
 	if err != nil {
 		panic(err)
 	}
@@ -147,24 +147,23 @@ func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitPr
 			ctx.GasMeter().ConsumeGas(gasCostPerIteration, "vote on proposal")
 
 			vote := foundation.Vote{
-				ProposalId: id,
+				ProposalId: *id,
 				Voter:      proposer,
 				Option:     foundation.VOTE_OPTION_YES,
 			}
 			err = s.keeper.Vote(ctx, vote)
 			if err != nil {
-				return &foundation.MsgSubmitProposalResponse{ProposalId: id}, sdkerrors.Wrap(err, "The proposal was created but failed on vote")
+				return &foundation.MsgSubmitProposalResponse{ProposalId: *id}, sdkerrors.Wrap(err, "The proposal was created but failed on vote")
 			}
 		}
 
 		// Then try to execute the proposal
-		// We consider the first proposer as the MsgExecRequest signer
-		if err = s.keeper.Exec(ctx, id); err != nil {
-			return &foundation.MsgSubmitProposalResponse{ProposalId: id}, sdkerrors.Wrap(err, "The proposal was created but failed on exec")
+		if err = s.keeper.Exec(ctx, *id); err != nil {
+			return &foundation.MsgSubmitProposalResponse{ProposalId: *id}, sdkerrors.Wrap(err, "The proposal was created but failed on exec")
 		}
 	}
 
-	return &foundation.MsgSubmitProposalResponse{ProposalId: id}, nil
+	return &foundation.MsgSubmitProposalResponse{ProposalId: *id}, nil
 }
 
 func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdrawProposal) (*foundation.MsgWithdrawProposalResponse, error) {
@@ -245,10 +244,11 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 		return nil, err
 	}
 
-	update := foundation.Member{
+	update := foundation.MemberRequest{
 		Address: req.Address,
+		Remove:  true,
 	}
-	if err := s.keeper.UpdateMembers(ctx, []foundation.Member{update}); err != nil {
+	if err := s.keeper.UpdateMembers(ctx, []foundation.MemberRequest{update}); err != nil {
 		return nil, err
 	}
 
