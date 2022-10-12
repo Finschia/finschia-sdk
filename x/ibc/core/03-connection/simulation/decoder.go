@@ -6,13 +6,14 @@ import (
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/types/kv"
+
 	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 )
 
 // NewDecodeStore returns a decoder function closure that unmarshals the KVPair's
 // Value to the corresponding connection type.
-func NewDecodeStore(cdc codec.Codec, kvA, kvB kv.Pair) (string, bool) {
+func NewDecodeStore(cdc codec.BinaryCodec, kvA, kvB kv.Pair) (string, bool) {
 	switch {
 	case bytes.HasPrefix(kvA.Key, host.KeyClientStorePrefix) && bytes.HasSuffix(kvA.Key, []byte(host.KeyConnectionPrefix)):
 		var clientConnectionsA, clientConnectionsB types.ClientPaths

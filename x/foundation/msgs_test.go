@@ -45,7 +45,7 @@ func TestMsgFundTreasury(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -96,7 +96,7 @@ func TestMsgWithdrawFromTreasury(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -112,21 +112,19 @@ func TestMsgUpdateMembers(t *testing.T) {
 
 	testCases := map[string]struct {
 		operator sdk.AccAddress
-		members  []foundation.Member
+		members  []foundation.MemberRequest
 		valid    bool
 	}{
 		"valid msg": {
 			operator: addrs[0],
-			members: []foundation.Member{{
-				Address:       addrs[1].String(),
-				Participating: true,
+			members: []foundation.MemberRequest{{
+				Address: addrs[1].String(),
 			}},
 			valid: true,
 		},
 		"empty operator": {
-			members: []foundation.Member{{
-				Address:       addrs[1].String(),
-				Participating: true,
+			members: []foundation.MemberRequest{{
+				Address: addrs[1].String(),
 			}},
 		},
 		"empty members": {
@@ -134,19 +132,17 @@ func TestMsgUpdateMembers(t *testing.T) {
 		},
 		"empty member address": {
 			operator: addrs[0],
-			members: []foundation.Member{{
-				Participating: true,
-			}},
+			members:  []foundation.MemberRequest{{}},
 		},
 		"duplicate updates": {
 			operator: addrs[0],
-			members: []foundation.Member{
+			members: []foundation.MemberRequest{
 				{
-					Address:       addrs[1].String(),
-					Participating: true,
+					Address: addrs[1].String(),
 				},
 				{
 					Address: addrs[1].String(),
+					Remove:  true,
 				},
 			},
 		},
@@ -161,7 +157,7 @@ func TestMsgUpdateMembers(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -250,7 +246,7 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -336,7 +332,7 @@ func TestMsgSubmitProposal(t *testing.T) {
 		err = msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -377,7 +373,7 @@ func TestMsgWithdrawProposal(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -440,7 +436,7 @@ func TestMsgVote(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -481,7 +477,7 @@ func TestMsgExec(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -514,7 +510,7 @@ func TestMsgLeaveFoundation(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -566,7 +562,7 @@ func TestMsgGrant(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 
@@ -616,7 +612,7 @@ func TestMsgRevoke(t *testing.T) {
 		err := msg.ValidateBasic()
 		if !tc.valid {
 			require.Error(t, err, name)
-			return
+			continue
 		}
 		require.NoError(t, err, name)
 

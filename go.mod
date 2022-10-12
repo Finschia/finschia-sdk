@@ -4,11 +4,11 @@ module github.com/line/lbm-sdk
 
 require (
 	github.com/99designs/keyring v1.1.6
-	github.com/VictoriaMetrics/fastcache v1.10.0
-	github.com/armon/go-metrics v0.4.0
+	github.com/VictoriaMetrics/fastcache v1.12.0
+	github.com/armon/go-metrics v0.4.1
 	github.com/bgentry/speakeasy v0.1.0
 	github.com/btcsuite/btcd v0.22.1
-	github.com/coinbase/rosetta-sdk-go v0.7.11
+	github.com/coinbase/rosetta-sdk-go v0.8.1
 	github.com/confio/ics23/go v0.7.0
 	github.com/cosmos/btcutil v1.0.4
 	github.com/cosmos/go-bip39 v1.0.0
@@ -120,6 +120,7 @@ require (
 	github.com/sasha-s/go-deadlock v0.2.1-0.20190427202633-1595213edefa // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
+	github.com/stretchr/objx v0.4.0 // indirect
 	github.com/subosito/gotenv v1.4.1 // indirect
 	github.com/tendermint/tendermint v0.34.19 // indirect
 	github.com/zondax/hid v0.9.0 // indirect

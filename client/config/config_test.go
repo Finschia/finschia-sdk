@@ -2,8 +2,8 @@ package config_test
 
 import (
 	"bytes"
-	//"fmt"
-	"io/ioutil"
+	"io"
+
 	"os"
 	"testing"
 
@@ -57,7 +57,7 @@ func TestConfigCmd(t *testing.T) {
 	cmd.SetOut(b)
 	cmd.SetArgs([]string{"node"})
 	cmd.Execute()
-	out, err := ioutil.ReadAll(b)
+	out, err := io.ReadAll(b)
 	require.NoError(t, err)
 	require.Equal(t, string(out), testNode1+"\n")
 }

@@ -204,6 +204,33 @@ func (suite *IntegrationTestSuite) TestInitializeBankPlus() {
 	}
 }
 
+func (suite *IntegrationTestSuite) TestSendCoinsFromModuleToAccount_Blacklist() {
+	app := simapp.Setup(false)
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{Height: 1})
+	appCodec := app.AppCodec()
+
+	// add module accounts to supply keeper
+	maccPerms := simapp.GetMaccPerms()
+	maccPerms[holder] = nil
+	maccPerms[authtypes.Burner] = []string{authtypes.Burner}
+	maccPerms[authtypes.Minter] = []string{authtypes.Minter}
+
+	addr1 := sdk.AccAddress([]byte("addr1_______________"))
+
+	authKeeper := authkeeper.NewAccountKeeper(
+		appCodec, app.GetKey(types.StoreKey), app.GetSubspace(types.ModuleName),
+		authtypes.ProtoBaseAccount, maccPerms,
+	)
+	keeper := bankpluskeeper.NewBaseKeeper(
+		appCodec, app.GetKey(types.StoreKey), authKeeper,
+		app.GetSubspace(types.ModuleName), map[string]bool{addr1.String(): true})
+
+	suite.Require().NoError(keeper.MintCoins(ctx, minttypes.ModuleName, initCoins))
+	suite.Require().Error(keeper.SendCoinsFromModuleToAccount(
+		ctx, minttypes.ModuleName, addr1, initCoins,
+	))
+}
+
 func TestKeeperTestSuite(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))
 }

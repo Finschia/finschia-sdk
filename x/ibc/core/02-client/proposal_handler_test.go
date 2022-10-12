@@ -4,10 +4,10 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	distributiontypes "github.com/line/lbm-sdk/x/distribution/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
+
 	client "github.com/line/lbm-sdk/x/ibc/core/02-client"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -24,29 +24,33 @@ func (suite *ClientTestSuite) TestNewClientUpdateProposalHandler() {
 	}{
 		{
 			"valid update client proposal", func() {
-				subject, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
-				subjectClientState := suite.chainA.GetClientState(subject)
-				substitute, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
-				initialHeight := clienttypes.NewHeight(subjectClientState.GetLatestHeight().GetRevisionNumber(), subjectClientState.GetLatestHeight().GetRevisionHeight()+1)
+				subjectPath := ibctesting.NewPath(suite.chainA, suite.chainB)
+				suite.coordinator.SetupClients(subjectPath)
+				subjectClientState := suite.chainA.GetClientState(subjectPath.EndpointA.ClientID)
+
+				substitutePath := ibctesting.NewPath(suite.chainA, suite.chainB)
+				suite.coordinator.SetupClients(substitutePath)
 
 				// update substitute twice
-				suite.coordinator.UpdateClient(suite.chainA, suite.chainB, substitute, exported.Ostracon)
-				suite.coordinator.UpdateClient(suite.chainA, suite.chainB, substitute, exported.Ostracon)
-				substituteClientState := suite.chainA.GetClientState(substitute)
+				err = substitutePath.EndpointA.UpdateClient()
+				suite.Require().NoError(err)
+				err = substitutePath.EndpointA.UpdateClient()
+				suite.Require().NoError(err)
+				substituteClientState := suite.chainA.GetClientState(substitutePath.EndpointA.ClientID)
 
-				tmClientState, ok := subjectClientState.(*ibctmtypes.ClientState)
+				tmClientState, ok := subjectClientState.(*ibcoctypes.ClientState)
 				suite.Require().True(ok)
 				tmClientState.AllowUpdateAfterMisbehaviour = true
 				tmClientState.FrozenHeight = tmClientState.LatestHeight
-				suite.chainA.App.IBCKeeper.ClientKeeper.SetClientState(suite.chainA.GetContext(), subject, tmClientState)
+				suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientState(suite.chainA.GetContext(), subjectPath.EndpointA.ClientID, tmClientState)
 
 				// replicate changes to substitute (they must match)
-				tmClientState, ok = substituteClientState.(*ibctmtypes.ClientState)
+				tmClientState, ok = substituteClientState.(*ibcoctypes.ClientState)
 				suite.Require().True(ok)
 				tmClientState.AllowUpdateAfterMisbehaviour = true
-				suite.chainA.App.IBCKeeper.ClientKeeper.SetClientState(suite.chainA.GetContext(), substitute, tmClientState)
+				suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientState(suite.chainA.GetContext(), substitutePath.EndpointA.ClientID, tmClientState)
 
-				content = clienttypes.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute, initialHeight)
+				content = clienttypes.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subjectPath.EndpointA.ClientID, substitutePath.EndpointA.ClientID)
 			}, true,
 		},
 		{
@@ -69,7 +73,7 @@ func (suite *ClientTestSuite) TestNewClientUpdateProposalHandler() {
 
 			tc.malleate()
 
-			proposalHandler := client.NewClientProposalHandler(suite.chainA.App.IBCKeeper.ClientKeeper)
+			proposalHandler := client.NewClientProposalHandler(suite.chainA.App.GetIBCKeeper().ClientKeeper)
 
 			err = proposalHandler(suite.chainA.GetContext(), content)
 

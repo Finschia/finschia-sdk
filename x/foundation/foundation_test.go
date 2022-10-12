@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/stretchr/testify/require"
@@ -11,10 +12,13 @@ import (
 
 func TestDecisionPolicy(t *testing.T) {
 	config := foundation.DefaultConfig()
-	policy := foundation.DefaultDecisionPolicy(config)
+	policy := foundation.DefaultDecisionPolicy()
 
 	require.NoError(t, policy.ValidateBasic())
-	require.NoError(t, policy.Validate(config))
+	info := foundation.FoundationInfo{
+		TotalWeight: sdk.OneDec(),
+	}
+	require.NoError(t, policy.Validate(info, config))
 }
 
 func TestTallyResult(t *testing.T) {
@@ -49,30 +53,40 @@ func TestThresholdDecisionPolicy(t *testing.T) {
 		threshold          sdk.Dec
 		votingPeriod       time.Duration
 		minExecutionPeriod time.Duration
+		totalWeight        sdk.Dec
 		validBasic         bool
 		valid              bool
 	}{
 		"valid policy": {
-			threshold:          config.MinThreshold,
+			threshold:          sdk.OneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
+			totalWeight:        sdk.OneDec(),
 			validBasic:         true,
 			valid:              true,
 		},
-		"invalid policy (basic)": {
-			threshold:          config.MinThreshold,
-			minExecutionPeriod: config.MaxExecutionPeriod - time.Nanosecond,
-		},
-		"invalid policy": {
-			threshold:          config.MinThreshold.Sub(sdk.SmallestDec()),
+		"invalid threshold": {
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
-			validBasic:         true,
+			totalWeight:        sdk.OneDec(),
 		},
-		"invalid policy (windows)": {
-			threshold:          config.MinThreshold,
+		"invalid voting period": {
+			threshold:          sdk.OneDec(),
+			minExecutionPeriod: config.MaxExecutionPeriod - time.Nanosecond,
+			totalWeight:        sdk.OneDec(),
+		},
+		"invalid min execution period": {
+			threshold:          sdk.OneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour,
+			totalWeight:        sdk.OneDec(),
+			validBasic:         true,
+		},
+		"invalid total weight": {
+			threshold:          sdk.OneDec(),
+			votingPeriod:       time.Hour,
+			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
+			totalWeight:        sdk.ZeroDec(),
 			validBasic:         true,
 		},
 	}
@@ -94,7 +108,10 @@ func TestThresholdDecisionPolicy(t *testing.T) {
 		}
 		require.NoError(t, err, name)
 
-		err = policy.Validate(config)
+		info := foundation.FoundationInfo{
+			TotalWeight: tc.totalWeight,
+		}
+		err = policy.Validate(info, config)
 		if !tc.valid {
 			require.Error(t, err, name)
 			continue
@@ -112,7 +129,11 @@ func TestThresholdDecisionPolicyAllow(t *testing.T) {
 		},
 	}
 	require.NoError(t, policy.ValidateBasic())
-	require.NoError(t, policy.Validate(config))
+
+	info := foundation.FoundationInfo{
+		TotalWeight: sdk.OneDec(),
+	}
+	require.NoError(t, policy.Validate(info, config))
 	require.Equal(t, time.Hour, policy.GetVotingPeriod())
 
 	testCases := map[string]struct {
@@ -133,8 +154,8 @@ func TestThresholdDecisionPolicyAllow(t *testing.T) {
 		},
 		"allow (member size < threshold)": {
 			sinceSubmission: policy.Windows.MinExecutionPeriod,
-			totalWeight:     config.MinThreshold,
-			tally:           foundation.NewTallyResult(config.MinThreshold, sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+			totalWeight:     sdk.OneDec(),
+			tally:           foundation.NewTallyResult(sdk.OneDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
 			valid:           true,
 			final:           true,
 			allow:           true,
@@ -181,30 +202,40 @@ func TestPercentageDecisionPolicy(t *testing.T) {
 		percentage         sdk.Dec
 		votingPeriod       time.Duration
 		minExecutionPeriod time.Duration
+		totalWeight        sdk.Dec
 		validBasic         bool
 		valid              bool
 	}{
 		"valid policy": {
-			percentage:         config.MinPercentage,
+			percentage:         sdk.OneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
+			totalWeight:        sdk.OneDec(),
 			validBasic:         true,
 			valid:              true,
 		},
-		"invalid policy (basic)": {
-			percentage:         config.MinPercentage,
-			minExecutionPeriod: config.MaxExecutionPeriod - time.Nanosecond,
-		},
-		"invalid policy": {
-			percentage:         config.MinPercentage.Sub(sdk.SmallestDec()),
+		"invalid percentage": {
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
-			validBasic:         true,
+			totalWeight:        sdk.OneDec(),
 		},
-		"invalid policy (windows)": {
-			percentage:         config.MinPercentage,
+		"invalid voting period": {
+			percentage:         sdk.OneDec(),
+			minExecutionPeriod: config.MaxExecutionPeriod - time.Nanosecond,
+			totalWeight:        sdk.OneDec(),
+		},
+		"invalid min execution period": {
+			percentage:         sdk.OneDec(),
 			votingPeriod:       time.Hour,
 			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour,
+			totalWeight:        sdk.OneDec(),
+			validBasic:         true,
+		},
+		"invalid total weight": {
+			percentage:         sdk.OneDec(),
+			votingPeriod:       time.Hour,
+			minExecutionPeriod: config.MaxExecutionPeriod + time.Hour - time.Nanosecond,
+			totalWeight:        sdk.ZeroDec(),
 			validBasic:         true,
 		},
 	}
@@ -226,7 +257,10 @@ func TestPercentageDecisionPolicy(t *testing.T) {
 		}
 		require.NoError(t, err, name)
 
-		err = policy.Validate(config)
+		info := foundation.FoundationInfo{
+			TotalWeight: tc.totalWeight,
+		}
+		err = policy.Validate(info, config)
 		if !tc.valid {
 			require.Error(t, err, name)
 			continue
@@ -244,7 +278,11 @@ func TestPercentageDecisionPolicyAllow(t *testing.T) {
 		},
 	}
 	require.NoError(t, policy.ValidateBasic())
-	require.NoError(t, policy.Validate(config))
+
+	info := foundation.FoundationInfo{
+		TotalWeight: sdk.OneDec(),
+	}
+	require.NoError(t, policy.Validate(info, config))
 	require.Equal(t, time.Hour, policy.GetVotingPeriod())
 
 	totalWeight := sdk.NewDec(10)
@@ -304,5 +342,233 @@ func TestPercentageDecisionPolicyAllow(t *testing.T) {
 		if tc.final {
 			require.Equal(t, tc.allow, result.Allow, name)
 		}
+	}
+}
+
+func TestMembers(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 2)
+	for i := range addrs {
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	testCases := map[string]struct {
+		members []foundation.Member
+		valid   bool
+	}{
+		"valid members": {
+			members: []foundation.Member{
+				{
+					Address: addrs[0].String(),
+				},
+				{
+					Address: addrs[1].String(),
+				},
+			},
+			valid: true,
+		},
+		"invalid member": {
+			members: []foundation.Member{{}},
+		},
+		"duplicate members": {
+			members: []foundation.Member{
+				{
+					Address: addrs[1].String(),
+				},
+				{
+					Address: addrs[1].String(),
+				},
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		members := foundation.Members{tc.members}
+		err := members.ValidateBasic()
+		if !tc.valid {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
+	}
+}
+
+func TestMemberRequests(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 2)
+	for i := range addrs {
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	testCases := map[string]struct {
+		members []foundation.MemberRequest
+		valid   bool
+	}{
+		"valid requests": {
+			members: []foundation.MemberRequest{
+				{
+					Address: addrs[0].String(),
+				},
+				{
+					Address: addrs[1].String(),
+					Remove:  true,
+				},
+			},
+			valid: true,
+		},
+		"invalid member": {
+			members: []foundation.MemberRequest{{}},
+		},
+		"duplicate requests": {
+			members: []foundation.MemberRequest{
+				{
+					Address: addrs[1].String(),
+				},
+				{
+					Address: addrs[1].String(),
+					Remove:  true,
+				},
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		requests := foundation.MemberRequests{tc.members}
+		err := requests.ValidateBasic()
+		if !tc.valid {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
+	}
+}
+
+func TestProposal(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 4)
+	for i := range addrs {
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	testCases := map[string]struct {
+		id                uint64
+		foundationVersion uint64
+		proposers         []string
+		msgs              []sdk.Msg
+		valid             bool
+	}{
+		"valid proposal": {
+			id:                1,
+			foundationVersion: 1,
+			proposers: []string{
+				addrs[0].String(),
+				addrs[1].String(),
+			},
+			msgs: []sdk.Msg{
+				&foundation.MsgWithdrawFromTreasury{
+					Operator: addrs[2].String(),
+					To:       addrs[3].String(),
+					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				},
+			},
+			valid: true,
+		},
+		"invalid id": {
+			foundationVersion: 1,
+			proposers: []string{
+				addrs[0].String(),
+				addrs[1].String(),
+			},
+			msgs: []sdk.Msg{
+				&foundation.MsgWithdrawFromTreasury{
+					Operator: addrs[2].String(),
+					To:       addrs[3].String(),
+					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				},
+			},
+		},
+		"invalid version": {
+			id: 1,
+			proposers: []string{
+				addrs[0].String(),
+				addrs[1].String(),
+			},
+			msgs: []sdk.Msg{
+				&foundation.MsgWithdrawFromTreasury{
+					Operator: addrs[2].String(),
+					To:       addrs[3].String(),
+					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				},
+			},
+		},
+		"empty proposers": {
+			id:                1,
+			foundationVersion: 1,
+			msgs: []sdk.Msg{
+				&foundation.MsgWithdrawFromTreasury{
+					Operator: addrs[2].String(),
+					To:       addrs[3].String(),
+					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				},
+			},
+		},
+		"invalid proposer": {
+			id:                1,
+			foundationVersion: 1,
+			proposers:         []string{""},
+			msgs: []sdk.Msg{
+				&foundation.MsgWithdrawFromTreasury{
+					Operator: addrs[2].String(),
+					To:       addrs[3].String(),
+					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				},
+			},
+		},
+		"duplicate proposers": {
+			id:                1,
+			foundationVersion: 1,
+			proposers: []string{
+				addrs[0].String(),
+				addrs[0].String(),
+			},
+			msgs: []sdk.Msg{
+				&foundation.MsgWithdrawFromTreasury{
+					Operator: addrs[2].String(),
+					To:       addrs[3].String(),
+					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				},
+			},
+		},
+		"empty msgs": {
+			id:                1,
+			foundationVersion: 1,
+			proposers: []string{
+				addrs[0].String(),
+				addrs[1].String(),
+			},
+		},
+		"invalid msg": {
+			id:                1,
+			foundationVersion: 1,
+			proposers: []string{
+				addrs[0].String(),
+				addrs[1].String(),
+			},
+			msgs: []sdk.Msg{
+				&foundation.MsgWithdrawFromTreasury{},
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		proposal := foundation.Proposal{
+			Id:                tc.id,
+			FoundationVersion: tc.foundationVersion,
+			Proposers:         tc.proposers,
+		}.WithMsgs(tc.msgs)
+
+		err := proposal.ValidateBasic()
+		if !tc.valid {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
 	}
 }

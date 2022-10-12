@@ -155,7 +155,8 @@ func (m *GenesisMetadata) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GenesisMetadata proto.InternalMessageInfo
 
-// IdentifiedGenesisMetadata has the client metadata with the corresponding client id.
+// IdentifiedGenesisMetadata has the client metadata with the corresponding
+// client id.
 type IdentifiedGenesisMetadata struct {
 	ClientId       string            `protobuf:"bytes,1,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty" yaml:"client_id"`
 	ClientMetadata []GenesisMetadata `protobuf:"bytes,2,rep,name=client_metadata,json=clientMetadata,proto3" json:"client_metadata" yaml:"client_metadata"`

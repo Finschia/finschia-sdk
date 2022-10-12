@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/client"
+
 	ibcclient "github.com/line/lbm-sdk/x/ibc/core/02-client"
 	connection "github.com/line/lbm-sdk/x/ibc/core/03-connection"
 	channel "github.com/line/lbm-sdk/x/ibc/core/04-channel"
@@ -22,7 +23,6 @@ func GetTxCmd() *cobra.Command {
 
 	ibcTxCmd.AddCommand(
 		ibcclient.GetTxCmd(),
-		connection.GetTxCmd(),
 		channel.GetTxCmd(),
 	)
 

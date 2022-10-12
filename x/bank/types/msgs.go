@@ -99,7 +99,7 @@ func (msg MsgMultiSend) GetSignBytes() []byte {
 func (msg MsgMultiSend) GetSigners() []sdk.AccAddress {
 	addrs := make([]sdk.AccAddress, len(msg.Inputs))
 	for i, in := range msg.Inputs {
-		addr, _ := sdk.AccAddressFromBech32(in.Address)
+		addr := sdk.MustAccAddressFromBech32(in.Address)
 		addrs[i] = addr
 	}
 

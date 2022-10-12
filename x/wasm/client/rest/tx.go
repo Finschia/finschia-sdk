@@ -77,7 +77,7 @@ func storeCodeHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		// build and sign the transaction, then broadcast to Tendermint
+		// build and sign the transaction, then broadcast to Ostracon
 		msg := types.MsgStoreCode{
 			Sender:       req.BaseReq.From,
 			WASMByteCode: wasm,
@@ -156,7 +156,7 @@ func storeCodeAndInstantiateContractHandlerFn(cliCtx client.Context) http.Handle
 			return
 		}
 
-		// build and sign the transaction, then broadcast to Tendermint
+		// build and sign the transaction, then broadcast to Ostracon
 		msg := lbmtypes.MsgStoreCodeAndInstantiateContract{
 			Sender:       req.BaseReq.From,
 			WASMByteCode: wasm,

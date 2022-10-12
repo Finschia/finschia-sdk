@@ -63,7 +63,7 @@ func SanitizeGenesisBalances(balances []Balance) []Balance {
 	// 1. Retrieve the address equivalents for each Balance's address.
 	addresses := make([]sdk.AccAddress, len(balances))
 	for i := range balances {
-		addr, _ := sdk.AccAddressFromBech32(balances[i].Address)
+		addr := sdk.MustAccAddressFromBech32(balances[i].Address)
 		addresses[i] = addr
 	}
 

@@ -1,6 +1,7 @@
 package types
 
 import (
+	"reflect"
 	"strings"
 
 	sdk "github.com/line/lbm-sdk/types"
@@ -19,17 +20,14 @@ func NewResultAcknowledgement(result []byte) Acknowledgement {
 
 // NewErrorAcknowledgement returns a new instance of Acknowledgement using an Acknowledgement_Error
 // type in the Response field.
+// NOTE: Acknowledgements are written into state and thus, changes made to error strings included in packet acknowledgements
+// risk an app hash divergence when nodes in a network are running different patch versions of software.
 func NewErrorAcknowledgement(err string) Acknowledgement {
 	return Acknowledgement{
 		Response: &Acknowledgement_Error{
 			Error: err,
 		},
 	}
-}
-
-// GetBytes is a helper for serialising acknowledgements
-func (ack Acknowledgement) GetBytes() []byte {
-	return sdk.MustSortJSON(SubModuleCdc.MustMarshalJSON(&ack))
 }
 
 // ValidateBasic performs a basic validation of the acknowledgement
@@ -43,8 +41,22 @@ func (ack Acknowledgement) ValidateBasic() error {
 		if strings.TrimSpace(resp.Error) == "" {
 			return sdkerrors.Wrap(ErrInvalidAcknowledgement, "acknowledgement error cannot be empty")
 		}
+
 	default:
 		return sdkerrors.Wrapf(ErrInvalidAcknowledgement, "unsupported acknowledgement response field type %T", resp)
 	}
 	return nil
+}
+
+// Success implements the Acknowledgement interface. The acknowledgement is
+// considered successful if it is a ResultAcknowledgement. Otherwise it is
+// considered a failed acknowledgement.
+func (ack Acknowledgement) Success() bool {
+	return reflect.TypeOf(ack.Response) == reflect.TypeOf(((*Acknowledgement_Result)(nil)))
+}
+
+// Acknowledgement implements the Acknowledgement interface. It returns the
+// acknowledgement serialised using JSON.
+func (ack Acknowledgement) Acknowledgement() []byte {
+	return sdk.MustSortJSON(SubModuleCdc.MustMarshalJSON(&ack))
 }

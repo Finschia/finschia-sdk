@@ -65,93 +65,6 @@ func (s *IntegrationTestSuite) TestNewProposalCmdUpdateFoundationParams() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewProposalCmdUpdateValidatorAuths() {
-	val := s.network.Validators[0]
-
-	commonFlags := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
-	}
-
-	testCases := []struct {
-		name         string
-		args         []string
-		expectErr    bool
-		expectedCode uint32
-		respType     proto.Message
-	}{
-		{
-			"with no args",
-			commonFlags,
-			true, 0, nil,
-		},
-		{
-			"with an invalid address",
-			append([]string{
-				fmt.Sprintf("--%s=%s",
-					cli.FlagAllowedValidatorAdd,
-					"this-is-an-invalid-address",
-				),
-			}, commonFlags...),
-			true, 0, nil,
-		},
-		{
-			"with duplicated validators in add",
-			append([]string{
-				fmt.Sprintf("--%s=%s,%s",
-					cli.FlagAllowedValidatorAdd,
-					val.ValAddress.String(),
-					val.ValAddress.String(),
-				),
-			}, commonFlags...),
-			true, 0, nil,
-		},
-		{
-			"with same validators in both add and delete",
-			append([]string{
-				fmt.Sprintf("--%s=%s",
-					cli.FlagAllowedValidatorAdd,
-					val.ValAddress.String()),
-				fmt.Sprintf("--%s=%s",
-					cli.FlagAllowedValidatorDelete,
-					val.ValAddress.String()),
-			}, commonFlags...),
-			true, 0, nil,
-		},
-		{
-			"valid transaction",
-			append([]string{
-				fmt.Sprintf("--%s=%s",
-					cli.FlagAllowedValidatorDelete,
-					val.ValAddress.String()),
-			}, commonFlags...),
-			false, 0, &sdk.TxResponse{},
-		},
-	}
-
-	for _, tc := range testCases {
-		tc := tc
-
-		s.Run(tc.name, func() {
-			cmd := cli.NewProposalCmdUpdateValidatorAuths()
-			flags.AddTxFlagsToCmd(cmd)
-
-			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
-			if tc.expectErr {
-				s.Require().Error(err)
-			} else {
-				s.Require().NoError(err)
-				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), tc.respType), out)
-
-				txResp := tc.respType.(*sdk.TxResponse)
-				s.Require().Equal(tc.expectedCode, txResp.Code)
-			}
-		})
-	}
-}
-
 func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
@@ -274,7 +187,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
-	updates := `[{"address":"%s", "participating":%t}]`
+	updates := `[{"address":"%s"}]`
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -282,14 +195,14 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 		"valid transaction": {
 			[]string{
 				s.operator.String(),
-				fmt.Sprintf(updates, s.comingMember, true),
+				fmt.Sprintf(updates, s.comingMember),
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
 				s.operator.String(),
-				fmt.Sprintf(updates, s.comingMember, true),
+				fmt.Sprintf(updates, s.comingMember),
 				"extra",
 			},
 			false,

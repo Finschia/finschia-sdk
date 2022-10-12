@@ -3,12 +3,12 @@ package keeper_test
 import (
 	"testing"
 
+	sdk "github.com/line/lbm-sdk/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/ibc/core/05-port/keeper"
 )
 
@@ -43,6 +43,12 @@ func (suite *KeeperTestSuite) TestBind() {
 	// Test that valid BindPort returns capability key
 	capKey := suite.keeper.BindPort(suite.ctx, validPort)
 	require.NotNil(suite.T(), capKey, "capabilityKey is nil on valid BindPort")
+
+	isBound := suite.keeper.IsBound(suite.ctx, validPort)
+	require.True(suite.T(), isBound, "port is bound successfully")
+
+	isNotBound := suite.keeper.IsBound(suite.ctx, "not-a-port")
+	require.False(suite.T(), isNotBound, "port is not bound")
 
 	// Test that rebinding the same portid causes panic
 	require.Panics(suite.T(), func() { suite.keeper.BindPort(suite.ctx, validPort) }, "did not panic on re-binding the same port")

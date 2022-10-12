@@ -4,7 +4,6 @@ package server
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	ostjson "github.com/line/ostracon/libs/json"
@@ -49,7 +48,7 @@ func ExportCmd(appExporter types.AppExporter, defaultNodeHome string) *cobra.Com
 					return err
 				}
 
-				genesis, err := ioutil.ReadFile(config.GenesisFile())
+				genesis, err := os.ReadFile(config.GenesisFile())
 				if err != nil {
 					return err
 				}

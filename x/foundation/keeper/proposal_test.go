@@ -6,12 +6,11 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
+	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
-	"github.com/line/lbm-sdk/x/foundation/keeper"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
-	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
 func newParams(enabled bool) *foundation.Params {
@@ -22,73 +21,6 @@ func newParams(enabled bool) *foundation.Params {
 
 func newUpdateFoundationParamsProposal(params *foundation.Params) govtypes.Content {
 	return foundation.NewUpdateFoundationParamsProposal("Test", "description", params)
-}
-
-func newValidatorAuths(addrs []sdk.ValAddress, allow bool) []foundation.ValidatorAuth {
-	auths := []foundation.ValidatorAuth{}
-	for _, addr := range addrs {
-		auth := foundation.ValidatorAuth{
-			OperatorAddress: addr.String(),
-			CreationAllowed: allow,
-		}
-		auths = append(auths, auth)
-	}
-
-	return auths
-}
-
-func newUpdateValidatorAuthsProposal(auths []foundation.ValidatorAuth) govtypes.Content {
-	return foundation.NewUpdateValidatorAuthsProposal("Test", "description", auths)
-}
-
-func TestProposalHandler(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
-
-	// turn on the module
-	k := app.FoundationKeeper
-	params_on := newParams(true)
-	k.SetParams(ctx, params_on)
-
-	handler := keeper.NewProposalHandler(k)
-
-	msgTypeURL := stakingplus.CreateValidatorAuthorization{}.MsgTypeURL()
-	// test adding creation allowed validators
-	adding := newValidatorAuths([]sdk.ValAddress{valAddr}, true)
-	ap := newUpdateValidatorAuthsProposal(adding)
-	require.NoError(t, ap.ValidateBasic())
-	require.NoError(t, handler(ctx, ap))
-	for i := range adding {
-		valAddr, err := sdk.ValAddressFromBech32(adding[i].OperatorAddress)
-		grantee := sdk.AccAddress(valAddr)
-		require.NoError(t, err)
-		_, err = k.GetAuthorization(ctx, govtypes.ModuleName, grantee, msgTypeURL)
-		require.NoError(t, err)
-	}
-
-	// test deleting creation allowed validators
-	deleting := newValidatorAuths([]sdk.ValAddress{valAddr}, false)
-	dp := newUpdateValidatorAuthsProposal(deleting)
-	require.NoError(t, dp.ValidateBasic())
-	require.NoError(t, handler(ctx, dp))
-	for i := range deleting {
-		valAddr, err := sdk.ValAddressFromBech32(adding[i].OperatorAddress)
-		grantee := sdk.AccAddress(valAddr)
-		_, err = k.GetAuthorization(ctx, govtypes.ModuleName, grantee, msgTypeURL)
-		require.Error(t, err)
-	}
-
-	// disable foundation
-	params_off := newParams(false)
-	pp := newUpdateFoundationParamsProposal(params_off)
-	require.NoError(t, pp.ValidateBasic())
-	require.NoError(t, handler(ctx, pp))
-	require.Empty(t, k.GetGrants(ctx))
-	require.Equal(t, params_off, k.GetParams(ctx))
-
-	// attempt to enable foundation, which fails
-	pp = newUpdateFoundationParamsProposal(params_on)
-	require.Error(t, pp.ValidateBasic())
 }
 
 func (s *KeeperTestSuite) TestSubmitProposal() {
@@ -150,7 +82,7 @@ func (s *KeeperTestSuite) TestWithdrawProposal() {
 			valid: true,
 		},
 		"not active": {
-			id: s.abortedProposal,
+			id: s.withdrawnProposal,
 		},
 	}
 
@@ -165,5 +97,54 @@ func (s *KeeperTestSuite) TestWithdrawProposal() {
 				s.Require().Error(err)
 			}
 		})
+	}
+}
+
+func TestAbortProposal(t *testing.T) {
+	checkTx := false
+	app := simapp.Setup(checkTx)
+	ctx := app.BaseApp.NewContext(checkTx, ocproto.Header{})
+	keeper := app.FoundationKeeper
+
+	createAddress := func() sdk.AccAddress {
+		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	operator := keeper.GetOperator(ctx)
+
+	members := make([]sdk.AccAddress, 10)
+	for i := range members {
+		members[i] = createAddress()
+	}
+	err := keeper.UpdateMembers(ctx, []foundation.MemberRequest{
+		{
+			Address: members[0].String(),
+		},
+	})
+	require.NoError(t, err)
+
+	stranger := createAddress()
+
+	// create proposals of different versions and abort them
+	for _, newMember := range members[1:] {
+		_, err := keeper.SubmitProposal(ctx, []string{members[0].String()}, "", []sdk.Msg{
+			&foundation.MsgWithdrawFromTreasury{
+				Operator: operator.String(),
+				To:       stranger.String(),
+				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+			},
+		})
+		require.NoError(t, err)
+
+		err = keeper.UpdateMembers(ctx, []foundation.MemberRequest{
+			{
+				Address: newMember.String(),
+			},
+		})
+		require.NoError(t, err)
+	}
+
+	for _, proposal := range keeper.GetProposals(ctx) {
+		require.Equal(t, foundation.PROPOSAL_STATUS_ABORTED, proposal.Status)
 	}
 }

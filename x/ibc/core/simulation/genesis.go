@@ -8,6 +8,7 @@ import (
 	"math/rand"
 
 	"github.com/line/lbm-sdk/types/module"
+
 	clientsims "github.com/line/lbm-sdk/x/ibc/core/02-client/simulation"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	connectionsims "github.com/line/lbm-sdk/x/ibc/core/03-connection/simulation"

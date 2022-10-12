@@ -4,7 +4,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 
 	"github.com/line/lbm-sdk/x/foundation"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
@@ -23,7 +22,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Operator:    s.keeper.GetAdmin(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 			},
 		},
 		"enabled with no create validator grantees": {
@@ -43,15 +42,14 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Operator:    s.keeper.GetAdmin(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 			},
 		},
 		"members": {
 			init: &foundation.GenesisState{
 				Members: []foundation.Member{
 					{
-						Address:       s.members[0].String(),
-						Participating: true,
+						Address: s.members[0].String(),
 					},
 				},
 			},
@@ -62,11 +60,10 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Operator:    s.keeper.GetAdmin(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Members: []foundation.Member{
 					{
-						Address:       s.members[0].String(),
-						Participating: true,
+						Address: s.members[0].String(),
 					},
 				},
 			},
@@ -99,7 +96,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Operator:    s.keeper.GetAdmin(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -130,7 +127,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			init: &foundation.GenesisState{
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Granter: foundation.ModuleName,
 						Grantee: s.stranger.String(),
 					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
@@ -142,10 +138,9 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Operator:    s.keeper.GetAdmin(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Granter: foundation.ModuleName,
 						Grantee: s.stranger.String(),
 					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
@@ -155,7 +150,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			init: &foundation.GenesisState{
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Granter: govtypes.ModuleName,
 						Grantee: s.stranger.String(),
 					}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
 						ValidatorAddress: sdk.ValAddress(s.stranger).String(),
@@ -169,19 +163,17 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Operator:    s.keeper.GetAdmin(s.ctx).String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy(foundation.DefaultConfig())),
+				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Granter: govtypes.ModuleName,
 						Grantee: s.stranger.String(),
 					}.WithAuthorization(&stakingplus.CreateValidatorAuthorization{
 						ValidatorAddress: sdk.ValAddress(s.stranger).String(),
 					}),
 				},
 				Members: []foundation.Member{{
-					Address:       s.stranger.String(),
-					Participating: true,
-					Metadata:      "genesis member",
+					Address:  s.stranger.String(),
+					Metadata: "genesis member",
 				}},
 			},
 		},
@@ -189,9 +181,8 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			init: &foundation.GenesisState{
 				Members: []foundation.Member{
 					{
-						Address:       s.members[0].String(),
-						Participating: true,
-						Metadata:      string(make([]rune, 256)),
+						Address:  s.members[0].String(),
+						Metadata: string(make([]rune, 256)),
 					},
 				},
 			},

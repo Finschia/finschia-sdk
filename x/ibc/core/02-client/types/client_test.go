@@ -6,7 +6,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -26,10 +25,11 @@ func (suite *TypesTestSuite) TestMarshalConsensusStateWithHeight() {
 			},
 		},
 		{
-			"tendermint client", func() {
-				clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
-				clientState := suite.chainA.GetClientState(clientA)
-				consensusState, ok := suite.chainA.GetConsensusState(clientA, clientState.GetLatestHeight())
+			"ostracon client", func() {
+				path := ibctesting.NewPath(suite.chainA, suite.chainB)
+				suite.coordinator.SetupClients(path)
+				clientState := suite.chainA.GetClientState(path.EndpointA.ClientID)
+				consensusState, ok := suite.chainA.GetConsensusState(path.EndpointA.ClientID, clientState.GetLatestHeight())
 				suite.Require().True(ok)
 
 				cswh = types.NewConsensusStateWithHeight(clientState.GetLatestHeight().(types.Height), consensusState)
@@ -65,13 +65,13 @@ func TestValidateClientType(t *testing.T) {
 		clientType string
 		expPass    bool
 	}{
-		{"valid", "tendermint", true},
+		{"valid", "ostracon", true},
 		{"valid solomachine", "solomachine-v1", true},
-		{"too large", "tenderminttenderminttenderminttenderminttendermintt", false},
+		{"too large", "ostraconostraconostraconostraconostraconostraconostracon", false},
 		{"too short", "t", false},
 		{"blank id", "               ", false},
 		{"empty id", "", false},
-		{"ends with dash", "tendermint-", false},
+		{"ends with dash", "ostracon-", false},
 	}
 
 	for _, tc := range testCases {

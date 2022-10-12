@@ -34,8 +34,7 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Members: []foundation.Member{
 					{
-						Address:       createAddress().String(),
-						Participating: true,
+						Address: createAddress().String(),
 					},
 				},
 			},
@@ -54,7 +53,6 @@ func TestValidateGenesis(t *testing.T) {
 			data: foundation.GenesisState{
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
-						Granter: foundation.ModuleName,
 						Grantee: createAddress().String(),
 					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
@@ -68,14 +66,9 @@ func TestValidateGenesis(t *testing.T) {
 				},
 			},
 		},
-		"member of invalid address": {
+		"invalid members": {
 			data: foundation.GenesisState{
-				Members: []foundation.Member{
-					{
-						Address:       "invalid-address",
-						Participating: true,
-					},
-				},
+				Members: []foundation.Member{{}},
 			},
 		},
 		"invalid operator address": {
@@ -101,39 +94,9 @@ func TestValidateGenesis(t *testing.T) {
 				}),
 			},
 		},
-		"proposal of no proposers": {
+		"invalid proposals": {
 			data: foundation.GenesisState{
-				Proposals: []foundation.Proposal{
-					{
-						Id:                1,
-						FoundationVersion: 1,
-					},
-				},
-			},
-		},
-		"proposal of invalid foundation version": {
-			data: foundation.GenesisState{
-				Proposals: []foundation.Proposal{
-					*foundation.Proposal{
-						Id:        1,
-						Proposers: []string{createAddress().String()},
-					}.WithMsgs([]sdk.Msg{&foundation.MsgWithdrawFromTreasury{
-						Operator: createAddress().String(),
-						To:       createAddress().String(),
-						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-					}}),
-				},
-			},
-		},
-		"proposal of empty msgs": {
-			data: foundation.GenesisState{
-				Proposals: []foundation.Proposal{
-					{
-						Id:                1,
-						Proposers:         []string{createAddress().String()},
-						FoundationVersion: 1,
-					},
-				},
+				Proposals: []foundation.Proposal{{}},
 			},
 		},
 		"duplicate proposals": {
@@ -217,7 +180,6 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid authorization": {
 			data: foundation.GenesisState{
 				Authorizations: []foundation.GrantAuthorization{{
-					Granter: foundation.ModuleName,
 					Grantee: createAddress().String(),
 				}},
 			},
@@ -225,9 +187,19 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid grantee": {
 			data: foundation.GenesisState{
 				Authorizations: []foundation.GrantAuthorization{
-					*foundation.GrantAuthorization{
-						Granter: foundation.ModuleName,
-					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
+					*foundation.GrantAuthorization{}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
+				},
+			},
+		},
+		"invalid pool": {
+			data: foundation.GenesisState{
+				Pool: foundation.Pool{
+					Treasury: sdk.DecCoins{
+						{
+							Denom:  sdk.DefaultBondDenom,
+							Amount: sdk.ZeroDec(),
+						},
+					},
 				},
 			},
 		},
