@@ -28,7 +28,7 @@ func TestImportExportGenesis(t *testing.T) {
 		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	operator := keeper.GetDefaultOperator(ctx)
+	operator := foundation.DefaultOperator()
 	member := createAddress()
 	stranger := createAddress()
 
@@ -198,7 +198,8 @@ func TestImportExportGenesis(t *testing.T) {
 					},
 				},
 				Foundation: *foundation.FoundationInfo{
-					Version: 1,
+					Operator: operator.String(),
+					Version:  1,
 				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{
 					Description: "using x/group",
 				}),

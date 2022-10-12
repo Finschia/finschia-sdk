@@ -5,6 +5,7 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
 )
 
 // DefaultGenesisState creates a default GenesisState object
@@ -17,8 +18,13 @@ func DefaultGenesisState() *GenesisState {
 
 func DefaultFoundation() FoundationInfo {
 	return *FoundationInfo{
-		Version: 1,
+		Operator: DefaultOperator().String(),
+		Version:  1,
 	}.WithDecisionPolicy(DefaultDecisionPolicy())
+}
+
+func DefaultOperator() sdk.AccAddress {
+	return authtypes.NewModuleAddress(DefaultOperatorName)
 }
 
 func DefaultParams() Params {
@@ -40,6 +46,26 @@ func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error
 	return nil
 }
 
+func (i FoundationInfo) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(i.Operator); err != nil {
+		return err
+	}
+
+	if i.Version == 0 {
+		return sdkerrors.ErrInvalidVersion.Wrap("version must be > 0")
+	}
+
+	policy := i.GetDecisionPolicy()
+	if policy == nil {
+		return sdkerrors.ErrInvalidRequest.Wrap("must provide decision policy")
+	}
+	if err := policy.ValidateBasic(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // ValidateGenesis validates the provided genesis state to ensure the
 // expected invariants holds.
 func ValidateGenesis(data GenesisState) error {
@@ -48,24 +74,11 @@ func ValidateGenesis(data GenesisState) error {
 	}
 
 	info := data.Foundation
-	if operator := info.Operator; len(operator) != 0 {
-		if _, err := sdk.AccAddressFromBech32(info.Operator); err != nil {
-			return err
-		}
-	}
-
-	if info.Version == 0 {
-		return sdkerrors.ErrInvalidVersion.Wrap("version must be > 0")
-	}
-
-	policy := info.GetDecisionPolicy()
-	if policy == nil {
-		return sdkerrors.ErrInvalidRequest.Wrap("must provide decision policy")
-	}
-	if err := policy.ValidateBasic(); err != nil {
+	if err := info.ValidateBasic(); err != nil {
 		return err
 	}
-	_, outsourcing := policy.(*OutsourcingDecisionPolicy)
+
+	_, outsourcing := info.GetDecisionPolicy().(*OutsourcingDecisionPolicy)
 
 	if outsourcing && len(data.Members) != 0 {
 		return sdkerrors.ErrInvalidRequest.Wrap("outsourcing policy not allows members")

@@ -39,7 +39,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
 				},
 			},
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				"extra",
 			},
@@ -82,7 +82,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTreasury() {
 			[]string{},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				"extra",
 			},
@@ -123,7 +123,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdFoundationInfo() {
 			[]string{},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				"extra",
 			},
@@ -163,16 +163,17 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMember() {
 	}{
 		"valid query": {
 			[]string{
-				val.Address.String(),
+				s.permanentMember.String(),
 			},
 			true,
 			&foundation.Member{
-				Address:  val.Address.String(),
-				Metadata: "genesis member",
+				Address:  s.permanentMember.String(),
+				Metadata: "permanent member",
 			},
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
+				s.permanentMember.String(),
 				"extra",
 			},
 			false,
@@ -214,7 +215,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMembers() {
 			[]string{},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				"extra",
 			},
@@ -253,19 +254,15 @@ func (s *IntegrationTestSuite) TestNewQueryCmdProposal() {
 	}{
 		"valid query": {
 			[]string{
-				"1",
+				fmt.Sprintf("%d", s.proposalID),
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
-				"1",
+				fmt.Sprintf("%d", s.proposalID),
 				"extra",
 			},
-			false,
-		},
-		"not enough args": {
-			[]string{},
 			false,
 		},
 	}
@@ -303,7 +300,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdProposals() {
 			[]string{},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				"extra",
 			},
@@ -342,22 +339,16 @@ func (s *IntegrationTestSuite) TestNewQueryCmdVote() {
 	}{
 		"valid query": {
 			[]string{
-				"1",
-				val.Address.String(),
+				fmt.Sprintf("%d", s.proposalID),
+				s.permanentMember.String(),
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
-				"1",
-				val.Address.String(),
+				fmt.Sprintf("%d", s.proposalID),
+				s.permanentMember.String(),
 				"extra",
-			},
-			false,
-		},
-		"not enough args": {
-			[]string{
-				"1",
 			},
 			false,
 		},
@@ -394,19 +385,15 @@ func (s *IntegrationTestSuite) TestNewQueryCmdVotes() {
 	}{
 		"valid query": {
 			[]string{
-				"1",
+				fmt.Sprintf("%d", s.proposalID),
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
-				"1",
+				fmt.Sprintf("%d", s.proposalID),
 				"extra",
 			},
-			false,
-		},
-		"not enough args": {
-			[]string{},
 			false,
 		},
 	}
@@ -442,19 +429,15 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTallyResult() {
 	}{
 		"valid query": {
 			[]string{
-				"1",
+				fmt.Sprintf("%d", s.proposalID),
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
-				"1",
+				fmt.Sprintf("%d", s.proposalID),
 				"extra",
 			},
-			false,
-		},
-		"not enough args": {
-			[]string{},
 			false,
 		},
 	}
@@ -504,7 +487,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 			true,
 			1,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				s.stranger.String(),
 				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),

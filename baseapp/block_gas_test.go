@@ -101,7 +101,7 @@ func TestBaseApp_BlockGas(t *testing.T) {
 			txBuilder.SetFeeAmount(feeAmount)
 			txBuilder.SetGasLimit(txtypes.MaxGasWanted) // tx validation checks that gasLimit can't be bigger than this
 
-			privs, accNums, accSeqs := []cryptotypes.PrivKey{priv1}, []uint64{8}, []uint64{0}
+			privs, accNums, accSeqs := []cryptotypes.PrivKey{priv1}, []uint64{7}, []uint64{0}
 			_, txBytes, err := createTestTx(encCfg.TxConfig, txBuilder, privs, accNums, accSeqs, ctx.ChainID())
 			require.NoError(t, err)
 

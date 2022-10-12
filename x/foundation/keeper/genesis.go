@@ -2,9 +2,11 @@ package keeper
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 
 	"github.com/line/lbm-sdk/x/foundation"
 
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	"github.com/line/lbm-sdk/x/stakingplus"
 )
@@ -64,8 +66,14 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 	totalWeight := int64(len(members))
 	info.TotalWeight = sdk.NewDec(totalWeight)
 
-	if len(info.Operator) == 0 {
-		info.Operator = k.GetDefaultOperator(ctx).String()
+	if addr := sdk.MustAccAddressFromBech32(info.Operator); !addr.Equals(foundation.DefaultOperator()) {
+		account := k.authKeeper.GetAccount(ctx, addr)
+		if account == nil {
+			return sdkerrors.ErrUnknownAddress.Wrapf("operator %s not exists", addr)
+		}
+		if _, ok := account.(authtypes.ModuleAccountI); !ok {
+			return sdkerrors.ErrInvalidRequest.Wrap("operator must be a module address")
+		}
 	}
 	k.setFoundationInfo(ctx, info)
 

@@ -156,10 +156,6 @@ func (k Keeper) GetOperator(ctx sdk.Context) sdk.AccAddress {
 	return operator
 }
 
-func (k Keeper) GetDefaultOperator(ctx sdk.Context) sdk.AccAddress {
-	return k.authKeeper.GetModuleAccount(ctx, foundation.DefaultOperatorName).GetAddress()
-}
-
 func (k Keeper) validateOperator(ctx sdk.Context, operator string) error {
 	addr := sdk.MustAccAddressFromBech32(operator)
 	if !addr.Equals(k.GetOperator(ctx)) {

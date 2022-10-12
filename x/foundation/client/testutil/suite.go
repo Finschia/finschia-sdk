@@ -3,8 +3,8 @@ package testutil
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 
+	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/crypto/hd"
@@ -29,10 +29,13 @@ type IntegrationTestSuite struct {
 
 	setupHeight int64
 
-	operator      sdk.AccAddress
-	comingMember  sdk.AccAddress
-	leavingMember sdk.AccAddress
-	stranger      sdk.AccAddress
+	operator        sdk.AccAddress
+	comingMember    sdk.AccAddress
+	leavingMember   sdk.AccAddress
+	permanentMember sdk.AccAddress
+	stranger        sdk.AccAddress
+
+	proposalID uint64
 }
 
 var commonArgs = []string{
@@ -64,25 +67,25 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	}
 	foundationData.Params = params
 
-	var operatorMnemonic string
-	operatorMnemonic, s.operator = s.createMnemonic("operator")
-	info := foundation.FoundationInfo{
-		Operator: s.operator.String(),
-		Version:  1,
-	}
-	err := info.SetDecisionPolicy(&foundation.ThresholdDecisionPolicy{
-		Threshold: sdk.OneDec(),
-		Windows: &foundation.DecisionPolicyWindows{
-			VotingPeriod: time.Hour,
-		},
-	})
-	s.Require().NoError(err)
-	foundationData.Foundation = info
+	foundationData.Foundation = foundation.DefaultFoundation()
 
 	var strangerMnemonic string
 	strangerMnemonic, s.stranger = s.createMnemonic("stranger")
 	var leavingMemberMnemonic string
 	leavingMemberMnemonic, s.leavingMember = s.createMnemonic("leavingmember")
+	var permanentMemberMnemonic string
+	permanentMemberMnemonic, s.permanentMember = s.createMnemonic("permanentmember")
+
+	foundationData.Members = []foundation.Member{
+		{
+			Address:  s.leavingMember.String(),
+			Metadata: "leaving member",
+		},
+		{
+			Address:  s.permanentMember.String(),
+			Metadata: "permanent member",
+		},
+	}
 
 	grantees := []sdk.AccAddress{s.stranger, s.leavingMember}
 	foundationData.Authorizations = make([]foundation.GrantAuthorization, len(grantees))
@@ -107,14 +110,14 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	var comingMemberMnemonic string
 	comingMemberMnemonic, s.comingMember = s.createMnemonic("comingmember")
 
-	s.createAccount("operator", operatorMnemonic)
+	s.operator = s.getOperator()
 	s.createAccount("stranger", strangerMnemonic)
 	s.createAccount("comingmember", comingMemberMnemonic)
 	s.createAccount("leavingmember", leavingMemberMnemonic)
+	s.createAccount("permanentmember", permanentMemberMnemonic)
 
-	s.addMembers([]sdk.AccAddress{s.leavingMember})
-	id := s.submitProposal(testdata.NewTestMsg(s.operator), false)
-	s.vote(id, []sdk.AccAddress{s.network.Validators[0].Address, s.leavingMember})
+	s.proposalID = s.submitProposal(testdata.NewTestMsg(s.operator), false)
+	s.vote(s.proposalID, []sdk.AccAddress{s.leavingMember, s.permanentMember})
 	s.Require().NoError(s.network.WaitForNextBlock())
 
 	s.setupHeight, err = s.network.LatestHeight()
@@ -128,40 +131,10 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 }
 
 // submit a proposal
-func (s *IntegrationTestSuite) addMembers(members []sdk.AccAddress) {
-	val := s.network.Validators[0]
-
-	updates := make([]json.RawMessage, len(members))
-	for i, member := range members {
-		update := foundation.MemberRequest{
-			Address: member.String(),
-		}
-		bz, err := s.cfg.Codec.MarshalJSON(&update)
-		s.Require().NoError(err)
-
-		updates[i] = bz
-	}
-	updateArg, err := json.Marshal(updates)
-	s.Require().NoError(err)
-
-	args := append([]string{
-		s.operator.String(),
-		string(updateArg),
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.operator),
-	}, commonArgs...)
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdUpdateMembers(), args)
-	s.Require().NoError(err)
-
-	var res sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
-	s.Require().Zero(res.Code, out.String())
-}
-
-// submit a proposal
 func (s *IntegrationTestSuite) submitProposal(msg sdk.Msg, try bool) uint64 {
 	val := s.network.Validators[0]
 
-	proposers := []string{val.Address.String()}
+	proposers := []string{s.permanentMember.String()}
 	proposersBz, err := json.Marshal(&proposers)
 	s.Require().NoError(err)
 
@@ -253,4 +226,20 @@ func (s *IntegrationTestSuite) createAccount(uid, mnemonic string) {
 	var res sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().Zero(res.Code, out.String())
+}
+
+// get foundation operator
+func (s *IntegrationTestSuite) getOperator() sdk.AccAddress {
+	val := s.network.Validators[0]
+
+	args := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewQueryCmdFoundationInfo(), args)
+	s.Require().NoError(err)
+
+	var res foundation.QueryFoundationInfoResponse
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
+	return sdk.MustAccAddressFromBech32(res.Info.Operator)
 }

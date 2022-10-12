@@ -16,7 +16,7 @@ func DefaultDecisionPolicy() DecisionPolicy {
 	return &ThresholdDecisionPolicy{
 		Threshold: sdk.OneDec(),
 		Windows: &DecisionPolicyWindows{
-			VotingPeriod: 24 * time.Hour,
+			VotingPeriod: 7 * 24 * time.Hour, // one week
 		},
 	}
 }

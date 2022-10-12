@@ -480,7 +480,7 @@ func (suite *AnteTestSuite) TestAnteHandlerFees() {
 		{
 			"signer as enough funds, should pass",
 			func() {
-				accNums = []uint64{8}
+				accNums = []uint64{7}
 				modAcc := suite.app.AccountKeeper.GetModuleAccount(suite.ctx, types.FeeCollectorName)
 
 				suite.Require().True(suite.app.BankKeeper.GetAllBalances(suite.ctx, modAcc.GetAddress()).Empty())
