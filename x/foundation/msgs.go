@@ -353,3 +353,24 @@ func (m MsgRevoke) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
+
+var _ sdk.Msg = (*MsgOneTimeMint)(nil)
+
+// ValidateBasic implements Msg.
+func (m MsgOneTimeMint) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
+
+	if !m.Amount.IsValid() || !m.Amount.IsAllPositive() {
+		return sdkerrors.ErrInvalidCoins.Wrap(m.Amount.String())
+	}
+
+	return nil
+}
+
+// GetSigners implements Msg.
+func (m MsgOneTimeMint) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
+	return []sdk.AccAddress{signer}
+}

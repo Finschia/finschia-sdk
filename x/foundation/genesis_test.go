@@ -27,7 +27,9 @@ func TestValidateGenesis(t *testing.T) {
 		valid bool
 	}{
 		"minimal": {
-			data:  foundation.GenesisState{},
+			data: foundation.GenesisState{
+				OneTimeMintMaxCount: 1,
+			},
 			valid: true,
 		},
 		"members": {
@@ -38,6 +40,7 @@ func TestValidateGenesis(t *testing.T) {
 						Participating: true,
 					},
 				},
+				OneTimeMintMaxCount: 1,
 			},
 			valid: true,
 		},
@@ -47,6 +50,7 @@ func TestValidateGenesis(t *testing.T) {
 					Operator: createAddress().String(),
 					Version:  1,
 				},
+				OneTimeMintMaxCount: 1,
 			},
 			valid: true,
 		},
@@ -57,6 +61,7 @@ func TestValidateGenesis(t *testing.T) {
 						Grantee: createAddress().String(),
 					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
+				OneTimeMintMaxCount: 1,
 			},
 			valid: true,
 		},
@@ -65,6 +70,7 @@ func TestValidateGenesis(t *testing.T) {
 				Params: &foundation.Params{
 					FoundationTax: sdk.NewDec(2),
 				},
+				OneTimeMintMaxCount: 1,
 			},
 		},
 		"member of invalid address": {
@@ -75,6 +81,7 @@ func TestValidateGenesis(t *testing.T) {
 						Participating: true,
 					},
 				},
+				OneTimeMintMaxCount: 1,
 			},
 		},
 		"invalid operator address": {
@@ -83,11 +90,13 @@ func TestValidateGenesis(t *testing.T) {
 					Operator: "invalid-address",
 					Version:  1,
 				},
+				OneTimeMintMaxCount: 1,
 			},
 		},
 		"invalid foundation version": {
 			data: foundation.GenesisState{
-				Foundation: &foundation.FoundationInfo{},
+				Foundation:          &foundation.FoundationInfo{},
+				OneTimeMintMaxCount: 1,
 			},
 		},
 		"invalid decision policy": {
@@ -98,6 +107,7 @@ func TestValidateGenesis(t *testing.T) {
 				}.WithDecisionPolicy(&foundation.ThresholdDecisionPolicy{
 					Windows: &foundation.DecisionPolicyWindows{},
 				}),
+				OneTimeMintMaxCount: 1,
 			},
 		},
 		"proposal of no proposers": {
@@ -108,6 +118,7 @@ func TestValidateGenesis(t *testing.T) {
 						FoundationVersion: 1,
 					},
 				},
+				OneTimeMintMaxCount: 1,
 			},
 		},
 		"proposal of invalid foundation version": {
@@ -122,6 +133,7 @@ func TestValidateGenesis(t *testing.T) {
 						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 					}}),
 				},
+				OneTimeMintMaxCount: 1,
 			},
 		},
 		"proposal of empty msgs": {
@@ -133,6 +145,7 @@ func TestValidateGenesis(t *testing.T) {
 						FoundationVersion: 1,
 					},
 				},
+				OneTimeMintMaxCount: 1,
 			},
 		},
 		"duplicate proposals": {
@@ -157,6 +170,7 @@ func TestValidateGenesis(t *testing.T) {
 						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 					}}),
 				},
+				OneTimeMintMaxCount: 1,
 			},
 		},
 		"no proposal for the vote": {
@@ -168,6 +182,7 @@ func TestValidateGenesis(t *testing.T) {
 						Option:     foundation.VOTE_OPTION_YES,
 					},
 				},
+				OneTimeMintMaxCount: 1,
 			},
 		},
 		"invalid voter": {
@@ -190,6 +205,7 @@ func TestValidateGenesis(t *testing.T) {
 						Option:     foundation.VOTE_OPTION_YES,
 					},
 				},
+				OneTimeMintMaxCount: 1,
 			},
 		},
 		"invalid vote option": {
@@ -211,6 +227,7 @@ func TestValidateGenesis(t *testing.T) {
 						Voter:      createAddress().String(),
 					},
 				},
+				OneTimeMintMaxCount: 1,
 			},
 		},
 		"invalid authorization": {
@@ -218,6 +235,7 @@ func TestValidateGenesis(t *testing.T) {
 				Authorizations: []foundation.GrantAuthorization{{
 					Grantee: createAddress().String(),
 				}},
+				OneTimeMintMaxCount: 1,
 			},
 		},
 		"invalid grantee": {
@@ -225,6 +243,7 @@ func TestValidateGenesis(t *testing.T) {
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
+				OneTimeMintMaxCount: 1,
 			},
 		},
 		"invalid pool": {
@@ -237,6 +256,12 @@ func TestValidateGenesis(t *testing.T) {
 						},
 					},
 				},
+				OneTimeMintMaxCount: 1,
+			},
+		},
+		"invalid one-time-mint max count": {
+			data: foundation.GenesisState{
+				OneTimeMintMaxCount: 0,
 			},
 		},
 	}

@@ -91,3 +91,9 @@ message EventRevoke {
   // message type url for which an autorization is revoked.
   string msg_type_url = 3;
 }
+
+// EventOneTimeMint is an event emitted when the minter mint coins to the treasury.
+message EventOneTimeMint {
+  repeated cosmos.base.v1beta1.Coin amount = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+}

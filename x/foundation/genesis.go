@@ -10,7 +10,8 @@ import (
 // DefaultGenesisState creates a default GenesisState object
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
-		Params: DefaultParams(),
+		Params:              DefaultParams(),
+		OneTimeMintMaxCount: 1,
 	}
 }
 
@@ -116,6 +117,10 @@ func ValidateGenesis(data GenesisState) error {
 
 	if err := data.Pool.ValidateBasic(); err != nil {
 		return err
+	}
+
+	if data.OneTimeMintMaxCount != 1 {
+		return sdkerrors.ErrInvalidType.Wrap("invalid OneTimeMintMaxCount(only 1 is valid)")
 	}
 
 	return nil

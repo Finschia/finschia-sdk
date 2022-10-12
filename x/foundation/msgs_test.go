@@ -623,3 +623,44 @@ func TestMsgRevoke(t *testing.T) {
 		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners(), name)
 	}
 }
+
+func TestMsgOneTimeMint(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 1)
+	for i := range addrs {
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	testCases := map[string]struct {
+		operator sdk.AccAddress
+		amount   sdk.Coins
+		valid    bool
+	}{
+		"valid msg": {
+			operator: addrs[0],
+			amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
+			valid:    true,
+		},
+		"empty operator": {
+			amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
+		},
+		"no amount": {
+			operator: addrs[0],
+		},
+	}
+
+	for name, tc := range testCases {
+		msg := foundation.MsgOneTimeMint{
+			Operator: tc.operator.String(),
+			Amount:   tc.amount,
+		}
+
+		err := msg.ValidateBasic()
+		if !tc.valid {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners(), name)
+	}
+}

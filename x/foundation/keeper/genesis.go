@@ -1,10 +1,10 @@
 package keeper
 
 import (
+	"errors"
+
 	sdk "github.com/line/lbm-sdk/types"
-
 	"github.com/line/lbm-sdk/x/foundation"
-
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	"github.com/line/lbm-sdk/x/stakingplus"
 )
@@ -122,6 +122,11 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 
 	k.SetPool(ctx, data.Pool)
 
+	if data.OneTimeMintMaxCount != 1 {
+		return errors.New("OneTimeMintMaxCount must be 1")
+	}
+	k.SetOneTimeMintCount(ctx, data.OneTimeMintMaxCount)
+
 	return nil
 }
 
@@ -135,13 +140,14 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 	}
 
 	return &foundation.GenesisState{
-		Params:             k.GetParams(ctx),
-		Foundation:         &info,
-		Members:            k.GetMembers(ctx),
-		PreviousProposalId: k.getPreviousProposalID(ctx),
-		Proposals:          proposals,
-		Votes:              votes,
-		Authorizations:     k.GetGrants(ctx),
+		Params:              k.GetParams(ctx),
+		Foundation:          &info,
+		Members:             k.GetMembers(ctx),
+		PreviousProposalId:  k.getPreviousProposalID(ctx),
+		Proposals:           proposals,
+		Votes:               votes,
+		Authorizations:      k.GetGrants(ctx),
+		OneTimeMintMaxCount: k.GetOneTimeMintCount(ctx),
 	}
 }
 
