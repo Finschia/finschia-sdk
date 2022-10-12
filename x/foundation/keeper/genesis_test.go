@@ -49,8 +49,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			init: &foundation.GenesisState{
 				Members: []foundation.Member{
 					{
-						Address:       s.members[0].String(),
-						Participating: true,
+						Address: s.members[0].String(),
 					},
 				},
 			},
@@ -64,8 +63,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
 				Members: []foundation.Member{
 					{
-						Address:       s.members[0].String(),
-						Participating: true,
+						Address: s.members[0].String(),
 					},
 				},
 			},
@@ -174,9 +172,8 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					}),
 				},
 				Members: []foundation.Member{{
-					Address:       s.stranger.String(),
-					Participating: true,
-					Metadata:      "genesis member",
+					Address:  s.stranger.String(),
+					Metadata: "genesis member",
 				}},
 			},
 		},
@@ -184,9 +181,8 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 			init: &foundation.GenesisState{
 				Members: []foundation.Member{
 					{
-						Address:       s.members[0].String(),
-						Participating: true,
-						Metadata:      string(make([]rune, 256)),
+						Address:  s.members[0].String(),
+						Metadata: string(make([]rune, 256)),
 					},
 				},
 			},

@@ -55,6 +55,7 @@ type KeeperTestSuite struct {
 	votedProposal     uint64
 	withdrawnProposal uint64
 	invalidProposal   uint64
+	nextProposal      uint64
 
 	balance sdk.Int
 }
@@ -104,18 +105,17 @@ func (s *KeeperTestSuite) SetupTest() {
 		s.Require().NoError(err)
 	}
 
-	updates := make([]foundation.Member, len(s.members))
+	updates := make([]foundation.MemberRequest, len(s.members))
 	for i, member := range s.members {
-		updates[i] = foundation.Member{
-			Address:       member.String(),
-			Participating: true,
+		updates[i] = foundation.MemberRequest{
+			Address: member.String(),
 		}
 	}
 	err := s.keeper.UpdateMembers(s.ctx, updates)
 	s.Require().NoError(err)
 
 	// create a proposal
-	s.activeProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
+	activeProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
 			Operator: s.operator.String(),
 			To:       s.stranger.String(),
@@ -123,6 +123,8 @@ func (s *KeeperTestSuite) SetupTest() {
 		},
 	})
 	s.Require().NoError(err)
+	s.activeProposal = *activeProposal
+
 	for _, member := range s.members[1:] {
 		err := s.keeper.Vote(s.ctx, foundation.Vote{
 			ProposalId: s.activeProposal,
@@ -133,7 +135,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	// create a proposal voted by all members
-	s.votedProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
+	votedProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
 			Operator: s.operator.String(),
 			To:       s.stranger.String(),
@@ -141,6 +143,8 @@ func (s *KeeperTestSuite) SetupTest() {
 		},
 	})
 	s.Require().NoError(err)
+	s.votedProposal = *votedProposal
+
 	for _, member := range s.members {
 		err := s.keeper.Vote(s.ctx, foundation.Vote{
 			ProposalId: s.votedProposal,
@@ -151,7 +155,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	// create an withdrawn proposal
-	s.withdrawnProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
+	withdrawnProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
 			Operator: s.operator.String(),
 			To:       s.stranger.String(),
@@ -159,11 +163,13 @@ func (s *KeeperTestSuite) SetupTest() {
 		},
 	})
 	s.Require().NoError(err)
+	s.withdrawnProposal = *withdrawnProposal
+
 	err = s.keeper.WithdrawProposal(s.ctx, s.withdrawnProposal)
 	s.Require().NoError(err)
 
 	// create an invalid proposal which contains invalid message
-	s.invalidProposal, err = s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
+	invalidProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
 			Operator: s.operator.String(),
 			To:       s.stranger.String(),
@@ -171,6 +177,11 @@ func (s *KeeperTestSuite) SetupTest() {
 		},
 	})
 	s.Require().NoError(err)
+	s.invalidProposal = *invalidProposal
+
+	// next proposal is the proposal id for the upcoming proposal
+	s.nextProposal = s.invalidProposal + 1
+
 	for _, member := range s.members {
 		err := s.keeper.Vote(s.ctx, foundation.Vote{
 			ProposalId: s.invalidProposal,

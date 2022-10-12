@@ -1106,6 +1106,7 @@
     - [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows)
     - [FoundationInfo](#lbm.foundation.v1.FoundationInfo)
     - [Member](#lbm.foundation.v1.Member)
+    - [MemberRequest](#lbm.foundation.v1.MemberRequest)
     - [Params](#lbm.foundation.v1.Params)
     - [PercentageDecisionPolicy](#lbm.foundation.v1.PercentageDecisionPolicy)
     - [Pool](#lbm.foundation.v1.Pool)
@@ -1116,7 +1117,6 @@
     - [Vote](#lbm.foundation.v1.Vote)
   
     - [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult)
-    - [ProposalResult](#lbm.foundation.v1.ProposalResult)
     - [ProposalStatus](#lbm.foundation.v1.ProposalStatus)
     - [VoteOption](#lbm.foundation.v1.VoteOption)
   
@@ -16819,9 +16819,27 @@ Member represents a foundation member with an account address and metadata.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | address is the member's account address. |
-| `participating` | [bool](#bool) |  | participating is the flag which allows one to remove the member by setting the flag to false. |
 | `metadata` | [string](#string) |  | metadata is any arbitrary metadata to attached to the member. |
 | `added_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | added_at is a timestamp specifying when a member was added. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MemberRequest"></a>
+
+### MemberRequest
+MemberRequest represents a foundation member to be used in Msg server requests.
+Contrary to `Member`, it doesn't have any `added_at` field
+since this field cannot be set as part of requests.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | address is the member's account address. |
+| `remove` | [bool](#bool) |  | remove is the flag which allows one to remove the member by setting the flag to true. |
+| `metadata` | [string](#string) |  | metadata is any arbitrary metadata attached to the member. |
 
 
 
@@ -16847,7 +16865,12 @@ Params defines the parameters for the foundation module.
 <a name="lbm.foundation.v1.PercentageDecisionPolicy"></a>
 
 ### PercentageDecisionPolicy
-PercentageDecisionPolicy implements the DecisionPolicy interface
+PercentageDecisionPolicy is a decision policy where a proposal passes when
+it satisfies the two following conditions:
+1. The percentage of all `YES` voters' weights out of the total group weight
+   is greater or equal than the given `percentage`.
+2. The voting and execution periods of the proposal respect the parameters
+   given by `windows`.
 
 
 | Field | Type | Label | Description |
@@ -16892,7 +16915,6 @@ passes as well as some optional metadata associated with the proposal.
 | `submit_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | submit_time is a timestamp specifying when a proposal was submitted. |
 | `foundation_version` | [uint64](#uint64) |  | foundation_version tracks the version of the foundation that this proposal corresponds to. When foundation info is changed, existing proposals from previous foundation versions will become invalid. |
 | `status` | [ProposalStatus](#lbm.foundation.v1.ProposalStatus) |  | status represents the high level position in the life cycle of the proposal. Initial value is Submitted. |
-| `result` | [ProposalResult](#lbm.foundation.v1.ProposalResult) |  | result is the final result based on the votes and election rule. Initial value is unfinalized. The result is persisted so that clients can always rely on this state and not have to replicate the logic. |
 | `final_tally_result` | [TallyResult](#lbm.foundation.v1.TallyResult) |  | final_tally_result contains the sums of all votes for this proposal for each vote option, after tallying. When querying a proposal via gRPC, this field is not populated until the proposal's voting period has ended. |
 | `voting_period_end` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | voting_period_end is the timestamp before which voting must be done. Unless a successfull MsgExec is called before (to execute a proposal whose tally is successful before the voting period ends), tallying will be done at this point, and the `final_tally_result`, as well as `status` and `result` fields will be accordingly updated. |
 | `executor_result` | [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult) |  | executor_result is the final result based on the votes and election rule. Initial value is NotRun. |
@@ -16924,7 +16946,12 @@ TallyResult represents the sum of votes for each vote option.
 <a name="lbm.foundation.v1.ThresholdDecisionPolicy"></a>
 
 ### ThresholdDecisionPolicy
-ThresholdDecisionPolicy implements the DecisionPolicy interface
+ThresholdDecisionPolicy is a decision policy where a proposal passes when it
+satisfies the two following conditions:
+1. The sum of all `YES` voters' weights is greater or equal than the defined
+   `threshold`.
+2. The voting and execution periods of the proposal respect the parameters
+   given by `windows`.
 
 
 | Field | Type | Label | Description |
@@ -16989,20 +17016,6 @@ ProposalExecutorResult defines types of proposal executor results.
 
 
 
-<a name="lbm.foundation.v1.ProposalResult"></a>
-
-### ProposalResult
-ProposalResult defines types of proposal results.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| PROPOSAL_RESULT_UNSPECIFIED | 0 | An empty value is invalid and not allowed |
-| PROPOSAL_RESULT_UNFINALIZED | 1 | Until a final tally has happened the status is unfinalized |
-| PROPOSAL_RESULT_ACCEPTED | 2 | Final result of the tally |
-| PROPOSAL_RESULT_REJECTED | 3 | Final result of the tally |
-
-
-
 <a name="lbm.foundation.v1.ProposalStatus"></a>
 
 ### ProposalStatus
@@ -17011,10 +17024,11 @@ ProposalStatus defines proposal statuses.
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | PROPOSAL_STATUS_UNSPECIFIED | 0 | An empty value is invalid and not allowed. |
-| PROPOSAL_STATUS_SUBMITTED | 1 | Initial status of a proposal when persisted. |
-| PROPOSAL_STATUS_CLOSED | 2 | Final status of a proposal when the final tally was executed. |
-| PROPOSAL_STATUS_ABORTED | 3 | Final status of a proposal when the group was modified before the final tally. |
-| PROPOSAL_STATUS_WITHDRAWN | 4 | A proposal can be deleted before the voting start time by the owner. When this happens the final status is Withdrawn. |
+| PROPOSAL_STATUS_SUBMITTED | 1 | Initial status of a proposal when submitted. |
+| PROPOSAL_STATUS_ACCEPTED | 2 | Final status of a proposal when the final tally is done and the outcome passes the foundation's decision policy. |
+| PROPOSAL_STATUS_REJECTED | 3 | Final status of a proposal when the final tally is done and the outcome is rejected by the foundation's decision policy. |
+| PROPOSAL_STATUS_ABORTED | 4 | Final status of a proposal when the decision policy is modified before the final tally. |
+| PROPOSAL_STATUS_WITHDRAWN | 5 | A proposal can be withdrawn before the voting start time by the owner. When this happens the final status is Withdrawn. |
 
 
 
@@ -17057,6 +17071,7 @@ EventExec is an event emitted when a proposal is executed.
 | ----- | ---- | ----- | ----------- |
 | `proposal_id` | [uint64](#uint64) |  | proposal_id is the unique ID of the proposal. |
 | `result` | [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult) |  | result is the proposal execution result. |
+| `logs` | [string](#string) |  | logs contains error logs in case the execution result is FAILURE. |
 
 
 
@@ -17181,7 +17196,7 @@ EventUpdateMembers is an event emitted when the members have been updated.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `member_updates` | [Member](#lbm.foundation.v1.Member) | repeated |  |
+| `member_updates` | [MemberRequest](#lbm.foundation.v1.MemberRequest) | repeated |  |
 
 
 
@@ -17866,7 +17881,7 @@ MsgUpdateMembers is the Msg/UpdateMembers request type.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `operator` | [string](#string) |  | operator is the account address of the foundation operator. |
-| `member_updates` | [Member](#lbm.foundation.v1.Member) | repeated | member_updates is the list of members to update, set participating to false to remove a member. |
+| `member_updates` | [MemberRequest](#lbm.foundation.v1.MemberRequest) | repeated | member_updates is the list of members to update, set remove to true to remove a member. |
 
 
 

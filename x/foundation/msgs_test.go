@@ -112,21 +112,19 @@ func TestMsgUpdateMembers(t *testing.T) {
 
 	testCases := map[string]struct {
 		operator sdk.AccAddress
-		members  []foundation.Member
+		members  []foundation.MemberRequest
 		valid    bool
 	}{
 		"valid msg": {
 			operator: addrs[0],
-			members: []foundation.Member{{
-				Address:       addrs[1].String(),
-				Participating: true,
+			members: []foundation.MemberRequest{{
+				Address: addrs[1].String(),
 			}},
 			valid: true,
 		},
 		"empty operator": {
-			members: []foundation.Member{{
-				Address:       addrs[1].String(),
-				Participating: true,
+			members: []foundation.MemberRequest{{
+				Address: addrs[1].String(),
 			}},
 		},
 		"empty members": {
@@ -134,19 +132,17 @@ func TestMsgUpdateMembers(t *testing.T) {
 		},
 		"empty member address": {
 			operator: addrs[0],
-			members: []foundation.Member{{
-				Participating: true,
-			}},
+			members:  []foundation.MemberRequest{{}},
 		},
 		"duplicate updates": {
 			operator: addrs[0],
-			members: []foundation.Member{
+			members: []foundation.MemberRequest{
 				{
-					Address:       addrs[1].String(),
-					Participating: true,
+					Address: addrs[1].String(),
 				},
 				{
 					Address: addrs[1].String(),
+					Remove:  true,
 				},
 			},
 		},
