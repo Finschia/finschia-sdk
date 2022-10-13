@@ -112,7 +112,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 
 	k.SetPool(ctx, data.Pool)
 
-	k.SetOneTimeMintCount(ctx, data.OneTimeMintMaxCount)
+	k.SetOneTimeMintLeftCount(ctx, data.OneTimeMintLeftCount)
 
 	return nil
 }
@@ -127,14 +127,14 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 	}
 
 	return &foundation.GenesisState{
-		Params:              k.GetParams(ctx),
-		Foundation:          &info,
-		Members:             k.GetMembers(ctx),
-		PreviousProposalId:  k.getPreviousProposalID(ctx),
-		Proposals:           proposals,
-		Votes:               votes,
-		Authorizations:      k.GetGrants(ctx),
-		OneTimeMintMaxCount: k.GetOneTimeMintCount(ctx),
+		Params:               k.GetParams(ctx),
+		Foundation:           &info,
+		Members:              k.GetMembers(ctx),
+		PreviousProposalId:   k.getPreviousProposalID(ctx),
+		Proposals:            proposals,
+		Votes:                votes,
+		Authorizations:       k.GetGrants(ctx),
+		OneTimeMintLeftCount: k.GetOneTimeMintLeftCount(ctx),
 	}
 }
 

@@ -659,7 +659,7 @@ func (s *KeeperTestSuite) TestMsgOneTimeMint() {
 			ctx, _ := s.ctx.CacheContext()
 
 			if tc.emptyCount {
-				s.keeper.SetOneTimeMintCount(ctx, 0)
+				s.keeper.SetOneTimeMintLeftCount(ctx, 0)
 			}
 
 			req := &foundation.MsgOneTimeMint{

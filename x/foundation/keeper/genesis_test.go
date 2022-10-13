@@ -14,9 +14,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 		export *foundation.GenesisState
 	}{
 		"minimal": {
-			init: &foundation.GenesisState{
-				OneTimeMintMaxCount: 1,
-			},
+			init:  &foundation.GenesisState{},
 			valid: true,
 			export: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
@@ -25,7 +23,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
-				OneTimeMintMaxCount: 1,
 			},
 		},
 		"enabled with no create validator grantees": {
@@ -34,7 +31,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Enabled:       true,
 					FoundationTax: sdk.ZeroDec(),
 				},
-				OneTimeMintMaxCount: 1,
 			},
 			valid: true,
 			export: &foundation.GenesisState{
@@ -47,7 +43,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Version:     1,
 					TotalWeight: sdk.ZeroDec(),
 				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
-				OneTimeMintMaxCount: 1,
 			},
 		},
 		"members": {
@@ -57,7 +52,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Address: s.members[0].String(),
 					},
 				},
-				OneTimeMintMaxCount: 1,
 			},
 			valid: true,
 			export: &foundation.GenesisState{
@@ -72,7 +66,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Address: s.members[0].String(),
 					},
 				},
-				OneTimeMintMaxCount: 1,
 			},
 		},
 		"proposals": {
@@ -95,7 +88,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Option:     foundation.VOTE_OPTION_YES,
 					},
 				},
-				OneTimeMintMaxCount: 1,
 			},
 			valid: true,
 			export: &foundation.GenesisState{
@@ -129,7 +121,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Option:     foundation.VOTE_OPTION_YES,
 					},
 				},
-				OneTimeMintMaxCount: 1,
 			},
 		},
 		"authorizations": {
@@ -139,7 +130,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Grantee: s.stranger.String(),
 					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
-				OneTimeMintMaxCount: 1,
 			},
 			valid: true,
 			export: &foundation.GenesisState{
@@ -154,7 +144,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Grantee: s.stranger.String(),
 					}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{}),
 				},
-				OneTimeMintMaxCount: 1,
 			},
 		},
 		"create validator authorizations": {
@@ -166,7 +155,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						ValidatorAddress: sdk.ValAddress(s.stranger).String(),
 					}),
 				},
-				OneTimeMintMaxCount: 1,
 			},
 			valid: true,
 			export: &foundation.GenesisState{
@@ -187,7 +175,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 					Address:  s.stranger.String(),
 					Metadata: "genesis member",
 				}},
-				OneTimeMintMaxCount: 1,
 			},
 		},
 		"member of long metadata": {
@@ -198,7 +185,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Metadata: string(make([]rune, 256)),
 					},
 				},
-				OneTimeMintMaxCount: 1,
 			},
 		},
 		"proposal of long metadata": {
@@ -215,7 +201,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
 					}}),
 				},
-				OneTimeMintMaxCount: 1,
 			},
 		},
 		"vote of long metadata": {
@@ -239,7 +224,6 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 						Metadata:   string(make([]rune, 256)),
 					},
 				},
-				OneTimeMintMaxCount: 1,
 			},
 		},
 	}

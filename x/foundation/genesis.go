@@ -10,8 +10,8 @@ import (
 // DefaultGenesisState creates a default GenesisState object
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
-		Params:              DefaultParams(),
-		OneTimeMintMaxCount: 1,
+		Params:               DefaultParams(),
+		OneTimeMintLeftCount: 0,
 	}
 }
 
@@ -112,8 +112,8 @@ func ValidateGenesis(data GenesisState) error {
 		return err
 	}
 
-	if data.OneTimeMintMaxCount != 1 {
-		return sdkerrors.ErrInvalidType.Wrap("invalid OneTimeMintMaxCount(only 1 is valid)")
+	if data.OneTimeMintLeftCount > 1 {
+		return sdkerrors.ErrInvalidType.Wrap("invalid oneTimeMintLeftCount(0 or 1)")
 	}
 
 	return nil

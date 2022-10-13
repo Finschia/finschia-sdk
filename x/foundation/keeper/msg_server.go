@@ -302,8 +302,8 @@ func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*founda
 func (s msgServer) OneTimeMint(c context.Context, req *foundation.MsgOneTimeMint) (*foundation.MsgOneTimeMintResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	oneTimeMintCount := s.keeper.GetOneTimeMintCount(ctx)
-	if oneTimeMintCount == 0 {
+	oneTimeMintLeftCount := s.keeper.GetOneTimeMintLeftCount(ctx)
+	if oneTimeMintLeftCount == 0 {
 		return nil, sdkerrors.ErrUnauthorized.Wrapf("The one-time-mint can no longer be executed.")
 	}
 
@@ -322,8 +322,8 @@ func (s msgServer) OneTimeMint(c context.Context, req *foundation.MsgOneTimeMint
 		return nil, err
 	}
 
-	oneTimeMintCount--
-	s.keeper.SetOneTimeMintCount(ctx, oneTimeMintCount)
+	oneTimeMintLeftCount--
+	s.keeper.SetOneTimeMintLeftCount(ctx, oneTimeMintLeftCount)
 
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventOneTimeMint{
 		Amount: req.Amount,
