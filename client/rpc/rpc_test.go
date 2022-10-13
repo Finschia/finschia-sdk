@@ -1,6 +1,7 @@
 package rpc_test
 
 import (
+	"encoding/base64"
 	"fmt"
 	"testing"
 
@@ -54,6 +55,24 @@ func (s *IntegrationTestSuite) TestLatestBlocks() {
 	var result ctypes.ResultBlock
 	err = legacy.Cdc.UnmarshalJSON(res, &result)
 	s.Require().NoError(err)
+
+	{
+		var result2 ctypes.ResultBlock
+		res, err := rest.GetRequest(fmt.Sprintf("%s/blocks/%d", val0.APIAddress, result.Block.Height))
+		s.Require().NoError(err)
+		err = legacy.Cdc.UnmarshalJSON(res, &result2)
+		s.Require().NoError(err)
+		s.Require().Equal(result, result2)
+	}
+	{
+		var result3 ctypes.ResultBlock
+		hash64 := base64.URLEncoding.EncodeToString(result.Block.Hash())
+		res, err := rest.GetRequest(fmt.Sprintf("%s/block/%s", val0.APIAddress, hash64))
+		s.Require().NoError(err)
+		err = legacy.Cdc.UnmarshalJSON(res, &result3)
+		s.Require().NoError(err)
+		s.Require().Equal(result, result3)
+	}
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

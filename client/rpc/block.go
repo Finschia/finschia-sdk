@@ -2,6 +2,8 @@ package rpc
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -73,6 +75,24 @@ func getBlock(clientCtx client.Context, height *int64) ([]byte, error) {
 	return legacy.Cdc.MarshalJSON(res)
 }
 
+func getBlockByHash(clientCtx client.Context, hash []byte) ([]byte, error) {
+	// get the node
+	node, err := clientCtx.GetNode()
+	if err != nil {
+		return nil, err
+	}
+
+	// header -> BlockchainInfo
+	// header, tx -> Block
+	// results -> BlockResults
+	res, err := node.BlockByHash(context.Background(), hash)
+	if err != nil {
+		return nil, err
+	}
+
+	return legacy.Cdc.MarshalJSON(res)
+}
+
 // get the current blockchain height
 func GetChainHeight(clientCtx client.Context) (int64, error) {
 	node, err := clientCtx.GetNode()
@@ -89,6 +109,38 @@ func GetChainHeight(clientCtx client.Context) (int64, error) {
 	return height, nil
 }
 
+// REST handler to get a block by hash
+func BlockByHashRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+
+		hash := vars["hash"]
+		blockHash, err := base64.URLEncoding.DecodeString(hash)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest,
+				"couldn't decode block hash by Base64URLDecode.")
+			return
+		}
+		if n := len(hash); n != sha256.Size {
+			if n == 0 {
+				rest.WriteErrorResponse(w, http.StatusBadRequest,
+					"block hash cannot be empty")
+			} else {
+				rest.WriteErrorResponse(w, http.StatusBadRequest,
+					"the length of block hash must be 32")
+			}
+			return
+		}
+
+		output, err := getBlockByHash(clientCtx, blockHash)
+		if rest.CheckInternalServerError(w, err) {
+			return
+		}
+
+		rest.PostProcessResponseBare(w, clientCtx, output)
+	}
+}
+
 // REST handler to get a block
 func BlockRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -97,7 +149,7 @@ func BlockRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 		height, err := strconv.ParseInt(vars["height"], 10, 64)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest,
-				"couldn't parse block height. Assumed format is '/block/{height}'.")
+				"couldn't parse block height. Assumed format is '/blocks/{height}'.")
 			return
 		}
 
