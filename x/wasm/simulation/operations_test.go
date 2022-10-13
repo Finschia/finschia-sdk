@@ -56,7 +56,7 @@ func TestWeightedOperations(t *testing.T) {
 
 				expected := reflect.TypeOf(tt.want[i].Op()).String()
 				actual := reflect.TypeOf(got[i].Op()).String()
-			
+
 				require.Equal(t, expected, actual, "return value type should be the same")
 			}
 		})
