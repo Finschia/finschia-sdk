@@ -91,7 +91,7 @@ prometheus = {{ .BaseConfig.Prometheus }}
 chan-check-tx-size = {{ .BaseConfig.ChanCheckTxSize }}
 
 # IAVLDisableFastNode enables or disables the fast node feature of IAVL. 
-# Default is false.
+# Default is true.
 iavl-disable-fastnode = {{ .BaseConfig.IAVLDisableFastNode }}
 
 ###############################################################################
