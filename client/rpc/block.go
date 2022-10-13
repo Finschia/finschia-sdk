@@ -122,13 +122,8 @@ func BlockByHashRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 		if n := len(blockHash); n != sha256.Size {
-			if n == 0 {
-				rest.WriteErrorResponse(w, http.StatusBadRequest,
-					"block hash cannot be empty")
-			} else {
-				rest.WriteErrorResponse(w, http.StatusBadRequest,
-					"the length of block hash must be 32")
-			}
+			rest.WriteErrorResponse(w, http.StatusBadRequest,
+				"the length of block hash must be 32")
 			return
 		}
 

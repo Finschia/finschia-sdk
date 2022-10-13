@@ -75,6 +75,62 @@ func (s *IntegrationTestSuite) TestLatestBlocks() {
 	}
 }
 
+func (s *IntegrationTestSuite) TestBlockWithFailure() {
+	val0 := s.network.Validators[0]
+
+	tcs := []struct {
+		name   string
+		height string
+		errRes string
+	}{
+		{
+			name:   "parse error",
+			height: "a",
+			errRes: "{\"error\":\"couldn't parse block height. Assumed format is '/blocks/{height}'.\"}",
+		},
+		{
+			name:   "bigger height error",
+			height: "1234567890",
+			errRes: "{\"error\":\"requested block height is bigger then the chain length\"}",
+		},
+	}
+	for _, tc := range tcs {
+		s.T().Run(tc.name, func(t *testing.T) {
+			res, err := rest.GetRequest(fmt.Sprintf("%s/blocks/%s", val0.APIAddress, tc.height))
+			s.Require().NoError(err)
+			s.Require().Equal(tc.errRes, string(res))
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestBlockByHashWithFailure() {
+	val0 := s.network.Validators[0]
+
+	tcs := []struct {
+		name   string
+		hash   string
+		errRes string
+	}{
+		{
+			name:   "base64 error",
+			hash:   "wrong hash",
+			errRes: "{\"error\":\"couldn't decode block hash by Base64URLDecode.\"}",
+		},
+		{
+			name:   "size error",
+			hash:   base64.URLEncoding.EncodeToString([]byte{0}),
+			errRes: "{\"error\":\"the length of block hash must be 32\"}",
+		},
+	}
+	for _, tc := range tcs {
+		s.T().Run(tc.name, func(t *testing.T) {
+			res, err := rest.GetRequest(fmt.Sprintf("%s/block/%s", val0.APIAddress, tc.hash))
+			s.Require().NoError(err)
+			s.Require().Equal(tc.errRes, string(res))
+		})
+	}
+}
+
 func TestIntegrationTestSuite(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))
 }
