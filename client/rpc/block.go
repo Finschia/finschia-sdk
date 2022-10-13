@@ -121,7 +121,7 @@ func BlockByHashRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 				"couldn't decode block hash by Base64URLDecode.")
 			return
 		}
-		if n := len(hash); n != sha256.Size {
+		if n := len(blockHash); n != sha256.Size {
 			if n == 0 {
 				rest.WriteErrorResponse(w, http.StatusBadRequest,
 					"block hash cannot be empty")
