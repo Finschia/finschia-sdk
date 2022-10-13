@@ -11,17 +11,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestDecisionPolicy(t *testing.T) {
-	config := foundation.DefaultConfig()
-	policy := foundation.DefaultDecisionPolicy()
-
-	require.NoError(t, policy.ValidateBasic())
-	info := foundation.FoundationInfo{
-		TotalWeight: sdk.OneDec(),
-	}
-	require.NoError(t, policy.Validate(info, config))
-}
-
 func TestTallyResult(t *testing.T) {
 	result := foundation.DefaultTallyResult()
 

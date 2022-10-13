@@ -12,15 +12,6 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
-func DefaultDecisionPolicy() DecisionPolicy {
-	return &ThresholdDecisionPolicy{
-		Threshold: sdk.OneDec(),
-		Windows: &DecisionPolicyWindows{
-			VotingPeriod: 7 * 24 * time.Hour, // one week
-		},
-	}
-}
-
 func validateProposers(proposers []string) error {
 	if len(proposers) == 0 {
 		return sdkerrors.ErrInvalidRequest.Wrap("no proposers")

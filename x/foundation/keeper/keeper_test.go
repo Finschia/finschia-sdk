@@ -64,8 +64,18 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.members = make([]sdk.AccAddress, 10)
 	for i := range s.members {
 		s.members[i] = createAddress()
+		member := foundation.Member{
+			Address: s.members[i].String(),
+		}
+		s.keeper.SetMember(s.ctx, member)
 	}
 	s.stranger = createAddress()
+
+	info := foundation.DefaultFoundation()
+	info.TotalWeight = sdk.NewDec(int64(len(s.members)))
+	err := info.SetDecisionPolicy(workingPolicy())
+	s.Require().NoError(err)
+	s.keeper.SetFoundationInfo(s.ctx, info)
 
 	s.balance = sdk.NewInt(1000000)
 	s.keeper.SetPool(s.ctx, foundation.Pool{
@@ -91,15 +101,6 @@ func (s *KeeperTestSuite) SetupTest() {
 		err = s.app.BankKeeper.SendCoins(s.ctx, minter, holder, amount)
 		s.Require().NoError(err)
 	}
-
-	updates := make([]foundation.MemberRequest, len(s.members))
-	for i, member := range s.members {
-		updates[i] = foundation.MemberRequest{
-			Address: member.String(),
-		}
-	}
-	err := s.keeper.UpdateMembers(s.ctx, updates)
-	s.Require().NoError(err)
 
 	// create a proposal
 	activeProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(s.operator)})

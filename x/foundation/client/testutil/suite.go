@@ -3,6 +3,7 @@ package testutil
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
@@ -87,6 +88,12 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	info := foundation.DefaultFoundation()
 	info.TotalWeight = sdk.NewDecFromInt(sdk.NewInt(int64(len(foundationData.Members))))
+	info.SetDecisionPolicy(&foundation.ThresholdDecisionPolicy{
+		Threshold: sdk.OneDec(),
+		Windows: &foundation.DecisionPolicyWindows{
+			VotingPeriod: 7 * 24 * time.Hour,
+		},
+	})
 	foundationData.Foundation = info
 
 	grantees := []sdk.AccAddress{s.stranger, s.leavingMember}

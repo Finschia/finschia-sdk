@@ -24,6 +24,12 @@ func DefaultFoundation() FoundationInfo {
 	}.WithDecisionPolicy(DefaultDecisionPolicy())
 }
 
+func DefaultDecisionPolicy() DecisionPolicy {
+	return &OutsourcingDecisionPolicy{
+		Description: "using x/group",
+	}
+}
+
 func DefaultOperator() sdk.AccAddress {
 	return authtypes.NewModuleAddress(DefaultOperatorName)
 }
@@ -68,6 +74,15 @@ func (i FoundationInfo) ValidateBasic() error {
 		return err
 	}
 
+	_, outsourcing := i.GetDecisionPolicy().(*OutsourcingDecisionPolicy)
+	memberExists := !i.TotalWeight.IsZero()
+	if outsourcing && memberExists {
+		return sdkerrors.ErrInvalidRequest.Wrap("outsourcing policy not allows members")
+	}
+	if !outsourcing && !memberExists {
+		return sdkerrors.ErrInvalidRequest.Wrap("one member must exist at least")
+	}
+
 	return nil
 }
 
@@ -82,14 +97,10 @@ func ValidateGenesis(data GenesisState) error {
 	if err := info.ValidateBasic(); err != nil {
 		return err
 	}
-	if realWeight := sdk.NewDecFromInt(sdk.NewInt(int64(len(data.Members)))); !info.TotalWeight.Equal(realWeight) {
+	outsourcing := info.TotalWeight.IsZero()
+
+	if realWeight := sdk.NewDec(int64(len(data.Members))); !info.TotalWeight.Equal(realWeight) {
 		return sdkerrors.ErrInvalidRequest.Wrapf("total weight not match, %s != %s", info.TotalWeight, realWeight)
-	}
-
-	_, outsourcing := info.GetDecisionPolicy().(*OutsourcingDecisionPolicy)
-
-	if outsourcing && len(data.Members) != 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("outsourcing policy not allows members")
 	}
 	members := Members{Members: data.Members}
 	if err := members.ValidateBasic(); err != nil {

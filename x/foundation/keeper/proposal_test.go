@@ -96,12 +96,15 @@ func TestAbortProposal(t *testing.T) {
 	for i := range members {
 		members[i] = createAddress()
 	}
-	err := keeper.UpdateMembers(ctx, []foundation.MemberRequest{
-		{
-			Address: members[0].String(),
-		},
+	keeper.SetMember(ctx, foundation.Member{
+		Address: members[0].String(),
 	})
+
+	info := foundation.DefaultFoundation()
+	info.TotalWeight = sdk.NewDec(int64(len(members)))
+	err := info.SetDecisionPolicy(workingPolicy())
 	require.NoError(t, err)
+	keeper.SetFoundationInfo(ctx, info)
 
 	// create proposals of different versions and abort them
 	for _, newMember := range members[1:] {

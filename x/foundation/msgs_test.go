@@ -168,7 +168,7 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 		"valid threshold policy": {
 			operator: addrs[0],
 			policy: &foundation.ThresholdDecisionPolicy{
-				Threshold: sdk.NewDec(3),
+				Threshold: sdk.OneDec(),
 				Windows: &foundation.DecisionPolicyWindows{
 					VotingPeriod: time.Hour,
 				},
@@ -187,7 +187,7 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 		},
 		"empty operator": {
 			policy: &foundation.ThresholdDecisionPolicy{
-				Threshold: sdk.NewDec(3),
+				Threshold: sdk.OneDec(),
 				Windows: &foundation.DecisionPolicyWindows{
 					VotingPeriod: time.Hour,
 				},
@@ -208,7 +208,7 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 		"zero voting period": {
 			operator: addrs[0],
 			policy: &foundation.ThresholdDecisionPolicy{
-				Threshold: sdk.NewDec(3),
+				Threshold: sdk.OneDec(),
 				Windows:   &foundation.DecisionPolicyWindows{},
 			},
 		},

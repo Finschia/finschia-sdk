@@ -22,7 +22,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *foundation.GenesisState) erro
 			return sdkerrors.ErrInvalidRequest.Wrap("operator must be a module address")
 		}
 	}
-	k.setFoundationInfo(ctx, info)
+	k.SetFoundationInfo(ctx, info)
 
 	k.setPreviousProposalID(ctx, data.PreviousProposalId)
 
@@ -31,7 +31,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *foundation.GenesisState) erro
 			return err
 		}
 
-		k.setMember(ctx, member)
+		k.SetMember(ctx, member)
 	}
 
 	for _, proposal := range data.Proposals {

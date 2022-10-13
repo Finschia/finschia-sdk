@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"testing"
+	"time"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
@@ -13,6 +14,15 @@ import (
 
 	"github.com/line/lbm-sdk/x/foundation"
 )
+
+func workingPolicy() foundation.DecisionPolicy {
+	return &foundation.ThresholdDecisionPolicy{
+		Threshold: sdk.OneDec(),
+		Windows: &foundation.DecisionPolicyWindows{
+			VotingPeriod: 7 * 24 * time.Hour, // one week
+		},
+	}
+}
 
 func TestImportExportGenesis(t *testing.T) {
 	checkTx := false
@@ -76,7 +86,7 @@ func TestImportExportGenesis(t *testing.T) {
 					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
+				}.WithDecisionPolicy(workingPolicy()),
 				Members: []foundation.Member{
 					{
 						Address: member.String(),
@@ -90,7 +100,7 @@ func TestImportExportGenesis(t *testing.T) {
 					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
+				}.WithDecisionPolicy(workingPolicy()),
 				Members: []foundation.Member{
 					{
 						Address: member.String(),
@@ -100,8 +110,17 @@ func TestImportExportGenesis(t *testing.T) {
 		},
 		"proposals": {
 			init: &foundation.GenesisState{
-				Params:             foundation.DefaultParams(),
-				Foundation:         foundation.DefaultFoundation(),
+				Params: foundation.DefaultParams(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    operator.String(),
+					Version:     1,
+					TotalWeight: sdk.OneDec(),
+				}.WithDecisionPolicy(workingPolicy()),
+				Members: []foundation.Member{
+					{
+						Address: member.String(),
+					},
+				},
 				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
@@ -124,8 +143,13 @@ func TestImportExportGenesis(t *testing.T) {
 				Foundation: *foundation.FoundationInfo{
 					Operator:    operator.String(),
 					Version:     1,
-					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
+					TotalWeight: sdk.OneDec(),
+				}.WithDecisionPolicy(workingPolicy()),
+				Members: []foundation.Member{
+					{
+						Address: member.String(),
+					},
+				},
 				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
@@ -161,12 +185,8 @@ func TestImportExportGenesis(t *testing.T) {
 			},
 			valid: true,
 			export: &foundation.GenesisState{
-				Params: foundation.DefaultParams(),
-				Foundation: *foundation.FoundationInfo{
-					Operator:    operator.String(),
-					Version:     1,
-					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
 				Authorizations: []foundation.GrantAuthorization{
 					*foundation.GrantAuthorization{
 						Grantee: stranger.String(),
@@ -201,7 +221,7 @@ func TestImportExportGenesis(t *testing.T) {
 					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
+				}.WithDecisionPolicy(workingPolicy()),
 				Members: []foundation.Member{
 					{
 						Address:  member.String(),
@@ -212,8 +232,17 @@ func TestImportExportGenesis(t *testing.T) {
 		},
 		"proposal of long metadata": {
 			init: &foundation.GenesisState{
-				Params:             foundation.DefaultParams(),
-				Foundation:         foundation.DefaultFoundation(),
+				Params: foundation.DefaultParams(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    operator.String(),
+					Version:     1,
+					TotalWeight: sdk.OneDec(),
+				}.WithDecisionPolicy(workingPolicy()),
+				Members: []foundation.Member{
+					{
+						Address: member.String(),
+					},
+				},
 				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
@@ -227,8 +256,17 @@ func TestImportExportGenesis(t *testing.T) {
 		},
 		"vote of long metadata": {
 			init: &foundation.GenesisState{
-				Params:             foundation.DefaultParams(),
-				Foundation:         foundation.DefaultFoundation(),
+				Params: foundation.DefaultParams(),
+				Foundation: *foundation.FoundationInfo{
+					Operator:    operator.String(),
+					Version:     1,
+					TotalWeight: sdk.OneDec(),
+				}.WithDecisionPolicy(workingPolicy()),
+				Members: []foundation.Member{
+					{
+						Address: member.String(),
+					},
+				},
 				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{

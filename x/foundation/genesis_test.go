@@ -2,6 +2,7 @@ package foundation_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 
@@ -12,10 +13,40 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
+func workingFoundation() foundation.FoundationInfo {
+	return *foundation.FoundationInfo{
+		Operator:    foundation.DefaultOperator().String(),
+		Version:     1,
+		TotalWeight: sdk.OneDec(),
+	}.WithDecisionPolicy(workingPolicy())
+}
+
+func workingPolicy() foundation.DecisionPolicy {
+	return &foundation.ThresholdDecisionPolicy{
+		Threshold: sdk.OneDec(),
+		Windows: &foundation.DecisionPolicyWindows{
+			VotingPeriod: 7 * 24 * time.Hour, // one week
+		},
+	}
+}
+
 func TestDefaultGenesisState(t *testing.T) {
 	gs := foundation.DefaultGenesisState()
-	require.Equal(t, sdk.ZeroDec(), gs.Params.FoundationTax)
+	require.NoError(t, foundation.ValidateGenesis(*gs))
+
+	require.True(t, gs.Params.FoundationTax.IsZero())
 	require.Empty(t, gs.Params.CensoredMsgTypeUrls)
+
+	require.EqualValues(t, 1, gs.Foundation.Version)
+	require.True(t, gs.Foundation.TotalWeight.IsZero())
+	require.Equal(t, foundation.DefaultOperator().String(), gs.Foundation.Operator)
+
+	require.Empty(t, gs.Members)
+	require.Zero(t, gs.PreviousProposalId)
+	require.Empty(t, gs.Proposals)
+	require.Empty(t, gs.Votes)
+
+	require.Empty(t, gs.Authorizations)
 }
 
 func TestValidateGenesis(t *testing.T) {
@@ -36,12 +67,8 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"members": {
 			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
-				Foundation: *foundation.FoundationInfo{
-					Operator:    foundation.DefaultOperator().String(),
-					Version:     1,
-					TotalWeight: sdk.OneDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
+				Params:     foundation.DefaultParams(),
+				Foundation: workingFoundation(),
 				Members: []foundation.Member{
 					{
 						Address: createAddress().String(),
@@ -72,13 +99,9 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid members": {
 			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
-				Foundation: *foundation.FoundationInfo{
-					Operator:    createAddress().String(),
-					Version:     1,
-					TotalWeight: sdk.OneDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
-				Members: []foundation.Member{{}},
+				Params:     foundation.DefaultParams(),
+				Foundation: workingFoundation(),
+				Members:    []foundation.Member{{}},
 			},
 		},
 		"invalid foundation info": {
@@ -86,7 +109,7 @@ func TestValidateGenesis(t *testing.T) {
 				Params: foundation.DefaultParams(),
 			},
 		},
-		"invalid total weight": {
+		"number of members is different from total weight": {
 			data: foundation.GenesisState{
 				Params:     foundation.DefaultParams(),
 				Foundation: foundation.DefaultFoundation(),
@@ -97,33 +120,11 @@ func TestValidateGenesis(t *testing.T) {
 				},
 			},
 		},
-		"non empty members with outsourcing decision policy": {
-			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
-				Foundation: *foundation.FoundationInfo{
-					Operator:    createAddress().String(),
-					Version:     1,
-					TotalWeight: sdk.OneDec(),
-				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{
-					Description: "using x/group",
-				}),
-				Members: []foundation.Member{
-					{
-						Address: createAddress().String(),
-					},
-				},
-			},
-		},
 		"non empty proposals with outsourcing decision policy": {
 			data: foundation.GenesisState{
-				Params: foundation.DefaultParams(),
-				Foundation: *foundation.FoundationInfo{
-					Operator:    createAddress().String(),
-					Version:     1,
-					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(&foundation.OutsourcingDecisionPolicy{
-					Description: "using x/group",
-				}),
+				Params:             foundation.DefaultParams(),
+				Foundation:         foundation.DefaultFoundation(),
+				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
 						Id:                1,
@@ -136,14 +137,25 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid proposal": {
 			data: foundation.GenesisState{
 				Params:     foundation.DefaultParams(),
-				Foundation: foundation.DefaultFoundation(),
-				Proposals:  []foundation.Proposal{{}},
+				Foundation: workingFoundation(),
+				Members: []foundation.Member{
+					{
+						Address: createAddress().String(),
+					},
+				},
+				PreviousProposalId: 1,
+				Proposals:          []foundation.Proposal{{}},
 			},
 		},
 		"proposal of too far ahead id": {
 			data: foundation.GenesisState{
-				Params:             foundation.DefaultParams(),
-				Foundation:         foundation.DefaultFoundation(),
+				Params:     foundation.DefaultParams(),
+				Foundation: workingFoundation(),
+				Members: []foundation.Member{
+					{
+						Address: createAddress().String(),
+					},
+				},
 				PreviousProposalId: 0,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
@@ -156,8 +168,13 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"proposal of too far ahead version": {
 			data: foundation.GenesisState{
-				Params:             foundation.DefaultParams(),
-				Foundation:         foundation.DefaultFoundation(),
+				Params:     foundation.DefaultParams(),
+				Foundation: workingFoundation(),
+				Members: []foundation.Member{
+					{
+						Address: createAddress().String(),
+					},
+				},
 				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
@@ -170,8 +187,13 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"duplicate proposals": {
 			data: foundation.GenesisState{
-				Params:             foundation.DefaultParams(),
-				Foundation:         foundation.DefaultFoundation(),
+				Params:     foundation.DefaultParams(),
+				Foundation: workingFoundation(),
+				Members: []foundation.Member{
+					{
+						Address: createAddress().String(),
+					},
+				},
 				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
@@ -202,8 +224,13 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid voter": {
 			data: foundation.GenesisState{
-				Params:             foundation.DefaultParams(),
-				Foundation:         foundation.DefaultFoundation(),
+				Params:     foundation.DefaultParams(),
+				Foundation: workingFoundation(),
+				Members: []foundation.Member{
+					{
+						Address: createAddress().String(),
+					},
+				},
 				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
@@ -215,7 +242,6 @@ func TestValidateGenesis(t *testing.T) {
 				Votes: []foundation.Vote{
 					{
 						ProposalId: 1,
-						Voter:      "invalid-address",
 						Option:     foundation.VOTE_OPTION_YES,
 					},
 				},
@@ -223,8 +249,13 @@ func TestValidateGenesis(t *testing.T) {
 		},
 		"invalid vote option": {
 			data: foundation.GenesisState{
-				Params:             foundation.DefaultParams(),
-				Foundation:         foundation.DefaultFoundation(),
+				Params:     foundation.DefaultParams(),
+				Foundation: workingFoundation(),
+				Members: []foundation.Member{
+					{
+						Address: createAddress().String(),
+					},
+				},
 				PreviousProposalId: 1,
 				Proposals: []foundation.Proposal{
 					*foundation.Proposal{
@@ -298,11 +329,18 @@ func TestFoundationInfo(t *testing.T) {
 		policy      foundation.DecisionPolicy
 		valid       bool
 	}{
-		"valid info": {
+		"valid info (default)": {
 			operator:    addrs[0],
 			version:     1,
 			totalWeight: sdk.ZeroDec(),
 			policy:      foundation.DefaultDecisionPolicy(),
+			valid:       true,
+		},
+		"valid info (working policy)": {
+			operator:    addrs[0],
+			version:     1,
+			totalWeight: sdk.OneDec(),
+			policy:      workingPolicy(),
 			valid:       true,
 		},
 		"invalid operator": {
@@ -330,6 +368,18 @@ func TestFoundationInfo(t *testing.T) {
 			version:     1,
 			totalWeight: sdk.ZeroDec(),
 			policy:      &foundation.ThresholdDecisionPolicy{},
+		},
+		"outsourcing with members": {
+			operator:    addrs[0],
+			version:     1,
+			totalWeight: sdk.OneDec(),
+			policy:      foundation.DefaultDecisionPolicy(),
+		},
+		"working policy without members": {
+			operator:    addrs[0],
+			version:     1,
+			totalWeight: sdk.ZeroDec(),
+			policy:      workingPolicy(),
 		},
 	}
 

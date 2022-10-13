@@ -18,7 +18,7 @@ func (k Keeper) UpdateDecisionPolicy(ctx sdk.Context, policy foundation.Decision
 	info := k.GetFoundationInfo(ctx)
 	info.SetDecisionPolicy(policy)
 	info.Version++
-	k.setFoundationInfo(ctx, info)
+	k.SetFoundationInfo(ctx, info)
 
 	if err := policy.Validate(info, k.config); err != nil {
 		return err
@@ -42,7 +42,7 @@ func (k Keeper) GetFoundationInfo(ctx sdk.Context) foundation.FoundationInfo {
 	return info
 }
 
-func (k Keeper) setFoundationInfo(ctx sdk.Context, info foundation.FoundationInfo) {
+func (k Keeper) SetFoundationInfo(ctx sdk.Context, info foundation.FoundationInfo) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&info)
 	store.Set(foundationInfoKey, bz)
@@ -77,14 +77,14 @@ func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.MemberReques
 			k.deleteMember(ctx, addr)
 		} else {
 			weightUpdate = weightUpdate.Add(sdk.OneDec())
-			k.setMember(ctx, new)
+			k.SetMember(ctx, new)
 		}
 	}
 
 	info := k.GetFoundationInfo(ctx)
 	info.TotalWeight = info.TotalWeight.Add(weightUpdate)
 	info.Version++
-	k.setFoundationInfo(ctx, info)
+	k.SetFoundationInfo(ctx, info)
 
 	if err := info.GetDecisionPolicy().Validate(info, k.config); err != nil {
 		return err
@@ -110,7 +110,7 @@ func (k Keeper) GetMember(ctx sdk.Context, address sdk.AccAddress) (*foundation.
 	return &member, nil
 }
 
-func (k Keeper) setMember(ctx sdk.Context, member foundation.Member) {
+func (k Keeper) SetMember(ctx sdk.Context, member foundation.Member) {
 	store := ctx.KVStore(k.storeKey)
 	addr := sdk.MustAccAddressFromBech32(member.Address)
 	key := memberKey(addr)
