@@ -1,25 +1,30 @@
 package keeper_test
 
 import (
-	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/staking/teststaking"
+	"github.com/line/lbm-sdk/x/staking/keeper"
+	"github.com/line/lbm-sdk/x/staking/types"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 func TestUnbondingToUnbondedPanic(t *testing.T) {
-	_, app, ctx := createTestInput()
+	app, ctx, _, _, validators := initValidators(t, 100, 2, []int64{0, 100})
 
-	//create a validator
-	addrDels := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(0))
-	addrVals := simapp.ConvertAddrsToValAddrs(addrDels)
+	validators[0] = keeper.TestingUpdateValidator(app.StakingKeeper, ctx, validators[0], false)
+	validators[1] = keeper.TestingUpdateValidator(app.StakingKeeper, ctx, validators[1], false)
+	applyValidatorSetUpdates(t, ctx, app.StakingKeeper, 1)
 
-	validator := teststaking.NewValidator(t, addrVals[0], PKs[0])
-	app.StakingKeeper.SetValidatorByConsAddr(ctx, validator)
+	assert.Equal(t, validators[0].Status, types.Unbonded)
+	assert.Equal(t, validators[1].Status, types.Bonded)
 
-	// unbond the validator
+	// unbond validator which is in unbonded status
 	require.Panics(t, func() {
-		app.StakingKeeper.UnbondingToUnbonded(ctx, validator)
+		app.StakingKeeper.UnbondingToUnbonded(ctx, validators[0])
+	})
+
+	// unbond validator which is in bonded status
+	require.Panics(t, func() {
+		app.StakingKeeper.UnbondingToUnbonded(ctx, validators[1])
 	})
 }
