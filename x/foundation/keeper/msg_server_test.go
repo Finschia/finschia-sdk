@@ -648,9 +648,6 @@ func (s *KeeperTestSuite) TestMsgOneTimeMint() {
 			amount:     sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
 			emptyCount: true,
 		},
-		"no amount": {
-			operator: s.operator,
-		},
 		"not authorized": {
 			operator: s.stranger,
 			amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
