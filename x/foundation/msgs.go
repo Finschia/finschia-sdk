@@ -362,6 +362,10 @@ func (m MsgOneTimeMint) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
+	if m.Amount.Empty() {
+		return sdkerrors.ErrInvalidCoins.Wrapf("The one-time-mint request amount is empty.")
+	}
+
 	if !m.Amount.IsValid() || !m.Amount.IsAllPositive() {
 		return sdkerrors.ErrInvalidCoins.Wrap(m.Amount.String())
 	}
@@ -371,6 +375,6 @@ func (m MsgOneTimeMint) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgOneTimeMint) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Operator)
+	signer := sdk.MustAccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }

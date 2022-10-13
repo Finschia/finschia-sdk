@@ -311,10 +311,6 @@ func (s msgServer) OneTimeMint(c context.Context, req *foundation.MsgOneTimeMint
 		return nil, err
 	}
 
-	if req.Amount.Empty() {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("The one-time-mint request amount is empty.")
-	}
-
 	// mint coins to one-time-minter
 	if err := s.keeper.bankKeeper.MintCoins(ctx, foundation.OneTimeMinterName, req.Amount); err != nil {
 		return nil, err
