@@ -633,10 +633,10 @@ func (s *KeeperTestSuite) TestMsgRevoke() {
 
 func (s *KeeperTestSuite) TestMsgOneTimeMint() {
 	testCases := map[string]struct {
-		operator   sdk.AccAddress
-		amount     sdk.Coins
-		emptyCount bool
-		valid      bool
+		operator       sdk.AccAddress
+		amount         sdk.Coins
+		emptyCountTest bool
+		valid          bool
 	}{
 		"valid request": {
 			operator: s.operator,
@@ -644,9 +644,9 @@ func (s *KeeperTestSuite) TestMsgOneTimeMint() {
 			valid:    true,
 		},
 		"empty count": {
-			operator:   s.operator,
-			amount:     sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
-			emptyCount: true,
+			operator:       s.operator,
+			amount:         sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
+			emptyCountTest: true,
 		},
 		"not authorized": {
 			operator: s.stranger,
@@ -658,7 +658,7 @@ func (s *KeeperTestSuite) TestMsgOneTimeMint() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			if tc.emptyCount {
+			if tc.emptyCountTest {
 				s.keeper.SetOneTimeMintLeftCount(ctx, 0)
 			}
 

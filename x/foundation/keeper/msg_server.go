@@ -302,13 +302,13 @@ func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*founda
 func (s msgServer) OneTimeMint(c context.Context, req *foundation.MsgOneTimeMint) (*foundation.MsgOneTimeMintResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
+	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+		return nil, err
+	}
+
 	oneTimeMintLeftCount := s.keeper.GetOneTimeMintLeftCount(ctx)
 	if oneTimeMintLeftCount == 0 {
 		return nil, sdkerrors.ErrUnauthorized.Wrapf("The one-time-mint can no longer be executed.")
-	}
-
-	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
-		return nil, err
 	}
 
 	// mint coins to one-time-minter

@@ -194,6 +194,9 @@ func (s *KeeperTestSuite) SetupTest() {
 	// grant stranger to receive foundation treasury
 	err = s.keeper.Grant(s.ctx, s.stranger, &foundation.ReceiveFromTreasuryAuthorization{})
 	s.Require().NoError(err)
+
+	// set one-time-mint left count to 1
+	s.keeper.SetOneTimeMintLeftCount(s.ctx, 1)
 }
 
 func TestKeeperTestSuite(t *testing.T) {
