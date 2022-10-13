@@ -54,6 +54,6 @@ func (msg MsgStoreCodeAndInstantiateContract) GetSignBytes() []byte {
 }
 
 func (msg MsgStoreCodeAndInstantiateContract) GetSigners() []sdk.AccAddress {
-	senderAddr, _ := sdk.AccAddressFromBech32(msg.Sender)
+	senderAddr := sdk.MustAccAddressFromBech32(msg.Sender)
 	return []sdk.AccAddress{senderAddr}
 }

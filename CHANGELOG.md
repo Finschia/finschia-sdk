@@ -73,7 +73,11 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (refactor) [\#685](https://github.com/line/lbm-sdk/pull/685) remove x/foundation UpdateValidatorAuthsProposal
 * (x/foundation) [\#686](https://github.com/line/lbm-sdk/pull/686) remove `Minthreshold` and `MinPercentage` from x/foundation config
 * (x/foundation) [\#693](https://github.com/line/lbm-sdk/pull/693) add pool to the state of x/foundation
+* (x/auth, client) [\#699](https://github.com/line/lbm-sdk/pull/699) Improvement on input validation of `req.Hash`
+* (x/wasm,distribution) [\#696](https://github.com/line/lbm-sdk/pull/696) x/wasm,distribution - add checking a file size before reading it
 * (x/foundation) [\#698](https://github.com/line/lbm-sdk/pull/698) update x/group relevant logic in x/foundation
+* (x/auth,bank,foundation,wasm) [\#691](https://github.com/line/lbm-sdk/pull/691) change AccAddressFromBech32 to MustAccAddressFromBech32
+* (x/wasm)  [\#690](https://github.com/line/lbm-sdk/pull/690) fix to prevent accepting file name
 * (x/foundation) [\#704](https://github.com/line/lbm-sdk/pull/704) update x/foundation params
 
 ### Bug Fixes
@@ -93,6 +97,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (simapp) [\#679](https://github.com/line/lbm-sdk/pull/679) fix the bug not setting `iavl-cache-size` value of `app.toml`
 * (x/foundation) [\#687](https://github.com/line/lbm-sdk/pull/687) fix bugs on aborting x/foundation proposals
 * (global) [\#694](https://github.com/line/lbm-sdk/pull/694) replace deprecated functions since go 1.16 or 1.17
+* (x/bankplus) [\#705](https://github.com/line/lbm-sdk/pull/705) add missing blockedAddr checking in bankplus
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
