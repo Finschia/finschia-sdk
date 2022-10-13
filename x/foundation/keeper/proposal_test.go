@@ -59,6 +59,9 @@ func (s *KeeperTestSuite) TestWithdrawProposal() {
 			id:    s.activeProposal,
 			valid: true,
 		},
+		"no such a proposal": {
+			id: s.nextProposal,
+		},
 		"not active": {
 			id: s.withdrawnProposal,
 		},
