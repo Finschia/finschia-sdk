@@ -1,18 +1,19 @@
 package mock
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"path/filepath"
 
-	"github.com/line/ostracon/types"
-
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
+	"github.com/line/ostracon/types"
 
 	bam "github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/codec"
+	storetypes "github.com/line/lbm-sdk/store/types"
 	sdk "github.com/line/lbm-sdk/types"
 )
 
@@ -36,7 +37,6 @@ func NewApp(rootDir string, logger log.Logger) (abci.Application, error) {
 
 	baseApp.SetInitChainer(InitChainer(capKeyMainStore))
 
-	// Set a Route.
 	baseApp.Router().AddRoute(sdk.NewRoute("kvstore", KVStoreHandler(capKeyMainStore)))
 
 	// Load latest version.
@@ -89,7 +89,7 @@ func InitChainer(key sdk.StoreKey) func(sdk.Context, abci.RequestInitChain) abci
 		genesisState := new(GenesisJSON)
 		err := json.Unmarshal(stateJSON, genesisState)
 		if err != nil {
-			panic(err) // TODO https://github.com/cosmos/cosmos-sdk/issues/468
+			panic(err) // TODO https://github.com/line/lbm-sdk/issues/468
 			// return sdk.ErrGenesisParse("").TraceCause(err, "")
 		}
 
@@ -127,4 +127,17 @@ func AppGenStateEmpty(_ *codec.LegacyAmino, _ types.GenesisDoc, _ []json.RawMess
 ) {
 	appState = json.RawMessage(``)
 	return
+}
+
+// Manually write the handlers for this custom message
+type MsgServer interface {
+	Test(ctx context.Context, msg *kvstoreTx) (*sdk.Result, error)
+}
+
+type MsgServerImpl struct {
+	capKeyMainStore *storetypes.KVStoreKey
+}
+
+func (m MsgServerImpl) Test(ctx context.Context, msg *kvstoreTx) (*sdk.Result, error) {
+	return KVStoreHandler(m.capKeyMainStore)(sdk.UnwrapSDKContext(ctx), msg)
 }

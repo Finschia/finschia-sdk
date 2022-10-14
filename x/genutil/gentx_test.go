@@ -3,9 +3,7 @@ package genutil_test
 import (
 	"encoding/json"
 	"fmt"
-	"math/rand"
 	"testing"
-	"time"
 
 	octypes "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
@@ -235,7 +233,6 @@ func (suite *GenTxTestSuite) TestDeliverGenTxs() {
 
 				msg := banktypes.NewMsgSend(addr1, addr2, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 1)})
 				tx, err := helpers.GenTx(
-					rand.New(rand.NewSource(time.Now().UnixNano())),
 					suite.encodingConfig.TxConfig,
 					[]sdk.Msg{msg},
 					sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10)},

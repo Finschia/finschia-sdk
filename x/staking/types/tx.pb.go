@@ -240,6 +240,27 @@ func (m *MsgDelegate) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDelegate proto.InternalMessageInfo
 
+func (m *MsgDelegate) GetDelegatorAddress() string {
+	if m != nil {
+		return m.DelegatorAddress
+	}
+	return ""
+}
+
+func (m *MsgDelegate) GetValidatorAddress() string {
+	if m != nil {
+		return m.ValidatorAddress
+	}
+	return ""
+}
+
+func (m *MsgDelegate) GetAmount() types1.Coin {
+	if m != nil {
+		return m.Amount
+	}
+	return types1.Coin{}
+}
+
 // MsgDelegateResponse defines the Msg/Delegate response type.
 type MsgDelegateResponse struct {
 }
@@ -318,6 +339,34 @@ func (m *MsgBeginRedelegate) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgBeginRedelegate proto.InternalMessageInfo
+
+func (m *MsgBeginRedelegate) GetDelegatorAddress() string {
+	if m != nil {
+		return m.DelegatorAddress
+	}
+	return ""
+}
+
+func (m *MsgBeginRedelegate) GetValidatorSrcAddress() string {
+	if m != nil {
+		return m.ValidatorSrcAddress
+	}
+	return ""
+}
+
+func (m *MsgBeginRedelegate) GetValidatorDstAddress() string {
+	if m != nil {
+		return m.ValidatorDstAddress
+	}
+	return ""
+}
+
+func (m *MsgBeginRedelegate) GetAmount() types1.Coin {
+	if m != nil {
+		return m.Amount
+	}
+	return types1.Coin{}
+}
 
 // MsgBeginRedelegateResponse defines the Msg/BeginRedelegate response type.
 type MsgBeginRedelegateResponse struct {
@@ -404,6 +453,27 @@ func (m *MsgUndelegate) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgUndelegate proto.InternalMessageInfo
+
+func (m *MsgUndelegate) GetDelegatorAddress() string {
+	if m != nil {
+		return m.DelegatorAddress
+	}
+	return ""
+}
+
+func (m *MsgUndelegate) GetValidatorAddress() string {
+	if m != nil {
+		return m.ValidatorAddress
+	}
+	return ""
+}
+
+func (m *MsgUndelegate) GetAmount() types1.Coin {
+	if m != nil {
+		return m.Amount
+	}
+	return types1.Coin{}
+}
 
 // MsgUndelegateResponse defines the Msg/Undelegate response type.
 type MsgUndelegateResponse struct {
