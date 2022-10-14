@@ -74,8 +74,7 @@ func (i FoundationInfo) ValidateBasic() error {
 		return err
 	}
 
-	var outsourcing bool
-	_, outsourcing = i.GetDecisionPolicy().(*OutsourcingDecisionPolicy)
+	_, outsourcing := i.GetDecisionPolicy().(*OutsourcingDecisionPolicy)
 	memberExists := !i.TotalWeight.IsZero()
 	if outsourcing && memberExists {
 		return sdkerrors.ErrInvalidRequest.Wrap("outsourcing policy not allows members")
@@ -98,7 +97,7 @@ func ValidateGenesis(data GenesisState) error {
 	if err := info.ValidateBasic(); err != nil {
 		return err
 	}
-	var outsourcing bool = info.TotalWeight.IsZero()
+	outsourcing := info.TotalWeight.IsZero()
 
 	if realWeight := sdk.NewDec(int64(len(data.Members))); !info.TotalWeight.Equal(realWeight) {
 		return sdkerrors.ErrInvalidRequest.Wrapf("total weight not match, %s != %s", info.TotalWeight, realWeight)
