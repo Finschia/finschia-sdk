@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/line/ostracon/libs/bytes"
+
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/client/grpc/tmservice"
@@ -75,7 +77,6 @@ func (s IntegrationTestSuite) TestQuerySyncing() {
 
 func (s IntegrationTestSuite) TestQueryLatestBlock() {
 	val := s.network.Validators[0]
-
 	_, err := s.queryClient.GetLatestBlock(context.Background(), &tmservice.GetLatestBlockRequest{})
 	s.Require().NoError(err)
 
@@ -83,6 +84,39 @@ func (s IntegrationTestSuite) TestQueryLatestBlock() {
 	s.Require().NoError(err)
 	var blockInfoRes tmservice.GetLatestBlockResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &blockInfoRes))
+}
+
+func (s IntegrationTestSuite) TestQueryBlockByHash() {
+	val := s.network.Validators[0]
+	node, _ := val.ClientCtx.GetNode()
+	blk, _ := node.Block(context.Background(), nil)
+	blkhash := blk.BlockID.Hash
+
+	tcs := []struct {
+		hash  bytes.HexBytes
+		isErr bool
+		err   string
+	}{
+		{blkhash, false, ""},
+		{bytes.HexBytes("wrong hash"), true, "The length of blcok hash must be 32: invalid request"},
+		{bytes.HexBytes(""), true, "block hash cannot be empty"},
+	}
+
+	for _, tc := range tcs {
+		_, err := s.queryClient.GetBlockByHash(context.Background(), &tmservice.GetBlockByHashRequest{Hash: tc.hash})
+		if tc.isErr {
+			s.Require().Error(err)
+			s.Require().Contains(err.Error(), tc.err)
+		} else {
+			s.Require().NoError(err)
+		}
+	}
+
+	// TODO: Unlike gRPC, REST requests often fail. Need to understand the cause later
+	//restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1/block/%s", val.APIAddress, base64.StdEncoding.EncodeToString(blkhash)))
+	//s.Require().NoError(err)
+	//var blockInfoRes tmservice.GetBlockByHashResponse
+	//s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &blockInfoRes))
 }
 
 func (s IntegrationTestSuite) TestQueryBlockByHeight() {
