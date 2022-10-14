@@ -13,7 +13,6 @@ func TestUnbondingToUnbondedPanic(t *testing.T) {
 
 	validators[0] = keeper.TestingUpdateValidator(app.StakingKeeper, ctx, validators[0], false)
 	validators[1] = keeper.TestingUpdateValidator(app.StakingKeeper, ctx, validators[1], false)
-	applyValidatorSetUpdates(t, ctx, app.StakingKeeper, 1)
 
 	assert.Equal(t, validators[0].Status, types.Unbonded)
 	assert.Equal(t, validators[1].Status, types.Bonded)
