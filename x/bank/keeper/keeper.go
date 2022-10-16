@@ -119,7 +119,8 @@ func NewBaseKeeper(
 // WithMintCoinsRestriction restricts the bank Keeper used within a specific module to
 // have restricted permissions on minting via function passed in parameter.
 // Previous restriction functions can be nested as such:
-//  bankKeeper.WithMintCoinsRestriction(restriction1).WithMintCoinsRestriction(restriction2)
+//
+//	bankKeeper.WithMintCoinsRestriction(restriction1).WithMintCoinsRestriction(restriction2)
 func (k BaseKeeper) WithMintCoinsRestriction(check MintingRestrictionFn) BaseKeeper {
 	oldRestrictionFn := k.mintCoinsRestrictionFn
 	k.mintCoinsRestrictionFn = func(ctx sdk.Context, coins sdk.Coins) error {
@@ -252,7 +253,7 @@ func (k BaseKeeper) HasSupply(ctx sdk.Context, denom string) bool {
 // false otherwise.
 func (k BaseKeeper) GetDenomMetaData(ctx sdk.Context, denom string) (types.Metadata, bool) {
 	store := ctx.KVStore(k.storeKey)
-	store = prefix.NewStore(store, types.DenomMetadataKey(denom))
+	store = prefix.NewStore(store, types.DenomMetadataPrefix)
 
 	bz := store.Get([]byte(denom))
 	if bz == nil {
@@ -299,7 +300,7 @@ func (k BaseKeeper) IterateAllDenomMetaData(ctx sdk.Context, cb func(types.Metad
 // SetDenomMetaData sets the denominations metadata
 func (k BaseKeeper) SetDenomMetaData(ctx sdk.Context, denomMetaData types.Metadata) {
 	store := ctx.KVStore(k.storeKey)
-	denomMetaDataStore := prefix.NewStore(store, types.DenomMetadataKey(denomMetaData.Base))
+	denomMetaDataStore := prefix.NewStore(store, types.DenomMetadataPrefix)
 
 	m := k.cdc.MustMarshal(&denomMetaData)
 	denomMetaDataStore.Set([]byte(denomMetaData.Base), m)
