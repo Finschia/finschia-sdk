@@ -10,8 +10,7 @@ import (
 // DefaultGenesisState creates a default GenesisState object
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
-		Params:           DefaultParams(),
-		GovMintLeftCount: 0,
+		Params: DefaultParams(),
 	}
 }
 
