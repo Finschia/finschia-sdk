@@ -18089,6 +18089,7 @@ Msg defines the foundation Msg service.
 | `LeaveFoundation` | [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation) | [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse) | LeaveFoundation allows a member to leave the foundation. | |
 | `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (granter, grantee, Authorization) tuple, then the grant will be overwritten. | |
 | `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name on the granter that has been granted to the grantee. | |
+| `GovMint` | [MsgGovMint](#lbm.foundation.v1.MsgGovMint) | [MsgGovMintResponse](#lbm.foundation.v1.MsgGovMintResponse) | GovMint defines a gov mint coins to the treasury. | |
 
  <!-- end services -->
 
