@@ -1142,6 +1142,8 @@
 - [lbm/foundation/v1/query.proto](#lbm/foundation/v1/query.proto)
     - [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest)
     - [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse)
+    - [QueryGovMintRequest](#lbm.foundation.v1.QueryGovMintRequest)
+    - [QueryGovMintResponse](#lbm.foundation.v1.QueryGovMintResponse)
     - [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest)
     - [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse)
     - [QueryMemberRequest](#lbm.foundation.v1.QueryMemberRequest)
@@ -17363,6 +17365,31 @@ QueryFoundationInfoResponse is the Query/FoundationInfo response type.
 
 
 
+<a name="lbm.foundation.v1.QueryGovMintRequest"></a>
+
+### QueryGovMintRequest
+QueryGovMintRequest is the Query/GovMint request type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryGovMintResponse"></a>
+
+### QueryGovMintResponse
+QueryGovMintResponse is the Query/GovMint response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `leftCount` | [uint32](#uint32) |  | leftCount is the left count of GovMint. |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.QueryGrantsRequest"></a>
 
 ### QueryGrantsRequest
@@ -17687,6 +17714,7 @@ Query defines the gRPC querier service for foundation module.
 | `Votes` | [QueryVotesRequest](#lbm.foundation.v1.QueryVotesRequest) | [QueryVotesResponse](#lbm.foundation.v1.QueryVotesResponse) | Votes queries a vote by proposal. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes|
 | `TallyResult` | [QueryTallyResultRequest](#lbm.foundation.v1.QueryTallyResultRequest) | [QueryTallyResultResponse](#lbm.foundation.v1.QueryTallyResultResponse) | TallyResult queries the tally of a proposal votes. | GET|/lbm/foundation/v1/proposals/{proposal_id}/tally|
 | `Grants` | [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest) | [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse) | Returns list of authorizations, granted to the grantee. | GET|/lbm/foundation/v1/grants/{grantee}/{msg_type_url}|
+| `GovMint` | [QueryGovMintRequest](#lbm.foundation.v1.QueryGovMintRequest) | [QueryGovMintResponse](#lbm.foundation.v1.QueryGovMintResponse) | GovMint queries the left count of gov mint. | GET|/lbm/foundation/v1/GovMint|
 
  <!-- end services -->
 
@@ -18061,7 +18089,6 @@ Msg defines the foundation Msg service.
 | `LeaveFoundation` | [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation) | [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse) | LeaveFoundation allows a member to leave the foundation. | |
 | `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (granter, grantee, Authorization) tuple, then the grant will be overwritten. | |
 | `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name on the granter that has been granted to the grantee. | |
-| `GovMint` | [MsgGovMint](#lbm.foundation.v1.MsgGovMint) | [MsgGovMintResponse](#lbm.foundation.v1.MsgGovMintResponse) | GovMint defines a gov mint coins to the treasury. | |
 
  <!-- end services -->
 
