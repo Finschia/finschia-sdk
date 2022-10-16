@@ -31,7 +31,7 @@ jobs:
       - name: install runsim
         run: |
           export GO111MODULE="on" && go install github.com/cosmos/tools/cmd/runsim@v1.0.0
-      - uses: actions/cache@v3.0.10
+      - uses: actions/cache@v3.0.11
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
@@ -41,7 +41,7 @@ jobs:
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3.0.10
+      - uses: actions/cache@v3.0.11
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
@@ -58,7 +58,7 @@ jobs:
     needs: [build, install-runsim, test-sim-multi-seed-long-part1]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3.0.10
+      - uses: actions/cache@v3.0.11
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
@@ -75,7 +75,7 @@ jobs:
     needs: [build, install-runsim, test-sim-multi-seed-long-part2]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3.0.10
+      - uses: actions/cache@v3.0.11
         with:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
