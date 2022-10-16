@@ -786,14 +786,12 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 	for i, msg := range msgs {
 		var (
 			msgResult    *sdk.Result
-			eventMsgName string // name to use as value in event `message.action`
 			err          error
 		)
 
 		if handler := app.msgServiceRouter.Handler(msg); handler != nil {
 			// ADR 031 request type routing
 			msgResult, err = handler(ctx, msg)
-			eventMsgName = sdk.MsgTypeURL(msg)
 		} else if legacyMsg, ok := msg.(legacytx.LegacyMsg); ok {
 			// legacy sdk.Msg routing
 			// Assuming that the app developer has migrated all their Msgs to
@@ -801,7 +799,6 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 			// path should never be called, because all those Msgs should be
 			// registered within the `msgServiceRouter` already.
 			msgRoute := legacyMsg.Route()
-			eventMsgName = legacyMsg.Type()
 			handler := app.router.Route(ctx, msgRoute)
 			if handler == nil {
 				return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized message route: %s; message index: %d", msgRoute, i)
@@ -816,10 +813,8 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 			return nil, sdkerrors.Wrapf(err, "failed to execute message; message index: %d", i)
 		}
 
-		msgEvents := sdk.Events{
-			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyAction, eventMsgName)),
-		}
-		msgEvents = msgEvents.AppendEvents(msgResult.GetEvents())
+		// create message events
+		msgEvents := createEvents(msg).AppendEvents(msgResult.GetEvents())
 
 		// append message events, data and logs
 		//
@@ -841,4 +836,23 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 		Log:    strings.TrimSpace(msgLogs.String()),
 		Events: events.ToABCIEvents(),
 	}, nil
+}
+
+func createEvents(msg sdk.Msg) sdk.Events {
+	eventMsgName := sdk.MsgTypeURL(msg)
+	msgEvent := sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyAction, eventMsgName))
+
+	// we set the signer attribute as the sender
+	if len(msg.GetSigners()) > 0 && !msg.GetSigners()[0].Empty() {
+		msgEvent = msgEvent.AppendAttributes(sdk.NewAttribute(sdk.AttributeKeySender, msg.GetSigners()[0].String()))
+	}
+
+	// here we assume that routes module name is the second element of the route
+	// e.g. "cosmos.bank.v1beta1.MsgSend" => "bank"
+	moduleName := strings.Split(eventMsgName, ".")
+	if len(moduleName) > 1 {
+		msgEvent = msgEvent.AppendAttributes(sdk.NewAttribute(sdk.AttributeKeyModule, moduleName[1]))
+	}
+
+	return sdk.Events{msgEvent}
 }
