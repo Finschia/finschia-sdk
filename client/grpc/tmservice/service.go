@@ -92,7 +92,7 @@ func (s queryServer) GetBlockByHash(_ context.Context, req *GetBlockByHashReques
 		if n == 0 {
 			return nil, status.Error(codes.InvalidArgument, "block hash cannot be empty")
 		}
-		return nil, status.Error(codes.InvalidArgument, "The length of blcok hash must be 32")
+		return nil, status.Error(codes.InvalidArgument, "the length of block hash must be 32")
 	}
 
 	res, err := getBlockByHash(s.clientCtx, req.Hash)
