@@ -12,5 +12,5 @@ const (
 
 	TreasuryName      = "treasury"
 	AdministratorName = "administrator"
-	OneTimeMinterName = "one-time-minter"
+	GovMinterName     = "gov-minter"
 )

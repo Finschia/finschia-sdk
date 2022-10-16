@@ -298,38 +298,38 @@ func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*founda
 	return &foundation.MsgRevokeResponse{}, nil
 }
 
-// OneTimeMint defines a method to withdraw coins from the treasury.
-func (s msgServer) OneTimeMint(c context.Context, req *foundation.MsgOneTimeMint) (*foundation.MsgOneTimeMintResponse, error) {
+// GovMint defines a method to withdraw coins from the treasury.
+func (s msgServer) GovMint(c context.Context, req *foundation.MsgGovMint) (*foundation.MsgGovMintResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
 	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
 		return nil, err
 	}
 
-	oneTimeMintLeftCount := s.keeper.GetOneTimeMintLeftCount(ctx)
-	if oneTimeMintLeftCount == 0 {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("The one-time-mint can no longer be executed.")
+	govMintLeftCount := s.keeper.GetGovMintLeftCount(ctx)
+	if govMintLeftCount == 0 {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("The gov-mint can no longer be executed.")
 	}
 
-	// mint coins to one-time-minter
-	if err := s.keeper.bankKeeper.MintCoins(ctx, foundation.OneTimeMinterName, req.Amount); err != nil {
+	// mint coins to gov-minter
+	if err := s.keeper.bankKeeper.MintCoins(ctx, foundation.GovMinterName, req.Amount); err != nil {
 		return nil, err
 	}
 
-	// fund treasury from one-time-minter
-	minter := s.keeper.authKeeper.GetModuleAccount(ctx, foundation.OneTimeMinterName).GetAddress()
+	// fund treasury from gov-minter
+	minter := s.keeper.authKeeper.GetModuleAccount(ctx, foundation.GovMinterName).GetAddress()
 	if err := s.keeper.FundTreasury(ctx, minter, req.Amount); err != nil {
 		return nil, err
 	}
 
-	oneTimeMintLeftCount--
-	s.keeper.SetOneTimeMintLeftCount(ctx, oneTimeMintLeftCount)
+	govMintLeftCount--
+	s.keeper.SetGovMintLeftCount(ctx, govMintLeftCount)
 
-	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventOneTimeMint{
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventGovMint{
 		Amount: req.Amount,
 	}); err != nil {
 		panic(err)
 	}
 
-	return &foundation.MsgOneTimeMintResponse{}, nil
+	return &foundation.MsgGovMintResponse{}, nil
 }

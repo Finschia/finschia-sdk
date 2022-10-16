@@ -38,8 +38,8 @@ message GenesisState {
   // pool
   Pool pool = 8 [(gogoproto.nullable) = false];
 
-  // oneTimeMintLeftCount is one time mint max count
-  uint32 oneTimeMintLeftCount = 9;
+  // govMintLeftCount is one time mint max count
+  uint32 govMintLeftCount = 9;
 }
 
 // GrantAuthorization defines authorization grant to grantee via route.

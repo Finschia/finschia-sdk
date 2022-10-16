@@ -24,7 +24,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgLeaveFoundation{},
 		&MsgGrant{},
 		&MsgRevoke{},
-		&MsgOneTimeMint{},
+		&MsgGovMint{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

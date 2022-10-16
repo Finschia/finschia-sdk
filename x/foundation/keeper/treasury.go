@@ -76,9 +76,9 @@ func (k Keeper) SetPool(ctx sdk.Context, pool foundation.Pool) {
 	store.Set(key, bz)
 }
 
-func (k Keeper) GetOneTimeMintLeftCount(ctx sdk.Context) uint32 {
+func (k Keeper) GetGovMintLeftCount(ctx sdk.Context) uint32 {
 	store := ctx.KVStore(k.storeKey)
-	key := oneTimeMintKey
+	key := govMintKey
 	bz := store.Get(key)
 
 	var count gogotypes.UInt32Value
@@ -87,9 +87,9 @@ func (k Keeper) GetOneTimeMintLeftCount(ctx sdk.Context) uint32 {
 	return count.Value
 }
 
-func (k Keeper) SetOneTimeMintLeftCount(ctx sdk.Context, count uint32) {
+func (k Keeper) SetGovMintLeftCount(ctx sdk.Context, count uint32) {
 	store := ctx.KVStore(k.storeKey)
-	key := oneTimeMintKey
+	key := govMintKey
 	bz := k.cdc.MustMarshal(&gogotypes.UInt32Value{Value: count})
 	store.Set(key, bz)
 }

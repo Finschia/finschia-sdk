@@ -1123,9 +1123,9 @@
 - [lbm/foundation/v1/event.proto](#lbm/foundation/v1/event.proto)
     - [EventExec](#lbm.foundation.v1.EventExec)
     - [EventFundTreasury](#lbm.foundation.v1.EventFundTreasury)
+    - [EventGovMint](#lbm.foundation.v1.EventGovMint)
     - [EventGrant](#lbm.foundation.v1.EventGrant)
     - [EventLeaveFoundation](#lbm.foundation.v1.EventLeaveFoundation)
-    - [EventOneTimeMint](#lbm.foundation.v1.EventOneTimeMint)
     - [EventRevoke](#lbm.foundation.v1.EventRevoke)
     - [EventSubmitProposal](#lbm.foundation.v1.EventSubmitProposal)
     - [EventUpdateDecisionPolicy](#lbm.foundation.v1.EventUpdateDecisionPolicy)
@@ -1170,12 +1170,12 @@
     - [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse)
     - [MsgFundTreasury](#lbm.foundation.v1.MsgFundTreasury)
     - [MsgFundTreasuryResponse](#lbm.foundation.v1.MsgFundTreasuryResponse)
+    - [MsgGovMint](#lbm.foundation.v1.MsgGovMint)
+    - [MsgGovMintResponse](#lbm.foundation.v1.MsgGovMintResponse)
     - [MsgGrant](#lbm.foundation.v1.MsgGrant)
     - [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse)
     - [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation)
     - [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse)
-    - [MsgOneTimeMint](#lbm.foundation.v1.MsgOneTimeMint)
-    - [MsgOneTimeMintResponse](#lbm.foundation.v1.MsgOneTimeMintResponse)
     - [MsgRevoke](#lbm.foundation.v1.MsgRevoke)
     - [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse)
     - [MsgSubmitProposal](#lbm.foundation.v1.MsgSubmitProposal)
@@ -17097,6 +17097,21 @@ EventFundTreasury is an event emitted when one funds the treasury.
 
 
 
+<a name="lbm.foundation.v1.EventGovMint"></a>
+
+### EventGovMint
+EventGovMint is an event emitted when the minter mint coins to the treasury.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.EventGrant"></a>
 
 ### EventGrant
@@ -17123,21 +17138,6 @@ EventLeaveFoundation is an event emitted when a foundation member leaves the fou
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | address is the account address of the foundation member. |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.EventOneTimeMint"></a>
-
-### EventOneTimeMint
-EventOneTimeMint is an event emitted when the minter mint coins to the treasury.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
 
 
 
@@ -17299,7 +17299,7 @@ GenesisState defines the foundation module's genesis state.
 | `votes` | [Vote](#lbm.foundation.v1.Vote) | repeated | votes is the list of votes. |
 | `authorizations` | [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization) | repeated | grants |
 | `pool` | [Pool](#lbm.foundation.v1.Pool) |  | pool |
-| `oneTimeMintLeftCount` | [uint32](#uint32) |  | oneTimeMintLeftCount is one time mint max count |
+| `govMintLeftCount` | [uint32](#uint32) |  | govMintLeftCount is one time mint max count |
 
 
 
@@ -17751,6 +17751,32 @@ MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
 
 
 
+<a name="lbm.foundation.v1.MsgGovMint"></a>
+
+### MsgGovMint
+MsgGovMint represents a message to mint coins to the treasury.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgGovMintResponse"></a>
+
+### MsgGovMintResponse
+MsgGovMintResponse defines the Msg/GovMint response type.
+
+
+
+
+
+
 <a name="lbm.foundation.v1.MsgGrant"></a>
 
 ### MsgGrant
@@ -17798,32 +17824,6 @@ MsgLeaveFoundation is the Msg/LeaveFoundation request type.
 
 ### MsgLeaveFoundationResponse
 MsgLeaveFoundationResponse is the Msg/LeaveFoundation response type.
-
-
-
-
-
-
-<a name="lbm.foundation.v1.MsgOneTimeMint"></a>
-
-### MsgOneTimeMint
-MsgOneTimeMint represents a message to mint coins to the treasury only one-time.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  |  |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.MsgOneTimeMintResponse"></a>
-
-### MsgOneTimeMintResponse
-MsgOneTimeMintResponse defines the Msg/OneTimeMint response type.
 
 
 
@@ -18061,7 +18061,7 @@ Msg defines the foundation Msg service.
 | `LeaveFoundation` | [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation) | [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse) | LeaveFoundation allows a member to leave the foundation. | |
 | `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (granter, grantee, Authorization) tuple, then the grant will be overwritten. | |
 | `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name on the granter that has been granted to the grantee. | |
-| `OneTimeMint` | [MsgOneTimeMint](#lbm.foundation.v1.MsgOneTimeMint) | [MsgOneTimeMintResponse](#lbm.foundation.v1.MsgOneTimeMintResponse) | OneTimeMint defines a one-time mint coins to the treasury. | |
+| `GovMint` | [MsgGovMint](#lbm.foundation.v1.MsgGovMint) | [MsgGovMintResponse](#lbm.foundation.v1.MsgGovMintResponse) | GovMint defines a gov mint coins to the treasury. | |
 
  <!-- end services -->
 

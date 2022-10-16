@@ -203,9 +203,9 @@ func TestValidateGenesis(t *testing.T) {
 				},
 			},
 		},
-		"invalid one-time-mint left count": {
+		"invalid gov-mint left count": {
 			data: foundation.GenesisState{
-				OneTimeMintLeftCount: 2,
+				GovMintLeftCount: 2,
 			},
 		},
 	}

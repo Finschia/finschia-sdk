@@ -95,8 +95,8 @@ message EventRevoke {
   string msg_type_url = 3;
 }
 
-// EventOneTimeMint is an event emitted when the minter mint coins to the treasury.
-message EventOneTimeMint {
+// EventGovMint is an event emitted when the minter mint coins to the treasury.
+message EventGovMint {
   repeated cosmos.base.v1beta1.Coin amount = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }

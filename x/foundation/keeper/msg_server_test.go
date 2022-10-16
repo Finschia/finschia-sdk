@@ -631,7 +631,7 @@ func (s *KeeperTestSuite) TestMsgRevoke() {
 	}
 }
 
-func (s *KeeperTestSuite) TestMsgOneTimeMint() {
+func (s *KeeperTestSuite) TestMsgGovMint() {
 	testCases := map[string]struct {
 		operator       sdk.AccAddress
 		amount         sdk.Coins
@@ -659,14 +659,14 @@ func (s *KeeperTestSuite) TestMsgOneTimeMint() {
 			ctx, _ := s.ctx.CacheContext()
 
 			if tc.emptyCountTest {
-				s.keeper.SetOneTimeMintLeftCount(ctx, 0)
+				s.keeper.SetGovMintLeftCount(ctx, 0)
 			}
 
-			req := &foundation.MsgOneTimeMint{
+			req := &foundation.MsgGovMint{
 				Operator: tc.operator.String(),
 				Amount:   tc.amount,
 			}
-			res, err := s.msgServer.OneTimeMint(sdk.WrapSDKContext(ctx), req)
+			res, err := s.msgServer.GovMint(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

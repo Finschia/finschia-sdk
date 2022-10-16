@@ -620,7 +620,7 @@ func TestMsgRevoke(t *testing.T) {
 	}
 }
 
-func TestMsgOneTimeMint(t *testing.T) {
+func TestMsgGovMint(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -642,10 +642,19 @@ func TestMsgOneTimeMint(t *testing.T) {
 		"no amount": {
 			operator: addrs[0],
 		},
+		"invalid amount": {
+			operator: addrs[0],
+			amount: sdk.Coins{
+				sdk.Coin{
+					Denom:  sdk.DefaultBondDenom,
+					Amount: sdk.NewInt(-10),
+				},
+			},
+		},
 	}
 
 	for name, tc := range testCases {
-		msg := foundation.MsgOneTimeMint{
+		msg := foundation.MsgGovMint{
 			Operator: tc.operator.String(),
 			Amount:   tc.amount,
 		}

@@ -195,8 +195,8 @@ func (s *KeeperTestSuite) SetupTest() {
 	err = s.keeper.Grant(s.ctx, s.stranger, &foundation.ReceiveFromTreasuryAuthorization{})
 	s.Require().NoError(err)
 
-	// set one-time-mint left count to 1
-	s.keeper.SetOneTimeMintLeftCount(s.ctx, 1)
+	// set gov-mint left count to 1
+	s.keeper.SetGovMintLeftCount(s.ctx, 1)
 }
 
 func TestKeeperTestSuite(t *testing.T) {

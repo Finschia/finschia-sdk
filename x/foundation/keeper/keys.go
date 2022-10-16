@@ -23,7 +23,7 @@ var (
 
 	poolKey = []byte{0x30}
 
-	oneTimeMintKey = []byte{0x40}
+	govMintKey = []byte{0x40}
 )
 
 // Uint64FromBytes converts a byte array to uint64

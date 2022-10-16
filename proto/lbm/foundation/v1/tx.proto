@@ -51,8 +51,8 @@ service Msg {
   // granter that has been granted to the grantee.
   rpc Revoke(MsgRevoke) returns (MsgRevokeResponse);
 
-  // OneTimeMint defines a one-time mint coins to the treasury.
-  rpc OneTimeMint(MsgOneTimeMint) returns (MsgOneTimeMintResponse);
+  // GovMint defines a gov mint coins to the treasury.
+  rpc GovMint(MsgGovMint) returns (MsgGovMintResponse);
 }
 
 // MsgFundTreasury represents a message to fund the treasury.
@@ -217,12 +217,12 @@ message MsgRevoke {
 // MsgRevokeResponse defines the Msg/MsgRevokeResponse response type.
 message MsgRevokeResponse {}
 
-// MsgOneTimeMint represents a message to mint coins to the treasury only one-time.
-message MsgOneTimeMint {
+// MsgGovMint represents a message to mint coins to the treasury.
+message MsgGovMint {
   string   operator                        = 1;
   repeated cosmos.base.v1beta1.Coin amount = 2
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
 
-// MsgOneTimeMintResponse defines the Msg/OneTimeMint response type.
-message MsgOneTimeMintResponse {}
+// MsgGovMintResponse defines the Msg/GovMint response type.
+message MsgGovMintResponse {}
