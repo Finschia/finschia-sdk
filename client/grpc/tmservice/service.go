@@ -2,13 +2,13 @@ package tmservice
 
 import (
 	"context"
+	"crypto/sha256"
 
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	abci "github.com/line/ostracon/abci/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	abci "github.com/line/ostracon/abci/types"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/rpc"
@@ -88,6 +88,13 @@ func (s queryServer) GetBlockByHeight(ctx context.Context, req *GetBlockByHeight
 
 // GetBlockByHash implements ServiceServer.GetBlockByHash
 func (s queryServer) GetBlockByHash(_ context.Context, req *GetBlockByHashRequest) (*GetBlockByHashResponse, error) {
+	if n := len(req.Hash); n != sha256.Size {
+		if n == 0 {
+			return nil, status.Error(codes.InvalidArgument, "block hash cannot be empty")
+		}
+		return nil, status.Error(codes.InvalidArgument, "the length of block hash must be 32")
+	}
+
 	res, err := getBlockByHash(s.clientCtx, req.Hash)
 	if err != nil {
 		return nil, err
