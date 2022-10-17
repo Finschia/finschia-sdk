@@ -74,12 +74,13 @@ func (i FoundationInfo) ValidateBasic() error {
 		return err
 	}
 
-	_, outsourcing := i.GetDecisionPolicy().(*OutsourcingDecisionPolicy)
+	// Is foundation outsourcing the proposal feature
+	_, isOutsourcing := i.GetDecisionPolicy().(*OutsourcingDecisionPolicy)
 	memberExists := !i.TotalWeight.IsZero()
-	if outsourcing && memberExists {
+	if isOutsourcing && memberExists {
 		return sdkerrors.ErrInvalidRequest.Wrap("outsourcing policy not allows members")
 	}
-	if !outsourcing && !memberExists {
+	if !isOutsourcing && !memberExists {
 		return sdkerrors.ErrInvalidRequest.Wrap("one member must exist at least")
 	}
 
@@ -97,7 +98,8 @@ func ValidateGenesis(data GenesisState) error {
 	if err := info.ValidateBasic(); err != nil {
 		return err
 	}
-	outsourcing := info.TotalWeight.IsZero()
+	// Is x/foundation outsourcing the proposal feature
+	isOutsourcing := info.TotalWeight.IsZero()
 
 	if realWeight := sdk.NewDec(int64(len(data.Members))); !info.TotalWeight.Equal(realWeight) {
 		return sdkerrors.ErrInvalidRequest.Wrapf("total weight not match, %s != %s", info.TotalWeight, realWeight)
@@ -107,7 +109,7 @@ func ValidateGenesis(data GenesisState) error {
 		return err
 	}
 
-	if outsourcing && len(data.Proposals) != 0 {
+	if isOutsourcing && len(data.Proposals) != 0 {
 		return sdkerrors.ErrInvalidRequest.Wrap("outsourcing policy not allows proposals")
 	}
 	proposalIDs := map[uint64]bool{}
