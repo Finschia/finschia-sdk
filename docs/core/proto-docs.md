@@ -17301,7 +17301,7 @@ GenesisState defines the foundation module's genesis state.
 | `votes` | [Vote](#lbm.foundation.v1.Vote) | repeated | votes is the list of votes. |
 | `authorizations` | [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization) | repeated | grants |
 | `pool` | [Pool](#lbm.foundation.v1.Pool) |  | pool |
-| `govMintLeftCount` | [uint32](#uint32) |  | govMintLeftCount is one time mint max count |
+| `govMintLeftCount` | [uint32](#uint32) |  | govMintLeftCount is gov mint max count |
 
 
 
@@ -17714,7 +17714,7 @@ Query defines the gRPC querier service for foundation module.
 | `Votes` | [QueryVotesRequest](#lbm.foundation.v1.QueryVotesRequest) | [QueryVotesResponse](#lbm.foundation.v1.QueryVotesResponse) | Votes queries a vote by proposal. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes|
 | `TallyResult` | [QueryTallyResultRequest](#lbm.foundation.v1.QueryTallyResultRequest) | [QueryTallyResultResponse](#lbm.foundation.v1.QueryTallyResultResponse) | TallyResult queries the tally of a proposal votes. | GET|/lbm/foundation/v1/proposals/{proposal_id}/tally|
 | `Grants` | [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest) | [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse) | Returns list of authorizations, granted to the grantee. | GET|/lbm/foundation/v1/grants/{grantee}/{msg_type_url}|
-| `GovMint` | [QueryGovMintRequest](#lbm.foundation.v1.QueryGovMintRequest) | [QueryGovMintResponse](#lbm.foundation.v1.QueryGovMintResponse) | GovMint queries the left count of gov mint. | GET|/lbm/foundation/v1/GovMint|
+| `GovMint` | [QueryGovMintRequest](#lbm.foundation.v1.QueryGovMintRequest) | [QueryGovMintResponse](#lbm.foundation.v1.QueryGovMintResponse) | GovMint queries the left count of gov mint. | GET|/lbm/foundation/v1/gov_mint|
 
  <!-- end services -->
 

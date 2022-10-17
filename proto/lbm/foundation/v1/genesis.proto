@@ -38,7 +38,7 @@ message GenesisState {
   // pool
   Pool pool = 8 [(gogoproto.nullable) = false];
 
-  // govMintLeftCount is one time mint max count
+  // govMintLeftCount is gov mint max count
   uint32 govMintLeftCount = 9;
 }
 

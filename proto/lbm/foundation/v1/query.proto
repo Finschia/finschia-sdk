@@ -72,7 +72,7 @@ service Query {
 
   // GovMint queries the left count of gov mint.
   rpc GovMint(QueryGovMintRequest) returns (QueryGovMintResponse) {
-    option (google.api.http).get = "/lbm/foundation/v1/GovMint";
+    option (google.api.http).get = "/lbm/foundation/v1/gov_mint";
   }
 }
 

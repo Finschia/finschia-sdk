@@ -1132,7 +1132,7 @@ var (
 
 	pattern_Query_Grants_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"lbm", "foundation", "v1", "grants", "grantee", "msg_type_url"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_GovMint_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"lbm", "foundation", "v1", "GovMint"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_GovMint_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"lbm", "foundation", "v1", "gov_mint"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

@@ -43,7 +43,7 @@ type GenesisState struct {
 	Authorizations []GrantAuthorization `protobuf:"bytes,7,rep,name=authorizations,proto3" json:"authorizations"`
 	// pool
 	Pool Pool `protobuf:"bytes,8,opt,name=pool,proto3" json:"pool"`
-	// govMintLeftCount is one time mint max count
+	// govMintLeftCount is gov mint max count
 	GovMintLeftCount uint32 `protobuf:"varint,9,opt,name=govMintLeftCount,proto3" json:"govMintLeftCount,omitempty"`
 }
 
