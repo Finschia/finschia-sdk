@@ -78,7 +78,10 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#698](https://github.com/line/lbm-sdk/pull/698) update x/group relevant logic in x/foundation
 * (x/auth,bank,foundation,wasm) [\#691](https://github.com/line/lbm-sdk/pull/691) change AccAddressFromBech32 to MustAccAddressFromBech32
 * (x/wasm)  [\#690](https://github.com/line/lbm-sdk/pull/690) fix to prevent accepting file name
+* (x/wasm) [\#690](https://github.com/line/lbm-sdk/pull/690) fix to prevent accepting file name
+* (cli) [\#708](https://github.com/line/lbm-sdk/pull/708) In CLI, allow 1 SIGN_MODE_DIRECT signer in transactions with multiple signers.
 * (x/bank) [\#716](https://github.com/line/lbm-sdk/pull/716) remove useless DenomMetadata key function
+
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
@@ -98,6 +101,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#687](https://github.com/line/lbm-sdk/pull/687) fix bugs on aborting x/foundation proposals
 * (global) [\#694](https://github.com/line/lbm-sdk/pull/694) replace deprecated functions since go 1.16 or 1.17
 * (x/bankplus) [\#705](https://github.com/line/lbm-sdk/pull/705) add missing blockedAddr checking in bankplus
+* (x/foundation) [\#712](https://github.com/line/lbm-sdk/pull/712) fix x/foundation EndBlocker
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
