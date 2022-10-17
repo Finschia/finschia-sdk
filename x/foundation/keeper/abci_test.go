@@ -75,7 +75,7 @@ func (s *KeeperTestSuite) TestEndBlocker() {
 		},
 		"voted proposal": {
 			s.votedProposal,
-			foundation.PROPOSAL_STATUS_ACCEPTED,
+			foundation.PROPOSAL_STATUS_REJECTED,
 		},
 		"withdrawn proposal": {
 			s.withdrawnProposal,

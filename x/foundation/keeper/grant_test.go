@@ -80,15 +80,28 @@ func (s *KeeperTestSuite) TestRevoke() {
 
 func (s *KeeperTestSuite) TestAccept() {
 	testCases := map[string]struct {
-		grantee sdk.AccAddress
-		msg     sdk.Msg
-		valid   bool
+		malleate func(ctx sdk.Context)
+		grantee  sdk.AccAddress
+		msg      sdk.Msg
+		valid    bool
 	}{
 		"valid request": {
 			grantee: s.stranger,
 			msg: &foundation.MsgWithdrawFromTreasury{
 				Operator: s.operator.String(),
 				To:       s.stranger.String(),
+				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+			},
+			valid: true,
+		},
+		"not being censored": {
+			malleate: func(ctx sdk.Context) {
+				s.keeper.SetParams(ctx, foundation.Params{})
+			},
+			grantee: s.members[0],
+			msg: &foundation.MsgWithdrawFromTreasury{
+				Operator: s.operator.String(),
+				To:       s.members[0].String(),
 				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 			},
 			valid: true,
@@ -106,6 +119,9 @@ func (s *KeeperTestSuite) TestAccept() {
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
+			if tc.malleate != nil {
+				tc.malleate(ctx)
+			}
 
 			err := s.keeper.Accept(ctx, tc.grantee, tc.msg)
 			if tc.valid {
