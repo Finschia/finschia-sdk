@@ -53,11 +53,12 @@ func TestValidateValidatorParams(t *testing.T) {
 		arg       interface{}
 		expectErr bool
 	}{
-		{nil, true},
-		{&ocproto.ValidatorParams{}, true},
-		{ocproto.ValidatorParams{}, true},
-		{ocproto.ValidatorParams{PubKeyTypes: []string{}}, true},
-		{ocproto.ValidatorParams{PubKeyTypes: []string{"secp256k1"}}, false},
+		// {nil, true},
+		// {&ocproto.ValidatorParams{}, true},
+		// {ocproto.ValidatorParams{}, true},
+		// {ocproto.ValidatorParams{PubKeyTypes: []string{}}, true},
+		// {ocproto.ValidatorParams{PubKeyTypes: []string{"secp256k1"}}, false},
+		{ocproto.ValidatorParams{PubKeyTypes: []string{"invalidPubKeyType"}}, true},
 	}
 
 	for _, tc := range testCases {
