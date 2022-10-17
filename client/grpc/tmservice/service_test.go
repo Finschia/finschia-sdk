@@ -2,6 +2,7 @@ package tmservice_test
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"testing"
 
@@ -98,7 +99,7 @@ func (s IntegrationTestSuite) TestQueryBlockByHash() {
 		err   string
 	}{
 		{blkhash, false, ""},
-		{bytes.HexBytes("wrong hash"), true, "The length of blcok hash must be 32: invalid request"},
+		{bytes.HexBytes("wrong hash"), true, "the length of block hash must be 32: invalid request"},
 		{bytes.HexBytes(""), true, "block hash cannot be empty"},
 	}
 
@@ -112,11 +113,10 @@ func (s IntegrationTestSuite) TestQueryBlockByHash() {
 		}
 	}
 
-	// TODO: Unlike gRPC, REST requests often fail. Need to understand the cause later
-	//restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1/block/%s", val.APIAddress, base64.StdEncoding.EncodeToString(blkhash)))
-	//s.Require().NoError(err)
-	//var blockInfoRes tmservice.GetBlockByHashResponse
-	//s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &blockInfoRes))
+	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1/block/%s", val.APIAddress, base64.URLEncoding.EncodeToString(blkhash)))
+	s.Require().NoError(err)
+	var blockInfoRes tmservice.GetBlockByHashResponse
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(restRes, &blockInfoRes))
 }
 
 func (s IntegrationTestSuite) TestQueryBlockByHeight() {

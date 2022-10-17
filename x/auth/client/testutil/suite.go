@@ -33,6 +33,7 @@ import (
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	bankcli "github.com/line/lbm-sdk/x/bank/client/testutil"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/x/genutil/client/cli"
 )
 
 type IntegrationTestSuite struct {
@@ -1247,7 +1248,7 @@ func (s *IntegrationTestSuite) TestTxWithoutPublicKey() {
 	unsignedTxFile := testutil.WriteToNewTempFile(s.T(), string(txJSON))
 
 	// Sign the file with the unsignedTx.
-	signedTx, err := TxSignExec(val1.ClientCtx, val1.Address, unsignedTxFile.Name())
+	signedTx, err := TxSignExec(val1.ClientCtx, val1.Address, unsignedTxFile.Name(), fmt.Sprintf("--%s=true", cli.FlagOverwrite))
 	s.Require().NoError(err)
 
 	// Remove the signerInfo's `public_key` field manually from the signedTx.
