@@ -719,3 +719,58 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 		})
 	}
 }
+
+func (s *IntegrationTestSuite) TestNewTxCmdGovMint() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
+	}
+
+	testCases := map[string]struct {
+		args  []string
+		valid bool
+	}{
+		"valid transaction": {
+			[]string{
+				s.operator.String(),
+				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
+			},
+			true,
+		},
+		"extra args": {
+			[]string{
+				s.operator.String(),
+				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
+				"extra",
+			},
+			false,
+		},
+		"not enough args": {
+			[]string{
+				s.operator.String(),
+			},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewTxCmdGovMint()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
+			s.Require().EqualValues(0, res.Code, out)
+		})
+	}
+}
