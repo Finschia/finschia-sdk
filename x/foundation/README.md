@@ -83,7 +83,7 @@ threshold and percentage. Any chain developer can extend upon these two, by
 creating custom decision policies, as long as they adhere to the
 `DecisionPolicy` interface:
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/x/foundation/foundation.go#L97-L110
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/x/foundation/foundation.go#L97-L110
 
 ### Threshold decision policy
 
@@ -219,7 +219,7 @@ module where the Msg method is defined.
 `x/authz`, while the latter allows an account to perform actions on behalf of
 another account.
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/x/foundation/authz.go#L10-L27
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/x/foundation/authz.go#L10-L27
 
 ## Built-in Authorizations
 
@@ -231,9 +231,9 @@ the [Msg/WithdrawFromTreasury](#msgwithdrawfromtreasury).
 **Note:** The subject which executes
 `lbm.foundation.v1.MsgWithdrawFromTreasury` is the foundation.
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/foundation/v1/authz.proto#L9-L13
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/foundation/v1/authz.proto#L9-L13
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/x/foundation/authz.pb.go#L27-L30
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/x/foundation/authz.pb.go#L27-L30
 
 ### CreateValidatorAuthorization
 
@@ -246,9 +246,9 @@ the message type is being censored (`CensoringMsgTypeUrls` contains the url of
 `Msg/CreateValidator`), the module authorizes all the operators included in the
 list of validators, from the staking module.
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/stakingplus/v1/authz.proto#L9-L15
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/stakingplus/v1/authz.proto#L9-L15
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/x/stakingplus/authz.pb.go#L27-L31
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/x/stakingplus/authz.pb.go#L27-L31
 
 ## Foundation Treasury
 
@@ -347,7 +347,7 @@ Authorization) tuple.
 
 The `MsgUpdateParams` can be used to update the parameters of `foundation`.
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/foundation/v1/tx.proto#L14-L17
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/foundation/v1/tx.proto#L14-L17
 
 It's expected to fail if:
 
@@ -358,7 +358,7 @@ It's expected to fail if:
 
 The `MsgUpdateDecisionPolicy` can be used to update the decision policy.
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/foundation/v1/tx.proto#L89-L96
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/foundation/v1/tx.proto#L89-L96
 
 It's expected to fail if:
 
@@ -369,7 +369,7 @@ It's expected to fail if:
 
 Foundation members can be updated with the `MsgUpdateMembers`.
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/foundation/v1/tx.proto#L76-L84
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/foundation/v1/tx.proto#L76-L84
 
 In the list of `MemberUpdates`, an existing member can be removed by setting
 its `remove` flag to true.
@@ -384,7 +384,7 @@ It's expected to fail if:
 
 The `MsgLeaveFoundation` allows a foundation member to leave the foundation.
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/foundation/v1/tx.proto#L184-L188
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/foundation/v1/tx.proto#L184-L188
 
 It's expected to fail if:
 
@@ -401,7 +401,7 @@ An optional `Exec` value can be provided to try to execute the proposal
 immediately after proposal creation. Proposers signatures are considered as yes
 votes in this case.
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/foundation/v1/tx.proto#L114-L130
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/foundation/v1/tx.proto#L114-L130
 
 It's expected to fail if:
 
@@ -414,7 +414,7 @@ A proposal can be withdrawn using `MsgWithdrawProposal` which has an `address`
 (can be either a proposer or the foundation operator) and a `proposal_id`
 (which has to be withdrawn).
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/foundation/v1/tx.proto#L138-L145
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/foundation/v1/tx.proto#L138-L145
 
 It's expected to fail if:
 
@@ -428,7 +428,7 @@ address, a choice (yes, no, veto or abstain) and some optional metadata.
 An optional `Exec` value can be provided to try to execute the proposal
 immediately after voting.
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/foundation/v1/tx.proto#L150-L167
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/foundation/v1/tx.proto#L150-L167
 
 It's expected to fail if:
 
@@ -439,7 +439,7 @@ It's expected to fail if:
 
 A proposal can be executed with the `MsgExec`.
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/foundation/v1/tx.proto#L172-L179
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/foundation/v1/tx.proto#L172-L179
 
 The messages that are part of this proposal won't be executed if:
 
@@ -453,7 +453,7 @@ If there is already a grant for the `(grantee, Authorization)` tuple, then the
 new grant overwrites the previous one. To update or extend an existing grant, a
 new grant with the same `(grantee, Authorization)` tuple should be created.
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/foundation/v1/tx.proto#L193-L201
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/foundation/v1/tx.proto#L193-L201
 
 The message handling should fail if:
 
@@ -467,7 +467,7 @@ The message handling should fail if:
 
 A grant can be removed with the `MsgRevoke` message.
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/foundation/v1/tx.proto#L206-L212
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/foundation/v1/tx.proto#L206-L212
 
 The message handling should fail if:
 
@@ -477,14 +477,14 @@ The message handling should fail if:
 
 Anyone can fund treasury with `MsgFundTreasury`.
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/foundation/v1/tx.proto#L55-L60
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/foundation/v1/tx.proto#L55-L60
 
 ## Msg/WithdrawFromTresury
 
 The foundation can withdraw coins from the treasury with
 `MsgWithdrawFromTreasury`.
 
-+++ https://github.com/line/lbm-sdk/blob/v0.46.0/proto/lbm/foundation/v1/tx.proto#L55-L60
++++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/foundation/v1/tx.proto#L55-L60
 
 The message handling should fail if:
 
