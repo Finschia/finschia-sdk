@@ -54,7 +54,7 @@ func (a *AllowedMsgAllowance) GetAllowance() (FeeAllowanceI, error) {
 func (a *AllowedMsgAllowance) SetAllowance(allowance FeeAllowanceI) error {
 	var err error
 	protoAllowance, ok := allowance.(proto.Message)
-	if !ok || protoAllowance == nil {
+	if !ok {
 		return sdkerrors.Wrapf(sdkerrors.ErrPackAny, "cannot proto marshal %T", allowance)
 	}
 	a.Allowance, err = types.NewAnyWithValue(protoAllowance)
