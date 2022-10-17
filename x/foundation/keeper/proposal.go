@@ -175,10 +175,14 @@ func (k Keeper) iterateProposalsByVPEnd(ctx sdk.Context, endTime time.Time, fn f
 	defer iter.Close()
 
 	for ; iter.Valid(); iter.Next() {
-		var proposal foundation.Proposal
-		k.cdc.MustUnmarshal(iter.Value(), &proposal)
+		_, id := splitProposalByVPEndKey(iter.Key())
 
-		if fn(proposal) {
+		proposal, err := k.GetProposal(ctx, id)
+		if err != nil {
+			panic(err)
+		}
+
+		if fn(*proposal) {
 			break
 		}
 	}
@@ -226,13 +230,13 @@ func (k Keeper) deleteProposal(ctx sdk.Context, proposalID uint64) {
 
 func (k Keeper) addProposalToVPEndQueue(ctx sdk.Context, proposal foundation.Proposal) {
 	store := ctx.KVStore(k.storeKey)
-	key := proposalByVPEndKey(proposal.Id, proposal.VotingPeriodEnd)
+	key := proposalByVPEndKey(proposal.VotingPeriodEnd, proposal.Id)
 	store.Set(key, []byte{})
 }
 
 func (k Keeper) removeProposalFromVPEndQueue(ctx sdk.Context, proposal foundation.Proposal) {
 	store := ctx.KVStore(k.storeKey)
-	key := proposalByVPEndKey(proposal.Id, proposal.VotingPeriodEnd)
+	key := proposalByVPEndKey(proposal.VotingPeriodEnd, proposal.Id)
 	store.Delete(key)
 }
 
