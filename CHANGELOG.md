@@ -78,6 +78,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#698](https://github.com/line/lbm-sdk/pull/698) update x/group relevant logic in x/foundation
 * (x/auth,bank,foundation,wasm) [\#691](https://github.com/line/lbm-sdk/pull/691) change AccAddressFromBech32 to MustAccAddressFromBech32
 * (x/wasm)  [\#690](https://github.com/line/lbm-sdk/pull/690) fix to prevent accepting file name
+* (x/bank) [\#716](https://github.com/line/lbm-sdk/pull/716) remove useless DenomMetadata key function
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
