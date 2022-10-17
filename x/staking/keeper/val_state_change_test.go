@@ -11,8 +11,9 @@ import (
 func TestUnbondingToUnbondedPanic(t *testing.T) {
 	app, ctx, _, _, validators := initValidators(t, 100, 2, []int64{0, 100})
 
-	validators[0] = keeper.TestingUpdateValidator(app.StakingKeeper, ctx, validators[0], false)
-	validators[1] = keeper.TestingUpdateValidator(app.StakingKeeper, ctx, validators[1], false)
+	for i, validator := range validators {
+		validators[i] = keeper.TestingUpdateValidator(app.StakingKeeper, ctx, validator, false)
+	}
 
 	assert.Equal(t, validators[0].Status, types.Unbonded)
 	assert.Equal(t, validators[1].Status, types.Bonded)
