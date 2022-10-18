@@ -107,6 +107,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (baseapp) [\#724](https://github.com/line/lbm-sdk/pull/724) add checking pubkey type from validator params
 * (x/staking) [\#726](https://github.com/line/lbm-sdk/pull/726) check allowedList size in StakeAuthorization.Accept()
 * (x/staking) [\#728](https://github.com/line/lbm-sdk/pull/728) fix typo in unbondingToUnbonded() panic
+* (client) [\#734](https://github.com/line/lbm-sdk/pull/734) add restrictions on the number of args in the CLIs
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
