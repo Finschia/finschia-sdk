@@ -58,6 +58,8 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	}
 	foundationData.Params = params
 
+	foundationData.GovMintLeftCount = 1
+
 	var operatorMnemonic string
 	operatorMnemonic, s.operator = s.createMnemonic("operator")
 	info := &foundation.FoundationInfo{

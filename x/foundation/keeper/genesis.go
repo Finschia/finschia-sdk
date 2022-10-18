@@ -2,9 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
-
 	"github.com/line/lbm-sdk/x/foundation"
-
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	"github.com/line/lbm-sdk/x/stakingplus"
 )
@@ -114,6 +112,8 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 
 	k.SetPool(ctx, data.Pool)
 
+	k.SetGovMintLeftCount(ctx, data.GovMintLeftCount)
+
 	return nil
 }
 
@@ -134,6 +134,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 		Proposals:          proposals,
 		Votes:              votes,
 		Authorizations:     k.GetGrants(ctx),
+		GovMintLeftCount:   k.GetGovMintLeftCount(ctx),
 	}
 }
 
