@@ -35,7 +35,7 @@ func (s msgServer) UpdateParams(c context.Context, req *foundation.MsgUpdatePara
 		return nil, err
 	}
 
-	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateFoundationParams{
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateParams{
 		Params: req.Params,
 	}); err != nil {
 		panic(err)
