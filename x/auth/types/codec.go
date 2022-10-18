@@ -1,7 +1,6 @@
 package types
 
 import (
-	//<<<<<<< HEAD
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/codec/types"
@@ -9,13 +8,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
-	//=======
-	//	"github.com/cosmos/cosmos-sdk/codec"
-	//	"github.com/cosmos/cosmos-sdk/codec/legacy"
-	//	"github.com/cosmos/cosmos-sdk/codec/types"
-	//	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
-	//	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
-	//>>>>>>> 81cfc6cc85 (fix: implement Amino serialization for x/authz and x/feegrant (#11224))
 )
 
 // RegisterLegacyAminoCodec registers the account interfaces and concrete types on the
