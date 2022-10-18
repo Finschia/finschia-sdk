@@ -241,10 +241,9 @@ the [Msg/WithdrawFromTreasury](#msgwithdrawfromtreasury).
 [Msg/CreateValidator](../stakingplus/spec/03_messages.md#msgcreatevalidator).
 An account must have this authorization prior to sending the message.
 
-**Note:** If the chain starts with no authorizations of it in the genesis while
-the message type is being censored (`CensoringMsgTypeUrls` contains the url of
-`Msg/CreateValidator`), the module authorizes all the operators included in the
-list of validators, from the staking module.
+**Note:** You MUST provide the `CreateValidatorAuthorization`s into the genesis
+if `Msg/CreateValidator` is being censored (`CensoringMsgTypeUrls` contains the
+url of `Msg/CreateValidator`), or the chain cannot be started.
 
 +++ https://github.com/line/lbm-sdk/blob/00ab960bd59775220bf84320e3146c882a63cce5/proto/lbm/stakingplus/v1/authz.proto#L9-L15
 
