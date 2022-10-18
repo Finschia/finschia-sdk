@@ -55,6 +55,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/wasm) [\#649](https://github.com/line/lbm-sdk/pull/649) fix: wasm module's FIXME in the snapshotter.go file
 * (x/ibc) [\#651](https://github.com/line/lbm-sdk/pull/651) feat: update x/ibc to support github.com/cosmos/ibc-go@v3.0.0
 * (config) [\#665](https://github.com/line/lbm-sdk/pull/665) remove bech32-cache-size
+* (x/foundation) [\#709](https://github.com/line/lbm-sdk/pull/709) add `gov mint` for x/foundation proposal
 
 ### Improvements
 
@@ -79,6 +80,9 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/auth,bank,foundation,wasm) [\#691](https://github.com/line/lbm-sdk/pull/691) change AccAddressFromBech32 to MustAccAddressFromBech32
 * (x/wasm) [\#690](https://github.com/line/lbm-sdk/pull/690) fix to prevent accepting file name
 * (cli) [\#708](https://github.com/line/lbm-sdk/pull/708) In CLI, allow 1 SIGN_MODE_DIRECT signer in transactions with multiple signers.
+* (x/modules) [\#722](https://github.com/line/lbm-sdk/pull/722) Check error for `RegisterQueryHandlerClient` in all modules `RegisterGRPCGatewayRoutes`
+* (x/bank) [\#716](https://github.com/line/lbm-sdk/pull/716) remove useless DenomMetadata key function
+* (x/foundation) [\#704](https://github.com/line/lbm-sdk/pull/704) update x/foundation params
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
@@ -99,6 +103,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (global) [\#694](https://github.com/line/lbm-sdk/pull/694) replace deprecated functions since go 1.16 or 1.17
 * (x/bankplus) [\#705](https://github.com/line/lbm-sdk/pull/705) add missing blockedAddr checking in bankplus
 * (x/foundation) [\#712](https://github.com/line/lbm-sdk/pull/712) fix x/foundation EndBlocker
+* (x/staking) [\#726](https://github.com/line/lbm-sdk/pull/726) check allowedList size in StakeAuthorization.Accept()
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path

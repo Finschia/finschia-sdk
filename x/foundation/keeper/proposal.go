@@ -10,12 +10,9 @@ import (
 
 // handleUpdateFoundationParamsProposal is a handler for update foundation params proposal
 func (k Keeper) handleUpdateFoundationParamsProposal(ctx sdk.Context, p *foundation.UpdateFoundationParamsProposal) error {
-	// TODO: validate param changes
 	params := p.Params
-	k.SetParams(ctx, params)
-
-	if !params.Enabled {
-		k.Cleanup(ctx)
+	if err := k.UpdateParams(ctx, params); err != nil {
+		return err
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateFoundationParams{
@@ -54,10 +51,7 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata str
 	}
 
 	foundationInfo := k.GetFoundationInfo(ctx)
-	operator, err := sdk.AccAddressFromBech32(foundationInfo.Operator)
-	if err != nil {
-		return nil, err
-	}
+	operator := sdk.MustAccAddressFromBech32(foundationInfo.Operator)
 	if err := ensureMsgAuthz(msgs, operator); err != nil {
 		return nil, err
 	}

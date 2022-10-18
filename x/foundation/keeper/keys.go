@@ -22,6 +22,8 @@ var (
 	grantKeyPrefix = []byte{0x20}
 
 	poolKey = []byte{0x30}
+
+	govMintKey = []byte{0x40}
 )
 
 // must be constant
