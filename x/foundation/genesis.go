@@ -8,6 +8,10 @@ import (
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 )
 
+const (
+	GovMintMaxCount = 1
+)
+
 // DefaultGenesisState creates a default GenesisState object
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
@@ -158,6 +162,10 @@ func ValidateGenesis(data GenesisState) error {
 
 	if err := data.Pool.ValidateBasic(); err != nil {
 		return err
+	}
+
+	if data.GovMintLeftCount > GovMintMaxCount {
+		return ErrInvalidGovMintLeftCount.Wrapf("invalid value: %d, max: %d", data.GovMintLeftCount, GovMintMaxCount)
 	}
 
 	return nil

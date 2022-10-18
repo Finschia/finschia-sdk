@@ -188,6 +188,9 @@ func (s *KeeperTestSuite) SetupTest() {
 	// grant stranger to receive foundation treasury
 	err = s.keeper.Grant(s.ctx, s.stranger, &foundation.ReceiveFromTreasuryAuthorization{})
 	s.Require().NoError(err)
+
+	// set gov-mint left count to 1
+	s.keeper.SetGovMintLeftCount(s.ctx, 1)
 }
 
 func TestKeeperTestSuite(t *testing.T) {

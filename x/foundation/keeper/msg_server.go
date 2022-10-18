@@ -285,3 +285,39 @@ func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*founda
 
 	return &foundation.MsgRevokeResponse{}, nil
 }
+
+// GovMint defines a method to withdraw coins from the treasury.
+func (s msgServer) GovMint(c context.Context, req *foundation.MsgGovMint) (*foundation.MsgGovMintResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+		return nil, err
+	}
+
+	govMintLeftCount := s.keeper.GetGovMintLeftCount(ctx)
+	if govMintLeftCount == 0 {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("The gov-mint can no longer be executed.")
+	}
+
+	// mint coins to gov-minter
+	if err := s.keeper.bankKeeper.MintCoins(ctx, foundation.GovMinterName, req.Amount); err != nil {
+		return nil, err
+	}
+
+	// fund treasury from gov-minter
+	minter := s.keeper.authKeeper.GetModuleAccount(ctx, foundation.GovMinterName).GetAddress()
+	if err := s.keeper.FundTreasury(ctx, minter, req.Amount); err != nil {
+		return nil, err
+	}
+
+	govMintLeftCount--
+	s.keeper.SetGovMintLeftCount(ctx, govMintLeftCount)
+
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventGovMint{
+		Amount: req.Amount,
+	}); err != nil {
+		panic(err)
+	}
+
+	return &foundation.MsgGovMintResponse{}, nil
+}

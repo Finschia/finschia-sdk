@@ -141,6 +141,7 @@ func NewTxCmd() *cobra.Command {
 		NewTxCmdLeaveFoundation(),
 		NewTxCmdGrant(),
 		NewTxCmdRevoke(),
+		NewTxCmdGovMint(),
 	)
 
 	return txCmd
@@ -724,6 +725,44 @@ func NewTxCmdRevoke() *cobra.Command {
 				Operator:   operator,
 				Grantee:    args[1],
 				MsgTypeUrl: args[2],
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewTxCmdGovMint() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "gov-mint [operator] [amount]",
+		Args:  cobra.ExactArgs(2),
+		Short: "mint coins for foundation",
+		Long: `mint coins for foundation
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			operator := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			amount, err := sdk.ParseCoinsNormalized(args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := foundation.MsgGovMint{
+				Operator: operator,
+				Amount:   amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

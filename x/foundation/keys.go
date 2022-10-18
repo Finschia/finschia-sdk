@@ -12,4 +12,5 @@ const (
 
 	TreasuryName        = "treasury"
 	DefaultOperatorName = "default_operator"
+	GovMinterName       = "gov-minter"
 )

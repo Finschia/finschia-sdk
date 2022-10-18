@@ -602,3 +602,49 @@ func (s *KeeperTestSuite) TestMsgRevoke() {
 		})
 	}
 }
+
+func (s *KeeperTestSuite) TestMsgGovMint() {
+	testCases := map[string]struct {
+		operator       sdk.AccAddress
+		amount         sdk.Coins
+		emptyCountTest bool
+		valid          bool
+	}{
+		"valid request": {
+			operator: s.operator,
+			amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
+			valid:    true,
+		},
+		"empty count": {
+			operator:       s.operator,
+			amount:         sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
+			emptyCountTest: true,
+		},
+		"not authorized": {
+			operator: s.stranger,
+			amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			if tc.emptyCountTest {
+				s.keeper.SetGovMintLeftCount(ctx, 0)
+			}
+
+			req := &foundation.MsgGovMint{
+				Operator: tc.operator.String(),
+				Amount:   tc.amount,
+			}
+			res, err := s.msgServer.GovMint(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
