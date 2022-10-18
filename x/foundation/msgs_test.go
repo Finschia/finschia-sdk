@@ -12,6 +12,52 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
+func TestMsgUpdateParams(t *testing.T) {
+	addrs := make([]sdk.AccAddress, 1)
+	for i := range addrs {
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	testCases := map[string]struct {
+		authority sdk.AccAddress
+		params    foundation.Params
+		valid     bool
+	}{
+		"valid msg": {
+			authority: addrs[0],
+			params: foundation.Params{
+				FoundationTax: sdk.ZeroDec(),
+			},
+			valid: true,
+		},
+		"invalid authority": {
+			params: foundation.Params{
+				FoundationTax: sdk.ZeroDec(),
+			},
+		},
+		"invalid params": {
+			authority: addrs[0],
+			params:    foundation.Params{},
+		},
+	}
+
+	for name, tc := range testCases {
+		msg := foundation.MsgUpdateParams{
+			Authority: tc.authority.String(),
+			Params:    tc.params,
+		}
+
+		err := msg.ValidateBasic()
+		if !tc.valid {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners(), name)
+	}
+}
+
 func TestMsgFundTreasury(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 1)
 	for i := range addrs {

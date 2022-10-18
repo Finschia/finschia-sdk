@@ -12,12 +12,21 @@ var _ sdk.Msg = (*MsgUpdateParams)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgUpdateParams) ValidateBasic() error {
-	panic("not implemented")
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", m.Authority)
+	}
+
+	if err := m.Params.ValidateBasic(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // GetSigners implements Msg.
 func (m MsgUpdateParams) GetSigners() []sdk.AccAddress {
-	panic("not implemented")
+	signer := sdk.MustAccAddressFromBech32(m.Authority)
+	return []sdk.AccAddress{signer}
 }
 
 var _ sdk.Msg = (*MsgFundTreasury)(nil)
