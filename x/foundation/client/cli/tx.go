@@ -128,6 +128,7 @@ func NewTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(
+		NewTxCmdUpdateParams(),
 		NewTxCmdFundTreasury(),
 		NewTxCmdWithdrawFromTreasury(),
 		NewTxCmdUpdateMembers(),
@@ -145,12 +146,12 @@ func NewTxCmd() *cobra.Command {
 	return txCmd
 }
 
-// NewProposalCmdUpdateFoundationParams implements the command to submit an update-foundation-params proposal
-func NewProposalCmdUpdateFoundationParams() *cobra.Command {
+func NewTxCmdUpdateParams() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-foundation-params [params-json]",
-		Short: "Submit an update foundation params proposal",
-		Long: `Submit an update foundation params proposal.
+		Use:   "update-params [authority] [params-json]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Update params",
+		Long: `Update x/foundation parameters.
 
 Example of the content of params-json:
 
@@ -163,20 +164,33 @@ Example of the content of params-json:
 }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
+				return err
+			}
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			_, err = parseParams(clientCtx.Codec, args[0])
+			params, err := parseParams(clientCtx.Codec, args[1])
 			if err != nil {
 				return err
 			}
 
-			panic("not implemented")
+			msg := foundation.MsgUpdateParams{
+				Authority: authority,
+				Params:    *params,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
 
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
 
