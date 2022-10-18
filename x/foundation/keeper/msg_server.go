@@ -25,8 +25,23 @@ func NewMsgServer(keeper Keeper) foundation.MsgServer {
 var _ foundation.MsgServer = msgServer{}
 
 func (s msgServer) UpdateParams(c context.Context, req *foundation.MsgUpdateParams) (*foundation.MsgUpdateParamsResponse, error) {
-	stub := foundation.UnimplementedMsgServer{}
-	return stub.UpdateParams(c, req)
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.keeper.validateOperator(ctx, req.Authority); err != nil {
+		return nil, err
+	}
+
+	if err := s.keeper.UpdateParams(ctx, req.Params); err != nil {
+		return nil, err
+	}
+
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateFoundationParams{
+		Params: req.Params,
+	}); err != nil {
+		panic(err)
+	}
+
+	return &foundation.MsgUpdateParamsResponse{}, nil
 }
 
 // FundTreasury defines a method to fund the treasury.
