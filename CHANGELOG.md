@@ -83,6 +83,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/modules) [\#722](https://github.com/line/lbm-sdk/pull/722) Check error for `RegisterQueryHandlerClient` in all modules `RegisterGRPCGatewayRoutes`
 * (x/bank) [\#716](https://github.com/line/lbm-sdk/pull/716) remove useless DenomMetadata key function
 * (x/foundation) [\#704](https://github.com/line/lbm-sdk/pull/704) update x/foundation params
+* (x/wasm)  [\#695](https://github.com/line/lbm-sdk/pull/695) fix to prevent external filesystem dependency of simulation
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
