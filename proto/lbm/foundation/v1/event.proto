@@ -13,7 +13,7 @@ import "lbm/foundation/v1/foundation.proto";
 
 // EventUpdateFoundationParams is emitted after updating foundation parameters.
 message EventUpdateFoundationParams {
-  Params params = 1;
+  Params params = 1 [(gogoproto.nullable) = false];
 }
 
 // EventFundTreasury is an event emitted when one funds the treasury.

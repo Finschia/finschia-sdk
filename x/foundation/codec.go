@@ -34,6 +34,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		(*DecisionPolicy)(nil),
 		&ThresholdDecisionPolicy{},
 		&PercentageDecisionPolicy{},
+		&OutsourcingDecisionPolicy{},
 	)
 
 	registry.RegisterImplementations(

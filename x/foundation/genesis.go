@@ -5,6 +5,7 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
 )
 
 const (
@@ -14,22 +15,38 @@ const (
 // DefaultGenesisState creates a default GenesisState object
 func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
-		Params: DefaultParams(),
+		Params:     DefaultParams(),
+		Foundation: DefaultFoundation(),
 	}
 }
 
-func DefaultParams() *Params {
-	return &Params{
-		Enabled:       false,
+func DefaultFoundation() FoundationInfo {
+	return *FoundationInfo{
+		Operator:    DefaultOperator().String(),
+		Version:     1,
+		TotalWeight: sdk.ZeroDec(),
+	}.WithDecisionPolicy(DefaultDecisionPolicy())
+}
+
+func DefaultDecisionPolicy() DecisionPolicy {
+	return &OutsourcingDecisionPolicy{
+		Description: "using x/group",
+	}
+}
+
+func DefaultOperator() sdk.AccAddress {
+	return authtypes.NewModuleAddress(DefaultOperatorName)
+}
+
+func DefaultParams() Params {
+	return Params{
 		FoundationTax: sdk.ZeroDec(),
 	}
 }
 
 func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
-	if data.Foundation != nil {
-		if err := data.Foundation.UnpackInterfaces(unpacker); err != nil {
-			return err
-		}
+	if err := data.Foundation.UnpackInterfaces(unpacker); err != nil {
+		return err
 	}
 
 	for _, ga := range data.Authorizations {
@@ -40,50 +57,82 @@ func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error
 	return nil
 }
 
+func (i FoundationInfo) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(i.Operator); err != nil {
+		return err
+	}
+
+	if i.Version == 0 {
+		return sdkerrors.ErrInvalidVersion.Wrap("version must be > 0")
+	}
+
+	if i.TotalWeight.IsNil() || i.TotalWeight.IsNegative() {
+		return sdkerrors.ErrInvalidRequest.Wrap("total weight must be >= 0")
+	}
+
+	policy := i.GetDecisionPolicy()
+	if policy == nil {
+		return sdkerrors.ErrInvalidRequest.Wrap("must provide decision policy")
+	}
+	if err := policy.ValidateBasic(); err != nil {
+		return err
+	}
+
+	// Is foundation outsourcing the proposal feature
+	_, isOutsourcing := i.GetDecisionPolicy().(*OutsourcingDecisionPolicy)
+	memberExists := !i.TotalWeight.IsZero()
+	if isOutsourcing && memberExists {
+		return sdkerrors.ErrInvalidRequest.Wrap("outsourcing policy not allows members")
+	}
+	if !isOutsourcing && !memberExists {
+		return sdkerrors.ErrInvalidRequest.Wrap("one member must exist at least")
+	}
+
+	return nil
+}
+
 // ValidateGenesis validates the provided genesis state to ensure the
 // expected invariants holds.
 func ValidateGenesis(data GenesisState) error {
-	if data.Params != nil {
-		if data.Params.FoundationTax.IsNegative() ||
-			data.Params.FoundationTax.GT(sdk.OneDec()) {
-			return sdkerrors.ErrInvalidRequest.Wrap("foundation tax must be >= 0 and <= 1")
-		}
+	if err := data.Params.ValidateBasic(); err != nil {
+		return err
 	}
 
-	if info := data.Foundation; info != nil {
-		if operator := info.Operator; len(operator) != 0 {
-			if _, err := sdk.AccAddressFromBech32(info.Operator); err != nil {
-				return err
-			}
-		}
-
-		if info.Version == 0 {
-			return sdkerrors.ErrInvalidVersion.Wrap("version must be > 0")
-		}
-
-		if info.GetDecisionPolicy() != nil {
-			if err := info.GetDecisionPolicy().ValidateBasic(); err != nil {
-				return err
-			}
-		}
-
+	info := data.Foundation
+	if err := info.ValidateBasic(); err != nil {
+		return err
 	}
+	// Is x/foundation outsourcing the proposal feature
+	isOutsourcing := info.TotalWeight.IsZero()
 
+	if realWeight := sdk.NewDec(int64(len(data.Members))); !info.TotalWeight.Equal(realWeight) {
+		return sdkerrors.ErrInvalidRequest.Wrapf("total weight not match, %s != %s", info.TotalWeight, realWeight)
+	}
 	members := Members{Members: data.Members}
 	if err := members.ValidateBasic(); err != nil {
 		return err
 	}
 
+	if isOutsourcing && len(data.Proposals) != 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("outsourcing policy not allows proposals")
+	}
 	proposalIDs := map[uint64]bool{}
 	for _, proposal := range data.Proposals {
 		id := proposal.Id
+		if id > data.PreviousProposalId {
+			return sdkerrors.ErrInvalidRequest.Wrapf("proposal %d has not yet been submitted", id)
+		}
 		if proposalIDs[id] {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicated id: %d", id)
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicated proposal id of %d", id)
 		}
 		proposalIDs[id] = true
 
 		if err := proposal.ValidateBasic(); err != nil {
 			return err
+		}
+
+		if proposal.FoundationVersion > info.Version {
+			return sdkerrors.ErrInvalidRequest.Wrapf("invalid foundation version of proposal %d", id)
 		}
 	}
 

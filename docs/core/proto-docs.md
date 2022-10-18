@@ -1107,6 +1107,7 @@
     - [FoundationInfo](#lbm.foundation.v1.FoundationInfo)
     - [Member](#lbm.foundation.v1.Member)
     - [MemberRequest](#lbm.foundation.v1.MemberRequest)
+    - [OutsourcingDecisionPolicy](#lbm.foundation.v1.OutsourcingDecisionPolicy)
     - [Params](#lbm.foundation.v1.Params)
     - [PercentageDecisionPolicy](#lbm.foundation.v1.PercentageDecisionPolicy)
     - [Pool](#lbm.foundation.v1.Pool)
@@ -16851,6 +16852,22 @@ since this field cannot be set as part of requests.
 
 
 
+<a name="lbm.foundation.v1.OutsourcingDecisionPolicy"></a>
+
+### OutsourcingDecisionPolicy
+OutsourcingDecisionPolicy is a dummy decision policy which is set after
+the operator has been updated into x/group's group policy.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `description` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.Params"></a>
 
 ### Params
@@ -16859,8 +16876,8 @@ Params defines the parameters for the foundation module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `enabled` | [bool](#bool) |  |  |
 | `foundation_tax` | [string](#string) |  |  |
+| `censored_msg_type_urls` | [string](#string) | repeated |  |
 
 
 
@@ -16979,7 +16996,9 @@ UpdateFoundationParamsProposal details a proposal to update params of foundation
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  |  |
 | `description` | [string](#string) |  |  |
-| `params` | [Params](#lbm.foundation.v1.Params) |  |  |
+| `params` | [Params](#lbm.foundation.v1.Params) |  | params defines the x/foundation parameters to update.
+
+Note: All parameters must be supplied. |
 
 
 

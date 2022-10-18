@@ -4,39 +4,17 @@ import (
 	"testing"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/keeper"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
-	"github.com/line/lbm-sdk/x/stakingplus"
 )
-
-var (
-	delPk   = ed25519.GenPrivKey().PubKey()
-	delAddr = sdk.AccAddress(delPk.Address())
-	valAddr = sdk.ValAddress(delAddr)
-)
-
-func TestCleanup(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
-
-	k := app.FoundationKeeper
-
-	// add grant
-	require.NoError(t, k.Grant(ctx, delAddr, &stakingplus.CreateValidatorAuthorization{}))
-
-	// cleanup
-	k.Cleanup(ctx)
-	require.Empty(t, k.GetGrants(ctx))
-}
 
 type KeeperTestSuite struct {
 	suite.Suite
@@ -55,19 +33,38 @@ type KeeperTestSuite struct {
 	votedProposal     uint64
 	withdrawnProposal uint64
 	invalidProposal   uint64
+	noHandlerProposal uint64
 	nextProposal      uint64
 
 	balance sdk.Int
 }
 
+func newMsgCreateDog(name string) sdk.Msg {
+	return &testdata.MsgCreateDog{
+		Dog: &testdata.Dog{
+			Name: name,
+		},
+	}
+}
+
 func (s *KeeperTestSuite) SetupTest() {
 	checkTx := false
 	s.app = simapp.Setup(checkTx)
+	testdata.RegisterInterfaces(s.app.InterfaceRegistry())
+	testdata.RegisterMsgServer(s.app.MsgServiceRouter(), testdata.MsgServerImpl{})
+
 	s.ctx = s.app.BaseApp.NewContext(checkTx, ocproto.Header{})
 	s.keeper = s.app.FoundationKeeper
 
 	s.queryServer = keeper.NewQueryServer(s.keeper)
 	s.msgServer = keeper.NewMsgServer(s.keeper)
+
+	s.keeper.SetParams(s.ctx, foundation.Params{
+		FoundationTax: sdk.OneDec(),
+		CensoredMsgTypeUrls: []string{
+			sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+		},
+	})
 
 	createAddress := func() sdk.AccAddress {
 		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -77,8 +74,18 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.members = make([]sdk.AccAddress, 10)
 	for i := range s.members {
 		s.members[i] = createAddress()
+		member := foundation.Member{
+			Address: s.members[i].String(),
+		}
+		s.keeper.SetMember(s.ctx, member)
 	}
 	s.stranger = createAddress()
+
+	info := foundation.DefaultFoundation()
+	info.TotalWeight = sdk.NewDec(int64(len(s.members)))
+	err := info.SetDecisionPolicy(workingPolicy())
+	s.Require().NoError(err)
+	s.keeper.SetFoundationInfo(s.ctx, info)
 
 	s.balance = sdk.NewInt(1000000)
 	s.keeper.SetPool(s.ctx, foundation.Pool{
@@ -105,23 +112,8 @@ func (s *KeeperTestSuite) SetupTest() {
 		s.Require().NoError(err)
 	}
 
-	updates := make([]foundation.MemberRequest, len(s.members))
-	for i, member := range s.members {
-		updates[i] = foundation.MemberRequest{
-			Address: member.String(),
-		}
-	}
-	err := s.keeper.UpdateMembers(s.ctx, updates)
-	s.Require().NoError(err)
-
 	// create a proposal
-	activeProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
-		&foundation.MsgWithdrawFromTreasury{
-			Operator: s.operator.String(),
-			To:       s.stranger.String(),
-			Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-		},
-	})
+	activeProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{newMsgCreateDog("shiba1")})
 	s.Require().NoError(err)
 	s.activeProposal = *activeProposal
 
@@ -135,13 +127,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	// create a proposal voted by all members
-	votedProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
-		&foundation.MsgWithdrawFromTreasury{
-			Operator: s.operator.String(),
-			To:       s.stranger.String(),
-			Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-		},
-	})
+	votedProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{newMsgCreateDog("shiba2")})
 	s.Require().NoError(err)
 	s.votedProposal = *votedProposal
 
@@ -149,19 +135,13 @@ func (s *KeeperTestSuite) SetupTest() {
 		err := s.keeper.Vote(s.ctx, foundation.Vote{
 			ProposalId: s.votedProposal,
 			Voter:      member.String(),
-			Option:     foundation.VOTE_OPTION_YES,
+			Option:     foundation.VOTE_OPTION_NO,
 		})
 		s.Require().NoError(err)
 	}
 
 	// create an withdrawn proposal
-	withdrawnProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
-		&foundation.MsgWithdrawFromTreasury{
-			Operator: s.operator.String(),
-			To:       s.stranger.String(),
-			Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-		},
-	})
+	withdrawnProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{newMsgCreateDog("shiba3")})
 	s.Require().NoError(err)
 	s.withdrawnProposal = *withdrawnProposal
 
@@ -179,9 +159,6 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.Require().NoError(err)
 	s.invalidProposal = *invalidProposal
 
-	// next proposal is the proposal id for the upcoming proposal
-	s.nextProposal = s.invalidProposal + 1
-
 	for _, member := range s.members {
 		err := s.keeper.Vote(s.ctx, foundation.Vote{
 			ProposalId: s.invalidProposal,
@@ -190,6 +167,23 @@ func (s *KeeperTestSuite) SetupTest() {
 		})
 		s.Require().NoError(err)
 	}
+
+	// create an invalid proposal which contains invalid message
+	noHandlerProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(s.operator)})
+	s.Require().NoError(err)
+	s.noHandlerProposal = *noHandlerProposal
+
+	for _, member := range s.members {
+		err := s.keeper.Vote(s.ctx, foundation.Vote{
+			ProposalId: s.noHandlerProposal,
+			Voter:      member.String(),
+			Option:     foundation.VOTE_OPTION_YES,
+		})
+		s.Require().NoError(err)
+	}
+
+	// next proposal is the proposal id for the upcoming proposal
+	s.nextProposal = s.noHandlerProposal + 1
 
 	// grant stranger to receive foundation treasury
 	err = s.keeper.Grant(s.ctx, s.stranger, &foundation.ReceiveFromTreasuryAuthorization{})

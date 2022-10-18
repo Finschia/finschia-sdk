@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"time"
 
+	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/stakingplus"
@@ -208,48 +209,28 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 	}{
 		"valid request (submit)": {
 			proposers: members,
-			msg: &foundation.MsgWithdrawFromTreasury{
-				Operator: s.operator.String(),
-				To:       s.stranger.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-			},
-			valid: true,
+			msg:       testdata.NewTestMsg(s.operator),
+			valid:     true,
 		},
 		"valid request (submit & execute)": {
 			proposers: members,
-			msg: &foundation.MsgWithdrawFromTreasury{
-				Operator: s.operator.String(),
-				To:       s.stranger.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-			},
-			exec:  foundation.Exec_EXEC_TRY,
-			valid: true,
+			msg:       testdata.NewTestMsg(s.operator),
+			exec:      foundation.Exec_EXEC_TRY,
+			valid:     true,
 		},
 		"valid request (submit & unable to reach quorum)": {
 			proposers: []string{members[0]},
-			msg: &foundation.MsgWithdrawFromTreasury{
-				Operator: s.operator.String(),
-				To:       s.stranger.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-			},
-			exec:  foundation.Exec_EXEC_TRY,
-			valid: true,
+			msg:       testdata.NewTestMsg(s.operator),
+			exec:      foundation.Exec_EXEC_TRY,
+			valid:     true,
 		},
 		"not a member": {
 			proposers: []string{s.stranger.String()},
-			msg: &foundation.MsgWithdrawFromTreasury{
-				Operator: s.operator.String(),
-				To:       s.stranger.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-			},
+			msg:       testdata.NewTestMsg(s.operator),
 		},
 		"unauthorized msg": {
 			proposers: []string{members[0]},
-			msg: &foundation.MsgWithdrawFromTreasury{
-				Operator: s.stranger.String(),
-				To:       s.stranger.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-			},
+			msg:       testdata.NewTestMsg(s.stranger),
 		},
 		"exec fails": {
 			malleate: func(ctx sdk.Context) {
@@ -264,12 +245,8 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 				s.Require().NoError(err)
 			},
 			proposers: members,
-			msg: &foundation.MsgWithdrawFromTreasury{
-				Operator: s.operator.String(),
-				To:       s.stranger.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-			},
-			exec: foundation.Exec_EXEC_TRY,
+			msg:       testdata.NewTestMsg(s.operator),
+			exec:      foundation.Exec_EXEC_TRY,
 		},
 	}
 
@@ -392,12 +369,7 @@ func (s *KeeperTestSuite) TestMsgVote() {
 				req := &foundation.MsgSubmitProposal{
 					Proposers: proposers,
 				}
-				err = req.SetMsgs([]sdk.Msg{
-					&foundation.MsgWithdrawFromTreasury{
-						Operator: s.operator.String(),
-						To:       s.stranger.String(),
-						Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance)),
-					}})
+				err = req.SetMsgs([]sdk.Msg{testdata.NewTestMsg(s.operator)})
 				s.Require().NoError(err)
 
 				res, err := s.msgServer.SubmitProposal(sdk.WrapSDKContext(ctx), req)

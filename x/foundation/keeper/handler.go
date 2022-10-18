@@ -9,10 +9,6 @@ import (
 
 func NewProposalHandler(k Keeper) govtypes.Handler {
 	return func(ctx sdk.Context, content govtypes.Content) error {
-		if !k.GetEnabled(ctx) {
-			return nil
-		}
-
 		switch c := content.(type) {
 		case *foundation.UpdateFoundationParamsProposal:
 			return k.handleUpdateFoundationParamsProposal(ctx, c)

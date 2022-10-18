@@ -15,10 +15,10 @@ message GenesisState {
   option (gogoproto.goproto_getters) = false;
 
   // params defines the module parameters at genesis.
-  Params params = 1;
+  Params params = 1 [(gogoproto.nullable) = false];
 
   // foundation is the foundation info.
-  FoundationInfo foundation = 2;
+  FoundationInfo foundation = 2 [(gogoproto.nullable) = false];
 
   // members is the list of the foundation members.
   repeated Member members = 3 [(gogoproto.nullable) = false];

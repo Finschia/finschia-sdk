@@ -82,6 +82,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (cli) [\#708](https://github.com/line/lbm-sdk/pull/708) In CLI, allow 1 SIGN_MODE_DIRECT signer in transactions with multiple signers.
 * (x/modules) [\#722](https://github.com/line/lbm-sdk/pull/722) Check error for `RegisterQueryHandlerClient` in all modules `RegisterGRPCGatewayRoutes`
 * (x/bank) [\#716](https://github.com/line/lbm-sdk/pull/716) remove useless DenomMetadata key function
+* (x/foundation) [\#704](https://github.com/line/lbm-sdk/pull/704) update x/foundation params
 * (x/wasm)  [\#695](https://github.com/line/lbm-sdk/pull/695) fix to prevent external filesystem dependency of simulation
 
 ### Bug Fixes
@@ -103,6 +104,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (global) [\#694](https://github.com/line/lbm-sdk/pull/694) replace deprecated functions since go 1.16 or 1.17
 * (x/bankplus) [\#705](https://github.com/line/lbm-sdk/pull/705) add missing blockedAddr checking in bankplus
 * (x/foundation) [\#712](https://github.com/line/lbm-sdk/pull/712) fix x/foundation EndBlocker
+* (baseapp) [\#724](https://github.com/line/lbm-sdk/pull/724) add checking pubkey type from validator params
+* (x/staking) [\#726](https://github.com/line/lbm-sdk/pull/726) check allowedList size in StakeAuthorization.Accept()
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
