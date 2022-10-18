@@ -471,7 +471,6 @@ func NewSimApp(
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
-		AddRoute(foundation.RouterKey, foundationkeeper.NewProposalHandler(app.FoundationKeeper)).
 		AddRoute(wasm.RouterKey, wasmkeeper.NewWasmProposalHandler(app.WasmKeeper, wasmlbmtypes.EnableAllProposals))
 
 	govKeeper := govkeeper.NewKeeper(

@@ -13,8 +13,6 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
-	"github.com/line/lbm-sdk/x/gov/client/cli"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 // Proposal flags
@@ -151,7 +149,6 @@ func NewTxCmd() *cobra.Command {
 func NewProposalCmdUpdateFoundationParams() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-foundation-params [params-json]",
-		Args:  cobra.ExactArgs(1),
 		Short: "Submit an update foundation params proposal",
 		Long: `Submit an update foundation params proposal.
 
@@ -170,50 +167,15 @@ Example of the content of params-json:
 			if err != nil {
 				return err
 			}
-			from := clientCtx.GetFromAddress()
 
-			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
+			_, err = parseParams(clientCtx.Codec, args[0])
 			if err != nil {
 				return err
 			}
 
-			deposit, err := sdk.ParseCoinsNormalized(depositStr)
-			if err != nil {
-				return err
-			}
-
-			title, err := cmd.Flags().GetString(cli.FlagTitle)
-			if err != nil {
-				return err
-			}
-
-			description, err := cmd.Flags().GetString(cli.FlagDescription)
-			if err != nil {
-				return err
-			}
-
-			params, err := parseParams(clientCtx.Codec, args[0])
-			if err != nil {
-				return err
-			}
-
-			content := foundation.NewUpdateFoundationParamsProposal(title, description, *params)
-			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
-			if err != nil {
-				return err
-			}
-
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			panic("not implemented")
 		},
 	}
-
-	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
-	cmd.Flags().String(cli.FlagDescription, "", "description of proposal")
-	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
 
 	return cmd
 }

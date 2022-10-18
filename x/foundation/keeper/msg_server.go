@@ -24,6 +24,11 @@ func NewMsgServer(keeper Keeper) foundation.MsgServer {
 
 var _ foundation.MsgServer = msgServer{}
 
+func (s msgServer) UpdateParams(c context.Context, req *foundation.MsgUpdateParams) (*foundation.MsgUpdateParamsResponse, error) {
+	stub := foundation.UnimplementedMsgServer{}
+	return stub.UpdateParams(c, req)
+}
+
 // FundTreasury defines a method to fund the treasury.
 func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasury) (*foundation.MsgFundTreasuryResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)

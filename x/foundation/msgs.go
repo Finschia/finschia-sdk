@@ -8,6 +8,18 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
+var _ sdk.Msg = (*MsgUpdateParams)(nil)
+
+// ValidateBasic implements Msg.
+func (m MsgUpdateParams) ValidateBasic() error {
+	panic("not implemented")
+}
+
+// GetSigners implements Msg.
+func (m MsgUpdateParams) GetSigners() []sdk.AccAddress {
+	panic("not implemented")
+}
+
 var _ sdk.Msg = (*MsgFundTreasury)(nil)
 
 // ValidateBasic implements Msg.
