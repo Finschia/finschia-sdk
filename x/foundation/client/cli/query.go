@@ -31,6 +31,7 @@ func NewQueryCmd() *cobra.Command {
 		NewQueryCmdVotes(),
 		NewQueryCmdTallyResult(),
 		NewQueryCmdGrants(),
+		NewQueryCmdGovMint(),
 	)
 
 	return cmd
@@ -396,6 +397,36 @@ func NewQueryCmdGrants() *cobra.Command {
 
 	flags.AddQueryFlagsToCmd(cmd)
 	flags.AddPaginationFlagsToCmd(cmd, "validator auths")
+
+	return cmd
+}
+
+// NewQueryCmdGrants returns grants on a grantee
+func NewQueryCmdGovMint() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "gov-mint",
+		Short: "Query the left count of gov mint",
+		Long: `Query the left count of gov mint
+`,
+		Args: cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := foundation.NewQueryClient(clientCtx)
+
+			req := foundation.QueryGovMintRequest{}
+			res, err := queryClient.GovMint(context.Background(), &req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
 }

@@ -17,6 +17,10 @@ func (s *KeeperTestSuite) TestExec() {
 			proposalID: s.invalidProposal,
 			valid:      true,
 		},
+		"no handler msg in proposal": {
+			proposalID: s.noHandlerProposal,
+			valid:      true,
+		},
 		"no such proposal": {
 			proposalID: s.nextProposal,
 		},

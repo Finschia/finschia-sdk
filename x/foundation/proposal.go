@@ -1,9 +1,8 @@
 package foundation
 
 import (
-	"fmt"
+	yaml "gopkg.in/yaml.v2"
 
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
@@ -12,7 +11,7 @@ const (
 	ProposalTypeUpdateFoundationParams = "UpdateFoundationParams"
 )
 
-func NewUpdateFoundationParamsProposal(title, description string, params *Params) govtypes.Content {
+func NewUpdateFoundationParamsProposal(title, description string, params Params) govtypes.Content {
 	return &UpdateFoundationParamsProposal{title, description, params}
 }
 
@@ -30,12 +29,7 @@ func (p *UpdateFoundationParamsProposal) ProposalType() string {
 	return ProposalTypeUpdateFoundationParams
 }
 func (p *UpdateFoundationParamsProposal) ValidateBasic() error {
-	params := p.Params
-	if params.Enabled {
-		return sdkerrors.ErrInvalidRequest.Wrap("cannot enable foundation")
-	}
-
-	if err := validateRatio(params.FoundationTax, "tax rate"); err != nil {
+	if err := p.Params.ValidateBasic(); err != nil {
 		return err
 	}
 
@@ -43,9 +37,6 @@ func (p *UpdateFoundationParamsProposal) ValidateBasic() error {
 }
 
 func (p UpdateFoundationParamsProposal) String() string {
-	return fmt.Sprintf(`Update Foundation Params Proposal:
-  Title:       %s
-  Description: %s
-  Enabled:     %t
-`, p.Title, p.Description, p.Params.Enabled)
+	out, _ := yaml.Marshal(p)
+	return string(out)
 }

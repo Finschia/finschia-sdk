@@ -50,6 +50,9 @@ service Msg {
   // Revoke revokes any authorization corresponding to the provided method name on the
   // granter that has been granted to the grantee.
   rpc Revoke(MsgRevoke) returns (MsgRevokeResponse);
+
+  // GovMint defines a gov mint coins to the treasury.
+  rpc GovMint(MsgGovMint) returns (MsgGovMintResponse);
 }
 
 // MsgFundTreasury represents a message to fund the treasury.
@@ -213,3 +216,13 @@ message MsgRevoke {
 
 // MsgRevokeResponse defines the Msg/MsgRevokeResponse response type.
 message MsgRevokeResponse {}
+
+// MsgGovMint represents a message to mint coins to the treasury.
+message MsgGovMint {
+  string   operator                        = 1;
+  repeated cosmos.base.v1beta1.Coin amount = 2
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+}
+
+// MsgGovMintResponse defines the Msg/GovMint response type.
+message MsgGovMintResponse {}
