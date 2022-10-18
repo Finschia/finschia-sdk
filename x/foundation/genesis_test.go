@@ -203,6 +203,11 @@ func TestValidateGenesis(t *testing.T) {
 				},
 			},
 		},
+		"invalid gov-mint left count": {
+			data: foundation.GenesisState{
+				GovMintLeftCount: 2,
+			},
+		},
 	}
 
 	for name, tc := range testCases {
