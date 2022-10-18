@@ -8,7 +8,7 @@ import (
 	"math"
 	"sort"
 
-	bip39 "github.com/cosmos/go-bip39"
+	"github.com/cosmos/go-bip39"
 	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/client"
@@ -95,12 +95,13 @@ func runAddCmdPrepare(cmd *cobra.Command, args []string) error {
 
 /*
 input
-	- bip39 mnemonic
-	- bip39 passphrase
-	- bip44 path
-	- local encryption password
+  - bip39 mnemonic
+  - bip39 passphrase
+  - bip44 path
+  - local encryption password
+
 output
-	- armor encrypted private key (saved to file)
+  - armor encrypted private key (saved to file)
 */
 func runAddCmd(ctx client.Context, cmd *cobra.Command, args []string, inBuf *bufio.Reader) error {
 	var err error
@@ -117,6 +118,13 @@ func runAddCmd(ctx client.Context, cmd *cobra.Command, args []string, inBuf *buf
 	algo, err := keyring.NewSigningAlgoFromString(algoStr, keyringAlgos)
 	if err != nil {
 		return err
+	}
+	multisigKeys, _ := cmd.Flags().GetStringSlice(flagMultisig)
+	if len(multisigKeys) != 0 {
+		err = verifyMultisigTarget(kb, multisigKeys)
+		if err != nil {
+			return err
+		}
 	}
 
 	if dryRun, _ := cmd.Flags().GetBool(flags.FlagDryRun); dryRun {
@@ -141,7 +149,6 @@ func runAddCmd(ctx client.Context, cmd *cobra.Command, args []string, inBuf *buf
 			}
 		}
 
-		multisigKeys, _ := cmd.Flags().GetStringSlice(flagMultisig)
 		if len(multisigKeys) != 0 {
 			pks := make([]cryptotypes.PubKey, len(multisigKeys))
 			multisigThreshold, _ := cmd.Flags().GetInt(flagMultiSigThreshold)
@@ -326,4 +333,24 @@ func printCreate(cmd *cobra.Command, info keyring.Info, showMnemonic bool, mnemo
 	}
 
 	return nil
+}
+
+func verifyMultisigTarget(kb keyring.Keyring, multisigKeys []string) error {
+	kl, err := kb.List()
+	if err != nil {
+		return err
+	}
+	cnt := 0
+	for i := 0; i < len(multisigKeys); i++ {
+		for j := 0; j < len(kl); j++ {
+			if kl[j].GetName() == multisigKeys[i] {
+				cnt++
+				break
+			}
+		}
+	}
+	if cnt == len(multisigKeys) {
+		return nil
+	}
+	return errors.New("part of the multisig target key does not exist")
 }
