@@ -58,6 +58,7 @@ func TestValidateValidatorParams(t *testing.T) {
 		{ocproto.ValidatorParams{}, true},
 		{ocproto.ValidatorParams{PubKeyTypes: []string{}}, true},
 		{ocproto.ValidatorParams{PubKeyTypes: []string{"secp256k1"}}, false},
+		{ocproto.ValidatorParams{PubKeyTypes: []string{"invalidPubKeyType"}}, true},
 	}
 
 	for _, tc := range testCases {
