@@ -8,20 +8,10 @@ import (
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
-
-func newParams(enabled bool) *foundation.Params {
-	params := foundation.DefaultParams()
-	params.Enabled = enabled
-	return params
-}
-
-func newUpdateFoundationParamsProposal(params *foundation.Params) govtypes.Content {
-	return foundation.NewUpdateFoundationParamsProposal("Test", "description", params)
-}
 
 func (s *KeeperTestSuite) TestSubmitProposal() {
 	testCases := map[string]struct {
@@ -32,29 +22,17 @@ func (s *KeeperTestSuite) TestSubmitProposal() {
 	}{
 		"valid proposal": {
 			proposers: []string{s.members[0].String()},
-			msg: &foundation.MsgWithdrawFromTreasury{
-				Operator: s.operator.String(),
-				To:       s.stranger.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-			},
-			valid: true,
+			msg:       testdata.NewTestMsg(s.operator),
+			valid:     true,
 		},
 		"long metadata": {
 			proposers: []string{s.members[0].String()},
 			metadata:  string(make([]rune, 256)),
-			msg: &foundation.MsgWithdrawFromTreasury{
-				Operator: s.operator.String(),
-				To:       s.stranger.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-			},
+			msg:       testdata.NewTestMsg(s.operator),
 		},
 		"unauthorized msg": {
 			proposers: []string{s.members[0].String()},
-			msg: &foundation.MsgWithdrawFromTreasury{
-				Operator: s.stranger.String(),
-				To:       s.stranger.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-			},
+			msg:       testdata.NewTestMsg(s.stranger),
 		},
 	}
 
@@ -81,6 +59,9 @@ func (s *KeeperTestSuite) TestWithdrawProposal() {
 			id:    s.activeProposal,
 			valid: true,
 		},
+		"no such a proposal": {
+			id: s.nextProposal,
+		},
 		"not active": {
 			id: s.withdrawnProposal,
 		},
@@ -103,6 +84,8 @@ func (s *KeeperTestSuite) TestWithdrawProposal() {
 func TestAbortProposal(t *testing.T) {
 	checkTx := false
 	app := simapp.Setup(checkTx)
+	testdata.RegisterInterfaces(app.InterfaceRegistry())
+
 	ctx := app.BaseApp.NewContext(checkTx, ocproto.Header{})
 	keeper := app.FoundationKeeper
 
@@ -116,24 +99,19 @@ func TestAbortProposal(t *testing.T) {
 	for i := range members {
 		members[i] = createAddress()
 	}
-	err := keeper.UpdateMembers(ctx, []foundation.MemberRequest{
-		{
-			Address: members[0].String(),
-		},
+	keeper.SetMember(ctx, foundation.Member{
+		Address: members[0].String(),
 	})
-	require.NoError(t, err)
 
-	stranger := createAddress()
+	info := foundation.DefaultFoundation()
+	info.TotalWeight = sdk.NewDec(int64(len(members)))
+	err := info.SetDecisionPolicy(workingPolicy())
+	require.NoError(t, err)
+	keeper.SetFoundationInfo(ctx, info)
 
 	// create proposals of different versions and abort them
 	for _, newMember := range members[1:] {
-		_, err := keeper.SubmitProposal(ctx, []string{members[0].String()}, "", []sdk.Msg{
-			&foundation.MsgWithdrawFromTreasury{
-				Operator: operator.String(),
-				To:       stranger.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-			},
-		})
+		_, err := keeper.SubmitProposal(ctx, []string{members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(operator)})
 		require.NoError(t, err)
 
 		err = keeper.UpdateMembers(ctx, []foundation.MemberRequest{

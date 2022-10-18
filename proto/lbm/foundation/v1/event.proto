@@ -13,7 +13,7 @@ import "lbm/foundation/v1/foundation.proto";
 
 // EventUpdateFoundationParams is emitted after updating foundation parameters.
 message EventUpdateFoundationParams {
-  Params params = 1;
+  Params params = 1 [(gogoproto.nullable) = false];
 }
 
 // EventFundTreasury is an event emitted when one funds the treasury.
@@ -93,4 +93,10 @@ message EventRevoke {
   string grantee = 2;
   // message type url for which an autorization is revoked.
   string msg_type_url = 3;
+}
+
+// EventGovMint is an event emitted when the minter mint coins to the treasury.
+message EventGovMint {
+  repeated cosmos.base.v1beta1.Coin amount = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }

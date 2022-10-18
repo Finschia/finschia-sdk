@@ -8,7 +8,9 @@ import (
 
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
+	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
+	txtypes "github.com/line/lbm-sdk/types/tx"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/client/cli"
 )
@@ -31,15 +33,15 @@ func (s *IntegrationTestSuite) TestNewProposalCmdUpdateFoundationParams() {
 		respType     proto.Message
 	}{
 		{
-			"with wrong # of args",
-			append([]string{
-				"no-args-expected",
-			}, commonFlags...),
+			"wrong number of args",
+			commonFlags,
 			true, 0, nil,
 		},
 		{
 			"valid transaction",
-			commonFlags,
+			append([]string{
+				fmt.Sprintf(`{"foundation_tax": "%s"}`, sdk.ZeroDec()),
+			}, commonFlags...),
 			false, 0, &sdk.TxResponse{},
 		},
 	}
@@ -85,17 +87,11 @@ func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				val.Address.String(),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
 				"extra",
-			},
-			false,
-		},
-		"not enough args": {
-			[]string{
-				val.Address.String(),
 			},
 			false,
 		},
@@ -115,7 +111,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -123,10 +119,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdFundTreasury() {
 func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
+		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
 	}
 
 	testCases := map[string]struct {
@@ -141,19 +134,12 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				s.operator.String(),
 				s.stranger.String(),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
 				"extra",
-			},
-			false,
-		},
-		"not enough args": {
-			[]string{
-				s.operator.String(),
-				s.stranger.String(),
 			},
 			false,
 		},
@@ -171,9 +157,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 			}
 			s.Require().NoError(err)
 
-			var res sdk.TxResponse
+			var res txtypes.Tx
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
@@ -181,10 +166,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
+		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
 	}
 
 	updates := `[{"address":"%s"}]`
@@ -199,17 +181,11 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				s.operator.String(),
 				fmt.Sprintf(updates, s.comingMember),
 				"extra",
-			},
-			false,
-		},
-		"not enough args": {
-			[]string{
-				s.operator.String(),
 			},
 			false,
 		},
@@ -227,9 +203,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 			}
 			s.Require().NoError(err)
 
-			var res sdk.TxResponse
+			var res txtypes.Tx
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
@@ -237,10 +212,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
+		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
 	}
 
 	doMarshal := func(policy foundation.DecisionPolicy) string {
@@ -264,7 +236,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				s.operator.String(),
 				doMarshal(&foundation.ThresholdDecisionPolicy{
@@ -274,12 +246,6 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 					},
 				}),
 				"extra",
-			},
-			false,
-		},
-		"not enough args": {
-			[]string{
-				s.operator.String(),
 			},
 			false,
 		},
@@ -297,9 +263,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 			}
 			s.Require().NoError(err)
 
-			var res sdk.TxResponse
+			var res txtypes.Tx
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
@@ -307,7 +272,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.permanentMember),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
@@ -321,32 +286,17 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 		"valid transaction": {
 			[]string{
 				"test proposal",
-				fmt.Sprintf(proposers, val.Address),
-				s.msgToString(&foundation.MsgWithdrawFromTreasury{
-					Operator: s.operator.String(),
-					To:       val.Address.String(),
-					Amount:   sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())),
-				}),
+				fmt.Sprintf(proposers, s.permanentMember),
+				s.msgToString(testdata.NewTestMsg()),
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				"test proposal",
-				fmt.Sprintf(proposers, val.Address),
-				s.msgToString(&foundation.MsgWithdrawFromTreasury{
-					Operator: s.operator.String(),
-					To:       val.Address.String(),
-					Amount:   sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())),
-				}),
+				fmt.Sprintf(proposers, s.permanentMember),
+				s.msgToString(testdata.NewTestMsg()),
 				"extra",
-			},
-			false,
-		},
-		"not enough args": {
-			[]string{
-				"test proposal",
-				fmt.Sprintf(proposers, val.Address),
 			},
 			false,
 		},
@@ -366,7 +316,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -374,35 +324,29 @@ func (s *IntegrationTestSuite) TestNewTxCmdSubmitProposal() {
 func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.permanentMember),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
+	id := s.submitProposal(testdata.NewTestMsg(s.operator), false)
 	testCases := map[string]struct {
 		args  []string
 		valid bool
 	}{
-		// TODO: make it work
-		// "valid transaction": {
-		// 	[]string{
-		// 		"1",
-		// 		val.Address.String(),
-		// 	},
-		// 	true,
-		// },
-		"extra args": {
+		"valid transaction": {
 			[]string{
-				"1",
-				val.Address.String(),
-				"extra",
+				fmt.Sprint(id),
+				s.permanentMember.String(),
 			},
-			false,
+			true,
 		},
-		"not enough args": {
+		"wrong number of args": {
 			[]string{
-				"1",
+				fmt.Sprint(id),
+				s.permanentMember.String(),
+				"extra",
 			},
 			false,
 		},
@@ -422,7 +366,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -430,17 +374,13 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
 func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.permanentMember),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
-	id := s.submitProposal(&foundation.MsgWithdrawFromTreasury{
-		Operator: s.operator.String(),
-		To:       s.network.Validators[0].Address.String(),
-		Amount:   sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))),
-	}, false)
+	id := s.submitProposal(testdata.NewTestMsg(s.operator), false)
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -448,27 +388,19 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 		"valid transaction": {
 			[]string{
 				fmt.Sprint(id),
-				val.Address.String(),
+				s.permanentMember.String(),
 				"VOTE_OPTION_YES",
 				"test vote",
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				fmt.Sprint(id),
-				val.Address.String(),
+				s.permanentMember.String(),
 				"VOTE_OPTION_YES",
 				"test vote",
 				"extra",
-			},
-			false,
-		},
-		"not enough args": {
-			[]string{
-				fmt.Sprint(id),
-				val.Address.String(),
-				"VOTE_OPTION_YES",
 			},
 			false,
 		},
@@ -488,7 +420,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -496,7 +428,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.permanentMember),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
@@ -508,22 +440,16 @@ func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 	}{
 		"valid transaction": {
 			[]string{
-				"1",
-				val.Address.String(),
+				fmt.Sprintf("%d", s.proposalID),
+				s.permanentMember.String(),
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
-				"1",
-				val.Address.String(),
+				fmt.Sprintf("%d", s.proposalID),
+				s.permanentMember.String(),
 				"extra",
-			},
-			false,
-		},
-		"not enough args": {
-			[]string{
-				"1",
 			},
 			false,
 		},
@@ -543,7 +469,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -551,7 +477,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdExec() {
 func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.leavingMember),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
@@ -567,15 +493,11 @@ func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				s.leavingMember.String(),
 				"extra",
 			},
-			false,
-		},
-		"not enough args": {
-			[]string{},
 			false,
 		},
 	}
@@ -594,7 +516,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
 
 			var res sdk.TxResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+			s.Require().Zero(res.Code, out)
 		})
 	}
 }
@@ -602,10 +524,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdLeaveFoundation() {
 func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
+		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
 	}
 
 	doMarshal := func(authorization foundation.Authorization) string {
@@ -625,19 +544,12 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				s.operator.String(),
 				s.comingMember.String(),
 				doMarshal(&foundation.ReceiveFromTreasuryAuthorization{}),
 				"extra",
-			},
-			false,
-		},
-		"not enough args": {
-			[]string{
-				s.operator.String(),
-				s.comingMember.String(),
 			},
 			false,
 		},
@@ -655,9 +567,8 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 			}
 			s.Require().NoError(err)
 
-			var res sdk.TxResponse
+			var res txtypes.Tx
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
 		})
 	}
 }
@@ -665,10 +576,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
+		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
 	}
 
 	testCases := map[string]struct {
@@ -683,19 +591,12 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				s.operator.String(),
 				s.leavingMember.String(),
 				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 				"extra",
-			},
-			false,
-		},
-		"not enough args": {
-			[]string{
-				s.operator.String(),
-				s.leavingMember.String(),
 			},
 			false,
 		},
@@ -713,9 +614,53 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 			}
 			s.Require().NoError(err)
 
-			var res sdk.TxResponse
+			var res txtypes.Tx
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
-			s.Require().EqualValues(0, res.Code, out)
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewTxCmdGovMint() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
+	}
+
+	testCases := map[string]struct {
+		args  []string
+		valid bool
+	}{
+		"valid transaction": {
+			[]string{
+				s.operator.String(),
+				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
+			},
+			true,
+		},
+		"wrong number of args": {
+			[]string{
+				s.operator.String(),
+				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
+				"extra",
+			},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewTxCmdGovMint()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var res txtypes.Tx
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 		})
 	}
 }

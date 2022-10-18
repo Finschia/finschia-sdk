@@ -1107,6 +1107,7 @@
     - [FoundationInfo](#lbm.foundation.v1.FoundationInfo)
     - [Member](#lbm.foundation.v1.Member)
     - [MemberRequest](#lbm.foundation.v1.MemberRequest)
+    - [OutsourcingDecisionPolicy](#lbm.foundation.v1.OutsourcingDecisionPolicy)
     - [Params](#lbm.foundation.v1.Params)
     - [PercentageDecisionPolicy](#lbm.foundation.v1.PercentageDecisionPolicy)
     - [Pool](#lbm.foundation.v1.Pool)
@@ -1123,6 +1124,7 @@
 - [lbm/foundation/v1/event.proto](#lbm/foundation/v1/event.proto)
     - [EventExec](#lbm.foundation.v1.EventExec)
     - [EventFundTreasury](#lbm.foundation.v1.EventFundTreasury)
+    - [EventGovMint](#lbm.foundation.v1.EventGovMint)
     - [EventGrant](#lbm.foundation.v1.EventGrant)
     - [EventLeaveFoundation](#lbm.foundation.v1.EventLeaveFoundation)
     - [EventRevoke](#lbm.foundation.v1.EventRevoke)
@@ -1141,6 +1143,8 @@
 - [lbm/foundation/v1/query.proto](#lbm/foundation/v1/query.proto)
     - [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest)
     - [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse)
+    - [QueryGovMintRequest](#lbm.foundation.v1.QueryGovMintRequest)
+    - [QueryGovMintResponse](#lbm.foundation.v1.QueryGovMintResponse)
     - [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest)
     - [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse)
     - [QueryMemberRequest](#lbm.foundation.v1.QueryMemberRequest)
@@ -1169,6 +1173,8 @@
     - [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse)
     - [MsgFundTreasury](#lbm.foundation.v1.MsgFundTreasury)
     - [MsgFundTreasuryResponse](#lbm.foundation.v1.MsgFundTreasuryResponse)
+    - [MsgGovMint](#lbm.foundation.v1.MsgGovMint)
+    - [MsgGovMintResponse](#lbm.foundation.v1.MsgGovMintResponse)
     - [MsgGrant](#lbm.foundation.v1.MsgGrant)
     - [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse)
     - [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation)
@@ -14239,7 +14245,7 @@ Service defines the gRPC querier service for ostracon queries.
 | `GetSyncing` | [GetSyncingRequest](#lbm.base.ostracon.v1.GetSyncingRequest) | [GetSyncingResponse](#lbm.base.ostracon.v1.GetSyncingResponse) | GetSyncing queries node syncing. | GET|/lbm/base/ostracon/v1/syncing|
 | `GetLatestBlock` | [GetLatestBlockRequest](#lbm.base.ostracon.v1.GetLatestBlockRequest) | [GetLatestBlockResponse](#lbm.base.ostracon.v1.GetLatestBlockResponse) | GetLatestBlock returns the latest block. | GET|/lbm/base/ostracon/v1/blocks/latest|
 | `GetBlockByHeight` | [GetBlockByHeightRequest](#lbm.base.ostracon.v1.GetBlockByHeightRequest) | [GetBlockByHeightResponse](#lbm.base.ostracon.v1.GetBlockByHeightResponse) | GetBlockByHeight queries block for given height. | GET|/lbm/base/ostracon/v1/blocks/{height}|
-| `GetBlockByHash` | [GetBlockByHashRequest](#lbm.base.ostracon.v1.GetBlockByHashRequest) | [GetBlockByHashResponse](#lbm.base.ostracon.v1.GetBlockByHashResponse) | GetBlockByHash queries block for given hash. | GET|/lbm/base/ostracon/v1/blocks/{hash}|
+| `GetBlockByHash` | [GetBlockByHashRequest](#lbm.base.ostracon.v1.GetBlockByHashRequest) | [GetBlockByHashResponse](#lbm.base.ostracon.v1.GetBlockByHashResponse) | GetBlockByHash queries block for given hash. | GET|/lbm/base/ostracon/v1/block/{hash}|
 | `GetBlockResultsByHeight` | [GetBlockResultsByHeightRequest](#lbm.base.ostracon.v1.GetBlockResultsByHeightRequest) | [GetBlockResultsByHeightResponse](#lbm.base.ostracon.v1.GetBlockResultsByHeightResponse) | GetBlockResultsByHeight queries block results for given height. | GET|/lbm/base/ostracon/v1/blockresults/{height}|
 | `GetLatestValidatorSet` | [GetLatestValidatorSetRequest](#lbm.base.ostracon.v1.GetLatestValidatorSetRequest) | [GetLatestValidatorSetResponse](#lbm.base.ostracon.v1.GetLatestValidatorSetResponse) | GetLatestValidatorSet queries latest validator-set. | GET|/lbm/base/ostracon/v1/validatorsets/latest|
 | `GetValidatorSetByHeight` | [GetValidatorSetByHeightRequest](#lbm.base.ostracon.v1.GetValidatorSetByHeightRequest) | [GetValidatorSetByHeightResponse](#lbm.base.ostracon.v1.GetValidatorSetByHeightResponse) | GetValidatorSetByHeight queries validator-set at a given height. | GET|/lbm/base/ostracon/v1/validatorsets/{height}|
@@ -16846,6 +16852,22 @@ since this field cannot be set as part of requests.
 
 
 
+<a name="lbm.foundation.v1.OutsourcingDecisionPolicy"></a>
+
+### OutsourcingDecisionPolicy
+OutsourcingDecisionPolicy is a dummy decision policy which is set after
+the operator has been updated into x/group's group policy.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `description` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="lbm.foundation.v1.Params"></a>
 
 ### Params
@@ -16854,8 +16876,8 @@ Params defines the parameters for the foundation module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `enabled` | [bool](#bool) |  |  |
 | `foundation_tax` | [string](#string) |  |  |
+| `censored_msg_type_urls` | [string](#string) | repeated |  |
 
 
 
@@ -16974,7 +16996,9 @@ UpdateFoundationParamsProposal details a proposal to update params of foundation
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  |  |
 | `description` | [string](#string) |  |  |
-| `params` | [Params](#lbm.foundation.v1.Params) |  |  |
+| `params` | [Params](#lbm.foundation.v1.Params) |  | params defines the x/foundation parameters to update.
+
+Note: All parameters must be supplied. |
 
 
 
@@ -17087,6 +17111,21 @@ EventFundTreasury is an event emitted when one funds the treasury.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `from` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.EventGovMint"></a>
+
+### EventGovMint
+EventGovMint is an event emitted when the minter mint coins to the treasury.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
 | `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
 
 
@@ -17281,6 +17320,7 @@ GenesisState defines the foundation module's genesis state.
 | `votes` | [Vote](#lbm.foundation.v1.Vote) | repeated | votes is the list of votes. |
 | `authorizations` | [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization) | repeated | grants |
 | `pool` | [Pool](#lbm.foundation.v1.Pool) |  | pool |
+| `govMintLeftCount` | [uint32](#uint32) |  | govMintLeftCount is gov mint max count |
 
 
 
@@ -17338,6 +17378,31 @@ QueryFoundationInfoResponse is the Query/FoundationInfo response type.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `info` | [FoundationInfo](#lbm.foundation.v1.FoundationInfo) |  | info is the FoundationInfo for the foundation. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryGovMintRequest"></a>
+
+### QueryGovMintRequest
+QueryGovMintRequest is the Query/GovMint request type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryGovMintResponse"></a>
+
+### QueryGovMintResponse
+QueryGovMintResponse is the Query/GovMint response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `leftCount` | [uint32](#uint32) |  | leftCount is the left count of GovMint. |
 
 
 
@@ -17668,6 +17733,7 @@ Query defines the gRPC querier service for foundation module.
 | `Votes` | [QueryVotesRequest](#lbm.foundation.v1.QueryVotesRequest) | [QueryVotesResponse](#lbm.foundation.v1.QueryVotesResponse) | Votes queries a vote by proposal. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes|
 | `TallyResult` | [QueryTallyResultRequest](#lbm.foundation.v1.QueryTallyResultRequest) | [QueryTallyResultResponse](#lbm.foundation.v1.QueryTallyResultResponse) | TallyResult queries the tally of a proposal votes. | GET|/lbm/foundation/v1/proposals/{proposal_id}/tally|
 | `Grants` | [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest) | [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse) | Returns list of authorizations, granted to the grantee. | GET|/lbm/foundation/v1/grants/{grantee}/{msg_type_url}|
+| `GovMint` | [QueryGovMintRequest](#lbm.foundation.v1.QueryGovMintRequest) | [QueryGovMintResponse](#lbm.foundation.v1.QueryGovMintResponse) | GovMint queries the left count of gov mint. | GET|/lbm/foundation/v1/gov_mint|
 
  <!-- end services -->
 
@@ -17726,6 +17792,32 @@ MsgFundTreasury represents a message to fund the treasury.
 
 ### MsgFundTreasuryResponse
 MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgGovMint"></a>
+
+### MsgGovMint
+MsgGovMint represents a message to mint coins to the treasury.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgGovMintResponse"></a>
+
+### MsgGovMintResponse
+MsgGovMintResponse defines the Msg/GovMint response type.
 
 
 
@@ -18016,6 +18108,7 @@ Msg defines the foundation Msg service.
 | `LeaveFoundation` | [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation) | [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse) | LeaveFoundation allows a member to leave the foundation. | |
 | `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (granter, grantee, Authorization) tuple, then the grant will be overwritten. | |
 | `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name on the granter that has been granted to the grantee. | |
+| `GovMint` | [MsgGovMint](#lbm.foundation.v1.MsgGovMint) | [MsgGovMintResponse](#lbm.foundation.v1.MsgGovMintResponse) | GovMint defines a gov mint coins to the treasury. | |
 
  <!-- end services -->
 
