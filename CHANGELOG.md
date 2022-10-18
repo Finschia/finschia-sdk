@@ -99,7 +99,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (global) [\#694](https://github.com/line/lbm-sdk/pull/694) replace deprecated functions since go 1.16 or 1.17
 * (x/bankplus) [\#705](https://github.com/line/lbm-sdk/pull/705) add missing blockedAddr checking in bankplus
 * (x/foundation) [\#712](https://github.com/line/lbm-sdk/pull/712) fix x/foundation EndBlocker
-* (baseapp) [\#724](https://github.com/line/lbm-sdk/pull/705) add checking pubkey type from validator params
+* (baseapp) [\#724](https://github.com/line/lbm-sdk/pull/724) add checking pubkey type from validator params
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
