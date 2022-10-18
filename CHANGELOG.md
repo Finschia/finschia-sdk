@@ -104,6 +104,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/bankplus) [\#705](https://github.com/line/lbm-sdk/pull/705) add missing blockedAddr checking in bankplus
 * (x/foundation) [\#712](https://github.com/line/lbm-sdk/pull/712) fix x/foundation EndBlocker
 * (x/staking) [\#726](https://github.com/line/lbm-sdk/pull/726) check allowedList size in StakeAuthorization.Accept()
+* (x/foundation) [\#730](https://github.com/line/lbm-sdk/pull/730) prune stale x/foundation proposals at voting period end
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
