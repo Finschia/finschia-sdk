@@ -9,9 +9,11 @@ import (
 func (s *KeeperTestSuite) TestBeginBlocker() {
 	ctx, _ := s.ctx.CacheContext()
 
-	s.keeper.SetParams(ctx, &foundation.Params{
-		Enabled:       true,
+	s.keeper.SetParams(ctx, foundation.Params{
 		FoundationTax: sdk.MustNewDecFromStr("0.5"),
+		CensoredMsgTypeUrls: []string{
+			sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+		},
 	})
 
 	before := s.keeper.GetTreasury(ctx)
@@ -73,7 +75,7 @@ func (s *KeeperTestSuite) TestEndBlocker() {
 		},
 		"voted proposal": {
 			s.votedProposal,
-			foundation.PROPOSAL_STATUS_ACCEPTED,
+			foundation.PROPOSAL_STATUS_REJECTED,
 		},
 		"withdrawn proposal": {
 			s.withdrawnProposal,

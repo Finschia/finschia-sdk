@@ -9,6 +9,7 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 func (s *IntegrationTestSuite) TestGRPCParams() {
@@ -27,9 +28,12 @@ func (s *IntegrationTestSuite) TestGRPCParams() {
 			false,
 			&foundation.QueryParamsResponse{},
 			&foundation.QueryParamsResponse{
-				Params: &foundation.Params{
-					Enabled:       true,
+				Params: foundation.Params{
 					FoundationTax: sdk.MustNewDecFromStr("0.2"),
+					CensoredMsgTypeUrls: []string{
+						sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
+						sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+					},
 				},
 			},
 		},

@@ -12,15 +12,6 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
-func DefaultDecisionPolicy() DecisionPolicy {
-	return &ThresholdDecisionPolicy{
-		Threshold: sdk.OneDec(),
-		Windows: &DecisionPolicyWindows{
-			VotingPeriod: 24 * time.Hour,
-		},
-	}
-}
-
 func validateProposers(proposers []string) error {
 	if len(proposers) == 0 {
 		return sdkerrors.ErrInvalidRequest.Wrap("no proposers")
@@ -61,6 +52,14 @@ func validateVoteOption(option VoteOption) error {
 	}
 	if _, ok := VoteOption_name[int32(option)]; !ok {
 		return sdkerrors.ErrInvalidRequest.Wrap("invalid vote option")
+	}
+
+	return nil
+}
+
+func (p Params) ValidateBasic() error {
+	if err := validateRatio(p.FoundationTax, "tax rate"); err != nil {
+		return err
 	}
 
 	return nil
@@ -235,8 +234,6 @@ func SetMsgs(msgs []sdk.Msg) ([]*codectypes.Any, error) {
 	return anys, nil
 }
 
-var _ DecisionPolicy = (*ThresholdDecisionPolicy)(nil)
-
 func validateDecisionPolicyWindows(windows DecisionPolicyWindows, config Config) error {
 	if windows.MinExecutionPeriod >= windows.VotingPeriod+config.MaxExecutionPeriod {
 		return sdkerrors.ErrInvalidRequest.Wrap("min_execution_period should be smaller than voting_period + max_execution_period")
@@ -251,6 +248,8 @@ func validateDecisionPolicyWindowsBasic(windows *DecisionPolicyWindows) error {
 
 	return nil
 }
+
+var _ DecisionPolicy = (*ThresholdDecisionPolicy)(nil)
 
 func (p ThresholdDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
 	if sinceSubmission < p.Windows.MinExecutionPeriod {
@@ -375,6 +374,24 @@ func validateRatio(ratio sdk.Dec, name string) error {
 		return sdkerrors.ErrInvalidRequest.Wrapf("%s must be >= 0 and <= 1", name)
 	}
 	return nil
+}
+
+var _ DecisionPolicy = (*OutsourcingDecisionPolicy)(nil)
+
+func (p OutsourcingDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
+	return nil, sdkerrors.ErrInvalidRequest.Wrap(p.Description)
+}
+
+func (p OutsourcingDecisionPolicy) GetVotingPeriod() time.Duration {
+	return 0
+}
+
+func (p OutsourcingDecisionPolicy) ValidateBasic() error {
+	return nil
+}
+
+func (p OutsourcingDecisionPolicy) Validate(info FoundationInfo, config Config) error {
+	return sdkerrors.ErrInvalidRequest.Wrap(p.Description)
 }
 
 var _ codectypes.UnpackInterfacesMessage = (*FoundationInfo)(nil)

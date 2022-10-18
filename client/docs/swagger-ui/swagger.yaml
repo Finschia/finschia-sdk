@@ -35088,11 +35088,12 @@ paths:
               params:
                 type: object
                 properties:
-                  enabled:
-                    type: boolean
-                    format: boolean
                   foundation_tax:
                     type: string
+                  censored_msg_type_urls:
+                    type: array
+                    items:
+                      type: string
                 description: Params defines the parameters for the foundation module.
             description: >-
               QueryParamsResponse is the response type for the Query/Params RPC
@@ -68794,11 +68795,12 @@ definitions:
   lbm.foundation.v1.Params:
     type: object
     properties:
-      enabled:
-        type: boolean
-        format: boolean
       foundation_tax:
         type: string
+      censored_msg_type_urls:
+        type: array
+        items:
+          type: string
     description: Params defines the parameters for the foundation module.
   lbm.foundation.v1.Proposal:
     type: object
@@ -69462,11 +69464,12 @@ definitions:
       params:
         type: object
         properties:
-          enabled:
-            type: boolean
-            format: boolean
           foundation_tax:
             type: string
+          censored_msg_type_urls:
+            type: array
+            items:
+              type: string
         description: Params defines the parameters for the foundation module.
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
   lbm.foundation.v1.QueryProposalResponse:

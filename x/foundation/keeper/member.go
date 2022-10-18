@@ -18,7 +18,7 @@ func (k Keeper) UpdateDecisionPolicy(ctx sdk.Context, policy foundation.Decision
 	info := k.GetFoundationInfo(ctx)
 	info.SetDecisionPolicy(policy)
 	info.Version++
-	k.setFoundationInfo(ctx, info)
+	k.SetFoundationInfo(ctx, info)
 
 	if err := policy.Validate(info, k.config); err != nil {
 		return err
@@ -42,7 +42,7 @@ func (k Keeper) GetFoundationInfo(ctx sdk.Context) foundation.FoundationInfo {
 	return info
 }
 
-func (k Keeper) setFoundationInfo(ctx sdk.Context, info foundation.FoundationInfo) {
+func (k Keeper) SetFoundationInfo(ctx sdk.Context, info foundation.FoundationInfo) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshal(&info)
 	store.Set(foundationInfoKey, bz)
@@ -63,7 +63,7 @@ func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.MemberReques
 			return err
 		}
 
-		addr, _ := sdk.AccAddressFromBech32(new.Address)
+		addr := sdk.MustAccAddressFromBech32(new.Address)
 		old, err := k.GetMember(ctx, addr)
 		if err != nil && request.Remove { // the member must exist
 			return err
@@ -77,14 +77,14 @@ func (k Keeper) UpdateMembers(ctx sdk.Context, members []foundation.MemberReques
 			k.deleteMember(ctx, addr)
 		} else {
 			weightUpdate = weightUpdate.Add(sdk.OneDec())
-			k.setMember(ctx, new)
+			k.SetMember(ctx, new)
 		}
 	}
 
 	info := k.GetFoundationInfo(ctx)
 	info.TotalWeight = info.TotalWeight.Add(weightUpdate)
 	info.Version++
-	k.setFoundationInfo(ctx, info)
+	k.SetFoundationInfo(ctx, info)
 
 	if err := info.GetDecisionPolicy().Validate(info, k.config); err != nil {
 		return err
@@ -110,12 +110,9 @@ func (k Keeper) GetMember(ctx sdk.Context, address sdk.AccAddress) (*foundation.
 	return &member, nil
 }
 
-func (k Keeper) setMember(ctx sdk.Context, member foundation.Member) {
+func (k Keeper) SetMember(ctx sdk.Context, member foundation.Member) {
 	store := ctx.KVStore(k.storeKey)
-	addr, err := sdk.AccAddressFromBech32(member.Address)
-	if err != nil {
-		panic(err)
-	}
+	addr := sdk.MustAccAddressFromBech32(member.Address)
 	key := memberKey(addr)
 
 	bz := k.cdc.MustMarshal(&member)
@@ -155,36 +152,12 @@ func (k Keeper) GetMembers(ctx sdk.Context) []foundation.Member {
 
 func (k Keeper) GetOperator(ctx sdk.Context) sdk.AccAddress {
 	info := k.GetFoundationInfo(ctx)
-	operator, err := sdk.AccAddressFromBech32(info.Operator)
-	if err != nil {
-		panic(err)
-	}
+	operator := sdk.MustAccAddressFromBech32(info.Operator)
 	return operator
 }
 
-func (k Keeper) UpdateOperator(ctx sdk.Context, operator sdk.AccAddress) error {
-	info := k.GetFoundationInfo(ctx)
-	if operator.String() == info.Operator {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s is already the operator", operator)
-	}
-
-	info.Operator = operator.String()
-	k.setFoundationInfo(ctx, info)
-
-	return nil
-}
-
-func (k Keeper) GetAdmin(ctx sdk.Context) sdk.AccAddress {
-	return k.authKeeper.GetModuleAccount(ctx, foundation.AdministratorName).GetAddress()
-}
-
 func (k Keeper) validateOperator(ctx sdk.Context, operator string) error {
-	addr, err := sdk.AccAddressFromBech32(operator)
-
-	if err != nil {
-		return err
-	}
-
+	addr := sdk.MustAccAddressFromBech32(operator)
 	if !addr.Equals(k.GetOperator(ctx)) {
 		return sdkerrors.ErrUnauthorized.Wrapf("%s is not the operator", operator)
 	}
@@ -194,10 +167,7 @@ func (k Keeper) validateOperator(ctx sdk.Context, operator string) error {
 
 func (k Keeper) validateMembers(ctx sdk.Context, members []string) error {
 	for _, member := range members {
-		addr, err := sdk.AccAddressFromBech32(member)
-		if err != nil {
-			return sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", member)
-		}
+		addr := sdk.MustAccAddressFromBech32(member)
 		if _, err := k.GetMember(ctx, addr); err != nil {
 			return sdkerrors.ErrUnauthorized.Wrapf("%s is not a member", member)
 		}

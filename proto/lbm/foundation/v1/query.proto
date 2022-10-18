@@ -81,7 +81,7 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is the response type for the Query/Params RPC method.
 message QueryParamsResponse {
-  Params params = 1;
+  Params params = 1 [(gogoproto.nullable) = false];
 }
 
 // QueryTreasuryRequest is the request type for the
