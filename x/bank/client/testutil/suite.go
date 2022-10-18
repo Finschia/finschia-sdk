@@ -214,6 +214,15 @@ func (s *IntegrationTestSuite) TestGetCmdQueryTotalSupply() {
 				Amount: sdk.ZeroInt(),
 			},
 		},
+		{
+			name: "wrong number of arguments",
+			args: []string{
+				"extra",
+				fmt.Sprintf("--%s=1", flags.FlagHeight),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+			},
+			expectErr: true,
+		},
 	}
 
 	for _, tc := range testCases {
@@ -331,6 +340,21 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDenomsMetadata() {
 			args: []string{
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 				fmt.Sprintf("--%s=foobar", cli.FlagDenom),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+			},
+			expectErr: true,
+			respType:  &types.QueryDenomMetadataResponse{},
+			expected: &types.QueryDenomMetadataResponse{
+				Metadata: types.Metadata{
+					DenomUnits: []*types.DenomUnit{},
+				},
+			},
+		},
+		{
+			name: "wrong number of arguments",
+			args: []string{
+				"extra",
+				fmt.Sprintf("--%s=1", flags.FlagHeight),
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			expectErr: true,
