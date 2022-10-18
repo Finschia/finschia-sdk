@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/btcsuite/btcd/btcec"
-	"github.com/line/ostracon/crypto"
 	"github.com/pkg/errors"
 
 	tmbtcec "github.com/tendermint/btcd/btcec"
@@ -89,10 +88,6 @@ func NewPrivKeySecp256k1(path hd.BIP44Params, hrp string) (types.LedgerPrivKey, 
 // PubKey returns the cached public key.
 func (pkl PrivKeyLedgerSecp256k1) PubKey() types.PubKey {
 	return pkl.CachedPubKey
-}
-
-func (pkl PrivKeyLedgerSecp256k1) VRFProve(seed []byte) (crypto.Proof, error) {
-	return nil, nil
 }
 
 // Sign returns a secp256k1 signature for the corresponding message
