@@ -17775,7 +17775,7 @@ MsgExecResponse is the Msg/Exec request type.
 <a name="lbm.foundation.v1.MsgFundTreasury"></a>
 
 ### MsgFundTreasury
-MsgFundTreasury represents a message to fund the treasury.
+MsgFundTreasury is the Msg/FundTreasury request type.
 
 
 | Field | Type | Label | Description |
@@ -17791,7 +17791,7 @@ MsgFundTreasury represents a message to fund the treasury.
 <a name="lbm.foundation.v1.MsgFundTreasuryResponse"></a>
 
 ### MsgFundTreasuryResponse
-MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
+MsgFundTreasuryResponse is the Msg/FundTreasury response type.
 
 
 
@@ -17801,7 +17801,7 @@ MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
 <a name="lbm.foundation.v1.MsgGovMint"></a>
 
 ### MsgGovMint
-MsgGovMint represents a message to mint coins to the treasury.
+MsgGovMint is the Msg/GovMint request type.
 
 
 | Field | Type | Label | Description |
@@ -17817,7 +17817,7 @@ MsgGovMint represents a message to mint coins to the treasury.
 <a name="lbm.foundation.v1.MsgGovMintResponse"></a>
 
 ### MsgGovMintResponse
-MsgGovMintResponse defines the Msg/GovMint response type.
+MsgGovMintResponse is the Msg/GovMint response type.
 
 
 
@@ -17827,7 +17827,7 @@ MsgGovMintResponse defines the Msg/GovMint response type.
 <a name="lbm.foundation.v1.MsgGrant"></a>
 
 ### MsgGrant
-MsgGrant is a request type for Grant method. It declares authorization to the grantee
+MsgGrant is the Msg/Grant request type.
 on behalf of the foundation.
 
 
@@ -17845,7 +17845,7 @@ on behalf of the foundation.
 <a name="lbm.foundation.v1.MsgGrantResponse"></a>
 
 ### MsgGrantResponse
-MsgGrantResponse defines the Msg/MsgGrant response type.
+MsgGrantResponse is the Msg/MsgGrant response type.
 
 
 
@@ -17880,8 +17880,7 @@ MsgLeaveFoundationResponse is the Msg/LeaveFoundation response type.
 <a name="lbm.foundation.v1.MsgRevoke"></a>
 
 ### MsgRevoke
-MsgRevoke revokes any authorization with the provided sdk.Msg type
-to the grantee on behalf of the foundation.
+MsgRevoke is the Msg/Revoke request type.
 
 
 | Field | Type | Label | Description |
@@ -17898,7 +17897,7 @@ to the grantee on behalf of the foundation.
 <a name="lbm.foundation.v1.MsgRevokeResponse"></a>
 
 ### MsgRevokeResponse
-MsgRevokeResponse defines the Msg/MsgRevokeResponse response type.
+MsgRevokeResponse is the Msg/MsgRevokeResponse response type.
 
 
 
@@ -18022,7 +18021,7 @@ MsgVoteResponse is the Msg/Vote response type.
 <a name="lbm.foundation.v1.MsgWithdrawFromTreasury"></a>
 
 ### MsgWithdrawFromTreasury
-MsgWithdrawFromTreasury represents a message to withdraw coins from the treasury.
+MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
 
 
 | Field | Type | Label | Description |
@@ -18039,7 +18038,7 @@ MsgWithdrawFromTreasury represents a message to withdraw coins from the treasury
 <a name="lbm.foundation.v1.MsgWithdrawFromTreasuryResponse"></a>
 
 ### MsgWithdrawFromTreasuryResponse
-MsgWithdrawFromTreasuryResponse defines the Msg/WithdrawFromTreasury response type.
+MsgWithdrawFromTreasuryResponse is the Msg/WithdrawFromTreasury response type.
 
 
 
@@ -18106,8 +18105,8 @@ Msg defines the foundation Msg service.
 | `Vote` | [MsgVote](#lbm.foundation.v1.MsgVote) | [MsgVoteResponse](#lbm.foundation.v1.MsgVoteResponse) | Vote allows a voter to vote on a proposal. | |
 | `Exec` | [MsgExec](#lbm.foundation.v1.MsgExec) | [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse) | Exec executes a proposal. | |
 | `LeaveFoundation` | [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation) | [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse) | LeaveFoundation allows a member to leave the foundation. | |
-| `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (granter, grantee, Authorization) tuple, then the grant will be overwritten. | |
-| `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name on the granter that has been granted to the grantee. | |
+| `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (grantee, Authorization) tuple, then the grant will be overwritten. | |
+| `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name that has been granted to the grantee. | |
 | `GovMint` | [MsgGovMint](#lbm.foundation.v1.MsgGovMint) | [MsgGovMintResponse](#lbm.foundation.v1.MsgGovMintResponse) | GovMint defines a gov mint coins to the treasury. | |
 
  <!-- end services -->

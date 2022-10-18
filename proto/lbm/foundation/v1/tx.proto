@@ -44,28 +44,28 @@ service Msg {
 
   // Grant grants the provided authorization to the grantee with authority of
   // the foundation. If there is already a grant for the given
-  // (granter, grantee, Authorization) tuple, then the grant will be overwritten.
+  // (grantee, Authorization) tuple, then the grant will be overwritten.
   rpc Grant(MsgGrant) returns (MsgGrantResponse);
 
-  // Revoke revokes any authorization corresponding to the provided method name on the
-  // granter that has been granted to the grantee.
+  // Revoke revokes any authorization corresponding to the provided method name
+  // that has been granted to the grantee.
   rpc Revoke(MsgRevoke) returns (MsgRevokeResponse);
 
   // GovMint defines a gov mint coins to the treasury.
   rpc GovMint(MsgGovMint) returns (MsgGovMintResponse);
 }
 
-// MsgFundTreasury represents a message to fund the treasury.
+// MsgFundTreasury is the Msg/FundTreasury request type.
 message MsgFundTreasury {
   string   from                            = 1;
   repeated cosmos.base.v1beta1.Coin amount = 2
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
 
-// MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
+// MsgFundTreasuryResponse is the Msg/FundTreasury response type.
 message MsgFundTreasuryResponse {}
 
-// MsgWithdrawFromTreasury represents a message to withdraw coins from the treasury.
+// MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
 message MsgWithdrawFromTreasury {
   string   operator                        = 1;
   string   to                              = 2;
@@ -73,7 +73,7 @@ message MsgWithdrawFromTreasury {
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
 
-// MsgWithdrawFromTreasuryResponse defines the Msg/WithdrawFromTreasury response type.
+// MsgWithdrawFromTreasuryResponse is the Msg/WithdrawFromTreasury response type.
 message MsgWithdrawFromTreasuryResponse {}
 
 // MsgUpdateMembers is the Msg/UpdateMembers request type.
@@ -193,7 +193,7 @@ message MsgLeaveFoundation {
 // MsgLeaveFoundationResponse is the Msg/LeaveFoundation response type.
 message MsgLeaveFoundationResponse {}
 
-// MsgGrant is a request type for Grant method. It declares authorization to the grantee
+// MsgGrant is the Msg/Grant request type.
 // on behalf of the foundation.
 message MsgGrant {
   string operator = 1;
@@ -203,26 +203,25 @@ message MsgGrant {
       [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization"];
 }
 
-// MsgGrantResponse defines the Msg/MsgGrant response type.
+// MsgGrantResponse is the Msg/MsgGrant response type.
 message MsgGrantResponse {}
 
-// MsgRevoke revokes any authorization with the provided sdk.Msg type
-// to the grantee on behalf of the foundation.
+// MsgRevoke is the Msg/Revoke request type.
 message MsgRevoke {
   string operator     = 1;
   string grantee      = 2;
   string msg_type_url = 3;
 }
 
-// MsgRevokeResponse defines the Msg/MsgRevokeResponse response type.
+// MsgRevokeResponse is the Msg/MsgRevokeResponse response type.
 message MsgRevokeResponse {}
 
-// MsgGovMint represents a message to mint coins to the treasury.
+// MsgGovMint is the Msg/GovMint request type.
 message MsgGovMint {
   string   operator                        = 1;
   repeated cosmos.base.v1beta1.Coin amount = 2
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
 
-// MsgGovMintResponse defines the Msg/GovMint response type.
+// MsgGovMintResponse is the Msg/GovMint response type.
 message MsgGovMintResponse {}

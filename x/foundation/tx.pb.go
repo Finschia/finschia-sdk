@@ -64,7 +64,7 @@ func (Exec) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_5ec2105611cae3ff, []int{0}
 }
 
-// MsgFundTreasury represents a message to fund the treasury.
+// MsgFundTreasury is the Msg/FundTreasury request type.
 type MsgFundTreasury struct {
 	From   string                              `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
 	Amount github_com_line_lbm_sdk_types.Coins `protobuf:"bytes,2,rep,name=amount,proto3,castrepeated=github.com/line/lbm-sdk/types.Coins" json:"amount"`
@@ -103,7 +103,7 @@ func (m *MsgFundTreasury) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgFundTreasury proto.InternalMessageInfo
 
-// MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
+// MsgFundTreasuryResponse is the Msg/FundTreasury response type.
 type MsgFundTreasuryResponse struct {
 }
 
@@ -140,7 +140,7 @@ func (m *MsgFundTreasuryResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgFundTreasuryResponse proto.InternalMessageInfo
 
-// MsgWithdrawFromTreasury represents a message to withdraw coins from the treasury.
+// MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
 type MsgWithdrawFromTreasury struct {
 	Operator string                              `protobuf:"bytes,1,opt,name=operator,proto3" json:"operator,omitempty"`
 	To       string                              `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
@@ -180,7 +180,7 @@ func (m *MsgWithdrawFromTreasury) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgWithdrawFromTreasury proto.InternalMessageInfo
 
-// MsgWithdrawFromTreasuryResponse defines the Msg/WithdrawFromTreasury response type.
+// MsgWithdrawFromTreasuryResponse is the Msg/WithdrawFromTreasury response type.
 type MsgWithdrawFromTreasuryResponse struct {
 }
 
@@ -778,7 +778,7 @@ func (m *MsgLeaveFoundationResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgLeaveFoundationResponse proto.InternalMessageInfo
 
-// MsgGrant is a request type for Grant method. It declares authorization to the grantee
+// MsgGrant is the Msg/Grant request type.
 // on behalf of the foundation.
 type MsgGrant struct {
 	Operator      string      `protobuf:"bytes,1,opt,name=operator,proto3" json:"operator,omitempty"`
@@ -819,7 +819,7 @@ func (m *MsgGrant) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgGrant proto.InternalMessageInfo
 
-// MsgGrantResponse defines the Msg/MsgGrant response type.
+// MsgGrantResponse is the Msg/MsgGrant response type.
 type MsgGrantResponse struct {
 }
 
@@ -856,8 +856,7 @@ func (m *MsgGrantResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgGrantResponse proto.InternalMessageInfo
 
-// MsgRevoke revokes any authorization with the provided sdk.Msg type
-// to the grantee on behalf of the foundation.
+// MsgRevoke is the Msg/Revoke request type.
 type MsgRevoke struct {
 	Operator   string `protobuf:"bytes,1,opt,name=operator,proto3" json:"operator,omitempty"`
 	Grantee    string `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
@@ -897,7 +896,7 @@ func (m *MsgRevoke) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgRevoke proto.InternalMessageInfo
 
-// MsgRevokeResponse defines the Msg/MsgRevokeResponse response type.
+// MsgRevokeResponse is the Msg/MsgRevokeResponse response type.
 type MsgRevokeResponse struct {
 }
 
@@ -934,7 +933,7 @@ func (m *MsgRevokeResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgRevokeResponse proto.InternalMessageInfo
 
-// MsgGovMint represents a message to mint coins to the treasury.
+// MsgGovMint is the Msg/GovMint request type.
 type MsgGovMint struct {
 	Operator string                              `protobuf:"bytes,1,opt,name=operator,proto3" json:"operator,omitempty"`
 	Amount   github_com_line_lbm_sdk_types.Coins `protobuf:"bytes,2,rep,name=amount,proto3,castrepeated=github.com/line/lbm-sdk/types.Coins" json:"amount"`
@@ -973,7 +972,7 @@ func (m *MsgGovMint) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgGovMint proto.InternalMessageInfo
 
-// MsgGovMintResponse defines the Msg/GovMint response type.
+// MsgGovMintResponse is the Msg/GovMint response type.
 type MsgGovMintResponse struct {
 }
 
@@ -1145,10 +1144,10 @@ type MsgClient interface {
 	LeaveFoundation(ctx context.Context, in *MsgLeaveFoundation, opts ...grpc.CallOption) (*MsgLeaveFoundationResponse, error)
 	// Grant grants the provided authorization to the grantee with authority of
 	// the foundation. If there is already a grant for the given
-	// (granter, grantee, Authorization) tuple, then the grant will be overwritten.
+	// (grantee, Authorization) tuple, then the grant will be overwritten.
 	Grant(ctx context.Context, in *MsgGrant, opts ...grpc.CallOption) (*MsgGrantResponse, error)
-	// Revoke revokes any authorization corresponding to the provided method name on the
-	// granter that has been granted to the grantee.
+	// Revoke revokes any authorization corresponding to the provided method name
+	// that has been granted to the grantee.
 	Revoke(ctx context.Context, in *MsgRevoke, opts ...grpc.CallOption) (*MsgRevokeResponse, error)
 	// GovMint defines a gov mint coins to the treasury.
 	GovMint(ctx context.Context, in *MsgGovMint, opts ...grpc.CallOption) (*MsgGovMintResponse, error)
@@ -1292,10 +1291,10 @@ type MsgServer interface {
 	LeaveFoundation(context.Context, *MsgLeaveFoundation) (*MsgLeaveFoundationResponse, error)
 	// Grant grants the provided authorization to the grantee with authority of
 	// the foundation. If there is already a grant for the given
-	// (granter, grantee, Authorization) tuple, then the grant will be overwritten.
+	// (grantee, Authorization) tuple, then the grant will be overwritten.
 	Grant(context.Context, *MsgGrant) (*MsgGrantResponse, error)
-	// Revoke revokes any authorization corresponding to the provided method name on the
-	// granter that has been granted to the grantee.
+	// Revoke revokes any authorization corresponding to the provided method name
+	// that has been granted to the grantee.
 	Revoke(context.Context, *MsgRevoke) (*MsgRevokeResponse, error)
 	// GovMint defines a gov mint coins to the treasury.
 	GovMint(context.Context, *MsgGovMint) (*MsgGovMintResponse, error)
