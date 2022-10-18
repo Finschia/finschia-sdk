@@ -189,6 +189,7 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 	}
 }
 
+// invalidAllowance does not implement proto.Message.
 type invalidAllowance struct {
 }
 
@@ -225,10 +226,11 @@ func TestSetAllowance(t *testing.T) {
 			allowed, err := feegrant.NewAllowedMsgAllowance(allowance, msgs)
 			require.NoError(t, err)
 			require.NotNil(t, allowed)
+			err = allowed.SetAllowance(tc.allowance)
 			if tc.valid {
-				require.NoError(t, allowed.SetAllowance(tc.allowance))
+				require.NoError(t, err)
 			} else {
-				require.Error(t, allowed.SetAllowance(tc.allowance))
+				require.Error(t, err)
 			}
 		})
 	}
