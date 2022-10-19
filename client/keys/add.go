@@ -340,17 +340,22 @@ func verifyMultisigTarget(kb keyring.Keyring, multisigKeys []string) error {
 	if err != nil {
 		return err
 	}
+
+	kmap := make(map[string]bool)
+	for i := 0; i < len(kl); i++ {
+		kmap[kl[i].GetName()] = true
+	}
+
 	cnt := 0
-	for i := 0; i < len(multisigKeys); i++ {
-		for j := 0; j < len(kl); j++ {
-			if kl[j].GetName() == multisigKeys[i] {
-				cnt++
-				break
-			}
+	for _, k := range multisigKeys {
+		if _, ok := kmap[k]; ok {
+			cnt++
 		}
 	}
+
 	if cnt == len(multisigKeys) {
 		return nil
 	}
+
 	return errors.New("part of the multisig target key does not exist")
 }
