@@ -10,15 +10,15 @@ import (
 )
 
 // ensureMsgAuthz checks that if a message requires signers that all of them are equal to the given account address of the operator.
-func ensureMsgAuthz(msgs []sdk.Msg, operator sdk.AccAddress) error {
+func ensureMsgAuthz(msgs []sdk.Msg, authority sdk.AccAddress) error {
 	for _, msg := range msgs {
 		// In practice, GetSigners() should return a non-empty array without
 		// duplicates, so the code below is equivalent to:
-		// `msgs[i].GetSigners()[0] == operator`
+		// `msgs[i].GetSigners()[0] == authority`
 		// but we prefer to loop through all GetSigners just to be sure.
 		for _, signer := range msg.GetSigners() {
-			if !operator.Equals(signer) {
-				return sdkerrors.ErrUnauthorized.Wrapf("signer of msg (%s) is not the operator (%s)", signer, operator)
+			if !authority.Equals(signer) {
+				return sdkerrors.ErrUnauthorized.Wrapf("msg does not have foundation authorization; expected %s, got %s", authority, signer)
 			}
 		}
 	}

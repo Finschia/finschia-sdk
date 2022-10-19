@@ -89,31 +89,31 @@ func (s *KeeperTestSuite) TestMsgFundTreasury() {
 
 func (s *KeeperTestSuite) TestMsgWithdrawFromTreasury() {
 	testCases := map[string]struct {
-		operator sdk.AccAddress
-		to       sdk.AccAddress
-		amount   sdk.Int
-		valid    bool
+		authority sdk.AccAddress
+		to        sdk.AccAddress
+		amount    sdk.Int
+		valid     bool
 	}{
 		"valid request": {
-			operator: s.operator,
-			to:       s.stranger,
-			amount:   s.balance,
-			valid:    true,
+			authority: s.operator,
+			to:        s.stranger,
+			amount:    s.balance,
+			valid:     true,
 		},
-		"operator not authorized": {
-			operator: s.stranger,
-			to:       s.stranger,
-			amount:   s.balance,
+		"authority not authorized": {
+			authority: s.stranger,
+			to:        s.stranger,
+			amount:    s.balance,
 		},
 		"receiver not authorized": {
-			operator: s.operator,
-			to:       s.members[0],
-			amount:   s.balance,
+			authority: s.operator,
+			to:        s.members[0],
+			amount:    s.balance,
 		},
 		"insufficient funds": {
-			operator: s.operator,
-			to:       s.stranger,
-			amount:   s.balance.Add(sdk.OneInt()),
+			authority: s.operator,
+			to:        s.stranger,
+			amount:    s.balance.Add(sdk.OneInt()),
 		},
 	}
 
@@ -122,9 +122,9 @@ func (s *KeeperTestSuite) TestMsgWithdrawFromTreasury() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &foundation.MsgWithdrawFromTreasury{
-				Operator: tc.operator.String(),
-				To:       tc.to.String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, tc.amount)),
+				Authority: tc.authority.String(),
+				To:        tc.to.String(),
+				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, tc.amount)),
 			}
 			res, err := s.msgServer.WithdrawFromTreasury(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
@@ -139,12 +139,12 @@ func (s *KeeperTestSuite) TestMsgWithdrawFromTreasury() {
 
 func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 	testCases := map[string]struct {
-		operator sdk.AccAddress
-		policy   foundation.DecisionPolicy
-		valid    bool
+		authority sdk.AccAddress
+		policy    foundation.DecisionPolicy
+		valid     bool
 	}{
 		"valid request": {
-			operator: s.operator,
+			authority: s.operator,
 			policy: &foundation.ThresholdDecisionPolicy{
 				Threshold: sdk.OneDec(),
 				Windows:   &foundation.DecisionPolicyWindows{},
@@ -152,14 +152,14 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 			valid: true,
 		},
 		"not authorized": {
-			operator: s.stranger,
+			authority: s.stranger,
 			policy: &foundation.ThresholdDecisionPolicy{
 				Threshold: sdk.OneDec(),
 				Windows:   &foundation.DecisionPolicyWindows{},
 			},
 		},
 		"invalid policy": {
-			operator: s.operator,
+			authority: s.operator,
 			policy: &foundation.ThresholdDecisionPolicy{
 				Threshold: sdk.OneDec(),
 				Windows: &foundation.DecisionPolicyWindows{
@@ -175,7 +175,7 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &foundation.MsgUpdateDecisionPolicy{
-				Operator: tc.operator.String(),
+				Authority: tc.authority.String(),
 			}
 			err := req.SetDecisionPolicy(tc.policy)
 			s.Require().NoError(err)
@@ -193,25 +193,25 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 
 func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 	testCases := map[string]struct {
-		operator sdk.AccAddress
-		member   foundation.MemberRequest
-		valid    bool
+		authority sdk.AccAddress
+		member    foundation.MemberRequest
+		valid     bool
 	}{
 		"valid request": {
-			operator: s.operator,
+			authority: s.operator,
 			member: foundation.MemberRequest{
 				Address: s.members[0].String(),
 			},
 			valid: true,
 		},
 		"not authorized": {
-			operator: s.stranger,
+			authority: s.stranger,
 			member: foundation.MemberRequest{
 				Address: s.members[0].String(),
 			},
 		},
 		"remove a non-member": {
-			operator: s.operator,
+			authority: s.operator,
 			member: foundation.MemberRequest{
 				Address: s.stranger.String(),
 				Remove:  true,
@@ -224,7 +224,7 @@ func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &foundation.MsgUpdateMembers{
-				Operator:      tc.operator.String(),
+				Authority:     tc.authority.String(),
 				MemberUpdates: []foundation.MemberRequest{tc.member},
 			}
 			res, err := s.msgServer.UpdateMembers(sdk.WrapSDKContext(ctx), req)
@@ -332,7 +332,7 @@ func (s *KeeperTestSuite) TestMsgWithdrawProposal() {
 			address:    s.members[0],
 			valid:      true,
 		},
-		"valid request (operator)": {
+		"valid request (authority)": {
 			proposalID: s.activeProposal,
 			address:    s.operator,
 			valid:      true,
@@ -553,24 +553,24 @@ func (s *KeeperTestSuite) TestMsgLeaveFoundation() {
 
 func (s *KeeperTestSuite) TestMsgGrant() {
 	testCases := map[string]struct {
-		operator      sdk.AccAddress
+		authority     sdk.AccAddress
 		grantee       sdk.AccAddress
 		authorization foundation.Authorization
 		valid         bool
 	}{
 		"valid request": {
-			operator:      s.operator,
+			authority:     s.operator,
 			grantee:       s.members[0],
 			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
 			valid:         true,
 		},
 		"not authorized": {
-			operator:      s.stranger,
+			authority:     s.stranger,
 			grantee:       s.members[0],
 			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
 		},
 		"already granted": {
-			operator:      s.operator,
+			authority:     s.operator,
 			grantee:       s.stranger,
 			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
 		},
@@ -581,8 +581,8 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &foundation.MsgGrant{
-				Operator: tc.operator.String(),
-				Grantee:  tc.grantee.String(),
+				Authority: tc.authority.String(),
+				Grantee:   tc.grantee.String(),
 			}
 			err := req.SetAuthorization(tc.authorization)
 			s.Require().NoError(err)
@@ -600,29 +600,29 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 
 func (s *KeeperTestSuite) TestMsgRevoke() {
 	testCases := map[string]struct {
-		operator   sdk.AccAddress
+		authority  sdk.AccAddress
 		grantee    sdk.AccAddress
 		msgTypeURL string
 		valid      bool
 	}{
 		"valid request": {
-			operator:   s.operator,
+			authority:  s.operator,
 			grantee:    s.stranger,
 			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 			valid:      true,
 		},
 		"no grant": {
-			operator:   s.operator,
+			authority:  s.operator,
 			grantee:    s.members[0],
 			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 		},
 		"not authorized": {
-			operator:   s.stranger,
+			authority:  s.stranger,
 			grantee:    s.stranger,
 			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 		},
 		"wrong granter": {
-			operator:   s.operator,
+			authority:  s.operator,
 			grantee:    s.stranger,
 			msgTypeURL: stakingplus.CreateValidatorAuthorization{}.MsgTypeURL(),
 		},
@@ -633,7 +633,7 @@ func (s *KeeperTestSuite) TestMsgRevoke() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &foundation.MsgRevoke{
-				Operator:   tc.operator.String(),
+				Authority:  tc.authority.String(),
 				Grantee:    tc.grantee.String(),
 				MsgTypeUrl: tc.msgTypeURL,
 			}
@@ -650,24 +650,24 @@ func (s *KeeperTestSuite) TestMsgRevoke() {
 
 func (s *KeeperTestSuite) TestMsgGovMint() {
 	testCases := map[string]struct {
-		operator       sdk.AccAddress
+		authority      sdk.AccAddress
 		amount         sdk.Coins
 		emptyCountTest bool
 		valid          bool
 	}{
 		"valid request": {
-			operator: s.operator,
-			amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
-			valid:    true,
+			authority: s.operator,
+			amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
+			valid:     true,
 		},
 		"empty count": {
-			operator:       s.operator,
+			authority:      s.operator,
 			amount:         sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
 			emptyCountTest: true,
 		},
 		"not authorized": {
-			operator: s.stranger,
-			amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
+			authority: s.stranger,
+			amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
 		},
 	}
 
@@ -680,8 +680,8 @@ func (s *KeeperTestSuite) TestMsgGovMint() {
 			}
 
 			req := &foundation.MsgGovMint{
-				Operator: tc.operator.String(),
-				Amount:   tc.amount,
+				Authority: tc.authority.String(),
+				Amount:    tc.amount,
 			}
 			res, err := s.msgServer.GovMint(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {

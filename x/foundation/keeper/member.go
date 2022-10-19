@@ -156,10 +156,11 @@ func (k Keeper) GetOperator(ctx sdk.Context) sdk.AccAddress {
 	return operator
 }
 
-func (k Keeper) validateOperator(ctx sdk.Context, operator string) error {
-	addr := sdk.MustAccAddressFromBech32(operator)
-	if !addr.Equals(k.GetOperator(ctx)) {
-		return sdkerrors.ErrUnauthorized.Wrapf("%s is not the operator", operator)
+func (k Keeper) validateAuthority(ctx sdk.Context, authority string) error {
+	addr := sdk.MustAccAddressFromBech32(authority)
+	validAuthority := k.GetOperator(ctx)
+	if !addr.Equals(validAuthority) {
+		return sdkerrors.ErrUnauthorized.Wrapf("invalid authority; expected %s, got %s", validAuthority, authority)
 	}
 
 	return nil

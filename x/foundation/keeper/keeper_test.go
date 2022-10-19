@@ -151,9 +151,9 @@ func (s *KeeperTestSuite) SetupTest() {
 	// create an invalid proposal which contains invalid message
 	invalidProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
-			Operator: s.operator.String(),
-			To:       s.stranger.String(),
-			Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance.Add(sdk.OneInt()))),
+			Authority: s.operator.String(),
+			To:        s.stranger.String(),
+			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance.Add(sdk.OneInt()))),
 		},
 	})
 	s.Require().NoError(err)
