@@ -125,7 +125,7 @@ func (m *EventFundTreasury) GetAmount() github_com_line_lbm_sdk_types.Coins {
 	return nil
 }
 
-// EventWithdrawFromTreasury is an event emitted when the operator withdraws coins from the treasury.
+// EventWithdrawFromTreasury is an event emitted when coins are withdrawn from the treasury.
 type EventWithdrawFromTreasury struct {
 	To     string                              `protobuf:"bytes,1,opt,name=to,proto3" json:"to,omitempty"`
 	Amount github_com_line_lbm_sdk_types.Coins `protobuf:"bytes,2,rep,name=amount,proto3,castrepeated=github.com/line/lbm-sdk/types.Coins" json:"amount"`
