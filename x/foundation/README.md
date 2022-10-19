@@ -242,7 +242,7 @@ the [Msg/WithdrawFromTreasury](#msgwithdrawfromtreasury).
 An account must have this authorization prior to sending the message.
 
 **Note:** You MUST provide the `CreateValidatorAuthorization`s into the genesis
-if `Msg/CreateValidator` is being censored (`CensoringMsgTypeUrls` contains the
+if `Msg/CreateValidator` is being censored (`CensoredMsgTypeUrls` contains the
 url of `Msg/CreateValidator`), or the chain cannot be started.
 
 +++ https://github.com/line/lbm-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/proto/lbm/stakingplus/v1/authz.proto#L9-L15
@@ -272,9 +272,9 @@ the genesis to make it work.
 
 The value of `FoundationTax` is the foundation tax rate.
 
-### CensoringMsgTypeUrls
+### CensoredMsgTypeUrls
 
-The `CensoringMsgTypeUrls` contains the urls of the messages under the
+The `CensoredMsgTypeUrls` contains the urls of the messages under the
 censorship.
 
 ## FoundationInfo
