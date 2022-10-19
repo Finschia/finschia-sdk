@@ -15,8 +15,13 @@ func TestImmutableTreePanics(t *testing.T) {
 	it := &immutableTree{immTree}
 	require.Panics(t, func() { it.Set([]byte{}, []byte{}) })
 	require.Panics(t, func() { it.Remove([]byte{}) })
-	require.Panics(t, func() { it.SaveVersion() })           // nolint:errcheck
-	require.Panics(t, func() { it.DeleteVersion(int64(1)) }) // nolint:errcheck
+	require.Panics(t, func() { it.SaveVersion() })                       // nolint:errcheck
+	require.Panics(t, func() { it.DeleteVersion(int64(1)) })             // nolint:errcheck
+	require.Panics(t, func() { it.LoadVersionForOverwriting(int64(1)) }) // nolint:errcheck
+
+	val, err := it.GetVersioned(nil, 1)
+	require.Error(t, err)
+	require.Nil(t, val)
 
 	val, proof, err := it.GetVersionedWithProof(nil, 1)
 	require.Error(t, err)
