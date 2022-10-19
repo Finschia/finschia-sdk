@@ -110,6 +110,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/staking) [\#728](https://github.com/line/lbm-sdk/pull/728) fix typo in unbondingToUnbonded() panic
 * (crypto) [\#731](https://github.com/line/lbm-sdk/pull/731) remove VRFProve function
 * (x/foundation) [\#732](https://github.com/line/lbm-sdk/pull/732) add verification on accounts into x/foundation Grants cli
+* (x/foundation) [\#730](https://github.com/line/lbm-sdk/pull/730) prune stale x/foundation proposals at voting period end
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
