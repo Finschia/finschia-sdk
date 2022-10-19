@@ -1,12 +1,14 @@
 package token_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	"github.com/line/lbm-sdk/x/token"
 )
 
@@ -739,5 +741,126 @@ func TestMsgRevokePermission(t *testing.T) {
 		require.NoError(t, err, name)
 
 		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+	}
+}
+
+func TestAminoJSON(t *testing.T) {
+	tx := legacytx.StdTx{}
+	var contractId = "deadbeef"
+
+	addrs := make([]sdk.AccAddress, 3)
+	for i := range addrs {
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	testCases := map[string]struct {
+		msg      legacytx.LegacyMsg
+		expected string
+	}{
+		"MsgSend": {
+			&token.MsgSend{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				To:         addrs[1].String(),
+				Amount:     sdk.OneInt(),
+			},
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSend\",\"value\":{\"amount\":\"1\",\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgTransferFrom": {
+			&token.MsgTransferFrom{
+				ContractId: contractId,
+				Proxy:      addrs[0].String(),
+				From:       addrs[1].String(),
+				To:         addrs[2].String(),
+				Amount:     sdk.OneInt(),
+			},
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgTransferFrom\",\"value\":{\"amount\":\"1\",\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String(), addrs[2].String()),
+		},
+		"MsgRevokeOperator": {
+			&token.MsgRevokeOperator{
+				ContractId: contractId,
+				Holder:     addrs[0].String(),
+				Operator:   addrs[1].String(),
+			},
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgRevokeOperator\",\"value\":{\"contract_id\":\"deadbeef\",\"holder\":\"%s\",\"operator\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgApprove": {
+			&token.MsgApprove{
+				ContractId: contractId,
+				Approver:   addrs[0].String(),
+				Proxy:      addrs[1].String(),
+			},
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgApprove\",\"value\":{\"approver\":\"%s\",\"contract_id\":\"deadbeef\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgIssue": {
+			&token.MsgIssue{
+				Name:     "Test Name",
+				Symbol:   "LN",
+				ImageUri: "http://image.url",
+				Meta:     "This is test",
+				Decimals: 6,
+				Mintable: false,
+				Owner:    addrs[0].String(),
+				To:       addrs[1].String(),
+				Amount:   sdk.NewInt(1000000),
+			},
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgIssue\",\"value\":{\"amount\":\"1000000\",\"decimals\":6,\"image_uri\":\"http://image.url\",\"meta\":\"This is test\",\"name\":\"Test Name\",\"owner\":\"%s\",\"symbol\":\"LN\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgGrantPermission": {
+			&token.MsgGrantPermission{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				To:         addrs[1].String(),
+				Permission: token.LegacyPermissionMint.String(),
+			},
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgGrantPermission\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"permission\":\"mint\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgRevokePermission": {
+			&token.MsgRevokePermission{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				Permission: token.LegacyPermissionMint.String(),
+			},
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgRevokePermission\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"permission\":\"mint\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+		},
+		"MsgMint": {
+			&token.MsgMint{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				To:         addrs[1].String(),
+				Amount:     sdk.NewInt(1000000),
+			},
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgMint\",\"value\":{\"amount\":\"1000000\",\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgBurn": {
+			&token.MsgBurn{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				Amount:     sdk.Int{},
+			},
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurn\",\"value\":{\"amount\":\"0\",\"contract_id\":\"deadbeef\",\"from\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+		},
+		"MsgBurnFrom": {
+			&token.MsgBurnFrom{
+				ContractId: contractId,
+				Proxy:      addrs[0].String(),
+				From:       addrs[1].String(),
+				Amount:     sdk.NewInt(1000000),
+			},
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnFrom\",\"value\":{\"amount\":\"1000000\",\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgModify": {
+			&token.MsgModify{
+				ContractId: contractId,
+				Owner:      addrs[0].String(),
+				Changes:    []token.Pair{token.Pair{Field: token.AttributeKeyName.String(), Value: "New test"}},
+			},
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgModify\",\"value\":{\"changes\":[{\"field\":\"name\",\"value\":\"New test\"}],\"contract_id\":\"deadbeef\",\"owner\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+		},
+	}
+
+	for _, tc := range testCases {
+		tx.Msgs = []sdk.Msg{tc.msg}
+		require.Equal(t, tc.expected, string(legacytx.StdSignBytes("foo", 1, 1, 1, legacytx.StdFee{}, []sdk.Msg{tc.msg}, "memo")))
 	}
 }
