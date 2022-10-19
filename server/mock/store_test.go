@@ -38,4 +38,5 @@ func TestMultiStore(t *testing.T) {
 	store := multiStore{}
 	require.Panics(t, func() { store.Snapshot(1, nil) }, "Snapshot should panic")
 	require.Panics(t, func() { store.Restore(1, 1, nil) }, "Restore should panic")
+	require.Panics(t, func() { store.SetIAVLDisableFastNode(false) }, "SetIAVLDisableFastNode should panic")
 }
