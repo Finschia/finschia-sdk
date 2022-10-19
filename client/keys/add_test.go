@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/cosmos/go-bip39"
+	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/ostracon/libs/cli"
@@ -121,11 +122,12 @@ func Test_runAddCmdBasic(t *testing.T) {
 		} else {
 			require.NoError(t, cmd.ExecuteContext(ctx))
 		}
-		cmd.ResetFlags()
-		cmd = AddKeyCommand()
-		cmd.Flags().AddFlagSet(Commands("").PersistentFlags())
-		mockIn = testutil.ApplyMockIODiscardOutErr(cmd)
-		*clientCtxPtr = clientCtxPtr.WithInput(mockIn)
+
+		cmd.Flags().Visit(func(f *pflag.Flag) {
+			if f.Name == "multisig" {
+				f.Value.(pflag.SliceValue).Replace([]string{})
+			}
+		})
 	}
 
 	cmd.SetArgs([]string{
