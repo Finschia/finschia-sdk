@@ -9,6 +9,51 @@ import (
 	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
+func (s *KeeperTestSuite) TestMsgUpdateParams() {
+	testCases := map[string]struct {
+		authority sdk.AccAddress
+		params    foundation.Params
+		valid     bool
+	}{
+		"valid request": {
+			authority: s.operator,
+			params:    foundation.DefaultParams(),
+			valid:     true,
+		},
+		"invalid authority": {
+			authority: s.stranger,
+			params:    foundation.DefaultParams(),
+		},
+		"enabling feature": {
+			authority: s.operator,
+			params: foundation.Params{
+				FoundationTax: sdk.ZeroDec(),
+				CensoredMsgTypeUrls: []string{
+					sdk.MsgTypeURL((*testdata.TestMsg)(nil)),
+				},
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+
+			req := &foundation.MsgUpdateParams{
+				Authority: tc.authority.String(),
+				Params:    tc.params,
+			}
+			res, err := s.msgServer.UpdateParams(sdk.WrapSDKContext(ctx), req)
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+			s.Require().NotNil(res)
+		})
+	}
+}
+
 func (s *KeeperTestSuite) TestMsgFundTreasury() {
 	testCases := map[string]struct {
 		amount sdk.Int
