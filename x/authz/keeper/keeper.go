@@ -132,7 +132,7 @@ func (k Keeper) DispatchActions(ctx sdk.Context, grantee sdk.AccAddress, msgs []
 func (k Keeper) SaveGrant(ctx sdk.Context, grantee, granter sdk.AccAddress, authorization authz.Authorization, expiration time.Time) error {
 	store := ctx.KVStore(k.storeKey)
 
-	grant, err := authz.NewGrant(authorization, expiration)
+	grant, err := authz.NewGrant(ctx.BlockTime(), authorization, expiration)
 	if err != nil {
 		return err
 	}
@@ -233,6 +233,10 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *authz.GenesisState {
 // InitGenesis new authz genesis
 func (k Keeper) InitGenesis(ctx sdk.Context, data *authz.GenesisState) {
 	for _, entry := range data.Authorization {
+		if entry.Expiration.Before(ctx.BlockTime()) {
+			continue
+		}
+
 		grantee := sdk.MustAccAddressFromBech32(entry.Grantee)
 		granter := sdk.MustAccAddressFromBech32(entry.Granter)
 		a, ok := entry.Authorization.GetCachedValue().(authz.Authorization)

@@ -94,6 +94,7 @@ $ %s query gov proposal 1
 func GetCmdQueryProposals() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposals",
+		Args:  cobra.NoArgs,
 		Short: "Query proposals with optional filters",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query for a all paginated proposals that match optional filters:

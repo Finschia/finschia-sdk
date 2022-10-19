@@ -85,6 +85,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#704](https://github.com/line/lbm-sdk/pull/704) update x/foundation params
 * (x/wasm)  [\#695](https://github.com/line/lbm-sdk/pull/695) fix to prevent external filesystem dependency of simulation
 * (x/foundation) [\#729](https://github.com/line/lbm-sdk/pull/729) add UpdateParams to x/foundation
+* (amino) [\#736](https://github.com/line/lbm-sdk/pull/736) apply the missing amino codec registratoin of cosmos-sdk
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
@@ -112,6 +113,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (crypto) [\#731](https://github.com/line/lbm-sdk/pull/731) remove VRFProve function
 * (x/foundation) [\#732](https://github.com/line/lbm-sdk/pull/732) add verification on accounts into x/foundation Grants cli
 * (x/foundation) [\#730](https://github.com/line/lbm-sdk/pull/730) prune stale x/foundation proposals at voting period end
+* (cli) [\#734](https://github.com/line/lbm-sdk/pull/734) add restrictions on the number of args in the CLIs
 * (client) [\#737](https://github.com/line/lbm-sdk/pull/737) check multisig key list to prevent unexpected key deletion
 
 ### Breaking Changes
