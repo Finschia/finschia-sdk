@@ -946,6 +946,29 @@ simd tx foundation --help
 you cannot broadcast the message directly. The use of those commands is to make
 it easier to generate the messages by end users.
 
+#### update-params
+
+The `update-params` command allows users to update the foundation's parameters.
+
+```bash
+simd tx foundation update-params [authority] [params-json] [flags]
+```
+
+Example:
+
+```bash
+simd tx foundation update-params link1... \
+    '{
+       "foundation_tax": "0.1",
+       "censored_msg_type_urls": [
+         "/cosmos.staking.v1beta1.MsgCreateValidator",
+         "/lbm.foundation.v1.MsgWithdrawFromTreasury"
+       ]
+     }'
+```
+
+**Note:** The signer is the foundation operator.
+
 #### update-members
 
 The `update-members` command allows users to update the foundation's members.
