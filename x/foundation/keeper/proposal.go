@@ -8,22 +8,6 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
-// handleUpdateFoundationParamsProposal is a handler for update foundation params proposal
-func (k Keeper) handleUpdateFoundationParamsProposal(ctx sdk.Context, p *foundation.UpdateFoundationParamsProposal) error {
-	params := p.Params
-	if err := k.UpdateParams(ctx, params); err != nil {
-		return err
-	}
-
-	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateFoundationParams{
-		Params: params,
-	}); err != nil {
-		panic(err)
-	}
-
-	return nil
-}
-
 func (k Keeper) newProposalID(ctx sdk.Context) uint64 {
 	id := k.getPreviousProposalID(ctx) + 1
 	k.setPreviousProposalID(ctx, id)
@@ -189,15 +173,25 @@ func (k Keeper) iterateProposalsByVPEnd(ctx sdk.Context, endTime time.Time, fn f
 }
 
 func (k Keeper) UpdateTallyOfVPEndProposals(ctx sdk.Context) {
+	var proposals []foundation.Proposal
 	k.iterateProposalsByVPEnd(ctx, ctx.BlockTime(), func(proposal foundation.Proposal) (stop bool) {
+		proposals = append(proposals, proposal)
+		return false
+	})
+
+	for _, proposal := range proposals {
+		proposal := proposal
+
+		if proposal.Status == foundation.PROPOSAL_STATUS_ABORTED || proposal.Status == foundation.PROPOSAL_STATUS_WITHDRAWN {
+			k.pruneProposal(ctx, proposal)
+			continue
+		}
+
 		if err := k.doTallyAndUpdate(ctx, &proposal); err != nil {
 			panic(err)
 		}
-
 		k.setProposal(ctx, proposal)
-
-		return false
-	})
+	}
 }
 
 func (k Keeper) GetProposal(ctx sdk.Context, id uint64) (*foundation.Proposal, error) {

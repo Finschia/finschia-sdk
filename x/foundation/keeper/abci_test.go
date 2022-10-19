@@ -66,27 +66,32 @@ func (s *KeeperTestSuite) TestEndBlocker() {
 	keeper.EndBlocker(ctx, s.keeper)
 
 	for name, tc := range map[string]struct {
-		id     uint64
-		status foundation.ProposalStatus
+		id      uint64
+		removed bool
+		status  foundation.ProposalStatus
 	}{
 		"active proposal": {
-			s.activeProposal,
-			foundation.PROPOSAL_STATUS_ACCEPTED,
+			id:     s.activeProposal,
+			status: foundation.PROPOSAL_STATUS_ACCEPTED,
 		},
 		"voted proposal": {
-			s.votedProposal,
-			foundation.PROPOSAL_STATUS_REJECTED,
+			id:     s.votedProposal,
+			status: foundation.PROPOSAL_STATUS_REJECTED,
 		},
 		"withdrawn proposal": {
-			s.withdrawnProposal,
-			foundation.PROPOSAL_STATUS_WITHDRAWN,
+			id:      s.withdrawnProposal,
+			removed: true,
 		},
 		"invalid proposal": {
-			s.invalidProposal,
-			foundation.PROPOSAL_STATUS_ACCEPTED,
+			id:     s.invalidProposal,
+			status: foundation.PROPOSAL_STATUS_ACCEPTED,
 		},
 	} {
 		proposal, err := s.keeper.GetProposal(ctx, tc.id)
+		if tc.removed {
+			s.Require().Error(err, name)
+			continue
+		}
 		s.Require().NoError(err, name)
 		s.Require().NotNil(proposal, name)
 		s.Require().Equal(tc.status, proposal.Status, name)

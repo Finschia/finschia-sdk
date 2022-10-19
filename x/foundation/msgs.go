@@ -8,6 +8,27 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
+var _ sdk.Msg = (*MsgUpdateParams)(nil)
+
+// ValidateBasic implements Msg.
+func (m MsgUpdateParams) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", m.Authority)
+	}
+
+	if err := m.Params.ValidateBasic(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetSigners implements Msg.
+func (m MsgUpdateParams) GetSigners() []sdk.AccAddress {
+	signer := sdk.MustAccAddressFromBech32(m.Authority)
+	return []sdk.AccAddress{signer}
+}
+
 var _ sdk.Msg = (*MsgFundTreasury)(nil)
 
 // ValidateBasic implements Msg.

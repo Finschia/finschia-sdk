@@ -1114,7 +1114,6 @@
     - [Proposal](#lbm.foundation.v1.Proposal)
     - [TallyResult](#lbm.foundation.v1.TallyResult)
     - [ThresholdDecisionPolicy](#lbm.foundation.v1.ThresholdDecisionPolicy)
-    - [UpdateFoundationParamsProposal](#lbm.foundation.v1.UpdateFoundationParamsProposal)
     - [Vote](#lbm.foundation.v1.Vote)
   
     - [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult)
@@ -1130,8 +1129,8 @@
     - [EventRevoke](#lbm.foundation.v1.EventRevoke)
     - [EventSubmitProposal](#lbm.foundation.v1.EventSubmitProposal)
     - [EventUpdateDecisionPolicy](#lbm.foundation.v1.EventUpdateDecisionPolicy)
-    - [EventUpdateFoundationParams](#lbm.foundation.v1.EventUpdateFoundationParams)
     - [EventUpdateMembers](#lbm.foundation.v1.EventUpdateMembers)
+    - [EventUpdateParams](#lbm.foundation.v1.EventUpdateParams)
     - [EventVote](#lbm.foundation.v1.EventVote)
     - [EventWithdrawFromTreasury](#lbm.foundation.v1.EventWithdrawFromTreasury)
     - [EventWithdrawProposal](#lbm.foundation.v1.EventWithdrawProposal)
@@ -1187,6 +1186,8 @@
     - [MsgUpdateDecisionPolicyResponse](#lbm.foundation.v1.MsgUpdateDecisionPolicyResponse)
     - [MsgUpdateMembers](#lbm.foundation.v1.MsgUpdateMembers)
     - [MsgUpdateMembersResponse](#lbm.foundation.v1.MsgUpdateMembersResponse)
+    - [MsgUpdateParams](#lbm.foundation.v1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#lbm.foundation.v1.MsgUpdateParamsResponse)
     - [MsgVote](#lbm.foundation.v1.MsgVote)
     - [MsgVoteResponse](#lbm.foundation.v1.MsgVoteResponse)
     - [MsgWithdrawFromTreasury](#lbm.foundation.v1.MsgWithdrawFromTreasury)
@@ -16986,25 +16987,6 @@ satisfies the two following conditions:
 
 
 
-<a name="lbm.foundation.v1.UpdateFoundationParamsProposal"></a>
-
-### UpdateFoundationParamsProposal
-UpdateFoundationParamsProposal details a proposal to update params of foundation module.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  |  |
-| `description` | [string](#string) |  |  |
-| `params` | [Params](#lbm.foundation.v1.Params) |  | params defines the x/foundation parameters to update.
-
-Note: All parameters must be supplied. |
-
-
-
-
-
-
 <a name="lbm.foundation.v1.Vote"></a>
 
 ### Vote
@@ -17212,21 +17194,6 @@ EventUpdateDecisionPolicy is an event emitted when the decision policy have been
 
 
 
-<a name="lbm.foundation.v1.EventUpdateFoundationParams"></a>
-
-### EventUpdateFoundationParams
-EventUpdateFoundationParams is emitted after updating foundation parameters.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.foundation.v1.Params) |  |  |
-
-
-
-
-
-
 <a name="lbm.foundation.v1.EventUpdateMembers"></a>
 
 ### EventUpdateMembers
@@ -17236,6 +17203,21 @@ EventUpdateMembers is an event emitted when the members have been updated.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `member_updates` | [MemberRequest](#lbm.foundation.v1.MemberRequest) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.EventUpdateParams"></a>
+
+### EventUpdateParams
+EventUpdateParams is emitted after updating foundation parameters.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.foundation.v1.Params) |  |  |
 
 
 
@@ -17775,7 +17757,7 @@ MsgExecResponse is the Msg/Exec request type.
 <a name="lbm.foundation.v1.MsgFundTreasury"></a>
 
 ### MsgFundTreasury
-MsgFundTreasury represents a message to fund the treasury.
+MsgFundTreasury is the Msg/FundTreasury request type.
 
 
 | Field | Type | Label | Description |
@@ -17791,7 +17773,7 @@ MsgFundTreasury represents a message to fund the treasury.
 <a name="lbm.foundation.v1.MsgFundTreasuryResponse"></a>
 
 ### MsgFundTreasuryResponse
-MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
+MsgFundTreasuryResponse is the Msg/FundTreasury response type.
 
 
 
@@ -17801,7 +17783,7 @@ MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
 <a name="lbm.foundation.v1.MsgGovMint"></a>
 
 ### MsgGovMint
-MsgGovMint represents a message to mint coins to the treasury.
+MsgGovMint is the Msg/GovMint request type.
 
 
 | Field | Type | Label | Description |
@@ -17817,7 +17799,7 @@ MsgGovMint represents a message to mint coins to the treasury.
 <a name="lbm.foundation.v1.MsgGovMintResponse"></a>
 
 ### MsgGovMintResponse
-MsgGovMintResponse defines the Msg/GovMint response type.
+MsgGovMintResponse is the Msg/GovMint response type.
 
 
 
@@ -17827,7 +17809,7 @@ MsgGovMintResponse defines the Msg/GovMint response type.
 <a name="lbm.foundation.v1.MsgGrant"></a>
 
 ### MsgGrant
-MsgGrant is a request type for Grant method. It declares authorization to the grantee
+MsgGrant is the Msg/Grant request type.
 on behalf of the foundation.
 
 
@@ -17845,7 +17827,7 @@ on behalf of the foundation.
 <a name="lbm.foundation.v1.MsgGrantResponse"></a>
 
 ### MsgGrantResponse
-MsgGrantResponse defines the Msg/MsgGrant response type.
+MsgGrantResponse is the Msg/MsgGrant response type.
 
 
 
@@ -17880,8 +17862,7 @@ MsgLeaveFoundationResponse is the Msg/LeaveFoundation response type.
 <a name="lbm.foundation.v1.MsgRevoke"></a>
 
 ### MsgRevoke
-MsgRevoke revokes any authorization with the provided sdk.Msg type
-to the grantee on behalf of the foundation.
+MsgRevoke is the Msg/Revoke request type.
 
 
 | Field | Type | Label | Description |
@@ -17898,7 +17879,7 @@ to the grantee on behalf of the foundation.
 <a name="lbm.foundation.v1.MsgRevokeResponse"></a>
 
 ### MsgRevokeResponse
-MsgRevokeResponse defines the Msg/MsgRevokeResponse response type.
+MsgRevokeResponse is the Msg/MsgRevokeResponse response type.
 
 
 
@@ -17990,6 +17971,34 @@ MsgUpdateMembersResponse is the Msg/UpdateMembers response type.
 
 
 
+<a name="lbm.foundation.v1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+MsgUpdateParams is the Msg/UpdateParams request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | authority is the address of the operator account. |
+| `params` | [Params](#lbm.foundation.v1.Params) |  | params defines the x/foundation parameters to update.
+
+NOTE: All parameters must be supplied. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+MsgUpdateParamsResponse is the Msg/UpdateParams response type.
+
+
+
+
+
+
 <a name="lbm.foundation.v1.MsgVote"></a>
 
 ### MsgVote
@@ -18022,7 +18031,7 @@ MsgVoteResponse is the Msg/Vote response type.
 <a name="lbm.foundation.v1.MsgWithdrawFromTreasury"></a>
 
 ### MsgWithdrawFromTreasury
-MsgWithdrawFromTreasury represents a message to withdraw coins from the treasury.
+MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
 
 
 | Field | Type | Label | Description |
@@ -18039,7 +18048,7 @@ MsgWithdrawFromTreasury represents a message to withdraw coins from the treasury
 <a name="lbm.foundation.v1.MsgWithdrawFromTreasuryResponse"></a>
 
 ### MsgWithdrawFromTreasuryResponse
-MsgWithdrawFromTreasuryResponse defines the Msg/WithdrawFromTreasury response type.
+MsgWithdrawFromTreasuryResponse is the Msg/WithdrawFromTreasury response type.
 
 
 
@@ -18097,6 +18106,7 @@ Msg defines the foundation Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `UpdateParams` | [MsgUpdateParams](#lbm.foundation.v1.MsgUpdateParams) | [MsgUpdateParamsResponse](#lbm.foundation.v1.MsgUpdateParamsResponse) | UpdateParams defines an operation for updating the x/foundation module parameters. | |
 | `FundTreasury` | [MsgFundTreasury](#lbm.foundation.v1.MsgFundTreasury) | [MsgFundTreasuryResponse](#lbm.foundation.v1.MsgFundTreasuryResponse) | FundTreasury defines a method to fund the treasury. | |
 | `WithdrawFromTreasury` | [MsgWithdrawFromTreasury](#lbm.foundation.v1.MsgWithdrawFromTreasury) | [MsgWithdrawFromTreasuryResponse](#lbm.foundation.v1.MsgWithdrawFromTreasuryResponse) | WithdrawFromTreasury defines a method to withdraw coins from the treasury. | |
 | `UpdateMembers` | [MsgUpdateMembers](#lbm.foundation.v1.MsgUpdateMembers) | [MsgUpdateMembersResponse](#lbm.foundation.v1.MsgUpdateMembersResponse) | UpdateMembers updates the foundation members. | |
@@ -18106,8 +18116,8 @@ Msg defines the foundation Msg service.
 | `Vote` | [MsgVote](#lbm.foundation.v1.MsgVote) | [MsgVoteResponse](#lbm.foundation.v1.MsgVoteResponse) | Vote allows a voter to vote on a proposal. | |
 | `Exec` | [MsgExec](#lbm.foundation.v1.MsgExec) | [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse) | Exec executes a proposal. | |
 | `LeaveFoundation` | [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation) | [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse) | LeaveFoundation allows a member to leave the foundation. | |
-| `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (granter, grantee, Authorization) tuple, then the grant will be overwritten. | |
-| `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name on the granter that has been granted to the grantee. | |
+| `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (grantee, Authorization) tuple, then the grant will be overwritten. | |
+| `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name that has been granted to the grantee. | |
 | `GovMint` | [MsgGovMint](#lbm.foundation.v1.MsgGovMint) | [MsgGovMintResponse](#lbm.foundation.v1.MsgGovMintResponse) | GovMint defines a gov mint coins to the treasury. | |
 
  <!-- end services -->
