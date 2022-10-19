@@ -8,22 +8,6 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
-// handleUpdateFoundationParamsProposal is a handler for update foundation params proposal
-func (k Keeper) handleUpdateFoundationParamsProposal(ctx sdk.Context, p *foundation.UpdateFoundationParamsProposal) error {
-	params := p.Params
-	if err := k.UpdateParams(ctx, params); err != nil {
-		return err
-	}
-
-	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateFoundationParams{
-		Params: params,
-	}); err != nil {
-		panic(err)
-	}
-
-	return nil
-}
-
 func (k Keeper) newProposalID(ctx sdk.Context) uint64 {
 	id := k.getPreviousProposalID(ctx) + 1
 	k.setPreviousProposalID(ctx, id)

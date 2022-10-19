@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
-
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	"github.com/line/lbm-sdk/testutil/testdata"
@@ -15,54 +13,48 @@ import (
 	"github.com/line/lbm-sdk/x/foundation/client/cli"
 )
 
-func (s *IntegrationTestSuite) TestNewProposalCmdUpdateFoundationParams() {
+func (s *IntegrationTestSuite) TestNewTxCmdUpdateParams() {
 	val := s.network.Validators[0]
 
-	commonFlags := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
+	commonArgs := []string{
+		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
 	}
 
-	testCases := []struct {
-		name         string
-		args         []string
-		expectErr    bool
-		expectedCode uint32
-		respType     proto.Message
+	testCases := map[string]struct {
+		args  []string
+		valid bool
 	}{
-		{
-			"wrong number of args",
-			commonFlags,
-			true, 0, nil,
-		},
-		{
-			"valid transaction",
-			append([]string{
+		"valid transaction": {
+			[]string{
+				s.operator.String(),
 				fmt.Sprintf(`{"foundation_tax": "%s"}`, sdk.ZeroDec()),
-			}, commonFlags...),
-			false, 0, &sdk.TxResponse{},
+			},
+			true,
+		},
+		"wrong number of args": {
+			[]string{
+				s.operator.String(),
+				fmt.Sprintf(`{"foundation_tax": "%s"}`, sdk.ZeroDec()),
+				"extra",
+			},
+			false,
 		},
 	}
 
-	for _, tc := range testCases {
+	for name, tc := range testCases {
 		tc := tc
 
-		s.Run(tc.name, func() {
-			cmd := cli.NewProposalCmdUpdateFoundationParams()
-			flags.AddTxFlagsToCmd(cmd)
-
-			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
-			if tc.expectErr {
+		s.Run(name, func() {
+			cmd := cli.NewTxCmdUpdateParams()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
 				s.Require().Error(err)
-			} else {
-				s.Require().NoError(err)
-				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), tc.respType), out)
-
-				txResp := tc.respType.(*sdk.TxResponse)
-				s.Require().Equal(tc.expectedCode, txResp.Code)
+				return
 			}
+			s.Require().NoError(err)
+
+			var res txtypes.Tx
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 		})
 	}
 }
