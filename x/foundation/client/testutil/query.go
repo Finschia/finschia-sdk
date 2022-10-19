@@ -179,6 +179,13 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMember() {
 			false,
 			nil,
 		},
+		"invalid member": {
+			[]string{
+				"",
+			},
+			false,
+			nil,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -262,6 +269,12 @@ func (s *IntegrationTestSuite) TestNewQueryCmdProposal() {
 			[]string{
 				fmt.Sprintf("%d", s.proposalID),
 				"extra",
+			},
+			false,
+		},
+		"invalid id": {
+			[]string{
+				fmt.Sprintf("%d", -1),
 			},
 			false,
 		},
@@ -352,6 +365,20 @@ func (s *IntegrationTestSuite) TestNewQueryCmdVote() {
 			},
 			false,
 		},
+		"invalid proposal id": {
+			[]string{
+				fmt.Sprintf("%d", -1),
+				s.permanentMember.String(),
+			},
+			false,
+		},
+		"invalid voter": {
+			[]string{
+				fmt.Sprintf("%d", s.proposalID),
+				"",
+			},
+			false,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -396,6 +423,12 @@ func (s *IntegrationTestSuite) TestNewQueryCmdVotes() {
 			},
 			false,
 		},
+		"invalid proposal id": {
+			[]string{
+				fmt.Sprintf("%d", -1),
+			},
+			false,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -437,6 +470,12 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTallyResult() {
 			[]string{
 				fmt.Sprintf("%d", s.proposalID),
 				"extra",
+			},
+			false,
+		},
+		"invalid proposal id": {
+			[]string{
+				fmt.Sprintf("%d", -1),
 			},
 			false,
 		},
@@ -492,6 +531,14 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 				s.stranger.String(),
 				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 				"extra",
+			},
+			false,
+			0,
+		},
+		"invalid grantee": {
+			[]string{
+				"",
+				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 			},
 			false,
 			0,

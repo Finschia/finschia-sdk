@@ -377,12 +377,18 @@ func NewQueryCmdGrants() *cobra.Command {
 				return err
 			}
 
+			grantee, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
 			msgTypeURL := ""
 			if len(args) >= 2 {
 				msgTypeURL = args[1]
 			}
+
 			params := foundation.QueryGrantsRequest{
-				Grantee:    args[0],
+				Grantee:    grantee.String(),
 				MsgTypeUrl: msgTypeURL,
 				Pagination: pageReq,
 			}
