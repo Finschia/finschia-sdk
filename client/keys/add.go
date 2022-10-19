@@ -105,6 +105,7 @@ output
 */
 func runAddCmd(ctx client.Context, cmd *cobra.Command, args []string, inBuf *bufio.Reader) error {
 	var err error
+	var multisigThreshold int
 
 	name := args[0]
 	interactive, _ := cmd.Flags().GetBool(flagInteractive)
@@ -121,6 +122,11 @@ func runAddCmd(ctx client.Context, cmd *cobra.Command, args []string, inBuf *buf
 	}
 	multisigKeys, _ := cmd.Flags().GetStringSlice(flagMultisig)
 	if len(multisigKeys) != 0 {
+		multisigThreshold, _ = cmd.Flags().GetInt(flagMultiSigThreshold)
+		if err = validateMultisigThreshold(multisigThreshold, len(multisigKeys)); err != nil {
+			return err
+		}
+
 		err = verifyMultisigTarget(kb, multisigKeys, name)
 		if err != nil {
 			return err
@@ -151,10 +157,6 @@ func runAddCmd(ctx client.Context, cmd *cobra.Command, args []string, inBuf *buf
 
 		if len(multisigKeys) != 0 {
 			pks := make([]cryptotypes.PubKey, len(multisigKeys))
-			multisigThreshold, _ := cmd.Flags().GetInt(flagMultiSigThreshold)
-			if err := validateMultisigThreshold(multisigThreshold, len(multisigKeys)); err != nil {
-				return err
-			}
 
 			for i, keyname := range multisigKeys {
 				k, err := kb.Key(keyname)
