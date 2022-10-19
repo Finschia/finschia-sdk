@@ -38,35 +38,35 @@ func TestPaginatedIterator(t *testing.T) {
 		reverse     bool
 	}
 	for _, tc := range []testCase{
-		// {
-		// 	desc:   "FirstChunk",
-		// 	page:   1,
-		// 	limit:  4,
-		// 	result: asc[:4],
-		// },
-		// {
-		// 	desc:   "SecondChunk",
-		// 	page:   2,
-		// 	limit:  4,
-		// 	result: asc[4:8],
-		// },
-		// {
-		// 	desc:   "ThirdChunkHalf",
-		// 	page:   3,
-		// 	limit:  4,
-		// 	result: asc[8:],
-		// },
-		// {
-		// 	desc:   "OverLimit",
-		// 	page:   10,
-		// 	limit:  10,
-		// 	result: [][]byte{},
-		// },
-		// {
-		// 	desc:   "ZeroLimit",
-		// 	page:   1,
-		// 	result: [][]byte{},
-		// },
+		{
+			desc:   "FirstChunk",
+			page:   1,
+			limit:  4,
+			result: asc[:4],
+		},
+		{
+			desc:   "SecondChunk",
+			page:   2,
+			limit:  4,
+			result: asc[4:8],
+		},
+		{
+			desc:   "ThirdChunkHalf",
+			page:   3,
+			limit:  4,
+			result: asc[8:],
+		},
+		{
+			desc:   "OverLimit",
+			page:   10,
+			limit:  10,
+			result: [][]byte{},
+		},
+		{
+			desc:   "ZeroLimit",
+			page:   1,
+			result: [][]byte{},
+		},
 		{
 			desc:    "ReverseFirstChunk",
 			page:    1,
@@ -74,13 +74,13 @@ func TestPaginatedIterator(t *testing.T) {
 			result:  desc[:6],
 			reverse: true,
 		},
-		// {
-		// 	desc:    "ReverseSecondChunk",
-		// 	page:    2,
-		// 	limit:   6,
-		// 	result:  desc[6:],
-		// 	reverse: true,
-		// },
+		{
+			desc:    "ReverseSecondChunk",
+			page:    2,
+			limit:   6,
+			result:  desc[6:],
+			reverse: true,
+		},
 	} {
 		tc := tc
 		t.Run(tc.desc, func(t *testing.T) {
