@@ -107,6 +107,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (baseapp) [\#724](https://github.com/line/lbm-sdk/pull/724) add checking pubkey type from validator params
 * (x/staking) [\#726](https://github.com/line/lbm-sdk/pull/726) check allowedList size in StakeAuthorization.Accept()
 * (x/staking) [\#728](https://github.com/line/lbm-sdk/pull/728) fix typo in unbondingToUnbonded() panic
+* (x/foundation) [\#732](https://github.com/line/lbm-sdk/pull/732) add verification on accounts into x/foundation Grants cli
 * (client) [\#734](https://github.com/line/lbm-sdk/pull/734) add restrictions on the number of args in the CLIs
 
 ### Breaking Changes
