@@ -18,21 +18,6 @@ message Params {
   repeated string censored_msg_type_urls = 2;
 }
 
-// UpdateFoundationParamsProposal details a proposal to update params of foundation module.
-message UpdateFoundationParamsProposal {
-  option (gogoproto.equal)            = false;
-  option (gogoproto.goproto_getters)  = false;
-  option (gogoproto.goproto_stringer) = false;
-
-  string title       = 1;
-  string description = 2;
-
-  // params defines the x/foundation parameters to update.
-  //
-  // Note: All parameters must be supplied.
-  Params params = 3 [(gogoproto.nullable) = false];
-}
-
 // Member represents a foundation member with an account address and metadata.
 message Member {
   // address is the member's account address.

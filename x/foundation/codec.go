@@ -4,15 +4,11 @@ import (
 	"github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
-	registry.RegisterImplementations((*govtypes.Content)(nil),
-		&UpdateFoundationParamsProposal{},
-	)
-
 	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgUpdateParams{},
 		&MsgFundTreasury{},
 		&MsgWithdrawFromTreasury{},
 		&MsgUpdateMembers{},
