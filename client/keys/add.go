@@ -121,7 +121,7 @@ func runAddCmd(ctx client.Context, cmd *cobra.Command, args []string, inBuf *buf
 	}
 	multisigKeys, _ := cmd.Flags().GetStringSlice(flagMultisig)
 	if len(multisigKeys) != 0 {
-		err = verifyMultisigTarget(kb, multisigKeys)
+		err = verifyMultisigTarget(kb, multisigKeys, name)
 		if err != nil {
 			return err
 		}
@@ -335,7 +335,7 @@ func printCreate(cmd *cobra.Command, info keyring.Info, showMnemonic bool, mnemo
 	return nil
 }
 
-func verifyMultisigTarget(kb keyring.Keyring, multisigKeys []string) error {
+func verifyMultisigTarget(kb keyring.Keyring, multisigKeys []string, newkey string) error {
 	kl, err := kb.List()
 	if err != nil {
 		return err
@@ -346,6 +346,10 @@ func verifyMultisigTarget(kb keyring.Keyring, multisigKeys []string) error {
 		kmap[kl[i].GetName()] = true
 	}
 
+	if _, ok := kmap[newkey]; ok {
+		return errors.New("you cannot specify a new key as one of the names of the keys that make up a multisig")
+	}
+
 	cnt := 0
 	for _, k := range multisigKeys {
 		if _, ok := kmap[k]; ok {
@@ -353,9 +357,9 @@ func verifyMultisigTarget(kb keyring.Keyring, multisigKeys []string) error {
 		}
 	}
 
-	if cnt == len(multisigKeys) {
-		return nil
+	if cnt != len(multisigKeys) {
+		return errors.New("part of the multisig target key does not exist")
 	}
 
-	return errors.New("part of the multisig target key does not exist")
+	return nil
 }
