@@ -3,6 +3,7 @@ package types
 import (
 	"github.com/line/lbm-sdk/codec"
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 var (
@@ -11,5 +12,5 @@ var (
 
 func init() {
 	cryptocodec.RegisterCrypto(amino)
-	amino.Seal()
+	sdk.RegisterLegacyAminoCodec(amino)
 }

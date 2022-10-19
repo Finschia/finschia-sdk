@@ -3,13 +3,13 @@ package types
 import (
 	"fmt"
 
-	yaml "gopkg.in/yaml.v2"
-
 	"github.com/gogo/protobuf/proto"
+	yaml "gopkg.in/yaml.v2"
 
 	"github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/gov/codec"
 )
 
 // Governance message types and routes
@@ -83,8 +83,8 @@ func (m MsgSubmitProposal) Type() string { return TypeMsgSubmitProposal }
 
 // ValidateBasic implements Msg
 func (m MsgSubmitProposal) ValidateBasic() error {
-	if m.Proposer == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, m.Proposer)
+	if _, err := sdk.AccAddressFromBech32(m.Proposer); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proposer address: %s", err)
 	}
 	if !m.InitialDeposit.IsValid() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, m.InitialDeposit.String())
@@ -109,7 +109,7 @@ func (m MsgSubmitProposal) ValidateBasic() error {
 
 // GetSignBytes implements Msg
 func (m MsgSubmitProposal) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&m)
+	bz := codec.ModuleCdc.MustMarshalJSON(&m)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -145,8 +145,8 @@ func (msg MsgDeposit) Type() string { return TypeMsgDeposit }
 
 // ValidateBasic implements Msg
 func (msg MsgDeposit) ValidateBasic() error {
-	if msg.Depositor == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, msg.Depositor)
+	if _, err := sdk.AccAddressFromBech32(msg.Depositor); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid depositor address: %s", err)
 	}
 	if !msg.Amount.IsValid() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
@@ -166,7 +166,7 @@ func (msg MsgDeposit) String() string {
 
 // GetSignBytes implements Msg
 func (msg MsgDeposit) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
+	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -190,10 +190,9 @@ func (msg MsgVote) Type() string { return TypeMsgVote }
 
 // ValidateBasic implements Msg
 func (msg MsgVote) ValidateBasic() error {
-	if msg.Voter == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, msg.Voter)
+	if _, err := sdk.AccAddressFromBech32(msg.Voter); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err)
 	}
-
 	if !ValidVoteOption(msg.Option) {
 		return sdkerrors.Wrap(ErrInvalidVote, msg.Option.String())
 	}
@@ -209,7 +208,7 @@ func (msg MsgVote) String() string {
 
 // GetSignBytes implements Msg
 func (msg MsgVote) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
+	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -233,8 +232,8 @@ func (msg MsgVoteWeighted) Type() string { return TypeMsgVoteWeighted }
 
 // ValidateBasic implements Msg
 func (msg MsgVoteWeighted) ValidateBasic() error {
-	if msg.Voter == "" {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, msg.Voter)
+	if _, err := sdk.AccAddressFromBech32(msg.Voter); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid voter address: %s", err)
 	}
 
 	if len(msg.Options) == 0 {
@@ -273,7 +272,7 @@ func (msg MsgVoteWeighted) String() string {
 
 // GetSignBytes implements Msg
 func (msg MsgVoteWeighted) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
+	bz := codec.ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 

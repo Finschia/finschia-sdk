@@ -85,6 +85,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#704](https://github.com/line/lbm-sdk/pull/704) update x/foundation params
 * (x/wasm)  [\#695](https://github.com/line/lbm-sdk/pull/695) fix to prevent external filesystem dependency of simulation
 * (x/foundation) [\#729](https://github.com/line/lbm-sdk/pull/729) add UpdateParams to x/foundation
+* (amino) [\#736](https://github.com/line/lbm-sdk/pull/736) apply the missing amino codec registratoin of cosmos-sdk
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
