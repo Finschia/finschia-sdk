@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	proto "github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -189,7 +190,7 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 	}
 }
 
-// invalidAllowance does not implement proto.Message.
+// invalidAllowance does not implement proto.Message
 type invalidAllowance struct {
 }
 
@@ -204,6 +205,32 @@ func (i invalidAllowance) ValidateBasic() error {
 	return nil
 }
 
+// invalidAllowance2 does not have field
+type invalidAllowance2 struct {
+}
+
+// compilation time interface implementation check
+var _ feegrant.FeeAllowanceI = (*invalidAllowance2)(nil)
+var _ proto.Message = (*invalidAllowance2)(nil)
+
+func (i invalidAllowance2) Accept(ctx sdk.Context, fee sdk.Coins, msgs []sdk.Msg) (remove bool, err error) {
+	return false, nil
+}
+
+func (i invalidAllowance2) ValidateBasic() error {
+	return nil
+}
+
+func (i invalidAllowance2) Reset() {
+}
+
+func (i invalidAllowance2) String() string {
+	return ""
+}
+
+func (i invalidAllowance2) ProtoMessage() {
+}
+
 func TestSetAllowance(t *testing.T) {
 	cases := map[string]struct {
 		allowance feegrant.FeeAllowanceI
@@ -213,8 +240,12 @@ func TestSetAllowance(t *testing.T) {
 			allowance: &feegrant.BasicAllowance{},
 			valid:     true,
 		},
-		"invalid allowance": {
+		"allowance without proto.Message": {
 			allowance: &invalidAllowance{},
+			valid:     false,
+		},
+		"allowance without fields": {
+			allowance: (*invalidAllowance2)(nil),
 			valid:     false,
 		},
 	}
