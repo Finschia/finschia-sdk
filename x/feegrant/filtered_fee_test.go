@@ -190,45 +190,38 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 	}
 }
 
-// invalidAllowance does not implement proto.Message
-type invalidAllowance struct {
+// invalidInterfaceAllowance does not implement proto.Message
+type invalidInterfaceAllowance struct {
 }
 
 // compilation time interface implementation check
-var _ feegrant.FeeAllowanceI = (*invalidAllowance)(nil)
+var _ feegrant.FeeAllowanceI = (*invalidInterfaceAllowance)(nil)
 
-func (i invalidAllowance) Accept(ctx sdk.Context, fee sdk.Coins, msgs []sdk.Msg) (remove bool, err error) {
+func (i invalidInterfaceAllowance) Accept(ctx sdk.Context, fee sdk.Coins, msgs []sdk.Msg) (remove bool, err error) {
 	return false, nil
 }
 
-func (i invalidAllowance) ValidateBasic() error {
+func (i invalidInterfaceAllowance) ValidateBasic() error {
 	return nil
 }
 
-// invalidAllowance2 does not have field
-type invalidAllowance2 struct {
+// invalidProtoAllowance can not run proto.Marshal
+type invalidProtoAllowance struct {
+	invalidInterfaceAllowance
 }
 
 // compilation time interface implementation check
-var _ feegrant.FeeAllowanceI = (*invalidAllowance2)(nil)
-var _ proto.Message = (*invalidAllowance2)(nil)
+var _ feegrant.FeeAllowanceI = (*invalidProtoAllowance)(nil)
+var _ proto.Message = (*invalidProtoAllowance)(nil)
 
-func (i invalidAllowance2) Accept(ctx sdk.Context, fee sdk.Coins, msgs []sdk.Msg) (remove bool, err error) {
-	return false, nil
+func (i invalidProtoAllowance) Reset() {
 }
 
-func (i invalidAllowance2) ValidateBasic() error {
-	return nil
-}
-
-func (i invalidAllowance2) Reset() {
-}
-
-func (i invalidAllowance2) String() string {
+func (i invalidProtoAllowance) String() string {
 	return ""
 }
 
-func (i invalidAllowance2) ProtoMessage() {
+func (i invalidProtoAllowance) ProtoMessage() {
 }
 
 func TestSetAllowance(t *testing.T) {
@@ -240,12 +233,12 @@ func TestSetAllowance(t *testing.T) {
 			allowance: &feegrant.BasicAllowance{},
 			valid:     true,
 		},
-		"allowance without proto.Message": {
-			allowance: &invalidAllowance{},
+		"invalid interface allowance": {
+			allowance: &invalidInterfaceAllowance{},
 			valid:     false,
 		},
-		"allowance without fields": {
-			allowance: (*invalidAllowance2)(nil),
+		"empty allowance": {
+			allowance: (*invalidProtoAllowance)(nil),
 			valid:     false,
 		},
 	}
