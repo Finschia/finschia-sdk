@@ -11,6 +11,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/client/cli"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
@@ -29,13 +30,16 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParams() {
 			[]string{},
 			true,
 			&foundation.QueryParamsResponse{
-				Params: &foundation.Params{
-					Enabled:       true,
+				Params: foundation.Params{
 					FoundationTax: sdk.MustNewDecFromStr("0.2"),
+					CensoredMsgTypeUrls: []string{
+						sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
+						sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
+					},
 				},
 			},
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				"extra",
 			},
@@ -78,7 +82,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTreasury() {
 			[]string{},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				"extra",
 			},
@@ -119,7 +123,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdFoundationInfo() {
 			[]string{},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				"extra",
 			},
@@ -159,17 +163,25 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMember() {
 	}{
 		"valid query": {
 			[]string{
-				val.Address.String(),
+				s.permanentMember.String(),
 			},
 			true,
 			&foundation.Member{
-				Address:  val.Address.String(),
-				Metadata: "genesis member",
+				Address:  s.permanentMember.String(),
+				Metadata: "permanent member",
 			},
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
+				s.permanentMember.String(),
 				"extra",
+			},
+			false,
+			nil,
+		},
+		"invalid member": {
+			[]string{
+				"",
 			},
 			false,
 			nil,
@@ -210,7 +222,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdMembers() {
 			[]string{},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				"extra",
 			},
@@ -249,19 +261,21 @@ func (s *IntegrationTestSuite) TestNewQueryCmdProposal() {
 	}{
 		"valid query": {
 			[]string{
-				"1",
+				fmt.Sprintf("%d", s.proposalID),
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
-				"1",
+				fmt.Sprintf("%d", s.proposalID),
 				"extra",
 			},
 			false,
 		},
-		"not enough args": {
-			[]string{},
+		"invalid id": {
+			[]string{
+				fmt.Sprintf("%d", -1),
+			},
 			false,
 		},
 	}
@@ -299,7 +313,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdProposals() {
 			[]string{},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				"extra",
 			},
@@ -338,22 +352,30 @@ func (s *IntegrationTestSuite) TestNewQueryCmdVote() {
 	}{
 		"valid query": {
 			[]string{
-				"1",
-				val.Address.String(),
+				fmt.Sprintf("%d", s.proposalID),
+				s.permanentMember.String(),
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
-				"1",
-				val.Address.String(),
+				fmt.Sprintf("%d", s.proposalID),
+				s.permanentMember.String(),
 				"extra",
 			},
 			false,
 		},
-		"not enough args": {
+		"invalid proposal id": {
 			[]string{
-				"1",
+				fmt.Sprintf("%d", -1),
+				s.permanentMember.String(),
+			},
+			false,
+		},
+		"invalid voter": {
+			[]string{
+				fmt.Sprintf("%d", s.proposalID),
+				"",
 			},
 			false,
 		},
@@ -390,19 +412,21 @@ func (s *IntegrationTestSuite) TestNewQueryCmdVotes() {
 	}{
 		"valid query": {
 			[]string{
-				"1",
+				fmt.Sprintf("%d", s.proposalID),
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
-				"1",
+				fmt.Sprintf("%d", s.proposalID),
 				"extra",
 			},
 			false,
 		},
-		"not enough args": {
-			[]string{},
+		"invalid proposal id": {
+			[]string{
+				fmt.Sprintf("%d", -1),
+			},
 			false,
 		},
 	}
@@ -438,19 +462,21 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTallyResult() {
 	}{
 		"valid query": {
 			[]string{
-				"1",
+				fmt.Sprintf("%d", s.proposalID),
 			},
 			true,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
-				"1",
+				fmt.Sprintf("%d", s.proposalID),
 				"extra",
 			},
 			false,
 		},
-		"not enough args": {
-			[]string{},
+		"invalid proposal id": {
+			[]string{
+				fmt.Sprintf("%d", -1),
+			},
 			false,
 		},
 	}
@@ -500,11 +526,19 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 			true,
 			1,
 		},
-		"extra args": {
+		"wrong number of args": {
 			[]string{
 				s.stranger.String(),
 				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 				"extra",
+			},
+			false,
+			0,
+		},
+		"invalid grantee": {
+			[]string{
+				"",
+				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 			},
 			false,
 			0,
@@ -526,6 +560,47 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 			var actual foundation.QueryGrantsResponse
 			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, len(actual.Authorizations))
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdGovMint() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args  []string
+		valid bool
+	}{
+		"valid query": {
+			[]string{},
+			true,
+		},
+		"extra args": {
+			[]string{
+				"extra",
+			},
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdGovMint()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual foundation.QueryGovMintResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 		})
 	}
 }

@@ -13,20 +13,9 @@ import "cosmos_proto/cosmos.proto";
 
 // Params defines the parameters for the foundation module.
 message Params {
-  bool   enabled        = 1;
-  string foundation_tax = 2
+  string foundation_tax = 1
       [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec", (gogoproto.nullable) = false];
-}
-
-// UpdateFoundationParamsProposal details a proposal to update params of foundation module.
-message UpdateFoundationParamsProposal {
-  option (gogoproto.equal)            = false;
-  option (gogoproto.goproto_getters)  = false;
-  option (gogoproto.goproto_stringer) = false;
-
-  string title       = 1;
-  string description = 2;
-  Params params      = 3;
+  repeated string censored_msg_type_urls = 2;
 }
 
 // Member represents a foundation member with an account address and metadata.
@@ -105,6 +94,14 @@ message DecisionPolicyWindows {
   // is empty, meaning that all proposals created with this decision policy
   // won't be able to be executed.
   google.protobuf.Duration min_execution_period = 2 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
+}
+
+// OutsourcingDecisionPolicy is a dummy decision policy which is set after
+// the operator has been updated into x/group's group policy.
+message OutsourcingDecisionPolicy {
+  option (cosmos_proto.implements_interface) = "DecisionPolicy";
+
+  string description = 1;
 }
 
 // VoteOption enumerates the valid vote options for a given proposal.

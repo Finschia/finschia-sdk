@@ -8,6 +8,27 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
+var _ sdk.Msg = (*MsgUpdateParams)(nil)
+
+// ValidateBasic implements Msg.
+func (m MsgUpdateParams) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", m.Authority)
+	}
+
+	if err := m.Params.ValidateBasic(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetSigners implements Msg.
+func (m MsgUpdateParams) GetSigners() []sdk.AccAddress {
+	signer := sdk.MustAccAddressFromBech32(m.Authority)
+	return []sdk.AccAddress{signer}
+}
+
 var _ sdk.Msg = (*MsgFundTreasury)(nil)
 
 // ValidateBasic implements Msg.
@@ -350,6 +371,31 @@ func (m MsgRevoke) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgRevoke) GetSigners() []sdk.AccAddress {
+	signer := sdk.MustAccAddressFromBech32(m.Operator)
+	return []sdk.AccAddress{signer}
+}
+
+var _ sdk.Msg = (*MsgGovMint)(nil)
+
+// ValidateBasic implements Msg.
+func (m MsgGovMint) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
+
+	if m.Amount.Empty() {
+		return sdkerrors.ErrInvalidCoins.Wrapf("The gov-mint request amount is empty.")
+	}
+
+	if !m.Amount.IsValid() {
+		return sdkerrors.ErrInvalidCoins.Wrap(m.Amount.String())
+	}
+
+	return nil
+}
+
+// GetSigners implements Msg.
+func (m MsgGovMint) GetSigners() []sdk.AccAddress {
 	signer := sdk.MustAccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }

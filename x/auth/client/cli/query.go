@@ -115,6 +115,7 @@ func GetAccountCmd() *cobra.Command {
 func GetAccountsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "accounts",
+		Args:  cobra.NoArgs,
 		Short: "Query all the accounts",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -147,6 +148,7 @@ func GetAccountsCmd() *cobra.Command {
 func QueryTxsByEventsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "txs",
+		Args:  cobra.NoArgs,
 		Short: "Query for paginated transactions that match a set of events",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`

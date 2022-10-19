@@ -33,6 +33,7 @@ import (
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	bankcli "github.com/line/lbm-sdk/x/bank/client/testutil"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/x/genutil/client/cli"
 )
 
 type IntegrationTestSuite struct {
@@ -452,6 +453,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxsCmdByEvents() {
 	testCases := []struct {
 		name        string
 		args        []string
+		expectErr   bool
 		expectEmpty bool
 	}{
 		{
@@ -462,6 +464,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxsCmdByEvents() {
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
+			false,
 		},
 		{
 			"no matching fee event",
@@ -470,6 +473,16 @@ func (s *IntegrationTestSuite) TestCLIQueryTxsCmdByEvents() {
 					sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(0))).String()),
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
+			false,
+			true,
+		},
+		{
+			"wrong number of arguments",
+			[]string{
+				"extra",
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+			},
+			true,
 			true,
 		},
 	}
@@ -481,6 +494,10 @@ func (s *IntegrationTestSuite) TestCLIQueryTxsCmdByEvents() {
 			clientCtx := val.ClientCtx
 
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
+			if tc.expectErr {
+				s.Require().Error(err)
+				return
+			}
 			s.Require().NoError(err)
 
 			var result sdk.SearchTxsResult
@@ -1121,16 +1138,43 @@ func (s *IntegrationTestSuite) TestGetAccountCmd() {
 
 func (s *IntegrationTestSuite) TestGetAccountsCmd() {
 	val := s.network.Validators[0]
-	clientCtx := val.ClientCtx
 
-	out, err := clitestutil.ExecTestCLICmd(clientCtx, authcli.GetAccountsCmd(), []string{
+	commonArgs := []string{
 		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
-	})
-	s.Require().NoError(err)
+	}
 
-	var res authtypes.QueryAccountsResponse
-	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res))
-	s.Require().NotEmpty(res.Accounts)
+	testCases := map[string]struct {
+		args  []string
+		valid bool
+	}{
+		"valid request": {
+			valid: true,
+		},
+		"wrong number of args": {
+			args: []string{
+				"extra",
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+		s.Run(name, func() {
+			cmd := authcli.GetAccountsCmd()
+			clientCtx := val.ClientCtx
+
+			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var res authtypes.QueryAccountsResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res))
+			s.Require().NotEmpty(res.Accounts)
+		})
+	}
 }
 
 func TestGetBroadcastCommandOfflineFlag(t *testing.T) {
@@ -1247,7 +1291,7 @@ func (s *IntegrationTestSuite) TestTxWithoutPublicKey() {
 	unsignedTxFile := testutil.WriteToNewTempFile(s.T(), string(txJSON))
 
 	// Sign the file with the unsignedTx.
-	signedTx, err := TxSignExec(val1.ClientCtx, val1.Address, unsignedTxFile.Name())
+	signedTx, err := TxSignExec(val1.ClientCtx, val1.Address, unsignedTxFile.Name(), fmt.Sprintf("--%s=true", cli.FlagOverwrite))
 	s.Require().NoError(err)
 
 	// Remove the signerInfo's `public_key` field manually from the signedTx.

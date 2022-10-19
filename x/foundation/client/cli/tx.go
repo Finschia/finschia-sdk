@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -13,20 +12,23 @@ import (
 	"github.com/line/lbm-sdk/client/tx"
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/version"
 	"github.com/line/lbm-sdk/x/foundation"
-	"github.com/line/lbm-sdk/x/gov/client/cli"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 // Proposal flags
 const (
-	FlagAllowedValidatorAdd    = "add"
-	FlagAllowedValidatorDelete = "delete"
-
 	FlagExec = "exec"
 	ExecTry  = "try"
 )
+
+func parseParams(codec codec.Codec, paramsJSON string) (*foundation.Params, error) {
+	var params foundation.Params
+	if err := codec.UnmarshalJSON([]byte(paramsJSON), &params); err != nil {
+		return nil, err
+	}
+
+	return &params, nil
+}
 
 func parseMemberRequests(codec codec.Codec, membersJSON string) ([]foundation.MemberRequest, error) {
 	var cliMembers []json.RawMessage
@@ -126,6 +128,7 @@ func NewTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(
+		NewTxCmdUpdateParams(),
 		NewTxCmdFundTreasury(),
 		NewTxCmdWithdrawFromTreasury(),
 		NewTxCmdUpdateMembers(),
@@ -137,75 +140,57 @@ func NewTxCmd() *cobra.Command {
 		NewTxCmdLeaveFoundation(),
 		NewTxCmdGrant(),
 		NewTxCmdRevoke(),
+		NewTxCmdGovMint(),
 	)
 
 	return txCmd
 }
 
-// NewProposalCmdUpdateFoundationParams implements the command to submit an update-foundation-params proposal
-func NewProposalCmdUpdateFoundationParams() *cobra.Command {
+func NewTxCmdUpdateParams() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-foundation-params",
-		Args:  cobra.NoArgs,
-		Short: "Submit an update foundation params proposal",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Submit an update foundation params proposal.
-For now, you have no other options, so we make the corresponding params json file for you.
+		Use:   "update-params [authority] [params-json]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Update params",
+		Long: `Update x/foundation parameters.
 
-Example:
-$ %s tx gov submit-proposal update-foundation-params [flags]
+Example of the content of params-json:
+
+{
+  "foundation_tax": "0.1",
+  "censored_msg_type_urls": [
+    "/cosmos.staking.v1beta1.MsgCreateValidator",
+    "/lbm.foundation.v1.MsgWithdrawFromTreasury"
+  ]
+}
 `,
-				version.AppName,
-			),
-		),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
+				return err
+			}
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
-			from := clientCtx.GetFromAddress()
 
-			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
+			params, err := parseParams(clientCtx.Codec, args[1])
 			if err != nil {
 				return err
 			}
 
-			deposit, err := sdk.ParseCoinsNormalized(depositStr)
-			if err != nil {
-				return err
+			msg := foundation.MsgUpdateParams{
+				Authority: authority,
+				Params:    *params,
 			}
-
-			title, err := cmd.Flags().GetString(cli.FlagTitle)
-			if err != nil {
-				return err
-			}
-
-			description, err := cmd.Flags().GetString(cli.FlagDescription)
-			if err != nil {
-				return err
-			}
-
-			params := &foundation.Params{
-				Enabled: false,
-			}
-			content := foundation.NewUpdateFoundationParamsProposal(title, description, params)
-			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
-			if err != nil {
-				return err
-			}
-
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
 
-	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
-	cmd.Flags().String(cli.FlagDescription, "", "description of proposal")
-	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
-
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
 
@@ -716,6 +701,44 @@ func NewTxCmdRevoke() *cobra.Command {
 				Operator:   operator,
 				Grantee:    args[1],
 				MsgTypeUrl: args[2],
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewTxCmdGovMint() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "gov-mint [operator] [amount]",
+		Args:  cobra.ExactArgs(2),
+		Short: "mint coins for foundation",
+		Long: `mint coins for foundation
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			operator := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			amount, err := sdk.ParseCoinsNormalized(args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := foundation.MsgGovMint{
+				Operator: operator,
+				Amount:   amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

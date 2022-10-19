@@ -5,21 +5,11 @@ import (
 	"time"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/stretchr/testify/require"
 )
-
-func TestDecisionPolicy(t *testing.T) {
-	config := foundation.DefaultConfig()
-	policy := foundation.DefaultDecisionPolicy()
-
-	require.NoError(t, policy.ValidateBasic())
-	info := foundation.FoundationInfo{
-		TotalWeight: sdk.OneDec(),
-	}
-	require.NoError(t, policy.Validate(info, config))
-}
 
 func TestTallyResult(t *testing.T) {
 	result := foundation.DefaultTallyResult()
@@ -355,7 +345,7 @@ func TestMembers(t *testing.T) {
 		members []foundation.Member
 		valid   bool
 	}{
-		"valid members": {
+		"valid updates": {
 			members: []foundation.Member{
 				{
 					Address: addrs[0].String(),
@@ -372,10 +362,10 @@ func TestMembers(t *testing.T) {
 		"duplicate members": {
 			members: []foundation.Member{
 				{
-					Address: addrs[1].String(),
+					Address: addrs[0].String(),
 				},
 				{
-					Address: addrs[1].String(),
+					Address: addrs[0].String(),
 				},
 			},
 		},
@@ -420,10 +410,10 @@ func TestMemberRequests(t *testing.T) {
 		"duplicate requests": {
 			members: []foundation.MemberRequest{
 				{
-					Address: addrs[1].String(),
+					Address: addrs[0].String(),
 				},
 				{
-					Address: addrs[1].String(),
+					Address: addrs[0].String(),
 					Remove:  true,
 				},
 			},
@@ -448,40 +438,58 @@ func TestProposal(t *testing.T) {
 	}
 
 	testCases := map[string]struct {
-		id                uint64
-		foundationVersion uint64
-		proposers         []string
-		msgs              []sdk.Msg
-		valid             bool
+		id        uint64
+		proposers []string
+		version   uint64
+		msgs      []sdk.Msg
+		valid     bool
 	}{
 		"valid proposal": {
-			id:                1,
-			foundationVersion: 1,
+			id: 1,
 			proposers: []string{
 				addrs[0].String(),
 				addrs[1].String(),
 			},
+			version: 1,
 			msgs: []sdk.Msg{
-				&foundation.MsgWithdrawFromTreasury{
-					Operator: addrs[2].String(),
-					To:       addrs[3].String(),
-					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-				},
+				testdata.NewTestMsg(),
 			},
 			valid: true,
 		},
 		"invalid id": {
-			foundationVersion: 1,
 			proposers: []string{
 				addrs[0].String(),
 				addrs[1].String(),
 			},
+			version: 1,
 			msgs: []sdk.Msg{
-				&foundation.MsgWithdrawFromTreasury{
-					Operator: addrs[2].String(),
-					To:       addrs[3].String(),
-					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-				},
+				testdata.NewTestMsg(),
+			},
+		},
+		"empty proposers": {
+			id:      1,
+			version: 1,
+			msgs: []sdk.Msg{
+				testdata.NewTestMsg(),
+			},
+		},
+		"invalid proposer": {
+			id:        1,
+			proposers: []string{""},
+			version:   1,
+			msgs: []sdk.Msg{
+				testdata.NewTestMsg(),
+			},
+		},
+		"duplicate proposers": {
+			id: 1,
+			proposers: []string{
+				addrs[0].String(),
+				addrs[0].String(),
+			},
+			version: 1,
+			msgs: []sdk.Msg{
+				testdata.NewTestMsg(),
 			},
 		},
 		"invalid version": {
@@ -491,66 +499,24 @@ func TestProposal(t *testing.T) {
 				addrs[1].String(),
 			},
 			msgs: []sdk.Msg{
-				&foundation.MsgWithdrawFromTreasury{
-					Operator: addrs[2].String(),
-					To:       addrs[3].String(),
-					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-				},
-			},
-		},
-		"empty proposers": {
-			id:                1,
-			foundationVersion: 1,
-			msgs: []sdk.Msg{
-				&foundation.MsgWithdrawFromTreasury{
-					Operator: addrs[2].String(),
-					To:       addrs[3].String(),
-					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-				},
-			},
-		},
-		"invalid proposer": {
-			id:                1,
-			foundationVersion: 1,
-			proposers:         []string{""},
-			msgs: []sdk.Msg{
-				&foundation.MsgWithdrawFromTreasury{
-					Operator: addrs[2].String(),
-					To:       addrs[3].String(),
-					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-				},
-			},
-		},
-		"duplicate proposers": {
-			id:                1,
-			foundationVersion: 1,
-			proposers: []string{
-				addrs[0].String(),
-				addrs[0].String(),
-			},
-			msgs: []sdk.Msg{
-				&foundation.MsgWithdrawFromTreasury{
-					Operator: addrs[2].String(),
-					To:       addrs[3].String(),
-					Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
-				},
+				testdata.NewTestMsg(),
 			},
 		},
 		"empty msgs": {
-			id:                1,
-			foundationVersion: 1,
+			id: 1,
 			proposers: []string{
 				addrs[0].String(),
 				addrs[1].String(),
 			},
+			version: 1,
 		},
 		"invalid msg": {
-			id:                1,
-			foundationVersion: 1,
+			id: 1,
 			proposers: []string{
 				addrs[0].String(),
 				addrs[1].String(),
 			},
+			version: 1,
 			msgs: []sdk.Msg{
 				&foundation.MsgWithdrawFromTreasury{},
 			},
@@ -560,9 +526,10 @@ func TestProposal(t *testing.T) {
 	for name, tc := range testCases {
 		proposal := foundation.Proposal{
 			Id:                tc.id,
-			FoundationVersion: tc.foundationVersion,
 			Proposers:         tc.proposers,
+			FoundationVersion: tc.version,
 		}.WithMsgs(tc.msgs)
+		require.NotNil(t, proposal)
 
 		err := proposal.ValidateBasic()
 		if !tc.valid {
@@ -570,5 +537,83 @@ func TestProposal(t *testing.T) {
 			continue
 		}
 		require.NoError(t, err, name)
+	}
+}
+
+func TestOutsourcingDecisionPolicy(t *testing.T) {
+	config := foundation.DefaultConfig()
+
+	testCases := map[string]struct {
+		totalWeight sdk.Dec
+		validBasic  bool
+		valid       bool
+	}{
+		"invalid policy": {
+			totalWeight: sdk.OneDec(),
+			validBasic:  true,
+		},
+	}
+
+	for name, tc := range testCases {
+		policy := foundation.OutsourcingDecisionPolicy{}
+		require.Zero(t, policy.GetVotingPeriod())
+
+		err := policy.ValidateBasic()
+		if !tc.validBasic {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
+
+		info := foundation.FoundationInfo{
+			TotalWeight: tc.totalWeight,
+		}
+		err = policy.Validate(info, config)
+		if !tc.valid {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
+	}
+}
+
+func TestOutsourcingDecisionPolicyAllow(t *testing.T) {
+	config := foundation.DefaultConfig()
+	policy := foundation.OutsourcingDecisionPolicy{}
+	require.NoError(t, policy.ValidateBasic())
+
+	info := foundation.FoundationInfo{
+		TotalWeight: sdk.OneDec(),
+	}
+	require.Error(t, policy.Validate(info, config))
+	require.Zero(t, policy.GetVotingPeriod())
+
+	testCases := map[string]struct {
+		sinceSubmission time.Duration
+		totalWeight     sdk.Dec
+		tally           foundation.TallyResult
+		valid           bool
+		final           bool
+		allow           bool
+	}{
+		"deny": {
+			sinceSubmission: 0,
+			totalWeight:     sdk.OneDec(),
+			tally:           foundation.NewTallyResult(sdk.OneDec(), sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec()),
+		},
+	}
+
+	for name, tc := range testCases {
+		result, err := policy.Allow(tc.tally, tc.totalWeight, tc.sinceSubmission)
+		if !tc.valid {
+			require.Error(t, err, name)
+			continue
+		}
+		require.NoError(t, err, name)
+
+		require.Equal(t, tc.final, result.Final, name)
+		if tc.final {
+			require.Equal(t, tc.allow, result.Allow, name)
+		}
 	}
 }

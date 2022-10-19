@@ -21,6 +21,7 @@ import (
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/snapshots"
 	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
 	"github.com/line/lbm-sdk/store/rootmulti"
@@ -91,10 +92,10 @@ func registerTestCodec(cdc *codec.LegacyAmino) {
 
 	// register test types
 	cdc.RegisterConcrete(&txTest{}, "cosmos-sdk/baseapp/txTest", nil)
-	cdc.RegisterConcrete(&msgCounter{}, "cosmos-sdk/baseapp/msgCounter", nil)
-	cdc.RegisterConcrete(&msgCounter2{}, "cosmos-sdk/baseapp/msgCounter2", nil)
-	cdc.RegisterConcrete(&msgKeyValue{}, "cosmos-sdk/baseapp/msgKeyValue", nil)
-	cdc.RegisterConcrete(&msgNoRoute{}, "cosmos-sdk/baseapp/msgNoRoute", nil)
+	legacy.RegisterAminoMsg(cdc, &msgCounter{}, "cosmos-sdk/baseapp/msgCounter")
+	legacy.RegisterAminoMsg(cdc, &msgCounter2{}, "cosmos-sdk/baseapp/msgCounter2")
+	legacy.RegisterAminoMsg(cdc, &msgKeyValue{}, "cosmos-sdk/baseapp/msgKeyValue")
+	legacy.RegisterAminoMsg(cdc, &msgNoRoute{}, "cosmos-sdk/baseapp/msgNoRoute")
 }
 
 // aminoTxEncoder creates a amino TxEncoder for testing purposes.
@@ -1257,7 +1258,7 @@ func TestRunInvalidTransaction(t *testing.T) {
 		// new codec so we can encode the tx, but we shouldn't be able to decode
 		newCdc := codec.NewLegacyAmino()
 		registerTestCodec(newCdc)
-		newCdc.RegisterConcrete(&msgNoDecode{}, "cosmos-sdk/baseapp/msgNoDecode", nil)
+		legacy.RegisterAminoMsg(newCdc, &msgNoDecode{}, "cosmos-sdk/baseapp/msgNoDecode")
 
 		txBytes, err := newCdc.Marshal(tx)
 		require.NoError(t, err)

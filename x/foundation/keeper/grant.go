@@ -7,8 +7,13 @@ import (
 )
 
 func (k Keeper) Grant(ctx sdk.Context, grantee sdk.AccAddress, authorization foundation.Authorization) error {
-	if _, err := k.GetAuthorization(ctx, grantee, authorization.MsgTypeURL()); err == nil {
-		return sdkerrors.ErrInvalidRequest.Wrapf("authorization for %s already exists", authorization.MsgTypeURL())
+	msgTypeURL := authorization.MsgTypeURL()
+	if !k.IsCensoredMessage(ctx, msgTypeURL) {
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not being censored", msgTypeURL)
+	}
+
+	if _, err := k.GetAuthorization(ctx, grantee, msgTypeURL); err == nil {
+		return sdkerrors.ErrInvalidRequest.Wrapf("authorization for %s already exists", msgTypeURL)
 	}
 
 	k.setAuthorization(ctx, grantee, authorization)
@@ -85,6 +90,12 @@ func (k Keeper) deleteAuthorization(ctx sdk.Context, grantee sdk.AccAddress, msg
 
 func (k Keeper) Accept(ctx sdk.Context, grantee sdk.AccAddress, msg sdk.Msg) error {
 	msgTypeURL := sdk.MsgTypeURL(msg)
+
+	// check whether the msg is being censored
+	if !k.IsCensoredMessage(ctx, msgTypeURL) {
+		return nil
+	}
+
 	authorization, err := k.GetAuthorization(ctx, grantee, msgTypeURL)
 	if err != nil {
 		return err

@@ -8,25 +8,6 @@ import (
 	"github.com/line/lbm-sdk/x/foundation"
 )
 
-// handleUpdateFoundationParamsProposal is a handler for update foundation params proposal
-func (k Keeper) handleUpdateFoundationParamsProposal(ctx sdk.Context, p *foundation.UpdateFoundationParamsProposal) error {
-	// TODO: validate param changes
-	params := p.Params
-	k.SetParams(ctx, params)
-
-	if !params.Enabled {
-		k.Cleanup(ctx)
-	}
-
-	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateFoundationParams{
-		Params: params,
-	}); err != nil {
-		panic(err)
-	}
-
-	return nil
-}
-
 func (k Keeper) newProposalID(ctx sdk.Context) uint64 {
 	id := k.getPreviousProposalID(ctx) + 1
 	k.setPreviousProposalID(ctx, id)
@@ -54,10 +35,7 @@ func (k Keeper) SubmitProposal(ctx sdk.Context, proposers []string, metadata str
 	}
 
 	foundationInfo := k.GetFoundationInfo(ctx)
-	operator, err := sdk.AccAddressFromBech32(foundationInfo.Operator)
-	if err != nil {
-		return nil, err
-	}
+	operator := sdk.MustAccAddressFromBech32(foundationInfo.Operator)
 	if err := ensureMsgAuthz(msgs, operator); err != nil {
 		return nil, err
 	}
@@ -181,25 +159,39 @@ func (k Keeper) iterateProposalsByVPEnd(ctx sdk.Context, endTime time.Time, fn f
 	defer iter.Close()
 
 	for ; iter.Valid(); iter.Next() {
-		var proposal foundation.Proposal
-		k.cdc.MustUnmarshal(iter.Value(), &proposal)
+		_, id := splitProposalByVPEndKey(iter.Key())
 
-		if fn(proposal) {
+		proposal, err := k.GetProposal(ctx, id)
+		if err != nil {
+			panic(err)
+		}
+
+		if fn(*proposal) {
 			break
 		}
 	}
 }
 
 func (k Keeper) UpdateTallyOfVPEndProposals(ctx sdk.Context) {
+	var proposals []foundation.Proposal
 	k.iterateProposalsByVPEnd(ctx, ctx.BlockTime(), func(proposal foundation.Proposal) (stop bool) {
+		proposals = append(proposals, proposal)
+		return false
+	})
+
+	for _, proposal := range proposals {
+		proposal := proposal
+
+		if proposal.Status == foundation.PROPOSAL_STATUS_ABORTED || proposal.Status == foundation.PROPOSAL_STATUS_WITHDRAWN {
+			k.pruneProposal(ctx, proposal)
+			continue
+		}
+
 		if err := k.doTallyAndUpdate(ctx, &proposal); err != nil {
 			panic(err)
 		}
-
 		k.setProposal(ctx, proposal)
-
-		return false
-	})
+	}
 }
 
 func (k Keeper) GetProposal(ctx sdk.Context, id uint64) (*foundation.Proposal, error) {
@@ -232,13 +224,13 @@ func (k Keeper) deleteProposal(ctx sdk.Context, proposalID uint64) {
 
 func (k Keeper) addProposalToVPEndQueue(ctx sdk.Context, proposal foundation.Proposal) {
 	store := ctx.KVStore(k.storeKey)
-	key := proposalByVPEndKey(proposal.Id, proposal.VotingPeriodEnd)
+	key := proposalByVPEndKey(proposal.VotingPeriodEnd, proposal.Id)
 	store.Set(key, []byte{})
 }
 
 func (k Keeper) removeProposalFromVPEndQueue(ctx sdk.Context, proposal foundation.Proposal) {
 	store := ctx.KVStore(k.storeKey)
-	key := proposalByVPEndKey(proposal.Id, proposal.VotingPeriodEnd)
+	key := proposalByVPEndKey(proposal.VotingPeriodEnd, proposal.Id)
 	store.Delete(key)
 }
 

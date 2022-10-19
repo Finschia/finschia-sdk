@@ -69,7 +69,6 @@ var (
 	NewCountTXDecorator       = keeper.NewCountTXDecorator
 
 	// variable aliases
-	ModuleCdc            = types.ModuleCdc
 	DefaultCodespace     = types.DefaultCodespace
 	ErrCreateFailed      = types.ErrCreateFailed
 	ErrAccountExists     = types.ErrAccountExists
