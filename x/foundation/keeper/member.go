@@ -150,7 +150,7 @@ func (k Keeper) GetMembers(ctx sdk.Context) []foundation.Member {
 	return members
 }
 
-func (k Keeper) validateAuthority(ctx sdk.Context, authority string) error {
+func (k Keeper) validateAuthority(authority string) error {
 	if authority != k.authority {
 		return sdkerrors.ErrUnauthorized.Wrapf("invalid authority; expected %s, got %s", k.authority, authority)
 	}
