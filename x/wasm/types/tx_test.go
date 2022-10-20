@@ -534,6 +534,37 @@ func TestMsgJsonSignBytes(t *testing.T) {
 	"value": {"msg": {"foo":"bar"}}
 }`,
 		},
+		"MsgUpdateAdmin": {
+			src: &MsgUpdateAdmin{
+				Sender:   "sender",
+				NewAdmin: "newAdmin",
+				Contract: "contract_address",
+			},
+			exp: `
+{
+	"type":"wasm/MsgUpdateAdmin",
+	"value":{"contract":"contract_address","new_admin":"newAdmin","sender":"sender"}
+}`,
+		},
+		"MsgClearAdmin": {
+			src: &MsgClearAdmin{
+				Sender:   "sender",
+				Contract: "contract_address",
+			},
+			exp: `
+{
+	"type":"wasm/MsgClearAdmin",
+	"value":{"contract":"contract_address","sender":"sender"}
+}`,
+		},
+		"MsgIBCSend": {
+			src: &MsgIBCCloseChannel{Channel: "channel"},
+			exp: `
+{
+	"type":"wasm/MsgIBCCloseChannel",
+	"value":{"channel":"channel"}
+}`,
+		},
 	}
 	for name, spec := range specs {
 		t.Run(name, func(t *testing.T) {
