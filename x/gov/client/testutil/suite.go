@@ -435,6 +435,14 @@ func (s *IntegrationTestSuite) TestCmdGetProposals() {
 			},
 			true,
 		},
+		{
+			"wrong number of arguments",
+			[]string{
+				"extra",
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+			},
+			true,
+		},
 	}
 
 	for _, tc := range testCases {

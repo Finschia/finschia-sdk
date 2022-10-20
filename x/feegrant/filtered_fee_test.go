@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	proto "github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -184,6 +185,76 @@ func TestFilteredFeeValidAllow(t *testing.T) {
 				feeAllowance, err := newAllowance.(*feegrant.AllowedMsgAllowance).GetAllowance()
 				require.NoError(t, err)
 				assert.Equal(t, tc.remains, feeAllowance.(*feegrant.BasicAllowance).SpendLimit)
+			}
+		})
+	}
+}
+
+// invalidInterfaceAllowance does not implement proto.Message
+type invalidInterfaceAllowance struct {
+}
+
+// compilation time interface implementation check
+var _ feegrant.FeeAllowanceI = (*invalidInterfaceAllowance)(nil)
+
+func (i invalidInterfaceAllowance) Accept(ctx sdk.Context, fee sdk.Coins, msgs []sdk.Msg) (remove bool, err error) {
+	return false, nil
+}
+
+func (i invalidInterfaceAllowance) ValidateBasic() error {
+	return nil
+}
+
+// invalidProtoAllowance can not run proto.Marshal
+type invalidProtoAllowance struct {
+	invalidInterfaceAllowance
+}
+
+// compilation time interface implementation check
+var _ feegrant.FeeAllowanceI = (*invalidProtoAllowance)(nil)
+var _ proto.Message = (*invalidProtoAllowance)(nil)
+
+func (i invalidProtoAllowance) Reset() {
+}
+
+func (i invalidProtoAllowance) String() string {
+	return ""
+}
+
+func (i invalidProtoAllowance) ProtoMessage() {
+}
+
+func TestSetAllowance(t *testing.T) {
+	cases := map[string]struct {
+		allowance feegrant.FeeAllowanceI
+		valid     bool
+	}{
+		"valid allowance": {
+			allowance: &feegrant.BasicAllowance{},
+			valid:     true,
+		},
+		"invalid interface allowance": {
+			allowance: &invalidInterfaceAllowance{},
+			valid:     false,
+		},
+		"empty allowance": {
+			allowance: (*invalidProtoAllowance)(nil),
+			valid:     false,
+		},
+	}
+
+	for name, tc := range cases {
+		t.Run(name, func(t *testing.T) {
+			allowance := &feegrant.BasicAllowance{}
+			msgs := []string{sdk.MsgTypeURL(&banktypes.MsgSend{})}
+			allowed, err := feegrant.NewAllowedMsgAllowance(allowance, msgs)
+			require.NoError(t, err)
+			require.NotNil(t, allowed)
+			err = allowed.SetAllowance(tc.allowance)
+			if tc.valid {
+				require.NoError(t, err)
+			} else {
+				require.Error(t, err)
 			}
 		})
 	}

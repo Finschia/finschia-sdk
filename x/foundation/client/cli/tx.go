@@ -13,8 +13,6 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
-	"github.com/line/lbm-sdk/x/gov/client/cli"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 // Proposal flags
@@ -130,6 +128,7 @@ func NewTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(
+		NewTxCmdUpdateParams(),
 		NewTxCmdFundTreasury(),
 		NewTxCmdWithdrawFromTreasury(),
 		NewTxCmdUpdateMembers(),
@@ -147,13 +146,12 @@ func NewTxCmd() *cobra.Command {
 	return txCmd
 }
 
-// NewProposalCmdUpdateFoundationParams implements the command to submit an update-foundation-params proposal
-func NewProposalCmdUpdateFoundationParams() *cobra.Command {
+func NewTxCmdUpdateParams() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-foundation-params [params-json]",
-		Args:  cobra.ExactArgs(1),
-		Short: "Submit an update foundation params proposal",
-		Long: `Submit an update foundation params proposal.
+		Use:   "update-params [authority] [params-json]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Update params",
+		Long: `Update x/foundation parameters.
 
 Example of the content of params-json:
 
@@ -166,55 +164,33 @@ Example of the content of params-json:
 }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
+				return err
+			}
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
-			from := clientCtx.GetFromAddress()
 
-			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
+			params, err := parseParams(clientCtx.Codec, args[1])
 			if err != nil {
 				return err
 			}
 
-			deposit, err := sdk.ParseCoinsNormalized(depositStr)
-			if err != nil {
-				return err
+			msg := foundation.MsgUpdateParams{
+				Authority: authority,
+				Params:    *params,
 			}
-
-			title, err := cmd.Flags().GetString(cli.FlagTitle)
-			if err != nil {
-				return err
-			}
-
-			description, err := cmd.Flags().GetString(cli.FlagDescription)
-			if err != nil {
-				return err
-			}
-
-			params, err := parseParams(clientCtx.Codec, args[0])
-			if err != nil {
-				return err
-			}
-
-			content := foundation.NewUpdateFoundationParamsProposal(title, description, *params)
-			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
-			if err != nil {
-				return err
-			}
-
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
 
-	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
-	cmd.Flags().String(cli.FlagDescription, "", "description of proposal")
-	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
-
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
 

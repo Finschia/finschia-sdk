@@ -84,6 +84,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/bank) [\#716](https://github.com/line/lbm-sdk/pull/716) remove useless DenomMetadata key function
 * (x/foundation) [\#704](https://github.com/line/lbm-sdk/pull/704) update x/foundation params
 * (x/wasm)  [\#695](https://github.com/line/lbm-sdk/pull/695) fix to prevent external filesystem dependency of simulation
+* (x/foundation) [\#729](https://github.com/line/lbm-sdk/pull/729) add UpdateParams to x/foundation
+* (amino) [\#736](https://github.com/line/lbm-sdk/pull/736) apply the missing amino codec registratoin of cosmos-sdk
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
@@ -104,10 +106,14 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (global) [\#694](https://github.com/line/lbm-sdk/pull/694) replace deprecated functions since go 1.16 or 1.17
 * (x/bankplus) [\#705](https://github.com/line/lbm-sdk/pull/705) add missing blockedAddr checking in bankplus
 * (x/foundation) [\#712](https://github.com/line/lbm-sdk/pull/712) fix x/foundation EndBlocker
+* (x/feegrant) [\#720](https://github.com/line/lbm-sdk/pull/720) remove potential runtime panic in x/feegrant
 * (baseapp) [\#724](https://github.com/line/lbm-sdk/pull/724) add checking pubkey type from validator params
 * (x/staking) [\#726](https://github.com/line/lbm-sdk/pull/726) check allowedList size in StakeAuthorization.Accept()
 * (x/staking) [\#728](https://github.com/line/lbm-sdk/pull/728) fix typo in unbondingToUnbonded() panic
+* (crypto) [\#731](https://github.com/line/lbm-sdk/pull/731) remove VRFProve function
 * (x/foundation) [\#732](https://github.com/line/lbm-sdk/pull/732) add verification on accounts into x/foundation Grants cli
+* (x/foundation) [\#730](https://github.com/line/lbm-sdk/pull/730) prune stale x/foundation proposals at voting period end
+* (cli) [\#734](https://github.com/line/lbm-sdk/pull/734) add restrictions on the number of args in the CLIs
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
@@ -132,3 +138,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (docs) [\#483](https://github.com/line/lbm-sdk/pull/483) update documents on x/stakingplus
 * (docs) [\#490](https://github.com/line/lbm-sdk/pull/490) update documents on x/consortium
 * (docs) [\#602](https://github.com/line/lbm-sdk/pull/602) update outdated events in specs
+* (docs) [\#721](https://github.com/line/lbm-sdk/pull/721) update x/foundation specification
