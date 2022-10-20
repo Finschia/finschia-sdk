@@ -16807,7 +16807,6 @@ FoundationInfo represents the high-level on-chain information for the foundation
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  | operator is the account address of the foundation's operator. |
 | `version` | [uint64](#uint64) |  | version is used to track changes to the foundation's membership structure that would break existing proposals. Whenever any member is added or removed, this version is incremented and will cause proposals based on older versions of the foundation to fail |
 | `total_weight` | [string](#string) |  | total_weight is the number of the foundation members. |
 | `decision_policy` | [google.protobuf.Any](#google.protobuf.Any) |  | decision_policy specifies the foundation's decision policy. |
@@ -16857,7 +16856,7 @@ since this field cannot be set as part of requests.
 
 ### OutsourcingDecisionPolicy
 OutsourcingDecisionPolicy is a dummy decision policy which is set after
-the operator has been updated into x/group's group policy.
+the proposal feature has been outsourced to x/group.
 
 
 | Field | Type | Label | Description |
