@@ -40,7 +40,7 @@ func (m MsgSend) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgSend) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
@@ -86,7 +86,7 @@ func (m MsgTransferFrom) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgTransferFrom) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
@@ -125,7 +125,7 @@ func (m MsgRevokeOperator) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgRevokeOperator) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
@@ -164,7 +164,7 @@ func (m MsgApprove) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgApprove) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
@@ -224,7 +224,7 @@ func (m MsgIssue) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgIssue) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
@@ -267,7 +267,7 @@ func (m MsgGrantPermission) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgGrantPermission) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
@@ -307,7 +307,7 @@ func (m MsgRevokePermission) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgRevokePermission) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
@@ -350,7 +350,7 @@ func (m MsgMint) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgMint) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
@@ -389,7 +389,7 @@ func (m MsgBurn) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgBurn) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
@@ -432,7 +432,7 @@ func (m MsgBurnFrom) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgBurnFrom) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
@@ -482,7 +482,7 @@ func (m MsgModify) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (m MsgModify) Route() string {
-	return sdk.MsgTypeURL(&m)
+	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.

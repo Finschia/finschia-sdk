@@ -1597,8 +1597,9 @@ func TestAminoJSON(t *testing.T) {
 	}}
 
 	testCase := map[string]struct {
-		msg      legacytx.LegacyMsg
-		expected string
+		msg          legacytx.LegacyMsg
+		expectedType string
+		expected     string
 	}{
 		"MsgTransferFT": {
 			&collection.MsgTransferFT{
@@ -1607,6 +1608,7 @@ func TestAminoJSON(t *testing.T) {
 				To:         addrs[1].String(),
 				Amount:     ftAmount,
 			},
+			"/lbm.collection.v1.MsgTransferFT",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgTransferFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgTransferFTFrom": {
@@ -1617,6 +1619,7 @@ func TestAminoJSON(t *testing.T) {
 				To:         addrs[2].String(),
 				Amount:     ftAmount,
 			},
+			"/lbm.collection.v1.MsgTransferFTFrom",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgTransferFTFrom\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String(), addrs[2].String()),
 		},
 		"MsgTransferNFT": {
@@ -1626,6 +1629,7 @@ func TestAminoJSON(t *testing.T) {
 				To:         addrs[1].String(),
 				TokenIds:   tokenIds,
 			},
+			"/lbm.collection.v1.MsgTransferNFT",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgTransferNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgTransferNFTFrom": {
@@ -1636,6 +1640,7 @@ func TestAminoJSON(t *testing.T) {
 				To:         addrs[2].String(),
 				TokenIds:   tokenIds,
 			},
+			"/lbm.collection.v1.MsgTransferNFTFrom",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgTransferNFTFrom\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"to\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String(), addrs[2].String()),
 		},
 		"MsgApprove": {
@@ -1644,6 +1649,7 @@ func TestAminoJSON(t *testing.T) {
 				Approver:   addrs[0].String(),
 				Proxy:      addrs[1].String(),
 			},
+			"/lbm.collection.v1.MsgApprove",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgApprove\",\"value\":{\"approver\":\"%s\",\"contract_id\":\"deadbeef\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgDisapprove": {
@@ -1652,6 +1658,7 @@ func TestAminoJSON(t *testing.T) {
 				Approver:   addrs[0].String(),
 				Proxy:      addrs[1].String(),
 			},
+			"/lbm.collection.v1.MsgDisapprove",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgDisapprove\",\"value\":{\"approver\":\"%s\",\"contract_id\":\"deadbeef\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgCreateContract": {
@@ -1661,6 +1668,7 @@ func TestAminoJSON(t *testing.T) {
 				BaseImgUri: "http://image.url",
 				Meta:       "This is test",
 			},
+			"/lbm.collection.v1.MsgCreateContract",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgCreateContract\",\"value\":{\"base_img_uri\":\"http://image.url\",\"meta\":\"This is test\",\"name\":\"Test Contract\",\"owner\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgIssueFT": {
@@ -1674,6 +1682,7 @@ func TestAminoJSON(t *testing.T) {
 				To:         addrs[1].String(),
 				Amount:     sdk.NewInt(1000000),
 			},
+			"/lbm.collection.v1.MsgIssueFT",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgIssueFT\",\"value\":{\"amount\":\"1000000\",\"contract_id\":\"deadbeef\",\"decimals\":6,\"meta\":\"This is FT Meta\",\"name\":\"Test FT\",\"owner\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgIssueNFT": {
@@ -1683,6 +1692,7 @@ func TestAminoJSON(t *testing.T) {
 				Meta:       "This is NFT Meta",
 				Owner:      addrs[0].String(),
 			},
+			"/lbm.collection.v1.MsgIssueNFT",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgIssueNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"meta\":\"This is NFT Meta\",\"name\":\"Test NFT\",\"owner\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgMintFT": {
@@ -1692,6 +1702,7 @@ func TestAminoJSON(t *testing.T) {
 				To:         addrs[1].String(),
 				Amount:     ftAmount,
 			},
+			"/lbm.collection.v1.MsgMintFT",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgMintFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgMintNFT": {
@@ -1701,6 +1712,7 @@ func TestAminoJSON(t *testing.T) {
 				To:         addrs[1].String(),
 				Params:     nftParams,
 			},
+			"/lbm.collection.v1.MsgMintNFT",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgMintNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"params\":[{\"meta\":\"Tibetian Fox\",\"name\":\"tibetian fox\",\"token_type\":\"deadbeef\"}],\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgBurnFT": {
@@ -1709,6 +1721,7 @@ func TestAminoJSON(t *testing.T) {
 				From:       addrs[0].String(),
 				Amount:     ftAmount,
 			},
+			"/lbm.collection.v1.MsgBurnFT",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgBurnFTFrom": {
@@ -1718,6 +1731,7 @@ func TestAminoJSON(t *testing.T) {
 				From:       addrs[1].String(),
 				Amount:     ftAmount,
 			},
+			"/lbm.collection.v1.MsgBurnFTFrom",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnFTFrom\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
 		},
 		"MsgBurnNFT": {
@@ -1726,6 +1740,7 @@ func TestAminoJSON(t *testing.T) {
 				From:       addrs[0].String(),
 				TokenIds:   tokenIds,
 			},
+			"/lbm.collection.v1.MsgBurnNFT",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgBurnNFTFrom": {
@@ -1735,6 +1750,7 @@ func TestAminoJSON(t *testing.T) {
 				From:       addrs[1].String(),
 				TokenIds:   tokenIds,
 			},
+			"/lbm.collection.v1.MsgBurnNFTFrom",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnNFTFrom\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
 		},
 		"MsgModify": {
@@ -1745,6 +1761,7 @@ func TestAminoJSON(t *testing.T) {
 				TokenIndex: "deadbeef",
 				Changes:    []collection.Change{{Field: "name", Value: "New test"}},
 			},
+			"/lbm.collection.v1.MsgModify",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgModify\",\"value\":{\"changes\":[{\"field\":\"name\",\"value\":\"New test\"}],\"contract_id\":\"deadbeef\",\"owner\":\"%s\",\"token_index\":\"deadbeef\",\"token_type\":\"NewType\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgGrantPermission": {
@@ -1754,6 +1771,7 @@ func TestAminoJSON(t *testing.T) {
 				To:         addrs[1].String(),
 				Permission: collection.LegacyPermissionMint.String(),
 			},
+			"/lbm.collection.v1.MsgGrantPermission",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgGrantPermission\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"permission\":\"mint\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgRevokePermission": {
@@ -1762,6 +1780,7 @@ func TestAminoJSON(t *testing.T) {
 				From:       addrs[0].String(),
 				Permission: collection.LegacyPermissionMint.String(),
 			},
+			"/lbm.collection.v1.MsgRevokePermission",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgRevokePermission\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"permission\":\"mint\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgAttach": {
@@ -1771,6 +1790,7 @@ func TestAminoJSON(t *testing.T) {
 				TokenId:    collection.NewNFTID("deadbeef", 1),
 				ToTokenId:  collection.NewNFTID("fee1dead", 1),
 			},
+			"/lbm.collection.v1.MsgAttach",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgAttach\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to_token_id\":\"fee1dead00000001\",\"token_id\":\"deadbeef00000001\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgDetach": {
@@ -1779,6 +1799,7 @@ func TestAminoJSON(t *testing.T) {
 				From:       addrs[0].String(),
 				TokenId:    collection.NewNFTID("fee1dead", 1),
 			},
+			"/lbm.collection.v1.MsgDetach",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgDetach\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"token_id\":\"fee1dead00000001\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgAttachFrom": {
@@ -1789,6 +1810,7 @@ func TestAminoJSON(t *testing.T) {
 				TokenId:    collection.NewNFTID("deadbeef", 1),
 				ToTokenId:  collection.NewNFTID("fee1dead", 1),
 			},
+			"/lbm.collection.v1.MsgAttachFrom",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgAttachFrom\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"to_token_id\":\"fee1dead00000001\",\"token_id\":\"deadbeef00000001\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
 		},
 		"MsgDetachFrom": {
@@ -1798,6 +1820,7 @@ func TestAminoJSON(t *testing.T) {
 				From:       addrs[1].String(),
 				TokenId:    collection.NewNFTID("fee1dead", 1),
 			},
+			"/lbm.collection.v1.MsgDetachFrom",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgDetachFrom\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"token_id\":\"fee1dead00000001\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
 		},
 	}
@@ -1806,6 +1829,8 @@ func TestAminoJSON(t *testing.T) {
 		tc := tc
 		t.Run(name, func(t *testing.T) {
 			tx.Msgs = []sdk.Msg{tc.msg}
+			require.Equal(t, collection.RouterKey, tc.msg.Route())
+			require.Equal(t, tc.expectedType, tc.msg.Type())
 			require.Equal(t, tc.expected, string(legacytx.StdSignBytes("foo", 1, 1, 1, legacytx.StdFee{}, []sdk.Msg{tc.msg}, "memo")))
 		})
 	}

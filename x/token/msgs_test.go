@@ -754,8 +754,9 @@ func TestAminoJSON(t *testing.T) {
 	}
 
 	testCases := map[string]struct {
-		msg      legacytx.LegacyMsg
-		expected string
+		msg          legacytx.LegacyMsg
+		expectedType string
+		expected     string
 	}{
 		"MsgSend": {
 			&token.MsgSend{
@@ -764,6 +765,7 @@ func TestAminoJSON(t *testing.T) {
 				To:         addrs[1].String(),
 				Amount:     sdk.OneInt(),
 			},
+			"/lbm.token.v1.MsgSend",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSend\",\"value\":{\"amount\":\"1\",\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgTransferFrom": {
@@ -774,6 +776,7 @@ func TestAminoJSON(t *testing.T) {
 				To:         addrs[2].String(),
 				Amount:     sdk.OneInt(),
 			},
+			"/lbm.token.v1.MsgTransferFrom",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgTransferFrom\",\"value\":{\"amount\":\"1\",\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String(), addrs[2].String()),
 		},
 		"MsgRevokeOperator": {
@@ -782,6 +785,7 @@ func TestAminoJSON(t *testing.T) {
 				Holder:     addrs[0].String(),
 				Operator:   addrs[1].String(),
 			},
+			"/lbm.token.v1.MsgRevokeOperator",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgRevokeOperator\",\"value\":{\"contract_id\":\"deadbeef\",\"holder\":\"%s\",\"operator\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgApprove": {
@@ -790,6 +794,7 @@ func TestAminoJSON(t *testing.T) {
 				Approver:   addrs[0].String(),
 				Proxy:      addrs[1].String(),
 			},
+			"/lbm.token.v1.MsgApprove",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/token/MsgApprove\",\"value\":{\"approver\":\"%s\",\"contract_id\":\"deadbeef\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgIssue": {
@@ -804,6 +809,7 @@ func TestAminoJSON(t *testing.T) {
 				To:       addrs[1].String(),
 				Amount:   sdk.NewInt(1000000),
 			},
+			"/lbm.token.v1.MsgIssue",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgIssue\",\"value\":{\"amount\":\"1000000\",\"decimals\":6,\"image_uri\":\"http://image.url\",\"meta\":\"This is test\",\"name\":\"Test Name\",\"owner\":\"%s\",\"symbol\":\"LN\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgGrantPermission": {
@@ -813,6 +819,7 @@ func TestAminoJSON(t *testing.T) {
 				To:         addrs[1].String(),
 				Permission: token.LegacyPermissionMint.String(),
 			},
+			"/lbm.token.v1.MsgGrantPermission",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/token/MsgGrantPermission\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"permission\":\"mint\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgRevokePermission": {
@@ -821,6 +828,7 @@ func TestAminoJSON(t *testing.T) {
 				From:       addrs[0].String(),
 				Permission: token.LegacyPermissionMint.String(),
 			},
+			"/lbm.token.v1.MsgRevokePermission",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/token/MsgRevokePermission\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"permission\":\"mint\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgMint": {
@@ -830,6 +838,7 @@ func TestAminoJSON(t *testing.T) {
 				To:         addrs[1].String(),
 				Amount:     sdk.NewInt(1000000),
 			},
+			"/lbm.token.v1.MsgMint",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgMint\",\"value\":{\"amount\":\"1000000\",\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgBurn": {
@@ -838,6 +847,7 @@ func TestAminoJSON(t *testing.T) {
 				From:       addrs[0].String(),
 				Amount:     sdk.Int{},
 			},
+			"/lbm.token.v1.MsgBurn",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurn\",\"value\":{\"amount\":\"0\",\"contract_id\":\"deadbeef\",\"from\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgBurnFrom": {
@@ -847,6 +857,7 @@ func TestAminoJSON(t *testing.T) {
 				From:       addrs[1].String(),
 				Amount:     sdk.NewInt(1000000),
 			},
+			"/lbm.token.v1.MsgBurnFrom",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnFrom\",\"value\":{\"amount\":\"1000000\",\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
 		},
 		"MsgModify": {
@@ -855,6 +866,7 @@ func TestAminoJSON(t *testing.T) {
 				Owner:      addrs[0].String(),
 				Changes:    []token.Pair{token.Pair{Field: token.AttributeKeyName.String(), Value: "New test"}},
 			},
+			"/lbm.token.v1.MsgModify",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/token/MsgModify\",\"value\":{\"changes\":[{\"field\":\"name\",\"value\":\"New test\"}],\"contract_id\":\"deadbeef\",\"owner\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 	}
@@ -864,6 +876,8 @@ func TestAminoJSON(t *testing.T) {
 
 		t.Run(name, func(t *testing.T) {
 			tx.Msgs = []sdk.Msg{tc.msg}
+			require.Equal(t, token.RouterKey, tc.msg.Route())
+			require.Equal(t, tc.expectedType, tc.msg.Type())
 			require.Equal(t, tc.expected, string(legacytx.StdSignBytes("foo", 1, 1, 1, legacytx.StdFee{}, []sdk.Msg{tc.msg}, "memo")))
 		})
 	}
