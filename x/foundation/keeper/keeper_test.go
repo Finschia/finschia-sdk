@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
@@ -195,4 +196,45 @@ func (s *KeeperTestSuite) SetupTest() {
 
 func TestKeeperTestSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
+}
+
+func TestNewKeeper(t *testing.T) {
+	createAddress := func() sdk.AccAddress {
+		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+	authority := foundation.DefaultAuthority()
+
+	testCases := map[string]struct {
+		authority sdk.AccAddress
+		panics    bool
+	}{
+		"default authority": {
+			authority: authority,
+		},
+		"invalid account": {
+			panics: true,
+		},
+		"not the default authority": {
+			authority: createAddress(),
+			panics:    true,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		newKeeper := func() keeper.Keeper {
+			app := simapp.Setup(false)
+			return keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(foundation.StoreKey), app.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundation.DefaultConfig(), tc.authority.String())
+		}
+
+		if tc.panics {
+			require.Panics(t, func() { newKeeper() }, name)
+			continue
+		}
+		require.NotPanics(t, func() { newKeeper() }, name)
+
+		k := newKeeper()
+		require.Equal(t, authority.String(), k.GetAuthority(), name)
+	}
 }

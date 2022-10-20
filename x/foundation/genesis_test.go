@@ -387,3 +387,8 @@ func TestFoundationInfo(t *testing.T) {
 		require.NoError(t, err, name)
 	}
 }
+
+func TestDefaultAuthority(t *testing.T) {
+	// the literal must be retained
+	require.Equal(t, sdk.AccAddress([]byte("\x2B\xD8\xB7\xB0\xD8\x3E\x0E\xC9\x2A\xBD\xF6\xF7\x14\xCA\x19\x9A\x78\x74\xD0\x86")), foundation.DefaultAuthority())
+}
