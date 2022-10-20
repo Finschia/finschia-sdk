@@ -25,9 +25,9 @@ type KeeperTestSuite struct {
 	queryServer foundation.QueryServer
 	msgServer   foundation.MsgServer
 
-	operator sdk.AccAddress
-	members  []sdk.AccAddress
-	stranger sdk.AccAddress
+	authority sdk.AccAddress
+	members   []sdk.AccAddress
+	stranger  sdk.AccAddress
 
 	activeProposal    uint64
 	votedProposal     uint64
@@ -70,7 +70,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	s.operator = s.keeper.GetOperator(s.ctx)
+	s.authority = sdk.MustAccAddressFromBech32(s.keeper.GetAuthority())
 	s.members = make([]sdk.AccAddress, 10)
 	for i := range s.members {
 		s.members[i] = createAddress()
@@ -151,7 +151,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	// create an invalid proposal which contains invalid message
 	invalidProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
-			Authority: s.operator.String(),
+			Authority: s.authority.String(),
 			To:        s.stranger.String(),
 			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance.Add(sdk.OneInt()))),
 		},
@@ -169,7 +169,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	// create an invalid proposal which contains invalid message
-	noHandlerProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(s.operator)})
+	noHandlerProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(s.authority)})
 	s.Require().NoError(err)
 	s.noHandlerProposal = *noHandlerProposal
 

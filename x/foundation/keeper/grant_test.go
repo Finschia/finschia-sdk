@@ -88,7 +88,7 @@ func (s *KeeperTestSuite) TestAccept() {
 		"valid request": {
 			grantee: s.stranger,
 			msg: &foundation.MsgWithdrawFromTreasury{
-				Authority: s.operator.String(),
+				Authority: s.authority.String(),
 				To:        s.stranger.String(),
 				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 			},
@@ -100,7 +100,7 @@ func (s *KeeperTestSuite) TestAccept() {
 			},
 			grantee: s.members[0],
 			msg: &foundation.MsgWithdrawFromTreasury{
-				Authority: s.operator.String(),
+				Authority: s.authority.String(),
 				To:        s.members[0].String(),
 				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 			},
@@ -109,7 +109,7 @@ func (s *KeeperTestSuite) TestAccept() {
 		"no authorization": {
 			grantee: s.members[0],
 			msg: &foundation.MsgWithdrawFromTreasury{
-				Authority: s.operator.String(),
+				Authority: s.authority.String(),
 				To:        s.members[0].String(),
 				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())),
 			},

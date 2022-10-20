@@ -16,7 +16,7 @@ func (s *KeeperTestSuite) TestMsgUpdateParams() {
 		valid     bool
 	}{
 		"valid request": {
-			authority: s.operator,
+			authority: s.authority,
 			params:    foundation.DefaultParams(),
 			valid:     true,
 		},
@@ -25,7 +25,7 @@ func (s *KeeperTestSuite) TestMsgUpdateParams() {
 			params:    foundation.DefaultParams(),
 		},
 		"enabling feature": {
-			authority: s.operator,
+			authority: s.authority,
 			params: foundation.Params{
 				FoundationTax: sdk.ZeroDec(),
 				CensoredMsgTypeUrls: []string{
@@ -95,7 +95,7 @@ func (s *KeeperTestSuite) TestMsgWithdrawFromTreasury() {
 		valid     bool
 	}{
 		"valid request": {
-			authority: s.operator,
+			authority: s.authority,
 			to:        s.stranger,
 			amount:    s.balance,
 			valid:     true,
@@ -106,12 +106,12 @@ func (s *KeeperTestSuite) TestMsgWithdrawFromTreasury() {
 			amount:    s.balance,
 		},
 		"receiver not authorized": {
-			authority: s.operator,
+			authority: s.authority,
 			to:        s.members[0],
 			amount:    s.balance,
 		},
 		"insufficient funds": {
-			authority: s.operator,
+			authority: s.authority,
 			to:        s.stranger,
 			amount:    s.balance.Add(sdk.OneInt()),
 		},
@@ -144,7 +144,7 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 		valid     bool
 	}{
 		"valid request": {
-			authority: s.operator,
+			authority: s.authority,
 			policy: &foundation.ThresholdDecisionPolicy{
 				Threshold: sdk.OneDec(),
 				Windows:   &foundation.DecisionPolicyWindows{},
@@ -159,7 +159,7 @@ func (s *KeeperTestSuite) TestMsgUpdateDecisionPolicy() {
 			},
 		},
 		"invalid policy": {
-			authority: s.operator,
+			authority: s.authority,
 			policy: &foundation.ThresholdDecisionPolicy{
 				Threshold: sdk.OneDec(),
 				Windows: &foundation.DecisionPolicyWindows{
@@ -198,7 +198,7 @@ func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 		valid     bool
 	}{
 		"valid request": {
-			authority: s.operator,
+			authority: s.authority,
 			member: foundation.MemberRequest{
 				Address: s.members[0].String(),
 			},
@@ -211,7 +211,7 @@ func (s *KeeperTestSuite) TestMsgUpdateMembers() {
 			},
 		},
 		"remove a non-member": {
-			authority: s.operator,
+			authority: s.authority,
 			member: foundation.MemberRequest{
 				Address: s.stranger.String(),
 				Remove:  true,
@@ -254,24 +254,24 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 	}{
 		"valid request (submit)": {
 			proposers: members,
-			msg:       testdata.NewTestMsg(s.operator),
+			msg:       testdata.NewTestMsg(s.authority),
 			valid:     true,
 		},
 		"valid request (submit & execute)": {
 			proposers: members,
-			msg:       testdata.NewTestMsg(s.operator),
+			msg:       testdata.NewTestMsg(s.authority),
 			exec:      foundation.Exec_EXEC_TRY,
 			valid:     true,
 		},
 		"valid request (submit & unable to reach quorum)": {
 			proposers: []string{members[0]},
-			msg:       testdata.NewTestMsg(s.operator),
+			msg:       testdata.NewTestMsg(s.authority),
 			exec:      foundation.Exec_EXEC_TRY,
 			valid:     true,
 		},
 		"not a member": {
 			proposers: []string{s.stranger.String()},
-			msg:       testdata.NewTestMsg(s.operator),
+			msg:       testdata.NewTestMsg(s.authority),
 		},
 		"unauthorized msg": {
 			proposers: []string{members[0]},
@@ -290,7 +290,7 @@ func (s *KeeperTestSuite) TestMsgSubmitProposal() {
 				s.Require().NoError(err)
 			},
 			proposers: members,
-			msg:       testdata.NewTestMsg(s.operator),
+			msg:       testdata.NewTestMsg(s.authority),
 			exec:      foundation.Exec_EXEC_TRY,
 		},
 	}
@@ -334,7 +334,7 @@ func (s *KeeperTestSuite) TestMsgWithdrawProposal() {
 		},
 		"valid request (authority)": {
 			proposalID: s.activeProposal,
-			address:    s.operator,
+			address:    s.authority,
 			valid:      true,
 		},
 		"not authorized": {
@@ -414,7 +414,7 @@ func (s *KeeperTestSuite) TestMsgVote() {
 				req := &foundation.MsgSubmitProposal{
 					Proposers: proposers,
 				}
-				err = req.SetMsgs([]sdk.Msg{testdata.NewTestMsg(s.operator)})
+				err = req.SetMsgs([]sdk.Msg{testdata.NewTestMsg(s.authority)})
 				s.Require().NoError(err)
 
 				res, err := s.msgServer.SubmitProposal(sdk.WrapSDKContext(ctx), req)
@@ -559,7 +559,7 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 		valid         bool
 	}{
 		"valid request": {
-			authority:     s.operator,
+			authority:     s.authority,
 			grantee:       s.members[0],
 			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
 			valid:         true,
@@ -570,7 +570,7 @@ func (s *KeeperTestSuite) TestMsgGrant() {
 			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
 		},
 		"already granted": {
-			authority:     s.operator,
+			authority:     s.authority,
 			grantee:       s.stranger,
 			authorization: &foundation.ReceiveFromTreasuryAuthorization{},
 		},
@@ -606,13 +606,13 @@ func (s *KeeperTestSuite) TestMsgRevoke() {
 		valid      bool
 	}{
 		"valid request": {
-			authority:  s.operator,
+			authority:  s.authority,
 			grantee:    s.stranger,
 			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 			valid:      true,
 		},
 		"no grant": {
-			authority:  s.operator,
+			authority:  s.authority,
 			grantee:    s.members[0],
 			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 		},
@@ -622,7 +622,7 @@ func (s *KeeperTestSuite) TestMsgRevoke() {
 			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 		},
 		"wrong granter": {
-			authority:  s.operator,
+			authority:  s.authority,
 			grantee:    s.stranger,
 			msgTypeURL: stakingplus.CreateValidatorAuthorization{}.MsgTypeURL(),
 		},
@@ -656,12 +656,12 @@ func (s *KeeperTestSuite) TestMsgGovMint() {
 		valid          bool
 	}{
 		"valid request": {
-			authority: s.operator,
+			authority: s.authority,
 			amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
 			valid:     true,
 		},
 		"empty count": {
-			authority:      s.operator,
+			authority:      s.authority,
 			amount:         sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
 			emptyCountTest: true,
 		},
