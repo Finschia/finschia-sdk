@@ -17,7 +17,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgTransferFTFrom{}, "lbm-sdk/MsgTransferFTFrom")
 	legacy.RegisterAminoMsg(cdc, &MsgTransferNFT{}, "lbm-sdk/MsgTransferNFT")
 	legacy.RegisterAminoMsg(cdc, &MsgTransferNFTFrom{}, "lbm-sdk/MsgTransferNFTFrom")
-	legacy.RegisterAminoMsg(cdc, &MsgApprove{}, "lbm-sdk/MsgApprove")
+	legacy.RegisterAminoMsg(cdc, &MsgApprove{}, "lbm-sdk/MsgCollectionApprove") // Changed msgName due to conflict with `x/token`
 	legacy.RegisterAminoMsg(cdc, &MsgDisapprove{}, "lbm-sdk/MsgDisapprove")
 	legacy.RegisterAminoMsg(cdc, &MsgCreateContract{}, "lbm-sdk/MsgCreateContract")
 	legacy.RegisterAminoMsg(cdc, &MsgIssueFT{}, "lbm-sdk/MsgIssueFT")
@@ -28,9 +28,9 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgBurnFTFrom{}, "lbm-sdk/MsgBurnFTFrom")
 	legacy.RegisterAminoMsg(cdc, &MsgBurnNFT{}, "lbm-sdk/MsgBurnNFT")
 	legacy.RegisterAminoMsg(cdc, &MsgBurnNFTFrom{}, "lbm-sdk/MsgBurnNFTFrom")
-	legacy.RegisterAminoMsg(cdc, &MsgModify{}, "lbm-sdk/MsgModify")
-	legacy.RegisterAminoMsg(cdc, &MsgGrantPermission{}, "lbm-sdk/MsgGrantPermission")
-	legacy.RegisterAminoMsg(cdc, &MsgRevokePermission{}, "lbm-sdk/MsgRevokePermission")
+	legacy.RegisterAminoMsg(cdc, &MsgModify{}, "lbm-sdk/MsgCollectionModify")                     // Changed msgName due to conflict with `x/token`
+	legacy.RegisterAminoMsg(cdc, &MsgGrantPermission{}, "lbm-sdk/MsgCollectionGrantPermission")   // Changed msgName due to conflict with `x/token`
+	legacy.RegisterAminoMsg(cdc, &MsgRevokePermission{}, "lbm-sdk/MsgCollectionRevokePermission") // Changed msgName due to conflict with `x/token`
 	legacy.RegisterAminoMsg(cdc, &MsgAttach{}, "lbm-sdk/MsgAttach")
 	legacy.RegisterAminoMsg(cdc, &MsgDetach{}, "lbm-sdk/MsgDetach")
 	legacy.RegisterAminoMsg(cdc, &MsgAttachFrom{}, "lbm-sdk/MsgAttachFrom")

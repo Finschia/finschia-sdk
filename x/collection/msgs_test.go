@@ -1644,7 +1644,7 @@ func TestAminoJSON(t *testing.T) {
 				Approver:   addrs[0].String(),
 				Proxy:      addrs[1].String(),
 			},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgApprove\",\"value\":{\"approver\":\"%s\",\"contract_id\":\"deadbeef\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgCollectionApprove\",\"value\":{\"approver\":\"%s\",\"contract_id\":\"deadbeef\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgDisapprove": {
 			&collection.MsgDisapprove{
@@ -1745,7 +1745,7 @@ func TestAminoJSON(t *testing.T) {
 				TokenIndex: "deadbeef",
 				Changes:    []collection.Change{{Field: "name", Value: "New test"}},
 			},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgModify\",\"value\":{\"changes\":[{\"field\":\"name\",\"value\":\"New test\"}],\"contract_id\":\"deadbeef\",\"owner\":\"%s\",\"token_index\":\"deadbeef\",\"token_type\":\"NewType\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgCollectionModify\",\"value\":{\"changes\":[{\"field\":\"name\",\"value\":\"New test\"}],\"contract_id\":\"deadbeef\",\"owner\":\"%s\",\"token_index\":\"deadbeef\",\"token_type\":\"NewType\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgGrantPermission": {
 			&collection.MsgGrantPermission{
@@ -1754,7 +1754,7 @@ func TestAminoJSON(t *testing.T) {
 				To:         addrs[1].String(),
 				Permission: collection.LegacyPermissionMint.String(),
 			},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgGrantPermission\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"permission\":\"mint\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgCollectionGrantPermission\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"permission\":\"mint\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgRevokePermission": {
 			&collection.MsgRevokePermission{
@@ -1762,7 +1762,7 @@ func TestAminoJSON(t *testing.T) {
 				From:       addrs[0].String(),
 				Permission: collection.LegacyPermissionMint.String(),
 			},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgRevokePermission\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"permission\":\"mint\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgCollectionRevokePermission\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"permission\":\"mint\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgAttach": {
 			&collection.MsgAttach{
@@ -1802,8 +1802,11 @@ func TestAminoJSON(t *testing.T) {
 		},
 	}
 
-	for _, tc := range testCase {
-		tx.Msgs = []sdk.Msg{tc.msg}
-		require.Equal(t, tc.expected, string(legacytx.StdSignBytes("foo", 1, 1, 1, legacytx.StdFee{}, []sdk.Msg{tc.msg}, "memo")))
+	for name, tc := range testCase {
+		tc := tc
+		t.Run(name, func(t *testing.T) {
+			tx.Msgs = []sdk.Msg{tc.msg}
+			require.Equal(t, tc.expected, string(legacytx.StdSignBytes("foo", 1, 1, 1, legacytx.StdFee{}, []sdk.Msg{tc.msg}, "memo")))
+		})
 	}
 }
