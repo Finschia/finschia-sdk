@@ -16807,7 +16807,6 @@ FoundationInfo represents the high-level on-chain information for the foundation
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  | operator is the account address of the foundation's operator. |
 | `version` | [uint64](#uint64) |  | version is used to track changes to the foundation's membership structure that would break existing proposals. Whenever any member is added or removed, this version is incremented and will cause proposals based on older versions of the foundation to fail |
 | `total_weight` | [string](#string) |  | total_weight is the number of the foundation members. |
 | `decision_policy` | [google.protobuf.Any](#google.protobuf.Any) |  | decision_policy specifies the foundation's decision policy. |
@@ -16857,7 +16856,7 @@ since this field cannot be set as part of requests.
 
 ### OutsourcingDecisionPolicy
 OutsourcingDecisionPolicy is a dummy decision policy which is set after
-the operator has been updated into x/group's group policy.
+the proposal feature has been outsourced to x/group.
 
 
 | Field | Type | Label | Description |
@@ -17242,7 +17241,7 @@ EventVote is an event emitted when a voter votes on a proposal.
 <a name="lbm.foundation.v1.EventWithdrawFromTreasury"></a>
 
 ### EventWithdrawFromTreasury
-EventWithdrawFromTreasury is an event emitted when the operator withdraws coins from the treasury.
+EventWithdrawFromTreasury is an event emitted when coins are withdrawn from the treasury.
 
 
 | Field | Type | Label | Description |
@@ -17788,7 +17787,7 @@ MsgGovMint is the Msg/GovMint request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  |  |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
 | `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
 
 
@@ -17815,7 +17814,7 @@ on behalf of the foundation.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  |  |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
 | `grantee` | [string](#string) |  |  |
 | `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 
@@ -17867,7 +17866,7 @@ MsgRevoke is the Msg/Revoke request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  |  |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
 | `grantee` | [string](#string) |  |  |
 | `msg_type_url` | [string](#string) |  |  |
 
@@ -17927,7 +17926,7 @@ MsgUpdateDecisionPolicy is the Msg/UpdateDecisionPolicy request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  | operator is the account address of the foundation operator. |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
 | `decision_policy` | [google.protobuf.Any](#google.protobuf.Any) |  | decision_policy is the updated decision policy. |
 
 
@@ -17953,7 +17952,7 @@ MsgUpdateMembers is the Msg/UpdateMembers request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  | operator is the account address of the foundation operator. |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
 | `member_updates` | [MemberRequest](#lbm.foundation.v1.MemberRequest) | repeated | member_updates is the list of members to update, set remove to true to remove a member. |
 
 
@@ -17979,7 +17978,7 @@ MsgUpdateParams is the Msg/UpdateParams request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `authority` | [string](#string) |  | authority is the address of the operator account. |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
 | `params` | [Params](#lbm.foundation.v1.Params) |  | params defines the x/foundation parameters to update.
 
 NOTE: All parameters must be supplied. |
@@ -18036,7 +18035,7 @@ MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  |  |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
 | `to` | [string](#string) |  |  |
 | `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
 

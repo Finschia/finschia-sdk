@@ -61,7 +61,7 @@ service Msg {
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {
-  // authority is the address of the operator account.
+  // authority is the address of the privileged account.
   string authority = 1;
 
   // params defines the x/foundation parameters to update.
@@ -85,7 +85,8 @@ message MsgFundTreasuryResponse {}
 
 // MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
 message MsgWithdrawFromTreasury {
-  string   operator                        = 1;
+  // authority is the address of the privileged account.
+  string   authority                       = 1;
   string   to                              = 2;
   repeated cosmos.base.v1beta1.Coin amount = 3
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
@@ -96,8 +97,8 @@ message MsgWithdrawFromTreasuryResponse {}
 
 // MsgUpdateMembers is the Msg/UpdateMembers request type.
 message MsgUpdateMembers {
-  // operator is the account address of the foundation operator.
-  string operator = 1;
+  // authority is the address of the privileged account.
+  string authority = 1;
 
   // member_updates is the list of members to update,
   // set remove to true to remove a member.
@@ -109,8 +110,8 @@ message MsgUpdateMembersResponse {}
 
 // MsgUpdateDecisionPolicy is the Msg/UpdateDecisionPolicy request type.
 message MsgUpdateDecisionPolicy {
-  // operator is the account address of the foundation operator.
-  string operator = 1;
+  // authority is the address of the privileged account.
+  string authority = 1;
 
   // decision_policy is the updated decision policy.
   google.protobuf.Any decision_policy = 2 [(cosmos_proto.accepts_interface) = "DecisionPolicy"];
@@ -214,8 +215,9 @@ message MsgLeaveFoundationResponse {}
 // MsgGrant is the Msg/Grant request type.
 // on behalf of the foundation.
 message MsgGrant {
-  string operator = 1;
-  string grantee  = 2;
+  // authority is the address of the privileged account.
+  string authority = 1;
+  string grantee   = 2;
 
   google.protobuf.Any authorization = 3
       [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization"];
@@ -226,7 +228,8 @@ message MsgGrantResponse {}
 
 // MsgRevoke is the Msg/Revoke request type.
 message MsgRevoke {
-  string operator     = 1;
+  // authority is the address of the privileged account.
+  string authority    = 1;
   string grantee      = 2;
   string msg_type_url = 3;
 }
@@ -236,7 +239,8 @@ message MsgRevokeResponse {}
 
 // MsgGovMint is the Msg/GovMint request type.
 message MsgGovMint {
-  string   operator                        = 1;
+  // authority is the address of the privileged account.
+  string   authority                       = 1;
   repeated cosmos.base.v1beta1.Coin amount = 2
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
