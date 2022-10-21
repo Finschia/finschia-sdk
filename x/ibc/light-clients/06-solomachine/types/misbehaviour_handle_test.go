@@ -3,7 +3,7 @@ package types_test
 import (
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	"github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -38,19 +38,9 @@ func (suite *SoloMachineTestSuite) TestCheckMisbehaviourAndUpdateState() {
 				}, true,
 			},
 			{
-				"client is frozen",
-				func() {
-					cs := solomachine.ClientState()
-					cs.FrozenSequence = 1
-					clientState = cs
-					misbehaviour = solomachine.CreateMisbehaviour()
-				},
-				false,
-			},
-			{
 				"wrong client state type",
 				func() {
-					clientState = &ibctmtypes.ClientState{}
+					clientState = &ibcoctypes.ClientState{}
 					misbehaviour = solomachine.CreateMisbehaviour()
 				},
 				false,
@@ -59,7 +49,7 @@ func (suite *SoloMachineTestSuite) TestCheckMisbehaviourAndUpdateState() {
 				"invalid misbehaviour type",
 				func() {
 					clientState = solomachine.ClientState()
-					misbehaviour = &ibctmtypes.Misbehaviour{}
+					misbehaviour = &ibcoctypes.Misbehaviour{}
 				},
 				false,
 			},
@@ -264,7 +254,7 @@ func (suite *SoloMachineTestSuite) TestCheckMisbehaviourAndUpdateState() {
 
 				if tc.expPass {
 					suite.Require().NoError(err)
-					suite.Require().True(clientState.IsFrozen(), "client not frozen")
+					suite.Require().True(clientState.(*types.ClientState).IsFrozen, "client not frozen")
 				} else {
 					suite.Require().Error(err)
 					suite.Require().Nil(clientState)

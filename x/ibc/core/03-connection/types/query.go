@@ -2,13 +2,9 @@ package types
 
 import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
+
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-)
-
-var (
-	_ codectypes.UnpackInterfacesMessage = QueryConnectionClientStateResponse{}
-	_ codectypes.UnpackInterfacesMessage = QueryConnectionConsensusStateResponse{}
 )
 
 var (

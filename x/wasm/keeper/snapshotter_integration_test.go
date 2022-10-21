@@ -2,7 +2,7 @@ package keeper_test
 
 import (
 	"crypto/sha256"
-	"io/ioutil"
+	"os"
 	"testing"
 	"time"
 
@@ -16,8 +16,8 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
-	tmtypes "github.com/line/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/simapp"
@@ -44,7 +44,7 @@ func TestSnapshotter(t *testing.T) {
 			srcWasmApp, genesisAddr := newWasmExampleApp(t)
 
 			// store wasm codes on chain
-			ctx := srcWasmApp.NewUncachedContext(false, tmproto.Header{
+			ctx := srcWasmApp.NewUncachedContext(false, ocproto.Header{
 				ChainID: "foo",
 				Height:  srcWasmApp.LastBlockHeight() + 1,
 				Time:    time.Now(),
@@ -54,7 +54,7 @@ func TestSnapshotter(t *testing.T) {
 
 			srcCodeIDToChecksum := make(map[uint64][]byte, len(spec.wasmFiles))
 			for i, v := range spec.wasmFiles {
-				wasmCode, err := ioutil.ReadFile(v)
+				wasmCode, err := os.ReadFile(v)
 				require.NoError(t, err)
 				codeID, err := contractKeeper.Create(ctx, genesisAddr, wasmCode, nil)
 				require.NoError(t, err)
@@ -84,7 +84,7 @@ func TestSnapshotter(t *testing.T) {
 
 			// then all wasm contracts are imported
 			wasmKeeper = simapp.NewTestSupport(t, destWasmApp).WasmKeeper()
-			ctx = destWasmApp.NewUncachedContext(false, tmproto.Header{
+			ctx = destWasmApp.NewUncachedContext(false, ocproto.Header{
 				ChainID: "foo",
 				Height:  destWasmApp.LastBlockHeight() + 1,
 				Time:    time.Now(),
@@ -118,9 +118,9 @@ func newWasmExampleApp(t *testing.T) (*simapp.SimApp, sdk.AccAddress) {
 		Address: acc.GetAddress().String(),
 		Coins:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, amount)),
 	}
-	validator := tmtypes.NewValidator(pubKey, 1)
-	valSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{validator})
-	simApp := simapp.SetupWithGenesisValSet(t, valSet, []authtypes.GenesisAccount{acc}, balance)
+	validator := octypes.NewValidator(pubKey, 1)
+	valSet := octypes.NewValidatorSet([]*octypes.Validator{validator})
+	simApp := simapp.SetupWithGenesisValSet(t, valSet, []authtypes.GenesisAccount{acc}, nil, balance)
 
 	return simApp, senderAddr
 }

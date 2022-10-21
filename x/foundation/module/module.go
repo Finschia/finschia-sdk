@@ -81,15 +81,13 @@ var _ module.AppModule = AppModule{}
 type AppModule struct {
 	AppModuleBasic
 
-	keeper        keeper.Keeper
-	stakingKeeper foundation.StakingKeeper
+	keeper keeper.Keeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Codec, keeper keeper.Keeper, stk foundation.StakingKeeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
 	return AppModule{
-		keeper:        keeper,
-		stakingKeeper: stk,
+		keeper: keeper,
 	}
 }
 
@@ -127,7 +125,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState foundation.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
-	if err := am.keeper.InitGenesis(ctx, am.stakingKeeper, &genesisState); err != nil {
+	if err := am.keeper.InitGenesis(ctx, &genesisState); err != nil {
 		panic(err)
 	}
 	return []abci.ValidatorUpdate{}

@@ -3,18 +3,21 @@ package types
 import (
 	"time"
 
-	ostbytes "github.com/line/ostracon/libs/bytes"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	ocbytes "github.com/line/ostracon/libs/bytes"
 	octypes "github.com/line/ostracon/types"
 
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
+// SentinelRoot is used as a stand-in root value for the consensus state set at the upgrade height
+const SentinelRoot = "sentinel_root"
+
 // NewConsensusState creates a new ConsensusState instance.
 func NewConsensusState(
-	timestamp time.Time, root commitmenttypes.MerkleRoot, nextValsHash ostbytes.HexBytes,
+	timestamp time.Time, root commitmenttypes.MerkleRoot, nextValsHash ocbytes.HexBytes,
 ) *ConsensusState {
 	return &ConsensusState{
 		Timestamp:          timestamp,
@@ -38,7 +41,7 @@ func (cs ConsensusState) GetTimestamp() uint64 {
 	return uint64(cs.Timestamp.UnixNano())
 }
 
-// ValidateBasic defines a basic validation for the tendermint consensus state.
+// ValidateBasic defines a basic validation for the ostracon consensus state.
 // NOTE: ProcessedTimestamp may be zero if this is an initial consensus state passed in by relayer
 // as opposed to a consensus state constructed by the chain.
 func (cs ConsensusState) ValidateBasic() error {

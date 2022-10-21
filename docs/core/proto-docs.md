@@ -658,15 +658,35 @@
   
     - [Query](#cosmwasm.wasm.v1.Query)
   
+- [ibc/applications/interchain_accounts/v1/account.proto](#ibc/applications/interchain_accounts/v1/account.proto)
+    - [InterchainAccount](#ibc.applications.interchain_accounts.v1.InterchainAccount)
+  
+- [ibc/applications/interchain_accounts/v1/genesis.proto](#ibc/applications/interchain_accounts/v1/genesis.proto)
+    - [ActiveChannel](#ibc.applications.interchain_accounts.v1.ActiveChannel)
+    - [ControllerGenesisState](#ibc.applications.interchain_accounts.v1.ControllerGenesisState)
+    - [GenesisState](#ibc.applications.interchain_accounts.v1.GenesisState)
+    - [HostGenesisState](#ibc.applications.interchain_accounts.v1.HostGenesisState)
+    - [RegisteredInterchainAccount](#ibc.applications.interchain_accounts.v1.RegisteredInterchainAccount)
+  
+- [ibc/applications/interchain_accounts/v1/metadata.proto](#ibc/applications/interchain_accounts/v1/metadata.proto)
+    - [Metadata](#ibc.applications.interchain_accounts.v1.Metadata)
+  
+- [ibc/applications/interchain_accounts/v1/packet.proto](#ibc/applications/interchain_accounts/v1/packet.proto)
+    - [CosmosTx](#ibc.applications.interchain_accounts.v1.CosmosTx)
+    - [InterchainAccountPacketData](#ibc.applications.interchain_accounts.v1.InterchainAccountPacketData)
+  
+    - [Type](#ibc.applications.interchain_accounts.v1.Type)
+  
 - [ibc/applications/transfer/v1/transfer.proto](#ibc/applications/transfer/v1/transfer.proto)
     - [DenomTrace](#ibc.applications.transfer.v1.DenomTrace)
-    - [FungibleTokenPacketData](#ibc.applications.transfer.v1.FungibleTokenPacketData)
     - [Params](#ibc.applications.transfer.v1.Params)
   
 - [ibc/applications/transfer/v1/genesis.proto](#ibc/applications/transfer/v1/genesis.proto)
     - [GenesisState](#ibc.applications.transfer.v1.GenesisState)
   
 - [ibc/applications/transfer/v1/query.proto](#ibc/applications/transfer/v1/query.proto)
+    - [QueryDenomHashRequest](#ibc.applications.transfer.v1.QueryDenomHashRequest)
+    - [QueryDenomHashResponse](#ibc.applications.transfer.v1.QueryDenomHashResponse)
     - [QueryDenomTraceRequest](#ibc.applications.transfer.v1.QueryDenomTraceRequest)
     - [QueryDenomTraceResponse](#ibc.applications.transfer.v1.QueryDenomTraceResponse)
     - [QueryDenomTracesRequest](#ibc.applications.transfer.v1.QueryDenomTracesRequest)
@@ -690,6 +710,9 @@
     - [MsgTransferResponse](#ibc.applications.transfer.v1.MsgTransferResponse)
   
     - [Msg](#ibc.applications.transfer.v1.Msg)
+  
+- [ibc/applications/transfer/v2/packet.proto](#ibc/applications/transfer/v2/packet.proto)
+    - [FungibleTokenPacketData](#ibc.applications.transfer.v2.FungibleTokenPacketData)
   
 - [ibc/core/channel/v1/channel.proto](#ibc/core/channel/v1/channel.proto)
     - [Acknowledgement](#ibc.core.channel.v1.Acknowledgement)
@@ -758,6 +781,8 @@
     - [MsgTimeoutOnCloseResponse](#ibc.core.channel.v1.MsgTimeoutOnCloseResponse)
     - [MsgTimeoutResponse](#ibc.core.channel.v1.MsgTimeoutResponse)
   
+    - [ResponseResultType](#ibc.core.channel.v1.ResponseResultType)
+  
     - [Msg](#ibc.core.channel.v1.Msg)
   
 - [ibc/core/client/v1/genesis.proto](#ibc/core/client/v1/genesis.proto)
@@ -772,12 +797,16 @@
     - [QueryClientStateResponse](#ibc.core.client.v1.QueryClientStateResponse)
     - [QueryClientStatesRequest](#ibc.core.client.v1.QueryClientStatesRequest)
     - [QueryClientStatesResponse](#ibc.core.client.v1.QueryClientStatesResponse)
+    - [QueryClientStatusRequest](#ibc.core.client.v1.QueryClientStatusRequest)
+    - [QueryClientStatusResponse](#ibc.core.client.v1.QueryClientStatusResponse)
     - [QueryConsensusStateRequest](#ibc.core.client.v1.QueryConsensusStateRequest)
     - [QueryConsensusStateResponse](#ibc.core.client.v1.QueryConsensusStateResponse)
     - [QueryConsensusStatesRequest](#ibc.core.client.v1.QueryConsensusStatesRequest)
     - [QueryConsensusStatesResponse](#ibc.core.client.v1.QueryConsensusStatesResponse)
     - [QueryUpgradedClientStateRequest](#ibc.core.client.v1.QueryUpgradedClientStateRequest)
     - [QueryUpgradedClientStateResponse](#ibc.core.client.v1.QueryUpgradedClientStateResponse)
+    - [QueryUpgradedConsensusStateRequest](#ibc.core.client.v1.QueryUpgradedConsensusStateRequest)
+    - [QueryUpgradedConsensusStateResponse](#ibc.core.client.v1.QueryUpgradedConsensusStateResponse)
   
     - [Query](#ibc.core.client.v1.Query)
   
@@ -805,6 +834,7 @@
     - [ConnectionPaths](#ibc.core.connection.v1.ConnectionPaths)
     - [Counterparty](#ibc.core.connection.v1.Counterparty)
     - [IdentifiedConnection](#ibc.core.connection.v1.IdentifiedConnection)
+    - [Params](#ibc.core.connection.v1.Params)
     - [Version](#ibc.core.connection.v1.Version)
   
     - [State](#ibc.core.connection.v1.State)
@@ -870,6 +900,26 @@
     - [TimestampedSignatureData](#ibc.lightclients.solomachine.v1.TimestampedSignatureData)
   
     - [DataType](#ibc.lightclients.solomachine.v1.DataType)
+  
+- [ibc/lightclients/solomachine/v2/solomachine.proto](#ibc/lightclients/solomachine/v2/solomachine.proto)
+    - [ChannelStateData](#ibc.lightclients.solomachine.v2.ChannelStateData)
+    - [ClientState](#ibc.lightclients.solomachine.v2.ClientState)
+    - [ClientStateData](#ibc.lightclients.solomachine.v2.ClientStateData)
+    - [ConnectionStateData](#ibc.lightclients.solomachine.v2.ConnectionStateData)
+    - [ConsensusState](#ibc.lightclients.solomachine.v2.ConsensusState)
+    - [ConsensusStateData](#ibc.lightclients.solomachine.v2.ConsensusStateData)
+    - [Header](#ibc.lightclients.solomachine.v2.Header)
+    - [HeaderData](#ibc.lightclients.solomachine.v2.HeaderData)
+    - [Misbehaviour](#ibc.lightclients.solomachine.v2.Misbehaviour)
+    - [NextSequenceRecvData](#ibc.lightclients.solomachine.v2.NextSequenceRecvData)
+    - [PacketAcknowledgementData](#ibc.lightclients.solomachine.v2.PacketAcknowledgementData)
+    - [PacketCommitmentData](#ibc.lightclients.solomachine.v2.PacketCommitmentData)
+    - [PacketReceiptAbsenceData](#ibc.lightclients.solomachine.v2.PacketReceiptAbsenceData)
+    - [SignBytes](#ibc.lightclients.solomachine.v2.SignBytes)
+    - [SignatureAndData](#ibc.lightclients.solomachine.v2.SignatureAndData)
+    - [TimestampedSignatureData](#ibc.lightclients.solomachine.v2.TimestampedSignatureData)
+  
+    - [DataType](#ibc.lightclients.solomachine.v2.DataType)
   
 - [lbm/bankplus/v1/bankplus.proto](#lbm/bankplus/v1/bankplus.proto)
     - [InactiveAddr](#lbm.bankplus.v1.InactiveAddr)
@@ -1056,31 +1106,31 @@
     - [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows)
     - [FoundationInfo](#lbm.foundation.v1.FoundationInfo)
     - [Member](#lbm.foundation.v1.Member)
+    - [MemberRequest](#lbm.foundation.v1.MemberRequest)
+    - [OutsourcingDecisionPolicy](#lbm.foundation.v1.OutsourcingDecisionPolicy)
     - [Params](#lbm.foundation.v1.Params)
     - [PercentageDecisionPolicy](#lbm.foundation.v1.PercentageDecisionPolicy)
+    - [Pool](#lbm.foundation.v1.Pool)
     - [Proposal](#lbm.foundation.v1.Proposal)
     - [TallyResult](#lbm.foundation.v1.TallyResult)
     - [ThresholdDecisionPolicy](#lbm.foundation.v1.ThresholdDecisionPolicy)
-    - [UpdateFoundationParamsProposal](#lbm.foundation.v1.UpdateFoundationParamsProposal)
-    - [UpdateValidatorAuthsProposal](#lbm.foundation.v1.UpdateValidatorAuthsProposal)
-    - [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth)
     - [Vote](#lbm.foundation.v1.Vote)
   
     - [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult)
-    - [ProposalResult](#lbm.foundation.v1.ProposalResult)
     - [ProposalStatus](#lbm.foundation.v1.ProposalStatus)
     - [VoteOption](#lbm.foundation.v1.VoteOption)
   
 - [lbm/foundation/v1/event.proto](#lbm/foundation/v1/event.proto)
     - [EventExec](#lbm.foundation.v1.EventExec)
     - [EventFundTreasury](#lbm.foundation.v1.EventFundTreasury)
+    - [EventGovMint](#lbm.foundation.v1.EventGovMint)
     - [EventGrant](#lbm.foundation.v1.EventGrant)
     - [EventLeaveFoundation](#lbm.foundation.v1.EventLeaveFoundation)
     - [EventRevoke](#lbm.foundation.v1.EventRevoke)
     - [EventSubmitProposal](#lbm.foundation.v1.EventSubmitProposal)
     - [EventUpdateDecisionPolicy](#lbm.foundation.v1.EventUpdateDecisionPolicy)
-    - [EventUpdateFoundationParams](#lbm.foundation.v1.EventUpdateFoundationParams)
     - [EventUpdateMembers](#lbm.foundation.v1.EventUpdateMembers)
+    - [EventUpdateParams](#lbm.foundation.v1.EventUpdateParams)
     - [EventVote](#lbm.foundation.v1.EventVote)
     - [EventWithdrawFromTreasury](#lbm.foundation.v1.EventWithdrawFromTreasury)
     - [EventWithdrawProposal](#lbm.foundation.v1.EventWithdrawProposal)
@@ -1092,6 +1142,8 @@
 - [lbm/foundation/v1/query.proto](#lbm/foundation/v1/query.proto)
     - [QueryFoundationInfoRequest](#lbm.foundation.v1.QueryFoundationInfoRequest)
     - [QueryFoundationInfoResponse](#lbm.foundation.v1.QueryFoundationInfoResponse)
+    - [QueryGovMintRequest](#lbm.foundation.v1.QueryGovMintRequest)
+    - [QueryGovMintResponse](#lbm.foundation.v1.QueryGovMintResponse)
     - [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest)
     - [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse)
     - [QueryMemberRequest](#lbm.foundation.v1.QueryMemberRequest)
@@ -1120,6 +1172,8 @@
     - [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse)
     - [MsgFundTreasury](#lbm.foundation.v1.MsgFundTreasury)
     - [MsgFundTreasuryResponse](#lbm.foundation.v1.MsgFundTreasuryResponse)
+    - [MsgGovMint](#lbm.foundation.v1.MsgGovMint)
+    - [MsgGovMintResponse](#lbm.foundation.v1.MsgGovMintResponse)
     - [MsgGrant](#lbm.foundation.v1.MsgGrant)
     - [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse)
     - [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation)
@@ -1132,6 +1186,8 @@
     - [MsgUpdateDecisionPolicyResponse](#lbm.foundation.v1.MsgUpdateDecisionPolicyResponse)
     - [MsgUpdateMembers](#lbm.foundation.v1.MsgUpdateMembers)
     - [MsgUpdateMembersResponse](#lbm.foundation.v1.MsgUpdateMembersResponse)
+    - [MsgUpdateParams](#lbm.foundation.v1.MsgUpdateParams)
+    - [MsgUpdateParamsResponse](#lbm.foundation.v1.MsgUpdateParamsResponse)
     - [MsgVote](#lbm.foundation.v1.MsgVote)
     - [MsgVoteResponse](#lbm.foundation.v1.MsgVoteResponse)
     - [MsgWithdrawFromTreasury](#lbm.foundation.v1.MsgWithdrawFromTreasury)
@@ -10066,6 +10122,238 @@ Query provides defines the gRPC querier service
 
 
 
+<a name="ibc/applications/interchain_accounts/v1/account.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ibc/applications/interchain_accounts/v1/account.proto
+
+
+
+<a name="ibc.applications.interchain_accounts.v1.InterchainAccount"></a>
+
+### InterchainAccount
+An InterchainAccount is defined as a BaseAccount & the address of the account owner on the controller chain
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `base_account` | [cosmos.auth.v1beta1.BaseAccount](#cosmos.auth.v1beta1.BaseAccount) |  |  |
+| `account_owner` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="ibc/applications/interchain_accounts/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ibc/applications/interchain_accounts/v1/genesis.proto
+
+
+
+<a name="ibc.applications.interchain_accounts.v1.ActiveChannel"></a>
+
+### ActiveChannel
+ActiveChannel contains a connection ID, port ID and associated active channel ID
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `connection_id` | [string](#string) |  |  |
+| `port_id` | [string](#string) |  |  |
+| `channel_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ibc.applications.interchain_accounts.v1.ControllerGenesisState"></a>
+
+### ControllerGenesisState
+ControllerGenesisState defines the interchain accounts controller genesis state
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `active_channels` | [ActiveChannel](#ibc.applications.interchain_accounts.v1.ActiveChannel) | repeated |  |
+| `interchain_accounts` | [RegisteredInterchainAccount](#ibc.applications.interchain_accounts.v1.RegisteredInterchainAccount) | repeated |  |
+| `ports` | [string](#string) | repeated |  |
+| `params` | [ibc.applications.interchain_accounts.controller.v1.Params](#ibc.applications.interchain_accounts.controller.v1.Params) |  |  |
+
+
+
+
+
+
+<a name="ibc.applications.interchain_accounts.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the interchain accounts genesis state
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `controller_genesis_state` | [ControllerGenesisState](#ibc.applications.interchain_accounts.v1.ControllerGenesisState) |  |  |
+| `host_genesis_state` | [HostGenesisState](#ibc.applications.interchain_accounts.v1.HostGenesisState) |  |  |
+
+
+
+
+
+
+<a name="ibc.applications.interchain_accounts.v1.HostGenesisState"></a>
+
+### HostGenesisState
+HostGenesisState defines the interchain accounts host genesis state
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `active_channels` | [ActiveChannel](#ibc.applications.interchain_accounts.v1.ActiveChannel) | repeated |  |
+| `interchain_accounts` | [RegisteredInterchainAccount](#ibc.applications.interchain_accounts.v1.RegisteredInterchainAccount) | repeated |  |
+| `port` | [string](#string) |  |  |
+| `params` | [ibc.applications.interchain_accounts.host.v1.Params](#ibc.applications.interchain_accounts.host.v1.Params) |  |  |
+
+
+
+
+
+
+<a name="ibc.applications.interchain_accounts.v1.RegisteredInterchainAccount"></a>
+
+### RegisteredInterchainAccount
+RegisteredInterchainAccount contains a connection ID, port ID and associated interchain account address
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `connection_id` | [string](#string) |  |  |
+| `port_id` | [string](#string) |  |  |
+| `account_address` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="ibc/applications/interchain_accounts/v1/metadata.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ibc/applications/interchain_accounts/v1/metadata.proto
+
+
+
+<a name="ibc.applications.interchain_accounts.v1.Metadata"></a>
+
+### Metadata
+Metadata defines a set of protocol specific data encoded into the ICS27 channel version bytestring
+See ICS004: https://github.com/cosmos/ibc/tree/master/spec/core/ics-004-channel-and-packet-semantics#Versioning
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `version` | [string](#string) |  | version defines the ICS27 protocol version |
+| `controller_connection_id` | [string](#string) |  | controller_connection_id is the connection identifier associated with the controller chain |
+| `host_connection_id` | [string](#string) |  | host_connection_id is the connection identifier associated with the host chain |
+| `address` | [string](#string) |  | address defines the interchain account address to be fulfilled upon the OnChanOpenTry handshake step NOTE: the address field is empty on the OnChanOpenInit handshake step |
+| `encoding` | [string](#string) |  | encoding defines the supported codec format |
+| `tx_type` | [string](#string) |  | tx_type defines the type of transactions the interchain account can execute |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="ibc/applications/interchain_accounts/v1/packet.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ibc/applications/interchain_accounts/v1/packet.proto
+
+
+
+<a name="ibc.applications.interchain_accounts.v1.CosmosTx"></a>
+
+### CosmosTx
+CosmosTx contains a list of sdk.Msg's. It should be used when sending transactions to an SDK host chain.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `messages` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
+
+
+
+
+
+
+<a name="ibc.applications.interchain_accounts.v1.InterchainAccountPacketData"></a>
+
+### InterchainAccountPacketData
+InterchainAccountPacketData is comprised of a raw transaction, type of transaction and optional memo field.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `type` | [Type](#ibc.applications.interchain_accounts.v1.Type) |  |  |
+| `data` | [bytes](#bytes) |  |  |
+| `memo` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="ibc.applications.interchain_accounts.v1.Type"></a>
+
+### Type
+Type defines a classification of message issued from a controller chain to its associated interchain accounts
+host
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| TYPE_UNSPECIFIED | 0 | Default zero value enumeration |
+| TYPE_EXECUTE_TX | 1 | Execute a transaction on an interchain accounts host chain |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="ibc/applications/transfer/v1/transfer.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -10084,26 +10372,6 @@ source tracing information path.
 | ----- | ---- | ----- | ----------- |
 | `path` | [string](#string) |  | path defines the chain of port/channel identifiers used for tracing the source of the fungible token. |
 | `base_denom` | [string](#string) |  | base denomination of the relayed fungible token. |
-
-
-
-
-
-
-<a name="ibc.applications.transfer.v1.FungibleTokenPacketData"></a>
-
-### FungibleTokenPacketData
-FungibleTokenPacketData defines a struct for the packet payload
-See FungibleTokenPacketData spec:
-https://github.com/cosmos/ics/tree/master/spec/ics-020-fungible-token-transfer#data-structures
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `denom` | [string](#string) |  | the token denomination to be transferred |
-| `amount` | [uint64](#uint64) |  | the token amount to be transferred |
-| `sender` | [string](#string) |  | the sender address |
-| `receiver` | [string](#string) |  | the recipient address on the destination chain |
 
 
 
@@ -10175,6 +10443,38 @@ GenesisState defines the ibc-transfer genesis state
 <p align="right"><a href="#top">Top</a></p>
 
 ## ibc/applications/transfer/v1/query.proto
+
+
+
+<a name="ibc.applications.transfer.v1.QueryDenomHashRequest"></a>
+
+### QueryDenomHashRequest
+QueryDenomHashRequest is the request type for the Query/DenomHash RPC
+method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `trace` | [string](#string) |  | The denomination trace ([port_id]/[channel_id])+/[denom] |
+
+
+
+
+
+
+<a name="ibc.applications.transfer.v1.QueryDenomHashResponse"></a>
+
+### QueryDenomHashResponse
+QueryDenomHashResponse is the response type for the Query/DenomHash RPC
+method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `hash` | [string](#string) |  | hash (in hex format) of the denomination trace information. |
+
+
+
 
 
 
@@ -10281,9 +10581,10 @@ Query provides defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `DenomTrace` | [QueryDenomTraceRequest](#ibc.applications.transfer.v1.QueryDenomTraceRequest) | [QueryDenomTraceResponse](#ibc.applications.transfer.v1.QueryDenomTraceResponse) | DenomTrace queries a denomination trace information. | GET|/ibc/applications/transfer/v1/denom_traces/{hash}|
-| `DenomTraces` | [QueryDenomTracesRequest](#ibc.applications.transfer.v1.QueryDenomTracesRequest) | [QueryDenomTracesResponse](#ibc.applications.transfer.v1.QueryDenomTracesResponse) | DenomTraces queries all denomination traces. | GET|/ibc/applications/transfer/v1/denom_traces|
-| `Params` | [QueryParamsRequest](#ibc.applications.transfer.v1.QueryParamsRequest) | [QueryParamsResponse](#ibc.applications.transfer.v1.QueryParamsResponse) | Params queries all parameters of the ibc-transfer module. | GET|/ibc/applications/transfer/v1/params|
+| `DenomTrace` | [QueryDenomTraceRequest](#ibc.applications.transfer.v1.QueryDenomTraceRequest) | [QueryDenomTraceResponse](#ibc.applications.transfer.v1.QueryDenomTraceResponse) | DenomTrace queries a denomination trace information. | GET|/ibc/apps/transfer/v1/denom_traces/{hash}|
+| `DenomTraces` | [QueryDenomTracesRequest](#ibc.applications.transfer.v1.QueryDenomTracesRequest) | [QueryDenomTracesResponse](#ibc.applications.transfer.v1.QueryDenomTracesResponse) | DenomTraces queries all denomination traces. | GET|/ibc/apps/transfer/v1/denom_traces|
+| `Params` | [QueryParamsRequest](#ibc.applications.transfer.v1.QueryParamsRequest) | [QueryParamsResponse](#ibc.applications.transfer.v1.QueryParamsResponse) | Params queries all parameters of the ibc-transfer module. | GET|/ibc/apps/transfer/v1/params|
+| `DenomHash` | [QueryDenomHashRequest](#ibc.applications.transfer.v1.QueryDenomHashRequest) | [QueryDenomHashResponse](#ibc.applications.transfer.v1.QueryDenomHashResponse) | DenomHash queries a denomination hash information. | GET|/ibc/apps/transfer/v1/denom_hashes/{trace}|
 
  <!-- end services -->
 
@@ -10316,11 +10617,10 @@ client.
 <a name="ibc.core.client.v1.ClientUpdateProposal"></a>
 
 ### ClientUpdateProposal
-ClientUpdateProposal is a governance proposal. If it passes, the substitute client's
-consensus states starting from the 'initial height' are copied over to the subjects
-client state. The proposal handler may fail if the subject and the substitute do not
-match in client and chain parameters (with exception to latest height, frozen height, and chain-id).
-The updated client must also be valid (cannot be expired).
+ClientUpdateProposal is a governance proposal. If it passes, the substitute
+client's latest consensus state is copied over to the subject client. The proposal
+handler may fail if the subject and the substitute do not match in client and
+chain parameters (with exception to latest height, frozen height, and chain-id).
 
 
 | Field | Type | Label | Description |
@@ -10329,7 +10629,6 @@ The updated client must also be valid (cannot be expired).
 | `description` | [string](#string) |  | the description of the proposal |
 | `subject_client_id` | [string](#string) |  | the client identifier for the client to be updated if the proposal passes |
 | `substitute_client_id` | [string](#string) |  | the substitute client identifier for the client standing in for the subject client |
-| `initial_height` | [Height](#ibc.core.client.v1.Height) |  | the intital height to copy consensus states from the substitute to the subject |
 
 
 
@@ -10339,7 +10638,8 @@ The updated client must also be valid (cannot be expired).
 <a name="ibc.core.client.v1.ConsensusStateWithHeight"></a>
 
 ### ConsensusStateWithHeight
-ConsensusStateWithHeight defines a consensus state with an additional height field.
+ConsensusStateWithHeight defines a consensus state with an additional height
+field.
 
 
 | Field | Type | Label | Description |
@@ -10359,11 +10659,12 @@ Height is a monotonically increasing data type
 that can be compared against another Height for the purposes of updating and
 freezing clients
 
-Normally the RevisionHeight is incremented at each height while keeping RevisionNumber
-the same. However some consensus algorithms may choose to reset the
-height in certain conditions e.g. hard forks, state-machine breaking changes
-In these cases, the RevisionNumber is incremented so that height continues to
-be monitonically increasing even as the RevisionHeight gets reset
+Normally the RevisionHeight is incremented at each height while keeping
+RevisionNumber the same. However some consensus algorithms may choose to
+reset the height in certain conditions e.g. hard forks, state-machine
+breaking changes In these cases, the RevisionNumber is incremented so that
+height continues to be monitonically increasing even as the RevisionHeight
+gets reset
 
 
 | Field | Type | Label | Description |
@@ -10448,7 +10749,7 @@ upgrade.
 ### MsgTransfer
 MsgTransfer defines a msg to transfer fungible tokens (i.e Coins) between
 ICS20 enabled chains. See ICS Spec here:
-https://github.com/cosmos/ics/tree/master/spec/ics-020-fungible-token-transfer#data-structures
+https://github.com/cosmos/ibc/tree/master/spec/app/ics-020-fungible-token-transfer#data-structures
 
 
 | Field | Type | Label | Description |
@@ -10459,7 +10760,7 @@ https://github.com/cosmos/ics/tree/master/spec/ics-020-fungible-token-transfer#d
 | `sender` | [string](#string) |  | the sender address |
 | `receiver` | [string](#string) |  | the recipient address on the destination chain |
 | `timeout_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | Timeout height relative to the current block height. The timeout is disabled when set to 0. |
-| `timeout_timestamp` | [uint64](#uint64) |  | Timeout timestamp (in nanoseconds) relative to the current block timestamp. The timeout is disabled when set to 0. |
+| `timeout_timestamp` | [uint64](#uint64) |  | Timeout timestamp in absolute nanoseconds since unix epoch. The timeout is disabled when set to 0. |
 
 
 
@@ -10495,6 +10796,42 @@ Msg defines the ibc/transfer Msg service.
 
 
 
+<a name="ibc/applications/transfer/v2/packet.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ibc/applications/transfer/v2/packet.proto
+
+
+
+<a name="ibc.applications.transfer.v2.FungibleTokenPacketData"></a>
+
+### FungibleTokenPacketData
+FungibleTokenPacketData defines a struct for the packet payload
+See FungibleTokenPacketData spec:
+https://github.com/cosmos/ibc/tree/master/spec/app/ics-020-fungible-token-transfer#data-structures
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `denom` | [string](#string) |  | the token denomination to be transferred |
+| `amount` | [string](#string) |  | the token amount to be transferred |
+| `sender` | [string](#string) |  | the sender address |
+| `receiver` | [string](#string) |  | the recipient address on the destination chain |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="ibc/core/channel/v1/channel.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -10511,7 +10848,7 @@ NOTE: The field numbers 21 and 22 were explicitly chosen to avoid accidental
 conflicts with other protobuf message formats used for acknowledgements.
 The first byte of any message with this format will be the non-ASCII values
 `0xaa` (result) or `0xb2` (error). Implemented as defined by ICS:
-https://github.com/cosmos/ics/tree/master/spec/ics-004-channel-and-packet-semantics#acknowledgement-envelope
+https://github.com/cosmos/ibc/tree/master/spec/core/ics-004-channel-and-packet-semantics#acknowledgement-envelope
 
 
 | Field | Type | Label | Description |
@@ -10986,6 +11323,7 @@ Query/QueryPacketCommitments RPC method
 | `port_id` | [string](#string) |  | port unique identifier |
 | `channel_id` | [string](#string) |  | channel unique identifier |
 | `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination request |
+| `packet_commitment_sequences` | [uint64](#uint64) | repeated | list of packet sequences |
 
 
 
@@ -11104,8 +11442,8 @@ Query/PacketReceipt RPC method
 <a name="ibc.core.channel.v1.QueryPacketReceiptResponse"></a>
 
 ### QueryPacketReceiptResponse
-QueryPacketReceiptResponse defines the client query response for a packet receipt
-which also includes a proof, and the height from which the proof was
+QueryPacketReceiptResponse defines the client query response for a packet
+receipt which also includes a proof, and the height from which the proof was
 retrieved
 
 
@@ -11253,6 +11591,11 @@ MsgAcknowledgement receives incoming IBC acknowledgement
 MsgAcknowledgementResponse defines the Msg/Acknowledgement response type.
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `result` | [ResponseResultType](#ibc.core.channel.v1.ResponseResultType) |  |  |
+
+
 
 
 
@@ -11280,7 +11623,8 @@ to acknowledge the change of channel state to CLOSED on Chain A.
 <a name="ibc.core.channel.v1.MsgChannelCloseConfirmResponse"></a>
 
 ### MsgChannelCloseConfirmResponse
-MsgChannelCloseConfirmResponse defines the Msg/ChannelCloseConfirm response type.
+MsgChannelCloseConfirmResponse defines the Msg/ChannelCloseConfirm response
+type.
 
 
 
@@ -11370,7 +11714,8 @@ acknowledge the change of channel state to OPEN on Chain A.
 <a name="ibc.core.channel.v1.MsgChannelOpenConfirmResponse"></a>
 
 ### MsgChannelOpenConfirmResponse
-MsgChannelOpenConfirmResponse defines the Msg/ChannelOpenConfirm response type.
+MsgChannelOpenConfirmResponse defines the Msg/ChannelOpenConfirm response
+type.
 
 
 
@@ -11401,6 +11746,11 @@ is called by a relayer on Chain A.
 MsgChannelOpenInitResponse defines the Msg/ChannelOpenInit response type.
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `channel_id` | [string](#string) |  |  |
+
+
 
 
 
@@ -11409,14 +11759,15 @@ MsgChannelOpenInitResponse defines the Msg/ChannelOpenInit response type.
 
 ### MsgChannelOpenTry
 MsgChannelOpenInit defines a msg sent by a Relayer to try to open a channel
-on Chain B.
+on Chain B. The version field within the Channel field has been deprecated. Its
+value will be ignored by core IBC.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `port_id` | [string](#string) |  |  |
 | `previous_channel_id` | [string](#string) |  | in the case of crossing hello's, when both chains call OpenInit, we need the channel identifier of the previous channel in state INIT |
-| `channel` | [Channel](#ibc.core.channel.v1.Channel) |  |  |
+| `channel` | [Channel](#ibc.core.channel.v1.Channel) |  | NOTE: the version field within the channel has been deprecated. Its value will be ignored by core IBC. |
 | `counterparty_version` | [string](#string) |  |  |
 | `proof_init` | [bytes](#bytes) |  |  |
 | `proof_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
@@ -11459,6 +11810,11 @@ MsgRecvPacket receives incoming IBC packet
 
 ### MsgRecvPacketResponse
 MsgRecvPacketResponse defines the Msg/RecvPacket response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `result` | [ResponseResultType](#ibc.core.channel.v1.ResponseResultType) |  |  |
 
 
 
@@ -11510,6 +11866,11 @@ MsgTimeoutOnClose timed-out packet upon counterparty channel closure.
 MsgTimeoutOnCloseResponse defines the Msg/TimeoutOnClose response type.
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `result` | [ResponseResultType](#ibc.core.channel.v1.ResponseResultType) |  |  |
+
+
 
 
 
@@ -11520,10 +11881,28 @@ MsgTimeoutOnCloseResponse defines the Msg/TimeoutOnClose response type.
 MsgTimeoutResponse defines the Msg/Timeout response type.
 
 
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `result` | [ResponseResultType](#ibc.core.channel.v1.ResponseResultType) |  |  |
+
+
 
 
 
  <!-- end messages -->
+
+
+<a name="ibc.core.channel.v1.ResponseResultType"></a>
+
+### ResponseResultType
+ResponseResultType defines the possible outcomes of the execution of a message
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| RESPONSE_RESULT_UNSPECIFIED | 0 | Default zero value enumeration |
+| RESPONSE_RESULT_NOOP | 1 | The message did not call the IBC application callbacks (because, for example, the packet had already been relayed) |
+| RESPONSE_RESULT_SUCCESS | 2 | The message was executed successfully |
+
 
  <!-- end enums -->
 
@@ -11599,7 +11978,8 @@ GenesisState defines the ibc client submodule's genesis state.
 <a name="ibc.core.client.v1.IdentifiedGenesisMetadata"></a>
 
 ### IdentifiedGenesisMetadata
-IdentifiedGenesisMetadata has the client metadata with the corresponding client id.
+IdentifiedGenesisMetadata has the client metadata with the corresponding
+client id.
 
 
 | Field | Type | Label | Description |
@@ -11631,7 +12011,8 @@ IdentifiedGenesisMetadata has the client metadata with the corresponding client 
 <a name="ibc.core.client.v1.QueryClientParamsRequest"></a>
 
 ### QueryClientParamsRequest
-QueryClientParamsRequest is the request type for the Query/ClientParams RPC method.
+QueryClientParamsRequest is the request type for the Query/ClientParams RPC
+method.
 
 
 
@@ -11641,7 +12022,8 @@ QueryClientParamsRequest is the request type for the Query/ClientParams RPC meth
 <a name="ibc.core.client.v1.QueryClientParamsResponse"></a>
 
 ### QueryClientParamsResponse
-QueryClientParamsResponse is the response type for the Query/ClientParams RPC method.
+QueryClientParamsResponse is the response type for the Query/ClientParams RPC
+method.
 
 
 | Field | Type | Label | Description |
@@ -11715,6 +12097,38 @@ method.
 | ----- | ---- | ----- | ----------- |
 | `client_states` | [IdentifiedClientState](#ibc.core.client.v1.IdentifiedClientState) | repeated | list of stored ClientStates of the chain. |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination response |
+
+
+
+
+
+
+<a name="ibc.core.client.v1.QueryClientStatusRequest"></a>
+
+### QueryClientStatusRequest
+QueryClientStatusRequest is the request type for the Query/ClientStatus RPC
+method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `client_id` | [string](#string) |  | client unique identifier |
+
+
+
+
+
+
+<a name="ibc.core.client.v1.QueryClientStatusResponse"></a>
+
+### QueryClientStatusResponse
+QueryClientStatusResponse is the response type for the Query/ClientStatus RPC
+method. It returns the current status of the IBC client.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `status` | [string](#string) |  |  |
 
 
 
@@ -11796,14 +12210,8 @@ Query/ConsensusStates RPC method
 <a name="ibc.core.client.v1.QueryUpgradedClientStateRequest"></a>
 
 ### QueryUpgradedClientStateRequest
-QueryUpgradedClientStateRequest is the request type for the Query/UpgradedClientState RPC
-method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  | client state unique identifier |
-| `plan_height` | [int64](#int64) |  | plan height of the current chain must be sent in request as this is the height under which upgraded client state is stored |
+QueryUpgradedClientStateRequest is the request type for the
+Query/UpgradedClientState RPC method
 
 
 
@@ -11813,13 +12221,40 @@ method
 <a name="ibc.core.client.v1.QueryUpgradedClientStateResponse"></a>
 
 ### QueryUpgradedClientStateResponse
-QueryUpgradedClientStateResponse is the response type for the Query/UpgradedClientState RPC
-method.
+QueryUpgradedClientStateResponse is the response type for the
+Query/UpgradedClientState RPC method.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `upgraded_client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | client state associated with the request identifier |
+
+
+
+
+
+
+<a name="ibc.core.client.v1.QueryUpgradedConsensusStateRequest"></a>
+
+### QueryUpgradedConsensusStateRequest
+QueryUpgradedConsensusStateRequest is the request type for the
+Query/UpgradedConsensusState RPC method
+
+
+
+
+
+
+<a name="ibc.core.client.v1.QueryUpgradedConsensusStateResponse"></a>
+
+### QueryUpgradedConsensusStateResponse
+QueryUpgradedConsensusStateResponse is the response type for the
+Query/UpgradedConsensusState RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `upgraded_consensus_state` | [google.protobuf.Any](#google.protobuf.Any) |  | Consensus state associated with the request identifier |
 
 
 
@@ -11843,8 +12278,10 @@ Query provides defines the gRPC querier service
 | `ClientStates` | [QueryClientStatesRequest](#ibc.core.client.v1.QueryClientStatesRequest) | [QueryClientStatesResponse](#ibc.core.client.v1.QueryClientStatesResponse) | ClientStates queries all the IBC light clients of a chain. | GET|/ibc/core/client/v1/client_states|
 | `ConsensusState` | [QueryConsensusStateRequest](#ibc.core.client.v1.QueryConsensusStateRequest) | [QueryConsensusStateResponse](#ibc.core.client.v1.QueryConsensusStateResponse) | ConsensusState queries a consensus state associated with a client state at a given height. | GET|/ibc/core/client/v1/consensus_states/{client_id}/revision/{revision_number}/height/{revision_height}|
 | `ConsensusStates` | [QueryConsensusStatesRequest](#ibc.core.client.v1.QueryConsensusStatesRequest) | [QueryConsensusStatesResponse](#ibc.core.client.v1.QueryConsensusStatesResponse) | ConsensusStates queries all the consensus state associated with a given client. | GET|/ibc/core/client/v1/consensus_states/{client_id}|
+| `ClientStatus` | [QueryClientStatusRequest](#ibc.core.client.v1.QueryClientStatusRequest) | [QueryClientStatusResponse](#ibc.core.client.v1.QueryClientStatusResponse) | Status queries the status of an IBC client. | GET|/ibc/core/client/v1/client_status/{client_id}|
 | `ClientParams` | [QueryClientParamsRequest](#ibc.core.client.v1.QueryClientParamsRequest) | [QueryClientParamsResponse](#ibc.core.client.v1.QueryClientParamsResponse) | ClientParams queries all parameters of the ibc client. | GET|/ibc/client/v1/params|
-| `UpgradedClientState` | [QueryUpgradedClientStateRequest](#ibc.core.client.v1.QueryUpgradedClientStateRequest) | [QueryUpgradedClientStateResponse](#ibc.core.client.v1.QueryUpgradedClientStateResponse) | UpgradedClientState queries an Upgraded IBC light client. | GET|/ibc/core/client/v1/upgraded_client_states/{client_id}|
+| `UpgradedClientState` | [QueryUpgradedClientStateRequest](#ibc.core.client.v1.QueryUpgradedClientStateRequest) | [QueryUpgradedClientStateResponse](#ibc.core.client.v1.QueryUpgradedClientStateResponse) | UpgradedClientState queries an Upgraded IBC light client. | GET|/ibc/core/client/v1/upgraded_client_states|
+| `UpgradedConsensusState` | [QueryUpgradedConsensusStateRequest](#ibc.core.client.v1.QueryUpgradedConsensusStateRequest) | [QueryUpgradedConsensusStateResponse](#ibc.core.client.v1.QueryUpgradedConsensusStateResponse) | UpgradedConsensusState queries an Upgraded IBC consensus state. | GET|/ibc/core/client/v1/upgraded_consensus_states|
 
  <!-- end services -->
 
@@ -11905,7 +12342,8 @@ light client misbehaviour.
 <a name="ibc.core.client.v1.MsgSubmitMisbehaviourResponse"></a>
 
 ### MsgSubmitMisbehaviourResponse
-MsgSubmitMisbehaviourResponse defines the Msg/SubmitMisbehaviour response type.
+MsgSubmitMisbehaviourResponse defines the Msg/SubmitMisbehaviour response
+type.
 
 
 
@@ -11943,7 +12381,8 @@ MsgUpdateClientResponse defines the Msg/UpdateClient response type.
 <a name="ibc.core.client.v1.MsgUpgradeClient"></a>
 
 ### MsgUpgradeClient
-MsgUpgradeClient defines an sdk.Msg to upgrade an IBC client to a new client state
+MsgUpgradeClient defines an sdk.Msg to upgrade an IBC client to a new client
+state
 
 
 | Field | Type | Label | Description |
@@ -12175,6 +12614,21 @@ identifier field.
 
 
 
+<a name="ibc.core.connection.v1.Params"></a>
+
+### Params
+Params defines the set of Connection parameters.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `max_expected_time_per_block` | [uint64](#uint64) |  | maximum expected time per block (in nanoseconds), used to enforce block delay. This parameter should reflect the largest amount of time that the chain might reasonably take to produce the next block under normal operating conditions. A safe choice is 3-5x the expected time per block. |
+
+
+
+
+
+
 <a name="ibc.core.connection.v1.Version"></a>
 
 ### Version
@@ -12234,6 +12688,7 @@ GenesisState defines the ibc connection submodule's genesis state.
 | `connections` | [IdentifiedConnection](#ibc.core.connection.v1.IdentifiedConnection) | repeated |  |
 | `client_connection_paths` | [ConnectionPaths](#ibc.core.connection.v1.ConnectionPaths) | repeated |  |
 | `next_connection_sequence` | [uint64](#uint64) |  | the sequence for the next generated connection identifier |
+| `params` | [Params](#ibc.core.connection.v1.Params) |  |  |
 
 
 
@@ -12517,7 +12972,8 @@ acknowledge the change of connection state to OPEN on Chain A.
 <a name="ibc.core.connection.v1.MsgConnectionOpenConfirmResponse"></a>
 
 ### MsgConnectionOpenConfirmResponse
-MsgConnectionOpenConfirmResponse defines the Msg/ConnectionOpenConfirm response type.
+MsgConnectionOpenConfirmResponse defines the Msg/ConnectionOpenConfirm
+response type.
 
 
 
@@ -12547,7 +13003,8 @@ initialize a connection with Chain B.
 <a name="ibc.core.connection.v1.MsgConnectionOpenInitResponse"></a>
 
 ### MsgConnectionOpenInitResponse
-MsgConnectionOpenInitResponse defines the Msg/ConnectionOpenInit response type.
+MsgConnectionOpenInitResponse defines the Msg/ConnectionOpenInit response
+type.
 
 
 
@@ -12704,8 +13161,8 @@ and a possible frozen height.
 | `latest_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | Latest height the client was updated to |
 | `proof_specs` | [ics23.ProofSpec](#ics23.ProofSpec) | repeated | Proof specifications used in verifying counterparty state |
 | `upgrade_path` | [string](#string) | repeated | Path at which next upgraded client will be committed. Each element corresponds to the key for a single CommitmentProof in the chained proof. NOTE: ClientState must stored under `{upgradePath}/{upgradeHeight}/clientState` ConsensusState must be stored under `{upgradepath}/{upgradeHeight}/consensusState` For SDK chains using the default upgrade module, upgrade_path should be []string{"upgrade", "upgradedIBCState"}` |
-| `allow_update_after_expiry` | [bool](#bool) |  | This flag, when set to true, will allow governance to recover a client which has expired |
-| `allow_update_after_misbehaviour` | [bool](#bool) |  | This flag, when set to true, will allow governance to unfreeze a client whose chain has experienced a misbehaviour event |
+| `allow_update_after_expiry` | [bool](#bool) |  | **Deprecated.** allow_update_after_expiry is deprecated |
+| `allow_update_after_misbehaviour` | [bool](#bool) |  | **Deprecated.** allow_update_after_misbehaviour is deprecated |
 
 
 
@@ -12732,7 +13189,8 @@ ConsensusState defines the consensus state from Ostracon.
 <a name="ibc.lightclients.ostracon.v1.Fraction"></a>
 
 ### Fraction
-Fraction defines the protobuf message type for tmmath.Fraction that only supports positive values.
+Fraction defines the protobuf message type for tmmath.Fraction that only
+supports positive values.
 
 
 | Field | Type | Label | Description |
@@ -12785,7 +13243,7 @@ that implements Misbehaviour interface expected by ICS-02
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  |  |
+| `client_id` | [string](#string) |  | **Deprecated.** ClientID is deprecated |
 | `header_1` | [Header](#ibc.lightclients.ostracon.v1.Header) |  |  |
 | `header_2` | [Header](#ibc.lightclients.ostracon.v1.Header) |  |  |
 
@@ -12882,8 +13340,9 @@ verification.
 <a name="ibc.lightclients.solomachine.v1.ConsensusState"></a>
 
 ### ConsensusState
-ConsensusState defines a solo machine consensus state. The sequence of a consensus state
-is contained in the "height" key used in storing the consensus state.
+ConsensusState defines a solo machine consensus state. The sequence of a
+consensus state is contained in the "height" key used in storing the
+consensus state.
 
 
 | Field | Type | Label | Description |
@@ -13095,8 +13554,326 @@ signature.
 <a name="ibc.lightclients.solomachine.v1.DataType"></a>
 
 ### DataType
-DataType defines the type of solo machine proof being created. This is done to preserve uniqueness of different
-data sign byte encodings.
+DataType defines the type of solo machine proof being created. This is done
+to preserve uniqueness of different data sign byte encodings.
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| DATA_TYPE_UNINITIALIZED_UNSPECIFIED | 0 | Default State |
+| DATA_TYPE_CLIENT_STATE | 1 | Data type for client state verification |
+| DATA_TYPE_CONSENSUS_STATE | 2 | Data type for consensus state verification |
+| DATA_TYPE_CONNECTION_STATE | 3 | Data type for connection state verification |
+| DATA_TYPE_CHANNEL_STATE | 4 | Data type for channel state verification |
+| DATA_TYPE_PACKET_COMMITMENT | 5 | Data type for packet commitment verification |
+| DATA_TYPE_PACKET_ACKNOWLEDGEMENT | 6 | Data type for packet acknowledgement verification |
+| DATA_TYPE_PACKET_RECEIPT_ABSENCE | 7 | Data type for packet receipt absence verification |
+| DATA_TYPE_NEXT_SEQUENCE_RECV | 8 | Data type for next sequence recv verification |
+| DATA_TYPE_HEADER | 9 | Data type for header verification |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="ibc/lightclients/solomachine/v2/solomachine.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ibc/lightclients/solomachine/v2/solomachine.proto
+
+
+
+<a name="ibc.lightclients.solomachine.v2.ChannelStateData"></a>
+
+### ChannelStateData
+ChannelStateData returns the SignBytes data for channel state
+verification.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `path` | [bytes](#bytes) |  |  |
+| `channel` | [ibc.core.channel.v1.Channel](#ibc.core.channel.v1.Channel) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.ClientState"></a>
+
+### ClientState
+ClientState defines a solo machine client that tracks the current consensus
+state and if the client is frozen.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sequence` | [uint64](#uint64) |  | latest sequence of the client state |
+| `is_frozen` | [bool](#bool) |  | frozen sequence of the solo machine |
+| `consensus_state` | [ConsensusState](#ibc.lightclients.solomachine.v2.ConsensusState) |  |  |
+| `allow_update_after_proposal` | [bool](#bool) |  | when set to true, will allow governance to update a solo machine client. The client will be unfrozen if it is frozen. |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.ClientStateData"></a>
+
+### ClientStateData
+ClientStateData returns the SignBytes data for client state verification.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `path` | [bytes](#bytes) |  |  |
+| `client_state` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.ConnectionStateData"></a>
+
+### ConnectionStateData
+ConnectionStateData returns the SignBytes data for connection state
+verification.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `path` | [bytes](#bytes) |  |  |
+| `connection` | [ibc.core.connection.v1.ConnectionEnd](#ibc.core.connection.v1.ConnectionEnd) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.ConsensusState"></a>
+
+### ConsensusState
+ConsensusState defines a solo machine consensus state. The sequence of a
+consensus state is contained in the "height" key used in storing the
+consensus state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `public_key` | [google.protobuf.Any](#google.protobuf.Any) |  | public key of the solo machine |
+| `diversifier` | [string](#string) |  | diversifier allows the same public key to be re-used across different solo machine clients (potentially on different chains) without being considered misbehaviour. |
+| `timestamp` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.ConsensusStateData"></a>
+
+### ConsensusStateData
+ConsensusStateData returns the SignBytes data for consensus state
+verification.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `path` | [bytes](#bytes) |  |  |
+| `consensus_state` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.Header"></a>
+
+### Header
+Header defines a solo machine consensus header
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sequence` | [uint64](#uint64) |  | sequence to update solo machine public key at |
+| `timestamp` | [uint64](#uint64) |  |  |
+| `signature` | [bytes](#bytes) |  |  |
+| `new_public_key` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `new_diversifier` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.HeaderData"></a>
+
+### HeaderData
+HeaderData returns the SignBytes data for update verification.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `new_pub_key` | [google.protobuf.Any](#google.protobuf.Any) |  | header public key |
+| `new_diversifier` | [string](#string) |  | header diversifier |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.Misbehaviour"></a>
+
+### Misbehaviour
+Misbehaviour defines misbehaviour for a solo machine which consists
+of a sequence and two signatures over different messages at that sequence.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `client_id` | [string](#string) |  |  |
+| `sequence` | [uint64](#uint64) |  |  |
+| `signature_one` | [SignatureAndData](#ibc.lightclients.solomachine.v2.SignatureAndData) |  |  |
+| `signature_two` | [SignatureAndData](#ibc.lightclients.solomachine.v2.SignatureAndData) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.NextSequenceRecvData"></a>
+
+### NextSequenceRecvData
+NextSequenceRecvData returns the SignBytes data for verification of the next
+sequence to be received.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `path` | [bytes](#bytes) |  |  |
+| `next_seq_recv` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.PacketAcknowledgementData"></a>
+
+### PacketAcknowledgementData
+PacketAcknowledgementData returns the SignBytes data for acknowledgement
+verification.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `path` | [bytes](#bytes) |  |  |
+| `acknowledgement` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.PacketCommitmentData"></a>
+
+### PacketCommitmentData
+PacketCommitmentData returns the SignBytes data for packet commitment
+verification.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `path` | [bytes](#bytes) |  |  |
+| `commitment` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.PacketReceiptAbsenceData"></a>
+
+### PacketReceiptAbsenceData
+PacketReceiptAbsenceData returns the SignBytes data for
+packet receipt absence verification.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `path` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.SignBytes"></a>
+
+### SignBytes
+SignBytes defines the signed bytes used for signature verification.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sequence` | [uint64](#uint64) |  |  |
+| `timestamp` | [uint64](#uint64) |  |  |
+| `diversifier` | [string](#string) |  |  |
+| `data_type` | [DataType](#ibc.lightclients.solomachine.v2.DataType) |  | type of the data used |
+| `data` | [bytes](#bytes) |  | marshaled data |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.SignatureAndData"></a>
+
+### SignatureAndData
+SignatureAndData contains a signature and the data signed over to create that
+signature.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `signature` | [bytes](#bytes) |  |  |
+| `data_type` | [DataType](#ibc.lightclients.solomachine.v2.DataType) |  |  |
+| `data` | [bytes](#bytes) |  |  |
+| `timestamp` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.solomachine.v2.TimestampedSignatureData"></a>
+
+### TimestampedSignatureData
+TimestampedSignatureData contains the signature data and the timestamp of the
+signature.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `signature_data` | [bytes](#bytes) |  |  |
+| `timestamp` | [uint64](#uint64) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="ibc.lightclients.solomachine.v2.DataType"></a>
+
+### DataType
+DataType defines the type of solo machine proof being created. This is done
+to preserve uniqueness of different data sign byte encodings.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
@@ -13469,7 +14246,7 @@ Service defines the gRPC querier service for ostracon queries.
 | `GetSyncing` | [GetSyncingRequest](#lbm.base.ostracon.v1.GetSyncingRequest) | [GetSyncingResponse](#lbm.base.ostracon.v1.GetSyncingResponse) | GetSyncing queries node syncing. | GET|/lbm/base/ostracon/v1/syncing|
 | `GetLatestBlock` | [GetLatestBlockRequest](#lbm.base.ostracon.v1.GetLatestBlockRequest) | [GetLatestBlockResponse](#lbm.base.ostracon.v1.GetLatestBlockResponse) | GetLatestBlock returns the latest block. | GET|/lbm/base/ostracon/v1/blocks/latest|
 | `GetBlockByHeight` | [GetBlockByHeightRequest](#lbm.base.ostracon.v1.GetBlockByHeightRequest) | [GetBlockByHeightResponse](#lbm.base.ostracon.v1.GetBlockByHeightResponse) | GetBlockByHeight queries block for given height. | GET|/lbm/base/ostracon/v1/blocks/{height}|
-| `GetBlockByHash` | [GetBlockByHashRequest](#lbm.base.ostracon.v1.GetBlockByHashRequest) | [GetBlockByHashResponse](#lbm.base.ostracon.v1.GetBlockByHashResponse) | GetBlockByHash queries block for given hash. | GET|/lbm/base/ostracon/v1/blocks/{hash}|
+| `GetBlockByHash` | [GetBlockByHashRequest](#lbm.base.ostracon.v1.GetBlockByHashRequest) | [GetBlockByHashResponse](#lbm.base.ostracon.v1.GetBlockByHashResponse) | GetBlockByHash queries block for given hash. | GET|/lbm/base/ostracon/v1/block/{hash}|
 | `GetBlockResultsByHeight` | [GetBlockResultsByHeightRequest](#lbm.base.ostracon.v1.GetBlockResultsByHeightRequest) | [GetBlockResultsByHeightResponse](#lbm.base.ostracon.v1.GetBlockResultsByHeightResponse) | GetBlockResultsByHeight queries block results for given height. | GET|/lbm/base/ostracon/v1/blockresults/{height}|
 | `GetLatestValidatorSet` | [GetLatestValidatorSetRequest](#lbm.base.ostracon.v1.GetLatestValidatorSetRequest) | [GetLatestValidatorSetResponse](#lbm.base.ostracon.v1.GetLatestValidatorSetResponse) | GetLatestValidatorSet queries latest validator-set. | GET|/lbm/base/ostracon/v1/validatorsets/latest|
 | `GetValidatorSetByHeight` | [GetValidatorSetByHeightRequest](#lbm.base.ostracon.v1.GetValidatorSetByHeightRequest) | [GetValidatorSetByHeightResponse](#lbm.base.ostracon.v1.GetValidatorSetByHeightResponse) | GetValidatorSetByHeight queries validator-set at a given height. | GET|/lbm/base/ostracon/v1/validatorsets/{height}|
@@ -16030,7 +16807,6 @@ FoundationInfo represents the high-level on-chain information for the foundation
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  | operator is the account address of the foundation's operator. |
 | `version` | [uint64](#uint64) |  | version is used to track changes to the foundation's membership structure that would break existing proposals. Whenever any member is added or removed, this version is incremented and will cause proposals based on older versions of the foundation to fail |
 | `total_weight` | [string](#string) |  | total_weight is the number of the foundation members. |
 | `decision_policy` | [google.protobuf.Any](#google.protobuf.Any) |  | decision_policy specifies the foundation's decision policy. |
@@ -16049,9 +16825,43 @@ Member represents a foundation member with an account address and metadata.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | address is the member's account address. |
-| `participating` | [bool](#bool) |  | participating is the flag which allows one to remove the member by setting the flag to false. |
 | `metadata` | [string](#string) |  | metadata is any arbitrary metadata to attached to the member. |
 | `added_at` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | added_at is a timestamp specifying when a member was added. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MemberRequest"></a>
+
+### MemberRequest
+MemberRequest represents a foundation member to be used in Msg server requests.
+Contrary to `Member`, it doesn't have any `added_at` field
+since this field cannot be set as part of requests.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  | address is the member's account address. |
+| `remove` | [bool](#bool) |  | remove is the flag which allows one to remove the member by setting the flag to true. |
+| `metadata` | [string](#string) |  | metadata is any arbitrary metadata attached to the member. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.OutsourcingDecisionPolicy"></a>
+
+### OutsourcingDecisionPolicy
+OutsourcingDecisionPolicy is a dummy decision policy which is set after
+the proposal feature has been outsourced to x/group.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `description` | [string](#string) |  |  |
 
 
 
@@ -16066,8 +16876,8 @@ Params defines the parameters for the foundation module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `enabled` | [bool](#bool) |  |  |
 | `foundation_tax` | [string](#string) |  |  |
+| `censored_msg_type_urls` | [string](#string) | repeated |  |
 
 
 
@@ -16077,13 +16887,33 @@ Params defines the parameters for the foundation module.
 <a name="lbm.foundation.v1.PercentageDecisionPolicy"></a>
 
 ### PercentageDecisionPolicy
-PercentageDecisionPolicy implements the DecisionPolicy interface
+PercentageDecisionPolicy is a decision policy where a proposal passes when
+it satisfies the two following conditions:
+1. The percentage of all `YES` voters' weights out of the total group weight
+   is greater or equal than the given `percentage`.
+2. The voting and execution periods of the proposal respect the parameters
+   given by `windows`.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `percentage` | [string](#string) |  | percentage is the minimum percentage the sum of yes votes must meet for a proposal to succeed. |
 | `windows` | [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows) |  | windows defines the different windows for voting and execution. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.Pool"></a>
+
+### Pool
+Pool is used for tracking treasury.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `treasury` | [cosmos.base.v1beta1.DecCoin](#cosmos.base.v1beta1.DecCoin) | repeated |  |
 
 
 
@@ -16107,7 +16937,6 @@ passes as well as some optional metadata associated with the proposal.
 | `submit_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | submit_time is a timestamp specifying when a proposal was submitted. |
 | `foundation_version` | [uint64](#uint64) |  | foundation_version tracks the version of the foundation that this proposal corresponds to. When foundation info is changed, existing proposals from previous foundation versions will become invalid. |
 | `status` | [ProposalStatus](#lbm.foundation.v1.ProposalStatus) |  | status represents the high level position in the life cycle of the proposal. Initial value is Submitted. |
-| `result` | [ProposalResult](#lbm.foundation.v1.ProposalResult) |  | result is the final result based on the votes and election rule. Initial value is unfinalized. The result is persisted so that clients can always rely on this state and not have to replicate the logic. |
 | `final_tally_result` | [TallyResult](#lbm.foundation.v1.TallyResult) |  | final_tally_result contains the sums of all votes for this proposal for each vote option, after tallying. When querying a proposal via gRPC, this field is not populated until the proposal's voting period has ended. |
 | `voting_period_end` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | voting_period_end is the timestamp before which voting must be done. Unless a successfull MsgExec is called before (to execute a proposal whose tally is successful before the voting period ends), tallying will be done at this point, and the `final_tally_result`, as well as `status` and `result` fields will be accordingly updated. |
 | `executor_result` | [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult) |  | executor_result is the final result based on the votes and election rule. Initial value is NotRun. |
@@ -16139,63 +16968,18 @@ TallyResult represents the sum of votes for each vote option.
 <a name="lbm.foundation.v1.ThresholdDecisionPolicy"></a>
 
 ### ThresholdDecisionPolicy
-ThresholdDecisionPolicy implements the DecisionPolicy interface
+ThresholdDecisionPolicy is a decision policy where a proposal passes when it
+satisfies the two following conditions:
+1. The sum of all `YES` voters' weights is greater or equal than the defined
+   `threshold`.
+2. The voting and execution periods of the proposal respect the parameters
+   given by `windows`.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `threshold` | [string](#string) |  | threshold is the minimum sum of yes votes that must be met or exceeded for a proposal to succeed. |
 | `windows` | [DecisionPolicyWindows](#lbm.foundation.v1.DecisionPolicyWindows) |  | windows defines the different windows for voting and execution. |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.UpdateFoundationParamsProposal"></a>
-
-### UpdateFoundationParamsProposal
-UpdateFoundationParamsProposal details a proposal to update params of foundation module.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  |  |
-| `description` | [string](#string) |  |  |
-| `params` | [Params](#lbm.foundation.v1.Params) |  |  |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.UpdateValidatorAuthsProposal"></a>
-
-### UpdateValidatorAuthsProposal
-UpdateValidatorAuthsProposal details a proposal to update validator auths on foundation.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  |  |
-| `description` | [string](#string) |  |  |
-| `auths` | [ValidatorAuth](#lbm.foundation.v1.ValidatorAuth) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.foundation.v1.ValidatorAuth"></a>
-
-### ValidatorAuth
-ValidatorAuth defines authorization info of a validator.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `operator_address` | [string](#string) |  |  |
-| `creation_allowed` | [bool](#bool) |  |  |
 
 
 
@@ -16237,20 +17021,6 @@ ProposalExecutorResult defines types of proposal executor results.
 
 
 
-<a name="lbm.foundation.v1.ProposalResult"></a>
-
-### ProposalResult
-ProposalResult defines types of proposal results.
-
-| Name | Number | Description |
-| ---- | ------ | ----------- |
-| PROPOSAL_RESULT_UNSPECIFIED | 0 | An empty value is invalid and not allowed |
-| PROPOSAL_RESULT_UNFINALIZED | 1 | Until a final tally has happened the status is unfinalized |
-| PROPOSAL_RESULT_ACCEPTED | 2 | Final result of the tally |
-| PROPOSAL_RESULT_REJECTED | 3 | Final result of the tally |
-
-
-
 <a name="lbm.foundation.v1.ProposalStatus"></a>
 
 ### ProposalStatus
@@ -16259,10 +17029,11 @@ ProposalStatus defines proposal statuses.
 | Name | Number | Description |
 | ---- | ------ | ----------- |
 | PROPOSAL_STATUS_UNSPECIFIED | 0 | An empty value is invalid and not allowed. |
-| PROPOSAL_STATUS_SUBMITTED | 1 | Initial status of a proposal when persisted. |
-| PROPOSAL_STATUS_CLOSED | 2 | Final status of a proposal when the final tally was executed. |
-| PROPOSAL_STATUS_ABORTED | 3 | Final status of a proposal when the group was modified before the final tally. |
-| PROPOSAL_STATUS_WITHDRAWN | 4 | A proposal can be deleted before the voting start time by the owner. When this happens the final status is Withdrawn. |
+| PROPOSAL_STATUS_SUBMITTED | 1 | Initial status of a proposal when submitted. |
+| PROPOSAL_STATUS_ACCEPTED | 2 | Final status of a proposal when the final tally is done and the outcome passes the foundation's decision policy. |
+| PROPOSAL_STATUS_REJECTED | 3 | Final status of a proposal when the final tally is done and the outcome is rejected by the foundation's decision policy. |
+| PROPOSAL_STATUS_ABORTED | 4 | Final status of a proposal when the decision policy is modified before the final tally. |
+| PROPOSAL_STATUS_WITHDRAWN | 5 | A proposal can be withdrawn before the voting start time by the owner. When this happens the final status is Withdrawn. |
 
 
 
@@ -16305,6 +17076,7 @@ EventExec is an event emitted when a proposal is executed.
 | ----- | ---- | ----- | ----------- |
 | `proposal_id` | [uint64](#uint64) |  | proposal_id is the unique ID of the proposal. |
 | `result` | [ProposalExecutorResult](#lbm.foundation.v1.ProposalExecutorResult) |  | result is the proposal execution result. |
+| `logs` | [string](#string) |  | logs contains error logs in case the execution result is FAILURE. |
 
 
 
@@ -16320,6 +17092,21 @@ EventFundTreasury is an event emitted when one funds the treasury.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `from` | [string](#string) |  |  |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.EventGovMint"></a>
+
+### EventGovMint
+EventGovMint is an event emitted when the minter mint coins to the treasury.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
 | `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
 
 
@@ -16406,21 +17193,6 @@ EventUpdateDecisionPolicy is an event emitted when the decision policy have been
 
 
 
-<a name="lbm.foundation.v1.EventUpdateFoundationParams"></a>
-
-### EventUpdateFoundationParams
-EventUpdateFoundationParams is emitted after updating foundation parameters.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.foundation.v1.Params) |  |  |
-
-
-
-
-
-
 <a name="lbm.foundation.v1.EventUpdateMembers"></a>
 
 ### EventUpdateMembers
@@ -16429,7 +17201,22 @@ EventUpdateMembers is an event emitted when the members have been updated.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `member_updates` | [Member](#lbm.foundation.v1.Member) | repeated |  |
+| `member_updates` | [MemberRequest](#lbm.foundation.v1.MemberRequest) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.EventUpdateParams"></a>
+
+### EventUpdateParams
+EventUpdateParams is emitted after updating foundation parameters.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.foundation.v1.Params) |  |  |
 
 
 
@@ -16454,7 +17241,7 @@ EventVote is an event emitted when a voter votes on a proposal.
 <a name="lbm.foundation.v1.EventWithdrawFromTreasury"></a>
 
 ### EventWithdrawFromTreasury
-EventWithdrawFromTreasury is an event emitted when the operator withdraws coins from the treasury.
+EventWithdrawFromTreasury is an event emitted when coins are withdrawn from the treasury.
 
 
 | Field | Type | Label | Description |
@@ -16513,6 +17300,8 @@ GenesisState defines the foundation module's genesis state.
 | `proposals` | [Proposal](#lbm.foundation.v1.Proposal) | repeated | proposals is the list of proposals. |
 | `votes` | [Vote](#lbm.foundation.v1.Vote) | repeated | votes is the list of votes. |
 | `authorizations` | [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization) | repeated | grants |
+| `pool` | [Pool](#lbm.foundation.v1.Pool) |  | pool |
+| `govMintLeftCount` | [uint32](#uint32) |  | govMintLeftCount is gov mint max count |
 
 
 
@@ -16527,7 +17316,6 @@ GrantAuthorization defines authorization grant to grantee via route.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `granter` | [string](#string) |  |  |
 | `grantee` | [string](#string) |  |  |
 | `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 
@@ -16571,6 +17359,31 @@ QueryFoundationInfoResponse is the Query/FoundationInfo response type.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `info` | [FoundationInfo](#lbm.foundation.v1.FoundationInfo) |  | info is the FoundationInfo for the foundation. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryGovMintRequest"></a>
+
+### QueryGovMintRequest
+QueryGovMintRequest is the Query/GovMint request type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.QueryGovMintResponse"></a>
+
+### QueryGovMintResponse
+QueryGovMintResponse is the Query/GovMint response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `leftCount` | [uint32](#uint32) |  | leftCount is the left count of GovMint. |
 
 
 
@@ -16807,7 +17620,7 @@ Query/Treasury RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+| `amount` | [cosmos.base.v1beta1.DecCoin](#cosmos.base.v1beta1.DecCoin) | repeated |  |
 
 
 
@@ -16901,6 +17714,7 @@ Query defines the gRPC querier service for foundation module.
 | `Votes` | [QueryVotesRequest](#lbm.foundation.v1.QueryVotesRequest) | [QueryVotesResponse](#lbm.foundation.v1.QueryVotesResponse) | Votes queries a vote by proposal. | GET|/lbm/foundation/v1/proposals/{proposal_id}/votes|
 | `TallyResult` | [QueryTallyResultRequest](#lbm.foundation.v1.QueryTallyResultRequest) | [QueryTallyResultResponse](#lbm.foundation.v1.QueryTallyResultResponse) | TallyResult queries the tally of a proposal votes. | GET|/lbm/foundation/v1/proposals/{proposal_id}/tally|
 | `Grants` | [QueryGrantsRequest](#lbm.foundation.v1.QueryGrantsRequest) | [QueryGrantsResponse](#lbm.foundation.v1.QueryGrantsResponse) | Returns list of authorizations, granted to the grantee. | GET|/lbm/foundation/v1/grants/{grantee}/{msg_type_url}|
+| `GovMint` | [QueryGovMintRequest](#lbm.foundation.v1.QueryGovMintRequest) | [QueryGovMintResponse](#lbm.foundation.v1.QueryGovMintResponse) | GovMint queries the left count of gov mint. | GET|/lbm/foundation/v1/gov_mint|
 
  <!-- end services -->
 
@@ -16942,7 +17756,7 @@ MsgExecResponse is the Msg/Exec request type.
 <a name="lbm.foundation.v1.MsgFundTreasury"></a>
 
 ### MsgFundTreasury
-MsgFundTreasury represents a message to fund the treasury.
+MsgFundTreasury is the Msg/FundTreasury request type.
 
 
 | Field | Type | Label | Description |
@@ -16958,7 +17772,33 @@ MsgFundTreasury represents a message to fund the treasury.
 <a name="lbm.foundation.v1.MsgFundTreasuryResponse"></a>
 
 ### MsgFundTreasuryResponse
-MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
+MsgFundTreasuryResponse is the Msg/FundTreasury response type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgGovMint"></a>
+
+### MsgGovMint
+MsgGovMint is the Msg/GovMint request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
+| `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgGovMintResponse"></a>
+
+### MsgGovMintResponse
+MsgGovMintResponse is the Msg/GovMint response type.
 
 
 
@@ -16968,13 +17808,13 @@ MsgFundTreasuryResponse defines the Msg/FundTreasury response type.
 <a name="lbm.foundation.v1.MsgGrant"></a>
 
 ### MsgGrant
-MsgGrant is a request type for Grant method. It declares authorization to the grantee
+MsgGrant is the Msg/Grant request type.
 on behalf of the foundation.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  |  |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
 | `grantee` | [string](#string) |  |  |
 | `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
 
@@ -16986,7 +17826,7 @@ on behalf of the foundation.
 <a name="lbm.foundation.v1.MsgGrantResponse"></a>
 
 ### MsgGrantResponse
-MsgGrantResponse defines the Msg/MsgGrant response type.
+MsgGrantResponse is the Msg/MsgGrant response type.
 
 
 
@@ -17021,13 +17861,12 @@ MsgLeaveFoundationResponse is the Msg/LeaveFoundation response type.
 <a name="lbm.foundation.v1.MsgRevoke"></a>
 
 ### MsgRevoke
-MsgRevoke revokes any authorization with the provided sdk.Msg type
-to the grantee on behalf of the foundation.
+MsgRevoke is the Msg/Revoke request type.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  |  |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
 | `grantee` | [string](#string) |  |  |
 | `msg_type_url` | [string](#string) |  |  |
 
@@ -17039,7 +17878,7 @@ to the grantee on behalf of the foundation.
 <a name="lbm.foundation.v1.MsgRevokeResponse"></a>
 
 ### MsgRevokeResponse
-MsgRevokeResponse defines the Msg/MsgRevokeResponse response type.
+MsgRevokeResponse is the Msg/MsgRevokeResponse response type.
 
 
 
@@ -17087,7 +17926,7 @@ MsgUpdateDecisionPolicy is the Msg/UpdateDecisionPolicy request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  | operator is the account address of the foundation operator. |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
 | `decision_policy` | [google.protobuf.Any](#google.protobuf.Any) |  | decision_policy is the updated decision policy. |
 
 
@@ -17113,8 +17952,8 @@ MsgUpdateMembers is the Msg/UpdateMembers request type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  | operator is the account address of the foundation operator. |
-| `member_updates` | [Member](#lbm.foundation.v1.Member) | repeated | member_updates is the list of members to update, set participating to false to remove a member. |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
+| `member_updates` | [MemberRequest](#lbm.foundation.v1.MemberRequest) | repeated | member_updates is the list of members to update, set remove to true to remove a member. |
 
 
 
@@ -17125,6 +17964,34 @@ MsgUpdateMembers is the Msg/UpdateMembers request type.
 
 ### MsgUpdateMembersResponse
 MsgUpdateMembersResponse is the Msg/UpdateMembers response type.
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgUpdateParams"></a>
+
+### MsgUpdateParams
+MsgUpdateParams is the Msg/UpdateParams request type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
+| `params` | [Params](#lbm.foundation.v1.Params) |  | params defines the x/foundation parameters to update.
+
+NOTE: All parameters must be supplied. |
+
+
+
+
+
+
+<a name="lbm.foundation.v1.MsgUpdateParamsResponse"></a>
+
+### MsgUpdateParamsResponse
+MsgUpdateParamsResponse is the Msg/UpdateParams response type.
 
 
 
@@ -17163,12 +18030,12 @@ MsgVoteResponse is the Msg/Vote response type.
 <a name="lbm.foundation.v1.MsgWithdrawFromTreasury"></a>
 
 ### MsgWithdrawFromTreasury
-MsgWithdrawFromTreasury represents a message to withdraw coins from the treasury.
+MsgWithdrawFromTreasury is the Msg/WithdrawFromTreasury request type.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator` | [string](#string) |  |  |
+| `authority` | [string](#string) |  | authority is the address of the privileged account. |
 | `to` | [string](#string) |  |  |
 | `amount` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
 
@@ -17180,7 +18047,7 @@ MsgWithdrawFromTreasury represents a message to withdraw coins from the treasury
 <a name="lbm.foundation.v1.MsgWithdrawFromTreasuryResponse"></a>
 
 ### MsgWithdrawFromTreasuryResponse
-MsgWithdrawFromTreasuryResponse defines the Msg/WithdrawFromTreasury response type.
+MsgWithdrawFromTreasuryResponse is the Msg/WithdrawFromTreasury response type.
 
 
 
@@ -17238,6 +18105,7 @@ Msg defines the foundation Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `UpdateParams` | [MsgUpdateParams](#lbm.foundation.v1.MsgUpdateParams) | [MsgUpdateParamsResponse](#lbm.foundation.v1.MsgUpdateParamsResponse) | UpdateParams defines an operation for updating the x/foundation module parameters. | |
 | `FundTreasury` | [MsgFundTreasury](#lbm.foundation.v1.MsgFundTreasury) | [MsgFundTreasuryResponse](#lbm.foundation.v1.MsgFundTreasuryResponse) | FundTreasury defines a method to fund the treasury. | |
 | `WithdrawFromTreasury` | [MsgWithdrawFromTreasury](#lbm.foundation.v1.MsgWithdrawFromTreasury) | [MsgWithdrawFromTreasuryResponse](#lbm.foundation.v1.MsgWithdrawFromTreasuryResponse) | WithdrawFromTreasury defines a method to withdraw coins from the treasury. | |
 | `UpdateMembers` | [MsgUpdateMembers](#lbm.foundation.v1.MsgUpdateMembers) | [MsgUpdateMembersResponse](#lbm.foundation.v1.MsgUpdateMembersResponse) | UpdateMembers updates the foundation members. | |
@@ -17247,8 +18115,9 @@ Msg defines the foundation Msg service.
 | `Vote` | [MsgVote](#lbm.foundation.v1.MsgVote) | [MsgVoteResponse](#lbm.foundation.v1.MsgVoteResponse) | Vote allows a voter to vote on a proposal. | |
 | `Exec` | [MsgExec](#lbm.foundation.v1.MsgExec) | [MsgExecResponse](#lbm.foundation.v1.MsgExecResponse) | Exec executes a proposal. | |
 | `LeaveFoundation` | [MsgLeaveFoundation](#lbm.foundation.v1.MsgLeaveFoundation) | [MsgLeaveFoundationResponse](#lbm.foundation.v1.MsgLeaveFoundationResponse) | LeaveFoundation allows a member to leave the foundation. | |
-| `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (granter, grantee, Authorization) tuple, then the grant will be overwritten. | |
-| `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name on the granter that has been granted to the grantee. | |
+| `Grant` | [MsgGrant](#lbm.foundation.v1.MsgGrant) | [MsgGrantResponse](#lbm.foundation.v1.MsgGrantResponse) | Grant grants the provided authorization to the grantee with authority of the foundation. If there is already a grant for the given (grantee, Authorization) tuple, then the grant will be overwritten. | |
+| `Revoke` | [MsgRevoke](#lbm.foundation.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.foundation.v1.MsgRevokeResponse) | Revoke revokes any authorization corresponding to the provided method name that has been granted to the grantee. | |
+| `GovMint` | [MsgGovMint](#lbm.foundation.v1.MsgGovMint) | [MsgGovMintResponse](#lbm.foundation.v1.MsgGovMintResponse) | GovMint defines a gov mint coins to the treasury. | |
 
  <!-- end services -->
 

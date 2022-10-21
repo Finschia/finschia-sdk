@@ -3,8 +3,9 @@ package cli
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"strconv"
+
+	"github.com/line/lbm-sdk/internal/os"
 
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
@@ -82,7 +83,7 @@ func StoreCodeCmd() *cobra.Command {
 }
 
 func parseStoreCodeArgs(file string, sender sdk.AccAddress, flags *flag.FlagSet) (types.MsgStoreCode, error) {
-	wasm, err := ioutil.ReadFile(file)
+	wasm, err := os.ReadFileWithSizeLimit(file, int64(types.MaxWasmSize))
 	if err != nil {
 		return types.MsgStoreCode{}, err
 	}
@@ -220,7 +221,7 @@ func parseInstantiateArgs(rawCodeID, initMsg string, sender sdk.AccAddress, flag
 		return types.MsgInstantiateContract{}, fmt.Errorf("you set an admin and passed --no-admin, those cannot both be true")
 	}
 
-	// build and sign the transaction, then broadcast to Tendermint
+	// build and sign the transaction, then broadcast to Ostracon
 	msg := types.MsgInstantiateContract{
 		Sender: sender.String(),
 		CodeID: codeID,
@@ -264,7 +265,7 @@ func StoreCodeAndInstantiateContractCmd() *cobra.Command {
 }
 
 func parseStoreCodeAndInstantiateContractArgs(file string, initMsg string, sender sdk.AccAddress, flags *flag.FlagSet) (lbmtypes.MsgStoreCodeAndInstantiateContract, error) {
-	wasm, err := ioutil.ReadFile(file)
+	wasm, err := os.ReadFileWithSizeLimit(file, int64(types.MaxWasmSize))
 	if err != nil {
 		return lbmtypes.MsgStoreCodeAndInstantiateContract{}, err
 	}

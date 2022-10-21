@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/query"
+
 	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 )
 
@@ -44,7 +45,7 @@ func (suite *KeeperTestSuite) TestQueryDenomTrace() {
 			func() {
 				expTrace.Path = "transfer/channelToA/transfer/channelToB"
 				expTrace.BaseDenom = "uatom"
-				suite.chainA.App.TransferKeeper.SetDenomTrace(suite.chainA.GetContext(), expTrace)
+				suite.chainA.GetSimApp().TransferKeeper.SetDenomTrace(suite.chainA.GetContext(), expTrace)
 
 				req = &types.QueryDenomTraceRequest{
 					Hash: expTrace.Hash().String(),
@@ -100,7 +101,7 @@ func (suite *KeeperTestSuite) TestQueryDenomTraces() {
 				expTraces = append(expTraces, types.DenomTrace{Path: "transfer/channelToA/transfer/channelToB", BaseDenom: "uatom"})
 
 				for _, trace := range expTraces {
-					suite.chainA.App.TransferKeeper.SetDenomTrace(suite.chainA.GetContext(), trace)
+					suite.chainA.GetSimApp().TransferKeeper.SetDenomTrace(suite.chainA.GetContext(), trace)
 				}
 
 				req = &types.QueryDenomTracesRequest{
@@ -139,4 +140,71 @@ func (suite *KeeperTestSuite) TestQueryParams() {
 	expParams := types.DefaultParams()
 	res, _ := suite.queryClient.Params(ctx, &types.QueryParamsRequest{})
 	suite.Require().Equal(&expParams, res.Params)
+}
+
+func (suite *KeeperTestSuite) TestQueryDenomHash() {
+
+	reqTrace := types.DenomTrace{
+		Path:      "transfer/channelToA/transfer/channelToB",
+		BaseDenom: "uatom",
+	}
+
+	var (
+		req     *types.QueryDenomHashRequest
+		expHash = reqTrace.Hash().String()
+	)
+
+	testCases := []struct {
+		msg      string
+		malleate func()
+		expPass  bool
+	}{
+		{
+			"invalid trace",
+			func() {
+				req = &types.QueryDenomHashRequest{
+					Trace: "transfer/channelToA/transfer/",
+				}
+			},
+			false,
+		},
+		{
+			"not found denom trace",
+			func() {
+				req = &types.QueryDenomHashRequest{
+					Trace: "transfer/channelToC/uatom",
+				}
+			},
+			false,
+		},
+		{
+			"success",
+			func() {},
+			true,
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(fmt.Sprintf("Case %s", tc.msg), func() {
+			suite.SetupTest() // reset
+
+			req = &types.QueryDenomHashRequest{
+				Trace: reqTrace.GetFullDenomPath(),
+			}
+			suite.chainA.GetSimApp().TransferKeeper.SetDenomTrace(suite.chainA.GetContext(), reqTrace)
+
+			tc.malleate()
+			ctx := sdk.WrapSDKContext(suite.chainA.GetContext())
+
+			res, err := suite.queryClient.DenomHash(ctx, req)
+
+			if tc.expPass {
+				suite.Require().NoError(err)
+				suite.Require().NotNil(res)
+				suite.Require().Equal(expHash, res.Hash)
+			} else {
+				suite.Require().Error(err)
+			}
+		})
+	}
 }

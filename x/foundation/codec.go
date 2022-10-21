@@ -4,16 +4,11 @@ import (
 	"github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
-	registry.RegisterImplementations((*govtypes.Content)(nil),
-		&UpdateFoundationParamsProposal{},
-		&UpdateValidatorAuthsProposal{},
-	)
-
 	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgUpdateParams{},
 		&MsgFundTreasury{},
 		&MsgWithdrawFromTreasury{},
 		&MsgUpdateMembers{},
@@ -25,6 +20,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgLeaveFoundation{},
 		&MsgGrant{},
 		&MsgRevoke{},
+		&MsgGovMint{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
@@ -34,6 +30,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		(*DecisionPolicy)(nil),
 		&ThresholdDecisionPolicy{},
 		&PercentageDecisionPolicy{},
+		&OutsourcingDecisionPolicy{},
 	)
 
 	registry.RegisterImplementations(

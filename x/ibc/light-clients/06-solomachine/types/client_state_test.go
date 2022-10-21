@@ -7,7 +7,7 @@ import (
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	"github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -19,9 +19,23 @@ const (
 )
 
 var (
-	prefix          = commitmenttypes.NewMerklePrefix([]byte("ibc"))
+	prefix = &commitmenttypes.MerklePrefix{
+		KeyPrefix: []byte("ibc"),
+	}
 	consensusHeight = clienttypes.ZeroHeight()
 )
+
+func (suite *SoloMachineTestSuite) TestStatus() {
+	clientState := suite.solomachine.ClientState()
+	// solo machine discards arguements
+	status := clientState.Status(suite.chainA.GetContext(), nil, nil)
+	suite.Require().Equal(exported.Active, status)
+
+	// freeze solo machine
+	clientState.IsFrozen = true
+	status = clientState.Status(suite.chainA.GetContext(), nil, nil)
+	suite.Require().Equal(exported.Frozen, status)
+}
 
 func (suite *SoloMachineTestSuite) TestClientStateValidateBasic() {
 	// test singlesig and multisig public keys
@@ -104,7 +118,7 @@ func (suite *SoloMachineTestSuite) TestInitialize() {
 			},
 			{
 				"invalid consensus state: Ostracon consensus state",
-				&ibctmtypes.ConsensusState{},
+				&ibcoctypes.ConsensusState{},
 				false,
 			},
 			{
@@ -117,7 +131,7 @@ func (suite *SoloMachineTestSuite) TestInitialize() {
 		for _, tc := range testCases {
 			err := solomachine.ClientState().Initialize(
 				suite.chainA.GetContext(), suite.chainA.Codec,
-				suite.chainA.App.IBCKeeper.ClientKeeper.ClientStore(suite.chainA.GetContext(), "solomachine"),
+				suite.chainA.App.GetIBCKeeper().ClientKeeper.ClientStore(suite.chainA.GetContext(), "solomachine"),
 				tc.consState,
 			)
 
@@ -131,9 +145,10 @@ func (suite *SoloMachineTestSuite) TestInitialize() {
 }
 
 func (suite *SoloMachineTestSuite) TestVerifyClientState() {
-	// create client for tendermint so we can use client state for verification
-	clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
-	clientState := suite.chainA.GetClientState(clientA)
+	// create client for ostracon so we can use client state for verification
+	tmPath := ibctesting.NewPath(suite.chainA, suite.chainB)
+	suite.coordinator.SetupClients(tmPath)
+	clientState := suite.chainA.GetClientState(tmPath.EndpointA.ClientID)
 	path := suite.solomachine.GetClientStatePath(counterpartyClientIdentifier)
 
 	// test singlesig and multisig public keys
@@ -170,18 +185,6 @@ func (suite *SoloMachineTestSuite) TestVerifyClientState() {
 				"ApplyPrefix failed",
 				solomachine.ClientState(),
 				nil,
-				proof,
-				false,
-			},
-			{
-				"client is frozen",
-				&types.ClientState{
-					Sequence:                 1,
-					FrozenSequence:           1,
-					ConsensusState:           solomachine.ConsensusState(),
-					AllowUpdateAfterProposal: false,
-				},
-				prefix,
 				proof,
 				false,
 			},
@@ -241,12 +244,16 @@ func (suite *SoloMachineTestSuite) TestVerifyClientState() {
 					expSeq = tc.clientState.Sequence + 1
 				}
 
+				// NOTE: to replicate the ordering of connection handshake, we must decrement proof height by 1
+				height := clienttypes.NewHeight(solomachine.GetHeight().GetRevisionNumber(), solomachine.GetHeight().GetRevisionHeight()-1)
+
 				err := tc.clientState.VerifyClientState(
-					suite.store, suite.chainA.Codec, solomachine.GetHeight(), tc.prefix, counterpartyClientIdentifier, tc.proof, clientState,
+					suite.store, suite.chainA.Codec, height, tc.prefix, counterpartyClientIdentifier, tc.proof, clientState,
 				)
 
 				if tc.expPass {
 					suite.Require().NoError(err)
+					suite.Require().Equal(expSeq, tc.clientState.Sequence)
 					suite.Require().Equal(expSeq, suite.GetSequenceFromStore(), "sequence not updated in the store (%d) on valid test case %s", suite.GetSequenceFromStore(), tc.name)
 				} else {
 					suite.Require().Error(err)
@@ -257,10 +264,11 @@ func (suite *SoloMachineTestSuite) TestVerifyClientState() {
 }
 
 func (suite *SoloMachineTestSuite) TestVerifyClientConsensusState() {
-	// create client for tendermint so we can use consensus state for verification
-	clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
-	clientState := suite.chainA.GetClientState(clientA)
-	consensusState, found := suite.chainA.GetConsensusState(clientA, clientState.GetLatestHeight())
+	// create client for ostracon so we can use consensus state for verification
+	tmPath := ibctesting.NewPath(suite.chainA, suite.chainB)
+	suite.coordinator.SetupClients(tmPath)
+	clientState := suite.chainA.GetClientState(tmPath.EndpointA.ClientID)
+	consensusState, found := suite.chainA.GetConsensusState(tmPath.EndpointA.ClientID, clientState.GetLatestHeight())
 	suite.Require().True(found)
 
 	path := suite.solomachine.GetConsensusStatePath(counterpartyClientIdentifier, consensusHeight)
@@ -302,18 +310,6 @@ func (suite *SoloMachineTestSuite) TestVerifyClientConsensusState() {
 				false,
 			},
 			{
-				"client is frozen",
-				&types.ClientState{
-					Sequence:                 1,
-					FrozenSequence:           1,
-					ConsensusState:           solomachine.ConsensusState(),
-					AllowUpdateAfterProposal: false,
-				},
-				prefix,
-				proof,
-				false,
-			},
-			{
 				"consensus state in client state is nil",
 				types.NewClientState(1, nil, false),
 				prefix,
@@ -369,12 +365,16 @@ func (suite *SoloMachineTestSuite) TestVerifyClientConsensusState() {
 					expSeq = tc.clientState.Sequence + 1
 				}
 
+				// NOTE: to replicate the ordering of connection handshake, we must decrement proof height by 1
+				height := clienttypes.NewHeight(solomachine.GetHeight().GetRevisionNumber(), solomachine.GetHeight().GetRevisionHeight()-2)
+
 				err := tc.clientState.VerifyClientConsensusState(
-					suite.store, suite.chainA.Codec, solomachine.GetHeight(), counterpartyClientIdentifier, consensusHeight, tc.prefix, tc.proof, consensusState,
+					suite.store, suite.chainA.Codec, height, counterpartyClientIdentifier, consensusHeight, tc.prefix, tc.proof, consensusState,
 				)
 
 				if tc.expPass {
 					suite.Require().NoError(err)
+					suite.Require().Equal(expSeq, tc.clientState.Sequence)
 					suite.Require().Equal(expSeq, suite.GetSequenceFromStore(), "sequence not updated in the store (%d) on valid test case %s", suite.GetSequenceFromStore(), tc.name)
 				} else {
 					suite.Require().Error(err)
@@ -385,7 +385,7 @@ func (suite *SoloMachineTestSuite) TestVerifyClientConsensusState() {
 }
 
 func (suite *SoloMachineTestSuite) TestVerifyConnectionState() {
-	counterparty := connectiontypes.NewCounterparty("clientB", testConnectionID, prefix)
+	counterparty := connectiontypes.NewCounterparty("clientB", testConnectionID, *prefix)
 	conn := connectiontypes.NewConnectionEnd(connectiontypes.OPEN, "clientA", counterparty, connectiontypes.ExportedVersionsToProto(connectiontypes.GetCompatibleVersions()), 0)
 
 	path := suite.solomachine.GetConnectionStatePath(testConnectionID)
@@ -427,18 +427,6 @@ func (suite *SoloMachineTestSuite) TestVerifyConnectionState() {
 				false,
 			},
 			{
-				"client is frozen",
-				&types.ClientState{
-					Sequence:                 1,
-					FrozenSequence:           1,
-					ConsensusState:           solomachine.ConsensusState(),
-					AllowUpdateAfterProposal: false,
-				},
-				prefix,
-				proof,
-				false,
-			},
-			{
 				"proof is nil",
 				solomachine.ClientState(),
 				prefix,
@@ -465,6 +453,7 @@ func (suite *SoloMachineTestSuite) TestVerifyConnectionState() {
 
 			if tc.expPass {
 				suite.Require().NoError(err, "valid test case %d failed: %s", i, tc.name)
+				suite.Require().Equal(expSeq, tc.clientState.Sequence)
 				suite.Require().Equal(expSeq, suite.GetSequenceFromStore(), "sequence not updated in the store (%d) on valid test case %d: %s", suite.GetSequenceFromStore(), i, tc.name)
 			} else {
 				suite.Require().Error(err, "invalid test case %d passed: %s", i, tc.name)
@@ -516,18 +505,6 @@ func (suite *SoloMachineTestSuite) TestVerifyChannelState() {
 				false,
 			},
 			{
-				"client is frozen",
-				&types.ClientState{
-					Sequence:                 1,
-					FrozenSequence:           1,
-					ConsensusState:           solomachine.ConsensusState(),
-					AllowUpdateAfterProposal: false,
-				},
-				prefix,
-				proof,
-				false,
-			},
-			{
 				"proof is nil",
 				solomachine.ClientState(),
 				prefix,
@@ -554,6 +531,7 @@ func (suite *SoloMachineTestSuite) TestVerifyChannelState() {
 
 			if tc.expPass {
 				suite.Require().NoError(err, "valid test case %d failed: %s", i, tc.name)
+				suite.Require().Equal(expSeq, tc.clientState.Sequence)
 				suite.Require().Equal(expSeq, suite.GetSequenceFromStore(), "sequence not updated in the store (%d) on valid test case %d: %s", suite.GetSequenceFromStore(), i, tc.name)
 			} else {
 				suite.Require().Error(err, "invalid test case %d passed: %s", i, tc.name)
@@ -604,18 +582,6 @@ func (suite *SoloMachineTestSuite) TestVerifyPacketCommitment() {
 				false,
 			},
 			{
-				"client is frozen",
-				&types.ClientState{
-					Sequence:                 1,
-					FrozenSequence:           1,
-					ConsensusState:           solomachine.ConsensusState(),
-					AllowUpdateAfterProposal: false,
-				},
-				prefix,
-				proof,
-				false,
-			},
-			{
 				"proof is nil",
 				solomachine.ClientState(),
 				prefix,
@@ -635,9 +601,10 @@ func (suite *SoloMachineTestSuite) TestVerifyPacketCommitment() {
 			tc := tc
 
 			expSeq := tc.clientState.Sequence + 1
+			ctx := suite.chainA.GetContext()
 
 			err := tc.clientState.VerifyPacketCommitment(
-				suite.store, suite.chainA.Codec, solomachine.GetHeight(), 0, 0, tc.prefix, tc.proof, testPortID, testChannelID, solomachine.Sequence, commitmentBytes,
+				ctx, suite.store, suite.chainA.Codec, solomachine.GetHeight(), 0, 0, tc.prefix, tc.proof, testPortID, testChannelID, solomachine.Sequence, commitmentBytes,
 			)
 
 			if tc.expPass {
@@ -691,18 +658,6 @@ func (suite *SoloMachineTestSuite) TestVerifyPacketAcknowledgement() {
 				false,
 			},
 			{
-				"client is frozen",
-				&types.ClientState{
-					Sequence:                 1,
-					FrozenSequence:           1,
-					ConsensusState:           solomachine.ConsensusState(),
-					AllowUpdateAfterProposal: false,
-				},
-				prefix,
-				proof,
-				false,
-			},
-			{
 				"proof is nil",
 				solomachine.ClientState(),
 				prefix,
@@ -722,9 +677,10 @@ func (suite *SoloMachineTestSuite) TestVerifyPacketAcknowledgement() {
 			tc := tc
 
 			expSeq := tc.clientState.Sequence + 1
+			ctx := suite.chainA.GetContext()
 
 			err := tc.clientState.VerifyPacketAcknowledgement(
-				suite.store, suite.chainA.Codec, solomachine.GetHeight(), 0, 0, tc.prefix, tc.proof, testPortID, testChannelID, solomachine.Sequence, ack,
+				ctx, suite.store, suite.chainA.Codec, solomachine.GetHeight(), 0, 0, tc.prefix, tc.proof, testPortID, testChannelID, solomachine.Sequence, ack,
 			)
 
 			if tc.expPass {
@@ -778,18 +734,6 @@ func (suite *SoloMachineTestSuite) TestVerifyPacketReceiptAbsence() {
 				false,
 			},
 			{
-				"client is frozen",
-				&types.ClientState{
-					Sequence:                 1,
-					FrozenSequence:           1,
-					ConsensusState:           solomachine.ConsensusState(),
-					AllowUpdateAfterProposal: false,
-				},
-				prefix,
-				proof,
-				false,
-			},
-			{
 				"proof is nil",
 				solomachine.ClientState(),
 				prefix,
@@ -809,9 +753,10 @@ func (suite *SoloMachineTestSuite) TestVerifyPacketReceiptAbsence() {
 			tc := tc
 
 			expSeq := tc.clientState.Sequence + 1
+			ctx := suite.chainA.GetContext()
 
 			err := tc.clientState.VerifyPacketReceiptAbsence(
-				suite.store, suite.chainA.Codec, solomachine.GetHeight(), 0, 0, tc.prefix, tc.proof, testPortID, testChannelID, solomachine.Sequence,
+				ctx, suite.store, suite.chainA.Codec, solomachine.GetHeight(), 0, 0, tc.prefix, tc.proof, testPortID, testChannelID, solomachine.Sequence,
 			)
 
 			if tc.expPass {
@@ -865,18 +810,6 @@ func (suite *SoloMachineTestSuite) TestVerifyNextSeqRecv() {
 				false,
 			},
 			{
-				"client is frozen",
-				&types.ClientState{
-					Sequence:                 1,
-					FrozenSequence:           1,
-					ConsensusState:           solomachine.ConsensusState(),
-					AllowUpdateAfterProposal: false,
-				},
-				prefix,
-				proof,
-				false,
-			},
-			{
 				"proof is nil",
 				solomachine.ClientState(),
 				prefix,
@@ -896,13 +829,15 @@ func (suite *SoloMachineTestSuite) TestVerifyNextSeqRecv() {
 			tc := tc
 
 			expSeq := tc.clientState.Sequence + 1
+			ctx := suite.chainA.GetContext()
 
 			err := tc.clientState.VerifyNextSequenceRecv(
-				suite.store, suite.chainA.Codec, solomachine.GetHeight(), 0, 0, tc.prefix, tc.proof, testPortID, testChannelID, nextSeqRecv,
+				ctx, suite.store, suite.chainA.Codec, solomachine.GetHeight(), 0, 0, tc.prefix, tc.proof, testPortID, testChannelID, nextSeqRecv,
 			)
 
 			if tc.expPass {
 				suite.Require().NoError(err, "valid test case %d failed: %s", i, tc.name)
+				suite.Require().Equal(expSeq, tc.clientState.Sequence)
 				suite.Require().Equal(expSeq, suite.GetSequenceFromStore(), "sequence not updated in the store (%d) on valid test case %d: %s", suite.GetSequenceFromStore(), i, tc.name)
 			} else {
 				suite.Require().Error(err, "invalid test case %d passed: %s", i, tc.name)

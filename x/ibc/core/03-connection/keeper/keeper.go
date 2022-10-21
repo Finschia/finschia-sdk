@@ -6,6 +6,8 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
+
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
@@ -19,15 +21,22 @@ type Keeper struct {
 	types.QueryServer
 
 	storeKey     sdk.StoreKey
-	cdc          codec.Codec
+	paramSpace   paramtypes.Subspace
+	cdc          codec.BinaryCodec
 	clientKeeper types.ClientKeeper
 }
 
 // NewKeeper creates a new IBC connection Keeper instance
-func NewKeeper(cdc codec.Codec, key sdk.StoreKey, ck types.ClientKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, key sdk.StoreKey, paramSpace paramtypes.Subspace, ck types.ClientKeeper) Keeper {
+	// set KeyTable if it has not already been set
+	if !paramSpace.HasKeyTable() {
+		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
+	}
+
 	return Keeper{
 		storeKey:     key,
 		cdc:          cdc,
+		paramSpace:   paramSpace,
 		clientKeeper: ck,
 	}
 }

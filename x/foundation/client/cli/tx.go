@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -13,30 +12,33 @@ import (
 	"github.com/line/lbm-sdk/client/tx"
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/version"
 	"github.com/line/lbm-sdk/x/foundation"
-	"github.com/line/lbm-sdk/x/gov/client/cli"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 // Proposal flags
 const (
-	FlagAllowedValidatorAdd    = "add"
-	FlagAllowedValidatorDelete = "delete"
-
 	FlagExec = "exec"
 	ExecTry  = "try"
 )
 
-func parseMembers(codec codec.Codec, membersJSON string) ([]foundation.Member, error) {
+func parseParams(codec codec.Codec, paramsJSON string) (*foundation.Params, error) {
+	var params foundation.Params
+	if err := codec.UnmarshalJSON([]byte(paramsJSON), &params); err != nil {
+		return nil, err
+	}
+
+	return &params, nil
+}
+
+func parseMemberRequests(codec codec.Codec, membersJSON string) ([]foundation.MemberRequest, error) {
 	var cliMembers []json.RawMessage
 	if err := json.Unmarshal([]byte(membersJSON), &cliMembers); err != nil {
 		return nil, err
 	}
 
-	members := make([]foundation.Member, len(cliMembers))
+	members := make([]foundation.MemberRequest, len(cliMembers))
 	for i, cliMember := range cliMembers {
-		var member foundation.Member
+		var member foundation.MemberRequest
 		if err := codec.UnmarshalJSON(cliMember, &member); err != nil {
 			return nil, err
 		}
@@ -126,6 +128,7 @@ func NewTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(
+		NewTxCmdUpdateParams(),
 		NewTxCmdFundTreasury(),
 		NewTxCmdWithdrawFromTreasury(),
 		NewTxCmdUpdateMembers(),
@@ -137,181 +140,57 @@ func NewTxCmd() *cobra.Command {
 		NewTxCmdLeaveFoundation(),
 		NewTxCmdGrant(),
 		NewTxCmdRevoke(),
+		NewTxCmdGovMint(),
 	)
 
 	return txCmd
 }
 
-// NewProposalCmdUpdateFoundationParams implements the command to submit an update-foundation-params proposal
-func NewProposalCmdUpdateFoundationParams() *cobra.Command {
+func NewTxCmdUpdateParams() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-foundation-params",
-		Args:  cobra.NoArgs,
-		Short: "Submit an update foundation params proposal",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Submit an update foundation params proposal.
-For now, you have no other options, so we make the corresponding params json file for you.
+		Use:   "update-params [authority] [params-json]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Update params",
+		Long: `Update x/foundation parameters.
 
-Example:
-$ %s tx gov submit-proposal update-foundation-params [flags]
-`,
-				version.AppName,
-			),
-		),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-			from := clientCtx.GetFromAddress()
+Example of the content of params-json:
 
-			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
-			if err != nil {
-				return err
-			}
-
-			deposit, err := sdk.ParseCoinsNormalized(depositStr)
-			if err != nil {
-				return err
-			}
-
-			title, err := cmd.Flags().GetString(cli.FlagTitle)
-			if err != nil {
-				return err
-			}
-
-			description, err := cmd.Flags().GetString(cli.FlagDescription)
-			if err != nil {
-				return err
-			}
-
-			params := &foundation.Params{
-				Enabled: false,
-			}
-			content := foundation.NewUpdateFoundationParamsProposal(title, description, params)
-			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
-			if err != nil {
-				return err
-			}
-
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
-
-	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
-	cmd.Flags().String(cli.FlagDescription, "", "description of proposal")
-	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
-
-	return cmd
+{
+  "foundation_tax": "0.1",
+  "censored_msg_type_urls": [
+    "/cosmos.staking.v1beta1.MsgCreateValidator",
+    "/lbm.foundation.v1.MsgWithdrawFromTreasury"
+  ]
 }
-
-// NewProposalCmdUpdateValidatorAuths implements the command to submit an update-validator-auths proposal
-func NewProposalCmdUpdateValidatorAuths() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "update-validator-auths",
-		Args:  cobra.NoArgs,
-		Short: "Submit an update validator auths proposal",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Submit an update validator auths proposal.
-
-Example:
-$ %s tx gov submit-proposal update-validator-auths [flags]
 `,
-				version.AppName,
-			),
-		),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
+				return err
+			}
+
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
-			from := clientCtx.GetFromAddress()
 
-			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
+			params, err := parseParams(clientCtx.Codec, args[1])
 			if err != nil {
 				return err
 			}
 
-			deposit, err := sdk.ParseCoinsNormalized(depositStr)
-			if err != nil {
-				return err
+			msg := foundation.MsgUpdateParams{
+				Authority: authority,
+				Params:    *params,
 			}
-
-			title, err := cmd.Flags().GetString(cli.FlagTitle)
-			if err != nil {
-				return err
-			}
-
-			description, err := cmd.Flags().GetString(cli.FlagDescription)
-			if err != nil {
-				return err
-			}
-
-			parseCommaSeparated := func(concat string) []string {
-				if concat == "" {
-					return []string{}
-				}
-				return strings.Split(concat, ",")
-			}
-
-			addingValidatorsStr, err := cmd.Flags().GetString(FlagAllowedValidatorAdd)
-			if err != nil {
-				return err
-			}
-			addingValidators := parseCommaSeparated(addingValidatorsStr)
-
-			deletingValidatorsStr, err := cmd.Flags().GetString(FlagAllowedValidatorDelete)
-			if err != nil {
-				return err
-			}
-			deletingValidators := parseCommaSeparated(deletingValidatorsStr)
-
-			createAuths := func(addings, deletings []string) []foundation.ValidatorAuth {
-				var auths []foundation.ValidatorAuth
-				for _, addr := range addings {
-					auth := foundation.ValidatorAuth{
-						OperatorAddress: addr,
-						CreationAllowed: true,
-					}
-					auths = append(auths, auth)
-				}
-				for _, addr := range deletings {
-					auth := foundation.ValidatorAuth{
-						OperatorAddress: addr,
-						CreationAllowed: false,
-					}
-					auths = append(auths, auth)
-				}
-
-				return auths
-			}
-
-			auths := createAuths(addingValidators, deletingValidators)
-			content := foundation.NewUpdateValidatorAuthsProposal(title, description, auths)
-			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
-			if err != nil {
-				return err
-			}
-
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
 
-	cmd.Flags().String(cli.FlagTitle, "", "title of proposal")
-	cmd.Flags().String(cli.FlagDescription, "", "description of proposal")
-	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
-
-	cmd.Flags().String(FlagAllowedValidatorAdd, "", "validator addresses to add")
-	cmd.Flags().String(FlagAllowedValidatorDelete, "", "validator addresses to delete")
-
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
 
@@ -355,14 +234,14 @@ func NewTxCmdFundTreasury() *cobra.Command {
 
 func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "withdraw-from-treasury [operator] [to] [amount]",
+		Use:   "withdraw-from-treasury [authority] [to] [amount]",
 		Args:  cobra.ExactArgs(3),
 		Short: "Withdraw coins from the treasury",
 		Long: `Withdraw coins from the treasury
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			operator := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
 				return err
 			}
 
@@ -377,9 +256,9 @@ func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 			}
 
 			msg := foundation.MsgWithdrawFromTreasury{
-				Operator: operator,
-				To:       args[1],
-				Amount:   amount,
+				Authority: authority,
+				To:        args[1],
+				Amount:    amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -394,7 +273,7 @@ func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 
 func NewTxCmdUpdateMembers() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-members [operator] [members-json]",
+		Use:   "update-members [authority] [members-json]",
 		Args:  cobra.ExactArgs(2),
 		Short: "Update the foundation members",
 		Long: `Update the foundation members
@@ -417,8 +296,8 @@ Example of the content of members-json:
 Set a member's participating to false to delete it.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			operator := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
 				return err
 			}
 
@@ -427,13 +306,13 @@ Set a member's participating to false to delete it.
 				return err
 			}
 
-			updates, err := parseMembers(clientCtx.Codec, args[1])
+			updates, err := parseMemberRequests(clientCtx.Codec, args[1])
 			if err != nil {
 				return err
 			}
 
 			msg := foundation.MsgUpdateMembers{
-				Operator:      operator,
+				Authority:     authority,
 				MemberUpdates: updates,
 			}
 			if err := msg.ValidateBasic(); err != nil {
@@ -449,7 +328,7 @@ Set a member's participating to false to delete it.
 
 func NewTxCmdUpdateDecisionPolicy() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-decision-policy [operator] [policy-json]",
+		Use:   "update-decision-policy [authority] [policy-json]",
 		Args:  cobra.ExactArgs(2),
 		Short: "Update the foundation decision policy",
 		Long: `Update the foundation decision policy
@@ -466,8 +345,8 @@ Example of the content of policy-json:
 }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			operator := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
 				return err
 			}
 
@@ -477,7 +356,7 @@ Example of the content of policy-json:
 			}
 
 			msg := foundation.MsgUpdateDecisionPolicy{
-				Operator: operator,
+				Authority: authority,
 			}
 			policy, err := parseDecisionPolicy(clientCtx.Codec, args[1])
 			if err != nil {
@@ -522,7 +401,7 @@ Example of the content of messages-json:
 [
   {
     "@type": "/lbm.foundation.v1.MsgWithdrawFromTreasury",
-    "operator": "addr1",
+    "authority": "addr1",
     "to": "addr2",
     "amount": "10000stake"
   }
@@ -751,7 +630,7 @@ func NewTxCmdLeaveFoundation() *cobra.Command {
 
 func NewTxCmdGrant() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "grant [operator] [grantee] [authorization-json]",
+		Use:   "grant [authority] [grantee] [authorization-json]",
 		Args:  cobra.ExactArgs(3),
 		Short: "Grant an authorization to grantee",
 		Long: `Grant an authorization to grantee
@@ -767,8 +646,8 @@ Example of the content of authorization-json:
 }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			operator := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
 				return err
 			}
 
@@ -778,8 +657,8 @@ Example of the content of authorization-json:
 			}
 
 			msg := foundation.MsgGrant{
-				Operator: operator,
-				Grantee:  args[1],
+				Authority: authority,
+				Grantee:   args[1],
 			}
 			authorization, err := parseAuthorization(clientCtx.Codec, args[2])
 			if err != nil {
@@ -802,14 +681,14 @@ Example of the content of authorization-json:
 
 func NewTxCmdRevoke() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "revoke [operator] [grantee] [msg-type-url]",
+		Use:   "revoke [authority] [grantee] [msg-type-url]",
 		Args:  cobra.ExactArgs(3),
 		Short: "Revoke an authorization of grantee",
 		Long: `Revoke an authorization of grantee
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			operator := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
 				return err
 			}
 
@@ -819,9 +698,47 @@ func NewTxCmdRevoke() *cobra.Command {
 			}
 
 			msg := foundation.MsgRevoke{
-				Operator:   operator,
+				Authority:  authority,
 				Grantee:    args[1],
 				MsgTypeUrl: args[2],
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+func NewTxCmdGovMint() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "gov-mint [authority] [amount]",
+		Args:  cobra.ExactArgs(2),
+		Short: "mint coins for foundation",
+		Long: `mint coins for foundation
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
+				return err
+			}
+
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			amount, err := sdk.ParseCoinsNormalized(args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := foundation.MsgGovMint{
+				Authority: authority,
+				Amount:    amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

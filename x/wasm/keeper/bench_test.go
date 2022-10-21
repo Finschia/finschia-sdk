@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -108,7 +108,7 @@ func BenchmarkCompilation(b *testing.B) {
 			ctx, keepers := createTestInput(b, false, SupportedFeatures, nil, nil, wasmConfig, spec.db())
 
 			// print out code size for comparisons
-			code, err := ioutil.ReadFile(spec.wasmFile)
+			code, err := os.ReadFile(spec.wasmFile)
 			require.NoError(b, err)
 			b.Logf("\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b(size: %d)  ", len(code))
 

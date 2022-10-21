@@ -3,11 +3,11 @@ package cli
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
-
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/version"
+	"github.com/spf13/cobra"
+
 	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 )
 
@@ -97,7 +97,11 @@ func GetCmdParams() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, _ := queryClient.Params(cmd.Context(), &types.QueryParamsRequest{})
+			res, err := queryClient.Params(cmd.Context(), &types.QueryParamsRequest{})
+			if err != nil {
+				return err
+			}
+
 			return clientCtx.PrintProto(res.Params)
 		},
 	}
@@ -116,15 +120,50 @@ func GetCmdQueryEscrowAddress() *cobra.Command {
 		Args:    cobra.ExactArgs(2),
 		Example: fmt.Sprintf("%s query ibc-transfer escrow-address [port] [channel-id]", version.AppName),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
 			port := args[0]
 			channel := args[1]
 			addr := types.GetEscrowAddress(port, channel)
-			fmt.Println(addr.String())
-			return nil
+			return clientCtx.PrintString(fmt.Sprintf("%s\n", addr.String()))
 		},
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
 
+	return cmd
+}
+
+// GetCmdQueryDenomHash defines the command to query a denomination hash from a given trace.
+func GetCmdQueryDenomHash() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "denom-hash [trace]",
+		Short:   "Query the denom hash info from a given denom trace",
+		Long:    "Query the denom hash info from a given denom trace",
+		Example: fmt.Sprintf("%s query ibc-transfer denom-hash [denom_trace]", version.AppName),
+		Args:    cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			req := &types.QueryDenomHashRequest{
+				Trace: args[0],
+			}
+
+			res, err := queryClient.DenomHash(cmd.Context(), req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
 	return cmd
 }

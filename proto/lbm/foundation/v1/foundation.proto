@@ -8,41 +8,14 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
+import "cosmos/base/v1beta1/coin.proto";
 import "cosmos_proto/cosmos.proto";
 
 // Params defines the parameters for the foundation module.
 message Params {
-  bool   enabled        = 1;
-  string foundation_tax = 2
+  string foundation_tax = 1
       [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec", (gogoproto.nullable) = false];
-}
-
-// ValidatorAuth defines authorization info of a validator.
-message ValidatorAuth {
-  string operator_address = 1;
-  bool   creation_allowed = 2;
-}
-
-// UpdateFoundationParamsProposal details a proposal to update params of foundation module.
-message UpdateFoundationParamsProposal {
-  option (gogoproto.equal)            = false;
-  option (gogoproto.goproto_getters)  = false;
-  option (gogoproto.goproto_stringer) = false;
-
-  string title       = 1;
-  string description = 2;
-  Params params      = 3;
-}
-
-// UpdateValidatorAuthsProposal details a proposal to update validator auths on foundation.
-message UpdateValidatorAuthsProposal {
-  option (gogoproto.equal)            = false;
-  option (gogoproto.goproto_getters)  = false;
-  option (gogoproto.goproto_stringer) = false;
-
-  string                 title       = 1;
-  string                 description = 2;
-  repeated ValidatorAuth auths       = 3 [(gogoproto.nullable) = false];
+  repeated string censored_msg_type_urls = 2;
 }
 
 // Member represents a foundation member with an account address and metadata.
@@ -50,17 +23,33 @@ message Member {
   // address is the member's account address.
   string address = 1;
 
-  // participating is the flag which allows one to remove the member by setting the flag to false.
-  bool participating = 2;
-
   // metadata is any arbitrary metadata to attached to the member.
-  string metadata = 3;
+  string metadata = 2;
 
   // added_at is a timestamp specifying when a member was added.
   google.protobuf.Timestamp added_at = 4 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
 }
 
-// ThresholdDecisionPolicy implements the DecisionPolicy interface
+// MemberRequest represents a foundation member to be used in Msg server requests.
+// Contrary to `Member`, it doesn't have any `added_at` field
+// since this field cannot be set as part of requests.
+message MemberRequest {
+  // address is the member's account address.
+  string address = 1;
+
+  // remove is the flag which allows one to remove the member by setting the flag to true.
+  bool remove = 2;
+
+  // metadata is any arbitrary metadata attached to the member.
+  string metadata = 3;
+}
+
+// ThresholdDecisionPolicy is a decision policy where a proposal passes when it
+// satisfies the two following conditions:
+// 1. The sum of all `YES` voters' weights is greater or equal than the defined
+//    `threshold`.
+// 2. The voting and execution periods of the proposal respect the parameters
+//    given by `windows`.
 message ThresholdDecisionPolicy {
   option (cosmos_proto.implements_interface) = "DecisionPolicy";
 
@@ -71,7 +60,12 @@ message ThresholdDecisionPolicy {
   DecisionPolicyWindows windows = 2;
 }
 
-// PercentageDecisionPolicy implements the DecisionPolicy interface
+// PercentageDecisionPolicy is a decision policy where a proposal passes when
+// it satisfies the two following conditions:
+// 1. The percentage of all `YES` voters' weights out of the total group weight
+//    is greater or equal than the given `percentage`.
+// 2. The voting and execution periods of the proposal respect the parameters
+//    given by `windows`.
 message PercentageDecisionPolicy {
   option (cosmos_proto.implements_interface) = "DecisionPolicy";
 
@@ -102,6 +96,14 @@ message DecisionPolicyWindows {
   google.protobuf.Duration min_execution_period = 2 [(gogoproto.stdduration) = true, (gogoproto.nullable) = false];
 }
 
+// OutsourcingDecisionPolicy is a dummy decision policy which is set after
+// the proposal feature has been outsourced to x/group.
+message OutsourcingDecisionPolicy {
+  option (cosmos_proto.implements_interface) = "DecisionPolicy";
+
+  string description = 1;
+}
+
 // VoteOption enumerates the valid vote options for a given proposal.
 enum VoteOption {
   option (gogoproto.goproto_enum_prefix) = false;
@@ -122,20 +124,17 @@ enum VoteOption {
 message FoundationInfo {
   option (gogoproto.goproto_getters) = false;
 
-  // operator is the account address of the foundation's operator.
-  string operator = 1;
-
   // version is used to track changes to the foundation's membership structure that
   // would break existing proposals. Whenever any member is added or removed,
   // this version is incremented and will cause proposals based on older versions
   // of the foundation to fail
-  uint64 version = 2;
+  uint64 version = 1;
 
   // total_weight is the number of the foundation members.
-  string total_weight = 3 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
+  string total_weight = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
 
   // decision_policy specifies the foundation's decision policy.
-  google.protobuf.Any decision_policy = 4 [(cosmos_proto.accepts_interface) = "DecisionPolicy"];
+  google.protobuf.Any decision_policy = 3 [(cosmos_proto.accepts_interface) = "DecisionPolicy"];
 }
 
 // Proposal defines a foundation proposal. Any member of the foundation can submit a proposal
@@ -164,28 +163,24 @@ message Proposal {
   // status represents the high level position in the life cycle of the proposal. Initial value is Submitted.
   ProposalStatus status = 6;
 
-  // result is the final result based on the votes and election rule. Initial value is unfinalized.
-  // The result is persisted so that clients can always rely on this state and not have to replicate the logic.
-  ProposalResult result = 7;
-
   // final_tally_result contains the sums of all votes for this
   // proposal for each vote option, after tallying. When querying a proposal
   // via gRPC, this field is not populated until the proposal's voting period
   // has ended.
-  TallyResult final_tally_result = 8 [(gogoproto.nullable) = false];
+  TallyResult final_tally_result = 7 [(gogoproto.nullable) = false];
 
   // voting_period_end is the timestamp before which voting must be done.
   // Unless a successfull MsgExec is called before (to execute a proposal whose
   // tally is successful before the voting period ends), tallying will be done
   // at this point, and the `final_tally_result`, as well
   // as `status` and `result` fields will be accordingly updated.
-  google.protobuf.Timestamp voting_period_end = 9 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp voting_period_end = 8 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
 
   // executor_result is the final result based on the votes and election rule. Initial value is NotRun.
-  ProposalExecutorResult executor_result = 10;
+  ProposalExecutorResult executor_result = 9;
 
   // messages is a list of Msgs that will be executed if the proposal passes.
-  repeated google.protobuf.Any messages = 11;
+  repeated google.protobuf.Any messages = 10;
 }
 
 // ProposalStatus defines proposal statuses.
@@ -195,35 +190,24 @@ enum ProposalStatus {
   // An empty value is invalid and not allowed.
   PROPOSAL_STATUS_UNSPECIFIED = 0;
 
-  // Initial status of a proposal when persisted.
+  // Initial status of a proposal when submitted.
   PROPOSAL_STATUS_SUBMITTED = 1;
 
-  // Final status of a proposal when the final tally was executed.
-  PROPOSAL_STATUS_CLOSED = 2;
+  // Final status of a proposal when the final tally is done and the outcome
+  // passes the foundation's decision policy.
+  PROPOSAL_STATUS_ACCEPTED = 2;
 
-  // Final status of a proposal when the group was modified before the final tally.
-  PROPOSAL_STATUS_ABORTED = 3;
+  // Final status of a proposal when the final tally is done and the outcome
+  // is rejected by the foundation's decision policy.
+  PROPOSAL_STATUS_REJECTED = 3;
 
-  // A proposal can be deleted before the voting start time by the owner. When this happens the final status
-  // is Withdrawn.
-  PROPOSAL_STATUS_WITHDRAWN = 4;
-}
+  // Final status of a proposal when the decision policy is modified before the
+  // final tally.
+  PROPOSAL_STATUS_ABORTED = 4;
 
-// ProposalResult defines types of proposal results.
-enum ProposalResult {
-  option (gogoproto.goproto_enum_prefix) = false;
-
-  // An empty value is invalid and not allowed
-  PROPOSAL_RESULT_UNSPECIFIED = 0;
-
-  // Until a final tally has happened the status is unfinalized
-  PROPOSAL_RESULT_UNFINALIZED = 1;
-
-  // Final result of the tally
-  PROPOSAL_RESULT_ACCEPTED = 2;
-
-  // Final result of the tally
-  PROPOSAL_RESULT_REJECTED = 3;
+  // A proposal can be withdrawn before the voting start time by the owner.
+  // When this happens the final status is Withdrawn.
+  PROPOSAL_STATUS_WITHDRAWN = 5;
 }
 
 // ProposalExecutorResult defines types of proposal executor results.
@@ -277,4 +261,10 @@ message Vote {
 
   // submit_time is the timestamp when the vote was submitted.
   google.protobuf.Timestamp submit_time = 5 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+}
+
+// Pool is used for tracking treasury.
+message Pool {
+  repeated cosmos.base.v1beta1.DecCoin treasury = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.DecCoins"];
 }

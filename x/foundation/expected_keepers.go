@@ -3,7 +3,6 @@ package foundation
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 type (
@@ -21,12 +20,7 @@ type (
 		SendCoinsFromModuleToModule(ctx sdk.Context, senderModule string, recipientModule string, amt sdk.Coins) error
 		SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 		SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
-	}
 
-	// StakingKeeper defines the staking module interface contract needed by the
-	// foundation module.
-	StakingKeeper interface {
-		// iterate through validators by operator address, execute func for each validator
-		IterateValidators(ctx sdk.Context, fn func(index int64, validator stakingtypes.ValidatorI) (stop bool))
+		MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	}
 )

@@ -1,9 +1,9 @@
 package cli
 
 import (
+	"github.com/line/lbm-sdk/client"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 )
 
@@ -45,14 +45,7 @@ func NewTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	txCmd.AddCommand(
-		NewChannelOpenInitCmd(),
-		NewChannelOpenTryCmd(),
-		NewChannelOpenAckCmd(),
-		NewChannelOpenConfirmCmd(),
-		NewChannelCloseInitCmd(),
-		NewChannelCloseConfirmCmd(),
-	)
+	txCmd.AddCommand()
 
 	return txCmd
 }

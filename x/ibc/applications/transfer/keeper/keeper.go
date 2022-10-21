@@ -1,28 +1,27 @@
 package keeper
 
 import (
-	ostbytes "github.com/line/ostracon/libs/bytes"
-	"github.com/line/ostracon/libs/log"
-
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
-	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
-	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
-	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
+	ocbytes "github.com/line/ostracon/libs/bytes"
+	"github.com/line/ostracon/libs/log"
+
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 )
 
 // Keeper defines the IBC fungible transfer keeper
 type Keeper struct {
 	storeKey   sdk.StoreKey
-	cdc        codec.Codec
+	cdc        codec.BinaryCodec
 	paramSpace paramtypes.Subspace
 
+	ics4Wrapper   types.ICS4Wrapper
 	channelKeeper types.ChannelKeeper
 	portKeeper    types.PortKeeper
 	authKeeper    types.AccountKeeper
@@ -32,13 +31,13 @@ type Keeper struct {
 
 // NewKeeper creates a new IBC transfer Keeper instance
 func NewKeeper(
-	cdc codec.Codec, key sdk.StoreKey, paramSpace paramtypes.Subspace,
-	channelKeeper types.ChannelKeeper, portKeeper types.PortKeeper,
+	cdc codec.BinaryCodec, key sdk.StoreKey, paramSpace paramtypes.Subspace,
+	ics4Wrapper types.ICS4Wrapper, channelKeeper types.ChannelKeeper, portKeeper types.PortKeeper,
 	authKeeper types.AccountKeeper, bankKeeper types.BankKeeper, scopedKeeper capabilitykeeper.ScopedKeeper,
 ) Keeper {
 
 	// ensure ibc transfer module account is set
-	if addr := authKeeper.GetModuleAddress(types.ModuleName); addr.Empty() {
+	if addr := authKeeper.GetModuleAddress(types.ModuleName); addr == nil {
 		panic("the IBC transfer module account has not been set")
 	}
 
@@ -51,6 +50,7 @@ func NewKeeper(
 		cdc:           cdc,
 		storeKey:      key,
 		paramSpace:    paramSpace,
+		ics4Wrapper:   ics4Wrapper,
 		channelKeeper: channelKeeper,
 		portKeeper:    portKeeper,
 		authKeeper:    authKeeper,
@@ -67,17 +67,6 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 // GetTransferAccount returns the ICS20 - transfers ModuleAccount
 func (k Keeper) GetTransferAccount(ctx sdk.Context) authtypes.ModuleAccountI {
 	return k.authKeeper.GetModuleAccount(ctx, types.ModuleName)
-}
-
-// ChanCloseInit defines a wrapper function for the channel Keeper's function
-// in order to expose it to the ICS20 transfer handler.
-func (k Keeper) ChanCloseInit(ctx sdk.Context, portID, channelID string) error {
-	capName := host.ChannelCapabilityPath(portID, channelID)
-	chanCap, ok := k.scopedKeeper.GetCapability(ctx, capName)
-	if !ok {
-		return sdkerrors.Wrapf(channeltypes.ErrChannelCapabilityNotFound, "could not retrieve channel capability at: %s", capName)
-	}
-	return k.channelKeeper.ChanCloseInit(ctx, portID, channelID, chanCap)
 }
 
 // IsBound checks if the transfer module is already bound to the desired port
@@ -106,7 +95,7 @@ func (k Keeper) SetPort(ctx sdk.Context, portID string) {
 }
 
 // GetDenomTrace retreives the full identifiers trace and base denomination from the store.
-func (k Keeper) GetDenomTrace(ctx sdk.Context, denomTraceHash ostbytes.HexBytes) (types.DenomTrace, bool) {
+func (k Keeper) GetDenomTrace(ctx sdk.Context, denomTraceHash ocbytes.HexBytes) (types.DenomTrace, bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DenomTraceKey)
 	bz := store.Get(denomTraceHash)
 	if bz == nil {
@@ -118,7 +107,7 @@ func (k Keeper) GetDenomTrace(ctx sdk.Context, denomTraceHash ostbytes.HexBytes)
 }
 
 // HasDenomTrace checks if a the key with the given denomination trace hash exists on the store.
-func (k Keeper) HasDenomTrace(ctx sdk.Context, denomTraceHash ostbytes.HexBytes) bool {
+func (k Keeper) HasDenomTrace(ctx sdk.Context, denomTraceHash ocbytes.HexBytes) bool {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DenomTraceKey)
 	return store.Has(denomTraceHash)
 }
