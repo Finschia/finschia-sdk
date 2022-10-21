@@ -178,8 +178,8 @@ var (
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName:     nil,
 		distrtypes.ModuleName:          nil,
-		foundation.TreasuryName:        nil,
 		foundation.ModuleName:          nil,
+		foundation.TreasuryName:        nil,
 		foundation.GovMinterName:       {authtypes.Minter},
 		minttypes.ModuleName:           {authtypes.Minter},
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},

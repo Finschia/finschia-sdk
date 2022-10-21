@@ -10,7 +10,6 @@ type (
 	// foundation module.
 	AuthKeeper interface {
 		GetModuleAccount(ctx sdk.Context, name string) authtypes.ModuleAccountI
-		GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
 	}
 
 	// BankKeeper defines the bank module interface contract needed by the
