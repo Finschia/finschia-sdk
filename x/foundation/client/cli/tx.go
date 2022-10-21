@@ -234,14 +234,14 @@ func NewTxCmdFundTreasury() *cobra.Command {
 
 func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "withdraw-from-treasury [operator] [to] [amount]",
+		Use:   "withdraw-from-treasury [authority] [to] [amount]",
 		Args:  cobra.ExactArgs(3),
 		Short: "Withdraw coins from the treasury",
 		Long: `Withdraw coins from the treasury
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			operator := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
 				return err
 			}
 
@@ -256,9 +256,9 @@ func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 			}
 
 			msg := foundation.MsgWithdrawFromTreasury{
-				Operator: operator,
-				To:       args[1],
-				Amount:   amount,
+				Authority: authority,
+				To:        args[1],
+				Amount:    amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -273,7 +273,7 @@ func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 
 func NewTxCmdUpdateMembers() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-members [operator] [members-json]",
+		Use:   "update-members [authority] [members-json]",
 		Args:  cobra.ExactArgs(2),
 		Short: "Update the foundation members",
 		Long: `Update the foundation members
@@ -296,8 +296,8 @@ Example of the content of members-json:
 Set a member's participating to false to delete it.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			operator := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
 				return err
 			}
 
@@ -312,7 +312,7 @@ Set a member's participating to false to delete it.
 			}
 
 			msg := foundation.MsgUpdateMembers{
-				Operator:      operator,
+				Authority:     authority,
 				MemberUpdates: updates,
 			}
 			if err := msg.ValidateBasic(); err != nil {
@@ -328,7 +328,7 @@ Set a member's participating to false to delete it.
 
 func NewTxCmdUpdateDecisionPolicy() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-decision-policy [operator] [policy-json]",
+		Use:   "update-decision-policy [authority] [policy-json]",
 		Args:  cobra.ExactArgs(2),
 		Short: "Update the foundation decision policy",
 		Long: `Update the foundation decision policy
@@ -345,8 +345,8 @@ Example of the content of policy-json:
 }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			operator := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
 				return err
 			}
 
@@ -356,7 +356,7 @@ Example of the content of policy-json:
 			}
 
 			msg := foundation.MsgUpdateDecisionPolicy{
-				Operator: operator,
+				Authority: authority,
 			}
 			policy, err := parseDecisionPolicy(clientCtx.Codec, args[1])
 			if err != nil {
@@ -401,7 +401,7 @@ Example of the content of messages-json:
 [
   {
     "@type": "/lbm.foundation.v1.MsgWithdrawFromTreasury",
-    "operator": "addr1",
+    "authority": "addr1",
     "to": "addr2",
     "amount": "10000stake"
   }
@@ -630,7 +630,7 @@ func NewTxCmdLeaveFoundation() *cobra.Command {
 
 func NewTxCmdGrant() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "grant [operator] [grantee] [authorization-json]",
+		Use:   "grant [authority] [grantee] [authorization-json]",
 		Args:  cobra.ExactArgs(3),
 		Short: "Grant an authorization to grantee",
 		Long: `Grant an authorization to grantee
@@ -646,8 +646,8 @@ Example of the content of authorization-json:
 }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			operator := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
 				return err
 			}
 
@@ -657,8 +657,8 @@ Example of the content of authorization-json:
 			}
 
 			msg := foundation.MsgGrant{
-				Operator: operator,
-				Grantee:  args[1],
+				Authority: authority,
+				Grantee:   args[1],
 			}
 			authorization, err := parseAuthorization(clientCtx.Codec, args[2])
 			if err != nil {
@@ -681,14 +681,14 @@ Example of the content of authorization-json:
 
 func NewTxCmdRevoke() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "revoke [operator] [grantee] [msg-type-url]",
+		Use:   "revoke [authority] [grantee] [msg-type-url]",
 		Args:  cobra.ExactArgs(3),
 		Short: "Revoke an authorization of grantee",
 		Long: `Revoke an authorization of grantee
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			operator := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
 				return err
 			}
 
@@ -698,7 +698,7 @@ func NewTxCmdRevoke() *cobra.Command {
 			}
 
 			msg := foundation.MsgRevoke{
-				Operator:   operator,
+				Authority:  authority,
 				Grantee:    args[1],
 				MsgTypeUrl: args[2],
 			}
@@ -715,14 +715,14 @@ func NewTxCmdRevoke() *cobra.Command {
 
 func NewTxCmdGovMint() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "gov-mint [operator] [amount]",
+		Use:   "gov-mint [authority] [amount]",
 		Args:  cobra.ExactArgs(2),
 		Short: "mint coins for foundation",
 		Long: `mint coins for foundation
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			operator := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, operator); err != nil {
+			authority := args[0]
+			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
 				return err
 			}
 
@@ -737,8 +737,8 @@ func NewTxCmdGovMint() *cobra.Command {
 			}
 
 			msg := foundation.MsgGovMint{
-				Operator: operator,
-				Amount:   amount,
+				Authority: authority,
+				Amount:    amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

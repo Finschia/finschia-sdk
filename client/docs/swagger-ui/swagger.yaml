@@ -33584,11 +33584,6 @@ paths:
                 description: info is the FoundationInfo for the foundation.
                 type: object
                 properties:
-                  operator:
-                    type: string
-                    description: >-
-                      operator is the account address of the foundation's
-                      operator.
                   version:
                     type: string
                     format: uint64
@@ -68691,9 +68686,6 @@ definitions:
   lbm.foundation.v1.FoundationInfo:
     type: object
     properties:
-      operator:
-        type: string
-        description: operator is the account address of the foundation's operator.
       version:
         type: string
         format: uint64
@@ -69116,9 +69108,6 @@ definitions:
         description: info is the FoundationInfo for the foundation.
         type: object
         properties:
-          operator:
-            type: string
-            description: operator is the account address of the foundation's operator.
           version:
             type: string
             format: uint64

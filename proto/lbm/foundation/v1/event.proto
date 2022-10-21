@@ -23,7 +23,7 @@ message EventFundTreasury {
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
 
-// EventWithdrawFromTreasury is an event emitted when the operator withdraws coins from the treasury.
+// EventWithdrawFromTreasury is an event emitted when coins are withdrawn from the treasury.
 message EventWithdrawFromTreasury {
   string   to                              = 1;
   repeated cosmos.base.v1beta1.Coin amount = 2
