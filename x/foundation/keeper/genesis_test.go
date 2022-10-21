@@ -36,10 +36,9 @@ func TestImportExportGenesis(t *testing.T) {
 		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	operator := foundation.DefaultOperator()
+	authority := foundation.DefaultAuthority()
 	existingAccount := createAddress()
 	app.AccountKeeper.SetAccount(ctx, app.AccountKeeper.NewAccountWithAddress(ctx, existingAccount))
-	anotherModuleAccount := app.AccountKeeper.GetModuleAccount(ctx, foundation.TreasuryName).GetAddress()
 
 	member := createAddress()
 	stranger := createAddress()
@@ -60,30 +59,10 @@ func TestImportExportGenesis(t *testing.T) {
 				Foundation: foundation.DefaultFoundation(),
 			},
 		},
-		"operator is another module account": {
-			init: &foundation.GenesisState{
-				Params: foundation.DefaultParams(),
-				Foundation: *foundation.FoundationInfo{
-					Operator:    anotherModuleAccount.String(),
-					Version:     1,
-					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
-			},
-			valid: true,
-			export: &foundation.GenesisState{
-				Params: foundation.DefaultParams(),
-				Foundation: *foundation.FoundationInfo{
-					Operator:    anotherModuleAccount.String(),
-					Version:     1,
-					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
-			},
-		},
 		"members": {
 			init: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
-					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
 				}.WithDecisionPolicy(workingPolicy()),
@@ -97,7 +76,6 @@ func TestImportExportGenesis(t *testing.T) {
 			export: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
-					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
 				}.WithDecisionPolicy(workingPolicy()),
@@ -112,7 +90,6 @@ func TestImportExportGenesis(t *testing.T) {
 			init: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
-					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
 				}.WithDecisionPolicy(workingPolicy()),
@@ -127,7 +104,7 @@ func TestImportExportGenesis(t *testing.T) {
 						Id:                1,
 						Proposers:         []string{member.String()},
 						FoundationVersion: 1,
-					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg(operator)}),
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg(authority)}),
 				},
 				Votes: []foundation.Vote{
 					{
@@ -141,7 +118,6 @@ func TestImportExportGenesis(t *testing.T) {
 			export: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
-					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
 				}.WithDecisionPolicy(workingPolicy()),
@@ -162,7 +138,7 @@ func TestImportExportGenesis(t *testing.T) {
 							AbstainCount:    sdk.ZeroDec(),
 							NoWithVetoCount: sdk.ZeroDec(),
 						},
-					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg(operator)}),
+					}.WithMsgs([]sdk.Msg{testdata.NewTestMsg(authority)}),
 				},
 				Votes: []foundation.Vote{
 					{
@@ -194,31 +170,10 @@ func TestImportExportGenesis(t *testing.T) {
 				},
 			},
 		},
-		"operator not exists": {
-			init: &foundation.GenesisState{
-				Params: foundation.DefaultParams(),
-				Foundation: *foundation.FoundationInfo{
-					Operator:    createAddress().String(),
-					Version:     1,
-					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
-			},
-		},
-		"operator is not module account": {
-			init: &foundation.GenesisState{
-				Params: foundation.DefaultParams(),
-				Foundation: *foundation.FoundationInfo{
-					Operator:    existingAccount.String(),
-					Version:     1,
-					TotalWeight: sdk.ZeroDec(),
-				}.WithDecisionPolicy(foundation.DefaultDecisionPolicy()),
-			},
-		},
 		"member of long metadata": {
 			init: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
-					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
 				}.WithDecisionPolicy(workingPolicy()),
@@ -234,7 +189,6 @@ func TestImportExportGenesis(t *testing.T) {
 			init: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
-					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
 				}.WithDecisionPolicy(workingPolicy()),
@@ -258,7 +212,6 @@ func TestImportExportGenesis(t *testing.T) {
 			init: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),
 				Foundation: *foundation.FoundationInfo{
-					Operator:    operator.String(),
 					Version:     1,
 					TotalWeight: sdk.OneDec(),
 				}.WithDecisionPolicy(workingPolicy()),

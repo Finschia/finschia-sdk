@@ -15,7 +15,6 @@ import (
 
 func workingFoundation() foundation.FoundationInfo {
 	return *foundation.FoundationInfo{
-		Operator:    foundation.DefaultOperator().String(),
 		Version:     1,
 		TotalWeight: sdk.OneDec(),
 	}.WithDecisionPolicy(workingPolicy())
@@ -39,7 +38,6 @@ func TestDefaultGenesisState(t *testing.T) {
 
 	require.EqualValues(t, 1, gs.Foundation.Version)
 	require.True(t, gs.Foundation.TotalWeight.IsZero())
-	require.Equal(t, foundation.DefaultOperator().String(), gs.Foundation.Operator)
 
 	require.Empty(t, gs.Members)
 	require.Zero(t, gs.PreviousProposalId)
@@ -324,66 +322,47 @@ func TestValidateGenesis(t *testing.T) {
 }
 
 func TestFoundationInfo(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 1)
-	for i := range addrs {
-		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	}
-
 	testCases := map[string]struct {
-		operator    sdk.AccAddress
 		version     uint64
 		totalWeight sdk.Dec
 		policy      foundation.DecisionPolicy
 		valid       bool
 	}{
 		"valid info (default)": {
-			operator:    addrs[0],
 			version:     1,
 			totalWeight: sdk.ZeroDec(),
 			policy:      foundation.DefaultDecisionPolicy(),
 			valid:       true,
 		},
 		"valid info (working policy)": {
-			operator:    addrs[0],
 			version:     1,
 			totalWeight: sdk.OneDec(),
 			policy:      workingPolicy(),
 			valid:       true,
 		},
-		"invalid operator": {
-			version:     1,
-			totalWeight: sdk.ZeroDec(),
-			policy:      foundation.DefaultDecisionPolicy(),
-		},
 		"invalid version": {
-			operator:    addrs[0],
 			totalWeight: sdk.ZeroDec(),
 			policy:      foundation.DefaultDecisionPolicy(),
 		},
 		"invalid total weight": {
-			operator: addrs[0],
-			version:  1,
-			policy:   foundation.DefaultDecisionPolicy(),
+			version: 1,
+			policy:  foundation.DefaultDecisionPolicy(),
 		},
 		"empty policy": {
-			operator:    addrs[0],
 			version:     1,
 			totalWeight: sdk.ZeroDec(),
 		},
 		"invalid policy": {
-			operator:    addrs[0],
 			version:     1,
 			totalWeight: sdk.ZeroDec(),
 			policy:      &foundation.ThresholdDecisionPolicy{},
 		},
 		"outsourcing with members": {
-			operator:    addrs[0],
 			version:     1,
 			totalWeight: sdk.OneDec(),
 			policy:      foundation.DefaultDecisionPolicy(),
 		},
 		"working policy without members": {
-			operator:    addrs[0],
 			version:     1,
 			totalWeight: sdk.ZeroDec(),
 			policy:      workingPolicy(),
@@ -392,7 +371,6 @@ func TestFoundationInfo(t *testing.T) {
 
 	for name, tc := range testCases {
 		info := foundation.FoundationInfo{
-			Operator:    tc.operator.String(),
 			Version:     tc.version,
 			TotalWeight: tc.totalWeight,
 		}
@@ -408,4 +386,9 @@ func TestFoundationInfo(t *testing.T) {
 		}
 		require.NoError(t, err, name)
 	}
+}
+
+func TestDefaultAuthority(t *testing.T) {
+	// the literal must be retained
+	require.Equal(t, sdk.AccAddress([]byte("\x2B\xD8\xB7\xB0\xD8\x3E\x0E\xC9\x2A\xBD\xF6\xF7\x14\xCA\x19\x9A\x78\x74\xD0\x86")), foundation.DefaultAuthority())
 }

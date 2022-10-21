@@ -105,6 +105,7 @@ Example:
 func GetCmdDenomsMetadata() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "denom-metadata",
+		Args:  cobra.NoArgs,
 		Short: "Query the client metadata for coin denominations",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query the client metadata for all the registered coin denominations
@@ -158,6 +159,7 @@ To query for the client metadata of a specific coin denomination use:
 func GetCmdQueryTotalSupply() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "total",
+		Args:  cobra.NoArgs,
 		Short: "Query the total supply of coins of the chain",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query total supply of coins that are held by accounts in the chain.

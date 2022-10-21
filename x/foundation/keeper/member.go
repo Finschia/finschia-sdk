@@ -150,16 +150,9 @@ func (k Keeper) GetMembers(ctx sdk.Context) []foundation.Member {
 	return members
 }
 
-func (k Keeper) GetOperator(ctx sdk.Context) sdk.AccAddress {
-	info := k.GetFoundationInfo(ctx)
-	operator := sdk.MustAccAddressFromBech32(info.Operator)
-	return operator
-}
-
-func (k Keeper) validateOperator(ctx sdk.Context, operator string) error {
-	addr := sdk.MustAccAddressFromBech32(operator)
-	if !addr.Equals(k.GetOperator(ctx)) {
-		return sdkerrors.ErrUnauthorized.Wrapf("%s is not the operator", operator)
+func (k Keeper) validateAuthority(authority string) error {
+	if authority != k.authority {
+		return sdkerrors.ErrUnauthorized.Wrapf("invalid authority; expected %s, got %s", k.authority, authority)
 	}
 
 	return nil

@@ -6,11 +6,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/client"
-	"github.com/line/lbm-sdk/x/distribution/types"
+	"github.com/line/lbm-sdk/codec/legacy"
 )
 
 func TestQueryDelegationRewardsAddrValidation(t *testing.T) {
-	clientCtx := client.Context{}.WithLegacyAmino(types.ModuleCdc.LegacyAmino)
+	clientCtx := client.Context{}.WithLegacyAmino(legacy.Cdc)
 
 	type args struct {
 		delAddr string

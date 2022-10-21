@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
-
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	"github.com/line/lbm-sdk/testutil/testdata"
@@ -15,54 +13,48 @@ import (
 	"github.com/line/lbm-sdk/x/foundation/client/cli"
 )
 
-func (s *IntegrationTestSuite) TestNewProposalCmdUpdateFoundationParams() {
+func (s *IntegrationTestSuite) TestNewTxCmdUpdateParams() {
 	val := s.network.Validators[0]
 
-	commonFlags := []string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
+	commonArgs := []string{
+		fmt.Sprintf("--%s", flags.FlagGenerateOnly),
 	}
 
-	testCases := []struct {
-		name         string
-		args         []string
-		expectErr    bool
-		expectedCode uint32
-		respType     proto.Message
+	testCases := map[string]struct {
+		args  []string
+		valid bool
 	}{
-		{
-			"wrong number of args",
-			commonFlags,
-			true, 0, nil,
-		},
-		{
-			"valid transaction",
-			append([]string{
+		"valid transaction": {
+			[]string{
+				s.authority.String(),
 				fmt.Sprintf(`{"foundation_tax": "%s"}`, sdk.ZeroDec()),
-			}, commonFlags...),
-			false, 0, &sdk.TxResponse{},
+			},
+			true,
+		},
+		"wrong number of args": {
+			[]string{
+				s.authority.String(),
+				fmt.Sprintf(`{"foundation_tax": "%s"}`, sdk.ZeroDec()),
+				"extra",
+			},
+			false,
 		},
 	}
 
-	for _, tc := range testCases {
+	for name, tc := range testCases {
 		tc := tc
 
-		s.Run(tc.name, func() {
-			cmd := cli.NewProposalCmdUpdateFoundationParams()
-			flags.AddTxFlagsToCmd(cmd)
-
-			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, tc.args)
-			if tc.expectErr {
+		s.Run(name, func() {
+			cmd := cli.NewTxCmdUpdateParams()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
 				s.Require().Error(err)
-			} else {
-				s.Require().NoError(err)
-				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), tc.respType), out)
-
-				txResp := tc.respType.(*sdk.TxResponse)
-				s.Require().Equal(tc.expectedCode, txResp.Code)
+				return
 			}
+			s.Require().NoError(err)
+
+			var res txtypes.Tx
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out)
 		})
 	}
 }
@@ -128,7 +120,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.operator.String(),
+				s.authority.String(),
 				s.stranger.String(),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
 			},
@@ -136,7 +128,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawFromTreasury() {
 		},
 		"wrong number of args": {
 			[]string{
-				s.operator.String(),
+				s.authority.String(),
 				s.stranger.String(),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
 				"extra",
@@ -176,14 +168,14 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateMembers() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.operator.String(),
+				s.authority.String(),
 				fmt.Sprintf(updates, s.comingMember),
 			},
 			true,
 		},
 		"wrong number of args": {
 			[]string{
-				s.operator.String(),
+				s.authority.String(),
 				fmt.Sprintf(updates, s.comingMember),
 				"extra",
 			},
@@ -226,7 +218,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.operator.String(),
+				s.authority.String(),
 				doMarshal(&foundation.ThresholdDecisionPolicy{
 					Threshold: sdk.NewDec(10),
 					Windows: &foundation.DecisionPolicyWindows{
@@ -238,7 +230,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdUpdateDecisionPolicy() {
 		},
 		"wrong number of args": {
 			[]string{
-				s.operator.String(),
+				s.authority.String(),
 				doMarshal(&foundation.ThresholdDecisionPolicy{
 					Threshold: sdk.NewDec(10),
 					Windows: &foundation.DecisionPolicyWindows{
@@ -330,7 +322,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdWithdrawProposal() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
-	id := s.submitProposal(testdata.NewTestMsg(s.operator), false)
+	id := s.submitProposal(testdata.NewTestMsg(s.authority), false)
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -380,7 +372,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdVote() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)))),
 	}
 
-	id := s.submitProposal(testdata.NewTestMsg(s.operator), false)
+	id := s.submitProposal(testdata.NewTestMsg(s.authority), false)
 	testCases := map[string]struct {
 		args  []string
 		valid bool
@@ -538,7 +530,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.operator.String(),
+				s.authority.String(),
 				s.comingMember.String(),
 				doMarshal(&foundation.ReceiveFromTreasuryAuthorization{}),
 			},
@@ -546,7 +538,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 		},
 		"wrong number of args": {
 			[]string{
-				s.operator.String(),
+				s.authority.String(),
 				s.comingMember.String(),
 				doMarshal(&foundation.ReceiveFromTreasuryAuthorization{}),
 				"extra",
@@ -585,7 +577,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.operator.String(),
+				s.authority.String(),
 				s.leavingMember.String(),
 				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 			},
@@ -593,7 +585,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 		},
 		"wrong number of args": {
 			[]string{
-				s.operator.String(),
+				s.authority.String(),
 				s.leavingMember.String(),
 				foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 				"extra",
@@ -632,14 +624,14 @@ func (s *IntegrationTestSuite) TestNewTxCmdGovMint() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.operator.String(),
+				s.authority.String(),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
 			},
 			true,
 		},
 		"wrong number of args": {
 			[]string{
-				s.operator.String(),
+				s.authority.String(),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.OneInt())).String(),
 				"extra",
 			},

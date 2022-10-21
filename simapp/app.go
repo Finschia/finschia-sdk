@@ -69,7 +69,6 @@ import (
 	feegrantkeeper "github.com/line/lbm-sdk/x/feegrant/keeper"
 	feegrantmodule "github.com/line/lbm-sdk/x/feegrant/module"
 	"github.com/line/lbm-sdk/x/foundation"
-	foundationclient "github.com/line/lbm-sdk/x/foundation/client"
 	foundationkeeper "github.com/line/lbm-sdk/x/foundation/keeper"
 	foundationmodule "github.com/line/lbm-sdk/x/foundation/module"
 	"github.com/line/lbm-sdk/x/genutil"
@@ -150,7 +149,6 @@ var (
 		gov.NewAppModuleBasic(
 			append(
 				wasmclient.ProposalHandlers,
-				foundationclient.UpdateFoundationParamsProposalHandler,
 				paramsclient.ProposalHandler,
 				distrclient.ProposalHandler,
 				upgradeclient.ProposalHandler,
@@ -180,8 +178,8 @@ var (
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName:     nil,
 		distrtypes.ModuleName:          nil,
+		foundation.ModuleName:          nil,
 		foundation.TreasuryName:        nil,
-		foundation.DefaultOperatorName: nil,
 		foundation.GovMinterName:       {authtypes.Minter},
 		minttypes.ModuleName:           {authtypes.Minter},
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
@@ -378,7 +376,7 @@ func NewSimApp(
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath, app.BaseApp)
 
 	foundationConfig := foundation.DefaultConfig()
-	app.FoundationKeeper = foundationkeeper.NewKeeper(appCodec, keys[foundation.StoreKey], app.BaseApp.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundationConfig)
+	app.FoundationKeeper = foundationkeeper.NewKeeper(appCodec, keys[foundation.StoreKey], app.BaseApp.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundationConfig, foundation.DefaultAuthority().String())
 
 	classKeeper := classkeeper.NewKeeper(appCodec, keys[class.StoreKey])
 	app.TokenKeeper = tokenkeeper.NewKeeper(appCodec, keys[token.StoreKey], app.AccountKeeper, classKeeper)
@@ -471,7 +469,6 @@ func NewSimApp(
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
-		AddRoute(foundation.RouterKey, foundationkeeper.NewProposalHandler(app.FoundationKeeper)).
 		AddRoute(wasm.RouterKey, wasmkeeper.NewWasmProposalHandler(app.WasmKeeper, wasmlbmtypes.EnableAllProposals))
 
 	govKeeper := govkeeper.NewKeeper(

@@ -24,6 +24,26 @@ func NewMsgServer(keeper Keeper) foundation.MsgServer {
 
 var _ foundation.MsgServer = msgServer{}
 
+func (s msgServer) UpdateParams(c context.Context, req *foundation.MsgUpdateParams) (*foundation.MsgUpdateParamsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
+		return nil, err
+	}
+
+	if err := s.keeper.UpdateParams(ctx, req.Params); err != nil {
+		return nil, err
+	}
+
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateParams{
+		Params: req.Params,
+	}); err != nil {
+		panic(err)
+	}
+
+	return &foundation.MsgUpdateParamsResponse{}, nil
+}
+
 // FundTreasury defines a method to fund the treasury.
 func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasury) (*foundation.MsgFundTreasuryResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
@@ -46,7 +66,7 @@ func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasu
 func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWithdrawFromTreasury) (*foundation.MsgWithdrawFromTreasuryResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
 		return nil, err
 	}
 
@@ -72,7 +92,7 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMembers) (*foundation.MsgUpdateMembersResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
 		return nil, err
 	}
 
@@ -92,7 +112,7 @@ func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMem
 func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUpdateDecisionPolicy) (*foundation.MsgUpdateDecisionPolicyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
 		return nil, err
 	}
 
@@ -169,10 +189,10 @@ func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdr
 		return nil, err
 	}
 
-	// operator may withdraw any proposal.
-	if req.Address != s.keeper.GetOperator(ctx).String() {
+	// authority may withdraw any proposal.
+	if err := s.keeper.validateAuthority(req.Address); err != nil {
 		// check whether the address is in proposers list.
-		if err = validateActorForProposal(req.Address, *proposal); err != nil {
+		if err := validateActorForProposal(req.Address, *proposal); err != nil {
 			return nil, err
 		}
 	}
@@ -258,7 +278,7 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundation.MsgGrantResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
 		return nil, err
 	}
 
@@ -274,7 +294,7 @@ func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundati
 func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*foundation.MsgRevokeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
 		return nil, err
 	}
 
@@ -290,7 +310,7 @@ func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*founda
 func (s msgServer) GovMint(c context.Context, req *foundation.MsgGovMint) (*foundation.MsgGovMintResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
 		return nil, err
 	}
 

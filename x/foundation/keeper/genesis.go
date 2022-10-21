@@ -2,27 +2,13 @@ package keeper
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-
 	"github.com/line/lbm-sdk/x/foundation"
-
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
 )
 
 func (k Keeper) InitGenesis(ctx sdk.Context, data *foundation.GenesisState) error {
 	k.SetParams(ctx, data.Params)
 
-	info := data.Foundation
-	if addr := sdk.MustAccAddressFromBech32(info.Operator); !addr.Equals(foundation.DefaultOperator()) {
-		account := k.authKeeper.GetAccount(ctx, addr)
-		if account == nil {
-			return sdkerrors.ErrUnknownAddress.Wrapf("operator %s not exists", addr)
-		}
-		if _, ok := account.(authtypes.ModuleAccountI); !ok {
-			return sdkerrors.ErrInvalidRequest.Wrap("operator must be a module address")
-		}
-	}
-	k.SetFoundationInfo(ctx, info)
+	k.SetFoundationInfo(ctx, data.Foundation)
 
 	k.setPreviousProposalID(ctx, data.PreviousProposalId)
 

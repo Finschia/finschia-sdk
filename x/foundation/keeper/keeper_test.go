@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
@@ -25,9 +26,9 @@ type KeeperTestSuite struct {
 	queryServer foundation.QueryServer
 	msgServer   foundation.MsgServer
 
-	operator sdk.AccAddress
-	members  []sdk.AccAddress
-	stranger sdk.AccAddress
+	authority sdk.AccAddress
+	members   []sdk.AccAddress
+	stranger  sdk.AccAddress
 
 	activeProposal    uint64
 	votedProposal     uint64
@@ -70,7 +71,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	s.operator = s.keeper.GetOperator(s.ctx)
+	s.authority = sdk.MustAccAddressFromBech32(s.keeper.GetAuthority())
 	s.members = make([]sdk.AccAddress, 10)
 	for i := range s.members {
 		s.members[i] = createAddress()
@@ -151,9 +152,9 @@ func (s *KeeperTestSuite) SetupTest() {
 	// create an invalid proposal which contains invalid message
 	invalidProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{
 		&foundation.MsgWithdrawFromTreasury{
-			Operator: s.operator.String(),
-			To:       s.stranger.String(),
-			Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance.Add(sdk.OneInt()))),
+			Authority: s.authority.String(),
+			To:        s.stranger.String(),
+			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, s.balance.Add(sdk.OneInt()))),
 		},
 	})
 	s.Require().NoError(err)
@@ -169,7 +170,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	// create an invalid proposal which contains invalid message
-	noHandlerProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(s.operator)})
+	noHandlerProposal, err := s.keeper.SubmitProposal(s.ctx, []string{s.members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(s.authority)})
 	s.Require().NoError(err)
 	s.noHandlerProposal = *noHandlerProposal
 
@@ -195,4 +196,45 @@ func (s *KeeperTestSuite) SetupTest() {
 
 func TestKeeperTestSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
+}
+
+func TestNewKeeper(t *testing.T) {
+	createAddress := func() sdk.AccAddress {
+		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+	authority := foundation.DefaultAuthority()
+
+	testCases := map[string]struct {
+		authority sdk.AccAddress
+		panics    bool
+	}{
+		"default authority": {
+			authority: authority,
+		},
+		"invalid account": {
+			panics: true,
+		},
+		"not the default authority": {
+			authority: createAddress(),
+			panics:    true,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		newKeeper := func() keeper.Keeper {
+			app := simapp.Setup(false)
+			return keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(foundation.StoreKey), app.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundation.DefaultConfig(), tc.authority.String())
+		}
+
+		if tc.panics {
+			require.Panics(t, func() { newKeeper() }, name)
+			continue
+		}
+		require.NotPanics(t, func() { newKeeper() }, name)
+
+		k := newKeeper()
+		require.Equal(t, authority.String(), k.GetAuthority(), name)
+	}
 }
