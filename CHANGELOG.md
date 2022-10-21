@@ -84,6 +84,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/bank) [\#716](https://github.com/line/lbm-sdk/pull/716) remove useless DenomMetadata key function
 * (x/foundation) [\#704](https://github.com/line/lbm-sdk/pull/704) update x/foundation params
 * (x/wasm)  [\#695](https://github.com/line/lbm-sdk/pull/695) fix to prevent external filesystem dependency of simulation
+* (store,x/wasm) [\#742](https://github.com/line/lbm-sdk/pull/742) fix to add error message in GetByteCode()
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
@@ -98,7 +99,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/token) [\#599](https://github.com/line/lbm-sdk/pull/599) fix the order of events
 * (x/wasm) [\#640](https://github.com/line/lbm-sdk/pull/640) remove legacy codes of wasm
 * (amino) [\#635](https://github.com/line/lbm-sdk/pull/635) change some minor things that haven't been fixed in #549
-* (store) [\#666](https://github.com/line/lbm-sdk/pull/666) change default `iavl-cache-size` and description 
+* (store) [\#666](https://github.com/line/lbm-sdk/pull/666) change default `iavl-cache-size` and description
 * (simapp) [\#679](https://github.com/line/lbm-sdk/pull/679) fix the bug not setting `iavl-cache-size` value of `app.toml`
 * (x/foundation) [\#687](https://github.com/line/lbm-sdk/pull/687) fix bugs on aborting x/foundation proposals
 * (global) [\#694](https://github.com/line/lbm-sdk/pull/694) replace deprecated functions since go 1.16 or 1.17
