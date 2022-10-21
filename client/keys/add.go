@@ -338,29 +338,14 @@ func printCreate(cmd *cobra.Command, info keyring.Info, showMnemonic bool, mnemo
 }
 
 func verifyMultisigTarget(kb keyring.Keyring, multisigKeys []string, newkey string) error {
-	kl, err := kb.List()
-	if err != nil {
-		return err
-	}
-
-	kmap := make(map[string]bool)
-	for i := 0; i < len(kl); i++ {
-		kmap[kl[i].GetName()] = true
-	}
-
-	if _, ok := kmap[newkey]; ok {
+	if _, err := kb.Key(newkey); err == nil {
 		return errors.New("you cannot specify a new key as one of the names of the keys that make up a multisig")
 	}
 
-	cnt := 0
 	for _, k := range multisigKeys {
-		if _, ok := kmap[k]; ok {
-			cnt++
+		if _, err := kb.Key(k); err != nil {
+			return errors.New("part of the multisig target key does not exist")
 		}
-	}
-
-	if cnt != len(multisigKeys) {
-		return errors.New("part of the multisig target key does not exist")
 	}
 
 	return nil
