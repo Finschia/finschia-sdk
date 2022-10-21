@@ -765,35 +765,35 @@ func TestMsgSubmitProposalAminoJSON(t *testing.T) {
 	}{
 		"MsgWithdrawFromTreasury": {
 			&foundation.MsgWithdrawFromTreasury{
-				Operator: addrs[0].String(),
-				To:       addrs[1].String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1000000))),
+				Authority: addrs[0].String(),
+				To:        addrs[1].String(),
+				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1000000))),
 			},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgWithdrawFromTreasury\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"denom\":\"stake\"}],\"operator\":\"%s\",\"to\":\"%s\"}}],\"metadata\":\"MsgWithdrawFromTreasury\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String(), proposer.String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgWithdrawFromTreasury\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"denom\":\"stake\"}],\"authority\":\"%s\",\"to\":\"%s\"}}],\"metadata\":\"MsgWithdrawFromTreasury\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String(), proposer.String()),
 		},
 		"MsgUpdateMembers": {
 			&foundation.MsgUpdateMembers{
-				Operator: addrs[0].String(),
+				Authority: addrs[0].String(),
 				MemberUpdates: []foundation.MemberRequest{{
 					Address: addrs[1].String(),
 				}},
 			},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgUpdateMembers\",\"value\":{\"member_updates\":[{\"address\":\"%s\"}],\"operator\":\"%s\"}}],\"metadata\":\"MsgUpdateMembers\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String(), proposer.String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgUpdateMembers\",\"value\":{\"authority\":\"%s\",\"member_updates\":[{\"address\":\"%s\"}]}}],\"metadata\":\"MsgUpdateMembers\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String(), proposer.String()),
 		},
 		"MsgRevoke": {
 			&foundation.MsgRevoke{
-				Operator:   addrs[0].String(),
+				Authority:  addrs[0].String(),
 				Grantee:    addrs[1].String(),
 				MsgTypeUrl: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 			},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgRevoke\",\"value\":{\"grantee\":\"%s\",\"msg_type_url\":\"/lbm.foundation.v1.MsgWithdrawFromTreasury\",\"operator\":\"%s\"}}],\"metadata\":\"MsgRevoke\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String(), proposer.String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgRevoke\",\"value\":{\"authority\":\"%s\",\"grantee\":\"%s\",\"msg_type_url\":\"/lbm.foundation.v1.MsgWithdrawFromTreasury\"}}],\"metadata\":\"MsgRevoke\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String(), proposer.String()),
 		},
 		"MsgGovMint": {
 			&foundation.MsgGovMint{
-				Operator: addrs[0].String(),
-				Amount:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
+				Authority: addrs[0].String(),
+				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
 			},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgGovMint\",\"value\":{\"amount\":[{\"amount\":\"10\",\"denom\":\"stake\"}],\"operator\":\"%s\"}}],\"metadata\":\"MsgGovMint\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), proposer.String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgGovMint\",\"value\":{\"amount\":[{\"amount\":\"10\",\"denom\":\"stake\"}],\"authority\":\"%s\"}}],\"metadata\":\"MsgGovMint\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), proposer.String()),
 		},
 	}
 
@@ -815,8 +815,8 @@ func TestMsgSubmitProposalAminoJSON(t *testing.T) {
 
 func TestMsgUpdateDecisionPolicyAminoJson(t *testing.T) {
 	var (
-		operator = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-		proposer = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		authority = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		proposer  = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	)
 
 	testCases := map[string]struct {
@@ -830,7 +830,7 @@ func TestMsgUpdateDecisionPolicyAminoJson(t *testing.T) {
 					VotingPeriod: time.Hour,
 				},
 			},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgUpdateDecisionPolicy\",\"value\":{\"decision_policy\":{\"type\":\"lbm-sdk/ThresholdDecisionPolicy\",\"value\":{\"threshold\":\"1.000000000000000000\",\"windows\":{\"min_execution_period\":\"0\",\"voting_period\":\"3600000000000\"}}},\"operator\":\"%s\"}}],\"metadata\":\"ThresholdDecisionPolicy\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", operator, proposer),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgUpdateDecisionPolicy\",\"value\":{\"authority\":\"%s\",\"decision_policy\":{\"type\":\"lbm-sdk/ThresholdDecisionPolicy\",\"value\":{\"threshold\":\"1.000000000000000000\",\"windows\":{\"min_execution_period\":\"0\",\"voting_period\":\"3600000000000\"}}}}}],\"metadata\":\"ThresholdDecisionPolicy\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", authority, proposer),
 		},
 		"PercentageDecisionPolicy": {
 			&foundation.PercentageDecisionPolicy{
@@ -839,7 +839,7 @@ func TestMsgUpdateDecisionPolicyAminoJson(t *testing.T) {
 					VotingPeriod: time.Hour,
 				},
 			},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgUpdateDecisionPolicy\",\"value\":{\"decision_policy\":{\"type\":\"lbm-sdk/PercentageDecisionPolicy\",\"value\":{\"percentage\":\"1.000000000000000000\",\"windows\":{\"min_execution_period\":\"0\",\"voting_period\":\"3600000000000\"}}},\"operator\":\"%s\"}}],\"metadata\":\"PercentageDecisionPolicy\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", operator, proposer),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgUpdateDecisionPolicy\",\"value\":{\"authority\":\"%s\",\"decision_policy\":{\"type\":\"lbm-sdk/PercentageDecisionPolicy\",\"value\":{\"percentage\":\"1.000000000000000000\",\"windows\":{\"min_execution_period\":\"0\",\"voting_period\":\"3600000000000\"}}}}}],\"metadata\":\"PercentageDecisionPolicy\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", authority, proposer),
 		},
 	}
 
@@ -848,7 +848,7 @@ func TestMsgUpdateDecisionPolicyAminoJson(t *testing.T) {
 
 		t.Run(name, func(t *testing.T) {
 			policyMsg := &foundation.MsgUpdateDecisionPolicy{
-				Operator: operator.String(),
+				Authority: authority.String(),
 			}
 			err := policyMsg.SetDecisionPolicy(tc.policy)
 			require.NoError(t, err)
@@ -883,11 +883,11 @@ func TestMsgGrantAminoJson(t *testing.T) {
 	}{
 		"ReceiveFromTreasuryAuthorization": {
 			&foundation.ReceiveFromTreasuryAuthorization{},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgGrant\",\"value\":{\"authorization\":{\"type\":\"lbm-sdk/ReceiveFromTreasuryAuthorization\",\"value\":{}},\"grantee\":\"%s\",\"operator\":\"%s\"}}],\"metadata\":\"ReceiveFromTreasuryAuthorization\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", grantee.String(), operator.String(), proposer.String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgGrant\",\"value\":{\"authority\":\"%s\",\"authorization\":{\"type\":\"lbm-sdk/ReceiveFromTreasuryAuthorization\",\"value\":{}},\"grantee\":\"%s\"}}],\"metadata\":\"ReceiveFromTreasuryAuthorization\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", operator.String(), grantee.String(), proposer.String()),
 		},
 		"CreateValidatorAuthorization": {
 			&stakingplus.CreateValidatorAuthorization{ValidatorAddress: validatorAddr.String()},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgGrant\",\"value\":{\"authorization\":{\"type\":\"lbm-sdk/CreateValidatorAuthorization\",\"value\":{\"validator_address\":\"%s\"}},\"grantee\":\"%s\",\"operator\":\"%s\"}}],\"metadata\":\"CreateValidatorAuthorization\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", validatorAddr.String(), grantee.String(), operator.String(), proposer.String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgGrant\",\"value\":{\"authority\":\"%s\",\"authorization\":{\"type\":\"lbm-sdk/CreateValidatorAuthorization\",\"value\":{\"validator_address\":\"%s\"}},\"grantee\":\"%s\"}}],\"metadata\":\"CreateValidatorAuthorization\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", operator.String(), validatorAddr.String(), grantee.String(), proposer.String()),
 		},
 	}
 
@@ -896,8 +896,8 @@ func TestMsgGrantAminoJson(t *testing.T) {
 
 		t.Run(name, func(t *testing.T) {
 			grantMsg := &foundation.MsgGrant{
-				Operator: operator.String(),
-				Grantee:  grantee.String(),
+				Authority: operator.String(),
+				Grantee:   grantee.String(),
 			}
 			err := grantMsg.SetAuthorization(tc.authorization)
 			require.NoError(t, err)
