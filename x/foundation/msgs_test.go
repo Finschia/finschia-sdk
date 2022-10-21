@@ -2,8 +2,6 @@ package foundation_test
 
 import (
 	"fmt"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
-	"github.com/line/lbm-sdk/x/stakingplus"
 	"testing"
 	"time"
 
@@ -12,7 +10,9 @@ import (
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	"github.com/line/lbm-sdk/x/foundation"
+	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
 func TestMsgUpdateParams(t *testing.T) {
@@ -698,13 +698,6 @@ func TestAminoJSON(t *testing.T) {
 		msg      legacytx.LegacyMsg
 		expected string
 	}{
-		"MsgUpdateParams": {
-			&foundation.MsgUpdateParams{
-				Authority: addrs[0].String(),
-				Params:    foundation.Params{FoundationTax: sdk.ZeroDec()},
-			},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgUpdateParams\",\"value\":{\"authority\":\"%s\",\"params\":{\"foundation_tax\":\"0.000000000000000000\"}}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
-		},
 		"MsgFundTreasury": {
 			&foundation.MsgFundTreasury{
 				From:   addrs[0].String(),
@@ -763,6 +756,13 @@ func TestMsgSubmitProposalAminoJSON(t *testing.T) {
 		msg      sdk.Msg
 		expected string
 	}{
+		"MsgUpdateParams": {
+			&foundation.MsgUpdateParams{
+				Authority: addrs[0].String(),
+				Params:    foundation.Params{FoundationTax: sdk.ZeroDec()},
+			},
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgUpdateParams\",\"value\":{\"authority\":\"%s\",\"params\":{\"foundation_tax\":\"0.000000000000000000\"}}}],\"metadata\":\"MsgUpdateParams\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), proposer.String()),
+		},
 		"MsgWithdrawFromTreasury": {
 			&foundation.MsgWithdrawFromTreasury{
 				Authority: addrs[0].String(),

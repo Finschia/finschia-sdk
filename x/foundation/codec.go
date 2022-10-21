@@ -13,7 +13,6 @@ import (
 
 // RegisterLegacyAminoCodec registers concrete types on the LegacyAmino codec
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "lbm-sdk/MsgUpdateParams")
 	legacy.RegisterAminoMsg(cdc, &MsgFundTreasury{}, "lbm-sdk/MsgFundTreasury")
 	legacy.RegisterAminoMsg(cdc, &MsgSubmitProposal{}, "lbm-sdk/MsgSubmitProposal")
 	legacy.RegisterAminoMsg(cdc, &MsgVote{}, "lbm-sdk/MsgVote")
@@ -22,6 +21,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgWithdrawProposal{}, "lbm-sdk/MsgWithdrawProposal")
 
 	// proposal from foundation operator
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateParams{}, "lbm-sdk/MsgUpdateParams")
 	legacy.RegisterAminoMsg(cdc, &MsgWithdrawFromTreasury{}, "lbm-sdk/MsgWithdrawFromTreasury")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateMembers{}, "lbm-sdk/MsgUpdateMembers")
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateDecisionPolicy{}, "lbm-sdk/MsgUpdateDecisionPolicy")
@@ -31,7 +31,6 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 
 	cdc.RegisterInterface((*Authorization)(nil), nil)
 	cdc.RegisterInterface((*DecisionPolicy)(nil), nil)
-	cdc.RegisterConcrete(&MemberRequest{}, "lbm-sdk/MemberRequest", nil)
 	cdc.RegisterConcrete(&ThresholdDecisionPolicy{}, "lbm-sdk/ThresholdDecisionPolicy", nil)
 	cdc.RegisterConcrete(&PercentageDecisionPolicy{}, "lbm-sdk/PercentageDecisionPolicy", nil)
 	cdc.RegisterConcrete(&ReceiveFromTreasuryAuthorization{}, "lbm-sdk/ReceiveFromTreasuryAuthorization", nil)
