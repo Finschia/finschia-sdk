@@ -24,8 +24,6 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgBurn{}, "lbm-sdk/MsgBurn")
 	legacy.RegisterAminoMsg(cdc, &MsgBurnFrom{}, "lbm-sdk/MsgBurnFrom")
 	legacy.RegisterAminoMsg(cdc, &MsgModify{}, "lbm-sdk/token/MsgModify") // Changed msgName due to conflict with `x/collection`
-
-	cdc.RegisterConcrete(&Pair{}, "lbm-sdk/Pair", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
