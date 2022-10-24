@@ -98,6 +98,15 @@ func TestGetBlockRentionHeight(t *testing.T) {
 			commitHeight: 499000,
 			expected:     0,
 		},
+		"iavl disable fast node": {
+			bapp: NewBaseApp(
+				name, logger, db, nil,
+				SetIAVLDisableFastNode(true),
+			),
+			maxAgeBlocks: 0,
+			commitHeight: 499000,
+			expected:     0,
+		},
 	}
 
 	for name, tc := range testCases {

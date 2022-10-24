@@ -79,6 +79,9 @@ type BaseConfig struct {
 	// IAVL cache size; bytes size unit
 	IAVLCacheSize uint64 `mapstructure:"iavl-cache-size"`
 
+	// IAVLDisableFastNode enables or disables the fast sync node.
+	IAVLDisableFastNode bool `mapstructure:"iavl-disable-fastnode"`
+
 	// When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
 	// It works when tendermint's prometheus option (config.toml) is set to true.
 	Prometheus bool `mapstructure:"prometheus"`
@@ -221,6 +224,7 @@ func DefaultConfig() *Config {
 			InterBlockCache:     true,
 			InterBlockCacheSize: cache.DefaultCommitKVStoreCacheSize,
 			IAVLCacheSize:       iavl.DefaultIAVLCacheSize,
+			IAVLDisableFastNode: false,
 			Pruning:             storetypes.PruningOptionDefault,
 			PruningKeepRecent:   "0",
 			PruningKeepEvery:    "0",
@@ -278,17 +282,18 @@ func GetConfig(v *viper.Viper) Config {
 
 	return Config{
 		BaseConfig: BaseConfig{
-			MinGasPrices:      v.GetString("minimum-gas-prices"),
-			InterBlockCache:   v.GetBool("inter-block-cache"),
-			Pruning:           v.GetString("pruning"),
-			PruningKeepRecent: v.GetString("pruning-keep-recent"),
-			PruningKeepEvery:  v.GetString("pruning-keep-every"),
-			PruningInterval:   v.GetString("pruning-interval"),
-			HaltHeight:        v.GetUint64("halt-height"),
-			HaltTime:          v.GetUint64("halt-time"),
-			IndexEvents:       v.GetStringSlice("index-events"),
-			MinRetainBlocks:   v.GetUint64("min-retain-blocks"),
-			IAVLCacheSize:     v.GetUint64("iavl-cache-size"),
+			MinGasPrices:        v.GetString("minimum-gas-prices"),
+			InterBlockCache:     v.GetBool("inter-block-cache"),
+			Pruning:             v.GetString("pruning"),
+			PruningKeepRecent:   v.GetString("pruning-keep-recent"),
+			PruningKeepEvery:    v.GetString("pruning-keep-every"),
+			PruningInterval:     v.GetString("pruning-interval"),
+			HaltHeight:          v.GetUint64("halt-height"),
+			HaltTime:            v.GetUint64("halt-time"),
+			IndexEvents:         v.GetStringSlice("index-events"),
+			MinRetainBlocks:     v.GetUint64("min-retain-blocks"),
+			IAVLDisableFastNode: v.GetBool("iavl-disable-fastnode"),
+			IAVLCacheSize:       v.GetUint64("iavl-cache-size"),
 		},
 		Telemetry: telemetry.Config{
 			ServiceName:             v.GetString("telemetry.service-name"),
