@@ -71,6 +71,10 @@ inter-block-cache-size = {{ .BaseConfig.InterBlockCacheSize }}
 # So be careful that all iavl cache size are difference from this iavl cache size value.
 iavl-cache-size = {{ .BaseConfig.IAVLCacheSize }}
 
+# IAVLDisableFastNode enables or disables the fast node feature of IAVL. 
+# Default is false.
+iavl-disable-fastnode = {{ .BaseConfig.IAVLDisableFastNode }}
+
 # IndexEvents defines the set of events in the form {eventType}.{attributeKey},
 # which informs Tendermint what to index. If empty, all events will be indexed.
 #

@@ -56,6 +56,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/ibc) [\#651](https://github.com/line/lbm-sdk/pull/651) feat: update x/ibc to support github.com/cosmos/ibc-go@v3.0.0
 * (config) [\#665](https://github.com/line/lbm-sdk/pull/665) remove bech32-cache-size
 * (x/foundation) [\#709](https://github.com/line/lbm-sdk/pull/709) add `gov mint` for x/foundation proposal
+* (iavl) [\#738](https://github.com/line/lbm-sdk/pull/738) bump github.com/cosmos/iavl from v0.17.3 to v0.19.3
 
 ### Improvements
 
@@ -87,6 +88,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#729](https://github.com/line/lbm-sdk/pull/729) add UpdateParams to x/foundation
 * (amino) [\#736](https://github.com/line/lbm-sdk/pull/736) apply the missing amino codec registratoin of cosmos-sdk
 * (x/foundation) [\#744](https://github.com/line/lbm-sdk/pull/744) revisit foundation operator
+* (store,x/wasm) [\#742](https://github.com/line/lbm-sdk/pull/742) fix to add error message in GetByteCode()
 * (amino) [\#745](https://github.com/line/lbm-sdk/pull/745) apply the missing amino codec of `x/token`, `x/collection`, `x/wasm` and `x/foundation`
 
 ### Bug Fixes
@@ -102,7 +104,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/token) [\#599](https://github.com/line/lbm-sdk/pull/599) fix the order of events
 * (x/wasm) [\#640](https://github.com/line/lbm-sdk/pull/640) remove legacy codes of wasm
 * (amino) [\#635](https://github.com/line/lbm-sdk/pull/635) change some minor things that haven't been fixed in #549
-* (store) [\#666](https://github.com/line/lbm-sdk/pull/666) change default `iavl-cache-size` and description 
+* (store) [\#666](https://github.com/line/lbm-sdk/pull/666) change default `iavl-cache-size` and description
 * (simapp) [\#679](https://github.com/line/lbm-sdk/pull/679) fix the bug not setting `iavl-cache-size` value of `app.toml`
 * (x/foundation) [\#687](https://github.com/line/lbm-sdk/pull/687) fix bugs on aborting x/foundation proposals
 * (global) [\#694](https://github.com/line/lbm-sdk/pull/694) replace deprecated functions since go 1.16 or 1.17
@@ -116,6 +118,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#732](https://github.com/line/lbm-sdk/pull/732) add verification on accounts into x/foundation Grants cli
 * (x/foundation) [\#730](https://github.com/line/lbm-sdk/pull/730) prune stale x/foundation proposals at voting period end
 * (cli) [\#734](https://github.com/line/lbm-sdk/pull/734) add restrictions on the number of args in the CLIs
+* (client) [\#737](https://github.com/line/lbm-sdk/pull/737) check multisig key list to prevent unexpected key deletion
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path

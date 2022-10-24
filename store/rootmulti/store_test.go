@@ -887,3 +887,14 @@ func hashStores(stores map[types.StoreKey]types.CommitKVStore) []byte {
 	}
 	return sdkmaps.HashFromMap(m)
 }
+
+func TestSetIAVLDIsableFastNode(t *testing.T) {
+	db := dbm.NewMemDB()
+	multi := newMultiStoreWithMounts(db, types.PruneNothing)
+
+	multi.SetIAVLDisableFastNode(true)
+	require.Equal(t, multi.iavlDisableFastNode, true)
+
+	multi.SetIAVLDisableFastNode(false)
+	require.Equal(t, multi.iavlDisableFastNode, false)
+}
