@@ -37,7 +37,6 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgDetachFrom{}, "lbm-sdk/MsgDetachFrom")
 
 	cdc.RegisterConcrete(&MintNFTParam{}, "lbm-sdk/MintNFTParam", nil)
-	cdc.RegisterConcrete(&Change{}, "lbm-sdk/Change", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
