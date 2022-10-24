@@ -143,3 +143,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (docs) [\#490](https://github.com/line/lbm-sdk/pull/490) update documents on x/consortium
 * (docs) [\#602](https://github.com/line/lbm-sdk/pull/602) update outdated events in specs
 * (docs) [\#721](https://github.com/line/lbm-sdk/pull/721) update x/foundation specification
+* (docs) [\#748](https://github.com/line/lbm-sdk/pull/748) add `govmint` to x/foundation specification

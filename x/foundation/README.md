@@ -31,6 +31,7 @@ back these foundation-specific functionalities.
     * [Msg/Revoke](#msgrevoke)
     * [Msg/FundTreasury](#msgfundtreasury)
     * [Msg/WithdrawFromTreasury](#msgwithdrawfromtreasury)
+    * [Msg/GovMint](#msggovmint)
 * [Events](#events)
     * [EventUpdateFoundationParams](#eventupdatefoundationparams)
     * [EventUpdateDecisionPolicy](#eventupdatedecisionpolicy)
@@ -44,6 +45,7 @@ back these foundation-specific functionalities.
     * [EventRevoke](#eventrevoke)
     * [EventFundTreasury](#eventfundedtreasury)
     * [EventWithdrawFromTreasury](#eventwithdrawedfromtreasury)
+    * [EventGovMint](#eventgovmint)
 * [Client](#client)
     * [CLI](#cli)
     * [gRPC](#grpc)
@@ -476,7 +478,7 @@ Anyone can fund treasury with `MsgFundTreasury`.
 
 +++ https://github.com/line/lbm-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/proto/lbm/foundation/v1/tx.proto#L76-L81
 
-## Msg/WithdrawFromTresury
+## Msg/WithdrawFromTreasury
 
 The foundation can withdraw coins from the treasury with
 `MsgWithdrawFromTreasury`.
@@ -488,6 +490,16 @@ The message handling should fail if:
 * the authority is not the module's authority.
 * the address which receives the coins has no authorization of
   `ReceiveFromTreasuryAuthorization`.
+
+## Msg/GovMint
+
+Massive minting is possible through 'msggovmint' up to 1 time after the chain is started.
+
++++ https://github.com/line/lbm-sdk/blob/66988a235a0e01f7a1ee76d719d585ff35f0d176/proto/lbm/foundation/v1/tx.proto#L221-L225
+
+The message handling should fail if:
+
+* The remaining left count is 0.
 
 # Events
 
@@ -596,6 +608,14 @@ the treasury.
 | Attribute Key | Attribute Value |
 |---------------|-----------------|
 | to            | {toAddress}     |
+| amount        | {amount}        |
+
+## EventGovMint
+
+`EventGovMint` is an event emitted when coins are minted by proposal
+
+| Attribute Key | Attribute Value |
+|---------------|-----------------|
 | amount        | {amount}        |
 
 # Client
