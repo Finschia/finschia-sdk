@@ -22,6 +22,7 @@ import (
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/codec/legacy"
+	"github.com/line/lbm-sdk/server/config"
 	"github.com/line/lbm-sdk/snapshots"
 	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
 	"github.com/line/lbm-sdk/store/rootmulti"
@@ -541,6 +542,9 @@ func TestBaseAppOptionSeal(t *testing.T) {
 	})
 	require.Panics(t, func() {
 		app.SetRouter(NewRouter())
+	})
+	require.Panics(t, func() {
+		app.SetChanCheckTxSize(10)
 	})
 }
 
@@ -2068,4 +2072,17 @@ func TestSnapshotManager(t *testing.T) {
 	}
 	app.SetSnapshotStore(snapshotStore)
 	require.NotNil(t, app.SnapshotManager())
+}
+
+func TestSetChanCheckTxSize(t *testing.T) {
+	logger := defaultLogger()
+	db := dbm.NewMemDB()
+
+	var size = uint(100)
+
+	app := NewBaseApp(t.Name(), logger, db, nil, SetChanCheckTxSize(size))
+	require.Equal(t, int(size), cap(app.chCheckTx))
+
+	app = NewBaseApp(t.Name(), logger, db, nil)
+	require.Equal(t, config.DefaultChanCheckTxSize, cap(app.chCheckTx))
 }
