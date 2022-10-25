@@ -264,6 +264,12 @@ sending the message `Msg/WithdrawFromTreasury`.
 value again (irreversible), which means you must set it to a non-zero value in
 the genesis to make it work.
 
+## GovMint
+
+When the chain is first started, it may be necessary to mint a large amount of 
+coins at most once for initial validators or for specific purposes. Newly minted
+coins are transferred to the treasury pool.
+
 # State
 
 ## Params
@@ -493,12 +499,13 @@ The message handling should fail if:
 
 ## Msg/GovMint
 
-Massive minting is possible through 'msggovmint' up to 1 time after the chain is started.
+Massive minting is possible through 'MsgGovMint' up to 1 time after the chain is started.
 
 +++ https://github.com/line/lbm-sdk/blob/66988a235a0e01f7a1ee76d719d585ff35f0d176/proto/lbm/foundation/v1/tx.proto#L221-L225
 
 The message handling should fail if:
 
+* the authority is not the module's authority.
 * The remaining left count is 0.
 
 # Events
@@ -612,7 +619,7 @@ the treasury.
 
 ## EventGovMint
 
-`EventGovMint` is an event emitted when coins are minted by proposal
+`EventGovMint` is an event emitted when coins are minted.
 
 | Attribute Key | Attribute Value |
 |---------------|-----------------|
