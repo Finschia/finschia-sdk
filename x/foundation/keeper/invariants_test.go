@@ -35,3 +35,32 @@ func (s *KeeperTestSuite) TestModuleAccountInvariant() {
 		s.Require().Equal(!tc.valid, broken, name)
 	}
 }
+
+func (s *KeeperTestSuite) TestProposalInvariant() {
+	testCases := map[string]struct {
+		malleate func(ctx sdk.Context)
+		valid    bool
+	}{
+		"invariant not broken": {
+			valid: true,
+		},
+		"active old proposal exists": {
+			malleate: func(ctx sdk.Context) {
+				info := s.keeper.GetFoundationInfo(ctx)
+				info.Version--
+				s.keeper.SetFoundationInfo(ctx, info)
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		ctx, _ := s.ctx.CacheContext()
+		if tc.malleate != nil {
+			tc.malleate(ctx)
+		}
+
+		invariant := keeper.ProposalInvariant(s.keeper)
+		_, broken := invariant(ctx)
+		s.Require().Equal(!tc.valid, broken, name)
+	}
+}
