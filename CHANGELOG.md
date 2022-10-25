@@ -89,6 +89,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (amino) [\#736](https://github.com/line/lbm-sdk/pull/736) apply the missing amino codec registratoin of cosmos-sdk
 * (x/foundation) [\#744](https://github.com/line/lbm-sdk/pull/744) revisit foundation operator
 * (store,x/wasm) [\#742](https://github.com/line/lbm-sdk/pull/742) fix to add error message in GetByteCode()
+* (amino) [\#745](https://github.com/line/lbm-sdk/pull/745) apply the missing amino codec of `x/token`, `x/collection`, `x/wasm` and `x/foundation`
 
 ### Bug Fixes
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path

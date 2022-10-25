@@ -2,6 +2,7 @@ package lbmtypes
 
 import (
 	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/codec/types"
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	sdk "github.com/line/lbm-sdk/types"
@@ -14,7 +15,7 @@ import (
 
 // RegisterLegacyAminoCodec registers the account types and interface
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) { //nolint:staticcheck
-	cdc.RegisterConcrete(&MsgStoreCodeAndInstantiateContract{}, "wasm/StoreCodeAndInstantiateContract", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgStoreCodeAndInstantiateContract{}, "wasm/StoreCodeAndInstantiateContract")
 
 	cdc.RegisterConcrete(&DeactivateContractProposal{}, "wasm/DeactivateContractProposal", nil)
 	cdc.RegisterConcrete(&ActivateContractProposal{}, "wasm/ActivateContractProposal", nil)
