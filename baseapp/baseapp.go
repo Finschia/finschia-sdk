@@ -551,6 +551,7 @@ func (app *BaseApp) getRunContextForTx(txBytes []byte, simulate bool) sdk.Contex
 
 func (app *BaseApp) getContextForTx(s *state, txBytes []byte) sdk.Context {
 	ctx := s.ctx.WithTxBytes(txBytes)
+	ctx = ctx.WithConsensusParams(app.GetConsensusParams(ctx))
 	return ctx
 }
 
