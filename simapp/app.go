@@ -609,6 +609,7 @@ func NewSimApp(
 		slashingtypes.ModuleName,
 		govtypes.ModuleName,
 		minttypes.ModuleName,
+		foundation.ModuleName,
 		crisistypes.ModuleName,
 		ibchost.ModuleName,
 		genutiltypes.ModuleName,
@@ -621,7 +622,6 @@ func NewSimApp(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		foundation.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
 		// wasm after ibc transfer
