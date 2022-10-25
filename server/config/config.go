@@ -23,6 +23,9 @@ const (
 
 	// DefaultGRPCWebAddress defines the default address to bind the gRPC-web server to.
 	DefaultGRPCWebAddress = "0.0.0.0:9091"
+
+	// DefaultChanCheckTxSize defines the default maximum size of channel check tx in Baseapp
+	DefaultChanCheckTxSize = 10000
 )
 
 // BaseConfig defines the server's basic configuration
@@ -85,6 +88,9 @@ type BaseConfig struct {
 	// When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
 	// It works when tendermint's prometheus option (config.toml) is set to true.
 	Prometheus bool `mapstructure:"prometheus"`
+
+	// ChanCheckTxSize is the size of RequestCheckTxAsync of BaseApp
+	ChanCheckTxSize uint `mapstructure:"chan-check-tx-size"`
 }
 
 // APIConfig defines the API listener configuration.
@@ -231,6 +237,7 @@ func DefaultConfig() *Config {
 			PruningInterval:     "0",
 			MinRetainBlocks:     0,
 			IndexEvents:         make([]string, 0),
+			ChanCheckTxSize:     DefaultChanCheckTxSize,
 		},
 		Telemetry: telemetry.Config{
 			Enabled:      false,
@@ -294,6 +301,7 @@ func GetConfig(v *viper.Viper) Config {
 			MinRetainBlocks:     v.GetUint64("min-retain-blocks"),
 			IAVLDisableFastNode: v.GetBool("iavl-disable-fastnode"),
 			IAVLCacheSize:       v.GetUint64("iavl-cache-size"),
+			ChanCheckTxSize:     v.GetUint("chan-check-tx-size"),
 		},
 		Telemetry: telemetry.Config{
 			ServiceName:             v.GetString("telemetry.service-name"),

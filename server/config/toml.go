@@ -86,6 +86,10 @@ index-events = {{ .BaseConfig.IndexEvents }}
 # It works when tendermint's prometheus option (config.toml) is set to true.
 prometheus = {{ .BaseConfig.Prometheus }}
 
+# ChanCheckTxSize is he size of RequestCheckTxAsync of BaseApp
+# ChanCheckTxSize should be equals to or greater than the mempool size.
+chan-check-tx-size = {{ .BaseConfig.ChanCheckTxSize }}
+
 ###############################################################################
 ###                         Telemetry Configuration                         ###
 ###############################################################################
