@@ -17122,7 +17122,6 @@ EventGrant is emitted on Msg/Grant
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `granter` | [string](#string) |  |  |
 | `grantee` | [string](#string) |  | the address of the grantee. |
 | `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  | authorization granted. |
 
@@ -17154,7 +17153,6 @@ EventRevoke is emitted on Msg/Revoke
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `granter` | [string](#string) |  |  |
 | `grantee` | [string](#string) |  | address of the grantee. |
 | `msg_type_url` | [string](#string) |  | message type url for which an autorization is revoked. |
 
