@@ -18,7 +18,6 @@ import (
 	bankcli "github.com/line/lbm-sdk/x/bank/client/cli"
 	"github.com/line/lbm-sdk/x/foundation"
 	"github.com/line/lbm-sdk/x/foundation/client/cli"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 type IntegrationTestSuite struct {
@@ -61,7 +60,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	params := foundation.Params{
 		FoundationTax: sdk.MustNewDecFromStr("0.2"),
 		CensoredMsgTypeUrls: []string{
-			sdk.MsgTypeURL((*stakingtypes.MsgCreateValidator)(nil)),
 			sdk.MsgTypeURL((*foundation.MsgWithdrawFromTreasury)(nil)),
 		},
 	}
@@ -97,14 +95,13 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	})
 	foundationData.Foundation = info
 
-	grantees := []sdk.AccAddress{s.stranger, s.leavingMember}
-	foundationData.Authorizations = make([]foundation.GrantAuthorization, len(grantees))
-	for i, grantee := range grantees {
+	treasuryReceivers := []sdk.AccAddress{s.stranger, s.leavingMember}
+	for _, receiver := range treasuryReceivers {
 		ga := foundation.GrantAuthorization{
-			Grantee: grantee.String(),
+			Grantee: receiver.String(),
 		}.WithAuthorization(&foundation.ReceiveFromTreasuryAuthorization{})
 		s.Require().NotNil(ga)
-		foundationData.Authorizations[i] = *ga
+		foundationData.Authorizations = append(foundationData.Authorizations, *ga)
 	}
 
 	foundationDataBz, err := s.cfg.Codec.MarshalJSON(&foundationData)
