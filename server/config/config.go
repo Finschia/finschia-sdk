@@ -24,7 +24,7 @@ const (
 	// DefaultGRPCWebAddress defines the default address to bind the gRPC-web server to.
 	DefaultGRPCWebAddress = "0.0.0.0:9091"
 
-	// DefaultChanCheckTxSize defines the default maximum size of channel check tx in Baseapp
+	// DefaultChanCheckTxSize defines the default size of channel check tx in Baseapp
 	DefaultChanCheckTxSize = 10000
 )
 

@@ -176,7 +176,7 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 
 	cmd.Flags().Bool(FlagPrometheus, false, "Enable prometheus metric for app")
 
-	cmd.Flags().Uint(FlagChanCheckTxSize, config.DefaultChanCheckTxSize, "The maximum size of the chan-check-tx-size")
+	cmd.Flags().Uint(FlagChanCheckTxSize, config.DefaultChanCheckTxSize, "The size of the channel check tx")
 
 	// add support for all Ostracon-specific command line options
 	ostcmd.AddNodeFlags(cmd)
