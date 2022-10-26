@@ -9,11 +9,13 @@ import (
 
 const (
 	moduleAccountInvariant = "module-accounts"
+	totalWeightInvariant   = "total-weight"
 	proposalInvariant      = "proposals"
 )
 
 func RegisterInvariants(ir sdk.InvariantRegistry, k Keeper) {
 	ir.RegisterRoute(foundation.ModuleName, moduleAccountInvariant, ModuleAccountInvariant(k))
+	ir.RegisterRoute(foundation.ModuleName, totalWeightInvariant, ProposalInvariant(k))
 	ir.RegisterRoute(foundation.ModuleName, proposalInvariant, ProposalInvariant(k))
 }
 
@@ -30,6 +32,21 @@ func ModuleAccountInvariant(k Keeper) sdk.Invariant {
 		broken := !treasury.IsEqual(sdk.NewDecCoinsFromCoins(balance...))
 
 		return sdk.FormatInvariant(foundation.ModuleName, moduleAccountInvariant, msg), broken
+	}
+}
+
+func TotalWeightInvariant(k Keeper) sdk.Invariant {
+	return func(ctx sdk.Context) (string, bool) {
+		// cache, we don't want to write changes
+		ctx, _ = ctx.CacheContext()
+
+		expected := k.GetFoundationInfo(ctx).TotalWeight
+		real := sdk.NewDec(int64(len(k.GetMembers(ctx))))
+
+		msg := fmt.Sprintf("total weight of foundation; expected %s, got %s\n", expected, real)
+		broken := !real.Equal(expected)
+
+		return sdk.FormatInvariant(foundation.ModuleName, totalWeightInvariant, msg), broken
 	}
 }
 

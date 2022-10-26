@@ -36,6 +36,36 @@ func (s *KeeperTestSuite) TestModuleAccountInvariant() {
 	}
 }
 
+func (s *KeeperTestSuite) TestTotalWeightInvariant() {
+	testCases := map[string]struct {
+		malleate func(ctx sdk.Context)
+		valid    bool
+	}{
+		"invariant not broken": {
+			valid: true,
+		},
+		"total weight differs from the number of foundation members": {
+			malleate: func(ctx sdk.Context) {
+				info := s.keeper.GetFoundationInfo(ctx)
+				numMembers := len(s.keeper.GetMembers(ctx))
+				info.TotalWeight = sdk.NewDec(int64(numMembers)).Add(sdk.OneDec())
+				s.keeper.SetFoundationInfo(ctx, info)
+			},
+		},
+	}
+
+	for name, tc := range testCases {
+		ctx, _ := s.ctx.CacheContext()
+		if tc.malleate != nil {
+			tc.malleate(ctx)
+		}
+
+		invariant := keeper.TotalWeightInvariant(s.keeper)
+		_, broken := invariant(ctx)
+		s.Require().Equal(!tc.valid, broken, name)
+	}
+}
+
 func (s *KeeperTestSuite) TestProposalInvariant() {
 	testCases := map[string]struct {
 		malleate func(ctx sdk.Context)
