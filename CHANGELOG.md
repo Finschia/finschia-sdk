@@ -57,6 +57,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (config) [\#665](https://github.com/line/lbm-sdk/pull/665) remove bech32-cache-size
 * (x/foundation) [\#709](https://github.com/line/lbm-sdk/pull/709) add `gov mint` for x/foundation proposal
 * (iavl) [\#738](https://github.com/line/lbm-sdk/pull/738) bump github.com/cosmos/iavl from v0.17.3 to v0.19.3
+* (baseapp) [\#756](https://github.com/line/lbm-sdk/pull/756) Change to create chCheckTx with the value set in app config
 * (x/foundation) [\#758](https://github.com/line/lbm-sdk/pull/758) add invariants to x/foundation
 
 ### Improvements
@@ -121,6 +122,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#730](https://github.com/line/lbm-sdk/pull/730) prune stale x/foundation proposals at voting period end
 * (cli) [\#734](https://github.com/line/lbm-sdk/pull/734) add restrictions on the number of args in the CLIs
 * (client) [\#737](https://github.com/line/lbm-sdk/pull/737) check multisig key list to prevent unexpected key deletion
+* (simapp) [\#752](https://github.com/line/lbm-sdk/pull/752) add x/distribution's module account into blockedAddr
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
@@ -146,3 +148,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (docs) [\#490](https://github.com/line/lbm-sdk/pull/490) update documents on x/consortium
 * (docs) [\#602](https://github.com/line/lbm-sdk/pull/602) update outdated events in specs
 * (docs) [\#721](https://github.com/line/lbm-sdk/pull/721) update x/foundation specification
+* (docs) [\#748](https://github.com/line/lbm-sdk/pull/748) add `GovMint` to x/foundation specification
