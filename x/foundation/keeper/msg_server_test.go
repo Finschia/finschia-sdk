@@ -6,7 +6,6 @@ import (
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/foundation"
-	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
 func (s *KeeperTestSuite) TestMsgUpdateParams() {
@@ -611,20 +610,15 @@ func (s *KeeperTestSuite) TestMsgRevoke() {
 			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 			valid:      true,
 		},
-		"no grant": {
-			authority:  s.authority,
-			grantee:    s.members[0],
-			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
-		},
 		"not authorized": {
 			authority:  s.stranger,
 			grantee:    s.stranger,
 			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 		},
-		"wrong granter": {
+		"no grant": {
 			authority:  s.authority,
-			grantee:    s.stranger,
-			msgTypeURL: stakingplus.CreateValidatorAuthorization{}.MsgTypeURL(),
+			grantee:    s.members[0],
+			msgTypeURL: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 		},
 	}
 

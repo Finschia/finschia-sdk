@@ -12,7 +12,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	"github.com/line/lbm-sdk/x/foundation"
-	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
 func TestMsgUpdateParams(t *testing.T) {
@@ -874,7 +873,6 @@ func TestMsgGrantAminoJson(t *testing.T) {
 		operator      = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 		grantee       = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 		proposer      = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-		validatorAddr = sdk.ValAddress(secp256k1.GenPrivKey().PubKey().Address())
 	)
 
 	testCases := map[string]struct {
@@ -884,10 +882,6 @@ func TestMsgGrantAminoJson(t *testing.T) {
 		"ReceiveFromTreasuryAuthorization": {
 			&foundation.ReceiveFromTreasuryAuthorization{},
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgGrant\",\"value\":{\"authority\":\"%s\",\"authorization\":{\"type\":\"lbm-sdk/ReceiveFromTreasuryAuthorization\",\"value\":{}},\"grantee\":\"%s\"}}],\"metadata\":\"ReceiveFromTreasuryAuthorization\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", operator.String(), grantee.String(), proposer.String()),
-		},
-		"CreateValidatorAuthorization": {
-			&stakingplus.CreateValidatorAuthorization{ValidatorAddress: validatorAddr.String()},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgGrant\",\"value\":{\"authority\":\"%s\",\"authorization\":{\"type\":\"lbm-sdk/CreateValidatorAuthorization\",\"value\":{\"validator_address\":\"%s\"}},\"grantee\":\"%s\"}}],\"metadata\":\"CreateValidatorAuthorization\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", operator.String(), validatorAddr.String(), grantee.String(), proposer.String()),
 		},
 	}
 
