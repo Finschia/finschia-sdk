@@ -2,6 +2,7 @@ package types
 
 import (
 	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/codec/types"
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	sdk "github.com/line/lbm-sdk/types"
@@ -13,12 +14,14 @@ import (
 
 // RegisterLegacyAminoCodec registers the account types and interface
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) { //nolint:staticcheck
-	cdc.RegisterConcrete(&MsgStoreCode{}, "wasm/MsgStoreCode", nil)
-	cdc.RegisterConcrete(&MsgInstantiateContract{}, "wasm/MsgInstantiateContract", nil)
-	cdc.RegisterConcrete(&MsgExecuteContract{}, "wasm/MsgExecuteContract", nil)
-	cdc.RegisterConcrete(&MsgMigrateContract{}, "wasm/MsgMigrateContract", nil)
-	cdc.RegisterConcrete(&MsgUpdateAdmin{}, "wasm/MsgUpdateAdmin", nil)
-	cdc.RegisterConcrete(&MsgClearAdmin{}, "wasm/MsgClearAdmin", nil)
+	legacy.RegisterAminoMsg(cdc, &MsgStoreCode{}, "wasm/MsgStoreCode")
+	legacy.RegisterAminoMsg(cdc, &MsgInstantiateContract{}, "wasm/MsgInstantiateContract")
+	legacy.RegisterAminoMsg(cdc, &MsgExecuteContract{}, "wasm/MsgExecuteContract")
+	legacy.RegisterAminoMsg(cdc, &MsgMigrateContract{}, "wasm/MsgMigrateContract")
+	legacy.RegisterAminoMsg(cdc, &MsgUpdateAdmin{}, "wasm/MsgUpdateAdmin")
+	legacy.RegisterAminoMsg(cdc, &MsgClearAdmin{}, "wasm/MsgClearAdmin")
+	legacy.RegisterAminoMsg(cdc, &MsgIBCSend{}, "wasm/MsgIBCSend")
+	legacy.RegisterAminoMsg(cdc, &MsgIBCCloseChannel{}, "wasm/MsgIBCCloseChannel")
 
 	cdc.RegisterConcrete(&PinCodesProposal{}, "wasm/PinCodesProposal", nil)
 	cdc.RegisterConcrete(&UnpinCodesProposal{}, "wasm/UnpinCodesProposal", nil)

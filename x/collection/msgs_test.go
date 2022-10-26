@@ -1,6 +1,8 @@
 package collection_test
 
 import (
+	"fmt"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -1573,5 +1575,263 @@ func TestMsgDetachFrom(t *testing.T) {
 		require.NoError(t, err, name)
 
 		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+	}
+}
+
+func TestAminoJSON(t *testing.T) {
+	tx := legacytx.StdTx{}
+	var contractId = "deadbeef"
+	var ftClassId = "00bab10c"
+
+	addrs := make([]sdk.AccAddress, 3)
+	for i := range addrs {
+		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	}
+
+	ftAmount := collection.NewCoins(collection.NewFTCoin(ftClassId, sdk.NewInt(1000000)))
+	tokenIds := []string{collection.NewNFTID(contractId, 1)}
+	nftParams := []collection.MintNFTParam{{
+		TokenType: "deadbeef",
+		Name:      "tibetian fox",
+		Meta:      "Tibetian Fox",
+	}}
+
+	testCase := map[string]struct {
+		msg          legacytx.LegacyMsg
+		expectedType string
+		expected     string
+	}{
+		"MsgTransferFT": {
+			&collection.MsgTransferFT{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				To:         addrs[1].String(),
+				Amount:     ftAmount,
+			},
+			"/lbm.collection.v1.MsgTransferFT",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgTransferFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgTransferFTFrom": {
+			&collection.MsgTransferFTFrom{
+				ContractId: contractId,
+				Proxy:      addrs[0].String(),
+				From:       addrs[1].String(),
+				To:         addrs[2].String(),
+				Amount:     ftAmount,
+			},
+			"/lbm.collection.v1.MsgTransferFTFrom",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgTransferFTFrom\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String(), addrs[2].String()),
+		},
+		"MsgTransferNFT": {
+			&collection.MsgTransferNFT{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				To:         addrs[1].String(),
+				TokenIds:   tokenIds,
+			},
+			"/lbm.collection.v1.MsgTransferNFT",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgTransferNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgTransferNFTFrom": {
+			&collection.MsgTransferNFTFrom{
+				ContractId: contractId,
+				Proxy:      addrs[0].String(),
+				From:       addrs[1].String(),
+				To:         addrs[2].String(),
+				TokenIds:   tokenIds,
+			},
+			"/lbm.collection.v1.MsgTransferNFTFrom",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgTransferNFTFrom\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"to\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String(), addrs[2].String()),
+		},
+		"MsgApprove": {
+			&collection.MsgApprove{
+				ContractId: contractId,
+				Approver:   addrs[0].String(),
+				Proxy:      addrs[1].String(),
+			},
+			"/lbm.collection.v1.MsgApprove",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgApprove\",\"value\":{\"approver\":\"%s\",\"contract_id\":\"deadbeef\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgDisapprove": {
+			&collection.MsgDisapprove{
+				ContractId: contractId,
+				Approver:   addrs[0].String(),
+				Proxy:      addrs[1].String(),
+			},
+			"/lbm.collection.v1.MsgDisapprove",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgDisapprove\",\"value\":{\"approver\":\"%s\",\"contract_id\":\"deadbeef\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgCreateContract": {
+			&collection.MsgCreateContract{
+				Owner:      addrs[0].String(),
+				Name:       "Test Contract",
+				BaseImgUri: "http://image.url",
+				Meta:       "This is test",
+			},
+			"/lbm.collection.v1.MsgCreateContract",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgCreateContract\",\"value\":{\"base_img_uri\":\"http://image.url\",\"meta\":\"This is test\",\"name\":\"Test Contract\",\"owner\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+		},
+		"MsgIssueFT": {
+			&collection.MsgIssueFT{
+				ContractId: contractId,
+				Name:       "Test FT",
+				Meta:       "This is FT Meta",
+				Decimals:   6,
+				Mintable:   false,
+				Owner:      addrs[0].String(),
+				To:         addrs[1].String(),
+				Amount:     sdk.NewInt(1000000),
+			},
+			"/lbm.collection.v1.MsgIssueFT",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgIssueFT\",\"value\":{\"amount\":\"1000000\",\"contract_id\":\"deadbeef\",\"decimals\":6,\"meta\":\"This is FT Meta\",\"name\":\"Test FT\",\"owner\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgIssueNFT": {
+			&collection.MsgIssueNFT{
+				ContractId: contractId,
+				Name:       "Test NFT",
+				Meta:       "This is NFT Meta",
+				Owner:      addrs[0].String(),
+			},
+			"/lbm.collection.v1.MsgIssueNFT",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgIssueNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"meta\":\"This is NFT Meta\",\"name\":\"Test NFT\",\"owner\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+		},
+		"MsgMintFT": {
+			&collection.MsgMintFT{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				To:         addrs[1].String(),
+				Amount:     ftAmount,
+			},
+			"/lbm.collection.v1.MsgMintFT",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgMintFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgMintNFT": {
+			&collection.MsgMintNFT{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				To:         addrs[1].String(),
+				Params:     nftParams,
+			},
+			"/lbm.collection.v1.MsgMintNFT",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgMintNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"params\":[{\"meta\":\"Tibetian Fox\",\"name\":\"tibetian fox\",\"token_type\":\"deadbeef\"}],\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgBurnFT": {
+			&collection.MsgBurnFT{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				Amount:     ftAmount,
+			},
+			"/lbm.collection.v1.MsgBurnFT",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnFT\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+		},
+		"MsgBurnFTFrom": {
+			&collection.MsgBurnFTFrom{
+				ContractId: contractId,
+				Proxy:      addrs[0].String(),
+				From:       addrs[1].String(),
+				Amount:     ftAmount,
+			},
+			"/lbm.collection.v1.MsgBurnFTFrom",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnFTFrom\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"token_id\":\"00bab10c00000000\"}],\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
+		},
+		"MsgBurnNFT": {
+			&collection.MsgBurnNFT{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				TokenIds:   tokenIds,
+			},
+			"/lbm.collection.v1.MsgBurnNFT",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnNFT\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+		},
+		"MsgBurnNFTFrom": {
+			&collection.MsgBurnNFTFrom{
+				ContractId: contractId,
+				Proxy:      addrs[0].String(),
+				From:       addrs[1].String(),
+				TokenIds:   tokenIds,
+			},
+			"/lbm.collection.v1.MsgBurnNFTFrom",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgBurnNFTFrom\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"token_ids\":[\"deadbeef00000001\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
+		},
+		"MsgModify": {
+			&collection.MsgModify{
+				ContractId: contractId,
+				Owner:      addrs[0].String(),
+				TokenType:  "NewType",
+				TokenIndex: "deadbeef",
+				Changes:    []collection.Change{{Field: "name", Value: "New test"}},
+			},
+			"/lbm.collection.v1.MsgModify",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgModify\",\"value\":{\"changes\":[{\"field\":\"name\",\"value\":\"New test\"}],\"contract_id\":\"deadbeef\",\"owner\":\"%s\",\"token_index\":\"deadbeef\",\"token_type\":\"NewType\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+		},
+		"MsgGrantPermission": {
+			&collection.MsgGrantPermission{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				To:         addrs[1].String(),
+				Permission: collection.LegacyPermissionMint.String(),
+			},
+			"/lbm.collection.v1.MsgGrantPermission",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgGrantPermission\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"permission\":\"mint\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+		},
+		"MsgRevokePermission": {
+			&collection.MsgRevokePermission{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				Permission: collection.LegacyPermissionMint.String(),
+			},
+			"/lbm.collection.v1.MsgRevokePermission",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgRevokePermission\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"permission\":\"mint\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+		},
+		"MsgAttach": {
+			&collection.MsgAttach{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				TokenId:    collection.NewNFTID("deadbeef", 1),
+				ToTokenId:  collection.NewNFTID("fee1dead", 1),
+			},
+			"/lbm.collection.v1.MsgAttach",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgAttach\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"to_token_id\":\"fee1dead00000001\",\"token_id\":\"deadbeef00000001\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+		},
+		"MsgDetach": {
+			&collection.MsgDetach{
+				ContractId: contractId,
+				From:       addrs[0].String(),
+				TokenId:    collection.NewNFTID("fee1dead", 1),
+			},
+			"/lbm.collection.v1.MsgDetach",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgDetach\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"token_id\":\"fee1dead00000001\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+		},
+		"MsgAttachFrom": {
+			&collection.MsgAttachFrom{
+				ContractId: contractId,
+				Proxy:      addrs[0].String(),
+				From:       addrs[1].String(),
+				TokenId:    collection.NewNFTID("deadbeef", 1),
+				ToTokenId:  collection.NewNFTID("fee1dead", 1),
+			},
+			"/lbm.collection.v1.MsgAttachFrom",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgAttachFrom\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"to_token_id\":\"fee1dead00000001\",\"token_id\":\"deadbeef00000001\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
+		},
+		"MsgDetachFrom": {
+			&collection.MsgDetachFrom{
+				ContractId: contractId,
+				Proxy:      addrs[0].String(),
+				From:       addrs[1].String(),
+				TokenId:    collection.NewNFTID("fee1dead", 1),
+			},
+			"/lbm.collection.v1.MsgDetachFrom",
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgDetachFrom\",\"value\":{\"contract_id\":\"deadbeef\",\"from\":\"%s\",\"proxy\":\"%s\",\"token_id\":\"fee1dead00000001\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[1].String(), addrs[0].String()),
+		},
+	}
+
+	for name, tc := range testCase {
+		tc := tc
+		t.Run(name, func(t *testing.T) {
+			tx.Msgs = []sdk.Msg{tc.msg}
+			require.Equal(t, collection.RouterKey, tc.msg.Route())
+			require.Equal(t, tc.expectedType, tc.msg.Type())
+			require.Equal(t, tc.expected, string(legacytx.StdSignBytes("foo", 1, 1, 1, legacytx.StdFee{}, []sdk.Msg{tc.msg}, "memo")))
+		})
 	}
 }
