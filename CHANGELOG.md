@@ -125,6 +125,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (client) [\#737](https://github.com/line/lbm-sdk/pull/737) check multisig key list to prevent unexpected key deletion
 * (simapp) [\#752](https://github.com/line/lbm-sdk/pull/752) add x/distribution's module account into blockedAddr
 * (x/auth) [\#754](https://github.com/line/lbm-sdk/pull/754) Fix wrong sequences in `sign-batch`
+* (x/foundation) [\#761](https://github.com/line/lbm-sdk/pull/761) restore build norace flag
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
