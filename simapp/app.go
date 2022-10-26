@@ -191,7 +191,7 @@ var (
 
 	// module accounts that are allowed to receive tokens
 	allowedReceivingModAcc = map[string]bool{
-		distrtypes.ModuleName: true,
+		// govtypes.ModuleName: true, // TODO: uncomment it when authority is ready
 	}
 )
 
