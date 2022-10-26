@@ -57,6 +57,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (config) [\#665](https://github.com/line/lbm-sdk/pull/665) remove bech32-cache-size
 * (x/foundation) [\#709](https://github.com/line/lbm-sdk/pull/709) add `gov mint` for x/foundation proposal
 * (iavl) [\#738](https://github.com/line/lbm-sdk/pull/738) bump github.com/cosmos/iavl from v0.17.3 to v0.19.3
+* (x/foundation) [\#758](https://github.com/line/lbm-sdk/pull/758) add invariants to x/foundation
 
 ### Improvements
 
