@@ -48,3 +48,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Build, CI
 
 ### Document Updates
+* (docs) [\#766](https://github.com/line/lbm-sdk/pull/766) fix submit-proposal command on x/foundation
