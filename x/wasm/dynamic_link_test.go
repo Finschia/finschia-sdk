@@ -53,7 +53,7 @@ func TestDynamicPingPongWorks(t *testing.T) {
 		Sender:  addr1,
 		CodeID:  calleeCodeId,
 		Label:   "callee",
-		InitMsg: []byte(`{}`),
+		Msg: []byte(`{}`),
 		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
@@ -67,7 +67,7 @@ func TestDynamicPingPongWorks(t *testing.T) {
 		Sender:  addr1,
 		CodeID:  callerCodeId,
 		Label:   "caller",
-		InitMsg: []byte(cosmwasmInstantiateCallerMsg),
+		Msg: []byte(cosmwasmInstantiateCallerMsg),
 		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
@@ -87,13 +87,13 @@ func TestDynamicPingPongWorks(t *testing.T) {
 	require.NoError(t, err)
 
 	assert.Equal(t, len(res.Events), 3)
-	assert.Equal(t, "wasm", res.Events[0].Type)
-	assert.Equal(t, len(res.Events[0].Attributes), 6)
-	assertAttribute(t, "returned_pong", "101", res.Events[0].Attributes[1])
-	assertAttribute(t, "returned_pong_with_struct", "hello world 101", res.Events[0].Attributes[2])
-	assertAttribute(t, "returned_pong_with_tuple", "(hello world, 42)", res.Events[0].Attributes[3])
-	assertAttribute(t, "returned_pong_with_tuple_takes_2_args", "(hello world, 42)", res.Events[0].Attributes[4])
-	assertAttribute(t, "returned_contract_address", calleeContractAddress, res.Events[0].Attributes[5])
+	assert.Equal(t, "wasm", res.Events[2].Type)
+	assert.Equal(t, len(res.Events[2].Attributes), 6)
+	assertAttribute(t, "returned_pong", "101", res.Events[2].Attributes[1])
+	assertAttribute(t, "returned_pong_with_struct", "hello world 101", res.Events[2].Attributes[2])
+	assertAttribute(t, "returned_pong_with_tuple", "(hello world, 42)", res.Events[2].Attributes[3])
+	assertAttribute(t, "returned_pong_with_tuple_takes_2_args", "(hello world, 42)", res.Events[2].Attributes[4])
+	assertAttribute(t, "returned_contract_address", calleeContractAddress, res.Events[2].Attributes[5])
 }
 
 // This tests re-entrancy in dynamic call fails
@@ -130,7 +130,7 @@ func TestDynamicReEntrancyFails(t *testing.T) {
 		Sender:  addr1,
 		CodeID:  calleeCodeId,
 		Label:   "callee",
-		InitMsg: []byte(`{}`),
+		Msg: []byte(`{}`),
 		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
@@ -144,7 +144,7 @@ func TestDynamicReEntrancyFails(t *testing.T) {
 		Sender:  addr1,
 		CodeID:  callerCodeId,
 		Label:   "caller",
-		InitMsg: []byte(cosmwasmInstantiateCallerMsg),
+		Msg: []byte(cosmwasmInstantiateCallerMsg),
 		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
@@ -200,7 +200,7 @@ func TestDynamicCallAndTraditionalQueryWork(t *testing.T) {
 		Sender:  addr1,
 		CodeID:  calleeCodeId,
 		Label:   "number",
-		InitMsg: []byte(`{"value":21}`),
+		Msg: []byte(`{"value":21}`),
 		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
@@ -214,7 +214,7 @@ func TestDynamicCallAndTraditionalQueryWork(t *testing.T) {
 		Sender:  addr1,
 		CodeID:  callerCodeId,
 		Label:   "call-number",
-		InitMsg: []byte(cosmwasmInstantiateCallerMsg),
+		Msg: []byte(cosmwasmInstantiateCallerMsg),
 		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
@@ -250,10 +250,10 @@ func TestDynamicCallAndTraditionalQueryWork(t *testing.T) {
 	res, err = h(data.ctx, &executeMsg)
 	require.NoError(t, err)
 	assert.Equal(t, len(res.Events), 3)
-	assert.Equal(t, "wasm", res.Events[0].Type)
-	assert.Equal(t, len(res.Events[0].Attributes), 3)
-	assertAttribute(t, "value_by_dynamic", "42", res.Events[0].Attributes[1])
-	assertAttribute(t, "value_by_query", "42", res.Events[0].Attributes[2])
+	assert.Equal(t, "wasm", res.Events[2].Type)
+	assert.Equal(t, len(res.Events[2].Attributes), 3)
+	assertAttribute(t, "value_by_dynamic", "42", res.Events[2].Attributes[1])
+	assertAttribute(t, "value_by_query", "42", res.Events[2].Attributes[2])
 
 	// queries
 	qRes, qErr = q(data.ctx, queryPath, queryReq)
@@ -300,7 +300,7 @@ func TestDynamicCallWithWriteFailsByQuery(t *testing.T) {
 		Sender:  addr1,
 		CodeID:  calleeCodeId,
 		Label:   "number",
-		InitMsg: []byte(`{"value":21}`),
+		Msg: []byte(`{"value":21}`),
 		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
@@ -314,7 +314,7 @@ func TestDynamicCallWithWriteFailsByQuery(t *testing.T) {
 		Sender:  addr1,
 		CodeID:  callerCodeId,
 		Label:   "call-number",
-		InitMsg: []byte(cosmwasmInstantiateCallerMsg),
+		Msg: []byte(cosmwasmInstantiateCallerMsg),
 		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
@@ -367,7 +367,7 @@ func TestDynamicCallCalleeFails(t *testing.T) {
 		Sender:  addr1,
 		CodeID:  calleeCodeId,
 		Label:   "callee",
-		InitMsg: []byte(`{}`),
+		Msg: []byte(`{}`),
 		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
@@ -381,7 +381,7 @@ func TestDynamicCallCalleeFails(t *testing.T) {
 		Sender:  addr1,
 		CodeID:  callerCodeId,
 		Label:   "caller",
-		InitMsg: []byte(cosmwasmInstantiateCallerMsg),
+		Msg: []byte(cosmwasmInstantiateCallerMsg),
 		Funds:   nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
