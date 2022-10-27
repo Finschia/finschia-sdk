@@ -153,3 +153,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (docs) [\#602](https://github.com/line/lbm-sdk/pull/602) update outdated events in specs
 * (docs) [\#721](https://github.com/line/lbm-sdk/pull/721) update x/foundation specification
 * (docs) [\#748](https://github.com/line/lbm-sdk/pull/748) add `GovMint` to x/foundation specification
+* (docs) [\#766](https://github.com/line/lbm-sdk/pull/766) fix submit-proposal command on x/foundation
