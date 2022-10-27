@@ -41,7 +41,7 @@ func (a cosmwasmAPIImpl) canonicalAddress(human string) ([]byte, uint64, error) 
 }
 
 func (a cosmwasmAPIImpl) GetContractEnv(contractAddrStr string) (wasmvm.Env, *wasmvm.Cache, wasmvm.KVStore, wasmvm.Querier, wasmvm.GasMeter, []byte, uint64, error) {
-	contractAddr := sdk.AccAddress(contractAddrStr)
+	contractAddr := sdk.MustAccAddressFromBech32(contractAddrStr)
 	_, codeInfo, prefixStore, err := a.keeper.contractInstance(*a.ctx, contractAddr)
 	if err != nil {
 		return wasmvm.Env{}, nil, nil, nil, nil, wasmvm.Checksum{}, 0, err
