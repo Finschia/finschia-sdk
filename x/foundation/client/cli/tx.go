@@ -21,6 +21,17 @@ const (
 	ExecTry  = "try"
 )
 
+func validateGenerateOnly(cmd *cobra.Command) error {
+	generateOnly, err := cmd.Flags().GetBool(flags.FlagGenerateOnly)
+	if err != nil {
+		return err
+	}
+	if !generateOnly {
+		return fmt.Errorf("you must use it with the flag --%s", flags.FlagGenerateOnly)
+	}
+	return nil
+}
+
 func parseParams(codec codec.Codec, paramsJSON string) (*foundation.Params, error) {
 	var params foundation.Params
 	if err := codec.UnmarshalJSON([]byte(paramsJSON), &params); err != nil {
@@ -164,8 +175,7 @@ Example of the content of params-json:
 }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			authority := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
+			if err := validateGenerateOnly(cmd); err != nil {
 				return err
 			}
 
@@ -180,7 +190,7 @@ Example of the content of params-json:
 			}
 
 			msg := foundation.MsgUpdateParams{
-				Authority: authority,
+				Authority: args[0],
 				Params:    *params,
 			}
 			if err := msg.ValidateBasic(); err != nil {
@@ -240,8 +250,7 @@ func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 		Long: `Withdraw coins from the treasury
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			authority := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
+			if err := validateGenerateOnly(cmd); err != nil {
 				return err
 			}
 
@@ -256,7 +265,7 @@ func NewTxCmdWithdrawFromTreasury() *cobra.Command {
 			}
 
 			msg := foundation.MsgWithdrawFromTreasury{
-				Authority: authority,
+				Authority: args[0],
 				To:        args[1],
 				Amount:    amount,
 			}
@@ -296,8 +305,7 @@ Example of the content of members-json:
 Set a member's participating to false to delete it.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			authority := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
+			if err := validateGenerateOnly(cmd); err != nil {
 				return err
 			}
 
@@ -312,7 +320,7 @@ Set a member's participating to false to delete it.
 			}
 
 			msg := foundation.MsgUpdateMembers{
-				Authority:     authority,
+				Authority:     args[0],
 				MemberUpdates: updates,
 			}
 			if err := msg.ValidateBasic(); err != nil {
@@ -345,8 +353,7 @@ Example of the content of policy-json:
 }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			authority := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
+			if err := validateGenerateOnly(cmd); err != nil {
 				return err
 			}
 
@@ -356,7 +363,7 @@ Example of the content of policy-json:
 			}
 
 			msg := foundation.MsgUpdateDecisionPolicy{
-				Authority: authority,
+				Authority: args[0],
 			}
 			policy, err := parseDecisionPolicy(clientCtx.Codec, args[1])
 			if err != nil {
@@ -646,8 +653,7 @@ Example of the content of authorization-json:
 }
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			authority := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
+			if err := validateGenerateOnly(cmd); err != nil {
 				return err
 			}
 
@@ -657,7 +663,7 @@ Example of the content of authorization-json:
 			}
 
 			msg := foundation.MsgGrant{
-				Authority: authority,
+				Authority: args[0],
 				Grantee:   args[1],
 			}
 			authorization, err := parseAuthorization(clientCtx.Codec, args[2])
@@ -687,8 +693,7 @@ func NewTxCmdRevoke() *cobra.Command {
 		Long: `Revoke an authorization of grantee
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			authority := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
+			if err := validateGenerateOnly(cmd); err != nil {
 				return err
 			}
 
@@ -698,7 +703,7 @@ func NewTxCmdRevoke() *cobra.Command {
 			}
 
 			msg := foundation.MsgRevoke{
-				Authority:  authority,
+				Authority:  args[0],
 				Grantee:    args[1],
 				MsgTypeUrl: args[2],
 			}
@@ -721,8 +726,7 @@ func NewTxCmdGovMint() *cobra.Command {
 		Long: `mint coins for foundation
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			authority := args[0]
-			if err := cmd.Flags().Set(flags.FlagFrom, authority); err != nil {
+			if err := validateGenerateOnly(cmd); err != nil {
 				return err
 			}
 
@@ -737,7 +741,7 @@ func NewTxCmdGovMint() *cobra.Command {
 			}
 
 			msg := foundation.MsgGovMint{
-				Authority: authority,
+				Authority: args[0],
 				Amount:    amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
