@@ -201,7 +201,6 @@ Example of the content of params-json:
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-
 	return cmd
 }
 
