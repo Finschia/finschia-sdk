@@ -127,6 +127,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/auth) [\#754](https://github.com/line/lbm-sdk/pull/754) Fix wrong sequences in `sign-batch`
 * (x/foundation) [\#761](https://github.com/line/lbm-sdk/pull/761) restore build norace flag
 * (server) [\#763](https://github.com/line/lbm-sdk/pull/763) start telemetry independently from the API server
+* (x/foundation) [\#772](https://github.com/line/lbm-sdk/pull/772) export x/foundation pool
 
 ### Breaking Changes
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
