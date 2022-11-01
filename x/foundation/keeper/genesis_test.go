@@ -170,6 +170,23 @@ func TestImportExportGenesis(t *testing.T) {
 				},
 			},
 		},
+		"pool": {
+			init: &foundation.GenesisState{
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
+				Pool: foundation.Pool{
+					Treasury: sdk.NewDecCoins(sdk.NewDecCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				},
+			},
+			valid: true,
+			export: &foundation.GenesisState{
+				Params:     foundation.DefaultParams(),
+				Foundation: foundation.DefaultFoundation(),
+				Pool: foundation.Pool{
+					Treasury: sdk.NewDecCoins(sdk.NewDecCoin(sdk.DefaultBondDenom, sdk.OneInt())),
+				},
+			},
+		},
 		"member of long metadata": {
 			init: &foundation.GenesisState{
 				Params: foundation.DefaultParams(),

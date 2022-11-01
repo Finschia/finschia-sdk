@@ -1049,7 +1049,7 @@ simd tx foundation update-decision-policy link1... \
 The `submit-proposal` command allows users to submit a new proposal.
 
 ```bash
-simd tx foundation submit-proposal [metadata] [proposers-json] [proposers-json] [messages-json] [flags]
+simd tx foundation submit-proposal [metadata] [proposers-json] [messages-json] [flags]
 ```
 
 Example:
