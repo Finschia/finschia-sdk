@@ -534,7 +534,6 @@ func NewSimApp(
 		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		transferModule,
 		icaModule,
-		mockModule,
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -563,7 +562,6 @@ func NewSimApp(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		icatypes.ModuleName,
-		ibcmock.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
 		wasm.ModuleName,
@@ -588,7 +586,6 @@ func NewSimApp(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		icatypes.ModuleName,
-		ibcmock.ModuleName,
 		foundation.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
@@ -617,7 +614,6 @@ func NewSimApp(
 		authz.ModuleName,
 		ibctransfertypes.ModuleName,
 		icatypes.ModuleName,
-		ibcmock.ModuleName,
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
