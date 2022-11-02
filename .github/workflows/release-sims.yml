@@ -3,9 +3,10 @@ name: Release Sims
 # This workflow only runs on a pull request when the branch contains rc** (rc1/vX.X.x)
 on:
   pull_request:
-    branches:
-      - "rc**"
-      - "release/*"
+  push:
+    tags:
+      - "release"
+      - "release to main"
 
 jobs:
   cleanup-runs:
