@@ -8,9 +8,10 @@ package baseapp
 // so this file mostly acts as confusing boilerplate.
 
 import (
+	abci "github.com/line/ostracon/abci/types"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 type peerFilters struct {

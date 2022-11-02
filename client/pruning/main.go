@@ -7,6 +7,9 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	dbm "github.com/tendermint/tm-db"
+
+	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/server"
@@ -14,8 +17,6 @@ import (
 	"github.com/line/lbm-sdk/store/rootmulti"
 	storetypes "github.com/line/lbm-sdk/store/types"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/tendermint/tendermint/libs/log"
-	dbm "github.com/tendermint/tm-db"
 )
 
 const FlagAppDBBackend = "app-db-backend"
@@ -62,7 +63,7 @@ func PruningCmd(appCreator servertypes.AppCreator) *cobra.Command {
 				return err
 			}
 
-			logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
+			logger := log.NewOCLogger(log.NewSyncWriter(os.Stdout))
 			app := appCreator(logger, db, nil, vp)
 			cms := app.CommitMultiStore()
 

@@ -1238,7 +1238,7 @@ func (s *IntegrationTestSuite) TestQueryModuleAccountByNameCmd() {
 
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, authcli.QueryModuleAccountByNameCmd(), []string{
 				tc.moduleName,
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			})
 			if tc.expectErr {
 				s.Require().Error(err)

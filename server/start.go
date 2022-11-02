@@ -204,7 +204,13 @@ func startStandAlone(ctx *Context, appCreator types.AppCreator) error {
 	}
 
 	app := appCreator(ctx.Logger, db, traceWriter, ctx.Viper)
-	_, err = startTelemetry(config.GetConfig(ctx.Viper))
+
+	config, err := config.GetConfig(ctx.Viper)
+	if err != nil {
+		return err
+	}
+
+	_, err = startTelemetry(config)
 	if err != nil {
 		return err
 	}
