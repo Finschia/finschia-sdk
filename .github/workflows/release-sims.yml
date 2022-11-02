@@ -2,10 +2,8 @@ name: Release Sims
 # Release Sims workflow runs long-lived (multi-seed & large block size) simulations
 # This workflow only runs on a pull request when the branch contains rc** (rc1/vX.X.x)
 on:
-  push:
-    tags:
-      - "release"
-      - "release to main"
+  pull_request:
+    types: [ labeled ]
 
 jobs:
   cleanup-runs:
@@ -14,11 +12,11 @@ jobs:
       - uses: rokroskar/workflow-run-cleanup-action@master
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-    if: "!startsWith(github.ref, 'refs/tags/') && github.ref != 'refs/heads/main'"
+    if: "!startsWith(github.ref, 'refs/tags/') && github.ref != 'refs/heads/main' && github.event.label.name == 'release'"
 
   build:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'skip-sims')"
+    if: "!contains(github.event.head_commit.message, 'skip-sims')  && github.event.label.name == 'release'"
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3.3.0
