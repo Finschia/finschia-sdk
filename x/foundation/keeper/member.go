@@ -16,7 +16,10 @@ func validateMetadata(metadata string, config foundation.Config) error {
 
 func (k Keeper) UpdateDecisionPolicy(ctx sdk.Context, policy foundation.DecisionPolicy) error {
 	info := k.GetFoundationInfo(ctx)
-	info.SetDecisionPolicy(policy)
+	err := info.SetDecisionPolicy(policy)
+	if err != nil {
+		return err
+	}
 	info.Version++
 	k.SetFoundationInfo(ctx, info)
 
