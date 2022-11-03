@@ -3,6 +3,11 @@ name: Release Sims
 # This workflow only runs on a pull request added `release` label
 on:
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
     branches:
       - main
       - rc*/*
