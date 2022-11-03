@@ -2,7 +2,11 @@ name: Release Sims
 # Release Sims workflow runs long-lived (multi-seed & large block size) simulations
 # This workflow only runs on a pull request added `release` label
 on:
-  pull_request
+  pull_request:
+    branches:
+      - main
+      - rc*/*
+      - release/*
 
 jobs:
   cleanup-runs:

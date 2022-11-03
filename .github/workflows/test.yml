@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - main
+      - rc*/*
+      - release/*
 jobs:
   cleanup-runs:
     runs-on: ubuntu-latest
