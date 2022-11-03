@@ -9,6 +9,7 @@ import (
 	"github.com/line/lbm-sdk/store/rootmulti"
 	storetypes "github.com/line/lbm-sdk/store/types"
 	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/libs/log"
 	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
 
@@ -46,7 +47,7 @@ func (suite *MsgTestSuite) SetupTest() {
 
 	app := simapp.Setup(false)
 	db := dbm.NewMemDB()
-	store := rootmulti.NewStore(db)
+	store := rootmulti.NewStore(db, log.NewNopLogger())
 	storeKey := storetypes.NewKVStoreKey("iavlStoreKey")
 
 	store.MountStoreWithDB(storeKey, storetypes.StoreTypeIAVL, nil)

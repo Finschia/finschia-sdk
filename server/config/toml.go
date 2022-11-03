@@ -90,10 +90,6 @@ prometheus = {{ .BaseConfig.Prometheus }}
 # ChanCheckTxSize should be equals to or greater than the mempool size set in config.toml of Ostracon.
 chan-check-tx-size = {{ .BaseConfig.ChanCheckTxSize }}
 
-# IAVLDisableFastNode enables or disables the fast node feature of IAVL. 
-# Default is true.
-iavl-disable-fastnode = {{ .BaseConfig.IAVLDisableFastNode }}
-
 ###############################################################################
 ###                         Telemetry Configuration                         ###
 ###############################################################################

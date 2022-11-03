@@ -334,7 +334,7 @@ func TestWithdrawDelegationRewardsBasic(t *testing.T) {
 
 func TestWithdrawDelegationZeroRewards(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
 
 	balancePower := int64(1000)
 	balanceTokens := app.StakingKeeper.TokensFromConsensusPower(ctx, balancePower)
@@ -344,7 +344,7 @@ func TestWithdrawDelegationZeroRewards(t *testing.T) {
 
 	// set module account coins
 	distrAcc := app.DistrKeeper.GetDistributionAccount(ctx)
-	require.NoError(t, simapp.FundModuleAccount(app.BankKeeper, ctx, distrAcc.GetName(), sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, balanceTokens))))
+	require.NoError(t, simapp.FundModuleAccount(app, ctx, distrAcc.GetName(), sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, balanceTokens))))
 	app.AccountKeeper.SetModuleAccount(ctx, distrAcc)
 
 	// create validator with 50% commission

@@ -18,7 +18,7 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/snapshots"
@@ -216,7 +216,7 @@ func TestWithRouter(t *testing.T) {
 	txPerHeight := 5
 
 	for blockN := 0; blockN < nBlocks; blockN++ {
-		header := tmproto.Header{Height: int64(blockN) + 1}
+		header := ocproto.Header{Height: int64(blockN) + 1}
 		app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 		for i := 0; i < txPerHeight; i++ {
@@ -305,17 +305,16 @@ func TestQuery(t *testing.T) {
 	require.Equal(t, 0, len(res.Value))
 
 	// query is still empty after a CheckTx
-	_, resTx, err := app.Check(aminoTxEncoder(), tx)
+	_, err := app.Check(aminoTxEncoder(), tx)
 	require.NoError(t, err)
-	require.NotNil(t, resTx)
 	res = app.Query(query)
 	require.Equal(t, 0, len(res.Value))
 
 	// query is still empty after a DeliverTx before we commit
-	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
-	_, resTx, err = app.Deliver(aminoTxEncoder(), tx)
+	_, resTx, err := app.Deliver(aminoTxEncoder(), tx)
 	require.NoError(t, err)
 	require.NotNil(t, resTx)
 	res = app.Query(query)
@@ -338,7 +337,7 @@ func TestGRPCQuery(t *testing.T) {
 	app := setupBaseApp(t, grpcQueryOpt)
 
 	app.InitChain(abci.RequestInitChain{})
-	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 	app.Commit()
 
@@ -417,7 +416,7 @@ func TestMultiMsgDeliverTx(t *testing.T) {
 	// run a multi-msg tx
 	// with all msgs the same route
 
-	header := tmproto.Header{Height: 1}
+	header := ocproto.Header{Height: 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 	tx := newTxCounter(0, 0, 1, 2)
 	txBytes, err := codec.Marshal(tx)
@@ -498,7 +497,7 @@ func TestSimulateTx(t *testing.T) {
 	nBlocks := 3
 	for blockN := 0; blockN < nBlocks; blockN++ {
 		count := int64(blockN + 1)
-		header := tmproto.Header{Height: count}
+		header := ocproto.Header{Height: count}
 		app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 		tx := newTxCounter(count, count)
@@ -553,7 +552,7 @@ func TestRunInvalidTransaction(t *testing.T) {
 
 	app := setupBaseApp(t, anteOpt, routerOpt)
 
-	header := tmproto.Header{Height: 1}
+	header := ocproto.Header{Height: 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 	// transaction with no messages
@@ -662,7 +661,7 @@ func TestTxGasLimits(t *testing.T) {
 				}
 			}()
 
-			count := tx.(txTest).Counter
+			count := tx.(*txTest).Counter
 			newCtx.GasMeter().ConsumeGas(uint64(count), "counter-ante")
 
 			return newCtx, nil
@@ -671,7 +670,7 @@ func TestTxGasLimits(t *testing.T) {
 
 	routerOpt := func(bapp *BaseApp) {
 		r := sdk.NewRoute(routeMsgCounter, func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
-			count := msg.(*msgCounter).Counter
+			count := msg.(msgCounter).Counter
 			ctx.GasMeter().ConsumeGas(uint64(count), "counter-handler")
 			return &sdk.Result{}, nil
 		})
@@ -680,7 +679,7 @@ func TestTxGasLimits(t *testing.T) {
 
 	app := setupBaseApp(t, anteOpt, routerOpt)
 
-	header := tmproto.Header{Height: 1}
+	header := ocproto.Header{Height: 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 	testCases := []struct {
@@ -746,7 +745,7 @@ func TestMaxBlockGasLimits(t *testing.T) {
 				}
 			}()
 
-			count := tx.(txTest).Counter
+			count := tx.(*txTest).Counter
 			newCtx.GasMeter().ConsumeGas(uint64(count), "counter-ante")
 
 			return
@@ -755,7 +754,7 @@ func TestMaxBlockGasLimits(t *testing.T) {
 
 	routerOpt := func(bapp *BaseApp) {
 		r := sdk.NewRoute(routeMsgCounter, func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
-			count := msg.(*msgCounter).Counter
+			count := msg.(msgCounter).Counter
 			ctx.GasMeter().ConsumeGas(uint64(count), "counter-handler")
 			return &sdk.Result{}, nil
 		})
@@ -794,14 +793,14 @@ func TestMaxBlockGasLimits(t *testing.T) {
 		tx := tc.tx
 
 		// reset the block gas
-		header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+		header := ocproto.Header{Height: app.LastBlockHeight() + 1}
 		app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 		// execute the transaction multiple times
 		for j := 0; j < tc.numDelivers; j++ {
 			_, result, err := app.Deliver(aminoTxEncoder(), tx)
 
-			ctx := app.getState(runTxModeDeliver).ctx
+			ctx := app.deliverState.ctx
 
 			// check for failed transactions
 			if tc.fail && (j+1) > tc.failAfterDeliver {
@@ -847,7 +846,7 @@ func TestCustomRunTxPanicHandler(t *testing.T) {
 
 	app := setupBaseApp(t, anteOpt, routerOpt)
 
-	header := tmproto.Header{Height: 1}
+	header := ocproto.Header{Height: 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 	app.AddRunTxRecoveryHandler(func(recoveryObj interface{}) error {
@@ -889,7 +888,7 @@ func TestBaseAppAnteHandler(t *testing.T) {
 	app.InitChain(abci.RequestInitChain{})
 	registerTestCodec(cdc)
 
-	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 	// execute a tx that will fail ante handler execution
@@ -904,7 +903,7 @@ func TestBaseAppAnteHandler(t *testing.T) {
 	require.Empty(t, res.Events)
 	require.False(t, res.IsOK(), fmt.Sprintf("%v", res))
 
-	ctx := app.getState(runTxModeDeliver).ctx
+	ctx := app.deliverState.ctx
 	store := ctx.KVStore(capKey1)
 	require.Equal(t, int64(0), getIntFromStore(store, anteKey))
 
@@ -921,7 +920,7 @@ func TestBaseAppAnteHandler(t *testing.T) {
 	require.NotEmpty(t, res.Events)
 	require.False(t, res.IsOK(), fmt.Sprintf("%v", res))
 
-	ctx = app.getState(runTxModeDeliver).ctx
+	ctx = app.deliverState.ctx
 	store = ctx.KVStore(capKey1)
 	require.Equal(t, int64(1), getIntFromStore(store, anteKey))
 	require.Equal(t, int64(0), getIntFromStore(store, deliverKey))
@@ -937,7 +936,7 @@ func TestBaseAppAnteHandler(t *testing.T) {
 	require.NotEmpty(t, res.Events)
 	require.True(t, res.IsOK(), fmt.Sprintf("%v", res))
 
-	ctx = app.getState(runTxModeDeliver).ctx
+	ctx = app.deliverState.ctx
 	store = ctx.KVStore(capKey1)
 	require.Equal(t, int64(2), getIntFromStore(store, anteKey))
 	require.Equal(t, int64(1), getIntFromStore(store, deliverKey))
@@ -965,7 +964,7 @@ func TestGasConsumptionBadTx(t *testing.T) {
 				}
 			}()
 
-			txTest := tx.(txTest)
+			txTest := tx.(*txTest)
 			newCtx.GasMeter().ConsumeGas(uint64(txTest.Counter), "counter-ante")
 			if txTest.FailOnAnte {
 				return newCtx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "ante handler failure")
@@ -998,7 +997,7 @@ func TestGasConsumptionBadTx(t *testing.T) {
 
 	app.InitChain(abci.RequestInitChain{})
 
-	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 	tx := newTxCounter(5, 0)
@@ -1091,7 +1090,7 @@ func TestInitChainer(t *testing.T) {
 	require.Equal(t, value, res.Value)
 
 	// commit and ensure we can still query
-	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	header := ocproto.Header{Height: app.LastBlockHeight() + 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 	app.Commit()
 
@@ -1129,14 +1128,14 @@ func TestBeginBlock_WithInitialHeight(t *testing.T) {
 
 	require.PanicsWithError(t, "invalid height: 4; expected: 3", func() {
 		app.BeginBlock(abci.RequestBeginBlock{
-			Header: tmproto.Header{
+			Header: ocproto.Header{
 				Height: 4,
 			},
 		})
 	})
 
 	app.BeginBlock(abci.RequestBeginBlock{
-		Header: tmproto.Header{
+		Header: ocproto.Header{
 			Height: 3,
 		},
 	})
@@ -1303,6 +1302,29 @@ func anteHandlerTxTest(t *testing.T, capKey sdk.StoreKey, storeKey []byte) sdk.A
 	}
 }
 
+// TODO(dudong2): remove this func after reverting CheckTx logic
+func anteHandlerTxTest2(t *testing.T, capKey sdk.StoreKey, storeKey []byte) sdk.AnteHandler {
+	return func(ctx sdk.Context, tx sdk.Tx, simulate bool) (sdk.Context, error) {
+		store := ctx.KVStore(capKey)
+		txTest := tx.(*txTest)
+
+		if txTest.FailOnAnte {
+			return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "ante handler failure")
+		}
+
+		_, err := incrementingCounter(t, store, storeKey, txTest.Counter)
+		if err != nil {
+			return ctx, err
+		}
+
+		ctx.EventManager().EmitEvents(
+			counterEvent("ante_handler", txTest.Counter),
+		)
+
+		return ctx, nil
+	}
+}
+
 func counterEvent(evType string, msgCount int64) sdk.Events {
 	return sdk.Events{
 		sdk.NewEvent(
@@ -1384,7 +1406,7 @@ func TestCheckTx(t *testing.T) {
 	// This ensures changes to the kvstore persist across successive CheckTx.
 	counterKey := []byte("counter-key")
 
-	anteOpt := func(bapp *BaseApp) { bapp.SetAnteHandler(anteHandlerTxTest(t, capKey1, counterKey)) }
+	anteOpt := func(bapp *BaseApp) { bapp.SetAnteHandler(anteHandlerTxTest2(t, capKey1, counterKey)) }
 	routerOpt := func(bapp *BaseApp) {
 		// TODO: can remove this once CheckTx doesnt process msgs.
 		bapp.Router().AddRoute(sdk.NewRoute(routeMsgCounter, func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
@@ -1405,9 +1427,8 @@ func TestCheckTx(t *testing.T) {
 		tx := newTxCounter(i, 0) // no messages
 		txBytes, err := codec.Marshal(tx)
 		require.NoError(t, err)
-		r := app.CheckTx(abci.RequestCheckTx{Tx: txBytes})
-		require.Empty(t, r.GetEvents())
-		require.True(t, r.IsOK(), fmt.Sprintf("%v", r))
+		_, err = app.checkTx(txBytes, tx, false)
+		require.NoError(t, err)
 	}
 
 	checkStateStore := app.checkState.ctx.KVStore(capKey1)
@@ -1417,7 +1438,7 @@ func TestCheckTx(t *testing.T) {
 	require.Equal(t, nTxs, storedCounter)
 
 	// If a block is committed, CheckTx state should be reset.
-	header := tmproto.Header{Height: 1}
+	header := ocproto.Header{Height: 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header, Hash: []byte("hash")})
 
 	require.NotNil(t, app.checkState.ctx.BlockGasMeter(), "block gas meter should have been set to checkState")
@@ -1425,6 +1446,9 @@ func TestCheckTx(t *testing.T) {
 
 	app.EndBlock(abci.RequestEndBlock{})
 	app.Commit()
+
+	// reset CheckTx state
+	app.BeginRecheckTx(abci.RequestBeginRecheckTx{Header: header})
 
 	checkStateStore = app.checkState.ctx.KVStore(capKey1)
 	storedBytes := checkStateStore.Get(counterKey)
@@ -1456,7 +1480,7 @@ func TestDeliverTx(t *testing.T) {
 	txPerHeight := 5
 
 	for blockN := 0; blockN < nBlocks; blockN++ {
-		header := tmproto.Header{Height: int64(blockN) + 1}
+		header := ocproto.Header{Height: int64(blockN) + 1}
 		app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 		for i := 0; i < txPerHeight; i++ {
@@ -1602,7 +1626,7 @@ func TestLoadVersionInvalid(t *testing.T) {
 	err = app.LoadVersion(-1)
 	require.Error(t, err)
 
-	header := tmproto.Header{Height: 1}
+	header := ocproto.Header{Height: 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 	res := app.Commit()
 	commitID1 := sdk.CommitID{Version: 1, Hash: res.Data}
@@ -1653,7 +1677,7 @@ func setupBaseAppWithSnapshots(t *testing.T, blocks uint, blockTxs int, options 
 	r := rand.New(rand.NewSource(3920758213583))
 	keyCounter := 0
 	for height := int64(1); height <= int64(blocks); height++ {
-		app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: height}})
+		app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: height}})
 		for txNum := 0; txNum < blockTxs; txNum++ {
 			tx := txTest{Msgs: []sdk.Msg{}}
 			for msgNum := 0; msgNum < 100; msgNum++ {
@@ -1724,13 +1748,13 @@ func TestLoadVersion(t *testing.T) {
 	require.Equal(t, emptyCommitID, lastID)
 
 	// execute a block, collect commit ID
-	header := tmproto.Header{Height: 1}
+	header := ocproto.Header{Height: 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 	res := app.Commit()
 	commitID1 := sdk.CommitID{Version: 1, Hash: res.Data}
 
 	// execute a block, collect commit ID
-	header = tmproto.Header{Height: 2}
+	header = ocproto.Header{Height: 2}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 	res = app.Commit()
 	commitID2 := sdk.CommitID{Version: 2, Hash: res.Data}
@@ -1829,7 +1853,7 @@ func TestSetLoader(t *testing.T) {
 			require.Nil(t, err)
 
 			// "execute" one block
-			app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: 2}})
+			app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: 2}})
 			res := app.Commit()
 			require.NotNil(t, res.Data)
 

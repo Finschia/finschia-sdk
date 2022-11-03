@@ -104,7 +104,7 @@ func GetQueryGranterGrants() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query authorization grants granted by granter.
 Examples:
-$ %s q %s grants-by-granter cosmos1skj..
+$ %s q %s grants-by-granter link1skj..
 `,
 				version.AppName, authz.ModuleName),
 		),
@@ -153,7 +153,7 @@ func GetQueryGranteeGrants() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query authorization grants granted to a grantee.
 Examples:
-$ %s q %s grants-by-grantee cosmos1skj..
+$ %s q %s grants-by-grantee link1skj..
 `,
 				version.AppName, authz.ModuleName),
 		),

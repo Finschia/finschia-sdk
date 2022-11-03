@@ -199,15 +199,6 @@ func TestListSnapshots(t *testing.T) {
 	assert.Equal(t, expected, resp)
 }
 
-func TestCommitMultiStore(t *testing.T) {
-	app := newBaseApp(t.Name())
-	cms := app.CommitMultiStore()
-	require.NotNil(t, cms)
-
-	app.Seal()
-	require.Panics(t, func() { app.CommitMultiStore() })
-}
-
 func TestSnapshotManager(t *testing.T) {
 	app := newBaseApp(t.Name())
 	require.Nil(t, app.SnapshotManager())
