@@ -236,7 +236,7 @@ func DefaultConfig() *Config {
 			IndexEvents:         make([]string, 0),
 			InterBlockCacheSize: cache.DefaultCommitKVStoreCacheSize,
 			IAVLCacheSize:       iavl.DefaultIAVLCacheSize,
-			IAVLDisableFastNode: false,
+			IAVLDisableFastNode: true,
 			ChanCheckTxSize:     DefaultChanCheckTxSize,
 		},
 		Telemetry: telemetry.Config{
