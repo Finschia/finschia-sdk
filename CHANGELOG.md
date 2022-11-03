@@ -48,7 +48,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (cli) [\#773](https://github.com/line/lbm-sdk/pull/773) guide users to use generate-only in messages for x/foundation authority
 
 ### Build, CI
-* (ci) [\#779](https://github.com/line/lbm-sdk/pull/779) change the `release-sims` test trigger rule
+* (ci) [\#779](https://github.com/line/lbm-sdk/pull/779) change github action trigger rules for `release/*` and `rc*/*` branches
 
 ### Document Updates
 * (docs) [\#766](https://github.com/line/lbm-sdk/pull/766) fix submit-proposal command on x/foundation
