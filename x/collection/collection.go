@@ -72,7 +72,7 @@ func TokenClassUnpackInterfaces(any *codectypes.Any, unpacker codectypes.AnyUnpa
 	return unpacker.UnpackAny(any, &class)
 }
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // FTClass
 var _ TokenClass = (*FTClass)(nil)
 
@@ -109,7 +109,7 @@ func (c FTClass) ValidateBasic() error {
 	return nil
 }
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // NFTClass
 var _ TokenClass = (*NFTClass)(nil)
 
@@ -143,7 +143,7 @@ func (c NFTClass) ValidateBasic() error {
 	return nil
 }
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Coin
 func NewFTCoin(classID string, amount sdk.Int) Coin {
 	return NewCoin(NewFTID(classID), amount)
@@ -217,7 +217,7 @@ func ParseCoin(coinStr string) (*Coin, error) {
 	return &coin, nil
 }
 
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Coins
 type Coins []Coin
 
