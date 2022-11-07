@@ -317,19 +317,20 @@ func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.
 		return err
 	}
 
-	modifiers := map[string]func(string){
-		collection.AttributeKeyName.String(): func(name string) {
+	modifiers := map[collection.AttributeKey]func(string){
+		collection.AttributeKeyName: func(name string) {
 			contract.Name = name
 		},
-		collection.AttributeKeyBaseImgURI.String(): func(uri string) {
+		collection.AttributeKeyBaseImgURI: func(uri string) {
 			contract.Name = uri
 		},
-		collection.AttributeKeyMeta.String(): func(meta string) {
+		collection.AttributeKeyMeta: func(meta string) {
 			contract.Meta = meta
 		},
 	}
 	for _, change := range changes {
-		modifiers[change.Key](change.Value)
+		key := collection.AttributeKeyFromString(change.Key)
+		modifiers[key](change.Value)
 	}
 
 	k.setContract(ctx, *contract)
@@ -351,16 +352,17 @@ func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID str
 		return err
 	}
 
-	modifiers := map[string]func(string){
-		collection.AttributeKeyName.String(): func(name string) {
+	modifiers := map[collection.AttributeKey]func(string){
+		collection.AttributeKeyName: func(name string) {
 			class.SetName(name)
 		},
-		collection.AttributeKeyMeta.String(): func(meta string) {
+		collection.AttributeKeyMeta: func(meta string) {
 			class.SetMeta(meta)
 		},
 	}
 	for _, change := range changes {
-		modifiers[change.Key](change.Value)
+		key := collection.AttributeKeyFromString(change.Key)
+		modifiers[key](change.Value)
 	}
 
 	k.setTokenClass(ctx, contractID, class)
@@ -383,16 +385,17 @@ func (k Keeper) ModifyNFT(ctx sdk.Context, contractID string, tokenID string, op
 		return err
 	}
 
-	modifiers := map[string]func(string){
-		collection.AttributeKeyName.String(): func(name string) {
+	modifiers := map[collection.AttributeKey]func(string){
+		collection.AttributeKeyName: func(name string) {
 			token.Name = name
 		},
-		collection.AttributeKeyMeta.String(): func(meta string) {
+		collection.AttributeKeyMeta: func(meta string) {
 			token.Meta = meta
 		},
 	}
 	for _, change := range changes {
-		modifiers[change.Key](change.Value)
+		key := collection.AttributeKeyFromString(change.Key)
+		modifiers[key](change.Value)
 	}
 
 	k.setNFT(ctx, contractID, *token)

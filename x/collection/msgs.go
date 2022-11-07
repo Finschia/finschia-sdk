@@ -166,26 +166,26 @@ func ValidatePermission(permission Permission) error {
 }
 
 func validateContractChange(change Attribute) error {
-	validators := map[AttributeKey]func(string) error{
-		AttributeKeyName:       validateName,
-		AttributeKeyBaseImgURI: validateBaseImgURI,
-		AttributeKeyMeta:       validateMeta,
+	validators := map[string]func(string) error{
+		AttributeKeyName.String():       validateName,
+		AttributeKeyBaseImgURI.String(): validateBaseImgURI,
+		AttributeKeyMeta.String():       validateMeta,
 	}
 
 	return validateChange(change, validators)
 }
 
 func validateTokenClassChange(change Attribute) error {
-	validators := map[AttributeKey]func(string) error{
-		AttributeKeyName: validateName,
-		AttributeKeyMeta: validateMeta,
+	validators := map[string]func(string) error{
+		AttributeKeyName.String(): validateName,
+		AttributeKeyMeta.String(): validateMeta,
 	}
 
 	return validateChange(change, validators)
 }
 
-func validateChange(change Attribute, validators map[AttributeKey]func(string) error) error {
-	validator, ok := validators[AttributeKeyFromString(change.Key)]
+func validateChange(change Attribute, validators map[string]func(string) error) error {
+	validator, ok := validators[change.Key]
 	if !ok {
 		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Key)
 	}
