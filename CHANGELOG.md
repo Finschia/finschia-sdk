@@ -43,6 +43,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Bug Fixes
 * (x/foundation) [\#772](https://github.com/line/lbm-sdk/pull/772) export x/foundation pool
+* (baseapp) [\#781](https://github.com/line/lbm-sdk/pull/781) implement method `SetOption()` in baseapp
 * (x/collection,token) [\#784](https://github.com/line/lbm-sdk/pull/784) make field key matching in x/token & x/collection case-sensitive
 
 ### Breaking Changes
