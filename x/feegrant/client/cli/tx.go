@@ -64,8 +64,7 @@ Examples:
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 
-			err := cmd.Flags().Set(flags.FlagFrom, args[0])
-			if err != nil {
+			if err := cmd.Flags().Set(flags.FlagFrom, args[0]); err != nil {
 				return err
 			}
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -198,8 +197,7 @@ Example:
 		),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := cmd.Flags().Set(flags.FlagFrom, args[0])
-			if err != nil {
+			if err := cmd.Flags().Set(flags.FlagFrom, args[0]); err != nil {
 				return err
 			}
 			clientCtx, err := client.GetClientTxContext(cmd)

@@ -120,12 +120,10 @@ func InterceptConfigsPreRunHandler(cmd *cobra.Command, customAppConfigTemplate s
 	basename := path.Base(executableName)
 
 	// Configure the viper instance
-	err = serverCtx.Viper.BindPFlags(cmd.Flags())
-	if err != nil {
+	if err = serverCtx.Viper.BindPFlags(cmd.Flags()); err != nil {
 		return err
 	}
-	err = serverCtx.Viper.BindPFlags(cmd.PersistentFlags())
-	if err != nil {
+	if err = serverCtx.Viper.BindPFlags(cmd.PersistentFlags()); err != nil {
 		return err
 	}
 	serverCtx.Viper.SetEnvPrefix(basename)

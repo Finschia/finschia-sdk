@@ -61,8 +61,7 @@ func (app *BaseApp) RegisterGRPCServer(server gogogrpc.Server) {
 		grpcCtx = context.WithValue(grpcCtx, sdk.SdkContextKey, sdkCtx)
 
 		md = metadata.Pairs(grpctypes.GRPCBlockHeightHeader, strconv.FormatInt(height, 10))
-		err = grpc.SetHeader(grpcCtx, md)
-		if err != nil {
+		if err = grpc.SetHeader(grpcCtx, md); err != nil {
 			return nil, err
 		}
 

@@ -112,12 +112,11 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 
 			// Bind flags to the Context's Viper so the app construction can set
 			// options accordingly.
-			err := serverCtx.Viper.BindPFlags(cmd.Flags())
-			if err != nil {
+			if err := serverCtx.Viper.BindPFlags(cmd.Flags()); err != nil {
 				return err
 			}
 
-			_, err = GetPruningOptionsFromFlags(serverCtx.Viper)
+			_, err := GetPruningOptionsFromFlags(serverCtx.Viper)
 			return err
 		},
 		RunE: func(cmd *cobra.Command, _ []string) error {

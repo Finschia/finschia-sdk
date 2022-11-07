@@ -39,8 +39,7 @@ func InitGenesis(
 		keeper.SetValidator(ctx, validator)
 
 		// Manually set indices for the first time
-		err := keeper.SetValidatorByConsAddr(ctx, validator)
-		if err != nil {
+		if err := keeper.SetValidatorByConsAddr(ctx, validator); err != nil {
 			panic(err)
 		}
 		keeper.SetValidatorByPowerIndex(ctx, validator)

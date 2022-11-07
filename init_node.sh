@@ -44,8 +44,8 @@ if [ -n "$2" ]; then
 fi
 
 VALIDATOR_PREFIX="validator"
-COINS="100000000000stake,100000000000ukrw"
-DELEGATE="10000000000stake"
+COINS="10000000000toy"
+DELEGATE="10000000000toy"
 
 # Create base dir and gentxs dir
 if ! mkdir -p ${GENTXS_DIR} 2> /dev/null; then

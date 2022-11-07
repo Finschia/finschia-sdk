@@ -103,8 +103,7 @@ func QueryTxsRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 		}
 
 		for _, txRes := range searchResult.Txs {
-			err = packStdTxResponse(w, clientCtx, txRes)
-			if err != nil {
+			if err = packStdTxResponse(w, clientCtx, txRes); err != nil {
 				// Error is already returned by packStdTxResponse.
 				return
 			}
