@@ -308,39 +308,6 @@ func TestCacheKVMergeIteratorRandom(t *testing.T) {
 	}
 }
 
-// Set, Delete and Write for the same key must be called sequentially.
-func TestCacheKVConcurrency(t *testing.T) {
-	const NumOps = 2000
-
-	st := newCacheKVStore()
-
-	wg := &sync.WaitGroup{}
-	wg.Add(NumOps * 3)
-	for i := 0; i < NumOps; i++ {
-		i := i
-		go func() {
-			st.Set([]byte(fmt.Sprintf("key%d", i)), []byte(fmt.Sprintf("value%d", i)))
-			st.Write()
-			wg.Done()
-		}()
-		go func() {
-			st.Get([]byte(fmt.Sprintf("key%d", i)))
-			wg.Done()
-		}()
-		go func() {
-			iter := st.Iterator([]byte("key0"), []byte(fmt.Sprintf("key%d", NumOps)))
-			for ; iter.Valid(); iter.Next() {
-			}
-			wg.Done()
-		}()
-	}
-	wg.Wait()
-
-	for i := 0; i < NumOps; i++ {
-		require.Equal(t, []byte(fmt.Sprintf("value%d", i)), st.Get([]byte(fmt.Sprintf("key%d", i))))
-	}
-}
-
 //-------------------------------------------------------------------------------------------
 // do some random ops
 
