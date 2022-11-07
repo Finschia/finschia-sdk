@@ -2,6 +2,7 @@ package token_test
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -594,7 +595,7 @@ func TestMsgModify(t *testing.T) {
 		"invalid key of change": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
-			changes:    []token.Pair{{Value: "tt"}},
+			changes:    []token.Pair{{Field: strings.ToUpper(token.AttributeKeyName.String()), Value: "tt"}},
 		},
 		"invalid value of change": {
 			contractID: "deadbeef",
