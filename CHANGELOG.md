@@ -38,6 +38,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [Unreleased](https://github.com/line/lbm-sdk/compare/v0.46.0-rc9...HEAD)
 
 ### Features
+* (global) [\#783](https://github.com/line/lbm-sdk/pull/783) bump up github.com/cosmos/cosmos-sdk to v0.45.10
 
 ### Improvements
 
