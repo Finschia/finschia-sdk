@@ -865,7 +865,7 @@ func TestAminoJSON(t *testing.T) {
 			&token.MsgModify{
 				ContractId: contractId,
 				Owner:      addrs[0].String(),
-				Changes:    []token.Pair{token.Pair{Field: token.AttributeKeyName.String(), Value: "New test"}},
+				Changes:    []token.Pair{{Field: token.AttributeKeyName.String(), Value: "New test"}},
 			},
 			"/lbm.token.v1.MsgModify",
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/token/MsgModify\",\"value\":{\"changes\":[{\"field\":\"name\",\"value\":\"New test\"}],\"contract_id\":\"deadbeef\",\"owner\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
