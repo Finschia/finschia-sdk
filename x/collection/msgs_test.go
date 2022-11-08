@@ -5,12 +5,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
-
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	"github.com/line/lbm-sdk/x/collection"
 )
 
