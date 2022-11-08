@@ -538,7 +538,9 @@ func withPageKeyDecoded(flagSet *flag.FlagSet) *flag.FlagSet {
 	if err != nil {
 		panic(err.Error())
 	}
-	flagSet.Set(flags.FlagPageKey, string(raw))
+	if err = flagSet.Set(flags.FlagPageKey, string(raw)); err != nil {
+		panic(err.Error())
+	}
 	return flagSet
 }
 
