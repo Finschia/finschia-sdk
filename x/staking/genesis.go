@@ -39,7 +39,9 @@ func InitGenesis(
 		keeper.SetValidator(ctx, validator)
 
 		// Manually set indices for the first time
-		keeper.SetValidatorByConsAddr(ctx, validator)
+		if err := keeper.SetValidatorByConsAddr(ctx, validator); err != nil {
+			panic(err)
+		}
 		keeper.SetValidatorByPowerIndex(ctx, validator)
 
 		// Call the creation hook if not exported
