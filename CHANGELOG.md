@@ -30,7 +30,6 @@ Types of changes (Stanzas):
 "CLI Breaking" for breaking CLI commands.
 "API Breaking" for breaking exported APIs used by developers building on SDK.
 "State Machine Breaking" for any changes that result in a different AppState given same genesisState and txList.
-
 Ref: https://keepachangelog.com/en/1.0.0/
 -->
 
