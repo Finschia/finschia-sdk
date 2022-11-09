@@ -68,6 +68,12 @@ else
   endif
 endif
 
+# VRF library selection
+ifeq (libsodium,$(findstring libsodium,$(LBM_BUILD_OPTIONS)))
+  CGO_ENABLED=1
+  BUILD_TAGS += gcc libsodium
+endif
+
 # secp256k1 implementation selection
 ifeq (libsecp256k1,$(findstring libsecp256k1,$(LBM_BUILD_OPTIONS)))
   CGO_ENABLED=1
