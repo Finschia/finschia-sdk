@@ -45,10 +45,10 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (x/foundation) [\#772](https://github.com/line/lbm-sdk/pull/772) export x/foundation pool
 * (baseapp) [\#781](https://github.com/line/lbm-sdk/pull/781) implement method `SetOption()` in baseapp
 * (global) [\#782](https://github.com/line/lbm-sdk/pull/782) add unhandled return error handling
-* (x/foundation) [\#790](https://github.com/line/lbm-sdk/pull/790) fix case of gov_mint_left_count in x/foundation
 
 ### Breaking Changes
 * (cli) [\#773](https://github.com/line/lbm-sdk/pull/773) guide users to use generate-only in messages for x/foundation authority
+* (x/foundation) [\#790](https://github.com/line/lbm-sdk/pull/790) fix case of gov_mint_left_count in x/foundation
 
 ### Build, CI
 * (ci) [\#779](https://github.com/line/lbm-sdk/pull/779) change github action trigger rules for `release/*` and `rc*/*` branches
