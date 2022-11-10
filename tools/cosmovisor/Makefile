@@ -2,9 +2,18 @@
 
 COSMOVISOR_TAG=v1.4.0
 
-all: test-single
+DEBUG=true
 
-test-single:
-	COSMOVISOR_TAG=$(COSMOVISOR_TAG) sh test_single.sh
+all: test
 
-.PHONY: all test-single
+test: test-single
+
+test-single: test-single-manual-download test-single-auto-download
+
+test-single-manual-download:
+	COSMOVISOR_TAG=$(COSMOVISOR_TAG) DEBUG=$(DEBUG) sh test_single.sh
+
+test-single-auto-download:
+	COSMOVISOR_TAG=$(COSMOVISOR_TAG) DEBUG=$(DEBUG) DAEMON_ALLOW_DOWNLOAD_BINARIES=true sh test_single.sh
+
+.PHONY: test-single-manual-download test-single-auto-download

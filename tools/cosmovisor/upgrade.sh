@@ -9,7 +9,7 @@ set -e
 
 [ -n "$CHAIN_ID" ]
 
-UPGRADE_HEIGHT=10
+UPGRADE_HEIGHT=5
 
 assert_begin() {
 	info=$($DAEMON_NAME q block 2>/dev/null)
@@ -36,12 +36,12 @@ wait_for_begin() {
 
 keyring_backend=test
 
-new_binary=$(realpath ./simd)
+new_binary=$(realpath ./dummyd)
 prepare_upgrade() {
 	name=$1
 	bindir=$DAEMON_HOME/cosmovisor/upgrades/$name/bin
 	mkdir -p $bindir
-	cp $new_binary $bindir
+	cp $new_binary $bindir/$DAEMON_NAME
 }
 
 submit_upgrade() {
@@ -58,6 +58,9 @@ vote() {
 
 wait_for_begin
 
-# prepare_upgrade testing
+if [ "$DAEMON_ALLOW_DOWNLOAD_BINARIES" != true ]
+then
+	prepare_upgrade testing
+fi
 submit_upgrade testing
 vote 1
