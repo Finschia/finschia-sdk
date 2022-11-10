@@ -131,7 +131,7 @@ $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
 
 cosmovisor:
-	$(MAKE) -C tools/cosmovisor
+	$(MAKE) -C tools/cosmovisor test
 
 .PHONY: build build-linux cosmovisor
 

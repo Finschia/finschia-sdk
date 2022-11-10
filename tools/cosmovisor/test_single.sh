@@ -2,9 +2,6 @@
 
 set -e
 
-# cosmovisor configs
-[ -n "$COSMOVISOR_TAG" ]
-
 # app configs
 CHAIN_ID=sim
 KEY_MNEMONIC="mind flame tobacco sense move hammer drift crime ring globe art gaze cinnamon helmet cruise special produce notable negative wait path scrap recall have"
@@ -30,7 +27,8 @@ export DAEMON_NAME=simd
 workdir=$(mktemp -d)
 export DAEMON_HOME=$workdir
 
-COSMOVISOR_TAG=$COSMOVISOR_TAG sh install.sh
+# init
+cosmovisor init $(which $DAEMON_NAME)
 CHAIN_ID=$CHAIN_ID KEY_MNEMONIC="$KEY_MNEMONIC" KEY_INDEX=0 sh configure.sh
 
 result=$workdir/result.fifo
