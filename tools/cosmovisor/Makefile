@@ -17,7 +17,7 @@ test: test-single
 test-single: test-single-manual-download test-single-auto-download
 
 test-single-manual-download: install install-simd
-	COSMOVISOR_TAG=$(COSMOVISOR_TAG) DEBUG=$(DEBUG) sh test_single.sh
+	DEBUG=$(DEBUG) sh test_single.sh
 
 test-single-auto-download: install install-simd
-	COSMOVISOR_TAG=$(COSMOVISOR_TAG) DEBUG=$(DEBUG) DAEMON_ALLOW_DOWNLOAD_BINARIES=true sh test_single.sh
+	DEBUG=$(DEBUG) DAEMON_ALLOW_DOWNLOAD_BINARIES=true sh test_single.sh
