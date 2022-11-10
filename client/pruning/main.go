@@ -23,6 +23,8 @@ const FlagAppDBBackend = "app-db-backend"
 
 // PruningCmd prunes the sdk root multi store history versions based on the pruning options
 // specified by command flags.
+//
+//nolint:golint
 func PruningCmd(appCreator servertypes.AppCreator) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "prune",

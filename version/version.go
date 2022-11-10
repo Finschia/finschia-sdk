@@ -9,11 +9,11 @@
 // At build time, the variables Name, Version, Commit, and BuildTags
 // can be passed as build flags as shown in the following example:
 //
-//  go build -X github.com/line/lbm-sdk/version.Name=sim \
-//   -X github.com/line/lbm-sdk/version.AppName=simd \
-//   -X github.com/line/lbm-sdk/version.Version=1.0 \
-//   -X github.com/line/lbm-sdk/version.Commit=f0f7b7dab7e36c20b757cebce0e8f4fc5b95de60 \
-//   -X "github.com/line/lbm-sdk/version.BuildTags=linux darwin amd64"
+//	go build -X github.com/line/lbm-sdk/version.Name=sim \
+//	 -X github.com/line/lbm-sdk/version.AppName=simd \
+//	 -X github.com/line/lbm-sdk/version.Version=1.0 \
+//	 -X github.com/line/lbm-sdk/version.Commit=f0f7b7dab7e36c20b757cebce0e8f4fc5b95de60 \
+//	 -X "github.com/line/lbm-sdk/version.BuildTags=linux darwin amd64"
 package version
 
 import (
@@ -24,15 +24,15 @@ import (
 )
 
 var (
-	// application's name
+	// Name is application's name
 	Name = ""
-	// application binary name
+	// AppName is application binary name
 	AppName = "<appd>"
-	// application's version string
+	// Version is application's version string
 	Version = ""
-	// commit
+	// Commit is commit
 	Commit = ""
-	// build tags
+	// BuildTags is build tags
 	BuildTags = ""
 )
 
