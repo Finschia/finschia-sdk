@@ -72,6 +72,9 @@ endif
 ifeq (libsodium,$(findstring libsodium,$(LBM_BUILD_OPTIONS)))
   CGO_ENABLED=1
   BUILD_TAGS += gcc libsodium
+  LIBSODIUM_TARGET = libsodium
+  CGO_CFLAGS += "-I$(LIBSODIUM_OS)/include"
+  CGO_LDFLAGS += "-L$(LIBSODIUM_OS)/lib -lsodium"
 endif
 
 # secp256k1 implementation selection
@@ -121,7 +124,6 @@ include contrib/devtools/Makefile
 BUILD_TARGETS := build install
 
 build: BUILD_ARGS=-o $(BUILDDIR)/
-	CGO_CFLAGS=$(CGO_CFLAGS) CGO_LDFLAGS=$(CGO_LDFLAGS) CGO_ENABLED=$(CGO_ENABLED) go build -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
 build-docker: go.sum $(BUILDDIR)/
 	docker build -t simapp:latest . --platform="linux/amd64" --build-arg ARCH=$(ARCH)
@@ -130,8 +132,8 @@ build-docker: go.sum $(BUILDDIR)/
 build-linux:
 	GOOS=linux GOARCH=$(if $(findstring aarch64,$(shell uname -m)) || $(findstring arm64,$(shell uname -m)),arm64,amd64) LEDGER_ENABLED=false $(MAKE) build
 
-$(BUILD_TARGETS): go.sum $(BUILDDIR)/
-	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
+$(BUILD_TARGETS): go.sum $(BUILDDIR)/ $(LIBSODIUM_TARGET)
+	CGO_CFLAGS=$(CGO_CFLAGS) CGO_LDFLAGS=$(CGO_LDFLAGS) CGO_ENABLED=$(CGO_ENABLED) go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
@@ -542,3 +544,28 @@ rosetta-data:
 	docker container rm data_dir_build
 
 .PHONY: rosetta-data
+
+###############################################################################
+###                                  tools                                  ###
+###############################################################################
+
+VRF_ROOT = $(shell pwd)/tools
+LIBSODIUM_ROOT = $(VRF_ROOT)/libsodium
+LIBSODIUM_OS = $(VRF_ROOT)/sodium/$(shell go env GOOS)_$(shell go env GOARCH)
+ifneq ($(TARGET_HOST), "")
+LIBSODIUM_HOST = "--host=$(TARGET_HOST)"
+endif
+
+libsodium:
+	@if [ ! -f $(LIBSODIUM_OS)/lib/libsodium.a ]; then \
+		rm -rf $(LIBSODIUM_ROOT) && \
+		mkdir $(LIBSODIUM_ROOT) && \
+		git submodule update --init --recursive && \
+		cd $(LIBSODIUM_ROOT) && \
+		./autogen.sh && \
+		./configure --disable-shared --prefix="$(LIBSODIUM_OS)" $(LIBSODIUM_HOST) && \
+		$(MAKE) && \
+		$(MAKE) install && \
+		env; \
+	fi
+.PHONY: libsodium
