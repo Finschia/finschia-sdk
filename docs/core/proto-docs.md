@@ -17299,7 +17299,7 @@ GenesisState defines the foundation module's genesis state.
 | `votes` | [Vote](#lbm.foundation.v1.Vote) | repeated | votes is the list of votes. |
 | `authorizations` | [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization) | repeated | grants |
 | `pool` | [Pool](#lbm.foundation.v1.Pool) |  | pool |
-| `govMintLeftCount` | [uint32](#uint32) |  | govMintLeftCount is gov mint max count |
+| `gov_mint_left_count` | [uint32](#uint32) |  | gov_mint_count_left is the remaining number of times for gov_mint. |
 
 
 
