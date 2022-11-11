@@ -47,7 +47,7 @@ prepare_upgrade() {
 submit_upgrade() {
 	name=$1
 	checksum=sha256:$(sha256sum $new_binary | awk '{print $1}')
-	info='{"binaries":{"linux/amd64":"file://'$new_binary'?checksum='$checksum'"}}'
+	info='{"binaries":{"any":"file://'$new_binary'?checksum='$checksum'"}}'
 	$DAEMON_NAME --home $DAEMON_HOME tx --keyring-backend $keyring_backend gov submit-proposal software-upgrade $name --upgrade-height $UPGRADE_HEIGHT --upgrade-info $info --title upgrade --description "test upgrade" --deposit 1stake --broadcast-mode block --from validator0 --chain-id $CHAIN_ID --yes
 }
 
