@@ -565,7 +565,6 @@ libsodium:
 		./autogen.sh && \
 		./configure --disable-shared --prefix="$(LIBSODIUM_OS)" $(LIBSODIUM_HOST) && \
 		$(MAKE) && \
-		$(MAKE) install && \
-		env; \
+		$(MAKE) install; \
 	fi
 .PHONY: libsodium
