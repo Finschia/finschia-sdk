@@ -11,9 +11,6 @@ const (
 	// StoreKey is string representation of the store key for auth
 	StoreKey = "acc"
 
-	// RouterKey defines the module's message routing key
-	RouterKey = ModuleName
-
 	// FeeCollectorName the root string for the fee collector account address
 	FeeCollectorName = "fee_collector"
 

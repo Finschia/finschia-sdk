@@ -40,6 +40,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Features
 
 ### Improvements
+* (x/auth) [\#776](https://github.com/line/lbm-sdk/pull/776) remove unused MsgEmpty
 
 ### Bug Fixes
 * (x/foundation) [\#772](https://github.com/line/lbm-sdk/pull/772) export x/foundation pool
