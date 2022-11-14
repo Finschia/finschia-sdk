@@ -38,6 +38,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [Unreleased](https://github.com/line/lbm-sdk/compare/v0.46.0-rc9...HEAD)
 
 ### Features
+(build) [\#793](https://github.com/line/lbm-sdk/pull/793) enable to use libsodium version ostracon
 
 ### Improvements
 * (x/auth) [\#776](https://github.com/line/lbm-sdk/pull/776) remove unused MsgEmpty
