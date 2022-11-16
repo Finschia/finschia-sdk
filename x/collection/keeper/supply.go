@@ -322,7 +322,7 @@ func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.
 			contract.Name = name
 		},
 		collection.AttributeKeyBaseImgURI: func(uri string) {
-			contract.Name = uri
+			contract.BaseImgUri = uri
 		},
 		collection.AttributeKeyMeta: func(meta string) {
 			contract.Meta = meta
