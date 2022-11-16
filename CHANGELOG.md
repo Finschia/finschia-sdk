@@ -39,16 +39,20 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Features
 * (global) [\#783](https://github.com/line/lbm-sdk/pull/783) bump up github.com/cosmos/cosmos-sdk to v0.45.10
+* (build) [\#793](https://github.com/line/lbm-sdk/pull/793) enable to use libsodium version ostracon
 
 ### Improvements
+* (x/auth) [\#776](https://github.com/line/lbm-sdk/pull/776) remove unused MsgEmpty
 
 ### Bug Fixes
 * (x/foundation) [\#772](https://github.com/line/lbm-sdk/pull/772) export x/foundation pool
 * (baseapp) [\#781](https://github.com/line/lbm-sdk/pull/781) implement method `SetOption()` in baseapp
 * (global) [\#782](https://github.com/line/lbm-sdk/pull/782) add unhandled return error handling
+* (x/collection,x/token) [\#798](https://github.com/line/lbm-sdk/pull/798) Fix x/collection ModifyContract
 
 ### Breaking Changes
 * (cli) [\#773](https://github.com/line/lbm-sdk/pull/773) guide users to use generate-only in messages for x/foundation authority
+* (x/foundation) [\#790](https://github.com/line/lbm-sdk/pull/790) fix case of gov_mint_left_count in x/foundation
 
 ### Build, CI
 * (ci) [\#779](https://github.com/line/lbm-sdk/pull/779) change github action trigger rules for `release/*` and `rc*/*` branches

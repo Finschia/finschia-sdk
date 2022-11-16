@@ -28,12 +28,6 @@
   
     - [Query](#cosmos.auth.v1beta1.Query)
   
-- [cosmos/auth/v1beta1/tx.proto](#cosmos/auth/v1beta1/tx.proto)
-    - [MsgEmpty](#cosmos.auth.v1beta1.MsgEmpty)
-    - [MsgEmptyResponse](#cosmos.auth.v1beta1.MsgEmptyResponse)
-  
-    - [Msg](#cosmos.auth.v1beta1.Msg)
-  
 - [cosmos/authz/v1beta1/authz.proto](#cosmos/authz/v1beta1/authz.proto)
     - [GenericAuthorization](#cosmos.authz.v1beta1.GenericAuthorization)
     - [Grant](#cosmos.authz.v1beta1.Grant)
@@ -1632,57 +1626,6 @@ Since: cosmos-sdk 0.43 | GET|/cosmos/auth/v1beta1/accounts|
 | `Account` | [QueryAccountRequest](#cosmos.auth.v1beta1.QueryAccountRequest) | [QueryAccountResponse](#cosmos.auth.v1beta1.QueryAccountResponse) | Account returns account details based on address. | GET|/cosmos/auth/v1beta1/accounts/{address}|
 | `Params` | [QueryParamsRequest](#cosmos.auth.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#cosmos.auth.v1beta1.QueryParamsResponse) | Params queries all parameters. | GET|/cosmos/auth/v1beta1/params|
 | `ModuleAccountByName` | [QueryModuleAccountByNameRequest](#cosmos.auth.v1beta1.QueryModuleAccountByNameRequest) | [QueryModuleAccountByNameResponse](#cosmos.auth.v1beta1.QueryModuleAccountByNameResponse) | ModuleAccountByName returns the module account info by module name | GET|/cosmos/auth/v1beta1/module_accounts/{name}|
-
- <!-- end services -->
-
-
-
-<a name="cosmos/auth/v1beta1/tx.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## cosmos/auth/v1beta1/tx.proto
-
-
-
-<a name="cosmos.auth.v1beta1.MsgEmpty"></a>
-
-### MsgEmpty
-MsgEmpty represents a message that doesn't do anything. Used to measure performance.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `from_address` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="cosmos.auth.v1beta1.MsgEmptyResponse"></a>
-
-### MsgEmptyResponse
-MsgEmptyResponse defines the Msg/Empty response type.
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
-
-<a name="cosmos.auth.v1beta1.Msg"></a>
-
-### Msg
-Msg defines the auth Msg service.
-
-| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
-| ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Empty` | [MsgEmpty](#cosmos.auth.v1beta1.MsgEmpty) | [MsgEmptyResponse](#cosmos.auth.v1beta1.MsgEmptyResponse) | Empty defines a method that doesn't do anything. Used to measure performance. | |
 
  <!-- end services -->
 
@@ -17389,7 +17332,7 @@ GenesisState defines the foundation module's genesis state.
 | `votes` | [Vote](#lbm.foundation.v1.Vote) | repeated | votes is the list of votes. |
 | `authorizations` | [GrantAuthorization](#lbm.foundation.v1.GrantAuthorization) | repeated | grants |
 | `pool` | [Pool](#lbm.foundation.v1.Pool) |  | pool |
-| `govMintLeftCount` | [uint32](#uint32) |  | govMintLeftCount is gov mint max count |
+| `gov_mint_left_count` | [uint32](#uint32) |  | gov_mint_count_left is the remaining number of times for gov_mint. |
 
 
 
