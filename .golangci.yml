@@ -65,4 +65,3 @@ linters-settings:
     allow-unused: false
     require-explanation: false
     require-specific: false
-    
