@@ -457,7 +457,7 @@ Example of the content of messages-json:
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().String(FlagExec, "", "Set to 1 to try to execute proposal immediately after creation")
+	cmd.Flags().String(FlagExec, "", "Set to 'try' to try to execute proposal immediately after creation (proposers signatures are considered as Yes votes)")
 
 	return cmd
 }
@@ -564,7 +564,7 @@ Parameters:
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().String(FlagExec, "", "Set to 1 to try to execute proposal immediately after voting")
+	cmd.Flags().String(FlagExec, "", "Set to 'try' to try to execute proposal immediately after voting")
 
 	return cmd
 }
