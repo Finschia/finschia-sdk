@@ -318,18 +318,6 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 		return nil, nil, sdkerrors.Wrap(types.ErrAccountExists, existingAcct.GetAddress().String())
 	}
 
-	// deposit initial contract funds
-	if !deposit.IsZero() {
-		if err := k.bank.TransferCoins(ctx, creator, contractAddress, deposit); err != nil {
-			return nil, nil, err
-		}
-	} else {
-		// create an empty account (so we don't have issues later)
-		// TODO: can we remove this?
-		contractAccount := k.accountKeeper.NewAccountWithAddress(ctx, contractAddress)
-		k.accountKeeper.SetAccount(ctx, contractAccount)
-	}
-
 	// get contact info
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.GetCodeKey(codeID))
@@ -388,6 +376,18 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 	k.appendToContractHistory(ctx, contractAddress, historyEntry)
 	k.storeContractInfo(ctx, contractAddress, &contractInfo)
 
+	// deposit initial contract funds
+	if !deposit.IsZero() {
+		if err := k.bank.TransferCoins(ctx, creator, contractAddress, deposit); err != nil {
+			return nil, nil, err
+		}
+	} else {
+		// create an empty account (so we don't have issues later)
+		// TODO: can we remove this?
+		contractAccount := k.accountKeeper.NewAccountWithAddress(ctx, contractAddress)
+		k.accountKeeper.SetAccount(ctx, contractAccount)
+	}
+
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		types.EventTypeInstantiate,
 		sdk.NewAttribute(types.AttributeKeyContractAddr, contractAddress.String()),
@@ -416,13 +416,6 @@ func (k Keeper) execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	executeCosts := k.instantiateContractCosts(k.gasRegister, ctx, k.IsPinnedCode(ctx, contractInfo.CodeID), len(msg))
 	ctx.GasMeter().ConsumeGas(executeCosts, "Loading CosmWasm module: execute")
 
-	// add more funds
-	if !coins.IsZero() {
-		if err := k.bank.TransferCoins(ctx, caller, contractAddress, coins); err != nil {
-			return nil, err
-		}
-	}
-
 	env := types.NewEnv(ctx, contractAddress)
 	info := types.NewInfo(caller, coins)
 
@@ -434,6 +427,13 @@ func (k Keeper) execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	k.consumeRuntimeGas(ctx, gasUsed)
 	if execErr != nil {
 		return nil, sdkerrors.Wrap(types.ErrExecuteFailed, execErr.Error())
+	}
+
+	// add more funds
+	if !coins.IsZero() {
+		if err := k.bank.TransferCoins(ctx, caller, contractAddress, coins); err != nil {
+			return nil, err
+		}
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
