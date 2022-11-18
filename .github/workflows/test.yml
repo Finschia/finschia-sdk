@@ -59,6 +59,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
+            .github/workflows/test.yml
       - name: Build
         run: GOOS=linux CGO_ENABLED=1 GOARCH=${{ matrix.goarch }} CC=${{ matrix.gcc }} LEDGER_ENABLED=false make build
 
@@ -129,6 +130,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
+            .github/workflows/test.yml
       - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-${{ matrix.part }}"
@@ -156,6 +158,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
+            .github/workflows/test.yml
       - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-00-coverage"
@@ -209,6 +212,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
+            .github/workflows/test.yml
       - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-${{ matrix.part }}"
