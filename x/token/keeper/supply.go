@@ -285,19 +285,20 @@ func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Pair)
 		return err
 	}
 
-	modifiers := map[string]func(string){
-		token.AttributeKeyName.String(): func(name string) {
+	modifiers := map[token.AttributeKey]func(string){
+		token.AttributeKeyName: func(name string) {
 			class.Name = name
 		},
-		token.AttributeKeyImageURI.String(): func(uri string) {
+		token.AttributeKeyImageURI: func(uri string) {
 			class.ImageUri = uri
 		},
-		token.AttributeKeyMeta.String(): func(meta string) {
+		token.AttributeKeyMeta: func(meta string) {
 			class.Meta = meta
 		},
 	}
 	for _, change := range changes {
-		modifiers[change.Field](change.Value)
+		key := token.AttributeKeyFromString(change.Field)
+		modifiers[key](change.Value)
 	}
 
 	k.setClass(ctx, *class)
