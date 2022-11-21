@@ -48,7 +48,6 @@ const (
 	FlagHaltTime            = "halt-time"
 	FlagInterBlockCache     = "inter-block-cache"
 	FlagInterBlockCacheSize = "inter-block-cache-size"
-	FlagIAVLCacheSize       = "iavl-cache-size"
 	FlagUnsafeSkipUpgrades  = "unsafe-skip-upgrades"
 	FlagTrace               = "trace"
 	FlagInvCheckPeriod      = "inv-check-period"
@@ -61,6 +60,8 @@ const (
 	FlagPruningInterval   = "pruning-interval"
 	FlagIndexEvents       = "index-events"
 	FlagMinRetainBlocks   = "min-retain-blocks"
+	FlagIAVLCacheSize     = "iavl-cache-size"
+	FlagIAVLFastNode      = "iavl-disable-fastnode"
 
 	// state sync-related flags
 	FlagStateSyncSnapshotInterval   = "state-sync.snapshot-interval"
@@ -177,6 +178,8 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 	cmd.Flags().Uint64(FlagStateSyncSnapshotInterval, 0, "State sync snapshot interval")
 	cmd.Flags().Uint32(FlagStateSyncSnapshotKeepRecent, 2, "State sync snapshot to keep")
 
+	cmd.Flags().Bool(FlagIAVLFastNode, true, "Enable fast node for IAVL tree")
+
 	cmd.Flags().Bool(FlagPrometheus, false, "Enable prometheus metric for app")
 
 	cmd.Flags().Uint(FlagChanCheckTxSize, config.DefaultChanCheckTxSize, "The size of the channel check tx")
@@ -203,7 +206,13 @@ func startStandAlone(ctx *Context, appCreator types.AppCreator) error {
 	}
 
 	app := appCreator(ctx.Logger, db, traceWriter, ctx.Viper)
-	_, err = startTelemetry(config.GetConfig(ctx.Viper))
+
+	config, err := config.GetConfig(ctx.Viper)
+	if err != nil {
+		return err
+	}
+
+	_, err = startTelemetry(config)
 	if err != nil {
 		return err
 	}
@@ -264,7 +273,11 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		return err
 	}
 
-	config := config.GetConfig(ctx.Viper)
+	config, err := config.GetConfig(ctx.Viper)
+	if err != nil {
+		return err
+	}
+
 	if err := config.ValidateBasic(); err != nil {
 		ctx.Logger.Error("WARNING: The minimum-gas-prices config in app.toml is set to the empty string. " +
 			"This defaults to 0 in the current version, but will error in the next version " +
@@ -324,6 +337,10 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 
 		app.RegisterTxService(clientCtx)
 		app.RegisterTendermintService(clientCtx)
+
+		if a, ok := app.(types.ApplicationQueryService); ok {
+			a.RegisterNodeService(clientCtx)
+		}
 	}
 
 	metrics, err := startTelemetry(config)

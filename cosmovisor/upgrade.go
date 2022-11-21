@@ -87,11 +87,11 @@ func MarkExecutable(path string) error {
 		return fmt.Errorf("stating binary: %w", err)
 	}
 	// end early if world exec already set
-	if info.Mode()&0001 == 1 {
+	if info.Mode()&0o001 == 1 {
 		return nil
 	}
 	// now try to set all exec bits
-	newMode := info.Mode().Perm() | 0111
+	newMode := info.Mode().Perm() | 0o111
 	return os.Chmod(path, newMode)
 }
 
@@ -185,7 +185,7 @@ func EnsureBinary(path string) error {
 	}
 
 	// this checks if the world-executable bit is set (we cannot check owner easily)
-	exec := info.Mode().Perm() & 0001
+	exec := info.Mode().Perm() & 0o001
 	if exec == 0 {
 		return fmt.Errorf("%s is not world executable", info.Name())
 	}

@@ -25,13 +25,15 @@ import (
 
 func TestBaseReq_Sanitize(t *testing.T) {
 	t.Parallel()
-	sanitized := rest.BaseReq{ChainID: "   test",
+	sanitized := rest.BaseReq{
+		ChainID:       "   test",
 		Memo:          "memo     ",
 		From:          " link1zp4lzwuwzvhq7xhe8xj688vv00dxv2zyue4xuj ",
 		Gas:           " ",
 		GasAdjustment: "  0.3",
 	}.Sanitize()
-	require.Equal(t, rest.BaseReq{ChainID: "test",
+	require.Equal(t, rest.BaseReq{
+		ChainID:       "test",
 		Memo:          "memo",
 		From:          "link1zp4lzwuwzvhq7xhe8xj688vv00dxv2zyue4xuj",
 		Gas:           "",

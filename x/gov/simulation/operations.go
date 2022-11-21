@@ -21,9 +21,9 @@ var initialProposalID = uint64(100000000000000)
 // nolint:gosec
 // Simulation operation weights constants
 const (
-	OpWeightMsgDeposit      = "op_weight_msg_deposit"
-	OpWeightMsgVote         = "op_weight_msg_vote"
-	OpWeightMsgVoteWeighted = "op_weight_msg_weighted_vote"
+	OpWeightMsgDeposit      = "op_weight_msg_deposit"       //nolint:gosec
+	OpWeightMsgVote         = "op_weight_msg_vote"          //nolint:gosec
+	OpWeightMsgVoteWeighted = "op_weight_msg_weighted_vote" //nolint:gosec
 )
 
 // WeightedOperations returns all the operations from the module with their respective weights
@@ -31,7 +31,6 @@ func WeightedOperations(
 	appParams simtypes.AppParams, cdc codec.JSONCodec, ak types.AccountKeeper,
 	bk types.BankKeeper, k keeper.Keeper, wContents []simtypes.WeightedProposalContent,
 ) simulation.WeightedOperations {
-
 	var (
 		weightMsgDeposit      int
 		weightMsgVote         int
@@ -156,7 +155,8 @@ func SimulateMsgSubmitProposal(
 		}
 
 		txGen := simappparams.MakeTestEncodingConfig().TxConfig
-		tx, err := helpers.GenTx(
+		tx, err := helpers.GenSignedMockTx(
+			r,
 			txGen,
 			[]sdk.Msg{msg},
 			fees,
@@ -243,6 +243,7 @@ func SimulateMsgDeposit(ak types.AccountKeeper, bk types.BankKeeper, k keeper.Ke
 		}
 
 		txCtx := simulation.OperationInput{
+			R:             r,
 			App:           app,
 			TxGen:         simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:           nil,
@@ -264,7 +265,8 @@ func SimulateMsgVote(ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keepe
 }
 
 func operationSimulateMsgVote(ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keeper,
-	simAccount simtypes.Account, proposalIDInt int64) simtypes.Operation {
+	simAccount simtypes.Account, proposalIDInt int64,
+) simtypes.Operation {
 	return func(
 		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context,
 		accs []simtypes.Account, chainID string,
@@ -317,7 +319,8 @@ func SimulateMsgVoteWeighted(ak types.AccountKeeper, bk types.BankKeeper, k keep
 }
 
 func operationSimulateMsgVoteWeighted(ak types.AccountKeeper, bk types.BankKeeper, k keeper.Keeper,
-	simAccount simtypes.Account, proposalIDInt int64) simtypes.Operation {
+	simAccount simtypes.Account, proposalIDInt int64,
+) simtypes.Operation {
 	return func(
 		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context,
 		accs []simtypes.Account, chainID string,
@@ -405,7 +408,8 @@ func randomDeposit(r *rand.Rand, ctx sdk.Context,
 // that matches a given Status.
 // It does not provide a default ID.
 func randomProposalID(r *rand.Rand, k keeper.Keeper,
-	ctx sdk.Context, status types.ProposalStatus) (proposalID uint64, found bool) {
+	ctx sdk.Context, status types.ProposalStatus,
+) (proposalID uint64, found bool) {
 	proposalID, _ = k.GetProposalID(ctx)
 
 	switch {
