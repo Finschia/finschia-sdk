@@ -232,8 +232,8 @@ jobs:
           USE_PREFETCH: NO
           USE_PRELOAD: 1,4
           SAVE_BRANCH_LAUNCH_DEPTH: 1
-          CGO_CFLAGS: -I${{ GITHUB_WORKSPACE }}/tools/sodium/linux_amd64/include
-          CGO_LDFLAGS: -L${{ GITHUB_WORKSPACE }}/tools/sodium/linux_amd64/lib -lsodium
+          CGO_CFLAGS: -I${{ env.GITHUB_WORKSPACE }}/tools/sodium/linux_amd64/include
+          CGO_LDFLAGS: -L${{ env.GITHUB_WORKSPACE }}/tools/sodium/linux_amd64/lib -lsodium
         run: |
           xargs --arg-file=pkgs.txt.part.${{ matrix.part }} go test -mod=readonly -timeout 30m -race -tags='cgo ledger test_ledger_mock goleveldb gcc libsodium'
         if: env.GIT_DIFF
