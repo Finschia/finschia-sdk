@@ -2,13 +2,14 @@ package collection_test
 
 import (
 	"fmt"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	"github.com/line/lbm-sdk/x/collection"
 )
 
@@ -1108,7 +1109,7 @@ func TestMsgModify(t *testing.T) {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	changes := []collection.Change{{Field: "name", Value: "New test"}}
+	changes := []collection.Change{{Field: collection.AttributeKeyName.String(), Value: "New test"}}
 	testCases := map[string]struct {
 		contractID string
 		owner      sdk.AccAddress
@@ -1149,7 +1150,7 @@ func TestMsgModify(t *testing.T) {
 		"invalid key of change": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Change{{Value: "tt"}},
+			changes:    []collection.Change{{Field: strings.ToUpper(collection.AttributeKeyName.String()) , Value: "tt"}},
 		},
 		"invalid value of change": {
 			contractID: "deadbeef",

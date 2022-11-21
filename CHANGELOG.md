@@ -49,6 +49,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (global) [\#782](https://github.com/line/lbm-sdk/pull/782) add unhandled return error handling
 * (x/collection,x/token) [\#798](https://github.com/line/lbm-sdk/pull/798) Fix x/collection ModifyContract
 * (ci) [\#803](https://github.com/line/lbm-sdk/pull/803) fix test flow to install libsodium
+* (x/collection,token) [\#784](https://github.com/line/lbm-sdk/pull/784) Make field key matching in x/token & x/collection case-sensitive
 
 ### Breaking Changes
 * (cli) [\#773](https://github.com/line/lbm-sdk/pull/773) guide users to use generate-only in messages for x/foundation authority
