@@ -1,5 +1,36 @@
 # Changelog
 
+## [v0.45.0-rc10](https://github.com/line/lbm-sdk/releases/tag/v0.45.0-rc10)
+
+This version based on cosmos-sdk v0.45.10 and Ostracon v1.0.7.
+
+### Features
+* (global) [\#783](https://github.com/line/lbm-sdk/pull/783) bump up github.com/cosmos/cosmos-sdk to v0.45.10
+* (build) [\#793](https://github.com/line/lbm-sdk/pull/793) enable to use libsodium version ostracon
+
+### Improvements
+* (x/auth) [\#776](https://github.com/line/lbm-sdk/pull/776) remove unused MsgEmpty
+
+### Bug Fixes
+* (x/foundation) [\#772](https://github.com/line/lbm-sdk/pull/772) export x/foundation pool
+* (baseapp) [\#781](https://github.com/line/lbm-sdk/pull/781) implement method `SetOption()` in baseapp
+* (global) [\#782](https://github.com/line/lbm-sdk/pull/782) add unhandled return error handling
+* (x/collection,x/token) [\#798](https://github.com/line/lbm-sdk/pull/798) Fix x/collection ModifyContract
+* (ci) [\#803](https://github.com/line/lbm-sdk/pull/803) fix test flow to install libsodium
+* (x/collection,token) [\#784](https://github.com/line/lbm-sdk/pull/784) Make field key matching in x/token & x/collection case-sensitive
+
+### Breaking Changes
+* (cli) [\#773](https://github.com/line/lbm-sdk/pull/773) guide users to use generate-only in messages for x/foundation authority
+* (x/foundation) [\#790](https://github.com/line/lbm-sdk/pull/790) fix case of gov_mint_left_count in x/foundation
+
+### Build, CI
+* (ci) [\#779](https://github.com/line/lbm-sdk/pull/779) change github action trigger rules for `release/*` and `rc*/*` branches
+
+### Document Updates
+* (docs) [\#766](https://github.com/line/lbm-sdk/pull/766) fix submit-proposal command on x/foundation
+* (docs) [\#802](https://github.com/line/lbm-sdk/pull/802) update x/foundation documentation
+
+
 ## [v0.45.0-rc9](https://github.com/line/lbm-sdk/releases/tag/v0.45.0-rc9)
 
 ### Features
