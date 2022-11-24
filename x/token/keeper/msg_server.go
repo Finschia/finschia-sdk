@@ -234,10 +234,9 @@ func (s msgServer) Mint(c context.Context, req *token.MsgMint) (*token.MsgMintRe
 // Burn defines a method to burn tokens
 func (s msgServer) Burn(c context.Context, req *token.MsgBurn) (*token.MsgBurnResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	from, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
-	}
+
+	from := sdk.MustAccAddressFromBech32(req.From)
+
 	if err := s.keeper.Burn(ctx, req.ContractId, from, req.Amount); err != nil {
 		return nil, err
 	}
@@ -248,14 +247,9 @@ func (s msgServer) Burn(c context.Context, req *token.MsgBurn) (*token.MsgBurnRe
 // BurnFrom defines a method for the proxy to burn tokens on the behalf of the holder.
 func (s msgServer) BurnFrom(c context.Context, req *token.MsgBurnFrom) (*token.MsgBurnFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	proxy, err := sdk.AccAddressFromBech32(req.Proxy)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", req.Proxy)
-	}
-	from, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
-	}
+	proxy := sdk.MustAccAddressFromBech32(req.Proxy)
+	from := sdk.MustAccAddressFromBech32(req.From)
+
 	if err := s.keeper.OperatorBurn(ctx, req.ContractId, proxy, from, req.Amount); err != nil {
 		return nil, err
 	}

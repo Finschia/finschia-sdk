@@ -150,7 +150,7 @@ func (k Keeper) Burn(ctx sdk.Context, contractID string, from sdk.AccAddress, am
 
 func (k Keeper) burn(ctx sdk.Context, contractID string, from sdk.AccAddress, amount sdk.Int) error {
 	if _, err := k.GetGrant(ctx, contractID, from, token.PermissionBurn); err != nil {
-		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	if err := k.burnToken(ctx, contractID, from, amount); err != nil {
@@ -181,10 +181,10 @@ func (k Keeper) OperatorBurn(ctx sdk.Context, contractID string, operator, from 
 func (k Keeper) operatorBurn(ctx sdk.Context, contractID string, operator, from sdk.AccAddress, amount sdk.Int) error {
 	_, err := k.GetGrant(ctx, contractID, operator, token.PermissionBurn)
 	if err != nil {
-		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 	if _, err := k.GetAuthorization(ctx, contractID, from, operator); err != nil {
-		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return token.ErrTokenNotApproved.Wrap(err.Error())
 	}
 
 	if err := k.burnToken(ctx, contractID, from, amount); err != nil {

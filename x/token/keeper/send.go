@@ -75,7 +75,8 @@ func (k Keeper) subtractToken(ctx sdk.Context, contractID string, addr sdk.AccAd
 	balance := k.GetBalance(ctx, contractID, addr)
 	newBalance := balance.Sub(amount)
 	if newBalance.IsNegative() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s is smaller than %s", balance, amount)
+		// Daphne emits ErrInsufficientFunds here, which is against to the spec.
+		return token.ErrInsufficientBalance.Wrapf("%s is smaller than %s", balance, amount)
 	}
 
 	k.setBalance(ctx, contractID, addr, newBalance)
