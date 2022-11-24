@@ -161,14 +161,8 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 		Mintable:   req.Mintable,
 	}
 
-	owner, err := sdk.AccAddressFromBech32(req.Owner)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", req.Owner)
-	}
-	to, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", req.To)
-	}
+	owner := sdk.MustAccAddressFromBech32(req.Owner)
+	to := sdk.MustAccAddressFromBech32(req.To)
 	s.keeper.Issue(ctx, class, owner, to, req.Amount)
 
 	return &token.MsgIssueResponse{Id: contractID}, nil
