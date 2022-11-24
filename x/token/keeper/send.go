@@ -24,7 +24,7 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, op
 		return err
 	}
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err == nil {
-		return sdkerrors.ErrInvalidRequest.Wrap("Already authorized")
+		return token.ErrTokenAlreadyApproved.Wrap("Already authorized")
 	}
 
 	k.setAuthorization(ctx, contractID, holder, operator)

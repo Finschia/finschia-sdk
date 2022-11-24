@@ -82,14 +82,10 @@ func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (
 // RevokeOperator revokes one to send tokens on behalf of the token holder
 func (s msgServer) RevokeOperator(c context.Context, req *token.MsgRevokeOperator) (*token.MsgRevokeOperatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	holder, err := sdk.AccAddressFromBech32(req.Holder)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", req.Holder)
-	}
-	operator, err := sdk.AccAddressFromBech32(req.Operator)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
-	}
+
+	holder := sdk.MustAccAddressFromBech32(req.Holder)
+	operator := sdk.MustAccAddressFromBech32(req.Operator)
+
 	if err := s.keeper.RevokeOperator(ctx, req.ContractId, holder, operator); err != nil {
 		return nil, err
 	}
@@ -108,14 +104,10 @@ func (s msgServer) RevokeOperator(c context.Context, req *token.MsgRevokeOperato
 // Approve allows one to send tokens on behalf of the approver
 func (s msgServer) Approve(c context.Context, req *token.MsgApprove) (*token.MsgApproveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	approver, err := sdk.AccAddressFromBech32(req.Approver)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", req.Approver)
-	}
-	proxy, err := sdk.AccAddressFromBech32(req.Proxy)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", req.Proxy)
-	}
+
+	approver := sdk.MustAccAddressFromBech32(req.Approver)
+	proxy := sdk.MustAccAddressFromBech32(req.Proxy)
+
 	if err := s.keeper.AuthorizeOperator(ctx, req.ContractId, approver, proxy); err != nil {
 		return nil, err
 	}
