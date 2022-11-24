@@ -1,8 +1,6 @@
 package ante_test
 
 import (
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
@@ -43,21 +41,6 @@ func (suite *AnteTestSuite) TestSetup() {
 
 	// Context GasMeter Limit should be set after SetUpContextDecorator runs
 	suite.Require().Equal(gasLimit, newCtx.GasMeter().Limit(), "GasMeter not set correctly")
-
-	// Set MaxGas lower than the tx's gasWanted
-	consensusParams := &abci.ConsensusParams{
-		Block: &abci.BlockParams{
-			MaxGas: int64(gasLimit) - 1,
-		},
-	}
-	suite.ctx = suite.ctx.WithConsensusParams(consensusParams)
-
-	// for both of CheckTx and ReCheckTx
-	for _, isRecheck := range []bool{false, true} {
-		suite.ctx = suite.ctx.WithIsReCheckTx(isRecheck)
-		_, err = antehandler(suite.ctx, tx, false)
-		suite.Require().Error(err)
-	}
 }
 
 func (suite *AnteTestSuite) TestRecoverPanic() {
