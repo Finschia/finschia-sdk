@@ -261,12 +261,10 @@ func (s msgServer) BurnFrom(c context.Context, req *token.MsgBurnFrom) (*token.M
 func (s msgServer) Modify(c context.Context, req *token.MsgModify) (*token.MsgModifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	grantee, err := sdk.AccAddressFromBech32(req.Owner)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Owner)
-	}
+	grantee := sdk.MustAccAddressFromBech32(req.Owner)
+
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, token.PermissionModify); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	if err := s.keeper.Modify(ctx, req.ContractId, grantee, req.Changes); err != nil {

@@ -89,7 +89,7 @@ func validateChange(change Pair) error {
 
 	validator, ok := validators[change.Field]
 	if !ok {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Field)
+		return ErrInvalidChangesField.Wrapf("invalid field: %s", change.Field)
 	}
 	return validator(change.Value)
 }

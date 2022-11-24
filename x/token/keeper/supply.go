@@ -69,7 +69,7 @@ func (k Keeper) GetClass(ctx sdk.Context, contractID string) (*token.TokenClass,
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(classKey(contractID))
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("no class for %s", contractID)
+		return nil, token.ErrTokenNotExist.Wrapf("no class for %s", contractID)
 	}
 
 	var class token.TokenClass

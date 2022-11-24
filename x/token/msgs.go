@@ -454,7 +454,7 @@ func (m MsgModify) ValidateBasic() error {
 	checkedFields := map[string]bool{}
 	for _, change := range m.Changes {
 		if checkedFields[change.Field] {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate fields: %s", change.Field)
+			return ErrDuplicateChangesField.Wrapf("duplicate fields: %s", change.Field)
 		}
 		checkedFields[change.Field] = true
 
@@ -463,7 +463,7 @@ func (m MsgModify) ValidateBasic() error {
 		}
 	}
 	if len(checkedFields) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("no field provided")
+		return ErrEmptyChanges.Wrapf("no field provided")
 	}
 
 	return nil
