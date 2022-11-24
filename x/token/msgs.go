@@ -21,6 +21,7 @@ func (m MsgSend) ValidateBasic() error {
 	}
 
 	if err := validateAmount(m.Amount); err != nil {
+		// Daphne emits ErrInvalidCoins here, which is against to the spec.
 		return err
 	}
 

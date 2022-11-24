@@ -26,14 +26,9 @@ var _ token.MsgServer = msgServer{}
 func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	from, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
-	}
-	to, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", req.To)
-	}
+	from := sdk.MustAccAddressFromBech32(req.From)
+	to := sdk.MustAccAddressFromBech32(req.To)
+
 	if err := s.keeper.Send(ctx, req.ContractId, from, to, req.Amount); err != nil {
 		return nil, err
 	}
@@ -57,21 +52,12 @@ func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendRe
 func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (*token.MsgTransferFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	from, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
-	}
-	proxy, err := sdk.AccAddressFromBech32(req.Proxy)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", req.Proxy)
-	}
-	to, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.To)
-	}
+	from := sdk.MustAccAddressFromBech32(req.From)
+	proxy := sdk.MustAccAddressFromBech32(req.Proxy)
+	to := sdk.MustAccAddressFromBech32(req.To)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, from, proxy); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, token.ErrTokenNotApproved.Wrap(err.Error())
 	}
 
 	if err := s.keeper.Send(ctx, req.ContractId, from, to, req.Amount); err != nil {
