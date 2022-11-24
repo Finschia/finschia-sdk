@@ -75,7 +75,7 @@ func validateLegacyPermission(permission string) error {
 
 func ValidatePermission(permission Permission) error {
 	if p := Permission_value[Permission_name[int32(permission)]]; p == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid permission: %s", permission)
+		return sdkerrors.ErrInvalidPermission.Wrapf("invalid permission: %s", permission)
 	}
 	return nil
 }

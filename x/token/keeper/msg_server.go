@@ -172,17 +172,11 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermission) (*token.MsgGrantPermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	granter, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", req.From)
-	}
-	grantee, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.To)
-	}
+	granter := sdk.MustAccAddressFromBech32(req.From)
+	grantee := sdk.MustAccAddressFromBech32(req.To)
 	permission := token.Permission(token.LegacyPermissionFromString(req.Permission))
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err == nil {
 		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission)
@@ -205,13 +199,10 @@ func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermiss
 func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermission) (*token.MsgRevokePermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	grantee, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.From)
-	}
+	grantee := sdk.MustAccAddressFromBech32(req.From)
 	permission := token.Permission(token.LegacyPermissionFromString(req.Permission))
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
