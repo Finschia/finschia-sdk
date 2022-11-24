@@ -220,14 +220,10 @@ func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermi
 // Mint defines a method to mint tokens
 func (s msgServer) Mint(c context.Context, req *token.MsgMint) (*token.MsgMintResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	from, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
-	}
-	to, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", req.To)
-	}
+
+	from := sdk.MustAccAddressFromBech32(req.From)
+	to := sdk.MustAccAddressFromBech32(req.To)
+
 	if err := s.keeper.Mint(ctx, req.ContractId, from, to, req.Amount); err != nil {
 		return nil, err
 	}

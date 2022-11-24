@@ -110,7 +110,7 @@ func (k Keeper) Mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddr
 
 func (k Keeper) mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddress, amount sdk.Int) error {
 	if _, err := k.GetGrant(ctx, contractID, grantee, token.PermissionMint); err != nil {
-		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	k.mintToken(ctx, contractID, to, amount)
