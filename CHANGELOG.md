@@ -137,6 +137,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ostracon) [\#614](https://github.com/line/lbm-sdk/pull/614) apply Ostracon's changes that replace `StakingPower` with `VotingPower` and `StakingPower` with `VotingPower`
 * (proto) [\#617](https://github.com/line/lbm-sdk/pull/617) change wasm gRPC path to original `cosmwasm` path.
 * (proto) [\#627](https://github.com/line/lbm-sdk/pull/627) revert changes in x/slashing proto
+* (rest) [\#807](https://github.com/line/lbm-sdk/pull/807) `types/rest` package moved to `testutil/rest`
+* (rest) [\#807](https://github.com/line/lbm-sdk/pull/807) remove legacy REST API
 
 ### Build, CI
 
