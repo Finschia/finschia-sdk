@@ -16,11 +16,10 @@ import (
 	ostrpcserver "github.com/line/ostracon/rpc/jsonrpc/server"
 
 	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/server/config"
 	"github.com/line/lbm-sdk/telemetry"
 	grpctypes "github.com/line/lbm-sdk/types/grpc"
-	"github.com/line/lbm-sdk/types/rest"
-
 	// unnamed import of statik for swagger UI support
 	_ "github.com/line/lbm-sdk/client/docs/statik"
 )
@@ -143,7 +142,7 @@ func (s *Server) registerMetrics() {
 
 		gr, err := s.metrics.Gather(format)
 		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("failed to gather metrics: %s", err))
+			writeErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("failed to gather metrics: %s", err))
 			return
 		}
 
@@ -152,4 +151,23 @@ func (s *Server) registerMetrics() {
 	}
 
 	s.Router.HandleFunc("/metrics", metricsHandler).Methods("GET")
+}
+
+// errorResponse defines the attributes of a JSON error response.
+type errorResponse struct {
+	Code  int    `json:"code,omitempty"`
+	Error string `json:"error"`
+}
+
+// newErrorResponse creates a new errorResponse instance.
+func newErrorResponse(code int, err string) errorResponse {
+	return errorResponse{Code: code, Error: err}
+}
+
+// writeErrorResponse prepares and writes a HTTP error
+// given a status code and an error message.
+func writeErrorResponse(w http.ResponseWriter, status int, err string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	_, _ = w.Write(legacy.Cdc.MustMarshalJSON(newErrorResponse(0, err)))
 }
