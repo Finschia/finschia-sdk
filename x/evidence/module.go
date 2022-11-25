@@ -21,7 +21,6 @@ import (
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	eviclient "github.com/line/lbm-sdk/x/evidence/client"
 	"github.com/line/lbm-sdk/x/evidence/client/cli"
-	"github.com/line/lbm-sdk/x/evidence/client/rest"
 	"github.com/line/lbm-sdk/x/evidence/keeper"
 	"github.com/line/lbm-sdk/x/evidence/simulation"
 	"github.com/line/lbm-sdk/x/evidence/types"
@@ -75,15 +74,7 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 }
 
 // RegisterRESTRoutes registers the evidence module's REST service handlers.
-func (a AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
-	evidenceRESTHandlers := make([]rest.EvidenceRESTHandler, len(a.evidenceHandlers))
-
-	for i, evidenceHandler := range a.evidenceHandlers {
-		evidenceRESTHandlers[i] = evidenceHandler.RESTHandler(clientCtx)
-	}
-
-	rest.RegisterRoutes(clientCtx, rtr, evidenceRESTHandlers)
-}
+func (AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {}
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the evidence module.
 func (a AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {

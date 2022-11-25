@@ -18,7 +18,6 @@ import (
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/mint/client/cli"
-	"github.com/line/lbm-sdk/x/mint/client/rest"
 	"github.com/line/lbm-sdk/x/mint/keeper"
 	"github.com/line/lbm-sdk/x/mint/simulation"
 	"github.com/line/lbm-sdk/x/mint/types"
@@ -65,9 +64,7 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 }
 
 // RegisterRESTRoutes registers the REST routes for the mint module.
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
-	rest.RegisterRoutes(clientCtx, rtr)
-}
+func (AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {}
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the mint module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {

@@ -15,7 +15,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
 	"github.com/line/lbm-sdk/x/upgrade/client/cli"
-	"github.com/line/lbm-sdk/x/upgrade/client/rest"
 	"github.com/line/lbm-sdk/x/upgrade/keeper"
 	"github.com/line/lbm-sdk/x/upgrade/types"
 )
@@ -43,9 +42,7 @@ func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 }
 
 // RegisterRESTRoutes registers all REST query handlers
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, r *mux.Router) {
-	rest.RegisterRoutes(clientCtx, r)
-}
+func (AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {}
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the upgrade module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {

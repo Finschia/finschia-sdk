@@ -19,7 +19,6 @@ import (
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/auth/client/cli"
-	"github.com/line/lbm-sdk/x/auth/client/rest"
 	"github.com/line/lbm-sdk/x/auth/keeper"
 	"github.com/line/lbm-sdk/x/auth/simulation"
 	"github.com/line/lbm-sdk/x/auth/types"
@@ -61,9 +60,9 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 }
 
 // RegisterRESTRoutes registers the REST routes for the auth module.
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
-	rest.RegisterRoutes(clientCtx, rtr, types.StoreKey)
-}
+// Deprecated: RegisterRESTRoutes is deprecated. `x/auth` legacy REST implementation
+// has been removed from the SDK.
+func (AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {}
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the auth module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {

@@ -1,7 +1,4 @@
-//go:build norace
-// +build norace
-
-package rest_test
+package testutil
 
 import (
 	"fmt"
@@ -9,10 +6,10 @@ import (
 	"github.com/gogo/protobuf/proto"
 
 	"github.com/line/lbm-sdk/testutil"
+	"github.com/line/lbm-sdk/testutil/rest"
 	sdk "github.com/line/lbm-sdk/types"
 	grpctypes "github.com/line/lbm-sdk/types/grpc"
 	"github.com/line/lbm-sdk/types/query"
-	"github.com/line/lbm-sdk/types/rest"
 	"github.com/line/lbm-sdk/x/bank/types"
 )
 
@@ -143,8 +140,26 @@ func (s *IntegrationTestSuite) TestDenomMetadataGRPCHandler() {
 						Base:    "uatom",
 						Display: "atom",
 					},
+					{
+						Name:        "Ethereum",
+						Symbol:      "ETH",
+						Description: "Ethereum mainnet token",
+						DenomUnits: []*types.DenomUnit{
+							{
+								Denom:    "wei",
+								Exponent: 0,
+							},
+							{
+								Denom:    "eth",
+								Exponent: 6,
+								Aliases:  []string{"ETH"},
+							},
+						},
+						Base:    "wei",
+						Display: "eth",
+					},
 				},
-				Pagination: &query.PageResponse{Total: 1},
+				Pagination: &query.PageResponse{Total: 2},
 			},
 		},
 		{
@@ -235,7 +250,7 @@ func (s *IntegrationTestSuite) TestBalancesGRPCHandler() {
 		},
 		{
 			"gPRC account balance of a denom",
-			fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s/by_denom?denom=%s", baseURL, val.Address.String(), s.cfg.BondDenom),
+			fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s/%s", baseURL, val.Address.String(), s.cfg.BondDenom),
 			&types.QueryBalanceResponse{},
 			&types.QueryBalanceResponse{
 				Balance: &sdk.Coin{
@@ -246,7 +261,7 @@ func (s *IntegrationTestSuite) TestBalancesGRPCHandler() {
 		},
 		{
 			"gPRC account balance of a bogus denom",
-			fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s/by_denom?denom=foobar", baseURL, val.Address.String()),
+			fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s/foobar", baseURL, val.Address.String()),
 			&types.QueryBalanceResponse{},
 			&types.QueryBalanceResponse{
 				Balance: &sdk.Coin{

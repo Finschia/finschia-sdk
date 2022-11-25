@@ -1,45 +1,17 @@
-package rest_test
+package testutil
 
 import (
 	"fmt"
-	"testing"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/testutil"
-	"github.com/line/lbm-sdk/testutil/network"
 	sdk "github.com/line/lbm-sdk/types"
 	grpctypes "github.com/line/lbm-sdk/types/grpc"
 	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/x/slashing/types"
 )
-
-type IntegrationTestSuite struct {
-	suite.Suite
-
-	cfg     network.Config
-	network *network.Network
-}
-
-func (s *IntegrationTestSuite) SetupSuite() {
-	s.T().Log("setting up integration test suite")
-
-	cfg := network.DefaultConfig()
-	cfg.NumValidators = 1
-
-	s.cfg = cfg
-	s.network = network.New(s.T(), cfg)
-
-	_, err := s.network.WaitForHeight(1)
-	s.Require().NoError(err)
-}
-
-func (s *IntegrationTestSuite) TearDownSuite() {
-	s.T().Log("tearing down integration test suite")
-	s.network.Cleanup()
-}
 
 func (s *IntegrationTestSuite) TestGRPCQueries() {
 	val := s.network.Validators[0]
@@ -127,8 +99,4 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 			}
 		})
 	}
-}
-
-func TestIntegrationTestSuite(t *testing.T) {
-	suite.Run(t, new(IntegrationTestSuite))
 }

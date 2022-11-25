@@ -21,7 +21,6 @@ import (
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	simKeeper "github.com/line/lbm-sdk/x/simulation"
 	"github.com/line/lbm-sdk/x/wasm/client/cli"
-	"github.com/line/lbm-sdk/x/wasm/client/rest"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
 	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/simulation"
@@ -78,9 +77,7 @@ func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONCodec, config client
 }
 
 // RegisterRESTRoutes registers the REST routes for the wasm module.
-func (AppModuleBasic) RegisterRESTRoutes(cliCtx client.Context, rtr *mux.Router) {
-	rest.RegisterRoutes(cliCtx, rtr)
-}
+func (AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {}
 
 // GetTxCmd returns the root tx command for the wasm module.
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {

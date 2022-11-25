@@ -83,7 +83,7 @@ func (a AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config sdkclient.Tx
 
 // RegisterRESTRoutes registers the REST routes for the feegrant module.
 // Deprecated: RegisterRESTRoutes is deprecated.
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx sdkclient.Context, rtr *mux.Router) {}
+func (AppModuleBasic) RegisterRESTRoutes(_ sdkclient.Context, _ *mux.Router) {}
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the feegrant module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx sdkclient.Context, mux *runtime.ServeMux) {

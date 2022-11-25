@@ -22,7 +22,6 @@ import (
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	govclient "github.com/line/lbm-sdk/x/gov/client"
 	"github.com/line/lbm-sdk/x/gov/client/cli"
-	"github.com/line/lbm-sdk/x/gov/client/rest"
 	"github.com/line/lbm-sdk/x/gov/keeper"
 	"github.com/line/lbm-sdk/x/gov/simulation"
 	"github.com/line/lbm-sdk/x/gov/types"
@@ -74,14 +73,7 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 }
 
 // RegisterRESTRoutes registers the REST routes for the gov module.
-func (a AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
-	proposalRESTHandlers := make([]rest.ProposalRESTHandler, 0, len(a.proposalHandlers))
-	for _, proposalHandler := range a.proposalHandlers {
-		proposalRESTHandlers = append(proposalRESTHandlers, proposalHandler.RESTHandler(clientCtx))
-	}
-
-	rest.RegisterHandlers(clientCtx, rtr, proposalRESTHandlers)
-}
+func (a AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {}
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the gov module.
 func (a AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
