@@ -724,11 +724,6 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			operator:   s.vendor,
 			tokenType:  "deadbeef",
 		},
-		"token index without type": {
-			contractID: s.contractID,
-			operator:   s.vendor,
-			tokenIndex: "deadbeef",
-		},
 	}
 
 	for name, tc := range testCases {

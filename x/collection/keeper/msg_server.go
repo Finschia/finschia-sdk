@@ -561,13 +561,10 @@ func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom
 func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collection.MsgModifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	operator, err := sdk.AccAddressFromBech32(req.Owner)
-	if err != nil {
-		return nil, err
-	}
+	operator := sdk.MustAccAddressFromBech32(req.Owner)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, operator, collection.PermissionModify); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	// copied from daphne
@@ -643,7 +640,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 			return s.keeper.ModifyContract(ctx, req.ContractId, operator, changes)
 		}
 
-		return sdkerrors.ErrInvalidRequest.Wrap("token index without type")
+		panic(sdkerrors.ErrInvalidRequest.Wrap("token index without type"))
 	}
 
 	if err := modify(req.TokenType, req.TokenIndex); err != nil {

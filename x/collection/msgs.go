@@ -212,7 +212,7 @@ func validateTokenClassChange(change Attribute) error {
 func validateChange(change Attribute, validators map[string]func(string) error) error {
 	validator, ok := validators[change.Key]
 	if !ok {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Key)
+		return ErrInvalidChangesField.Wrapf("invalid field: %s", change.Key)
 	}
 	return validator(change.Value)
 }
@@ -922,17 +922,17 @@ func (m MsgModify) ValidateBasic() error {
 	if len(m.TokenType) != 0 {
 		classID := m.TokenType
 		if err := ValidateClassID(classID); err != nil {
-			return err
+			return ErrInvalidTokenType.Wrap(err.Error())
 		}
 		if err := ValidateLegacyFTClassID(classID); err == nil && len(m.TokenIndex) == 0 {
-			return sdkerrors.ErrInvalidRequest.Wrap("fungible token type without index")
+			return ErrTokenTypeFTWithoutIndex.Wrap("fungible token type without index")
 		}
 	}
 
 	if len(m.TokenIndex) != 0 {
 		tokenID := m.TokenType + m.TokenIndex
 		if err := ValidateTokenID(tokenID); err != nil {
-			return err
+			return ErrInvalidTokenIndex.Wrap(err.Error())
 		}
 	}
 
@@ -941,19 +941,19 @@ func (m MsgModify) ValidateBasic() error {
 		if len(m.TokenIndex) == 0 {
 			validator = validateContractChange
 		} else {
-			return sdkerrors.ErrInvalidRequest.Wrap("token index without type")
+			return ErrTokenIndexWithoutType.Wrap("token index without type")
 		}
 	}
 	if len(m.Changes) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("empty changes")
+		return ErrEmptyChanges.Wrap("empty changes")
 	}
 	if len(m.Changes) > changesLimit {
-		return sdkerrors.ErrInvalidRequest.Wrapf("the number of changes exceeds the limit: %d > %d", len(m.Changes), changesLimit)
+		return ErrInvalidChangesFieldCount.Wrapf("the number of changes exceeds the limit: %d > %d", len(m.Changes), changesLimit)
 	}
 	seenKeys := map[string]bool{}
 	for _, change := range m.Changes {
 		if seenKeys[change.Field] {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate keys: %s", change.Field)
+			return ErrDuplicateChangesField.Wrapf("duplicate keys: %s", change.Field)
 		}
 		seenKeys[change.Field] = true
 

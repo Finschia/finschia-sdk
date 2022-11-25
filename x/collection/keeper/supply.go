@@ -349,7 +349,16 @@ func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.
 func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID string, operator sdk.AccAddress, changes []collection.Attribute) error {
 	class, err := k.GetTokenClass(ctx, contractID, classID)
 	if err != nil {
-		return err
+		// legacy error split
+		if err := collection.ValidateLegacyFTClassID(classID); err == nil {
+			return collection.ErrTokenNotExist.Wrap(collection.NewFTID(classID))
+		}
+
+		if err := collection.ValidateLegacyNFTClassID(classID); err == nil {
+			return collection.ErrTokenTypeNotExist.Wrap(classID)
+		}
+
+		panic(err)
 	}
 
 	modifiers := map[collection.AttributeKey]func(string){
@@ -382,7 +391,7 @@ func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID str
 func (k Keeper) ModifyNFT(ctx sdk.Context, contractID string, tokenID string, operator sdk.AccAddress, changes []collection.Attribute) error {
 	token, err := k.GetNFT(ctx, contractID, tokenID)
 	if err != nil {
-		return err
+		return collection.ErrTokenNotExist.Wrap(err.Error())
 	}
 
 	modifiers := map[collection.AttributeKey]func(string){
