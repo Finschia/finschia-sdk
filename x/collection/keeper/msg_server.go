@@ -259,13 +259,10 @@ func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateCo
 func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*collection.MsgIssueFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	ownerAddr, err := sdk.AccAddressFromBech32(req.Owner)
-	if err != nil {
-		return nil, err
-	}
+	ownerAddr := sdk.MustAccAddressFromBech32(req.Owner)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, ownerAddr, collection.PermissionIssue); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	class := &collection.FTClass{
@@ -289,10 +286,7 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 		Mintable:   class.Mintable,
 	}
 
-	toAddr, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, err
-	}
+	toAddr := sdk.MustAccAddressFromBech32(req.To)
 
 	ctx.EventManager().EmitEvent(collection.NewEventIssueFT(event, toAddr, req.Amount))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -320,13 +314,10 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*collection.MsgIssueNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	ownerAddr, err := sdk.AccAddressFromBech32(req.Owner)
-	if err != nil {
-		return nil, err
-	}
+	ownerAddr := sdk.MustAccAddressFromBech32(req.Owner)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, ownerAddr, collection.PermissionIssue); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	class := &collection.NFTClass{

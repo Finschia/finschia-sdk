@@ -44,9 +44,6 @@ func (s *KeeperTestSuite) TestCreateTokenClass() {
 			class:      &collection.NFTClass{},
 			valid:      true,
 		},
-		"invalid contract id": {
-			class: &collection.FTClass{},
-		},
 	}
 
 	for name, tc := range testCases {

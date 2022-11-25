@@ -80,7 +80,7 @@ func (k Keeper) setContract(ctx sdk.Context, contract collection.Contract) {
 
 func (k Keeper) CreateTokenClass(ctx sdk.Context, contractID string, class collection.TokenClass) (*string, error) {
 	if _, err := k.GetContract(ctx, contractID); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	nextClassIDs := k.getNextClassIDs(ctx, contractID)

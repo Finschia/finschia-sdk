@@ -161,7 +161,7 @@ func validateStringSize(str string, limit int, name string) error {
 
 func validateDecimals(decimals int32) error {
 	if decimals < 0 || decimals > 18 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid decimals: %d", decimals)
+		return ErrInvalidTokenDecimals.Wrapf("invalid decimals: %d", decimals)
 	}
 	return nil
 }
@@ -527,7 +527,7 @@ func (m MsgIssueFT) ValidateBasic() error {
 	}
 
 	if len(m.Name) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("empty name")
+		return ErrInvalidTokenName.Wrapf("empty name")
 	}
 	if err := validateName(m.Name); err != nil {
 		return err
@@ -547,7 +547,7 @@ func (m MsgIssueFT) ValidateBasic() error {
 
 	// daphne compat.
 	if m.Amount.Equal(sdk.OneInt()) && m.Decimals == 0 && !m.Mintable {
-		return sdkerrors.ErrInvalidRequest.Wrap("invalid issue of ft")
+		return ErrInvalidIssueFT.Wrap("invalid issue of ft")
 	}
 
 	return nil
