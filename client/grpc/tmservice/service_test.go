@@ -14,8 +14,8 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/testutil/network"
+	"github.com/line/lbm-sdk/testutil/rest"
 	qtypes "github.com/line/lbm-sdk/types/query"
-	"github.com/line/lbm-sdk/types/rest"
 	"github.com/line/lbm-sdk/version"
 )
 
