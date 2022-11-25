@@ -127,7 +127,11 @@ func ValidateNFTID(id string) error {
 
 // Deprecated: do not use (no successor).
 func ValidateLegacyNFTID(id string) error {
-	return validateID(id, reLegacyNFTID)
+	if err := validateID(id, reLegacyNFTID); err != nil {
+		return ErrInvalidTokenID.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func validateID(id string, reg *regexp.Regexp) error {
@@ -823,7 +827,7 @@ func (m MsgBurnNFT) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("token ids cannot be empty")
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateLegacyNFTID(id); err != nil {
@@ -871,7 +875,7 @@ func (m MsgBurnNFTFrom) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("token ids cannot be empty")
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateLegacyNFTID(id); err != nil {

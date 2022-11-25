@@ -417,13 +417,10 @@ func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*coll
 func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collection.MsgBurnFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionBurn); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	burnt, err := s.keeper.BurnCoins(ctx, req.ContractId, fromAddr, req.Amount)
@@ -450,22 +447,15 @@ func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collec
 func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) (*collection.MsgBurnFTFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
-
-	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
-	if err != nil {
-		return nil, err
-	}
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
+	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, collection.ErrCollectionNotApproved.Wrap(err.Error())
 	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, proxyAddr, collection.PermissionBurn); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	burnt, err := s.keeper.BurnCoins(ctx, req.ContractId, fromAddr, req.Amount)
@@ -492,13 +482,10 @@ func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) 
 func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*collection.MsgBurnNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionBurn); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	coins := make([]collection.Coin, 0, len(req.TokenIds))
@@ -532,22 +519,15 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom) (*collection.MsgBurnNFTFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
-
-	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
-	if err != nil {
-		return nil, err
-	}
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
+	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, collection.ErrCollectionNotApproved.Wrap(err.Error())
 	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, proxyAddr, collection.PermissionBurn); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	coins := make([]collection.Coin, 0, len(req.TokenIds))
