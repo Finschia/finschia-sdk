@@ -700,19 +700,12 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPermission) (*collection.MsgGrantPermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	granter, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
-
-	grantee, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, err
-	}
-
+	granter := sdk.MustAccAddressFromBech32(req.From)
+	grantee := sdk.MustAccAddressFromBech32(req.To)
 	permission := collection.Permission(collection.LegacyPermissionFromString(req.Permission))
+
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("%s is not authorized for %s", granter, permission)
+		return nil, collection.ErrTokenNoPermission.Wrapf("%s is not authorized for %s", granter, permission)
 	}
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err == nil {
 		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission)
@@ -735,14 +728,11 @@ func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPe
 func (s msgServer) RevokePermission(c context.Context, req *collection.MsgRevokePermission) (*collection.MsgRevokePermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	grantee, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
-
+	grantee := sdk.MustAccAddressFromBech32(req.From)
 	permission := collection.Permission(collection.LegacyPermissionFromString(req.Permission))
+
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("%s is not authorized for %s", grantee, permission)
+		return nil, collection.ErrTokenNoPermission.Wrapf("%s is not authorized for %s", grantee, permission)
 	}
 
 	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
