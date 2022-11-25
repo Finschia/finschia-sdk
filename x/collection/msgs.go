@@ -129,15 +129,27 @@ func validateID(id string, reg *regexp.Regexp) error {
 }
 
 func validateName(name string) error {
-	return validateStringSize(name, nameLengthLimit, "name")
+	if err := validateStringSize(name, nameLengthLimit, "name"); err != nil {
+		return ErrInvalidNameLength.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func validateBaseImgURI(baseImgURI string) error {
-	return validateStringSize(baseImgURI, baseImgURILengthLimit, "base_img_uri")
+	if err := validateStringSize(baseImgURI, baseImgURILengthLimit, "base_img_uri"); err != nil {
+		return ErrInvalidBaseImgURILength.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func validateMeta(meta string) error {
-	return validateStringSize(meta, metaLengthLimit, "meta")
+	if err := validateStringSize(meta, metaLengthLimit, "meta"); err != nil {
+		return ErrInvalidMetaLength.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func validateStringSize(str string, limit int, name string) error {
