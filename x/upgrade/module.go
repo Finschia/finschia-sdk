@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
@@ -40,9 +39,6 @@ func (AppModuleBasic) Name() string {
 func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	types.RegisterLegacyAminoCodec(cdc)
 }
-
-// RegisterRESTRoutes registers all REST query handlers
-func (AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {}
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the upgrade module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {

@@ -8,7 +8,6 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/gorilla/mux"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
 
@@ -67,9 +66,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 
 	return ValidateGenesis(&data)
 }
-
-// RegisterRESTRoutes registers the REST routes for the staking module.
-func (AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {}
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the staking module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {

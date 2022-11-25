@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
@@ -66,10 +65,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 	}
 
 	return gs.Validate()
-}
-
-// RegisterRESTRoutes implements AppModuleBasic interface
-func (AppModuleBasic) RegisterRESTRoutes(ctx client.Context, rtr *mux.Router) {
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the interchain accounts module.

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
@@ -63,10 +62,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 	}
 
 	return gs.Validate()
-}
-
-// RegisterRESTRoutes implements AppModuleBasic interface
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the ibc-transfer module.

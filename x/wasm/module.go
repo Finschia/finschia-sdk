@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"math/rand"
 
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cast"
@@ -75,9 +74,6 @@ func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONCodec, config client
 	}
 	return ValidateGenesis(data)
 }
-
-// RegisterRESTRoutes registers the REST routes for the wasm module.
-func (AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {}
 
 // GetTxCmd returns the root tx command for the wasm module.
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
@@ -48,9 +47,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 
 	return foundation.ValidateGenesis(data)
 }
-
-// RegisterRESTRoutes registers all REST query handlers
-func (AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {}
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the foundation module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
