@@ -70,24 +70,6 @@ func getBlock(clientCtx client.Context, height *int64) ([]byte, error) {
 	return legacy.Cdc.MarshalJSON(res)
 }
 
-func getBlockByHash(clientCtx client.Context, hash []byte) ([]byte, error) {
-	// get the node
-	node, err := clientCtx.GetNode()
-	if err != nil {
-		return nil, err
-	}
-
-	// header -> BlockchainInfo
-	// header, tx -> Block
-	// results -> BlockResults
-	res, err := node.BlockByHash(context.Background(), hash)
-	if err != nil {
-		return nil, err
-	}
-
-	return legacy.Cdc.MarshalJSON(res)
-}
-
 // get the current blockchain height
 func GetChainHeight(clientCtx client.Context) (int64, error) {
 	node, err := clientCtx.GetNode()
