@@ -6,17 +6,17 @@ package mocks
 
 import (
 	json "encoding/json"
+	reflect "reflect"
+
 	gomock "github.com/golang/mock/gomock"
 	runtime "github.com/grpc-ecosystem/grpc-gateway/runtime"
-	reflect "reflect"
-	cobra "github.com/spf13/cobra"
-	
 	client "github.com/line/lbm-sdk/client"
 	codec "github.com/line/lbm-sdk/codec"
 	types "github.com/line/lbm-sdk/codec/types"
 	types0 "github.com/line/lbm-sdk/types"
 	module "github.com/line/lbm-sdk/types/module"
 	types1 "github.com/line/ostracon/abci/types"
+	cobra "github.com/spf13/cobra"
 )
 
 // MockAppModuleBasic is a mock of AppModuleBasic interface.
@@ -133,7 +133,6 @@ func (mr *MockAppModuleBasicMockRecorder) RegisterLegacyAminoCodec(arg0 interfac
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterLegacyAminoCodec", reflect.TypeOf((*MockAppModuleBasic)(nil).RegisterLegacyAminoCodec), arg0)
 }
-
 
 // ValidateGenesis mocks base method.
 func (m *MockAppModuleBasic) ValidateGenesis(arg0 codec.JSONCodec, arg1 client.TxEncodingConfig, arg2 json.RawMessage) error {
@@ -528,7 +527,6 @@ func (mr *MockAppModuleMockRecorder) RegisterLegacyAminoCodec(arg0 interface{}) 
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterLegacyAminoCodec", reflect.TypeOf((*MockAppModule)(nil).RegisterLegacyAminoCodec), arg0)
 }
-
 
 // RegisterServices mocks base method.
 func (m *MockAppModule) RegisterServices(arg0 module.Configurator) {
