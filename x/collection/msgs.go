@@ -40,7 +40,7 @@ var (
 
 func validateAmount(amount sdk.Int) error {
 	if !amount.IsPositive() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("amount must be positive: %s", amount)
+		return ErrInvalidAmount.Wrapf("amount must be positive: %s", amount)
 	}
 	return nil
 }
@@ -95,11 +95,20 @@ func ValidateLegacyFTClassID(id string) error {
 
 // Deprecated: do not use (no successor).
 func ValidateLegacyNFTClassID(id string) error {
-	return validateID(id, reLegacyNFTClassID)
+	// daphne emits ErrInvalidTokenID here, but it's against to the spec.
+	if err := validateID(id, reLegacyNFTClassID); err != nil {
+		return ErrInvalidTokenType.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func ValidateTokenID(id string) error {
-	return validateID(id, reTokenID)
+	if err := validateID(id, reTokenID); err != nil {
+		return ErrInvalidTokenID.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func ValidateFTID(id string) error {
@@ -677,7 +686,7 @@ func (m MsgMintNFT) ValidateBasic() error {
 	}
 
 	if len(m.Params) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("mint params cannot be empty")
+		return ErrEmptyField.Wrap("mint params cannot be empty")
 	}
 	for _, param := range m.Params {
 		classID := param.TokenType

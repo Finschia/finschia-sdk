@@ -163,22 +163,22 @@ func (k Keeper) setNextClassIDs(ctx sdk.Context, ids collection.NextClassIDs) {
 func (k Keeper) MintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, amount []collection.Coin) error {
 	for _, coin := range amount {
 		if err := collection.ValidateFTID(coin.TokenId); err != nil {
-			return err
+			return collection.ErrTokenNotMintable.Wrap(err.Error())
 		}
 
 		classID := collection.SplitTokenID(coin.TokenId)
 		class, err := k.GetTokenClass(ctx, contractID, classID)
 		if err != nil {
-			return err
+			return collection.ErrTokenNotExist.Wrap(err.Error())
 		}
 
 		ftClass, ok := class.(*collection.FTClass)
 		if !ok {
-			return sdkerrors.ErrInvalidType.Wrapf("not a class of fungible token: %s", classID)
+			return collection.ErrTokenNotMintable.Wrapf("not a class of fungible token: %s", classID)
 		}
 
 		if !ftClass.Mintable {
-			return sdkerrors.ErrInvalidRequest.Wrapf("class is not mintable")
+			return collection.ErrTokenNotMintable.Wrapf("class is not mintable")
 		}
 
 		k.mintFT(ctx, contractID, to, classID, coin.Amount)
@@ -205,11 +205,11 @@ func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, p
 		classID := param.TokenType
 		class, err := k.GetTokenClass(ctx, contractID, classID)
 		if err != nil {
-			return nil, err
+			return nil, collection.ErrTokenTypeNotExist.Wrap(err.Error())
 		}
 
 		if _, ok := class.(*collection.NFTClass); !ok {
-			return nil, sdkerrors.ErrInvalidType.Wrapf("not a class of non-fungible token: %s", classID)
+			return nil, collection.ErrTokenTypeNotExist.Wrapf("not a class of non-fungible token: %s", classID)
 		}
 
 		nextTokenID := k.getNextTokenID(ctx, contractID, classID)

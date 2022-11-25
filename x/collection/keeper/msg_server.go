@@ -354,19 +354,13 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collection.MsgMintFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionMint); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
-	toAddr, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, err
-	}
+	toAddr := sdk.MustAccAddressFromBech32(req.To)
 
 	if err := s.keeper.MintFT(ctx, req.ContractId, toAddr, req.Amount); err != nil {
 		return nil, err
@@ -389,19 +383,13 @@ func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collec
 func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*collection.MsgMintNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionMint); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
-	toAddr, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, err
-	}
+	toAddr := sdk.MustAccAddressFromBech32(req.To)
 
 	tokens, err := s.keeper.MintNFT(ctx, req.ContractId, toAddr, req.Params)
 	if err != nil {
