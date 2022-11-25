@@ -21,7 +21,6 @@ import (
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/grpc/tmservice"
-	"github.com/line/lbm-sdk/client/rpc"
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/server/api"
@@ -34,7 +33,6 @@ import (
 	"github.com/line/lbm-sdk/version"
 	"github.com/line/lbm-sdk/x/auth"
 	"github.com/line/lbm-sdk/x/auth/ante"
-	authrest "github.com/line/lbm-sdk/x/auth/client/rest"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
 	authsims "github.com/line/lbm-sdk/x/auth/simulation"
 	authtx "github.com/line/lbm-sdk/x/auth/tx"
@@ -84,7 +82,7 @@ import (
 	icahostkeeper "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/host/keeper"
 	icahosttypes "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/host/types"
 	icatypes "github.com/line/lbm-sdk/x/ibc/applications/27-interchain-accounts/types"
-	transfer "github.com/line/lbm-sdk/x/ibc/applications/transfer"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer"
 	ibctransferkeeper "github.com/line/lbm-sdk/x/ibc/applications/transfer/keeper"
 	ibctransfertypes "github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 	ibc "github.com/line/lbm-sdk/x/ibc/core"
@@ -849,9 +847,7 @@ func (app *SimApp) SimulationManager() *module.SimulationManager {
 // API server.
 func (app *SimApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
 	clientCtx := apiSvr.ClientCtx
-	rpc.RegisterRoutes(clientCtx, apiSvr.Router)
-	// Register legacy tx routes.
-	authrest.RegisterTxRoutes(clientCtx, apiSvr.Router)
+
 	// Register new tx routes from grpc-gateway.
 	authtx.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 	// Register new tendermint queries routes from grpc-gateway.
