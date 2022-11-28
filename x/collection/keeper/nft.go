@@ -65,20 +65,20 @@ func (k Keeper) pruneNFT(ctx sdk.Context, contractID string, tokenID string) []s
 func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress, subject, target string) error {
 	// validate subject
 	if !k.GetBalance(ctx, contractID, owner, subject).IsPositive() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, subject)
+		return collection.ErrTokenNotOwnedBy.Wrapf("%s is not owner of %s", owner, subject)
 	}
 
 	// validate target
 	if err := k.hasNFT(ctx, contractID, target); err != nil {
-		return err
+		return collection.ErrTokenNotNFT.Wrap(err.Error())
 	}
 
 	root := k.GetRoot(ctx, contractID, target)
 	if !owner.Equals(k.getOwner(ctx, contractID, root)) {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, target)
+		return collection.ErrTokenNotOwnedBy.Wrapf("%s is not owner of %s", owner, target)
 	}
 	if root == subject {
-		return sdkerrors.ErrInvalidRequest.Wrap("cycles not allowed")
+		return collection.ErrCannotAttachToADescendant.Wrap("cycles not allowed")
 	}
 
 	// update subject
@@ -113,16 +113,16 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 
 func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress, subject string) error {
 	if err := k.hasNFT(ctx, contractID, subject); err != nil {
-		return err
+		return collection.ErrTokenNotNFT.Wrap(err.Error())
 	}
 
 	parent, err := k.GetParent(ctx, contractID, subject)
 	if err != nil {
-		return err
+		return collection.ErrTokenNotAChild.Wrap(err.Error())
 	}
 
 	if !owner.Equals(k.GetRootOwner(ctx, contractID, subject)) {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%s is not owner of %s", owner, subject)
+		return collection.ErrTokenNotOwnedBy.Wrapf("%s is not owner of %s", owner, subject)
 	}
 
 	// update subject
@@ -312,12 +312,12 @@ func (k Keeper) validateDepthAndWidth(ctx sdk.Context, contractID string, tokenI
 
 	depth := len(widths)
 	if legacyDepth := depth - 1; legacyDepth > int(params.DepthLimit) {
-		return sdkerrors.ErrInvalidRequest.Wrapf("resulting depth exceeds its limit: %d", params.DepthLimit)
+		return collection.ErrCompositionTooDeep.Wrapf("resulting depth exceeds its limit: %d", params.DepthLimit)
 	}
 
 	for _, width := range widths {
 		if width > int(params.WidthLimit) {
-			return sdkerrors.ErrInvalidRequest.Wrapf("resulting width exceeds its limit: %d", params.WidthLimit)
+			return collection.ErrCompositionTooWide.Wrapf("resulting width exceeds its limit: %d", params.WidthLimit)
 		}
 	}
 

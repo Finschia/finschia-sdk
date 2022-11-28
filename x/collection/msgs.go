@@ -1093,7 +1093,7 @@ func (m MsgAttach) ValidateBasic() error {
 	}
 
 	if m.TokenId == m.ToTokenId {
-		return sdkerrors.ErrInvalidRequest.Wrap("cannot attach token to itself")
+		return ErrCannotAttachToItself.Wrap("cannot attach token to itself")
 	}
 
 	return nil
@@ -1183,7 +1183,7 @@ func (m MsgAttachFrom) ValidateBasic() error {
 	}
 
 	if m.TokenId == m.ToTokenId {
-		return sdkerrors.ErrInvalidRequest.Wrap("cannot attach token to itself")
+		return ErrCannotAttachToItself.Wrap("cannot attach token to itself")
 	}
 
 	return nil

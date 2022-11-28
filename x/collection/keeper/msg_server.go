@@ -670,10 +670,7 @@ func (s msgServer) Attach(c context.Context, req *collection.MsgAttach) (*collec
 		panic(err)
 	}
 
-	fromAddr, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
 
 	if err := s.keeper.Attach(ctx, req.ContractId, fromAddr, req.TokenId, req.ToTokenId); err != nil {
 		return nil, err
@@ -694,7 +691,7 @@ func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collec
 	// for the additional field of the event
 	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
 	if err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNotAChild.Wrap(err.Error())
 	}
 	event := collection.EventDetached{
 		ContractId:     req.ContractId,
@@ -708,10 +705,7 @@ func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collec
 		panic(err)
 	}
 
-	fromAddr, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
 
 	if err := s.keeper.Detach(ctx, req.ContractId, fromAddr, req.TokenId); err != nil {
 		return nil, err
@@ -723,18 +717,11 @@ func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collec
 func (s msgServer) AttachFrom(c context.Context, req *collection.MsgAttachFrom) (*collection.MsgAttachFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
-
-	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
-	if err != nil {
-		return nil, err
-	}
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
+	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, collection.ErrCollectionNotApproved.Wrap(err.Error())
 	}
 
 	event := collection.EventAttached{
@@ -760,15 +747,8 @@ func (s msgServer) AttachFrom(c context.Context, req *collection.MsgAttachFrom) 
 func (s msgServer) DetachFrom(c context.Context, req *collection.MsgDetachFrom) (*collection.MsgDetachFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
-
-	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
-	if err != nil {
-		return nil, err
-	}
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
+	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
@@ -776,14 +756,14 @@ func (s msgServer) DetachFrom(c context.Context, req *collection.MsgDetachFrom) 
 
 	// legacy
 	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNotNFT.Wrap(err.Error())
 	}
 	oldRoot := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
 
 	// for the additional field of the event
 	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
 	if err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNotAChild.Wrap(err.Error())
 	}
 	event := collection.EventDetached{
 		ContractId:     req.ContractId,
