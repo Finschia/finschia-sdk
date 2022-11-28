@@ -153,15 +153,8 @@ func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransfe
 func (s msgServer) Approve(c context.Context, req *collection.MsgApprove) (*collection.MsgApproveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	approverAddr, err := sdk.AccAddressFromBech32(req.Approver)
-	if err != nil {
-		return nil, err
-	}
-
-	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
-	if err != nil {
-		return nil, err
-	}
+	approverAddr := sdk.MustAccAddressFromBech32(req.Approver)
+	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if err := s.keeper.AuthorizeOperator(ctx, req.ContractId, approverAddr, proxyAddr); err != nil {
 		return nil, err
@@ -182,15 +175,8 @@ func (s msgServer) Approve(c context.Context, req *collection.MsgApprove) (*coll
 func (s msgServer) Disapprove(c context.Context, req *collection.MsgDisapprove) (*collection.MsgDisapproveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	approverAddr, err := sdk.AccAddressFromBech32(req.Approver)
-	if err != nil {
-		return nil, err
-	}
-
-	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
-	if err != nil {
-		return nil, err
-	}
+	approverAddr := sdk.MustAccAddressFromBech32(req.Approver)
+	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if err := s.keeper.RevokeOperator(ctx, req.ContractId, approverAddr, proxyAddr); err != nil {
 		return nil, err

@@ -98,10 +98,10 @@ func (k Keeper) setBalance(ctx sdk.Context, contractID string, address sdk.AccAd
 
 func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
 	if _, err := k.GetContract(ctx, contractID); err != nil {
-		return sdkerrors.ErrNotFound.Wrapf("contract does not exist: %s", contractID)
+		return collection.ErrCollectionNotExist.Wrapf("contract does not exist: %s", contractID)
 	}
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err == nil {
-		return sdkerrors.ErrInvalidRequest.Wrap("Already authorized")
+		return collection.ErrCollectionAlreadyApproved.Wrap("Already authorized")
 	}
 
 	k.setAuthorization(ctx, contractID, holder, operator)
@@ -114,10 +114,10 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, op
 
 func (k Keeper) RevokeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
 	if _, err := k.GetContract(ctx, contractID); err != nil {
-		return sdkerrors.ErrNotFound.Wrapf("contract does not exist: %s", contractID)
+		return collection.ErrCollectionNotExist.Wrapf("contract does not exist: %s", contractID)
 	}
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err != nil {
-		return err
+		return collection.ErrCollectionNotApproved.Wrap(err.Error())
 	}
 
 	k.deleteAuthorization(ctx, contractID, holder, operator)
