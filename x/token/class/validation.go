@@ -3,6 +3,8 @@ package class
 import (
 	"fmt"
 	"regexp"
+
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 var (
@@ -14,7 +16,7 @@ var (
 // ValidateID returns whether the contract id is valid
 func ValidateID(id string) error {
 	if !reContractID.MatchString(id) {
-		return ErrInvalidContractID.Wrapf("invalid contract id: %s", id)
+		return sdkerrors.ErrInvalidRequest.Wrapf("invalid contract id; %s", id)
 	}
 	return nil
 }
