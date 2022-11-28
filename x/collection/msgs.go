@@ -322,7 +322,7 @@ func (m MsgTransferNFT) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("token ids cannot be empty")
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateTokenID(id); err != nil {
@@ -373,7 +373,7 @@ func (m MsgTransferNFTFrom) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("token ids cannot be empty")
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateTokenID(id); err != nil {

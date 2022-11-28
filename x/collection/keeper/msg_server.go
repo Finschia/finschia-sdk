@@ -27,15 +27,8 @@ var _ collection.MsgServer = (*msgServer)(nil)
 func (s msgServer) TransferFT(c context.Context, req *collection.MsgTransferFT) (*collection.MsgTransferFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
-
-	toAddr, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, err
-	}
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
+	toAddr := sdk.MustAccAddressFromBech32(req.To)
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, req.Amount); err != nil {
 		return nil, err
@@ -59,24 +52,14 @@ func (s msgServer) TransferFT(c context.Context, req *collection.MsgTransferFT) 
 func (s msgServer) TransferFTFrom(c context.Context, req *collection.MsgTransferFTFrom) (*collection.MsgTransferFTFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
-
-	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
-	if err != nil {
-		return nil, err
-	}
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
+	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, collection.ErrCollectionNotApproved.Wrap(err.Error())
 	}
 
-	toAddr, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, err
-	}
+	toAddr := sdk.MustAccAddressFromBech32(req.To)
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, req.Amount); err != nil {
 		return nil, err
@@ -115,15 +98,8 @@ func (s msgServer) TransferNFT(c context.Context, req *collection.MsgTransferNFT
 	}
 	ctx.EventManager().EmitEvents(collection.NewEventTransferNFT(event))
 
-	fromAddr, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
-
-	toAddr, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, err
-	}
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
+	toAddr := sdk.MustAccAddressFromBech32(req.To)
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, amount); err != nil {
 		return nil, err
@@ -144,18 +120,11 @@ func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransfe
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	fromAddr, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, err
-	}
-
-	proxyAddr, err := sdk.AccAddressFromBech32(req.Proxy)
-	if err != nil {
-		return nil, err
-	}
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
+	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, collection.ErrCollectionNotApproved.Wrap(err.Error())
 	}
 
 	// emit legacy events
@@ -167,10 +136,8 @@ func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransfe
 		Amount:     amount,
 	}
 	ctx.EventManager().EmitEvents(collection.NewEventTransferNFTFrom(event))
-	toAddr, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, err
-	}
+
+	toAddr := sdk.MustAccAddressFromBech32(req.To)
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, amount); err != nil {
 		return nil, err
