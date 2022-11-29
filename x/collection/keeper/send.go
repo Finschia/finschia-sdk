@@ -2,7 +2,6 @@ package keeper
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/collection"
 )
 
@@ -58,7 +57,7 @@ func (k Keeper) subtractCoins(ctx sdk.Context, contractID string, address sdk.Ac
 		balance := k.GetBalance(ctx, contractID, address, coin.TokenId)
 		newBalance := balance.Sub(coin.Amount)
 		if newBalance.IsNegative() {
-			return collection.ErrInsufficientToken.Wrapf("%s is smaller than %s", balance, coin.Amount)
+			return collection.ErrInsufficientTokens.Wrapf("%s is smaller than %s", balance, coin.Amount)
 		}
 		k.setBalance(ctx, contractID, address, coin.TokenId, newBalance)
 	}
@@ -98,10 +97,10 @@ func (k Keeper) setBalance(ctx sdk.Context, contractID string, address sdk.AccAd
 
 func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
 	if _, err := k.GetContract(ctx, contractID); err != nil {
-		return collection.ErrCollectionNotExist.Wrapf("contract does not exist: %s", contractID)
+		return err
 	}
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err == nil {
-		return collection.ErrCollectionAlreadyApproved.Wrap("Already authorized")
+		return collection.ErrAuthorizationAlreadyExists.Wrapf("%s already authorized by %s", operator, holder)
 	}
 
 	k.setAuthorization(ctx, contractID, holder, operator)
@@ -114,10 +113,10 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, op
 
 func (k Keeper) RevokeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
 	if _, err := k.GetContract(ctx, contractID); err != nil {
-		return collection.ErrCollectionNotExist.Wrapf("contract does not exist: %s", contractID)
+		return err
 	}
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err != nil {
-		return collection.ErrCollectionNotApproved.Wrap(err.Error())
+		return collection.ErrAuthorizationAlreadyExists.Wrapf("%s already authorized by %s", operator, holder)
 	}
 
 	k.deleteAuthorization(ctx, contractID, holder, operator)
@@ -132,7 +131,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, contractID string, holder, ope
 			Operator: operator.String(),
 		}, nil
 	}
-	return nil, sdkerrors.ErrNotFound.Wrapf("no authorization by %s to %s", holder, operator)
+	return nil, collection.ErrAuthorizationNotFound.Wrapf("%s not authorized by %s", operator, holder)
 }
 
 func (k Keeper) setAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) {

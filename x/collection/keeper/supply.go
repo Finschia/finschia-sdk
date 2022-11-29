@@ -57,7 +57,7 @@ func (k Keeper) GetContract(ctx sdk.Context, contractID string) (*collection.Con
 	key := contractKey(contractID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("no such a contract: %s", contractID)
+		return nil, collection.ErrContractNotFound.Wrap(contractID)
 	}
 
 	var contract collection.Contract
@@ -113,7 +113,7 @@ func (k Keeper) GetTokenClass(ctx sdk.Context, contractID, classID string) (coll
 	key := classKey(contractID, classID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("no such a class in contract %s: %s", contractID, classID)
+		return nil, collection.ErrClassNotFound.Wrapf("no %s in contract %s", classID, contractID)
 	}
 
 	var class collection.TokenClass
@@ -163,22 +163,22 @@ func (k Keeper) setNextClassIDs(ctx sdk.Context, ids collection.NextClassIDs) {
 func (k Keeper) MintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, amount []collection.Coin) error {
 	for _, coin := range amount {
 		if err := collection.ValidateFTID(coin.TokenId); err != nil {
-			return collection.ErrTokenNotMintable.Wrap(err.Error())
+			return err
 		}
 
 		classID := collection.SplitTokenID(coin.TokenId)
 		class, err := k.GetTokenClass(ctx, contractID, classID)
 		if err != nil {
-			return collection.ErrTokenNotExist.Wrap(err.Error())
+			return err
 		}
 
 		ftClass, ok := class.(*collection.FTClass)
 		if !ok {
-			return collection.ErrTokenNotMintable.Wrapf("not a class of fungible token: %s", classID)
+			return collection.ErrWrongClass.Wrapf("class %s not fungible", classID)
 		}
 
 		if !ftClass.Mintable {
-			return collection.ErrTokenNotMintable.Wrapf("class is not mintable")
+			return collection.ErrNotMintable.Wrapf("class %s not mintable", classID)
 		}
 
 		k.mintFT(ctx, contractID, to, classID, coin.Amount)
@@ -205,11 +205,11 @@ func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, p
 		classID := param.TokenType
 		class, err := k.GetTokenClass(ctx, contractID, classID)
 		if err != nil {
-			return nil, collection.ErrTokenTypeNotExist.Wrap(err.Error())
+			return nil, err
 		}
 
 		if _, ok := class.(*collection.NFTClass); !ok {
-			return nil, collection.ErrTokenTypeNotExist.Wrapf("not a class of non-fungible token: %s", classID)
+			return nil, collection.ErrWrongClass.Wrapf("class %s not non-fungible", classID)
 		}
 
 		nextTokenID := k.getNextTokenID(ctx, contractID, classID)
@@ -349,16 +349,7 @@ func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.
 func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID string, operator sdk.AccAddress, changes []collection.Attribute) error {
 	class, err := k.GetTokenClass(ctx, contractID, classID)
 	if err != nil {
-		// legacy error split
-		if err := collection.ValidateLegacyFTClassID(classID); err == nil {
-			return collection.ErrTokenNotExist.Wrap(collection.NewFTID(classID))
-		}
-
-		if err := collection.ValidateLegacyNFTClassID(classID); err == nil {
-			return collection.ErrTokenTypeNotExist.Wrap(classID)
-		}
-
-		panic(err)
+		return err
 	}
 
 	modifiers := map[collection.AttributeKey]func(string){
@@ -391,7 +382,7 @@ func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID str
 func (k Keeper) ModifyNFT(ctx sdk.Context, contractID string, tokenID string, operator sdk.AccAddress, changes []collection.Attribute) error {
 	token, err := k.GetNFT(ctx, contractID, tokenID)
 	if err != nil {
-		return collection.ErrTokenNotExist.Wrap(err.Error())
+		return err
 	}
 
 	modifiers := map[collection.AttributeKey]func(string){
@@ -463,7 +454,7 @@ func (k Keeper) GetGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddr
 			Permission: permission,
 		}, nil
 	}
-	return nil, sdkerrors.ErrNotFound.Wrapf("no %s permission granted on %s", permission, grantee)
+	return nil, collection.ErrGrantNotFound.Wrapf("%s has no %s", grantee, permission)
 }
 
 func (k Keeper) setGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) {
