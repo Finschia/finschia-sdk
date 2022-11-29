@@ -6,6 +6,7 @@
 *.swm
 *.swn
 *.pyc
+.dccache
 
 # private files
 private[.-]*
@@ -56,3 +57,5 @@ dependency-graph.png
 *.out
 *.synctex.gz
 
+# tools
+tools/sodium

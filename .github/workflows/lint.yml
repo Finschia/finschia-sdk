@@ -9,6 +9,8 @@ on:
   push:
     branches:
       - main
+      - rc*/*
+      - release/*
 jobs:
   golangci:
     name: golangci-lint

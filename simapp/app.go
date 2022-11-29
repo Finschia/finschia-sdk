@@ -20,6 +20,7 @@ import (
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/client"
+	nodeservice "github.com/line/lbm-sdk/client/grpc/node"
 	"github.com/line/lbm-sdk/client/grpc/tmservice"
 	"github.com/line/lbm-sdk/client/rpc"
 	"github.com/line/lbm-sdk/codec"
@@ -28,6 +29,7 @@ import (
 	"github.com/line/lbm-sdk/server/config"
 	servertypes "github.com/line/lbm-sdk/server/types"
 	simappparams "github.com/line/lbm-sdk/simapp/params"
+	"github.com/line/lbm-sdk/store/streaming"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
@@ -277,7 +279,6 @@ func NewSimApp(
 	homePath string, invCheckPeriod uint, encodingConfig simappparams.EncodingConfig,
 	appOpts servertypes.AppOptions, wasmOpts []wasm.Option, baseAppOptions ...func(*baseapp.BaseApp),
 ) *SimApp {
-
 	appCodec := encodingConfig.Marshaler
 	legacyAmino := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -315,6 +316,12 @@ func NewSimApp(
 	// NOTE: The testingkey is just mounted for testing purposes. Actual applications should
 	// not include this key.
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey, "testingkey")
+
+	// configure state listening capabilities using AppOptions
+	// we are doing nothing with the returned streamingServices and waitGroup in this case
+	if _, _, err := streaming.LoadStreamingServices(bApp, appOpts, appCodec, keys); err != nil {
+		ostos.Exit(err.Error())
+	}
 
 	app := &SimApp{
 		BaseApp:           bApp,
@@ -503,7 +510,7 @@ func NewSimApp(
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
 	// we prefer to be more strict in what arguments the modules expect.
-	var skipGenesisInvariants = cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
+	skipGenesisInvariants := cast.ToBool(appOpts.Get(crisis.FlagSkipGenesisInvariants))
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -668,7 +675,6 @@ func NewSimApp(
 			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 		},
 	)
-
 	if err != nil {
 		panic(err)
 	}
@@ -857,6 +863,9 @@ func (app *SimApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APICon
 	// Register new tendermint queries routes from grpc-gateway.
 	tmservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 
+	// Register node gRPC service for grpc-gateway.
+	nodeservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
+
 	// Register legacy and grpc-gateway routes for all modules.
 	ModuleBasics.RegisterRESTRoutes(clientCtx, apiSvr.Router)
 	ModuleBasics.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
@@ -875,6 +884,10 @@ func (app *SimApp) RegisterTxService(clientCtx client.Context) {
 // RegisterTendermintService implements the Application.RegisterTendermintService method.
 func (app *SimApp) RegisterTendermintService(clientCtx client.Context) {
 	tmservice.RegisterTendermintService(app.BaseApp.GRPCQueryRouter(), clientCtx, app.interfaceRegistry)
+}
+
+func (app *SimApp) RegisterNodeService(clientCtx client.Context) {
+	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter())
 }
 
 // RegisterSwaggerAPI registers swagger route with API Server

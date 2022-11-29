@@ -151,11 +151,18 @@ func (s *KeeperTestSuite) TestModify() {
 				ctx, _ := s.ctx.CacheContext()
 
 				err := s.keeper.Modify(ctx, contractID, grantee, changes)
-				if contractID == s.contractID {
-					s.Require().NoError(err)
-				} else {
+				if contractID != s.contractID {
 					s.Require().Error(err)
+					return
 				}
+				s.Require().NoError(err)
+
+				class, err := s.keeper.GetClass(ctx, contractID)
+				s.Require().NoError(err)
+
+				s.Require().Equal(changes[0].Value, class.Name)
+				s.Require().Equal(changes[1].Value, class.ImageUri)
+				s.Require().Equal(changes[2].Value, class.Meta)
 			})
 		}
 	}

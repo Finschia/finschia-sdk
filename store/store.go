@@ -1,6 +1,7 @@
 package store
 
 import (
+	"github.com/line/ostracon/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/cache"
@@ -9,7 +10,7 @@ import (
 )
 
 func NewCommitMultiStore(db dbm.DB) types.CommitMultiStore {
-	return rootmulti.NewStore(db)
+	return rootmulti.NewStore(db, log.NewNopLogger())
 }
 
 func NewCommitKVStoreCacheManager(cacheSize int, metricsProvider cache.MetricsProvider) types.MultiStorePersistentCache {

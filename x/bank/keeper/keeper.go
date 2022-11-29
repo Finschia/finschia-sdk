@@ -79,7 +79,6 @@ func (k BaseKeeper) GetPaginatedTotalSupply(ctx sdk.Context, pagination *query.P
 		supply = supply.Add(sdk.NewCoin(string(key), amount))
 		return nil
 	})
-
 	if err != nil {
 		return nil, nil, err
 	}
@@ -100,7 +99,6 @@ func NewBaseKeeper(
 	paramSpace paramtypes.Subspace,
 	blockedAddrs map[string]bool,
 ) BaseKeeper {
-
 	// set KeyTable if it has not already been set
 	if !paramSpace.HasKeyTable() {
 		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
@@ -119,7 +117,8 @@ func NewBaseKeeper(
 // WithMintCoinsRestriction restricts the bank Keeper used within a specific module to
 // have restricted permissions on minting via function passed in parameter.
 // Previous restriction functions can be nested as such:
-//  bankKeeper.WithMintCoinsRestriction(restriction1).WithMintCoinsRestriction(restriction2)
+//
+//	bankKeeper.WithMintCoinsRestriction(restriction1).WithMintCoinsRestriction(restriction2)
 func (k BaseKeeper) WithMintCoinsRestriction(check MintingRestrictionFn) BaseKeeper {
 	oldRestrictionFn := k.mintCoinsRestrictionFn
 	k.mintCoinsRestrictionFn = func(ctx sdk.Context, coins sdk.Coins) error {
@@ -311,7 +310,6 @@ func (k BaseKeeper) SetDenomMetaData(ctx sdk.Context, denomMetaData types.Metada
 func (k BaseKeeper) SendCoinsFromModuleToAccount(
 	ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins,
 ) error {
-
 	senderAddr := k.ak.GetModuleAddress(senderModule)
 	if senderAddr.Empty() {
 		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule))
@@ -329,7 +327,6 @@ func (k BaseKeeper) SendCoinsFromModuleToAccount(
 func (k BaseKeeper) SendCoinsFromModuleToModule(
 	ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins,
 ) error {
-
 	senderAddr := k.ak.GetModuleAddress(senderModule)
 	if senderAddr.Empty() {
 		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule))
@@ -348,7 +345,6 @@ func (k BaseKeeper) SendCoinsFromModuleToModule(
 func (k BaseKeeper) SendCoinsFromAccountToModule(
 	ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins,
 ) error {
-
 	recipientAcc := k.ak.GetModuleAccount(ctx, recipientModule)
 	if recipientAcc == nil {
 		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", recipientModule))
@@ -363,7 +359,6 @@ func (k BaseKeeper) SendCoinsFromAccountToModule(
 func (k BaseKeeper) DelegateCoinsFromAccountToModule(
 	ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins,
 ) error {
-
 	recipientAcc := k.ak.GetModuleAccount(ctx, recipientModule)
 	if recipientAcc == nil {
 		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", recipientModule))
@@ -382,7 +377,6 @@ func (k BaseKeeper) DelegateCoinsFromAccountToModule(
 func (k BaseKeeper) UndelegateCoinsFromModuleToAccount(
 	ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins,
 ) error {
-
 	acc := k.ak.GetModuleAccount(ctx, senderModule)
 	if acc == nil {
 		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule))

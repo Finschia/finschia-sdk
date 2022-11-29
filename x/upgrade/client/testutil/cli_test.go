@@ -3,9 +3,8 @@ package testutil
 import (
 	"testing"
 
-	"github.com/stretchr/testify/suite"
-
 	"github.com/line/lbm-sdk/testutil/network"
+	"github.com/stretchr/testify/suite"
 )
 
 func TestIntegrationTestSuite(t *testing.T) {
