@@ -1,0 +1,130 @@
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - id: simd-linux-amd64
+    main: ./simapp/simd
+    binary: simd
+    goos:
+      - linux
+    goarch:
+      - amd64
+    env:
+      - CGO_ENABLED=1
+      - TARGET_ARCH=x86_64
+    flags:
+      - -mod=readonly
+      - -trimpath
+      - "-tags={{ .Env.BUILD_TAGS }}"
+    ldflags:
+      - "{{ .Env.BUILD_VARS }}"
+  - id: simd-darwin-amd64
+    main: ./simapp/simd
+    binary: simd
+    goos:
+      - darwin
+    goarch:
+      - amd64
+    env:
+      - CGO_ENABLED=1
+      - CC=o64-clang
+      - CXX=o64-clang++
+      - TARGET_ARCH=x86_64
+    flags:
+      - -mod=readonly
+      - -trimpath
+      - "-tags={{ .Env.BUILD_TAGS }}"
+    ldflags:
+      - "{{ .Env.BUILD_VARS }}"
+#  - id: simd-linux-arm64
+#    main: ./simapp/simd
+#    binary: simd
+#    goos:
+#      - linux
+#    goarch:
+#      - arm64
+#    env:
+#      - CGO_ENABLED=1
+#      - CC=aarch64-linux-gnu-gcc
+#      - CXX=aarch64-linux-gnu-g++
+#      - TARGET_ARCH=aarch64
+#    flags:
+#      - -mod=readonly
+#      - -trimpath
+#      - "-tags={{ .Env.BUILD_TAGS }}"
+#    ldflags:
+#      - "{{ .Env.BUILD_VARS }}"
+#  - id: simd-darwin-arm64
+#    main: ./simapp/simd
+#    binary: simd
+#    goos:
+#      - darwin
+#    goarch:
+#      - arm64
+#    env:
+#      - CGO_ENABLED=1
+#      - CC=oa64-clang
+#      - CXX=oa64-clang++
+#      - TARGET_ARCH=aarch64
+#    flags:
+#      - -mod=readonly
+#      - -trimpath
+#      - "-tags={{ .Env.BUILD_TAGS }}"
+#    ldflags:
+#      - "{{ .Env.BUILD_VARS }}"
+
+archives:
+  -
+    id: bin-archive
+    builds:
+      - simd-linux-amd64
+      - simd-darwin-amd64
+      - simd-linux-arm64
+      - simd-darwin-arm64
+    format: tar.gz
+    name_template: "simd_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    wrap_in_directory: true
+    files:
+      - LICENSE
+      - NOTICE
+      - RELEASE_CHANGELOG.md
+
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+changelog:
+  use: git
+  sort: asc
+  groups:
+    - title: "Breaking Changes"
+      regexp: '^.*?BREAKING CHANGE(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: Features
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: 'Bug Fixes'
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 2
+    - title: 'Build, CI'
+      regexp: '^.*?(ci|build)(\([[:word:]]+\))??!?:.+$'
+      order: 3
+    - title: 'Document Updates'
+      regexp: '^.*?docs(\([[:word:]]+\))??!?:.+$'
+      order: 4
+    - title: Improvements
+      regexp: '^.*?(test|refactor)(\([[:word:]]+\))??!?:.+$'
+      order: 5
+
+release:
+  github:
+    owner: tkxkd0159
+    name: lbm-sdk
+  prerelease: auto
+  mode: replace
+  draft: false
+
+
+# modelines, feel free to remove those if you don't want/use them:
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=cnqoj

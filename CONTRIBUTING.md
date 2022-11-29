@@ -13,8 +13,7 @@
     - [Development Procedure](#development-procedure)
     - [Pull Merge Procedure](#pull-merge-procedure)
     - [Release Procedure](#release-procedure)
-    - [Point Release Procedure](#point-release-procedure)
-  - [Code Owner Membership](#code-owner-membership)
+  - [Commit Convention](#commit-convention)
 
 Thank you for considering making contributions to lbm-sdk and related
 repositories!
@@ -230,3 +229,17 @@ should be targeted against the release candidate branch.
 - Tag the release (use `git tag -a`) and create a release in Github
 - Delete the `RC` branches
 
+## Commit Convention
+All commits pushed to `lbm-sdk` are classified according to the rules below.
+Therefore, it cannot be included in the release notes unless you properly assign the prefix to the commit.  
+For example, you can write commit message like `feat: this is new feature`. However, if you want to clarify the scope of the commit, you can write it as follows, `feat(x/token): this is new feature`.
+- `chore` : a commit of the type chore makes trivial changes. If you don't want to include specific commit in the release note, add this prefix.
+- `feat` : a commit of the type feat introduces a new feature to the codebase
+- `fix` : a commit of the type fix patches a bug in your codebase
+- `refactor` : A code change that neither fixes a bug nor adds a feature
+- `BREAKING CHANGE` : a commit of the type breaking changes to the codebase. This changes breaks down the backward compatibility
+- `perf` : A code change that improves performance
+- `test`: Adding missing tests or correcting existing tests
+- `docs`: Documentation only changes
+- `build`: Changes that affect the build system or external dependencies
+- `ci`: Changes to our CI configuration files and scripts

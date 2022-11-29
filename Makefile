@@ -78,9 +78,9 @@ build_tags += $(BUILD_TAGS)
 build_tags := $(strip $(build_tags))
 
 whitespace :=
-whitespace += $(whitespace)
+empty += $(whitespace) $(whitespace)
 comma := ,
-build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
+build_tags_comma_sep := $(subst $(empty),$(comma),$(build_tags))
 
 # process linker flags
 
@@ -536,3 +536,81 @@ rosetta-data:
 	docker container rm data_dir_build
 
 .PHONY: rosetta-data
+
+###############################################################################
+###                                release                                  ###
+###############################################################################
+
+GORELEASER_CONFIG ?= .goreleaser.yaml
+
+#GORELEASER_BUILD_LDF = \
+#-X github.com/line/lbm-sdk/version.Name=sim \
+#-X github.com/line/lbm-sdk/version.AppName=simd \
+#-X github.com/line/lbm-sdk/version.Version=$(shell git describe --tags --abbrev=0) \
+#-X github.com/line/lbm-sdk/version.Commit=$(COMMIT) \
+#-X github.com/line/lbm-sdk/types.DBBackend=$(DB_BACKEND) \
+#-X github.com/line/lbm-sdk/version.BuildTags="$(GORELEASER_TAGS)"
+
+GORELEASER_BUILD_LDF = $(ldflags)
+GORELEASER_BUILD_LDF := $(strip $(GORELEASER_BUILD_LDF))
+
+GOLANG_VERSION=1.18.3
+
+GORELEASER_SKIP_VALIDATE ?= false
+GORELEASER_DEBUG         ?= false
+GORELEASER_IMAGE         ?= goreleaser/goreleaser-cross:v$(GOLANG_VERSION)
+GORELEASER_RELEASE       ?= false
+GO_MOD_NAME              := $(shell go list -m 2>/dev/null)
+
+ifeq ($(GORELEASER_RELEASE),true)
+	GORELEASER_SKIP_VALIDATE := false
+	GORELEASER_SKIP_PUBLISH  := release --skip-publish=false
+else
+	GORELEASER_SKIP_PUBLISH  := --skip-publish=true
+	GORELEASER_SKIP_VALIDATE ?= false
+	GITHUB_TOKEN=
+endif
+
+ifeq ($(GORELEASER_MOUNT_CONFIG),true)
+	GORELEASER_IMAGE := -v $(HOME)/.docker/config.json:/root/.docker/config.json $(GORELEASER_IMAGE)
+endif
+
+release-snapshot:
+	docker run --rm \
+		-e BUILD_TAGS="$(build_tags)" \
+		-e BUILD_VARS="$(GORELEASER_BUILD_LDF)" \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(shell pwd):/go/src/$(GO_MOD_NAME) \
+		-w /go/src/$(GO_MOD_NAME) \
+		$(GORELEASER_IMAGE) \
+		build --snapshot \
+		-f "$(GORELEASER_CONFIG)" \
+		--skip-validate=$(GORELEASER_SKIP_VALIDATE) \
+		--debug=$(GORELEASER_DEBUG) \
+		--rm-dist
+
+release:
+	docker run --rm \
+		-e BUILD_TAGS="$(build_tags)" \
+		-e BUILD_VARS="$(GORELEASER_BUILD_LDF)" \
+		-e GITHUB_TOKEN="$(GITHUB_TOKEN)" \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(shell pwd):/go/src/$(GO_MOD_NAME) \
+		-w /go/src/$(GO_MOD_NAME) \
+		$(GORELEASER_IMAGE) \
+		$(GORELEASER_SKIP_PUBLISH) \
+		-f "$(GORELEASER_CONFIG)" \
+		--skip-validate=$(GORELEASER_SKIP_VALIDATE) \
+		--skip-announce=true \
+		--debug=$(GORELEASER_DEBUG) \
+		--rm-dist
+
+build-static: go.sum
+	CGO_ENABLED=1 go build -mod=readonly -tags "$(build_tags)" -ldflags '$(GORELEASER_BUILD_LDF)' -o build/simd ./simapp/simd
+
+
+showflag:
+	@echo $(GORELEASER_BUILD_LDF)
+	@echo $(GORELEASER_TAGS)
+
+.PHONY: release-snapshot release build-static envtestss
