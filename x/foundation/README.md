@@ -31,6 +31,7 @@ back these foundation-specific functionalities.
     * [Msg/Revoke](#msgrevoke)
     * [Msg/FundTreasury](#msgfundtreasury)
     * [Msg/WithdrawFromTreasury](#msgwithdrawfromtreasury)
+    * [Msg/GovMint](#msggovmint)
 * [Events](#events)
     * [EventUpdateFoundationParams](#eventupdatefoundationparams)
     * [EventUpdateDecisionPolicy](#eventupdatedecisionpolicy)
@@ -44,23 +45,24 @@ back these foundation-specific functionalities.
     * [EventRevoke](#eventrevoke)
     * [EventFundTreasury](#eventfundedtreasury)
     * [EventWithdrawFromTreasury](#eventwithdrawedfromtreasury)
+    * [EventGovMint](#eventgovmint)
 * [Client](#client)
     * [CLI](#cli)
     * [gRPC](#grpc)
 
 # Concepts
 
-## Foundation Operator
+## Authority
 
-A foundation operator is a module account associated with the foundation and a
-decision policy. It is an "administrator" which has the ability to add, remove
-and update members in the foundation.
+`x/foundation`'s authority is a module account associated with the foundation
+and a decision policy. It is an "administrator" which has the ability to add,
+remove and update members in the foundation.
 `x/foundation` has several messages which cannot be triggered but by the
-operator. It includes membership management messages, and other messages which
+authority. It includes membership management messages, and other messages which
 controls the assets of the foundation.
 
-**Note:** The operator is a module account, which means no one has the private
-key of the operator. Hence, foundation members MUST propose, vote and execute
+**Note:** The authority is a module account, which means no one has the private
+key of the authority. Hence, foundation members MUST propose, vote and execute
 the corresponding proposal.
 
 ## Decision Policy
@@ -125,7 +127,7 @@ is submitted, and the end is defined by the decision policy.
 ### Withdrawing Proposals
 
 Proposals can be withdrawn any time before the voting period end, either by the
-foundation operator or by one of the proposers. Once withdrawn, it is marked as
+module's authority or by one of the proposers. Once withdrawn, it is marked as
 `PROPOSAL_STATUS_WITHDRAWN`, and no more voting or execution is allowed on it.
 
 ### Aborted Proposals
@@ -262,6 +264,12 @@ sending the message `Msg/WithdrawFromTreasury`.
 value again (irreversible), which means you must set it to a non-zero value in
 the genesis to make it work.
 
+## GovMint
+
+When the chain is first started, it may be necessary to mint a large amount of 
+coins at most once for initial validators or for specific purposes. Newly minted
+coins are transferred to the treasury pool.
+
 # State
 
 ## Params
@@ -282,10 +290,6 @@ censorship.
 `FoundationInfo` contains the information relevant to the foundation.
 
 * FoundationInfo: `0x01 -> ProtocolBuffer(FoundationInfo)`.
-
-### Operator
-
-The `Operator` is the account address of the foundation operator.
 
 ### Version
 
@@ -350,7 +354,7 @@ The `MsgUpdateParams` can be used to update the parameters of `foundation`.
 
 It's expected to fail if:
 
-* the signer is not the foundation operator.
+* the authority is not the module's authority.
 * the parameters introduces any new foundation-specific features.
 
 ## Msg/UpdateDecisionPolicy
@@ -361,7 +365,7 @@ The `MsgUpdateDecisionPolicy` can be used to update the decision policy.
 
 It's expected to fail if:
 
-* the signer is not the foundation operator.
+* the authority is not the module's authority.
 * the new decision policy's `Validate()` method doesn't pass.
 
 ## Msg/UpdateMembers
@@ -375,7 +379,7 @@ its `remove` flag to true.
 
 It's expected to fail if:
 
-* the signer is not the foundation operator.
+* the authority is not the module's authority.
 * if the decision policy's `Validate()` method fails against the updated
   membership.
 
@@ -410,14 +414,14 @@ It's expected to fail if:
 ## Msg/WithdrawProposal
 
 A proposal can be withdrawn using `MsgWithdrawProposal` which has an `address`
-(can be either a proposer or the foundation operator) and a `proposal_id`
-(which has to be withdrawn).
+(can be either a proposer or the module's authority) and a `proposal_id` (which
+has to be withdrawn).
 
 +++ https://github.com/line/lbm-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/proto/lbm/foundation/v1/tx.proto#L159-L166
 
 It's expected to fail if:
 
-* the signer is neither the foundation operator nor a proposer of the proposal.
+* the address is neither the module's authority nor a proposer of the proposal.
 * the proposal is already closed or aborted.
 
 ## Msg/Vote
@@ -456,6 +460,7 @@ new grant with the same `(grantee, Authorization)` tuple should be created.
 
 The message handling should fail if:
 
+* the authority is not the module's authority.
 * provided `Authorization` is not implemented.
 * `Authorization.MsgTypeURL()` is not defined in the router (there is no
   defined handler in the app router to handle that Msg types).
@@ -470,6 +475,7 @@ A grant can be removed with the `MsgRevoke` message.
 
 The message handling should fail if:
 
+* the authority is not the module's authority.
 * provided `MsgTypeUrl` is empty.
 
 ## Msg/FundTreasury
@@ -478,7 +484,7 @@ Anyone can fund treasury with `MsgFundTreasury`.
 
 +++ https://github.com/line/lbm-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/proto/lbm/foundation/v1/tx.proto#L76-L81
 
-## Msg/WithdrawFromTresury
+## Msg/WithdrawFromTreasury
 
 The foundation can withdraw coins from the treasury with
 `MsgWithdrawFromTreasury`.
@@ -487,9 +493,20 @@ The foundation can withdraw coins from the treasury with
 
 The message handling should fail if:
 
-* the signer is not the foundation operator.
+* the authority is not the module's authority.
 * the address which receives the coins has no authorization of
   `ReceiveFromTreasuryAuthorization`.
+
+## Msg/GovMint
+
+Massive minting is possible through 'MsgGovMint' up to 1 time after the chain is started.
+
++++ https://github.com/line/lbm-sdk/blob/66988a235a0e01f7a1ee76d719d585ff35f0d176/proto/lbm/foundation/v1/tx.proto#L221-L225
+
+The message handling should fail if:
+
+* the authority is not the module's authority.
+* The remaining left count is 0.
 
 # Events
 
@@ -600,6 +617,14 @@ the treasury.
 | to            | {toAddress}     |
 | amount        | {amount}        |
 
+## EventGovMint
+
+`EventGovMint` is an event emitted when coins are minted.
+
+| Attribute Key | Attribute Value |
+|---------------|-----------------|
+| amount        | {amount}        |
+
 # Client
 
 ## CLI
@@ -662,7 +687,6 @@ info:
     windows:
       min_execution_period: 0s
       voting_period: 86400s
-  operator: link1...
   total_weight: "3.000000000000000000"
   version: "1"
 ```
@@ -751,10 +775,10 @@ proposal:
   id: "1"
   messages:
   - '@type': /lbm.foundation.v1.MsgWithdrawFromTreasury
+    authority: link1...
     amount:
     - amount: "1000000000"
       denom: stake
-    operator: link1...
     to: link1...
   metadata: show-me-the-money
   proposers:
@@ -796,10 +820,10 @@ proposals:
   id: "1"
   messages:
   - '@type': /lbm.foundation.v1.MsgWithdrawFromTreasury
+    authority: link1...
     amount:
     - amount: "1000000000"
       denom: stake
-    operator: link1...
     to: link1...
   metadata: show-me-the-money
   proposers:
@@ -942,7 +966,7 @@ The `tx` commands allow users to interact with the `foundation` module.
 simd tx foundation --help
 ```
 
-**Note:** Some commands must be signed by the foundation operator, which means
+**Note:** Some commands must be signed by the module's authority, which means
 you cannot broadcast the message directly. The use of those commands is to make
 it easier to generate the messages by end users.
 
@@ -967,14 +991,14 @@ simd tx foundation update-params link1... \
      }'
 ```
 
-**Note:** The signer is the foundation operator.
+**Note:** The signer is the module's authority.
 
 #### update-members
 
 The `update-members` command allows users to update the foundation's members.
 
 ```bash
-simd tx foundation update-members [operator] [members-json] [flags]
+simd tx foundation update-members [authority] [members-json] [flags]
 ```
 
 Example:
@@ -993,7 +1017,7 @@ simd tx foundation update-members link1... \
      ]'
 ```
 
-**Note:** The signer is the foundation operator.
+**Note:** The signer is the module's authority.
 
 #### update-decision-policy
 
@@ -1001,7 +1025,7 @@ The `update-decision-policy` command allows users to update the foundation's
 decision policy.
 
 ```bash
-simd tx foundation update-decision-policy [operator] [decision-policy-json] [flags]
+simd tx foundation update-decision-policy [authority] [decision-policy-json] [flags]
 ```
 
 Example:
@@ -1018,7 +1042,7 @@ simd tx foundation update-decision-policy link1... \
      }'
 ```
 
-**Note:** The signer is the foundation operator.
+**Note:** The signer is the module's authority.
 
 #### submit-proposal
 
@@ -1039,7 +1063,7 @@ simd tx foundation submit-proposal show-me-the-money \
     '[
        {
          "@type": "/lbm.foundation.v1.MsgWithdrawFromTreasury",
-         "operator": "link1...",
+         "authority": "link1...",
          "to": "link1...",
          "amount": [
            {
@@ -1056,7 +1080,7 @@ simd tx foundation submit-proposal show-me-the-money \
 The `withdraw-proposal` command allows users to withdraw a proposal.
 
 ```bash
-simd tx foundation withdraw-proposal [proposal-id] [operator-or-proposer] [flags]
+simd tx foundation withdraw-proposal [proposal-id] [authority-or-proposer] [flags]
 ```
 
 Example:
@@ -1113,7 +1137,7 @@ simd tx foundation leave-foundation link1...
 The `grant` command allows users to grant an authorization to a grantee.
 
 ```bash
-simd tx foundation grant [operator] [grantee] [authorization-json] [flags]
+simd tx foundation grant [authority] [grantee] [authorization-json] [flags]
 ```
 
 Example:
@@ -1125,14 +1149,14 @@ simd tx foundation grant link1.. link1... \
      }'
 ```
 
-**Note:** The signer is the foundation operator.
+**Note:** The signer is the module's authority.
 
 #### revoke
 
 The `revoke` command allows users to revoke an authorization from a grantee.
 
 ```bash
-simd tx foundation revoke [operator] [grantee] [msg-type-url] [flags]
+simd tx foundation revoke [authority] [grantee] [msg-type-url] [flags]
 ```
 
 Example:
@@ -1141,7 +1165,7 @@ Example:
 simd tx foundation revoke link1.. link1... /lbm.foundation.v1.MsgWithdrawFromTreasury
 ```
 
-**Note:** The signer is the foundation operator.
+**Note:** The signer is the module's authority.
 
 #### fund-treasury
 
@@ -1163,7 +1187,7 @@ The `withdraw-from-treasury` command allows users to withdraw coins from the
 foundation treasury.
 
 ```bash
-simd tx foundation withdraw-from-treasury [operator] [to] [amount] [flags]
+simd tx foundation withdraw-from-treasury [authority] [to] [amount] [flags]
 ```
 
 Example:
@@ -1172,7 +1196,7 @@ Example:
 simd tx foundation withdraw-from-treasury link1.. link1... 1000stake
 ```
 
-**Note:** The signer is the foundation operator.
+**Note:** The signer is the module's authority.
 
 ## gRPC
 
@@ -1232,7 +1256,6 @@ Example Output:
 ```bash
 {
   "info": {
-    "operator": "link1...",
     "version": "1",
     "totalWeight": "3000000000000000000",
     "decisionPolicy": {"@type":"/lbm.foundation.v1.ThresholdDecisionPolicy","threshold":"3000000000000000000","windows":{"votingPeriod":"86400s","minExecutionPeriod":"0s"}}
@@ -1349,7 +1372,7 @@ Example Output:
     "votingPeriodEnd": "2022-09-20T01:26:38.544943184Z",
     "executorResult": "PROPOSAL_EXECUTOR_RESULT_NOT_RUN",
     "messages": [
-      {"@type":"/lbm.foundation.v1.MsgWithdrawFromTreasury","amount":[{"denom":"stake","amount":"1000000000"}],"operator":"link1...","to":"link1..."}
+      {"@type":"/lbm.foundation.v1.MsgWithdrawFromTreasury","authority":"link1...","amount":[{"denom":"stake","amount":"1000000000"}],"to":"link1..."}
     ]
   }
 }
@@ -1394,7 +1417,7 @@ Example Output:
       "votingPeriodEnd": "2022-09-20T01:26:38.544943184Z",
       "executorResult": "PROPOSAL_EXECUTOR_RESULT_NOT_RUN",
       "messages": [
-        {"@type":"/lbm.foundation.v1.MsgWithdrawFromTreasury","amount":[{"denom":"stake","amount":"1000000000"}],"operator":"link1...","to":"link1..."}
+        {"@type":"/lbm.foundation.v1.MsgWithdrawFromTreasury","authority":"link1...","amount":[{"denom":"stake","amount":"1000000000"}],"to":"link1..."}
       ]
     }
   ],

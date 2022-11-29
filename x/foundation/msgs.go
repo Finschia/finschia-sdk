@@ -29,6 +29,21 @@ func (m MsgUpdateParams) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgUpdateParams) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgUpdateParams) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgUpdateParams) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgFundTreasury)(nil)
 
 // ValidateBasic implements Msg.
@@ -50,12 +65,27 @@ func (m MsgFundTreasury) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgFundTreasury) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgFundTreasury) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgFundTreasury) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgWithdrawFromTreasury)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgWithdrawFromTreasury) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", m.Authority)
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
@@ -71,16 +101,31 @@ func (m MsgWithdrawFromTreasury) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgWithdrawFromTreasury) GetSigners() []sdk.AccAddress {
-	signer := sdk.MustAccAddressFromBech32(m.Operator)
+	signer := sdk.MustAccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgWithdrawFromTreasury) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgWithdrawFromTreasury) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgWithdrawFromTreasury) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgUpdateMembers)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgUpdateMembers) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", m.Authority)
 	}
 
 	if len(m.MemberUpdates) == 0 {
@@ -96,16 +141,31 @@ func (m MsgUpdateMembers) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgUpdateMembers) GetSigners() []sdk.AccAddress {
-	signer := sdk.MustAccAddressFromBech32(m.Operator)
+	signer := sdk.MustAccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgUpdateMembers) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgUpdateMembers) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgUpdateMembers) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgUpdateDecisionPolicy)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgUpdateDecisionPolicy) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", m.Authority)
 	}
 
 	if m.GetDecisionPolicy() == nil {
@@ -120,8 +180,23 @@ func (m MsgUpdateDecisionPolicy) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgUpdateDecisionPolicy) GetSigners() []sdk.AccAddress {
-	signer := sdk.MustAccAddressFromBech32(m.Operator)
+	signer := sdk.MustAccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgUpdateDecisionPolicy) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgUpdateDecisionPolicy) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgUpdateDecisionPolicy) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 func (m MsgUpdateDecisionPolicy) GetDecisionPolicy() DecisionPolicy {
@@ -206,6 +281,21 @@ func (m MsgSubmitProposal) GetSigners() []sdk.AccAddress {
 	return signers
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgSubmitProposal) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgSubmitProposal) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgSubmitProposal) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgWithdrawProposal)(nil)
 
 // ValidateBasic implements Msg.
@@ -225,6 +315,21 @@ func (m MsgWithdrawProposal) ValidateBasic() error {
 func (m MsgWithdrawProposal) GetSigners() []sdk.AccAddress {
 	signer := sdk.MustAccAddressFromBech32(m.Address)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgWithdrawProposal) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgWithdrawProposal) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgWithdrawProposal) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgVote)(nil)
@@ -256,6 +361,21 @@ func (m MsgVote) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgVote) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgVote) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgVote) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgExec)(nil)
 
 // ValidateBasic implements Msg.
@@ -277,6 +397,21 @@ func (m MsgExec) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgExec) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgExec) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgExec) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgLeaveFoundation)(nil)
 
 // ValidateBasic implements Msg.
@@ -294,12 +429,27 @@ func (m MsgLeaveFoundation) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgLeaveFoundation) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgLeaveFoundation) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgLeaveFoundation) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgGrant)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgGrant) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", m.Authority)
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Grantee); err != nil {
@@ -346,16 +496,31 @@ func (m MsgGrant) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 
 // GetSigners implements Msg.
 func (m MsgGrant) GetSigners() []sdk.AccAddress {
-	signer := sdk.MustAccAddressFromBech32(m.Operator)
+	signer := sdk.MustAccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgGrant) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgGrant) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgGrant) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgRevoke)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgRevoke) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", m.Authority)
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Grantee); err != nil {
@@ -371,16 +536,31 @@ func (m MsgRevoke) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgRevoke) GetSigners() []sdk.AccAddress {
-	signer := sdk.MustAccAddressFromBech32(m.Operator)
+	signer := sdk.MustAccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgRevoke) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgRevoke) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgRevoke) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgGovMint)(nil)
 
 // ValidateBasic implements Msg.
 func (m MsgGovMint) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	if _, err := sdk.AccAddressFromBech32(m.Authority); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid authority address: %s", m.Authority)
 	}
 
 	if m.Amount.Empty() {
@@ -396,6 +576,21 @@ func (m MsgGovMint) ValidateBasic() error {
 
 // GetSigners implements Msg.
 func (m MsgGovMint) GetSigners() []sdk.AccAddress {
-	signer := sdk.MustAccAddressFromBech32(m.Operator)
+	signer := sdk.MustAccAddressFromBech32(m.Authority)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgGovMint) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgGovMint) Route() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgGovMint) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }

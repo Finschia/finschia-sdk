@@ -16,7 +16,7 @@ import (
 // and designed to ensure the IAVL store handles bounds the same way as the mock storage we use in Rust contract tests
 func TestIavlRangeBounds(t *testing.T) {
 	db := dbm.NewMemDB()
-	tree, err := iavltree.NewMutableTree(db, 50)
+	tree, err := iavltree.NewMutableTree(db, 50, false)
 	require.NoError(t, err)
 	kvstore := iavl.UnsafeNewStore(tree)
 

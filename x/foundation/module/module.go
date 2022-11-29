@@ -92,7 +92,9 @@ func NewAppModule(cdc codec.Codec, keeper keeper.Keeper) AppModule {
 }
 
 // RegisterInvariants does nothing, there are no invariants to enforce
-func (AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
+func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
+	keeper.RegisterInvariants(ir, am.keeper)
+}
 
 // Route is empty, as we do not handle Messages (just proposals)
 func (AppModule) Route() sdk.Route { return sdk.Route{} }

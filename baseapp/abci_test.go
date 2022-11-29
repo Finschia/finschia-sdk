@@ -98,6 +98,15 @@ func TestGetBlockRentionHeight(t *testing.T) {
 			commitHeight: 499000,
 			expected:     0,
 		},
+		"iavl disable fast node": {
+			bapp: NewBaseApp(
+				name, logger, db, nil,
+				SetIAVLDisableFastNode(true),
+			),
+			maxAgeBlocks: 0,
+			commitHeight: 499000,
+			expected:     0,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -159,4 +168,40 @@ func TestBaseAppCreateQueryContext(t *testing.T) {
 			}
 		})
 	}
+}
+
+// Test and ensure that consensus params has been updated.
+// See:
+// - https://github.com/line/lbm-sdk/pull/673
+func TestBaseAppBeginBlockConsensusParams(t *testing.T) {
+	t.Parallel()
+
+	logger := defaultLogger()
+	db := dbm.NewMemDB()
+	name := t.Name()
+	app := NewBaseApp(name, logger, db, nil)
+	app.SetParamStore(&paramStore{db: dbm.NewMemDB()})
+	app.InitChain(abci.RequestInitChain{
+		ConsensusParams: &abci.ConsensusParams{
+			Block: &abci.BlockParams{
+				MaxGas: -1,
+			},
+		},
+	})
+	app.init()
+
+	// set block params
+	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: 1}})
+	ctx := app.deliverState.ctx
+	maxGas := int64(123456789)
+	app.paramStore.Set(ctx, ParamStoreKeyBlockParams,
+		&abci.BlockParams{
+			MaxGas: maxGas,
+		})
+	app.Commit()
+
+	// confirm consensus params updated into the context
+	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: 2}})
+	newCtx := app.getContextForTx(app.checkState, []byte{})
+	require.Equal(t, maxGas, newCtx.ConsensusParams().Block.MaxGas)
 }

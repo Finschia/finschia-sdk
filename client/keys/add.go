@@ -8,7 +8,7 @@ import (
 	"math"
 	"sort"
 
-	bip39 "github.com/cosmos/go-bip39"
+	"github.com/cosmos/go-bip39"
 	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/client"
@@ -95,15 +95,17 @@ func runAddCmdPrepare(cmd *cobra.Command, args []string) error {
 
 /*
 input
-	- bip39 mnemonic
-	- bip39 passphrase
-	- bip44 path
-	- local encryption password
+  - bip39 mnemonic
+  - bip39 passphrase
+  - bip44 path
+  - local encryption password
+
 output
-	- armor encrypted private key (saved to file)
+  - armor encrypted private key (saved to file)
 */
 func runAddCmd(ctx client.Context, cmd *cobra.Command, args []string, inBuf *bufio.Reader) error {
 	var err error
+	var multisigThreshold int
 
 	name := args[0]
 	interactive, _ := cmd.Flags().GetBool(flagInteractive)
@@ -117,6 +119,18 @@ func runAddCmd(ctx client.Context, cmd *cobra.Command, args []string, inBuf *buf
 	algo, err := keyring.NewSigningAlgoFromString(algoStr, keyringAlgos)
 	if err != nil {
 		return err
+	}
+	multisigKeys, _ := cmd.Flags().GetStringSlice(flagMultisig)
+	if len(multisigKeys) != 0 {
+		multisigThreshold, _ = cmd.Flags().GetInt(flagMultiSigThreshold)
+		if err = validateMultisigThreshold(multisigThreshold, len(multisigKeys)); err != nil {
+			return err
+		}
+
+		err = verifyMultisigTarget(kb, multisigKeys, name)
+		if err != nil {
+			return err
+		}
 	}
 
 	if dryRun, _ := cmd.Flags().GetBool(flags.FlagDryRun); dryRun {
@@ -141,13 +155,8 @@ func runAddCmd(ctx client.Context, cmd *cobra.Command, args []string, inBuf *buf
 			}
 		}
 
-		multisigKeys, _ := cmd.Flags().GetStringSlice(flagMultisig)
 		if len(multisigKeys) != 0 {
 			pks := make([]cryptotypes.PubKey, len(multisigKeys))
-			multisigThreshold, _ := cmd.Flags().GetInt(flagMultiSigThreshold)
-			if err := validateMultisigThreshold(multisigThreshold, len(multisigKeys)); err != nil {
-				return err
-			}
 
 			for i, keyname := range multisigKeys {
 				k, err := kb.Key(keyname)
@@ -323,6 +332,20 @@ func printCreate(cmd *cobra.Command, info keyring.Info, showMnemonic bool, mnemo
 
 	default:
 		return fmt.Errorf("invalid output format %s", outputFormat)
+	}
+
+	return nil
+}
+
+func verifyMultisigTarget(kb keyring.Keyring, multisigKeys []string, newkey string) error {
+	if _, err := kb.Key(newkey); err == nil {
+		return errors.New("you cannot specify a new key as one of the names of the keys that make up a multisig")
+	}
+
+	for _, k := range multisigKeys {
+		if _, err := kb.Key(k); err != nil {
+			return errors.New("part of the multisig target key does not exist")
+		}
 	}
 
 	return nil

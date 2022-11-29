@@ -22,7 +22,6 @@ func DefaultGenesisState() *GenesisState {
 
 func DefaultFoundation() FoundationInfo {
 	return *FoundationInfo{
-		Operator:    DefaultOperator().String(),
 		Version:     1,
 		TotalWeight: sdk.ZeroDec(),
 	}.WithDecisionPolicy(DefaultDecisionPolicy())
@@ -34,8 +33,8 @@ func DefaultDecisionPolicy() DecisionPolicy {
 	}
 }
 
-func DefaultOperator() sdk.AccAddress {
-	return authtypes.NewModuleAddress(DefaultOperatorName)
+func DefaultAuthority() sdk.AccAddress {
+	return authtypes.NewModuleAddress(ModuleName)
 }
 
 func DefaultParams() Params {
@@ -58,10 +57,6 @@ func (data GenesisState) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error
 }
 
 func (i FoundationInfo) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32(i.Operator); err != nil {
-		return err
-	}
-
 	if i.Version == 0 {
 		return sdkerrors.ErrInvalidVersion.Wrap("version must be > 0")
 	}

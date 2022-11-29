@@ -33,6 +33,7 @@ import (
 	"github.com/line/lbm-sdk/store/cache"
 	"github.com/line/lbm-sdk/store/iavl"
 	storetypes "github.com/line/lbm-sdk/store/types"
+	"github.com/line/lbm-sdk/telemetry"
 )
 
 // Ostracon full-node start flags
@@ -52,6 +53,7 @@ const (
 	FlagTrace               = "trace"
 	FlagInvCheckPeriod      = "inv-check-period"
 	FlagPrometheus          = "prometheus"
+	FlagChanCheckTxSize     = "chan-check-tx-size"
 
 	FlagPruning           = "pruning"
 	FlagPruningKeepRecent = "pruning-keep-recent"
@@ -175,6 +177,8 @@ is performed. Note, when enabled, gRPC will also be automatically enabled.
 
 	cmd.Flags().Bool(FlagPrometheus, false, "Enable prometheus metric for app")
 
+	cmd.Flags().Uint(FlagChanCheckTxSize, config.DefaultChanCheckTxSize, "The size of the channel check tx")
+
 	// add support for all Ostracon-specific command line options
 	ostcmd.AddNodeFlags(cmd)
 	return cmd
@@ -197,6 +201,10 @@ func startStandAlone(ctx *Context, appCreator types.AppCreator) error {
 	}
 
 	app := appCreator(ctx.Logger, db, traceWriter, ctx.Viper)
+	_, err = startTelemetry(config.GetConfig(ctx.Viper))
+	if err != nil {
+		return err
+	}
 
 	svr, err := server.NewServer(addr, transport, app)
 	if err != nil {
@@ -316,6 +324,11 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		app.RegisterTendermintService(clientCtx)
 	}
 
+	metrics, err := startTelemetry(config)
+	if err != nil {
+		return err
+	}
+
 	var apiSrv *api.Server
 	if config.API.Enable {
 		genDoc, err := genDocProvider()
@@ -327,6 +340,9 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 
 		apiSrv = api.New(clientCtx, ctx.Logger.With("module", "api-server"))
 		app.RegisterAPIRoutes(apiSrv, config.API)
+		if config.Telemetry.Enabled {
+			apiSrv.SetTelemetry(metrics)
+		}
 		errCh := make(chan error)
 
 		go func() {
@@ -437,4 +453,11 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 
 	// wait for signal capture and gracefully return
 	return WaitForQuitSignals()
+}
+
+func startTelemetry(cfg config.Config) (*telemetry.Metrics, error) {
+	if !cfg.Telemetry.Enabled {
+		return nil, nil
+	}
+	return telemetry.New(cfg.Telemetry)
 }

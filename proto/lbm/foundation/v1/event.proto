@@ -23,7 +23,7 @@ message EventFundTreasury {
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
 
-// EventWithdrawFromTreasury is an event emitted when the operator withdraws coins from the treasury.
+// EventWithdrawFromTreasury is an event emitted when coins are withdrawn from the treasury.
 message EventWithdrawFromTreasury {
   string   to                              = 1;
   repeated cosmos.base.v1beta1.Coin amount = 2
@@ -78,21 +78,25 @@ message EventLeaveFoundation {
 
 // EventGrant is emitted on Msg/Grant
 message EventGrant {
-  string granter = 1;
   // the address of the grantee.
-  string grantee = 2;
+  string grantee = 1;
   // authorization granted.
-  google.protobuf.Any authorization = 3
+  google.protobuf.Any authorization = 2
       [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/authz.Authorization"];
 }
 
 // EventRevoke is emitted on Msg/Revoke
 message EventRevoke {
-  string granter = 1;
   // address of the grantee.
-  string grantee = 2;
+  string grantee = 1;
   // message type url for which an autorization is revoked.
-  string msg_type_url = 3;
+  string msg_type_url = 2;
+}
+
+// EventGovMint is an event emitted when the minter mint coins to the treasury.
+message EventGovMint {
+  repeated cosmos.base.v1beta1.Coin amount = 1
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
 }
 
 // EventGovMint is an event emitted when the minter mint coins to the treasury.

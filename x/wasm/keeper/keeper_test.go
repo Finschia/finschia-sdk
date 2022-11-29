@@ -1928,3 +1928,40 @@ func TestIterateInactiveContracts(t *testing.T) {
 	expectList := []sdk.AccAddress{example1.Contract, example2.Contract}
 	assert.ElementsMatch(t, expectList, inactiveContracts)
 }
+
+func TestKeeper_GetByteCode(t *testing.T) {
+
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.ContractKeeper
+
+	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
+
+	em := sdk.NewEventManager()
+	_, err := keeper.Create(ctx.WithEventManager(em), creator, hackatomWasm, nil)
+	require.NoError(t, err)
+
+	tests := []struct {
+		name    string
+		codeID  uint64
+		want    []byte
+		wantErr bool
+		expErr  *sdkerrors.Error
+	}{
+		{name: "success", codeID: 1, want: hackatomWasm, wantErr: false, expErr: nil},
+		{name: "not found contract", codeID: 42, want: nil, wantErr: true, expErr: types.ErrNotFound},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := keepers.WasmKeeper.GetByteCode(ctx, tt.codeID)
+			if tt.wantErr {
+				require.Equal(t, err, tt.expErr)
+				return
+			}
+			require.NoError(t, err)
+			require.Equal(t, tt.want, got)
+
+		})
+	}
+}

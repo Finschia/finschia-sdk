@@ -23,10 +23,7 @@ func (k Keeper) Grant(ctx sdk.Context, grantee sdk.AccAddress, authorization fou
 		return err
 	}
 
-	// TODO: remove granter from the event proto.
-	granter := foundation.ModuleName
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventGrant{
-		Granter:       granter,
 		Grantee:       grantee.String(),
 		Authorization: any,
 	}); err != nil {
@@ -42,10 +39,7 @@ func (k Keeper) Revoke(ctx sdk.Context, grantee sdk.AccAddress, msgTypeURL strin
 	}
 	k.deleteAuthorization(ctx, grantee, msgTypeURL)
 
-	// TODO: remove granter from the event proto.
-	granter := foundation.ModuleName
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventRevoke{
-		Granter:    granter,
 		Grantee:    grantee.String(),
 		MsgTypeUrl: msgTypeURL,
 	}); err != nil {

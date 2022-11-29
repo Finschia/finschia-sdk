@@ -220,6 +220,21 @@ func (m MsgTransferFT) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgTransferFT) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgTransferFT) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgTransferFT) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgTransferFTFrom)(nil)
 
 // ValidateBasic implements Msg.
@@ -249,6 +264,21 @@ func (m MsgTransferFTFrom) ValidateBasic() error {
 func (m MsgTransferFTFrom) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgTransferFTFrom) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgTransferFTFrom) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgTransferFTFrom) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgTransferNFT)(nil)
@@ -282,6 +312,21 @@ func (m MsgTransferNFT) ValidateBasic() error {
 func (m MsgTransferNFT) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgTransferNFT) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgTransferNFT) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgTransferNFT) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgTransferNFTFrom)(nil)
@@ -320,6 +365,21 @@ func (m MsgTransferNFTFrom) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgTransferNFTFrom) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgTransferNFTFrom) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgTransferNFTFrom) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgApprove)(nil)
 
 // ValidateBasic implements Msg.
@@ -344,6 +404,21 @@ func (m MsgApprove) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgApprove) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgApprove) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgApprove) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgDisapprove)(nil)
 
 // ValidateBasic implements Msg.
@@ -366,6 +441,21 @@ func (m MsgDisapprove) ValidateBasic() error {
 func (m MsgDisapprove) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.Approver)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgDisapprove) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgDisapprove) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgDisapprove) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgCreateContract)(nil)
@@ -395,6 +485,21 @@ func (m MsgCreateContract) ValidateBasic() error {
 func (m MsgCreateContract) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.Owner)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgCreateContract) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgCreateContract) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgCreateContract) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgIssueFT)(nil)
@@ -442,6 +547,21 @@ func (m MsgIssueFT) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgIssueFT) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgIssueFT) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgIssueFT) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgIssueNFT)(nil)
 
 // ValidateBasic implements Msg.
@@ -471,6 +591,21 @@ func (m MsgIssueNFT) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgIssueNFT) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgIssueNFT) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgIssueNFT) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgMintFT)(nil)
 
 // ValidateBasic implements Msg.
@@ -497,6 +632,21 @@ func (m MsgMintFT) ValidateBasic() error {
 func (m MsgMintFT) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgMintFT) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgMintFT) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgMintFT) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgMintNFT)(nil)
@@ -541,6 +691,21 @@ func (m MsgMintNFT) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgMintNFT) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgMintNFT) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgMintNFT) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgBurnFT)(nil)
 
 // ValidateBasic implements Msg.
@@ -564,6 +729,21 @@ func (m MsgBurnFT) ValidateBasic() error {
 func (m MsgBurnFT) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgBurnFT) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgBurnFT) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgBurnFT) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgBurnFTFrom)(nil)
@@ -594,6 +774,21 @@ func (m MsgBurnFTFrom) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgBurnFTFrom) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgBurnFTFrom) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgBurnFTFrom) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgBurnNFT)(nil)
 
 // ValidateBasic implements Msg.
@@ -622,6 +817,21 @@ func (m MsgBurnNFT) ValidateBasic() error {
 func (m MsgBurnNFT) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgBurnNFT) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgBurnNFT) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgBurnNFT) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgBurnNFTFrom)(nil)
@@ -655,6 +865,21 @@ func (m MsgBurnNFTFrom) ValidateBasic() error {
 func (m MsgBurnNFTFrom) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgBurnNFTFrom) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgBurnNFTFrom) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgBurnNFTFrom) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgModify)(nil)
@@ -725,6 +950,21 @@ func (m MsgModify) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgModify) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgModify) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgModify) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgGrantPermission)(nil)
 
 // ValidateBasic implements Msg.
@@ -753,6 +993,21 @@ func (m MsgGrantPermission) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgGrantPermission) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgGrantPermission) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgGrantPermission) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgRevokePermission)(nil)
 
 // ValidateBasic implements Msg.
@@ -776,6 +1031,21 @@ func (m MsgRevokePermission) ValidateBasic() error {
 func (m MsgRevokePermission) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgRevokePermission) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgRevokePermission) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgRevokePermission) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgAttach)(nil)
@@ -810,6 +1080,21 @@ func (m MsgAttach) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgAttach) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgAttach) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgAttach) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgDetach)(nil)
 
 // ValidateBasic implements Msg.
@@ -833,6 +1118,21 @@ func (m MsgDetach) ValidateBasic() error {
 func (m MsgDetach) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgDetach) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgDetach) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgDetach) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgAttachFrom)(nil)
@@ -870,6 +1170,21 @@ func (m MsgAttachFrom) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{signer}
 }
 
+// Type implements the LegacyMsg.Type method.
+func (m MsgAttachFrom) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgAttachFrom) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgAttachFrom) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
 var _ sdk.Msg = (*MsgDetachFrom)(nil)
 
 // ValidateBasic implements Msg.
@@ -896,4 +1211,19 @@ func (m MsgDetachFrom) ValidateBasic() error {
 func (m MsgDetachFrom) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
 	return []sdk.AccAddress{signer}
+}
+
+// Type implements the LegacyMsg.Type method.
+func (m MsgDetachFrom) Type() string {
+	return sdk.MsgTypeURL(&m)
+}
+
+// Route implements the LegacyMsg.Route method.
+func (m MsgDetachFrom) Route() string {
+	return RouterKey
+}
+
+// GetSignBytes implements the LegacyMsg.GetSignBytes method.
+func (m MsgDetachFrom) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }

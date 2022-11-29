@@ -39,7 +39,7 @@ func (suite *IntegrationTestSuite) TestExportGenesis() {
 
 func (suite *IntegrationTestSuite) getTestBalancesAndSupply() ([]types.Balance, sdk.Coins) {
 	addr2, _ := sdk.AccAddressFromBech32("link1f9xjhxm0plzrh9cskf4qee4pc2xwp0n0p662v8")
-	addr1, _ := sdk.AccAddressFromBech32("link1jv65s3grqf6v6jl3dp4t6c9t9rk99cd8j3y7jh") // distribution module address
+	addr1, _ := sdk.AccAddressFromBech32("link1t5u0jfg3ljsjrh2m9e47d4ny2hea7eehndz0n9")
 	addr1Balance := sdk.Coins{sdk.NewInt64Coin("testcoin3", 10)}
 	addr2Balance := sdk.Coins{sdk.NewInt64Coin("testcoin1", 32), sdk.NewInt64Coin("testcoin2", 34)}
 

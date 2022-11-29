@@ -97,7 +97,7 @@ message DecisionPolicyWindows {
 }
 
 // OutsourcingDecisionPolicy is a dummy decision policy which is set after
-// the operator has been updated into x/group's group policy.
+// the proposal feature has been outsourced to x/group.
 message OutsourcingDecisionPolicy {
   option (cosmos_proto.implements_interface) = "DecisionPolicy";
 
@@ -124,20 +124,17 @@ enum VoteOption {
 message FoundationInfo {
   option (gogoproto.goproto_getters) = false;
 
-  // operator is the account address of the foundation's operator.
-  string operator = 1;
-
   // version is used to track changes to the foundation's membership structure that
   // would break existing proposals. Whenever any member is added or removed,
   // this version is incremented and will cause proposals based on older versions
   // of the foundation to fail
-  uint64 version = 2;
+  uint64 version = 1;
 
   // total_weight is the number of the foundation members.
-  string total_weight = 3 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
+  string total_weight = 2 [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/line/lbm-sdk/types.Dec"];
 
   // decision_policy specifies the foundation's decision policy.
-  google.protobuf.Any decision_policy = 4 [(cosmos_proto.accepts_interface) = "DecisionPolicy"];
+  google.protobuf.Any decision_policy = 3 [(cosmos_proto.accepts_interface) = "DecisionPolicy"];
 }
 
 // Proposal defines a foundation proposal. Any member of the foundation can submit a proposal

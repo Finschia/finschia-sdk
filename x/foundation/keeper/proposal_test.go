@@ -22,13 +22,13 @@ func (s *KeeperTestSuite) TestSubmitProposal() {
 	}{
 		"valid proposal": {
 			proposers: []string{s.members[0].String()},
-			msg:       testdata.NewTestMsg(s.operator),
+			msg:       testdata.NewTestMsg(s.authority),
 			valid:     true,
 		},
 		"long metadata": {
 			proposers: []string{s.members[0].String()},
 			metadata:  string(make([]rune, 256)),
-			msg:       testdata.NewTestMsg(s.operator),
+			msg:       testdata.NewTestMsg(s.authority),
 		},
 		"unauthorized msg": {
 			proposers: []string{s.members[0].String()},
@@ -93,7 +93,7 @@ func TestAbortProposal(t *testing.T) {
 		return sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	operator := keeper.GetOperator(ctx)
+	authority := sdk.MustAccAddressFromBech32(keeper.GetAuthority())
 
 	members := make([]sdk.AccAddress, 10)
 	for i := range members {
@@ -111,7 +111,7 @@ func TestAbortProposal(t *testing.T) {
 
 	// create proposals of different versions and abort them
 	for _, newMember := range members[1:] {
-		_, err := keeper.SubmitProposal(ctx, []string{members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(operator)})
+		_, err := keeper.SubmitProposal(ctx, []string{members[0].String()}, "", []sdk.Msg{testdata.NewTestMsg(authority)})
 		require.NoError(t, err)
 
 		err = keeper.UpdateMembers(ctx, []foundation.MemberRequest{

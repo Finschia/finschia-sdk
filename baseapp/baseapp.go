@@ -16,6 +16,7 @@ import (
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/server/config"
 	"github.com/line/lbm-sdk/snapshots"
 	"github.com/line/lbm-sdk/store"
 	"github.com/line/lbm-sdk/store/rootmulti"
@@ -75,6 +76,7 @@ type BaseApp struct { // nolint: maligned
 
 	checkAccountWGs *AccountWGs
 	chCheckTx       chan *RequestCheckTxAsync
+	chCheckTxSize   uint // chCheckTxSize is the initial size for chCheckTx
 
 	// an inter-block write-through cache provided to the context during deliverState
 	interBlockCache sdk.MultiStorePersistentCache
@@ -153,12 +155,17 @@ func NewBaseApp(
 		txDecoder:        txDecoder,
 		fauxMerkleMode:   false,
 		checkAccountWGs:  NewAccountWGs(),
-		chCheckTx:        make(chan *RequestCheckTxAsync, 10000), // TODO config channel buffer size. It might be good to set it tendermint mempool.size
 	}
 
 	for _, option := range options {
 		option(app)
 	}
+
+	chCheckTxSize := app.chCheckTxSize
+	if chCheckTxSize == 0 {
+		chCheckTxSize = config.DefaultChanCheckTxSize
+	}
+	app.chCheckTx = make(chan *RequestCheckTxAsync, chCheckTxSize)
 
 	if app.interBlockCache != nil {
 		app.cms.SetInterBlockCache(app.interBlockCache)
@@ -551,6 +558,7 @@ func (app *BaseApp) getRunContextForTx(txBytes []byte, simulate bool) sdk.Contex
 
 func (app *BaseApp) getContextForTx(s *state, txBytes []byte) sdk.Context {
 	ctx := s.ctx.WithTxBytes(txBytes)
+	ctx = ctx.WithConsensusParams(app.GetConsensusParams(ctx))
 	return ctx
 }
 

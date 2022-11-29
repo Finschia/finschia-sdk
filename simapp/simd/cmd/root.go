@@ -123,6 +123,7 @@ func initAppConfig() (string, interface{}) {
 	//
 	// In simapp, we set the min gas prices to 0.
 	srvCfg.MinGasPrices = "0stake"
+	// srvCfg.BaseConfig.IAVLDisableFastNode = true // disable fastnode by default
 
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
@@ -286,6 +287,7 @@ func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, a
 		baseapp.SetSnapshotStore(snapshotStore),
 		baseapp.SetSnapshotInterval(cast.ToUint64(appOpts.Get(server.FlagStateSyncSnapshotInterval))),
 		baseapp.SetSnapshotKeepRecent(cast.ToUint32(appOpts.Get(server.FlagStateSyncSnapshotKeepRecent))),
+		baseapp.SetChanCheckTxSize(cast.ToUint(appOpts.Get(server.FlagChanCheckTxSize))),
 	)
 }
 

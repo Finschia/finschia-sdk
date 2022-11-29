@@ -71,6 +71,10 @@ inter-block-cache-size = {{ .BaseConfig.InterBlockCacheSize }}
 # So be careful that all iavl cache size are difference from this iavl cache size value.
 iavl-cache-size = {{ .BaseConfig.IAVLCacheSize }}
 
+# IAVLDisableFastNode enables or disables the fast node feature of IAVL. 
+# Default is false.
+iavl-disable-fastnode = {{ .BaseConfig.IAVLDisableFastNode }}
+
 # IndexEvents defines the set of events in the form {eventType}.{attributeKey},
 # which informs Tendermint what to index. If empty, all events will be indexed.
 #
@@ -81,6 +85,10 @@ index-events = {{ .BaseConfig.IndexEvents }}
 # When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
 # It works when tendermint's prometheus option (config.toml) is set to true.
 prometheus = {{ .BaseConfig.Prometheus }}
+
+# ChanCheckTxSize is the size of RequestCheckTxAsync of BaseApp.
+# ChanCheckTxSize should be equals to or greater than the mempool size set in config.toml of Ostracon.
+chan-check-tx-size = {{ .BaseConfig.ChanCheckTxSize }}
 
 ###############################################################################
 ###                         Telemetry Configuration                         ###

@@ -178,8 +178,8 @@ var (
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName:     nil,
 		distrtypes.ModuleName:          nil,
+		foundation.ModuleName:          nil,
 		foundation.TreasuryName:        nil,
-		foundation.DefaultOperatorName: nil,
 		foundation.GovMinterName:       {authtypes.Minter},
 		minttypes.ModuleName:           {authtypes.Minter},
 		stakingtypes.BondedPoolName:    {authtypes.Burner, authtypes.Staking},
@@ -191,7 +191,7 @@ var (
 
 	// module accounts that are allowed to receive tokens
 	allowedReceivingModAcc = map[string]bool{
-		distrtypes.ModuleName: true,
+		// govtypes.ModuleName: true, // TODO: uncomment it when authority is ready
 	}
 )
 
@@ -376,7 +376,7 @@ func NewSimApp(
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath, app.BaseApp)
 
 	foundationConfig := foundation.DefaultConfig()
-	app.FoundationKeeper = foundationkeeper.NewKeeper(appCodec, keys[foundation.StoreKey], app.BaseApp.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundationConfig)
+	app.FoundationKeeper = foundationkeeper.NewKeeper(appCodec, keys[foundation.StoreKey], app.BaseApp.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundationConfig, foundation.DefaultAuthority().String())
 
 	classKeeper := classkeeper.NewKeeper(appCodec, keys[class.StoreKey])
 	app.TokenKeeper = tokenkeeper.NewKeeper(appCodec, keys[token.StoreKey], app.AccountKeeper, classKeeper)
@@ -609,6 +609,7 @@ func NewSimApp(
 		slashingtypes.ModuleName,
 		govtypes.ModuleName,
 		minttypes.ModuleName,
+		foundation.ModuleName,
 		crisistypes.ModuleName,
 		ibchost.ModuleName,
 		genutiltypes.ModuleName,
@@ -621,7 +622,6 @@ func NewSimApp(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
-		foundation.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
 		// wasm after ibc transfer
