@@ -6,15 +6,11 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	dbm "github.com/line/tm-db/v2"
-	"github.com/line/tm-db/v2/goleveldb"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 	"github.com/syndtr/goleveldb/leveldb/opt"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 // BenchmarkVerification benchmarks secp256k1 verification which is 1000 gas based on cpu time.
@@ -88,11 +84,11 @@ func BenchmarkInstantiationOverhead(b *testing.B) {
 
 func BenchmarkAPI(b *testing.B) {
 	wasmConfig := types.WasmConfig{MemoryCacheSize: 0}
-	ctx, keepers := createTestInput(b, false, SupportedFeatures, nil, nil, wasmConfig, memdb.NewDB())
+	ctx, keepers := createTestInput(b, false, SupportedFeatures, nil, nil, wasmConfig, dbm.NewMemDB())
 	example := InstantiateHackatomExampleContract(b, ctx, keepers)
 	api := keepers.WasmKeeper.cosmwasmAPI(ctx)
 	addrStr := example.Contract.String()
-	addrBytes, err := sdk.AccAddressToBytes(example.Contract.String())
+	addrBytes, err := sdk.AccAddressFromBech32(example.Contract.String())
 	require.NoError(b, err)
 
 	b.Run("GetContractEnv", func(b *testing.B) {
