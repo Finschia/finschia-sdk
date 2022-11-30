@@ -7,8 +7,10 @@ import (
 	"github.com/line/lbm-sdk/store/types"
 )
 
-var _ types.Committer = (*Store)(nil)
-var _ types.KVStore = (*Store)(nil)
+var (
+	_ types.Committer = (*Store)(nil)
+	_ types.KVStore   = (*Store)(nil)
+)
 
 // Store is a wrapper for a dbm with Commiter implementation
 type Store struct {

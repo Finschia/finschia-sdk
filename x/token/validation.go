@@ -81,13 +81,13 @@ func ValidatePermission(permission Permission) error {
 }
 
 func validateChange(change Pair) error {
-	validators := map[AttributeKey]func(string) error{
-		AttributeKeyName:     validateName,
-		AttributeKeyImageURI: validateImageURI,
-		AttributeKeyMeta:     validateMeta,
+	validators := map[string]func(string) error{
+		AttributeKeyName.String():     validateName,
+		AttributeKeyImageURI.String(): validateImageURI,
+		AttributeKeyMeta.String():     validateMeta,
 	}
 
-	validator, ok := validators[AttributeKeyFromString(change.Field)]
+	validator, ok := validators[change.Field]
 	if !ok {
 		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Field)
 	}

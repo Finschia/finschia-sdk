@@ -5,7 +5,7 @@ import (
 
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 
-	//	sdk "github.com/cosmos/cosmos-sdk/types"
+	//	sdk "github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/require"
 
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"

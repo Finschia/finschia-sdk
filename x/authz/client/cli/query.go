@@ -65,7 +65,7 @@ $ %s query %s grants link1skjw.. link1skjwj.. %s
 			if err != nil {
 				return err
 			}
-			var msgAuthorized = ""
+			msgAuthorized := ""
 			if len(args) >= 3 {
 				msgAuthorized = args[2]
 			}
@@ -80,7 +80,8 @@ $ %s query %s grants link1skjw.. link1skjwj.. %s
 					Granter:    granter.String(),
 					Grantee:    grantee.String(),
 					MsgTypeUrl: msgAuthorized,
-					Pagination: pageReq},
+					Pagination: pageReq,
+				},
 			)
 			if err != nil {
 				return err
@@ -103,7 +104,7 @@ func GetQueryGranterGrants() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query authorization grants granted by granter.
 Examples:
-$ %s q %s grants-by-granter cosmos1skj..
+$ %s q %s grants-by-granter link1skj..
 `,
 				version.AppName, authz.ModuleName),
 		),
@@ -152,7 +153,7 @@ func GetQueryGranteeGrants() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query authorization grants granted to a grantee.
 Examples:
-$ %s q %s grants-by-grantee cosmos1skj..
+$ %s q %s grants-by-grantee link1skj..
 `,
 				version.AppName, authz.ModuleName),
 		),

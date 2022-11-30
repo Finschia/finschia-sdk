@@ -68,6 +68,15 @@ else
   endif
 endif
 
+# VRF library selection
+ifeq (libsodium,$(findstring libsodium,$(LBM_BUILD_OPTIONS)))
+  CGO_ENABLED=1
+  BUILD_TAGS += gcc libsodium
+  LIBSODIUM_TARGET = libsodium
+  CGO_CFLAGS += "-I$(LIBSODIUM_OS)/include"
+  CGO_LDFLAGS += "-L$(LIBSODIUM_OS)/lib -lsodium"
+endif
+
 # secp256k1 implementation selection
 ifeq (libsecp256k1,$(findstring libsecp256k1,$(LBM_BUILD_OPTIONS)))
   CGO_ENABLED=1
@@ -115,7 +124,6 @@ include contrib/devtools/Makefile
 BUILD_TARGETS := build install
 
 build: BUILD_ARGS=-o $(BUILDDIR)/
-	CGO_CFLAGS=$(CGO_CFLAGS) CGO_LDFLAGS=$(CGO_LDFLAGS) CGO_ENABLED=$(CGO_ENABLED) go build -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
 build-docker: go.sum $(BUILDDIR)/
 	docker build -t simapp:latest . --platform="linux/amd64" --build-arg ARCH=$(ARCH)
@@ -124,8 +132,8 @@ build-docker: go.sum $(BUILDDIR)/
 build-linux:
 	GOOS=linux GOARCH=$(if $(findstring aarch64,$(shell uname -m)) || $(findstring arm64,$(shell uname -m)),arm64,amd64) LEDGER_ENABLED=false $(MAKE) build
 
-$(BUILD_TARGETS): go.sum $(BUILDDIR)/
-	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
+$(BUILD_TARGETS): go.sum $(BUILDDIR)/ $(LIBSODIUM_TARGET)
+	CGO_CFLAGS=$(CGO_CFLAGS) CGO_LDFLAGS=$(CGO_LDFLAGS) CGO_ENABLED=$(CGO_ENABLED) go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
@@ -357,9 +365,8 @@ lint-fix:
 .PHONY: lint lint-fix
 
 format:
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs gofmt -w -s
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs misspell -w
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs goimports -w -local github.com/line/lbm-sdk
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name "*.pb.go" -not -name "*.pb.gw.go" -not -name "*.pulsar.go" -not -path "./crypto/keys/secp256k1/*" | xargs gofumpt -w -l
+	golangci-lint run --fix
 .PHONY: format
 
 ###############################################################################
@@ -411,8 +418,9 @@ proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
 	@echo "Generating Protobuf files"
-	@if $(DOCKER) ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then $(DOCKER) start -a $(containerProtoGen); else $(DOCKER) run --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
-			sh ./scripts/protocgen.sh; fi
+	@if docker ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then docker start -a $(containerProtoGen); else docker run --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
+		sh ./scripts/protocgen.sh; fi
+	@go mod tidy
 
 # This generates the SDK's custom wrapper for google.protobuf.Any. It should only be run manually when needed
 proto-gen-any:
@@ -437,7 +445,7 @@ proto-lint:
 proto-check-breaking:
 	@$(DOCKER_BUF) breaking --against $(HTTPS_GIT)#branch=main
 
-TM_URL              = https://raw.githubusercontent.com/tendermint/tendermint/v0.34.0-rc6/proto/tendermint
+TM_URL              = https://raw.githubusercontent.com/tendermint/tendermint/v0.34.22/proto/tendermint
 GOGO_PROTO_URL      = https://raw.githubusercontent.com/regen-network/protobuf/cosmos
 COSMOS_PROTO_URL    = https://raw.githubusercontent.com/regen-network/cosmos-proto/master
 CONFIO_URL          = https://raw.githubusercontent.com/confio/ics23/v0.6.3
@@ -536,6 +544,30 @@ rosetta-data:
 	docker container rm data_dir_build
 
 .PHONY: rosetta-data
+
+###############################################################################
+###                                  tools                                  ###
+###############################################################################
+
+VRF_ROOT = $(shell pwd)/tools
+LIBSODIUM_ROOT = $(VRF_ROOT)/libsodium
+LIBSODIUM_OS = $(VRF_ROOT)/sodium/$(shell go env GOOS)_$(shell go env GOARCH)
+ifneq ($(TARGET_HOST), "")
+LIBSODIUM_HOST = "--host=$(TARGET_HOST)"
+endif
+
+libsodium:
+	@if [ ! -f $(LIBSODIUM_OS)/lib/libsodium.a ]; then \
+		rm -rf $(LIBSODIUM_ROOT) && \
+		mkdir $(LIBSODIUM_ROOT) && \
+		git submodule update --init --recursive && \
+		cd $(LIBSODIUM_ROOT) && \
+		./autogen.sh && \
+		./configure --disable-shared --prefix="$(LIBSODIUM_OS)" $(LIBSODIUM_HOST) && \
+		$(MAKE) && \
+		$(MAKE) install; \
+	fi
+.PHONY: libsodium
 
 ###############################################################################
 ###                                release                                  ###

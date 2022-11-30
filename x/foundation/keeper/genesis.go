@@ -66,6 +66,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 		Proposals:          proposals,
 		Votes:              votes,
 		Authorizations:     k.GetGrants(ctx),
+		Pool:               k.GetPool(ctx),
 		GovMintLeftCount:   k.GetGovMintLeftCount(ctx),
 	}
 }
