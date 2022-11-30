@@ -58,8 +58,6 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 )
 
-require github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486
-
 require (
 	filippo.io/edwards25519 v1.0.0-rc.1 // indirect
 	github.com/ChainSafe/go-schnorrkel v0.0.0-20200405005733-88cbf1b4c40d // indirect
