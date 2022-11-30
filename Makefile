@@ -575,14 +575,6 @@ libsodium:
 
 GORELEASER_CONFIG ?= .goreleaser.yaml
 
-#GORELEASER_BUILD_LDF = \
-#-X github.com/line/lbm-sdk/version.Name=sim \
-#-X github.com/line/lbm-sdk/version.AppName=simd \
-#-X github.com/line/lbm-sdk/version.Version=$(shell git describe --tags --abbrev=0) \
-#-X github.com/line/lbm-sdk/version.Commit=$(COMMIT) \
-#-X github.com/line/lbm-sdk/types.DBBackend=$(DB_BACKEND) \
-#-X github.com/line/lbm-sdk/version.BuildTags="$(GORELEASER_TAGS)"
-
 GORELEASER_BUILD_LDF = $(ldflags)
 GORELEASER_BUILD_LDF := $(strip $(GORELEASER_BUILD_LDF))
 
@@ -638,11 +630,6 @@ release:
 		--rm-dist
 
 build-static: go.sum
-	CGO_ENABLED=1 go build -mod=readonly -tags "$(build_tags)" -ldflags '$(GORELEASER_BUILD_LDF)' -o build/simd ./simapp/simd
+	CGO_ENABLED=1 BUILD_TAGS=static $(MAKE) build
 
-
-showflag:
-	@echo $(GORELEASER_BUILD_LDF)
-	@echo $(GORELEASER_TAGS)
-
-.PHONY: release-snapshot release build-static envtestss
+.PHONY: release-snapshot release build-static
