@@ -646,8 +646,8 @@ github.com/line/ostracon v1.0.7-0.20220729051742-2231684789c6 h1:WKz4yaIW+TJgJv5
 github.com/line/ostracon v1.0.7-0.20220729051742-2231684789c6/go.mod h1:8gnHCqwRjbJfhVtQkl7KIfcubtpsIEmiN0u91B4EYWY=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486 h1:uvXQdcWaUyNsgkXBz375FpQ285WEJaLXhQ5HtoNK/GU=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486/go.mod h1:wmkyPabXjtVZ1dvRofmurjaceghywtCSYGqFuFS+TbI=
-github.com/line/wasmvm v1.0.0-0.10.0 h1:lxKdyNrRug/Sk7h2pb0aBsbTMNTesQU+TM/edSS9cg0=
-github.com/line/wasmvm v1.0.0-0.10.0/go.mod h1:86gNsXbobrNQccER5XbU5j6qN0P/C1JML0iSKIgLYho=
+github.com/line/wasmvm v1.0.0-0.10.0.0.20221129090614-57a68a6f4566 h1:3qaZaG742/eJALcgXfQat297KtHL8FVxhHefp1qCrDE=
+github.com/line/wasmvm v1.0.0-0.10.0.0.20221129090614-57a68a6f4566/go.mod h1:Lq3FVvi/rb+OOlTxqtcqcao2GGESQ4hUpuXMcjdJbco=
 github.com/lyft/protoc-gen-star v0.5.3/go.mod h1:V0xaHgaf5oCCqmcxYcWiDfTiKsZsRc87/1qhoTACD8w=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/magiconair/properties v1.8.1/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=

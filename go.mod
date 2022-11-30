@@ -31,7 +31,7 @@ require (
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/jhump/protoreflect v1.10.3
 	github.com/line/ostracon v1.0.7-0.20220729051742-2231684789c6
-	github.com/line/wasmvm v1.0.0-0.10.0
+	github.com/line/wasmvm v1.0.0-0.10.0.0.20221129090614-57a68a6f4566
 	github.com/magiconair/properties v1.8.6
 	github.com/mailru/easyjson v0.7.7
 	github.com/mattn/go-isatty v0.0.16
@@ -57,6 +57,8 @@ require (
 	google.golang.org/protobuf v1.28.1
 	gopkg.in/yaml.v2 v2.4.0
 )
+
+require github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486
 
 require (
 	filippo.io/edwards25519 v1.0.0-rc.1 // indirect
@@ -98,7 +100,6 @@ require (
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/lib/pq v1.10.6 // indirect
 	github.com/libp2p/go-buffer-pool v0.1.0 // indirect
-	github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/mimoo/StrobeGo v0.0.0-20181016162300-f8f6d4d2b643 // indirect
