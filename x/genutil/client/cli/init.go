@@ -4,17 +4,18 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"os"
-	"path/filepath"
-
 	"github.com/cosmos/go-bip39"
 	cfg "github.com/line/ostracon/config"
 	"github.com/line/ostracon/libs/cli"
 	ostos "github.com/line/ostracon/libs/os"
 	ostrand "github.com/line/ostracon/libs/rand"
+	"github.com/line/ostracon/privval"
 	"github.com/line/ostracon/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
@@ -99,6 +100,10 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 				}
 			}
 
+			if strings.ToLower(config.PrivKeyType) != privval.PrivKeyTypeEd25519 {
+				return fmt.Errorf("unsupported %s: \"%s\"", flags.FlagPrivKeyType, config.PrivKeyType)
+			}
+
 			nodeID, _, err := genutil.InitializeNodeValidatorFilesFromMnemonic(config, mnemonic)
 			if err != nil {
 				return err
@@ -149,8 +154,8 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 	cmd.Flags().BoolP(FlagOverwrite, "o", false, "overwrite the genesis.json file")
 	cmd.Flags().Bool(FlagRecover, false, "provide seed phrase to recover existing key instead of creating")
 	cmd.Flags().String(flags.FlagChainID, "", "genesis file chain-id, if left blank will be randomly created")
-	cmd.Flags().String(flags.FlagPrivKeyType, flags.DefaultPrivKeyType, "specify validator's private key type (ed25519|composite). \n"+
-		"set this to priv_key.type in priv_validator_key.json; default `ed25519`")
+	cmd.Flags().String(flags.FlagPrivKeyType, flags.DefaultPrivKeyType, "specify validator's private key type (currently only ed25519 is supported).\n"+
+		"This option affects the priv_key.type setting in priv_validator_key.json")
 
 	return cmd
 }
