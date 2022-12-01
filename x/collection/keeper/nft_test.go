@@ -9,33 +9,36 @@ func (s *KeeperTestSuite) TestAttach() {
 		contractID string
 		subject    string
 		target     string
-		valid      bool
+		err        error
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			subject:    collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
 			target:     collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit),
-			valid:      true,
 		},
 		"not owner of subject": {
 			contractID: s.contractID,
 			subject:    collection.NewNFTID(s.nftClassID, s.numNFTs+1),
 			target:     collection.NewNFTID(s.nftClassID, 1),
+			err:        collection.ErrInsufficientTokens,
 		},
 		"target not found": {
 			contractID: s.contractID,
 			subject:    collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
 			target:     collection.NewNFTID(s.nftClassID, s.numNFTs*3+1),
+			err:        collection.ErrTokenNotFound,
 		},
 		"result exceeds the limit": {
 			contractID: s.contractID,
 			subject:    collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+2),
 			target:     collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit),
+			err:        collection.ErrInvalidComposition,
 		},
 		"not owner of target": {
 			contractID: s.contractID,
 			subject:    collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
 			target:     collection.NewNFTID(s.nftClassID, s.numNFTs+1),
+			err:        collection.ErrInsufficientTokens,
 		},
 	}
 
@@ -44,11 +47,10 @@ func (s *KeeperTestSuite) TestAttach() {
 			ctx, _ := s.ctx.CacheContext()
 
 			err := s.keeper.Attach(ctx, tc.contractID, s.customer, tc.subject, tc.target)
-			if !tc.valid {
-				s.Require().Error(err)
+			s.Require().ErrorIs(err, tc.err)
+			if tc.err != nil {
 				return
 			}
-			s.Require().NoError(err)
 
 			parent, err := s.keeper.GetParent(ctx, tc.contractID, tc.subject)
 			s.Require().NoError(err)
@@ -61,24 +63,26 @@ func (s *KeeperTestSuite) TestDetach() {
 	testCases := map[string]struct {
 		contractID string
 		subject    string
-		valid      bool
+		err        error
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			subject:    collection.NewNFTID(s.nftClassID, 2),
-			valid:      true,
 		},
 		"subject not found": {
 			contractID: s.contractID,
 			subject:    collection.NewNFTID(s.nftClassID, s.numNFTs*3+1),
+			err:        collection.ErrTokenNotFound,
 		},
 		"subject has no parent": {
 			contractID: s.contractID,
 			subject:    collection.NewNFTID(s.nftClassID, 1),
+			err:        collection.ErrParentNotFound,
 		},
 		"not owner of subject": {
 			contractID: s.contractID,
 			subject:    collection.NewNFTID(s.nftClassID, s.numNFTs+2),
+			err:        collection.ErrInsufficientTokens,
 		},
 	}
 
@@ -87,11 +91,10 @@ func (s *KeeperTestSuite) TestDetach() {
 			ctx, _ := s.ctx.CacheContext()
 
 			err := s.keeper.Detach(ctx, tc.contractID, s.customer, tc.subject)
-			if !tc.valid {
-				s.Require().Error(err)
+			s.Require().ErrorIs(err, tc.err)
+			if tc.err != nil {
 				return
 			}
-			s.Require().NoError(err)
 
 			parent, err := s.keeper.GetParent(ctx, tc.contractID, tc.subject)
 			s.Require().Error(err)

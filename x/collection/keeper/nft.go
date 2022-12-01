@@ -4,7 +4,6 @@ import (
 	gogotypes "github.com/gogo/protobuf/types"
 
 	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/collection"
 )
 
@@ -22,7 +21,7 @@ func (k Keeper) GetNFT(ctx sdk.Context, contractID string, tokenID string) (*col
 	key := nftKey(contractID, tokenID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("nft not exists: %s", tokenID)
+		return nil, collection.ErrTokenNotFound.Wrapf("nft not found; %s", tokenID)
 	}
 
 	var token collection.NFT
@@ -63,11 +62,6 @@ func (k Keeper) pruneNFT(ctx sdk.Context, contractID string, tokenID string) []s
 }
 
 func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress, subject, target string) error {
-	// validate subject
-	if !k.GetBalance(ctx, contractID, owner, subject).IsPositive() {
-		return collection.ErrInsufficientTokens.Wrapf("%s not owns %s", owner, subject)
-	}
-
 	// validate target
 	if err := k.hasNFT(ctx, contractID, target); err != nil {
 		return err
@@ -81,11 +75,17 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 		return collection.ErrInvalidComposition.Wrap("cycles not allowed")
 	}
 
-	// update subject
-	k.deleteOwner(ctx, contractID, subject)
-	k.setParent(ctx, contractID, subject, target)
+	// validate subject
+	if err := k.hasNFT(ctx, contractID, subject); err != nil {
+		return err
+	}
 
-	// update target
+	if err := k.subtractCoins(ctx, contractID, owner, collection.NewCoins(collection.NewCoin(subject, sdk.OneInt()))); err != nil {
+		return collection.ErrInsufficientTokens.Wrapf("%s not owns %s", owner, subject)
+	}
+
+	// update relation
+	k.setParent(ctx, contractID, subject, target)
 	k.setChild(ctx, contractID, target, subject)
 
 	// finally, check the invariant
@@ -125,11 +125,12 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 		return collection.ErrInsufficientTokens.Wrapf("%s not owns %s", owner, subject)
 	}
 
-	// update subject
-	k.deleteParent(ctx, contractID, subject)
-	k.setOwner(ctx, contractID, subject, owner)
+	if err := k.addCoins(ctx, contractID, owner, collection.NewCoins(collection.NewCoin(subject, sdk.OneInt()))); err != nil {
+		panic(err)
+	}
 
-	// update parent
+	// update relation
+	k.deleteParent(ctx, contractID, subject)
 	k.deleteChild(ctx, contractID, *parent, subject)
 
 	// legacy

@@ -259,7 +259,6 @@ func (k Keeper) BurnCoins(ctx sdk.Context, contractID string, from sdk.AccAddres
 				return false
 			})
 
-			k.deleteOwner(ctx, contractID, coin.TokenId)
 			k.deleteNFT(ctx, contractID, coin.TokenId)
 			pruned := k.pruneNFT(ctx, contractID, coin.TokenId)
 
@@ -314,7 +313,7 @@ func (k Keeper) setNextTokenID(ctx sdk.Context, contractID string, classID strin
 func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.AccAddress, changes []collection.Attribute) error {
 	contract, err := k.GetContract(ctx, contractID)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	modifiers := map[collection.AttributeKey]func(string){

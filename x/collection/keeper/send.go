@@ -60,6 +60,10 @@ func (k Keeper) subtractCoins(ctx sdk.Context, contractID string, address sdk.Ac
 			return collection.ErrInsufficientTokens.Wrapf("%s is smaller than %s", balance, coin.Amount)
 		}
 		k.setBalance(ctx, contractID, address, coin.TokenId, newBalance)
+
+		if err := collection.ValidateNFTID(coin.TokenId); err == nil {
+			k.deleteOwner(ctx, contractID, coin.TokenId)
+		}
 	}
 
 	return nil
@@ -97,8 +101,9 @@ func (k Keeper) setBalance(ctx sdk.Context, contractID string, address sdk.AccAd
 
 func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
 	if _, err := k.GetContract(ctx, contractID); err != nil {
-		return err
+		panic(err)
 	}
+
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err == nil {
 		return collection.ErrAuthorizationAlreadyExists.Wrapf("%s already authorized by %s", operator, holder)
 	}
@@ -112,11 +117,8 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, op
 }
 
 func (k Keeper) RevokeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
-	if _, err := k.GetContract(ctx, contractID); err != nil {
-		return err
-	}
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err != nil {
-		return collection.ErrAuthorizationAlreadyExists.Wrapf("%s already authorized by %s", operator, holder)
+		return err
 	}
 
 	k.deleteAuthorization(ctx, contractID, holder, operator)

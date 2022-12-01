@@ -123,7 +123,11 @@ func ValidateTokenID(id string) error {
 }
 
 func ValidateFTID(id string) error {
-	return validateID(id, reFTID)
+	if err := validateID(id, reFTID); err != nil {
+		return ErrInvalidTokenID.Wrapf("%s not ft", id)
+	}
+
+	return nil
 }
 
 func ValidateNFTID(id string) error {
