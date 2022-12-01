@@ -4,6 +4,10 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+
 	"github.com/cosmos/go-bip39"
 	cfg "github.com/line/ostracon/config"
 	"github.com/line/ostracon/libs/cli"
@@ -13,9 +17,6 @@ import (
 	"github.com/line/ostracon/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"os"
-	"path/filepath"
-	"strings"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
