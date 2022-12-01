@@ -2,23 +2,25 @@ package types_test
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
+
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
-	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 )
 
 func (suite *TypesTestSuite) TestValidateBasic() {
-	subject, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
-	subjectClientState := suite.chainA.GetClientState(subject)
-	substitute, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
-	initialHeight := types.NewHeight(subjectClientState.GetLatestHeight().GetRevisionNumber(), subjectClientState.GetLatestHeight().GetRevisionHeight()+1)
+	subjectPath := ibctesting.NewPath(suite.chainA, suite.chainB)
+	suite.coordinator.SetupClients(subjectPath)
+	subject := subjectPath.EndpointA.ClientID
+
+	substitutePath := ibctesting.NewPath(suite.chainA, suite.chainB)
+	suite.coordinator.SetupClients(substitutePath)
+	substitute := substitutePath.EndpointA.ClientID
 
 	testCases := []struct {
 		name     string
@@ -27,32 +29,27 @@ func (suite *TypesTestSuite) TestValidateBasic() {
 	}{
 		{
 			"success",
-			types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute, initialHeight),
+			types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute),
 			true,
 		},
 		{
 			"fails validate abstract - empty title",
-			types.NewClientUpdateProposal("", ibctesting.Description, subject, substitute, initialHeight),
+			types.NewClientUpdateProposal("", ibctesting.Description, subject, substitute),
 			false,
 		},
 		{
 			"subject and substitute use the same identifier",
-			types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, subject, initialHeight),
+			types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, subject),
 			false,
 		},
 		{
 			"invalid subject clientID",
-			types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, ibctesting.InvalidID, substitute, initialHeight),
+			types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, ibctesting.InvalidID, substitute),
 			false,
 		},
 		{
 			"invalid substitute clientID",
-			types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, ibctesting.InvalidID, initialHeight),
-			false,
-		},
-		{
-			"initial height is zero",
-			types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute, types.ZeroHeight()),
+			types.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, ibctesting.InvalidID),
 			false,
 		},
 	}
@@ -72,7 +69,7 @@ func (suite *TypesTestSuite) TestValidateBasic() {
 // tests a client update proposal can be marshaled and unmarshaled
 func (suite *TypesTestSuite) TestMarshalClientUpdateProposalProposal() {
 	// create proposal
-	proposal := types.NewClientUpdateProposal("update IBC client", "description", "subject", "substitute", types.NewHeight(1, 0))
+	proposal := types.NewClientUpdateProposal("update IBC client", "description", "subject", "substitute")
 
 	// create codec
 	ir := codectypes.NewInterfaceRegistry()
@@ -97,8 +94,9 @@ func (suite *TypesTestSuite) TestUpgradeProposalValidateBasic() {
 		err      error
 	)
 
-	client, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
-	cs := suite.chainA.GetClientState(client)
+	path := ibctesting.NewPath(suite.chainA, suite.chainB)
+	suite.coordinator.SetupClients(path)
+	cs := suite.chainA.GetClientState(path.EndpointA.ClientID)
 	plan := upgradetypes.Plan{
 		Name:   "ibc upgrade",
 		Height: 1000,
@@ -123,22 +121,8 @@ func (suite *TypesTestSuite) TestUpgradeProposalValidateBasic() {
 			}, false,
 		},
 		{
-			"fails plan validate basic, height and time is 0", func() {
-				invalidPlan := upgradetypes.Plan{Name: "ibc upgrade"}
-				proposal, err = types.NewUpgradeProposal(ibctesting.Title, ibctesting.Description, invalidPlan, cs)
-				suite.Require().NoError(err)
-			}, false,
-		},
-		{
 			"plan height is zero", func() {
 				invalidPlan := upgradetypes.Plan{Name: "ibc upgrade", Height: 0}
-				proposal, err = types.NewUpgradeProposal(ibctesting.Title, ibctesting.Description, invalidPlan, cs)
-				suite.Require().NoError(err)
-			}, false,
-		},
-		{
-			"plan time is not set to 0", func() {
-				invalidPlan := upgradetypes.Plan{Name: "ibc upgrade", Time: time.Now()}
 				proposal, err = types.NewUpgradeProposal(ibctesting.Title, ibctesting.Description, invalidPlan, cs)
 				suite.Require().NoError(err)
 			}, false,

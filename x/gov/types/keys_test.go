@@ -10,7 +10,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 )
 
-var addr = sdk.BytesToAccAddress(ed25519.GenPrivKey().PubKey().Address())
+var addr = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 func TestProposalKeys(t *testing.T) {
 	// key proposal
@@ -37,7 +37,6 @@ func TestProposalKeys(t *testing.T) {
 }
 
 func TestDepositKeys(t *testing.T) {
-
 	key := DepositsKey(2)
 	proposalID := SplitProposalKey(key)
 	require.Equal(t, int(proposalID), 2)
@@ -49,7 +48,6 @@ func TestDepositKeys(t *testing.T) {
 }
 
 func TestVoteKeys(t *testing.T) {
-
 	key := VotesKey(2)
 	proposalID := SplitProposalKey(key)
 	require.Equal(t, int(proposalID), 2)

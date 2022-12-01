@@ -18,8 +18,8 @@ import (
 //-------------------------------------
 
 const (
-	PrivKeyName = "ostracon/PrivKeyEd25519"
-	PubKeyName  = "ostracon/PubKeyEd25519"
+	PrivKeyName = "tendermint/PrivKeyEd25519"
+	PubKeyName  = "tendermint/PubKeyEd25519"
 	// PubKeySize is is the size, in bytes, of public keys as used in this package.
 	PubKeySize = 32
 	// PrivKeySize is the size, in bytes, of private keys as used in this package.
@@ -34,8 +34,10 @@ const (
 	keyType = "ed25519"
 )
 
-var _ cryptotypes.PrivKey = &PrivKey{}
-var _ codec.AminoMarshaler = &PrivKey{}
+var (
+	_ cryptotypes.PrivKey  = &PrivKey{}
+	_ codec.AminoMarshaler = &PrivKey{}
+)
 
 // Bytes returns the privkey byte format.
 func (privKey *PrivKey) Bytes() []byte {
@@ -150,8 +152,10 @@ func GenPrivKeyFromSecret(secret []byte) *PrivKey {
 
 //-------------------------------------
 
-var _ cryptotypes.PubKey = &PubKey{}
-var _ codec.AminoMarshaler = &PubKey{}
+var (
+	_ cryptotypes.PubKey   = &PubKey{}
+	_ codec.AminoMarshaler = &PubKey{}
+)
 
 // Address is the SHA256-20 of the raw pubkey bytes.
 // It doesn't implement ADR-28 addresses and it must not be used

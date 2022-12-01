@@ -77,7 +77,7 @@ func (t *Tx) ValidateBasic() error {
 	}
 
 	if fee.Payer != "" {
-		err := sdk.ValidateAccAddress(fee.Payer)
+		_, err := sdk.AccAddressFromBech32(fee.Payer)
 		if err != nil {
 			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid fee payer address (%s)", err)
 		}
@@ -118,7 +118,8 @@ func (t *Tx) GetSigners() []sdk.AccAddress {
 	// ensure any specified fee payer is included in the required signers (at the end)
 	feePayer := t.AuthInfo.Fee.Payer
 	if feePayer != "" && !seen[feePayer] {
-		signers = append(signers, sdk.AccAddress(feePayer))
+		payerAddr := sdk.MustAccAddressFromBech32(feePayer)
+		signers = append(signers, payerAddr)
 		seen[feePayer] = true
 	}
 
@@ -128,18 +129,15 @@ func (t *Tx) GetSigners() []sdk.AccAddress {
 func (t *Tx) GetGas() uint64 {
 	return t.AuthInfo.Fee.GasLimit
 }
+
 func (t *Tx) GetFee() sdk.Coins {
 	return t.AuthInfo.Fee.Amount
 }
+
 func (t *Tx) FeePayer() sdk.AccAddress {
 	feePayer := t.AuthInfo.Fee.Payer
 	if feePayer != "" {
-		err := sdk.ValidateAccAddress(feePayer)
-		if err != nil {
-			panic(err)
-		}
-		payerAddr := sdk.AccAddress(feePayer)
-		return payerAddr
+		return sdk.MustAccAddressFromBech32(feePayer)
 	}
 	// use first signer as default if no payer specified
 	return t.GetSigners()[0]
@@ -148,14 +146,9 @@ func (t *Tx) FeePayer() sdk.AccAddress {
 func (t *Tx) FeeGranter() sdk.AccAddress {
 	feePayer := t.AuthInfo.Fee.Granter
 	if feePayer != "" {
-		err := sdk.ValidateAccAddress(feePayer)
-		if err != nil {
-			panic(err)
-		}
-		granterAddr := sdk.AccAddress(feePayer)
-		return granterAddr
+		return sdk.MustAccAddressFromBech32(feePayer)
 	}
-	return sdk.AccAddress("")
+	return nil
 }
 
 // UnpackInterfaces implements the UnpackInterfaceMessages.UnpackInterfaces method

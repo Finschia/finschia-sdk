@@ -180,9 +180,9 @@ func TestContractValidateBasic(t *testing.T) {
 }
 
 func TestGenesisContractInfoMarshalUnmarshal(t *testing.T) {
-	var myAddr sdk.AccAddress = sdk.BytesToAccAddress(rand.Bytes(ContractAddrLen))
-	var myOtherAddr sdk.AccAddress = sdk.BytesToAccAddress(rand.Bytes(ContractAddrLen))
-	var anyPos = AbsoluteTxPosition{BlockHeight: 1, TxIndex: 2}
+	var myAddr sdk.AccAddress = rand.Bytes(ContractAddrLen)
+	var myOtherAddr sdk.AccAddress = rand.Bytes(ContractAddrLen)
+	anyPos := AbsoluteTxPosition{BlockHeight: 1, TxIndex: 2}
 
 	anyTime := time.Now().UTC()
 	// using gov proposal here as a random protobuf types as it contains an Any type inside for nested unpacking
@@ -190,7 +190,7 @@ func TestGenesisContractInfoMarshalUnmarshal(t *testing.T) {
 	require.NoError(t, err)
 	myExtension.TotalDeposit = nil
 
-	src := NewContractInfo(1, myAddr, myOtherAddr, "bar", &anyPos, ContractStatusActive)
+	src := NewContractInfo(1, myAddr, myOtherAddr, "bar", &anyPos)
 	err = src.SetExtension(&myExtension)
 	require.NoError(t, err)
 

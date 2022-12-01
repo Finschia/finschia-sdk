@@ -3,6 +3,7 @@ package wasm
 
 import (
 	"github.com/line/lbm-sdk/x/wasm/keeper"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -68,7 +69,6 @@ var (
 	NewCountTXDecorator       = keeper.NewCountTXDecorator
 
 	// variable aliases
-	ModuleCdc            = types.ModuleCdc
 	DefaultCodespace     = types.DefaultCodespace
 	ErrCreateFailed      = types.ErrCreateFailed
 	ErrAccountExists     = types.ErrAccountExists
@@ -97,8 +97,8 @@ type (
 	MsgStoreCodeResponse                       = types.MsgStoreCodeResponse
 	MsgInstantiateContract                     = types.MsgInstantiateContract
 	MsgInstantiateContractResponse             = types.MsgInstantiateContractResponse
-	MsgStoreCodeAndInstantiateContract         = types.MsgStoreCodeAndInstantiateContract
-	MsgStoreCodeAndInstantiateContractResponse = types.MsgStoreCodeAndInstantiateContractResponse
+	MsgStoreCodeAndInstantiateContract         = lbmtypes.MsgStoreCodeAndInstantiateContract
+	MsgStoreCodeAndInstantiateContractResponse = lbmtypes.MsgStoreCodeAndInstantiateContractResponse
 	MsgExecuteContract                         = types.MsgExecuteContract
 	MsgExecuteContractResponse                 = types.MsgExecuteContractResponse
 	MsgMigrateContract                         = types.MsgMigrateContract
@@ -126,7 +126,4 @@ type (
 	CustomQuerier                              = keeper.CustomQuerier
 	QueryPlugins                               = keeper.QueryPlugins
 	Option                                     = keeper.Option
-
-	EncodeHandler = types.EncodeHandler
-	EncodeQuerier = types.EncodeQuerier
 )

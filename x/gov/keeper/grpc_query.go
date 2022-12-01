@@ -57,14 +57,20 @@ func (q Keeper) Proposals(c context.Context, req *types.QueryProposalsRequest) (
 
 		// match voter address (if supplied)
 		if len(req.Voter) > 0 {
-			voter := sdk.AccAddress(req.Voter)
+			voter, err := sdk.AccAddressFromBech32(req.Voter)
+			if err != nil {
+				return false, err
+			}
 
 			_, matchVoter = q.GetVote(ctx, p.ProposalId, voter)
 		}
 
 		// match depositor (if supplied)
 		if len(req.Depositor) > 0 {
-			depositor := sdk.AccAddress(req.Depositor)
+			depositor, err := sdk.AccAddressFromBech32(req.Depositor)
+			if err != nil {
+				return false, err
+			}
 			_, matchDepositor = q.GetDeposit(ctx, p.ProposalId, depositor)
 		}
 
@@ -78,7 +84,6 @@ func (q Keeper) Proposals(c context.Context, req *types.QueryProposalsRequest) (
 
 		return false, nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -102,7 +107,10 @@ func (q Keeper) Vote(c context.Context, req *types.QueryVoteRequest) (*types.Que
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	voter := sdk.AccAddress(req.Voter)
+	voter, err := sdk.AccAddressFromBech32(req.Voter)
+	if err != nil {
+		return nil, err
+	}
 	vote, found := q.GetVote(ctx, req.ProposalId, voter)
 	if !found {
 		return nil, status.Errorf(codes.InvalidArgument,
@@ -138,7 +146,6 @@ func (q Keeper) Votes(c context.Context, req *types.QueryVotesRequest) (*types.Q
 		votes = append(votes, vote)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -189,7 +196,10 @@ func (q Keeper) Deposit(c context.Context, req *types.QueryDepositRequest) (*typ
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	depositor := sdk.AccAddress(req.Depositor)
+	depositor, err := sdk.AccAddressFromBech32(req.Depositor)
+	if err != nil {
+		return nil, err
+	}
 	deposit, found := q.GetDeposit(ctx, req.ProposalId, depositor)
 	if !found {
 		return nil, status.Errorf(codes.InvalidArgument,
@@ -224,7 +234,6 @@ func (q Keeper) Deposits(c context.Context, req *types.QueryDepositsRequest) (*t
 		deposits = append(deposits, deposit)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

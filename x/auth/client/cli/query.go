@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -43,6 +44,7 @@ func GetQueryCmd() *cobra.Command {
 		GetAccountCmd(),
 		GetAccountsCmd(),
 		QueryParamsCmd(),
+		QueryModuleAccountByNameCmd(),
 	)
 
 	return cmd
@@ -91,10 +93,11 @@ func GetAccountCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			if err = sdk.ValidateAccAddress(args[0]); err != nil {
+			key, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
 				return err
 			}
-			key := sdk.AccAddress(args[0])
+
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.Account(cmd.Context(), &types.QueryAccountRequest{Address: key.String()})
 			if err != nil {
@@ -114,6 +117,7 @@ func GetAccountCmd() *cobra.Command {
 func GetAccountsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "accounts",
+		Args:  cobra.NoArgs,
 		Short: "Query all the accounts",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -142,10 +146,45 @@ func GetAccountsCmd() *cobra.Command {
 	return cmd
 }
 
+// QueryModuleAccountByNameCmd returns a command to
+func QueryModuleAccountByNameCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "module-account [module-name]",
+		Short:   "Query module account info by module name",
+		Args:    cobra.ExactArgs(1),
+		Example: fmt.Sprintf("%s q auth module-account auth", version.AppName),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			moduleName := args[0]
+			if len(moduleName) == 0 {
+				return fmt.Errorf("module name should not be empty")
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.ModuleAccountByName(context.Background(), &types.QueryModuleAccountByNameRequest{Name: moduleName})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
 // QueryTxsByEventsCmd returns a command to search through transactions by events.
 func QueryTxsByEventsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "txs",
+		Args:  cobra.NoArgs,
 		Short: "Query for paginated transactions that match a set of events",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`

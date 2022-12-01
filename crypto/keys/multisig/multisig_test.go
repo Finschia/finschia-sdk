@@ -110,7 +110,8 @@ func TestVerifyMultisignature(t *testing.T) {
 				pk = genPk
 			},
 			true,
-		}, {
+		},
+		{
 			"wrong size for sig bit array",
 			func(require *require.Assertions) {
 				pubKeys := generatePubKeys(3)
@@ -165,7 +166,8 @@ func TestVerifyMultisignature(t *testing.T) {
 				)
 			},
 			true,
-		}, {
+		},
+		{
 			"duplicate signatures",
 			func(require *require.Assertions) {
 				pubKeys, sigs := generatePubKeysAndSignatures(5, msg)
@@ -178,7 +180,8 @@ func TestVerifyMultisignature(t *testing.T) {
 				sig.Signatures = append(sig.Signatures, sigs[0])
 			},
 			false,
-		}, {
+		},
+		{
 			"duplicated key",
 			func(require *require.Assertions) {
 				// here we test an edge case where we create a multi sig with two same
@@ -191,7 +194,8 @@ func TestVerifyMultisignature(t *testing.T) {
 				multisig.AddSignature(sig, sigs[0], 1)
 			},
 			true,
-		}, {
+		},
+		{
 			"same key used twice",
 			func(require *require.Assertions) {
 				pubkeys, sigs := generatePubKeysAndSignatures(3, msg)
@@ -201,7 +205,8 @@ func TestVerifyMultisignature(t *testing.T) {
 				multisig.AddSignature(sig, sigs[0], 1)
 			},
 			false,
-		}, {
+		},
+		{
 			"unable to verify signature",
 			func(require *require.Assertions) {
 				pubKeys := generatePubKeys(2)
@@ -392,27 +397,27 @@ func TestAminoUnmarshalJSON(t *testing.T) {
 	// with amino, there's no error.
 	// ref: https://github.com/cosmos/cosmos-sdk/issues/8776
 	pkJSON := `{
-	"type": "ostracon/PubKeyMultisigThreshold",
+	"type": "tendermint/PubKeyMultisigThreshold",
 	"value": {
 		"pubkeys": [
 			{
-			"type": "ostracon/PubKeySecp256k1",
+			"type": "tendermint/PubKeySecp256k1",
 			"value": "AzYxq2VNeD10TyABwOgV36OVWDIMn8AtI4OFA0uQX2MK"
 			},
 			{
-			"type": "ostracon/PubKeySecp256k1",
+			"type": "tendermint/PubKeySecp256k1",
 			"value": "A39cdsrm00bTeQ3RVZVqjkH8MvIViO9o99c8iLiNO35h"
 			},
 			{
-			"type": "ostracon/PubKeySecp256k1",
+			"type": "tendermint/PubKeySecp256k1",
 			"value": "A/uLLCZph8MkFg2tCxqSMGwFfPHdt1kkObmmrqy9aiYD"
 			},
 			{
-			"type": "ostracon/PubKeySecp256k1",
+			"type": "tendermint/PubKeySecp256k1",
 			"value": "A4mOMhM5gPDtBAkAophjRs6uDGZm4tD4Dbok3ai4qJi8"
 			},
 			{
-			"type": "ostracon/PubKeySecp256k1",
+			"type": "tendermint/PubKeySecp256k1",
 			"value": "A90icFucrjNNz2SAdJWMApfSQcARIqt+M2x++t6w5fFs"
 			}
 		],
@@ -453,6 +458,6 @@ func TestProtoMarshalJSON(t *testing.T) {
 	require.NoError(err)
 	ko, err := keyring.MkAccKeyOutput(info)
 	require.NoError(err)
-	require.Equal(ko.Address, sdk.BytesToAccAddress(pk2.Address()).String())
+	require.Equal(ko.Address, sdk.AccAddress(pk2.Address()).String())
 	require.Equal(ko.PubKey, string(bz))
 }

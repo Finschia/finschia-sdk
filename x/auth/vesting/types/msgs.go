@@ -11,6 +11,7 @@ const TypeMsgCreateVestingAccount = "msg_create_vesting_account"
 var _ sdk.Msg = &MsgCreateVestingAccount{}
 
 // NewMsgCreateVestingAccount returns a reference to a new MsgCreateVestingAccount.
+//
 //nolint:interfacer
 func NewMsgCreateVestingAccount(fromAddr, toAddr sdk.AccAddress, amount sdk.Coins, endTime int64, delayed bool) *MsgCreateVestingAccount {
 	return &MsgCreateVestingAccount{
@@ -30,11 +31,11 @@ func (msg MsgCreateVestingAccount) Type() string { return TypeMsgCreateVestingAc
 
 // ValidateBasic Implements Msg.
 func (msg MsgCreateVestingAccount) ValidateBasic() error {
-	from, err := sdk.AccAddressToBytes(msg.FromAddress)
+	from, err := sdk.AccAddressFromBech32(msg.FromAddress)
 	if err != nil {
 		return err
 	}
-	to, err := sdk.AccAddressToBytes(msg.ToAddress)
+	to, err := sdk.AccAddressFromBech32(msg.ToAddress)
 	if err != nil {
 		return err
 	}
@@ -64,14 +65,14 @@ func (msg MsgCreateVestingAccount) ValidateBasic() error {
 // GetSignBytes returns the bytes all expected signers must sign over for a
 // MsgCreateVestingAccount.
 func (msg MsgCreateVestingAccount) GetSignBytes() []byte {
-	return sdk.MustSortJSON(amino.MustMarshalJSON(&msg))
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 // GetSigners returns the expected signers for a MsgCreateVestingAccount.
 func (msg MsgCreateVestingAccount) GetSigners() []sdk.AccAddress {
-	err := sdk.ValidateAccAddress(msg.FromAddress)
+	from, err := sdk.AccAddressFromBech32(msg.FromAddress)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{sdk.AccAddress(msg.FromAddress)}
+	return []sdk.AccAddress{from}
 }

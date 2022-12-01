@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"testing"
@@ -17,9 +16,9 @@ import (
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/proto/ostracon/crypto"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store"
 	"github.com/line/lbm-sdk/store/prefix"
@@ -41,13 +40,13 @@ func TestGenesisExportImport(t *testing.T) {
 	wasmKeeper, srcCtx, srcStoreKeys := setupKeeper(t)
 	contractKeeper := NewGovPermissionKeeper(wasmKeeper)
 
-	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	wasmCode, err := os.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	// store some test data
 	f := fuzz.New().Funcs(ModelFuzzers...)
 
-	wasmKeeper.setParams(srcCtx, types.DefaultParams())
+	wasmKeeper.SetParams(srcCtx, types.DefaultParams())
 
 	for i := 0; i < 25; i++ {
 		var (
@@ -65,9 +64,9 @@ func TestGenesisExportImport(t *testing.T) {
 		f.Fuzz(&pinned)
 		f.Fuzz(&contractExtension)
 
-		err := sdk.ValidateAccAddress(codeInfo.Creator)
+		creatorAddr, err := sdk.AccAddressFromBech32(codeInfo.Creator)
 		require.NoError(t, err)
-		codeID, err := contractKeeper.Create(srcCtx, sdk.AccAddress(codeInfo.Creator), wasmCode, &codeInfo.InstantiateConfig)
+		codeID, err := contractKeeper.Create(srcCtx, creatorAddr, wasmCode, &codeInfo.InstantiateConfig)
 		require.NoError(t, err)
 		if pinned {
 			contractKeeper.PinCode(srcCtx, codeID)
@@ -89,7 +88,7 @@ func TestGenesisExportImport(t *testing.T) {
 	}
 	var wasmParams types.Params
 	f.NilChance(0).Fuzz(&wasmParams)
-	wasmKeeper.setParams(srcCtx, wasmParams)
+	wasmKeeper.SetParams(srcCtx, wasmParams)
 
 	// export
 	exportedState := ExportGenesis(srcCtx, wasmKeeper)
@@ -128,7 +127,7 @@ func TestGenesisExportImport(t *testing.T) {
 	})
 
 	// re-import
-	var importState wasmTypes.GenesisState
+	var importState types.GenesisState
 	err = dstKeeper.cdc.UnmarshalJSON(exportedGenesis, &importState)
 	require.NoError(t, err)
 	InitGenesis(dstCtx, dstKeeper, importState, &StakingKeeperMock{}, TestHandler(contractKeeper))
@@ -154,7 +153,7 @@ func TestGenesisExportImport(t *testing.T) {
 }
 
 func TestGenesisInit(t *testing.T) {
-	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	wasmCode, err := os.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	myCodeInfo := wasmTypes.CodeInfoFixture(wasmTypes.WithSHA256CodeHash(wasmCode))
@@ -258,7 +257,8 @@ func TestGenesisInit(t *testing.T) {
 					},
 				},
 				Params: types.DefaultParams(),
-			}},
+			},
+		},
 		"happy path: code id in info and contract do match": {
 			src: types.GenesisState{
 				Codes: []types.Code{{
@@ -403,7 +403,7 @@ func TestGenesisInit(t *testing.T) {
 			},
 		},
 		"validator set update called for any genesis messages": {
-			src: wasmTypes.GenesisState{
+			src: types.GenesisState{
 				GenMsgs: []types.GenesisState_GenMsgs{
 					{Sum: &types.GenesisState_GenMsgs_StoreCode{
 						StoreCode: types.MsgStoreCodeFixture(),
@@ -421,7 +421,7 @@ func TestGenesisInit(t *testing.T) {
 			expSuccess:     true,
 		},
 		"validator set update not called on genesis msg handler errors": {
-			src: wasmTypes.GenesisState{
+			src: types.GenesisState{
 				GenMsgs: []types.GenesisState_GenMsgs{
 					{Sum: &types.GenesisState_GenMsgs_StoreCode{
 						StoreCode: types.MsgStoreCodeFixture(),
@@ -487,8 +487,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
         "code_id": "1",
         "creator": "link1p0yx9c9q4xsnedlcn24gqfry5dcu6e9xkhv9aj",
         "admin": "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
-        "label": "ȀĴnZV芢毤",
-        "status": "Active"
+        "label": "ȀĴnZV芢毤"
       }
     }
   ],
@@ -500,14 +499,14 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 	keeper, ctx, _ := setupKeeper(t)
 	contractKeeper := NewGovPermissionKeeper(keeper)
 
-	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	wasmCode, err := os.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	wasmCodeHash := sha256.Sum256(wasmCode)
 	enc64 := base64.StdEncoding.EncodeToString
 	genesisStr := fmt.Sprintf(genesisTemplate, enc64(wasmCodeHash[:]), enc64(wasmCode))
 
-	var importState wasmTypes.GenesisState
+	var importState types.GenesisState
 	err = keeper.cdc.UnmarshalJSON([]byte(genesisStr), &importState)
 	require.NoError(t, err)
 	require.NoError(t, importState.ValidateBasic(), genesisStr)
@@ -538,7 +537,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 	assert.Equal(t, expCodeInfo, *gotCodeInfo)
 
 	// verify contract
-	contractAddr := sdk.AccAddress("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
+	contractAddr, _ := sdk.AccAddressFromBech32("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
 	gotContractInfo := keeper.GetContractInfo(ctx, contractAddr)
 	require.NotNil(t, gotContractInfo)
 	contractCreatorAddr := "link1p0yx9c9q4xsnedlcn24gqfry5dcu6e9xkhv9aj"
@@ -550,15 +549,15 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 		Admin:   adminAddr,
 		Label:   "ȀĴnZV芢毤",
 		Created: &types.AbsoluteTxPosition{BlockHeight: 0, TxIndex: 0},
-		Status:  wasmTypes.ContractStatusActive,
 	}
 	assert.Equal(t, expContractInfo, *gotContractInfo)
 
-	expHistory := []types.ContractCodeHistoryEntry{{
-		Operation: types.ContractCodeHistoryOperationTypeGenesis,
-		CodeID:    firstCodeID,
-		Updated:   types.NewAbsoluteTxPosition(ctx),
-	},
+	expHistory := []types.ContractCodeHistoryEntry{
+		{
+			Operation: types.ContractCodeHistoryOperationTypeGenesis,
+			CodeID:    firstCodeID,
+			Updated:   types.NewAbsoluteTxPosition(ctx),
+		},
 	}
 	assert.Equal(t, expHistory, keeper.GetContractHistory(ctx, contractAddr))
 	assert.Equal(t, uint64(2), keeper.PeekAutoIncrementID(ctx, types.KeyLastCodeID))
@@ -566,12 +565,12 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 }
 
 func TestSupportedGenMsgTypes(t *testing.T) {
-	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	wasmCode, err := os.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 	var (
-		myAddress          = sdk.BytesToAccAddress(bytes.Repeat([]byte{1}, types.ContractAddrLen))
-		verifierAddress    = sdk.BytesToAccAddress(bytes.Repeat([]byte{2}, types.ContractAddrLen))
-		beneficiaryAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{3}, types.ContractAddrLen))
+		myAddress          sdk.AccAddress = bytes.Repeat([]byte{1}, types.ContractAddrLen)
+		verifierAddress    sdk.AccAddress = bytes.Repeat([]byte{2}, types.ContractAddrLen)
+		beneficiaryAddress sdk.AccAddress = bytes.Repeat([]byte{3}, types.ContractAddrLen)
 	)
 	const denom = "stake"
 	importState := types.GenesisState{
@@ -638,7 +637,7 @@ func TestSupportedGenMsgTypes(t *testing.T) {
 
 func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 	t.Helper()
-	tempDir, err := ioutil.TempDir("", "wasm")
+	tempDir, err := os.MkdirTemp("", "wasm")
 	require.NoError(t, err)
 	t.Cleanup(func() { os.RemoveAll(tempDir) })
 	var (
@@ -647,7 +646,7 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 		keyWasm    = sdk.NewKVStoreKey(wasmTypes.StoreKey)
 	)
 
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	ms := store.NewCommitMultiStore(db)
 	ms.MountStoreWithDB(keyWasm, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(keyParams, sdk.StoreTypeIAVL, db)

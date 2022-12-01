@@ -3,7 +3,6 @@ package keys
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -64,14 +63,13 @@ func Test_runImportCmd(t *testing.T) {
 
 	armoredKey := `-----BEGIN OSTRACON PRIVATE KEY-----
 kdf: bcrypt
-salt: A278E4F0DC466EF58CC9FC3149688593
+salt: A53F628182B827E07DD11A96EAB9D526
 type: secp256k1
 
-mSB5rEfN4VCi1EnEca5PigV/WphYtrBFft+QyZ2ISztMeQmuhFNFWwjLBsJm5zXv
-KNXMn0ZEeCZtbyNzPPdQUQBwcbueq9vx5NDqQCg=
-=wp9z
------END OSTRACON PRIVATE KEY-----
-`
+Ax9IQsSq+jOWkPRDJQ69a5/uUm4XliPim/CbYDVoXO6D3fts5IEXcUTmIa60ynC/
+8hzYAawzYMO95Kwi0NI8WW9wUv3TseSWFv6/RpU=
+=umYd
+-----END OSTRACON PRIVATE KEY-----`
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -96,7 +94,7 @@ KNXMn0ZEeCZtbyNzPPdQUQBwcbueq9vx5NDqQCg=
 
 			keyfile := filepath.Join(kbHome, "key.asc")
 
-			require.NoError(t, ioutil.WriteFile(keyfile, []byte(armoredKey), 0644))
+			require.NoError(t, os.WriteFile(keyfile, []byte(armoredKey), 0o644))
 
 			defer func() {
 				_ = os.RemoveAll(kbHome)

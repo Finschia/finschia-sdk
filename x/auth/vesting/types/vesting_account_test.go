@@ -345,7 +345,8 @@ func TestGetVestedCoinsPeriodicVestingAcc(t *testing.T) {
 	vestedCoins = pva.GetVestedCoins(now.Add(18 * time.Hour))
 	require.Equal(t,
 		sdk.Coins{
-			sdk.NewInt64Coin(feeDenom, 750), sdk.NewInt64Coin(stakeDenom, 75)}, vestedCoins)
+			sdk.NewInt64Coin(feeDenom, 750), sdk.NewInt64Coin(stakeDenom, 75),
+		}, vestedCoins)
 
 	// require 100% of coins vested
 	vestedCoins = pva.GetVestedCoins(now.Add(48 * time.Hour))
@@ -661,7 +662,7 @@ func TestTrackUndelegationPermLockedVestingAcc(t *testing.T) {
 
 func TestGenesisAccountValidate(t *testing.T) {
 	pubkey := secp256k1.GenPrivKey().PubKey()
-	addr := sdk.BytesToAccAddress(pubkey.Address())
+	addr := sdk.AccAddress(pubkey.Address())
 	baseAcc := authtypes.NewBaseAccount(addr, pubkey, 0, 0)
 	initialVesting := sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 50))
 	baseVestingWithCoins := types.NewBaseVestingAccount(baseAcc, initialVesting, 100)
@@ -786,6 +787,7 @@ func TestDelayedVestingAccountMarshal(t *testing.T) {
 	_, err = app.AccountKeeper.UnmarshalAccount(bz[:len(bz)/2])
 	require.NotNil(t, err)
 }
+
 func TestPermanentLockedAccountMarshal(t *testing.T) {
 	baseAcc, coins := initBaseAccount()
 	acc := types.NewPermanentLockedAccount(baseAcc, coins)

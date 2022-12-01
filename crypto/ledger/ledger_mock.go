@@ -11,7 +11,7 @@ import (
 
 	"github.com/cosmos/go-bip39"
 	secp256k1 "github.com/tendermint/btcd/btcec"
-	
+
 	"github.com/line/ostracon/crypto"
 
 	"github.com/line/lbm-sdk/crypto/hd"
@@ -29,8 +29,7 @@ func init() {
 	}
 }
 
-type LedgerSECP256K1Mock struct {
-}
+type LedgerSECP256K1Mock struct{}
 
 func (mock LedgerSECP256K1Mock) Close() error {
 	return nil
@@ -83,7 +82,7 @@ func (mock LedgerSECP256K1Mock) GetAddressPubKeySECP256K1(derivationPath []uint3
 
 	// Generate the bech32 addr using existing occrypto/etc.
 	pub := &csecp256k1.PubKey{Key: compressedPublicKey}
-	addr := sdk.BytesToAccAddress(pub.Address()).String()
+	addr := sdk.AccAddress(pub.Address()).String()
 	return pk, addr, err
 }
 

@@ -3,6 +3,7 @@ on:
   pull_request:
     branches:
       - main
+      - rc*/*
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+" # Push events to matching v*, i.e. v1.0, v20.15.10
@@ -35,6 +36,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: ${{github.event_name != 'pull_request'}}
+          build-args: ARCH=x86_64
           tags: ${{steps.meta.outputs.tags}}
           labels: ${{steps.meta.outputs.labels}}
           platforms: linux/amd64

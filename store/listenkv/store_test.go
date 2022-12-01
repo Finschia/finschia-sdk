@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/codec"
 	codecTypes "github.com/line/lbm-sdk/codec/types"
@@ -29,9 +29,11 @@ var kvPairs = []types.KVPair{
 	{Key: keyFmt(3), Value: valFmt(3)},
 }
 
-var testStoreKey = types.NewKVStoreKey("listen_test")
-var interfaceRegistry = codecTypes.NewInterfaceRegistry()
-var testMarshaller = codec.NewProtoCodec(interfaceRegistry)
+var (
+	testStoreKey      = types.NewKVStoreKey("listen_test")
+	interfaceRegistry = codecTypes.NewInterfaceRegistry()
+	testMarshaller    = codec.NewProtoCodec(interfaceRegistry)
+)
 
 func newListenKVStore(w io.Writer) *listenkv.Store {
 	store := newEmptyListenKVStore(w)
@@ -45,9 +47,9 @@ func newListenKVStore(w io.Writer) *listenkv.Store {
 
 func newEmptyListenKVStore(w io.Writer) *listenkv.Store {
 	listener := types.NewStoreKVPairWriteListener(w, testMarshaller)
-	memDB := dbadapter.Store{DB: memdb.NewDB()}
+	dbm := dbadapter.Store{DB: dbm.NewMemDB()}
 
-	return listenkv.NewStore(memDB, testStoreKey, []types.WriteListener{listener})
+	return listenkv.NewStore(dbm, testStoreKey, []types.WriteListener{listener})
 }
 
 func TestListenKVStoreGet(t *testing.T) {
@@ -130,7 +132,6 @@ func TestListenKVStoreSet(t *testing.T) {
 	store := newEmptyListenKVStore(&buf)
 	require.Panics(t, func() { store.Set([]byte(""), []byte("value")) }, "setting an empty key should panic")
 	require.Panics(t, func() { store.Set(nil, []byte("value")) }, "setting a nil key should panic")
-
 }
 
 func TestListenKVStoreDelete(t *testing.T) {
@@ -190,6 +191,10 @@ func TestTestListenKVStoreIterator(t *testing.T) {
 	store := newListenKVStore(&buf)
 	iterator := store.Iterator(nil, nil)
 
+	s, e := iterator.Domain()
+	require.Equal(t, []byte(nil), s)
+	require.Equal(t, []byte(nil), e)
+
 	testCases := []struct {
 		expectedKey   []byte
 		expectedValue []byte
@@ -228,6 +233,10 @@ func TestTestListenKVStoreReverseIterator(t *testing.T) {
 
 	store := newListenKVStore(&buf)
 	iterator := store.ReverseIterator(nil, nil)
+
+	s, e := iterator.Domain()
+	require.Equal(t, []byte(nil), s)
+	require.Equal(t, []byte(nil), e)
 
 	testCases := []struct {
 		expectedKey   []byte
@@ -269,9 +278,9 @@ func TestListenKVStorePrefix(t *testing.T) {
 }
 
 func TestListenKVStoreGetStoreType(t *testing.T) {
-	memDB := dbadapter.Store{DB: memdb.NewDB()}
+	dbm := dbadapter.Store{DB: dbm.NewMemDB()}
 	store := newEmptyListenKVStore(nil)
-	require.Equal(t, memDB.GetStoreType(), store.GetStoreType())
+	require.Equal(t, dbm.GetStoreType(), store.GetStoreType())
 }
 
 func TestListenKVStoreCacheWrap(t *testing.T) {

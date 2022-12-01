@@ -2,111 +2,30 @@ package keeper
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
-
 	"github.com/line/lbm-sdk/x/foundation"
-
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
-	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
-	"github.com/line/lbm-sdk/x/stakingplus"
 )
 
-func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *foundation.GenesisState) error {
-	params := data.Params
-	if params == nil {
-		params = foundation.DefaultParams()
-	}
-	k.SetParams(ctx, params)
+func (k Keeper) InitGenesis(ctx sdk.Context, data *foundation.GenesisState) error {
+	k.SetParams(ctx, data.Params)
 
-	authorizations := data.Authorizations
-	createValidatorGrantees := getCreateValidatorGrantees(authorizations)
-	if k.GetEnabled(ctx) && len(createValidatorGrantees) == 0 {
-		// Allowed validators must exist if the module is enabled,
-		// so it should be the very first block of the chain.
-		// We gather the information from staking module.
-		sk.IterateValidators(ctx, func(_ int64, addr stakingtypes.ValidatorI) (stop bool) {
-			grantee := addr.GetOperator().ToAccAddress()
-			createValidatorGrantees = append(createValidatorGrantees, grantee)
+	k.SetFoundationInfo(ctx, data.Foundation)
 
-			// add to authorizations
-			authorization := &stakingplus.CreateValidatorAuthorization{
-				ValidatorAddress: grantee.ToValAddress().String(),
-			}
-			ga := foundation.GrantAuthorization{
-				Granter: govtypes.ModuleName,
-				Grantee: grantee.String(),
-			}
-			if err := ga.SetAuthorization(authorization); err != nil {
-				panic(err)
-			}
-			authorizations = append(authorizations, ga)
+	k.setPreviousProposalID(ctx, data.PreviousProposalId)
 
-			return false
-		})
-	}
-
-	members := data.Members
-	if len(members) == 0 {
-		for _, grantee := range createValidatorGrantees {
-			member := foundation.Member{
-				Address:       grantee.String(),
-				Participating: true,
-				Metadata:      "genesis member",
-			}
-			members = append(members, member)
-		}
-	}
-	for _, member := range members {
+	for _, member := range data.Members {
 		if err := validateMetadata(member.Metadata, k.config); err != nil {
 			return err
 		}
 
-		if member.Participating {
-			k.setMember(ctx, member)
-		}
+		k.SetMember(ctx, member)
 	}
-
-	info := data.Foundation
-	if info == nil {
-		info = &foundation.FoundationInfo{
-			Version: 1,
-		}
-	}
-
-	totalWeight := int64(0)
-	for _, member := range members {
-		if member.Participating {
-			totalWeight++
-		}
-	}
-	info.TotalWeight = sdk.NewDec(totalWeight)
-
-	if len(info.Operator) == 0 {
-		info.Operator = k.GetAdmin(ctx).String()
-	}
-
-	if info.GetDecisionPolicy() == nil ||
-		info.GetDecisionPolicy().ValidateBasic() != nil ||
-		info.GetDecisionPolicy().Validate(k.config) != nil {
-		policy := foundation.DefaultDecisionPolicy(k.config)
-		if err := info.SetDecisionPolicy(policy); err != nil {
-			return err
-		}
-	}
-
-	if err := k.setFoundationInfo(ctx, *info); err != nil {
-		return err
-	}
-
-	k.setPreviousProposalID(ctx, data.PreviousProposalId)
 
 	for _, proposal := range data.Proposals {
 		if err := validateMetadata(proposal.Metadata, k.config); err != nil {
 			return err
 		}
 
-		if err := k.setProposal(ctx, proposal); err != nil {
-			return err
-		}
+		k.setProposal(ctx, proposal)
 		k.addProposalToVPEndQueue(ctx, proposal)
 	}
 
@@ -115,16 +34,17 @@ func (k Keeper) InitGenesis(ctx sdk.Context, sk foundation.StakingKeeper, data *
 			return err
 		}
 
-		if err := k.setVote(ctx, vote); err != nil {
-			return err
-		}
+		k.setVote(ctx, vote)
 	}
 
-	for _, ga := range authorizations {
-		if err := k.setAuthorization(ctx, ga.Granter, sdk.AccAddress(ga.Grantee), ga.GetAuthorization()); err != nil {
-			return err
-		}
+	for _, ga := range data.Authorizations {
+		grantee := sdk.MustAccAddressFromBech32(ga.Grantee)
+		k.setAuthorization(ctx, grantee, ga.GetAuthorization())
 	}
+
+	k.SetPool(ctx, data.Pool)
+
+	k.SetGovMintLeftCount(ctx, data.GovMintLeftCount)
 
 	return nil
 }
@@ -140,46 +60,21 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 
 	return &foundation.GenesisState{
 		Params:             k.GetParams(ctx),
-		Foundation:         &info,
+		Foundation:         info,
 		Members:            k.GetMembers(ctx),
 		PreviousProposalId: k.getPreviousProposalID(ctx),
 		Proposals:          proposals,
 		Votes:              votes,
 		Authorizations:     k.GetGrants(ctx),
-	}
-}
-
-func (k Keeper) ResetState(ctx sdk.Context) {
-	store := ctx.KVStore(k.storeKey)
-	// TODO: reset validator list too
-
-	// reset foundation
-	store.Delete(foundationInfoKey)
-
-	// reset members
-	for _, member := range k.GetMembers(ctx) {
-		store.Delete(memberKey(sdk.AccAddress(member.Address)))
-	}
-
-	// id
-	store.Delete(previousProposalIDKey)
-
-	// reset proposals & votes
-	for _, proposal := range k.GetProposals(ctx) {
-		k.pruneProposal(ctx, proposal)
-	}
-
-	// reset authorizations
-	for _, ga := range k.GetGrants(ctx) {
-		k.deleteAuthorization(ctx, ga.Granter, sdk.AccAddress(ga.Grantee), ga.GetAuthorization().MsgTypeURL())
+		Pool:               k.GetPool(ctx),
+		GovMintLeftCount:   k.GetGovMintLeftCount(ctx),
 	}
 }
 
 func (k Keeper) GetGrants(ctx sdk.Context) []foundation.GrantAuthorization {
 	var grantAuthorizations []foundation.GrantAuthorization
-	k.iterateAuthorizations(ctx, func(granter string, grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
+	k.iterateAuthorizations(ctx, func(grantee sdk.AccAddress, authorization foundation.Authorization) (stop bool) {
 		grantAuthorization := foundation.GrantAuthorization{
-			Granter: granter,
 			Grantee: grantee.String(),
 		}
 		if err := grantAuthorization.SetAuthorization(authorization); err != nil {
@@ -190,17 +85,4 @@ func (k Keeper) GetGrants(ctx sdk.Context) []foundation.GrantAuthorization {
 		return false
 	})
 	return grantAuthorizations
-}
-
-func getCreateValidatorGrantees(authorizations []foundation.GrantAuthorization) []sdk.AccAddress {
-	granter := govtypes.ModuleName
-	msgTypeURL := stakingplus.CreateValidatorAuthorization{}.MsgTypeURL()
-	var grantees []sdk.AccAddress
-	for _, ga := range authorizations {
-		if ga.Granter == granter && ga.GetAuthorization().MsgTypeURL() == msgTypeURL {
-			grantees = append(grantees, sdk.AccAddress(ga.Grantee))
-		}
-	}
-
-	return grantees
 }

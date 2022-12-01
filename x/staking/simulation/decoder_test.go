@@ -19,8 +19,8 @@ import (
 
 var (
 	delPk1   = ed25519.GenPrivKey().PubKey()
-	delAddr1 = sdk.BytesToAccAddress(delPk1.Address())
-	valAddr1 = sdk.BytesToValAddress(delPk1.Address())
+	delAddr1 = sdk.AccAddress(delPk1.Address())
+	valAddr1 = sdk.ValAddress(delPk1.Address())
 )
 
 func makeTestCodec() (cdc *codec.LegacyAmino) {

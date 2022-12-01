@@ -33,18 +33,17 @@ func ExamplePrintRegisteredTypes() {
 	cdc.PrintTypes(os.Stdout)
 	//| Type | Name | Prefix | Length | Notes |
 	//| ---- | ---- | ------ | ----- | ------ |
-	//| PrivKeyLedgerSecp256k1 | ostracon/PrivKeyLedgerSecp256k1 | 0x5421414C | variable |  |
-	//| PubKey | ostracon/PubKeySr25519 | 0x09EF29BD | variable |  |
-	//| PubKey | ostracon/PubKeyEd25519 | 0xCA5F2BB0 | variable |  |
-	//| PubKey | ostracon/PubKeySecp256k1 | 0xC03701B7 | variable |  |
-	//| LegacyAminoPubKey | ostracon/PubKeyMultisigThreshold | 0x77A72198 | variable |  |
-	//| PrivKey | ostracon/PrivKeySr25519 | 0x2C3D3053 | variable |  |
-	//| PrivKey | ostracon/PrivKeyEd25519 | 0xF53C89CD | variable |  |
-	//| PrivKey | ostracon/PrivKeySecp256k1 | 0x423EB2BA | variable |  |
+	//| PrivKeyLedgerSecp256k1 | tendermint/PrivKeyLedgerSecp256k1 | 0x10CAB393 | variable |  |
+	//| PubKey | tendermint/PubKeySr25519 | 0x0DFB1005 | variable |  |
+	//| PubKey | tendermint/PubKeyEd25519 | 0x1624DE64 | variable |  |
+	//| PubKey | tendermint/PubKeySecp256k1 | 0xEB5AE987 | variable |  |
+	//| LegacyAminoPubKey | tendermint/PubKeyMultisigThreshold | 0x22C1F7E2 | variable |  |
+	//| PrivKey | tendermint/PrivKeySr25519 | 0x2F82D78B | variable |  |
+	//| PrivKey | tendermint/PrivKeyEd25519 | 0xA3288910 | variable |  |
+	//| PrivKey | tendermint/PrivKeySecp256k1 | 0xE1B0F79B | variable |  |
 }
 
 func TestNilEncodings(t *testing.T) {
-
 	// Check nil Signature.
 	var a, b []byte
 	checkAminoJSON(t, &a, &b, true)
@@ -59,5 +58,4 @@ func TestNilEncodings(t *testing.T) {
 	var e, f cryptotypes.PrivKey
 	checkAminoJSON(t, &e, &f, true)
 	require.EqualValues(t, e, f)
-
 }

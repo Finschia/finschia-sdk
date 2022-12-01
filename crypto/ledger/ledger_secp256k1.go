@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/btcsuite/btcd/btcec"
-	"github.com/line/ostracon/crypto"
 	"github.com/pkg/errors"
 
 	tmbtcec "github.com/tendermint/btcd/btcec"
@@ -15,11 +14,9 @@ import (
 	"github.com/line/lbm-sdk/crypto/types"
 )
 
-var (
-	// discoverLedger defines a function to be invoked at runtime for discovering
-	// a connected Ledger device.
-	discoverLedger discoverLedgerFn
-)
+// discoverLedger defines a function to be invoked at runtime for discovering
+// a connected Ledger device.
+var discoverLedger discoverLedgerFn
 
 type (
 	// discoverLedgerFn defines a Ledger discovery function that returns a
@@ -91,10 +88,6 @@ func (pkl PrivKeyLedgerSecp256k1) PubKey() types.PubKey {
 	return pkl.CachedPubKey
 }
 
-func (pkl PrivKeyLedgerSecp256k1) VRFProve(seed []byte) (crypto.Proof, error) {
-	return nil, nil
-}
-
 // Sign returns a secp256k1 signature for the corresponding message
 func (pkl PrivKeyLedgerSecp256k1) Sign(message []byte) ([]byte, error) {
 	device, err := getDevice()
@@ -108,7 +101,8 @@ func (pkl PrivKeyLedgerSecp256k1) Sign(message []byte) ([]byte, error) {
 
 // ShowAddress triggers a ledger device to show the corresponding address.
 func ShowAddress(path hd.BIP44Params, expectedPubKey types.PubKey,
-	accountAddressPrefix string) error {
+	accountAddressPrefix string,
+) error {
 	device, err := getDevice()
 	if err != nil {
 		return err

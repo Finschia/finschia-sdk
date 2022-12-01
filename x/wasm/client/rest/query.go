@@ -15,6 +15,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/rest"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -27,6 +28,8 @@ func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {
 	r.HandleFunc("/wasm/contract/{contractAddr}/history", queryContractHistoryFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/wasm/contract/{contractAddr}/smart/{query}", queryContractStateSmartHandlerFn(cliCtx)).Queries("encoding", "{encoding}").Methods("GET")
 	r.HandleFunc("/wasm/contract/{contractAddr}/raw/{key}", queryContractStateRawHandlerFn(cliCtx)).Queries("encoding", "{encoding}").Methods("GET")
+	r.HandleFunc("/wasm/inactive_contract", listInactiveContractsHandlerFn(cliCtx)).Queries("GET")
+	r.HandleFunc("/wasm/inactive_contract/{contractAddr}", queryInactiveContractHandlerFn(cliCtx)).Queries("GET")
 }
 
 func listCodesHandlerFn(cliCtx client.Context) http.HandlerFunc {
@@ -145,8 +148,7 @@ func listContractsByCodeHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func queryContractHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		addr := mux.Vars(r)["contractAddr"]
-		err := sdk.ValidateAccAddress(addr)
+		addr, err := sdk.AccAddressFromBech32(mux.Vars(r)["contractAddr"])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -156,7 +158,7 @@ func queryContractHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		route := fmt.Sprintf("custom/%s/%s/%s", types.QuerierRoute, keeper.QueryGetContract, addr)
+		route := fmt.Sprintf("custom/%s/%s/%s", types.QuerierRoute, keeper.QueryGetContract, addr.String())
 		res, height, err := cliCtx.Query(route)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
@@ -170,8 +172,7 @@ func queryContractHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func queryContractStateAllHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		addr := mux.Vars(r)["contractAddr"]
-		err := sdk.ValidateAccAddress(addr)
+		addr, err := sdk.AccAddressFromBech32(mux.Vars(r)["contractAddr"])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -181,8 +182,7 @@ func queryContractStateAllHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		route := fmt.Sprintf("custom/%s/%s/%s/%s", types.QuerierRoute, keeper.QueryGetContractState, addr,
-			keeper.QueryMethodContractStateAll)
+		route := fmt.Sprintf("custom/%s/%s/%s/%s", types.QuerierRoute, keeper.QueryGetContractState, addr.String(), keeper.QueryMethodContractStateAll)
 		res, height, err := cliCtx.Query(route)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
@@ -205,8 +205,7 @@ func queryContractStateAllHandlerFn(cliCtx client.Context) http.HandlerFunc {
 func queryContractStateRawHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		decoder := newArgDecoder(hex.DecodeString)
-		addr := mux.Vars(r)["contractAddr"]
-		err := sdk.ValidateAccAddress(addr)
+		addr, err := sdk.AccAddressFromBech32(mux.Vars(r)["contractAddr"])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -222,8 +221,7 @@ func queryContractStateRawHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		route := fmt.Sprintf("custom/%s/%s/%s/%s", types.QuerierRoute, keeper.QueryGetContractState, addr,
-			keeper.QueryMethodContractStateRaw)
+		route := fmt.Sprintf("custom/%s/%s/%s/%s", types.QuerierRoute, keeper.QueryGetContractState, addr.String(), keeper.QueryMethodContractStateRaw)
 		res, height, err := cliCtx.QueryWithData(route, queryData)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
@@ -243,8 +241,7 @@ type smartResponse struct {
 func queryContractStateSmartHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		decoder := newArgDecoder(hex.DecodeString)
-		addr := mux.Vars(r)["contractAddr"]
-		err := sdk.ValidateAccAddress(addr)
+		addr, err := sdk.AccAddressFromBech32(mux.Vars(r)["contractAddr"])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -255,8 +252,7 @@ func queryContractStateSmartHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		route := fmt.Sprintf("custom/%s/%s/%s/%s", types.QuerierRoute, keeper.QueryGetContractState, addr,
-			keeper.QueryMethodContractStateSmart)
+		route := fmt.Sprintf("custom/%s/%s/%s/%s", types.QuerierRoute, keeper.QueryGetContractState, addr.String(), keeper.QueryMethodContractStateSmart)
 
 		queryData, err := decoder.DecodeString(mux.Vars(r)["query"])
 		if err != nil {
@@ -278,8 +274,7 @@ func queryContractStateSmartHandlerFn(cliCtx client.Context) http.HandlerFunc {
 
 func queryContractHistoryFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		addr := mux.Vars(r)["contractAddr"]
-		err := sdk.ValidateAccAddress(addr)
+		addr, err := sdk.AccAddressFromBech32(mux.Vars(r)["contractAddr"])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -303,7 +298,7 @@ func queryContractHistoryFn(cliCtx client.Context) http.HandlerFunc {
 		}
 
 		data := &types.QueryContractHistoryRequest{
-			Address:    addr,
+			Address:    addr.String(),
 			Pagination: pageReq,
 		}
 		bs, err := cliCtx.LegacyAmino.MarshalJSON(data)
@@ -390,4 +385,74 @@ func parseHTTPArgs(r *http.Request) (pageKey string, offset, limit, page uint64,
 	}
 
 	return pageKey, offset, limit, page, countTotal, nil
+}
+
+func listInactiveContractsHandlerFn(cliCtx client.Context) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, keeper.QueryInactiveContracts)
+		pageKey, offset, limit, page, countTotal, err := parseHTTPArgs(r)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		pageReq, err := client.NewPageRequest(pageKey, offset, limit, page, countTotal, false)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		data := &lbmtypes.QueryInactiveContractsRequest{
+			Pagination: pageReq,
+		}
+		bs, err := cliCtx.LegacyAmino.MarshalJSON(data)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		res, height, err := cliCtx.QueryWithData(route, bs)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		cliCtx = cliCtx.WithHeight(height)
+		rest.PostProcessResponse(w, cliCtx, json.RawMessage(res))
+	}
+}
+
+func queryInactiveContractHandlerFn(cliCtx client.Context) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, keeper.QueryIsInactiveContract)
+		addr, err := sdk.AccAddressFromBech32(mux.Vars(r)["contractAddr"])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		data := lbmtypes.QueryInactiveContractRequest{Address: addr.String()}
+		bs, err := cliCtx.LegacyAmino.MarshalJSON(data)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		res, height, err := cliCtx.QueryWithData(route, bs)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		cliCtx = cliCtx.WithHeight(height)
+		rest.PostProcessResponse(w, cliCtx, json.RawMessage(res))
+	}
 }

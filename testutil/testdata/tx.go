@@ -15,7 +15,7 @@ import (
 func KeyTestPubAddr() (cryptotypes.PrivKey, cryptotypes.PubKey, sdk.AccAddress) {
 	key := secp256k1.GenPrivKey()
 	pub := key.PubKey()
-	addr := sdk.BytesToAccAddress(pub.Address())
+	addr := sdk.AccAddress(pub.Address())
 	return key, pub, addr
 }
 
@@ -24,7 +24,7 @@ func KeyTestPubAddrSecp256R1(require *require.Assertions) (cryptotypes.PrivKey, 
 	key, err := secp256r1.GenPrivKey()
 	require.NoError(err)
 	pub := key.PubKey()
-	addr := sdk.BytesToAccAddress(pub.Address())
+	addr := sdk.AccAddress(pub.Address())
 	return key, pub, addr
 }
 
@@ -62,15 +62,16 @@ func (msg *TestMsg) GetSignBytes() []byte {
 	}
 	return sdk.MustSortJSON(bz)
 }
+
 func (msg *TestMsg) GetSigners() []sdk.AccAddress {
 	addrs := make([]sdk.AccAddress, len(msg.Signers))
 	for i, in := range msg.Signers {
-		err := sdk.ValidateAccAddress(in)
+		addr, err := sdk.AccAddressFromBech32(in)
 		if err != nil {
 			panic(err)
 		}
 
-		addrs[i] = sdk.AccAddress(in)
+		addrs[i] = addr
 	}
 
 	return addrs

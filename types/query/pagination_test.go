@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/codec"
@@ -74,7 +74,7 @@ func (s *paginationTestSuite) TestPagination() {
 	}
 
 	balances = balances.Sort()
-	addr1 := sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	acc1 := app.AccountKeeper.NewAccountWithAddress(ctx, addr1)
 	app.AccountKeeper.SetAccount(ctx, acc1)
 	s.Require().NoError(simapp.FundAccount(app, ctx, addr1, balances))
@@ -183,7 +183,7 @@ func (s *paginationTestSuite) TestReversePagination() {
 	}
 
 	balances = balances.Sort()
-	addr1 := sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	acc1 := app.AccountKeeper.NewAccountWithAddress(ctx, addr1)
 	app.AccountKeeper.SetAccount(ctx, acc1)
 	s.Require().NoError(simapp.FundAccount(app, ctx, addr1, balances))
@@ -317,7 +317,7 @@ func ExamplePaginate() {
 	balResult := sdk.NewCoins()
 	authStore := ctx.KVStore(app.GetKey(types.StoreKey))
 	balancesStore := prefix.NewStore(authStore, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, address.MustLengthPrefix(addr1.Bytes()))
+	accountStore := prefix.NewStore(balancesStore, address.MustLengthPrefix(addr1))
 	pageRes, err := query.Paginate(accountStore, request.Pagination, func(key []byte, value []byte) error {
 		var tempRes sdk.Coin
 		err := app.AppCodec().Unmarshal(value, &tempRes)
@@ -340,7 +340,7 @@ func setupTest() (*simapp.SimApp, sdk.Context, codec.Codec) {
 	ctx := app.BaseApp.NewContext(false, ocproto.Header{Height: 1})
 	appCodec := app.AppCodec()
 
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	ms := store.NewCommitMultiStore(db)
 
 	ms.LoadLatestVersion()

@@ -2,13 +2,13 @@ package tmservice
 
 import (
 	"context"
+	"crypto/sha256"
 
 	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	abci "github.com/line/ostracon/abci/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	abci "github.com/line/ostracon/abci/types"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/rpc"
@@ -24,8 +24,10 @@ type queryServer struct {
 	interfaceRegistry codectypes.InterfaceRegistry
 }
 
-var _ ServiceServer = queryServer{}
-var _ codectypes.UnpackInterfacesMessage = &GetLatestValidatorSetResponse{}
+var (
+	_ ServiceServer                      = queryServer{}
+	_ codectypes.UnpackInterfacesMessage = &GetLatestValidatorSetResponse{}
+)
 
 // NewQueryServer creates a new tendermint query server.
 func NewQueryServer(clientCtx client.Context, interfaceRegistry codectypes.InterfaceRegistry) ServiceServer {
@@ -76,12 +78,7 @@ func (s queryServer) GetBlockByHeight(ctx context.Context, req *GetBlockByHeight
 		return nil, status.Error(codes.InvalidArgument, "requested block height is bigger then the chain length")
 	}
 
-	res, err := getBlock(ctx, s.clientCtx, &req.Height)
-	if err != nil {
-		return nil, err
-	}
-	protoBlockID := res.BlockID.ToProto()
-	protoBlock, err := res.Block.ToProto()
+	protoBlockID, protoBlock, err := GetProtoBlock(ctx, s.clientCtx, &req.Height)
 	if err != nil {
 		return nil, err
 	}
@@ -93,6 +90,13 @@ func (s queryServer) GetBlockByHeight(ctx context.Context, req *GetBlockByHeight
 
 // GetBlockByHash implements ServiceServer.GetBlockByHash
 func (s queryServer) GetBlockByHash(_ context.Context, req *GetBlockByHashRequest) (*GetBlockByHashResponse, error) {
+	if n := len(req.Hash); n != sha256.Size {
+		if n == 0 {
+			return nil, status.Error(codes.InvalidArgument, "block hash cannot be empty")
+		}
+		return nil, status.Error(codes.InvalidArgument, "the length of block hash must be 32")
+	}
+
 	res, err := getBlockByHash(s.clientCtx, req.Hash)
 	if err != nil {
 		return nil, err

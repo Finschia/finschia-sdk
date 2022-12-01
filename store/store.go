@@ -1,15 +1,16 @@
 package store
 
 import (
-	tmdb "github.com/line/tm-db/v2"
+	"github.com/line/ostracon/libs/log"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/cache"
 	"github.com/line/lbm-sdk/store/rootmulti"
 	"github.com/line/lbm-sdk/store/types"
 )
 
-func NewCommitMultiStore(db tmdb.DB) types.CommitMultiStore {
-	return rootmulti.NewStore(db)
+func NewCommitMultiStore(db dbm.DB) types.CommitMultiStore {
+	return rootmulti.NewStore(db, log.NewNopLogger())
 }
 
 func NewCommitKVStoreCacheManager(cacheSize int, metricsProvider cache.MetricsProvider) types.MultiStorePersistentCache {

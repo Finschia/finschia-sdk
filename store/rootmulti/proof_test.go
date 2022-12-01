@@ -3,9 +3,11 @@ package rootmulti
 import (
 	"testing"
 
-	abci "github.com/line/ostracon/abci/types"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
+
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/store/iavl"
 	"github.com/line/lbm-sdk/store/types"
@@ -13,8 +15,8 @@ import (
 
 func TestVerifyIAVLStoreQueryProof(t *testing.T) {
 	// Create main tree for testing.
-	db := memdb.NewDB()
-	iStore, err := iavl.LoadStore(db, iavl.NewCacheManagerNoCache(), types.CommitID{}, false, iavl.DefaultIAVLCacheSize)
+	db := dbm.NewMemDB()
+	iStore, err := iavl.LoadStore(db, log.NewNopLogger(), types.NewKVStoreKey("test"), types.CommitID{}, false, iavl.DefaultIAVLCacheSize, false)
 	store := iStore.(*iavl.Store)
 	require.Nil(t, err)
 	store.Set([]byte("MYKEY"), []byte("MYVALUE"))
@@ -56,8 +58,8 @@ func TestVerifyIAVLStoreQueryProof(t *testing.T) {
 
 func TestVerifyMultiStoreQueryProof(t *testing.T) {
 	// Create main tree for testing.
-	db := memdb.NewDB()
-	store := NewStore(db)
+	db := dbm.NewMemDB()
+	store := NewStore(db, log.NewNopLogger())
 	iavlStoreKey := types.NewKVStoreKey("iavlStoreKey")
 
 	store.MountStoreWithDB(iavlStoreKey, types.StoreTypeIAVL, nil)
@@ -111,8 +113,8 @@ func TestVerifyMultiStoreQueryProof(t *testing.T) {
 
 func TestVerifyMultiStoreQueryProofAbsence(t *testing.T) {
 	// Create main tree for testing.
-	db := memdb.NewDB()
-	store := NewStore(db)
+	db := dbm.NewMemDB()
+	store := NewStore(db, log.NewNopLogger())
 	iavlStoreKey := types.NewKVStoreKey("iavlStoreKey")
 
 	store.MountStoreWithDB(iavlStoreKey, types.StoreTypeIAVL, nil)

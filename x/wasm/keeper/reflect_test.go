@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"os"
 	"strings"
 	"testing"
 
@@ -94,14 +94,14 @@ func TestReflectContractSend(t *testing.T) {
 	_, _, bob := keyPubAddr()
 
 	// upload reflect code
-	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
+	reflectCode, err := os.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
 	reflectID, err := keeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), reflectID)
 
 	// upload hackatom escrow code
-	escrowCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	escrowCode, err := os.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 	escrowID, err := keeper.Create(ctx, creator, escrowCode, nil)
 	require.NoError(t, err)
@@ -109,7 +109,7 @@ func TestReflectContractSend(t *testing.T) {
 
 	// creator instantiates a contract and gives it tokens
 	reflectStart := sdk.NewCoins(sdk.NewInt64Coin("denom", 40000))
-	reflectAddr, _, err := keeper.Instantiate(ctx, reflectID, creator, "", []byte("{}"), "reflect contract 2", reflectStart)
+	reflectAddr, _, err := keeper.Instantiate(ctx, reflectID, creator, nil, []byte("{}"), "reflect contract 2", reflectStart)
 	require.NoError(t, err)
 	require.NotEmpty(t, reflectAddr)
 
@@ -121,7 +121,7 @@ func TestReflectContractSend(t *testing.T) {
 	initMsgBz, err := json.Marshal(initMsg)
 	require.NoError(t, err)
 	escrowStart := sdk.NewCoins(sdk.NewInt64Coin("denom", 25000))
-	escrowAddr, _, err := keeper.Instantiate(ctx, escrowID, creator, "", initMsgBz, "escrow contract 2", escrowStart)
+	escrowAddr, _, err := keeper.Instantiate(ctx, escrowID, creator, nil, initMsgBz, "escrow contract 2", escrowStart)
 	require.NoError(t, err)
 	require.NotEmpty(t, escrowAddr)
 
@@ -163,7 +163,6 @@ func TestReflectContractSend(t *testing.T) {
 	checkAccount(t, ctx, accKeeper, bankKeeper, reflectAddr, sdk.NewCoins(sdk.NewInt64Coin("denom", 26000))) // 40k - 14k (from send)
 	checkAccount(t, ctx, accKeeper, bankKeeper, escrowAddr, sdk.Coins{})                                     // emptied reserved
 	checkAccount(t, ctx, accKeeper, bankKeeper, bob, sdk.NewCoins(sdk.NewInt64Coin("denom", 39000)))         // all escrow of 25k + 14k
-
 }
 
 func TestReflectCustomMsg(t *testing.T) {
@@ -177,7 +176,7 @@ func TestReflectCustomMsg(t *testing.T) {
 	_, _, fred := keyPubAddr()
 
 	// upload code
-	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
+	reflectCode, err := os.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
 	codeID, err := keeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
@@ -185,7 +184,7 @@ func TestReflectCustomMsg(t *testing.T) {
 
 	// creator instantiates a contract and gives it tokens
 	contractStart := sdk.NewCoins(sdk.NewInt64Coin("denom", 40000))
-	contractAddr, _, err := keeper.Instantiate(ctx, codeID, creator, "", []byte("{}"), "reflect contract 1", contractStart)
+	contractAddr, _, err := keeper.Instantiate(ctx, codeID, creator, nil, []byte("{}"), "reflect contract 1", contractStart)
 	require.NoError(t, err)
 	require.NotEmpty(t, contractAddr)
 
@@ -268,7 +267,7 @@ func TestMaskReflectCustomQuery(t *testing.T) {
 	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
 
 	// upload code
-	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
+	reflectCode, err := os.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
 	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
@@ -276,7 +275,7 @@ func TestMaskReflectCustomQuery(t *testing.T) {
 
 	// creator instantiates a contract and gives it tokens
 	contractStart := sdk.NewCoins(sdk.NewInt64Coin("denom", 40000))
-	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, "", []byte("{}"), "reflect contract 1", contractStart)
+	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, nil, []byte("{}"), "reflect contract 1", contractStart)
 	require.NoError(t, err)
 	require.NotEmpty(t, contractAddr)
 
@@ -320,14 +319,14 @@ func TestReflectStargateQuery(t *testing.T) {
 	creator := keepers.Faucet.NewFundedAccount(ctx, funds...)
 
 	// upload code
-	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
+	reflectCode, err := os.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
 	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), codeID)
 
 	// creator instantiates a contract and gives it tokens
-	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, "", []byte("{}"), "reflect contract 1", contractStart)
+	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, nil, []byte("{}"), "reflect contract 1", contractStart)
 	require.NoError(t, err)
 	require.NotEmpty(t, contractAddr)
 
@@ -364,14 +363,14 @@ func TestReflectInvalidStargateQuery(t *testing.T) {
 	creator := keepers.Faucet.NewFundedAccount(ctx, funds...)
 
 	// upload code
-	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
+	reflectCode, err := os.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
 	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), codeID)
 
 	// creator instantiates a contract and gives it tokens
-	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, sdk.AccAddress(""), []byte("{}"), "reflect contract 1", contractStart)
+	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, nil, []byte("{}"), "reflect contract 1", contractStart)
 	require.NoError(t, err)
 	require.NotEmpty(t, contractAddr)
 
@@ -444,7 +443,7 @@ func TestMaskReflectWasmQueries(t *testing.T) {
 	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
 
 	// upload reflect code
-	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
+	reflectCode, err := os.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
 	reflectID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
@@ -452,7 +451,7 @@ func TestMaskReflectWasmQueries(t *testing.T) {
 
 	// creator instantiates a contract and gives it tokens
 	reflectStart := sdk.NewCoins(sdk.NewInt64Coin("denom", 40000))
-	reflectAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, reflectID, creator, "", []byte("{}"), "reflect contract 2", reflectStart)
+	reflectAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, reflectID, creator, nil, []byte("{}"), "reflect contract 2", reflectStart)
 	require.NoError(t, err)
 	require.NotEmpty(t, reflectAddr)
 
@@ -516,7 +515,7 @@ func TestWasmRawQueryWithNil(t *testing.T) {
 	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
 
 	// upload reflect code
-	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
+	reflectCode, err := os.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
 	reflectID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
@@ -524,7 +523,7 @@ func TestWasmRawQueryWithNil(t *testing.T) {
 
 	// creator instantiates a contract and gives it tokens
 	reflectStart := sdk.NewCoins(sdk.NewInt64Coin("denom", 40000))
-	reflectAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, reflectID, creator, "", []byte("{}"), "reflect contract 2", reflectStart)
+	reflectAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, reflectID, creator, nil, []byte("{}"), "reflect contract 2", reflectStart)
 	require.NoError(t, err)
 	require.NotEmpty(t, reflectAddr)
 

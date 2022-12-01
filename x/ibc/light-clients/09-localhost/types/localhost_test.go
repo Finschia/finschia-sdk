@@ -3,12 +3,12 @@ package types_test
 import (
 	"testing"
 
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )

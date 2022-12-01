@@ -1,17 +1,14 @@
 package types
 
 import (
-	"encoding/json"
 	"fmt"
 	"reflect"
 
-	"github.com/gogo/protobuf/jsonpb"
 	"github.com/gogo/protobuf/proto"
-	wasmvmtypes "github.com/line/wasmvm/types"
-
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 const (
@@ -25,44 +22,6 @@ const (
 	SDKAddrLen = 20
 )
 
-var AllContractStatus = []ContractStatus{
-	ContractStatusInactive,
-	ContractStatusActive,
-}
-
-func (c ContractStatus) String() string {
-	switch c {
-	case ContractStatusActive:
-		return "Active"
-	case ContractStatusInactive:
-		return "Inactive"
-	}
-	return "Unspecified"
-}
-
-func (c *ContractStatus) UnmarshalText(text []byte) error {
-	for _, v := range AllContractStatus {
-		if v.String() == string(text) {
-			*c = v
-			return nil
-		}
-	}
-	*c = ContractStatusUnspecified
-	return nil
-}
-
-func (c ContractStatus) MarshalText() ([]byte, error) {
-	return []byte(c.String()), nil
-}
-
-func (c *ContractStatus) MarshalJSONPB(_ *jsonpb.Marshaler) ([]byte, error) {
-	return json.Marshal(c)
-}
-
-func (c *ContractStatus) UnmarshalJSONPB(_ *jsonpb.Unmarshaler, data []byte) error {
-	return json.Unmarshal(data, c)
-}
-
 func (m Model) ValidateBasic() error {
 	if len(m.Key) == 0 {
 		return sdkerrors.Wrap(ErrEmpty, "key")
@@ -74,7 +33,7 @@ func (c CodeInfo) ValidateBasic() error {
 	if len(c.CodeHash) == 0 {
 		return sdkerrors.Wrap(ErrEmpty, "code hash")
 	}
-	if err := sdk.ValidateAccAddress(c.Creator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(c.Creator); err != nil {
 		return sdkerrors.Wrap(err, "creator")
 	}
 	if err := c.InstantiateConfig.ValidateBasic(); err != nil {
@@ -95,7 +54,7 @@ func NewCodeInfo(codeHash []byte, creator sdk.AccAddress, instantiatePermission 
 var AllCodeHistoryTypes = []ContractCodeHistoryOperationType{ContractCodeHistoryOperationTypeGenesis, ContractCodeHistoryOperationTypeInit, ContractCodeHistoryOperationTypeMigrate}
 
 // NewContractInfo creates a new instance of a given WASM contract info
-func NewContractInfo(codeID uint64, creator, admin sdk.AccAddress, label string, createdAt *AbsoluteTxPosition, status ContractStatus) ContractInfo {
+func NewContractInfo(codeID uint64, creator, admin sdk.AccAddress, label string, createdAt *AbsoluteTxPosition) ContractInfo {
 	var adminAddr string
 	if !admin.Empty() {
 		adminAddr = admin.String()
@@ -106,7 +65,6 @@ func NewContractInfo(codeID uint64, creator, admin sdk.AccAddress, label string,
 		Admin:   adminAddr,
 		Label:   label,
 		Created: createdAt,
-		Status:  status,
 	}
 }
 
@@ -122,26 +80,16 @@ func (c *ContractInfo) ValidateBasic() error {
 	if c.CodeID == 0 {
 		return sdkerrors.Wrap(ErrEmpty, "code id")
 	}
-	if err := sdk.ValidateAccAddress(c.Creator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(c.Creator); err != nil {
 		return sdkerrors.Wrap(err, "creator")
 	}
 	if len(c.Admin) != 0 {
-		if err := sdk.ValidateAccAddress(c.Admin); err != nil {
+		if _, err := sdk.AccAddressFromBech32(c.Admin); err != nil {
 			return sdkerrors.Wrap(err, "admin")
 		}
 	}
 	if err := validateLabel(c.Label); err != nil {
 		return sdkerrors.Wrap(err, "label")
-	}
-	found := false
-	for _, v := range AllContractStatus {
-		if c.Status == v {
-			found = true
-			break
-		}
-	}
-	if !found || c.Status == ContractStatusUnspecified {
-		return sdkerrors.Wrap(ErrInvalidMsg, "invalid status")
 	}
 	if c.Extension == nil {
 		return nil
@@ -235,9 +183,12 @@ func (c *ContractInfo) ResetFromGenesis(ctx sdk.Context) ContractCodeHistoryEntr
 // AdminAddr convert into sdk.AccAddress or nil when not set
 func (c *ContractInfo) AdminAddr() sdk.AccAddress {
 	if c.Admin == "" {
-		return ""
+		return nil
 	}
-	admin := sdk.AccAddress(c.Admin)
+	admin, err := sdk.AccAddressFromBech32(c.Admin)
+	if err != nil { // should never happen
+		panic(err.Error())
+	}
 	return admin
 }
 

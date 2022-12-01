@@ -2,14 +2,12 @@ package cachekv_test
 
 import (
 	"fmt"
-	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
 	ostrand "github.com/line/ostracon/libs/rand"
-	tmdb "github.com/line/tm-db/v2"
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/lbm-sdk/store/dbadapter"
@@ -17,7 +15,7 @@ import (
 )
 
 func newCacheKVStore() types.CacheKVStore {
-	mem := dbadapter.Store{DB: memdb.NewDB()}
+	mem := dbadapter.Store{DB: dbm.NewMemDB()}
 	return cachekv.NewStore(mem)
 }
 
@@ -25,7 +23,7 @@ func keyFmt(i int) []byte { return bz(fmt.Sprintf("key%0.8d", i)) }
 func valFmt(i int) []byte { return bz(fmt.Sprintf("value%0.8d", i)) }
 
 func TestCacheKVStore(t *testing.T) {
-	mem := dbadapter.Store{DB: memdb.NewDB()}
+	mem := dbadapter.Store{DB: dbm.NewMemDB()}
 	st := cachekv.NewStore(mem)
 
 	require.Empty(t, st.Get(keyFmt(1)), "Expected `key1` to be empty")
@@ -33,7 +31,6 @@ func TestCacheKVStore(t *testing.T) {
 	// put something in mem and in cache
 	mem.Set(keyFmt(1), valFmt(1))
 	st.Set(keyFmt(1), valFmt(1))
-	st.Prefetch(keyFmt(1), false)
 	require.Equal(t, valFmt(1), st.Get(keyFmt(1)))
 
 	// update it in cache, shoudn't change mem
@@ -69,7 +66,7 @@ func TestCacheKVStore(t *testing.T) {
 }
 
 func TestCacheKVStoreNoNilSet(t *testing.T) {
-	mem := dbadapter.Store{DB: memdb.NewDB()}
+	mem := dbadapter.Store{DB: dbm.NewMemDB()}
 	st := cachekv.NewStore(mem)
 	require.Panics(t, func() { st.Set([]byte("key"), nil) }, "setting a nil value should panic")
 	require.Panics(t, func() { st.Set(nil, []byte("value")) }, "setting a nil key should panic")
@@ -77,7 +74,7 @@ func TestCacheKVStoreNoNilSet(t *testing.T) {
 }
 
 func TestCacheKVStoreNested(t *testing.T) {
-	mem := dbadapter.Store{DB: memdb.NewDB()}
+	mem := dbadapter.Store{DB: dbm.NewMemDB()}
 	st := cachekv.NewStore(mem)
 
 	// set. check its there on st and not on mem.
@@ -116,7 +113,7 @@ func TestCacheKVIteratorBounds(t *testing.T) {
 
 	// iterate over all of them
 	itr := st.Iterator(nil, nil)
-	var i = 0
+	i := 0
 	for ; itr.Valid(); itr.Next() {
 		k, v := itr.Key(), itr.Value()
 		require.Equal(t, keyFmt(i), k)
@@ -232,7 +229,7 @@ func TestCacheKVMergeIteratorDeleteLast(t *testing.T) {
 
 func TestCacheKVMergeIteratorDeletes(t *testing.T) {
 	st := newCacheKVStore()
-	truth := memdb.NewDB()
+	truth := dbm.NewMemDB()
 
 	// set some items and write them
 	nItems := 10
@@ -249,7 +246,7 @@ func TestCacheKVMergeIteratorDeletes(t *testing.T) {
 
 	// reset
 	st = newCacheKVStore()
-	truth = memdb.NewDB()
+	truth = dbm.NewMemDB()
 
 	// set some items and write them
 	for i := 0; i < nItems; i++ {
@@ -268,7 +265,7 @@ func TestCacheKVMergeIteratorChunks(t *testing.T) {
 	st := newCacheKVStore()
 
 	// Use the truth to check values on the merge iterator
-	truth := memdb.NewDB()
+	truth := dbm.NewMemDB()
 
 	// sets to the parent
 	setRange(t, st, truth, 0, 20)
@@ -297,7 +294,7 @@ func TestCacheKVMergeIteratorChunks(t *testing.T) {
 
 func TestCacheKVMergeIteratorRandom(t *testing.T) {
 	st := newCacheKVStore()
-	truth := memdb.NewDB()
+	truth := dbm.NewMemDB()
 
 	start, end := 25, 975
 	max := 1000
@@ -307,39 +304,6 @@ func TestCacheKVMergeIteratorRandom(t *testing.T) {
 	for i := 0; i < 2000; i++ {
 		doRandomOp(t, st, truth, max)
 		assertIterateDomainCompare(t, st, truth)
-	}
-}
-
-// Set, Delete and Write for the same key must be called sequentially.
-func TestCacheKVConcurrency(t *testing.T) {
-	const NumOps = 2000
-
-	st := newCacheKVStore()
-
-	wg := &sync.WaitGroup{}
-	wg.Add(NumOps * 3)
-	for i := 0; i < NumOps; i++ {
-		i := i
-		go func() {
-			st.Set([]byte(fmt.Sprintf("key%d", i)), []byte(fmt.Sprintf("value%d", i)))
-			st.Write()
-			wg.Done()
-		}()
-		go func() {
-			st.Get([]byte(fmt.Sprintf("key%d", i)))
-			wg.Done()
-		}()
-		go func() {
-			iter := st.Iterator([]byte("key0"), []byte(fmt.Sprintf("key%d", NumOps)))
-			for ; iter.Valid(); iter.Next() {
-			}
-			wg.Done()
-		}()
-	}
-	wg.Wait()
-
-	for i := 0; i < NumOps; i++ {
-		require.Equal(t, []byte(fmt.Sprintf("value%d", i)), st.Get([]byte(fmt.Sprintf("key%d", i))))
 	}
 }
 
@@ -361,7 +325,7 @@ func randInt(n int) int {
 }
 
 // useful for replaying a error case if we find one
-func doOp(t *testing.T, st types.CacheKVStore, truth tmdb.DB, op int, args ...int) {
+func doOp(t *testing.T, st types.CacheKVStore, truth dbm.DB, op int, args ...int) {
 	switch op {
 	case opSet:
 		k := args[0]
@@ -386,7 +350,7 @@ func doOp(t *testing.T, st types.CacheKVStore, truth tmdb.DB, op int, args ...in
 	}
 }
 
-func doRandomOp(t *testing.T, st types.CacheKVStore, truth tmdb.DB, maxKey int) {
+func doRandomOp(t *testing.T, st types.CacheKVStore, truth dbm.DB, maxKey int) {
 	r := randInt(totalOps)
 	switch r {
 	case opSet:
@@ -417,7 +381,7 @@ func doRandomOp(t *testing.T, st types.CacheKVStore, truth tmdb.DB, maxKey int) 
 // iterate over whole domain
 func assertIterateDomain(t *testing.T, st types.KVStore, expectedN int) {
 	itr := st.Iterator(nil, nil)
-	var i = 0
+	i := 0
 	for ; itr.Valid(); itr.Next() {
 		k, v := itr.Key(), itr.Value()
 		require.Equal(t, keyFmt(i), k)
@@ -427,7 +391,7 @@ func assertIterateDomain(t *testing.T, st types.KVStore, expectedN int) {
 	require.Equal(t, expectedN, i)
 }
 
-func assertIterateDomainCheck(t *testing.T, st types.KVStore, mem tmdb.DB, r []keyRange) {
+func assertIterateDomainCheck(t *testing.T, st types.KVStore, mem dbm.DB, r []keyRange) {
 	// iterate over each and check they match the other
 	itr := st.Iterator(nil, nil)
 	itr2, err := mem.Iterator(nil, nil) // ground truth
@@ -458,7 +422,7 @@ func assertIterateDomainCheck(t *testing.T, st types.KVStore, mem tmdb.DB, r []k
 	require.False(t, itr2.Valid())
 }
 
-func assertIterateDomainCompare(t *testing.T, st types.KVStore, mem tmdb.DB) {
+func assertIterateDomainCompare(t *testing.T, st types.KVStore, mem dbm.DB) {
 	// iterate over each and check they match the other
 	itr := st.Iterator(nil, nil)
 	itr2, err := mem.Iterator(nil, nil) // ground truth
@@ -482,7 +446,7 @@ func checkIterators(t *testing.T, itr, itr2 types.Iterator) {
 
 //--------------------------------------------------------
 
-func setRange(t *testing.T, st types.KVStore, mem tmdb.DB, start, end int) {
+func setRange(t *testing.T, st types.KVStore, mem dbm.DB, start, end int) {
 	for i := start; i < end; i++ {
 		st.Set(keyFmt(i), valFmt(i))
 		err := mem.Set(keyFmt(i), valFmt(i))
@@ -490,7 +454,7 @@ func setRange(t *testing.T, st types.KVStore, mem tmdb.DB, start, end int) {
 	}
 }
 
-func deleteRange(t *testing.T, st types.KVStore, mem tmdb.DB, start, end int) {
+func deleteRange(t *testing.T, st types.KVStore, mem dbm.DB, start, end int) {
 	for i := start; i < end; i++ {
 		st.Delete(keyFmt(i))
 		err := mem.Delete(keyFmt(i))

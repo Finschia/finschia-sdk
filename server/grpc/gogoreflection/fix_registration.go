@@ -6,11 +6,9 @@ import (
 	"fmt"
 	"reflect"
 
+	_ "github.com/confio/ics23/go"         //nolint: staticcheck     // TODO(dudong2): after separating ibc module from lbm-sdk, remove this
 	_ "github.com/gogo/protobuf/gogoproto" // required so it does register the gogoproto file descriptor
 	gogoproto "github.com/gogo/protobuf/proto"
-
-	// nolint: staticcheck
-	_ "github.com/confio/ics23/go"     // TODO(dudong2): after separating ibc module from lbm-sdk, remove this
 	"github.com/golang/protobuf/proto" // nolint: staticcheck
 	dpb "github.com/golang/protobuf/protoc-gen-go/descriptor"
 	_ "github.com/regen-network/cosmos-proto" // look above
@@ -19,7 +17,6 @@ import (
 var importsToFix = map[string]string{
 	"gogo.proto":   "gogoproto/gogo.proto",
 	"cosmos.proto": "cosmos_proto/cosmos.proto",
-	"proofs.proto": "confio/proofs.proto", // TODO(dudong2): after separating ibc module from lbm-sdk, remove this
 }
 
 // fixRegistration is required because certain files register themselves in a way
@@ -88,7 +85,7 @@ func getFileDescriptor(filePath string) []byte {
 	if len(fd) != 0 {
 		return fd
 	}
-	// nolint: staticcheck
+	//nolint: staticcheck
 	return proto.FileDescriptor(filePath)
 }
 
@@ -97,7 +94,7 @@ func getMessageType(name string) reflect.Type {
 	if typ != nil {
 		return typ
 	}
-	// nolint: staticcheck
+	//nolint: staticcheck
 	return proto.MessageType(name)
 }
 
@@ -109,7 +106,7 @@ func getExtension(extID int32, m proto.Message) *gogoproto.ExtensionDesc {
 		}
 	}
 	// check into proto registry
-	// nolint: staticcheck
+	//nolint: staticcheck
 	for id, desc := range proto.RegisteredExtensions(m) {
 		if id == extID {
 			return &gogoproto.ExtensionDesc{
@@ -135,7 +132,7 @@ func getExtensionsNumbers(m proto.Message) []int32 {
 	if len(out) != 0 {
 		return out
 	}
-	// nolint: staticcheck
+	//nolint: staticcheck
 	protoExts := proto.RegisteredExtensions(m)
 	out = make([]int32, 0, len(protoExts))
 	for id := range protoExts {

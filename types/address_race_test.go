@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -24,7 +24,7 @@ func addressStringCaller(require *require.Assertions, prefix byte, max uint32, c
 			return
 		default:
 			binary.BigEndian.PutUint32(bz[1:], i)
-			str := sdk.BytesToAccAddress(bz).String()
+			str := types.AccAddress(bz).String()
 			require.True(str != "")
 		}
 

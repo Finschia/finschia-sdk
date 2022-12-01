@@ -12,6 +12,8 @@ MOCKS_DIR = $(CURDIR)/tests/mocks
 HTTPS_GIT := https://github.com/line/lbm-sdk.git
 DOCKER := $(shell which docker)
 DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bufbuild/buf
+CGO_ENABLED ?= 1
+ARCH ?= x86_64
 
 export GO111MODULE = on
 
@@ -66,6 +68,15 @@ else
   endif
 endif
 
+# VRF library selection
+ifeq (libsodium,$(findstring libsodium,$(LBM_BUILD_OPTIONS)))
+  CGO_ENABLED=1
+  BUILD_TAGS += gcc libsodium
+  LIBSODIUM_TARGET = libsodium
+  CGO_CFLAGS += "-I$(LIBSODIUM_OS)/include"
+  CGO_LDFLAGS += "-L$(LIBSODIUM_OS)/lib -lsodium"
+endif
+
 # secp256k1 implementation selection
 ifeq (libsecp256k1,$(findstring libsecp256k1,$(LBM_BUILD_OPTIONS)))
   CGO_ENABLED=1
@@ -113,46 +124,28 @@ include contrib/devtools/Makefile
 BUILD_TARGETS := build install
 
 build: BUILD_ARGS=-o $(BUILDDIR)/
-build-linux:
-	GOOS=linux GOARCH=amd64 LEDGER_ENABLED=false $(MAKE) build
 
-$(BUILD_TARGETS): go.sum $(BUILDDIR)/
-	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
+build-docker: go.sum $(BUILDDIR)/
+	docker build -t simapp:latest . --platform="linux/amd64" --build-arg ARCH=$(ARCH)
+
+# todo: should be fix
+build-linux:
+	GOOS=linux GOARCH=$(if $(findstring aarch64,$(shell uname -m)) || $(findstring arm64,$(shell uname -m)),arm64,amd64) LEDGER_ENABLED=false $(MAKE) build
+
+$(BUILD_TARGETS): go.sum $(BUILDDIR)/ $(LIBSODIUM_TARGET)
+	CGO_CFLAGS=$(CGO_CFLAGS) CGO_LDFLAGS=$(CGO_LDFLAGS) CGO_ENABLED=$(CGO_ENABLED) go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
 
-build-simd-all: go.sum
-	$(DOCKER) rm latest-build || true
-	$(DOCKER) run --volume=$(CURDIR):/sources:ro \
-        --env TARGET_PLATFORMS='linux/amd64 darwin/amd64 linux/arm64 windows/amd64' \
-        --env APP=simd \
-        --env VERSION=$(VERSION) \
-        --env COMMIT=$(COMMIT) \
-        --env LEDGER_ENABLED=$(LEDGER_ENABLED) \
-        --name latest-build cosmossdk/rbuilder:latest
-	$(DOCKER) cp -a latest-build:/home/builder/artifacts/ $(CURDIR)/
-
-build-simd-linux: go.sum $(BUILDDIR)/
-	$(DOCKER) rm latest-build || true
-	$(DOCKER) run --volume=$(CURDIR):/sources:ro \
-        --env TARGET_PLATFORMS='linux/amd64' \
-        --env APP=simd \
-        --env VERSION=$(VERSION) \
-        --env COMMIT=$(COMMIT) \
-        --env LEDGER_ENABLED=false \
-        --name latest-build cosmossdk/rbuilder:latest
-	$(DOCKER) cp -a latest-build:/home/builder/artifacts/ $(CURDIR)/
-	cp artifacts/simd-*-linux-amd64 $(BUILDDIR)/simd
-
 cosmovisor:
-	$(MAKE) -C cosmovisor cosmovisor
+	$(MAKE) -C tools/cosmovisor test
 
-.PHONY: build build-linux build-simd-all build-simd-linux cosmovisor
+.PHONY: build build-linux cosmovisor
 
 mocks: $(MOCKS_DIR)
 	mockgen -source=client/account_retriever.go -package mocks -destination tests/mocks/account_retriever.go
-	mockgen -package mocks -destination tests/mocks/tendermint_tm_db_DB.go github.com/line/tm-db/v2 DB
+	mockgen -package mocks -destination tests/mocks/tendermint_tm_db_DB.go github.com/tendermint/tm-db DB
 	mockgen -source=types/module/module.go -package mocks -destination tests/mocks/types_module_module.go
 	mockgen -source=types/invariant.go -package mocks -destination tests/mocks/types_invariant.go
 	mockgen -source=types/router.go -package mocks -destination tests/mocks/types_router.go
@@ -372,9 +365,8 @@ lint-fix:
 .PHONY: lint lint-fix
 
 format:
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs gofmt -w -s
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs misspell -w
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name '*.pb.go' | xargs goimports -w -local github.com/line/lbm-sdk
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/docs/statik/statik.go" -not -path "./tests/mocks/*" -not -name "*.pb.go" -not -name "*.pb.gw.go" -not -name "*.pulsar.go" -not -path "./crypto/keys/secp256k1/*" | xargs gofumpt -w -l
+	golangci-lint run --fix
 .PHONY: format
 
 ###############################################################################
@@ -409,7 +401,7 @@ devdoc-update:
 # easyjson must be used for types that are not registered in amino by RegisterConcrete.
 easyjson-gen:
 	@echo "Generating easyjson files"
-	go get github.com/mailru/easyjson@v0.7.7
+	go install github.com/mailru/easyjson@v0.7.7
 	easyjson ./types/result.go
 
 ###############################################################################
@@ -426,8 +418,9 @@ proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
 	@echo "Generating Protobuf files"
-	@if $(DOCKER) ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then $(DOCKER) start -a $(containerProtoGen); else $(DOCKER) run --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
-			sh ./scripts/protocgen.sh; fi
+	@if docker ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then docker start -a $(containerProtoGen); else docker run --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
+		sh ./scripts/protocgen.sh; fi
+	@go mod tidy
 
 # This generates the SDK's custom wrapper for google.protobuf.Any. It should only be run manually when needed
 proto-gen-any:
@@ -452,7 +445,7 @@ proto-lint:
 proto-check-breaking:
 	@$(DOCKER_BUF) breaking --against $(HTTPS_GIT)#branch=main
 
-TM_URL              = https://raw.githubusercontent.com/tendermint/tendermint/v0.34.0-rc6/proto/tendermint
+TM_URL              = https://raw.githubusercontent.com/tendermint/tendermint/v0.34.22/proto/tendermint
 GOGO_PROTO_URL      = https://raw.githubusercontent.com/regen-network/protobuf/cosmos
 COSMOS_PROTO_URL    = https://raw.githubusercontent.com/regen-network/cosmos-proto/master
 CONFIO_URL          = https://raw.githubusercontent.com/confio/ics23/v0.6.3
@@ -514,14 +507,64 @@ proto-update-deps:
 ###                                Localnet                                 ###
 ###############################################################################
 
-# Run a 4-node testnet locally
-localnet-start: build-linux localnet-stop
-	$(if $(shell $(DOCKER) inspect -f '{{ .Id }}' cosmossdk/simd-env 2>/dev/null),$(info found image cosmossdk/simd-env),$(MAKE) -C contrib/images simd-env)
-	$(DOCKER) run --rm -v $(CURDIR)/localnet:/data cosmossdk/simd-env \
-		testnet init-files --v 4 -o /data --starting-ip-address 192.168.10.2 --keyring-backend=test
+localnet-build-env:
+	$(MAKE) -C contrib/images simd-env
+
+localnet-build-dlv:
+	$(MAKE) -C contrib/images simd-dlv
+
+localnet-build-nodes:
+	$(DOCKER) run --rm -v $(CURDIR)/.testnets:/data cosmossdk/simd \
+			  testnet init-files --v 4 -o /data --starting-ip-address 192.168.10.2 --keyring-backend=test
 	docker-compose up -d
 
 localnet-stop:
 	docker-compose down
 
-.PHONY: localnet-start localnet-stop
+# localnet-start will run a 4-node testnet locally. The nodes are
+# based off the docker images in: ./contrib/images/simd-env
+localnet-start: localnet-stop localnet-build-env localnet-build-nodes
+
+# localnet-debug will run a 4-node testnet locally in debug mode
+# you can read more about the debug mode here: ./contrib/images/simd-dlv/README.md
+localnet-debug: localnet-stop localnet-build-dlv localnet-build-nodes
+
+.PHONY: localnet-start localnet-stop localnet-debug localnet-build-env \
+localnet-build-dlv localnet-build-nodes
+
+###############################################################################
+###                                rosetta                                  ###
+###############################################################################
+
+rosetta-data:
+	-docker container rm data_dir_build
+	docker build -t rosetta-ci:latest -f contrib/rosetta/node/Dockerfile .
+	docker run --name data_dir_build -t rosetta-ci:latest sh /rosetta/data.sh
+	docker cp data_dir_build:/tmp/data.tar.gz "$(CURDIR)/contrib/rosetta/node/data.tar.gz"
+	docker container rm data_dir_build
+
+.PHONY: rosetta-data
+
+###############################################################################
+###                                  tools                                  ###
+###############################################################################
+
+VRF_ROOT = $(shell pwd)/tools
+LIBSODIUM_ROOT = $(VRF_ROOT)/libsodium
+LIBSODIUM_OS = $(VRF_ROOT)/sodium/$(shell go env GOOS)_$(shell go env GOARCH)
+ifneq ($(TARGET_HOST), "")
+LIBSODIUM_HOST = "--host=$(TARGET_HOST)"
+endif
+
+libsodium:
+	@if [ ! -f $(LIBSODIUM_OS)/lib/libsodium.a ]; then \
+		rm -rf $(LIBSODIUM_ROOT) && \
+		mkdir $(LIBSODIUM_ROOT) && \
+		git submodule update --init --recursive && \
+		cd $(LIBSODIUM_ROOT) && \
+		./autogen.sh && \
+		./configure --disable-shared --prefix="$(LIBSODIUM_OS)" $(LIBSODIUM_HOST) && \
+		$(MAKE) && \
+		$(MAKE) install; \
+	fi
+.PHONY: libsodium

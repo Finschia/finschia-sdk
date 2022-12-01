@@ -5,6 +5,7 @@ import (
 	"sort"
 
 	codectypes "github.com/line/lbm-sdk/codec/types"
+
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )

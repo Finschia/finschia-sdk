@@ -22,7 +22,7 @@ minimum-gas-prices = "{{ .BaseConfig.MinGasPrices }}"
 
 # default: the last 100 states are kept in addition to every 500th state; pruning at 10 block intervals
 # nothing: all historic states will be saved, nothing will be deleted (i.e. archiving node)
-# everything: all saved states will be deleted, storing only the current state; pruning at 10 block intervals
+# everything: all saved states will be deleted, storing only the current and previous state; pruning at 10 block intervals
 # custom: allow pruning options to be manually specified through 'pruning-keep-recent', 'pruning-keep-every', and 'pruning-interval'
 pruning = "{{ .BaseConfig.Pruning }}"
 
@@ -66,11 +66,14 @@ inter-block-cache = {{ .BaseConfig.InterBlockCache }}
 # InterBlockCacheSize is the maximum bytes size of the inter-block cache.
 inter-block-cache-size = {{ .BaseConfig.InterBlockCacheSize }}
 
-# IAVLCacheSize is the maximum bytes size of iavl node cache
+# IAVLCacheSize is the maximum units size of iavl node cache (1 unit is 128 bytes)
+# This iavl cache size is just one store cache size, and the store exists for each modules.
+# So be careful that all iavl cache size are difference from this iavl cache size value.
 iavl-cache-size = {{ .BaseConfig.IAVLCacheSize }}
 
-# Bech32CacheSize is the maximum bytes size of bech32 cache (Default : 1GB)
-bech32-cache-size = {{ .BaseConfig.Bech32CacheSize }}
+# IAVLDisableFastNode enables or disables the fast node feature of IAVL. 
+# Default is true.
+iavl-disable-fastnode = {{ .BaseConfig.IAVLDisableFastNode }}
 
 # IndexEvents defines the set of events in the form {eventType}.{attributeKey},
 # which informs Tendermint what to index. If empty, all events will be indexed.
@@ -82,6 +85,10 @@ index-events = {{ .BaseConfig.IndexEvents }}
 # When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
 # It works when tendermint's prometheus option (config.toml) is set to true.
 prometheus = {{ .BaseConfig.Prometheus }}
+
+# ChanCheckTxSize is the size of RequestCheckTxAsync of BaseApp.
+# ChanCheckTxSize should be equals to or greater than the mempool size set in config.toml of Ostracon.
+chan-check-tx-size = {{ .BaseConfig.ChanCheckTxSize }}
 
 ###############################################################################
 ###                         Telemetry Configuration                         ###

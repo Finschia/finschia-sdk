@@ -17,12 +17,12 @@ import (
 	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	ostcfg "github.com/line/ostracon/config"
 	ostlog "github.com/line/ostracon/libs/log"
-	tmdb "github.com/line/tm-db/v2"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/server/config"
@@ -120,8 +120,12 @@ func InterceptConfigsPreRunHandler(cmd *cobra.Command, customAppConfigTemplate s
 	basename := path.Base(executableName)
 
 	// Configure the viper instance
-	serverCtx.Viper.BindPFlags(cmd.Flags())
-	serverCtx.Viper.BindPFlags(cmd.PersistentFlags())
+	if err = serverCtx.Viper.BindPFlags(cmd.Flags()); err != nil {
+		return err
+	}
+	if err = serverCtx.Viper.BindPFlags(cmd.PersistentFlags()); err != nil {
+		return err
+	}
 	serverCtx.Viper.SetEnvPrefix(basename)
 	serverCtx.Viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
 	serverCtx.Viper.AutomaticEnv()
@@ -282,6 +286,7 @@ func AddCommands(rootCmd *cobra.Command, defaultNodeHome string, appCreator type
 		ostcmd.ResetAllCmd,
 		ostcmd.ResetStateCmd,
 	)
+
 	startCmd := StartCmd(appCreator, defaultNodeHome)
 	addStartFlags(startCmd)
 
@@ -290,6 +295,7 @@ func AddCommands(rootCmd *cobra.Command, defaultNodeHome string, appCreator type
 		ostraconCmd,
 		ExportCmd(appExport, defaultNodeHome),
 		version.NewVersionCommand(),
+		NewRollbackCmd(appCreator, defaultNodeHome),
 	)
 }
 
@@ -381,7 +387,7 @@ func addrToIP(addr net.Addr) net.IP {
 	return ip
 }
 
-func openDB(rootDir string) (tmdb.DB, error) {
+func openDB(rootDir string) (dbm.DB, error) {
 	dataDir := filepath.Join(rootDir, "data")
 	return sdk.NewLevelDB("application", dataDir)
 }
@@ -393,6 +399,6 @@ func openTraceWriter(traceWriterFile string) (w io.Writer, err error) {
 	return os.OpenFile(
 		traceWriterFile,
 		os.O_WRONLY|os.O_APPEND|os.O_CREATE,
-		0666,
+		0o666,
 	)
 }

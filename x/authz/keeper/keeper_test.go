@@ -61,7 +61,7 @@ func (s *TestSuite) TestKeeper() {
 	s.T().Log("verify if expired authorization is rejected")
 	x := &banktypes.SendAuthorization{SpendLimit: newCoins}
 	err := app.AuthzKeeper.SaveGrant(ctx, granterAddr, granteeAddr, x, now.Add(-1*time.Hour))
-	s.Require().NoError(err)
+	s.Require().Error(err)
 	authorization, _ = app.AuthzKeeper.GetCleanAuthorization(ctx, granteeAddr, granterAddr, bankSendAuthMsgType)
 	s.Require().Nil(authorization)
 
@@ -92,7 +92,6 @@ func (s *TestSuite) TestKeeper() {
 	s.Require().NoError(err)
 	authorization, _ = app.AuthzKeeper.GetCleanAuthorization(ctx, granteeAddr, granterAddr, bankSendAuthMsgType)
 	s.Require().Nil(authorization)
-
 }
 
 func (s *TestSuite) TestKeeperIter() {
@@ -105,14 +104,14 @@ func (s *TestSuite) TestKeeperIter() {
 	authorization, expiration := app.AuthzKeeper.GetCleanAuthorization(ctx, granteeAddr, granterAddr, "Abcd")
 	s.Require().Nil(authorization)
 	s.Require().Equal(time.Time{}, expiration)
-	now := s.ctx.BlockHeader().Time
+	now := s.ctx.BlockHeader().Time.Add(time.Second)
 	s.Require().NotNil(now)
 
 	newCoins := sdk.NewCoins(sdk.NewInt64Coin("steak", 100))
 	s.T().Log("verify if expired authorization is rejected")
 	x := &banktypes.SendAuthorization{SpendLimit: newCoins}
 	err := app.AuthzKeeper.SaveGrant(ctx, granteeAddr, granterAddr, x, now.Add(-1*time.Hour))
-	s.Require().NoError(err)
+	s.Require().Error(err)
 	authorization, _ = app.AuthzKeeper.GetCleanAuthorization(ctx, granteeAddr, granterAddr, "abcd")
 	s.Require().Nil(authorization)
 
@@ -121,7 +120,6 @@ func (s *TestSuite) TestKeeperIter() {
 		s.Require().Equal(grantee, granteeAddr)
 		return true
 	})
-
 }
 
 func (s *TestSuite) TestKeeperFees() {
@@ -131,8 +129,7 @@ func (s *TestSuite) TestKeeperFees() {
 	granteeAddr := addrs[1]
 	recipientAddr := addrs[2]
 	s.Require().NoError(simapp.FundAccount(app, s.ctx, granterAddr, sdk.NewCoins(sdk.NewInt64Coin("steak", 10000))))
-	now := s.ctx.BlockHeader().Time
-	s.Require().NotNil(now)
+	expiration := s.ctx.BlockHeader().Time.Add(1 * time.Second)
 
 	smallCoin := sdk.NewCoins(sdk.NewInt64Coin("steak", 20))
 	someCoin := sdk.NewCoins(sdk.NewInt64Coin("steak", 123))
@@ -157,7 +154,7 @@ func (s *TestSuite) TestKeeperFees() {
 
 	s.T().Log("verify dispatch executes with correct information")
 	// grant authorization
-	err = app.AuthzKeeper.SaveGrant(s.ctx, granteeAddr, granterAddr, &banktypes.SendAuthorization{SpendLimit: smallCoin}, now)
+	err = app.AuthzKeeper.SaveGrant(s.ctx, granteeAddr, granterAddr, &banktypes.SendAuthorization{SpendLimit: smallCoin}, expiration)
 	s.Require().NoError(err)
 	authorization, _ := app.AuthzKeeper.GetCleanAuthorization(s.ctx, granteeAddr, granterAddr, bankSendAuthMsgType)
 	s.Require().NotNil(authorization)
@@ -206,8 +203,7 @@ func (s *TestSuite) TestDispatchedEvents() {
 	granteeAddr := addrs[1]
 	recipientAddr := addrs[2]
 	require.NoError(simapp.FundAccount(app, s.ctx, granterAddr, sdk.NewCoins(sdk.NewInt64Coin("steak", 10000))))
-	now := s.ctx.BlockHeader().Time
-	require.NotNil(now)
+	expiration := s.ctx.BlockHeader().Time.Add(1 * time.Second) // must be in the future
 
 	smallCoin := sdk.NewCoins(sdk.NewInt64Coin("steak", 20))
 	msgs := authz.NewMsgExec(granteeAddr, []sdk.Msg{
@@ -219,7 +215,7 @@ func (s *TestSuite) TestDispatchedEvents() {
 	})
 
 	// grant authorization
-	err := app.AuthzKeeper.SaveGrant(s.ctx, granteeAddr, granterAddr, &banktypes.SendAuthorization{SpendLimit: smallCoin}, now)
+	err := app.AuthzKeeper.SaveGrant(s.ctx, granteeAddr, granterAddr, &banktypes.SendAuthorization{SpendLimit: smallCoin}, expiration)
 	require.NoError(err)
 	authorization, _ := app.AuthzKeeper.GetCleanAuthorization(s.ctx, granteeAddr, granterAddr, bankSendAuthMsgType)
 	require.NotNil(authorization)
@@ -231,9 +227,12 @@ func (s *TestSuite) TestDispatchedEvents() {
 	result, err := app.AuthzKeeper.DispatchActions(s.ctx, granteeAddr, executeMsgs)
 	require.NoError(err)
 	require.NotNil(result)
+
 	events := s.ctx.EventManager().Events()
+
 	// get last 5 events (events that occur *after* the grant)
 	events = events[len(events)-5:]
+
 	requiredEvents := map[string]bool{
 		"coin_spent":    false,
 		"coin_received": false,

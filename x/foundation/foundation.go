@@ -12,15 +12,6 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
-func DefaultDecisionPolicy(config Config) DecisionPolicy {
-	return &ThresholdDecisionPolicy{
-		Threshold: config.MinThreshold,
-		Windows: &DecisionPolicyWindows{
-			VotingPeriod: 24 * time.Hour,
-		},
-	}
-}
-
 func validateProposers(proposers []string) error {
 	if len(proposers) == 0 {
 		return sdkerrors.ErrInvalidRequest.Wrap("no proposers")
@@ -33,7 +24,7 @@ func validateProposers(proposers []string) error {
 		}
 		addrs[proposer] = true
 
-		if err := sdk.ValidateAccAddress(proposer); err != nil {
+		if _, err := sdk.AccAddressFromBech32(proposer); err != nil {
 			return sdkerrors.ErrInvalidAddress.Wrapf("invalid proposer address: %s", proposer)
 		}
 	}
@@ -66,24 +57,26 @@ func validateVoteOption(option VoteOption) error {
 	return nil
 }
 
-func validateMembers(members []Member) error {
-	addrs := map[string]bool{}
-	for _, member := range members {
-		if err := member.ValidateBasic(); err != nil {
-			return err
-		}
-		if addrs[member.Address] {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicated address: %s", member.Address)
-		}
-		addrs[member.Address] = true
+func (p Params) ValidateBasic() error {
+	if err := validateRatio(p.FoundationTax, "tax rate"); err != nil {
+		return err
 	}
 
 	return nil
 }
 
 func (m Member) ValidateBasic() error {
-	if err := sdk.ValidateAccAddress(m.Address); err != nil {
-		return err
+	if _, err := sdk.AccAddressFromBech32(m.Address); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid member address: %s", m.Address)
+	}
+
+	return nil
+}
+
+// ValidateBasic performs stateless validation on a member.
+func (m MemberRequest) ValidateBasic() error {
+	if _, err := sdk.AccAddressFromBech32(m.Address); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid member address: %s", m.Address)
 	}
 
 	return nil
@@ -106,7 +99,7 @@ type DecisionPolicy interface {
 	Allow(tallyResult TallyResult, totalPower sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error)
 
 	ValidateBasic() error
-	Validate(config Config) error
+	Validate(info FoundationInfo, config Config) error
 }
 
 // DefaultTallyResult returns a TallyResult with all counts set to 0.
@@ -136,7 +129,7 @@ func (t *TallyResult) Add(option VoteOption) error {
 	case VOTE_OPTION_NO_WITH_VETO:
 		t.NoWithVetoCount = t.NoWithVetoCount.Add(weight)
 	default:
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "unknown vote option %s", option.String())
+		return sdkerrors.ErrInvalidRequest.Wrapf("unknown vote option %s", option)
 	}
 
 	return nil
@@ -155,6 +148,22 @@ func (t TallyResult) TotalCounts() sdk.Dec {
 }
 
 var _ codectypes.UnpackInterfacesMessage = (*Proposal)(nil)
+
+func (p Proposal) ValidateBasic() error {
+	if p.Id == 0 {
+		return sdkerrors.ErrInvalidRequest.Wrap("id must be > 0")
+	}
+	if p.FoundationVersion == 0 {
+		return sdkerrors.ErrInvalidVersion.Wrap("foundation version must be > 0")
+	}
+	if err := validateProposers(p.Proposers); err != nil {
+		return err
+	}
+	if err := validateMsgs(p.GetMsgs()); err != nil {
+		return err
+	}
+	return nil
+}
 
 func (p *Proposal) GetMsgs() []sdk.Msg {
 	msgs, err := GetMsgs(p.Messages, "proposal")
@@ -225,8 +234,6 @@ func SetMsgs(msgs []sdk.Msg) ([]*codectypes.Any, error) {
 	return anys, nil
 }
 
-var _ DecisionPolicy = (*ThresholdDecisionPolicy)(nil)
-
 func validateDecisionPolicyWindows(windows DecisionPolicyWindows, config Config) error {
 	if windows.MinExecutionPeriod >= windows.VotingPeriod+config.MaxExecutionPeriod {
 		return sdkerrors.ErrInvalidRequest.Wrap("min_execution_period should be smaller than voting_period + max_execution_period")
@@ -241,6 +248,8 @@ func validateDecisionPolicyWindowsBasic(windows *DecisionPolicyWindows) error {
 
 	return nil
 }
+
+var _ DecisionPolicy = (*ThresholdDecisionPolicy)(nil)
 
 func (p ThresholdDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
 	if sinceSubmission < p.Windows.MinExecutionPeriod {
@@ -275,7 +284,7 @@ func (p ThresholdDecisionPolicy) GetVotingPeriod() time.Duration {
 }
 
 func (p ThresholdDecisionPolicy) ValidateBasic() error {
-	if !p.Threshold.IsPositive() {
+	if p.Threshold.IsNil() || !p.Threshold.IsPositive() {
 		return sdkerrors.ErrInvalidRequest.Wrap("threshold must be a positive number")
 	}
 
@@ -285,9 +294,9 @@ func (p ThresholdDecisionPolicy) ValidateBasic() error {
 	return nil
 }
 
-func (p ThresholdDecisionPolicy) Validate(config Config) error {
-	if p.Threshold.LT(config.MinThreshold) {
-		return sdkerrors.ErrInvalidRequest.Wrap("threshold must be greater than or equal to min_threshold")
+func (p ThresholdDecisionPolicy) Validate(info FoundationInfo, config Config) error {
+	if !info.TotalWeight.IsPositive() {
+		return sdkerrors.ErrInvalidRequest.Wrapf("total weight must be positive")
 	}
 
 	if err := validateDecisionPolicyWindows(*p.Windows, config); err != nil {
@@ -342,9 +351,11 @@ func (p PercentageDecisionPolicy) ValidateBasic() error {
 	return nil
 }
 
-func (p PercentageDecisionPolicy) Validate(config Config) error {
-	if p.Percentage.LT(config.MinPercentage) {
-		return sdkerrors.ErrInvalidRequest.Wrap("percentage must be greater than or equal to min_percentage")
+func (p PercentageDecisionPolicy) Validate(info FoundationInfo, config Config) error {
+	// total weight must be positive, because the admin is group policy
+	// (in x/group words)
+	if !info.TotalWeight.IsPositive() {
+		return sdkerrors.ErrInvalidRequest.Wrapf("total weight must be positive")
 	}
 
 	if err := validateDecisionPolicyWindows(*p.Windows, config); err != nil {
@@ -363,6 +374,24 @@ func validateRatio(ratio sdk.Dec, name string) error {
 		return sdkerrors.ErrInvalidRequest.Wrapf("%s must be >= 0 and <= 1", name)
 	}
 	return nil
+}
+
+var _ DecisionPolicy = (*OutsourcingDecisionPolicy)(nil)
+
+func (p OutsourcingDecisionPolicy) Allow(result TallyResult, totalWeight sdk.Dec, sinceSubmission time.Duration) (*DecisionPolicyResult, error) {
+	return nil, sdkerrors.ErrInvalidRequest.Wrap(p.Description)
+}
+
+func (p OutsourcingDecisionPolicy) GetVotingPeriod() time.Duration {
+	return 0
+}
+
+func (p OutsourcingDecisionPolicy) ValidateBasic() error {
+	return nil
+}
+
+func (p OutsourcingDecisionPolicy) Validate(info FoundationInfo, config Config) error {
+	return sdkerrors.ErrInvalidRequest.Wrap(p.Description)
 }
 
 var _ codectypes.UnpackInterfacesMessage = (*FoundationInfo)(nil)
@@ -432,4 +461,60 @@ func SetAuthorization(a Authorization) (*codectypes.Any, error) {
 		return nil, err
 	}
 	return any, nil
+}
+
+func (p Pool) ValidateBasic() error {
+	if err := p.Treasury.Validate(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Members defines a repeated slice of Member objects.
+type Members struct {
+	Members []Member
+}
+
+// ValidateBasic performs stateless validation on an array of members. On top
+// of validating each member individually, it also makes sure there are no
+// duplicate addresses.
+func (ms Members) ValidateBasic() error {
+	index := make(map[string]struct{}, len(ms.Members))
+	for i := range ms.Members {
+		member := ms.Members[i]
+		if err := member.ValidateBasic(); err != nil {
+			return err
+		}
+		addr := member.Address
+		if _, exists := index[addr]; exists {
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicated address: %s", member.Address)
+		}
+		index[addr] = struct{}{}
+	}
+	return nil
+}
+
+// MemberRequests defines a repeated slice of MemberRequest objects.
+type MemberRequests struct {
+	Members []MemberRequest
+}
+
+// ValidateBasic performs stateless validation on an array of members. On top
+// of validating each member individually, it also makes sure there are no
+// duplicate addresses.
+func (ms MemberRequests) ValidateBasic() error {
+	index := make(map[string]struct{}, len(ms.Members))
+	for i := range ms.Members {
+		member := ms.Members[i]
+		if err := member.ValidateBasic(); err != nil {
+			return err
+		}
+		addr := member.Address
+		if _, exists := index[addr]; exists {
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicated address: %s", member.Address)
+		}
+		index[addr] = struct{}{}
+	}
+	return nil
 }

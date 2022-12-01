@@ -14,8 +14,8 @@ import (
 
 func TestValidateParams(t *testing.T) {
 	var (
-		anyAddress     = sdk.BytesToAccAddress(make([]byte, ContractAddrLen))
-		invalidAddress = "invalid address"
+		anyAddress     sdk.AccAddress = make([]byte, ContractAddrLen)
+		invalidAddress                = "invalid address"
 	)
 
 	specs := map[string]struct {
@@ -120,33 +120,6 @@ func TestValidateParams(t *testing.T) {
 			},
 			expErr: true,
 		},
-		"reject empty gas multiplier": {
-			src: Params{
-				CodeUploadAccess:             AllowNobody,
-				InstantiateDefaultPermission: AccessTypeNobody,
-				InstanceCost:                 DefaultInstanceCost,
-				CompileCost:                  DefaultCompileCost,
-			},
-			expErr: true,
-		},
-		"reject empty instance cost": {
-			src: Params{
-				CodeUploadAccess:             AllowNobody,
-				InstantiateDefaultPermission: AccessTypeNobody,
-				GasMultiplier:                DefaultGasMultiplier,
-				CompileCost:                  DefaultCompileCost,
-			},
-			expErr: true,
-		},
-		"reject empty compile cost": {
-			src: Params{
-				CodeUploadAccess:             AllowNobody,
-				InstantiateDefaultPermission: AccessTypeNobody,
-				GasMultiplier:                DefaultGasMultiplier,
-				InstanceCost:                 DefaultInstanceCost,
-			},
-			expErr: true,
-		},
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
@@ -200,12 +173,12 @@ func TestAccessTypeUnmarshalJson(t *testing.T) {
 		})
 	}
 }
+
 func TestParamsUnmarshalJson(t *testing.T) {
 	specs := map[string]struct {
 		src string
 		exp Params
 	}{
-
 		"defaults": {
 			src: `{"code_upload_access": {"permission": "Everybody"},
 				"instantiate_default_permission": "Everybody",

@@ -37,6 +37,11 @@ func (s GenesisState) ValidateBasic() error {
 			return sdkerrors.Wrapf(err, "gen message: %d", i)
 		}
 	}
+	for i, addr := range s.InactiveContractAddresses {
+		if _, err := sdk.AccAddressFromBech32(addr); err != nil {
+			return sdkerrors.Wrapf(err, "inactive contract address: %d", i)
+		}
+	}
 	return nil
 }
 
@@ -54,7 +59,7 @@ func (c Code) ValidateBasic() error {
 }
 
 func (c Contract) ValidateBasic() error {
-	if err := sdk.ValidateAccAddress(c.ContractAddress); err != nil {
+	if _, err := sdk.AccAddressFromBech32(c.ContractAddress); err != nil {
 		return sdkerrors.Wrap(err, "contract address")
 	}
 	if err := c.ContractInfo.ValidateBasic(); err != nil {

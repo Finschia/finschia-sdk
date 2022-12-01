@@ -2,6 +2,7 @@ package connection
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+
 	"github.com/line/lbm-sdk/x/ibc/core/03-connection/keeper"
 	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 )
@@ -17,6 +18,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, gs types.GenesisState) {
 		k.SetClientConnectionPaths(ctx, connPaths.ClientId, connPaths.Paths)
 	}
 	k.SetNextConnectionSequence(ctx, gs.NextConnectionSequence)
+	k.SetParams(ctx, gs.Params)
 }
 
 // ExportGenesis returns the ibc connection submodule's exported genesis.
@@ -25,5 +27,6 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 		Connections:            k.GetAllConnections(ctx),
 		ClientConnectionPaths:  k.GetAllClientConnectionPaths(ctx),
 		NextConnectionSequence: k.GetNextConnectionSequence(ctx),
+		Params:                 k.GetParams(ctx),
 	}
 }

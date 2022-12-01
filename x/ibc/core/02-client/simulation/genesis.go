@@ -4,6 +4,7 @@ import (
 	"math/rand"
 
 	simtypes "github.com/line/lbm-sdk/types/simulation"
+
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 )
 

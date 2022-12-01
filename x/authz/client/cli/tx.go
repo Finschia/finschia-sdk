@@ -70,11 +70,10 @@ Examples:
 				return err
 			}
 
-			err = sdk.ValidateAccAddress(args[0])
+			grantee, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
-			grantee := sdk.AccAddress(args[0])
 
 			exp, err := cmd.Flags().GetInt64(FlagExpiration)
 			if err != nil {
@@ -135,12 +134,12 @@ Examples:
 					delegateLimit = &spendLimit[0]
 				}
 
-				allowed, err := toValidatorAddresses(allowValidators)
+				allowed, err := bech32toValidatorAddresses(allowValidators)
 				if err != nil {
 					return err
 				}
 
-				denied, err := toValidatorAddresses(denyValidators)
+				denied, err := bech32toValidatorAddresses(denyValidators)
 				if err != nil {
 					return err
 				}
@@ -195,11 +194,10 @@ Example:
 				return err
 			}
 
-			err = sdk.ValidateAccAddress(args[0])
+			grantee, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
-			grantee := sdk.AccAddress(args[0])
 
 			granter := clientCtx.GetFromAddress()
 			msgAuthorized := args[1]
@@ -225,7 +223,6 @@ Example:
 		),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -251,14 +248,13 @@ Example:
 	return cmd
 }
 
-func toValidatorAddresses(validators []string) ([]sdk.ValAddress, error) {
+func bech32toValidatorAddresses(validators []string) ([]sdk.ValAddress, error) {
 	vals := make([]sdk.ValAddress, len(validators))
 	for i, validator := range validators {
-		err := sdk.ValidateValAddress(validator)
+		addr, err := sdk.ValAddressFromBech32(validator)
 		if err != nil {
 			return nil, err
 		}
-		addr := sdk.ValAddress([]byte(validator))
 		vals[i] = addr
 	}
 	return vals, nil

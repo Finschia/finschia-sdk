@@ -36,12 +36,13 @@ func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	balance := s.keeper.GetBalance(ctx, req.ContractId, sdk.AccAddress(req.Address))
+	balance := s.keeper.GetBalance(ctx, req.ContractId, addr)
 
 	return &token.QueryBalanceResponse{Amount: balance}, nil
 }
@@ -148,31 +149,6 @@ func (s queryServer) TokenClasses(c context.Context, req *token.QueryTokenClasse
 	return &token.QueryTokenClassesResponse{Classes: classes, Pagination: pageRes}, nil
 }
 
-func (s queryServer) Grant(c context.Context, req *token.QueryGrantRequest) (*token.QueryGrantResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
-	}
-	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
-	}
-	permission := token.Permission(token.Permission_value[req.Permission])
-	if permission == 0 {
-		return nil, sdkerrors.ErrInvalidRequest.Wrapf("invalid permission: %s", req.Permission)
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	grant, err := s.keeper.GetGrant(ctx, req.ContractId, sdk.AccAddress(req.Grantee), permission)
-	if err != nil {
-		return nil, err
-	}
-
-	return &token.QueryGrantResponse{Grant: *grant}, nil
-}
-
 func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGrantsRequest) (*token.QueryGranteeGrantsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
@@ -181,19 +157,20 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
+	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
+	if err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
-	grantStore := prefix.NewStore(store, grantKeyPrefixByGrantee(req.ContractId, sdk.AccAddress(req.Grantee)))
+	grantStore := prefix.NewStore(store, grantKeyPrefixByGrantee(req.ContractId, grantee))
 	var grants []token.Grant
 	pageRes, err := query.Paginate(grantStore, req.Pagination, func(key []byte, _ []byte) error {
 		permission := token.Permission(key[0])
 		grants = append(grants, token.Grant{
 			Grantee:    req.Grantee,
-			Permission: permission.String(),
+			Permission: permission,
 		})
 		return nil
 	})
@@ -204,61 +181,6 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 	return &token.QueryGranteeGrantsResponse{Grants: grants, Pagination: pageRes}, nil
 }
 
-func (s queryServer) Authorization(c context.Context, req *token.QueryAuthorizationRequest) (*token.QueryAuthorizationResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
-	}
-	if err := sdk.ValidateAccAddress(req.Operator); err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
-	}
-	if err := sdk.ValidateAccAddress(req.Holder); err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", req.Holder)
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	authorization, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.Holder), sdk.AccAddress(req.Operator))
-	if err != nil {
-		return nil, err
-	}
-
-	return &token.QueryAuthorizationResponse{Authorization: *authorization}, nil
-}
-
-func (s queryServer) OperatorAuthorizations(c context.Context, req *token.QueryOperatorAuthorizationsRequest) (*token.QueryOperatorAuthorizationsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
-	}
-	if err := sdk.ValidateAccAddress(req.Operator); err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	store := ctx.KVStore(s.keeper.storeKey)
-	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, sdk.AccAddress(req.Operator)))
-	var authorizations []token.Authorization
-	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key []byte, value []byte) error {
-		holder := sdk.AccAddress(key)
-		authorizations = append(authorizations, token.Authorization{
-			Holder:   holder.String(),
-			Operator: req.Operator,
-		})
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return &token.QueryOperatorAuthorizationsResponse{Authorizations: authorizations, Pagination: pageRes}, nil
-}
-
 func (s queryServer) Approved(c context.Context, req *token.QueryApprovedRequest) (*token.QueryApprovedResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
@@ -267,16 +189,47 @@ func (s queryServer) Approved(c context.Context, req *token.QueryApprovedRequest
 	if err := token.ValidateContractID(req.ContractId); err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+	proxy, err := sdk.AccAddressFromBech32(req.Proxy)
+	if err != nil {
 		return nil, err
 	}
-	if err := sdk.ValidateAccAddress(req.Approver); err != nil {
+	approver, err := sdk.AccAddressFromBech32(req.Approver)
+	if err != nil {
 		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	_, err := s.keeper.GetAuthorization(ctx, req.ContractId, sdk.AccAddress(req.Approver), sdk.AccAddress(req.Address))
-	approved := (err == nil)
+	_, err = s.keeper.GetAuthorization(ctx, req.ContractId, approver, proxy)
+	approved := err == nil
 
 	return &token.QueryApprovedResponse{Approved: approved}, nil
+}
+
+func (s queryServer) Approvers(c context.Context, req *token.QueryApproversRequest) (*token.QueryApproversResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if err := token.ValidateContractID(req.ContractId); err != nil {
+		return nil, err
+	}
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	store := ctx.KVStore(s.keeper.storeKey)
+	authorizationStore := prefix.NewStore(store, authorizationKeyPrefixByOperator(req.ContractId, addr))
+	var approvers []string
+	pageRes, err := query.Paginate(authorizationStore, req.Pagination, func(key []byte, value []byte) error {
+		holder := sdk.AccAddress(key)
+		approvers = append(approvers, holder.String())
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &token.QueryApproversResponse{Approvers: approvers, Pagination: pageRes}, nil
 }

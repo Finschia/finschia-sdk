@@ -2,10 +2,8 @@ package listenkv
 
 import (
 	"io"
-	"time"
 
 	"github.com/line/lbm-sdk/store/types"
-	"github.com/line/lbm-sdk/telemetry"
 )
 
 var _ types.KVStore = &Store{}
@@ -45,15 +43,6 @@ func (s *Store) Set(key []byte, value []byte) {
 func (s *Store) Delete(key []byte) {
 	s.parent.Delete(key)
 	s.onWrite(true, key, nil)
-}
-
-// Prefetch implements types.KVStore.
-func (s *Store) Prefetch(key []byte, forSet bool) (hits, misses int, value []byte) {
-	defer telemetry.MeasureSince(time.Now(), "store", "cachekv", "prefetch")
-
-	// do not update cache
-	types.AssertValidKey(key)
-	return s.parent.Prefetch(key, forSet)
 }
 
 // Has implements the KVStore interface. It delegates the Has call to the
@@ -97,7 +86,10 @@ func newTraceIterator(parent types.Iterator, listeners []types.WriteListener) ty
 	return &listenIterator{parent: parent, listeners: listeners}
 }
 
-// TODO(dudong2): remove Domain() func (removed in other stores by woosang). Add it later, if it's needed.
+// Domain implements the Iterator interface.
+func (li *listenIterator) Domain() (start []byte, end []byte) {
+	return li.parent.Domain()
+}
 
 // Valid implements the Iterator interface.
 func (li *listenIterator) Valid() bool {

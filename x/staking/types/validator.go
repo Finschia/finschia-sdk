@@ -38,6 +38,7 @@ var (
 var _ ValidatorI = Validator{}
 
 // NewValidator constructs a new Validator
+//
 //nolint:interfacer
 func NewValidator(operator sdk.ValAddress, pubKey cryptotypes.PubKey, description Description) (Validator, error) {
 	pkAny, err := codectypes.NewAnyWithValue(pubKey)
@@ -98,9 +99,7 @@ func (v Validators) Len() int {
 
 // Implements sort interface
 func (v Validators) Less(i, j int) bool {
-	valIBytes, _ := sdk.ValAddressToBytes(v[i].GetOperator().String())
-	valJBytes, _ := sdk.ValAddressToBytes(v[j].GetOperator().String())
-	return bytes.Compare(valIBytes, valJBytes) == -1
+	return bytes.Compare(v[i].GetOperator().Bytes(), v[j].GetOperator().Bytes()) == -1
 }
 
 // Implements sort interface
@@ -124,9 +123,7 @@ func (valz ValidatorsByVotingPower) Less(i, j int, r sdk.Int) bool {
 		if errI != nil || errJ != nil {
 			return false
 		}
-		bytesI, _ := sdk.ConsAddressToBytes(addrI.String())
-		bytesJ, _ := sdk.ConsAddressToBytes(addrJ.String())
-		return bytes.Compare(bytesI, bytesJ) == -1
+		return bytes.Compare(addrI, addrJ) == -1
 	}
 	return valz[i].ConsensusPower(r) > valz[j].ConsensusPower(r)
 }
@@ -410,7 +407,8 @@ func (v Validator) RemoveTokens(tokens sdk.Int) Validator {
 
 // RemoveDelShares removes delegator shares from a validator.
 // NOTE: because token fractions are left in the valiadator,
-//       the exchange rate of future shares of this validator can increase.
+//
+//	the exchange rate of future shares of this validator can increase.
 func (v Validator) RemoveDelShares(delShares sdk.Dec) (Validator, sdk.Int) {
 	remainingShares := v.DelegatorShares.Sub(delShares)
 
@@ -447,7 +445,6 @@ func (v *Validator) MinEqual(other *Validator) bool {
 		v.Jailed == other.Jailed &&
 		v.MinSelfDelegation.Equal(other.MinSelfDelegation) &&
 		v.ConsensusPubkey.Equal(other.ConsensusPubkey)
-
 }
 
 // Equal checks if the receiver equals the parameter
@@ -462,9 +459,13 @@ func (v Validator) GetMoniker() string    { return v.Description.Moniker }
 func (v Validator) GetStatus() BondStatus { return v.Status }
 func (v Validator) GetOperator() sdk.ValAddress {
 	if v.OperatorAddress == "" {
-		return ""
+		return nil
 	}
-	return sdk.ValAddress(v.OperatorAddress)
+	addr, err := sdk.ValAddressFromBech32(v.OperatorAddress)
+	if err != nil {
+		panic(err)
+	}
+	return addr
 }
 
 // ConsPubKey returns the validator PubKey as a cryptotypes.PubKey.
@@ -475,7 +476,6 @@ func (v Validator) ConsPubKey() (cryptotypes.PubKey, error) {
 	}
 
 	return pk, nil
-
 }
 
 // OcConsPublicKey casts Validator.ConsensusPubkey to ocprotocrypto.PubKey.
@@ -497,10 +497,10 @@ func (v Validator) OcConsPublicKey() (ocprotocrypto.PublicKey, error) {
 func (v Validator) GetConsAddr() (sdk.ConsAddress, error) {
 	pk, ok := v.ConsensusPubkey.GetCachedValue().(cryptotypes.PubKey)
 	if !ok {
-		return "", sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk)
 	}
 
-	return sdk.BytesToConsAddress(pk.Address()), nil
+	return sdk.ConsAddress(pk.Address()), nil
 }
 
 func (v Validator) GetTokens() sdk.Int       { return v.Tokens }

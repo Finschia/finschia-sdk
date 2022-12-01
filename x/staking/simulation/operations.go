@@ -17,11 +17,11 @@ import (
 // Simulation operation weights constants
 // nolint:gosec
 const (
-	OpWeightMsgCreateValidator = "op_weight_msg_create_validator"
-	OpWeightMsgEditValidator   = "op_weight_msg_edit_validator"
-	OpWeightMsgDelegate        = "op_weight_msg_delegate"
-	OpWeightMsgUndelegate      = "op_weight_msg_undelegate"
-	OpWeightMsgBeginRedelegate = "op_weight_msg_begin_redelegate"
+	OpWeightMsgCreateValidator = "op_weight_msg_create_validator" //nolint:gosec
+	OpWeightMsgEditValidator   = "op_weight_msg_edit_validator"   //nolint:gosec
+	OpWeightMsgDelegate        = "op_weight_msg_delegate"         //nolint:gosec
+	OpWeightMsgUndelegate      = "op_weight_msg_undelegate"       //nolint:gosec
+	OpWeightMsgBeginRedelegate = "op_weight_msg_begin_redelegate" //nolint:gosec
 )
 
 // WeightedOperations returns all the operations from the module with their respective weights
@@ -97,7 +97,7 @@ func SimulateMsgCreateValidator(ak types.AccountKeeper, bk types.BankKeeper, k k
 		r *rand.Rand, app *baseapp.BaseApp, ctx sdk.Context, accs []simtypes.Account, chainID string,
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
-		address := simAccount.Address.ToValAddress()
+		address := sdk.ValAddress(simAccount.Address)
 
 		// ensure the validator doesn't exist already
 		_, found := k.GetValidator(ctx, address)
@@ -153,6 +153,7 @@ func SimulateMsgCreateValidator(ak types.AccountKeeper, bk types.BankKeeper, k k
 		}
 
 		txCtx := simulation.OperationInput{
+			R:             r,
 			App:           app,
 			TxGen:         simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:           nil,
@@ -191,7 +192,7 @@ func SimulateMsgEditValidator(ak types.AccountKeeper, bk types.BankKeeper, k kee
 			return simtypes.NoOpMsg(types.ModuleName, types.TypeMsgEditValidator, "invalid commission rate"), nil, nil
 		}
 
-		simAccount, found := simtypes.FindAccount(accs, val.GetOperator().ToAccAddress())
+		simAccount, found := simtypes.FindAccount(accs, sdk.AccAddress(val.GetOperator()))
 		if !found {
 			return simtypes.NoOpMsg(types.ModuleName, types.TypeMsgEditValidator, "unable to find account"), nil, fmt.Errorf("validator %s not found", val.GetOperator())
 		}
@@ -277,6 +278,7 @@ func SimulateMsgDelegate(ak types.AccountKeeper, bk types.BankKeeper, k keeper.K
 		msg := types.NewMsgDelegate(simAccount.Address, val.GetOperator(), bondAmt)
 
 		txCtx := simulation.OperationInput{
+			R:             r,
 			App:           app,
 			TxGen:         simappparams.MakeTestEncodingConfig().TxConfig,
 			Cdc:           nil,

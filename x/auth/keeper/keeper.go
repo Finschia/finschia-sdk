@@ -43,8 +43,6 @@ type AccountKeeperI interface {
 	// Fetch the sequence of an account at a specified address.
 	GetSequence(sdk.Context, sdk.AccAddress) (uint64, error)
 
-	// Prefetch an account, i.e. pre-fetch
-	Prefetch(sdk.Context, sdk.AccAddress, bool)
 	// Fetch the next account number, and increment the internal counter.
 	GetNextAccountNumber(sdk.Context) uint64
 }
@@ -73,7 +71,6 @@ func NewAccountKeeper(
 	cdc codec.BinaryCodec, key sdk.StoreKey, paramstore paramtypes.Subspace, proto func() types.AccountI,
 	maccPerms map[string][]string,
 ) AccountKeeper {
-
 	// set KeyTable if it has not already been set
 	if !paramstore.HasKeyTable() {
 		paramstore = paramstore.WithKeyTable(types.ParamKeyTable())
@@ -162,7 +159,7 @@ func (ak AccountKeeper) ValidatePermissions(macc types.ModuleAccountI) error {
 func (ak AccountKeeper) GetModuleAddress(moduleName string) sdk.AccAddress {
 	permAddr, ok := ak.permAddrs[moduleName]
 	if !ok {
-		return ""
+		return nil
 	}
 
 	return permAddr.GetAddress()
@@ -225,7 +222,7 @@ func (ak AccountKeeper) decodeAccount(bz []byte) types.AccountI {
 }
 
 // MarshalAccount protobuf serializes an Account interface
-func (ak AccountKeeper) MarshalAccount(accountI types.AccountI) ([]byte, error) { // nolint:interfacer
+func (ak AccountKeeper) MarshalAccount(accountI types.AccountI) ([]byte, error) { //nolint:interfacer
 	return ak.cdc.MarshalInterface(accountI)
 }
 

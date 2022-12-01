@@ -84,12 +84,10 @@ func TestGetPaginatedVotes(t *testing.T) {
 		msgs        [][]sdk.Msg
 		votes       []types.Vote
 	}
-	acc1Bytes := make([]byte, 20)
-	acc1Bytes[0] = 1
-	acc2Bytes := make([]byte, 20)
-	acc2Bytes[0] = 2
-	acc1 := sdk.BytesToAccAddress(acc1Bytes)
-	acc2 := sdk.BytesToAccAddress(acc2Bytes)
+	acc1 := make(sdk.AccAddress, 20)
+	acc1[0] = 1
+	acc2 := make(sdk.AccAddress, 20)
+	acc2[0] = 2
 	acc1Msgs := []sdk.Msg{
 		types.NewMsgVote(acc1, 0, types.OptionYes),
 		types.NewMsgVote(acc1, 0, types.OptionYes),
@@ -166,7 +164,7 @@ func TestGetPaginatedVotes(t *testing.T) {
 		tc := tc
 
 		t.Run(tc.description, func(t *testing.T) {
-			var marshalled = make([]octypes.Tx, len(tc.msgs))
+			marshalled := make([]octypes.Tx, len(tc.msgs))
 			cli := TxSearchMock{txs: marshalled, txConfig: encCfg.TxConfig}
 			clientCtx := client.Context{}.
 				WithLegacyAmino(encCfg.Amino).

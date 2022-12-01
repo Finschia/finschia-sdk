@@ -13,7 +13,7 @@ func (s *KeeperTestSuite) TestImportExportGenesis() {
 	s.Require().NoError(err)
 	err = s.keeper.Mint(s.ctx, s.contractID, s.vendor, s.customer, s.balance)
 	s.Require().NoError(err)
-	s.keeper.Abandon(s.ctx, s.contractID, s.vendor, token.Permission_Mint)
+	s.keeper.Abandon(s.ctx, s.contractID, s.vendor, token.PermissionMint)
 
 	// restore
 	s.keeper.InitGenesis(s.ctx, genesis)

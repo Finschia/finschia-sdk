@@ -1,9 +1,9 @@
 package cli
 
 import (
+	"github.com/line/lbm-sdk/client"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 )
 
@@ -20,10 +20,11 @@ func GetQueryCmd() *cobra.Command {
 	queryCmd.AddCommand(
 		GetCmdQueryClientStates(),
 		GetCmdQueryClientState(),
+		GetCmdQueryClientStatus(),
 		GetCmdQueryConsensusStates(),
 		GetCmdQueryConsensusState(),
 		GetCmdQueryHeader(),
-		GetCmdNodeConsensusState(),
+		GetCmdSelfConsensusState(),
 		GetCmdParams(),
 	)
 

@@ -94,6 +94,7 @@ $ %s query gov proposal 1
 func GetCmdQueryProposals() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposals",
+		Args:  cobra.NoArgs,
 		Short: "Query proposals with optional filters",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query for a all paginated proposals that match optional filters:
@@ -113,6 +114,20 @@ $ %s query gov proposals --page=2 --limit=100
 			strProposalStatus, _ := cmd.Flags().GetString(flagStatus)
 
 			var proposalStatus types.ProposalStatus
+
+			if len(bechDepositorAddr) != 0 {
+				_, err := sdk.AccAddressFromBech32(bechDepositorAddr)
+				if err != nil {
+					return err
+				}
+			}
+
+			if len(bechVoterAddr) != 0 {
+				_, err := sdk.AccAddressFromBech32(bechVoterAddr)
+				if err != nil {
+					return err
+				}
+			}
 
 			if len(strProposalStatus) != 0 {
 				proposalStatus1, err := types.ProposalStatusFromString(gcutils.NormalizeProposalStatus(strProposalStatus))
@@ -202,7 +217,10 @@ $ %s query gov vote 1 link1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 				return fmt.Errorf("failed to fetch proposal-id %d: %s", proposalID, err)
 			}
 
-			voterAddr := sdk.AccAddress(args[1])
+			voterAddr, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
 
 			res, err := queryClient.Vote(
 				ctx,
@@ -216,7 +234,6 @@ $ %s query gov vote 1 link1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 			if vote.Empty() {
 				params := types.NewQueryVoteParams(proposalID, voterAddr)
 				resByTxQuery, err := gcutils.QueryVoteByTxQuery(clientCtx, params)
-
 				if err != nil {
 					return err
 				}
@@ -302,13 +319,11 @@ $ %[1]s query gov votes 1 --page=2 --limit=100
 				ctx,
 				&types.QueryVotesRequest{ProposalId: proposalID, Pagination: pageReq},
 			)
-
 			if err != nil {
 				return err
 			}
 
 			return clientCtx.PrintProto(res)
-
 		},
 	}
 
@@ -357,7 +372,10 @@ $ %s query gov deposit 1 link1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 				return fmt.Errorf("failed to fetch proposal-id %d: %s", proposalID, err)
 			}
 
-			depositorAddr := sdk.AccAddress(args[1])
+			depositorAddr, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
 
 			var deposit types.Deposit
 			propStatus := proposalRes.Proposal.Status
@@ -452,7 +470,6 @@ $ %s query gov deposits 1
 				ctx,
 				&types.QueryDepositsRequest{ProposalId: proposalID, Pagination: pageReq},
 			)
-
 			if err != nil {
 				return err
 			}

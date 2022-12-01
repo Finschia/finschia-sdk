@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"testing"
 	"time"
 
@@ -13,9 +13,8 @@ import (
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/libs/rand"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	dbm "github.com/line/tm-db/v2"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
 	evidencetypes "github.com/line/lbm-sdk/x/evidence/types"
 	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
@@ -72,6 +71,7 @@ import (
 	"github.com/line/lbm-sdk/x/upgrade"
 	upgradeclient "github.com/line/lbm-sdk/x/upgrade/client"
 	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
 
 	wasmappparams "github.com/line/lbm-sdk/simapp/params"
@@ -111,8 +111,8 @@ func MakeEncodingConfig(_ testing.TB) wasmappparams.EncodingConfig {
 	ModuleBasics.RegisterLegacyAminoCodec(amino)
 	ModuleBasics.RegisterInterfaces(interfaceRegistry)
 	// add wasmd types
-	types.RegisterInterfaces(interfaceRegistry)
-	types.RegisterLegacyAminoCodec(amino)
+	lbmtypes.RegisterInterfaces(interfaceRegistry)
+	lbmtypes.RegisterLegacyAminoCodec(amino)
 
 	return encodingConfig
 }
@@ -194,7 +194,7 @@ func CreateDefaultTestInput(t testing.TB) (sdk.Context, TestKeepers) {
 // CreateTestInput encoders can be nil to accept the defaults, or set it to override some of the message handlers (like default)
 func CreateTestInput(t testing.TB, isCheckTx bool, supportedFeatures string, encoders *MessageEncoders, queriers *QueryPlugins, opts ...Option) (sdk.Context, TestKeepers) {
 	// Load default wasm config
-	return createTestInput(t, isCheckTx, supportedFeatures, encoders, queriers, types.DefaultWasmConfig(), memdb.NewDB(), opts...)
+	return createTestInput(t, isCheckTx, supportedFeatures, encoders, queriers, types.DefaultWasmConfig(), dbm.NewMemDB(), opts...)
 }
 
 // encoders can be nil to accept the defaults, or set it to override some of the message handlers (like default)
@@ -249,7 +249,8 @@ func createTestInput(
 		keys[paramstypes.StoreKey],
 		tkeys[paramstypes.TStoreKey],
 	)
-	for _, m := range []string{authtypes.ModuleName,
+	for _, m := range []string{
+		authtypes.ModuleName,
 		banktypes.ModuleName,
 		stakingtypes.ModuleName,
 		minttypes.ModuleName,
@@ -260,7 +261,8 @@ func createTestInput(
 		capabilitytypes.ModuleName,
 		ibchost.ModuleName,
 		govtypes.ModuleName,
-		types.ModuleName} {
+		types.ModuleName,
+	} {
 		paramsKeeper.Subspace(m)
 	}
 	subspace := func(m string) paramstypes.Subspace {
@@ -394,7 +396,7 @@ func createTestInput(
 		queriers,
 		opts...,
 	)
-	keeper.setParams(ctx, types.DefaultParams())
+	keeper.SetParams(ctx, types.DefaultParams())
 	// add wasm handler so we can loop-back (contracts calling contracts)
 	contractKeeper := NewDefaultPermissionKeeper(&keeper)
 	router.AddRoute(sdk.NewRoute(types.RouterKey, TestHandler(contractKeeper)))
@@ -412,7 +414,7 @@ func createTestInput(
 		AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(paramsKeeper)).
 		AddRoute(distributiontypes.RouterKey, distribution.NewCommunityPoolSpendProposalHandler(distKeeper)).
-		AddRoute(types.RouterKey, NewWasmProposalHandler(&keeper, types.EnableAllProposals))
+		AddRoute(types.RouterKey, NewWasmProposalHandler(&keeper, lbmtypes.EnableAllProposals))
 
 	govKeeper := govkeeper.NewKeeper(
 		appCodec,
@@ -465,11 +467,11 @@ func TestHandler(k types.ContractOpsKeeper) sdk.Handler {
 }
 
 func handleStoreCode(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgStoreCode) (*sdk.Result, error) {
-	err := sdk.ValidateAccAddress(msg.Sender)
+	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	codeID, err := k.Create(ctx, sdk.AccAddress(msg.Sender), msg.WASMByteCode, msg.InstantiatePermission)
+	codeID, err := k.Create(ctx, senderAddr, msg.WASMByteCode, msg.InstantiatePermission)
 	if err != nil {
 		return nil, err
 	}
@@ -481,38 +483,38 @@ func handleStoreCode(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgS
 }
 
 func handleInstantiate(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgInstantiateContract) (*sdk.Result, error) {
-	err := sdk.ValidateAccAddress(msg.Sender)
+	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
+	var adminAddr sdk.AccAddress
 	if msg.Admin != "" {
-		if err = sdk.ValidateAccAddress(msg.Admin); err != nil {
+		if adminAddr, err = sdk.AccAddressFromBech32(msg.Admin); err != nil {
 			return nil, sdkerrors.Wrap(err, "admin")
 		}
 	}
 
-	contractAddr, _, err := k.Instantiate(ctx, msg.CodeID, sdk.AccAddress(msg.Sender), sdk.AccAddress(msg.Admin),
-		msg.Msg, msg.Label, msg.Funds)
+	contractAddr, _, err := k.Instantiate(ctx, msg.CodeID, senderAddr, adminAddr, msg.Msg, msg.Label, msg.Funds)
 	if err != nil {
 		return nil, err
 	}
 
 	return &sdk.Result{
-		Data:   contractAddr.Bytes(),
+		Data:   contractAddr,
 		Events: ctx.EventManager().Events().ToABCIEvents(),
 	}, nil
 }
 
 func handleExecute(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgExecuteContract) (*sdk.Result, error) {
-	err := sdk.ValidateAccAddress(msg.Sender)
+	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	err = sdk.ValidateAccAddress(msg.Contract)
+	contractAddr, err := sdk.AccAddressFromBech32(msg.Contract)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "admin")
 	}
-	data, err := k.Execute(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender), msg.Msg, msg.Funds)
+	data, err := k.Execute(ctx, contractAddr, senderAddr, msg.Msg, msg.Funds)
 	if err != nil {
 		return nil, err
 	}
@@ -552,7 +554,7 @@ func StoreIBCReflectContract(t testing.TB, ctx sdk.Context, keepers TestKeepers)
 }
 
 func StoreReflectContract(t testing.TB, ctx sdk.Context, keepers TestKeepers) uint64 {
-	wasmCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
+	wasmCode, err := os.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
 
 	_, _, creatorAddr := keyPubAddr()
@@ -566,7 +568,7 @@ func StoreExampleContract(t testing.TB, ctx sdk.Context, keepers TestKeepers, wa
 	creator, _, creatorAddr := keyPubAddr()
 	fundAccounts(t, ctx, keepers.AccountKeeper, keepers.BankKeeper, creatorAddr, anyAmount)
 
-	wasmCode, err := ioutil.ReadFile(wasmFile)
+	wasmCode, err := os.ReadFile(wasmFile)
 	require.NoError(t, err)
 
 	codeID, err := keepers.ContractKeeper.Create(ctx, creatorAddr, wasmCode, nil)
@@ -602,7 +604,8 @@ func StoreRandomContractWithAccessConfig(
 	t testing.TB, ctx sdk.Context,
 	keepers TestKeepers,
 	mock types.WasmerEngine,
-	cfg *types.AccessConfig) ExampleContract {
+	cfg *types.AccessConfig,
+) ExampleContract {
 	t.Helper()
 	anyAmount := sdk.NewCoins(sdk.NewInt64Coin("denom", 1000))
 	creator, _, creatorAddr := keyPubAddr()
@@ -613,7 +616,6 @@ func StoreRandomContractWithAccessConfig(
 	require.NoError(t, err)
 	exampleContract := ExampleContract{InitialAmount: anyAmount, Creator: creator, CreatorAddr: creatorAddr, CodeID: codeID}
 	return exampleContract
-
 }
 
 type HackatomExampleInstance struct {
@@ -713,9 +715,6 @@ func (m BurnerExampleInitMsg) GetBytes(t testing.TB) []byte {
 func fundAccounts(t testing.TB, ctx sdk.Context, am authkeeper.AccountKeeper, bank bankkeeper.Keeper, addr sdk.AccAddress, coins sdk.Coins) {
 	acc := am.NewAccountWithAddress(ctx, addr)
 	am.SetAccount(ctx, acc)
-	for _, coin := range coins {
-		require.NoError(t, bank.SetBalance(ctx, addr, coin))
-	}
 	NewTestFaucet(t, ctx, bank, minttypes.ModuleName, coins...).Fund(ctx, addr, coins...)
 }
 
@@ -731,6 +730,6 @@ func keyPubAddr() (crypto.PrivKey, crypto.PubKey, sdk.AccAddress) {
 
 	key := ed25519.GenPrivKeyFromSecret(seed)
 	pub := key.PubKey()
-	addr := sdk.BytesToAccAddress(pub.Address())
+	addr := sdk.AccAddress(pub.Address())
 	return key, pub, addr
 }

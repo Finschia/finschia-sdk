@@ -21,7 +21,7 @@ type KeyOutput struct {
 }
 
 // NewKeyOutput creates a default KeyOutput instance without Mnemonic, Threshold and PubKeys
-func NewKeyOutput(name string, keyType KeyType, a sdk.Address, pk cryptotypes.PubKey) (KeyOutput, error) { // nolint:interfacer
+func NewKeyOutput(name string, keyType KeyType, a sdk.Address, pk cryptotypes.PubKey) (KeyOutput, error) { //nolint:interfacer
 	apk, err := codectypes.NewAnyWithValue(pk)
 	if err != nil {
 		return KeyOutput{}, err
@@ -41,14 +41,14 @@ func NewKeyOutput(name string, keyType KeyType, a sdk.Address, pk cryptotypes.Pu
 // MkConsKeyOutput create a KeyOutput in with "cons" Bech32 prefixes.
 func MkConsKeyOutput(keyInfo Info) (KeyOutput, error) {
 	pk := keyInfo.GetPubKey()
-	addr := sdk.BytesToConsAddress(pk.Address())
+	addr := sdk.ConsAddress(pk.Address())
 	return NewKeyOutput(keyInfo.GetName(), keyInfo.GetType(), addr, pk)
 }
 
 // MkValKeyOutput create a KeyOutput in with "val" Bech32 prefixes.
 func MkValKeyOutput(keyInfo Info) (KeyOutput, error) {
 	pk := keyInfo.GetPubKey()
-	addr := sdk.BytesToValAddress(pk.Address())
+	addr := sdk.ValAddress(pk.Address())
 	return NewKeyOutput(keyInfo.GetName(), keyInfo.GetType(), addr, pk)
 }
 
@@ -57,7 +57,7 @@ func MkValKeyOutput(keyInfo Info) (KeyOutput, error) {
 // public keys will be added.
 func MkAccKeyOutput(keyInfo Info) (KeyOutput, error) {
 	pk := keyInfo.GetPubKey()
-	addr := sdk.BytesToAccAddress(pk.Address())
+	addr := sdk.AccAddress(pk.Address())
 	return NewKeyOutput(keyInfo.GetName(), keyInfo.GetType(), addr, pk)
 }
 

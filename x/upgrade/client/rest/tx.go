@@ -19,7 +19,8 @@ import (
 
 func registerTxHandlers(
 	clientCtx client.Context,
-	r *mux.Router) {
+	r *mux.Router,
+) {
 	r.HandleFunc("/upgrade/plan", newPostPlanHandler(clientCtx)).Methods("POST")
 	r.HandleFunc("/upgrade/cancel", newCancelPlanHandler(clientCtx)).Methods("POST")
 }
@@ -71,7 +72,10 @@ func newPostPlanHandler(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		fromAddr := sdk.AccAddress(req.BaseReq.From)
+		fromAddr, err := sdk.AccAddressFromBech32(req.BaseReq.From)
+		if rest.CheckBadRequestError(w, err) {
+			return
+		}
 
 		var t time.Time
 		if req.UpgradeTime != "" {
@@ -109,7 +113,10 @@ func newCancelPlanHandler(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		fromAddr := sdk.AccAddress(req.BaseReq.From)
+		fromAddr, err := sdk.AccAddressFromBech32(req.BaseReq.From)
+		if rest.CheckBadRequestError(w, err) {
+			return
+		}
 
 		content := types.NewCancelSoftwareUpgradeProposal(req.Title, req.Description)
 

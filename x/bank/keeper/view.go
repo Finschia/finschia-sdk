@@ -27,8 +27,6 @@ type ViewKeeper interface {
 	LockedCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 
-	Prefetch(ctx sdk.Context, tx sdk.Tx)
-
 	IterateAccountBalances(ctx sdk.Context, addr sdk.AccAddress, cb func(coin sdk.Coin) (stop bool))
 	IterateAllBalances(ctx sdk.Context, cb func(address sdk.AccAddress, coin sdk.Coin) (stop bool))
 }
@@ -110,56 +108,6 @@ func (k BaseViewKeeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom s
 	k.cdc.MustUnmarshal(bz, &balance)
 
 	return balance
-}
-
-func (k BaseViewKeeper) Prefetch(ctx sdk.Context, tx sdk.Tx) {
-	store := ctx.KVStore(k.storeKey)
-	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-
-	for _, msg := range tx.GetMsgs() {
-		switch msg := msg.(type) {
-		case *types.MsgSend:
-			addrs := map[string]bool{}
-			denoms := map[string]bool{}
-			addrs[msg.FromAddress] = false
-			addrs[msg.ToAddress] = true
-			for _, a := range msg.Amount {
-				denoms[a.Denom] = true
-			}
-			for a, isReceiver := range addrs {
-				addr := sdk.AccAddress(a)
-				k.ak.Prefetch(ctx, addr, isReceiver)
-				accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
-				for denom := range denoms {
-					accountStore.Prefetch([]byte(denom), isReceiver)
-				}
-			}
-
-		case *types.MsgMultiSend:
-			addrs := map[string]bool{}
-			denoms := map[string]bool{}
-			for _, i := range msg.Inputs {
-				addrs[i.Address] = false
-				for _, a := range i.Coins {
-					denoms[a.Denom] = true
-				}
-			}
-			for _, i := range msg.Outputs {
-				addrs[i.Address] = true
-				for _, a := range i.Coins {
-					denoms[a.Denom] = true
-				}
-			}
-			for a, isReceiver := range addrs {
-				addr := sdk.AccAddress(a)
-				k.ak.Prefetch(ctx, addr, isReceiver)
-				accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
-				for denom := range denoms {
-					accountStore.Prefetch([]byte(denom), isReceiver)
-				}
-			}
-		}
-	}
 }
 
 // IterateAccountBalances iterates over the balances of a single account and

@@ -72,13 +72,13 @@ func (k Keeper) GetPreviousProposerConsAddr(ctx sdk.Context) sdk.ConsAddress {
 
 	addrValue := gogotypes.BytesValue{}
 	k.cdc.MustUnmarshal(bz, &addrValue)
-	return sdk.ConsAddress(addrValue.GetValue())
+	return addrValue.GetValue()
 }
 
 // set the proposer public key for this block
 func (k Keeper) SetPreviousProposerConsAddr(ctx sdk.Context, consAddr sdk.ConsAddress) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshal(&gogotypes.BytesValue{Value: consAddr.Bytes()})
+	bz := k.cdc.MustMarshal(&gogotypes.BytesValue{Value: consAddr})
 	store.Set(types.ProposerKey, bz)
 }
 
@@ -331,7 +331,8 @@ func (k Keeper) SetValidatorSlashEvent(ctx sdk.Context, val sdk.ValAddress, heig
 
 // iterate over slash events between heights, inclusive
 func (k Keeper) IterateValidatorSlashEventsBetween(ctx sdk.Context, val sdk.ValAddress, startingHeight uint64, endingHeight uint64,
-	handler func(height uint64, event types.ValidatorSlashEvent) (stop bool)) {
+	handler func(height uint64, event types.ValidatorSlashEvent) (stop bool),
+) {
 	store := ctx.KVStore(k.storeKey)
 	iter := store.Iterator(
 		types.GetValidatorSlashEventKeyPrefix(val, startingHeight),

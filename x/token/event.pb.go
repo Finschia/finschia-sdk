@@ -24,54 +24,51 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// Deprecated: use typed events.
+//
 // EventType enumerates the valid event types on x/token.
-// For the legacy events.
 type EventType int32
 
 const (
-	EventType_Unspecified     EventType = 0
-	EventType_IssueToken      EventType = 1
-	EventType_MintToken       EventType = 2
-	EventType_BurnToken       EventType = 3
-	EventType_BurnTokenFrom   EventType = 4
-	EventType_ModifyToken     EventType = 5
-	EventType_Transfer        EventType = 6
-	EventType_TransferFrom    EventType = 7
-	EventType_GrantPermToken  EventType = 8
-	EventType_RevokePermToken EventType = 9
-	EventType_ApproveToken    EventType = 10
+	EventTypeUnspecified     EventType = 0
+	EventTypeIssueToken      EventType = 1
+	EventTypeMintToken       EventType = 2
+	EventTypeBurnToken       EventType = 3
+	EventTypeBurnTokenFrom   EventType = 4
+	EventTypeModifyToken     EventType = 5
+	EventTypeTransfer        EventType = 6
+	EventTypeTransferFrom    EventType = 7
+	EventTypeGrantPermToken  EventType = 8
+	EventTypeRevokePermToken EventType = 9
+	EventTypeApproveToken    EventType = 10
 )
 
 var EventType_name = map[int32]string{
-	0:  "unspecified",
-	1:  "issue",
-	2:  "mint",
-	3:  "burn",
-	4:  "burn_from",
-	5:  "modify_token",
-	6:  "transfer",
-	7:  "transfer_from",
-	8:  "grant_perm",
-	9:  "revoke_perm",
-	10: "approve_token",
+	0:  "EVENT_TYPE_UNSPECIFIED",
+	1:  "EVENT_TYPE_ISSUE",
+	2:  "EVENT_TYPE_MINT",
+	3:  "EVENT_TYPE_BURN",
+	4:  "EVENT_TYPE_BURN_FROM",
+	5:  "EVENT_TYPE_MODIFY_TOKEN",
+	6:  "EVENT_TYPE_TRANSFER",
+	7:  "EVENT_TYPE_TRANSFER_FROM",
+	8:  "EVENT_TYPE_GRANT_PERM",
+	9:  "EVENT_TYPE_REVOKE_PERM",
+	10: "EVENT_TYPE_APPROVE_TOKEN",
 }
 
 var EventType_value = map[string]int32{
-	"unspecified":   0,
-	"issue":         1,
-	"mint":          2,
-	"burn":          3,
-	"burn_from":     4,
-	"modify_token":  5,
-	"transfer":      6,
-	"transfer_from": 7,
-	"grant_perm":    8,
-	"revoke_perm":   9,
-	"approve_token": 10,
-}
-
-func (x EventType) String() string {
-	return proto.EnumName(EventType_name, int32(x))
+	"EVENT_TYPE_UNSPECIFIED":   0,
+	"EVENT_TYPE_ISSUE":         1,
+	"EVENT_TYPE_MINT":          2,
+	"EVENT_TYPE_BURN":          3,
+	"EVENT_TYPE_BURN_FROM":     4,
+	"EVENT_TYPE_MODIFY_TOKEN":  5,
+	"EVENT_TYPE_TRANSFER":      6,
+	"EVENT_TYPE_TRANSFER_FROM": 7,
+	"EVENT_TYPE_GRANT_PERM":    8,
+	"EVENT_TYPE_REVOKE_PERM":   9,
+	"EVENT_TYPE_APPROVE_TOKEN": 10,
 }
 
 func (EventType) EnumDescriptor() ([]byte, []int) {
@@ -79,65 +76,60 @@ func (EventType) EnumDescriptor() ([]byte, []int) {
 }
 
 // AttributeKey enumerates the valid attribute keys on x/token.
-// For the legacy events.
 type AttributeKey int32
 
 const (
-	AttributeKey_Unspecified AttributeKey = 0
-	AttributeKey_Name        AttributeKey = 1
-	AttributeKey_Symbol      AttributeKey = 2
-	AttributeKey_Meta        AttributeKey = 3
-	AttributeKey_ContractID  AttributeKey = 4
-	AttributeKey_Owner       AttributeKey = 5
-	AttributeKey_Amount      AttributeKey = 6
-	AttributeKey_Decimals    AttributeKey = 7
-	AttributeKey_ImageURI    AttributeKey = 8
-	AttributeKey_Mintable    AttributeKey = 9
-	AttributeKey_From        AttributeKey = 10
-	AttributeKey_To          AttributeKey = 11
-	AttributeKey_Perm        AttributeKey = 12
-	AttributeKey_Approver    AttributeKey = 13
-	AttributeKey_Proxy       AttributeKey = 14
+	AttributeKeyUnspecified AttributeKey = 0
+	AttributeKeyName        AttributeKey = 1
+	AttributeKeySymbol      AttributeKey = 2
+	AttributeKeyMeta        AttributeKey = 3
+	AttributeKeyContractID  AttributeKey = 4
+	AttributeKeyOwner       AttributeKey = 5
+	AttributeKeyAmount      AttributeKey = 6
+	AttributeKeyDecimals    AttributeKey = 7
+	AttributeKeyImageURI    AttributeKey = 8
+	AttributeKeyMintable    AttributeKey = 9
+	AttributeKeyFrom        AttributeKey = 10
+	AttributeKeyTo          AttributeKey = 11
+	AttributeKeyPerm        AttributeKey = 12
+	AttributeKeyApprover    AttributeKey = 13
+	AttributeKeyProxy       AttributeKey = 14
 )
 
 var AttributeKey_name = map[int32]string{
-	0:  "unspecified",
-	1:  "name",
-	2:  "symbol",
-	3:  "meta",
-	4:  "contract_id",
-	5:  "owner",
-	6:  "amount",
-	7:  "decimals",
-	8:  "img_uri",
-	9:  "mintable",
-	10: "from",
-	11: "to",
-	12: "perm",
-	13: "approver",
-	14: "proxy",
+	0:  "ATTRIBUTE_KEY_UNSPECIFIED",
+	1:  "ATTRIBUTE_KEY_NAME",
+	2:  "ATTRIBUTE_KEY_SYMBOL",
+	3:  "ATTRIBUTE_KEY_META",
+	4:  "ATTRIBUTE_KEY_CONTRACT_ID",
+	5:  "ATTRIBUTE_KEY_OWNER",
+	6:  "ATTRIBUTE_KEY_AMOUNT",
+	7:  "ATTRIBUTE_KEY_DECIMALS",
+	8:  "ATTRIBUTE_KEY_IMG_URI",
+	9:  "ATTRIBUTE_KEY_MINTABLE",
+	10: "ATTRIBUTE_KEY_FROM",
+	11: "ATTRIBUTE_KEY_TO",
+	12: "ATTRIBUTE_KEY_PERM",
+	13: "ATTRIBUTE_KEY_APPROVER",
+	14: "ATTRIBUTE_KEY_PROXY",
 }
 
 var AttributeKey_value = map[string]int32{
-	"unspecified": 0,
-	"name":        1,
-	"symbol":      2,
-	"meta":        3,
-	"contract_id": 4,
-	"owner":       5,
-	"amount":      6,
-	"decimals":    7,
-	"img_uri":     8,
-	"mintable":    9,
-	"from":        10,
-	"to":          11,
-	"perm":        12,
-	"approver":    13,
-	"proxy":       14,
-}
-
-func (x AttributeKey) String() string {
-	return proto.EnumName(AttributeKey_name, int32(x))
+	"ATTRIBUTE_KEY_UNSPECIFIED": 0,
+	"ATTRIBUTE_KEY_NAME":        1,
+	"ATTRIBUTE_KEY_SYMBOL":      2,
+	"ATTRIBUTE_KEY_META":        3,
+	"ATTRIBUTE_KEY_CONTRACT_ID": 4,
+	"ATTRIBUTE_KEY_OWNER":       5,
+	"ATTRIBUTE_KEY_AMOUNT":      6,
+	"ATTRIBUTE_KEY_DECIMALS":    7,
+	"ATTRIBUTE_KEY_IMG_URI":     8,
+	"ATTRIBUTE_KEY_MINTABLE":    9,
+	"ATTRIBUTE_KEY_FROM":        10,
+	"ATTRIBUTE_KEY_TO":          11,
+	"ATTRIBUTE_KEY_PERM":        12,
+	"ATTRIBUTE_KEY_APPROVER":    13,
+	"ATTRIBUTE_KEY_PROXY":       14,
 }
 
 func (AttributeKey) EnumDescriptor() ([]byte, []int) {
@@ -353,38 +345,40 @@ func (m *EventRevokedOperator) GetOperator() string {
 	return ""
 }
 
-// EventIssue is emitted when a new token class is created.
+// EventIssued is emitted when a new token class is created.
 //
 // Since: 0.46.0 (finschia)
-type EventIssue struct {
+type EventIssued struct {
+	// address which created the contract.
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	// contract id associated with the token class.
-	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
+	ContractId string `protobuf:"bytes,2,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// name defines the human-readable name of the token class.
-	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	// symbol is an abbreviated name for token class.
-	Symbol string `protobuf:"bytes,3,opt,name=symbol,proto3" json:"symbol,omitempty"`
+	Symbol string `protobuf:"bytes,4,opt,name=symbol,proto3" json:"symbol,omitempty"`
 	// uri is an uri for the resource of the token class stored off chain.
-	Uri string `protobuf:"bytes,4,opt,name=uri,proto3" json:"uri,omitempty"`
+	Uri string `protobuf:"bytes,5,opt,name=uri,proto3" json:"uri,omitempty"`
 	// meta is a brief description of token class.
-	Meta string `protobuf:"bytes,5,opt,name=meta,proto3" json:"meta,omitempty"`
+	Meta string `protobuf:"bytes,6,opt,name=meta,proto3" json:"meta,omitempty"`
 	// decimals is the number of decimals which one must divide the amount by to get its user representation.
-	Decimals int32 `protobuf:"varint,6,opt,name=decimals,proto3" json:"decimals,omitempty"`
+	Decimals int32 `protobuf:"varint,7,opt,name=decimals,proto3" json:"decimals,omitempty"`
 	// mintable represents whether the token is allowed to mint.
-	Mintable bool `protobuf:"varint,7,opt,name=mintable,proto3" json:"mintable,omitempty"`
+	Mintable bool `protobuf:"varint,8,opt,name=mintable,proto3" json:"mintable,omitempty"`
 }
 
-func (m *EventIssue) Reset()         { *m = EventIssue{} }
-func (m *EventIssue) String() string { return proto.CompactTextString(m) }
-func (*EventIssue) ProtoMessage()    {}
-func (*EventIssue) Descriptor() ([]byte, []int) {
+func (m *EventIssued) Reset()         { *m = EventIssued{} }
+func (m *EventIssued) String() string { return proto.CompactTextString(m) }
+func (*EventIssued) ProtoMessage()    {}
+func (*EventIssued) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d7505f4c4cdec18e, []int{3}
 }
-func (m *EventIssue) XXX_Unmarshal(b []byte) error {
+func (m *EventIssued) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventIssue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventIssued) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventIssue.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventIssued.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -394,73 +388,80 @@ func (m *EventIssue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *EventIssue) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventIssue.Merge(m, src)
+func (m *EventIssued) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventIssued.Merge(m, src)
 }
-func (m *EventIssue) XXX_Size() int {
+func (m *EventIssued) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventIssue) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventIssue.DiscardUnknown(m)
+func (m *EventIssued) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventIssued.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventIssue proto.InternalMessageInfo
+var xxx_messageInfo_EventIssued proto.InternalMessageInfo
 
-func (m *EventIssue) GetContractId() string {
+func (m *EventIssued) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *EventIssued) GetContractId() string {
 	if m != nil {
 		return m.ContractId
 	}
 	return ""
 }
 
-func (m *EventIssue) GetName() string {
+func (m *EventIssued) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *EventIssue) GetSymbol() string {
+func (m *EventIssued) GetSymbol() string {
 	if m != nil {
 		return m.Symbol
 	}
 	return ""
 }
 
-func (m *EventIssue) GetUri() string {
+func (m *EventIssued) GetUri() string {
 	if m != nil {
 		return m.Uri
 	}
 	return ""
 }
 
-func (m *EventIssue) GetMeta() string {
+func (m *EventIssued) GetMeta() string {
 	if m != nil {
 		return m.Meta
 	}
 	return ""
 }
 
-func (m *EventIssue) GetDecimals() int32 {
+func (m *EventIssued) GetDecimals() int32 {
 	if m != nil {
 		return m.Decimals
 	}
 	return 0
 }
 
-func (m *EventIssue) GetMintable() bool {
+func (m *EventIssued) GetMintable() bool {
 	if m != nil {
 		return m.Mintable
 	}
 	return false
 }
 
-// EventGrant is emitted when a granter grants its permission to a grantee.
+// EventGranted is emitted when a granter grants its permission to a grantee.
 //
 // Info: `granter` would be empty if the permission is granted by an issuance.
 //
 // Since: 0.46.0 (finschia)
-type EventGrant struct {
+type EventGranted struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address which granted the permission to `grantee`.
@@ -469,21 +470,21 @@ type EventGrant struct {
 	// address of the grantee.
 	Grantee string `protobuf:"bytes,3,opt,name=grantee,proto3" json:"grantee,omitempty"`
 	// permission on the token class.
-	Permission string `protobuf:"bytes,4,opt,name=permission,proto3" json:"permission,omitempty"`
+	Permission Permission `protobuf:"varint,4,opt,name=permission,proto3,enum=lbm.token.v1.Permission" json:"permission,omitempty"`
 }
 
-func (m *EventGrant) Reset()         { *m = EventGrant{} }
-func (m *EventGrant) String() string { return proto.CompactTextString(m) }
-func (*EventGrant) ProtoMessage()    {}
-func (*EventGrant) Descriptor() ([]byte, []int) {
+func (m *EventGranted) Reset()         { *m = EventGranted{} }
+func (m *EventGranted) String() string { return proto.CompactTextString(m) }
+func (*EventGranted) ProtoMessage()    {}
+func (*EventGranted) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d7505f4c4cdec18e, []int{4}
 }
-func (m *EventGrant) XXX_Unmarshal(b []byte) error {
+func (m *EventGranted) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventGrant) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventGranted) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventGrant.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventGranted.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -493,70 +494,70 @@ func (m *EventGrant) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *EventGrant) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventGrant.Merge(m, src)
+func (m *EventGranted) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventGranted.Merge(m, src)
 }
-func (m *EventGrant) XXX_Size() int {
+func (m *EventGranted) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventGrant) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventGrant.DiscardUnknown(m)
+func (m *EventGranted) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventGranted.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventGrant proto.InternalMessageInfo
+var xxx_messageInfo_EventGranted proto.InternalMessageInfo
 
-func (m *EventGrant) GetContractId() string {
+func (m *EventGranted) GetContractId() string {
 	if m != nil {
 		return m.ContractId
 	}
 	return ""
 }
 
-func (m *EventGrant) GetGranter() string {
+func (m *EventGranted) GetGranter() string {
 	if m != nil {
 		return m.Granter
 	}
 	return ""
 }
 
-func (m *EventGrant) GetGrantee() string {
+func (m *EventGranted) GetGrantee() string {
 	if m != nil {
 		return m.Grantee
 	}
 	return ""
 }
 
-func (m *EventGrant) GetPermission() string {
+func (m *EventGranted) GetPermission() Permission {
 	if m != nil {
 		return m.Permission
 	}
-	return ""
+	return PermissionUnspecified
 }
 
-// EventAbandon is emitted when a grantee abandons its permission.
+// EventRenounced is emitted when a grantee renounces its permission.
 //
 // Since: 0.46.0 (finschia)
-type EventAbandon struct {
+type EventRenounced struct {
 	// contract id associated with the token class.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address of the grantee which abandons its grant.
 	Grantee string `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
 	// permission on the token class.
-	Permission string `protobuf:"bytes,3,opt,name=permission,proto3" json:"permission,omitempty"`
+	Permission Permission `protobuf:"varint,3,opt,name=permission,proto3,enum=lbm.token.v1.Permission" json:"permission,omitempty"`
 }
 
-func (m *EventAbandon) Reset()         { *m = EventAbandon{} }
-func (m *EventAbandon) String() string { return proto.CompactTextString(m) }
-func (*EventAbandon) ProtoMessage()    {}
-func (*EventAbandon) Descriptor() ([]byte, []int) {
+func (m *EventRenounced) Reset()         { *m = EventRenounced{} }
+func (m *EventRenounced) String() string { return proto.CompactTextString(m) }
+func (*EventRenounced) ProtoMessage()    {}
+func (*EventRenounced) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d7505f4c4cdec18e, []int{5}
 }
-func (m *EventAbandon) XXX_Unmarshal(b []byte) error {
+func (m *EventRenounced) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventAbandon) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventRenounced) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventAbandon.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventRenounced.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -566,37 +567,37 @@ func (m *EventAbandon) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-func (m *EventAbandon) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventAbandon.Merge(m, src)
+func (m *EventRenounced) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventRenounced.Merge(m, src)
 }
-func (m *EventAbandon) XXX_Size() int {
+func (m *EventRenounced) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventAbandon) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventAbandon.DiscardUnknown(m)
+func (m *EventRenounced) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventRenounced.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventAbandon proto.InternalMessageInfo
+var xxx_messageInfo_EventRenounced proto.InternalMessageInfo
 
-func (m *EventAbandon) GetContractId() string {
+func (m *EventRenounced) GetContractId() string {
 	if m != nil {
 		return m.ContractId
 	}
 	return ""
 }
 
-func (m *EventAbandon) GetGrantee() string {
+func (m *EventRenounced) GetGrantee() string {
 	if m != nil {
 		return m.Grantee
 	}
 	return ""
 }
 
-func (m *EventAbandon) GetPermission() string {
+func (m *EventRenounced) GetPermission() Permission {
 	if m != nil {
 		return m.Permission
 	}
-	return ""
+	return PermissionUnspecified
 }
 
 // EventMinted is emitted when tokens are minted.
@@ -807,9 +808,9 @@ func init() {
 	proto.RegisterType((*EventSent)(nil), "lbm.token.v1.EventSent")
 	proto.RegisterType((*EventAuthorizedOperator)(nil), "lbm.token.v1.EventAuthorizedOperator")
 	proto.RegisterType((*EventRevokedOperator)(nil), "lbm.token.v1.EventRevokedOperator")
-	proto.RegisterType((*EventIssue)(nil), "lbm.token.v1.EventIssue")
-	proto.RegisterType((*EventGrant)(nil), "lbm.token.v1.EventGrant")
-	proto.RegisterType((*EventAbandon)(nil), "lbm.token.v1.EventAbandon")
+	proto.RegisterType((*EventIssued)(nil), "lbm.token.v1.EventIssued")
+	proto.RegisterType((*EventGranted)(nil), "lbm.token.v1.EventGranted")
+	proto.RegisterType((*EventRenounced)(nil), "lbm.token.v1.EventRenounced")
 	proto.RegisterType((*EventMinted)(nil), "lbm.token.v1.EventMinted")
 	proto.RegisterType((*EventBurned)(nil), "lbm.token.v1.EventBurned")
 	proto.RegisterType((*EventModified)(nil), "lbm.token.v1.EventModified")
@@ -818,65 +819,78 @@ func init() {
 func init() { proto.RegisterFile("lbm/token/v1/event.proto", fileDescriptor_d7505f4c4cdec18e) }
 
 var fileDescriptor_d7505f4c4cdec18e = []byte{
-	// 918 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x56, 0xcd, 0x92, 0xdb, 0x44,
-	0x10, 0x5e, 0x59, 0xf2, 0x5f, 0xdb, 0xde, 0x0c, 0x62, 0x8b, 0x28, 0x3a, 0x78, 0x27, 0x0e, 0x87,
-	0x25, 0x55, 0xd8, 0x95, 0x70, 0xe2, 0xe8, 0x25, 0x84, 0x72, 0x51, 0x4b, 0xb6, 0x9c, 0xcd, 0x85,
-	0x8b, 0x4b, 0xb2, 0x66, 0xbd, 0x53, 0x6b, 0xcd, 0xa8, 0x46, 0x23, 0x13, 0x73, 0x82, 0xab, 0x4e,
-	0xbc, 0x80, 0x0e, 0x3c, 0x01, 0x47, 0x5e, 0x21, 0xc7, 0x1c, 0x29, 0x0e, 0x29, 0x6a, 0xf7, 0x01,
-	0x78, 0x01, 0x0e, 0xd4, 0xcc, 0x48, 0xde, 0x35, 0x84, 0x4a, 0x60, 0xc9, 0x6d, 0xba, 0xbf, 0xd6,
-	0x7c, 0x5f, 0xf7, 0x74, 0xb7, 0x0d, 0xde, 0x32, 0x8c, 0x47, 0x92, 0x9f, 0x13, 0x36, 0x5a, 0x3d,
-	0x18, 0x91, 0x15, 0x61, 0x72, 0x98, 0x08, 0x2e, 0xb9, 0xdb, 0x5d, 0x86, 0xf1, 0x50, 0x23, 0xc3,
-	0xd5, 0x03, 0x7f, 0x6f, 0xc1, 0x17, 0x5c, 0x03, 0x23, 0x75, 0x32, 0x31, 0xfe, 0xf6, 0xd7, 0x26,
-	0x58, 0x23, 0x83, 0x9f, 0x2c, 0x68, 0x7f, 0xae, 0x6e, 0x7b, 0x4a, 0x98, 0x74, 0xf7, 0xa1, 0x33,
-	0xe7, 0x4c, 0x8a, 0x60, 0x2e, 0x67, 0x34, 0xf2, 0x2c, 0x6c, 0x1d, 0xb4, 0xa7, 0x50, 0xb9, 0x26,
-	0x91, 0xeb, 0x43, 0x8b, 0x27, 0x44, 0x04, 0x92, 0x0b, 0xaf, 0xa6, 0xd1, 0x8d, 0xed, 0xba, 0xe0,
-	0x9c, 0x0a, 0x1e, 0x7b, 0xb6, 0xf6, 0xeb, 0xb3, 0xbb, 0x0b, 0x35, 0xc9, 0x3d, 0x47, 0x7b, 0x6a,
-	0x92, 0xbb, 0x63, 0x68, 0x04, 0x31, 0xcf, 0x98, 0xf4, 0xea, 0xca, 0x77, 0xf8, 0xd1, 0x8b, 0x57,
-	0xfb, 0x3b, 0xbf, 0xbe, 0xda, 0xbf, 0xbb, 0xa0, 0xf2, 0x2c, 0x0b, 0x87, 0x73, 0x1e, 0x8f, 0x96,
-	0x94, 0x91, 0xd1, 0x32, 0x8c, 0x3f, 0x4e, 0xa3, 0xf3, 0x91, 0x5c, 0x27, 0x24, 0x1d, 0x4e, 0x98,
-	0x9c, 0x96, 0x1f, 0x0e, 0x18, 0xdc, 0xd6, 0x82, 0xc7, 0x99, 0x3c, 0xe3, 0x82, 0x7e, 0x4b, 0xa2,
-	0x27, 0x95, 0x82, 0x37, 0xca, 0xff, 0x00, 0x1a, 0x67, 0x7c, 0x19, 0x91, 0x4a, 0x7c, 0x69, 0x6d,
-	0xa5, 0x65, 0x6f, 0xa7, 0x35, 0x38, 0x87, 0x3d, 0xcd, 0x37, 0x25, 0x2b, 0x7e, 0xfe, 0xae, 0xc9,
-	0x7e, 0xb6, 0x00, 0x34, 0xdb, 0x24, 0x4d, 0x33, 0xf2, 0x66, 0x0e, 0x17, 0x1c, 0x16, 0xc4, 0xa4,
-	0x64, 0xd0, 0x67, 0xc5, 0x9b, 0xae, 0xe3, 0x90, 0x2f, 0xcb, 0xdb, 0x4b, 0xcb, 0x45, 0x60, 0x67,
-	0x82, 0x96, 0x8f, 0xa1, 0x8e, 0xea, 0xeb, 0x98, 0xc8, 0xc0, 0xbc, 0xc5, 0x54, 0x9f, 0x95, 0xba,
-	0x88, 0xcc, 0x69, 0x1c, 0x2c, 0x53, 0xaf, 0x81, 0xad, 0x83, 0xfa, 0x74, 0x63, 0x2b, 0x2c, 0xa6,
-	0x4c, 0x06, 0xe1, 0x92, 0x78, 0x4d, 0x6c, 0x1d, 0xb4, 0xa6, 0x1b, 0x7b, 0xf0, 0x7d, 0xa5, 0xfc,
-	0x0b, 0x11, 0xbc, 0x4d, 0x27, 0x79, 0xd0, 0x5c, 0xa8, 0xc8, 0x4d, 0x79, 0x2a, 0xf3, 0x0a, 0x21,
-	0x65, 0x02, 0x95, 0xe9, 0xf6, 0x01, 0x12, 0x22, 0x62, 0x9a, 0xa6, 0x94, 0xb3, 0x32, 0x91, 0x6b,
-	0x9e, 0x01, 0x85, 0xae, 0x69, 0x8d, 0x30, 0x60, 0x11, 0x67, 0xff, 0x42, 0x04, 0xd9, 0x16, 0xf1,
-	0x57, 0x2a, 0xfb, 0x6f, 0x54, 0x85, 0x05, 0x1d, 0xcd, 0x75, 0x44, 0x99, 0x24, 0xd1, 0xcd, 0x26,
-	0xc7, 0x4c, 0x89, 0xfd, 0x9a, 0x29, 0x71, 0xfe, 0xeb, 0x94, 0xfc, 0x58, 0xe9, 0x3b, 0xcc, 0x04,
-	0xbb, 0xa9, 0xbe, 0xd7, 0x4d, 0xf6, 0xff, 0xa0, 0xf1, 0x3b, 0x0b, 0x7a, 0xa6, 0x86, 0x3c, 0xa2,
-	0xa7, 0xf4, 0xa6, 0x2a, 0x1f, 0x42, 0x73, 0x7e, 0x16, 0xb0, 0x05, 0x49, 0x3d, 0x1b, 0xdb, 0x07,
-	0x9d, 0x87, 0xee, 0xf0, 0xfa, 0x6a, 0x1c, 0x1e, 0x07, 0x54, 0x1c, 0x3a, 0x4a, 0xe6, 0xb4, 0x0a,
-	0xbc, 0xff, 0x7b, 0xad, 0x5c, 0x7f, 0x27, 0xeb, 0x84, 0xb8, 0x18, 0x3a, 0x19, 0x4b, 0x13, 0x32,
-	0xd7, 0x6a, 0xd0, 0x8e, 0x7f, 0x2b, 0x2f, 0x70, 0xe7, 0xd9, 0x95, 0xcb, 0xbd, 0x03, 0x75, 0xaa,
-	0x26, 0x13, 0x59, 0xfe, 0x6e, 0x5e, 0x60, 0xd0, 0x63, 0x7a, 0xa2, 0x18, 0xdc, 0xdb, 0xe0, 0xa8,
-	0x61, 0x40, 0x35, 0xbf, 0x97, 0x17, 0xb8, 0xad, 0xfa, 0x62, 0x03, 0x84, 0x99, 0x60, 0xc8, 0x36,
-	0x80, 0x7a, 0x10, 0x03, 0x60, 0x68, 0x2b, 0x60, 0xa6, 0xea, 0x89, 0x1c, 0xff, 0xbd, 0xbc, 0xc0,
-	0xbd, 0x0d, 0xfa, 0x58, 0x15, 0xf9, 0x2e, 0x74, 0x63, 0x55, 0x9b, 0xf5, 0x4c, 0x67, 0x81, 0xea,
-	0x46, 0x91, 0xae, 0xd7, 0xda, 0x5c, 0xe2, 0x43, 0x4b, 0x8a, 0x80, 0xa5, 0xa7, 0x44, 0xa0, 0x86,
-	0xdf, 0xcd, 0x0b, 0xdc, 0x3a, 0x29, 0x6d, 0xf7, 0x1e, 0xf4, 0x2a, 0xcc, 0x90, 0x34, 0x7d, 0x94,
-	0x17, 0xb8, 0x5b, 0x05, 0x68, 0x8e, 0x01, 0x80, 0x6e, 0xfa, 0x99, 0xea, 0x6e, 0xd4, 0xf2, 0xdd,
-	0xbc, 0xc0, 0xbb, 0x7a, 0x88, 0x8f, 0x89, 0x88, 0x0d, 0xc9, 0x87, 0xd0, 0x11, 0x7a, 0xfd, 0x99,
-	0xa0, 0xb6, 0xff, 0x7e, 0x5e, 0xe0, 0x5b, 0x66, 0x23, 0x5e, 0x45, 0xdd, 0x83, 0x5e, 0x90, 0x24,
-	0x82, 0xaf, 0x48, 0x29, 0x17, 0x0c, 0xdd, 0xd8, 0x38, 0x75, 0xd0, 0xfd, 0x3f, 0x6a, 0xd0, 0x1d,
-	0x4b, 0x29, 0x68, 0x98, 0x49, 0xf2, 0x25, 0x59, 0xbf, 0x45, 0xd1, 0xcb, 0x25, 0x87, 0x2c, 0xbf,
-	0x95, 0x17, 0xd8, 0xf9, 0x6a, 0x6b, 0xc9, 0xa1, 0x9a, 0x0f, 0x79, 0x81, 0x1b, 0x4f, 0xcd, 0x92,
-	0x2b, 0x57, 0x1a, 0xb2, 0x4d, 0xec, 0x91, 0x5a, 0x69, 0xdb, 0x5d, 0x85, 0x1c, 0xf3, 0x74, 0x9f,
-	0x55, 0x5d, 0xf5, 0xc8, 0xdd, 0x83, 0x3a, 0xff, 0x86, 0x11, 0x81, 0xea, 0x7e, 0x3b, 0x2f, 0x70,
-	0xfd, 0x89, 0x32, 0x14, 0x85, 0x69, 0x54, 0xd4, 0x30, 0x14, 0x63, 0x6d, 0x5d, 0xdf, 0x90, 0xa8,
-	0x69, 0x2a, 0xfe, 0xa8, 0xda, 0x90, 0x77, 0xa0, 0x49, 0xe3, 0xc5, 0x2c, 0x13, 0x14, 0xb5, 0x0c,
-	0x34, 0x89, 0x83, 0x05, 0x79, 0x36, 0x9d, 0x5c, 0x5f, 0x9e, 0xa8, 0x6d, 0xb0, 0xa3, 0xd2, 0xae,
-	0x06, 0x0c, 0x81, 0x51, 0xfd, 0x78, 0xf3, 0xd3, 0x89, 0x3a, 0x7e, 0x23, 0x2f, 0x70, 0xed, 0x84,
-	0xab, 0x18, 0x5d, 0xfc, 0xae, 0x89, 0x51, 0x65, 0x57, 0x77, 0x96, 0x15, 0x17, 0xa8, 0x67, 0xee,
-	0x2c, 0x8b, 0x2d, 0x54, 0x52, 0x89, 0xe0, 0xcf, 0xd7, 0x68, 0xd7, 0x24, 0x75, 0xac, 0x8c, 0xc3,
-	0x4f, 0x5f, 0x5c, 0xf4, 0xad, 0x97, 0x17, 0x7d, 0xeb, 0xb7, 0x8b, 0xbe, 0xf5, 0xc3, 0x65, 0x7f,
-	0xe7, 0xe5, 0x65, 0x7f, 0xe7, 0x97, 0xcb, 0xfe, 0xce, 0xd7, 0xfb, 0xff, 0x34, 0xb8, 0xcf, 0xcd,
-	0x1f, 0x86, 0xb0, 0xa1, 0xff, 0x31, 0x7c, 0xf2, 0x67, 0x00, 0x00, 0x00, 0xff, 0xff, 0xb5, 0x32,
-	0x2c, 0x9c, 0x8b, 0x08, 0x00, 0x00,
+	// 1124 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x56, 0x4f, 0x6f, 0xe3, 0x44,
+	0x14, 0x8f, 0x9b, 0x34, 0x49, 0xa7, 0xdd, 0x32, 0x78, 0xd3, 0xd6, 0x6b, 0x50, 0x6a, 0x7a, 0x2a,
+	0x0b, 0x9b, 0xb0, 0x7f, 0x80, 0x5d, 0x6e, 0x4e, 0xe3, 0x56, 0x56, 0x6b, 0x3b, 0x9a, 0x38, 0x85,
+	0x72, 0x89, 0x9c, 0x64, 0x9a, 0x5a, 0x8d, 0x3d, 0x91, 0xe3, 0x94, 0x0d, 0x27, 0x2e, 0x48, 0x28,
+	0xe2, 0xc0, 0x17, 0xf0, 0x01, 0xc1, 0x81, 0x1b, 0x5f, 0x63, 0x8f, 0x2b, 0x24, 0x24, 0xc4, 0x61,
+	0x85, 0xda, 0x2f, 0x82, 0x66, 0x1c, 0xa7, 0x76, 0x5c, 0x58, 0x96, 0x85, 0xdb, 0x3c, 0xcf, 0xef,
+	0x37, 0xef, 0xf7, 0xe6, 0xbd, 0x37, 0xcf, 0x40, 0x18, 0x74, 0x9c, 0xaa, 0x4f, 0xce, 0xb1, 0x5b,
+	0xbd, 0xb8, 0x5f, 0xc5, 0x17, 0xd8, 0xf5, 0x2b, 0x43, 0x8f, 0xf8, 0x84, 0x5f, 0x1b, 0x74, 0x9c,
+	0x0a, 0xdb, 0xa9, 0x5c, 0xdc, 0x17, 0x4b, 0x7d, 0xd2, 0x27, 0x6c, 0xa3, 0x4a, 0x57, 0x21, 0x46,
+	0x4c, 0xb2, 0x43, 0x30, 0xdb, 0xd9, 0xf9, 0x99, 0x03, 0x2b, 0x0a, 0x3d, 0xad, 0x89, 0x5d, 0x9f,
+	0xdf, 0x06, 0xab, 0x5d, 0xe2, 0xfa, 0x9e, 0xd5, 0xf5, 0xdb, 0x76, 0x4f, 0xe0, 0x24, 0x6e, 0x77,
+	0x05, 0x81, 0xe8, 0x93, 0xda, 0xe3, 0x45, 0x50, 0x24, 0x43, 0xec, 0x59, 0x3e, 0xf1, 0x84, 0x25,
+	0xb6, 0x3b, 0xb7, 0x79, 0x1e, 0xe4, 0x4e, 0x3d, 0xe2, 0x08, 0x59, 0xf6, 0x9d, 0xad, 0xf9, 0x75,
+	0xb0, 0xe4, 0x13, 0x21, 0xc7, 0xbe, 0x2c, 0xf9, 0x84, 0x97, 0x41, 0xde, 0x72, 0xc8, 0xd8, 0xf5,
+	0x85, 0x65, 0xfa, 0xad, 0xf6, 0xee, 0xb3, 0x17, 0xdb, 0x99, 0xdf, 0x5f, 0x6c, 0xbf, 0xd3, 0xb7,
+	0xfd, 0xb3, 0x71, 0xa7, 0xd2, 0x25, 0x4e, 0x75, 0x60, 0xbb, 0xb8, 0x3a, 0xe8, 0x38, 0xf7, 0x46,
+	0xbd, 0xf3, 0xaa, 0x3f, 0x19, 0xe2, 0x51, 0x45, 0x75, 0x7d, 0x34, 0x23, 0xee, 0xb8, 0x60, 0x8b,
+	0x09, 0x96, 0xc7, 0xfe, 0x19, 0xf1, 0xec, 0x2f, 0x71, 0xcf, 0x88, 0x14, 0xbc, 0x54, 0xfe, 0x26,
+	0xc8, 0x9f, 0x91, 0x41, 0x0f, 0x47, 0xe2, 0x67, 0x56, 0x22, 0xac, 0x6c, 0x32, 0xac, 0x9d, 0x73,
+	0x50, 0x62, 0xfe, 0x10, 0xbe, 0x20, 0xe7, 0xff, 0xb7, 0xb3, 0x5f, 0x38, 0xb0, 0xca, 0xbc, 0xa9,
+	0xa3, 0xd1, 0x18, 0xf7, 0x78, 0x01, 0x14, 0xba, 0x1e, 0x66, 0xd0, 0xd0, 0x41, 0x64, 0x2e, 0xba,
+	0x5f, 0x4a, 0xb9, 0xe7, 0x41, 0xce, 0xb5, 0x1c, 0x1c, 0xa5, 0x83, 0xae, 0xa9, 0xa4, 0xd1, 0xc4,
+	0xe9, 0x90, 0xc1, 0x2c, 0x25, 0x33, 0x8b, 0x87, 0x20, 0x3b, 0xf6, 0xec, 0x30, 0x27, 0x88, 0x2e,
+	0x29, 0xdb, 0xc1, 0xbe, 0x25, 0xe4, 0x43, 0x36, 0x5d, 0x53, 0xe1, 0x3d, 0xdc, 0xb5, 0x1d, 0x6b,
+	0x30, 0x12, 0x0a, 0x12, 0xb7, 0xbb, 0x8c, 0xe6, 0x36, 0xdd, 0x73, 0x6c, 0xd7, 0xb7, 0x3a, 0x03,
+	0x2c, 0x14, 0x25, 0x6e, 0xb7, 0x88, 0xe6, 0xf6, 0x4e, 0xc0, 0x81, 0x35, 0x16, 0xd4, 0x81, 0x67,
+	0xb9, 0x3e, 0xee, 0xbd, 0xfc, 0xea, 0x04, 0x50, 0xe8, 0x33, 0x6c, 0x74, 0x77, 0x91, 0x79, 0xbd,
+	0x13, 0x05, 0x16, 0x99, 0xfc, 0x63, 0x00, 0x86, 0xd8, 0x73, 0xec, 0xd1, 0xc8, 0x26, 0x2e, 0x8b,
+	0x6f, 0xfd, 0x81, 0x50, 0x89, 0x37, 0x47, 0xa5, 0x31, 0xdf, 0x47, 0x31, 0xec, 0xce, 0xd7, 0x1c,
+	0x58, 0x9f, 0xa5, 0xd8, 0x25, 0x63, 0xb7, 0xfb, 0x4a, 0x0a, 0x71, 0x52, 0xe1, 0xa2, 0x8e, 0xec,
+	0x2b, 0xe8, 0x08, 0xa2, 0xe4, 0x6b, 0xf6, 0x3f, 0xbb, 0xa6, 0xbf, 0xeb, 0xc6, 0xb0, 0xf3, 0xb2,
+	0x37, 0x74, 0x5e, 0xee, 0xdf, 0x76, 0xde, 0xf7, 0x91, 0xbe, 0xda, 0xd8, 0x73, 0x5f, 0x57, 0xdf,
+	0x4d, 0xaf, 0xc5, 0x7f, 0xa0, 0xf1, 0x2b, 0x0e, 0xdc, 0x0a, 0xef, 0x90, 0xf4, 0xec, 0x53, 0xfb,
+	0x75, 0x55, 0x3e, 0x00, 0x85, 0xee, 0x99, 0xe5, 0xf6, 0xf1, 0x48, 0xc8, 0x4a, 0xd9, 0xdd, 0xd5,
+	0x07, 0xfc, 0x42, 0x26, 0x2d, 0xdb, 0xab, 0xe5, 0xa8, 0x4c, 0x14, 0x01, 0xef, 0xfe, 0x9a, 0x9b,
+	0x3d, 0xa9, 0xe6, 0x64, 0x88, 0xf9, 0x47, 0x60, 0x53, 0x39, 0x56, 0x74, 0xb3, 0x6d, 0x9e, 0x34,
+	0x94, 0x76, 0x4b, 0x6f, 0x36, 0x94, 0x3d, 0x75, 0x5f, 0x55, 0xea, 0x30, 0x23, 0x0a, 0xd3, 0x40,
+	0x2a, 0xcd, 0xa1, 0x2d, 0x77, 0x34, 0xc4, 0xdd, 0x50, 0xf4, 0x3d, 0x00, 0x63, 0x2c, 0xb5, 0xd9,
+	0x6c, 0x29, 0x90, 0x13, 0xb7, 0xa6, 0x81, 0x74, 0x7b, 0x8e, 0x67, 0x4f, 0x84, 0x49, 0x95, 0xf0,
+	0xef, 0x81, 0x37, 0x62, 0x70, 0x4d, 0xd5, 0x4d, 0xb8, 0x24, 0x6e, 0x4e, 0x03, 0x89, 0x9f, 0xa3,
+	0x69, 0x4d, 0xdd, 0x04, 0xae, 0xb5, 0x90, 0x0e, 0xb3, 0x0b, 0x60, 0x9a, 0xe0, 0x10, 0xfc, 0x08,
+	0x94, 0x16, 0xc0, 0xed, 0x7d, 0x64, 0x68, 0x30, 0x27, 0x8a, 0xd3, 0x40, 0xda, 0x4c, 0x33, 0xf6,
+	0x69, 0x22, 0x3f, 0x04, 0x5b, 0x71, 0x3d, 0x46, 0x5d, 0xdd, 0x3f, 0x69, 0x9b, 0xc6, 0xa1, 0xa2,
+	0xc3, 0xe5, 0x85, 0xa8, 0x59, 0x9e, 0x26, 0xa1, 0xb3, 0x0a, 0xb8, 0x1d, 0xa3, 0x99, 0x48, 0xd6,
+	0x9b, 0xfb, 0x0a, 0x82, 0x79, 0x71, 0x63, 0x1a, 0x48, 0x6f, 0xce, 0x29, 0xa6, 0x67, 0xb9, 0xa3,
+	0x53, 0xec, 0xf1, 0x1f, 0x03, 0xe1, 0x06, 0x7c, 0x28, 0xb0, 0x20, 0xde, 0x99, 0x06, 0xd2, 0x46,
+	0x8a, 0xc4, 0xf4, 0x7d, 0x04, 0x36, 0x62, 0xc4, 0x03, 0x24, 0xeb, 0x66, 0xbb, 0xa1, 0x20, 0x0d,
+	0x16, 0xc5, 0xb7, 0xa6, 0x81, 0xb4, 0x35, 0x67, 0xb1, 0x17, 0x8b, 0xb6, 0x6b, 0x28, 0xf0, 0x71,
+	0x22, 0x99, 0x48, 0x39, 0x36, 0x0e, 0x95, 0x90, 0xb8, 0x22, 0xbe, 0x3d, 0x0d, 0x24, 0x61, 0x4e,
+	0x0c, 0xa7, 0xc5, 0x35, 0x33, 0x29, 0x55, 0x6e, 0x34, 0x90, 0x71, 0xac, 0xcc, 0xae, 0x04, 0x2c,
+	0x48, 0x95, 0x87, 0x43, 0x8f, 0x5c, 0x84, 0xa9, 0x15, 0x8b, 0xdf, 0xfc, 0x50, 0xce, 0xfc, 0xf4,
+	0x63, 0x39, 0x73, 0xf7, 0xdb, 0x3c, 0x58, 0x93, 0x7d, 0xdf, 0xb3, 0x3b, 0x63, 0x1f, 0x1f, 0xe2,
+	0x09, 0xff, 0x09, 0xb8, 0x23, 0x9b, 0x26, 0x52, 0x6b, 0x2d, 0x53, 0x69, 0x1f, 0x2a, 0x27, 0x0b,
+	0xd5, 0xc5, 0x22, 0x89, 0x13, 0xe2, 0x05, 0xf6, 0x3e, 0xe0, 0x93, 0x5c, 0x5d, 0xd6, 0x68, 0x89,
+	0x95, 0xa6, 0x81, 0x04, 0xe3, 0x24, 0x9d, 0xce, 0x8d, 0x0f, 0x40, 0x29, 0x89, 0x6e, 0x9e, 0x68,
+	0x35, 0xe3, 0x28, 0x2a, 0xb2, 0x38, 0xbe, 0x19, 0x4e, 0x94, 0xd4, 0xf9, 0x9a, 0x62, 0xca, 0x30,
+	0x9b, 0x3e, 0x5f, 0xa3, 0x93, 0xe5, 0xc9, 0x62, 0x24, 0x7b, 0x86, 0x6e, 0x22, 0x79, 0xcf, 0x6c,
+	0xab, 0xf5, 0xa8, 0xd4, 0xe2, 0xa4, 0xbd, 0xa8, 0x7b, 0xeb, 0xb4, 0x66, 0x92, 0x54, 0xe3, 0x53,
+	0x5d, 0x41, 0x70, 0x39, 0xac, 0x99, 0x38, 0xc9, 0xf8, 0xc2, 0xc5, 0x5e, 0x3a, 0x14, 0x59, 0x33,
+	0x5a, 0xba, 0x09, 0xf3, 0xe9, 0x50, 0x64, 0xf6, 0xa4, 0xd0, 0x0e, 0x4e, 0x32, 0xea, 0xca, 0x9e,
+	0xaa, 0xc9, 0x47, 0x4d, 0x58, 0x08, 0x6b, 0x39, 0xce, 0xa9, 0x47, 0x03, 0xf1, 0x21, 0xd8, 0x48,
+	0xb2, 0x54, 0xed, 0xa0, 0xdd, 0x42, 0x2a, 0x2c, 0xa6, 0x49, 0xaa, 0x63, 0xf5, 0x71, 0x0b, 0xa9,
+	0x69, 0x57, 0xb4, 0x95, 0xe5, 0xda, 0x91, 0x02, 0x57, 0xd2, 0x2c, 0x6d, 0x36, 0x5f, 0xd3, 0x77,
+	0xcd, 0x1a, 0x00, 0xa4, 0xef, 0x9a, 0xd5, 0xfe, 0x2e, 0x80, 0x49, 0xb4, 0x69, 0xc0, 0x55, 0x91,
+	0x9f, 0x06, 0xd2, 0x7a, 0x1c, 0x6b, 0x92, 0xf4, 0xb9, 0xac, 0xd2, 0xd7, 0xd2, 0xe7, 0xd2, 0x32,
+	0x4f, 0x6b, 0x9f, 0x15, 0x39, 0x82, 0xb7, 0xd2, 0xda, 0x67, 0x25, 0xee, 0xa5, 0xd3, 0xd7, 0x40,
+	0xc6, 0x67, 0x27, 0x70, 0x3d, 0x9d, 0xbe, 0x86, 0x47, 0x9e, 0x4e, 0xae, 0xdb, 0xa1, 0xf6, 0xe4,
+	0xd9, 0x65, 0x99, 0x7b, 0x7e, 0x59, 0xe6, 0xfe, 0xb8, 0x2c, 0x73, 0xdf, 0x5d, 0x95, 0x33, 0xcf,
+	0xaf, 0xca, 0x99, 0xdf, 0xae, 0xca, 0x99, 0xcf, 0xb7, 0xff, 0x6a, 0x5c, 0x3c, 0x0d, 0x7f, 0x7d,
+	0x3b, 0x79, 0xf6, 0xef, 0xfb, 0xf0, 0xcf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x09, 0xc6, 0xf1, 0x28,
+	0x55, 0x0b, 0x00, 0x00,
 }
 
 func (m *EventSent) Marshal() (dAtA []byte, err error) {
@@ -1028,7 +1042,7 @@ func (m *EventRevokedOperator) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *EventIssue) Marshal() (dAtA []byte, err error) {
+func (m *EventIssued) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1038,12 +1052,12 @@ func (m *EventIssue) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *EventIssue) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventIssued) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventIssue) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventIssued) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1056,52 +1070,59 @@ func (m *EventIssue) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x38
+		dAtA[i] = 0x40
 	}
 	if m.Decimals != 0 {
 		i = encodeVarintEvent(dAtA, i, uint64(m.Decimals))
 		i--
-		dAtA[i] = 0x30
+		dAtA[i] = 0x38
 	}
 	if len(m.Meta) > 0 {
 		i -= len(m.Meta)
 		copy(dAtA[i:], m.Meta)
 		i = encodeVarintEvent(dAtA, i, uint64(len(m.Meta)))
 		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x32
 	}
 	if len(m.Uri) > 0 {
 		i -= len(m.Uri)
 		copy(dAtA[i:], m.Uri)
 		i = encodeVarintEvent(dAtA, i, uint64(len(m.Uri)))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x2a
 	}
 	if len(m.Symbol) > 0 {
 		i -= len(m.Symbol)
 		copy(dAtA[i:], m.Symbol)
 		i = encodeVarintEvent(dAtA, i, uint64(len(m.Symbol)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x22
 	}
 	if len(m.Name) > 0 {
 		i -= len(m.Name)
 		copy(dAtA[i:], m.Name)
 		i = encodeVarintEvent(dAtA, i, uint64(len(m.Name)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.ContractId) > 0 {
 		i -= len(m.ContractId)
 		copy(dAtA[i:], m.ContractId)
 		i = encodeVarintEvent(dAtA, i, uint64(len(m.ContractId)))
 		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintEvent(dAtA, i, uint64(len(m.Creator)))
+		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *EventGrant) Marshal() (dAtA []byte, err error) {
+func (m *EventGranted) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1111,22 +1132,20 @@ func (m *EventGrant) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *EventGrant) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventGranted) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventGrant) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventGranted) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Permission) > 0 {
-		i -= len(m.Permission)
-		copy(dAtA[i:], m.Permission)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.Permission)))
+	if m.Permission != 0 {
+		i = encodeVarintEvent(dAtA, i, uint64(m.Permission))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x20
 	}
 	if len(m.Grantee) > 0 {
 		i -= len(m.Grantee)
@@ -1152,7 +1171,7 @@ func (m *EventGrant) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *EventAbandon) Marshal() (dAtA []byte, err error) {
+func (m *EventRenounced) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1162,22 +1181,20 @@ func (m *EventAbandon) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *EventAbandon) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventRenounced) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventAbandon) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventRenounced) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Permission) > 0 {
-		i -= len(m.Permission)
-		copy(dAtA[i:], m.Permission)
-		i = encodeVarintEvent(dAtA, i, uint64(len(m.Permission)))
+	if m.Permission != 0 {
+		i = encodeVarintEvent(dAtA, i, uint64(m.Permission))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x18
 	}
 	if len(m.Grantee) > 0 {
 		i -= len(m.Grantee)
@@ -1435,12 +1452,16 @@ func (m *EventRevokedOperator) Size() (n int) {
 	return n
 }
 
-func (m *EventIssue) Size() (n int) {
+func (m *EventIssued) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovEvent(uint64(l))
+	}
 	l = len(m.ContractId)
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
@@ -1470,7 +1491,7 @@ func (m *EventIssue) Size() (n int) {
 	return n
 }
 
-func (m *EventGrant) Size() (n int) {
+func (m *EventGranted) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1488,14 +1509,13 @@ func (m *EventGrant) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	l = len(m.Permission)
-	if l > 0 {
-		n += 1 + l + sovEvent(uint64(l))
+	if m.Permission != 0 {
+		n += 1 + sovEvent(uint64(m.Permission))
 	}
 	return n
 }
 
-func (m *EventAbandon) Size() (n int) {
+func (m *EventRenounced) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1509,9 +1529,8 @@ func (m *EventAbandon) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovEvent(uint64(l))
 	}
-	l = len(m.Permission)
-	if l > 0 {
-		n += 1 + l + sovEvent(uint64(l))
+	if m.Permission != 0 {
+		n += 1 + sovEvent(uint64(m.Permission))
 	}
 	return n
 }
@@ -2095,7 +2114,7 @@ func (m *EventRevokedOperator) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *EventIssue) Unmarshal(dAtA []byte) error {
+func (m *EventIssued) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2118,13 +2137,45 @@ func (m *EventIssue) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventIssue: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventIssued: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventIssue: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventIssued: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvent
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvent
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ContractId", wireType)
 			}
@@ -2156,7 +2207,7 @@ func (m *EventIssue) Unmarshal(dAtA []byte) error {
 			}
 			m.ContractId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
@@ -2188,7 +2239,7 @@ func (m *EventIssue) Unmarshal(dAtA []byte) error {
 			}
 			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Symbol", wireType)
 			}
@@ -2220,7 +2271,7 @@ func (m *EventIssue) Unmarshal(dAtA []byte) error {
 			}
 			m.Symbol = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Uri", wireType)
 			}
@@ -2252,7 +2303,7 @@ func (m *EventIssue) Unmarshal(dAtA []byte) error {
 			}
 			m.Uri = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 5:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Meta", wireType)
 			}
@@ -2284,7 +2335,7 @@ func (m *EventIssue) Unmarshal(dAtA []byte) error {
 			}
 			m.Meta = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 6:
+		case 7:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Decimals", wireType)
 			}
@@ -2303,7 +2354,7 @@ func (m *EventIssue) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 7:
+		case 8:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Mintable", wireType)
 			}
@@ -2344,7 +2395,7 @@ func (m *EventIssue) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *EventGrant) Unmarshal(dAtA []byte) error {
+func (m *EventGranted) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2367,10 +2418,10 @@ func (m *EventGrant) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventGrant: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventGranted: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventGrant: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventGranted: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2470,10 +2521,10 @@ func (m *EventGrant) Unmarshal(dAtA []byte) error {
 			m.Grantee = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
-			if wireType != 2 {
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Permission", wireType)
 			}
-			var stringLen uint64
+			m.Permission = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowEvent
@@ -2483,24 +2534,11 @@ func (m *EventGrant) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				m.Permission |= Permission(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthEvent
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEvent
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Permission = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipEvent(dAtA[iNdEx:])
@@ -2522,7 +2560,7 @@ func (m *EventGrant) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *EventAbandon) Unmarshal(dAtA []byte) error {
+func (m *EventRenounced) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2545,10 +2583,10 @@ func (m *EventAbandon) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventAbandon: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventRenounced: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventAbandon: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventRenounced: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2616,10 +2654,10 @@ func (m *EventAbandon) Unmarshal(dAtA []byte) error {
 			m.Grantee = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
-			if wireType != 2 {
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Permission", wireType)
 			}
-			var stringLen uint64
+			m.Permission = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowEvent
@@ -2629,24 +2667,11 @@ func (m *EventAbandon) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				m.Permission |= Permission(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthEvent
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthEvent
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Permission = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipEvent(dAtA[iNdEx:])

@@ -14,8 +14,10 @@ const (
 	gasCostPerIteration = uint64(10)
 )
 
-var _ FeeAllowanceI = (*AllowedMsgAllowance)(nil)
-var _ types.UnpackInterfacesMessage = (*AllowedMsgAllowance)(nil)
+var (
+	_ FeeAllowanceI                 = (*AllowedMsgAllowance)(nil)
+	_ types.UnpackInterfacesMessage = (*AllowedMsgAllowance)(nil)
+)
 
 // UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
 func (a *AllowedMsgAllowance) UnpackInterfaces(unpacker types.AnyUnpacker) error {
@@ -53,11 +55,14 @@ func (a *AllowedMsgAllowance) GetAllowance() (FeeAllowanceI, error) {
 // SetAllowance sets allowed fee allowance.
 func (a *AllowedMsgAllowance) SetAllowance(allowance FeeAllowanceI) error {
 	var err error
-	a.Allowance, err = types.NewAnyWithValue(allowance.(proto.Message))
-	if err != nil {
+	protoAllowance, ok := allowance.(proto.Message)
+	if !ok {
 		return sdkerrors.Wrapf(sdkerrors.ErrPackAny, "cannot proto marshal %T", allowance)
 	}
-
+	a.Allowance, err = types.NewAnyWithValue(protoAllowance)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrPackAny, "cannot proto marshal %T", protoAllowance)
+	}
 	return nil
 }
 

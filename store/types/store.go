@@ -6,7 +6,7 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 	oststrings "github.com/line/ostracon/libs/strings"
-	tmdb "github.com/line/tm-db/v2"
+	dbm "github.com/tendermint/tm-db"
 
 	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
 	"github.com/line/lbm-sdk/types/kv"
@@ -15,18 +15,6 @@ import (
 type Store interface {
 	GetStoreType() StoreType
 	CacheWrapper
-}
-
-type Cache interface {
-	Set(key, value []byte)
-	Has(key []byte) bool
-	Get(dst, key []byte) []byte
-	Del(key []byte)
-	Stats() (hits, misses, entries, bytes uint64)
-}
-
-type CacheManager interface {
-	GetCache() Cache
 }
 
 // something that can persist to disk
@@ -110,7 +98,6 @@ func (s *StoreUpgrades) RenamedFrom(key string) string {
 		}
 	}
 	return ""
-
 }
 
 type MultiStore interface {
@@ -165,7 +152,7 @@ type CommitMultiStore interface {
 
 	// Mount a store of type using the given db.
 	// If db == nil, the new store will use the CommitMultiStore db.
-	MountStoreWithDB(key StoreKey, typ StoreType, db tmdb.DB)
+	MountStoreWithDB(key StoreKey, typ StoreType, db dbm.DB)
 
 	// Panics on a nil key.
 	GetCommitStore(key StoreKey) CommitStore
@@ -201,12 +188,14 @@ type CommitMultiStore interface {
 	// starting a new chain at an arbitrary height.
 	SetInitialVersion(version int64) error
 
-	// SetIAVLCacheManager sets the CacheManager that is holding nodedb cache of IAVL tree
-	// If a cacheManager is not set, then IAVL tree does not use cache
-	SetIAVLCacheManager(cacheManager CacheManager)
-
 	// SetIAVLCacheSize sets the cache size of the IAVL tree.
 	SetIAVLCacheSize(size int)
+
+	// SetIAVLDisableFastNode enables/disables fastnode feature on iavl.
+	SetIAVLDisableFastNode(disable bool)
+
+	// RollbackToVersion rollback the db to specific version(height).
+	RollbackToVersion(version int64) error
 }
 
 //---------subsp-------------------------------
@@ -216,7 +205,7 @@ type CommitMultiStore interface {
 type KVStore interface {
 	Store
 
-	// Get returns nil iff key doesn't exist. Panics on nil key.
+	// Get returns nil if key doesn't exist. Panics on nil key.
 	Get(key []byte) []byte
 
 	// Has checks if a key exists. Panics on nil key.
@@ -227,9 +216,6 @@ type KVStore interface {
 
 	// Delete deletes the key. Panics on nil key.
 	Delete(key []byte)
-
-	// Prefetch fetches the key'ed object, filling ibc & iavl cache along the way.
-	Prefetch(key []byte, forSet bool) (hits, misses int, value []byte)
 
 	// Iterator over a domain of keys in ascending order. End is exclusive.
 	// Start must be less than end, or the Iterator is invalid.
@@ -248,7 +234,7 @@ type KVStore interface {
 }
 
 // Iterator is an alias db's Iterator for convenience.
-type Iterator = tmdb.Iterator
+type Iterator = dbm.Iterator
 
 // CacheKVStore branches a KVStore and provides read cache functionality.
 // After calling .Write() on the CacheKVStore, all previously created

@@ -44,9 +44,11 @@ func (suite *FoundationTestSuite) TestQueryParams() {
 		expPass  bool
 	}{
 		{
-			"with enabled",
+			"with foundation tax",
 			func() {
-				params := &foundation.Params{Enabled: true}
+				params := foundation.Params{
+					FoundationTax: sdk.OneDec(),
+				}
 				suite.app.FoundationKeeper.SetParams(suite.ctx, params)
 
 				req = &foundation.QueryParamsRequest{}

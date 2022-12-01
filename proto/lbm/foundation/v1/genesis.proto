@@ -15,10 +15,10 @@ message GenesisState {
   option (gogoproto.goproto_getters) = false;
 
   // params defines the module parameters at genesis.
-  Params params = 1;
+  Params params = 1 [(gogoproto.nullable) = false];
 
   // foundation is the foundation info.
-  FoundationInfo foundation = 2;
+  FoundationInfo foundation = 2 [(gogoproto.nullable) = false];
 
   // members is the list of the foundation members.
   repeated Member members = 3 [(gogoproto.nullable) = false];
@@ -34,15 +34,20 @@ message GenesisState {
 
   // grants
   repeated GrantAuthorization authorizations = 7 [(gogoproto.nullable) = false];
+
+  // pool
+  Pool pool = 8 [(gogoproto.nullable) = false];
+
+  // gov_mint_count_left is the remaining number of times for gov_mint.
+  uint32 gov_mint_left_count = 9;
 }
 
 // GrantAuthorization defines authorization grant to grantee via route.
 message GrantAuthorization {
   option (gogoproto.goproto_getters) = false;
 
-  string granter = 1;
-  string grantee = 2;
+  string grantee = 1;
 
-  google.protobuf.Any authorization = 3
+  google.protobuf.Any authorization = 2
       [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/foundation.Authorization"];
 }

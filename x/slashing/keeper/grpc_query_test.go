@@ -37,13 +37,13 @@ func (suite *SlashingTestSuite) SetupTest() {
 
 	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 2, app.StakingKeeper.TokensFromConsensusPower(ctx, 200))
 
-	info1 := types.NewValidatorSigningInfo(addrDels[0].ToConsAddress(),
-		time.Unix(2, 0), false, int64(10), int64(3))
-	info2 := types.NewValidatorSigningInfo(addrDels[1].ToConsAddress(),
-		time.Unix(2, 0), false, int64(10), int64(4))
+	info1 := types.NewValidatorSigningInfo(sdk.ConsAddress(addrDels[0]), int64(4), int64(3),
+		time.Unix(2, 0), false, int64(10))
+	info2 := types.NewValidatorSigningInfo(sdk.ConsAddress(addrDels[1]), int64(5), int64(4),
+		time.Unix(2, 0), false, int64(10))
 
-	app.SlashingKeeper.SetValidatorSigningInfo(ctx, addrDels[0].ToConsAddress(), info1)
-	app.SlashingKeeper.SetValidatorSigningInfo(ctx, addrDels[1].ToConsAddress(), info2)
+	app.SlashingKeeper.SetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]), info1)
+	app.SlashingKeeper.SetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[1]), info2)
 
 	suite.app = app
 	suite.ctx = ctx
@@ -70,7 +70,7 @@ func (suite *SlashingTestSuite) TestGRPCSigningInfo() {
 	suite.Error(err)
 	suite.Nil(infoResp)
 
-	consAddr := suite.addrDels[0].ToConsAddress()
+	consAddr := sdk.ConsAddress(suite.addrDels[0])
 	info, found := suite.app.SlashingKeeper.GetValidatorSigningInfo(suite.ctx, consAddr)
 	suite.True(found)
 
@@ -91,7 +91,7 @@ func (suite *SlashingTestSuite) TestGRPCSigningInfos() {
 	})
 
 	// verify all values are returned without pagination
-	var infoResp, err = queryClient.SigningInfos(gocontext.Background(),
+	infoResp, err := queryClient.SigningInfos(gocontext.Background(),
 		&types.QuerySigningInfosRequest{Pagination: nil})
 	suite.NoError(err)
 	suite.Equal(signingInfos, infoResp.Info)

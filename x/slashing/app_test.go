@@ -20,15 +20,15 @@ import (
 
 var (
 	priv1 = secp256k1.GenPrivKey()
-	addr1 = sdk.BytesToAccAddress(priv1.PubKey().Address())
+	addr1 = sdk.AccAddress(priv1.PubKey().Address())
 
 	valKey  = ed25519.GenPrivKey()
-	valAddr = sdk.BytesToAccAddress(valKey.PubKey().Address())
+	valAddr = sdk.AccAddress(valKey.PubKey().Address())
 )
 
 func checkValidator(t *testing.T, app *simapp.SimApp, _ sdk.AccAddress, expFound bool) stakingtypes.Validator {
 	ctxCheck := app.BaseApp.NewContext(true, ocproto.Header{})
-	validator, found := app.StakingKeeper.GetValidator(ctxCheck, addr1.ToValAddress())
+	validator, found := app.StakingKeeper.GetValidator(ctxCheck, sdk.ValAddress(addr1))
 	require.Equal(t, expFound, found)
 	return validator
 }
@@ -64,7 +64,7 @@ func TestSlashingMsgs(t *testing.T) {
 	commission := stakingtypes.NewCommissionRates(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
 
 	createValidatorMsg, err := stakingtypes.NewMsgCreateValidator(
-		addr1.ToValAddress(), valKey.PubKey(), bondCoin, description, commission, sdk.OneInt(),
+		sdk.ValAddress(addr1), valKey.PubKey(), bondCoin, description, commission, sdk.OneInt(),
 	)
 	require.NoError(t, err)
 
@@ -78,12 +78,12 @@ func TestSlashingMsgs(t *testing.T) {
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 	validator := checkValidator(t, app, addr1, true)
-	require.Equal(t, addr1.ToValAddress().String(), validator.OperatorAddress)
+	require.Equal(t, sdk.ValAddress(addr1).String(), validator.OperatorAddress)
 	require.Equal(t, stakingtypes.Bonded, validator.Status)
 	require.True(sdk.IntEq(t, bondTokens, validator.BondedTokens()))
-	unjailMsg := &types.MsgUnjail{ValidatorAddr: addr1.ToValAddress().String()}
+	unjailMsg := &types.MsgUnjail{ValidatorAddr: sdk.ValAddress(addr1).String()}
 
-	checkValidatorSigningInfo(t, app, valAddr.ToConsAddress(), true)
+	checkValidatorSigningInfo(t, app, sdk.ConsAddress(valAddr), true)
 
 	// unjail should fail with unknown validator
 	header = ocproto.Header{Height: app.LastBlockHeight() + 1}
