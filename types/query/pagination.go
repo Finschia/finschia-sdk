@@ -55,7 +55,6 @@ func Paginate(
 	pageRequest *PageRequest,
 	onResult func(key []byte, value []byte) error,
 ) (*PageResponse, error) {
-
 	// if the PageRequest is nil, use default PageRequest
 	if pageRequest == nil {
 		pageRequest = &PageRequest{}

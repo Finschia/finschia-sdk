@@ -6,9 +6,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 )
 
-var (
-	amino = codec.NewLegacyAmino()
-)
+var amino = codec.NewLegacyAmino()
 
 func init() {
 	cryptocodec.RegisterCrypto(amino)

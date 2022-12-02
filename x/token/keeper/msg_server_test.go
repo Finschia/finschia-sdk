@@ -412,7 +412,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			req := &token.MsgModify{
 				ContractId: s.contractID,
 				Owner:      tc.grantee.String(),
-				Changes:    []token.Pair{{Field: token.AttributeKeyName.String(), Value: "hello"}},
+				Changes:    []token.Pair{{Field: token.AttributeKeyImageURI.String(), Value: "uri"}},
 			}
 			res, err := s.msgServer.Modify(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {

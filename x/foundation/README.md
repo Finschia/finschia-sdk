@@ -350,7 +350,7 @@ Authorization) tuple.
 
 The `MsgUpdateParams` can be used to update the parameters of `foundation`.
 
-+++ https://github.com/line/lbm-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/proto/lbm/foundation/v1/tx.proto#L62-L71
++++ https://github.com/line/lbm-sdk/blob/f682f758268c19dd93958abbbaf697f51e6991b3/proto/lbm/foundation/v1/tx.proto#L62-L71
 
 It's expected to fail if:
 
@@ -361,7 +361,7 @@ It's expected to fail if:
 
 The `MsgUpdateDecisionPolicy` can be used to update the decision policy.
 
-+++ https://github.com/line/lbm-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/proto/lbm/foundation/v1/tx.proto#L110-L117
++++ https://github.com/line/lbm-sdk/blob/f682f758268c19dd93958abbbaf697f51e6991b3/proto/lbm/foundation/v1/tx.proto#L111-L118
 
 It's expected to fail if:
 
@@ -372,7 +372,7 @@ It's expected to fail if:
 
 Foundation members can be updated with the `MsgUpdateMembers`.
 
-+++ https://github.com/line/lbm-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/proto/lbm/foundation/v1/tx.proto#L97-L105
++++ https://github.com/line/lbm-sdk/blob/f682f758268c19dd93958abbbaf697f51e6991b3/proto/lbm/foundation/v1/tx.proto#L98-L106
 
 In the list of `MemberUpdates`, an existing member can be removed by setting
 its `remove` flag to true.
@@ -456,7 +456,7 @@ If there is already a grant for the `(grantee, Authorization)` tuple, then the
 new grant overwrites the previous one. To update or extend an existing grant, a
 new grant with the same `(grantee, Authorization)` tuple should be created.
 
-+++ https://github.com/line/lbm-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/proto/lbm/foundation/v1/tx.proto#L214-L222
++++ https://github.com/line/lbm-sdk/blob/f682f758268c19dd93958abbbaf697f51e6991b3/proto/lbm/foundation/v1/tx.proto#L215-L224
 
 The message handling should fail if:
 
@@ -471,7 +471,7 @@ The message handling should fail if:
 
 A grant can be removed with the `MsgRevoke` message.
 
-+++ https://github.com/line/lbm-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/proto/lbm/foundation/v1/tx.proto#L227-L232
++++ https://github.com/line/lbm-sdk/blob/f682f758268c19dd93958abbbaf697f51e6991b3/proto/lbm/foundation/v1/tx.proto#L229-L235
 
 The message handling should fail if:
 
@@ -489,7 +489,7 @@ Anyone can fund treasury with `MsgFundTreasury`.
 The foundation can withdraw coins from the treasury with
 `MsgWithdrawFromTreasury`.
 
-+++ https://github.com/line/lbm-sdk/blob/392277a33519d289154e8da27f05f9a6788ab076/proto/lbm/foundation/v1/tx.proto#L86-L92
++++ https://github.com/line/lbm-sdk/blob/f682f758268c19dd93958abbbaf697f51e6991b3/proto/lbm/foundation/v1/tx.proto#L86-L93
 
 The message handling should fail if:
 
@@ -501,7 +501,7 @@ The message handling should fail if:
 
 Massive minting is possible through 'MsgGovMint' up to 1 time after the chain is started.
 
-+++ https://github.com/line/lbm-sdk/blob/66988a235a0e01f7a1ee76d719d585ff35f0d176/proto/lbm/foundation/v1/tx.proto#L221-L225
++++ https://github.com/line/lbm-sdk/blob/f682f758268c19dd93958abbbaf697f51e6991b3/proto/lbm/foundation/v1/tx.proto#L240-L246
 
 The message handling should fail if:
 
@@ -1049,7 +1049,7 @@ simd tx foundation update-decision-policy link1... \
 The `submit-proposal` command allows users to submit a new proposal.
 
 ```bash
-simd tx foundation submit-proposal [metadata] [proposers-json] [proposers-json] [messages-json] [flags]
+simd tx foundation submit-proposal [metadata] [proposers-json] [messages-json] [flags]
 ```
 
 Example:

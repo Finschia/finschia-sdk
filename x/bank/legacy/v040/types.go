@@ -1,7 +1,7 @@
 package v040
 
 import (
-	"github.com/golang/protobuf/proto" // nolint: staticcheck
+	"github.com/golang/protobuf/proto" //nolint:staticcheck
 
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/x/bank/types"
@@ -25,7 +25,7 @@ type SupplyI interface {
 func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	registry.RegisterInterface(
 		"cosmos.bank.v1beta1.SupplyI",
-		(*SupplyI)(nil), // nolint: staticcheck
-		&types.Supply{}, // nolint: staticcheck
+		(*SupplyI)(nil),
+		&types.Supply{}, //nolint:staticcheck
 	)
 }

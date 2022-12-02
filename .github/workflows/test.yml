@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - main
+      - rc*/*
+      - release/*
 jobs:
   cleanup-runs:
     runs-on: ubuntu-latest
@@ -26,7 +28,7 @@ jobs:
         run: go version
       - name: install tparse
         run: |
-          export GO111MODULE="on" && go install github.com/mfridman/tparse@v0.8.3
+          go install github.com/mfridman/tparse@v0.8.3
       - uses: actions/cache@v3.0.11
         with:
           path: ~/go/bin
@@ -57,6 +59,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
+            .github/workflows/test.yml
       - name: Build
         run: GOOS=linux CGO_ENABLED=1 GOARCH=${{ matrix.goarch }} CC=${{ matrix.gcc }} LEDGER_ENABLED=false make build
 
@@ -126,16 +129,23 @@ jobs:
             **/**.go
             go.mod
             go.sum
+            .github/workflows/test.yml
       - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-${{ matrix.part }}"
+        if: env.GIT_DIFF
+      - name: install libsodium
+        run: |
+          make libsodium
         if: env.GIT_DIFF
       - name: test & coverage report creation
         env:
           USE_PRELOAD: 1,4
           SAVE_BRANCH_LAUNCH_DEPTH: 1
+          CGO_CFLAGS: "-I${{ github.workspace }}/tools/sodium/linux_amd64/include"
+          CGO_LDFLAGS: "-L${{ github.workspace }}/tools/sodium/linux_amd64/lib -lsodium"
         run: |
-          cat pkgs.txt.part.${{ matrix.part }} | xargs go test -mod=readonly -timeout 30m -coverprofile=${{ matrix.part }}profile.out -covermode=atomic -tags='norace ledger test_ledger_mock goleveldb'
+          cat pkgs.txt.part.${{ matrix.part }} | xargs go test -mod=readonly -timeout 30m -coverprofile=${{ matrix.part }}profile.out -covermode=atomic -tags='norace ledger test_ledger_mock goleveldb gcc libsodium'
         if: env.GIT_DIFF
       - uses: actions/upload-artifact@v3
         with:
@@ -153,6 +163,7 @@ jobs:
             **/**.go
             go.mod
             go.sum
+            .github/workflows/test.yml
       - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-00-coverage"
@@ -206,17 +217,24 @@ jobs:
             **/**.go
             go.mod
             go.sum
+            .github/workflows/test.yml
       - uses: actions/download-artifact@v3
         with:
           name: "${{ github.sha }}-${{ matrix.part }}"
+        if: env.GIT_DIFF
+      - name: install libsodium
+        run: |
+          make libsodium
         if: env.GIT_DIFF
       - name: test & coverage report creation
         env:
           USE_PREFETCH: NO
           USE_PRELOAD: 1,4
           SAVE_BRANCH_LAUNCH_DEPTH: 1
+          CGO_CFLAGS: "-I${{ github.workspace }}/tools/sodium/linux_amd64/include"
+          CGO_LDFLAGS: "-L${{ github.workspace }}/tools/sodium/linux_amd64/lib -lsodium"
         run: |
-          xargs --arg-file=pkgs.txt.part.${{ matrix.part }} go test -mod=readonly -timeout 30m -race -tags='cgo ledger test_ledger_mock goleveldb'
+          xargs --arg-file=pkgs.txt.part.${{ matrix.part }} go test -mod=readonly -timeout 30m -race -tags='cgo ledger test_ledger_mock goleveldb gcc libsodium'
         if: env.GIT_DIFF
       - uses: actions/upload-artifact@v3
         with:

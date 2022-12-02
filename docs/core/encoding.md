@@ -74,8 +74,8 @@ add the following code inside the `init` method of their module's `codec.go` fil
 
 ```go
 import (
-  authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
-  govcodec "github.com/cosmos/cosmos-sdk/x/gov/codec"
+  authzcodec "github.com/line/lbm-sdk/x/authz/codec"
+  govcodec "github.com/line/lbm-sdk/x/gov/codec"
 )
 
 init() {

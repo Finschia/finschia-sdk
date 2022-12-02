@@ -2,7 +2,6 @@ package cachekv
 
 import (
 	"bytes"
-	"sync"
 
 	dbm "github.com/tendermint/tm-db"
 
@@ -29,7 +28,7 @@ func IsKeyInDomain(key, start, end []byte) bool {
 	return true
 }
 
-func newMemIterator(start, end []byte, items *dbm.MemDB, deleted *sync.Map, ascending bool) *memIterator {
+func newMemIterator(start, end []byte, items *dbm.MemDB, deleted map[string]struct{}, ascending bool) *memIterator {
 	var iter types.Iterator
 	var err error
 
@@ -43,17 +42,11 @@ func newMemIterator(start, end []byte, items *dbm.MemDB, deleted *sync.Map, asce
 		panic(err)
 	}
 
-	newDeleted := make(map[string]struct{})
-	deleted.Range(func(key, value interface{}) bool {
-		newDeleted[key.(string)] = value.(struct{})
-		return true
-	})
-
 	return &memIterator{
 		Iterator: iter,
 
 		lastKey: nil,
-		deleted: newDeleted,
+		deleted: deleted,
 	}
 }
 
