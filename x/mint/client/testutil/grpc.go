@@ -29,7 +29,7 @@ func (s *IntegrationTestSuite) TestQueryGRPC() {
 			&minttypes.QueryParamsResponse{},
 			&minttypes.QueryParamsResponse{
 				Params: minttypes.NewParams("stake", sdk.NewDecWithPrec(13, 2), sdk.NewDecWithPrec(100, 2),
-					sdk.NewDec(1), sdk.NewDecWithPrec(67, 2), (60 * 60 * 8766 / 5)),
+					sdk.NewDec(1), sdk.NewDecWithPrec(67, 2), 60*60*8766/5),
 			},
 		},
 		{
@@ -54,6 +54,7 @@ func (s *IntegrationTestSuite) TestQueryGRPC() {
 		},
 	}
 	for _, tc := range testCases {
+		tc := tc
 		resp, err := testutil.GetRequestWithHeaders(tc.url, tc.headers)
 		s.Run(tc.name, func() {
 			s.Require().NoError(err)
