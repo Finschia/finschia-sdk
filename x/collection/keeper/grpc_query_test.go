@@ -2,6 +2,8 @@ package keeper_test
 
 import (
 	"github.com/gogo/protobuf/proto"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/query"
@@ -18,14 +20,13 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 		contractID string
 		address    sdk.AccAddress
 		tokenID    string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryBalanceResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			address:    s.vendor,
 			tokenID:    tokenID,
-			valid:      true,
 			postTest: func(res *collection.QueryBalanceResponse) {
 				expected := collection.NewCoin(tokenID, s.balance)
 				s.Require().Equal(expected, res.Balance)
@@ -34,14 +35,17 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 		"invalid contract id": {
 			address: s.vendor,
 			tokenID: tokenID,
+			code:    codes.InvalidArgument,
 		},
 		"invalid address": {
 			contractID: s.contractID,
 			tokenID:    tokenID,
+			code:       codes.InvalidArgument,
 		},
-		"valid token id": {
+		"invalid token id": {
 			contractID: s.contractID,
 			address:    s.vendor,
+			code:       codes.InvalidArgument,
 		},
 	}
 
@@ -53,12 +57,15 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 				TokenId:    tc.tokenID,
 			}
 			res, err := s.queryServer.Balance(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -72,14 +79,13 @@ func (s *KeeperTestSuite) TestQueryAllBalances() {
 	testCases := map[string]struct {
 		contractID string
 		address    sdk.AccAddress
-		valid      bool
+		code       codes.Code
 		count      uint64
 		postTest   func(res *collection.QueryAllBalancesResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			address:    s.customer,
-			valid:      true,
 			postTest: func(res *collection.QueryAllBalancesResponse) {
 				s.Require().Equal(s.numNFTs+1, len(res.Balances))
 			},
@@ -87,7 +93,6 @@ func (s *KeeperTestSuite) TestQueryAllBalances() {
 		"valid request with limit": {
 			contractID: s.contractID,
 			address:    s.customer,
-			valid:      true,
 			count:      1,
 			postTest: func(res *collection.QueryAllBalancesResponse) {
 				s.Require().Equal(1, len(res.Balances))
@@ -95,9 +100,11 @@ func (s *KeeperTestSuite) TestQueryAllBalances() {
 		},
 		"invalid contract id": {
 			address: s.customer,
+			code:    codes.InvalidArgument,
 		},
 		"invalid address": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 	}
 
@@ -113,12 +120,15 @@ func (s *KeeperTestSuite) TestQueryAllBalances() {
 				Pagination: pageReq,
 			}
 			res, err := s.queryServer.AllBalances(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -133,26 +143,28 @@ func (s *KeeperTestSuite) TestQueryFTSupply() {
 	testCases := map[string]struct {
 		contractID string
 		tokenID    string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryFTSupplyResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			tokenID:    tokenID,
-			valid:      true,
 			postTest: func(res *collection.QueryFTSupplyResponse) {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Supply)
 			},
 		},
 		"invalid contract id": {
 			tokenID: tokenID,
+			code:    codes.InvalidArgument,
 		},
 		"invalid token id": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 		"no such a token": {
 			contractID: s.contractID,
 			tokenID:    collection.NewFTID("00bab10c"),
+			code:       codes.NotFound,
 		},
 	}
 
@@ -163,12 +175,15 @@ func (s *KeeperTestSuite) TestQueryFTSupply() {
 				TokenId:    tc.tokenID,
 			}
 			res, err := s.queryServer.FTSupply(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -183,26 +198,28 @@ func (s *KeeperTestSuite) TestQueryFTMinted() {
 	testCases := map[string]struct {
 		contractID string
 		tokenID    string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryFTMintedResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			tokenID:    tokenID,
-			valid:      true,
 			postTest: func(res *collection.QueryFTMintedResponse) {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(6)), res.Minted)
 			},
 		},
 		"invalid contract id": {
 			tokenID: tokenID,
+			code:    codes.InvalidArgument,
 		},
 		"invalid token id": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 		"no such a token": {
 			contractID: s.contractID,
 			tokenID:    collection.NewFTID("00bab10c"),
+			code:       codes.NotFound,
 		},
 	}
 
@@ -213,12 +230,15 @@ func (s *KeeperTestSuite) TestQueryFTMinted() {
 				TokenId:    tc.tokenID,
 			}
 			res, err := s.queryServer.FTMinted(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -233,26 +253,28 @@ func (s *KeeperTestSuite) TestQueryFTBurnt() {
 	testCases := map[string]struct {
 		contractID string
 		tokenID    string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryFTBurntResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			tokenID:    tokenID,
-			valid:      true,
 			postTest: func(res *collection.QueryFTBurntResponse) {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Burnt)
 			},
 		},
 		"invalid contract id": {
 			tokenID: tokenID,
+			code:    codes.InvalidArgument,
 		},
 		"invalid token id": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 		"no such a token": {
 			contractID: s.contractID,
 			tokenID:    collection.NewFTID("00bab10c"),
+			code:       codes.NotFound,
 		},
 	}
 
@@ -263,12 +285,15 @@ func (s *KeeperTestSuite) TestQueryFTBurnt() {
 				TokenId:    tc.tokenID,
 			}
 			res, err := s.queryServer.FTBurnt(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -282,26 +307,28 @@ func (s *KeeperTestSuite) TestQueryNFTSupply() {
 	testCases := map[string]struct {
 		contractID string
 		tokenType  string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryNFTSupplyResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			tokenType:  s.nftClassID,
-			valid:      true,
 			postTest: func(res *collection.QueryNFTSupplyResponse) {
 				s.Require().EqualValues(s.numNFTs*3, res.Supply.Int64())
 			},
 		},
 		"invalid contract id": {
 			tokenType: s.nftClassID,
+			code:      codes.InvalidArgument,
 		},
 		"invalid token type": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 		"no such a token type": {
 			contractID: s.contractID,
 			tokenType:  "deadbeef",
+			code:       codes.NotFound,
 		},
 	}
 
@@ -312,12 +339,15 @@ func (s *KeeperTestSuite) TestQueryNFTSupply() {
 				TokenType:  tc.tokenType,
 			}
 			res, err := s.queryServer.NFTSupply(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -331,26 +361,28 @@ func (s *KeeperTestSuite) TestQueryNFTMinted() {
 	testCases := map[string]struct {
 		contractID string
 		tokenType  string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryNFTMintedResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			tokenType:  s.nftClassID,
-			valid:      true,
 			postTest: func(res *collection.QueryNFTMintedResponse) {
 				s.Require().EqualValues(s.numNFTs*3, res.Minted.Int64())
 			},
 		},
 		"invalid contract id": {
 			tokenType: s.nftClassID,
+			code:      codes.InvalidArgument,
 		},
 		"invalid token type": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 		"no such a token type": {
 			contractID: s.contractID,
 			tokenType:  "deadbeef",
+			code:       codes.NotFound,
 		},
 	}
 
@@ -361,12 +393,15 @@ func (s *KeeperTestSuite) TestQueryNFTMinted() {
 				TokenType:  tc.tokenType,
 			}
 			res, err := s.queryServer.NFTMinted(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -380,26 +415,28 @@ func (s *KeeperTestSuite) TestQueryNFTBurnt() {
 	testCases := map[string]struct {
 		contractID string
 		tokenType  string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryNFTBurntResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			tokenType:  s.nftClassID,
-			valid:      true,
 			postTest: func(res *collection.QueryNFTBurntResponse) {
 				s.Require().Equal(sdk.ZeroInt(), res.Burnt)
 			},
 		},
 		"invalid contract id": {
 			tokenType: s.nftClassID,
+			code:      codes.InvalidArgument,
 		},
 		"invalid token type": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 		"no such a token type": {
 			contractID: s.contractID,
 			tokenType:  "deadbeef",
+			code:       codes.NotFound,
 		},
 	}
 
@@ -410,12 +447,15 @@ func (s *KeeperTestSuite) TestQueryNFTBurnt() {
 				TokenType:  tc.tokenType,
 			}
 			res, err := s.queryServer.NFTBurnt(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -428,19 +468,21 @@ func (s *KeeperTestSuite) TestQueryContract() {
 
 	testCases := map[string]struct {
 		contractID string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryContractResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			valid:      true,
 			postTest: func(res *collection.QueryContractResponse) {
 				s.Require().Equal(s.contractID, res.Contract.ContractId)
 			},
 		},
-		"invalid contract id": {},
+		"invalid contract id": {
+			code: codes.InvalidArgument,
+		},
 		"no such an id": {
 			contractID: "deadbeef",
+			code:       codes.NotFound,
 		},
 	}
 
@@ -450,12 +492,15 @@ func (s *KeeperTestSuite) TestQueryContract() {
 				ContractId: tc.contractID,
 			}
 			res, err := s.queryServer.Contract(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -469,26 +514,28 @@ func (s *KeeperTestSuite) TestQueryTokenClassTypeName() {
 	testCases := map[string]struct {
 		contractID string
 		classID    string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryTokenClassTypeNameResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			classID:    s.ftClassID,
-			valid:      true,
 			postTest: func(res *collection.QueryTokenClassTypeNameResponse) {
 				s.Require().Equal(proto.MessageName(&collection.FTClass{}), res.Name)
 			},
 		},
 		"invalid contract id": {
 			classID: s.ftClassID,
+			code:    codes.InvalidArgument,
 		},
 		"invalid class id": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 		"no such a class": {
 			contractID: s.contractID,
 			classID:    "00bab10c",
+			code:       codes.NotFound,
 		},
 	}
 
@@ -499,12 +546,15 @@ func (s *KeeperTestSuite) TestQueryTokenClassTypeName() {
 				ClassId:    tc.classID,
 			}
 			res, err := s.queryServer.TokenClassTypeName(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -518,13 +568,12 @@ func (s *KeeperTestSuite) TestQueryTokenType() {
 	testCases := map[string]struct {
 		contractID string
 		tokenType  string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryTokenTypeResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			tokenType:  s.nftClassID,
-			valid:      true,
 			postTest: func(res *collection.QueryTokenTypeResponse) {
 				s.Require().Equal(s.contractID, res.TokenType.ContractId)
 				s.Require().Equal(s.nftClassID, res.TokenType.TokenType)
@@ -532,17 +581,21 @@ func (s *KeeperTestSuite) TestQueryTokenType() {
 		},
 		"invalid contract id": {
 			tokenType: s.nftClassID,
+			code:      codes.InvalidArgument,
 		},
 		"invalid token type": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 		"no such a token type": {
 			contractID: s.contractID,
 			tokenType:  "deadbeef",
+			code:       codes.NotFound,
 		},
 		"not a class of nft": {
 			contractID: s.contractID,
 			tokenType:  s.ftClassID,
+			code:       codes.InvalidArgument,
 		},
 	}
 
@@ -553,12 +606,15 @@ func (s *KeeperTestSuite) TestQueryTokenType() {
 				TokenType:  tc.tokenType,
 			}
 			res, err := s.queryServer.TokenType(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -571,26 +627,26 @@ func (s *KeeperTestSuite) TestQueryTokenTypes() {
 
 	testCases := map[string]struct {
 		contractID string
-		valid      bool
+		code       codes.Code
 		count      uint64
 		postTest   func(res *collection.QueryTokenTypesResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			valid:      true,
 			postTest: func(res *collection.QueryTokenTypesResponse) {
 				s.Require().Equal(1, len(res.TokenTypes))
 			},
 		},
 		"valid request with limit": {
 			contractID: s.contractID,
-			valid:      true,
 			count:      1,
 			postTest: func(res *collection.QueryTokenTypesResponse) {
 				s.Require().Equal(1, len(res.TokenTypes))
 			},
 		},
-		"invalid contract id": {},
+		"invalid contract id": {
+			code: codes.InvalidArgument,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -604,12 +660,15 @@ func (s *KeeperTestSuite) TestQueryTokenTypes() {
 				Pagination: pageReq,
 			}
 			res, err := s.queryServer.TokenTypes(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -625,13 +684,12 @@ func (s *KeeperTestSuite) TestQueryToken() {
 	testCases := map[string]struct {
 		contractID string
 		tokenID    string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryTokenResponse)
 	}{
 		"valid ft request": {
 			contractID: s.contractID,
 			tokenID:    ftTokenID,
-			valid:      true,
 			postTest: func(res *collection.QueryTokenResponse) {
 				s.Require().Equal("/lbm.collection.v1.FT", res.Token.TypeUrl)
 				token := collection.TokenFromAny(&res.Token)
@@ -644,7 +702,6 @@ func (s *KeeperTestSuite) TestQueryToken() {
 		"valid nft request": {
 			contractID: s.contractID,
 			tokenID:    nftTokenID,
-			valid:      true,
 			postTest: func(res *collection.QueryTokenResponse) {
 				s.Require().Equal("/lbm.collection.v1.OwnerNFT", res.Token.TypeUrl)
 				token := collection.TokenFromAny(&res.Token)
@@ -656,17 +713,21 @@ func (s *KeeperTestSuite) TestQueryToken() {
 		},
 		"invalid contract id": {
 			tokenID: ftTokenID,
+			code:    codes.InvalidArgument,
 		},
 		"invalid token id": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 		"no such a fungible token": {
 			contractID: s.contractID,
 			tokenID:    collection.NewFTID("00bab10c"),
+			code:       codes.NotFound,
 		},
 		"no such a non-fungible token": {
 			contractID: s.contractID,
 			tokenID:    collection.NewNFTID("deadbeef", 1),
+			code:       codes.NotFound,
 		},
 	}
 
@@ -677,12 +738,15 @@ func (s *KeeperTestSuite) TestQueryToken() {
 				TokenId:    tc.tokenID,
 			}
 			res, err := s.queryServer.Token(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -696,14 +760,13 @@ func (s *KeeperTestSuite) TestQueryTokensWithTokenType() {
 	testCases := map[string]struct {
 		contractID string
 		tokenType  string
-		valid      bool
+		code       codes.Code
 		count      uint64
 		postTest   func(res *collection.QueryTokensWithTokenTypeResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			tokenType:  s.nftClassID,
-			valid:      true,
 			count:      1000000,
 			postTest: func(res *collection.QueryTokensWithTokenTypeResponse) {
 				s.Require().Equal(s.numNFTs*3, len(res.Tokens))
@@ -712,7 +775,6 @@ func (s *KeeperTestSuite) TestQueryTokensWithTokenType() {
 		"valid request with limit": {
 			contractID: s.contractID,
 			tokenType:  s.nftClassID,
-			valid:      true,
 			count:      1,
 			postTest: func(res *collection.QueryTokensWithTokenTypeResponse) {
 				s.Require().Equal(1, len(res.Tokens))
@@ -720,9 +782,11 @@ func (s *KeeperTestSuite) TestQueryTokensWithTokenType() {
 		},
 		"invalid contract id": {
 			tokenType: s.nftClassID,
+			code:      codes.InvalidArgument,
 		},
 		"invalid token type": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 	}
 
@@ -738,12 +802,15 @@ func (s *KeeperTestSuite) TestQueryTokensWithTokenType() {
 				Pagination: pageReq,
 			}
 			res, err := s.queryServer.TokensWithTokenType(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -756,13 +823,12 @@ func (s *KeeperTestSuite) TestQueryTokens() {
 
 	testCases := map[string]struct {
 		contractID string
-		valid      bool
+		code       codes.Code
 		count      uint64
 		postTest   func(res *collection.QueryTokensResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			valid:      true,
 			count:      1000000,
 			postTest: func(res *collection.QueryTokensResponse) {
 				s.Require().Equal(s.numNFTs*3+1, len(res.Tokens))
@@ -770,13 +836,14 @@ func (s *KeeperTestSuite) TestQueryTokens() {
 		},
 		"valid request with limit": {
 			contractID: s.contractID,
-			valid:      true,
 			count:      1,
 			postTest: func(res *collection.QueryTokensResponse) {
 				s.Require().Equal(1, len(res.Tokens))
 			},
 		},
-		"invalid contract id": {},
+		"invalid contract id": {
+			code: codes.InvalidArgument,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -790,12 +857,15 @@ func (s *KeeperTestSuite) TestQueryTokens() {
 				Pagination: pageReq,
 			}
 			res, err := s.queryServer.Tokens(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -810,26 +880,28 @@ func (s *KeeperTestSuite) TestQueryRoot() {
 	testCases := map[string]struct {
 		contractID string
 		tokenID    string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryRootResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			tokenID:    tokenID,
-			valid:      true,
 			postTest: func(res *collection.QueryRootResponse) {
 				s.Require().Equal(collection.NewNFTID(s.nftClassID, 1), res.Root.Id)
 			},
 		},
 		"invalid contract id": {
 			tokenID: tokenID,
+			code:    codes.InvalidArgument,
 		},
 		"invalid token id": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 		"no such a token": {
 			contractID: s.contractID,
 			tokenID:    collection.NewNFTID("deadbeef", 1),
+			code:       codes.NotFound,
 		},
 	}
 
@@ -840,12 +912,15 @@ func (s *KeeperTestSuite) TestQueryRoot() {
 				TokenId:    tc.tokenID,
 			}
 			res, err := s.queryServer.Root(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -860,30 +935,33 @@ func (s *KeeperTestSuite) TestQueryParent() {
 	testCases := map[string]struct {
 		contractID string
 		tokenID    string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryParentResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			tokenID:    tokenID,
-			valid:      true,
 			postTest: func(res *collection.QueryParentResponse) {
 				s.Require().Equal(collection.NewNFTID(s.nftClassID, 1), res.Parent.Id)
 			},
 		},
 		"invalid contract id": {
 			tokenID: tokenID,
+			code:    codes.InvalidArgument,
 		},
 		"invalid token id": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 		"no such a token": {
 			contractID: s.contractID,
 			tokenID:    collection.NewNFTID("deadbeef", 1),
+			code:       codes.NotFound,
 		},
 		"no parent": {
 			contractID: s.contractID,
 			tokenID:    collection.NewNFTID(s.nftClassID, 1),
+			code:       codes.NotFound,
 		},
 	}
 
@@ -894,12 +972,15 @@ func (s *KeeperTestSuite) TestQueryParent() {
 				TokenId:    tc.tokenID,
 			}
 			res, err := s.queryServer.Parent(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -914,14 +995,13 @@ func (s *KeeperTestSuite) TestQueryChildren() {
 	testCases := map[string]struct {
 		contractID string
 		tokenID    string
-		valid      bool
+		code       codes.Code
 		count      uint64
 		postTest   func(res *collection.QueryChildrenResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			tokenID:    tokenID,
-			valid:      true,
 			postTest: func(res *collection.QueryChildrenResponse) {
 				s.Require().Equal(1, len(res.Children))
 				s.Require().Equal(collection.NewNFTID(s.nftClassID, 2), res.Children[0].Id)
@@ -930,7 +1010,6 @@ func (s *KeeperTestSuite) TestQueryChildren() {
 		"valid request with limit": {
 			contractID: s.contractID,
 			tokenID:    tokenID,
-			valid:      true,
 			count:      1,
 			postTest: func(res *collection.QueryChildrenResponse) {
 				s.Require().Equal(1, len(res.Children))
@@ -939,9 +1018,11 @@ func (s *KeeperTestSuite) TestQueryChildren() {
 		},
 		"invalid contract id": {
 			tokenID: tokenID,
+			code:    codes.InvalidArgument,
 		},
 		"invalid token id": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 	}
 
@@ -957,12 +1038,15 @@ func (s *KeeperTestSuite) TestQueryChildren() {
 				Pagination: pageReq,
 			}
 			res, err := s.queryServer.Children(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -976,22 +1060,23 @@ func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 	testCases := map[string]struct {
 		contractID string
 		grantee    sdk.AccAddress
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryGranteeGrantsResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			grantee:    s.vendor,
-			valid:      true,
 			postTest: func(res *collection.QueryGranteeGrantsResponse) {
 				s.Require().Equal(4, len(res.Grants))
 			},
 		},
 		"invalid contract id": {
 			grantee: s.vendor,
+			code:    codes.InvalidArgument,
 		},
 		"invalid grantee": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 	}
 
@@ -1002,12 +1087,15 @@ func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 				Grantee:    tc.grantee.String(),
 			}
 			res, err := s.queryServer.GranteeGrants(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -1022,14 +1110,13 @@ func (s *KeeperTestSuite) TestQueryApproved() {
 		contractID string
 		address    sdk.AccAddress
 		approver   sdk.AccAddress
-		valid      bool
+		code       codes.Code
 		postTest   func(res *collection.QueryApprovedResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			address:    s.operator,
 			approver:   s.customer,
-			valid:      true,
 			postTest: func(res *collection.QueryApprovedResponse) {
 				s.Require().True(res.Approved)
 			},
@@ -1037,14 +1124,17 @@ func (s *KeeperTestSuite) TestQueryApproved() {
 		"invalid contract id": {
 			address:  s.operator,
 			approver: s.customer,
+			code:     codes.InvalidArgument,
 		},
 		"invalid address": {
 			contractID: s.contractID,
 			approver:   s.customer,
+			code:       codes.InvalidArgument,
 		},
 		"invalid approver": {
 			contractID: s.contractID,
 			address:    s.operator,
+			code:       codes.InvalidArgument,
 		},
 	}
 
@@ -1056,12 +1146,15 @@ func (s *KeeperTestSuite) TestQueryApproved() {
 				Approver:   tc.approver.String(),
 			}
 			res, err := s.queryServer.Approved(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -1075,14 +1168,13 @@ func (s *KeeperTestSuite) TestQueryApprovers() {
 	testCases := map[string]struct {
 		contractID string
 		address    sdk.AccAddress
-		valid      bool
+		code       codes.Code
 		count      uint64
 		postTest   func(res *collection.QueryApproversResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			address:    s.operator,
-			valid:      true,
 			postTest: func(res *collection.QueryApproversResponse) {
 				s.Require().Equal(1, len(res.Approvers))
 			},
@@ -1090,7 +1182,6 @@ func (s *KeeperTestSuite) TestQueryApprovers() {
 		"valid request with limit": {
 			contractID: s.contractID,
 			address:    s.operator,
-			valid:      true,
 			count:      1,
 			postTest: func(res *collection.QueryApproversResponse) {
 				s.Require().Equal(1, len(res.Approvers))
@@ -1098,9 +1189,11 @@ func (s *KeeperTestSuite) TestQueryApprovers() {
 		},
 		"invalid contract id": {
 			address: s.operator,
+			code:    codes.InvalidArgument,
 		},
 		"invalid address": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 	}
 
@@ -1116,12 +1209,15 @@ func (s *KeeperTestSuite) TestQueryApprovers() {
 				Pagination: pageReq,
 			}
 			res, err := s.queryServer.Approvers(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
