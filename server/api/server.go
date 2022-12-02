@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+
 	"github.com/line/ostracon/libs/log"
 	ostrpcserver "github.com/line/ostracon/rpc/jsonrpc/server"
 
@@ -20,6 +21,7 @@ import (
 	"github.com/line/lbm-sdk/server/config"
 	"github.com/line/lbm-sdk/telemetry"
 	grpctypes "github.com/line/lbm-sdk/types/grpc"
+
 	// unnamed import of statik for swagger UI support
 	_ "github.com/line/lbm-sdk/client/docs/statik"
 )
