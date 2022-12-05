@@ -211,8 +211,8 @@ github.com/cncf/xds/go v0.0.0-20211001041855-01bcc9b48dfe/go.mod h1:eXthEFrGJvWH
 github.com/cncf/xds/go v0.0.0-20211130200136-a8f946100490/go.mod h1:eXthEFrGJvWHgFFCl3hGmgk+/aYT6PnTQLykKQRLhEs=
 github.com/cockroachdb/datadriven v0.0.0-20190809214429-80d97fb3cbaa/go.mod h1:zn76sxSg3SzpJ0PPJaLDCu+Bu0Lg3sKTORVIj19EIF8=
 github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd/go.mod h1:sE/e/2PUdi/liOCUjSTXgM1o87ZssimdTWN964YiIeI=
-github.com/coinbase/rosetta-sdk-go v0.8.1 h1:WE+Temc8iz7Ra7sCpV9ymBJx78vItqFJ2xcSiPet1Pc=
-github.com/coinbase/rosetta-sdk-go v0.8.1/go.mod h1:tXPR6AIW9ogsH4tYIaFOKOgfJNanCvcyl7JKLd4DToc=
+github.com/coinbase/rosetta-sdk-go v0.8.2 h1:+sNgMUPpntOsYLy5aRsHqBY6I0MTxZkS4JXV1Un3DKc=
+github.com/coinbase/rosetta-sdk-go v0.8.2/go.mod h1:tXPR6AIW9ogsH4tYIaFOKOgfJNanCvcyl7JKLd4DToc=
 github.com/confio/ics23/go v0.7.0 h1:00d2kukk7sPoHWL4zZBZwzxnpA2pec1NPdwbSokJ5w8=
 github.com/confio/ics23/go v0.7.0/go.mod h1:E45NqnlpxGnpfTWL/xauN7MRwEE28T4Dd4uraToOaKg=
 github.com/coniks-sys/coniks-go v0.0.0-20180722014011-11acf4819b71 h1:MFLTqgfJclmtaQ1SRUrWwmDX/1UBok3XWUethkJ2swQ=
