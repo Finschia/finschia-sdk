@@ -189,7 +189,7 @@ func validateStringSize(str string, limit int) error {
 
 func validateDecimals(decimals int32) error {
 	if decimals < 0 || decimals > 18 {
-		return ErrInvalidDecimals.Wrapf("must be >=0 and <18, got; %d", decimals)
+		return ErrInvalidDecimals.Wrapf("must be >=0 and <=18, got; %d", decimals)
 	}
 	return nil
 }
