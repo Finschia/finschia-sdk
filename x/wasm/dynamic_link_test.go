@@ -164,6 +164,84 @@ func TestDynamicReEntrancyFails(t *testing.T) {
 	assert.ErrorContains(t, err, "A contract can only be called once per one call stack.")
 }
 
+func TestDynamicLinkInterfaceValidation(t *testing.T) {
+	// setup
+	data := setupTest(t)
+
+	h := data.module.Route().Handler()
+
+	// store dynamic callee code
+	storeCalleeMsg := &MsgStoreCode{
+		Sender:       addr1,
+		WASMByteCode: calleeContract,
+	}
+	res, err := h(data.ctx, storeCalleeMsg)
+	require.NoError(t, err)
+
+	calleeCodeId := uint64(1)
+	assertStoreCodeResponse(t, res.Data, calleeCodeId)
+
+	// store dynamic caller code
+	storeCallerMsg := &MsgStoreCode{
+		Sender:       addr1,
+		WASMByteCode: callerContract,
+	}
+	res, err = h(data.ctx, storeCallerMsg)
+	require.NoError(t, err)
+
+	callerCodeId := uint64(2)
+	assertStoreCodeResponse(t, res.Data, callerCodeId)
+
+	// instantiate callee contract
+	instantiateCalleeMsg := &MsgInstantiateContract{
+		Sender:  addr1,
+		CodeID:  calleeCodeId,
+		Label:   "callee",
+		InitMsg: []byte(`{}`),
+		Funds:   nil,
+	}
+	res, err = h(data.ctx, instantiateCalleeMsg)
+	require.NoError(t, err)
+
+	calleeContractAddress := parseInitResponse(t, res.Data)
+
+	// instantiate caller contract
+	cosmwasmInstantiateCallerMsg := fmt.Sprintf(`{"callee_addr":"%s"}`, calleeContractAddress)
+	instantiateCallerMsg := &MsgInstantiateContract{
+		Sender:  addr1,
+		CodeID:  callerCodeId,
+		Label:   "caller",
+		InitMsg: []byte(cosmwasmInstantiateCallerMsg),
+		Funds:   nil,
+	}
+	res, err = h(data.ctx, instantiateCallerMsg)
+	require.NoError(t, err)
+
+	callerContractAddress := parseInitResponse(t, res.Data)
+
+	// execute validate interface
+	cosmwasmExecuteMsg := `{"validate_interface":{}}`
+	executeMsg := MsgExecuteContract{
+		Sender:   addr1,
+		Contract: callerContractAddress,
+		Msg:      []byte(cosmwasmExecuteMsg),
+		Funds:    nil,
+	}
+	res, err = h(data.ctx, &executeMsg)
+	require.NoError(t, err)
+
+	// execute validate interface error
+	cosmwasmExecuteMsgErr := `{"validate_interface_err":{}}`
+	executeMsgErr := MsgExecuteContract{
+		Sender:   addr1,
+		Contract: callerContractAddress,
+		Msg:      []byte(cosmwasmExecuteMsgErr),
+		Funds:    nil,
+	}
+	res, err = h(data.ctx, &executeMsgErr)
+	assert.ErrorContains(t, err, "The following functions are not implemented:")
+}
+
 // This tests both of dynamic calls and traditional queries can be used
 // in a contract call
 func TestDynamicCallAndTraditionalQueryWork(t *testing.T) {
