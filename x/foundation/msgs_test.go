@@ -870,9 +870,9 @@ func TestMsgUpdateDecisionPolicyAminoJson(t *testing.T) {
 
 func TestMsgGrantAminoJson(t *testing.T) {
 	var (
-		operator      = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-		grantee       = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-		proposer      = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		operator = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		grantee  = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+		proposer = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	)
 
 	testCases := map[string]struct {
