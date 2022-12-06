@@ -4,6 +4,7 @@ package server
 
 import (
 	"fmt"
+
 	sdk "github.com/line/lbm-sdk/types"
 	cfg "github.com/line/ostracon/config"
 	osjson "github.com/line/ostracon/libs/json"
@@ -44,14 +45,14 @@ func ShowValidatorCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverCtx := GetServerContextFromCmd(cmd)
 			cfg := serverCtx.Config
-			return showValidator(cmd, args, cfg)
+			return showValidator(cmd, cfg)
 		},
 	}
 
 	return &cmd
 }
 
-func showValidator(cmd *cobra.Command, args []string, config *cfg.Config) error {
+func showValidator(cmd *cobra.Command, config *cfg.Config) error {
 	var pv types.PrivValidator
 	if config.PrivValidatorListenAddr != "" {
 		chainID, err := loadChainID(config)
