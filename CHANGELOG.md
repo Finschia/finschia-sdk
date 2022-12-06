@@ -36,89 +36,85 @@ Ref: https://keepachangelog.com/en/1.0.0/
 # Changelog
 
 ## [Unreleased]
+* (x/wasm) [\#669](https://github.com/line/lbm-sdk/pull/669) update wasmvm and update contracts for tests
+* (x/wasm) [\#656](https://github.com/line/lbm-sdk/pull/656) add unit test for dynamic link when callee fails
+* (global) [\#658](https://github.com/line/lbm-sdk/pull/658) Add benchmarking job to ci
+* (x/wasm) [\#659](https://github.com/line/lbm-sdk/pull/659) Adjust gas cost for GetContractEnv of CosmWasmAPI
+* (x/wasm) [\#633](https://github.com/line/lbm-sdk/pull/633) Add benchmarks for cosmwasm APIs
+* (x/wasm) [\#509](https://github.com/line/lbm-sdk/pull/590) Add integration tests for dynamic call
 
--   (x/wasm) [\#669](https://github.com/line/lbm-sdk/pull/669) update wasmvm and update contracts for tests
--   (x/wasm) [\#656](https://github.com/line/lbm-sdk/pull/656) add unit test for dynamic link when callee fails
--   (global) [\#658](https://github.com/line/lbm-sdk/pull/658) Add benchmarking job to ci
--   (x/wasm) [\#659](https://github.com/line/lbm-sdk/pull/659) Adjust gas cost for GetContractEnv of CosmWasmAPI
--   (x/wasm) [\#633](https://github.com/line/lbm-sdk/pull/633) Add benchmarks for cosmwasm APIs
--   (x/wasm) [\#509](https://github.com/line/lbm-sdk/pull/590) Add integration tests for dynamic call
-
-## [v0.43.0](https://github.com/line/lbm-sdk/releases/tag/v0.43.0)
 
 ### Features
-
--   (x/wasm) [\#570](https://github.com/line/lbm-sdk/pull/570) Merge wasmd 0.27.0
--   (x/wasm) [\#470](https://github.com/line/lbm-sdk/pull/470) remove contract activation control by actor
--   (x/wasm) [\#513](https://github.com/line/lbm-sdk/pull/513) fix message representation for signing
--   (x/foundation) [\#518](https://github.com/line/lbm-sdk/pull/518) add foundation treasury feature to x/foundation
--   (x/foundation) [\#528](https://github.com/line/lbm-sdk/pull/528) add a feature of whitelist for /lbm.foundation.v1.MsgWithdrawFromTreasury
--   (proto) [\#584](https://github.com/line/lbm-sdk/pull/564) remove `prove` field in the `GetTxsEventRequest` of `tx` proto
--   (x/collection) [\#571](https://github.com/line/lbm-sdk/pull/571) add x/collection proto
--   (x/collection) [\#574](https://github.com/line/lbm-sdk/pull/574) implement x/collection
--   (store) [\#605](https://github.com/line/lbm-sdk/pull/605) replace line/iavl and line/tm-db with cosmos/iavl and tendermint/tm-db.
--   (server/grpc) [\#607](https://github.com/line/lbm-sdk/pull/607) revert gRPC block height header.
--   (global) [\#611](https://github.com/line/lbm-sdk/pull/611) bump github.com/cosmos/cosmos-sdk from v0.45.1 to v0.45.6
--   (simapp) [\#620](https://github.com/line/lbm-sdk/pull/620) chore: add iterator feature for simapp
--   (x/collection) [\#622](https://github.com/line/lbm-sdk/pull/622) add Query/TokenClassTypeName
--   (x/bank) [\#629](https://github.com/line/lbm-sdk/pull/629) remove unsafe balance changing methods from bank keeper such as `SetBalance` and `SetSupply`.
--   (x/wasm) [\#649](https://github.com/line/lbm-sdk/pull/649) fix: wasm module's FIXME in the snapshotter.go file
--   (x/ibc) [\#651](https://github.com/line/lbm-sdk/pull/651) feat: update x/ibc to support github.com/cosmos/ibc-go@v3.0.0
--   (config) [\#665](https://github.com/line/lbm-sdk/pull/665) remove bech32-cache-size
+* (x/wasm) [\#570](https://github.com/line/lbm-sdk/pull/570) Merge wasmd 0.27.0
+* (x/wasm) [\#470](https://github.com/line/lbm-sdk/pull/470) remove contract activation control by actor
+* (x/wasm) [\#513](https://github.com/line/lbm-sdk/pull/513) fix message representation for signing
+* (x/foundation) [\#518](https://github.com/line/lbm-sdk/pull/518) add foundation treasury feature to x/foundation
+* (x/foundation) [\#528](https://github.com/line/lbm-sdk/pull/528) add a feature of whitelist for /lbm.foundation.v1.MsgWithdrawFromTreasury
+* (proto) [\#584](https://github.com/line/lbm-sdk/pull/564) remove `prove` field in the `GetTxsEventRequest` of `tx` proto
+* (x/collection) [\#571](https://github.com/line/lbm-sdk/pull/571) add x/collection proto
+* (x/collection) [\#574](https://github.com/line/lbm-sdk/pull/574) implement x/collection
+* (store) [\#605](https://github.com/line/lbm-sdk/pull/605) replace line/iavl and line/tm-db with cosmos/iavl and tendermint/tm-db.
+* (server/grpc) [\#607](https://github.com/line/lbm-sdk/pull/607) revert gRPC block height header.
+* (global) [\#611](https://github.com/line/lbm-sdk/pull/611) bump github.com/cosmos/cosmos-sdk from v0.45.1 to v0.45.6
+* (simapp) [\#620](https://github.com/line/lbm-sdk/pull/620) chore: add iterator feature for simapp
+* (x/collection) [\#622](https://github.com/line/lbm-sdk/pull/622) add Query/TokenClassTypeName
+* (x/bank) [\#629](https://github.com/line/lbm-sdk/pull/629) remove unsafe balance changing methods from bank keeper such as `SetBalance` and `SetSupply`.
+* (x/wasm) [\#649](https://github.com/line/lbm-sdk/pull/649) fix: wasm module's FIXME in the snapshotter.go file
+* (x/ibc) [\#651](https://github.com/line/lbm-sdk/pull/651) feat: update x/ibc to support github.com/cosmos/ibc-go@v3.0.0
+* (config) [\#665](https://github.com/line/lbm-sdk/pull/665) remove bech32-cache-size
 
 ### Improvements
-
--   (refactor) [\#493](https://github.com/line/lbm-sdk/pull/493) restructure x/consortium
--   (server/grpc) [\#526](https://github.com/line/lbm-sdk/pull/526) add index field into TxResponse
--   (cli) [\#535](https://github.com/line/lbm-sdk/pull/536) updated ostracon to v1.0.5; `unsafe-reset-all` command has been moved to the `ostracon` sub-command.
--   (x/foundation) [\#597](https://github.com/line/lbm-sdk/pull/597) tidy up x/foundation
--   (x/collection) [\#604](https://github.com/line/lbm-sdk/pull/604) add EventOwnerChanged and EventRootChanged
--   (x/collection) [\#608](https://github.com/line/lbm-sdk/pull/608) remove new APIs on x/collection
--   (x/token) [\#609](https://github.com/line/lbm-sdk/pull/609) remove new APIs on x/token
--   (x/collection) [\#621](https://github.com/line/lbm-sdk/pull/621) add additional information into EventXXXChanged
--   (x/token) [\#636](https://github.com/line/lbm-sdk/pull/636) add creator into x/token EventIssue
--   (x/token) [\#637](https://github.com/line/lbm-sdk/pull/637) rename x/token events
--   (x/collection) [\#639](https://github.com/line/lbm-sdk/pull/639) rename x/collection events
--   (x/wasm) [\#661](https://github.com/line/lbm-sdk/pull/661) x/wasm refactoring - detaching the custom wasm proto part of lbm-sdk. (apply changes of [\#625](https://github.com/line/lbm-sdk/pull/625) and [\#655](https://github.com/line/lbm-sdk/pull/655))
+* (refactor) [\#493](https://github.com/line/lbm-sdk/pull/493) restructure x/consortium
+* (server/grpc) [\#526](https://github.com/line/lbm-sdk/pull/526) add index field into TxResponse
+* (cli) [\#535](https://github.com/line/lbm-sdk/pull/536) updated ostracon to v1.0.5; `unsafe-reset-all` command has been moved to the `ostracon` sub-command.
+* (x/foundation) [\#597](https://github.com/line/lbm-sdk/pull/597) tidy up x/foundation
+* (x/collection) [\#604](https://github.com/line/lbm-sdk/pull/604) add EventOwnerChanged and EventRootChanged
+* (x/collection) [\#608](https://github.com/line/lbm-sdk/pull/608) remove new APIs on x/collection
+* (x/token) [\#609](https://github.com/line/lbm-sdk/pull/609) remove new APIs on x/token
+* (x/collection) [\#621](https://github.com/line/lbm-sdk/pull/621) add additional information into EventXXXChanged
+* (x/token) [\#636](https://github.com/line/lbm-sdk/pull/636) add creator into x/token EventIssue
+* (x/token) [\#637](https://github.com/line/lbm-sdk/pull/637) rename x/token events
+* (x/collection) [\#639](https://github.com/line/lbm-sdk/pull/639) rename x/collection events
+* (x/wasm) [\#661](https://github.com/line/lbm-sdk/pull/661) x/wasm refactoring - detaching the custom wasm proto part of lbm-sdk. (apply changes of [\#625](https://github.com/line/lbm-sdk/pull/625) and [\#655](https://github.com/line/lbm-sdk/pull/655))
 
 ### Bug Fixes
 
--   (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
--   (client) [\#476](https://github.com/line/lbm-sdk/pull/476) change the default value of the client output format in the config
--   (server/grpc) [\#516](https://github.com/line/lbm-sdk/pull/516) restore build norace flag
--   (genesis) [\#517](https://github.com/line/lbm-sdk/pull/517) fix genesis auth account format(cosmos-sdk style -> lbm-sdk style)
--   (x/token) [\#539](https://github.com/line/lbm-sdk/pull/539) fix the compatibility issues with daphne
--   (x/foundation) [\#545](https://github.com/line/lbm-sdk/pull/545) fix genesis and support abstain
--   (x/auth) [\#563](https://github.com/line/lbm-sdk/pull/563) fix unmarshal bug of `BaseAccountJSON`
--   (client) [\#565](https://github.com/line/lbm-sdk/pull/565) fix the data race problem in `TestQueryABCIHeight`
--   (x/token) [\#589](https://github.com/line/lbm-sdk/pull/589) fix naming collision in x/token enums
--   (x/token) [\#599](https://github.com/line/lbm-sdk/pull/599) fix the order of events
--   (x/wasm) [\#640](https://github.com/line/lbm-sdk/pull/640) remove legacy codes of wasm
--   (amino) [\#635](https://github.com/line/lbm-sdk/pull/635) change some minor things that haven't been fixed in #549
--   (store) [\#666](https://github.com/line/lbm-sdk/pull/666) change default `iavl-cache-size` and description
--   (simapp) [\#679](https://github.com/line/lbm-sdk/pull/679) fix the bug not setting `iavl-cache-size` value of `app.toml`
+* (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
+* (client) [\#476](https://github.com/line/lbm-sdk/pull/476) change the default value of the client output format in the config
+* (server/grpc) [\#516](https://github.com/line/lbm-sdk/pull/516) restore build norace flag
+* (genesis) [\#517](https://github.com/line/lbm-sdk/pull/517) fix genesis auth account format(cosmos-sdk style -> lbm-sdk style)
+* (x/token) [\#539](https://github.com/line/lbm-sdk/pull/539) fix the compatibility issues with daphne
+* (x/foundation) [\#545](https://github.com/line/lbm-sdk/pull/545) fix genesis and support abstain
+* (x/auth) [\#563](https://github.com/line/lbm-sdk/pull/563) fix unmarshal bug of `BaseAccountJSON`
+* (client) [\#565](https://github.com/line/lbm-sdk/pull/565) fix the data race problem in `TestQueryABCIHeight`
+* (x/token) [\#589](https://github.com/line/lbm-sdk/pull/589) fix naming collision in x/token enums
+* (x/token) [\#599](https://github.com/line/lbm-sdk/pull/599) fix the order of events
+* (x/wasm) [\#640](https://github.com/line/lbm-sdk/pull/640) remove legacy codes of wasm
+* (amino) [\#635](https://github.com/line/lbm-sdk/pull/635) change some minor things that haven't been fixed in #549
+* (store) [\#666](https://github.com/line/lbm-sdk/pull/666) change default `iavl-cache-size` and description
+* (simapp) [\#679](https://github.com/line/lbm-sdk/pull/679) fix the bug not setting `iavl-cache-size` value of `app.toml`
 
 ### Breaking Changes
 
--   (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
--   (global) [\#603](https://github.com/line/lbm-sdk/pull/603) apply types/address.go from cosmos-sdk@v0.45.1
--   (amino) [\#600](https://github.com/line/lbm-sdk/pull/600) change amino codec path from `lbm-sdk/` to `cosmos-sdk/`
--   (ostracon) [\#610](https://github.com/line/lbm-sdk/pull/610) apply change of prefix of key name in ostracon
--   (ostracon) [\#614](https://github.com/line/lbm-sdk/pull/614) apply Ostracon's changes that replace `StakingPower` with `VotingPower` and `StakingPower` with `VotingPower`
--   (proto) [\#617](https://github.com/line/lbm-sdk/pull/617) change wasm gRPC path to original `cosmwasm` path.
--   (proto) [\#627](https://github.com/line/lbm-sdk/pull/627) revert changes in x/slashing proto
+* (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
+* (global) [\#603](https://github.com/line/lbm-sdk/pull/603) apply types/address.go from cosmos-sdk@v0.45.1
+* (amino) [\#600](https://github.com/line/lbm-sdk/pull/600) change amino codec path from `lbm-sdk/` to `cosmos-sdk/`
+* (ostracon) [\#610](https://github.com/line/lbm-sdk/pull/610) apply change of prefix of key name in ostracon
+* (ostracon) [\#614](https://github.com/line/lbm-sdk/pull/614) apply Ostracon's changes that replace `StakingPower` with `VotingPower` and `StakingPower` with `VotingPower`
+* (proto) [\#617](https://github.com/line/lbm-sdk/pull/617) change wasm gRPC path to original `cosmwasm` path.
+* (proto) [\#627](https://github.com/line/lbm-sdk/pull/627) revert changes in x/slashing proto
 
 ### Build, CI
 
--   (ci) [\#457](https://github.com/line/lbm-sdk/pull/457), [\#471](https://github.com/line/lbm-sdk/pull/471) add swagger check
--   (ci) [\#469](https://github.com/line/lbm-sdk/pull/469) publish docker image on tag push
--   (ci) [\#580](https://github.com/line/lbm-sdk/pull/580) fix the problem that the registered docker image couldn't run on M1.
--   (simapp) [\#591](https://github.com/line/lbm-sdk/pull/591) chore: add x/wasm module to simapp
--   (ci) [\#618](https://github.com/line/lbm-sdk/pull/618) remove stale action
--   (ci) [\#619](https://github.com/line/lbm-sdk/pull/619) change the Dockerfile to use the downloaded static library
+* (ci) [\#457](https://github.com/line/lbm-sdk/pull/457), [\#471](https://github.com/line/lbm-sdk/pull/471) add swagger check
+* (ci) [\#469](https://github.com/line/lbm-sdk/pull/469) publish docker image on tag push
+* (ci) [\#580](https://github.com/line/lbm-sdk/pull/580) fix the problem that the registered docker image couldn't run on M1.
+* (simapp) [\#591](https://github.com/line/lbm-sdk/pull/591) chore: add x/wasm module to simapp
+* (ci) [\#618](https://github.com/line/lbm-sdk/pull/618) remove stale action
+* (ci) [\#619](https://github.com/line/lbm-sdk/pull/619) change the Dockerfile to use the downloaded static library
 
 ### Document Updates
 
--   (docs) [\#483](https://github.com/line/lbm-sdk/pull/483) update documents on x/stakingplus
--   (docs) [\#490](https://github.com/line/lbm-sdk/pull/490) update documents on x/consortium
--   (docs) [\#602](https://github.com/line/lbm-sdk/pull/602) update outdated events in specs
+* (docs) [\#483](https://github.com/line/lbm-sdk/pull/483) update documents on x/stakingplus
+* (docs) [\#490](https://github.com/line/lbm-sdk/pull/490) update documents on x/consortium
+* (docs) [\#602](https://github.com/line/lbm-sdk/pull/602) update outdated events in specs
