@@ -31,7 +31,7 @@ require (
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/jhump/protoreflect v1.10.3
 	github.com/line/ostracon v1.0.7-0.20220729051742-2231684789c6
-	github.com/line/wasmvm v1.0.0-0.10.0.0.20221129090614-57a68a6f4566
+	github.com/line/wasmvm v1.0.0-0.10.0.0.20221206064228-ce0757a8da21
 	github.com/magiconair/properties v1.8.6
 	github.com/mailru/easyjson v0.7.7
 	github.com/mattn/go-isatty v0.0.16
