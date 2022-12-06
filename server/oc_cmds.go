@@ -4,16 +4,17 @@ package server
 
 import (
 	"fmt"
-
+	sdk "github.com/line/lbm-sdk/types"
+	cfg "github.com/line/ostracon/config"
+	osjson "github.com/line/ostracon/libs/json"
+	ostos "github.com/line/ostracon/libs/os"
+	"github.com/line/ostracon/node"
 	"github.com/line/ostracon/p2p"
 	pvm "github.com/line/ostracon/privval"
+	"github.com/line/ostracon/types"
 	ostversion "github.com/line/ostracon/version"
 	"github.com/spf13/cobra"
 	yaml "gopkg.in/yaml.v2"
-
-	"github.com/line/lbm-sdk/client"
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	sdk "github.com/line/lbm-sdk/types"
 )
 
 // ShowNodeIDCmd - ported from Ostracon, dump node ID to stdout
@@ -43,27 +44,62 @@ func ShowValidatorCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverCtx := GetServerContextFromCmd(cmd)
 			cfg := serverCtx.Config
-
-			privValidator := pvm.LoadFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile())
-			pk, err := privValidator.GetPubKey()
-			if err != nil {
-				return err
-			}
-			sdkPK, err := cryptocodec.FromOcPubKeyInterface(pk)
-			if err != nil {
-				return err
-			}
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			bz, err := clientCtx.Codec.MarshalInterfaceJSON(sdkPK)
-			if err != nil {
-				return err
-			}
-			fmt.Println(string(bz))
-			return nil
+			return showValidator(cmd, args, cfg)
 		},
 	}
 
 	return &cmd
+}
+
+func showValidator(cmd *cobra.Command, args []string, config *cfg.Config) error {
+	var pv types.PrivValidator
+	if config.PrivValidatorListenAddr != "" {
+		chainID, err := loadChainID(config)
+		if err != nil {
+			return err
+		}
+		serverCtx := GetServerContextFromCmd(cmd)
+		log := serverCtx.Logger
+		pv, err = node.CreateAndStartPrivValidatorSocketClient(config.PrivValidatorListenAddr, chainID, log)
+		if err != nil {
+			return err
+		}
+	} else {
+		keyFilePath := config.PrivValidatorKeyFile()
+		if !ostos.FileExists(keyFilePath) {
+			return fmt.Errorf("private validator file %s does not exist", keyFilePath)
+		}
+		pv = pvm.LoadFilePV(keyFilePath, config.PrivValidatorStateFile())
+	}
+
+	pubKey, err := pv.GetPubKey()
+	if err != nil {
+		return fmt.Errorf("can't get pubkey: %w", err)
+	}
+
+	bz, err := osjson.Marshal(pubKey)
+	if err != nil {
+		return fmt.Errorf("failed to marshal private validator pubkey: %w", err)
+	}
+
+	fmt.Println(string(bz))
+	return nil
+}
+
+func loadChainID(config *cfg.Config) (string, error) {
+	stateDB, err := node.DefaultDBProvider(&node.DBContext{ID: "state", Config: config})
+	if err != nil {
+		return "", err
+	}
+	defer func() {
+		var _ = stateDB.Close()
+	}()
+	genesisDocProvider := node.DefaultGenesisDocProviderFunc(config)
+	_, genDoc, err := node.LoadStateFromDBOrGenesisDocProvider(stateDB, genesisDocProvider)
+	if err != nil {
+		return "", err
+	}
+	return genDoc.ChainID, nil
 }
 
 // ShowAddressCmd - show this node's validator address
