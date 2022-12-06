@@ -576,6 +576,7 @@ libsodium:
 GORELEASER_CONFIG ?= .goreleaser.yaml
 
 GORELEASER_BUILD_LDF = $(ldflags)
+GORELEASER_BUILD_LDF += -linkmode=external -extldflags "-Wl,-z,muldefs -static"
 GORELEASER_BUILD_LDF := $(strip $(GORELEASER_BUILD_LDF))
 
 GOLANG_VERSION=1.18.3
@@ -584,7 +585,8 @@ GORELEASER_SKIP_VALIDATE ?= false
 GORELEASER_DEBUG         ?= false
 GORELEASER_IMAGE         ?= goreleaser/goreleaser-cross:v$(GOLANG_VERSION)
 GORELEASER_RELEASE       ?= false
-GO_MOD_NAME              := $(shell go list -m 2>/dev/null)
+GO_MOD_NAME              := github.com/line/lbm-sdk
+#GO_MOD_NAME              := $(shell go list -m 2>/dev/null)
 
 ifeq ($(GORELEASER_RELEASE),true)
 	GORELEASER_SKIP_VALIDATE := false
@@ -602,7 +604,7 @@ endif
 release-snapshot:
 	docker run --rm \
 		-e BUILD_TAGS="$(build_tags)" \
-		-e BUILD_VARS="$(GORELEASER_BUILD_LDF)" \
+		-e BUILD_VARS='$(GORELEASER_BUILD_LDF)' \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v $(shell pwd):/go/src/$(GO_MOD_NAME) \
 		-w /go/src/$(GO_MOD_NAME) \
@@ -616,7 +618,7 @@ release-snapshot:
 release:
 	docker run --rm \
 		-e BUILD_TAGS="$(build_tags)" \
-		-e BUILD_VARS="$(GORELEASER_BUILD_LDF)" \
+		-e BUILD_VARS='$(GORELEASER_BUILD_LDF)' \
 		-e GITHUB_TOKEN="$(GITHUB_TOKEN)" \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v $(shell pwd):/go/src/$(GO_MOD_NAME) \
@@ -630,6 +632,6 @@ release:
 		--rm-dist
 
 build-static: go.sum
-	CGO_ENABLED=1 BUILD_TAGS=static $(MAKE) build
+	CGO_ENABLED=1 go build -mod=readonly -tags "$(build_tags)" -ldflags '$(GORELEASER_BUILD_LDF)' -trimpath -o ./build/ ./...
 
 .PHONY: release-snapshot release build-static

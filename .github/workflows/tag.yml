@@ -3,8 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+" # Push events to matching v*, i.e. v1.0, v20.15.10
-      - "v[0-9]+.[0-9]+.[0-9]+-rc*" # Push events to matching v*, i.e. v1.0-rc1, v20.15.10-rc5
+      - 'v[0-9]+.[0-9]+.[0-9]+*' # Push events to matching v*, i.e. v1.0, v20.15.10
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -16,10 +15,12 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version-file: './go.mod'
-      - run: go version
-#      - name: Create release
-#        uses: goreleaser/goreleaser-action@v3
-#        with:
-#          args: release --rm-dist --release-notes ./RELEASE_NOTES.md
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build & Publish release
+        run: |
+          make release
+        env:
+          GORELEASER_MOUNT_CONFIG: true
+          GORELEASER_IMAGE: line/goreleaser:v1.18.3-1.0.0
+          GORELEASER_RELEASE: true
+          BUILD_TAGS: static
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

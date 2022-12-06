@@ -11,43 +11,44 @@ builds:
       - amd64
     env:
       - CGO_ENABLED=1
-      - TARGET_ARCH=x86_64
     flags:
       - -mod=readonly
       - -trimpath
       - "-tags={{ .Env.BUILD_TAGS }}"
     ldflags:
       - "{{ .Env.BUILD_VARS }}"
-  - id: simd-darwin-amd64
+  - id: simd-linux-arm64
     main: ./simapp/simd
     binary: simd
     goos:
-      - darwin
+      - linux
     goarch:
-      - amd64
+      - arm64
     env:
       - CGO_ENABLED=1
-      - CC=o64-clang
-      - CXX=o64-clang++
-      - TARGET_ARCH=x86_64
+      - CC=aarch64-linux-gnu-gcc
+      - CXX=aarch64-linux-gnu-g++
     flags:
       - -mod=readonly
       - -trimpath
       - "-tags={{ .Env.BUILD_TAGS }}"
     ldflags:
       - "{{ .Env.BUILD_VARS }}"
-#  - id: simd-linux-arm64
+
+
+# * wasmvm doesn't support darwin static lib yet
+#  - id: simd-darwin-amd64
 #    main: ./simapp/simd
 #    binary: simd
 #    goos:
-#      - linux
+#      - darwin
 #    goarch:
-#      - arm64
+#      - amd64
 #    env:
 #      - CGO_ENABLED=1
-#      - CC=aarch64-linux-gnu-gcc
-#      - CXX=aarch64-linux-gnu-g++
-#      - TARGET_ARCH=aarch64
+#      - CC=o64-clang
+#      - CXX=o64-clang++
+#      - TARGET_ARCH=x86_64
 #    flags:
 #      - -mod=readonly
 #      - -trimpath
@@ -78,9 +79,7 @@ archives:
     id: bin-archive
     builds:
       - simd-linux-amd64
-      - simd-darwin-amd64
       - simd-linux-arm64
-      - simd-darwin-arm64
     format: tar.gz
     name_template: "simd_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     wrap_in_directory: true
@@ -115,6 +114,8 @@ changelog:
     - title: Improvements
       regexp: '^.*?(test|refactor)(\([[:word:]]+\))??!?:.+$'
       order: 5
+    - title: Others
+      order: 999
 
 release:
   github:
