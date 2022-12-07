@@ -93,7 +93,6 @@ func TestPrivKeyTypeSupports(t *testing.T) {
 	tests := []struct {
 		privKeyType string
 		shouldErr   bool
-		err         error
 	}{
 		{
 			privKeyType: "Ed25519",
