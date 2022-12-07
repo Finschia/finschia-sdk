@@ -178,7 +178,7 @@ func (k Keeper) MintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, am
 		}
 
 		if !ftClass.Mintable {
-			return collection.ErrNotMintable.Wrapf("class %s not mintable", classID)
+			return collection.ErrWrongClass.Wrapf("class %s not mintable", classID)
 		}
 
 		k.mintFT(ctx, contractID, to, classID, coin.Amount)

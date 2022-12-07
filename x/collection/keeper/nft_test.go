@@ -32,7 +32,7 @@ func (s *KeeperTestSuite) TestAttach() {
 			contractID: s.contractID,
 			subject:    collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+2),
 			target:     collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit),
-			err:        collection.ErrInvalidComposition,
+			err:        collection.ErrCompositionFailed,
 		},
 		"not owner of target": {
 			contractID: s.contractID,
@@ -77,7 +77,7 @@ func (s *KeeperTestSuite) TestDetach() {
 		"subject has no parent": {
 			contractID: s.contractID,
 			subject:    collection.NewNFTID(s.nftClassID, 1),
-			err:        collection.ErrParentNotFound,
+			err:        collection.ErrCompositionFailed,
 		},
 		"not owner of subject": {
 			contractID: s.contractID,

@@ -765,11 +765,6 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			permission: collection.LegacyPermissionModify.String(),
 			valid:      true,
 		},
-		"already granted": {
-			granter:    s.vendor,
-			grantee:    s.operator,
-			permission: collection.LegacyPermissionMint.String(),
-		},
 		"granter has no permission": {
 			granter:    s.customer,
 			grantee:    s.operator,
