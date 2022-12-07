@@ -24,7 +24,7 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skip-sims')"
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3.3.1
+      - uses: actions/setup-go@v3.4.0
         with:
           go-version: 1.18
       - name: Display go version
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/setup-go@v3.3.1
+      - uses: actions/setup-go@v3.4.0
         with:
           go-version: 1.18
       - name: Display go version
@@ -52,7 +52,7 @@ jobs:
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3.3.1
+      - uses: actions/setup-go@v3.4.0
         with:
           go-version: 1.18
       - name: Display go version
@@ -79,7 +79,7 @@ jobs:
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3.3.1
+      - uses: actions/setup-go@v3.4.0
         with:
           go-version: 1.18
       - name: Display go version
@@ -108,7 +108,7 @@ jobs:
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3.3.1
+      - uses: actions/setup-go@v3.4.0
         with:
           go-version: 1.18
       - name: Display go version
@@ -137,7 +137,7 @@ jobs:
     needs: [build, install-runsim]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3.3.1
+      - uses: actions/setup-go@v3.4.0
         with:
           go-version: 1.18
       - name: Display go version
