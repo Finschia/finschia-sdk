@@ -8,7 +8,7 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
-func (suite *TendermintTestSuite) TestConsensusStateValidateBasic() {
+func (suite *OstraconTestSuite) TestConsensusStateValidateBasic() {
 	testCases := []struct {
 		msg            string
 		consensusState *types.ConsensusState
@@ -18,6 +18,13 @@ func (suite *TendermintTestSuite) TestConsensusStateValidateBasic() {
 			&types.ConsensusState{
 				Timestamp:          suite.now,
 				Root:               commitmenttypes.NewMerkleRoot([]byte("app_hash")),
+				NextValidatorsHash: suite.valsHash,
+			},
+			true},
+		{"success with sentinel",
+			&types.ConsensusState{
+				Timestamp:          suite.now,
+				Root:               commitmenttypes.NewMerkleRoot([]byte(types.SentinelRoot)),
 				NextValidatorsHash: suite.valsHash,
 			},
 			true},

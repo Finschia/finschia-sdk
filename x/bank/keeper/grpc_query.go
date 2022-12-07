@@ -24,25 +24,18 @@ func (k BaseKeeper) Balance(ctx context.Context, req *types.QueryBalanceRequest)
 		return nil, status.Error(codes.InvalidArgument, "address cannot be empty")
 	}
 
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid bech32 format")
-	}
-
 	if req.Denom == "" {
 		return nil, status.Error(codes.InvalidArgument, "invalid denom")
 	}
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	balance := k.GetBalance(sdkCtx, sdk.AccAddress(req.Address), req.Denom)
-	if balance.Amount.Int64() == 0 {
-		go func() {
-			store := sdkCtx.KVStore(k.storeKey)
-			balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-			accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(sdk.AccAddress(req.Address)))
-			k.ak.Prefetch(sdkCtx, sdk.AccAddress(req.Address), true)
-			accountStore.Prefetch([]byte(req.Denom), true)
-		}()
+	address, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid address: %s", err.Error())
 	}
+
+	balance := k.GetBalance(sdkCtx, address, req.Denom)
+
 	return &types.QueryBalanceResponse{Balance: &balance}, nil
 }
 
@@ -56,14 +49,15 @@ func (k BaseKeeper) AllBalances(ctx context.Context, req *types.QueryAllBalances
 		return nil, status.Error(codes.InvalidArgument, "address cannot be empty")
 	}
 
-	if err := sdk.ValidateAccAddress(req.Address); err != nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid bech32 format")
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid address: %s", err.Error())
 	}
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	balances := sdk.NewCoins()
-	accountStore := k.getAccountStore(sdkCtx, sdk.AccAddress(req.Address))
+	accountStore := k.getAccountStore(sdkCtx, addr)
 
 	pageRes, err := query.Paginate(accountStore, req.Pagination, func(_, value []byte) error {
 		var result sdk.Coin
@@ -74,12 +68,47 @@ func (k BaseKeeper) AllBalances(ctx context.Context, req *types.QueryAllBalances
 		balances = append(balances, result)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "paginate: %v", err)
 	}
 
 	return &types.QueryAllBalancesResponse{Balances: balances, Pagination: pageRes}, nil
+}
+
+// SpendableBalances implements a gRPC query handler for retrieving an account's
+// spendable balances.
+func (k BaseKeeper) SpendableBalances(ctx context.Context, req *types.QuerySpendableBalancesRequest) (*types.QuerySpendableBalancesResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	addr, err := sdk.AccAddressFromBech32(req.Address)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid address: %s", err.Error())
+	}
+
+	sdkCtx := sdk.UnwrapSDKContext(ctx)
+
+	balances := sdk.NewCoins()
+	accountStore := k.getAccountStore(sdkCtx, addr)
+	zeroAmt := sdk.ZeroInt()
+
+	pageRes, err := query.Paginate(accountStore, req.Pagination, func(key, value []byte) error {
+		balances = append(balances, sdk.NewCoin(string(key), zeroAmt))
+		return nil
+	})
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "paginate: %v", err)
+	}
+
+	result := sdk.NewCoins()
+	spendable := k.SpendableCoins(sdkCtx, addr)
+
+	for _, c := range balances {
+		result = append(result, sdk.NewCoin(c.Denom, spendable.AmountOf(c.Denom)))
+	}
+
+	return &types.QuerySpendableBalancesResponse{Balances: result, Pagination: pageRes}, nil
 }
 
 // TotalSupply implements the Query/TotalSupply gRPC method
@@ -138,7 +167,6 @@ func (k BaseKeeper) DenomsMetadata(c context.Context, req *types.QueryDenomsMeta
 		metadatas = append(metadatas, metadata)
 		return nil
 	})
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

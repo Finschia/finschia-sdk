@@ -2,14 +2,14 @@ package utils
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"io/ioutil"
-
-	"github.com/pkg/errors"
+	"os"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/codec"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+
 	clientutils "github.com/line/lbm-sdk/x/ibc/core/02-client/client/utils"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
@@ -40,7 +40,7 @@ func QueryConnection(
 func queryConnectionABCI(clientCtx client.Context, connectionID string) (*types.QueryConnectionResponse, error) {
 	key := host.ConnectionKey(connectionID)
 
-	value, proofBz, proofHeight, err := ibcclient.QueryTendermintProof(clientCtx, key)
+	value, proofBz, proofHeight, err := ibcclient.QueryOstraconProof(clientCtx, key)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func QueryClientConnections(
 func queryClientConnectionsABCI(clientCtx client.Context, clientID string) (*types.QueryClientConnectionsResponse, error) {
 	key := host.ClientConnectionsKey(clientID)
 
-	value, proofBz, proofHeight, err := ibcclient.QueryTendermintProof(clientCtx, key)
+	value, proofBz, proofHeight, err := ibcclient.QueryOstraconProof(clientCtx, key)
 	if err != nil {
 		return nil, err
 	}
@@ -171,12 +171,12 @@ func ParseClientState(cdc *codec.LegacyAmino, arg string) (exported.ClientState,
 	var clientState exported.ClientState
 	if err := cdc.UnmarshalJSON([]byte(arg), &clientState); err != nil {
 		// check for file path if JSON input is not provided
-		contents, err := ioutil.ReadFile(arg)
+		contents, err := os.ReadFile(arg)
 		if err != nil {
 			return nil, errors.New("either JSON input nor path to .json file were provided")
 		}
 		if err := cdc.UnmarshalJSON(contents, &clientState); err != nil {
-			return nil, errors.Wrap(err, "error unmarshalling client state")
+			return nil, fmt.Errorf("error unmarshalling client state: %w", err)
 		}
 	}
 	return clientState, nil
@@ -188,12 +188,12 @@ func ParsePrefix(cdc *codec.LegacyAmino, arg string) (commitmenttypes.MerklePref
 	var prefix commitmenttypes.MerklePrefix
 	if err := cdc.UnmarshalJSON([]byte(arg), &prefix); err != nil {
 		// check for file path if JSON input is not provided
-		contents, err := ioutil.ReadFile(arg)
+		contents, err := os.ReadFile(arg)
 		if err != nil {
 			return commitmenttypes.MerklePrefix{}, errors.New("neither JSON input nor path to .json file were provided")
 		}
 		if err := cdc.UnmarshalJSON(contents, &prefix); err != nil {
-			return commitmenttypes.MerklePrefix{}, errors.Wrap(err, "error unmarshalling commitment prefix")
+			return commitmenttypes.MerklePrefix{}, fmt.Errorf("error unmarshalling commitment prefix: %w", err)
 		}
 	}
 	return prefix, nil
@@ -206,7 +206,7 @@ func ParseProof(cdc *codec.LegacyAmino, arg string) ([]byte, error) {
 	var merkleProof commitmenttypes.MerkleProof
 	if err := cdc.UnmarshalJSON([]byte(arg), &merkleProof); err != nil {
 		// check for file path if JSON input is not provided
-		contents, err := ioutil.ReadFile(arg)
+		contents, err := os.ReadFile(arg)
 		if err != nil {
 			return nil, errors.New("neither JSON input nor path to .json file were provided")
 		}

@@ -5,11 +5,11 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/line/lbm-sdk/codec/legacy"
 	cdctypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
+	authzcodec "github.com/line/lbm-sdk/x/authz/codec"
 )
 
 var (
@@ -27,6 +27,7 @@ var (
 )
 
 // NewMsgGrant creates a new MsgGrant
+//
 //nolint:interfacer
 func NewMsgGrant(granter sdk.AccAddress, grantee sdk.AccAddress, a Authorization, expiration time.Time) (*MsgGrant, error) {
 	m := &MsgGrant{
@@ -43,27 +44,23 @@ func NewMsgGrant(granter sdk.AccAddress, grantee sdk.AccAddress, a Authorization
 
 // GetSigners implements Msg
 func (msg MsgGrant) GetSigners() []sdk.AccAddress {
-	err := sdk.ValidateAccAddress(msg.Granter)
+	granter, err := sdk.AccAddressFromBech32(msg.Granter)
 	if err != nil {
 		panic(err)
 	}
-	granter := sdk.AccAddress(msg.Granter)
 	return []sdk.AccAddress{granter}
 }
 
 // ValidateBasic implements Msg
 func (msg MsgGrant) ValidateBasic() error {
-	err := sdk.ValidateAccAddress(msg.Granter)
+	granter, err := sdk.AccAddressFromBech32(msg.Granter)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "invalid granter address")
 	}
-	granter := sdk.AccAddress(msg.Granter)
-
-	err = sdk.ValidateAccAddress(msg.Grantee)
+	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "invalid granter address")
 	}
-	grantee := sdk.AccAddress(msg.Grantee)
 
 	if granter.Equals(grantee) {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "granter and grantee cannot be same")
@@ -83,7 +80,7 @@ func (msg MsgGrant) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (msg MsgGrant) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&msg))
+	return sdk.MustSortJSON(authzcodec.ModuleCdc.MustMarshalJSON(&msg))
 }
 
 // GetAuthorization returns the cache value from the MsgGrant.Authorization if present.
@@ -124,6 +121,7 @@ func (msg MsgGrant) UnpackInterfaces(unpacker cdctypes.AnyUnpacker) error {
 }
 
 // NewMsgRevoke creates a new MsgRevoke
+//
 //nolint:interfacer
 func NewMsgRevoke(granter sdk.AccAddress, grantee sdk.AccAddress, msgTypeURL string) MsgRevoke {
 	return MsgRevoke{
@@ -135,27 +133,23 @@ func NewMsgRevoke(granter sdk.AccAddress, grantee sdk.AccAddress, msgTypeURL str
 
 // GetSigners implements Msg
 func (msg MsgRevoke) GetSigners() []sdk.AccAddress {
-	err := sdk.ValidateAccAddress(msg.Granter)
+	granter, err := sdk.AccAddressFromBech32(msg.Granter)
 	if err != nil {
 		panic(err)
 	}
-	granter := sdk.AccAddress(msg.Granter)
 	return []sdk.AccAddress{granter}
 }
 
 // ValidateBasic implements MsgRequest.ValidateBasic
 func (msg MsgRevoke) ValidateBasic() error {
-	err := sdk.ValidateAccAddress(msg.Granter)
+	granter, err := sdk.AccAddressFromBech32(msg.Granter)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "invalid granter address")
 	}
-	granter := sdk.AccAddress(msg.Granter)
-
-	err = sdk.ValidateAccAddress(msg.Grantee)
+	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "invalid grantee address")
 	}
-	grantee := sdk.AccAddress(msg.Grantee)
 
 	if granter.Equals(grantee) {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "granter and grantee cannot be same")
@@ -180,10 +174,11 @@ func (msg MsgRevoke) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (msg MsgRevoke) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&msg))
+	return sdk.MustSortJSON(authzcodec.ModuleCdc.MustMarshalJSON(&msg))
 }
 
 // NewMsgExec creates a new MsgExecAuthorized
+//
 //nolint:interfacer
 func NewMsgExec(grantee sdk.AccAddress, msgs []sdk.Msg) MsgExec {
 	msgsAny := make([]*cdctypes.Any, len(msgs))
@@ -218,17 +213,16 @@ func (msg MsgExec) GetMessages() ([]sdk.Msg, error) {
 
 // GetSigners implements Msg
 func (msg MsgExec) GetSigners() []sdk.AccAddress {
-	err := sdk.ValidateAccAddress(msg.Grantee)
+	grantee, err := sdk.AccAddressFromBech32(msg.Grantee)
 	if err != nil {
 		panic(err)
 	}
-	grantee := sdk.AccAddress(msg.Grantee)
 	return []sdk.AccAddress{grantee}
 }
 
 // ValidateBasic implements Msg
 func (msg MsgExec) ValidateBasic() error {
-	err := sdk.ValidateAccAddress(msg.Grantee)
+	_, err := sdk.AccAddressFromBech32(msg.Grantee)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "invalid grantee address")
 	}
@@ -252,5 +246,5 @@ func (msg MsgExec) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (msg MsgExec) GetSignBytes() []byte {
-	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&msg))
+	return sdk.MustSortJSON(authzcodec.ModuleCdc.MustMarshalJSON(&msg))
 }

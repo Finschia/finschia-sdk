@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 )
@@ -18,14 +19,14 @@ const (
 //nolint:interfacer
 func NewMsgTransfer(
 	sourcePort, sourceChannel string,
-	token sdk.Coin, sender sdk.AccAddress, receiver string,
+	token sdk.Coin, sender, receiver string,
 	timeoutHeight clienttypes.Height, timeoutTimestamp uint64,
 ) *MsgTransfer {
 	return &MsgTransfer{
 		SourcePort:       sourcePort,
 		SourceChannel:    sourceChannel,
 		Token:            token,
-		Sender:           sender.String(),
+		Sender:           sender,
 		Receiver:         receiver,
 		TimeoutHeight:    timeoutHeight,
 		TimeoutTimestamp: timeoutTimestamp,
@@ -60,7 +61,7 @@ func (msg MsgTransfer) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInsufficientFunds, msg.Token.String())
 	}
 	// NOTE: sender format must be validated as it is required by the GetSigners function.
-	err := sdk.ValidateAccAddress(msg.Sender)
+	_, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
@@ -77,6 +78,9 @@ func (msg MsgTransfer) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgTransfer) GetSigners() []sdk.AccAddress {
-	valAddr := sdk.AccAddress(msg.Sender)
-	return []sdk.AccAddress{valAddr}
+	signer, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{signer}
 }

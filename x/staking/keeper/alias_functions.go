@@ -39,7 +39,8 @@ func (k Keeper) IterateBondedValidatorsByPower(ctx sdk.Context, fn func(index in
 
 	i := int64(0)
 	for ; iterator.Valid() && i < int64(maxValidators); iterator.Next() {
-		validator := k.mustGetValidator(ctx, sdk.ValAddress(string(iterator.Value())))
+		address := iterator.Value()
+		validator := k.mustGetValidator(ctx, address)
 
 		if validator.IsBonded() {
 			stop := fn(i, validator) // XXX is this safe will the validator unexposed fields be able to get written to?
@@ -61,7 +62,7 @@ func (k Keeper) IterateLastValidators(ctx sdk.Context, fn func(index int64, vali
 	for ; iterator.Valid(); iterator.Next() {
 		address := types.AddressFromLastValidatorPowerKey(iterator.Key())
 
-		validator, found := k.GetValidator(ctx, sdk.ValAddress(string(address)))
+		validator, found := k.GetValidator(ctx, address)
 		if !found {
 			panic(fmt.Sprintf("validator record not found for address: %v\n", address))
 		}
@@ -113,7 +114,8 @@ func (k Keeper) Delegation(ctx sdk.Context, addrDel sdk.AccAddress, addrVal sdk.
 
 // iterate through all of the delegations from a delegator
 func (k Keeper) IterateDelegations(ctx sdk.Context, delAddr sdk.AccAddress,
-	fn func(index int64, del types.DelegationI) (stop bool)) {
+	fn func(index int64, del types.DelegationI) (stop bool),
+) {
 	store := ctx.KVStore(k.storeKey)
 	delegatorPrefixKey := types.GetDelegationsKey(delAddr)
 

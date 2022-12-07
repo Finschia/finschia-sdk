@@ -21,8 +21,7 @@ func TestMigrateJSON(t *testing.T) {
 		WithTxConfig(encodingConfig.TxConfig).
 		WithCodec(encodingConfig.Marshaler)
 
-	voter := sdk.AccAddress("link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3q4fdzl")
-	err := sdk.ValidateAccAddress(voter.String())
+	voter, err := sdk.AccAddressFromBech32("link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3q4fdzl")
 	require.NoError(t, err)
 	govGenState := &types.GenesisState{
 		Votes: types.Votes{

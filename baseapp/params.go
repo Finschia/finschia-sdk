@@ -6,6 +6,7 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	sdk "github.com/line/lbm-sdk/types"
 )
@@ -80,6 +81,15 @@ func ValidateValidatorParams(i interface{}) error {
 
 	if len(v.PubKeyTypes) == 0 {
 		return errors.New("validator allowed pubkey types must not be empty")
+	}
+
+	for _, pubKeyType := range v.PubKeyTypes {
+		switch pubKeyType {
+		case octypes.ABCIPubKeyTypeBls12WithEd25519, octypes.ABCIPubKeyTypeEd25519, octypes.ABCIPubKeyTypeSecp256k1, octypes.ABCIPubKeyTypeBls12:
+			continue
+		default:
+			return fmt.Errorf("not-allowed pubkey type: %s", pubKeyType)
+		}
 	}
 
 	return nil

@@ -2,6 +2,7 @@ package ibc
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+
 	client "github.com/line/lbm-sdk/x/ibc/core/02-client"
 	connection "github.com/line/lbm-sdk/x/ibc/core/03-connection"
 	channel "github.com/line/lbm-sdk/x/ibc/core/04-channel"

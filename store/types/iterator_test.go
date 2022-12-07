@@ -4,16 +4,17 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/tm-db/v2/memdb"
+	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/store/iavl"
 	"github.com/line/lbm-sdk/store/types"
 )
 
 func newMemTestKVStore(t *testing.T) types.KVStore {
-	db := memdb.NewDB()
-	store, err := iavl.LoadStore(db, iavl.NewCacheManagerNoCache(), types.CommitID{}, false, iavl.DefaultIAVLCacheSize)
+	db := dbm.NewMemDB()
+	store, err := iavl.LoadStore(db, log.NewNopLogger(), types.NewKVStoreKey("test"), types.CommitID{}, false, iavl.DefaultIAVLCacheSize, false)
 	require.NoError(t, err)
 	return store
 }

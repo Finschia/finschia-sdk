@@ -24,9 +24,9 @@ func MakeTestHandlerMap() signing.SignModeHandler {
 
 func TestHandlerMap_GetSignBytes(t *testing.T) {
 	priv1 := secp256k1.GenPrivKey()
-	addr1 := sdk.BytesToAccAddress(priv1.PubKey().Address())
+	addr1 := sdk.AccAddress(priv1.PubKey().Address())
 	priv2 := secp256k1.GenPrivKey()
-	addr2 := sdk.BytesToAccAddress(priv2.PubKey().Address())
+	addr2 := sdk.AccAddress(priv2.PubKey().Address())
 
 	coins := sdk.Coins{sdk.NewInt64Coin("foocoin", 10)}
 

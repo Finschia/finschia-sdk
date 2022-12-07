@@ -12,10 +12,10 @@ import (
 // TODO: Figure out API for others to either add their own pubkey types, or
 // to make verify / marshal accept a AminoCdc.
 const (
-	PubKeyAminoRoute = "ostracon/PubKeyMultisigThreshold"
+	PubKeyAminoRoute = "tendermint/PubKeyMultisigThreshold"
 )
 
-//nolint
+// nolint
 // Deprecated: Amino is being deprecated in the SDK. But even if you need to
 // use Amino for some reason, please use `codec/legacy.Cdc` instead.
 var AminoCdc = codec.NewLegacyAmino()

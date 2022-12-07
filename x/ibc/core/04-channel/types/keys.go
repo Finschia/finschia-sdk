@@ -5,6 +5,7 @@ import (
 	"regexp"
 
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 )
 

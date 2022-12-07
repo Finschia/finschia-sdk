@@ -21,6 +21,8 @@ type ViewKeeper interface {
 	IterateCodeInfos(ctx sdk.Context, cb func(uint64, CodeInfo) bool)
 	GetByteCode(ctx sdk.Context, codeID uint64) ([]byte, error)
 	IsPinnedCode(ctx sdk.Context, codeID uint64) bool
+	IterateInactiveContracts(ctx sdk.Context, fn func(contractAddress sdk.AccAddress) bool)
+	IsInactiveContract(ctx sdk.Context, contractAddress sdk.AccAddress) bool
 }
 
 // ContractOpsKeeper contains mutable operations on a contract.
@@ -55,11 +57,14 @@ type ContractOpsKeeper interface {
 	// SetContractInfoExtension updates the extension point data that is stored with the contract info
 	SetContractInfoExtension(ctx sdk.Context, contract sdk.AccAddress, extra ContractInfoExtension) error
 
-	// UpdateContractStatus sets a new status of the contract on the ContractInfo.
-	UpdateContractStatus(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, status ContractStatus) error
-
 	// SetAccessConfig updates the access config of a code id.
 	SetAccessConfig(ctx sdk.Context, codeID uint64, config AccessConfig) error
+
+	// DeactivateContract add the contract address to inactive contract list.
+	DeactivateContract(ctx sdk.Context, contractAddress sdk.AccAddress) error
+
+	// ActivateContract remove the contract address from inactive contract list.
+	ActivateContract(ctx sdk.Context, contractAddress sdk.AccAddress) error
 }
 
 // IBCContractKeeper IBC lifecycle event handler
@@ -68,7 +73,7 @@ type IBCContractKeeper interface {
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
 		msg wasmvmtypes.IBCChannelOpenMsg,
-	) error
+	) (string, error)
 	OnConnectChannel(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,

@@ -74,7 +74,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 			s.Require().NoError(err)
 
 			var actual token.QueryBalanceResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
@@ -129,7 +129,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 			s.Require().NoError(err)
 
 			var actual token.QueryTokenClassResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
@@ -177,7 +177,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokens() {
 			s.Require().NoError(err)
 
 			var actual token.QueryTokenClassesResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
@@ -205,15 +205,15 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGranteeGrants() {
 				Grants: []token.Grant{
 					{
 						Grantee:    s.vendor.String(),
-						Permission: token.Permission_Modify.String(),
+						Permission: token.PermissionModify,
 					},
 					{
 						Grantee:    s.vendor.String(),
-						Permission: token.Permission_Mint.String(),
+						Permission: token.PermissionMint,
 					},
 					{
 						Grantee:    s.vendor.String(),
-						Permission: token.Permission_Burn.String(),
+						Permission: token.PermissionBurn,
 					},
 				},
 				Pagination: &query.PageResponse{
@@ -252,13 +252,13 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGranteeGrants() {
 			s.Require().NoError(err)
 
 			var actual token.QueryGranteeGrantsResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
+func (s *IntegrationTestSuite) TestNewQueryCmdApproved() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -277,11 +277,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 				s.customer.String(),
 			},
 			true,
-			&token.QueryAuthorizationResponse{
-				Authorization: token.Authorization{
-					Holder:   s.customer.String(),
-					Operator: s.vendor.String(),
-				},
+			&token.QueryApprovedResponse{
+				Approved: true,
 			},
 		},
 		"extra args": {
@@ -308,7 +305,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdAuthorization()
+			cmd := cli.NewQueryCmdApproved()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -316,14 +313,14 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.QueryAuthorizationResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			var actual token.QueryApprovedResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewQueryCmdOperatorAuthorizations() {
+func (s *IntegrationTestSuite) TestNewQueryCmdApprovers() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -341,13 +338,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdOperatorAuthorizations() {
 				s.vendor.String(),
 			},
 			true,
-			&token.QueryOperatorAuthorizationsResponse{
-				Authorizations: []token.Authorization{
-					{
-						Holder:   s.customer.String(),
-						Operator: s.vendor.String(),
-					},
-				},
+			&token.QueryApproversResponse{
+				Approvers:  []string{s.customer.String()},
 				Pagination: &query.PageResponse{},
 			},
 		},
@@ -373,7 +365,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdOperatorAuthorizations() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdOperatorAuthorizations()
+			cmd := cli.NewQueryCmdApprovers()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -381,8 +373,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdOperatorAuthorizations() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.QueryOperatorAuthorizationsResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			var actual token.QueryApproversResponse
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})
 	}

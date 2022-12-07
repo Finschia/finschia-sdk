@@ -5,8 +5,9 @@ import (
 	"github.com/line/lbm-sdk/codec/types"
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/msgservice"
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
+	authzcodec "github.com/line/lbm-sdk/x/authz/codec"
+	govcodec "github.com/line/lbm-sdk/x/gov/codec"
 )
 
 // RegisterLegacyAminoCodec registers the account interfaces and concrete types on the
@@ -15,9 +16,8 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*ModuleAccountI)(nil), nil)
 	cdc.RegisterInterface((*GenesisAccount)(nil), nil)
 	cdc.RegisterInterface((*AccountI)(nil), nil)
-	cdc.RegisterConcrete(&BaseAccount{}, "lbm-sdk/BaseAccount", nil)
-	cdc.RegisterConcrete(&ModuleAccount{}, "lbm-sdk/ModuleAccount", nil)
-	cdc.RegisterConcrete(&MsgEmpty{}, "lbm-sdk/MsgEmpty", nil)
+	cdc.RegisterConcrete(&BaseAccount{}, "cosmos-sdk/BaseAccount", nil)
+	cdc.RegisterConcrete(&ModuleAccount{}, "cosmos-sdk/ModuleAccount", nil)
 
 	legacytx.RegisterLegacyAminoCodec(cdc)
 }
@@ -25,11 +25,6 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 // RegisterInterfaces associates protoName with AccountI interface
 // and creates a registry of it's concrete implementations
 func RegisterInterfaces(registry types.InterfaceRegistry) {
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgEmpty{},
-	)
-	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
-
 	registry.RegisterInterface(
 		"cosmos.auth.v1beta1.AccountI",
 		(*AccountI)(nil),
@@ -53,4 +48,10 @@ var (
 func init() {
 	RegisterLegacyAminoCodec(amino)
 	cryptocodec.RegisterCrypto(amino)
+	sdk.RegisterLegacyAminoCodec(amino)
+
+	// Register all Amino interfaces and concrete types on the authz  and gov Amino codec so that this can later be
+	// used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
+	RegisterLegacyAminoCodec(authzcodec.Amino)
+	RegisterLegacyAminoCodec(govcodec.Amino)
 }

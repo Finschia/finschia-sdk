@@ -4,15 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
 	"time"
 
 	ics23 "github.com/confio/ics23/go"
+	"github.com/cosmos/iavl"
+	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/iavl/v2"
 	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/libs/log"
 	occrypto "github.com/line/ostracon/proto/ostracon/crypto"
-	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/lbm-sdk/store/listenkv"
@@ -24,7 +24,9 @@ import (
 )
 
 const (
-	DefaultIAVLCacheSize = 1024 * 1024 * 100
+	// DefaultIAVLCacheSize is default Iavl cache units size. 1 unit is 128 byte
+	// default 64MB
+	DefaultIAVLCacheSize = 1024 * 512
 )
 
 var (
@@ -33,87 +35,43 @@ var (
 	_ types.CommitKVStore           = (*Store)(nil)
 	_ types.Queryable               = (*Store)(nil)
 	_ types.StoreWithInitialVersion = (*Store)(nil)
-
-	_ types.CacheManager = (*CacheManagerSingleton)(nil)
 )
 
 // Store Implements types.KVStore and CommitKVStore.
 type Store struct {
-	tree    Tree
-	cache   types.Cache
-	metrics *Metrics
-}
-
-type CacheManagerSingleton struct {
-	cache   types.Cache
-	metrics *Metrics
-}
-
-func (cms *CacheManagerSingleton) GetCache() types.Cache {
-	return cms.cache
-}
-
-func NewCacheManagerSingleton(cacheSize int, provider MetricsProvider) types.CacheManager {
-	cm := &CacheManagerSingleton{
-		cache: NewFastCache(cacheSize),
-		// cache: NewRistrettoCache(cacheSize),
-		// cache: NewFreeCache(cacheSize),
-		metrics: provider(),
-	}
-	startCacheMetricUpdator(cm.cache, cm.metrics)
-	return cm
-}
-
-var peakCacheBytes uint64
-
-func startCacheMetricUpdator(cache types.Cache, metrics *Metrics) {
-	// Execution time of `fastcache.UpdateStats()` can increase linearly as cache entries grows
-	// So we update the metrics with a separate go route.
-	go func() {
-		for {
-			hits, misses, entries, bytes := cache.Stats()
-			metrics.IAVLCacheHits.Set(float64(hits))
-			metrics.IAVLCacheMisses.Set(float64(misses))
-			metrics.IAVLCacheEntries.Set(float64(entries))
-			metrics.IAVLCacheBytes.Set(float64(bytes))
-			if bytes > peakCacheBytes {
-				peakCacheBytes = bytes
-				metrics.IAVLCachePeakBytes.Set(float64(bytes))
-			}
-			time.Sleep(10 * time.Second)
-		}
-	}()
-}
-
-type CacheManagerNoCache struct{}
-
-func (cmn *CacheManagerNoCache) GetCache() types.Cache {
-	return nil
-}
-
-func NewCacheManagerNoCache() types.CacheManager {
-	return &CacheManagerNoCache{}
+	tree Tree
 }
 
 // LoadStore returns an IAVL Store as a CommitKVStore. Internally, it will load the
 // store's version (id) from the provided DB. An error is returned if the version
 // fails to load, or if called with a positive version on an empty tree.
-func LoadStore(db tmdb.DB, cacheManager types.CacheManager, id types.CommitID, lazyLoading bool, cacheSize int) (types.CommitKVStore, error) {
-	return LoadStoreWithInitialVersion(db, cacheManager, id, lazyLoading, 0, cacheSize)
+func LoadStore(db dbm.DB, logger log.Logger, key types.StoreKey, id types.CommitID, lazyLoading bool, cacheSize int, disableFastNode bool) (types.CommitKVStore, error) {
+	return LoadStoreWithInitialVersion(db, logger, key, id, lazyLoading, 0, cacheSize, disableFastNode)
 }
 
 // LoadStoreWithInitialVersion returns an IAVL Store as a CommitKVStore setting its initialVersion
 // to the one given. Internally, it will load the store's version (id) from the
 // provided DB. An error is returned if the version fails to load, or if called with a positive
 // version on an empty tree.
-func LoadStoreWithInitialVersion(db tmdb.DB, cacheManager types.CacheManager, id types.CommitID, lazyLoading bool, initialVersion uint64, cacheSize int) (types.CommitKVStore, error) {
-	if cacheManager == nil {
-		cacheManager = NewCacheManagerNoCache()
-	}
-	cache := cacheManager.GetCache()
-	tree, err := iavl.NewMutableTreeWithCacheWithOpts(db, cache, &iavl.Options{InitialVersion: initialVersion}) // TODO(dudong2): need to fix to use cacheSize(by using NewMutableTreeWithOpts)
+func LoadStoreWithInitialVersion(db dbm.DB, logger log.Logger, key types.StoreKey, id types.CommitID, lazyLoading bool, initialVersion uint64, cacheSize int, disableFastNode bool) (types.CommitKVStore, error) {
+	tree, err := iavl.NewMutableTreeWithOpts(db, cacheSize, &iavl.Options{InitialVersion: initialVersion}, disableFastNode)
 	if err != nil {
 		return nil, err
+	}
+
+	isUpgradeable, err := tree.IsUpgradeable()
+	if err != nil {
+		return nil, err
+	}
+
+	if isUpgradeable && logger != nil {
+		logger.Info(
+			"Upgrading IAVL storage for faster queries + execution on live state. This may take a while",
+			"store_key", key.String(),
+			"version", initialVersion,
+			"commit", fmt.Sprintf("%X", id),
+			"is_lazy", lazyLoading,
+		)
 	}
 
 	if lazyLoading {
@@ -126,16 +84,12 @@ func LoadStoreWithInitialVersion(db tmdb.DB, cacheManager types.CacheManager, id
 		return nil, err
 	}
 
-	var metrics *Metrics
-	if cms, ok := cacheManager.(*CacheManagerSingleton); ok {
-		metrics = cms.metrics
-	} else {
-		metrics = NopMetrics()
+	if logger != nil {
+		logger.Debug("Finished loading IAVL tree")
 	}
+
 	return &Store{
-		tree:    tree,
-		cache:   cache,
-		metrics: metrics,
+		tree: tree,
 	}, nil
 }
 
@@ -189,9 +143,14 @@ func (st *Store) Commit() types.CommitID {
 
 // LastCommitID implements Committer.
 func (st *Store) LastCommitID() types.CommitID {
+	hash, err := st.tree.Hash()
+	if err != nil {
+		panic(err)
+	}
+
 	return types.CommitID{
 		Version: st.tree.Version(),
-		Hash:    st.tree.Hash(),
+		Hash:    hash,
 	}
 }
 
@@ -210,6 +169,11 @@ func (st *Store) GetPruning() types.PruningOptions {
 // VersionExists returns whether or not a given version is stored.
 func (st *Store) VersionExists(version int64) bool {
 	return st.tree.VersionExists(version)
+}
+
+// GetAllVersions returns all versions in the iavl tree
+func (st *Store) GetAllVersions() []int {
+	return st.tree.(*iavl.MutableTree).AvailableVersions()
 }
 
 // Implements Store.
@@ -242,29 +206,27 @@ func (st *Store) Set(key, value []byte) {
 // Implements types.KVStore.
 func (st *Store) Get(key []byte) []byte {
 	defer telemetry.MeasureSince(time.Now(), "store", "iavl", "get")
-	_, value := st.tree.Get(key)
+	value, err := st.tree.Get(key)
+	if err != nil {
+		panic(err)
+	}
 	return value
 }
 
 // Implements types.KVStore.
 func (st *Store) Has(key []byte) (exists bool) {
 	defer telemetry.MeasureSince(time.Now(), "store", "iavl", "has")
-	return st.tree.Has(key)
+	has, err := st.tree.Has(key)
+	if err != nil {
+		panic(err)
+	}
+	return has
 }
 
 // Implements types.KVStore.
 func (st *Store) Delete(key []byte) {
 	defer telemetry.MeasureSince(time.Now(), "store", "iavl", "delete")
 	st.tree.Remove(key)
-}
-
-func init() {
-	if os.Getenv("USE_PREFETCH") != "NO" {
-		usePrefetch = 1
-	} else {
-		usePrefetch = -1
-	}
-	prefetcher()
 }
 
 // DeleteVersions deletes a series of versions from the MutableTree. An error
@@ -274,32 +236,28 @@ func (st *Store) DeleteVersions(versions ...int64) error {
 	return st.tree.DeleteVersions(versions...)
 }
 
+// LoadVersionForOverwriting attempts to load a tree at a previously committed
+// version, or the latest version below it. Any versions greater than targetVersion will be deleted.
+func (st *Store) LoadVersionForOverwriting(targetVersion int64) (int64, error) {
+	return st.tree.LoadVersionForOverwriting(targetVersion)
+}
+
 // Implements types.KVStore.
 func (st *Store) Iterator(start, end []byte) types.Iterator {
-	var iTree *iavl.ImmutableTree
-
-	switch tree := st.tree.(type) {
-	case *immutableTree:
-		iTree = tree.ImmutableTree
-	case *iavl.MutableTree:
-		iTree = tree.ImmutableTree
+	iterator, err := st.tree.Iterator(start, end, true)
+	if err != nil {
+		panic(err)
 	}
-
-	return newIAVLIterator(iTree, start, end, true)
+	return iterator
 }
 
 // Implements types.KVStore.
 func (st *Store) ReverseIterator(start, end []byte) types.Iterator {
-	var iTree *iavl.ImmutableTree
-
-	switch tree := st.tree.(type) {
-	case *immutableTree:
-		iTree = tree.ImmutableTree
-	case *iavl.MutableTree:
-		iTree = tree.ImmutableTree
+	iterator, err := st.tree.Iterator(start, end, false)
+	if err != nil {
+		panic(err)
 	}
-
-	return newIAVLIterator(iTree, start, end, false)
+	return iterator
 }
 
 // SetInitialVersion sets the initial version of the IAVL tree. It is used when
@@ -374,7 +332,12 @@ func (st *Store) Query(req abci.RequestQuery) (res abci.ResponseQuery) {
 			break
 		}
 
-		_, res.Value = tree.GetVersioned(key, res.Height)
+		value, err := tree.GetVersioned(key, res.Height)
+		if err != nil {
+			panic(err)
+		}
+		res.Value = value
+
 		if !req.Prove {
 			break
 		}
@@ -454,17 +417,7 @@ func getProofFromTree(tree *iavl.MutableTree, key []byte, exists bool) *occrypto
 
 // Implements types.Iterator.
 type iavlIterator struct {
-	*iavl.Iterator
+	dbm.Iterator
 }
 
 var _ types.Iterator = (*iavlIterator)(nil)
-
-// newIAVLIterator will create a new iavlIterator.
-// CONTRACT: Caller must release the iavlIterator, as each one creates a new
-// goroutine.
-func newIAVLIterator(tree *iavl.ImmutableTree, start, end []byte, ascending bool) *iavlIterator {
-	iter := &iavlIterator{
-		Iterator: tree.Iterator(start, end, ascending),
-	}
-	return iter
-}

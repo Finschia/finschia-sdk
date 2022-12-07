@@ -57,7 +57,6 @@ func (suite *SimTestSuite) TestWeightedOperations() {
 // TestSimulateMsgSetWithdrawAddress tests the normal scenario of a valid message of type TypeMsgSetWithdrawAddress.
 // Abonormal scenarios, where the message is created by an errors, are not tested here.
 func (suite *SimTestSuite) TestSimulateMsgSetWithdrawAddress() {
-
 	// setup 3 accounts
 	s := rand.NewSource(1)
 	r := rand.New(s)
@@ -244,7 +243,7 @@ func (suite *SimTestSuite) getTestingValidator(accounts []simtypes.Account, comm
 	require := suite.Require()
 	account := accounts[n]
 	valPubKey := account.PubKey
-	valAddr := sdk.BytesToValAddress(account.PubKey.Address())
+	valAddr := sdk.ValAddress(account.PubKey.Address().Bytes())
 	validator, err := stakingtypes.NewValidator(valAddr, valPubKey, stakingtypes.
 		Description{})
 	require.NoError(err)
@@ -265,7 +264,6 @@ func (suite *SimTestSuite) setupValidatorRewards(valAddress sdk.ValAddress) {
 	// setup current revards
 	currentRewards := distrtypes.NewValidatorCurrentRewards(decCoins, 3)
 	suite.app.DistrKeeper.SetValidatorCurrentRewards(suite.ctx, valAddress, currentRewards)
-
 }
 
 func TestSimTestSuite(t *testing.T) {

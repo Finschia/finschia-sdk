@@ -14,7 +14,7 @@ var _ exported.GenesisBalance = (*Balance)(nil)
 
 // GetAddress returns the account address of the Balance object.
 func (b Balance) GetAddress() sdk.AccAddress {
-	return sdk.AccAddress(b.Address)
+	return sdk.MustAccAddressFromBech32(b.Address)
 }
 
 // GetCoins returns the account coins of the Balance object.
@@ -24,8 +24,7 @@ func (b Balance) GetCoins() sdk.Coins {
 
 // Validate checks for address and coins correctness.
 func (b Balance) Validate() error {
-	err := sdk.ValidateAccAddress(b.Address)
-	if err != nil {
+	if _, err := sdk.AccAddressFromBech32(b.Address); err != nil {
 		return err
 	}
 
@@ -43,8 +42,9 @@ type balanceByAddress struct {
 
 func (b balanceByAddress) Len() int { return len(b.addresses) }
 func (b balanceByAddress) Less(i, j int) bool {
-	return bytes.Compare(b.addresses[i].Bytes(), b.addresses[j].Bytes()) < 0
+	return bytes.Compare(b.addresses[i], b.addresses[j]) < 0
 }
+
 func (b balanceByAddress) Swap(i, j int) {
 	b.addresses[i], b.addresses[j] = b.addresses[j], b.addresses[i]
 	b.balances[i], b.balances[j] = b.balances[j], b.balances[i]
@@ -64,7 +64,7 @@ func SanitizeGenesisBalances(balances []Balance) []Balance {
 	// 1. Retrieve the address equivalents for each Balance's address.
 	addresses := make([]sdk.AccAddress, len(balances))
 	for i := range balances {
-		addr := sdk.AccAddress(balances[i].Address)
+		addr := sdk.MustAccAddressFromBech32(balances[i].Address)
 		addresses[i] = addr
 	}
 

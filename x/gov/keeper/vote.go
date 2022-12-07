@@ -84,7 +84,8 @@ func (keeper Keeper) SetVote(ctx sdk.Context, vote types.Vote) {
 
 	store := ctx.KVStore(keeper.storeKey)
 	bz := keeper.cdc.MustMarshal(&vote)
-	addr := sdk.AccAddress(vote.Voter)
+	addr := sdk.MustAccAddressFromBech32(vote.Voter)
+
 	store.Set(types.VoteKey(vote.ProposalId, addr), bz)
 }
 

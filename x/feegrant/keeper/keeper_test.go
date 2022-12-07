@@ -133,7 +133,7 @@ func (suite *KeeperTestSuite) TestKeeperCrud() {
 			suite.Equal(tc.allowance, allow)
 		})
 	}
-	accAddr := sdk.AccAddress("link1k907plrxssuh2dxsd8k2jtp3de2t4xyhq6rkxd")
+	accAddr, err := sdk.AccAddressFromBech32("link1k907plrxssuh2dxsd8k2jtp3de2t4xyhq6rkxd")
 	suite.Require().NoError(err)
 
 	// let's grant and revoke authorization to non existing account
@@ -145,7 +145,6 @@ func (suite *KeeperTestSuite) TestKeeperCrud() {
 
 	_, err = suite.msgSrvr.RevokeAllowance(suite.ctx, &feegrant.MsgRevokeAllowance{Granter: suite.addrs[3].String(), Grantee: accAddr.String()})
 	suite.Require().NoError(err)
-
 }
 
 func (suite *KeeperTestSuite) TestUseGrantedFee() {
@@ -233,7 +232,6 @@ func (suite *KeeperTestSuite) TestUseGrantedFee() {
 	_, err = suite.keeper.GetAllowance(ctx, suite.addrs[0], suite.addrs[2])
 	suite.Error(err)
 	suite.Contains(err.Error(), "fee-grant not found")
-
 }
 
 func (suite *KeeperTestSuite) TestIterateGrants() {

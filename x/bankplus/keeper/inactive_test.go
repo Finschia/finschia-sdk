@@ -6,8 +6,8 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
@@ -22,7 +22,7 @@ import (
 func genAddress() sdk.AccAddress {
 	b := make([]byte, 20)
 	rand.Read(b)
-	return sdk.BytesToAccAddress(b)
+	return b
 }
 
 func setupKeeper(storeKey *sdk.KVStoreKey) BaseKeeper {
@@ -40,7 +40,7 @@ func setupKeeper(storeKey *sdk.KVStoreKey) BaseKeeper {
 }
 
 func setupContext(t *testing.T, storeKey *sdk.KVStoreKey) sdk.Context {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	stateStore := store.NewCommitMultiStore(db)
 	stateStore.MountStoreWithDB(storeKey, sdk.StoreTypeIAVL, db)
 	require.NoError(t, stateStore.LoadLatestVersion())

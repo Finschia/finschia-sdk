@@ -24,7 +24,10 @@ func QueryAccountRequestHandlerFn(storeName string, clientCtx client.Context) ht
 		vars := mux.Vars(r)
 		bech32addr := vars["address"]
 
-		addr := sdk.AccAddress(bech32addr)
+		addr, err := sdk.AccAddressFromBech32(bech32addr)
+		if rest.CheckInternalServerError(w, err) {
+			return
+		}
 
 		clientCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, clientCtx, r)
 		if !ok {
@@ -100,7 +103,10 @@ func QueryTxsRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 		}
 
 		for _, txRes := range searchResult.Txs {
-			packStdTxResponse(w, clientCtx, txRes)
+			if err = packStdTxResponse(w, clientCtx, txRes); err != nil {
+				// Error is already returned by packStdTxResponse.
+				return
+			}
 		}
 
 		err = checkAminoMarshalError(clientCtx, searchResult, "/cosmos/tx/v1beta1/txs")
@@ -201,14 +207,12 @@ func checkAminoMarshalError(ctx client.Context, resp interface{}, grpcEndPoint s
 
 	_, err := marshaler.MarshalJSON(resp)
 	if err != nil {
-
 		// If there's an unmarshalling error, we assume that it's because we're
 		// using amino to unmarshal a non-amino tx.
 		return fmt.Errorf("this transaction cannot be displayed via legacy REST endpoints, because it does not support"+
-			" Amino serialization. Please either use CLI, gRPC, gRPC-gateway, or directly query the Tendermint RPC"+
+			" Amino serialization. Please either use CLI, gRPC, gRPC-gateway, or directly query the Ostracon RPC"+
 			" endpoint to query this transaction. The new REST endpoint (via gRPC-gateway) is %s. Please also see the"+
 			"REST endpoints migration guide at %s for more info", grpcEndPoint, clientrest.DeprecationURL)
-
 	}
 
 	return nil

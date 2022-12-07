@@ -8,8 +8,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/line/lbm-sdk/x/wasm/keeper"
-
 	octypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
 
@@ -22,6 +20,7 @@ import (
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/genutil"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
+	"github.com/line/lbm-sdk/x/wasm/keeper"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
@@ -215,7 +214,6 @@ func GenesisListCodesCmd(defaultNodeHome string, genReader GenesisReader) *cobra
 				return err
 			}
 			return printJSONOutput(cmd, all)
-
 		},
 	}
 	cmd.Flags().String(flags.FlagHome, defaultNodeHome, "The application home directory")
@@ -277,11 +275,11 @@ func getAllCodes(state *types.GenesisState) ([]CodeMeta, error) {
 				accessConfig = *msg.InstantiatePermission
 			} else {
 				// default
-				err := sdk.ValidateAccAddress(msg.Sender)
+				creator, err := sdk.AccAddressFromBech32(msg.Sender)
 				if err != nil {
 					return nil, fmt.Errorf("sender: %s", err)
 				}
-				accessConfig = state.Params.InstantiateDefaultPermission.With(sdk.AccAddress(msg.Sender))
+				accessConfig = state.Params.InstantiateDefaultPermission.With(creator)
 			}
 			hash := sha256.Sum256(msg.WASMByteCode)
 			all = append(all, CodeMeta{
@@ -483,29 +481,32 @@ func codeSeqValue(state *types.GenesisState) uint64 {
 func getActorAddress(cmd *cobra.Command) (sdk.AccAddress, error) {
 	actorArg, err := cmd.Flags().GetString(flagRunAs)
 	if err != nil {
-		return "", fmt.Errorf("run-as: %s", err.Error())
+		return nil, fmt.Errorf("run-as: %s", err.Error())
 	}
 	if len(actorArg) == 0 {
-		return "", errors.New("run-as address is required")
+		return nil, errors.New("run-as address is required")
 	}
 
-	err = sdk.ValidateAccAddress(actorArg)
+	actorAddr, err := sdk.AccAddressFromBech32(actorArg)
 	if err == nil {
-		return sdk.AccAddress(actorArg), nil
+		return actorAddr, nil
 	}
 	inBuf := bufio.NewReader(cmd.InOrStdin())
-	keyringBackend, _ := cmd.Flags().GetString(flags.FlagKeyringBackend)
+	keyringBackend, err := cmd.Flags().GetString(flags.FlagKeyringBackend)
+	if err != nil {
+		return nil, err
+	}
 
 	homeDir := client.GetClientContextFromCmd(cmd).HomeDir
 	// attempt to lookup address from Keybase if no address was provided
 	kb, err := keyring.New(sdk.KeyringServiceName(), keyringBackend, homeDir, inBuf)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	info, err := kb.Key(actorArg)
 	if err != nil {
-		return "", fmt.Errorf("failed to get address from Keybase: %w", err)
+		return nil, fmt.Errorf("failed to get address from Keybase: %w", err)
 	}
 	return info.GetAddress(), nil
 }

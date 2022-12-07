@@ -3,10 +3,10 @@ package simapp
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"github.com/line/ostracon/libs/log"
-	tmdb "github.com/line/tm-db/v2"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/simapp/helpers"
@@ -19,7 +19,7 @@ import (
 // SetupSimulation creates the config, db (levelDB), temporary directory and logger for
 // the simulation tests. If `FlagEnabledValue` is false it skips the current test.
 // Returns error on an invalid db intantiation or temp dir creation.
-func SetupSimulation(dirPrefix, dbName string) (simtypes.Config, tmdb.DB, string, log.Logger, bool, error) {
+func SetupSimulation(dirPrefix, dbName string) (simtypes.Config, dbm.DB, string, log.Logger, bool, error) {
 	if !FlagEnabledValue {
 		return simtypes.Config{}, nil, "", nil, true, nil
 	}
@@ -34,7 +34,7 @@ func SetupSimulation(dirPrefix, dbName string) (simtypes.Config, tmdb.DB, string
 		logger = log.NewNopLogger()
 	}
 
-	dir, err := ioutil.TempDir("", dirPrefix)
+	dir, err := os.MkdirTemp("", dirPrefix)
 	if err != nil {
 		return simtypes.Config{}, nil, "", nil, false, err
 	}
@@ -56,7 +56,7 @@ func SimulationOperations(app App, cdc codec.JSONCodec, config simtypes.Config) 
 	}
 
 	if config.ParamsFile != "" {
-		bz, err := ioutil.ReadFile(config.ParamsFile)
+		bz, err := os.ReadFile(config.ParamsFile)
 		if err != nil {
 			panic(err)
 		}
@@ -84,7 +84,7 @@ func CheckExportSimulation(
 			return err
 		}
 
-		if err := ioutil.WriteFile(config.ExportStatePath, []byte(exported.AppState), 0600); err != nil {
+		if err := os.WriteFile(config.ExportStatePath, []byte(exported.AppState), 0o600); err != nil {
 			return err
 		}
 	}
@@ -96,7 +96,7 @@ func CheckExportSimulation(
 			return err
 		}
 
-		if err := ioutil.WriteFile(config.ExportParamsPath, paramsBz, 0600); err != nil {
+		if err := os.WriteFile(config.ExportParamsPath, paramsBz, 0o600); err != nil {
 			return err
 		}
 	}
@@ -104,7 +104,7 @@ func CheckExportSimulation(
 }
 
 // PrintStats prints the corresponding statistics from the app DB.
-func PrintStats(db tmdb.DB) {
+func PrintStats(db dbm.DB) {
 	fmt.Println("\nLevelDB Stats")
 	fmt.Println(db.Stats()["leveldb.stats"])
 	fmt.Println("LevelDB cached block size", db.Stats()["leveldb.cachedblock"])

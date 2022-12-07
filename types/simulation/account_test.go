@@ -47,7 +47,7 @@ func TestFindAccountEmptySlice(t *testing.T) {
 	require.Equal(t, 1, len(accs))
 	acc, found := simulation.FindAccount(nil, accs[0].Address)
 	require.False(t, found)
-	require.Equal(t, acc.Address, sdk.AccAddress(""))
+	require.Nil(t, acc.Address)
 	require.Nil(t, acc.PrivKey)
 	require.Nil(t, acc.PubKey)
 }

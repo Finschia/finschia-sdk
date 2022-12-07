@@ -6,11 +6,11 @@ import (
 	"github.com/gogo/protobuf/proto"
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/x/wasm/keeper"
-	"github.com/line/lbm-sdk/x/wasm/types"
-
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/wasm/keeper"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 // NewHandler returns a handler for "wasm" type messages.
@@ -30,7 +30,12 @@ func NewHandler(k types.ContractOpsKeeper) sdk.Handler {
 		case *MsgInstantiateContract:
 			res, err = msgServer.InstantiateContract(sdk.WrapSDKContext(ctx), msg)
 		case *MsgStoreCodeAndInstantiateContract:
-			res, err = msgServer.StoreCodeAndInstantiateContract(sdk.WrapSDKContext(ctx), msg)
+			lbmMsgServer, ok := msgServer.(lbmtypes.MsgServer)
+			if !ok {
+				errMsg := fmt.Sprintf("unrecognized wasm message type: %T", msg)
+				return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, errMsg)
+			}
+			res, err = lbmMsgServer.StoreCodeAndInstantiateContract(sdk.WrapSDKContext(ctx), msg)
 		case *MsgExecuteContract:
 			res, err = msgServer.ExecuteContract(sdk.WrapSDKContext(ctx), msg)
 		case *MsgMigrateContract:

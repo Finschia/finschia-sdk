@@ -41,20 +41,10 @@ func NewBaseVestingAccount(baseAccount *authtypes.BaseAccount, originalVesting s
 //
 // CONTRACT: Delegated vesting coins and vestingCoins must be sorted.
 func (bva BaseVestingAccount) LockedCoinsFromVesting(vestingCoins sdk.Coins) sdk.Coins {
-	lockedCoins := sdk.NewCoins()
-
-	for _, vestingCoin := range vestingCoins {
-		vestingAmt := vestingCoin.Amount
-		delVestingAmt := bva.DelegatedVesting.AmountOf(vestingCoin.Denom)
-
-		max := sdk.MaxInt(vestingAmt.Sub(delVestingAmt), sdk.ZeroInt())
-		lockedCoin := sdk.NewCoin(vestingCoin.Denom, max)
-
-		if !lockedCoin.IsZero() {
-			lockedCoins = lockedCoins.Add(lockedCoin)
-		}
+	lockedCoins := vestingCoins.Sub(vestingCoins.Min(bva.DelegatedVesting))
+	if lockedCoins == nil {
+		return sdk.Coins{}
 	}
-
 	return lockedCoins
 }
 
@@ -183,8 +173,13 @@ func (bva BaseVestingAccount) String() string {
 
 // MarshalYAML returns the YAML representation of a BaseVestingAccount.
 func (bva BaseVestingAccount) MarshalYAML() (interface{}, error) {
+	accAddr, err := sdk.AccAddressFromBech32(bva.Address)
+	if err != nil {
+		return nil, err
+	}
+
 	out := vestingAccountYAML{
-		Address:          sdk.AccAddress(bva.Address),
+		Address:          accAddr,
 		AccountNumber:    bva.AccountNumber,
 		PubKey:           getPKString(bva),
 		Sequence:         bva.Sequence,
@@ -198,8 +193,10 @@ func (bva BaseVestingAccount) MarshalYAML() (interface{}, error) {
 
 // Continuous Vesting Account
 
-var _ vestexported.VestingAccount = (*ContinuousVestingAccount)(nil)
-var _ authtypes.GenesisAccount = (*ContinuousVestingAccount)(nil)
+var (
+	_ vestexported.VestingAccount = (*ContinuousVestingAccount)(nil)
+	_ authtypes.GenesisAccount    = (*ContinuousVestingAccount)(nil)
+)
 
 // NewContinuousVestingAccountRaw creates a new ContinuousVestingAccount object from BaseVestingAccount
 func NewContinuousVestingAccountRaw(bva *BaseVestingAccount, startTime int64) *ContinuousVestingAccount {
@@ -291,8 +288,13 @@ func (cva ContinuousVestingAccount) String() string {
 
 // MarshalYAML returns the YAML representation of a ContinuousVestingAccount.
 func (cva ContinuousVestingAccount) MarshalYAML() (interface{}, error) {
+	accAddr, err := sdk.AccAddressFromBech32(cva.Address)
+	if err != nil {
+		return nil, err
+	}
+
 	out := vestingAccountYAML{
-		Address:          sdk.AccAddress(cva.Address),
+		Address:          accAddr,
 		AccountNumber:    cva.AccountNumber,
 		PubKey:           getPKString(cva),
 		Sequence:         cva.Sequence,
@@ -307,8 +309,10 @@ func (cva ContinuousVestingAccount) MarshalYAML() (interface{}, error) {
 
 // Periodic Vesting Account
 
-var _ vestexported.VestingAccount = (*PeriodicVestingAccount)(nil)
-var _ authtypes.GenesisAccount = (*PeriodicVestingAccount)(nil)
+var (
+	_ vestexported.VestingAccount = (*PeriodicVestingAccount)(nil)
+	_ authtypes.GenesisAccount    = (*PeriodicVestingAccount)(nil)
+)
 
 // NewPeriodicVestingAccountRaw creates a new PeriodicVestingAccount object from BaseVestingAccount
 func NewPeriodicVestingAccountRaw(bva *BaseVestingAccount, startTime int64, periods Periods) *PeriodicVestingAccount {
@@ -429,8 +433,13 @@ func (pva PeriodicVestingAccount) String() string {
 
 // MarshalYAML returns the YAML representation of a PeriodicVestingAccount.
 func (pva PeriodicVestingAccount) MarshalYAML() (interface{}, error) {
+	accAddr, err := sdk.AccAddressFromBech32(pva.Address)
+	if err != nil {
+		return nil, err
+	}
+
 	out := vestingAccountYAML{
-		Address:          sdk.AccAddress(pva.Address),
+		Address:          accAddr,
 		AccountNumber:    pva.AccountNumber,
 		PubKey:           getPKString(pva),
 		Sequence:         pva.Sequence,
@@ -446,8 +455,10 @@ func (pva PeriodicVestingAccount) MarshalYAML() (interface{}, error) {
 
 // Delayed Vesting Account
 
-var _ vestexported.VestingAccount = (*DelayedVestingAccount)(nil)
-var _ authtypes.GenesisAccount = (*DelayedVestingAccount)(nil)
+var (
+	_ vestexported.VestingAccount = (*DelayedVestingAccount)(nil)
+	_ authtypes.GenesisAccount    = (*DelayedVestingAccount)(nil)
+)
 
 // NewDelayedVestingAccountRaw creates a new DelayedVestingAccount object from BaseVestingAccount
 func NewDelayedVestingAccountRaw(bva *BaseVestingAccount) *DelayedVestingAccount {
@@ -514,8 +525,10 @@ func (dva DelayedVestingAccount) String() string {
 //-----------------------------------------------------------------------------
 // Permanent Locked Vesting Account
 
-var _ vestexported.VestingAccount = (*PermanentLockedAccount)(nil)
-var _ authtypes.GenesisAccount = (*PermanentLockedAccount)(nil)
+var (
+	_ vestexported.VestingAccount = (*PermanentLockedAccount)(nil)
+	_ authtypes.GenesisAccount    = (*PermanentLockedAccount)(nil)
+)
 
 // NewPermanentLockedAccount returns a PermanentLockedAccount
 func NewPermanentLockedAccount(baseAcc *authtypes.BaseAccount, coins sdk.Coins) *PermanentLockedAccount {

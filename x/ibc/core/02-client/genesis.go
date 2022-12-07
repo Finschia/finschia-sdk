@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	sdk "github.com/line/lbm-sdk/types"
+
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/keeper"
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"

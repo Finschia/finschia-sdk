@@ -3,33 +3,48 @@ package mock
 import (
 	"encoding/json"
 
-	"github.com/line/lbm-sdk/types/module"
-
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-
 	"github.com/gorilla/mux"
-	"github.com/spf13/cobra"
-
-	abci "github.com/line/ostracon/abci/types"
-
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
-	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
+	"github.com/line/lbm-sdk/types/module"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/spf13/cobra"
+
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
+	porttypes "github.com/line/lbm-sdk/x/ibc/core/05-port/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 )
 
 const (
 	ModuleName = "mock"
+
+	PortID  = ModuleName
+	Version = "mock-version"
 )
 
 var (
-	MockAcknowledgement = []byte("mock acknowledgement")
-	MockCommitment      = []byte("mock packet commitment")
+	MockAcknowledgement             = channeltypes.NewResultAcknowledgement([]byte("mock acknowledgement"))
+	MockFailAcknowledgement         = channeltypes.NewErrorAcknowledgement("mock failed acknowledgement")
+	MockPacketData                  = []byte("mock packet data")
+	MockFailPacketData              = []byte("mock failed packet data")
+	MockAsyncPacketData             = []byte("mock async packet data")
+	MockRecvCanaryCapabilityName    = "mock receive canary capability name"
+	MockAckCanaryCapabilityName     = "mock acknowledgement canary capability name"
+	MockTimeoutCanaryCapabilityName = "mock timeout canary capability name"
 )
+
+var _ porttypes.IBCModule = IBCModule{}
+
+// Expected Interface
+// PortKeeper defines the expected IBC port keeper
+type PortKeeper interface {
+	BindPort(ctx sdk.Context, portID string) *capabilitytypes.Capability
+	IsBound(ctx sdk.Context, portID string) bool
+}
 
 // AppModuleBasic is the mock AppModuleBasic.
 type AppModuleBasic struct{}
@@ -74,13 +89,14 @@ func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 // AppModule represents the AppModule for the mock module.
 type AppModule struct {
 	AppModuleBasic
-	scopedKeeper capabilitykeeper.ScopedKeeper
+	ibcApps    []*MockIBCApp
+	portKeeper PortKeeper
 }
 
 // NewAppModule returns a mock AppModule instance.
-func NewAppModule(sk capabilitykeeper.ScopedKeeper) AppModule {
+func NewAppModule(pk PortKeeper) AppModule {
 	return AppModule{
-		scopedKeeper: sk,
+		portKeeper: pk,
 	}
 }
 
@@ -107,6 +123,14 @@ func (am AppModule) RegisterServices(module.Configurator) {}
 
 // InitGenesis implements the AppModule interface.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
+	for _, ibcApp := range am.ibcApps {
+		if ibcApp.PortID != "" && !am.portKeeper.IsBound(ctx, ibcApp.PortID) {
+			// bind mock portID
+			cap := am.portKeeper.BindPort(ctx, ibcApp.PortID)
+			ibcApp.ScopedKeeper.ClaimCapability(ctx, cap, host.PortPath(ibcApp.PortID))
+		}
+	}
+
 	return []abci.ValidatorUpdate{}
 }
 
@@ -115,6 +139,9 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 	return nil
 }
 
+// ConsensusVersion implements AppModule/ConsensusVersion.
+func (AppModule) ConsensusVersion() uint64 { return 1 }
+
 // BeginBlock implements the AppModule interface
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 }
@@ -122,65 +149,4 @@ func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 // EndBlock implements the AppModule interface
 func (am AppModule) EndBlock(ctx sdk.Context, req abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}
-}
-
-// OnChanOpenInit implements the IBCModule interface.
-func (am AppModule) OnChanOpenInit(
-	ctx sdk.Context, _ channeltypes.Order, _ []string, portID string,
-	channelID string, chanCap *capabilitytypes.Capability, _ channeltypes.Counterparty, _ string,
-) error {
-	// Claim channel capability passed back by IBC module
-	if err := am.scopedKeeper.ClaimCapability(ctx, chanCap, host.ChannelCapabilityPath(portID, channelID)); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// OnChanOpenTry implements the IBCModule interface.
-func (am AppModule) OnChanOpenTry(
-	ctx sdk.Context, _ channeltypes.Order, _ []string, portID string,
-	channelID string, chanCap *capabilitytypes.Capability, _ channeltypes.Counterparty, _, _ string,
-) error {
-	// Claim channel capability passed back by IBC module
-	if err := am.scopedKeeper.ClaimCapability(ctx, chanCap, host.ChannelCapabilityPath(portID, channelID)); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// OnChanOpenAck implements the IBCModule interface.
-func (am AppModule) OnChanOpenAck(sdk.Context, string, string, string) error {
-	return nil
-}
-
-// OnChanOpenConfirm implements the IBCModule interface.
-func (am AppModule) OnChanOpenConfirm(sdk.Context, string, string) error {
-	return nil
-}
-
-// OnChanCloseInit implements the IBCModule interface.
-func (am AppModule) OnChanCloseInit(sdk.Context, string, string) error {
-	return nil
-}
-
-// OnChanCloseConfirm implements the IBCModule interface.
-func (am AppModule) OnChanCloseConfirm(sdk.Context, string, string) error {
-	return nil
-}
-
-// OnRecvPacket implements the IBCModule interface.
-func (am AppModule) OnRecvPacket(sdk.Context, channeltypes.Packet) (*sdk.Result, []byte, error) {
-	return nil, MockAcknowledgement, nil
-}
-
-// OnAcknowledgementPacket implements the IBCModule interface.
-func (am AppModule) OnAcknowledgementPacket(sdk.Context, channeltypes.Packet, []byte) (*sdk.Result, error) {
-	return nil, nil
-}
-
-// OnTimeoutPacket implements the IBCModule interface.
-func (am AppModule) OnTimeoutPacket(sdk.Context, channeltypes.Packet) (*sdk.Result, error) {
-	return nil, nil
 }

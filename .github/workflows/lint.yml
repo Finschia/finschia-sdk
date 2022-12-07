@@ -9,14 +9,19 @@ on:
   push:
     branches:
       - main
+      - rc*/*
+      - release/*
 jobs:
   golangci:
     name: golangci-lint
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
+      - uses: actions/setup-go@v3.3.1
+        with:
+          go-version: 1.18
       - uses: actions/checkout@v3
-      - uses: technote-space/get-diff-action@v6.1.0
+      - uses: technote-space/get-diff-action@v6.1.1
         with:
           PATTERNS: |
             **/**.go
@@ -25,7 +30,7 @@ jobs:
       - uses: golangci/golangci-lint-action@master
         with:
           # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
-          version: v1.39
+          version: v1.47.2
           args: --timeout 10m
           github-token: ${{ secrets.GITHUB_TOKEN }}
         if: env.GIT_DIFF

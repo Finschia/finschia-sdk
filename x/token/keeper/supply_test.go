@@ -20,13 +20,13 @@ func (s *KeeperTestSuite) TestIssue() {
 	s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
 
 	mintPermissions := []token.Permission{
-		token.Permission_Mint,
-		token.Permission_Burn,
+		token.PermissionMint,
+		token.PermissionBurn,
 	}
 	for _, permission := range mintPermissions {
 		s.Require().Nil(s.keeper.GetGrant(ctx, class.ContractId, s.vendor, permission))
 	}
-	s.Require().NotNil(s.keeper.GetGrant(ctx, class.ContractId, s.vendor, token.Permission_Modify))
+	s.Require().NotNil(s.keeper.GetGrant(ctx, class.ContractId, s.vendor, token.PermissionModify))
 
 	// override fails
 	class.ContractId = s.contractID
@@ -36,19 +36,21 @@ func (s *KeeperTestSuite) TestIssue() {
 }
 
 func (s *KeeperTestSuite) TestMint() {
-	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor:   "vendor",
-		s.operator: "operator",
-		s.customer: "customer",
+	userDescriptions := map[string]string{
+		s.vendor.String():   "vendor",
+		s.operator.String(): "operator",
+		s.customer.String(): "customer",
 	}
 	to := s.vendor
 	amount := sdk.OneInt()
-	for grantee, desc := range userDescriptions {
+	for granteeStr, desc := range userDescriptions {
+		grantee, err := sdk.AccAddressFromBech32(granteeStr)
+		s.Require().NoError(err)
 		name := fmt.Sprintf("Grantee: %s", desc)
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			_, grantErr := s.keeper.GetGrant(ctx, s.contractID, grantee, token.Permission_Mint)
+			_, grantErr := s.keeper.GetGrant(ctx, s.contractID, grantee, token.PermissionMint)
 			err := s.keeper.Mint(ctx, s.contractID, grantee, to, amount)
 			if grantErr == nil {
 				s.Require().NoError(err)
@@ -60,22 +62,24 @@ func (s *KeeperTestSuite) TestMint() {
 }
 
 func (s *KeeperTestSuite) TestBurn() {
-	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor:   "vendor",
-		s.operator: "operator",
-		s.customer: "customer",
+	userDescriptions := map[string]string{
+		s.vendor.String():   "vendor",
+		s.operator.String(): "operator",
+		s.customer.String(): "customer",
 	}
 	amountDescriptions := map[sdk.Int]string{
 		s.balance:                   "limit",
 		s.balance.Add(sdk.OneInt()): "excess",
 	}
-	for from, fromDesc := range userDescriptions {
+	for fromStr, fromDesc := range userDescriptions {
+		from, err := sdk.AccAddressFromBech32(fromStr)
+		s.Require().NoError(err)
 		for amount, amountDesc := range amountDescriptions {
 			name := fmt.Sprintf("From: %s, Amount: %s", fromDesc, amountDesc)
 			s.Run(name, func() {
 				ctx, _ := s.ctx.CacheContext()
 
-				_, grantErr := s.keeper.GetGrant(ctx, s.contractID, from, token.Permission_Burn)
+				_, grantErr := s.keeper.GetGrant(ctx, s.contractID, from, token.PermissionBurn)
 				err := s.keeper.Burn(ctx, s.contractID, from, amount)
 				if grantErr == nil && amount.LTE(s.balance) {
 					s.Require().NoError(err)
@@ -88,23 +92,27 @@ func (s *KeeperTestSuite) TestBurn() {
 }
 
 func (s *KeeperTestSuite) TestOperatorBurn() {
-	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor:   "vendor",
-		s.operator: "operator",
-		s.customer: "customer",
+	userDescriptions := map[string]string{
+		s.vendor.String():   "vendor",
+		s.operator.String(): "operator",
+		s.customer.String(): "customer",
 	}
 	amountDescriptions := map[sdk.Int]string{
 		s.balance:                   "limit",
 		s.balance.Add(sdk.OneInt()): "excess",
 	}
-	for operator, operatorDesc := range userDescriptions {
-		for from, fromDesc := range userDescriptions {
+	for operatorStr, operatorDesc := range userDescriptions {
+		operator, err := sdk.AccAddressFromBech32(operatorStr)
+		s.Require().NoError(err)
+		for fromStr, fromDesc := range userDescriptions {
+			from, err := sdk.AccAddressFromBech32(fromStr)
+			s.Require().NoError(err)
 			for amount, amountDesc := range amountDescriptions {
 				name := fmt.Sprintf("Operator: %s, From: %s, Amount: %s", operatorDesc, fromDesc, amountDesc)
 				s.Run(name, func() {
 					ctx, _ := s.ctx.CacheContext()
 
-					_, grantErr := s.keeper.GetGrant(ctx, s.contractID, operator, token.Permission_Burn)
+					_, grantErr := s.keeper.GetGrant(ctx, s.contractID, operator, token.PermissionBurn)
 					_, authErr := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
 					err := s.keeper.OperatorBurn(ctx, s.contractID, operator, from, amount)
 					if grantErr == nil && authErr == nil && amount.LTE(s.balance) {
@@ -123,29 +131,38 @@ func (s *KeeperTestSuite) TestModify() {
 		s.contractID: "valid",
 		"fee1dead":   "not-exist",
 	}
-	userDescriptions := map[sdk.AccAddress]string{
-		s.vendor:   "vendor",
-		s.operator: "operator",
-		s.customer: "customer",
+	userDescriptions := map[string]string{
+		s.vendor.String():   "vendor",
+		s.operator.String(): "operator",
+		s.customer.String(): "customer",
 	}
 	changes := []token.Pair{
-		{Field: token.AttributeKey_Name.String(), Value: "new name"},
-		{Field: token.AttributeKey_ImageURI.String(), Value: "new uri"},
-		{Field: token.AttributeKey_Meta.String(), Value: "new meta"},
+		{Field: token.AttributeKeyName.String(), Value: "new name"},
+		{Field: token.AttributeKeyImageURI.String(), Value: "new uri"},
+		{Field: token.AttributeKeyMeta.String(), Value: "new meta"},
 	}
 
 	for contractID, contractDesc := range contractDescriptions {
-		for grantee, granteeDesc := range userDescriptions {
+		for granteeStr, granteeDesc := range userDescriptions {
+			grantee, err := sdk.AccAddressFromBech32(granteeStr)
+			s.Require().NoError(err)
 			name := fmt.Sprintf("Grantee: %s, Contract: %s", granteeDesc, contractDesc)
 			s.Run(name, func() {
 				ctx, _ := s.ctx.CacheContext()
 
 				err := s.keeper.Modify(ctx, contractID, grantee, changes)
-				if contractID == s.contractID {
-					s.Require().NoError(err)
-				} else {
+				if contractID != s.contractID {
 					s.Require().Error(err)
+					return
 				}
+				s.Require().NoError(err)
+
+				class, err := s.keeper.GetClass(ctx, contractID)
+				s.Require().NoError(err)
+
+				s.Require().Equal(changes[0].Value, class.Name)
+				s.Require().Equal(changes[1].Value, class.ImageUri)
+				s.Require().Equal(changes[2].Value, class.Meta)
 			})
 		}
 	}

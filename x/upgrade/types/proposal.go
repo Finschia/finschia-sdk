@@ -20,9 +20,7 @@ var _ gov.Content = &SoftwareUpgradeProposal{}
 
 func init() {
 	gov.RegisterProposalType(ProposalTypeSoftwareUpgrade)
-	gov.RegisterProposalTypeCodec(&SoftwareUpgradeProposal{}, "lbm-sdk/SoftwareUpgradeProposal")
 	gov.RegisterProposalType(ProposalTypeCancelSoftwareUpgrade)
-	gov.RegisterProposalTypeCodec(&CancelSoftwareUpgradeProposal{}, "lbm-sdk/CancelSoftwareUpgradeProposal")
 }
 
 func (sup *SoftwareUpgradeProposal) GetTitle() string       { return sup.Title }
@@ -56,6 +54,7 @@ func (csup *CancelSoftwareUpgradeProposal) ProposalRoute() string  { return Rout
 func (csup *CancelSoftwareUpgradeProposal) ProposalType() string {
 	return ProposalTypeCancelSoftwareUpgrade
 }
+
 func (csup *CancelSoftwareUpgradeProposal) ValidateBasic() error {
 	return gov.ValidateAbstract(csup)
 }

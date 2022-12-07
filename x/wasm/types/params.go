@@ -33,15 +33,18 @@ const (
 	//
 	// Please note that all gas prices returned to wasmvm should have this multiplied.
 	DefaultGasMultiplier uint64 = 140_000_000
-	// InstanceCost is how much SDK gas we charge each time we load a WASM instance.
-	// Creating a new instance is costly, and this helps put a recursion limit to contracts calling contracts.
+	// DefaultInstanceCost is how much SDK gas we charge each time we load a WASM instance.
+	// Creating a new instance is costly, and this helps put a recursion limit to contract calling contracts.
 	DefaultInstanceCost = 60_000
-	// CompileCost is how much SDK gas we charge *per byte* for compiling WASM code.
+	// DefaultCompileCost is how much SDK gas we charge *per byte* for compiling WASM code.
 	DefaultCompileCost = 3
 )
 
 var ParamStoreKeyUploadAccess = []byte("uploadAccess")
 var ParamStoreKeyInstantiateAccess = []byte("instantiateAccess")
+
+// TODO: detach below params because these are  lbm-sdk custom params
+
 var ParamStoreKeyGasMultiplier = []byte("gasMultiplier")
 var ParamStoreKeyInstanceCost = []byte("instanceCost")
 var ParamStoreKeyCompileCost = []byte("compileCost")
@@ -57,8 +60,7 @@ func (a AccessType) With(addr sdk.AccAddress) AccessConfig {
 	case AccessTypeNobody:
 		return AllowNobody
 	case AccessTypeOnlyAddress:
-		addrBytes, _ := sdk.AccAddressToBytes(addr.String())
-		if err := sdk.VerifyAddressFormat(addrBytes); err != nil {
+		if err := sdk.VerifyAddressFormat(addr); err != nil {
 			panic(err)
 		}
 		return AccessConfig{Permission: AccessTypeOnlyAddress, Address: addr.String()}
@@ -90,6 +92,7 @@ func (a *AccessType) UnmarshalText(text []byte) error {
 	*a = AccessTypeUnspecified
 	return nil
 }
+
 func (a AccessType) MarshalText() ([]byte, error) {
 	return []byte(a.String()), nil
 }
@@ -155,15 +158,6 @@ func (p Params) ValidateBasic() error {
 	if err := validateAccessConfig(p.CodeUploadAccess); err != nil {
 		return errors.Wrap(err, "upload access")
 	}
-	if err := validateGasMultiplier(p.GasMultiplier); err != nil {
-		return errors.Wrap(err, "gas multiplier")
-	}
-	if err := validateInstanceCost(p.InstanceCost); err != nil {
-		return errors.Wrap(err, "instance cost")
-	}
-	if err := validateCompileCost(p.CompileCost); err != nil {
-		return errors.Wrap(err, "compile cost")
-	}
 	return nil
 }
 
@@ -191,39 +185,6 @@ func validateAccessType(i interface{}) error {
 	return sdkerrors.Wrapf(ErrInvalid, "unknown type: %q", a)
 }
 
-func validateGasMultiplier(i interface{}) error {
-	a, ok := i.(uint64)
-	if !ok {
-		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
-	}
-	if a == 0 {
-		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
-	}
-	return nil
-}
-
-func validateInstanceCost(i interface{}) error {
-	a, ok := i.(uint64)
-	if !ok {
-		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
-	}
-	if a == 0 {
-		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
-	}
-	return nil
-}
-
-func validateCompileCost(i interface{}) error {
-	a, ok := i.(uint64)
-	if !ok {
-		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
-	}
-	if a == 0 {
-		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
-	}
-	return nil
-}
-
 func (a AccessConfig) ValidateBasic() error {
 	switch a.Permission {
 	case AccessTypeUnspecified:
@@ -234,10 +195,43 @@ func (a AccessConfig) ValidateBasic() error {
 		}
 		return nil
 	case AccessTypeOnlyAddress:
-		err := sdk.ValidateAccAddress(a.Address)
+		_, err := sdk.AccAddressFromBech32(a.Address)
 		return err
 	}
 	return sdkerrors.Wrapf(ErrInvalid, "unknown type: %q", a.Permission)
+}
+
+func validateGasMultiplier(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater than 0")
+	}
+	return nil
+}
+
+func validateInstanceCost(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater than 0")
+	}
+	return nil
+}
+
+func validateCompileCost(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater than 0")
+	}
+	return nil
 }
 
 func (a AccessConfig) Allowed(actor sdk.AccAddress) bool {

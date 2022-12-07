@@ -6,6 +6,7 @@ import (
 	"sort"
 	"time"
 
+	ocjson "github.com/line/ostracon/libs/json"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
@@ -18,23 +19,23 @@ import (
 
 const flagGenesisTime = "genesis-time"
 
-// VersionMap allow applications to extend and modify the migration process.
+// Allow applications to extend and modify the migration process.
 //
 // Ref: https://github.com/cosmos/cosmos-sdk/issues/5041
-var VersionMap = types.VersionMap{}
+var migrationMap = types.MigrationMap{}
 
 // GetMigrationCallback returns a MigrationCallback for a given version.
 func GetMigrationCallback(version string) types.MigrationCallback {
-	return VersionMap[version]
+	return migrationMap[version]
 }
 
 // GetMigrationVersions get all migration version in a sorted slice.
 func GetMigrationVersions() []string {
-	versions := make([]string, len(VersionMap))
+	versions := make([]string, len(migrationMap))
 
 	var i int
 
-	for version := range VersionMap {
+	for version := range migrationMap {
 		versions[i] = version
 		i++
 	}
@@ -111,7 +112,7 @@ $ %s migrate v0.43 /path/to/genesis.json --chain-id=test-chain-1 --genesis-time=
 				genDoc.ChainID = chainID
 			}
 
-			bz, err := json.Marshal(genDoc)
+			bz, err := ocjson.Marshal(genDoc)
 			if err != nil {
 				return errors.Wrap(err, "failed to marshal genesis doc")
 			}

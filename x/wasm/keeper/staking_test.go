@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	wasmtypes "github.com/line/lbm-sdk/x/wasm/types"
@@ -106,7 +106,7 @@ func TestInitializeStaking(t *testing.T) {
 	creator := k.Faucet.NewFundedAccount(ctx, deposit...)
 
 	// upload staking derivates code
-	stakingCode, err := ioutil.ReadFile("./testdata/staking.wasm")
+	stakingCode, err := os.ReadFile("./testdata/staking.wasm")
 	require.NoError(t, err)
 	stakingID, err := keeper.Create(ctx, creator, stakingCode, nil)
 	require.NoError(t, err)
@@ -124,7 +124,7 @@ func TestInitializeStaking(t *testing.T) {
 	initBz, err := json.Marshal(&initMsg)
 	require.NoError(t, err)
 
-	stakingAddr, _, err := k.ContractKeeper.Instantiate(ctx, stakingID, creator, "", initBz, "staking derivates - DRV", nil)
+	stakingAddr, _, err := k.ContractKeeper.Instantiate(ctx, stakingID, creator, nil, initBz, "staking derivates - DRV", nil)
 	require.NoError(t, err)
 	require.NotEmpty(t, stakingAddr)
 
@@ -137,14 +137,14 @@ func TestInitializeStaking(t *testing.T) {
 		Name:         "Missing Validator",
 		Symbol:       "MISS",
 		Decimals:     0,
-		Validator:    bob.ToValAddress(),
+		Validator:    sdk.ValAddress(bob),
 		ExitTax:      sdk.MustNewDecFromStr("0.10"),
 		MinWithdrawl: "100",
 	}
 	badBz, err := json.Marshal(&badInitMsg)
 	require.NoError(t, err)
 
-	_, _, err = k.ContractKeeper.Instantiate(ctx, stakingID, creator, "", badBz, "missing validator", nil)
+	_, _, err = k.ContractKeeper.Instantiate(ctx, stakingID, creator, nil, badBz, "missing validator", nil)
 	require.Error(t, err)
 
 	// no changes to bonding shares
@@ -189,7 +189,7 @@ func initializeStaking(t *testing.T) initInfo {
 	creator := k.Faucet.NewFundedAccount(ctx, deposit...)
 
 	// upload staking derivates code
-	stakingCode, err := ioutil.ReadFile("./testdata/staking.wasm")
+	stakingCode, err := os.ReadFile("./testdata/staking.wasm")
 	require.NoError(t, err)
 	stakingID, err := k.ContractKeeper.Create(ctx, creator, stakingCode, nil)
 	require.NoError(t, err)
@@ -207,7 +207,7 @@ func initializeStaking(t *testing.T) initInfo {
 	initBz, err := json.Marshal(&initMsg)
 	require.NoError(t, err)
 
-	stakingAddr, _, err := k.ContractKeeper.Instantiate(ctx, stakingID, creator, "", initBz, "staking derivates - DRV", nil)
+	stakingAddr, _, err := k.ContractKeeper.Instantiate(ctx, stakingID, creator, nil, initBz, "staking derivates - DRV", nil)
 	require.NoError(t, err)
 	require.NotEmpty(t, stakingAddr)
 
@@ -447,14 +447,14 @@ func TestQueryStakingInfo(t *testing.T) {
 	creator := initInfo.faucet.NewFundedAccount(ctx, deposit...)
 
 	// upload mask code
-	maskCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
+	maskCode, err := os.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
 	maskID, err := initInfo.contractKeeper.Create(ctx, creator, maskCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(2), maskID)
 
 	// creator instantiates a contract and gives it tokens
-	maskAddr, _, err := initInfo.contractKeeper.Instantiate(ctx, maskID, creator, "", []byte("{}"), "mask contract 2", nil)
+	maskAddr, _, err := initInfo.contractKeeper.Instantiate(ctx, maskID, creator, nil, []byte("{}"), "mask contract 2", nil)
 	require.NoError(t, err)
 	require.NotEmpty(t, maskAddr)
 
@@ -514,7 +514,7 @@ func TestQueryStakingInfo(t *testing.T) {
 	require.Contains(t, valInfo.MaxChangeRate, "0.010")
 
 	// missing validator
-	noVal := sdk.BytesToValAddress(secp256k1.GenPrivKey().PubKey().Address())
+	noVal := sdk.ValAddress(secp256k1.GenPrivKey().PubKey().Address())
 	reflectNoValidatorQuery := ReflectQueryMsg{Chain: &ChainQuery{Request: &wasmvmtypes.QueryRequest{Staking: &wasmvmtypes.StakingQuery{
 		Validator: &wasmvmtypes.ValidatorQuery{
 			Address: noVal.String(),
@@ -658,7 +658,7 @@ func addValidator(t *testing.T, ctx sdk.Context, stakingKeeper stakingkeeper.Kee
 
 	privKey := secp256k1.GenPrivKey()
 	pubKey := privKey.PubKey()
-	addr := sdk.BytesToValAddress(pubKey.Address())
+	addr := sdk.ValAddress(pubKey.Address())
 
 	pkAny, err := codectypes.NewAnyWithValue(pubKey)
 	require.NoError(t, err)

@@ -7,40 +7,48 @@ import "lbm/token/v1/token.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/token";
 
+// Deprecated: use typed events.
+//
 // EventType enumerates the valid event types on x/token.
-// For the legacy events.
 enum EventType {
-  unspecified   = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
-  issue         = 1 [(gogoproto.enumvalue_customname) = "IssueToken"];
-  mint          = 2 [(gogoproto.enumvalue_customname) = "MintToken"];
-  burn          = 3 [(gogoproto.enumvalue_customname) = "BurnToken"];
-  burn_from     = 4 [(gogoproto.enumvalue_customname) = "BurnTokenFrom"];
-  modify_token  = 5 [(gogoproto.enumvalue_customname) = "ModifyToken"];
-  transfer      = 6 [(gogoproto.enumvalue_customname) = "Transfer"];
-  transfer_from = 7 [(gogoproto.enumvalue_customname) = "TransferFrom"];
-  grant_perm    = 8 [(gogoproto.enumvalue_customname) = "GrantPermToken"];
-  revoke_perm   = 9 [(gogoproto.enumvalue_customname) = "RevokePermToken"];
-  approve_token = 10 [(gogoproto.enumvalue_customname) = "ApproveToken"];
+  option (gogoproto.goproto_enum_stringer) = false;
+  option (gogoproto.goproto_enum_prefix)   = false;
+
+  EVENT_TYPE_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "EventTypeUnspecified"];
+
+  EVENT_TYPE_ISSUE         = 1 [(gogoproto.enumvalue_customname) = "EventTypeIssueToken"];
+  EVENT_TYPE_MINT          = 2 [(gogoproto.enumvalue_customname) = "EventTypeMintToken"];
+  EVENT_TYPE_BURN          = 3 [(gogoproto.enumvalue_customname) = "EventTypeBurnToken"];
+  EVENT_TYPE_BURN_FROM     = 4 [(gogoproto.enumvalue_customname) = "EventTypeBurnTokenFrom"];
+  EVENT_TYPE_MODIFY_TOKEN  = 5 [(gogoproto.enumvalue_customname) = "EventTypeModifyToken"];
+  EVENT_TYPE_TRANSFER      = 6 [(gogoproto.enumvalue_customname) = "EventTypeTransfer"];
+  EVENT_TYPE_TRANSFER_FROM = 7 [(gogoproto.enumvalue_customname) = "EventTypeTransferFrom"];
+  EVENT_TYPE_GRANT_PERM    = 8 [(gogoproto.enumvalue_customname) = "EventTypeGrantPermToken"];
+  EVENT_TYPE_REVOKE_PERM   = 9 [(gogoproto.enumvalue_customname) = "EventTypeRevokePermToken"];
+  EVENT_TYPE_APPROVE_TOKEN = 10 [(gogoproto.enumvalue_customname) = "EventTypeApproveToken"];
 }
 
 // AttributeKey enumerates the valid attribute keys on x/token.
-// For the legacy events.
 enum AttributeKey {
-  unspecified = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
-  name        = 1 [(gogoproto.enumvalue_customname) = "Name"];
-  symbol      = 2 [(gogoproto.enumvalue_customname) = "Symbol"];
-  meta        = 3 [(gogoproto.enumvalue_customname) = "Meta"];
-  contract_id = 4 [(gogoproto.enumvalue_customname) = "ContractID"];
-  owner       = 5 [(gogoproto.enumvalue_customname) = "Owner"];
-  amount      = 6 [(gogoproto.enumvalue_customname) = "Amount"];
-  decimals    = 7 [(gogoproto.enumvalue_customname) = "Decimals"];
-  img_uri     = 8 [(gogoproto.enumvalue_customname) = "ImageURI"];
-  mintable    = 9 [(gogoproto.enumvalue_customname) = "Mintable"];
-  from        = 10 [(gogoproto.enumvalue_customname) = "From"];
-  to          = 11 [(gogoproto.enumvalue_customname) = "To"];
-  perm        = 12 [(gogoproto.enumvalue_customname) = "Perm"];
-  approver    = 13 [(gogoproto.enumvalue_customname) = "Approver"];
-  proxy       = 14 [(gogoproto.enumvalue_customname) = "Proxy"];
+  option (gogoproto.goproto_enum_stringer) = false;
+  option (gogoproto.goproto_enum_prefix)   = false;
+
+  ATTRIBUTE_KEY_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "AttributeKeyUnspecified"];
+
+  ATTRIBUTE_KEY_NAME        = 1 [(gogoproto.enumvalue_customname) = "AttributeKeyName"];
+  ATTRIBUTE_KEY_SYMBOL      = 2 [(gogoproto.enumvalue_customname) = "AttributeKeySymbol"];
+  ATTRIBUTE_KEY_META        = 3 [(gogoproto.enumvalue_customname) = "AttributeKeyMeta"];
+  ATTRIBUTE_KEY_CONTRACT_ID = 4 [(gogoproto.enumvalue_customname) = "AttributeKeyContractID"];
+  ATTRIBUTE_KEY_OWNER       = 5 [(gogoproto.enumvalue_customname) = "AttributeKeyOwner"];
+  ATTRIBUTE_KEY_AMOUNT      = 6 [(gogoproto.enumvalue_customname) = "AttributeKeyAmount"];
+  ATTRIBUTE_KEY_DECIMALS    = 7 [(gogoproto.enumvalue_customname) = "AttributeKeyDecimals"];
+  ATTRIBUTE_KEY_IMG_URI     = 8 [(gogoproto.enumvalue_customname) = "AttributeKeyImageURI"];
+  ATTRIBUTE_KEY_MINTABLE    = 9 [(gogoproto.enumvalue_customname) = "AttributeKeyMintable"];
+  ATTRIBUTE_KEY_FROM        = 10 [(gogoproto.enumvalue_customname) = "AttributeKeyFrom"];
+  ATTRIBUTE_KEY_TO          = 11 [(gogoproto.enumvalue_customname) = "AttributeKeyTo"];
+  ATTRIBUTE_KEY_PERM        = 12 [(gogoproto.enumvalue_customname) = "AttributeKeyPerm"];
+  ATTRIBUTE_KEY_APPROVER    = 13 [(gogoproto.enumvalue_customname) = "AttributeKeyApprover"];
+  ATTRIBUTE_KEY_PROXY       = 14 [(gogoproto.enumvalue_customname) = "AttributeKeyProxy"];
 }
 
 // EventSent is emitted when tokens are transferred.
@@ -83,32 +91,34 @@ message EventRevokedOperator {
   string operator = 3;
 }
 
-// EventIssue is emitted when a new token class is created.
+// EventIssued is emitted when a new token class is created.
 //
 // Since: 0.46.0 (finschia)
-message EventIssue {
+message EventIssued {
+  // address which created the contract.
+  string creator = 1;
   // contract id associated with the token class.
-  string contract_id = 1;
+  string contract_id = 2;
   // name defines the human-readable name of the token class.
-  string name = 2;
+  string name = 3;
   // symbol is an abbreviated name for token class.
-  string symbol = 3;
+  string symbol = 4;
   // uri is an uri for the resource of the token class stored off chain.
-  string uri = 4;
+  string uri = 5;
   // meta is a brief description of token class.
-  string meta = 5;
+  string meta = 6;
   // decimals is the number of decimals which one must divide the amount by to get its user representation.
-  int32 decimals = 6;
+  int32 decimals = 7;
   // mintable represents whether the token is allowed to mint.
-  bool mintable = 7;
+  bool mintable = 8;
 }
 
-// EventGrant is emitted when a granter grants its permission to a grantee.
+// EventGranted is emitted when a granter grants its permission to a grantee.
 //
 // Info: `granter` would be empty if the permission is granted by an issuance.
 //
 // Since: 0.46.0 (finschia)
-message EventGrant {
+message EventGranted {
   // contract id associated with the token class.
   string contract_id = 1;
   // address which granted the permission to `grantee`.
@@ -117,19 +127,19 @@ message EventGrant {
   // address of the grantee.
   string grantee = 3;
   // permission on the token class.
-  string permission = 4;
+  Permission permission = 4;
 }
 
-// EventAbandon is emitted when a grantee abandons its permission.
+// EventRenounced is emitted when a grantee renounces its permission.
 //
 // Since: 0.46.0 (finschia)
-message EventAbandon {
+message EventRenounced {
   // contract id associated with the token class.
   string contract_id = 1;
   // address of the grantee which abandons its grant.
   string grantee = 2;
   // permission on the token class.
-  string permission = 3;
+  Permission permission = 3;
 }
 
 // EventMinted is emitted when tokens are minted.

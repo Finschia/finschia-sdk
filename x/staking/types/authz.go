@@ -94,21 +94,25 @@ func (a StakeAuthorization) Accept(ctx sdk.Context, msg sdk.Msg) (authz.AcceptRe
 		}
 	}
 
-	if !isValidatorExists {
+	if len(allowedList) > 0 && !isValidatorExists {
 		return authz.AcceptResponse{}, sdkerrors.ErrUnauthorized.Wrapf("cannot delegate/undelegate to %s validator", validatorAddress)
 	}
 
 	if a.MaxTokens == nil {
-		return authz.AcceptResponse{Accept: true, Delete: false,
-			Updated: &StakeAuthorization{Validators: a.GetValidators(), AuthorizationType: a.GetAuthorizationType()}}, nil
+		return authz.AcceptResponse{
+			Accept: true, Delete: false,
+			Updated: &StakeAuthorization{Validators: a.GetValidators(), AuthorizationType: a.GetAuthorizationType()},
+		}, nil
 	}
 
 	limitLeft := a.MaxTokens.Sub(amount)
 	if limitLeft.IsZero() {
 		return authz.AcceptResponse{Accept: true, Delete: true}, nil
 	}
-	return authz.AcceptResponse{Accept: true, Delete: false,
-		Updated: &StakeAuthorization{Validators: a.GetValidators(), AuthorizationType: a.GetAuthorizationType(), MaxTokens: &limitLeft}}, nil
+	return authz.AcceptResponse{
+		Accept: true, Delete: false,
+		Updated: &StakeAuthorization{Validators: a.GetValidators(), AuthorizationType: a.GetAuthorizationType(), MaxTokens: &limitLeft},
+	}, nil
 }
 
 func validateAndBech32fy(allowed []sdk.ValAddress, denied []sdk.ValAddress) ([]string, []string, error) {

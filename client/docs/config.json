@@ -127,7 +127,8 @@
       "url": "./tmp-swagger-gen/ibc/core/client/v1/query.swagger.json",
       "operationIds": {
         "rename": {
-          "Params": "IBCClientParams"
+          "Params": "IBCClientParams",
+          "UpgradedConsensusState": "IBCUpgradedConsensusState"
         }
       }
     },
@@ -148,7 +149,7 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/lbm/wasm/v1/query.swagger.json"
+      "url": "./tmp-swagger-gen/cosmwasm/wasm/v1/query.swagger.json"
     },
     {
       "url": "./tmp-swagger-gen/lbm/foundation/v1/query.swagger.json",
@@ -170,7 +171,26 @@
         "rename": {
           "Params": "TokenParams",
           "Balance": "TokenBalance",
-          "Grants": "TokenGrants"
+          "AllBalances": "TokenAllBalances",
+          "GranteeGrants": "TokenGranteeGrants",
+          "Approved": "TokenApproved",
+          "Approvers": "TokenApprovers",
+          "Supply": "TokenSupply",
+          "Minted": "TokenMinted",
+          "Burnt": "TokenBurnt"
+        }
+      }
+    },
+    {
+      "url": "./tmp-swagger-gen/lbm/collection/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "CollectionParams",
+          "Balance": "CollectionBalance",
+          "AllBalances": "CollectionAllBalances",
+          "GranteeGrants": "CollectionGranteeGrants",
+          "Approved": "CollectionApproved",
+          "Approvers": "CollectionApprovers"
         }
       }
     },
@@ -181,6 +201,12 @@
           "Params": "FeegrantParams"
         }
       }
+    },
+    {
+      "url": "./tmp-swagger-gen/lbm/wasm/v1/query.swagger.json"
+    },
+    {
+      "url": "./tmp-swagger-gen/cosmos/base/node/v1beta1/query.swagger.json"
     }
   ]
 }

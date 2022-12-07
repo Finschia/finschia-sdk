@@ -32,7 +32,7 @@ func TestCalculateRewardsBasic(t *testing.T) {
 
 	// fetch validator and delegation
 	val := app.StakingKeeper.Validator(ctx, valAddrs[0])
-	del := app.StakingKeeper.Delegation(ctx, valAddrs[0].ToAccAddress(), valAddrs[0])
+	del := app.StakingKeeper.Delegation(ctx, sdk.AccAddress(valAddrs[0]), valAddrs[0])
 
 	// historical count should be 2 (once for validator init, once for delegation init)
 	require.Equal(t, uint64(2), app.DistrKeeper.GetValidatorHistoricalReferenceCount(ctx))
@@ -88,7 +88,7 @@ func TestCalculateRewardsAfterSlash(t *testing.T) {
 
 	// fetch validator and delegation
 	val := app.StakingKeeper.Validator(ctx, valAddrs[0])
-	del := app.StakingKeeper.Delegation(ctx, valAddrs[0].ToAccAddress(), valAddrs[0])
+	del := app.StakingKeeper.Delegation(ctx, sdk.AccAddress(valAddrs[0]), valAddrs[0])
 
 	// end period
 	endingPeriod := app.DistrKeeper.IncrementValidatorPeriod(ctx, val)
@@ -151,7 +151,7 @@ func TestCalculateRewardsAfterManySlashes(t *testing.T) {
 
 	// fetch validator and delegation
 	val := app.StakingKeeper.Validator(ctx, valAddrs[0])
-	del := app.StakingKeeper.Delegation(ctx, valAddrs[0].ToAccAddress(), valAddrs[0])
+	del := app.StakingKeeper.Delegation(ctx, sdk.AccAddress(valAddrs[0]), valAddrs[0])
 
 	// end period
 	endingPeriod := app.DistrKeeper.IncrementValidatorPeriod(ctx, val)
@@ -225,7 +225,7 @@ func TestCalculateRewardsMultiDelegator(t *testing.T) {
 
 	// fetch validator and delegation
 	val := app.StakingKeeper.Validator(ctx, valAddrs[0])
-	del1 := app.StakingKeeper.Delegation(ctx, valAddrs[0].ToAccAddress(), valAddrs[0])
+	del1 := app.StakingKeeper.Delegation(ctx, sdk.AccAddress(valAddrs[0]), valAddrs[0])
 
 	// allocate some rewards
 	initial := int64(20)
@@ -234,8 +234,8 @@ func TestCalculateRewardsMultiDelegator(t *testing.T) {
 
 	// second delegation
 	tstaking.Ctx = ctx
-	tstaking.Delegate(valAddrs[1].ToAccAddress(), valAddrs[0], sdk.NewInt(100))
-	del2 := app.StakingKeeper.Delegation(ctx, valAddrs[1].ToAccAddress(), valAddrs[0])
+	tstaking.Delegate(sdk.AccAddress(valAddrs[1]), valAddrs[0], sdk.NewInt(100))
+	del2 := app.StakingKeeper.Delegation(ctx, sdk.AccAddress(valAddrs[1]), valAddrs[0])
 
 	// fetch updated validator
 	val = app.StakingKeeper.Validator(ctx, valAddrs[0])
@@ -292,7 +292,7 @@ func TestWithdrawDelegationRewardsBasic(t *testing.T) {
 	expTokens := balanceTokens.Sub(valTokens)
 	require.Equal(t,
 		sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, expTokens)},
-		app.BankKeeper.GetAllBalances(ctx, valAddrs[0].ToAccAddress()),
+		app.BankKeeper.GetAllBalances(ctx, sdk.AccAddress(valAddrs[0])),
 	)
 
 	// end block to bond validator
@@ -314,7 +314,7 @@ func TestWithdrawDelegationRewardsBasic(t *testing.T) {
 	require.Equal(t, uint64(2), app.DistrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
 	// withdraw rewards
-	_, err := app.DistrKeeper.WithdrawDelegationRewards(ctx, valAddrs[0].ToAccAddress(), valAddrs[0])
+	_, err := app.DistrKeeper.WithdrawDelegationRewards(ctx, sdk.AccAddress(valAddrs[0]), valAddrs[0])
 	require.Nil(t, err)
 
 	// historical count should still be 2 (added one record, cleared one)
@@ -324,19 +324,39 @@ func TestWithdrawDelegationRewardsBasic(t *testing.T) {
 	exp := balanceTokens.Sub(valTokens).Add(initial.QuoRaw(2))
 	require.Equal(t,
 		sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, exp)},
-		app.BankKeeper.GetAllBalances(ctx, valAddrs[0].ToAccAddress()),
+		app.BankKeeper.GetAllBalances(ctx, sdk.AccAddress(valAddrs[0])),
 	)
 
 	// withdraw commission
 	_, err = app.DistrKeeper.WithdrawValidatorCommission(ctx, valAddrs[0])
 	require.Nil(t, err)
+}
 
-	// assert correct balance
-	exp = balanceTokens.Sub(valTokens).Add(initial)
-	require.Equal(t,
-		sdk.Coins{sdk.NewCoin(sdk.DefaultBondDenom, exp)},
-		app.BankKeeper.GetAllBalances(ctx, valAddrs[0].ToAccAddress()),
-	)
+func TestWithdrawDelegationZeroRewards(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+
+	balancePower := int64(1000)
+	balanceTokens := app.StakingKeeper.TokensFromConsensusPower(ctx, balancePower)
+	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000000))
+	valAddrs := simapp.ConvertAddrsToValAddrs(addr)
+	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
+
+	// set module account coins
+	distrAcc := app.DistrKeeper.GetDistributionAccount(ctx)
+	require.NoError(t, simapp.FundModuleAccount(app, ctx, distrAcc.GetName(), sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, balanceTokens))))
+	app.AccountKeeper.SetModuleAccount(ctx, distrAcc)
+
+	// create validator with 50% commission
+	power := int64(100)
+	tstaking.Commission = stakingtypes.NewCommissionRates(sdk.NewDecWithPrec(5, 1), sdk.NewDecWithPrec(5, 1), sdk.NewDec(0))
+	_ = tstaking.CreateValidatorWithValPower(valAddrs[0], valConsPk1, power, true)
+
+	// withdraw rewards -- should be 0
+	amount, err := app.DistrKeeper.WithdrawDelegationRewards(ctx, sdk.AccAddress(valAddrs[0]), valAddrs[0])
+	require.NoError(t, err)
+	require.True(t, amount.IsZero(), "expected withdraw rewards to be zero")
+	require.True(t, amount.IsValid(), "expected returned coins to be valid")
 }
 
 func TestCalculateRewardsAfterManySlashesInSameBlock(t *testing.T) {
@@ -360,7 +380,7 @@ func TestCalculateRewardsAfterManySlashesInSameBlock(t *testing.T) {
 
 	// fetch validator and delegation
 	val := app.StakingKeeper.Validator(ctx, valAddrs[0])
-	del := app.StakingKeeper.Delegation(ctx, valAddrs[0].ToAccAddress(), valAddrs[0])
+	del := app.StakingKeeper.Delegation(ctx, sdk.AccAddress(valAddrs[0]), valAddrs[0])
 
 	// end period
 	endingPeriod := app.DistrKeeper.IncrementValidatorPeriod(ctx, val)
@@ -428,7 +448,7 @@ func TestCalculateRewardsMultiDelegatorMultiSlash(t *testing.T) {
 
 	// fetch validator and delegation
 	val := app.StakingKeeper.Validator(ctx, valAddrs[0])
-	del1 := app.StakingKeeper.Delegation(ctx, valAddrs[0].ToAccAddress(), valAddrs[0])
+	del1 := app.StakingKeeper.Delegation(ctx, sdk.AccAddress(valAddrs[0]), valAddrs[0])
 
 	// allocate some rewards
 	initial := app.StakingKeeper.TokensFromConsensusPower(ctx, 30).ToDec()
@@ -441,9 +461,9 @@ func TestCalculateRewardsMultiDelegatorMultiSlash(t *testing.T) {
 	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 3)
 
 	// second delegation
-	tstaking.DelegateWithPower(valAddrs[1].ToAccAddress(), valAddrs[0], 100)
+	tstaking.DelegateWithPower(sdk.AccAddress(valAddrs[1]), valAddrs[0], 100)
 
-	del2 := app.StakingKeeper.Delegation(ctx, valAddrs[1].ToAccAddress(), valAddrs[0])
+	del2 := app.StakingKeeper.Delegation(ctx, sdk.AccAddress(valAddrs[1]), valAddrs[0])
 
 	// end block
 	staking.EndBlocker(ctx, app.StakingKeeper)
@@ -509,7 +529,7 @@ func TestCalculateRewardsMultiDelegatorMultWithdraw(t *testing.T) {
 
 	// fetch validator and delegation
 	val := app.StakingKeeper.Validator(ctx, valAddrs[0])
-	del1 := app.StakingKeeper.Delegation(ctx, valAddrs[0].ToAccAddress(), valAddrs[0])
+	del1 := app.StakingKeeper.Delegation(ctx, sdk.AccAddress(valAddrs[0]), valAddrs[0])
 
 	// allocate some rewards
 	app.DistrKeeper.AllocateTokensToValidator(ctx, val, tokens)
@@ -518,14 +538,14 @@ func TestCalculateRewardsMultiDelegatorMultWithdraw(t *testing.T) {
 	require.Equal(t, uint64(2), app.DistrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
 	// second delegation
-	tstaking.Delegate(valAddrs[1].ToAccAddress(), valAddrs[0], sdk.NewInt(100))
+	tstaking.Delegate(sdk.AccAddress(valAddrs[1]), valAddrs[0], sdk.NewInt(100))
 
 	// historical count should be 3 (second delegation init)
 	require.Equal(t, uint64(3), app.DistrKeeper.GetValidatorHistoricalReferenceCount(ctx))
 
 	// fetch updated validator
 	val = app.StakingKeeper.Validator(ctx, valAddrs[0])
-	del2 := app.StakingKeeper.Delegation(ctx, valAddrs[1].ToAccAddress(), valAddrs[0])
+	del2 := app.StakingKeeper.Delegation(ctx, sdk.AccAddress(valAddrs[1]), valAddrs[0])
 
 	// end block
 	staking.EndBlocker(ctx, app.StakingKeeper)
@@ -537,11 +557,11 @@ func TestCalculateRewardsMultiDelegatorMultWithdraw(t *testing.T) {
 	app.DistrKeeper.AllocateTokensToValidator(ctx, val, tokens)
 
 	// first delegator withdraws
-	_, err := app.DistrKeeper.WithdrawDelegationRewards(ctx, valAddrs[0].ToAccAddress(), valAddrs[0])
+	_, err := app.DistrKeeper.WithdrawDelegationRewards(ctx, sdk.AccAddress(valAddrs[0]), valAddrs[0])
 	require.NoError(t, err)
 
 	// second delegator withdraws
-	_, err = app.DistrKeeper.WithdrawDelegationRewards(ctx, valAddrs[1].ToAccAddress(), valAddrs[0])
+	_, err = app.DistrKeeper.WithdrawDelegationRewards(ctx, sdk.AccAddress(valAddrs[1]), valAddrs[0])
 	require.NoError(t, err)
 
 	// historical count should be 3 (validator init + two delegations)
@@ -576,7 +596,7 @@ func TestCalculateRewardsMultiDelegatorMultWithdraw(t *testing.T) {
 	app.DistrKeeper.AllocateTokensToValidator(ctx, val, tokens)
 
 	// first delegator withdraws again
-	_, err = app.DistrKeeper.WithdrawDelegationRewards(ctx, valAddrs[0].ToAccAddress(), valAddrs[0])
+	_, err = app.DistrKeeper.WithdrawDelegationRewards(ctx, sdk.AccAddress(valAddrs[0]), valAddrs[0])
 	require.NoError(t, err)
 
 	// end period

@@ -30,7 +30,6 @@ func GetQueryCmd() *cobra.Command {
 	)
 
 	return slashingQueryCmd
-
 }
 
 // GetCmdQuerySigningInfo implements the command to query signing info.
@@ -55,7 +54,7 @@ $ <appd> query slashing signing-info '{"@type":"/cosmos.crypto.ed25519.PubKey","
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
-			consAddr := sdk.BytesToConsAddress(pk.Address())
+			consAddr := sdk.ConsAddress(pk.Address())
 			params := &types.QuerySigningInfoRequest{ConsAddress: consAddr.String()}
 			res, err := queryClient.SigningInfo(cmd.Context(), params)
 			if err != nil {

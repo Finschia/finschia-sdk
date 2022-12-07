@@ -36,10 +36,35 @@ message Pair {
 
 // Permission enumerates the valid permissions on a token class.
 enum Permission {
-  unspecified = 0 [(gogoproto.enumvalue_customname) = "Unspecified"];
-  modify      = 1 [(gogoproto.enumvalue_customname) = "Modify"];
-  mint        = 2 [(gogoproto.enumvalue_customname) = "Mint"];
-  burn        = 3 [(gogoproto.enumvalue_customname) = "Burn"];
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // unspecified defines the default permission which is invalid.
+  PERMISSION_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "PermissionUnspecified"];
+
+  // PERMISSION_MODIFY defines a permission to modify a contract.
+  PERMISSION_MODIFY = 1 [(gogoproto.enumvalue_customname) = "PermissionModify"];
+  // PERMISSION_MINT defines a permission to mint tokens of a contract.
+  PERMISSION_MINT = 2 [(gogoproto.enumvalue_customname) = "PermissionMint"];
+  // PERMISSION_BURN defines a permission to burn tokens of a contract.
+  PERMISSION_BURN = 3 [(gogoproto.enumvalue_customname) = "PermissionBurn"];
+}
+
+// Deprecated: use Permission
+//
+// LegacyPermission enumerates the valid permissions on a token class.
+enum LegacyPermission {
+  option (gogoproto.goproto_enum_stringer) = false;
+  option (gogoproto.goproto_enum_prefix)   = false;
+
+  // unspecified defines the default permission which is invalid.
+  LEGACY_PERMISSION_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "LegacyPermissionUnspecified"];
+
+  // modify defines a permission to modify a contract.
+  LEGACY_PERMISSION_MODIFY = 1 [(gogoproto.enumvalue_customname) = "LegacyPermissionModify"];
+  // mint defines a permission to mint tokens of a contract.
+  LEGACY_PERMISSION_MINT = 2 [(gogoproto.enumvalue_customname) = "LegacyPermissionMint"];
+  // burn defines a permission to burn tokens of a contract.
+  LEGACY_PERMISSION_BURN = 3 [(gogoproto.enumvalue_customname) = "LegacyPermissionBurn"];
 }
 
 // Authorization defines an authorization given to the operator on tokens of the holder.
@@ -55,5 +80,5 @@ message Grant {
   // address of the grantee.
   string grantee = 1;
   // permission on the token class.
-  string permission = 2;
+  Permission permission = 2;
 }

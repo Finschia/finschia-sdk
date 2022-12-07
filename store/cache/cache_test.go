@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/iavl/v2"
-	"github.com/line/tm-db/v2/memdb"
+	"github.com/cosmos/iavl"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/cache"
 	iavlstore "github.com/line/lbm-sdk/store/iavl"
@@ -15,11 +15,11 @@ import (
 )
 
 func TestGetOrSetStoreCache(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	mngr := cache.NewCommitKVStoreCacheManager(cache.DefaultCommitKVStoreCacheSize, cache.NopMetricsProvider())
 
 	sKey := types.NewKVStoreKey("test")
-	tree, err := iavl.NewMutableTree(db, 100)
+	tree, err := iavl.NewMutableTree(db, 100, false)
 	require.NoError(t, err)
 	store := iavlstore.UnsafeNewStore(tree)
 	store2 := mngr.GetStoreCache(sKey, store)
@@ -29,11 +29,11 @@ func TestGetOrSetStoreCache(t *testing.T) {
 }
 
 func TestUnwrap(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	mngr := cache.NewCommitKVStoreCacheManager(cache.DefaultCommitKVStoreCacheSize, cache.NopMetricsProvider())
 
 	sKey := types.NewKVStoreKey("test")
-	tree, err := iavl.NewMutableTree(db, 100)
+	tree, err := iavl.NewMutableTree(db, 100, false)
 	require.NoError(t, err)
 	store := iavlstore.UnsafeNewStore(tree)
 	_ = mngr.GetStoreCache(sKey, store)
@@ -43,11 +43,11 @@ func TestUnwrap(t *testing.T) {
 }
 
 func TestStoreCache(t *testing.T) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	mngr := cache.NewCommitKVStoreCacheManager(cache.DefaultCommitKVStoreCacheSize, cache.NopMetricsProvider())
 
 	sKey := types.NewKVStoreKey("test")
-	tree, err := iavl.NewMutableTree(db, 100)
+	tree, err := iavl.NewMutableTree(db, 100, false)
 	require.NoError(t, err)
 	store := iavlstore.UnsafeNewStore(tree)
 	kvStore := mngr.GetStoreCache(sKey, store)

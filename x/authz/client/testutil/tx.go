@@ -45,7 +45,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	// Create new account in the keyring.
 	info, _, err := val.ClientCtx.Keyring.NewMnemonic("grantee", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	s.Require().NoError(err)
-	newAddr := sdk.BytesToAccAddress(info.GetPubKey().Address().Bytes())
+	newAddr := sdk.AccAddress(info.GetPubKey().Address())
 
 	// Send some funds to the new account.
 	_, err = banktestutil.MsgSendExec(
@@ -77,9 +77,11 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	s.network.Cleanup()
 }
 
-var typeMsgSend = bank.SendAuthorization{}.MsgTypeURL()
-var typeMsgVote = sdk.MsgTypeURL(&govtypes.MsgVote{})
-var typeMsgSubmitProposal = sdk.MsgTypeURL(&govtypes.MsgSubmitProposal{})
+var (
+	typeMsgSend           = bank.SendAuthorization{}.MsgTypeURL()
+	typeMsgVote           = sdk.MsgTypeURL(&govtypes.MsgVote{})
+	typeMsgSubmitProposal = sdk.MsgTypeURL(&govtypes.MsgSubmitProposal{})
+)
 
 func (s *IntegrationTestSuite) TestCLITxGrantAuthorization() {
 	val := s.network.Validators[0]
@@ -575,7 +577,6 @@ func (s *IntegrationTestSuite) TestNewExecGenericAuthorized() {
 	for _, tc := range testCases {
 		tc := tc
 		s.Run(tc.name, func() {
-
 			cmd := cli.NewCmdExecAuthorization()
 			clientCtx := val.ClientCtx
 

@@ -3,8 +3,10 @@ package mock
 import (
 	"io"
 
-	tmdb "github.com/line/tm-db/v2"
+	protoio "github.com/gogo/protobuf/io"
+	dbm "github.com/tendermint/tm-db"
 
+	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
 	store "github.com/line/lbm-sdk/store/types"
 	sdk "github.com/line/lbm-sdk/types"
 )
@@ -79,7 +81,7 @@ func (ms multiStore) GetCommitStore(key sdk.StoreKey) sdk.CommitStore {
 	panic("not implemented")
 }
 
-func (ms multiStore) MountStoreWithDB(key sdk.StoreKey, typ sdk.StoreType, db tmdb.DB) {
+func (ms multiStore) MountStoreWithDB(key sdk.StoreKey, typ sdk.StoreType, db dbm.DB) {
 	ms.kv[key] = kvStore{store: make(map[string][]byte)}
 }
 
@@ -114,7 +116,12 @@ func (ms multiStore) GetStoreType() sdk.StoreType {
 func (ms multiStore) SetInterBlockCache(_ sdk.MultiStorePersistentCache) {
 	panic("not implemented")
 }
+
 func (ms multiStore) SetIAVLCacheSize(size int) {
+	panic("not implemented")
+}
+
+func (ms multiStore) SetIAVLDisableFastNode(disable bool) {
 	panic("not implemented")
 }
 
@@ -122,17 +129,17 @@ func (ms multiStore) SetInitialVersion(version int64) error {
 	panic("not implemented")
 }
 
-func (ms multiStore) Snapshot(height uint64, format uint32) (<-chan io.ReadCloser, error) {
+func (ms multiStore) Snapshot(height uint64, protoWriter protoio.Writer) error {
 	panic("not implemented")
 }
 
 func (ms multiStore) Restore(
-	height uint64, format uint32, chunks <-chan io.ReadCloser, ready chan<- struct{},
-) error {
+	height uint64, format uint32, protoReader protoio.Reader,
+) (snapshottypes.SnapshotItem, error) {
 	panic("not implemented")
 }
 
-func (ms multiStore) SetIAVLCacheManager(cacheManager store.CacheManager) {
+func (ms multiStore) RollbackToVersion(version int64) error {
 	panic("not implemented")
 }
 
@@ -180,10 +187,6 @@ func (kv kvStore) Delete(key []byte) {
 	delete(kv.store, string(key))
 }
 
-func (kv kvStore) Prefetch(key []byte, forSet bool) (hits, misses int, value []byte) {
-	return 0, 0, nil
-}
-
 func (kv kvStore) Prefix(prefix []byte) sdk.KVStore {
 	panic("not implemented")
 }
@@ -205,10 +208,6 @@ func (kv kvStore) SubspaceIterator(prefix []byte) sdk.Iterator {
 }
 
 func (kv kvStore) ReverseSubspaceIterator(prefix []byte) sdk.Iterator {
-	panic("not implemented")
-}
-
-func (kv kvStore) SetIAVLCacheManager(cacheManager store.CacheManager) {
 	panic("not implemented")
 }
 

@@ -6,15 +6,17 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/grpc"
+	"github.com/spf13/cobra"
+	dbm "github.com/tendermint/tm-db"
+
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	octypes "github.com/line/ostracon/types"
-	tmdb "github.com/line/tm-db/v2"
-	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/server/api"
 	"github.com/line/lbm-sdk/server/config"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // ServerStartTime defines the time duration that the server need to stay running after startup
@@ -47,15 +49,28 @@ type (
 
 		// RegisterTxService registers the gRPC Query service for tx (such as tx
 		// simulation, fetching txs by hash...).
-		RegisterTxService(clientCtx client.Context)
+		RegisterTxService(client.Context)
 
 		// RegisterTendermintService registers the gRPC Query service for ostracon queries.
-		RegisterTendermintService(clientCtx client.Context)
+		RegisterTendermintService(client.Context)
+
+		// CommitMultiStore Returns the multistore instance
+		CommitMultiStore() sdk.CommitMultiStore
+	}
+
+	// ApplicationQueryService defines an extension of the Application interface
+	// that facilitates gRPC query Services.
+	//
+	// NOTE: This interfaces exists only in the v0.45.x line to ensure the existing
+	// Application interface does not introduce API breaking changes.
+	ApplicationQueryService interface {
+		// RegisterNodeService registers the node gRPC Query service.
+		RegisterNodeService(client.Context)
 	}
 
 	// AppCreator is a function that allows us to lazily initialize an
 	// application using various configurations.
-	AppCreator func(log.Logger, tmdb.DB, io.Writer, AppOptions) Application
+	AppCreator func(log.Logger, dbm.DB, io.Writer, AppOptions) Application
 
 	// ModuleInitFlags takes a start command and adds modules specific init flags.
 	ModuleInitFlags func(startCmd *cobra.Command)
@@ -75,5 +90,5 @@ type (
 
 	// AppExporter is a function that dumps all app state to
 	// JSON-serializable structure and returns the current validator set.
-	AppExporter func(log.Logger, tmdb.DB, io.Writer, int64, bool, []string, AppOptions) (ExportedApp, error)
+	AppExporter func(log.Logger, dbm.DB, io.Writer, int64, bool, []string, AppOptions) (ExportedApp, error)
 )

@@ -29,10 +29,9 @@ func NewQueryCmd() *cobra.Command {
 		NewQueryCmdBurnt(),
 		NewQueryCmdTokenClass(),
 		NewQueryCmdTokenClasses(),
-		NewQueryCmdGrant(),
 		NewQueryCmdGranteeGrants(),
-		NewQueryCmdAuthorization(),
-		NewQueryCmdOperatorAuthorizations(),
+		NewQueryCmdApproved(),
+		NewQueryCmdApprovers(),
 	)
 
 	return queryCmd
@@ -200,34 +199,6 @@ func NewQueryCmdTokenClasses() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdGrant() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:     "grant [class-id] [grantee] [permission]",
-		Args:    cobra.ExactArgs(3),
-		Short:   "query a permission on a given grantee",
-		Example: fmt.Sprintf(`$ %s query %s grant <class-id> <grantee> <permission>`, version.AppName, token.ModuleName),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
-			queryClient := token.NewQueryClient(clientCtx)
-			res, err := queryClient.Grant(cmd.Context(), &token.QueryGrantRequest{
-				ContractId: args[0],
-				Grantee:    args[1],
-				Permission: args[2],
-			})
-			if err != nil {
-				return err
-			}
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-	return cmd
-}
-
 func NewQueryCmdGranteeGrants() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "grantee-grants [class-id] [grantee]",
@@ -255,22 +226,22 @@ func NewQueryCmdGranteeGrants() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdAuthorization() *cobra.Command {
+func NewQueryCmdApproved() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "authorization [class-id] [operator] [holder]",
+		Use:     "approved [class-id] [operator] [holder]",
 		Args:    cobra.ExactArgs(3),
 		Short:   "query authorization on its operator and the token holder",
-		Example: fmt.Sprintf(`$ %s query %s authorization <class-id> <operator> <holder>`, version.AppName, token.ModuleName),
+		Example: fmt.Sprintf(`$ %s query %s approved <class-id> <operator> <holder>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 			queryClient := token.NewQueryClient(clientCtx)
-			res, err := queryClient.Authorization(cmd.Context(), &token.QueryAuthorizationRequest{
+			res, err := queryClient.Approved(cmd.Context(), &token.QueryApprovedRequest{
 				ContractId: args[0],
-				Operator:   args[1],
-				Holder:     args[2],
+				Proxy:      args[1],
+				Approver:   args[2],
 			})
 			if err != nil {
 				return err
@@ -283,12 +254,12 @@ func NewQueryCmdAuthorization() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdOperatorAuthorizations() *cobra.Command {
+func NewQueryCmdApprovers() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "operator-authorizations [class-id] [operator]",
+		Use:     "approvers [class-id] [address]",
 		Args:    cobra.ExactArgs(2),
 		Short:   "query all authorizations on a given operator",
-		Example: fmt.Sprintf(`$ %s query %s operator-authorizations <class-id> <operator>`, version.AppName, token.ModuleName),
+		Example: fmt.Sprintf(`$ %s query %s approvers <class-id> <address>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -299,9 +270,9 @@ func NewQueryCmdOperatorAuthorizations() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			res, err := queryClient.OperatorAuthorizations(cmd.Context(), &token.QueryOperatorAuthorizationsRequest{
+			res, err := queryClient.Approvers(cmd.Context(), &token.QueryApproversRequest{
 				ContractId: args[0],
-				Operator:   args[1],
+				Address:    args[1],
 				Pagination: pageReq,
 			})
 			if err != nil {

@@ -52,10 +52,9 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		s.T().Skip("skipping test in unit-tests mode.")
 	}
 
-	var err error
 	s.network = network.New(s.T(), s.cfg)
 
-	_, err = s.network.WaitForHeight(1)
+	_, err := s.network.WaitForHeight(1)
 	s.Require().NoError(err)
 
 	val := s.network.Validators[0]
@@ -197,7 +196,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrant() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestCmdGetFeeGrants() {
+func (s *IntegrationTestSuite) TestCmdGetFeeGrantsByGrantee() {
 	val := s.network.Validators[0]
 	grantee := s.addedGrantee
 	clientCtx := val.ClientCtx
@@ -218,7 +217,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrants() {
 			true, nil, 0,
 		},
 		{
-			"non existed grantee",
+			"non existent grantee",
 			[]string{
 				"link19lrl5da53xtd2yssw2799y53uyaskadqkzv0ky",
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
@@ -239,7 +238,63 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrants() {
 		tc := tc
 
 		s.Run(tc.name, func() {
-			cmd := cli.GetCmdQueryFeeGrants()
+			cmd := cli.GetCmdQueryFeeGrantsByGrantee()
+			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
+
+			if tc.expectErr {
+				s.Require().Error(err)
+			} else {
+				s.Require().NoError(err)
+				s.Require().NoError(clientCtx.Codec.UnmarshalJSON(out.Bytes(), tc.resp), out.String())
+				s.Require().Len(tc.resp.Allowances, tc.expectLength)
+			}
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestCmdGetFeeGrantsByGranter() {
+	val := s.network.Validators[0]
+	granter := s.addedGranter
+	clientCtx := val.ClientCtx
+
+	testCases := []struct {
+		name         string
+		args         []string
+		expectErr    bool
+		resp         *feegrant.QueryAllowancesByGranterResponse
+		expectLength int
+	}{
+		{
+			"wrong grantee",
+			[]string{
+				"wrong_grantee",
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+			},
+			true, nil, 0,
+		},
+		{
+			"non existent grantee",
+			[]string{
+				"link1nph3cfzk6trsmfxkeu943nvach5qw4vw99nwdh",
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+			},
+			false, &feegrant.QueryAllowancesByGranterResponse{}, 0,
+		},
+		{
+			"valid req",
+			[]string{
+				granter.String(),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+			},
+			false, &feegrant.QueryAllowancesByGranterResponse{}, 1,
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+
+		s.Run(tc.name, func() {
+			cmd := cli.GetCmdQueryFeeGrantsByGranter()
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
 
 			if tc.expectErr {
@@ -561,7 +616,8 @@ func (s *IntegrationTestSuite) TestNewCmdRevokeFeegrant() {
 	}
 
 	// Create new fee grant specifically to test amino.
-	aminoGrantee := sdk.AccAddress("link1zp4lzwuwzvhq7xhe8xj688vv00dxv2zyue4xuj")
+	aminoGrantee, err := sdk.AccAddressFromBech32("link1zp4lzwuwzvhq7xhe8xj688vv00dxv2zyue4xuj")
+	s.Require().NoError(err)
 	s.createGrant(granter, aminoGrantee)
 
 	testCases := []struct {
@@ -660,10 +716,9 @@ func (s *IntegrationTestSuite) TestTxWithFeeGrant() {
 	granter := val.Address
 
 	// creating an account manually (This account won't be exist in state)
-	k, _, err := val.ClientCtx.Keyring.NewMnemonic("grantee", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
+	info, _, err := val.ClientCtx.Keyring.NewMnemonic("grantee", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	s.Require().NoError(err)
-	pub := k.GetPubKey()
-	grantee := sdk.BytesToAccAddress(pub.Address())
+	grantee := sdk.AccAddress(info.GetPubKey().Address())
 
 	commonFlags := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -708,10 +763,9 @@ func (s *IntegrationTestSuite) TestFilteredFeeAllowance() {
 	val := s.network.Validators[0]
 
 	granter := val.Address
-	k, _, err := val.ClientCtx.Keyring.NewMnemonic("grantee1", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
+	info, _, err := val.ClientCtx.Keyring.NewMnemonic("grantee1", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	s.Require().NoError(err)
-	pub := k.GetPubKey()
-	grantee := sdk.BytesToAccAddress(pub.Address())
+	grantee := sdk.AccAddress(info.GetPubKey().Address())
 
 	clientCtx := val.ClientCtx
 

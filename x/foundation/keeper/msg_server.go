@@ -10,13 +10,6 @@ import (
 
 const gasCostPerIteration = uint64(20)
 
-func canFoundationAuthorize(msgTypeURL string) bool {
-	urls := map[string]bool{
-		foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(): true,
-	}
-	return urls[msgTypeURL]
-}
-
 type msgServer struct {
 	keeper Keeper
 }
@@ -31,10 +24,31 @@ func NewMsgServer(keeper Keeper) foundation.MsgServer {
 
 var _ foundation.MsgServer = msgServer{}
 
+func (s msgServer) UpdateParams(c context.Context, req *foundation.MsgUpdateParams) (*foundation.MsgUpdateParamsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
+		return nil, err
+	}
+
+	if err := s.keeper.UpdateParams(ctx, req.Params); err != nil {
+		return nil, err
+	}
+
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateParams{
+		Params: req.Params,
+	}); err != nil {
+		panic(err)
+	}
+
+	return &foundation.MsgUpdateParamsResponse{}, nil
+}
+
 // FundTreasury defines a method to fund the treasury.
 func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasury) (*foundation.MsgFundTreasuryResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.FundTreasury(ctx, sdk.AccAddress(req.From), req.Amount); err != nil {
+	from := sdk.MustAccAddressFromBech32(req.From)
+	if err := s.keeper.FundTreasury(ctx, from, req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -42,7 +56,7 @@ func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasu
 		From:   req.From,
 		Amount: req.Amount,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgFundTreasuryResponse{}, nil
@@ -52,15 +66,16 @@ func (s msgServer) FundTreasury(c context.Context, req *foundation.MsgFundTreasu
 func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWithdrawFromTreasury) (*foundation.MsgWithdrawFromTreasuryResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
 		return nil, err
 	}
 
-	if err := s.keeper.Accept(ctx, foundation.ModuleName, sdk.AccAddress(req.To), req); err != nil {
+	to := sdk.MustAccAddressFromBech32(req.To)
+	if err := s.keeper.Accept(ctx, to, req); err != nil {
 		return nil, err
 	}
 
-	if err := s.keeper.WithdrawFromTreasury(ctx, sdk.AccAddress(req.To), req.Amount); err != nil {
+	if err := s.keeper.WithdrawFromTreasury(ctx, to, req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -68,7 +83,7 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 		To:     req.To,
 		Amount: req.Amount,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgWithdrawFromTreasuryResponse{}, nil
@@ -77,7 +92,7 @@ func (s msgServer) WithdrawFromTreasury(c context.Context, req *foundation.MsgWi
 func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMembers) (*foundation.MsgUpdateMembersResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
 		return nil, err
 	}
 
@@ -88,7 +103,7 @@ func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMem
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventUpdateMembers{
 		MemberUpdates: req.MemberUpdates,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgUpdateMembersResponse{}, nil
@@ -97,7 +112,7 @@ func (s msgServer) UpdateMembers(c context.Context, req *foundation.MsgUpdateMem
 func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUpdateDecisionPolicy) (*foundation.MsgUpdateDecisionPolicyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
 		return nil, err
 	}
 
@@ -111,7 +126,7 @@ func (s msgServer) UpdateDecisionPolicy(c context.Context, req *foundation.MsgUp
 		return nil, err
 	}
 	if err := ctx.EventManager().EmitTypedEvent(event); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgUpdateDecisionPolicyResponse{}, nil
@@ -129,11 +144,14 @@ func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitPr
 		return nil, err
 	}
 
-	proposal, _ := s.keeper.GetProposal(ctx, id)
+	proposal, err := s.keeper.GetProposal(ctx, *id)
+	if err != nil {
+		panic(err)
+	}
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventSubmitProposal{
 		Proposal: *proposal,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	// Try to execute proposal immediately
@@ -143,24 +161,23 @@ func (s msgServer) SubmitProposal(c context.Context, req *foundation.MsgSubmitPr
 			ctx.GasMeter().ConsumeGas(gasCostPerIteration, "vote on proposal")
 
 			vote := foundation.Vote{
-				ProposalId: id,
+				ProposalId: *id,
 				Voter:      proposer,
 				Option:     foundation.VOTE_OPTION_YES,
 			}
 			err = s.keeper.Vote(ctx, vote)
 			if err != nil {
-				return &foundation.MsgSubmitProposalResponse{ProposalId: id}, sdkerrors.Wrap(err, "The proposal was created but failed on vote")
+				return &foundation.MsgSubmitProposalResponse{ProposalId: *id}, sdkerrors.Wrap(err, "The proposal was created but failed on vote")
 			}
 		}
 
 		// Then try to execute the proposal
-		// We consider the first proposer as the MsgExecRequest signer
-		if err = s.keeper.Exec(ctx, id); err != nil {
-			return &foundation.MsgSubmitProposalResponse{ProposalId: id}, sdkerrors.Wrap(err, "The proposal was created but failed on exec")
+		if err = s.keeper.Exec(ctx, *id); err != nil {
+			return &foundation.MsgSubmitProposalResponse{ProposalId: *id}, sdkerrors.Wrap(err, "The proposal was created but failed on exec")
 		}
 	}
 
-	return &foundation.MsgSubmitProposalResponse{ProposalId: id}, nil
+	return &foundation.MsgSubmitProposalResponse{ProposalId: *id}, nil
 }
 
 func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdrawProposal) (*foundation.MsgWithdrawProposalResponse, error) {
@@ -172,10 +189,10 @@ func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdr
 		return nil, err
 	}
 
-	// operator may withdraw any proposal.
-	if req.Address != s.keeper.GetOperator(ctx).String() {
+	// authority may withdraw any proposal.
+	if err := s.keeper.validateAuthority(req.Address); err != nil {
 		// check whether the address is in proposers list.
-		if err = validateActorForProposal(req.Address, *proposal); err != nil {
+		if err := validateActorForProposal(req.Address, *proposal); err != nil {
 			return nil, err
 		}
 	}
@@ -187,7 +204,7 @@ func (s msgServer) WithdrawProposal(c context.Context, req *foundation.MsgWithdr
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventWithdrawProposal{
 		ProposalId: id,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgWithdrawProposalResponse{}, nil
@@ -241,17 +258,18 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 		return nil, err
 	}
 
-	update := foundation.Member{
+	update := foundation.MemberRequest{
 		Address: req.Address,
+		Remove:  true,
 	}
-	if err := s.keeper.UpdateMembers(ctx, []foundation.Member{update}); err != nil {
+	if err := s.keeper.UpdateMembers(ctx, []foundation.MemberRequest{update}); err != nil {
 		return nil, err
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventLeaveFoundation{
 		Address: req.Address,
 	}); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	return &foundation.MsgLeaveFoundationResponse{}, nil
@@ -260,17 +278,13 @@ func (s msgServer) LeaveFoundation(c context.Context, req *foundation.MsgLeaveFo
 func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundation.MsgGrantResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
 		return nil, err
 	}
 
-	msgTypeURL := req.GetAuthorization().MsgTypeURL()
-	if !canFoundationAuthorize(msgTypeURL) {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("foundation cannot grant %s", msgTypeURL)
-	}
-
 	authorization := req.GetAuthorization()
-	if err := s.keeper.Grant(ctx, foundation.ModuleName, sdk.AccAddress(req.Grantee), authorization); err != nil {
+	grantee := sdk.MustAccAddressFromBech32(req.Grantee)
+	if err := s.keeper.Grant(ctx, grantee, authorization); err != nil {
 		return nil, err
 	}
 
@@ -280,17 +294,50 @@ func (s msgServer) Grant(c context.Context, req *foundation.MsgGrant) (*foundati
 func (s msgServer) Revoke(c context.Context, req *foundation.MsgRevoke) (*foundation.MsgRevokeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if err := s.keeper.validateOperator(ctx, req.Operator); err != nil {
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
 		return nil, err
 	}
 
-	if !canFoundationAuthorize(req.MsgTypeUrl) {
-		return nil, sdkerrors.ErrUnauthorized.Wrapf("foundation cannot revoke %s", req.MsgTypeUrl)
-	}
-
-	if err := s.keeper.Revoke(ctx, foundation.ModuleName, sdk.AccAddress(req.Grantee), req.MsgTypeUrl); err != nil {
+	grantee := sdk.MustAccAddressFromBech32(req.Grantee)
+	if err := s.keeper.Revoke(ctx, grantee, req.MsgTypeUrl); err != nil {
 		return nil, err
 	}
 
 	return &foundation.MsgRevokeResponse{}, nil
+}
+
+// GovMint defines a method to withdraw coins from the treasury.
+func (s msgServer) GovMint(c context.Context, req *foundation.MsgGovMint) (*foundation.MsgGovMintResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	if err := s.keeper.validateAuthority(req.Authority); err != nil {
+		return nil, err
+	}
+
+	govMintLeftCount := s.keeper.GetGovMintLeftCount(ctx)
+	if govMintLeftCount == 0 {
+		return nil, sdkerrors.ErrUnauthorized.Wrapf("The gov-mint can no longer be executed.")
+	}
+
+	// mint coins to gov-minter
+	if err := s.keeper.bankKeeper.MintCoins(ctx, foundation.GovMinterName, req.Amount); err != nil {
+		return nil, err
+	}
+
+	// fund treasury from gov-minter
+	minter := s.keeper.authKeeper.GetModuleAccount(ctx, foundation.GovMinterName).GetAddress()
+	if err := s.keeper.FundTreasury(ctx, minter, req.Amount); err != nil {
+		return nil, err
+	}
+
+	govMintLeftCount--
+	s.keeper.SetGovMintLeftCount(ctx, govMintLeftCount)
+
+	if err := ctx.EventManager().EmitTypedEvent(&foundation.EventGovMint{
+		Amount: req.Amount,
+	}); err != nil {
+		panic(err)
+	}
+
+	return &foundation.MsgGovMintResponse{}, nil
 }

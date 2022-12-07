@@ -14,7 +14,6 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/input"
-	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
@@ -221,66 +220,14 @@ func WriteGeneratedTxResponse(
 // transaction is initially created via the provided factory's generator. Once
 // created, the fee, memo, and messages are set.
 func BuildUnsignedTx(txf Factory, msgs ...sdk.Msg) (client.TxBuilder, error) {
-	if txf.chainID == "" {
-		return nil, fmt.Errorf("chain ID required but not specified")
-	}
-
-	fees := txf.fees
-
-	if !txf.gasPrices.IsZero() {
-		if !fees.IsZero() {
-			return nil, errors.New("cannot provide both fees and gas prices")
-		}
-
-		glDec := sdk.NewDec(int64(txf.gas))
-
-		// Derive the fees based on the provided gas prices, where
-		// fee = ceil(gasPrice * gasLimit).
-		fees = make(sdk.Coins, len(txf.gasPrices))
-
-		for i, gp := range txf.gasPrices {
-			fee := gp.Amount.Mul(glDec)
-			fees[i] = sdk.NewCoin(gp.Denom, fee.Ceil().RoundInt())
-		}
-	}
-
-	tx := txf.txConfig.NewTxBuilder()
-
-	if err := tx.SetMsgs(msgs...); err != nil {
-		return nil, err
-	}
-
-	tx.SetMemo(txf.memo)
-	tx.SetFeeAmount(fees)
-	tx.SetGasLimit(txf.gas)
-	tx.SetTimeoutHeight(txf.TimeoutHeight())
-
-	return tx, nil
+	return txf.BuildUnsignedTx(msgs...)
 }
 
 // BuildSimTx creates an unsigned tx with an empty single signature and returns
 // the encoded transaction or an error if the unsigned transaction cannot be
 // built.
 func BuildSimTx(txf Factory, msgs ...sdk.Msg) ([]byte, error) {
-	txb, err := BuildUnsignedTx(txf, msgs...)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create an empty signature literal as the ante handler will populate with a
-	// sentinel pubkey.
-	sig := signing.SignatureV2{
-		PubKey: &secp256k1.PubKey{},
-		Data: &signing.SingleSignatureData{
-			SignMode: txf.signMode,
-		},
-		Sequence: txf.Sequence(),
-	}
-	if err := txb.SetSignatures(sig); err != nil {
-		return nil, err
-	}
-
-	return txf.txConfig.TxEncoder()(txb.GetTx())
+	return txf.BuildSimTx(msgs...)
 }
 
 // CalculateGas simulates the execution of a transaction and returns the
@@ -370,11 +317,41 @@ func SignWithPrivKey(
 	return sigV2, nil
 }
 
-func checkMultipleSigners(mode signing.SignMode, tx authsigning.Tx) error {
-	if mode == signing.SignMode_SIGN_MODE_DIRECT &&
-		len(tx.GetSigners()) > 1 {
-		return sdkerrors.Wrap(sdkerrors.ErrNotSupported, "Signing in DIRECT mode is only supported for transactions with one signer only")
+// countDirectSigners counts the number of DIRECT signers in a signature data.
+func countDirectSigners(data signing.SignatureData) int {
+	switch data := data.(type) {
+	case *signing.SingleSignatureData:
+		if data.SignMode == signing.SignMode_SIGN_MODE_DIRECT {
+			return 1
+		}
+
+		return 0
+	case *signing.MultiSignatureData:
+		directSigners := 0
+		for _, d := range data.Signatures {
+			directSigners += countDirectSigners(d)
+		}
+
+		return directSigners
+	default:
+		panic("unreachable case")
 	}
+}
+
+// checkMultipleSigners checks that there can be maximum one DIRECT signer in a tx.
+func checkMultipleSigners(tx authsigning.Tx) error {
+	directSigners := 0
+	sigsV2, err := tx.GetSignaturesV2()
+	if err != nil {
+		return err
+	}
+	for _, sig := range sigsV2 {
+		directSigners += countDirectSigners(sig.Data)
+		if directSigners > 1 {
+			return sdkerrors.ErrNotSupported.Wrap("txs signed with CLI can have maximum 1 DIRECT signer")
+		}
+	}
+
 	return nil
 }
 
@@ -393,9 +370,6 @@ func Sign(txf Factory, name string, txBuilder client.TxBuilder, overwriteSig boo
 	if signMode == signing.SignMode_SIGN_MODE_UNSPECIFIED {
 		// use the SignModeHandler's default mode if unspecified
 		signMode = txf.txConfig.SignModeHandler().DefaultMode()
-	}
-	if err := checkMultipleSigners(signMode, txBuilder.GetTx()); err != nil {
-		return err
 	}
 
 	key, err := txf.keybase.Key(name)
@@ -426,6 +400,7 @@ func Sign(txf Factory, name string, txBuilder client.TxBuilder, overwriteSig boo
 		Data:     &sigData,
 		Sequence: txf.Sequence(),
 	}
+
 	var prevSignatures []signing.SignatureV2
 	if !overwriteSig {
 		prevSignatures, err = txBuilder.GetTx().GetSignaturesV2()
@@ -433,7 +408,18 @@ func Sign(txf Factory, name string, txBuilder client.TxBuilder, overwriteSig boo
 			return err
 		}
 	}
-	if err := txBuilder.SetSignatures(sig); err != nil {
+	// Overwrite or append signer infos.
+	var sigs []signing.SignatureV2
+	if overwriteSig {
+		sigs = []signing.SignatureV2{sig}
+	} else {
+		sigs = append(prevSignatures, sig)
+	}
+	if err := txBuilder.SetSignatures(sigs...); err != nil {
+		return err
+	}
+
+	if err := checkMultipleSigners(txBuilder.GetTx()); err != nil {
 		return err
 	}
 

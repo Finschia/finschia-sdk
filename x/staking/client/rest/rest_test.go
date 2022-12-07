@@ -1,3 +1,4 @@
+//go:build norace
 // +build norace
 
 package rest_test
@@ -45,7 +46,7 @@ func (s *IntegrationTestSuite) TestLegacyGetValidators() {
 
 				s.Require().Equal(errResp.Error, tc.expErrMsg)
 			} else {
-				var resp = rest.ResponseWithHeight{}
+				resp := rest.ResponseWithHeight{}
 				err = val.ClientCtx.LegacyAmino.UnmarshalJSON(respJSON, &resp)
 				s.Require().NoError(err)
 
@@ -55,7 +56,7 @@ func (s *IntegrationTestSuite) TestLegacyGetValidators() {
 				s.Require().Greater(len(validators), 0)
 				// While we're at it, also check that the consensus_pubkey is
 				// an Any, and not bech32 anymore.
-				s.Require().Contains(string(resp.Result), "\"consensus_pubkey\": {\n      \"type\": \"ostracon/PubKeyEd25519\",")
+				s.Require().Contains(string(resp.Result), "\"consensus_pubkey\": {\n      \"type\": \"tendermint/PubKeyEd25519\",")
 			}
 		})
 	}

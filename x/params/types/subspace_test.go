@@ -7,8 +7,8 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/suite"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/simapp"
@@ -27,7 +27,7 @@ type SubspaceTestSuite struct {
 }
 
 func (suite *SubspaceTestSuite) SetupTest() {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 
 	ms := store.NewCommitMultiStore(db)
 	ms.MountStoreWithDB(key, sdk.StoreTypeIAVL, db)
@@ -149,6 +149,29 @@ func (suite *SubspaceTestSuite) TestGetParamSet() {
 	suite.Require().Equal(a.UnbondingTime, b.UnbondingTime)
 	suite.Require().Equal(a.MaxValidators, b.MaxValidators)
 	suite.Require().Equal(a.BondDenom, b.BondDenom)
+}
+
+func (suite *SubspaceTestSuite) TestGetParamSetIfExists() {
+	a := params{
+		UnbondingTime: time.Hour * 48,
+		MaxValidators: 100,
+		BondDenom:     "stake",
+	}
+	suite.Require().NotPanics(func() {
+		suite.ss.Set(suite.ctx, keyUnbondingTime, a.UnbondingTime)
+		suite.ss.Set(suite.ctx, keyMaxValidators, a.MaxValidators)
+		suite.ss.Set(suite.ctx, keyBondDenom, a.BondDenom)
+	})
+
+	b := paramsV2{}
+	suite.Require().NotPanics(func() {
+		suite.ss.GetParamSetIfExists(suite.ctx, &b)
+	})
+	suite.Require().Equal(a.UnbondingTime, b.UnbondingTime)
+	suite.Require().Equal(a.MaxValidators, b.MaxValidators)
+	suite.Require().Equal(a.BondDenom, b.BondDenom)
+	suite.Require().Zero(b.MaxRedelegationEntries)
+	suite.Require().False(suite.ss.Has(suite.ctx, keyMaxRedelegationEntries), "key from the new param version should not yet exist")
 }
 
 func (suite *SubspaceTestSuite) TestSetParamSet() {

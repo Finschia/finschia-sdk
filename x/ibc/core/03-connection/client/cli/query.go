@@ -3,11 +3,11 @@ package cli
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
-
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/version"
+	"github.com/spf13/cobra"
+
 	"github.com/line/lbm-sdk/x/ibc/core/03-connection/client/utils"
 	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"

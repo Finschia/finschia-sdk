@@ -121,7 +121,6 @@ func TestAddTokensValidatorUnbonding(t *testing.T) {
 }
 
 func TestAddTokensValidatorUnbonded(t *testing.T) {
-
 	validator := newValidator(t, valAddr1, pk1)
 	validator = validator.UpdateStatus(types.Unbonded)
 	validator, delShares := validator.AddTokensFromDel(sdk.NewInt(10))
@@ -202,7 +201,7 @@ func TestValidatorMarshalUnmarshalJSON(t *testing.T) {
 	js, err := legacy.Cdc.MarshalJSON(validator)
 	require.NoError(t, err)
 	require.NotEmpty(t, js)
-	require.Contains(t, string(js), "\"consensus_pubkey\":{\"type\":\"ostracon/PubKeyEd25519\"")
+	require.Contains(t, string(js), "\"consensus_pubkey\":{\"type\":\"tendermint/PubKeyEd25519\"")
 	got := &types.Validator{}
 	err = legacy.Cdc.UnmarshalJSON(js, got)
 	assert.NoError(t, err)
@@ -251,7 +250,7 @@ func TestValidatorsSortDeterminism(t *testing.T) {
 	// Create random validator slice
 	for i := range vals {
 		pk := ed25519.GenPrivKey().PubKey()
-		vals[i] = newValidator(t, sdk.BytesToValAddress(pk.Address()), pk)
+		vals[i] = newValidator(t, sdk.ValAddress(pk.Address()), pk)
 	}
 
 	// Save sorted copy
@@ -278,7 +277,7 @@ func TestValidatorsSortTendermint(t *testing.T) {
 	for i := range vals {
 		pk := ed25519.GenPrivKey().PubKey()
 		pk2 := ed25519.GenPrivKey().PubKey()
-		vals[i] = newValidator(t, sdk.BytesToValAddress(pk2.Address()), pk)
+		vals[i] = newValidator(t, sdk.ValAddress(pk2.Address()), pk)
 		vals[i].Status = types.Bonded
 		vals[i].Tokens = sdk.NewInt(rand.Int63())
 	}
@@ -310,7 +309,7 @@ func TestValidatorToTm(t *testing.T) {
 
 	for i := range vals {
 		pk := ed25519.GenPrivKey().PubKey()
-		val := newValidator(t, sdk.BytesToValAddress(pk.Address()), pk)
+		val := newValidator(t, sdk.ValAddress(pk.Address()), pk)
 		val.Status = types.Bonded
 		val.Tokens = sdk.NewInt(rand.Int63())
 		vals[i] = val

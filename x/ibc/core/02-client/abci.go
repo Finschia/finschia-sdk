@@ -2,6 +2,7 @@ package client
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/keeper"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"

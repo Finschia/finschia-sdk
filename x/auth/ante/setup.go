@@ -8,9 +8,7 @@ import (
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 )
 
-var (
-	_ GasTx = (*legacytx.StdTx)(nil) // assert StdTx implements GasTx
-)
+var _ GasTx = (*legacytx.StdTx)(nil) // assert StdTx implements GasTx
 
 // GasTx defines a Tx with a GetGas() method which is needed to use SetUpContextDecorator
 type GasTx interface {
@@ -81,8 +79,7 @@ func SetGasMeter(simulate bool, ctx sdk.Context, gasLimit uint64) sdk.Context {
 }
 
 func validateGasWanted(ctx sdk.Context) error {
-	// validate gasWanted only when checkTx
-	if !ctx.IsCheckTx() || ctx.IsReCheckTx() {
+	if !ctx.IsCheckTx() {
 		return nil
 	}
 

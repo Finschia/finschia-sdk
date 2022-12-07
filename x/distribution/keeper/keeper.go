@@ -32,9 +32,8 @@ func NewKeeper(
 	ak types.AccountKeeper, bk types.BankKeeper, sk types.StakingKeeper,
 	feeCollectorName string, blockedAddrs map[string]bool,
 ) Keeper {
-
 	// ensure distribution module account is set
-	if addr := ak.GetModuleAddress(types.ModuleName); addr.Empty() {
+	if addr := ak.GetModuleAddress(types.ModuleName); addr == nil {
 		panic(fmt.Sprintf("%s module account has not been set", types.ModuleName))
 	}
 
@@ -99,14 +98,6 @@ func (k Keeper) WithdrawDelegationRewards(ctx sdk.Context, delAddr sdk.AccAddres
 		return nil, err
 	}
 
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeWithdrawRewards,
-			sdk.NewAttribute(sdk.AttributeKeyAmount, rewards.String()),
-			sdk.NewAttribute(types.AttributeKeyValidator, valAddr.String()),
-		),
-	)
-
 	// reinitialize the delegation
 	k.initializeDelegation(ctx, valAddr, delAddr)
 	return rewards, nil
@@ -128,7 +119,7 @@ func (k Keeper) WithdrawValidatorCommission(ctx sdk.Context, valAddr sdk.ValAddr
 	k.SetValidatorOutstandingRewards(ctx, valAddr, types.ValidatorOutstandingRewards{Rewards: outstanding.Sub(sdk.NewDecCoinsFromCoins(commission...))})
 
 	if !commission.IsZero() {
-		accAddr := valAddr.ToAccAddress()
+		accAddr := sdk.AccAddress(valAddr)
 		withdrawAddr := k.GetDelegatorWithdrawAddr(ctx, accAddr)
 		err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, withdrawAddr, commission)
 		if err != nil {

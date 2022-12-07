@@ -42,12 +42,6 @@ func (ak AccountKeeper) GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.A
 	return ak.decodeAccount(bz)
 }
 
-// Prefetch implements AccountKeeperI.
-func (ak AccountKeeper) Prefetch(ctx sdk.Context, addr sdk.AccAddress, forSet bool) {
-	store := ctx.KVStore(ak.key)
-	store.Prefetch(types.AddressStoreKey(addr), forSet)
-}
-
 // GetAllAccounts returns all accounts in the accountKeeper.
 func (ak AccountKeeper) GetAllAccounts(ctx sdk.Context) (accounts []types.AccountI) {
 	ak.IterateAccounts(ctx, func(acc types.AccountI) (stop bool) {

@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
@@ -471,29 +470,48 @@ func wrapKeyNotFound(err error, msg string) error {
 }
 
 func (ks keystore) List() ([]Info, error) {
-	var res []Info
+	res := []Info{}
 
 	keys, err := ks.db.Keys()
 	if err != nil {
 		return nil, err
 	}
 
-	sort.Strings(keys)
+	if len(keys) == 0 {
+		return res, nil
+	}
 
+	sort.Strings(keys)
 	for _, key := range keys {
 		if strings.HasSuffix(key, infoSuffix) {
 			rawInfo, err := ks.db.Get(key)
 			if err != nil {
-				return nil, err
+				fmt.Printf("err for key %s: %q\n", key, err)
+
+				// add the name of the key in case the user wants to retrieve it
+				// afterwards
+				info := newOfflineInfo(key, nil, hd.PubKeyType(""))
+				res = append(res, info)
+				continue
 			}
 
 			if len(rawInfo.Data) == 0 {
-				return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, key)
+				fmt.Println(sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, key))
+
+				// add the name of the key in case the user wants to retrieve it
+				// afterwards
+				info := newOfflineInfo(key, nil, hd.PubKeyType(""))
+				res = append(res, info)
+				continue
 			}
 
 			info, err := unmarshalInfo(rawInfo.Data)
 			if err != nil {
-				return nil, err
+				fmt.Printf("err for key %s: %q\n", key, err)
+
+				// add the name of the key in case the user wants to retrieve it
+				// afterwards
+				info = newOfflineInfo(key, nil, hd.PubKeyType(""))
 			}
 
 			res = append(res, info)
@@ -551,7 +569,7 @@ func (ks keystore) NewAccount(name string, mnemonic string, bip39Passphrase stri
 
 	// check if the a key already exists with the same address and return an error
 	// if found
-	address := sdk.BytesToAccAddress(privKey.PubKey().Address())
+	address := sdk.AccAddress(privKey.PubKey().Address())
 	if _, err := ks.KeyByAddress(address); err == nil {
 		return nil, fmt.Errorf("account with address %s already exists in keyring, delete the key first if you want to recreate it", address)
 	}
@@ -673,7 +691,7 @@ func newRealPrompt(dir string, buf io.Reader) func(string) (string, error) {
 
 		switch {
 		case err == nil:
-			keyhash, err = ioutil.ReadFile(keyhashFilePath)
+			keyhash, err = os.ReadFile(keyhashFilePath)
 			if err != nil {
 				return "", fmt.Errorf("failed to read %s: %v", keyhashFilePath, err)
 			}
@@ -737,7 +755,7 @@ func newRealPrompt(dir string, buf io.Reader) func(string) (string, error) {
 				continue
 			}
 
-			if err := ioutil.WriteFile(dir+"/keyhash", passwordHash, 0555); err != nil {
+			if err := os.WriteFile(dir+"/keyhash", passwordHash, 0o555); err != nil {
 				return "", err
 			}
 

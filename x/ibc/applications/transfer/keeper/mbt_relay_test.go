@@ -7,18 +7,17 @@ package keeper_test
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strconv"
 	"strings"
 
-	"github.com/line/ostracon/crypto"
-
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/ostracon/crypto"
+
 	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -31,7 +30,7 @@ type TlaBalance struct {
 type TlaFungibleTokenPacketData struct {
 	Sender   string   `json:"sender"`
 	Receiver string   `json:"receiver"`
-	Amount   int      `json:"amount"`
+	Amount   string   `json:"amount"`
 	Denom    []string `json:"denom"`
 }
 
@@ -91,7 +90,7 @@ type Balance struct {
 }
 
 func AddressFromString(address string) string {
-	return sdk.BytesToAccAddress(crypto.AddressHash([]byte(address))).String()
+	return sdk.AccAddress(crypto.AddressHash([]byte(address))).String()
 }
 
 func AddressFromTla(addr []string) string {
@@ -144,7 +143,7 @@ func FungibleTokenPacketFromTla(packet TlaFungibleTokenPacket) FungibleTokenPack
 		DestPort:      packet.DestPort,
 		Data: types.NewFungibleTokenPacketData(
 			DenomFromTla(packet.Data.Denom),
-			uint64(packet.Data.Amount),
+			packet.Data.Amount,
 			AddressFromString(packet.Data.Sender),
 			AddressFromString(packet.Data.Receiver)),
 	}
@@ -251,10 +250,10 @@ func (bank *Bank) NonZeroString() string {
 // Construct a bank out of the chain bank
 func BankOfChain(chain *ibctesting.TestChain) Bank {
 	bank := MakeBank()
-	chain.App.BankKeeper.IterateAllBalances(chain.GetContext(), func(address sdk.AccAddress, coin sdk.Coin) (stop bool) {
+	chain.GetSimApp().BankKeeper.IterateAllBalances(chain.GetContext(), func(address sdk.AccAddress, coin sdk.Coin) (stop bool) {
 		fullDenom := coin.Denom
 		if strings.HasPrefix(coin.Denom, "ibc/") {
-			fullDenom, _ = chain.App.TransferKeeper.DenomPathFromHash(chain.GetContext(), coin.Denom)
+			fullDenom, _ = chain.GetSimApp().TransferKeeper.DenomPathFromHash(chain.GetContext(), coin.Denom)
 		}
 		bank.SetBalance(address.String(), fullDenom, coin.Amount)
 		return false
@@ -276,7 +275,7 @@ func (suite *KeeperTestSuite) CheckBankBalances(chain *ibctesting.TestChain, ban
 
 func (suite *KeeperTestSuite) TestModelBasedRelay() {
 	dirname := "model_based_tests/"
-	files, err := ioutil.ReadDir(dirname)
+	files, err := os.ReadDir(dirname)
 	if err != nil {
 		panic(fmt.Errorf("Failed to read model-based test files: %w", err))
 	}
@@ -285,7 +284,7 @@ func (suite *KeeperTestSuite) TestModelBasedRelay() {
 		if !strings.HasSuffix(file_info.Name(), ".json") {
 			continue
 		}
-		jsonBlob, err := ioutil.ReadFile(dirname + file_info.Name())
+		jsonBlob, err := os.ReadFile(dirname + file_info.Name())
 		if err != nil {
 			panic(fmt.Errorf("Failed to read JSON test fixture: %w", err))
 		}
@@ -295,18 +294,18 @@ func (suite *KeeperTestSuite) TestModelBasedRelay() {
 		}
 
 		suite.SetupTest()
-		_, _, connAB, connBA := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
-		_, _, connBC, connCB := suite.coordinator.SetupClientConnections(suite.chainB, suite.chainC, exported.Ostracon)
-		suite.coordinator.CreateTransferChannels(suite.chainA, suite.chainB, connAB, connBA, channeltypes.UNORDERED)
-		suite.coordinator.CreateTransferChannels(suite.chainB, suite.chainC, connBC, connCB, channeltypes.UNORDERED)
+		pathAtoB := NewTransferPath(suite.chainA, suite.chainB)
+		pathBtoC := NewTransferPath(suite.chainB, suite.chainC)
+		suite.coordinator.Setup(pathAtoB)
+		suite.coordinator.Setup(pathBtoC)
 
 		for i, tlaTc := range tlaTestCases {
 			tc := OnRecvPacketTestCaseFromTla(tlaTc)
 			registerDenom := func() {
 				denomTrace := types.ParseDenomTrace(tc.packet.Data.Denom)
 				traceHash := denomTrace.Hash()
-				if !suite.chainB.App.TransferKeeper.HasDenomTrace(suite.chainB.GetContext(), traceHash) {
-					suite.chainB.App.TransferKeeper.SetDenomTrace(suite.chainB.GetContext(), denomTrace)
+				if !suite.chainB.GetSimApp().TransferKeeper.HasDenomTrace(suite.chainB.GetContext(), traceHash) {
+					suite.chainB.GetSimApp().TransferKeeper.SetDenomTrace(suite.chainB.GetContext(), denomTrace)
 				}
 			}
 
@@ -324,7 +323,8 @@ func (suite *KeeperTestSuite) TestModelBasedRelay() {
 				}
 				switch tc.handler {
 				case "SendTransfer":
-					err = sdk.ValidateAccAddress(tc.packet.Data.Sender)
+					var sender sdk.AccAddress
+					sender, err = sdk.AccAddressFromBech32(tc.packet.Data.Sender)
 					if err != nil {
 						panic("MBT failed to convert sender address")
 					}
@@ -333,28 +333,32 @@ func (suite *KeeperTestSuite) TestModelBasedRelay() {
 					denom := denomTrace.IBCDenom()
 					err = sdk.ValidateDenom(denom)
 					if err == nil {
-						err = suite.chainB.App.TransferKeeper.SendTransfer(
+						amount, ok := sdk.NewIntFromString(tc.packet.Data.Amount)
+						if !ok {
+							panic("MBT failed to parse amount from string")
+						}
+						err = suite.chainB.GetSimApp().TransferKeeper.SendTransfer(
 							suite.chainB.GetContext(),
 							tc.packet.SourcePort,
 							tc.packet.SourceChannel,
-							sdk.NewCoin(denom, sdk.NewIntFromUint64(tc.packet.Data.Amount)),
-							sdk.AccAddress(tc.packet.Data.Sender),
+							sdk.NewCoin(denom, amount),
+							sender,
 							tc.packet.Data.Receiver,
 							clienttypes.NewHeight(0, 110),
 							0)
 					}
 				case "OnRecvPacket":
-					err = suite.chainB.App.TransferKeeper.OnRecvPacket(suite.chainB.GetContext(), packet, tc.packet.Data)
+					err = suite.chainB.GetSimApp().TransferKeeper.OnRecvPacket(suite.chainB.GetContext(), packet, tc.packet.Data)
 				case "OnTimeoutPacket":
 					registerDenom()
-					err = suite.chainB.App.TransferKeeper.OnTimeoutPacket(suite.chainB.GetContext(), packet, tc.packet.Data)
+					err = suite.chainB.GetSimApp().TransferKeeper.OnTimeoutPacket(suite.chainB.GetContext(), packet, tc.packet.Data)
 				case "OnRecvAcknowledgementResult":
-					err = suite.chainB.App.TransferKeeper.OnAcknowledgementPacket(
+					err = suite.chainB.GetSimApp().TransferKeeper.OnAcknowledgementPacket(
 						suite.chainB.GetContext(), packet, tc.packet.Data,
 						channeltypes.NewResultAcknowledgement(nil))
 				case "OnRecvAcknowledgementError":
 					registerDenom()
-					err = suite.chainB.App.TransferKeeper.OnAcknowledgementPacket(
+					err = suite.chainB.GetSimApp().TransferKeeper.OnAcknowledgementPacket(
 						suite.chainB.GetContext(), packet, tc.packet.Data,
 						channeltypes.NewErrorAcknowledgement("MBT Error Acknowledgement"))
 				default:

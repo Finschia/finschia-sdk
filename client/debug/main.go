@@ -70,34 +70,29 @@ $ %s debug addr link19wgf6ymq2ur6r59st95e04e49m69z4al4fc982
 			`, version.AppName),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-
 			addrString := args[0]
-			var addrBytes []byte
+			var addr []byte
 
 			// try hex, then bech32
 			var err error
-			addrBytes, err = hex.DecodeString(addrString)
+			addr, err = hex.DecodeString(addrString)
 			if err != nil {
 				var err2 error
-				addrBytes, err2 = sdk.AccAddressToBytes(addrString)
+				addr, err2 = sdk.AccAddressFromBech32(addrString)
 				if err2 != nil {
 					var err3 error
-					addrBytes, err3 = sdk.ValAddressToBytes(addrString)
+					addr, err3 = sdk.ValAddressFromBech32(addrString)
 
 					if err3 != nil {
 						return fmt.Errorf("expected hex or bech32. Got errors: hex: %v, bech32 acc: %v, bech32 val: %v", err, err2, err3)
-
 					}
 				}
 			}
 
-			accAddr := sdk.BytesToAccAddress(addrBytes)
-			valAddr := sdk.BytesToValAddress(addrBytes)
-
-			cmd.Println("Address Bytes:", addrBytes)
-			cmd.Printf("Address (hex): %X\n", addrBytes)
-			cmd.Printf("Bech32 Acc: %s\n", accAddr)
-			cmd.Printf("Bech32 Val: %s\n", valAddr)
+			cmd.Println("Address:", addr)
+			cmd.Printf("Address (hex): %X\n", addr)
+			cmd.Printf("Bech32 Acc: %s\n", sdk.AccAddress(addr))
+			cmd.Printf("Bech32 Val: %s\n", sdk.ValAddress(addr))
 			return nil
 		},
 	}

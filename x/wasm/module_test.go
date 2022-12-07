@@ -3,7 +3,7 @@ package wasm
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/dvsekhvalnov/jose2go/base64url"
@@ -50,12 +50,12 @@ func setupTest(t *testing.T) testData {
 func keyPubAddr() (crypto.PrivKey, crypto.PubKey, sdk.AccAddress) {
 	key := ed25519.GenPrivKey()
 	pub := key.PubKey()
-	addr := sdk.BytesToAccAddress(pub.Address())
+	addr := sdk.AccAddress(pub.Address())
 	return key, pub, addr
 }
 
 func mustLoad(path string) []byte {
-	bz, err := ioutil.ReadFile(path)
+	bz, err := os.ReadFile(path)
 	if err != nil {
 		panic(err)
 	}
@@ -202,9 +202,7 @@ func TestHandleInstantiate(t *testing.T) {
 
 func TestHandleStoreAndInstantiate(t *testing.T) {
 	data := setupTest(t)
-
-	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
-	creator := createFakeFundedAccount(t, data.ctx, data.acctKeeper, data.bankKeeper, deposit)
+	creator := data.faucet.NewFundedAccount(data.ctx, sdk.NewInt64Coin("denom", 100000))
 
 	h := data.module.Route().Handler()
 	q := data.module.LegacyQuerierHandler(nil)
@@ -436,7 +434,7 @@ func TestHandleExecute(t *testing.T) {
 	assert.Equal(t, deposit, data.bankKeeper.GetAllBalances(data.ctx, creatorAcct.GetAddress()))
 
 	// ensure contract has updated balance
-	contractAddr := sdk.AccAddress(contractBech32Addr)
+	contractAddr, _ := sdk.AccAddressFromBech32(contractBech32Addr)
 	contractAcct := data.acctKeeper.GetAccount(data.ctx, contractAddr)
 	require.NotNil(t, contractAcct)
 	assert.Equal(t, deposit, data.bankKeeper.GetAllBalances(data.ctx, contractAcct.GetAddress()))
@@ -577,7 +575,7 @@ func TestHandleExecuteEscrow(t *testing.T) {
 	assert.Equal(t, deposit.Add(topUp...), balance)
 
 	// ensure contract has updated balance
-	contractAddr := sdk.AccAddress(contractBech32Addr)
+	contractAddr, _ := sdk.AccAddressFromBech32(contractBech32Addr)
 	contractAcct := data.acctKeeper.GetAccount(data.ctx, contractAddr)
 	require.NotNil(t, contractAcct)
 	assert.Equal(t, sdk.Coins{}, data.bankKeeper.GetAllBalances(data.ctx, contractAcct.GetAddress()))
@@ -723,7 +721,7 @@ func assertContractList(t *testing.T, q sdk.Querier, ctx sdk.Context, codeID uin
 	err := json.Unmarshal(bz, &res)
 	require.NoError(t, err)
 
-	var hasAddrs = make([]string, len(res))
+	hasAddrs := make([]string, len(res))
 	for i, r := range res {
 		hasAddrs[i] = r
 	}
@@ -760,14 +758,4 @@ func assertContractInfo(t *testing.T, q sdk.Querier, ctx sdk.Context, contractBe
 
 	assert.Equal(t, codeID, res.CodeID)
 	assert.Equal(t, creator.String(), res.Creator)
-}
-func createFakeFundedAccount(t *testing.T, ctx sdk.Context, am authkeeper.AccountKeeper, bankKeeper bankkeeper.Keeper, coins sdk.Coins) sdk.AccAddress {
-	t.Helper()
-	_, _, addr := keyPubAddr()
-	acc := am.NewAccountWithAddress(ctx, addr)
-	am.SetAccount(ctx, acc)
-	for _, coin := range coins {
-		require.NoError(t, bankKeeper.SetBalance(ctx, addr, coin))
-	}
-	return addr
 }

@@ -185,7 +185,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryTotalSupply() {
 					sdk.NewCoin(fmt.Sprintf("%stoken", val.Moniker), s.cfg.AccountTokens),
 					sdk.NewCoin(s.cfg.BondDenom, s.cfg.StakingTokens.Add(sdk.NewInt(10))),
 				),
-				Pagination: &query.PageResponse{Total: 2},
+				Pagination: &query.PageResponse{Total: 0},
 			},
 		},
 		{
@@ -213,6 +213,15 @@ func (s *IntegrationTestSuite) TestGetCmdQueryTotalSupply() {
 				Denom:  "foobar",
 				Amount: sdk.ZeroInt(),
 			},
+		},
+		{
+			name: "wrong number of arguments",
+			args: []string{
+				"extra",
+				fmt.Sprintf("--%s=1", flags.FlagHeight),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+			},
+			expectErr: true,
 		},
 	}
 
@@ -331,6 +340,21 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDenomsMetadata() {
 			args: []string{
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 				fmt.Sprintf("--%s=foobar", cli.FlagDenom),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+			},
+			expectErr: true,
+			respType:  &types.QueryDenomMetadataResponse{},
+			expected: &types.QueryDenomMetadataResponse{
+				Metadata: types.Metadata{
+					DenomUnits: []*types.DenomUnit{},
+				},
+			},
+		},
+		{
+			name: "wrong number of arguments",
+			args: []string{
+				"extra",
+				fmt.Sprintf("--%s=1", flags.FlagHeight),
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			expectErr: true,

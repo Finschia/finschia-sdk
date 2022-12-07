@@ -35,8 +35,6 @@ func TestAccessors(t *testing.T) {
 	retFoo := []byte("xxx")
 	mockDB.EXPECT().Get(gomock.Eq(key)).Times(1).Return(retFoo, nil)
 	require.True(t, bytes.Equal(retFoo, store.Get(key)))
-	mockDB.EXPECT().Get(gomock.Eq(key)).Times(1).Return(retFoo, nil)
-	store.Prefetch(key, false)
 
 	mockDB.EXPECT().Get(gomock.Eq(key)).Times(1).Return(nil, errFoo)
 	require.Panics(t, func() { store.Get(key) })

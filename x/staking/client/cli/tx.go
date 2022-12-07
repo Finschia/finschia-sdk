@@ -98,7 +98,7 @@ func NewEditValidatorCmd() *cobra.Command {
 				return err
 			}
 			valAddr := clientCtx.GetFromAddress()
-			moniker, _ := cmd.Flags().GetString(FlagMoniker)
+			moniker, _ := cmd.Flags().GetString(FlagEditMoniker)
 			identity, _ := cmd.Flags().GetString(FlagIdentity)
 			website, _ := cmd.Flags().GetString(FlagWebsite)
 			security, _ := cmd.Flags().GetString(FlagSecurityContact)
@@ -129,7 +129,7 @@ func NewEditValidatorCmd() *cobra.Command {
 				newMinSelfDelegation = &msb
 			}
 
-			msg := types.NewMsgEditValidator(valAddr.ToValAddress(), description, newRate, newMinSelfDelegation)
+			msg := types.NewMsgEditValidator(sdk.ValAddress(valAddr), description, newRate, newMinSelfDelegation)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -170,7 +170,10 @@ $ %s tx staking delegate %s1l2rsakp388kuv9k8qzq6lrm9taddae7fpx59wm 1000stake --f
 			}
 
 			delAddr := clientCtx.GetFromAddress()
-			valAddr := sdk.ValAddress(args[0])
+			valAddr, err := sdk.ValAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
 
 			msg := types.NewMsgDelegate(delAddr, valAddr, amount)
 
@@ -205,9 +208,15 @@ $ %s tx staking redelegate %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj %s1l2rsakp3
 				return err
 			}
 			delAddr := clientCtx.GetFromAddress()
-			valSrcAddr := sdk.ValAddress(args[0])
+			valSrcAddr, err := sdk.ValAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
 
-			valDstAddr := sdk.ValAddress(args[1])
+			valDstAddr, err := sdk.ValAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
 
 			amount, err := sdk.ParseCoinNormalized(args[2])
 			if err != nil {
@@ -247,7 +256,10 @@ $ %s tx staking unbond %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj 100stake --from
 				return err
 			}
 			delAddr := clientCtx.GetFromAddress()
-			valAddr := sdk.ValAddress(args[0])
+			valAddr, err := sdk.ValAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
 
 			amount, err := sdk.ParseCoinNormalized(args[1])
 			if err != nil {
@@ -315,7 +327,7 @@ func newBuildCreateValidatorMsg(clientCtx client.Context, txf tx.Factory, fs *fl
 	}
 
 	msg, err := types.NewMsgCreateValidator(
-		valAddr.ToValAddress(), pk, amount, description, commissionRates, minSelfDelegation,
+		sdk.ValAddress(valAddr), pk, amount, description, commissionRates, minSelfDelegation,
 	)
 	if err != nil {
 		return txf, nil, err
@@ -485,7 +497,6 @@ func PrepareConfigForTxCreateValidator(flagSet *flag.FlagSet, moniker, nodeID, c
 func BuildCreateValidatorMsg(clientCtx client.Context, config TxCreateValidatorConfig, txBldr tx.Factory, generateOnly bool) (tx.Factory, sdk.Msg, error) {
 	amounstStr := config.Amount
 	amount, err := sdk.ParseCoinNormalized(amounstStr)
-
 	if err != nil {
 		return txBldr, nil, err
 	}
@@ -504,7 +515,6 @@ func BuildCreateValidatorMsg(clientCtx client.Context, config TxCreateValidatorC
 	maxRateStr := config.CommissionMaxRate
 	maxChangeRateStr := config.CommissionMaxChangeRate
 	commissionRates, err := buildCommissionRates(rateStr, maxRateStr, maxChangeRateStr)
-
 	if err != nil {
 		return txBldr, nil, err
 	}
@@ -518,7 +528,7 @@ func BuildCreateValidatorMsg(clientCtx client.Context, config TxCreateValidatorC
 	}
 
 	msg, err := types.NewMsgCreateValidator(
-		valAddr.ToValAddress(), config.PubKey, amount, description, commissionRates, minSelfDelegation,
+		sdk.ValAddress(valAddr), config.PubKey, amount, description, commissionRates, minSelfDelegation,
 	)
 	if err != nil {
 		return txBldr, msg, err

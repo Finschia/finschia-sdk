@@ -41,8 +41,8 @@ func TestStoreMigration(t *testing.T) {
 		},
 		{
 			"AddrPubkeyRelationKey",
-			v040slashing.AddrPubkeyRelationKey(consAddr.Bytes()),
-			types.AddrPubkeyRelationKey(consAddr.Bytes()),
+			v040slashing.AddrPubkeyRelationKey(consAddr),
+			types.AddrPubkeyRelationKey(consAddr),
 		},
 	}
 

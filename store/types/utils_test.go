@@ -5,16 +5,17 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/tm-db/v2/memdb"
+	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/store/rootmulti"
 	"github.com/line/lbm-sdk/store/types"
 )
 
 func initTestStores(t *testing.T) (types.KVStore, types.KVStore) {
-	db := memdb.NewDB()
-	ms := rootmulti.NewStore(db)
+	db := dbm.NewMemDB()
+	ms := rootmulti.NewStore(db, log.NewNopLogger())
 
 	key1 := types.NewKVStoreKey("store1")
 	key2 := types.NewKVStoreKey("store2")

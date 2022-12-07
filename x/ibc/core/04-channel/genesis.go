@@ -2,6 +2,7 @@ package channel
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+
 	"github.com/line/lbm-sdk/x/ibc/core/04-channel/keeper"
 	"github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 )

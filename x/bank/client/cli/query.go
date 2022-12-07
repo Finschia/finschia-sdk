@@ -65,10 +65,11 @@ Example:
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			if err := sdk.ValidateAccAddress(args[0]); err != nil {
+			addr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
 				return err
 			}
-			addr := sdk.AccAddress(args[0])
+
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
 				return err
@@ -104,6 +105,7 @@ Example:
 func GetCmdDenomsMetadata() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "denom-metadata",
+		Args:  cobra.NoArgs,
 		Short: "Query the client metadata for coin denominations",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query the client metadata for all the registered coin denominations
@@ -157,6 +159,7 @@ To query for the client metadata of a specific coin denomination use:
 func GetCmdQueryTotalSupply() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "total",
+		Args:  cobra.NoArgs,
 		Short: "Query the total supply of coins of the chain",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query total supply of coins that are held by accounts in the chain.
@@ -207,6 +210,7 @@ To query for the total supply of a specific coin denomination use:
 
 	cmd.Flags().String(FlagDenom, "", "The specific balance denomination to query for")
 	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "all supply totals")
 
 	return cmd
 }

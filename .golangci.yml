@@ -19,7 +19,6 @@ linters:
     - prealloc
     - scopelint
     - staticcheck
-    - structcheck
     - stylecheck
     - typecheck
     - unconvert
@@ -39,12 +38,6 @@ issues:
     - text: "Use of weak random number generator"
       linters:
         - gosec
-    - text: "comment on exported var"
-      linters:
-        - golint
-    - text: "don't use an underscore in package name"
-      linters:
-        - golint
     - text: "ST1003:"
       linters:
         - stylecheck
@@ -54,6 +47,9 @@ issues:
       linters:
         - stylecheck
     - text: "SA1019: codec.LegacyAmino is deprecated"
+      linters:
+        - staticcheck
+    - text: "SA1019: collection."
       linters:
         - staticcheck
   max-issues-per-linter: 10000
@@ -67,6 +63,5 @@ linters-settings:
     suggest-new: true
   nolintlint:
     allow-unused: false
-    allow-leading-space: true
     require-explanation: false
     require-specific: false

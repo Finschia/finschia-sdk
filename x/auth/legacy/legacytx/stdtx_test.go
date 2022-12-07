@@ -22,11 +22,11 @@ import (
 
 var (
 	priv = ed25519.GenPrivKey()
-	addr = sdk.BytesToAccAddress(priv.PubKey().Address())
+	addr = sdk.AccAddress(priv.PubKey().Address())
 )
 
 func init() {
-	var amino = codec.NewLegacyAmino()
+	amino := codec.NewLegacyAmino()
 	RegisterLegacyAminoCodec(amino)
 }
 
@@ -163,7 +163,7 @@ func TestTxValidateBasic(t *testing.T) {
 func TestDefaultTxEncoder(t *testing.T) {
 	cdc := codec.NewLegacyAmino()
 	sdk.RegisterLegacyAminoCodec(cdc)
-	cdc.RegisterConcrete(testdata.TestMsg{}, "lbm-sdk/Test", nil)
+	cdc.RegisterConcrete(testdata.TestMsg{}, "cosmos-sdk/Test", nil)
 	encoder := DefaultTxEncoder(cdc)
 
 	msgs := []sdk.Msg{testdata.NewTestMsg(addr)}

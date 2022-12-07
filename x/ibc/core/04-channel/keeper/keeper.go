@@ -4,14 +4,14 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/line/ostracon/libs/log"
-	tmdb "github.com/line/tm-db/v2"
-
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+	"github.com/line/ostracon/libs/log"
+	db "github.com/tendermint/tm-db"
+
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	"github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
@@ -20,13 +20,15 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
+var _ porttypes.ICS4Wrapper = Keeper{}
+
 // Keeper defines the IBC channel keeper
 type Keeper struct {
 	// implements gRPC QueryServer interface
 	types.QueryServer
 
 	storeKey         sdk.StoreKey
-	cdc              codec.Codec
+	cdc              codec.BinaryCodec
 	clientKeeper     types.ClientKeeper
 	connectionKeeper types.ConnectionKeeper
 	portKeeper       types.PortKeeper
@@ -35,7 +37,7 @@ type Keeper struct {
 
 // NewKeeper creates a new IBC channel Keeper instance
 func NewKeeper(
-	cdc codec.Codec, key sdk.StoreKey,
+	cdc codec.BinaryCodec, key sdk.StoreKey,
 	clientKeeper types.ClientKeeper, connectionKeeper types.ConnectionKeeper,
 	portKeeper types.PortKeeper, scopedKeeper capabilitykeeper.ScopedKeeper,
 ) Keeper {
@@ -222,7 +224,7 @@ func (k Keeper) HasPacketAcknowledgement(ctx sdk.Context, portID, channelID stri
 // IteratePacketSequence provides an iterator over all send, receive or ack sequences.
 // For each sequence, cb will be called. If the cb returns true, the iterator
 // will close and stop.
-func (k Keeper) IteratePacketSequence(ctx sdk.Context, iterator tmdb.Iterator, cb func(portID, channelID string, sequence uint64) bool) {
+func (k Keeper) IteratePacketSequence(ctx sdk.Context, iterator db.Iterator, cb func(portID, channelID string, sequence uint64) bool) {
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		portID, channelID, err := host.ParseChannelPath(string(iterator.Key()))
@@ -401,6 +403,33 @@ func (k Keeper) GetChannelClientState(ctx sdk.Context, portID, channelID string)
 	return connection.ClientId, clientState, nil
 }
 
+// GetConnection wraps the connection keeper's GetConnection function.
+func (k Keeper) GetConnection(ctx sdk.Context, connectionID string) (exported.ConnectionI, error) {
+	connection, found := k.connectionKeeper.GetConnection(ctx, connectionID)
+	if !found {
+		return nil, sdkerrors.Wrapf(connectiontypes.ErrConnectionNotFound, "connection-id: %s", connectionID)
+	}
+
+	return connection, nil
+}
+
+// GetChannelConnection returns the connection ID and state associated with the given port and channel identifier.
+func (k Keeper) GetChannelConnection(ctx sdk.Context, portID, channelID string) (string, exported.ConnectionI, error) {
+	channel, found := k.GetChannel(ctx, portID, channelID)
+	if !found {
+		return "", nil, sdkerrors.Wrapf(types.ErrChannelNotFound, "port-id: %s, channel-id: %s", portID, channelID)
+	}
+
+	connectionID := channel.ConnectionHops[0]
+
+	connection, found := k.connectionKeeper.GetConnection(ctx, connectionID)
+	if !found {
+		return "", nil, sdkerrors.Wrapf(connectiontypes.ErrConnectionNotFound, "connection-id: %s", connectionID)
+	}
+
+	return connectionID, connection, nil
+}
+
 // LookupModuleByChannel will return the IBCModule along with the capability associated with a given channel defined by its portID and channelID
 func (k Keeper) LookupModuleByChannel(ctx sdk.Context, portID, channelID string) (string, *capabilitytypes.Capability, error) {
 	modules, cap, err := k.scopedKeeper.LookupModules(ctx, host.ChannelCapabilityPath(portID, channelID))
@@ -412,7 +441,7 @@ func (k Keeper) LookupModuleByChannel(ctx sdk.Context, portID, channelID string)
 }
 
 // common functionality for IteratePacketCommitment and IteratePacketAcknowledgement
-func (k Keeper) iterateHashes(_ sdk.Context, iterator tmdb.Iterator, cb func(portID, channelID string, sequence uint64, hash []byte) bool) {
+func (k Keeper) iterateHashes(_ sdk.Context, iterator db.Iterator, cb func(portID, channelID string, sequence uint64, hash []byte) bool) {
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {

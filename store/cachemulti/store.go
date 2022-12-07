@@ -3,12 +3,13 @@ package cachemulti
 import (
 	"fmt"
 	"io"
-	"sync"
 
-	tmdb "github.com/line/tm-db/v2"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/lbm-sdk/store/dbadapter"
+	"github.com/line/lbm-sdk/store/listenkv"
+	"github.com/line/lbm-sdk/store/tracekv"
 	"github.com/line/lbm-sdk/store/types"
 )
 
@@ -50,17 +51,13 @@ func NewFromKVStore(
 	}
 
 	for key, store := range stores {
-		var cacheWrapped types.CacheWrap
 		if cms.TracingEnabled() {
-			cacheWrapped = store.CacheWrapWithTrace(cms.traceWriter, cms.traceContext)
-		} else {
-			cacheWrapped = store.CacheWrap()
+			store = tracekv.NewStore(store.(types.KVStore), cms.traceWriter, cms.traceContext)
 		}
 		if cms.ListeningEnabled(key) {
-			cms.stores[key] = cacheWrapped.CacheWrapWithListeners(key, cms.listeners[key])
-		} else {
-			cms.stores[key] = cacheWrapped
+			store = listenkv.NewStore(store.(types.KVStore), key, listeners[key])
 		}
+		cms.stores[key] = cachekv.NewStore(store.(types.KVStore))
 	}
 
 	return cms
@@ -69,10 +66,9 @@ func NewFromKVStore(
 // NewStore creates a new Store object from a mapping of store keys to
 // CacheWrapper objects. Each CacheWrapper store is a branched store.
 func NewStore(
-	db tmdb.DB, stores map[types.StoreKey]types.CacheWrapper, keys map[string]types.StoreKey,
+	db dbm.DB, stores map[types.StoreKey]types.CacheWrapper, keys map[string]types.StoreKey,
 	traceWriter io.Writer, traceContext types.TraceContext, listeners map[types.StoreKey][]types.WriteListener,
 ) Store {
-
 	return NewFromKVStore(dbadapter.Store{DB: db}, stores, keys, traceWriter, traceContext, listeners)
 }
 
@@ -138,26 +134,8 @@ func (cms Store) GetStoreType() types.StoreType {
 // Write calls Write on each underlying store.
 func (cms Store) Write() {
 	cms.db.Write()
-	var wg sync.WaitGroup
-	var panicMsg interface{}
 	for _, store := range cms.stores {
-		wg.Add(1)
-		go func(s types.CacheWrap) {
-			defer func() {
-				if msg := recover(); msg != nil {
-					if panicMsg == nil {
-						panicMsg = msg
-					}
-				}
-				wg.Done()
-			}()
-
-			s.Write()
-		}(store)
-	}
-	wg.Wait()
-	if panicMsg != nil {
-		panic(panicMsg)
+		store.Write()
 	}
 }
 
