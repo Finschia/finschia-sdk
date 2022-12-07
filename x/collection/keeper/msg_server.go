@@ -64,7 +64,7 @@ func (s msgServer) TransferFTFrom(c context.Context, req *collection.MsgTransfer
 	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
-		return nil, err
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
 	toAddr := sdk.MustAccAddressFromBech32(req.To)
@@ -135,7 +135,7 @@ func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransfe
 	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
-		return nil, err
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
 	amount := make([]collection.Coin, len(req.TokenIds))
@@ -764,7 +764,7 @@ func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collec
 	// for the additional field of the event
 	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
 	if err != nil {
-		return nil, err
+		return nil, collection.ErrCompositionFailed.Wrap(err.Error())
 	}
 	event := collection.EventDetached{
 		ContractId:     req.ContractId,
@@ -844,7 +844,7 @@ func (s msgServer) DetachFrom(c context.Context, req *collection.MsgDetachFrom) 
 	// for the additional field of the event
 	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
 	if err != nil {
-		return nil, err
+		return nil, collection.ErrCompositionFailed.Wrap(err.Error())
 	}
 	event := collection.EventDetached{
 		ContractId:     req.ContractId,
