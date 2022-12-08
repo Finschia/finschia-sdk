@@ -20,8 +20,9 @@ func (k Keeper) Send(ctx sdk.Context, contractID string, from, to sdk.AccAddress
 
 func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
 	if _, err := k.GetClass(ctx, contractID); err != nil {
-		return err
+		panic(err)
 	}
+
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err == nil {
 		return token.ErrAuthorizationAlreadyExists.Wrapf("%s already authorized by %s", operator, holder)
 	}
@@ -36,9 +37,6 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, op
 }
 
 func (k Keeper) RevokeOperator(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) error {
-	if _, err := k.GetClass(ctx, contractID); err != nil {
-		return err
-	}
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err != nil {
 		return err
 	}

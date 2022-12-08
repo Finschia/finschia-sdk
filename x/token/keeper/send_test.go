@@ -4,19 +4,20 @@ import (
 	"fmt"
 
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/token"
 )
 
 func (s *KeeperTestSuite) TestSend() {
 	testCases := map[string]struct {
 		amount sdk.Int
-		valid  bool
+		err    error
 	}{
 		"valid send": {
 			amount: sdk.OneInt(),
-			valid:  true,
 		},
 		"insufficient tokens": {
 			amount: s.balance.Add(sdk.OneInt()),
+			err:    token.ErrInsufficientTokens,
 		},
 	}
 
@@ -25,11 +26,10 @@ func (s *KeeperTestSuite) TestSend() {
 			ctx, _ := s.ctx.CacheContext()
 
 			err := s.keeper.Send(ctx, s.contractID, s.vendor, s.operator, tc.amount)
-			if !tc.valid {
-				s.Require().Error(err)
+			s.Require().ErrorIs(err, tc.err)
+			if tc.err != nil {
 				return
 			}
-			s.Require().NoError(err)
 
 			vendorBalance := s.keeper.GetBalance(ctx, s.contractID, s.vendor)
 			s.Require().True(s.balance.Sub(tc.amount).Equal(vendorBalance))
@@ -41,84 +41,64 @@ func (s *KeeperTestSuite) TestSend() {
 }
 
 func (s *KeeperTestSuite) TestAuthorizeOperator() {
-	dummyContractID := "fee1dead"
-	_, err := s.keeper.GetClass(s.ctx, dummyContractID)
-	s.Require().Error(err)
-
-	contractDescriptions := map[string]string{
-		s.contractID:    "valid",
-		dummyContractID: "not-exists",
-	}
 	userDescriptions := map[string]string{
 		s.vendor.String():   "vendor",
 		s.operator.String(): "operator",
 		s.customer.String(): "customer",
 		s.stranger.String(): "stranger",
 	}
-	for id, idDesc := range contractDescriptions {
-		for operatorStr, operatorDesc := range userDescriptions {
-			operator, err := sdk.AccAddressFromBech32(operatorStr)
+	for operatorStr, operatorDesc := range userDescriptions {
+		operator, err := sdk.AccAddressFromBech32(operatorStr)
+		s.Require().NoError(err)
+		for fromStr, fromDesc := range userDescriptions {
+			from, err := sdk.AccAddressFromBech32(fromStr)
 			s.Require().NoError(err)
-			for fromStr, fromDesc := range userDescriptions {
-				from, err := sdk.AccAddressFromBech32(fromStr)
-				s.Require().NoError(err)
-				name := fmt.Sprintf("ContractID: %s, Operator: %s, From: %s", idDesc, operatorDesc, fromDesc)
-				s.Run(name, func() {
-					ctx, _ := s.ctx.CacheContext()
+			name := fmt.Sprintf("Operator: %s, From: %s", operatorDesc, fromDesc)
+			s.Run(name, func() {
+				ctx, _ := s.ctx.CacheContext()
 
-					_, idErr := s.keeper.GetClass(ctx, id)
-					_, authErr := s.keeper.GetAuthorization(ctx, id, from, operator)
-					err := s.keeper.AuthorizeOperator(ctx, id, from, operator)
-					if idErr == nil && authErr != nil {
-						s.Require().NoError(err)
-						_, authErr = s.keeper.GetAuthorization(ctx, id, from, operator)
-						s.Require().NoError(authErr)
-					} else {
-						s.Require().Error(err)
-					}
-				})
-			}
+				_, queryErr := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
+				err := s.keeper.AuthorizeOperator(ctx, s.contractID, from, operator)
+				if queryErr == nil { // authorize must fail
+					s.Require().ErrorIs(err, token.ErrAuthorizationAlreadyExists)
+				} else {
+					s.Require().ErrorIs(queryErr, token.ErrAuthorizationNotFound)
+					s.Require().NoError(err)
+					_, queryErr := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
+					s.Require().NoError(queryErr)
+				}
+			})
 		}
 	}
 }
 
 func (s *KeeperTestSuite) TestRevokeOperator() {
-	dummyContractID := "fee1dead"
-	_, err := s.keeper.GetClass(s.ctx, dummyContractID)
-	s.Require().Error(err)
-
-	contractDescriptions := map[string]string{
-		s.contractID:    "valid",
-		dummyContractID: "not-exists",
-	}
 	userDescriptions := map[string]string{
 		s.vendor.String():   "vendor",
 		s.operator.String(): "operator",
 		s.customer.String(): "customer",
 	}
-	for id, idDesc := range contractDescriptions {
-		for operatorStr, operatorDesc := range userDescriptions {
-			operator, err := sdk.AccAddressFromBech32(operatorStr)
+	for operatorStr, operatorDesc := range userDescriptions {
+		operator, err := sdk.AccAddressFromBech32(operatorStr)
+		s.Require().NoError(err)
+		for fromStr, fromDesc := range userDescriptions {
+			from, err := sdk.AccAddressFromBech32(fromStr)
 			s.Require().NoError(err)
-			for fromStr, fromDesc := range userDescriptions {
-				from, err := sdk.AccAddressFromBech32(fromStr)
-				s.Require().NoError(err)
-				name := fmt.Sprintf("ContractID: %s, Operator: %s, From: %s", idDesc, operatorDesc, fromDesc)
-				s.Run(name, func() {
-					ctx, _ := s.ctx.CacheContext()
+			name := fmt.Sprintf("Operator: %s, From: %s", operatorDesc, fromDesc)
+			s.Run(name, func() {
+				ctx, _ := s.ctx.CacheContext()
 
-					_, idErr := s.keeper.GetClass(ctx, id)
-					_, authErr := s.keeper.GetAuthorization(ctx, id, from, operator)
-					err := s.keeper.RevokeOperator(ctx, id, from, operator)
-					if idErr == nil && authErr == nil {
-						s.Require().NoError(err)
-						_, authErr = s.keeper.GetAuthorization(ctx, id, from, operator)
-						s.Require().Error(authErr)
-					} else {
-						s.Require().Error(err)
-					}
-				})
-			}
+				_, queryErr := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
+				err := s.keeper.RevokeOperator(ctx, s.contractID, from, operator)
+				if queryErr != nil { // revoke must fail
+					s.Require().ErrorIs(queryErr, token.ErrAuthorizationNotFound)
+					s.Require().ErrorIs(err, token.ErrAuthorizationNotFound)
+				} else {
+					s.Require().NoError(err)
+					_, queryErr := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
+					s.Require().ErrorIs(queryErr, token.ErrAuthorizationNotFound)
+				}
+			})
 		}
 	}
 }
