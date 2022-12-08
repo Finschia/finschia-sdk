@@ -1,8 +1,12 @@
+//go:build norace
+// +build norace
+
 package testutil
 
 import (
-	"github.com/stretchr/testify/suite"
 	"testing"
+
+	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/testutil/network"
 )

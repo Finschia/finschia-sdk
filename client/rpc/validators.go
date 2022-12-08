@@ -3,11 +3,9 @@ package rpc
 import (
 	"context"
 	"fmt"
-	"net/http"
 	"strconv"
 	"strings"
 
-	"github.com/gorilla/mux"
 	octypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
 
@@ -16,7 +14,7 @@ import (
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/rest"
+	"github.com/line/lbm-sdk/types/query"
 )
 
 // TODO these next two functions feel kinda hacky based on their placement
@@ -60,7 +58,7 @@ func ValidatorCommand() *cobra.Command {
 
 	cmd.Flags().StringP(flags.FlagNode, "n", "tcp://localhost:26657", "Node to connect to")
 	cmd.Flags().String(flags.FlagKeyringBackend, flags.DefaultKeyringBackend, "Select keyring's backend (os|file|kwallet|pass|test)")
-	cmd.Flags().Int(flags.FlagPage, rest.DefaultPage, "Query a specific page of paginated results")
+	cmd.Flags().Int(flags.FlagPage, query.DefaultPage, "Query a specific page of paginated results")
 	cmd.Flags().Int(flags.FlagLimit, 100, "Query number of results returned per page")
 
 	return cmd
@@ -147,58 +145,4 @@ func GetValidators(ctx context.Context, clientCtx client.Context, height *int64,
 	}
 
 	return out, nil
-}
-
-// REST
-
-// Validator Set at a height REST handler
-func ValidatorSetRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		_, page, limit, err := rest.ParseHTTPArgsWithLimit(r, 100)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, "failed to parse pagination parameters")
-			return
-		}
-
-		vars := mux.Vars(r)
-		height, err := strconv.ParseInt(vars["height"], 10, 64)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, "failed to parse block height")
-			return
-		}
-
-		chainHeight, err := GetChainHeight(clientCtx)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, "failed to parse chain height")
-			return
-		}
-		if height > chainHeight {
-			rest.WriteErrorResponse(w, http.StatusNotFound, "requested block height is bigger then the chain length")
-			return
-		}
-
-		output, err := GetValidators(r.Context(), clientCtx, &height, &page, &limit)
-		if rest.CheckInternalServerError(w, err) {
-			return
-		}
-		rest.PostProcessResponse(w, clientCtx, output)
-	}
-}
-
-// Latest Validator Set REST handler
-func LatestValidatorSetRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		_, page, limit, err := rest.ParseHTTPArgsWithLimit(r, 100)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, "failed to parse pagination parameters")
-			return
-		}
-
-		output, err := GetValidators(r.Context(), clientCtx, nil, &page, &limit)
-		if rest.CheckInternalServerError(w, err) {
-			return
-		}
-
-		rest.PostProcessResponse(w, clientCtx, output)
-	}
 }

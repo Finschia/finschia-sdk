@@ -7,7 +7,6 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
@@ -20,7 +19,6 @@ import (
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/bank/client/cli"
-	"github.com/line/lbm-sdk/x/bank/client/rest"
 	"github.com/line/lbm-sdk/x/bank/keeper"
 	v040 "github.com/line/lbm-sdk/x/bank/legacy/v040"
 	"github.com/line/lbm-sdk/x/bank/simulation"
@@ -64,11 +62,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, _ client.TxEncodingCo
 	}
 
 	return data.Validate()
-}
-
-// RegisterRESTRoutes registers the REST routes for the bank module.
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
-	rest.RegisterHandlers(clientCtx, rtr)
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the bank module.
