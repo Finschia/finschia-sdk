@@ -155,9 +155,6 @@ func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermiss
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
 		return nil, err
 	}
-	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err == nil {
-		return nil, token.ErrGrantAlreadyExists.Wrapf("%s already granted for %s", grantee, permission)
-	}
 
 	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
 
