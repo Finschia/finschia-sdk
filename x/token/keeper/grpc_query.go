@@ -34,11 +34,11 @@ func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) 
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, token.SDKErrorToGRPCError(err)
 	}
 	addr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
+		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address))
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -54,13 +54,13 @@ func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, token.SDKErrorToGRPCError(err)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	// daphne compat.
 	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
-		return nil, err
+		return nil, token.SDKErrorToGRPCError(err)
 	}
 	supply := s.keeper.GetSupply(ctx, req.ContractId)
 
@@ -74,13 +74,13 @@ func (s queryServer) Minted(c context.Context, req *token.QueryMintedRequest) (*
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, token.SDKErrorToGRPCError(err)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	// daphne compat.
 	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
-		return nil, err
+		return nil, token.SDKErrorToGRPCError(err)
 	}
 	minted := s.keeper.GetMinted(ctx, req.ContractId)
 
@@ -94,13 +94,13 @@ func (s queryServer) Burnt(c context.Context, req *token.QueryBurntRequest) (*to
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, token.SDKErrorToGRPCError(err)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	// daphne compat.
 	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
-		return nil, err
+		return nil, token.SDKErrorToGRPCError(err)
 	}
 	burnt := s.keeper.GetBurnt(ctx, req.ContractId)
 
@@ -114,13 +114,13 @@ func (s queryServer) TokenClass(c context.Context, req *token.QueryTokenClassReq
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, token.SDKErrorToGRPCError(err)
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	class, err := s.keeper.GetClass(ctx, req.ContractId)
 	if err != nil {
-		return nil, err
+		return nil, token.SDKErrorToGRPCError(err)
 	}
 
 	return &token.QueryTokenClassResponse{Class: *class}, nil
@@ -155,11 +155,11 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, token.SDKErrorToGRPCError(err)
 	}
 	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee)
+		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee))
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -187,15 +187,15 @@ func (s queryServer) Approved(c context.Context, req *token.QueryApprovedRequest
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, token.SDKErrorToGRPCError(err)
 	}
 	proxy, err := sdk.AccAddressFromBech32(req.Proxy)
 	if err != nil {
-		return nil, err
+		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", req.Proxy))
 	}
 	approver, err := sdk.AccAddressFromBech32(req.Approver)
 	if err != nil {
-		return nil, err
+		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", req.Approver))
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -211,11 +211,11 @@ func (s queryServer) Approvers(c context.Context, req *token.QueryApproversReque
 	}
 
 	if err := token.ValidateContractID(req.ContractId); err != nil {
-		return nil, err
+		return nil, token.SDKErrorToGRPCError(err)
 	}
 	addr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address)
+		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address))
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)

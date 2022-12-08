@@ -1,6 +1,9 @@
 package keeper_test
 
 import (
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/x/token"
@@ -14,22 +17,23 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 	testCases := map[string]struct {
 		contractID string
 		address    sdk.AccAddress
-		valid      bool
+		code       codes.Code
 		postTest   func(res *token.QueryBalanceResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			address:    s.vendor,
-			valid:      true,
 			postTest: func(res *token.QueryBalanceResponse) {
 				s.Require().Equal(s.balance, res.Amount)
 			},
 		},
 		"invalid contract id": {
 			address: s.vendor,
+			code:    codes.InvalidArgument,
 		},
 		"invalid address": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 	}
 
@@ -40,12 +44,15 @@ func (s *KeeperTestSuite) TestQueryBalance() {
 				Address:    tc.address.String(),
 			}
 			res, err := s.queryServer.Balance(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -59,19 +66,21 @@ func (s *KeeperTestSuite) TestQuerySupply() {
 	testCases := map[string]struct {
 		contractID string
 		reqType    string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *token.QuerySupplyResponse)
 	}{
 		"valid supply request": {
 			contractID: s.contractID,
-			valid:      true,
 			postTest: func(res *token.QuerySupplyResponse) {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Amount)
 			},
 		},
-		"invalid contract id": {},
+		"invalid contract id": {
+			code: codes.InvalidArgument,
+		},
 		"no such a contract id": {
 			contractID: "fee1dead",
+			code:       codes.NotFound,
 		},
 	}
 
@@ -81,12 +90,15 @@ func (s *KeeperTestSuite) TestQuerySupply() {
 				ContractId: tc.contractID,
 			}
 			res, err := s.queryServer.Supply(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -99,19 +111,21 @@ func (s *KeeperTestSuite) TestQueryMinted() {
 
 	testCases := map[string]struct {
 		contractID string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *token.QueryMintedResponse)
 	}{
 		"valid mint request": {
 			contractID: s.contractID,
-			valid:      true,
 			postTest: func(res *token.QueryMintedResponse) {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(4)), res.Amount)
 			},
 		},
-		"invalid contract id": {},
+		"invalid contract id": {
+			code: codes.InvalidArgument,
+		},
 		"no such a contract id": {
 			contractID: "fee1dead",
+			code:       codes.NotFound,
 		},
 	}
 
@@ -121,12 +135,15 @@ func (s *KeeperTestSuite) TestQueryMinted() {
 				ContractId: tc.contractID,
 			}
 			res, err := s.queryServer.Minted(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -139,19 +156,21 @@ func (s *KeeperTestSuite) TestQueryBurnt() {
 
 	testCases := map[string]struct {
 		contractID string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *token.QueryBurntResponse)
 	}{
 		"valid burn request": {
 			contractID: s.contractID,
-			valid:      true,
 			postTest: func(res *token.QueryBurntResponse) {
 				s.Require().Equal(s.balance, res.Amount)
 			},
 		},
-		"invalid contract id": {},
+		"invalid contract id": {
+			code: codes.InvalidArgument,
+		},
 		"no such a contract id": {
 			contractID: "fee1dead",
+			code:       codes.NotFound,
 		},
 	}
 
@@ -161,12 +180,15 @@ func (s *KeeperTestSuite) TestQueryBurnt() {
 				ContractId: tc.contractID,
 			}
 			res, err := s.queryServer.Burnt(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -179,19 +201,21 @@ func (s *KeeperTestSuite) TestQueryTokenClass() {
 
 	testCases := map[string]struct {
 		contractID string
-		valid      bool
+		code       codes.Code
 		postTest   func(res *token.QueryTokenClassResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			valid:      true,
 			postTest: func(res *token.QueryTokenClassResponse) {
 				s.Require().Equal(s.contractID, res.Class.ContractId)
 			},
 		},
-		"invalid contract id": {},
+		"invalid contract id": {
+			code: codes.InvalidArgument,
+		},
 		"no such an id": {
 			contractID: "00000000",
+			code:       codes.NotFound,
 		},
 	}
 
@@ -201,12 +225,15 @@ func (s *KeeperTestSuite) TestQueryTokenClass() {
 				ContractId: tc.contractID,
 			}
 			res, err := s.queryServer.TokenClass(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -219,20 +246,18 @@ func (s *KeeperTestSuite) TestQueryTokenClasses() {
 
 	testCases := map[string]struct {
 		contractID string
-		valid      bool
+		code       codes.Code
 		count      uint64
 		postTest   func(res *token.QueryTokenClassesResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			valid:      true,
 			postTest: func(res *token.QueryTokenClassesResponse) {
 				s.Require().Equal(2, len(res.Classes))
 			},
 		},
 		"valid request with limit": {
 			contractID: s.contractID,
-			valid:      true,
 			count:      1,
 			postTest: func(res *token.QueryTokenClassesResponse) {
 				s.Require().Equal(1, len(res.Classes))
@@ -250,12 +275,15 @@ func (s *KeeperTestSuite) TestQueryTokenClasses() {
 				Pagination: pageReq,
 			}
 			res, err := s.queryServer.TokenClasses(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -269,22 +297,23 @@ func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 	testCases := map[string]struct {
 		contractID string
 		grantee    sdk.AccAddress
-		valid      bool
+		code       codes.Code
 		postTest   func(res *token.QueryGranteeGrantsResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			grantee:    s.vendor,
-			valid:      true,
 			postTest: func(res *token.QueryGranteeGrantsResponse) {
 				s.Require().Equal(3, len(res.Grants))
 			},
 		},
 		"invalid contract id": {
 			grantee: s.vendor,
+			code:    codes.InvalidArgument,
 		},
 		"invalid grantee": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 	}
 
@@ -295,12 +324,15 @@ func (s *KeeperTestSuite) TestQueryGranteeGrants() {
 				Grantee:    tc.grantee.String(),
 			}
 			res, err := s.queryServer.GranteeGrants(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -315,14 +347,13 @@ func (s *KeeperTestSuite) TestQueryApproved() {
 		contractID string
 		address    sdk.AccAddress
 		approver   sdk.AccAddress
-		valid      bool
+		code       codes.Code
 		postTest   func(res *token.QueryApprovedResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			address:    s.operator,
 			approver:   s.customer,
-			valid:      true,
 			postTest: func(res *token.QueryApprovedResponse) {
 				s.Require().NotNil(res.Approved)
 			},
@@ -330,14 +361,17 @@ func (s *KeeperTestSuite) TestQueryApproved() {
 		"invalid contract id": {
 			address:  s.operator,
 			approver: s.customer,
+			code:     codes.InvalidArgument,
 		},
 		"invalid address": {
 			contractID: s.contractID,
 			approver:   s.customer,
+			code:       codes.InvalidArgument,
 		},
 		"invalid approver": {
 			contractID: s.contractID,
 			address:    s.operator,
+			code:       codes.InvalidArgument,
 		},
 	}
 
@@ -349,12 +383,15 @@ func (s *KeeperTestSuite) TestQueryApproved() {
 				Approver:   tc.approver.String(),
 			}
 			res, err := s.queryServer.Approved(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
@@ -368,14 +405,13 @@ func (s *KeeperTestSuite) TestQueryApprovers() {
 	testCases := map[string]struct {
 		contractID string
 		operator   sdk.AccAddress
-		valid      bool
+		code       codes.Code
 		count      uint64
 		postTest   func(res *token.QueryApproversResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			operator:   s.operator,
-			valid:      true,
 			postTest: func(res *token.QueryApproversResponse) {
 				s.Require().Equal(2, len(res.Approvers))
 			},
@@ -383,7 +419,6 @@ func (s *KeeperTestSuite) TestQueryApprovers() {
 		"valid request with limit": {
 			contractID: s.contractID,
 			operator:   s.operator,
-			valid:      true,
 			count:      1,
 			postTest: func(res *token.QueryApproversResponse) {
 				s.Require().Equal(1, len(res.Approvers))
@@ -391,9 +426,11 @@ func (s *KeeperTestSuite) TestQueryApprovers() {
 		},
 		"invalid contract id": {
 			operator: s.operator,
+			code:     codes.InvalidArgument,
 		},
 		"invalid operator": {
 			contractID: s.contractID,
+			code:       codes.InvalidArgument,
 		},
 	}
 
@@ -409,12 +446,15 @@ func (s *KeeperTestSuite) TestQueryApprovers() {
 				Pagination: pageReq,
 			}
 			res, err := s.queryServer.Approvers(s.goCtx, req)
-			if !tc.valid {
-				s.Require().Error(err)
+			grpcstatus, ok := status.FromError(err)
+			s.Require().True(ok)
+			s.Require().Equal(tc.code, grpcstatus.Code())
+			if tc.code != codes.OK {
+				s.Require().Nil(res)
 				return
 			}
-			s.Require().NoError(err)
 			s.Require().NotNil(res)
+
 			tc.postTest(res)
 		})
 	}
