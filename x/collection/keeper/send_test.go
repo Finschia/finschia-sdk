@@ -47,11 +47,6 @@ func (s *KeeperTestSuite) TestSendCoins() {
 }
 
 func (s *KeeperTestSuite) TestAuthorizeOperator() {
-	// make sure the dummy contract does not exist
-	dummyContractID := "deadbeef"
-	_, err := s.keeper.GetContract(s.ctx, dummyContractID)
-	s.Require().Error(err)
-
 	userDescriptions := map[string]string{
 		s.vendor.String():   "vendor",
 		s.operator.String(): "operator",
@@ -84,11 +79,6 @@ func (s *KeeperTestSuite) TestAuthorizeOperator() {
 }
 
 func (s *KeeperTestSuite) TestRevokeOperator() {
-	// make sure the dummy contract does not exist
-	dummyContractID := "deadbeef"
-	_, err := s.keeper.GetContract(s.ctx, dummyContractID)
-	s.Require().Error(err)
-
 	userDescriptions := map[string]string{
 		s.vendor.String():   "vendor",
 		s.operator.String(): "operator",
