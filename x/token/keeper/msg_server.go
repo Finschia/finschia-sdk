@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/token"
 )
 
@@ -24,6 +25,10 @@ var _ token.MsgServer = msgServer{}
 // Send defines a method to send tokens from one account to another account
 func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
 
 	from := sdk.MustAccAddressFromBech32(req.From)
 	to := sdk.MustAccAddressFromBech32(req.To)
@@ -51,12 +56,16 @@ func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendRe
 func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (*token.MsgTransferFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
+	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	from := sdk.MustAccAddressFromBech32(req.From)
 	proxy := sdk.MustAccAddressFromBech32(req.Proxy)
 	to := sdk.MustAccAddressFromBech32(req.To)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, from, proxy); err != nil {
-		return nil, err
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
 	if err := s.keeper.Send(ctx, req.ContractId, from, to, req.Amount); err != nil {
@@ -82,6 +91,10 @@ func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (
 func (s msgServer) RevokeOperator(c context.Context, req *token.MsgRevokeOperator) (*token.MsgRevokeOperatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
+	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	holder := sdk.MustAccAddressFromBech32(req.Holder)
 	operator := sdk.MustAccAddressFromBech32(req.Operator)
 
@@ -103,6 +116,10 @@ func (s msgServer) RevokeOperator(c context.Context, req *token.MsgRevokeOperato
 // Approve allows one to send tokens on behalf of the approver
 func (s msgServer) Approve(c context.Context, req *token.MsgApprove) (*token.MsgApproveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
 
 	approver := sdk.MustAccAddressFromBech32(req.Approver)
 	proxy := sdk.MustAccAddressFromBech32(req.Proxy)
@@ -149,11 +166,15 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermission) (*token.MsgGrantPermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
+	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	granter := sdk.MustAccAddressFromBech32(req.From)
 	grantee := sdk.MustAccAddressFromBech32(req.To)
 	permission := token.Permission(token.LegacyPermissionFromString(req.Permission))
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
-		return nil, err
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
 	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
@@ -172,6 +193,10 @@ func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermiss
 // RevokePermission abandons the permission
 func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermission) (*token.MsgRevokePermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
 
 	grantee := sdk.MustAccAddressFromBech32(req.From)
 	permission := token.Permission(token.LegacyPermissionFromString(req.Permission))
@@ -195,6 +220,10 @@ func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermi
 func (s msgServer) Mint(c context.Context, req *token.MsgMint) (*token.MsgMintResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
+	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	from := sdk.MustAccAddressFromBech32(req.From)
 	to := sdk.MustAccAddressFromBech32(req.To)
 
@@ -209,6 +238,10 @@ func (s msgServer) Mint(c context.Context, req *token.MsgMint) (*token.MsgMintRe
 func (s msgServer) Burn(c context.Context, req *token.MsgBurn) (*token.MsgBurnResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
+	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	from := sdk.MustAccAddressFromBech32(req.From)
 
 	if err := s.keeper.Burn(ctx, req.ContractId, from, req.Amount); err != nil {
@@ -221,6 +254,11 @@ func (s msgServer) Burn(c context.Context, req *token.MsgBurn) (*token.MsgBurnRe
 // BurnFrom defines a method for the proxy to burn tokens on the behalf of the holder.
 func (s msgServer) BurnFrom(c context.Context, req *token.MsgBurnFrom) (*token.MsgBurnFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+
+	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	proxy := sdk.MustAccAddressFromBech32(req.Proxy)
 	from := sdk.MustAccAddressFromBech32(req.From)
 
@@ -235,10 +273,14 @@ func (s msgServer) BurnFrom(c context.Context, req *token.MsgBurnFrom) (*token.M
 func (s msgServer) Modify(c context.Context, req *token.MsgModify) (*token.MsgModifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
+	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+		return nil, err
+	}
+
 	grantee := sdk.MustAccAddressFromBech32(req.Owner)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, token.PermissionModify); err != nil {
-		return nil, err
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
 	if err := s.keeper.Modify(ctx, req.ContractId, grantee, req.Changes); err != nil {
