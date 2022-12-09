@@ -87,24 +87,26 @@ func TestMsgTransferFT(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgTransferFT{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			To:         tc.to.String(),
-			Amount:     tc.amount,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgTransferFT{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				To:         tc.to.String(),
+				Amount:     tc.amount,
+			}
 
-		if tc.panic {
-			require.Panics(t, func() { msg.ValidateBasic() }, name)
-			continue
-		}
+			if tc.panic {
+				require.Panics(t, func() { msg.ValidateBasic() })
+				return
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -174,20 +176,22 @@ func TestMsgTransferFTFrom(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgTransferFTFrom{
-			ContractId: tc.contractID,
-			Proxy:      tc.proxy.String(),
-			From:       tc.from.String(),
-			To:         tc.to.String(),
-			Amount:     tc.amount,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgTransferFTFrom{
+				ContractId: tc.contractID,
+				Proxy:      tc.proxy.String(),
+				From:       tc.from.String(),
+				To:         tc.to.String(),
+				Amount:     tc.amount,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+		})
 	}
 }
 
@@ -246,19 +250,21 @@ func TestMsgTransferNFT(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgTransferNFT{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			To:         tc.to.String(),
-			TokenIds:   tc.ids,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgTransferNFT{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				To:         tc.to.String(),
+				TokenIds:   tc.ids,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -331,20 +337,22 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgTransferNFTFrom{
-			ContractId: tc.contractID,
-			Proxy:      tc.proxy.String(),
-			From:       tc.from.String(),
-			To:         tc.to.String(),
-			TokenIds:   tc.ids,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgTransferNFTFrom{
+				ContractId: tc.contractID,
+				Proxy:      tc.proxy.String(),
+				From:       tc.from.String(),
+				To:         tc.to.String(),
+				TokenIds:   tc.ids,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+		})
 	}
 }
 
@@ -383,18 +391,20 @@ func TestMsgApprove(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgApprove{
-			ContractId: tc.contractID,
-			Approver:   tc.approver.String(),
-			Proxy:      tc.proxy.String(),
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgApprove{
+				ContractId: tc.contractID,
+				Approver:   tc.approver.String(),
+				Proxy:      tc.proxy.String(),
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
+		})
 	}
 }
 
@@ -433,18 +443,20 @@ func TestMsgDisapprove(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgDisapprove{
-			ContractId: tc.contractID,
-			Approver:   tc.approver.String(),
-			Proxy:      tc.proxy.String(),
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgDisapprove{
+				ContractId: tc.contractID,
+				Approver:   tc.approver.String(),
+				Proxy:      tc.proxy.String(),
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
+		})
 	}
 }
 
@@ -500,19 +512,21 @@ func TestMsgCreateContract(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgCreateContract{
-			Owner:      tc.owner.String(),
-			Name:       tc.name,
-			BaseImgUri: tc.baseImgURI,
-			Meta:       tc.meta,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgCreateContract{
+				Owner:      tc.owner.String(),
+				Name:       tc.name,
+				BaseImgUri: tc.baseImgURI,
+				Meta:       tc.meta,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
+		})
 	}
 }
 
@@ -615,22 +629,24 @@ func TestMsgIssueFT(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgIssueFT{
-			ContractId: tc.contractID,
-			Owner:      tc.owner.String(),
-			To:         tc.to.String(),
-			Name:       tc.name,
-			Meta:       tc.meta,
-			Decimals:   tc.decimals,
-			Amount:     tc.amount,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgIssueFT{
+				ContractId: tc.contractID,
+				Owner:      tc.owner.String(),
+				To:         tc.to.String(),
+				Name:       tc.name,
+				Meta:       tc.meta,
+				Decimals:   tc.decimals,
+				Amount:     tc.amount,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
+		})
 	}
 }
 
@@ -685,19 +701,21 @@ func TestMsgIssueNFT(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgIssueNFT{
-			ContractId: tc.contractID,
-			Owner:      tc.operator.String(),
-			Name:       tc.name,
-			Meta:       tc.meta,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgIssueNFT{
+				ContractId: tc.contractID,
+				Owner:      tc.operator.String(),
+				Name:       tc.name,
+				Meta:       tc.meta,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+		})
 	}
 }
 
@@ -755,19 +773,21 @@ func TestMsgMintFT(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgMintFT{
-			ContractId: tc.contractID,
-			From:       tc.operator.String(),
-			To:         tc.to.String(),
-			Amount:     tc.amount,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgMintFT{
+				ContractId: tc.contractID,
+				From:       tc.operator.String(),
+				To:         tc.to.String(),
+				Amount:     tc.amount,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+		})
 	}
 }
 
@@ -849,19 +869,21 @@ func TestMsgMintNFT(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgMintNFT{
-			ContractId: tc.contractID,
-			From:       tc.operator.String(),
-			To:         tc.to.String(),
-			Params:     tc.params,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgMintNFT{
+				ContractId: tc.contractID,
+				From:       tc.operator.String(),
+				To:         tc.to.String(),
+				Params:     tc.params,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.operator}, msg.GetSigners())
+		})
 	}
 }
 
@@ -907,18 +929,20 @@ func TestMsgBurnFT(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgBurnFT{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			Amount:     tc.amount,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgBurnFT{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				Amount:     tc.amount,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -975,19 +999,21 @@ func TestMsgBurnFTFrom(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgBurnFTFrom{
-			ContractId: tc.contractID,
-			Proxy:      tc.grantee.String(),
-			From:       tc.from.String(),
-			Amount:     tc.amount,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgBurnFTFrom{
+				ContractId: tc.contractID,
+				Proxy:      tc.grantee.String(),
+				From:       tc.from.String(),
+				Amount:     tc.amount,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1034,18 +1060,20 @@ func TestMsgBurnNFT(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgBurnNFT{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			TokenIds:   tc.ids,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgBurnNFT{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				TokenIds:   tc.ids,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1104,19 +1132,21 @@ func TestMsgBurnNFTFrom(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgBurnNFTFrom{
-			ContractId: tc.contractID,
-			Proxy:      tc.grantee.String(),
-			From:       tc.from.String(),
-			TokenIds:   tc.ids,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgBurnNFTFrom{
+				ContractId: tc.contractID,
+				Proxy:      tc.grantee.String(),
+				From:       tc.from.String(),
+				TokenIds:   tc.ids,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1195,20 +1225,22 @@ func TestMsgModify(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgModify{
-			ContractId: tc.contractID,
-			TokenType:  tc.tokenType,
-			TokenIndex: tc.tokenIndex,
-			Owner:      tc.owner.String(),
-			Changes:    tc.changes,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgModify{
+				ContractId: tc.contractID,
+				TokenType:  tc.tokenType,
+				TokenIndex: tc.tokenIndex,
+				Owner:      tc.owner.String(),
+				Changes:    tc.changes,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1258,19 +1290,21 @@ func TestMsgGrantPermission(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgGrantPermission{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			To:         tc.to.String(),
-			Permission: tc.permission,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgGrantPermission{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				To:         tc.to.String(),
+				Permission: tc.permission,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1309,18 +1343,20 @@ func TestMsgRevokePermission(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgRevokePermission{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			Permission: tc.permission,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgRevokePermission{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				Permission: tc.permission,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1383,19 +1419,21 @@ func TestMsgAttach(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgAttach{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			TokenId:    tc.tokenID,
-			ToTokenId:  tc.toTokenID,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgAttach{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				TokenId:    tc.tokenID,
+				ToTokenId:  tc.toTokenID,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1437,18 +1475,20 @@ func TestMsgDetach(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgDetach{
-			ContractId: tc.contractID,
-			From:       tc.from.String(),
-			TokenId:    tc.tokenID,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgDetach{
+				ContractId: tc.contractID,
+				From:       tc.from.String(),
+				TokenId:    tc.tokenID,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1524,20 +1564,22 @@ func TestMsgAttachFrom(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgAttachFrom{
-			ContractId: tc.contractID,
-			Proxy:      tc.proxy.String(),
-			From:       tc.from.String(),
-			TokenId:    tc.tokenID,
-			ToTokenId:  tc.toTokenID,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgAttachFrom{
+				ContractId: tc.contractID,
+				Proxy:      tc.proxy.String(),
+				From:       tc.from.String(),
+				TokenId:    tc.tokenID,
+				ToTokenId:  tc.toTokenID,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+		})
 	}
 }
 
@@ -1589,19 +1631,21 @@ func TestMsgDetachFrom(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := collection.MsgDetachFrom{
-			ContractId: tc.contractID,
-			Proxy:      tc.proxy.String(),
-			From:       tc.from.String(),
-			TokenId:    tc.tokenID,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := collection.MsgDetachFrom{
+				ContractId: tc.contractID,
+				Proxy:      tc.proxy.String(),
+				From:       tc.from.String(),
+				TokenId:    tc.tokenID,
+			}
 
-		require.ErrorIs(t, msg.ValidateBasic(), tc.err, name)
-		if tc.err != nil {
-			continue
-		}
+			require.ErrorIs(t, msg.ValidateBasic(), tc.err)
+			if tc.err != nil {
+				return
+			}
 
-		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+			require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+		})
 	}
 }
 
