@@ -10,11 +10,12 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/require"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
-	"github.com/stretchr/testify/require"
 )
 
 func TestGovRestHandlers(t *testing.T) {
@@ -32,7 +33,7 @@ func TestGovRestHandlers(t *testing.T) {
 	)
 	encodingConfig := keeper.MakeEncodingConfig(t)
 	clientCtx := client.Context{}.
-		WithJSONMarshaler(encodingConfig.Marshaler).
+		WithJSONCodec(encodingConfig.Marshaler).
 		WithTxConfig(encodingConfig.TxConfig).
 		WithLegacyAmino(encodingConfig.Amino).
 		WithInput(os.Stdin).
@@ -158,7 +159,7 @@ func TestGovRestHandlers(t *testing.T) {
 				"admin":       "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu",
 				"code_id":     "1",
 				"label":       "https://example.com/",
-				"init_msg":    "my/builder:tag",
+				"msg":         dict{"recipient": "link100dejzacpanrldpjjwksjm62shqhyss44jf5xz"},
 				"funds":       []dict{{"denom": "ustake", "amount": "100"}},
 				"deposit":     []dict{{"denom": "ustake", "amount": "10"}},
 				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
@@ -181,6 +182,76 @@ func TestGovRestHandlers(t *testing.T) {
 				"base_req":    aBaseReq,
 			},
 			expCode: http.StatusOK,
+		},
+		"execute contract": {
+			srcPath: "/gov/proposals/wasm_execute",
+			srcBody: dict{
+				"title":       "Test Proposal",
+				"description": "My proposal",
+				"type":        "migrate",
+				"contract":    "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt",
+				"msg":         dict{"foo": "bar"},
+				"run_as":      "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu",
+				"deposit":     []dict{{"denom": "ustake", "amount": "10"}},
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
+				"base_req":    aBaseReq,
+			},
+			expCode: http.StatusOK,
+		},
+		"execute contract fails with no run_as": {
+			srcPath: "/gov/proposals/wasm_execute",
+			srcBody: dict{
+				"title":       "Test Proposal",
+				"description": "My proposal",
+				"type":        "migrate",
+				"contract":    "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt",
+				"msg":         dict{"foo": "bar"},
+				"deposit":     []dict{{"denom": "ustake", "amount": "10"}},
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
+				"base_req":    aBaseReq,
+			},
+			expCode: http.StatusBadRequest,
+		},
+		"execute contract fails with no message": {
+			srcPath: "/gov/proposals/wasm_execute",
+			srcBody: dict{
+				"title":       "Test Proposal",
+				"description": "My proposal",
+				"type":        "migrate",
+				"contract":    "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt",
+				"run_as":      "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu",
+				"deposit":     []dict{{"denom": "ustake", "amount": "10"}},
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
+				"base_req":    aBaseReq,
+			},
+			expCode: http.StatusBadRequest,
+		},
+		"sudo contract": {
+			srcPath: "/gov/proposals/wasm_sudo",
+			srcBody: dict{
+				"title":       "Test Proposal",
+				"description": "My proposal",
+				"type":        "migrate",
+				"contract":    "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt",
+				"msg":         dict{"foo": "bar"},
+				"deposit":     []dict{{"denom": "ustake", "amount": "10"}},
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
+				"base_req":    aBaseReq,
+			},
+			expCode: http.StatusOK,
+		},
+		"sudo contract fails with no message": {
+			srcPath: "/gov/proposals/wasm_sudo",
+			srcBody: dict{
+				"title":       "Test Proposal",
+				"description": "My proposal",
+				"type":        "migrate",
+				"contract":    "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt",
+				"deposit":     []dict{{"denom": "ustake", "amount": "10"}},
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
+				"base_req":    aBaseReq,
+			},
+			expCode: http.StatusBadRequest,
 		},
 		"update contract admin": {
 			srcPath: "/gov/proposals/wasm_update_admin",
@@ -208,6 +279,52 @@ func TestGovRestHandlers(t *testing.T) {
 				"base_req":    aBaseReq,
 			},
 			expCode: http.StatusOK,
+		},
+		"deactivate contract": {
+			srcPath: "/gov/proposals/deactivate_contract",
+			srcBody: dict{
+				"title":       "Test Proposal",
+				"description": "My proposal",
+				"deposit":     []dict{{"denom": "cony", "amount": "10"}},
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
+				"contract":    "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt",
+				"base_req":    aBaseReq,
+			},
+			expCode: http.StatusOK,
+		},
+		"deactivate contract with no contract": {
+			srcPath: "/gov/proposals/deactivate_contract",
+			srcBody: dict{
+				"title":       "Test Proposal",
+				"description": "My proposal",
+				"deposit":     []dict{{"denom": "cony", "amount": "10"}},
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
+				"base_req":    aBaseReq,
+			},
+			expCode: http.StatusBadRequest,
+		},
+		"activate contract": {
+			srcPath: "/gov/proposals/activate_contract",
+			srcBody: dict{
+				"title":       "Test Proposal",
+				"description": "My proposal",
+				"deposit":     []dict{{"denom": "cony", "amount": "10"}},
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
+				"contract":    "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt",
+				"base_req":    aBaseReq,
+			},
+			expCode: http.StatusOK,
+		},
+		"activate contract with no contract": {
+			srcPath: "/gov/proposals/activate_contract",
+			srcBody: dict{
+				"title":       "Test Proposal",
+				"description": "My proposal",
+				"deposit":     []dict{{"denom": "cony", "amount": "10"}},
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
+				"base_req":    aBaseReq,
+			},
+			expCode: http.StatusBadRequest,
 		},
 	}
 	for msg, spec := range specs {

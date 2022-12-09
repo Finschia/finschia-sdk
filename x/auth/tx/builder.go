@@ -7,6 +7,7 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/tx"
 	"github.com/line/lbm-sdk/types/tx/signing"
 	"github.com/line/lbm-sdk/x/auth/ante"
@@ -34,7 +35,6 @@ var (
 	_ client.TxBuilder           = &wrapper{}
 	_ ante.HasExtensionOptionsTx = &wrapper{}
 	_ ExtensionOptionsTxBuilder  = &wrapper{}
-	_ ProtoTxProvider            = &wrapper{}
 )
 
 // ExtensionOptionsTxBuilder defines a TxBuilder that can also set extensions.
@@ -100,7 +100,7 @@ func (w *wrapper) GetSigners() []sdk.AccAddress {
 	return w.tx.GetSigners()
 }
 
-func (w *wrapper) GetPubKeys() []cryptotypes.PubKey {
+func (w *wrapper) GetPubKeys() ([]cryptotypes.PubKey, error) {
 	signerInfos := w.tx.AuthInfo.SignerInfos
 	pks := make([]cryptotypes.PubKey, len(signerInfos))
 
@@ -111,13 +111,16 @@ func (w *wrapper) GetPubKeys() []cryptotypes.PubKey {
 			continue
 		}
 
-		pk, ok := si.PublicKey.GetCachedValue().(cryptotypes.PubKey)
+		pkAny := si.PublicKey.GetCachedValue()
+		pk, ok := pkAny.(cryptotypes.PubKey)
 		if ok {
 			pks[i] = pk
+		} else {
+			return nil, sdkerrors.Wrapf(sdkerrors.ErrLogic, "Expecting PubKey, got: %T", pkAny)
 		}
 	}
 
-	return pks
+	return pks, nil
 }
 
 func (w *wrapper) GetGas() uint64 {
@@ -131,7 +134,7 @@ func (w *wrapper) GetFee() sdk.Coins {
 func (w *wrapper) FeePayer() sdk.AccAddress {
 	feePayer := w.tx.AuthInfo.Fee.Payer
 	if feePayer != "" {
-		return sdk.AccAddress(feePayer)
+		return sdk.MustAccAddressFromBech32(feePayer)
 	}
 	// use first signer as default if no payer specified
 	return w.GetSigners()[0]
@@ -140,13 +143,9 @@ func (w *wrapper) FeePayer() sdk.AccAddress {
 func (w *wrapper) FeeGranter() sdk.AccAddress {
 	feePayer := w.tx.AuthInfo.Fee.Granter
 	if feePayer != "" {
-		return sdk.AccAddress(feePayer)
+		return sdk.MustAccAddressFromBech32(feePayer)
 	}
-	return ""
-}
-
-func (w *wrapper) GetSigBlockHeight() uint64 {
-	return w.tx.AuthInfo.SigBlockHeight
+	return nil
 }
 
 func (w *wrapper) GetMemo() string {
@@ -161,7 +160,10 @@ func (w *wrapper) GetTimeoutHeight() uint64 {
 func (w *wrapper) GetSignaturesV2() ([]signing.SignatureV2, error) {
 	signerInfos := w.tx.AuthInfo.SignerInfos
 	sigs := w.tx.Signatures
-	pubKeys := w.GetPubKeys()
+	pubKeys, err := w.GetPubKeys()
+	if err != nil {
+		return nil, err
+	}
 	n := len(signerInfos)
 	res := make([]signing.SignatureV2, n)
 
@@ -194,12 +196,7 @@ func (w *wrapper) SetMsgs(msgs ...sdk.Msg) error {
 
 	for i, msg := range msgs {
 		var err error
-		switch msg := msg.(type) {
-		case sdk.ServiceMsg:
-			anys[i], err = codectypes.NewAnyWithCustomTypeURL(msg.Request, msg.MethodName)
-		default:
-			anys[i], err = codectypes.NewAnyWithValue(msg)
-		}
+		anys[i], err = codectypes.NewAnyWithValue(msg)
 		if err != nil {
 			return err
 		}
@@ -226,10 +223,6 @@ func (w *wrapper) SetMemo(memo string) {
 
 	// set bodyBz to nil because the cached bodyBz no longer matches tx.Body
 	w.bodyBz = nil
-}
-
-func (w *wrapper) SetSigBlockHeight(sbh uint64) {
-	w.tx.AuthInfo.SigBlockHeight = sbh
 }
 
 func (w *wrapper) SetGasLimit(limit uint64) {
@@ -348,9 +341,4 @@ func (w *wrapper) SetExtensionOptions(extOpts ...*codectypes.Any) {
 func (w *wrapper) SetNonCriticalExtensionOptions(extOpts ...*codectypes.Any) {
 	w.tx.Body.NonCriticalExtensionOptions = extOpts
 	w.bodyBz = nil
-}
-
-// ProtoTxProvider is a type which can provide a proto transaction.
-type ProtoTxProvider interface {
-	GetProtoTx() *tx.Tx
 }

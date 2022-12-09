@@ -11,7 +11,7 @@ import (
 	"github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/testutil/testdata"
-	"github.com/line/lbm-sdk/x/auth/client/rest"
+	"github.com/line/lbm-sdk/x/auth/client/cli"
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 )
 
@@ -120,9 +120,8 @@ func TestAminoCodecUnpackAnyFails(t *testing.T) {
 
 func TestAminoCodecFullDecodeAndEncode(t *testing.T) {
 	// This tx comes from https://github.com/cosmos/cosmos-sdk/issues/8117.
-	txSigned := `{"type":"lbm-sdk/StdTx","value":{"msg":[{"type":"lbm-sdk/MsgCreateValidator","value":{"description":{"moniker":"fulltest","identity":"satoshi","website":"example.com","details":"example inc"},"commission":{"rate":"0.500000000000000000","max_rate":"1.000000000000000000","max_change_rate":"0.200000000000000000"},"min_self_delegation":"1000000","delegator_address":"link120yvjfy7m2gnu9mvusrs40cxxhpt8nr3qhn8re","validator_address":"linkvaloper120yvjfy7m2gnu9mvusrs40cxxhpt8nr3jr36d2","pubkey":{"type":"ostracon/PubKeyEd25519","value":"CYrOiM3HtS7uv1B1OAkknZnFYSRpQYSYII8AtMMtev0="},"value":{"denom":"umuon","amount":"700000000"}}}],"fee":{"amount":[{"denom":"umuon","amount":"6000"}],"gas":"160000"},"signatures":[{"pub_key":{"type":"ostracon/PubKeySecp256k1","value":"AwAOXeWgNf1FjMaayrSnrOOKz+Fivr6DiI/i0x0sZCHw"},"signature":"RcnfS/u2yl7uIShTrSUlDWvsXo2p2dYu6WJC8VDVHMBLEQZWc8bsINSCjOnlsIVkUNNe1q/WCA9n3Gy1+0zhYA=="}],"sig_block_height":"0","memo":"","timeout_height":"0"}}`
-	_, legacyCdc := simapp.MakeCodecs()
-
+	txSigned := `{"type":"cosmos-sdk/StdTx","value":{"msg":[{"type":"cosmos-sdk/MsgCreateValidator","value":{"description":{"moniker":"fulltest","identity":"satoshi","website":"example.com","details":"example inc"},"commission":{"rate":"0.500000000000000000","max_rate":"1.000000000000000000","max_change_rate":"0.200000000000000000"},"min_self_delegation":"1000000","delegator_address":"link14pt0q5cwf38zt08uu0n6yrstf3rndzr5057jys","validator_address":"linkvaloper14pt0q5cwf38zt08uu0n6yrstf3rndzr52q28gr","pubkey":{"type":"tendermint/PubKeyEd25519","value":"CYrOiM3HtS7uv1B1OAkknZnFYSRpQYSYII8AtMMtev0="},"value":{"denom":"umuon","amount":"700000000"}}}],"fee":{"amount":[{"denom":"umuon","amount":"6000"}],"gas":"160000"},"signatures":[{"pub_key":{"type":"tendermint/PubKeySecp256k1","value":"AwAOXeWgNf1FjMaayrSnrOOKz+Fivr6DiI/i0x0sZCHw"},"signature":"RcnfS/u2yl7uIShTrSUlDWvsXo2p2dYu6WJC8VDVHMBLEQZWc8bsINSCjOnlsIVkUNNe1q/WCA9n3Gy1+0zhYA=="}],"memo":"","timeout_height":"0"}}`
+	var legacyCdc = simapp.MakeTestEncodingConfig().Amino
 	var tx legacytx.StdTx
 	err := legacyCdc.UnmarshalJSON([]byte(txSigned), &tx)
 	require.NoError(t, err)
@@ -133,7 +132,7 @@ func TestAminoCodecFullDecodeAndEncode(t *testing.T) {
 	require.Equal(t, string(marshaledTx), txSigned)
 
 	// Marshalling/unmarshalling the tx wrapped in a struct should work.
-	txRequest := &rest.BroadcastReq{
+	txRequest := &cli.BroadcastReq{
 		Mode: "block",
 		Tx:   tx,
 	}

@@ -12,6 +12,8 @@ MOCKS_DIR = $(CURDIR)/tests/mocks
 HTTPS_GIT := https://github.com/line/lbm-sdk.git
 DOCKER := $(shell which docker)
 DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bufbuild/buf
+CGO_ENABLED ?= 1
+ARCH ?= x86_64
 
 export GO111MODULE = on
 
@@ -113,8 +115,14 @@ include contrib/devtools/Makefile
 BUILD_TARGETS := build install
 
 build: BUILD_ARGS=-o $(BUILDDIR)/
+	CGO_CFLAGS=$(CGO_CFLAGS) CGO_LDFLAGS=$(CGO_LDFLAGS) CGO_ENABLED=$(CGO_ENABLED) go build -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
+
+build-docker: go.sum $(BUILDDIR)/
+	docker build -t simapp:latest . --platform="linux/amd64" --build-arg ARCH=$(ARCH)
+
+# todo: should be fix
 build-linux:
-	GOOS=linux GOARCH=amd64 LEDGER_ENABLED=false $(MAKE) build
+	GOOS=linux GOARCH=$(if $(findstring aarch64,$(shell uname -m)) || $(findstring arm64,$(shell uname -m)),arm64,amd64) LEDGER_ENABLED=false $(MAKE) build
 
 $(BUILD_TARGETS): go.sum $(BUILDDIR)/
 	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
@@ -122,37 +130,14 @@ $(BUILD_TARGETS): go.sum $(BUILDDIR)/
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
 
-build-simd-all: go.sum
-	$(DOCKER) rm latest-build || true
-	$(DOCKER) run --volume=$(CURDIR):/sources:ro \
-        --env TARGET_PLATFORMS='linux/amd64 darwin/amd64 linux/arm64 windows/amd64' \
-        --env APP=simd \
-        --env VERSION=$(VERSION) \
-        --env COMMIT=$(COMMIT) \
-        --env LEDGER_ENABLED=$(LEDGER_ENABLED) \
-        --name latest-build cosmossdk/rbuilder:latest
-	$(DOCKER) cp -a latest-build:/home/builder/artifacts/ $(CURDIR)/
-
-build-simd-linux: go.sum $(BUILDDIR)/
-	$(DOCKER) rm latest-build || true
-	$(DOCKER) run --volume=$(CURDIR):/sources:ro \
-        --env TARGET_PLATFORMS='linux/amd64' \
-        --env APP=simd \
-        --env VERSION=$(VERSION) \
-        --env COMMIT=$(COMMIT) \
-        --env LEDGER_ENABLED=false \
-        --name latest-build cosmossdk/rbuilder:latest
-	$(DOCKER) cp -a latest-build:/home/builder/artifacts/ $(CURDIR)/
-	cp artifacts/simd-*-linux-amd64 $(BUILDDIR)/simd
-
 cosmovisor:
 	$(MAKE) -C cosmovisor cosmovisor
 
-.PHONY: build build-linux build-simd-all build-simd-linux cosmovisor
+.PHONY: build build-linux cosmovisor
 
 mocks: $(MOCKS_DIR)
 	mockgen -source=client/account_retriever.go -package mocks -destination tests/mocks/account_retriever.go
-	mockgen -package mocks -destination tests/mocks/tendermint_tm_db_DB.go github.com/line/tm-db/v2 DB
+	mockgen -package mocks -destination tests/mocks/tendermint_tm_db_DB.go github.com/tendermint/tm-db DB
 	mockgen -source=types/module/module.go -package mocks -destination tests/mocks/types_module_module.go
 	mockgen -source=types/invariant.go -package mocks -destination tests/mocks/types_invariant.go
 	mockgen -source=types/router.go -package mocks -destination tests/mocks/types_router.go
@@ -258,6 +243,11 @@ endif
 
 .PHONY: run-tests test test-all $(TEST_TARGETS)
 
+test-sim-nondeterminism-short:
+	@echo "Running non-determinism test..."
+	@go test -mod=readonly $(SIMAPP) -run TestAppStateDeterminism -Enabled=true \
+		-NumBlocks=50 -BlockSize=100 -Commit=true -Period=0 -v -timeout 24h
+
 test-sim-nondeterminism:
 	@echo "Running non-determinism test..."
 	@go test -mod=readonly $(SIMAPP) -run TestAppStateDeterminism -Enabled=true \
@@ -269,9 +259,17 @@ test-sim-custom-genesis-fast:
 	@go test -mod=readonly $(SIMAPP) -run TestFullAppSimulation -Genesis=${HOME}/.gaiad/config/genesis.json \
 		-Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Seed=99 -Period=5 -v -timeout 24h
 
+test-sim-import-export-short: runsim
+	@echo "Running application import/export simulation. This may take several minutes..."
+	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 10 5 TestAppImportExport
+
 test-sim-import-export: runsim
 	@echo "Running application import/export simulation. This may take several minutes..."
 	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 50 5 TestAppImportExport
+
+test-sim-after-import-short: runsim
+	@echo "Running application simulation-after-import. This may take several minutes..."
+	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 10 5 TestAppSimulationAfterImport
 
 test-sim-after-import: runsim
 	@echo "Running application simulation-after-import. This may take several minutes..."
@@ -301,7 +299,7 @@ test-sim-multi-seed-long-part3: runsim
 
 test-sim-multi-seed-short: runsim
 	@echo "Running short multi-seed application simulation. This may take awhile!"
-	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 50 10 TestFullAppSimulation
+	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 20 10 TestFullAppSimulation
 
 test-sim-benchmark-invariants:
 	@echo "Running simulation invariant benchmarks..."
@@ -396,34 +394,45 @@ devdoc-update:
 # easyjson must be used for types that are not registered in amino by RegisterConcrete.
 easyjson-gen:
 	@echo "Generating easyjson files"
-	go get github.com/mailru/easyjson@v0.7.7
+	go install github.com/mailru/easyjson@v0.7.7
 	easyjson ./types/result.go
 
 ###############################################################################
 ###                                Protobuf                                 ###
 ###############################################################################
 
+containerProtoVer=v0.2
+containerProtoImage=tendermintdev/sdk-proto-gen:$(containerProtoVer)
+containerProtoGen=cosmos-sdk-proto-gen-$(containerProtoVer)
+containerProtoGenSwagger=cosmos-sdk-proto-gen-swagger-$(containerProtoVer)
+containerProtoFmt=cosmos-sdk-proto-fmt-$(containerProtoVer)
+
 proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
 	@echo "Generating Protobuf files"
-	$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace tendermintdev/sdk-proto-gen sh ./scripts/protocgen.sh
-
-proto-format:
-	@echo "Formatting Protobuf files"
-	$(DOCKER) run --rm -v $(CURDIR):/workspace \
-	--workdir /workspace tendermintdev/docker-build-proto \
-	find ./ -not -path "./third_party/*" -name *.proto -exec clang-format -i {} \;
+	@if $(DOCKER) ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGen}$$"; then $(DOCKER) start -a $(containerProtoGen); else $(DOCKER) run --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
+			sh ./scripts/protocgen.sh; fi
 
 # This generates the SDK's custom wrapper for google.protobuf.Any. It should only be run manually when needed
 proto-gen-any:
-	$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace tendermintdev/sdk-proto-gen sh ./scripts/protocgen-any.sh
+	@echo "Generating Protobuf Any"
+	$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) sh ./scripts/protocgen-any.sh
 
 proto-swagger-gen:
-	$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace tendermintdev/sdk-proto-gen sh ./scripts/protoc-swagger-gen.sh
+	@echo "Generating Protobuf Swagger"
+	@if $(DOCKER) ps -a --format '{{.Names}}' | grep -Eq "^${containerProtoGenSwagger}$$"; then $(DOCKER) start -a $(containerProtoGenSwagger); else $(DOCKER) run --name $(containerProtoGenSwagger) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
+		sh ./scripts/protoc-swagger-gen.sh; fi
+
+proto-format:
+	@echo "Formatting Protobuf files"
+	@$(DOCKER) run --rm -v $(CURDIR):/workspace \
+    		--workdir /workspace tendermintdev/docker-build-proto \
+    		find ./ -not -path "./third_party/*" -name *.proto -exec clang-format -i {} \;
 
 proto-lint:
-	@$(DOCKER_BUF) lint --error-format=json
+	@$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace cellink/clang-format-lint \
+		--clang-format-executable /clang-format/clang-format9 -r --extensions proto --exclude ./third_party/* .
 
 proto-check-breaking:
 	@$(DOCKER_BUF) breaking --against $(HTTPS_GIT)#branch=main
@@ -490,19 +499,40 @@ proto-update-deps:
 ###                                Localnet                                 ###
 ###############################################################################
 
-# Run a 4-node testnet locally
-localnet-start: build-linux localnet-stop
-	$(if $(shell $(DOCKER) inspect -f '{{ .Id }}' cosmossdk/simd-env 2>/dev/null),$(info found image cosmossdk/simd-env),$(MAKE) -C contrib/images simd-env)
-	if ! [ -f build/node0/simd/config/genesis.json ]; then $(DOCKER) run --rm \
-		--user $(shell id -u):$(shell id -g) \
-		-v $(BUILDDIR):/simd:Z \
-		-v /etc/group:/etc/group:ro \
-		-v /etc/passwd:/etc/passwd:ro \
-		-v /etc/shadow:/etc/shadow:ro \
-		cosmossdk/simd-env testnet --v 4 -o . --starting-ip-address 192.168.10.2 --keyring-backend=test ; fi
+localnet-build-env:
+	$(MAKE) -C contrib/images simd-env
+
+localnet-build-dlv:
+	$(MAKE) -C contrib/images simd-dlv
+
+localnet-build-nodes:
+	$(DOCKER) run --rm -v $(CURDIR)/.testnets:/data cosmossdk/simd \
+			  testnet init-files --v 4 -o /data --starting-ip-address 192.168.10.2 --keyring-backend=test
 	docker-compose up -d
 
 localnet-stop:
 	docker-compose down
 
-.PHONY: localnet-start localnet-stop
+# localnet-start will run a 4-node testnet locally. The nodes are
+# based off the docker images in: ./contrib/images/simd-env
+localnet-start: localnet-stop localnet-build-env localnet-build-nodes
+
+# localnet-debug will run a 4-node testnet locally in debug mode
+# you can read more about the debug mode here: ./contrib/images/simd-dlv/README.md
+localnet-debug: localnet-stop localnet-build-dlv localnet-build-nodes
+
+.PHONY: localnet-start localnet-stop localnet-debug localnet-build-env \
+localnet-build-dlv localnet-build-nodes
+
+###############################################################################
+###                                rosetta                                  ###
+###############################################################################
+
+rosetta-data:
+	-docker container rm data_dir_build
+	docker build -t rosetta-ci:latest -f contrib/rosetta/node/Dockerfile .
+	docker run --name data_dir_build -t rosetta-ci:latest sh /rosetta/data.sh
+	docker cp data_dir_build:/tmp/data.tar.gz "$(CURDIR)/contrib/rosetta/node/data.tar.gz"
+	docker container rm data_dir_build
+
+.PHONY: rosetta-data

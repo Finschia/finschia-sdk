@@ -4,24 +4,24 @@ import (
 	"context"
 
 	sdk "github.com/line/lbm-sdk/types"
+
 	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 )
 
 var _ types.MsgServer = Keeper{}
 
-// See createOutgoingPacket in spec:https://github.com/cosmos/ics/tree/master/spec/ics-020-fungible-token-transfer#packet-relay
+// See createOutgoingPacket in spec:https://github.com/cosmos/ibc/tree/master/spec/app/ics-020-fungible-token-transfer#packet-relay
 
 // Transfer defines a rpc handler method for MsgTransfer.
 func (k Keeper) Transfer(goCtx context.Context, msg *types.MsgTransfer) (*types.MsgTransferResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	err := sdk.ValidateAccAddress(msg.Sender)
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return nil, err
 	}
 	if err := k.SendTransfer(
-		ctx, msg.SourcePort, msg.SourceChannel, msg.Token, sdk.AccAddress(msg.Sender),
-		msg.Receiver, msg.TimeoutHeight, msg.TimeoutTimestamp,
+		ctx, msg.SourcePort, msg.SourceChannel, msg.Token, sender, msg.Receiver, msg.TimeoutHeight, msg.TimeoutTimestamp,
 	); err != nil {
 		return nil, err
 	}

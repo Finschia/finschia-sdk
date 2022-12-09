@@ -1,5 +1,3 @@
-// +build norace
-
 package rest_test
 
 import (
@@ -57,6 +55,18 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 	_, err = s.network.WaitForHeight(1)
 	s.Require().NoError(err)
+
+	// create a proposal3 with deposit
+	_, err = govtestutil.MsgSubmitProposal(val.ClientCtx, val.Address.String(),
+		"Text Proposal 3", "Where is the title!?", types.ProposalTypeText,
+		fmt.Sprintf("--%s=%s", cli.FlagDeposit, sdk.NewCoin(s.cfg.BondDenom, types.DefaultMinDepositTokens).String()))
+	s.Require().NoError(err)
+	_, err = s.network.WaitForHeight(1)
+	s.Require().NoError(err)
+
+	// vote for proposal3 as val
+	_, err = govtestutil.MsgVote(val.ClientCtx, val.Address.String(), "3", "yes=0.6,no=0.3,abstain=0.05,no_with_veto=0.05")
+	s.Require().NoError(err)
 }
 
 func (s *IntegrationTestSuite) TestGetProposalGRPC() {
@@ -69,17 +79,17 @@ func (s *IntegrationTestSuite) TestGetProposalGRPC() {
 	}{
 		{
 			"empty proposal",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s", val.APIAddress, ""),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s", val.APIAddress, ""),
 			true,
 		},
 		{
 			"get non existing proposal",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s", val.APIAddress, "10"),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s", val.APIAddress, "10"),
 			true,
 		},
 		{
 			"get proposal with id",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s", val.APIAddress, "1"),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s", val.APIAddress, "1"),
 			false,
 		},
 	}
@@ -91,7 +101,7 @@ func (s *IntegrationTestSuite) TestGetProposalGRPC() {
 			s.Require().NoError(err)
 
 			var proposal types.QueryProposalResponse
-			err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, &proposal)
+			err = val.ClientCtx.Codec.UnmarshalJSON(resp, &proposal)
 
 			if tc.expErr {
 				s.Require().Error(err)
@@ -115,7 +125,7 @@ func (s *IntegrationTestSuite) TestGetProposalsGRPC() {
 	}{
 		{
 			"get proposals with height 1",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals", val.APIAddress),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals", val.APIAddress),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -124,14 +134,14 @@ func (s *IntegrationTestSuite) TestGetProposalsGRPC() {
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals", val.APIAddress),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals", val.APIAddress),
 			map[string]string{},
-			2,
+			3,
 			false,
 		},
 		{
 			"valid request with filter by status",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals?proposal_status=1", val.APIAddress),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals?proposal_status=1", val.APIAddress),
 			map[string]string{},
 			1,
 			false,
@@ -145,7 +155,7 @@ func (s *IntegrationTestSuite) TestGetProposalsGRPC() {
 			s.Require().NoError(err)
 
 			var proposals types.QueryProposalsResponse
-			err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, &proposals)
+			err = val.ClientCtx.Codec.UnmarshalJSON(resp, &proposals)
 
 			if tc.expErr {
 				s.Require().Empty(proposals.Proposals)
@@ -163,29 +173,45 @@ func (s *IntegrationTestSuite) TestGetProposalVoteGRPC() {
 	voterAddressBech32 := val.Address.String()
 
 	testCases := []struct {
-		name   string
-		url    string
-		expErr bool
+		name           string
+		url            string
+		expErr         bool
+		expVoteOptions types.WeightedVoteOptions
 	}{
 		{
 			"empty proposal",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/votes/%s", val.APIAddress, "", voterAddressBech32),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/votes/%s", val.APIAddress, "", voterAddressBech32),
 			true,
+			types.NewNonSplitVoteOption(types.OptionYes),
 		},
 		{
 			"get non existing proposal",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/votes/%s", val.APIAddress, "10", voterAddressBech32),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/votes/%s", val.APIAddress, "10", voterAddressBech32),
 			true,
+			types.NewNonSplitVoteOption(types.OptionYes),
 		},
 		{
 			"get proposal with wrong voter address",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/votes/%s", val.APIAddress, "1", "wrongVoterAddress"),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/votes/%s", val.APIAddress, "1", "wrongVoterAddress"),
 			true,
+			types.NewNonSplitVoteOption(types.OptionYes),
 		},
 		{
 			"get proposal with id",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/votes/%s", val.APIAddress, "1", voterAddressBech32),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/votes/%s", val.APIAddress, "1", voterAddressBech32),
 			false,
+			types.NewNonSplitVoteOption(types.OptionYes),
+		},
+		{
+			"get proposal with id for split vote",
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/votes/%s", val.APIAddress, "3", voterAddressBech32),
+			false,
+			types.WeightedVoteOptions{
+				types.WeightedVoteOption{Option: types.OptionYes, Weight: sdk.NewDecWithPrec(60, 2)},
+				types.WeightedVoteOption{Option: types.OptionNo, Weight: sdk.NewDecWithPrec(30, 2)},
+				types.WeightedVoteOption{Option: types.OptionAbstain, Weight: sdk.NewDecWithPrec(5, 2)},
+				types.WeightedVoteOption{Option: types.OptionNoWithVeto, Weight: sdk.NewDecWithPrec(5, 2)},
+			},
 		},
 	}
 
@@ -196,14 +222,18 @@ func (s *IntegrationTestSuite) TestGetProposalVoteGRPC() {
 			s.Require().NoError(err)
 
 			var vote types.QueryVoteResponse
-			err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, &vote)
+			err = val.ClientCtx.Codec.UnmarshalJSON(resp, &vote)
 
 			if tc.expErr {
 				s.Require().Error(err)
 			} else {
 				s.Require().NoError(err)
 				s.Require().NotEmpty(vote.Vote)
-				s.Require().Equal(types.OptionYes, vote.Vote.Option)
+				s.Require().Equal(len(vote.Vote.Options), len(tc.expVoteOptions))
+				for i, option := range tc.expVoteOptions {
+					s.Require().Equal(option.Option, vote.Vote.Options[i].Option)
+					s.Require().True(option.Weight.Equal(vote.Vote.Options[i].Weight))
+				}
 			}
 		})
 	}
@@ -219,12 +249,12 @@ func (s *IntegrationTestSuite) TestGetProposalVotesGRPC() {
 	}{
 		{
 			"votes with empty proposal id",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/votes", val.APIAddress, ""),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/votes", val.APIAddress, ""),
 			true,
 		},
 		{
 			"get votes with valid id",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/votes", val.APIAddress, "1"),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/votes", val.APIAddress, "1"),
 			false,
 		},
 	}
@@ -236,7 +266,7 @@ func (s *IntegrationTestSuite) TestGetProposalVotesGRPC() {
 			s.Require().NoError(err)
 
 			var votes types.QueryVotesResponse
-			err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, &votes)
+			err = val.ClientCtx.Codec.UnmarshalJSON(resp, &votes)
 
 			if tc.expErr {
 				s.Require().Error(err)
@@ -258,22 +288,22 @@ func (s *IntegrationTestSuite) TestGetProposalDepositGRPC() {
 	}{
 		{
 			"get deposit with empty proposal id",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/deposits/%s", val.APIAddress, "", val.Address.String()),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/deposits/%s", val.APIAddress, "", val.Address.String()),
 			true,
 		},
 		{
 			"get deposit of non existing proposal",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/deposits/%s", val.APIAddress, "10", val.Address.String()),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/deposits/%s", val.APIAddress, "10", val.Address.String()),
 			true,
 		},
 		{
 			"get deposit with wrong depositer address",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/deposits/%s", val.APIAddress, "1", "wrongDepositerAddress"),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/deposits/%s", val.APIAddress, "1", "wrongDepositerAddress"),
 			true,
 		},
 		{
 			"get deposit valid request",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/deposits/%s", val.APIAddress, "1", val.Address.String()),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/deposits/%s", val.APIAddress, "1", val.Address.String()),
 			false,
 		},
 	}
@@ -285,7 +315,7 @@ func (s *IntegrationTestSuite) TestGetProposalDepositGRPC() {
 			s.Require().NoError(err)
 
 			var deposit types.QueryDepositResponse
-			err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, &deposit)
+			err = val.ClientCtx.Codec.UnmarshalJSON(resp, &deposit)
 
 			if tc.expErr {
 				s.Require().Error(err)
@@ -307,12 +337,12 @@ func (s *IntegrationTestSuite) TestGetProposalDepositsGRPC() {
 	}{
 		{
 			"get deposits with empty proposal id",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/deposits", val.APIAddress, ""),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/deposits", val.APIAddress, ""),
 			true,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/deposits", val.APIAddress, "1"),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/deposits", val.APIAddress, "1"),
 			false,
 		},
 	}
@@ -324,7 +354,7 @@ func (s *IntegrationTestSuite) TestGetProposalDepositsGRPC() {
 			s.Require().NoError(err)
 
 			var deposits types.QueryDepositsResponse
-			err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, &deposits)
+			err = val.ClientCtx.Codec.UnmarshalJSON(resp, &deposits)
 
 			if tc.expErr {
 				s.Require().Error(err)
@@ -347,17 +377,17 @@ func (s *IntegrationTestSuite) TestGetTallyGRPC() {
 	}{
 		{
 			"get tally with no proposal id",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/tally", val.APIAddress, ""),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/tally", val.APIAddress, ""),
 			true,
 		},
 		{
 			"get tally with non existing proposal",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/tally", val.APIAddress, "10"),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/tally", val.APIAddress, "10"),
 			true,
 		},
 		{
 			"get tally valid request",
-			fmt.Sprintf("%s/lbm/gov/v1/proposals/%s/tally", val.APIAddress, "1"),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/proposals/%s/tally", val.APIAddress, "1"),
 			false,
 		},
 	}
@@ -369,7 +399,7 @@ func (s *IntegrationTestSuite) TestGetTallyGRPC() {
 			s.Require().NoError(err)
 
 			var tally types.QueryTallyResultResponse
-			err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, &tally)
+			err = val.ClientCtx.Codec.UnmarshalJSON(resp, &tally)
 
 			if tc.expErr {
 				s.Require().Error(err)
@@ -393,12 +423,12 @@ func (s *IntegrationTestSuite) TestGetParamsGRPC() {
 	}{
 		{
 			"request params with empty params type",
-			fmt.Sprintf("%s/lbm/gov/v1/params/%s", val.APIAddress, ""),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/params/%s", val.APIAddress, ""),
 			true, nil, nil,
 		},
 		{
 			"get deposit params",
-			fmt.Sprintf("%s/lbm/gov/v1/params/%s", val.APIAddress, types.ParamDeposit),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/params/%s", val.APIAddress, types.ParamDeposit),
 			false,
 			&types.QueryParamsResponse{},
 			&types.QueryParamsResponse{
@@ -407,7 +437,7 @@ func (s *IntegrationTestSuite) TestGetParamsGRPC() {
 		},
 		{
 			"get vote params",
-			fmt.Sprintf("%s/lbm/gov/v1/params/%s", val.APIAddress, types.ParamVoting),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/params/%s", val.APIAddress, types.ParamVoting),
 			false,
 			&types.QueryParamsResponse{},
 			&types.QueryParamsResponse{
@@ -416,7 +446,7 @@ func (s *IntegrationTestSuite) TestGetParamsGRPC() {
 		},
 		{
 			"get tally params",
-			fmt.Sprintf("%s/lbm/gov/v1/params/%s", val.APIAddress, types.ParamTallying),
+			fmt.Sprintf("%s/cosmos/gov/v1beta1/params/%s", val.APIAddress, types.ParamTallying),
 			false,
 			&types.QueryParamsResponse{},
 			&types.QueryParamsResponse{
@@ -431,7 +461,7 @@ func (s *IntegrationTestSuite) TestGetParamsGRPC() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
 
-			err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType)
+			err = val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType)
 
 			if tc.expErr {
 				s.Require().Error(err)

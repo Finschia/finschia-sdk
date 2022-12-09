@@ -2,7 +2,6 @@ package types
 
 import (
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -14,14 +13,16 @@ import (
 type ProposalType string
 
 const (
-	ProposalTypeStoreCode            ProposalType = "StoreCode"
-	ProposalTypeInstantiateContract  ProposalType = "InstantiateContract"
-	ProposalTypeMigrateContract      ProposalType = "MigrateContract"
-	ProposalTypeUpdateAdmin          ProposalType = "UpdateAdmin"
-	ProposalTypeClearAdmin           ProposalType = "ClearAdmin"
-	ProposalTypePinCodes             ProposalType = "PinCodes"
-	ProposalTypeUnpinCodes           ProposalType = "UnpinCodes"
-	ProposalTypeUpdateContractStatus ProposalType = "UpdateContractStatus"
+	ProposalTypeStoreCode               ProposalType = "StoreCode"
+	ProposalTypeInstantiateContract     ProposalType = "InstantiateContract"
+	ProposalTypeMigrateContract         ProposalType = "MigrateContract"
+	ProposalTypeSudoContract            ProposalType = "SudoContract"
+	ProposalTypeExecuteContract         ProposalType = "ExecuteContract"
+	ProposalTypeUpdateAdmin             ProposalType = "UpdateAdmin"
+	ProposalTypeClearAdmin              ProposalType = "ClearAdmin"
+	ProposalTypePinCodes                ProposalType = "PinCodes"
+	ProposalTypeUnpinCodes              ProposalType = "UnpinCodes"
+	ProposalTypeUpdateInstantiateConfig ProposalType = "UpdateInstantiateConfig"
 )
 
 // DisableAllProposals contains no wasm gov types.
@@ -32,11 +33,13 @@ var EnableAllProposals = []ProposalType{
 	ProposalTypeStoreCode,
 	ProposalTypeInstantiateContract,
 	ProposalTypeMigrateContract,
+	ProposalTypeSudoContract,
+	ProposalTypeExecuteContract,
 	ProposalTypeUpdateAdmin,
 	ProposalTypeClearAdmin,
 	ProposalTypePinCodes,
 	ProposalTypeUnpinCodes,
-	ProposalTypeUpdateContractStatus,
+	ProposalTypeUpdateInstantiateConfig,
 }
 
 // ConvertToProposals maps each key to a ProposalType and returns a typed list.
@@ -61,18 +64,23 @@ func init() { // register new content types with the sdk
 	govtypes.RegisterProposalType(string(ProposalTypeStoreCode))
 	govtypes.RegisterProposalType(string(ProposalTypeInstantiateContract))
 	govtypes.RegisterProposalType(string(ProposalTypeMigrateContract))
+	govtypes.RegisterProposalType(string(ProposalTypeSudoContract))
+	govtypes.RegisterProposalType(string(ProposalTypeExecuteContract))
 	govtypes.RegisterProposalType(string(ProposalTypeUpdateAdmin))
 	govtypes.RegisterProposalType(string(ProposalTypeClearAdmin))
 	govtypes.RegisterProposalType(string(ProposalTypePinCodes))
 	govtypes.RegisterProposalType(string(ProposalTypeUnpinCodes))
+	govtypes.RegisterProposalType(string(ProposalTypeUpdateInstantiateConfig))
 	govtypes.RegisterProposalTypeCodec(&StoreCodeProposal{}, "wasm/StoreCodeProposal")
 	govtypes.RegisterProposalTypeCodec(&InstantiateContractProposal{}, "wasm/InstantiateContractProposal")
 	govtypes.RegisterProposalTypeCodec(&MigrateContractProposal{}, "wasm/MigrateContractProposal")
+	govtypes.RegisterProposalTypeCodec(&SudoContractProposal{}, "wasm/SudoContractProposal")
+	govtypes.RegisterProposalTypeCodec(&ExecuteContractProposal{}, "wasm/ExecuteContractProposal")
 	govtypes.RegisterProposalTypeCodec(&UpdateAdminProposal{}, "wasm/UpdateAdminProposal")
 	govtypes.RegisterProposalTypeCodec(&ClearAdminProposal{}, "wasm/ClearAdminProposal")
 	govtypes.RegisterProposalTypeCodec(&PinCodesProposal{}, "wasm/PinCodesProposal")
 	govtypes.RegisterProposalTypeCodec(&UnpinCodesProposal{}, "wasm/UnpinCodesProposal")
-	govtypes.RegisterProposalTypeCodec(UpdateContractStatusProposal{}, "wasm/UpdateContractStatusProposal")
+	govtypes.RegisterProposalTypeCodec(&UpdateInstantiateConfigProposal{}, "wasm/UpdateInstantiateConfigProposal")
 }
 
 // ProposalRoute returns the routing key of a parameter change proposal.
@@ -92,7 +100,7 @@ func (p StoreCodeProposal) ValidateBasic() error {
 	if err := validateProposalCommons(p.Title, p.Description); err != nil {
 		return err
 	}
-	if err := sdk.ValidateAccAddress(p.RunAs); err != nil {
+	if _, err := sdk.AccAddressFromBech32(p.RunAs); err != nil {
 		return sdkerrors.Wrap(err, "run as")
 	}
 
@@ -100,13 +108,6 @@ func (p StoreCodeProposal) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "code bytes %s", err.Error())
 	}
 
-	if err := validateSourceURL(p.Source); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "source %s", err.Error())
-	}
-
-	if err := validateBuilder(p.Builder); err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "builder %s", err.Error())
-	}
 	if p.InstantiatePermission != nil {
 		if err := p.InstantiatePermission.ValidateBasic(); err != nil {
 			return sdkerrors.Wrap(err, "instantiate permission")
@@ -122,9 +123,7 @@ func (p StoreCodeProposal) String() string {
   Description: %s
   Run as:      %s
   WasmCode:    %X
-  Source:      %s
-  Builder:     %s
-`, p.Title, p.Description, p.RunAs, p.WASMByteCode, p.Source, p.Builder)
+`, p.Title, p.Description, p.RunAs, p.WASMByteCode)
 }
 
 // MarshalYAML pretty prints the wasm byte code
@@ -134,16 +133,12 @@ func (p StoreCodeProposal) MarshalYAML() (interface{}, error) {
 		Description           string        `yaml:"description"`
 		RunAs                 string        `yaml:"run_as"`
 		WASMByteCode          string        `yaml:"wasm_byte_code"`
-		Source                string        `yaml:"source"`
-		Builder               string        `yaml:"builder"`
 		InstantiatePermission *AccessConfig `yaml:"instantiate_permission"`
 	}{
 		Title:                 p.Title,
 		Description:           p.Description,
 		RunAs:                 p.RunAs,
 		WASMByteCode:          base64.StdEncoding.EncodeToString(p.WASMByteCode),
-		Source:                p.Source,
-		Builder:               p.Builder,
 		InstantiatePermission: p.InstantiatePermission,
 	}, nil
 }
@@ -167,7 +162,7 @@ func (p InstantiateContractProposal) ValidateBasic() error {
 	if err := validateProposalCommons(p.Title, p.Description); err != nil {
 		return err
 	}
-	if err := sdk.ValidateAccAddress(p.RunAs); err != nil {
+	if _, err := sdk.AccAddressFromBech32(p.RunAs); err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "run as")
 	}
 
@@ -184,14 +179,13 @@ func (p InstantiateContractProposal) ValidateBasic() error {
 	}
 
 	if len(p.Admin) != 0 {
-		if err := sdk.ValidateAccAddress(p.Admin); err != nil {
+		if _, err := sdk.AccAddressFromBech32(p.Admin); err != nil {
 			return err
 		}
 	}
-	if !json.Valid(p.InitMsg) {
-		return sdkerrors.Wrap(ErrInvalid, "init msg json")
+	if err := p.Msg.ValidateBasic(); err != nil {
+		return sdkerrors.Wrap(err, "payload msg")
 	}
-
 	return nil
 }
 
@@ -204,9 +198,9 @@ func (p InstantiateContractProposal) String() string {
   Admin:       %s
   Code id:     %d
   Label:       %s
-  InitMsg:     %q
+  Msg:         %q
   Funds:       %s
-`, p.Title, p.Description, p.RunAs, p.Admin, p.CodeID, p.Label, p.InitMsg, p.Funds)
+`, p.Title, p.Description, p.RunAs, p.Admin, p.CodeID, p.Label, p.Msg, p.Funds)
 }
 
 // MarshalYAML pretty prints the init message
@@ -218,7 +212,7 @@ func (p InstantiateContractProposal) MarshalYAML() (interface{}, error) {
 		Admin       string    `yaml:"admin"`
 		CodeID      uint64    `yaml:"code_id"`
 		Label       string    `yaml:"label"`
-		InitMsg     string    `yaml:"init_msg"`
+		Msg         string    `yaml:"msg"`
 		Funds       sdk.Coins `yaml:"funds"`
 	}{
 		Title:       p.Title,
@@ -227,7 +221,7 @@ func (p InstantiateContractProposal) MarshalYAML() (interface{}, error) {
 		Admin:       p.Admin,
 		CodeID:      p.CodeID,
 		Label:       p.Label,
-		InitMsg:     string(p.InitMsg),
+		Msg:         string(p.Msg),
 		Funds:       p.Funds,
 	}, nil
 }
@@ -252,14 +246,11 @@ func (p MigrateContractProposal) ValidateBasic() error {
 	if p.CodeID == 0 {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "code_id is required")
 	}
-	if err := sdk.ValidateAccAddress(p.Contract); err != nil {
+	if _, err := sdk.AccAddressFromBech32(p.Contract); err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
-	if err := sdk.ValidateAccAddress(p.RunAs); err != nil {
-		return sdkerrors.Wrap(err, "run as")
-	}
-	if !json.Valid(p.MigrateMsg) {
-		return sdkerrors.Wrap(ErrInvalid, "migrate msg json")
+	if err := p.Msg.ValidateBasic(); err != nil {
+		return sdkerrors.Wrap(err, "payload msg")
 	}
 	return nil
 }
@@ -271,9 +262,8 @@ func (p MigrateContractProposal) String() string {
   Description: %s
   Contract:    %s
   Code id:     %d
-  Run as:      %s
-  MigrateMsg   %q
-`, p.Title, p.Description, p.Contract, p.CodeID, p.RunAs, p.MigrateMsg)
+  Msg:         %q
+`, p.Title, p.Description, p.Contract, p.CodeID, p.Msg)
 }
 
 // MarshalYAML pretty prints the migrate message
@@ -283,15 +273,127 @@ func (p MigrateContractProposal) MarshalYAML() (interface{}, error) {
 		Description string `yaml:"description"`
 		Contract    string `yaml:"contract"`
 		CodeID      uint64 `yaml:"code_id"`
-		MigrateMsg  string `yaml:"msg"`
-		RunAs       string `yaml:"run_as"`
+		Msg         string `yaml:"msg"`
 	}{
 		Title:       p.Title,
 		Description: p.Description,
 		Contract:    p.Contract,
 		CodeID:      p.CodeID,
-		MigrateMsg:  string(p.MigrateMsg),
+		Msg:         string(p.Msg),
+	}, nil
+}
+
+// ProposalRoute returns the routing key of a parameter change proposal.
+func (p SudoContractProposal) ProposalRoute() string { return RouterKey }
+
+// GetTitle returns the title of the proposal
+func (p *SudoContractProposal) GetTitle() string { return p.Title }
+
+// GetDescription returns the human readable description of the proposal
+func (p SudoContractProposal) GetDescription() string { return p.Description }
+
+// ProposalType returns the type
+func (p SudoContractProposal) ProposalType() string { return string(ProposalTypeSudoContract) }
+
+// ValidateBasic validates the proposal
+func (p SudoContractProposal) ValidateBasic() error {
+	if err := validateProposalCommons(p.Title, p.Description); err != nil {
+		return err
+	}
+	if _, err := sdk.AccAddressFromBech32(p.Contract); err != nil {
+		return sdkerrors.Wrap(err, "contract")
+	}
+	if err := p.Msg.ValidateBasic(); err != nil {
+		return sdkerrors.Wrap(err, "payload msg")
+	}
+	return nil
+}
+
+// String implements the Stringer interface.
+func (p SudoContractProposal) String() string {
+	return fmt.Sprintf(`Migrate Contract Proposal:
+  Title:       %s
+  Description: %s
+  Contract:    %s
+  Msg:         %q
+`, p.Title, p.Description, p.Contract, p.Msg)
+}
+
+// MarshalYAML pretty prints the migrate message
+func (p SudoContractProposal) MarshalYAML() (interface{}, error) {
+	return struct {
+		Title       string `yaml:"title"`
+		Description string `yaml:"description"`
+		Contract    string `yaml:"contract"`
+		Msg         string `yaml:"msg"`
+	}{
+		Title:       p.Title,
+		Description: p.Description,
+		Contract:    p.Contract,
+		Msg:         string(p.Msg),
+	}, nil
+}
+
+// ProposalRoute returns the routing key of a parameter change proposal.
+func (p ExecuteContractProposal) ProposalRoute() string { return RouterKey }
+
+// GetTitle returns the title of the proposal
+func (p *ExecuteContractProposal) GetTitle() string { return p.Title }
+
+// GetDescription returns the human readable description of the proposal
+func (p ExecuteContractProposal) GetDescription() string { return p.Description }
+
+// ProposalType returns the type
+func (p ExecuteContractProposal) ProposalType() string { return string(ProposalTypeExecuteContract) }
+
+// ValidateBasic validates the proposal
+func (p ExecuteContractProposal) ValidateBasic() error {
+	if err := validateProposalCommons(p.Title, p.Description); err != nil {
+		return err
+	}
+	if _, err := sdk.AccAddressFromBech32(p.Contract); err != nil {
+		return sdkerrors.Wrap(err, "contract")
+	}
+	if _, err := sdk.AccAddressFromBech32(p.RunAs); err != nil {
+		return sdkerrors.Wrap(err, "run as")
+	}
+	if !p.Funds.IsValid() {
+		return sdkerrors.ErrInvalidCoins
+	}
+	if err := p.Msg.ValidateBasic(); err != nil {
+		return sdkerrors.Wrap(err, "payload msg")
+	}
+	return nil
+}
+
+// String implements the Stringer interface.
+func (p ExecuteContractProposal) String() string {
+	return fmt.Sprintf(`Migrate Contract Proposal:
+  Title:       %s
+  Description: %s
+  Contract:    %s
+  Run as:      %s
+  Msg:         %q
+  Funds:       %s
+`, p.Title, p.Description, p.Contract, p.RunAs, p.Msg, p.Funds)
+}
+
+// MarshalYAML pretty prints the migrate message
+func (p ExecuteContractProposal) MarshalYAML() (interface{}, error) {
+	return struct {
+		Title       string    `yaml:"title"`
+		Description string    `yaml:"description"`
+		Contract    string    `yaml:"contract"`
+		Msg         string    `yaml:"msg"`
+		RunAs       string    `yaml:"run_as"`
+		Funds       sdk.Coins `yaml:"funds"`
+	}{
+		Title:       p.Title,
+		Description: p.Description,
+		Contract:    p.Contract,
+		Msg:         string(p.Msg),
 		RunAs:       p.RunAs,
+		Funds:       p.Funds,
 	}, nil
 }
 
@@ -312,10 +414,10 @@ func (p UpdateAdminProposal) ValidateBasic() error {
 	if err := validateProposalCommons(p.Title, p.Description); err != nil {
 		return err
 	}
-	if err := sdk.ValidateAccAddress(p.Contract); err != nil {
+	if _, err := sdk.AccAddressFromBech32(p.Contract); err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
-	if err := sdk.ValidateAccAddress(p.NewAdmin); err != nil {
+	if _, err := sdk.AccAddressFromBech32(p.NewAdmin); err != nil {
 		return sdkerrors.Wrap(err, "new admin")
 	}
 	return nil
@@ -348,7 +450,7 @@ func (p ClearAdminProposal) ValidateBasic() error {
 	if err := validateProposalCommons(p.Title, p.Description); err != nil {
 		return err
 	}
-	if err := sdk.ValidateAccAddress(p.Contract); err != nil {
+	if _, err := sdk.AccAddressFromBech32(p.Contract); err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
 	return nil
@@ -427,49 +529,6 @@ func (p UnpinCodesProposal) String() string {
 `, p.Title, p.Description, p.CodeIDs)
 }
 
-// ProposalRoute returns the routing key of a parameter change proposal.
-func (p UpdateContractStatusProposal) ProposalRoute() string { return RouterKey }
-
-// GetTitle returns the title of the proposal
-func (p *UpdateContractStatusProposal) GetTitle() string { return p.Title }
-
-// GetDescription returns the human readable description of the proposal
-func (p UpdateContractStatusProposal) GetDescription() string { return p.Description }
-
-// ProposalType returns the type
-func (p UpdateContractStatusProposal) ProposalType() string { return string(ProposalTypeUpdateAdmin) }
-
-// ValidateBasic validates the proposal
-func (p UpdateContractStatusProposal) ValidateBasic() error {
-	if err := validateProposalCommons(p.Title, p.Description); err != nil {
-		return err
-	}
-	if err := sdk.ValidateAccAddress(p.Contract); err != nil {
-		return sdkerrors.Wrap(err, "contract")
-	}
-	found := false
-	for _, v := range AllContractStatus {
-		if p.Status == v {
-			found = true
-			break
-		}
-	}
-	if !found || p.Status == ContractStatusUnspecified {
-		return sdkerrors.Wrap(govtypes.ErrInvalidProposalContent, "invalid status")
-	}
-	return nil
-}
-
-// String implements the Stringer interface.
-func (p UpdateContractStatusProposal) String() string {
-	return fmt.Sprintf(`Update Contract Status Proposal:
-  Title:       %s
-  Description: %s
-  Contract:    %s
-  Status:   %s
-`, p.Title, p.Description, p.Contract, p.Status.String())
-}
-
 func validateProposalCommons(title, description string) error {
 	if strings.TrimSpace(title) != title {
 		return sdkerrors.Wrap(govtypes.ErrInvalidProposalContent, "proposal title must not start/end with white spaces")
@@ -490,4 +549,57 @@ func validateProposalCommons(title, description string) error {
 		return sdkerrors.Wrapf(govtypes.ErrInvalidProposalContent, "proposal description is longer than max length of %d", govtypes.MaxDescriptionLength)
 	}
 	return nil
+}
+
+// ProposalRoute returns the routing key of a parameter change proposal.
+func (p UpdateInstantiateConfigProposal) ProposalRoute() string { return RouterKey }
+
+// GetTitle returns the title of the proposal
+func (p *UpdateInstantiateConfigProposal) GetTitle() string { return p.Title }
+
+// GetDescription returns the human readable description of the proposal
+func (p UpdateInstantiateConfigProposal) GetDescription() string { return p.Description }
+
+// ProposalType returns the type
+func (p UpdateInstantiateConfigProposal) ProposalType() string {
+	return string(ProposalTypeUpdateInstantiateConfig)
+}
+
+// ValidateBasic validates the proposal
+func (p UpdateInstantiateConfigProposal) ValidateBasic() error {
+	if err := validateProposalCommons(p.Title, p.Description); err != nil {
+		return err
+	}
+	if len(p.AccessConfigUpdates) == 0 {
+		return sdkerrors.Wrap(ErrEmpty, "code updates")
+	}
+	dedup := make(map[uint64]bool)
+	for _, codeUpdate := range p.AccessConfigUpdates {
+		_, found := dedup[codeUpdate.CodeID]
+		if found {
+			return sdkerrors.Wrapf(ErrDuplicate, "duplicate code: %d", codeUpdate.CodeID)
+		}
+		if err := codeUpdate.InstantiatePermission.ValidateBasic(); err != nil {
+			return sdkerrors.Wrap(err, "instantiate permission")
+		}
+		dedup[codeUpdate.CodeID] = true
+	}
+	return nil
+}
+
+// String implements the Stringer interface.
+func (p UpdateInstantiateConfigProposal) String() string {
+	return fmt.Sprintf(`Update Instantiate Config Proposal:
+  Title:       %s
+  Description: %s
+  AccessConfigUpdates: %v
+`, p.Title, p.Description, p.AccessConfigUpdates)
+}
+
+// String implements the Stringer interface.
+func (c AccessConfigUpdate) String() string {
+	return fmt.Sprintf(`AccessConfigUpdate:
+  CodeID:       %d
+  AccessConfig: %v
+`, c.CodeID, c.InstantiatePermission)
 }

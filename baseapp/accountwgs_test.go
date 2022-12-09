@@ -77,10 +77,6 @@ func (tx AccountLockTestTx) ValidateBasic() error {
 	return nil
 }
 
-func (tx AccountLockTestTx) GetSigBlockHeight() uint64 {
-	return 0
-}
-
 func newTestPrivKeys(num int) []*secp256k1.PrivKey {
 	privs := make([]*secp256k1.PrivKey, 0, num)
 	for i := 0; i < num; i++ {
@@ -92,7 +88,7 @@ func newTestPrivKeys(num int) []*secp256k1.PrivKey {
 func getAddrs(privs []*secp256k1.PrivKey) []sdk.AccAddress {
 	addrs := make([]sdk.AccAddress, 0, len(privs))
 	for _, priv := range privs {
-		addrs = append(addrs, sdk.BytesToAccAddress(priv.PubKey().Address()))
+		addrs = append(addrs, sdk.AccAddress(priv.PubKey().Address()))
 	}
 	return addrs
 }

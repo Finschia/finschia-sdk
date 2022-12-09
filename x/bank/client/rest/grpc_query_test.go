@@ -1,3 +1,4 @@
+//go:build norace
 // +build norace
 
 package rest_test
@@ -28,7 +29,7 @@ func (s *IntegrationTestSuite) TestTotalSupplyGRPCHandler() {
 	}{
 		{
 			"test GRPC total supply",
-			fmt.Sprintf("%s/lbm/bank/v1/supply", baseURL),
+			fmt.Sprintf("%s/cosmos/bank/v1beta1/supply", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -38,11 +39,14 @@ func (s *IntegrationTestSuite) TestTotalSupplyGRPCHandler() {
 					sdk.NewCoin(fmt.Sprintf("%stoken", val.Moniker), s.cfg.AccountTokens),
 					sdk.NewCoin(s.cfg.BondDenom, s.cfg.StakingTokens.Add(sdk.NewInt(10))),
 				),
+				Pagination: &query.PageResponse{
+					Total: 2,
+				},
 			},
 		},
 		{
 			"GRPC total supply of a specific denom",
-			fmt.Sprintf("%s/lbm/bank/v1/supply/%s", baseURL, s.cfg.BondDenom),
+			fmt.Sprintf("%s/cosmos/bank/v1beta1/supply/%s", baseURL, s.cfg.BondDenom),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -53,7 +57,7 @@ func (s *IntegrationTestSuite) TestTotalSupplyGRPCHandler() {
 		},
 		{
 			"Query for `height` > 1",
-			fmt.Sprintf("%s/lbm/bank/v1/supply/%s", baseURL, s.cfg.BondDenom),
+			fmt.Sprintf("%s/cosmos/bank/v1beta1/supply/%s", baseURL, s.cfg.BondDenom),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "2",
 			},
@@ -64,7 +68,7 @@ func (s *IntegrationTestSuite) TestTotalSupplyGRPCHandler() {
 		},
 		{
 			"Query params shouldn't be considered as height",
-			fmt.Sprintf("%s/lbm/bank/v1/supply/%s?height=2", baseURL, s.cfg.BondDenom),
+			fmt.Sprintf("%s/cosmos/bank/v1beta1/supply/%s?height=2", baseURL, s.cfg.BondDenom),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -75,7 +79,7 @@ func (s *IntegrationTestSuite) TestTotalSupplyGRPCHandler() {
 		},
 		{
 			"GRPC total supply of a bogus denom",
-			fmt.Sprintf("%s/lbm/bank/v1/supply/foobar", baseURL),
+			fmt.Sprintf("%s/cosmos/bank/v1beta1/supply/foobar", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -92,7 +96,7 @@ func (s *IntegrationTestSuite) TestTotalSupplyGRPCHandler() {
 			resp, err := testutil.GetRequestWithHeaders(tc.url, tc.headers)
 			s.Require().NoError(err)
 
-			s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 			s.Require().Equal(tc.expected.String(), tc.respType.String())
 		})
 	}
@@ -112,7 +116,7 @@ func (s *IntegrationTestSuite) TestDenomMetadataGRPCHandler() {
 	}{
 		{
 			"test GRPC client metadata",
-			fmt.Sprintf("%s/lbm/bank/v1/denoms_metadata", baseURL),
+			fmt.Sprintf("%s/cosmos/bank/v1beta1/denoms_metadata", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -121,6 +125,8 @@ func (s *IntegrationTestSuite) TestDenomMetadataGRPCHandler() {
 			&types.QueryDenomsMetadataResponse{
 				Metadatas: []types.Metadata{
 					{
+						Name:        "Cosmos Hub Atom",
+						Symbol:      "ATOM",
 						Description: "The native staking token of the Cosmos Hub.",
 						DenomUnits: []*types.DenomUnit{
 							{
@@ -143,7 +149,7 @@ func (s *IntegrationTestSuite) TestDenomMetadataGRPCHandler() {
 		},
 		{
 			"GRPC client metadata of a specific denom",
-			fmt.Sprintf("%s/lbm/bank/v1/denoms_metadata/uatom", baseURL),
+			fmt.Sprintf("%s/cosmos/bank/v1beta1/denoms_metadata/uatom", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -151,6 +157,8 @@ func (s *IntegrationTestSuite) TestDenomMetadataGRPCHandler() {
 			&types.QueryDenomMetadataResponse{},
 			&types.QueryDenomMetadataResponse{
 				Metadata: types.Metadata{
+					Name:        "Cosmos Hub Atom",
+					Symbol:      "ATOM",
 					Description: "The native staking token of the Cosmos Hub.",
 					DenomUnits: []*types.DenomUnit{
 						{
@@ -171,7 +179,7 @@ func (s *IntegrationTestSuite) TestDenomMetadataGRPCHandler() {
 		},
 		{
 			"GRPC client metadata of a bogus denom",
-			fmt.Sprintf("%s/lbm/bank/v1/denoms_metadata/foobar", baseURL),
+			fmt.Sprintf("%s/cosmos/bank/v1beta1/denoms_metadata/foobar", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -192,9 +200,9 @@ func (s *IntegrationTestSuite) TestDenomMetadataGRPCHandler() {
 			s.Require().NoError(err)
 
 			if tc.expErr {
-				s.Require().Error(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().Error(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 			} else {
-				s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 				s.Require().Equal(tc.expected.String(), tc.respType.String())
 			}
 		})
@@ -213,7 +221,7 @@ func (s *IntegrationTestSuite) TestBalancesGRPCHandler() {
 	}{
 		{
 			"gRPC total account balance",
-			fmt.Sprintf("%s/lbm/bank/v1/balances/%s", baseURL, val.Address.String()),
+			fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s", baseURL, val.Address.String()),
 			&types.QueryAllBalancesResponse{},
 			&types.QueryAllBalancesResponse{
 				Balances: sdk.NewCoins(
@@ -227,7 +235,7 @@ func (s *IntegrationTestSuite) TestBalancesGRPCHandler() {
 		},
 		{
 			"gPRC account balance of a denom",
-			fmt.Sprintf("%s/lbm/bank/v1/balances/%s/%s", baseURL, val.Address.String(), s.cfg.BondDenom),
+			fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s/by_denom?denom=%s", baseURL, val.Address.String(), s.cfg.BondDenom),
 			&types.QueryBalanceResponse{},
 			&types.QueryBalanceResponse{
 				Balance: &sdk.Coin{
@@ -238,7 +246,7 @@ func (s *IntegrationTestSuite) TestBalancesGRPCHandler() {
 		},
 		{
 			"gPRC account balance of a bogus denom",
-			fmt.Sprintf("%s/lbm/bank/v1/balances/%s/foobar", baseURL, val.Address.String()),
+			fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s/by_denom?denom=foobar", baseURL, val.Address.String()),
 			&types.QueryBalanceResponse{},
 			&types.QueryBalanceResponse{
 				Balance: &sdk.Coin{
@@ -255,7 +263,7 @@ func (s *IntegrationTestSuite) TestBalancesGRPCHandler() {
 			resp, err := rest.GetRequest(tc.url)
 			s.Require().NoError(err)
 
-			s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(resp, tc.respType))
+			s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(resp, tc.respType))
 			s.Require().Equal(tc.expected.String(), tc.respType.String())
 		})
 	}

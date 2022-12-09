@@ -7,9 +7,9 @@ import (
 
 	ics23 "github.com/confio/ics23/go"
 	"github.com/gogo/protobuf/proto"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	occrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
@@ -76,7 +76,7 @@ func NewMerklePath(keyPath ...string) MerklePath {
 }
 
 // String implements fmt.Stringer.
-// This represents the path in the same way the tendermint KeyPath will
+// This represents the path in the same way the ostracon KeyPath will
 // represent a key path. The backslashes partition the key path into
 // the respective stores they belong to.
 func (mp MerklePath) String() string {
@@ -253,8 +253,8 @@ func verifyChainedMembershipProof(root []byte, specs []*ics23.ProofSpec, proofs 
 			value = subroot
 		case *ics23.CommitmentProof_Nonexist:
 			return sdkerrors.Wrapf(ErrInvalidProof,
-				"chained membership proof contains nonexistence proof at index %d. If this is unexpected, please ensure that proof was queried from the height that contained the value in store and was queried with the correct key.",
-				i)
+				"chained membership proof contains nonexistence proof at index %d. If this is unexpected, please ensure that proof was queried from a height that contained the value in store and was queried with the correct key. The key used: %s",
+				i, keys)
 		default:
 			return sdkerrors.Wrapf(ErrInvalidProof,
 				"expected proof type: %T, got: %T", &ics23.CommitmentProof_Exist{}, proofs[i].Proof)

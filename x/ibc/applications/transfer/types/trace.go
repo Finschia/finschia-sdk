@@ -7,11 +7,11 @@ import (
 	"sort"
 	"strings"
 
-	ostbytes "github.com/line/ostracon/libs/bytes"
-	octypes "github.com/line/ostracon/types"
-
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	ocbytes "github.com/line/ostracon/libs/bytes"
+	octypes "github.com/line/ostracon/types"
+
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 )
 
@@ -41,7 +41,7 @@ func ParseDenomTrace(rawDenom string) DenomTrace {
 // Hash returns the hex bytes of the SHA256 hash of the DenomTrace fields using the following formula:
 //
 // hash = sha256(tracePath + "/" + baseDenom)
-func (dt DenomTrace) Hash() ostbytes.HexBytes {
+func (dt DenomTrace) Hash() ocbytes.HexBytes {
 	hash := sha256.Sum256([]byte(dt.GetFullDenomPath()))
 	return hash[:]
 }
@@ -162,8 +162,8 @@ func ValidatePrefixedDenom(denom string) error {
 
 // ValidateIBCDenom validates that the given denomination is either:
 //
-//  - A valid base denomination (eg: 'uatom')
-//  - A valid fungible token representation (i.e 'ibc/{hash}') per ADR 001 https://github.com/line/lbm-sdk/blob/master/docs/architecture/adr-001-coin-source-tracing.md
+//  - A valid base denomination (eg: 'uatom' or 'gamm/pool/1' as in https://github.com/cosmos/ibc-go/issues/894)
+//  - A valid fungible token representation (i.e 'ibc/{hash}') per ADR 001 https://github.com/cosmos/ibc-go/blob/main/docs/architecture/adr-001-coin-source-tracing.md
 func ValidateIBCDenom(denom string) error {
 	if err := sdk.ValidateDenom(denom); err != nil {
 		return err
@@ -172,24 +172,24 @@ func ValidateIBCDenom(denom string) error {
 	denomSplit := strings.SplitN(denom, "/", 2)
 
 	switch {
-	case strings.TrimSpace(denom) == "",
-		len(denomSplit) == 1 && denomSplit[0] == DenomPrefix,
-		len(denomSplit) == 2 && (denomSplit[0] != DenomPrefix || strings.TrimSpace(denomSplit[1]) == ""):
+	case denom == DenomPrefix:
 		return sdkerrors.Wrapf(ErrInvalidDenomForTransfer, "denomination should be prefixed with the format 'ibc/{hash(trace + \"/\" + %s)}'", denom)
 
-	case denomSplit[0] == denom && strings.TrimSpace(denom) != "":
-		return nil
-	}
+	case len(denomSplit) == 2 && denomSplit[0] == DenomPrefix:
+		if strings.TrimSpace(denomSplit[1]) == "" {
+			return sdkerrors.Wrapf(ErrInvalidDenomForTransfer, "denomination should be prefixed with the format 'ibc/{hash(trace + \"/\" + %s)}'", denom)
+		}
 
-	if _, err := ParseHexHash(denomSplit[1]); err != nil {
-		return sdkerrors.Wrapf(err, "invalid denom trace hash %s", denomSplit[1])
+		if _, err := ParseHexHash(denomSplit[1]); err != nil {
+			return sdkerrors.Wrapf(err, "invalid denom trace hash %s", denomSplit[1])
+		}
 	}
 
 	return nil
 }
 
 // ParseHexHash parses a hex hash in string format to bytes and validates its correctness.
-func ParseHexHash(hexHash string) (ostbytes.HexBytes, error) {
+func ParseHexHash(hexHash string) (ocbytes.HexBytes, error) {
 	hash, err := hex.DecodeString(hexHash)
 	if err != nil {
 		return nil, err

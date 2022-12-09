@@ -8,11 +8,12 @@ import (
 	"sync"
 
 	"github.com/gogo/protobuf/proto"
+
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto/tmhash"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	tmdb "github.com/line/tm-db/v2"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/snapshots"
@@ -20,6 +21,7 @@ import (
 	"github.com/line/lbm-sdk/store/rootmulti"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 )
 
 var (
@@ -39,7 +41,7 @@ type BaseApp struct { // nolint: maligned
 	// initialized on creation
 	logger            log.Logger
 	name              string               // application name from abci.Info
-	db                tmdb.DB              // common DB backend
+	db                dbm.DB               // common DB backend
 	cms               sdk.CommitMultiStore // Main (uncached) state
 	storeLoader       StoreLoader          // function to handle store loading, may be overridden with SetStoreLoader()
 	router            sdk.Router           // handle any kind of message
@@ -113,7 +115,11 @@ type BaseApp struct { // nolint: maligned
 	minRetainBlocks uint64
 
 	// application's version string
-	appVersion string
+	version string
+
+	// application's protocol version that increments on every upgrade
+	// if BaseApp is passed to the upgrade keeper's NewKeeper method.
+	appVersion uint64
 
 	// recovery handler for app.runTx method
 	runTxRecoveryMiddleware recoveryMiddleware
@@ -132,7 +138,7 @@ type BaseApp struct { // nolint: maligned
 //
 // NOTE: The db is used to store the version number for now.
 func NewBaseApp(
-	name string, logger log.Logger, db tmdb.DB, txDecoder sdk.TxDecoder, options ...func(*BaseApp),
+	name string, logger log.Logger, db dbm.DB, txDecoder sdk.TxDecoder, options ...func(*BaseApp),
 ) *BaseApp {
 	app := &BaseApp{
 		logger:           logger,
@@ -170,14 +176,24 @@ func (app *BaseApp) Name() string {
 	return app.name
 }
 
-// AppVersion returns the application's version string.
-func (app *BaseApp) AppVersion() string {
+// AppVersion returns the application's protocol version.
+func (app *BaseApp) AppVersion() uint64 {
 	return app.appVersion
+}
+
+// Version returns the application's version string.
+func (app *BaseApp) Version() string {
+	return app.version
 }
 
 // Logger returns the logger of the BaseApp.
 func (app *BaseApp) Logger() log.Logger {
 	return app.logger
+}
+
+// Trace returns the boolean value for logging error stack traces.
+func (app *BaseApp) Trace() bool {
+	return app.trace
 }
 
 // MsgServiceRouter returns the MsgServiceRouter of a BaseApp.
@@ -245,6 +261,22 @@ func (app *BaseApp) LoadLatestVersion() error {
 // DefaultStoreLoader will be used by default and loads the latest version
 func DefaultStoreLoader(ms sdk.CommitMultiStore) error {
 	return ms.LoadLatestVersion()
+}
+
+// CommitMultiStore returns the root multi-store.
+// App constructor can use this to access the `cms`.
+// UNSAFE: only safe to use during app initialization.
+func (app *BaseApp) CommitMultiStore() sdk.CommitMultiStore {
+	if app.sealed {
+		panic("cannot call CommitMultiStore() after baseapp is sealed")
+	}
+	return app.cms
+}
+
+// SnapshotManager returns the snapshot manager.
+// application use this to register extra extension snapshotters.
+func (app *BaseApp) SnapshotManager() *snapshots.Manager {
+	return app.snapshotManager
 }
 
 // LoadVersion loads the BaseApp application version. It will panic if called
@@ -561,6 +593,10 @@ func (app *BaseApp) preCheckTx(txBytes []byte) (tx sdk.Tx, err error) {
 	return tx, err
 }
 
+func (app *BaseApp) PreCheckTx(txBytes []byte) (sdk.Tx, error) {
+	return app.preCheckTx(txBytes)
+}
+
 func (app *BaseApp) checkTx(txBytes []byte, tx sdk.Tx, recheck bool) (gInfo sdk.GasInfo, err error) {
 	ctx := app.getCheckContextForTx(txBytes, recheck)
 	gasCtx := &ctx
@@ -613,19 +649,13 @@ func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate 
 // Note, gas execution info is always returned. A reference to a Result is
 // returned if the tx does not run out of gas and if all the messages are valid
 // and execute successfully. An error is returned otherwise.
-func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.GasInfo, result *sdk.Result, err error) {
+func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.GasInfo, result *sdk.Result, anteEvents []abci.Event, err error) {
 	ctx := app.getRunContextForTx(txBytes, simulate)
 	ms := ctx.MultiStore()
 
 	// only run the tx if there is block gas remaining
 	if !simulate && ctx.BlockGasMeter().IsOutOfGas() {
-		gInfo = sdk.GasInfo{GasUsed: ctx.BlockGasMeter().GasConsumed()}
-		return gInfo, nil, sdkerrors.Wrap(sdkerrors.ErrOutOfGas, "no block gas left to run tx")
-	}
-
-	var startingGas uint64
-	if !simulate {
-		startingGas = ctx.BlockGasMeter().GasConsumed()
+		return gInfo, nil, nil, sdkerrors.Wrap(sdkerrors.ErrOutOfGas, "no block gas left to run tx")
 	}
 
 	defer func() {
@@ -637,26 +667,30 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 		gInfo = sdk.GasInfo{GasWanted: ctx.GasMeter().Limit(), GasUsed: ctx.GasMeter().GasConsumed()}
 	}()
 
+	blockGasConsumed := false
+	// consumeBlockGas makes sure block gas is consumed at most once. It must happen after
+	// tx processing, and must be execute even if tx processing fails. Hence we use trick with `defer`
+	consumeBlockGas := func() {
+		if !blockGasConsumed {
+			blockGasConsumed = true
+			ctx.BlockGasMeter().ConsumeGas(
+				ctx.GasMeter().GasConsumedToLimit(), "block gas meter",
+			)
+		}
+	}
+
 	// If BlockGasMeter() panics it will be caught by the above recover and will
 	// return an error - in any case BlockGasMeter will consume gas past the limit.
 	//
 	// NOTE: This must exist in a separate defer function for the above recovery
 	// to recover from this one.
-	defer func() {
-		if !simulate {
-			ctx.BlockGasMeter().ConsumeGas(
-				ctx.GasMeter().GasConsumedToLimit(), "block gas meter",
-			)
-
-			if ctx.BlockGasMeter().GasConsumed() < startingGas {
-				panic(sdk.ErrorGasOverflow{Descriptor: "tx gas summation"})
-			}
-		}
-	}()
+	if !simulate {
+		defer consumeBlockGas()
+	}
 
 	msgs := tx.GetMsgs()
 	if err = validateBasicTxMsgs(msgs); err != nil {
-		return sdk.GasInfo{}, nil, err
+		return sdk.GasInfo{}, nil, nil, err
 	}
 
 	var newCtx sdk.Context
@@ -671,11 +705,12 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 		ctx = newCtx.WithMultiStore(ms)
 	}
 
-	events := ctx.EventManager().Events()
-
 	if err != nil {
-		return gInfo, nil, err
+		return gInfo, nil, nil, err
 	}
+
+	events := ctx.EventManager().Events()
+	anteEvents = events.ToABCIEvents()
 
 	// Create a new Context based off of the existing Context with a MultiStore branch
 	// in case message processing fails. At this point, the MultiStore
@@ -687,15 +722,18 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 	// Result if any single message fails or does not have a registered Handler.
 	result, err = app.runMsgs(runMsgCtx, msgs)
 	if err == nil && !simulate {
+		// When block gas exceeds, it'll panic and won't commit the cached store.
+		consumeBlockGas()
+
 		msCache.Write()
 
-		if len(events) > 0 {
+		if len(anteEvents) > 0 {
 			// append the events in the order of occurrence
-			result.Events = append(events.ToABCIEvents(), result.Events...)
+			result.Events = append(anteEvents, result.Events...)
 		}
 	}
 
-	return gInfo, result, err
+	return gInfo, result, anteEvents, err
 }
 
 // runMsgs iterates through a list of messages and executes them with the provided
@@ -713,37 +751,39 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 	// NOTE: GasWanted is determined by the AnteHandler and GasUsed by the GasMeter.
 	for i, msg := range msgs {
 		var (
-			msgEvents sdk.Events
-			msgResult *sdk.Result
-			msgFqName string
-			err       error
+			msgResult    *sdk.Result
+			eventMsgName string // name to use as value in event `message.action`
+			err          error
 		)
 
-		if svcMsg, ok := msg.(sdk.ServiceMsg); ok {
-			msgFqName = svcMsg.MethodName
-			handler := app.msgServiceRouter.Handler(msgFqName)
-			if handler == nil {
-				return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized message service method: %s; message index: %d", msgFqName, i)
-			}
-			msgResult, err = handler(ctx, svcMsg.Request)
-		} else {
+		if handler := app.msgServiceRouter.Handler(msg); handler != nil {
+			// ADR 031 request type routing
+			msgResult, err = handler(ctx, msg)
+			eventMsgName = sdk.MsgTypeURL(msg)
+		} else if legacyMsg, ok := msg.(legacytx.LegacyMsg); ok {
 			// legacy sdk.Msg routing
-			msgRoute := msg.Route()
-			msgFqName = msg.Type()
+			// Assuming that the app developer has migrated all their Msgs to
+			// proto messages and has registered all `Msg services`, then this
+			// path should never be called, because all those Msgs should be
+			// registered within the `msgServiceRouter` already.
+			msgRoute := legacyMsg.Route()
+			eventMsgName = legacyMsg.Type()
 			handler := app.router.Route(ctx, msgRoute)
 			if handler == nil {
 				return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized message route: %s; message index: %d", msgRoute, i)
 			}
 
 			msgResult, err = handler(ctx, msg)
+		} else {
+			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "can't route message %+v", msg)
 		}
 
 		if err != nil {
 			return nil, sdkerrors.Wrapf(err, "failed to execute message; message index: %d", i)
 		}
 
-		msgEvents = sdk.Events{
-			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyAction, msgFqName)),
+		msgEvents := sdk.Events{
+			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyAction, eventMsgName)),
 		}
 		msgEvents = msgEvents.AppendEvents(msgResult.GetEvents())
 
@@ -753,7 +793,7 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 		// separate each result.
 		events = events.AppendEvents(msgEvents)
 
-		txMsgData.Data = append(txMsgData.Data, &sdk.MsgData{MsgType: msg.Type(), Data: msgResult.Data})
+		txMsgData.Data = append(txMsgData.Data, &sdk.MsgData{MsgType: sdk.MsgTypeURL(msg), Data: msgResult.Data})
 		msgLogs = append(msgLogs, sdk.NewABCIMessageLog(uint32(i), msgResult.Log, msgEvents))
 	}
 

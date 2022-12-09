@@ -4,7 +4,7 @@ This is forked from [`cosmos-sdk`](https://github.com/cosmos/cosmos-sdk) at 2021
 
 **WARNING**: Breaking changes may occur because this repository is still in the pre-release development phase.
 
-**Note**: Requires [Go 1.15+](https://golang.org/dl/)
+**Note**: Requires [Go 1.18+](https://golang.org/dl/)
 
 ## What is the LBM SDK?
 
@@ -68,70 +68,6 @@ simd start --home ~/.simapp/simapp1
 &nbsp;
 
 ## Follow Guide
-
-
-**Create new account**
-```
-simd keys add user0 --keyring-backend test --home ~/.simapp/simapp0
-
-# check if new account was added successfully
-simd keys list --keyring-backend test --home ~/.simapp/simapp0               
-```
-
-Let the user0 and validator0 **account address** be each 
-* **user0: link1lu5hgjp2gyvgdpf674aklzrpdeuyhjr4fsuqrj**
-* **validator0: link146asaycmtydq45kxc8evntqfgepagygelel00h**
-
-If you run multi node, home option's value can be ~/.simapp/simapp1, ~/.simapp/simapp2, ...
-You can get same result whatever --home option you use
-
-&nbsp;
-
-**Send funds(Bank)**
-```
-# user0 balances: "0"
-simd query bank balances link1lu5hgjp2gyvgdpf674aklzrpdeuyhjr4fsuqrj --home ~/.simapp/simapp0
-
-# validator0 balances: 90000000000stake, 100000000000ukrw
-simd query bank balances link146asaycmtydq45kxc8evntqfgepagygelel00h --home ~/.simapp/simapp0
-
-# send 10000stake from validator0 to user0
-simd tx bank send link146asaycmtydq45kxc8evntqfgepagygelel00h link1lu5hgjp2gyvgdpf674aklzrpdeuyhjr4fsuqrj 10000000000stake --keyring-backend test --chain-id sim --home ~/.simapp/simapp0
-
-# user0 balances: 10000000000stake
-simd query bank balances link1lu5hgjp2gyvgdpf674aklzrpdeuyhjr4fsuqrj --home ~/.simapp/simapp0
-
-# validator0 balances: 80000000000stake, 100000000000ukrw
-simd query bank balances link146asaycmtydq45kxc8evntqfgepagygelel00h --home ~/.simapp/simapp0
-```
-
-&nbsp;
-
-**Staking(deligate)**
-```
-# Bech32 Val is operator address of validator0
-simd debug addr link146asaycmtydq45kxc8evntqfgepagygelel00h --home ~/.simapp/simapp0
-```
-Let the **validator0 operator address** be **linkvaloper146asaycmtydq45kxc8evntqfgepagygeddajpy**
-
-&nbsp;
-
-```
-# deligate 10000000000stake to validator0
-simd tx staking delegate linkvaloper146asaycmtydq45kxc8evntqfgepagygeddajpy 10000000000stake 
---from link1lu5hgjp2gyvgdpf674aklzrpdeuyhjr4fsuqrj --keyring-backend test --chain-id sim --home ~/.simapp/simapp0
-
-# check if deligation was successful
-simd query staking validators --chain-id sim --home ~/.simapp/simapp0
-
-# undeligate 10000000000stake from validator
-simd tx staking unbond linkvaloper146asaycmtydq45kxc8evntqfgepagygeddajpy 10000000000stake --from link1lu5hgjp2gyvgdpf674aklzrpdeuyhjr4fsuqrj --keyring-backend test --chain-id sim --home ~/.simapp/simapp0
-
-# check if undeligation was successful
-simd query staking validators --chain-id sim --home ~/.simapp/simapp0
-```
-
-&nbsp;
-
+You can refer the sample tx commands at [here](docs/sample-tx.md) 
 Test different commands to get a broader understanding of lbm
 

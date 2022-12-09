@@ -20,7 +20,8 @@ func InitGenesis(ctx sdk.Context, ak keeper.AccountKeeper, data types.GenesisSta
 	accounts = types.SanitizeGenesisAccounts(accounts)
 
 	for _, a := range accounts {
-		ak.SetAccount(ctx, a)
+		acc := ak.NewAccount(ctx, a)
+		ak.SetAccount(ctx, acc)
 	}
 
 	ak.GetModuleAccount(ctx, types.FeeCollectorName)

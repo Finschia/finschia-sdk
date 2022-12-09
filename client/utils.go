@@ -1,6 +1,7 @@
 package client
 
 import (
+	rpchttp "github.com/line/ostracon/rpc/client/http"
 	"github.com/spf13/pflag"
 
 	"github.com/line/lbm-sdk/client/flags"
@@ -51,11 +52,12 @@ func ReadPageRequest(flagSet *pflag.FlagSet) (*query.PageRequest, error) {
 	limit, _ := flagSet.GetUint64(flags.FlagLimit)
 	countTotal, _ := flagSet.GetBool(flags.FlagCountTotal)
 	page, _ := flagSet.GetUint64(flags.FlagPage)
+	reverse, _ := flagSet.GetBool(flags.FlagReverse)
 
-	return NewPageRequest(pageKey, offset, limit, page, countTotal)
+	return NewPageRequest(pageKey, offset, limit, page, countTotal, reverse)
 }
 
-func NewPageRequest(pageKey string, offset, limit, page uint64, countTotal bool) (*query.PageRequest, error) {
+func NewPageRequest(pageKey string, offset, limit, page uint64, countTotal bool, reverse bool) (*query.PageRequest, error) {
 	if page > 1 && offset > 0 {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "page and offset cannot be used together")
 	}
@@ -69,5 +71,14 @@ func NewPageRequest(pageKey string, offset, limit, page uint64, countTotal bool)
 		Offset:     offset,
 		Limit:      limit,
 		CountTotal: countTotal,
+		Reverse:    reverse,
 	}, nil
+}
+
+// NewClientFromNode sets up Client implementation that communicates with a Tendermint node over
+// JSON RPC and WebSockets
+// TODO: We might not need to manually append `/websocket`:
+// https://github.com/cosmos/cosmos-sdk/issues/8986
+func NewClientFromNode(nodeURI string) (*rpchttp.HTTP, error) {
+	return rpchttp.New(nodeURI, "/websocket")
 }

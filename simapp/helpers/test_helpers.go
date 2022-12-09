@@ -14,12 +14,12 @@ import (
 
 // SimAppChainID hardcoded chainID for simulation
 const (
-	DefaultGenTxGas = 1000000
+	DefaultGenTxGas = 10000000
 	SimAppChainID   = "simulation-app"
 )
 
 // GenTx generates a signed mock transaction.
-func GenTx(gen client.TxConfig, msgs []sdk.Msg, feeAmt sdk.Coins, gas uint64, chainID string, sbh, accSeqs []uint64, priv ...cryptotypes.PrivKey) (sdk.Tx, error) {
+func GenTx(gen client.TxConfig, msgs []sdk.Msg, feeAmt sdk.Coins, gas uint64, chainID string, accNums, accSeqs []uint64, priv ...cryptotypes.PrivKey) (sdk.Tx, error) {
 	sigs := make([]signing.SignatureV2, len(priv))
 
 	// create a random length memo
@@ -57,10 +57,10 @@ func GenTx(gen client.TxConfig, msgs []sdk.Msg, feeAmt sdk.Coins, gas uint64, ch
 	// 2nd round: once all signer infos are set, every signer can sign.
 	for i, p := range priv {
 		signerData := authsign.SignerData{
-			ChainID:  chainID,
-			Sequence: accSeqs[i],
+			ChainID:       chainID,
+			AccountNumber: accNums[i],
+			Sequence:      accSeqs[i],
 		}
-		tx.SetSigBlockHeight(sbh[i])
 		signBytes, err := gen.SignModeHandler().GetSignBytes(signMode, signerData, tx.GetTx())
 		if err != nil {
 			panic(err)

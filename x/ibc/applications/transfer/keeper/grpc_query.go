@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/query"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 )
 
@@ -79,5 +79,32 @@ func (q Keeper) Params(c context.Context, _ *types.QueryParamsRequest) (*types.Q
 
 	return &types.QueryParamsResponse{
 		Params: &params,
+	}, nil
+}
+
+// DenomHash implements the Query/DenomHash gRPC method
+func (q Keeper) DenomHash(c context.Context, req *types.QueryDenomHashRequest) (*types.QueryDenomHashResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	// Convert given request trace path to DenomTrace struct to confirm the path in a valid denom trace format
+	denomTrace := types.ParseDenomTrace(req.Trace)
+	if err := denomTrace.Validate(); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	denomHash := denomTrace.Hash()
+	found := q.HasDenomTrace(ctx, denomHash)
+	if !found {
+		return nil, status.Error(
+			codes.NotFound,
+			sdkerrors.Wrap(types.ErrTraceNotFound, req.Trace).Error(),
+		)
+	}
+
+	return &types.QueryDenomHashResponse{
+		Hash: denomHash.String(),
 	}, nil
 }

@@ -3,9 +3,8 @@ package rest
 import (
 	"github.com/gorilla/mux"
 
-	"github.com/line/lbm-sdk/client/rest"
-
 	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/rest"
 )
 
 // RegisterRoutes registers REST routes for the upgrade module under the path specified by routeName.

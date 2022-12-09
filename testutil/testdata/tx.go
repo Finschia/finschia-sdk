@@ -3,7 +3,10 @@ package testdata
 import (
 	"encoding/json"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/crypto/keys/secp256r1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	sdk "github.com/line/lbm-sdk/types"
 )
@@ -12,7 +15,16 @@ import (
 func KeyTestPubAddr() (cryptotypes.PrivKey, cryptotypes.PubKey, sdk.AccAddress) {
 	key := secp256k1.GenPrivKey()
 	pub := key.PubKey()
-	addr := sdk.BytesToAccAddress(pub.Address())
+	addr := sdk.AccAddress(pub.Address())
+	return key, pub, addr
+}
+
+// KeyTestPubAddr generates a new secp256r1 keypair.
+func KeyTestPubAddrSecp256R1(require *require.Assertions) (cryptotypes.PrivKey, cryptotypes.PubKey, sdk.AccAddress) {
+	key, err := secp256r1.GenPrivKey()
+	require.NoError(err)
+	pub := key.PubKey()
+	addr := sdk.AccAddress(pub.Address())
 	return key, pub, addr
 }
 
@@ -23,7 +35,7 @@ func NewTestFeeAmount() sdk.Coins {
 
 // NewTestGasLimit is a test fee gas limit.
 func NewTestGasLimit() uint64 {
-	return 100000
+	return 200000
 }
 
 // NewTestMsg creates a message for testing with the given signers.
@@ -53,26 +65,19 @@ func (msg *TestMsg) GetSignBytes() []byte {
 func (msg *TestMsg) GetSigners() []sdk.AccAddress {
 	addrs := make([]sdk.AccAddress, len(msg.Signers))
 	for i, in := range msg.Signers {
-		err := sdk.ValidateAccAddress(in)
+		addr, err := sdk.AccAddressFromBech32(in)
 		if err != nil {
 			panic(err)
 		}
 
-		addrs[i] = sdk.AccAddress(in)
+		addrs[i] = addr
 	}
 
 	return addrs
 }
 func (msg *TestMsg) ValidateBasic() error { return nil }
 
-var _ sdk.MsgRequest = &MsgCreateDog{}
+var _ sdk.Msg = &MsgCreateDog{}
 
 func (msg *MsgCreateDog) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{} }
 func (msg *MsgCreateDog) ValidateBasic() error         { return nil }
-
-func NewServiceMsgCreateDog(msg *MsgCreateDog) sdk.Msg {
-	return sdk.ServiceMsg{
-		MethodName: "/testdata.Msg/CreateDog",
-		Request:    msg,
-	}
-}

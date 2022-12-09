@@ -47,7 +47,7 @@ func (s signModeLegacyAminoJSONHandler) GetSignBytes(mode signingtypes.SignMode,
 	}
 
 	return legacytx.StdSignBytes(
-		data.ChainID, tx.GetSigBlockHeight(), data.Sequence, protoTx.GetTimeoutHeight(),
+		data.ChainID, data.AccountNumber, data.Sequence, protoTx.GetTimeoutHeight(),
 		legacytx.StdFee{Amount: protoTx.GetFee(), Gas: protoTx.GetGas()},
 		tx.GetMsgs(), protoTx.GetMemo(),
 	), nil

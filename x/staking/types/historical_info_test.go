@@ -5,9 +5,11 @@ import (
 	"sort"
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/staking/types"
 )
 
@@ -26,12 +28,12 @@ func createValidators(t *testing.T) []types.Validator {
 
 func TestHistoricalInfo(t *testing.T) {
 	validators := createValidators(t)
-	hi := types.NewHistoricalInfo(header, validators)
+	hi := types.NewHistoricalInfo(header, validators, sdk.DefaultPowerReduction)
 	require.True(t, sort.IsSorted(types.Validators(hi.Valset)), "Validators are not sorted")
 
 	var value []byte
 	require.NotPanics(t, func() {
-		value = types.ModuleCdc.MustMarshalBinaryBare(&hi)
+		value = types.ModuleCdc.MustMarshal(&hi)
 	})
 	require.NotNil(t, value, "Marshalled HistoricalInfo is nil")
 
@@ -67,7 +69,7 @@ func TestValidateBasic(t *testing.T) {
 	err = types.ValidateBasic(hi)
 	require.Error(t, err, "ValidateBasic passed on unsorted ValSet")
 
-	hi = types.NewHistoricalInfo(header, validators)
+	hi = types.NewHistoricalInfo(header, validators, sdk.DefaultPowerReduction)
 	err = types.ValidateBasic(hi)
 	require.NoError(t, err, "ValidateBasic failed on valid HistoricalInfo")
 }

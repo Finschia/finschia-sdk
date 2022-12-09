@@ -15,7 +15,7 @@ import (
 
 var (
 	delPk1   = ed25519.GenPrivKey().PubKey()
-	delAddr1 = sdk.BytesToAccAddress(delPk1.Address())
+	delAddr1 = sdk.AccAddress(delPk1.Address())
 
 	amount = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(1)))
 )
@@ -33,8 +33,7 @@ func TestProposalHandlerPassed(t *testing.T) {
 	// add coins to the module account
 	macc := app.DistrKeeper.GetDistributionAccount(ctx)
 	balances := app.BankKeeper.GetAllBalances(ctx, macc.GetAddress())
-	err := app.BankKeeper.SetBalances(ctx, macc.GetAddress(), balances.Add(amount...))
-	require.NoError(t, err)
+	require.NoError(t, simapp.FundModuleAccount(app, ctx, macc.GetName(), amount))
 
 	app.AccountKeeper.SetModuleAccount(ctx, macc)
 

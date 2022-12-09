@@ -21,8 +21,8 @@ func TestBeginBlocker(t *testing.T) {
 	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
 
 	pks := simapp.CreateTestPubKeys(1)
-	simapp.AddTestAddrsFromPubKeys(app, ctx, pks, sdk.TokensFromConsensusPower(200))
-	addr, pk := sdk.BytesToValAddress(pks[0].Address()), pks[0]
+	simapp.AddTestAddrsFromPubKeys(app, ctx, pks, app.StakingKeeper.TokensFromConsensusPower(ctx, 200))
+	addr, pk := sdk.ValAddress(pks[0].Address()), pks[0]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 
 	// bond the validator
@@ -30,15 +30,15 @@ func TestBeginBlocker(t *testing.T) {
 	amt := tstaking.CreateValidatorWithValPower(addr, pk, power, true)
 	staking.EndBlocker(ctx, app.StakingKeeper)
 	require.Equal(
-		t, app.BankKeeper.GetAllBalances(ctx, addr.ToAccAddress()),
+		t, app.BankKeeper.GetAllBalances(ctx, sdk.AccAddress(addr)),
 		sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.GetParams(ctx).BondDenom, InitTokens.Sub(amt))),
 	)
 	require.Equal(t, amt, app.StakingKeeper.Validator(ctx, addr).GetBondedTokens())
 
 	val := abci.Validator{
-		Address:     pk.Address(),
-		Power:       power,
-		VotingPower: power,
+		Address:      pk.Address(),
+		Power:        power,
+		VotingWeight: power,
 	}
 
 	// mark the validator as having signed
@@ -53,7 +53,7 @@ func TestBeginBlocker(t *testing.T) {
 
 	slashing.BeginBlocker(ctx, req, app.SlashingKeeper)
 
-	info, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.BytesToConsAddress(pk.Address()))
+	info, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(pk.Address()))
 	require.True(t, found)
 	require.Equal(t, ctx.BlockHeight(), info.StartHeight)
 	require.Equal(t, int64(1), info.IndexOffset)

@@ -4,10 +4,10 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	distributiontypes "github.com/line/lbm-sdk/x/distribution/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
+
 	client "github.com/line/lbm-sdk/x/ibc/core/02-client"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
@@ -24,21 +24,33 @@ func (suite *ClientTestSuite) TestNewClientUpdateProposalHandler() {
 	}{
 		{
 			"valid update client proposal", func() {
-				clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
-				clientState := suite.chainA.GetClientState(clientA)
+				subjectPath := ibctesting.NewPath(suite.chainA, suite.chainB)
+				suite.coordinator.SetupClients(subjectPath)
+				subjectClientState := suite.chainA.GetClientState(subjectPath.EndpointA.ClientID)
 
-				tmClientState, ok := clientState.(*ibctmtypes.ClientState)
+				substitutePath := ibctesting.NewPath(suite.chainA, suite.chainB)
+				suite.coordinator.SetupClients(substitutePath)
+
+				// update substitute twice
+				err = substitutePath.EndpointA.UpdateClient()
+				suite.Require().NoError(err)
+				err = substitutePath.EndpointA.UpdateClient()
+				suite.Require().NoError(err)
+				substituteClientState := suite.chainA.GetClientState(substitutePath.EndpointA.ClientID)
+
+				tmClientState, ok := subjectClientState.(*ibcoctypes.ClientState)
 				suite.Require().True(ok)
 				tmClientState.AllowUpdateAfterMisbehaviour = true
 				tmClientState.FrozenHeight = tmClientState.LatestHeight
-				suite.chainA.App.IBCKeeper.ClientKeeper.SetClientState(suite.chainA.GetContext(), clientA, tmClientState)
+				suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientState(suite.chainA.GetContext(), subjectPath.EndpointA.ClientID, tmClientState)
 
-				// use next header for chainB to update the client on chainA
-				header, err := suite.chainA.ConstructUpdateOCClientHeader(suite.chainB, clientA)
-				suite.Require().NoError(err)
+				// replicate changes to substitute (they must match)
+				tmClientState, ok = substituteClientState.(*ibcoctypes.ClientState)
+				suite.Require().True(ok)
+				tmClientState.AllowUpdateAfterMisbehaviour = true
+				suite.chainA.App.GetIBCKeeper().ClientKeeper.SetClientState(suite.chainA.GetContext(), substitutePath.EndpointA.ClientID, tmClientState)
 
-				content, err = clienttypes.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, clientA, header)
-				suite.Require().NoError(err)
+				content = clienttypes.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subjectPath.EndpointA.ClientID, substitutePath.EndpointA.ClientID)
 			}, true,
 		},
 		{
@@ -61,7 +73,7 @@ func (suite *ClientTestSuite) TestNewClientUpdateProposalHandler() {
 
 			tc.malleate()
 
-			proposalHandler := client.NewClientUpdateProposalHandler(suite.chainA.App.IBCKeeper.ClientKeeper)
+			proposalHandler := client.NewClientProposalHandler(suite.chainA.App.GetIBCKeeper().ClientKeeper)
 
 			err = proposalHandler(suite.chainA.GetContext(), content)
 

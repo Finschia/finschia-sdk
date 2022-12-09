@@ -9,7 +9,7 @@ import (
 	"github.com/line/lbm-sdk/client"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/rest"
-	authclient "github.com/line/lbm-sdk/x/auth/client"
+	authtx "github.com/line/lbm-sdk/x/auth/tx"
 	"github.com/line/lbm-sdk/x/staking/types"
 )
 
@@ -33,7 +33,7 @@ func queryTxs(clientCtx client.Context, action string, delegatorAddr string) (*s
 		fmt.Sprintf("%s.%s='%s'", sdk.EventTypeMessage, sdk.AttributeKeySender, delegatorAddr),
 	}
 
-	return authclient.QueryTxsByEvents(clientCtx, events, page, limit, "")
+	return authtx.QueryTxsByEvents(clientCtx, events, page, limit, "")
 }
 
 func queryBonds(clientCtx client.Context, endpoint string) http.HandlerFunc {
@@ -42,17 +42,15 @@ func queryBonds(clientCtx client.Context, endpoint string) http.HandlerFunc {
 		bech32delegator := vars["delegatorAddr"]
 		bech32validator := vars["validatorAddr"]
 
-		err := sdk.ValidateAccAddress(bech32delegator)
+		delegatorAddr, err := sdk.AccAddressFromBech32(bech32delegator)
 		if rest.CheckBadRequestError(w, err) {
 			return
 		}
-		delegatorAddr := sdk.AccAddress(bech32delegator)
 
-		err = sdk.ValidateValAddress(bech32validator)
+		validatorAddr, err := sdk.ValAddressFromBech32(bech32validator)
 		if rest.CheckBadRequestError(w, err) {
 			return
 		}
-		validatorAddr := sdk.ValAddress(bech32validator)
 
 		clientCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, clientCtx, r)
 		if !ok {
@@ -81,11 +79,10 @@ func queryDelegator(clientCtx client.Context, endpoint string) http.HandlerFunc 
 		vars := mux.Vars(r)
 		bech32delegator := vars["delegatorAddr"]
 
-		err := sdk.ValidateAccAddress(bech32delegator)
+		delegatorAddr, err := sdk.AccAddressFromBech32(bech32delegator)
 		if rest.CheckBadRequestError(w, err) {
 			return
 		}
-		delegatorAddr := sdk.AccAddress(bech32delegator)
 
 		clientCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, clientCtx, r)
 		if !ok {
@@ -119,11 +116,10 @@ func queryValidator(clientCtx client.Context, endpoint string) http.HandlerFunc 
 			return
 		}
 
-		err = sdk.ValidateValAddress(bech32validatorAddr)
+		validatorAddr, err := sdk.ValAddressFromBech32(bech32validatorAddr)
 		if rest.CheckBadRequestError(w, err) {
 			return
 		}
-		validatorAddr := sdk.ValAddress(bech32validatorAddr)
 
 		clientCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, clientCtx, r)
 		if !ok {

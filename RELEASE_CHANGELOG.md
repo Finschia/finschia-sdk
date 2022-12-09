@@ -1,5 +1,63 @@
 # Changelog
 
+## [v0.45.0-rc0](https://github.com/line/lbm-sdk/releases/tag/v0.45.0-rc0)
+
+### Features
+* (x/wasm) [\#444](https://github.com/line/lbm-sdk/pull/444) Merge wasmd 0.19.0
+    * remove custom encoder from x/wasm/keeper.NewKeeper's arg. After the Token/collection module is added, it will be ported again.
+* (cosmos-sdk) [\#437](https://github.com/line/lbm-sdk/pull/437) dump up to cosmos-sdk v0.42.11
+    * [changelog of cosmos-sdk v0.42.11](https://github.com/cosmos/cosmos-sdk/blob/v0.42.11/CHANGELOG.md)
+* (feat) [\#434](https://github.com/line/lbm-sdk/pull/434) Revert signature mechanism using `sig_block_height`
+* (x/token) [\#416](https://github.com/line/lbm-sdk/pull/416) Migrate token module from line/link
+
+### Bug Fixes
+* (x/wasm) [\#436](https://github.com/line/lbm-sdk/pull/436) remove `x/wasm/linkwasmd`
+
+### Build, CI
+* (makefile, ci) [\#438](https://github.com/line/lbm-sdk/pull/438) fix `make proto-format` and `make proto-check-breaking` error
+
+
+## [v0.44.0-rc0](https://github.com/line/lbm-sdk/releases/tag/v0.44.0-rc0)
+
+### Features
+* (feat) [\#352] (https://github.com/line/lbm-sdk/pull/352) iavl, db & disk stats logging
+* (x/gov) [\#368](https://github.com/line/lbm-sdk/pull/368) Governance Split Votes, use `MsgWeightedVote` to send a split vote. Sending a regular `MsgVote` will convert the underlying vote option into a weighted vote with weight 1.
+* (x/upgrade) [\#377] (https://github.com/line/lbm-sdk/pull/377) To smoothen the update to the latest stable release, the SDK includes vesion map for managing migrations between SDK versions.
+* (x/wasm) [\#358] (https://github.com/line/lbm-sdk/pull/358) change wasm metrics method to using prometheus directly
+* (x/feegrant) [\#380] (https://github.com/line/lbm-sdk/pull/380) Feegrant module
+* (x/wasm) [\#395] (https://github.com/line/lbm-sdk/pull/395) Add the instantiate_permission in the CodeInfoResponse
+* (x/consortium) [\#406] (https://github.com/line/lbm-sdk/pull/406) Add CreateValidator access control feature
+* (x/bank) [\#400] (https://github.com/line/lbm-sdk/pull/400) add `bankplus` function to restrict to send coin to inactive smart contract.
+
+### Improvements
+* (slashing) [\#347](https://github.com/line/lbm-sdk/pull/347) Introduce VoterSetCounter
+* (auth) [\#348](https://github.com/line/lbm-sdk/pull/348) Increase default valid_sig_block_period
+
+### Bug Fixes
+* (x/feegrant) [\#383] (https://github.com/line/lbm-sdk/pull/383) Update allowance inside AllowedMsgAllowance
+* (tm-db) [\#388] (https://github.com/line/lbm-sdk/pull/388) Bump up tm-db fixing invalid memory reference
+* (swagger) [\#391] (https://github.com/line/lbm-sdk/pull/391) fix swagger's config path for wasm
+* (x/wasm) [\#393] (https://github.com/line/lbm-sdk/pull/393) fix bug where `StoreCodeAndInstantiateContract`, `UpdateContractStatus`, `UpdateContractStatusProposal` API does not work
+* (x/slashing) [\#407] (https://github.com/line/lbm-sdk/pull/407) Fix query signing infos command
+
+### Breaking Changes
+* (x/consortium) [\#411] (https://github.com/line/lbm-sdk/pull/411) Validate validator addresses in update-validator-auths proposal
+
+### Build, CI
+* (ci) [\#350](https://github.com/line/lbm-sdk/pull/350) Reduce sim test time
+* (ci) [\#351](https://github.com/line/lbm-sdk/pull/351) Remove diff condition from sim-normal
+
+### Document Updates
+* (docs) [\#361](https://github.com/line/lbm-sdk/pull/361) Add sample command docs
+* (docs) [\#392](https://github.com/line/lbm-sdk/pull/392) Modify with latest version of swagger REST interface docs.
+
+
+## [v0.43.1](https://github.com/line/lbm-sdk/releases/tag/v0.43.1)
+
+### Bug Fixes
+* (distribution) [\#364](https://github.com/line/lbm-sdk/pull/364) Force genOrBroadcastFn even when max-msgs != 0
+* (bank) [\#366](https://github.com/line/lbm-sdk/pull/366) Check bech32 address format in bank query
+
 ## [v0.43.0](https://github.com/line/lbm-sdk/releases/tag/v0.43.0)
 
 ### Features
@@ -62,7 +120,7 @@
 * (test) [\#193](https://github.com/line/lbm-sdk/pull/193) Allow to add new validator in test network
 * (client) [\#286](https://github.com/line/lbm-sdk/pull/286) Fix invalid type casting for error
 * (test) [\#326](https://github.com/line/lbm-sdk/pull/326) Enable sim test and fix address related bug
- 
+
 ### Breaking Changes
 * (global) [\#90](https://github.com/line/lbm-sdk/pull/90) Revise module path to `github.com/line/lfb-sdk`
 * (rpc) [\#97](https://github.com/line/lbm-sdk/pull/97) Send response with 404 status when quering non-exist account
@@ -77,7 +135,8 @@
 ### Build, CI
 * (ci) [\#234](https://github.com/line/lbm-sdk/pull/234) Fix branch name in ci script
 * (docker) [\#264](https://github.com/line/lbm-sdk/pull/264) Remove docker publish
- 
+* (ci) [\#345](https://github.com/line/lbm-sdk/pull/345) Split long sim test into 3 parts
+
 ### Document Updates
 * (docs) [\#205](https://github.com/line/lbm-sdk/pull/205) Renewal docs for open source
 * (docs) [\#207](https://github.com/line/lbm-sdk/pull/207) Fix license

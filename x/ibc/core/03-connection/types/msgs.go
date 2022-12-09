@@ -4,6 +4,7 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
@@ -26,7 +27,7 @@ var (
 func NewMsgConnectionOpenInit(
 	clientID, counterpartyClientID string,
 	counterpartyPrefix commitmenttypes.MerklePrefix,
-	version *Version, delayPeriod uint64, signer sdk.AccAddress,
+	version *Version, delayPeriod uint64, signer string,
 ) *MsgConnectionOpenInit {
 	// counterparty must have the same delay period
 	counterparty := NewCounterparty(counterpartyClientID, "", counterpartyPrefix)
@@ -35,18 +36,8 @@ func NewMsgConnectionOpenInit(
 		Counterparty: counterparty,
 		Version:      version,
 		DelayPeriod:  delayPeriod,
-		Signer:       signer.String(),
+		Signer:       signer,
 	}
-}
-
-// Route implements sdk.Msg
-func (msg MsgConnectionOpenInit) Route() string {
-	return host.RouterKey
-}
-
-// Type implements sdk.Msg
-func (msg MsgConnectionOpenInit) Type() string {
-	return "connection_open_init"
 }
 
 // ValidateBasic implements sdk.Msg.
@@ -64,21 +55,19 @@ func (msg MsgConnectionOpenInit) ValidateBasic() error {
 			return sdkerrors.Wrap(err, "basic validation of the provided version failed")
 		}
 	}
-	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+	_, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
 	return msg.Counterparty.ValidateBasic()
 }
 
-// GetSignBytes implements sdk.Msg. The function will panic since it is used
-// for amino transaction verification which IBC does not support.
-func (msg MsgConnectionOpenInit) GetSignBytes() []byte {
-	panic("IBC messages do not support amino")
-}
-
 // GetSigners implements sdk.Msg
 func (msg MsgConnectionOpenInit) GetSigners() []sdk.AccAddress {
-	accAddr := sdk.AccAddress(msg.Signer)
+	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{accAddr}
 }
 
@@ -90,7 +79,7 @@ func NewMsgConnectionOpenTry(
 	counterpartyPrefix commitmenttypes.MerklePrefix,
 	counterpartyVersions []*Version, delayPeriod uint64,
 	proofInit, proofClient, proofConsensus []byte,
-	proofHeight, consensusHeight clienttypes.Height, signer sdk.AccAddress,
+	proofHeight, consensusHeight clienttypes.Height, signer string,
 ) *MsgConnectionOpenTry {
 	counterparty := NewCounterparty(counterpartyClientID, counterpartyConnectionID, counterpartyPrefix)
 	csAny, _ := clienttypes.PackClientState(counterpartyClient)
@@ -106,18 +95,8 @@ func NewMsgConnectionOpenTry(
 		ProofConsensus:       proofConsensus,
 		ProofHeight:          proofHeight,
 		ConsensusHeight:      consensusHeight,
-		Signer:               signer.String(),
+		Signer:               signer,
 	}
-}
-
-// Route implements sdk.Msg
-func (msg MsgConnectionOpenTry) Route() string {
-	return host.RouterKey
-}
-
-// Type implements sdk.Msg
-func (msg MsgConnectionOpenTry) Type() string {
-	return "connection_open_try"
 }
 
 // ValidateBasic implements sdk.Msg
@@ -168,7 +147,8 @@ func (msg MsgConnectionOpenTry) ValidateBasic() error {
 	if msg.ConsensusHeight.IsZero() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidHeight, "consensus height must be non-zero")
 	}
-	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+	_, err = sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
 	return msg.Counterparty.ValidateBasic()
@@ -179,15 +159,12 @@ func (msg MsgConnectionOpenTry) UnpackInterfaces(unpacker codectypes.AnyUnpacker
 	return unpacker.UnpackAny(msg.ClientState, new(exported.ClientState))
 }
 
-// GetSignBytes implements sdk.Msg. The function will panic since it is used
-// for amino transaction verification which IBC does not support.
-func (msg MsgConnectionOpenTry) GetSignBytes() []byte {
-	panic("IBC messages do not support amino")
-}
-
 // GetSigners implements sdk.Msg
 func (msg MsgConnectionOpenTry) GetSigners() []sdk.AccAddress {
-	accAddr := sdk.AccAddress(msg.Signer)
+	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{accAddr}
 }
 
@@ -198,7 +175,7 @@ func NewMsgConnectionOpenAck(
 	proofTry, proofClient, proofConsensus []byte,
 	proofHeight, consensusHeight clienttypes.Height,
 	version *Version,
-	signer sdk.AccAddress,
+	signer string,
 ) *MsgConnectionOpenAck {
 	csAny, _ := clienttypes.PackClientState(counterpartyClient)
 	return &MsgConnectionOpenAck{
@@ -211,23 +188,13 @@ func NewMsgConnectionOpenAck(
 		ProofHeight:              proofHeight,
 		ConsensusHeight:          consensusHeight,
 		Version:                  version,
-		Signer:                   signer.String(),
+		Signer:                   signer,
 	}
 }
 
 // UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
 func (msg MsgConnectionOpenAck) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	return unpacker.UnpackAny(msg.ClientState, new(exported.ClientState))
-}
-
-// Route implements sdk.Msg
-func (msg MsgConnectionOpenAck) Route() string {
-	return host.RouterKey
-}
-
-// Type implements sdk.Msg
-func (msg MsgConnectionOpenAck) Type() string {
-	return "connection_open_ack"
 }
 
 // ValidateBasic implements sdk.Msg
@@ -266,21 +233,19 @@ func (msg MsgConnectionOpenAck) ValidateBasic() error {
 	if msg.ConsensusHeight.IsZero() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidHeight, "consensus height must be non-zero")
 	}
-	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+	_, err = sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
 	return nil
 }
 
-// GetSignBytes implements sdk.Msg. The function will panic since it is used
-// for amino transaction verification which IBC does not support.
-func (msg MsgConnectionOpenAck) GetSignBytes() []byte {
-	panic("IBC messages do not support amino")
-}
-
 // GetSigners implements sdk.Msg
 func (msg MsgConnectionOpenAck) GetSigners() []sdk.AccAddress {
-	accAddr := sdk.AccAddress(msg.Signer)
+	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{accAddr}
 }
 
@@ -288,24 +253,14 @@ func (msg MsgConnectionOpenAck) GetSigners() []sdk.AccAddress {
 //nolint:interfacer
 func NewMsgConnectionOpenConfirm(
 	connectionID string, proofAck []byte, proofHeight clienttypes.Height,
-	signer sdk.AccAddress,
+	signer string,
 ) *MsgConnectionOpenConfirm {
 	return &MsgConnectionOpenConfirm{
 		ConnectionId: connectionID,
 		ProofAck:     proofAck,
 		ProofHeight:  proofHeight,
-		Signer:       signer.String(),
+		Signer:       signer,
 	}
-}
-
-// Route implements sdk.Msg
-func (msg MsgConnectionOpenConfirm) Route() string {
-	return host.RouterKey
-}
-
-// Type implements sdk.Msg
-func (msg MsgConnectionOpenConfirm) Type() string {
-	return "connection_open_confirm"
 }
 
 // ValidateBasic implements sdk.Msg
@@ -319,20 +274,18 @@ func (msg MsgConnectionOpenConfirm) ValidateBasic() error {
 	if msg.ProofHeight.IsZero() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidHeight, "proof height must be non-zero")
 	}
-	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+	_, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
 	return nil
 }
 
-// GetSignBytes implements sdk.Msg. The function will panic since it is used
-// for amino transaction verification which IBC does not support.
-func (msg MsgConnectionOpenConfirm) GetSignBytes() []byte {
-	panic("IBC messages do not support amino")
-}
-
 // GetSigners implements sdk.Msg
 func (msg MsgConnectionOpenConfirm) GetSigners() []sdk.AccAddress {
-	accAddr := sdk.AccAddress(msg.Signer)
+	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{accAddr}
 }

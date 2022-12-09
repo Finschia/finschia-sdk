@@ -4,10 +4,12 @@ import (
 	"bufio"
 	"bytes"
 	"crypto/sha256"
-	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"fmt"
+
+	octypes "github.com/line/ostracon/types"
+	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
@@ -18,10 +20,8 @@ import (
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/genutil"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
+	"github.com/line/lbm-sdk/x/wasm/keeper"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"github.com/line/ostracon/crypto"
-	octypes "github.com/line/ostracon/types"
-	"github.com/spf13/cobra"
 )
 
 // GenesisReader reads genesis data. Extension point for custom genesis state readers.
@@ -43,7 +43,7 @@ type GenesisMutator interface {
 // that is executed on block 0.
 func GenesisStoreCodeCmd(defaultNodeHome string, genesisMutator GenesisMutator) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "store [wasm file] --source [source] --builder [builder] --run-as [owner_address_or_key_name]\",",
+		Use:   "store [wasm file] --run-as [owner_address_or_key_name]\",",
 		Short: "Upload a wasm binary",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -68,10 +68,9 @@ func GenesisStoreCodeCmd(defaultNodeHome string, genesisMutator GenesisMutator) 
 			})
 		},
 	}
-	cmd.Flags().String(flagSource, "", "A valid URI reference to the contract's source code, optional")
-	cmd.Flags().String(flagBuilder, "", "A valid docker tag for the build system, optional")
 	cmd.Flags().String(flagRunAs, "", "The address that is stored as code creator")
 	cmd.Flags().String(flagInstantiateByEverybody, "", "Everybody can instantiate a contract from the code, optional")
+	cmd.Flags().String(flagInstantiateNobody, "", "Nobody except the governance process can instantiate a contract from the code, optional")
 	cmd.Flags().String(flagInstantiateByAddress, "", "Only this address can instantiate a contract instance from the code, optional")
 
 	cmd.Flags().String(flags.FlagHome, defaultNodeHome, "The application home directory")
@@ -115,7 +114,7 @@ func GenesisInstantiateContractCmd(defaultNodeHome string, genesisMutator Genesi
 				if err != nil {
 					return err
 				}
-				var codeInfo *codeMeta
+				var codeInfo *CodeMeta
 				for i := range codeInfos {
 					if codeInfos[i].CodeID == msg.CodeID {
 						codeInfo = &codeInfos[i]
@@ -127,7 +126,7 @@ func GenesisInstantiateContractCmd(defaultNodeHome string, genesisMutator Genesi
 				}
 				// permissions correct?
 				if !codeInfo.Info.InstantiateConfig.Allowed(senderAddr) {
-					return fmt.Errorf("permissions were not granted for %state", senderAddr)
+					return fmt.Errorf("permissions were not granted for %s", senderAddr)
 				}
 				state.GenMsgs = append(state.GenMsgs, types.GenesisState_GenMsgs{
 					Sum: &types.GenesisState_GenMsgs_InstantiateContract{InstantiateContract: &msg},
@@ -139,6 +138,7 @@ func GenesisInstantiateContractCmd(defaultNodeHome string, genesisMutator Genesi
 	cmd.Flags().String(flagAmount, "", "Coins to send to the contract during instantiation")
 	cmd.Flags().String(flagLabel, "", "A human-readable name for this contract in lists")
 	cmd.Flags().String(flagAdmin, "", "Address of an admin")
+	cmd.Flags().Bool(flagNoAdmin, false, "You must set this explicitly if you don't want an admin")
 	cmd.Flags().String(flagRunAs, "", "The address that pays the init funds. It is the creator of the contract.")
 
 	cmd.Flags().String(flags.FlagHome, defaultNodeHome, "The application home directory")
@@ -179,7 +179,7 @@ func GenesisExecuteContractCmd(defaultNodeHome string, genesisMutator GenesisMut
 
 				// - does contract address exists?
 				if !hasContract(state, msg.Contract) {
-					return fmt.Errorf("unknown contract: %state", msg.Contract)
+					return fmt.Errorf("unknown contract: %s", msg.Contract)
 				}
 				state.GenMsgs = append(state.GenMsgs, types.GenesisState_GenMsgs{
 					Sum: &types.GenesisState_GenMsgs_ExecuteContract{ExecuteContract: &msg},
@@ -214,7 +214,6 @@ func GenesisListCodesCmd(defaultNodeHome string, genReader GenesisReader) *cobra
 				return err
 			}
 			return printJSONOutput(cmd, all)
-
 		},
 	}
 	cmd.Flags().String(flags.FlagHome, defaultNodeHome, "The application home directory")
@@ -254,18 +253,18 @@ func printJSONOutput(cmd *cobra.Command, obj interface{}) error {
 	return clientCtx.PrintString(string(bz))
 }
 
-type codeMeta struct {
+type CodeMeta struct {
 	CodeID uint64         `json:"code_id"`
 	Info   types.CodeInfo `json:"info"`
 }
 
-func getAllCodes(state *types.GenesisState) ([]codeMeta, error) {
-	all := make([]codeMeta, 0, len(state.Codes))
-	for _, c := range state.Codes {
-		all = append(all, codeMeta{
+func getAllCodes(state *types.GenesisState) ([]CodeMeta, error) {
+	all := make([]CodeMeta, len(state.Codes))
+	for i, c := range state.Codes {
+		all[i] = CodeMeta{
 			CodeID: c.CodeID,
 			Info:   c.CodeInfo,
-		})
+		}
 	}
 	// add inflight
 	seq := codeSeqValue(state)
@@ -276,20 +275,18 @@ func getAllCodes(state *types.GenesisState) ([]codeMeta, error) {
 				accessConfig = *msg.InstantiatePermission
 			} else {
 				// default
-				err := sdk.ValidateAccAddress(msg.Sender)
+				creator, err := sdk.AccAddressFromBech32(msg.Sender)
 				if err != nil {
 					return nil, fmt.Errorf("sender: %s", err)
 				}
-				accessConfig = state.Params.InstantiateDefaultPermission.With(sdk.AccAddress(msg.Sender))
+				accessConfig = state.Params.InstantiateDefaultPermission.With(creator)
 			}
 			hash := sha256.Sum256(msg.WASMByteCode)
-			all = append(all, codeMeta{
+			all = append(all, CodeMeta{
 				CodeID: seq,
 				Info: types.CodeInfo{
 					CodeHash:          hash[:],
 					Creator:           msg.Sender,
-					Source:            msg.Source,
-					Builder:           msg.Builder,
 					InstantiateConfig: accessConfig,
 				},
 			})
@@ -299,25 +296,25 @@ func getAllCodes(state *types.GenesisState) ([]codeMeta, error) {
 	return all, nil
 }
 
-type contractMeta struct {
+type ContractMeta struct {
 	ContractAddress string             `json:"contract_address"`
 	Info            types.ContractInfo `json:"info"`
 }
 
-func getAllContracts(state *types.GenesisState) []contractMeta {
-	all := make([]contractMeta, 0, len(state.Contracts))
-	for _, c := range state.Contracts {
-		all = append(all, contractMeta{
+func getAllContracts(state *types.GenesisState) []ContractMeta {
+	all := make([]ContractMeta, len(state.Contracts))
+	for i, c := range state.Contracts {
+		all[i] = ContractMeta{
 			ContractAddress: c.ContractAddress,
 			Info:            c.ContractInfo,
-		})
+		}
 	}
 	// add inflight
 	seq := contractSeqValue(state)
 	for _, m := range state.GenMsgs {
 		if msg := m.GetInstantiateContract(); msg != nil {
-			all = append(all, contractMeta{
-				ContractAddress: contractAddress(msg.CodeID, seq).String(),
+			all = append(all, ContractMeta{
+				ContractAddress: keeper.BuildContractAddress(msg.CodeID, seq).String(),
 				Info: types.ContractInfo{
 					CodeID:  msg.CodeID,
 					Creator: msg.Sender,
@@ -340,7 +337,7 @@ func hasAccountBalance(cmd *cobra.Command, appState map[string]json.RawMessage, 
 	if err != nil {
 		return false, err
 	}
-	cdc := clientCtx.JSONMarshaler
+	cdc := clientCtx.Codec
 	var genBalIterator banktypes.GenesisBalancesIterator
 	err = genutil.ValidateAccountInGenesis(appState, genBalIterator, sender, coins, cdc)
 	if err != nil {
@@ -358,7 +355,7 @@ func hasContract(state *types.GenesisState, contractAddr string) bool {
 	seq := contractSeqValue(state)
 	for _, m := range state.GenMsgs {
 		if msg := m.GetInstantiateContract(); msg != nil {
-			if contractAddress(msg.CodeID, seq).String() == contractAddr {
+			if keeper.BuildContractAddress(msg.CodeID, seq).String() == contractAddr {
 				return true
 			}
 			seq++
@@ -395,7 +392,7 @@ func (d DefaultGenesisReader) ReadWasmGenesis(cmd *cobra.Command) (*GenesisData,
 	var wasmGenesisState types.GenesisState
 	if appState[types.ModuleName] != nil {
 		clientCtx := client.GetClientContextFromCmd(cmd)
-		clientCtx.JSONMarshaler.MustUnmarshalJSON(appState[types.ModuleName], &wasmGenesisState)
+		clientCtx.Codec.MustUnmarshalJSON(appState[types.ModuleName], &wasmGenesisState)
 	}
 
 	return NewGenesisData(
@@ -437,7 +434,7 @@ func (x DefaultGenesisIO) AlterWasmModuleState(cmd *cobra.Command, callback func
 		return err
 	}
 	clientCtx := client.GetClientContextFromCmd(cmd)
-	wasmGenStateBz, err := clientCtx.JSONMarshaler.MarshalJSON(g.WasmModuleState)
+	wasmGenStateBz, err := clientCtx.Codec.MarshalJSON(g.WasmModuleState)
 	if err != nil {
 		return sdkerrors.Wrap(err, "marshal wasm genesis state")
 	}
@@ -484,45 +481,32 @@ func codeSeqValue(state *types.GenesisState) uint64 {
 func getActorAddress(cmd *cobra.Command) (sdk.AccAddress, error) {
 	actorArg, err := cmd.Flags().GetString(flagRunAs)
 	if err != nil {
-		return "", fmt.Errorf("run-as: %s", err.Error())
+		return nil, fmt.Errorf("run-as: %s", err.Error())
 	}
 	if len(actorArg) == 0 {
-		return "", errors.New("run-as address is required")
+		return nil, errors.New("run-as address is required")
 	}
 
-	err = sdk.ValidateAccAddress(actorArg)
+	actorAddr, err := sdk.AccAddressFromBech32(actorArg)
 	if err == nil {
-		return sdk.AccAddress(actorArg), nil
+		return actorAddr, nil
 	}
 	inBuf := bufio.NewReader(cmd.InOrStdin())
-	keyringBackend, _ := cmd.Flags().GetString(flags.FlagKeyringBackend)
+	keyringBackend, err := cmd.Flags().GetString(flags.FlagKeyringBackend)
+	if err != nil {
+		return nil, err
+	}
 
 	homeDir := client.GetClientContextFromCmd(cmd).HomeDir
 	// attempt to lookup address from Keybase if no address was provided
 	kb, err := keyring.New(sdk.KeyringServiceName(), keyringBackend, homeDir, inBuf)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	info, err := kb.Key(actorArg)
 	if err != nil {
-		return "", fmt.Errorf("failed to get address from Keybase: %w", err)
+		return nil, fmt.Errorf("failed to get address from Keybase: %w", err)
 	}
 	return info.GetAddress(), nil
-}
-
-// contractAddress builds a contract address. copied from keeper
-func contractAddress(codeID, instanceID uint64) sdk.AccAddress {
-	// NOTE: It is possible to get a duplicate address if either codeID or instanceID
-	// overflow 32 bits. This is highly improbable, but something that could be refactored.
-	contractID := codeID<<32 + instanceID
-	return addrFromUint64(contractID)
-}
-
-// addrFromUint64 is a helper for address generation, copied from keeper
-func addrFromUint64(id uint64) sdk.AccAddress {
-	addr := make([]byte, 20)
-	addr[0] = 'C'
-	binary.PutUvarint(addr[1:], id)
-	return sdk.BytesToAccAddress(crypto.AddressHash(addr))
 }

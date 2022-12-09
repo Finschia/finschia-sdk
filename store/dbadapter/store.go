@@ -3,16 +3,17 @@ package dbadapter
 import (
 	"io"
 
-	tmdb "github.com/line/tm-db/v2"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/cachekv"
+	"github.com/line/lbm-sdk/store/listenkv"
 	"github.com/line/lbm-sdk/store/tracekv"
 	"github.com/line/lbm-sdk/store/types"
 )
 
-// Wrapper type for tmdb.Db with implementation of KVStore
+// Wrapper type for dbm.DB with implementation of KVStore
 type Store struct {
-	tmdb.DB
+	dbm.DB
 }
 
 // Get wraps the underlying DB's Get method panicing on error.
@@ -85,5 +86,10 @@ func (dsa Store) CacheWrapWithTrace(w io.Writer, tc types.TraceContext) types.Ca
 	return cachekv.NewStore(tracekv.NewStore(dsa, w, tc))
 }
 
-// tmdb.DB implements KVStore so we can CacheKVStore it.
+// CacheWrapWithListeners implements the CacheWrapper interface.
+func (dsa Store) CacheWrapWithListeners(storeKey types.StoreKey, listeners []types.WriteListener) types.CacheWrap {
+	return cachekv.NewStore(listenkv.NewStore(dsa, storeKey, listeners))
+}
+
+// dbm.DB implements KVStore so we can CacheKVStore it.
 var _ types.KVStore = Store{}

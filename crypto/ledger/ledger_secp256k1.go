@@ -74,13 +74,13 @@ func NewPrivKeySecp256k1Unsafe(path hd.BIP44Params) (types.LedgerPrivKey, error)
 func NewPrivKeySecp256k1(path hd.BIP44Params, hrp string) (types.LedgerPrivKey, string, error) {
 	device, err := getDevice()
 	if err != nil {
-		return nil, "", err
+		return nil, "", fmt.Errorf("failed to retrieve device: %w", err)
 	}
 	defer warnIfErrors(device.Close)
 
 	pubKey, addr, err := getPubKeyAddrSafe(device, path, hrp)
 	if err != nil {
-		return nil, "", err
+		return nil, "", fmt.Errorf("failed to recover pubkey: %w", err)
 	}
 
 	return PrivKeyLedgerSecp256k1{pubKey, path}, addr, nil
@@ -154,7 +154,7 @@ func (pkl *PrivKeyLedgerSecp256k1) AssertIsPrivKeyInner() {}
 // Bytes implements the PrivKey interface. It stores the cached public key so
 // we can verify the same key when we reconnect to a ledger.
 func (pkl PrivKeyLedgerSecp256k1) Bytes() []byte {
-	return cdc.MustMarshalBinaryBare(pkl)
+	return cdc.MustMarshal(pkl)
 }
 
 // Equals implements the PrivKey interface. It makes sure two private keys
@@ -266,7 +266,7 @@ func getPubKeyUnsafe(device SECP256K1, path hd.BIP44Params) (types.PubKey, error
 func getPubKeyAddrSafe(device SECP256K1, path hd.BIP44Params, hrp string) (types.PubKey, string, error) {
 	publicKey, addr, err := device.GetAddressPubKeySECP256K1(path.DerivationPath(), hrp)
 	if err != nil {
-		return nil, "", fmt.Errorf("address %s rejected", addr)
+		return nil, "", fmt.Errorf("%w: address rejected for path %s", err, path.String())
 	}
 
 	// re-serialize in the 33-byte compressed format

@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-const defaultConfigTemplate = `# This is a TOML config file.
+const DefaultConfigTemplate = `# This is a TOML config file.
 # For more information, see https://github.com/toml-lang/toml
 
 ###############################################################################
@@ -22,7 +22,7 @@ minimum-gas-prices = "{{ .BaseConfig.MinGasPrices }}"
 
 # default: the last 100 states are kept in addition to every 500th state; pruning at 10 block intervals
 # nothing: all historic states will be saved, nothing will be deleted (i.e. archiving node)
-# everything: all saved states will be deleted, storing only the current state; pruning at 10 block intervals
+# everything: all saved states will be deleted, storing only the current and previous state; pruning at 10 block intervals
 # custom: allow pruning options to be manually specified through 'pruning-keep-recent', 'pruning-keep-every', and 'pruning-interval'
 pruning = "{{ .BaseConfig.Pruning }}"
 
@@ -66,11 +66,10 @@ inter-block-cache = {{ .BaseConfig.InterBlockCache }}
 # InterBlockCacheSize is the maximum bytes size of the inter-block cache.
 inter-block-cache-size = {{ .BaseConfig.InterBlockCacheSize }}
 
-# IAVLCacheSize is the maximum bytes size of iavl node cache
+# IAVLCacheSize is the maximum units size of iavl node cache (1 unit is 128 bytes)
+# This iavl cache size is just one store cache size, and the store exists for each modules.
+# So be careful that all iavl cache size are difference from this iavl cache size value.
 iavl-cache-size = {{ .BaseConfig.IAVLCacheSize }}
-
-# Bech32CacheSize is the maximum bytes size of bech32 cache (Default : 1GB)
-bech32-cache-size = {{ .BaseConfig.Bech32CacheSize }}
 
 # IndexEvents defines the set of events in the form {eventType}.{attributeKey},
 # which informs Tendermint what to index. If empty, all events will be indexed.
@@ -152,6 +151,30 @@ rpc-max-body-bytes = {{ .API.RPCMaxBodyBytes }}
 enabled-unsafe-cors = {{ .API.EnableUnsafeCORS }}
 
 ###############################################################################
+###                           Rosetta Configuration                         ###
+###############################################################################
+
+[rosetta]
+
+# Enable defines if the Rosetta API server should be enabled.
+enable = {{ .Rosetta.Enable }}
+
+# Address defines the Rosetta API server to listen on.
+address = "{{ .Rosetta.Address }}"
+
+# Network defines the name of the blockchain that will be returned by Rosetta.
+blockchain = "{{ .Rosetta.Blockchain }}"
+
+# Network defines the name of the network that will be returned by Rosetta.
+network = "{{ .Rosetta.Network }}"
+
+# Retries defines the number of retries when connecting to the node before failing.
+retries = {{ .Rosetta.Retries }}
+
+# Offline defines if Rosetta server should run in offline mode.
+offline = {{ .Rosetta.Offline }}
+
+###############################################################################
 ###                           gRPC Configuration                            ###
 ###############################################################################
 
@@ -162,6 +185,22 @@ enable = {{ .GRPC.Enable }}
 
 # Address defines the gRPC server address to bind to.
 address = "{{ .GRPC.Address }}"
+
+###############################################################################
+###                        gRPC Web Configuration                           ###
+###############################################################################
+
+[grpc-web]
+
+# GRPCWebEnable defines if the gRPC-web should be enabled.
+# NOTE: gRPC must also be enabled, otherwise, this configuration is a no-op.
+enable = {{ .GRPCWeb.Enable }}
+
+# Address defines the gRPC-web server address to bind to.
+address = "{{ .GRPCWeb.Address }}"
+
+# EnableUnsafeCORS defines if CORS should be enabled (unsafe - use it at your own risk).
+enable-unsafe-cors = {{ .GRPCWeb.EnableUnsafeCORS }}
 
 ###############################################################################
 ###                        State Sync Configuration                         ###
@@ -186,7 +225,7 @@ func init() {
 
 	tmpl := template.New("appConfigFileTemplate")
 
-	if configTemplate, err = tmpl.Parse(defaultConfigTemplate); err != nil {
+	if configTemplate, err = tmpl.Parse(DefaultConfigTemplate); err != nil {
 		panic(err)
 	}
 }
@@ -200,9 +239,21 @@ func ParseConfig(v *viper.Viper) (*Config, error) {
 	return conf, err
 }
 
+// SetConfigTemplate sets the custom app config template for
+// the application
+func SetConfigTemplate(customTemplate string) {
+	var err error
+
+	tmpl := template.New("appConfigFileTemplate")
+
+	if configTemplate, err = tmpl.Parse(customTemplate); err != nil {
+		panic(err)
+	}
+}
+
 // WriteConfigFile renders config using the template and writes it to
 // configFilePath.
-func WriteConfigFile(configFilePath string, config *Config) {
+func WriteConfigFile(configFilePath string, config interface{}) {
 	var buffer bytes.Buffer
 
 	if err := configTemplate.Execute(&buffer, config); err != nil {

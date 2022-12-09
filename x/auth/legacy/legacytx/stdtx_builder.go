@@ -29,25 +29,7 @@ func (s *StdTxBuilder) GetTx() authsigning.Tx {
 
 // SetMsgs implements TxBuilder.SetMsgs
 func (s *StdTxBuilder) SetMsgs(msgs ...sdk.Msg) error {
-	stdTxMsgs := make([]sdk.Msg, len(msgs))
-
-	for i, msg := range msgs {
-		switch msg := msg.(type) {
-		case sdk.ServiceMsg:
-			// Since ServiceMsg isn't registered with amino, we unpack msg.Request
-			// into a Msg so that it's handled gracefully for the legacy
-			// GET /txs/{hash} and /txs endpoints.
-			sdkMsg, ok := msg.Request.(sdk.Msg)
-			if !ok {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "Expecting %T at %d to implement sdk.Msg", msg.Request, i)
-			}
-			stdTxMsgs[i] = sdkMsg
-		default:
-			// legacy sdk.Msg
-			stdTxMsgs[i] = msg
-		}
-	}
-	s.Msgs = stdTxMsgs
+	s.Msgs = msgs
 	return nil
 }
 
@@ -79,14 +61,13 @@ func (s *StdTxBuilder) SetMemo(memo string) {
 	s.Memo = memo
 }
 
-func (s *StdTxBuilder) SetSigBlockHeight(sbh uint64) {
-	s.SigBlockHeight = sbh
-}
-
 // SetTimeoutHeight sets the transaction's height timeout.
 func (s *StdTxBuilder) SetTimeoutHeight(height uint64) {
 	s.TimeoutHeight = height
 }
+
+// SetFeeGranter does nothing for stdtx
+func (s *StdTxBuilder) SetFeeGranter(_ sdk.AccAddress) {}
 
 // StdTxConfig is a context.TxConfig for StdTx
 type StdTxConfig struct {
@@ -118,7 +99,7 @@ func (s StdTxConfig) TxEncoder() sdk.TxEncoder {
 }
 
 func (s StdTxConfig) TxDecoder() sdk.TxDecoder {
-	return mkDecoder(s.Cdc.UnmarshalBinaryBare)
+	return mkDecoder(s.Cdc.Unmarshal)
 }
 
 func (s StdTxConfig) TxJSONEncoder() sdk.TxEncoder {
@@ -210,6 +191,6 @@ func mkDecoder(unmarshaler Unmarshaler) sdk.TxDecoder {
 // DefaultTxEncoder logic for standard transaction encoding
 func DefaultTxEncoder(cdc *codec.LegacyAmino) sdk.TxEncoder {
 	return func(tx sdk.Tx) ([]byte, error) {
-		return cdc.MarshalBinaryBare(tx)
+		return cdc.Marshal(tx)
 	}
 }

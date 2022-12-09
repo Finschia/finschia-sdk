@@ -3,18 +3,23 @@ package types
 import (
 	"encoding/json"
 	"io"
+	"time"
 
 	"github.com/gogo/protobuf/grpc"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	octypes "github.com/line/ostracon/types"
-	tmdb "github.com/line/tm-db/v2"
 	"github.com/spf13/cobra"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/server/api"
 	"github.com/line/lbm-sdk/server/config"
 )
+
+// ServerStartTime defines the time duration that the server need to stay running after startup
+// for the startup be considered successful
+const ServerStartTime = 5 * time.Second
 
 type (
 	// AppOptions defines an interface that is passed into an application
@@ -38,7 +43,7 @@ type (
 
 		// RegisterGRPCServer registers gRPC services directly with the gRPC
 		// server.
-		RegisterGRPCServer(client.Context, grpc.Server)
+		RegisterGRPCServer(grpc.Server)
 
 		// RegisterTxService registers the gRPC Query service for tx (such as tx
 		// simulation, fetching txs by hash...).
@@ -50,7 +55,7 @@ type (
 
 	// AppCreator is a function that allows us to lazily initialize an
 	// application using various configurations.
-	AppCreator func(log.Logger, tmdb.DB, io.Writer, AppOptions) Application
+	AppCreator func(log.Logger, dbm.DB, io.Writer, AppOptions) Application
 
 	// ModuleInitFlags takes a start command and adds modules specific init flags.
 	ModuleInitFlags func(startCmd *cobra.Command)
@@ -70,5 +75,5 @@ type (
 
 	// AppExporter is a function that dumps all app state to
 	// JSON-serializable structure and returns the current validator set.
-	AppExporter func(log.Logger, tmdb.DB, io.Writer, int64, bool, []string, AppOptions) (ExportedApp, error)
+	AppExporter func(log.Logger, dbm.DB, io.Writer, int64, bool, []string, AppOptions) (ExportedApp, error)
 )

@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/snapshots"
 	"github.com/line/lbm-sdk/snapshots/types"
@@ -21,11 +21,14 @@ import (
 )
 
 func setupStore(t *testing.T) *snapshots.Store {
+	// ioutil.TempDir() is used instead of testing.T.TempDir()
+	// see https://github.com/cosmos/cosmos-sdk/pull/8475 for
+	// this change's rationale.
 	tempdir, err := ioutil.TempDir("", "")
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = os.RemoveAll(tempdir) })
 
-	store, err := snapshots.NewStore(memdb.NewDB(), tempdir)
+	store, err := snapshots.NewStore(dbm.NewMemDB(), tempdir)
 	require.NoError(t, err)
 
 	_, err = store.Save(1, 1, makeChunks([][]byte{
@@ -50,20 +53,20 @@ func setupStore(t *testing.T) *snapshots.Store {
 
 func TestNewStore(t *testing.T) {
 	tempdir := t.TempDir()
-	_, err := snapshots.NewStore(memdb.NewDB(), tempdir)
+	_, err := snapshots.NewStore(dbm.NewMemDB(), tempdir)
 
 	require.NoError(t, err)
 }
 
 func TestNewStore_ErrNoDir(t *testing.T) {
-	_, err := snapshots.NewStore(memdb.NewDB(), "")
+	_, err := snapshots.NewStore(dbm.NewMemDB(), "")
 	require.Error(t, err)
 }
 
 func TestNewStore_ErrDirFailure(t *testing.T) {
 	notADir := filepath.Join(testutil.TempFile(t).Name(), "subdir")
 
-	_, err := snapshots.NewStore(memdb.NewDB(), notADir)
+	_, err := snapshots.NewStore(dbm.NewMemDB(), notADir)
 	require.Error(t, err)
 }
 

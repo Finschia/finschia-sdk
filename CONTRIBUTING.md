@@ -84,7 +84,7 @@ All PRs require two Reviews before merge (except docs changes, or variable name-
 If you open a PR on the LBM SDK, it is mandatory to update the relevant documentation in /docs.
 
 - If your change relates to the core SDK (baseapp, store, ...), please update the `docs/basics/`, `docs/core/` and/or `docs/building-modules/` folders.
-- If your changes relate to the core of the CLI or Light-client (not specifically to module's CLI/Rest), please modify the `docs/interfaces/` folder.
+- If your changes relate to the core of the CLI (not specifically to module's CLI/Rest), please modify the `docs/run-node/` folder.
 - If your changes relate to a module, please update the module's spec in `x/moduleName/docs/spec/`.
 
 ## Forking
@@ -115,7 +115,7 @@ Please don't make Pull Requests from `main`.
 
 ## Dependencies
 
-We use [Go 1.15 Modules](https://github.com/golang/go/wiki/Modules) to manage
+We use [Go 1.18 Modules](https://github.com/golang/go/wiki/Modules) to manage
 dependency versions.
 
 The `main` branch of every LBM repository should just build with `go get`,

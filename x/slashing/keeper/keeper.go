@@ -14,13 +14,13 @@ import (
 // Keeper of the slashing store
 type Keeper struct {
 	storeKey   sdk.StoreKey
-	cdc        codec.BinaryMarshaler
+	cdc        codec.BinaryCodec
 	sk         types.StakingKeeper
 	paramspace types.ParamSubspace
 }
 
 // NewKeeper creates a slashing keeper
-func NewKeeper(cdc codec.BinaryMarshaler, key sdk.StoreKey, sk types.StakingKeeper, paramspace types.ParamSubspace) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, key sdk.StoreKey, sk types.StakingKeeper, paramspace types.ParamSubspace) Keeper {
 	// set KeyTable if it has not already been set
 	if !paramspace.HasKeyTable() {
 		paramspace = paramspace.WithKeyTable(types.ParamKeyTable())
@@ -56,7 +56,7 @@ func (k Keeper) GetPubkey(ctx sdk.Context, a cryptotypes.Address) (cryptotypes.P
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.AddrPubkeyRelationKey(a))
 	if bz == nil {
-		return nil, fmt.Errorf("address %s not found", sdk.BytesToConsAddress(a))
+		return nil, fmt.Errorf("address %s not found", sdk.ConsAddress(a))
 	}
 	var pk cryptotypes.PubKey
 	return pk, k.cdc.UnmarshalInterface(bz, &pk)

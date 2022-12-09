@@ -44,7 +44,7 @@ func (q Keeper) Proposals(c context.Context, req *types.QueryProposalsRequest) (
 
 	pageRes, err := query.FilteredPaginate(proposalStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var p types.Proposal
-		if err := q.cdc.UnmarshalBinaryBare(value, &p); err != nil {
+		if err := q.cdc.Unmarshal(value, &p); err != nil {
 			return false, status.Error(codes.Internal, err.Error())
 		}
 
@@ -57,14 +57,20 @@ func (q Keeper) Proposals(c context.Context, req *types.QueryProposalsRequest) (
 
 		// match voter address (if supplied)
 		if len(req.Voter) > 0 {
-			voter := sdk.AccAddress(req.Voter)
+			voter, err := sdk.AccAddressFromBech32(req.Voter)
+			if err != nil {
+				return false, err
+			}
 
 			_, matchVoter = q.GetVote(ctx, p.ProposalId, voter)
 		}
 
 		// match depositor (if supplied)
 		if len(req.Depositor) > 0 {
-			depositor := sdk.AccAddress(req.Depositor)
+			depositor, err := sdk.AccAddressFromBech32(req.Depositor)
+			if err != nil {
+				return false, err
+			}
 			_, matchDepositor = q.GetDeposit(ctx, p.ProposalId, depositor)
 		}
 
@@ -102,7 +108,10 @@ func (q Keeper) Vote(c context.Context, req *types.QueryVoteRequest) (*types.Que
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	voter := sdk.AccAddress(req.Voter)
+	voter, err := sdk.AccAddressFromBech32(req.Voter)
+	if err != nil {
+		return nil, err
+	}
 	vote, found := q.GetVote(ctx, req.ProposalId, voter)
 	if !found {
 		return nil, status.Errorf(codes.InvalidArgument,
@@ -130,9 +139,10 @@ func (q Keeper) Votes(c context.Context, req *types.QueryVotesRequest) (*types.Q
 
 	pageRes, err := query.Paginate(votesStore, req.Pagination, func(key []byte, value []byte) error {
 		var vote types.Vote
-		if err := q.cdc.UnmarshalBinaryBare(value, &vote); err != nil {
+		if err := q.cdc.Unmarshal(value, &vote); err != nil {
 			return err
 		}
+		populateLegacyOption(&vote)
 
 		votes = append(votes, vote)
 		return nil
@@ -188,7 +198,10 @@ func (q Keeper) Deposit(c context.Context, req *types.QueryDepositRequest) (*typ
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	depositor := sdk.AccAddress(req.Depositor)
+	depositor, err := sdk.AccAddressFromBech32(req.Depositor)
+	if err != nil {
+		return nil, err
+	}
 	deposit, found := q.GetDeposit(ctx, req.ProposalId, depositor)
 	if !found {
 		return nil, status.Errorf(codes.InvalidArgument,
@@ -216,7 +229,7 @@ func (q Keeper) Deposits(c context.Context, req *types.QueryDepositsRequest) (*t
 
 	pageRes, err := query.Paginate(depositStore, req.Pagination, func(key []byte, value []byte) error {
 		var deposit types.Deposit
-		if err := q.cdc.UnmarshalBinaryBare(value, &deposit); err != nil {
+		if err := q.cdc.Unmarshal(value, &deposit); err != nil {
 			return err
 		}
 

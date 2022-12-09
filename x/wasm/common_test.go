@@ -1,9 +1,11 @@
 package wasm
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // ensure store code returns the expected response
@@ -27,7 +29,7 @@ func parseInitResponse(t *testing.T, data []byte) string {
 	require.NotEmpty(t, pInstResp.Address)
 	addr := pInstResp.Address
 	// ensure this is a valid sdk address
-	err := sdk.ValidateAccAddress(addr)
+	_, err := sdk.AccAddressFromBech32(addr)
 	require.NoError(t, err)
 	return addr
 }
@@ -41,7 +43,7 @@ func parseStoreAndInitResponse(t *testing.T, data []byte) (uint64, string) {
 	addr := res.Address
 	codeID := res.CodeID
 	// ensure this is a valid sdk address
-	err := sdk.ValidateAccAddress(addr)
+	_, err := sdk.AccAddressFromBech32(addr)
 	require.NoError(t, err)
 	return codeID, addr
 }

@@ -4,17 +4,14 @@ package server
 
 import (
 	"fmt"
-	"strings"
 
-	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
-	"github.com/line/ostracon/libs/cli"
 	"github.com/line/ostracon/p2p"
 	pvm "github.com/line/ostracon/privval"
 	ostversion "github.com/line/ostracon/version"
 	"github.com/spf13/cobra"
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/client"
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	sdk "github.com/line/lbm-sdk/types"
 )
@@ -32,7 +29,6 @@ func ShowNodeIDCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-
 			fmt.Println(nodeKey.ID())
 			return nil
 		},
@@ -49,31 +45,24 @@ func ShowValidatorCmd() *cobra.Command {
 			cfg := serverCtx.Config
 
 			privValidator := pvm.LoadFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile())
-			valPubKey, err := privValidator.GetPubKey()
+			pk, err := privValidator.GetPubKey()
 			if err != nil {
 				return err
 			}
-
-			output, _ := cmd.Flags().GetString(cli.OutputFlag)
-			if strings.ToLower(output) == "json" {
-				return printlnJSON(valPubKey)
-			}
-
-			pubkey, err := cryptocodec.FromOcPubKeyInterface(valPubKey)
+			sdkPK, err := cryptocodec.FromOcPubKeyInterface(pk)
 			if err != nil {
 				return err
 			}
-			pubkeyBech32, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, pubkey)
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			bz, err := clientCtx.Codec.MarshalInterfaceJSON(sdkPK)
 			if err != nil {
 				return err
 			}
-
-			fmt.Println(pubkeyBech32)
+			fmt.Println(string(bz))
 			return nil
 		},
 	}
 
-	cmd.Flags().StringP(cli.OutputFlag, "o", "text", "Output format (text|json)")
 	return &cmd
 }
 
@@ -87,19 +76,12 @@ func ShowAddressCmd() *cobra.Command {
 			cfg := serverCtx.Config
 
 			privValidator := pvm.LoadFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile())
-			valConsAddr := sdk.BytesToConsAddress(privValidator.GetAddress())
-
-			output, _ := cmd.Flags().GetString(cli.OutputFlag)
-			if strings.ToLower(output) == "json" {
-				return printlnJSON(valConsAddr)
-			}
-
+			valConsAddr := (sdk.ConsAddress)(privValidator.GetAddress())
 			fmt.Println(valConsAddr.String())
 			return nil
 		},
 	}
 
-	cmd.Flags().StringP(cli.OutputFlag, "o", "text", "Output format (text|json)")
 	return cmd
 }
 
@@ -128,35 +110,6 @@ against which this app has been compiled.
 			}
 
 			fmt.Println(string(bs))
-			return nil
-		},
-	}
-}
-
-func printlnJSON(v interface{}) error {
-	cdc := codec.NewLegacyAmino()
-	cryptocodec.RegisterCrypto(cdc)
-
-	marshalled, err := cdc.MarshalJSON(v)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(string(marshalled))
-	return nil
-}
-
-// UnsafeResetAllCmd - extension of the ostracon command, resets initialization
-func UnsafeResetAllCmd() *cobra.Command {
-	return &cobra.Command{
-		Use:   "unsafe-reset-all",
-		Short: "Resets the blockchain database, removes address book files, and resets data/priv_validator_state.json to the genesis state",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			serverCtx := GetServerContextFromCmd(cmd)
-			cfg := serverCtx.Config
-
-			ostcmd.ResetAll(cfg.DBDir(), cfg.P2P.AddrBookFile(), cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(),
-				cfg.PrivKeyType, serverCtx.Logger)
 			return nil
 		},
 	}

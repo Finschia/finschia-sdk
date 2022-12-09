@@ -4,20 +4,25 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/spf13/viper"
+
 	"github.com/line/lbm-sdk/store/cache"
 	"github.com/line/lbm-sdk/store/iavl"
-	"github.com/spf13/viper"
 
 	storetypes "github.com/line/lbm-sdk/store/types"
 	"github.com/line/lbm-sdk/telemetry"
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 const (
 	defaultMinGasPrices = ""
 
-	// DefaultGRPCAddress is the default address the gRPC server binds to.
+	// DefaultGRPCAddress defines the default address to bind the gRPC server to.
 	DefaultGRPCAddress = "0.0.0.0:9090"
+
+	// DefaultGRPCWebAddress defines the default address to bind the gRPC-web server to.
+	DefaultGRPCWebAddress = "0.0.0.0:9091"
 )
 
 // BaseConfig defines the server's basic configuration
@@ -72,10 +77,7 @@ type BaseConfig struct {
 	InterBlockCacheSize int `mapstructure:"inter-block-cache-size"`
 
 	// IAVL cache size; bytes size unit
-	IAVLCacheSize int `mapstructure:"iavl-cache-size"`
-
-	// Bech32CacheSize is the maximum bytes size of bech32 cache (Default : 1GB)
-	Bech32CacheSize int `mapstructure:"bech32-cache-size"`
+	IAVLCacheSize uint64 `mapstructure:"iavl-cache-size"`
 
 	// When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
 	// It works when tendermint's prometheus option (config.toml) is set to true.
@@ -116,6 +118,29 @@ type APIConfig struct {
 	// Ref: https://github.com/cosmos/cosmos-sdk/issues/6420
 }
 
+// RosettaConfig defines the Rosetta API listener configuration.
+type RosettaConfig struct {
+	// Address defines the API server to listen on
+	Address string `mapstructure:"address"`
+
+	// Blockchain defines the blockchain name
+	// defaults to DefaultBlockchain
+	Blockchain string `mapstructure:"blockchain"`
+
+	// Network defines the network name
+	Network string `mapstructure:"network"`
+
+	// Retries defines the maximum number of retries
+	// rosetta will do before quitting
+	Retries int `mapstructure:"retries"`
+
+	// Enable defines if the API server should be enabled.
+	Enable bool `mapstructure:"enable"`
+
+	// Offline defines if the server must be run in offline mode
+	Offline bool `mapstructure:"offline"`
+}
+
 // GRPCConfig defines configuration for the gRPC server.
 type GRPCConfig struct {
 	// Enable defines if the gRPC server should be enabled.
@@ -123,6 +148,18 @@ type GRPCConfig struct {
 
 	// Address defines the API server to listen on
 	Address string `mapstructure:"address"`
+}
+
+// GRPCWebConfig defines configuration for the gRPC-web server.
+type GRPCWebConfig struct {
+	// Enable defines if the gRPC-web should be enabled.
+	Enable bool `mapstructure:"enable"`
+
+	// Address defines the gRPC-web server to listen on
+	Address string `mapstructure:"address"`
+
+	// EnableUnsafeCORS defines if CORS should be enabled (unsafe - use it at your own risk)
+	EnableUnsafeCORS bool `mapstructure:"enable-unsafe-cors"`
 }
 
 // StateSyncConfig defines the state sync snapshot configuration.
@@ -144,6 +181,8 @@ type Config struct {
 	Telemetry telemetry.Config `mapstructure:"telemetry"`
 	API       APIConfig        `mapstructure:"api"`
 	GRPC      GRPCConfig       `mapstructure:"grpc"`
+	Rosetta   RosettaConfig    `mapstructure:"rosetta"`
+	GRPCWeb   GRPCWebConfig    `mapstructure:"grpc-web"`
 	StateSync StateSyncConfig  `mapstructure:"state-sync"`
 }
 
@@ -182,7 +221,6 @@ func DefaultConfig() *Config {
 			InterBlockCache:     true,
 			InterBlockCacheSize: cache.DefaultCommitKVStoreCacheSize,
 			IAVLCacheSize:       iavl.DefaultIAVLCacheSize,
-			Bech32CacheSize:     sdk.DefaultBech32CacheSize,
 			Pruning:             storetypes.PruningOptionDefault,
 			PruningKeepRecent:   "0",
 			PruningKeepEvery:    "0",
@@ -207,6 +245,18 @@ func DefaultConfig() *Config {
 		GRPC: GRPCConfig{
 			Enable:  true,
 			Address: DefaultGRPCAddress,
+		},
+		Rosetta: RosettaConfig{
+			Enable:     false,
+			Address:    ":8080",
+			Blockchain: "app",
+			Network:    "network",
+			Retries:    3,
+			Offline:    false,
+		},
+		GRPCWeb: GRPCWebConfig{
+			Enable:  true,
+			Address: DefaultGRPCWebAddress,
 		},
 		StateSync: StateSyncConfig{
 			SnapshotInterval:   0,
@@ -238,6 +288,7 @@ func GetConfig(v *viper.Viper) Config {
 			HaltTime:          v.GetUint64("halt-time"),
 			IndexEvents:       v.GetStringSlice("index-events"),
 			MinRetainBlocks:   v.GetUint64("min-retain-blocks"),
+			IAVLCacheSize:     v.GetUint64("iavl-cache-size"),
 		},
 		Telemetry: telemetry.Config{
 			ServiceName:             v.GetString("telemetry.service-name"),
@@ -259,13 +310,40 @@ func GetConfig(v *viper.Viper) Config {
 			RPCMaxBodyBytes:    v.GetUint("api.rpc-max-body-bytes"),
 			EnableUnsafeCORS:   v.GetBool("api.enabled-unsafe-cors"),
 		},
+		Rosetta: RosettaConfig{
+			Enable:     v.GetBool("rosetta.enable"),
+			Address:    v.GetString("rosetta.address"),
+			Blockchain: v.GetString("rosetta.blockchain"),
+			Network:    v.GetString("rosetta.network"),
+			Retries:    v.GetInt("rosetta.retries"),
+			Offline:    v.GetBool("rosetta.offline"),
+		},
 		GRPC: GRPCConfig{
 			Enable:  v.GetBool("grpc.enable"),
 			Address: v.GetString("grpc.address"),
+		},
+		GRPCWeb: GRPCWebConfig{
+			Enable:           v.GetBool("grpc-web.enable"),
+			Address:          v.GetString("grpc-web.address"),
+			EnableUnsafeCORS: v.GetBool("grpc-web.enable-unsafe-cors"),
 		},
 		StateSync: StateSyncConfig{
 			SnapshotInterval:   v.GetUint64("state-sync.snapshot-interval"),
 			SnapshotKeepRecent: v.GetUint32("state-sync.snapshot-keep-recent"),
 		},
 	}
+}
+
+// ValidateBasic returns an error if min-gas-prices field is empty in BaseConfig. Otherwise, it returns nil.
+func (c Config) ValidateBasic() error {
+	if c.BaseConfig.MinGasPrices == "" {
+		return sdkerrors.ErrAppConfig.Wrap("set min gas price in app.toml or flag or env variable")
+	}
+	if c.Pruning == storetypes.PruningOptionEverything && c.StateSync.SnapshotInterval > 0 {
+		return sdkerrors.ErrAppConfig.Wrapf(
+			"cannot enable state sync snapshots with '%s' pruning setting", storetypes.PruningOptionEverything,
+		)
+	}
+
+	return nil
 }

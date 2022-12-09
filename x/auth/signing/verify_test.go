@@ -34,24 +34,24 @@ func TestVerifySignature(t *testing.T) {
 	cdc := codec.NewLegacyAmino()
 	sdk.RegisterLegacyAminoCodec(cdc)
 	types.RegisterLegacyAminoCodec(cdc)
-	cdc.RegisterConcrete(testdata.TestMsg{}, "lbm-sdk/Test", nil)
+	cdc.RegisterConcrete(testdata.TestMsg{}, "cosmos-sdk/Test", nil)
 
 	acc1 := app.AccountKeeper.NewAccountWithAddress(ctx, addr)
 	_ = app.AccountKeeper.NewAccountWithAddress(ctx, addr1)
 	app.AccountKeeper.SetAccount(ctx, acc1)
 	balances := sdk.NewCoins(sdk.NewInt64Coin("atom", 200))
-	require.NoError(t, app.BankKeeper.SetBalances(ctx, addr, balances))
+	require.NoError(t, simapp.FundAccount(app, ctx, addr, balances))
 	acc, err := ante.GetSignerAcc(ctx, app.AccountKeeper, addr)
-	require.NoError(t, app.BankKeeper.SetBalances(ctx, addr, balances))
+	require.NoError(t, simapp.FundAccount(app, ctx, addr, balances))
 
 	msgs := []sdk.Msg{testdata.NewTestMsg(addr)}
-	sbh := uint64(1)
 	fee := legacytx.NewStdFee(50000, sdk.Coins{sdk.NewInt64Coin("atom", 150)})
 	signerData := signing.SignerData{
-		ChainID:  chainId,
-		Sequence: acc.GetSequence(),
+		ChainID:       chainId,
+		AccountNumber: acc.GetAccountNumber(),
+		Sequence:      acc.GetSequence(),
 	}
-	signBytes := legacytx.StdSignBytes(signerData.ChainID, sbh, signerData.Sequence, 10, fee, msgs, memo)
+	signBytes := legacytx.StdSignBytes(signerData.ChainID, signerData.AccountNumber, signerData.Sequence, 10, fee, msgs, memo)
 	signature, err := priv.Sign(signBytes)
 	require.NoError(t, err)
 
@@ -60,7 +60,7 @@ func TestVerifySignature(t *testing.T) {
 	require.NoError(t, err)
 
 	handler := MakeTestHandlerMap()
-	stdTx := legacytx.NewStdTx(msgs, fee, []legacytx.StdSignature{stdSig}, sbh, memo)
+	stdTx := legacytx.NewStdTx(msgs, fee, []legacytx.StdSignature{stdSig}, memo)
 	stdTx.TimeoutHeight = 10
 	err = signing.VerifySignature(pubKey, signerData, sigV2.Data, handler, stdTx)
 	require.NoError(t, err)
@@ -69,7 +69,7 @@ func TestVerifySignature(t *testing.T) {
 	multisigKey := kmultisig.NewLegacyAminoPubKey(2, pkSet)
 	multisignature := multisig.NewMultisig(2)
 	msgs = []sdk.Msg{testdata.NewTestMsg(addr, addr1)}
-	multiSignBytes := legacytx.StdSignBytes(signerData.ChainID, sbh, signerData.Sequence, 10, fee, msgs, memo)
+	multiSignBytes := legacytx.StdSignBytes(signerData.ChainID, signerData.AccountNumber, signerData.Sequence, 10, fee, msgs, memo)
 
 	sig1, err := priv.Sign(multiSignBytes)
 	require.NoError(t, err)
@@ -88,7 +88,7 @@ func TestVerifySignature(t *testing.T) {
 	err = multisig.AddSignatureFromPubKey(multisignature, sig2V2.Data, pkSet[1], pkSet)
 	require.NoError(t, err)
 
-	stdTx = legacytx.NewStdTx(msgs, fee, []legacytx.StdSignature{stdSig1, stdSig2}, sbh, memo)
+	stdTx = legacytx.NewStdTx(msgs, fee, []legacytx.StdSignature{stdSig1, stdSig2}, memo)
 	stdTx.TimeoutHeight = 10
 
 	err = signing.VerifySignature(multisigKey, signerData, multisignature, handler, stdTx)

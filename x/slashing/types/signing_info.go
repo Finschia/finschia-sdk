@@ -14,7 +14,6 @@ func NewValidatorSigningInfo(
 	condAddr sdk.ConsAddress, startHeight, indexOffset int64,
 	jailedUntil time.Time, tombstoned bool, missedBlocksCounter int64,
 ) ValidatorSigningInfo {
-
 	return ValidatorSigningInfo{
 		Address:             condAddr.String(),
 		StartHeight:         startHeight,
@@ -39,7 +38,7 @@ func (i ValidatorSigningInfo) String() string {
 }
 
 // unmarshal a validator signing info from a store value
-func UnmarshalValSigningInfo(cdc codec.Marshaler, value []byte) (signingInfo ValidatorSigningInfo, err error) {
-	err = cdc.UnmarshalBinaryBare(value, &signingInfo)
+func UnmarshalValSigningInfo(cdc codec.Codec, value []byte) (signingInfo ValidatorSigningInfo, err error) {
+	err = cdc.Unmarshal(value, &signingInfo)
 	return signingInfo, err
 }

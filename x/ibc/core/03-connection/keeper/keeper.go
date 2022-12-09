@@ -6,6 +6,8 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
+
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
@@ -19,15 +21,22 @@ type Keeper struct {
 	types.QueryServer
 
 	storeKey     sdk.StoreKey
-	cdc          codec.BinaryMarshaler
+	paramSpace   paramtypes.Subspace
+	cdc          codec.BinaryCodec
 	clientKeeper types.ClientKeeper
 }
 
 // NewKeeper creates a new IBC connection Keeper instance
-func NewKeeper(cdc codec.BinaryMarshaler, key sdk.StoreKey, ck types.ClientKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, key sdk.StoreKey, paramSpace paramtypes.Subspace, ck types.ClientKeeper) Keeper {
+	// set KeyTable if it has not already been set
+	if !paramSpace.HasKeyTable() {
+		paramSpace = paramSpace.WithKeyTable(types.ParamKeyTable())
+	}
+
 	return Keeper{
 		storeKey:     key,
 		cdc:          cdc,
+		paramSpace:   paramSpace,
 		clientKeeper: ck,
 	}
 }
@@ -62,7 +71,7 @@ func (k Keeper) GetConnection(ctx sdk.Context, connectionID string) (types.Conne
 	}
 
 	var connection types.ConnectionEnd
-	k.cdc.MustUnmarshalBinaryBare(bz, &connection)
+	k.cdc.MustUnmarshal(bz, &connection)
 
 	return connection, true
 }
@@ -70,7 +79,7 @@ func (k Keeper) GetConnection(ctx sdk.Context, connectionID string) (types.Conne
 // SetConnection sets a connection to the store
 func (k Keeper) SetConnection(ctx sdk.Context, connectionID string, connection types.ConnectionEnd) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(&connection)
+	bz := k.cdc.MustMarshal(&connection)
 	store.Set(host.ConnectionKey(connectionID), bz)
 }
 
@@ -101,7 +110,7 @@ func (k Keeper) GetClientConnectionPaths(ctx sdk.Context, clientID string) ([]st
 	}
 
 	var clientPaths types.ClientPaths
-	k.cdc.MustUnmarshalBinaryBare(bz, &clientPaths)
+	k.cdc.MustUnmarshal(bz, &clientPaths)
 	return clientPaths.Paths, true
 }
 
@@ -109,7 +118,7 @@ func (k Keeper) GetClientConnectionPaths(ctx sdk.Context, clientID string) ([]st
 func (k Keeper) SetClientConnectionPaths(ctx sdk.Context, clientID string, paths []string) {
 	store := ctx.KVStore(k.storeKey)
 	clientPaths := types.ClientPaths{Paths: paths}
-	bz := k.cdc.MustMarshalBinaryBare(&clientPaths)
+	bz := k.cdc.MustMarshal(&clientPaths)
 	store.Set(host.ClientConnectionsKey(clientID), bz)
 }
 
@@ -160,7 +169,7 @@ func (k Keeper) IterateConnections(ctx sdk.Context, cb func(types.IdentifiedConn
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var connection types.ConnectionEnd
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &connection)
+		k.cdc.MustUnmarshal(iterator.Value(), &connection)
 
 		connectionID := host.MustParseConnectionPath(string(iterator.Key()))
 		identifiedConnection := types.NewIdentifiedConnection(connectionID, connection)

@@ -3,15 +3,15 @@ package types_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-	"github.com/stretchr/testify/suite"
-
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
+
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 	"github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
@@ -34,13 +34,13 @@ type SoloMachineTestSuite struct {
 
 func (suite *SoloMachineTestSuite) SetupTest() {
 	suite.coordinator = ibctesting.NewCoordinator(suite.T(), 2)
-	suite.chainA = suite.coordinator.GetChain(ibctesting.GetChainID(0))
-	suite.chainB = suite.coordinator.GetChain(ibctesting.GetChainID(1))
+	suite.chainA = suite.coordinator.GetChain(ibctesting.GetChainID(1))
+	suite.chainB = suite.coordinator.GetChain(ibctesting.GetChainID(2))
 
 	suite.solomachine = ibctesting.NewSolomachine(suite.T(), suite.chainA.Codec, "solomachinesingle", "testing", 1)
 	suite.solomachineMulti = ibctesting.NewSolomachine(suite.T(), suite.chainA.Codec, "solomachinemulti", "testing", 4)
 
-	suite.store = suite.chainA.App.IBCKeeper.ClientKeeper.ClientStore(suite.chainA.GetContext(), exported.Solomachine)
+	suite.store = suite.chainA.App.GetIBCKeeper().ClientKeeper.ClientStore(suite.chainA.GetContext(), exported.Solomachine)
 }
 
 func TestSoloMachineTestSuite(t *testing.T) {
@@ -58,7 +58,7 @@ func (suite *SoloMachineTestSuite) GetSequenceFromStore() uint64 {
 }
 
 func (suite *SoloMachineTestSuite) GetInvalidProof() []byte {
-	invalidProof, err := suite.chainA.Codec.MarshalBinaryBare(&types.TimestampedSignatureData{Timestamp: suite.solomachine.Time})
+	invalidProof, err := suite.chainA.Codec.Marshal(&types.TimestampedSignatureData{Timestamp: suite.solomachine.Time})
 	suite.Require().NoError(err)
 
 	return invalidProof

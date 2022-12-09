@@ -19,9 +19,9 @@ func BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock, k keeper.Keeper) 
 	// determine the total power signing the block
 	var previousTotalPower, sumPreviousPrecommitPower int64
 	for _, voteInfo := range req.LastCommitInfo.GetVotes() {
-		previousTotalPower += voteInfo.Validator.VotingPower
+		previousTotalPower += voteInfo.Validator.VotingWeight
 		if voteInfo.SignedLastBlock {
-			sumPreviousPrecommitPower += voteInfo.Validator.VotingPower
+			sumPreviousPrecommitPower += voteInfo.Validator.VotingWeight
 		}
 	}
 
@@ -33,6 +33,6 @@ func BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock, k keeper.Keeper) 
 	}
 
 	// record the proposer for when we payout on the next block
-	consAddr := sdk.BytesToConsAddress(req.Header.ProposerAddress)
+	consAddr := sdk.ConsAddress(req.Header.ProposerAddress)
 	k.SetPreviousProposerConsAddr(ctx, consAddr)
 }

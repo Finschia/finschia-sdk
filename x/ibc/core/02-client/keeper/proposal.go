@@ -2,62 +2,101 @@ package keeper
 
 import (
 	"github.com/armon/go-metrics"
-
 	"github.com/line/lbm-sdk/telemetry"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
-// ClientUpdateProposal will try to update the client with the new header if and only if
-// the proposal passes. The localhost client is not allowed to be modified with a proposal.
+// ClientUpdateProposal will retrieve the subject and substitute client.
+// A callback will occur to the subject client state with the client
+// prefixed store being provided for both the subject and the substitute client.
+// The localhost client is not allowed to be modified with a proposal. The IBC
+// client implementations are responsible for validating the parameters of the
+// subtitute (enusring they match the subject's parameters) as well as copying
+// the necessary consensus states from the subtitute to the subject client
+// store. The substitute must be Active and the subject must not be Active.
 func (k Keeper) ClientUpdateProposal(ctx sdk.Context, p *types.ClientUpdateProposal) error {
-	if p.ClientId == exported.Localhost {
+	if p.SubjectClientId == exported.Localhost || p.SubstituteClientId == exported.Localhost {
 		return sdkerrors.Wrap(types.ErrInvalidUpdateClientProposal, "cannot update localhost client with proposal")
 	}
 
-	clientState, found := k.GetClientState(ctx, p.ClientId)
+	subjectClientState, found := k.GetClientState(ctx, p.SubjectClientId)
 	if !found {
-		return sdkerrors.Wrapf(types.ErrClientNotFound, "cannot update client with ID %s", p.ClientId)
+		return sdkerrors.Wrapf(types.ErrClientNotFound, "subject client with ID %s", p.SubjectClientId)
 	}
 
-	header, err := types.UnpackHeader(p.Header)
+	subjectClientStore := k.ClientStore(ctx, p.SubjectClientId)
+
+	if status := subjectClientState.Status(ctx, subjectClientStore, k.cdc); status == exported.Active {
+		return sdkerrors.Wrap(types.ErrInvalidUpdateClientProposal, "cannot update Active subject client")
+	}
+
+	substituteClientState, found := k.GetClientState(ctx, p.SubstituteClientId)
+	if !found {
+		return sdkerrors.Wrapf(types.ErrClientNotFound, "substitute client with ID %s", p.SubstituteClientId)
+	}
+
+	if subjectClientState.GetLatestHeight().GTE(substituteClientState.GetLatestHeight()) {
+		return sdkerrors.Wrapf(types.ErrInvalidHeight, "subject client state latest height is greater or equal to substitute client state latest height (%s >= %s)", subjectClientState.GetLatestHeight(), substituteClientState.GetLatestHeight())
+	}
+
+	substituteClientStore := k.ClientStore(ctx, p.SubstituteClientId)
+
+	if status := substituteClientState.Status(ctx, substituteClientStore, k.cdc); status != exported.Active {
+		return sdkerrors.Wrapf(types.ErrClientNotActive, "substitute client is not Active, status is %s", status)
+	}
+
+	clientState, err := subjectClientState.CheckSubstituteAndUpdateState(ctx, k.cdc, subjectClientStore, substituteClientStore, substituteClientState)
 	if err != nil {
 		return err
 	}
+	k.SetClientState(ctx, p.SubjectClientId, clientState)
 
-	clientState, consensusState, err := clientState.CheckProposedHeaderAndUpdateState(ctx, k.cdc, k.ClientStore(ctx, p.ClientId), header)
-	if err != nil {
-		return err
-	}
-
-	k.SetClientState(ctx, p.ClientId, clientState)
-	k.SetClientConsensusState(ctx, p.ClientId, header.GetHeight(), consensusState)
-
-	k.Logger(ctx).Info("client updated after governance proposal passed", "client-id", p.ClientId, "height", clientState.GetLatestHeight().String())
+	k.Logger(ctx).Info("client updated after governance proposal passed", "client-id", p.SubjectClientId, "height", clientState.GetLatestHeight().String())
 
 	defer func() {
 		telemetry.IncrCounterWithLabels(
 			[]string{"ibc", "client", "update"},
 			1,
 			[]metrics.Label{
-				telemetry.NewLabel("client-type", clientState.ClientType()),
-				telemetry.NewLabel("client-id", p.ClientId),
-				telemetry.NewLabel("update-type", "proposal"),
+				telemetry.NewLabel(types.LabelClientType, clientState.ClientType()),
+				telemetry.NewLabel(types.LabelClientID, p.SubjectClientId),
+				telemetry.NewLabel(types.LabelUpdateType, "proposal"),
 			},
 		)
 	}()
 
 	// emitting events in the keeper for proposal updates to clients
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeUpdateClientProposal,
-			sdk.NewAttribute(types.AttributeKeyClientID, p.ClientId),
-			sdk.NewAttribute(types.AttributeKeyClientType, clientState.ClientType()),
-			sdk.NewAttribute(types.AttributeKeyConsensusHeight, header.GetHeight().String()),
-		),
-	)
+	EmitUpdateClientProposalEvent(ctx, p.SubjectClientId, clientState)
 
 	return nil
+}
+
+// HandleUpgradeProposal sets the upgraded client state in the upgrade store. It clears
+// an IBC client state and consensus state if a previous plan was set. Then  it
+// will schedule an upgrade and finally set the upgraded client state in upgrade
+// store.
+func (k Keeper) HandleUpgradeProposal(ctx sdk.Context, p *types.UpgradeProposal) error {
+	clientState, err := types.UnpackClientState(p.UpgradedClientState)
+	if err != nil {
+		return sdkerrors.Wrap(err, "could not unpack UpgradedClientState")
+	}
+
+	// zero out any custom fields before setting
+	cs := clientState.ZeroCustomFields()
+	bz, err := types.MarshalClientState(k.cdc, cs)
+	if err != nil {
+		return sdkerrors.Wrap(err, "could not marshal UpgradedClientState")
+	}
+
+	if err := k.upgradeKeeper.ScheduleUpgrade(ctx, p.Plan); err != nil {
+		return err
+	}
+
+	// sets the new upgraded client in last height committed on this chain is at plan.Height,
+	// since the chain will panic at plan.Height and new chain will resume at plan.Height
+	return k.upgradeKeeper.SetUpgradedClient(ctx, p.Plan.Height, bz)
 }

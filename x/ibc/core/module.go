@@ -8,17 +8,17 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/spf13/cobra"
-
-	abci "github.com/line/ostracon/abci/types"
-
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/spf13/cobra"
+
 	ibcclient "github.com/line/lbm-sdk/x/ibc/core/02-client"
+	clientkeeper "github.com/line/lbm-sdk/x/ibc/core/02-client/keeper"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
@@ -50,12 +50,12 @@ func (AppModuleBasic) RegisterLegacyAminoCodec(*codec.LegacyAmino) {}
 
 // DefaultGenesis returns default genesis state as raw bytes for the ibc
 // module.
-func (AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
+func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(types.DefaultGenesisState())
 }
 
 // ValidateGenesis performs genesis state validation for the ibc module.
-func (AppModuleBasic) ValidateGenesis(cdc codec.JSONMarshaler, config client.TxEncodingConfig, bz json.RawMessage) error {
+func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncodingConfig, bz json.RawMessage) error {
 	var gs types.GenesisState
 	if err := cdc.UnmarshalJSON(bz, &gs); err != nil {
 		return fmt.Errorf("failed to unmarshal %s genesis state: %w", host.ModuleName, err)
@@ -117,7 +117,7 @@ func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {
 
 // Route returns the message routing key for the ibc module.
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(host.RouterKey, NewHandler(*am.keeper))
+	return sdk.Route{}
 }
 
 // QuerierRoute returns the ibc module's querier route name.
@@ -136,11 +136,14 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	connectiontypes.RegisterMsgServer(cfg.MsgServer(), am.keeper)
 	channeltypes.RegisterMsgServer(cfg.MsgServer(), am.keeper)
 	types.RegisterQueryService(cfg.QueryServer(), am.keeper)
+
+	m := clientkeeper.NewMigrator(am.keeper.ClientKeeper)
+	cfg.RegisterMigration(host.ModuleName, 1, m.Migrate1to2)
 }
 
 // InitGenesis performs genesis initialization for the ibc module. It returns
 // no validator updates.
-func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, bz json.RawMessage) []abci.ValidatorUpdate {
+func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, bz json.RawMessage) []abci.ValidatorUpdate {
 	var gs types.GenesisState
 	err := cdc.UnmarshalJSON(bz, &gs)
 	if err != nil {
@@ -152,9 +155,12 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, bz jso
 
 // ExportGenesis returns the exported genesis state as raw bytes for the ibc
 // module.
-func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json.RawMessage {
+func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(ExportGenesis(ctx, *am.keeper))
 }
+
+// ConsensusVersion implements AppModule/ConsensusVersion.
+func (AppModule) ConsensusVersion() uint64 { return 2 }
 
 // BeginBlock returns the begin blocker for the ibc module.
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
@@ -166,8 +172,6 @@ func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 func (am AppModule) EndBlock(ctx sdk.Context, req abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}
 }
-
-//____________________________________________________________________________
 
 // AppModuleSimulation functions
 

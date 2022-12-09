@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/assert"
+
+	sdk "github.com/line/lbm-sdk/types"
 
 	"github.com/stretchr/testify/require"
 )
@@ -30,7 +31,7 @@ func TestBindingPortForIBCContractOnInstantiate(t *testing.T) {
 
 	// create a second contract should give yet another portID (and different address)
 	creator := RandomAccountAddress(t)
-	addr, _, err := keepers.ContractKeeper.Instantiate(ctx, example.CodeID, creator, "", initMsgBz, "ibc-reflect-2", nil)
+	addr, _, err := keepers.ContractKeeper.Instantiate(ctx, example.CodeID, creator, nil, initMsgBz, "ibc-reflect-2", nil)
 	require.NoError(t, err)
 	require.NotEqual(t, example.Contract, addr)
 
@@ -41,7 +42,7 @@ func TestBindingPortForIBCContractOnInstantiate(t *testing.T) {
 }
 
 func TestContractFromPortID(t *testing.T) {
-	contractAddr := contractAddress(1, 100)
+	contractAddr := BuildContractAddress(1, 100)
 	specs := map[string]struct {
 		srcPort string
 		expAddr sdk.AccAddress
@@ -79,5 +80,4 @@ func TestContractFromPortID(t *testing.T) {
 			assert.Equal(t, spec.expAddr, gotAddr)
 		})
 	}
-
 }

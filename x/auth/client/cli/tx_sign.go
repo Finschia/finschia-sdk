@@ -10,9 +10,7 @@ import (
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/tx/signing"
 	authclient "github.com/line/lbm-sdk/x/auth/client"
-	"github.com/line/lbm-sdk/x/auth/client/rest"
 )
 
 const (
@@ -49,7 +47,7 @@ account key. It implies --signature-only.
 		Args:   cobra.ExactArgs(1),
 	}
 
-	cmd.Flags().String(flagMultisig, "", "Address of the multisig account on behalf of which the transaction shall be signed")
+	cmd.Flags().String(flagMultisig, "", "Address or key name of the multisig account on behalf of which the transaction shall be signed")
 	cmd.Flags().String(flags.FlagOutputDocument, "", "The document will be written to the given file instead of STDOUT")
 	cmd.Flags().Bool(flagSigOnly, true, "Print only the generated signature, then exit")
 	cmd.Flags().String(flags.FlagChainID, "", "network chain ID")
@@ -69,11 +67,10 @@ func makeSignBatchCmd() func(cmd *cobra.Command, args []string) error {
 		txCfg := clientCtx.TxConfig
 		printSignatureOnly, _ := cmd.Flags().GetBool(flagSigOnly)
 		infile := os.Stdin
-		var multisigAddr sdk.AccAddress
 
-		// validate multisig address if there's any
-		if ms, _ := cmd.Flags().GetString(flagMultisig); ms != "" {
-			multisigAddr = sdk.AccAddress(ms)
+		ms, err := cmd.Flags().GetString(flagMultisig)
+		if err != nil {
+			return err
 		}
 
 		// prepare output document
@@ -100,7 +97,7 @@ func makeSignBatchCmd() func(cmd *cobra.Command, args []string) error {
 			if err != nil {
 				return err
 			}
-			if multisigAddr.Empty() {
+			if ms == "" {
 				from, _ := cmd.Flags().GetString(flags.FlagFrom)
 				_, fromName, _, err := client.GetFromFields(txFactory.Keybase(), from, clientCtx.GenerateOnly)
 				if err != nil {
@@ -111,11 +108,15 @@ func makeSignBatchCmd() func(cmd *cobra.Command, args []string) error {
 					return err
 				}
 			} else {
-				if txFactory.SignMode() == signing.SignMode_SIGN_MODE_UNSPECIFIED {
-					txFactory = txFactory.WithSignMode(signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON)
+				multisigAddr, _, _, err := client.GetFromFields(txFactory.Keybase(), ms, clientCtx.GenerateOnly)
+				if err != nil {
+					return fmt.Errorf("error getting account from keybase: %w", err)
 				}
 				err = authclient.SignTxWithSignerAddress(
 					txFactory, clientCtx, multisigAddr, clientCtx.GetFromName(), txBuilder, clientCtx.Offline, true)
+				if err != nil {
+					return err
+				}
 			}
 
 			if err != nil {
@@ -134,14 +135,13 @@ func makeSignBatchCmd() func(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		return scanner.Err()
+		return scanner.UnmarshalErr()
 	}
 }
 
 func setOutputFile(cmd *cobra.Command) (func(), error) {
 	outputDoc, _ := cmd.Flags().GetString(flags.FlagOutputDocument)
 	if outputDoc == "" {
-		cmd.SetOut(cmd.OutOrStdout())
 		return func() {}, nil
 	}
 
@@ -179,7 +179,7 @@ be generated via the 'multisign' command.
 		Args:   cobra.ExactArgs(1),
 	}
 
-	cmd.Flags().String(flagMultisig, "", "Address of the multisig account on behalf of which the transaction shall be signed")
+	cmd.Flags().String(flagMultisig, "", "Address or key name of the multisig account on behalf of which the transaction shall be signed")
 	cmd.Flags().Bool(flagOverwrite, false, "Overwrite existing signatures with a new one. If disabled, new signature will be appended")
 	cmd.Flags().Bool(flagSigOnly, false, "Print only the signatures")
 	cmd.Flags().String(flags.FlagOutputDocument, "", "The document will be written to the given file instead of STDOUT")
@@ -192,8 +192,10 @@ be generated via the 'multisign' command.
 }
 
 func preSignCmd(cmd *cobra.Command, _ []string) {
-	// Conditionally mark the account sequence required as no RPC query will be done.
+	// Conditionally mark the account and sequence numbers required as no RPC
+	// query will be done.
 	if offline, _ := cmd.Flags().GetBool(flags.FlagOffline); offline {
+		cmd.MarkFlagRequired(flags.FlagAccountNumber)
 		cmd.MarkFlagRequired(flags.FlagSequence)
 	}
 }
@@ -207,15 +209,13 @@ func makeSignCmd() func(cmd *cobra.Command, args []string) error {
 			return err
 		}
 		f := cmd.Flags()
-		txFactory := tx.NewFactoryCLI(clientCtx, f)
 
 		clientCtx, txF, newTx, err := readTxAndInitContexts(clientCtx, cmd, args[0])
 		if err != nil {
 			return err
 		}
-		if txF.SignMode() == signing.SignMode_SIGN_MODE_UNSPECIFIED {
-			txF = txF.WithSignMode(signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON)
-		}
+
+		txFactory := tx.NewFactoryCLI(clientCtx, cmd.Flags())
 		txCfg := clientCtx.TxConfig
 		txBuilder, err := txCfg.WrapTxBuilder(newTx)
 		if err != nil {
@@ -223,18 +223,31 @@ func makeSignCmd() func(cmd *cobra.Command, args []string) error {
 		}
 
 		printSignatureOnly, _ := cmd.Flags().GetBool(flagSigOnly)
-		multisigAddrStr, _ := cmd.Flags().GetString(flagMultisig)
+		multisig, _ := cmd.Flags().GetString(flagMultisig)
+		if err != nil {
+			return err
+		}
 		from, _ := cmd.Flags().GetString(flags.FlagFrom)
-		_, fromName, _, err := client.GetFromFields(txFactory.Keybase(), from, clientCtx.GenerateOnly)
+		_, fromName, _, err := client.GetFromFields(txF.Keybase(), from, clientCtx.GenerateOnly)
 		if err != nil {
 			return fmt.Errorf("error getting account from keybase: %w", err)
 		}
 
 		overwrite, _ := f.GetBool(flagOverwrite)
-		if multisigAddrStr != "" {
-			multisigAddr := sdk.AccAddress(multisigAddrStr)
+		if multisig != "" {
+			multisigAddr, err := sdk.AccAddressFromBech32(multisig)
+			if err != nil {
+				// Bech32 decode error, maybe it's a name, we try to fetch from keyring
+				multisigAddr, _, _, err = client.GetFromFields(txFactory.Keybase(), multisig, clientCtx.GenerateOnly)
+				if err != nil {
+					return fmt.Errorf("error getting account from keybase: %w", err)
+				}
+			}
 			err = authclient.SignTxWithSignerAddress(
 				txF, clientCtx, multisigAddr, fromName, txBuilder, clientCtx.Offline, overwrite)
+			if err != nil {
+				return err
+			}
 			printSignatureOnly = true
 		} else {
 			err = authclient.SignTx(txF, clientCtx, clientCtx.GetFromName(), txBuilder, clientCtx.Offline, overwrite)
@@ -254,7 +267,7 @@ func makeSignCmd() func(cmd *cobra.Command, args []string) error {
 			if err != nil {
 				return err
 			}
-			req := rest.BroadcastReq{
+			req := BroadcastReq{
 				Tx:   stdTx,
 				Mode: "block|sync|async",
 			}

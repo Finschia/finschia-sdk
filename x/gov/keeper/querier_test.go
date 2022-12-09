@@ -153,7 +153,7 @@ func TestQueries(t *testing.T) {
 	TestAddrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.NewInt(20000001))
 
 	oneCoins := sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 1))
-	consCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.TokensFromConsensusPower(10)))
+	consCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, app.StakingKeeper.TokensFromConsensusPower(ctx, 10)))
 
 	tp := TestProposal
 
@@ -163,9 +163,9 @@ func TestQueries(t *testing.T) {
 	proposal1, err := app.GovKeeper.SubmitProposal(ctx, tp)
 	require.NoError(t, err)
 	deposit1 := types.NewDeposit(proposal1.ProposalId, TestAddrs[0], oneCoins)
-	err = sdk.ValidateAccAddress(deposit1.Depositor)
+	depositer1, err := sdk.AccAddressFromBech32(deposit1.Depositor)
 	require.NoError(t, err)
-	_, err = app.GovKeeper.AddDeposit(ctx, deposit1.ProposalId, sdk.AccAddress(deposit1.Depositor), deposit1.Amount)
+	_, err = app.GovKeeper.AddDeposit(ctx, deposit1.ProposalId, depositer1, deposit1.Amount)
 	require.NoError(t, err)
 
 	proposal1.TotalDeposit = proposal1.TotalDeposit.Add(deposit1.Amount...)
@@ -173,9 +173,9 @@ func TestQueries(t *testing.T) {
 	proposal2, err := app.GovKeeper.SubmitProposal(ctx, tp)
 	require.NoError(t, err)
 	deposit2 := types.NewDeposit(proposal2.ProposalId, TestAddrs[0], consCoins)
-	err = sdk.ValidateAccAddress(deposit2.Depositor)
+	depositer2, err := sdk.AccAddressFromBech32(deposit2.Depositor)
 	require.NoError(t, err)
-	_, err = app.GovKeeper.AddDeposit(ctx, deposit2.ProposalId, sdk.AccAddress(deposit2.Depositor), deposit2.Amount)
+	_, err = app.GovKeeper.AddDeposit(ctx, deposit2.ProposalId, depositer2, deposit2.Amount)
 	require.NoError(t, err)
 
 	proposal2.TotalDeposit = proposal2.TotalDeposit.Add(deposit2.Amount...)
@@ -184,19 +184,19 @@ func TestQueries(t *testing.T) {
 	proposal3, err := app.GovKeeper.SubmitProposal(ctx, tp)
 	require.NoError(t, err)
 	deposit3 := types.NewDeposit(proposal3.ProposalId, TestAddrs[1], oneCoins)
-	err = sdk.ValidateAccAddress(deposit3.Depositor)
+	depositer3, err := sdk.AccAddressFromBech32(deposit3.Depositor)
 	require.NoError(t, err)
 
-	_, err = app.GovKeeper.AddDeposit(ctx, deposit3.ProposalId, sdk.AccAddress(deposit3.Depositor), deposit3.Amount)
+	_, err = app.GovKeeper.AddDeposit(ctx, deposit3.ProposalId, depositer3, deposit3.Amount)
 	require.NoError(t, err)
 
 	proposal3.TotalDeposit = proposal3.TotalDeposit.Add(deposit3.Amount...)
 
 	// TestAddrs[1] deposits on proposals #2 & #3
 	deposit4 := types.NewDeposit(proposal2.ProposalId, TestAddrs[1], depositParams.MinDeposit)
-	err = sdk.ValidateAccAddress(deposit4.Depositor)
+	depositer4, err := sdk.AccAddressFromBech32(deposit4.Depositor)
 	require.NoError(t, err)
-	_, err = app.GovKeeper.AddDeposit(ctx, deposit4.ProposalId, sdk.AccAddress(deposit4.Depositor), deposit4.Amount)
+	_, err = app.GovKeeper.AddDeposit(ctx, deposit4.ProposalId, depositer4, deposit4.Amount)
 	require.NoError(t, err)
 
 	proposal2.TotalDeposit = proposal2.TotalDeposit.Add(deposit4.Amount...)
@@ -204,9 +204,9 @@ func TestQueries(t *testing.T) {
 	proposal2.VotingEndTime = proposal2.VotingEndTime.Add(types.DefaultPeriod)
 
 	deposit5 := types.NewDeposit(proposal3.ProposalId, TestAddrs[1], depositParams.MinDeposit)
-	err = sdk.ValidateAccAddress(deposit5.Depositor)
+	depositer5, err := sdk.AccAddressFromBech32(deposit5.Depositor)
 	require.NoError(t, err)
-	_, err = app.GovKeeper.AddDeposit(ctx, deposit5.ProposalId, sdk.AccAddress(deposit5.Depositor), deposit5.Amount)
+	_, err = app.GovKeeper.AddDeposit(ctx, deposit5.ProposalId, depositer5, deposit5.Amount)
 	require.NoError(t, err)
 
 	proposal3.TotalDeposit = proposal3.TotalDeposit.Add(deposit5.Amount...)
@@ -240,62 +240,61 @@ func TestQueries(t *testing.T) {
 	require.Equal(t, deposit5, deposit)
 
 	// Only proposal #1 should be in types.Deposit Period
-	proposals := getQueriedProposals(t, ctx, legacyQuerierCdc, querier, "", "", types.StatusDepositPeriod, 1, 0)
-
+	proposals := getQueriedProposals(t, ctx, legacyQuerierCdc, querier, nil, nil, types.StatusDepositPeriod, 1, 0)
 	require.Len(t, proposals, 1)
 	require.Equal(t, proposal1, proposals[0])
 
 	// Only proposals #2 and #3 should be in Voting Period
-	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, "", "", types.StatusVotingPeriod, 1, 0)
+	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, nil, nil, types.StatusVotingPeriod, 1, 0)
 	require.Len(t, proposals, 2)
 	require.Equal(t, proposal2, proposals[0])
 	require.Equal(t, proposal3, proposals[1])
 
 	// Addrs[0] votes on proposals #2 & #3
-	vote1 := types.NewVote(proposal2.ProposalId, TestAddrs[0], types.OptionYes)
-	vote2 := types.NewVote(proposal3.ProposalId, TestAddrs[0], types.OptionYes)
+	vote1 := types.NewVote(proposal2.ProposalId, TestAddrs[0], types.NewNonSplitVoteOption(types.OptionYes))
+	vote2 := types.NewVote(proposal3.ProposalId, TestAddrs[0], types.NewNonSplitVoteOption(types.OptionYes))
 	app.GovKeeper.SetVote(ctx, vote1)
 	app.GovKeeper.SetVote(ctx, vote2)
 
 	// Addrs[1] votes on proposal #3
-	vote3 := types.NewVote(proposal3.ProposalId, TestAddrs[1], types.OptionYes)
+	vote3 := types.NewVote(proposal3.ProposalId, TestAddrs[1], types.NewNonSplitVoteOption(types.OptionYes))
 	app.GovKeeper.SetVote(ctx, vote3)
 
 	// Test query voted by TestAddrs[0]
-	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, "", TestAddrs[0], types.StatusNil, 1, 0)
+	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, nil, TestAddrs[0], types.StatusNil, 1, 0)
 	require.Equal(t, proposal2, proposals[0])
 	require.Equal(t, proposal3, proposals[1])
 
 	// Test query votes on types.Proposal 2
 	votes := getQueriedVotes(t, ctx, legacyQuerierCdc, querier, proposal2.ProposalId, 1, 0)
 	require.Len(t, votes, 1)
-	require.Equal(t, vote1, votes[0])
+	checkEqualVotes(t, vote1, votes[0])
 
 	vote := getQueriedVote(t, ctx, legacyQuerierCdc, querier, proposal2.ProposalId, TestAddrs[0])
-	require.Equal(t, vote1, vote)
+	checkEqualVotes(t, vote1, vote)
 
 	// Test query votes on types.Proposal 3
 	votes = getQueriedVotes(t, ctx, legacyQuerierCdc, querier, proposal3.ProposalId, 1, 0)
 	require.Len(t, votes, 2)
-	require.Equal(t, vote2, votes[0])
-	require.Equal(t, vote3, votes[1])
+	checkEqualVotes(t, vote2, votes[0])
+	checkEqualVotes(t, vote3, votes[1])
 
 	// Test query all proposals
-	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, "", "", types.StatusNil, 1, 0)
+	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, nil, nil, types.StatusNil, 1, 0)
 	require.Equal(t, proposal1, proposals[0])
 	require.Equal(t, proposal2, proposals[1])
 	require.Equal(t, proposal3, proposals[2])
 
 	// Test query voted by TestAddrs[1]
-	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, "", TestAddrs[1], types.StatusNil, 1, 0)
+	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, nil, TestAddrs[1], types.StatusNil, 1, 0)
 	require.Equal(t, proposal3.ProposalId, proposals[0].ProposalId)
 
 	// Test query deposited by TestAddrs[0]
-	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, TestAddrs[0], "", types.StatusNil, 1, 0)
+	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, TestAddrs[0], nil, types.StatusNil, 1, 0)
 	require.Equal(t, proposal1.ProposalId, proposals[0].ProposalId)
 
 	// Test query deposited by addr2
-	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, TestAddrs[1], "", types.StatusNil, 1, 0)
+	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, TestAddrs[1], nil, types.StatusNil, 1, 0)
 	require.Equal(t, proposal2.ProposalId, proposals[0].ProposalId)
 	require.Equal(t, proposal3.ProposalId, proposals[1].ProposalId)
 
@@ -317,14 +316,24 @@ func TestPaginatedVotesQuery(t *testing.T) {
 	app.GovKeeper.SetProposal(ctx, proposal)
 
 	votes := make([]types.Vote, 20)
-	rand := rand.New(rand.NewSource(time.Now().UnixNano()))
-	addrBytes := make([]byte, 20)
+	random := rand.New(rand.NewSource(time.Now().UnixNano()))
+	addrMap := make(map[string]struct{})
+	genAddr := func() string {
+		addr := make(sdk.AccAddress, 20)
+		for {
+			random.Read(addr)
+			addrStr := addr.String()
+			if _, ok := addrMap[addrStr]; !ok {
+				addrMap[addrStr] = struct{}{}
+				return addrStr
+			}
+		}
+	}
 	for i := range votes {
-		rand.Read(addrBytes)
 		vote := types.Vote{
 			ProposalId: proposal.ProposalId,
-			Voter:      sdk.BytesToAccAddress(addrBytes).String(),
-			Option:     types.OptionYes,
+			Voter:      genAddr(),
+			Options:    types.NewNonSplitVoteOption(types.OptionYes),
 		}
 		votes[i] = vote
 		app.GovKeeper.SetVote(ctx, vote)
@@ -374,4 +383,15 @@ func TestPaginatedVotesQuery(t *testing.T) {
 			}
 		})
 	}
+}
+
+// checkEqualVotes checks that two votes are equal, without taking into account
+// graceful fallback for `Option`.
+// When querying, the keeper populates the `vote.Option` field when there's
+// only 1 vote, this function checks equality of structs while skipping that
+// field.
+func checkEqualVotes(t *testing.T, vote1, vote2 types.Vote) {
+	require.Equal(t, vote1.Options, vote2.Options)
+	require.Equal(t, vote1.Voter, vote2.Voter)
+	require.Equal(t, vote1.ProposalId, vote2.ProposalId)
 }

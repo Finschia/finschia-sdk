@@ -62,35 +62,35 @@ type GasEstimateResponse struct {
 // BaseReq defines a structure that can be embedded in other request structures
 // that all share common "base" fields.
 type BaseReq struct {
-	From           string       `json:"from"`
-	Memo           string       `json:"memo"`
-	ChainID        string       `json:"chain_id"`
-	SigBlockHeight uint64       `json:"sig_block_height"`
-	Sequence       uint64       `json:"sequence"`
-	TimeoutHeight  uint64       `json:"timeout_height"`
-	Fees           sdk.Coins    `json:"fees"`
-	GasPrices      sdk.DecCoins `json:"gas_prices"`
-	Gas            string       `json:"gas"`
-	GasAdjustment  string       `json:"gas_adjustment"`
-	Simulate       bool         `json:"simulate"`
+	From          string       `json:"from"`
+	Memo          string       `json:"memo"`
+	ChainID       string       `json:"chain_id"`
+	AccountNumber uint64       `json:"account_number"`
+	Sequence      uint64       `json:"sequence"`
+	TimeoutHeight uint64       `json:"timeout_height"`
+	Fees          sdk.Coins    `json:"fees"`
+	GasPrices     sdk.DecCoins `json:"gas_prices"`
+	Gas           string       `json:"gas"`
+	GasAdjustment string       `json:"gas_adjustment"`
+	Simulate      bool         `json:"simulate"`
 }
 
 // NewBaseReq creates a new basic request instance and sanitizes its values
 func NewBaseReq(
-	from, memo, chainID string, gas, gasAdjustment string, signBlockHeight, seq uint64,
+	from, memo, chainID string, gas, gasAdjustment string, accNumber, seq uint64,
 	fees sdk.Coins, gasPrices sdk.DecCoins, simulate bool,
 ) BaseReq {
 	return BaseReq{
-		From:           strings.TrimSpace(from),
-		Memo:           strings.TrimSpace(memo),
-		ChainID:        strings.TrimSpace(chainID),
-		Fees:           fees,
-		GasPrices:      gasPrices,
-		Gas:            strings.TrimSpace(gas),
-		GasAdjustment:  strings.TrimSpace(gasAdjustment),
-		SigBlockHeight: signBlockHeight,
-		Sequence:       seq,
-		Simulate:       simulate,
+		From:          strings.TrimSpace(from),
+		Memo:          strings.TrimSpace(memo),
+		ChainID:       strings.TrimSpace(chainID),
+		Fees:          fees,
+		GasPrices:     gasPrices,
+		Gas:           strings.TrimSpace(gas),
+		GasAdjustment: strings.TrimSpace(gasAdjustment),
+		AccountNumber: accNumber,
+		Sequence:      seq,
+		Simulate:      simulate,
 	}
 }
 
@@ -98,7 +98,7 @@ func NewBaseReq(
 func (br BaseReq) Sanitize() BaseReq {
 	return NewBaseReq(
 		br.From, br.Memo, br.ChainID, br.Gas, br.GasAdjustment,
-		br.SigBlockHeight, br.Sequence, br.Fees, br.GasPrices, br.Simulate,
+		br.AccountNumber, br.Sequence, br.Fees, br.GasPrices, br.Simulate,
 	)
 }
 
@@ -124,7 +124,7 @@ func (br BaseReq) ValidateBasic(w http.ResponseWriter) bool {
 		}
 	}
 
-	if err := sdk.ValidateAccAddress(br.From); err != nil || len(br.From) == 0 {
+	if _, err := sdk.AccAddressFromBech32(br.From); err != nil || len(br.From) == 0 {
 		WriteErrorResponse(w, http.StatusUnauthorized, fmt.Sprintf("invalid from address: %s", br.From))
 		return false
 	}
@@ -133,7 +133,7 @@ func (br BaseReq) ValidateBasic(w http.ResponseWriter) bool {
 }
 
 // ReadRESTReq reads and unmarshals a Request's body to the the BaseReq struct.
-// Writes an error response to ResponseWriter and returns true if errors occurred.
+// Writes an error response to ResponseWriter and returns false if errors occurred.
 func ReadRESTReq(w http.ResponseWriter, r *http.Request, cdc *codec.LegacyAmino, req interface{}) bool {
 	body, err := ioutil.ReadAll(r.Body)
 	if CheckBadRequestError(w, err) {

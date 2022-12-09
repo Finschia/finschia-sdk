@@ -3,10 +3,11 @@ package mem
 import (
 	"io"
 
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/lbm-sdk/store/dbadapter"
+	"github.com/line/lbm-sdk/store/listenkv"
 	"github.com/line/lbm-sdk/store/tracekv"
 	"github.com/line/lbm-sdk/store/types"
 )
@@ -23,10 +24,10 @@ type Store struct {
 }
 
 func NewStore() *Store {
-	return NewStoreWithDB(memdb.NewDB())
+	return NewStoreWithDB(dbm.NewMemDB())
 }
 
-func NewStoreWithDB(db *memdb.MemDB) *Store { // nolint: interfacer
+func NewStoreWithDB(db *dbm.MemDB) *Store { // nolint: interfacer
 	return &Store{Store: dbadapter.Store{DB: db}}
 }
 
@@ -43,6 +44,11 @@ func (s Store) CacheWrap() types.CacheWrap {
 // CacheWrapWithTrace implements KVStore.
 func (s Store) CacheWrapWithTrace(w io.Writer, tc types.TraceContext) types.CacheWrap {
 	return cachekv.NewStore(tracekv.NewStore(s, w, tc))
+}
+
+// CacheWrapWithListeners implements the CacheWrapper interface.
+func (s Store) CacheWrapWithListeners(storeKey types.StoreKey, listeners []types.WriteListener) types.CacheWrap {
+	return cachekv.NewStore(listenkv.NewStore(s, storeKey, listeners))
 }
 
 // Commit performs a no-op as entries are persistent between commitments.

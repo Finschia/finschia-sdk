@@ -5,47 +5,22 @@ import (
 	"strings"
 	"testing"
 
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 const firstCodeID = 1
-
-func TestBuilderRegexp(t *testing.T) {
-	cases := map[string]struct {
-		example string
-		valid   bool
-	}{
-		"normal":                {"fedora/httpd:version1.0", true},
-		"another valid org":     {"confio/js-builder-1:test", true},
-		"no org name":           {"cosmwasm-opt:0.6.3", false},
-		"invalid trailing char": {"someone/cosmwasm-opt-:0.6.3", false},
-		"invalid leading char":  {"confio/.builder-1:manual", false},
-		"multiple orgs":         {"confio/assembly-script/optimizer:v0.9.1", true},
-		"too long":              {"over-128-character-limit/some-long-sub-path/and-yet-another-long-name/testtesttesttesttesttesttest/foobarfoobar/foobarfoobar:randomstringrandomstringrandomstringrandomstring", false},
-	}
-
-	for name, tc := range cases {
-		t.Run(name, func(t *testing.T) {
-			err := validateBuilder(tc.example)
-			if tc.valid {
-				assert.NoError(t, err)
-			} else {
-				assert.Error(t, err)
-			}
-		})
-
-	}
-}
 
 func TestStoreCodeValidation(t *testing.T) {
 	bad, err := sdk.AccAddressFromHex("012345")
 	require.NoError(t, err)
 	badAddress := bad.String()
 	// proper address size
-	goodAddress := sdk.BytesToAccAddress(make([]byte, 20)).String()
-
+	goodAddress := sdk.AccAddress(make([]byte, ContractAddrLen)).String()
+	sdk.GetConfig().SetAddressVerifier(VerifyAddressLen())
 	cases := map[string]struct {
 		msg   MsgStoreCode
 		valid bool
@@ -78,37 +53,8 @@ func TestStoreCodeValidation(t *testing.T) {
 			msg: MsgStoreCode{
 				Sender:       goodAddress,
 				WASMByteCode: []byte("foo"),
-				Builder:      "confio/cosmwasm-opt:0.6.2",
-				Source:       "https://crates.io/api/v1/crates/cw-erc20/0.1.0/download",
 			},
 			valid: true,
-		},
-		"invalid builder": {
-			msg: MsgStoreCode{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Builder:      "-bad-opt:0.6.2",
-				Source:       "https://crates.io/api/v1/crates/cw-erc20/0.1.0/download",
-			},
-			valid: false,
-		},
-		"invalid source scheme": {
-			msg: MsgStoreCode{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Builder:      "cosmwasm-opt:0.6.2",
-				Source:       "ftp://crates.io/api/download.tar.gz",
-			},
-			valid: false,
-		},
-		"invalid source format": {
-			msg: MsgStoreCode{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Builder:      "cosmwasm-opt:0.6.2",
-				Source:       "/api/download-ss",
-			},
-			valid: false,
 		},
 		"invalid InstantiatePermission": {
 			msg: MsgStoreCode{
@@ -137,7 +83,7 @@ func TestInstantiateContractValidation(t *testing.T) {
 	require.NoError(t, err)
 	badAddress := bad.String()
 	// proper address size
-	goodAddress := sdk.BytesToAccAddress(make([]byte, 20)).String()
+	goodAddress := sdk.AccAddress(make([]byte, 20)).String()
 
 	cases := map[string]struct {
 		msg   MsgInstantiateContract
@@ -149,25 +95,25 @@ func TestInstantiateContractValidation(t *testing.T) {
 		},
 		"correct minimal": {
 			msg: MsgInstantiateContract{
-				Sender:  goodAddress,
-				CodeID:  firstCodeID,
-				Label:   "foo",
-				InitMsg: []byte("{}"),
+				Sender: goodAddress,
+				CodeID: firstCodeID,
+				Label:  "foo",
+				Msg:    []byte("{}"),
 			},
 			valid: true,
 		},
 		"missing code": {
 			msg: MsgInstantiateContract{
-				Sender:  goodAddress,
-				Label:   "foo",
-				InitMsg: []byte("{}"),
+				Sender: goodAddress,
+				Label:  "foo",
+				Msg:    []byte("{}"),
 			},
 			valid: false,
 		},
 		"missing label": {
 			msg: MsgInstantiateContract{
-				Sender:  goodAddress,
-				InitMsg: []byte("{}"),
+				Sender: goodAddress,
+				Msg:    []byte("{}"),
 			},
 			valid: false,
 		},
@@ -180,29 +126,29 @@ func TestInstantiateContractValidation(t *testing.T) {
 		},
 		"bad sender minimal": {
 			msg: MsgInstantiateContract{
-				Sender:  badAddress,
-				CodeID:  firstCodeID,
-				Label:   "foo",
-				InitMsg: []byte("{}"),
+				Sender: badAddress,
+				CodeID: firstCodeID,
+				Label:  "foo",
+				Msg:    []byte("{}"),
 			},
 			valid: false,
 		},
 		"correct maximal": {
 			msg: MsgInstantiateContract{
-				Sender:  goodAddress,
-				CodeID:  firstCodeID,
-				Label:   "foo",
-				InitMsg: []byte(`{"some": "data"}`),
-				Funds:   sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
+				Sender: goodAddress,
+				CodeID: firstCodeID,
+				Label:  "foo",
+				Msg:    []byte(`{"some": "data"}`),
+				Funds:  sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
 			},
 			valid: true,
 		},
 		"negative funds": {
 			msg: MsgInstantiateContract{
-				Sender:  goodAddress,
-				CodeID:  firstCodeID,
-				Label:   "foo",
-				InitMsg: []byte(`{"some": "data"}`),
+				Sender: goodAddress,
+				CodeID: firstCodeID,
+				Label:  "foo",
+				Msg:    []byte(`{"some": "data"}`),
 				// we cannot use sdk.NewCoin() constructors as they panic on creating invalid data (before we can test)
 				Funds: sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(-200)}},
 			},
@@ -210,10 +156,10 @@ func TestInstantiateContractValidation(t *testing.T) {
 		},
 		"non json init msg": {
 			msg: MsgInstantiateContract{
-				Sender:  goodAddress,
-				CodeID:  firstCodeID,
-				Label:   "foo",
-				InitMsg: []byte("invalid-json"),
+				Sender: goodAddress,
+				CodeID: firstCodeID,
+				Label:  "foo",
+				Msg:    []byte("invalid-json"),
 			},
 			valid: false,
 		},
@@ -239,162 +185,12 @@ func TestInstantiateContractValidation(t *testing.T) {
 	}
 }
 
-func TestStoreCodeAndInstantiateContractValidation(t *testing.T) {
-	bad, err := sdk.AccAddressFromHex("012345")
-	require.NoError(t, err)
-	badAddress := bad.String()
-	require.NoError(t, err)
-	// proper address size
-	goodAddress := sdk.BytesToAccAddress(make([]byte, 20)).String()
-
-	cases := map[string]struct {
-		msg   MsgStoreCodeAndInstantiateContract
-		valid bool
-	}{
-		"empty": {
-			msg:   MsgStoreCodeAndInstantiateContract{},
-			valid: false,
-		},
-		"correct minimal": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Label:        "foo",
-				InitMsg:      []byte("{}"),
-			},
-			valid: true,
-		},
-		"missing code": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:  goodAddress,
-				Label:   "foo",
-				InitMsg: []byte("{}"),
-			},
-			valid: false,
-		},
-		"missing label": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				InitMsg:      []byte("{}"),
-			},
-			valid: false,
-		},
-		"missing init message": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Label:        "foo",
-			},
-			valid: false,
-		},
-		"correct maximal": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Builder:      "confio/cosmwasm-opt:0.6.2",
-				Source:       "https://crates.io/api/v1/crates/cw-erc20/0.1.0/download",
-				Label:        "foo",
-				InitMsg:      []byte(`{"some": "data"}`),
-				Funds:        sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
-			},
-			valid: true,
-		},
-		"invalid builder": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Builder:      "-bad-opt:0.6.2",
-				Source:       "https://crates.io/api/v1/crates/cw-erc20/0.1.0/download",
-				Label:        "foo",
-				InitMsg:      []byte(`{"some": "data"}`),
-				Funds:        sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
-			},
-			valid: false,
-		},
-		"invalid source scheme": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Builder:      "cosmwasm-opt:0.6.2",
-				Source:       "ftp://crates.io/api/download.tar.gz",
-				Label:        "foo",
-				InitMsg:      []byte(`{"some": "data"}`),
-				Funds:        sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
-			},
-			valid: false,
-		},
-		"invalid source format": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Builder:      "cosmwasm-opt:0.6.2",
-				Source:       "/api/download-ss",
-				Label:        "foo",
-				InitMsg:      []byte(`{"some": "data"}`),
-				Funds:        sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
-			},
-			valid: false,
-		},
-		"invalid InstantiatePermission": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:                goodAddress,
-				WASMByteCode:          []byte("foo"),
-				InstantiatePermission: &AccessConfig{Permission: AccessTypeOnlyAddress, Address: badAddress},
-				Label:                 "foo",
-				InitMsg:               []byte(`{"some": "data"}`),
-				Funds:                 sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(200)}},
-			},
-			valid: false,
-		},
-		"negative funds": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				InitMsg:      []byte(`{"some": "data"}`),
-				// we cannot use sdk.NewCoin() constructors as they panic on creating invalid data (before we can test)
-				Funds: sdk.Coins{sdk.Coin{Denom: "foobar", Amount: sdk.NewInt(-200)}},
-			},
-			valid: false,
-		},
-		"non json init msg": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:       goodAddress,
-				WASMByteCode: []byte("foo"),
-				Label:        "foo",
-				InitMsg:      []byte("invalid-json"),
-			},
-			valid: false,
-		},
-		"bad sender minimal": {
-			msg: MsgStoreCodeAndInstantiateContract{
-				Sender:       badAddress,
-				WASMByteCode: []byte("foo"),
-				Label:        "foo",
-				InitMsg:      []byte("{}"),
-			},
-			valid: false,
-		},
-	}
-
-	for name, tc := range cases {
-		t.Run(name, func(t *testing.T) {
-			err := tc.msg.ValidateBasic()
-			if tc.valid {
-				assert.NoError(t, err)
-			} else {
-				assert.Error(t, err)
-			}
-		})
-	}
-}
-
 func TestExecuteContractValidation(t *testing.T) {
 	bad, err := sdk.AccAddressFromHex("012345")
 	require.NoError(t, err)
 	badAddress := bad.String()
 	// proper address size
-	goodAddress := sdk.BytesToAccAddress(make([]byte, 20)).String()
+	goodAddress := sdk.AccAddress(make([]byte, 20)).String()
 
 	cases := map[string]struct {
 		msg   MsgExecuteContract
@@ -503,9 +299,9 @@ func TestMsgUpdateAdministrator(t *testing.T) {
 	require.NoError(t, err)
 	badAddress := bad.String()
 	// proper address size
-	goodAddress := sdk.BytesToAccAddress(make([]byte, 20)).String()
-	otherGoodAddress := sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, 20)).String()
-	anotherGoodAddress := sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, 20)).String()
+	goodAddress := sdk.AccAddress(make([]byte, 20)).String()
+	otherGoodAddress := sdk.AccAddress(bytes.Repeat([]byte{0x1}, 20)).String()
+	anotherGoodAddress := sdk.AccAddress(bytes.Repeat([]byte{0x2}, 20)).String()
 
 	specs := map[string]struct {
 		src    MsgUpdateAdmin
@@ -575,8 +371,8 @@ func TestMsgClearAdministrator(t *testing.T) {
 	require.NoError(t, err)
 	badAddress := bad.String()
 	// proper address size
-	goodAddress := sdk.BytesToAccAddress(make([]byte, 20)).String()
-	anotherGoodAddress := sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, 20)).String()
+	goodAddress := sdk.AccAddress(make([]byte, 20)).String()
+	anotherGoodAddress := sdk.AccAddress(bytes.Repeat([]byte{0x2}, 20)).String()
 
 	specs := map[string]struct {
 		src    MsgClearAdmin
@@ -626,8 +422,8 @@ func TestMsgMigrateContract(t *testing.T) {
 	require.NoError(t, err)
 	badAddress := bad.String()
 	// proper address size
-	goodAddress := sdk.BytesToAccAddress(make([]byte, 20)).String()
-	anotherGoodAddress := sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, 20)).String()
+	goodAddress := sdk.AccAddress(make([]byte, 20)).String()
+	anotherGoodAddress := sdk.AccAddress(bytes.Repeat([]byte{0x2}, 20)).String()
 
 	specs := map[string]struct {
 		src    MsgMigrateContract
@@ -635,10 +431,10 @@ func TestMsgMigrateContract(t *testing.T) {
 	}{
 		"all good": {
 			src: MsgMigrateContract{
-				Sender:     goodAddress,
-				Contract:   anotherGoodAddress,
-				CodeID:     firstCodeID,
-				MigrateMsg: []byte("{}"),
+				Sender:   goodAddress,
+				Contract: anotherGoodAddress,
+				CodeID:   firstCodeID,
+				Msg:      []byte("{}"),
 			},
 		},
 		"bad sender": {
@@ -680,10 +476,10 @@ func TestMsgMigrateContract(t *testing.T) {
 		},
 		"non json migrateMsg": {
 			src: MsgMigrateContract{
-				Sender:     goodAddress,
-				Contract:   anotherGoodAddress,
-				CodeID:     firstCodeID,
-				MigrateMsg: []byte("invalid json"),
+				Sender:   goodAddress,
+				Contract: anotherGoodAddress,
+				CodeID:   firstCodeID,
+				Msg:      []byte("invalid json"),
 			},
 			expErr: true,
 		},
@@ -708,65 +504,41 @@ func TestMsgMigrateContract(t *testing.T) {
 	}
 }
 
-func TestMsgUpdateContractStatus(t *testing.T) {
-	bad, err := sdk.AccAddressFromHex("012345")
-	require.NoError(t, err)
-	badAddress := bad.String()
-	// proper address size
-	goodAddress := sdk.BytesToAccAddress(make([]byte, 20)).String()
-	anotherGoodAddress := sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, 20)).String()
-
+func TestMsgJsonSignBytes(t *testing.T) {
+	const myInnerMsg = `{"foo":"bar"}`
 	specs := map[string]struct {
-		src    MsgUpdateContractStatus
-		expErr bool
+		src legacytx.LegacyMsg
+		exp string
 	}{
-		"all good": {
-			src: MsgUpdateContractStatus{
-				Sender:   goodAddress,
-				Status:   ContractStatusInactive,
-				Contract: anotherGoodAddress,
-			},
+		"MsgInstantiateContract": {
+			src: &MsgInstantiateContract{Msg: RawContractMessage(myInnerMsg)},
+			exp: `
+{
+	"type":"wasm/MsgInstantiateContract",
+	"value": {"msg": {"foo":"bar"}, "funds":[]}
+}`,
 		},
-		"status required": {
-			src: MsgUpdateContractStatus{
-				Sender:   goodAddress,
-				Contract: anotherGoodAddress,
-			},
-			expErr: true,
+		"MsgExecuteContract": {
+			src: &MsgExecuteContract{Msg: RawContractMessage(myInnerMsg)},
+			exp: `
+{
+	"type":"wasm/MsgExecuteContract",
+	"value": {"msg": {"foo":"bar"}, "funds":[]}
+}`,
 		},
-		"bad sender": {
-			src: MsgUpdateContractStatus{
-				Sender:   badAddress,
-				Status:   ContractStatusInactive,
-				Contract: anotherGoodAddress,
-			},
-			expErr: true,
-		},
-		"bad status": {
-			src: MsgUpdateContractStatus{
-				Sender:   goodAddress,
-				Status:   3,
-				Contract: anotherGoodAddress,
-			},
-			expErr: true,
-		},
-		"bad contract addr": {
-			src: MsgUpdateContractStatus{
-				Sender:   goodAddress,
-				Status:   ContractStatusInactive,
-				Contract: badAddress,
-			},
-			expErr: true,
+		"MsgMigrateContract": {
+			src: &MsgMigrateContract{Msg: RawContractMessage(myInnerMsg)},
+			exp: `
+{
+	"type":"wasm/MsgMigrateContract",
+	"value": {"msg": {"foo":"bar"}}
+}`,
 		},
 	}
-	for msg, spec := range specs {
-		t.Run(msg, func(t *testing.T) {
-			err := spec.src.ValidateBasic()
-			if spec.expErr {
-				require.Error(t, err)
-				return
-			}
-			require.NoError(t, err)
+	for name, spec := range specs {
+		t.Run(name, func(t *testing.T) {
+			bz := spec.src.GetSignBytes()
+			assert.JSONEq(t, spec.exp, string(bz), "raw: %s", string(bz))
 		})
 	}
 }

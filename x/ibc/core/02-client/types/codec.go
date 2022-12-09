@@ -2,11 +2,12 @@ package types
 
 import (
 	proto "github.com/gogo/protobuf/proto"
-
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/msgservice"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
+
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
@@ -32,6 +33,11 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	registry.RegisterInterface(
 		"ibc.core.client.v1.Misbehaviour",
 		(*exported.Misbehaviour)(nil),
+	)
+	registry.RegisterImplementations(
+		(*govtypes.Content)(nil),
+		&ClientUpdateProposal{},
+		&UpgradeProposal{},
 	)
 	registry.RegisterImplementations(
 		(*sdk.Msg)(nil),

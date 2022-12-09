@@ -29,7 +29,7 @@ func (k Keeper) Slash(ctx sdk.Context, consAddr sdk.ConsAddress, infractionHeigh
 	}
 
 	// Amount of slashing = slash slashFactor * power at time of infraction
-	amount := sdk.TokensFromConsensusPower(power)
+	amount := k.TokensFromConsensusPower(ctx, power)
 	slashAmountDec := amount.ToDec().Mul(slashFactor)
 	slashAmount := slashAmountDec.TruncateInt()
 
@@ -245,9 +245,12 @@ func (k Keeper) SlashRedelegation(ctx sdk.Context, srcValidator types.Validator,
 			continue
 		}
 
-		valDstAddr := sdk.ValAddress(redelegation.ValidatorDstAddress)
+		valDstAddr, err := sdk.ValAddressFromBech32(redelegation.ValidatorDstAddress)
+		if err != nil {
+			panic(err)
+		}
 
-		delegatorAddress := sdk.AccAddress(redelegation.DelegatorAddress)
+		delegatorAddress := sdk.MustAccAddressFromBech32(redelegation.DelegatorAddress)
 
 		delegation, found := k.GetDelegation(ctx, delegatorAddress, valDstAddr)
 		if !found {

@@ -13,21 +13,23 @@ import (
 // provided LegacyAmino codec. These types are used for Amino JSON serialization
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*exported.VestingAccount)(nil), nil)
-	cdc.RegisterConcrete(&BaseVestingAccount{}, "lbm-sdk/BaseVestingAccount", nil)
-	cdc.RegisterConcrete(&ContinuousVestingAccount{}, "lbm-sdk/ContinuousVestingAccount", nil)
-	cdc.RegisterConcrete(&DelayedVestingAccount{}, "lbm-sdk/DelayedVestingAccount", nil)
-	cdc.RegisterConcrete(&PeriodicVestingAccount{}, "lbm-sdk/PeriodicVestingAccount", nil)
+	cdc.RegisterConcrete(&BaseVestingAccount{}, "cosmos-sdk/BaseVestingAccount", nil)
+	cdc.RegisterConcrete(&ContinuousVestingAccount{}, "cosmos-sdk/ContinuousVestingAccount", nil)
+	cdc.RegisterConcrete(&DelayedVestingAccount{}, "cosmos-sdk/DelayedVestingAccount", nil)
+	cdc.RegisterConcrete(&PeriodicVestingAccount{}, "cosmos-sdk/PeriodicVestingAccount", nil)
+	cdc.RegisterConcrete(&PermanentLockedAccount{}, "cosmos-sdk/PermanentLockedAccount", nil)
 }
 
 // RegisterInterface associates protoName with AccountI and VestingAccount
 // Interfaces and creates a registry of it's concrete implementations
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterInterface(
-		"lbm.vesting.v1.VestingAccount",
+		"cosmos.vesting.v1beta1.VestingAccount",
 		(*exported.VestingAccount)(nil),
 		&ContinuousVestingAccount{},
 		&DelayedVestingAccount{},
 		&PeriodicVestingAccount{},
+		&PermanentLockedAccount{},
 	)
 
 	registry.RegisterImplementations(
@@ -36,6 +38,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&DelayedVestingAccount{},
 		&ContinuousVestingAccount{},
 		&PeriodicVestingAccount{},
+		&PermanentLockedAccount{},
 	)
 
 	registry.RegisterImplementations(
@@ -44,6 +47,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&DelayedVestingAccount{},
 		&ContinuousVestingAccount{},
 		&PeriodicVestingAccount{},
+		&PermanentLockedAccount{},
 	)
 
 	registry.RegisterImplementations(

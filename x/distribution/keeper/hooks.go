@@ -22,7 +22,7 @@ func (h Hooks) AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress) {
 	h.k.initializeValidator(ctx, val)
 }
 
-// cleanup for after validator is removed
+// AfterValidatorRemoved performs clean up after a validator is removed
 func (h Hooks) AfterValidatorRemoved(ctx sdk.Context, _ sdk.ConsAddress, valAddr sdk.ValAddress) {
 	// fetch outstanding
 	outstanding := h.k.GetValidatorOutstandingRewardsCoins(ctx, valAddr)
@@ -43,7 +43,7 @@ func (h Hooks) AfterValidatorRemoved(ctx sdk.Context, _ sdk.ConsAddress, valAddr
 
 		// add to validator account
 		if !coins.IsZero() {
-			accAddr := valAddr.ToAccAddress()
+			accAddr := sdk.AccAddress(valAddr)
 			withdrawAddr := h.k.GetDelegatorWithdrawAddr(ctx, accAddr)
 
 			if err := h.k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, withdrawAddr, coins); err != nil {
@@ -52,7 +52,9 @@ func (h Hooks) AfterValidatorRemoved(ctx sdk.Context, _ sdk.ConsAddress, valAddr
 		}
 	}
 
-	// add outstanding to community pool
+	// Add outstanding to community pool
+	// The validator is removed only after it has no more delegations.
+	// This operation sends only the remaining dust to the community pool.
 	feePool := h.k.GetFeePool(ctx)
 	feePool.CommunityPool = feePool.CommunityPool.Add(outstanding...)
 	h.k.SetFeePool(ctx, feePool)

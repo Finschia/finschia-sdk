@@ -14,9 +14,14 @@ import (
 // Profile with:
 // /usr/local/go/bin/go test -benchmem -run=^$ github.com/line/lbm-sdk/simapp -bench ^BenchmarkFullAppSimulation$ -Commit=true -cpuprofile cpu.out
 func BenchmarkFullAppSimulation(b *testing.B) {
-	config, db, dir, logger, _, err := SetupSimulation("goleveldb-app-sim", "Simulation")
+	b.ReportAllocs()
+	config, db, dir, logger, skip, err := SetupSimulation("goleveldb-app-sim", "Simulation")
 	if err != nil {
 		b.Fatalf("simulation setup failed: %s", err.Error())
+	}
+
+	if skip {
+		b.Skip("skipping benchmark application simulation")
 	}
 
 	defer func() {
@@ -27,7 +32,7 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 		}
 	}()
 
-	app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, FlagPeriodValue, MakeTestEncodingConfig(), EmptyAppOptions{}, interBlockCacheOpt())
+	app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, FlagPeriodValue, MakeTestEncodingConfig(), EmptyAppOptions{}, nil, interBlockCacheOpt())
 
 	// run randomized simulation
 	_, simParams, simErr := simulation.SimulateFromSeed(
@@ -57,9 +62,14 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 }
 
 func BenchmarkInvariants(b *testing.B) {
-	config, db, dir, logger, _, err := SetupSimulation("leveldb-app-invariant-bench", "Simulation")
+	b.ReportAllocs()
+	config, db, dir, logger, skip, err := SetupSimulation("leveldb-app-invariant-bench", "Simulation")
 	if err != nil {
 		b.Fatalf("simulation setup failed: %s", err.Error())
+	}
+
+	if skip {
+		b.Skip("skipping benchmark application simulation")
 	}
 
 	config.AllInvariants = false
@@ -72,7 +82,7 @@ func BenchmarkInvariants(b *testing.B) {
 		}
 	}()
 
-	app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, FlagPeriodValue, MakeTestEncodingConfig(), EmptyAppOptions{}, interBlockCacheOpt())
+	app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, FlagPeriodValue, MakeTestEncodingConfig(), EmptyAppOptions{}, nil, interBlockCacheOpt())
 
 	// run randomized simulation
 	_, simParams, simErr := simulation.SimulateFromSeed(

@@ -128,7 +128,7 @@ func (cgts ConsumeTxSizeGasDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, sim
 				PubKey:    pubkey,
 			}
 
-			sigBz := legacy.Cdc.MustMarshalBinaryBare(simSig)
+			sigBz := legacy.Cdc.MustMarshal(simSig)
 			cost := sdk.Gas(len(sigBz) + 6)
 
 			// If the pubkey is a multi-signature pubkey, then we estimate for the maximum
@@ -181,6 +181,12 @@ type (
 	}
 )
 
+// TxTimeoutHeightDecorator defines an AnteHandler decorator that checks for a
+// tx height timeout.
+func NewTxTimeoutHeightDecorator() TxTimeoutHeightDecorator {
+	return TxTimeoutHeightDecorator{}
+}
+
 // AnteHandle implements an AnteHandler decorator for the TxHeightTimeoutDecorator
 // type where the current block height is checked against the tx's height timeout.
 // If a height timeout is provided (non-zero) and is less than the current block
@@ -198,34 +204,5 @@ func (txh TxTimeoutHeightDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 		)
 	}
 
-	return next(ctx, tx, simulate)
-}
-
-type TxSigBlockHeightDecorator struct {
-	ak AccountKeeper
-}
-
-func NewTxSigBlockHeightDecorator(ak AccountKeeper) TxSigBlockHeightDecorator {
-	return TxSigBlockHeightDecorator{
-		ak: ak,
-	}
-}
-
-func (txs TxSigBlockHeightDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
-	if !simulate {
-		params := txs.ak.GetParams(ctx)
-		sbh := tx.GetSigBlockHeight()
-		current := uint64(ctx.BlockHeight())
-		validMin := uint64(0)
-		if current > params.ValidSigBlockPeriod {
-			validMin = current - params.ValidSigBlockPeriod
-		}
-		if sbh > uint64(ctx.BlockHeight()) || sbh < validMin {
-			return ctx, sdkerrors.Wrapf(
-				sdkerrors.ErrInvalidSigBlockHeight, "sig block height: %d, current: %d, valid sig block period: %d",
-				sbh, ctx.BlockHeight(), params.ValidSigBlockPeriod,
-			)
-		}
-	}
 	return next(ctx, tx, simulate)
 }

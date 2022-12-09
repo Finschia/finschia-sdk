@@ -77,13 +77,13 @@ func TestSimulateMsgUnjail(t *testing.T) {
 	app.StakingKeeper.Jail(ctx, val0ConsAddress)
 
 	// setup self delegation
-	delTokens := sdk.TokensFromConsensusPower(2)
+	delTokens := app.StakingKeeper.TokensFromConsensusPower(ctx, 2)
 	validator0, issuedShares := validator0.AddTokensFromDel(delTokens)
-	val0AccAddress := sdk.ValAddress(validator0.OperatorAddress).ToAccAddress()
+	val0AccAddress, err := sdk.ValAddressFromBech32(validator0.OperatorAddress)
 	require.NoError(t, err)
-	selfDelegation := stakingtypes.NewDelegation(val0AccAddress, validator0.GetOperator(), issuedShares)
+	selfDelegation := stakingtypes.NewDelegation(val0AccAddress.Bytes(), validator0.GetOperator(), issuedShares)
 	app.StakingKeeper.SetDelegation(ctx, selfDelegation)
-	app.DistrKeeper.SetDelegatorStartingInfo(ctx, validator0.GetOperator(), val0AccAddress, distrtypes.NewDelegatorStartingInfo(2, sdk.OneDec(), 200))
+	app.DistrKeeper.SetDelegatorStartingInfo(ctx, validator0.GetOperator(), val0AccAddress.Bytes(), distrtypes.NewDelegatorStartingInfo(2, sdk.OneDec(), 200))
 
 	// begin a new block
 	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: app.LastBlockHeight() + 1, AppHash: app.LastCommitID().Hash, Time: blockTime}})
@@ -116,15 +116,14 @@ func createTestApp(isCheckTx bool) (*simapp.SimApp, sdk.Context) {
 func getTestingAccounts(t *testing.T, r *rand.Rand, app *simapp.SimApp, ctx sdk.Context, n int) []simtypes.Account {
 	accounts := simtypes.RandomAccounts(r, n)
 
-	initAmt := sdk.TokensFromConsensusPower(200)
+	initAmt := app.StakingKeeper.TokensFromConsensusPower(ctx, 200)
 	initCoins := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, initAmt))
 
 	// add coins to the accounts
 	for _, account := range accounts {
 		acc := app.AccountKeeper.NewAccountWithAddress(ctx, account.Address)
 		app.AccountKeeper.SetAccount(ctx, acc)
-		err := app.BankKeeper.SetBalances(ctx, account.Address, initCoins)
-		require.NoError(t, err)
+		require.NoError(t, simapp.FundAccount(app, ctx, account.Address, initCoins))
 	}
 
 	return accounts
@@ -138,7 +137,7 @@ func getTestingValidator0(t *testing.T, app *simapp.SimApp, ctx sdk.Context, acc
 func getTestingValidator(t *testing.T, app *simapp.SimApp, ctx sdk.Context, accounts []simtypes.Account, commission stakingtypes.Commission, n int) stakingtypes.Validator {
 	account := accounts[n]
 	valPubKey := account.ConsKey.PubKey()
-	valAddr := sdk.BytesToValAddress(account.PubKey.Address())
+	valAddr := sdk.ValAddress(account.PubKey.Address().Bytes())
 	validator, err := stakingtypes.NewValidator(valAddr, valPubKey, stakingtypes.Description{})
 	require.NoError(t, err)
 	validator, err = validator.SetInitialCommission(commission)

@@ -7,6 +7,10 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/spf13/cast"
+	"github.com/spf13/cobra"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/codec"
 	cdctypes "github.com/line/lbm-sdk/codec/types"
@@ -15,14 +19,13 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
+	simKeeper "github.com/line/lbm-sdk/x/simulation"
 	"github.com/line/lbm-sdk/x/wasm/client/cli"
 	"github.com/line/lbm-sdk/x/wasm/client/rest"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/simulation"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	abci "github.com/line/ostracon/abci/types"
-	"github.com/spf13/cast"
-	"github.com/spf13/cobra"
 )
 
 var (
@@ -32,19 +35,23 @@ var (
 
 // Module init related flags
 const (
-	flagWasmMemoryCacheSize = "wasm.memory_cache_size"
-	flagWasmQueryGasLimit   = "wasm.query_gas_limit"
+	flagWasmMemoryCacheSize    = "wasm.memory_cache_size"
+	flagWasmQueryGasLimit      = "wasm.query_gas_limit"
+	flagWasmSimulationGasLimit = "wasm.simulation_gas_limit"
 )
 
 // AppModuleBasic defines the basic application module used by the wasm module.
 type AppModuleBasic struct{}
 
-func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
+func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) { //nolint:staticcheck
 	RegisterCodec(amino)
 }
 
 func (b AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, serveMux *runtime.ServeMux) {
-	types.RegisterQueryHandlerClient(context.Background(), serveMux, types.NewQueryClient(clientCtx))
+	err := types.RegisterQueryHandlerClient(context.Background(), serveMux, types.NewQueryClient(clientCtx))
+	if err != nil {
+		panic(err)
+	}
 }
 
 // Name returns the wasm module's name.
@@ -54,14 +61,14 @@ func (AppModuleBasic) Name() string {
 
 // DefaultGenesis returns default genesis state as raw bytes for the wasm
 // module.
-func (AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
+func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(&GenesisState{
 		Params: DefaultParams(),
 	})
 }
 
 // ValidateGenesis performs genesis state validation for the wasm module.
-func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
+func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONCodec, config client.TxEncodingConfig, message json.RawMessage) error {
 	var data GenesisState
 	err := marshaler.UnmarshalJSON(message, &data)
 	if err != nil {
@@ -85,37 +92,59 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 	return cli.GetQueryCmd()
 }
 
-// RegisterInterfaceTypes implements InterfaceModule
+// RegisterInterfaces implements InterfaceModule
 func (b AppModuleBasic) RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
-	types.RegisterInterfaces(registry)
+	lbmtypes.RegisterInterfaces(registry)
 }
 
-//____________________________________________________________________________
+// ____________________________________________________________________________
 
 // AppModule implements an application module for the wasm module.
 type AppModule struct {
 	AppModuleBasic
-	cdc                codec.Marshaler
+	cdc                codec.Codec
 	keeper             *Keeper
 	validatorSetSource keeper.ValidatorSetSource
+	accountKeeper      types.AccountKeeper // for simulation
+	bankKeeper         simKeeper.BankKeeper
 }
 
+// ConsensusVersion is a sequence number for state-breaking change of the
+// module. It should be incremented on each consensus-breaking change
+// introduced by the module. To avoid wrong/empty versions, the initial version
+// should be set to 1.
+func (AppModule) ConsensusVersion() uint64 { return 1 }
+
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Marshaler, keeper *Keeper, validatorSetSource keeper.ValidatorSetSource) AppModule {
+func NewAppModule(
+	cdc codec.Codec,
+	keeper *Keeper,
+	validatorSetSource keeper.ValidatorSetSource,
+	ak types.AccountKeeper,
+	bk simKeeper.BankKeeper,
+) AppModule {
 	return AppModule{
 		AppModuleBasic:     AppModuleBasic{},
 		cdc:                cdc,
 		keeper:             keeper,
 		validatorSetSource: validatorSetSource,
+		accountKeeper:      ak,
+		bankKeeper:         bk,
 	}
 }
 
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(keeper.NewDefaultPermissionKeeper(am.keeper)))
 	types.RegisterQueryServer(cfg.QueryServer(), NewQuerier(am.keeper))
+	lbmtypes.RegisterQueryServer(cfg.QueryServer(), NewQuerier(am.keeper))
+
+	// m := keeper.NewMigrator(*am.keeper)
+	// if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
+	// 	panic(fmt.Sprintf("failed to migrate x/distribution from version 1 to 2: %v", err))
+	// }
 }
 
-func (am AppModule) LegacyQuerierHandler(amino *codec.LegacyAmino) sdk.Querier {
+func (am AppModule) LegacyQuerierHandler(amino *codec.LegacyAmino) sdk.Querier { //nolint:staticcheck
 	return keeper.NewLegacyQuerier(am.keeper, am.keeper.QueryGasLimit())
 }
 
@@ -134,8 +163,8 @@ func (AppModule) QuerierRoute() string {
 
 // InitGenesis performs genesis initialization for the wasm module. It returns
 // no validator updates.
-func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, data json.RawMessage) []abci.ValidatorUpdate {
-	var genesisState GenesisState
+func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
+	var genesisState types.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 	validators, err := InitGenesis(ctx, am.keeper, genesisState, am.validatorSetSource, am.Route().Handler())
 	if err != nil {
@@ -146,7 +175,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, data j
 
 // ExportGenesis returns the exported genesis state as raw bytes for the wasm
 // module.
-func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json.RawMessage {
+func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	gs := ExportGenesis(ctx, am.keeper)
 	return cdc.MustMarshalJSON(gs)
 }
@@ -160,7 +189,7 @@ func (AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.Validato
 	return []abci.ValidatorUpdate{}
 }
 
-//____________________________________________________________________________
+// ____________________________________________________________________________
 
 // AppModuleSimulation functions
 
@@ -185,16 +214,17 @@ func (am AppModule) RegisterStoreDecoder(sdr sdk.StoreDecoderRegistry) {
 
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
-	return nil
+	return simulation.WeightedOperations(&simState, am.accountKeeper, am.bankKeeper, am.keeper)
 }
 
-//____________________________________________________________________________
+// ____________________________________________________________________________
 
 // AddModuleInitFlags implements servertypes.ModuleInitFlags interface.
 func AddModuleInitFlags(startCmd *cobra.Command) {
 	defaults := DefaultWasmConfig()
 	startCmd.Flags().Uint32(flagWasmMemoryCacheSize, defaults.MemoryCacheSize, "Sets the size in MiB (NOT bytes) of an in-memory cache for Wasm modules. Set to 0 to disable.")
 	startCmd.Flags().Uint64(flagWasmQueryGasLimit, defaults.SmartQueryGasLimit, "Set the max gas that can be spent on executing a query with a Wasm contract")
+	startCmd.Flags().String(flagWasmSimulationGasLimit, "", "Set the max gas that can be spent when executing a simulation TX")
 }
 
 // ReadWasmConfig reads the wasm specifig configuration
@@ -209,6 +239,15 @@ func ReadWasmConfig(opts servertypes.AppOptions) (types.WasmConfig, error) {
 	if v := opts.Get(flagWasmQueryGasLimit); v != nil {
 		if cfg.SmartQueryGasLimit, err = cast.ToUint64E(v); err != nil {
 			return cfg, err
+		}
+	}
+	if v := opts.Get(flagWasmSimulationGasLimit); v != nil {
+		if raw, ok := v.(string); ok && raw != "" {
+			limit, err := cast.ToUint64E(v) // non empty string set
+			if err != nil {
+				return cfg, err
+			}
+			cfg.SimulationGasLimit = &limit
 		}
 	}
 	// attach contract debugging to global "trace" flag

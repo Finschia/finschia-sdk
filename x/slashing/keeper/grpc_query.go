@@ -34,7 +34,10 @@ func (k Keeper) SigningInfo(c context.Context, req *types.QuerySigningInfoReques
 		return nil, status.Errorf(codes.InvalidArgument, "invalid request")
 	}
 
-	consAddr := sdk.ConsAddress(req.ConsAddress)
+	consAddr, err := sdk.ConsAddressFromBech32(req.ConsAddress)
+	if err != nil {
+		return nil, err
+	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	signingInfo, found := k.GetValidatorSigningInfo(ctx, consAddr)
@@ -57,7 +60,7 @@ func (k Keeper) SigningInfos(c context.Context, req *types.QuerySigningInfosRequ
 	sigInfoStore := prefix.NewStore(store, types.ValidatorSigningInfoKeyPrefix)
 	pageRes, err := query.Paginate(sigInfoStore, req.Pagination, func(key []byte, value []byte) error {
 		var info types.ValidatorSigningInfo
-		err := k.cdc.UnmarshalBinaryBare(value, &info)
+		err := k.cdc.Unmarshal(value, &info)
 		if err != nil {
 			return err
 		}

@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	gogotypes "github.com/gogo/protobuf/types"
 	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/codec"
@@ -15,8 +16,14 @@ import (
 
 // AccountKeeperI is the interface contract that x/auth's keeper implements.
 type AccountKeeperI interface {
-	// Return a new account with the specified address. Does not save the new account to the store.
+	// Return a new account with the next account number and the specified address. Does not save the new account to the store.
 	NewAccountWithAddress(sdk.Context, sdk.AccAddress) types.AccountI
+
+	// Return a new account with the next account number. Does not save the new account to the store.
+	NewAccount(sdk.Context, types.AccountI) types.AccountI
+
+	// Check if an account exists in the store.
+	HasAccount(sdk.Context, sdk.AccAddress) bool
 
 	// Retrieve an account from the store.
 	GetAccount(sdk.Context, sdk.AccAddress) types.AccountI
@@ -27,7 +34,7 @@ type AccountKeeperI interface {
 	// Remove an account from the store.
 	RemoveAccount(sdk.Context, types.AccountI)
 
-	// Iterate over all accounts, calling the provided function. Stop iteraiton when it returns false.
+	// Iterate over all accounts, calling the provided function. Stop iteration when it returns true.
 	IterateAccounts(sdk.Context, func(types.AccountI) bool)
 
 	// Fetch the public key of an account at a specified address
@@ -35,14 +42,17 @@ type AccountKeeperI interface {
 
 	// Fetch the sequence of an account at a specified address.
 	GetSequence(sdk.Context, sdk.AccAddress) (uint64, error)
+
+	// Fetch the next account number, and increment the internal counter.
+	GetNextAccountNumber(sdk.Context) uint64
 }
 
 // AccountKeeper encodes/decodes accounts using the go-amino (binary)
 // encoding/decoding library.
 type AccountKeeper struct {
 	key           sdk.StoreKey
-	cdc           codec.BinaryMarshaler
-	paramSubspace *paramtypes.Subspace
+	cdc           codec.BinaryCodec
+	paramSubspace paramtypes.Subspace
 	permAddrs     map[string]types.PermissionsForAddress
 
 	// The prototypical AccountI constructor.
@@ -53,8 +63,12 @@ var _ AccountKeeperI = &AccountKeeper{}
 
 // NewAccountKeeper returns a new AccountKeeperI that uses go-amino to
 // (binary) encode and decode concrete sdk.Accounts.
+// `maccPerms` is a map that takes accounts' addresses as keys, and their respective permissions as values. This map is used to construct
+// types.PermissionsForAddress and is used in keeper.ValidatePermissions. Permissions are plain strings,
+// and don't have to fit into any predefined structure. This auth module does not use account permissions internally, though other modules
+// may use auth.Keeper to access the accounts permissions map.
 func NewAccountKeeper(
-	cdc codec.BinaryMarshaler, key sdk.StoreKey, paramstore *paramtypes.Subspace, proto func() types.AccountI,
+	cdc codec.BinaryCodec, key sdk.StoreKey, paramstore paramtypes.Subspace, proto func() types.AccountI,
 	maccPerms map[string][]string,
 ) AccountKeeper {
 
@@ -102,6 +116,33 @@ func (ak AccountKeeper) GetSequence(ctx sdk.Context, addr sdk.AccAddress) (uint6
 	return acc.GetSequence(), nil
 }
 
+// GetNextAccountNumber returns and increments the global account number counter.
+// If the global account number is not set, it initializes it with value 0.
+func (ak AccountKeeper) GetNextAccountNumber(ctx sdk.Context) uint64 {
+	var accNumber uint64
+	store := ctx.KVStore(ak.key)
+
+	bz := store.Get(types.GlobalAccountNumberKey)
+	if bz == nil {
+		// initialize the account numbers
+		accNumber = 0
+	} else {
+		val := gogotypes.UInt64Value{}
+
+		err := ak.cdc.Unmarshal(bz, &val)
+		if err != nil {
+			panic(err)
+		}
+
+		accNumber = val.GetValue()
+	}
+
+	bz = ak.cdc.MustMarshal(&gogotypes.UInt64Value{Value: accNumber + 1})
+	store.Set(types.GlobalAccountNumberKey, bz)
+
+	return accNumber
+}
+
 // ValidatePermissions validates that the module account has been granted
 // permissions within its set of allowed permissions.
 func (ak AccountKeeper) ValidatePermissions(macc types.ModuleAccountI) error {
@@ -119,7 +160,7 @@ func (ak AccountKeeper) ValidatePermissions(macc types.ModuleAccountI) error {
 func (ak AccountKeeper) GetModuleAddress(moduleName string) sdk.AccAddress {
 	permAddr, ok := ak.permAddrs[moduleName]
 	if !ok {
-		return ""
+		return nil
 	}
 
 	return permAddr.GetAddress()
@@ -154,9 +195,10 @@ func (ak AccountKeeper) GetModuleAccountAndPermissions(ctx sdk.Context, moduleNa
 
 	// create a new module account
 	macc := types.NewEmptyModuleAccount(moduleName, perms...)
-	ak.SetModuleAccount(ctx, macc)
+	maccI := (ak.NewAccount(ctx, macc)).(types.ModuleAccountI) // set the account number
+	ak.SetModuleAccount(ctx, maccI)
 
-	return macc, perms
+	return maccI, perms
 }
 
 // GetModuleAccount gets the module account from the auth account store, if the account does not
@@ -167,7 +209,7 @@ func (ak AccountKeeper) GetModuleAccount(ctx sdk.Context, moduleName string) typ
 }
 
 // SetModuleAccount sets the module account to the auth account store
-func (ak AccountKeeper) SetModuleAccount(ctx sdk.Context, macc types.ModuleAccountI) { //nolint:interfacer
+func (ak AccountKeeper) SetModuleAccount(ctx sdk.Context, macc types.ModuleAccountI) {
 	ak.SetAccount(ctx, macc)
 }
 
@@ -182,14 +224,15 @@ func (ak AccountKeeper) decodeAccount(bz []byte) types.AccountI {
 
 // MarshalAccount protobuf serializes an Account interface
 func (ak AccountKeeper) MarshalAccount(accountI types.AccountI) ([]byte, error) { // nolint:interfacer
-	return types.MarshalAccountX(ak.cdc, accountI)
+	return ak.cdc.MarshalInterface(accountI)
 }
 
 // UnmarshalAccount returns an Account interface from raw encoded account
 // bytes of a Proto-based Account type
 func (ak AccountKeeper) UnmarshalAccount(bz []byte) (types.AccountI, error) {
-	return types.UnmarshalAccountX(ak.cdc, bz)
+	var acc types.AccountI
+	return acc, ak.cdc.UnmarshalInterface(bz, &acc)
 }
 
-// GetCodec return codec.Marshaler object used by the keeper
-func (ak AccountKeeper) GetCodec() codec.BinaryMarshaler { return ak.cdc }
+// GetCodec return codec.Codec object used by the keeper
+func (ak AccountKeeper) GetCodec() codec.BinaryCodec { return ak.cdc }

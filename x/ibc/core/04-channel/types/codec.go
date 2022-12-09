@@ -5,6 +5,7 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
+
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
@@ -14,24 +15,15 @@ func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	registry.RegisterInterface(
 		"ibc.core.channel.v1.ChannelI",
 		(*exported.ChannelI)(nil),
+		&Channel{},
 	)
 	registry.RegisterInterface(
 		"ibc.core.channel.v1.CounterpartyChannelI",
 		(*exported.CounterpartyChannelI)(nil),
+		&Counterparty{},
 	)
 	registry.RegisterInterface(
 		"ibc.core.channel.v1.PacketI",
-		(*exported.PacketI)(nil),
-	)
-	registry.RegisterImplementations(
-		(*exported.ChannelI)(nil),
-		&Channel{},
-	)
-	registry.RegisterImplementations(
-		(*exported.CounterpartyChannelI)(nil),
-		&Counterparty{},
-	)
-	registry.RegisterImplementations(
 		(*exported.PacketI)(nil),
 		&Packet{},
 	)

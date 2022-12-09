@@ -21,14 +21,25 @@ import (
 func Test_splitAndCall_NoMessages(t *testing.T) {
 	clientCtx := client.Context{}
 
-	err := newSplitAndApply(nil, clientCtx, nil, nil, 10)
-	assert.NoError(t, err, "")
+	// empty tx will always trigger genOrBroadcastFn
+	maxMsgsCases := []int{0, 1, 10}
+	calledCounter := 0
+	for _, maxMsgs := range maxMsgsCases {
+		err := newSplitAndApply(
+			func(clientCtx client.Context, fs *pflag.FlagSet, msgs ...sdk.Msg) error {
+				// dummy genOrBroadcastFn called once for each case
+				calledCounter++
+				return nil
+			}, clientCtx, nil, nil, maxMsgs)
+		assert.NoError(t, err, "")
+	}
+	assert.Equal(t, calledCounter, len(maxMsgsCases))
 }
 
 func Test_splitAndCall_Splitting(t *testing.T) {
 	clientCtx := client.Context{}
 
-	addr := sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 
 	// Add five messages
 	msgs := []sdk.Msg{
@@ -71,7 +82,7 @@ func TestParseProposal(t *testing.T) {
 {
   "title": "Community Pool Spend",
   "description": "Pay me some Atoms!",
-  "recipient": "cosmos1s5afhd6gxevu37mkqcvvsj8qeylhn0rz46zdlq",
+  "recipient": "link1s5afhd6gxevu37mkqcvvsj8qeylhn0rz46zdlq",
   "amount": "1000stake",
   "deposit": "1000stake"
 }
@@ -82,7 +93,7 @@ func TestParseProposal(t *testing.T) {
 
 	require.Equal(t, "Community Pool Spend", proposal.Title)
 	require.Equal(t, "Pay me some Atoms!", proposal.Description)
-	require.Equal(t, "cosmos1s5afhd6gxevu37mkqcvvsj8qeylhn0rz46zdlq", proposal.Recipient)
+	require.Equal(t, "link1s5afhd6gxevu37mkqcvvsj8qeylhn0rz46zdlq", proposal.Recipient)
 	require.Equal(t, "1000stake", proposal.Deposit)
 	require.Equal(t, "1000stake", proposal.Amount)
 }

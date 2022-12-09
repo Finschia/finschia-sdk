@@ -1,10 +1,9 @@
 package types
 
 import (
+	"bytes"
 	"encoding/json"
-	fmt "fmt"
 	"sort"
-	"strings"
 
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
@@ -15,7 +14,7 @@ var _ exported.GenesisBalance = (*Balance)(nil)
 
 // GetAddress returns the account address of the Balance object.
 func (b Balance) GetAddress() sdk.AccAddress {
-	return sdk.AccAddress(b.Address)
+	return sdk.MustAccAddressFromBech32(b.Address)
 }
 
 // GetCoins returns the account coins of the Balance object.
@@ -25,34 +24,29 @@ func (b Balance) GetCoins() sdk.Coins {
 
 // Validate checks for address and coins correctness.
 func (b Balance) Validate() error {
-	err := sdk.ValidateAccAddress(b.Address)
-	if err != nil {
+	if _, err := sdk.AccAddressFromBech32(b.Address); err != nil {
 		return err
 	}
-	seenDenoms := make(map[string]bool)
 
-	// NOTE: we perform a custom validation since the coins.Validate function
-	// errors on zero balance coins
-	for _, coin := range b.Coins {
-		if seenDenoms[coin.Denom] {
-			return fmt.Errorf("duplicate denomination %s", coin.Denom)
-		}
-
-		if err := sdk.ValidateDenom(coin.Denom); err != nil {
-			return err
-		}
-
-		if coin.IsNegative() {
-			return fmt.Errorf("coin %s amount is cannot be negative", coin.Denom)
-		}
-
-		seenDenoms[coin.Denom] = true
+	if err := b.Coins.Validate(); err != nil {
+		return err
 	}
 
-	// sort the coins post validation
-	b.Coins.Sort()
-
 	return nil
+}
+
+type balanceByAddress struct {
+	addresses []sdk.AccAddress
+	balances  []Balance
+}
+
+func (b balanceByAddress) Len() int { return len(b.addresses) }
+func (b balanceByAddress) Less(i, j int) bool {
+	return bytes.Compare(b.addresses[i], b.addresses[j]) < 0
+}
+func (b balanceByAddress) Swap(i, j int) {
+	b.addresses[i], b.addresses[j] = b.addresses[j], b.addresses[i]
+	b.balances[i], b.balances[j] = b.balances[j], b.balances[i]
 }
 
 // SanitizeGenesisBalances sorts addresses and coin sets.
@@ -65,38 +59,17 @@ func SanitizeGenesisBalances(balances []Balance) []Balance {
 	// before whereby sdk.AccAddressFromBech32, which is a very expensive operation
 	// compared n * n elements yet discarded computations each time, as per:
 	//  https://github.com/cosmos/cosmos-sdk/issues/7766#issuecomment-786671734
-	// with this change the first step is to extract out and singly produce the values
-	// that'll be used for comparisons and keep them cheap and fast.
 
-	// 1. Retrieve the byte equivalents for each Balance's address and maintain a mapping of
-	// its Balance, as the mapper will be used in sorting.
-	type addrToBalance struct {
-		// We use a pointer here to avoid averse effects of value copying
-		// wasting RAM all around.
-		balance *Balance
-		accAddr sdk.AccAddress
-	}
-	adL := make([]*addrToBalance, 0, len(balances))
-	for _, balance := range balances {
-		balance := balance
-		adL = append(adL, &addrToBalance{
-			balance: &balance,
-			accAddr: sdk.AccAddress(balance.Address),
-		})
+	// 1. Retrieve the address equivalents for each Balance's address.
+	addresses := make([]sdk.AccAddress, len(balances))
+	for i := range balances {
+		addr, _ := sdk.AccAddressFromBech32(balances[i].Address)
+		addresses[i] = addr
 	}
 
-	// 2. Sort with the cheap mapping, using the mapper's
-	// already accAddr bytes values which is a cheaper operation.
-	sort.Slice(adL, func(i, j int) bool {
-		ai, aj := adL[i], adL[j]
-		return strings.Compare(string(ai.accAddr), string(aj.accAddr)) < 0
-	})
+	// 2. Sort balances.
+	sort.Sort(balanceByAddress{addresses: addresses, balances: balances})
 
-	// 3. To complete the sorting, we have to now just insert
-	// back the balances in the order returned by the sort.
-	for i, ad := range adL {
-		balances[i] = *ad.balance
-	}
 	return balances
 }
 
@@ -107,7 +80,7 @@ type GenesisBalancesIterator struct{}
 // appGenesis and invokes a callback on each genesis account. If any call
 // returns true, iteration stops.
 func (GenesisBalancesIterator) IterateGenesisBalances(
-	cdc codec.JSONMarshaler, appState map[string]json.RawMessage, cb func(exported.GenesisBalance) (stop bool),
+	cdc codec.JSONCodec, appState map[string]json.RawMessage, cb func(exported.GenesisBalance) (stop bool),
 ) {
 	for _, balance := range GetGenesisStateFromAppState(cdc, appState).Balances {
 		if cb(balance) {

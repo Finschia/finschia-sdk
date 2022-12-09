@@ -12,20 +12,22 @@ import (
 // governance module.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*Content)(nil), nil)
-	cdc.RegisterConcrete(&MsgSubmitProposal{}, "lbm-sdk/MsgSubmitProposal", nil)
-	cdc.RegisterConcrete(&MsgDeposit{}, "lbm-sdk/MsgDeposit", nil)
-	cdc.RegisterConcrete(&MsgVote{}, "lbm-sdk/MsgVote", nil)
-	cdc.RegisterConcrete(&TextProposal{}, "lbm-sdk/TextProposal", nil)
+	cdc.RegisterConcrete(&MsgSubmitProposal{}, "cosmos-sdk/MsgSubmitProposal", nil)
+	cdc.RegisterConcrete(&MsgDeposit{}, "cosmos-sdk/MsgDeposit", nil)
+	cdc.RegisterConcrete(&MsgVote{}, "cosmos-sdk/MsgVote", nil)
+	cdc.RegisterConcrete(&MsgVoteWeighted{}, "cosmos-sdk/MsgVoteWeighted", nil)
+	cdc.RegisterConcrete(&TextProposal{}, "cosmos-sdk/TextProposal", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgSubmitProposal{},
 		&MsgVote{},
+		&MsgVoteWeighted{},
 		&MsgDeposit{},
 	)
 	registry.RegisterInterface(
-		"lbm.gov.v1.Content",
+		"cosmos.gov.v1beta1.Content",
 		(*Content)(nil),
 		&TextProposal{},
 	)

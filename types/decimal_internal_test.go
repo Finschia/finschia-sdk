@@ -4,8 +4,9 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/line/lbm-sdk/codec"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/line/lbm-sdk/codec"
 )
 
 type decimalInternalTestSuite struct {

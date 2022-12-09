@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/tm-db/v2/memdb"
+	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/store/rootmulti"
 	"github.com/line/lbm-sdk/store/types"
@@ -55,9 +55,9 @@ func (s *storeTestSuite) TestCommitID() {
 	s.Require().False(nonempty.IsZero())
 }
 
-func (s *storeTestSuite) TestNewKVStoreKeys() {
-	s.Require().Equal(map[string]*sdk.KVStoreKey{}, sdk.NewKVStoreKeys())
-	s.Require().Equal(1, len(sdk.NewKVStoreKeys("one")))
+func (s *storeTestSuite) TestNewTransientStoreKeys() {
+	s.Require().Equal(map[string]*sdk.TransientStoreKey{}, sdk.NewTransientStoreKeys())
+	s.Require().Equal(1, len(sdk.NewTransientStoreKeys("one")))
 }
 
 func (s *storeTestSuite) TestNewInfiniteGasMeter() {
@@ -108,7 +108,7 @@ func (s *storeTestSuite) TestDiffKVStores() {
 }
 
 func (s *storeTestSuite) initTestStores() (types.KVStore, types.KVStore) {
-	db := memdb.NewDB()
+	db := dbm.NewMemDB()
 	ms := rootmulti.NewStore(db)
 
 	key1 := types.NewKVStoreKey("store1")

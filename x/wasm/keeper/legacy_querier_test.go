@@ -3,31 +3,31 @@ package keeper
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"testing"
 
-	sdk "github.com/line/lbm-sdk/types"
-	sdkErrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/wasm/types"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 func TestLegacyQueryContractState(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
-	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.WasmKeeper, keepers.BankKeeper
+	keeper := keepers.WasmKeeper
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
-	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
-	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit.Add(deposit...))
-	anyAddr := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, topUp)
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit.Add(deposit...)...)
+	anyAddr := keepers.Faucet.NewFundedAccount(ctx, sdk.NewInt64Coin("denom", 5000))
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	contractID, err := keepers.ContractKeeper.Create(ctx, creator, wasmCode, "", "", nil)
+	contractID, err := keepers.ContractKeeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, bob := keyPubAddr()
@@ -38,7 +38,7 @@ func TestLegacyQueryContractState(t *testing.T) {
 	initMsgBz, err := json.Marshal(initMsg)
 	require.NoError(t, err)
 
-	addr, _, err := keepers.ContractKeeper.Instantiate(ctx, contractID, creator, "", initMsgBz, "demo contract to query", deposit)
+	addr, _, err := keepers.ContractKeeper.Instantiate(ctx, contractID, creator, nil, initMsgBz, "demo contract to query", deposit)
 	require.NoError(t, err)
 
 	contractModel := []types.Model{
@@ -60,7 +60,7 @@ func TestLegacyQueryContractState(t *testing.T) {
 		// if success and expSmartRes is not set, we parse into []types.Model and compare (all state)
 		expModelLen      int
 		expModelContains []types.Model
-		expErr           *sdkErrors.Error
+		expErr           error
 	}{
 		"query all": {
 			srcPath:     []string{QueryGetContractState, addr.String(), QueryMethodContractStateAll},
@@ -93,7 +93,7 @@ func TestLegacyQueryContractState(t *testing.T) {
 		"query smart with invalid json": {
 			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateSmart},
 			srcReq:  abci.RequestQuery{Data: []byte(`not a json string`)},
-			expErr:  types.ErrQueryFailed,
+			expErr:  types.ErrInvalid,
 		},
 		"query non-existent raw key": {
 			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
@@ -120,6 +120,7 @@ func TestLegacyQueryContractState(t *testing.T) {
 		},
 		"query smart with unknown address": {
 			srcPath:     []string{QueryGetContractState, anyAddr.String(), QueryMethodContractStateSmart},
+			srcReq:      abci.RequestQuery{Data: []byte(`{}`)},
 			expModelLen: 0,
 			expErr:      types.ErrNotFound,
 		},
@@ -129,7 +130,7 @@ func TestLegacyQueryContractState(t *testing.T) {
 		t.Run(msg, func(t *testing.T) {
 			binResult, err := q(ctx, spec.srcPath, spec.srcReq)
 			// require.True(t, spec.expErr.Is(err), "unexpected error")
-			require.True(t, spec.expErr.Is(err), err)
+			require.True(t, errors.Is(err, spec.expErr), err)
 
 			// if smart query, check custom response
 			if spec.srcPath[2] != QueryMethodContractStateAll {
@@ -154,17 +155,17 @@ func TestLegacyQueryContractState(t *testing.T) {
 
 func TestLegacyQueryContractListByCodeOrdering(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
-	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.WasmKeeper, keepers.BankKeeper
+	keeper := keepers.WasmKeeper
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 1000000))
 	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 500))
-	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit)
-	anyAddr := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, topUp)
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit.Add(deposit...)...)
+	anyAddr := keepers.Faucet.NewFundedAccount(ctx, topUp...)
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	codeID, err := keepers.ContractKeeper.Create(ctx, creator, wasmCode, "", "", nil)
+	codeID, err := keepers.ContractKeeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, bob := keyPubAddr()
@@ -192,7 +193,7 @@ func TestLegacyQueryContractListByCodeOrdering(t *testing.T) {
 			ctx = setBlock(ctx, h)
 			h++
 		}
-		_, _, err = keepers.ContractKeeper.Instantiate(ctx, codeID, creator, "", initMsgBz, fmt.Sprintf("contract %d", i), topUp)
+		_, _, err = keepers.ContractKeeper.Instantiate(ctx, codeID, creator, nil, initMsgBz, fmt.Sprintf("contract %d", i), topUp)
 		require.NoError(t, err)
 	}
 
@@ -220,9 +221,7 @@ func TestLegacyQueryContractHistory(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	keeper := keepers.WasmKeeper
 
-	var (
-		otherAddr = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, sdk.BytesAddrLen))
-	)
+	var otherAddr sdk.AccAddress = bytes.Repeat([]byte{0x2}, types.ContractAddrLen)
 
 	specs := map[string]struct {
 		srcQueryAddr sdk.AccAddress
@@ -292,7 +291,7 @@ func TestLegacyQueryContractHistory(t *testing.T) {
 			var defaultQueryGasLimit sdk.Gas = 3000000
 			q := NewLegacyQuerier(keeper, defaultQueryGasLimit)
 			queryContractAddr := spec.srcQueryAddr
-			if queryContractAddr.Empty() {
+			if queryContractAddr == nil {
 				queryContractAddr = myContractAddr
 			}
 
@@ -359,6 +358,7 @@ func TestLegacyQueryCodeList(t *testing.T) {
 			require.Len(t, got, len(spec.codeIDs))
 			for i, exp := range spec.codeIDs {
 				assert.EqualValues(t, exp, got[i]["id"])
+				assert.NotNil(t, got[i]["instantiate_permission"])
 			}
 		})
 	}

@@ -191,13 +191,15 @@ func (m *MsgUpdateClientResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateClientResponse proto.InternalMessageInfo
 
-// MsgUpgradeClient defines an sdk.Msg to upgrade an IBC client to a new client state
+// MsgUpgradeClient defines an sdk.Msg to upgrade an IBC client to a new client
+// state
 type MsgUpgradeClient struct {
 	// client unique identifier
 	ClientId string `protobuf:"bytes,1,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty" yaml:"client_id"`
 	// upgraded client state
 	ClientState *types.Any `protobuf:"bytes,2,opt,name=client_state,json=clientState,proto3" json:"client_state,omitempty" yaml:"client_state"`
-	// upgraded consensus state, only contains enough information to serve as a basis of trust in update logic
+	// upgraded consensus state, only contains enough information to serve as a
+	// basis of trust in update logic
 	ConsensusState *types.Any `protobuf:"bytes,3,opt,name=consensus_state,json=consensusState,proto3" json:"consensus_state,omitempty" yaml:"consensus_state"`
 	// proof that old chain committed to new client
 	ProofUpgradeClient []byte `protobuf:"bytes,4,opt,name=proof_upgrade_client,json=proofUpgradeClient,proto3" json:"proof_upgrade_client,omitempty" yaml:"proof_upgrade_client"`
@@ -321,7 +323,8 @@ func (m *MsgSubmitMisbehaviour) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgSubmitMisbehaviour proto.InternalMessageInfo
 
-// MsgSubmitMisbehaviourResponse defines the Msg/SubmitMisbehaviour response type.
+// MsgSubmitMisbehaviourResponse defines the Msg/SubmitMisbehaviour response
+// type.
 type MsgSubmitMisbehaviourResponse struct {
 }
 

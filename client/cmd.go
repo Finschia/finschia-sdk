@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/line/ostracon/libs/cli"
-	rpchttp "github.com/line/ostracon/rpc/client/http"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -99,6 +98,11 @@ func ReadPersistentCommandFlags(clientCtx Context, flagSet *pflag.FlagSet) (Cont
 		clientCtx = clientCtx.WithHomeDir(homeDir)
 	}
 
+	if !clientCtx.Simulate || flagSet.Changed(flags.FlagDryRun) {
+		dryRun, _ := flagSet.GetBool(flags.FlagDryRun)
+		clientCtx = clientCtx.WithSimulation(dryRun)
+	}
+
 	if clientCtx.KeyringDir == "" || flagSet.Changed(flags.FlagKeyringDir) {
 		keyringDir, _ := flagSet.GetString(flags.FlagKeyringDir)
 
@@ -120,7 +124,7 @@ func ReadPersistentCommandFlags(clientCtx Context, flagSet *pflag.FlagSet) (Cont
 		keyringBackend, _ := flagSet.GetString(flags.FlagKeyringBackend)
 
 		if keyringBackend != "" {
-			kr, err := newKeyringFromFlags(clientCtx, keyringBackend)
+			kr, err := NewKeyringFromBackend(clientCtx, keyringBackend)
 			if err != nil {
 				return clientCtx, err
 			}
@@ -134,7 +138,7 @@ func ReadPersistentCommandFlags(clientCtx Context, flagSet *pflag.FlagSet) (Cont
 		if rpcURI != "" {
 			clientCtx = clientCtx.WithNodeURI(rpcURI)
 
-			client, err := rpchttp.New(rpcURI, "/websocket")
+			client, err := NewClientFromNode(rpcURI)
 			if err != nil {
 				return clientCtx, err
 			}
@@ -191,11 +195,6 @@ func readTxCommandFlags(clientCtx Context, flagSet *pflag.FlagSet) (Context, err
 		clientCtx = clientCtx.WithGenerateOnly(genOnly)
 	}
 
-	if !clientCtx.Simulate || flagSet.Changed(flags.FlagDryRun) {
-		dryRun, _ := flagSet.GetBool(flags.FlagDryRun)
-		clientCtx = clientCtx.WithSimulation(dryRun)
-	}
-
 	if !clientCtx.Offline || flagSet.Changed(flags.FlagOffline) {
 		offline, _ := flagSet.GetBool(flags.FlagOffline)
 		clientCtx = clientCtx.WithOffline(offline)
@@ -221,6 +220,19 @@ func readTxCommandFlags(clientCtx Context, flagSet *pflag.FlagSet) (Context, err
 		clientCtx = clientCtx.WithSignModeStr(signModeStr)
 	}
 
+	if clientCtx.FeeGranter == nil || flagSet.Changed(flags.FlagFeeAccount) {
+		granter, _ := flagSet.GetString(flags.FlagFeeAccount)
+
+		if granter != "" {
+			granterAcc, err := sdk.AccAddressFromBech32(granter)
+			if err != nil {
+				return clientCtx, err
+			}
+
+			clientCtx = clientCtx.WithFeeGranterAddress(granterAcc)
+		}
+	}
+
 	if clientCtx.From == "" || flagSet.Changed(flags.FlagFrom) {
 		from, _ := flagSet.GetString(flags.FlagFrom)
 		fromAddr, fromName, keyType, err := GetFromFields(clientCtx.Keyring, from, clientCtx.GenerateOnly)
@@ -238,7 +250,6 @@ func readTxCommandFlags(clientCtx Context, flagSet *pflag.FlagSet) (Context, err
 			clientCtx = clientCtx.WithSignModeStr(flags.SignModeLegacyAminoJSON)
 		}
 	}
-
 	return clientCtx, nil
 }
 

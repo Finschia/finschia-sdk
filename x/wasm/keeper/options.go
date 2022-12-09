@@ -3,8 +3,9 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/x/wasm/types"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 type optsFn func(*Keeper)
@@ -22,23 +23,39 @@ func WithWasmEngine(x types.WasmerEngine) Option {
 }
 
 // WithMessageHandler is an optional constructor parameter to set a custom handler for wasmVM messages.
-// This option should not be combined with Option `WithMessageEncoders`.
+// This option should not be combined with Option `WithMessageEncoders` or `WithMessageHandlerDecorator`
 func WithMessageHandler(x Messenger) Option {
 	return optsFn(func(k *Keeper) {
 		k.messenger = x
 	})
 }
 
+// WithMessageHandlerDecorator is an optional constructor parameter to decorate the wasm handler for wasmVM messages.
+// This option should not be combined with Option `WithMessageEncoders` or `WithMessageHandler`
+func WithMessageHandlerDecorator(d func(old Messenger) Messenger) Option {
+	return optsFn(func(k *Keeper) {
+		k.messenger = d(k.messenger)
+	})
+}
+
 // WithQueryHandler is an optional constructor parameter to set custom query handler for wasmVM requests.
-// This option should not be combined with Option `WithQueryPlugins`.
+// This option should not be combined with Option `WithQueryPlugins` or `WithQueryHandlerDecorator`
 func WithQueryHandler(x WasmVMQueryHandler) Option {
 	return optsFn(func(k *Keeper) {
 		k.wasmVMQueryHandler = x
 	})
 }
 
+// WithQueryHandlerDecorator is an optional constructor parameter to decorate the default wasm query handler for wasmVM requests.
+// This option should not be combined with Option `WithQueryPlugins` or `WithQueryHandler`
+func WithQueryHandlerDecorator(d func(old WasmVMQueryHandler) WasmVMQueryHandler) Option {
+	return optsFn(func(k *Keeper) {
+		k.wasmVMQueryHandler = d(k.wasmVMQueryHandler)
+	})
+}
+
 // WithQueryPlugins is an optional constructor parameter to pass custom query plugins for wasmVM requests.
-// This option expects the default `QueryHandler` set an should not be combined with Option `WithQueryHandler`.
+// This option expects the default `QueryHandler` set an should not be combined with Option `WithQueryHandler` or `WithQueryHandlerDecorator`.
 func WithQueryPlugins(x *QueryPlugins) Option {
 	return optsFn(func(k *Keeper) {
 		q, ok := k.wasmVMQueryHandler.(QueryPlugins)
@@ -50,7 +67,7 @@ func WithQueryPlugins(x *QueryPlugins) Option {
 }
 
 // WithMessageEncoders is an optional constructor parameter to pass custom message encoder to the default wasm message handler.
-// This option expects the `DefaultMessageHandler` set an should not be combined with Option `WithMessageHandler`.
+// This option expects the `DefaultMessageHandler` set and should not be combined with Option `WithMessageHandler` or `WithMessageHandlerDecorator`.
 func WithMessageEncoders(x *MessageEncoders) Option {
 	return optsFn(func(k *Keeper) {
 		q, ok := k.messenger.(*MessageHandlerChain)
@@ -79,6 +96,28 @@ func WithCoinTransferrer(x CoinTransferrer) Option {
 
 func WithVMCacheMetrics(r prometheus.Registerer) Option {
 	return optsFn(func(k *Keeper) {
-		NewWasmVMMetricsCollector(k.wasmVM).Register(r)
+		NewWasmVMCacheMetricsCollector(k.wasmVM).Register(r)
+	})
+}
+
+func WithVMMetrics(provider MetricsProvider) Option {
+	return optsFn(func(k *Keeper) {
+		k.metrics = provider()
+	})
+}
+
+// WithGasRegister set a new gas register to implement custom gas costs.
+// When the "gas multiplier" for wasmvm gas conversion is modified inside the new register,
+// make sure to also use `WithApiCosts` option for non default values
+func WithGasRegister(x WasmGasRegister) Option {
+	return optsFn(func(k *Keeper) {
+		k.gasRegister = x
+	})
+}
+
+// WithMaxQueryStackSize overwrites the default limit for maximum query stacks
+func WithMaxQueryStackSize(m uint32) Option {
+	return optsFn(func(k *Keeper) {
+		k.maxQueryStackSize = m
 	})
 }

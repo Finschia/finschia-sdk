@@ -3,10 +3,19 @@ package cli
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
 	"testing"
+
+	ostcfg "github.com/line/ostracon/config"
+	"github.com/line/ostracon/libs/log"
+	octypes "github.com/line/ostracon/types"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
@@ -14,20 +23,14 @@ import (
 	"github.com/line/lbm-sdk/crypto/keyring"
 	"github.com/line/lbm-sdk/server"
 	"github.com/line/lbm-sdk/testutil"
+	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/genutil"
-	genutiltest "github.com/line/lbm-sdk/x/genutil/client/testutil"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"github.com/line/ostracon/libs/log"
-	octypes "github.com/line/ostracon/types"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 var wasmIdent = []byte("\x00\x61\x73\x6D")
@@ -55,7 +58,6 @@ func TestGenesisStoreCodeCmd(t *testing.T) {
 			mutator: func(cmd *cobra.Command) {
 				cmd.SetArgs([]string{anyValidWasmFile.Name()})
 				flagSet := cmd.Flags()
-				flagSet.Set("source", "https://foo.bar")
 				flagSet.Set("run-as", keeper.RandomBech32AccountAddress(t))
 			},
 		},
@@ -80,18 +82,6 @@ func TestGenesisStoreCodeCmd(t *testing.T) {
 			srcGenesis: minimalWasmGenesis,
 			mutator: func(cmd *cobra.Command) {
 				cmd.SetArgs([]string{anyValidWasmFile.Name()})
-				flagSet := cmd.Flags()
-				flagSet.Set("source", "https://foo.bar")
-			},
-			expError: true,
-		},
-		"invalid msg data should fail": {
-			srcGenesis: minimalWasmGenesis,
-			mutator: func(cmd *cobra.Command) {
-				cmd.SetArgs([]string{anyValidWasmFile.Name()})
-				flagSet := cmd.Flags()
-				flagSet.Set("source", "not an url")
-				flagSet.Set("run-as", keeper.RandomBech32AccountAddress(t))
 			},
 			expError: true,
 		},
@@ -153,6 +143,7 @@ func TestInstantiateContractCmd(t *testing.T) {
 				flagSet := cmd.Flags()
 				flagSet.Set("label", "testing")
 				flagSet.Set("run-as", myWellFundedAccount)
+				flagSet.Set("no-admin", "true")
 			},
 			expMsgCount: 1,
 		},
@@ -168,6 +159,7 @@ func TestInstantiateContractCmd(t *testing.T) {
 				flagSet := cmd.Flags()
 				flagSet.Set("label", "testing")
 				flagSet.Set("run-as", myWellFundedAccount)
+				flagSet.Set("admin", myWellFundedAccount)
 			},
 			expMsgCount: 2,
 		},
@@ -186,6 +178,7 @@ func TestInstantiateContractCmd(t *testing.T) {
 				flagSet := cmd.Flags()
 				flagSet.Set("label", "testing")
 				flagSet.Set("run-as", myWellFundedAccount)
+				flagSet.Set("no-admin", "true")
 			},
 			expMsgCount: 2,
 		},
@@ -196,6 +189,7 @@ func TestInstantiateContractCmd(t *testing.T) {
 				flagSet := cmd.Flags()
 				flagSet.Set("label", "testing")
 				flagSet.Set("run-as", myWellFundedAccount)
+				flagSet.Set("no-admin", "true")
 			},
 			expError: true,
 		},
@@ -213,6 +207,59 @@ func TestInstantiateContractCmd(t *testing.T) {
 				flagSet := cmd.Flags()
 				flagSet.Set("label", "testing")
 				flagSet.Set("run-as", myWellFundedAccount)
+				flagSet.Set("no-admin", "true")
+			},
+			expError: true,
+		},
+		"fails if no explicit --no-admin passed": {
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
+				Codes: []types.Code{
+					{
+						CodeID: 1,
+						CodeInfo: types.CodeInfo{
+							CodeHash: []byte("a-valid-code-hash"),
+							Creator:  keeper.RandomBech32AccountAddress(t),
+							InstantiateConfig: types.AccessConfig{
+								Permission: types.AccessTypeEverybody,
+							},
+						},
+						CodeBytes: wasmIdent,
+					},
+				},
+			},
+			mutator: func(cmd *cobra.Command) {
+				cmd.SetArgs([]string{"1", `{}`})
+				flagSet := cmd.Flags()
+				flagSet.Set("label", "testing")
+				flagSet.Set("run-as", myWellFundedAccount)
+			},
+			expError: true,
+		},
+		"fails if both --admin and --no-admin passed": {
+			srcGenesis: types.GenesisState{
+				Params: types.DefaultParams(),
+				Codes: []types.Code{
+					{
+						CodeID: 1,
+						CodeInfo: types.CodeInfo{
+							CodeHash: []byte("a-valid-code-hash"),
+							Creator:  keeper.RandomBech32AccountAddress(t),
+							InstantiateConfig: types.AccessConfig{
+								Permission: types.AccessTypeEverybody,
+							},
+						},
+						CodeBytes: wasmIdent,
+					},
+				},
+			},
+			mutator: func(cmd *cobra.Command) {
+				cmd.SetArgs([]string{"1", `{}`})
+				flagSet := cmd.Flags()
+				flagSet.Set("label", "testing")
+				flagSet.Set("run-as", myWellFundedAccount)
+				flagSet.Set("no-admin", "true")
+				flagSet.Set("admin", myWellFundedAccount)
 			},
 			expError: true,
 		},
@@ -238,6 +285,7 @@ func TestInstantiateContractCmd(t *testing.T) {
 				flagSet := cmd.Flags()
 				flagSet.Set("label", "testing")
 				flagSet.Set("run-as", keeper.RandomBech32AccountAddress(t))
+				flagSet.Set("no-admin", "true")
 			},
 			expMsgCount: 1,
 		},
@@ -264,6 +312,7 @@ func TestInstantiateContractCmd(t *testing.T) {
 				flagSet.Set("label", "testing")
 				flagSet.Set("run-as", myWellFundedAccount)
 				flagSet.Set("amount", "100stake")
+				flagSet.Set("no-admin", "true")
 			},
 			expMsgCount: 1,
 		},
@@ -290,6 +339,7 @@ func TestInstantiateContractCmd(t *testing.T) {
 				flagSet.Set("label", "testing")
 				flagSet.Set("run-as", keeper.RandomBech32AccountAddress(t))
 				flagSet.Set("amount", "10stake")
+				flagSet.Set("no-admin", "true")
 			},
 			expError: true,
 		},
@@ -315,7 +365,7 @@ func TestInstantiateContractCmd(t *testing.T) {
 }
 
 func TestExecuteContractCmd(t *testing.T) {
-	const firstContractAddress = "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu"
+	const firstContractAddress = "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"
 	minimalWasmGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
 	}
@@ -396,7 +446,8 @@ func TestExecuteContractCmd(t *testing.T) {
 				},
 			},
 			mutator: func(cmd *cobra.Command) {
-				cmd.SetArgs([]string{"link1weh0k0l6t6v4jkmkde8e90tzkw2c59g4lkcapz", `{}`})
+				// See TestBuildContractAddress in keeper_test.go
+				cmd.SetArgs([]string{"link1mujpjkwhut9yjw4xueyugc02evfv46y0dtmnz4lh8xxkkdapym9skz93hr", `{}`})
 				flagSet := cmd.Flags()
 				flagSet.Set("run-as", myWellFundedAccount)
 			},
@@ -517,7 +568,7 @@ func TestExecuteContractCmd(t *testing.T) {
 func TestGetAllContracts(t *testing.T) {
 	specs := map[string]struct {
 		src types.GenesisState
-		exp []contractMeta
+		exp []ContractMeta
 	}{
 		"read from contracts state": {
 			src: types.GenesisState{
@@ -532,7 +583,7 @@ func TestGetAllContracts(t *testing.T) {
 					},
 				},
 			},
-			exp: []contractMeta{
+			exp: []ContractMeta{
 				{
 					ContractAddress: "first-contract",
 					Info:            types.ContractInfo{Label: "first"},
@@ -550,13 +601,13 @@ func TestGetAllContracts(t *testing.T) {
 					{Sum: &types.GenesisState_GenMsgs_InstantiateContract{InstantiateContract: &types.MsgInstantiateContract{Label: "second"}}},
 				},
 			},
-			exp: []contractMeta{
+			exp: []ContractMeta{
 				{
-					ContractAddress: contractAddress(0, 1).String(),
+					ContractAddress: keeper.BuildContractAddress(0, 1).String(),
 					Info:            types.ContractInfo{Label: "first"},
 				},
 				{
-					ContractAddress: contractAddress(0, 2).String(),
+					ContractAddress: keeper.BuildContractAddress(0, 2).String(),
 					Info:            types.ContractInfo{Label: "second"},
 				},
 			},
@@ -570,9 +621,9 @@ func TestGetAllContracts(t *testing.T) {
 					{Sum: &types.GenesisState_GenMsgs_InstantiateContract{InstantiateContract: &types.MsgInstantiateContract{Label: "hundred"}}},
 				},
 			},
-			exp: []contractMeta{
+			exp: []ContractMeta{
 				{
-					ContractAddress: contractAddress(0, 100).String(),
+					ContractAddress: keeper.BuildContractAddress(0, 100).String(),
 					Info:            types.ContractInfo{Label: "hundred"},
 				},
 			},
@@ -592,13 +643,13 @@ func TestGetAllContracts(t *testing.T) {
 					{Sum: &types.GenesisState_GenMsgs_InstantiateContract{InstantiateContract: &types.MsgInstantiateContract{Label: "hundred"}}},
 				},
 			},
-			exp: []contractMeta{
+			exp: []ContractMeta{
 				{
 					ContractAddress: "first-contract",
 					Info:            types.ContractInfo{Label: "first"},
 				},
 				{
-					ContractAddress: contractAddress(0, 100).String(),
+					ContractAddress: keeper.BuildContractAddress(0, 100).String(),
 					Info:            types.ContractInfo{Label: "hundred"},
 				},
 			},
@@ -643,13 +694,25 @@ func setupGenesis(t *testing.T, wasmGenesis types.GenesisState) string {
 	return homeDir
 }
 
+func createDefaultOstraconConfig(rootDir string) (*ostcfg.Config, error) {
+	conf := ostcfg.DefaultConfig()
+	conf.SetRoot(rootDir)
+	ostcfg.EnsureRoot(rootDir)
+
+	if err := conf.ValidateBasic(); err != nil {
+		return nil, fmt.Errorf("error in config file: %v", err)
+	}
+
+	return conf, nil
+}
+
 func executeCmdWithContext(t *testing.T, homeDir string, cmd *cobra.Command) error {
 	logger := log.NewNopLogger()
-	cfg, err := genutiltest.CreateDefaultTendermintConfig(homeDir)
+	cfg, err := createDefaultOstraconConfig(homeDir)
 	require.NoError(t, err)
 	appCodec := keeper.MakeEncodingConfig(t).Marshaler
 	serverCtx := server.NewContext(viper.New(), cfg, logger)
-	clientCtx := client.Context{}.WithJSONMarshaler(appCodec).WithHomeDir(homeDir)
+	clientCtx := client.Context{}.WithJSONCodec(appCodec).WithHomeDir(homeDir)
 
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
@@ -661,7 +724,7 @@ func executeCmdWithContext(t *testing.T, homeDir string, cmd *cobra.Command) err
 	mockIn := testutil.ApplyMockIODiscardOutErr(cmd)
 	kb, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, homeDir, mockIn)
 	require.NoError(t, err)
-	_, err = kb.NewAccount(defaultTestKeyName, testutil.TestMnemonic, "", sdk.FullFundraiserPath, hd.Secp256k1)
+	_, err = kb.NewAccount(defaultTestKeyName, testdata.TestMnemonic, "", sdk.FullFundraiserPath, hd.Secp256k1)
 	require.NoError(t, err)
 	return cmd.ExecuteContext(ctx)
 }

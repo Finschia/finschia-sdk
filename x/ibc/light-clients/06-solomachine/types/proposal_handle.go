@@ -6,60 +6,59 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
-// CheckProposedHeaderAndUpdateState updates the consensus state to the header's sequence and
-// public key. An error is returned if the client has been disallowed to be updated by a
-// governance proposal, the header cannot be casted to a solo machine header, or the current
-// public key equals the new public key.
-func (cs ClientState) CheckProposedHeaderAndUpdateState(
-	ctx sdk.Context, cdc codec.BinaryMarshaler, clientStore sdk.KVStore,
-	header exported.Header,
-) (exported.ClientState, exported.ConsensusState, error) {
+// CheckSubstituteAndUpdateState verifies that the subject is allowed to be updated by
+// a governance proposal and that the substitute client is a solo machine.
+// It will update the consensus state to the substitute's consensus state and
+// the sequence to the substitute's current sequence. An error is returned if
+// the client has been disallowed to be updated by a governance proposal,
+// the substitute is not a solo machine, or the current public key equals
+// the new public key.
+func (cs ClientState) CheckSubstituteAndUpdateState(
+	ctx sdk.Context, cdc codec.BinaryCodec, subjectClientStore,
+	_ sdk.KVStore, substituteClient exported.ClientState,
+) (exported.ClientState, error) {
 
 	if !cs.AllowUpdateAfterProposal {
-		return nil, nil, sdkerrors.Wrapf(
+		return nil, sdkerrors.Wrapf(
 			clienttypes.ErrUpdateClientFailed,
 			"solo machine client is not allowed to updated with a proposal",
 		)
 	}
 
-	smHeader, ok := header.(*Header)
+	substituteClientState, ok := substituteClient.(*ClientState)
 	if !ok {
-		return nil, nil, sdkerrors.Wrapf(
-			clienttypes.ErrInvalidHeader, "header type %T, expected  %T", header, &Header{},
+		return nil, sdkerrors.Wrapf(
+			clienttypes.ErrInvalidClientType, "substitute client state type %T, expected  %T", substituteClient, &ClientState{},
 		)
 	}
 
-	consensusPublicKey, err := cs.ConsensusState.GetPubKey()
+	subjectPublicKey, err := cs.ConsensusState.GetPubKey()
 	if err != nil {
-		return nil, nil, sdkerrors.Wrap(err, "failed to get consensus public key")
+		return nil, sdkerrors.Wrap(err, "failed to get consensus public key")
 	}
 
-	headerPublicKey, err := smHeader.GetPubKey()
+	substitutePublicKey, err := substituteClientState.ConsensusState.GetPubKey()
 	if err != nil {
-		return nil, nil, sdkerrors.Wrap(err, "failed to get header public key")
+		return nil, sdkerrors.Wrap(err, "failed to get substitute client public key")
 	}
 
-	if reflect.DeepEqual(consensusPublicKey, headerPublicKey) {
-		return nil, nil, sdkerrors.Wrapf(
-			clienttypes.ErrInvalidHeader, "new public key in header equals current public key",
+	if reflect.DeepEqual(subjectPublicKey, substitutePublicKey) {
+		return nil, sdkerrors.Wrapf(
+			clienttypes.ErrInvalidHeader, "subject and substitute have the same public key",
 		)
 	}
 
 	clientState := &cs
 
-	consensusState := &ConsensusState{
-		PublicKey:   smHeader.NewPublicKey,
-		Diversifier: smHeader.NewDiversifier,
-		Timestamp:   smHeader.Timestamp,
-	}
+	// update to substitute parameters
+	clientState.Sequence = substituteClientState.Sequence
+	clientState.ConsensusState = substituteClientState.ConsensusState
+	clientState.IsFrozen = false
 
-	clientState.Sequence = smHeader.Sequence
-	clientState.ConsensusState = consensusState
-	clientState.FrozenSequence = 0
-
-	return clientState, consensusState, nil
+	return clientState, nil
 }

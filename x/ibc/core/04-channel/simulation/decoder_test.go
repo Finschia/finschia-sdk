@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"testing"
 
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/kv"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/simapp"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/kv"
 	"github.com/line/lbm-sdk/x/ibc/core/04-channel/simulation"
 	"github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
@@ -32,7 +32,7 @@ func TestDecodeStore(t *testing.T) {
 		Pairs: []kv.Pair{
 			{
 				Key:   host.ChannelKey(portID, channelID),
-				Value: cdc.MustMarshalBinaryBare(&channel),
+				Value: cdc.MustMarshal(&channel),
 			},
 			{
 				Key:   host.NextSequenceSendKey(portID, channelID),

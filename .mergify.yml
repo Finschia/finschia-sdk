@@ -1,10 +1,18 @@
-pull_request_rules:
-  - name: automerge to master with label automerge and branch protection passing
+queue_rules:
+  - name: default
     conditions:
       - "#approved-reviews-by>1"
-      - base=master
+
+pull_request_rules:
+  - name: automerge to main with label automerge and branch protection passing
+    conditions:
+      - "#approved-reviews-by>1"
+      - base=main
       - label=automerge
     actions:
-      merge:
+      queue:
+        name: default
         method: squash
-        strict: true
+        commit_message_template: |
+          {{ title }} (#{{ number }})
+          {{ body }}

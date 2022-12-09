@@ -63,7 +63,7 @@ func InitGenesis(
 	}
 
 	for _, delegation := range data.Delegations {
-		delegatorAddress := sdk.AccAddress(delegation.DelegatorAddress)
+		delegatorAddress := sdk.MustAccAddressFromBech32(delegation.DelegatorAddress)
 
 		// Call the before-creation hook if not exported
 		if !data.Exported {
@@ -102,34 +102,35 @@ func InitGenesis(
 	if bondedPool == nil {
 		panic(fmt.Sprintf("%s module account has not been set", types.BondedPoolName))
 	}
-
 	// TODO remove with genesis 2-phases refactor https://github.com/cosmos/cosmos-sdk/issues/2862
-	// add coins if not provided on genesis
-	if bankKeeper.GetAllBalances(ctx, bondedPool.GetAddress()).IsZero() {
-		if err := bankKeeper.SetBalances(ctx, bondedPool.GetAddress(), bondedCoins); err != nil {
-			panic(err)
-		}
-
+	bondedBalance := bankKeeper.GetAllBalances(ctx, bondedPool.GetAddress())
+	if bondedBalance.IsZero() {
 		accountKeeper.SetModuleAccount(ctx, bondedPool)
 	}
-
+	// if balance is different from bonded coins panic because genesis is most likely malformed
+	if !bondedBalance.IsEqual(bondedCoins) {
+		panic(fmt.Sprintf("bonded pool balance is different from bonded coins: %s <-> %s", bondedBalance, bondedCoins))
+	}
 	notBondedPool := keeper.GetNotBondedPool(ctx)
 	if notBondedPool == nil {
 		panic(fmt.Sprintf("%s module account has not been set", types.NotBondedPoolName))
 	}
 
-	if bankKeeper.GetAllBalances(ctx, notBondedPool.GetAddress()).IsZero() {
-		if err := bankKeeper.SetBalances(ctx, notBondedPool.GetAddress(), notBondedCoins); err != nil {
-			panic(err)
-		}
-
+	notBondedBalance := bankKeeper.GetAllBalances(ctx, notBondedPool.GetAddress())
+	if notBondedBalance.IsZero() {
 		accountKeeper.SetModuleAccount(ctx, notBondedPool)
 	}
-
+	// if balance is different from non bonded coins panic because genesis is most likely malformed
+	if !notBondedBalance.IsEqual(notBondedCoins) {
+		panic(fmt.Sprintf("not bonded pool balance is different from not bonded coins: %s <-> %s", notBondedBalance, notBondedCoins))
+	}
 	// don't need to run Tendermint updates if we exported
 	if data.Exported {
 		for _, lv := range data.LastValidatorPowers {
-			valAddr := sdk.ValAddress(lv.Address)
+			valAddr, err := sdk.ValAddressFromBech32(lv.Address)
+			if err != nil {
+				panic(err)
+			}
 			keeper.SetLastValidatorPower(ctx, valAddr, lv.Power)
 			validator, found := keeper.GetValidator(ctx, valAddr)
 
@@ -137,7 +138,7 @@ func InitGenesis(
 				panic(fmt.Sprintf("validator %s not found", lv.Address))
 			}
 
-			update := validator.ABCIValidatorUpdate()
+			update := validator.ABCIValidatorUpdate(keeper.PowerReduction(ctx))
 			update.Power = lv.Power // keep the next-val-set offset, use the last power for the first block
 			res = append(res, update)
 		}
@@ -202,9 +203,9 @@ func WriteValidators(ctx sdk.Context, keeper keeper.Keeper) (vals []octypes.Gene
 		}
 
 		vals = append(vals, octypes.GenesisValidator{
-			Address: tmPk.Address(),
+			Address: sdk.ConsAddress(tmPk.Address()).Bytes(),
 			PubKey:  tmPk,
-			Power:   validator.GetConsensusPower(),
+			Power:   validator.GetConsensusPower(keeper.PowerReduction(ctx)),
 			Name:    validator.GetMoniker(),
 		})
 
@@ -233,17 +234,22 @@ func validateGenesisStateValidators(validators []types.Validator) error {
 		if err != nil {
 			return err
 		}
-		consAddr, err := val.GetConsAddr()
-		if err != nil {
-			return err
-		}
+
 		strKey := string(consPk.Bytes())
 
 		if _, ok := addrMap[strKey]; ok {
+			consAddr, err := val.GetConsAddr()
+			if err != nil {
+				return err
+			}
 			return fmt.Errorf("duplicate validator in genesis state: moniker %v, address %v", val.Description.Moniker, consAddr)
 		}
 
 		if val.Jailed && val.IsBonded() {
+			consAddr, err := val.GetConsAddr()
+			if err != nil {
+				return err
+			}
 			return fmt.Errorf("validator is bonded and jailed in genesis state: moniker %v, address %v", val.Description.Moniker, consAddr)
 		}
 

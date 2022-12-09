@@ -27,7 +27,7 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal types.Proposal) (passes boo
 			validator.GetBondedTokens(),
 			validator.GetDelegatorShares(),
 			sdk.ZeroDec(),
-			types.OptionEmpty,
+			types.WeightedVoteOptions{},
 		)
 
 		return false
@@ -35,21 +35,16 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal types.Proposal) (passes boo
 
 	keeper.IterateVotes(ctx, proposal.ProposalId, func(vote types.Vote) bool {
 		// if validator, just record it in the map
-		voterBytes, err := sdk.AccAddressToBytes(vote.Voter)
+		voter := sdk.MustAccAddressFromBech32(vote.Voter)
 
-		if err != nil {
-			panic(err)
-		}
-
-		valAddrStr := sdk.BytesToValAddress(voterBytes).String()
+		valAddrStr := sdk.ValAddress(voter.Bytes()).String()
 		if val, ok := currValidators[valAddrStr]; ok {
-			val.Vote = vote.Option
+			val.Vote = vote.Options
 			currValidators[valAddrStr] = val
 		}
 
 		// iterate over all delegations from voter, deduct from any delegated-to validators
-		keeper.sk.IterateDelegations(ctx, sdk.AccAddress(vote.Voter), func(index int64,
-			delegation stakingtypes.DelegationI) (stop bool) {
+		keeper.sk.IterateDelegations(ctx, voter, func(index int64, delegation stakingtypes.DelegationI) (stop bool) {
 			valAddrStr := delegation.GetValidatorAddr().String()
 
 			if val, ok := currValidators[valAddrStr]; ok {
@@ -61,27 +56,33 @@ func (keeper Keeper) Tally(ctx sdk.Context, proposal types.Proposal) (passes boo
 				// delegation shares * bonded / total shares
 				votingPower := delegation.GetShares().MulInt(val.BondedTokens).Quo(val.DelegatorShares)
 
-				results[vote.Option] = results[vote.Option].Add(votingPower)
+				for _, option := range vote.Options {
+					subPower := votingPower.Mul(option.Weight)
+					results[option.Option] = results[option.Option].Add(subPower)
+				}
 				totalVotingPower = totalVotingPower.Add(votingPower)
 			}
 
 			return false
 		})
 
-		keeper.deleteVote(ctx, vote.ProposalId, sdk.AccAddress(vote.Voter))
+		keeper.deleteVote(ctx, vote.ProposalId, voter)
 		return false
 	})
 
 	// iterate over the validators again to tally their voting power
 	for _, val := range currValidators {
-		if val.Vote == types.OptionEmpty {
+		if len(val.Vote) == 0 {
 			continue
 		}
 
 		sharesAfterDeductions := val.DelegatorShares.Sub(val.DelegatorDeductions)
 		votingPower := sharesAfterDeductions.MulInt(val.BondedTokens).Quo(val.DelegatorShares)
 
-		results[val.Vote] = results[val.Vote].Add(votingPower)
+		for _, option := range val.Vote {
+			subPower := votingPower.Mul(option.Weight)
+			results[option.Option] = results[option.Option].Add(subPower)
+		}
 		totalVotingPower = totalVotingPower.Add(votingPower)
 	}
 

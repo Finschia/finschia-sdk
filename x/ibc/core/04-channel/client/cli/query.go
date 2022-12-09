@@ -1,15 +1,14 @@
 package cli
 
 import (
-	"context"
 	"fmt"
 	"strconv"
-
-	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/version"
+	"github.com/spf13/cobra"
+
 	"github.com/line/lbm-sdk/x/ibc/core/04-channel/client/utils"
 	"github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
@@ -44,7 +43,7 @@ func GetCmdQueryChannels() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.Channels(context.Background(), req)
+			res, err := queryClient.Channels(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -118,7 +117,7 @@ func GetCmdQueryConnectionChannels() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.ConnectionChannels(context.Background(), req)
+			res, err := queryClient.ConnectionChannels(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -189,7 +188,7 @@ func GetCmdQueryPacketCommitments() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.PacketCommitments(context.Background(), req)
+			res, err := queryClient.PacketCommitments(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -357,7 +356,7 @@ The return value represents:
 				PacketCommitmentSequences: seqs,
 			}
 
-			res, err := queryClient.UnreceivedPackets(context.Background(), req)
+			res, err := queryClient.UnreceivedPackets(cmd.Context(), req)
 			if err != nil {
 				return err
 			}
@@ -407,7 +406,7 @@ The return value represents:
 				PacketAckSequences: seqs,
 			}
 
-			res, err := queryClient.UnreceivedAcks(context.Background(), req)
+			res, err := queryClient.UnreceivedAcks(cmd.Context(), req)
 			if err != nil {
 				return err
 			}

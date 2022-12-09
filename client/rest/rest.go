@@ -8,7 +8,7 @@ import (
 
 // DeprecationURL is the URL for migrating deprecated REST endpoints to newer ones.
 // TODO Switch to `/` (not `/master`) once v0.40 docs are deployed.
-// https://github.com/line/lbm-sdk/issues/8019
+// https://github.com/cosmos/cosmos-sdk/issues/8019
 const DeprecationURL = "https://docs.cosmos.network/master/migrations/rest.html"
 
 // addHTTPDeprecationHeaders is a mux middleware function for adding HTTP
@@ -22,9 +22,11 @@ func addHTTPDeprecationHeaders(h http.Handler) http.Handler {
 	})
 }
 
+// nolint
 // WithHTTPDeprecationHeaders returns a new *mux.Router, identical to its input
 // but with the addition of HTTP Deprecation headers. This is used to mark legacy
 // amino REST endpoints as deprecated in the REST API.
+// nolint: gocritic
 func WithHTTPDeprecationHeaders(r *mux.Router) *mux.Router {
 	subRouter := r.NewRoute().Subrouter()
 	subRouter.Use(addHTTPDeprecationHeaders)

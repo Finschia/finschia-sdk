@@ -10,17 +10,17 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
-func (suite *TendermintTestSuite) TestGetHeight() {
+func (suite *OstraconTestSuite) TestGetHeight() {
 	header := suite.chainA.LastHeader
 	suite.Require().NotEqual(uint64(0), header.GetHeight())
 }
 
-func (suite *TendermintTestSuite) TestGetTime() {
+func (suite *OstraconTestSuite) TestGetTime() {
 	header := suite.chainA.LastHeader
 	suite.Require().NotEqual(time.Time{}, header.GetTime())
 }
 
-func (suite *TendermintTestSuite) TestHeaderValidateBasic() {
+func (suite *OstraconTestSuite) TestHeaderValidateBasic() {
 	var (
 		header *types.Header
 	)
@@ -39,12 +39,12 @@ func (suite *TendermintTestSuite) TestHeaderValidateBasic() {
 		{"SignedHeaderFromProto failed", func() {
 			header.SignedHeader.Commit.Height = -1
 		}, false},
-		{"signed header failed tendermint ValidateBasic", func() {
+		{"signed header failed ostracon ValidateBasic", func() {
 			header = suite.chainA.LastHeader
 			header.SignedHeader.Commit = nil
 		}, false},
-		{"trusted height is greater than header height", func() {
-			header.TrustedHeight = header.GetHeight().(clienttypes.Height).Increment().(clienttypes.Height)
+		{"trusted height is equal to header height", func() {
+			header.TrustedHeight = header.GetHeight().(clienttypes.Height)
 		}, false},
 		{"validator set nil", func() {
 			header.ValidatorSet = nil

@@ -1,11 +1,9 @@
 package types
 
 import (
-	"encoding/json"
 	"fmt"
 	"reflect"
 
-	"github.com/gogo/protobuf/jsonpb"
 	"github.com/gogo/protobuf/proto"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
@@ -14,48 +12,15 @@ import (
 )
 
 const (
-	defaultMemoryCacheSize   uint32 = 100 // in MiB
-	defaultQueryGasLimit     uint64 = 3000000
-	defaultContractDebugMode        = false
+	defaultMemoryCacheSize    uint32 = 100 // in MiB
+	defaultSmartQueryGasLimit uint64 = 3_000_000
+	defaultContractDebugMode         = false
+
+	// ContractAddrLen defines a valid address length for contracts
+	ContractAddrLen = 32
+	// SDKAddrLen defines a valid address length that was used in sdk address generation
+	SDKAddrLen = 20
 )
-
-var AllContractStatus = []ContractStatus{
-	ContractStatusInactive,
-	ContractStatusActive,
-}
-
-func (c ContractStatus) String() string {
-	switch c {
-	case ContractStatusActive:
-		return "Active"
-	case ContractStatusInactive:
-		return "Inactive"
-	}
-	return "Unspecified"
-}
-
-func (c *ContractStatus) UnmarshalText(text []byte) error {
-	for _, v := range AllContractStatus {
-		if v.String() == string(text) {
-			*c = v
-			return nil
-		}
-	}
-	*c = ContractStatusUnspecified
-	return nil
-}
-
-func (c ContractStatus) MarshalText() ([]byte, error) {
-	return []byte(c.String()), nil
-}
-
-func (c *ContractStatus) MarshalJSONPB(_ *jsonpb.Marshaler) ([]byte, error) {
-	return json.Marshal(c)
-}
-
-func (c *ContractStatus) UnmarshalJSONPB(_ *jsonpb.Unmarshaler, data []byte) error {
-	return json.Unmarshal(data, c)
-}
 
 func (m Model) ValidateBasic() error {
 	if len(m.Key) == 0 {
@@ -68,14 +33,8 @@ func (c CodeInfo) ValidateBasic() error {
 	if len(c.CodeHash) == 0 {
 		return sdkerrors.Wrap(ErrEmpty, "code hash")
 	}
-	if err := sdk.ValidateAccAddress(c.Creator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(c.Creator); err != nil {
 		return sdkerrors.Wrap(err, "creator")
-	}
-	if err := validateSourceURL(c.Source); err != nil {
-		return sdkerrors.Wrap(err, "source")
-	}
-	if err := validateBuilder(c.Builder); err != nil {
-		return sdkerrors.Wrap(err, "builder")
 	}
 	if err := c.InstantiateConfig.ValidateBasic(); err != nil {
 		return sdkerrors.Wrap(err, "instantiate config")
@@ -83,13 +42,11 @@ func (c CodeInfo) ValidateBasic() error {
 	return nil
 }
 
-// NewCodeInfo fills a new Contract struct
-func NewCodeInfo(codeHash []byte, creator sdk.AccAddress, source string, builder string, instantiatePermission AccessConfig) CodeInfo {
+// NewCodeInfo fills a new CodeInfo struct
+func NewCodeInfo(codeHash []byte, creator sdk.AccAddress, instantiatePermission AccessConfig) CodeInfo {
 	return CodeInfo{
 		CodeHash:          codeHash,
 		Creator:           creator.String(),
-		Source:            source,
-		Builder:           builder,
 		InstantiateConfig: instantiatePermission,
 	}
 }
@@ -97,7 +54,7 @@ func NewCodeInfo(codeHash []byte, creator sdk.AccAddress, source string, builder
 var AllCodeHistoryTypes = []ContractCodeHistoryOperationType{ContractCodeHistoryOperationTypeGenesis, ContractCodeHistoryOperationTypeInit, ContractCodeHistoryOperationTypeMigrate}
 
 // NewContractInfo creates a new instance of a given WASM contract info
-func NewContractInfo(codeID uint64, creator, admin sdk.AccAddress, label string, createdAt *AbsoluteTxPosition, status ContractStatus) ContractInfo {
+func NewContractInfo(codeID uint64, creator, admin sdk.AccAddress, label string, createdAt *AbsoluteTxPosition) ContractInfo {
 	var adminAddr string
 	if !admin.Empty() {
 		adminAddr = admin.String()
@@ -108,7 +65,6 @@ func NewContractInfo(codeID uint64, creator, admin sdk.AccAddress, label string,
 		Admin:   adminAddr,
 		Label:   label,
 		Created: createdAt,
-		Status:  status,
 	}
 }
 
@@ -124,26 +80,16 @@ func (c *ContractInfo) ValidateBasic() error {
 	if c.CodeID == 0 {
 		return sdkerrors.Wrap(ErrEmpty, "code id")
 	}
-	if err := sdk.ValidateAccAddress(c.Creator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(c.Creator); err != nil {
 		return sdkerrors.Wrap(err, "creator")
 	}
 	if len(c.Admin) != 0 {
-		if err := sdk.ValidateAccAddress(c.Admin); err != nil {
+		if _, err := sdk.AccAddressFromBech32(c.Admin); err != nil {
 			return sdkerrors.Wrap(err, "admin")
 		}
 	}
 	if err := validateLabel(c.Label); err != nil {
 		return sdkerrors.Wrap(err, "label")
-	}
-	found := false
-	for _, v := range AllContractStatus {
-		if c.Status == v {
-			found = true
-			break
-		}
-	}
-	if !found || c.Status == ContractStatusUnspecified {
-		return sdkerrors.Wrap(ErrInvalidMsg, "invalid status")
 	}
 	if c.Extension == nil {
 		return nil
@@ -237,9 +183,12 @@ func (c *ContractInfo) ResetFromGenesis(ctx sdk.Context) ContractCodeHistoryEntr
 // AdminAddr convert into sdk.AccAddress or nil when not set
 func (c *ContractInfo) AdminAddr() sdk.AccAddress {
 	if c.Admin == "" {
-		return ""
+		return nil
 	}
-	admin := sdk.AccAddress(c.Admin)
+	admin, err := sdk.AccAddressFromBech32(c.Admin)
+	if err != nil { // should never happen
+		panic(err.Error())
+	}
 	return admin
 }
 
@@ -313,6 +262,7 @@ func NewEnv(ctx sdk.Context, contractAddr sdk.AccAddress) wasmvmtypes.Env {
 	if nano < 1 {
 		panic("Block (unix) time must never be empty or negative ")
 	}
+
 	env := wasmvmtypes.Env{
 		Block: wasmvmtypes.BlockInfo{
 			Height:  uint64(ctx.BlockHeight()),
@@ -322,6 +272,9 @@ func NewEnv(ctx sdk.Context, contractAddr sdk.AccAddress) wasmvmtypes.Env {
 		Contract: wasmvmtypes.ContractInfo{
 			Address: contractAddr.String(),
 		},
+	}
+	if txCounter, ok := TXCounter(ctx); ok {
+		env.Transaction = &wasmvmtypes.TransactionInfo{Index: txCounter}
 	}
 	return env
 }
@@ -346,29 +299,12 @@ func NewWasmCoins(cosmosCoins sdk.Coins) (wasmCoins []wasmvmtypes.Coin) {
 	return wasmCoins
 }
 
-const CustomEventType = "wasm"
-const AttributeKeyContractAddr = "contract_address"
-
-// ParseEvents converts wasm LogAttributes into an sdk.Events
-func ParseEvents(wasmOutputAttrs []wasmvmtypes.EventAttribute, contractAddr sdk.AccAddress) sdk.Events {
-	// we always tag with the contract address issuing this event
-	attrs := []sdk.Attribute{sdk.NewAttribute(AttributeKeyContractAddr, contractAddr.String())}
-
-	// append attributes from wasm to the sdk.Event
-	for _, l := range wasmOutputAttrs {
-		// and reserve the contract_address key for our use (not contract)
-		if l.Key != AttributeKeyContractAddr {
-			attr := sdk.NewAttribute(l.Key, l.Value)
-			attrs = append(attrs, attr)
-		}
-	}
-
-	// each wasm invokation always returns one sdk.Event
-	return sdk.Events{sdk.NewEvent(CustomEventType, attrs...)}
-}
-
 // WasmConfig is the extra config required for wasm
 type WasmConfig struct {
+	// SimulationGasLimit is the max gas to be used in a tx simulation call.
+	// When not set the consensus max block gas is used instead
+	SimulationGasLimit *uint64
+	// SimulationGasLimit is the max gas to be used in a smart query contract call
 	SmartQueryGasLimit uint64
 	// MemoryCacheSize in MiB not bytes
 	MemoryCacheSize uint32
@@ -379,8 +315,36 @@ type WasmConfig struct {
 // DefaultWasmConfig returns the default settings for WasmConfig
 func DefaultWasmConfig() WasmConfig {
 	return WasmConfig{
-		SmartQueryGasLimit: defaultQueryGasLimit,
+		SmartQueryGasLimit: defaultSmartQueryGasLimit,
 		MemoryCacheSize:    defaultMemoryCacheSize,
 		ContractDebugMode:  defaultContractDebugMode,
+	}
+}
+
+// VerifyAddressLen ensures that the address matches the expected length
+func VerifyAddressLen() func(addr []byte) error {
+	return func(addr []byte) error {
+		if len(addr) != ContractAddrLen && len(addr) != SDKAddrLen {
+			return sdkerrors.ErrInvalidAddress
+		}
+		return nil
+	}
+}
+
+// IsSubset will return true if the caller is the same as the superset,
+// or if the caller is more restrictive than the superset.
+func (a AccessConfig) IsSubset(superSet AccessConfig) bool {
+	switch superSet.Permission {
+	case AccessTypeEverybody:
+		// Everything is a subset of this
+		return a.Permission != AccessTypeUnspecified
+	case AccessTypeNobody:
+		// Only an exact match is a subset of this
+		return a.Permission == AccessTypeNobody
+	case AccessTypeOnlyAddress:
+		// An exact match or nobody
+		return a.Permission == AccessTypeNobody || (a.Permission == AccessTypeOnlyAddress && a.Address == superSet.Address)
+	default:
+		return false
 	}
 }

@@ -18,6 +18,7 @@ type StakingKeeper interface {
 
 // AccountKeeper defines the expected account keeper (noalias)
 type AccountKeeper interface {
+	NewAccount(sdk.Context, auth.AccountI) auth.AccountI
 	SetAccount(sdk.Context, auth.AccountI)
 	IterateAccounts(ctx sdk.Context, process func(auth.AccountI) (stop bool))
 }
@@ -34,7 +35,7 @@ type GenesisAccountsIterator interface {
 // GenesisAccountsIterator defines the expected iterating genesis accounts object (noalias)
 type GenesisBalancesIterator interface {
 	IterateGenesisBalances(
-		cdc codec.JSONMarshaler,
+		cdc codec.JSONCodec,
 		appGenesis map[string]json.RawMessage,
 		cb func(bankexported.GenesisBalance) (stop bool),
 	)

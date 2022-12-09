@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
@@ -24,7 +23,7 @@ var (
 )
 
 const (
-	MaxMessagesPerTxDefault = 5
+	MaxMessagesPerTxDefault = 0
 )
 
 // NewTxCmd returns a root CLI command handler for all x/distribution transaction commands.
@@ -53,13 +52,12 @@ func newSplitAndApply(
 	genOrBroadcastFn newGenerateOrBroadcastFunc, clientCtx client.Context,
 	fs *pflag.FlagSet, msgs []sdk.Msg, chunkSize int,
 ) error {
-
-	if chunkSize == 0 {
+	totalMessages := len(msgs)
+	if chunkSize == 0 || totalMessages == 0 {
 		return genOrBroadcastFn(clientCtx, fs, msgs...)
 	}
 
 	// split messages into slices of length chunkSize
-	totalMessages := len(msgs)
 	for i := 0; i < len(msgs); i += chunkSize {
 
 		sliceEnd := i + chunkSize
@@ -100,15 +98,15 @@ $ %s tx distribution withdraw-rewards %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj 
 				return err
 			}
 			delAddr := clientCtx.GetFromAddress()
-			err = sdk.ValidateValAddress(args[0])
+			valAddr, err := sdk.ValAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
 
-			msgs := []sdk.Msg{types.NewMsgWithdrawDelegatorReward(delAddr, sdk.ValAddress(args[0]))}
+			msgs := []sdk.Msg{types.NewMsgWithdrawDelegatorReward(delAddr, valAddr)}
 
 			if commission, _ := cmd.Flags().GetBool(FlagCommission); commission {
-				msgs = append(msgs, types.NewMsgWithdrawValidatorCommission(sdk.ValAddress(args[0])))
+				msgs = append(msgs, types.NewMsgWithdrawValidatorCommission(valAddr))
 			}
 
 			for _, msg := range msgs {
@@ -133,11 +131,12 @@ func NewWithdrawAllRewardsCmd() *cobra.Command {
 		Short: "withdraw all delegations rewards for a delegator",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Withdraw all rewards for a single delegator.
+Note that if you use this command with --%[2]s=%[3]s or --%[2]s=%[4]s, the %[5]s flag will automatically be set to 0.
 
 Example:
-$ %s tx distribution withdraw-all-rewards --from mykey
+$ %[1]s tx distribution withdraw-all-rewards --from mykey
 `,
-				version.AppName,
+				version.AppName, flags.FlagBroadcastMode, flags.BroadcastSync, flags.BroadcastAsync, FlagMaxMessagesPerTx,
 			),
 		),
 		Args: cobra.NoArgs,
@@ -155,7 +154,7 @@ $ %s tx distribution withdraw-all-rewards --from mykey
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
-			delValsRes, err := queryClient.DelegatorValidators(context.Background(), &types.QueryDelegatorValidatorsRequest{DelegatorAddress: delAddr.String()})
+			delValsRes, err := queryClient.DelegatorValidators(cmd.Context(), &types.QueryDelegatorValidatorsRequest{DelegatorAddress: delAddr.String()})
 			if err != nil {
 				return err
 			}
@@ -164,12 +163,12 @@ $ %s tx distribution withdraw-all-rewards --from mykey
 			// build multi-message transaction
 			msgs := make([]sdk.Msg, 0, len(validators))
 			for _, valAddr := range validators {
-				err := sdk.ValidateValAddress(valAddr)
+				val, err := sdk.ValAddressFromBech32(valAddr)
 				if err != nil {
 					return err
 				}
 
-				msg := types.NewMsgWithdrawDelegatorReward(delAddr, sdk.ValAddress(valAddr))
+				msg := types.NewMsgWithdrawDelegatorReward(delAddr, val)
 				if err := msg.ValidateBasic(); err != nil {
 					return err
 				}
@@ -177,6 +176,11 @@ $ %s tx distribution withdraw-all-rewards --from mykey
 			}
 
 			chunkSize, _ := cmd.Flags().GetInt(FlagMaxMessagesPerTx)
+			if clientCtx.BroadcastMode != flags.BroadcastBlock && chunkSize > 0 {
+				return fmt.Errorf("cannot use broadcast mode %[1]s with %[2]s != 0",
+					clientCtx.BroadcastMode, FlagMaxMessagesPerTx)
+			}
+
 			return newSplitAndApply(tx.GenerateOrBroadcastTxCLI, clientCtx, cmd.Flags(), msgs, chunkSize)
 		},
 	}
@@ -209,15 +213,12 @@ $ %s tx distribution set-withdraw-addr %s1gghjut3ccd8ay0zduzj64hwre2fxs9ld75ru9p
 				return err
 			}
 			delAddr := clientCtx.GetFromAddress()
-			err = sdk.ValidateAccAddress(args[0])
+			withdrawAddr, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgSetWithdrawAddress(delAddr, sdk.AccAddress(args[0]))
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
+			msg := types.NewMsgSetWithdrawAddress(delAddr, withdrawAddr)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -254,9 +255,6 @@ $ %s tx distribution fund-community-pool 100uatom --from mykey
 			}
 
 			msg := types.NewMsgFundCommunityPool(amount, depositorAddr)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -300,7 +298,7 @@ Where proposal.json contains:
 			if err != nil {
 				return err
 			}
-			proposal, err := ParseCommunityPoolSpendProposalWithDeposit(clientCtx.JSONMarshaler, args[0])
+			proposal, err := ParseCommunityPoolSpendProposalWithDeposit(clientCtx.Codec, args[0])
 			if err != nil {
 				return err
 			}
@@ -316,19 +314,14 @@ Where proposal.json contains:
 			}
 
 			from := clientCtx.GetFromAddress()
-			err = sdk.ValidateAccAddress(proposal.Recipient)
+			recpAddr, err := sdk.AccAddressFromBech32(proposal.Recipient)
 			if err != nil {
 				return err
 			}
-			content := types.NewCommunityPoolSpendProposal(proposal.Title, proposal.Description,
-				sdk.AccAddress(proposal.Recipient), amount)
+			content := types.NewCommunityPoolSpendProposal(proposal.Title, proposal.Description, recpAddr, amount)
 
 			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {
-				return err
-			}
-
-			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
 

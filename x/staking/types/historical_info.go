@@ -8,14 +8,17 @@ import (
 
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 // NewHistoricalInfo will create a historical information struct from header and valset
 // it will first sort valset before inclusion into historical info
-func NewHistoricalInfo(header ocproto.Header, valSet Validators) HistoricalInfo {
-	// Must sort in the same way that ostracon does
-	sort.Sort(ValidatorsByVotingPower(valSet))
+func NewHistoricalInfo(header ocproto.Header, valSet Validators, powerReduction sdk.Int) HistoricalInfo {
+	// Must sort in the same way that tendermint does
+	sort.SliceStable(valSet, func(i, j int) bool {
+		return ValidatorsByVotingPower(valSet).Less(i, j, powerReduction)
+	})
 
 	return HistoricalInfo{
 		Header: header,
@@ -24,7 +27,7 @@ func NewHistoricalInfo(header ocproto.Header, valSet Validators) HistoricalInfo 
 }
 
 // MustUnmarshalHistoricalInfo wll unmarshal historical info and panic on error
-func MustUnmarshalHistoricalInfo(cdc codec.BinaryMarshaler, value []byte) HistoricalInfo {
+func MustUnmarshalHistoricalInfo(cdc codec.BinaryCodec, value []byte) HistoricalInfo {
 	hi, err := UnmarshalHistoricalInfo(cdc, value)
 	if err != nil {
 		panic(err)
@@ -34,8 +37,8 @@ func MustUnmarshalHistoricalInfo(cdc codec.BinaryMarshaler, value []byte) Histor
 }
 
 // UnmarshalHistoricalInfo will unmarshal historical info and return any error
-func UnmarshalHistoricalInfo(cdc codec.BinaryMarshaler, value []byte) (hi HistoricalInfo, err error) {
-	err = cdc.UnmarshalBinaryBare(value, &hi)
+func UnmarshalHistoricalInfo(cdc codec.BinaryCodec, value []byte) (hi HistoricalInfo, err error) {
+	err = cdc.Unmarshal(value, &hi)
 	return hi, err
 }
 

@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/line/lbm-sdk/x/wasm/types"
+
 	"github.com/stretchr/testify/assert"
 
 	sdk "github.com/line/lbm-sdk/types"
@@ -24,19 +26,19 @@ func TestDispatchSubMsgSuccessCase(t *testing.T) {
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
 	contractStart := sdk.NewCoins(sdk.NewInt64Coin("denom", 40000))
 
-	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit)
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
 	creatorBalance := deposit.Sub(contractStart)
 	_, _, fred := keyPubAddr()
 
 	// upload code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, "", "", nil)
+	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), codeID)
 
 	// creator instantiates a contract and gives it tokens
-	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, "", []byte("{}"), "reflect contract 1", contractStart)
+	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, nil, []byte("{}"), "reflect contract 1", contractStart)
 	require.NoError(t, err)
 	require.NotEmpty(t, contractAddr)
 
@@ -58,7 +60,7 @@ func TestDispatchSubMsgSuccessCase(t *testing.T) {
 		},
 	}
 	reflectSend := ReflectHandleMsg{
-		ReflectSubCall: &reflectSubPayload{
+		ReflectSubMsg: &reflectSubPayload{
 			Msgs: []wasmvmtypes.SubMsg{{
 				ID:      7,
 				Msg:     msg,
@@ -79,7 +81,7 @@ func TestDispatchSubMsgSuccessCase(t *testing.T) {
 
 	// query the reflect state to ensure the result was stored
 	query := ReflectQueryMsg{
-		SubCallResult: &SubCall{ID: 7},
+		SubMsgResult: &SubCall{ID: 7},
 	}
 	queryBz, err := json.Marshal(query)
 	require.NoError(t, err)
@@ -95,29 +97,14 @@ func TestDispatchSubMsgSuccessCase(t *testing.T) {
 	sub := res.Result.Ok
 	assert.Empty(t, sub.Data)
 	require.Len(t, sub.Events, 3)
-
-	transfer := sub.Events[0]
+	assert.Equal(t, "coin_spent", sub.Events[0].Type)
+	assert.Equal(t, "coin_received", sub.Events[1].Type)
+	transfer := sub.Events[2]
 	assert.Equal(t, "transfer", transfer.Type)
 	assert.Equal(t, wasmvmtypes.EventAttribute{
 		Key:   "recipient",
 		Value: fred.String(),
 	}, transfer.Attributes[0])
-
-	sender := sub.Events[1]
-	assert.Equal(t, "message", sender.Type)
-	assert.Equal(t, wasmvmtypes.EventAttribute{
-		Key:   "sender",
-		Value: contractAddr.String(),
-	}, sender.Attributes[0])
-
-	// where does this come from?
-	module := sub.Events[2]
-	assert.Equal(t, "message", module.Type)
-	assert.Equal(t, wasmvmtypes.EventAttribute{
-		Key:   "module",
-		Value: "bank",
-	}, module.Attributes[0])
-
 }
 
 func TestDispatchSubMsgErrorHandling(t *testing.T) {
@@ -130,20 +117,20 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, ReflectFeatures, nil, nil)
 	ctx = ctx.WithGasMeter(sdk.NewInfiniteGasMeter())
 	ctx = ctx.WithBlockGasMeter(sdk.NewInfiniteGasMeter())
-	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.WasmKeeper, keepers.BankKeeper
+	keeper := keepers.WasmKeeper
 	contractStart := sdk.NewCoins(sdk.NewInt64Coin(fundedDenom, int64(fundedAmount)))
-	uploader := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, contractStart.Add(contractStart...))
+	uploader := keepers.Faucet.NewFundedAccount(ctx, contractStart.Add(contractStart...)...)
 
 	// upload code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	reflectID, err := keepers.ContractKeeper.Create(ctx, uploader, reflectCode, "", "", nil)
+	reflectID, err := keepers.ContractKeeper.Create(ctx, uploader, reflectCode, nil)
 	require.NoError(t, err)
 
 	// create hackatom contract for testing (for infinite loop)
 	hackatomCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
-	hackatomID, err := keepers.ContractKeeper.Create(ctx, uploader, hackatomCode, "", "", nil)
+	hackatomID, err := keepers.ContractKeeper.Create(ctx, uploader, hackatomCode, nil)
 	require.NoError(t, err)
 	_, _, bob := keyPubAddr()
 	_, _, fred := keyPubAddr()
@@ -153,7 +140,7 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 	}
 	initMsgBz, err := json.Marshal(initMsg)
 	require.NoError(t, err)
-	hackatomAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, hackatomID, uploader, "", initMsgBz, "hackatom demo", contractStart)
+	hackatomAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, hackatomID, uploader, nil, initMsgBz, "hackatom demo", contractStart)
 	require.NoError(t, err)
 
 	validBankSend := func(contract, emptyAccount string) wasmvmtypes.CosmosMsg {
@@ -207,16 +194,16 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 		}
 	}
 
-	type assertion func(t *testing.T, ctx sdk.Context, contract, emptyAccount string, response wasmvmtypes.SubcallResult)
+	type assertion func(t *testing.T, ctx sdk.Context, contract, emptyAccount string, response wasmvmtypes.SubMsgResult)
 
 	assertReturnedEvents := func(expectedEvents int) assertion {
-		return func(t *testing.T, ctx sdk.Context, contract, emptyAccount string, response wasmvmtypes.SubcallResult) {
-			assert.Len(t, response.Ok.Events, expectedEvents)
+		return func(t *testing.T, ctx sdk.Context, contract, emptyAccount string, response wasmvmtypes.SubMsgResult) {
+			require.Len(t, response.Ok.Events, expectedEvents)
 		}
 	}
 
 	assertGasUsed := func(minGas, maxGas uint64) assertion {
-		return func(t *testing.T, ctx sdk.Context, contract, emptyAccount string, response wasmvmtypes.SubcallResult) {
+		return func(t *testing.T, ctx sdk.Context, contract, emptyAccount string, response wasmvmtypes.SubMsgResult) {
 			gasUsed := ctx.GasMeter().GasConsumed()
 			assert.True(t, gasUsed >= minGas, "Used %d gas (less than expected %d)", gasUsed, minGas)
 			assert.True(t, gasUsed <= maxGas, "Used %d gas (more than expected %d)", gasUsed, maxGas)
@@ -224,23 +211,22 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 	}
 
 	assertErrorString := func(shouldContain string) assertion {
-		return func(t *testing.T, ctx sdk.Context, contract, emptyAccount string, response wasmvmtypes.SubcallResult) {
+		return func(t *testing.T, ctx sdk.Context, contract, emptyAccount string, response wasmvmtypes.SubMsgResult) {
 			assert.Contains(t, response.Err, shouldContain)
 		}
 	}
 
-	assertGotContractAddr := func(t *testing.T, ctx sdk.Context, contract, emptyAccount string, response wasmvmtypes.SubcallResult) {
+	assertGotContractAddr := func(t *testing.T, ctx sdk.Context, contract, emptyAccount string, response wasmvmtypes.SubMsgResult) {
 		// should get the events emitted on new contract
 		event := response.Ok.Events[0]
-		assert.Equal(t, event.Type, "wasm")
-		assert.Equal(t, event.Attributes[0].Key, "contract_address")
+		require.Equal(t, event.Type, "instantiate")
+		assert.Equal(t, event.Attributes[0].Key, "_contract_address")
 		eventAddr := event.Attributes[0].Value
 		assert.NotEqual(t, contract, eventAddr)
 
-		// data field is the raw canonical address
-		// QUESTION: why not types.MsgInstantiateContractResponse? difference between calling Router and Service?
-		resAddr := sdk.AccAddress(response.Ok.Data)
-		assert.Equal(t, eventAddr, resAddr.String())
+		var res types.MsgInstantiateContractResponse
+		keepers.EncodingConfig.Marshaler.MustUnmarshal(response.Ok.Data, &res)
+		assert.Equal(t, eventAddr, res.Address)
 	}
 
 	cases := map[string]struct {
@@ -259,17 +245,16 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 		resultAssertions []assertion
 	}{
 		"send tokens": {
-			submsgID: 5,
-			msg:      validBankSend,
-			// note we charge another 40k for the reply call
-			resultAssertions: []assertion{assertReturnedEvents(3), assertGasUsed(117000, 130000)},
+			submsgID:         5,
+			msg:              validBankSend,
+			resultAssertions: []assertion{assertReturnedEvents(3), assertGasUsed(111000, 113100)},
 		},
 		"not enough tokens": {
 			submsgID:    6,
 			msg:         invalidBankSend,
 			subMsgError: true,
 			// uses less gas than the send tokens (cost of bank transfer)
-			resultAssertions: []assertion{assertGasUsed(96000, 110000), assertErrorString("insufficient funds")},
+			resultAssertions: []assertion{assertGasUsed(76000, 77000), assertErrorString("codespace: sdk, code: 5")},
 		},
 		"out of gas panic with no gas limit": {
 			submsgID:        7,
@@ -281,44 +266,42 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 			submsgID: 15,
 			msg:      validBankSend,
 			gasLimit: &subGasLimit,
-			// uses same gas as call without limit
-			resultAssertions: []assertion{assertReturnedEvents(3), assertGasUsed(117000, 130000)},
+			// uses same gas as call without limit (note we do not charge the 40k on reply)
+			resultAssertions: []assertion{assertReturnedEvents(3), assertGasUsed(111400, 111500)},
 		},
 		"not enough tokens with limit": {
 			submsgID:    16,
 			msg:         invalidBankSend,
 			subMsgError: true,
 			gasLimit:    &subGasLimit,
-			// uses same gas as call without limit
-			resultAssertions: []assertion{assertGasUsed(96000, 110000), assertErrorString("insufficient funds")},
+			// uses same gas as call without limit (note we do not charge the 40k on reply)
+			resultAssertions: []assertion{assertGasUsed(76000, 77000), assertErrorString("codespace: sdk, code: 5")},
 		},
 		"out of gas caught with gas limit": {
 			submsgID:    17,
 			msg:         infiniteLoop,
 			subMsgError: true,
 			gasLimit:    &subGasLimit,
-			// uses all the subGasLimit, plus the 92k or so for the main contract
-			resultAssertions: []assertion{assertGasUsed(subGasLimit+92000, subGasLimit+106000), assertErrorString("out of gas")},
+			// uses all the subGasLimit, plus the 52k or so for the main contract
+			resultAssertions: []assertion{assertGasUsed(subGasLimit+74000, subGasLimit+75000), assertErrorString("codespace: sdk, code: 11")},
 		},
-
 		"instantiate contract gets address in data and events": {
 			submsgID:         21,
 			msg:              instantiateContract,
 			resultAssertions: []assertion{assertReturnedEvents(1), assertGotContractAddr},
 		},
 	}
-
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
-			creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, contractStart)
+			creator := keepers.Faucet.NewFundedAccount(ctx, contractStart...)
 			_, _, empty := keyPubAddr()
 
-			contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, reflectID, creator, "", []byte("{}"), fmt.Sprintf("contract %s", name), contractStart)
+			contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, reflectID, creator, nil, []byte("{}"), fmt.Sprintf("contract %s", name), contractStart)
 			require.NoError(t, err)
 
 			msg := tc.msg(contractAddr.String(), empty.String())
 			reflectSend := ReflectHandleMsg{
-				ReflectSubCall: &reflectSubPayload{
+				ReflectSubMsg: &reflectSubPayload{
 					Msgs: []wasmvmtypes.SubMsg{{
 						ID:       tc.submsgID,
 						Msg:      msg,
@@ -349,7 +332,7 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 
 				// query the reply
 				query := ReflectQueryMsg{
-					SubCallResult: &SubCall{ID: tc.submsgID},
+					SubMsgResult: &SubCall{ID: tc.submsgID},
 				}
 				queryBz, err := json.Marshal(query)
 				require.NoError(t, err)
@@ -388,23 +371,23 @@ func TestDispatchSubMsgEncodeToNoSdkMsg(t *testing.T) {
 		Bank: nilEncoder,
 	}
 
-	ctx, keepers := CreateTestInput(t, false, ReflectFeatures, nil, nil, WithMessageHandler(NewSDKMessageHandler(nil, nil, customEncoders)))
-	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.WasmKeeper, keepers.BankKeeper
+	ctx, keepers := CreateTestInput(t, false, ReflectFeatures, nil, nil, WithMessageHandler(NewSDKMessageHandler(nil, customEncoders)))
+	keeper := keepers.WasmKeeper
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
 	contractStart := sdk.NewCoins(sdk.NewInt64Coin("denom", 40000))
 
-	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit)
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
 	_, _, fred := keyPubAddr()
 
 	// upload code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, "", "", nil)
+	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 
 	// creator instantiates a contract and gives it tokens
-	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, "", []byte("{}"), "reflect contract 1", contractStart)
+	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, nil, []byte("{}"), "reflect contract 1", contractStart)
 	require.NoError(t, err)
 	require.NotEmpty(t, contractAddr)
 
@@ -421,7 +404,7 @@ func TestDispatchSubMsgEncodeToNoSdkMsg(t *testing.T) {
 		},
 	}
 	reflectSend := ReflectHandleMsg{
-		ReflectSubCall: &reflectSubPayload{
+		ReflectSubMsg: &reflectSubPayload{
 			Msgs: []wasmvmtypes.SubMsg{{
 				ID:      7,
 				Msg:     msg,
@@ -436,7 +419,7 @@ func TestDispatchSubMsgEncodeToNoSdkMsg(t *testing.T) {
 
 	// query the reflect state to ensure the result was stored
 	query := ReflectQueryMsg{
-		SubCallResult: &SubCall{ID: 7},
+		SubMsgResult: &SubCall{ID: 7},
 	}
 	queryBz, err := json.Marshal(query)
 	require.NoError(t, err)
@@ -457,22 +440,22 @@ func TestDispatchSubMsgEncodeToNoSdkMsg(t *testing.T) {
 // Try a simple send, no gas limit to for a sanity check before trying table tests
 func TestDispatchSubMsgConditionalReplyOn(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, ReflectFeatures, nil, nil)
-	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.WasmKeeper, keepers.BankKeeper
+	keeper := keepers.WasmKeeper
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
 	contractStart := sdk.NewCoins(sdk.NewInt64Coin("denom", 40000))
 
-	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit)
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
 	_, _, fred := keyPubAddr()
 
 	// upload code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
 	require.NoError(t, err)
-	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, "", "", nil)
+	codeID, err := keepers.ContractKeeper.Create(ctx, creator, reflectCode, nil)
 	require.NoError(t, err)
 
 	// creator instantiates a contract and gives it tokens
-	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, "", []byte("{}"), "reflect contract 1", contractStart)
+	contractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, nil, []byte("{}"), "reflect contract 1", contractStart)
 	require.NoError(t, err)
 
 	goodSend := wasmvmtypes.CosmosMsg{
@@ -547,7 +530,7 @@ func TestDispatchSubMsgConditionalReplyOn(t *testing.T) {
 			}
 
 			reflectSend := ReflectHandleMsg{
-				ReflectSubCall: &reflectSubPayload{
+				ReflectSubMsg: &reflectSubPayload{
 					Msgs: []wasmvmtypes.SubMsg{subMsg},
 				},
 			}
@@ -563,7 +546,7 @@ func TestDispatchSubMsgConditionalReplyOn(t *testing.T) {
 
 			// query the reflect state to check if the result was stored
 			query := ReflectQueryMsg{
-				SubCallResult: &SubCall{ID: id},
+				SubMsgResult: &SubCall{ID: id},
 			}
 			queryBz, err := json.Marshal(query)
 			require.NoError(t, err)

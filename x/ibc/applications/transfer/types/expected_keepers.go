@@ -4,6 +4,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/auth/types"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+
 	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	ibcexported "github.com/line/lbm-sdk/x/ibc/core/exported"
@@ -22,14 +23,18 @@ type BankKeeper interface {
 	BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
+	BlockedAddr(addr sdk.AccAddress) bool
+}
+
+// ICS4Wrapper defines the expected ICS4Wrapper for middleware
+type ICS4Wrapper interface {
+	SendPacket(ctx sdk.Context, channelCap *capabilitytypes.Capability, packet ibcexported.PacketI) error
 }
 
 // ChannelKeeper defines the expected IBC channel keeper
 type ChannelKeeper interface {
 	GetChannel(ctx sdk.Context, srcPort, srcChan string) (channel channeltypes.Channel, found bool)
 	GetNextSequenceSend(ctx sdk.Context, portID, channelID string) (uint64, bool)
-	SendPacket(ctx sdk.Context, channelCap *capabilitytypes.Capability, packet ibcexported.PacketI) error
-	ChanCloseInit(ctx sdk.Context, portID, channelID string, chanCap *capabilitytypes.Capability) error
 }
 
 // ClientKeeper defines the expected IBC client keeper

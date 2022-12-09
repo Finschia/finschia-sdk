@@ -10,7 +10,7 @@ import (
 
 // RegisterLegacyAminoCodec registers concrete types on LegacyAmino codec
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgUnjail{}, "lbm-sdk/MsgUnjail", nil)
+	cdc.RegisterConcrete(&MsgUnjail{}, "cosmos-sdk/MsgUnjail", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

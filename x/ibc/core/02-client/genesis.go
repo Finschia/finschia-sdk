@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	sdk "github.com/line/lbm-sdk/types"
+
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/keeper"
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
@@ -60,10 +61,11 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) types.GenesisState {
 		panic(err)
 	}
 	return types.GenesisState{
-		Clients:          genClients,
-		ClientsMetadata:  clientsMetadata,
-		ClientsConsensus: k.GetAllConsensusStates(ctx),
-		Params:           k.GetParams(ctx),
-		CreateLocalhost:  false,
+		Clients:            genClients,
+		ClientsMetadata:    clientsMetadata,
+		ClientsConsensus:   k.GetAllConsensusStates(ctx),
+		Params:             k.GetParams(ctx),
+		CreateLocalhost:    false,
+		NextClientSequence: k.GetNextClientSequence(ctx),
 	}
 }

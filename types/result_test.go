@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/golang/protobuf/proto"
-
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
@@ -142,6 +141,7 @@ func (s *resultTestSuite) TestResponseResultTx() {
 	resultTx := &ctypes.ResultTx{
 		Hash:     bytes.HexBytes([]byte("test")),
 		Height:   10,
+		Index:    1,
 		TxResult: deliverTxResult,
 	}
 	logs, err := sdk.ParseABCILogs(`[]`)
@@ -161,22 +161,26 @@ func (s *resultTestSuite) TestResponseResultTx() {
 		GasUsed:   90,
 		Tx:        nil,
 		Timestamp: "timestamp",
+		Index:     1,
 	}
 
 	s.Require().Equal(want, sdk.NewResponseResultTx(resultTx, nil, "timestamp"))
 	s.Require().Equal((*sdk.TxResponse)(nil), sdk.NewResponseResultTx(nil, nil, "timestamp"))
-	s.Require().Equal(`Response:
-  Height: 10
-  TxHash: 74657374
-  Code: 1
-  Data: 64617461
-  Raw Log: []
-  Logs: []
-  Info: info
-  GasWanted: 100
-  GasUsed: 90
-  Codespace: codespace
-  Timestamp: timestamp`, sdk.NewResponseResultTx(resultTx, nil, "timestamp").String())
+	s.Require().Equal(`code: 1
+codespace: codespace
+data: "64617461"
+events: []
+gas_used: "90"
+gas_wanted: "100"
+height: "10"
+index: 1
+info: info
+logs: []
+raw_log: '[]'
+timestamp: timestamp
+tx: null
+txhash: "74657374"
+`, sdk.NewResponseResultTx(resultTx, nil, "timestamp").String())
 	s.Require().True(sdk.TxResponse{}.Empty())
 	s.Require().False(want.Empty())
 
@@ -218,6 +222,18 @@ func (s *resultTestSuite) TestResponseFormatBroadcastTxCommit() {
 			GasWanted: 99,
 			GasUsed:   100,
 			Codespace: "codespace",
+			Events: []abci.Event{
+				{
+					Type: "message",
+					Attributes: []abci.EventAttribute{
+						{
+							Key:   []byte("action"),
+							Value: []byte("foo"),
+							Index: true,
+						},
+					},
+				},
+			},
 		},
 	}
 	deliverTxResult := &ctypes.ResultBroadcastTxCommit{
@@ -231,6 +247,18 @@ func (s *resultTestSuite) TestResponseFormatBroadcastTxCommit() {
 			GasWanted: 99,
 			GasUsed:   100,
 			Codespace: "codespace",
+			Events: []abci.Event{
+				{
+					Type: "message",
+					Attributes: []abci.EventAttribute{
+						{
+							Key:   []byte("action"),
+							Value: []byte("foo"),
+							Index: true,
+						},
+					},
+				},
+			},
 		},
 	}
 	want := &sdk.TxResponse{
@@ -244,6 +272,18 @@ func (s *resultTestSuite) TestResponseFormatBroadcastTxCommit() {
 		Info:      "info",
 		GasWanted: 99,
 		GasUsed:   100,
+		Events: []abci.Event{
+			{
+				Type: "message",
+				Attributes: []abci.EventAttribute{
+					{
+						Key:   []byte("action"),
+						Value: []byte("foo"),
+						Index: true,
+					},
+				},
+			},
+		},
 	}
 
 	s.Require().Equal(want, sdk.NewResponseFormatBroadcastTxCommit(checkTxResult))

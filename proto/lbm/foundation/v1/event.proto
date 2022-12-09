@@ -1,0 +1,93 @@
+syntax = "proto3";
+package lbm.foundation.v1;
+
+option go_package = "github.com/line/lbm-sdk/x/foundation";
+
+import "gogoproto/gogo.proto";
+
+import "google/protobuf/any.proto";
+import "cosmos_proto/cosmos.proto";
+
+import "cosmos/base/v1beta1/coin.proto";
+import "lbm/foundation/v1/foundation.proto";
+
+// EventUpdateFoundationParams is emitted after updating foundation parameters.
+message EventUpdateFoundationParams {
+  Params params = 1;
+}
+
+// EventFundTreasury is an event emitted when one funds the treasury.
+message EventFundTreasury {
+  string   from                            = 1;
+  repeated cosmos.base.v1beta1.Coin amount = 2
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+}
+
+// EventWithdrawFromTreasury is an event emitted when the operator withdraws coins from the treasury.
+message EventWithdrawFromTreasury {
+  string   to                              = 1;
+  repeated cosmos.base.v1beta1.Coin amount = 2
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
+}
+
+// EventUpdateMembers is an event emitted when the members have been updated.
+message EventUpdateMembers {
+  repeated Member member_updates = 1 [(gogoproto.nullable) = false];
+}
+
+// EventUpdateDecisionPolicy is an event emitted when the decision policy have been updated.
+message EventUpdateDecisionPolicy {
+  option (gogoproto.goproto_getters)  = false;
+  google.protobuf.Any decision_policy = 1 [(cosmos_proto.accepts_interface) = "DecisionPolicy"];
+}
+
+// EventSubmitProposal is an event emitted when a proposal is created.
+message EventSubmitProposal {
+  // proposal is the unique ID of the proposal.
+  Proposal proposal = 1 [(gogoproto.nullable) = false];
+}
+
+// EventWithdrawProposal is an event emitted when a proposal is withdrawn.
+message EventWithdrawProposal {
+  // proposal_id is the unique ID of the proposal.
+  uint64 proposal_id = 1;
+}
+
+// EventVote is an event emitted when a voter votes on a proposal.
+message EventVote {
+  Vote vote = 1 [(gogoproto.nullable) = false];
+}
+
+// EventExec is an event emitted when a proposal is executed.
+message EventExec {
+  // proposal_id is the unique ID of the proposal.
+  uint64 proposal_id = 1;
+
+  // result is the proposal execution result.
+  ProposalExecutorResult result = 2;
+}
+
+// EventLeaveFoundation is an event emitted when a foundation member leaves the foundation.
+message EventLeaveFoundation {
+  // address is the account address of the foundation member.
+  string address = 1;
+}
+
+// EventGrant is emitted on Msg/Grant
+message EventGrant {
+  string granter = 1;
+  // the address of the grantee.
+  string grantee = 2;
+  // authorization granted.
+  google.protobuf.Any authorization = 3
+      [(cosmos_proto.accepts_interface) = "github.com/line/lbm-sdk/x/authz.Authorization"];
+}
+
+// EventRevoke is emitted on Msg/Revoke
+message EventRevoke {
+  string granter = 1;
+  // address of the grantee.
+  string grantee = 2;
+  // message type url for which an autorization is revoked.
+  string msg_type_url = 3;
+}

@@ -51,7 +51,10 @@ timestamp.`,
 			if err != nil {
 				return err
 			}
-			toAddr := sdk.AccAddress(args[0])
+			toAddr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
 
 			amount, err := sdk.ParseCoinsNormalized(args[1])
 			if err != nil {
@@ -66,9 +69,6 @@ timestamp.`,
 			delayed, _ := cmd.Flags().GetBool(FlagDelayed)
 
 			msg := types.NewMsgCreateVestingAccount(clientCtx.GetFromAddress(), toAddr, amount, endTime, delayed)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},

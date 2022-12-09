@@ -7,7 +7,6 @@ import (
 	"github.com/line/lbm-sdk/x/staking/types"
 )
 
-//_______________________________________________________________________
 // Validator Set
 
 // iterate through the validator set and perform the provided function
@@ -40,7 +39,8 @@ func (k Keeper) IterateBondedValidatorsByPower(ctx sdk.Context, fn func(index in
 
 	i := int64(0)
 	for ; iterator.Valid() && i < int64(maxValidators); iterator.Next() {
-		validator := k.mustGetValidator(ctx, sdk.ValAddress(string(iterator.Value())))
+		address := iterator.Value()
+		validator := k.mustGetValidator(ctx, address)
 
 		if validator.IsBonded() {
 			stop := fn(i, validator) // XXX is this safe will the validator unexposed fields be able to get written to?
@@ -62,7 +62,7 @@ func (k Keeper) IterateLastValidators(ctx sdk.Context, fn func(index int64, vali
 	for ; iterator.Valid(); iterator.Next() {
 		address := types.AddressFromLastValidatorPowerKey(iterator.Key())
 
-		validator, found := k.GetValidator(ctx, sdk.ValAddress(string(address)))
+		validator, found := k.GetValidator(ctx, address)
 		if !found {
 			panic(fmt.Sprintf("validator record not found for address: %v\n", address))
 		}
@@ -95,7 +95,6 @@ func (k Keeper) ValidatorByConsAddr(ctx sdk.Context, addr sdk.ConsAddress) types
 	return val
 }
 
-//_______________________________________________________________________
 // Delegation Set
 
 // Returns self as it is both a validatorset and delegationset

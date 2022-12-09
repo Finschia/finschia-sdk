@@ -3,23 +3,27 @@ package keeper
 import (
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"testing"
 	"time"
 
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
-	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
+	"github.com/line/ostracon/libs/log"
+	wasmvm "github.com/line/wasmvm"
+	wasmvmtypes "github.com/line/wasmvm/types"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkErrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/query"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
+	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"github.com/line/ostracon/libs/log"
-	cosmwasm "github.com/line/wasmvm"
-	wasmvmtypes "github.com/line/wasmvm/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestQueryAllContractState(t *testing.T) {
@@ -121,7 +125,7 @@ func TestQuerySmartContractState(t *testing.T) {
 		srcAddr  sdk.AccAddress
 		srcQuery *types.QuerySmartContractStateRequest
 		expResp  string
-		expErr   *sdkErrors.Error
+		expErr   error
 	}{
 		"query smart": {
 			srcQuery: &types.QuerySmartContractStateRequest{Address: contractAddr, QueryData: []byte(`{"verifier":{}}`)},
@@ -133,7 +137,7 @@ func TestQuerySmartContractState(t *testing.T) {
 		},
 		"query smart with invalid json": {
 			srcQuery: &types.QuerySmartContractStateRequest{Address: contractAddr, QueryData: []byte(`not a json string`)},
-			expErr:   types.ErrQueryFailed,
+			expErr:   status.Error(codes.InvalidArgument, "invalid query data"),
 		},
 		"query smart with unknown address": {
 			srcQuery: &types.QuerySmartContractStateRequest{Address: RandomBech32AccountAddress(t), QueryData: []byte(`{"verifier":{}}`)},
@@ -143,7 +147,7 @@ func TestQuerySmartContractState(t *testing.T) {
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
 			got, err := q.SmartContractState(sdk.WrapSDKContext(ctx), spec.srcQuery)
-			require.True(t, spec.expErr.Is(err), "but got %+v", err)
+			require.True(t, errors.Is(err, spec.expErr), "but got %+v", err)
 			if spec.expErr != nil {
 				return
 			}
@@ -154,7 +158,7 @@ func TestQuerySmartContractState(t *testing.T) {
 
 func TestQuerySmartContractPanics(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
-	contractAddr := contractAddress(1, 1)
+	contractAddr := BuildContractAddress(1, 1)
 	keepers.WasmKeeper.storeCodeInfo(ctx, 1, types.CodeInfo{})
 	keepers.WasmKeeper.storeContractInfo(ctx, contractAddr, &types.ContractInfo{
 		CodeID:  1,
@@ -181,14 +185,15 @@ func TestQuerySmartContractPanics(t *testing.T) {
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			keepers.WasmKeeper.wasmVM = &wasmtesting.MockWasmer{QueryFn: func(checksum cosmwasm.Checksum, env wasmvmtypes.Env, queryMsg []byte, store cosmwasm.KVStore, goapi cosmwasm.GoAPI, querier cosmwasm.Querier, gasMeter cosmwasm.GasMeter, gasLimit uint64) ([]byte, uint64, error) {
+			keepers.WasmKeeper.wasmVM = &wasmtesting.MockWasmer{QueryFn: func(checksum wasmvm.Checksum, env wasmvmtypes.Env, queryMsg []byte, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) ([]byte, uint64, error) {
 				spec.doInContract()
 				return nil, 0, nil
 			}}
 			// when
 			q := Querier(keepers.WasmKeeper)
 			got, err := q.SmartContractState(sdk.WrapSDKContext(ctx), &types.QuerySmartContractStateRequest{
-				Address: contractAddr.String(),
+				Address:   contractAddr.String(),
+				QueryData: types.RawContractMessage("{}"),
 			})
 			require.True(t, spec.expErr.Is(err), "got error: %+v", err)
 			assert.Nil(t, got)
@@ -253,17 +258,17 @@ func TestQueryRawContractState(t *testing.T) {
 
 func TestQueryContractListByCodeOrdering(t *testing.T) {
 	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
-	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.WasmKeeper, keepers.BankKeeper
+	keeper := keepers.WasmKeeper
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 1000000))
 	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 500))
-	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit)
-	anyAddr := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, topUp)
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
+	anyAddr := keepers.Faucet.NewFundedAccount(ctx, topUp...)
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	codeID, err := keepers.ContractKeeper.Create(ctx, creator, wasmCode, "", "", nil)
+	codeID, err := keepers.ContractKeeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, bob := keyPubAddr()
@@ -291,7 +296,7 @@ func TestQueryContractListByCodeOrdering(t *testing.T) {
 			ctx = setBlock(ctx, h)
 			h++
 		}
-		_, _, err = keepers.ContractKeeper.Instantiate(ctx, codeID, creator, "", initMsgBz, fmt.Sprintf("contract %d", i), topUp)
+		_, _, err = keepers.ContractKeeper.Instantiate(ctx, codeID, creator, nil, initMsgBz, fmt.Sprintf("contract %d", i), topUp)
 		require.NoError(t, err)
 	}
 
@@ -430,7 +435,7 @@ func TestQueryContractHistory(t *testing.T) {
 		t.Run(msg, func(t *testing.T) {
 			xCtx, _ := ctx.CacheContext()
 
-			cAddr := sdk.AccAddress(myContractBech32Addr)
+			cAddr, _ := sdk.AccAddressFromBech32(myContractBech32Addr)
 			keeper.appendToContractHistory(xCtx, cAddr, spec.srcHistory...)
 
 			// when
@@ -444,6 +449,59 @@ func TestQueryContractHistory(t *testing.T) {
 			}
 			require.NoError(t, err)
 			assert.Equal(t, spec.expContent, got.Entries)
+		})
+	}
+}
+
+func TestQueryCode(t *testing.T) {
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	require.NoError(t, err)
+
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
+	codeID := uint64(1)
+	require.NoError(t, keeper.importCode(ctx, codeID,
+		types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode)), wasmCode))
+
+	specs := map[string]struct {
+		req    *types.QueryCodeRequest
+		expErr error
+	}{
+		"req nil": {
+			req:    nil,
+			expErr: status.Error(codes.InvalidArgument, "empty request"),
+		},
+		"req.CodeId=0": {
+			req:    &types.QueryCodeRequest{CodeId: 0},
+			expErr: sdkErrors.Wrap(types.ErrInvalid, "code id"),
+		},
+		"not exist codeID": {
+			req:    &types.QueryCodeRequest{CodeId: 2},
+			expErr: types.ErrNotFound,
+		},
+		"code codeID": {
+			req:    &types.QueryCodeRequest{CodeId: 1},
+			expErr: nil,
+		},
+	}
+
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			xCtx, _ := ctx.CacheContext()
+
+			q := Querier(keeper)
+			got, err := q.Code(sdk.WrapSDKContext(xCtx), spec.req)
+			if spec.expErr != nil {
+				assert.Nil(t, got)
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, spec.expErr.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.NotNil(t, got)
+				assert.EqualValues(t, got.CodeID, codeID)
+				assert.NotNil(t, got.InstantiatePermission)
+			}
 		})
 	}
 }
@@ -591,7 +649,198 @@ func TestQueryContractInfo(t *testing.T) {
 			assert.Equal(t, spec.expRsp, gotRsp)
 		})
 	}
+}
 
+func TestQueryPinnedCodes(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
+	exampleContract1 := InstantiateHackatomExampleContract(t, ctx, keepers)
+	exampleContract2 := InstantiateIBCReflectContract(t, ctx, keepers)
+	require.NoError(t, keeper.pinCode(ctx, exampleContract1.CodeID))
+	require.NoError(t, keeper.pinCode(ctx, exampleContract2.CodeID))
+
+	q := Querier(keeper)
+	specs := map[string]struct {
+		srcQuery   *types.QueryPinnedCodesRequest
+		expCodeIDs []uint64
+		expErr     bool
+	}{
+		"req nil": {
+			srcQuery: nil,
+			expErr:   true,
+		},
+		"query all": {
+			srcQuery:   &types.QueryPinnedCodesRequest{},
+			expCodeIDs: []uint64{exampleContract1.CodeID, exampleContract2.CodeID},
+		},
+		"with pagination offset": {
+			srcQuery: &types.QueryPinnedCodesRequest{
+				Pagination: &query.PageRequest{
+					Offset: 1,
+				},
+			},
+			expCodeIDs: []uint64{exampleContract2.CodeID},
+		},
+		"with invalid pagination key": {
+			srcQuery: &types.QueryPinnedCodesRequest{
+				Pagination: &query.PageRequest{
+					Offset: 1,
+					Key:    []byte("test"),
+				},
+			},
+			expErr: true,
+		},
+		"with pagination limit": {
+			srcQuery: &types.QueryPinnedCodesRequest{
+				Pagination: &query.PageRequest{
+					Limit: 1,
+				},
+			},
+			expCodeIDs: []uint64{exampleContract1.CodeID},
+		},
+		"with pagination next key": {
+			srcQuery: &types.QueryPinnedCodesRequest{
+				Pagination: &query.PageRequest{
+					Key: fromBase64("AAAAAAAAAAM="),
+				},
+			},
+			expCodeIDs: []uint64{exampleContract2.CodeID},
+		},
+	}
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			got, err := q.PinnedCodes(sdk.WrapSDKContext(ctx), spec.srcQuery)
+			if spec.expErr {
+				assert.Nil(t, got)
+				assert.NotNil(t, err)
+
+				return
+			}
+			require.NotNil(t, got)
+			assert.Equal(t, spec.expCodeIDs, got.CodeIDs)
+		})
+	}
+}
+
+func TestQueryCodeInfo(t *testing.T) {
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	require.NoError(t, err)
+
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
+	anyAddress, err := sdk.AccAddressFromBech32("link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5")
+	require.NoError(t, err)
+	specs := map[string]struct {
+		codeId       uint64
+		accessConfig types.AccessConfig
+	}{
+		"everybody": {
+			codeId:       1,
+			accessConfig: types.AllowEverybody,
+		},
+		"nobody": {
+			codeId:       10,
+			accessConfig: types.AllowNobody,
+		},
+		"with_address": {
+			codeId:       20,
+			accessConfig: types.AccessTypeOnlyAddress.With(anyAddress),
+		},
+	}
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			codeInfo := types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode))
+			codeInfo.InstantiateConfig = spec.accessConfig
+			require.NoError(t, keeper.importCode(ctx, spec.codeId,
+				codeInfo,
+				wasmCode),
+			)
+
+			q := Querier(keeper)
+			got, err := q.Code(sdk.WrapSDKContext(ctx), &types.QueryCodeRequest{
+				CodeId: spec.codeId,
+			})
+			require.NoError(t, err)
+			expectedResponse := &types.QueryCodeResponse{
+				CodeInfoResponse: &types.CodeInfoResponse{
+					CodeID:                spec.codeId,
+					Creator:               codeInfo.Creator,
+					DataHash:              codeInfo.CodeHash,
+					InstantiatePermission: spec.accessConfig,
+				},
+				Data: wasmCode,
+			}
+			require.NotNil(t, got.CodeInfoResponse)
+			require.EqualValues(t, expectedResponse, got)
+		})
+	}
+}
+
+func TestQueryCodeInfoList(t *testing.T) {
+
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	require.NoError(t, err)
+
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
+	anyAddress, err := sdk.AccAddressFromBech32("link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5")
+	require.NoError(t, err)
+	codeInfoWithConfig := func(accessConfig types.AccessConfig) types.CodeInfo {
+		codeInfo := types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode))
+		codeInfo.InstantiateConfig = accessConfig
+		return codeInfo
+	}
+
+	codes := []struct {
+		name     string
+		codeId   uint64
+		codeInfo types.CodeInfo
+	}{
+		{
+			name:     "everybody",
+			codeId:   1,
+			codeInfo: codeInfoWithConfig(types.AllowEverybody),
+		},
+		{
+			codeId:   10,
+			name:     "nobody",
+			codeInfo: codeInfoWithConfig(types.AllowNobody),
+		},
+		{
+			name:     "with_address",
+			codeId:   20,
+			codeInfo: codeInfoWithConfig(types.AccessTypeOnlyAddress.With(anyAddress)),
+		},
+	}
+
+	allCodesResponse := make([]types.CodeInfoResponse, 0)
+	for _, code := range codes {
+		t.Run(fmt.Sprintf("import_%s", code.name), func(t *testing.T) {
+			require.NoError(t, keeper.importCode(ctx, code.codeId,
+				code.codeInfo,
+				wasmCode),
+			)
+		})
+
+		allCodesResponse = append(allCodesResponse, types.CodeInfoResponse{
+			CodeID:                code.codeId,
+			Creator:               code.codeInfo.Creator,
+			DataHash:              code.codeInfo.CodeHash,
+			InstantiatePermission: code.codeInfo.InstantiateConfig,
+		})
+	}
+	q := Querier(keeper)
+	got, err := q.Codes(sdk.WrapSDKContext(ctx), &types.QueryCodesRequest{
+		Pagination: &query.PageRequest{
+			Limit: 3,
+		},
+	})
+	require.NoError(t, err)
+	require.Len(t, got.CodeInfos, 3)
+	require.EqualValues(t, allCodesResponse, got.CodeInfos)
 }
 
 func fromBase64(s string) []byte {
@@ -600,4 +849,55 @@ func fromBase64(s string) []byte {
 		panic(err)
 	}
 	return r
+}
+
+func TestQueryInactiveContracts(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
+	var mock wasmtesting.MockWasmer
+	wasmtesting.MakeInstantiable(&mock)
+	example1 := SeedNewContractInstance(t, ctx, keepers, &mock)
+	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
+	example2 := SeedNewContractInstance(t, ctx, keepers, &mock)
+	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
+
+	// set inactive
+	err := keeper.deactivateContract(ctx, example1.Contract)
+	require.NoError(t, err)
+	err = keeper.deactivateContract(ctx, example2.Contract)
+	require.NoError(t, err)
+
+	q := Querier(keeper)
+	rq := lbmtypes.QueryInactiveContractsRequest{}
+	res, err := q.InactiveContracts(sdk.WrapSDKContext(ctx), &rq)
+	require.NoError(t, err)
+	expect := []string{example1.Contract.String(), example2.Contract.String()}
+	for _, exp := range expect {
+		assert.Contains(t, res.Addresses, exp)
+	}
+}
+
+func TestQueryIsInactiveContract(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
+	var mock wasmtesting.MockWasmer
+	wasmtesting.MakeInstantiable(&mock)
+	example := SeedNewContractInstance(t, ctx, keepers, &mock)
+
+	q := Querier(keeper)
+	rq := lbmtypes.QueryInactiveContractRequest{Address: example.Contract.String()}
+	res, err := q.InactiveContract(sdk.WrapSDKContext(ctx), &rq)
+	require.NoError(t, err)
+	require.False(t, res.Inactivated)
+
+	// set inactive
+	err = keeper.deactivateContract(ctx, example.Contract)
+	require.NoError(t, err)
+
+	rq = lbmtypes.QueryInactiveContractRequest{Address: example.Contract.String()}
+	res, err = q.InactiveContract(sdk.WrapSDKContext(ctx), &rq)
+	require.NoError(t, err)
+	require.True(t, res.Inactivated)
 }

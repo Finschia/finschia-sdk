@@ -8,13 +8,14 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	abci "github.com/line/ostracon/abci/types"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/rpc"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	qtypes "github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/version"
-	abci "github.com/line/ostracon/abci/types"
 )
 
 // This is the struct that we will implement all the handlers on.
@@ -35,8 +36,8 @@ func NewQueryServer(clientCtx client.Context, interfaceRegistry codectypes.Inter
 }
 
 // GetSyncing implements ServiceServer.GetSyncing
-func (s queryServer) GetSyncing(_ context.Context, _ *GetSyncingRequest) (*GetSyncingResponse, error) {
-	status, err := getNodeStatus(s.clientCtx)
+func (s queryServer) GetSyncing(ctx context.Context, _ *GetSyncingRequest) (*GetSyncingResponse, error) {
+	status, err := getNodeStatus(ctx, s.clientCtx)
 	if err != nil {
 		return nil, err
 	}
@@ -46,8 +47,8 @@ func (s queryServer) GetSyncing(_ context.Context, _ *GetSyncingRequest) (*GetSy
 }
 
 // GetLatestBlock implements ServiceServer.GetLatestBlock
-func (s queryServer) GetLatestBlock(context.Context, *GetLatestBlockRequest) (*GetLatestBlockResponse, error) {
-	status, err := getBlock(s.clientCtx, nil)
+func (s queryServer) GetLatestBlock(ctx context.Context, _ *GetLatestBlockRequest) (*GetLatestBlockResponse, error) {
+	status, err := getBlock(ctx, s.clientCtx, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +66,7 @@ func (s queryServer) GetLatestBlock(context.Context, *GetLatestBlockRequest) (*G
 }
 
 // GetBlockByHeight implements ServiceServer.GetBlockByHeight
-func (s queryServer) GetBlockByHeight(_ context.Context, req *GetBlockByHeightRequest) (*GetBlockByHeightResponse, error) {
+func (s queryServer) GetBlockByHeight(ctx context.Context, req *GetBlockByHeightRequest) (*GetBlockByHeightResponse, error) {
 	chainHeight, err := rpc.GetChainHeight(s.clientCtx)
 	if err != nil {
 		return nil, err
@@ -75,12 +76,7 @@ func (s queryServer) GetBlockByHeight(_ context.Context, req *GetBlockByHeightRe
 		return nil, status.Error(codes.InvalidArgument, "requested block height is bigger then the chain length")
 	}
 
-	res, err := getBlock(s.clientCtx, &req.Height)
-	if err != nil {
-		return nil, err
-	}
-	protoBlockID := res.BlockID.ToProto()
-	protoBlock, err := res.Block.ToProto()
+	protoBlockID, protoBlock, err := GetProtoBlock(ctx, s.clientCtx, &req.Height)
 	if err != nil {
 		return nil, err
 	}
@@ -133,30 +129,7 @@ func (s queryServer) GetLatestValidatorSet(ctx context.Context, req *GetLatestVa
 	if err != nil {
 		return nil, err
 	}
-
-	validatorsRes, err := rpc.GetValidators(s.clientCtx, nil, &page, &limit)
-	if err != nil {
-		return nil, err
-	}
-
-	outputValidatorsRes := &GetLatestValidatorSetResponse{
-		BlockHeight: validatorsRes.BlockHeight,
-		Validators:  make([]*Validator, len(validatorsRes.Validators)),
-	}
-
-	for i, validator := range validatorsRes.Validators {
-		anyPub, err := codectypes.NewAnyWithValue(validator.PubKey)
-		if err != nil {
-			return nil, err
-		}
-		outputValidatorsRes.Validators[i] = &Validator{
-			Address:          validator.Address.String(),
-			ProposerPriority: validator.ProposerPriority,
-			PubKey:           anyPub,
-			VotingPower:      validator.VotingPower,
-		}
-	}
-	return outputValidatorsRes, nil
+	return validatorsOutput(ctx, s.clientCtx, nil, page, limit)
 }
 
 func (m *GetLatestValidatorSetResponse) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
@@ -184,36 +157,47 @@ func (s queryServer) GetValidatorSetByHeight(ctx context.Context, req *GetValida
 	if req.Height > chainHeight {
 		return nil, status.Error(codes.InvalidArgument, "requested block height is bigger then the chain length")
 	}
-
-	validatorsRes, err := rpc.GetValidators(s.clientCtx, &req.Height, &page, &limit)
-
+	r, err := validatorsOutput(ctx, s.clientCtx, &req.Height, page, limit)
 	if err != nil {
 		return nil, err
 	}
+	return &GetValidatorSetByHeightResponse{
+		BlockHeight: r.BlockHeight,
+		Validators:  r.Validators,
+		Pagination:  r.Pagination,
+	}, nil
+}
 
-	outputValidatorsRes := &GetValidatorSetByHeightResponse{
-		BlockHeight: validatorsRes.BlockHeight,
-		Validators:  make([]*Validator, len(validatorsRes.Validators)),
+func validatorsOutput(ctx context.Context, cctx client.Context, height *int64, page, limit int) (*GetLatestValidatorSetResponse, error) {
+	vs, err := rpc.GetValidators(ctx, cctx, height, &page, &limit)
+	if err != nil {
+		return nil, err
 	}
-
-	for i, validator := range validatorsRes.Validators {
-		anyPub, err := codectypes.NewAnyWithValue(validator.PubKey)
+	resp := GetLatestValidatorSetResponse{
+		BlockHeight: vs.BlockHeight,
+		Validators:  make([]*Validator, len(vs.Validators)),
+		Pagination: &qtypes.PageResponse{
+			Total: vs.Total,
+		},
+	}
+	for i, v := range vs.Validators {
+		anyPub, err := codectypes.NewAnyWithValue(v.PubKey)
 		if err != nil {
 			return nil, err
 		}
-		outputValidatorsRes.Validators[i] = &Validator{
-			Address:          validator.Address.String(),
-			ProposerPriority: validator.ProposerPriority,
+		resp.Validators[i] = &Validator{
+			Address:          v.Address.String(),
+			ProposerPriority: v.ProposerPriority,
 			PubKey:           anyPub,
-			VotingPower:      validator.VotingPower,
+			VotingPower:      v.VotingPower,
 		}
 	}
-	return outputValidatorsRes, nil
+	return &resp, nil
 }
 
 // GetNodeInfo implements ServiceServer.GetNodeInfo
 func (s queryServer) GetNodeInfo(ctx context.Context, req *GetNodeInfoRequest) (*GetNodeInfoResponse, error) {
-	status, err := getNodeStatus(s.clientCtx)
+	status, err := getNodeStatus(ctx, s.clientCtx)
 	if err != nil {
 		return nil, err
 	}
@@ -234,13 +218,14 @@ func (s queryServer) GetNodeInfo(ctx context.Context, req *GetNodeInfoRequest) (
 	resp := GetNodeInfoResponse{
 		DefaultNodeInfo: protoNodeInfo,
 		ApplicationVersion: &VersionInfo{
-			AppName:   nodeInfo.AppName,
-			Name:      nodeInfo.Name,
-			GitCommit: nodeInfo.GitCommit,
-			GoVersion: nodeInfo.GoVersion,
-			Version:   nodeInfo.Version,
-			BuildTags: nodeInfo.BuildTags,
-			BuildDeps: deps,
+			AppName:       nodeInfo.AppName,
+			Name:          nodeInfo.Name,
+			GitCommit:     nodeInfo.GitCommit,
+			GoVersion:     nodeInfo.GoVersion,
+			Version:       nodeInfo.Version,
+			BuildTags:     nodeInfo.BuildTags,
+			BuildDeps:     deps,
+			LbmSdkVersion: nodeInfo.LbmSdkVersion,
 		},
 	}
 	return &resp, nil

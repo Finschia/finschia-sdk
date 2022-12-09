@@ -2,13 +2,13 @@ package types_test
 
 import (
 	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibcoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 func (suite *TypesTestSuite) TestMarshalHeader() {
 
 	cdc := suite.chainA.App.AppCodec()
-	h := &ibctmtypes.Header{
+	h := &ibcoctypes.Header{
 		TrustedHeight: types.NewHeight(4, 100),
 	}
 

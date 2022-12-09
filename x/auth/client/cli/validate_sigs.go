@@ -16,7 +16,7 @@ import (
 func GetValidateSignaturesCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "validate-signatures [file]",
-		Short: "Validate transactions signatures",
+		Short: "validate transactions signatures",
 		Long: `Print the addresses that must sign the transaction, those who have already
 signed it, and make sure that signatures are in the correct order.
 
@@ -87,7 +87,7 @@ func printAndValidateSigs(
 			pubKey         = sig.PubKey
 			multiSigHeader string
 			multiSigMsg    string
-			sigAddr        = sdk.BytesToAccAddress(pubKey.Address())
+			sigAddr        = sdk.AccAddress(pubKey.Address())
 			sigSanity      = "OK"
 		)
 
@@ -96,18 +96,19 @@ func printAndValidateSigs(
 			success = false
 		}
 
-		// Validate the actual signature over the transaction bytes since we can
+		// validate the actual signature over the transaction bytes since we can
 		// reach out to a full node to query accounts.
 		if !offline && success {
-			accSeq, err := clientCtx.AccountRetriever.GetAccountSequence(clientCtx, sigAddr)
+			accNum, accSeq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, sigAddr)
 			if err != nil {
-				cmd.Printf("failed to get account: %s\n", sigAddr)
+				cmd.PrintErrf("failed to get account: %s\n", sigAddr)
 				return false
 			}
 
 			signingData := authsigning.SignerData{
-				ChainID:  chainID,
-				Sequence: accSeq,
+				ChainID:       chainID,
+				AccountNumber: accNum,
+				Sequence:      accSeq,
 			}
 			err = authsigning.VerifySignature(pubKey, signingData, sig.Data, signModeHandler, sigTx)
 			if err != nil {
