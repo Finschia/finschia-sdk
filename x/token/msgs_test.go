@@ -192,6 +192,12 @@ func TestMsgRevokeOperator(t *testing.T) {
 			holder:     addrs[0],
 			err:        sdkerrors.ErrInvalidAddress,
 		},
+		"operator and holder should be different": {
+			contractID: "deadbeef",
+			holder:     addrs[0],
+			operator:   addrs[0],
+			err:        token.ErrInvalid,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -244,6 +250,12 @@ func TestMsgApprove(t *testing.T) {
 			contractID: "deadbeef",
 			approver:   addrs[0],
 			err:        sdkerrors.ErrInvalidAddress,
+		},
+		"proxy and approver should be different": {
+			contractID: "deadbeef",
+			approver:   addrs[0],
+			proxy:      addrs[0],
+			err:        token.ErrInvalid,
 		},
 	}
 

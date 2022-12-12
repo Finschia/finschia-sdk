@@ -109,6 +109,10 @@ func (m MsgRevokeOperator) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("operator: %s", m.Operator)
 	}
 
+	if m.Operator == m.Holder {
+		return ErrInvalid.Wrap("operator and holder should be different")
+	}
+
 	return nil
 }
 
@@ -146,6 +150,10 @@ func (m MsgApprove) ValidateBasic() error {
 	}
 	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("proxy: %s", m.Proxy)
+	}
+
+	if m.Proxy == m.Approver {
+		return ErrInvalid.Wrap("proxy and approver should be different")
 	}
 
 	return nil
