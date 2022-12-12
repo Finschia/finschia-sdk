@@ -43,6 +43,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (cosmovisor) [\#792](https://github.com/line/lbm-sdk/pull/792) Use upstream's cosmovisor
 
 ### Bug Fixes
+* (client) [\#817](https://github.com/line/lbm-sdk/pull/817) remove support for composite (BLS) type
 
 ### Breaking Changes
 * (rest) [\#807](https://github.com/line/lbm-sdk/pull/807) remove legacy REST API
