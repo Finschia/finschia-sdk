@@ -12,11 +12,6 @@ jobs:
         with:
           fetch-depth: 0
       - run: git fetch --force --tags
-      - name: Install Go
-        uses: actions/setup-go@v3
-        with:
-          go-version-file: './go.mod'
-          cache: true
       - name: Build & Publish release
         run: |
           make release
