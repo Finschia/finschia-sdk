@@ -57,7 +57,7 @@ func (k Keeper) GetContract(ctx sdk.Context, contractID string) (*collection.Con
 	key := contractKey(contractID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, collection.ErrContractNotFound.Wrap(contractID)
+		return nil, collection.ErrNotFound.Wrapf("contract %s", contractID)
 	}
 
 	var contract collection.Contract
@@ -113,7 +113,7 @@ func (k Keeper) GetTokenClass(ctx sdk.Context, contractID, classID string) (coll
 	key := classKey(contractID, classID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, collection.ErrClassNotFound.Wrapf("no %s in contract %s", classID, contractID)
+		return nil, collection.ErrNotFound.Wrapf("no %s in contract %s", classID, contractID)
 	}
 
 	var class collection.TokenClass
@@ -453,7 +453,7 @@ func (k Keeper) GetGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddr
 			Permission: permission,
 		}, nil
 	}
-	return nil, collection.ErrGrantNotFound.Wrapf("%s has no %s", grantee, permission)
+	return nil, collection.ErrNotFound.Wrapf("%s has no permission %s", grantee, permission)
 }
 
 func (k Keeper) setGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission collection.Permission) {

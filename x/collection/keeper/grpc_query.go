@@ -42,7 +42,7 @@ func (s queryServer) Balance(c context.Context, req *collection.QueryBalanceRequ
 
 	addr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
-		return nil, collection.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address))
+		return nil, collection.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("address: %s", req.Address))
 	}
 
 	if err := collection.ValidateTokenID(req.TokenId); err != nil {
@@ -68,7 +68,7 @@ func (s queryServer) AllBalances(c context.Context, req *collection.QueryAllBala
 
 	addr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
-		return nil, collection.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address))
+		return nil, collection.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("address: %s", req.Address))
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -612,7 +612,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *collection.QueryGrant
 
 	granteeAddr, err := sdk.AccAddressFromBech32(req.Grantee)
 	if err != nil {
-		return nil, collection.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee))
+		return nil, collection.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("grantee: %s", req.Grantee))
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -645,11 +645,11 @@ func (s queryServer) Approved(c context.Context, req *collection.QueryApprovedRe
 
 	addr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
-		return nil, collection.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid address address: %s", req.Address))
+		return nil, collection.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("address: %s", req.Address))
 	}
 	approverAddr, err := sdk.AccAddressFromBech32(req.Approver)
 	if err != nil {
-		return nil, collection.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", req.Approver))
+		return nil, collection.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("approver: %s", req.Approver))
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -670,7 +670,7 @@ func (s queryServer) Approvers(c context.Context, req *collection.QueryApprovers
 
 	addr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
-		return nil, collection.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid address address: %s", req.Address))
+		return nil, collection.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("address: %s", req.Address))
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)

@@ -40,7 +40,7 @@ var (
 
 func validateAmount(amount sdk.Int) error {
 	if !amount.IsPositive() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("amount must be positive: %s", amount)
+		return ErrInvalid.Wrapf("amount must be positive: %s", amount)
 	}
 	return nil
 }
@@ -48,7 +48,7 @@ func validateAmount(amount sdk.Int) error {
 // deprecated
 func validateCoins(amount []Coin) error {
 	if err := validateCoinsWithIDValidator(amount, ValidateTokenID); err != nil {
-		return ErrInvalidCoins.Wrap(err.Error())
+		return err
 	}
 
 	return nil
@@ -56,12 +56,13 @@ func validateCoins(amount []Coin) error {
 
 // deprecated
 func validateCoinsWithIDValidator(amount []Coin, validator func(string) error) error {
-	for _, amt := range amount {
+	for i, amt := range amount {
+		hint := fmt.Sprintf("index %d", i)
 		if err := validator(amt.TokenId); err != nil {
-			return err
+			return sdkerrors.Wrap(err, hint)
 		}
 		if err := validateAmount(amt.Amount); err != nil {
-			return err
+			return sdkerrors.Wrap(err, hint)
 		}
 	}
 	return nil
@@ -86,7 +87,7 @@ func SplitTokenID(tokenID string) (classID string) {
 
 func ValidateContractID(id string) error {
 	if err := class.ValidateID(id); err != nil {
-		return ErrInvalidContractID.Wrap(id)
+		return ErrInvalid.Wrapf("contract; %s", id)
 	}
 
 	return nil
@@ -94,7 +95,7 @@ func ValidateContractID(id string) error {
 
 func ValidateClassID(id string) error {
 	if err := validateID(id, reClassID); err != nil {
-		return ErrInvalidClassID.Wrap(id)
+		return ErrInvalid.Wrapf("class id; %s", id)
 	}
 
 	return nil
@@ -108,7 +109,7 @@ func ValidateLegacyFTClassID(id string) error {
 // Deprecated: do not use (no successor).
 func ValidateLegacyNFTClassID(id string) error {
 	if err := validateID(id, reLegacyNFTClassID); err != nil {
-		return ErrInvalidClassID.Wrapf("%s not nft class", id)
+		return ErrInvalid.Wrapf("%s not nft class", id)
 	}
 
 	return nil
@@ -116,7 +117,7 @@ func ValidateLegacyNFTClassID(id string) error {
 
 func ValidateTokenID(id string) error {
 	if err := validateID(id, reTokenID); err != nil {
-		return ErrInvalidTokenID.Wrap(id)
+		return ErrInvalid.Wrapf("token id; %s", id)
 	}
 
 	return nil
@@ -124,7 +125,7 @@ func ValidateTokenID(id string) error {
 
 func ValidateFTID(id string) error {
 	if err := validateID(id, reFTID); err != nil {
-		return ErrInvalidTokenID.Wrapf("%s not ft", id)
+		return ErrInvalid.Wrapf("%s not ft", id)
 	}
 
 	return nil
@@ -135,7 +136,7 @@ func ValidateNFTID(id string) error {
 		return err
 	}
 	if err := ValidateFTID(id); err == nil {
-		return ErrInvalidTokenID.Wrapf("%s not nft", id)
+		return ErrInvalid.Wrapf("%s not nft", id)
 	}
 	return nil
 }
@@ -143,7 +144,7 @@ func ValidateNFTID(id string) error {
 // Deprecated: do not use (no successor).
 func ValidateLegacyNFTID(id string) error {
 	if err := validateID(id, reLegacyNFTID); err != nil {
-		return ErrInvalidTokenID.Wrapf("%s not nft", id)
+		return ErrInvalid.Wrapf("%s not nft", id)
 	}
 
 	return nil
@@ -158,7 +159,7 @@ func validateID(id string, reg *regexp.Regexp) error {
 
 func validateName(name string) error {
 	if err := validateStringSize(name, nameLengthLimit); err != nil {
-		return ErrInvalidName.Wrap(err.Error())
+		return sdkerrors.Wrap(err, "name")
 	}
 
 	return nil
@@ -166,7 +167,7 @@ func validateName(name string) error {
 
 func validateBaseImgURI(baseImgURI string) error {
 	if err := validateStringSize(baseImgURI, baseImgURILengthLimit); err != nil {
-		return ErrInvalidBaseImgURI.Wrap(err.Error())
+		return sdkerrors.Wrap(err, "base img uri")
 	}
 
 	return nil
@@ -174,7 +175,7 @@ func validateBaseImgURI(baseImgURI string) error {
 
 func validateMeta(meta string) error {
 	if err := validateStringSize(meta, metaLengthLimit); err != nil {
-		return ErrInvalidMeta.Wrap(err.Error())
+		return sdkerrors.Wrap(err, "meta")
 	}
 
 	return nil
@@ -182,25 +183,30 @@ func validateMeta(meta string) error {
 
 func validateStringSize(str string, limit int) error {
 	if length := utf8.RuneCountInString(str); length > limit {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%d exceeds its limit %d in length", length, limit)
+		return ErrMaxLimit.Wrapf("length must be <=%d", limit)
 	}
 	return nil
 }
 
 func validateDecimals(decimals int32) error {
-	if decimals < 0 || decimals > 18 {
-		return ErrInvalidDecimals.Wrapf("must be >=0 and <=18, got; %d", decimals)
+	min, max := int32(0), int32(18)
+	if decimals < min || decimals > max {
+		return ErrInvalid.Wrapf("decimals must be >=%d and <=%d", min, max)
 	}
 	return nil
 }
 
 func validateLegacyPermission(permission string) error {
-	return ValidatePermission(Permission(LegacyPermissionFromString(permission)))
+	p := Permission(LegacyPermissionFromString(permission))
+	if err := ValidatePermission(p); err != nil {
+		return ErrInvalid.Wrapf("permission; %s", permission)
+	}
+	return nil
 }
 
 func ValidatePermission(permission Permission) error {
 	if p := Permission_value[Permission_name[int32(permission)]]; p == 0 {
-		return ErrInvalidPermission.Wrap(permission.String())
+		return ErrInvalid.Wrapf("permission; %s", permission)
 	}
 	return nil
 }
@@ -227,7 +233,7 @@ func validateTokenClassChange(change Attribute) error {
 func validateChange(change Attribute, validators map[string]func(string) error) error {
 	validator, ok := validators[change.Key]
 	if !ok {
-		return ErrInvalidChanges.Wrapf("invalid key: %s", change.Key)
+		return ErrInvalid.Wrapf("key; %s", change.Key)
 	}
 	return validator(change.Value)
 }
@@ -241,14 +247,14 @@ func (m MsgTransferFT) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
+		return sdkerrors.ErrInvalidAddress.Wrapf("to: %s", m.To)
 	}
 
 	if err := validateCoins(m.Amount); err != nil {
-		return err
+		return sdkerrors.Wrap(err, "amount")
 	}
 
 	return nil
@@ -284,17 +290,17 @@ func (m MsgTransferFTFrom) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+		return sdkerrors.ErrInvalidAddress.Wrapf("proxy: %s", m.Proxy)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
+		return sdkerrors.ErrInvalidAddress.Wrapf("to: %s", m.To)
 	}
 
 	if err := validateCoins(m.Amount); err != nil {
-		return err
+		return sdkerrors.Wrap(err, "amount")
 	}
 
 	return nil
@@ -330,18 +336,19 @@ func (m MsgTransferNFT) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
+		return sdkerrors.ErrInvalidAddress.Wrapf("to: %s", m.To)
 	}
 
 	if len(m.TokenIds) == 0 {
-		return ErrEmptyTokenIDs
+		return ErrEmpty.Wrap("token ids")
 	}
-	for _, id := range m.TokenIds {
+	for i, id := range m.TokenIds {
+		hint := fmt.Sprintf("index %d", i)
 		if err := ValidateTokenID(id); err != nil {
-			return err
+			return sdkerrors.Wrap(sdkerrors.Wrap(err, hint), "token ids")
 		}
 	}
 
@@ -378,21 +385,22 @@ func (m MsgTransferNFTFrom) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+		return sdkerrors.ErrInvalidAddress.Wrapf("proxy: %s", m.Proxy)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
+		return sdkerrors.ErrInvalidAddress.Wrapf("to: %s", m.To)
 	}
 
 	if len(m.TokenIds) == 0 {
-		return ErrEmptyTokenIDs
+		return ErrEmpty.Wrap("token ids")
 	}
-	for _, id := range m.TokenIds {
+	for i, id := range m.TokenIds {
+		hint := fmt.Sprintf("index %d", i)
 		if err := ValidateTokenID(id); err != nil {
-			return err
+			return sdkerrors.Wrap(sdkerrors.Wrap(err, hint), "token ids")
 		}
 	}
 
@@ -429,10 +437,10 @@ func (m MsgApprove) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Approver); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", m.Approver)
+		return sdkerrors.ErrInvalidAddress.Wrapf("approver: %s", m.Approver)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+		return sdkerrors.ErrInvalidAddress.Wrapf("proxy: %s", m.Proxy)
 	}
 
 	return nil
@@ -468,10 +476,10 @@ func (m MsgDisapprove) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Approver); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", m.Approver)
+		return sdkerrors.ErrInvalidAddress.Wrapf("approver: %s", m.Approver)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+		return sdkerrors.ErrInvalidAddress.Wrapf("proxy: %s", m.Proxy)
 	}
 
 	return nil
@@ -503,7 +511,7 @@ var _ sdk.Msg = (*MsgCreateContract)(nil)
 // ValidateBasic implements Msg.
 func (m MsgCreateContract) ValidateBasic() error {
 	if _, err := sdk.AccAddressFromBech32(m.Owner); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", m.Owner)
+		return sdkerrors.ErrInvalidAddress.Wrapf("owner: %s", m.Owner)
 	}
 
 	if err := validateName(m.Name); err != nil {
@@ -551,11 +559,11 @@ func (m MsgIssueFT) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Owner); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", m.Owner)
+		return sdkerrors.ErrInvalidAddress.Wrapf("owner: %s", m.Owner)
 	}
 
 	if len(m.Name) == 0 {
-		return ErrInvalidName.Wrap("empty")
+		return ErrEmpty.Wrap("name")
 	}
 	if err := validateName(m.Name); err != nil {
 		return err
@@ -570,7 +578,7 @@ func (m MsgIssueFT) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
+		return sdkerrors.ErrInvalidAddress.Wrapf("to: %s", m.To)
 	}
 
 	return nil
@@ -614,7 +622,7 @@ func (m MsgIssueNFT) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Owner); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", m.Owner)
+		return sdkerrors.ErrInvalidAddress.Wrapf("owner: %s", m.Owner)
 	}
 
 	return nil
@@ -650,14 +658,14 @@ func (m MsgMintFT) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
+		return sdkerrors.ErrInvalidAddress.Wrapf("to: %s", m.To)
 	}
 
 	if err := validateCoins(m.Amount); err != nil {
-		return err
+		return sdkerrors.Wrap(err, "amount")
 	}
 
 	return nil
@@ -693,27 +701,28 @@ func (m MsgMintNFT) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
+		return sdkerrors.ErrInvalidAddress.Wrapf("to: %s", m.To)
 	}
 
 	if len(m.Params) == 0 {
-		return ErrInvalidMintNFTParams.Wrap("empty")
+		return ErrEmpty.Wrap("params")
 	}
-	for _, param := range m.Params {
+	for i, param := range m.Params {
 		classID := param.TokenType
+		hint := fmt.Sprintf("index %d", i)
 		if err := ValidateLegacyNFTClassID(classID); err != nil {
-			return err
+			return sdkerrors.Wrap(sdkerrors.Wrap(err, hint), "params")
 		}
 
 		if err := validateName(param.Name); err != nil {
-			return err
+			return sdkerrors.Wrap(sdkerrors.Wrap(err, hint), "params")
 		}
 
 		if err := validateMeta(param.Meta); err != nil {
-			return err
+			return sdkerrors.Wrap(sdkerrors.Wrap(err, hint), "params")
 		}
 	}
 
@@ -750,11 +759,11 @@ func (m MsgBurnFT) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 
 	if err := validateCoins(m.Amount); err != nil {
-		return err
+		return sdkerrors.Wrap(err, "amount")
 	}
 
 	return nil
@@ -790,14 +799,14 @@ func (m MsgBurnFTFrom) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+		return sdkerrors.ErrInvalidAddress.Wrapf("proxy: %s", m.Proxy)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 
 	if err := validateCoins(m.Amount); err != nil {
-		return err
+		return sdkerrors.Wrap(err, "amount")
 	}
 
 	return nil
@@ -833,15 +842,16 @@ func (m MsgBurnNFT) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 
 	if len(m.TokenIds) == 0 {
-		return ErrEmptyTokenIDs
+		return ErrEmpty.Wrap("token ids")
 	}
-	for _, id := range m.TokenIds {
+	for i, id := range m.TokenIds {
+		hint := fmt.Sprintf("index %d", i)
 		if err := ValidateLegacyNFTID(id); err != nil {
-			return err
+			return sdkerrors.Wrap(sdkerrors.Wrap(err, hint), "token ids")
 		}
 	}
 
@@ -878,18 +888,19 @@ func (m MsgBurnNFTFrom) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+		return sdkerrors.ErrInvalidAddress.Wrapf("proxy: %s", m.Proxy)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 
 	if len(m.TokenIds) == 0 {
-		return ErrEmptyTokenIDs
+		return ErrEmpty.Wrap("token ids")
 	}
-	for _, id := range m.TokenIds {
+	for i, id := range m.TokenIds {
+		hint := fmt.Sprintf("index %d", i)
 		if err := ValidateLegacyNFTID(id); err != nil {
-			return err
+			return sdkerrors.Wrap(sdkerrors.Wrap(err, hint), "token ids")
 		}
 	}
 
@@ -926,7 +937,7 @@ func (m MsgModify) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Owner); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", m.Owner)
+		return sdkerrors.ErrInvalidAddress.Wrapf("owner: %s", m.Owner)
 	}
 
 	if len(m.TokenType) != 0 {
@@ -935,7 +946,7 @@ func (m MsgModify) ValidateBasic() error {
 			return err
 		}
 		if err := ValidateLegacyFTClassID(classID); err == nil && len(m.TokenIndex) == 0 {
-			return ErrInvalidModificationTarget.Wrap("fungible token type without index")
+			return ErrInvalid.Wrap("fungible token type without index")
 		}
 	}
 
@@ -951,19 +962,19 @@ func (m MsgModify) ValidateBasic() error {
 		if len(m.TokenIndex) == 0 {
 			validator = validateContractChange
 		} else {
-			return ErrInvalidModificationTarget.Wrap("token index without type")
+			return ErrInvalid.Wrap("token index without type")
 		}
 	}
 	if len(m.Changes) == 0 {
-		return ErrInvalidChanges.Wrap("empty")
+		return ErrEmpty.Wrap("changes")
 	}
 	if len(m.Changes) > changesLimit {
-		return ErrInvalidChanges.Wrapf("number of changes exceeds its limit: %d > %d", len(m.Changes), changesLimit)
+		return ErrMaxLimit.Wrapf("number of changes must be <=%d", changesLimit)
 	}
 	seenKeys := map[string]bool{}
 	for _, change := range m.Changes {
 		if seenKeys[change.Field] {
-			return ErrInvalidChanges.Wrapf("duplicate keys: %s", change.Field)
+			return ErrDuplicate.Wrapf("key; %s", change.Field)
 		}
 		seenKeys[change.Field] = true
 
@@ -1009,10 +1020,10 @@ func (m MsgGrantPermission) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.To); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
+		return sdkerrors.ErrInvalidAddress.Wrapf("to: %s", m.To)
 	}
 
 	if err := validateLegacyPermission(m.Permission); err != nil {
@@ -1052,7 +1063,7 @@ func (m MsgRevokePermission) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 
 	if err := validateLegacyPermission(m.Permission); err != nil {
@@ -1092,18 +1103,18 @@ func (m MsgAttach) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 
 	if err := ValidateTokenID(m.TokenId); err != nil {
-		return err
+		return sdkerrors.Wrap(err, "token id")
 	}
 	if err := ValidateTokenID(m.ToTokenId); err != nil {
-		return err
+		return sdkerrors.Wrap(err, "to token id")
 	}
 
 	if m.TokenId == m.ToTokenId {
-		return ErrInvalidComposition.Wrap("target and subject should be different")
+		return ErrInvalid.Wrap("target and subject should be different")
 	}
 
 	return nil
@@ -1139,7 +1150,7 @@ func (m MsgDetach) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 
 	if err := ValidateTokenID(m.TokenId); err != nil {
@@ -1179,21 +1190,21 @@ func (m MsgAttachFrom) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+		return sdkerrors.ErrInvalidAddress.Wrapf("proxy: %s", m.Proxy)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 
 	if err := ValidateTokenID(m.TokenId); err != nil {
-		return err
+		return sdkerrors.Wrap(err, "token id")
 	}
 	if err := ValidateTokenID(m.ToTokenId); err != nil {
-		return err
+		return sdkerrors.Wrap(err, "to token id")
 	}
 
 	if m.TokenId == m.ToTokenId {
-		return ErrInvalidComposition.Wrap("target and subject should be different")
+		return ErrInvalid.Wrap("target and subject should be different")
 	}
 
 	return nil
@@ -1229,10 +1240,10 @@ func (m MsgDetachFrom) ValidateBasic() error {
 	}
 
 	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+		return sdkerrors.ErrInvalidAddress.Wrapf("proxy: %s", m.Proxy)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
+		return sdkerrors.ErrInvalidAddress.Wrapf("from: %s", m.From)
 	}
 
 	if err := ValidateTokenID(m.TokenId); err != nil {

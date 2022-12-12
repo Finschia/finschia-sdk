@@ -26,7 +26,7 @@ func (s *KeeperTestSuite) TestAttach() {
 			contractID: s.contractID,
 			subject:    collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
 			target:     collection.NewNFTID(s.nftClassID, s.numNFTs*3+1),
-			err:        collection.ErrTokenNotFound,
+			err:        collection.ErrNotFound,
 		},
 		"result exceeds the limit": {
 			contractID: s.contractID,
@@ -72,7 +72,7 @@ func (s *KeeperTestSuite) TestDetach() {
 		"subject not found": {
 			contractID: s.contractID,
 			subject:    collection.NewNFTID(s.nftClassID, s.numNFTs*3+1),
-			err:        collection.ErrTokenNotFound,
+			err:        collection.ErrNotFound,
 		},
 		"subject has no parent": {
 			contractID: s.contractID,

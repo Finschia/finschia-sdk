@@ -66,9 +66,9 @@ func (s *KeeperTestSuite) TestAuthorizeOperator() {
 				_, queryErr := s.keeper.GetAuthorization(ctx, s.contractID, fromAddr, operatorAddr)
 				err = s.keeper.AuthorizeOperator(ctx, s.contractID, fromAddr, operatorAddr)
 				if queryErr == nil { // authorize must fail
-					s.Require().ErrorIs(err, collection.ErrAuthorizationAlreadyExists)
+					s.Require().ErrorIs(err, collection.ErrAlreadyExists)
 				} else {
-					s.Require().ErrorIs(queryErr, collection.ErrAuthorizationNotFound)
+					s.Require().ErrorIs(queryErr, collection.ErrNotFound)
 					s.Require().NoError(err)
 					_, queryErr := s.keeper.GetAuthorization(ctx, s.contractID, fromAddr, operatorAddr)
 					s.Require().NoError(queryErr)
@@ -98,12 +98,12 @@ func (s *KeeperTestSuite) TestRevokeOperator() {
 				_, queryErr := s.keeper.GetAuthorization(ctx, s.contractID, fromAddr, operatorAddr)
 				err = s.keeper.RevokeOperator(ctx, s.contractID, fromAddr, operatorAddr)
 				if queryErr != nil { // revoke must fail
-					s.Require().ErrorIs(queryErr, collection.ErrAuthorizationNotFound)
-					s.Require().ErrorIs(err, collection.ErrAuthorizationNotFound)
+					s.Require().ErrorIs(queryErr, collection.ErrNotFound)
+					s.Require().ErrorIs(err, collection.ErrNotFound)
 				} else {
 					s.Require().NoError(err)
 					_, queryErr := s.keeper.GetAuthorization(ctx, s.contractID, fromAddr, operatorAddr)
-					s.Require().ErrorIs(queryErr, collection.ErrAuthorizationNotFound)
+					s.Require().ErrorIs(queryErr, collection.ErrNotFound)
 				}
 			})
 		}

@@ -105,7 +105,7 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, op
 	}
 
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err == nil {
-		return collection.ErrAuthorizationAlreadyExists.Wrapf("%s already authorized by %s", operator, holder)
+		return collection.ErrAlreadyExists.Wrapf("%s already authorized by %s", operator, holder)
 	}
 
 	k.setAuthorization(ctx, contractID, holder, operator)
@@ -133,7 +133,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, contractID string, holder, ope
 			Operator: operator.String(),
 		}, nil
 	}
-	return nil, collection.ErrAuthorizationNotFound.Wrapf("%s not authorized by %s", operator, holder)
+	return nil, collection.ErrNotFound.Wrapf("%s not authorized by %s", operator, holder)
 }
 
 func (k Keeper) setAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) {
