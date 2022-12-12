@@ -19,7 +19,7 @@ func (s *KeeperTestSuite) TestMsgSend() {
 		"contract not found": {
 			contractID: "fee1dead",
 			amount:     sdk.OneInt(),
-			err:        token.ErrContractNotFound,
+			err:        token.ErrNotFound,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
@@ -68,7 +68,7 @@ func (s *KeeperTestSuite) TestMsgTransferFrom() {
 			proxy:      s.operator,
 			from:       s.customer,
 			amount:     s.balance,
-			err:        token.ErrContractNotFound,
+			err:        token.ErrNotFound,
 		},
 		"not approved": {
 			contractID: s.contractID,
@@ -124,13 +124,13 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 			contractID: "fee1dead",
 			holder:     s.customer,
 			operator:   s.operator,
-			err:        token.ErrContractNotFound,
+			err:        token.ErrNotFound,
 		},
 		"no authorization": {
 			contractID: s.contractID,
 			holder:     s.customer,
 			operator:   s.vendor,
-			err:        token.ErrAuthorizationNotFound,
+			err:        token.ErrNotFound,
 		},
 	}
 
@@ -170,13 +170,13 @@ func (s *KeeperTestSuite) TestMsgApprove() {
 			contractID: "fee1dead",
 			approver:   s.customer,
 			proxy:      s.vendor,
-			err:        token.ErrContractNotFound,
+			err:        token.ErrNotFound,
 		},
 		"already approved": {
 			contractID: s.contractID,
 			approver:   s.customer,
 			proxy:      s.operator,
-			err:        token.ErrAuthorizationAlreadyExists,
+			err:        token.ErrAlreadyExists,
 		},
 	}
 
@@ -251,7 +251,7 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			granter:    s.vendor,
 			grantee:    s.operator,
 			permission: token.LegacyPermissionModify.String(),
-			err:        token.ErrContractNotFound,
+			err:        token.ErrNotFound,
 		},
 		"granter has no permission": {
 			contractID: s.contractID,
@@ -299,13 +299,13 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 			contractID: "fee1dead",
 			from:       s.operator,
 			permission: token.LegacyPermissionMint.String(),
-			err:        token.ErrContractNotFound,
+			err:        token.ErrNotFound,
 		},
 		"not granted yet": {
 			contractID: s.contractID,
 			from:       s.operator,
 			permission: token.LegacyPermissionModify.String(),
-			err:        token.ErrGrantNotFound,
+			err:        token.ErrNotFound,
 		},
 	}
 
@@ -342,7 +342,7 @@ func (s *KeeperTestSuite) TestMsgMint() {
 		"contract not found": {
 			contractID: "fee1dead",
 			grantee:    s.operator,
-			err:        token.ErrContractNotFound,
+			err:        token.ErrNotFound,
 		},
 		"not granted": {
 			contractID: s.contractID,
@@ -385,7 +385,7 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 		"contract not found": {
 			contractID: "fee1dead",
 			from:       s.vendor,
-			err:        token.ErrContractNotFound,
+			err:        token.ErrNotFound,
 		},
 		"not granted": {
 			contractID: s.contractID,
@@ -430,7 +430,7 @@ func (s *KeeperTestSuite) TestMsgBurnFrom() {
 			contractID: "fee1dead",
 			proxy:      s.operator,
 			from:       s.customer,
-			err:        token.ErrContractNotFound,
+			err:        token.ErrNotFound,
 		},
 		"not approved": {
 			contractID: s.contractID,
@@ -474,7 +474,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 		"contract not found": {
 			contractID: "fee1dead",
 			grantee:    s.vendor,
-			err:        token.ErrContractNotFound,
+			err:        token.ErrNotFound,
 		},
 		"not granted": {
 			contractID: s.contractID,

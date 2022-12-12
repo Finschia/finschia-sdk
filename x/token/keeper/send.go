@@ -7,7 +7,7 @@ import (
 
 func (k Keeper) Send(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amount sdk.Int) error {
 	if !amount.IsPositive() {
-		panic(token.ErrInvalidAmount.Wrap("amount must be positive"))
+		panic(token.ErrInvalid.Wrap("amount must be positive"))
 	}
 
 	if err := k.subtractToken(ctx, contractID, from, amount); err != nil {
@@ -24,7 +24,7 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, op
 	}
 
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err == nil {
-		return token.ErrAuthorizationAlreadyExists.Wrapf("%s already authorized by %s", operator, holder)
+		return token.ErrAlreadyExists.Wrapf("%s already authorized by %s", operator, holder)
 	}
 
 	k.setAuthorization(ctx, contractID, holder, operator)
@@ -53,7 +53,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, contractID string, holder, ope
 			Operator: operator.String(),
 		}, nil
 	}
-	return nil, token.ErrAuthorizationNotFound.Wrapf("%s not authorized by %s", operator, holder)
+	return nil, token.ErrNotFound.Wrapf("%s not authorized by %s", operator, holder)
 }
 
 func (k Keeper) setAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) {

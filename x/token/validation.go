@@ -26,55 +26,60 @@ func stringInSize(str string, size int) bool {
 
 func validateName(name string) error {
 	if len(name) == 0 {
-		return ErrInvalidName.Wrap("cannot be empty")
+		return ErrEmpty.Wrap("name")
 	} else if !stringInSize(name, maxName) {
-		return ErrInvalidName.Wrapf("cannot be longer than %d", maxName)
+		return ErrMaxLimit.Wrapf("length of name must be <=%d", maxName)
 	}
 	return nil
 }
 
 func validateSymbol(symbol string) error {
 	if !reSymbol.MatchString(symbol) {
-		return ErrInvalidSymbol.Wrapf("got; %s, valid expression is; %s", symbol, reSymbolString)
+		return ErrInvalid.Wrapf("valid expression for symbol is %s", reSymbolString)
 	}
 	return nil
 }
 
 func validateImageURI(uri string) error {
 	if !stringInSize(uri, maxImageURI) {
-		return ErrInvalidImageURI.Wrapf("cannot be longer than %d", maxImageURI)
+		return ErrMaxLimit.Wrapf("length of image uri must be <=%d", maxImageURI)
 	}
 	return nil
 }
 
 func validateMeta(meta string) error {
 	if !stringInSize(meta, maxMeta) {
-		return ErrInvalidMeta.Wrapf("cannot be longer than %d", maxMeta)
+		return ErrMaxLimit.Wrapf("length of meta must be <=%d", maxMeta)
 	}
 	return nil
 }
 
 func validateDecimals(decimals int32) error {
-	if decimals < 0 || decimals > 18 {
-		return ErrInvalidDecimals.Wrapf("must be >=0 and <=18, got; %d", decimals)
+	min, max := int32(0), int32(18)
+	if decimals < min || decimals > max {
+		return ErrInvalid.Wrapf("decimals must be >=%d and <=%d", min, max)
 	}
 	return nil
 }
 
 func validateAmount(amount sdk.Int) error {
 	if !amount.IsPositive() {
-		return ErrInvalidAmount.Wrapf("must be positive: %s", amount)
+		return ErrInvalid.Wrapf("amount must be positive; %s", amount)
 	}
 	return nil
 }
 
 func validateLegacyPermission(permission string) error {
-	return ValidatePermission(Permission(LegacyPermissionFromString(permission)))
+	p := Permission(LegacyPermissionFromString(permission))
+	if err := ValidatePermission(p); err != nil {
+		return ErrInvalid.Wrapf("permission; %s", permission)
+	}
+	return nil
 }
 
 func ValidatePermission(permission Permission) error {
 	if p := Permission_value[Permission_name[int32(permission)]]; p == 0 {
-		return ErrInvalidPermission.Wrap(permission.String())
+		return ErrInvalid.Wrapf("permission; %s", permission)
 	}
 	return nil
 }
@@ -88,14 +93,14 @@ func validateChange(change Pair) error {
 
 	validator, ok := validators[change.Field]
 	if !ok {
-		return ErrInvalidChanges.Wrapf("invalid key: %s", change.Field)
+		return ErrInvalid.Wrapf("key; %s", change.Field)
 	}
 	return validator(change.Value)
 }
 
 func ValidateContractID(id string) error {
 	if err := class.ValidateID(id); err != nil {
-		return ErrInvalidContractID.Wrap(id)
+		return ErrInvalid.Wrapf("contract id; %s", id)
 	}
 
 	return nil
