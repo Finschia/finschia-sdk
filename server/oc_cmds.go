@@ -5,7 +5,9 @@ package server
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/types"
+	"github.com/spf13/cobra"
+	yaml "gopkg.in/yaml.v2"
+
 	cfg "github.com/line/ostracon/config"
 	osjson "github.com/line/ostracon/libs/json"
 	ostos "github.com/line/ostracon/libs/os"
@@ -14,8 +16,8 @@ import (
 	pvm "github.com/line/ostracon/privval"
 	"github.com/line/ostracon/types"
 	ostversion "github.com/line/ostracon/version"
-	"github.com/spf13/cobra"
-	yaml "gopkg.in/yaml.v2"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // ShowNodeIDCmd - ported from Ostracon, dump node ID to stdout

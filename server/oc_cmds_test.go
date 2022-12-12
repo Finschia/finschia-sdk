@@ -4,7 +4,12 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/line/lbm-sdk/server"
+	"io/ioutil"
+	"os"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+
 	cfg "github.com/line/ostracon/config"
 	"github.com/line/ostracon/crypto"
 	tmjson "github.com/line/ostracon/libs/json"
@@ -15,10 +20,8 @@ import (
 	"github.com/line/ostracon/privval"
 	"github.com/line/ostracon/types"
 	tmtime "github.com/line/ostracon/types/time"
-	"github.com/stretchr/testify/require"
-	"io/ioutil"
-	"os"
-	"testing"
+
+	"github.com/line/lbm-sdk/server"
 )
 
 var (
