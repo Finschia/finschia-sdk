@@ -579,15 +579,14 @@ GORELEASER_BUILD_LDF = $(ldflags)
 GORELEASER_BUILD_LDF += -linkmode=external -extldflags "-Wl,-z,muldefs -static"
 GORELEASER_BUILD_LDF := $(strip $(GORELEASER_BUILD_LDF))
 
-GOLANG_VERSION=1.18.3
-
 GORELEASER_SKIP_VALIDATE ?= false
 GORELEASER_DEBUG         ?= false
+GORELEASER_IMAGE         ?= line/goreleaser-cross:1.13-1.19.3
 GORELEASER_RELEASE       ?= false
 GORELEASER_IMAGE         ?= goreleaser/goreleaser-cross:v$(GOLANG_VERSION)
-GO_MOD_NAME              := github.com/line/lbm-sdk
+GO_MOD_NAME              := $(shell go list -m 2>/dev/null)
+#GO_MOD_NAME              := github.com/line/lbm-sdk
 
-#GO_MOD_NAME              := $(shell go list -m 2>/dev/null)
 ifeq ($(GORELEASER_RELEASE),true)
 	GORELEASER_SKIP_VALIDATE := false
 	GORELEASER_SKIP_PUBLISH  := release --skip-publish=false
@@ -597,14 +596,15 @@ else
 	GITHUB_TOKEN=
 endif
 
-	GORELEASER_IMAGE := -v $(HOME)/.docker/config.json:/root/.docker/config.json $(GORELEASER_IMAGE)
 ifeq ($(GORELEASER_MOUNT_CONFIG),true)
+	GORELEASER_IMAGE := -v $(HOME)/.docker/config.json:/root/.docker/config.json $(GORELEASER_IMAGE)
 endif
 
 release-snapshot:
 	docker run --rm \
 		-e BUILD_TAGS="$(build_tags)" \
 		-e BUILD_VARS='$(GORELEASER_BUILD_LDF)' \
+		-e GITHUB_TOKEN="$(GITHUB_TOKEN)" \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v $(shell pwd):/go/src/$(GO_MOD_NAME) \
 		-w /go/src/$(GO_MOD_NAME) \
@@ -613,13 +613,12 @@ release-snapshot:
 		-f "$(GORELEASER_CONFIG)" \
 		--skip-validate=$(GORELEASER_SKIP_VALIDATE) \
 		--debug=$(GORELEASER_DEBUG) \
-		-e GITHUB_TOKEN="$(GITHUB_TOKEN)" \
 		--rm-dist
 release:
-
 	docker run --rm \
 		-e BUILD_TAGS="$(build_tags)" \
 		-e BUILD_VARS='$(GORELEASER_BUILD_LDF)' \
+		-e GITHUB_TOKEN="$(GITHUB_TOKEN)" \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v $(shell pwd):/go/src/$(GO_MOD_NAME) \
 		-w /go/src/$(GO_MOD_NAME) \

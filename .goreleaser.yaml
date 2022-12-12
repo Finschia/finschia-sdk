@@ -17,23 +17,25 @@ builds:
       - "-tags={{ .Env.BUILD_TAGS }}"
     ldflags:
       - "{{ .Env.BUILD_VARS }}"
-  - id: simd-linux-arm64
-    main: ./simapp/simd
-    binary: simd
-    goos:
-      - linux
-    goarch:
-      - arm64
-    env:
-      - CGO_ENABLED=1
-      - CC=aarch64-linux-gnu-gcc
-      - CXX=aarch64-linux-gnu-g++
-    flags:
-      - -mod=readonly
-      - -trimpath
-      - "-tags={{ .Env.BUILD_TAGS }}"
-    ldflags:
-      - "{{ .Env.BUILD_VARS }}"
+
+# * Can't build on line/wasmvm@1.0.0-10
+#  - id: simd-linux-arm64
+#    main: ./simapp/simd
+#    binary: simd
+#    goos:
+#      - linux
+#    goarch:
+#      - arm64
+#    env:
+#      - CGO_ENABLED=1
+#      - CC=aarch64-linux-gnu-gcc
+#      - CXX=aarch64-linux-gnu-g++
+#    flags:
+#      - -mod=readonly
+#      - -trimpath
+#      - "-tags={{ .Env.BUILD_TAGS }}"
+#    ldflags:
+#      - "{{ .Env.BUILD_VARS }}"
 
 
 # * wasmvm doesn't support darwin static lib yet

@@ -11,16 +11,18 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - run: git fetch --force --tags
       - name: Install Go
         uses: actions/setup-go@v3
         with:
           go-version-file: './go.mod'
+          cache: true
       - name: Build & Publish release
         run: |
           make release
         env:
           GORELEASER_MOUNT_CONFIG: true
-          GORELEASER_IMAGE: line/goreleaser:v1.18.3-1.0.0
+          GORELEASER_IMAGE: tkxkd0159/gorel:1.0.0
           GORELEASER_RELEASE: true
           BUILD_TAGS: static
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
