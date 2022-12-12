@@ -72,7 +72,7 @@ inter-block-cache-size = {{ .BaseConfig.InterBlockCacheSize }}
 iavl-cache-size = {{ .BaseConfig.IAVLCacheSize }}
 
 # IAVLDisableFastNode enables or disables the fast node feature of IAVL. 
-# Default is false.
+# Default is true.
 iavl-disable-fastnode = {{ .BaseConfig.IAVLDisableFastNode }}
 
 # IndexEvents defines the set of events in the form {eventType}.{attributeKey},

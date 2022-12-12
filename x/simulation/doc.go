@@ -2,7 +2,7 @@
 Package simulation implements a full fledged Cosmos SDK application used for executing
 simulation test suites.
 
-Simulation App
+# Simulation App
 
 The SimApp type defines an application used for running extensive simulation
 testing suites. It contains all core modules, including governance, staking,
@@ -30,7 +30,7 @@ still be pseudo-randomly simulated.
 The simulation test suite also supports testing determinism and import/export
 functionality.
 
-Randomness
+# Randomness
 
 Currently, simulation uses a single seed (integer) as a source for a PRNG by
 which all random operations are executed from. Any call to the PRNG changes all
@@ -44,7 +44,7 @@ the simulation suite is expected to support a series of PRNGs that can be used
 uniquely per module and simulation component so that they will not effect each
 others state execution outcome.
 
-Usage
+# Usage
 
 To execute a completely pseudo-random simulation:
 

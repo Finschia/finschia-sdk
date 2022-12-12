@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"math/rand"
 
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cast"
@@ -21,7 +20,6 @@ import (
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	simKeeper "github.com/line/lbm-sdk/x/simulation"
 	"github.com/line/lbm-sdk/x/wasm/client/cli"
-	"github.com/line/lbm-sdk/x/wasm/client/rest"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
 	"github.com/line/lbm-sdk/x/wasm/lbmtypes"
 	"github.com/line/lbm-sdk/x/wasm/simulation"
@@ -75,11 +73,6 @@ func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONCodec, config client
 		return err
 	}
 	return ValidateGenesis(data)
-}
-
-// RegisterRESTRoutes registers the REST routes for the wasm module.
-func (AppModuleBasic) RegisterRESTRoutes(cliCtx client.Context, rtr *mux.Router) {
-	rest.RegisterRoutes(cliCtx, rtr)
 }
 
 // GetTxCmd returns the root tx command for the wasm module.

@@ -4,15 +4,17 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/lbm-sdk/store/iavl"
-	"github.com/line/lbm-sdk/store/rootmulti"
-	storetypes "github.com/line/lbm-sdk/store/types"
 	sdk "github.com/line/lbm-sdk/types"
-	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
 
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/libs/log"
+
 	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/store/iavl"
+	"github.com/line/lbm-sdk/store/rootmulti"
+	storetypes "github.com/line/lbm-sdk/store/types"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
@@ -77,7 +79,7 @@ type TypesTestSuite struct {
 func (suite *TypesTestSuite) SetupTest() {
 	app := simapp.Setup(false)
 	db := dbm.NewMemDB()
-	store := rootmulti.NewStore(db)
+	store := rootmulti.NewStore(db, log.NewNopLogger())
 	storeKey := storetypes.NewKVStoreKey("iavlStoreKey")
 
 	store.MountStoreWithDB(storeKey, storetypes.StoreTypeIAVL, nil)

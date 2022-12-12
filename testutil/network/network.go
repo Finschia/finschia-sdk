@@ -255,8 +255,8 @@ func New(t *testing.T, cfg Config) *Network {
 		clientDir := filepath.Join(network.BaseDir, nodeDirName, "simcli")
 		gentxsDir := filepath.Join(network.BaseDir, "gentxs")
 
-		require.NoError(t, os.MkdirAll(filepath.Join(nodeDir, "config"), 0755))
-		require.NoError(t, os.MkdirAll(clientDir, 0755))
+		require.NoError(t, os.MkdirAll(filepath.Join(nodeDir, "config"), 0o755))
+		require.NoError(t, os.MkdirAll(clientDir, 0o755))
 
 		tmCfg.SetRoot(nodeDir)
 		tmCfg.Moniker = nodeDirName
@@ -378,12 +378,10 @@ func New(t *testing.T, cfg Config) *Network {
 
 	require.NoError(t, initGenFiles(cfg, genAccounts, genBalances, genFiles))
 	require.NoError(t, collectGenFiles(cfg, network.Validators, network.BaseDir))
-
 	t.Log("starting test network...")
 	for _, v := range network.Validators {
 		require.NoError(t, startInProcess(cfg, v))
 	}
-
 	t.Log("started test network")
 
 	// Ensure we cleanup incase any test was abruptly halted (e.g. SIGINT) as any

@@ -110,7 +110,7 @@ func (s *IntegrationTestSuite) TestCLIValidateSignatures() {
 
 func (s *IntegrationTestSuite) TestCLISignBatch() {
 	val := s.network.Validators[0]
-	var sendTokens = sdk.NewCoins(
+	sendTokens := sdk.NewCoins(
 		sdk.NewCoin(fmt.Sprintf("%stoken", val.Moniker), sdk.NewInt(10)),
 		sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)),
 	)
@@ -184,7 +184,7 @@ func (s *IntegrationTestSuite) TestCLISignAminoJSON() {
 	require := s.Require()
 	val1 := s.network.Validators[0]
 	txCfg := val1.ClientCtx.TxConfig
-	var sendTokens = sdk.NewCoins(
+	sendTokens := sdk.NewCoins(
 		sdk.NewCoin(fmt.Sprintf("%stoken", val1.Moniker), sdk.NewInt(10)),
 		sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)),
 	)
@@ -1049,7 +1049,6 @@ func (s *IntegrationTestSuite) TestSignBatchMultisig() {
 
 	_, err = TxMultiSignExec(val.ClientCtx, multisigInfo.GetName(), filename.Name(), file1.Name(), file2.Name(), file3.Name())
 	s.Require().NoError(err)
-
 }
 
 func (s *IntegrationTestSuite) TestMultisignBatch() {
@@ -1212,9 +1211,57 @@ func (s *IntegrationTestSuite) TestGetAccountsCmd() {
 	}
 }
 
+func (s *IntegrationTestSuite) TestQueryModuleAccountByNameCmd() {
+	val := s.network.Validators[0]
+
+	testCases := []struct {
+		name       string
+		moduleName string
+		expectErr  bool
+	}{
+		{
+			"invalid module name",
+			"gover",
+			true,
+		},
+		{
+			"valid module name",
+			"mint",
+			false,
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		s.Run(tc.name, func() {
+			clientCtx := val.ClientCtx
+
+			out, err := clitestutil.ExecTestCLICmd(clientCtx, authcli.QueryModuleAccountByNameCmd(), []string{
+				tc.moduleName,
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+			})
+			if tc.expectErr {
+				s.Require().Error(err)
+				s.Require().NotEqual("internal", err.Error())
+			} else {
+				var res authtypes.QueryModuleAccountByNameResponse
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res))
+
+				var account authtypes.AccountI
+				err := val.ClientCtx.InterfaceRegistry.UnpackAny(res.Account, &account)
+				s.Require().NoError(err)
+
+				moduleAccount, ok := account.(authtypes.ModuleAccountI)
+				s.Require().True(ok)
+				s.Require().Equal(tc.moduleName, moduleAccount.GetName())
+			}
+		})
+	}
+}
+
 func TestGetBroadcastCommandOfflineFlag(t *testing.T) {
 	clientCtx := client.Context{}.WithOffline(true)
-	clientCtx = clientCtx.WithTxConfig(simapp.MakeTestEncodingConfig().TxConfig) // nolint
+	clientCtx = clientCtx.WithTxConfig(simapp.MakeTestEncodingConfig().TxConfig) //nolint:staticcheck
 
 	cmd := authcli.GetBroadcastCommand()
 	_ = testutil.ApplyMockIODiscardOutErr(cmd)
@@ -1418,7 +1465,8 @@ func (s *IntegrationTestSuite) TestSignWithMultiSignersAminoJSON() {
 }
 
 func (s *IntegrationTestSuite) createBankMsg(val *network.Validator, toAddr sdk.AccAddress, amount sdk.Coins, extraFlags ...string) (testutil.BufferWriter, error) {
-	flags := []string{fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+	flags := []string{
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees,
 			sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
