@@ -57,7 +57,7 @@ func ShowValidatorCmd() *cobra.Command {
 func showValidator(cmd *cobra.Command, config *cfg.Config) error {
 	var pv types.PrivValidator
 	if config.PrivValidatorListenAddr != "" {
-		chainID, err := LoadChainID(config)
+		chainID, err := loadChainID(config)
 		if err != nil {
 			return err
 		}
@@ -89,7 +89,7 @@ func showValidator(cmd *cobra.Command, config *cfg.Config) error {
 	return nil
 }
 
-func LoadChainID(config *cfg.Config) (string, error) {
+func loadChainID(config *cfg.Config) (string, error) {
 	stateDB, err := node.DefaultDBProvider(&node.DBContext{ID: "state", Config: config})
 	if err != nil {
 		return "", err

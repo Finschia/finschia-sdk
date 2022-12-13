@@ -1,4 +1,4 @@
-package server_test
+package server
 
 import (
 	"bytes"
@@ -20,8 +20,6 @@ import (
 	"github.com/line/ostracon/privval"
 	"github.com/line/ostracon/types"
 	tmtime "github.com/line/ostracon/types/time"
-
-	"github.com/line/lbm-sdk/server"
 )
 
 var (
@@ -31,8 +29,8 @@ var (
 func TestShowValidator(t *testing.T) {
 	testCommon := newPrecedenceCommon(t)
 
-	serverCtx := &server.Context{}
-	ctx := context.WithValue(context.Background(), server.ServerContextKey, serverCtx)
+	serverCtx := &Context{}
+	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
 	if err := testCommon.cmd.ExecuteContext(ctx); err != cancelledInPreRun {
 		t.Fatalf("function failed with [%T] %v", err, err)
@@ -40,7 +38,7 @@ func TestShowValidator(t *testing.T) {
 
 	// ostracon init & create the server config file
 	initFilesWithConfig(serverCtx.Config)
-	output := captureStdout(t, func() { server.ShowValidatorCmd().ExecuteContext(ctx) })
+	output := captureStdout(t, func() { ShowValidatorCmd().ExecuteContext(ctx) })
 
 	// output must match the locally stored priv_validator key
 	privKey := loadFilePVKey(t, serverCtx.Config.PrivValidatorKeyFile())
@@ -52,8 +50,8 @@ func TestShowValidator(t *testing.T) {
 func TestShowValidatorWithKMS(t *testing.T) {
 	testCommon := newPrecedenceCommon(t)
 
-	serverCtx := &server.Context{}
-	ctx := context.WithValue(context.Background(), server.ServerContextKey, serverCtx)
+	serverCtx := &Context{}
+	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
 	if err := testCommon.cmd.ExecuteContext(ctx); err != cancelledInPreRun {
 		t.Fatalf("function failed with [%T] %v", err, err)
@@ -62,7 +60,7 @@ func TestShowValidatorWithKMS(t *testing.T) {
 	// ostracon init & create the server config file
 	initFilesWithConfig(serverCtx.Config)
 
-	chainID, err := server.LoadChainID(serverCtx.Config)
+	chainID, err := loadChainID(serverCtx.Config)
 	require.NoError(t, err)
 
 	// remove config file
@@ -74,7 +72,7 @@ func TestShowValidatorWithKMS(t *testing.T) {
 	privval.WithMockKMS(t, t.TempDir(), chainID, func(addr string, privKey crypto.PrivKey) {
 		serverCtx.Config.PrivValidatorListenAddr = addr
 		require.NoFileExists(t, serverCtx.Config.PrivValidatorKeyFile())
-		output := captureStdout(t, func() { server.ShowValidatorCmd().ExecuteContext(ctx) })
+		output := captureStdout(t, func() { ShowValidatorCmd().ExecuteContext(ctx) })
 		require.NoError(t, err)
 
 		// output must contains the KMS public key
@@ -88,8 +86,8 @@ func TestShowValidatorWithKMS(t *testing.T) {
 func TestShowValidatorWithInefficientKMSAddress(t *testing.T) {
 	testCommon := newPrecedenceCommon(t)
 
-	serverCtx := &server.Context{}
-	ctx := context.WithValue(context.Background(), server.ServerContextKey, serverCtx)
+	serverCtx := &Context{}
+	ctx := context.WithValue(context.Background(), ServerContextKey, serverCtx)
 
 	if err := testCommon.cmd.ExecuteContext(ctx); err != cancelledInPreRun {
 		t.Fatalf("function failed with [%T] %v", err, err)
@@ -105,7 +103,7 @@ func TestShowValidatorWithInefficientKMSAddress(t *testing.T) {
 	}
 
 	serverCtx.Config.PrivValidatorListenAddr = "127.0.0.1:inefficient"
-	err := server.ShowValidatorCmd().ExecuteContext(ctx)
+	err := ShowValidatorCmd().ExecuteContext(ctx)
 	require.Error(t, err)
 }
 
@@ -121,7 +119,7 @@ func TestLoadChainID(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, expected, genDoc.ChainID)
 
-	chainID, err := server.LoadChainID(config)
+	chainID, err := loadChainID(config)
 	require.NoError(t, err)
 	require.Equal(t, expected, chainID)
 }
@@ -136,7 +134,7 @@ func TestLoadChainIDWithoutStateDB(t *testing.T) {
 	config.DBBackend = "goleveldb"
 	config.DBPath = "/../path with containing chars that cannot be used\\/:*?\"<>|\x00"
 
-	_, err := server.LoadChainID(config)
+	_, err := loadChainID(config)
 	require.Error(t, err)
 }
 
