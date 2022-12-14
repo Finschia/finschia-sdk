@@ -11,7 +11,7 @@ func (k Keeper) hasNFT(ctx sdk.Context, contractID string, tokenID string) error
 	store := ctx.KVStore(k.storeKey)
 	key := nftKey(contractID, tokenID)
 	if !store.Has(key) {
-		return collection.ErrNotFound.Wrapf("nft not found; %s", tokenID)
+		return collection.ErrTokenNotFound.Wrapf("nft not found; %s", tokenID)
 	}
 	return nil
 }
@@ -21,7 +21,7 @@ func (k Keeper) GetNFT(ctx sdk.Context, contractID string, tokenID string) (*col
 	key := nftKey(contractID, tokenID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, collection.ErrNotFound.Wrapf("nft not found; %s", tokenID)
+		return nil, collection.ErrTokenNotFound.Wrapf("nft not found; %s", tokenID)
 	}
 
 	var token collection.NFT
@@ -205,7 +205,7 @@ func (k Keeper) GetParent(ctx sdk.Context, contractID string, tokenID string) (*
 	key := parentKey(contractID, tokenID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, collection.ErrNotFound.Wrapf("%s has no parent", tokenID)
+		return nil, collection.ErrTokenNotFound.Wrapf("%s has no parent", tokenID)
 	}
 
 	var parent gogotypes.StringValue
@@ -313,12 +313,12 @@ func (k Keeper) validateDepthAndWidth(ctx sdk.Context, contractID string, tokenI
 
 	depth := len(widths)
 	if legacyDepth := depth - 1; legacyDepth > int(params.DepthLimit) {
-		return collection.ErrCompositionFailed.Wrapf("resulting depth exceeds its limit %d", params.DepthLimit)
+		return collection.ErrCompositionFailed.Wrapf("resulting depth exceeds its limit: %d", params.DepthLimit)
 	}
 
 	for _, width := range widths {
 		if width > int(params.WidthLimit) {
-			return collection.ErrCompositionFailed.Wrapf("resulting width exceeds its limit %d", params.WidthLimit)
+			return collection.ErrCompositionFailed.Wrapf("resulting width exceeds its limit: %d", params.WidthLimit)
 		}
 	}
 

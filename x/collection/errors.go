@@ -10,27 +10,57 @@ import (
 const collectionCodespace = ModuleName
 
 var (
-	ErrEmpty              = sdkerrors.Register(collectionCodespace, 2, "empty value")
-	ErrDuplicate          = sdkerrors.Register(collectionCodespace, 3, "duplicate value")
-	ErrMaxLimit           = sdkerrors.Register(collectionCodespace, 4, "limit exceeded")
-	ErrInvalid            = sdkerrors.Register(collectionCodespace, 5, "invalid value")
-	ErrNotFound           = sdkerrors.Register(collectionCodespace, 6, "not found")
-	ErrAlreadyExists      = sdkerrors.Register(collectionCodespace, 7, "already exists")
-	ErrWrongClass         = sdkerrors.Register(collectionCodespace, 8, "class not supports this feature")
-	ErrInsufficientTokens = sdkerrors.Register(collectionCodespace, 9, "insufficient tokens")
-	ErrCompositionFailed  = sdkerrors.Register(collectionCodespace, 10, "failed composition precondition")
+	ErrInvalidContractID          = sdkerrors.Register(collectionCodespace, 2, "invalid contract id")
+	ErrContractNotFound           = sdkerrors.Register(collectionCodespace, 3, "contract not found")
+	ErrInvalidClassID             = sdkerrors.Register(collectionCodespace, 4, "invalid class id")
+	ErrClassNotFound              = sdkerrors.Register(collectionCodespace, 5, "class not found")
+	ErrWrongClass                 = sdkerrors.Register(collectionCodespace, 6, "class not supports this feature")
+	ErrInvalidTokenID             = sdkerrors.Register(collectionCodespace, 7, "invalid token id")
+	ErrTokenNotFound              = sdkerrors.Register(collectionCodespace, 8, "token not found")
+	ErrInvalidPermission          = sdkerrors.Register(collectionCodespace, 9, "invalid permission")
+	ErrGrantNotFound              = sdkerrors.Register(collectionCodespace, 10, "grant not found")
+	ErrOperatorIsHolder           = sdkerrors.Register(collectionCodespace, 11, "operator and holder should be different")
+	ErrAuthorizationNotFound      = sdkerrors.Register(collectionCodespace, 12, "authorization not found")
+	ErrAuthorizationAlreadyExists = sdkerrors.Register(collectionCodespace, 13, "authorization already exists")
+	ErrInvalidCoins               = sdkerrors.Register(collectionCodespace, 14, "invalid coins")
+	ErrInsufficientTokens         = sdkerrors.Register(collectionCodespace, 15, "insufficient tokens")
+	ErrInvalidName                = sdkerrors.Register(collectionCodespace, 16, "invalid name")
+	ErrInvalidBaseImgURI          = sdkerrors.Register(collectionCodespace, 17, "invalid base_img_uri")
+	ErrInvalidMeta                = sdkerrors.Register(collectionCodespace, 18, "invalid meta")
+	ErrInvalidDecimals            = sdkerrors.Register(collectionCodespace, 19, "invalid decimals")
+	ErrInvalidChanges             = sdkerrors.Register(collectionCodespace, 20, "invalid changes")
+	ErrInvalidModificationTarget  = sdkerrors.Register(collectionCodespace, 21, "invalid modification target")
+	ErrInvalidComposition         = sdkerrors.Register(collectionCodespace, 23, "invalid nft composition")
+	ErrCompositionFailed          = sdkerrors.Register(collectionCodespace, 24, "failed composition precondition")
+	ErrInvalidMintNFTParams       = sdkerrors.Register(collectionCodespace, 25, "invalid mint nft params")
+	ErrEmptyTokenIDs              = sdkerrors.Register(collectionCodespace, 26, "empty token ids")
 
 	sdkToGRPC = map[*sdkerrors.Error]codes.Code{
 		// this codespace
-		ErrEmpty:              codes.InvalidArgument,
-		ErrDuplicate:          codes.InvalidArgument,
-		ErrMaxLimit:           codes.InvalidArgument,
-		ErrInvalid:            codes.InvalidArgument,
-		ErrNotFound:           codes.NotFound,
-		ErrAlreadyExists:      codes.AlreadyExists,
-		ErrWrongClass:         codes.InvalidArgument,
-		ErrInsufficientTokens: codes.FailedPrecondition,
-		ErrCompositionFailed:  codes.InvalidArgument,
+		ErrContractNotFound:           codes.NotFound,
+		ErrClassNotFound:              codes.NotFound,
+		ErrTokenNotFound:              codes.NotFound,
+		ErrGrantNotFound:              codes.NotFound,
+		ErrAuthorizationNotFound:      codes.NotFound,
+		ErrInvalidContractID:          codes.InvalidArgument,
+		ErrInvalidClassID:             codes.InvalidArgument,
+		ErrInvalidTokenID:             codes.InvalidArgument,
+		ErrInvalidPermission:          codes.InvalidArgument,
+		ErrOperatorIsHolder:           codes.InvalidArgument,
+		ErrInvalidCoins:               codes.InvalidArgument,
+		ErrInvalidName:                codes.InvalidArgument,
+		ErrInvalidDecimals:            codes.InvalidArgument,
+		ErrInvalidBaseImgURI:          codes.InvalidArgument,
+		ErrWrongClass:                 codes.InvalidArgument,
+		ErrInvalidChanges:             codes.InvalidArgument,
+		ErrInvalidModificationTarget:  codes.InvalidArgument,
+		ErrInvalidMeta:                codes.InvalidArgument,
+		ErrInvalidMintNFTParams:       codes.InvalidArgument,
+		ErrEmptyTokenIDs:              codes.InvalidArgument,
+		ErrInvalidComposition:         codes.InvalidArgument,
+		ErrCompositionFailed:          codes.InvalidArgument,
+		ErrInsufficientTokens:         codes.FailedPrecondition,
+		ErrAuthorizationAlreadyExists: codes.AlreadyExists,
 
 		// sdk codespace
 		sdkerrors.ErrInvalidAddress: codes.InvalidArgument,
