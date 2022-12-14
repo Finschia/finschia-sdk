@@ -8,7 +8,6 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/gorilla/mux"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
 
@@ -19,7 +18,6 @@ import (
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/staking/client/cli"
-	"github.com/line/lbm-sdk/x/staking/client/rest"
 	"github.com/line/lbm-sdk/x/staking/keeper"
 	"github.com/line/lbm-sdk/x/staking/simulation"
 	"github.com/line/lbm-sdk/x/staking/types"
@@ -67,11 +65,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 	}
 
 	return ValidateGenesis(&data)
-}
-
-// RegisterRESTRoutes registers the REST routes for the staking module.
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
-	rest.RegisterHandlers(clientCtx, rtr)
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the staking module.
