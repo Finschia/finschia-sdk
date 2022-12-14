@@ -27,44 +27,44 @@ func stringInSize(str string, size int) bool {
 
 func validateName(name string) error {
 	if len(name) == 0 {
-		return ErrInvalidName.Wrap("cannot be empty")
+		return ErrInvalidTokenName.Wrap("name cannot be empty")
 	} else if !stringInSize(name, maxName) {
-		return ErrInvalidName.Wrapf("cannot be longer than %d", maxName)
+		return ErrInvalidNameLength.Wrapf("name cannot be longer than %d", maxName)
 	}
 	return nil
 }
 
 func validateSymbol(symbol string) error {
 	if !reSymbol.MatchString(symbol) {
-		return ErrInvalidSymbol.Wrapf("got; %s, valid expression is; %s", symbol, reSymbolString)
+		return ErrInvalidTokenSymbol.Wrapf("invalid symbol: %s, valid expression is: %s", symbol, reSymbolString)
 	}
 	return nil
 }
 
 func validateImageURI(uri string) error {
 	if !stringInSize(uri, maxImageURI) {
-		return ErrInvalidImageURI.Wrapf("cannot be longer than %d", maxImageURI)
+		return ErrInvalidImageURILength.Wrapf("image_uri cannot be longer than %d", maxImageURI)
 	}
 	return nil
 }
 
 func validateMeta(meta string) error {
 	if !stringInSize(meta, maxMeta) {
-		return ErrInvalidMeta.Wrapf("cannot be longer than %d", maxMeta)
+		return ErrInvalidMetaLength.Wrapf("meta cannot be longer than %d", maxMeta)
 	}
 	return nil
 }
 
 func validateDecimals(decimals int32) error {
 	if decimals < 0 || decimals > 18 {
-		return ErrInvalidDecimals.Wrapf("must be >=0 and <=18, got; %d", decimals)
+		return ErrInvalidTokenDecimals.Wrapf("invalid decimals: %d", decimals)
 	}
 	return nil
 }
 
 func validateAmount(amount sdk.Int) error {
 	if !amount.IsPositive() {
-		return ErrInvalidAmount.Wrapf("must be positive: %s", amount)
+		return ErrInvalidAmount.Wrapf("amount must be positive: %s", amount)
 	}
 	return nil
 }
@@ -89,15 +89,11 @@ func validateChange(change Pair) error {
 
 	validator, ok := validators[change.Field]
 	if !ok {
-		return ErrInvalidChanges.Wrapf("invalid key: %s", change.Field)
+		return ErrInvalidChangesField.Wrapf("invalid field: %s", change.Field)
 	}
 	return validator(change.Value)
 }
 
 func ValidateContractID(id string) error {
-	if err := class.ValidateID(id); err != nil {
-		return class.ErrInvalidContractID.Wrap(id)
-	}
-
-	return nil
+	return class.ValidateID(id)
 }

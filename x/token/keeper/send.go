@@ -2,12 +2,13 @@ package keeper
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/token"
 )
 
 func (k Keeper) Send(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amount sdk.Int) error {
 	if !amount.IsPositive() {
-		panic(token.ErrInvalidAmount.Wrap("amount must be positive"))
+		panic(sdkerrors.ErrInvalidRequest.Wrap("amount must be positive"))
 	}
 
 	if err := k.subtractToken(ctx, contractID, from, amount); err != nil {
@@ -24,7 +25,7 @@ func (k Keeper) AuthorizeOperator(ctx sdk.Context, contractID string, holder, op
 	}
 
 	if _, err := k.GetAuthorization(ctx, contractID, holder, operator); err == nil {
-		return token.ErrAuthorizationAlreadyExists.Wrapf("%s already authorized by %s", operator, holder)
+		return token.ErrTokenAlreadyApproved.Wrap("Already authorized")
 	}
 
 	k.setAuthorization(ctx, contractID, holder, operator)
@@ -53,7 +54,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, contractID string, holder, ope
 			Operator: operator.String(),
 		}, nil
 	}
-	return nil, token.ErrAuthorizationNotFound.Wrapf("%s not authorized by %s", operator, holder)
+	return nil, sdkerrors.ErrNotFound.Wrapf("no authorization to %s by %s", operator, holder)
 }
 
 func (k Keeper) setAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) {
@@ -72,7 +73,8 @@ func (k Keeper) subtractToken(ctx sdk.Context, contractID string, addr sdk.AccAd
 	balance := k.GetBalance(ctx, contractID, addr)
 	newBalance := balance.Sub(amount)
 	if newBalance.IsNegative() {
-		return token.ErrInsufficientTokens.Wrapf("%s is smaller than %s", balance, amount)
+		// Daphne emits ErrInsufficientFunds here, which is against to the spec.
+		return token.ErrInsufficientBalance.Wrapf("%s is smaller than %s", balance, amount)
 	}
 
 	k.setBalance(ctx, contractID, addr, newBalance)

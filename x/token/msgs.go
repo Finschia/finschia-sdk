@@ -21,6 +21,7 @@ func (m MsgSend) ValidateBasic() error {
 	}
 
 	if err := validateAmount(m.Amount); err != nil {
+		// Daphne emits ErrInvalidCoins here, which is against to the spec.
 		return err
 	}
 
@@ -462,7 +463,7 @@ func (m MsgModify) ValidateBasic() error {
 	checkedFields := map[string]bool{}
 	for _, change := range m.Changes {
 		if checkedFields[change.Field] {
-			return ErrInvalidChanges.Wrapf("duplicate key: %s", change.Field)
+			return ErrDuplicateChangesField.Wrapf("duplicate fields: %s", change.Field)
 		}
 		checkedFields[change.Field] = true
 
@@ -471,7 +472,7 @@ func (m MsgModify) ValidateBasic() error {
 		}
 	}
 	if len(checkedFields) == 0 {
-		return ErrInvalidChanges.Wrapf("no field provided")
+		return ErrEmptyChanges.Wrapf("no field provided")
 	}
 
 	return nil

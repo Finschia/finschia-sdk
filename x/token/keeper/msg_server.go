@@ -4,6 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/token"
 )
 
@@ -64,7 +65,7 @@ func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (
 	to := sdk.MustAccAddressFromBech32(req.To)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, from, proxy); err != nil {
-		return nil, err
+		return nil, token.ErrTokenNotApproved.Wrap(err.Error())
 	}
 
 	if err := s.keeper.Send(ctx, req.ContractId, from, to, req.Amount); err != nil {
@@ -173,7 +174,7 @@ func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermiss
 	grantee := sdk.MustAccAddressFromBech32(req.To)
 	permission := token.Permission(token.LegacyPermissionFromString(req.Permission))
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
-		return nil, err
+		return nil, token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
@@ -200,7 +201,7 @@ func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermi
 	grantee := sdk.MustAccAddressFromBech32(req.From)
 	permission := token.Permission(token.LegacyPermissionFromString(req.Permission))
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {
-		return nil, err
+		return nil, token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
@@ -279,7 +280,7 @@ func (s msgServer) Modify(c context.Context, req *token.MsgModify) (*token.MsgMo
 	grantee := sdk.MustAccAddressFromBech32(req.Owner)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, token.PermissionModify); err != nil {
-		return nil, err
+		return nil, token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	if err := s.keeper.Modify(ctx, req.ContractId, grantee, req.Changes); err != nil {

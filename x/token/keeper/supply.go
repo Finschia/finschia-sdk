@@ -69,7 +69,7 @@ func (k Keeper) GetClass(ctx sdk.Context, contractID string) (*token.TokenClass,
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(classKey(contractID))
 	if bz == nil {
-		return nil, token.ErrContractNotFound.Wrap(contractID)
+		return nil, token.ErrTokenNotExist.Wrapf("no class for %s", contractID)
 	}
 
 	var class token.TokenClass
@@ -110,7 +110,7 @@ func (k Keeper) Mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddr
 
 func (k Keeper) mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddress, amount sdk.Int) error {
 	if _, err := k.GetGrant(ctx, contractID, grantee, token.PermissionMint); err != nil {
-		return err
+		return token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	k.mintToken(ctx, contractID, to, amount)
@@ -150,7 +150,7 @@ func (k Keeper) Burn(ctx sdk.Context, contractID string, from sdk.AccAddress, am
 
 func (k Keeper) burn(ctx sdk.Context, contractID string, from sdk.AccAddress, amount sdk.Int) error {
 	if _, err := k.GetGrant(ctx, contractID, from, token.PermissionBurn); err != nil {
-		return err
+		return token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	if err := k.burnToken(ctx, contractID, from, amount); err != nil {
@@ -181,10 +181,10 @@ func (k Keeper) OperatorBurn(ctx sdk.Context, contractID string, operator, from 
 func (k Keeper) operatorBurn(ctx sdk.Context, contractID string, operator, from sdk.AccAddress, amount sdk.Int) error {
 	_, err := k.GetGrant(ctx, contractID, operator, token.PermissionBurn)
 	if err != nil {
-		return err
+		return token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 	if _, err := k.GetAuthorization(ctx, contractID, from, operator); err != nil {
-		return err
+		return token.ErrTokenNotApproved.Wrap(err.Error())
 	}
 
 	if err := k.burnToken(ctx, contractID, from, amount); err != nil {
@@ -354,7 +354,7 @@ func (k Keeper) GetGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddr
 		return grant, nil
 	}
 
-	return nil, token.ErrGrantNotFound.Wrapf("%s has no %s", grantee, permission)
+	return nil, sdkerrors.ErrNotFound.Wrapf("%s has no %s permission", grantee, permission)
 }
 
 func (k Keeper) setGrant(ctx sdk.Context, contractID string, grantee sdk.AccAddress, permission token.Permission) {
