@@ -64,7 +64,7 @@ func (s msgServer) TransferFTFrom(c context.Context, req *collection.MsgTransfer
 	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
-		return nil, err
+		return nil, collection.ErrCollectionNotApproved.Wrap(err.Error())
 	}
 
 	toAddr := sdk.MustAccAddressFromBech32(req.To)
@@ -135,7 +135,7 @@ func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransfe
 	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
-		return nil, err
+		return nil, collection.ErrCollectionNotApproved.Wrap(err.Error())
 	}
 
 	amount := make([]collection.Coin, len(req.TokenIds))
@@ -243,7 +243,7 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 	ownerAddr := sdk.MustAccAddressFromBech32(req.Owner)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, ownerAddr, collection.PermissionIssue); err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	class := &collection.FTClass{
@@ -302,7 +302,7 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 	ownerAddr := sdk.MustAccAddressFromBech32(req.Owner)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, ownerAddr, collection.PermissionIssue); err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	class := &collection.NFTClass{
@@ -346,7 +346,7 @@ func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collec
 	fromAddr := sdk.MustAccAddressFromBech32(req.From)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionMint); err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	toAddr := sdk.MustAccAddressFromBech32(req.To)
@@ -379,7 +379,7 @@ func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*coll
 	fromAddr := sdk.MustAccAddressFromBech32(req.From)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionMint); err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	toAddr := sdk.MustAccAddressFromBech32(req.To)
@@ -417,7 +417,7 @@ func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collec
 	fromAddr := sdk.MustAccAddressFromBech32(req.From)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionBurn); err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	burnt, err := s.keeper.BurnCoins(ctx, req.ContractId, fromAddr, req.Amount)
@@ -452,11 +452,11 @@ func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) 
 	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
-		return nil, err
+		return nil, collection.ErrCollectionNotApproved.Wrap(err.Error())
 	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, proxyAddr, collection.PermissionBurn); err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	burnt, err := s.keeper.BurnCoins(ctx, req.ContractId, fromAddr, req.Amount)
@@ -490,7 +490,7 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 	fromAddr := sdk.MustAccAddressFromBech32(req.From)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, fromAddr, collection.PermissionBurn); err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	coins := make([]collection.Coin, 0, len(req.TokenIds))
@@ -532,11 +532,11 @@ func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom
 	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
-		return nil, err
+		return nil, collection.ErrCollectionNotApproved.Wrap(err.Error())
 	}
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, proxyAddr, collection.PermissionBurn); err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	coins := make([]collection.Coin, 0, len(req.TokenIds))
@@ -577,7 +577,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 	operator := sdk.MustAccAddressFromBech32(req.Owner)
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, operator, collection.PermissionModify); err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	// copied from daphne
@@ -675,7 +675,7 @@ func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPe
 	permission := collection.Permission(collection.LegacyPermissionFromString(req.Permission))
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNoPermission.Wrapf("%s is not authorized for %s", granter, permission)
 	}
 
 	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
@@ -703,7 +703,7 @@ func (s msgServer) RevokePermission(c context.Context, req *collection.MsgRevoke
 	permission := collection.Permission(collection.LegacyPermissionFromString(req.Permission))
 
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNoPermission.Wrapf("%s is not authorized for %s", grantee, permission)
 	}
 
 	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
@@ -764,7 +764,7 @@ func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collec
 	// for the additional field of the event
 	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
 	if err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNotAChild.Wrap(err.Error())
 	}
 	event := collection.EventDetached{
 		ContractId:     req.ContractId,
@@ -798,7 +798,7 @@ func (s msgServer) AttachFrom(c context.Context, req *collection.MsgAttachFrom) 
 	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
-		return nil, err
+		return nil, collection.ErrCollectionNotApproved.Wrap(err.Error())
 	}
 
 	event := collection.EventAttached{
@@ -832,19 +832,19 @@ func (s msgServer) DetachFrom(c context.Context, req *collection.MsgDetachFrom) 
 	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
-		return nil, err
+		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
 	// legacy
 	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNotNFT.Wrap(err.Error())
 	}
 	oldRoot := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
 
 	// for the additional field of the event
 	parent, err := s.keeper.GetParent(ctx, req.ContractId, req.TokenId)
 	if err != nil {
-		return nil, err
+		return nil, collection.ErrTokenNotAChild.Wrap(err.Error())
 	}
 	event := collection.EventDetached{
 		ContractId:     req.ContractId,

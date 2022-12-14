@@ -40,18 +40,14 @@ var (
 
 func validateAmount(amount sdk.Int) error {
 	if !amount.IsPositive() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("amount must be positive: %s", amount)
+		return ErrInvalidAmount.Wrapf("amount must be positive: %s", amount)
 	}
 	return nil
 }
 
 // deprecated
 func validateCoins(amount []Coin) error {
-	if err := validateCoinsWithIDValidator(amount, ValidateTokenID); err != nil {
-		return ErrInvalidCoins.Wrap(err.Error())
-	}
-
-	return nil
+	return validateCoinsWithIDValidator(amount, ValidateTokenID)
 }
 
 // deprecated
@@ -85,19 +81,11 @@ func SplitTokenID(tokenID string) (classID string) {
 }
 
 func ValidateContractID(id string) error {
-	if err := class.ValidateID(id); err != nil {
-		return class.ErrInvalidContractID.Wrap(id)
-	}
-
-	return nil
+	return class.ValidateID(id)
 }
 
 func ValidateClassID(id string) error {
-	if err := validateID(id, reClassID); err != nil {
-		return ErrInvalidClassID.Wrap(id)
-	}
-
-	return nil
+	return validateID(id, reClassID)
 }
 
 // Deprecated: do not use (no successor).
@@ -107,8 +95,9 @@ func ValidateLegacyFTClassID(id string) error {
 
 // Deprecated: do not use (no successor).
 func ValidateLegacyNFTClassID(id string) error {
+	// daphne emits ErrInvalidTokenID here, but it's against to the spec.
 	if err := validateID(id, reLegacyNFTClassID); err != nil {
-		return ErrInvalidClassID.Wrapf("%s not nft class", id)
+		return ErrInvalidTokenType.Wrap(err.Error())
 	}
 
 	return nil
@@ -116,7 +105,7 @@ func ValidateLegacyNFTClassID(id string) error {
 
 func ValidateTokenID(id string) error {
 	if err := validateID(id, reTokenID); err != nil {
-		return ErrInvalidTokenID.Wrap(id)
+		return ErrInvalidTokenID.Wrap(err.Error())
 	}
 
 	return nil
@@ -135,7 +124,7 @@ func ValidateNFTID(id string) error {
 		return err
 	}
 	if err := ValidateFTID(id); err == nil {
-		return ErrInvalidTokenID.Wrapf("%s not nft", id)
+		return sdkerrors.ErrInvalidRequest.Wrapf("invalid id: %s", id)
 	}
 	return nil
 }
@@ -143,7 +132,7 @@ func ValidateNFTID(id string) error {
 // Deprecated: do not use (no successor).
 func ValidateLegacyNFTID(id string) error {
 	if err := validateID(id, reLegacyNFTID); err != nil {
-		return ErrInvalidTokenID.Wrapf("%s not nft", id)
+		return ErrInvalidTokenID.Wrap(err.Error())
 	}
 
 	return nil
@@ -151,38 +140,38 @@ func ValidateLegacyNFTID(id string) error {
 
 func validateID(id string, reg *regexp.Regexp) error {
 	if !reg.MatchString(id) {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid id; %s", id)
+		return sdkerrors.ErrInvalidRequest.Wrapf("invalid id: %s", id)
 	}
 	return nil
 }
 
 func validateName(name string) error {
-	if err := validateStringSize(name, nameLengthLimit); err != nil {
-		return ErrInvalidName.Wrap(err.Error())
+	if err := validateStringSize(name, nameLengthLimit, "name"); err != nil {
+		return ErrInvalidNameLength.Wrap(err.Error())
 	}
 
 	return nil
 }
 
 func validateBaseImgURI(baseImgURI string) error {
-	if err := validateStringSize(baseImgURI, baseImgURILengthLimit); err != nil {
-		return ErrInvalidBaseImgURI.Wrap(err.Error())
+	if err := validateStringSize(baseImgURI, baseImgURILengthLimit, "base_img_uri"); err != nil {
+		return ErrInvalidBaseImgURILength.Wrap(err.Error())
 	}
 
 	return nil
 }
 
 func validateMeta(meta string) error {
-	if err := validateStringSize(meta, metaLengthLimit); err != nil {
-		return ErrInvalidMeta.Wrap(err.Error())
+	if err := validateStringSize(meta, metaLengthLimit, "meta"); err != nil {
+		return ErrInvalidMetaLength.Wrap(err.Error())
 	}
 
 	return nil
 }
 
-func validateStringSize(str string, limit int) error {
+func validateStringSize(str string, limit int, name string) error {
 	if length := utf8.RuneCountInString(str); length > limit {
-		return sdkerrors.ErrInvalidRequest.Wrapf("%d exceeds its limit %d in length", length, limit)
+		return sdkerrors.ErrInvalidRequest.Wrapf("%s cannot exceed %d in length: current %d", name, limit, length)
 	}
 	return nil
 }
@@ -227,7 +216,7 @@ func validateTokenClassChange(change Attribute) error {
 func validateChange(change Attribute, validators map[string]func(string) error) error {
 	validator, ok := validators[change.Key]
 	if !ok {
-		return ErrInvalidChanges.Wrapf("invalid key: %s", change.Key)
+		return ErrInvalidChangesField.Wrapf("invalid field: %s", change.Key)
 	}
 	return validator(change.Value)
 }
@@ -337,7 +326,7 @@ func (m MsgTransferNFT) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return ErrEmptyTokenIDs
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateTokenID(id); err != nil {
@@ -388,7 +377,7 @@ func (m MsgTransferNFTFrom) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return ErrEmptyTokenIDs
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateTokenID(id); err != nil {
@@ -563,7 +552,7 @@ func (m MsgIssueFT) ValidateBasic() error {
 	}
 
 	if len(m.Name) == 0 {
-		return ErrInvalidName.Wrap("empty")
+		return ErrInvalidTokenName.Wrapf("empty name")
 	}
 	if err := validateName(m.Name); err != nil {
 		return err
@@ -583,7 +572,7 @@ func (m MsgIssueFT) ValidateBasic() error {
 
 	// daphne compat.
 	if m.Amount.Equal(sdk.OneInt()) && m.Decimals == 0 && !m.Mintable {
-		return ErrBadUseCase.Wrap("condition (amount == 0 & decimals == 0 & mintable == false) is invalid")
+		return ErrInvalidIssueFT.Wrap("invalid issue of ft")
 	}
 
 	return nil
@@ -713,7 +702,7 @@ func (m MsgMintNFT) ValidateBasic() error {
 	}
 
 	if len(m.Params) == 0 {
-		return ErrInvalidMintNFTParams.Wrap("empty")
+		return ErrEmptyField.Wrap("mint params cannot be empty")
 	}
 	for _, param := range m.Params {
 		classID := param.TokenType
@@ -850,7 +839,7 @@ func (m MsgBurnNFT) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return ErrEmptyTokenIDs
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateLegacyNFTID(id); err != nil {
@@ -898,7 +887,7 @@ func (m MsgBurnNFTFrom) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return ErrEmptyTokenIDs
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateLegacyNFTID(id); err != nil {
@@ -945,17 +934,17 @@ func (m MsgModify) ValidateBasic() error {
 	if len(m.TokenType) != 0 {
 		classID := m.TokenType
 		if err := ValidateClassID(classID); err != nil {
-			return err
+			return ErrInvalidTokenType.Wrap(err.Error())
 		}
 		if err := ValidateLegacyFTClassID(classID); err == nil && len(m.TokenIndex) == 0 {
-			return ErrInvalidModificationTarget.Wrap("fungible token type without index")
+			return ErrTokenTypeFTWithoutIndex.Wrap("fungible token type without index")
 		}
 	}
 
 	if len(m.TokenIndex) != 0 {
 		tokenID := m.TokenType + m.TokenIndex
 		if err := ValidateTokenID(tokenID); err != nil {
-			return err
+			return ErrInvalidTokenIndex.Wrap(err.Error())
 		}
 	}
 
@@ -964,19 +953,19 @@ func (m MsgModify) ValidateBasic() error {
 		if len(m.TokenIndex) == 0 {
 			validator = validateContractChange
 		} else {
-			return ErrInvalidModificationTarget.Wrap("token index without type")
+			return ErrTokenIndexWithoutType.Wrap("token index without type")
 		}
 	}
 	if len(m.Changes) == 0 {
-		return ErrInvalidChanges.Wrap("empty")
+		return ErrEmptyChanges.Wrap("empty changes")
 	}
 	if len(m.Changes) > changesLimit {
-		return ErrInvalidChanges.Wrapf("number of changes exceeds its limit: %d > %d", len(m.Changes), changesLimit)
+		return ErrInvalidChangesFieldCount.Wrapf("the number of changes exceeds the limit: %d > %d", len(m.Changes), changesLimit)
 	}
 	seenKeys := map[string]bool{}
 	for _, change := range m.Changes {
 		if seenKeys[change.Field] {
-			return ErrInvalidChanges.Wrapf("duplicate keys: %s", change.Field)
+			return ErrDuplicateChangesField.Wrapf("duplicate keys: %s", change.Field)
 		}
 		seenKeys[change.Field] = true
 
@@ -1116,7 +1105,7 @@ func (m MsgAttach) ValidateBasic() error {
 	}
 
 	if m.TokenId == m.ToTokenId {
-		return ErrInvalidComposition.Wrap("target and subject should be different")
+		return ErrCannotAttachToItself.Wrap("cannot attach token to itself")
 	}
 
 	return nil
@@ -1206,7 +1195,7 @@ func (m MsgAttachFrom) ValidateBasic() error {
 	}
 
 	if m.TokenId == m.ToTokenId {
-		return ErrInvalidComposition.Wrap("target and subject should be different")
+		return ErrCannotAttachToItself.Wrap("cannot attach token to itself")
 	}
 
 	return nil

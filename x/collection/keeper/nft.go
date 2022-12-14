@@ -11,7 +11,7 @@ func (k Keeper) hasNFT(ctx sdk.Context, contractID string, tokenID string) error
 	store := ctx.KVStore(k.storeKey)
 	key := nftKey(contractID, tokenID)
 	if !store.Has(key) {
-		return collection.ErrTokenNotFound.Wrapf("nft not found; %s", tokenID)
+		return sdkerrors.ErrNotFound.Wrapf("nft not exists: %s", tokenID)
 	}
 	return nil
 }
@@ -62,17 +62,22 @@ func (k Keeper) pruneNFT(ctx sdk.Context, contractID string, tokenID string) []s
 }
 
 func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress, subject, target string) error {
+	// validate subject
+	if !k.GetBalance(ctx, contractID, owner, subject).IsPositive() {
+		return collection.ErrTokenNotOwnedBy.Wrapf("%s is not owner of %s", owner, subject)
+	}
+
 	// validate target
 	if err := k.hasNFT(ctx, contractID, target); err != nil {
-		return err
+		return collection.ErrTokenNotNFT.Wrap(err.Error())
 	}
 
 	root := k.GetRoot(ctx, contractID, target)
 	if !owner.Equals(k.getOwner(ctx, contractID, root)) {
-		return collection.ErrInsufficientTokens.Wrapf("%s not owns %s", owner, target)
+		return collection.ErrTokenNotOwnedBy.Wrapf("%s is not owner of %s", owner, target)
 	}
 	if root == subject {
-		return collection.ErrInvalidComposition.Wrap("cycles not allowed")
+		return collection.ErrCannotAttachToADescendant.Wrap("cycles not allowed")
 	}
 
 	// validate subject
@@ -113,16 +118,16 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 
 func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress, subject string) error {
 	if err := k.hasNFT(ctx, contractID, subject); err != nil {
-		return err
+		return collection.ErrTokenNotNFT.Wrap(err.Error())
 	}
 
 	parent, err := k.GetParent(ctx, contractID, subject)
 	if err != nil {
-		return err
+		return collection.ErrTokenNotAChild.Wrap(err.Error())
 	}
 
 	if !owner.Equals(k.GetRootOwner(ctx, contractID, subject)) {
-		return collection.ErrInsufficientTokens.Wrapf("%s not owns %s", owner, subject)
+		return collection.ErrTokenNotOwnedBy.Wrapf("%s is not owner of %s", owner, subject)
 	}
 
 	if err := k.addCoins(ctx, contractID, owner, collection.NewCoins(collection.NewCoin(subject, sdk.OneInt()))); err != nil {
@@ -205,7 +210,7 @@ func (k Keeper) GetParent(ctx sdk.Context, contractID string, tokenID string) (*
 	key := parentKey(contractID, tokenID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, collection.ErrParentNotFound.Wrapf("%s has no parent", tokenID)
+		return nil, sdkerrors.ErrNotFound.Wrapf("%s has no parent", tokenID)
 	}
 
 	var parent gogotypes.StringValue
@@ -313,12 +318,12 @@ func (k Keeper) validateDepthAndWidth(ctx sdk.Context, contractID string, tokenI
 
 	depth := len(widths)
 	if legacyDepth := depth - 1; legacyDepth > int(params.DepthLimit) {
-		return collection.ErrInvalidComposition.Wrapf("resulting depth exceeds its limit: %d", params.DepthLimit)
+		return collection.ErrCompositionTooDeep.Wrapf("resulting depth exceeds its limit: %d", params.DepthLimit)
 	}
 
 	for _, width := range widths {
 		if width > int(params.WidthLimit) {
-			return collection.ErrInvalidComposition.Wrapf("resulting width exceeds its limit: %d", params.WidthLimit)
+			return collection.ErrCompositionTooWide.Wrapf("resulting width exceeds its limit: %d", params.WidthLimit)
 		}
 	}
 
