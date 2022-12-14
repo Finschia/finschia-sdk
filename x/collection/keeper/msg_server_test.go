@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/collection"
 )
 
@@ -77,7 +76,7 @@ func (s *KeeperTestSuite) TestMsgTransferFTFrom() {
 			proxy:      s.vendor,
 			from:       s.customer,
 			amount:     s.balance,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrAuthorizationNotFound,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
@@ -182,7 +181,7 @@ func (s *KeeperTestSuite) TestMsgTransferNFTFrom() {
 			proxy:      s.vendor,
 			from:       s.customer,
 			tokenID:    tokenID,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrAuthorizationNotFound,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
@@ -362,7 +361,7 @@ func (s *KeeperTestSuite) TestMsgIssueFT() {
 			contractID: s.contractID,
 			owner:      s.customer,
 			amount:     sdk.ZeroInt(),
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrGrantNotFound,
 		},
 	}
 
@@ -405,7 +404,7 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 		"no permission": {
 			contractID: s.contractID,
 			owner:      s.customer,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrGrantNotFound,
 		},
 	}
 
@@ -453,7 +452,7 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 			contractID: s.contractID,
 			from:       s.customer,
 			amount:     amount,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrGrantNotFound,
 		},
 		"no class of the token": {
 			contractID: s.contractID,
@@ -511,7 +510,7 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 			contractID: s.contractID,
 			from:       s.customer,
 			params:     params,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrGrantNotFound,
 		},
 		"no class of the token": {
 			contractID: s.contractID,
@@ -569,7 +568,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 			contractID: s.contractID,
 			from:       s.customer,
 			amount:     amount,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrGrantNotFound,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
@@ -630,14 +629,14 @@ func (s *KeeperTestSuite) TestMsgBurnFTFrom() {
 			proxy:      s.vendor,
 			from:       s.customer,
 			amount:     amount,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrAuthorizationNotFound,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			proxy:      s.stranger,
 			from:       s.customer,
 			amount:     amount,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrGrantNotFound,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
@@ -696,7 +695,7 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 			contractID: s.contractID,
 			from:       s.customer,
 			tokenIDs:   tokenIDs,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrGrantNotFound,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
@@ -757,14 +756,14 @@ func (s *KeeperTestSuite) TestMsgBurnNFTFrom() {
 			proxy:      s.vendor,
 			from:       s.customer,
 			tokenIDs:   tokenIDs,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrAuthorizationNotFound,
 		},
 		"no permission": {
 			contractID: s.contractID,
 			proxy:      s.stranger,
 			from:       s.customer,
 			tokenIDs:   tokenIDs,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrGrantNotFound,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
@@ -821,7 +820,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 			operator:   s.customer,
 			tokenType:  s.nftClassID,
 			tokenIndex: tokenIndex,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrGrantNotFound,
 		},
 		"nft not found": {
 			contractID: s.contractID,
@@ -892,17 +891,12 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			permission: collection.LegacyPermissionModify.String(),
 			err:        collection.ErrContractNotFound,
 		},
-		"already granted": {
-			granter:    s.vendor,
-			grantee:    s.operator,
-			permission: collection.LegacyPermissionMint.String(),
-		},
 		"granter has no permission": {
 			contractID: s.contractID,
 			granter:    s.customer,
 			grantee:    s.operator,
 			permission: collection.LegacyPermissionModify.String(),
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrGrantNotFound,
 		},
 	}
 
@@ -1088,7 +1082,7 @@ func (s *KeeperTestSuite) TestMsgAttachFrom() {
 			operator:   s.vendor,
 			subjectID:  collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrAuthorizationNotFound,
 		},
 		"not owner of the token": {
 			contractID: s.contractID,
@@ -1143,7 +1137,7 @@ func (s *KeeperTestSuite) TestMsgDetachFrom() {
 			contractID: s.contractID,
 			operator:   s.vendor,
 			subjectID:  collection.NewNFTID(s.nftClassID, 2),
-			err:        sdkerrors.ErrUnauthorized,
+			err:        collection.ErrAuthorizationNotFound,
 		},
 		"not owner of the token": {
 			contractID: s.contractID,
