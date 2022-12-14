@@ -72,7 +72,7 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 		return collection.ErrInsufficientTokens.Wrapf("%s not owns %s", owner, target)
 	}
 	if root == subject {
-		return collection.ErrCompositionFailed.Wrap("cycles not allowed")
+		return collection.ErrInvalidComposition.Wrap("cycles not allowed")
 	}
 
 	// validate subject
@@ -118,7 +118,7 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 
 	parent, err := k.GetParent(ctx, contractID, subject)
 	if err != nil {
-		return collection.ErrCompositionFailed.Wrap(err.Error())
+		return err
 	}
 
 	if !owner.Equals(k.GetRootOwner(ctx, contractID, subject)) {
@@ -205,7 +205,7 @@ func (k Keeper) GetParent(ctx sdk.Context, contractID string, tokenID string) (*
 	key := parentKey(contractID, tokenID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, collection.ErrTokenNotFound.Wrapf("%s has no parent", tokenID)
+		return nil, collection.ErrParentNotFound.Wrapf("%s has no parent", tokenID)
 	}
 
 	var parent gogotypes.StringValue
@@ -313,12 +313,12 @@ func (k Keeper) validateDepthAndWidth(ctx sdk.Context, contractID string, tokenI
 
 	depth := len(widths)
 	if legacyDepth := depth - 1; legacyDepth > int(params.DepthLimit) {
-		return collection.ErrCompositionFailed.Wrapf("resulting depth exceeds its limit: %d", params.DepthLimit)
+		return collection.ErrInvalidComposition.Wrapf("resulting depth exceeds its limit: %d", params.DepthLimit)
 	}
 
 	for _, width := range widths {
 		if width > int(params.WidthLimit) {
-			return collection.ErrCompositionFailed.Wrapf("resulting width exceeds its limit: %d", params.WidthLimit)
+			return collection.ErrInvalidComposition.Wrapf("resulting width exceeds its limit: %d", params.WidthLimit)
 		}
 	}
 

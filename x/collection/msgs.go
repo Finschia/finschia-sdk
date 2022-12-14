@@ -581,6 +581,11 @@ func (m MsgIssueFT) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", m.To)
 	}
 
+	// daphne compat.
+	if m.Amount.Equal(sdk.OneInt()) && m.Decimals == 0 && !m.Mintable {
+		return ErrBadUseCase.Wrap("condition (amount == 0 & decimals == 0 & mintable == false) is invalid")
+	}
+
 	return nil
 }
 

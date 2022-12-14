@@ -626,6 +626,15 @@ func TestMsgIssueFT(t *testing.T) {
 			amount:     sdk.OneInt(),
 			err:        collection.ErrInvalidDecimals,
 		},
+		"daphne compat": {
+			contractID: contractID,
+			owner:      addrs[0],
+			to:         addrs[1],
+			name:       name,
+			meta:       meta,
+			amount:     sdk.OneInt(),
+			err:        collection.ErrBadUseCase,
+		},
 	}
 
 	for name, tc := range testCases {
