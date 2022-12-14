@@ -86,7 +86,7 @@ func SplitTokenID(tokenID string) (classID string) {
 
 func ValidateContractID(id string) error {
 	if err := class.ValidateID(id); err != nil {
-		return ErrInvalidContractID.Wrap(id)
+		return class.ErrInvalidContractID.Wrap(id)
 	}
 
 	return nil
@@ -200,7 +200,7 @@ func validateLegacyPermission(permission string) error {
 
 func ValidatePermission(permission Permission) error {
 	if p := Permission_value[Permission_name[int32(permission)]]; p == 0 {
-		return ErrInvalidPermission.Wrap(permission.String())
+		return sdkerrors.ErrInvalidPermission.Wrap(permission.String())
 	}
 	return nil
 }

@@ -30,8 +30,6 @@ var (
 	ErrInvalidModificationTarget  = sdkerrors.Register(collectionCodespace, 39, "invalid modification target")
 	ErrInsufficientTokens         = sdkerrors.Register(collectionCodespace, 41, "insufficient tokens")
 	ErrInvalidMeta                = sdkerrors.Register(collectionCodespace, 43, "invalid meta")
-	ErrInvalidPermission          = sdkerrors.Register(collectionCodespace, 49, "invalid permission")
 	ErrInvalidMintNFTParams       = sdkerrors.Register(collectionCodespace, 51, "invalid mint nft params")
-	ErrInvalidContractID          = sdkerrors.Register(collectionCodespace, 52, "invalid contract id")
 	ErrEmptyTokenIDs              = sdkerrors.Register(collectionCodespace, 53, "empty token ids")
 )
