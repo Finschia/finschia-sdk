@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/token"
 )
 
@@ -44,7 +43,7 @@ func (s *KeeperTestSuite) TestMint() {
 		},
 		"no permission": {
 			grantee: s.customer,
-			err:     sdkerrors.ErrUnauthorized,
+			err:     token.ErrGrantNotFound,
 		},
 	}
 
@@ -74,7 +73,7 @@ func (s *KeeperTestSuite) TestBurn() {
 		"no permission": {
 			from:   s.customer,
 			amount: s.balance,
-			err:    sdkerrors.ErrUnauthorized,
+			err:    token.ErrGrantNotFound,
 		},
 		"insufficient tokens": {
 			from:   s.vendor,
@@ -112,13 +111,13 @@ func (s *KeeperTestSuite) TestOperatorBurn() {
 			operator: s.vendor,
 			from:     s.stranger,
 			amount:   s.balance,
-			err:      sdkerrors.ErrUnauthorized,
+			err:      token.ErrAuthorizationNotFound,
 		},
 		"no permission": {
 			operator: s.stranger,
 			from:     s.customer,
 			amount:   s.balance,
-			err:      sdkerrors.ErrUnauthorized,
+			err:      token.ErrGrantNotFound,
 		},
 		"insufficient tokens": {
 			operator: s.operator,

@@ -2,7 +2,6 @@ package keeper_test
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/token"
 )
 
@@ -75,7 +74,7 @@ func (s *KeeperTestSuite) TestMsgTransferFrom() {
 			proxy:      s.vendor,
 			from:       s.customer,
 			amount:     s.balance,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        token.ErrAuthorizationNotFound,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
@@ -253,17 +252,12 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			permission: token.LegacyPermissionModify.String(),
 			err:        token.ErrContractNotFound,
 		},
-		"already granted": {
-			granter:    s.vendor,
-			grantee:    s.operator,
-			permission: token.LegacyPermissionMint.String(),
-		},
 		"granter has no permission": {
 			contractID: s.contractID,
 			granter:    s.customer,
 			grantee:    s.operator,
 			permission: token.LegacyPermissionModify.String(),
-			err:        sdkerrors.ErrUnauthorized,
+			err:        token.ErrGrantNotFound,
 		},
 	}
 
@@ -352,7 +346,7 @@ func (s *KeeperTestSuite) TestMsgMint() {
 		"not granted": {
 			contractID: s.contractID,
 			grantee:    s.customer,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        token.ErrGrantNotFound,
 		},
 	}
 
@@ -395,7 +389,7 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 		"not granted": {
 			contractID: s.contractID,
 			from:       s.customer,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        token.ErrGrantNotFound,
 		},
 	}
 
@@ -441,7 +435,7 @@ func (s *KeeperTestSuite) TestMsgBurnFrom() {
 			contractID: s.contractID,
 			proxy:      s.vendor,
 			from:       s.customer,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        token.ErrAuthorizationNotFound,
 		},
 	}
 
@@ -484,7 +478,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 		"not granted": {
 			contractID: s.contractID,
 			grantee:    s.operator,
-			err:        sdkerrors.ErrUnauthorized,
+			err:        token.ErrGrantNotFound,
 		},
 	}
 

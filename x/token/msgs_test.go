@@ -196,7 +196,7 @@ func TestMsgRevokeOperator(t *testing.T) {
 			contractID: "deadbeef",
 			holder:     addrs[0],
 			operator:   addrs[0],
-			err:        token.ErrInvalid,
+			err:        token.ErrOperatorIsHolder,
 		},
 	}
 
@@ -255,7 +255,7 @@ func TestMsgApprove(t *testing.T) {
 			contractID: "deadbeef",
 			approver:   addrs[0],
 			proxy:      addrs[0],
-			err:        token.ErrInvalid,
+			err:        token.ErrOperatorIsHolder,
 		},
 	}
 

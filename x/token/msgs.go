@@ -110,7 +110,7 @@ func (m MsgRevokeOperator) ValidateBasic() error {
 	}
 
 	if m.Operator == m.Holder {
-		return ErrInvalid.Wrap("operator and holder should be different")
+		return ErrOperatorIsHolder
 	}
 
 	return nil
@@ -153,7 +153,7 @@ func (m MsgApprove) ValidateBasic() error {
 	}
 
 	if m.Proxy == m.Approver {
-		return ErrInvalid.Wrap("proxy and approver should be different")
+		return ErrOperatorIsHolder
 	}
 
 	return nil

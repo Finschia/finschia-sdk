@@ -22,6 +22,5 @@ var (
 	ErrAuthorizationNotFound      = sdkerrors.Register(tokenCodespace, 24, "authorization not found")
 	ErrAuthorizationAlreadyExists = sdkerrors.Register(tokenCodespace, 25, "authorization already exists")
 	ErrInvalidPermission          = sdkerrors.Register(tokenCodespace, 26, "invalid permission")
-	ErrGrantAlreadyExists         = sdkerrors.Register(tokenCodespace, 27, "grant already exists")
 	ErrInvalidContractID          = sdkerrors.Register(tokenCodespace, 28, "invalid contract id")
 )
