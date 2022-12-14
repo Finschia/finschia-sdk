@@ -38,7 +38,7 @@ func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) 
 	}
 	addr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
-		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("address: %s", req.Address))
+		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address))
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -159,7 +159,7 @@ func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGra
 	}
 	grantee, err := sdk.AccAddressFromBech32(req.Grantee)
 	if err != nil {
-		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("grantee: %s", req.Grantee))
+		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Grantee))
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -191,11 +191,11 @@ func (s queryServer) Approved(c context.Context, req *token.QueryApprovedRequest
 	}
 	proxy, err := sdk.AccAddressFromBech32(req.Proxy)
 	if err != nil {
-		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("proxy: %s", req.Proxy))
+		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", req.Proxy))
 	}
 	approver, err := sdk.AccAddressFromBech32(req.Approver)
 	if err != nil {
-		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("approver: %s", req.Approver))
+		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", req.Approver))
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -215,7 +215,7 @@ func (s queryServer) Approvers(c context.Context, req *token.QueryApproversReque
 	}
 	addr, err := sdk.AccAddressFromBech32(req.Address)
 	if err != nil {
-		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("address: %s", req.Address))
+		return nil, token.SDKErrorToGRPCError(sdkerrors.ErrInvalidAddress.Wrapf("invalid address: %s", req.Address))
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)

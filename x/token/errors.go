@@ -10,23 +10,40 @@ import (
 const tokenCodespace = ModuleName
 
 var (
-	ErrEmpty              = sdkerrors.Register(tokenCodespace, 2, "empty value")
-	ErrDuplicate          = sdkerrors.Register(tokenCodespace, 3, "duplicate value")
-	ErrMaxLimit           = sdkerrors.Register(tokenCodespace, 4, "limit exceeded")
-	ErrInvalid            = sdkerrors.Register(tokenCodespace, 5, "invalid value")
-	ErrNotFound           = sdkerrors.Register(tokenCodespace, 6, "not found")
-	ErrAlreadyExists      = sdkerrors.Register(tokenCodespace, 7, "already exists")
-	ErrInsufficientTokens = sdkerrors.Register(tokenCodespace, 8, "insufficient tokens")
+	ErrInvalidContractID          = sdkerrors.Register(tokenCodespace, 2, "invalid contract id")
+	ErrContractNotFound           = sdkerrors.Register(tokenCodespace, 3, "contract not found")
+	ErrWrongContract              = sdkerrors.Register(tokenCodespace, 4, "contract not supports this feature")
+	ErrInvalidPermission          = sdkerrors.Register(tokenCodespace, 5, "invalid permission")
+	ErrGrantNotFound              = sdkerrors.Register(tokenCodespace, 6, "grant not found")
+	ErrOperatorIsHolder           = sdkerrors.Register(tokenCodespace, 7, "operator and holder should be different")
+	ErrAuthorizationNotFound      = sdkerrors.Register(tokenCodespace, 8, "authorization not found")
+	ErrAuthorizationAlreadyExists = sdkerrors.Register(tokenCodespace, 9, "authorization already exists")
+	ErrInvalidAmount              = sdkerrors.Register(tokenCodespace, 10, "invalid amount")
+	ErrInsufficientTokens         = sdkerrors.Register(tokenCodespace, 11, "insufficient tokens")
+	ErrInvalidName                = sdkerrors.Register(tokenCodespace, 12, "invalid name")
+	ErrInvalidSymbol              = sdkerrors.Register(tokenCodespace, 13, "invalid symbol")
+	ErrInvalidImageURI            = sdkerrors.Register(tokenCodespace, 14, "invalid image_uri")
+	ErrInvalidMeta                = sdkerrors.Register(tokenCodespace, 15, "invalid meta")
+	ErrInvalidDecimals            = sdkerrors.Register(tokenCodespace, 16, "invalid decimals")
+	ErrInvalidChanges             = sdkerrors.Register(tokenCodespace, 17, "invalid changes")
 
 	sdkToGRPC = map[*sdkerrors.Error]codes.Code{
 		// this codespace
-		ErrEmpty:              codes.InvalidArgument,
-		ErrDuplicate:          codes.InvalidArgument,
-		ErrMaxLimit:           codes.InvalidArgument,
-		ErrInvalid:            codes.InvalidArgument,
-		ErrNotFound:           codes.NotFound,
-		ErrAlreadyExists:      codes.AlreadyExists,
-		ErrInsufficientTokens: codes.FailedPrecondition,
+		ErrContractNotFound:           codes.NotFound,
+		ErrGrantNotFound:              codes.NotFound,
+		ErrAuthorizationNotFound:      codes.NotFound,
+		ErrInvalidContractID:          codes.InvalidArgument,
+		ErrInvalidPermission:          codes.InvalidArgument,
+		ErrOperatorIsHolder:           codes.InvalidArgument,
+		ErrInvalidAmount:              codes.InvalidArgument,
+		ErrInvalidName:                codes.InvalidArgument,
+		ErrInvalidDecimals:            codes.InvalidArgument,
+		ErrInvalidImageURI:            codes.InvalidArgument,
+		ErrWrongContract:              codes.InvalidArgument,
+		ErrInvalidChanges:             codes.InvalidArgument,
+		ErrInvalidMeta:                codes.InvalidArgument,
+		ErrInsufficientTokens:         codes.FailedPrecondition,
+		ErrAuthorizationAlreadyExists: codes.AlreadyExists,
 
 		// sdk codespace
 		sdkerrors.ErrInvalidAddress: codes.InvalidArgument,

@@ -43,7 +43,7 @@ func TestMsgSend(t *testing.T) {
 			from:   addrs[0],
 			to:     addrs[1],
 			amount: sdk.OneInt(),
-			err:    token.ErrInvalid,
+			err:    token.ErrInvalidContractID,
 		},
 		"invalid to": {
 			contractID: "deadbeef",
@@ -56,7 +56,7 @@ func TestMsgSend(t *testing.T) {
 			from:       addrs[0],
 			to:         addrs[1],
 			amount:     sdk.ZeroInt(),
-			err:        token.ErrInvalid,
+			err:        token.ErrInvalidAmount,
 		},
 	}
 
@@ -113,7 +113,7 @@ func TestMsgTransferFrom(t *testing.T) {
 			from:   addrs[1],
 			to:     addrs[2],
 			amount: sdk.OneInt(),
-			err:    token.ErrInvalid,
+			err:    token.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: "deadbeef",
@@ -135,7 +135,7 @@ func TestMsgTransferFrom(t *testing.T) {
 			from:       addrs[1],
 			to:         addrs[2],
 			amount:     sdk.ZeroInt(),
-			err:        token.ErrInvalid,
+			err:        token.ErrInvalidAmount,
 		},
 	}
 
@@ -180,7 +180,7 @@ func TestMsgRevokeOperator(t *testing.T) {
 		"invalid contract id": {
 			holder:   addrs[0],
 			operator: addrs[1],
-			err:      token.ErrInvalid,
+			err:      token.ErrInvalidContractID,
 		},
 		"invalid holder": {
 			contractID: "deadbeef",
@@ -239,7 +239,7 @@ func TestMsgApprove(t *testing.T) {
 		"invalid contract id": {
 			approver: addrs[0],
 			proxy:    addrs[1],
-			err:      token.ErrInvalid,
+			err:      token.ErrInvalidContractID,
 		},
 		"invalid approver": {
 			contractID: "deadbeef",
@@ -333,7 +333,7 @@ func TestMsgIssue(t *testing.T) {
 			meta:     "some meta",
 			decimals: 8,
 			amount:   sdk.OneInt(),
-			err:      token.ErrEmpty,
+			err:      token.ErrInvalidName,
 		},
 		"long name": {
 			owner:    addrs[0],
@@ -344,7 +344,7 @@ func TestMsgIssue(t *testing.T) {
 			meta:     "some meta",
 			decimals: 8,
 			amount:   sdk.OneInt(),
-			err:      token.ErrMaxLimit,
+			err:      token.ErrInvalidName,
 		},
 		"invalid symbol": {
 			owner:    addrs[0],
@@ -354,7 +354,7 @@ func TestMsgIssue(t *testing.T) {
 			meta:     "some meta",
 			decimals: 8,
 			amount:   sdk.OneInt(),
-			err:      token.ErrInvalid,
+			err:      token.ErrInvalidSymbol,
 		},
 		"invalid image uri": {
 			owner:    addrs[0],
@@ -365,7 +365,7 @@ func TestMsgIssue(t *testing.T) {
 			meta:     "some meta",
 			decimals: 8,
 			amount:   sdk.OneInt(),
-			err:      token.ErrMaxLimit,
+			err:      token.ErrInvalidImageURI,
 		},
 		"invalid meta": {
 			owner:    addrs[0],
@@ -376,7 +376,7 @@ func TestMsgIssue(t *testing.T) {
 			meta:     string(make([]rune, 1001)),
 			decimals: 8,
 			amount:   sdk.OneInt(),
-			err:      token.ErrMaxLimit,
+			err:      token.ErrInvalidMeta,
 		},
 		"invalid decimals": {
 			owner:    addrs[0],
@@ -387,7 +387,7 @@ func TestMsgIssue(t *testing.T) {
 			meta:     "some meta",
 			decimals: 19,
 			amount:   sdk.OneInt(),
-			err:      token.ErrInvalid,
+			err:      token.ErrInvalidDecimals,
 		},
 	}
 
@@ -438,7 +438,7 @@ func TestMsgMint(t *testing.T) {
 			grantee: addrs[0],
 			to:      addrs[1],
 			amount:  sdk.OneInt(),
-			err:     token.ErrInvalid,
+			err:     token.ErrInvalidContractID,
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
@@ -457,7 +457,7 @@ func TestMsgMint(t *testing.T) {
 			grantee:    addrs[0],
 			to:         addrs[1],
 			amount:     sdk.ZeroInt(),
-			err:        token.ErrInvalid,
+			err:        token.ErrInvalidAmount,
 		},
 	}
 
@@ -501,7 +501,7 @@ func TestMsgBurn(t *testing.T) {
 		"invalid contract id": {
 			from:   addrs[0],
 			amount: sdk.OneInt(),
-			err:    token.ErrInvalid,
+			err:    token.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: "deadbeef",
@@ -512,7 +512,7 @@ func TestMsgBurn(t *testing.T) {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			amount:     sdk.ZeroInt(),
-			err:        token.ErrInvalid,
+			err:        token.ErrInvalidAmount,
 		},
 	}
 
@@ -558,7 +558,7 @@ func TestMsgBurnFrom(t *testing.T) {
 			grantee: addrs[0],
 			from:    addrs[1],
 			amount:  sdk.OneInt(),
-			err:     token.ErrInvalid,
+			err:     token.ErrInvalidContractID,
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
@@ -577,7 +577,7 @@ func TestMsgBurnFrom(t *testing.T) {
 			grantee:    addrs[0],
 			from:       addrs[1],
 			amount:     sdk.ZeroInt(),
-			err:        token.ErrInvalid,
+			err:        token.ErrInvalidAmount,
 		},
 	}
 
@@ -622,7 +622,7 @@ func TestMsgModify(t *testing.T) {
 		"invalid contract id": {
 			grantee: addrs[0],
 			changes: []token.Pair{validChange},
-			err:     token.ErrInvalid,
+			err:     token.ErrInvalidContractID,
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
@@ -633,18 +633,18 @@ func TestMsgModify(t *testing.T) {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			changes:    []token.Pair{{Field: strings.ToUpper(token.AttributeKeyName.String()), Value: "tt"}},
-			err:        token.ErrInvalid,
+			err:        token.ErrInvalidChanges,
 		},
 		"invalid value of change": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			changes:    []token.Pair{{Field: "symbol"}},
-			err:        token.ErrInvalid,
+			err:        token.ErrInvalidChanges,
 		},
 		"empty changes": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
-			err:        token.ErrEmpty,
+			err:        token.ErrInvalidChanges,
 		},
 		"duplicated changes": {
 			contractID: "deadbeef",
@@ -653,7 +653,7 @@ func TestMsgModify(t *testing.T) {
 				{Field: token.AttributeKeyName.String(), Value: "hello"},
 				{Field: token.AttributeKeyName.String(), Value: "world"},
 			},
-			err: token.ErrDuplicate,
+			err: token.ErrInvalidChanges,
 		},
 	}
 
@@ -699,7 +699,7 @@ func TestMsgGrantPermission(t *testing.T) {
 			from:       addrs[0],
 			to:         addrs[1],
 			permission: token.LegacyPermissionMint.String(),
-			err:        token.ErrInvalid,
+			err:        token.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: "deadbeef",
@@ -717,7 +717,7 @@ func TestMsgGrantPermission(t *testing.T) {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			to:         addrs[1],
-			err:        token.ErrInvalid,
+			err:        token.ErrInvalidPermission,
 		},
 	}
 
@@ -761,7 +761,7 @@ func TestMsgRevokePermission(t *testing.T) {
 		"invalid contract id": {
 			from:       addrs[0],
 			permission: token.LegacyPermissionMint.String(),
-			err:        token.ErrInvalid,
+			err:        token.ErrInvalidContractID,
 		},
 		"invalid from": {
 			contractID: "deadbeef",
@@ -771,7 +771,7 @@ func TestMsgRevokePermission(t *testing.T) {
 		"invalid permission": {
 			contractID: "deadbeef",
 			from:       addrs[0],
-			err:        token.ErrInvalid,
+			err:        token.ErrInvalidPermission,
 		},
 	}
 
