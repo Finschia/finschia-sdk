@@ -111,7 +111,7 @@ func (m MsgRevokeOperator) ValidateBasic() error {
 	}
 
 	if m.Operator == m.Holder {
-		return ErrOperatorIsHolder
+		return ErrApproverProxySame
 	}
 
 	return nil
@@ -154,7 +154,7 @@ func (m MsgApprove) ValidateBasic() error {
 	}
 
 	if m.Proxy == m.Approver {
-		return ErrOperatorIsHolder
+		return ErrApproverProxySame
 	}
 
 	return nil

@@ -74,16 +74,16 @@ func TestMsgTransferFT(t *testing.T) {
 				TokenId: collection.NewFTID("00bab10c"),
 				Amount:  sdk.ZeroInt(),
 			}},
-			err: collection.ErrInvalidCoins,
+			err: collection.ErrInvalidAmount,
 		},
-		"invalid amount": {
+		"invalid token id": {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			to:         addrs[1],
 			amount: []collection.Coin{{
 				Amount: sdk.OneInt(),
 			}},
-			err: collection.ErrInvalidCoins,
+			err: collection.ErrInvalidTokenID,
 		},
 	}
 
@@ -170,9 +170,20 @@ func TestMsgTransferFTFrom(t *testing.T) {
 			from:       addrs[1],
 			to:         addrs[2],
 			amount: []collection.Coin{{
+				TokenId: collection.NewFTID("00bab10c"),
+				Amount:  sdk.ZeroInt(),
+			}},
+			err: collection.ErrInvalidAmount,
+		},
+		"invalid denom": {
+			contractID: "deadbeef",
+			proxy:      addrs[0],
+			from:       addrs[1],
+			to:         addrs[2],
+			amount: []collection.Coin{{
 				Amount: sdk.OneInt(),
 			}},
-			err: collection.ErrInvalidCoins,
+			err: collection.ErrInvalidTokenID,
 		},
 	}
 
@@ -239,7 +250,7 @@ func TestMsgTransferNFT(t *testing.T) {
 			contractID: "deadbeef",
 			from:       addrs[0],
 			to:         addrs[1],
-			err:        collection.ErrEmptyTokenIDs,
+			err:        collection.ErrEmptyField,
 		},
 		"invalid token ids": {
 			contractID: "deadbeef",
@@ -325,7 +336,7 @@ func TestMsgTransferNFTFrom(t *testing.T) {
 			proxy:      addrs[0],
 			from:       addrs[1],
 			to:         addrs[2],
-			err:        collection.ErrEmptyTokenIDs,
+			err:        collection.ErrEmptyField,
 		},
 		"invalid id": {
 			contractID: "deadbeef",
@@ -494,21 +505,21 @@ func TestMsgCreateContract(t *testing.T) {
 			name:       string(make([]rune, 21)),
 			baseImgURI: uri,
 			meta:       meta,
-			err:        collection.ErrInvalidName,
+			err:        collection.ErrInvalidNameLength,
 		},
 		"invalid base image uri": {
 			owner:      addrs[0],
 			name:       name,
 			baseImgURI: string(make([]rune, 1001)),
 			meta:       meta,
-			err:        collection.ErrInvalidBaseImgURI,
+			err:        collection.ErrInvalidBaseImgURILength,
 		},
 		"invalid meta": {
 			owner:      addrs[0],
 			name:       name,
 			baseImgURI: uri,
 			meta:       string(make([]rune, 1001)),
-			err:        collection.ErrInvalidMeta,
+			err:        collection.ErrInvalidMetaLength,
 		},
 	}
 
@@ -595,7 +606,7 @@ func TestMsgIssueFT(t *testing.T) {
 			meta:       meta,
 			decimals:   decimals,
 			amount:     sdk.OneInt(),
-			err:        collection.ErrInvalidName,
+			err:        collection.ErrInvalidTokenName,
 		},
 		"long name": {
 			contractID: contractID,
@@ -605,7 +616,7 @@ func TestMsgIssueFT(t *testing.T) {
 			meta:       meta,
 			decimals:   decimals,
 			amount:     sdk.OneInt(),
-			err:        collection.ErrInvalidName,
+			err:        collection.ErrInvalidNameLength,
 		},
 		"invalid meta": {
 			contractID: contractID,
@@ -615,7 +626,7 @@ func TestMsgIssueFT(t *testing.T) {
 			meta:       string(make([]rune, 1001)),
 			decimals:   decimals,
 			amount:     sdk.OneInt(),
-			err:        collection.ErrInvalidMeta,
+			err:        collection.ErrInvalidMetaLength,
 		},
 		"invalid decimals": {
 			contractID: contractID,
@@ -625,7 +636,7 @@ func TestMsgIssueFT(t *testing.T) {
 			meta:       meta,
 			decimals:   19,
 			amount:     sdk.OneInt(),
-			err:        collection.ErrInvalidDecimals,
+			err:        collection.ErrInvalidTokenDecimals,
 		},
 		"daphne compat": {
 			contractID: contractID,
@@ -634,7 +645,7 @@ func TestMsgIssueFT(t *testing.T) {
 			name:       name,
 			meta:       meta,
 			amount:     sdk.OneInt(),
-			err:        collection.ErrBadUseCase,
+			err:        collection.ErrInvalidIssueFT,
 		},
 	}
 
@@ -699,14 +710,14 @@ func TestMsgIssueNFT(t *testing.T) {
 			operator:   addrs[0],
 			name:       string(make([]rune, 21)),
 			meta:       meta,
-			err:        collection.ErrInvalidName,
+			err:        collection.ErrInvalidNameLength,
 		},
 		"invalid meta": {
 			contractID: contractID,
 			operator:   addrs[0],
 			name:       name,
 			meta:       string(make([]rune, 1001)),
-			err:        collection.ErrInvalidMeta,
+			err:        collection.ErrInvalidMetaLength,
 		},
 	}
 
@@ -776,9 +787,19 @@ func TestMsgMintFT(t *testing.T) {
 			operator:   addrs[0],
 			to:         addrs[1],
 			amount: []collection.Coin{{
+				TokenId: collection.NewFTID("00bab10c"),
+				Amount:  sdk.ZeroInt(),
+			}},
+			err: collection.ErrInvalidAmount,
+		},
+		"invalid token id": {
+			contractID: contractID,
+			operator:   addrs[0],
+			to:         addrs[1],
+			amount: []collection.Coin{{
 				Amount: sdk.OneInt(),
 			}},
-			err: collection.ErrInvalidCoins,
+			err: collection.ErrInvalidTokenID,
 		},
 	}
 
@@ -847,16 +868,27 @@ func TestMsgMintNFT(t *testing.T) {
 			contractID: "deadbeef",
 			operator:   addrs[0],
 			to:         addrs[1],
-			err:        collection.ErrInvalidMintNFTParams,
+			err:        collection.ErrEmptyField,
 		},
 		"param of invalid token type": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
 			to:         addrs[1],
-			params:     []collection.MintNFTParam{{}},
-			err:        collection.ErrInvalidClassID,
+			params: []collection.MintNFTParam{{
+				Name: "tibetian fox",
+			}},
+			err: collection.ErrInvalidTokenType,
 		},
-		"param of invalid name": {
+		"param of empty name": {
+			contractID: "deadbeef",
+			operator:   addrs[0],
+			to:         addrs[1],
+			params: []collection.MintNFTParam{{
+				TokenType: "deadbeef",
+			}},
+			err: collection.ErrInvalidTokenName,
+		},
+		"param of too long name": {
 			contractID: "deadbeef",
 			operator:   addrs[0],
 			to:         addrs[1],
@@ -864,7 +896,7 @@ func TestMsgMintNFT(t *testing.T) {
 				TokenType: "deadbeef",
 				Name:      string(make([]rune, 21)),
 			}},
-			err: collection.ErrInvalidName,
+			err: collection.ErrInvalidNameLength,
 		},
 		"param of invalid meta": {
 			contractID: "deadbeef",
@@ -872,9 +904,10 @@ func TestMsgMintNFT(t *testing.T) {
 			to:         addrs[1],
 			params: []collection.MintNFTParam{{
 				TokenType: "deadbeef",
+				Name:      "tibetian fox",
 				Meta:      string(make([]rune, 1001)),
 			}},
-			err: collection.ErrInvalidMeta,
+			err: collection.ErrInvalidMetaLength,
 		},
 	}
 
@@ -934,7 +967,16 @@ func TestMsgBurnFT(t *testing.T) {
 			amount: []collection.Coin{{
 				Amount: sdk.OneInt(),
 			}},
-			err: collection.ErrInvalidCoins,
+			err: collection.ErrInvalidTokenID,
+		},
+		"invalid amount": {
+			contractID: "deadbeef",
+			from:       addrs[0],
+			amount: []collection.Coin{{
+				TokenId: collection.NewFTID("00bab10c"),
+				Amount:  sdk.ZeroInt(),
+			}},
+			err: collection.ErrInvalidAmount,
 		},
 	}
 
@@ -1004,7 +1046,17 @@ func TestMsgBurnFTFrom(t *testing.T) {
 			amount: []collection.Coin{{
 				Amount: sdk.OneInt(),
 			}},
-			err: collection.ErrInvalidCoins,
+			err: collection.ErrInvalidTokenID,
+		},
+		"invalid amount": {
+			contractID: "deadbeef",
+			grantee:    addrs[0],
+			from:       addrs[1],
+			amount: []collection.Coin{{
+				TokenId: collection.NewFTID("00bab10c"),
+				Amount:  sdk.ZeroInt(),
+			}},
+			err: collection.ErrInvalidAmount,
 		},
 	}
 
@@ -1059,7 +1111,7 @@ func TestMsgBurnNFT(t *testing.T) {
 		"empty ids": {
 			contractID: "deadbeef",
 			from:       addrs[0],
-			err:        collection.ErrEmptyTokenIDs,
+			err:        collection.ErrEmptyField,
 		},
 		"invalid id": {
 			contractID: "deadbeef",
@@ -1130,7 +1182,7 @@ func TestMsgBurnNFTFrom(t *testing.T) {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			from:       addrs[1],
-			err:        collection.ErrEmptyTokenIDs,
+			err:        collection.ErrEmptyField,
 		},
 		"invalid id": {
 			contractID: "deadbeef",
@@ -1207,30 +1259,30 @@ func TestMsgModify(t *testing.T) {
 			contractID: "deadbeef",
 			owner:      addrs[0],
 			changes:    []collection.Change{{Field: strings.ToUpper(collection.AttributeKeyName.String()), Value: "tt"}},
-			err:        collection.ErrInvalidChanges,
+			err:        collection.ErrInvalidChangesField,
 		},
 		"invalid value of change": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Change{{Field: "symbol"}},
-			err:        collection.ErrInvalidChanges,
+			changes:    []collection.Change{{Field: collection.AttributeKeyName.String(), Value: string(make([]rune, 21))}},
+			err:        collection.ErrInvalidNameLength,
 		},
 		"empty changes": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			err:        collection.ErrInvalidChanges,
+			err:        collection.ErrEmptyChanges,
 		},
 		"too many changes": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
 			changes:    make([]collection.Change, 101),
-			err:        collection.ErrInvalidChanges,
+			err:        collection.ErrInvalidChangesFieldCount,
 		},
 		"duplicated changes": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
 			changes:    []collection.Change{changes[0], changes[0]},
-			err:        collection.ErrInvalidChanges,
+			err:        collection.ErrDuplicateChangesField,
 		},
 	}
 
@@ -1424,7 +1476,7 @@ func TestMsgAttach(t *testing.T) {
 			from:       addrs[0],
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[0],
-			err:        collection.ErrInvalidComposition,
+			err:        collection.ErrCannotAttachToItself,
 		},
 	}
 
@@ -1569,7 +1621,7 @@ func TestMsgAttachFrom(t *testing.T) {
 			from:       addrs[1],
 			tokenID:    tokenIDs[0],
 			toTokenID:  tokenIDs[0],
-			err:        collection.ErrInvalidComposition,
+			err:        collection.ErrCannotAttachToItself,
 		},
 	}
 

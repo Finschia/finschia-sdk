@@ -95,9 +95,22 @@ func (s msgServer) TransferNFT(c context.Context, req *collection.MsgTransferNFT
 		return nil, err
 	}
 
+	fromAddr := sdk.MustAccAddressFromBech32(req.From)
+
 	amount := make([]collection.Coin, len(req.TokenIds))
 	for i, id := range req.TokenIds {
 		amount[i] = collection.Coin{TokenId: id, Amount: sdk.OneInt()}
+
+		// legacy
+		if err := s.keeper.hasNFT(ctx, req.ContractId, id); err != nil {
+			return nil, err
+		}
+		if _, err := s.keeper.GetParent(ctx, req.ContractId, id); err == nil {
+			return nil, collection.ErrTokenCannotTransferChildToken.Wrap(id)
+		}
+		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(fromAddr) {
+			return nil, collection.ErrTokenNotOwnedBy.Wrapf("%s does not have %s", fromAddr, id)
+		}
 	}
 
 	// emit legacy events
@@ -110,7 +123,6 @@ func (s msgServer) TransferNFT(c context.Context, req *collection.MsgTransferNFT
 	}
 	ctx.EventManager().EmitEvents(collection.NewEventTransferNFT(event))
 
-	fromAddr := sdk.MustAccAddressFromBech32(req.From)
 	toAddr := sdk.MustAccAddressFromBech32(req.To)
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, amount); err != nil {
@@ -141,6 +153,17 @@ func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransfe
 	amount := make([]collection.Coin, len(req.TokenIds))
 	for i, id := range req.TokenIds {
 		amount[i] = collection.Coin{TokenId: id, Amount: sdk.OneInt()}
+
+		// legacy
+		if err := s.keeper.hasNFT(ctx, req.ContractId, id); err != nil {
+			return nil, err
+		}
+		if _, err := s.keeper.GetParent(ctx, req.ContractId, id); err == nil {
+			return nil, collection.ErrTokenCannotTransferChildToken.Wrap(id)
+		}
+		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(fromAddr) {
+			return nil, collection.ErrTokenNotOwnedBy.Wrapf("%s does not have %s", fromAddr, id)
+		}
 	}
 
 	// emit legacy events
@@ -496,6 +519,17 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 	coins := make([]collection.Coin, 0, len(req.TokenIds))
 	for _, id := range req.TokenIds {
 		coins = append(coins, collection.NewCoin(id, sdk.OneInt()))
+
+		// legacy
+		if err := s.keeper.hasNFT(ctx, req.ContractId, id); err != nil {
+			return nil, err
+		}
+		if _, err := s.keeper.GetParent(ctx, req.ContractId, id); err == nil {
+			return nil, collection.ErrBurnNonRootNFT.Wrap(id)
+		}
+		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(fromAddr) {
+			return nil, collection.ErrTokenNotOwnedBy.Wrapf("%s does not have %s", fromAddr, id)
+		}
 	}
 
 	// legacy: emit events against the original request.
@@ -542,6 +576,17 @@ func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom
 	coins := make([]collection.Coin, 0, len(req.TokenIds))
 	for _, id := range req.TokenIds {
 		coins = append(coins, collection.NewCoin(id, sdk.OneInt()))
+
+		// legacy
+		if err := s.keeper.hasNFT(ctx, req.ContractId, id); err != nil {
+			return nil, err
+		}
+		if _, err := s.keeper.GetParent(ctx, req.ContractId, id); err == nil {
+			return nil, collection.ErrBurnNonRootNFT.Wrap(id)
+		}
+		if !s.keeper.getOwner(ctx, req.ContractId, id).Equals(fromAddr) {
+			return nil, collection.ErrTokenNotOwnedBy.Wrapf("%s does not have %s", fromAddr, id)
+		}
 	}
 
 	// legacy: emit events against the original request.
@@ -832,12 +877,12 @@ func (s msgServer) DetachFrom(c context.Context, req *collection.MsgDetachFrom) 
 	proxyAddr := sdk.MustAccAddressFromBech32(req.Proxy)
 
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, fromAddr, proxyAddr); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, err
 	}
 
 	// legacy
 	if err := s.keeper.hasNFT(ctx, req.ContractId, req.TokenId); err != nil {
-		return nil, collection.ErrTokenNotNFT.Wrap(err.Error())
+		return nil, err
 	}
 	oldRoot := s.keeper.GetRoot(ctx, req.ContractId, req.TokenId)
 

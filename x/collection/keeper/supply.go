@@ -57,7 +57,7 @@ func (k Keeper) GetContract(ctx sdk.Context, contractID string) (*collection.Con
 	key := contractKey(contractID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("no such a contract: %s", contractID)
+		return nil, collection.ErrCollectionNotExist.Wrapf("no such a contract: %s", contractID)
 	}
 
 	var contract collection.Contract
@@ -163,6 +163,11 @@ func (k Keeper) setNextClassIDs(ctx sdk.Context, ids collection.NextClassIDs) {
 func (k Keeper) MintFT(ctx sdk.Context, contractID string, to sdk.AccAddress, amount []collection.Coin) error {
 	for _, coin := range amount {
 		if err := collection.ValidateFTID(coin.TokenId); err != nil {
+			// legacy
+			if err := k.hasNFT(ctx, contractID, coin.TokenId); err != nil {
+				return err
+			}
+
 			return collection.ErrTokenNotMintable.Wrap(err.Error())
 		}
 
@@ -390,7 +395,7 @@ func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID str
 func (k Keeper) ModifyNFT(ctx sdk.Context, contractID string, tokenID string, operator sdk.AccAddress, changes []collection.Attribute) error {
 	token, err := k.GetNFT(ctx, contractID, tokenID)
 	if err != nil {
-		return collection.ErrTokenNotExist.Wrap(err.Error())
+		return err
 	}
 
 	modifiers := map[collection.AttributeKey]func(string){

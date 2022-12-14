@@ -2,7 +2,6 @@ package keeper
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/collection"
 )
 
@@ -134,7 +133,7 @@ func (k Keeper) GetAuthorization(ctx sdk.Context, contractID string, holder, ope
 			Operator: operator.String(),
 		}, nil
 	}
-	return nil, sdkerrors.ErrNotFound.Wrapf("no authorization by %s to %s", holder, operator)
+	return nil, collection.ErrCollectionNotApproved.Wrapf("no authorization by %s to %s", holder, operator)
 }
 
 func (k Keeper) setAuthorization(ctx sdk.Context, contractID string, holder, operator sdk.AccAddress) {

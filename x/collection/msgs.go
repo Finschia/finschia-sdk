@@ -178,7 +178,7 @@ func validateStringSize(str string, limit int, name string) error {
 
 func validateDecimals(decimals int32) error {
 	if decimals < 0 || decimals > 18 {
-		return ErrInvalidDecimals.Wrapf("must be >=0 and <=18, got; %d", decimals)
+		return ErrInvalidTokenDecimals.Wrapf("got; %d", decimals)
 	}
 	return nil
 }
@@ -425,7 +425,7 @@ func (m MsgApprove) ValidateBasic() error {
 	}
 
 	if m.Proxy == m.Approver {
-		return ErrOperatorIsHolder
+		return ErrApproverProxySame
 	}
 
 	return nil
@@ -468,7 +468,7 @@ func (m MsgDisapprove) ValidateBasic() error {
 	}
 
 	if m.Proxy == m.Approver {
-		return ErrOperatorIsHolder
+		return ErrApproverProxySame
 	}
 
 	return nil
@@ -710,6 +710,9 @@ func (m MsgMintNFT) ValidateBasic() error {
 			return err
 		}
 
+		if len(param.Name) == 0 {
+			return ErrInvalidTokenName
+		}
 		if err := validateName(param.Name); err != nil {
 			return err
 		}

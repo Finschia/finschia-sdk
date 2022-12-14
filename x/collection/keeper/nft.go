@@ -7,11 +7,28 @@ import (
 	"github.com/line/lbm-sdk/x/collection"
 )
 
+func legacyNFTNotFoundError(k Keeper, ctx sdk.Context, contractID string, tokenID string) error {
+	// legacy
+	if err2 := collection.ValidateLegacyNFTID(tokenID); err2 == nil {
+		return collection.ErrTokenNotExist.Wrap(tokenID)
+	}
+
+	if err2 := collection.ValidateFTID(tokenID); err2 != nil {
+		return collection.ErrTokenNotExist.Wrap(tokenID)
+	}
+	classID := collection.SplitTokenID(tokenID)
+	if _, err2 := k.GetTokenClass(ctx, contractID, classID); err2 != nil {
+		return collection.ErrTokenNotExist.Wrap(tokenID)
+	}
+
+	return collection.ErrTokenNotNFT.Wrap(tokenID)
+}
+
 func (k Keeper) hasNFT(ctx sdk.Context, contractID string, tokenID string) error {
 	store := ctx.KVStore(k.storeKey)
 	key := nftKey(contractID, tokenID)
 	if !store.Has(key) {
-		return sdkerrors.ErrNotFound.Wrapf("nft not exists: %s", tokenID)
+		return legacyNFTNotFoundError(k, ctx, contractID, tokenID)
 	}
 	return nil
 }
@@ -21,7 +38,7 @@ func (k Keeper) GetNFT(ctx sdk.Context, contractID string, tokenID string) (*col
 	key := nftKey(contractID, tokenID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, collection.ErrTokenNotFound.Wrapf("nft not found; %s", tokenID)
+		return nil, legacyNFTNotFoundError(k, ctx, contractID, tokenID)
 	}
 
 	var token collection.NFT
@@ -63,13 +80,21 @@ func (k Keeper) pruneNFT(ctx sdk.Context, contractID string, tokenID string) []s
 
 func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress, subject, target string) error {
 	// validate subject
+	if err := k.hasNFT(ctx, contractID, subject); err != nil {
+		return err
+	}
+
+	if _, err := k.GetParent(ctx, contractID, subject); err == nil {
+		return collection.ErrTokenAlreadyAChild.Wrap(subject)
+	}
+
 	if !k.GetBalance(ctx, contractID, owner, subject).IsPositive() {
 		return collection.ErrTokenNotOwnedBy.Wrapf("%s is not owner of %s", owner, subject)
 	}
 
 	// validate target
 	if err := k.hasNFT(ctx, contractID, target); err != nil {
-		return collection.ErrTokenNotNFT.Wrap(err.Error())
+		return err
 	}
 
 	root := k.GetRoot(ctx, contractID, target)
@@ -80,13 +105,8 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 		return collection.ErrCannotAttachToADescendant.Wrap("cycles not allowed")
 	}
 
-	// validate subject
-	if err := k.hasNFT(ctx, contractID, subject); err != nil {
-		return err
-	}
-
 	if err := k.subtractCoins(ctx, contractID, owner, collection.NewCoins(collection.NewCoin(subject, sdk.OneInt()))); err != nil {
-		return collection.ErrInsufficientTokens.Wrapf("%s not owns %s", owner, subject)
+		panic(collection.ErrInsufficientToken.Wrapf("%s not owns %s", owner, subject))
 	}
 
 	// update relation
@@ -118,7 +138,7 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 
 func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress, subject string) error {
 	if err := k.hasNFT(ctx, contractID, subject); err != nil {
-		return collection.ErrTokenNotNFT.Wrap(err.Error())
+		return err
 	}
 
 	parent, err := k.GetParent(ctx, contractID, subject)
@@ -210,7 +230,7 @@ func (k Keeper) GetParent(ctx sdk.Context, contractID string, tokenID string) (*
 	key := parentKey(contractID, tokenID)
 	bz := store.Get(key)
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("%s has no parent", tokenID)
+		return nil, collection.ErrTokenNotAChild.Wrapf("%s has no parent", tokenID)
 	}
 
 	var parent gogotypes.StringValue

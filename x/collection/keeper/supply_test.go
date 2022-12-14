@@ -76,17 +76,17 @@ func (s *KeeperTestSuite) TestMintFT() {
 		"invalid token id": {
 			contractID: s.contractID,
 			amount:     collection.NewNFTCoin(s.ftClassID, 1),
-			err:        collection.ErrInvalidTokenID,
+			err:        collection.ErrTokenNotExist,
 		},
 		"class not found": {
 			contractID: s.contractID,
 			amount:     collection.NewFTCoin("00bab10c", sdk.OneInt()),
-			err:        collection.ErrClassNotFound,
+			err:        collection.ErrTokenNotExist,
 		},
 		"not a class id of ft": {
 			contractID: s.contractID,
 			amount:     collection.NewFTCoin(s.nftClassID, sdk.OneInt()),
-			err:        collection.ErrWrongClass,
+			err:        collection.ErrTokenNotMintable,
 		},
 	}
 
@@ -116,12 +116,12 @@ func (s *KeeperTestSuite) TestMintNFT() {
 		"class not found": {
 			contractID: s.contractID,
 			params:     []collection.MintNFTParam{{TokenType: "deadbeef"}},
-			err:        collection.ErrClassNotFound,
+			err:        collection.ErrTokenTypeNotExist,
 		},
 		"not a class id of nft": {
 			contractID: s.contractID,
 			params:     []collection.MintNFTParam{{TokenType: s.ftClassID}},
-			err:        collection.ErrWrongClass,
+			err:        collection.ErrTokenTypeNotExist,
 		},
 	}
 
@@ -151,7 +151,7 @@ func (s *KeeperTestSuite) TestBurnCoins() {
 		"insufficient tokens": {
 			contractID: s.contractID,
 			amount:     collection.NewFTCoin("00bab10c", sdk.OneInt()),
-			err:        collection.ErrInsufficientTokens,
+			err:        collection.ErrInsufficientToken,
 		},
 	}
 
@@ -221,7 +221,7 @@ func (s *KeeperTestSuite) TestModifyTokenClass() {
 
 			err := s.keeper.ModifyTokenClass(ctx, s.contractID, classID, s.vendor, changes)
 			if classID != s.nftClassID {
-				s.Require().ErrorIs(err, collection.ErrClassNotFound)
+				s.Require().ErrorIs(err, collection.ErrTokenTypeNotExist)
 				return
 			}
 			s.Require().NoError(err)
@@ -256,7 +256,7 @@ func (s *KeeperTestSuite) TestModifyNFT() {
 
 			err := s.keeper.ModifyNFT(ctx, s.contractID, tokenID, s.vendor, changes)
 			if tokenID != validTokenID {
-				s.Require().ErrorIs(err, collection.ErrTokenNotFound)
+				s.Require().ErrorIs(err, collection.ErrTokenNotExist)
 				return
 			}
 			s.Require().NoError(err)
