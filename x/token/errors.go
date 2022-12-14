@@ -21,6 +21,4 @@ var (
 	ErrOperatorIsHolder           = sdkerrors.Register(tokenCodespace, 23, "operator and holder should be different")
 	ErrAuthorizationNotFound      = sdkerrors.Register(tokenCodespace, 24, "authorization not found")
 	ErrAuthorizationAlreadyExists = sdkerrors.Register(tokenCodespace, 25, "authorization already exists")
-	ErrInvalidPermission          = sdkerrors.Register(tokenCodespace, 26, "invalid permission")
-	ErrInvalidContractID          = sdkerrors.Register(tokenCodespace, 28, "invalid contract id")
 )
