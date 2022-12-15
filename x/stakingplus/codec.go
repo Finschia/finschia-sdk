@@ -5,6 +5,7 @@ import (
 	"github.com/line/lbm-sdk/codec/types"
 	authzcodec "github.com/line/lbm-sdk/x/authz/codec"
 	"github.com/line/lbm-sdk/x/foundation"
+	fdncodec "github.com/line/lbm-sdk/x/foundation/codec"
 	govcodec "github.com/line/lbm-sdk/x/gov/codec"
 )
 
@@ -26,6 +27,5 @@ func init() {
 	// used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
 	RegisterLegacyAminoCodec(authzcodec.Amino)
 	RegisterLegacyAminoCodec(govcodec.Amino)
-
-	RegisterLegacyAminoCodec(foundation.Amino)
+	RegisterLegacyAminoCodec(fdncodec.Amino)
 }

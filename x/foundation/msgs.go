@@ -6,6 +6,7 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/foundation/codec"
 )
 
 var _ sdk.Msg = (*MsgUpdateParams)(nil)
@@ -41,7 +42,7 @@ func (m MsgUpdateParams) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgUpdateParams) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgFundTreasury)(nil)
@@ -77,7 +78,7 @@ func (m MsgFundTreasury) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgFundTreasury) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgWithdrawFromTreasury)(nil)
@@ -117,7 +118,7 @@ func (m MsgWithdrawFromTreasury) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgWithdrawFromTreasury) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgUpdateMembers)(nil)
@@ -157,7 +158,7 @@ func (m MsgUpdateMembers) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgUpdateMembers) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgUpdateDecisionPolicy)(nil)
@@ -196,7 +197,7 @@ func (m MsgUpdateDecisionPolicy) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgUpdateDecisionPolicy) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
 
 func (m MsgUpdateDecisionPolicy) GetDecisionPolicy() DecisionPolicy {
@@ -293,7 +294,7 @@ func (m MsgSubmitProposal) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgSubmitProposal) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgWithdrawProposal)(nil)
@@ -329,7 +330,7 @@ func (m MsgWithdrawProposal) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgWithdrawProposal) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgVote)(nil)
@@ -373,7 +374,7 @@ func (m MsgVote) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgVote) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgExec)(nil)
@@ -409,7 +410,7 @@ func (m MsgExec) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgExec) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgLeaveFoundation)(nil)
@@ -441,7 +442,7 @@ func (m MsgLeaveFoundation) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgLeaveFoundation) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgGrant)(nil)
@@ -512,7 +513,7 @@ func (m MsgGrant) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgGrant) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgRevoke)(nil)
@@ -552,7 +553,7 @@ func (m MsgRevoke) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgRevoke) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
 
 var _ sdk.Msg = (*MsgGovMint)(nil)
@@ -592,5 +593,5 @@ func (m MsgGovMint) Route() string {
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
 func (m MsgGovMint) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+	return sdk.MustSortJSON(codec.ModuleCdc.MustMarshalJSON(&m))
 }
