@@ -43,6 +43,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Bug Fixes
 
+* (x/foundation) [#834](https://github.com/line/lbm-sdk/pull/834) Apply foundation audit
+
 ### Breaking Changes
 
 ### Build, CI
