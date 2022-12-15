@@ -143,20 +143,18 @@ func (s msgServer) Approve(c context.Context, req *token.MsgApprove) (*token.Msg
 // Issue defines a method to issue a token
 func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssueResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	contractID := s.keeper.classKeeper.NewID(ctx)
 	class := token.TokenClass{
-		ContractId: contractID,
-		Name:       req.Name,
-		Symbol:     req.Symbol,
-		ImageUri:   req.ImageUri,
-		Meta:       req.Meta,
-		Decimals:   req.Decimals,
-		Mintable:   req.Mintable,
+		Name:     req.Name,
+		Symbol:   req.Symbol,
+		ImageUri: req.ImageUri,
+		Meta:     req.Meta,
+		Decimals: req.Decimals,
+		Mintable: req.Mintable,
 	}
 
 	owner := sdk.MustAccAddressFromBech32(req.Owner)
 	to := sdk.MustAccAddressFromBech32(req.To)
-	s.keeper.Issue(ctx, class, owner, to, req.Amount)
+	contractID := s.keeper.Issue(ctx, class, owner, to, req.Amount)
 
 	return &token.MsgIssueResponse{Id: contractID}, nil
 }
