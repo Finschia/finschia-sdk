@@ -5,7 +5,7 @@ const (
 )
 
 var (
-	ErrError             = Register(linkCodespace, 2, "error")
-	ErrInvalidPermission = Register(linkCodespace, 3, "invalid permission")
-	ErrInvalidDenom      = Register(linkCodespace, 4, "invalid denom")
+	// ErrError             = Register(linkCodespace, 1, "error")
+	ErrInvalidPermission = Register(linkCodespace, 2, "invalid permission")
+	ErrInvalidDenom      = Register(linkCodespace, 3, "invalid denom")
 )
