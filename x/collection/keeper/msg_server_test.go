@@ -3,6 +3,7 @@ package keeper_test
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/collection"
+	"github.com/line/lbm-sdk/x/token/class"
 )
 
 func (s *KeeperTestSuite) TestMsgTransferFT() {
@@ -18,7 +19,7 @@ func (s *KeeperTestSuite) TestMsgTransferFT() {
 		"contract not found": {
 			contractID: "deadbeef",
 			amount:     s.balance,
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
@@ -69,7 +70,7 @@ func (s *KeeperTestSuite) TestMsgTransferFTFrom() {
 			proxy:      s.operator,
 			from:       s.customer,
 			amount:     s.balance,
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"not approved": {
 			contractID: s.contractID,
@@ -124,7 +125,7 @@ func (s *KeeperTestSuite) TestMsgTransferNFT() {
 		"contract not found": {
 			contractID: "deadbeef",
 			tokenID:    collection.NewNFTID(s.nftClassID, 1),
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"not found": {
 			contractID: s.contractID,
@@ -184,7 +185,7 @@ func (s *KeeperTestSuite) TestMsgTransferNFTFrom() {
 			proxy:      s.operator,
 			from:       s.customer,
 			tokenID:    tokenID,
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"not approved": {
 			contractID: s.contractID,
@@ -254,7 +255,7 @@ func (s *KeeperTestSuite) TestMsgApprove() {
 			contractID: "deadbeef",
 			approver:   s.customer,
 			proxy:      s.vendor,
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"already approved": {
 			contractID: s.contractID,
@@ -300,7 +301,7 @@ func (s *KeeperTestSuite) TestMsgDisapprove() {
 			contractID: "deadbeef",
 			approver:   s.customer,
 			proxy:      s.operator,
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"no authorization": {
 			contractID: s.contractID,
@@ -379,7 +380,7 @@ func (s *KeeperTestSuite) TestMsgIssueFT() {
 			contractID: "deadbeef",
 			owner:      s.vendor,
 			amount:     sdk.ZeroInt(),
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"no permission": {
 			contractID: s.contractID,
@@ -423,7 +424,7 @@ func (s *KeeperTestSuite) TestMsgIssueNFT() {
 		"contract not found": {
 			contractID: "deadbeef",
 			owner:      s.vendor,
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"no permission": {
 			contractID: s.contractID,
@@ -470,7 +471,7 @@ func (s *KeeperTestSuite) TestMsgMintFT() {
 			contractID: "deadbeef",
 			from:       s.vendor,
 			amount:     amount,
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"no permission": {
 			contractID: s.contractID,
@@ -528,7 +529,7 @@ func (s *KeeperTestSuite) TestMsgMintNFT() {
 			contractID: "deadbeef",
 			from:       s.vendor,
 			params:     params,
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"no permission": {
 			contractID: s.contractID,
@@ -586,7 +587,7 @@ func (s *KeeperTestSuite) TestMsgBurnFT() {
 			contractID: "deadbeef",
 			from:       s.vendor,
 			amount:     amount,
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"no permission": {
 			contractID: s.contractID,
@@ -646,7 +647,7 @@ func (s *KeeperTestSuite) TestMsgBurnFTFrom() {
 			proxy:      s.operator,
 			from:       s.customer,
 			amount:     amount,
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"no authorization": {
 			contractID: s.contractID,
@@ -713,7 +714,7 @@ func (s *KeeperTestSuite) TestMsgBurnNFT() {
 			contractID: "deadbeef",
 			from:       s.vendor,
 			tokenIDs:   tokenIDs,
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"no permission": {
 			contractID: s.contractID,
@@ -789,7 +790,7 @@ func (s *KeeperTestSuite) TestMsgBurnNFTFrom() {
 			proxy:      s.operator,
 			from:       s.customer,
 			tokenIDs:   tokenIDs,
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"no authorization": {
 			contractID: s.contractID,
@@ -871,7 +872,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 		"contract not found": {
 			contractID: "deadbeef",
 			operator:   s.vendor,
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"no permission": {
 			contractID: s.contractID,
@@ -947,7 +948,7 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			granter:    s.vendor,
 			grantee:    s.operator,
 			permission: collection.LegacyPermissionModify.String(),
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"granter has no permission": {
 			contractID: s.contractID,
@@ -995,7 +996,7 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 			contractID: "deadbeef",
 			from:       s.operator,
 			permission: collection.LegacyPermissionMint.String(),
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"not granted yet": {
 			contractID: s.contractID,
@@ -1041,7 +1042,7 @@ func (s *KeeperTestSuite) TestMsgAttach() {
 			contractID: "deadbeef",
 			subjectID:  collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"not owner of the token": {
 			contractID: s.contractID,
@@ -1085,7 +1086,7 @@ func (s *KeeperTestSuite) TestMsgDetach() {
 		"contract not found": {
 			contractID: "deadbeef",
 			subjectID:  collection.NewNFTID(s.nftClassID, 2),
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"not owner of the token": {
 			contractID: s.contractID,
@@ -1133,7 +1134,7 @@ func (s *KeeperTestSuite) TestMsgAttachFrom() {
 			operator:   s.operator,
 			subjectID:  collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
 			targetID:   collection.NewNFTID(s.nftClassID, 1),
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"not authorized": {
 			contractID: s.contractID,
@@ -1189,7 +1190,7 @@ func (s *KeeperTestSuite) TestMsgDetachFrom() {
 			contractID: "deadbeef",
 			operator:   s.operator,
 			subjectID:  collection.NewNFTID(s.nftClassID, 2),
-			err:        collection.ErrCollectionNotExist,
+			err:        class.ErrContractNotExist,
 		},
 		"not authorized": {
 			contractID: s.contractID,

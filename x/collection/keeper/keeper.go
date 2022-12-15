@@ -5,6 +5,7 @@ import (
 	"github.com/line/lbm-sdk/telemetry"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/collection"
+	"github.com/line/lbm-sdk/x/token/class"
 )
 
 // Keeper defines the collection module Keeper
@@ -39,4 +40,16 @@ func (k Keeper) createAccountOnAbsence(ctx sdk.Context, address sdk.AccAddress) 
 		defer telemetry.IncrCounter(1, "new", "account")
 		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, address))
 	}
+}
+
+func validateLegacyContract(k Keeper, ctx sdk.Context, contractID string) error {
+	if !k.classKeeper.HasID(ctx, contractID) {
+		return class.ErrContractNotExist.Wrap(contractID)
+	}
+
+	if _, err := k.GetContract(ctx, contractID); err != nil {
+		return err
+	}
+
+	return nil
 }

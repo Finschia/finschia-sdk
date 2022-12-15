@@ -3,6 +3,7 @@ package keeper_test
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/token"
+	"github.com/line/lbm-sdk/x/token/class"
 )
 
 func (s *KeeperTestSuite) TestMsgSend() {
@@ -18,7 +19,7 @@ func (s *KeeperTestSuite) TestMsgSend() {
 		"contract not found": {
 			contractID: "fee1dead",
 			amount:     sdk.OneInt(),
-			err:        token.ErrContractNotFound,
+			err:        class.ErrContractNotExist,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
@@ -67,7 +68,7 @@ func (s *KeeperTestSuite) TestMsgTransferFrom() {
 			proxy:      s.operator,
 			from:       s.customer,
 			amount:     s.balance,
-			err:        token.ErrContractNotFound,
+			err:        class.ErrContractNotExist,
 		},
 		"not approved": {
 			contractID: s.contractID,
@@ -123,7 +124,7 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 			contractID: "fee1dead",
 			holder:     s.customer,
 			operator:   s.operator,
-			err:        token.ErrContractNotFound,
+			err:        class.ErrContractNotExist,
 		},
 		"no authorization": {
 			contractID: s.contractID,
@@ -169,7 +170,7 @@ func (s *KeeperTestSuite) TestMsgApprove() {
 			contractID: "fee1dead",
 			approver:   s.customer,
 			proxy:      s.vendor,
-			err:        token.ErrContractNotFound,
+			err:        class.ErrContractNotExist,
 		},
 		"already approved": {
 			contractID: s.contractID,
@@ -250,7 +251,7 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			granter:    s.vendor,
 			grantee:    s.operator,
 			permission: token.LegacyPermissionModify.String(),
-			err:        token.ErrContractNotFound,
+			err:        class.ErrContractNotExist,
 		},
 		"granter has no permission": {
 			contractID: s.contractID,
@@ -298,7 +299,7 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 			contractID: "fee1dead",
 			from:       s.operator,
 			permission: token.LegacyPermissionMint.String(),
-			err:        token.ErrContractNotFound,
+			err:        class.ErrContractNotExist,
 		},
 		"not granted yet": {
 			contractID: s.contractID,
@@ -341,7 +342,7 @@ func (s *KeeperTestSuite) TestMsgMint() {
 		"contract not found": {
 			contractID: "fee1dead",
 			grantee:    s.operator,
-			err:        token.ErrContractNotFound,
+			err:        class.ErrContractNotExist,
 		},
 		"not granted": {
 			contractID: s.contractID,
@@ -384,7 +385,7 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 		"contract not found": {
 			contractID: "fee1dead",
 			from:       s.vendor,
-			err:        token.ErrContractNotFound,
+			err:        class.ErrContractNotExist,
 		},
 		"not granted": {
 			contractID: s.contractID,
@@ -429,7 +430,7 @@ func (s *KeeperTestSuite) TestMsgBurnFrom() {
 			contractID: "fee1dead",
 			proxy:      s.operator,
 			from:       s.customer,
-			err:        token.ErrContractNotFound,
+			err:        class.ErrContractNotExist,
 		},
 		"not approved": {
 			contractID: s.contractID,
@@ -473,7 +474,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 		"contract not found": {
 			contractID: "fee1dead",
 			grantee:    s.vendor,
-			err:        token.ErrContractNotFound,
+			err:        class.ErrContractNotExist,
 		},
 		"not granted": {
 			contractID: s.contractID,

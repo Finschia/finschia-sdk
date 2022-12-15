@@ -27,7 +27,7 @@ var _ collection.MsgServer = (*msgServer)(nil)
 func (s msgServer) TransferFT(c context.Context, req *collection.MsgTransferFT) (*collection.MsgTransferFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -56,7 +56,7 @@ func (s msgServer) TransferFT(c context.Context, req *collection.MsgTransferFT) 
 func (s msgServer) TransferFTFrom(c context.Context, req *collection.MsgTransferFTFrom) (*collection.MsgTransferFTFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -91,7 +91,7 @@ func (s msgServer) TransferFTFrom(c context.Context, req *collection.MsgTransfer
 func (s msgServer) TransferNFT(c context.Context, req *collection.MsgTransferNFT) (*collection.MsgTransferNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -139,7 +139,7 @@ func (s msgServer) TransferNFT(c context.Context, req *collection.MsgTransferNFT
 func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransferNFTFrom) (*collection.MsgTransferNFTFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -192,7 +192,7 @@ func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransfe
 func (s msgServer) Approve(c context.Context, req *collection.MsgApprove) (*collection.MsgApproveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -218,7 +218,7 @@ func (s msgServer) Approve(c context.Context, req *collection.MsgApprove) (*coll
 func (s msgServer) Disapprove(c context.Context, req *collection.MsgDisapprove) (*collection.MsgDisapproveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -259,7 +259,7 @@ func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateCo
 func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*collection.MsgIssueFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -318,7 +318,7 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*collection.MsgIssueNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -362,7 +362,7 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collection.MsgMintFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -395,7 +395,7 @@ func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collec
 func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*collection.MsgMintNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -433,7 +433,7 @@ func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*coll
 func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collection.MsgBurnFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -467,7 +467,7 @@ func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collec
 func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) (*collection.MsgBurnFTFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -506,7 +506,7 @@ func (s msgServer) BurnFTFrom(c context.Context, req *collection.MsgBurnFTFrom) 
 func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*collection.MsgBurnNFTResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -558,7 +558,7 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom) (*collection.MsgBurnNFTFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -615,7 +615,7 @@ func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom
 func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collection.MsgModifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -711,7 +711,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPermission) (*collection.MsgGrantPermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -740,7 +740,7 @@ func (s msgServer) GrantPermission(c context.Context, req *collection.MsgGrantPe
 func (s msgServer) RevokePermission(c context.Context, req *collection.MsgRevokePermission) (*collection.MsgRevokePermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -767,7 +767,7 @@ func (s msgServer) RevokePermission(c context.Context, req *collection.MsgRevoke
 func (s msgServer) Attach(c context.Context, req *collection.MsgAttach) (*collection.MsgAttachResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -796,7 +796,7 @@ func (s msgServer) Attach(c context.Context, req *collection.MsgAttach) (*collec
 func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collection.MsgDetachResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -835,7 +835,7 @@ func (s msgServer) Detach(c context.Context, req *collection.MsgDetach) (*collec
 func (s msgServer) AttachFrom(c context.Context, req *collection.MsgAttachFrom) (*collection.MsgAttachFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -869,7 +869,7 @@ func (s msgServer) AttachFrom(c context.Context, req *collection.MsgAttachFrom) 
 func (s msgServer) DetachFrom(c context.Context, req *collection.MsgDetachFrom) (*collection.MsgDetachFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetContract(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 

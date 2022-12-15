@@ -25,7 +25,7 @@ var _ token.MsgServer = msgServer{}
 func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -55,7 +55,7 @@ func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendRe
 func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (*token.MsgTransferFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -90,7 +90,7 @@ func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (
 func (s msgServer) RevokeOperator(c context.Context, req *token.MsgRevokeOperator) (*token.MsgRevokeOperatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -116,7 +116,7 @@ func (s msgServer) RevokeOperator(c context.Context, req *token.MsgRevokeOperato
 func (s msgServer) Approve(c context.Context, req *token.MsgApprove) (*token.MsgApproveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -165,7 +165,7 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermission) (*token.MsgGrantPermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -193,7 +193,7 @@ func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermiss
 func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermission) (*token.MsgRevokePermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -219,7 +219,7 @@ func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermi
 func (s msgServer) Mint(c context.Context, req *token.MsgMint) (*token.MsgMintResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -237,7 +237,7 @@ func (s msgServer) Mint(c context.Context, req *token.MsgMint) (*token.MsgMintRe
 func (s msgServer) Burn(c context.Context, req *token.MsgBurn) (*token.MsgBurnResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -254,7 +254,7 @@ func (s msgServer) Burn(c context.Context, req *token.MsgBurn) (*token.MsgBurnRe
 func (s msgServer) BurnFrom(c context.Context, req *token.MsgBurnFrom) (*token.MsgBurnFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
@@ -272,7 +272,7 @@ func (s msgServer) BurnFrom(c context.Context, req *token.MsgBurnFrom) (*token.M
 func (s msgServer) Modify(c context.Context, req *token.MsgModify) (*token.MsgModifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, err := s.keeper.GetClass(ctx, req.ContractId); err != nil {
+	if err := validateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
 		return nil, err
 	}
 
