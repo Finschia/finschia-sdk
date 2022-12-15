@@ -10,27 +10,20 @@ func (s *KeeperTestSuite) TestIssue() {
 
 	// create a not mintable class
 	class := token.TokenClass{
-		ContractId: "fee1dead",
-		Name:       "NOT Mintable",
-		Symbol:     "NO",
-		Mintable:   false,
+		Name:     "NOT Mintable",
+		Symbol:   "NO",
+		Mintable: false,
 	}
-	s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
+	contractID := s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
 
 	mintPermissions := []token.Permission{
 		token.PermissionMint,
 		token.PermissionBurn,
 	}
 	for _, permission := range mintPermissions {
-		s.Require().Nil(s.keeper.GetGrant(ctx, class.ContractId, s.vendor, permission))
+		s.Require().Nil(s.keeper.GetGrant(ctx, contractID, s.vendor, permission))
 	}
-	s.Require().NotNil(s.keeper.GetGrant(ctx, class.ContractId, s.vendor, token.PermissionModify))
-
-	// override fails
-	class.ContractId = s.contractID
-	s.Require().Panics(func() {
-		s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
-	})
+	s.Require().NotNil(s.keeper.GetGrant(ctx, contractID, s.vendor, token.PermissionModify))
 }
 
 func (s *KeeperTestSuite) TestMint() {
@@ -43,7 +36,7 @@ func (s *KeeperTestSuite) TestMint() {
 		},
 		"no permission": {
 			grantee: s.customer,
-			err:     token.ErrGrantNotFound,
+			err:     token.ErrTokenNoPermission,
 		},
 	}
 
@@ -73,12 +66,12 @@ func (s *KeeperTestSuite) TestBurn() {
 		"no permission": {
 			from:   s.customer,
 			amount: s.balance,
-			err:    token.ErrGrantNotFound,
+			err:    token.ErrTokenNoPermission,
 		},
 		"insufficient tokens": {
 			from:   s.vendor,
 			amount: s.balance.Add(sdk.OneInt()),
-			err:    token.ErrInsufficientTokens,
+			err:    token.ErrInsufficientBalance,
 		},
 	}
 
@@ -111,19 +104,19 @@ func (s *KeeperTestSuite) TestOperatorBurn() {
 			operator: s.vendor,
 			from:     s.stranger,
 			amount:   s.balance,
-			err:      token.ErrAuthorizationNotFound,
+			err:      token.ErrTokenNotApproved,
 		},
 		"no permission": {
 			operator: s.stranger,
 			from:     s.customer,
 			amount:   s.balance,
-			err:      token.ErrGrantNotFound,
+			err:      token.ErrTokenNoPermission,
 		},
 		"insufficient tokens": {
 			operator: s.operator,
 			from:     s.customer,
 			amount:   s.balance.Add(sdk.OneInt()),
-			err:      token.ErrInsufficientTokens,
+			err:      token.ErrInsufficientBalance,
 		},
 	}
 

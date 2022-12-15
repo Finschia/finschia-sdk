@@ -24,7 +24,7 @@ func (s *KeeperTestSuite) TestMsgSend() {
 		"insufficient funds": {
 			contractID: s.contractID,
 			amount:     s.balance.Add(sdk.OneInt()),
-			err:        token.ErrInsufficientTokens,
+			err:        token.ErrInsufficientBalance,
 		},
 	}
 
@@ -75,14 +75,14 @@ func (s *KeeperTestSuite) TestMsgTransferFrom() {
 			proxy:      s.vendor,
 			from:       s.customer,
 			amount:     s.balance,
-			err:        token.ErrAuthorizationNotFound,
+			err:        token.ErrTokenNotApproved,
 		},
 		"insufficient funds": {
 			contractID: s.contractID,
 			proxy:      s.operator,
 			from:       s.customer,
 			amount:     s.balance.Add(sdk.OneInt()),
-			err:        token.ErrInsufficientTokens,
+			err:        token.ErrInsufficientBalance,
 		},
 	}
 
@@ -130,7 +130,7 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 			contractID: s.contractID,
 			holder:     s.customer,
 			operator:   s.vendor,
-			err:        token.ErrAuthorizationNotFound,
+			err:        token.ErrTokenNotApproved,
 		},
 	}
 
@@ -176,7 +176,7 @@ func (s *KeeperTestSuite) TestMsgApprove() {
 			contractID: s.contractID,
 			approver:   s.customer,
 			proxy:      s.operator,
-			err:        token.ErrAuthorizationAlreadyExists,
+			err:        token.ErrTokenAlreadyApproved,
 		},
 	}
 
@@ -258,7 +258,7 @@ func (s *KeeperTestSuite) TestMsgGrantPermission() {
 			granter:    s.customer,
 			grantee:    s.operator,
 			permission: token.LegacyPermissionModify.String(),
-			err:        token.ErrGrantNotFound,
+			err:        token.ErrTokenNoPermission,
 		},
 	}
 
@@ -305,7 +305,7 @@ func (s *KeeperTestSuite) TestMsgRevokePermission() {
 			contractID: s.contractID,
 			from:       s.operator,
 			permission: token.LegacyPermissionModify.String(),
-			err:        token.ErrGrantNotFound,
+			err:        token.ErrTokenNoPermission,
 		},
 	}
 
@@ -347,7 +347,7 @@ func (s *KeeperTestSuite) TestMsgMint() {
 		"not granted": {
 			contractID: s.contractID,
 			grantee:    s.customer,
-			err:        token.ErrGrantNotFound,
+			err:        token.ErrTokenNoPermission,
 		},
 	}
 
@@ -390,7 +390,7 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 		"not granted": {
 			contractID: s.contractID,
 			from:       s.customer,
-			err:        token.ErrGrantNotFound,
+			err:        token.ErrTokenNoPermission,
 		},
 	}
 
@@ -436,7 +436,7 @@ func (s *KeeperTestSuite) TestMsgBurnFrom() {
 			contractID: s.contractID,
 			proxy:      s.vendor,
 			from:       s.customer,
-			err:        token.ErrAuthorizationNotFound,
+			err:        token.ErrTokenNotApproved,
 		},
 	}
 
@@ -479,7 +479,7 @@ func (s *KeeperTestSuite) TestMsgModify() {
 		"not granted": {
 			contractID: s.contractID,
 			grantee:    s.operator,
-			err:        token.ErrGrantNotFound,
+			err:        token.ErrTokenNoPermission,
 		},
 	}
 

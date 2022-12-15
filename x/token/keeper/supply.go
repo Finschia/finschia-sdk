@@ -6,12 +6,12 @@ import (
 	"github.com/line/lbm-sdk/x/token"
 )
 
-func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.AccAddress, amount sdk.Int) {
-	k.issue(ctx, class)
+func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.AccAddress, amount sdk.Int) string {
+	contractID := k.issue(ctx, class)
 
 	event := token.EventIssued{
 		Creator:    owner.String(),
-		ContractId: class.ContractId,
+		ContractId: contractID,
 		Name:       class.Name,
 		Symbol:     class.Symbol,
 		Uri:        class.ImageUri,
@@ -36,33 +36,36 @@ func (k Keeper) Issue(ctx sdk.Context, class token.TokenClass, owner, to sdk.Acc
 
 	// legacy
 	eventGrant := token.EventGranted{
-		ContractId: class.ContractId,
+		ContractId: contractID,
 		Grantee:    to.String(),
 	}
 	ctx.EventManager().EmitEvent(token.NewEventGrantPermTokenHead(eventGrant))
 	for _, permission := range permissions {
 		eventGrant.Permission = permission
 		ctx.EventManager().EmitEvent(token.NewEventGrantPermTokenBody(eventGrant))
-		k.Grant(ctx, class.ContractId, nil, owner, permission)
+		k.Grant(ctx, contractID, nil, owner, permission)
 	}
 
-	k.mintToken(ctx, class.ContractId, to, amount)
+	k.mintToken(ctx, contractID, to, amount)
 
 	if err := ctx.EventManager().EmitTypedEvent(&token.EventMinted{
-		ContractId: class.ContractId,
+		ContractId: contractID,
 		Operator:   owner.String(),
 		To:         to.String(),
 		Amount:     amount,
 	}); err != nil {
 		panic(err)
 	}
+
+	return contractID
 }
 
-func (k Keeper) issue(ctx sdk.Context, class token.TokenClass) {
-	if _, err := k.GetClass(ctx, class.ContractId); err == nil {
-		panic(sdkerrors.ErrInvalidRequest.Wrapf("ID already exists: %s", class.ContractId))
-	}
+func (k Keeper) issue(ctx sdk.Context, class token.TokenClass) string {
+	contractID := k.classKeeper.NewID(ctx)
+	class.ContractId = contractID
 	k.setClass(ctx, class)
+
+	return contractID
 }
 
 func (k Keeper) GetClass(ctx sdk.Context, contractID string) (*token.TokenClass, error) {

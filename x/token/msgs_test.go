@@ -197,7 +197,7 @@ func TestMsgRevokeOperator(t *testing.T) {
 			contractID: "deadbeef",
 			holder:     addrs[0],
 			operator:   addrs[0],
-			err:        token.ErrOperatorIsHolder,
+			err:        token.ErrApproverProxySame,
 		},
 	}
 
@@ -256,7 +256,7 @@ func TestMsgApprove(t *testing.T) {
 			contractID: "deadbeef",
 			approver:   addrs[0],
 			proxy:      addrs[0],
-			err:        token.ErrOperatorIsHolder,
+			err:        token.ErrApproverProxySame,
 		},
 	}
 
@@ -334,7 +334,7 @@ func TestMsgIssue(t *testing.T) {
 			meta:     "some meta",
 			decimals: 8,
 			amount:   sdk.OneInt(),
-			err:      token.ErrInvalidName,
+			err:      token.ErrInvalidTokenName,
 		},
 		"long name": {
 			owner:    addrs[0],
@@ -345,7 +345,7 @@ func TestMsgIssue(t *testing.T) {
 			meta:     "some meta",
 			decimals: 8,
 			amount:   sdk.OneInt(),
-			err:      token.ErrInvalidName,
+			err:      token.ErrInvalidNameLength,
 		},
 		"invalid symbol": {
 			owner:    addrs[0],
@@ -355,7 +355,7 @@ func TestMsgIssue(t *testing.T) {
 			meta:     "some meta",
 			decimals: 8,
 			amount:   sdk.OneInt(),
-			err:      token.ErrInvalidSymbol,
+			err:      token.ErrInvalidTokenSymbol,
 		},
 		"invalid image uri": {
 			owner:    addrs[0],
@@ -366,7 +366,7 @@ func TestMsgIssue(t *testing.T) {
 			meta:     "some meta",
 			decimals: 8,
 			amount:   sdk.OneInt(),
-			err:      token.ErrInvalidImageURI,
+			err:      token.ErrInvalidImageURILength,
 		},
 		"invalid meta": {
 			owner:    addrs[0],
@@ -377,7 +377,7 @@ func TestMsgIssue(t *testing.T) {
 			meta:     string(make([]rune, 1001)),
 			decimals: 8,
 			amount:   sdk.OneInt(),
-			err:      token.ErrInvalidMeta,
+			err:      token.ErrInvalidMetaLength,
 		},
 		"invalid decimals": {
 			owner:    addrs[0],
@@ -388,7 +388,7 @@ func TestMsgIssue(t *testing.T) {
 			meta:     "some meta",
 			decimals: 19,
 			amount:   sdk.OneInt(),
-			err:      token.ErrInvalidDecimals,
+			err:      token.ErrInvalidTokenDecimals,
 		},
 	}
 
@@ -634,18 +634,18 @@ func TestMsgModify(t *testing.T) {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
 			changes:    []token.Pair{{Field: strings.ToUpper(token.AttributeKeyName.String()), Value: "tt"}},
-			err:        token.ErrInvalidChanges,
+			err:        token.ErrInvalidChangesField,
 		},
 		"invalid value of change": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
-			changes:    []token.Pair{{Field: "symbol"}},
-			err:        token.ErrInvalidChanges,
+			changes:    []token.Pair{{Field: token.AttributeKeyName.String(), Value: string(make([]rune, 21))}},
+			err:        token.ErrInvalidNameLength,
 		},
 		"empty changes": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
-			err:        token.ErrInvalidChanges,
+			err:        token.ErrEmptyChanges,
 		},
 		"duplicated changes": {
 			contractID: "deadbeef",
@@ -654,7 +654,7 @@ func TestMsgModify(t *testing.T) {
 				{Field: token.AttributeKeyName.String(), Value: "hello"},
 				{Field: token.AttributeKeyName.String(), Value: "world"},
 			},
-			err: token.ErrInvalidChanges,
+			err: token.ErrDuplicateChangesField,
 		},
 	}
 

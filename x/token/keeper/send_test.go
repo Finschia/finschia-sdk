@@ -17,7 +17,7 @@ func (s *KeeperTestSuite) TestSend() {
 		},
 		"insufficient tokens": {
 			amount: s.balance.Add(sdk.OneInt()),
-			err:    token.ErrInsufficientTokens,
+			err:    token.ErrInsufficientBalance,
 		},
 	}
 
@@ -60,9 +60,9 @@ func (s *KeeperTestSuite) TestAuthorizeOperator() {
 				_, queryErr := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
 				err := s.keeper.AuthorizeOperator(ctx, s.contractID, from, operator)
 				if queryErr == nil { // authorize must fail
-					s.Require().ErrorIs(err, token.ErrAuthorizationAlreadyExists)
+					s.Require().ErrorIs(err, token.ErrTokenAlreadyApproved)
 				} else {
-					s.Require().ErrorIs(queryErr, token.ErrAuthorizationNotFound)
+					s.Require().ErrorIs(queryErr, token.ErrTokenNotApproved)
 					s.Require().NoError(err)
 					_, queryErr := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
 					s.Require().NoError(queryErr)
@@ -91,12 +91,12 @@ func (s *KeeperTestSuite) TestRevokeOperator() {
 				_, queryErr := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
 				err := s.keeper.RevokeOperator(ctx, s.contractID, from, operator)
 				if queryErr != nil { // revoke must fail
-					s.Require().ErrorIs(queryErr, token.ErrAuthorizationNotFound)
-					s.Require().ErrorIs(err, token.ErrAuthorizationNotFound)
+					s.Require().ErrorIs(queryErr, token.ErrTokenNotApproved)
+					s.Require().ErrorIs(err, token.ErrTokenNotApproved)
 				} else {
 					s.Require().NoError(err)
 					_, queryErr := s.keeper.GetAuthorization(ctx, s.contractID, from, operator)
-					s.Require().ErrorIs(queryErr, token.ErrAuthorizationNotFound)
+					s.Require().ErrorIs(queryErr, token.ErrTokenNotApproved)
 				}
 			})
 		}

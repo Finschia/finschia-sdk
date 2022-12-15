@@ -74,19 +74,17 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.balance = sdk.NewInt(1000)
 
 	// create a mintable class
-	s.contractID = "f00dbabe"
 	class := token.TokenClass{
-		ContractId: s.contractID,
-		Name:       "Mintable",
-		Symbol:     "OK",
-		Mintable:   true,
+		Name:     "Mintable",
+		Symbol:   "OK",
+		Mintable: true,
 	}
-	s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
+	s.contractID = s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
+
 	err := s.keeper.Burn(s.ctx, s.contractID, s.vendor, s.balance)
 	s.Require().NoError(err)
 
 	// create another class for the query test
-	class.ContractId = "deadbeef"
 	s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
 
 	// mint to the others
