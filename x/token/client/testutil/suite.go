@@ -57,16 +57,16 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	s.classes = []token.TokenClass{
 		{
-			Name:       "test",
-			Symbol:     "ZERO",
-			Decimals:   8,
-			Mintable:   true,
+			Name:     "test",
+			Symbol:   "ZERO",
+			Decimals: 8,
+			Mintable: true,
 		},
 		{
-			Name:       "test",
-			Symbol:     "ONE",
-			Decimals:   8,
-			Mintable:   true,
+			Name:     "test",
+			Symbol:   "ONE",
+			Decimals: 8,
+			Mintable: true,
 		},
 	}
 
