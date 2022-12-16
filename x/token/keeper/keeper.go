@@ -34,7 +34,7 @@ func NewKeeper(
 	}
 }
 
-func validateLegacyContract(k Keeper, ctx sdk.Context, contractID string) error {
+func ValidateLegacyContract(k Keeper, ctx sdk.Context, contractID string) error {
 	if !k.classKeeper.HasID(ctx, contractID) {
 		return class.ErrContractNotExist.Wrap(contractID)
 	}
