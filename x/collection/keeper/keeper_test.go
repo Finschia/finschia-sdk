@@ -156,6 +156,11 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.Require().NoError(err)
 	err = s.keeper.AuthorizeOperator(s.ctx, s.contractID, s.customer, s.stranger)
 	s.Require().NoError(err)
+
+	// not token contract
+	notTokenContractID := app.ClassKeeper.NewID(s.ctx)
+	err = keeper.ValidateLegacyContract(s.keeper, s.ctx, notTokenContractID)
+	s.Require().ErrorIs(err, collection.ErrCollectionNotExist)
 }
 
 func TestKeeperTestSuite(t *testing.T) {

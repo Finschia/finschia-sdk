@@ -35,6 +35,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 // - ErrInvalidAddress
 //   - `from` is of invalid format.
 //   - `to` is of invalid format.
+//
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //   - `amount` is not positive.
@@ -127,6 +128,7 @@ var xxx_messageInfo_MsgSendResponse proto.InternalMessageInfo
 //   - `proxy` is of invalid format.
 //   - `from` is of invalid format.
 //   - `to` is of invalid format.
+//
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //   - `amount` is not positive.
@@ -221,6 +223,7 @@ var xxx_messageInfo_MsgTransferFromResponse proto.InternalMessageInfo
 // - ErrInvalidAddress
 //   - `holder` is of invalid format.
 //   - `operator` is of invalid format.
+//
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //
@@ -314,6 +317,7 @@ var xxx_messageInfo_MsgRevokeOperatorResponse proto.InternalMessageInfo
 // - ErrInvalidAddress
 //   - `approver` is of invalid format.
 //   - `proxy` is of invalid format.
+//
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //
@@ -403,6 +407,7 @@ var xxx_messageInfo_MsgApproveResponse proto.InternalMessageInfo
 // - ErrInvalidAddress
 //   - `owner` is of invalid format.
 //   - `to` is of invalid format.
+//
 // - ErrInvalidRequest
 //   - `name` is empty.
 //   - `name` exceeds the app-specific limit in length.
@@ -512,6 +517,7 @@ var xxx_messageInfo_MsgIssueResponse proto.InternalMessageInfo
 // - ErrInvalidAddress
 //   - `granter` is of invalid format.
 //   - `grantee` is of invalid format.
+//
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //   - `permission` is not a valid permission.
@@ -603,6 +609,7 @@ var xxx_messageInfo_MsgGrantPermissionResponse proto.InternalMessageInfo
 // Throws:
 // - ErrInvalidAddress
 //   - `grantee` is of invalid format.
+//
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //   - `permission` is not a valid permission.
@@ -693,6 +700,7 @@ var xxx_messageInfo_MsgRevokePermissionResponse proto.InternalMessageInfo
 // - ErrInvalidAddress
 //   - `from` is of invalid format.
 //   - `to` is of invalid format.
+//
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //   - `amount` is not positive.
@@ -784,6 +792,7 @@ var xxx_messageInfo_MsgMintResponse proto.InternalMessageInfo
 // Throws:
 // - ErrInvalidAddress
 //   - `from` is of invalid format.
+//
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //   - `amount` is not positive.
@@ -874,6 +883,7 @@ var xxx_messageInfo_MsgBurnResponse proto.InternalMessageInfo
 // - ErrInvalidAddress
 //   - `proxy` is of invalid format.
 //   - `from` is of invalid format.
+//
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //   - `amount` is not positive.
@@ -965,6 +975,7 @@ var xxx_messageInfo_MsgBurnFromResponse proto.InternalMessageInfo
 // Throws:
 // - ErrInvalidAddress
 //   - `owner` is of invalid format.
+//
 // - ErrInvalidRequest
 //   - `contract_id` is of invalid format.
 //   - `changes` has duplicate keys.
