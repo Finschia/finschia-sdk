@@ -50,11 +50,11 @@ func TestDynamicPingPongWorks(t *testing.T) {
 
 	// instantiate callee contract
 	instantiateCalleeMsg := &MsgInstantiateContract{
-		Sender:  addr1,
-		CodeID:  calleeCodeId,
-		Label:   "callee",
-		Msg: []byte(`{}`),
-		Funds:   nil,
+		Sender: addr1,
+		CodeID: calleeCodeId,
+		Label:  "callee",
+		Msg:    []byte(`{}`),
+		Funds:  nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
 	require.NoError(t, err)
@@ -64,11 +64,11 @@ func TestDynamicPingPongWorks(t *testing.T) {
 	// instantiate caller contract
 	cosmwasmInstantiateCallerMsg := fmt.Sprintf(`{"callee_addr":"%s"}`, calleeContractAddress)
 	instantiateCallerMsg := &MsgInstantiateContract{
-		Sender:  addr1,
-		CodeID:  callerCodeId,
-		Label:   "caller",
-		Msg: []byte(cosmwasmInstantiateCallerMsg),
-		Funds:   nil,
+		Sender: addr1,
+		CodeID: callerCodeId,
+		Label:  "caller",
+		Msg:    []byte(cosmwasmInstantiateCallerMsg),
+		Funds:  nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
 	require.NoError(t, err)
@@ -127,11 +127,11 @@ func TestDynamicReEntrancyFails(t *testing.T) {
 
 	// instantiate callee contract
 	instantiateCalleeMsg := &MsgInstantiateContract{
-		Sender:  addr1,
-		CodeID:  calleeCodeId,
-		Label:   "callee",
-		Msg: []byte(`{}`),
-		Funds:   nil,
+		Sender: addr1,
+		CodeID: calleeCodeId,
+		Label:  "callee",
+		Msg:    []byte(`{}`),
+		Funds:  nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
 	require.NoError(t, err)
@@ -141,11 +141,11 @@ func TestDynamicReEntrancyFails(t *testing.T) {
 	// instantiate caller contract
 	cosmwasmInstantiateCallerMsg := fmt.Sprintf(`{"callee_addr":"%s"}`, calleeContractAddress)
 	instantiateCallerMsg := &MsgInstantiateContract{
-		Sender:  addr1,
-		CodeID:  callerCodeId,
-		Label:   "caller",
-		Msg: []byte(cosmwasmInstantiateCallerMsg),
-		Funds:   nil,
+		Sender: addr1,
+		CodeID: callerCodeId,
+		Label:  "caller",
+		Msg:    []byte(cosmwasmInstantiateCallerMsg),
+		Funds:  nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
 	require.NoError(t, err)
@@ -194,11 +194,11 @@ func TestDynamicLinkInterfaceValidation(t *testing.T) {
 
 	// instantiate callee contract
 	instantiateCalleeMsg := &MsgInstantiateContract{
-		Sender:  addr1,
-		CodeID:  calleeCodeId,
-		Label:   "callee",
-		Msg: []byte(`{}`),
-		Funds:   nil,
+		Sender: addr1,
+		CodeID: calleeCodeId,
+		Label:  "callee",
+		Msg:    []byte(`{}`),
+		Funds:  nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
 	require.NoError(t, err)
@@ -208,11 +208,11 @@ func TestDynamicLinkInterfaceValidation(t *testing.T) {
 	// instantiate caller contract
 	cosmwasmInstantiateCallerMsg := fmt.Sprintf(`{"callee_addr":"%s"}`, calleeContractAddress)
 	instantiateCallerMsg := &MsgInstantiateContract{
-		Sender:  addr1,
-		CodeID:  callerCodeId,
-		Label:   "caller",
-		Msg: []byte(cosmwasmInstantiateCallerMsg),
-		Funds:   nil,
+		Sender: addr1,
+		CodeID: callerCodeId,
+		Label:  "caller",
+		Msg:    []byte(cosmwasmInstantiateCallerMsg),
+		Funds:  nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
 	require.NoError(t, err)
@@ -275,11 +275,11 @@ func TestDynamicCallAndTraditionalQueryWork(t *testing.T) {
 
 	// instantiate callee contract
 	instantiateCalleeMsg := &MsgInstantiateContract{
-		Sender:  addr1,
-		CodeID:  calleeCodeId,
-		Label:   "number",
-		Msg: []byte(`{"value":21}`),
-		Funds:   nil,
+		Sender: addr1,
+		CodeID: calleeCodeId,
+		Label:  "number",
+		Msg:    []byte(`{"value":21}`),
+		Funds:  nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
 	require.NoError(t, err)
@@ -289,11 +289,11 @@ func TestDynamicCallAndTraditionalQueryWork(t *testing.T) {
 	// instantiate caller contract
 	cosmwasmInstantiateCallerMsg := fmt.Sprintf(`{"callee_addr":"%s"}`, calleeContractAddress)
 	instantiateCallerMsg := &MsgInstantiateContract{
-		Sender:  addr1,
-		CodeID:  callerCodeId,
-		Label:   "call-number",
-		Msg: []byte(cosmwasmInstantiateCallerMsg),
-		Funds:   nil,
+		Sender: addr1,
+		CodeID: callerCodeId,
+		Label:  "call-number",
+		Msg:    []byte(cosmwasmInstantiateCallerMsg),
+		Funds:  nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
 	require.NoError(t, err)
@@ -375,11 +375,11 @@ func TestDynamicCallWithWriteFailsByQuery(t *testing.T) {
 
 	// instantiate callee contract
 	instantiateCalleeMsg := &MsgInstantiateContract{
-		Sender:  addr1,
-		CodeID:  calleeCodeId,
-		Label:   "number",
-		Msg: []byte(`{"value":21}`),
-		Funds:   nil,
+		Sender: addr1,
+		CodeID: calleeCodeId,
+		Label:  "number",
+		Msg:    []byte(`{"value":21}`),
+		Funds:  nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
 	require.NoError(t, err)
@@ -389,11 +389,11 @@ func TestDynamicCallWithWriteFailsByQuery(t *testing.T) {
 	// instantiate caller contract
 	cosmwasmInstantiateCallerMsg := fmt.Sprintf(`{"callee_addr":"%s"}`, calleeContractAddress)
 	instantiateCallerMsg := &MsgInstantiateContract{
-		Sender:  addr1,
-		CodeID:  callerCodeId,
-		Label:   "call-number",
-		Msg: []byte(cosmwasmInstantiateCallerMsg),
-		Funds:   nil,
+		Sender: addr1,
+		CodeID: callerCodeId,
+		Label:  "call-number",
+		Msg:    []byte(cosmwasmInstantiateCallerMsg),
+		Funds:  nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
 	require.NoError(t, err)
@@ -442,11 +442,11 @@ func TestDynamicCallCalleeFails(t *testing.T) {
 
 	// instantiate callee contract
 	instantiateCalleeMsg := &MsgInstantiateContract{
-		Sender:  addr1,
-		CodeID:  calleeCodeId,
-		Label:   "callee",
-		Msg: []byte(`{}`),
-		Funds:   nil,
+		Sender: addr1,
+		CodeID: calleeCodeId,
+		Label:  "callee",
+		Msg:    []byte(`{}`),
+		Funds:  nil,
 	}
 	res, err = h(data.ctx, instantiateCalleeMsg)
 	require.NoError(t, err)
@@ -456,11 +456,11 @@ func TestDynamicCallCalleeFails(t *testing.T) {
 	// instantiate caller contract
 	cosmwasmInstantiateCallerMsg := fmt.Sprintf(`{"callee_addr":"%s"}`, calleeContractAddress)
 	instantiateCallerMsg := &MsgInstantiateContract{
-		Sender:  addr1,
-		CodeID:  callerCodeId,
-		Label:   "caller",
-		Msg: []byte(cosmwasmInstantiateCallerMsg),
-		Funds:   nil,
+		Sender: addr1,
+		CodeID: callerCodeId,
+		Label:  "caller",
+		Msg:    []byte(cosmwasmInstantiateCallerMsg),
+		Funds:  nil,
 	}
 	res, err = h(data.ctx, instantiateCallerMsg)
 	require.NoError(t, err)

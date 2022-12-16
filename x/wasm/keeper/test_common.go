@@ -722,6 +722,7 @@ var keyCounter uint64
 
 // we need to make this deterministic (same every test run), as encoded address size and thus gas cost,
 // depends on the actual bytes (due to ugly CanonicalAddress encoding)
+//
 //nolint:unparam
 func keyPubAddr() (crypto.PrivKey, crypto.PubKey, sdk.AccAddress) {
 	keyCounter++
