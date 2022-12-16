@@ -575,6 +575,10 @@ func (m MsgIssueFT) ValidateBasic() error {
 		return ErrInvalidIssueFT.Wrap("invalid issue of ft")
 	}
 
+	if err := validateAmount(m.Amount); err != nil {
+		return err
+	}
+
 	return nil
 }
 
