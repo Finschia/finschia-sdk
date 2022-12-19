@@ -45,6 +45,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Breaking Changes
 
+* (codec) [#833](https://github.com/line/lbm-sdk/pull/833) Fix foundation amino codec
+
 ### Build, CI
 
 ### Document Updates

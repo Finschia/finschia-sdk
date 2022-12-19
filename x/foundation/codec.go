@@ -4,10 +4,10 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/codec/types"
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
 	authzcodec "github.com/line/lbm-sdk/x/authz/codec"
+	fdncodec "github.com/line/lbm-sdk/x/foundation/codec"
 	govcodec "github.com/line/lbm-sdk/x/gov/codec"
 )
 
@@ -69,18 +69,10 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	)
 }
 
-var (
-	Amino     = codec.NewLegacyAmino()
-	ModuleCdc = codec.NewAminoCodec(Amino)
-)
-
 func init() {
-	RegisterLegacyAminoCodec(Amino)
-	cryptocodec.RegisterCrypto(Amino)
-	sdk.RegisterLegacyAminoCodec(Amino)
-
 	// Register all Amino interfaces and concrete types on the authz and gov Amino codec so that this can later be
 	// used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
 	RegisterLegacyAminoCodec(authzcodec.Amino)
 	RegisterLegacyAminoCodec(govcodec.Amino)
+	RegisterLegacyAminoCodec(fdncodec.Amino)
 }

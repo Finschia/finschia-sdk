@@ -10,6 +10,7 @@ import (
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/auth/vesting/exported"
 	authzcodec "github.com/line/lbm-sdk/x/authz/codec"
+	fdncodec "github.com/line/lbm-sdk/x/foundation/codec"
 	govcodec "github.com/line/lbm-sdk/x/gov/codec"
 )
 
@@ -77,4 +78,5 @@ func init() {
 	// used to properly serialize MsgGrant, MsgExec and MsgSubmitProposal instances
 	RegisterLegacyAminoCodec(authzcodec.Amino)
 	RegisterLegacyAminoCodec(govcodec.Amino)
+	RegisterLegacyAminoCodec(fdncodec.Amino)
 }
