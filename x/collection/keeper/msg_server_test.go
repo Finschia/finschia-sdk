@@ -1093,6 +1093,11 @@ func (s *KeeperTestSuite) TestMsgDetach() {
 			subjectID:  collection.NewNFTID(s.nftClassID, s.numNFTs+2),
 			err:        collection.ErrTokenNotOwnedBy,
 		},
+		"not a child": {
+			contractID: s.contractID,
+			subjectID:  collection.NewNFTID(s.nftClassID, 1),
+			err:        collection.ErrTokenNotAChild,
+		},
 	}
 
 	for name, tc := range testCases {
