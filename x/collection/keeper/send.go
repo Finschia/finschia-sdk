@@ -9,9 +9,7 @@ func (k Keeper) SendCoins(ctx sdk.Context, contractID string, from, to sdk.AccAd
 	if err := k.subtractCoins(ctx, contractID, from, amount); err != nil {
 		return err
 	}
-	if err := k.addCoins(ctx, contractID, to, amount); err != nil {
-		return err
-	}
+	k.addCoins(ctx, contractID, to, amount)
 
 	// legacy
 	for _, coin := range amount {
@@ -35,7 +33,7 @@ func (k Keeper) SendCoins(ctx sdk.Context, contractID string, from, to sdk.AccAd
 	return nil
 }
 
-func (k Keeper) addCoins(ctx sdk.Context, contractID string, address sdk.AccAddress, amount []collection.Coin) error {
+func (k Keeper) addCoins(ctx sdk.Context, contractID string, address sdk.AccAddress, amount []collection.Coin) {
 	for _, coin := range amount {
 		balance := k.GetBalance(ctx, contractID, address, coin.TokenId)
 		newBalance := balance.Add(coin.Amount)
@@ -48,8 +46,6 @@ func (k Keeper) addCoins(ctx sdk.Context, contractID string, address sdk.AccAddr
 
 	// create account if recipient does not exist.
 	k.createAccountOnAbsence(ctx, address)
-
-	return nil
 }
 
 func (k Keeper) subtractCoins(ctx sdk.Context, contractID string, address sdk.AccAddress, amount []collection.Coin) error {

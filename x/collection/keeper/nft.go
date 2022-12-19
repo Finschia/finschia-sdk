@@ -150,9 +150,7 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, owner sdk.AccAddress,
 		return collection.ErrTokenNotOwnedBy.Wrapf("%s is not owner of %s", owner, subject)
 	}
 
-	if err := k.addCoins(ctx, contractID, owner, collection.NewCoins(collection.NewCoin(subject, sdk.OneInt()))); err != nil {
-		panic(err)
-	}
+	k.addCoins(ctx, contractID, owner, collection.NewCoins(collection.NewCoin(subject, sdk.OneInt())))
 
 	// update relation
 	k.deleteParent(ctx, contractID, subject)
