@@ -1018,63 +1018,22 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
 	// Balance queries the number of tokens of a given contract owned by the address.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `address` is of invalid format.
 	Balance(ctx context.Context, in *QueryBalanceRequest, opts ...grpc.CallOption) (*QueryBalanceResponse, error)
 	// Supply queries the number of tokens from the given contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	Supply(ctx context.Context, in *QuerySupplyRequest, opts ...grpc.CallOption) (*QuerySupplyResponse, error)
 	// Minted queries the number of minted tokens from the given contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	Minted(ctx context.Context, in *QueryMintedRequest, opts ...grpc.CallOption) (*QueryMintedResponse, error)
 	// Burnt queries the number of burnt tokens from the given contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	Burnt(ctx context.Context, in *QueryBurntRequest, opts ...grpc.CallOption) (*QueryBurntResponse, error)
 	// TokenClass queries an token metadata based on its contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	TokenClass(ctx context.Context, in *QueryTokenClassRequest, opts ...grpc.CallOption) (*QueryTokenClassResponse, error)
 	// TokenClasses queries all token metadata.
 	TokenClasses(ctx context.Context, in *QueryTokenClassesRequest, opts ...grpc.CallOption) (*QueryTokenClassesResponse, error)
 	// GranteeGrants queries permissions on a given grantee.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `grantee` is of invalid format.
 	GranteeGrants(ctx context.Context, in *QueryGranteeGrantsRequest, opts ...grpc.CallOption) (*QueryGranteeGrantsResponse, error)
 	// Approved queries authorization on a given proxy approver pair.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `proxy` is of invalid format.
-	//   - `approver` is of invalid format.
 	Approved(ctx context.Context, in *QueryApprovedRequest, opts ...grpc.CallOption) (*QueryApprovedResponse, error)
 	// Approvers queries approvers on a given proxy.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `proxy` is of invalid format.
 	Approvers(ctx context.Context, in *QueryApproversRequest, opts ...grpc.CallOption) (*QueryApproversResponse, error)
 }
 
@@ -1170,63 +1129,22 @@ func (c *queryClient) Approvers(ctx context.Context, in *QueryApproversRequest, 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Balance queries the number of tokens of a given contract owned by the address.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `address` is of invalid format.
 	Balance(context.Context, *QueryBalanceRequest) (*QueryBalanceResponse, error)
 	// Supply queries the number of tokens from the given contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	Supply(context.Context, *QuerySupplyRequest) (*QuerySupplyResponse, error)
 	// Minted queries the number of minted tokens from the given contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	Minted(context.Context, *QueryMintedRequest) (*QueryMintedResponse, error)
 	// Burnt queries the number of burnt tokens from the given contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	Burnt(context.Context, *QueryBurntRequest) (*QueryBurntResponse, error)
 	// TokenClass queries an token metadata based on its contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	TokenClass(context.Context, *QueryTokenClassRequest) (*QueryTokenClassResponse, error)
 	// TokenClasses queries all token metadata.
 	TokenClasses(context.Context, *QueryTokenClassesRequest) (*QueryTokenClassesResponse, error)
 	// GranteeGrants queries permissions on a given grantee.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `grantee` is of invalid format.
 	GranteeGrants(context.Context, *QueryGranteeGrantsRequest) (*QueryGranteeGrantsResponse, error)
 	// Approved queries authorization on a given proxy approver pair.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `proxy` is of invalid format.
-	//   - `approver` is of invalid format.
 	Approved(context.Context, *QueryApprovedRequest) (*QueryApprovedResponse, error)
 	// Approvers queries approvers on a given proxy.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `proxy` is of invalid format.
 	Approvers(context.Context, *QueryApproversRequest) (*QueryApproversResponse, error)
 }
 

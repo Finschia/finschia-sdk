@@ -14,227 +14,108 @@ option go_package = "github.com/line/lbm-sdk/x/collection";
 // Query defines the gRPC querier service.
 service Query {
   // Balance queries the balance of a single token class for a single account.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  // - ErrInvalidAddress
-  //   - `address` is of invalid format.
   rpc Balance(QueryBalanceRequest) returns (QueryBalanceResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/balances/{address}/{token_id}";
   }
 
   // AllBalances queries the balance of all token classes for a single account.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  // - ErrInvalidAddress
-  //   - `address` is of invalid format.
   rpc AllBalances(QueryAllBalancesRequest) returns (QueryAllBalancesResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/balances/{address}";
   }
 
   // FTSupply queries the number of tokens from a given contract id and token id.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  //   - `class_id` is of invalid format.
-  // - ErrNotFound
-  //   - there is no token class of `class_id`.
   rpc FTSupply(QueryFTSupplyRequest) returns (QueryFTSupplyResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/supply";
   }
 
   // FTMinted queries the number of minted tokens from a given contract id and token id.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  //   - `class_id` is of invalid format.
-  // - ErrNotFound
-  //   - there is no token class of `class_id`.
   rpc FTMinted(QueryFTMintedRequest) returns (QueryFTMintedResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/minted";
   }
 
   // FTBurnt queries the number of burnt tokens from a given contract id and token id.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  //   - `class_id` is of invalid format.
-  // - ErrNotFound
-  //   - there is no token class of `class_id`.
   rpc FTBurnt(QueryFTBurntRequest) returns (QueryFTBurntResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/fts/{token_id}/burnt";
   }
 
   // NFTSupply queries the number of tokens from a given contract id and token type.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  //   - `class_id` is of invalid format.
-  // - ErrNotFound
-  //   - there is no token class of `class_id`.
   rpc NFTSupply(QueryNFTSupplyRequest) returns (QueryNFTSupplyResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/supply";
   }
 
   // NFTMinted queries the number of minted tokens from a given contract id and token type.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  //   - `class_id` is of invalid format.
-  // - ErrNotFound
-  //   - there is no token class of `class_id`.
   rpc NFTMinted(QueryNFTMintedRequest) returns (QueryNFTMintedResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/minted";
   }
 
   // NFTBurnt queries the number of burnt tokens from a given contract id and token type.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  //   - `class_id` is of invalid format.
-  // - ErrNotFound
-  //   - there is no token class of `class_id`.
   rpc NFTBurnt(QueryNFTBurntRequest) returns (QueryNFTBurntResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/burnt";
   }
 
   // Contract queries a contract metadata based on its contract id.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  // - ErrNotFound
-  //   - there is no contract of `contract_id`.
   rpc Contract(QueryContractRequest) returns (QueryContractResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}";
   }
 
   // TokenClassTypeName queries the fully qualified message type name of a token class from its class id.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  //   - `class_id` is of invalid format.
-  // - ErrNotFound
-  //   - there is no token class of `class_id`.
+  //
   // Since: 0.46.0 (finschia)
   rpc TokenClassTypeName(QueryTokenClassTypeNameRequest) returns (QueryTokenClassTypeNameResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_classes/{class_id}/type_name";
   }
 
   // TokenType queries metadata of a token type.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  //   - `class_id` is of invalid format.
-  // - ErrNotFound
-  //   - there is no token class of `class_id`.
   rpc TokenType(QueryTokenTypeRequest) returns (QueryTokenTypeResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}";
   }
 
   // TokenTypes queries metadata of all the token types.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  // - ErrNotFound
-  //   - there is no token contract of `contract_id`.
   rpc TokenTypes(QueryTokenTypesRequest) returns (QueryTokenTypesResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types";
   }
 
   // Token queries a metadata of a token from its token id.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  //   - `token_id` is of invalid format.
-  // - ErrNotFound
-  //   - there is no token of `token_id`.
   rpc Token(QueryTokenRequest) returns (QueryTokenResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}";
   }
 
   // TokensWithTokenType queries all token metadata with token type.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  //   - `token_type` is of invalid format.
-  // - ErrNotFound
-  //   - there is no contract of `contract_id`.
   rpc TokensWithTokenType(QueryTokensWithTokenTypeRequest) returns (QueryTokensWithTokenTypeResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/tokens";
   }
 
   // Tokens queries all token metadata.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  // - ErrNotFound
-  //   - there is no contract of `contract_id`.
   rpc Tokens(QueryTokensRequest) returns (QueryTokensResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/tokens";
   }
 
   // Root queries the root of a given nft.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  //   - `token_id` is of invalid format.
-  // - ErrNotFound
-  //   - there is no token of `token_id`.
   rpc Root(QueryRootRequest) returns (QueryRootResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root";
   }
 
   // Parent queries the parent of a given nft.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  //   - `token_id` is of invalid format.
-  // - ErrNotFound
-  //   - there is no token of `token_id`.
-  //   - token is the root.
   rpc Parent(QueryParentRequest) returns (QueryParentResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent";
   }
 
   // Children queries the children of a given nft.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  //   - `token_id` is of invalid format.
   rpc Children(QueryChildrenRequest) returns (QueryChildrenResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children";
   }
 
   // GranteeGrants queries all permissions on a given grantee.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  // - ErrInvalidAddress
-  //   - `grantee` is of invalid format.
   rpc GranteeGrants(QueryGranteeGrantsRequest) returns (QueryGranteeGrantsResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}";
   }
 
   // Approved queries whether the proxy is approved by the approver.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  // - ErrInvalidAddress
-  //   - `proxy` is of invalid format.
-  //   - `approver` is of invalid format.
-  // - ErrNotFound
-  //   - there is no authorization given by `approver` to `proxy`.
   rpc Approved(QueryApprovedRequest) returns (QueryApprovedResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}";
   }
 
   // Approvers queries approvers of a given proxy.
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `contract_id` is of invalid format.
-  // - ErrInvalidAddress
-  //   - `proxy` is of invalid format.
   rpc Approvers(QueryApproversRequest) returns (QueryApproversResponse) {
     option (google.api.http).get = "/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers";
   }
