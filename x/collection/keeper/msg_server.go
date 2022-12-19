@@ -126,7 +126,7 @@ func (s msgServer) TransferNFT(c context.Context, req *collection.MsgTransferNFT
 	toAddr := sdk.MustAccAddressFromBech32(req.To)
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, amount); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -179,7 +179,7 @@ func (s msgServer) TransferNFTFrom(c context.Context, req *collection.MsgTransfe
 	toAddr := sdk.MustAccAddressFromBech32(req.To)
 
 	if err := s.keeper.SendCoins(ctx, req.ContractId, fromAddr, toAddr, amount); err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -543,7 +543,7 @@ func (s msgServer) BurnNFT(c context.Context, req *collection.MsgBurnNFT) (*coll
 
 	burnt, err := s.keeper.BurnCoins(ctx, req.ContractId, fromAddr, coins)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	// emit events against all burnt tokens.
@@ -600,7 +600,7 @@ func (s msgServer) BurnNFTFrom(c context.Context, req *collection.MsgBurnNFTFrom
 
 	burnt, err := s.keeper.BurnCoins(ctx, req.ContractId, fromAddr, coins)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
 	// emit events against all burnt tokens.
