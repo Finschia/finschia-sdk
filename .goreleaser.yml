@@ -55,7 +55,7 @@ changelog:
       regexp: '^.*?docs(\([[:word:]]+\))??!?:.+$'
       order: 4
     - title: Improvements
-      regexp: '^.*?(test|refactor)(\([[:word:]]+\))??!?:.+$'
+      regexp: '^.*?(test|refactor|perf)(\([[:word:]]+\))??!?:.+$'
       order: 5
     - title: Others
       order: 999
