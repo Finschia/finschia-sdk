@@ -17,7 +17,7 @@ jobs:
           make release
         env:
           GORELEASER_MOUNT_CONFIG: true
-          GORELEASER_IMAGE: tkxkd0159/gorel:1.0.0
+          GORELEASER_IMAGE: line/goreleaserx-wasm:1.0.0-0.10.0
           GORELEASER_RELEASE: true
           BUILD_TAGS: static
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
