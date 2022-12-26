@@ -61,6 +61,11 @@ func (app *BaseApp) RegisterGRPCServer(server gogogrpc.Server) {
 			}
 
 			sdkCtx = app.createQueryContextWithCheckState()
+		} else {
+			sdkCtx, err = app.createQueryContext(height, false)
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		// Add relevant gRPC headers
