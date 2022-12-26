@@ -643,8 +643,8 @@ github.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20190605223551-b
 github.com/lightstep/lightstep-tracer-go v0.18.1/go.mod h1:jlF1pusYV4pidLvZ+XD0UBX0ZE6WURAspgAczcDHrL4=
 github.com/line/ostracon v1.0.7-0.20220729051742-2231684789c6 h1:WKz4yaIW+TJgJv5uhmrHYC3UnohDHlXDT6GccvgV0AA=
 github.com/line/ostracon v1.0.7-0.20220729051742-2231684789c6/go.mod h1:8gnHCqwRjbJfhVtQkl7KIfcubtpsIEmiN0u91B4EYWY=
-github.com/line/wasmvm v1.0.0-0.10.0.0.20221206064228-ce0757a8da21 h1:ptPbwqWu139S7K1jh8NaGYbE6zNKLW0zwvJDGhfjHSQ=
-github.com/line/wasmvm v1.0.0-0.10.0.0.20221206064228-ce0757a8da21/go.mod h1:Lq3FVvi/rb+OOlTxqtcqcao2GGESQ4hUpuXMcjdJbco=
+github.com/line/wasmvm v1.0.0-0.10.0.0.20221226034317-6d2861f53d3a h1:2wgOMBVR5PObP597P9n/ZkSOUVy3MDjgJH6hR3eqBJE=
+github.com/line/wasmvm v1.0.0-0.10.0.0.20221226034317-6d2861f53d3a/go.mod h1:Lq3FVvi/rb+OOlTxqtcqcao2GGESQ4hUpuXMcjdJbco=
 github.com/lyft/protoc-gen-star v0.5.3/go.mod h1:V0xaHgaf5oCCqmcxYcWiDfTiKsZsRc87/1qhoTACD8w=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/magiconair/properties v1.8.1/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
