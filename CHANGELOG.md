@@ -45,7 +45,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Bug Fixes
 * (client) [\#817](https://github.com/line/lbm-sdk/pull/817) remove support for composite (BLS) type
-* (chore) [\#842](https://github.com/line/lbm-sdk/pull/842) change index number to make correct node address in init_node.sh 
+* (script) [\#842](https://github.com/line/lbm-sdk/pull/842) change index number to make correct node address in init_node.sh 
 
 ### Breaking Changes
 * (rest) [\#807](https://github.com/line/lbm-sdk/pull/807) remove legacy REST API
