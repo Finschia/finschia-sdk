@@ -82,31 +82,33 @@ func TestThresholdDecisionPolicy(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		policy := foundation.ThresholdDecisionPolicy{
-			Threshold: tc.threshold,
-			Windows: &foundation.DecisionPolicyWindows{
-				VotingPeriod:       tc.votingPeriod,
-				MinExecutionPeriod: tc.minExecutionPeriod,
-			},
-		}
-		require.Equal(t, tc.votingPeriod, policy.GetVotingPeriod())
+		t.Run(name, func(t *testing.T) {
+			policy := foundation.ThresholdDecisionPolicy{
+				Threshold: tc.threshold,
+				Windows: &foundation.DecisionPolicyWindows{
+					VotingPeriod:       tc.votingPeriod,
+					MinExecutionPeriod: tc.minExecutionPeriod,
+				},
+			}
+			require.Equal(t, tc.votingPeriod, policy.GetVotingPeriod())
 
-		err := policy.ValidateBasic()
-		if !tc.validBasic {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := policy.ValidateBasic()
+			if !tc.validBasic {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		info := foundation.FoundationInfo{
-			TotalWeight: tc.totalWeight,
-		}
-		err = policy.Validate(info, config)
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			info := foundation.FoundationInfo{
+				TotalWeight: tc.totalWeight,
+			}
+			err = policy.Validate(info, config)
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
+		})
 	}
 }
 
@@ -171,17 +173,19 @@ func TestThresholdDecisionPolicyAllow(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		result, err := policy.Allow(tc.tally, tc.totalWeight, tc.sinceSubmission)
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+		t.Run(name, func(t *testing.T) {
+			result, err := policy.Allow(tc.tally, tc.totalWeight, tc.sinceSubmission)
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, tc.final, result.Final, name)
-		if tc.final {
-			require.Equal(t, tc.allow, result.Allow, name)
-		}
+			require.Equal(t, tc.final, result.Final)
+			if tc.final {
+				require.Equal(t, tc.allow, result.Allow)
+			}
+		})
 	}
 }
 
@@ -231,31 +235,33 @@ func TestPercentageDecisionPolicy(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		policy := foundation.PercentageDecisionPolicy{
-			Percentage: tc.percentage,
-			Windows: &foundation.DecisionPolicyWindows{
-				VotingPeriod:       tc.votingPeriod,
-				MinExecutionPeriod: tc.minExecutionPeriod,
-			},
-		}
-		require.Equal(t, tc.votingPeriod, policy.GetVotingPeriod())
+		t.Run(name, func(t *testing.T) {
+			policy := foundation.PercentageDecisionPolicy{
+				Percentage: tc.percentage,
+				Windows: &foundation.DecisionPolicyWindows{
+					VotingPeriod:       tc.votingPeriod,
+					MinExecutionPeriod: tc.minExecutionPeriod,
+				},
+			}
+			require.Equal(t, tc.votingPeriod, policy.GetVotingPeriod())
 
-		err := policy.ValidateBasic()
-		if !tc.validBasic {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := policy.ValidateBasic()
+			if !tc.validBasic {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		info := foundation.FoundationInfo{
-			TotalWeight: tc.totalWeight,
-		}
-		err = policy.Validate(info, config)
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			info := foundation.FoundationInfo{
+				TotalWeight: tc.totalWeight,
+			}
+			err = policy.Validate(info, config)
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
+		})
 	}
 }
 
@@ -321,17 +327,19 @@ func TestPercentageDecisionPolicyAllow(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		result, err := policy.Allow(tc.tally, totalWeight, tc.sinceSubmission)
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+		t.Run(name, func(t *testing.T) {
+			result, err := policy.Allow(tc.tally, totalWeight, tc.sinceSubmission)
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, tc.final, result.Final, name)
-		if tc.final {
-			require.Equal(t, tc.allow, result.Allow, name)
-		}
+			require.Equal(t, tc.final, result.Final)
+			if tc.final {
+				require.Equal(t, tc.allow, result.Allow)
+			}
+		})
 	}
 }
 
@@ -372,13 +380,15 @@ func TestMembers(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		members := foundation.Members{tc.members}
-		err := members.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+		t.Run(name, func(t *testing.T) {
+			members := foundation.Members{tc.members}
+			err := members.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
+		})
 	}
 }
 
@@ -421,13 +431,15 @@ func TestMemberRequests(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		requests := foundation.MemberRequests{tc.members}
-		err := requests.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+		t.Run(name, func(t *testing.T) {
+			requests := foundation.MemberRequests{tc.members}
+			err := requests.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
+		})
 	}
 }
 
@@ -524,19 +536,21 @@ func TestProposal(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		proposal := foundation.Proposal{
-			Id:                tc.id,
-			Proposers:         tc.proposers,
-			FoundationVersion: tc.version,
-		}.WithMsgs(tc.msgs)
-		require.NotNil(t, proposal)
+		t.Run(name, func(t *testing.T) {
+			proposal := foundation.Proposal{
+				Id:                tc.id,
+				Proposers:         tc.proposers,
+				FoundationVersion: tc.version,
+			}.WithMsgs(tc.msgs)
+			require.NotNil(t, proposal)
 
-		err := proposal.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := proposal.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
+		})
 	}
 }
 
@@ -555,25 +569,27 @@ func TestOutsourcingDecisionPolicy(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		policy := foundation.OutsourcingDecisionPolicy{}
-		require.Zero(t, policy.GetVotingPeriod())
+		t.Run(name, func(t *testing.T) {
+			policy := foundation.OutsourcingDecisionPolicy{}
+			require.Zero(t, policy.GetVotingPeriod())
 
-		err := policy.ValidateBasic()
-		if !tc.validBasic {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := policy.ValidateBasic()
+			if !tc.validBasic {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		info := foundation.FoundationInfo{
-			TotalWeight: tc.totalWeight,
-		}
-		err = policy.Validate(info, config)
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			info := foundation.FoundationInfo{
+				TotalWeight: tc.totalWeight,
+			}
+			err = policy.Validate(info, config)
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
+		})
 	}
 }
 
@@ -604,16 +620,18 @@ func TestOutsourcingDecisionPolicyAllow(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		result, err := policy.Allow(tc.tally, tc.totalWeight, tc.sinceSubmission)
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+		t.Run(name, func(t *testing.T) {
+			result, err := policy.Allow(tc.tally, tc.totalWeight, tc.sinceSubmission)
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, tc.final, result.Final, name)
-		if tc.final {
-			require.Equal(t, tc.allow, result.Allow, name)
-		}
+			require.Equal(t, tc.final, result.Final)
+			if tc.final {
+				require.Equal(t, tc.allow, result.Allow)
+			}
+		})
 	}
 }

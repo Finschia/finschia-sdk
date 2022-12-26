@@ -222,19 +222,20 @@ func TestNewKeeper(t *testing.T) {
 
 	for name, tc := range testCases {
 		tc := tc
+		t.Run(name, func(t *testing.T) {
+			newKeeper := func() keeper.Keeper {
+				app := simapp.Setup(false)
+				return keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(foundation.StoreKey), app.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundation.DefaultConfig(), tc.authority.String())
+			}
 
-		newKeeper := func() keeper.Keeper {
-			app := simapp.Setup(false)
-			return keeper.NewKeeper(app.AppCodec(), sdk.NewKVStoreKey(foundation.StoreKey), app.MsgServiceRouter(), app.AccountKeeper, app.BankKeeper, authtypes.FeeCollectorName, foundation.DefaultConfig(), tc.authority.String())
-		}
+			if tc.panics {
+				require.Panics(t, func() { newKeeper() })
+				return
+			}
+			require.NotPanics(t, func() { newKeeper() })
 
-		if tc.panics {
-			require.Panics(t, func() { newKeeper() }, name)
-			continue
-		}
-		require.NotPanics(t, func() { newKeeper() }, name)
-
-		k := newKeeper()
-		require.Equal(t, authority.String(), k.GetAuthority(), name)
+			k := newKeeper()
+			require.Equal(t, authority.String(), k.GetAuthority())
+		})
 	}
 }
