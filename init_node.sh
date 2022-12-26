@@ -124,7 +124,7 @@ for ((i = 0; i < N; i++))
       sed -i 's/addr_book_strict = true/addr_book_strict = false/g' ${CHAIN_DIR}/config/config.toml  # for local test
       sed -i 's/allow_duplicate_ip = false/allow_duplicate_ip = true/g' ${CHAIN_DIR}/config/config.toml  # allow duplicated ip
 
-      sed -i 's#'"${MEMO}"'#'"${MEMO_SPLIT[1]}"':'"${P2P_PORT}"'#g' ${CHAIN_0_DIR}/config/config.toml  # change port of persistent_peers
+      sed -i 's#'"${MEMO}"'#'"${MEMO_SPLIT[0]}"':'"${P2P_PORT}"'#g' ${CHAIN_0_DIR}/config/config.toml  # change port of persistent_peers
 
       sed -i 's/pruning = "default"/pruning = "nothing"/g' ${CHAIN_DIR}/config/app.toml
       sed -i 's#"0.0.0.0:9091"#"0.0.0.0:'"${GRPC_WEB_PORT}"'"#g' ${CHAIN_DIR}/config/app.toml
@@ -138,7 +138,7 @@ for ((i = 0; i < N; i++))
       sed -i '' 's/addr_book_strict = true/addr_book_strict = false/g' ${CHAIN_DIR}/config/config.toml  # for local test
       sed -i '' 's/allow_duplicate_ip = false/allow_duplicate_ip = true/g' ${CHAIN_DIR}/config/config.toml  # allow duplicated ip
       
-      sed -i '' 's#'"${MEMO}"'#'"${MEMO_SPLIT[1]}"':'"${P2P_PORT}"'#g' ${CHAIN_0_DIR}/config/config.toml  # change port of persistent_peers
+      sed -i '' 's#'"${MEMO}"'#'"${MEMO_SPLIT[0]}"':'"${P2P_PORT}"'#g' ${CHAIN_0_DIR}/config/config.toml  # change port of persistent_peers
       
       sed -i '' 's/pruning = "default"/pruning = "nothing"/g' ${CHAIN_DIR}/config/app.toml
       sed -i '' 's#"0.0.0.0:9091"#"0.0.0.0:'"${GRPC_WEB_PORT}"'"#g' ${CHAIN_DIR}/config/app.toml
