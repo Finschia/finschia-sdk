@@ -31,13 +31,13 @@ func TestAPIHumanAddress(t *testing.T) {
 		result, gas, err := api.HumanAddress(bz)
 		require.NoError(t, err)
 		assert.Equal(t, addr, result)
-		assert.Equal(t, wasmtype.DefaultGasMultiplier * 5, gas)
+		assert.Equal(t, wasmtype.DefaultGasMultiplier*5, gas)
 	})
 
 	t.Run("invalid address", func(t *testing.T) {
 		_, gas, err := api.HumanAddress([]byte("invalid_address"))
 		require.Error(t, err)
-		assert.Equal(t, wasmtype.DefaultGasMultiplier * 5, gas)
+		assert.Equal(t, wasmtype.DefaultGasMultiplier*5, gas)
 	})
 }
 
@@ -52,13 +52,13 @@ func TestAPICanonicalAddress(t *testing.T) {
 		result, gas, err := api.CanonicalAddress(addr)
 		require.NoError(t, err)
 		assert.Equal(t, expected.Bytes(), result)
-		assert.Equal(t, wasmtype.DefaultGasMultiplier * 4, gas)
+		assert.Equal(t, wasmtype.DefaultGasMultiplier*4, gas)
 	})
 
-	t.Run("invalid address", func(t * testing.T) {
+	t.Run("invalid address", func(t *testing.T) {
 		_, gas, err := api.CanonicalAddress("invalid_address")
 		assert.Error(t, err)
-		assert.Equal(t, wasmtype.DefaultGasMultiplier * 4, gas)
+		assert.Equal(t, wasmtype.DefaultGasMultiplier*4, gas)
 	})
 }
 
@@ -101,11 +101,11 @@ func TestAPIGetContractEnv(t *testing.T) {
 		assert.Equal(t, []byte{uint8(0), uint8(0), uint8(0), uint8(value)}, store.Get([]byte("number")))
 
 		queryMsg := []byte(`{"number":{}}`)
-		query := wasmvmtypes.QueryRequest {
-			Wasm: &wasmvmtypes.WasmQuery {
-				Smart: &wasmvmtypes.SmartQuery {
+		query := wasmvmtypes.QueryRequest{
+			Wasm: &wasmvmtypes.WasmQuery{
+				Smart: &wasmvmtypes.SmartQuery{
 					ContractAddr: contractAddr.String(),
-					Msg: queryMsg,
+					Msg:          queryMsg,
 				},
 			},
 		}
@@ -114,12 +114,12 @@ func TestAPIGetContractEnv(t *testing.T) {
 		assert.Equal(t, []byte(`{"value":42}`), queryResult)
 
 		expectedInstantiateCost := keepers.WasmKeeper.instantiateContractCosts(keepers.WasmKeeper.gasRegister, ctx, false, msgLen)
-		assert.Equal(t, wasmtype.DefaultGasMultiplier * expectedInstantiateCost, instantiateCost)
+		assert.Equal(t, wasmtype.DefaultGasMultiplier*expectedInstantiateCost, instantiateCost)
 
-		assert.Equal(t, wasmtype.DefaultGasMultiplier * 11, gas)
+		assert.Equal(t, wasmtype.DefaultGasMultiplier*11, gas)
 	})
 
-	t.Run("non-existed contract", func(t *testing.T){
+	t.Run("non-existed contract", func(t *testing.T) {
 		nonExistedContractAddr := "link1nc5tatafv6eyq7llkr2gv50ff9e22mnf70qgjlv737ktmt4eswrqyu0w3p"
 		require.NotEqual(t, nonExistedContractAddr, contractAddr)
 		_, _, _, _, _, _, _, _, err := api.GetContractEnv(nonExistedContractAddr, uint64(msgLen))

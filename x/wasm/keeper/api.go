@@ -9,8 +9,8 @@ import (
 )
 
 type cosmwasmAPIImpl struct {
-	keeper        *Keeper
-	ctx           *sdk.Context
+	keeper *Keeper
+	ctx    *sdk.Context
 }
 
 const (
