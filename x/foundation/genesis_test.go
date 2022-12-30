@@ -302,13 +302,6 @@ func TestValidateGenesis(t *testing.T) {
 				},
 			},
 		},
-		"invalid gov-mint left count": {
-			data: foundation.GenesisState{
-				Params:           foundation.DefaultParams(),
-				Foundation:       foundation.DefaultFoundation(),
-				GovMintLeftCount: foundation.GovMintMaxCount + 1,
-			},
-		},
 	}
 
 	for name, tc := range testCases {

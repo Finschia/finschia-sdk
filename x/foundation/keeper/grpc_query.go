@@ -266,14 +266,3 @@ func (s queryServer) Grants(c context.Context, req *foundation.QueryGrantsReques
 
 	return &foundation.QueryGrantsResponse{Authorizations: authorizations, Pagination: pageRes}, nil
 }
-
-func (s queryServer) GovMint(c context.Context, req *foundation.QueryGovMintRequest) (*foundation.QueryGovMintResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-	leftCount := s.keeper.GetGovMintLeftCount(ctx)
-
-	return &foundation.QueryGovMintResponse{LeftCount: leftCount}, nil
-}

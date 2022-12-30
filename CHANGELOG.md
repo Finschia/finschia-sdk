@@ -38,6 +38,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [Unreleased](https://github.com/line/lbm-sdk/compare/v0.46.0...HEAD)
 
 ### Features
+* (x/foundation) [\#843](https://github.com/line/lbm-sdk/pull/843) remove `gov mint` for x/foundation proposal
 
 ### Improvements
 * (cosmovisor) [\#792](https://github.com/line/lbm-sdk/pull/792) Use upstream's cosmovisor
