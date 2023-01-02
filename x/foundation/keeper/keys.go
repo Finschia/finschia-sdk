@@ -25,6 +25,7 @@ var (
 
 	// deprecatedGovMintKey Deprecated. Don't use it again.
 	deprecatedGovMintKey = []byte{0x40}
+	_                    = deprecatedGovMintKey
 )
 
 // must be constant
