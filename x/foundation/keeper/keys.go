@@ -22,6 +22,9 @@ var (
 	grantKeyPrefix = []byte{0x20}
 
 	poolKey = []byte{0x30}
+
+	// deprecatedGovMintKey Deprecated. Don't use it again.
+	deprecatedGovMintKey = []byte{0x40}
 )
 
 // must be constant
