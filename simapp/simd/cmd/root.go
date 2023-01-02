@@ -36,9 +36,6 @@ import (
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/crisis"
 	genutilcli "github.com/line/lbm-sdk/x/genutil/client/cli"
-	"github.com/line/lbm-sdk/x/wasm"
-	wasmkeeper "github.com/line/lbm-sdk/x/wasm/keeper"
-	"github.com/prometheus/client_golang/prometheus"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the
@@ -265,10 +262,10 @@ func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, a
 	if err != nil {
 		panic(err)
 	}
-	var wasmOpts []wasm.Option
-	if cast.ToBool(appOpts.Get("telemetry.enabled")) {
-		wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
-	}
+	//var wasmOpts []wasm.Option
+	//if cast.ToBool(appOpts.Get("telemetry.enabled")) {
+	//	wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
+	//}
 
 	return simapp.NewSimApp(
 		logger, db, traceStore, true, skipUpgradeHeights,
@@ -276,7 +273,7 @@ func (a appCreator) newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, a
 		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
 		a.encCfg,
 		appOpts,
-		wasmOpts,
+		//wasmOpts,
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(cast.ToString(appOpts.Get(server.FlagMinGasPrices))),
 		baseapp.SetHaltHeight(cast.ToUint64(appOpts.Get(server.FlagHaltHeight))),

@@ -14,8 +14,6 @@ import (
 	ibctransferkeeper "github.com/line/lbm-sdk/x/ibc/applications/transfer/keeper"
 	ibckeeper "github.com/line/lbm-sdk/x/ibc/core/keeper"
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
-
-	"github.com/line/lbm-sdk/x/wasm"
 )
 
 type TestSupport struct {
@@ -31,17 +29,17 @@ func (s TestSupport) IBCKeeper() *ibckeeper.Keeper {
 	return s.app.IBCKeeper
 }
 
-func (s TestSupport) WasmKeeper() wasm.Keeper {
-	return s.app.WasmKeeper
-}
+//func (s TestSupport) WasmKeeper() wasm.Keeper {
+//	return s.app.WasmKeeper
+//}
 
 func (s TestSupport) AppCodec() codec.Codec {
 	return s.app.appCodec
 }
 
-func (s TestSupport) ScopedWasmIBCKeeper() capabilitykeeper.ScopedKeeper {
-	return s.app.ScopedWasmKeeper
-}
+//func (s TestSupport) ScopedWasmIBCKeeper() capabilitykeeper.ScopedKeeper {
+//	return s.app.ScopedWasmKeeper
+//}
 
 func (s TestSupport) ScopeIBCKeeper() capabilitykeeper.ScopedKeeper {
 	return s.app.ScopedIBCKeeper

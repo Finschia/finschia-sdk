@@ -34,7 +34,7 @@ import (
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
-	"github.com/line/lbm-sdk/x/wasm"
+	//"github.com/line/lbm-sdk/x/wasm"
 )
 
 // DefaultConsensusParams defines the default Tendermint consensus params used in
@@ -56,7 +56,7 @@ var DefaultConsensusParams = &abci.ConsensusParams{
 	},
 }
 
-func setup(withGenesis bool, invCheckPeriod uint, opts ...wasm.Option) (*SimApp, GenesisState) {
+func setup(withGenesis bool, invCheckPeriod uint /*, opts ...wasm.Option*/) (*SimApp, GenesisState) {
 	randDir, _ := os.MkdirTemp(DefaultNodeHome, "")
 	snapshotDir := filepath.Join(randDir, "data", "snapshots")
 	snapshotDB := dbm.NewMemDB()
@@ -66,7 +66,7 @@ func setup(withGenesis bool, invCheckPeriod uint, opts ...wasm.Option) (*SimApp,
 
 	db := dbm.NewMemDB()
 	encCdc := MakeTestEncodingConfig()
-	app := NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, encCdc, EmptyAppOptions{}, opts, baseAppOpts...)
+	app := NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, encCdc, EmptyAppOptions{} /*opts,*/, baseAppOpts...)
 	if withGenesis {
 		return app, NewDefaultGenesisState(encCdc.Marshaler)
 	}
@@ -100,8 +100,8 @@ func Setup(isCheckTx bool) *SimApp {
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
 // of one consensus engine unit (10^6) in the default token of the simapp from first genesis
 // account. A Nop logger is set in SimApp.
-func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs []authtypes.GenesisAccount, opts []wasm.Option, balances ...banktypes.Balance) *SimApp {
-	app, genesisState := setup(true, 5, opts...)
+func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs []authtypes.GenesisAccount /*opts []wasm.Option,*/, balances ...banktypes.Balance) *SimApp {
+	app, genesisState := setup(true, 5 /*, opts...*/)
 	// set genesis accounts
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)
 	genesisState[authtypes.ModuleName] = app.AppCodec().MustMarshalJSON(authGenesis)
