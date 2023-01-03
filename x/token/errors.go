@@ -8,6 +8,7 @@ const tokenCodespace = ModuleName
 
 var (
 	// ErrTokenExist               = sdkerrors.Register(tokenCodespace, 1, "token already exists")
+
 	ErrTokenNotExist            = sdkerrors.Register(tokenCodespace, 2, "token does not exist")
 	ErrTokenNotMintable         = sdkerrors.Register(tokenCodespace, 3, "token is not mintable")
 	ErrInvalidTokenName         = sdkerrors.Register(tokenCodespace, 4, "token name should not be empty")
