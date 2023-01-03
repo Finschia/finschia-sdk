@@ -1,39 +1,12 @@
 # Changelog
 
-## [v0.45.0-rc10](https://github.com/line/lbm-sdk/releases/tag/v0.45.0-rc10)
+## [v0.46.0](https://github.com/line/lbm-sdk/releases/tag/v0.46.0) - 2022-11-28
 
-This version based on cosmos-sdk v0.45.10 and Ostracon v1.0.7.
+This version based on cosmos-sdk v0.45.10, wasmd v0.27.0 and Ostracon v1.0.7.
 
 ### Features
 * (global) [\#783](https://github.com/line/lbm-sdk/pull/783) bump up github.com/cosmos/cosmos-sdk to v0.45.10
 * (build) [\#793](https://github.com/line/lbm-sdk/pull/793) enable to use libsodium version ostracon
-
-### Improvements
-* (x/auth) [\#776](https://github.com/line/lbm-sdk/pull/776) remove unused MsgEmpty
-
-### Bug Fixes
-* (x/foundation) [\#772](https://github.com/line/lbm-sdk/pull/772) export x/foundation pool
-* (baseapp) [\#781](https://github.com/line/lbm-sdk/pull/781) implement method `SetOption()` in baseapp
-* (global) [\#782](https://github.com/line/lbm-sdk/pull/782) add unhandled return error handling
-* (x/collection,x/token) [\#798](https://github.com/line/lbm-sdk/pull/798) Fix x/collection ModifyContract
-* (ci) [\#803](https://github.com/line/lbm-sdk/pull/803) fix test flow to install libsodium
-* (x/collection,token) [\#784](https://github.com/line/lbm-sdk/pull/784) Make field key matching in x/token & x/collection case-sensitive
-
-### Breaking Changes
-* (cli) [\#773](https://github.com/line/lbm-sdk/pull/773) guide users to use generate-only in messages for x/foundation authority
-* (x/foundation) [\#790](https://github.com/line/lbm-sdk/pull/790) fix case of gov_mint_left_count in x/foundation
-
-### Build, CI
-* (ci) [\#779](https://github.com/line/lbm-sdk/pull/779) change github action trigger rules for `release/*` and `rc*/*` branches
-
-### Document Updates
-* (docs) [\#766](https://github.com/line/lbm-sdk/pull/766) fix submit-proposal command on x/foundation
-* (docs) [\#802](https://github.com/line/lbm-sdk/pull/802) update x/foundation documentation
-
-
-## [v0.45.0-rc9](https://github.com/line/lbm-sdk/releases/tag/v0.45.0-rc9)
-
-### Features
 * (x/wasm) [\#570](https://github.com/line/lbm-sdk/pull/570) Merge wasmd 0.27.0
 * (x/wasm) [\#470](https://github.com/line/lbm-sdk/pull/470) remove contract activation control by actor
 * (x/wasm) [\#513](https://github.com/line/lbm-sdk/pull/513) fix message representation for signing
@@ -57,6 +30,8 @@ This version based on cosmos-sdk v0.45.10 and Ostracon v1.0.7.
 * (x/foundation) [\#758](https://github.com/line/lbm-sdk/pull/758) add invariants to x/foundation
 
 ### Improvements
+* (ostracon) [\#811](https://github.com/line/lbm-sdk/pull/811) bump up Ostracon from `2231684789c6e754744e3f10f8b41c96c4575ad1` to v1.0.7
+* (x/auth) [\#776](https://github.com/line/lbm-sdk/pull/776) remove unused MsgEmpty
 * (refactor) [\#493](https://github.com/line/lbm-sdk/pull/493) restructure x/consortium
 * (server/grpc) [\#526](https://github.com/line/lbm-sdk/pull/526) add index field into TxResponse
 * (cli) [\#535](https://github.com/line/lbm-sdk/pull/536) updated ostracon to v1.0.5; `unsafe-reset-all` command has been moved to the `ostracon` sub-command.
@@ -90,6 +65,12 @@ This version based on cosmos-sdk v0.45.10 and Ostracon v1.0.7.
 * (x/foundation) [\#757](https://github.com/line/lbm-sdk/pull/757) remove redundant granter from x/foundation events
 
 ### Bug Fixes
+* (x/foundation) [\#772](https://github.com/line/lbm-sdk/pull/772) export x/foundation pool
+* (baseapp) [\#781](https://github.com/line/lbm-sdk/pull/781) implement method `SetOption()` in baseapp
+* (global) [\#782](https://github.com/line/lbm-sdk/pull/782) add unhandled return error handling
+* (x/collection,x/token) [\#798](https://github.com/line/lbm-sdk/pull/798) Fix x/collection ModifyContract
+* (ci) [\#803](https://github.com/line/lbm-sdk/pull/803) fix test flow to install libsodium
+* (x/collection,token) [\#784](https://github.com/line/lbm-sdk/pull/784) Make field key matching in x/token & x/collection case-sensitive
 * (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
 * (client) [\#476](https://github.com/line/lbm-sdk/pull/476) change the default value of the client output format in the config
 * (server/grpc) [\#516](https://github.com/line/lbm-sdk/pull/516) restore build norace flag
@@ -124,6 +105,8 @@ This version based on cosmos-sdk v0.45.10 and Ostracon v1.0.7.
 * (server) [\#763](https://github.com/line/lbm-sdk/pull/763) start telemetry independently from the API server
 
 ### Breaking Changes
+* (cli) [\#773](https://github.com/line/lbm-sdk/pull/773) guide users to use generate-only in messages for x/foundation authority
+* (x/foundation) [\#790](https://github.com/line/lbm-sdk/pull/790) fix case of gov_mint_left_count in x/foundation
 * (proto) [\#564](https://github.com/line/lbm-sdk/pull/564) change gRPC path to original cosmos path
 * (global) [\#603](https://github.com/line/lbm-sdk/pull/603) apply types/address.go from cosmos-sdk@v0.45.1
 * (amino) [\#600](https://github.com/line/lbm-sdk/pull/600) change amino codec path from `lbm-sdk/` to `cosmos-sdk/`
@@ -133,6 +116,7 @@ This version based on cosmos-sdk v0.45.10 and Ostracon v1.0.7.
 * (proto) [\#627](https://github.com/line/lbm-sdk/pull/627) revert changes in x/slashing proto
 
 ### Build, CI
+* (ci) [\#779](https://github.com/line/lbm-sdk/pull/779) change github action trigger rules for `release/*` and `rc*/*` branches
 * (ci) [\#457](https://github.com/line/lbm-sdk/pull/457), [\#471](https://github.com/line/lbm-sdk/pull/471) add swagger check
 * (ci) [\#469](https://github.com/line/lbm-sdk/pull/469) publish docker image on tag push
 * (ci) [\#580](https://github.com/line/lbm-sdk/pull/580) fix the problem that the registered docker image couldn't run on M1.
@@ -141,6 +125,8 @@ This version based on cosmos-sdk v0.45.10 and Ostracon v1.0.7.
 * (ci) [\#619](https://github.com/line/lbm-sdk/pull/619) change the Dockerfile to use the downloaded static library
 
 ### Document Updates
+* (docs) [\#766](https://github.com/line/lbm-sdk/pull/766) fix submit-proposal command on x/foundation
+* (docs) [\#802](https://github.com/line/lbm-sdk/pull/802) update x/foundation documentation
 * (docs) [\#483](https://github.com/line/lbm-sdk/pull/483) update documents on x/stakingplus
 * (docs) [\#490](https://github.com/line/lbm-sdk/pull/490) update documents on x/consortium
 * (docs) [\#602](https://github.com/line/lbm-sdk/pull/602) update outdated events in specs
@@ -148,7 +134,7 @@ This version based on cosmos-sdk v0.45.10 and Ostracon v1.0.7.
 * (docs) [\#748](https://github.com/line/lbm-sdk/pull/748) add `GovMint` to x/foundation specification
 
 
-## [v0.45.0-rc0](https://github.com/line/lbm-sdk/releases/tag/v0.45.0-rc0)
+## [v0.45.0](https://github.com/line/lbm-sdk/releases/tag/v0.45.0)
 
 ### Features
 * (x/wasm) [\#444](https://github.com/line/lbm-sdk/pull/444) Merge wasmd 0.19.0
@@ -159,6 +145,7 @@ This version based on cosmos-sdk v0.45.10 and Ostracon v1.0.7.
 * (x/token) [\#416](https://github.com/line/lbm-sdk/pull/416) Migrate token module from line/link
 
 ### Bug Fixes
+* (x/wasm) [\#453](https://github.com/line/lbm-sdk/pull/453) modify wasm grpc query api path
 * (x/wasm) [\#436](https://github.com/line/lbm-sdk/pull/436) remove `x/wasm/linkwasmd`
 
 ### Build, CI

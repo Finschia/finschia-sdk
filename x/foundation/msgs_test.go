@@ -44,19 +44,21 @@ func TestMsgUpdateParams(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := foundation.MsgUpdateParams{
-			Authority: tc.authority.String(),
-			Params:    tc.params,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := foundation.MsgUpdateParams{
+				Authority: tc.authority.String(),
+				Params:    tc.params,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := msg.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners(), name)
+			require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners())
+		})
 	}
 }
 
@@ -86,19 +88,21 @@ func TestMsgFundTreasury(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := foundation.MsgFundTreasury{
-			From:   tc.from.String(),
-			Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, tc.amount)),
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := foundation.MsgFundTreasury{
+				From:   tc.from.String(),
+				Amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, tc.amount)),
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := msg.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners(), name)
+			require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+		})
 	}
 }
 
@@ -136,20 +140,22 @@ func TestMsgWithdrawFromTreasury(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := foundation.MsgWithdrawFromTreasury{
-			Authority: tc.authority.String(),
-			To:        tc.to.String(),
-			Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, tc.amount)),
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := foundation.MsgWithdrawFromTreasury{
+				Authority: tc.authority.String(),
+				To:        tc.to.String(),
+				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, tc.amount)),
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := msg.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners(), name)
+			require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners())
+		})
 	}
 }
 
@@ -186,19 +192,21 @@ func TestMsgUpdateMembers(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := foundation.MsgUpdateMembers{
-			Authority:     tc.authority.String(),
-			MemberUpdates: tc.members,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := foundation.MsgUpdateMembers{
+				Authority:     tc.authority.String(),
+				MemberUpdates: tc.members,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := msg.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners(), name)
+			require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners())
+		})
 	}
 }
 
@@ -272,22 +280,24 @@ func TestMsgUpdateDecisionPolicy(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := foundation.MsgUpdateDecisionPolicy{
-			Authority: tc.authority.String(),
-		}
-		if tc.policy != nil {
-			err := msg.SetDecisionPolicy(tc.policy)
-			require.NoError(t, err, name)
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := foundation.MsgUpdateDecisionPolicy{
+				Authority: tc.authority.String(),
+			}
+			if tc.policy != nil {
+				err := msg.SetDecisionPolicy(tc.policy)
+				require.NoError(t, err)
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := msg.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners(), name)
+			require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners())
+		})
 	}
 }
 
@@ -334,26 +344,28 @@ func TestMsgSubmitProposal(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		var proposers []string
-		for _, proposer := range tc.proposers {
-			proposers = append(proposers, proposer.String())
-		}
+		t.Run(name, func(t *testing.T) {
+			var proposers []string
+			for _, proposer := range tc.proposers {
+				proposers = append(proposers, proposer.String())
+			}
 
-		msg := foundation.MsgSubmitProposal{
-			Proposers: proposers,
-			Exec:      tc.exec,
-		}
-		err := msg.SetMsgs(tc.msgs)
-		require.NoError(t, err, name)
+			msg := foundation.MsgSubmitProposal{
+				Proposers: proposers,
+				Exec:      tc.exec,
+			}
+			err := msg.SetMsgs(tc.msgs)
+			require.NoError(t, err)
 
-		err = msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err = msg.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, tc.proposers, msg.GetSigners(), name)
+			require.Equal(t, tc.proposers, msg.GetSigners())
+		})
 	}
 }
 
@@ -382,19 +394,21 @@ func TestMsgWithdrawProposal(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := foundation.MsgWithdrawProposal{
-			ProposalId: tc.id,
-			Address:    tc.address.String(),
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := foundation.MsgWithdrawProposal{
+				ProposalId: tc.id,
+				Address:    tc.address.String(),
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := msg.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, []sdk.AccAddress{tc.address}, msg.GetSigners(), name)
+			require.Equal(t, []sdk.AccAddress{tc.address}, msg.GetSigners())
+		})
 	}
 }
 
@@ -443,21 +457,23 @@ func TestMsgVote(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := foundation.MsgVote{
-			ProposalId: tc.id,
-			Voter:      tc.voter.String(),
-			Option:     tc.option,
-			Exec:       tc.exec,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := foundation.MsgVote{
+				ProposalId: tc.id,
+				Voter:      tc.voter.String(),
+				Option:     tc.option,
+				Exec:       tc.exec,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := msg.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, []sdk.AccAddress{tc.voter}, msg.GetSigners(), name)
+			require.Equal(t, []sdk.AccAddress{tc.voter}, msg.GetSigners())
+		})
 	}
 }
 
@@ -486,19 +502,21 @@ func TestMsgExec(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := foundation.MsgExec{
-			ProposalId: tc.id,
-			Signer:     tc.signer.String(),
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := foundation.MsgExec{
+				ProposalId: tc.id,
+				Signer:     tc.signer.String(),
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := msg.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, []sdk.AccAddress{tc.signer}, msg.GetSigners(), name)
+			require.Equal(t, []sdk.AccAddress{tc.signer}, msg.GetSigners())
+		})
 	}
 }
 
@@ -520,18 +538,20 @@ func TestMsgLeaveFoundation(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := foundation.MsgLeaveFoundation{
-			Address: tc.address.String(),
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := foundation.MsgLeaveFoundation{
+				Address: tc.address.String(),
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := msg.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, []sdk.AccAddress{tc.address}, msg.GetSigners(), name)
+			require.Equal(t, []sdk.AccAddress{tc.address}, msg.GetSigners())
+		})
 	}
 }
 
@@ -568,22 +588,24 @@ func TestMsgGrant(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := foundation.MsgGrant{
-			Authority: tc.authority.String(),
-			Grantee:   tc.grantee.String(),
-		}
-		if tc.authorization != nil {
-			msg.SetAuthorization(tc.authorization)
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := foundation.MsgGrant{
+				Authority: tc.authority.String(),
+				Grantee:   tc.grantee.String(),
+			}
+			if tc.authorization != nil {
+				msg.SetAuthorization(tc.authorization)
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := msg.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners(), name)
+			require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners())
+		})
 	}
 }
 
@@ -620,70 +642,22 @@ func TestMsgRevoke(t *testing.T) {
 	}
 
 	for name, tc := range testCases {
-		msg := foundation.MsgRevoke{
-			Authority:  tc.authority.String(),
-			Grantee:    tc.grantee.String(),
-			MsgTypeUrl: tc.msgTypeURL,
-		}
+		t.Run(name, func(t *testing.T) {
+			msg := foundation.MsgRevoke{
+				Authority:  tc.authority.String(),
+				Grantee:    tc.grantee.String(),
+				MsgTypeUrl: tc.msgTypeURL,
+			}
 
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
+			err := msg.ValidateBasic()
+			if !tc.valid {
+				require.Error(t, err)
+				return
+			}
+			require.NoError(t, err)
 
-		require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners(), name)
-	}
-}
-
-func TestMsgGovMint(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 1)
-	for i := range addrs {
-		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	}
-
-	testCases := map[string]struct {
-		authority sdk.AccAddress
-		amount    sdk.Coins
-		valid     bool
-	}{
-		"valid msg": {
-			authority: addrs[0],
-			amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
-			valid:     true,
-		},
-		"empty authority": {
-			amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
-		},
-		"no amount": {
-			authority: addrs[0],
-		},
-		"invalid amount": {
-			authority: addrs[0],
-			amount: sdk.Coins{
-				sdk.Coin{
-					Denom:  sdk.DefaultBondDenom,
-					Amount: sdk.NewInt(-10),
-				},
-			},
-		},
-	}
-
-	for name, tc := range testCases {
-		msg := foundation.MsgGovMint{
-			Authority: tc.authority.String(),
-			Amount:    tc.amount,
-		}
-
-		err := msg.ValidateBasic()
-		if !tc.valid {
-			require.Error(t, err, name)
-			continue
-		}
-		require.NoError(t, err, name)
-
-		require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners(), name)
+			require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners())
+		})
 	}
 }
 
@@ -786,13 +760,6 @@ func TestMsgSubmitProposalAminoJSON(t *testing.T) {
 				MsgTypeUrl: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 			},
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgRevoke\",\"value\":{\"authority\":\"%s\",\"grantee\":\"%s\",\"msg_type_url\":\"/lbm.foundation.v1.MsgWithdrawFromTreasury\"}}],\"metadata\":\"MsgRevoke\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String(), proposer.String()),
-		},
-		"MsgGovMint": {
-			&foundation.MsgGovMint{
-				Authority: addrs[0].String(),
-				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
-			},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgGovMint\",\"value\":{\"amount\":[{\"amount\":\"10\",\"denom\":\"stake\"}],\"authority\":\"%s\"}}],\"metadata\":\"MsgGovMint\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), proposer.String()),
 		},
 	}
 

@@ -54,9 +54,6 @@ service Msg {
   // Revoke revokes any authorization corresponding to the provided method name
   // that has been granted to the grantee.
   rpc Revoke(MsgRevoke) returns (MsgRevokeResponse);
-
-  // GovMint defines a gov mint coins to the treasury.
-  rpc GovMint(MsgGovMint) returns (MsgGovMintResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -236,14 +233,3 @@ message MsgRevoke {
 
 // MsgRevokeResponse is the Msg/MsgRevokeResponse response type.
 message MsgRevokeResponse {}
-
-// MsgGovMint is the Msg/GovMint request type.
-message MsgGovMint {
-  // authority is the address of the privileged account.
-  string   authority                       = 1;
-  repeated cosmos.base.v1beta1.Coin amount = 2
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/types.Coins"];
-}
-
-// MsgGovMintResponse is the Msg/GovMint response type.
-message MsgGovMintResponse {}

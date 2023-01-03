@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	gogotypes "github.com/gogo/protobuf/types"
-
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/foundation"
@@ -73,23 +71,5 @@ func (k Keeper) SetPool(ctx sdk.Context, pool foundation.Pool) {
 
 	store := ctx.KVStore(k.storeKey)
 	key := poolKey
-	store.Set(key, bz)
-}
-
-func (k Keeper) GetGovMintLeftCount(ctx sdk.Context) uint32 {
-	store := ctx.KVStore(k.storeKey)
-	key := govMintKey
-	bz := store.Get(key)
-
-	var count gogotypes.UInt32Value
-	k.cdc.MustUnmarshal(bz, &count)
-
-	return count.Value
-}
-
-func (k Keeper) SetGovMintLeftCount(ctx sdk.Context, count uint32) {
-	store := ctx.KVStore(k.storeKey)
-	key := govMintKey
-	bz := k.cdc.MustMarshal(&gogotypes.UInt32Value{Value: count})
 	store.Set(key, bz)
 }

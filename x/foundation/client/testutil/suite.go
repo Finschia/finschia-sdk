@@ -65,8 +65,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	}
 	foundationData.Params = params
 
-	foundationData.GovMintLeftCount = 1
-
 	var strangerMnemonic string
 	strangerMnemonic, s.stranger = s.createMnemonic("stranger")
 	var leavingMemberMnemonic string

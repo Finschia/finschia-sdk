@@ -27,7 +27,6 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgUpdateDecisionPolicy{}, "lbm-sdk/MsgUpdateDecisionPolicy")
 	legacy.RegisterAminoMsg(cdc, &MsgGrant{}, "lbm-sdk/MsgGrant")
 	legacy.RegisterAminoMsg(cdc, &MsgRevoke{}, "lbm-sdk/MsgRevoke")
-	legacy.RegisterAminoMsg(cdc, &MsgGovMint{}, "lbm-sdk/MsgGovMint")
 
 	cdc.RegisterInterface((*Authorization)(nil), nil)
 	cdc.RegisterInterface((*DecisionPolicy)(nil), nil)
@@ -50,7 +49,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgLeaveFoundation{},
 		&MsgGrant{},
 		&MsgRevoke{},
-		&MsgGovMint{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

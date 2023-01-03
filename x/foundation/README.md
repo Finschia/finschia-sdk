@@ -31,7 +31,6 @@ back these foundation-specific functionalities.
     * [Msg/Revoke](#msgrevoke)
     * [Msg/FundTreasury](#msgfundtreasury)
     * [Msg/WithdrawFromTreasury](#msgwithdrawfromtreasury)
-    * [Msg/GovMint](#msggovmint)
 * [Events](#events)
     * [EventUpdateFoundationParams](#eventupdatefoundationparams)
     * [EventUpdateDecisionPolicy](#eventupdatedecisionpolicy)
@@ -45,7 +44,6 @@ back these foundation-specific functionalities.
     * [EventRevoke](#eventrevoke)
     * [EventFundTreasury](#eventfundedtreasury)
     * [EventWithdrawFromTreasury](#eventwithdrawedfromtreasury)
-    * [EventGovMint](#eventgovmint)
 * [Client](#client)
     * [CLI](#cli)
     * [gRPC](#grpc)
@@ -263,12 +261,6 @@ sending the message `Msg/WithdrawFromTreasury`.
 **Note:** After setting the tax rate to zero, you cannot set it to a non-zero
 value again (irreversible), which means you must set it to a non-zero value in
 the genesis to make it work.
-
-## GovMint
-
-When the chain is first started, it may be necessary to mint a large amount of 
-coins at most once for initial validators or for specific purposes. Newly minted
-coins are transferred to the treasury pool.
 
 # State
 
@@ -497,17 +489,6 @@ The message handling should fail if:
 * the address which receives the coins has no authorization of
   `ReceiveFromTreasuryAuthorization`.
 
-## Msg/GovMint
-
-Massive minting is possible through 'MsgGovMint' up to 1 time after the chain is started.
-
-+++ https://github.com/line/lbm-sdk/blob/f682f758268c19dd93958abbbaf697f51e6991b3/proto/lbm/foundation/v1/tx.proto#L240-L246
-
-The message handling should fail if:
-
-* the authority is not the module's authority.
-* The remaining left count is 0.
-
 # Events
 
 ## EventUpdateFoundationParams
@@ -615,14 +596,6 @@ the treasury.
 | Attribute Key | Attribute Value |
 |---------------|-----------------|
 | to            | {toAddress}     |
-| amount        | {amount}        |
-
-## EventGovMint
-
-`EventGovMint` is an event emitted when coins are minted.
-
-| Attribute Key | Attribute Value |
-|---------------|-----------------|
 | amount        | {amount}        |
 
 # Client

@@ -1,27 +1,74 @@
----
-project_name: lbm-sdk
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - id: simd-linux-amd64
+    main: ./simapp/simd
+    binary: simd
+    goos:
+      - linux
+    goarch:
+      - amd64
+    env:
+      - CGO_ENABLED=1
+    flags:
+      - -mod=readonly
+      - -trimpath
+      - "-tags={{ .Env.BUILD_TAGS }}"
+    ldflags:
+      - "{{ .Env.BUILD_VARS }}"
+
+archives:
+  -
+    id: bin-archive
+    builds:
+      - simd-linux-amd64
+    format: tar.gz
+    name_template: "simd_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    wrap_in_directory: true
+    files:
+      - LICENSE
+      - NOTICE
+      - RELEASE_CHANGELOG.md
+
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt"
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+changelog:
+  use: git
+  sort: asc
+  groups:
+    - title: "Breaking Changes"
+      regexp: '^.*?BREAKING CHANGE(\([[:word:]]+\))??!?:.+$'
+      order: 0
+    - title: Features
+      regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
+      order: 1
+    - title: 'Bug Fixes'
+      regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
+      order: 2
+    - title: 'Build, CI'
+      regexp: '^.*?(ci|build)(\([[:word:]]+\))??!?:.+$'
+      order: 3
+    - title: 'Document Updates'
+      regexp: '^.*?docs(\([[:word:]]+\))??!?:.+$'
+      order: 4
+    - title: Improvements
+      regexp: '^.*?(test|refactor|perf)(\([[:word:]]+\))??!?:.+$'
+      order: 5
+    - title: Others
+      order: 999
 
 release:
   github:
     owner: line
     name: lbm-sdk
+  prerelease: auto
+  mode: replace
+  draft: false
 
-builds:
-  - skip: true
 
-archives:
-  - format: tar.gz
-    wrap_in_directory: true
-    format_overrides:
-      - goos: windows
-        format: zip
-    name_template: "{{ .Binary }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
-    files:
-      - LICENSE
-      - README.md
-
-snapshot:
-  name_template: SNAPSHOT-{{ .Commit }}
-
-changelog:
-  skip: true
+# modelines, feel free to remove those if you don't want/use them:
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=cnqoj

@@ -8,13 +8,14 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/require"
+	dbm "github.com/tendermint/tm-db"
+
 	"github.com/line/ostracon/crypto"
 	"github.com/line/ostracon/crypto/ed25519"
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/libs/rand"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
 
 	evidencetypes "github.com/line/lbm-sdk/x/evidence/types"
 	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
@@ -722,6 +723,7 @@ var keyCounter uint64
 
 // we need to make this deterministic (same every test run), as encoded address size and thus gas cost,
 // depends on the actual bytes (due to ugly CanonicalAddress encoding)
+//
 //nolint:unparam
 func keyPubAddr() (crypto.PrivKey, crypto.PubKey, sdk.AccAddress) {
 	keyCounter++

@@ -2,19 +2,14 @@ package rpc
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/base64"
 	"fmt"
-	"net/http"
 	"strconv"
 
-	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/codec/legacy"
-	"github.com/line/lbm-sdk/types/rest"
 )
 
 // BlockCommand returns the verified block data for a given heights
@@ -75,24 +70,6 @@ func getBlock(clientCtx client.Context, height *int64) ([]byte, error) {
 	return legacy.Cdc.MarshalJSON(res)
 }
 
-func getBlockByHash(clientCtx client.Context, hash []byte) ([]byte, error) {
-	// get the node
-	node, err := clientCtx.GetNode()
-	if err != nil {
-		return nil, err
-	}
-
-	// header -> BlockchainInfo
-	// header, tx -> Block
-	// results -> BlockResults
-	res, err := node.BlockByHash(context.Background(), hash)
-	if err != nil {
-		return nil, err
-	}
-
-	return legacy.Cdc.MarshalJSON(res)
-}
-
 // get the current blockchain height
 func GetChainHeight(clientCtx client.Context) (int64, error) {
 	node, err := clientCtx.GetNode()
@@ -107,75 +84,4 @@ func GetChainHeight(clientCtx client.Context) (int64, error) {
 
 	height := status.SyncInfo.LatestBlockHeight
 	return height, nil
-}
-
-// REST handler to get a block by hash
-func BlockByHashRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-
-		hash := vars["hash"]
-		blockHash, err := base64.URLEncoding.DecodeString(hash)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest,
-				"couldn't decode block hash by Base64URLDecode.")
-			return
-		}
-		if n := len(blockHash); n != sha256.Size {
-			rest.WriteErrorResponse(w, http.StatusBadRequest,
-				"the length of block hash must be 32")
-			return
-		}
-
-		output, err := getBlockByHash(clientCtx, blockHash)
-		if rest.CheckInternalServerError(w, err) {
-			return
-		}
-
-		rest.PostProcessResponseBare(w, clientCtx, output)
-	}
-}
-
-// REST handler to get a block
-func BlockRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-
-		height, err := strconv.ParseInt(vars["height"], 10, 64)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest,
-				"couldn't parse block height. Assumed format is '/blocks/{height}'.")
-			return
-		}
-
-		chainHeight, err := GetChainHeight(clientCtx)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, "failed to parse chain height")
-			return
-		}
-
-		if height > chainHeight {
-			rest.WriteErrorResponse(w, http.StatusNotFound, "requested block height is bigger then the chain length")
-			return
-		}
-
-		output, err := getBlock(clientCtx, &height)
-		if rest.CheckInternalServerError(w, err) {
-			return
-		}
-
-		rest.PostProcessResponseBare(w, clientCtx, output)
-	}
-}
-
-// REST handler to get the latest block
-func LatestBlockRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		output, err := getBlock(clientCtx, nil)
-		if rest.CheckInternalServerError(w, err) {
-			return
-		}
-
-		rest.PostProcessResponseBare(w, clientCtx, output)
-	}
 }

@@ -43,7 +43,7 @@ func TestFwdCapabilityKeyCompatibility(t *testing.T) {
 	cap := types.NewCapability(24)
 	new := types.FwdCapabilityKey("bank", cap)
 	old := legacyFwdCapabilityKey("bank", cap)
-	if runtime.GOOS == "darwin" && runtime.GOARCH == "arm" {
+	if runtime.GOOS == "darwin" && (runtime.GOARCH == "arm" || runtime.GOARCH == "arm64") {
 		// the legacy version has 1 more byte on mac m1
 		require.Equal(t, len(old), len(new)+1)
 	} else {

@@ -25,14 +25,16 @@ func (s *KeeperTestSuite) TestModuleAccountInvariant() {
 	}
 
 	for name, tc := range testCases {
-		ctx, _ := s.ctx.CacheContext()
-		if tc.malleate != nil {
-			tc.malleate(ctx)
-		}
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+			if tc.malleate != nil {
+				tc.malleate(ctx)
+			}
 
-		invariant := keeper.ModuleAccountInvariant(s.keeper)
-		_, broken := invariant(ctx)
-		s.Require().Equal(!tc.valid, broken, name)
+			invariant := keeper.ModuleAccountInvariant(s.keeper)
+			_, broken := invariant(ctx)
+			s.Require().Equal(!tc.valid, broken)
+		})
 	}
 }
 
@@ -55,14 +57,16 @@ func (s *KeeperTestSuite) TestTotalWeightInvariant() {
 	}
 
 	for name, tc := range testCases {
-		ctx, _ := s.ctx.CacheContext()
-		if tc.malleate != nil {
-			tc.malleate(ctx)
-		}
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+			if tc.malleate != nil {
+				tc.malleate(ctx)
+			}
 
-		invariant := keeper.TotalWeightInvariant(s.keeper)
-		_, broken := invariant(ctx)
-		s.Require().Equal(!tc.valid, broken, name)
+			invariant := keeper.TotalWeightInvariant(s.keeper)
+			_, broken := invariant(ctx)
+			s.Require().Equal(!tc.valid, broken)
+		})
 	}
 }
 
@@ -84,13 +88,15 @@ func (s *KeeperTestSuite) TestProposalInvariant() {
 	}
 
 	for name, tc := range testCases {
-		ctx, _ := s.ctx.CacheContext()
-		if tc.malleate != nil {
-			tc.malleate(ctx)
-		}
+		s.Run(name, func() {
+			ctx, _ := s.ctx.CacheContext()
+			if tc.malleate != nil {
+				tc.malleate(ctx)
+			}
 
-		invariant := keeper.ProposalInvariant(s.keeper)
-		_, broken := invariant(ctx)
-		s.Require().Equal(!tc.valid, broken, name)
+			invariant := keeper.ProposalInvariant(s.keeper)
+			_, broken := invariant(ctx)
+			s.Require().Equal(!tc.valid, broken)
+		})
 	}
 }
