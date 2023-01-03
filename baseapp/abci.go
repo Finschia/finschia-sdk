@@ -12,10 +12,11 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
-	abci "github.com/line/ostracon/abci/types"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"google.golang.org/grpc/codes"
 	grpcstatus "google.golang.org/grpc/status"
+
+	abci "github.com/line/ostracon/abci/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/codec"
 	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
@@ -919,4 +920,20 @@ func splitPath(requestPath string) (path []string) {
 	}
 
 	return path
+}
+
+// createQueryContext creates a new sdk.Context for a query, taking as args
+// the block height and whether the query needs a proof or not.
+func (app *BaseApp) createQueryContextWithCheckState() sdk.Context {
+
+	cacheMS := app.checkState.CacheMultiStore()
+
+	// branch the commit-multistore for safety
+	app.checkStateMtx.RLock()
+	ctx := sdk.NewContext(
+		cacheMS, app.checkState.ctx.BlockHeader(), true, app.logger,
+	).WithMinGasPrices(app.minGasPrices).WithBlockHeight(app.LastBlockHeight())
+	app.checkStateMtx.RUnlock()
+
+	return ctx
 }
