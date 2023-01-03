@@ -48,6 +48,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (client) [\#817](https://github.com/line/lbm-sdk/pull/817) remove support for composite (BLS) type
 
 * (x/foundation) [#834](https://github.com/line/lbm-sdk/pull/834) Apply foundation audit
+* (x/collection,token) [#849](https://github.com/line/lbm-sdk/pull/849) Introduce codespace into x/collection,token
 
 ### Breaking Changes
 * (rest) [\#807](https://github.com/line/lbm-sdk/pull/807) remove legacy REST API
