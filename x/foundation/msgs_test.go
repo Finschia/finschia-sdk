@@ -661,58 +661,6 @@ func TestMsgRevoke(t *testing.T) {
 	}
 }
 
-func TestMsgGovMint(t *testing.T) {
-	addrs := make([]sdk.AccAddress, 1)
-	for i := range addrs {
-		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	}
-
-	testCases := map[string]struct {
-		authority sdk.AccAddress
-		amount    sdk.Coins
-		valid     bool
-	}{
-		"valid msg": {
-			authority: addrs[0],
-			amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
-			valid:     true,
-		},
-		"empty authority": {
-			amount: sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
-		},
-		"no amount": {
-			authority: addrs[0],
-		},
-		"invalid amount": {
-			authority: addrs[0],
-			amount: sdk.Coins{
-				sdk.Coin{
-					Denom:  sdk.DefaultBondDenom,
-					Amount: sdk.NewInt(-10),
-				},
-			},
-		},
-	}
-
-	for name, tc := range testCases {
-		t.Run(name, func(t *testing.T) {
-			msg := foundation.MsgGovMint{
-				Authority: tc.authority.String(),
-				Amount:    tc.amount,
-			}
-
-			err := msg.ValidateBasic()
-			if !tc.valid {
-				require.Error(t, err)
-				return
-			}
-			require.NoError(t, err)
-
-			require.Equal(t, []sdk.AccAddress{tc.authority}, msg.GetSigners())
-		})
-	}
-}
-
 func TestAminoJSON(t *testing.T) {
 	addrs := make([]sdk.AccAddress, 3)
 	for i := range addrs {
@@ -812,13 +760,6 @@ func TestMsgSubmitProposalAminoJSON(t *testing.T) {
 				MsgTypeUrl: foundation.ReceiveFromTreasuryAuthorization{}.MsgTypeURL(),
 			},
 			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgRevoke\",\"value\":{\"authority\":\"%s\",\"grantee\":\"%s\",\"msg_type_url\":\"/lbm.foundation.v1.MsgWithdrawFromTreasury\"}}],\"metadata\":\"MsgRevoke\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String(), proposer.String()),
-		},
-		"MsgGovMint": {
-			&foundation.MsgGovMint{
-				Authority: addrs[0].String(),
-				Amount:    sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))),
-			},
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgSubmitProposal\",\"value\":{\"exec\":1,\"messages\":[{\"type\":\"lbm-sdk/MsgGovMint\",\"value\":{\"amount\":[{\"amount\":\"10\",\"denom\":\"stake\"}],\"authority\":\"%s\"}}],\"metadata\":\"MsgGovMint\",\"proposers\":[\"%s\"]}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), proposer.String()),
 		},
 	}
 

@@ -44,8 +44,6 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *foundation.GenesisState) erro
 
 	k.SetPool(ctx, data.Pool)
 
-	k.SetGovMintLeftCount(ctx, data.GovMintLeftCount)
-
 	return nil
 }
 
@@ -67,7 +65,6 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *foundation.GenesisState {
 		Votes:              votes,
 		Authorizations:     k.GetGrants(ctx),
 		Pool:               k.GetPool(ctx),
-		GovMintLeftCount:   k.GetGovMintLeftCount(ctx),
 	}
 }
 
