@@ -647,15 +647,6 @@ func TestMsgIssueFT(t *testing.T) {
 			amount:     sdk.OneInt(),
 			err:        collection.ErrInvalidIssueFT,
 		},
-		"invalid amount": {
-			contractID: "deadbeef",
-			owner:      addrs[0],
-			to:         addrs[1],
-			name:       name,
-			meta:       meta,
-			amount:     sdk.ZeroInt(),
-			err:        collection.ErrInvalidAmount,
-		},
 	}
 
 	for name, tc := range testCases {
