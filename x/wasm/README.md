@@ -1,4 +1,20 @@
-
+<!-- TOC -->
+* [Events](#events)
+  * [Message Events](#message-events)
+    * [MsgStoreCode](#msgstorecode)
+    * [MsgInstantiateContract](#msginstantiatecontract)
+    * [MsgStoreCodeAndInstantiateContract](#msgstorecodeandinstantiatecontract)
+    * [MsgExecuteContract](#msgexecutecontract)
+    * [MsgMigrateContract](#msgmigratecontract)
+    * [MsgUpdateAdmin](#msgupdateadmin)
+    * [MsgClearAdmin](#msgclearadmin)
+  * [Keeper Events](#keeper-events)
+    * [Reply](#reply)
+    * [Sudo](#sudo)
+    * [PinCode](#pincode)
+    * [UnpinCode](#unpincode)
+  * [Proposal Events](#proposal-events)
+<!-- TOC -->
 
 # Events
 
@@ -94,9 +110,6 @@ In addition to message events, the wasm keeper will produce events when the foll
 | Type       | Attribute Key | Attribute Value | Note |
 |------------|---------------|-----------------|------|
 | unpin_code | code_id       | {codeID}        |      |
-
-
-### 
 
 ## Proposal Events
 If you use wasm proposal, it makes common event like below.
