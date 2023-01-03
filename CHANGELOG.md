@@ -57,3 +57,4 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (ci) [\#829](https://github.com/line/lbm-sdk/pull/829) automate release process
 
 ### Document Updates
+* (x/wasm) [\#851](https://github.com/line/lbm-sdk/pull/851) add wasm events description
