@@ -39,6 +39,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Features
 * (baseapp) [\#840](https://github.com/line/lbm-sdk/pull/840) allow querying the state based on `CheckState`.
+* (x/foundation) [\#848](https://github.com/line/lbm-sdk/pull/848) remove `gov mint` for x/foundation proposal
 
 ### Improvements
 * (cosmovisor) [\#792](https://github.com/line/lbm-sdk/pull/792) Use upstream's cosmovisor
@@ -46,6 +47,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Bug Fixes
 * (client) [\#817](https://github.com/line/lbm-sdk/pull/817) remove support for composite (BLS) type
+
+* (x/foundation) [#834](https://github.com/line/lbm-sdk/pull/834) Apply foundation audit
 
 ### Breaking Changes
 * (rest) [\#807](https://github.com/line/lbm-sdk/pull/807) remove legacy REST API
