@@ -34,7 +34,6 @@ import (
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
-	//"github.com/line/lbm-sdk/x/wasm"
 )
 
 // DefaultConsensusParams defines the default Tendermint consensus params used in
@@ -100,8 +99,8 @@ func Setup(isCheckTx bool) *SimApp {
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
 // of one consensus engine unit (10^6) in the default token of the simapp from first genesis
 // account. A Nop logger is set in SimApp.
-func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs []authtypes.GenesisAccount /*opts []wasm.Option,*/, balances ...banktypes.Balance) *SimApp {
-	app, genesisState := setup(true, 5 /*, opts...*/)
+func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *SimApp {
+	app, genesisState := setup(true, 5)
 	// set genesis accounts
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)
 	genesisState[authtypes.ModuleName] = app.AppCodec().MustMarshalJSON(authGenesis)
