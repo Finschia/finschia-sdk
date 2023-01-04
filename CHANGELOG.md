@@ -38,6 +38,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [Unreleased](https://github.com/line/lbm-sdk/compare/v0.46.0...HEAD)
 
 ### Features
+* (baseapp) [\#840](https://github.com/line/lbm-sdk/pull/840) allow querying the state based on `CheckState`.
+* (x/foundation) [\#848](https://github.com/line/lbm-sdk/pull/848) remove `gov mint` for x/foundation proposal
 * (x/wasm) [\#850](https://github.com/line/lbm-sdk/pull/850) remove `x/wasm` module in lbm-sdk
 
 ### Improvements
