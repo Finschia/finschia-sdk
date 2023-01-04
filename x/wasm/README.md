@@ -29,32 +29,36 @@
 | store_code | feature       | {WasmvmRequiredFeature} |      |
 
 ### MsgInstantiateContract
-| Type        | Attribute Key     | Attribute Value     | Note                      |
-|-------------|-------------------|---------------------|---------------------------|
-| message     | module            | wasm                |                           |
-| message     | sender            | {senderAddress}     |                           |
-| instantiate | code_id           | {contractCodeID}    |                           |
-| instantiate | _contract_address | {contractAddress}   |                           |
-| transfer    | recipient         | {recipientAddress}  | Only when the fund exists |
-| transfer    | sender            | {senderAddress}     | Only when the fund exists |                 
-| transfer    | amount            | {amount}            | Only when the fund exists |
+| Type                   | Attribute Key                | Attribute Value                | Note                                          |
+|------------------------|------------------------------|--------------------------------|-----------------------------------------------|
+| message                | module                       | wasm                           |                                               |
+| message                | sender                       | {senderAddress}                |                                               |
+| instantiate            | code_id                      | {contractCodeID}               |                                               |
+| instantiate            | _contract_address            | {contractAddress}              |                                               |
+| transfer               | recipient                    | {recipientAddress}             | Only when the fund exists                     |
+| transfer               | sender                       | {senderAddress}                | Only when the fund exists                     |                 
+| transfer               | amount                       | {amount}                       | Only when the fund exists                     |
+| wasm                   | {customContractAttributeKey} | {customContractAttributeValue} | (optional) Defined by wasm contract developer |
+| wasm-{customEventType} | {customContractAttributeKey} | {customContractAttributeKey}   | (optional) Defined by wasm contract developer |
 
 ### MsgStoreCodeAndInstantiateContract
-| Type        | Attribute Key     | Attribute Value         | Note                      |
-|-------------|-------------------|-------------------------|---------------------------|
-| message     | module            | wasm                    |                           |
-| message     | sender            | {senderAddress}         |                           |
-| store_code  | code_id           | {contractCodeID}        |                           |
-| store_code  | feature           | {WasmvmRequiredFeature} |                           |
-| instantiate | code_id           | {contractCodeID}        |                           |
-| instantiate | _contract_address | {contractAddress}       |                           |
-| transfer    | recipient         | {recipientAddress}      | Only when the fund exists |
-| transfer    | sender            | {senderAddress}         | Only when the fund exists |                 
-| transfer    | amount            | {amount}                | Only when the fund exists |
+| Type                   | Attribute Key                | Attribute Value                 | Note                                          |
+|------------------------|------------------------------|---------------------------------|-----------------------------------------------|
+| message                | module                       | wasm                            |                                               |
+| message                | sender                       | {senderAddress}                 |                                               |
+| store_code             | code_id                      | {contractCodeID}                |                                               |
+| store_code             | feature                      | {WasmvmRequiredFeature}         |                                               |
+| instantiate            | code_id                      | {contractCodeID}                |                                               |
+| instantiate            | _contract_address            | {contractAddress}               |                                               |
+| transfer               | recipient                    | {recipientAddress}              | Only when the fund exists                     |
+| transfer               | sender                       | {senderAddress}                 | Only when the fund exists                     |                 
+| transfer               | amount                       | {amount}                        | Only when the fund exists                     |
+| wasm                   | {customContractAttributeKey} | {customContractAttributeValue}  | (optional) Defined by wasm contract developer |
+| wasm-{customEventType} | {customContractAttributeKey} | {customContractAttributeKey}    | (optional) Defined by wasm contract developer |
 
 ### MsgExecuteContract
 | Type                   | Attribute Key                | Attribute Value                | Note                                          |
-|------------------------|------------------------------|--------------------------------|-----------------------------------------------|
+|------------------------|------------------------------|:-------------------------------|-----------------------------------------------|
 | message                | module                       | wasm                           |                                               |
 | message                | sender                       | {senderAddress}                |                                               |
 | execute                | _contract_address            | {contractAddress}              |                                               |
@@ -62,12 +66,14 @@
 | wasm-{customEventType} | {customContractAttributeKey} | {customContractAttributeKey}   | (optional) Defined by wasm contract developer |
 
 ### MsgMigrateContract
-| Type    | Attribute Key     | Attribute Value   | Note                      |
-|---------|-------------------|-------------------|---------------------------|
-| message | module            | wasm              |                           |
-| message | sender            | {senderAddress}   |                           |
-| migrate | code_id           | {newCodeID}       |                           |
-| migrate | _contract_address | {contractAddress} |                           |
+| Type                   | Attribute Key                | Attribute Value                | Note                                          |
+|------------------------|------------------------------|--------------------------------|-----------------------------------------------|
+| message                | module                       | wasm                           |                                               |
+| message                | sender                       | {senderAddress}                |                                               |
+| migrate                | code_id                      | {newCodeID}                    |                                               |
+| migrate                | _contract_address            | {contractAddress}              |                                               |
+| wasm                   | {customContractAttributeKey} | {customContractAttributeValue} | (optional) Defined by wasm contract developer |
+| wasm-{customEventType} | {customContractAttributeKey} | {customContractAttributeKey}   | (optional) Defined by wasm contract developer |
 
 ### MsgUpdateAdmin
 | Type    | Attribute Key     | Attribute Value   | Note                      |
