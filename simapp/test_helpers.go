@@ -56,7 +56,7 @@ var DefaultConsensusParams = &abci.ConsensusParams{
 	},
 }
 
-func setup(withGenesis bool, invCheckPeriod uint /*, opts ...wasm.Option*/) (*SimApp, GenesisState) {
+func setup(withGenesis bool, invCheckPeriod uint) (*SimApp, GenesisState) {
 	randDir, _ := os.MkdirTemp(DefaultNodeHome, "")
 	snapshotDir := filepath.Join(randDir, "data", "snapshots")
 	snapshotDB := dbm.NewMemDB()
@@ -66,7 +66,7 @@ func setup(withGenesis bool, invCheckPeriod uint /*, opts ...wasm.Option*/) (*Si
 
 	db := dbm.NewMemDB()
 	encCdc := MakeTestEncodingConfig()
-	app := NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, encCdc, EmptyAppOptions{} /*opts,*/, baseAppOpts...)
+	app := NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, encCdc, EmptyAppOptions{}, baseAppOpts...)
 	if withGenesis {
 		return app, NewDefaultGenesisState(encCdc.Marshaler)
 	}
