@@ -19,7 +19,12 @@ import (
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
-var _ module.AppModuleBasic = AppModuleBasic{}
+var (
+	_ module.AppModule           = AppModule{}
+	_ module.AppModuleBasic      = AppModuleBasic{}
+	_ module.BeginBlockAppModule = AppModule{}
+	_ module.EndBlockAppModule   = AppModule{}
+)
 
 // AppModuleBasic defines the basic application module used by the stakingplus module.
 type AppModuleBasic struct {
@@ -32,8 +37,6 @@ func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry
 }
 
 //____________________________________________________________________________
-
-var _ module.AppModule = AppModule{}
 
 // AppModule implements an application module for the stakingplus module.
 type AppModule struct {
