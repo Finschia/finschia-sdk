@@ -23,8 +23,9 @@ func init() {
 }
 
 var (
-	_ module.AppModule      = AppModule{}
-	_ module.AppModuleBasic = AppModuleBasic{}
+	_ module.AppModule           = AppModule{}
+	_ module.AppModuleBasic      = AppModuleBasic{}
+	_ module.BeginBlockAppModule = AppModule{}
 )
 
 // AppModuleBasic implements the sdk.AppModuleBasic interface

@@ -19,7 +19,12 @@ import (
 	"github.com/line/lbm-sdk/x/foundation/keeper"
 )
 
-var _ module.AppModuleBasic = AppModuleBasic{}
+var (
+	_ module.AppModule           = AppModule{}
+	_ module.AppModuleBasic      = AppModuleBasic{}
+	_ module.BeginBlockAppModule = AppModule{}
+	_ module.EndBlockAppModule   = AppModule{}
+)
 
 // AppModuleBasic defines the basic application module used by the foundation module.
 type AppModuleBasic struct{}
@@ -70,8 +75,6 @@ func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry
 }
 
 //____________________________________________________________________________
-
-var _ module.AppModule = AppModule{}
 
 // AppModule implements an application module for the foundation module.
 type AppModule struct {
