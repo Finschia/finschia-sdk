@@ -44,6 +44,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Improvements
 * (cosmovisor) [\#792](https://github.com/line/lbm-sdk/pull/792) Use upstream's cosmovisor
 * (server) [\#821](https://github.com/line/lbm-sdk/pull/821) Get validator pubkey considering KMS
+* (x/distribution) [\#855](https://github.com/line/lbm-sdk/pull/855) add tests for FeePool and handler
 
 ### Bug Fixes
 * (client) [\#817](https://github.com/line/lbm-sdk/pull/817) remove support for composite (BLS) type
