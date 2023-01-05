@@ -6,7 +6,6 @@ import (
 	mocktypes "github.com/line/lbm-sdk/x/distribution/mocks/types"
 	"github.com/line/lbm-sdk/x/distribution/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -42,9 +41,7 @@ func (s *handlerTestSuite) TestMsgSetWithdrawAddress() {
 	_, err := s.cut(ctx, withdrawAddress)
 
 	// Assert
-	if err != nil {
-		assert.Fail(s.T(), err.Error())
-	}
+	require.NoError(s.T(), err)
 }
 
 func (s *handlerTestSuite) TestMsgWithdrawDelegatorReward() {
