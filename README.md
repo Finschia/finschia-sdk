@@ -10,7 +10,7 @@ This is forked from [`cosmos-sdk`](https://github.com/cosmos/cosmos-sdk) at 2021
 
 The [LBM SDK](https://github.com/line/lbm-sdk) is an open-source framework for building multi-asset public Proof-of-Stake (PoS) <df value="blockchain">blockchains</df>, as well as permissioned Proof-Of-Authority (PoA) blockchains. Blockchains built with the Cosmos SDK are generally referred to as **application-specific blockchains**. 
 
-The purpose of `LBM SDK` is to succeed to [the objectives of `Cosmos sdk`](https://github.com/cosmos/cosmos-sdk/blob/master/docs/intro/overview.md) while helping develop blockchains that requires faster transaction processing to be applied to reality.
+The purpose of `LBM SDK` is to succeed to [the objectives of `Cosmos sdk`](https://github.com/cosmos/cosmos-sdk/blob/master/docs/intro/overview.md) while helping develop blockchains that require faster transaction processing to be applied to reality.
 
 ## Why the LBM SDK?
 
@@ -68,6 +68,6 @@ simd start --home ~/.simapp/simapp1
 &nbsp;
 
 ## Follow Guide
-You can refer the sample tx commands at [here](docs/sample-tx.md) 
+You can refer to the sample tx commands [here](docs/sample-tx.md). 
 Test different commands to get a broader understanding of lbm
 
