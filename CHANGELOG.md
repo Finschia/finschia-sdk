@@ -51,6 +51,10 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 * (x/foundation) [#834](https://github.com/line/lbm-sdk/pull/834) Apply foundation audit
 
+### Removed
+* [\#853](https://github.com/line/lbm-sdk/pull/853) remove useless stub BeginBlock, EndBlock methods from modules below
+  * ibc, authz, collection, feegrant, ibc, token, wasm
+
 ### Breaking Changes
 * (rest) [\#807](https://github.com/line/lbm-sdk/pull/807) remove legacy REST API
 
