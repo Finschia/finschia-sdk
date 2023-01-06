@@ -95,7 +95,7 @@ func BenchmarkAPI(b *testing.B) {
 		b.ReportAllocs()
 		b.ResetTimer()
 		for i := 0; i < b.N; i++ {
-			_, _, _, _, _, _, _, err := api.GetContractEnv(addrStr)
+			_, _, _, _, _, _, _, _, err := api.GetContractEnv(addrStr, 0)
 			require.NoError(b, err)
 		}
 	})
@@ -118,6 +118,7 @@ func BenchmarkAPI(b *testing.B) {
 		}
 	})
 }
+
 // Calculate the time it takes to compile some wasm code the first time.
 // This will help us adjust pricing for UploadCode
 func BenchmarkCompilation(b *testing.B) {

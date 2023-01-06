@@ -36,6 +36,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 # Changelog
 
 ## [Unreleased]
+* (x/wasm) [\#835](https://github.com/line/lbm-sdk/pull/835) add calculate instantiate cost function into get contract env api
 * (global) [\#764](https://github.com/line/lbm-sdk/pull/764) update dependencies of packages in dynamic link branch
 * (x/wasm) [\#669](https://github.com/line/lbm-sdk/pull/669) update wasmvm and update contracts for tests
 * (x/wasm) [\#656](https://github.com/line/lbm-sdk/pull/656) add unit test for dynamic link when callee fails

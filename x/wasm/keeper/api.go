@@ -9,9 +9,8 @@ import (
 )
 
 type cosmwasmAPIImpl struct {
-	gasMultiplier GasMultiplier
-	keeper        *Keeper
-	ctx           *sdk.Context
+	keeper *Keeper
+	ctx    *sdk.Context
 }
 
 const (
@@ -27,7 +26,8 @@ var (
 )
 
 func (a cosmwasmAPIImpl) humanAddress(canon []byte) (string, uint64, error) {
-	gas := a.gasMultiplier.FromWasmVMGas(5)
+	gasMultiplier := a.keeper.getGasMultiplier(*a.ctx)
+	gas := gasMultiplier.ToWasmVMGas(5)
 	if err := sdk.VerifyAddressFormat(canon); err != nil {
 		return "", gas, err
 	}
@@ -37,15 +37,18 @@ func (a cosmwasmAPIImpl) humanAddress(canon []byte) (string, uint64, error) {
 
 func (a cosmwasmAPIImpl) canonicalAddress(human string) ([]byte, uint64, error) {
 	bz, err := sdk.AccAddressFromBech32(human)
-	return bz, a.gasMultiplier.ToWasmVMGas(4), err
+	gasMultiplier := a.keeper.getGasMultiplier(*a.ctx)
+	return bz, gasMultiplier.ToWasmVMGas(4), err
 }
 
-func (a cosmwasmAPIImpl) GetContractEnv(contractAddrStr string) (wasmvm.Env, *wasmvm.Cache, wasmvm.KVStore, wasmvm.Querier, wasmvm.GasMeter, []byte, uint64, error) {
+func (a cosmwasmAPIImpl) getContractEnv(contractAddrStr string, inputSize uint64) (wasmvm.Env, *wasmvm.Cache, wasmvm.KVStore, wasmvm.Querier, wasmvm.GasMeter, []byte, uint64, uint64, error) {
 	contractAddr := sdk.MustAccAddressFromBech32(contractAddrStr)
-	_, codeInfo, prefixStore, err := a.keeper.contractInstance(*a.ctx, contractAddr)
+	contractInfo, codeInfo, prefixStore, err := a.keeper.contractInstance(*a.ctx, contractAddr)
 	if err != nil {
-		return wasmvm.Env{}, nil, nil, nil, nil, wasmvm.Checksum{}, 0, err
+		return wasmvm.Env{}, nil, nil, nil, nil, wasmvm.Checksum{}, 0, 0, err
 	}
+
+	gasMultiplier := a.keeper.getGasMultiplier(*a.ctx)
 
 	cache := a.keeper.wasmVM.GetCache()
 	if cache == nil {
@@ -53,27 +56,27 @@ func (a cosmwasmAPIImpl) GetContractEnv(contractAddrStr string) (wasmvm.Env, *wa
 	}
 
 	// prepare querier
-	querier := NewQueryHandler(*a.ctx, a.keeper.wasmVMQueryHandler, contractAddr, a.gasMultiplier)
+	querier := NewQueryHandler(*a.ctx, a.keeper.wasmVMQueryHandler, contractAddr, gasMultiplier)
 
 	// this gas cost is temporal value defined by
 	// https://github.com/line/lbm-sdk/runs/8150140720?check_suite_focus=true#step:5:483
 	// Before release, it is adjusted by benchmark taken in environment similar to the nodes.
-	gas := 11 * a.gasMultiplier.multiplier
+	gas := gasMultiplier.ToWasmVMGas(11)
+	instantiateCost := gasMultiplier.ToWasmVMGas(a.keeper.instantiateContractCosts(a.keeper.gasRegister, *a.ctx, a.keeper.IsPinnedCode(*a.ctx, contractInfo.CodeID), int(inputSize)))
 	wasmStore := types.NewWasmStore(prefixStore)
 	env := types.NewEnv(*a.ctx, contractAddr)
 
-	return env, cache, wasmStore, querier, a.keeper.gasMeter(*a.ctx), codeInfo.CodeHash, gas, nil
+	return env, cache, wasmStore, querier, a.keeper.gasMeter(*a.ctx), codeInfo.CodeHash, instantiateCost, gas, nil
 }
 
 func (k Keeper) cosmwasmAPI(ctx sdk.Context) wasmvm.GoAPI {
 	x := cosmwasmAPIImpl{
-		gasMultiplier: k.getGasMultiplier(ctx),
-		keeper:        &k,
-		ctx:           &ctx,
+		keeper: &k,
+		ctx:    &ctx,
 	}
 	return wasmvm.GoAPI{
 		HumanAddress:     x.humanAddress,
 		CanonicalAddress: x.canonicalAddress,
-		GetContractEnv:   x.GetContractEnv,
+		GetContractEnv:   x.getContractEnv,
 	}
 }
