@@ -167,12 +167,12 @@ func NewEventGrantPermToken(event EventGranted) sdk.Event {
 	if len(event.Granter) != 0 {
 		attributes[AttributeKeyFrom] = event.Granter
 	}
-
 	res := sdk.NewEvent(eventType)
 	for key, value := range attributes {
 		attribute := sdk.NewAttribute(key.String(), value)
 		res = res.AppendAttributes(attribute)
 	}
+
 	return res
 }
 
