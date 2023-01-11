@@ -27,14 +27,14 @@ var (
 	_ module.AppModule           = AppModule{}
 	_ module.AppModuleBasic      = AppModuleBasic{}
 	_ module.AppModuleSimulation = AppModule{}
+	_ module.BeginBlockAppModule = AppModule{}
+	_ module.EndBlockAppModule   = AppModule{}
 )
 
 // AppModuleBasic defines the basic application module used by the staking module.
 type AppModuleBasic struct {
 	cdc codec.Codec
 }
-
-var _ module.AppModuleBasic = AppModuleBasic{}
 
 // Name returns the staking module's name.
 func (AppModuleBasic) Name() string {
