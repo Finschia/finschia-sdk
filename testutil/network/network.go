@@ -61,7 +61,6 @@ func NewAppConstructor(encodingCfg params.EncodingConfig) AppConstructor {
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
 			encodingCfg,
 			simapp.EmptyAppOptions{},
-			nil,
 			baseapp.SetPruning(storetypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
 		)
@@ -378,12 +377,10 @@ func New(t *testing.T, cfg Config) *Network {
 
 	require.NoError(t, initGenFiles(cfg, genAccounts, genBalances, genFiles))
 	require.NoError(t, collectGenFiles(cfg, network.Validators, network.BaseDir))
-
 	t.Log("starting test network...")
 	for _, v := range network.Validators {
 		require.NoError(t, startInProcess(cfg, v))
 	}
-
 	t.Log("started test network")
 
 	// Ensure we cleanup incase any test was abruptly halted (e.g. SIGINT) as any

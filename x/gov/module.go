@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 
@@ -22,7 +21,6 @@ import (
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	govclient "github.com/line/lbm-sdk/x/gov/client"
 	"github.com/line/lbm-sdk/x/gov/client/cli"
-	"github.com/line/lbm-sdk/x/gov/client/rest"
 	"github.com/line/lbm-sdk/x/gov/keeper"
 	"github.com/line/lbm-sdk/x/gov/simulation"
 	"github.com/line/lbm-sdk/x/gov/types"
@@ -32,6 +30,7 @@ var (
 	_ module.AppModule           = AppModule{}
 	_ module.AppModuleBasic      = AppModuleBasic{}
 	_ module.AppModuleSimulation = AppModule{}
+	_ module.EndBlockAppModule   = AppModule{}
 )
 
 // AppModuleBasic defines the basic application module used by the gov module.
@@ -71,16 +70,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 	}
 
 	return types.ValidateGenesis(&data)
-}
-
-// RegisterRESTRoutes registers the REST routes for the gov module.
-func (a AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
-	proposalRESTHandlers := make([]rest.ProposalRESTHandler, 0, len(a.proposalHandlers))
-	for _, proposalHandler := range a.proposalHandlers {
-		proposalRESTHandlers = append(proposalRESTHandlers, proposalHandler.RESTHandler(clientCtx))
-	}
-
-	rest.RegisterHandlers(clientCtx, rtr, proposalRESTHandlers)
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the gov module.

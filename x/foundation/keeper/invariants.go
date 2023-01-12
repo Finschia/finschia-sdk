@@ -14,9 +14,13 @@ const (
 )
 
 func RegisterInvariants(ir sdk.InvariantRegistry, k Keeper) {
-	ir.RegisterRoute(foundation.ModuleName, moduleAccountInvariant, ModuleAccountInvariant(k))
-	ir.RegisterRoute(foundation.ModuleName, totalWeightInvariant, ProposalInvariant(k))
-	ir.RegisterRoute(foundation.ModuleName, proposalInvariant, ProposalInvariant(k))
+	for name, invariant := range map[string]func(k Keeper) sdk.Invariant{
+		moduleAccountInvariant: ModuleAccountInvariant,
+		totalWeightInvariant:   TotalWeightInvariant,
+		proposalInvariant:      ProposalInvariant,
+	} {
+		ir.RegisterRoute(foundation.ModuleName, name, invariant(k))
+	}
 }
 
 func ModuleAccountInvariant(k Keeper) sdk.Invariant {

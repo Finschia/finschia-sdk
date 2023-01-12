@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
@@ -20,7 +19,12 @@ import (
 	"github.com/line/lbm-sdk/x/foundation/keeper"
 )
 
-var _ module.AppModuleBasic = AppModuleBasic{}
+var (
+	_ module.AppModule           = AppModule{}
+	_ module.AppModuleBasic      = AppModuleBasic{}
+	_ module.BeginBlockAppModule = AppModule{}
+	_ module.EndBlockAppModule   = AppModule{}
+)
 
 // AppModuleBasic defines the basic application module used by the foundation module.
 type AppModuleBasic struct{}
@@ -49,9 +53,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 	return foundation.ValidateGenesis(data)
 }
 
-// RegisterRESTRoutes registers all REST query handlers
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, r *mux.Router) {}
-
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the foundation module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
 	if err := foundation.RegisterQueryHandlerClient(context.Background(), mux, foundation.NewQueryClient(clientCtx)); err != nil {
@@ -74,8 +75,6 @@ func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry
 }
 
 //____________________________________________________________________________
-
-var _ module.AppModule = AppModule{}
 
 // AppModule implements an application module for the foundation module.
 type AppModule struct {

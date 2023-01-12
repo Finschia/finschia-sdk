@@ -1,17 +1,11 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "LBM SDK - Legacy REST and gRPC Gateway docs",
+    "title": "LBM SDK - gRPC Gateway docs",
     "description": "A REST interface for state queries, legacy transactions",
     "version": "1.0.0"
   },
   "apis": [
-    {
-      "url": "./client/docs/swagger_legacy.yaml",
-      "dereference": {
-        "circular": "ignore"
-      }
-    },
     {
       "url": "./tmp-swagger-gen/cosmos/auth/v1beta1/query.swagger.json",
       "operationIds": {
@@ -149,9 +143,6 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/cosmwasm/wasm/v1/query.swagger.json"
-    },
-    {
       "url": "./tmp-swagger-gen/lbm/foundation/v1/query.swagger.json",
       "operationIds": {
         "rename": {
@@ -201,9 +192,6 @@
           "Params": "FeegrantParams"
         }
       }
-    },
-    {
-      "url": "./tmp-swagger-gen/lbm/wasm/v1/query.swagger.json"
     },
     {
       "url": "./tmp-swagger-gen/cosmos/base/node/v1beta1/query.swagger.json"

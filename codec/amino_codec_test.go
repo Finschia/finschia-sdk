@@ -131,6 +131,7 @@ func TestAminoCodecFullDecodeAndEncode(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, string(marshaledTx), txSigned)
 
+	// The test logic written below is not included in cosmos-sdk
 	// Marshalling/unmarshalling the tx wrapped in a struct should work.
 	txRequest := &cli.BroadcastReq{
 		Mode: "block",

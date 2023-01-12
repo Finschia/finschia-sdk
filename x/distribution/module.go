@@ -8,7 +8,6 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/gorilla/mux"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
 
@@ -19,7 +18,6 @@ import (
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/distribution/client/cli"
-	"github.com/line/lbm-sdk/x/distribution/client/rest"
 	"github.com/line/lbm-sdk/x/distribution/keeper"
 	"github.com/line/lbm-sdk/x/distribution/simulation"
 	"github.com/line/lbm-sdk/x/distribution/types"
@@ -29,6 +27,7 @@ var (
 	_ module.AppModule           = AppModule{}
 	_ module.AppModuleBasic      = AppModuleBasic{}
 	_ module.AppModuleSimulation = AppModule{}
+	_ module.BeginBlockAppModule = AppModule{}
 )
 
 // AppModuleBasic defines the basic application module used by the distribution module.
@@ -60,11 +59,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config sdkclient.TxEn
 	}
 
 	return types.ValidateGenesis(&data)
-}
-
-// RegisterRESTRoutes registers the REST routes for the distribution module.
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx sdkclient.Context, rtr *mux.Router) {
-	rest.RegisterHandlers(clientCtx, rtr)
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the distribution module.
@@ -172,8 +166,6 @@ func (AppModule) ConsensusVersion() uint64 { return 1 }
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 	BeginBlocker(ctx, req, am.keeper)
 }
-
-// AppModuleSimulation functions
 
 // GenerateGenesisState creates a randomized GenState of the distribution module.
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {

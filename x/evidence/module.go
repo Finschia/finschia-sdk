@@ -8,7 +8,6 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
 	abci "github.com/line/ostracon/abci/types"
@@ -21,7 +20,6 @@ import (
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	eviclient "github.com/line/lbm-sdk/x/evidence/client"
 	"github.com/line/lbm-sdk/x/evidence/client/cli"
-	"github.com/line/lbm-sdk/x/evidence/client/rest"
 	"github.com/line/lbm-sdk/x/evidence/keeper"
 	"github.com/line/lbm-sdk/x/evidence/simulation"
 	"github.com/line/lbm-sdk/x/evidence/types"
@@ -31,6 +29,7 @@ var (
 	_ module.AppModule           = AppModule{}
 	_ module.AppModuleBasic      = AppModuleBasic{}
 	_ module.AppModuleSimulation = AppModule{}
+	_ module.BeginBlockAppModule = AppModule{}
 )
 
 // ----------------------------------------------------------------------------
@@ -72,17 +71,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 	}
 
 	return gs.Validate()
-}
-
-// RegisterRESTRoutes registers the evidence module's REST service handlers.
-func (a AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
-	evidenceRESTHandlers := make([]rest.EvidenceRESTHandler, len(a.evidenceHandlers))
-
-	for i, evidenceHandler := range a.evidenceHandlers {
-		evidenceRESTHandlers[i] = evidenceHandler.RESTHandler(clientCtx)
-	}
-
-	rest.RegisterRoutes(clientCtx, rtr, evidenceRESTHandlers)
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the evidence module.
