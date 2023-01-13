@@ -10,9 +10,6 @@ import (
 
 	"github.com/line/lbm-sdk/codec"
 	bankkeeper "github.com/line/lbm-sdk/x/bank/keeper"
-	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
-	ibctransferkeeper "github.com/line/lbm-sdk/x/ibc/applications/transfer/keeper"
-	ibckeeper "github.com/line/lbm-sdk/x/ibc/core/keeper"
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 )
 
@@ -25,20 +22,8 @@ func NewTestSupport(t testing.TB, app *SimApp) *TestSupport {
 	return &TestSupport{t: t, app: app}
 }
 
-func (s TestSupport) IBCKeeper() *ibckeeper.Keeper {
-	return s.app.IBCKeeper
-}
-
 func (s TestSupport) AppCodec() codec.Codec {
 	return s.app.appCodec
-}
-
-func (s TestSupport) ScopeIBCKeeper() capabilitykeeper.ScopedKeeper {
-	return s.app.ScopedIBCKeeper
-}
-
-func (s TestSupport) ScopedTransferKeeper() capabilitykeeper.ScopedKeeper {
-	return s.app.ScopedTransferKeeper
 }
 
 func (s TestSupport) StakingKeeper() stakingkeeper.Keeper {
@@ -47,10 +32,6 @@ func (s TestSupport) StakingKeeper() stakingkeeper.Keeper {
 
 func (s TestSupport) BankKeeper() bankkeeper.Keeper {
 	return s.app.BankKeeper
-}
-
-func (s TestSupport) TransferKeeper() ibctransferkeeper.Keeper {
-	return s.app.TransferKeeper
 }
 
 func (s TestSupport) GetBaseApp() *baseapp.BaseApp {
