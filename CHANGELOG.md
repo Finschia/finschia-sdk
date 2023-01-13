@@ -54,6 +54,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Removed
 * [\#853](https://github.com/line/lbm-sdk/pull/853) remove useless stub BeginBlock, EndBlock methods from modules below
   * ibc, authz, collection, feegrant, ibc, token, wasm
+* (x/ibc) [\#858](https://github.com/line/lbm-sdk/pull/858) detach ibc module(repo: [line/ibc-go](https://github.com/line/ibc-go))
 
 ### Breaking Changes
 * (rest) [\#807](https://github.com/line/lbm-sdk/pull/807) remove legacy REST API
