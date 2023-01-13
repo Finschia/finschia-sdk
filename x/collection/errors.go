@@ -7,8 +7,6 @@ import (
 const collectionCodespace = ModuleName
 
 var (
-	// ErrTokenExist                    = sdkerrors.Register(collectionCodespace, 1, "token symbol, token-id already exists")
-
 	ErrTokenNotExist                 = sdkerrors.Register(collectionCodespace, 2, "token symbol, token-id does not exist")
 	ErrTokenNotMintable              = sdkerrors.Register(collectionCodespace, 3, "token symbol, token-id is not mintable")
 	ErrInvalidTokenName              = sdkerrors.Register(collectionCodespace, 4, "token name should not be empty")
