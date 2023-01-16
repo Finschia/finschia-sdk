@@ -361,10 +361,10 @@ func (s queryServer) getToken(ctx sdk.Context, contractID string, tokenID string
 			return nil, err
 		}
 
-		owner := s.keeper.GetRootOwner(ctx, contractID, token.Id)
+		owner := s.keeper.GetRootOwner(ctx, contractID, token.TokenId)
 		return &collection.OwnerNFT{
 			ContractId: contractID,
-			TokenId:    token.Id,
+			TokenId:    token.TokenId,
 			Name:       token.Name,
 			Meta:       token.Meta,
 			Owner:      owner.String(),

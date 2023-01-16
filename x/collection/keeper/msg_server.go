@@ -256,7 +256,7 @@ func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateCo
 
 	id := s.keeper.CreateContract(ctx, ownerAddr, contract)
 
-	return &collection.MsgCreateContractResponse{Id: id}, nil
+	return &collection.MsgCreateContractResponse{ContractId: id}, nil
 }
 
 func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*collection.MsgIssueFTResponse, error) {
@@ -285,7 +285,7 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 	event := collection.EventCreatedFTClass{
 		ContractId: req.ContractId,
 		Operator:   req.Owner,
-		ClassId:    *id,
+		TokenId:    collection.NewFTID(*id),
 		Name:       class.Name,
 		Meta:       class.Meta,
 		Decimals:   class.Decimals,
@@ -317,7 +317,7 @@ func (s msgServer) IssueFT(c context.Context, req *collection.MsgIssueFT) (*coll
 		}
 	}
 
-	return &collection.MsgIssueFTResponse{Id: *id}, nil
+	return &collection.MsgIssueFTResponse{TokenId: *id}, nil
 }
 
 func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*collection.MsgIssueNFTResponse, error) {
@@ -344,7 +344,7 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 	event := collection.EventCreatedNFTClass{
 		ContractId: req.ContractId,
 		Operator:   req.Owner,
-		ClassId:    *id,
+		TokenType:  *id,
 		Name:       class.Name,
 		Meta:       class.Meta,
 	}
@@ -360,7 +360,7 @@ func (s msgServer) IssueNFT(c context.Context, req *collection.MsgIssueNFT) (*co
 		s.keeper.Grant(ctx, req.ContractId, []byte{}, ownerAddr, permission)
 	}
 
-	return &collection.MsgIssueNFTResponse{Id: *id}, nil
+	return &collection.MsgIssueNFTResponse{TokenType: *id}, nil
 }
 
 func (s msgServer) MintFT(c context.Context, req *collection.MsgMintFT) (*collection.MsgMintFTResponse, error) {
@@ -433,9 +433,9 @@ func (s msgServer) MintNFT(c context.Context, req *collection.MsgMintNFT) (*coll
 
 	tokenIDs := make([]string, 0, len(tokens))
 	for _, token := range tokens {
-		tokenIDs = append(tokenIDs, token.Id)
+		tokenIDs = append(tokenIDs, token.TokenId)
 	}
-	return &collection.MsgMintNFTResponse{Ids: tokenIDs}, nil
+	return &collection.MsgMintNFTResponse{TokenIds: tokenIDs}, nil
 }
 
 func (s msgServer) BurnFT(c context.Context, req *collection.MsgBurnFT) (*collection.MsgBurnFTResponse, error) {
@@ -646,7 +646,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 				event := collection.EventModifiedTokenClass{
 					ContractId: req.ContractId,
 					Operator:   operator.String(),
-					ClassId:    classID,
+					TokenType:  classID,
 					Changes:    changes,
 					TypeName:   proto.MessageName(&collection.FTClass{}),
 				}
@@ -662,7 +662,7 @@ func (s msgServer) Modify(c context.Context, req *collection.MsgModify) (*collec
 			event := collection.EventModifiedTokenClass{
 				ContractId: req.ContractId,
 				Operator:   operator.String(),
-				ClassId:    classID,
+				TokenType:  classID,
 				Changes:    changes,
 				TypeName:   proto.MessageName(&collection.NFTClass{}),
 			}

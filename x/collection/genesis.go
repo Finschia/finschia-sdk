@@ -99,7 +99,7 @@ func ValidateGenesis(data GenesisState) error {
 			return sdkerrors.ErrInvalidRequest.Wrap("nfts cannot be empty")
 		}
 		for _, token := range contractNFTs.Nfts {
-			if err := ValidateTokenID(token.Id); err != nil {
+			if err := ValidateTokenID(token.TokenId); err != nil {
 				return err
 			}
 			if err := validateName(token.Name); err != nil {

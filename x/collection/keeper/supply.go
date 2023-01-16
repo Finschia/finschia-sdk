@@ -222,9 +222,9 @@ func (k Keeper) MintNFT(ctx sdk.Context, contractID string, to sdk.AccAddress, p
 		k.setOwner(ctx, contractID, tokenID, to)
 
 		token := collection.NFT{
-			Id:   tokenID,
-			Name: param.Name,
-			Meta: param.Meta,
+			TokenId: tokenID,
+			Name:    param.Name,
+			Meta:    param.Meta,
 		}
 		k.setNFT(ctx, contractID, token)
 
@@ -369,7 +369,7 @@ func (k Keeper) ModifyTokenClass(ctx sdk.Context, contractID string, classID str
 
 	event := collection.EventModifiedTokenClass{
 		ContractId: contractID,
-		ClassId:    class.GetId(),
+		TokenType:  class.GetId(),
 		Operator:   operator.String(),
 		Changes:    changes,
 	}

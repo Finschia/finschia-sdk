@@ -1150,7 +1150,7 @@ func TestMsgModify(t *testing.T) {
 		"invalid key of change": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Change{{Field: strings.ToUpper(collection.AttributeKeyName.String()) , Value: "tt"}},
+			changes:    []collection.Change{{Field: strings.ToUpper(collection.AttributeKeyName.String()), Value: "tt"}},
 		},
 		"invalid value of change": {
 			contractID: "deadbeef",
