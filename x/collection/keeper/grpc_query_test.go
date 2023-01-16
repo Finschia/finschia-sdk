@@ -435,7 +435,7 @@ func (s *KeeperTestSuite) TestQueryContract() {
 			contractID: s.contractID,
 			valid:      true,
 			postTest: func(res *collection.QueryContractResponse) {
-				s.Require().Equal(s.contractID, res.Contract.ContractId)
+				s.Require().Equal(s.contractID, res.Contract.Id)
 			},
 		},
 		"invalid contract id": {},

@@ -25,7 +25,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.customer.String(),
 				s.vendor.String(),
 				"1",
@@ -34,7 +34,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.customer.String(),
 				s.vendor.String(),
 				"1",
@@ -44,7 +44,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.customer.String(),
 				s.vendor.String(),
 			},
@@ -52,7 +52,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 		},
 		"amount out of range": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.customer.String(),
 				s.vendor.String(),
 				"10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -95,7 +95,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				s.vendor.String(),
@@ -105,7 +105,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				s.vendor.String(),
@@ -116,7 +116,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				s.vendor.String(),
@@ -125,7 +125,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 		},
 		"amount out of range": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				s.vendor.String(),
@@ -169,7 +169,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 			},
@@ -177,7 +177,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				"extra",
@@ -186,7 +186,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 			},
 			false,
@@ -227,7 +227,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevokeOperator() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[1].ContractId,
+				s.classes[1].Id,
 				s.customer.String(),
 				s.vendor.String(),
 			},
@@ -235,7 +235,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevokeOperator() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[1].ContractId,
+				s.classes[1].Id,
 				s.customer.String(),
 				s.vendor.String(),
 				"extra",
@@ -244,7 +244,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevokeOperator() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[1].ContractId,
+				s.classes[1].Id,
 				s.customer.String(),
 			},
 			false,
@@ -351,7 +351,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrantPermission() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[1].ContractId,
+				s.classes[1].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				token.LegacyPermissionMint.String(),
@@ -360,7 +360,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrantPermission() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[1].ContractId,
+				s.classes[1].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				token.LegacyPermissionMint.String(),
@@ -370,7 +370,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrantPermission() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[1].ContractId,
+				s.classes[1].Id,
 				s.vendor.String(),
 				s.customer.String(),
 			},
@@ -412,7 +412,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevokePermission() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[1].ContractId,
+				s.classes[1].Id,
 				s.vendor.String(),
 				token.LegacyPermissionModify.String(),
 			},
@@ -420,7 +420,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevokePermission() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[1].ContractId,
+				s.classes[1].Id,
 				s.vendor.String(),
 				token.LegacyPermissionModify.String(),
 				"extra",
@@ -429,7 +429,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevokePermission() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[1].ContractId,
+				s.classes[1].Id,
 				s.vendor.String(),
 			},
 			false,
@@ -470,7 +470,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMint() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				"1",
@@ -479,7 +479,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMint() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				"1",
@@ -489,7 +489,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMint() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 			},
@@ -531,7 +531,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[1].ContractId,
+				s.classes[1].Id,
 				s.vendor.String(),
 				"1",
 			},
@@ -539,7 +539,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[1].ContractId,
+				s.classes[1].Id,
 				s.vendor.String(),
 				"1",
 				"extra",
@@ -548,7 +548,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[1].ContractId,
+				s.classes[1].Id,
 				s.vendor.String(),
 			},
 			false,
@@ -589,7 +589,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurnFrom() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				"1",
@@ -598,7 +598,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurnFrom() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				"1",
@@ -608,7 +608,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurnFrom() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 			},
@@ -650,7 +650,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				token.AttributeKeyName.String(),
 				"cool token",
@@ -659,7 +659,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 		},
 		"extra args": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				token.AttributeKeyName.String(),
 				"cool token",
@@ -669,7 +669,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 		},
 		"not enough args": {
 			[]string{
-				s.classes[0].ContractId,
+				s.classes[0].Id,
 				s.vendor.String(),
 				token.AttributeKeyName.String(),
 			},

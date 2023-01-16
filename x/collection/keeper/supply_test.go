@@ -22,7 +22,7 @@ func (s *KeeperTestSuite) TestCreateContract() {
 	s.Require().NoError(err)
 	s.Require().NotNil(output)
 
-	s.Require().Equal(id, output.ContractId)
+	s.Require().Equal(id, output.Id)
 	s.Require().Equal(input.Name, output.Name)
 	s.Require().Equal(input.Meta, output.Meta)
 	s.Require().Equal(input.BaseImgUri, output.BaseImgUri)

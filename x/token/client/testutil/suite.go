@@ -27,7 +27,7 @@ type IntegrationTestSuite struct {
 	vendor   sdk.AccAddress
 	customer sdk.AccAddress
 
-	classes []token.TokenClass
+	classes []token.Contract
 
 	balance sdk.Int
 }
@@ -52,20 +52,20 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.vendor = s.createAccount("vendor")
 	s.customer = s.createAccount("customer")
 
-	s.classes = []token.TokenClass{
+	s.classes = []token.Contract{
 		{
-			ContractId: "678c146a",
-			Name:       "test",
-			Symbol:     "ZERO",
-			Decimals:   8,
-			Mintable:   true,
+			Id:       "678c146a",
+			Name:     "test",
+			Symbol:   "ZERO",
+			Decimals: 8,
+			Mintable: true,
 		},
 		{
-			ContractId: "9be17165",
-			Name:       "test",
-			Symbol:     "ONE",
-			Decimals:   8,
-			Mintable:   true,
+			Id:       "9be17165",
+			Name:     "test",
+			Symbol:   "ONE",
+			Decimals: 8,
+			Mintable: true,
 		},
 	}
 
@@ -77,7 +77,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	// customer approves vendor to manipulate its tokens of the both classes, so vendor can do OperatorXXX (Send or Burn) later.
 	for _, class := range s.classes {
-		s.authorizeOperator(class.ContractId, s.customer, s.vendor)
+		s.authorizeOperator(class.Id, s.customer, s.vendor)
 	}
 
 	s.setupHeight, err = s.network.LatestHeight()

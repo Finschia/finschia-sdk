@@ -34,7 +34,7 @@ func TestValidateGenesis(t *testing.T) {
 		"contract of invalid name": {
 			&collection.GenesisState{
 				Contracts: []collection.Contract{{
-					ContractId: "deadbeef",
+					Id:         "deadbeef",
 					Name:       string(make([]rune, 21)),
 					Meta:       "Tibetian Fox",
 					BaseImgUri: "file:///tibetian_fox.png",
@@ -45,7 +45,7 @@ func TestValidateGenesis(t *testing.T) {
 		"contract of invalid base img uri": {
 			&collection.GenesisState{
 				Contracts: []collection.Contract{{
-					ContractId: "deadbeef",
+					Id:         "deadbeef",
 					Name:       "tibetian fox",
 					BaseImgUri: string(make([]rune, 1001)),
 					Meta:       "Tibetian Fox",
@@ -56,7 +56,7 @@ func TestValidateGenesis(t *testing.T) {
 		"contract of invalid meta": {
 			&collection.GenesisState{
 				Contracts: []collection.Contract{{
-					ContractId: "deadbeef",
+					Id:         "deadbeef",
 					Name:       "tibetian fox",
 					BaseImgUri: "file:///tibetian_fox.png",
 					Meta:       string(make([]rune, 1001)),

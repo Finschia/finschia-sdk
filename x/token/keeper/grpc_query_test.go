@@ -172,21 +172,21 @@ func (s *KeeperTestSuite) TestQueryBurnt() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryTokenClass() {
+func (s *KeeperTestSuite) TestQueryContract() {
 	// empty request
-	_, err := s.queryServer.TokenClass(s.goCtx, nil)
+	_, err := s.queryServer.Contract(s.goCtx, nil)
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
 		contractID string
 		valid      bool
-		postTest   func(res *token.QueryTokenClassResponse)
+		postTest   func(res *token.QueryContractResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			valid:      true,
-			postTest: func(res *token.QueryTokenClassResponse) {
-				s.Require().Equal(s.contractID, res.Class.ContractId)
+			postTest: func(res *token.QueryContractResponse) {
+				s.Require().Equal(s.contractID, res.Contract.Id)
 			},
 		},
 		"invalid contract id": {},
@@ -197,10 +197,10 @@ func (s *KeeperTestSuite) TestQueryTokenClass() {
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
-			req := &token.QueryTokenClassRequest{
+			req := &token.QueryContractRequest{
 				ContractId: tc.contractID,
 			}
-			res, err := s.queryServer.TokenClass(s.goCtx, req)
+			res, err := s.queryServer.Contract(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -212,30 +212,30 @@ func (s *KeeperTestSuite) TestQueryTokenClass() {
 	}
 }
 
-func (s *KeeperTestSuite) TestQueryTokenClasses() {
+func (s *KeeperTestSuite) TestQueryContracts() {
 	// empty request
-	_, err := s.queryServer.TokenClasses(s.goCtx, nil)
+	_, err := s.queryServer.Contracts(s.goCtx, nil)
 	s.Require().Error(err)
 
 	testCases := map[string]struct {
 		contractID string
 		valid      bool
 		count      uint64
-		postTest   func(res *token.QueryTokenClassesResponse)
+		postTest   func(res *token.QueryContractsResponse)
 	}{
 		"valid request": {
 			contractID: s.contractID,
 			valid:      true,
-			postTest: func(res *token.QueryTokenClassesResponse) {
-				s.Require().Equal(2, len(res.Classes))
+			postTest: func(res *token.QueryContractsResponse) {
+				s.Require().Equal(2, len(res.Contracts))
 			},
 		},
 		"valid request with limit": {
 			contractID: s.contractID,
 			valid:      true,
 			count:      1,
-			postTest: func(res *token.QueryTokenClassesResponse) {
-				s.Require().Equal(1, len(res.Classes))
+			postTest: func(res *token.QueryContractsResponse) {
+				s.Require().Equal(1, len(res.Contracts))
 			},
 		},
 	}
@@ -246,10 +246,10 @@ func (s *KeeperTestSuite) TestQueryTokenClasses() {
 			if tc.count != 0 {
 				pageReq.Limit = tc.count
 			}
-			req := &token.QueryTokenClassesRequest{
+			req := &token.QueryContractsRequest{
 				Pagination: pageReq,
 			}
-			res, err := s.queryServer.TokenClasses(s.goCtx, req)
+			res, err := s.queryServer.Contracts(s.goCtx, req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

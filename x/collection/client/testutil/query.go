@@ -554,7 +554,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdContract() {
 			},
 			true,
 			&collection.QueryContractResponse{
-				Contract: collection.Contract{ContractId: s.contractID},
+				Contract: collection.Contract{Id: s.contractID},
 			},
 		},
 		"extra args": {

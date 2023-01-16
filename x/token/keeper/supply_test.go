@@ -11,11 +11,11 @@ func (s *KeeperTestSuite) TestIssue() {
 	ctx, _ := s.ctx.CacheContext()
 
 	// create a not mintable class
-	class := token.TokenClass{
-		ContractId: "fee1dead",
-		Name:       "NOT Mintable",
-		Symbol:     "NO",
-		Mintable:   false,
+	class := token.Contract{
+		Id:       "fee1dead",
+		Name:     "NOT Mintable",
+		Symbol:   "NO",
+		Mintable: false,
 	}
 	s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
 
@@ -24,12 +24,12 @@ func (s *KeeperTestSuite) TestIssue() {
 		token.PermissionBurn,
 	}
 	for _, permission := range mintPermissions {
-		s.Require().Nil(s.keeper.GetGrant(ctx, class.ContractId, s.vendor, permission))
+		s.Require().Nil(s.keeper.GetGrant(ctx, class.Id, s.vendor, permission))
 	}
-	s.Require().NotNil(s.keeper.GetGrant(ctx, class.ContractId, s.vendor, token.PermissionModify))
+	s.Require().NotNil(s.keeper.GetGrant(ctx, class.Id, s.vendor, token.PermissionModify))
 
 	// override fails
-	class.ContractId = s.contractID
+	class.Id = s.contractID
 	s.Require().Panics(func() {
 		s.keeper.Issue(ctx, class, s.vendor, s.vendor, sdk.OneInt())
 	})
