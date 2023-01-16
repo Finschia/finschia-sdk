@@ -24,9 +24,9 @@ func TestValidateGenesis(t *testing.T) {
 		"contract of invalid contract id": {
 			&collection.GenesisState{
 				Contracts: []collection.Contract{{
-					Name:       "tibetian fox",
-					Meta:       "Tibetian Fox",
-					BaseImgUri: "file:///tibetian_fox.png",
+					Name: "tibetian fox",
+					Meta: "Tibetian Fox",
+					Uri:  "file:///tibetian_fox.png",
 				}},
 			},
 			false,
@@ -34,10 +34,10 @@ func TestValidateGenesis(t *testing.T) {
 		"contract of invalid name": {
 			&collection.GenesisState{
 				Contracts: []collection.Contract{{
-					Id:         "deadbeef",
-					Name:       string(make([]rune, 21)),
-					Meta:       "Tibetian Fox",
-					BaseImgUri: "file:///tibetian_fox.png",
+					Id:   "deadbeef",
+					Name: string(make([]rune, 21)),
+					Meta: "Tibetian Fox",
+					Uri:  "file:///tibetian_fox.png",
 				}},
 			},
 			false,
@@ -45,10 +45,10 @@ func TestValidateGenesis(t *testing.T) {
 		"contract of invalid base img uri": {
 			&collection.GenesisState{
 				Contracts: []collection.Contract{{
-					Id:         "deadbeef",
-					Name:       "tibetian fox",
-					BaseImgUri: string(make([]rune, 1001)),
-					Meta:       "Tibetian Fox",
+					Id:   "deadbeef",
+					Name: "tibetian fox",
+					Uri:  string(make([]rune, 1001)),
+					Meta: "Tibetian Fox",
 				}},
 			},
 			false,
@@ -56,10 +56,10 @@ func TestValidateGenesis(t *testing.T) {
 		"contract of invalid meta": {
 			&collection.GenesisState{
 				Contracts: []collection.Contract{{
-					Id:         "deadbeef",
-					Name:       "tibetian fox",
-					BaseImgUri: "file:///tibetian_fox.png",
-					Meta:       string(make([]rune, 1001)),
+					Id:   "deadbeef",
+					Name: "tibetian fox",
+					Uri:  "file:///tibetian_fox.png",
+					Meta: string(make([]rune, 1001)),
 				}},
 			},
 			false,

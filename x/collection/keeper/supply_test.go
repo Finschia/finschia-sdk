@@ -11,9 +11,9 @@ func (s *KeeperTestSuite) TestCreateContract() {
 	ctx, _ := s.ctx.CacheContext()
 
 	input := collection.Contract{
-		Name:       "tibetian fox",
-		Meta:       "Tibetian Fox",
-		BaseImgUri: "file:///tibetian_fox.png",
+		Name: "tibetian fox",
+		Meta: "Tibetian Fox",
+		Uri:  "file:///tibetian_fox.png",
 	}
 	id := s.keeper.CreateContract(ctx, s.vendor, input)
 	s.Require().NotEmpty(id)
@@ -25,7 +25,7 @@ func (s *KeeperTestSuite) TestCreateContract() {
 	s.Require().Equal(id, output.Id)
 	s.Require().Equal(input.Name, output.Name)
 	s.Require().Equal(input.Meta, output.Meta)
-	s.Require().Equal(input.BaseImgUri, output.BaseImgUri)
+	s.Require().Equal(input.Uri, output.Uri)
 }
 
 func (s *KeeperTestSuite) TestCreateTokenClass() {
@@ -209,7 +209,7 @@ func (s *KeeperTestSuite) TestModifyContract() {
 			s.Require().NoError(err)
 
 			s.Require().Equal(changes[0].Value, contract.Name)
-			s.Require().Equal(changes[1].Value, contract.BaseImgUri)
+			s.Require().Equal(changes[1].Value, contract.Uri)
 			s.Require().Equal(changes[2].Value, contract.Meta)
 		})
 	}

@@ -487,10 +487,10 @@ func TestMsgCreateContract(t *testing.T) {
 
 	for name, tc := range testCases {
 		msg := collection.MsgCreateContract{
-			Owner:      tc.owner.String(),
-			Name:       tc.name,
-			BaseImgUri: tc.baseImgURI,
-			Meta:       tc.meta,
+			Owner: tc.owner.String(),
+			Name:  tc.name,
+			Uri:   tc.baseImgURI,
+			Meta:  tc.meta,
 		}
 
 		err := msg.ValidateBasic()
@@ -1664,13 +1664,13 @@ func TestAminoJSON(t *testing.T) {
 		},
 		"MsgCreateContract": {
 			&collection.MsgCreateContract{
-				Owner:      addrs[0].String(),
-				Name:       "Test Contract",
-				BaseImgUri: "http://image.url",
-				Meta:       "This is test",
+				Owner: addrs[0].String(),
+				Name:  "Test Contract",
+				Uri:   "http://image.url",
+				Meta:  "This is test",
 			},
 			"/lbm.collection.v1.MsgCreateContract",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgCreateContract\",\"value\":{\"base_img_uri\":\"http://image.url\",\"meta\":\"This is test\",\"name\":\"Test Contract\",\"owner\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgCreateContract\",\"value\":{\"meta\":\"This is test\",\"name\":\"Test Contract\",\"owner\":\"%s\",\"uri\":\"http://image.url\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgIssueFT": {
 			&collection.MsgIssueFT{

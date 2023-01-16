@@ -55,7 +55,7 @@ func TestNewEventCreateCollection(t *testing.T) {
 		ContractId: str(),
 		Name:       str(),
 		Meta:       str(),
-		BaseImgUri: str(),
+		Uri:        str(),
 	}
 	legacy := collection.NewEventCreateCollection(event)
 
@@ -65,7 +65,7 @@ func TestNewEventCreateCollection(t *testing.T) {
 		collection.AttributeKeyContractID: event.ContractId,
 		collection.AttributeKeyName:       event.Name,
 		collection.AttributeKeyMeta:       event.Meta,
-		collection.AttributeKeyBaseImgURI: event.BaseImgUri,
+		collection.AttributeKeyBaseImgURI: event.Uri,
 		collection.AttributeKeyOwner:      event.Creator,
 	}
 	for key, value := range attributes {

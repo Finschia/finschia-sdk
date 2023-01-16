@@ -373,7 +373,7 @@ func TestMsgIssue(t *testing.T) {
 			To:       tc.to.String(),
 			Name:     tc.name,
 			Symbol:   tc.symbol,
-			ImageUri: tc.imageUri,
+			Uri:      tc.imageUri,
 			Meta:     tc.meta,
 			Decimals: tc.decimals,
 			Amount:   tc.amount,
@@ -802,7 +802,7 @@ func TestAminoJSON(t *testing.T) {
 			&token.MsgIssue{
 				Name:     "Test Name",
 				Symbol:   "LN",
-				ImageUri: "http://image.url",
+				Uri:      "http://image.url",
 				Meta:     "This is test",
 				Decimals: 6,
 				Mintable: false,
@@ -811,7 +811,7 @@ func TestAminoJSON(t *testing.T) {
 				Amount:   sdk.NewInt(1000000),
 			},
 			"/lbm.token.v1.MsgIssue",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgIssue\",\"value\":{\"amount\":\"1000000\",\"decimals\":6,\"image_uri\":\"http://image.url\",\"meta\":\"This is test\",\"name\":\"Test Name\",\"owner\":\"%s\",\"symbol\":\"LN\",\"to\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/MsgIssue\",\"value\":{\"amount\":\"1000000\",\"decimals\":6,\"meta\":\"This is test\",\"name\":\"Test Name\",\"owner\":\"%s\",\"symbol\":\"LN\",\"to\":\"%s\",\"uri\":\"http://image.url\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String(), addrs[1].String()),
 		},
 		"MsgGrantPermission": {
 			&token.MsgGrantPermission{

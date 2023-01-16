@@ -117,10 +117,10 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid image uri of class": {
 			&token.GenesisState{
 				Classes: []token.Contract{{
-					Id:       "deadbeef",
-					Name:     "test",
-					Symbol:   "TT",
-					ImageUri: string(make([]rune, 1001)),
+					Id:     "deadbeef",
+					Name:   "test",
+					Symbol: "TT",
+					Uri:    string(make([]rune, 1001)),
 				}},
 			},
 			false,
