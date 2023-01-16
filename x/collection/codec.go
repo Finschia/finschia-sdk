@@ -18,7 +18,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgSendNFT{}, "lbm-sdk/MsgSendNFT")
 	legacy.RegisterAminoMsg(cdc, &MsgOperatorSendNFT{}, "lbm-sdk/MsgOperatorSendNFT")
 	legacy.RegisterAminoMsg(cdc, &MsgAuthorizeOperator{}, "lbm-sdk/collection/MsgAuthorizeOperator") // Changed msgName due to conflict with `x/token`
-	legacy.RegisterAminoMsg(cdc, &MsgRevokeOperator{}, "lbm-sdk/MsgRevokeOperator")
+	legacy.RegisterAminoMsg(cdc, &MsgRevokeOperator{}, "lbm-sdk/collection/MsgRevokeOperator")       // Changed msgName due to conflict with `x/token`
 	legacy.RegisterAminoMsg(cdc, &MsgCreateContract{}, "lbm-sdk/MsgCreateContract")
 	legacy.RegisterAminoMsg(cdc, &MsgIssueFT{}, "lbm-sdk/MsgIssueFT")
 	legacy.RegisterAminoMsg(cdc, &MsgIssueNFT{}, "lbm-sdk/MsgIssueNFT")

@@ -80,7 +80,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdSend() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
+func (s *IntegrationTestSuite) TestNewTxCmdOperatorSend() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.vendor),
@@ -139,7 +139,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdTransferFrom()
+			cmd := cli.NewTxCmdOperatorSend()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -574,7 +574,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdBurnFrom() {
+func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurn() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, s.vendor),
@@ -620,7 +620,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurnFrom() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdBurnFrom()
+			cmd := cli.NewTxCmdOperatorBurn()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)

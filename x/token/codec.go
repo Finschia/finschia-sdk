@@ -15,7 +15,7 @@ import (
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgSend{}, "lbm-sdk/MsgSend")
 	legacy.RegisterAminoMsg(cdc, &MsgOperatorSend{}, "lbm-sdk/MsgOperatorSend")
-	legacy.RegisterAminoMsg(cdc, &MsgRevokeOperator{}, "lbm-sdk/MsgRevokeOperator")
+	legacy.RegisterAminoMsg(cdc, &MsgRevokeOperator{}, "lbm-sdk/token/MsgRevokeOperator")       // Changed msgName due to conflict with `x/collection`
 	legacy.RegisterAminoMsg(cdc, &MsgAuthorizeOperator{}, "lbm-sdk/token/MsgAuthorizeOperator") // Changed msgName due to conflict with `x/collection`
 	legacy.RegisterAminoMsg(cdc, &MsgIssue{}, "lbm-sdk/MsgIssue")
 	legacy.RegisterAminoMsg(cdc, &MsgGrantPermission{}, "lbm-sdk/token/MsgGrantPermission")   // Changed msgName due to conflict with `x/collection`

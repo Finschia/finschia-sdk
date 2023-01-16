@@ -47,28 +47,28 @@ func (s *KeeperTestSuite) TestMsgSend() {
 	}
 }
 
-func (s *KeeperTestSuite) TestMsgTransferFrom() {
+func (s *KeeperTestSuite) TestMsgOperatorSend() {
 	testCases := map[string]struct {
-		proxy  sdk.AccAddress
-		from   sdk.AccAddress
-		amount sdk.Int
-		valid  bool
+		operator sdk.AccAddress
+		from     sdk.AccAddress
+		amount   sdk.Int
+		valid    bool
 	}{
 		"valid request": {
-			proxy:  s.operator,
-			from:   s.customer,
-			amount: s.balance,
-			valid:  true,
+			operator: s.operator,
+			from:     s.customer,
+			amount:   s.balance,
+			valid:    true,
 		},
 		"not approved": {
-			proxy:  s.vendor,
-			from:   s.customer,
-			amount: s.balance,
+			operator: s.vendor,
+			from:     s.customer,
+			amount:   s.balance,
 		},
 		"insufficient funds (not enough balance)": {
-			proxy:  s.operator,
-			from:   s.customer,
-			amount: s.balance.Add(sdk.OneInt()),
+			operator: s.operator,
+			from:     s.customer,
+			amount:   s.balance.Add(sdk.OneInt()),
 		},
 	}
 
@@ -76,14 +76,14 @@ func (s *KeeperTestSuite) TestMsgTransferFrom() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			req := &token.MsgTransferFrom{
+			req := &token.MsgOperatorSend{
 				ContractId: s.contractID,
-				Proxy:      tc.proxy.String(),
+				Operator:   tc.operator.String(),
 				From:       tc.from.String(),
 				To:         s.vendor.String(),
 				Amount:     tc.amount,
 			}
-			res, err := s.msgServer.TransferFrom(sdk.WrapSDKContext(ctx), req)
+			res, err := s.msgServer.OperatorSend(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -131,20 +131,20 @@ func (s *KeeperTestSuite) TestMsgRevokeOperator() {
 	}
 }
 
-func (s *KeeperTestSuite) TestMsgApprove() {
+func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 	testCases := map[string]struct {
-		approver sdk.AccAddress
-		proxy    sdk.AccAddress
+		holder   sdk.AccAddress
+		operator sdk.AccAddress
 		valid    bool
 	}{
 		"valid request": {
-			approver: s.customer,
-			proxy:    s.vendor,
+			holder:   s.customer,
+			operator: s.vendor,
 			valid:    true,
 		},
 		"already approved": {
-			approver: s.customer,
-			proxy:    s.operator,
+			holder:   s.customer,
+			operator: s.operator,
 		},
 	}
 
@@ -152,12 +152,12 @@ func (s *KeeperTestSuite) TestMsgApprove() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			req := &token.MsgApprove{
+			req := &token.MsgAuthorizeOperator{
 				ContractId: s.contractID,
-				Approver:   tc.approver.String(),
-				Proxy:      tc.proxy.String(),
+				Holder:     tc.holder.String(),
+				Operator:   tc.operator.String(),
 			}
-			res, err := s.msgServer.Approve(sdk.WrapSDKContext(ctx), req)
+			res, err := s.msgServer.AuthorizeOperator(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return
@@ -353,20 +353,20 @@ func (s *KeeperTestSuite) TestMsgBurn() {
 	}
 }
 
-func (s *KeeperTestSuite) TestMsgBurnFrom() {
+func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 	testCases := map[string]struct {
-		proxy sdk.AccAddress
-		from  sdk.AccAddress
-		valid bool
+		operator sdk.AccAddress
+		from     sdk.AccAddress
+		valid    bool
 	}{
 		"valid request": {
-			proxy: s.operator,
-			from:  s.customer,
-			valid: true,
+			operator: s.operator,
+			from:     s.customer,
+			valid:    true,
 		},
 		"not approved": {
-			proxy: s.vendor,
-			from:  s.customer,
+			operator: s.vendor,
+			from:     s.customer,
 		},
 	}
 
@@ -374,13 +374,13 @@ func (s *KeeperTestSuite) TestMsgBurnFrom() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			req := &token.MsgBurnFrom{
+			req := &token.MsgOperatorBurn{
 				ContractId: s.contractID,
-				Proxy:      tc.proxy.String(),
+				Operator:   tc.operator.String(),
 				From:       tc.from.String(),
 				Amount:     s.balance,
 			}
-			res, err := s.msgServer.BurnFrom(sdk.WrapSDKContext(ctx), req)
+			res, err := s.msgServer.OperatorBurn(sdk.WrapSDKContext(ctx), req)
 			if !tc.valid {
 				s.Require().Error(err)
 				return

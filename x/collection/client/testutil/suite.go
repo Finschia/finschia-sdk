@@ -329,7 +329,7 @@ func (s *IntegrationTestSuite) authorizeOperator(contractID string, holder, oper
 		operator.String(),
 	}, commonArgs...)
 
-	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdApprove(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdAuthorizeOperator(), args)
 	s.Require().NoError(err)
 
 	var res sdk.TxResponse

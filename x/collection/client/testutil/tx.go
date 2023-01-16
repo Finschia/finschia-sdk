@@ -10,7 +10,7 @@ import (
 	"github.com/line/lbm-sdk/x/collection/client/cli"
 )
 
-func (s *IntegrationTestSuite) TestNewTxCmdTransferFT() {
+func (s *IntegrationTestSuite) TestNewTxCmdSendFT() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -74,7 +74,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdTransferFT()
+			cmd := cli.NewTxCmdSendFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -89,7 +89,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFT() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdTransferFTFrom() {
+func (s *IntegrationTestSuite) TestNewTxCmdOperatorSendFT() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -158,7 +158,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFTFrom() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdTransferFTFrom()
+			cmd := cli.NewTxCmdOperatorSendFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -173,7 +173,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFTFrom() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdTransferNFT() {
+func (s *IntegrationTestSuite) TestNewTxCmdSendNFT() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -237,7 +237,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferNFT() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdTransferNFT()
+			cmd := cli.NewTxCmdSendNFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -252,7 +252,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferNFT() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdTransferNFTFrom() {
+func (s *IntegrationTestSuite) TestNewTxCmdOperatorSendNFT() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -321,7 +321,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferNFTFrom() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdTransferNFTFrom()
+			cmd := cli.NewTxCmdOperatorSendNFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -728,7 +728,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurnFT() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdBurnFTFrom() {
+func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurnFT() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -783,7 +783,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurnFTFrom() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdBurnFTFrom()
+			cmd := cli.NewTxCmdOperatorBurnFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -864,7 +864,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurnNFT() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurnNFTFrom() {
+func (s *IntegrationTestSuite) TestNewTxCmdOperatorOperatorBurnNFT() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -919,7 +919,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdOperatorBurnNFTFrom() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdBurnNFTFrom()
+			cmd := cli.NewTxCmdOperatorBurnNFT()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -1148,7 +1148,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdDetach() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdAttachFrom() {
+func (s *IntegrationTestSuite) TestNewTxCmdOperatorAttach() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -1208,7 +1208,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAttachFrom() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdAttachFrom()
+			cmd := cli.NewTxCmdOperatorAttach()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -1223,7 +1223,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdAttachFrom() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdDetachFrom() {
+func (s *IntegrationTestSuite) TestNewTxCmdOperatorDetach() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -1278,7 +1278,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdDetachFrom() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdDetachFrom()
+			cmd := cli.NewTxCmdOperatorDetach()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -1410,7 +1410,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevokePermission() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
+func (s *IntegrationTestSuite) TestNewTxCmdAuthorizeOperator() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -1452,7 +1452,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdApprove()
+			cmd := cli.NewTxCmdAuthorizeOperator()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -1467,7 +1467,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewTxCmdDisapprove() {
+func (s *IntegrationTestSuite) TestNewTxCmdRevokeOperator() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -1509,7 +1509,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdDisapprove() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewTxCmdDisapprove()
+			cmd := cli.NewTxCmdRevokeOperator()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
