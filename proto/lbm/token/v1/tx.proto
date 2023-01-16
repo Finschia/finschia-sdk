@@ -247,8 +247,8 @@ message MsgIssue {
   string name = 1;
   // symbol is an abbreviated name for token class. mandatory (not ERC20 compliant).
   string symbol = 2;
-  // image_uri is an uri for the image of the token class stored off chain.
-  string image_uri = 3;
+  // uri for the image of the token class stored off chain.
+  string uri = 3;
   // meta is a brief description of token class.
   string meta = 4;
   // decimals is the number of decimals which one must divide the amount by to get its user representation.

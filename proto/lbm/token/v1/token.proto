@@ -18,8 +18,8 @@ message Contract {
   string name = 2;
   // symbol is an abbreviated name for contract. mandatory (not ERC20 compliant).
   string symbol = 3;
-  // image_uri is an uri for the image of the contract stored off chain.
-  string image_uri = 4;
+  // an uri for the image of the contract stored off chain.
+  string uri = 4;
   // meta is a brief description of contract.
   string meta = 5;
   // decimals is the number of decimals which one must divide the amount by to get its user representation.

@@ -127,7 +127,7 @@ message EventCreatedContract {
   // metadata of the contract.
   string meta = 4;
   // uri for the contract image stored off chain.
-  string base_img_uri = 5;
+  string uri = 5;
 }
 
 // EventCreatedFTClass is emitted when a new fungible token class is created.

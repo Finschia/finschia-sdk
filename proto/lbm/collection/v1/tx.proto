@@ -367,8 +367,8 @@ message MsgCreateContract {
 
   // name defines the human-readable name of the contract.
   string name = 2;
-  // base img uri is an uri for the contract image stored off chain.
-  string base_img_uri = 3;
+  // uri for the contract image stored off chain.
+  string uri = 3;
   // meta is a brief description of the contract.
   string meta = 4;
 }
@@ -601,7 +601,7 @@ message MsgModify {
   // Note: if token type is of FTs, the index cannot be empty.
   string token_index = 4;
   // changes to apply.
-  // on modifying collection: name, base_img_uri, meta.
+  // on modifying collection: name, uri, meta.
   // on modifying token type and token: name, meta.
   repeated Change changes = 5 [(gogoproto.nullable) = false];
 }

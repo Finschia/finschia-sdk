@@ -24719,11 +24719,9 @@ paths:
                       description: >-
                         symbol is an abbreviated name for contract. mandatory
                         (not ERC20 compliant).
-                    image_uri:
+                    uri:
                       type: string
-                      description: >-
-                        image_uri is an uri for the image of the contract stored
-                        off chain.
+                      description: an uri for the image of the contract stored off chain.
                     meta:
                       type: string
                       description: meta is a brief description of contract.
@@ -24877,11 +24875,9 @@ paths:
                     description: >-
                       symbol is an abbreviated name for contract. mandatory (not
                       ERC20 compliant).
-                  image_uri:
+                  uri:
                     type: string
-                    description: >-
-                      image_uri is an uri for the image of the contract stored
-                      off chain.
+                    description: an uri for the image of the contract stored off chain.
                   meta:
                     type: string
                     description: meta is a brief description of contract.
@@ -25523,11 +25519,9 @@ paths:
                   meta:
                     type: string
                     description: meta is a brief description of the contract.
-                  base_img_uri:
+                  uri:
                     type: string
-                    description: >-
-                      base img uri is an uri for the contract image stored off
-                      chain.
+                    description: uri for the contract image stored off chain.
             description: >-
               QueryContractResponse is the response type for the Query/Contract
               RPC method.
@@ -51916,9 +51910,9 @@ definitions:
         description: >-
           symbol is an abbreviated name for contract. mandatory (not ERC20
           compliant).
-      image_uri:
+      uri:
         type: string
-        description: image_uri is an uri for the image of the contract stored off chain.
+        description: an uri for the image of the contract stored off chain.
       meta:
         type: string
         description: meta is a brief description of contract.
@@ -52035,11 +52029,9 @@ definitions:
             description: >-
               symbol is an abbreviated name for contract. mandatory (not ERC20
               compliant).
-          image_uri:
+          uri:
             type: string
-            description: >-
-              image_uri is an uri for the image of the contract stored off
-              chain.
+            description: an uri for the image of the contract stored off chain.
           meta:
             type: string
             description: meta is a brief description of contract.
@@ -52078,11 +52070,9 @@ definitions:
               description: >-
                 symbol is an abbreviated name for contract. mandatory (not ERC20
                 compliant).
-            image_uri:
+            uri:
               type: string
-              description: >-
-                image_uri is an uri for the image of the contract stored off
-                chain.
+              description: an uri for the image of the contract stored off chain.
             meta:
               type: string
               description: meta is a brief description of contract.
@@ -52200,9 +52190,9 @@ definitions:
       meta:
         type: string
         description: meta is a brief description of the contract.
-      base_img_uri:
+      uri:
         type: string
-        description: base img uri is an uri for the contract image stored off chain.
+        description: uri for the contract image stored off chain.
     description: Contract defines the information of the contract for the collection.
   lbm.collection.v1.Grant:
     type: object
@@ -52406,9 +52396,9 @@ definitions:
           meta:
             type: string
             description: meta is a brief description of the contract.
-          base_img_uri:
+          uri:
             type: string
-            description: base img uri is an uri for the contract image stored off chain.
+            description: uri for the contract image stored off chain.
     description: >-
       QueryContractResponse is the response type for the Query/Contract RPC
       method.

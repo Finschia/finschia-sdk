@@ -22,8 +22,8 @@ message Contract {
   string name = 2;
   // meta is a brief description of the contract.
   string meta = 3;
-  // base img uri is an uri for the contract image stored off chain.
-  string base_img_uri = 4;
+  // uri for the contract image stored off chain.
+  string uri = 4;
 }
 
 // FTClass defines the class of fungible token.

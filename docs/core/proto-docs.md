@@ -9116,7 +9116,7 @@ Contract defines the information of the contract for the collection.
 | `id` | [string](#string) |  | contract_id defines the unique identifier of the contract. |
 | `name` | [string](#string) |  | name defines the human-readable name of the contract. |
 | `meta` | [string](#string) |  | meta is a brief description of the contract. |
-| `base_img_uri` | [string](#string) |  | base img uri is an uri for the contract image stored off chain. |
+| `uri` | [string](#string) |  | uri for the contract image stored off chain. |
 
 
 
@@ -9401,7 +9401,7 @@ Since: 0.46.0 (finschia)
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `name` | [string](#string) |  | name of the contract. |
 | `meta` | [string](#string) |  | metadata of the contract. |
-| `base_img_uri` | [string](#string) |  | uri for the contract image stored off chain. |
+| `uri` | [string](#string) |  | uri for the contract image stored off chain. |
 
 
 
@@ -10991,7 +10991,7 @@ Signer: `owner`
 | ----- | ---- | ----- | ----------- |
 | `owner` | [string](#string) |  | address which all the permissions on the contract will be granted to (not a permanent property). |
 | `name` | [string](#string) |  | name defines the human-readable name of the contract. |
-| `base_img_uri` | [string](#string) |  | base img uri is an uri for the contract image stored off chain. |
+| `uri` | [string](#string) |  | uri for the contract image stored off chain. |
 | `meta` | [string](#string) |  | meta is a brief description of the contract. |
 
 
@@ -11322,7 +11322,7 @@ MsgModify is the Msg/Modify request type.
 | `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
 | `token_type` | [string](#string) |  | token type of the token. |
 | `token_index` | [string](#string) |  | token index of the token. if index is empty, it would modify the corresponding token type. if index is not empty, it would modify the corresponding nft. Note: if token type is of FTs, the index cannot be empty. |
-| `changes` | [Change](#lbm.collection.v1.Change) | repeated | changes to apply. on modifying collection: name, base_img_uri, meta. on modifying token type and token: name, meta. |
+| `changes` | [Change](#lbm.collection.v1.Change) | repeated | changes to apply. on modifying collection: name, uri, meta. on modifying token type and token: name, meta. |
 
 
 
@@ -12890,7 +12890,7 @@ Contract defines token information.
 | `id` | [string](#string) |  | id defines the unique identifier of the contract. |
 | `name` | [string](#string) |  | name defines the human-readable name of the contract. mandatory (not ERC20 compliant). |
 | `symbol` | [string](#string) |  | symbol is an abbreviated name for contract. mandatory (not ERC20 compliant). |
-| `image_uri` | [string](#string) |  | image_uri is an uri for the image of the contract stored off chain. |
+| `uri` | [string](#string) |  | an uri for the image of the contract stored off chain. |
 | `meta` | [string](#string) |  | meta is a brief description of contract. |
 | `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
 | `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint or burn. |
@@ -13858,7 +13858,7 @@ Signer: `owner`
 | ----- | ---- | ----- | ----------- |
 | `name` | [string](#string) |  | name defines the human-readable name of the token class. mandatory (not ERC20 compliant). |
 | `symbol` | [string](#string) |  | symbol is an abbreviated name for token class. mandatory (not ERC20 compliant). |
-| `image_uri` | [string](#string) |  | image_uri is an uri for the image of the token class stored off chain. |
+| `uri` | [string](#string) |  | uri for the image of the token class stored off chain. |
 | `meta` | [string](#string) |  | meta is a brief description of token class. |
 | `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
 | `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint. |
