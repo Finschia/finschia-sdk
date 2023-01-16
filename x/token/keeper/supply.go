@@ -14,7 +14,7 @@ func (k Keeper) Issue(ctx sdk.Context, class token.Contract, owner, to sdk.AccAd
 		ContractId: class.Id,
 		Name:       class.Name,
 		Symbol:     class.Symbol,
-		Uri:        class.ImageUri,
+		Uri:        class.Uri,
 		Meta:       class.Meta,
 		Decimals:   class.Decimals,
 		Mintable:   class.Mintable,
@@ -290,7 +290,7 @@ func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Pair)
 			class.Name = name
 		},
 		token.AttributeKeyImageURI: func(uri string) {
-			class.ImageUri = uri
+			class.Uri = uri
 		},
 		token.AttributeKeyMeta: func(meta string) {
 			class.Meta = meta

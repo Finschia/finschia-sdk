@@ -192,7 +192,7 @@ func (m MsgIssue) ValidateBasic() error {
 		return err
 	}
 
-	if err := validateImageURI(m.ImageUri); err != nil {
+	if err := validateImageURI(m.Uri); err != nil {
 		return err
 	}
 

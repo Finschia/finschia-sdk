@@ -14,7 +14,7 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 		ContractId: contractID,
 		Name:       contract.Name,
 		Meta:       contract.Meta,
-		BaseImgUri: contract.BaseImgUri,
+		Uri:        contract.Uri,
 	}
 	ctx.EventManager().EmitEvent(collection.NewEventCreateCollection(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
@@ -322,7 +322,7 @@ func (k Keeper) ModifyContract(ctx sdk.Context, contractID string, operator sdk.
 			contract.Name = name
 		},
 		collection.AttributeKeyBaseImgURI: func(uri string) {
-			contract.BaseImgUri = uri
+			contract.Uri = uri
 		},
 		collection.AttributeKeyMeta: func(meta string) {
 			contract.Meta = meta

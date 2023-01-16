@@ -244,9 +244,9 @@ func (s msgServer) Disapprove(c context.Context, req *collection.MsgDisapprove) 
 func (s msgServer) CreateContract(c context.Context, req *collection.MsgCreateContract) (*collection.MsgCreateContractResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	contract := collection.Contract{
-		Name:       req.Name,
-		BaseImgUri: req.BaseImgUri,
-		Meta:       req.Meta,
+		Name: req.Name,
+		Uri:  req.Uri,
+		Meta: req.Meta,
 	}
 
 	ownerAddr, err := sdk.AccAddressFromBech32(req.Owner)

@@ -259,10 +259,10 @@ func NewTxCmdCreateContract() *cobra.Command {
 			}
 
 			msg := collection.MsgCreateContract{
-				Owner:      creator,
-				Name:       name,
-				BaseImgUri: baseImgURI,
-				Meta:       meta,
+				Owner: creator,
+				Name:  name,
+				Uri:   baseImgURI,
+				Meta:  meta,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

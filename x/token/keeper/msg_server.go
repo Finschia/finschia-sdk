@@ -155,7 +155,7 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 		Id:       contractID,
 		Name:     req.Name,
 		Symbol:   req.Symbol,
-		ImageUri: req.ImageUri,
+		Uri:      req.Uri,
 		Meta:     req.Meta,
 		Decimals: req.Decimals,
 		Mintable: req.Mintable,

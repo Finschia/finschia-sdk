@@ -43,7 +43,7 @@ func ValidateGenesis(data GenesisState) error {
 		if err := validateSymbol(c.Symbol); err != nil {
 			return err
 		}
-		if err := validateImageURI(c.ImageUri); err != nil {
+		if err := validateImageURI(c.Uri); err != nil {
 			return err
 		}
 		if err := validateMeta(c.Meta); err != nil {

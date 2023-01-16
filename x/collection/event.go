@@ -40,7 +40,7 @@ func NewEventCreateCollection(event EventCreatedContract) sdk.Event {
 		AttributeKeyContractID: event.ContractId,
 		AttributeKeyName:       event.Name,
 		AttributeKeyMeta:       event.Meta,
-		AttributeKeyBaseImgURI: event.BaseImgUri,
+		AttributeKeyBaseImgURI: event.Uri,
 
 		AttributeKeyOwner: event.Creator,
 	}

@@ -470,7 +470,7 @@ func (m MsgCreateContract) ValidateBasic() error {
 		return err
 	}
 
-	if err := validateBaseImgURI(m.BaseImgUri); err != nil {
+	if err := validateBaseImgURI(m.Uri); err != nil {
 		return err
 	}
 

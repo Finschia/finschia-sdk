@@ -234,7 +234,7 @@ func NewTxCmdIssue() *cobra.Command {
 				To:       args[1],
 				Name:     args[2],
 				Symbol:   args[3],
-				ImageUri: imageURI,
+				Uri:      imageURI,
 				Meta:     meta,
 				Amount:   supply,
 				Mintable: mintable,
