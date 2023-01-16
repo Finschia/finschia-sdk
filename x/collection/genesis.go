@@ -19,7 +19,7 @@ func ValidateGenesis(data GenesisState) error {
 	}
 
 	for _, contract := range data.Contracts {
-		if err := ValidateContractID(contract.ContractId); err != nil {
+		if err := ValidateContractID(contract.Id); err != nil {
 			return err
 		}
 

@@ -27,8 +27,8 @@ func NewQueryCmd() *cobra.Command {
 		NewQueryCmdSupply(),
 		NewQueryCmdMinted(),
 		NewQueryCmdBurnt(),
-		NewQueryCmdTokenClass(),
-		NewQueryCmdTokenClasses(),
+		NewQueryCmdContract(),
+		NewQueryCmdContracts(),
 		NewQueryCmdGranteeGrants(),
 		NewQueryCmdApproved(),
 		NewQueryCmdApprovers(),
@@ -142,7 +142,7 @@ func NewQueryCmdBurnt() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdTokenClass() *cobra.Command {
+func NewQueryCmdContract() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "token [contract-id]",
 		Args:    cobra.ExactArgs(1),
@@ -154,7 +154,7 @@ func NewQueryCmdTokenClass() *cobra.Command {
 				return err
 			}
 			queryClient := token.NewQueryClient(clientCtx)
-			res, err := queryClient.TokenClass(cmd.Context(), &token.QueryTokenClassRequest{
+			res, err := queryClient.Contract(cmd.Context(), &token.QueryContractRequest{
 				ContractId: args[0],
 			})
 			if err != nil {
@@ -168,7 +168,7 @@ func NewQueryCmdTokenClass() *cobra.Command {
 	return cmd
 }
 
-func NewQueryCmdTokenClasses() *cobra.Command {
+func NewQueryCmdContracts() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "tokens",
 		Args:    cobra.NoArgs,
@@ -184,7 +184,7 @@ func NewQueryCmdTokenClasses() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			res, err := queryClient.TokenClasses(cmd.Context(), &token.QueryTokenClassesRequest{
+			res, err := queryClient.Contracts(cmd.Context(), &token.QueryContractsRequest{
 				Pagination: pageReq,
 			})
 			if err != nil {

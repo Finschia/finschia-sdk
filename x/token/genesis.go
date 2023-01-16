@@ -34,7 +34,7 @@ func ValidateGenesis(data GenesisState) error {
 	}
 
 	for _, c := range data.Classes {
-		if err := ValidateContractID(c.ContractId); err != nil {
+		if err := ValidateContractID(c.Id); err != nil {
 			return err
 		}
 		if err := validateName(c.Name); err != nil {

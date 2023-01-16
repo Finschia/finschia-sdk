@@ -151,14 +151,14 @@ func (s msgServer) Approve(c context.Context, req *token.MsgApprove) (*token.Msg
 func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssueResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	contractID := s.keeper.classKeeper.NewID(ctx)
-	class := token.TokenClass{
-		ContractId: contractID,
-		Name:       req.Name,
-		Symbol:     req.Symbol,
-		ImageUri:   req.ImageUri,
-		Meta:       req.Meta,
-		Decimals:   req.Decimals,
-		Mintable:   req.Mintable,
+	class := token.Contract{
+		Id:       contractID,
+		Name:     req.Name,
+		Symbol:   req.Symbol,
+		ImageUri: req.ImageUri,
+		Meta:     req.Meta,
+		Decimals: req.Decimals,
+		Mintable: req.Mintable,
 	}
 
 	owner, err := sdk.AccAddressFromBech32(req.Owner)
@@ -171,7 +171,7 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 	}
 	s.keeper.Issue(ctx, class, owner, to, req.Amount)
 
-	return &token.MsgIssueResponse{Id: contractID}, nil
+	return &token.MsgIssueResponse{ContractId: contractID}, nil
 }
 
 // GrantPermission allows one to mint or burn tokens or modify a token metadata

@@ -107,8 +107,8 @@ func (s queryServer) Burnt(c context.Context, req *token.QueryBurntRequest) (*to
 	return &token.QueryBurntResponse{Amount: burnt}, nil
 }
 
-// TokenClass queries an token metadata based on its contract id.
-func (s queryServer) TokenClass(c context.Context, req *token.QueryTokenClassRequest) (*token.QueryTokenClassResponse, error) {
+// Contract queries an token metadata based on its contract id.
+func (s queryServer) Contract(c context.Context, req *token.QueryContractRequest) (*token.QueryContractResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -123,11 +123,11 @@ func (s queryServer) TokenClass(c context.Context, req *token.QueryTokenClassReq
 		return nil, err
 	}
 
-	return &token.QueryTokenClassResponse{Class: *class}, nil
+	return &token.QueryContractResponse{Contract: *class}, nil
 }
 
-// TokenClasses queries all token metadata.
-func (s queryServer) TokenClasses(c context.Context, req *token.QueryTokenClassesRequest) (*token.QueryTokenClassesResponse, error) {
+// Contracts queries all token metadata.
+func (s queryServer) Contracts(c context.Context, req *token.QueryContractsRequest) (*token.QueryContractsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -135,9 +135,9 @@ func (s queryServer) TokenClasses(c context.Context, req *token.QueryTokenClasse
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(s.keeper.storeKey)
 	classStore := prefix.NewStore(store, classKeyPrefix)
-	var classes []token.TokenClass
+	var classes []token.Contract
 	pageRes, err := query.Paginate(classStore, req.Pagination, func(key []byte, value []byte) error {
-		var class token.TokenClass
+		var class token.Contract
 		s.keeper.cdc.MustUnmarshal(value, &class)
 		classes = append(classes, class)
 		return nil
@@ -146,7 +146,7 @@ func (s queryServer) TokenClasses(c context.Context, req *token.QueryTokenClasse
 		return nil, err
 	}
 
-	return &token.QueryTokenClassesResponse{Classes: classes, Pagination: pageRes}, nil
+	return &token.QueryContractsResponse{Contracts: classes, Pagination: pageRes}, nil
 }
 
 func (s queryServer) GranteeGrants(c context.Context, req *token.QueryGranteeGrantsRequest) (*token.QueryGranteeGrantsResponse, error) {

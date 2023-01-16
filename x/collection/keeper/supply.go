@@ -42,7 +42,7 @@ func (k Keeper) CreateContract(ctx sdk.Context, creator sdk.AccAddress, contract
 
 func (k Keeper) createContract(ctx sdk.Context, contract collection.Contract) string {
 	contractID := k.classKeeper.NewID(ctx)
-	contract.ContractId = contractID
+	contract.Id = contractID
 	k.setContract(ctx, contract)
 
 	// set the next class ids
@@ -69,7 +69,7 @@ func (k Keeper) GetContract(ctx sdk.Context, contractID string) (*collection.Con
 
 func (k Keeper) setContract(ctx sdk.Context, contract collection.Contract) {
 	store := ctx.KVStore(k.storeKey)
-	key := contractKey(contract.ContractId)
+	key := contractKey(contract.Id)
 
 	bz, err := contract.Marshal()
 	if err != nil {
