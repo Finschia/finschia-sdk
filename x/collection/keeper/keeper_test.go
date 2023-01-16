@@ -137,8 +137,8 @@ func (s *KeeperTestSuite) SetupTest() {
 
 		for i := range tokens[1:] {
 			r := len(tokens) - 1 - i
-			subject := tokens[r].Id
-			target := tokens[r-1].Id
+			subject := tokens[r].TokenId
+			target := tokens[r-1].TokenId
 			err := s.keeper.Attach(s.ctx, s.contractID, to, subject, target)
 			s.Require().NoError(err)
 		}
@@ -146,7 +146,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		tokens, err = s.keeper.MintNFT(s.ctx, s.contractID, to, newParams(s.nftClassID, remainders))
 		s.Require().NoError(err)
 
-		err = s.keeper.Attach(s.ctx, s.contractID, to, tokens[remainders-1].Id, tokens[remainders-2].Id)
+		err = s.keeper.Attach(s.ctx, s.contractID, to, tokens[remainders-1].TokenId, tokens[remainders-2].TokenId)
 		s.Require().NoError(err)
 
 	}

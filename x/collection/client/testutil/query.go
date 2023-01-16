@@ -981,7 +981,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdRoot() {
 			true,
 			&collection.QueryRootResponse{
 				Root: collection.NFT{
-					Id: collection.NewNFTID(s.nftClassID, 1),
+					TokenId: collection.NewNFTID(s.nftClassID, 1),
 				},
 			},
 		},
@@ -1052,7 +1052,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdParent() {
 			true,
 			&collection.QueryParentResponse{
 				Parent: collection.NFT{
-					Id: collection.NewNFTID(s.nftClassID, 1),
+					TokenId: collection.NewNFTID(s.nftClassID, 1),
 				},
 			},
 		},
@@ -1123,7 +1123,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdChildren() {
 			true,
 			&collection.QueryChildrenResponse{
 				Children: []collection.NFT{{
-					Id: collection.NewNFTID(s.nftClassID, 2),
+					TokenId: collection.NewNFTID(s.nftClassID, 2),
 				}},
 				Pagination: &query.PageResponse{},
 			},

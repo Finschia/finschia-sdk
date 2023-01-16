@@ -180,7 +180,7 @@ func (s *IntegrationTestSuite) createFTClass(contractID string, operator sdk.Acc
 	s.pickEvent(res.Events, &event, func(e proto.Message) {
 		event = *e.(*collection.EventCreatedFTClass)
 	})
-	return event.ClassId
+	return collection.SplitTokenID(event.TokenId)
 }
 
 func (s *IntegrationTestSuite) createNFTClass(contractID string, operator sdk.AccAddress) string {
@@ -201,7 +201,7 @@ func (s *IntegrationTestSuite) createNFTClass(contractID string, operator sdk.Ac
 	s.pickEvent(res.Events, &event, func(e proto.Message) {
 		event = *e.(*collection.EventCreatedNFTClass)
 	})
-	return event.ClassId
+	return event.TokenType
 }
 
 func (s *IntegrationTestSuite) mintFT(contractID string, operator, to sdk.AccAddress, classID string, amount sdk.Int) {
@@ -244,7 +244,7 @@ func (s *IntegrationTestSuite) mintNFT(contractID string, operator, to sdk.AccAd
 	})
 
 	s.Require().Equal(1, len(event.Tokens))
-	return event.Tokens[0].Id
+	return event.Tokens[0].TokenId
 }
 
 func (s *IntegrationTestSuite) burnFT(contractID string, from sdk.AccAddress, amount collection.Coins) {

@@ -184,9 +184,9 @@ func TestValidateGenesis(t *testing.T) {
 			&collection.GenesisState{
 				Nfts: []collection.ContractNFTs{{
 					Nfts: []collection.NFT{{
-						Id:   collection.NewNFTID("deadbeef", 1),
-						Name: "tibetian fox",
-						Meta: "Tibetian Fox",
+						TokenId: collection.NewNFTID("deadbeef", 1),
+						Name:    "tibetian fox",
+						Meta:    "Tibetian Fox",
 					}},
 				}},
 			},
@@ -217,9 +217,9 @@ func TestValidateGenesis(t *testing.T) {
 				Nfts: []collection.ContractNFTs{{
 					ContractId: "deadbeef",
 					Nfts: []collection.NFT{{
-						Id:   collection.NewNFTID("deadbeef", 1),
-						Name: string(make([]rune, 21)),
-						Meta: "Tibetian Fox",
+						TokenId: collection.NewNFTID("deadbeef", 1),
+						Name:    string(make([]rune, 21)),
+						Meta:    "Tibetian Fox",
 					}},
 				}},
 			},
@@ -230,9 +230,9 @@ func TestValidateGenesis(t *testing.T) {
 				Nfts: []collection.ContractNFTs{{
 					ContractId: "deadbeef",
 					Nfts: []collection.NFT{{
-						Id:   collection.NewNFTID("deadbeef", 1),
-						Name: "tibetian fox",
-						Meta: string(make([]rune, 1001)),
+						TokenId: collection.NewNFTID("deadbeef", 1),
+						Name:    "tibetian fox",
+						Meta:    string(make([]rune, 1001)),
 					}},
 				}},
 			},

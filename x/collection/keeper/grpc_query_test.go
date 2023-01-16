@@ -818,7 +818,7 @@ func (s *KeeperTestSuite) TestQueryRoot() {
 			tokenID:    tokenID,
 			valid:      true,
 			postTest: func(res *collection.QueryRootResponse) {
-				s.Require().Equal(collection.NewNFTID(s.nftClassID, 1), res.Root.Id)
+				s.Require().Equal(collection.NewNFTID(s.nftClassID, 1), res.Root.TokenId)
 			},
 		},
 		"invalid contract id": {
@@ -868,7 +868,7 @@ func (s *KeeperTestSuite) TestQueryParent() {
 			tokenID:    tokenID,
 			valid:      true,
 			postTest: func(res *collection.QueryParentResponse) {
-				s.Require().Equal(collection.NewNFTID(s.nftClassID, 1), res.Parent.Id)
+				s.Require().Equal(collection.NewNFTID(s.nftClassID, 1), res.Parent.TokenId)
 			},
 		},
 		"invalid contract id": {
@@ -924,7 +924,7 @@ func (s *KeeperTestSuite) TestQueryChildren() {
 			valid:      true,
 			postTest: func(res *collection.QueryChildrenResponse) {
 				s.Require().Equal(1, len(res.Children))
-				s.Require().Equal(collection.NewNFTID(s.nftClassID, 2), res.Children[0].Id)
+				s.Require().Equal(collection.NewNFTID(s.nftClassID, 2), res.Children[0].TokenId)
 			},
 		},
 		"valid request with limit": {
@@ -934,7 +934,7 @@ func (s *KeeperTestSuite) TestQueryChildren() {
 			count:      1,
 			postTest: func(res *collection.QueryChildrenResponse) {
 				s.Require().Equal(1, len(res.Children))
-				s.Require().Equal(collection.NewNFTID(s.nftClassID, 2), res.Children[0].Id)
+				s.Require().Equal(collection.NewNFTID(s.nftClassID, 2), res.Children[0].TokenId)
 			},
 		},
 		"invalid contract id": {
