@@ -51,18 +51,18 @@ service Query {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}/burnt";
   }
 
-  // TokenClass queries an token metadata based on its contract id.
+  // Contract queries an token metadata based on its contract id.
   // Throws:
   // - ErrInvalidRequest
   //   - `contract_id` is of invalid format.
   // - ErrNotFound
   //   - there is no token class of `contract_id`.
-  rpc TokenClass(QueryTokenClassRequest) returns (QueryTokenClassResponse) {
+  rpc Contract(QueryContractRequest) returns (QueryContractResponse) {
     option (google.api.http).get = "/lbm/token/v1/token_classes/{contract_id}";
   }
 
-  // TokenClasses queries all token metadata.
-  rpc TokenClasses(QueryTokenClassesRequest) returns (QueryTokenClassesResponse) {
+  // Contracts queries all token metadata.
+  rpc Contracts(QueryContractsRequest) returns (QueryContractsResponse) {
     option (google.api.http).get = "/lbm/token/v1/token_classes";
   }
 
@@ -100,7 +100,7 @@ service Query {
 
 // QueryBalanceRequest is the request type for the Query/Balance RPC method
 message QueryBalanceRequest {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
   // address is the address to query balance for.
   string address = 2;
@@ -114,7 +114,7 @@ message QueryBalanceResponse {
 
 // QuerySupplyRequest is the request type for the Query/Supply RPC method
 message QuerySupplyRequest {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
 }
 
@@ -126,7 +126,7 @@ message QuerySupplyResponse {
 
 // QueryMintedRequest is the request type for the Query/Minted RPC method
 message QueryMintedRequest {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
 }
 
@@ -138,7 +138,7 @@ message QueryMintedResponse {
 
 // QueryBurntRequest is the request type for the Query/Burnt RPC method
 message QueryBurntRequest {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
 }
 
@@ -148,36 +148,36 @@ message QueryBurntResponse {
   string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// QueryTokenClassRequest is the request type for the Query/TokenClass RPC method
-message QueryTokenClassRequest {
-  // contract id associated with the token class.
+// QueryContractRequest is the request type for the Query/Contract RPC method
+message QueryContractRequest {
+  // contract id associated with the contract.
   string contract_id = 1;
 }
 
-// QueryTokenClassResponse is the response type for the Query/TokenClass RPC method
-message QueryTokenClassResponse {
-  TokenClass class = 1 [(gogoproto.nullable) = false];
+// QueryContractResponse is the response type for the Query/Contract RPC method
+message QueryContractResponse {
+  Contract contract = 1 [(gogoproto.nullable) = false];
 }
 
-// QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method
-message QueryTokenClassesRequest {
+// QueryContractsRequest is the request type for the Query/Contracts RPC method
+message QueryContractsRequest {
   // pagination defines an optional pagination for the request.
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
-// QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method
-message QueryTokenClassesResponse {
-  // information of the token classes.
-  repeated TokenClass classes = 1 [(gogoproto.nullable) = false];
+// QueryContractsResponse is the response type for the Query/Contracts RPC method
+message QueryContractsResponse {
+  // information of the contracts.
+  repeated Contract contracts = 1 [(gogoproto.nullable) = false];
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC method
 message QueryGranteeGrantsRequest {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
-  // grantee which has permissions on the token class.
+  // grantee which has permissions on the contract.
   string grantee = 2;
 
   // pagination defines an optional pagination for the request.
@@ -194,7 +194,7 @@ message QueryGranteeGrantsResponse {
 
 // QueryApprovedRequest is the request type for the Query/Approved RPC method
 message QueryApprovedRequest {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
   // address of the proxy which the authorization is granted to.
   string proxy = 2;
@@ -209,7 +209,7 @@ message QueryApprovedResponse {
 
 // QueryApproversRequest is the request type for the Query/Approvers RPC method
 message QueryApproversRequest {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
   // address of the proxy which the authorization is granted to.
   string address = 2;

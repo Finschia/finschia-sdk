@@ -140,7 +140,7 @@ func (AttributeKey) EnumDescriptor() ([]byte, []int) {
 //
 // Since: 0.46.0 (finschia)
 type EventSent struct {
-	// contract id associated with the token class.
+	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address which triggered the send.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
@@ -217,7 +217,7 @@ func (m *EventSent) GetTo() string {
 //
 // Since: 0.46.0 (finschia)
 type EventAuthorizedOperator struct {
-	// contract id associated with the token class.
+	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address of a holder which authorized the `operator` address as an operator.
 	Holder string `protobuf:"bytes,2,opt,name=holder,proto3" json:"holder,omitempty"`
@@ -283,7 +283,7 @@ func (m *EventAuthorizedOperator) GetOperator() string {
 //
 // Since: 0.46.0 (finschia)
 type EventRevokedOperator struct {
-	// contract id associated with the token class.
+	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address of a holder which revoked the `operator` address as an operator.
 	Holder string `protobuf:"bytes,2,opt,name=holder,proto3" json:"holder,omitempty"`
@@ -345,21 +345,21 @@ func (m *EventRevokedOperator) GetOperator() string {
 	return ""
 }
 
-// EventIssued is emitted when a new token class is created.
+// EventIssued is emitted when a new contract is created.
 //
 // Since: 0.46.0 (finschia)
 type EventIssued struct {
 	// address which created the contract.
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	// contract id associated with the token class.
+	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,2,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
-	// name defines the human-readable name of the token class.
+	// name defines the human-readable name of the contract.
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	// symbol is an abbreviated name for token class.
+	// symbol is an abbreviated name for contract.
 	Symbol string `protobuf:"bytes,4,opt,name=symbol,proto3" json:"symbol,omitempty"`
-	// uri is an uri for the resource of the token class stored off chain.
+	// uri is an uri for the resource of the contract stored off chain.
 	Uri string `protobuf:"bytes,5,opt,name=uri,proto3" json:"uri,omitempty"`
-	// meta is a brief description of token class.
+	// meta is a brief description of contract.
 	Meta string `protobuf:"bytes,6,opt,name=meta,proto3" json:"meta,omitempty"`
 	// decimals is the number of decimals which one must divide the amount by to get its user representation.
 	Decimals int32 `protobuf:"varint,7,opt,name=decimals,proto3" json:"decimals,omitempty"`
@@ -462,14 +462,14 @@ func (m *EventIssued) GetMintable() bool {
 //
 // Since: 0.46.0 (finschia)
 type EventGranted struct {
-	// contract id associated with the token class.
+	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address which granted the permission to `grantee`.
 	// it would be empty where the event is triggered by the issuance.
 	Granter string `protobuf:"bytes,2,opt,name=granter,proto3" json:"granter,omitempty"`
 	// address of the grantee.
 	Grantee string `protobuf:"bytes,3,opt,name=grantee,proto3" json:"grantee,omitempty"`
-	// permission on the token class.
+	// permission on the contract.
 	Permission Permission `protobuf:"varint,4,opt,name=permission,proto3,enum=lbm.token.v1.Permission" json:"permission,omitempty"`
 }
 
@@ -538,11 +538,11 @@ func (m *EventGranted) GetPermission() Permission {
 //
 // Since: 0.46.0 (finschia)
 type EventRenounced struct {
-	// contract id associated with the token class.
+	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address of the grantee which abandons its grant.
 	Grantee string `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
-	// permission on the token class.
+	// permission on the contract.
 	Permission Permission `protobuf:"varint,3,opt,name=permission,proto3,enum=lbm.token.v1.Permission" json:"permission,omitempty"`
 }
 
@@ -604,7 +604,7 @@ func (m *EventRenounced) GetPermission() Permission {
 //
 // Since: 0.46.0 (finschia)
 type EventMinted struct {
-	// contract id associated with the token class.
+	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address which triggered the mint.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
@@ -672,7 +672,7 @@ func (m *EventMinted) GetTo() string {
 //
 // Since: 0.46.0 (finschia)
 type EventBurned struct {
-	// contract id associated with the token class.
+	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address which triggered the burn.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
@@ -736,11 +736,11 @@ func (m *EventBurned) GetFrom() string {
 	return ""
 }
 
-// EventModified is emitted when the information of a token class is modified.
+// EventModified is emitted when the information of a contract is modified.
 //
 // Since: 0.46.0 (finschia)
 type EventModified struct {
-	// contract id associated with the token class.
+	// contract id associated with the contract.
 	ContractId string `protobuf:"bytes,1,opt,name=contract_id,json=contractId,proto3" json:"contract_id,omitempty"`
 	// address which triggered the modify.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`

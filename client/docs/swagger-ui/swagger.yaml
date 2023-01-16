@@ -24693,42 +24693,40 @@ paths:
         - Query
   /lbm/token/v1/token_classes:
     get:
-      summary: TokenClasses queries all token metadata.
-      operationId: TokenClasses
+      summary: Contracts queries all token metadata.
+      operationId: Contracts
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              classes:
+              contracts:
                 type: array
                 items:
                   type: object
                   properties:
-                    contract_id:
+                    id:
                       type: string
-                      description: >-
-                        contract_id defines the unique identifier of the token
-                        class.
+                      description: id defines the unique identifier of the contract.
                     name:
                       type: string
                       description: >-
-                        name defines the human-readable name of the token class.
+                        name defines the human-readable name of the contract.
                         mandatory (not ERC20 compliant).
                     symbol:
                       type: string
                       description: >-
-                        symbol is an abbreviated name for token class. mandatory
+                        symbol is an abbreviated name for contract. mandatory
                         (not ERC20 compliant).
                     image_uri:
                       type: string
                       description: >-
-                        image_uri is an uri for the image of the token class
-                        stored off chain.
+                        image_uri is an uri for the image of the contract stored
+                        off chain.
                     meta:
                       type: string
-                      description: meta is a brief description of token class.
+                      description: meta is a brief description of contract.
                     decimals:
                       type: integer
                       format: int32
@@ -24741,8 +24739,8 @@ paths:
                       description: >-
                         mintable represents whether the token is allowed to mint
                         or burn.
-                  description: TokenClass defines token information.
-                description: information of the token classes.
+                  description: Contract defines token information.
+                description: information of the contracts.
               pagination:
                 description: pagination defines the pagination in the response.
                 type: object
@@ -24762,8 +24760,8 @@ paths:
 
                       was set, its value is undefined otherwise
             title: >-
-              QueryTokenClassesResponse is the response type for the
-              Query/TokenClasses RPC method
+              QueryContractsResponse is the response type for the
+              Query/Contracts RPC method
         default:
           description: An unexpected error response
           schema:
@@ -24850,45 +24848,43 @@ paths:
   '/lbm/token/v1/token_classes/{contract_id}':
     get:
       summary: |-
-        TokenClass queries an token metadata based on its contract id.
+        Contract queries an token metadata based on its contract id.
         Throws:
         - ErrInvalidRequest
           - `contract_id` is of invalid format.
         - ErrNotFound
           - there is no token class of `contract_id`.
-      operationId: TokenClass
+      operationId: TokenContract
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              class:
+              contract:
                 type: object
                 properties:
-                  contract_id:
+                  id:
                     type: string
-                    description: >-
-                      contract_id defines the unique identifier of the token
-                      class.
+                    description: id defines the unique identifier of the contract.
                   name:
                     type: string
                     description: >-
-                      name defines the human-readable name of the token class.
+                      name defines the human-readable name of the contract.
                       mandatory (not ERC20 compliant).
                   symbol:
                     type: string
                     description: >-
-                      symbol is an abbreviated name for token class. mandatory
-                      (not ERC20 compliant).
+                      symbol is an abbreviated name for contract. mandatory (not
+                      ERC20 compliant).
                   image_uri:
                     type: string
                     description: >-
-                      image_uri is an uri for the image of the token class
-                      stored off chain.
+                      image_uri is an uri for the image of the contract stored
+                      off chain.
                   meta:
                     type: string
-                    description: meta is a brief description of token class.
+                    description: meta is a brief description of contract.
                   decimals:
                     type: integer
                     format: int32
@@ -24901,10 +24897,10 @@ paths:
                     description: >-
                       mintable represents whether the token is allowed to mint
                       or burn.
-                description: TokenClass defines token information.
+                description: Contract defines token information.
             title: >-
-              QueryTokenClassResponse is the response type for the
-              Query/TokenClass RPC method
+              QueryContractResponse is the response type for the Query/Contract
+              RPC method
         default:
           description: An unexpected error response
           schema:
@@ -24929,7 +24925,7 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
-          description: contract id associated with the token class.
+          description: contract id associated with the contract.
           in: path
           required: true
           type: string
@@ -25001,7 +24997,7 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
-          description: contract id associated with the token class.
+          description: contract id associated with the contract.
           in: path
           required: true
           type: string
@@ -25117,7 +25113,7 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
-          description: contract id associated with the token class.
+          description: contract id associated with the contract.
           in: path
           required: true
           type: string
@@ -25182,7 +25178,7 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
-          description: contract id associated with the token class.
+          description: contract id associated with the contract.
           in: path
           required: true
           type: string
@@ -25239,7 +25235,7 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
-          description: contract id associated with the token class.
+          description: contract id associated with the contract.
           in: path
           required: true
           type: string
@@ -25270,7 +25266,7 @@ paths:
                       type: string
                       description: address of the grantee.
                     permission:
-                      description: permission on the token class.
+                      description: permission on the contract.
                       type: string
                       enum:
                         - PERMISSION_UNSPECIFIED
@@ -25325,12 +25321,12 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
-          description: contract id associated with the token class.
+          description: contract id associated with the contract.
           in: path
           required: true
           type: string
         - name: grantee
-          description: grantee which has permissions on the token class.
+          description: grantee which has permissions on the contract.
           in: path
           required: true
           type: string
@@ -25440,7 +25436,7 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
-          description: contract id associated with the token class.
+          description: contract id associated with the contract.
           in: path
           required: true
           type: string
@@ -25492,7 +25488,7 @@ paths:
                       format: byte
       parameters:
         - name: contract_id
-          description: contract id associated with the token class.
+          description: contract id associated with the contract.
           in: path
           required: true
           type: string
@@ -25507,7 +25503,7 @@ paths:
           - `contract_id` is of invalid format.
         - ErrNotFound
           - there is no contract of `contract_id`.
-      operationId: Contract
+      operationId: CollectionContract
       responses:
         '200':
           description: A successful response.
@@ -25518,7 +25514,7 @@ paths:
                 description: contract is the information of the contract.
                 type: object
                 properties:
-                  contract_id:
+                  id:
                     type: string
                     description: contract_id defines the unique identifier of the contract.
                   name:
@@ -51904,6 +51900,39 @@ definitions:
        - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
        - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
        - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+  lbm.token.v1.Contract:
+    type: object
+    properties:
+      id:
+        type: string
+        description: id defines the unique identifier of the contract.
+      name:
+        type: string
+        description: >-
+          name defines the human-readable name of the contract. mandatory (not
+          ERC20 compliant).
+      symbol:
+        type: string
+        description: >-
+          symbol is an abbreviated name for contract. mandatory (not ERC20
+          compliant).
+      image_uri:
+        type: string
+        description: image_uri is an uri for the image of the contract stored off chain.
+      meta:
+        type: string
+        description: meta is a brief description of contract.
+      decimals:
+        type: integer
+        format: int32
+        description: >-
+          decimals is the number of decimals which one must divide the amount by
+          to get its user representation.
+      mintable:
+        type: boolean
+        format: boolean
+        description: mintable represents whether the token is allowed to mint or burn.
+    description: Contract defines token information.
   lbm.token.v1.Grant:
     type: object
     properties:
@@ -51911,7 +51940,7 @@ definitions:
         type: string
         description: address of the grantee.
       permission:
-        description: permission on the token class.
+        description: permission on the contract.
         type: string
         enum:
           - PERMISSION_UNSPECIFIED
@@ -51929,7 +51958,7 @@ definitions:
       - PERMISSION_BURN
     default: PERMISSION_UNSPECIFIED
     description: |-
-      Permission enumerates the valid permissions on a token class.
+      Permission enumerates the valid permissions on a contract.
 
        - PERMISSION_UNSPECIFIED: unspecified defines the default permission which is invalid.
        - PERMISSION_MODIFY: PERMISSION_MODIFY defines a permission to modify a contract.
@@ -51987,6 +52016,111 @@ definitions:
         type: string
         description: the amount of the burnt tokens.
     title: QueryBurntResponse is the response type for the Query/Burnt RPC method
+  lbm.token.v1.QueryContractResponse:
+    type: object
+    properties:
+      contract:
+        type: object
+        properties:
+          id:
+            type: string
+            description: id defines the unique identifier of the contract.
+          name:
+            type: string
+            description: >-
+              name defines the human-readable name of the contract. mandatory
+              (not ERC20 compliant).
+          symbol:
+            type: string
+            description: >-
+              symbol is an abbreviated name for contract. mandatory (not ERC20
+              compliant).
+          image_uri:
+            type: string
+            description: >-
+              image_uri is an uri for the image of the contract stored off
+              chain.
+          meta:
+            type: string
+            description: meta is a brief description of contract.
+          decimals:
+            type: integer
+            format: int32
+            description: >-
+              decimals is the number of decimals which one must divide the
+              amount by to get its user representation.
+          mintable:
+            type: boolean
+            format: boolean
+            description: mintable represents whether the token is allowed to mint or burn.
+        description: Contract defines token information.
+    title: >-
+      QueryContractResponse is the response type for the Query/Contract RPC
+      method
+  lbm.token.v1.QueryContractsResponse:
+    type: object
+    properties:
+      contracts:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              description: id defines the unique identifier of the contract.
+            name:
+              type: string
+              description: >-
+                name defines the human-readable name of the contract. mandatory
+                (not ERC20 compliant).
+            symbol:
+              type: string
+              description: >-
+                symbol is an abbreviated name for contract. mandatory (not ERC20
+                compliant).
+            image_uri:
+              type: string
+              description: >-
+                image_uri is an uri for the image of the contract stored off
+                chain.
+            meta:
+              type: string
+              description: meta is a brief description of contract.
+            decimals:
+              type: integer
+              format: int32
+              description: >-
+                decimals is the number of decimals which one must divide the
+                amount by to get its user representation.
+            mintable:
+              type: boolean
+              format: boolean
+              description: >-
+                mintable represents whether the token is allowed to mint or
+                burn.
+          description: Contract defines token information.
+        description: information of the contracts.
+      pagination:
+        description: pagination defines the pagination in the response.
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+    title: >-
+      QueryContractsResponse is the response type for the Query/Contracts RPC
+      method
   lbm.token.v1.QueryGranteeGrantsResponse:
     type: object
     properties:
@@ -51999,7 +52133,7 @@ definitions:
               type: string
               description: address of the grantee.
             permission:
-              description: permission on the token class.
+              description: permission on the contract.
               type: string
               enum:
                 - PERMISSION_UNSPECIFIED
@@ -52044,144 +52178,6 @@ definitions:
         type: string
         description: the supply of the tokens.
     title: QuerySupplyResponse is the response type for the Query/Supply RPC method
-  lbm.token.v1.QueryTokenClassResponse:
-    type: object
-    properties:
-      class:
-        type: object
-        properties:
-          contract_id:
-            type: string
-            description: contract_id defines the unique identifier of the token class.
-          name:
-            type: string
-            description: >-
-              name defines the human-readable name of the token class. mandatory
-              (not ERC20 compliant).
-          symbol:
-            type: string
-            description: >-
-              symbol is an abbreviated name for token class. mandatory (not
-              ERC20 compliant).
-          image_uri:
-            type: string
-            description: >-
-              image_uri is an uri for the image of the token class stored off
-              chain.
-          meta:
-            type: string
-            description: meta is a brief description of token class.
-          decimals:
-            type: integer
-            format: int32
-            description: >-
-              decimals is the number of decimals which one must divide the
-              amount by to get its user representation.
-          mintable:
-            type: boolean
-            format: boolean
-            description: mintable represents whether the token is allowed to mint or burn.
-        description: TokenClass defines token information.
-    title: >-
-      QueryTokenClassResponse is the response type for the Query/TokenClass RPC
-      method
-  lbm.token.v1.QueryTokenClassesResponse:
-    type: object
-    properties:
-      classes:
-        type: array
-        items:
-          type: object
-          properties:
-            contract_id:
-              type: string
-              description: contract_id defines the unique identifier of the token class.
-            name:
-              type: string
-              description: >-
-                name defines the human-readable name of the token class.
-                mandatory (not ERC20 compliant).
-            symbol:
-              type: string
-              description: >-
-                symbol is an abbreviated name for token class. mandatory (not
-                ERC20 compliant).
-            image_uri:
-              type: string
-              description: >-
-                image_uri is an uri for the image of the token class stored off
-                chain.
-            meta:
-              type: string
-              description: meta is a brief description of token class.
-            decimals:
-              type: integer
-              format: int32
-              description: >-
-                decimals is the number of decimals which one must divide the
-                amount by to get its user representation.
-            mintable:
-              type: boolean
-              format: boolean
-              description: >-
-                mintable represents whether the token is allowed to mint or
-                burn.
-          description: TokenClass defines token information.
-        description: information of the token classes.
-      pagination:
-        description: pagination defines the pagination in the response.
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            title: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-    title: >-
-      QueryTokenClassesResponse is the response type for the Query/TokenClasses
-      RPC method
-  lbm.token.v1.TokenClass:
-    type: object
-    properties:
-      contract_id:
-        type: string
-        description: contract_id defines the unique identifier of the token class.
-      name:
-        type: string
-        description: >-
-          name defines the human-readable name of the token class. mandatory
-          (not ERC20 compliant).
-      symbol:
-        type: string
-        description: >-
-          symbol is an abbreviated name for token class. mandatory (not ERC20
-          compliant).
-      image_uri:
-        type: string
-        description: image_uri is an uri for the image of the token class stored off chain.
-      meta:
-        type: string
-        description: meta is a brief description of token class.
-      decimals:
-        type: integer
-        format: int32
-        description: >-
-          decimals is the number of decimals which one must divide the amount by
-          to get its user representation.
-      mintable:
-        type: boolean
-        format: boolean
-        description: mintable represents whether the token is allowed to mint or burn.
-    description: TokenClass defines token information.
   lbm.collection.v1.Coin:
     type: object
     properties:
@@ -52195,7 +52191,7 @@ definitions:
   lbm.collection.v1.Contract:
     type: object
     properties:
-      contract_id:
+      id:
         type: string
         description: contract_id defines the unique identifier of the contract.
       name:
@@ -52401,7 +52397,7 @@ definitions:
         description: contract is the information of the contract.
         type: object
         properties:
-          contract_id:
+          id:
             type: string
             description: contract_id defines the unique identifier of the contract.
           name:

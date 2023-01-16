@@ -862,10 +862,10 @@
   
 - [lbm/token/v1/token.proto](#lbm/token/v1/token.proto)
     - [Authorization](#lbm.token.v1.Authorization)
+    - [Contract](#lbm.token.v1.Contract)
     - [Grant](#lbm.token.v1.Grant)
     - [Pair](#lbm.token.v1.Pair)
     - [Params](#lbm.token.v1.Params)
-    - [TokenClass](#lbm.token.v1.TokenClass)
   
     - [LegacyPermission](#lbm.token.v1.LegacyPermission)
     - [Permission](#lbm.token.v1.Permission)
@@ -902,16 +902,16 @@
     - [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse)
     - [QueryBurntRequest](#lbm.token.v1.QueryBurntRequest)
     - [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse)
+    - [QueryContractRequest](#lbm.token.v1.QueryContractRequest)
+    - [QueryContractResponse](#lbm.token.v1.QueryContractResponse)
+    - [QueryContractsRequest](#lbm.token.v1.QueryContractsRequest)
+    - [QueryContractsResponse](#lbm.token.v1.QueryContractsResponse)
     - [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest)
     - [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse)
     - [QueryMintedRequest](#lbm.token.v1.QueryMintedRequest)
     - [QueryMintedResponse](#lbm.token.v1.QueryMintedResponse)
     - [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest)
     - [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse)
-    - [QueryTokenClassRequest](#lbm.token.v1.QueryTokenClassRequest)
-    - [QueryTokenClassResponse](#lbm.token.v1.QueryTokenClassResponse)
-    - [QueryTokenClassesRequest](#lbm.token.v1.QueryTokenClassesRequest)
-    - [QueryTokenClassesResponse](#lbm.token.v1.QueryTokenClassesResponse)
   
     - [Query](#lbm.token.v1.Query)
   
@@ -9113,7 +9113,7 @@ Contract defines the information of the contract for the collection.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract_id defines the unique identifier of the contract. |
+| `id` | [string](#string) |  | contract_id defines the unique identifier of the contract. |
 | `name` | [string](#string) |  | name defines the human-readable name of the contract. |
 | `meta` | [string](#string) |  | meta is a brief description of the contract. |
 | `base_img_uri` | [string](#string) |  | base img uri is an uri for the contract image stored off chain. |
@@ -12879,6 +12879,27 @@ Authorization defines an authorization given to the operator on tokens of the ho
 
 
 
+<a name="lbm.token.v1.Contract"></a>
+
+### Contract
+Contract defines token information.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  | id defines the unique identifier of the contract. |
+| `name` | [string](#string) |  | name defines the human-readable name of the contract. mandatory (not ERC20 compliant). |
+| `symbol` | [string](#string) |  | symbol is an abbreviated name for contract. mandatory (not ERC20 compliant). |
+| `image_uri` | [string](#string) |  | image_uri is an uri for the image of the contract stored off chain. |
+| `meta` | [string](#string) |  | meta is a brief description of contract. |
+| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
+| `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint or burn. |
+
+
+
+
+
+
 <a name="lbm.token.v1.Grant"></a>
 
 ### Grant
@@ -12888,7 +12909,7 @@ Grant defines permission given to a grantee.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `grantee` | [string](#string) |  | address of the grantee. |
-| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
+| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the contract. |
 
 
 
@@ -12920,27 +12941,6 @@ Params defines the parameters for the token module.
 
 
 
-
-<a name="lbm.token.v1.TokenClass"></a>
-
-### TokenClass
-TokenClass defines token information.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract_id defines the unique identifier of the token class. |
-| `name` | [string](#string) |  | name defines the human-readable name of the token class. mandatory (not ERC20 compliant). |
-| `symbol` | [string](#string) |  | symbol is an abbreviated name for token class. mandatory (not ERC20 compliant). |
-| `image_uri` | [string](#string) |  | image_uri is an uri for the image of the token class stored off chain. |
-| `meta` | [string](#string) |  | meta is a brief description of token class. |
-| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
-| `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint or burn. |
-
-
-
-
-
  <!-- end messages -->
 
 
@@ -12949,7 +12949,7 @@ TokenClass defines token information.
 ### LegacyPermission
 Deprecated: use Permission
 
-LegacyPermission enumerates the valid permissions on a token class.
+LegacyPermission enumerates the valid permissions on a contract.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
@@ -12963,7 +12963,7 @@ LegacyPermission enumerates the valid permissions on a token class.
 <a name="lbm.token.v1.Permission"></a>
 
 ### Permission
-Permission enumerates the valid permissions on a token class.
+Permission enumerates the valid permissions on a contract.
 
 | Name | Number | Description |
 | ---- | ------ | ----------- |
@@ -12998,7 +12998,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `holder` | [string](#string) |  | address of a holder which authorized the `operator` address as an operator. |
 | `operator` | [string](#string) |  | address which became an operator of `holder`. |
 
@@ -13017,7 +13017,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the burn. |
 | `from` | [string](#string) |  | holder whose tokens were burned. |
 | `amount` | [string](#string) |  | number of tokens burned. |
@@ -13039,10 +13039,10 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `granter` | [string](#string) |  | address which granted the permission to `grantee`. it would be empty where the event is triggered by the issuance. |
 | `grantee` | [string](#string) |  | address of the grantee. |
-| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
+| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the contract. |
 
 
 
@@ -13052,7 +13052,7 @@ Since: 0.46.0 (finschia)
 <a name="lbm.token.v1.EventIssued"></a>
 
 ### EventIssued
-EventIssued is emitted when a new token class is created.
+EventIssued is emitted when a new contract is created.
 
 Since: 0.46.0 (finschia)
 
@@ -13060,11 +13060,11 @@ Since: 0.46.0 (finschia)
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `creator` | [string](#string) |  | address which created the contract. |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `name` | [string](#string) |  | name defines the human-readable name of the token class. |
-| `symbol` | [string](#string) |  | symbol is an abbreviated name for token class. |
-| `uri` | [string](#string) |  | uri is an uri for the resource of the token class stored off chain. |
-| `meta` | [string](#string) |  | meta is a brief description of token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `name` | [string](#string) |  | name defines the human-readable name of the contract. |
+| `symbol` | [string](#string) |  | symbol is an abbreviated name for contract. |
+| `uri` | [string](#string) |  | uri is an uri for the resource of the contract stored off chain. |
+| `meta` | [string](#string) |  | meta is a brief description of contract. |
 | `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
 | `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint. |
 
@@ -13083,7 +13083,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the mint. |
 | `to` | [string](#string) |  | recipient of the tokens. |
 | `amount` | [string](#string) |  | number of tokens minted. |
@@ -13096,14 +13096,14 @@ Since: 0.46.0 (finschia)
 <a name="lbm.token.v1.EventModified"></a>
 
 ### EventModified
-EventModified is emitted when the information of a token class is modified.
+EventModified is emitted when the information of a contract is modified.
 
 Since: 0.46.0 (finschia)
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
 | `changes` | [Pair](#lbm.token.v1.Pair) | repeated | changes on the metadata of the class. |
 
@@ -13122,9 +13122,9 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `grantee` | [string](#string) |  | address of the grantee which abandons its grant. |
-| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the token class. |
+| `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the contract. |
 
 
 
@@ -13141,7 +13141,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `holder` | [string](#string) |  | address of a holder which revoked the `operator` address as an operator. |
 | `operator` | [string](#string) |  | address which was revoked as an operator of `holder`. |
 
@@ -13160,7 +13160,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the send. |
 | `from` | [string](#string) |  | holder whose tokens were sent. |
 | `to` | [string](#string) |  | recipient of the tokens |
@@ -13343,7 +13343,7 @@ GenesisState defines the token module's genesis state.
 | `params` | [Params](#lbm.token.v1.Params) |  | params defines all the paramaters of the module. |
 | `class_state` | [ClassGenesisState](#lbm.token.v1.ClassGenesisState) |  | class_state is the class keeper's genesis state. |
 | `balances` | [ContractBalances](#lbm.token.v1.ContractBalances) | repeated | balances is an array containing the balances of all the accounts. |
-| `classes` | [TokenClass](#lbm.token.v1.TokenClass) | repeated | classes defines the metadata of the differents tokens. |
+| `classes` | [Contract](#lbm.token.v1.Contract) | repeated | classes defines the metadata of the differents tokens. |
 | `grants` | [ContractGrants](#lbm.token.v1.ContractGrants) | repeated | grants defines the grant information. |
 | `authorizations` | [ContractAuthorizations](#lbm.token.v1.ContractAuthorizations) | repeated | authorizations defines the approve information. |
 | `supplies` | [ContractCoin](#lbm.token.v1.ContractCoin) | repeated | supplies represents the total supplies of tokens. |
@@ -13379,7 +13379,7 @@ QueryApprovedRequest is the request type for the Query/Approved RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `proxy` | [string](#string) |  | address of the proxy which the authorization is granted to. |
 | `approver` | [string](#string) |  | approver is the address of the approver of the authorization. |
 
@@ -13411,7 +13411,7 @@ QueryApproversRequest is the request type for the Query/Approvers RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `address` | [string](#string) |  | address of the proxy which the authorization is granted to. |
 | `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
@@ -13444,7 +13444,7 @@ QueryBalanceRequest is the request type for the Query/Balance RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `address` | [string](#string) |  | address is the address to query balance for. |
 
 
@@ -13475,7 +13475,7 @@ QueryBurntRequest is the request type for the Query/Burnt RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 
 
 
@@ -13497,6 +13497,67 @@ QueryBurntResponse is the response type for the Query/Burnt RPC method
 
 
 
+<a name="lbm.token.v1.QueryContractRequest"></a>
+
+### QueryContractRequest
+QueryContractRequest is the request type for the Query/Contract RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryContractResponse"></a>
+
+### QueryContractResponse
+QueryContractResponse is the response type for the Query/Contract RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract` | [Contract](#lbm.token.v1.Contract) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryContractsRequest"></a>
+
+### QueryContractsRequest
+QueryContractsRequest is the request type for the Query/Contracts RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryContractsResponse"></a>
+
+### QueryContractsResponse
+QueryContractsResponse is the response type for the Query/Contracts RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contracts` | [Contract](#lbm.token.v1.Contract) | repeated | information of the contracts. |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
 <a name="lbm.token.v1.QueryGranteeGrantsRequest"></a>
 
 ### QueryGranteeGrantsRequest
@@ -13505,8 +13566,8 @@ QueryGranteeGrantsRequest is the request type for the Query/GranteeGrants RPC me
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-| `grantee` | [string](#string) |  | grantee which has permissions on the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `grantee` | [string](#string) |  | grantee which has permissions on the contract. |
 | `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
@@ -13538,7 +13599,7 @@ QueryMintedRequest is the request type for the Query/Minted RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 
 
 
@@ -13568,7 +13629,7 @@ QuerySupplyRequest is the request type for the Query/Supply RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
 
 
 
@@ -13584,67 +13645,6 @@ QuerySupplyResponse is the response type for the Query/Supply RPC method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `amount` | [string](#string) |  | the supply of the tokens. |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryTokenClassRequest"></a>
-
-### QueryTokenClassRequest
-QueryTokenClassRequest is the request type for the Query/TokenClass RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the token class. |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryTokenClassResponse"></a>
-
-### QueryTokenClassResponse
-QueryTokenClassResponse is the response type for the Query/TokenClass RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `class` | [TokenClass](#lbm.token.v1.TokenClass) |  |  |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryTokenClassesRequest"></a>
-
-### QueryTokenClassesRequest
-QueryTokenClassesRequest is the request type for the Query/TokenClasses RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryTokenClassesResponse"></a>
-
-### QueryTokenClassesResponse
-QueryTokenClassesResponse is the response type for the Query/TokenClasses RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `classes` | [TokenClass](#lbm.token.v1.TokenClass) | repeated | information of the token classes. |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -13668,8 +13668,8 @@ Query defines the gRPC querier service.
 | `Supply` | [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse) | Supply queries the number of tokens from the given contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}/supply|
 | `Minted` | [QueryMintedRequest](#lbm.token.v1.QueryMintedRequest) | [QueryMintedResponse](#lbm.token.v1.QueryMintedResponse) | Minted queries the number of minted tokens from the given contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}/minted|
 | `Burnt` | [QueryBurntRequest](#lbm.token.v1.QueryBurntRequest) | [QueryBurntResponse](#lbm.token.v1.QueryBurntResponse) | Burnt queries the number of burnt tokens from the given contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}/burnt|
-| `TokenClass` | [QueryTokenClassRequest](#lbm.token.v1.QueryTokenClassRequest) | [QueryTokenClassResponse](#lbm.token.v1.QueryTokenClassResponse) | TokenClass queries an token metadata based on its contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}|
-| `TokenClasses` | [QueryTokenClassesRequest](#lbm.token.v1.QueryTokenClassesRequest) | [QueryTokenClassesResponse](#lbm.token.v1.QueryTokenClassesResponse) | TokenClasses queries all token metadata. | GET|/lbm/token/v1/token_classes|
+| `Contract` | [QueryContractRequest](#lbm.token.v1.QueryContractRequest) | [QueryContractResponse](#lbm.token.v1.QueryContractResponse) | Contract queries an token metadata based on its contract id. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrNotFound - there is no token class of `contract_id`. | GET|/lbm/token/v1/token_classes/{contract_id}|
+| `Contracts` | [QueryContractsRequest](#lbm.token.v1.QueryContractsRequest) | [QueryContractsResponse](#lbm.token.v1.QueryContractsResponse) | Contracts queries all token metadata. | GET|/lbm/token/v1/token_classes|
 | `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.token.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.token.v1.QueryGranteeGrantsResponse) | GranteeGrants queries permissions on a given grantee. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `grantee` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}|
 | `Approved` | [QueryApprovedRequest](#lbm.token.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.token.v1.QueryApprovedResponse) | Approved queries authorization on a given proxy approver pair. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. - `approver` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{approver}/proxies/{proxy}|
 | `Approvers` | [QueryApproversRequest](#lbm.token.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.token.v1.QueryApproversResponse) | Approvers queries approvers on a given proxy. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. | GET|/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/approvers|
@@ -13879,7 +13879,7 @@ MsgIssueResponse defines the Msg/Issue response type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  | id of the new token class. |
+| `contract_id` | [string](#string) |  | id of the new contract. |
 
 
 

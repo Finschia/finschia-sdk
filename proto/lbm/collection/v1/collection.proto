@@ -17,7 +17,7 @@ message Params {
 // Contract defines the information of the contract for the collection.
 message Contract {
   // contract_id defines the unique identifier of the contract.
-  string contract_id = 1;
+  string id = 1;
   // name defines the human-readable name of the contract.
   string name = 2;
   // meta is a brief description of the contract.

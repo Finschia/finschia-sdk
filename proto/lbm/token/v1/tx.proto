@@ -267,8 +267,8 @@ message MsgIssue {
 
 // MsgIssueResponse defines the Msg/Issue response type.
 message MsgIssueResponse {
-  // id of the new token class.
-  string id = 1;
+  // id of the new contract.
+  string contract_id = 1;
 }
 
 // MsgGrantPermission defines the Msg/GrantPermission request type.

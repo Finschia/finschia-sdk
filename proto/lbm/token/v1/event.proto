@@ -55,7 +55,7 @@ enum AttributeKey {
 //
 // Since: 0.46.0 (finschia)
 message EventSent {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the send.
   string operator = 2;
@@ -71,7 +71,7 @@ message EventSent {
 //
 // Since: 0.46.0 (finschia)
 message EventAuthorizedOperator {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
   // address of a holder which authorized the `operator` address as an operator.
   string holder = 2;
@@ -83,7 +83,7 @@ message EventAuthorizedOperator {
 //
 // Since: 0.46.0 (finschia)
 message EventRevokedOperator {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
   // address of a holder which revoked the `operator` address as an operator.
   string holder = 2;
@@ -91,21 +91,21 @@ message EventRevokedOperator {
   string operator = 3;
 }
 
-// EventIssued is emitted when a new token class is created.
+// EventIssued is emitted when a new contract is created.
 //
 // Since: 0.46.0 (finschia)
 message EventIssued {
   // address which created the contract.
   string creator = 1;
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 2;
-  // name defines the human-readable name of the token class.
+  // name defines the human-readable name of the contract.
   string name = 3;
-  // symbol is an abbreviated name for token class.
+  // symbol is an abbreviated name for contract.
   string symbol = 4;
-  // uri is an uri for the resource of the token class stored off chain.
+  // uri is an uri for the resource of the contract stored off chain.
   string uri = 5;
-  // meta is a brief description of token class.
+  // meta is a brief description of contract.
   string meta = 6;
   // decimals is the number of decimals which one must divide the amount by to get its user representation.
   int32 decimals = 7;
@@ -119,14 +119,14 @@ message EventIssued {
 //
 // Since: 0.46.0 (finschia)
 message EventGranted {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
   // address which granted the permission to `grantee`.
   // it would be empty where the event is triggered by the issuance.
   string granter = 2;
   // address of the grantee.
   string grantee = 3;
-  // permission on the token class.
+  // permission on the contract.
   Permission permission = 4;
 }
 
@@ -134,11 +134,11 @@ message EventGranted {
 //
 // Since: 0.46.0 (finschia)
 message EventRenounced {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
   // address of the grantee which abandons its grant.
   string grantee = 2;
-  // permission on the token class.
+  // permission on the contract.
   Permission permission = 3;
 }
 
@@ -146,7 +146,7 @@ message EventRenounced {
 //
 // Since: 0.46.0 (finschia)
 message EventMinted {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the mint.
   string operator = 2;
@@ -160,7 +160,7 @@ message EventMinted {
 //
 // Since: 0.46.0 (finschia)
 message EventBurned {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the burn.
   string operator = 2;
@@ -170,11 +170,11 @@ message EventBurned {
   string amount = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// EventModified is emitted when the information of a token class is modified.
+// EventModified is emitted when the information of a contract is modified.
 //
 // Since: 0.46.0 (finschia)
 message EventModified {
-  // contract id associated with the token class.
+  // contract id associated with the contract.
   string contract_id = 1;
   // address which triggered the modify.
   string operator = 2;
