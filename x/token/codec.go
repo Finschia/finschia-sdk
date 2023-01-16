@@ -14,15 +14,15 @@ import (
 // RegisterLegacyAminoCodec registers concrete types on the LegacyAmino codec
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	legacy.RegisterAminoMsg(cdc, &MsgSend{}, "lbm-sdk/MsgSend")
-	legacy.RegisterAminoMsg(cdc, &MsgTransferFrom{}, "lbm-sdk/MsgTransferFrom")
+	legacy.RegisterAminoMsg(cdc, &MsgOperatorSend{}, "lbm-sdk/MsgOperatorSend")
 	legacy.RegisterAminoMsg(cdc, &MsgRevokeOperator{}, "lbm-sdk/MsgRevokeOperator")
-	legacy.RegisterAminoMsg(cdc, &MsgApprove{}, "lbm-sdk/token/MsgApprove") // Changed msgName due to conflict with `x/collection`
+	legacy.RegisterAminoMsg(cdc, &MsgAuthorizeOperator{}, "lbm-sdk/token/MsgAuthorizeOperator") // Changed msgName due to conflict with `x/collection`
 	legacy.RegisterAminoMsg(cdc, &MsgIssue{}, "lbm-sdk/MsgIssue")
 	legacy.RegisterAminoMsg(cdc, &MsgGrantPermission{}, "lbm-sdk/token/MsgGrantPermission")   // Changed msgName due to conflict with `x/collection`
 	legacy.RegisterAminoMsg(cdc, &MsgRevokePermission{}, "lbm-sdk/token/MsgRevokePermission") // Changed msgName due to conflict with `x/collection`
 	legacy.RegisterAminoMsg(cdc, &MsgMint{}, "lbm-sdk/MsgMint")
 	legacy.RegisterAminoMsg(cdc, &MsgBurn{}, "lbm-sdk/MsgBurn")
-	legacy.RegisterAminoMsg(cdc, &MsgBurnFrom{}, "lbm-sdk/MsgBurnFrom")
+	legacy.RegisterAminoMsg(cdc, &MsgOperatorBurn{}, "lbm-sdk/MsgOperatorBurn")
 	legacy.RegisterAminoMsg(cdc, &MsgModify{}, "lbm-sdk/token/MsgModify") // Changed msgName due to conflict with `x/collection`
 }
 
@@ -34,9 +34,9 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgMint{},
 		&MsgBurn{},
 		&MsgModify{},
-		&MsgTransferFrom{},
-		&MsgApprove{},
-		&MsgBurnFrom{},
+		&MsgOperatorSend{},
+		&MsgAuthorizeOperator{},
+		&MsgOperatorBurn{},
 		&MsgGrantPermission{},
 		&MsgRevokePermission{},
 	)

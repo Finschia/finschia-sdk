@@ -38,7 +38,7 @@ func NewTxCmd() *cobra.Command {
 
 	txCmd.AddCommand(
 		NewTxCmdSend(),
-		NewTxCmdTransferFrom(),
+		NewTxCmdOperatorSend(),
 		NewTxCmdApprove(),
 		NewTxCmdRevokeOperator(),
 		NewTxCmdIssue(),
@@ -46,7 +46,7 @@ func NewTxCmd() *cobra.Command {
 		NewTxCmdRevokePermission(),
 		NewTxCmdMint(),
 		NewTxCmdBurn(),
-		NewTxCmdBurnFrom(),
+		NewTxCmdOperatorBurn(),
 		NewTxCmdModify(),
 	)
 
@@ -89,7 +89,7 @@ func NewTxCmdSend() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdTransferFrom() *cobra.Command {
+func NewTxCmdOperatorSend() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "transfer-from [contract-id] [operator] [from] [to] [amount]",
 		Args:  cobra.ExactArgs(5),
@@ -108,9 +108,9 @@ func NewTxCmdTransferFrom() *cobra.Command {
 			if !ok {
 				return sdkerrors.ErrInvalidType.Wrapf("failed to set amount: %s", amountStr)
 			}
-			msg := token.MsgTransferFrom{
+			msg := token.MsgOperatorSend{
 				ContractId: args[0],
-				Proxy:      args[1],
+				Operator:   args[1],
 				From:       args[2],
 				To:         args[3],
 				Amount:     amount,
@@ -140,10 +140,10 @@ func NewTxCmdApprove() *cobra.Command {
 				return err
 			}
 
-			msg := token.MsgApprove{
+			msg := token.MsgAuthorizeOperator{
 				ContractId: args[0],
-				Approver:   args[1],
-				Proxy:      args[2],
+				Holder:     args[1],
+				Operator:   args[2],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -391,7 +391,7 @@ func NewTxCmdBurn() *cobra.Command {
 	return cmd
 }
 
-func NewTxCmdBurnFrom() *cobra.Command {
+func NewTxCmdOperatorBurn() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "burn-from [contract-id] [grantee] [from] [amount]",
 		Args:  cobra.ExactArgs(4),
@@ -411,9 +411,9 @@ func NewTxCmdBurnFrom() *cobra.Command {
 				return sdkerrors.ErrInvalidType.Wrapf("failed to set amount: %s", amountStr)
 			}
 
-			msg := token.MsgBurnFrom{
+			msg := token.MsgOperatorBurn{
 				ContractId: args[0],
-				Proxy:      args[1],
+				Operator:   args[1],
 				From:       args[2],
 				Amount:     amount,
 			}

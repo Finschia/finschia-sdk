@@ -192,10 +192,10 @@ func validateChange(change Attribute, validators map[string]func(string) error) 
 	return validator(change.Value)
 }
 
-var _ sdk.Msg = (*MsgTransferFT)(nil)
+var _ sdk.Msg = (*MsgSendFT)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgTransferFT) ValidateBasic() error {
+func (m MsgSendFT) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
@@ -215,36 +215,36 @@ func (m MsgTransferFT) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgTransferFT) GetSigners() []sdk.AccAddress {
+func (m MsgSendFT) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgTransferFT) Type() string {
+func (m MsgSendFT) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgTransferFT) Route() string {
+func (m MsgSendFT) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgTransferFT) GetSignBytes() []byte {
+func (m MsgSendFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgTransferFTFrom)(nil)
+var _ sdk.Msg = (*MsgOperatorSendFT)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgTransferFTFrom) ValidateBasic() error {
+func (m MsgOperatorSendFT) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
@@ -261,30 +261,30 @@ func (m MsgTransferFTFrom) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgTransferFTFrom) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
+func (m MsgOperatorSendFT) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgTransferFTFrom) Type() string {
+func (m MsgOperatorSendFT) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgTransferFTFrom) Route() string {
+func (m MsgOperatorSendFT) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgTransferFTFrom) GetSignBytes() []byte {
+func (m MsgOperatorSendFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgTransferNFT)(nil)
+var _ sdk.Msg = (*MsgSendNFT)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgTransferNFT) ValidateBasic() error {
+func (m MsgSendNFT) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
@@ -309,36 +309,36 @@ func (m MsgTransferNFT) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgTransferNFT) GetSigners() []sdk.AccAddress {
+func (m MsgSendNFT) GetSigners() []sdk.AccAddress {
 	signer, _ := sdk.AccAddressFromBech32(m.From)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgTransferNFT) Type() string {
+func (m MsgSendNFT) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgTransferNFT) Route() string {
+func (m MsgSendNFT) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgTransferNFT) GetSignBytes() []byte {
+func (m MsgSendNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgTransferNFTFrom)(nil)
+var _ sdk.Msg = (*MsgOperatorSendNFT)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgTransferNFTFrom) ValidateBasic() error {
+func (m MsgOperatorSendNFT) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
@@ -360,101 +360,101 @@ func (m MsgTransferNFTFrom) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgTransferNFTFrom) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
+func (m MsgOperatorSendNFT) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgTransferNFTFrom) Type() string {
+func (m MsgOperatorSendNFT) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgTransferNFTFrom) Route() string {
+func (m MsgOperatorSendNFT) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgTransferNFTFrom) GetSignBytes() []byte {
+func (m MsgOperatorSendNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgApprove)(nil)
+var _ sdk.Msg = (*MsgAuthorizeOperator)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgApprove) ValidateBasic() error {
+func (m MsgAuthorizeOperator) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Approver); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", m.Approver)
+	if _, err := sdk.AccAddressFromBech32(m.Holder); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", m.Holder)
 	}
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
 	return nil
 }
 
 // GetSigners implements Msg
-func (m MsgApprove) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Approver)
+func (m MsgAuthorizeOperator) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Holder)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgApprove) Type() string {
+func (m MsgAuthorizeOperator) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgApprove) Route() string {
+func (m MsgAuthorizeOperator) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgApprove) GetSignBytes() []byte {
+func (m MsgAuthorizeOperator) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgDisapprove)(nil)
+var _ sdk.Msg = (*MsgRevokeOperator)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgDisapprove) ValidateBasic() error {
+func (m MsgRevokeOperator) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Approver); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", m.Approver)
+	if _, err := sdk.AccAddressFromBech32(m.Holder); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", m.Holder)
 	}
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
 	return nil
 }
 
 // GetSigners implements Msg
-func (m MsgDisapprove) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Approver)
+func (m MsgRevokeOperator) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Holder)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgDisapprove) Type() string {
+func (m MsgRevokeOperator) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgDisapprove) Route() string {
+func (m MsgRevokeOperator) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgDisapprove) GetSignBytes() []byte {
+func (m MsgRevokeOperator) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
@@ -746,16 +746,16 @@ func (m MsgBurnFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgBurnFTFrom)(nil)
+var _ sdk.Msg = (*MsgOperatorBurnFT)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgBurnFTFrom) ValidateBasic() error {
+func (m MsgOperatorBurnFT) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
@@ -769,23 +769,23 @@ func (m MsgBurnFTFrom) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgBurnFTFrom) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
+func (m MsgOperatorBurnFT) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgBurnFTFrom) Type() string {
+func (m MsgOperatorBurnFT) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgBurnFTFrom) Route() string {
+func (m MsgOperatorBurnFT) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgBurnFTFrom) GetSignBytes() []byte {
+func (m MsgOperatorBurnFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
@@ -834,16 +834,16 @@ func (m MsgBurnNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgBurnNFTFrom)(nil)
+var _ sdk.Msg = (*MsgOperatorBurnNFT)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgBurnNFTFrom) ValidateBasic() error {
+func (m MsgOperatorBurnNFT) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
@@ -862,23 +862,23 @@ func (m MsgBurnNFTFrom) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgBurnNFTFrom) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
+func (m MsgOperatorBurnNFT) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgBurnNFTFrom) Type() string {
+func (m MsgOperatorBurnNFT) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgBurnNFTFrom) Route() string {
+func (m MsgOperatorBurnNFT) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgBurnNFTFrom) GetSignBytes() []byte {
+func (m MsgOperatorBurnNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
@@ -1135,16 +1135,16 @@ func (m MsgDetach) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgAttachFrom)(nil)
+var _ sdk.Msg = (*MsgOperatorAttach)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgAttachFrom) ValidateBasic() error {
+func (m MsgOperatorAttach) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
@@ -1165,36 +1165,36 @@ func (m MsgAttachFrom) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgAttachFrom) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
+func (m MsgOperatorAttach) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgAttachFrom) Type() string {
+func (m MsgOperatorAttach) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgAttachFrom) Route() string {
+func (m MsgOperatorAttach) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgAttachFrom) GetSignBytes() []byte {
+func (m MsgOperatorAttach) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }
 
-var _ sdk.Msg = (*MsgDetachFrom)(nil)
+var _ sdk.Msg = (*MsgOperatorDetach)(nil)
 
 // ValidateBasic implements Msg.
-func (m MsgDetachFrom) ValidateBasic() error {
+func (m MsgOperatorDetach) ValidateBasic() error {
 	if err := ValidateContractID(m.ContractId); err != nil {
 		return err
 	}
 
-	if _, err := sdk.AccAddressFromBech32(m.Proxy); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", m.Proxy)
+	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
+		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 	if _, err := sdk.AccAddressFromBech32(m.From); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", m.From)
@@ -1208,22 +1208,22 @@ func (m MsgDetachFrom) ValidateBasic() error {
 }
 
 // GetSigners implements Msg
-func (m MsgDetachFrom) GetSigners() []sdk.AccAddress {
-	signer, _ := sdk.AccAddressFromBech32(m.Proxy)
+func (m MsgOperatorDetach) GetSigners() []sdk.AccAddress {
+	signer, _ := sdk.AccAddressFromBech32(m.Operator)
 	return []sdk.AccAddress{signer}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (m MsgDetachFrom) Type() string {
+func (m MsgOperatorDetach) Type() string {
 	return sdk.MsgTypeURL(&m)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (m MsgDetachFrom) Route() string {
+func (m MsgOperatorDetach) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (m MsgDetachFrom) GetSignBytes() []byte {
+func (m MsgOperatorDetach) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
 }

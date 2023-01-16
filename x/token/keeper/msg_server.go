@@ -53,24 +53,24 @@ func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendRe
 	return &token.MsgSendResponse{}, nil
 }
 
-// TransferFrom defines a method to send tokens from one account to another account by the proxy
-func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (*token.MsgTransferFromResponse, error) {
+// OperatorSend defines a method to send tokens from one account to another account by the operator
+func (s msgServer) OperatorSend(c context.Context, req *token.MsgOperatorSend) (*token.MsgOperatorSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
 	from, err := sdk.AccAddressFromBech32(req.From)
 	if err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
 	}
-	proxy, err := sdk.AccAddressFromBech32(req.Proxy)
+	operator, err := sdk.AccAddressFromBech32(req.Operator)
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", req.Proxy)
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
 	}
 	to, err := sdk.AccAddressFromBech32(req.To)
 	if err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.To)
 	}
 
-	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, from, proxy); err != nil {
+	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, from, operator); err != nil {
 		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
 	}
 
@@ -80,7 +80,7 @@ func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (
 
 	event := token.EventSent{
 		ContractId: req.ContractId,
-		Operator:   req.Proxy,
+		Operator:   req.Operator,
 		From:       req.From,
 		To:         req.To,
 		Amount:     req.Amount,
@@ -90,7 +90,7 @@ func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (
 		panic(err)
 	}
 
-	return &token.MsgTransferFromResponse{}, nil
+	return &token.MsgOperatorSendResponse{}, nil
 }
 
 // RevokeOperator revokes one to send tokens on behalf of the token holder
@@ -119,32 +119,32 @@ func (s msgServer) RevokeOperator(c context.Context, req *token.MsgRevokeOperato
 	return &token.MsgRevokeOperatorResponse{}, nil
 }
 
-// Approve allows one to send tokens on behalf of the approver
-func (s msgServer) Approve(c context.Context, req *token.MsgApprove) (*token.MsgApproveResponse, error) {
+// AuthorizeOperator allows one to send tokens on behalf of the holder
+func (s msgServer) AuthorizeOperator(c context.Context, req *token.MsgAuthorizeOperator) (*token.MsgAuthorizeOperatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	approver, err := sdk.AccAddressFromBech32(req.Approver)
+	holder, err := sdk.AccAddressFromBech32(req.Holder)
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid approver address: %s", req.Approver)
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", req.Holder)
 	}
-	proxy, err := sdk.AccAddressFromBech32(req.Proxy)
+	operator, err := sdk.AccAddressFromBech32(req.Operator)
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", req.Proxy)
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
 	}
-	if err := s.keeper.AuthorizeOperator(ctx, req.ContractId, approver, proxy); err != nil {
+	if err := s.keeper.AuthorizeOperator(ctx, req.ContractId, holder, operator); err != nil {
 		return nil, err
 	}
 
 	event := token.EventAuthorizedOperator{
 		ContractId: req.ContractId,
-		Holder:     req.Approver,
-		Operator:   req.Proxy,
+		Holder:     req.Holder,
+		Operator:   req.Operator,
 	}
 	ctx.EventManager().EmitEvent(token.NewEventApproveToken(event))
 	if err := ctx.EventManager().EmitTypedEvent(&event); err != nil {
 		panic(err)
 	}
 
-	return &token.MsgApproveResponse{}, nil
+	return &token.MsgAuthorizeOperatorResponse{}, nil
 }
 
 // Issue defines a method to issue a token
@@ -264,22 +264,22 @@ func (s msgServer) Burn(c context.Context, req *token.MsgBurn) (*token.MsgBurnRe
 	return &token.MsgBurnResponse{}, nil
 }
 
-// BurnFrom defines a method for the proxy to burn tokens on the behalf of the holder.
-func (s msgServer) BurnFrom(c context.Context, req *token.MsgBurnFrom) (*token.MsgBurnFromResponse, error) {
+// OperatorBurn defines a method for the operator to burn tokens on the behalf of the holder.
+func (s msgServer) OperatorBurn(c context.Context, req *token.MsgOperatorBurn) (*token.MsgOperatorBurnResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	proxy, err := sdk.AccAddressFromBech32(req.Proxy)
+	operator, err := sdk.AccAddressFromBech32(req.Operator)
 	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid proxy address: %s", req.Proxy)
+		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
 	}
 	from, err := sdk.AccAddressFromBech32(req.From)
 	if err != nil {
 		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
 	}
-	if err := s.keeper.OperatorBurn(ctx, req.ContractId, proxy, from, req.Amount); err != nil {
+	if err := s.keeper.OperatorBurn(ctx, req.ContractId, operator, from, req.Amount); err != nil {
 		return nil, err
 	}
 
-	return &token.MsgBurnFromResponse{}, nil
+	return &token.MsgOperatorBurnResponse{}, nil
 }
 
 // Modify defines a method to modify a token metadata
