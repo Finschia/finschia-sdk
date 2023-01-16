@@ -9194,7 +9194,7 @@ Since: 0.46.0 (finschia)
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  | id defines the unique identifier of the token. |
+| `token_id` | [string](#string) |  | token id defines the unique identifier of the token. |
 | `name` | [string](#string) |  | name defines the human-readable name of the token. |
 | `meta` | [string](#string) |  | meta is a brief description of the token. |
 
@@ -9420,7 +9420,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the create. |
-| `class_id` | [string](#string) |  | class id associated with the token class. |
+| `token_id` | [string](#string) |  | token id associated with the token class. |
 | `name` | [string](#string) |  | name of the token class. |
 | `meta` | [string](#string) |  | metadata of the token class. |
 | `decimals` | [int32](#int32) |  | decimals of the token class. |
@@ -9443,7 +9443,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the create. |
-| `class_id` | [string](#string) |  | class id associated with the token class. |
+| `token_type` | [string](#string) |  | token type associated with the token class. |
 | `name` | [string](#string) |  | name of the token class. |
 | `meta` | [string](#string) |  | metadata of the token class. |
 
@@ -9586,7 +9586,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
-| `class_id` | [string](#string) |  | class id associated with the token class. |
+| `token_type` | [string](#string) |  | token type associated with the token class. |
 | `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. |
 | `type_name` | [string](#string) |  | type name of the token class. |
 
@@ -11007,7 +11007,7 @@ MsgCreateContractResponse is the Msg/CreateContract response type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  | id of the new contract. |
+| `contract_id` | [string](#string) |  | id of the new contract. |
 
 
 
@@ -11178,7 +11178,7 @@ MsgIssueFTResponse is the Msg/IssueFT response type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  | id of the new token type. |
+| `token_id` | [string](#string) |  | id of the token. |
 
 
 
@@ -11221,7 +11221,7 @@ MsgIssueNFTResponse is the Msg/IssueNFT response type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `id` | [string](#string) |  | id of the new token type. |
+| `token_type` | [string](#string) |  | id of the new token type. |
 
 
 
@@ -11303,7 +11303,7 @@ MsgMintNFTResponse is the Msg/MintNFT response type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `ids` | [string](#string) | repeated | ids of the new non-fungible tokens. |
+| `token_ids` | [string](#string) | repeated | ids of the new non-fungible tokens. |
 
 
 

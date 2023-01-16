@@ -67,8 +67,8 @@ message NFTClass {
 //
 // Since: 0.46.0 (finschia)
 message NFT {
-  // id defines the unique identifier of the token.
-  string id = 1;
+  // token id defines the unique identifier of the token.
+  string token_id = 1;
   // name defines the human-readable name of the token.
   string name = 2;
   // meta is a brief description of the token.

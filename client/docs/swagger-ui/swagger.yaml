@@ -27840,9 +27840,9 @@ paths:
                 items:
                   type: object
                   properties:
-                    id:
+                    token_id:
                       type: string
-                      description: id defines the unique identifier of the token.
+                      description: token id defines the unique identifier of the token.
                     name:
                       type: string
                       description: name defines the human-readable name of the token.
@@ -28156,9 +28156,9 @@ paths:
               parent:
                 type: object
                 properties:
-                  id:
+                  token_id:
                     type: string
-                    description: id defines the unique identifier of the token.
+                    description: token id defines the unique identifier of the token.
                   name:
                     type: string
                     description: name defines the human-readable name of the token.
@@ -28394,9 +28394,9 @@ paths:
               root:
                 type: object
                 properties:
-                  id:
+                  token_id:
                     type: string
-                    description: id defines the unique identifier of the token.
+                    description: token id defines the unique identifier of the token.
                   name:
                     type: string
                     description: name defines the human-readable name of the token.
@@ -52231,9 +52231,9 @@ definitions:
   lbm.collection.v1.NFT:
     type: object
     properties:
-      id:
+      token_id:
         type: string
-        description: id defines the unique identifier of the token.
+        description: token id defines the unique identifier of the token.
       name:
         type: string
         description: name defines the human-readable name of the token.
@@ -52359,9 +52359,9 @@ definitions:
         items:
           type: object
           properties:
-            id:
+            token_id:
               type: string
-              description: id defines the unique identifier of the token.
+              description: token id defines the unique identifier of the token.
             name:
               type: string
               description: name defines the human-readable name of the token.
@@ -52522,9 +52522,9 @@ definitions:
       parent:
         type: object
         properties:
-          id:
+          token_id:
             type: string
-            description: id defines the unique identifier of the token.
+            description: token id defines the unique identifier of the token.
           name:
             type: string
             description: name defines the human-readable name of the token.
@@ -52542,9 +52542,9 @@ definitions:
       root:
         type: object
         properties:
-          id:
+          token_id:
             type: string
-            description: id defines the unique identifier of the token.
+            description: token id defines the unique identifier of the token.
           name:
             type: string
             description: name defines the human-readable name of the token.

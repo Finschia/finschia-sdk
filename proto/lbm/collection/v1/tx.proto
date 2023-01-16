@@ -376,7 +376,7 @@ message MsgCreateContract {
 // MsgCreateContractResponse is the Msg/CreateContract response type.
 message MsgCreateContractResponse {
   // id of the new contract.
-  string id = 1;
+  string contract_id = 1;
 }
 
 // MsgIssueFT is the Msg/IssueFT request type.
@@ -420,8 +420,8 @@ message MsgIssueFT {
 
 // MsgIssueFTResponse is the Msg/IssueFT response type.
 message MsgIssueFTResponse {
-  // id of the new token type.
-  string id = 1;
+  // id of the token.
+  string token_id = 1;
 }
 
 // MsgIssueNFT is the Msg/IssueNFT request type.
@@ -450,7 +450,7 @@ message MsgIssueNFT {
 // MsgIssueNFTResponse is the Msg/IssueNFT response type.
 message MsgIssueNFTResponse {
   // id of the new token type.
-  string id = 1;
+  string token_type = 1;
 }
 
 // MsgMintFT is the Msg/MintFT request type.
@@ -505,7 +505,7 @@ message MsgMintNFT {
 // MsgMintNFTResponse is the Msg/MintNFT response type.
 message MsgMintNFTResponse {
   // ids of the new non-fungible tokens.
-  repeated string ids = 1;
+  repeated string token_ids = 1;
 }
 
 // MintNFTParam defines a parameter for minting nft.
