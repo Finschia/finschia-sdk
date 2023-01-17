@@ -34,7 +34,8 @@ type KeeperTestSuite struct {
 
 	balance sdk.Int
 
-	numNFTs int
+	numNFTs  int
+	numRoots int
 }
 
 func createRandomAccounts(accNum int) []sdk.AccAddress {
@@ -131,10 +132,13 @@ func (s *KeeperTestSuite) SetupTest() {
 	// 1 for the successful attach, 2 for the failure
 	remainders := 1 + 2
 	s.numNFTs = collection.DefaultDepthLimit + remainders
+	// 3 chains, and each chain has depth_limit, 1 and 2 of its length.
+	s.numRoots = 3
 	for _, to := range []sdk.AccAddress{s.customer, s.operator, s.vendor} {
 		tokens, err := s.keeper.MintNFT(s.ctx, s.contractID, to, newParams(s.nftClassID, collection.DefaultDepthLimit))
 		s.Require().NoError(err)
 
+		// create a chain of its length depth_limit
 		for i := range tokens[1:] {
 			r := len(tokens) - 1 - i
 			subject := tokens[r].Id
@@ -146,6 +150,7 @@ func (s *KeeperTestSuite) SetupTest() {
 		tokens, err = s.keeper.MintNFT(s.ctx, s.contractID, to, newParams(s.nftClassID, remainders))
 		s.Require().NoError(err)
 
+		// a chain of length 2
 		err = s.keeper.Attach(s.ctx, s.contractID, to, tokens[remainders-1].Id, tokens[remainders-2].Id)
 		s.Require().NoError(err)
 
