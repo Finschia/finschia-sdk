@@ -85,7 +85,6 @@ func (s queryServer) AllBalances(c context.Context, req *collection.QueryAllBala
 
 		coin := collection.NewCoin(tokenID, balance)
 		balances = append(balances, coin)
-
 		return nil
 	})
 	if err != nil {
