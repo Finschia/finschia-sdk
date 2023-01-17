@@ -81,7 +81,7 @@ func (s *KeeperTestSuite) TestQueryAllBalances() {
 			address:    s.customer,
 			valid:      true,
 			postTest: func(res *collection.QueryAllBalancesResponse) {
-				s.Require().Equal(s.numNFTs+1, len(res.Balances))
+				s.Require().Equal(2+1+1, len(res.Balances))
 			},
 		},
 		"valid request with limit": {

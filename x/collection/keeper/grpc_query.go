@@ -86,15 +86,6 @@ func (s queryServer) AllBalances(c context.Context, req *collection.QueryAllBala
 		coin := collection.NewCoin(tokenID, balance)
 		balances = append(balances, coin)
 
-		if err := collection.ValidateNFTID(tokenID); err == nil {
-			s.keeper.iterateDescendants(ctx, req.ContractId, tokenID, func(tokenID string, _ int) (stop bool) {
-				coin := collection.NewCoin(tokenID, sdk.OneInt())
-				balances = append(balances, coin)
-
-				return false
-			})
-		}
-
 		return nil
 	})
 	if err != nil {
