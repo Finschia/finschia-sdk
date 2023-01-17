@@ -7,7 +7,7 @@ import (
 
 // InitGenesis new collection genesis
 func (k Keeper) InitGenesis(ctx sdk.Context, data *collection.GenesisState) {
-	k.setParams(ctx, data.Params)
+	k.SetParams(ctx, data.Params)
 
 	for _, contract := range data.Contracts {
 		k.setContract(ctx, contract)

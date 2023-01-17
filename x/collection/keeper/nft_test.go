@@ -13,8 +13,8 @@ func (s *KeeperTestSuite) TestAttach() {
 	}{
 		"valid request": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
-			target:     collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit),
+			subject:    collection.NewNFTID(s.nftClassID, s.depthLimit+1),
+			target:     collection.NewNFTID(s.nftClassID, s.depthLimit),
 		},
 		"not owner of subject": {
 			contractID: s.contractID,
@@ -24,19 +24,19 @@ func (s *KeeperTestSuite) TestAttach() {
 		},
 		"target not found": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
+			subject:    collection.NewNFTID(s.nftClassID, s.depthLimit+1),
 			target:     collection.NewNFTID(s.nftClassID, s.numNFTs*3+1),
 			err:        collection.ErrTokenNotExist,
 		},
 		"result exceeds the limit": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+2),
-			target:     collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit),
+			subject:    collection.NewNFTID(s.nftClassID, s.depthLimit+2),
+			target:     collection.NewNFTID(s.nftClassID, s.depthLimit),
 			err:        collection.ErrCompositionTooDeep,
 		},
 		"not owner of target": {
 			contractID: s.contractID,
-			subject:    collection.NewNFTID(s.nftClassID, collection.DefaultDepthLimit+1),
+			subject:    collection.NewNFTID(s.nftClassID, s.depthLimit+1),
 			target:     collection.NewNFTID(s.nftClassID, s.numNFTs+1),
 			err:        collection.ErrTokenNotOwnedBy,
 		},
