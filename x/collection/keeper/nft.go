@@ -8,8 +8,7 @@ import (
 )
 
 func legacyNFTNotFoundError(k Keeper, ctx sdk.Context, contractID string, tokenID string) error {
-	// legacy
-	if err2 := collection.ValidateLegacyNFTID(tokenID); err2 == nil {
+	if err2 := collection.ValidateLegacyNFTID(tokenID); err2 == nil /* "==" is intentional */ {
 		return collection.ErrTokenNotExist.Wrap(tokenID)
 	}
 
