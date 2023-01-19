@@ -315,7 +315,7 @@ func NewSimApp(
 
 	classKeeper := classkeeper.NewKeeper(appCodec, keys[class.StoreKey])
 	app.TokenKeeper = tokenkeeper.NewKeeper(appCodec, keys[token.StoreKey], classKeeper)
-	app.CollectionKeeper = collectionkeeper.NewKeeper(appCodec, keys[collection.StoreKey], app.AccountKeeper, classKeeper)
+	app.CollectionKeeper = collectionkeeper.NewKeeper(appCodec, keys[collection.StoreKey], classKeeper)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
