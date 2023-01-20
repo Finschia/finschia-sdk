@@ -48,8 +48,8 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 ### Bug Fixes
 * (client) [\#817](https://github.com/line/lbm-sdk/pull/817) remove support for composite (BLS) type
-
 * (x/foundation) [#834](https://github.com/line/lbm-sdk/pull/834) Apply foundation audit
+* (x/token,collection) [#863](https://github.com/line/lbm-sdk/pull/863) Update x/collection,token proto
 
 ### Removed
 * [\#853](https://github.com/line/lbm-sdk/pull/853) remove useless stub BeginBlock, EndBlock methods from modules below
