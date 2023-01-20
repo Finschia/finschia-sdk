@@ -24849,13 +24849,7 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}':
     get:
-      summary: |-
-        TokenClass queries an token metadata based on its contract id.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `contract_id`.
+      summary: TokenClass queries an token metadata based on its contract id.
       operationId: TokenClass
       responses:
         '200':
@@ -24937,13 +24931,7 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/accounts/{address}/approvers':
     get:
-      summary: |-
-        Approvers queries approvers on a given proxy.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrInvalidAddress
-          - `proxy` is of invalid format.
+      summary: Approvers queries approvers on a given proxy.
       operationId: TokenApprovers
       responses:
         '200':
@@ -25072,14 +25060,7 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/accounts/{approver}/proxies/{proxy}':
     get:
-      summary: |-
-        Approved queries authorization on a given proxy approver pair.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrInvalidAddress
-          - `proxy` is of invalid format.
-          - `approver` is of invalid format.
+      summary: Approved queries authorization on a given proxy approver pair.
       operationId: TokenApproved
       responses:
         '200':
@@ -25138,13 +25119,6 @@ paths:
       summary: >-
         Balance queries the number of tokens of a given contract owned by the
         address.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrInvalidAddress
-          - `address` is of invalid format.
       operationId: TokenBalance
       responses:
         '200':
@@ -25195,13 +25169,7 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/burnt':
     get:
-      summary: |-
-        Burnt queries the number of burnt tokens from the given contract id.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `contract_id`.
+      summary: Burnt queries the number of burnt tokens from the given contract id.
       operationId: TokenBurnt
       responses:
         '200':
@@ -25247,13 +25215,7 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/grants/{grantee}':
     get:
-      summary: |-
-        GranteeGrants queries permissions on a given grantee.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrInvalidAddress
-          - `grantee` is of invalid format.
+      summary: GranteeGrants queries permissions on a given grantee.
       operationId: TokenGranteeGrants
       responses:
         '200':
@@ -25396,13 +25358,7 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/minted':
     get:
-      summary: |-
-        Minted queries the number of minted tokens from the given contract id.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `contract_id`.
+      summary: Minted queries the number of minted tokens from the given contract id.
       operationId: TokenMinted
       responses:
         '200':
@@ -25448,13 +25404,7 @@ paths:
         - Query
   '/lbm/token/v1/token_classes/{contract_id}/supply':
     get:
-      summary: |-
-        Supply queries the number of tokens from the given contract id.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `contract_id`.
+      summary: Supply queries the number of tokens from the given contract id.
       operationId: TokenSupply
       responses:
         '200':
@@ -25500,13 +25450,7 @@ paths:
         - Query
   '/lbm/collection/v1/contracts/{contract_id}':
     get:
-      summary: |-
-        Contract queries a contract metadata based on its contract id.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrNotFound
-          - there is no contract of `contract_id`.
+      summary: Contract queries a contract metadata based on its contract id.
       operationId: Contract
       responses:
         '200':
@@ -25734,13 +25678,7 @@ paths:
         - Query
   '/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers':
     get:
-      summary: |-
-        Approvers queries approvers of a given proxy.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrInvalidAddress
-          - `proxy` is of invalid format.
+      summary: Approvers queries approvers of a given proxy.
       operationId: CollectionApprovers
       responses:
         '200':
@@ -26035,16 +25973,7 @@ paths:
         - Query
   '/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}':
     get:
-      summary: |-
-        Approved queries whether the proxy is approved by the approver.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrInvalidAddress
-          - `proxy` is of invalid format.
-          - `approver` is of invalid format.
-        - ErrNotFound
-          - there is no authorization given by `approver` to `proxy`.
+      summary: Approved queries whether the proxy is approved by the approver.
       operationId: CollectionApproved
       responses:
         '200':
@@ -26270,13 +26199,6 @@ paths:
       summary: >-
         AllBalances queries the balance of all token classes for a single
         account.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrInvalidAddress
-          - `address` is of invalid format.
       operationId: CollectionAllBalances
       responses:
         '200':
@@ -26583,13 +26505,6 @@ paths:
       summary: >-
         Balance queries the balance of a single token class for a single
         account.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrInvalidAddress
-          - `address` is of invalid format.
       operationId: CollectionBalance
       responses:
         '200':
@@ -26822,14 +26737,6 @@ paths:
       summary: >-
         FTBurnt queries the number of burnt tokens from a given contract id and
         token id.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `class_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `class_id`.
       operationId: FTBurnt
       responses:
         '200':
@@ -27050,14 +26957,6 @@ paths:
       summary: >-
         FTMinted queries the number of minted tokens from a given contract id
         and token id.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `class_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `class_id`.
       operationId: FTMinted
       responses:
         '200':
@@ -27278,14 +27177,6 @@ paths:
       summary: >-
         FTSupply queries the number of tokens from a given contract id and token
         id.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `class_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `class_id`.
       operationId: FTSupply
       responses:
         '200':
@@ -27503,13 +27394,7 @@ paths:
         - Query
   '/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}':
     get:
-      summary: |-
-        GranteeGrants queries all permissions on a given grantee.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrInvalidAddress
-          - `grantee` is of invalid format.
+      summary: GranteeGrants queries all permissions on a given grantee.
       operationId: CollectionGranteeGrants
       responses:
         '200':
@@ -27822,12 +27707,7 @@ paths:
         - Query
   '/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children':
     get:
-      summary: |-
-        Children queries the children of a given nft.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `token_id` is of invalid format.
+      summary: Children queries the children of a given nft.
       operationId: Children
       responses:
         '200':
@@ -28137,15 +28017,7 @@ paths:
         - Query
   '/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent':
     get:
-      summary: |-
-        Parent queries the parent of a given nft.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `token_id` is of invalid format.
-        - ErrNotFound
-          - there is no token of `token_id`.
-          - token is the root.
+      summary: Parent queries the parent of a given nft.
       operationId: Parent
       responses:
         '200':
@@ -28376,14 +28248,7 @@ paths:
         - Query
   '/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/root':
     get:
-      summary: |-
-        Root queries the root of a given nft.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `token_id` is of invalid format.
-        - ErrNotFound
-          - there is no token of `token_id`.
+      summary: Root queries the root of a given nft.
       operationId: Root
       responses:
         '200':
@@ -28617,15 +28482,7 @@ paths:
       summary: >-
         TokenClassTypeName queries the fully qualified message type name of a
         token class from its class id.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `class_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `class_id`.
-        Since: 0.46.0 (finschia)
+      description: 'Since: 0.46.0 (finschia)'
       operationId: TokenClassTypeName
       responses:
         '200':
@@ -28846,13 +28703,7 @@ paths:
         - Query
   '/lbm/collection/v1/contracts/{contract_id}/token_types':
     get:
-      summary: |-
-        TokenTypes queries metadata of all the token types.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrNotFound
-          - there is no token contract of `contract_id`.
+      summary: TokenTypes queries metadata of all the token types.
       operationId: TokenTypes
       responses:
         '200':
@@ -29160,14 +29011,7 @@ paths:
         - Query
   '/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}':
     get:
-      summary: |-
-        TokenType queries metadata of a token type.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `class_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `class_id`.
+      summary: TokenType queries metadata of a token type.
       operationId: TokenType
       responses:
         '200':
@@ -29404,14 +29248,6 @@ paths:
       summary: >-
         NFTBurnt queries the number of burnt tokens from a given contract id and
         token type.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `class_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `class_id`.
       operationId: NFTBurnt
       responses:
         '200':
@@ -29632,14 +29468,6 @@ paths:
       summary: >-
         NFTMinted queries the number of minted tokens from a given contract id
         and token type.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `class_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `class_id`.
       operationId: NFTMinted
       responses:
         '200':
@@ -29860,14 +29688,6 @@ paths:
       summary: >-
         NFTSupply queries the number of tokens from a given contract id and
         token type.
-
-        Throws:
-
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `class_id` is of invalid format.
-        - ErrNotFound
-          - there is no token class of `class_id`.
       operationId: NFTSupply
       responses:
         '200':
@@ -30085,14 +29905,7 @@ paths:
         - Query
   '/lbm/collection/v1/contracts/{contract_id}/token_types/{token_type}/tokens':
     get:
-      summary: |-
-        TokensWithTokenType queries all token metadata with token type.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `token_type` is of invalid format.
-        - ErrNotFound
-          - there is no contract of `contract_id`.
+      summary: TokensWithTokenType queries all token metadata with token type.
       operationId: TokensWithTokenType
       responses:
         '200':
@@ -30561,13 +30374,7 @@ paths:
         - Query
   '/lbm/collection/v1/contracts/{contract_id}/tokens':
     get:
-      summary: |-
-        Tokens queries all token metadata.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-        - ErrNotFound
-          - there is no contract of `contract_id`.
+      summary: Tokens queries all token metadata.
       operationId: Tokens
       responses:
         '200':
@@ -31031,14 +30838,7 @@ paths:
         - Query
   '/lbm/collection/v1/contracts/{contract_id}/tokens/{token_id}':
     get:
-      summary: |-
-        Token queries a metadata of a token from its token id.
-        Throws:
-        - ErrInvalidRequest
-          - `contract_id` is of invalid format.
-          - `token_id` is of invalid format.
-        - ErrNotFound
-          - there is no token of `token_id`.
+      summary: Token queries a metadata of a token from its token id.
       operationId: Token
       responses:
         '200':
