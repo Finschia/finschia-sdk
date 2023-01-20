@@ -4,6 +4,7 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/collection"
+	"github.com/line/lbm-sdk/x/token/class"
 )
 
 // Keeper defines the collection module Keeper
@@ -28,4 +29,16 @@ func NewKeeper(
 		storeKey:    key,
 		cdc:         cdc,
 	}
+}
+
+func ValidateLegacyContract(k Keeper, ctx sdk.Context, contractID string) error {
+	if !k.classKeeper.HasID(ctx, contractID) {
+		return class.ErrContractNotExist.Wrap(contractID)
+	}
+
+	if _, err := k.GetContract(ctx, contractID); err != nil {
+		return err
+	}
+
+	return nil
 }

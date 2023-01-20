@@ -693,14 +693,6 @@ var xxx_messageInfo_MsgDisapproveResponse proto.InternalMessageInfo
 
 // MsgCreateContract is the Msg/CreateContract request type.
 //
-// Throws:
-// - ErrInvalidAddress
-//   - `owner` is of invalid format.
-// - ErrInvalidRequest
-//   - `name` exceeds the app-specific limit in length.
-//   - `base_img_uri` exceeds the app-specific limit in length.
-//   - `meta` exceeds the app-specific limit in length.
-//
 // Signer: `owner`
 type MsgCreateContract struct {
 	// address which all the permissions on the contract will be granted to (not a permanent property).
@@ -821,19 +813,6 @@ func (m *MsgCreateContractResponse) GetId() string {
 }
 
 // MsgIssueFT is the Msg/IssueFT request type.
-//
-// Throws:
-// - ErrInvalidAddress
-//   - `owner` is of invalid format.
-//   - `to` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `name` is empty.
-//   - `name` exceeds the app-specific limit in length.
-//   - `meta` exceeds the app-specific limit in length.
-//   - `decimals` is lesser than 0 or greater than 18.
-//   - `amount` is not positive.
-//   - `mintable` == false, amount == 1 and decimals == 0 (weird, but for the backward compatibility).
 //
 // Signer: `owner`
 type MsgIssueFT struct {
@@ -987,14 +966,6 @@ func (m *MsgIssueFTResponse) GetId() string {
 
 // MsgIssueNFT is the Msg/IssueNFT request type.
 //
-// Throws:
-// - ErrInvalidAddress
-//   - `owner` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `name` exceeds the app-specific limit in length.
-//   - `meta` exceeds the app-specific limit in length.
-//
 // Signer: `owner`
 type MsgIssueNFT struct {
 	// contract id associated with the contract.
@@ -1116,14 +1087,6 @@ func (m *MsgIssueNFTResponse) GetId() string {
 
 // MsgMintFT is the Msg/MintFT request type.
 //
-// Throws:
-// - ErrInvalidAddress
-//   - `from` is of invalid format.
-//   - `to` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `amount` is not positive.
-//
 // Signer: `from`
 type MsgMintFT struct {
 	// contract id associated with the contract.
@@ -1236,15 +1199,6 @@ func (m *MsgMintFTResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgMintFTResponse proto.InternalMessageInfo
 
 // MsgMintNFT is the Msg/MintNFT request type.
-//
-// Throws:
-// - ErrInvalidAddress
-//   - `from` is of invalid format.
-//   - `to` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `params` is empty.
-//   - `params` has an invalid element.
 //
 // Signer: `from`
 type MsgMintNFT struct {
@@ -2201,15 +2155,6 @@ var xxx_messageInfo_MsgRevokePermissionResponse proto.InternalMessageInfo
 
 // MsgAttach is the Msg/Attach request type.
 //
-// Throws:
-// - ErrInvalidAddress
-//   - `from` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `token_id` is of invalid format.
-//   - `to_token_id` is of invalid format.
-//   - `token_id` is equal to `to_token_id`.
-//
 // Signer: `from`
 type MsgAttach struct {
 	// contract id associated with the contract.
@@ -2321,13 +2266,6 @@ func (m *MsgAttachResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAttachResponse proto.InternalMessageInfo
 
 // MsgDetach is the Msg/Detach request type.
-//
-// Throws:
-// - ErrInvalidAddress
-//   - `from` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `token_id` is of invalid format.
 //
 // Signer: `from`
 type MsgDetach struct {
@@ -2813,58 +2751,33 @@ type MsgClient interface {
 	// Fires:
 	// - EventSent
 	// - transfer_ft (deprecated, not typed)
-	// Throws:
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to spend.
 	TransferFT(ctx context.Context, in *MsgTransferFT, opts ...grpc.CallOption) (*MsgTransferFTResponse, error)
 	// TransferFTFrom defines a method to send fungible tokens from one account to another account by the proxy.
 	// Fires:
 	// - EventSent
 	// - transfer_ft_from (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized:
-	//   - the approver has not authorized the proxy.
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to spend.
 	TransferFTFrom(ctx context.Context, in *MsgTransferFTFrom, opts ...grpc.CallOption) (*MsgTransferFTFromResponse, error)
 	// TransferNFT defines a method to send non-fungible tokens from one account to another account.
 	// Fires:
 	// - EventSent
 	// - transfer_nft (deprecated, not typed)
 	// - operation_transfer_nft (deprecated, not typed)
-	// Throws:
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to spend.
 	TransferNFT(ctx context.Context, in *MsgTransferNFT, opts ...grpc.CallOption) (*MsgTransferNFTResponse, error)
 	// TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the proxy.
 	// Fires:
 	// - EventSent
 	// - transfer_nft_from (deprecated, not typed)
 	// - operation_transfer_nft (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized:
-	//   - the approver has not authorized the proxy.
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to spend.
 	TransferNFTFrom(ctx context.Context, in *MsgTransferNFTFrom, opts ...grpc.CallOption) (*MsgTransferNFTFromResponse, error)
 	// Approve allows one to send tokens on behalf of the approver.
 	// Fires:
 	// - EventAuthorizedOperator
 	// - approve_collection (deprecated, not typed)
-	// Throws:
-	// - ErrNotFound:
-	//   - there is no contract of `contract_id`.
-	// - ErrInvalidRequest:
-	//   - `approver` has already authorized `proxy`.
 	Approve(ctx context.Context, in *MsgApprove, opts ...grpc.CallOption) (*MsgApproveResponse, error)
 	// Disapprove revokes the authorization of the proxy to send the approver's token.
 	// Fires:
 	// - EventRevokedOperator
 	// - disapprove_collection (deprecated, not typed)
-	// Throws:
-	// - ErrNotFound:
-	//   - there is no contract of `contract_id`.
-	//   - there is no authorization by `approver` to `proxy`.
 	Disapprove(ctx context.Context, in *MsgDisapprove, opts ...grpc.CallOption) (*MsgDisapproveResponse, error)
 	// CreateContract defines a method to create a contract for collection.
 	// it grants `mint`, `burn`, `modify` and `issue` permissions on the contract to its creator.
@@ -2889,17 +2802,11 @@ type MsgClient interface {
 	// Fires:
 	// - EventMintedFT
 	// - mint_ft (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `from` does not have `mint` permission.
 	MintFT(ctx context.Context, in *MsgMintFT, opts ...grpc.CallOption) (*MsgMintFTResponse, error)
 	// MintNFT defines a method to mint non-fungible tokens.
 	// Fires:
 	// - EventMintedNFT
 	// - mint_nft (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `from` does not have `mint` permission.
 	MintNFT(ctx context.Context, in *MsgMintNFT, opts ...grpc.CallOption) (*MsgMintNFTResponse, error)
 	// BurnFT defines a method to burn fungible tokens.
 	// Fires:
@@ -2907,11 +2814,6 @@ type MsgClient interface {
 	// - burn_ft (deprecated, not typed)
 	// - burn_nft (deprecated, not typed)
 	// - operation_burn_nft (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `from` does not have `burn` permission.
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to burn.
 	BurnFT(ctx context.Context, in *MsgBurnFT, opts ...grpc.CallOption) (*MsgBurnFTResponse, error)
 	// BurnFTFrom defines a method to burn fungible tokens of the approver by the proxy.
 	// Fires:
@@ -2919,12 +2821,6 @@ type MsgClient interface {
 	// - burn_ft_from (deprecated, not typed)
 	// - burn_nft_from (deprecated, not typed)
 	// - operation_burn_nft (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `proxy` does not have `burn` permission.
-	//   - the approver has not authorized `proxy`.
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to burn.
 	BurnFTFrom(ctx context.Context, in *MsgBurnFTFrom, opts ...grpc.CallOption) (*MsgBurnFTFromResponse, error)
 	// BurnNFT defines a method to burn non-fungible tokens.
 	// Fires:
@@ -2932,11 +2828,6 @@ type MsgClient interface {
 	// - burn_ft (deprecated, not typed)
 	// - burn_nft (deprecated, not typed)
 	// - operation_burn_nft (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `from` does not have `burn` permission.
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to burn.
 	BurnNFT(ctx context.Context, in *MsgBurnNFT, opts ...grpc.CallOption) (*MsgBurnNFTResponse, error)
 	// BurnNFTFrom defines a method to burn non-fungible tokens of the approver by the proxy.
 	// Fires:
@@ -2944,12 +2835,6 @@ type MsgClient interface {
 	// - burn_ft_from (deprecated, not typed)
 	// - burn_nft_from (deprecated, not typed)
 	// - operation_burn_nft (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `proxy` does not have `burn` permission.
-	//   - the approver has not authorized `proxy`.
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to burn.
 	BurnNFTFrom(ctx context.Context, in *MsgBurnNFTFrom, opts ...grpc.CallOption) (*MsgBurnNFTFromResponse, error)
 	// Modify defines a method to modify metadata.
 	// Fires:
@@ -2959,79 +2844,40 @@ type MsgClient interface {
 	// - modify_token_type (deprecated, not typed)
 	// - modify_token (deprecated, not typed)
 	// - EventModifiedNFT
-	// Throws:
-	// - ErrUnauthorized
-	//   - the proxy does not have `modify` permission.
-	// - ErrNotFound
-	//   - there is no contract of `contract_id`.
-	//   - there is no token type of `token_type`.
-	//   - there is no token of `token_id`.
 	Modify(ctx context.Context, in *MsgModify, opts ...grpc.CallOption) (*MsgModifyResponse, error)
 	// GrantPermission allows one to mint or burn tokens or modify metadata.
 	// Fires:
 	// - EventGranted
 	// - grant_perm (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `granter` does not have `permission`.
-	// - ErrInvalidRequest
-	//   - `grantee` already has `permission`.
 	GrantPermission(ctx context.Context, in *MsgGrantPermission, opts ...grpc.CallOption) (*MsgGrantPermissionResponse, error)
 	// RevokePermission abandons a permission.
 	// Fires:
 	// - EventRenounced
 	// - revoke_perm (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `grantee` does not have `permission`.
 	RevokePermission(ctx context.Context, in *MsgRevokePermission, opts ...grpc.CallOption) (*MsgRevokePermissionResponse, error)
 	// Attach defines a method to attach a token to another token.
 	// Fires:
 	// - EventAttach
 	// - attach (deprecated, not typed)
 	// - operation_root_changed (deprecated, not typed)
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `owner` does not owns `id`.
-	//   - `owner` does not owns `to`.
-	//   - `token_id` is not root.
-	//   - `token_id` is an ancestor of `to_token_id`, which creates a cycle as a result.
-	//   - depth of `to_token_id` exceeds an app-specific limit.
 	Attach(ctx context.Context, in *MsgAttach, opts ...grpc.CallOption) (*MsgAttachResponse, error)
 	// Detach defines a method to detach a token from another token.
 	// Fires:
 	// - EventDetach
 	// - detach (deprecated, not typed)
 	// - operation_root_changed (deprecated, not typed)
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `owner` does not owns `token_id`.
 	Detach(ctx context.Context, in *MsgDetach, opts ...grpc.CallOption) (*MsgDetachResponse, error)
 	// AttachFrom defines a method to attach a token to another token by proxy.
 	// Fires:
 	// - EventAttach
 	// - attach_from (deprecated, not typed)
 	// - operation_root_changed (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - the approver has not authorized `proxy`.
-	// - ErrInvalidRequest
-	//   - `owner` does not owns `subject`.
-	//   - `owner` does not owns `target`.
-	//   - `subject` is not root.
-	//   - `subject` is an ancestor of `target`, which creates a cycle as a result.
-	//   - depth of `to` exceeds an app-specific limit.
 	AttachFrom(ctx context.Context, in *MsgAttachFrom, opts ...grpc.CallOption) (*MsgAttachFromResponse, error)
 	// DetachFrom defines a method to detach a token from another token by proxy.
 	// Fires:
 	// - EventDetach
 	// - detach_from (deprecated, not typed)
 	// - operation_root_changed (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - the approver has not authorized `proxy`.
-	// - ErrInvalidRequest
-	//   - `owner` does not owns `subject`.
 	DetachFrom(ctx context.Context, in *MsgDetachFrom, opts ...grpc.CallOption) (*MsgDetachFromResponse, error)
 }
 
@@ -3247,58 +3093,33 @@ type MsgServer interface {
 	// Fires:
 	// - EventSent
 	// - transfer_ft (deprecated, not typed)
-	// Throws:
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to spend.
 	TransferFT(context.Context, *MsgTransferFT) (*MsgTransferFTResponse, error)
 	// TransferFTFrom defines a method to send fungible tokens from one account to another account by the proxy.
 	// Fires:
 	// - EventSent
 	// - transfer_ft_from (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized:
-	//   - the approver has not authorized the proxy.
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to spend.
 	TransferFTFrom(context.Context, *MsgTransferFTFrom) (*MsgTransferFTFromResponse, error)
 	// TransferNFT defines a method to send non-fungible tokens from one account to another account.
 	// Fires:
 	// - EventSent
 	// - transfer_nft (deprecated, not typed)
 	// - operation_transfer_nft (deprecated, not typed)
-	// Throws:
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to spend.
 	TransferNFT(context.Context, *MsgTransferNFT) (*MsgTransferNFTResponse, error)
 	// TransferNFTFrom defines a method to send non-fungible tokens from one account to another account by the proxy.
 	// Fires:
 	// - EventSent
 	// - transfer_nft_from (deprecated, not typed)
 	// - operation_transfer_nft (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized:
-	//   - the approver has not authorized the proxy.
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to spend.
 	TransferNFTFrom(context.Context, *MsgTransferNFTFrom) (*MsgTransferNFTFromResponse, error)
 	// Approve allows one to send tokens on behalf of the approver.
 	// Fires:
 	// - EventAuthorizedOperator
 	// - approve_collection (deprecated, not typed)
-	// Throws:
-	// - ErrNotFound:
-	//   - there is no contract of `contract_id`.
-	// - ErrInvalidRequest:
-	//   - `approver` has already authorized `proxy`.
 	Approve(context.Context, *MsgApprove) (*MsgApproveResponse, error)
 	// Disapprove revokes the authorization of the proxy to send the approver's token.
 	// Fires:
 	// - EventRevokedOperator
 	// - disapprove_collection (deprecated, not typed)
-	// Throws:
-	// - ErrNotFound:
-	//   - there is no contract of `contract_id`.
-	//   - there is no authorization by `approver` to `proxy`.
 	Disapprove(context.Context, *MsgDisapprove) (*MsgDisapproveResponse, error)
 	// CreateContract defines a method to create a contract for collection.
 	// it grants `mint`, `burn`, `modify` and `issue` permissions on the contract to its creator.
@@ -3323,17 +3144,11 @@ type MsgServer interface {
 	// Fires:
 	// - EventMintedFT
 	// - mint_ft (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `from` does not have `mint` permission.
 	MintFT(context.Context, *MsgMintFT) (*MsgMintFTResponse, error)
 	// MintNFT defines a method to mint non-fungible tokens.
 	// Fires:
 	// - EventMintedNFT
 	// - mint_nft (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `from` does not have `mint` permission.
 	MintNFT(context.Context, *MsgMintNFT) (*MsgMintNFTResponse, error)
 	// BurnFT defines a method to burn fungible tokens.
 	// Fires:
@@ -3341,11 +3156,6 @@ type MsgServer interface {
 	// - burn_ft (deprecated, not typed)
 	// - burn_nft (deprecated, not typed)
 	// - operation_burn_nft (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `from` does not have `burn` permission.
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to burn.
 	BurnFT(context.Context, *MsgBurnFT) (*MsgBurnFTResponse, error)
 	// BurnFTFrom defines a method to burn fungible tokens of the approver by the proxy.
 	// Fires:
@@ -3353,12 +3163,6 @@ type MsgServer interface {
 	// - burn_ft_from (deprecated, not typed)
 	// - burn_nft_from (deprecated, not typed)
 	// - operation_burn_nft (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `proxy` does not have `burn` permission.
-	//   - the approver has not authorized `proxy`.
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to burn.
 	BurnFTFrom(context.Context, *MsgBurnFTFrom) (*MsgBurnFTFromResponse, error)
 	// BurnNFT defines a method to burn non-fungible tokens.
 	// Fires:
@@ -3366,11 +3170,6 @@ type MsgServer interface {
 	// - burn_ft (deprecated, not typed)
 	// - burn_nft (deprecated, not typed)
 	// - operation_burn_nft (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `from` does not have `burn` permission.
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to burn.
 	BurnNFT(context.Context, *MsgBurnNFT) (*MsgBurnNFTResponse, error)
 	// BurnNFTFrom defines a method to burn non-fungible tokens of the approver by the proxy.
 	// Fires:
@@ -3378,12 +3177,6 @@ type MsgServer interface {
 	// - burn_ft_from (deprecated, not typed)
 	// - burn_nft_from (deprecated, not typed)
 	// - operation_burn_nft (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `proxy` does not have `burn` permission.
-	//   - the approver has not authorized `proxy`.
-	// - ErrInvalidRequest:
-	//   - the balance of `from` does not have enough tokens to burn.
 	BurnNFTFrom(context.Context, *MsgBurnNFTFrom) (*MsgBurnNFTFromResponse, error)
 	// Modify defines a method to modify metadata.
 	// Fires:
@@ -3393,79 +3186,40 @@ type MsgServer interface {
 	// - modify_token_type (deprecated, not typed)
 	// - modify_token (deprecated, not typed)
 	// - EventModifiedNFT
-	// Throws:
-	// - ErrUnauthorized
-	//   - the proxy does not have `modify` permission.
-	// - ErrNotFound
-	//   - there is no contract of `contract_id`.
-	//   - there is no token type of `token_type`.
-	//   - there is no token of `token_id`.
 	Modify(context.Context, *MsgModify) (*MsgModifyResponse, error)
 	// GrantPermission allows one to mint or burn tokens or modify metadata.
 	// Fires:
 	// - EventGranted
 	// - grant_perm (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `granter` does not have `permission`.
-	// - ErrInvalidRequest
-	//   - `grantee` already has `permission`.
 	GrantPermission(context.Context, *MsgGrantPermission) (*MsgGrantPermissionResponse, error)
 	// RevokePermission abandons a permission.
 	// Fires:
 	// - EventRenounced
 	// - revoke_perm (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - `grantee` does not have `permission`.
 	RevokePermission(context.Context, *MsgRevokePermission) (*MsgRevokePermissionResponse, error)
 	// Attach defines a method to attach a token to another token.
 	// Fires:
 	// - EventAttach
 	// - attach (deprecated, not typed)
 	// - operation_root_changed (deprecated, not typed)
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `owner` does not owns `id`.
-	//   - `owner` does not owns `to`.
-	//   - `token_id` is not root.
-	//   - `token_id` is an ancestor of `to_token_id`, which creates a cycle as a result.
-	//   - depth of `to_token_id` exceeds an app-specific limit.
 	Attach(context.Context, *MsgAttach) (*MsgAttachResponse, error)
 	// Detach defines a method to detach a token from another token.
 	// Fires:
 	// - EventDetach
 	// - detach (deprecated, not typed)
 	// - operation_root_changed (deprecated, not typed)
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `owner` does not owns `token_id`.
 	Detach(context.Context, *MsgDetach) (*MsgDetachResponse, error)
 	// AttachFrom defines a method to attach a token to another token by proxy.
 	// Fires:
 	// - EventAttach
 	// - attach_from (deprecated, not typed)
 	// - operation_root_changed (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - the approver has not authorized `proxy`.
-	// - ErrInvalidRequest
-	//   - `owner` does not owns `subject`.
-	//   - `owner` does not owns `target`.
-	//   - `subject` is not root.
-	//   - `subject` is an ancestor of `target`, which creates a cycle as a result.
-	//   - depth of `to` exceeds an app-specific limit.
 	AttachFrom(context.Context, *MsgAttachFrom) (*MsgAttachFromResponse, error)
 	// DetachFrom defines a method to detach a token from another token by proxy.
 	// Fires:
 	// - EventDetach
 	// - detach_from (deprecated, not typed)
 	// - operation_root_changed (deprecated, not typed)
-	// Throws:
-	// - ErrUnauthorized
-	//   - the approver has not authorized `proxy`.
-	// - ErrInvalidRequest
-	//   - `owner` does not owns `subject`.
 	DetachFrom(context.Context, *MsgDetachFrom) (*MsgDetachFromResponse, error)
 }
 
