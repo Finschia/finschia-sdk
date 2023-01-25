@@ -670,10 +670,6 @@
 - [lbm/collection/v1/query.proto](#lbm/collection/v1/query.proto)
     - [QueryAllBalancesRequest](#lbm.collection.v1.QueryAllBalancesRequest)
     - [QueryAllBalancesResponse](#lbm.collection.v1.QueryAllBalancesResponse)
-    - [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest)
-    - [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse)
-    - [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest)
-    - [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse)
     - [QueryBalanceRequest](#lbm.collection.v1.QueryBalanceRequest)
     - [QueryBalanceResponse](#lbm.collection.v1.QueryBalanceResponse)
     - [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest)
@@ -688,6 +684,10 @@
     - [QueryFTSupplyResponse](#lbm.collection.v1.QueryFTSupplyResponse)
     - [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest)
     - [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse)
+    - [QueryHoldersByOperatorRequest](#lbm.collection.v1.QueryHoldersByOperatorRequest)
+    - [QueryHoldersByOperatorResponse](#lbm.collection.v1.QueryHoldersByOperatorResponse)
+    - [QueryIsOperatorForRequest](#lbm.collection.v1.QueryIsOperatorForRequest)
+    - [QueryIsOperatorForResponse](#lbm.collection.v1.QueryIsOperatorForResponse)
     - [QueryNFTBurntRequest](#lbm.collection.v1.QueryNFTBurntRequest)
     - [QueryNFTBurntResponse](#lbm.collection.v1.QueryNFTBurntResponse)
     - [QueryNFTMintedRequest](#lbm.collection.v1.QueryNFTMintedRequest)
@@ -10068,71 +10068,6 @@ QueryAllBalancesResponse is the response type for the Query/AllBalances RPC meth
 
 
 
-<a name="lbm.collection.v1.QueryApprovedRequest"></a>
-
-### QueryApprovedRequest
-QueryApprovedRequest is the request type for the Query/Approved RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `address` | [string](#string) |  | the address of the proxy. |
-| `approver` | [string](#string) |  | the address of the token approver. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryApprovedResponse"></a>
-
-### QueryApprovedResponse
-QueryApprovedResponse is the response type for the Query/Approved RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `approved` | [bool](#bool) |  |  |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryApproversRequest"></a>
-
-### QueryApproversRequest
-QueryApproversRequest is the request type for the Query/Approvers RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `contract_id` | [string](#string) |  | contract id associated with the contract. |
-| `address` | [string](#string) |  | address of the proxy. |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
-
-
-
-
-
-
-<a name="lbm.collection.v1.QueryApproversResponse"></a>
-
-### QueryApproversResponse
-QueryApproversResponse is the response type for the Query/Approvers RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `approvers` | [string](#string) | repeated |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
 <a name="lbm.collection.v1.QueryBalanceRequest"></a>
 
 ### QueryBalanceRequest
@@ -10348,6 +10283,71 @@ QueryGranteeGrantsResponse is the response type for the Query/GranteeGrants RPC 
 | ----- | ---- | ----- | ----------- |
 | `grants` | [Grant](#lbm.collection.v1.Grant) | repeated |  |
 | `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryHoldersByOperatorRequest"></a>
+
+### QueryHoldersByOperatorRequest
+QueryHoldersByOperatorRequest is the request type for the Query/HoldersByOperator RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | address of the operator. |
+| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryHoldersByOperatorResponse"></a>
+
+### QueryHoldersByOperatorResponse
+QueryHoldersByOperatorResponse is the response type for the Query/HoldersByOperator RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `holders` | [string](#string) | repeated |  |
+| `pagination` | [cosmos.base.query.v1beta1.PageResponse](#cosmos.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryIsOperatorForRequest"></a>
+
+### QueryIsOperatorForRequest
+QueryIsOperatorForRequest is the request type for the Query/IsOperatorFor RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `contract_id` | [string](#string) |  | contract id associated with the contract. |
+| `operator` | [string](#string) |  | the address of the operator. |
+| `holder` | [string](#string) |  | the address of the token holder. |
+
+
+
+
+
+
+<a name="lbm.collection.v1.QueryIsOperatorForResponse"></a>
+
+### QueryIsOperatorForResponse
+QueryIsOperatorForResponse is the response type for the Query/IsOperatorFor RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authorized` | [bool](#bool) |  |  |
 
 
 
@@ -10735,8 +10735,8 @@ Query defines the gRPC querier service.
 | `Parent` | [QueryParentRequest](#lbm.collection.v1.QueryParentRequest) | [QueryParentResponse](#lbm.collection.v1.QueryParentResponse) | Parent queries the parent of a given nft. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. - ErrNotFound - there is no token of `token_id`. - token is the root. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/parent|
 | `Children` | [QueryChildrenRequest](#lbm.collection.v1.QueryChildrenRequest) | [QueryChildrenResponse](#lbm.collection.v1.QueryChildrenResponse) | Children queries the children of a given nft. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - `token_id` is of invalid format. | GET|/lbm/collection/v1/contracts/{contract_id}/nfts/{token_id}/children|
 | `GranteeGrants` | [QueryGranteeGrantsRequest](#lbm.collection.v1.QueryGranteeGrantsRequest) | [QueryGranteeGrantsResponse](#lbm.collection.v1.QueryGranteeGrantsResponse) | GranteeGrants queries all permissions on a given grantee. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `grantee` is of invalid format. | GET|/lbm/collection/v1/contracts/{contract_id}/grants/{grantee}|
-| `Approved` | [QueryApprovedRequest](#lbm.collection.v1.QueryApprovedRequest) | [QueryApprovedResponse](#lbm.collection.v1.QueryApprovedResponse) | Approved queries whether the proxy is approved by the approver. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. - `approver` is of invalid format. - ErrNotFound - there is no authorization given by `approver` to `proxy`. | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/proxies/{approver}|
-| `Approvers` | [QueryApproversRequest](#lbm.collection.v1.QueryApproversRequest) | [QueryApproversResponse](#lbm.collection.v1.QueryApproversResponse) | Approvers queries approvers of a given proxy. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. | GET|/lbm/collection/v1/contracts/{contract_id}/accounts/{address}/approvers|
+| `IsOperatorFor` | [QueryIsOperatorForRequest](#lbm.collection.v1.QueryIsOperatorForRequest) | [QueryIsOperatorForResponse](#lbm.collection.v1.QueryIsOperatorForResponse) | IsOperatorFor queries whether the operator is authorized by the holder. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. - `approver` is of invalid format. - ErrNotFound - there is no authorization given by `approver` to `proxy`. | |
+| `HoldersByOperator` | [QueryHoldersByOperatorRequest](#lbm.collection.v1.QueryHoldersByOperatorRequest) | [QueryHoldersByOperatorResponse](#lbm.collection.v1.QueryHoldersByOperatorResponse) | HoldersByOperator queries holders of a given operator. Throws: - ErrInvalidRequest - `contract_id` is of invalid format. - ErrInvalidAddress - `proxy` is of invalid format. | |
 
  <!-- end services -->
 
