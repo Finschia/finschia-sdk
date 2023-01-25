@@ -185,7 +185,7 @@ func (s *KeeperTestSuite) TestMsgAuthorizeOperator() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgAuthorizeOperator{
-				ContractId: s.contractID,
+				ContractId: tc.contractID,
 				Holder:     tc.holder.String(),
 				Operator:   tc.operator.String(),
 			}
@@ -445,7 +445,7 @@ func (s *KeeperTestSuite) TestMsgOperatorBurn() {
 			ctx, _ := s.ctx.CacheContext()
 
 			req := &token.MsgOperatorBurn{
-				ContractId: s.contractID,
+				ContractId: tc.contractID,
 				Operator:   tc.operator.String(),
 				From:       tc.from.String(),
 				Amount:     s.balance,
