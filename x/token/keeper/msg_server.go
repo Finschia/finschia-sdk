@@ -4,7 +4,6 @@ import (
 	"context"
 
 	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/token"
 )
 
@@ -26,14 +25,13 @@ var _ token.MsgServer = msgServer{}
 func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	from, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
+	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
+		return nil, err
 	}
-	to, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", req.To)
-	}
+
+	from := sdk.MustAccAddressFromBech32(req.From)
+	to := sdk.MustAccAddressFromBech32(req.To)
+
 	if err := s.keeper.Send(ctx, req.ContractId, from, to, req.Amount); err != nil {
 		return nil, err
 	}
@@ -57,21 +55,16 @@ func (s msgServer) Send(c context.Context, req *token.MsgSend) (*token.MsgSendRe
 func (s msgServer) OperatorSend(c context.Context, req *token.MsgOperatorSend) (*token.MsgOperatorSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	from, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
-	}
-	operator, err := sdk.AccAddressFromBech32(req.Operator)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
-	}
-	to, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.To)
+	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
+		return nil, err
 	}
 
+	from := sdk.MustAccAddressFromBech32(req.From)
+	operator := sdk.MustAccAddressFromBech32(req.Operator)
+	to := sdk.MustAccAddressFromBech32(req.To)
+
 	if _, err := s.keeper.GetAuthorization(ctx, req.ContractId, from, operator); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, token.ErrTokenNotApproved.Wrap(err.Error())
 	}
 
 	if err := s.keeper.Send(ctx, req.ContractId, from, to, req.Amount); err != nil {
@@ -96,14 +89,14 @@ func (s msgServer) OperatorSend(c context.Context, req *token.MsgOperatorSend) (
 // RevokeOperator revokes one to send tokens on behalf of the token holder
 func (s msgServer) RevokeOperator(c context.Context, req *token.MsgRevokeOperator) (*token.MsgRevokeOperatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	holder, err := sdk.AccAddressFromBech32(req.Holder)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", req.Holder)
+
+	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
+		return nil, err
 	}
-	operator, err := sdk.AccAddressFromBech32(req.Operator)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
-	}
+
+	holder := sdk.MustAccAddressFromBech32(req.Holder)
+	operator := sdk.MustAccAddressFromBech32(req.Operator)
+
 	if err := s.keeper.RevokeOperator(ctx, req.ContractId, holder, operator); err != nil {
 		return nil, err
 	}
@@ -122,14 +115,14 @@ func (s msgServer) RevokeOperator(c context.Context, req *token.MsgRevokeOperato
 // AuthorizeOperator allows one to send tokens on behalf of the holder
 func (s msgServer) AuthorizeOperator(c context.Context, req *token.MsgAuthorizeOperator) (*token.MsgAuthorizeOperatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	holder, err := sdk.AccAddressFromBech32(req.Holder)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid holder address: %s", req.Holder)
+
+	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
+		return nil, err
 	}
-	operator, err := sdk.AccAddressFromBech32(req.Operator)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
-	}
+
+	holder := sdk.MustAccAddressFromBech32(req.Holder)
+	operator := sdk.MustAccAddressFromBech32(req.Operator)
+
 	if err := s.keeper.AuthorizeOperator(ctx, req.ContractId, holder, operator); err != nil {
 		return nil, err
 	}
@@ -150,9 +143,7 @@ func (s msgServer) AuthorizeOperator(c context.Context, req *token.MsgAuthorizeO
 // Issue defines a method to issue a token
 func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssueResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	contractID := s.keeper.classKeeper.NewID(ctx)
 	class := token.Contract{
-		Id:       contractID,
 		Name:     req.Name,
 		Symbol:   req.Symbol,
 		Uri:      req.Uri,
@@ -161,15 +152,9 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 		Mintable: req.Mintable,
 	}
 
-	owner, err := sdk.AccAddressFromBech32(req.Owner)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid owner address: %s", req.Owner)
-	}
-	to, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", req.To)
-	}
-	s.keeper.Issue(ctx, class, owner, to, req.Amount)
+	owner := sdk.MustAccAddressFromBech32(req.Owner)
+	to := sdk.MustAccAddressFromBech32(req.To)
+	contractID := s.keeper.Issue(ctx, class, owner, to, req.Amount)
 
 	return &token.MsgIssueResponse{ContractId: contractID}, nil
 }
@@ -178,20 +163,15 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermission) (*token.MsgGrantPermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	granter, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid granter address: %s", req.From)
+	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
+		return nil, err
 	}
-	grantee, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.To)
-	}
+
+	granter := sdk.MustAccAddressFromBech32(req.From)
+	grantee := sdk.MustAccAddressFromBech32(req.To)
 	permission := token.Permission(token.LegacyPermissionFromString(req.Permission))
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, granter, permission); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
-	}
-	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err == nil {
-		return nil, sdkerrors.ErrInvalidRequest.Wrapf("%s is already granted for %s", grantee, permission)
+		return nil, token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	s.keeper.Grant(ctx, req.ContractId, granter, grantee, permission)
@@ -211,13 +191,14 @@ func (s msgServer) GrantPermission(c context.Context, req *token.MsgGrantPermiss
 func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermission) (*token.MsgRevokePermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	grantee, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.From)
+	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
+		return nil, err
 	}
+
+	grantee := sdk.MustAccAddressFromBech32(req.From)
 	permission := token.Permission(token.LegacyPermissionFromString(req.Permission))
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, permission); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	s.keeper.Abandon(ctx, req.ContractId, grantee, permission)
@@ -235,14 +216,14 @@ func (s msgServer) RevokePermission(c context.Context, req *token.MsgRevokePermi
 // Mint defines a method to mint tokens
 func (s msgServer) Mint(c context.Context, req *token.MsgMint) (*token.MsgMintResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	from, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
+
+	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
+		return nil, err
 	}
-	to, err := sdk.AccAddressFromBech32(req.To)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid to address: %s", req.To)
-	}
+
+	from := sdk.MustAccAddressFromBech32(req.From)
+	to := sdk.MustAccAddressFromBech32(req.To)
+
 	if err := s.keeper.Mint(ctx, req.ContractId, from, to, req.Amount); err != nil {
 		return nil, err
 	}
@@ -253,10 +234,13 @@ func (s msgServer) Mint(c context.Context, req *token.MsgMint) (*token.MsgMintRe
 // Burn defines a method to burn tokens
 func (s msgServer) Burn(c context.Context, req *token.MsgBurn) (*token.MsgBurnResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	from, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
+
+	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
+		return nil, err
 	}
+
+	from := sdk.MustAccAddressFromBech32(req.From)
+
 	if err := s.keeper.Burn(ctx, req.ContractId, from, req.Amount); err != nil {
 		return nil, err
 	}
@@ -267,14 +251,14 @@ func (s msgServer) Burn(c context.Context, req *token.MsgBurn) (*token.MsgBurnRe
 // OperatorBurn defines a method for the operator to burn tokens on the behalf of the holder.
 func (s msgServer) OperatorBurn(c context.Context, req *token.MsgOperatorBurn) (*token.MsgOperatorBurnResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	operator, err := sdk.AccAddressFromBech32(req.Operator)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", req.Operator)
+
+	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
+		return nil, err
 	}
-	from, err := sdk.AccAddressFromBech32(req.From)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", req.From)
-	}
+
+	operator := sdk.MustAccAddressFromBech32(req.Operator)
+	from := sdk.MustAccAddressFromBech32(req.From)
+
 	if err := s.keeper.OperatorBurn(ctx, req.ContractId, operator, from, req.Amount); err != nil {
 		return nil, err
 	}
@@ -286,12 +270,14 @@ func (s msgServer) OperatorBurn(c context.Context, req *token.MsgOperatorBurn) (
 func (s msgServer) Modify(c context.Context, req *token.MsgModify) (*token.MsgModifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	grantee, err := sdk.AccAddressFromBech32(req.Owner)
-	if err != nil {
-		return nil, sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", req.Owner)
+	if err := ValidateLegacyContract(s.keeper, ctx, req.ContractId); err != nil {
+		return nil, err
 	}
+
+	grantee := sdk.MustAccAddressFromBech32(req.Owner)
+
 	if _, err := s.keeper.GetGrant(ctx, req.ContractId, grantee, token.PermissionModify); err != nil {
-		return nil, sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return nil, token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	if err := s.keeper.Modify(ctx, req.ContractId, grantee, req.Changes); err != nil {

@@ -27,44 +27,44 @@ func stringInSize(str string, size int) bool {
 
 func validateName(name string) error {
 	if len(name) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("name cannot be empty")
+		return ErrInvalidTokenName.Wrap("name cannot be empty")
 	} else if !stringInSize(name, maxName) {
-		return sdkerrors.ErrInvalidRequest.Wrapf("name cannot be longer than %d", maxName)
+		return ErrInvalidNameLength.Wrapf("name cannot be longer than %d", maxName)
 	}
 	return nil
 }
 
 func validateSymbol(symbol string) error {
 	if !reSymbol.MatchString(symbol) {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid symbol: %s, valid expression is: %s", symbol, reSymbolString)
+		return ErrInvalidTokenSymbol.Wrapf("invalid symbol: %s, valid expression is: %s", symbol, reSymbolString)
 	}
 	return nil
 }
 
 func validateImageURI(uri string) error {
 	if !stringInSize(uri, maxImageURI) {
-		return sdkerrors.ErrInvalidRequest.Wrapf("image_uri cannot be longer than %d", maxImageURI)
+		return ErrInvalidImageURILength.Wrapf("image_uri cannot be longer than %d", maxImageURI)
 	}
 	return nil
 }
 
 func validateMeta(meta string) error {
 	if !stringInSize(meta, maxMeta) {
-		return sdkerrors.ErrInvalidRequest.Wrapf("meta cannot be longer than %d", maxMeta)
+		return ErrInvalidMetaLength.Wrapf("meta cannot be longer than %d", maxMeta)
 	}
 	return nil
 }
 
 func validateDecimals(decimals int32) error {
 	if decimals < 0 || decimals > 18 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid decimals: %d", decimals)
+		return ErrInvalidTokenDecimals.Wrapf("invalid decimals: %d", decimals)
 	}
 	return nil
 }
 
 func validateAmount(amount sdk.Int) error {
 	if !amount.IsPositive() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("amount must be positive: %s", amount)
+		return ErrInvalidAmount.Wrapf("amount must be positive: %s", amount)
 	}
 	return nil
 }
@@ -75,7 +75,7 @@ func validateLegacyPermission(permission string) error {
 
 func ValidatePermission(permission Permission) error {
 	if p := Permission_value[Permission_name[int32(permission)]]; p == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid permission: %s", permission)
+		return sdkerrors.ErrInvalidPermission.Wrap(permission.String())
 	}
 	return nil
 }
@@ -89,7 +89,7 @@ func validateChange(change Attribute) error {
 
 	validator, ok := validators[change.Key]
 	if !ok {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field of key: %s", change.Key)
+		return ErrInvalidChangesField.Wrapf("invalid field of key: %s", change.Key)
 	}
 	return validator(change.Value)
 }

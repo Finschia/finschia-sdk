@@ -40,7 +40,7 @@ var (
 
 func validateAmount(amount sdk.Int) error {
 	if !amount.IsPositive() {
-		return sdkerrors.ErrInvalidRequest.Wrapf("amount must be positive: %s", amount)
+		return ErrInvalidAmount.Wrapf("amount must be positive: %s", amount)
 	}
 	return nil
 }
@@ -95,15 +95,28 @@ func ValidateLegacyFTClassID(id string) error {
 
 // Deprecated: do not use (no successor).
 func ValidateLegacyNFTClassID(id string) error {
-	return validateID(id, reLegacyNFTClassID)
+	// daphne emits ErrInvalidTokenID here, but it's against to the spec.
+	if err := validateID(id, reLegacyNFTClassID); err != nil {
+		return ErrInvalidTokenType.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func ValidateTokenID(id string) error {
-	return validateID(id, reTokenID)
+	if err := validateID(id, reTokenID); err != nil {
+		return ErrInvalidTokenID.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func ValidateFTID(id string) error {
-	return validateID(id, reFTID)
+	if err := validateID(id, reFTID); err != nil {
+		return ErrInvalidTokenID.Wrapf("%s not ft", id)
+	}
+
+	return nil
 }
 
 func ValidateNFTID(id string) error {
@@ -118,7 +131,11 @@ func ValidateNFTID(id string) error {
 
 // Deprecated: do not use (no successor).
 func ValidateLegacyNFTID(id string) error {
-	return validateID(id, reLegacyNFTID)
+	if err := validateID(id, reLegacyNFTID); err != nil {
+		return ErrInvalidTokenID.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func validateID(id string, reg *regexp.Regexp) error {
@@ -129,15 +146,27 @@ func validateID(id string, reg *regexp.Regexp) error {
 }
 
 func validateName(name string) error {
-	return validateStringSize(name, nameLengthLimit, "name")
+	if err := validateStringSize(name, nameLengthLimit, "name"); err != nil {
+		return ErrInvalidNameLength.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func validateBaseImgURI(baseImgURI string) error {
-	return validateStringSize(baseImgURI, baseImgURILengthLimit, "base_img_uri")
+	if err := validateStringSize(baseImgURI, baseImgURILengthLimit, "base_img_uri"); err != nil {
+		return ErrInvalidBaseImgURILength.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func validateMeta(meta string) error {
-	return validateStringSize(meta, metaLengthLimit, "meta")
+	if err := validateStringSize(meta, metaLengthLimit, "meta"); err != nil {
+		return ErrInvalidMetaLength.Wrap(err.Error())
+	}
+
+	return nil
 }
 
 func validateStringSize(str string, limit int, name string) error {
@@ -149,7 +178,7 @@ func validateStringSize(str string, limit int, name string) error {
 
 func validateDecimals(decimals int32) error {
 	if decimals < 0 || decimals > 18 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid decimals: %d", decimals)
+		return ErrInvalidTokenDecimals.Wrapf("got; %d", decimals)
 	}
 	return nil
 }
@@ -160,7 +189,7 @@ func validateLegacyPermission(permission string) error {
 
 func ValidatePermission(permission Permission) error {
 	if p := Permission_value[Permission_name[int32(permission)]]; p == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid permission: %s", permission)
+		return sdkerrors.ErrInvalidPermission.Wrap(permission.String())
 	}
 	return nil
 }
@@ -187,7 +216,7 @@ func validateTokenClassChange(change Attribute) error {
 func validateChange(change Attribute, validators map[string]func(string) error) error {
 	validator, ok := validators[change.Key]
 	if !ok {
-		return sdkerrors.ErrInvalidRequest.Wrapf("invalid field: %s", change.Key)
+		return ErrInvalidChangesField.Wrapf("invalid field: %s", change.Key)
 	}
 	return validator(change.Value)
 }
@@ -297,7 +326,7 @@ func (m MsgSendNFT) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("token ids cannot be empty")
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateTokenID(id); err != nil {
@@ -348,7 +377,7 @@ func (m MsgOperatorSendNFT) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("token ids cannot be empty")
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateTokenID(id); err != nil {
@@ -395,6 +424,10 @@ func (m MsgAuthorizeOperator) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
+	if m.Operator == m.Holder {
+		return ErrApproverProxySame
+	}
+
 	return nil
 }
 
@@ -432,6 +465,10 @@ func (m MsgRevokeOperator) ValidateBasic() error {
 	}
 	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
+
+	if m.Operator == m.Holder {
+		return ErrApproverProxySame
 	}
 
 	return nil
@@ -515,7 +552,7 @@ func (m MsgIssueFT) ValidateBasic() error {
 	}
 
 	if len(m.Name) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("empty name")
+		return ErrInvalidTokenName.Wrapf("empty name")
 	}
 	if err := validateName(m.Name); err != nil {
 		return err
@@ -535,7 +572,7 @@ func (m MsgIssueFT) ValidateBasic() error {
 
 	// daphne compat.
 	if m.Amount.Equal(sdk.OneInt()) && m.Decimals == 0 && !m.Mintable {
-		return sdkerrors.ErrInvalidRequest.Wrap("invalid issue of ft")
+		return ErrInvalidIssueFT.Wrap("invalid issue of ft")
 	}
 
 	return nil
@@ -665,7 +702,7 @@ func (m MsgMintNFT) ValidateBasic() error {
 	}
 
 	if len(m.Params) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("mint params cannot be empty")
+		return ErrEmptyField.Wrap("mint params cannot be empty")
 	}
 	for _, param := range m.Params {
 		classID := param.TokenType
@@ -673,6 +710,9 @@ func (m MsgMintNFT) ValidateBasic() error {
 			return err
 		}
 
+		if len(param.Name) == 0 {
+			return ErrInvalidTokenName
+		}
 		if err := validateName(param.Name); err != nil {
 			return err
 		}
@@ -802,7 +842,7 @@ func (m MsgBurnNFT) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("token ids cannot be empty")
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateLegacyNFTID(id); err != nil {
@@ -850,7 +890,7 @@ func (m MsgOperatorBurnNFT) ValidateBasic() error {
 	}
 
 	if len(m.TokenIds) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("token ids cannot be empty")
+		return ErrEmptyField.Wrap("token ids cannot be empty")
 	}
 	for _, id := range m.TokenIds {
 		if err := ValidateLegacyNFTID(id); err != nil {
@@ -897,17 +937,17 @@ func (m MsgModify) ValidateBasic() error {
 	if len(m.TokenType) != 0 {
 		classID := m.TokenType
 		if err := ValidateClassID(classID); err != nil {
-			return err
+			return ErrInvalidTokenType.Wrap(err.Error())
 		}
 		if err := ValidateLegacyFTClassID(classID); err == nil && len(m.TokenIndex) == 0 {
-			return sdkerrors.ErrInvalidRequest.Wrap("fungible token type without index")
+			return ErrTokenTypeFTWithoutIndex.Wrap("fungible token type without index")
 		}
 	}
 
 	if len(m.TokenIndex) != 0 {
 		tokenID := m.TokenType + m.TokenIndex
 		if err := ValidateTokenID(tokenID); err != nil {
-			return err
+			return ErrInvalidTokenIndex.Wrap(err.Error())
 		}
 	}
 
@@ -916,19 +956,19 @@ func (m MsgModify) ValidateBasic() error {
 		if len(m.TokenIndex) == 0 {
 			validator = validateContractChange
 		} else {
-			return sdkerrors.ErrInvalidRequest.Wrap("token index without type")
+			return ErrTokenIndexWithoutType.Wrap("token index without type")
 		}
 	}
 	if len(m.Changes) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrap("empty changes")
+		return ErrEmptyChanges.Wrap("empty changes")
 	}
 	if len(m.Changes) > changesLimit {
-		return sdkerrors.ErrInvalidRequest.Wrapf("the number of changes exceeds the limit: %d > %d", len(m.Changes), changesLimit)
+		return ErrInvalidChangesFieldCount.Wrapf("the number of changes exceeds the limit: %d > %d", len(m.Changes), changesLimit)
 	}
 	seenKeys := map[string]bool{}
 	for _, change := range m.Changes {
 		if seenKeys[change.Key] {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate keys: %s", change.Key)
+			return ErrDuplicateChangesField.Wrapf("duplicate keys: %s", change.Key)
 		}
 		seenKeys[change.Key] = true
 
@@ -1068,7 +1108,7 @@ func (m MsgAttach) ValidateBasic() error {
 	}
 
 	if m.TokenId == m.ToTokenId {
-		return sdkerrors.ErrInvalidRequest.Wrap("cannot attach token to itself")
+		return ErrCannotAttachToItself.Wrap("cannot attach token to itself")
 	}
 
 	return nil
@@ -1158,7 +1198,7 @@ func (m MsgOperatorAttach) ValidateBasic() error {
 	}
 
 	if m.TokenId == m.ToTokenId {
-		return sdkerrors.ErrInvalidRequest.Wrap("cannot attach token to itself")
+		return ErrCannotAttachToItself.Wrap("cannot attach token to itself")
 	}
 
 	return nil

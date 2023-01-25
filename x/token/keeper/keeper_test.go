@@ -74,24 +74,22 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.balance = sdk.NewInt(1000)
 
 	// create a mintable class
-	s.contractID = "f00dbabe"
 	class := token.Contract{
-		Id:       s.contractID,
 		Name:     "Mintable",
 		Symbol:   "OK",
 		Mintable: true,
 	}
-	s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
+	s.contractID = s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
+
 	err := s.keeper.Burn(s.ctx, s.contractID, s.vendor, s.balance)
 	s.Require().NoError(err)
 
 	// create another class for the query test
-	class.Id = "deadbeef"
 	s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
 
 	// mint to the others
 	for _, to := range []sdk.AccAddress{s.vendor, s.operator, s.customer} {
-		err = s.keeper.Mint(s.ctx, s.contractID, s.vendor, to, s.balance)
+		err := s.keeper.Mint(s.ctx, s.contractID, s.vendor, to, s.balance)
 		s.Require().NoError(err)
 	}
 
@@ -105,9 +103,14 @@ func (s *KeeperTestSuite) SetupTest() {
 
 	// authorize operator
 	for _, holder := range []sdk.AccAddress{s.vendor, s.customer} {
-		err = s.keeper.AuthorizeOperator(s.ctx, s.contractID, holder, s.operator)
+		err := s.keeper.AuthorizeOperator(s.ctx, s.contractID, holder, s.operator)
 		s.Require().NoError(err)
 	}
+
+	// not token contract
+	notTokenContractID := app.ClassKeeper.NewID(s.ctx)
+	err = keeper.ValidateLegacyContract(s.keeper, s.ctx, notTokenContractID)
+	s.Require().ErrorIs(err, token.ErrTokenNotExist)
 }
 
 func TestKeeperTestSuite(t *testing.T) {

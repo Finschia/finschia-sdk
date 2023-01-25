@@ -1016,63 +1016,22 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
 	// Balance queries the number of tokens of a given contract owned by the address.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `address` is of invalid format.
 	Balance(ctx context.Context, in *QueryBalanceRequest, opts ...grpc.CallOption) (*QueryBalanceResponse, error)
 	// Supply queries the number of tokens from the given contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	Supply(ctx context.Context, in *QuerySupplyRequest, opts ...grpc.CallOption) (*QuerySupplyResponse, error)
 	// Minted queries the number of minted tokens from the given contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	Minted(ctx context.Context, in *QueryMintedRequest, opts ...grpc.CallOption) (*QueryMintedResponse, error)
 	// Burnt queries the number of burnt tokens from the given contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	Burnt(ctx context.Context, in *QueryBurntRequest, opts ...grpc.CallOption) (*QueryBurntResponse, error)
 	// Contract queries an token metadata based on its contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	Contract(ctx context.Context, in *QueryContractRequest, opts ...grpc.CallOption) (*QueryContractResponse, error)
 	// Contracts queries all token metadata.
 	Contracts(ctx context.Context, in *QueryContractsRequest, opts ...grpc.CallOption) (*QueryContractsResponse, error)
 	// GranteeGrants queries permissions on a given grantee.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `grantee` is of invalid format.
 	GranteeGrants(ctx context.Context, in *QueryGranteeGrantsRequest, opts ...grpc.CallOption) (*QueryGranteeGrantsResponse, error)
 	// IsOperatorFor queries authorization on a given operator holder pair.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `proxy` is of invalid format.
-	//   - `approver` is of invalid format.
 	IsOperatorFor(ctx context.Context, in *QueryIsOperatorForRequest, opts ...grpc.CallOption) (*QueryIsOperatorForResponse, error)
 	// HoldersByOperator queries holders on a given operator.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `proxy` is of invalid format.
 	HoldersByOperator(ctx context.Context, in *QueryHoldersByOperatorRequest, opts ...grpc.CallOption) (*QueryHoldersByOperatorResponse, error)
 }
 
@@ -1168,63 +1127,22 @@ func (c *queryClient) HoldersByOperator(ctx context.Context, in *QueryHoldersByO
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Balance queries the number of tokens of a given contract owned by the address.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `address` is of invalid format.
 	Balance(context.Context, *QueryBalanceRequest) (*QueryBalanceResponse, error)
 	// Supply queries the number of tokens from the given contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	Supply(context.Context, *QuerySupplyRequest) (*QuerySupplyResponse, error)
 	// Minted queries the number of minted tokens from the given contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	Minted(context.Context, *QueryMintedRequest) (*QueryMintedResponse, error)
 	// Burnt queries the number of burnt tokens from the given contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	Burnt(context.Context, *QueryBurntRequest) (*QueryBurntResponse, error)
 	// Contract queries an token metadata based on its contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `contract_id`.
 	Contract(context.Context, *QueryContractRequest) (*QueryContractResponse, error)
 	// Contracts queries all token metadata.
 	Contracts(context.Context, *QueryContractsRequest) (*QueryContractsResponse, error)
 	// GranteeGrants queries permissions on a given grantee.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `grantee` is of invalid format.
 	GranteeGrants(context.Context, *QueryGranteeGrantsRequest) (*QueryGranteeGrantsResponse, error)
 	// IsOperatorFor queries authorization on a given operator holder pair.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `proxy` is of invalid format.
-	//   - `approver` is of invalid format.
 	IsOperatorFor(context.Context, *QueryIsOperatorForRequest) (*QueryIsOperatorForResponse, error)
 	// HoldersByOperator queries holders on a given operator.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `proxy` is of invalid format.
 	HoldersByOperator(context.Context, *QueryHoldersByOperatorRequest) (*QueryHoldersByOperatorResponse, error)
 }
 

@@ -21,6 +21,7 @@ func (m MsgSend) ValidateBasic() error {
 	}
 
 	if err := validateAmount(m.Amount); err != nil {
+		// Daphne emits ErrInvalidCoins here, which is against to the spec.
 		return err
 	}
 
@@ -109,6 +110,10 @@ func (m MsgRevokeOperator) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
 	}
 
+	if m.Operator == m.Holder {
+		return ErrApproverProxySame
+	}
+
 	return nil
 }
 
@@ -146,6 +151,10 @@ func (m MsgAuthorizeOperator) ValidateBasic() error {
 	}
 	if _, err := sdk.AccAddressFromBech32(m.Operator); err != nil {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid operator address: %s", m.Operator)
+	}
+
+	if m.Operator == m.Holder {
+		return ErrApproverProxySame
 	}
 
 	return nil
@@ -454,7 +463,7 @@ func (m MsgModify) ValidateBasic() error {
 	seenKeys := map[string]bool{}
 	for _, change := range m.Changes {
 		if seenKeys[change.Key] {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate fields: %s", change.Key)
+			return ErrDuplicateChangesField.Wrapf("duplicate fields: %s", change.Key)
 		}
 		seenKeys[change.Key] = true
 
@@ -463,7 +472,7 @@ func (m MsgModify) ValidateBasic() error {
 		}
 	}
 	if len(seenKeys) == 0 {
-		return sdkerrors.ErrInvalidRequest.Wrapf("no field provided")
+		return ErrEmptyChanges.Wrapf("no field provided")
 	}
 
 	return nil

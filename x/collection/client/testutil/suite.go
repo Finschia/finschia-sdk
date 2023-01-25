@@ -229,6 +229,7 @@ func (s *IntegrationTestSuite) mintNFT(contractID string, operator, to sdk.AccAd
 		operator.String(),
 		to.String(),
 		classID,
+		fmt.Sprintf("--%s=%s", cli.FlagName, "arctic fox"),
 	}, commonArgs...)
 
 	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdMintNFT(), args)

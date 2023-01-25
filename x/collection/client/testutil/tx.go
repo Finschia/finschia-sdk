@@ -611,6 +611,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMintNFT() {
 				s.operator.String(),
 				s.customer.String(),
 				s.nftClassID,
+				fmt.Sprintf("--%s=%s", cli.FlagName, "arctic fox"),
 			},
 			true,
 		},

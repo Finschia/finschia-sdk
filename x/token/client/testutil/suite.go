@@ -3,7 +3,10 @@ package testutil
 import (
 	"fmt"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
+
+	abci "github.com/line/ostracon/abci/types"
 
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/crypto/hd"
@@ -54,14 +57,12 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	s.classes = []token.Contract{
 		{
-			Id:       "678c146a",
 			Name:     "test",
 			Symbol:   "ZERO",
 			Decimals: 8,
 			Mintable: true,
 		},
 		{
-			Id:       "9be17165",
 			Name:     "test",
 			Symbol:   "ONE",
 			Decimals: 8,
@@ -72,8 +73,8 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.balance = sdk.NewInt(1000)
 
 	// vendor creates 2 tokens
-	s.createClass(s.vendor, s.vendor, s.classes[1].Name, s.classes[1].Symbol, s.balance, s.classes[1].Mintable)
-	s.createClass(s.vendor, s.customer, s.classes[0].Name, s.classes[0].Symbol, s.balance, s.classes[0].Mintable)
+	s.classes[1].Id = s.createClass(s.vendor, s.vendor, s.classes[1].Name, s.classes[1].Symbol, s.balance, s.classes[1].Mintable)
+	s.classes[0].Id = s.createClass(s.vendor, s.customer, s.classes[0].Name, s.classes[0].Symbol, s.balance, s.classes[0].Mintable)
 
 	// customer approves vendor to manipulate its tokens of the both classes, so vendor can do OperatorXXX (Send or Burn) later.
 	for _, class := range s.classes {
@@ -85,7 +86,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(s.network.WaitForNextBlock())
 }
 
-func (s *IntegrationTestSuite) createClass(owner, to sdk.AccAddress, name, symbol string, supply sdk.Int, mintable bool) {
+func (s *IntegrationTestSuite) createClass(owner, to sdk.AccAddress, name, symbol string, supply sdk.Int, mintable bool) string {
 	val := s.network.Validators[0]
 	args := append([]string{
 		owner.String(),
@@ -103,6 +104,12 @@ func (s *IntegrationTestSuite) createClass(owner, to sdk.AccAddress, name, symbo
 	var res sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().EqualValues(0, res.Code, out.String())
+
+	var event token.EventIssued
+	s.pickEvent(res.Events, &event, func(e proto.Message) {
+		event = *e.(*token.EventIssued)
+	})
+	return event.ContractId
 }
 
 // creates an account and send some coins to it for the future transactions.
@@ -144,6 +151,24 @@ func (s *IntegrationTestSuite) authorizeOperator(contractID string, holder, oper
 	var res sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().EqualValues(0, res.Code, out.String())
+}
+
+func (s *IntegrationTestSuite) pickEvent(events []abci.Event, event proto.Message, fn func(event proto.Message)) {
+	getType := func(msg proto.Message) string {
+		return proto.MessageName(msg)
+	}
+
+	for _, e := range events {
+		if e.Type == getType(event) {
+			msg, err := sdk.ParseTypedEvent(e)
+			s.Require().NoError(err)
+
+			fn(msg)
+			return
+		}
+	}
+
+	s.Require().Failf("event not found", "%s", events)
 }
 
 func (s *IntegrationTestSuite) TearDownSuite() {

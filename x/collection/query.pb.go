@@ -2400,167 +2400,48 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
 	// Balance queries the balance of a single token class for a single account.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `address` is of invalid format.
 	Balance(ctx context.Context, in *QueryBalanceRequest, opts ...grpc.CallOption) (*QueryBalanceResponse, error)
 	// AllBalances queries the balance of all token classes for a single account.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `address` is of invalid format.
 	AllBalances(ctx context.Context, in *QueryAllBalancesRequest, opts ...grpc.CallOption) (*QueryAllBalancesResponse, error)
 	// FTSupply queries the number of tokens from a given contract id and token id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
 	FTSupply(ctx context.Context, in *QueryFTSupplyRequest, opts ...grpc.CallOption) (*QueryFTSupplyResponse, error)
 	// FTMinted queries the number of minted tokens from a given contract id and token id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
 	FTMinted(ctx context.Context, in *QueryFTMintedRequest, opts ...grpc.CallOption) (*QueryFTMintedResponse, error)
 	// FTBurnt queries the number of burnt tokens from a given contract id and token id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
 	FTBurnt(ctx context.Context, in *QueryFTBurntRequest, opts ...grpc.CallOption) (*QueryFTBurntResponse, error)
 	// NFTSupply queries the number of tokens from a given contract id and token type.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
 	NFTSupply(ctx context.Context, in *QueryNFTSupplyRequest, opts ...grpc.CallOption) (*QueryNFTSupplyResponse, error)
 	// NFTMinted queries the number of minted tokens from a given contract id and token type.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
 	NFTMinted(ctx context.Context, in *QueryNFTMintedRequest, opts ...grpc.CallOption) (*QueryNFTMintedResponse, error)
 	// NFTBurnt queries the number of burnt tokens from a given contract id and token type.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
 	NFTBurnt(ctx context.Context, in *QueryNFTBurntRequest, opts ...grpc.CallOption) (*QueryNFTBurntResponse, error)
 	// Contract queries a contract metadata based on its contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no contract of `contract_id`.
 	Contract(ctx context.Context, in *QueryContractRequest, opts ...grpc.CallOption) (*QueryContractResponse, error)
 	// TokenClassTypeName queries the fully qualified message type name of a token class from its class id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
+	//
 	// Since: 0.46.0 (finschia)
 	TokenClassTypeName(ctx context.Context, in *QueryTokenClassTypeNameRequest, opts ...grpc.CallOption) (*QueryTokenClassTypeNameResponse, error)
 	// TokenType queries metadata of a token type.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
 	TokenType(ctx context.Context, in *QueryTokenTypeRequest, opts ...grpc.CallOption) (*QueryTokenTypeResponse, error)
 	// TokenTypes queries metadata of all the token types.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token contract of `contract_id`.
 	TokenTypes(ctx context.Context, in *QueryTokenTypesRequest, opts ...grpc.CallOption) (*QueryTokenTypesResponse, error)
 	// Token queries a metadata of a token from its token id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `token_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token of `token_id`.
 	Token(ctx context.Context, in *QueryTokenRequest, opts ...grpc.CallOption) (*QueryTokenResponse, error)
 	// TokensWithTokenType queries all token metadata with token type.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `token_type` is of invalid format.
-	// - ErrNotFound
-	//   - there is no contract of `contract_id`.
 	TokensWithTokenType(ctx context.Context, in *QueryTokensWithTokenTypeRequest, opts ...grpc.CallOption) (*QueryTokensWithTokenTypeResponse, error)
 	// Tokens queries all token metadata.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no contract of `contract_id`.
 	Tokens(ctx context.Context, in *QueryTokensRequest, opts ...grpc.CallOption) (*QueryTokensResponse, error)
 	// Root queries the root of a given nft.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `token_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token of `token_id`.
 	Root(ctx context.Context, in *QueryRootRequest, opts ...grpc.CallOption) (*QueryRootResponse, error)
 	// Parent queries the parent of a given nft.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `token_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token of `token_id`.
-	//   - token is the root.
 	Parent(ctx context.Context, in *QueryParentRequest, opts ...grpc.CallOption) (*QueryParentResponse, error)
 	// Children queries the children of a given nft.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `token_id` is of invalid format.
 	Children(ctx context.Context, in *QueryChildrenRequest, opts ...grpc.CallOption) (*QueryChildrenResponse, error)
 	// GranteeGrants queries all permissions on a given grantee.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `grantee` is of invalid format.
 	GranteeGrants(ctx context.Context, in *QueryGranteeGrantsRequest, opts ...grpc.CallOption) (*QueryGranteeGrantsResponse, error)
 	// IsOperatorFor queries whether the operator is authorized by the holder.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `proxy` is of invalid format.
-	//   - `approver` is of invalid format.
-	// - ErrNotFound
-	//   - there is no authorization given by `approver` to `proxy`.
 	IsOperatorFor(ctx context.Context, in *QueryIsOperatorForRequest, opts ...grpc.CallOption) (*QueryIsOperatorForResponse, error)
 	// HoldersByOperator queries holders of a given operator.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `proxy` is of invalid format.
 	HoldersByOperator(ctx context.Context, in *QueryHoldersByOperatorRequest, opts ...grpc.CallOption) (*QueryHoldersByOperatorResponse, error)
 }
 
@@ -2764,167 +2645,48 @@ func (c *queryClient) HoldersByOperator(ctx context.Context, in *QueryHoldersByO
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Balance queries the balance of a single token class for a single account.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `address` is of invalid format.
 	Balance(context.Context, *QueryBalanceRequest) (*QueryBalanceResponse, error)
 	// AllBalances queries the balance of all token classes for a single account.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `address` is of invalid format.
 	AllBalances(context.Context, *QueryAllBalancesRequest) (*QueryAllBalancesResponse, error)
 	// FTSupply queries the number of tokens from a given contract id and token id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
 	FTSupply(context.Context, *QueryFTSupplyRequest) (*QueryFTSupplyResponse, error)
 	// FTMinted queries the number of minted tokens from a given contract id and token id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
 	FTMinted(context.Context, *QueryFTMintedRequest) (*QueryFTMintedResponse, error)
 	// FTBurnt queries the number of burnt tokens from a given contract id and token id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
 	FTBurnt(context.Context, *QueryFTBurntRequest) (*QueryFTBurntResponse, error)
 	// NFTSupply queries the number of tokens from a given contract id and token type.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
 	NFTSupply(context.Context, *QueryNFTSupplyRequest) (*QueryNFTSupplyResponse, error)
 	// NFTMinted queries the number of minted tokens from a given contract id and token type.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
 	NFTMinted(context.Context, *QueryNFTMintedRequest) (*QueryNFTMintedResponse, error)
 	// NFTBurnt queries the number of burnt tokens from a given contract id and token type.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
 	NFTBurnt(context.Context, *QueryNFTBurntRequest) (*QueryNFTBurntResponse, error)
 	// Contract queries a contract metadata based on its contract id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no contract of `contract_id`.
 	Contract(context.Context, *QueryContractRequest) (*QueryContractResponse, error)
 	// TokenClassTypeName queries the fully qualified message type name of a token class from its class id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
+	//
 	// Since: 0.46.0 (finschia)
 	TokenClassTypeName(context.Context, *QueryTokenClassTypeNameRequest) (*QueryTokenClassTypeNameResponse, error)
 	// TokenType queries metadata of a token type.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `class_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token class of `class_id`.
 	TokenType(context.Context, *QueryTokenTypeRequest) (*QueryTokenTypeResponse, error)
 	// TokenTypes queries metadata of all the token types.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token contract of `contract_id`.
 	TokenTypes(context.Context, *QueryTokenTypesRequest) (*QueryTokenTypesResponse, error)
 	// Token queries a metadata of a token from its token id.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `token_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token of `token_id`.
 	Token(context.Context, *QueryTokenRequest) (*QueryTokenResponse, error)
 	// TokensWithTokenType queries all token metadata with token type.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `token_type` is of invalid format.
-	// - ErrNotFound
-	//   - there is no contract of `contract_id`.
 	TokensWithTokenType(context.Context, *QueryTokensWithTokenTypeRequest) (*QueryTokensWithTokenTypeResponse, error)
 	// Tokens queries all token metadata.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no contract of `contract_id`.
 	Tokens(context.Context, *QueryTokensRequest) (*QueryTokensResponse, error)
 	// Root queries the root of a given nft.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `token_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token of `token_id`.
 	Root(context.Context, *QueryRootRequest) (*QueryRootResponse, error)
 	// Parent queries the parent of a given nft.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `token_id` is of invalid format.
-	// - ErrNotFound
-	//   - there is no token of `token_id`.
-	//   - token is the root.
 	Parent(context.Context, *QueryParentRequest) (*QueryParentResponse, error)
 	// Children queries the children of a given nft.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	//   - `token_id` is of invalid format.
 	Children(context.Context, *QueryChildrenRequest) (*QueryChildrenResponse, error)
 	// GranteeGrants queries all permissions on a given grantee.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `grantee` is of invalid format.
 	GranteeGrants(context.Context, *QueryGranteeGrantsRequest) (*QueryGranteeGrantsResponse, error)
 	// IsOperatorFor queries whether the operator is authorized by the holder.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `proxy` is of invalid format.
-	//   - `approver` is of invalid format.
-	// - ErrNotFound
-	//   - there is no authorization given by `approver` to `proxy`.
 	IsOperatorFor(context.Context, *QueryIsOperatorForRequest) (*QueryIsOperatorForResponse, error)
 	// HoldersByOperator queries holders of a given operator.
-	// Throws:
-	// - ErrInvalidRequest
-	//   - `contract_id` is of invalid format.
-	// - ErrInvalidAddress
-	//   - `proxy` is of invalid format.
 	HoldersByOperator(context.Context, *QueryHoldersByOperatorRequest) (*QueryHoldersByOperatorResponse, error)
 }
 

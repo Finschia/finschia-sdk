@@ -15,20 +15,12 @@ service Msg {
   // Fires:
   // - EventSent
   // - transfer_ft (deprecated, not typed)
-  // Throws:
-  // - ErrInvalidRequest:
-  //   - the balance of `from` does not have enough tokens to spend.
   rpc SendFT(MsgSendFT) returns (MsgSendFTResponse);
 
   // OperatorSendFT defines a method to send fungible tokens from one account to another account by the operator.
   // Fires:
   // - EventSent
   // - transfer_ft_from (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized:
-  //   - the approver has not authorized the proxy.
-  // - ErrInvalidRequest:
-  //   - the balance of `from` does not have enough tokens to spend.
   rpc OperatorSendFT(MsgOperatorSendFT) returns (MsgOperatorSendFTResponse);
 
   // SendNFT defines a method to send non-fungible tokens from one account to another account.
@@ -36,9 +28,6 @@ service Msg {
   // - EventSent
   // - transfer_nft (deprecated, not typed)
   // - operation_transfer_nft (deprecated, not typed)
-  // Throws:
-  // - ErrInvalidRequest:
-  //   - the balance of `from` does not have enough tokens to spend.
   rpc SendNFT(MsgSendNFT) returns (MsgSendNFTResponse);
 
   // OperatorSendNFT defines a method to send non-fungible tokens from one account to another account by the operator.
@@ -46,32 +35,18 @@ service Msg {
   // - EventSent
   // - transfer_nft_from (deprecated, not typed)
   // - operation_transfer_nft (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized:
-  //   - the approver has not authorized the proxy.
-  // - ErrInvalidRequest:
-  //   - the balance of `from` does not have enough tokens to spend.
   rpc OperatorSendNFT(MsgOperatorSendNFT) returns (MsgOperatorSendNFTResponse);
 
   // AuthorizeOperator allows one to send tokens on behalf of the holder.
   // Fires:
   // - EventAuthorizedOperator
   // - approve_collection (deprecated, not typed)
-  // Throws:
-  // - ErrNotFound:
-  //   - there is no contract of `contract_id`.
-  // - ErrInvalidRequest:
-  //   - `approver` has already authorized `proxy`.
   rpc AuthorizeOperator(MsgAuthorizeOperator) returns (MsgAuthorizeOperatorResponse);
 
   // RevokeOperator revokes the authorization of the operator to send the holder's token.
   // Fires:
   // - EventRevokedOperator
   // - disapprove_collection (deprecated, not typed)
-  // Throws:
-  // - ErrNotFound:
-  //   - there is no contract of `contract_id`.
-  //   - there is no authorization by `approver` to `proxy`.
   rpc RevokeOperator(MsgRevokeOperator) returns (MsgRevokeOperatorResponse);
 
   // CreateContract defines a method to create a contract for collection.
@@ -100,18 +75,12 @@ service Msg {
   // Fires:
   // - EventMintedFT
   // - mint_ft (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - `from` does not have `mint` permission.
   rpc MintFT(MsgMintFT) returns (MsgMintFTResponse);
 
   // MintNFT defines a method to mint non-fungible tokens.
   // Fires:
   // - EventMintedNFT
   // - mint_nft (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - `from` does not have `mint` permission.
   rpc MintNFT(MsgMintNFT) returns (MsgMintNFTResponse);
 
   // BurnFT defines a method to burn fungible tokens.
@@ -120,11 +89,6 @@ service Msg {
   // - burn_ft (deprecated, not typed)
   // - burn_nft (deprecated, not typed)
   // - operation_burn_nft (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - `from` does not have `burn` permission.
-  // - ErrInvalidRequest:
-  //   - the balance of `from` does not have enough tokens to burn.
   rpc BurnFT(MsgBurnFT) returns (MsgBurnFTResponse);
 
   // OperatorBurnFT defines a method to burn fungible tokens of the holder by the operator.
@@ -133,12 +97,6 @@ service Msg {
   // - burn_ft_from (deprecated, not typed)
   // - burn_nft_from (deprecated, not typed)
   // - operation_burn_nft (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - `proxy` does not have `burn` permission.
-  //   - the approver has not authorized `proxy`.
-  // - ErrInvalidRequest:
-  //   - the balance of `from` does not have enough tokens to burn.
   rpc OperatorBurnFT(MsgOperatorBurnFT) returns (MsgOperatorBurnFTResponse);
 
   // BurnNFT defines a method to burn non-fungible tokens.
@@ -147,11 +105,6 @@ service Msg {
   // - burn_ft (deprecated, not typed)
   // - burn_nft (deprecated, not typed)
   // - operation_burn_nft (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - `from` does not have `burn` permission.
-  // - ErrInvalidRequest:
-  //   - the balance of `from` does not have enough tokens to burn.
   rpc BurnNFT(MsgBurnNFT) returns (MsgBurnNFTResponse);
 
   // OperatorBurnNFT defines a method to burn non-fungible tokens of the holder by the operator.
@@ -160,12 +113,6 @@ service Msg {
   // - burn_ft_from (deprecated, not typed)
   // - burn_nft_from (deprecated, not typed)
   // - operation_burn_nft (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - `proxy` does not have `burn` permission.
-  //   - the approver has not authorized `proxy`.
-  // - ErrInvalidRequest:
-  //   - the balance of `from` does not have enough tokens to burn.
   rpc OperatorBurnNFT(MsgOperatorBurnNFT) returns (MsgOperatorBurnNFTResponse);
 
   // Modify defines a method to modify metadata.
@@ -176,33 +123,18 @@ service Msg {
   // - modify_token_type (deprecated, not typed)
   // - modify_token (deprecated, not typed)
   // - EventModifiedNFT
-  // Throws:
-  // - ErrUnauthorized
-  //   - the proxy does not have `modify` permission.
-  // - ErrNotFound
-  //   - there is no contract of `contract_id`.
-  //   - there is no token type of `token_type`.
-  //   - there is no token of `token_id`.
   rpc Modify(MsgModify) returns (MsgModifyResponse);
 
   // GrantPermission allows one to mint or burn tokens or modify metadata.
   // Fires:
   // - EventGranted
   // - grant_perm (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - `granter` does not have `permission`.
-  // - ErrInvalidRequest
-  //   - `grantee` already has `permission`.
   rpc GrantPermission(MsgGrantPermission) returns (MsgGrantPermissionResponse);
 
   // RevokePermission abandons a permission.
   // Fires:
   // - EventRenounced
   // - revoke_perm (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - `grantee` does not have `permission`.
   rpc RevokePermission(MsgRevokePermission) returns (MsgRevokePermissionResponse);
 
   // Attach defines a method to attach a token to another token.
@@ -210,13 +142,6 @@ service Msg {
   // - EventAttach
   // - attach (deprecated, not typed)
   // - operation_root_changed (deprecated, not typed)
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `owner` does not owns `id`.
-  //   - `owner` does not owns `to`.
-  //   - `token_id` is not root.
-  //   - `token_id` is an ancestor of `to_token_id`, which creates a cycle as a result.
-  //   - depth of `to_token_id` exceeds an app-specific limit.
   rpc Attach(MsgAttach) returns (MsgAttachResponse);
 
   // Detach defines a method to detach a token from another token.
@@ -224,9 +149,6 @@ service Msg {
   // - EventDetach
   // - detach (deprecated, not typed)
   // - operation_root_changed (deprecated, not typed)
-  // Throws:
-  // - ErrInvalidRequest
-  //   - `owner` does not owns `token_id`.
   rpc Detach(MsgDetach) returns (MsgDetachResponse);
 
   // OperatorAttach defines a method to attach a token to another token by operator.
@@ -234,15 +156,6 @@ service Msg {
   // - EventAttach
   // - attach_from (deprecated, not typed)
   // - operation_root_changed (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - the approver has not authorized `proxy`.
-  // - ErrInvalidRequest
-  //   - `owner` does not owns `subject`.
-  //   - `owner` does not owns `target`.
-  //   - `subject` is not root.
-  //   - `subject` is an ancestor of `target`, which creates a cycle as a result.
-  //   - depth of `to` exceeds an app-specific limit.
   rpc OperatorAttach(MsgOperatorAttach) returns (MsgOperatorAttachResponse);
 
   // OperatorDetach defines a method to detach a token from another token by operator.
@@ -250,11 +163,6 @@ service Msg {
   // - EventDetach
   // - detach_from (deprecated, not typed)
   // - operation_root_changed (deprecated, not typed)
-  // Throws:
-  // - ErrUnauthorized
-  //   - the approver has not authorized `proxy`.
-  // - ErrInvalidRequest
-  //   - `owner` does not owns `subject`.
   rpc OperatorDetach(MsgOperatorDetach) returns (MsgOperatorDetachResponse);
 }
 
@@ -352,14 +260,6 @@ message MsgRevokeOperatorResponse {}
 
 // MsgCreateContract is the Msg/CreateContract request type.
 //
-// Throws:
-// - ErrInvalidAddress
-//   - `owner` is of invalid format.
-// - ErrInvalidRequest
-//   - `name` exceeds the app-specific limit in length.
-//   - `base_img_uri` exceeds the app-specific limit in length.
-//   - `meta` exceeds the app-specific limit in length.
-//
 // Signer: `owner`
 message MsgCreateContract {
   // address which all the permissions on the contract will be granted to (not a permanent property).
@@ -380,19 +280,6 @@ message MsgCreateContractResponse {
 }
 
 // MsgIssueFT is the Msg/IssueFT request type.
-//
-// Throws:
-// - ErrInvalidAddress
-//   - `owner` is of invalid format.
-//   - `to` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `name` is empty.
-//   - `name` exceeds the app-specific limit in length.
-//   - `meta` exceeds the app-specific limit in length.
-//   - `decimals` is lesser than 0 or greater than 18.
-//   - `amount` is not positive.
-//   - `mintable` == false, amount == 1 and decimals == 0 (weird, but for the backward compatibility).
 //
 // Signer: `owner`
 message MsgIssueFT {
@@ -426,14 +313,6 @@ message MsgIssueFTResponse {
 
 // MsgIssueNFT is the Msg/IssueNFT request type.
 //
-// Throws:
-// - ErrInvalidAddress
-//   - `owner` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `name` exceeds the app-specific limit in length.
-//   - `meta` exceeds the app-specific limit in length.
-//
 // Signer: `owner`
 message MsgIssueNFT {
   // contract id associated with the contract.
@@ -455,14 +334,6 @@ message MsgIssueNFTResponse {
 
 // MsgMintFT is the Msg/MintFT request type.
 //
-// Throws:
-// - ErrInvalidAddress
-//   - `from` is of invalid format.
-//   - `to` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `amount` is not positive.
-//
 // Signer: `from`
 message MsgMintFT {
   // contract id associated with the contract.
@@ -480,15 +351,6 @@ message MsgMintFT {
 message MsgMintFTResponse {}
 
 // MsgMintNFT is the Msg/MintNFT request type.
-//
-// Throws:
-// - ErrInvalidAddress
-//   - `from` is of invalid format.
-//   - `to` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `params` is empty.
-//   - `params` has an invalid element.
 //
 // Signer: `from`
 message MsgMintNFT {
@@ -639,15 +501,6 @@ message MsgRevokePermissionResponse {}
 
 // MsgAttach is the Msg/Attach request type.
 //
-// Throws:
-// - ErrInvalidAddress
-//   - `from` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `token_id` is of invalid format.
-//   - `to_token_id` is of invalid format.
-//   - `token_id` is equal to `to_token_id`.
-//
 // Signer: `from`
 message MsgAttach {
   // contract id associated with the contract.
@@ -664,13 +517,6 @@ message MsgAttach {
 message MsgAttachResponse {}
 
 // MsgDetach is the Msg/Detach request type.
-//
-// Throws:
-// - ErrInvalidAddress
-//   - `from` is of invalid format.
-// - ErrInvalidRequest
-//   - `contract_id` is of invalid format.
-//   - `token_id` is of invalid format.
 //
 // Signer: `from`
 message MsgDetach {

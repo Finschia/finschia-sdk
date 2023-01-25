@@ -6,12 +6,12 @@ import (
 	"github.com/line/lbm-sdk/x/token"
 )
 
-func (k Keeper) Issue(ctx sdk.Context, class token.Contract, owner, to sdk.AccAddress, amount sdk.Int) {
-	k.issue(ctx, class)
+func (k Keeper) Issue(ctx sdk.Context, class token.Contract, owner, to sdk.AccAddress, amount sdk.Int) string {
+	contractID := k.issue(ctx, class)
 
 	event := token.EventIssued{
 		Creator:    owner.String(),
-		ContractId: class.Id,
+		ContractId: contractID,
 		Name:       class.Name,
 		Symbol:     class.Symbol,
 		Uri:        class.Uri,
@@ -36,40 +36,43 @@ func (k Keeper) Issue(ctx sdk.Context, class token.Contract, owner, to sdk.AccAd
 
 	// legacy
 	eventGrant := token.EventGranted{
-		ContractId: class.Id,
+		ContractId: contractID,
 		Grantee:    to.String(),
 	}
 	ctx.EventManager().EmitEvent(token.NewEventGrantPermTokenHead(eventGrant))
 	for _, permission := range permissions {
 		eventGrant.Permission = permission
 		ctx.EventManager().EmitEvent(token.NewEventGrantPermTokenBody(eventGrant))
-		k.Grant(ctx, class.Id, nil, owner, permission)
+		k.Grant(ctx, contractID, nil, owner, permission)
 	}
 
-	k.mintToken(ctx, class.Id, to, amount)
+	k.mintToken(ctx, contractID, to, amount)
 
 	if err := ctx.EventManager().EmitTypedEvent(&token.EventMinted{
-		ContractId: class.Id,
+		ContractId: contractID,
 		Operator:   owner.String(),
 		To:         to.String(),
 		Amount:     amount,
 	}); err != nil {
 		panic(err)
 	}
+
+	return contractID
 }
 
-func (k Keeper) issue(ctx sdk.Context, class token.Contract) {
-	if _, err := k.GetClass(ctx, class.Id); err == nil {
-		panic(sdkerrors.ErrInvalidRequest.Wrapf("ID already exists: %s", class.Id))
-	}
+func (k Keeper) issue(ctx sdk.Context, class token.Contract) string {
+	contractID := k.classKeeper.NewID(ctx)
+	class.Id = contractID
 	k.setClass(ctx, class)
+
+	return contractID
 }
 
 func (k Keeper) GetClass(ctx sdk.Context, contractID string) (*token.Contract, error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(classKey(contractID))
 	if bz == nil {
-		return nil, sdkerrors.ErrNotFound.Wrapf("no class for %s", contractID)
+		return nil, token.ErrTokenNotExist.Wrapf("no class for %s", contractID)
 	}
 
 	var class token.Contract
@@ -110,7 +113,7 @@ func (k Keeper) Mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddr
 
 func (k Keeper) mint(ctx sdk.Context, contractID string, grantee, to sdk.AccAddress, amount sdk.Int) error {
 	if _, err := k.GetGrant(ctx, contractID, grantee, token.PermissionMint); err != nil {
-		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	k.mintToken(ctx, contractID, to, amount)
@@ -150,7 +153,7 @@ func (k Keeper) Burn(ctx sdk.Context, contractID string, from sdk.AccAddress, am
 
 func (k Keeper) burn(ctx sdk.Context, contractID string, from sdk.AccAddress, amount sdk.Int) error {
 	if _, err := k.GetGrant(ctx, contractID, from, token.PermissionBurn); err != nil {
-		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 
 	if err := k.burnToken(ctx, contractID, from, amount); err != nil {
@@ -181,10 +184,10 @@ func (k Keeper) OperatorBurn(ctx sdk.Context, contractID string, operator, from 
 func (k Keeper) operatorBurn(ctx sdk.Context, contractID string, operator, from sdk.AccAddress, amount sdk.Int) error {
 	_, err := k.GetGrant(ctx, contractID, operator, token.PermissionBurn)
 	if err != nil {
-		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return token.ErrTokenNoPermission.Wrap(err.Error())
 	}
 	if _, err := k.GetAuthorization(ctx, contractID, from, operator); err != nil {
-		return sdkerrors.ErrUnauthorized.Wrap(err.Error())
+		return token.ErrTokenNotApproved.Wrap(err.Error())
 	}
 
 	if err := k.burnToken(ctx, contractID, from, amount); err != nil {
@@ -282,7 +285,7 @@ func (k Keeper) Modify(ctx sdk.Context, contractID string, grantee sdk.AccAddres
 func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Attribute) error {
 	class, err := k.GetClass(ctx, contractID)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
 	modifiers := map[token.AttributeKey]func(string){

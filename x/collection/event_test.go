@@ -14,17 +14,21 @@ import (
 
 func TestEventTypeStringer(t *testing.T) {
 	for _, name := range collection.EventType_name {
-		value := collection.EventType(collection.EventType_value[name])
-		customName := value.String()
-		require.EqualValues(t, value, collection.EventTypeFromString(customName), name)
+		t.Run(name, func(t *testing.T) {
+			value := collection.EventType(collection.EventType_value[name])
+			customName := value.String()
+			require.EqualValues(t, value, collection.EventTypeFromString(customName))
+		})
 	}
 }
 
 func TestAttributeKeyStringer(t *testing.T) {
 	for _, name := range collection.AttributeKey_name {
-		value := collection.AttributeKey(collection.AttributeKey_value[name])
-		customName := value.String()
-		require.EqualValues(t, value, collection.AttributeKeyFromString(customName), name)
+		t.Run(name, func(t *testing.T) {
+			value := collection.AttributeKey(collection.AttributeKey_value[name])
+			customName := value.String()
+			require.EqualValues(t, value, collection.AttributeKeyFromString(customName))
+		})
 	}
 }
 
