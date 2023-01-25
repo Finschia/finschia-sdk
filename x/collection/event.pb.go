@@ -1069,6 +1069,7 @@ type EventModifiedContract struct {
 	// address which triggered the modify.
 	Operator string `protobuf:"bytes,2,opt,name=operator,proto3" json:"operator,omitempty"`
 	// changes of the attributes applied.
+	// possible attribute keys are same as those of MsgModify.
 	Changes []Attribute `protobuf:"bytes,3,rep,name=changes,proto3" json:"changes"`
 }
 
@@ -1137,6 +1138,7 @@ type EventModifiedTokenClass struct {
 	// token type associated with the token class.
 	TokenType string `protobuf:"bytes,3,opt,name=token_type,json=tokenType,proto3" json:"token_type,omitempty"`
 	// changes of the attributes applied.
+	// possible attribute keys are same as those of MsgModify.
 	Changes []Attribute `protobuf:"bytes,4,rep,name=changes,proto3" json:"changes"`
 	// type name of the token class.
 	TypeName string `protobuf:"bytes,5,opt,name=type_name,json=typeName,proto3" json:"type_name,omitempty"`
@@ -1221,6 +1223,7 @@ type EventModifiedNFT struct {
 	// token id associated with the non-fungible token.
 	TokenId string `protobuf:"bytes,3,opt,name=token_id,json=tokenId,proto3" json:"token_id,omitempty"`
 	// changes of the attributes applied.
+	// possible attribute keys are same as those of MsgModify.
 	Changes []Attribute `protobuf:"bytes,4,rep,name=changes,proto3" json:"changes"`
 }
 

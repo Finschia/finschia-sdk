@@ -245,6 +245,7 @@ message EventModifiedContract {
   // address which triggered the modify.
   string operator = 2;
   // changes of the attributes applied.
+  // possible attribute keys are same as those of MsgModify.
   repeated Attribute changes = 3 [(gogoproto.nullable) = false];
 }
 
@@ -259,6 +260,7 @@ message EventModifiedTokenClass {
   // token type associated with the token class.
   string token_type = 3;
   // changes of the attributes applied.
+  // possible attribute keys are same as those of MsgModify.
   repeated Attribute changes = 4 [(gogoproto.nullable) = false];
   // type name of the token class.
   string type_name = 5;
@@ -275,6 +277,7 @@ message EventModifiedNFT {
   // token id associated with the non-fungible token.
   string token_id = 3;
   // changes of the attributes applied.
+  // possible attribute keys are same as those of MsgModify.
   repeated Attribute changes = 4 [(gogoproto.nullable) = false];
 }
 

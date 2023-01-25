@@ -927,13 +927,13 @@ func (m MsgModify) ValidateBasic() error {
 	}
 	seenKeys := map[string]bool{}
 	for _, change := range m.Changes {
-		if seenKeys[change.Field] {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate keys: %s", change.Field)
+		if seenKeys[change.Key] {
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate keys: %s", change.Key)
 		}
-		seenKeys[change.Field] = true
+		seenKeys[change.Key] = true
 
 		attribute := Attribute{
-			Key:   change.Field,
+			Key:   change.Key,
 			Value: change.Value,
 		}
 		if err := validator(attribute); err != nil {

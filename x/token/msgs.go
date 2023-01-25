@@ -451,18 +451,18 @@ func (m MsgModify) ValidateBasic() error {
 		return sdkerrors.ErrInvalidAddress.Wrapf("invalid grantee address: %s", m.Owner)
 	}
 
-	checkedFields := map[string]bool{}
+	seenKeys := map[string]bool{}
 	for _, change := range m.Changes {
-		if checkedFields[change.Field] {
-			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate fields: %s", change.Field)
+		if seenKeys[change.Key] {
+			return sdkerrors.ErrInvalidRequest.Wrapf("duplicate fields: %s", change.Key)
 		}
-		checkedFields[change.Field] = true
+		seenKeys[change.Key] = true
 
 		if err := validateChange(change); err != nil {
 			return err
 		}
 	}
-	if len(checkedFields) == 0 {
+	if len(seenKeys) == 0 {
 		return sdkerrors.ErrInvalidRequest.Wrapf("no field provided")
 	}
 

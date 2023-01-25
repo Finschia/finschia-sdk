@@ -1109,13 +1109,13 @@ func TestMsgModify(t *testing.T) {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	changes := []collection.Change{{Field: collection.AttributeKeyName.String(), Value: "New test"}}
+	changes := []collection.Attribute{{Key: collection.AttributeKeyName.String(), Value: "New test"}}
 	testCases := map[string]struct {
 		contractID string
 		owner      sdk.AccAddress
 		tokenType  string
 		tokenIndex string
-		changes    []collection.Change
+		changes    []collection.Attribute
 		valid      bool
 	}{
 		"valid contract modification": {
@@ -1150,12 +1150,12 @@ func TestMsgModify(t *testing.T) {
 		"invalid key of change": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Change{{Field: strings.ToUpper(collection.AttributeKeyName.String()), Value: "tt"}},
+			changes:    []collection.Attribute{{Key: strings.ToUpper(collection.AttributeKeyName.String()), Value: "tt"}},
 		},
 		"invalid value of change": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Change{{Field: "symbol"}},
+			changes:    []collection.Attribute{{Key: "symbol"}},
 		},
 		"empty changes": {
 			contractID: "deadbeef",
@@ -1164,12 +1164,12 @@ func TestMsgModify(t *testing.T) {
 		"too many changes": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    make([]collection.Change, 101),
+			changes:    make([]collection.Attribute, 101),
 		},
 		"duplicated changes": {
 			contractID: "deadbeef",
 			owner:      addrs[0],
-			changes:    []collection.Change{changes[0], changes[0]},
+			changes:    []collection.Attribute{changes[0], changes[0]},
 		},
 	}
 
@@ -1760,10 +1760,10 @@ func TestAminoJSON(t *testing.T) {
 				Owner:      addrs[0].String(),
 				TokenType:  "NewType",
 				TokenIndex: "deadbeef",
-				Changes:    []collection.Change{{Field: "name", Value: "New test"}},
+				Changes:    []collection.Attribute{{Key: "name", Value: "New test"}},
 			},
 			"/lbm.collection.v1.MsgModify",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgModify\",\"value\":{\"changes\":[{\"field\":\"name\",\"value\":\"New test\"}],\"contract_id\":\"deadbeef\",\"owner\":\"%s\",\"token_index\":\"deadbeef\",\"token_type\":\"NewType\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/collection/MsgModify\",\"value\":{\"changes\":[{\"key\":\"name\",\"value\":\"New test\"}],\"contract_id\":\"deadbeef\",\"owner\":\"%s\",\"token_index\":\"deadbeef\",\"token_type\":\"NewType\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 		"MsgGrantPermission": {
 			&collection.MsgGrantPermission{

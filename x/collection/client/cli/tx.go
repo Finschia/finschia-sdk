@@ -682,8 +682,8 @@ func NewTxCmdModify() *cobra.Command {
 				return err
 			}
 
-			changes := []collection.Change{{
-				Field: args[4],
+			changes := []collection.Attribute{{
+				Key:   args[4],
 				Value: args[5],
 			}}
 			msg := collection.MsgModify{

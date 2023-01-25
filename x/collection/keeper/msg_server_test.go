@@ -735,8 +735,8 @@ func (s *KeeperTestSuite) TestMsgModify() {
 		s.Run(name, func() {
 			ctx, _ := s.ctx.CacheContext()
 
-			changes := []collection.Change{{
-				Field: collection.AttributeKeyName.String(),
+			changes := []collection.Attribute{{
+				Key:   collection.AttributeKeyName.String(),
 				Value: "test",
 			}}
 			req := &collection.MsgModify{

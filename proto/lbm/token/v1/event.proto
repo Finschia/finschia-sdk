@@ -179,5 +179,6 @@ message EventModified {
   // address which triggered the modify.
   string operator = 2;
   // changes on the metadata of the class.
-  repeated Pair changes = 3 [(gogoproto.nullable) = false];
+  // possible attribute keys are same as those of MsgModify.
+  repeated Attribute changes = 3 [(gogoproto.nullable) = false];
 }

@@ -136,10 +136,10 @@ func (s *KeeperTestSuite) TestModify() {
 		s.operator.String(): "operator",
 		s.customer.String(): "customer",
 	}
-	changes := []token.Pair{
-		{Field: token.AttributeKeyName.String(), Value: "new name"},
-		{Field: token.AttributeKeyImageURI.String(), Value: "new uri"},
-		{Field: token.AttributeKeyMeta.String(), Value: "new meta"},
+	changes := []token.Attribute{
+		{Key: token.AttributeKeyName.String(), Value: "new name"},
+		{Key: token.AttributeKeyImageURI.String(), Value: "new uri"},
+		{Key: token.AttributeKeyMeta.String(), Value: "new meta"},
 	}
 
 	for contractID, contractDesc := range contractDescriptions {

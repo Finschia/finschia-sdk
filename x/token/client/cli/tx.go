@@ -442,11 +442,11 @@ func NewTxCmdModify() *cobra.Command {
 				return err
 			}
 
-			change := token.Pair{Field: args[2], Value: args[3]}
+			change := token.Attribute{Key: args[2], Value: args[3]}
 			msg := token.MsgModify{
 				ContractId: args[0],
 				Owner:      args[1],
-				Changes:    []token.Pair{change},
+				Changes:    []token.Attribute{change},
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err

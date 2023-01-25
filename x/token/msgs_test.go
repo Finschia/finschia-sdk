@@ -571,36 +571,36 @@ func TestMsgModify(t *testing.T) {
 		addrs[i] = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	}
 
-	validChange := token.Pair{Field: token.AttributeKeyName.String(), Value: "New test"}
+	validChange := token.Attribute{Key: token.AttributeKeyName.String(), Value: "New test"}
 	testCases := map[string]struct {
 		contractID string
 		grantee    sdk.AccAddress
-		changes    []token.Pair
+		changes    []token.Attribute
 		valid      bool
 	}{
 		"valid msg": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
-			changes:    []token.Pair{validChange},
+			changes:    []token.Attribute{validChange},
 			valid:      true,
 		},
 		"invalid contract id": {
 			grantee: addrs[0],
-			changes: []token.Pair{validChange},
+			changes: []token.Attribute{validChange},
 		},
 		"invalid grantee": {
 			contractID: "deadbeef",
-			changes:    []token.Pair{validChange},
+			changes:    []token.Attribute{validChange},
 		},
 		"invalid key of change": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
-			changes:    []token.Pair{{Field: strings.ToUpper(token.AttributeKeyName.String()), Value: "tt"}},
+			changes:    []token.Attribute{{Key: strings.ToUpper(token.AttributeKeyName.String()), Value: "tt"}},
 		},
 		"invalid value of change": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
-			changes:    []token.Pair{{Field: "symbol"}},
+			changes:    []token.Attribute{{Key: "symbol"}},
 		},
 		"empty changes": {
 			contractID: "deadbeef",
@@ -609,9 +609,9 @@ func TestMsgModify(t *testing.T) {
 		"duplicated changes": {
 			contractID: "deadbeef",
 			grantee:    addrs[0],
-			changes: []token.Pair{
-				{Field: token.AttributeKeyName.String(), Value: "hello"},
-				{Field: token.AttributeKeyName.String(), Value: "world"},
+			changes: []token.Attribute{
+				{Key: token.AttributeKeyName.String(), Value: "hello"},
+				{Key: token.AttributeKeyName.String(), Value: "world"},
 			},
 		},
 	}
@@ -865,10 +865,10 @@ func TestAminoJSON(t *testing.T) {
 			&token.MsgModify{
 				ContractId: contractId,
 				Owner:      addrs[0].String(),
-				Changes:    []token.Pair{{Field: token.AttributeKeyName.String(), Value: "New test"}},
+				Changes:    []token.Attribute{{Key: token.AttributeKeyName.String(), Value: "New test"}},
 			},
 			"/lbm.token.v1.MsgModify",
-			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/token/MsgModify\",\"value\":{\"changes\":[{\"field\":\"name\",\"value\":\"New test\"}],\"contract_id\":\"deadbeef\",\"owner\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
+			fmt.Sprintf("{\"account_number\":\"1\",\"chain_id\":\"foo\",\"fee\":{\"amount\":[],\"gas\":\"0\"},\"memo\":\"memo\",\"msgs\":[{\"type\":\"lbm-sdk/token/MsgModify\",\"value\":{\"changes\":[{\"key\":\"name\",\"value\":\"New test\"}],\"contract_id\":\"deadbeef\",\"owner\":\"%s\"}}],\"sequence\":\"1\",\"timeout_height\":\"1\"}", addrs[0].String()),
 		},
 	}
 

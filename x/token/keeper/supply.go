@@ -262,7 +262,7 @@ func (k Keeper) setBurnt(ctx sdk.Context, contractID string, amount sdk.Int) {
 	k.setStatistics(ctx, contractID, amount, burnKeyPrefix)
 }
 
-func (k Keeper) Modify(ctx sdk.Context, contractID string, grantee sdk.AccAddress, changes []token.Pair) error {
+func (k Keeper) Modify(ctx sdk.Context, contractID string, grantee sdk.AccAddress, changes []token.Attribute) error {
 	if err := k.modify(ctx, contractID, changes); err != nil {
 		return err
 	}
@@ -279,7 +279,7 @@ func (k Keeper) Modify(ctx sdk.Context, contractID string, grantee sdk.AccAddres
 	return nil
 }
 
-func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Pair) error {
+func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Attribute) error {
 	class, err := k.GetClass(ctx, contractID)
 	if err != nil {
 		return err
@@ -297,7 +297,7 @@ func (k Keeper) modify(ctx sdk.Context, contractID string, changes []token.Pair)
 		},
 	}
 	for _, change := range changes {
-		key := token.AttributeKeyFromString(change.Field)
+		key := token.AttributeKeyFromString(change.Key)
 		modifiers[key](change.Value)
 	}
 

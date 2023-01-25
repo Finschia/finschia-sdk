@@ -28,9 +28,9 @@ message Contract {
   bool mintable = 7;
 }
 
-// Pair defines a key-value pair.
-message Pair {
-  string field = 1;
+// Attribute defines a key and value of the attribute.
+message Attribute {
+  string key   = 1;
   string value = 2;
 }
 

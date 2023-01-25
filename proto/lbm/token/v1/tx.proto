@@ -408,7 +408,8 @@ message MsgModify {
   // the address of the grantee which must have modify permission.
   string owner = 2;
   // changes to apply.
-  repeated Pair changes = 3 [(gogoproto.nullable) = false];
+  // possible attribute keys are: name, img_uri, meta
+  repeated Attribute changes = 3 [(gogoproto.nullable) = false];
 }
 
 // MsgModifyResponse defines the Msg/Modify response type.

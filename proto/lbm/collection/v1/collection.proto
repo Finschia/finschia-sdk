@@ -203,11 +203,3 @@ message Attribute {
   string key   = 1;
   string value = 2;
 }
-
-// Deprecated: use Attribute
-//
-// Change defines a field-value pair.
-message Change {
-  string field = 1;
-  string value = 2;
-}

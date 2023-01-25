@@ -613,7 +613,6 @@
 - [lbm/collection/v1/collection.proto](#lbm/collection/v1/collection.proto)
     - [Attribute](#lbm.collection.v1.Attribute)
     - [Authorization](#lbm.collection.v1.Authorization)
-    - [Change](#lbm.collection.v1.Change)
     - [Coin](#lbm.collection.v1.Coin)
     - [Contract](#lbm.collection.v1.Contract)
     - [FT](#lbm.collection.v1.FT)
@@ -861,10 +860,10 @@
     - [CreateValidatorAuthorization](#lbm.stakingplus.v1.CreateValidatorAuthorization)
   
 - [lbm/token/v1/token.proto](#lbm/token/v1/token.proto)
+    - [Attribute](#lbm.token.v1.Attribute)
     - [Authorization](#lbm.token.v1.Authorization)
     - [Contract](#lbm.token.v1.Contract)
     - [Grant](#lbm.token.v1.Grant)
-    - [Pair](#lbm.token.v1.Pair)
     - [Params](#lbm.token.v1.Params)
   
     - [LegacyPermission](#lbm.token.v1.LegacyPermission)
@@ -9071,24 +9070,6 @@ Since: 0.46.0 (finschia)
 
 
 
-<a name="lbm.collection.v1.Change"></a>
-
-### Change
-Deprecated: use Attribute
-
-Change defines a field-value pair.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `field` | [string](#string) |  |  |
-| `value` | [string](#string) |  |  |
-
-
-
-
-
-
 <a name="lbm.collection.v1.Coin"></a>
 
 ### Coin
@@ -9547,7 +9528,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
-| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. |
+| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. possible attribute keys are same as those of MsgModify. |
 
 
 
@@ -9567,7 +9548,7 @@ Since: 0.46.0 (finschia)
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
 | `token_id` | [string](#string) |  | token id associated with the non-fungible token. |
-| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. |
+| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. possible attribute keys are same as those of MsgModify. |
 
 
 
@@ -9587,7 +9568,7 @@ Since: 0.46.0 (finschia)
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
 | `token_type` | [string](#string) |  | token type associated with the token class. |
-| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. |
+| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes of the attributes applied. possible attribute keys are same as those of MsgModify. |
 | `type_name` | [string](#string) |  | type name of the token class. |
 
 
@@ -11182,7 +11163,7 @@ MsgModify is the Msg/Modify request type.
 | `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
 | `token_type` | [string](#string) |  | token type of the token. |
 | `token_index` | [string](#string) |  | token index of the token. if index is empty, it would modify the corresponding token type. if index is not empty, it would modify the corresponding nft. Note: if token type is of FTs, the index cannot be empty. |
-| `changes` | [Change](#lbm.collection.v1.Change) | repeated | changes to apply. on modifying collection: name, uri, meta. on modifying token type and token: name, meta. |
+| `changes` | [Attribute](#lbm.collection.v1.Attribute) | repeated | changes to apply. possible attribute keys on modifying collection: name, base_img_uri, meta. possible attribute keys on modifying token type and token: name, meta. |
 
 
 
@@ -12863,6 +12844,22 @@ CreateValidatorAuthorization allows the grantee to create a new validator.
 
 
 
+<a name="lbm.token.v1.Attribute"></a>
+
+### Attribute
+Attribute defines a key and value of the attribute.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [string](#string) |  |  |
+| `value` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="lbm.token.v1.Authorization"></a>
 
 ### Authorization
@@ -12910,22 +12907,6 @@ Grant defines permission given to a grantee.
 | ----- | ---- | ----- | ----------- |
 | `grantee` | [string](#string) |  | address of the grantee. |
 | `permission` | [Permission](#lbm.token.v1.Permission) |  | permission on the contract. |
-
-
-
-
-
-
-<a name="lbm.token.v1.Pair"></a>
-
-### Pair
-Pair defines a key-value pair.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `field` | [string](#string) |  |  |
-| `value` | [string](#string) |  |  |
 
 
 
@@ -13105,7 +13086,7 @@ Since: 0.46.0 (finschia)
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `operator` | [string](#string) |  | address which triggered the modify. |
-| `changes` | [Pair](#lbm.token.v1.Pair) | repeated | changes on the metadata of the class. |
+| `changes` | [Attribute](#lbm.token.v1.Attribute) | repeated | changes on the metadata of the class. possible attribute keys are same as those of MsgModify. |
 
 
 
@@ -13907,7 +13888,7 @@ Signer: `owner`
 | ----- | ---- | ----- | ----------- |
 | `contract_id` | [string](#string) |  | contract id associated with the contract. |
 | `owner` | [string](#string) |  | the address of the grantee which must have modify permission. |
-| `changes` | [Pair](#lbm.token.v1.Pair) | repeated | changes to apply. |
+| `changes` | [Attribute](#lbm.token.v1.Attribute) | repeated | changes to apply. possible attribute keys are: name, img_uri, meta |
 
 
 

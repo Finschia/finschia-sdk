@@ -601,9 +601,9 @@ message MsgModify {
   // Note: if token type is of FTs, the index cannot be empty.
   string token_index = 4;
   // changes to apply.
-  // on modifying collection: name, uri, meta.
-  // on modifying token type and token: name, meta.
-  repeated Change changes = 5 [(gogoproto.nullable) = false];
+  // possible attribute keys on modifying collection: name, base_img_uri, meta.
+  // possible attribute keys on modifying token type and token: name, meta.
+  repeated Attribute changes = 5 [(gogoproto.nullable) = false];
 }
 
 // MsgModifyResponse is the Msg/Modify response type.

@@ -167,8 +167,8 @@ func TestNewEventModifyToken(t *testing.T) {
 	event := token.EventModified{
 		ContractId: str(),
 		Operator:   str(),
-		Changes: []token.Pair{{
-			Field: token.AttributeKeyName.String(),
+		Changes: []token.Attribute{{
+			Key:   token.AttributeKeyName.String(),
 			Value: str(),
 		}},
 	}
@@ -187,7 +187,7 @@ func TestNewEventModifyToken(t *testing.T) {
 		require.Equal(t, token.EventTypeModifyToken.String(), legacy.Type)
 
 		attributes := map[string]string{
-			event.Changes[i].Field: event.Changes[i].Value,
+			event.Changes[i].Key: event.Changes[i].Value,
 		}
 		for key, value := range attributes {
 			require.True(t, assertAttribute(legacy, key, value), key)
